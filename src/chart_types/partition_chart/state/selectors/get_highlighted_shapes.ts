@@ -29,29 +29,31 @@ import { partitionGeometries } from './geometries';
 
 const getHighlightedLegendItemPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;
 
-const legendStrategies = {
-  node: (legendPath: LegendPath) => ({ path }: { path: LegendPath }) =>
+type LegendStrategyFn = (legendPath: LegendPath) => (partialShape: { path: LegendPath; dataName: DataName }) => boolean;
+
+const legendStrategies: Record<LegendStrategy, LegendStrategyFn> = {
+  node: (legendPath) => ({ path }) =>
     // highlight exact match in the path only
     legendPath.length === path.length &&
     legendPath.every(({ index, value }, i) => index === path[i]?.index && value === path[i]?.value),
 
-  path: (legendPath: LegendPath) => ({ path }: { path: LegendPath }) =>
+  path: (legendPath) => ({ path }) =>
     // highlight members of the exact path; ie. exact match in the path, plus all its ancestors
     path.every(({ index, value }, i) => index === legendPath[i]?.index && value === legendPath[i]?.value),
 
-  keyInLayer: (legendPath: LegendPath) => ({ path, dataName }: { path: LegendPath; dataName: DataName }) =>
+  keyInLayer: (legendPath) => ({ path, dataName }) =>
     // highlight all identically named items which are within the same depth (ring) as the hovered legend depth
     legendPath.length === path.length && dataName === legendPath[legendPath.length - 1].value,
 
-  key: (legendPath: LegendPath) => ({ dataName }: { dataName: DataName }) =>
+  key: (legendPath) => ({ dataName }) =>
     // highlight all identically named items, no matter where they are
     dataName === legendPath[legendPath.length - 1].value,
 
-  nodeWithDescendants: (legendPath: LegendPath) => ({ path }: { path: LegendPath }) =>
+  nodeWithDescendants: (legendPath) => ({ path }) =>
     // highlight exact match in the path, and everything that is its descendant in that branch
     legendPath.every(({ index, value }, i) => index === path[i]?.index && value === path[i]?.value),
 
-  pathWithDescendants: (legendPath: LegendPath) => ({ path }: { path: LegendPath }) =>
+  pathWithDescendants: (legendPath) => ({ path }) =>
     // highlight exact match in the path, and everything that is its ancestor, or its descendant in that branch
     legendPath
       .slice(0, path.length)
