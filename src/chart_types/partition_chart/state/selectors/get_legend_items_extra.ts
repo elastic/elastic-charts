@@ -19,8 +19,8 @@
 
 import createCachedSelector from 're-reselect';
 
-import { LegendItemExtraValues } from '../../../../commons/legend';
-import { SeriesKey } from '../../../../commons/series_id';
+import { LegendItemExtraValues } from '../../../../common/legend';
+import { SeriesKey } from '../../../../common/series_id';
 import { SettingsSpec } from '../../../../specs';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
@@ -35,14 +35,7 @@ export const getLegendItemsExtra = createCachedSelector(
   (pieSpec, { legendMaxDepth }, tree): Map<SeriesKey, LegendItemExtraValues> => {
     const legendExtraValues = new Map<SeriesKey, LegendItemExtraValues>();
 
-    if (!pieSpec) {
-      return legendExtraValues;
-    }
-    if (isInvalidLegendMaxDepth(legendMaxDepth)) {
-      return legendExtraValues;
-    }
-
-    return getExtraValueMap(pieSpec, tree);
+    return pieSpec && !isInvalidLegendMaxDepth(legendMaxDepth) ? getExtraValueMap(pieSpec, tree) : legendExtraValues;
   },
 )(getChartIdSelector);
 
@@ -63,10 +56,6 @@ function getExtraValueMap(
   tree: HierarchyOfArrays,
   keys: Map<SeriesKey, LegendItemExtraValues> = new Map(),
 ): Map<SeriesKey, LegendItemExtraValues> {
-  if (tree.length === 0) {
-    return keys;
-  }
-
   for (let i = 0; i < tree.length; i++) {
     const branch = tree[i];
     const [key, arrayNode] = branch;
@@ -77,7 +66,7 @@ function getExtraValueMap(
       const formattedValue = valueFormatter ? valueFormatter(value) : value;
 
       values.set(key, formattedValue);
-      keys.set(path.join('__'), values);
+      keys.set(path.map(({ value: v }) => v).join('__'), values);
     }
 
     getExtraValueMap({ layers, valueFormatter }, children, keys);

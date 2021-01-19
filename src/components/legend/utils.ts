@@ -20,16 +20,11 @@ import { LegendItemExtraValues, LegendItem } from '../../common/legend';
 
 /** @internal */
 export function getExtra(extraValues: Map<string, LegendItemExtraValues>, item: LegendItem, totalItems: number) {
-  const {
-    seriesIdentifier: { key },
-    defaultExtra,
-    childId,
-    path,
-  } = item;
+  const { defaultExtra, childId, path } = item;
   if (extraValues.size === 0) {
     return defaultExtra?.formatted ?? '';
   }
-  const extraValueKey = path ? path.join('__') : key;
+  const extraValueKey = path.map(({ value: v }) => v).join('__');
   const itemExtraValues = extraValues.get(extraValueKey);
   const actionExtra = (childId && itemExtraValues?.get(childId)) ?? null;
   if (extraValues.size !== totalItems) {
