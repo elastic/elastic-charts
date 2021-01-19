@@ -182,12 +182,12 @@ export function splitSeriesDataByAccessors(
     let sum = xValueSums.get(x) ?? 0;
 
     // extract small multiples aggregation values
-    const smH = smallMultiples?.horizontal?.by?.(spec, datum) ?? null;
+    const smH = smallMultiples?.horizontal?.by?.(spec, datum);
     if (!isNil(smH)) {
       smHValues.add(smH);
     }
 
-    const smV = smallMultiples?.vertical?.by?.(spec, datum) ?? null;
+    const smV = smallMultiples?.vertical?.by?.(spec, datum);
     if (!isNil(smV)) {
       smVValues.add(smV);
     }
