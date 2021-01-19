@@ -715,7 +715,7 @@ describe('Rendering points - bubble', () => {
       geometriesIndex,
     } = computeSeriesGeometriesSelector(store.getState());
 
-    test('Can render a splitted bubble', () => {
+    test('Can render a split bubble', () => {
       const [{ value: renderedBubble }] = bubbles;
       expect(renderedBubble.points).toHaveLength(7);
       expect(renderedBubble.color).toBe('red');

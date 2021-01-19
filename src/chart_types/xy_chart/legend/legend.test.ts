@@ -314,7 +314,7 @@ describe('Legends', () => {
     name = getSeriesName(seriesIdentifier1, true, false, spec2);
     expect(name).toBe('spec2');
   });
-  it('use the splitted value as name if has a single series and splitSeries is used', () => {
+  it('use the split value as name if has a single series and splitSeries is used', () => {
     const seriesIdentifier1 = {
       specId: '',
       yAccessor: 'y1',

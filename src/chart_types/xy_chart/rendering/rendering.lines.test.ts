@@ -680,7 +680,7 @@ describe('Rendering points - line', () => {
       geometriesIndex,
     } = computeSeriesGeometriesSelector(store.getState());
 
-    test('Can render a splitted line', () => {
+    test('Can render a split line', () => {
       const [{ value: renderedLine }] = lines;
       expect(renderedLine.line.split('M').length - 1).toBe(3);
       expect(renderedLine.color).toBe('red');
