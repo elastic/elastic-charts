@@ -110,9 +110,11 @@ interface LegendItemState {
 /** @internal */
 export class LegendListItem extends Component<LegendItemProps, LegendItemState> {
   static displayName = 'LegendItem';
+
   shouldClearPersistedColor = false;
 
   colorRef = createRef<HTMLButtonElement>();
+
   state: LegendItemState = {
     isOpen: false,
     actionActive: false,
@@ -228,6 +230,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           style={style}
           data-ech-series-name={label}
         >
+          <div className="background" />
           <ItemColor
             ref={this.colorRef}
             color={color}

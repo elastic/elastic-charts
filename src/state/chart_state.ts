@@ -38,7 +38,8 @@ import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from './actions/colors';
 import { DOMElement } from './actions/dom_element';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
-import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC } from './actions/specs';
+import { REMOVE_SPEC, SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC } from './actions/specs';
+import { Z_INDEX_EVENT } from './actions/z_index';
 import { interactionsReducer } from './reducers/interactions';
 import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_internal_is_intialized';
 import { getLegendItemsSelector } from './selectors/get_legend_items';
@@ -180,7 +181,6 @@ export interface PointerStates {
 export interface InteractionsState {
   pointer: PointerStates;
   highlightedLegendItemKey: string | null;
-  legendCollapsed: boolean;
   deselectedDataSeries: SeriesIdentifier[];
   hoveredDOMElement: DOMElement | null;
 }
@@ -202,6 +202,10 @@ export interface GlobalChartState {
    * a unique ID for each chart used by re-reselect to memoize selector per chart
    */
   chartId: string;
+  /**
+   * The Z-Index of the chart component
+   */
+  zIndex: number;
   /**
    * true when all all the specs are parsed ad stored into the specs object
    */
@@ -248,6 +252,7 @@ export interface GlobalChartState {
 /** @internal */
 export const getInitialState = (chartId: string): GlobalChartState => ({
   chartId,
+  zIndex: 0,
   specsInitialized: false,
   specParsing: false,
   chartRendered: false,
@@ -263,7 +268,6 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
   internalChartState: null,
   interactions: {
     pointer: getInitialPointerState(),
-    legendCollapsed: false,
     highlightedLegendItemKey: null,
     deselectedDataSeries: [],
     hoveredDOMElement: null,
@@ -284,6 +288,11 @@ export const chartStoreReducer = (chartId: string) => {
   const initialState = getInitialState(chartId);
   return (state = initialState, action: StateActions): GlobalChartState => {
     switch (action.type) {
+      case Z_INDEX_EVENT:
+        return {
+          ...state,
+          zIndex: action.zIndex,
+        };
       case SPEC_PARSED:
         const chartType = findMainChartType(state.specs);
 

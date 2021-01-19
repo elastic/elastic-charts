@@ -332,6 +332,8 @@ export interface BubbleSeriesStyle {
 export class Chart extends React.Component<ChartProps, ChartState> {
     constructor(props: ChartProps);
     // (undocumented)
+    componentDidMount(): void;
+    // (undocumented)
     componentWillUnmount(): void;
     // (undocumented)
     static defaultProps: ChartProps;
@@ -405,6 +407,8 @@ export interface CrosshairStyle {
     // (undocumented)
     band: FillStyle & Visible;
     // (undocumented)
+    crossLine: StrokeStyle & Visible & Partial<StrokeDashArray>;
+    // (undocumented)
     line: StrokeStyle & Visible & Partial<StrokeDashArray>;
 }
 
@@ -428,8 +432,7 @@ export const CurveType: Readonly<{
 export type CurveType = $Values<typeof CurveType>;
 
 // @public (undocumented)
-export type 
-= ComponentType<{
+export type CustomAnnotationTooltip = ComponentType<{
     header?: string;
     details?: string;
     datum: LineAnnotationDatum | RectAnnotationDatum;
@@ -1258,6 +1261,8 @@ export interface PartitionLayer {
 export const PartitionLayout: Readonly<{
     sunburst: "sunburst";
     treemap: "treemap";
+    icicle: "icicle";
+    flame: "flame";
 }>;
 
 // @public (undocumented)
@@ -1958,8 +1963,8 @@ export type YDomainRange = YDomainBase & DomainRange;
 // src/chart_types/heatmap/layout/types/config_types.ts:28:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:60:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:61:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:126:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:127:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:128:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:129:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/specs/index.ts:48:13 - (ae-forgotten-export) The symbol "NodeColorAccessor" needs to be exported by the entry point index.d.ts
 // src/commons/series_id.ts:39:3 - (ae-forgotten-export) The symbol "SeriesKey" needs to be exported by the entry point index.d.ts
 

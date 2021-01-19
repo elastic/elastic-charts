@@ -28,7 +28,6 @@ import {
   ON_LEGEND_ITEM_OUT,
   ON_LEGEND_ITEM_OVER,
   ON_TOGGLE_DESELECT_SERIES,
-  ON_TOGGLE_LEGEND,
   ToggleDeselectSeriesAction,
 } from '../actions/legend';
 import { MouseActions, ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE } from '../actions/mouse';
@@ -136,11 +135,6 @@ export function interactionsReducer(
         },
       };
     }
-    case ON_TOGGLE_LEGEND:
-      return {
-        ...state,
-        legendCollapsed: !state.legendCollapsed,
-      };
     case ON_LEGEND_ITEM_OUT:
       return {
         ...state,

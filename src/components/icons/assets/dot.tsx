@@ -30,13 +30,8 @@ export class DotIcon extends React.Component<IconComponentProps> {
 
   render() {
     return (
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" {...this.props}>
-        <defs>
-          <circle id="dot-a" cx="8" cy="8" r="4" />
-        </defs>
-        <g>
-          <use xlinkHref="#dot-a" />
-        </g>
+      <svg width={16} height={16} viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" {...this.props}>
+        <circle cx={8} cy={8} r={4} />
       </svg>
     );
   }

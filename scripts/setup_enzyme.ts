@@ -24,6 +24,15 @@ configure({ adapter: new Adapter() });
 
 process.env.RNG_SEED = 'jest-unit-tests';
 
+declare global {
+  interface Window {
+    /**
+     * ResizeObserverMock override
+     */
+    ResizeObserver: typeof ResizeObserverMock;
+  }
+}
+
 /**
  * Mocking RAF and ResizeObserver to missing RAF and RO in jsdom
  */
@@ -36,6 +45,7 @@ window.requestAnimationFrame = (callback) => {
 type ResizeObserverMockCallback = (entries: Array<{ contentRect: { width: number; height: number } }>) => void;
 class ResizeObserverMock {
   callback: ResizeObserverMockCallback;
+
   constructor(callback: ResizeObserverMockCallback) {
     this.callback = callback;
   }
@@ -49,7 +59,6 @@ class ResizeObserverMock {
   disconnect() {}
 }
 
-// @ts-ignore
 window.ResizeObserver = ResizeObserverMock;
 
 // Some tests will fail due to undefined Path2D, this mock doesn't create issues on test env

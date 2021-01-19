@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { Optional } from 'utility-types';
+
 import { ScaleType } from '../../../scales/constants';
 import { compareByValueAsc, identity } from '../../../utils/commons';
 import { computeContinuousDataDomain, computeOrdinalDataDomain, Domain } from '../../../utils/domain';
@@ -35,7 +37,7 @@ import { XDomain } from './types';
  * @internal
  */
 export function mergeXDomain(
-  specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[],
+  specs: Optional<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>, 'seriesType'>[],
   xValues: Set<string | number>,
   customXDomain?: DomainRange | Domain,
   fallbackScale?: XScaleType,
@@ -177,13 +179,13 @@ export function findMinInterval(xValues: number[]): number {
  * @internal
  */
 export function convertXScaleTypes(
-  specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>[],
+  specs: Optional<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>, 'seriesType'>[],
 ): {
   scaleType: XScaleType;
   isBandScale: boolean;
   timeZone?: string;
 } | null {
-  const seriesTypes = new Set<string>();
+  const seriesTypes = new Set<string | undefined>();
   const scaleTypes = new Set<ScaleType>();
   const timeZones = new Set<string>();
   specs.forEach((spec) => {
@@ -201,11 +203,7 @@ export function convertXScaleTypes(
     const scaleType = scaleTypes.values().next().value;
     let timeZone: string | undefined;
     if (scaleType === ScaleType.Time) {
-      if (timeZones.size > 1) {
-        timeZone = 'utc';
-      } else {
-        timeZone = timeZones.values().next().value;
-      }
+      timeZone = timeZones.size > 1 ? 'utc' : timeZones.values().next().value;
     }
     return { scaleType, isBandScale, timeZone };
   }
