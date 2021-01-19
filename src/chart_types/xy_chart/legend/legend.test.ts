@@ -18,10 +18,10 @@
  */
 
 import { ChartTypes } from '../..';
-import { LegendItem } from '../../../commons/legend';
+import { LegendItem } from '../../../common/legend';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
-import { Position, RecursivePartial } from '../../../utils/commons';
+import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { SeriesCollectionValue, getSeriesName } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, SeriesTypes } from '../utils/specs';
@@ -141,6 +141,7 @@ describe('Legends', () => {
         isSeriesHidden: false,
         isToggleable: true,
         defaultExtra: nullDisplayValue,
+        path: [{ index: 0, value: 'seriesCollectionValue1a' }],
       },
     ];
     expect([...legend.values()]).toEqual(expected);
@@ -159,6 +160,7 @@ describe('Legends', () => {
         isSeriesHidden: false,
         isToggleable: true,
         defaultExtra: nullDisplayValue,
+        path: [{ index: 0, value: 'seriesCollectionValue1a' }],
       },
       {
         color: 'blue',
@@ -169,6 +171,7 @@ describe('Legends', () => {
         isSeriesHidden: false,
         isToggleable: true,
         defaultExtra: nullDisplayValue,
+        path: [{ index: 0, value: 'seriesCollectionValue1b' }],
       },
     ];
     expect([...legend.values()]).toEqual(expected);
@@ -187,6 +190,7 @@ describe('Legends', () => {
         isSeriesHidden: false,
         isToggleable: true,
         defaultExtra: nullDisplayValue,
+        path: [{ index: 0, value: 'seriesCollectionValue1a' }],
       },
       {
         color: 'green',
@@ -197,6 +201,7 @@ describe('Legends', () => {
         isSeriesHidden: false,
         isToggleable: true,
         defaultExtra: nullDisplayValue,
+        path: [{ index: 0, value: 'seriesCollectionValue2a' }],
       },
     ];
     expect([...legend.values()]).toEqual(expected);
@@ -220,6 +225,7 @@ describe('Legends', () => {
         isSeriesHidden: false,
         isToggleable: true,
         defaultExtra: nullDisplayValue,
+        path: [{ index: 0, value: 'seriesCollectionValue1a' }],
       },
     ];
     expect([...legend.values()]).toEqual(expected);
@@ -308,7 +314,7 @@ describe('Legends', () => {
     name = getSeriesName(seriesIdentifier1, true, false, spec2);
     expect(name).toBe('spec2');
   });
-  it('use the splitted value as name if has a single series and splitSeries is used', () => {
+  it('use the split value as name if has a single series and splitSeries is used', () => {
     const seriesIdentifier1 = {
       specId: '',
       yAccessor: 'y1',

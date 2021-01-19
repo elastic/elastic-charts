@@ -17,11 +17,11 @@
  * under the License.
  */
 
-import { LegendItem } from '../../../commons/legend';
-import { SeriesKey, SeriesIdentifier } from '../../../commons/series_id';
+import { LegendItem } from '../../../common/legend';
+import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { TickFormatterOptions } from '../../../specs';
-import { Color } from '../../../utils/commons';
+import { Color } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { LastValues } from '../state/utils/types';
@@ -127,6 +127,7 @@ export function computeLegend(
       isItemHidden: hideInLegend,
       isToggleable: true,
       defaultExtra: getLegendExtra(showLegendExtra, spec.xScaleType, formatter, 'y1', lastValue),
+      path: [{ index: 0, value: seriesIdentifier.key }],
     });
     if (banded) {
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
@@ -139,6 +140,7 @@ export function computeLegend(
         isItemHidden: hideInLegend,
         isToggleable: true,
         defaultExtra: getLegendExtra(showLegendExtra, spec.xScaleType, formatter, 'y0', lastValue),
+        path: [{ index: 0, value: seriesIdentifier.key }],
       });
     }
   });

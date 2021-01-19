@@ -18,11 +18,12 @@
  */
 
 import { SpecId } from '../utils/ids';
+import { CategoryKey } from './category';
 
 /**
  * A string key used to uniquely identify a series
  */
-export type SeriesKey = string;
+export type SeriesKey = CategoryKey;
 
 /**
  * A series identifier
