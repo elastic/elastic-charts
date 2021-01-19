@@ -29,7 +29,7 @@ import { partitionGeometries } from './geometries';
 
 const getHighlightedLegendItemPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;
 
-const legendStrategies = Object.freeze({
+const legendStrategies = {
   node: (legendPath: LegendPath) => ({ path }: { path: LegendPath }) =>
     // highlight exact match in the path only
     legendPath.length === path.length &&
@@ -56,7 +56,7 @@ const legendStrategies = Object.freeze({
     legendPath
       .slice(0, path.length)
       .every(({ index, value }, i) => index === path[i]?.index && value === path[i]?.value),
-});
+};
 
 /** @public */
 export const LegendStrategy = Object.freeze({
