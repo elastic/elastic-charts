@@ -22,7 +22,7 @@ import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
-import { Position } from '../../../utils/commons';
+import { Position } from '../../../utils/common';
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';
 import { Logger } from '../../../utils/logger';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';

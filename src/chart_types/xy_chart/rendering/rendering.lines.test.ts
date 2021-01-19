@@ -22,7 +22,7 @@ import { MockSeriesIdentifier } from '../../../mocks/series/series_identifiers';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { Position } from '../../../utils/commons';
+import { Position } from '../../../utils/common';
 import { PointGeometry } from '../../../utils/geometry';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
 import { SeriesTypes } from '../utils/specs';
