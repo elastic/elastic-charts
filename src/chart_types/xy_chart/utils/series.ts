@@ -115,9 +115,6 @@ export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentif
 
 /**
  * Returns string form of accessor. Uses index when accessor is a function.
- *
- * @param accessor
- * @param index
  * @internal
  */
 export function getAccessorFieldName(accessor: Accessor | AccessorFn, index: number) {
@@ -126,7 +123,7 @@ export function getAccessorFieldName(accessor: Accessor | AccessorFn, index: num
 
 /**
  * Split a dataset into multiple series depending on the accessors.
- * Each series is then associated with a key thats belong to its configuration.
+ * Each series is then associated with a key that belongs to its configuration.
  * This method removes every data with an invalid x: a string or number value is required
  * `y` values and `mark` values are casted to number or null.
  * @internal
@@ -329,12 +326,7 @@ function castToNumber(value: any, nonNumericValues: any[]): number | null {
   return num;
 }
 
-/**
- * Sorts data based on order of xValues
- * @param dataSeries
- * @param xValues
- * @param xScaleType
- */
+/** Sorts data based on order of xValues */
 const getSortedDataSeries = (
   dataSeries: DataSeries[],
   xValues: Set<string | number>,
@@ -380,14 +372,7 @@ export function getFormattedDataSeries(
   return [...fittedAndStackedDataSeries, ...nonStackedDataSeries];
 }
 
-/**
- *
- * @param seriesSpecs the map for all the series spec
- * @param deselectedDataSeries the array of deselected/hidden data series
- * @param enableVislibSeriesSort is optional; if not specified in <Settings />,
- * @param smallMultiples
- * @internal
- */
+/** @internal */
 export function getDataSeriesFromSpecs(
   seriesSpecs: BasicSeriesSpec[],
   deselectedDataSeries: SeriesIdentifier[] = [],
@@ -612,12 +597,7 @@ export function getSortedDataSeriesColorsValuesMap(
 
 /**
  * Helper function to get highest override color.
- *
- * from highest to lowest: `temporary`, `seriesSpec.color` then `persisted`
- *
- * @param key
- * @param customColors
- * @param overrides
+ * From highest to lowest: `temporary`, `seriesSpec.color` then, unless `temporary` is set to `null`, `persisted`
  */
 function getHighestOverride(
   key: string,
@@ -632,11 +612,6 @@ function getHighestOverride(
 
 /**
  * Returns color for a series given all color hierarchies
- *
- * @param seriesCollection
- * @param chartColors
- * @param customColors
- * @param overrides
  * @internal
  */
 export function getSeriesColors(
