@@ -560,16 +560,15 @@ export function getSeriesName(
   const nameKeys =
     spec && spec.yAccessors.length > 1 ? seriesIdentifier.seriesKeys : seriesIdentifier.seriesKeys.slice(0, -1);
 
-  if (nameKeys.length > 0 && nameKeys[0] !== null && !hasSingleSeries) {
+  if (
+    (nameKeys.length > 0 && nameKeys[0] !== null && !hasSingleSeries) ||
+    (spec && spec.splitSeriesAccessors && nameKeys.length > 0 && nameKeys[0] != null)
+  ) {
     return nameKeys.join(delimiter);
   }
 
   if (!spec) {
     return '';
-  }
-
-  if (spec.splitSeriesAccessors && nameKeys.length > 0 && nameKeys[0] != null) {
-    return nameKeys.join(delimiter);
   }
 
   return typeof spec.name === 'string' ? spec.name : `${spec.id}`;
