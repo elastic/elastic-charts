@@ -543,17 +543,16 @@ export function getSeriesName(
   spec?: BasicSeriesSpec,
 ): string {
   let delimiter = SERIES_DELIMITER;
-  if (spec && spec.name && typeof spec.name !== 'string') {
-    let customLabel: string | number | null = null;
-    if (typeof spec.name === 'function') {
-      customLabel = spec.name(seriesIdentifier, isTooltip);
-    } else {
-      delimiter = spec.name.delimiter ?? delimiter;
-      customLabel = getSeriesNameFromOptions(spec.name, seriesIdentifier, delimiter);
-    }
-
+  if (spec?.name && typeof spec.name !== 'string') {
+    const customLabel =
+      typeof spec.name === 'function'
+        ? spec.name(seriesIdentifier, isTooltip)
+        : getSeriesNameFromOptions(spec.name, seriesIdentifier, spec.name.delimiter ?? SERIES_DELIMITER);
     if (customLabel !== null) {
       return customLabel.toString();
+    }
+    if (typeof spec.name !== 'function') {
+      delimiter = spec.name.delimiter ?? SERIES_DELIMITER;
     }
   }
 
