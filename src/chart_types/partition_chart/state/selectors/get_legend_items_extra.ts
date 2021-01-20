@@ -35,17 +35,19 @@ export const getLegendItemsExtra = createCachedSelector(
   (pieSpec, { legendMaxDepth }, tree): Map<SeriesKey, LegendItemExtraValues> => {
     const legendExtraValues = new Map<SeriesKey, LegendItemExtraValues>();
 
-    return pieSpec && !isInvalidLegendMaxDepth(legendMaxDepth) ? getExtraValueMap(pieSpec, tree) : legendExtraValues;
+    return pieSpec && isValidLegendMaxDepth(legendMaxDepth)
+      ? getExtraValueMap(pieSpec, tree, legendMaxDepth)
+      : legendExtraValues;
   },
 )(getChartIdSelector);
 
 /**
- * Check if the legendMaxDepth from settings is not a valid number (NaN or <=0)
+ * Check if the legendMaxDepth from settings is a valid number (NaN or <=0)
  *
  * @param legendMaxDepth - SettingsSpec['legendMaxDepth']
  */
-function isInvalidLegendMaxDepth(legendMaxDepth: SettingsSpec['legendMaxDepth']): boolean {
-  return typeof legendMaxDepth === 'number' && (Number.isNaN(legendMaxDepth) || legendMaxDepth <= 0);
+function isValidLegendMaxDepth(legendMaxDepth: SettingsSpec['legendMaxDepth']): boolean {
+  return typeof legendMaxDepth === 'number' && !Number.isNaN(legendMaxDepth) && legendMaxDepth > 0;
 }
 
 /**
@@ -54,6 +56,8 @@ function isInvalidLegendMaxDepth(legendMaxDepth: SettingsSpec['legendMaxDepth'])
 function getExtraValueMap(
   { layers, valueFormatter }: Pick<PartitionSpec, 'layers' | 'valueFormatter'>,
   tree: HierarchyOfArrays,
+  maxDepth: number,
+  depth: number = 0,
   keys: Map<SeriesKey, LegendItemExtraValues> = new Map(),
 ): Map<SeriesKey, LegendItemExtraValues> {
   for (let i = 0; i < tree.length; i++) {
@@ -69,7 +73,9 @@ function getExtraValueMap(
       keys.set(path.map(({ index }) => index).join('__'), values);
     }
 
-    getExtraValueMap({ layers, valueFormatter }, children, keys);
+    if (depth < maxDepth) {
+      getExtraValueMap({ layers, valueFormatter }, children, maxDepth, depth + 1, keys);
+    }
   }
   return keys;
 }
