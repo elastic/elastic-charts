@@ -19,11 +19,11 @@
 
 import { SeriesIdentifier, SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { GroupBySpec, BinAgg, Direction, XScaleType } from '../../../specs';
+import { BinAgg, Direction, GroupBySpec, XScaleType } from '../../../specs';
 import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
-import { Datum, Color, isNil } from '../../../utils/common';
+import { Color, Datum, isNil } from '../../../utils/common';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
@@ -31,8 +31,8 @@ import { groupSeriesByYGroup, isHistogramEnabled, isStackedSpec } from '../domai
 import { LastValues } from '../state/utils/types';
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
-import { BasicSeriesSpec, SeriesTypes, SeriesSpecs, SeriesNameConfigOptions, StackMode } from './specs';
-import { formatStackedDataSeriesValues, datumXSortPredicate } from './stacked_series_utils';
+import { BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesTypes, StackMode } from './specs';
+import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
 
 /** @internal */
 export const SERIES_DELIMITER = ' - ';
@@ -557,21 +557,18 @@ export function getSeriesName(
     }
   }
 
-  const nameKeys =
-    spec && spec.yAccessors.length > 1 ? seriesIdentifier.seriesKeys : seriesIdentifier.seriesKeys.slice(0, -1);
+  const multipleYAccessors = spec && spec.yAccessors.length > 1;
+  const nameKeys = multipleYAccessors ? seriesIdentifier.seriesKeys : seriesIdentifier.seriesKeys.slice(0, -1);
+  const nonZeroLength = nameKeys.length > 0;
+  const startsWithNonNull = nameKeys[0] !== null;
 
-  if (
-    (nameKeys.length > 0 && nameKeys[0] !== null && !hasSingleSeries) ||
-    (spec && spec.splitSeriesAccessors && nameKeys.length > 0 && nameKeys[0] != null)
-  ) {
-    return nameKeys.join(delimiter);
-  }
-
-  if (!spec) {
-    return '';
-  }
-
-  return typeof spec.name === 'string' ? spec.name : `${spec.id}`;
+  return nonZeroLength && startsWithNonNull && (spec?.splitSeriesAccessors || !hasSingleSeries)
+    ? nameKeys.join(delimiter)
+    : !spec
+    ? ''
+    : typeof spec.name === 'string'
+    ? spec.name
+    : `${spec.id}`;
 }
 
 function getSortIndex({ specSortIndex }: SeriesCollectionValue, total: number): number {
