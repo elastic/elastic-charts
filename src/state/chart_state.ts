@@ -26,10 +26,10 @@ import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/grou
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { LegendItem, LegendItemExtraValues } from '../common/legend';
-import { SeriesKey, SeriesIdentifier } from '../common/series_id';
-import { TooltipInfo, TooltipAnchorPosition } from '../components/tooltip/types';
-import { Spec, PointerEvent, DEFAULT_SETTINGS_SPEC } from '../specs';
-import { Color } from '../utils/common';
+import { SeriesIdentifier, SeriesKey } from '../common/series_id';
+import { TooltipAnchorPosition, TooltipInfo } from '../components/tooltip/types';
+import { DEFAULT_SETTINGS_SPEC, PointerEvent, Spec } from '../specs';
+import { Color, keepDistinct } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
 import { Logger } from '../utils/logger';
 import { Point } from '../utils/point';
@@ -295,7 +295,7 @@ export const chartStoreReducer = (chartId: string) => {
           zIndex: action.zIndex,
         };
       case SPEC_PARSED:
-        const chartType = findMainChartType(state.specs);
+        const chartType = chartTypeFromSpecs(state.specs);
 
         if (isChartTypeChanged(state, chartType)) {
           const internalChartState = initInternalChartState(chartType);
@@ -311,7 +311,6 @@ export const chartStoreReducer = (chartId: string) => {
           ...state,
           specsInitialized: true,
           specParsing: false,
-          chartType,
         };
 
       case SPEC_UNMOUNTED:
@@ -435,28 +434,16 @@ export const chartStoreReducer = (chartId: string) => {
   };
 };
 
-function findMainChartType(specs: SpecList): ChartTypes | null {
-  const types: Partial<Record<ChartTypes, number>> = Object.keys(specs).reduce<Partial<Record<ChartTypes, number>>>(
-    (acc, specId) => {
-      const { chartType } = specs[specId];
-      let accumulator = acc[chartType];
-      if (accumulator === undefined) {
-        accumulator = 0;
-      } else {
-        accumulator += 1;
-      }
-      acc[chartType] = accumulator;
-      return acc;
-    },
-    {},
-  );
-  // https://stackoverflow.com/questions/55012174/why-doesnt-object-keys-return-a-keyof-type-in-typescript
-  const chartTypes = Object.keys(types).filter((type) => type !== ChartTypes.Global);
-  if (chartTypes.length > 1) {
-    Logger.warn('Multiple chart type on the same configuration');
+function chartTypeFromSpecs(specs: SpecList): ChartTypes | null {
+  const nonGlobalTypes = Object.values(specs)
+    .map((s) => s.chartType)
+    .filter((type) => type !== ChartTypes.Global)
+    .filter(keepDistinct);
+  if (nonGlobalTypes.length !== 1) {
+    Logger.warn(`${nonGlobalTypes.length === 0 ? 'Zero' : 'Multiple'} chart types in the same configuration`);
     return null;
   }
-  return chartTypes[0] as ChartTypes;
+  return nonGlobalTypes[0];
 }
 
 function initInternalChartState(chartType: ChartTypes | null): InternalChartState | null {
