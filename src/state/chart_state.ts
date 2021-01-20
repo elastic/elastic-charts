@@ -296,23 +296,13 @@ export const chartStoreReducer = (chartId: string) => {
         };
       case SPEC_PARSED:
         const chartType = chartTypeFromSpecs(state.specs);
-
-        if (isChartTypeChanged(state, chartType)) {
-          const internalChartState = initInternalChartState(chartType);
-          return {
-            ...state,
-            specsInitialized: true,
-            specParsing: false,
-            chartType,
-            internalChartState,
-          };
-        }
         return {
           ...state,
           specsInitialized: true,
           specParsing: false,
+          chartType,
+          internalChartState: state.chartType === chartType ? state.internalChartState : newInternalState(chartType),
         };
-
       case SPEC_UNMOUNTED:
         return {
           ...state,
@@ -446,7 +436,7 @@ function chartTypeFromSpecs(specs: SpecList): ChartTypes | null {
   return nonGlobalTypes[0];
 }
 
-function initInternalChartState(chartType: ChartTypes | null): InternalChartState | null {
+function newInternalState(chartType: ChartTypes | null): InternalChartState | null {
   switch (chartType) {
     case ChartTypes.Goal:
       return new GoalState();
@@ -459,8 +449,4 @@ function initInternalChartState(chartType: ChartTypes | null): InternalChartStat
     default:
       return null;
   }
-}
-
-function isChartTypeChanged(state: GlobalChartState, newChartType: ChartTypes | null) {
-  return state.chartType !== newChartType;
 }
