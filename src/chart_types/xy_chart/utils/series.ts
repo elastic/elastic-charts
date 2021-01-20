@@ -542,7 +542,10 @@ export function getSeriesName(
   isTooltip: boolean,
   spec?: BasicSeriesSpec,
 ): string {
-  let delimiter = SERIES_DELIMITER;
+  const delimiter2 =
+    spec?.name && typeof spec.name !== 'string' && typeof spec.name !== 'function'
+      ? spec.name.delimiter ?? SERIES_DELIMITER
+      : SERIES_DELIMITER;
   if (spec?.name && typeof spec.name !== 'string') {
     const customLabel =
       typeof spec.name === 'function'
@@ -550,9 +553,6 @@ export function getSeriesName(
         : getSeriesNameFromOptions(spec.name, seriesIdentifier, spec.name.delimiter ?? SERIES_DELIMITER);
     if (customLabel !== null) {
       return customLabel.toString();
-    }
-    if (typeof spec.name !== 'function') {
-      delimiter = spec.name.delimiter ?? SERIES_DELIMITER;
     }
   }
 
@@ -562,7 +562,7 @@ export function getSeriesName(
   const startsWithNonNull = nameKeys[0] !== null;
 
   return nonZeroLength && startsWithNonNull && (spec?.splitSeriesAccessors || !hasSingleSeries)
-    ? nameKeys.join(delimiter)
+    ? nameKeys.join(delimiter2)
     : spec === undefined
     ? ''
     : typeof spec.name === 'string'
