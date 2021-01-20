@@ -28,7 +28,7 @@ import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { LastValues } from '../state/utils/types';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
-import { defaultXYSeriesSort } from '../utils/default_series_sort_fn';
+import { defaultXYLegendSeriesSort } from '../utils/default_series_sort_fn';
 import {
   getSeriesIndex,
   getSeriesName,
@@ -154,7 +154,7 @@ export function computeLegend(
   const legendSortFn = getLegendCompareFn(sortSeriesBy, (a, b) => {
     const aDs = serialIdentifierDataSeriesMap[a.key];
     const bDs = serialIdentifierDataSeriesMap[b.key];
-    return defaultXYSeriesSort(aDs, bDs);
+    return defaultXYLegendSeriesSort(aDs, bDs);
   });
 
   return legendItems.sort((a, b) => {

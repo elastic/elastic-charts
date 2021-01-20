@@ -42,7 +42,7 @@ import { Point } from '../../../../utils/point';
 import { getTooltipCompareFn } from '../../../../utils/series_sort';
 import { isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltip } from '../../tooltip/tooltip';
-import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
+import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
 import { DataSeries } from '../../utils/series';
 import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
 import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from '../utils/spec';
@@ -206,7 +206,7 @@ function getTooltipAndHighlightFromValue(
   const tooltipSortFn = getTooltipCompareFn(settings.sortSeriesBy, (a, b) => {
     const aDs = serialIdentifierDataSeriesMap[a.key];
     const bDs = serialIdentifierDataSeriesMap[b.key];
-    return defaultXYSeriesSort(aDs, bDs);
+    return defaultXYLegendSeriesSort(aDs, bDs);
   });
 
   const sortedTooltipValues = values.sort((a, b) => {

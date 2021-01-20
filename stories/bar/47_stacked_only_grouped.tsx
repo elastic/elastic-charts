@@ -81,7 +81,7 @@ export const Example = () => {
   ];
   return (
     <Chart renderer="canvas" className="story-chart">
-      <Settings showLegend />
+      <Settings />
       <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis
         id="left"

@@ -22,14 +22,41 @@ import { DataSeries } from './series';
 /**
  * Return the default sorting used for XY series.
  * Ordered by group insert order, then first stacked, after non stacked.
- * @param a
- * @param b
  * @internal
  */
 export function defaultXYSeriesSort(a: DataSeries, b: DataSeries) {
-  if (a.groupId === b.groupId && a.isStacked && b.isStacked) {
-    return b.insertIndex - a.insertIndex;
+  if (a.groupId !== b.groupId) {
+    return a.insertIndex - b.insertIndex;
   }
 
+  if (a.isStacked && !b.isStacked) {
+    return -1; // a first then b
+  }
+  if (!a.isStacked && b.isStacked) {
+    return 1; // b first then a
+  }
+  return a.insertIndex - b.insertIndex;
+}
+
+/**
+ * Return the default sorting used for XY series.
+ * Ordered by group insert order, then first stacked, after non stacked.
+ * Stacked are sorted from from top to bottom to respect the rendering order
+ * @internal
+ */
+export function defaultXYLegendSeriesSort(a: DataSeries, b: DataSeries) {
+  if (a.groupId !== b.groupId) {
+    return a.insertIndex - b.insertIndex;
+  }
+
+  if (a.isStacked && !b.isStacked) {
+    return -1; // a first then b
+  }
+  if (!a.isStacked && b.isStacked) {
+    return 1; // b first then a
+  }
+  if (a.isStacked && b.isStacked) {
+    return b.insertIndex - a.insertIndex;
+  }
   return a.insertIndex - b.insertIndex;
 }

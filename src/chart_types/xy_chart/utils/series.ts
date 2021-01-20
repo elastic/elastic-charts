@@ -551,7 +551,7 @@ export function getSeriesName(
 ): string {
   let delimiter = SERIES_DELIMITER;
   if (spec && spec.name && typeof spec.name !== 'string') {
-    let customLabel: string | number | null = null;
+    let customLabel: string | number | null;
     if (typeof spec.name === 'function') {
       customLabel = spec.name(seriesIdentifier, isTooltip);
     } else {
@@ -638,14 +638,20 @@ export function getSeriesColors(
   const seriesColorMap = new Map<SeriesKey, Color>();
   let counter = 0;
 
-  dataSeries.forEach((ds) => {
-    const seriesKey = getSeriesKey(ds, ds.groupId);
-    const colorOverride = getHighestOverride(seriesKey, customColors, overrides);
-    const color = colorOverride || chartColors.vizColors[counter % chartColors.vizColors.length];
+  dataSeries
+    .slice()
+    // use the insert insert index order to avoid color assignment breaking changes
+    .sort((a, b) => {
+      return a.insertIndex - b.insertIndex;
+    })
+    .forEach((ds) => {
+      const seriesKey = getSeriesKey(ds, ds.groupId);
+      const colorOverride = getHighestOverride(seriesKey, customColors, overrides);
+      const color = colorOverride || chartColors.vizColors[counter % chartColors.vizColors.length];
 
-    seriesColorMap.set(seriesKey, color);
-    counter++;
-  });
+      seriesColorMap.set(seriesKey, color);
+      counter++;
+    });
   return seriesColorMap;
 }
 
