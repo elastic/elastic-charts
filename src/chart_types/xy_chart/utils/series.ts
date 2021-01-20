@@ -627,6 +627,7 @@ function getHighestOverride(
   const tempColor: Color | undefined | null = overrides.temporary[key];
 
   if (tempColor) {
+    // unexpected empty string is falsy and falls through, see comment in `export type Color = ...`
     return tempColor;
   }
 

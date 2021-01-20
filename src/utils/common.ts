@@ -104,7 +104,7 @@ export type Datum = any; // unknown;
 export type Rotation = 0 | 90 | -90 | 180;
 /** @public */
 export type Rendering = 'canvas' | 'svg';
-export type Color = string;
+export type Color = string; // todo static/runtime type it this for proper color string content; several places in the code, and ultimate use, dictate it not be an empty string
 export type StrokeStyle = Color; // now narrower than string | CanvasGradient | CanvasPattern
 
 export const Position = Object.freeze({

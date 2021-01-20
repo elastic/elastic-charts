@@ -193,7 +193,7 @@ export interface ExternalEventsState {
 
 /** @internal */
 export interface ColorOverrides {
-  temporary: Record<SeriesKey, Color | null>;
+  temporary: Record<SeriesKey, Color | null>; // null (vs. undefined) means that `overrides.persisted[key]` in `series.ts` not be used
   persisted: Record<SeriesKey, Color>;
 }
 

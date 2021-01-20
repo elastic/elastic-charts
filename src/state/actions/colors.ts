@@ -29,36 +29,36 @@ export const SET_TEMPORARY_COLOR = 'SET_TEMPORARY_COLOR';
 /** @internal */
 export const SET_PERSISTED_COLOR = 'SET_PERSISTED_COLOR';
 
-interface ClearTemporaryColors {
+interface ClearedTemporaryColors {
   type: typeof CLEAR_TEMPORARY_COLORS;
 }
 
-interface SetTemporaryColor {
+interface TemporaryColor {
   type: typeof SET_TEMPORARY_COLOR;
   key: SeriesKey;
   color: Color | null;
 }
 
-interface SetPersistedColor {
+interface PersistedColor {
   type: typeof SET_PERSISTED_COLOR;
   key: SeriesKey;
   color: Color | null;
 }
 
 /** @internal */
-export function clearTemporaryColors(): ClearTemporaryColors {
+export function clearTemporaryColors(): ClearedTemporaryColors {
   return { type: CLEAR_TEMPORARY_COLORS };
 }
 
 /** @internal */
-export function setTemporaryColor(key: SeriesKey, color: Color | null): SetTemporaryColor {
+export function setTemporaryColor(key: SeriesKey, color: Color | null): TemporaryColor {
   return { type: SET_TEMPORARY_COLOR, key, color };
 }
 
 /** @internal */
-export function setPersistedColor(key: SeriesKey, color: Color | null): SetPersistedColor {
+export function setPersistedColor(key: SeriesKey, color: Color | null): PersistedColor {
   return { type: SET_PERSISTED_COLOR, key, color };
 }
 
 /** @internal */
-export type ColorsActions = ClearTemporaryColors | SetTemporaryColor | SetPersistedColor;
+export type ColorsActions = ClearedTemporaryColors | TemporaryColor | PersistedColor;
