@@ -24,7 +24,7 @@ import { CategoryKey, CategoryLabel } from './category';
 import { SeriesIdentifier } from './series_id';
 
 /** @internal */
-export type LegendItemChildId = CategoryKey | number;
+export type LegendItemChildId = CategoryKey;
 
 /** @internal */
 export type LegendItem = {
