@@ -1348,6 +1348,21 @@ export interface PointerOverEvent extends BasePointerEvent {
 // @public (undocumented)
 export type PointerUpdateListener = (event: PointerEvent) => void;
 
+// Warning: (ae-missing-release-tag) "PointShape" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const PointShape: Readonly<{
+    Circle: "circle";
+    Square: "square";
+    Diamond: "diamond";
+    Cross: "cross";
+    AngledCross: "angledCross";
+    Triangle: "triangle";
+}>;
+
+// @public (undocumented)
+export type PointShape = $Values<typeof PointShape>;
+
 // Warning: (ae-missing-release-tag) "PointStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1355,6 +1370,7 @@ export interface PointStyle {
     fill?: Color | ColorVariant;
     opacity: number;
     radius: number;
+    shape?: PointShape;
     stroke?: Color | ColorVariant;
     strokeWidth: number;
     visible: boolean;

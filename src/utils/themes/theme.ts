@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { $Values } from 'utility-types';
+
 import { mergePartial, RecursivePartial, Color, ColorVariant, HorizontalAlignment, VerticalAlignment } from '../common';
 import { Margins, SimplePadding } from '../dimensions';
 import { LIGHT_THEME } from './light_theme';
@@ -306,6 +308,18 @@ export type DisplayValueStyle = Omit<TextStyle, 'fill' | 'fontSize'> & {
   };
 };
 
+export const PointShape = Object.freeze({
+  Circle: 'circle' as const,
+  Square: 'square' as const,
+  Diamond: 'diamond' as const,
+  Cross: 'cross' as const,
+  AngledCross: 'angledCross' as const,
+  Triangle: 'triangle' as const,
+});
+
+/** @public */
+export type PointShape = $Values<typeof PointShape>;
+
 export interface PointStyle {
   /** is the point visible or hidden */
   visible: boolean;
@@ -319,6 +333,8 @@ export interface PointStyle {
   opacity: number;
   /** the radius of each point of the theme/series */
   radius: number;
+  /** shape for the point, default to circle */
+  shape?: PointShape;
 }
 
 export interface LineStyle {

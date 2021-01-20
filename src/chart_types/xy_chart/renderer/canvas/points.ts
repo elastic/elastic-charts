@@ -22,10 +22,20 @@ import { Circle, Stroke, Fill, Rect } from '../../../../geoms/types';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PointGeometry } from '../../../../utils/geometry';
-import { PointStyle, GeometryStateStyle } from '../../../../utils/themes/theme';
+import { PointStyle, GeometryStateStyle, PointShape } from '../../../../utils/themes/theme';
 import { renderCircle } from './primitives/arc';
+import { renderCross, renderSquare, renderTriangle } from './primitives/shapes';
 import { buildPointStyles } from './styles/point';
 import { withPanelTransform } from './utils/panel_transform';
+
+const shapeRenderers = {
+  [PointShape.Circle]: renderCircle,
+  [PointShape.AngledCross]: renderCross(45),
+  [PointShape.Cross]: renderCross(0),
+  [PointShape.Diamond]: renderSquare(45),
+  [PointShape.Square]: renderSquare(0),
+  [PointShape.Triangle]: renderTriangle(0),
+};
 
 /**
  * Renders points from single series
@@ -39,9 +49,9 @@ export function renderPoints(
   geometryStateStyle: GeometryStateStyle,
 ) {
   points
-    .map<[Circle, Fill, Stroke]>((point) => {
+    .map<[Circle, Fill, Stroke, PointShape]>((point) => {
       const { x, y, color, radius: pointRadius, transform, styleOverrides } = point;
-      const { fill, stroke, radius } = buildPointStyles(
+      const { fill, stroke, radius, shape } = buildPointStyles(
         color,
         themeStyle,
         geometryStateStyle,
@@ -55,10 +65,10 @@ export function renderPoints(
         radius,
       };
 
-      return [circle, fill, stroke];
+      return [circle, fill, stroke, shape];
     })
     .sort(([{ radius: a }], [{ radius: b }]) => b - a)
-    .forEach((args) => renderCircle(ctx, ...args));
+    .forEach(([circle, fill, stroke, shape]) => shapeRenderers[shape](ctx, circle, fill, stroke));
 }
 
 /**

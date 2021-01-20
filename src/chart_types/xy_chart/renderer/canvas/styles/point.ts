@@ -19,7 +19,7 @@
 
 import { Fill, Stroke } from '../../../../../geoms/types';
 import { mergePartial, getColorFromVariant } from '../../../../../utils/common';
-import { PointStyle, GeometryStateStyle } from '../../../../../utils/themes/theme';
+import { PointStyle, GeometryStateStyle, PointShape } from '../../../../../utils/themes/theme';
 import { stringToRGB, OpacityFn } from '../../../../partition_chart/layout/utils/color_library_wrappers';
 
 /**
@@ -38,7 +38,7 @@ export function buildPointStyles(
   geometryStateStyle: GeometryStateStyle,
   pointRadius: number,
   overrides?: Partial<PointStyle>,
-): { fill: Fill; stroke: Stroke; radius: number } {
+): { fill: Fill; stroke: Stroke; radius: number; shape: PointShape } {
   const pointStyle = mergePartial(themePointStyle, overrides);
   const fillOpacity: OpacityFn = (opacity) => opacity * pointStyle.opacity * geometryStateStyle.opacity;
   const fillColor = stringToRGB(getColorFromVariant(baseColor, pointStyle.fill), fillOpacity);
@@ -54,7 +54,7 @@ export function buildPointStyles(
   };
 
   const radius = getRadius(pointRadius, themePointStyle.radius, overrides?.radius);
-  return { fill, stroke, radius };
+  return { fill, stroke, radius, shape: pointStyle.shape ?? PointShape.Circle };
 }
 
 /** @internal */
