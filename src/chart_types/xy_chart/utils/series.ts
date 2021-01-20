@@ -625,24 +625,9 @@ function getHighestOverride(
   overrides: ColorOverrides,
 ): Color | undefined {
   const tempColor: Color | undefined | null = overrides.temporary[key];
-
-  if (tempColor) {
-    // unexpected empty string is falsy and falls through, see comment in `export type Color = ...`
-    return tempColor;
-  }
-
-  const customColor: Color | undefined | null = customColors.get(key);
-
-  if (customColor) {
-    return customColor;
-  }
-
-  if (tempColor === null) {
-    // Use default color when temporary and custom colors are null
-    return;
-  }
-
-  return overrides.persisted[key];
+  // Unexpected empty `tempColor` string is falsy and falls through, see comment in `export type Color = ...`
+  // Use default color when temporary and custom colors are null
+  return tempColor || customColors.get(key) || (tempColor === null ? undefined : overrides.persisted[key]);
 }
 
 /**
