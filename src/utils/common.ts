@@ -539,3 +539,5 @@ export const getPercentageValue = <T>(ratio: string | number, relativeValue: num
 
   return num && !isNaN(num) ? num : defaultValue;
 };
+
+export const keepDistinct = <T>(d: T, i: number, a: T[]): boolean => a.indexOf(d) === i;

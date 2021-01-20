@@ -35,9 +35,14 @@ import {
   LIGHT_THEME,
   LineSeries,
   AreaSeries,
+  Partition,
+  Datum,
+  PartitionLayout,
 } from '../../src';
+import { config } from '../../src/chart_types/partition_chart/layout/config/config';
 import { SeededDataGenerator } from '../../src/mocks/utils';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
+import { indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
 const dg = new SeededDataGenerator();
 const numOfDays = 7;
@@ -142,6 +147,26 @@ export const Example = () => {
         splitSeriesAccessors={['g']}
         data={data3}
         color={[LIGHT_THEME.colors.vizColors[0], 'lightgray']}
+      />
+      <Partition
+        id="website d"
+        data={[
+          { sitc1: 'Machinery and transport equipment', exportVal: 5 },
+          { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 4 },
+        ]}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d))}`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            // nodeLabel: (d: Datum) => d,
+            fillLabel: { textInvertible: true },
+            shape: {
+              fillColor: indexInterpolatedFillColor(interpolatorCET2s),
+            },
+          },
+        ]}
+        config={{ partitionLayout: PartitionLayout.sunburst, linkLabel: { maximumSection: 10000 } }}
       />
     </Chart>
   );
