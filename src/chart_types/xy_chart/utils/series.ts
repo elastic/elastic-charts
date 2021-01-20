@@ -568,7 +568,7 @@ export function getSeriesName(
     ? ''
     : typeof spec.name === 'string'
     ? spec.name
-    : `${spec.id}`;
+    : spec.id;
 }
 
 function getSortIndex({ specSortIndex }: SeriesCollectionValue, total: number): number {
