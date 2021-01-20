@@ -558,11 +558,7 @@ export function getSeriesName(
   const startsWithNonNull = nameKeys[0] !== null;
 
   return nonZeroLength && startsWithNonNull && (spec?.splitSeriesAccessors || !hasSingleSeries)
-    ? nameKeys.join(
-        spec?.name && typeof spec.name !== 'string' && typeof spec.name !== 'function'
-          ? spec.name.delimiter ?? SERIES_DELIMITER
-          : SERIES_DELIMITER,
-      )
+    ? nameKeys.join(typeof spec?.name === 'object' ? spec.name.delimiter ?? SERIES_DELIMITER : SERIES_DELIMITER)
     : spec === undefined
     ? ''
     : typeof spec.name === 'string'
