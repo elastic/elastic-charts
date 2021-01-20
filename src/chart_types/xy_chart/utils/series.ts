@@ -564,7 +564,7 @@ export function getSeriesName(
 
   return nonZeroLength && startsWithNonNull && (spec?.splitSeriesAccessors || !hasSingleSeries)
     ? nameKeys.join(delimiter)
-    : !spec
+    : spec === undefined
     ? ''
     : typeof spec.name === 'string'
     ? spec.name
