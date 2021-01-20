@@ -66,7 +66,7 @@ function getExtraValueMap(
       const formattedValue = valueFormatter ? valueFormatter(value) : value;
 
       values.set(key, formattedValue);
-      keys.set(path.map(({ value: v }) => v).join('__'), values);
+      keys.set(path.map(({ index }) => index).join('__'), values);
     }
 
     getExtraValueMap({ layers, valueFormatter }, children, keys);

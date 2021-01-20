@@ -24,7 +24,7 @@ export function getExtra(extraValues: Map<string, LegendItemExtraValues>, item: 
   if (extraValues.size === 0) {
     return defaultExtra?.formatted ?? '';
   }
-  const extraValueKey = path.map(({ value: v }) => v).join('__');
+  const extraValueKey = path.map(({ index }) => index).join('__');
   const itemExtraValues = extraValues.get(extraValueKey);
   const actionExtra = (childId && itemExtraValues?.get(childId)) ?? null;
   if (extraValues.size !== totalItems) {
