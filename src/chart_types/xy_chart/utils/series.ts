@@ -557,26 +557,22 @@ export function getSeriesName(
     }
   }
 
-  let name = '';
   const nameKeys =
     spec && spec.yAccessors.length > 1 ? seriesIdentifier.seriesKeys : seriesIdentifier.seriesKeys.slice(0, -1);
 
-  // there is one series, the is only one yAccessor, the first part is not null
-  if (hasSingleSeries || nameKeys.length === 0 || nameKeys[0] == null) {
-    if (!spec) {
-      return '';
-    }
-
-    if (spec.splitSeriesAccessors && nameKeys.length > 0 && nameKeys[0] != null) {
-      name = nameKeys.join(delimiter);
-    } else {
-      name = typeof spec.name === 'string' ? spec.name : `${spec.id}`;
-    }
-  } else {
-    name = nameKeys.join(delimiter);
+  if (nameKeys.length > 0 && nameKeys[0] !== null && !hasSingleSeries) {
+    return nameKeys.join(delimiter);
   }
 
-  return name;
+  if (!spec) {
+    return '';
+  }
+
+  if (spec.splitSeriesAccessors && nameKeys.length > 0 && nameKeys[0] != null) {
+    return nameKeys.join(delimiter);
+  }
+
+  return typeof spec.name === 'string' ? spec.name : `${spec.id}`;
 }
 
 function getSortIndex({ specSortIndex }: SeriesCollectionValue, total: number): number {
