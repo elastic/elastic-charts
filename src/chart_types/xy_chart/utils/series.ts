@@ -542,10 +542,6 @@ export function getSeriesName(
   isTooltip: boolean,
   spec?: BasicSeriesSpec,
 ): string {
-  const delimiter2 =
-    spec?.name && typeof spec.name !== 'string' && typeof spec.name !== 'function'
-      ? spec.name.delimiter ?? SERIES_DELIMITER
-      : SERIES_DELIMITER;
   if (spec?.name && typeof spec.name !== 'string') {
     const customLabel =
       typeof spec.name === 'function'
@@ -562,7 +558,11 @@ export function getSeriesName(
   const startsWithNonNull = nameKeys[0] !== null;
 
   return nonZeroLength && startsWithNonNull && (spec?.splitSeriesAccessors || !hasSingleSeries)
-    ? nameKeys.join(delimiter2)
+    ? nameKeys.join(
+        spec?.name && typeof spec.name !== 'string' && typeof spec.name !== 'function'
+          ? spec.name.delimiter ?? SERIES_DELIMITER
+          : SERIES_DELIMITER,
+      )
     : spec === undefined
     ? ''
     : typeof spec.name === 'string'
