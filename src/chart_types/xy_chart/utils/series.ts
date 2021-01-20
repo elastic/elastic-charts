@@ -543,11 +543,11 @@ export function getSeriesName(
   spec?: BasicSeriesSpec,
 ): string {
   const customLabel =
-    !spec?.name || typeof spec.name === 'string'
-      ? null
-      : typeof spec.name === 'function'
+    typeof spec?.name === 'function'
       ? spec.name(seriesIdentifier, isTooltip)
-      : getSeriesNameFromOptions(spec.name, seriesIdentifier, spec.name.delimiter ?? SERIES_DELIMITER);
+      : typeof spec?.name === 'object'
+      ? getSeriesNameFromOptions(spec.name, seriesIdentifier, spec.name.delimiter ?? SERIES_DELIMITER)
+      : null;
 
   if (customLabel !== null) {
     return customLabel.toString();
