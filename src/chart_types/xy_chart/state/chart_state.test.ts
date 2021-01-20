@@ -18,13 +18,13 @@
  */
 
 import { ChartTypes } from '../..';
-import { LegendItem } from '../../../commons/legend';
+import { LegendItem } from '../../../common/legend';
 import { MockBarGeometry } from '../../../mocks';
 import { ScaleContinuous, ScaleBand } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes, TooltipType } from '../../../specs/constants';
 import { TooltipValue } from '../../../specs/settings';
-import { Position, RecursivePartial } from '../../../utils/commons';
+import { Position, RecursivePartial } from '../../../utils/common';
 import { GeometryValue, BandedAccessorType } from '../../../utils/geometry';
 import { AxisId } from '../../../utils/ids';
 import { AxisStyle } from '../../../utils/themes/theme';
@@ -78,6 +78,7 @@ describe.skip('Chart Store', () => {
       specId: SPEC_ID,
       key: 'color1',
     },
+    path: [],
   };
 
   const secondLegendItem: LegendItem = {
@@ -87,6 +88,7 @@ describe.skip('Chart Store', () => {
       specId: SPEC_ID,
       key: 'color2',
     },
+    path: [],
   };
   beforeEach(() => {
     store = null; // new ChartStore();

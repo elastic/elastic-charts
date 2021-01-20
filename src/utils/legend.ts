@@ -17,28 +17,10 @@
  * under the License.
  */
 
-import { Color } from '../../../../utils/common';
-import { Pixels, SizeRatio } from '../../../partition_chart/layout/types/geometry_types';
-import { FontFamily } from '../../../partition_chart/layout/types/types';
+import { Position } from './common';
 
-// todo switch to `io-ts` style, generic way of combining static and runtime type info
-export interface Config {
-  angleStart: number;
-  angleEnd: number;
+export const isHorizontalLegend = (legendPosition: Position) =>
+  legendPosition === Position.Bottom || legendPosition === Position.Top;
 
-  // shape geometry
-  width: number;
-  height: number;
-  margin: { left: SizeRatio; right: SizeRatio; top: SizeRatio; bottom: SizeRatio };
-
-  // general text config
-  fontFamily: FontFamily;
-
-  // fill text config
-  minFontSize: Pixels;
-  maxFontSize: Pixels;
-
-  // other
-  backgroundColor: Color;
-  sectorLineWidth: Pixels;
-}
+export const isHierarchicalLegend = (flatLegend: boolean | undefined, legendPosition: Position) =>
+  !flatLegend && !isHorizontalLegend(legendPosition);
