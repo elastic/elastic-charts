@@ -542,14 +542,15 @@ export function getSeriesName(
   isTooltip: boolean,
   spec?: BasicSeriesSpec,
 ): string {
-  if (spec?.name && typeof spec.name !== 'string') {
-    const customLabel =
-      typeof spec.name === 'function'
-        ? spec.name(seriesIdentifier, isTooltip)
-        : getSeriesNameFromOptions(spec.name, seriesIdentifier, spec.name.delimiter ?? SERIES_DELIMITER);
-    if (customLabel !== null) {
-      return customLabel.toString();
-    }
+  const customLabel =
+    !spec?.name || typeof spec.name === 'string'
+      ? null
+      : typeof spec.name === 'function'
+      ? spec.name(seriesIdentifier, isTooltip)
+      : getSeriesNameFromOptions(spec.name, seriesIdentifier, spec.name.delimiter ?? SERIES_DELIMITER);
+
+  if (customLabel !== null) {
+    return customLabel.toString();
   }
 
   const multipleYAccessors = spec && spec.yAccessors.length > 1;
