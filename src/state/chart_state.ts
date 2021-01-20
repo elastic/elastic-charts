@@ -373,30 +373,24 @@ export const chartStoreReducer = (chartId: string) => {
           },
         };
       case SET_PERSISTED_COLOR:
+        const { [action.key]: removedPersistedColor, ...otherPersistentColors } = state.colors.persisted;
         return {
           ...state,
           colors: {
             ...state.colors,
-            persisted:
-              action.color !== null
-                ? {
-                    ...state.colors.persisted,
-                    [action.key]: action.color,
-                  }
-                : (() => {
-                    const { [action.key]: removed, ...others } = state.colors.persisted;
-                    return others;
-                  })(),
+            persisted: {
+              ...otherPersistentColors,
+              ...(action.color && { [action.key]: action.color }),
+            },
           },
         };
       default:
-        if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
-          return state;
-        }
-        return {
-          ...state,
-          interactions: interactionsReducer(state.interactions, action, getLegendItemsSelector(state)),
-        };
+        return getInternalIsInitializedSelector(state) === InitStatus.Initialized
+          ? {
+              ...state,
+              interactions: interactionsReducer(state.interactions, action, getLegendItemsSelector(state)),
+            }
+          : state;
     }
   };
 };
