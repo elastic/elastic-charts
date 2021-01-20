@@ -18,12 +18,11 @@
  */
 
 import { getSeriesIndex } from '../../chart_types/xy_chart/utils/series';
-import { LegendItem } from '../../commons/legend';
-import { SeriesIdentifier } from '../../commons/series_id';
+import { LegendItem } from '../../common/legend';
+import { SeriesIdentifier } from '../../common/series_id';
 import { getDelta } from '../../utils/point';
 import { ON_KEY_UP, KeyActions } from '../actions/key';
 import {
-  ON_TOGGLE_LEGEND,
   ON_LEGEND_ITEM_OUT,
   ON_LEGEND_ITEM_OVER,
   ON_TOGGLE_DESELECT_SERIES,
@@ -135,20 +134,18 @@ export function interactionsReducer(
         },
       };
     }
-    case ON_TOGGLE_LEGEND:
-      return {
-        ...state,
-        legendCollapsed: !state.legendCollapsed,
-      };
     case ON_LEGEND_ITEM_OUT:
       return {
         ...state,
         highlightedLegendItemKey: null,
+        highlightedLegendPath: [],
       };
     case ON_LEGEND_ITEM_OVER:
+      const { legendItemKey: highlightedLegendItemKey, legendPath: highlightedLegendPath } = action;
       return {
         ...state,
-        highlightedLegendItemKey: action.legendItemKey,
+        highlightedLegendItemKey,
+        highlightedLegendPath,
       };
     case ON_TOGGLE_DESELECT_SERIES:
       return {

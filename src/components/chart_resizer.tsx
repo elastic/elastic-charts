@@ -26,7 +26,7 @@ import { debounce } from 'ts-debounce';
 import { updateParentDimensions } from '../state/actions/chart_settings';
 import { GlobalChartState } from '../state/chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
-import { isDefined } from '../utils/commons';
+import { isDefined } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
 
 interface ResizerStateProps {
@@ -43,9 +43,13 @@ const DEFAULT_RESIZE_DEBOUNCE = 200;
 
 class Resizer extends React.Component<ResizerProps> {
   private initialResizeComplete = false;
+
   private containerRef: RefObject<HTMLDivElement>;
+
   private ro: ResizeObserver;
+
   private animationFrameID: number | null;
+
   private onResizeDebounced: (entries: ResizeObserverEntry[]) => void;
 
   constructor(props: ResizerProps) {

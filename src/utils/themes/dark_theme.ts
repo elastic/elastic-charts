@@ -24,7 +24,7 @@ import {
   DEFAULT_CHART_PADDING,
   DEFAULT_GEOMETRY_STYLES,
   DEFAULT_MISSING_COLOR,
-} from './theme_commons';
+} from './theme_common';
 
 export const DARK_THEME: Theme = {
   chartPaddings: DEFAULT_CHART_PADDING,
@@ -176,6 +176,11 @@ export const DARK_THEME: Theme = {
       visible: true,
     },
     line: {
+      stroke: '#999',
+      strokeWidth: 1,
+      visible: true,
+    },
+    crossLine: {
       stroke: '#999',
       strokeWidth: 1,
       dash: [5, 5],

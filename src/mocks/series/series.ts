@@ -22,7 +22,7 @@ import { shuffle } from 'lodash';
 import { FullDataSeriesDatum, WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
 import { SeriesTypes } from '../../specs';
-import { mergePartial } from '../../utils/commons';
+import { mergePartial } from '../../utils/common';
 import { MockSeriesSpec } from '../specs';
 import { getRandomNumberGenerator } from '../utils';
 import { fitFunctionData } from './data';
@@ -59,6 +59,7 @@ export class MockDataSeries {
   }
 
   static fitFunction(
+    // eslint-disable-next-line unicorn/no-object-as-default-parameter
     options: { shuffle?: boolean; ordinal?: boolean } = { shuffle: true, ordinal: false },
   ): DataSeries {
     const ordinalData = options.ordinal
@@ -156,9 +157,8 @@ export class MockDataSeriesDatum {
   static full({
     fittingIndex = 0,
     ...datum
-  }: Partial<WithIndex<FullDataSeriesDatum>> & Pick<WithIndex<FullDataSeriesDatum>, 'x' | 'y1'>): WithIndex<
-    FullDataSeriesDatum
-  > {
+  }: Partial<WithIndex<FullDataSeriesDatum>> &
+    Pick<WithIndex<FullDataSeriesDatum>, 'x' | 'y1'>): WithIndex<FullDataSeriesDatum> {
     return {
       ...(MockDataSeriesDatum.simple(datum) as WithIndex<FullDataSeriesDatum>),
       fittingIndex,

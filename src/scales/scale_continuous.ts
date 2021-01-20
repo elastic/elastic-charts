@@ -31,7 +31,7 @@ import {
 
 import { ScaleContinuousType, Scale } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { maxValueWithUpperLimit, mergePartial } from '../utils/commons';
+import { maxValueWithUpperLimit, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
 
@@ -160,18 +160,31 @@ const defaultScaleOptions: ScaleOptions = {
  */
 export class ScaleContinuous implements Scale {
   readonly bandwidth: number;
+
   readonly totalBarsInCluster: number;
+
   readonly bandwidthPadding: number;
+
   readonly minInterval: number;
+
   readonly step: number;
+
   readonly type: ScaleContinuousType;
+
   readonly domain: any[];
+
   readonly range: number[];
+
   readonly isInverted: boolean;
+
   readonly tickValues: number[];
+
   readonly timeZone: string;
+
   readonly barsPadding: number;
+
   readonly isSingleValueHistogram: boolean;
+
   private readonly d3Scale: D3Scale;
 
   constructor(scaleData: ScaleData, options?: Partial<ScaleOptions>) {

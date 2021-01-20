@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { getDistance } from '../../../utils/commons';
+import { getDistance } from '../../../utils/common';
 import { Delaunay, Bounds } from '../../../utils/d3-delaunay';
 import { IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 import { Point } from '../../../utils/point';
@@ -29,9 +29,13 @@ export type IndexedGeometrySpatialMapPoint = [number, number];
 /** @internal */
 export class IndexedGeometrySpatialMap {
   private map: Delaunay<IndexedGeometrySpatialMapPoint> | null = null;
+
   private points: IndexedGeometrySpatialMapPoint[] = [];
+
   private pointGeometries: PointGeometry[] = [];
+
   private searchStartIndex: number = 0;
+
   private maxRadius = -Infinity;
 
   constructor(points: PointGeometry[] = []) {

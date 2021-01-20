@@ -26,7 +26,7 @@ import { ScaleType } from '../../../scales/constants';
 import { Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants';
 import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
-import { RecursivePartial, Color, Position, Datum } from '../../../utils/commons';
+import { RecursivePartial, Color, Position, Datum } from '../../../utils/common';
 import { CurveType } from '../../../utils/curves';
 import { AxisId, GroupId } from '../../../utils/ids';
 import {
@@ -841,7 +841,8 @@ export interface BaseAnnotationSpec<
   T extends typeof AnnotationTypes.Rectangle | typeof AnnotationTypes.Line,
   D extends RectAnnotationDatum | LineAnnotationDatum,
   S extends RectAnnotationStyle | LineAnnotationStyle
-> extends Spec, AnnotationPortalSettings {
+> extends Spec,
+    AnnotationPortalSettings {
   chartType: typeof ChartTypes.XYAxis;
   specType: typeof SpecTypes.Annotation;
   /**

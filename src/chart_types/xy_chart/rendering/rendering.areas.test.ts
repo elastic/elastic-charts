@@ -117,10 +117,7 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
           },
           styleOverrides: undefined,
           value: {
@@ -153,10 +150,7 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
           },
           styleOverrides: undefined,
           value: {
@@ -248,10 +242,7 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
           },
           styleOverrides: undefined,
           value: {
@@ -284,10 +275,7 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
           },
           styleOverrides: undefined,
           value: {
@@ -325,10 +313,7 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}',
           },
           styleOverrides: undefined,
           value: {
@@ -361,10 +346,7 @@ describe('Rendering points - areas', () => {
             yAccessor: 1,
             splitAccessors: new Map(),
             seriesKeys: [1],
-            key:
-              'groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}',
-            smHorizontalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
-            smVerticalAccessorValue: '__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__',
+            key: 'groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}',
           },
           styleOverrides: undefined,
           value: {
@@ -796,7 +778,7 @@ describe('Rendering points - areas', () => {
       geometries = computeSeriesGeometriesSelector(store.getState());
     });
 
-    test('Can render a splitted area and line', () => {
+    test('Can render a split area and line', () => {
       const { areas } = geometries.geometries;
 
       const [{ value: firstArea }] = areas;
@@ -864,7 +846,7 @@ describe('Rendering points - areas', () => {
     const store = initStore([pointSeriesSpec1, pointSeriesSpec2]);
     const domains = computeSeriesDomainsSelector(store.getState());
 
-    expect(domains.formattedDataSeries[1].data).toMatchObject([
+    expect(domains.formattedDataSeries[0].data).toMatchObject([
       {
         datum: [1546300800000, 0],
         initialY0: null,
@@ -913,7 +895,7 @@ describe('Rendering points - areas', () => {
     const store = initStore([pointSeriesSpec1, pointSeriesSpec2]);
     const domains = computeSeriesDomainsSelector(store.getState());
 
-    expect(domains.formattedDataSeries[1].data).toMatchObject([
+    expect(domains.formattedDataSeries[0].data).toMatchObject([
       {
         datum: [1546300800000, null],
         initialY0: null,
@@ -934,7 +916,7 @@ describe('Rendering points - areas', () => {
       },
     ]);
 
-    expect(domains.formattedDataSeries[0].data).toEqual([
+    expect(domains.formattedDataSeries[1].data).toEqual([
       {
         datum: [1546300800000, 3],
         initialY0: null,

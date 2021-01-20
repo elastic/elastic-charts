@@ -25,6 +25,7 @@ import { KeyActions } from './key';
 import { LegendActions } from './legend';
 import { MouseActions } from './mouse';
 import { SpecActions } from './specs';
+import { ZIndexActions } from './z_index';
 
 /** @internal */
 export type StateActions =
@@ -35,4 +36,5 @@ export type StateActions =
   | EventsActions
   | MouseActions
   | KeyActions
-  | ColorsActions;
+  | ColorsActions
+  | ZIndexActions;

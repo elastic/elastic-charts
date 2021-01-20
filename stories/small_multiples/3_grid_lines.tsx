@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -42,9 +43,7 @@ const groupNames = new Array(16).fill(0).map((d, i) => String.fromCharCode(97 + 
 const data = dg.generateGroupedSeries(numOfDays, 16).map((d) => {
   return {
     y: d.y,
-    x: DateTime.fromISO('2020-01-01T00:00:00Z')
-      .plus({ days: d.x })
-      .toMillis(),
+    x: DateTime.fromISO('2020-01-01T00:00:00Z').plus({ days: d.x }).toMillis(),
     g: d.g,
     h: `host ${groupNames.indexOf(d.g) % 4}`,
     v: `metric ${Math.floor(groupNames.indexOf(d.g) / 4)}`,
@@ -53,9 +52,12 @@ const data = dg.generateGroupedSeries(numOfDays, 16).map((d) => {
 
 export const Example = () => {
   const showLegend = boolean('Show Legend', false);
+  const onElementClick = action('onElementClick');
+
   return (
     <Chart className="story-chart">
       <Settings
+        onElementClick={onElementClick}
         showLegend={showLegend}
         theme={{
           lineSeriesStyle: {

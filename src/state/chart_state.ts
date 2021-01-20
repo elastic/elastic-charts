@@ -22,23 +22,25 @@ import React, { RefObject } from 'react';
 import { ChartTypes } from '../chart_types';
 import { GoalState } from '../chart_types/goal_chart/state/chart_state';
 import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
+import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
-import { LegendItem, LegendItemExtraValues } from '../commons/legend';
-import { SeriesKey, SeriesIdentifier } from '../commons/series_id';
+import { LegendItem, LegendItemExtraValues } from '../common/legend';
+import { SeriesKey, SeriesIdentifier } from '../common/series_id';
 import { TooltipInfo, TooltipAnchorPosition } from '../components/tooltip/types';
-import { Spec, PointerEvent } from '../specs';
-import { DEFAULT_SETTINGS_SPEC } from '../specs/constants';
-import { Color } from '../utils/commons';
+import { Spec, PointerEvent, DEFAULT_SETTINGS_SPEC } from '../specs';
+import { Color } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
 import { Logger } from '../utils/logger';
 import { Point } from '../utils/point';
 import { StateActions } from './actions';
 import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
-import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from './actions/colors';
+import { CLEAR_TEMPORARY_COLORS, SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR } from './actions/colors';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
-import { SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC, REMOVE_SPEC } from './actions/specs';
+import { LegendPath } from './actions/legend';
+import { REMOVE_SPEC, SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC } from './actions/specs';
+import { Z_INDEX_EVENT } from './actions/z_index';
 import { interactionsReducer } from './reducers/interactions';
 import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_internal_is_intialized';
 import { getLegendItemsSelector } from './selectors/get_legend_items';
@@ -179,8 +181,8 @@ export interface PointerStates {
 /** @internal */
 export interface InteractionsState {
   pointer: PointerStates;
-  highlightedLegendItemKey: string | null;
-  legendCollapsed: boolean;
+  highlightedLegendItemKey: PrimitiveValue;
+  highlightedLegendPath: LegendPath;
   deselectedDataSeries: SeriesIdentifier[];
 }
 
@@ -201,6 +203,10 @@ export interface GlobalChartState {
    * a unique ID for each chart used by re-reselect to memoize selector per chart
    */
   chartId: string;
+  /**
+   * The Z-Index of the chart component
+   */
+  zIndex: number;
   /**
    * true when all all the specs are parsed ad stored into the specs object
    */
@@ -247,6 +253,7 @@ export interface GlobalChartState {
 /** @internal */
 export const getInitialState = (chartId: string): GlobalChartState => ({
   chartId,
+  zIndex: 0,
   specsInitialized: false,
   specParsing: false,
   chartRendered: false,
@@ -262,8 +269,8 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
   internalChartState: null,
   interactions: {
     pointer: getInitialPointerState(),
-    legendCollapsed: false,
     highlightedLegendItemKey: null,
+    highlightedLegendPath: [],
     deselectedDataSeries: [],
   },
   externalEvents: {
@@ -282,6 +289,11 @@ export const chartStoreReducer = (chartId: string) => {
   const initialState = getInitialState(chartId);
   return (state = initialState, action: StateActions): GlobalChartState => {
     switch (action.type) {
+      case Z_INDEX_EVENT:
+        return {
+          ...state,
+          zIndex: action.zIndex,
+        };
       case SPEC_PARSED:
         const chartType = findMainChartType(state.specs);
 

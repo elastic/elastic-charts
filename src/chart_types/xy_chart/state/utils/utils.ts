@@ -17,11 +17,11 @@
  * under the License.
  */
 
-import { SeriesKey, SeriesIdentifier } from '../../../../commons/series_id';
+import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
 import { GroupBySpec, SortSeriesByConfig } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
-import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
+import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import { Domain } from '../../../../utils/domain';
@@ -36,7 +36,7 @@ import {
 import { GroupId, SpecId } from '../../../../utils/ids';
 import { getRenderingCompareFn, SeriesCompareFn } from '../../../../utils/series_sort';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
-import { getPredicateFn, Predicate } from '../../../heatmap/utils/commons';
+import { getPredicateFn, Predicate } from '../../../heatmap/utils/common';
 import { XDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
 import { isStackedSpec, mergeYDomain } from '../../domains/y_domain';

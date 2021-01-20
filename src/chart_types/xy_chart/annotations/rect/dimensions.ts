@@ -19,7 +19,7 @@
 
 import { Scale, ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
-import { isDefined } from '../../../../utils/commons';
+import { isDefined } from '../../../../utils/common';
 import { GroupId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
@@ -181,12 +181,8 @@ function scaleXonContinuousScale(
     return null;
   }
   const scaledX0 = xScale.scale(x0);
-  let scaledX1: number | null;
-  if (xScale.totalBarsInCluster > 0 && !isHistogramModeEnabled) {
-    scaledX1 = xScale.scale(x1 + xScale.minInterval);
-  } else {
-    scaledX1 = xScale.scale(x1);
-  }
+  const scaledX1: number | null =
+    xScale.totalBarsInCluster > 0 && !isHistogramModeEnabled ? xScale.scale(x1 + xScale.minInterval) : xScale.scale(x1);
   if (scaledX1 == null || scaledX0 == null) {
     return null;
   }

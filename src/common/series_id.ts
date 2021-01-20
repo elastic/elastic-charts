@@ -17,29 +17,25 @@
  * under the License.
  */
 
-import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { Color } from '../utils/commons';
-import { SeriesIdentifier } from './series_id';
-/** @internal */
-export type LegendItemChildId = string;
+import { SpecId } from '../utils/ids';
+import { CategoryKey } from './category';
 
-/** @internal */
-export type LegendItem = {
-  seriesIdentifier: SeriesIdentifier;
-  childId?: LegendItemChildId;
-  depth?: number;
-  color: Color;
-  label: string;
-  isSeriesHidden?: boolean;
-  isItemHidden?: boolean;
-  defaultExtra?: {
-    raw: number | null;
-    formatted: number | string | null;
-    legendSizingLabel: number | string | null;
-  };
-  // TODO: Remove when partition layers are toggleable
-  isToggleable?: boolean;
+/**
+ * A string key used to uniquely identify a series
+ */
+export type SeriesKey = CategoryKey;
+
+/**
+ * A series identifier
+ * @public
+ */
+export type SeriesIdentifier = {
+  /**
+   * The SpecId, used to identify the spec
+   */
+  specId: SpecId;
+  /**
+   * A string key used to uniquely identify a series
+   */
+  key: SeriesKey;
 };
-
-/** @internal */
-export type LegendItemExtraValues = Map<LegendItemChildId, PrimitiveValue>;

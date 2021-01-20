@@ -23,7 +23,7 @@ import { isVerticalAxis } from '../../chart_types/xy_chart/utils/axis_type_utils
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { BBox } from '../../utils/bbox/bbox_calculator';
 import { CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
-import { Position, isDefined } from '../../utils/commons';
+import { Position, isDefined } from '../../utils/common';
 import { GlobalChartState } from '../chart_state';
 import { getChartIdSelector } from './get_chart_id';
 import { getChartThemeSelector } from './get_chart_theme';
@@ -50,7 +50,7 @@ export const getLegendSizeSelector = createCachedSelector(
     const bboxCalculator = new CanvasTextBBoxCalculator();
     const bbox = labels.reduce(
       (acc, { label, depth }) => {
-        const bbox = bboxCalculator.compute(
+        const labelBBox = bboxCalculator.compute(
           label,
           1,
           12,
@@ -58,12 +58,12 @@ export const getLegendSizeSelector = createCachedSelector(
           1.5,
           400,
         );
-        bbox.width += depth * LEGEND_HIERARCHY_MARGIN;
-        if (acc.height < bbox.height) {
-          acc.height = bbox.height;
+        labelBBox.width += depth * LEGEND_HIERARCHY_MARGIN;
+        if (acc.height < labelBBox.height) {
+          acc.height = labelBBox.height;
         }
-        if (acc.width < bbox.width) {
-          acc.width = bbox.width;
+        if (acc.width < labelBBox.width) {
+          acc.width = labelBBox.width;
         }
         return acc;
       },

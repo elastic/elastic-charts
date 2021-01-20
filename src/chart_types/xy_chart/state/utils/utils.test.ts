@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable jest/no-conditional-expect */
 
 import { MockDataSeries } from '../../../../mocks/series/series';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
@@ -210,13 +212,11 @@ describe('Chart State utils', () => {
     const specId1 = 'bar1';
     const specId2 = 'bar2';
     const dg = new SeededDataGenerator();
-    // 4 groups generated
     const data = dg.generateGroupedSeries(50, 4);
-    const targetKey =
-      'groupId{__global__}spec{bar1}yAccessor{y}splitAccessors{g-b}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}';
+    const targetKey = 'groupId{__global__}spec{bar1}yAccessor{y}splitAccessors{g-b}';
 
     describe('empty series collection and specs', () => {
-      it('it should return an empty map', () => {
+      it('should return an empty map', () => {
         const actual = getCustomSeriesColors(MockDataSeries.empty());
 
         expect(actual.size).toBe(0);
@@ -224,7 +224,7 @@ describe('Chart State utils', () => {
     });
 
     describe('series collection is not empty', () => {
-      it('it should return an empty map if no color', () => {
+      it('should return an empty map if no color', () => {
         const barSpec1 = MockSeriesSpec.bar({ id: specId1, data, splitSeriesAccessors: ['g'] });
         const barSpec2 = MockSeriesSpec.bar({ id: specId2, data, splitSeriesAccessors: ['g'] });
         const store = MockStore.default();
@@ -235,7 +235,7 @@ describe('Chart State utils', () => {
         expect(actual.size).toBe(0);
       });
 
-      it('it should return string color value', () => {
+      it('should return string color value', () => {
         const color = 'green';
         const barSpec1 = MockSeriesSpec.bar({ id: specId1, data, color });
         const barSpec2 = MockSeriesSpec.bar({ id: specId2, data });
@@ -260,7 +260,7 @@ describe('Chart State utils', () => {
         MockStore.addSpecs([barSpec1, barSpec2], store);
         const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-        it('it should return color from color array', () => {
+        it('should return color from color array', () => {
           const actual = getCustomSeriesColors(formattedDataSeries);
 
           expect(actual.size).toBe(4);
@@ -295,7 +295,7 @@ describe('Chart State utils', () => {
         MockStore.addSpecs([barSpec1, barSpec2], store);
         const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-        it('it should return color from color function', () => {
+        it('should return color from color function', () => {
           const actual = getCustomSeriesColors(formattedDataSeries);
           expect(actual.size).toBe(1);
           expect(actual.get(targetKey)).toBe('aquamarine');

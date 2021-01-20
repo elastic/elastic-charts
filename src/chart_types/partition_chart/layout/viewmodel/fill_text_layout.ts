@@ -19,7 +19,7 @@
 
 import chroma from 'chroma-js';
 
-import { ValueFormatter, Color } from '../../../../utils/commons';
+import { ValueFormatter, Color } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Layer } from '../../specs';
 import { conjunctiveConstraint } from '../circline_geometry';
@@ -263,7 +263,7 @@ export const getRectangleRowGeometry: GetShapeRowGeometry<RectangleConstruction>
 
 function rowSetComplete(rowSet: RowSet, measuredBoxes: RowBox[]) {
   return (
-    !measuredBoxes.length &&
+    measuredBoxes.length === 0 &&
     !rowSet.rows.some(
       (r) => isNaN(r.length) || r.rowWords.length === 0 || r.rowWords.every((rw) => rw.text.length === 0),
     )
@@ -314,7 +314,7 @@ export function getFillTextColor(
   textContrast: TextContrast,
   sliceFillColor: string,
   containerBackgroundColor?: Color,
-) {
+): string | undefined {
   const bgColorAlpha = isColorValid(containerBackgroundColor) ? chroma(containerBackgroundColor).alpha() : 1;
   if (!isColorValid(containerBackgroundColor) || bgColorAlpha < 1) {
     if (bgColorAlpha < 1) {
@@ -332,7 +332,7 @@ export function getFillTextColor(
     );
   }
 
-  let adjustedTextColor = textColor;
+  let adjustedTextColor: string | undefined = textColor;
   const containerBackground = combineColors(sliceFillColor, containerBackgroundColor);
   const textShouldBeInvertedAndTextContrastIsFalse = textInvertible && !textContrast;
   const textShouldBeInvertedAndTextContrastIsSetToTrue = textInvertible && typeof textContrast !== 'number';
@@ -343,7 +343,6 @@ export function getFillTextColor(
   if (textShouldBeInvertedAndTextContrastIsFalse || textShouldBeInvertedAndTextContrastIsSetToTrue) {
     const backgroundIsDark = colorIsDark(combineColors(sliceFillColor, containerBackgroundColor));
     const specifiedTextColorIsDark = colorIsDark(textColor);
-    // @ts-ignore
     adjustedTextColor = getTextColorIfTextInvertible(
       backgroundIsDark,
       specifiedTextColorIsDark,
@@ -391,7 +390,7 @@ function fill<C>(
     leftAlign: boolean,
     middleAlign: boolean,
   ) {
-    const { maxRowCount, fillLabel, fontFamily: configFontFamily } = config;
+    const { maxRowCount, fillLabel } = config;
     return (allFontSizes: Pixels[][], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
       const container = shapeConstructor(node);
       const rotation = getRotation(node);
@@ -415,9 +414,6 @@ function fill<C>(
         textContrast,
         textOpacity,
       } = {
-        fontFamily: configFontFamily,
-        fontWeight: 'normal',
-        padding: 2,
         ...fillLabel,
         valueFormatter: formatter,
         ...layer.fillLabel,
@@ -432,8 +428,6 @@ function fill<C>(
       );
 
       const valueFont = {
-        fontFamily: configFontFamily,
-        fontWeight: 'normal',
         ...fillLabel,
         ...fillLabel.valueFont,
         ...layer.fillLabel,
@@ -487,7 +481,7 @@ function tryFontSize<C>(
   boxes: Box[],
   maxRowCount: number,
 ) {
-  return function(initialRowSet: RowSet, fontSize: Pixels): { rowSet: RowSet; completed: boolean } {
+  return function tryFontSizeFn(initialRowSet: RowSet, fontSize: Pixels): { rowSet: RowSet; completed: boolean } {
     let rowSet: RowSet = initialRowSet;
 
     const wordSpacing = getWordSpacing(fontSize);
@@ -560,9 +554,9 @@ function tryFontSize<C>(
         let rowHasRoom = true;
 
         // iterate through words: keep adding words while there's room
-        while (measuredBoxes.length && rowHasRoom) {
+        while (measuredBoxes.length > 0 && rowHasRoom) {
           // adding box to row
-          const currentBox = measuredBoxes[0];
+          const [currentBox] = measuredBoxes;
 
           const wordBeginning = currentRowLength;
           currentRowLength += currentBox.width + wordSpacing;
@@ -581,7 +575,7 @@ function tryFontSize<C>(
 
       innerCompleted = rowSetComplete(rowSet, measuredBoxes);
     }
-    const completed = !measuredBoxes.length;
+    const completed = measuredBoxes.length === 0;
     return { rowSet, completed };
   };
 }

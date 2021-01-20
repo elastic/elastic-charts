@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ValueFormatter, Color } from '../../../../utils/commons';
+import { ValueFormatter, Color } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { meanAngle } from '../geometry';
 import { Config } from '../types/config_types';
@@ -71,18 +71,10 @@ export function linkTextLayout(
     ? makeHighContrastColor(sectorLineStroke, validBackgroundColor)
     : undefined;
   const labelFontSpec = {
-    fontStyle: 'normal',
-    fontVariant: 'normal',
-    fontFamily: config.fontFamily,
-    fontWeight: 'normal',
     ...linkLabel,
     textColor: contrastTextColor,
   };
   const valueFontSpec = {
-    fontStyle: 'normal',
-    fontVariant: 'normal',
-    fontFamily: config.fontFamily,
-    fontWeight: 'normal',
     ...linkLabel,
     ...linkLabel.valueFont,
     textColor: contrastTextColor,
@@ -123,17 +115,9 @@ export function linkTextLayout(
       const valueText = valueFormatter(valueGetter(node));
 
       const labelFontSpec: Font = {
-        fontStyle: 'normal',
-        fontVariant: 'normal',
-        fontFamily: config.fontFamily,
-        fontWeight: 'normal',
         ...linkLabel,
       };
       const valueFontSpec: Font = {
-        fontStyle: 'normal',
-        fontVariant: 'normal',
-        fontFamily: config.fontFamily,
-        fontWeight: 'normal',
         ...linkLabel,
         ...linkLabel.valueFont,
       };

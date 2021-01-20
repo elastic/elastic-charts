@@ -18,7 +18,7 @@
  */
 
 import { IndexedAccessorFn } from '../../../../utils/accessor';
-import { ValueAccessor } from '../../../../utils/commons';
+import { ValueAccessor } from '../../../../utils/common';
 import { Relation } from '../types/types';
 import {
   HierarchyOfArrays,
@@ -28,12 +28,14 @@ import {
   groupByRollup,
   mapEntryValue,
   mapsToArrays,
+  Sorter,
 } from '../utils/group_by_rollup';
 
 export function getHierarchyOfArrays(
   rawFacts: Relation,
   valueAccessor: ValueAccessor,
   groupByRollupAccessors: IndexedAccessorFn[],
+  sorter: Sorter | null = childOrders.descending,
 ): HierarchyOfArrays {
   const aggregator = aggregators.sum;
 
@@ -52,6 +54,6 @@ export function getHierarchyOfArrays(
   // size as data value vs size as number of pixels in the rectangle
   return mapsToArrays(
     groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts),
-    aggregateComparator(mapEntryValue, childOrders.descending),
+    sorter && aggregateComparator(mapEntryValue, sorter),
   );
 }

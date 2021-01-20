@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { SeriesIdentifier } from '../commons/series_id';
+import { SeriesIdentifier } from '../common/series_id';
 import { SettingsSpec, SortSeriesByConfig } from '../specs/settings';
 
 /**

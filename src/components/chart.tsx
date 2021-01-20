@@ -27,17 +27,19 @@ import { isHorizontalAxis } from '../chart_types/xy_chart/utils/axis_type_utils'
 import { PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
 import { onExternalPointerEvent } from '../state/actions/events';
+import { onComputedZIndex } from '../state/actions/z_index';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 import { ChartSize, getChartSize } from '../utils/chart_size';
-import { Position } from '../utils/commons';
+import { Position } from '../utils/common';
 import { ChartBackground } from './chart_background';
 import { ChartContainer } from './chart_container';
 import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
 import { ErrorBoundary } from './error_boundary';
 import { Legend } from './legend/legend';
+import { getElementZIndex } from './portal/utils';
 
 interface ChartProps {
   /**
@@ -74,8 +76,11 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   };
 
   private unsubscribeToStore: Unsubscribe;
+
   private chartStore: Store<GlobalChartState>;
+
   private chartContainerRef: React.RefObject<HTMLDivElement>;
+
   private chartStageRef: React.RefObject<HTMLCanvasElement>;
 
   constructor(props: ChartProps) {
@@ -108,11 +113,19 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     });
   }
 
+  componentDidMount() {
+    if (this.chartContainerRef.current) {
+      const zIndex = getElementZIndex(this.chartContainerRef.current, document.body);
+      this.chartStore.dispatch(onComputedZIndex(zIndex));
+    }
+  }
+
   componentWillUnmount() {
     this.unsubscribeToStore();
   }
 
   getPNGSnapshot(
+    // eslint-disable-next-line unicorn/no-object-as-default-parameter
     options = {
       backgroundColor: 'transparent',
       pixelRatio: 2,
@@ -136,15 +149,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     bgCtx.fillRect(0, 0, canvas.width, canvas.height);
     bgCtx.drawImage(canvas, 0, 0);
 
-    // @ts-ignore
-    if (bgCtx.msToBlob) {
-      // @ts-ignore
-      const blobOrDataUrl = bgCtx.msToBlob();
-      return {
-        blobOrDataUrl,
-        browser: 'IE11',
-      };
-    }
     return {
       blobOrDataUrl: backgroundCanvas.toDataURL(),
       browser: 'other',

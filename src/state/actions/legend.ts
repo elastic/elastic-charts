@@ -17,10 +17,8 @@
  * under the License.
  */
 
-import { SeriesIdentifier } from '../../commons/series_id';
-
-/** @internal */
-export const ON_TOGGLE_LEGEND = 'ON_TOGGLE_LEGEND';
+import { CategoryKey } from '../../common/category';
+import { SeriesIdentifier } from '../../common/series_id';
 
 /** @internal */
 export const ON_LEGEND_ITEM_OVER = 'ON_LEGEND_ITEM_OVER';
@@ -31,12 +29,14 @@ export const ON_LEGEND_ITEM_OUT = 'ON_LEGEND_ITEM_OUT';
 /** @internal */
 export const ON_TOGGLE_DESELECT_SERIES = 'ON_TOGGLE_DESELECT_SERIES';
 
-interface ToggleLegendAction {
-  type: typeof ON_TOGGLE_LEGEND;
-}
+export type LegendPathElement = { index: number; value: CategoryKey };
+
+export type LegendPath = LegendPathElement[];
+
 interface LegendItemOverAction {
   type: typeof ON_LEGEND_ITEM_OVER;
-  legendItemKey: string | null;
+  legendItemKey: CategoryKey | null;
+  legendPath: LegendPath;
 }
 interface LegendItemOutAction {
   type: typeof ON_LEGEND_ITEM_OUT;
@@ -50,13 +50,9 @@ export interface ToggleDeselectSeriesAction {
 }
 
 /** @internal */
-export function onToggleLegend(): ToggleLegendAction {
-  return { type: ON_TOGGLE_LEGEND };
-}
-
-/** @internal */
-export function onLegendItemOverAction(legendItemKey: string | null): LegendItemOverAction {
-  return { type: ON_LEGEND_ITEM_OVER, legendItemKey };
+export function onLegendItemOverAction(legendPath: LegendPath): LegendItemOverAction {
+  // todo remove obsoleted `legendItemKey`
+  return { type: ON_LEGEND_ITEM_OVER, legendItemKey: legendPath[legendPath.length - 1]?.value ?? null, legendPath };
 }
 
 /** @internal */
@@ -73,8 +69,4 @@ export function onToggleDeselectSeriesAction(
 }
 
 /** @internal */
-export type LegendActions =
-  | ToggleLegendAction
-  | LegendItemOverAction
-  | LegendItemOutAction
-  | ToggleDeselectSeriesAction;
+export type LegendActions = LegendItemOverAction | LegendItemOutAction | ToggleDeselectSeriesAction;

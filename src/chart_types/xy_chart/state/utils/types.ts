@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import { Scale } from '../../../../scales';
 import { Domain } from '../../../../utils/domain';
 import {

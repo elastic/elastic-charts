@@ -22,15 +22,16 @@ import React, { ComponentType, ReactChild } from 'react';
 import { Spec } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { LegendStrategy } from '../chart_types/partition_chart/state/selectors/get_highlighted_shapes';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { DomainRange } from '../chart_types/xy_chart/utils/specs';
-import { SeriesIdentifier } from '../commons/series_id';
-import { TooltipPortalSettings } from '../components/portal';
+import { SeriesIdentifier } from '../common/series_id';
+import { TooltipPortalSettings } from '../components';
 import { CustomTooltip } from '../components/tooltip/types';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
-import { Color, Position, Rendering, Rotation } from '../utils/commons';
+import { Color, Position, Rendering, Rotation } from '../utils/common';
 import { Domain } from '../utils/domain';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
@@ -350,12 +351,16 @@ export interface SettingsSpec extends Spec {
   /**
    * Limit the legend to a max depth when showing a hierarchical legend
    */
-  legendMaxDepth?: number;
+  legendMaxDepth: number;
   /**
    * Display the legend as a flat hierarchy
    */
   flatLegend?: boolean;
 
+  /**
+   * Choose a partition highlighting strategy for hovering over legend items
+   */
+  legendStrategy?: LegendStrategy;
   /**
    * Removes duplicate axes
    *
@@ -496,6 +501,7 @@ export type DefaultSettingsProps =
   | 'showLegendExtra'
   | 'theme'
   | 'legendPosition'
+  | 'legendMaxDepth'
   | 'hideDuplicateAxes'
   | 'brushAxis'
   | 'minBrushDelta'
@@ -509,12 +515,12 @@ export const Settings: React.FunctionComponent<SettingsSpecProps> = getConnect()
 
 /** @internal */
 export function isPointerOutEvent(event: PointerEvent | null | undefined): event is PointerOutEvent {
-  return event !== null && event !== undefined && event.type === PointerEventType.Out;
+  return event?.type === PointerEventType.Out;
 }
 
 /** @internal */
 export function isPointerOverEvent(event: PointerEvent | null | undefined): event is PointerOverEvent {
-  return event !== null && event !== undefined && event.type === PointerEventType.Over;
+  return event?.type === PointerEventType.Over;
 }
 
 /** @internal */
@@ -524,7 +530,7 @@ export function isTooltipProps(config: TooltipType | TooltipProps): config is To
 
 /** @internal */
 export function isTooltipType(config: TooltipType | TooltipProps): config is TooltipType {
-  return typeof config === 'string';
+  return typeof config !== 'object'; // TooltipType is 'vertical'|'cross'|'follow'|'none' while TooltipProps is object
 }
 
 /** @internal */

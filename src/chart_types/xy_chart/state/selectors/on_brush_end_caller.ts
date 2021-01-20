@@ -26,7 +26,7 @@ import { GroupBrushExtent, XYBrushArea } from '../../../../specs';
 import { BrushAxis } from '../../../../specs/constants';
 import { DragState, GlobalChartState } from '../../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { maxValueWithUpperLimit, minValueWithLowerLimit, Rotation } from '../../../../utils/commons';
+import { maxValueWithUpperLimit, minValueWithLowerLimit, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { hasDragged, DragCheckProps } from '../../../../utils/events';
 import { GroupId } from '../../../../utils/ids';
@@ -82,29 +82,27 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
             onBrushEnd,
           };
 
-          if (lastDrag !== null && hasDragged(prevProps, nextProps)) {
-            if (onBrushEnd) {
-              const brushArea: XYBrushArea = {};
-              const { yScales, xScale } = computedScales;
+          if (lastDrag !== null && hasDragged(prevProps, nextProps) && onBrushEnd) {
+            const brushArea: XYBrushArea = {};
+            const { yScales, xScale } = computedScales;
 
-              if (brushAxis === BrushAxis.X || brushAxis === BrushAxis.Both) {
-                brushArea.x = getXBrushExtent(
-                  chartDimensions,
-                  lastDrag,
-                  rotation,
-                  histogramMode,
-                  xScale,
-                  minBrushDelta,
-                  roundHistogramBrushValues,
-                  allowBrushingLastHistogramBucket,
-                );
-              }
-              if (brushAxis === BrushAxis.Y || brushAxis === BrushAxis.Both) {
-                brushArea.y = getYBrushExtents(chartDimensions, lastDrag, rotation, yScales, minBrushDelta);
-              }
-              if (brushArea.x !== undefined || brushArea.y !== undefined) {
-                onBrushEnd(brushArea);
-              }
+            if (brushAxis === BrushAxis.X || brushAxis === BrushAxis.Both) {
+              brushArea.x = getXBrushExtent(
+                chartDimensions,
+                lastDrag,
+                rotation,
+                histogramMode,
+                xScale,
+                minBrushDelta,
+                roundHistogramBrushValues,
+                allowBrushingLastHistogramBucket,
+              );
+            }
+            if (brushAxis === BrushAxis.Y || brushAxis === BrushAxis.Both) {
+              brushArea.y = getYBrushExtents(chartDimensions, lastDrag, rotation, yScales, minBrushDelta);
+            }
+            if (brushArea.x !== undefined || brushArea.y !== undefined) {
+              onBrushEnd(brushArea);
             }
           }
           prevProps = nextProps;

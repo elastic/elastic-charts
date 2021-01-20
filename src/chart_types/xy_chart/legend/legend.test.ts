@@ -26,7 +26,7 @@ import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
 import { onToggleDeselectSeriesAction } from '../../../state/actions/legend';
 import { GlobalChartState } from '../../../state/chart_state';
-import { Position, RecursivePartial } from '../../../utils/commons';
+import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { computeLegendSelector } from '../state/selectors/compute_legend';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
@@ -116,6 +116,7 @@ describe('Legends', () => {
       isSeriesHidden: false,
       isToggleable: true,
       defaultExtra: nullDisplayValue,
+      path: [{ index: 0, value: 'groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{}' }],
     };
     expect(legend[0]).toMatchObject(expected);
   });
@@ -154,21 +155,41 @@ describe('Legends', () => {
         color: 'red',
         label: 'a - y1',
         childId: 'y1',
+        isItemHidden: false,
+        isSeriesHidden: false,
+        isToggleable: true,
+        defaultExtra: nullDisplayValue,
+        path: [{ index: 0, value: 'groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}' }],
       },
       {
         color: 'blue',
         label: 'a - y2',
         childId: 'y1',
+        isItemHidden: false,
+        isSeriesHidden: false,
+        isToggleable: true,
+        defaultExtra: nullDisplayValue,
+        path: [{ index: 0, value: 'groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g-a}' }],
       },
       {
         color: 'violet',
         label: 'b - y1',
         childId: 'y1',
+        isItemHidden: false,
+        isSeriesHidden: false,
+        isToggleable: true,
+        defaultExtra: nullDisplayValue,
+        path: [{ index: 0, value: 'groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}' }],
       },
       {
         color: 'green',
         label: 'b - y2',
         childId: 'y1',
+        isItemHidden: false,
+        isSeriesHidden: false,
+        isToggleable: true,
+        defaultExtra: nullDisplayValue,
+        path: [{ index: 0, value: 'groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g-b}' }],
       },
     ];
     expect(legend).toHaveLength(4);
@@ -213,6 +234,11 @@ describe('Legends', () => {
         color: 'blue',
         label: 'spec2',
         childId: 'y1',
+        isItemHidden: false,
+        isSeriesHidden: false,
+        isToggleable: true,
+        defaultExtra: nullDisplayValue,
+        path: [{ index: 0, value: 'groupId{__global__}spec{spec2}yAccessor{y}splitAccessors{}' }],
       },
     ];
     expect(legend).toHaveLength(2);
@@ -338,7 +364,7 @@ describe('Legends', () => {
     name = getSeriesName(seriesIdentifier1, true, false, spec2);
     expect(name).toBe('spec2');
   });
-  it('use the splitted value as name if has a single series and splitSeries is used', () => {
+  it('use the split value as name if has a single series and splitSeries is used', () => {
     const seriesIdentifier1 = {
       specId: '',
       yAccessor: 'y1',

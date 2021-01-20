@@ -19,7 +19,7 @@
 
 import { $Values as Values } from 'utility-types';
 
-import { Color, StrokeStyle, ValueFormatter } from '../../../../utils/commons';
+import { Color, StrokeStyle, ValueFormatter } from '../../../../utils/common';
 import { PerSideDistance } from '../../../../utils/dimensions';
 import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from './geometry_types';
 import { Font, FontFamily, PartialFont } from './types';
@@ -27,6 +27,8 @@ import { Font, FontFamily, PartialFont } from './types';
 export const PartitionLayout = Object.freeze({
   sunburst: 'sunburst' as const,
   treemap: 'treemap' as const,
+  icicle: 'icicle' as const,
+  flame: 'flame' as const,
 });
 
 /** @public */
@@ -131,7 +133,9 @@ export interface Config extends StaticConfig {
 // switching to `io-ts` style, generic way of combining static and runtime type info - 1st step
 class Type<A> {
   dflt: A;
+
   reconfigurable: boolean | string;
+
   documentation = 'string';
 
   constructor(dflt: A, reconfigurable: boolean | string, documentation: string) {
@@ -143,7 +147,9 @@ class Type<A> {
 
 export class Numeric extends Type<number> {
   min: number;
+
   max: number;
+
   type = 'number';
 
   constructor({

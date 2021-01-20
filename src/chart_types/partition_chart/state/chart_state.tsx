@@ -44,7 +44,9 @@ export class PartitionState implements InternalChartState {
   chartType = ChartTypes.Partition;
 
   onElementClickCaller: (state: GlobalChartState) => void;
+
   onElementOverCaller: (state: GlobalChartState) => void;
+
   onElementOutCaller: (state: GlobalChartState) => void;
 
   constructor() {
@@ -70,6 +72,7 @@ export class PartitionState implements InternalChartState {
   }
 
   getLegendItemsLabels(globalState: GlobalChartState) {
+    // order doesn't matter, but it needs to return the highest depth of the label occurrence so enough horizontal width is allocated
     return getLegendItemsLabels(globalState);
   }
 

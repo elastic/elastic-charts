@@ -71,7 +71,7 @@ describe('Stacked Series Utils', () => {
       );
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      const [data0] = formattedDataSeries[2].data;
+      const [data0] = formattedDataSeries[0].data;
       expect(data0.initialY1).toBe(10);
       expect(data0.y0).toBe(0);
       expect(data0.y1).toBe(0.1);
@@ -81,7 +81,7 @@ describe('Stacked Series Utils', () => {
       expect(data1.y0).toBe(0.1);
       expect(data1.y1).toBeCloseTo(0.3);
 
-      const [data2] = formattedDataSeries[0].data;
+      const [data2] = formattedDataSeries[2].data;
       expect(data2.initialY1).toBe(70);
       expect(data2.y0).toBeCloseTo(0.3);
       expect(data2.y1).toBe(1);
@@ -102,7 +102,7 @@ describe('Stacked Series Utils', () => {
       );
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      const [data0] = formattedDataSeries[2].data;
+      const [data0] = formattedDataSeries[0].data;
       expect(data0.initialY1).toBe(10);
       expect(data0.y0).toBe(0);
       expect(data0.y1).toBe(0.25);
@@ -116,7 +116,7 @@ describe('Stacked Series Utils', () => {
         mark: null,
       });
 
-      const [data2] = formattedDataSeries[0].data;
+      const [data2] = formattedDataSeries[2].data;
       expect(data2.initialY1).toBe(30);
       expect(data2.y0).toBe(0.25);
       expect(data2.y1).toBe(1);
@@ -138,7 +138,7 @@ describe('Stacked Series Utils', () => {
       );
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      const [data0] = formattedDataSeries[2].data;
+      const [data0] = formattedDataSeries[0].data;
       expect(data0.initialY0).toBe(2);
       expect(data0.initialY1).toBe(10);
       expect(data0.y0).toBe(0.02);
@@ -150,7 +150,7 @@ describe('Stacked Series Utils', () => {
       expect(data1.y0).toBe(0.14);
       expect(data1.y1).toBeCloseTo(0.3, 5);
 
-      const [data2] = formattedDataSeries[0].data;
+      const [data2] = formattedDataSeries[2].data;
       expect(data2.initialY0).toBe(6);
       expect(data2.initialY1).toBe(70);
       expect(data2.y0).toBeCloseTo(0.36);
@@ -173,7 +173,7 @@ describe('Stacked Series Utils', () => {
       );
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      const [data0] = formattedDataSeries[2].data;
+      const [data0] = formattedDataSeries[0].data;
       expect(data0.initialY0).toBe(2);
       expect(data0.initialY1).toBe(10);
       expect(data0.y0).toBe(0.02);
@@ -185,7 +185,7 @@ describe('Stacked Series Utils', () => {
       expect(data1.y0).toBe(0.1);
       expect(data1.y1).toBe(0.1);
 
-      const [data2] = formattedDataSeries[0].data;
+      const [data2] = formattedDataSeries[2].data;
       expect(data2.initialY0).toBe(6);
       expect(data2.initialY1).toBe(90);
       expect(data2.y0).toBe(0.16);
@@ -212,7 +212,7 @@ describe('Stacked Series Utils', () => {
       expect(formattedDataSeries).toHaveLength(2);
       expect(formattedDataSeries[0].data).toHaveLength(4);
       expect(formattedDataSeries[1].data).toHaveLength(4);
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
+      expect(formattedDataSeries[0].data[0]).toMatchObject({
         initialY0: null,
         initialY1: 10,
         x: 1,
@@ -220,7 +220,7 @@ describe('Stacked Series Utils', () => {
         y1: 0.1,
         mark: null,
       });
-      expect(formattedDataSeries[1].data[1]).toMatchObject({
+      expect(formattedDataSeries[0].data[1]).toMatchObject({
         initialY0: null,
         initialY1: 20,
         x: 2,
@@ -228,7 +228,7 @@ describe('Stacked Series Utils', () => {
         y1: 1,
         mark: null,
       });
-      expect(formattedDataSeries[1].data[3]).toMatchObject({
+      expect(formattedDataSeries[0].data[3]).toMatchObject({
         initialY0: null,
         initialY1: 40,
         x: 4,
@@ -236,7 +236,7 @@ describe('Stacked Series Utils', () => {
         y1: 1,
         mark: null,
       });
-      expect(formattedDataSeries[0].data[0]).toMatchObject({
+      expect(formattedDataSeries[1].data[0]).toMatchObject({
         initialY0: null,
         initialY1: 90,
         x: 1,
@@ -244,7 +244,7 @@ describe('Stacked Series Utils', () => {
         y1: 1,
         mark: null,
       });
-      expect(formattedDataSeries[0].data[1]).toMatchObject({
+      expect(formattedDataSeries[1].data[1]).toMatchObject({
         initialY0: null,
         initialY1: null,
         x: 2,
@@ -255,7 +255,7 @@ describe('Stacked Series Utils', () => {
           x: 2,
         },
       });
-      expect(formattedDataSeries[0].data[2]).toMatchObject({
+      expect(formattedDataSeries[1].data[2]).toMatchObject({
         initialY0: null,
         initialY1: 30,
         x: 3,

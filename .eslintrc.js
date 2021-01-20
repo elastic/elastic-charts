@@ -32,7 +32,7 @@ module.exports = {
   ],
   rules: {
     /**
-     * depricated to be deleted
+     * deprecated to be deleted
      */
     // https://github.com/typescript-eslint/typescript-eslint/issues/2077
     '@typescript-eslint/camelcase': 0,
@@ -69,6 +69,8 @@ module.exports = {
     '@typescript-eslint/restrict-plus-operands': 0, // rule is broken
     '@typescript-eslint/no-unsafe-call': 1,
     '@typescript-eslint/unbound-method': 1,
+    '@typescript-eslint/no-redeclare': 'off', // we use to declare enum type and object with the same name
+    '@typescript-eslint/no-shadow': 'off', // we use shadow mostly within the canvas renderer function when we need a new context
     'unicorn/consistent-function-scoping': 1,
     'unicorn/explicit-length-check': 1,
     'import/no-cycle': [0, { maxDepth: 3, ignoreExternal: true }], // TODO: should error when this is fixed https://github.com/benmosher/eslint-plugin-import/issues/1453
@@ -79,9 +81,12 @@ module.exports = {
     'global-require': 1,
     'import/no-dynamic-require': 1,
     'no-shadow': 1,
-    'no-param-reassign': 1,
+    'no-param-reassign': [1, { props: false }],
+    '@typescript-eslint/comma-spacing': 0,
     'react/no-array-index-key': 1,
     'react/prefer-stateless-function': 1,
+    'react/require-default-props': 'off',
+    'react/display-name': 'off',
     'jsx-a11y/no-static-element-interactions': 1,
     'jsx-a11y/mouse-events-have-key-events': 1,
     'jsx-a11y/click-events-have-key-events': 1,
@@ -92,6 +97,7 @@ module.exports = {
     /**
      * Standard rules
      */
+    'no-restricted-syntax': 0, // this is a good rule, for-of is good
     'no-console': process.env.NODE_ENV === 'production' ? 2 : 1,
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 1,
     'prefer-template': 'error',
@@ -101,7 +107,7 @@ module.exports = {
     'no-bitwise': 0,
     'no-void': 0,
     yoda: 0,
-    'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+    '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'no-restricted-globals': 0,
     'no-case-declarations': 0,
     'no-return-await': 0,
@@ -263,6 +269,10 @@ module.exports = {
         case: 'snakeCase',
       },
     ],
+    'unicorn/no-array-callback-reference': 'off',
+    'unicorn/no-array-reduce': 'off',
+    'unicorn/prefer-dom-node-append': 'off',
+    'unicorn/prefer-dom-node-remove': 'off',
 
     /*
      * file-header plugin
@@ -333,7 +343,7 @@ module.exports = {
         'prefer-destructuring': [
           'warn',
           {
-            array: true,
+            array: false,
             object: true,
           },
           {

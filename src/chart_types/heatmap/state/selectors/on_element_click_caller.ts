@@ -21,7 +21,7 @@ import createCachedSelector from 're-reselect';
 import { Selector } from 'reselect';
 
 import { ChartTypes } from '../../..';
-import { SeriesIdentifier } from '../../../../commons/series_id';
+import { SeriesIdentifier } from '../../../../common/series_id';
 import { SettingsSpec } from '../../../../specs';
 import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
@@ -56,17 +56,15 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
             return;
           }
           const nextPickedShapesLength = pickedShapes.length;
-          if (nextPickedShapesLength > 0 && isClicking(prevClick, lastClick)) {
-            if (settings && settings.onElementClick) {
-              const elements = pickedShapes.map<[Cell, SeriesIdentifier]>((value) => [
-                value,
-                {
-                  specId: spec.id,
-                  key: `spec{${spec.id}}`,
-                },
-              ]);
-              settings.onElementClick(elements);
-            }
+          if (nextPickedShapesLength > 0 && isClicking(prevClick, lastClick) && settings && settings.onElementClick) {
+            const elements = pickedShapes.map<[Cell, SeriesIdentifier]>((value) => [
+              value,
+              {
+                specId: spec.id,
+                key: `spec{${spec.id}}`,
+              },
+            ]);
+            settings.onElementClick(elements);
           }
           prevClick = lastClick;
         },

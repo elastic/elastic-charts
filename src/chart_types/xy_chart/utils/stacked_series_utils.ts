@@ -27,7 +27,7 @@ import {
   SeriesPoint,
 } from 'd3-shape';
 
-import { SeriesKey } from '../../../commons/series_id';
+import { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { DataSeries, DataSeriesDatum } from './series';
 import { StackMode } from './specs';
@@ -100,10 +100,7 @@ export function formatStackedDataSeriesValues(
 
   const keys = Object.keys(dataSeriesKeys).reduce<string[]>((acc, key) => [...acc, `${key}-y0`, `${key}-y1`], []);
 
-  const stack = D3Stack<D3StackArrayElement>()
-    .keys(keys)
-    .order(stackOrderNone)
-    .offset(stackOffset)(reorderedArray);
+  const stack = D3Stack<D3StackArrayElement>().keys(keys).order(stackOrderNone).offset(stackOffset)(reorderedArray);
 
   const unionedYStacks = stack.reduce<D3UnionStack>((acc, d) => {
     const key = d.key.slice(0, -3);

@@ -20,7 +20,7 @@
 import { $Values } from 'utility-types';
 
 import { ChartTypes } from '../chart_types';
-import { Position } from '../utils/commons';
+import { Position } from '../utils/common';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { SettingsSpec } from './settings';
 
@@ -135,6 +135,7 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
       visible: false,
     },
   },
+  legendMaxDepth: Infinity,
   legendPosition: Position.Right,
   showLegendExtra: false,
   hideDuplicateAxes: false,

@@ -20,8 +20,8 @@
 import classNames from 'classnames';
 import React, { Component, createRef, MouseEventHandler } from 'react';
 
-import { LegendItem, LegendItemExtraValues } from '../../commons/legend';
-import { SeriesIdentifier } from '../../commons/series_id';
+import { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { SeriesIdentifier } from '../../common/series_id';
 import { LegendItemListener, BasicListener, LegendColorPicker, LegendAction } from '../../specs/settings';
 import {
   clearTemporaryColors as clearTemporaryColorsAction,
@@ -33,7 +33,7 @@ import {
   onLegendItemOverAction,
   onToggleDeselectSeriesAction,
 } from '../../state/actions/legend';
-import { Position, Color } from '../../utils/commons';
+import { Position, Color } from '../../utils/common';
 import { deepEqual } from '../../utils/fast_deep_equal';
 import { Color as ItemColor } from './color';
 import { renderExtra } from './extra';
@@ -63,11 +63,7 @@ export interface LegendItemProps {
   toggleDeselectSeriesAction: typeof onToggleDeselectSeriesAction;
 }
 
-/**
- * @internal
- * @param item
- * @param props
- */
+/** @internal */
 export function renderLegendItem(
   item: LegendItem,
   props: Omit<LegendItemProps, 'item'>,
@@ -110,9 +106,11 @@ interface LegendItemState {
 /** @internal */
 export class LegendListItem extends Component<LegendItemProps, LegendItemState> {
   static displayName = 'LegendItem';
+
   shouldClearPersistedColor = false;
 
   colorRef = createRef<HTMLButtonElement>();
+
   state: LegendItemState = {
     isOpen: false,
     actionActive: false,
@@ -122,8 +120,8 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
   }
 
-  handleColorClick = (changable: boolean): MouseEventHandler | undefined =>
-    changable
+  handleColorClick = (changeable: boolean): MouseEventHandler | undefined =>
+    changeable
       ? (event) => {
           event.stopPropagation();
           this.toggleIsOpen();
@@ -140,7 +138,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     if (onMouseOver) {
       onMouseOver(item.seriesIdentifier);
     }
-    mouseOverAction(item.seriesIdentifier.key);
+    mouseOverAction(item.path);
   };
 
   onLegendItemMouseOut = () => {
@@ -228,6 +226,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           style={style}
           data-ech-series-name={label}
         >
+          <div className="background" />
           <ItemColor
             ref={this.colorRef}
             color={color}
@@ -236,7 +235,12 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             hasColorPicker={hasColorPicker}
             onClick={this.handleColorClick(hasColorPicker)}
           />
-          <ItemLabel label={label} onClick={this.handleLabelClick(seriesIdentifier)} isSeriesHidden={isSeriesHidden} />
+          <ItemLabel
+            label={label}
+            isToggleable={item.isToggleable}
+            onClick={this.handleLabelClick(seriesIdentifier)}
+            isSeriesHidden={isSeriesHidden}
+          />
           {showExtra && extra && renderExtra(extra, isSeriesHidden)}
           {Action && (
             <div className="echLegendItem__action">

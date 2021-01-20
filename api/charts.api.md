@@ -332,6 +332,8 @@ export interface BubbleSeriesStyle {
 export class Chart extends React.Component<ChartProps, ChartState> {
     constructor(props: ChartProps);
     // (undocumented)
+    componentDidMount(): void;
+    // (undocumented)
     componentWillUnmount(): void;
     // (undocumented)
     static defaultProps: ChartProps;
@@ -404,6 +406,8 @@ export type CompleteBoundedDomain = DomainBase & LowerBound & UpperBound;
 export interface CrosshairStyle {
     // (undocumented)
     band: FillStyle & Visible;
+    // (undocumented)
+    crossLine: StrokeStyle & Visible & Partial<StrokeDashArray>;
     // (undocumented)
     line: StrokeStyle & Visible & Partial<StrokeDashArray>;
 }
@@ -569,7 +573,7 @@ export const DEFAULT_TOOLTIP_TYPE: "vertical";
 // Warning: (ae-missing-release-tag) "DefaultSettingsProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'legendMaxDepth' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
 
 // Warning: (ae-missing-release-tag) "Direction" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1059,6 +1063,19 @@ export interface LegendColorPickerProps {
 // @public (undocumented)
 export type LegendItemListener = (series: SeriesIdentifier | null) => void;
 
+// @public (undocumented)
+export const LegendStrategy: Readonly<{
+    Node: "node";
+    Path: "path";
+    KeyInLayer: "keyInLayer";
+    Key: "key";
+    NodeWithDescendants: "nodeWithDescendants";
+    PathWithDescendants: "pathWithDescendants";
+}>;
+
+// @public (undocumented)
+export type LegendStrategy = $Values<typeof LegendStrategy>;
+
 // Warning: (ae-missing-release-tag) "LegendStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1256,6 +1273,8 @@ export interface PartitionLayer {
 export const PartitionLayout: Readonly<{
     sunburst: "sunburst";
     treemap: "treemap";
+    icicle: "icicle";
+    flame: "flame";
 }>;
 
 // @public (undocumented)
@@ -1598,8 +1617,9 @@ export interface SettingsSpec extends Spec {
     legendAction?: LegendAction;
     // (undocumented)
     legendColorPicker?: LegendColorPicker;
-    legendMaxDepth?: number;
+    legendMaxDepth: number;
     legendPosition: Position;
+    legendStrategy?: LegendStrategy;
     minBrushDelta?: number;
     noResults?: ComponentType | ReactChild;
     // (undocumented)
@@ -1957,10 +1977,10 @@ export type YDomainRange = YDomainBase & DomainRange;
 // src/chart_types/heatmap/layout/types/config_types.ts:28:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:60:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:61:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:126:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:127:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:128:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:129:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/specs/index.ts:48:13 - (ae-forgotten-export) The symbol "NodeColorAccessor" needs to be exported by the entry point index.d.ts
-// src/commons/series_id.ts:39:3 - (ae-forgotten-export) The symbol "SeriesKey" needs to be exported by the entry point index.d.ts
+// src/common/series_id.ts:40:3 - (ae-forgotten-export) The symbol "SeriesKey" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
