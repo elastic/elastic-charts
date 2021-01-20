@@ -346,22 +346,11 @@ export const chartStoreReducer = (chartId: string) => {
         };
       case EXTERNAL_POINTER_EVENT:
         // discard events from self if any
-        if (action.event.chartId === chartId) {
-          return {
-            ...state,
-            externalEvents: {
-              ...state.externalEvents,
-              pointer: null,
-            },
-          };
-        }
         return {
           ...state,
           externalEvents: {
             ...state.externalEvents,
-            pointer: {
-              ...action.event,
-            },
+            pointer: action.event.chartId === chartId ? null : action.event,
           },
         };
       case CLEAR_TEMPORARY_COLORS:
