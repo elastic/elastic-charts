@@ -310,26 +310,14 @@ export const chartStoreReducer = (chartId: string) => {
           chartRendered: false,
         };
       case UPSERT_SPEC:
-        if (!state.specParsing) {
-          return {
-            ...state,
-            specsInitialized: false,
-            chartRendered: false,
-            specParsing: true,
-            specs: {
-              [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC,
-              [action.spec.id]: action.spec,
-            },
-          };
-        }
         return {
           ...state,
           specsInitialized: false,
           chartRendered: false,
-          specs: {
-            ...state.specs,
-            [action.spec.id]: action.spec,
-          },
+          specParsing: true,
+          specs: state.specParsing
+            ? { ...state.specs, [action.spec.id]: action.spec }
+            : { [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC, [action.spec.id]: action.spec },
         };
       case REMOVE_SPEC:
         const { [action.id]: specToRemove, ...rest } = state.specs;
