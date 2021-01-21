@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { Example } from '../stories/small_multiples/6_heterogeneous_cartesians';
+import { Example } from '../stories/small_multiples/7_partition_small_multiples';
 
 export class Playground extends React.Component {
   render() {
