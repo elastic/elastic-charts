@@ -503,6 +503,8 @@ function getSortedOrdinalXValues(
   }
 }
 
+const BIG_NUMBER = Number.MAX_SAFE_INTEGER; // the sort comparator must yield finite results, can't use infinities
+
 function getSeriesNameFromOptions(
   options: SeriesNameConfigOptions,
   { yAccessor, splitAccessors }: XYChartSeriesIdentifier,
@@ -515,7 +517,7 @@ function getSeriesNameFromOptions(
   return (
     options.names
       .slice()
-      .sort(({ sortIndex: a = Infinity }, { sortIndex: b = Infinity }) => a - b)
+      .sort(({ sortIndex: a = BIG_NUMBER }, { sortIndex: b = BIG_NUMBER }) => a - b)
       .map(({ accessor, value, name }) => {
         const accessorValue = splitAccessors.get(accessor) ?? null;
         if (accessorValue === value) {
