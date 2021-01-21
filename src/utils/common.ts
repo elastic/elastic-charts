@@ -540,4 +540,8 @@ export const getPercentageValue = <T>(ratio: string | number, relativeValue: num
   return num && !isNaN(num) ? num : defaultValue;
 };
 
+/**
+ * Predicate function, eg. to be called with [].filter, to keep distinct values
+ * @example [1, 2, 4, 2, 4, 0, 3, 2].filter(keepDistinct) ==> [1, 2, 4, 0, 3]
+ */
 export const keepDistinct = <T>(d: T, i: number, a: T[]): boolean => a.indexOf(d) === i;
