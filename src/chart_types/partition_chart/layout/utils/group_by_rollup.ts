@@ -88,6 +88,13 @@ export function pathAccessor(n: ArrayEntry) {
 const ascending: Sorter = (a, b) => a - b;
 const descending: Sorter = (a, b) => b - a;
 
+/** @public */
+export function getNodeName(node: ArrayNode) {
+  const index = node[SORT_INDEX_KEY];
+  const arrayEntry: ArrayEntry = node[PARENT_KEY][CHILDREN_KEY][index];
+  return entryKey(arrayEntry);
+}
+
 /** @internal */
 export function groupByRollup(
   keyAccessors: Array<((a: Datum) => Key) | ((a: Datum, i: number) => Key)>,

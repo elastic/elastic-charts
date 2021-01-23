@@ -21,14 +21,15 @@ import createCachedSelector from 're-reselect';
 
 import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { MODEL_KEY } from '../../layout/types/types';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import {
-  PARENT_KEY,
-  DEPTH_KEY,
   AGGREGATE_KEY,
-  CHILDREN_KEY,
-  SORT_INDEX_KEY,
+  DEPTH_KEY,
+  getNodeName,
+  PARENT_KEY,
   PATH_KEY,
+  SORT_INDEX_KEY,
 } from '../../layout/utils/group_by_rollup';
 import { partitionGeometries } from './geometries';
 
@@ -57,7 +58,7 @@ export const getPickedShapesLayerValues = createCachedSelector(
 /** @internal */
 export function pickShapesLayerValues(pickedShapes: QuadViewModel[]): Array<Array<LayerValue>> {
   const maxDepth = pickedShapes.reduce((acc, curr) => Math.max(acc, curr.depth), 0);
-  const elements = pickedShapes
+  return pickedShapes
     .filter(({ depth }) => depth === maxDepth) // eg. lowest layer in a treemap, where layers overlap in screen space; doesn't apply to sunburst/flame
     .map<Array<LayerValue>>((viewModel) => {
       const values: Array<LayerValue> = [];
@@ -68,11 +69,10 @@ export function pickShapesLayerValues(pickedShapes: QuadViewModel[]): Array<Arra
         sortIndex: viewModel[SORT_INDEX_KEY],
         path: viewModel[PATH_KEY],
       });
-      let node = viewModel[PARENT_KEY];
-      let index = node.sortIndex;
+      let node = viewModel[MODEL_KEY];
       while (node[DEPTH_KEY] > 0) {
         const value = node[AGGREGATE_KEY];
-        const dataName = node[PARENT_KEY][CHILDREN_KEY][index][0];
+        const dataName = getNodeName(node);
         values.push({
           groupByRollup: dataName,
           value,
@@ -82,9 +82,7 @@ export function pickShapesLayerValues(pickedShapes: QuadViewModel[]): Array<Arra
         });
 
         node = node[PARENT_KEY];
-        index = node[SORT_INDEX_KEY];
       }
       return values.reverse();
     });
-  return elements;
 }
