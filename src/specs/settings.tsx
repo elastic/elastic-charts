@@ -29,6 +29,7 @@ import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
 import { CustomTooltip } from '../components/tooltip/types';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
+import { LegendPath } from '../state/actions/legend';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
 import { Color, Position, Rendering, Rotation } from '../utils/common';
@@ -41,6 +42,9 @@ import { BinAgg, BrushAxis, DEFAULT_SETTINGS_SPEC, Direction, PointerEventType, 
 export interface LayerValue {
   groupByRollup: PrimitiveValue;
   value: number;
+  sortIndex: number;
+  depth: number;
+  path: LegendPath;
 }
 
 export interface GroupBrushExtent {

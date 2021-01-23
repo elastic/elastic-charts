@@ -22,7 +22,14 @@ import createCachedSelector from 're-reselect';
 import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
-import { PARENT_KEY, DEPTH_KEY, AGGREGATE_KEY, CHILDREN_KEY, SORT_INDEX_KEY } from '../../layout/utils/group_by_rollup';
+import {
+  PARENT_KEY,
+  DEPTH_KEY,
+  AGGREGATE_KEY,
+  CHILDREN_KEY,
+  SORT_INDEX_KEY,
+  PATH_KEY,
+} from '../../layout/utils/group_by_rollup';
 import { partitionGeometries } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
@@ -51,22 +58,31 @@ export const getPickedShapesLayerValues = createCachedSelector(
 export function pickShapesLayerValues(pickedShapes: QuadViewModel[]): Array<Array<LayerValue>> {
   const maxDepth = pickedShapes.reduce((acc, curr) => Math.max(acc, curr.depth), 0);
   const elements = pickedShapes
-    .filter(({ depth }) => depth === maxDepth)
+    .filter(({ depth }) => depth === maxDepth) // eg. lowest layer in a treemap, where layers overlap in screen space; doesn't apply to sunburst/flame
     .map<Array<LayerValue>>((model) => {
       const values: Array<LayerValue> = [];
       values.push({
         groupByRollup: model.dataName,
-        value: model.value,
+        value: model[AGGREGATE_KEY],
+        depth: model[DEPTH_KEY],
+        sortIndex: model[SORT_INDEX_KEY],
+        path: model[PATH_KEY],
       });
-      let parent = model[PARENT_KEY];
-      let index = model[PARENT_KEY].sortIndex;
-      while (parent[DEPTH_KEY] > 0) {
-        const value = parent[AGGREGATE_KEY];
-        const dataName = parent[PARENT_KEY][CHILDREN_KEY][index][0];
-        values.push({ groupByRollup: dataName, value });
+      let node = model[PARENT_KEY];
+      let index = node.sortIndex;
+      while (node[DEPTH_KEY] > 0) {
+        const value = node[AGGREGATE_KEY];
+        const dataName = node[PARENT_KEY][CHILDREN_KEY][index][0];
+        values.push({
+          groupByRollup: dataName,
+          value,
+          depth: node[DEPTH_KEY],
+          sortIndex: node[SORT_INDEX_KEY],
+          path: node[PATH_KEY],
+        });
 
-        parent = parent[PARENT_KEY];
-        index = parent[SORT_INDEX_KEY];
+        node = node[PARENT_KEY];
+        index = node[SORT_INDEX_KEY];
       }
       return values.reverse();
     });
