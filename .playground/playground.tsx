@@ -38,7 +38,7 @@
 
 import React from 'react';
 
-import { Example } from '../stories/icicle/01_unix_icicle';
+import { Example } from '../stories/icicle/02_unix_flame';
 
 export class Playground extends React.Component {
   render() {
