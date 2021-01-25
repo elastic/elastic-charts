@@ -25,7 +25,7 @@ import { MockAnnotationLineProps, MockAnnotationRectProps } from '../../../../mo
 import { ScaleType } from '../../../../scales/constants';
 import { SpecTypes } from '../../../../specs/constants';
 import { Settings } from '../../../../specs/settings';
-import { Rotation } from '../../../../utils/commons';
+import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AnnotationId } from '../../../../utils/ids';
 import { LineAnnotation } from '../../specs/line_annotation';

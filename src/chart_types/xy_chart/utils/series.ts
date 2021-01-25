@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import { SeriesIdentifier, SeriesKey } from '../../../commons/series_id';
+import { SeriesIdentifier, SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { GroupBySpec, BinAgg, Direction, XScaleType, DEFAULT_SINGLE_PANEL_SM_VALUE } from '../../../specs';
+import { GroupBySpec, BinAgg, Direction, XScaleType } from '../../../specs';
 import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
-import { Datum, Color, isNil } from '../../../utils/commons';
+import { Datum, Color, isNil } from '../../../utils/common';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
@@ -182,14 +182,12 @@ export function splitSeriesDataByAccessors(
     let sum = xValueSums.get(x) ?? 0;
 
     // extract small multiples aggregation values
-    const smH = smallMultiples?.horizontal?.by
-      ? smallMultiples.horizontal?.by(spec, datum)
-      : DEFAULT_SINGLE_PANEL_SM_VALUE;
+    const smH = smallMultiples?.horizontal?.by?.(spec, datum);
     if (!isNil(smH)) {
       smHValues.add(smH);
     }
 
-    const smV = smallMultiples?.vertical?.by ? smallMultiples.vertical.by(spec, datum) : DEFAULT_SINGLE_PANEL_SM_VALUE;
+    const smV = smallMultiples?.vertical?.by?.(spec, datum);
     if (!isNil(smV)) {
       smVValues.add(smV);
     }
@@ -211,8 +209,8 @@ export function splitSeriesDataByAccessors(
         seriesKeys,
         yAccessor: accessorStr,
         splitAccessors,
-        smVerticalAccessorValue: smV,
-        smHorizontalAccessorValue: smH,
+        ...(smV && { smVerticalAccessorValue: smV }),
+        ...(smH && { smHorizontalAccessorValue: smH }),
       };
       const seriesKey = getSeriesKey(seriesIdentifier, groupId);
       sum += cleanedDatum.y1 ?? 0;

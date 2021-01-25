@@ -22,13 +22,14 @@ import React, { RefObject } from 'react';
 import { ChartTypes } from '../chart_types';
 import { GoalState } from '../chart_types/goal_chart/state/chart_state';
 import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
+import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
-import { LegendItem, LegendItemExtraValues } from '../commons/legend';
-import { SeriesKey, SeriesIdentifier } from '../commons/series_id';
+import { LegendItem, LegendItemExtraValues } from '../common/legend';
+import { SeriesKey, SeriesIdentifier } from '../common/series_id';
 import { TooltipInfo, TooltipAnchorPosition } from '../components/tooltip/types';
 import { Spec, PointerEvent, DEFAULT_SETTINGS_SPEC } from '../specs';
-import { Color } from '../utils/commons';
+import { Color } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
 import { Logger } from '../utils/logger';
 import { Point } from '../utils/point';
@@ -38,6 +39,7 @@ import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from './actions/colors';
 import { DOMElement } from './actions/dom_element';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
+import { LegendPath } from './actions/legend';
 import { REMOVE_SPEC, SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC } from './actions/specs';
 import { Z_INDEX_EVENT } from './actions/z_index';
 import { interactionsReducer } from './reducers/interactions';
@@ -180,7 +182,8 @@ export interface PointerStates {
 /** @internal */
 export interface InteractionsState {
   pointer: PointerStates;
-  highlightedLegendItemKey: string | null;
+  highlightedLegendItemKey: PrimitiveValue;
+  highlightedLegendPath: LegendPath;
   deselectedDataSeries: SeriesIdentifier[];
   hoveredDOMElement: DOMElement | null;
 }
@@ -269,6 +272,7 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
   interactions: {
     pointer: getInitialPointerState(),
     highlightedLegendItemKey: null,
+    highlightedLegendPath: [],
     deselectedDataSeries: [],
     hoveredDOMElement: null,
   },

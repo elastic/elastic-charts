@@ -20,7 +20,7 @@
 import { ComponentType } from 'react';
 
 import { TooltipPortalSettings } from '../../../components/portal';
-import { Position, Color } from '../../../utils/commons';
+import { Position, Color } from '../../../utils/common';
 import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../utils/specs';
 import { AnnotationLineProps } from './line/types';
 import { AnnotationRectProps } from './rect/types';

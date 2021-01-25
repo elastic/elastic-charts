@@ -28,11 +28,12 @@ export { DebugState } from './state/types';
 export { CurveType } from './utils/curves';
 export { SimplePadding } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
-export { Datum, Position, Rendering, Rotation, VerticalAlignment, HorizontalAlignment } from './utils/commons';
-export { SeriesIdentifier } from './commons/series_id';
+export { Datum, Position, Rendering, Rotation, VerticalAlignment, HorizontalAlignment } from './utils/common';
+export { SeriesIdentifier } from './common/series_id';
 export { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
 export { AnnotationTooltipFormatter, CustomAnnotationTooltip } from './chart_types/xy_chart/annotations/types';
 export { GeometryValue } from './utils/geometry';
+export { LegendStrategy } from './chart_types/partition_chart/state/selectors/get_highlighted_shapes';
 export {
   Config as PartitionConfig,
   FillLabelConfig as PartitionFillLabel,
@@ -56,10 +57,10 @@ export { ScaleType } from './scales/constants';
 
 // theme
 export * from './utils/themes/theme';
-export * from './utils/themes/theme_commons';
+export * from './utils/themes/theme_common';
 export { LIGHT_THEME } from './utils/themes/light_theme';
 export { DARK_THEME } from './utils/themes/dark_theme';
 
 // utilities
-export { RecursivePartial } from './utils/commons';
+export { RecursivePartial } from './utils/common';
 export { DataGenerator } from './utils/data_generators/data_generator';

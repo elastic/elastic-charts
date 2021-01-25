@@ -17,7 +17,9 @@
  * under the License.
  */
 
-import { Color } from '../../../../utils/commons';
+import { CategoryKey } from '../../../../common/category';
+import { LegendPath } from '../../../../state/actions/legend';
+import { Color } from '../../../../utils/common';
 import { config, ValueGetterName } from '../config/config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { VerticalAlignments } from '../viewmodel/constants';
@@ -148,13 +150,13 @@ interface SectorGeomSpecY {
   y1px: Distance;
 }
 
-export type DataName = any; // todo consider narrowing it to eg. primitives
+export type DataName = CategoryKey; // todo consider narrowing it to eg. primitives
 
 export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   yMidPx: Distance;
   depth: number;
   sortIndex: number;
-  path: number[];
+  path: LegendPath;
   dataName: DataName;
   value: number;
   parent: ArrayNode;

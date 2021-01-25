@@ -18,8 +18,8 @@
  */
 
 import { getSeriesIndex } from '../../chart_types/xy_chart/utils/series';
-import { LegendItem } from '../../commons/legend';
-import { SeriesIdentifier } from '../../commons/series_id';
+import { LegendItem } from '../../common/legend';
+import { SeriesIdentifier } from '../../common/series_id';
 import { getDelta } from '../../utils/point';
 import { DOMElementActions, ON_DOM_ELEMENT_ENTER, ON_DOM_ELEMENT_LEAVE } from '../actions/dom_element';
 import { KeyActions, ON_KEY_UP } from '../actions/key';
@@ -139,11 +139,14 @@ export function interactionsReducer(
       return {
         ...state,
         highlightedLegendItemKey: null,
+        highlightedLegendPath: [],
       };
     case ON_LEGEND_ITEM_OVER:
+      const { legendItemKey: highlightedLegendItemKey, legendPath: highlightedLegendPath } = action;
       return {
         ...state,
-        highlightedLegendItemKey: action.legendItemKey,
+        highlightedLegendItemKey,
+        highlightedLegendPath,
       };
     case ON_TOGGLE_DESELECT_SERIES:
       return {
