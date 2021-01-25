@@ -175,9 +175,7 @@ export function computeSeriesDomains(
   });
 
   const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.scaleType).sort(
-    (a, b) => {
-      return seriesSortFn(a, b);
-    },
+    seriesSortFn,
   );
 
   // let's compute the yDomain after computing all stacked values

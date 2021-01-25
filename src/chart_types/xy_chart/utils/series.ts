@@ -633,7 +633,7 @@ export function getSeriesColors(
 
   dataSeries
     .slice()
-    // use the insert insert index order to avoid color assignment breaking changes
+    // use the insert index order to avoid color assignment breaking changes
     .sort((a, b) => a.insertIndex - b.insertIndex)
     .forEach((ds) => {
       const seriesKey = getSeriesKey(ds, ds.groupId);

@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
+import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -81,7 +81,6 @@ export const Example = () => {
   ];
   return (
     <Chart renderer="canvas" className="story-chart">
-      <Settings />
       <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis
         id="left"

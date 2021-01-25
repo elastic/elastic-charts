@@ -450,8 +450,6 @@ export interface SettingsSpec extends Spec {
 /**
  * An object of compare functions to sort
  * series in different part of the chart like tooltip, legend and rendering order.
- *
- * @internal
  */
 export interface SortSeriesByConfig {
   /**
