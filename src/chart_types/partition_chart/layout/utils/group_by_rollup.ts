@@ -19,7 +19,7 @@
 
 import { CategoryKey } from '../../../../common/category';
 import { LegendPath } from '../../../../state/actions/legend';
-import { Datum } from '../../../../utils/common';
+import { Datum, ValueAccessor } from '../../../../utils/common';
 import { Relation } from '../types/types';
 
 export const AGGREGATE_KEY = 'value';
@@ -99,7 +99,7 @@ export function getNodeName(node: ArrayNode) {
 /** @internal */
 export function groupByRollup(
   keyAccessors: Array<((a: Datum) => Key) | ((a: Datum, i: number) => Key)>,
-  valueAccessor: (v: any) => any,
+  valueAccessor: ValueAccessor,
   {
     reducer,
     identity,
@@ -116,7 +116,7 @@ export function groupByRollup(
     const keyCount = keyAccessors.length;
     let pointer: HierarchyOfMaps = p;
     keyAccessors.forEach((keyAccessor, i) => {
-      const key = keyAccessor(n, index);
+      const key: Key = keyAccessor(n, index);
       const last = i === keyCount - 1;
       const node = pointer.get(key);
       const inputIndices = node?.[INPUT_KEY] ?? [];

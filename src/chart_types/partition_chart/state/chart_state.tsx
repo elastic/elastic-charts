@@ -35,7 +35,7 @@ import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
-import { getPieSpec } from './selectors/pie_spec';
+import { getPartitionSpec } from './selectors/partition_spec';
 import { getTooltipInfoSelector } from './selectors/tooltip';
 
 /** @internal */
@@ -54,66 +54,50 @@ export class PartitionState implements InternalChartState {
     this.onElementOutCaller = createOnElementOutCaller();
   }
 
-  isInitialized(globalState: GlobalChartState) {
-    return getPieSpec(globalState) !== null ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
-  }
+  isInitialized = (globalState: GlobalChartState) =>
+    getPartitionSpec(globalState) !== null ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
 
-  isBrushAvailable() {
-    return false;
-  }
+  isBrushAvailable = () => false;
 
-  isBrushing() {
-    return false;
-  }
+  isBrushing = () => false;
 
-  isChartEmpty() {
-    return false;
-  }
+  isChartEmpty = () => false;
 
-  getLegendItemsLabels(globalState: GlobalChartState) {
+  getLegendItemsLabels = (globalState: GlobalChartState) => {
     // order doesn't matter, but it needs to return the highest depth of the label occurrence so enough horizontal width is allocated
     return getLegendItemsLabels(globalState);
-  }
+  };
 
-  getLegendItems(globalState: GlobalChartState) {
-    return computeLegendSelector(globalState);
-  }
+  getLegendItems = (globalState: GlobalChartState) => computeLegendSelector(globalState);
 
-  getLegendExtraValues(globalState: GlobalChartState) {
-    return getLegendItemsExtra(globalState);
-  }
+  getLegendExtraValues = (globalState: GlobalChartState) => getLegendItemsExtra(globalState);
 
-  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
-    return (
-      <>
-        <Tooltip getChartContainerRef={containerRef} />
-        <Partition forwardStageRef={forwardStageRef} />
-        <HighlighterFromHover />
-        <HighlighterFromLegend />
-      </>
-    );
-  }
+  chartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
+    <>
+      <Tooltip getChartContainerRef={containerRef} />
+      <Partition forwardStageRef={forwardStageRef} />
+      <HighlighterFromHover />
+      <HighlighterFromLegend />
+    </>
+  );
 
-  getPointerCursor() {
-    return 'default';
-  }
+  getPointerCursor = () => 'default';
 
-  isTooltipVisible(globalState: GlobalChartState) {
-    return { visible: isTooltipVisibleSelector(globalState), isExternal: false };
-  }
+  isTooltipVisible = (globalState: GlobalChartState) => ({
+    visible: isTooltipVisibleSelector(globalState),
+    isExternal: false,
+  });
 
-  getTooltipInfo(globalState: GlobalChartState) {
-    return getTooltipInfoSelector(globalState);
-  }
+  getTooltipInfo = (globalState: GlobalChartState) => getTooltipInfoSelector(globalState);
 
-  getTooltipAnchor(state: GlobalChartState) {
+  getTooltipAnchor = (state: GlobalChartState) => {
     const { position } = state.interactions.pointer.current;
     return {
       isRotated: false,
       x1: position.x,
       y1: position.y,
     };
-  }
+  };
 
   eventCallbacks(globalState: GlobalChartState) {
     this.onElementOverCaller(globalState);
@@ -122,22 +106,14 @@ export class PartitionState implements InternalChartState {
   }
 
   // TODO
-  getProjectionContainerArea(): Dimensions {
-    return { width: 0, height: 0, top: 0, left: 0 };
-  }
+  getProjectionContainerArea = (): Dimensions => ({ width: 0, height: 0, top: 0, left: 0 });
 
   // TODO
-  getMainProjectionArea(): Dimensions {
-    return { width: 0, height: 0, top: 0, left: 0 };
-  }
+  getMainProjectionArea = (): Dimensions => ({ width: 0, height: 0, top: 0, left: 0 });
 
   // TODO
-  getBrushArea(): Dimensions | null {
-    return null;
-  }
+  getBrushArea = (): Dimensions | null => null;
 
   // TODO
-  getDebugState(): DebugState {
-    return {};
-  }
+  getDebugState = (): DebugState => ({});
 }
