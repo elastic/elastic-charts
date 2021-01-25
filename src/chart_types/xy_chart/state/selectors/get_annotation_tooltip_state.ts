@@ -30,9 +30,10 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { AnnotationId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { AnnotationLineProps } from '../../annotations/line/types';
+import { AnnotationRectProps } from '../../annotations/rect/types';
 import { computeRectAnnotationTooltipState } from '../../annotations/tooltip';
 import { AnnotationTooltipState, AnnotationDimensions } from '../../annotations/types';
-import { AxisSpec, AnnotationSpec, AnnotationTypes, LineAnnotationDatum } from '../../utils/specs';
+import { AxisSpec, AnnotationSpec, AnnotationTypes } from '../../utils/specs';
 import { ComputedGeometries } from '../utils/types';
 import { computeAnnotationDimensionsSelector } from './compute_annotations';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -130,13 +131,11 @@ function getTooltipStateForDOMElements(
   if (!spec || spec.hideTooltips) {
     return null;
   }
-  const annotations = annotationDimensions.get(hoveredDOMElement.createdBySpecId);
-  if (!annotations) {
-    return null;
-  }
-  const dimension = (annotations as AnnotationLineProps[]).find((d) => {
-    return d.id === hoveredDOMElement.id && d.datum === hoveredDOMElement.datum;
-  });
+  const dimension = (annotationDimensions.get(hoveredDOMElement.createdBySpecId) ?? [])
+    .filter(isAnnotationLineProps)
+    .find((d) => {
+      return d.id === hoveredDOMElement.id && d.datum === hoveredDOMElement.datum;
+    });
 
   if (!dimension) {
     return null;
@@ -145,7 +144,7 @@ function getTooltipStateForDOMElements(
   return {
     isVisible: true,
     annotationType: AnnotationTypes.Line,
-    datum: hoveredDOMElement.datum as LineAnnotationDatum,
+    datum: dimension.datum,
     anchor: {
       top: (dimension.marker?.position.top ?? 0) + dimension.panel.top + chartDimensions.top,
       left: (dimension.marker?.position.left ?? 0) + dimension.panel.left + chartDimensions.left,
@@ -154,6 +153,9 @@ function getTooltipStateForDOMElements(
     customTooltip: spec.customTooltip,
     tooltipSettings: getTooltipSettings(spec),
   };
+}
+function isAnnotationLineProps(prop: AnnotationLineProps | AnnotationRectProps): prop is AnnotationLineProps {
+  return 'linePathPoints' in prop;
 }
 
 function getTooltipSettings({

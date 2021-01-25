@@ -77,7 +77,7 @@ export interface AnnotationTooltipState {
 }
 
 /** @internal */
-export type AnnotationDimensions = AnnotationLineProps[] | AnnotationRectProps[];
+export type AnnotationDimensions = Array<AnnotationLineProps | AnnotationRectProps>;
 
 /** @internal */
 export type Bounds = {

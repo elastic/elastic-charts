@@ -101,9 +101,7 @@ function computeYDomainLineAnnotationDimensions(
               icon: marker,
               color: lineColor,
               dimension: markerDimensions,
-              position: {
-                ...markerPosition,
-              },
+              position: markerPosition,
               alignment: anchorPosition,
             }
           : undefined;
@@ -214,9 +212,7 @@ function computeXDomainLineAnnotationDimensions(
               icon: marker,
               color: lineColor,
               dimension: markerDimensions,
-              position: {
-                ...markerPosition,
-              },
+              position: markerPosition,
               alignment: anchorPosition,
             }
           : undefined;

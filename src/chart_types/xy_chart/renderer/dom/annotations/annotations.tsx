@@ -68,21 +68,18 @@ interface AnnotationsOwnProps {
 
 type AnnotationsProps = AnnotationsDispatchProps & AnnotationsStateProps & AnnotationsOwnProps;
 
+const MARKER_TRANSFORMS = {
+  [Position.Right]: 'translate(-50%, 0%)',
+  [Position.Left]: 'translate(-100%, -50%)',
+  [Position.Top]: 'translate(-50%, -100%)',
+  [Position.Bottom]: 'translate(-50%, 0%)',
+};
+
 function getMarkerCentredTransform(alignment: Position, hasMarkerDimensions: boolean): string | undefined {
   if (hasMarkerDimensions) {
     return undefined;
   }
-  switch (alignment) {
-    case Position.Right:
-      return `translate(-50%, 0%)`;
-    case Position.Left:
-      return `translate(-100%, -50%)`;
-    case Position.Top:
-      return `translate(-50%, -100%)`;
-    case Position.Bottom:
-    default:
-      return `translate(-50%, 0%)`;
-  }
+  return MARKER_TRANSFORMS[alignment];
 }
 
 function renderAnnotationLineMarkers(
