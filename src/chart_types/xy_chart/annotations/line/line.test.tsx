@@ -85,12 +85,14 @@ describe('annotation marker', () => {
         },
         specId: 'foo-line',
         datum: { dataValue: 2, details: 'foo' },
-        marker: {
-          icon: <div />,
-          color: '#777',
-          position: { left: -0, top: 80 },
-          alignment: 'left',
-        },
+        markers: [
+          {
+            icon: <div />,
+            color: '#777',
+            position: { left: -0, top: 80 },
+            alignment: 'left',
+          },
+        ],
       }),
     ];
     expect(dimensions.get(id)).toEqual(expectedDimensions);
@@ -123,12 +125,14 @@ describe('annotation marker', () => {
         },
         specId: 'foo-line',
         datum: { dataValue: 2, details: 'foo' },
-        marker: {
-          icon: <div />,
-          color: '#777',
-          position: { left: -0, top: 20 },
-          alignment: 'left',
-        },
+        markers: [
+          {
+            icon: <div />,
+            color: '#777',
+            position: { left: -0, top: 20 },
+            alignment: 'left',
+          },
+        ],
       }),
     ];
     expect(dimensions.get(id)).toEqual(expectedDimensions);
@@ -157,12 +161,14 @@ describe('annotation marker', () => {
           x2: 20,
           y2: 100,
         },
-        marker: {
-          icon: <div />,
-          color: '#777',
-          position: { top: 100, left: 20 },
-          alignment: 'bottom',
-        },
+        markers: [
+          {
+            icon: <div />,
+            color: '#777',
+            position: { top: 100, left: 20 },
+            alignment: 'bottom',
+          },
+        ],
       }),
     ];
     expect(dimensions.get(id)).toEqual(expectedDimensions);

@@ -29,7 +29,6 @@ import { isHorizontalRotation } from '../../state/utils/common';
 import { computeXScaleOffset } from '../../state/utils/utils';
 import { getPanelSize } from '../../utils/panel';
 import { AnnotationDomainTypes, LineAnnotationSpec, LineAnnotationDatum } from '../../utils/specs';
-import { AnnotationMarker } from '../types';
 import { AnnotationLineProps } from './types';
 
 function computeYDomainLineAnnotationDimensions(
@@ -42,18 +41,18 @@ function computeYDomainLineAnnotationDimensions(
   const {
     id: specId,
     dataValues,
-    marker,
-    markerDimensions,
+    marker: icon,
+    markerDimensions: dimension,
     markerPosition: specMarkerPosition,
     style,
   } = annotationSpec;
   const lineStyle = mergeWithDefaultAnnotationLine(style);
-  const lineColor = lineStyle?.line?.stroke ?? 'red';
+  const color = lineStyle?.line?.stroke ?? 'red';
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
   // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
   // but we are displaying a line annotation
 
-  const anchorPosition = getAnchorPosition(false, isHorizontalChartRotation, specMarkerPosition, axisPosition);
+  const alignment = getAnchorPosition(false, isHorizontalChartRotation, specMarkerPosition, axisPosition);
   const lineProps: AnnotationLineProps[] = [];
   const [domainStart, domainEnd] = yScale.domain;
 
@@ -80,41 +79,42 @@ function computeYDomainLineAnnotationDimensions(
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
-        const topPos = vertical.scaleOrThrow(verticalValue);
-        const leftPos = horizontal.scaleOrThrow(horizontalValue);
+        const top = vertical.scaleOrThrow(verticalValue);
+        const left = horizontal.scaleOrThrow(horizontalValue);
 
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;
 
-        const markerPosition = getMarkerPositionForYAnnotation(
+        const position = getMarkerPositionForYAnnotation(
           panelSize,
           chartRotation,
-          anchorPosition,
+          alignment,
           annotationValueYPosition,
-          markerDimensions,
+          dimension,
         );
 
         const linePathPoints = getYLinePath({ width, height }, annotationValueYPosition);
 
-        const annotationMarker: AnnotationMarker | undefined = marker
-          ? {
-              icon: marker,
-              color: lineColor,
-              dimension: markerDimensions,
-              position: markerPosition,
-              alignment: anchorPosition,
-            }
-          : undefined;
         const lineProp: AnnotationLineProps = {
           specId,
           id: getAnnotationLinePropsId(specId, datum, verticalValue, horizontalValue),
           datum,
           linePathPoints,
-          marker: annotationMarker,
+          markers: icon
+            ? [
+                {
+                  icon,
+                  color,
+                  dimension,
+                  position,
+                  alignment,
+                },
+              ]
+            : [],
           panel: {
             ...panelSize,
-            top: topPos,
-            left: leftPos,
+            top,
+            left,
           },
         };
 
@@ -137,17 +137,17 @@ function computeXDomainLineAnnotationDimensions(
   const {
     id: specId,
     dataValues,
-    marker,
-    markerDimensions,
+    marker: icon,
+    markerDimensions: dimension,
     markerPosition: specMarkerPosition,
     style,
   } = annotationSpec;
   const lineStyle = mergeWithDefaultAnnotationLine(style);
-  const lineColor = lineStyle?.line?.stroke ?? 'red';
+  const color = lineStyle?.line?.stroke ?? 'red';
 
   const lineProps: AnnotationLineProps[] = [];
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
-  const anchorPosition = getAnchorPosition(true, isHorizontalChartRotation, specMarkerPosition, axisPosition);
+  const alignment = getAnchorPosition(true, isHorizontalChartRotation, specMarkerPosition, axisPosition);
   const panelSize = getPanelSize({ vertical, horizontal });
 
   dataValues.forEach((datum: LineAnnotationDatum) => {
@@ -192,40 +192,41 @@ function computeXDomainLineAnnotationDimensions(
           return;
         }
 
-        const topPos = vertical.scaleOrThrow(verticalValue);
-        const leftPos = horizontal.scaleOrThrow(horizontalValue);
+        const top = vertical.scaleOrThrow(verticalValue);
+        const left = horizontal.scaleOrThrow(horizontalValue);
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;
 
-        const markerPosition = getMarkerPositionForXAnnotation(
+        const position = getMarkerPositionForXAnnotation(
           panelSize,
           chartRotation,
-          anchorPosition,
+          alignment,
           annotationValueXPosition,
-          markerDimensions,
+          dimension,
         );
 
         const linePathPoints = getXLinePath({ width, height }, annotationValueXPosition);
 
-        const annotationMarker: AnnotationMarker | undefined = marker
-          ? {
-              icon: marker,
-              color: lineColor,
-              dimension: markerDimensions,
-              position: markerPosition,
-              alignment: anchorPosition,
-            }
-          : undefined;
         const lineProp: AnnotationLineProps = {
           specId,
           id: getAnnotationLinePropsId(specId, datum, verticalValue, horizontalValue),
           datum,
           linePathPoints,
-          marker: annotationMarker,
+          markers: icon
+            ? [
+                {
+                  icon,
+                  color,
+                  dimension,
+                  position,
+                  alignment,
+                },
+              ]
+            : [],
           panel: {
             ...panelSize,
-            top: topPos,
-            left: leftPos,
+            top,
+            left,
           },
         };
         lineProps.push(lineProp);

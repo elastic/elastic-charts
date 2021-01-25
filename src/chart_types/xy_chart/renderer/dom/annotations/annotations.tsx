@@ -88,11 +88,11 @@ function renderAnnotationLineMarkers(
   onDOMElementEnter: typeof onDOMElementEnterAction,
   onDOMElementLeave: typeof onDOMElementLeaveAction,
 ) {
-  return annotationLines.reduce<JSX.Element[]>((markers, { id, specId, datum, marker, panel }: AnnotationLineProps) => {
-    if (!marker) {
-      return markers;
+  return annotationLines.reduce<JSX.Element[]>((acc, { id, specId, datum, markers, panel }: AnnotationLineProps) => {
+    if (markers.length === 0) {
+      return acc;
     }
-    const { icon, color, position, alignment, dimension } = marker;
+    const { icon, color, position, alignment, dimension } = markers[0];
     const style = {
       color,
       top: chartDimensions.top + position.top + panel.top,
@@ -100,7 +100,7 @@ function renderAnnotationLineMarkers(
     };
 
     const transform = { transform: getMarkerCentredTransform(alignment, Boolean(dimension)) };
-    markers.push(
+    acc.push(
       <div
         className="echAnnotation"
         key={`annotation-${specId}-${id}`}
@@ -119,7 +119,7 @@ function renderAnnotationLineMarkers(
       </div>,
     );
 
-    return markers;
+    return acc;
   }, []);
 }
 const AnnotationsComponent = ({

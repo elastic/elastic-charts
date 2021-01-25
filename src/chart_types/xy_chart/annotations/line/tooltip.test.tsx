@@ -126,12 +126,14 @@ describe('Annotation tooltips', () => {
           x2: 3,
           y2: 4,
         },
-        marker: {
-          icon: React.createElement('div'),
-          color: 'red',
-          dimension: { width: 10, height: 10 },
-          position: { top: 0, left: 0 },
-        },
+        markers: [
+          {
+            icon: React.createElement('div'),
+            color: 'red',
+            dimension: { width: 10, height: 10 },
+            position: { top: 0, left: 0 },
+          },
+        ],
       }),
     ];
     const chartRotation: Rotation = 0;

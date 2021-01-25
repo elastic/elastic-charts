@@ -31,6 +31,6 @@ export interface AnnotationLineProps {
    * The path points of a line annotation
    */
   linePathPoints: Line;
-  marker?: AnnotationMarker;
+  markers: Array<AnnotationMarker>;
   panel: Dimensions;
 }

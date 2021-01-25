@@ -35,6 +35,7 @@ export class MockAnnotationLineProps {
     },
     panel: { top: 0, left: 0, width: 100, height: 100 },
     datum: { dataValue: 0 },
+    markers: [],
   };
 
   static default(partial?: RecursivePartial<AnnotationLineProps>, smVerticalValue?: any, smHorizontalValue?: any) {

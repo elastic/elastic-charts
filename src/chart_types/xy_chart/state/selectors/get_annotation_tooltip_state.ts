@@ -146,8 +146,8 @@ function getTooltipStateForDOMElements(
     annotationType: AnnotationTypes.Line,
     datum: dimension.datum,
     anchor: {
-      top: (dimension.marker?.position.top ?? 0) + dimension.panel.top + chartDimensions.top,
-      left: (dimension.marker?.position.left ?? 0) + dimension.panel.left + chartDimensions.left,
+      top: (dimension.markers[0]?.position.top ?? 0) + dimension.panel.top + chartDimensions.top,
+      left: (dimension.markers[0]?.position.left ?? 0) + dimension.panel.left + chartDimensions.left,
     },
     customTooltipDetails: spec.customTooltipDetails,
     customTooltip: spec.customTooltip,
