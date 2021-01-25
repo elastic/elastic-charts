@@ -109,7 +109,7 @@ function computeYDomainLineAnnotationDimensions(
           : undefined;
         const lineProp: AnnotationLineProps = {
           specId,
-          id: `${lineProps.length}`,
+          id: [specId, verticalValue, horizontalValue, datum.header, datum.details].join('__'),
           datum,
           linePathPoints,
           marker: annotationMarker,
@@ -222,7 +222,7 @@ function computeXDomainLineAnnotationDimensions(
           : undefined;
         const lineProp: AnnotationLineProps = {
           specId,
-          id: `${lineProps.length}`,
+          id: [specId, verticalValue, horizontalValue, datum.header, datum.details].join('__'),
           datum,
           linePathPoints,
           marker: annotationMarker,
