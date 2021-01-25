@@ -147,7 +147,6 @@ function getTooltipStateForDOMElements(
     annotationType: AnnotationTypes.Line,
     datum: hoveredDOMElement.datum as LineAnnotationDatum,
     anchor: {
-      position: undefined,
       top: (dimension.marker?.position.top ?? 0) + dimension.panel.top + chartDimensions.top,
       left: (dimension.marker?.position.left ?? 0) + dimension.panel.left + chartDimensions.left,
     },

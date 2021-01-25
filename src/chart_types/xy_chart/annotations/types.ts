@@ -68,8 +68,6 @@ export interface AnnotationTooltipState {
   annotationType: AnnotationType;
   datum: LineAnnotationDatum | RectAnnotationDatum;
   anchor: {
-    // TODO this seems to be unused as it is never set internally
-    position?: Position;
     top: number;
     left: number;
   };
