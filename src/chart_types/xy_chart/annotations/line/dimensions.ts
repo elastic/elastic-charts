@@ -107,7 +107,7 @@ function computeYDomainLineAnnotationDimensions(
           : undefined;
         const lineProp: AnnotationLineProps = {
           specId,
-          id: [specId, verticalValue, horizontalValue, datum.header, datum.details].join('__'),
+          id: getAnnotationLinePropsId(specId, datum, verticalValue, horizontalValue),
           datum,
           linePathPoints,
           marker: annotationMarker,
@@ -218,7 +218,7 @@ function computeXDomainLineAnnotationDimensions(
           : undefined;
         const lineProp: AnnotationLineProps = {
           specId,
-          id: [specId, verticalValue, horizontalValue, datum.header, datum.details].join('__'),
+          id: getAnnotationLinePropsId(specId, datum, verticalValue, horizontalValue),
           datum,
           linePathPoints,
           marker: annotationMarker,
@@ -395,4 +395,16 @@ function getMarkerPositionForYAnnotation(
         left: rotation === 90 ? width - value - mWidth / 2 : value - mWidth / 2,
       };
   }
+}
+
+/**
+ * @internal
+ */
+export function getAnnotationLinePropsId(
+  specId: string,
+  datum: LineAnnotationDatum,
+  verticalValue?: any,
+  horizontalValue?: any,
+) {
+  return [specId, verticalValue, horizontalValue, datum.header, datum.details].join('__');
 }
