@@ -121,4 +121,5 @@ export interface Part extends Rectangle {
  *   - replace users' use of `s.parent` with `s[MODEL_KEY]` for the ShapeTreeNode -> ArrayNode access
  *   - change MODEL_KEY to something other than 'parent' when it's done (might still be breaking change)
  */
-export const MODEL_KEY = 'whatever';
+/** @public */
+export const MODEL_KEY = 'parent';

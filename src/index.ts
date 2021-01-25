@@ -46,6 +46,7 @@ export {
 export { Config as HeatmapConfig } from './chart_types/heatmap/layout/types/config_types';
 export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
 export { PrimitiveValue } from './chart_types/partition_chart/layout/utils/group_by_rollup';
+export { MODEL_KEY } from './chart_types/partition_chart/layout/types/types';
 export * from './chart_types/goal_chart/specs/index';
 export {
   Accessor,

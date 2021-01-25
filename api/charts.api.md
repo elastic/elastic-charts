@@ -1195,6 +1195,9 @@ export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationSt
 // @public
 export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, axillaryThemes?: PartialTheme[]): Theme;
 
+// @public (undocumented)
+export const MODEL_KEY = "parent";
+
 // Warning: (ae-missing-release-tag) "niceTimeFormatByDay" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
