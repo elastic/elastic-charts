@@ -324,6 +324,9 @@ export interface BubbleSeriesStyle {
     point: PointStyle;
 }
 
+// @public (undocumented)
+export type CategoryKey = string;
+
 // Warning: (ae-forgotten-export) The symbol "ChartProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "ChartState" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "Chart" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1020,15 +1023,12 @@ export type HorizontalAlignment = $Values<typeof HorizontalAlignment>;
 // @public
 export type IndexedAccessorFn = UnaryAccessorFn | BinaryAccessorFn;
 
-// Warning: (ae-missing-release-tag) "LayerValue" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface LayerValue {
-    // Warning: (ae-forgotten-export) The symbol "PrimitiveValue" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
+    depth: number;
     groupByRollup: PrimitiveValue;
-    // (undocumented)
+    path: LegendPath;
+    sortIndex: number;
     value: number;
 }
 
@@ -1062,6 +1062,15 @@ export interface LegendColorPickerProps {
 //
 // @public (undocumented)
 export type LegendItemListener = (series: SeriesIdentifier | null) => void;
+
+// @public (undocumented)
+export type LegendPath = LegendPathElement[];
+
+// @public (undocumented)
+export type LegendPathElement = {
+    index: number;
+    value: CategoryKey;
+};
 
 // @public (undocumented)
 export const LegendStrategy: Readonly<{
@@ -1386,6 +1395,9 @@ export interface Postfixes {
     y0AccessorFormat?: string;
     y1AccessorFormat?: string;
 }
+
+// @public (undocumented)
+export type PrimitiveValue = string | number | null;
 
 // @public
 export type ProjectedValues = {

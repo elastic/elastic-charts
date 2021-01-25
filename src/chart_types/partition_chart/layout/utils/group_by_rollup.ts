@@ -60,6 +60,7 @@ interface MapNode extends NodeDescriptor {
 /** @internal */
 export const HIERARCHY_ROOT_KEY: Key = '__root_key__';
 
+/** @public */
 export type PrimitiveValue = string | number | null; // there could be more but sufficient for now
 type Key = CategoryKey;
 export type Sorter = (a: number, b: number) => number;
