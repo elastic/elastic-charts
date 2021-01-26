@@ -39,7 +39,7 @@ export function buildPointStyles(
   pointRadius: number,
   overrides?: Partial<PointStyle>,
 ): { fill: Fill; stroke: Stroke; radius: number; shape: PointShape } {
-  const pointStyle = mergePartial(themePointStyle, overrides);
+  const pointStyle = mergePartial(themePointStyle, overrides, { mergeOptionalPartialValues: true });
   const fillOpacity: OpacityFn = (opacity) => opacity * pointStyle.opacity * geometryStateStyle.opacity;
   const fillColor = stringToRGB(getColorFromVariant(baseColor, pointStyle.fill), fillOpacity);
   const fill: Fill = {

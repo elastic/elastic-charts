@@ -24,10 +24,14 @@ import { MIN_STROKE_WIDTH } from './line';
  * WARNING: This function modify directly, without saving, the context calling the fill() and/or stroke() if defined
  * @internal
  */
-export function fillAndStroke(ctx: CanvasRenderingContext2D, fill?: Fill, stroke?: Stroke) {
+export function fillAndStroke(ctx: CanvasRenderingContext2D, fill?: Fill, stroke?: Stroke, path?: Path2D) {
   if (fill) {
     ctx.fillStyle = RGBtoString(fill.color);
-    ctx.fill();
+    if (path) {
+      ctx.fill(path);
+    } else {
+      ctx.fill();
+    }
   }
   if (stroke && stroke.width > MIN_STROKE_WIDTH) {
     ctx.strokeStyle = RGBtoString(stroke.color);
@@ -35,6 +39,10 @@ export function fillAndStroke(ctx: CanvasRenderingContext2D, fill?: Fill, stroke
     if (stroke.dash) {
       ctx.setLineDash(stroke.dash);
     }
-    ctx.stroke();
+    if (path) {
+      ctx.stroke(path);
+    } else {
+      ctx.stroke();
+    }
   }
 }

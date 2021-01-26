@@ -24,6 +24,7 @@ import { LineStyle, PointStyle } from '../../../utils/themes/theme';
 import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
 import { PointStyleAccessor, StackMode } from '../utils/specs';
+import { buildPointGeometryStyles } from './point_style';
 import {
   getY0ScaledValueOrThrowFn,
   getY1ScaledValueOrThrowFn,
@@ -43,6 +44,7 @@ export function renderPoints(
   panel: Dimensions,
   color: Color,
   lineStyle: LineStyle,
+  pointStyle: PointStyle,
   hasY0Accessors: boolean,
   markSizeOptions: MarkSizeOptions,
   styleAccessor?: PointStyleAccessor,
@@ -84,11 +86,11 @@ export function renderPoints(
 
     yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
       const valueAccessor = getYDatumValueFn(yDatumKeyName);
-      // skip rendering point if y1 is null
-      const radius = getRadius(mark);
+
       let y: number | null;
       try {
         y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
+        // skip rendering point if y1 is null
         if (y === null) {
           return;
         }
@@ -107,12 +109,15 @@ export function renderPoints(
         smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
       };
       const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
+      const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
       const orphan = isOrphanDataPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+      const radius = markSizeOptions.enabled ? getRadius(mark) : styleOverrides?.radius ?? pointStyle.radius;
       const pointGeometry: PointGeometry = {
-        radius,
         x,
         y,
+        radius,
         color,
+        style,
         value: {
           x: xValue,
           y: originalY,
@@ -125,7 +130,6 @@ export function renderPoints(
           y: 0,
         },
         seriesIdentifier,
-        styleOverrides,
         panel,
         orphan,
       };

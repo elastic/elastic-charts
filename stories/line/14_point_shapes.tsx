@@ -22,6 +22,7 @@ import React from 'react';
 import {
   Axis,
   Chart,
+  LIGHT_THEME,
   LineSeries,
   niceTimeFormatByDay,
   PointShape,
@@ -34,6 +35,7 @@ import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20);
+const shapes = Object.values(PointShape);
 export const Example = () => (
   <Chart className="story-chart">
     <Settings showLegend showLegendExtra legendPosition={Position.Right} />
@@ -44,7 +46,7 @@ export const Example = () => (
       position={Position.Left}
       tickFormat={(d) => `${Number(d).toFixed(0)}%`}
     />
-    {Object.values(PointShape).map((shape, i) => {
+    {shapes.map((shape, i) => {
       return (
         <LineSeries
           key={shape}
@@ -58,5 +60,25 @@ export const Example = () => (
         />
       );
     })}
+    <LineSeries
+      id="multi"
+      xScaleType={ScaleType.Time}
+      yScaleType={ScaleType.Linear}
+      xAccessor={0}
+      yAccessors={[1]}
+      color="lightgray"
+      pointStyleAccessor={(datum) => {
+        return {
+          shape: shapes[datum.datum[2] % shapes.length],
+          fill: LIGHT_THEME.colors.vizColors[datum.datum[2] % LIGHT_THEME.colors.vizColors.length],
+          opacity: 0.9,
+          radius: 5,
+          stroke: LIGHT_THEME.colors.vizColors[datum.datum[2] % LIGHT_THEME.colors.vizColors.length],
+          strokeWidth: 1,
+          visible: true,
+        };
+      }}
+      data={data.map(([x, y], i) => [x, y + 60, i])}
+    />
   </Chart>
 );

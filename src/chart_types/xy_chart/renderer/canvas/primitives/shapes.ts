@@ -18,6 +18,7 @@
  */
 import { Circle, Fill, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
+import { cross, square, triangle } from '../../shapes_paths';
 import { fillAndStroke } from './utils';
 
 /** @internal */
@@ -28,15 +29,11 @@ export function renderCross(rotation = 45) {
     }
     withContext(ctx, (ctx) => {
       const { x, y, radius } = shape;
-      ctx.lineCap = 'square';
       ctx.translate(x, y);
       ctx.rotate((rotation * Math.PI) / 180);
       ctx.beginPath();
-      ctx.moveTo(-radius, 0);
-      ctx.lineTo(radius, 0);
-      ctx.moveTo(0, radius);
-      ctx.lineTo(0, -radius);
-      fillAndStroke(ctx, undefined, stroke);
+      const path = new Path2D(cross(radius));
+      fillAndStroke(ctx, undefined, stroke, path);
     });
   };
 }
@@ -53,9 +50,8 @@ export function renderSquare(rotation = 0) {
       ctx.translate(x, y);
       ctx.rotate((rotation * Math.PI) / 180);
       ctx.beginPath();
-      ctx.rect(-radius, -radius, radius * 2, radius * 2);
-
-      fillAndStroke(ctx, fill, stroke);
+      const path = new Path2D(square(radius));
+      fillAndStroke(ctx, fill, stroke, path);
     });
   };
 }
@@ -73,11 +69,8 @@ export function renderTriangle(rotation = 0) {
       ctx.translate(x, y);
       ctx.rotate((rotation * Math.PI) / 180);
       ctx.beginPath();
-      ctx.moveTo(-(radius * Math.sqrt(3)) / 2, radius / 2);
-      ctx.lineTo((radius * Math.sqrt(3)) / 2, radius / 2);
-      ctx.lineTo(0, -radius);
-      ctx.closePath();
-      fillAndStroke(ctx, fill, stroke);
+      const path = new Path2D(triangle(radius));
+      fillAndStroke(ctx, fill, stroke, path);
     });
   };
 }
