@@ -438,6 +438,7 @@ export type CurveType = $Values<typeof CurveType>;
 export type CustomAnnotationTooltip = ComponentType<{
     header?: string;
     details?: string;
+    datum: LineAnnotationDatum | RectAnnotationDatum;
 }> | null;
 
 // @public
