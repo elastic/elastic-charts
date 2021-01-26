@@ -466,7 +466,7 @@ export function getDataSeriesFromSpecs(
             return a - b;
           }),
         );
-
+  console.log(globalDataSeries);
   return {
     dataSeries: globalDataSeries,
     seriesCollection,

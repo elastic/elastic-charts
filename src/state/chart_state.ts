@@ -27,6 +27,7 @@ import { PartitionState } from '../chart_types/partition_chart/state/chart_state
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { LegendItem, LegendItemExtraValues } from '../common/legend';
 import { SeriesIdentifier, SeriesKey } from '../common/series_id';
+import { ScreenReaderData } from '../components/screen_reader_data_table/screen_reader_data_table';
 import { TooltipAnchorPosition, TooltipInfo } from '../components/tooltip/types';
 import { DEFAULT_SETTINGS_SPEC, PointerEvent, Spec } from '../specs';
 import { Color, keepDistinct } from '../utils/common';
@@ -150,6 +151,12 @@ export interface InternalChartState {
    * @param globalState
    */
   getDebugState(globalState: GlobalChartState): DebugState;
+
+  /**
+   * Get the screen reader data from the chart state
+   * @param globalState
+   */
+  getScreenReaderData(globalState: GlobalChartState): ScreenReaderData[];
 }
 
 /** @internal */

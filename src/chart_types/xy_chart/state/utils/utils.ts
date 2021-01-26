@@ -235,7 +235,7 @@ export function computeSeriesDomains(
 
   const verticalPredicate = smallMultiples?.vertical?.sort ?? Predicate.DataIndex;
   const smVDomain = [...smVValues].sort(getPredicateFn(verticalPredicate));
-
+  console.log(formattedDataSeries); // has the data parameter and can get the data from that
   return {
     xDomain,
     yDomain,

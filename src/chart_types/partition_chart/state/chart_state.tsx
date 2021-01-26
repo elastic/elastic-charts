@@ -20,6 +20,7 @@
 import React, { RefObject } from 'react';
 
 import { ChartTypes } from '../..';
+import { ScreenReaderData } from '../../../components/screen_reader_data_table/screen_reader_data_table';
 import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
@@ -139,5 +140,10 @@ export class PartitionState implements InternalChartState {
   // TODO
   getDebugState(): DebugState {
     return {};
+  }
+
+  // TODO
+  getScreenReaderData(): ScreenReaderData[] {
+    return [];
   }
 }

@@ -290,7 +290,6 @@ export interface LegendColorPickerProps {
 export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 
 export interface DataTableProps {
-  // dataTable: ComponentType<string>;
   /**
    * Whether to show the data table for screen readers
    */

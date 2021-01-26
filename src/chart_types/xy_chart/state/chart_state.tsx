@@ -23,10 +23,12 @@ import { ChartTypes } from '../..';
 import { LegendItemExtraValues } from '../../../common/legend';
 import { SeriesKey } from '../../../common/series_id';
 import { BrushTool } from '../../../components/brush/brush';
+import { ScreenReaderDataTable } from '../../../components/screen_reader_data_table';
 import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
+import { getScreenReaderDataSelector } from '../../../state/selectors/get_screen_reader_data';
 import { htmlIdGenerator } from '../../../utils/common';
 import { XYChart } from '../renderer/canvas/xy_chart';
 import { Annotations } from '../renderer/dom/annotations';
@@ -128,6 +130,7 @@ export class XYAxisChartState implements InternalChartState {
         <Annotations getChartContainerRef={containerRef} />
         <Highlighter />
         <BrushTool />
+        <ScreenReaderDataTable />
       </>
     );
   }
@@ -158,5 +161,9 @@ export class XYAxisChartState implements InternalChartState {
 
   getDebugState(globalState: GlobalChartState) {
     return getDebugStateSelector(globalState);
+  }
+
+  getScreenReaderData(globalState: GlobalChartState) {
+    return getScreenReaderDataSelector(globalState);
   }
 }
