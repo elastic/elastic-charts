@@ -18,59 +18,29 @@
  */
 import { Circle, Fill, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
-import { cross, square, triangle } from '../../shapes_paths';
+import { PointShape } from '../../../../../utils/themes/theme';
+import { ShapeRendererFn } from '../../shapes_paths';
 import { fillAndStroke } from './utils';
 
 /** @internal */
-export function renderCross(rotation = 45) {
-  return (ctx: CanvasRenderingContext2D, shape: Circle, fill?: Fill, stroke?: Stroke) => {
-    if (!stroke) {
-      return;
-    }
-    withContext(ctx, (ctx) => {
-      const { x, y, radius } = shape;
-      ctx.translate(x, y);
-      ctx.rotate((rotation * Math.PI) / 180);
-      ctx.beginPath();
-      const path = new Path2D(cross(radius));
-      fillAndStroke(ctx, undefined, stroke, path);
-    });
-  };
-}
+export function renderShape(
+  ctx: CanvasRenderingContext2D,
+  shape: PointShape,
+  coordinates: Circle,
+  fill?: Fill,
+  stroke?: Stroke,
+) {
+  if (!stroke || !fill) {
+    return;
+  }
+  withContext(ctx, (ctx) => {
+    const [pathFn, rotation] = ShapeRendererFn[shape];
+    const { x, y, radius } = coordinates;
+    ctx.translate(x, y);
+    ctx.rotate((rotation * Math.PI) / 180);
+    ctx.beginPath();
 
-/** @internal */
-export function renderSquare(rotation = 0) {
-  return (ctx: CanvasRenderingContext2D, shape: Circle, fill?: Fill, stroke?: Stroke) => {
-    if (!stroke || !fill) {
-      return;
-    }
-    withContext(ctx, (ctx) => {
-      const { x, y, radius } = shape;
-
-      ctx.translate(x, y);
-      ctx.rotate((rotation * Math.PI) / 180);
-      ctx.beginPath();
-      const path = new Path2D(square(radius));
-      fillAndStroke(ctx, fill, stroke, path);
-    });
-  };
-}
-
-/** @internal */
-export function renderTriangle(rotation = 0) {
-  return (ctx: CanvasRenderingContext2D, shape: Circle, fill?: Fill, stroke?: Stroke) => {
-    if (!stroke || !fill) {
-      return;
-    }
-
-    withContext(ctx, (ctx) => {
-      const { x, y, radius } = shape;
-
-      ctx.translate(x, y);
-      ctx.rotate((rotation * Math.PI) / 180);
-      ctx.beginPath();
-      const path = new Path2D(triangle(radius));
-      fillAndStroke(ctx, fill, stroke, path);
-    });
-  };
+    const path = new Path2D(pathFn(radius));
+    fillAndStroke(ctx, fill, stroke, path);
+  });
 }

@@ -26,7 +26,6 @@ import { InitStatus, getInternalIsInitializedSelector } from '../../../../state/
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { isPointGeometry, IndexedGeometry, PointGeometry } from '../../../../utils/geometry';
-import { PointShape } from '../../../../utils/themes/theme';
 import { RGBtoString } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { DEFAULT_HIGHLIGHT_PADDING } from '../../rendering/constants';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
@@ -34,7 +33,7 @@ import { computeChartTransformSelector } from '../../state/selectors/compute_cha
 import { getHighlightedGeomsSelector } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
 import { Transform } from '../../state/utils/types';
 import { computeChartTransform } from '../../state/utils/utils';
-import { circle, cross, square, triangle } from '../shapes_paths';
+import { ShapeRendererFn } from '../shapes_paths';
 
 interface HighlighterProps {
   initialized: boolean;
@@ -52,40 +51,13 @@ function getTransformForPanel(panel: Dimensions, rotation: Rotation, { left, top
 }
 
 function renderPath(geom: PointGeometry) {
-  // if radius is 0, keep showing the highlight
+  // keep the highlighter radius to a minimum
   const radius = Math.max(geom.radius, DEFAULT_HIGHLIGHT_PADDING);
-  switch (geom.style.shape) {
-    case PointShape.Triangle:
-      return {
-        d: triangle(radius),
-        rotate: 0,
-      };
-    case PointShape.Diamond:
-      return {
-        d: square(radius),
-        rotate: 45,
-      };
-    case PointShape.Square:
-      return {
-        d: square(radius),
-        rotate: 0,
-      };
-    case PointShape.AngledCross:
-      return {
-        d: cross(radius),
-        rotate: 40,
-      };
-    case PointShape.Cross:
-      return {
-        d: cross(radius),
-        rotate: 0,
-      };
-    default:
-      return {
-        d: circle(radius),
-        rotate: 0,
-      };
-  }
+  const [shapeFn, rotate] = ShapeRendererFn[geom.style.shape];
+  return {
+    d: shapeFn(radius),
+    rotate,
+  };
 }
 
 class HighlighterComponent extends React.Component<HighlighterProps> {

@@ -25,17 +25,8 @@ import { PointGeometry } from '../../../../utils/geometry';
 import { PointStyle, GeometryStateStyle, PointShape } from '../../../../utils/themes/theme';
 import { RgbObject } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { renderCircle } from './primitives/arc';
-import { renderCross, renderSquare, renderTriangle } from './primitives/shapes';
+import { renderShape } from './primitives/shapes';
 import { withPanelTransform } from './utils/panel_transform';
-
-const shapeRenderers = {
-  [PointShape.Circle]: renderCircle,
-  [PointShape.AngledCross]: renderCross(45),
-  [PointShape.Cross]: renderCross(0),
-  [PointShape.Diamond]: renderSquare(45),
-  [PointShape.Square]: renderSquare(0),
-  [PointShape.Triangle]: renderTriangle(0),
-};
 
 /**
  * Renders points from single series
@@ -54,16 +45,16 @@ export function renderPoints(ctx: CanvasRenderingContext2D, points: PointGeometr
         color: applyOpacity(style.stroke.color, opacity),
       };
 
-      const circle: Circle = {
+      const coordinates: Circle = {
         x: x + transform.x,
         y: y + transform.y,
         radius,
       };
 
-      return [circle, fill, stroke, style.shape];
+      return [coordinates, fill, stroke, style.shape];
     })
     .sort(([{ radius: a }], [{ radius: b }]) => b - a)
-    .forEach(([circle, fill, stroke, shape]) => shapeRenderers[shape](ctx, circle, fill, stroke));
+    .forEach(([coordinates, fill, stroke, shape]) => renderShape(ctx, shape, coordinates, fill, stroke));
 }
 
 /**

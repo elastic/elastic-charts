@@ -17,27 +17,41 @@
  * under the License.
  */
 
+import { PointShape } from '../../../utils/themes/theme';
+
 /** @internal */
 export type SVGPath = string;
 
-/** @internal */
-export function cross(r: number): SVGPath {
-  return `M ${-r} 0 L ${r} 0 M 0 ${r} L 0 ${-r}`;
-}
+export type SVGPathFn = (radius: number) => SVGPath;
 
 /** @internal */
-export function triangle(r: number): SVGPath {
+export const cross: SVGPathFn = (r: number) => {
+  return `M ${-r} 0 L ${r} 0 M 0 ${r} L 0 ${-r}`;
+};
+
+/** @internal */
+export const triangle: SVGPathFn = (r: number) => {
   const h = (r * Math.sqrt(3)) / 2;
   const hr = r / 2;
   return `M ${-h} ${hr} L ${h} ${hr} L 0 ${-r} Z`;
-}
+};
 
 /** @internal */
-export function square(r: number): SVGPath {
+export const square: SVGPathFn = (r: number) => {
   return `M ${-r} ${-r} L ${-r} ${r} L ${r} ${r} L ${r} ${-r} Z`;
-}
+};
 
 /** @internal */
-export function circle(r: number): SVGPath {
+export const circle: SVGPathFn = (r: number) => {
   return `M ${-r} ${0} a ${r},${r} 0 1,0 ${r * 2},0 a ${r},${r} 0 1,0 ${-r * 2},0`;
-}
+};
+
+/** @internal */
+export const ShapeRendererFn: Record<PointShape, [SVGPathFn, number]> = {
+  [PointShape.Circle]: [circle, 0],
+  [PointShape.AngledCross]: [cross, 45],
+  [PointShape.Cross]: [cross, 0],
+  [PointShape.Diamond]: [square, 45],
+  [PointShape.Square]: [square, 0],
+  [PointShape.Triangle]: [triangle, 0],
+};
