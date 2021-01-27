@@ -37,7 +37,7 @@ const scssLoaders = [
   'sass-loader',
 ];
 
-const MAX_CYCLES = 0;
+const MAX_CYCLES = 1000;
 let numCyclesDetected = 0;
 
 module.exports = async ({ config }) => {
