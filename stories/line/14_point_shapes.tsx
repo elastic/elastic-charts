@@ -55,7 +55,7 @@ export const Example = () => (
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
-          lineSeriesStyle={{ point: { shape, radius: 10, fill: 'red' } }}
+          lineSeriesStyle={{ point: { shape, radius: 10 } }}
           data={data.map(([x, y]) => [x, y + 10 * i])}
         />
       );
