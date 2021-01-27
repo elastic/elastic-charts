@@ -118,7 +118,7 @@ function getTooltipAndHighlightFromValue(
     return EMPTY_VALUES;
   }
 
-  if (tooltipType === TooltipType.None) {
+  if (tooltipType === TooltipType.None && !externalPointerEvent) {
     return EMPTY_VALUES;
   }
 
