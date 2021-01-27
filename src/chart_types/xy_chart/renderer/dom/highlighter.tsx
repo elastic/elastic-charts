@@ -112,16 +112,17 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
 
           if (isPointGeometry(geom)) {
             const { color } = geom.style.stroke;
-            const d = renderPath(geom);
+            const { d, rotate } = renderPath(geom);
             return (
-              <path
-                d={d.d}
-                stroke={RGBtoString(color)}
-                strokeWidth={4}
-                transform={`${geomTransform} translate(${x}, ${y}) rotate(${d.rotate || 0})`}
-                fill="transparent"
-                clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
-              />
+              <g transform={geomTransform} clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}>
+                <path
+                  d={d}
+                  stroke={RGBtoString(color)}
+                  strokeWidth={4}
+                  transform={`translate(${x}, ${y}) rotate(${rotate || 0})`}
+                  fill="transparent"
+                />
+              </g>
             );
           }
           return (
