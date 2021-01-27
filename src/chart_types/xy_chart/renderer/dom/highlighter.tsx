@@ -86,7 +86,11 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
             const { color } = geom.style.stroke;
             const { d, rotate } = renderPath(geom);
             return (
-              <g transform={geomTransform} clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}>
+              <g
+                key={i}
+                transform={geomTransform}
+                clipPath={geom.value.mark !== null ? `url(#${clipPathId})` : undefined}
+              >
                 <path
                   d={d}
                   stroke={RGBtoString(color)}
