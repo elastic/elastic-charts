@@ -28,7 +28,7 @@ import { getScreenReaderDataSelector } from '../../state/selectors/get_screen_re
 
 export interface ScreenReaderData {
   seriesName: SeriesName | SeriesNameFn | undefined | SeriesNameConfigOptions;
-  seriesType: string;
+  seriesType: string | null;
   dataKey: string[];
   dataValue: any[];
   xScaleType: ScaleType;
@@ -49,14 +49,20 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) 
   const classNames = 'echDataTable';
 
   const renderText = () => {
-    return `This chart has ${data.length} series in it. The series is a ${data[0].seriesType} series.`;
+    if (!data[0]) {
+      return;
+    }
+
+    return `This chart has ${data.length} series in it. ${data.map((value, index) => {
+      return ` The ${index + 1} series of ${data.length} series is a ${value.seriesType} series`;
+    })}`;
   };
 
   const screenReaderTable = (d: ScreenReaderData[]) => {
     const dataKeys: JSX.Element[] = [];
     // go through the number of series in ScreenReaderData
     for (let seriesIndex = 0; seriesIndex < d.length; seriesIndex++) {
-      if (seriesIndex > 0) {
+      if (d.length !== 1) {
         dataKeys.push(
           <th key={Math.random()}>
             {seriesIndex + 1} series of the total {d.length} series{' '}
@@ -82,7 +88,9 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) 
 
   return (
     <>
-      <p aria-label="alt text for chart">{renderText()}</p>
+      <p className={classNames} aria-label="alt text for chart">
+        {renderText()}
+      </p>
       <table className={classNames}>
         <tbody>{screenReaderTable(data)}</tbody>
       </table>
