@@ -35,10 +35,6 @@ export const Example = () => {
         legendStrategy={LegendStrategy.PathWithDescendants}
         legendMaxDepth={maxDepth}
         theme={STORYBOOK_LIGHT_THEME}
-        onElementClick={(e) => {
-          // eslint-disable-next-line no-console
-          console.log(e);
-        }}
       />
       <Partition
         id="spec_1"
@@ -46,7 +42,11 @@ export const Example = () => {
         valueAccessor={(d: Datum) => d.value as number}
         valueFormatter={() => ''}
         layers={getLayerSpec(color)}
-        config={{ ...config, partitionLayout: PartitionLayout.flame }}
+        config={{
+          ...config,
+          partitionLayout: PartitionLayout.flame,
+          drilldown: true,
+        }}
       />
     </Chart>
   );

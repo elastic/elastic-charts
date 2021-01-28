@@ -165,6 +165,10 @@ export const configMetadata = {
     type: 'string',
     values: Object.keys(PartitionLayout),
   },
+  drilldown: {
+    dflt: false,
+    type: 'boolean',
+  },
 
   // fill text layout config
   circlePadding: { dflt: 2, min: 0.0, max: 8, type: 'number' },

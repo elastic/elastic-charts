@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { CategoryKey } from '../../../../common/category';
 import { IndexedAccessorFn } from '../../../../utils/accessor';
 import { ValueAccessor } from '../../../../utils/common';
 import { Relation } from '../types/types';
@@ -36,6 +37,8 @@ export function getHierarchyOfArrays(
   valueAccessor: ValueAccessor,
   groupByRollupAccessors: IndexedAccessorFn[],
   sorter: Sorter | null = childOrders.descending,
+  drilldown: boolean,
+  drilldownSelection: CategoryKey[],
 ): HierarchyOfArrays {
   const aggregator = aggregators.sum;
 
@@ -53,7 +56,7 @@ export function getHierarchyOfArrays(
   // By introducing `scale`, we no longer need to deal with the dichotomy of
   // size as data value vs size as number of pixels in the rectangle
   return mapsToArrays(
-    groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts),
+    groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts, drilldown, drilldownSelection),
     sorter && aggregateComparator(mapEntryValue, sorter),
   );
 }
