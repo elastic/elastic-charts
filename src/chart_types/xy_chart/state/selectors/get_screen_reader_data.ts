@@ -21,24 +21,18 @@ import createCachedSelector from 're-reselect';
 
 import { ScreenReaderData } from '../../../../components/screen_reader_data_table/screen_reader_data_table';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getScreenReaderDataTableSettings } from '../../../../state/selectors/get_screen_reader_settings';
+import { getScreenReaderDataTableSettingsSelector } from '../../../../state/selectors/get_screen_reader_settings';
+import { computeScreenReaderData } from '../utils/utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 
 /** @internal */
 export const getScreenReaderDataSelector = createCachedSelector(
-  [getScreenReaderDataTableSettings, computeSeriesDomainsSelector],
+  [getScreenReaderDataTableSettingsSelector, computeSeriesDomainsSelector],
   ({ showDataTable }, seriesDomainsAndData): ScreenReaderData[] | [] => {
     if (!showDataTable) {
       return [];
     }
     const { formattedDataSeries } = seriesDomainsAndData;
-    const dataForScreenReader = [];
-
-    dataForScreenReader.push(computeScreenReaderData(formattedDataSeries));
+    return computeScreenReaderData(formattedDataSeries);
   },
 )(getChartIdSelector);
-
-function computeScreenReaderData(data: any): ScreenReaderData[] {
-  getChartIdSelector(chartId);
-  return dataForScreenReader;
-}

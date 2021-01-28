@@ -18,6 +18,7 @@
  */
 
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
+import { ScreenReaderData } from '../../../../components/screen_reader_data_table/screen_reader_data_table';
 import { Scale } from '../../../../scales';
 import { GroupBySpec, SortSeriesByConfig } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
@@ -187,7 +188,6 @@ export function computeSeriesDomains(
 
   const verticalPredicate = smallMultiples?.vertical?.sort ?? Predicate.DataIndex;
   const smVDomain = [...smVValues].sort(getPredicateFn(verticalPredicate));
-  console.log(formattedDataSeries); // has the data parameter and can get the data from that
   return {
     xDomain,
     yDomain,
@@ -598,4 +598,37 @@ export function getBarIndexKey(
   }
 
   return [groupId, specId, ...splitAccessors.values(), yAccessor].join('__-__');
+}
+
+/** @internal */
+function parseDataForKeys(d: DataSeries) {
+  if (!d) return [];
+  return Object.keys(d.data[0].datum);
+}
+
+/** @internal */
+function parseDataForValues(d: DataSeries) {
+  if (!d) return [];
+  const values = [];
+  for (let i = 0; i < d.data.length; i++) {
+    values.push(Object.values(d.data[i].datum));
+  }
+  return values;
+}
+
+/** @internal */
+export function computeScreenReaderData(data: DataSeries[]): ScreenReaderData[] {
+  const formattedScreenReaderDataArray = [];
+  for (let i = 0; i < data.length; i++) {
+    const current = {
+      seriesName: data[i].spec.name,
+      seriesType: data[i].seriesType,
+      dataKey: parseDataForKeys(data[i]),
+      dataValue: parseDataForValues(data[i]),
+      xScaleType: data[i].spec.xScaleType,
+      yScaleType: data[i].spec.yScaleType,
+    };
+    formattedScreenReaderDataArray.push(current);
+  }
+  return formattedScreenReaderDataArray;
 }

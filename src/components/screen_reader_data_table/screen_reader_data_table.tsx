@@ -21,28 +21,25 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { ScaleType } from '../../scales/constants';
-import { SeriesName } from '../../specs';
+import { SeriesName, SeriesNameConfigOptions, SeriesNameFn } from '../../specs';
 import { GlobalChartState } from '../../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
 
 export interface ScreenReaderData {
-  seriesName: SeriesName;
-  seriesType: 'bar' | 'line' | 'area' | 'pie' | 'treemap' | 'gauge' | 'goal';
-  dataKey: Array<string>;
-  dataValue: Array<string | number>;
+  seriesName: SeriesName | SeriesNameFn | undefined | SeriesNameConfigOptions;
+  seriesType: string;
+  dataKey: string[];
+  dataValue: any[];
   xScaleType: ScaleType;
   yScaleType: ScaleType;
 }
 
 export interface ScreenReaderDataTableStateProps {
   data: ScreenReaderData[];
-  // isChartEmpty: boolean;
-  // geometries: Geometries;
-  // geometriesIndex: IndexedGeometryMap;
 }
 
-const ScreenReaderDataTableComponent = (props: ScreenReaderData & ScreenReaderDataTableStateProps) => {
+const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) => {
   const { data } = props;
 
   if (!data) {
@@ -51,23 +48,29 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderData & ScreenReaderDa
 
   const classNames = 'echDataTable';
 
-  const renderText = () => {};
+  const renderText = () => {
+    return `This chart has ${data.length} series in it. The series is a ${data[0].seriesType} series.`;
+  };
 
-  const screenReaderTable = (data: ScreenReaderData[]) => {
+  const screenReaderTable = (d: ScreenReaderData[]) => {
     const dataKeys: JSX.Element[] = [];
     // go through the number of series in ScreenReaderData
-    for (let seriesIndex = 0; seriesIndex < data.length; seriesIndex++) {
-      dataKeys.push(
-        <th>
-          {seriesIndex + 1} series of the total {data.length} series{' '}
-        </th>,
-      );
-      // get the index of the key in each series and use the index to get the index of it in the values
-      for (let j = 0; j < data[seriesIndex].dataKey.length; j++) {
+    for (let seriesIndex = 0; seriesIndex < d.length; seriesIndex++) {
+      if (seriesIndex > 0) {
         dataKeys.push(
-          <tr>
-            <th scope="row">{data[seriesIndex].dataKey[j]}</th>
-            {data[seriesIndex].dataValue.map((value) => {
+          <th key={Math.random()}>
+            {seriesIndex + 1} series of the total {d.length} series{' '}
+          </th>,
+        );
+      }
+      // get the index of the key in each series and use the index to get the index of it in the values
+      for (let j = 0; j < d[seriesIndex].dataKey.length; j++) {
+        dataKeys.push(
+          <tr key={Math.random()}>
+            <th scope="row" key={Math.random()}>
+              {d[seriesIndex].dataKey[j]}
+            </th>
+            {d[seriesIndex].dataValue.map((value) => {
               return <td key={Math.random()}>{value[j]}</td>;
             })}
           </tr>,
@@ -79,9 +82,7 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderData & ScreenReaderDa
 
   return (
     <>
-      <div role="text" aria-label="alt text for chart">
-        {renderText()}
-      </div>
+      <p aria-label="alt text for chart">{renderText()}</p>
       <table className={classNames}>
         <tbody>{screenReaderTable(data)}</tbody>
       </table>

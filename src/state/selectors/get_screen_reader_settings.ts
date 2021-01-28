@@ -16,11 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { DataTableProps, SettingsSpec } from '../../specs/settings';
+import createCachedSelector from 're-reselect';
 
-/** @internal */
-export function getScreenReaderDataTableSettings(settings: SettingsSpec): DataTableProps {
-  return {
-    showDataTable: settings.dataTable?.showDataTable ?? false,
-  };
-}
+import { DataTableProps } from '../../specs';
+import { getChartIdSelector } from './get_chart_id';
+import { getSettingsSpecSelector } from './get_settings_specs';
+
+export const getScreenReaderDataTableSettingsSelector = createCachedSelector(
+  [getSettingsSpecSelector],
+  ({ dataTable }): DataTableProps => {
+    return {
+      showDataTable: dataTable?.showDataTable ?? false,
+    };
+  },
+)(getChartIdSelector);
