@@ -54,50 +54,69 @@ export class PartitionState implements InternalChartState {
     this.onElementOutCaller = createOnElementOutCaller();
   }
 
-  isInitialized = (globalState: GlobalChartState) =>
-    getPartitionSpec(globalState) !== null ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
+  isInitialized(globalState: GlobalChartState) {
+    return getPartitionSpec(globalState) !== null ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
+  }
 
-  isBrushAvailable = () => false;
+  isBrushAvailable() {
+    return false;
+  }
 
-  isBrushing = () => false;
+  isBrushing() {
+    return false;
+  }
 
-  isChartEmpty = () => false;
+  isChartEmpty() {
+    return false;
+  }
 
-  getLegendItemsLabels = (globalState: GlobalChartState) => {
+  getLegendItemsLabels(globalState: GlobalChartState) {
     // order doesn't matter, but it needs to return the highest depth of the label occurrence so enough horizontal width is allocated
     return getLegendItemsLabels(globalState);
-  };
+  }
 
-  getLegendItems = (globalState: GlobalChartState) => computeLegendSelector(globalState);
+  getLegendItems(globalState: GlobalChartState) {
+    return computeLegendSelector(globalState);
+  }
 
-  getLegendExtraValues = (globalState: GlobalChartState) => getLegendItemsExtra(globalState);
+  getLegendExtraValues(globalState: GlobalChartState) {
+    return getLegendItemsExtra(globalState);
+  }
 
-  chartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
-    <>
-      <Tooltip getChartContainerRef={containerRef} />
-      <Partition forwardStageRef={forwardStageRef} />
-      <HighlighterFromHover />
-      <HighlighterFromLegend />
-    </>
-  );
+  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
+    return (
+      <>
+        <Tooltip getChartContainerRef={containerRef} />
+        <Partition forwardStageRef={forwardStageRef} />
+        <HighlighterFromHover />
+        <HighlighterFromLegend />
+      </>
+    );
+  }
 
-  getPointerCursor = () => 'default';
+  getPointerCursor() {
+    return 'default';
+  }
 
-  isTooltipVisible = (globalState: GlobalChartState) => ({
-    visible: isTooltipVisibleSelector(globalState),
-    isExternal: false,
-  });
+  isTooltipVisible(globalState: GlobalChartState) {
+    return {
+      visible: isTooltipVisibleSelector(globalState),
+      isExternal: false,
+    };
+  }
 
-  getTooltipInfo = (globalState: GlobalChartState) => getTooltipInfoSelector(globalState);
+  getTooltipInfo(globalState: GlobalChartState) {
+    return getTooltipInfoSelector(globalState);
+  }
 
-  getTooltipAnchor = (state: GlobalChartState) => {
+  getTooltipAnchor(state: GlobalChartState) {
     const { position } = state.interactions.pointer.current;
     return {
       isRotated: false,
       x1: position.x,
       y1: position.y,
     };
-  };
+  }
 
   eventCallbacks(globalState: GlobalChartState) {
     this.onElementOverCaller(globalState);
@@ -106,14 +125,22 @@ export class PartitionState implements InternalChartState {
   }
 
   // TODO
-  getProjectionContainerArea = (): Dimensions => ({ width: 0, height: 0, top: 0, left: 0 });
+  getProjectionContainerArea(): Dimensions {
+    return { width: 0, height: 0, top: 0, left: 0 };
+  }
 
   // TODO
-  getMainProjectionArea = (): Dimensions => ({ width: 0, height: 0, top: 0, left: 0 });
+  getMainProjectionArea(): Dimensions {
+    return { width: 0, height: 0, top: 0, left: 0 };
+  }
 
   // TODO
-  getBrushArea = (): Dimensions | null => null;
+  getBrushArea(): Dimensions | null {
+    return null;
+  }
 
   // TODO
-  getDebugState = (): DebugState => ({});
+  getDebugState(): DebugState {
+    return {};
+  }
 }
