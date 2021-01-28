@@ -22,6 +22,7 @@ import { PointShape } from '../../../utils/themes/theme';
 /** @internal */
 export type SVGPath = string;
 
+/** @internal */
 export type SVGPathFn = (radius: number) => SVGPath;
 
 /** @internal */
@@ -49,8 +50,8 @@ export const circle: SVGPathFn = (r: number) => {
 /** @internal */
 export const ShapeRendererFn: Record<PointShape, [SVGPathFn, number]> = {
   [PointShape.Circle]: [circle, 0],
-  [PointShape.AngledCross]: [cross, 45],
-  [PointShape.Cross]: [cross, 0],
+  [PointShape.X]: [cross, 45],
+  [PointShape.Plus]: [cross, 0],
   [PointShape.Diamond]: [square, 45],
   [PointShape.Square]: [square, 0],
   [PointShape.Triangle]: [triangle, 0],

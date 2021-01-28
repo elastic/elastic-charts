@@ -312,8 +312,8 @@ export const PointShape = Object.freeze({
   Circle: 'circle' as const,
   Square: 'square' as const,
   Diamond: 'diamond' as const,
-  Cross: 'cross' as const,
-  AngledCross: 'angledCross' as const,
+  Plus: 'plus' as const,
+  X: 'x' as const,
   Triangle: 'triangle' as const,
 });
 
