@@ -1356,8 +1356,8 @@ export const PointShape: Readonly<{
     Circle: "circle";
     Square: "square";
     Diamond: "diamond";
-    Cross: "cross";
-    AngledCross: "angledCross";
+    Plus: "plus";
+    X: "x";
     Triangle: "triangle";
 }>;
 
