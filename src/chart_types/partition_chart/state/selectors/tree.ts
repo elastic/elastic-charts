@@ -25,7 +25,7 @@ import { SpecTypes } from '../../../../specs';
 import { GlobalChartState, SpecList } from '../../../../state/chart_state';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { configMetadata } from '../../layout/config/config';
-import { childOrders, HierarchyOfArrays, HIERARCHY_ROOT_KEY } from '../../layout/utils/group_by_rollup';
+import { childOrders, HIERARCHY_ROOT_KEY, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
 import { getHierarchyOfArrays } from '../../layout/viewmodel/hierarchy_of_arrays';
 import { isSunburst, isTreemap } from '../../layout/viewmodel/viewmodel';
 import { PartitionSpec } from '../../specs';
@@ -35,28 +35,28 @@ const getSpecs = (state: GlobalChartState) => state.specs;
 const getDrilldownSelection = (state: GlobalChartState) => state.interactions.drilldown || [];
 
 /** @internal */
-export const getTreeFun = (specs: SpecList, drilldownSelection: CategoryKey[]): HierarchyOfArrays => {
-  const pieSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
-  if (pieSpecs.length !== 1) {
-    return [];
-  }
-  const {
-    data,
-    valueAccessor,
-    layers,
-    config: { drilldown },
-  } = pieSpecs[0];
-  const layout = pieSpecs[0].config.partitionLayout ?? configMetadata.partitionLayout.dflt;
-  const sorter = isTreemap(layout) || isSunburst(layout) ? childOrders.descending : null;
-  return getHierarchyOfArrays(
-    data,
-    valueAccessor,
-    [() => HIERARCHY_ROOT_KEY, ...layers.map(({ groupByRollup }) => groupByRollup)],
-    sorter,
-    Boolean(drilldown),
-    drilldownSelection,
-  );
-};
-
-/** @internal */
-export const getTree = createCachedSelector([getSpecs, getDrilldownSelection], getTreeFun)((state) => state.chartId);
+export const getTree = createCachedSelector(
+  [getSpecs, getDrilldownSelection],
+  (specs: SpecList, drilldownSelection: CategoryKey[]): HierarchyOfArrays => {
+    const pieSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
+    if (pieSpecs.length !== 1) {
+      return [];
+    }
+    const {
+      data,
+      valueAccessor,
+      layers,
+      config: { drilldown },
+    } = pieSpecs[0];
+    const layout = pieSpecs[0].config.partitionLayout ?? configMetadata.partitionLayout.dflt;
+    const sorter = isTreemap(layout) || isSunburst(layout) ? childOrders.descending : null;
+    return getHierarchyOfArrays(
+      data,
+      valueAccessor,
+      [() => HIERARCHY_ROOT_KEY, ...layers.map(({ groupByRollup }) => groupByRollup)],
+      sorter,
+      Boolean(drilldown),
+      drilldownSelection,
+    );
+  },
+)((state) => state.chartId);
