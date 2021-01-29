@@ -24,19 +24,21 @@ export FORCE_COLOR=1
 ###
 UNAME=$(uname)
 OS="linux"
-nodeBin="$nodeDir/bin"
-
 if [[ "$UNAME" = *"MINGW64_NT"* ]]; then
   OS="win"
-  nodeBin="$HOME/node"
 fi
 echo " -- Running on OS: $OS"
 
 nodeVersion="$(cat $dir/.nvmrc)"
 nodeDir="$cacheDir/node/$nodeVersion"
-classifier="x64.tar.gz"
 
-nodeUrl="https://us-central1-elastic-kibana-184716.cloudfunctions.net/kibana-ci-proxy-cache/dist/v$nodeVersion/node-v$nodeVersion-${OS}-${classifier}"
+if [[ "$OS" == "win" ]]; then
+  nodeBin="$HOME/node"
+  nodeUrl="https://nodejs.org/dist/v$nodeVersion/node-v$nodeVersion-win-x64.zip"
+else
+  nodeBin="$nodeDir/bin"
+  nodeUrl="https://nodejs.org/dist/v$nodeVersion/node-v$nodeVersion-linux-x64.tar.gz"
+fi
 
 echo " -- node: version=v${nodeVersion} dir=$nodeDir"
 
