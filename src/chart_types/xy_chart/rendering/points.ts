@@ -110,11 +110,14 @@ export function renderPoints(
       const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
       const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
       const orphan = isOrphanDataPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
-      const radius = markSizeOptions.enabled ? getRadius(mark) : styleOverrides?.radius ?? pointStyle.radius;
+      // if radius is defined with the mark, limit the minimum radius to the theme radius value
+      const radius = markSizeOptions.enabled
+        ? Math.max(getRadius(mark), pointStyle.radius)
+        : styleOverrides?.radius ?? pointStyle.radius;
       const pointGeometry: PointGeometry = {
         x,
         y,
-        radius: Math.max(radius, pointStyle.radius),
+        radius,
         color,
         style,
         value: {
