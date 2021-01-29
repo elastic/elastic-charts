@@ -19,34 +19,19 @@
 
 import createCachedSelector from 're-reselect';
 
-import { ChartTypes } from '../../..';
 import { ScaleBand } from '../../../../scales';
-import { SpecTypes } from '../../../../specs/constants';
-import { DEFAULT_SM_PANEL_PADDING, SmallMultiplesSpec } from '../../../../specs/small_multiples';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { DEFAULT_SM_PANEL_PADDING } from '../../../../specs/small_multiples';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getSpecsFromStore } from '../../../../state/utils';
 import { Domain } from '../../../../utils/domain';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
+import { getSmallMultipleSpec } from './get_small_multiples_spec';
 
 /** @internal */
 export interface SmallMultipleScales {
   horizontal: ScaleBand;
   vertical: ScaleBand;
 }
-
-const getSmallMultipleSpec = (state: GlobalChartState) => {
-  const smallMultiples = getSpecsFromStore<SmallMultiplesSpec>(
-    state.specs,
-    ChartTypes.Global,
-    SpecTypes.SmallMultiples,
-  );
-  if (smallMultiples.length !== 1) {
-    return undefined;
-  }
-  return smallMultiples[0];
-};
 
 /**
  * Return the small multiple scales for horizontal and vertical grids

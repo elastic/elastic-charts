@@ -29,10 +29,26 @@ export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
 /** @alpha */
 export type GroupBySort = Predicate;
 
+/** @public */
+export type Formatter = (value: ReturnType<GroupByAccessor>) => string;
+
 /** @alpha */
 export interface GroupBySpec extends Spec {
+  /**
+   * Function to return a unique value __by__ which to group the data
+   */
   by: GroupByAccessor;
+  /**
+   * Sort predicate used to sort grouped data
+   */
   sort: GroupBySort;
+  /**
+   * Title for each panel. Use to display unique title for panel.
+   *
+   * If both axis title and this value are set, the axis title will be
+   * treated as the primary title and this as the secondary.
+   */
+  title?: Formatter;
 }
 const DEFAULT_GROUP_BY_PROPS = {
   chartType: ChartTypes.Global,
@@ -42,7 +58,7 @@ const DEFAULT_GROUP_BY_PROPS = {
 type DefaultGroupByProps = 'chartType' | 'specType';
 
 /** @alpha */
-export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort'>;
+export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort' | 'title'>;
 
 /** @alpha */
 export const GroupBy: React.FunctionComponent<GroupByProps> = getConnect()(

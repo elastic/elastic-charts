@@ -22,45 +22,68 @@ import createCachedSelector from 're-reselect';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
+import { hasSMDomain } from '../../utils/panel';
 import { PerPanelMap, getPerPanelMap } from '../../utils/panel_utils';
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
-import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
+import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
+import { getSmallMultiplesIndexOrderSelector, SmallMultiplesGroupBy } from './get_specs';
 
 /** @internal */
 export type PerPanelAxisGeoms = {
   axesGeoms: AxisGeometry[];
 } & PerPanelMap;
 
+const getPanelTitle = (
+  isVertical: boolean,
+  verticalValue: any,
+  horizontalValue: any,
+  groupBy?: SmallMultiplesGroupBy,
+): string => {
+  const formatter = isVertical ? groupBy?.vertical?.title : groupBy?.horizontal?.title;
+
+  if (formatter) {
+    try {
+      const value = isVertical ? `${verticalValue}` : `${horizontalValue}`;
+      return formatter(value);
+    } catch {
+      // fallthrough
+    }
+  }
+  return isVertical ? `${verticalValue}` : `${horizontalValue}`;
+};
+
 /** @internal */
 export const computePerPanelAxesGeomsSelector = createCachedSelector(
-  [computeAxesGeometriesSelector, computeSmallMultipleScalesSelector],
-  (axesGeoms, scales): Array<PerPanelAxisGeoms> => {
+  [computeAxesGeometriesSelector, computeSmallMultipleScalesSelector, getSmallMultiplesIndexOrderSelector],
+  (axesGeoms, scales, groupBySpec): Array<PerPanelAxisGeoms> => {
     const { horizontal, vertical } = scales;
-    return getPerPanelMap(scales, (anchor, h, v) => {
-      const lastLine = horizontal.domain.includes(h) && vertical.domain[vertical.domain.length - 1] === v;
-      const firstColumn = horizontal.domain[0] === h;
-      if (firstColumn || lastLine) {
+    const t = getPerPanelMap(scales, (_, h, v) => {
+      const primaryColumn = isPrimaryColumn(horizontal, h);
+      const primaryRow = isPrimaryRow(scales, h, v);
+
+      if (primaryColumn || primaryRow) {
         return {
           axesGeoms: axesGeoms
             .filter(({ axis: { position } }) => {
-              if (firstColumn && lastLine) {
+              if (primaryColumn && primaryRow) {
                 return true;
               }
-              return firstColumn ? isVerticalAxis(position) : isHorizontalAxis(position);
+              return primaryColumn ? isVerticalAxis(position) : isHorizontalAxis(position);
             })
             .map((geom) => {
               const {
-                axis: { position, title },
+                axis: { position },
               } = geom;
-              const panelTitle = isVerticalAxis(position) ? `${v}` : `${h}`;
-              const useSmallMultiplePanelTitles = isVerticalAxis(position)
-                ? vertical.domain.length > 1
-                : horizontal.domain.length > 1;
+              const isVertical = isVerticalAxis(position);
+              const usePanelTitle = isVertical ? hasSMDomain(vertical) : hasSMDomain(horizontal);
+              const panelTitle = usePanelTitle ? getPanelTitle(isVertical, v, h, groupBySpec) : undefined;
+
               return {
                 ...geom,
                 axis: {
                   ...geom.axis,
-                  title: useSmallMultiplePanelTitles ? panelTitle : title,
+                  title: panelTitle,
+                  secondary: false,
                 },
               };
             }),
@@ -69,5 +92,15 @@ export const computePerPanelAxesGeomsSelector = createCachedSelector(
 
       return null;
     });
+
+    return t;
   },
 )(getChartIdSelector);
+
+function isPrimaryRow({ horizontal, vertical }: SmallMultipleScales, horizontalValue: any, verticalValue: any) {
+  return horizontal.domain.includes(horizontalValue) && vertical.domain.includes(verticalValue);
+}
+
+function isPrimaryColumn({ domain }: SmallMultipleScales['horizontal'], horizontalValue: any) {
+  return domain[0] === horizontalValue;
+}

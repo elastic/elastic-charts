@@ -116,6 +116,17 @@ export const DARK_THEME: Theme = {
       fill: '#D4D4D4',
       visible: true,
     },
+    axisPanelTitle: {
+      fontSize: 8,
+      fontStyle: 'bold',
+      fontFamily: 'sans-serif',
+      padding: {
+        inner: 8,
+        outer: 0,
+      },
+      fill: '#D4D4D4',
+      visible: true,
+    },
     axisLine: {
       visible: true,
       stroke: '#444',

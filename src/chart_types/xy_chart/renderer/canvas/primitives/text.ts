@@ -23,18 +23,21 @@ import { Font, TextAlign, TextBaseline } from '../../../../partition_chart/layou
 import { cssFontShorthand, measureText } from '../../../../partition_chart/layout/utils/measure';
 
 /** @internal */
+export type TextFont = Font & {
+  fill: string;
+  fontSize: number;
+  align: TextAlign;
+  baseline: TextBaseline;
+  shadow?: string;
+  shadowSize?: number;
+};
+
+/** @internal */
 export function renderText(
   ctx: CanvasRenderingContext2D,
   origin: Point,
   text: string,
-  font: Font & {
-    fill: string;
-    fontSize: number;
-    align: TextAlign;
-    baseline: TextBaseline;
-    shadow?: string;
-    shadowSize?: number;
-  },
+  font: TextFont,
   degree: number = 0,
   translation?: Partial<Point>,
   scale: number = 1,

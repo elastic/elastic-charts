@@ -45,8 +45,8 @@ const data = dg.generateGroupedSeries(numOfDays, 16).map((d) => {
     y: d.y,
     x: DateTime.fromISO('2020-01-01T00:00:00Z').plus({ days: d.x }).toMillis(),
     g: d.g,
-    h: `host ${groupNames.indexOf(d.g) % 4}`,
-    v: `metric ${Math.floor(groupNames.indexOf(d.g) / 4)}`,
+    h: groupNames.indexOf(d.g) % 4,
+    v: Math.floor(groupNames.indexOf(d.g) / 4),
   };
 });
 
@@ -69,13 +69,13 @@ export const Example = () => {
       />
       <Axis
         id="time"
-        title="timestamp"
+        title="Hosts"
         position={Position.Bottom}
         gridLine={{ visible: true }}
         ticks={2}
         style={{
           tickLabel: {
-            padding: 10,
+            padding: 5,
           },
           axisTitle: {
             padding: 0,
@@ -91,7 +91,7 @@ export const Example = () => {
       />
       <Axis
         id="y"
-        title="metric"
+        title="Metrics"
         position={Position.Left}
         gridLine={{ visible: true }}
         domain={{
@@ -115,20 +115,8 @@ export const Example = () => {
         tickFormat={(d) => d.toFixed(2)}
       />
 
-      <GroupBy
-        id="v_split"
-        by={(spec, { v }) => {
-          return v;
-        }}
-        sort="numDesc"
-      />
-      <GroupBy
-        id="h_split"
-        by={(spec, { h }) => {
-          return h;
-        }}
-        sort="numAsc"
-      />
+      <GroupBy id="v_split" by={(_, { v }) => v} title={(v) => `Metric ${v}`} sort="numDesc" />
+      <GroupBy id="h_split" by={(spec, { h }) => h} title={(v) => `Host ${v}`} sort="numAsc" />
       <SmallMultiples
         splitVertically="v_split"
         splitHorizontally="h_split"
