@@ -35,6 +35,8 @@ import {
   YDefinedFn,
 } from './utils';
 
+const DEFAULT_RADIUS = 1;
+
 /** @internal */
 export function renderPoints(
   shift: number,
@@ -55,7 +57,7 @@ export function renderPoints(
 } {
   const indexedGeometryMap = new IndexedGeometryMap();
   const getRadius = markSizeOptions.enabled
-    ? getRadiusFn(dataSeries.data, lineStyle.strokeWidth, markSizeOptions.ratio)
+    ? getRadiusFn(dataSeries.data, pointStyle.strokeWidth, markSizeOptions.ratio)
     : () => 0;
   const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
 
@@ -115,7 +117,7 @@ export function renderPoints(
       const pointGeometry: PointGeometry = {
         x,
         y,
-        radius,
+        radius: Math.max(radius, DEFAULT_RADIUS),
         color,
         style,
         value: {
