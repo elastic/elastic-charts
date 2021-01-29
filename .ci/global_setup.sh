@@ -24,21 +24,19 @@ export FORCE_COLOR=1
 ###
 UNAME=$(uname)
 OS="linux"
+nodeBin="$nodeDir/bin"
+
 if [[ "$UNAME" = *"MINGW64_NT"* ]]; then
   OS="win"
+  nodeBin="$HOME/node"
 fi
 echo " -- Running on OS: $OS"
 
 nodeVersion="$(cat $dir/.nvmrc)"
 nodeDir="$cacheDir/node/$nodeVersion"
+classifier="x64.tar.gz"
 
-if [[ "$OS" == "win" ]]; then
-  nodeBin="$HOME/node"
-  nodeUrl="https://nodejs.org/dist/v$nodeVersion/node-v$nodeVersion-win-x64.zip"
-else
-  nodeBin="$nodeDir/bin"
-  nodeUrl="https://nodejs.org/dist/v$nodeVersion/node-v$nodeVersion-linux-x64.tar.gz"
-fi
+nodeUrl="https://us-central1-elastic-kibana-184716.cloudfunctions.net/kibana-ci-proxy-cache/dist/v$nodeVersion/node-v$nodeVersion-${OS}-${classifier}"
 
 echo " -- node: version=v${nodeVersion} dir=$nodeDir"
 
@@ -71,8 +69,7 @@ export PATH="$nodeBin:$PATH"
 ###
 ### downloading yarn
 ###
-yarnVersion="$(node -e "console.log(String(require('./package.json').engines.yarn || '').replace(/^[^\d]+/,''))")"
-npm install -g yarn@^${yarnVersion}
+npm install -g yarn
 
 ###
 ### setup yarn offline cache
