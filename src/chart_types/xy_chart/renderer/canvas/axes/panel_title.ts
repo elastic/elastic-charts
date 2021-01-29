@@ -27,15 +27,16 @@ import { getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
 import { renderText, TextFont } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
 
-export type TitleProps = Pick<AxisProps, 'title' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'>;
+export type TitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'>;
 
 /** @internal */
 export function renderPanelTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   const {
-    axisSpec: { title, position },
+    axisSpec: { position },
     axisStyle: { axisPanelTitle },
+    panelTitle,
   } = props;
-  if (!title || !axisPanelTitle.visible) {
+  if (!panelTitle || !axisPanelTitle.visible) {
     return null;
   }
   if (isHorizontalAxis(position)) {
@@ -51,9 +52,9 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
     dimension: { maxLabelBboxWidth },
     axisStyle: { axisTitle, axisPanelTitle, tickLine, tickLabel },
     debug,
-    title,
+    panelTitle,
   } = props;
-  if (!title) {
+  if (!panelTitle) {
     return null;
   }
   const font = getFontStyle(axisPanelTitle);
@@ -78,7 +79,7 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
       x: left + font.fontSize / 2,
       y: top - height / 2,
     },
-    title,
+    panelTitle,
     font,
     -90,
   );
@@ -91,10 +92,10 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: TitleProps)
     dimension: { maxLabelBboxHeight },
     axisStyle: { axisTitle, axisPanelTitle, tickLine, tickLabel },
     debug,
-    title,
+    panelTitle,
   } = props;
 
-  if (!title) {
+  if (!panelTitle) {
     return;
   }
 
@@ -121,7 +122,7 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: TitleProps)
       x: left + width / 2,
       y: top + font.fontSize / 2,
     },
-    title,
+    panelTitle,
     font,
   );
 }

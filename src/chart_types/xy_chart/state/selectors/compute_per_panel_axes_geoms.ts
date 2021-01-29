@@ -20,6 +20,7 @@
 import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { Position } from '../../../../utils/common';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
 import { hasSMDomain } from '../../utils/panel';
@@ -32,6 +33,13 @@ import { getSmallMultiplesIndexOrderSelector, SmallMultiplesGroupBy } from './ge
 export type PerPanelAxisGeoms = {
   axesGeoms: AxisGeometry[];
 } & PerPanelMap;
+
+const isPrimaryAxis = (primaryColumn: boolean, primaryRow: boolean, position: Position, debug?: boolean) => {
+  if (primaryColumn && primaryRow) {
+    return true;
+  }
+  return primaryColumn ? isVerticalAxis(position) : isHorizontalAxis(position);
+};
 
 const getPanelTitle = (
   isVertical: boolean,
@@ -59,7 +67,7 @@ export const computePerPanelAxesGeomsSelector = createCachedSelector(
     const { horizontal, vertical } = scales;
     const t = getPerPanelMap(scales, (_, h, v) => {
       const primaryColumn = isPrimaryColumn(horizontal, h);
-      const primaryRow = isPrimaryRow(scales, h, v);
+      const primaryRow = isPrimaryRow(scales, h, v, primaryColumn);
 
       if (primaryColumn || primaryRow) {
         return {
@@ -82,7 +90,7 @@ export const computePerPanelAxesGeomsSelector = createCachedSelector(
                 ...geom,
                 axis: {
                   ...geom.axis,
-                  title: panelTitle,
+                  panelTitle,
                   secondary: false,
                 },
               };
@@ -97,7 +105,18 @@ export const computePerPanelAxesGeomsSelector = createCachedSelector(
   },
 )(getChartIdSelector);
 
-function isPrimaryRow({ horizontal, vertical }: SmallMultipleScales, horizontalValue: any, verticalValue: any) {
+function isPrimaryRow(
+  { horizontal, vertical }: SmallMultipleScales,
+  horizontalValue: any,
+  verticalValue: any,
+  test?: boolean,
+) {
+  // if (test) debugger;
+
+  // return horizontal.domain.includes(horizontalValue) &&
+  // horizontal.domain.length === 1 ?
+  //   vertical.domain.includes(verticalValue) : vertical.domain[vertical.domain.length - 1] === verticalValue;
+
   return horizontal.domain.includes(horizontalValue) && vertical.domain.includes(verticalValue);
 }
 

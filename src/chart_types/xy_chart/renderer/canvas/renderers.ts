@@ -54,7 +54,6 @@ export function renderXYChartCanvas2d(
       annotationSpecs,
       perPanelAxisGeoms,
       perPanelGridLines,
-      axesGeoms,
       axesSpecs,
       axesStyles,
       debug,
@@ -81,7 +80,6 @@ export function renderXYChartCanvas2d(
         renderAxes(ctx, {
           axesSpecs,
           perPanelAxisGeoms,
-          axesGeoms,
           renderingArea,
           debug,
           axesStyles,

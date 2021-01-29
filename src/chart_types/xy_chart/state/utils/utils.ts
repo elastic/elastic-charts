@@ -19,7 +19,7 @@
 
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
-import { GroupBySpec, SortSeriesByConfig } from '../../../../specs';
+import { SortSeriesByConfig } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';

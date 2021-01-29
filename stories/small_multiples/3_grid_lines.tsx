@@ -51,12 +51,14 @@ const data = dg.generateGroupedSeries(numOfDays, 16).map((d) => {
 });
 
 export const Example = () => {
+  const debug = boolean('Debug', false);
   const showLegend = boolean('Show Legend', false);
   const onElementClick = action('onElementClick');
 
   return (
     <Chart className="story-chart">
       <Settings
+        debug={debug}
         onElementClick={onElementClick}
         showLegend={showLegend}
         theme={{
@@ -78,7 +80,7 @@ export const Example = () => {
             padding: 5,
           },
           axisTitle: {
-            padding: 0,
+            padding: 2,
           },
           tickLine: {
             visible: false,
@@ -99,12 +101,13 @@ export const Example = () => {
         }}
         ticks={2}
         style={{
-          axisTitle: {
-            padding: 0,
-          },
           tickLabel: {
             padding: 5,
           },
+          axisTitle: {
+            padding: 2,
+          },
+
           tickLine: {
             visible: false,
           },

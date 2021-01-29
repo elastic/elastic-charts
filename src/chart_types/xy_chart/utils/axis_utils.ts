@@ -731,7 +731,7 @@ export interface AxisGeometry {
   axis: {
     id: AxisId;
     position: Position;
-    title?: string;
+    panelTitle?: string;
     secondary?: boolean;
   };
   dimension: AxisTicksDimensions;
@@ -882,7 +882,6 @@ export function getAxesGeometries(
       axis: {
         id: axisSpec.id,
         position: axisSpec.position,
-        title: axisSpec.title,
       },
       anchorPoint: {
         x: anchorPoint.dimensions.left,

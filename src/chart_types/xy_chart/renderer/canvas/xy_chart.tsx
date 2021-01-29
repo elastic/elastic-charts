@@ -37,7 +37,6 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme, AxisStyle } from '../../../../utils/themes/theme';
 import { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
-import { computeAxesGeometriesSelector } from '../../state/selectors/compute_axes_geometries';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
 import { computePerPanelGridLinesSelector } from '../../state/selectors/compute_grid_lines';
@@ -52,7 +51,6 @@ import { getHighlightedSeriesSelector } from '../../state/selectors/get_highligh
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { Geometries, Transform } from '../../state/utils/types';
-import { AxisGeometry } from '../../utils/axis_utils';
 import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { AxisSpec, AnnotationSpec } from '../../utils/specs';
@@ -74,7 +72,6 @@ export interface ReactiveChartStateProps {
   axesSpecs: AxisSpec[];
   perPanelAxisGeoms: Array<PerPanelAxisGeoms>;
   perPanelGridLines: Array<LinesGrid>;
-  axesGeoms: Array<AxisGeometry>;
   axesStyles: Map<AxisId, AxisStyle | null>;
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
@@ -218,7 +215,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   axesSpecs: [],
   perPanelAxisGeoms: [],
   perPanelGridLines: [],
-  axesGeoms: [],
   axesStyles: new Map(),
   annotationDimensions: new Map(),
   annotationSpecs: [],
@@ -247,7 +243,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     axesSpecs: getAxisSpecsSelector(state),
     perPanelAxisGeoms: computePerPanelAxesGeomsSelector(state),
     perPanelGridLines: computePerPanelGridLinesSelector(state),
-    axesGeoms: computeAxesGeometriesSelector(state),
     axesStyles: getAxesStylesSelector(state),
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),

@@ -19,12 +19,13 @@
 
 import { withContext } from '../../../../../renderers/canvas';
 import { Dimensions, Size } from '../../../../../utils/dimensions';
+import { AxisId } from '../../../../../utils/ids';
 import { Point } from '../../../../../utils/point';
 import { AxisStyle } from '../../../../../utils/themes/theme';
 import { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
 import { getSpecsById } from '../../../state/utils/spec';
 import { isVerticalAxis } from '../../../utils/axis_type_utils';
-import { AxisGeometry, AxisTick, AxisTicksDimensions, shouldShowTicks } from '../../../utils/axis_utils';
+import { AxisTick, AxisTicksDimensions, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisSpec } from '../../../utils/specs';
 import { renderDebugRect } from '../utils/debug';
 import { renderTitle } from './global_title';
@@ -35,7 +36,7 @@ import { renderTickLabel } from './tick_label';
 
 /** @internal */
 export interface AxisProps {
-  title?: string;
+  panelTitle?: string;
   secondary?: boolean;
   panelAnchor: Point;
   axisStyle: AxisStyle;
@@ -52,7 +53,6 @@ export interface AxisProps {
 export interface AxesProps {
   axesSpecs: AxisSpec[];
   perPanelAxisGeoms: PerPanelAxisGeoms[];
-  axesGeoms: AxisGeometry[];
   axesStyles: Map<string, AxisStyle | null>;
   sharedAxesStyle: AxisStyle;
   debug: boolean;
@@ -63,17 +63,18 @@ export interface AxesProps {
 export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
   const { axesSpecs, perPanelAxisGeoms, axesStyles, sharedAxesStyle, debug, renderingArea } = props;
 
-  renderGlobalTitles(ctx, props);
+  const seenAxesTitleIds = new Set<AxisId>();
 
   perPanelAxisGeoms.forEach(({ axesGeoms, panelAnchor }) => {
     withContext(ctx, (ctx) => {
       axesGeoms.forEach((geometry) => {
         const {
-          axis: { title, id, position, secondary },
+          axis: { panelTitle, id, position, secondary },
           anchorPoint,
           size,
           dimension,
           visibleTicks: ticks,
+          parentSize,
         } = geometry;
         const axisSpec = getSpecsById<AxisSpec>(axesSpecs, id);
 
@@ -83,8 +84,22 @@ export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
 
         const axisStyle = axesStyles.get(axisSpec.id) ?? sharedAxesStyle;
 
+        if (!seenAxesTitleIds.has(id)) {
+          seenAxesTitleIds.add(id);
+
+          renderTitle(ctx, {
+            ...props,
+            panelTitle,
+            size: parentSize,
+            anchorPoint,
+            dimension,
+            axisStyle,
+            axisSpec,
+          });
+        }
+
         renderAxis(ctx, {
-          title,
+          panelTitle,
           secondary,
           panelAnchor,
           axisSpec,
@@ -96,30 +111,6 @@ export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
           debug,
           renderingArea,
         });
-      });
-    });
-  });
-}
-
-function renderGlobalTitles(ctx: CanvasRenderingContext2D, props: AxesProps) {
-  withContext(ctx, (ctx) => {
-    props.axesGeoms.forEach(({ anchorPoint, parentSize, dimension, axis: { id, position } }) => {
-      const axisSpec = getSpecsById<AxisSpec>(props.axesSpecs, id);
-
-      if (!axisSpec || !position || axisSpec.hide) {
-        return;
-      }
-
-      const axisStyle = props.axesStyles.get(axisSpec.id) ?? props.sharedAxesStyle;
-
-      renderTitle(ctx, {
-        ...props,
-        title: axisSpec.title,
-        size: parentSize,
-        anchorPoint,
-        dimension,
-        axisStyle,
-        axisSpec,
       });
     });
   });
