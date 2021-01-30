@@ -17,24 +17,14 @@
  * under the License.
  */
 
-import { getRadius } from './point';
+import { ChartTypes } from '../../..';
+import { SpecTypes } from '../../../../specs';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { getSpecsFromStore } from '../../../../state/utils';
+import { PartitionSpec } from '../../specs';
 
-describe('point', () => {
-  describe('#getRadius', () => {
-    it('should return max of point and theme radius - theme', () => {
-      expect(getRadius(10, 20)).toBe(20);
-    });
-
-    it('should return max of point and theme radius - point', () => {
-      expect(getRadius(30, 20)).toBe(30);
-    });
-
-    it('should return override if provided - lower', () => {
-      expect(getRadius(10, 20, 5)).toBe(5);
-    });
-
-    it('should return override if provided - higher', () => {
-      expect(getRadius(10, 20, 50)).toBe(50);
-    });
-  });
-});
+/** @internal */
+export function getPartitionSpec(state: GlobalChartState): PartitionSpec | null {
+  const pieSpecs = getSpecsFromStore<PartitionSpec>(state.specs, ChartTypes.Partition, SpecTypes.Series);
+  return pieSpecs.length > 0 ? pieSpecs[0] : null;
+}

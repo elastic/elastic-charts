@@ -16,15 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import { ChartTypes } from '../../..';
-import { SpecTypes } from '../../../../specs/constants';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { getSpecsFromStore } from '../../../../state/utils';
-import { PartitionSpec } from '../../specs';
+import { Circle, Fill, Stroke } from '../../../../../geoms/types';
+import { withContext } from '../../../../../renderers/canvas';
+import { PointShape } from '../../../../../utils/themes/theme';
+import { ShapeRendererFn } from '../../shapes_paths';
+import { fillAndStroke } from './utils';
 
 /** @internal */
-export function getPieSpec(state: GlobalChartState): PartitionSpec | null {
-  const pieSpecs = getSpecsFromStore<PartitionSpec>(state.specs, ChartTypes.Partition, SpecTypes.Series);
-  return pieSpecs.length > 0 ? pieSpecs[0] : null;
+export function renderShape(
+  ctx: CanvasRenderingContext2D,
+  shape: PointShape,
+  coordinates: Circle,
+  fill?: Fill,
+  stroke?: Stroke,
+) {
+  if (!stroke || !fill) {
+    return;
+  }
+  withContext(ctx, (ctx) => {
+    const [pathFn, rotation] = ShapeRendererFn[shape];
+    const { x, y, radius } = coordinates;
+    ctx.translate(x, y);
+    ctx.rotate((rotation * Math.PI) / 180);
+    ctx.beginPath();
+
+    const path = new Path2D(pathFn(radius));
+    fillAndStroke(ctx, fill, stroke, path);
+  });
 }
