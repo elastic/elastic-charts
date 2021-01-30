@@ -1040,7 +1040,7 @@ export type LegendAction = ComponentType<LegendActionProps>;
 export interface LegendActionProps {
     color: string;
     label: string;
-    series: SeriesIdentifier;
+    series: SeriesIdentifier[];
 }
 
 // Warning: (ae-missing-release-tag) "LegendColorPicker" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -1056,13 +1056,13 @@ export interface LegendColorPickerProps {
     color: Color;
     onChange: (color: Color | null) => void;
     onClose: () => void;
-    seriesIdentifier: SeriesIdentifier;
+    seriesIdentifiers: SeriesIdentifier[];
 }
 
 // Warning: (ae-missing-release-tag) "LegendItemListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type LegendItemListener = (series: SeriesIdentifier | null) => void;
+export type LegendItemListener = (series: SeriesIdentifier[]) => void;
 
 // @public (undocumented)
 export type LegendPath = LegendPathElement[];
