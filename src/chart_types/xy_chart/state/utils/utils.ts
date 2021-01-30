@@ -50,14 +50,7 @@ import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../../utils/scales';
-import {
-  DataSeries,
-  getSeriesIndex,
-  getFormattedDataSeries,
-  getDataSeriesFromSpecs,
-  XYChartSeriesIdentifier,
-  getSeriesKey,
-} from '../../utils/series';
+import { DataSeries, getFormattedDataSeries, getDataSeriesFromSpecs, getSeriesKey } from '../../utils/series';
 import {
   AxisSpec,
   BasicSeriesSpec,
@@ -77,27 +70,6 @@ import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales'
 import { isHorizontalRotation } from './common';
 import { getSpecsById, getAxesSpecForSpecId, getSpecDomainGroupId } from './spec';
 import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform } from './types';
-
-/**
- * Adds or removes series from array or series
- * @param series
- * @param target
- * @internal
- */
-export function updateDeselectedDataSeries(
-  series: XYChartSeriesIdentifier[],
-  target: XYChartSeriesIdentifier,
-): XYChartSeriesIdentifier[] {
-  const seriesIndex = getSeriesIndex(series, target);
-  const updatedSeries = series ? [...series] : [];
-
-  if (seriesIndex > -1) {
-    updatedSeries.splice(seriesIndex, 1);
-  } else {
-    updatedSeries.push(target);
-  }
-  return updatedSeries;
-}
 
 /**
  * Return map association between `seriesKey` and only the custom colors string

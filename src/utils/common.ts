@@ -545,3 +545,14 @@ export const getPercentageValue = <T>(ratio: string | number, relativeValue: num
  * @example [1, 2, 4, 2, 4, 0, 3, 2].filter(keepDistinct) ==> [1, 2, 4, 0, 3]
  */
 export const keepDistinct = <T>(d: T, i: number, a: T[]): boolean => a.indexOf(d) === i;
+
+export function toEntries<T extends Record<string, string>, S>(
+  array: T[],
+  accessor: keyof T,
+  staticValue: S,
+): Record<string, S> {
+  return array.reduce<Record<string, S>>((acc, curr) => {
+    acc[curr[accessor]] = staticValue;
+    return acc;
+  }, {});
+}

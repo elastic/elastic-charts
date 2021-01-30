@@ -69,7 +69,7 @@ export const Example = () => {
       MIN
     </span>
   );
-  const showLegend = boolean('Show Legend', false);
+  const showLegend = boolean('Show Legend', true);
   const onElementClick = action('onElementClick');
 
   return (

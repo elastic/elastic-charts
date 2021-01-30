@@ -28,7 +28,7 @@ export type LegendItemChildId = CategoryKey;
 
 /** @internal */
 export type LegendItem = {
-  seriesIdentifier: SeriesIdentifier;
+  seriesIdentifiers: SeriesIdentifier[];
   childId?: LegendItemChildId;
   depth?: number;
   /**

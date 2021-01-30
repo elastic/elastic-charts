@@ -29,6 +29,7 @@ import { LastValues } from '../state/utils/types';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
 import { defaultXYLegendSeriesSort } from '../utils/default_series_sort_fn';
+import { groupBy } from '../utils/group_data_series';
 import {
   getSeriesIndex,
   getSeriesName,
@@ -129,7 +130,7 @@ export function computeLegend(
     legendItems.push({
       color,
       label: labelY1,
-      seriesIdentifier,
+      seriesIdentifiers: [seriesIdentifier],
       childId: BandedAccessorType.Y1,
       isSeriesHidden,
       isItemHidden: hideInLegend,
@@ -142,7 +143,7 @@ export function computeLegend(
       legendItems.push({
         color,
         label: labelY0,
-        seriesIdentifier,
+        seriesIdentifiers: [seriesIdentifier],
         childId: BandedAccessorType.Y0,
         isSeriesHidden,
         isItemHidden: hideInLegend,
@@ -159,5 +160,17 @@ export function computeLegend(
     return defaultXYLegendSeriesSort(aDs, bDs);
   });
 
-  return legendItems.sort((a, b) => legendSortFn(a.seriesIdentifier, b.seriesIdentifier));
+  return groupBy(
+    legendItems.sort((a, b) => legendSortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0])),
+    ({ color, label }) => {
+      return `${color}---${label}`;
+    },
+    true,
+  ).map((d) => {
+    return {
+      ...d[0],
+      seriesIdentifiers: d.map(({ seriesIdentifiers: [s] }) => s),
+      path: d.map(({ path: [p] }) => p),
+    };
+  });
 }

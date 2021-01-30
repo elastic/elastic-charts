@@ -133,7 +133,7 @@ describe('Rendering utils', () => {
     const highlightedLegendItem: LegendItem = {
       color: '',
       label: '',
-      seriesIdentifier,
+      seriesIdentifiers: [seriesIdentifier],
       isSeriesHidden: false,
       defaultExtra: {
         formatted: null,
@@ -145,10 +145,12 @@ describe('Rendering utils', () => {
 
     const unhighlightedLegendItem: LegendItem = {
       ...highlightedLegendItem,
-      seriesIdentifier: {
-        ...seriesIdentifier,
-        key: 'not me',
-      },
+      seriesIdentifiers: [
+        {
+          ...seriesIdentifier,
+          key: 'not me',
+        },
+      ],
     };
 
     const sharedThemeStyle: SharedGeometryStateStyle = {

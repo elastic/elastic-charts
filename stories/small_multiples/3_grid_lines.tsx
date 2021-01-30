@@ -51,7 +51,7 @@ const data = dg.generateGroupedSeries(numOfDays, 16).map((d) => {
 });
 
 export const Example = () => {
-  const showLegend = boolean('Show Legend', false);
+  const showLegend = boolean('Show Legend', true);
   const onElementClick = action('onElementClick');
 
   return (
@@ -120,14 +120,14 @@ export const Example = () => {
         by={(spec, { v }) => {
           return v;
         }}
-        sort="numDesc"
+        sort="alphaAsc"
       />
       <GroupBy
         id="h_split"
         by={(spec, { h }) => {
           return h;
         }}
-        sort="numAsc"
+        sort="alphaAsc"
       />
       <SmallMultiples
         splitVertically="v_split"
