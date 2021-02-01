@@ -877,7 +877,7 @@ export interface GoalSpec extends Spec {
     // Warning: (ae-forgotten-export) The symbol "Config" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    config: RecursivePartial<Config_2>;
+    config: RecursivePartial<Config>;
     // (undocumented)
     labelMajor: string | BandFillColorAccessor;
     // (undocumented)
@@ -957,6 +957,118 @@ export type HeatmapBrushEvent = {
     y: (string | number)[];
 };
 
+// Warning: (ae-missing-release-tag) "Config" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface HeatmapConfig {
+    brushArea: {
+        visible: boolean;
+        fill: Color;
+        stroke: Color;
+        strokeWidth: number;
+    };
+    brushMask: {
+        visible: boolean;
+        fill: Color;
+    };
+    brushTool: {
+        visible: boolean;
+        fill: Color;
+    };
+    // (undocumented)
+    cell: {
+        maxWidth: Pixels | 'fill';
+        maxHeight: Pixels | 'fill';
+        align: 'center';
+        label: Font & {
+            fontSize: Pixels;
+            maxWidth: Pixels | 'fill';
+            fill: string;
+            align: TextAlign;
+            baseline: TextBaseline;
+            visible: boolean;
+        };
+        border: {
+            strokeWidth: Pixels;
+            stroke: Color;
+        };
+    };
+    // Warning: (ae-forgotten-export) The symbol "FontFamily" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    fontFamily: FontFamily;
+    // (undocumented)
+    grid: {
+        cellWidth: {
+            min: Pixels;
+            max: Pixels | 'fill';
+        };
+        cellHeight: {
+            min: Pixels;
+            max: Pixels | 'fill';
+        };
+        stroke: {
+            color: string;
+            width: number;
+        };
+    };
+    // (undocumented)
+    height: Pixels;
+    // (undocumented)
+    margin: {
+        left: SizeRatio;
+        right: SizeRatio;
+        top: SizeRatio;
+        bottom: SizeRatio;
+    };
+    // (undocumented)
+    maxColumnWidth: Pixels;
+    // (undocumented)
+    maxLegendHeight?: number;
+    // (undocumented)
+    maxRowHeight: Pixels;
+    // (undocumented)
+    onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
+    // (undocumented)
+    timeZone: string;
+    // Warning: (ae-forgotten-export) The symbol "Pixels" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    width: Pixels;
+    // Warning: (ae-forgotten-export) The symbol "Font" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    xAxisLabel: Font & {
+        name: string;
+        fontSize: Pixels;
+        width: Pixels | 'auto';
+        fill: string;
+        align: TextAlign;
+        baseline: TextBaseline;
+        visible: boolean;
+        padding: number;
+        formatter: (value: string | number) => string;
+    };
+    // (undocumented)
+    yAxisLabel: Font & {
+        name: string;
+        fontSize: Pixels;
+        width: Pixels | 'auto' | {
+            max: Pixels;
+        };
+        fill: string;
+        baseline: TextBaseline;
+        visible: boolean;
+        padding: number | {
+            left?: number;
+            right?: number;
+            top?: number;
+            bottom?: number;
+        };
+        formatter: (value: string | number) => string;
+    };
+}
+
 // Warning: (ae-missing-release-tag) "HeatmapElementEvent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -972,10 +1084,8 @@ export interface HeatmapSpec extends Spec {
     //
     // (undocumented)
     colorScale?: HeatmapScaleType;
-    // Warning: (ae-forgotten-export) The symbol "Config" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
-    config: RecursivePartial<Config>;
+    config: RecursivePartial<HeatmapConfig>;
     // (undocumented)
     data: Datum[];
     // (undocumented)
@@ -2227,6 +2337,9 @@ export type YDomainRange = YDomainBase & DomainRange;
 
 // Warnings were encountered during analysis:
 //
+// src/chart_types/heatmap/layout/types/config_types.ts:28:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:60:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:61:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:128:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:129:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/common/series_id.ts:40:3 - (ae-forgotten-export) The symbol "SeriesKey" needs to be exported by the entry point index.d.ts
