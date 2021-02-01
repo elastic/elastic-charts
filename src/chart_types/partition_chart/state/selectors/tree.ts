@@ -20,9 +20,8 @@
 import createCachedSelector from 're-reselect';
 
 import { ChartTypes } from '../../..';
-import { CategoryKey } from '../../../../common/category';
 import { SpecTypes } from '../../../../specs';
-import { GlobalChartState, SpecList } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { configMetadata } from '../../layout/config/config';
 import { childOrders, HIERARCHY_ROOT_KEY, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
