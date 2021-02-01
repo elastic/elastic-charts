@@ -37,7 +37,7 @@ const getDrilldownSelection = (state: GlobalChartState) => state.interactions.dr
 /** @internal */
 export const getTree = createCachedSelector(
   [getSpecs, getDrilldownSelection],
-  (specs: SpecList, drilldownSelection: CategoryKey[]): HierarchyOfArrays => {
+  (specs, drilldownSelection): HierarchyOfArrays => {
     const pieSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
     if (pieSpecs.length !== 1) {
       return [];
