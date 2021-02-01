@@ -20,7 +20,7 @@
 import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { Position } from '../../../../utils/common';
+import { Position, safeFormat } from '../../../../utils/common';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
 import { hasSMDomain } from '../../utils/panel';
@@ -34,13 +34,6 @@ export type PerPanelAxisGeoms = {
   axesGeoms: AxisGeometry[];
 } & PerPanelMap;
 
-const isPrimaryAxis = (primaryColumn: boolean, primaryRow: boolean, position: Position, debug?: boolean) => {
-  if (primaryColumn && primaryRow) {
-    return true;
-  }
-  return primaryColumn ? isVerticalAxis(position) : isHorizontalAxis(position);
-};
-
 const getPanelTitle = (
   isVertical: boolean,
   verticalValue: any,
@@ -48,78 +41,46 @@ const getPanelTitle = (
   groupBy?: SmallMultiplesGroupBy,
 ): string => {
   const formatter = isVertical ? groupBy?.vertical?.title : groupBy?.horizontal?.title;
+  const value = isVertical ? `${verticalValue}` : `${horizontalValue}`;
 
-  if (formatter) {
-    try {
-      const value = isVertical ? `${verticalValue}` : `${horizontalValue}`;
-      return formatter(value);
-    } catch {
-      // fallthrough
-    }
-  }
-  return isVertical ? `${verticalValue}` : `${horizontalValue}`;
+  return safeFormat(value, formatter);
 };
+
+const isPrimaryColumnFn = ({ horizontal: { domain } }: SmallMultipleScales) => (
+  position: Position,
+  horizontalValue: any,
+) => isVerticalAxis(position) && domain[0] === horizontalValue;
+
+const isPrimaryRowFn = ({ vertical: { domain } }: SmallMultipleScales) => (position: Position, verticalValue: any) =>
+  isHorizontalAxis(position) && domain[0] === verticalValue;
 
 /** @internal */
 export const computePerPanelAxesGeomsSelector = createCachedSelector(
   [computeAxesGeometriesSelector, computeSmallMultipleScalesSelector, getSmallMultiplesIndexOrderSelector],
   (axesGeoms, scales, groupBySpec): Array<PerPanelAxisGeoms> => {
     const { horizontal, vertical } = scales;
-    const t = getPerPanelMap(scales, (_, h, v) => {
-      const primaryColumn = isPrimaryColumn(horizontal, h);
-      const primaryRow = isPrimaryRow(scales, h, v, primaryColumn);
+    const isPrimaryColumn = isPrimaryColumnFn(scales);
+    const isPrimaryRow = isPrimaryRowFn(scales);
 
-      if (primaryColumn || primaryRow) {
+    return getPerPanelMap(scales, (_, h, v) => ({
+      axesGeoms: axesGeoms.map((geom) => {
+        const {
+          axis: { position },
+        } = geom;
+        const isVertical = isVerticalAxis(position);
+        const usePanelTitle = isVertical ? hasSMDomain(vertical) : hasSMDomain(horizontal);
+        const panelTitle = usePanelTitle ? getPanelTitle(isVertical, v, h, groupBySpec) : undefined;
+        const secondary = !isPrimaryColumn(position, h) && !isPrimaryRow(position, v);
+
         return {
-          axesGeoms: axesGeoms
-            .filter(({ axis: { position } }) => {
-              if (primaryColumn && primaryRow) {
-                return true;
-              }
-              return primaryColumn ? isVerticalAxis(position) : isHorizontalAxis(position);
-            })
-            .map((geom) => {
-              const {
-                axis: { position },
-              } = geom;
-              const isVertical = isVerticalAxis(position);
-              const usePanelTitle = isVertical ? hasSMDomain(vertical) : hasSMDomain(horizontal);
-              const panelTitle = usePanelTitle ? getPanelTitle(isVertical, v, h, groupBySpec) : undefined;
-
-              return {
-                ...geom,
-                axis: {
-                  ...geom.axis,
-                  panelTitle,
-                  secondary: false,
-                },
-              };
-            }),
+          ...geom,
+          axis: {
+            ...geom.axis,
+            panelTitle,
+            secondary,
+          },
         };
-      }
-
-      return null;
-    });
-
-    return t;
+      }),
+    }));
   },
 )(getChartIdSelector);
-
-function isPrimaryRow(
-  { horizontal, vertical }: SmallMultipleScales,
-  horizontalValue: any,
-  verticalValue: any,
-  test?: boolean,
-) {
-  // if (test) debugger;
-
-  // return horizontal.domain.includes(horizontalValue) &&
-  // horizontal.domain.length === 1 ?
-  //   vertical.domain.includes(verticalValue) : vertical.domain[vertical.domain.length - 1] === verticalValue;
-
-  return horizontal.domain.includes(horizontalValue) && vertical.domain.includes(verticalValue);
-}
-
-function isPrimaryColumn({ domain }: SmallMultipleScales['horizontal'], horizontalValue: any) {
-  return domain[0] === horizontalValue;
-}

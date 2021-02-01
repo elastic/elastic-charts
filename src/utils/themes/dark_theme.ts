@@ -117,7 +117,7 @@ export const DARK_THEME: Theme = {
       visible: true,
     },
     axisPanelTitle: {
-      fontSize: 8,
+      fontSize: 10,
       fontStyle: 'bold',
       fontFamily: 'sans-serif',
       padding: {

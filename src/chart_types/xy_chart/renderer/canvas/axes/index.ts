@@ -18,6 +18,7 @@
  */
 
 import { withContext } from '../../../../../renderers/canvas';
+import { Position } from '../../../../../utils/common';
 import { Dimensions, Size } from '../../../../../utils/dimensions';
 import { AxisId } from '../../../../../utils/ids';
 import { Point } from '../../../../../utils/point';
@@ -62,7 +63,6 @@ export interface AxesProps {
 /** @internal */
 export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
   const { axesSpecs, perPanelAxisGeoms, axesStyles, sharedAxesStyle, debug, renderingArea } = props;
-
   const seenAxesTitleIds = new Set<AxisId>();
 
   perPanelAxisGeoms.forEach(({ axesGeoms, panelAnchor }) => {
@@ -120,14 +120,22 @@ function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
   withContext(ctx, (ctx) => {
     const { ticks, size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary } = props;
     const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
-    const isVertical = isVerticalAxis(axisSpec.position);
+    const { position } = axisSpec;
+    const isVertical = isVerticalAxis(position);
+    const y = isVertical
+      ? anchorPoint.y + panelAnchor.y
+      : anchorPoint.y + (position === Position.Top ? 1 : -1) * panelAnchor.y;
+    const x = isVertical
+      ? anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x
+      : anchorPoint.x + panelAnchor.x;
     const translate = {
-      y: isVertical ? anchorPoint.y + panelAnchor.y : anchorPoint.y,
-      x: isVertical ? anchorPoint.x : anchorPoint.x + panelAnchor.x,
+      y,
+      x,
     };
 
     ctx.translate(translate.x, translate.y);
-    if (debug) {
+
+    if (debug && !secondary) {
       renderDebugRect(ctx, {
         x: 0,
         y: 0,
