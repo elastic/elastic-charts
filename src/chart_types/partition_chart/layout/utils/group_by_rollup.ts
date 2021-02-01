@@ -123,7 +123,7 @@ export function groupByRollup(
           !drilldown ||
           keyAccessors
             .slice(0, drilldownSelection.length)
-            .map((ka) => ka(n, index))
+            .map((keyAccessor) => keyAccessor(n, index))
             .join(' | ') === drilldownSelection.slice(0, drilldownSelection.length).join(' | '),
       )
       .forEach((keyAccessor, i) => {
