@@ -787,8 +787,8 @@ export function getAxesGeometries(
         acc.bottom,
         acc.left,
         acc.right,
-        labelPaddingSum,
         tickDimension,
+        labelPaddingSum,
         tickLabel.visible,
       );
 
