@@ -1,3 +1,10 @@
+## [24.4.1](https://github.com/elastic/elastic-charts/compare/v24.4.0...v24.4.1) (2021-02-02)
+
+
+### Bug Fixes
+
+* external tooltip legend extra value sync ([#1003](https://github.com/elastic/elastic-charts/issues/1003)) ([d4aa3d0](https://github.com/elastic/elastic-charts/commit/d4aa3d0a5de2437e0960a763951e28c8bacb4f9e))
+
 # [24.4.0](https://github.com/elastic/elastic-charts/compare/v24.3.0...v24.4.0) (2020-12-09)
 
 
