@@ -101,7 +101,7 @@ describe('Chart State utils', () => {
       },
     ]);
     expect(domains.formattedDataSeries).toMatchSnapshot();
-    // expect(true).toBeBoolean();
+    expect(true).toBeBoolean();
   });
   it('should compute and format specifications for stacked chart', () => {
     const spec1 = MockSeriesSpec.line({
