@@ -36,6 +36,7 @@ import { AxisStyle, TextOffset } from '../../../utils/themes/theme';
 import { XDomain, YDomain } from '../domains/types';
 import { computeAxesGeometriesSelector } from '../state/selectors/compute_axes_geometries';
 import { computeAxisTicksDimensionsSelector } from '../state/selectors/compute_axis_ticks_dimensions';
+import { getScale, SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { getAxesStylesSelector } from '../state/selectors/get_axis_styles';
 import { computeGridLinesSelector } from '../state/selectors/get_grid_lines';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
@@ -117,6 +118,7 @@ describe('Axis computational utils', () => {
     chartType: ChartTypes.XYAxis,
     specType: SpecTypes.Axis,
     id: 'axis_1',
+    title: 'Axis 1',
     groupId: 'group_1',
     hide: false,
     showOverlappingTicks: false,
@@ -131,6 +133,7 @@ describe('Axis computational utils', () => {
     chartType: ChartTypes.XYAxis,
     specType: SpecTypes.Axis,
     id: 'axis_2',
+    title: 'Axis 2',
     groupId: 'group_1',
     hide: false,
     showOverlappingTicks: false,
@@ -170,19 +173,6 @@ describe('Axis computational utils', () => {
     integersOnly: false,
   });
 
-  // const horizontalAxisSpecWTitle: AxisSpec = {
-  //   id: ('axis_2'),
-  //   groupId: ('group_1'),
-  //   title: 'h axis',
-  //   hide: false,
-  //   showOverlappingTicks: false,
-  //   showOverlappingLabels: false,
-  //   position: Position.Top,
-  //   style,
-  //   tickFormat: (value: any) => {
-  //     return `${value}`;
-  //   },
-  // };
   const lineSeriesSpec = MockSeriesSpec.line({
     id: 'line',
     groupId: 'group_1',
@@ -210,6 +200,11 @@ describe('Axis computational utils', () => {
     type: 'yDomain',
     domain: [0, 1],
     isBandScale: false,
+  };
+
+  const smScales: SmallMultipleScales = {
+    horizontal: getScale([], chartDim.width),
+    vertical: getScale([], chartDim.height),
   };
 
   const { axes } = LIGHT_THEME;
@@ -982,7 +977,7 @@ describe('Axis computational utils', () => {
       axesStyles,
       xDomain,
       [yDomain],
-      chartDim,
+      smScales,
       1,
       false,
       (v) => `${v}`,
@@ -1014,7 +1009,7 @@ describe('Axis computational utils', () => {
       axesStyles,
       xDomain,
       [yDomain],
-      chartDim,
+      smScales,
       1,
       false,
       (v) => `${v}`,
@@ -1025,17 +1020,24 @@ describe('Axis computational utils', () => {
       x: 10,
     });
     expect(verticalAxisSpecWTitleGeoms?.size).toEqual({
-      width: 10,
+      width: 30,
       height: 100,
     });
   });
 
-  const axisTitleStyles = mergePartial(LIGHT_THEME.axes.axisTitle, {
-    padding: {
-      inner: 0,
-      outer: 10,
-    },
-  });
+  const axisTitleStyles = (titleHeight: number, panelTitleHeight?: number) =>
+    mergePartial(LIGHT_THEME.axes, {
+      axisTitle: {
+        fontSize: titleHeight,
+        padding: {
+          inner: 0,
+          outer: 10,
+        },
+      },
+      axisPanelTitle: {
+        fontSize: panelTitleHeight,
+      },
+    });
 
   test('should compute left axis position', () => {
     const axisTitleHeight = 10;
@@ -1047,10 +1049,10 @@ describe('Axis computational utils', () => {
     const leftAxisPosition = getAxisPosition(
       chartDim,
       LIGHT_THEME.chartMargins,
-      axisTitleHeight,
-      axisTitleStyles,
+      axisTitleStyles(axisTitleHeight),
       verticalAxisSpec,
       axis1Dims,
+      smScales,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
@@ -1087,10 +1089,10 @@ describe('Axis computational utils', () => {
     const rightAxisPosition = getAxisPosition(
       chartDim,
       LIGHT_THEME.chartMargins,
-      axisTitleHeight,
-      axisTitleStyles,
+      axisTitleStyles(axisTitleHeight),
       verticalAxisSpec,
       axis1Dims,
+      smScales,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
@@ -1127,10 +1129,10 @@ describe('Axis computational utils', () => {
     const topAxisPosition = getAxisPosition(
       chartDim,
       LIGHT_THEME.chartMargins,
-      axisTitleHeight,
-      axisTitleStyles,
+      axisTitleStyles(axisTitleHeight),
       horizontalAxisSpec,
       axis1Dims,
+      smScales,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
@@ -1168,10 +1170,10 @@ describe('Axis computational utils', () => {
     const bottomAxisPosition = getAxisPosition(
       chartDim,
       LIGHT_THEME.chartMargins,
-      axisTitleHeight,
-      axisTitleStyles,
+      axisTitleStyles(axisTitleHeight),
       horizontalAxisSpec,
       axis1Dims,
+      smScales,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
@@ -1217,7 +1219,7 @@ describe('Axis computational utils', () => {
       axisStyles,
       xDomain,
       [yDomain],
-      chartDim,
+      smScales,
       1,
       false,
       (v) => `${v}`,
@@ -1290,7 +1292,7 @@ describe('Axis computational utils', () => {
         axisStyles,
         xDomain,
         [yDomain],
-        chartDim,
+        smScales,
         1,
         false,
         (v) => `${v}`,
@@ -1681,7 +1683,7 @@ describe('Axis computational utils', () => {
         axesStyles,
         xDomain,
         [yDomain],
-        chartDim,
+        smScales,
         1,
         false,
         customFormatter,
@@ -1711,7 +1713,7 @@ describe('Axis computational utils', () => {
         axesStyles,
         xDomain,
         [yDomain],
-        chartDim,
+        smScales,
         1,
         false,
         customFotmatter,
@@ -1747,7 +1749,7 @@ describe('Axis computational utils', () => {
         axesStyles,
         xDomain,
         [yDomain],
-        chartDim,
+        smScales,
         1,
         false,
         customFotmatter,

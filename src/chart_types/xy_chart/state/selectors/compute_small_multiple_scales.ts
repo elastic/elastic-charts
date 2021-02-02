@@ -47,7 +47,10 @@ export const computeSmallMultipleScalesSelector = createCachedSelector(
   },
 )(getChartIdSelector);
 
-function getScale(domain: Domain, maxRange: number, padding = DEFAULT_SM_PANEL_PADDING) {
+/**
+ * @internal
+ */
+export function getScale(domain: Domain, maxRange: number, padding = DEFAULT_SM_PANEL_PADDING) {
   const singlePanelSmallMultiple = domain.length <= 1;
   const defaultDomain = domain.length === 0 ? [undefined] : domain;
   return new ScaleBand(defaultDomain, [0, maxRange], undefined, singlePanelSmallMultiple ? 0 : padding);
