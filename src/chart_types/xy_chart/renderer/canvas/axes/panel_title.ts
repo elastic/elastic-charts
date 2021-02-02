@@ -48,7 +48,7 @@ export function renderPanelTitle(ctx: CanvasRenderingContext2D, props: TitleProp
 function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   const {
     size: { height },
-    axisSpec: { position, hide: hideAxis },
+    axisSpec: { position, hide: hideAxis, title },
     dimension: { maxLabelBboxWidth },
     axisStyle: { axisTitle, axisPanelTitle, tickLine, tickLabel },
     debug,
@@ -59,8 +59,8 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   }
   const font = getFontStyle(axisPanelTitle);
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const panelTitlePadding = getSimplePadding(axisPanelTitle.visible ? axisPanelTitle.padding : 0);
-  const titleDimension = getTitleDimension(axisTitle);
+  const panelTitlePadding = getSimplePadding(axisPanelTitle.visible && panelTitle ? axisPanelTitle.padding : 0);
+  const titleDimension = title ? getTitleDimension(axisTitle) : 0;
   const labelPadding = getSimplePadding(tickLabel.padding);
   const labelWidth = tickLabel.visible ? labelPadding.outer + maxLabelBboxWidth + labelPadding.inner : 0;
   const top = height;
@@ -88,7 +88,7 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
 function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   const {
     size: { width },
-    axisSpec: { position, hide: hideAxis },
+    axisSpec: { position, hide: hideAxis, title },
     dimension: { maxLabelBboxHeight },
     axisStyle: { axisTitle, axisPanelTitle, tickLine, tickLabel },
     debug,
@@ -101,8 +101,8 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: TitleProps)
 
   const font = getFontStyle(axisPanelTitle);
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const panelTitlePadding = getSimplePadding(axisPanelTitle.visible ? axisPanelTitle.padding : 0);
-  const titleDimension = getTitleDimension(axisTitle);
+  const panelTitlePadding = getSimplePadding(axisPanelTitle.visible && panelTitle ? axisPanelTitle.padding : 0);
+  const titleDimension = title ? getTitleDimension(axisTitle) : 0;
   const labelPadding = getSimplePadding(tickLabel.padding);
   const labelHeight = tickLabel.visible ? maxLabelBboxHeight + labelPadding.outer + labelPadding.inner : 0;
 

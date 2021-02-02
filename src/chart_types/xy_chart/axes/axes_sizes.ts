@@ -66,7 +66,7 @@ export function computeAxesSizes(
     const labelPaddingSum = tickLabel.visible ? labelPadding.inner + labelPadding.outer : 0;
 
     const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
-    const titleDimension = title !== undefined ? getTitleDimension(axisTitle) : 0;
+    const titleDimension = title ? getTitleDimension(axisTitle) : 0;
     const hasPanelTitle = Boolean(isVerticalAxis(position) ? smSpec?.splitVertically : smSpec?.splitHorizontally);
     const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
     const axisDimension = labelPaddingSum + tickDimension + titleDimension + panelTitleDimension;

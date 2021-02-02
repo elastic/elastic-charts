@@ -17,7 +17,8 @@
  * under the License.
  */
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, text } from '@storybook/addon-knobs';
+import { startCase } from 'lodash';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -33,7 +34,9 @@ import {
   LIGHT_THEME,
   niceTimeFormatByDay,
   timeFormatter,
+  AxisSpec,
 } from '../../src';
+import { isVerticalAxis } from '../../src/chart_types/xy_chart/utils/axis_type_utils';
 import { SeededDataGenerator } from '../../src/mocks/utils';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -49,6 +52,42 @@ const data = dg.generateGroupedSeries(numOfDays, 16).map((d) => {
     v: Math.floor(groupNames.indexOf(d.g) / 4),
   };
 });
+
+const axisStyle: AxisSpec['style'] = {
+  tickLabel: {
+    padding: 5,
+  },
+  axisTitle: {
+    padding: 2,
+  },
+  tickLine: {
+    visible: false,
+  },
+};
+
+const getAxisOptions = (
+  position: Position,
+): Pick<AxisSpec, 'id' | 'title' | 'gridLine' | 'ticks' | 'domain' | 'tickFormat' | 'style' | 'hide' | 'position'> => {
+  const isPrimary = position === Position.Left || position === Position.Bottom;
+  const isVertical = isVerticalAxis(position);
+  return {
+    id: position,
+    position,
+    ticks: isVertical ? 2 : undefined,
+    tickFormat: isVertical ? (d) => d.toFixed(2) : timeFormatter(niceTimeFormatByDay(numOfDays)),
+    domain: isVertical
+      ? {
+          max: 10,
+        }
+      : undefined,
+    hide: boolean('Hide', !isPrimary, position),
+    style: axisStyle,
+    gridLine: {
+      visible: boolean('Show grid line', isPrimary, position),
+    },
+    title: text('Title', isVertical ? `Metrics - ${startCase(position)}` : `Hosts - ${startCase(position)}`, position),
+  };
+};
 
 export const Example = () => {
   const debug = boolean('Debug', false);
@@ -69,57 +108,13 @@ export const Example = () => {
           },
         }}
       />
-      <Axis
-        id="time"
-        title="Hosts"
-        position={Position.Bottom}
-        gridLine={{ visible: true }}
-        ticks={2}
-        style={{
-          tickLabel: {
-            padding: 5,
-          },
-          axisTitle: {
-            padding: 2,
-          },
-          tickLine: {
-            visible: false,
-          },
-          axisLine: {
-            visible: false,
-          },
-        }}
-        tickFormat={timeFormatter(niceTimeFormatByDay(numOfDays))}
-      />
-      <Axis
-        id="y"
-        title="Metrics"
-        position={Position.Left}
-        gridLine={{ visible: true }}
-        domain={{
-          max: 10,
-        }}
-        ticks={2}
-        style={{
-          tickLabel: {
-            padding: 5,
-          },
-          axisTitle: {
-            padding: 2,
-          },
-
-          tickLine: {
-            visible: false,
-          },
-          axisLine: {
-            visible: false,
-          },
-        }}
-        tickFormat={(d) => d.toFixed(2)}
-      />
+      <Axis {...getAxisOptions(Position.Left)} />
+      <Axis {...getAxisOptions(Position.Bottom)} />
+      <Axis {...getAxisOptions(Position.Top)} />
+      <Axis {...getAxisOptions(Position.Right)} />
 
       <GroupBy id="v_split" by={(_, { v }) => v} title={(v) => `Metric ${v}`} sort="numDesc" />
-      <GroupBy id="h_split" by={(spec, { h }) => h} title={(v) => `Host ${v}`} sort="numAsc" />
+      <GroupBy id="h_split" by={(_, { h }) => h} title={(v) => `Host ${v}`} sort="numAsc" />
       <SmallMultiples
         splitVertically="v_split"
         splitHorizontally="h_split"

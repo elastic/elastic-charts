@@ -62,7 +62,7 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   }
 
   const font = getFontStyle(axisTitle);
-  const titlePadding = getSimplePadding(axisTitle.visible ? axisTitle.padding : 0);
+  const titlePadding = getSimplePadding(axisTitle.visible && title ? axisTitle.padding : 0);
   const panelTitleDimension = panelTitle ? getTitleDimension(axisPanelTitle) : 0;
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const labelPadding = getSimplePadding(tickLabel.padding);
@@ -106,7 +106,7 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: TitleProps)
   }
 
   const font = getFontStyle(axisTitle);
-  const titlePadding = getSimplePadding(axisTitle.visible ? axisTitle.padding : 0);
+  const titlePadding = getSimplePadding(axisTitle.visible && title ? axisTitle.padding : 0);
   const panelTitleDimension = panelTitle ? getTitleDimension(axisPanelTitle) : 0;
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const labelPadding = getSimplePadding(tickLabel.padding);
