@@ -53,17 +53,21 @@ const data = dg.generateGroupedSeries(numOfDays, 16).map((d) => {
   };
 });
 
-const axisStyle: AxisSpec['style'] = {
+const getAxisStyle = (position: Position): AxisSpec['style'] => ({
   tickLabel: {
     padding: 5,
   },
+  axisPanelTitle: {
+    visible: !boolean('Hide panel titles', false, position),
+  },
   axisTitle: {
     padding: 2,
+    visible: !boolean('Hide title', false, position),
   },
   tickLine: {
     visible: false,
   },
-};
+});
 
 const getAxisOptions = (
   position: Position,
@@ -81,11 +85,15 @@ const getAxisOptions = (
         }
       : undefined,
     hide: boolean('Hide', !isPrimary, position),
-    style: axisStyle,
     gridLine: {
       visible: boolean('Show grid line', isPrimary, position),
     },
-    title: text('Title', isVertical ? `Metrics - ${startCase(position)}` : `Hosts - ${startCase(position)}`, position),
+    style: getAxisStyle(position),
+    title: text(
+      'Title',
+      isVertical ? `Metrics - ${startCase(position)}` : `Hosts - ${startCase(position)}`,
+      position,
+    ).trim(),
   };
 };
 
