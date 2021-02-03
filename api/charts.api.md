@@ -945,7 +945,7 @@ export interface GroupBySpec extends Spec {
 
 // Warning: (ae-incompatible-release-tags) The symbol "GroupByTitleFormatter" is marked as @public, but its signature references "GroupByAccessor" which is marked as @alpha
 //
-// @public (undocumented)
+// @public
 export type GroupByTitleFormatter = (value: ReturnType<GroupByAccessor>) => string;
 
 // @public (undocumented)

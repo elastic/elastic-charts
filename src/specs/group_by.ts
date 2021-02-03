@@ -29,7 +29,10 @@ export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
 /** @alpha */
 export type GroupBySort = Predicate;
 
-/** @public */
+/**
+ * Title formatter that handles any value returned from the GroupByAccessor
+ * @public
+ */
 export type GroupByTitleFormatter = (value: ReturnType<GroupByAccessor>) => string;
 
 /** @alpha */
