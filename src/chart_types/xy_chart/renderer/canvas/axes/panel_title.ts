@@ -27,10 +27,10 @@ import { getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
 import { renderText, TextFont } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
 
-export type TitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'>;
+type PanelTitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'>;
 
 /** @internal */
-export function renderPanelTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
+export function renderPanelTitle(ctx: CanvasRenderingContext2D, props: PanelTitleProps) {
   const {
     axisSpec: { position },
     axisStyle: { axisPanelTitle },
@@ -45,7 +45,7 @@ export function renderPanelTitle(ctx: CanvasRenderingContext2D, props: TitleProp
   return renderVerticalTitle(ctx, props);
 }
 
-function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
+function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: PanelTitleProps) {
   const {
     size: { height },
     axisSpec: { position, hide: hideAxis, title },
@@ -85,7 +85,7 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   );
 }
 
-function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
+function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: PanelTitleProps) {
   const {
     size: { width },
     axisSpec: { position, hide: hideAxis, title },

@@ -27,7 +27,7 @@ import { renderText } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
 import { getFontStyle } from './panel_title';
 
-export type TitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'> & {
+type TitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'> & {
   anchorPoint: Point;
 };
 

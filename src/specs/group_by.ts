@@ -30,7 +30,7 @@ export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
 export type GroupBySort = Predicate;
 
 /** @public */
-export type Formatter = (value: ReturnType<GroupByAccessor>) => string;
+export type GroupByTitleFormatter = (value: ReturnType<GroupByAccessor>) => string;
 
 /** @alpha */
 export interface GroupBySpec extends Spec {
@@ -48,7 +48,7 @@ export interface GroupBySpec extends Spec {
    * If both axis title and this value are set, the axis title will be
    * treated as the primary title and this as the secondary.
    */
-  title?: Formatter;
+  title?: GroupByTitleFormatter;
 }
 const DEFAULT_GROUP_BY_PROPS = {
   chartType: ChartTypes.Global,
