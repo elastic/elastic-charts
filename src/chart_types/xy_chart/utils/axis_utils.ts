@@ -655,7 +655,7 @@ export function getTitleDimension({
   fontSize,
   padding,
 }: AxisStyle['axisTitle'] | AxisStyle['axisPanelTitle']): number {
-  if (!visible && fontSize <= 0) return 0;
+  if (!visible || fontSize <= 0) return 0;
   const { inner, outer } = getSimplePadding(padding);
   return inner + fontSize + outer;
 }
