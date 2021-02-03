@@ -731,8 +731,8 @@ export interface AxisGeometry {
   axis: {
     id: AxisId;
     position: Position;
-    panelTitle?: string;
-    secondary?: boolean;
+    panelTitle?: string; // defined later per panel
+    secondary?: boolean; // defined later per panel
   };
   dimension: AxisTicksDimensions;
   ticks: AxisTick[];

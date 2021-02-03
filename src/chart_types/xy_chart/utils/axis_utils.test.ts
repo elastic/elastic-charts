@@ -30,6 +30,7 @@ import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_c
 import { SvgTextBBoxCalculator } from '../../../utils/bbox/svg_text_bbox_calculator';
 import { Position, mergePartial } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
+import { Domain } from '../../../utils/domain';
 import { AxisId, GroupId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { AxisStyle, TextOffset } from '../../../utils/themes/theme';
@@ -202,10 +203,26 @@ describe('Axis computational utils', () => {
     isBandScale: false,
   };
 
-  const smScales: SmallMultipleScales = {
-    horizontal: getScale([], chartDim.width),
-    vertical: getScale([], chartDim.height),
-  };
+  const getSmScales = (smHDomain: Domain = [], smVDomain: Domain = []): SmallMultipleScales => ({
+    horizontal: getScale(smHDomain, chartDim.width),
+    vertical: getScale(smVDomain, chartDim.height),
+  });
+
+  const emptySmScales = getSmScales();
+
+  const axisTitleStyles = (titleHeight: number, panelTitleHeight?: number) =>
+    mergePartial(LIGHT_THEME.axes, {
+      axisTitle: {
+        fontSize: titleHeight,
+        padding: {
+          inner: 0,
+          outer: 10,
+        },
+      },
+      axisPanelTitle: {
+        fontSize: panelTitleHeight,
+      },
+    });
 
   const { axes } = LIGHT_THEME;
 
@@ -977,7 +994,7 @@ describe('Axis computational utils', () => {
       axesStyles,
       xDomain,
       [yDomain],
-      smScales,
+      emptySmScales,
       1,
       false,
       (v) => `${v}`,
@@ -1009,7 +1026,7 @@ describe('Axis computational utils', () => {
       axesStyles,
       xDomain,
       [yDomain],
-      smScales,
+      emptySmScales,
       1,
       false,
       (v) => `${v}`,
@@ -1025,20 +1042,6 @@ describe('Axis computational utils', () => {
     });
   });
 
-  const axisTitleStyles = (titleHeight: number, panelTitleHeight?: number) =>
-    mergePartial(LIGHT_THEME.axes, {
-      axisTitle: {
-        fontSize: titleHeight,
-        padding: {
-          inner: 0,
-          outer: 10,
-        },
-      },
-      axisPanelTitle: {
-        fontSize: panelTitleHeight,
-      },
-    });
-
   test('should compute left axis position', () => {
     const axisTitleHeight = 10;
     const cumTopSum = 10;
@@ -1052,7 +1055,7 @@ describe('Axis computational utils', () => {
       axisTitleStyles(axisTitleHeight),
       verticalAxisSpec,
       axis1Dims,
-      smScales,
+      emptySmScales,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
@@ -1092,7 +1095,7 @@ describe('Axis computational utils', () => {
       axisTitleStyles(axisTitleHeight),
       verticalAxisSpec,
       axis1Dims,
-      smScales,
+      emptySmScales,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
@@ -1132,7 +1135,7 @@ describe('Axis computational utils', () => {
       axisTitleStyles(axisTitleHeight),
       horizontalAxisSpec,
       axis1Dims,
-      smScales,
+      emptySmScales,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
@@ -1173,7 +1176,7 @@ describe('Axis computational utils', () => {
       axisTitleStyles(axisTitleHeight),
       horizontalAxisSpec,
       axis1Dims,
-      smScales,
+      emptySmScales,
       cumTopSum,
       cumBottomSum,
       cumLeftSum,
@@ -1219,7 +1222,7 @@ describe('Axis computational utils', () => {
       axisStyles,
       xDomain,
       [yDomain],
-      smScales,
+      emptySmScales,
       1,
       false,
       (v) => `${v}`,
@@ -1292,7 +1295,7 @@ describe('Axis computational utils', () => {
         axisStyles,
         xDomain,
         [yDomain],
-        smScales,
+        emptySmScales,
         1,
         false,
         (v) => `${v}`,
@@ -1683,7 +1686,7 @@ describe('Axis computational utils', () => {
         axesStyles,
         xDomain,
         [yDomain],
-        smScales,
+        emptySmScales,
         1,
         false,
         customFormatter,
@@ -1713,7 +1716,7 @@ describe('Axis computational utils', () => {
         axesStyles,
         xDomain,
         [yDomain],
-        smScales,
+        emptySmScales,
         1,
         false,
         customFotmatter,
@@ -1749,7 +1752,7 @@ describe('Axis computational utils', () => {
         axesStyles,
         xDomain,
         [yDomain],
-        smScales,
+        emptySmScales,
         1,
         false,
         customFotmatter,
@@ -1759,6 +1762,151 @@ describe('Axis computational utils', () => {
       expect(axisTicksPosition.find(({ axis: { id } }) => id === spec.id)!.ticks.map(({ label }) => label)).toEqual(
         expected,
       );
+    });
+  });
+
+  describe('Small multiples', () => {
+    const axisStyles = axisTitleStyles(10, 8);
+    const cumTopSum = 10;
+    const cumBottomSum = 10;
+    const cumLeftSum = 10;
+    const cumRightSum = 10;
+    const smScales = getSmScales(['a'], [0]);
+
+    describe.each(['test', ''])('Axes title positions - title is "%s"', (title) => {
+      test('should compute left axis position', () => {
+        const leftAxisPosition = getAxisPosition(
+          chartDim,
+          LIGHT_THEME.chartMargins,
+          axisStyles,
+          { ...verticalAxisSpec, title },
+          axis1Dims,
+          smScales,
+          cumTopSum,
+          cumBottomSum,
+          cumLeftSum,
+          cumRightSum,
+          10,
+          0,
+          true,
+        );
+
+        const expectedLeftAxisPosition = {
+          dimensions: {
+            height: 100,
+            width: title ? 56 : 36,
+            left: 110,
+            top: 0,
+          },
+          topIncrement: 0,
+          bottomIncrement: 0,
+          leftIncrement: 0,
+          rightIncrement: title ? 66 : 46,
+        };
+
+        expect(leftAxisPosition).toEqual(expectedLeftAxisPosition);
+      });
+
+      test('should compute right axis position', () => {
+        verticalAxisSpec.position = Position.Right;
+        const rightAxisPosition = getAxisPosition(
+          chartDim,
+          LIGHT_THEME.chartMargins,
+          axisStyles,
+          { ...verticalAxisSpec, title },
+          axis1Dims,
+          smScales,
+          cumTopSum,
+          cumBottomSum,
+          cumLeftSum,
+          cumRightSum,
+          10,
+          0,
+          true,
+        );
+
+        const expectedRightAxisPosition = {
+          dimensions: {
+            height: 100,
+            width: title ? 56 : 36,
+            left: 110,
+            top: 0,
+          },
+          topIncrement: 0,
+          bottomIncrement: 0,
+          leftIncrement: 0,
+          rightIncrement: title ? 66 : 46,
+        };
+
+        expect(rightAxisPosition).toEqual(expectedRightAxisPosition);
+      });
+
+      test('should compute top axis position', () => {
+        horizontalAxisSpec.position = Position.Top;
+        const topAxisPosition = getAxisPosition(
+          chartDim,
+          LIGHT_THEME.chartMargins,
+          axisStyles,
+          { ...horizontalAxisSpec, title },
+          axis1Dims,
+          smScales,
+          cumTopSum,
+          cumBottomSum,
+          cumLeftSum,
+          cumRightSum,
+          10,
+          0,
+          true,
+        );
+
+        const expectedTopAxisPosition = {
+          dimensions: {
+            height: title ? 56 : 36,
+            width: 100,
+            left: 0,
+            top: 20,
+          },
+          topIncrement: title ? 66 : 46,
+          bottomIncrement: 0,
+          leftIncrement: 0,
+          rightIncrement: 0,
+        };
+
+        expect(topAxisPosition).toEqual(expectedTopAxisPosition);
+      });
+
+      test('should compute bottom axis position', () => {
+        horizontalAxisSpec.position = Position.Bottom;
+        const bottomAxisPosition = getAxisPosition(
+          chartDim,
+          LIGHT_THEME.chartMargins,
+          axisStyles,
+          { ...horizontalAxisSpec, title },
+          axis1Dims,
+          smScales,
+          cumTopSum,
+          cumBottomSum,
+          cumLeftSum,
+          cumRightSum,
+          10,
+          0,
+          true,
+        );
+
+        const expectedBottomAxisPosition = {
+          dimensions: {
+            height: title ? 56 : 36,
+            width: 100,
+            left: 0,
+            top: 110,
+          },
+          topIncrement: 0,
+          bottomIncrement: title ? 66 : 46,
+          leftIncrement: 0,
+          rightIncrement: 0,
+        };
+        expect(bottomAxisPosition).toEqual(expectedBottomAxisPosition);
+      });
     });
   });
 });
