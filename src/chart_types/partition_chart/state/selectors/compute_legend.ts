@@ -26,7 +26,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { identity } from '../../../../utils/common';
 import { isHierarchicalLegend } from '../../../../utils/legend';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
-import { map } from '../iterables';
+import { map } from '../../layout/utils/iterables';
 import { partitionGeometries } from './geometries';
 import { getPartitionSpec } from './partition_spec';
 

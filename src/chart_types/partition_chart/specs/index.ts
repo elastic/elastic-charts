@@ -21,7 +21,7 @@ import React from 'react';
 
 import { ChartTypes } from '../..';
 import { Spec } from '../../../specs';
-import { SpecTypes } from '../../../specs/constants';
+import { SpecTypes } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
 import {
