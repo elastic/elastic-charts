@@ -19,9 +19,8 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
+import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings } from '../../src';
 import { config } from '../../src/chart_types/partition_chart/layout/config/config';
-import { MODEL_KEY } from '../../src/chart_types/partition_chart/layout/types/types';
 import { arrayToLookup } from '../../src/chart_types/partition_chart/layout/utils/calcs';
 import { mocks } from '../../src/mocks/hierarchical';
 import { countryDimension } from '../../src/mocks/hierarchical/dimension_codes';

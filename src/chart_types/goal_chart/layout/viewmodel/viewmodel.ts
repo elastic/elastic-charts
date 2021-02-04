@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { TextMeasure } from '../../../../common/non_cartesian_utils';
+import { TextMeasure } from '../../../../common/text_utils';
 import { GoalSpec } from '../../specs';
 import { Config } from '../types/config_types';
 import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';

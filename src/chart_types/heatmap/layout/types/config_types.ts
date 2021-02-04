@@ -18,9 +18,8 @@
  */
 
 import { Pixels, SizeRatio } from '../../../../common/geometry_types';
-import { FontFamily } from '../../../../common/non_cartesian_utils';
+import { Font, FontFamily, TextAlign, TextBaseline } from '../../../../common/text_utils';
 import { Color } from '../../../../utils/common';
-import { Font, TextAlign, TextBaseline } from '../../../partition_chart/layout/types/types';
 import { Cell } from './viewmodel_types';
 
 /** potential internal */

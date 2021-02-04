@@ -19,11 +19,10 @@
 
 import { TAU } from '../../../../common/constants';
 import { Distance, PointTuple, PointTuples } from '../../../../common/geometry_types';
-import { TextMeasure } from '../../../../common/non_cartesian_utils';
+import { Box, Font, TextAlign, TextMeasure } from '../../../../common/text_utils';
 import { ValueFormatter, Color } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { Config } from '../types/config_types';
-import { Box, Font, TextAlign } from '../types/types';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 import { makeHighContrastColor, integerSnap, monotonicHillClimb, isColorValid } from '../utils/calcs';
 import { meanAngle } from '../utils/geometry';

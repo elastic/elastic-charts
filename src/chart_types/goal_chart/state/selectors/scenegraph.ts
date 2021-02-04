@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { measureText } from '../../../../common/non_cartesian_utils';
+import { measureText } from '../../../../common/text_utils';
 import { mergePartial, RecursivePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { config as defaultConfig } from '../../layout/config/config';

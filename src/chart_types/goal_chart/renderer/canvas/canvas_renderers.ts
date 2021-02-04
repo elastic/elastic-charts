@@ -18,7 +18,7 @@
  */
 
 import { GOLDEN_RATIO } from '../../../../common/constants';
-import { cssFontShorthand } from '../../../../common/non_cartesian_utils';
+import { cssFontShorthand } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { GoalSubtype } from '../../specs/constants';

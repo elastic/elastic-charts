@@ -30,12 +30,11 @@ import {
   RingSectorConstruction,
   PointTuple,
 } from '../../../../common/geometry_types';
-import { TextMeasure } from '../../../../common/non_cartesian_utils';
+import { Box, Font, PartialFont, TextMeasure } from '../../../../common/text_utils';
 import { ValueFormatter, Color } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Layer } from '../../specs';
 import { Config, Padding, TextContrast } from '../types/config_types';
-import { Box, Font, PartialFont } from '../types/types';
 import {
   QuadViewModel,
   RawTextGetter,

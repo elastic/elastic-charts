@@ -27,14 +27,14 @@ import {
   PointTuples,
   Radian,
 } from '../../../../common/geometry_types';
+import { Font } from '../../../../common/text_utils';
 import { LegendPath } from '../../../../state/actions/legend';
 import { Color } from '../../../../utils/common';
-import { config, ValueGetterName } from '../config/config';
+import { config, MODEL_KEY, ValueGetterName } from '../config/config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { VerticalAlignments } from '../viewmodel/constants';
 import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
 import { Config } from './config_types';
-import { Font, MODEL_KEY } from './types';
 
 /** @internal */
 export type LinkLabelVM = {

@@ -19,12 +19,11 @@
 
 import { TAU } from '../../../../common/constants';
 import { Distance, Pixels, PointTuple, Radius } from '../../../../common/geometry_types';
-import { TextMeasure } from '../../../../common/non_cartesian_utils';
+import { Part, TextMeasure } from '../../../../common/text_utils';
 import { StrokeStyle, ValueFormatter, Color } from '../../../../utils/common';
 import { Layer } from '../../specs';
-import { percentValueGetter } from '../config/config';
+import { MODEL_KEY, percentValueGetter } from '../config/config';
 import { Config, PartitionLayout } from '../types/config_types';
-import { Part, MODEL_KEY } from '../types/types';
 import {
   nullShapeViewModel,
   OutsideLinksViewModel,

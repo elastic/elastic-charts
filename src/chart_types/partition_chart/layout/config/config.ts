@@ -19,8 +19,8 @@
 
 import { ConfigItem, configMap, Numeric } from '../../../../common/config_objects';
 import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
+import { FONT_STYLES, FONT_VARIANTS } from '../../../../common/text_utils';
 import { Config, PartitionLayout } from '../types/config_types';
-import { FONT_STYLES, FONT_VARIANTS, MODEL_KEY } from '../types/types';
 import { ShapeTreeNode } from '../types/viewmodel_types';
 import { AGGREGATE_KEY, STATISTICS_KEY } from '../utils/group_by_rollup';
 
@@ -40,6 +40,21 @@ function significantDigitCount(d: number): number {
 export function sumValueGetter(node: ShapeTreeNode): number {
   return node[AGGREGATE_KEY];
 }
+
+/**
+ * It's an unfortunate accident that 'parent' is used both
+ *   - for linking an ArrayNode to a QuadViewModel, and
+ *   - for recursively linking the parent ArrayNode to an ArrayNode (child) in the tree
+ *
+ * By extracting out the 'MODEL_KEY', we make the distinction clear, while the API, which depends on this, doesn't
+ * change. This makes an eventual API change a single-line change, assuming `[MODEL_KEY]` is used where needed, and just there
+ *
+ *  Todo:
+ *   - replace users' use of `s.parent` with `s[MODEL_KEY]` for the ShapeTreeNode -> ArrayNode access
+ *   - change MODEL_KEY to something other than 'parent' when it's done (might still be breaking change)
+ */
+/** @public */
+export const MODEL_KEY = 'parent';
 
 export function percentValueGetter(node: ShapeTreeNode): number {
   return (100 * node[AGGREGATE_KEY]) / node[MODEL_KEY][STATISTICS_KEY].globalAggregate;
@@ -256,3 +271,15 @@ export const configMetadata: Record<string, ConfigItem> = {
 };
 
 export const config: Config = configMap<Config>((item: ConfigItem) => item.dflt, configMetadata);
+
+/**
+ * Part-to-whole visualizations such as treemap, sunburst, pie hinge on an aggregation
+ * function such that the value is independent of the order of how the constituents are aggregated
+ * https://en.wikipedia.org/wiki/Associative_property
+ * Hierarchical, space-filling part-to-whole visualizations also need that the
+ * the value of a node is equal to the sum of the values of its children
+ * https://mboehm7.github.io/teaching/ss19_dbs/04_RelationalAlgebra.pdf p21
+ * It's now `count` and `sum` but subject to change
+ *
+ * potential internal, or removable */
+export type AdditiveAggregation = 'count' | 'sum';

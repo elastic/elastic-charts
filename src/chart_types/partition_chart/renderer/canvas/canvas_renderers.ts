@@ -19,7 +19,7 @@
 
 import { TAU } from '../../../../common/constants';
 import { Pixels } from '../../../../common/geometry_types';
-import { cssFontShorthand } from '../../../../common/non_cartesian_utils';
+import { cssFontShorthand } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { Color } from '../../../../utils/common';
 import {

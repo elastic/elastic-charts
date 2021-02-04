@@ -19,7 +19,7 @@
 
 import { GOLDEN_RATIO } from '../../../../common/constants';
 import { Pixels } from '../../../../common/geometry_types';
-import { Part } from '../types/types';
+import { Part } from '../../../../common/text_utils';
 import { ArrayEntry, CHILDREN_KEY, entryValue, HierarchyOfArrays } from './group_by_rollup';
 
 const MAX_U_PADDING_RATIO = 0.0256197; // this limits area distortion to <10% (which occurs due to pixel padding) with very small rectangles
