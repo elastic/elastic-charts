@@ -22,6 +22,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { LegendItem } from '../../../../common/legend';
+import { ScreenReaderDataTable } from '../../../../components/screen_reader_data_table';
 import { DataTableProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -135,6 +136,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       initialized,
       isChartEmpty,
       chartContainerDimensions: { width, height },
+      showDataTable,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
@@ -142,7 +144,21 @@ class XYChartComponent extends React.Component<XYChartProps> {
       return null;
     }
 
-    return (
+    return showDataTable ? (
+      <>
+        <ScreenReaderDataTable />
+        <canvas
+          ref={forwardStageRef}
+          className="echCanvasRenderer"
+          width={width * this.devicePixelRatio}
+          height={height * this.devicePixelRatio}
+          style={{
+            width,
+            height,
+          }}
+        />
+      </>
+    ) : (
       <canvas
         ref={forwardStageRef}
         className="echCanvasRenderer"

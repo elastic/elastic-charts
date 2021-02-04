@@ -26,6 +26,7 @@ import { GlobalChartState } from '../../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
 
+/** @internal * */
 export interface ScreenReaderData {
   seriesName: SeriesName | SeriesNameFn | undefined | SeriesNameConfigOptions;
   seriesType: string | null;
@@ -35,6 +36,7 @@ export interface ScreenReaderData {
   yScaleType: ScaleType;
 }
 
+/** @internal */
 export interface ScreenReaderDataTableStateProps {
   data: ScreenReaderData[];
 }
@@ -46,16 +48,22 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) 
     return null;
   }
 
-  const classNames = 'echDataTable';
+  const classes = 'echDataTable';
 
-  const renderText = () => {
+  const renderAltText = () => {
     if (!data[0]) {
       return;
     }
 
-    return `This chart has ${data.length} series in it. ${data.map((value, index) => {
-      return ` The ${index + 1} series of ${data.length} series is a ${value.seriesType} series`;
-    })}`;
+    const validSeriesName = data[0].seriesName !== undefined ? ` with the name ${data[0].seriesName}` : ``;
+
+    return `This chart has ${data.length} series. ${data.map((value, index) => {
+      return ` The ${index + 1} series of ${data.length} series is a ${
+        value.seriesType
+      } series${validSeriesName}. The x scale is ${value.xScaleType} and the y scale is ${value.yScaleType}.`;
+    })}
+    
+    `;
   };
 
   const screenReaderTable = (d: ScreenReaderData[]) => {
@@ -64,9 +72,11 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) 
     for (let seriesIndex = 0; seriesIndex < d.length; seriesIndex++) {
       if (d.length !== 1) {
         dataKeys.push(
-          <th key={Math.random()}>
-            {seriesIndex + 1} series of the total {d.length} series{' '}
-          </th>,
+          <tr key={Math.random()}>
+            <th key={Math.random()}>
+              {seriesIndex + 1} series of the total {d.length} series{' '}
+            </th>
+          </tr>,
         );
       }
       // get the index of the key in each series and use the index to get the index of it in the values
@@ -88,10 +98,10 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) 
 
   return (
     <>
-      <p className={classNames} aria-label="alt text for chart">
-        {renderText()}
+      <p tabIndex={-1} className={classes} aria-labelledby="information about the serie(s) within the chart">
+        {renderAltText()}
       </p>
-      <table className={classNames}>
+      <table tabIndex={-1} className={classes}>
         <tbody>{screenReaderTable(data)}</tbody>
       </table>
     </>
