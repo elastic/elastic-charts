@@ -82,12 +82,16 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) 
       // get the index of the key in each series and use the index to get the index of it in the values
       for (let j = 0; j < d[seriesIndex].dataKey.length; j++) {
         dataKeys.push(
-          <tr key={Math.random()}>
-            <th scope="row" key={Math.random()}>
+          <tr key={Math.random()} tabIndex={-1}>
+            <th scope="row" key={Math.random()} tabIndex={-1}>
               {d[seriesIndex].dataKey[j]}
             </th>
             {d[seriesIndex].dataValue.map((value) => {
-              return <td key={Math.random()}>{value[j]}</td>;
+              return (
+                <td key={Math.random()} tabIndex={-1}>
+                  {value[j]}
+                </td>
+              );
             })}
           </tr>,
         );

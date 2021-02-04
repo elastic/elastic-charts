@@ -30,6 +30,7 @@ import { getChartContainerDimensionsSelector } from '../../../../state/selectors
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { getScreenReaderDataTableSettingsSelector } from '../../../../state/selectors/get_screen_reader_settings';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -52,7 +53,6 @@ import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
-import { isDataTableOnlySelector } from '../../state/selectors/is_data_table_only';
 import { Geometries, Transform } from '../../state/utils/types';
 import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
@@ -79,7 +79,7 @@ export interface ReactiveChartStateProps {
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
-  showDataTable?: DataTableProps['showDataTable'];
+  dataTable: DataTableProps;
 }
 
 interface ReactiveChartDispatchProps {
@@ -136,17 +136,15 @@ class XYChartComponent extends React.Component<XYChartProps> {
       initialized,
       isChartEmpty,
       chartContainerDimensions: { width, height },
-      showDataTable,
+      dataTable: { showDataTable },
     } = this.props;
 
     if (!initialized || isChartEmpty) {
       this.ctx = null;
       return null;
     }
-
     return showDataTable ? (
       <>
-        <ScreenReaderDataTable />
         <canvas
           ref={forwardStageRef}
           className="echCanvasRenderer"
@@ -157,6 +155,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
             height,
           }}
         />
+        <ScreenReaderDataTable />
       </>
     ) : (
       <canvas
@@ -238,7 +237,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationDimensions: new Map(),
   annotationSpecs: [],
   panelGeoms: [],
-  showDataTable: false,
+  dataTable: { showDataTable: false },
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -266,7 +265,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
-    showDataTable: isDataTableOnlySelector(state),
+    dataTable: getScreenReaderDataTableSettingsSelector(state),
   };
 };
 
