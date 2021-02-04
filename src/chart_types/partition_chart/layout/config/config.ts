@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { Config, PartitionLayout, Numeric } from '../types/config_types';
+import { ConfigItem, configMap, Numeric } from '../../../../common/config_objects';
+import { Config, PartitionLayout } from '../types/config_types';
 import { FONT_STYLES, FONT_VARIANTS, MODEL_KEY } from '../types/types';
 import { ShapeTreeNode } from '../types/viewmodel_types';
 import { GOLDEN_RATIO, TAU } from '../utils/constants';
@@ -101,7 +102,7 @@ const valueFont = {
 };
 
 /** @internal */
-export const configMetadata = {
+export const configMetadata: Record<string, ConfigItem> = {
   // shape geometry
   width: { dflt: 300, min: 0, max: 1024, type: 'number', reconfigurable: false },
   height: { dflt: 150, min: 0, max: 1024, type: 'number', reconfigurable: false },
@@ -254,18 +255,4 @@ export const configMetadata = {
   sectorLineStroke: { dflt: 'white', type: 'string' },
 };
 
-// todo switch to `io-ts` style, generic way of combining static and runtime type info
-export function configMap<Conf>(mapper: (v: any) => any, configMetadata: any): Conf {
-  const result: Conf = Object.assign(
-    {},
-    ...Object.entries(configMetadata).map(([k, v]: [string, any]) => {
-      if (v.type === 'group') {
-        return { [k]: configMap<Config>(mapper, v.values) };
-      }
-      return { [k]: mapper(v) };
-    }),
-  ) as Conf;
-  return result;
-}
-
-export const config: Config = configMap<Config>((item: any) => item.dflt, configMetadata);
+export const config: Config = configMap<Config>((item: ConfigItem) => item.dflt, configMetadata);
