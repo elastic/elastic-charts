@@ -20,6 +20,7 @@
 import { $Values } from 'utility-types';
 
 import { ChartTypes } from '../chart_types';
+import { LogBase } from '../scales/scale_continuous';
 import { Position } from '../utils/common';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { SettingsSpec } from './settings';
@@ -142,4 +143,6 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   baseTheme: LIGHT_THEME,
   brushAxis: BrushAxis.X,
   minBrushDelta: 2,
+  xLogBase: LogBase.Common,
+  yLogBase: LogBase.Common,
 };

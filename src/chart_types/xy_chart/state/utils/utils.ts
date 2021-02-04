@@ -20,7 +20,7 @@
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
 import { GroupBySpec, SortSeriesByConfig } from '../../../../specs';
-import { OrderBy } from '../../../../specs/settings';
+import { OrderBy, SettingsSpec } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
@@ -203,7 +203,7 @@ export function computeSeriesGeometries(
   { xDomain, yDomain, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
   seriesColorMap: Map<SeriesKey, Color>,
   chartTheme: Theme,
-  chartRotation: Rotation,
+  { rotation: chartRotation, yLogBase, yLogMinLimit }: SettingsSpec,
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   enableHistogramMode: boolean,
@@ -237,6 +237,8 @@ export function computeSeriesGeometries(
   const yScales = computeYScales({
     yDomains: yDomain,
     range: [isHorizontalRotation(chartRotation) ? vertical.bandwidth : horizontal.bandwidth, 0],
+    logBase: yLogBase,
+    logMinLimit: yLogMinLimit,
   });
 
   const computedGeoms = renderGeometries(

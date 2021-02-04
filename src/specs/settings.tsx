@@ -29,6 +29,7 @@ import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
 import { CustomTooltip } from '../components/tooltip/types';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
+import { LogBase } from '../scales/scale_continuous';
 import { LegendPath } from '../state/actions/legend';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
@@ -470,6 +471,32 @@ export interface SettingsSpec extends Spec {
    * Render component for no results UI
    */
   noResults?: ComponentType | ReactChild;
+  /**
+   * Min log value to render y scale
+   *
+   * Defaults to min value of domain, or 0 if mixed polarity
+   */
+  yLogMinLimit?: number;
+
+  /**
+   * Min log value to render y scale
+   *
+   * Defaults to min value of domain, or 0 if mixed polarity
+   */
+  yLogBase: LogBase;
+  /**
+   * Min log value to render x scale
+   *
+   * Defaults to min value of domain, or 0 if mixed polarity
+   */
+  xLogMinLimit?: number;
+
+  /**
+   * Min log value to render x scale
+   *
+   * Defaults to min value of domain, or 0 if mixed polarity
+   */
+  xLogBase: LogBase;
 }
 
 /**
@@ -528,7 +555,9 @@ export type DefaultSettingsProps =
   | 'hideDuplicateAxes'
   | 'brushAxis'
   | 'minBrushDelta'
-  | 'externalPointerEvents';
+  | 'externalPointerEvents'
+  | 'yLogBase'
+  | 'xLogBase';
 
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
 
