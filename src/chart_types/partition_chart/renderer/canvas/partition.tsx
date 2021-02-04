@@ -83,21 +83,6 @@ class PartitionComponent extends React.Component<PartitionProps> {
     }
   }
 
-  private drawCanvas() {
-    if (this.ctx) {
-      const { width, height }: Dimensions = this.props.chartContainerDimensions;
-      renderPartitionCanvas2d(this.ctx, this.devicePixelRatio, {
-        ...this.props.geometries,
-        config: { ...this.props.geometries.config, width, height },
-      });
-    }
-  }
-
-  private tryCanvasContext() {
-    const canvas = this.props.forwardStageRef.current;
-    this.ctx = canvas && canvas.getContext('2d');
-  }
-
   handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
     const {
       initialized,
@@ -149,6 +134,21 @@ class PartitionComponent extends React.Component<PartitionProps> {
         }}
       />
     );
+  }
+
+  private drawCanvas() {
+    if (this.ctx) {
+      const { width, height }: Dimensions = this.props.chartContainerDimensions;
+      renderPartitionCanvas2d(this.ctx, this.devicePixelRatio, {
+        ...this.props.geometries,
+        config: { ...this.props.geometries.config, width, height },
+      });
+    }
+  }
+
+  private tryCanvasContext() {
+    const canvas = this.props.forwardStageRef.current;
+    this.ctx = canvas && canvas.getContext('2d');
   }
 }
 
