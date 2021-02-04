@@ -22,8 +22,6 @@ import chroma from 'chroma-js';
 import { ValueFormatter, Color } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Layer } from '../../specs';
-import { conjunctiveConstraint } from '../circline_geometry';
-import { wrapToTau } from '../geometry';
 import { Config, Padding, TextContrast } from '../types/config_types';
 import {
   Coordinate,
@@ -54,7 +52,9 @@ import {
   monotonicHillClimb,
   isColorValid,
 } from '../utils/calcs';
+import { conjunctiveConstraint } from '../utils/circline_geometry';
 import { TAU } from '../utils/constants';
+import { wrapToTau } from '../utils/geometry';
 import { logarithm, trueBearingToStandardPositionAngle } from '../utils/math';
 import { VerticalAlignments } from './constants';
 import { RectangleConstruction } from './viewmodel';

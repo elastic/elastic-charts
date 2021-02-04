@@ -19,13 +19,13 @@
 
 import { ValueFormatter, Color } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
-import { meanAngle } from '../geometry';
 import { Config } from '../types/config_types';
 import { Distance, PointTuple, PointTuples } from '../types/geometry_types';
 import { Box, Font, TextAlign, TextMeasure } from '../types/types';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 import { makeHighContrastColor, integerSnap, monotonicHillClimb, isColorValid } from '../utils/calcs';
 import { TAU } from '../utils/constants';
+import { meanAngle } from '../utils/geometry';
 import { trueBearingToStandardPositionAngle } from '../utils/math';
 
 function cutToLength(s: string, maxLength: number) {

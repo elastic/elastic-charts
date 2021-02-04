@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { wrapToTau } from '../geometry';
 import { RIGHT_ANGLE } from './constants';
+import { wrapToTau } from './geometry';
 
 /** @internal */
 export function trueBearingToStandardPositionAngle(alphaIn: number) {

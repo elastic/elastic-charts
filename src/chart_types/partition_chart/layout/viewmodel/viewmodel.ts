@@ -20,7 +20,6 @@
 import { StrokeStyle, ValueFormatter, Color } from '../../../../utils/common';
 import { Layer } from '../../specs';
 import { percentValueGetter } from '../config/config';
-import { meanAngle } from '../geometry';
 import { Config, PartitionLayout } from '../types/config_types';
 import { Distance, Pixels, PointTuple, Radius } from '../types/geometry_types';
 import { TextMeasure, Part, MODEL_KEY } from '../types/types';
@@ -37,6 +36,7 @@ import {
 } from '../types/viewmodel_types';
 import { argsToRGBString, stringToRGB } from '../utils/color_library_wrappers';
 import { TAU } from '../utils/constants';
+import { meanAngle } from '../utils/geometry';
 import {
   aggregateAccessor,
   ArrayEntry,
