@@ -16,17 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import createCachedSelector from 're-reselect';
-
-import { DEFAULT_CURSOR } from '../../../../common/constants';
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { isBrushingSelector } from './is_brushing';
-import { getPickedShapes } from './picked_shapes';
 
 /** @internal */
-export const getPointerCursorSelector = createCachedSelector(
-  [getPickedShapes, isBrushingSelector],
-  (pickedShapes, isBrushing) => {
-    return isBrushing || (Array.isArray(pickedShapes) && pickedShapes.length > 0) ? 'pointer' : DEFAULT_CURSOR;
-  },
-)(getChartIdSelector);
+export const DEFAULT_CURSOR = 'default';
