@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { measureText } from '../../../../common/non_cartesian_utils';
 import { identity, mergePartial, RecursivePartial, Color } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { config as defaultConfig, VALUE_GETTERS } from '../../layout/config/config';
@@ -29,7 +30,6 @@ import {
   ValueGetter,
 } from '../../layout/types/viewmodel_types';
 import { DEPTH_KEY, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
-import { measureText } from '../../layout/utils/measure';
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { PartitionSpec, Layer } from '../../specs';
 

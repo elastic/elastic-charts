@@ -18,7 +18,7 @@
  */
 
 import { ConfigItem, configMap } from '../../../../common/config_objects';
-import { TAU } from '../../../partition_chart/layout/utils/constants';
+import { TAU } from '../../../../common/constants';
 import { Config } from '../types/config_types';
 
 /** @internal */

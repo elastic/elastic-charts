@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { FontFamily } from '../../../../common/non_cartesian_utils';
 import { Datum } from '../../../../utils/common';
 import { ArrayEntry } from '../utils/group_by_rollup';
 
@@ -47,12 +48,6 @@ export type NumericFontWeight = number & typeof FONT_WEIGHTS[number];
 export const FONT_STYLES = Object.freeze(['normal', 'italic', 'oblique', 'inherit', 'initial', 'unset'] as const);
 export type FontStyle = typeof FONT_STYLES[number];
 
-/**
- * todo consider doing tighter control for permissible font families, eg. as in Kibana Canvas - expression language
- *  - though the same applies for permissible (eg. known available or loaded) font weights, styles, variants...
- */
-export type FontFamily = string;
-
 export interface Font {
   fontStyle: FontStyle;
   fontVariant: FontVariant;
@@ -77,10 +72,10 @@ export const TEXT_BASELINE = Object.freeze([
 ] as const);
 export type TextBaseline = typeof TEXT_BASELINE[number];
 
+/** potential internal */
 export interface Box extends Font {
   text: string;
 }
-export type TextMeasure = (fontSize: number, boxes: Box[]) => TextMetrics[];
 
 /**
  * Part-to-whole visualizations such as treemap, sunburst, pie hinge on an aggregation

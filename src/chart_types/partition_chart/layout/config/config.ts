@@ -18,10 +18,10 @@
  */
 
 import { ConfigItem, configMap, Numeric } from '../../../../common/config_objects';
+import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
 import { Config, PartitionLayout } from '../types/config_types';
 import { FONT_STYLES, FONT_VARIANTS, MODEL_KEY } from '../types/types';
 import { ShapeTreeNode } from '../types/viewmodel_types';
-import { GOLDEN_RATIO, TAU } from '../utils/constants';
 import { AGGREGATE_KEY, STATISTICS_KEY } from '../utils/group_by_rollup';
 
 const LOG_10 = Math.log(10);

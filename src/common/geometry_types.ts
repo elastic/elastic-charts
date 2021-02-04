@@ -70,4 +70,5 @@ type CirclinePredicateSet = CirclinePredicate[];
 /** @internal */
 export type RingSectorConstruction = CirclinePredicateSet;
 
+/** potential internal */
 export type TimeMs = number;

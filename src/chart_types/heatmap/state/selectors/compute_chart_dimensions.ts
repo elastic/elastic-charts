@@ -19,6 +19,7 @@
 import { max as d3Max } from 'd3-array';
 import createCachedSelector from 're-reselect';
 
+import { measureText } from '../../../../common/non_cartesian_utils';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
@@ -26,7 +27,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { Position } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Box } from '../../../partition_chart/layout/types/types';
-import { measureText } from '../../../partition_chart/layout/utils/measure';
 import { XDomain } from '../../../xy_chart/domains/types';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
 import { getGridHeightParamsSelector } from './get_grid_full_height';

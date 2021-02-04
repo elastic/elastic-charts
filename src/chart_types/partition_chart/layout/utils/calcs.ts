@@ -19,9 +19,9 @@
 
 import chroma from 'chroma-js';
 
+import { Ratio } from '../../../../common/geometry_types';
 import { Color } from '../../../../utils/common';
 import { TextContrast } from '../types/config_types';
-import { Ratio } from '../types/geometry_types';
 import { RgbTuple, RGBATupleToString, stringToRGB } from './color_library_wrappers';
 
 /** @internal */

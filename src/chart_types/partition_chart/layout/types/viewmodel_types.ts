@@ -18,6 +18,15 @@
  */
 
 import { CategoryKey } from '../../../../common/category';
+import {
+  Coordinate,
+  Distance,
+  Pixels,
+  PointObject,
+  PointTuple,
+  PointTuples,
+  Radian,
+} from '../../../../common/geometry_types';
 import { LegendPath } from '../../../../state/actions/legend';
 import { Color } from '../../../../utils/common';
 import { config, ValueGetterName } from '../config/config';
@@ -25,7 +34,6 @@ import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { VerticalAlignments } from '../viewmodel/constants';
 import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
 import { Config } from './config_types';
-import { Coordinate, Distance, Pixels, PointObject, PointTuple, PointTuples, Radian } from './geometry_types';
 import { Font, MODEL_KEY } from './types';
 
 /** @internal */

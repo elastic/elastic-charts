@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { RIGHT_ANGLE } from './constants';
+import { RIGHT_ANGLE } from '../../../../common/constants';
 import { wrapToTau } from './geometry';
 
 /** @internal */

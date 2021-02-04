@@ -19,10 +19,11 @@
 
 import { $Values as Values } from 'utility-types';
 
+import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from '../../../../common/geometry_types';
+import { FontFamily } from '../../../../common/non_cartesian_utils';
 import { Color, StrokeStyle, ValueFormatter } from '../../../../utils/common';
 import { PerSideDistance } from '../../../../utils/dimensions';
-import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from './geometry_types';
-import { Font, FontFamily, PartialFont } from './types';
+import { Font, PartialFont } from './types';
 
 export const PartitionLayout = Object.freeze({
   sunburst: 'sunburst' as const,

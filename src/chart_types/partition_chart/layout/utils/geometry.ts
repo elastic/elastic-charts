@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { Radian } from '../types/geometry_types';
-import { TAU } from './constants';
+import { TAU } from '../../../../common/constants';
+import { Radian } from '../../../../common/geometry_types';
 
 /** @internal */
 export function wrapToTau(a: Radian) {

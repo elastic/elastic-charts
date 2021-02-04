@@ -17,8 +17,11 @@
  * under the License.
  */
 
-import { Pixels } from '../types/geometry_types';
-import { Box, Font, TextMeasure } from '../types/types';
+import { Box, Font } from '../chart_types/partition_chart/layout/types/types';
+import { Pixels } from './geometry_types';
+
+/** potential internal */
+export type TextMeasure = (fontSize: number, boxes: Box[]) => TextMetrics[];
 
 /** @internal */
 export function cssFontShorthand({ fontStyle, fontVariant, fontWeight, fontFamily }: Font, fontSize: Pixels) {
@@ -33,3 +36,9 @@ export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
       return ctx.measureText(box.text);
     });
 }
+
+/**
+ * todo consider doing tighter control for permissible font families, eg. as in Kibana Canvas - expression language
+ *  - though the same applies for permissible (eg. known available or loaded) font weights, styles, variants...
+ */
+export type FontFamily = string;

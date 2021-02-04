@@ -19,10 +19,7 @@
 
 import chroma from 'chroma-js';
 
-import { ValueFormatter, Color } from '../../../../utils/common';
-import { Logger } from '../../../../utils/logger';
-import { Layer } from '../../specs';
-import { Config, Padding, TextContrast } from '../types/config_types';
+import { TAU } from '../../../../common/constants';
 import {
   Coordinate,
   Distance,
@@ -32,8 +29,13 @@ import {
   Ratio,
   RingSectorConstruction,
   PointTuple,
-} from '../types/geometry_types';
-import { Box, Font, PartialFont, TextMeasure } from '../types/types';
+} from '../../../../common/geometry_types';
+import { TextMeasure } from '../../../../common/non_cartesian_utils';
+import { ValueFormatter, Color } from '../../../../utils/common';
+import { Logger } from '../../../../utils/logger';
+import { Layer } from '../../specs';
+import { Config, Padding, TextContrast } from '../types/config_types';
+import { Box, Font, PartialFont } from '../types/types';
 import {
   QuadViewModel,
   RawTextGetter,
@@ -53,7 +55,6 @@ import {
   isColorValid,
 } from '../utils/calcs';
 import { conjunctiveConstraint } from '../utils/circline_geometry';
-import { TAU } from '../utils/constants';
 import { wrapToTau } from '../utils/geometry';
 import { logarithm, trueBearingToStandardPositionAngle } from '../utils/math';
 import { VerticalAlignments } from './constants';

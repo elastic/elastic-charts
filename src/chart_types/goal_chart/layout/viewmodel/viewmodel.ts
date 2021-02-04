@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { TextMeasure } from '../../../partition_chart/layout/types/types';
+import { TextMeasure } from '../../../../common/non_cartesian_utils';
 import { GoalSpec } from '../../specs';
 import { Config } from '../types/config_types';
 import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';

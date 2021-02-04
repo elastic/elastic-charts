@@ -20,13 +20,14 @@
 import { bisectLeft } from 'd3-array';
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
+import { Pixels } from '../../../../common/geometry_types';
+import { TextMeasure } from '../../../../common/non_cartesian_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Dimensions } from '../../../../utils/dimensions';
-import { Pixels } from '../../../partition_chart/layout/types/geometry_types';
-import { Box, TextMeasure } from '../../../partition_chart/layout/types/types';
+import { Box } from '../../../partition_chart/layout/types/types';
 import { stringToRGB } from '../../../partition_chart/layout/utils/color_library_wrappers';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
