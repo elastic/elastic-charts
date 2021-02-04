@@ -39,10 +39,7 @@ export function renderPanelTitle(ctx: CanvasRenderingContext2D, props: PanelTitl
   if (!panelTitle || !axisPanelTitle.visible) {
     return null;
   }
-  if (isHorizontalAxis(position)) {
-    return renderHorizontalTitle(ctx, props);
-  }
-  return renderVerticalTitle(ctx, props);
+  return isHorizontalAxis(position) ? renderHorizontalTitle(ctx, props) : renderVerticalTitle(ctx, props);
 }
 
 function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: PanelTitleProps) {
