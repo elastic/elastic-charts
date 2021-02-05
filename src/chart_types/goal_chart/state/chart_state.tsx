@@ -20,6 +20,7 @@
 import React, { RefObject } from 'react';
 
 import { ChartTypes } from '../..';
+import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { LegendItem } from '../../../common/legend';
 import { ScreenReaderData } from '../../../components/screen_reader_data_table/screen_reader_data_table';
 import { Tooltip } from '../../../components/tooltip';
@@ -94,7 +95,7 @@ export class GoalState implements InternalChartState {
   }
 
   getPointerCursor() {
-    return 'default';
+    return DEFAULT_CSS_CURSOR;
   }
 
   isTooltipVisible(globalState: GlobalChartState) {
