@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { DEFAULT_CURSOR } from '../../common/constants';
+import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalPointerCursor = (state: GlobalChartState): string => {
-  return state.internalChartState?.getPointerCursor(state) ?? DEFAULT_CURSOR;
+  return state.internalChartState?.getPointerCursor(state) ?? DEFAULT_CSS_CURSOR;
 };

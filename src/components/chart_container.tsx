@@ -21,7 +21,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { DEFAULT_CURSOR } from '../common/constants';
+import { DEFAULT_CSS_CURSOR } from '../common/constants';
 import { SettingsSpec } from '../specs';
 import { onKeyPress as onKeyPressAction } from '../state/actions/key';
 import {
@@ -225,7 +225,7 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
     return {
       status,
       initialized,
-      pointerCursor: DEFAULT_CURSOR,
+      pointerCursor: DEFAULT_CSS_CURSOR,
       isBrushingAvailable: false,
       isBrushing: false,
       internalChartRenderer: () => null,
@@ -240,7 +240,6 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
     pointerCursor: getInternalPointerCursor(state),
     isBrushingAvailable: getInternalIsBrushingAvailableSelector(state),
     isBrushing: getInternalIsBrushingSelector(state),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     internalChartRenderer: getInternalChartRendererSelector(state),
     settings,
   };

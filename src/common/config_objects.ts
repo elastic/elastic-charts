@@ -38,7 +38,7 @@ class Type<A> {
 
   reconfigurable: boolean | string;
 
-  documentation = 'string';
+  documentation: string;
 
   constructor(dflt: A, reconfigurable: boolean | string, documentation: string) {
     this.dflt = dflt;

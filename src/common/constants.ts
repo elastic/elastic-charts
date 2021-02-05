@@ -18,7 +18,7 @@
  */
 
 /** @internal */
-export const DEFAULT_CURSOR = 'default';
+export const DEFAULT_CSS_CURSOR = 'default';
 /** potential internal */
 export const TAU = 2 * Math.PI;
 /** potential internal */

@@ -20,7 +20,7 @@
 import React, { RefObject } from 'react';
 
 import { ChartTypes } from '../..';
-import { DEFAULT_CURSOR } from '../../../common/constants';
+import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { Tooltip } from '../../../components/tooltip';
 import { BackwardRef, GlobalChartState, InternalChartState } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
@@ -100,7 +100,7 @@ export class PartitionState implements InternalChartState {
   }
 
   getPointerCursor() {
-    return DEFAULT_CURSOR;
+    return DEFAULT_CSS_CURSOR;
   }
 
   isTooltipVisible(globalState: GlobalChartState) {
