@@ -18,7 +18,7 @@
  */
 
 import { ChartTypes } from '../../..';
-import { Pixels } from '../../../../common/geometry_types';
+import { Pixels } from '../../../../common/geometry';
 import { Fill, Line, Stroke } from '../../../../geoms/types';
 import { Point } from '../../../../utils/point';
 import { config } from '../config/config';

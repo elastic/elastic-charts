@@ -16,16 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+const module = jest.requireActual('../color_calcs.ts');
 
-import { RIGHT_ANGLE } from '../../../../common/constants';
-import { wrapToTau } from './geometry';
-
-/** @internal */
-export function trueBearingToStandardPositionAngle(alphaIn: number) {
-  return wrapToTau(RIGHT_ANGLE - alphaIn);
-}
-
-/** @internal */
-export function logarithm(base: number, y: number) {
-  return Math.log(y) / Math.log(base);
-}
+export const getBackgroundWithContainerColorFromUser = jest.fn(module.getBackgroundWithContainerColorFromUser);
+export const makeHighContrastColor = jest.fn(module.makeHighContrastColor);

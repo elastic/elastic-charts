@@ -88,4 +88,4 @@ export {
 } from './utils/common';
 export { DataGenerator } from './utils/data_generators/data_generator';
 export * from './utils/themes/merge_utils';
-export { MODEL_KEY } from './chart_types/partition_chart/layout/config/config';
+export { MODEL_KEY } from './chart_types/partition_chart/layout/config';

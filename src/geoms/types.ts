@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { RgbObject } from '../chart_types/partition_chart/layout/utils/color_library_wrappers';
-import { Radian } from '../common/geometry_types';
+import { RgbObject } from '../common/color_library_wrappers';
+import { Radian } from '../common/geometry';
 
 /** potential internal */
 export interface Text {

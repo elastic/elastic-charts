@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import { ConfigItem, configMap, Numeric } from '../../../../common/config_objects';
-import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
-import { FONT_STYLES, FONT_VARIANTS } from '../../../../common/text_utils';
-import { Config, PartitionLayout } from '../types/config_types';
-import { ShapeTreeNode } from '../types/viewmodel_types';
-import { AGGREGATE_KEY, STATISTICS_KEY } from '../utils/group_by_rollup';
+import { ConfigItem, configMap, Numeric } from '../../../common/config_objects';
+import { GOLDEN_RATIO, TAU } from '../../../common/constants';
+import { FONT_STYLES, FONT_VARIANTS } from '../../../common/text_utils';
+import { Config, PartitionLayout } from './types/config_types';
+import { ShapeTreeNode } from './types/viewmodel_types';
+import { AGGREGATE_KEY, STATISTICS_KEY } from './utils/group_by_rollup';
 
 const LOG_10 = Math.log(10);
 

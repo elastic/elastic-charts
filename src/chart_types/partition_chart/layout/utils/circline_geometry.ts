@@ -25,7 +25,7 @@ import {
   Distance,
   PointObject,
   RingSectorConstruction,
-} from '../../../../common/geometry_types';
+} from '../../../../common/geometry';
 
 function euclideanDistance({ x: x1, y: y1 }: PointObject, { x: x2, y: y2 }: PointObject): Distance {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));

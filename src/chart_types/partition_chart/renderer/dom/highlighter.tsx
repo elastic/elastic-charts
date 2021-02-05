@@ -20,9 +20,9 @@
 import React from 'react';
 
 import { TAU } from '../../../../common/constants';
-import { PointObject } from '../../../../common/geometry_types';
+import { PointObject } from '../../../../common/geometry';
 import { Dimensions } from '../../../../utils/dimensions';
-import { configMetadata } from '../../layout/config/config';
+import { configMetadata } from '../../layout/config';
 import { PartitionLayout } from '../../layout/types/config_types';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { isSunburst, isTreemap } from '../../layout/viewmodel/viewmodel';

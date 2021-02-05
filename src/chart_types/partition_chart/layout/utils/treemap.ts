@@ -18,7 +18,7 @@
  */
 
 import { GOLDEN_RATIO } from '../../../../common/constants';
-import { Pixels } from '../../../../common/geometry_types';
+import { Pixels } from '../../../../common/geometry';
 import { Part } from '../../../../common/text_utils';
 import { ArrayEntry, CHILDREN_KEY, entryValue, HierarchyOfArrays } from './group_by_rollup';
 

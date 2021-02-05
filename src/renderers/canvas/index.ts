@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Coordinate } from '../../common/geometry_types';
+import { Coordinate } from '../../common/geometry';
 import { Rect } from '../../geoms/types';
 import { ClippedRanges } from '../../utils/geometry';
 import { Point } from '../../utils/point';

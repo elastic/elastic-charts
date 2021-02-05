@@ -19,8 +19,8 @@
 
 import { $Values as Values } from 'utility-types';
 
-import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from '../../../../common/geometry_types';
-import { Font, FontFamily, PartialFont } from '../../../../common/text_utils';
+import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from '../../../../common/geometry';
+import { Font, FontFamily, PartialFont, TextContrast } from '../../../../common/text_utils';
 import { Color, StrokeStyle, ValueFormatter } from '../../../../utils/common';
 import { PerSideDistance } from '../../../../utils/dimensions';
 
@@ -37,8 +37,6 @@ export type PartitionLayout = Values<typeof PartitionLayout>; // could use Value
 export type PerSidePadding = PerSideDistance;
 
 export type Padding = Pixels | Partial<PerSidePadding>;
-
-export type TextContrast = boolean | number;
 
 interface LabelConfig extends Font {
   textColor: Color;

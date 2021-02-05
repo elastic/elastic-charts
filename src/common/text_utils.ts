@@ -17,9 +17,11 @@
  * under the License.
  */
 
+import { $Values as Values } from 'utility-types';
+
 import { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Datum } from '../utils/common';
-import { Pixels } from './geometry_types';
+import { Pixels } from './geometry';
 
 export const FONT_VARIANTS = Object.freeze(['normal', 'small-caps'] as const);
 export type FontVariant = typeof FONT_VARIANTS[number];
@@ -111,3 +113,17 @@ export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
  *  - though the same applies for permissible (eg. known available or loaded) font weights, styles, variants...
  */
 export type FontFamily = string;
+
+/** potential internal */
+export type TextContrast = boolean | number;
+
+export const VerticalAlignments = Object.freeze({
+  top: 'top' as const,
+  middle: 'middle' as const,
+  bottom: 'bottom' as const,
+  alphabetic: 'alphabetic' as const,
+  hanging: 'hanging' as const,
+  ideographic: 'ideographic' as const,
+});
+
+export type VerticalAlignments = Values<typeof VerticalAlignments>;

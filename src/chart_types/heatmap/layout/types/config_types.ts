@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Pixels, SizeRatio } from '../../../../common/geometry_types';
+import { Pixels, SizeRatio } from '../../../../common/geometry';
 import { Font, FontFamily, TextAlign, TextBaseline } from '../../../../common/text_utils';
 import { Color } from '../../../../utils/common';
 import { Cell } from './viewmodel_types';

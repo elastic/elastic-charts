@@ -26,13 +26,12 @@ import {
   PointTuple,
   PointTuples,
   Radian,
-} from '../../../../common/geometry_types';
-import { Font } from '../../../../common/text_utils';
+} from '../../../../common/geometry';
+import { Font, VerticalAlignments } from '../../../../common/text_utils';
 import { LegendPath } from '../../../../state/actions/legend';
 import { Color } from '../../../../utils/common';
-import { config, MODEL_KEY, ValueGetterName } from '../config/config';
+import { config, MODEL_KEY, ValueGetterName } from '../config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
-import { VerticalAlignments } from '../viewmodel/constants';
 import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
 import { Config } from './config_types';
 

@@ -20,7 +20,7 @@
 import React from 'react';
 
 import { ChartTypes } from '../..';
-import { Pixels } from '../../../common/geometry_types';
+import { Pixels } from '../../../common/geometry';
 import { Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
@@ -33,7 +33,7 @@ import {
   ValueAccessor,
   ValueFormatter,
 } from '../../../utils/common';
-import { config, percentFormatter } from '../layout/config/config';
+import { config, percentFormatter } from '../layout/config';
 import { Config, FillFontSizeRange, FillLabelConfig } from '../layout/types/config_types';
 import { ShapeTreeNode, ValueGetter, NodeColorAccessor } from '../layout/types/viewmodel_types';
 import { AGGREGATE_KEY, PrimitiveValue } from '../layout/utils/group_by_rollup';
