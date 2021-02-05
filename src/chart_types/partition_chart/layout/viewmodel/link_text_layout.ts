@@ -223,8 +223,6 @@ function nodeToLinkLabel({
       width,
       valueWidth,
       verticalOffset,
-      labelFontSpec,
-      valueFontSpec,
     };
   };
 }
