@@ -20,29 +20,29 @@
 import chroma from 'chroma-js';
 
 import {
-  combineColors,
-  makeHighContrastColor,
   colorIsDark,
+  combineColors,
   getTextColorIfTextInvertible,
   isColorValid,
+  makeHighContrastColor,
 } from '../../../../common/color_calcs';
 import { TAU } from '../../../../common/constants';
 import {
   Coordinate,
   Distance,
   Pixels,
+  PointTuple,
   Radian,
   Radius,
   Ratio,
   RingSectorConstruction,
-  PointTuple,
   trueBearingToStandardPositionAngle,
   wrapToTau,
 } from '../../../../common/geometry';
 import { logarithm } from '../../../../common/math';
 import { integerSnap, monotonicHillClimb } from '../../../../common/optimize';
 import { Box, Font, PartialFont, TextContrast, TextMeasure, VerticalAlignments } from '../../../../common/text_utils';
-import { ValueFormatter, Color } from '../../../../utils/common';
+import { Color, ValueFormatter } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Layer } from '../../specs';
 import { Config, Padding } from '../types/config_types';
@@ -85,8 +85,7 @@ function angleToCircline(
   const normalAngle = alpha + (direction * Math.PI) / 2;
   const x = sectorRadiusLineX + INFINITY_RADIUS * Math.cos(normalAngle);
   const y = sectorRadiusLineY + INFINITY_RADIUS * Math.sin(normalAngle);
-  const sectorRadiusCircline = { x, y, r: INFINITY_RADIUS, inside: false, from: 0, to: TAU };
-  return sectorRadiusCircline;
+  return { x, y, r: INFINITY_RADIUS, inside: false, from: 0, to: TAU };
 }
 
 /** @internal */
@@ -154,8 +153,7 @@ function makeRowCircline(
   const topRadius = r - offset;
   const x = cx + topRadius * Math.cos(-rotation + TAU / 4);
   const y = cy + topRadius * Math.cos(-rotation + TAU / 2);
-  const circline = { r: r + radialOffset, x, y };
-  return circline;
+  return { r: r + radialOffset, x, y };
 }
 
 /** @internal */
@@ -319,7 +317,7 @@ export function getFillTextColor(
     if (bgColorAlpha < 1) {
       Logger.expected('Text contrast requires a background color with an alpha value of 1', 1, bgColorAlpha);
     } else if (containerBackgroundColor !== 'transparent') {
-      Logger.warn(`Invalid background color "${containerBackgroundColor}"`);
+      Logger.warn(`Invalid background color "${String(containerBackgroundColor)}"`);
     }
 
     return getTextColorIfTextInvertible(
@@ -356,6 +354,7 @@ export function getFillTextColor(
 
   return adjustedTextColor;
 }
+
 type GetShapeRowGeometry<C> = (
   container: C,
   cx: Distance,

@@ -119,9 +119,11 @@ export function linkTextLayout(
       const labelText = cutToLength(rawText, maxTextLength);
       const valueText = valueFormatter(valueGetter(node));
 
+      // eslint-disable-next-line no-shadow
       const labelFontSpec: Font = {
         ...linkLabel,
       };
+      // eslint-disable-next-line no-shadow
       const valueFontSpec: Font = {
         ...linkLabel,
         ...linkLabel.valueFont,
@@ -142,6 +144,7 @@ export function linkTextLayout(
               text: labelText,
             })
           : { text: '', width: 0, verticalOffset: 0 };
+      // eslint-disable-next-line no-shadow
       const linkLabels: PointTuples = [
         [x0, y0],
         [stemFromX, stemFromY],
@@ -165,17 +168,17 @@ export function linkTextLayout(
     })
     .filter(({ text }) => text !== ''); // cull linked labels whose text was truncated to nothing;
   return { linkLabels, valueFontSpec, labelFontSpec, strokeColor };
+}
 
-  function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, box: Box) {
-    const desiredLength = desiredText.length;
-    const response = (v: number) => measure(fontSize, [{ ...box, text: box.text.slice(0, Math.max(0, v)) }])[0].width;
-    const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
-    const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(box.text, visibleLength);
-    const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...box, text }])[0];
-    return {
-      width,
-      verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
-      text,
-    };
-  }
+function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, box: Box) {
+  const desiredLength = desiredText.length;
+  const response = (v: number) => measure(fontSize, [{ ...box, text: box.text.slice(0, Math.max(0, v)) }])[0].width;
+  const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
+  const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(box.text, visibleLength);
+  const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...box, text }])[0];
+  return {
+    width,
+    verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
+    text,
+  };
 }
