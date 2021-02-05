@@ -85,7 +85,7 @@ describe('Chart State utils', () => {
       minInterval: 1,
       type: 'xDomain',
     });
-    expect(domains.yDomain).toEqual([
+    expect(domains.yDomains).toEqual([
       {
         domain: [0, 10],
         scaleType: ScaleType.Log,
@@ -133,7 +133,7 @@ describe('Chart State utils', () => {
       minInterval: 1,
       type: 'xDomain',
     });
-    expect(domains.yDomain).toEqual([
+    expect(domains.yDomains).toEqual([
       {
         domain: [0, 5],
         scaleType: ScaleType.Log,
