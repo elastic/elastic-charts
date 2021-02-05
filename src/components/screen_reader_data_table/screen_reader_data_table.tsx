@@ -85,7 +85,7 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) 
           <tr
             key={`${d[seriesIndex].seriesType}__${d[seriesIndex].dataKey[j]}__${seriesIndex}`}
             tabIndex={-1}
-            aria-labelledby="alt data from chart"
+            aria-labelledby="alt text for chart data"
           >
             <th
               scope="row"

@@ -4,6 +4,14 @@ exports[`Chart should render the legend name test 1`] = `
 "<Chart size={{...}} id=\\"chart1\\" renderer=\\"canvas\\">
   <Provider store={{...}}>
     <div className=\\"echChart\\" style={{...}}>
+      <Connect(ScreenReaderDataTableComponent)>
+        <ScreenReaderDataTableComponent data={{...}} dispatch={[Function: dispatch]}>
+          <p tabIndex={-1} className=\\"echDataTable\\" aria-labelledby=\\"information about the serie(s) within the chart\\" />
+          <table tabIndex={-1} className=\\"echDataTable\\" role=\\"presentation\\">
+            <tbody />
+          </table>
+        </ScreenReaderDataTableComponent>
+      </Connect(ScreenReaderDataTableComponent)>
       <Connect(ChartBackground)>
         <ChartBackground backgroundColor=\\"transparent\\" dispatch={[Function: dispatch]}>
           <div className=\\"echChartBackground\\" style={{...}} />
