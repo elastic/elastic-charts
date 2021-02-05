@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { makeHighContrastColor, isColorValid } from '../../../../common/color_calcs';
+import { isColorValid, makeHighContrastColor } from '../../../../common/color_calcs';
 import { TAU } from '../../../../common/constants';
 import {
   Distance,
@@ -29,7 +29,7 @@ import {
 } from '../../../../common/geometry';
 import { integerSnap, monotonicHillClimb } from '../../../../common/optimize';
 import { Box, Font, TextAlign, TextMeasure } from '../../../../common/text_utils';
-import { ValueFormatter, Color } from '../../../../utils/common';
+import { Color, ValueFormatter } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { Config, LinkLabelConfig } from '../types/config_types';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
@@ -184,16 +184,14 @@ function nodeToLinkLabel({
     const rawText = rawTextGetter(node);
     const labelText = cutToLength(rawText, maxTextLength);
     const valueText = valueFormatter(valueGetter(node));
-
-    const labelFontSpec: Font = {
-      ...linkLabel,
-    };
-    const valueFontSpec: Font = {
-      ...linkLabel,
-      ...linkLabel.valueFont,
-    };
     const translateX = stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap);
-    const { width: valueWidth } = measure(linkLabel.fontSize, [{ ...valueFontSpec, text: valueText }])[0];
+    const { width: valueWidth } = measure(linkLabel.fontSize, [
+      {
+        ...linkLabel,
+        ...linkLabel.valueFont,
+        text: valueText,
+      },
+    ])[0];
     const widthAdjustment = valueWidth + 2 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
     const allottedLabelWidth = Math.max(
       0,
@@ -202,7 +200,7 @@ function nodeToLinkLabel({
     const { text, width, verticalOffset } =
       linkLabel.fontSize / 2 <= cy + diskCenter.y && cy + diskCenter.y <= rectHeight - linkLabel.fontSize / 2
         ? fitText(measure, labelText, allottedLabelWidth, linkLabel.fontSize, {
-            ...labelFontSpec,
+            ...linkLabel,
             text: labelText,
           })
         : { text: '', width: 0, verticalOffset: 0 };
