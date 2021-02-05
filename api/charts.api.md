@@ -928,8 +928,13 @@ export const GroupBy: React.FunctionComponent<GroupByProps>;
 // @alpha (undocumented)
 export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
 
+// Warning: (ae-incompatible-release-tags) The symbol "GroupByFormatter" is marked as @public, but its signature references "GroupByAccessor" which is marked as @alpha
+//
+// @public
+export type GroupByFormatter = (value: ReturnType<GroupByAccessor>) => string;
+
 // @alpha (undocumented)
-export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort' | 'title'>;
+export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort' | 'format'>;
 
 // Warning: (ae-forgotten-export) The symbol "Predicate" needs to be exported by the entry point index.d.ts
 //
@@ -939,14 +944,9 @@ export type GroupBySort = Predicate;
 // @alpha (undocumented)
 export interface GroupBySpec extends Spec {
     by: GroupByAccessor;
-    sort: GroupBySort;
     format?: GroupByFormatter;
+    sort: GroupBySort;
 }
-
-// Warning: (ae-incompatible-release-tags) The symbol "GroupByFormatter" is marked as @public, but its signature references "GroupByAccessor" which is marked as @alpha
-//
-// @public
-export type GroupByFormatter = (value: ReturnType<GroupByAccessor>) => string;
 
 // @public (undocumented)
 export type GroupId = string;
