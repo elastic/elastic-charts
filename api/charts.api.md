@@ -940,13 +940,13 @@ export type GroupBySort = Predicate;
 export interface GroupBySpec extends Spec {
     by: GroupByAccessor;
     sort: GroupBySort;
-    title?: GroupByTitleFormatter;
+    format?: GroupByFormatter;
 }
 
-// Warning: (ae-incompatible-release-tags) The symbol "GroupByTitleFormatter" is marked as @public, but its signature references "GroupByAccessor" which is marked as @alpha
+// Warning: (ae-incompatible-release-tags) The symbol "GroupByFormatter" is marked as @public, but its signature references "GroupByAccessor" which is marked as @alpha
 //
 // @public
-export type GroupByTitleFormatter = (value: ReturnType<GroupByAccessor>) => string;
+export type GroupByFormatter = (value: ReturnType<GroupByAccessor>) => string;
 
 // @public (undocumented)
 export type GroupId = string;

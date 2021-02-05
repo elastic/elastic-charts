@@ -121,8 +121,8 @@ export const Example = () => {
       <Axis {...getAxisOptions(Position.Top)} />
       <Axis {...getAxisOptions(Position.Right)} />
 
-      <GroupBy id="v_split" by={(_, { v }) => v} title={(v) => `Metric ${v}`} sort="numDesc" />
-      <GroupBy id="h_split" by={(_, { h }) => h} title={(v) => `Host ${v}`} sort="numAsc" />
+      <GroupBy id="v_split" by={(_, { v }) => v} format={(v) => `Metric ${v}`} sort="numDesc" />
+      <GroupBy id="h_split" by={(_, { h }) => h} format={(v) => `Host ${v}`} sort="numAsc" />
       <SmallMultiples
         splitVertically="v_split"
         splitHorizontally="h_split"

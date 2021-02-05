@@ -33,7 +33,7 @@ export type GroupBySort = Predicate;
  * Title formatter that handles any value returned from the GroupByAccessor
  * @public
  */
-export type GroupByTitleFormatter = (value: ReturnType<GroupByAccessor>) => string;
+export type GroupByFormatter = (value: ReturnType<GroupByAccessor>) => string;
 
 /** @alpha */
 export interface GroupBySpec extends Spec {
@@ -46,12 +46,11 @@ export interface GroupBySpec extends Spec {
    */
   sort: GroupBySort;
   /**
-   * Title for each panel. Use to display unique title for panel.
+   * Formatter used on all `by` values.
    *
-   * If both axis title and this value are set, the axis title will be
-   * treated as the primary title and this as the secondary.
+   * Only for displayed values, not used in sorting or other internal computations.
    */
-  title?: GroupByTitleFormatter;
+  format?: GroupByFormatter;
 }
 const DEFAULT_GROUP_BY_PROPS = {
   chartType: ChartTypes.Global,
@@ -61,7 +60,7 @@ const DEFAULT_GROUP_BY_PROPS = {
 type DefaultGroupByProps = 'chartType' | 'specType';
 
 /** @alpha */
-export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort' | 'title'>;
+export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort' | 'format'>;
 
 /** @alpha */
 export const GroupBy: React.FunctionComponent<GroupByProps> = getConnect()(
