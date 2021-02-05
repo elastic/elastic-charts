@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { isColorValid, makeHighContrastColor } from '../../../../common/color_calcs';
+import { getOnPaperColorSet } from '../../../../common/color_calcs';
 import { TAU } from '../../../../common/constants';
 import {
   Distance,
@@ -61,25 +61,14 @@ export function linkTextLayout(
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;
-  // determine the ideal contrast color for the link labels
-  const validBackgroundColor = isColorValid(containerBackgroundColor)
-    ? containerBackgroundColor
-    : 'rgba(255, 255, 255, 0)';
-  const contrastTextColor = containerBackgroundColor
-    ? makeHighContrastColor(linkLabel.textColor, validBackgroundColor)
-    : linkLabel.textColor;
-  const strokeColor = containerBackgroundColor
-    ? makeHighContrastColor(sectorLineStroke, validBackgroundColor)
-    : undefined;
-  const labelFontSpec = {
-    ...linkLabel,
-    textColor: contrastTextColor,
-  };
-  const valueFontSpec = {
-    ...linkLabel,
-    ...linkLabel.valueFont,
-    textColor: contrastTextColor,
-  };
+
+  const { contrastTextColor, strokeColor } = getOnPaperColorSet(
+    linkLabel.textColor,
+    sectorLineStroke,
+    containerBackgroundColor,
+  );
+  const labelFontSpec: Font = { ...linkLabel, textColor: contrastTextColor };
+  const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor: contrastTextColor };
 
   const linkLabels: LinkLabelVM[] = nodesWithoutRoom
     .filter((n: ShapeTreeNode) => n.depth === maxDepth) // only the outermost ring can have links
