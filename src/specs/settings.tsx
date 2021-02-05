@@ -34,7 +34,7 @@ import { LegendPath } from '../state/actions/legend';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
 import { Color, Position, Rendering, Rotation } from '../utils/common';
-import { Domain } from '../utils/domain';
+import { ContinuousDomain, OrdinalDomain } from '../utils/domain';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
@@ -411,7 +411,7 @@ export interface SettingsSpec extends Spec {
   onLegendItemMinusClick?: LegendItemListener;
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
-  xDomain?: Domain | DomainRange;
+  xDomain?: ContinuousDomain | OrdinalDomain | DomainRange;
   resizeDebounce?: number;
   /**
    * Render slot to render action for legend

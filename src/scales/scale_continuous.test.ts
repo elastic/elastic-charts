@@ -22,13 +22,13 @@ import { DateTime, Settings } from 'luxon';
 import { ScaleContinuous, ScaleBand } from '.';
 import { XDomain } from '../chart_types/xy_chart/domains/types';
 import { computeXScale } from '../chart_types/xy_chart/utils/scales';
-import { Domain } from '../utils/domain';
+import { ContinuousDomain, Range } from '../utils/domain';
 import { ScaleType } from './constants';
 import { isLogarithmicScale } from './types';
 
 describe('Scale Continuous', () => {
   test('shall invert on continuous scale linear', () => {
-    const domain: Domain = [0, 2];
+    const domain: ContinuousDomain = [0, 2];
     const minRange = 0;
     const maxRange = 100;
     const scale = new ScaleContinuous({ type: ScaleType.Linear, domain, range: [minRange, maxRange] });
@@ -37,7 +37,7 @@ describe('Scale Continuous', () => {
     expect(scale.invert(100)).toBe(2);
   });
   test('is value within domain', () => {
-    const domain: Domain = [0, 2];
+    const domain: ContinuousDomain = [0, 2];
     const minRange = 0;
     const maxRange = 100;
     const scale = new ScaleContinuous({ type: ScaleType.Linear, domain, range: [minRange, maxRange] });
@@ -59,8 +59,8 @@ describe('Scale Continuous', () => {
     expect(scale.invert(100)).toBe(endTime.toMillis());
   });
   test('check if a scale is log scale', () => {
-    const domain: Domain = [0, 2];
-    const range: [number, number] = [0, 100];
+    const domain: ContinuousDomain = [0, 2];
+    const range: Range = [0, 100];
     const scaleLinear = new ScaleContinuous({ type: ScaleType.Linear, domain, range });
     const scaleLog = new ScaleContinuous({ type: ScaleType.Log, domain, range });
     const scaleTime = new ScaleContinuous({ type: ScaleType.Time, domain, range });
@@ -73,9 +73,9 @@ describe('Scale Continuous', () => {
     expect(isLogarithmicScale(scaleBand)).toBe(false);
   });
   test('can get the right x value on linear scale', () => {
-    const domain: Domain = [0, 2];
+    const domain: ContinuousDomain = [0, 2];
     const data = [0, 0.5, 0.8, 2];
-    const range: [number, number] = [0, 2];
+    const range: Range = [0, 2];
     const scaleLinear = new ScaleContinuous({ type: ScaleType.Linear, domain, range });
     expect(scaleLinear.bandwidth).toBe(0);
     expect(scaleLinear.invertWithStep(0, data)).toEqual({ value: 0, withinBandwidth: true });
@@ -127,7 +127,7 @@ describe('Scale Continuous', () => {
 
     // we tweak the maxRange removing the bandwidth to correctly compute
     // a band linear scale in computeXScale
-    const range: [number, number] = [0, 100 - 10];
+    const range: Range = [0, 100 - 10];
     const scaleLinear = new ScaleContinuous(
       { type: ScaleType.Linear, domain, range },
       { bandwidth: 10, minInterval: 10 },
@@ -435,7 +435,7 @@ describe('Scale Continuous', () => {
     });
   });
   describe('ticks as integers or floats', () => {
-    const domain: Domain = [0, 7];
+    const domain: ContinuousDomain = [0, 7];
     const minRange = 0;
     const maxRange = 100;
     let scale: ScaleContinuous;

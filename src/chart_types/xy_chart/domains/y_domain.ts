@@ -20,7 +20,7 @@
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { identity } from '../../../utils/common';
-import { computeContinuousDataDomain } from '../../../utils/domain';
+import { computeContinuousDataDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { getSpecDomainGroupId } from '../state/utils/spec';
@@ -76,7 +76,7 @@ function mergeYDomainForGroup(
   const groupId = getSpecDomainGroupId(spec);
   const isLogScale = groupYScaleType === ScaleType.Log;
 
-  let domain: number[];
+  let domain: ContinuousDomain;
   if (stackMode === StackMode.Percentage) {
     domain = computeContinuousDataDomain([0, 1], identity, isLogScale, customDomain);
   } else {

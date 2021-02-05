@@ -20,6 +20,7 @@
 import { Scale, ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { LogBase } from '../../../scales/scale_continuous';
+import { ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { XDomain, YDomain } from '../domains/types';
 
@@ -79,7 +80,7 @@ export function computeXScale(options: XScaleOptions): Scale {
     return new ScaleBand(domain, range, bandwidth, barsPadding);
   }
   if (isBandScale) {
-    const [domainMin, domainMax] = domain;
+    const [domainMin, domainMax] = domain as ContinuousDomain;
     const isSingleValueHistogram = !!enableHistogramMode && domainMax - domainMin === 0;
 
     const adjustedDomainMax = isSingleValueHistogram ? domainMin + minInterval : domainMax;

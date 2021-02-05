@@ -24,7 +24,7 @@ import { OrderBy, SettingsSpec } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
-import { Domain } from '../../../../utils/domain';
+import { ContinuousDomain, OrdinalDomain } from '../../../../utils/domain';
 import {
   PointGeometry,
   BarGeometry,
@@ -153,7 +153,7 @@ export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   customYDomainsByGroupId: Map<GroupId, YDomainRange> = new Map(),
   deselectedDataSeries: SeriesIdentifier[] = [],
-  customXDomain?: DomainRange | Domain,
+  customXDomain?: DomainRange | ContinuousDomain | OrdinalDomain,
   orderOrdinalBinsBy?: OrderBy,
   smallMultiples?: { vertical?: GroupBySpec; horizontal?: GroupBySpec },
   sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,

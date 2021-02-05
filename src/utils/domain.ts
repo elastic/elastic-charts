@@ -24,8 +24,8 @@ import { AccessorFn } from './accessor';
 import { getPercentageValue } from './common';
 
 export type OrdinalDomain = (number | string)[];
-export type ContinousDomain = [min: number, max: number];
-export type Domain = OrdinalDomain | ContinousDomain;
+export type ContinuousDomain = [min: number, max: number];
+export type Range = [min: number, max: number];
 
 /** @internal */
 export function computeOrdinalDataDomain(
@@ -106,7 +106,7 @@ export function computeContinuousDataDomain(
   accessor: (n: any) => number,
   isLogScale: boolean,
   domainOptions?: YDomainRange | null,
-): number[] {
+): ContinuousDomain {
   const range = extent<any, number>(data, accessor);
 
   if (domainOptions === null) {
