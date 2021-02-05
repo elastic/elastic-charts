@@ -72,8 +72,8 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) 
     for (let seriesIndex = 0; seriesIndex < d.length; seriesIndex++) {
       if (d.length !== 1) {
         dataKeys.push(
-          <tr key={Math.random()}>
-            <th key={Math.random()}>
+          <tr key={`${d[seriesIndex].dataKey}__${seriesIndex}`}>
+            <th key={`${d[seriesIndex].dataValue}__${d[seriesIndex].seriesName}__${seriesIndex}`}>
               {seriesIndex + 1} series of the total {d.length} series{' '}
             </th>
           </tr>,
@@ -82,13 +82,26 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) 
       // get the index of the key in each series and use the index to get the index of it in the values
       for (let j = 0; j < d[seriesIndex].dataKey.length; j++) {
         dataKeys.push(
-          <tr key={Math.random()} tabIndex={-1} aria-labelledby="alt data from chart">
-            <th scope="row" key={Math.random()} tabIndex={-1} align="center">
+          <tr
+            key={`${d[seriesIndex].seriesType}__${d[seriesIndex].dataKey[j]}__${seriesIndex}`}
+            tabIndex={-1}
+            aria-labelledby="alt data from chart"
+          >
+            <th
+              scope="row"
+              key={`${d[seriesIndex].seriesType}__${d[seriesIndex].dataValue[j]}__${seriesIndex}`}
+              tabIndex={-1}
+              align="center"
+            >
               {d[seriesIndex].dataKey[j]}
             </th>
-            {d[seriesIndex].dataValue.map((value) => {
+            {d[seriesIndex].dataValue.map((value, index) => {
               return (
-                <td key={Math.random()} tabIndex={-1} align="center">
+                <td
+                  key={`${d[seriesIndex].seriesName}__${d[seriesIndex].dataKey[index]}__${seriesIndex}${index}`}
+                  tabIndex={-1}
+                  align="center"
+                >
                   {value[j]}
                 </td>
               );
