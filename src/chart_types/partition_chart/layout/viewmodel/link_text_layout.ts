@@ -185,13 +185,8 @@ function nodeToLinkLabel({
     const labelText = cutToLength(rawText, maxTextLength);
     const valueText = valueFormatter(valueGetter(node));
     const translateX = stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap);
-    const { width: valueWidth } = measure(linkLabel.fontSize, [
-      {
-        ...linkLabel,
-        ...linkLabel.valueFont,
-        text: valueText,
-      },
-    ])[0];
+    const fontSpec: Font = { ...linkLabel, ...linkLabel.valueFont }; // only interested in the font properties
+    const valueWidth = measureOneBoxWidth(measure, linkLabel.fontSize, fontSpec, valueText);
     const widthAdjustment = valueWidth + 2 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
     const allottedLabelWidth = Math.max(
       0,
@@ -223,4 +218,8 @@ function nodeToLinkLabel({
       verticalOffset,
     };
   };
+}
+
+function measureOneBoxWidth(measure: TextMeasure, fontSize: number, fontSpec: Font, text: string) {
+  return measure(fontSize, [{ ...fontSpec, text }])[0].width;
 }
