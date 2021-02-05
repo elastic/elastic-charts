@@ -27,8 +27,7 @@ import {
   PointTuples,
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
-import { integerSnap, monotonicHillClimb } from '../../../../common/optimize';
-import { Box, Font, TextMeasure } from '../../../../common/text_utils';
+import { cutToLength, fitText, Font, measureOneBoxWidth, TextMeasure } from '../../../../common/text_utils';
 import { Color, ValueFormatter } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { Config, LinkLabelConfig } from '../types/config_types';
@@ -210,26 +209,5 @@ function nodeToLinkLabel({
       verticalOffset,
       textAlign: rightSide ? 'left' : 'right',
     };
-  };
-}
-
-function measureOneBoxWidth(measure: TextMeasure, fontSize: number, box: Box) {
-  return measure(fontSize, [box])[0].width;
-}
-
-function cutToLength(s: string, maxLength: number) {
-  return s.length <= maxLength ? s : `${s.slice(0, Math.max(0, maxLength - 1))}…`; // ellipsis is one char
-}
-
-function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, font: Font) {
-  const desiredLength = desiredText.length;
-  const response = (v: number) => measure(fontSize, [{ ...font, text: desiredText.slice(0, Math.max(0, v)) }])[0].width;
-  const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
-  const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(desiredText, visibleLength);
-  const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...font, text }])[0];
-  return {
-    width,
-    verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
-    text,
   };
 }
