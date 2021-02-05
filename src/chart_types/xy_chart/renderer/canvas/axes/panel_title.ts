@@ -18,10 +18,10 @@
  */
 
 import { AxisProps } from '.';
+import { FontStyle } from '../../../../../common/text_utils';
 import { Position } from '../../../../../utils/common';
 import { getSimplePadding } from '../../../../../utils/dimensions';
 import { AxisStyle } from '../../../../../utils/themes/theme';
-import { FontStyle } from '../../../../partition_chart/layout/types/types';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
 import { renderText, TextFont } from '../primitives/text';

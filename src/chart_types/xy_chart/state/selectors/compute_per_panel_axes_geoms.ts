@@ -40,7 +40,7 @@ const getPanelTitle = (
   horizontalValue: any,
   groupBy?: SmallMultiplesGroupBy,
 ): string => {
-  const formatter = isVertical ? groupBy?.vertical?.title : groupBy?.horizontal?.title;
+  const formatter = isVertical ? groupBy?.vertical?.format : groupBy?.horizontal?.format;
   const value = isVertical ? `${verticalValue}` : `${horizontalValue}`;
 
   return safeFormat(value, formatter);
