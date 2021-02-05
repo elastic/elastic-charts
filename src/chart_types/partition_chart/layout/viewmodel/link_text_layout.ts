@@ -28,15 +28,11 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { integerSnap, monotonicHillClimb } from '../../../../common/optimize';
-import { Box, Font, TextAlign, TextMeasure } from '../../../../common/text_utils';
+import { Box, Font, TextMeasure } from '../../../../common/text_utils';
 import { Color, ValueFormatter } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { Config, LinkLabelConfig } from '../types/config_types';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
-
-function cutToLength(s: string, maxLength: number) {
-  return s.length <= maxLength ? s : `${s.slice(0, Math.max(0, maxLength - 1))}…`; // ellipsis is one char
-}
 
 /** @internal */
 export interface LinkLabelsViewModelSpec {
@@ -109,20 +105,8 @@ export function linkTextLayout(
       }),
     )
     .filter(({ text }) => text !== ''); // cull linked labels whose text was truncated to nothing;
-  return { linkLabels, valueFontSpec, labelFontSpec, strokeColor };
-}
 
-function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, box: Box) {
-  const desiredLength = desiredText.length;
-  const response = (v: number) => measure(fontSize, [{ ...box, text: box.text.slice(0, Math.max(0, v)) }])[0].width;
-  const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
-  const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(box.text, visibleLength);
-  const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...box, text }])[0];
-  return {
-    width,
-    verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
-    text,
-  };
+  return { linkLabels, valueFontSpec, labelFontSpec, strokeColor };
 }
 
 function linkLabelCompare(n1: ShapeTreeNode, n2: ShapeTreeNode) {
@@ -162,7 +146,10 @@ function nodeToLinkLabel({
   rectHeight: Distance;
   diskCenter: Point;
 }) {
+  const labelFont: Font = linkLabel; // only interested in the font properties
+  const valueFont: Font = { ...labelFont, ...linkLabel.valueFont }; // only interested in the font properties
   return function nodeToLinkLabelMap(node: ShapeTreeNode): LinkLabelVM {
+    // geometry
     const midAngle = trueBearingToStandardPositionAngle((node.x0 + node.x1) / 2);
     const north = midAngle < TAU / 2 ? 1 : -1;
     const rightSide = TAU / 4 < midAngle && midAngle < (3 * TAU) / 4 ? 0 : 1;
@@ -173,53 +160,76 @@ function nodeToLinkLabel({
     const y0 = sin * anchorRadius;
     const x = cos * (anchorRadius + linkLabel.radiusPadding);
     const y = sin * (anchorRadius + linkLabel.radiusPadding);
+    const stemFromX = x; // might be different in the future, eg. to allow a small gap: doc purpose
+    const stemFromY = y; // might be different in the future, eg. to allow a small gap: doc purpose
+
+    // calculate and remember vertical offset, as linked labels accrete
     const poolIndex = rightSide + (1 - north);
     const relativeY = north * y;
-    currentY[poolIndex] = Math.max(currentY[poolIndex] + rowPitch, relativeY + yRelativeIncrement, rowPitch / 2);
-    const cy = north * currentY[poolIndex];
-    const stemFromX = x;
-    const stemFromY = y;
+    const yOffset = Math.max(currentY[poolIndex] + rowPitch, relativeY + yRelativeIncrement, rowPitch / 2);
+    currentY[poolIndex] = yOffset;
+
+    // more geometry: the part that depends on vertical position
+    const cy = north * yOffset;
     const stemToX = x + north * west * cy - west * relativeY;
     const stemToY = cy;
-    const rawText = rawTextGetter(node);
-    const labelText = cutToLength(rawText, maxTextLength);
-    const valueText = valueFormatter(valueGetter(node));
     const translateX = stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap);
-    const fontSpec: Font = { ...linkLabel, ...linkLabel.valueFont }; // only interested in the font properties
-    const valueWidth = measureOneBoxWidth(measure, linkLabel.fontSize, fontSpec, valueText);
-    const widthAdjustment = valueWidth + 2 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
-    const allottedLabelWidth = Math.max(
-      0,
-      rightSide ? rectWidth - diskCenter.x - translateX - widthAdjustment : diskCenter.x + translateX - widthAdjustment,
-    );
-    const { text, width, verticalOffset } =
-      linkLabel.fontSize / 2 <= cy + diskCenter.y && cy + diskCenter.y <= rectHeight - linkLabel.fontSize / 2
-        ? fitText(measure, labelText, allottedLabelWidth, linkLabel.fontSize, {
-            ...linkLabel,
-            text: labelText,
-          })
-        : { text: '', width: 0, verticalOffset: 0 };
+    const translate: PointTuple = [translateX, stemToY];
+
+    // the path points of the label link, ie. a polyline
     const linkLabels: PointTuples = [
       [x0, y0],
       [stemFromX, stemFromY],
       [stemToX, stemToY],
       [stemToX + west * linkLabel.horizontalStemLength, stemToY],
     ];
-    const translate: PointTuple = [translateX, stemToY];
-    const textAlign: TextAlign = rightSide ? 'left' : 'right';
+
+    // value text is simple: the full, formatted value is always shown, not truncated
+    const valueText = valueFormatter(valueGetter(node));
+    const valueWidth = measureOneBoxWidth(measure, linkLabel.fontSize, { ...valueFont, text: valueText });
+    const widthAdjustment = valueWidth + 2 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
+
+    // label text removes space allotted for value and gaps, then tries to fit as much as possible
+    const labelText = cutToLength(rawTextGetter(node), maxTextLength);
+    const allottedLabelWidth = Math.max(
+      0,
+      rightSide ? rectWidth - diskCenter.x - translateX - widthAdjustment : diskCenter.x + translateX - widthAdjustment,
+    );
+    const { text, width, verticalOffset } =
+      linkLabel.fontSize / 2 <= cy + diskCenter.y && cy + diskCenter.y <= rectHeight - linkLabel.fontSize / 2
+        ? fitText(measure, labelText, allottedLabelWidth, linkLabel.fontSize, labelFont)
+        : { text: '', width: 0, verticalOffset: 0 };
+
     return {
       linkLabels,
       translate,
-      textAlign,
       text,
       valueText,
       width,
       valueWidth,
       verticalOffset,
+      textAlign: rightSide ? 'left' : 'right',
     };
   };
 }
 
-function measureOneBoxWidth(measure: TextMeasure, fontSize: number, fontSpec: Font, text: string) {
-  return measure(fontSize, [{ ...fontSpec, text }])[0].width;
+function measureOneBoxWidth(measure: TextMeasure, fontSize: number, box: Box) {
+  return measure(fontSize, [box])[0].width;
+}
+
+function cutToLength(s: string, maxLength: number) {
+  return s.length <= maxLength ? s : `${s.slice(0, Math.max(0, maxLength - 1))}…`; // ellipsis is one char
+}
+
+function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, font: Font) {
+  const desiredLength = desiredText.length;
+  const response = (v: number) => measure(fontSize, [{ ...font, text: desiredText.slice(0, Math.max(0, v)) }])[0].width;
+  const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
+  const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(desiredText, visibleLength);
+  const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...font, text }])[0];
+  return {
+    width,
+    verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
+    text,
+  };
 }

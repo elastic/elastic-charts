@@ -48,6 +48,7 @@ export type NumericFontWeight = number & typeof FONT_WEIGHTS[number];
 export const FONT_STYLES = Object.freeze(['normal', 'italic', 'oblique', 'inherit', 'initial', 'unset'] as const);
 export type FontStyle = typeof FONT_STYLES[number];
 
+// this doesn't include the font size, so it's more like a font face (?) - unfortunately all vague terms
 export interface Font {
   fontStyle: FontStyle;
   fontVariant: FontVariant;
