@@ -30,16 +30,15 @@ import { getPartitionSpec } from './partition_spec';
 export const computeLegendSelector = createCachedSelector(
   [getPartitionSpec, getSettingsSpecSelector, partitionGeometries],
   (partitionSpec, { flatLegend, legendMaxDepth, legendPosition }, { quadViewModel }): LegendItem[] => {
-    if (!partitionSpec) {
-      return [];
-    }
-    return getLegendItems(
-      partitionSpec.id,
-      partitionSpec.layers,
-      flatLegend,
-      legendMaxDepth,
-      legendPosition,
-      quadViewModel,
-    );
+    return partitionSpec
+      ? getLegendItems(
+          partitionSpec.id,
+          partitionSpec.layers,
+          flatLegend,
+          legendMaxDepth,
+          legendPosition,
+          quadViewModel,
+        )
+      : [];
   },
 )(getChartIdSelector);
