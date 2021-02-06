@@ -85,37 +85,39 @@ export function limitLogScaleDomain([min, max]: [min: number, max: number], logM
     }
   }
 
+  const fallbackLimit = absLimit || LOG_MIN_ABS_DOMAIN;
+
   if (min === 0) {
     if (max > 0) {
-      return [LOG_MIN_ABS_DOMAIN, max];
+      return [fallbackLimit, max];
     }
     if (max < 0) {
-      return [-LOG_MIN_ABS_DOMAIN, max];
+      return [-fallbackLimit, max];
     }
-    return [LOG_MIN_ABS_DOMAIN, LOG_MIN_ABS_DOMAIN];
+    return [fallbackLimit, fallbackLimit];
   }
   if (max === 0) {
     if (min > 0) {
-      return [min, LOG_MIN_ABS_DOMAIN];
+      return [min, fallbackLimit];
     }
     if (min < 0) {
-      return [min, -LOG_MIN_ABS_DOMAIN];
+      return [min, -fallbackLimit];
     }
-    return [LOG_MIN_ABS_DOMAIN, LOG_MIN_ABS_DOMAIN];
+    return [fallbackLimit, fallbackLimit];
   }
   if (min < 0 && max > 0) {
     const isD0Min = Math.abs(max) - Math.abs(min) >= 0;
     if (isD0Min) {
-      return [LOG_MIN_ABS_DOMAIN, max];
+      return [fallbackLimit, max];
     }
-    return [min, -LOG_MIN_ABS_DOMAIN];
+    return [min, -fallbackLimit];
   }
   if (min > 0 && max < 0) {
     const isD0Max = Math.abs(min) - Math.abs(max) >= 0;
     if (isD0Max) {
-      return [min, LOG_MIN_ABS_DOMAIN];
+      return [min, fallbackLimit];
     }
-    return [-LOG_MIN_ABS_DOMAIN, max];
+    return [-fallbackLimit, max];
   }
   return [min, max];
 }

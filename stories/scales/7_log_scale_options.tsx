@@ -19,11 +19,11 @@
 
 import { boolean, number, select } from '@storybook/addon-knobs';
 import { range } from 'lodash';
-import numeral from 'numeral';
 import React from 'react';
 
-import { Chart, Axis, LineSeries, Position, ScaleType, Settings, SettingsSpecProps } from '../../src';
+import { Chart, Axis, LineSeries, Position, ScaleType, Settings, SettingsSpecProps, AreaSeries } from '../../src';
 import { LogBase } from '../../src/scales/scale_continuous';
+import { logBaseMap, logFormatter } from '../utils/formatters';
 import { getKnobsFromEnum } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -86,11 +86,20 @@ const getDataValue = (type: string, v: number, i: number, length: number) => {
   }
 };
 
-const logBaseMap = {
-  [LogBase.Common]: 10,
-  [LogBase.Binary]: 2,
-  [LogBase.Natural]: Math.E,
+const seriesMap = {
+  line: LineSeries,
+  area: AreaSeries,
 };
+
+const getSeriesType = () =>
+  select<keyof typeof seriesMap>(
+    'Series Type',
+    {
+      Line: 'line',
+      Area: 'area',
+    },
+    'line',
+  );
 
 const getInitalData = (rows: number) => {
   const quart = Math.round(rows / 4);
@@ -107,22 +116,28 @@ const getData = (rows: number, { yLogBase, xLogBase, yDataType, xDataType, yNega
     };
   });
 
-const formatter = (n: number) => numeral(n).format('0,00e+0');
-
 export const Example = () => {
   const rows = number('Rows in dataset', 11, { min: 5, step: 2, max: 21 });
   const logOptions = getLogKnobs();
   const data = getData(rows, logOptions);
+  const type = getSeriesType();
+  const Series = seriesMap[type];
 
   return (
     <Chart className="story-chart">
       <Settings {...logOptions} />
-      <Axis id="y" tickFormat={formatter} position={Position.Left} />
-      <Axis id="x" tickFormat={formatter} position={Position.Bottom} style={{ tickLabel: { rotation: -90 } }} />
-      <LineSeries
-        id="line"
+      <Axis id="y" tickFormat={logFormatter(logOptions.yLogBase)} position={Position.Left} />
+      <Axis
+        id="x"
+        tickFormat={logFormatter(logOptions.xLogBase)}
+        position={Position.Bottom}
+        style={{ tickLabel: { rotation: -90 } }}
+      />
+      <Series
+        id="series"
         yScaleType={getScaleType(ScaleType.Log, 'Y - Axis')}
         xScaleType={getScaleType(ScaleType.Log, 'X - Axis')}
+        areaSeriesStyle={{ point: { visible: true } }}
         data={data}
       />
     </Chart>
