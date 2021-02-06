@@ -29,7 +29,14 @@ export const getTooltipInfoSelector = createCachedSelector(
   [getPartitionSpec, getPickedShapes],
   (spec, pickedShapes): TooltipInfo => {
     return spec
-      ? getTooltipInfo(pickedShapes, spec.layers, spec.valueGetter, spec.valueFormatter, spec.percentFormatter, spec.id)
+      ? getTooltipInfo(
+          pickedShapes,
+          spec.layers.map((l) => l.nodeLabel),
+          spec.valueGetter,
+          spec.valueFormatter,
+          spec.percentFormatter,
+          spec.id,
+        )
       : EMPTY_TOOLTIP;
   },
 )((state) => state.chartId);

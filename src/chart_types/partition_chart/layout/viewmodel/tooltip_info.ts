@@ -18,8 +18,7 @@
  */
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
-import { ValueFormatter } from '../../../../utils/common';
-import { Layer } from '../../specs';
+import { LabelAccessor, ValueFormatter } from '../../../../utils/common';
 import { percentValueGetter, sumValueGetter } from '../config';
 import { QuadViewModel, ValueGetter } from '../types/viewmodel_types';
 import { valueGetterFunction } from './scenegraph';
@@ -33,7 +32,7 @@ export const EMPTY_TOOLTIP = Object.freeze({
 /** @internal */
 export function getTooltipInfo(
   pickedShapes: QuadViewModel[],
-  labelFormatters: Layer[],
+  labelFormatters: (LabelAccessor | undefined)[],
   valueGetter: ValueGetter,
   valueFormatter: ValueFormatter,
   percentFormatter: ValueFormatter,
@@ -51,8 +50,7 @@ export function getTooltipInfo(
   const valueGetterFun = valueGetterFunction(valueGetter);
   const primaryValueGetterFun = valueGetterFun === percentValueGetter ? sumValueGetter : valueGetterFun;
   pickedShapes.forEach((shape) => {
-    const labelFormatter = labelFormatters[shape.depth - 1];
-    const formatter = labelFormatter?.nodeLabel;
+    const formatter = labelFormatters[shape.depth - 1];
     const value = primaryValueGetterFun(shape);
 
     tooltipInfo.values.push({
