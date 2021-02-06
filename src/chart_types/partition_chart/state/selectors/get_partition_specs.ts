@@ -17,14 +17,17 @@
  * under the License.
  */
 
+import createCachedSelector from 're-reselect';
+
 import { ChartTypes } from '../../..';
 import { SpecTypes } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { PartitionSpec } from '../../specs';
 
+const getSpecs = (state: GlobalChartState) => state.specs;
+
 /** @internal */
-export function getPartitionSpec(state: GlobalChartState): PartitionSpec | null {
-  const pieSpecs = getSpecsFromStore<PartitionSpec>(state.specs, ChartTypes.Partition, SpecTypes.Series);
-  return pieSpecs.length > 0 ? pieSpecs[0] : null; // singleton!
-}
+export const getPartitionSpecs = createCachedSelector([getSpecs], (specs) => {
+  return getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
+})((state) => state.chartId);

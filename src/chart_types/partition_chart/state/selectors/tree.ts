@@ -19,17 +19,12 @@
 
 import createCachedSelector from 're-reselect';
 
-import { ChartTypes } from '../../..';
-import { SpecTypes } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { getSpecsFromStore } from '../../../../state/utils';
 import { configMetadata } from '../../layout/config';
 import { childOrders, HierarchyOfArrays, HIERARCHY_ROOT_KEY } from '../../layout/utils/group_by_rollup';
 import { getHierarchyOfArrays } from '../../layout/viewmodel/hierarchy_of_arrays';
 import { isSunburst, isTreemap } from '../../layout/viewmodel/viewmodel';
 import { PartitionSpec } from '../../specs';
-
-const getSpecs = (state: GlobalChartState) => state.specs;
+import { getPartitionSpecs } from './get_partition_specs';
 
 function getTreeForSpec(spec: PartitionSpec) {
   const { data, valueAccessor, layers } = spec;
@@ -45,9 +40,8 @@ function getTreeForSpec(spec: PartitionSpec) {
 
 /** @internal */
 export const getTree = createCachedSelector(
-  [getSpecs],
-  (specs): HierarchyOfArrays => {
-    const partitionSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
+  [getPartitionSpecs],
+  (partitionSpecs): HierarchyOfArrays => {
     return partitionSpecs.length === 1 ? getTreeForSpec(partitionSpecs[0]) : []; // singleton!
   },
 )((state) => state.chartId);
