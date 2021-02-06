@@ -19,30 +19,11 @@
 
 import createCachedSelector from 're-reselect';
 
-import { Datum } from '../../../../utils/common';
 import { configMetadata } from '../../layout/config';
-import { PartitionLayout } from '../../layout/types/config_types';
-import { childOrders, HierarchyOfArrays, HIERARCHY_ROOT_KEY } from '../../layout/utils/group_by_rollup';
-import { getHierarchyOfArrays } from '../../layout/viewmodel/hierarchy_of_arrays';
-import { isSunburst, isTreemap } from '../../layout/viewmodel/viewmodel';
-import { Layer, PartitionSpec } from '../../specs';
+import { HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
+import { partitionTree } from '../../layout/viewmodel/hierarchy_of_arrays';
+import { PartitionSpec } from '../../specs';
 import { getPartitionSpecs } from './get_partition_specs';
-
-function partitionTree(
-  data: Datum[],
-  valueAccessor: any,
-  layers: Layer[],
-  defaultLayout: PartitionLayout,
-  layout: PartitionLayout = defaultLayout,
-) {
-  const sorter = isTreemap(layout) || isSunburst(layout) ? childOrders.descending : null;
-  return getHierarchyOfArrays(
-    data,
-    valueAccessor,
-    [() => HIERARCHY_ROOT_KEY, ...layers.map(({ groupByRollup }) => groupByRollup)],
-    sorter,
-  );
-}
 
 function getTreeForSpec(spec: PartitionSpec) {
   const { data, valueAccessor, layers, config } = spec;

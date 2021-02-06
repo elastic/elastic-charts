@@ -19,18 +19,23 @@
 
 import { Relation } from '../../../../common/text_utils';
 import { IndexedAccessorFn } from '../../../../utils/accessor';
-import { ValueAccessor } from '../../../../utils/common';
+import { Datum, ValueAccessor } from '../../../../utils/common';
+import { Layer } from '../../specs';
+import { PartitionLayout } from '../types/config_types';
 import {
-  HierarchyOfArrays,
   aggregateComparator,
   aggregators,
   childOrders,
   groupByRollup,
+  HIERARCHY_ROOT_KEY,
+  HierarchyOfArrays,
   mapEntryValue,
   mapsToArrays,
   Sorter,
 } from '../utils/group_by_rollup';
+import { isSunburst, isTreemap } from './viewmodel';
 
+/* @internal */
 export function getHierarchyOfArrays(
   rawFacts: Relation,
   valueAccessor: ValueAccessor,
@@ -55,5 +60,21 @@ export function getHierarchyOfArrays(
   return mapsToArrays(
     groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts),
     sorter && aggregateComparator(mapEntryValue, sorter),
+  );
+}
+
+export function partitionTree(
+  data: Datum[],
+  valueAccessor: any,
+  layers: Layer[],
+  defaultLayout: PartitionLayout,
+  layout: PartitionLayout = defaultLayout,
+) {
+  const sorter = isTreemap(layout) || isSunburst(layout) ? childOrders.descending : null;
+  return getHierarchyOfArrays(
+    data,
+    valueAccessor,
+    [() => HIERARCHY_ROOT_KEY, ...layers.map(({ groupByRollup }) => groupByRollup)],
+    sorter,
   );
 }
