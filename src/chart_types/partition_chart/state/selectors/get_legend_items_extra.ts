@@ -23,9 +23,7 @@ import { LegendItemExtraValues } from '../../../../common/legend';
 import { SeriesKey } from '../../../../common/series_id';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { ValueFormatter } from '../../../../utils/common';
-import { CHILDREN_KEY, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
-import { Layer } from '../../specs';
+import { getExtraValueMap } from '../../layout/viewmodel/hierarchy_of_arrays';
 import { getPartitionSpec } from './partition_spec';
 import { getTree } from './tree';
 
@@ -38,34 +36,3 @@ export const getLegendItemsExtra = createCachedSelector(
       : new Map<SeriesKey, LegendItemExtraValues>();
   },
 )(getChartIdSelector);
-
-/**
- * Creates flat extra value map from nested key path
- */
-function getExtraValueMap(
-  layers: Layer[],
-  valueFormatter: ValueFormatter,
-  tree: HierarchyOfArrays,
-  maxDepth: number,
-  depth: number = 0,
-  keys: Map<SeriesKey, LegendItemExtraValues> = new Map(),
-): Map<SeriesKey, LegendItemExtraValues> {
-  for (let i = 0; i < tree.length; i++) {
-    const branch = tree[i];
-    const [key, arrayNode] = branch;
-    const { value, path, [CHILDREN_KEY]: children } = arrayNode;
-
-    if (key != null) {
-      const values: LegendItemExtraValues = new Map();
-      const formattedValue = valueFormatter ? valueFormatter(value) : value;
-
-      values.set(key, formattedValue);
-      keys.set(path.map(({ index }) => index).join('__'), values);
-    }
-
-    if (depth < maxDepth) {
-      getExtraValueMap(layers, valueFormatter, children, maxDepth, depth + 1, keys);
-    }
-  }
-  return keys;
-}

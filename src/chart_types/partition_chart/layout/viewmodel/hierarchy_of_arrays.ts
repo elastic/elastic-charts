@@ -17,15 +17,18 @@
  * under the License.
  */
 
+import { LegendItemExtraValues } from '../../../../common/legend';
+import { SeriesKey } from '../../../../common/series_id';
 import { Relation } from '../../../../common/text_utils';
 import { IndexedAccessorFn } from '../../../../utils/accessor';
-import { Datum, ValueAccessor } from '../../../../utils/common';
+import { Datum, ValueAccessor, ValueFormatter } from '../../../../utils/common';
 import { Layer } from '../../specs';
 import { PartitionLayout } from '../types/config_types';
 import {
   aggregateComparator,
   aggregators,
   childOrders,
+  CHILDREN_KEY,
   groupByRollup,
   HIERARCHY_ROOT_KEY,
   HierarchyOfArrays,
@@ -63,9 +66,10 @@ export function getHierarchyOfArrays(
   );
 }
 
+/** @internal */
 export function partitionTree(
   data: Datum[],
-  valueAccessor: any,
+  valueAccessor: ValueAccessor,
   layers: Layer[],
   defaultLayout: PartitionLayout,
   layout: PartitionLayout = defaultLayout,
@@ -74,7 +78,40 @@ export function partitionTree(
   return getHierarchyOfArrays(
     data,
     valueAccessor,
+    // eslint-disable-next-line no-shadow
     [() => HIERARCHY_ROOT_KEY, ...layers.map(({ groupByRollup }) => groupByRollup)],
     sorter,
   );
+}
+
+/**
+ * Creates flat extra value map from nested key path
+ * @internal
+ */
+export function getExtraValueMap(
+  layers: Layer[],
+  valueFormatter: ValueFormatter,
+  tree: HierarchyOfArrays,
+  maxDepth: number,
+  depth: number = 0,
+  keys: Map<SeriesKey, LegendItemExtraValues> = new Map(),
+): Map<SeriesKey, LegendItemExtraValues> {
+  for (let i = 0; i < tree.length; i++) {
+    const branch = tree[i];
+    const [key, arrayNode] = branch;
+    const { value, path, [CHILDREN_KEY]: children } = arrayNode;
+
+    if (key != null) {
+      const values: LegendItemExtraValues = new Map();
+      const formattedValue = valueFormatter ? valueFormatter(value) : value;
+
+      values.set(key, formattedValue);
+      keys.set(path.map(({ index }) => index).join('__'), values);
+    }
+
+    if (depth < maxDepth) {
+      getExtraValueMap(layers, valueFormatter, children, maxDepth, depth + 1, keys);
+    }
+  }
+  return keys;
 }
