@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { ChartTypes } from '../../chart_types';
 import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
 import { getSeriesIndex } from '../../chart_types/xy_chart/utils/series';
 import { LegendItem } from '../../common/legend';
@@ -82,10 +83,9 @@ export function interactionsReducer(
         },
       };
     case ON_MOUSE_DOWN:
-      const layerValues: LayerValue[] = getPickedShapesLayerValues(globalState)[0];
       return {
         ...state,
-        drilldown: layerValues ? layerValues[layerValues.length - 1].path.map((n) => n.value) : [],
+        drilldown: getDrilldownData(globalState),
         pointer: {
           ...state.pointer,
           dragging: false,
@@ -174,7 +174,10 @@ export function interactionsReducer(
   }
 }
 
-/** @internal */
+/**
+ * Helper functions that currently depend on chart type eg. xy or partition
+ */
+
 function toggleDeselectedDataSeries(
   { legendItemId: id, negate }: ToggleDeselectSeriesAction,
   deselectedDataSeries: SeriesIdentifier[],
@@ -198,4 +201,12 @@ function toggleDeselectedDataSeries(
     return [...deselectedDataSeries.slice(0, index), ...deselectedDataSeries.slice(index + 1)];
   }
   return [...deselectedDataSeries, id];
+}
+
+function getDrilldownData(globalState: GlobalChartState) {
+  if (globalState.chartType !== ChartTypes.Partition) {
+    return [];
+  }
+  const layerValues: LayerValue[] = getPickedShapesLayerValues(globalState)[0];
+  return layerValues ? layerValues[layerValues.length - 1].path.map((n) => n.value) : [];
 }
