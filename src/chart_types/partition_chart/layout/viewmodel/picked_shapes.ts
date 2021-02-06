@@ -33,7 +33,7 @@ export const pickedShapes = (geoms: ShapeViewModel, pointerPosition: Point): Qua
 };
 
 /** @internal */
-export function pickShapesLayerValues(shapes: QuadViewModel[]): Array<Array<LayerValue>> {
+export function pickShapesLayerValues(shapes: QuadViewModel[]): LayerValue[][] {
   const maxDepth = shapes.reduce((acc, curr) => Math.max(acc, curr.depth), 0);
   return shapes
     .filter(({ depth }) => depth === maxDepth) // eg. lowest layer in a treemap, where layers overlap in screen space; doesn't apply to sunburst/flame
