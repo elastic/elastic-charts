@@ -47,7 +47,7 @@ export const getLegendItemsExtra = createCachedSelector(
  * @param legendMaxDepth - SettingsSpec['legendMaxDepth']
  */
 function isValidLegendMaxDepth(legendMaxDepth: SettingsSpec['legendMaxDepth']): boolean {
-  return typeof legendMaxDepth === 'number' && !Number.isNaN(legendMaxDepth) && legendMaxDepth > 0;
+  return Number.isFinite(legendMaxDepth) && legendMaxDepth > 0;
 }
 
 /**
