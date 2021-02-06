@@ -20,55 +20,16 @@
 import createCachedSelector from 're-reselect';
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
-import { percentValueGetter, sumValueGetter } from '../../layout/config';
-import { valueGetterFunction } from '../../layout/viewmodel/scenegraph';
+import { EMPTY_TOOLTIP, getTooltipInfo } from '../../layout/viewmodel/tooltip_info';
 import { getPartitionSpec } from './partition_spec';
 import { getPickedShapes } from './picked_shapes';
-
-const EMPTY_TOOLTIP = Object.freeze({
-  header: null,
-  values: [],
-});
 
 /** @internal */
 export const getTooltipInfoSelector = createCachedSelector(
   [getPartitionSpec, getPickedShapes],
-  (partitionSpec, pickedShapes): TooltipInfo => {
-    if (!partitionSpec) {
-      return EMPTY_TOOLTIP;
-    }
-    const { valueGetter, valueFormatter, layers: labelFormatters } = partitionSpec;
-    if (!valueFormatter || !labelFormatters) {
-      return EMPTY_TOOLTIP;
-    }
-
-    const tooltipInfo: TooltipInfo = {
-      header: null,
-      values: [],
-    };
-
-    const valueGetterFun = valueGetterFunction(valueGetter);
-    const primaryValueGetterFun = valueGetterFun === percentValueGetter ? sumValueGetter : valueGetterFun;
-    pickedShapes.forEach((shape) => {
-      const labelFormatter = labelFormatters[shape.depth - 1];
-      const formatter = labelFormatter?.nodeLabel;
-      const value = primaryValueGetterFun(shape);
-
-      tooltipInfo.values.push({
-        label: formatter ? formatter(shape.dataName) : shape.dataName,
-        color: shape.fillColor,
-        isHighlighted: false,
-        isVisible: true,
-        seriesIdentifier: {
-          specId: partitionSpec.id,
-          key: partitionSpec.id,
-        },
-        value,
-        formattedValue: `${valueFormatter(value)} (${partitionSpec.percentFormatter(percentValueGetter(shape))})`,
-        valueAccessor: shape.depth,
-      });
-    });
-
-    return tooltipInfo;
+  (spec, pickedShapes): TooltipInfo => {
+    return spec
+      ? getTooltipInfo(pickedShapes, spec.layers, spec.valueGetter, spec.valueFormatter, spec.percentFormatter, spec.id)
+      : EMPTY_TOOLTIP;
   },
 )((state) => state.chartId);

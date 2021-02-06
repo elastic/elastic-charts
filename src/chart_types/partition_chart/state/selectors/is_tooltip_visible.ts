@@ -33,9 +33,6 @@ import { getTooltipInfoSelector } from './tooltip';
 export const isTooltipVisibleSelector = createCachedSelector(
   [getSettingsSpecSelector, getTooltipInfoSelector],
   (settingsSpec, tooltipInfo): boolean => {
-    if (getTooltipType(settingsSpec) === TooltipType.None) {
-      return false;
-    }
-    return tooltipInfo.values.length > 0;
+    return getTooltipType(settingsSpec) !== TooltipType.None && tooltipInfo.values.length > 0;
   },
 )(getChartIdSelector);
