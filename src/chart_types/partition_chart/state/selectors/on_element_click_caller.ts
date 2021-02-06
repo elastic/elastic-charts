@@ -44,8 +44,8 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
     if (selector === null && state.chartType === ChartTypes.Partition) {
       selector = createCachedSelector(
         [getPartitionSpec, getLastClickSelector, getSettingsSpecSelector, getPickedShapesLayerValues],
-        (pieSpec, lastClick: PointerState | null, settings: SettingsSpec, pickedShapes): void => {
-          if (!pieSpec) {
+        (partitionSpec, lastClick: PointerState | null, settings: SettingsSpec, pickedShapes): void => {
+          if (!partitionSpec) {
             return;
           }
           if (!settings.onElementClick) {
@@ -56,8 +56,8 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
             const elements = pickedShapes.map<[Array<LayerValue>, SeriesIdentifier]>((values) => [
               values,
               {
-                specId: pieSpec.id,
-                key: `spec{${pieSpec.id}}`,
+                specId: partitionSpec.id,
+                key: `spec{${partitionSpec.id}}`,
               },
             ]);
             settings.onElementClick(elements);

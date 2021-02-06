@@ -33,8 +33,8 @@ import { getPartitionSpec } from './partition_spec';
 /** @internal */
 export const computeLegendSelector = createCachedSelector(
   [getPartitionSpec, getSettingsSpecSelector, partitionGeometries],
-  (pieSpec, { flatLegend, legendMaxDepth, legendPosition }, { quadViewModel }): LegendItem[] => {
-    if (!pieSpec) {
+  (partitionSpec, { flatLegend, legendMaxDepth, legendPosition }, { quadViewModel }): LegendItem[] => {
+    if (!partitionSpec) {
       return [];
     }
 
@@ -59,14 +59,14 @@ export const computeLegendSelector = createCachedSelector(
     items.sort(compareTreePaths);
 
     return items.map<LegendItem>(({ dataName, fillColor, depth, path }) => {
-      const formatter = pieSpec.layers[depth - 1]?.nodeLabel ?? identity;
+      const formatter = partitionSpec.layers[depth - 1]?.nodeLabel ?? identity;
       return {
         color: fillColor,
         label: formatter(dataName),
         childId: dataName,
         depth: useHierarchicalLegend ? depth - 1 : 0,
         path,
-        seriesIdentifier: { key: dataName, specId: pieSpec.id },
+        seriesIdentifier: { key: dataName, specId: partitionSpec.id },
       };
     });
   },

@@ -33,11 +33,11 @@ const EMPTY_TOOLTIP = Object.freeze({
 /** @internal */
 export const getTooltipInfoSelector = createCachedSelector(
   [getPartitionSpec, getPickedShapes],
-  (pieSpec, pickedShapes): TooltipInfo => {
-    if (!pieSpec) {
+  (partitionSpec, pickedShapes): TooltipInfo => {
+    if (!partitionSpec) {
       return EMPTY_TOOLTIP;
     }
-    const { valueGetter, valueFormatter, layers: labelFormatters } = pieSpec;
+    const { valueGetter, valueFormatter, layers: labelFormatters } = partitionSpec;
     if (!valueFormatter || !labelFormatters) {
       return EMPTY_TOOLTIP;
     }
@@ -60,11 +60,11 @@ export const getTooltipInfoSelector = createCachedSelector(
         isHighlighted: false,
         isVisible: true,
         seriesIdentifier: {
-          specId: pieSpec.id,
-          key: pieSpec.id,
+          specId: partitionSpec.id,
+          key: partitionSpec.id,
         },
         value,
-        formattedValue: `${valueFormatter(value)} (${pieSpec.percentFormatter(percentValueGetter(shape))})`,
+        formattedValue: `${valueFormatter(value)} (${partitionSpec.percentFormatter(percentValueGetter(shape))})`,
         valueAccessor: shape.depth,
       });
     });

@@ -67,8 +67,8 @@ export function createOnElementOverCaller(): (state: GlobalChartState) => void {
     if (selector === null && state.chartType === ChartTypes.Partition) {
       selector = createCachedSelector(
         [getPartitionSpec, getPickedShapesLayerValues, getSettingsSpecSelector],
-        (pieSpec, nextPickedShapes, settings): void => {
-          if (!pieSpec) {
+        (partitionSpec, nextPickedShapes, settings): void => {
+          if (!partitionSpec) {
             return;
           }
           if (!settings.onElementOver) {
@@ -79,8 +79,8 @@ export function createOnElementOverCaller(): (state: GlobalChartState) => void {
             const elements = nextPickedShapes.map<[Array<LayerValue>, SeriesIdentifier]>((values) => [
               values,
               {
-                specId: pieSpec.id,
-                key: `spec{${pieSpec.id}}`,
+                specId: partitionSpec.id,
+                key: `spec{${partitionSpec.id}}`,
               },
             ]);
             settings.onElementOver(elements);

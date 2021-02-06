@@ -40,8 +40,8 @@ export function createOnElementOutCaller(): (state: GlobalChartState) => void {
     if (selector === null && state.chartType === ChartTypes.Partition) {
       selector = createCachedSelector(
         [getPartitionSpec, getPickedShapesLayerValues, getSettingsSpecSelector],
-        (pieSpec, pickedShapes, settings): void => {
-          if (!pieSpec) {
+        (partitionSpec, pickedShapes, settings): void => {
+          if (!partitionSpec) {
             return;
           }
           if (!settings.onElementOut) {

@@ -32,11 +32,11 @@ import { getTree } from './tree';
 /** @internal */
 export const getLegendItemsExtra = createCachedSelector(
   [getPartitionSpec, getSettingsSpecSelector, getTree],
-  (pieSpec, { legendMaxDepth }, tree): Map<SeriesKey, LegendItemExtraValues> => {
+  (partitionSpec, { legendMaxDepth }, tree): Map<SeriesKey, LegendItemExtraValues> => {
     const legendExtraValues = new Map<SeriesKey, LegendItemExtraValues>();
 
-    return pieSpec && isValidLegendMaxDepth(legendMaxDepth)
-      ? getExtraValueMap(pieSpec, tree, legendMaxDepth)
+    return partitionSpec && isValidLegendMaxDepth(legendMaxDepth)
+      ? getExtraValueMap(partitionSpec, tree, legendMaxDepth)
       : legendExtraValues;
   },
 )(getChartIdSelector);
