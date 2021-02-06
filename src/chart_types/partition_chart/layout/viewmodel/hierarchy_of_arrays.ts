@@ -18,9 +18,9 @@
  */
 
 import { CategoryKey } from '../../../../common/category';
+import { Relation } from '../../../../common/text_utils';
 import { IndexedAccessorFn } from '../../../../utils/accessor';
 import { ValueAccessor } from '../../../../utils/common';
-import { Relation } from '../types/types';
 import {
   HierarchyOfArrays,
   aggregateComparator,

@@ -17,15 +17,24 @@
  * under the License.
  */
 
-import { wrapToTau } from '../geometry';
-import { RIGHT_ANGLE } from './constants';
+import { ChartTypes } from '../../..';
+import { SpecTypes } from '../../../../specs/constants';
+import { SmallMultiplesSpec } from '../../../../specs/small_multiples';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { getSpecsFromStore } from '../../../../state/utils';
 
-/** @internal */
-export function trueBearingToStandardPositionAngle(alphaIn: number) {
-  return wrapToTau(RIGHT_ANGLE - alphaIn);
-}
-
-/** @internal */
-export function logarithm(base: number, y: number) {
-  return Math.log(y) / Math.log(base);
-}
+/**
+ * Return the small multiple spec
+ * @internal
+ */
+export const getSmallMultipleSpec = (state: GlobalChartState) => {
+  const smallMultiples = getSpecsFromStore<SmallMultiplesSpec>(
+    state.specs,
+    ChartTypes.Global,
+    SpecTypes.SmallMultiples,
+  );
+  if (smallMultiples.length !== 1) {
+    return undefined;
+  }
+  return smallMultiples[0];
+};

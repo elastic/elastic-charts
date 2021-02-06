@@ -199,6 +199,8 @@ export interface AxisStyle {
     // (undocumented)
     axisLine: StrokeStyle & Visible;
     // (undocumented)
+    axisPanelTitle: TextStyle & Visible;
+    // (undocumented)
     axisTitle: TextStyle & Visible;
     // (undocumented)
     gridLine: {
@@ -926,8 +928,13 @@ export const GroupBy: React.FunctionComponent<GroupByProps>;
 // @alpha (undocumented)
 export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
 
+// Warning: (ae-incompatible-release-tags) The symbol "GroupByFormatter" is marked as @public, but its signature references "GroupByAccessor" which is marked as @alpha
+//
+// @public
+export type GroupByFormatter = (value: ReturnType<GroupByAccessor>) => string;
+
 // @alpha (undocumented)
-export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort'>;
+export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort' | 'format'>;
 
 // Warning: (ae-forgotten-export) The symbol "Predicate" needs to be exported by the entry point index.d.ts
 //
@@ -936,9 +943,8 @@ export type GroupBySort = Predicate;
 
 // @alpha (undocumented)
 export interface GroupBySpec extends Spec {
-    // (undocumented)
     by: GroupByAccessor;
-    // (undocumented)
+    format?: GroupByFormatter;
     sort: GroupBySort;
 }
 
@@ -959,7 +965,7 @@ export type HeatmapBrushEvent = {
 
 // Warning: (ae-missing-release-tag) "Config" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
-// @public (undocumented)
+// @public
 export interface HeatmapConfig {
     brushArea: {
         visible: boolean;
@@ -2337,11 +2343,11 @@ export type YDomainRange = YDomainBase & DomainRange;
 
 // Warnings were encountered during analysis:
 //
-// src/chart_types/heatmap/layout/types/config_types.ts:28:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:60:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:61:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:134:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:136:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:29:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:61:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:62:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:126:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:127:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/common/series_id.ts:40:3 - (ae-forgotten-export) The symbol "SeriesKey" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
