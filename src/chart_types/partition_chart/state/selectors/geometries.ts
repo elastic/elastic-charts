@@ -27,7 +27,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getSpecsFromStore } from '../../../../state/utils';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { PartitionSpec } from '../../specs';
-import { render } from './scenegraph';
+import { getShapeViewModel } from './scenegraph';
 import { getTree } from './tree';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
@@ -36,8 +36,9 @@ const getSpecs = (state: GlobalChartState) => state.specs;
 export const partitionGeometries = createCachedSelector(
   [getSpecs, getChartContainerDimensionsSelector, getTree, getChartThemeSelector],
   (specs, parentDimensions, tree, { background }): ShapeViewModel => {
-    const pieSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
-
-    return pieSpecs.length === 1 ? render(pieSpecs[0], parentDimensions, tree, background.color) : nullShapeViewModel();
+    const partitionSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
+    return partitionSpecs.length === 1 // singleton!
+      ? getShapeViewModel(partitionSpecs[0], parentDimensions, tree, background.color)
+      : nullShapeViewModel();
   },
 )((state) => state.chartId);

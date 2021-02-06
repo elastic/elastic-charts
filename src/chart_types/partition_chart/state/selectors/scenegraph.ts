@@ -46,7 +46,7 @@ export function valueGetterFunction(valueGetter: ValueGetter) {
 }
 
 /** @internal */
-export function render(
+export function getShapeViewModel(
   partitionSpec: PartitionSpec,
   parentDimensions: Dimensions,
   tree: HierarchyOfArrays,

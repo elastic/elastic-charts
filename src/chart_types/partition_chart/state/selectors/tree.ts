@@ -31,22 +31,23 @@ import { PartitionSpec } from '../../specs';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
 
+function getTreeForSpec(spec: PartitionSpec) {
+  const { data, valueAccessor, layers } = spec;
+  const layout = spec.config.partitionLayout ?? configMetadata.partitionLayout.dflt;
+  const sorter = isTreemap(layout) || isSunburst(layout) ? childOrders.descending : null;
+  return getHierarchyOfArrays(
+    data,
+    valueAccessor,
+    [() => HIERARCHY_ROOT_KEY, ...layers.map(({ groupByRollup }) => groupByRollup)],
+    sorter,
+  );
+}
+
 /** @internal */
 export const getTree = createCachedSelector(
   [getSpecs],
   (specs): HierarchyOfArrays => {
-    const pieSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
-    if (pieSpecs.length !== 1) {
-      return [];
-    }
-    const { data, valueAccessor, layers } = pieSpecs[0];
-    const layout = pieSpecs[0].config.partitionLayout ?? configMetadata.partitionLayout.dflt;
-    const sorter = isTreemap(layout) || isSunburst(layout) ? childOrders.descending : null;
-    return getHierarchyOfArrays(
-      data,
-      valueAccessor,
-      [() => HIERARCHY_ROOT_KEY, ...layers.map(({ groupByRollup }) => groupByRollup)],
-      sorter,
-    );
+    const partitionSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
+    return partitionSpecs.length === 1 ? getTreeForSpec(partitionSpecs[0]) : []; // singleton!
   },
 )((state) => state.chartId);
