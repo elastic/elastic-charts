@@ -24,7 +24,8 @@ import { QuadViewModel, ShapeViewModel } from '../types/viewmodel_types';
 import { AGGREGATE_KEY, DEPTH_KEY, getNodeName, PARENT_KEY, PATH_KEY, SORT_INDEX_KEY } from '../utils/group_by_rollup';
 
 /** @internal */
-export const pickedShapes = (geoms: ShapeViewModel, pointerPosition: Point): QuadViewModel[] => {
+export const pickedShapes = (models: ShapeViewModel[], pointerPosition: Point): QuadViewModel[] => {
+  const geoms = models[0];
   const picker = geoms.pickQuads;
   const { diskCenter } = geoms;
   const x = pointerPosition.x - diskCenter.x;

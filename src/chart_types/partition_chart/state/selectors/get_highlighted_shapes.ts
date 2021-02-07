@@ -31,7 +31,8 @@ const getHighlightedLegendItemPath = (state: GlobalChartState) => state.interact
 /** @internal */
 export const legendHoverHighlightNodes = createCachedSelector(
   [getSettingsSpecSelector, getHighlightedLegendItemPath, partitionGeometries],
-  ({ legendStrategy }, highlightedLegendItemPath, { quadViewModel }): QuadViewModel[] => {
+  ({ legendStrategy }, highlightedLegendItemPath, geometries): QuadViewModel[] => {
+    const { quadViewModel } = geometries[0];
     return highlightedLegendItemPath.length > 0
       ? highlightedGeoms(legendStrategy, quadViewModel, highlightedLegendItemPath)
       : [];

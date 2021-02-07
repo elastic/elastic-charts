@@ -29,9 +29,19 @@ import { getTree } from './tree';
 /** @internal */
 export const partitionGeometries = createCachedSelector(
   [getPartitionSpecs, getChartContainerDimensionsSelector, getTree, getChartThemeSelector],
-  (partitionSpecs, parentDimensions, tree, { background }): ShapeViewModel => {
-    return partitionSpecs.length === 1 // singleton!
-      ? getShapeViewModel(partitionSpecs[0], parentDimensions, tree, background.color)
-      : nullShapeViewModel();
+  (partitionSpecs, parentDimensions, tree, { background }): ShapeViewModel[] => {
+    return [
+      partitionSpecs.length > 0 // singleton!
+        ? getShapeViewModel(partitionSpecs[0], parentDimensions, tree, background.color)
+        : nullShapeViewModel(),
+    ];
+  },
+)((state) => state.chartId);
+
+/** @internal */
+export const partitionMultiGeometries = createCachedSelector(
+  [getPartitionSpecs, getChartContainerDimensionsSelector, getTree, getChartThemeSelector],
+  (partitionSpecs, parentDimensions, tree, { background }): ShapeViewModel[] => {
+    return partitionSpecs.map((spec) => getShapeViewModel(spec, parentDimensions, tree, background.color));
   },
 )((state) => state.chartId);

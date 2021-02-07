@@ -34,6 +34,6 @@ function getTreeForSpec(spec: PartitionSpec) {
 export const getTree = createCachedSelector(
   [getPartitionSpecs],
   (partitionSpecs): HierarchyOfArrays => {
-    return partitionSpecs.length === 1 ? getTreeForSpec(partitionSpecs[0]) : []; // singleton!
+    return partitionSpecs.length > 0 ? getTreeForSpec(partitionSpecs[0]) : []; // singleton!
   },
 )((state) => state.chartId);

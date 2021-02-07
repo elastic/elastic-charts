@@ -29,7 +29,8 @@ import { getPartitionSpec } from './partition_spec';
 /** @internal */
 export const computeLegendSelector = createCachedSelector(
   [getPartitionSpec, getSettingsSpecSelector, partitionGeometries],
-  (partitionSpec, { flatLegend, legendMaxDepth, legendPosition }, { quadViewModel }): LegendItem[] => {
+  (partitionSpec, { flatLegend, legendMaxDepth, legendPosition }, geometries): LegendItem[] => {
+    const { quadViewModel } = geometries[0];
     return partitionSpec
       ? getLegendItems(
           partitionSpec.id,
