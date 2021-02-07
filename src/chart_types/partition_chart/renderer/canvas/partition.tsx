@@ -21,6 +21,7 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { clearCanvas } from '../../../../renderers/canvas';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
@@ -139,16 +140,16 @@ class PartitionComponent extends React.Component<PartitionProps> {
   }
 
   private drawCanvas() {
-    const { width, height }: Dimensions = this.props.chartContainerDimensions;
-    this.props.multiGeometries.forEach((geometries) => {
-      if (this.ctx) {
-        // TS weirdness for the ctx check to need to be inside the forEach
+    if (this.ctx) {
+      const { width, height }: Dimensions = this.props.chartContainerDimensions;
+      clearCanvas(this.ctx, width * this.devicePixelRatio, height * this.devicePixelRatio);
+      for (const geometries of this.props.multiGeometries) {
         renderPartitionCanvas2d(this.ctx, this.devicePixelRatio, {
           ...geometries,
           config: { ...geometries.config, width, height },
         });
       }
-    });
+    }
   }
 
   private tryCanvasContext() {
