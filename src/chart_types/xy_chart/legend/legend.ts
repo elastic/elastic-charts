@@ -37,6 +37,7 @@ import {
   getSeriesKey,
   isDataSeriesBanded,
   getSeriesIdentifierFromDataSeries,
+  XYChartSeriesIdentifier,
 } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
 
@@ -105,7 +106,7 @@ export function computeLegend(
   const legendItems: LegendItem[] = [];
 
   dataSeries.forEach((series) => {
-    const { specId } = series;
+    const { specId, yAccessor } = series;
     const banded = isDataSeriesBanded(series);
     const key = getSeriesKey(series, series.groupId);
     const spec = getSpecsById<BasicSeriesSpec>(specs, specId);
@@ -137,6 +138,7 @@ export function computeLegend(
       isToggleable: true,
       defaultExtra: getLegendExtra(showLegendExtra, spec.xScaleType, formatter, 'y1', lastValue),
       path: [{ index: 0, value: seriesIdentifier.key }],
+      keys: [spec.groupId, yAccessor, ...series.splitAccessors.values()],
     });
     if (banded) {
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
@@ -150,6 +152,7 @@ export function computeLegend(
         isToggleable: true,
         defaultExtra: getLegendExtra(showLegendExtra, spec.xScaleType, formatter, 'y0', lastValue),
         path: [{ index: 0, value: seriesIdentifier.key }],
+        keys: [spec.groupId, yAccessor, ...series.splitAccessors.values()],
       });
     }
   });
@@ -162,8 +165,8 @@ export function computeLegend(
 
   return groupBy(
     legendItems.sort((a, b) => legendSortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0])),
-    ({ color, label }) => {
-      return `${color}---${label}`;
+    ({ keys }) => {
+      return keys.join('__');
     },
     true,
   ).map((d) => {

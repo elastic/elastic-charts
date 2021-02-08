@@ -46,6 +46,7 @@ export type LegendItem = {
   };
   // TODO: Remove when partition layers are toggleable
   isToggleable?: boolean;
+  keys: Array<string | number>;
 };
 
 /** @internal */

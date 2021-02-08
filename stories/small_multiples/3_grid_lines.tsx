@@ -142,10 +142,10 @@ export const Example = () => {
         timeZone="UTC"
         xAccessor="x"
         yAccessors={['y']}
-        color={({ smHorizontalAccessorValue }) => {
-          const val = Number(`${smHorizontalAccessorValue}`.split('host ')[1]);
-          return LIGHT_THEME.colors.vizColors[val];
-        }}
+        // color={({ smHorizontalAccessorValue }) => {
+        //   const val = Number(`${smHorizontalAccessorValue}`.split('host ')[1]);
+        //   return LIGHT_THEME.colors.vizColors[val];
+        // }}
         data={data}
       />
     </Chart>

@@ -33,6 +33,7 @@ import {
   LineAnnotation,
   AnnotationDomainTypes,
   LIGHT_THEME,
+  LineSeries,
 } from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
