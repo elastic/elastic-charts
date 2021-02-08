@@ -26,6 +26,7 @@ export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
 export * from './specs';
 export { DebugState } from './state/types';
 export { CurveType } from './utils/curves';
+export { ContinuousDomain, OrdinalDomain } from './utils/domain';
 export { SimplePadding } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
 export { SeriesIdentifier } from './common/series_id';
