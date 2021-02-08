@@ -117,20 +117,17 @@ export interface StaticConfig extends FillFontSizeRange {
 
 export type EasingFunction = (x: Ratio) => Ratio;
 
+/** @alpha */
 export interface AnimKeyframe {
-  /** @alpha */
   time: number;
-  /** @alpha */
   easingFunction: EasingFunction;
-  /** @alpha */
   keyframeConfig: Partial<StaticConfig>;
 }
 
 export interface Config extends StaticConfig {
+  /** @alpha */
   animation: {
-    /** @alpha */
     duration: TimeMs;
-    /** @alpha */
     keyframes: Array<AnimKeyframe>;
   };
 }

@@ -19,43 +19,33 @@
 
 import createCachedSelector from 're-reselect';
 
-import { ChartTypes } from '../../..';
-import { SpecTypes } from '../../../../specs';
+import { CategoryKey } from '../../../../common/category';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { getSpecsFromStore } from '../../../../state/utils';
 import { configMetadata } from '../../layout/config';
-import { childOrders, HierarchyOfArrays, HIERARCHY_ROOT_KEY } from '../../layout/utils/group_by_rollup';
-import { getHierarchyOfArrays } from '../../layout/viewmodel/hierarchy_of_arrays';
-import { isSunburst, isTreemap } from '../../layout/viewmodel/viewmodel';
+import { HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
+import { partitionTree } from '../../layout/viewmodel/hierarchy_of_arrays';
 import { PartitionSpec } from '../../specs';
+import { getPartitionSpecs } from './get_partition_specs';
 
-const getSpecs = (state: GlobalChartState) => state.specs;
+function getTreeForSpec(spec: PartitionSpec, drilldownSelection: CategoryKey[]) {
+  const { data, valueAccessor, layers, config } = spec;
+  return partitionTree(
+    data,
+    valueAccessor,
+    layers,
+    configMetadata.partitionLayout.dflt,
+    config.partitionLayout,
+    Boolean(config.drilldown),
+    drilldownSelection,
+  );
+}
 
 const getDrilldownSelection = (state: GlobalChartState) => state.interactions.drilldown || [];
 
 /** @internal */
 export const getTree = createCachedSelector(
-  [getSpecs, getDrilldownSelection],
-  (specs, drilldownSelection): HierarchyOfArrays => {
-    const pieSpecs = getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
-    if (pieSpecs.length !== 1) {
-      return [];
-    }
-    const {
-      data,
-      valueAccessor,
-      layers,
-      config: { drilldown },
-    } = pieSpecs[0];
-    const layout = pieSpecs[0].config.partitionLayout ?? configMetadata.partitionLayout.dflt;
-    const sorter = isTreemap(layout) || isSunburst(layout) ? childOrders.descending : null;
-    return getHierarchyOfArrays(
-      data,
-      valueAccessor,
-      [() => HIERARCHY_ROOT_KEY, ...layers.map(({ groupByRollup }) => groupByRollup)],
-      sorter,
-      Boolean(drilldown),
-      drilldownSelection,
-    );
+  [getPartitionSpecs, getDrilldownSelection],
+  (partitionSpecs, drilldownSelection): HierarchyOfArrays => {
+    return partitionSpecs.length > 0 ? getTreeForSpec(partitionSpecs[0], drilldownSelection) : []; // singleton!
   },
 )((state) => state.chartId);

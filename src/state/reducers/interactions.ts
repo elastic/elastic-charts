@@ -33,7 +33,7 @@ import {
   ON_TOGGLE_DESELECT_SERIES,
   ToggleDeselectSeriesAction,
 } from '../actions/legend';
-import { ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE, MouseActions } from '../actions/mouse';
+import { MouseActions, ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE } from '../actions/mouse';
 import { GlobalChartState, InteractionsState } from '../chart_state';
 import { getInitialPointerState } from '../utils';
 
