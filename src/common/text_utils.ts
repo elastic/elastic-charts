@@ -130,17 +130,17 @@ export const VerticalAlignments = Object.freeze({
 
 export type VerticalAlignments = Values<typeof VerticalAlignments>;
 
-/** internal */
+/** @internal */
 export function measureOneBoxWidth(measure: TextMeasure, fontSize: number, box: Box) {
   return measure(fontSize, [box])[0].width;
 }
 
-/** internal */
+/** @internal */
 export function cutToLength(s: string, maxLength: number) {
   return s.length <= maxLength ? s : `${s.slice(0, Math.max(0, maxLength - 1))}…`; // ellipsis is one char
 }
 
-/** internal */
+/** @internal */
 export function fitText(
   measure: TextMeasure,
   desiredText: string,
