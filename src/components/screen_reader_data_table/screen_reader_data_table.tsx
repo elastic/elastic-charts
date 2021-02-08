@@ -41,7 +41,69 @@ export interface ScreenReaderDataTableStateProps {
   data: ScreenReaderData[];
 }
 
-const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) => {
+/** @internal */
+export const renderAltText = (data: ScreenReaderData[]) => {
+  if (!data[0]) {
+    return;
+  }
+
+  const validSeriesName = data[0].seriesName !== undefined ? ` with the name ${data[0].seriesName}` : ``;
+
+  return `This chart has a total of ${data.length} series. ${data.map((value, index) => {
+    return ` The ${index + 1} series of ${data.length} series is a ${
+      value.seriesType
+    } series${validSeriesName}. The x scale is ${value.xScaleType} and the y scale is ${value.yScaleType}.`;
+  })}
+  
+  `;
+};
+
+/** @internal */
+export const computeScreenReaderTable = (d: ScreenReaderData[]) => {
+  const dataKeys: JSX.Element[] = [];
+  // go through the number of series in ScreenReaderData
+  for (let seriesIndex = 0; seriesIndex < d.length; seriesIndex++) {
+    if (d.length !== 1) {
+      dataKeys.push(
+        <tr key={`${d[seriesIndex].dataKey}__${seriesIndex}`}>
+          <th key={`${d[seriesIndex].dataValue}__${d[seriesIndex].seriesName}__${seriesIndex}`}>
+            {seriesIndex + 1} series of the total {d.length} series{' '}
+          </th>
+        </tr>,
+      );
+    }
+    // get the index of the key in each series and use the index to get the index of it in the values
+    for (let j = 0; j < d[seriesIndex].dataKey.length; j++) {
+      dataKeys.push(
+        <tr
+          key={`${d[seriesIndex].seriesType}__${d[seriesIndex].dataKey[j]}__${seriesIndex}`}
+          aria-labelledby="alt text for chart data"
+        >
+          <th
+            scope="row"
+            key={`${d[seriesIndex].seriesType}__${d[seriesIndex].dataValue[j]}__${seriesIndex}`}
+            align="center"
+          >
+            {d[seriesIndex].dataKey[j]}
+          </th>
+          {d[seriesIndex].dataValue.map((value, index) => {
+            return (
+              <td
+                key={`${d[seriesIndex].seriesName}__${d[seriesIndex].dataKey[index]}__${seriesIndex}${index}`}
+                align="center"
+              >
+                {value[j]}
+              </td>
+            );
+          })}
+        </tr>,
+      );
+    }
+  }
+  return dataKeys;
+};
+
+export const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) => {
   const { data } = props;
 
   if (!data) {
@@ -50,76 +112,13 @@ const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) 
 
   const classes = 'echDataTable';
 
-  const renderAltText = () => {
-    if (!data[0]) {
-      return;
-    }
-
-    const validSeriesName = data[0].seriesName !== undefined ? ` with the name ${data[0].seriesName}` : ``;
-
-    return `This chart has ${data.length} series. ${data.map((value, index) => {
-      return ` The ${index + 1} series of ${data.length} series is a ${
-        value.seriesType
-      } series${validSeriesName}. The x scale is ${value.xScaleType} and the y scale is ${value.yScaleType}.`;
-    })}
-    
-    `;
-  };
-
-  const screenReaderTable = (d: ScreenReaderData[]) => {
-    const dataKeys: JSX.Element[] = [];
-    // go through the number of series in ScreenReaderData
-    for (let seriesIndex = 0; seriesIndex < d.length; seriesIndex++) {
-      if (d.length !== 1) {
-        dataKeys.push(
-          <tr key={`${d[seriesIndex].dataKey}__${seriesIndex}`}>
-            <th key={`${d[seriesIndex].dataValue}__${d[seriesIndex].seriesName}__${seriesIndex}`}>
-              {seriesIndex + 1} series of the total {d.length} series{' '}
-            </th>
-          </tr>,
-        );
-      }
-      // get the index of the key in each series and use the index to get the index of it in the values
-      for (let j = 0; j < d[seriesIndex].dataKey.length; j++) {
-        dataKeys.push(
-          <tr
-            key={`${d[seriesIndex].seriesType}__${d[seriesIndex].dataKey[j]}__${seriesIndex}`}
-            tabIndex={-1}
-            aria-labelledby="alt text for chart data"
-          >
-            <th
-              scope="row"
-              key={`${d[seriesIndex].seriesType}__${d[seriesIndex].dataValue[j]}__${seriesIndex}`}
-              tabIndex={-1}
-              align="center"
-            >
-              {d[seriesIndex].dataKey[j]}
-            </th>
-            {d[seriesIndex].dataValue.map((value, index) => {
-              return (
-                <td
-                  key={`${d[seriesIndex].seriesName}__${d[seriesIndex].dataKey[index]}__${seriesIndex}${index}`}
-                  tabIndex={-1}
-                  align="center"
-                >
-                  {value[j]}
-                </td>
-              );
-            })}
-          </tr>,
-        );
-      }
-    }
-    return dataKeys;
-  };
-
   return (
     <>
-      <p tabIndex={-1} className={classes} aria-labelledby="information about the serie(s) within the chart">
-        {renderAltText()}
+      <p className={classes} aria-labelledby="information about the serie(s) within the chart">
+        {renderAltText(data)}
       </p>
-      <table tabIndex={-1} className={classes} role="presentation">
-        <tbody>{screenReaderTable(data)}</tbody>
+      <table className={classes} role="presentation" tabIndex={-1}>
+        <tbody>{computeScreenReaderTable(data)}</tbody>
       </table>
     </>
   );

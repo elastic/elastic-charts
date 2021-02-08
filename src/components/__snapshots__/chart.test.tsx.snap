@@ -6,8 +6,8 @@ exports[`Chart should render the legend name test 1`] = `
     <div className=\\"echChart\\" style={{...}}>
       <Connect(ScreenReaderDataTableComponent)>
         <ScreenReaderDataTableComponent data={{...}} dispatch={[Function: dispatch]}>
-          <p tabIndex={-1} className=\\"echDataTable\\" aria-labelledby=\\"information about the serie(s) within the chart\\" />
-          <table tabIndex={-1} className=\\"echDataTable\\" role=\\"presentation\\">
+          <p className=\\"echDataTable\\" aria-labelledby=\\"information about the serie(s) within the chart\\" />
+          <table className=\\"echDataTable\\" role=\\"presentation\\" tabIndex={-1}>
             <tbody />
           </table>
         </ScreenReaderDataTableComponent>

@@ -612,7 +612,9 @@ function parseDataForValues(d: DataSeries) {
   if (!d) return [];
   const values = [];
   for (let i = 0; i < d.data.length; i++) {
-    values.push(Object.values(d.data[i].datum));
+    if (d.data[i].datum) {
+      values.push(Object.values(d.data[i].datum));
+    }
   }
   return values;
 }
