@@ -1345,6 +1345,19 @@ export interface LineStyle {
     visible: boolean;
 }
 
+// Warning: (ae-missing-release-tag) "LogBase" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+// Warning: (ae-missing-release-tag) "LogBase" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const LogBase: Readonly<{
+    Common: "common";
+    Binary: "binary";
+    Natural: "natural";
+}>;
+
+// @public
+export type LogBase = $Values<typeof LogBase>;
+
 // @public (undocumented)
 export type LowerBoundedDomain = DomainBase & LowerBound;
 
@@ -1943,7 +1956,6 @@ export interface SettingsSpec extends Spec {
     xDomain?: ContinuousDomain | OrdinalDomain | DomainRange;
     xLogBase: LogBase;
     xLogMinLimit?: number;
-    // Warning: (ae-forgotten-export) The symbol "LogBase" needs to be exported by the entry point index.d.ts
     yLogBase: LogBase;
     yLogMinLimit?: number;
 }
