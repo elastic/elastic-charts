@@ -16,7 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-const module = jest.requireActual('../calcs.ts');
 
-export const getBackgroundWithContainerColorFromUser = jest.fn(module.getBackgroundWithContainerColorFromUser);
-export const makeHighContrastColor = jest.fn(module.makeHighContrastColor);
+import { ChartTypes } from '../../..';
+import { SpecTypes } from '../../../../specs/constants';
+import { SmallMultiplesSpec } from '../../../../specs/small_multiples';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { getSpecsFromStore } from '../../../../state/utils';
+
+/**
+ * Return the small multiple spec
+ * @internal
+ */
+export const getSmallMultipleSpec = (state: GlobalChartState) => {
+  const smallMultiples = getSpecsFromStore<SmallMultiplesSpec>(
+    state.specs,
+    ChartTypes.Global,
+    SpecTypes.SmallMultiples,
+  );
+  if (smallMultiples.length !== 1) {
+    return undefined;
+  }
+  return smallMultiples[0];
+};

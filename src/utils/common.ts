@@ -556,3 +556,18 @@ export function toEntries<T extends Record<string, string>, S>(
     return acc;
   }, {});
 }
+
+/**
+ * Safely format values with error handling
+ */
+export const safeFormat = <V = any>(value: V, formatter?: (value: V) => string): string => {
+  if (formatter) {
+    try {
+      return formatter(value);
+    } catch {
+      // fallthrough
+    }
+  }
+
+  return `${value}`;
+};

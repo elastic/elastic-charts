@@ -17,14 +17,21 @@
  * under the License.
  */
 
-import { $Values } from 'utility-types';
+import React, { RefObject } from 'react';
 
-export const VerticalAlignments = Object.freeze({
-  top: 'top' as const,
-  middle: 'middle' as const,
-  bottom: 'bottom' as const,
-  alphabetic: 'alphabetic' as const,
-  hanging: 'hanging' as const,
-  ideographic: 'ideographic' as const,
-});
-export type VerticalAlignments = $Values<typeof VerticalAlignments>;
+import { Tooltip } from '../../../../components/tooltip';
+import { BackwardRef } from '../../../../state/chart_state';
+import { Partition } from '../canvas/partition';
+import { HighlighterFromHover } from './highlighter_hover';
+import { HighlighterFromLegend } from './highlighter_legend';
+
+export function render(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
+  return (
+    <>
+      <Tooltip getChartContainerRef={containerRef} />
+      <Partition forwardStageRef={forwardStageRef} />
+      <HighlighterFromHover />
+      <HighlighterFromLegend />
+    </>
+  );
+}

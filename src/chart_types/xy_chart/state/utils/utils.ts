@@ -19,7 +19,7 @@
 
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
-import { GroupBySpec, SortSeriesByConfig } from '../../../../specs';
+import { SortSeriesByConfig } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
@@ -67,6 +67,7 @@ import {
   YDomainRange,
 } from '../../utils/specs';
 import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales';
+import { SmallMultiplesGroupBy } from '../selectors/get_specs';
 import { isHorizontalRotation } from './common';
 import { getSpecsById, getAxesSpecForSpecId, getSpecDomainGroupId } from './spec';
 import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform } from './types';
@@ -134,7 +135,7 @@ export function computeSeriesDomains(
   deselectedDataSeries: SeriesIdentifier[] = [],
   customXDomain?: DomainRange | Domain,
   orderOrdinalBinsBy?: OrderBy,
-  smallMultiples?: { vertical?: GroupBySpec; horizontal?: GroupBySpec },
+  smallMultiples?: SmallMultiplesGroupBy,
   sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
 ): SeriesDomainsAndData {
   const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
@@ -157,8 +158,8 @@ export function computeSeriesDomains(
     seriesSortFn,
   );
 
-  // let's compute the yDomain after computing all stacked values
-  const yDomain = mergeYDomain(formattedDataSeries, customYDomainsByGroupId);
+  // let's compute the yDomains after computing all stacked values
+  const yDomains = mergeYDomain(formattedDataSeries, customYDomainsByGroupId);
 
   // sort small multiples values
   const horizontalPredicate = smallMultiples?.horizontal?.sort ?? Predicate.DataIndex;
@@ -169,7 +170,7 @@ export function computeSeriesDomains(
 
   return {
     xDomain,
-    yDomain,
+    yDomains,
     smHDomain,
     smVDomain,
     formattedDataSeries,
@@ -179,7 +180,7 @@ export function computeSeriesDomains(
 /** @internal */
 export function computeSeriesGeometries(
   seriesSpecs: BasicSeriesSpec[],
-  { xDomain, yDomain, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
+  { xDomain, yDomains, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
   seriesColorMap: Map<SeriesKey, Color>,
   chartTheme: Theme,
   chartRotation: Rotation,
@@ -214,7 +215,7 @@ export function computeSeriesGeometries(
   const { horizontal, vertical } = smallMultiplesScales;
 
   const yScales = computeYScales({
-    yDomains: yDomain,
+    yDomains,
     range: [isHorizontalRotation(chartRotation) ? vertical.bandwidth : horizontal.bandwidth, 0],
   });
 

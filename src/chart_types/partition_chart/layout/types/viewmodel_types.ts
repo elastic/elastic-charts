@@ -18,15 +18,22 @@
  */
 
 import { CategoryKey } from '../../../../common/category';
+import {
+  Coordinate,
+  Distance,
+  Pixels,
+  PointObject,
+  PointTuple,
+  PointTuples,
+  Radian,
+} from '../../../../common/geometry';
+import { Font, VerticalAlignments } from '../../../../common/text_utils';
 import { LegendPath } from '../../../../state/actions/legend';
 import { Color } from '../../../../utils/common';
-import { config, ValueGetterName } from '../config/config';
+import { config, MODEL_KEY, ValueGetterName } from '../config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
-import { VerticalAlignments } from '../viewmodel/constants';
 import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
 import { Config } from './config_types';
-import { Coordinate, Distance, Pixels, PointObject, PointTuple, PointTuples, Radian } from './geometry_types';
-import { Font, MODEL_KEY } from './types';
 
 /** @internal */
 export type LinkLabelVM = {
@@ -130,14 +137,21 @@ export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointO
   outerRadius: 0,
 });
 
-type TreeLevel = number;
+export type TreeLevel = number;
 
-interface AngleFromTo {
+export interface AngleFromTo {
   x0: Radian;
   x1: Radian;
 }
 
-interface TreeNode extends AngleFromTo {
+/** @internal */
+export interface LayerFromTo {
+  y0: TreeLevel;
+  y1: TreeLevel;
+}
+
+/** potential internal */
+export interface TreeNode extends AngleFromTo {
   x0: Radian;
   x1: Radian;
   y0: TreeLevel;
@@ -145,7 +159,8 @@ interface TreeNode extends AngleFromTo {
   fill?: Color;
 }
 
-interface SectorGeomSpecY {
+/** potential internal */
+export interface SectorGeomSpecY {
   y0px: Distance;
   y1px: Distance;
 }

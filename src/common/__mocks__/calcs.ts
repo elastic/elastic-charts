@@ -16,12 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+const module = jest.requireActual('../color_calcs.ts');
 
-// just like [].map except on iterables, to avoid having to materialize both input and output arrays
-/** @internal */
-export function map<InElem, OutElem>(fun: (arg: InElem, index: number) => OutElem, iterable: Iterable<InElem>) {
-  let i = 0;
-  return (function* () {
-    for (const next of iterable) yield fun(next, i++);
-  })();
-}
+export const getBackgroundWithContainerColorFromUser = jest.fn(module.getBackgroundWithContainerColorFromUser);
+export const makeHighContrastColor = jest.fn(module.makeHighContrastColor);

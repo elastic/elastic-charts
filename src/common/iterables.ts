@@ -17,15 +17,11 @@
  * under the License.
  */
 
-import { wrapToTau } from '../geometry';
-import { RIGHT_ANGLE } from './constants';
-
+// just like [].map except on iterables, to avoid having to materialize both input and output arrays
 /** @internal */
-export function trueBearingToStandardPositionAngle(alphaIn: number) {
-  return wrapToTau(RIGHT_ANGLE - alphaIn);
-}
-
-/** @internal */
-export function logarithm(base: number, y: number) {
-  return Math.log(y) / Math.log(base);
+export function map<InElem, OutElem>(fun: (arg: InElem, index: number) => OutElem, iterable: Iterable<InElem>) {
+  let i = 0;
+  return (function* mapGenerator() {
+    for (const next of iterable) yield fun(next, i++);
+  })();
 }

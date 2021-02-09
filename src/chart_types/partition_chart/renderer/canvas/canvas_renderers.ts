@@ -17,9 +17,12 @@
  * under the License.
  */
 
-import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { addOpacity } from '../../../../common/color_calcs';
+import { TAU } from '../../../../common/constants';
+import { Pixels } from '../../../../common/geometry';
+import { cssFontShorthand } from '../../../../common/text_utils';
+import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { Color } from '../../../../utils/common';
-import { Pixels } from '../../layout/types/geometry_types';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
@@ -28,9 +31,6 @@ import {
   ShapeViewModel,
   TextRow,
 } from '../../layout/types/viewmodel_types';
-import { addOpacity } from '../../layout/utils/calcs';
-import { TAU } from '../../layout/utils/constants';
-import { cssFontShorthand } from '../../layout/utils/measure';
 import { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
@@ -261,9 +261,6 @@ export function renderPartitionCanvas2d(
     // unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
-      // clear the canvas
-      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000),
-
       // bottom layer: sectors (pie slices, ring sectors etc.)
       (ctx: CanvasRenderingContext2D) =>
         isSunburst(config.partitionLayout) ? renderSectors(ctx, quadViewModel) : renderRectangles(ctx, quadViewModel),

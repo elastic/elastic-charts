@@ -408,17 +408,14 @@ function chartTypeFromSpecs(specs: SpecList): ChartTypes | null {
   return nonGlobalTypes[0];
 }
 
+const constructors: Record<ChartTypes, () => InternalChartState | null> = {
+  [ChartTypes.Goal]: () => new GoalState(),
+  [ChartTypes.Partition]: () => new PartitionState(),
+  [ChartTypes.XYAxis]: () => new XYAxisChartState(),
+  [ChartTypes.Heatmap]: () => new HeatmapState(),
+  [ChartTypes.Global]: () => null,
+}; // with no default, TS signals if a new chart type isn't added here too
+
 function newInternalState(chartType: ChartTypes | null): InternalChartState | null {
-  switch (chartType) {
-    case ChartTypes.Goal:
-      return new GoalState();
-    case ChartTypes.Partition:
-      return new PartitionState();
-    case ChartTypes.XYAxis:
-      return new XYAxisChartState();
-    case ChartTypes.Heatmap:
-      return new HeatmapState();
-    default:
-      return null;
-  }
+  return chartType ? constructors[chartType]() : null;
 }

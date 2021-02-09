@@ -17,6 +17,17 @@
  * under the License.
  */
 
-export const TAU = 2 * Math.PI;
-export const RIGHT_ANGLE = TAU / 4;
-export const GOLDEN_RATIO = 1.618;
+import createCachedSelector from 're-reselect';
+
+import { ChartTypes } from '../../..';
+import { SpecTypes } from '../../../../specs';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { getSpecsFromStore } from '../../../../state/utils';
+import { PartitionSpec } from '../../specs';
+
+const getSpecs = (state: GlobalChartState) => state.specs;
+
+/** @internal */
+export const getPartitionSpecs = createCachedSelector([getSpecs], (specs) => {
+  return getSpecsFromStore<PartitionSpec>(specs, ChartTypes.Partition, SpecTypes.Series);
+})((state) => state.chartId);
