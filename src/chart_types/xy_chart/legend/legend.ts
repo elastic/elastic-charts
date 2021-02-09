@@ -37,7 +37,6 @@ import {
   getSeriesKey,
   isDataSeriesBanded,
   getSeriesIdentifierFromDataSeries,
-  XYChartSeriesIdentifier,
 } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
 
@@ -110,7 +109,17 @@ export function computeLegend(
     const banded = isDataSeriesBanded(series);
     const key = getSeriesKey(series, series.groupId);
     const spec = getSpecsById<BasicSeriesSpec>(specs, specId);
-    const color = seriesColors.get(key) || defaultColor;
+    const dataSeriesKey = getSeriesKey(
+      {
+        specId: series.specId,
+        yAccessor: series.yAccessor,
+        splitAccessors: series.splitAccessors,
+      },
+      series.groupId,
+    );
+
+    const color = seriesColors.get(dataSeriesKey) || defaultColor;
+
     const hasSingleSeries = dataSeries.length === 1;
     const name = getSeriesName(series, hasSingleSeries, false, spec);
     const isSeriesHidden = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, series) >= 0 : false;
@@ -138,7 +147,7 @@ export function computeLegend(
       isToggleable: true,
       defaultExtra: getLegendExtra(showLegendExtra, spec.xScaleType, formatter, 'y1', lastValue),
       path: [{ index: 0, value: seriesIdentifier.key }],
-      keys: [spec.groupId, yAccessor, ...series.splitAccessors.values()],
+      keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
     });
     if (banded) {
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
@@ -152,7 +161,7 @@ export function computeLegend(
         isToggleable: true,
         defaultExtra: getLegendExtra(showLegendExtra, spec.xScaleType, formatter, 'y0', lastValue),
         path: [{ index: 0, value: seriesIdentifier.key }],
-        keys: [spec.groupId, yAccessor, ...series.splitAccessors.values()],
+        keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
       });
     }
   });
@@ -163,6 +172,7 @@ export function computeLegend(
     return defaultXYLegendSeriesSort(aDs, bDs);
   });
 
+  // return legendItems.sort((a, b) => legendSortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0]));
   return groupBy(
     legendItems.sort((a, b) => legendSortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0])),
     ({ keys }) => {

@@ -141,6 +141,7 @@ describe('Rendering utils', () => {
         legendSizingLabel: null,
       },
       path: [],
+      keys: [],
     };
 
     const unhighlightedLegendItem: LegendItem = {
@@ -151,6 +152,7 @@ describe('Rendering utils', () => {
           key: 'not me',
         },
       ],
+      keys: [],
     };
 
     const sharedThemeStyle: SharedGeometryStateStyle = {

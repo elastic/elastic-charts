@@ -32,25 +32,36 @@ import {
   BarSeries,
   LineAnnotation,
   AnnotationDomainTypes,
+  LIGHT_THEME,
+  LineSeries,
 } from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
+import { ColorVariant } from '../../src/utils/common';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
 const numOfDays = 7;
-function generateData() {
-  return dg.generateGroupedSeries(numOfDays, 2).map((d) => {
+function generateData(totalGroups = 2, mappings: Record<string, string>) {
+  return dg.generateGroupedSeries(numOfDays, totalGroups).map((d) => {
     return {
       ...d,
       x: DateTime.fromFormat(`${d.x + 1}`, 'E').toFormat('EEEE'),
       y: Math.floor(d.y * 10),
-      g: d.g === 'a' ? 'new user' : 'existing user',
+      g: mappings[d.g],
     };
   });
 }
-const data1 = generateData();
-const data2 = generateData();
-const data3 = generateData();
+const data1 = generateData(2, { a: 'new user', b: 'existing user' }).map((d) => ({ ...d, site: 'website A' }));
+const data2 = generateData(2, { a: 'new user', b: 'existing user' }).map((d) => ({ ...d, site: 'website B' }));
+
+const datal1 = generateData(2, { a: 'avg new user', b: 'avg existing user' }).map((d) => ({
+  ...d,
+  site: 'website A',
+}));
+const datal2 = generateData(2, { a: 'avg new user', b: 'avg existing user' }).map((d) => ({
+  ...d,
+  site: 'website B',
+}));
 
 export const Example = () => {
   const marker = (
@@ -74,18 +85,18 @@ export const Example = () => {
 
   return (
     <Chart className="story-chart">
-      <Settings onElementClick={onElementClick} rotation={90} showLegend={showLegend} />
+      <Settings onElementClick={onElementClick} rotation={0} showLegend={showLegend} />
       <Axis id="time" title="metric" position={Position.Bottom} gridLine={{ visible: false }} />
       <Axis id="y" title="Day of week" position={Position.Left} gridLine={{ visible: false }} />
 
       <GroupBy
         id="h_split"
-        by={(spec) => {
-          return spec.id;
+        by={(spec, datum) => {
+          return datum.site;
         }}
         sort="alphaAsc"
       />
-      {!disableSmallMultiples && <SmallMultiples splitHorizontally="h_split" />}
+      {!disableSmallMultiples && <SmallMultiples splitVertically="h_split" />}
       <LineAnnotation
         dataValues={[
           {
@@ -113,30 +124,26 @@ export const Example = () => {
         xAccessor="x"
         yAccessors={['y']}
         stackAccessors={['x']}
-        splitSeriesAccessors={['g']}
-        data={data1}
+        splitSeriesAccessors={disableSmallMultiples ? ['site', 'g'] : ['g']}
+        data={[...data1, ...data2]}
+        color={[LIGHT_THEME.colors.vizColors[0], 'lightgray']}
       />
-      <BarSeries
-        id="website b"
+      <LineSeries
+        id="avg"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"
         yAccessors={['y']}
-        stackAccessors={['x']}
         splitSeriesAccessors={['g']}
-        data={data2}
-      />
-      <BarSeries
-        id="website c"
-        xScaleType={ScaleType.Time}
-        yScaleType={ScaleType.Linear}
-        timeZone="local"
-        xAccessor="x"
-        yAccessors={['y']}
-        stackAccessors={['x']}
-        splitSeriesAccessors={['g']}
-        data={data3}
+        data={[...datal1, ...datal2]}
+        lineSeriesStyle={{
+          point: {
+            radius: 1,
+            fill: ColorVariant.Series,
+          },
+        }}
+        color={['black', 'darkgray']}
       />
     </Chart>
   );

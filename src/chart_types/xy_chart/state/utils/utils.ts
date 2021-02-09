@@ -82,7 +82,14 @@ export function getCustomSeriesColors(dataSeries: DataSeries[]): Map<SeriesKey, 
 
   dataSeries.forEach((ds) => {
     const { spec, specId } = ds;
-    const seriesKey = getSeriesKey(ds, ds.groupId);
+    const dataSeriesKey = {
+      specId: ds.specId,
+      yAccessor: ds.yAccessor,
+      splitAccessors: ds.splitAccessors,
+      smVerticalAccessorValue: undefined,
+      smHorizontalAccessorValue: undefined,
+    };
+    const seriesKey = getSeriesKey(dataSeriesKey, ds.groupId);
 
     if (!spec || !spec.color) {
       return;
@@ -369,8 +376,16 @@ function renderGeometries(
       top: topPos,
       left: leftPos,
     };
+    const dataSeriesKey = getSeriesKey(
+      {
+        specId: ds.specId,
+        yAccessor: ds.yAccessor,
+        splitAccessors: ds.splitAccessors,
+      },
+      ds.groupId,
+    );
 
-    const color = seriesColorsMap.get(ds.key) || defaultColor;
+    const color = seriesColorsMap.get(dataSeriesKey) || defaultColor;
 
     if (isBarSeriesSpec(spec)) {
       const key = getBarIndexKey(ds, enableHistogramMode);

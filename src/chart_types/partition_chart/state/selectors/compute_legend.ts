@@ -67,6 +67,7 @@ export const computeLegendSelector = createCachedSelector(
         depth: useHierarchicalLegend ? depth - 1 : 0,
         path,
         seriesIdentifiers: [{ key: dataName, specId: pieSpec.id }],
+        keys: [],
       };
     });
   },

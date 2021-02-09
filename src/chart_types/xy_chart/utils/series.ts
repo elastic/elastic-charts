@@ -578,19 +578,28 @@ export function getSeriesColors(
 ): Map<SeriesKey, Color> {
   const seriesColorMap = new Map<SeriesKey, Color>();
   let counter = 0;
+  const sortedDataSeries = dataSeries.slice().sort((a, b) => a.insertIndex - b.insertIndex);
+  groupBy(
+    sortedDataSeries,
+    (ds) => {
+      return [ds.specId, ds.groupId, ds.yAccessor, ...ds.splitAccessors.values()].join('__');
+    },
+    true,
+  ).forEach((ds) => {
+    const dsKeys = {
+      specId: ds[0].specId,
+      yAccessor: ds[0].yAccessor,
+      splitAccessors: ds[0].splitAccessors,
+      smVerticalAccessorValue: undefined,
+      smHorizontalAccessorValue: undefined,
+    };
+    const seriesKey = getSeriesKey(dsKeys, ds[0].groupId);
+    const colorOverride = getHighestOverride(seriesKey, customColors, overrides);
+    const color = colorOverride || chartColors.vizColors[counter % chartColors.vizColors.length];
 
-  dataSeries
-    .slice()
-    // use the insert index order to avoid color assignment breaking changes
-    .sort((a, b) => a.insertIndex - b.insertIndex)
-    .forEach((ds) => {
-      const seriesKey = getSeriesKey(ds, ds.groupId);
-      const colorOverride = getHighestOverride(seriesKey, customColors, overrides);
-      const color = colorOverride || chartColors.vizColors[counter % chartColors.vizColors.length];
-
-      seriesColorMap.set(seriesKey, color);
-      counter++;
-    });
+    seriesColorMap.set(seriesKey, color);
+    counter++;
+  });
   return seriesColorMap;
 }
 
