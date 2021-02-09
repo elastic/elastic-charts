@@ -32,6 +32,7 @@ type LogKnobs = Pick<SettingsSpecProps, 'yLogBase' | 'yLogMinLimit' | 'xLogBase'
   yDataType: string;
   xNegative: boolean;
   yNegative: boolean;
+  yPadding: number;
 };
 
 const getDataType = (group: string, defaultType = 'increasing') =>
@@ -69,6 +70,7 @@ const getLogKnobs = (): LogKnobs => {
     xLogMinLimit: xUseDefaultLimit ? undefined : xLimit,
     yLogBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, { group: yGroup }),
     xLogBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, { group: xGroup }),
+    yPadding: number('Padding', 0, { min: 0 }, yGroup),
   };
 };
 
@@ -126,7 +128,12 @@ export const Example = () => {
   return (
     <Chart className="story-chart">
       <Settings {...logOptions} />
-      <Axis id="y" tickFormat={logFormatter(logOptions.yLogBase)} position={Position.Left} />
+      <Axis
+        id="y"
+        tickFormat={logFormatter(logOptions.yLogBase)}
+        position={Position.Left}
+        domain={{ padding: logOptions.yPadding }}
+      />
       <Axis
         id="x"
         tickFormat={logFormatter(logOptions.xLogBase)}

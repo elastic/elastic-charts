@@ -68,20 +68,14 @@ export function limitLogScaleDomain([min, max]: [min: number, max: number], logM
       if (max > absLimit) {
         return [absLimit, max];
       }
-      if (max < absLimit) {
-        return [-absLimit, max];
-      }
       return [absLimit, absLimit];
     }
 
     if (max < 0 && max > -absLimit) {
-      if (min > -absLimit) {
-        return [min, absLimit];
-      }
       if (min < -absLimit) {
         return [min, -absLimit];
       }
-      return [absLimit, absLimit];
+      return [-absLimit, -absLimit];
     }
   }
 
@@ -141,7 +135,8 @@ export const LogBase = Object.freeze({
  */
 export type LogBase = $Values<typeof LogBase>;
 
-const logBaseMap: Record<LogBase, number> = {
+/** @internal */
+export const logBaseMap: Record<LogBase, number> = {
   [LogBase.Common]: 10,
   [LogBase.Binary]: 2,
   [LogBase.Natural]: Math.E,

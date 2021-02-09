@@ -282,7 +282,7 @@ export interface YDomainBase {
    */
   fit?: boolean;
   /**
-   * Padding for computed domain. Pixel number or percent string.
+   * Padding for computed domain. Positive pixel number or percent string.
    *
    * Setting `max` or `min` will override this functionality.
    */

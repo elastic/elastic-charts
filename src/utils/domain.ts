@@ -51,12 +51,8 @@ function getPaddedRange(start: number, end: number, domainOptions?: YDomainRange
 
   let computedPadding = 0;
 
-  if (typeof domainOptions.padding === 'string') {
-    const delta = Math.abs(end - start);
-    computedPadding = getPercentageValue(domainOptions.padding, delta, 0);
-  } else {
-    computedPadding = domainOptions.padding;
-  }
+  const delta = Math.abs(end - start);
+  computedPadding = getPercentageValue(domainOptions.padding, delta, 0);
 
   if (computedPadding === 0) {
     return [start, end];
