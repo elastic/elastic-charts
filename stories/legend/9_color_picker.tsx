@@ -21,9 +21,18 @@ import { EuiColorPicker, EuiWrappingPopover, EuiButton, EuiSpacer, EuiFlexItem, 
 import { action } from '@storybook/addon-actions';
 import React, { useState, useMemo } from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendColorPicker } from '../../src';
-import { SeriesKey } from '../../src/common/series_id';
-import { Color, toEntries } from '../../src/utils/common';
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  Position,
+  ScaleType,
+  Settings,
+  LegendColorPicker,
+  Color,
+  SeriesKey,
+  toEntries,
+} from '../../src';
 import { BARCHART_1Y1G } from '../../src/utils/data_samples/test_dataset';
 
 const onChangeAction = action('onChange');

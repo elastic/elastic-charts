@@ -81,13 +81,12 @@ export const Example = () => {
   );
   const showLegend = boolean('Show Legend', true);
   const onElementClick = action('onElementClick');
-  const disableSmallMultiples = boolean('Disable small multiples', false);
 
   return (
     <Chart className="story-chart">
-      <Settings onElementClick={onElementClick} rotation={0} showLegend={showLegend} />
-      <Axis id="time" title="metric" position={Position.Bottom} gridLine={{ visible: false }} />
-      <Axis id="y" title="Day of week" position={Position.Left} gridLine={{ visible: false }} />
+      <Settings onElementClick={onElementClick} showLegend={showLegend} />
+      <Axis id="time" title="Day of week" position={Position.Bottom} gridLine={{ visible: false }} />
+      <Axis id="y" title="Count of logins" position={Position.Left} gridLine={{ visible: false }} />
 
       <GroupBy
         id="h_split"
@@ -96,7 +95,7 @@ export const Example = () => {
         }}
         sort="alphaAsc"
       />
-      {!disableSmallMultiples && <SmallMultiples splitVertically="h_split" />}
+      <SmallMultiples splitVertically="h_split" />
       <LineAnnotation
         dataValues={[
           {
@@ -118,19 +117,19 @@ export const Example = () => {
       />
       <BarSeries
         id="website a"
-        xScaleType={ScaleType.Time}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"
         yAccessors={['y']}
         stackAccessors={['x']}
-        splitSeriesAccessors={disableSmallMultiples ? ['site', 'g'] : ['g']}
+        splitSeriesAccessors={['g']}
         data={[...data1, ...data2]}
         color={[LIGHT_THEME.colors.vizColors[0], 'lightgray']}
       />
       <LineSeries
         id="avg"
-        xScaleType={ScaleType.Time}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"

@@ -549,6 +549,10 @@ export const getPercentageValue = <T>(ratio: string | number, relativeValue: num
  */
 export const keepDistinct = <T>(d: T, i: number, a: T[]): boolean => a.indexOf(d) === i;
 
+/**
+ * Return an object which keys are values of an object and the value is the
+ * static one provided
+ */
 export function toEntries<T extends Record<string, string>, S>(
   array: T[],
   accessor: keyof T,

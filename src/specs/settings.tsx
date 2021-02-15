@@ -270,7 +270,7 @@ export interface ExternalPointerEventsSettings {
  */
 export interface LegendActionProps {
   /**
-   * Series identifier for the given series
+   * Series identifiers for the given series
    */
   series: SeriesIdentifier[];
   /**
@@ -309,7 +309,7 @@ export interface LegendColorPickerProps {
    */
   onChange: (color: Color | null) => void;
   /**
-   * Series id for the active series
+   * Series ids for the active series
    */
   seriesIdentifiers: SeriesIdentifier[];
 }

@@ -107,7 +107,8 @@ export const Example = () => {
       />
       <BarSeries
         id="website a"
-        xScaleType={ScaleType.Time}
+        name={({ splitAccessors }) => `WebA - ${splitAccessors.get('g')}`}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"
@@ -118,7 +119,8 @@ export const Example = () => {
       />
       <BarSeries
         id="website b"
-        xScaleType={ScaleType.Time}
+        name={({ splitAccessors }) => `WebB - ${splitAccessors.get('g')}`}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"
@@ -129,7 +131,8 @@ export const Example = () => {
       />
       <BarSeries
         id="website c"
-        xScaleType={ScaleType.Time}
+        name={({ splitAccessors }) => `WebC - ${splitAccessors.get('g')}`}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"

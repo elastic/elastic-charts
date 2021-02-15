@@ -70,11 +70,9 @@ export function renderLegendItem(
   totalItems: number,
   index: number,
 ) {
-  const { seriesIdentifiers, childId } = item;
-
   return (
     <LegendListItem
-      key={`${seriesIdentifiers.map(({ key }) => key).join('-')}-${childId}-${index}`}
+      key={`${index}`}
       item={item}
       totalItems={totalItems}
       position={props.position}

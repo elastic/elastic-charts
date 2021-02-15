@@ -172,7 +172,6 @@ export function computeLegend(
     return defaultXYLegendSeriesSort(aDs, bDs);
   });
 
-  // return legendItems.sort((a, b) => legendSortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0]));
   return groupBy(
     legendItems.sort((a, b) => legendSortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0])),
     ({ keys }) => {
