@@ -701,7 +701,7 @@ export const DEFAULT_TOOLTIP_TYPE: "vertical";
 // Warning: (ae-missing-release-tag) "DefaultSettingsProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'legendMaxDepth' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'yLogBase' | 'xLogBase';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'legendMaxDepth' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
 
 // Warning: (ae-missing-release-tag) "DEPTH_KEY" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1736,6 +1736,16 @@ export type ScaleBandType = ScaleOrdinalType;
 // @public (undocumented)
 export type ScaleContinuousType = typeof ScaleType.Linear | typeof ScaleType.Time | typeof ScaleType.Log | typeof ScaleType.Sqrt;
 
+// Warning: (ae-missing-release-tag) "ScaleLogOptions" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export interface ScaleLogOptions {
+    xLogBase?: LogBase;
+    xLogMinLimit?: number;
+    yLogBase?: LogBase;
+    yLogMinLimit?: number;
+}
+
 // Warning: (ae-missing-release-tag) "ScaleOrdinalType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1952,6 +1962,7 @@ export interface SettingsSpec extends Spec {
     // (undocumented)
     rotation: Rotation;
     roundHistogramBrushValues?: boolean;
+    scaleLogOptions?: ScaleLogOptions;
     // (undocumented)
     showLegend: boolean;
     showLegendExtra: boolean;
@@ -1959,10 +1970,6 @@ export interface SettingsSpec extends Spec {
     tooltip: TooltipSettings;
     // (undocumented)
     xDomain?: ContinuousDomain | OrdinalDomain | DomainRange;
-    xLogBase: LogBase;
-    xLogMinLimit?: number;
-    yLogBase: LogBase;
-    yLogMinLimit?: number;
 }
 
 // Warning: (ae-missing-release-tag) "SettingsSpecProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)

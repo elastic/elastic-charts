@@ -27,7 +27,7 @@ import { logBaseMap, logFormatter } from '../utils/formatters';
 import { getKnobsFromEnum } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-type LogKnobs = Pick<SettingsSpecProps, 'logOptions'> & {
+type LogKnobs = Pick<SettingsSpecProps, 'scaleLogOptions'> & {
   xDataType: string;
   yDataType: string;
   xNegative: boolean;
@@ -66,7 +66,7 @@ const getLogKnobs = (): LogKnobs => {
     yDataType: getDataType(yGroup, 'upDown'),
     xNegative: boolean('Use negative values', false, xGroup),
     yNegative: boolean('Use negative values', false, yGroup),
-    logOptions: {
+    scaleLogOptions: {
       yLogMinLimit: yUseDefaultLimit ? undefined : yLimit,
       xLogMinLimit: xUseDefaultLimit ? undefined : xLimit,
       yLogBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, {
@@ -118,7 +118,7 @@ const getInitalData = (rows: number) => {
 
 const getData = (
   rows: number,
-  { logOptions: { yLogBase, xLogBase } = {}, yDataType, xDataType, yNegative, xNegative }: LogKnobs,
+  { scaleLogOptions: { yLogBase, xLogBase } = {}, yDataType, xDataType, yNegative, xNegative }: LogKnobs,
 ) =>
   getInitalData(rows).map((v, i, { length }) => {
     const y0 = getDataValue(yDataType, v, i, length);
@@ -141,13 +141,13 @@ export const Example = () => {
       <Settings {...logKnobs} />
       <Axis
         id="y"
-        tickFormat={logFormatter(logKnobs.logOptions?.yLogBase)}
+        tickFormat={logFormatter(logKnobs.scaleLogOptions?.yLogBase)}
         position={Position.Left}
         domain={{ padding: logKnobs.yPadding }}
       />
       <Axis
         id="x"
-        tickFormat={logFormatter(logKnobs.logOptions?.xLogBase)}
+        tickFormat={logFormatter(logKnobs.scaleLogOptions?.xLogBase)}
         position={Position.Bottom}
         style={{ tickLabel: { rotation: -90 } }}
       />

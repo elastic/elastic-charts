@@ -40,7 +40,7 @@ export const Example = () => {
   );
   return (
     <Chart className="story-chart">
-      <Settings logOptions={{ yLogMinLimit: number('Y log limit', 1, { min: 0 }) }} />
+      <Settings scaleLogOptions={{ yLogMinLimit: number('Y log limit', 1, { min: 0 }) }} />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
       <Axis id="left" title="negative metric" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 

@@ -95,7 +95,7 @@ export function computeAxisTicksDimensions(
   yDomains: YDomain[],
   totalBarsInCluster: number,
   bboxCalculator: BBoxCalculator,
-  { rotation: chartRotation, logOptions: { yLogBase, yLogMinLimit, xLogBase, xLogMinLimit } = {} }: SettingsSpec,
+  { rotation: chartRotation, scaleLogOptions: { yLogBase, yLogMinLimit, xLogBase, xLogMinLimit } = {} }: SettingsSpec,
   { gridLine, tickLabel }: AxisStyle,
   fallBackTickFormatter: TickFormatter,
   barsPadding?: number,
@@ -756,7 +756,7 @@ export function getAxesGeometries(
     leftMargin: number;
   },
   { chartPaddings, chartMargins, axes: sharedAxesStyle }: Theme,
-  { rotation: chartRotation, logOptions: { yLogBase, yLogMinLimit, xLogBase, xLogMinLimit } = {} }: SettingsSpec,
+  { rotation: chartRotation, scaleLogOptions: { yLogBase, yLogMinLimit, xLogBase, xLogMinLimit } = {} }: SettingsSpec,
   axisSpecs: AxisSpec[],
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
   axesStyles: Map<AxisId, AxisStyle | null>,

@@ -321,7 +321,7 @@ export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
  */
 export type MarkBuffer = number | ((radius: number) => number);
 
-export interface LogOptions {
+export interface ScaleLogOptions {
   /**
    * Min log value to render y scale
    *
@@ -507,7 +507,7 @@ export interface SettingsSpec extends Spec {
    * Options to configure log scales
    * TODO: move into scales component to be per scale not per chart
    */
-  logOptions?: LogOptions;
+  scaleLogOptions?: ScaleLogOptions;
 }
 
 /**

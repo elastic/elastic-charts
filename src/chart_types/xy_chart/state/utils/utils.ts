@@ -183,7 +183,7 @@ export function computeSeriesGeometries(
   { xDomain, yDomains, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
   seriesColorMap: Map<SeriesKey, Color>,
   chartTheme: Theme,
-  { rotation: chartRotation, logOptions: { yLogBase, yLogMinLimit, xLogBase, xLogMinLimit } = {} }: SettingsSpec,
+  { rotation: chartRotation, scaleLogOptions: { yLogBase, yLogMinLimit, xLogBase, xLogMinLimit } = {} }: SettingsSpec,
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   enableHistogramMode: boolean,
