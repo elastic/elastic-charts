@@ -174,8 +174,8 @@ export function computeLegend(
 
   return groupBy(
     legendItems.sort((a, b) => legendSortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0])),
-    ({ keys }) => {
-      return keys.join('__');
+    ({ keys, childId }) => {
+      return [...keys, childId].join('__'); // childId is used for band charts
     },
     true,
   ).map((d) => {
