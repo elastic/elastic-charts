@@ -39,7 +39,7 @@ export const Example = () => {
 
   return (
     <Chart className="story-chart">
-      <Settings showLegend yLogMinLimit={number('Y log limit', 1, { min: 0 })} />
+      <Settings showLegend logOptions={{ yLogMinLimit: number('Y log limit', 1, { min: 0 }) }} />
       <Axis
         id="bottom"
         title="timestamp per 1 minute"

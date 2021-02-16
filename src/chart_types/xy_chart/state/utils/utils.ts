@@ -18,7 +18,7 @@
  */
 
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
-import { Scale } from '../../../../scales';
+import { LogBase, Scale } from '../../../../scales';
 import { SortSeriesByConfig } from '../../../../specs';
 import { OrderBy, SettingsSpec } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
@@ -204,7 +204,7 @@ export function computeSeriesGeometries(
   { xDomain, yDomains, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
   seriesColorMap: Map<SeriesKey, Color>,
   chartTheme: Theme,
-  { rotation: chartRotation, yLogBase, yLogMinLimit }: SettingsSpec,
+  { rotation: chartRotation, logOptions: { yLogBase, yLogMinLimit, xLogBase, xLogMinLimit } = {} }: SettingsSpec,
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   enableHistogramMode: boolean,
@@ -256,6 +256,8 @@ export function computeSeriesGeometries(
     chartTheme,
     enableHistogramMode,
     chartRotation,
+    xLogBase,
+    xLogMinLimit,
   );
 
   const totalBarsInCluster = Object.values(barIndexByPanel).reduce((acc, curr) => {
@@ -268,6 +270,8 @@ export function computeSeriesGeometries(
     range: [0, isHorizontalRotation(chartRotation) ? horizontal.bandwidth : vertical.bandwidth],
     barsPadding: enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding,
     enableHistogramMode,
+    logBase: xLogBase,
+    logMinLimit: xLogMinLimit,
   });
 
   return {
@@ -344,6 +348,8 @@ function renderGeometries(
   chartTheme: Theme,
   enableHistogramMode: boolean,
   chartRotation: Rotation,
+  xLogBase?: LogBase,
+  xLogMinLimit?: number,
 ): Omit<ComputedGeometries, 'scales'> {
   const len = dataSeries.length;
   let i;
@@ -388,6 +394,8 @@ function renderGeometries(
       range: [0, isHorizontalRotation(chartRotation) ? smHScale.bandwidth : smVScale.bandwidth],
       barsPadding,
       enableHistogramMode,
+      logBase: xLogBase,
+      logMinLimit: xLogMinLimit,
     });
 
     const { stackMode } = ds;

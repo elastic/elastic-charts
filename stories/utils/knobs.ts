@@ -75,10 +75,12 @@ export const getKnobsFromEnum = <T extends SelectTypeKnobValue, O extends Record
   defaultValue: T,
   {
     group,
+    allowUndefined,
     include,
     exclude,
   }: {
     group?: string;
+    allowUndefined?: boolean;
     include?: Array<T>;
     exclude?: Array<T>;
   } = {},
@@ -92,7 +94,7 @@ export const getKnobsFromEnum = <T extends SelectTypeKnobValue, O extends Record
         // @ts-ignore
         acc[key] = value;
         return acc;
-      }, {} as O),
+      }, (allowUndefined ? { Undefined: undefined } : ({} as unknown)) as O),
     defaultValue,
     group,
   ) || undefined;

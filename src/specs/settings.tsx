@@ -321,6 +321,38 @@ export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
  */
 export type MarkBuffer = number | ((radius: number) => number);
 
+export interface LogOptions {
+  /**
+   * Min log value to render y scale
+   *
+   * Defaults to min value of domain, or LOG_MIN_ABS_DOMAIN if mixed polarity
+   */
+  yLogMinLimit?: number;
+
+  /**
+   * Base for log y scales
+   *
+   * @defaultValue `common` {@link (LogBase:type) | LogBase.Common}
+   * (i.e. log base 10)
+   */
+  yLogBase?: LogBase;
+
+  /**
+   * Min log value to render x scale
+   *
+   * Defaults to min value of domain, or LOG_MIN_ABS_DOMAIN if mixed polarity
+   */
+  xLogMinLimit?: number;
+
+  /**
+   * Base for log x scales
+   *
+   * @defaultValue `common` {@link (LogBase:type) | LogBase.Common}
+   * (i.e. log base 10)
+   */
+  xLogBase?: LogBase;
+}
+
 /**
  * The Spec used for Chart settings
  * @public
@@ -472,31 +504,10 @@ export interface SettingsSpec extends Spec {
    */
   noResults?: ComponentType | ReactChild;
   /**
-   * Min log value to render y scale
-   *
-   * Defaults to min value of domain, or 0 if mixed polarity
+   * Options to configure log scales
+   * TODO: move into scales component to be per scale not per chart
    */
-  yLogMinLimit?: number;
-
-  /**
-   * Min log value to render y scale
-   *
-   * Defaults to min value of domain, or 0 if mixed polarity
-   */
-  yLogBase: LogBase;
-  /**
-   * Min log value to render x scale
-   *
-   * Defaults to min value of domain, or 0 if mixed polarity
-   */
-  xLogMinLimit?: number;
-
-  /**
-   * Min log value to render x scale
-   *
-   * Defaults to min value of domain, or 0 if mixed polarity
-   */
-  xLogBase: LogBase;
+  logOptions?: LogOptions;
 }
 
 /**
@@ -555,9 +566,7 @@ export type DefaultSettingsProps =
   | 'hideDuplicateAxes'
   | 'brushAxis'
   | 'minBrushDelta'
-  | 'externalPointerEvents'
-  | 'yLogBase'
-  | 'xLogBase';
+  | 'externalPointerEvents';
 
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
 

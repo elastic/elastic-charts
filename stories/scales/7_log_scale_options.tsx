@@ -27,7 +27,7 @@ import { logBaseMap, logFormatter } from '../utils/formatters';
 import { getKnobsFromEnum } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-type LogKnobs = Pick<SettingsSpecProps, 'yLogBase' | 'yLogMinLimit' | 'xLogBase' | 'xLogMinLimit'> & {
+type LogKnobs = Pick<SettingsSpecProps, 'logOptions'> & {
   xDataType: string;
   yDataType: string;
   xNegative: boolean;
@@ -59,17 +59,25 @@ const getLogKnobs = (): LogKnobs => {
   const yGroup = 'Y - Axis';
   const yUseDefaultLimit = boolean('Use default limit', false, yGroup);
   const yLimit = number('Log min limit', 1, { min: 0 }, yGroup);
-  const xUseDefaultLimit = boolean('Use default limit', false, xGroup);
+  const xUseDefaultLimit = boolean('Use default limit', true, xGroup);
   const xLimit = number('Log min limit', 1, { min: 0 }, xGroup);
   return {
     xDataType: getDataType(xGroup),
     yDataType: getDataType(yGroup, 'upDown'),
     xNegative: boolean('Use negative values', false, xGroup),
     yNegative: boolean('Use negative values', false, yGroup),
-    yLogMinLimit: yUseDefaultLimit ? undefined : yLimit,
-    xLogMinLimit: xUseDefaultLimit ? undefined : xLimit,
-    yLogBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, { group: yGroup }),
-    xLogBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, { group: xGroup }),
+    logOptions: {
+      yLogMinLimit: yUseDefaultLimit ? undefined : yLimit,
+      xLogMinLimit: xUseDefaultLimit ? undefined : xLimit,
+      yLogBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, {
+        group: yGroup,
+        allowUndefined: true,
+      }),
+      xLogBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, {
+        group: xGroup,
+        allowUndefined: true,
+      }),
+    },
     yPadding: number('Padding', 0, { min: 0 }, yGroup),
   };
 };
@@ -108,7 +116,10 @@ const getInitalData = (rows: number) => {
   return [...range(quart, -quart, -1), ...range(-quart, quart + 1, 1)];
 };
 
-const getData = (rows: number, { yLogBase, xLogBase, yDataType, xDataType, yNegative, xNegative }: LogKnobs) =>
+const getData = (
+  rows: number,
+  { logOptions: { yLogBase, xLogBase } = {}, yDataType, xDataType, yNegative, xNegative }: LogKnobs,
+) =>
   getInitalData(rows).map((v, i, { length }) => {
     const y0 = getDataValue(yDataType, v, i, length);
     const x0 = getDataValue(xDataType, v, i, length);
@@ -120,23 +131,23 @@ const getData = (rows: number, { yLogBase, xLogBase, yDataType, xDataType, yNega
 
 export const Example = () => {
   const rows = number('Rows in dataset', 11, { min: 5, step: 2, max: 21 });
-  const logOptions = getLogKnobs();
-  const data = getData(rows, logOptions);
+  const logKnobs = getLogKnobs();
+  const data = getData(rows, logKnobs);
   const type = getSeriesType();
   const Series = seriesMap[type];
 
   return (
     <Chart className="story-chart">
-      <Settings {...logOptions} />
+      <Settings {...logKnobs} />
       <Axis
         id="y"
-        tickFormat={logFormatter(logOptions.yLogBase)}
+        tickFormat={logFormatter(logKnobs.logOptions?.yLogBase)}
         position={Position.Left}
-        domain={{ padding: logOptions.yPadding }}
+        domain={{ padding: logKnobs.yPadding }}
       />
       <Axis
         id="x"
-        tickFormat={logFormatter(logOptions.xLogBase)}
+        tickFormat={logFormatter(logKnobs.logOptions?.xLogBase)}
         position={Position.Bottom}
         style={{ tickLabel: { rotation: -90 } }}
       />
