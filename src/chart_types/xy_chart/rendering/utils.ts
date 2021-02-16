@@ -107,7 +107,9 @@ export function getGeometryStateStyle(
   const { default: defaultStyles, highlighted, unhighlighted } = sharedGeometryStyle;
 
   if (highlightedLegendItem) {
-    const isPartOfHighlightedSeries = seriesIdentifier.key === highlightedLegendItem.seriesIdentifier.key;
+    const isPartOfHighlightedSeries = highlightedLegendItem.seriesIdentifiers.some(
+      ({ key }) => key === seriesIdentifier.key,
+    );
 
     return isPartOfHighlightedSeries ? highlighted : unhighlighted;
   }
