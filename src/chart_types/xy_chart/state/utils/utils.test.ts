@@ -28,6 +28,7 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { Spec } from '../../../../specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G, BARCHART_2Y0G } from '../../../../utils/data_samples/test_dataset';
+import { ContinuousDomain, Range } from '../../../../utils/domain';
 import { SpecId } from '../../../../utils/ids';
 import { PointShape } from '../../../../utils/themes/theme';
 import { getSeriesIndex, XYChartSeriesIdentifier } from '../../utils/series';
@@ -40,7 +41,6 @@ import {
   isHistogramModeEnabled,
   setBarSeriesAccessors,
   getCustomSeriesColors,
-  updateDeselectedDataSeries,
   computeScreenReaderData,
 } from './utils';
 
@@ -88,14 +88,14 @@ describe('Chart State utils', () => {
     });
     expect(domains.yDomains).toEqual([
       {
-        domain: [0, 10],
+        domain: [1, 10],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
       },
       {
-        domain: [0, 10],
+        domain: [1, 10],
         scaleType: ScaleType.Log,
         groupId: 'group2',
         isBandScale: false,
@@ -136,14 +136,14 @@ describe('Chart State utils', () => {
     });
     expect(domains.yDomains).toEqual([
       {
-        domain: [0, 5],
+        domain: [1, 5],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
       },
       {
-        domain: [0, 9],
+        domain: [1, 9],
         scaleType: ScaleType.Log,
         groupId: 'group2',
         isBandScale: false,
@@ -179,36 +179,6 @@ describe('Chart State utils', () => {
     expect(getSeriesIndex(deselectedSeries, dataSeriesValuesA)).toBe(0);
     expect(getSeriesIndex(deselectedSeries, dataSeriesValuesC)).toBe(-1);
     expect(getSeriesIndex([], dataSeriesValuesA)).toBe(-1);
-  });
-  it('should update a list of SeriesCollectionValue given a selected SeriesCollectionValue item', () => {
-    const dataSeriesValuesA: XYChartSeriesIdentifier = {
-      specId: 'a',
-      yAccessor: 'y1',
-      splitAccessors: new Map(),
-      seriesKeys: ['a', 'b', 'c'],
-      key: 'a',
-    };
-    const dataSeriesValuesB: XYChartSeriesIdentifier = {
-      specId: 'b',
-      yAccessor: 'y1',
-      splitAccessors: new Map(),
-      seriesKeys: ['a', 'b', 'c'],
-      key: 'b',
-    };
-    const dataSeriesValuesC: XYChartSeriesIdentifier = {
-      specId: 'a',
-      yAccessor: 'y1',
-      splitAccessors: new Map(),
-      seriesKeys: ['a', 'b', 'd'],
-      key: 'd',
-    };
-    const selectedSeries = [dataSeriesValuesA, dataSeriesValuesB];
-    const addedSelectedSeries = [dataSeriesValuesA, dataSeriesValuesB, dataSeriesValuesC];
-    const removedSelectedSeries = [dataSeriesValuesB];
-
-    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesC)).toEqual(addedSelectedSeries);
-    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesA)).toEqual(removedSelectedSeries);
-    expect(updateDeselectedDataSeries([], dataSeriesValuesA)).toEqual([dataSeriesValuesA]);
   });
 
   describe('getCustomSeriesColors', () => {
@@ -733,8 +703,8 @@ describe('Chart State utils', () => {
   });
 
   test('can compute xScaleOffset dependent on histogram mode', () => {
-    const domain = [0, 10];
-    const range: [number, number] = [0, 100];
+    const domain: ContinuousDomain = [0, 10];
+    const range: Range = [0, 100];
     const bandwidth = 10;
     const barsPadding = 0.5;
     const scale = new ScaleContinuous(

@@ -529,18 +529,18 @@ export const round = (value: number, fractionDigits = 0): number => {
  */
 export const getPercentageValue = <T>(ratio: string | number, relativeValue: number, defaultValue: T): number | T => {
   if (typeof ratio === 'number') {
-    return ratio;
+    return Math.abs(ratio);
   }
 
   const ratioStr = ratio.trim();
 
   if (/\d+%$/.test(ratioStr)) {
-    const percentage = Number.parseInt(ratioStr.slice(0, -1), 10);
+    const percentage = Math.abs(Number.parseInt(ratioStr.slice(0, -1), 10));
     return relativeValue * (percentage / 100);
   }
   const num = Number.parseFloat(ratioStr);
 
-  return num && !isNaN(num) ? num : defaultValue;
+  return num && !isNaN(num) ? Math.abs(num) : defaultValue;
 };
 
 /**
@@ -548,6 +548,21 @@ export const getPercentageValue = <T>(ratio: string | number, relativeValue: num
  * @example [1, 2, 4, 2, 4, 0, 3, 2].filter(keepDistinct) ==> [1, 2, 4, 0, 3]
  */
 export const keepDistinct = <T>(d: T, i: number, a: T[]): boolean => a.indexOf(d) === i;
+
+/**
+ * Return an object which keys are values of an object and the value is the
+ * static one provided
+ */
+export function toEntries<T extends Record<string, string>, S>(
+  array: T[],
+  accessor: keyof T,
+  staticValue: S,
+): Record<string, S> {
+  return array.reduce<Record<string, S>>((acc, curr) => {
+    acc[curr[accessor]] = staticValue;
+    return acc;
+  }, {});
+}
 
 /**
  * Safely format values with error handling

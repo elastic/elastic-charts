@@ -20,12 +20,13 @@
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { ScreenReaderData } from '../../../../components/screen_reader_data_table/screen_reader_data_table';
 import { Scale } from '../../../../scales';
+import { LogBase } from '../../../../scales/scale_continuous';
 import { SortSeriesByConfig } from '../../../../specs';
-import { OrderBy } from '../../../../specs/settings';
+import { OrderBy, SettingsSpec } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
-import { Domain } from '../../../../utils/domain';
+import { ContinuousDomain, OrdinalDomain } from '../../../../utils/domain';
 import {
   PointGeometry,
   BarGeometry,
@@ -51,14 +52,7 @@ import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../../utils/scales';
-import {
-  DataSeries,
-  getSeriesIndex,
-  getFormattedDataSeries,
-  getDataSeriesFromSpecs,
-  XYChartSeriesIdentifier,
-  getSeriesKey,
-} from '../../utils/series';
+import { DataSeries, getFormattedDataSeries, getDataSeriesFromSpecs, getSeriesKey } from '../../utils/series';
 import {
   AxisSpec,
   BasicSeriesSpec,
@@ -81,27 +75,6 @@ import { getSpecsById, getAxesSpecForSpecId, getSpecDomainGroupId } from './spec
 import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform } from './types';
 
 /**
- * Adds or removes series from array or series
- * @param series
- * @param target
- * @internal
- */
-export function updateDeselectedDataSeries(
-  series: XYChartSeriesIdentifier[],
-  target: XYChartSeriesIdentifier,
-): XYChartSeriesIdentifier[] {
-  const seriesIndex = getSeriesIndex(series, target);
-  const updatedSeries = series ? [...series] : [];
-
-  if (seriesIndex > -1) {
-    updatedSeries.splice(seriesIndex, 1);
-  } else {
-    updatedSeries.push(target);
-  }
-  return updatedSeries;
-}
-
-/**
  * Return map association between `seriesKey` and only the custom colors string
  * @internal
  * @param dataSeries
@@ -112,7 +85,14 @@ export function getCustomSeriesColors(dataSeries: DataSeries[]): Map<SeriesKey, 
 
   dataSeries.forEach((ds) => {
     const { spec, specId } = ds;
-    const seriesKey = getSeriesKey(ds, ds.groupId);
+    const dataSeriesKey = {
+      specId: ds.specId,
+      yAccessor: ds.yAccessor,
+      splitAccessors: ds.splitAccessors,
+      smVerticalAccessorValue: undefined,
+      smHorizontalAccessorValue: undefined,
+    };
+    const seriesKey = getSeriesKey(dataSeriesKey, ds.groupId);
 
     if (!spec || !spec.color) {
       return;
@@ -155,7 +135,7 @@ export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   customYDomainsByGroupId: Map<GroupId, YDomainRange> = new Map(),
   deselectedDataSeries: SeriesIdentifier[] = [],
-  customXDomain?: DomainRange | Domain,
+  customXDomain?: DomainRange | ContinuousDomain | OrdinalDomain,
   orderOrdinalBinsBy?: OrderBy,
   smallMultiples?: SmallMultiplesGroupBy,
   sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
@@ -204,7 +184,7 @@ export function computeSeriesGeometries(
   { xDomain, yDomains, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
   seriesColorMap: Map<SeriesKey, Color>,
   chartTheme: Theme,
-  chartRotation: Rotation,
+  { rotation: chartRotation, scaleLogOptions: { yLogBase, yLogMinLimit, xLogBase, xLogMinLimit } = {} }: SettingsSpec,
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   enableHistogramMode: boolean,
@@ -238,6 +218,8 @@ export function computeSeriesGeometries(
   const yScales = computeYScales({
     yDomains,
     range: [isHorizontalRotation(chartRotation) ? vertical.bandwidth : horizontal.bandwidth, 0],
+    logBase: yLogBase,
+    logMinLimit: yLogMinLimit,
   });
 
   const computedGeoms = renderGeometries(
@@ -254,6 +236,8 @@ export function computeSeriesGeometries(
     chartTheme,
     enableHistogramMode,
     chartRotation,
+    xLogBase,
+    xLogMinLimit,
   );
 
   const totalBarsInCluster = Object.values(barIndexByPanel).reduce((acc, curr) => {
@@ -266,6 +250,8 @@ export function computeSeriesGeometries(
     range: [0, isHorizontalRotation(chartRotation) ? horizontal.bandwidth : vertical.bandwidth],
     barsPadding: enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding,
     enableHistogramMode,
+    logBase: xLogBase,
+    logMinLimit: xLogMinLimit,
   });
 
   return {
@@ -342,6 +328,8 @@ function renderGeometries(
   chartTheme: Theme,
   enableHistogramMode: boolean,
   chartRotation: Rotation,
+  xLogBase?: LogBase,
+  xLogMinLimit?: number,
 ): Omit<ComputedGeometries, 'scales'> {
   const len = dataSeries.length;
   let i;
@@ -386,6 +374,8 @@ function renderGeometries(
       range: [0, isHorizontalRotation(chartRotation) ? smHScale.bandwidth : smVScale.bandwidth],
       barsPadding,
       enableHistogramMode,
+      logBase: xLogBase,
+      logMinLimit: xLogMinLimit,
     });
 
     const { stackMode } = ds;
@@ -398,8 +388,16 @@ function renderGeometries(
       top: topPos,
       left: leftPos,
     };
+    const dataSeriesKey = getSeriesKey(
+      {
+        specId: ds.specId,
+        yAccessor: ds.yAccessor,
+        splitAccessors: ds.splitAccessors,
+      },
+      ds.groupId,
+    );
 
-    const color = seriesColorsMap.get(ds.key) || defaultColor;
+    const color = seriesColorsMap.get(dataSeriesKey) || defaultColor;
 
     if (isBarSeriesSpec(spec)) {
       const key = getBarIndexKey(ds, enableHistogramMode);
