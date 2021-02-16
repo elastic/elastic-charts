@@ -601,13 +601,11 @@ export function getBarIndexKey(
   return [groupId, specId, ...splitAccessors.values(), yAccessor].join('__-__');
 }
 
-/** @internal */
 function parseDataForKeys(d: DataSeries) {
   if (!d) return [];
   return Object.keys(d.data[0].datum);
 }
 
-/** @internal */
 function parseDataForValues(d: DataSeries) {
   if (!d) return [];
   const values = [];

@@ -32,7 +32,7 @@ import { getComputedScalesSelector } from './get_computed_scales';
 export const isBrushAvailableSelector = createCachedSelector(
   [getSettingsSpecSelector, getComputedScalesSelector],
   (settingsSpec, scales): boolean => {
-    if (!scales.xScale || settingsSpec.dataTable?.showDataTable === true) {
+    if (!scales.xScale) {
       return false;
     }
     return scales.xScale.type !== ScaleType.Ordinal && Boolean(settingsSpec.onBrushEnd);

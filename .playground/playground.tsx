@@ -19,10 +19,32 @@
 
 import React from 'react';
 
-import { Example } from '../stories/icicle/02_unix_flame';
+import { Chart, Settings, Axis, Position, BarSeries, ScaleType } from '../src';
 
 export class Playground extends React.Component {
   render() {
-    return <Example />;
+    return (
+      <div className="story-chart story-root root">
+        <Chart size={[500, 200]}>
+          <Settings dataTable={{ showDataTable: true }} />
+          <Axis id="count" title="count" position={Position.Left} />
+          <Axis id="x" title="goods" position={Position.Bottom} />
+          {new Array(10).fill(0).map((d, i) => {
+            return (
+              // eslint-disable-next-line react/jsx-key
+              <BarSeries
+                id={`bar${i}`}
+                name="short"
+                xScaleType={ScaleType.Linear}
+                yScaleType={ScaleType.Linear}
+                xAccessor="x"
+                yAccessors={['y']}
+                data={[{ x: 1, y: Math.random() }]}
+              />
+            );
+          })}
+        </Chart>
+      </div>
+    );
   }
 }

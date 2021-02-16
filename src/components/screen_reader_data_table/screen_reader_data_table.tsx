@@ -39,6 +39,36 @@ export interface ScreenReaderDataTableStateProps {
   data: ScreenReaderData[];
 }
 
+/** @internal */
+export const altTextChartDescription = () => {
+  // if there is a stackAccessor in the series then it is stacked
+  return `There are 3 series in this chart.
+  There are 2 line series and 1 area series.
+  Each series has 10 data points.
+  There is an x-axis and one y-axis
+  The x-axis is linear. The y axis is linear
+  The x-axis domain is 0 to 100
+  The y-axis domain is 0 to 5.00 
+  `;
+};
+
+/** @internal */
+export const renderAltText = (data: ScreenReaderData[]) => {
+  if (!data[0]) {
+    return;
+  }
+
+  const validSeriesName = data[0].seriesName !== undefined ? ` with the name ${data[0].seriesName}` : ``;
+
+  return `This chart has a total of ${data.length} series. ${data.map((value, index) => {
+    return ` The ${index + 1} series of ${data.length} series is a ${
+      value.seriesType
+    } series${validSeriesName}. The x scale is ${value.xScaleType} and the y scale is ${value.yScaleType}.`;
+  })}
+
+`;
+};
+
 export const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) => {
   const { data } = props;
 
@@ -48,24 +78,6 @@ export const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableState
 
   const classes = 'echDataTable';
 
-  /** @internal */
-  const renderAltText = (data: ScreenReaderData[]) => {
-    if (!data[0]) {
-      return;
-    }
-
-    const validSeriesName = data[0].seriesName !== undefined ? ` with the name ${data[0].seriesName}` : ``;
-
-    return `This chart has a total of ${data.length} series. ${data.map((value, index) => {
-      return ` The ${index + 1} series of ${data.length} series is a ${
-        value.seriesType
-      } series${validSeriesName}. The x scale is ${value.xScaleType} and the y scale is ${value.yScaleType}.`;
-    })}
-  
-  `;
-  };
-
-  /** @internal */
   const computeScreenReaderTable = (d: ScreenReaderData[]) => {
     const dataKeys: JSX.Element[] = [];
     // go through the number of series in ScreenReaderData
@@ -112,7 +124,7 @@ export const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableState
 
   return (
     <>
-      <p className={classes} aria-labelledby="information about the serie(s) within the chart">
+      <p className={classes} aria-label="information about the serie(s) within the chart">
         {renderAltText(data)}
       </p>
       <table className={classes} role="presentation" tabIndex={-1}>

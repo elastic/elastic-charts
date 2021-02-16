@@ -4,14 +4,6 @@ exports[`Chart should render the legend name test 1`] = `
 "<Chart size={{...}} id=\\"chart1\\" renderer=\\"canvas\\">
   <Provider store={{...}}>
     <div className=\\"echChart\\" style={{...}}>
-      <Connect(ScreenReaderDataTableComponent)>
-        <ScreenReaderDataTableComponent data={{...}} dispatch={[Function: dispatch]}>
-          <p className=\\"echDataTable\\" aria-labelledby=\\"information about the serie(s) within the chart\\" />
-          <table className=\\"echDataTable\\" role=\\"presentation\\" tabIndex={-1}>
-            <tbody />
-          </table>
-        </ScreenReaderDataTableComponent>
-      </Connect(ScreenReaderDataTableComponent)>
       <Connect(ChartBackground)>
         <ChartBackground backgroundColor=\\"transparent\\" dispatch={[Function: dispatch]}>
           <div className=\\"echChartBackground\\" style={{...}} />
@@ -80,8 +72,8 @@ exports[`Chart should render the legend name test 1`] = `
                   </Crosshair>
                 </Connect(Crosshair)>
                 <Connect(XYChart) forwardStageRef={{...}}>
-                  <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} dataTable={{...}} onChartRendered={[Function (anonymous)]}>
-                    <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} />
+                  <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} onChartRendered={[Function (anonymous)]}>
+                    <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"img\\" aria-label=\\"There are 3 series in this chart.\\\\n  There are 2 line series and 1 area series.\\\\n  Each series has 10 data points.\\\\n  There is an x-axis and one y-axis\\\\n  The x-axis is linear. The y axis is linear\\\\n  The x-axis domain is 0 to 100\\\\n  The y-axis domain is 0 to 5.00 \\\\n  \\" />
                   </XYChart>
                 </Connect(XYChart)>
                 <Connect(Tooltip) getChartContainerRef={[Function (anonymous)]}>

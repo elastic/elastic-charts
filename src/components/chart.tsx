@@ -40,7 +40,6 @@ import { ChartStatus } from './chart_status';
 import { ErrorBoundary } from './error_boundary';
 import { Legend } from './legend/legend';
 import { getElementZIndex } from './portal/utils';
-import { ScreenReaderDataTable } from './screen_reader_data_table';
 
 interface ChartProps {
   /**
@@ -173,7 +172,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     return (
       <Provider store={this.chartStore}>
         <div className={chartClassNames} style={containerSizeStyle} ref={this.chartContainerRef}>
-          <ScreenReaderDataTable />
           <ChartBackground />
           <ChartStatus />
           <ChartResizer />

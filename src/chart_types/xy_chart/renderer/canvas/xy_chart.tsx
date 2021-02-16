@@ -22,14 +22,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { LegendItem } from '../../../../common/legend';
-import { DataTableProps } from '../../../../specs';
+import { altTextChartDescription } from '../../../../components/screen_reader_data_table/screen_reader_data_table';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
-import { getScreenReaderDataTableSettingsSelector } from '../../../../state/selectors/get_screen_reader_settings';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -78,7 +77,6 @@ export interface ReactiveChartStateProps {
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
-  dataTable: DataTableProps;
 }
 
 interface ReactiveChartDispatchProps {
@@ -151,6 +149,9 @@ class XYChartComponent extends React.Component<XYChartProps> {
           width,
           height,
         }}
+        // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+        role="img"
+        aria-label={altTextChartDescription()}
       />
     );
   }
@@ -221,7 +222,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationDimensions: new Map(),
   annotationSpecs: [],
   panelGeoms: [],
-  dataTable: { showDataTable: false },
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -249,7 +249,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
-    dataTable: getScreenReaderDataTableSettingsSelector(state),
   };
 };
 
