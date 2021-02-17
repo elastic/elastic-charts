@@ -329,7 +329,7 @@ export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoun
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
 /** @public */
-export type CustomXDomain = (DomainRange & LogScaleOptions) | OrdinalDomain;
+export type CustomXDomain = (DomainRange & Pick<LogScaleOptions, 'logBase'>) | OrdinalDomain;
 
 export interface DisplayValueSpec {
   /** Show value label in chart element */

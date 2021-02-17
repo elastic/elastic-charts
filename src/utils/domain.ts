@@ -71,17 +71,16 @@ function getPaddedRange(start: number, end: number, domainOptions?: YDomainRange
 /** @internal */
 export function computeDomainExtent(
   [start, end]: [number, number] | [undefined, undefined],
-  isLogScale: boolean,
   domainOptions?: YDomainRange,
 ): [number, number] {
   if (start != null && end != null) {
     const [paddedStart, paddedEnd] = getPaddedRange(start, end, domainOptions);
 
     if (paddedStart >= 0 && paddedEnd >= 0) {
-      return domainOptions?.fit || isLogScale ? [paddedStart, paddedEnd] : [0, paddedEnd];
+      return domainOptions?.fit ? [paddedStart, paddedEnd] : [0, paddedEnd];
     }
     if (paddedStart < 0 && paddedEnd < 0) {
-      return domainOptions?.fit || isLogScale ? [paddedStart, paddedEnd] : [paddedStart, 0];
+      return domainOptions?.fit ? [paddedStart, paddedEnd] : [paddedStart, 0];
     }
 
     return [paddedStart, paddedEnd];
@@ -100,7 +99,6 @@ export function computeDomainExtent(
 export function computeContinuousDataDomain(
   data: any[],
   accessor: (n: any) => number,
-  isLogScale: boolean,
   domainOptions?: YDomainRange | null,
 ): ContinuousDomain {
   const range = extent<any, number>(data, accessor);
@@ -109,5 +107,5 @@ export function computeContinuousDataDomain(
     return [range[0] ?? 0, range[1] ?? 0];
   }
 
-  return computeDomainExtent(range, isLogScale, domainOptions);
+  return computeDomainExtent(range, domainOptions);
 }

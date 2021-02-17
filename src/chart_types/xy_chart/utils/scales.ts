@@ -61,7 +61,7 @@ interface XScaleOptions {
  */
 export function computeXScale(options: XScaleOptions): Scale {
   const { xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, ticks, integersOnly } = options;
-  const { scaleType, minInterval, domain, isBandScale, timeZone, logBase, logMinLimit } = xDomain;
+  const { scaleType, minInterval, domain, isBandScale, timeZone, logBase } = xDomain;
   const rangeDiff = Math.abs(range[1] - range[0]);
   const isInverse = range[1] < range[0];
   if (scaleType === ScaleType.Ordinal) {
@@ -96,7 +96,6 @@ export function computeXScale(options: XScaleOptions): Scale {
         ticks,
         isSingleValueHistogram,
         logBase,
-        logMinLimit,
       },
     );
 
@@ -113,7 +112,6 @@ export function computeXScale(options: XScaleOptions): Scale {
       ticks,
       integersOnly,
       logBase,
-      logMinLimit,
     },
   );
 }

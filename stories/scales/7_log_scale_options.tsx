@@ -21,18 +21,18 @@ import { boolean, number, select } from '@storybook/addon-knobs';
 import { range } from 'lodash';
 import React from 'react';
 
-import { Chart, Axis, LineSeries, Position, ScaleType, Settings, AreaSeries, CurveType } from '../../src';
+import { Chart, Axis, LineSeries, Position, ScaleType, Settings, AreaSeries, CurveType, YDomainBase } from '../../src';
 import { LogBase, LogScaleOptions } from '../../src/scales/scale_continuous';
 import { logBaseMap, logFormatter } from '../utils/formatters';
 import { getKnobsFromEnum } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-type LogKnobs = LogScaleOptions & {
-  dataType: string;
-  negative: boolean;
-  scaleType: Extract<ScaleType, 'log' | 'linear'>;
-  padding?: number;
-};
+type LogKnobs = LogScaleOptions &
+  Pick<YDomainBase, 'fit' | 'padding'> & {
+    dataType: string;
+    negative: boolean;
+    scaleType: Extract<ScaleType, 'log' | 'linear'>;
+  };
 
 const getDataType = (group: string, defaultType = 'increasing') =>
   select(
@@ -59,9 +59,10 @@ const getLogKnobs = (isXAxis = false): LogKnobs => {
   const limit = number('Log min limit', 1, { min: 0 }, group);
 
   return {
+    ...(!isXAxis && { fit: boolean('Fit domain', true, group) }),
     dataType: getDataType(group, isXAxis ? undefined : 'upDown'),
     negative: boolean('Use negative values', false, group),
-    logMinLimit: useDefaultLimit ? undefined : limit,
+    ...(!isXAxis && { logMinLimit: useDefaultLimit ? undefined : limit }),
     logBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, {
       group,
       allowUndefined: true,
@@ -150,11 +151,11 @@ Example.story = {
   parameters: {
     options: { selectedPanel: SB_SOURCE_PANEL },
     info: {
-      text: `Log scales will try to best fit the data without setting a baseline to a set value.
-      If you provide a \`yLogMinLimit\` or \`xLogMinLimit\`, the scale will be limited to that value.
-      This does _not_ replace the min domain value, such that if all values are greater than this limit,
-      the domain min will be determined by the dataset.\n\nThe \`yLogBase\` and \`xLogBase\`
-      provides a way to set the base of the log to one of following:
+      text: `With the \`domain.fit\` option enabled, Log scales will try to best fit the y axis data without setting a baseline to a hardcoded value, currently 1.
+      If you provide a \`logMinLimit\` on the \`Axis.domain\` prop, the scale will be limited to that value.
+      This is _not_ the same as min domain value, such that if all values are greater than \`logMinLimit\`,
+      the domain min will be determined solely by the dataset.\n\nThe \`domain.logBase\` and \`xDomain.logBase\` options
+      provide a way to set the base of the log to one of following:
       [\`Common\`](https://en.wikipedia.org/wiki/Common_logarithm) (base 10),
       [\`Binary\`](https://en.wikipedia.org/wiki/Binary_logarithm) (base 2),
       [\`Natural\`](https://en.wikipedia.org/wiki/Natural_logarithm) (base e), the default is \`Common\``,

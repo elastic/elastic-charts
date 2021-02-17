@@ -76,7 +76,7 @@ export function mergeXDomain(
       }
     }
   } else {
-    seriesXComputedDomains = computeContinuousDataDomain(values, identity, mainXScaleType.scaleType === ScaleType.Log, {
+    seriesXComputedDomains = computeContinuousDataDomain(values, identity, {
       fit: true,
     });
     let customMinInterval: undefined | number;
@@ -125,7 +125,6 @@ export function mergeXDomain(
     minInterval,
     timeZone: mainXScaleType.timeZone,
     logBase: customXDomain && 'logBase' in customXDomain ? customXDomain.logBase : undefined,
-    logMinLimit: customXDomain && 'logMinLimit' in customXDomain ? customXDomain.logMinLimit : undefined,
   };
 }
 
