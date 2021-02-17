@@ -21,7 +21,7 @@ import numeral from 'numeral';
 
 import { LogBase } from '../../src/scales/scale_continuous';
 
-const superStringMap: Record<number, string> = {
+const superStringMap: Record<string, string> = {
   0: '⁰',
   1: '¹',
   2: '²',
@@ -34,7 +34,12 @@ const superStringMap: Record<number, string> = {
   9: '⁹',
 };
 
-export const getSuperScriptNumber = (n: number) => `${n > 0 ? '' : '⁻'}${superStringMap[Math.abs(n)]}`;
+export const getSuperScriptNumber = (n: number) =>
+  `${n > 0 ? '' : '⁻'}${Math.abs(n)
+    .toString()
+    .split('')
+    .map((c) => superStringMap[c])
+    .join('')}`;
 
 export const logBaseMap = {
   [LogBase.Common]: 10,
@@ -43,9 +48,12 @@ export const logBaseMap = {
 };
 
 export const logFormatter = (base: LogBase = LogBase.Common) => (n: number) => {
-  const exp = Math.log(n) / Math.log(logBaseMap[base]) + Number.EPSILON;
+  const sign = n < 1 ? '-' : '';
+  const nAbs = Math.abs(n);
+  const exp = Math.log(nAbs) / Math.log(logBaseMap[base]) + Number.EPSILON;
   const roundedExp = Math.floor(exp);
-  const constant = numeral(n / Math.pow(logBaseMap[base], roundedExp)).format('0[.]00');
+  const constant = numeral(nAbs / Math.pow(logBaseMap[base], roundedExp)).format('0[.]00');
   const baseLabel = base === LogBase.Natural ? 'e' : logBaseMap[base];
-  return `${constant} x ${baseLabel}${getSuperScriptNumber(roundedExp)}`;
+  const expString = getSuperScriptNumber(roundedExp);
+  return `${sign}${constant} x ${baseLabel}${expString}`;
 };

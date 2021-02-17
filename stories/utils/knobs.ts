@@ -20,6 +20,7 @@
 import { PopoverAnchorPosition } from '@elastic/eui';
 import { select, array, number, optionsKnob } from '@storybook/addon-knobs';
 import { SelectTypeKnobValue } from '@storybook/addon-knobs/dist/components/types';
+import { startCase, kebabCase } from 'lodash';
 
 import { Rotation, Position, Placement, TooltipProps } from '../../src';
 import { TooltipType } from '../../src/specs/constants';
@@ -92,7 +93,7 @@ export const getKnobsFromEnum = <T extends SelectTypeKnobValue, O extends Record
       .filter(([, v]) => !exclude || !exclude.includes(v))
       .reduce<O>((acc, [key, value]) => {
         // @ts-ignore
-        acc[key] = value;
+        acc[startCase(kebabCase(key))] = value;
         return acc;
       }, (allowUndefined ? { Undefined: undefined } : ({} as unknown)) as O),
     defaultValue,

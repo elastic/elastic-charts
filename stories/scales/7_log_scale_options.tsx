@@ -21,18 +21,17 @@ import { boolean, number, select } from '@storybook/addon-knobs';
 import { range } from 'lodash';
 import React from 'react';
 
-import { Chart, Axis, LineSeries, Position, ScaleType, Settings, SettingsSpecProps, AreaSeries } from '../../src';
-import { LogBase } from '../../src/scales/scale_continuous';
+import { Chart, Axis, LineSeries, Position, ScaleType, Settings, AreaSeries, CurveType } from '../../src';
+import { LogBase, LogScaleOptions } from '../../src/scales/scale_continuous';
 import { logBaseMap, logFormatter } from '../utils/formatters';
 import { getKnobsFromEnum } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-type LogKnobs = Pick<SettingsSpecProps, 'scaleLogOptions'> & {
-  xDataType: string;
-  yDataType: string;
-  xNegative: boolean;
-  yNegative: boolean;
-  yPadding: number;
+type LogKnobs = LogScaleOptions & {
+  dataType: string;
+  negative: boolean;
+  scaleType: Extract<ScaleType, 'log' | 'linear'>;
+  padding?: number;
 };
 
 const getDataType = (group: string, defaultType = 'increasing') =>
@@ -54,31 +53,21 @@ const getScaleType = (type: ScaleType, group: string) =>
     'log' | 'linear'
   >;
 
-const getLogKnobs = (): LogKnobs => {
-  const xGroup = 'X - Axis';
-  const yGroup = 'Y - Axis';
-  const yUseDefaultLimit = boolean('Use default limit', false, yGroup);
-  const yLimit = number('Log min limit', 1, { min: 0 }, yGroup);
-  const xUseDefaultLimit = boolean('Use default limit', true, xGroup);
-  const xLimit = number('Log min limit', 1, { min: 0 }, xGroup);
+const getLogKnobs = (isXAxis = false): LogKnobs => {
+  const group = isXAxis ? 'X - Axis' : 'Y - Axis';
+  const useDefaultLimit = boolean('Use default limit', isXAxis, group);
+  const limit = number('Log min limit', 1, { min: 0 }, group);
+
   return {
-    xDataType: getDataType(xGroup),
-    yDataType: getDataType(yGroup, 'upDown'),
-    xNegative: boolean('Use negative values', false, xGroup),
-    yNegative: boolean('Use negative values', false, yGroup),
-    scaleLogOptions: {
-      yLogMinLimit: yUseDefaultLimit ? undefined : yLimit,
-      xLogMinLimit: xUseDefaultLimit ? undefined : xLimit,
-      yLogBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, {
-        group: yGroup,
-        allowUndefined: true,
-      }),
-      xLogBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, {
-        group: xGroup,
-        allowUndefined: true,
-      }),
-    },
-    yPadding: number('Padding', 0, { min: 0 }, yGroup),
+    dataType: getDataType(group, isXAxis ? undefined : 'upDown'),
+    negative: boolean('Use negative values', false, group),
+    logMinLimit: useDefaultLimit ? undefined : limit,
+    logBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, {
+      group,
+      allowUndefined: true,
+    }),
+    scaleType: getScaleType(ScaleType.Log, group),
+    ...(!isXAxis && { padding: number('Padding', 0, { min: 0 }, group) }),
   };
 };
 
@@ -116,45 +105,40 @@ const getInitalData = (rows: number) => {
   return [...range(quart, -quart, -1), ...range(-quart, quart + 1, 1)];
 };
 
-const getData = (
-  rows: number,
-  { scaleLogOptions: { yLogBase, xLogBase } = {}, yDataType, xDataType, yNegative, xNegative }: LogKnobs,
-) =>
+const getData = (rows: number, yLogKnobs: LogKnobs, xLogKnobs: LogKnobs) =>
   getInitalData(rows).map((v, i, { length }) => {
-    const y0 = getDataValue(yDataType, v, i, length);
-    const x0 = getDataValue(xDataType, v, i, length);
+    const y0 = getDataValue(yLogKnobs.dataType, v, i, length);
+    const x0 = getDataValue(xLogKnobs.dataType, v, i, length);
     return {
-      y: Math.pow(logBaseMap[yLogBase ?? LogBase.Common], y0) * (yNegative ? -1 : 1),
-      x: Math.pow(logBaseMap[xLogBase ?? LogBase.Common], x0) * (xNegative ? -1 : 1),
+      y: Math.pow(logBaseMap[yLogKnobs.logBase ?? LogBase.Common], y0) * (yLogKnobs.negative ? -1 : 1),
+      x: Math.pow(logBaseMap[xLogKnobs.logBase ?? LogBase.Common], x0) * (xLogKnobs.negative ? -1 : 1),
     };
   });
 
 export const Example = () => {
   const rows = number('Rows in dataset', 11, { min: 5, step: 2, max: 21 });
-  const logKnobs = getLogKnobs();
-  const data = getData(rows, logKnobs);
+  const yLogKnobs = getLogKnobs(false);
+  const xLogKnobs = getLogKnobs(true);
+  const data = getData(rows, yLogKnobs, xLogKnobs);
   const type = getSeriesType();
+  const curve = getKnobsFromEnum('Curve type', CurveType, CurveType.CURVE_CARDINAL as CurveType);
   const Series = seriesMap[type];
 
   return (
     <Chart className="story-chart">
-      <Settings {...logKnobs} />
-      <Axis
-        id="y"
-        tickFormat={logFormatter(logKnobs.scaleLogOptions?.yLogBase)}
-        position={Position.Left}
-        domain={{ padding: logKnobs.yPadding }}
-      />
+      <Settings xDomain={xLogKnobs} />
+      <Axis id="y" position={Position.Left} domain={yLogKnobs} tickFormat={logFormatter(yLogKnobs.logBase)} />
       <Axis
         id="x"
-        tickFormat={logFormatter(logKnobs.scaleLogOptions?.xLogBase)}
+        tickFormat={logFormatter(xLogKnobs.logBase)}
         position={Position.Bottom}
         style={{ tickLabel: { rotation: -90 } }}
       />
       <Series
         id="series"
-        yScaleType={getScaleType(ScaleType.Log, 'Y - Axis')}
-        xScaleType={getScaleType(ScaleType.Log, 'X - Axis')}
+        curve={curve}
+        yScaleType={yLogKnobs.scaleType}
+        xScaleType={xLogKnobs.scaleType}
         areaSeriesStyle={{ point: { visible: true } }}
         data={data}
       />

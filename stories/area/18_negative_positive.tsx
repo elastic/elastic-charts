@@ -39,7 +39,7 @@ export const Example = () => {
 
   return (
     <Chart className="story-chart">
-      <Settings showLegend scaleLogOptions={{ yLogMinLimit: number('Y log limit', 1, { min: 0 }) }} />
+      <Settings showLegend />
       <Axis
         id="bottom"
         title="timestamp per 1 minute"
@@ -47,7 +47,13 @@ export const Example = () => {
         showOverlappingTicks
         tickFormat={dateFormatter}
       />
-      <Axis id="left" title={dataset.metric.title} position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+      <Axis
+        id="left"
+        title={dataset.metric.title}
+        position={Position.Left}
+        tickFormat={(d) => Number(d).toFixed(2)}
+        domain={{ logMinLimit: number('Y log limit', 1, { min: 0 }) }}
+      />
 
       <AreaSeries
         id="area1"

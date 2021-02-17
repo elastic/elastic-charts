@@ -28,7 +28,7 @@ import {
   ScalePower,
   ScaleTime,
 } from 'd3-scale';
-import { $Values } from 'utility-types';
+import { $Values, Required } from 'utility-types';
 
 import { ScaleContinuousType, Scale } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
@@ -151,7 +151,26 @@ interface ScaleData {
   range: [min: number, max: number];
 }
 
-interface ScaleOptions {
+/**
+ * Options specific to log scales
+ */
+export interface LogScaleOptions {
+  /**
+   * Min value to render on log scale
+   *
+   * Defaults to min value of domain, or LOG_MIN_ABS_DOMAIN if mixed polarity
+   */
+  logMinLimit?: number;
+  /**
+   * Base for log scale
+   *
+   * @defaultValue `common` {@link (LogBase:type) | LogBase.Common}
+   * (i.e. log base 10)
+   */
+  logBase?: LogBase;
+}
+
+type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
   /**
    * The desidered bandwidth for a linear band scale.
    * @defaultValue 0
@@ -192,17 +211,8 @@ interface ScaleOptions {
   /**
    * Show only integer values
    */
-  integersOnly?: boolean;
-  /**
-   * Set base for log scales, otherwise ignored
-   * @defaultValue 10
-   */
-  logBase: LogBase;
-  /**
-   * Set min limit for log scales, otherwise ignored
-   */
-  logMinLimit?: number;
-}
+  integersOnly: boolean;
+};
 
 const defaultScaleOptions: ScaleOptions = {
   bandwidth: 0,
@@ -313,7 +323,7 @@ export class ScaleContinuous implements Scale {
         const intervalCount = Math.floor((this.domain[1] - this.domain[0]) / this.minInterval);
         this.tickValues = new Array(intervalCount + 1).fill(0).map((_, i) => this.domain[0] + i * this.minInterval);
       } else {
-        this.tickValues = this.getTicks(ticks, integersOnly!);
+        this.tickValues = this.getTicks(ticks, integersOnly);
       }
     }
   }

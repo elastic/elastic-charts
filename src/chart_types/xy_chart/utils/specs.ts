@@ -23,11 +23,13 @@ import { ChartTypes } from '../..';
 import { TooltipPortalSettings } from '../../../components/portal/types';
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
+import { LogScaleOptions } from '../../../scales/scale_continuous';
 import { Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants';
 import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
 import { RecursivePartial, Color, Position, Datum } from '../../../utils/common';
 import { CurveType } from '../../../utils/curves';
+import { OrdinalDomain } from '../../../utils/domain';
 import { AxisId, GroupId } from '../../../utils/ids';
 import {
   AreaSeriesStyle,
@@ -324,7 +326,10 @@ export type UnboundedDomainWithInterval = DomainBase;
 /** @public */
 export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain | UnboundedDomainWithInterval;
 /** @public */
-export type YDomainRange = YDomainBase & DomainRange;
+export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
+
+/** @public */
+export type CustomXDomain = (DomainRange & LogScaleOptions) | OrdinalDomain;
 
 export interface DisplayValueSpec {
   /** Show value label in chart element */

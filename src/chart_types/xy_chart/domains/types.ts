@@ -19,14 +19,15 @@
 
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
+import { LogScaleOptions } from '../../../scales/scale_continuous';
 import { OrdinalDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 
-export interface BaseDomain {
+export type BaseDomain = LogScaleOptions & {
   scaleType: typeof ScaleType.Ordinal | ScaleContinuousType;
   /* if the scale needs to be a band scale: used when displaying bars */
   isBandScale: boolean;
-}
+};
 
 export type XDomain = BaseDomain & {
   type: 'xDomain';

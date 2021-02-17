@@ -128,6 +128,8 @@ function mergeYDomainForGroup(
     scaleType: groupYScaleType,
     groupId,
     domain,
+    logBase: customDomain?.logBase,
+    logMinLimit: customDomain?.logMinLimit,
   };
 }
 
