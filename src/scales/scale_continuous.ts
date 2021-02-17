@@ -200,6 +200,7 @@ interface ScaleOptions {
   logBase: LogBase;
   /**
    * Set min limit for log scales, otherwise ignored
+   * @defaultValue LOG_MIN_ABS_DOMAIN
    */
   logMinLimit?: number;
 }
@@ -214,6 +215,7 @@ const defaultScaleOptions: ScaleOptions = {
   isSingleValueHistogram: false,
   integersOnly: false,
   logBase: LogBase.Common,
+  logMinLimit: LOG_MIN_ABS_DOMAIN,
 };
 
 /**
