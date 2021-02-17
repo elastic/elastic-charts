@@ -86,14 +86,14 @@ describe('Chart State utils', () => {
     });
     expect(domains.yDomains).toEqual([
       {
-        domain: [1, 10],
+        domain: [0, 10],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
       },
       {
-        domain: [1, 10],
+        domain: [0, 10],
         scaleType: ScaleType.Log,
         groupId: 'group2',
         isBandScale: false,
@@ -134,14 +134,14 @@ describe('Chart State utils', () => {
     });
     expect(domains.yDomains).toEqual([
       {
-        domain: [1, 5],
+        domain: [0, 5],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
       },
       {
-        domain: [1, 9],
+        domain: [0, 9],
         scaleType: ScaleType.Log,
         groupId: 'group2',
         isBandScale: false,
