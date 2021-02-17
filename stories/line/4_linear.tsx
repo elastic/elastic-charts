@@ -27,41 +27,19 @@ const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 export const Example = () => (
   <Chart className="story-chart">
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
-    <Axis id="left" title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title} position={Position.Left} />
+    <Axis
+      id="left"
+      title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+      position={Position.Left}
+      tickFormat={(d) => `${Number(d).toFixed(2)}%`}
+    />
     <LineSeries
       id="lines"
-      xScaleType={ScaleType.Ordinal}
-      yScaleType={ScaleType.Log}
-      xAccessor="x"
-      yAccessors={['doc_count']}
-      splitSeriesAccessors={['key']}
-      data={[
-        {
-          x: 0,
-          key: 'jpg',
-          doc_count: 9109,
-        },
-        {
-          x: 0,
-          key: 'css',
-          doc_count: 2159,
-        },
-        {
-          x: 0,
-          key: 'png',
-          doc_count: 1373,
-        },
-        {
-          x: 0,
-          key: 'gif',
-          doc_count: 918,
-        },
-        {
-          x: 0,
-          key: 'php',
-          doc_count: 445,
-        },
-      ]}
+      xScaleType={ScaleType.Linear}
+      yScaleType={ScaleType.Linear}
+      xAccessor={0}
+      yAccessors={[1]}
+      data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
     />
   </Chart>
 );
