@@ -212,6 +212,7 @@ export const configMetadata: Record<string, ConfigItem> = {
         type: 'function',
       },
       valueFont,
+      clip: { type: 'boolean', dflt: false },
     },
   },
 

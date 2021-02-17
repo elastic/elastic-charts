@@ -82,6 +82,7 @@ export interface RowSet {
   verticalAlignment: VerticalAlignments;
   leftAlign: boolean; // might be generalized into horizontalAlign - if needed
   container?: any;
+  clip?: boolean;
 }
 
 /** @internal */
