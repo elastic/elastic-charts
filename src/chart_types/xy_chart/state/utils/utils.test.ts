@@ -28,7 +28,6 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { Spec } from '../../../../specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G, BARCHART_2Y0G } from '../../../../utils/data_samples/test_dataset';
-import { ContinuousDomain, Range } from '../../../../utils/domain';
 import { SpecId } from '../../../../utils/ids';
 import { PointShape } from '../../../../utils/themes/theme';
 import { getSeriesIndex, XYChartSeriesIdentifier } from '../../utils/series';
@@ -88,14 +87,14 @@ describe('Chart State utils', () => {
     });
     expect(domains.yDomains).toEqual([
       {
-        domain: [1, 10],
+        domain: [0, 10],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
       },
       {
-        domain: [1, 10],
+        domain: [0, 10],
         scaleType: ScaleType.Log,
         groupId: 'group2',
         isBandScale: false,
@@ -136,14 +135,14 @@ describe('Chart State utils', () => {
     });
     expect(domains.yDomains).toEqual([
       {
-        domain: [1, 5],
+        domain: [0, 5],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
       },
       {
-        domain: [1, 9],
+        domain: [0, 9],
         scaleType: ScaleType.Log,
         groupId: 'group2',
         isBandScale: false,
@@ -703,8 +702,8 @@ describe('Chart State utils', () => {
   });
 
   test('can compute xScaleOffset dependent on histogram mode', () => {
-    const domain: ContinuousDomain = [0, 10];
-    const range: Range = [0, 100];
+    const domain = [0, 10];
+    const range: [number, number] = [0, 100];
     const bandwidth = 10;
     const barsPadding = 0.5;
     const scale = new ScaleContinuous(
