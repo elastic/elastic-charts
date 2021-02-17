@@ -78,7 +78,7 @@ function mergeYDomainForGroup(
 
   let domain: ContinuousDomain;
   if (stackMode === StackMode.Percentage) {
-    domain = computeContinuousDataDomain([0, 1], identity, isLogScale, customDomain);
+    domain = computeContinuousDataDomain([0, 1], identity, customDomain);
   } else {
     // TODO remove when removing yScaleToDataExtent
     const newCustomDomain = customDomain ? { ...customDomain } : {};
@@ -94,12 +94,7 @@ function mergeYDomainForGroup(
     const nonStackedDomain = computeYDomain(nonStacked, isLogScale, hasZeroBaselineSpecs);
 
     // merge stacked and non stacked domain together
-    domain = computeContinuousDataDomain(
-      [...stackedDomain, ...nonStackedDomain],
-      identity,
-      isLogScale,
-      newCustomDomain,
-    );
+    domain = computeContinuousDataDomain([...stackedDomain, ...nonStackedDomain], identity, newCustomDomain);
 
     const [computedDomainMin, computedDomainMax] = domain;
 
@@ -145,7 +140,7 @@ function computeYDomain(dataSeries: DataSeries[], isLogScale: boolean, hasZeroBa
   if (yValues.size === 0) {
     return [];
   }
-  return computeContinuousDataDomain([...yValues.values()], identity, isLogScale, null);
+  return computeContinuousDataDomain([...yValues.values()], identity, null);
 }
 
 /** @internal */

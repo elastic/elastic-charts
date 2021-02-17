@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { Example } from '../stories/icicle/02_unix_flame';
+import { Example } from '../stories/line/4_linear';
 
 export class Playground extends React.Component {
   render() {

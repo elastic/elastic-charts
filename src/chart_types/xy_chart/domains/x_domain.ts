@@ -81,7 +81,7 @@ export function mergeXDomain(
       }
     }
   } else {
-    seriesXComputedDomains = computeContinuousDataDomain(values, identity, mainXScaleType.scaleType === ScaleType.Log, {
+    seriesXComputedDomains = computeContinuousDataDomain(values, identity, {
       fit: true,
     });
     let customMinInterval: undefined | number;
