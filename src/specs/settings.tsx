@@ -367,7 +367,9 @@ export interface SettingsSpec extends Spec {
   /**
    * Set legend position
    */
-  legendPosition: Position;
+  legendPosition:
+    | Position
+    | [typeof Position.Top | typeof Position.Bottom, typeof Position.Left | typeof Position.Right];
   /**
    * Show an extra parameter on each legend item defined by the chart type
    * @defaultValue `false`

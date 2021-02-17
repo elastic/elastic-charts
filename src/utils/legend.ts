@@ -17,10 +17,11 @@
  * under the License.
  */
 
+import { SettingsSpec } from '../specs/settings';
 import { Position } from './common';
 
-export const isHorizontalLegend = (legendPosition: Position) =>
+export const isHorizontalLegend = (legendPosition: SettingsSpec['legendPosition']) =>
   legendPosition === Position.Bottom || legendPosition === Position.Top;
 
-export const isHierarchicalLegend = (flatLegend: boolean | undefined, legendPosition: Position) =>
+export const isHierarchicalLegend = (flatLegend: boolean | undefined, legendPosition: SettingsSpec['legendPosition']) =>
   !flatLegend && !isHorizontalLegend(legendPosition);

@@ -54,7 +54,7 @@ export const getGridHeightParamsSelector = createCachedSelector(
     const xAxisHeight = visible ? fontSize : 0;
     const totalVerticalPadding = padding * 2;
     let legendHeight = 0;
-    if (showLegend && isHorizontalLegend(legendPosition)) {
+    if (showLegend && isHorizontalLegend(Array.isArray(legendPosition) ? legendPosition[1] : legendPosition)) {
       legendHeight = maxLegendHeight ?? legendSize.height;
     }
     const verticalRemainingSpace = containerHeight - xAxisHeight - totalVerticalPadding - legendHeight;

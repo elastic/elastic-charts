@@ -35,7 +35,7 @@ const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 export const getHeatmapContainerSizeSelector = createCachedSelector(
   [getParentDimension, getLegendSizeSelector, getHeatmapConfigSelector, getSettingsSpecSelector],
   (parentDimensions, legendSize, { maxLegendHeight }, { showLegend, legendPosition }): Dimensions => {
-    if (!showLegend) {
+    if (!showLegend || Array.isArray(legendPosition)) {
       return parentDimensions;
     }
     if (isVerticalAxis(legendPosition)) {

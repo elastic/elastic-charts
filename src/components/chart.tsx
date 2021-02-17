@@ -104,7 +104,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       const settings = getSettingsSpecSelector(state);
       if (this.state.legendPosition !== settings.legendPosition) {
         this.setState({
-          legendPosition: settings.legendPosition,
+          legendPosition: Array.isArray(settings.legendPosition) ? settings.legendPosition[1] : settings.legendPosition,
         });
       }
       if (state.internalChartState) {

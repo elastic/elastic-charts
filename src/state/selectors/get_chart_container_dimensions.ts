@@ -31,11 +31,20 @@ const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 /** @internal */
 export const getChartContainerDimensionsSelector = createCachedSelector(
   [getSettingsSpecSelector, getLegendSizeSelector, getParentDimension],
-  (settings, legendSize, parentDimensions): Dimensions => {
-    if (!settings.showLegend) {
+  ({ showLegend, legendPosition }, legendSize, parentDimensions): Dimensions => {
+    if (!showLegend) {
       return parentDimensions;
     }
-    if (isVerticalAxis(settings.legendPosition)) {
+    // when using to legend positions the legend is within the chart area
+    if (Array.isArray(legendPosition)) {
+      return {
+        left: 0,
+        top: 0,
+        width: parentDimensions.width,
+        height: parentDimensions.height,
+      };
+    }
+    if (isVerticalAxis(legendPosition)) {
       return {
         left: 0,
         top: 0,
