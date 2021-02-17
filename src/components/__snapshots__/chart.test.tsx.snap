@@ -20,8 +20,8 @@ exports[`Chart should render the legend name test 1`] = `
         </Resizer>
       </Connect(Resizer)>
       <Connect(LegendComponent)>
-        <LegendComponent debug={true} chartTheme={{...}} size={{...}} items={{...}} position=\\"right\\" showExtra={false} extraValues={{...}} colorPicker={[undefined]} action={[undefined]} onItemOver={[undefined]} onItemOut={[undefined]} onItemClick={[undefined]} onToggleDeselectSeriesAction={[Function (anonymous)]} onItemOutAction={[Function (anonymous)]} onItemOverAction={[Function (anonymous)]} clearTemporaryColors={[Function (anonymous)]} setTemporaryColor={[Function (anonymous)]} setPersistedColor={[Function (anonymous)]}>
-          <div className=\\"echLegend echLegend--right echLegend--debug\\">
+        <LegendComponent debug={true} chartDimensions={{...}} containerDimensions={{...}} chartTheme={{...}} size={{...}} items={{...}} position=\\"right\\" showExtra={false} extraValues={{...}} colorPicker={[undefined]} action={[undefined]} onItemOver={[undefined]} onItemOut={[undefined]} onItemClick={[undefined]} onToggleDeselectSeriesAction={[Function (anonymous)]} onItemOutAction={[Function (anonymous)]} onItemOverAction={[Function (anonymous)]} clearTemporaryColors={[Function (anonymous)]} setTemporaryColor={[Function (anonymous)]} setPersistedColor={[Function (anonymous)]}>
+          <div className=\\"echLegend echLegend--right echLegend--debug\\" style={{...}}>
             <div style={{...}} className=\\"echLegendListContainer\\">
               <ul style={{...}} className=\\"echLegendList\\">
                 <LegendItem item={{...}} totalItems={1} position=\\"right\\" colorPicker={[undefined]} action={[undefined]} extraValues={{...}} showExtra={false} toggleDeselectSeriesAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} clearTemporaryColorsAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} onMouseOver={[undefined]} onMouseOut={[undefined]} onClick={[undefined]}>
