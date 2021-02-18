@@ -53,8 +53,8 @@ function renderTextRow(
     }
     withContext(ctx, (ctx) => {
       ctx.scale(1, -1);
-      ctx.rect(container.x0 + 1, container.y0 + 1, container.x1 - container.x0 - 2, container.y1 - container.y0 - 2);
       if (clip) {
+        ctx.rect(container.x0 + 1, container.y0 + 1, container.x1 - container.x0 - 2, container.y1 - container.y0 - 2);
         ctx.clip();
       }
       ctx.beginPath();
