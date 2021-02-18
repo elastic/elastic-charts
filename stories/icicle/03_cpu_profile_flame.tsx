@@ -56,8 +56,8 @@ export const Example = () => {
             clip: boolean("Allow, and clip, texts that wouldn't otherwise fit", true),
             padding: { left: 0, right: 0, top: 0, bottom: 0 },
           },
-          minFontSize: 9,
-          maxFontSize: 9,
+          minFontSize: 4,
+          maxFontSize: 19,
           maxRowCount: 1,
         }}
       />
