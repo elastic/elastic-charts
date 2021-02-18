@@ -52,7 +52,11 @@
     "typecheck:src": "yarn build:ts --noEmit",
     "typecheck:all": "tsc -p ./tsconfig.json --noEmit",
     "ts:prune": "ts-prune",
-    "watch": "yarn test --watch"
+    "watch": "yarn test --watch",
+    "index:check": "ts-node scripts/index_check.ts",
+    "tsdocs:check": "ts-node scripts/tsdoc_check.ts",
+    "lint:test": "node --inspect ./node_modules/eslint/bin/eslint src/utils/geometry.ts",
+    "lint:check": "eslint src/utils/geometry.ts"
   },
   "dependencies": {
     "@popperjs/core": "^2.4.0",
@@ -151,6 +155,7 @@
     "eslint": "^7.17.0",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-elastic-charts": "file:./eslint-plugin-elastic-charts",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-file-header": "^0.0.1",
     "eslint-plugin-header": "^3.1.0",

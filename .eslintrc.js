@@ -29,34 +29,22 @@ module.exports = {
     'react-hooks',
     'jsx-a11y',
     'prettier',
+    'elastic-charts',
   ],
   rules: {
-    /**
+    /*
      * deprecated to be deleted
      */
-    // https://github.com/typescript-eslint/typescript-eslint/issues/2077
-    '@typescript-eslint/camelcase': 0,
+    '@typescript-eslint/camelcase': 0, // https://github.com/typescript-eslint/typescript-eslint/issues/2077
 
-    /**
+    /*
      *****************************************
      * Rules with high processing demand
      *****************************************
      */
-    'import/no-restricted-paths':
-      process.env.NODE_ENV === 'production'
-        ? [
-            'error',
-            {
-              zones: [
-                { target: './src', from: './src/index.ts' },
-                { target: './src', from: './', except: ['./src', './node_modules/'] },
-              ],
-            },
-          ]
-        : 0,
     'import/namespace': process.env.NODE_ENV === 'production' ? 2 : 0,
 
-    /**
+    /*
      *****************************************
      * Rules to consider adding/fixing later
      *****************************************
@@ -94,7 +82,7 @@ module.exports = {
     eqeqeq: 1,
     'unicorn/no-nested-ternary': 0,
 
-    /**
+    /*
      * Standard rules
      */
     'no-restricted-syntax': 0, // this is a good rule, for-of is good
@@ -300,6 +288,7 @@ module.exports = {
         ' * under the License.',
         ' ',
       ],
+      2,
     ],
   },
   env: {
@@ -332,6 +321,38 @@ module.exports = {
     {
       files: ['src/**/*.{ts?(x),js}'],
       rules: {
+        /*
+         * Custom elastic-charts rules
+         */
+        'elastic-charts/no-different-release-tag': 2,
+        'elastic-charts/require-release-tag': 2,
+        'elastic-charts/require-tsdocs': 2,
+        'elastic-charts/require-documentation': 1,
+
+        /*
+         *****************************************
+         * Rules with high processing demand
+         *****************************************
+         */
+        'import/no-restricted-paths':
+          process.env.NODE_ENV === 'production'
+            ? [
+                'error',
+                {
+                  zones: [
+                    { target: './src', from: './src/index.ts' },
+                    { target: './src', from: './', except: ['./src', './node_modules/'] },
+                  ],
+                },
+              ]
+            : 0,
+
+        'import/no-internal-modules': [
+          'error',
+          {
+            allow: ['**/src/**'],
+          },
+        ],
         'no-underscore-dangle': 2,
         'import/no-unresolved': 'error',
         'import/no-extraneous-dependencies': [
@@ -402,6 +423,9 @@ module.exports = {
     {
       files: ['*.test.ts?(x)'],
       rules: {
+        'elastic-charts/require-release-tag': 0,
+        'elastic-charts/require-tsdocs': 0,
+        'elastic-charts/require-documentation': 0,
         'unicorn/error-message': 0,
       },
     },
