@@ -51,6 +51,10 @@ export const Example = () => {
           ...config,
           partitionLayout: PartitionLayout.icicle,
           drilldown: true,
+          fillLabel: { clip: true, padding: { top: 0, bottom: 0 } },
+          minFontSize: 9,
+          maxFontSize: 9,
+          maxRowCount: 1,
         }}
       />
     </Chart>
