@@ -50,6 +50,7 @@ export const Example = () => {
         config={{
           ...config,
           partitionLayout: PartitionLayout.icicle,
+          drilldown: true,
         }}
       />
     </Chart>
