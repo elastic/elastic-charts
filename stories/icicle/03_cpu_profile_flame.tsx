@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, PrimitiveValue, Settings } from '../../src';
@@ -51,7 +52,10 @@ export const Example = () => {
           ...config,
           partitionLayout: PartitionLayout.icicle,
           drilldown: true,
-          fillLabel: { clip: true, padding: { top: 0, bottom: 0 } },
+          fillLabel: {
+            clip: boolean("Allow, and clip, texts that wouldn't otherwise fit", true),
+            padding: { left: 0, right: 0, top: 0, bottom: 0 },
+          },
           minFontSize: 9,
           maxFontSize: 9,
           maxRowCount: 1,
