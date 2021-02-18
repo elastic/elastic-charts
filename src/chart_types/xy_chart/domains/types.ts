@@ -23,12 +23,14 @@ import { LogScaleOptions } from '../../../scales/scale_continuous';
 import { OrdinalDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 
+/** @internal */
 export interface BaseDomain {
   scaleType: typeof ScaleType.Ordinal | ScaleContinuousType;
   /* if the scale needs to be a band scale: used when displaying bars */
   isBandScale: boolean;
 }
 
+/** @internal */
 export type XDomain = BaseDomain &
   Pick<LogScaleOptions, 'logBase'> & {
     type: 'xDomain';
@@ -39,6 +41,7 @@ export type XDomain = BaseDomain &
     domain: OrdinalDomain | ContinuousDomain;
   };
 
+/** @internal */
 export type YDomain = BaseDomain &
   LogScaleOptions & {
     type: 'yDomain';
