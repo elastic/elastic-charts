@@ -55,7 +55,7 @@ export { CustomTooltip, TooltipInfo } from './components/tooltip/types';
 
 // scales
 export { ScaleType } from './scales/constants';
-export { ScaleContinuousType, ScaleOrdinalType, ScaleBandType, LogBase } from './scales';
+export { ScaleContinuousType, ScaleOrdinalType, ScaleBandType, LogBase, LogScaleOptions } from './scales';
 
 // theme
 export * from './utils/themes/theme';
