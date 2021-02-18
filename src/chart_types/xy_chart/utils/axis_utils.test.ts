@@ -63,6 +63,8 @@ import {
 import { computeXScale } from './scales';
 import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
 
+const NO_ROTATION = 0;
+
 const getCustomStyle = (rotation = 0, padding = 10): AxisStyle =>
   mergePartial(LIGHT_THEME.axes, {
     tickLine: {
@@ -234,7 +236,7 @@ describe('Axis computational utils', () => {
       [yDomain],
       1,
       bboxCalculator,
-      0,
+      NO_ROTATION,
       axes,
       (v) => `${v}`,
     );
@@ -247,7 +249,7 @@ describe('Axis computational utils', () => {
       [yDomain],
       1,
       bboxCalculator,
-      0,
+      NO_ROTATION,
       axes,
       (v) => `${v}`,
       undefined,
@@ -268,7 +270,7 @@ describe('Axis computational utils', () => {
       [yDomain],
       1,
       bboxCalculator,
-      0,
+      NO_ROTATION,
       axes,
       (v) => `${v}`,
     );
@@ -291,7 +293,7 @@ describe('Axis computational utils', () => {
       [yDomain],
       1,
       bboxCalculator,
-      0,
+      NO_ROTATION,
       axes,
       (v) => `${v}`,
     );
@@ -308,7 +310,7 @@ describe('Axis computational utils', () => {
       [yDomain],
       1,
       bboxCalculator,
-      0,
+      NO_ROTATION,
       axes,
       (v) => `${v}`,
     );
@@ -325,7 +327,7 @@ describe('Axis computational utils', () => {
       [yDomain],
       1,
       bboxCalculator,
-      0,
+      NO_ROTATION,
       axes,
       (v) => `${v}`,
     );
@@ -986,7 +988,7 @@ describe('Axis computational utils', () => {
         leftMargin: 0,
       },
       LIGHT_THEME,
-      0,
+      NO_ROTATION,
       axisSpecs,
       axisDims,
       axesStyles,
@@ -1018,7 +1020,7 @@ describe('Axis computational utils', () => {
         leftMargin: 0,
       },
       LIGHT_THEME,
-      0,
+      NO_ROTATION,
       axisSpecs,
       axisDims,
       axesStyles,
@@ -1212,7 +1214,7 @@ describe('Axis computational utils', () => {
         leftMargin: 0,
       },
       LIGHT_THEME,
-      0,
+      NO_ROTATION,
       axisSpecs,
       axisDims,
       axisStyles,
@@ -1285,7 +1287,7 @@ describe('Axis computational utils', () => {
           leftMargin: 0,
         },
         LIGHT_THEME,
-        0,
+        NO_ROTATION,
         invalidSpecs,
         axisDims,
         axisStyles,
@@ -1676,7 +1678,7 @@ describe('Axis computational utils', () => {
           leftMargin: 0,
         },
         LIGHT_THEME,
-        0,
+        NO_ROTATION,
         axisSpecs,
         axisDims,
         axesStyles,
@@ -1706,7 +1708,7 @@ describe('Axis computational utils', () => {
           leftMargin: 0,
         },
         LIGHT_THEME,
-        0,
+        NO_ROTATION,
         axisSpecs,
         axisDims,
         axesStyles,
@@ -1742,7 +1744,7 @@ describe('Axis computational utils', () => {
           leftMargin: 0,
         },
         LIGHT_THEME,
-        0,
+        NO_ROTATION,
         axisSpecs,
         axisDims,
         axesStyles,
