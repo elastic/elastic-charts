@@ -86,18 +86,22 @@ describe('Chart State utils', () => {
     });
     expect(domains.yDomains).toEqual([
       {
-        domain: [1, 10],
+        domain: [0, 10],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
       {
-        domain: [1, 10],
+        domain: [0, 10],
         scaleType: ScaleType.Log,
         groupId: 'group2',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
     ]);
     expect(domains.formattedDataSeries).toMatchSnapshot();
@@ -134,18 +138,22 @@ describe('Chart State utils', () => {
     });
     expect(domains.yDomains).toEqual([
       {
-        domain: [1, 5],
+        domain: [0, 5],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
       {
-        domain: [1, 9],
+        domain: [0, 9],
         scaleType: ScaleType.Log,
         groupId: 'group2',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
     ]);
     expect(domains.formattedDataSeries.filter(({ isStacked }) => isStacked)).toMatchSnapshot();
