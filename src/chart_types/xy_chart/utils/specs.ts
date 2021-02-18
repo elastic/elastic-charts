@@ -57,8 +57,9 @@ export const SeriesTypes = Object.freeze({
   Line: 'line' as const,
   Bubble: 'bubble' as const,
 });
+
 /**
- * XY series types
+ * XY series type
  * @public
  */
 export type SeriesTypes = $Values<typeof SeriesTypes>;
