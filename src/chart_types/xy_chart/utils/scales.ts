@@ -20,7 +20,7 @@
 import { Scale, ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { LogBase } from '../../../scales/scale_continuous';
-import { ContinuousDomain } from '../../../utils/domain';
+import { ContinuousDomain, Range } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { XDomain, YDomain } from '../domains/types';
 
@@ -43,7 +43,7 @@ function getBandScaleRange(
 interface XScaleOptions {
   xDomain: XDomain;
   totalBarsInCluster: number;
-  range: [min: number, max: number];
+  range: Range;
   barsPadding?: number;
   enableHistogramMode?: boolean;
   ticks?: number;
@@ -118,7 +118,7 @@ export function computeXScale(options: XScaleOptions): Scale {
 
 interface YScaleOptions {
   yDomains: YDomain[];
-  range: [min: number, max: number];
+  range: Range;
   ticks?: number;
   integersOnly?: boolean;
 }

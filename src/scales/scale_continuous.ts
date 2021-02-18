@@ -34,6 +34,7 @@ import { ScaleContinuousType, Scale } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { maxValueWithUpperLimit, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
+import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
 
 /**
@@ -61,7 +62,7 @@ const SCALES = {
  * @param domain the domain to limit
  * @internal
  */
-export function limitLogScaleDomain([min, max]: [min: number, max: number], logMinLimit?: number) {
+export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit?: number) {
   const absLimit = logMinLimit !== undefined ? Math.abs(logMinLimit) : undefined;
   if (absLimit !== undefined && absLimit > 0) {
     if (min > 0 && min < absLimit) {
@@ -148,7 +149,7 @@ interface ScaleData {
   /** The data input domain */
   domain: any[];
   /** The data output range */
-  range: [min: number, max: number];
+  range: Range;
 }
 
 /**
