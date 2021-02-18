@@ -321,6 +321,7 @@ function fill<C>(
         padding,
         textContrast,
         textOpacity,
+        clip,
       } = {
         ...fillLabel,
         valueFormatter: formatter,
@@ -368,7 +369,7 @@ function fill<C>(
           cy,
           padding,
           node,
-          config.fillLabel.clip,
+          clip,
         ),
         fillTextColor,
       };
