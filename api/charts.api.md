@@ -563,6 +563,9 @@ export type CustomAnnotationTooltip = ComponentType<{
 // @public
 export type CustomTooltip = ComponentType<TooltipInfo>;
 
+// @public (undocumented)
+export type CustomXDomain = (DomainRange & Pick<LogScaleOptions, 'logBase'>) | OrdinalDomain;
+
 // Warning: (ae-missing-release-tag) "DARK_THEME" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1358,6 +1361,14 @@ export const LogBase: Readonly<{
 // @public
 export type LogBase = $Values<typeof LogBase>;
 
+// Warning: (ae-missing-release-tag) "LogScaleOptions" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public
+export interface LogScaleOptions {
+    logBase?: LogBase;
+    logMinLimit?: number;
+}
+
 // @public (undocumented)
 export type LowerBoundedDomain = DomainBase & LowerBound;
 
@@ -1736,16 +1747,6 @@ export type ScaleBandType = ScaleOrdinalType;
 // @public (undocumented)
 export type ScaleContinuousType = typeof ScaleType.Linear | typeof ScaleType.Time | typeof ScaleType.Log | typeof ScaleType.Sqrt;
 
-// Warning: (ae-missing-release-tag) "ScaleLogOptions" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export interface ScaleLogOptions {
-    xLogBase?: LogBase;
-    xLogMinLimit?: number;
-    yLogBase?: LogBase;
-    yLogMinLimit?: number;
-}
-
 // Warning: (ae-missing-release-tag) "ScaleOrdinalType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1759,9 +1760,7 @@ export interface ScalesConfig {
     histogramPadding: number;
 }
 
-// Warning: (ae-missing-release-tag) "ScaleType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export const ScaleType: Readonly<{
     Linear: "linear";
     Ordinal: "ordinal";
@@ -1962,14 +1961,13 @@ export interface SettingsSpec extends Spec {
     // (undocumented)
     rotation: Rotation;
     roundHistogramBrushValues?: boolean;
-    scaleLogOptions?: ScaleLogOptions;
     // (undocumented)
     showLegend: boolean;
     showLegendExtra: boolean;
     theme?: PartialTheme | PartialTheme[];
     tooltip: TooltipSettings;
     // (undocumented)
-    xDomain?: ContinuousDomain | OrdinalDomain | DomainRange;
+    xDomain?: CustomXDomain;
 }
 
 // Warning: (ae-missing-release-tag) "SettingsSpecProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2386,7 +2384,7 @@ export interface YDomainBase {
 }
 
 // @public (undocumented)
-export type YDomainRange = YDomainBase & DomainRange;
+export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
 
 // Warnings were encountered during analysis:
