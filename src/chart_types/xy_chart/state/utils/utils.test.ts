@@ -28,6 +28,7 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { Spec } from '../../../../specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G, BARCHART_2Y0G } from '../../../../utils/data_samples/test_dataset';
+import { ContinuousDomain, Range } from '../../../../utils/domain';
 import { SpecId } from '../../../../utils/ids';
 import { PointShape } from '../../../../utils/themes/theme';
 import { getSeriesIndex, XYChartSeriesIdentifier } from '../../utils/series';
@@ -92,6 +93,8 @@ describe('Chart State utils', () => {
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
       {
         domain: [0, 10],
@@ -99,6 +102,8 @@ describe('Chart State utils', () => {
         groupId: 'group2',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
     ]);
     expect(domains.formattedDataSeries).toMatchSnapshot();
@@ -140,6 +145,8 @@ describe('Chart State utils', () => {
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
       {
         domain: [0, 9],
@@ -147,6 +154,8 @@ describe('Chart State utils', () => {
         groupId: 'group2',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
     ]);
     expect(domains.formattedDataSeries.filter(({ isStacked }) => isStacked)).toMatchSnapshot();
@@ -702,8 +711,8 @@ describe('Chart State utils', () => {
   });
 
   test('can compute xScaleOffset dependent on histogram mode', () => {
-    const domain = [0, 10];
-    const range: [number, number] = [0, 100];
+    const domain: ContinuousDomain = [0, 10];
+    const range: Range = [0, 100];
     const bandwidth = 10;
     const barsPadding = 0.5;
     const scale = new ScaleContinuous(
