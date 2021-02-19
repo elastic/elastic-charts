@@ -29,12 +29,20 @@ export function aggregateAccessor(n: ArrayEntry): number;
 
 // @public (undocumented)
 export interface AngleFromTo {
-    // Warning: (ae-forgotten-export) The symbol "Radian" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     x0: Radian;
     // (undocumented)
     x1: Radian;
+}
+
+// @alpha (undocumented)
+export interface AnimKeyframe {
+    // (undocumented)
+    easingFunction: EasingFunction;
+    // (undocumented)
+    keyframeConfig: Partial<StaticConfig>;
+    // (undocumented)
+    time: number;
 }
 
 // @public
@@ -330,6 +338,9 @@ export interface BubbleSeriesStyle {
     // (undocumented)
     point: PointStyle;
 }
+
+// @public (undocumented)
+export type Cartesian = number;
 
 // @public (undocumented)
 export type CategoryKey = string;
@@ -663,6 +674,11 @@ export type DisplayValueStyle = Omit<TextStyle, 'fill' | 'fontSize'> & {
 // @public (undocumented)
 export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain | UnboundedDomainWithInterval;
 
+// Warning: (ae-forgotten-export) The symbol "Ratio" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type EasingFunction = (x: Ratio) => Ratio;
+
 // @public (undocumented)
 export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>) => void;
 
@@ -922,8 +938,6 @@ export interface HeatmapConfig {
     onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
     // (undocumented)
     timeZone: string;
-    // Warning: (ae-forgotten-export) The symbol "Pixels" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     width: Pixels;
     // Warning: (ae-forgotten-export) The symbol "Font" needs to be exported by the entry point index.d.ts
@@ -1283,8 +1297,6 @@ export type PartialTheme = RecursivePartial<Theme>;
 // @public (undocumented)
 export const Partition: React_2.FunctionComponent<SpecRequiredProps_7 & SpecOptionalProps_7>;
 
-// Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export interface PartitionConfig extends StaticConfig {
     // @alpha (undocumented)
@@ -1336,6 +1348,9 @@ export const PATH_KEY = "path";
 
 // @public (undocumented)
 export function pathAccessor(n: ArrayEntry): LegendPath;
+
+// @public (undocumented)
+export type Pixels = number;
 
 // @public
 export const Placement: Readonly<{
@@ -1457,6 +1472,9 @@ export type ProjectedValues = {
 
 // @public
 export type ProjectionClickListener = (values: ProjectedValues) => void;
+
+// @public (undocumented)
+export type Radian = Cartesian;
 
 // @public (undocumented)
 export type RawTextGetter = (node: ShapeTreeNode) => string;
@@ -1763,6 +1781,9 @@ export interface SimplePadding {
     outer: number;
 }
 
+// @public (undocumented)
+export type SizeRatio = Ratio;
+
 // @alpha (undocumented)
 export const SmallMultiples: React_2.FunctionComponent<SmallMultiplesProps>;
 
@@ -1833,6 +1854,71 @@ export const StackMode: Readonly<{
 // @public
 export type StackMode = $Values<typeof StackMode>;
 
+// Warning: (ae-forgotten-export) The symbol "FillFontSizeRange" needs to be exported by the entry point index.d.ts
+//
+// @public
+export interface StaticConfig extends FillFontSizeRange {
+    // (undocumented)
+    backgroundColor: Color;
+    // (undocumented)
+    circlePadding: Distance;
+    // (undocumented)
+    clockwiseSectors: boolean;
+    // @alpha (undocumented)
+    drilldown: boolean;
+    // (undocumented)
+    emptySizeRatio: SizeRatio;
+    // (undocumented)
+    fillLabel: PartitionFillLabel;
+    // (undocumented)
+    fillOutside: boolean;
+    // (undocumented)
+    fillRectangleHeight: Distance;
+    // (undocumented)
+    fillRectangleWidth: Distance;
+    // (undocumented)
+    fontFamily: FontFamily;
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    horizontalTextAngleThreshold: Radian;
+    // (undocumented)
+    horizontalTextEnforcer: Ratio;
+    // Warning: (ae-forgotten-export) The symbol "LinkLabelConfig" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    linkLabel: LinkLabelConfig;
+    // (undocumented)
+    margin: {
+        left: SizeRatio;
+        right: SizeRatio;
+        top: SizeRatio;
+        bottom: SizeRatio;
+    };
+    // (undocumented)
+    maxRowCount: number;
+    // (undocumented)
+    outerSizeRatio: SizeRatio;
+    // (undocumented)
+    partitionLayout: PartitionLayout;
+    // (undocumented)
+    radialPadding: Distance;
+    // Warning: (ae-forgotten-export) The symbol "Radius" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    radiusOutside: Radius;
+    // Warning: (ae-forgotten-export) The symbol "StrokeStyle" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    sectorLineStroke: StrokeStyle_2;
+    // (undocumented)
+    sectorLineWidth: Pixels;
+    // (undocumented)
+    specialFirstInnermostSector: boolean;
+    // (undocumented)
+    width: number;
+}
+
 // @public (undocumented)
 export interface Statistics {
     // (undocumented)
@@ -1853,6 +1939,11 @@ export interface StrokeStyle<C = Color> {
     strokeWidth: number;
 }
 
+// Warning: (ae-forgotten-export) The symbol "TEXT_ALIGNS" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type TextAlign = typeof TEXT_ALIGNS[number];
+
 // @public
 export interface TextAlignment {
     // (undocumented)
@@ -1860,6 +1951,11 @@ export interface TextAlignment {
     // (undocumented)
     vertical: VerticalAlignment;
 }
+
+// Warning: (ae-forgotten-export) The symbol "TEXT_BASELINE" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type TextBaseline = typeof TEXT_BASELINE[number];
 
 // @public
 export interface TextOffset {
@@ -1924,6 +2020,9 @@ export type TickStyle = StrokeStyle & Visible & {
 
 // @public (undocumented)
 export function timeFormatter(format: string): TickFormatter;
+
+// @public (undocumented)
+export type TimeMs = number;
 
 // @public
 export function toEntries<T extends Record<string, string>, S>(array: T[], accessor: keyof T, staticValue: S): Record<string, S>;
@@ -2082,14 +2181,6 @@ export interface YDomainBase {
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
-
-// Warnings were encountered during analysis:
-//
-// src/chart_types/heatmap/layout/types/config_types.ts:31:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:63:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:64:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:141:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

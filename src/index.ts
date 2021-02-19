@@ -38,9 +38,12 @@ export { GeometryValue, BandedAccessorType } from './utils/geometry';
 export { LegendPath, LegendPathElement } from './state/actions/legend';
 export { CategoryKey } from './common/category';
 export {
+  AnimKeyframe,
   Config as PartitionConfig,
   FillLabelConfig as PartitionFillLabel,
   PartitionLayout,
+  EasingFunction,
+  StaticConfig,
 } from './chart_types/partition_chart/layout/types/config_types';
 export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
 export * from './chart_types/goal_chart/specs/index';
@@ -53,6 +56,8 @@ export {
   AccessorArrayIndex,
 } from './utils/accessor';
 export { CustomTooltip, TooltipInfo } from './components/tooltip/types';
+export { SizeRatio, Pixels, Radian, Cartesian, TimeMs } from './common/geometry';
+export { TextAlign, TextBaseline } from './common/text_utils';
 
 // scales
 export { ScaleType } from './scales/constants';

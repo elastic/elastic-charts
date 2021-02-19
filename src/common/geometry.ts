@@ -31,7 +31,8 @@ export type Pixels = number;
 export type Ratio = number;
 /** @public */
 export type SizeRatio = Ratio;
-type Cartesian = number;
+/** @public */
+export type Cartesian = number;
 /** @internal */
 export type Coordinate = Cartesian;
 /** @public */
