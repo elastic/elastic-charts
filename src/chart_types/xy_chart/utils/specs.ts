@@ -124,6 +124,7 @@ export type SeriesName = string | number | null;
 export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean) => SeriesName;
 /**
  * Accessor mapping to replace names
+ * @public
  */
 export interface SeriesNameConfig {
   /**
@@ -148,6 +149,7 @@ export interface SeriesNameConfig {
    */
   sortIndex?: number;
 }
+/** @public */
 export interface SeriesNameConfigOptions {
   /**
    * Array of accessor naming configs to replace series names
@@ -332,6 +334,7 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 /** @public */
 export type CustomXDomain = (DomainRange & Pick<LogScaleOptions, 'logBase'>) | OrdinalDomain;
 
+/** @public */
 export interface DisplayValueSpec {
   /** Show value label in chart element */
   showValueLabel?: boolean;
@@ -345,6 +348,7 @@ export interface DisplayValueSpec {
   hideClippedValue?: boolean;
 }
 
+/** @public */
 export interface SeriesSpec extends Spec {
   specType: typeof SpecTypes.Series;
   chartType: typeof ChartTypes.XYAxis;
@@ -404,6 +408,7 @@ export interface SeriesSpec extends Spec {
   tickFormat?: TickFormatter;
 }
 
+/** @public */
 export interface Postfixes {
   /**
    * Postfix for y1 accessor when using `y0Accessors`
@@ -426,6 +431,7 @@ export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) 
 /** @public */
 export type SeriesColorAccessor = string | SeriesColorsArray | SeriesColorAccessorFn;
 
+/** @public */
 export interface SeriesAccessors {
   /** The field name of the x value on Datum object */
   xAccessor: Accessor | AccessorFn;
@@ -445,8 +451,10 @@ export interface SeriesAccessors {
   markSizeAccessor?: Accessor | AccessorFn;
 }
 
+/** @public */
 export type XScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
 
+/** @public */
 export interface SeriesScales {
   /**
    * The x axis scale type
@@ -486,6 +494,7 @@ export type BasicSeriesSpec = SeriesSpec &
     markFormat?: TickFormatter<number>;
   };
 
+/** @public */
 export type SeriesSpecs<S extends BasicSeriesSpec = BasicSeriesSpec> = Array<S>;
 
 /**
@@ -610,6 +619,7 @@ export type AreaSeriesSpec = BasicSeriesSpec &
     fit?: Exclude<Fit, 'explicit'> | FitConfig;
   };
 
+/** @public */
 export interface HistogramConfig {
   /**
    *  Determines how points in the series will align to bands in histogram mode
@@ -618,6 +628,7 @@ export interface HistogramConfig {
   histogramModeAlignment?: HistogramModeAlignment;
 }
 
+/** @public */
 export const HistogramModeAlignments = Object.freeze({
   Start: 'start' as HistogramModeAlignment,
   Center: 'center' as HistogramModeAlignment,
@@ -629,6 +640,7 @@ export type HistogramModeAlignment = 'start' | 'center' | 'end';
 
 /**
  * This spec describe the configuration for a chart axis.
+ * @public
  */
 export interface AxisSpec extends Spec {
   specType: typeof SpecTypes.Axis;
@@ -694,6 +706,7 @@ export type TickFormatterOptions = {
 /** @public */
 export type TickFormatter<V = any> = (value: V, options?: TickFormatterOptions) => string;
 
+/** @public */
 export const AnnotationTypes = Object.freeze({
   Line: 'line' as const,
   Rectangle: 'rectangle' as const,
@@ -779,6 +792,7 @@ export type LineAnnotationSpec = BaseAnnotationSpec<
 
 /**
  * The descriptive object of a rectangular annotation
+ * @public
  */
 export interface RectAnnotationDatum {
   /**
@@ -843,6 +857,7 @@ export type AnnotationPortalSettings = TooltipPortalSettings<'chart'> & {
   customTooltipDetails?: AnnotationTooltipFormatter;
 };
 
+/** @public */
 export interface BaseAnnotationSpec<
   T extends typeof AnnotationTypes.Rectangle | typeof AnnotationTypes.Line,
   D extends RectAnnotationDatum | LineAnnotationDatum,

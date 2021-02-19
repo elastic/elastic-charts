@@ -20,21 +20,24 @@
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { ScaleType } from './constants';
 
+/** @public */
 export type ScaleContinuousType =
   | typeof ScaleType.Linear
   | typeof ScaleType.Time
   | typeof ScaleType.Log
   | typeof ScaleType.Sqrt;
 
+/** @public */
 export type ScaleOrdinalType = typeof ScaleType.Ordinal;
 
+/** @public */
 export type ScaleBandType = ScaleOrdinalType;
 
 /**
  * A `Scale` interface. A scale can map an input value within a specified domain
  * to an output value from a specified range.
  * The the value is mapped depending on the `type` (linear, log, sqrt, time, ordinal)
- * @internal
+ * @public
  */
 export interface Scale {
   domain: any[];
@@ -71,10 +74,7 @@ export interface Scale {
   barsPadding: number;
 }
 
-/** @internal */
 export { ScaleBand } from './scale_band';
-
-/** @internal */
 export { ScaleContinuous } from './scale_continuous';
 
 export { LogBase, LogScaleOptions } from './scale_continuous';

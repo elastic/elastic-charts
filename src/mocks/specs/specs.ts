@@ -246,6 +246,7 @@ export class MockSeriesSpec {
   }
 }
 
+/** @internal */
 export class MockSeriesSpecs {
   static fromSpecs(specs: BasicSeriesSpec[]): SeriesSpecs {
     return specs;

@@ -43,12 +43,14 @@ import { getPanelSize, hasSMDomain } from './panel';
 import { computeXScale, computeYScales } from './scales';
 import { AxisSpec, TickFormatterOptions, TickFormatter } from './specs';
 
+/** @internal */
 export interface AxisTick {
   value: number | string;
   label: string;
   position: number;
 }
 
+/** @internal */
 export interface AxisTicksDimensions {
   tickValues: string[] | number[];
   tickLabels: string[];
@@ -59,6 +61,7 @@ export interface AxisTicksDimensions {
   isHidden: boolean;
 }
 
+/** @internal */
 export interface TickLabelProps {
   x: number;
   y: number;
@@ -70,6 +73,7 @@ export interface TickLabelProps {
   verticalAlign: Extract<VerticalAlignment, 'top' | 'middle' | 'bottom'>;
 }
 
+/** @internal */
 export const defaultTickFormatter = (tick: any) => `${tick}`;
 
 /**
@@ -721,10 +725,12 @@ export function getAxisPosition(
   return { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement };
 }
 
+/** @internal */
 export function shouldShowTicks({ visible, strokeWidth, size }: AxisStyle['tickLine'], axisHidden: boolean): boolean {
   return !axisHidden && visible && size > 0 && strokeWidth >= MIN_STROKE_WIDTH;
 }
 
+/** @internal */
 export interface AxisGeometry {
   anchorPoint: Point;
   size: Size;

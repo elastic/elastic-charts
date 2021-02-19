@@ -229,7 +229,7 @@ const defaultScaleOptions: ScaleOptions = {
 
 /**
  * Continuous scale
- * @internal
+ * @public
  */
 export class ScaleContinuous implements Scale {
   readonly bandwidth: number;

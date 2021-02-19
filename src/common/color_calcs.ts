@@ -77,6 +77,7 @@ export function combineColors(foregroundColor: Color, backgroundColor: Color): C
 /**
  * Return true if the color is a valid CSS color, false otherwise
  * @param color a color written in string
+ * @internal
  */
 export function isColorValid(color?: string): color is Color {
   return Boolean(color) && chroma.valid(color);

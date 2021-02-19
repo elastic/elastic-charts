@@ -30,6 +30,7 @@ import { DataSeries } from '../utils/series';
 import { BasicSeriesSpec, YDomainRange, SeriesTypes, StackMode } from '../utils/specs';
 import { YDomain } from './types';
 
+/** @internal */
 export type YBasicSeriesSpec = Pick<
   BasicSeriesSpec,
   'id' | 'seriesType' | 'yScaleType' | 'groupId' | 'stackAccessors' | 'yScaleToDataExtent' | 'useDefaultGroupDomain'

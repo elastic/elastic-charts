@@ -26,6 +26,7 @@ import { Point } from './point';
 /**
  * Color variants that are unique to `@elastic/charts`. These go beyond the standard
  * static color allocations.
+ * @public
  */
 export const ColorVariant = Object.freeze({
   /**
@@ -38,8 +39,10 @@ export const ColorVariant = Object.freeze({
    */
   None: '__use__empty__color__' as const,
 });
+/** @public */
 export type ColorVariant = $Values<typeof ColorVariant>;
 
+/** @public */
 export const HorizontalAlignment = Object.freeze({
   Center: 'center' as const,
   Right: 'right' as const,
@@ -69,6 +72,7 @@ export const HorizontalAlignment = Object.freeze({
  */
 export type HorizontalAlignment = $Values<typeof HorizontalAlignment>;
 
+/** @public */
 export const VerticalAlignment = Object.freeze({
   Middle: 'middle' as const,
   Top: 'top' as const,
@@ -104,9 +108,12 @@ export type Datum = any; // unknown;
 export type Rotation = 0 | 90 | -90 | 180;
 /** @public */
 export type Rendering = 'canvas' | 'svg';
+/** @public */
 export type Color = string; // todo static/runtime type it this for proper color string content; several places in the code, and ultimate use, dictate it not be an empty string
+/** @public */
 export type StrokeStyle = Color; // now narrower than string | CanvasGradient | CanvasPattern
 
+/** @public */
 export const Position = Object.freeze({
   Top: 'top' as const,
   Bottom: 'bottom' as const,
@@ -198,6 +205,7 @@ export function htmlIdGenerator(idPrefix?: string) {
  *  children?: RecursivePartial<Person>[]
  * }
  * ```
+ * @public
  */
 export type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends NonAny[] // checks for nested any[]
@@ -218,6 +226,7 @@ export type RecursivePartial<T> = {
 };
 type NonAny = number | boolean | string | symbol | null;
 
+/** @public */
 export interface MergeOptions {
   /**
    * Includes all available keys of every provided partial at a given level.
@@ -322,6 +331,7 @@ export function shallowClone(value: any) {
  * @param partial structure to override values from base
  *
  * @returns new base structure with updated partial values
+ * @internal
  */
 export function mergePartial<T>(
   base: T,
@@ -421,9 +431,13 @@ export function getUniqueValues<T>(fullArray: T[], uniqueProperty: keyof T, filt
   ).filtered;
 }
 
+/** @public */
 export type ValueFormatter = (value: number) => string;
+/** @public */
 export type ValueAccessor = (d: Datum) => number;
+/** @public */
 export type LabelAccessor = (value: PrimitiveValue) => string;
+/** @public */
 export type ShowAccessor = (value: PrimitiveValue) => boolean;
 
 /**
@@ -526,6 +540,7 @@ export const round = (value: number, fractionDigits = 0): number => {
  * Get number/percentage value from string
  *
  * i.e. `'90%'` with relative value of `100` returns `90`
+ * @internal
  */
 export const getPercentageValue = <T>(ratio: string | number, relativeValue: number, defaultValue: T): number | T => {
   if (typeof ratio === 'number') {
@@ -546,12 +561,14 @@ export const getPercentageValue = <T>(ratio: string | number, relativeValue: num
 /**
  * Predicate function, eg. to be called with [].filter, to keep distinct values
  * @example [1, 2, 4, 2, 4, 0, 3, 2].filter(keepDistinct) ==> [1, 2, 4, 0, 3]
+ * @internal
  */
 export const keepDistinct = <T>(d: T, i: number, a: T[]): boolean => a.indexOf(d) === i;
 
 /**
  * Return an object which keys are values of an object and the value is the
  * static one provided
+ * @public
  */
 export function toEntries<T extends Record<string, string>, S>(
   array: T[],
@@ -566,6 +583,7 @@ export function toEntries<T extends Record<string, string>, S>(
 
 /**
  * Safely format values with error handling
+ * @internal
  */
 export const safeFormat = <V = any>(value: V, formatter?: (value: V) => string): string => {
   if (formatter) {

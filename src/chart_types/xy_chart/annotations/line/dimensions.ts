@@ -334,6 +334,7 @@ function getYLinePath({ width }: Size, value: number): Line {
   };
 }
 
+/** @internal */
 export function getMarkerPositionForXAnnotation(
   { width, height }: Size,
   rotation: Rotation,

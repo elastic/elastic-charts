@@ -27,7 +27,7 @@ import { ScaleType } from './constants';
 
 /**
  * Categorical scale
- * @internal
+ * @public
  */
 export class ScaleBand implements Scale {
   readonly bandwidth: number;

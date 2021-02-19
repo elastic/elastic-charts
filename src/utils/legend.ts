@@ -19,8 +19,10 @@
 
 import { Position } from './common';
 
+/** @internal */
 export const isHorizontalLegend = (legendPosition: Position) =>
   legendPosition === Position.Bottom || legendPosition === Position.Top;
 
+/** @internal */
 export const isHierarchicalLegend = (flatLegend: boolean | undefined, legendPosition: Position) =>
   !flatLegend && !isHorizontalLegend(legendPosition);

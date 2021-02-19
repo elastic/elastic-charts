@@ -79,13 +79,19 @@ function rectangleFillOrigins(n: ShapeTreeNode): PointTuple {
   return [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
 }
 
-/** potential internal */
+/**
+ * @internal
+ */
 export const ringSectorInnerRadius = (n: ShapeTreeNode): Radius => n.y0px;
 
-/** potential internal */
+/**
+ * @internal
+ */
 export const ringSectorOuterRadius = (n: ShapeTreeNode): Radius => n.y1px;
 
-/** potential internal */
+/**
+ * @internal
+ */
 export const ringSectorMiddleRadius = (n: ShapeTreeNode): Radius => n.yMidPx;
 
 function sectorFillOrigins(fillOutside: boolean) {
@@ -231,7 +237,9 @@ const rawChildNodes = (
   }
 };
 
+/** @internal */
 export const isTreemap = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.treemap;
+/** @internal */
 export const isSunburst = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.sunburst;
 const isIcicle = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.icicle;
 const isFlame = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.flame;

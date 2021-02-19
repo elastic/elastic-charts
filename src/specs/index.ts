@@ -19,6 +19,7 @@
 
 import { ChartTypes } from '../chart_types';
 
+/** @public */
 export interface Spec {
   /** unique Spec identifier */
   id: string;
