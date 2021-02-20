@@ -231,10 +231,20 @@ const rawChildNodes = (
   }
 };
 
-export const isTreemap = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.treemap;
-export const isSunburst = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.sunburst;
-const isIcicle = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.icicle;
-const isFlame = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.flame;
+/** @internal */
+export const isTreemap = (p: PartitionLayout) => p === PartitionLayout.treemap;
+
+/** @internal */
+export const isSunburst = (p: PartitionLayout) => p === PartitionLayout.sunburst;
+
+/** @internal */
+export const isIcicle = (p: PartitionLayout) => p === PartitionLayout.icicle;
+
+/** @internal */
+export const isFlame = (p: PartitionLayout) => p === PartitionLayout.flame;
+
+/** @internal */
+export const isLinear = (p: PartitionLayout) => isFlame(p) || isIcicle(p);
 
 /** @internal */
 export function shapeViewModel(
