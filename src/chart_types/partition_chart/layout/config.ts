@@ -249,7 +249,7 @@ export const configMetadata: Record<string, ConfigItem> = {
           },
         },
       },
-      clip: {
+      clipText: {
         type: 'boolean',
         dflt: false,
         documentation: "Renders, but clips, text that's longer than what would fit in a box entirely",

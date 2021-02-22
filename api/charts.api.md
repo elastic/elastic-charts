@@ -1452,7 +1452,7 @@ export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
 // @public (undocumented)
 export interface PartitionFillLabel extends LabelConfig {
     // (undocumented)
-    clip: boolean;
+    clipText: boolean;
 }
 
 // Warning: (ae-missing-release-tag) "Layer" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)

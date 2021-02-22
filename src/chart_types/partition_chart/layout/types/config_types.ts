@@ -50,7 +50,7 @@ interface LabelConfig extends Font {
 
 /** @public */
 export interface FillLabelConfig extends LabelConfig {
-  clip: boolean;
+  clipText: boolean;
 }
 
 export interface LinkLabelConfig extends LabelConfig {

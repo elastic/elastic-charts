@@ -321,7 +321,7 @@ function fill<C>(
         padding,
         textContrast,
         textOpacity,
-        clip,
+        clipText,
       } = {
         ...fillLabel,
         valueFormatter: formatter,
@@ -369,7 +369,7 @@ function fill<C>(
           cy,
           padding,
           node,
-          clip,
+          clipText,
         ),
         fillTextColor,
       };
@@ -425,7 +425,7 @@ function tryFontSize<C>(
         rotation,
         verticalAlignment,
         leftAlign,
-        clip: clipText,
+        clipText,
         rows: [...new Array(targetRowCount)].map(() => ({
           rowWords: [],
           rowAnchorX: NaN,
