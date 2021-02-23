@@ -24,29 +24,16 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src
 
 export const Example = () => {
   const showDataTable = boolean('showDataTable', true);
-  const useSimpleData = boolean('use simple data', true);
+  const useStackedData = boolean('use stacked data', false);
 
-  return useSimpleData ? (
+  return useStackedData ? (
     <Chart className="story-chart">
-      <Settings dataTable={{ showDataTable }} showLegend />
-      <BarSeries
-        id="spec1"
-        name="Simple bar series"
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y']}
-        data={[
-          { x: 0, y: 2 },
-          { x: 1, y: 7 },
-          { x: 2, y: 3 },
-          { x: 3, y: 6 },
-        ]}
+      <Settings
+        showLegend
+        showLegendExtra
+        legendPosition={Position.Right}
+        dataTable={{ showDefaultDescription: showDataTable }}
       />
-    </Chart>
-  ) : (
-    <Chart className="story-chart">
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} dataTable={{ showDataTable }} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
@@ -67,6 +54,24 @@ export const Example = () => {
           { x: 1, y: 5, g: 'b' },
           { x: 2, y: 8, g: 'b' },
           { x: 3, y: 2, g: 'b' },
+        ]}
+      />
+    </Chart>
+  ) : (
+    <Chart className="story-chart">
+      <Settings dataTable={{ showDefaultDescription: showDataTable }} showLegend />
+      <BarSeries
+        id="spec1"
+        name="Simple bar series"
+        xScaleType={ScaleType.Linear}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        data={[
+          { x: 0, y: 2 },
+          { x: 1, y: 7 },
+          { x: 2, y: 3 },
+          { x: 3, y: 6 },
         ]}
       />
     </Chart>

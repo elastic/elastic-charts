@@ -315,12 +315,33 @@ export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 
 export interface DataTableProps {
   /**
-   * Whether to show the data table for screen readers
+   * Whether to show the data table for screen readers defaults to true
    */
-  showDataTable: boolean;
+  showDefaultDescription: boolean;
+  /**
+   * consumer provides a description
+   */
+  description?: string;
+  /**
+   * consumer provides a visible caption for the chart
+   */
+  visibleCaption?: string;
+  /**
+   * Heading level for the description or generatedDescription defaults to h2
+   */
+  HeadingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 
-export type DataTable = DataTableProps;
+export type InternalDataTableProps = DataTableProps & {
+  /**
+   * This can be the chart title if provided, that can go in an aria-lable or aria-describedBy (not both)
+   */
+  altTextLabel: string;
+  /**
+   * Elastic-charts generated description that can go in an aria-label or aria-describedBy (not both)
+   */
+  generatedDescription: string;
+};
 
 /**
  * Buffer between cursor and point to trigger interaction
@@ -478,9 +499,9 @@ export interface SettingsSpec extends Spec {
    */
   noResults?: ComponentType | ReactChild;
   /**
-   * Optional data table generated for screen readers, defaults to false
+   * Data table generated for screen readers - true by default
    */
-  dataTable?: DataTable;
+  dataTable: DataTableProps;
 }
 
 /**
@@ -539,7 +560,8 @@ export type DefaultSettingsProps =
   | 'hideDuplicateAxes'
   | 'brushAxis'
   | 'minBrushDelta'
-  | 'externalPointerEvents';
+  | 'externalPointerEvents'
+  | 'dataTable';
 
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
 

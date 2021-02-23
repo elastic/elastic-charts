@@ -22,13 +22,15 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { LegendItem } from '../../../../common/legend';
-import { altTextChartDescription } from '../../../../components/screen_reader_data_table/screen_reader_data_table';
+import { computeAlternativeChartText } from '../../../../components/screen_reader_data_table/screen_reader_data_table';
+import { DataTableProps, InternalDataTableProps } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { getScreenReaderDataTableSettingsSelector } from '../../../../state/selectors/get_screen_reader_settings';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -49,6 +51,7 @@ import {
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
+import { getScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { Geometries, Transform } from '../../state/utils/types';
@@ -77,6 +80,8 @@ export interface ReactiveChartStateProps {
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
+  dataTable: DataTableProps;
+  generatedDescription: InternalDataTableProps['generatedDescription'];
 }
 
 interface ReactiveChartDispatchProps {
@@ -133,26 +138,52 @@ class XYChartComponent extends React.Component<XYChartProps> {
       initialized,
       isChartEmpty,
       chartContainerDimensions: { width, height },
+      dataTable,
+      generatedDescription,
     } = this.props;
+
+    const { description, HeadingLevel, showDefaultDescription } = dataTable;
+
+    const ariaProps = {
+      //   // if there is a label or label id, include an aria-labelledby
+      //   // and if there is a label id, use that; otherwise generate and id (for the label that was passed in)
+      'aria-labelledby': description ? description ?? generatedDescription : undefined,
+      //   // if there is a description id, prepend that; unless they turned off the default summary, append that
+      'aria-describedby': showDefaultDescription
+        ? ''
+        : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `${generatedDescription}`,
+    };
 
     if (!initialized || isChartEmpty) {
       this.ctx = null;
       return null;
     }
     return (
-      <canvas
-        ref={forwardStageRef}
-        className="echCanvasRenderer"
-        width={width * this.devicePixelRatio}
-        height={height * this.devicePixelRatio}
-        style={{
-          width,
-          height,
-        }}
-        // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-        role="img"
-        aria-label={altTextChartDescription()}
-      />
+      <figure>
+        <canvas
+          ref={forwardStageRef}
+          className="echCanvasRenderer"
+          width={width * this.devicePixelRatio}
+          height={height * this.devicePixelRatio}
+          style={{
+            width,
+            height,
+          }}
+          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+          role="presentation"
+          {...ariaProps}
+        />
+        {description && (
+          // @ts-ignore
+          <HeadingLevel>
+            {' '}
+            {/* id={altTextLabel}> */}
+            {description}
+          </HeadingLevel>
+        )}
+        <figcaption className="screen-reader">{generatedDescription}</figcaption>
+      </figure>
     );
   }
 
@@ -222,6 +253,11 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationDimensions: new Map(),
   annotationSpecs: [],
   panelGeoms: [],
+  dataTable: {
+    showDefaultDescription: true,
+    description: undefined,
+  },
+  generatedDescription: '',
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -249,6 +285,8 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
+    dataTable: getScreenReaderDataTableSettingsSelector(state),
+    generatedDescription: computeAlternativeChartText(getScreenReaderDataSelector(state)),
   };
 };
 

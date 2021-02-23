@@ -588,17 +588,29 @@ export function getBarIndexKey(
 
 function parseDataForKeys(d: DataSeries) {
   if (!d) return [];
-  return Object.keys(d.data[0].datum);
+  const keysAndValues = Object.entries(d.data[0]);
+  const keys = [];
+  for (let i = 0; i < keysAndValues.length; i++) {
+    if (keysAndValues[i][0] !== 'datum' && keysAndValues[i][1] !== null && keysAndValues[i][1] !== undefined) {
+      keys.push(keysAndValues[i][0]);
+    }
+  }
+  return keys;
 }
 
 function parseDataForValues(d: DataSeries) {
   if (!d) return [];
-  const values = [];
-  for (let i = 0; i < d.data.length; i++) {
-    if (d.data[i].datum) {
-      values.push(Object.values(d.data[i].datum));
-    }
-  }
+  const values: any[] = [];
+  // need to go through each data[i] and get the value of the not null undefined
+  d.data.map((value) => {
+    const keysAndValues = Object.entries(value);
+    // eslint-disable-next-line array-callback-return
+    return keysAndValues.map((val) => {
+      if (val[0] !== 'datum' && val[1] !== null && val[1] !== undefined) {
+        return values.push(val[1]);
+      }
+    });
+  });
   return values;
 }
 
@@ -609,6 +621,7 @@ export function computeScreenReaderData(data: DataSeries[]): ScreenReaderData[] 
     const current = {
       seriesName: data[i].spec.name,
       seriesType: data[i].seriesType,
+      splitAccessor: data[i].splitAccessors.size > 0,
       dataKey: parseDataForKeys(data[i]),
       dataValue: parseDataForValues(data[i]),
       xScaleType: data[i].spec.xScaleType,

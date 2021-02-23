@@ -21,14 +21,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { ScaleType } from '../../scales/constants';
-import { SeriesName, SeriesNameConfigOptions, SeriesNameFn } from '../../specs';
+import { SeriesName, SeriesNameConfigOptions, SeriesNameFn, SeriesTypes } from '../../specs';
 import { GlobalChartState } from '../../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
 
 export interface ScreenReaderData {
   seriesName: SeriesName | SeriesNameFn | undefined | SeriesNameConfigOptions;
-  seriesType: string | null;
+  seriesType: SeriesTypes;
+  splitAccessor: boolean;
   dataKey: string[];
   dataValue: any[];
   xScaleType: ScaleType;
@@ -40,35 +41,84 @@ export interface ScreenReaderDataTableStateProps {
 }
 
 /** @internal */
-export const altTextChartDescription = () => {
-  // if there is a stackAccessor in the series then it is stacked
-  return `There are 3 series in this chart.
-  There are 2 line series and 1 area series.
-  Each series has 10 data points.
-  There is an x-axis and one y-axis
-  The x-axis is linear. The y axis is linear
-  The x-axis domain is 0 to 100
-  The y-axis domain is 0 to 5.00 
-  `;
+export const computeAlternativeChartText = (d: ScreenReaderData[]): string => {
+  // number of series of type (make an object that has the count)
+
+  const numberOfSeriesByType = {};
+  d.forEach((series) => {
+    const { seriesType } = series;
+    // @ts-ignore
+    if (numberOfSeriesByType[seriesType]) {
+      // @ts-ignore
+      numberOfSeriesByType[seriesType]++;
+    } else {
+      // @ts-ignore
+      numberOfSeriesByType[seriesType] = 1;
+    }
+  });
+
+  const numberOfSeries =
+    d.length > 1 ? `There are ${d.length} series in this chart.` : `There is one series in this chart`;
+
+  // if there is a splitAccessor in the series then it is stacked
+  return !d[0].splitAccessor
+    ? `${numberOfSeries} Each series has ${d[0].dataValue.length} data points. `
+    : `This  chart is a stacked series.`;
 };
+
+const renderKeyHeaders = (keysArray: string[], index: number) => {
+  if (index === 0) {
+    index++;
+    return keysArray.map((val) => {
+      return (
+        <th scope="row" key={Math.random()}>
+          {' '}
+          {val}{' '}
+        </th>
+      );
+    });
+  }
+};
+
+const computeScreenReaderTableForXYCharts = (d: ScreenReaderData[]) => {
+  const dataKeys: JSX.Element[] = [];
+  // go through the number of series in ScreenReaderData
+  for (let seriesIndex = 0; seriesIndex < d.length; seriesIndex++) {
+    dataKeys.push(
+      <>
+        <tr key={Math.random()}>
+          <th scope="row" key={Math.random()} />
+          <th scope="row" key={Math.random()}>
+            {`Series Number of total ${d.length}`}{' '}
+          </th>
+          {renderKeyHeaders(d[seriesIndex].dataKey, seriesIndex)}
+        </tr>
+        <tr key={Math.random()}>
+          <th scope="col" key={Math.random()} />
+          <td key={Math.random()}>{seriesIndex + 1}</td>
+
+          {
+            // eslint-disable-next-line array-callback-return
+            d[seriesIndex].dataValue.map((value, index) => {
+              if (index % d[0].dataKey.length) {
+                return <td key={Math.random()}>{value}</td>;
+              }
+            })
+          }
+        </tr>
+      </>,
+    );
+  }
+  return dataKeys;
+};
+
+// TODO
+// const computeScreenReaderTableForStackedXYCharts = (d: ScreenReaderData) => {};
+// const computeScreenReaderTableForPartitionCharts = (d: ScreenReaderData) => {};
+// const computeScreenReaderTableForGoalCharts = (d: ScreenReaderData) => {};
+// const computeScreenReaderTableForGaugeXYCharts = (d: ScreenReaderData) => {};
 
 /** @internal */
-export const renderAltText = (data: ScreenReaderData[]) => {
-  if (!data[0]) {
-    return;
-  }
-
-  const validSeriesName = data[0].seriesName !== undefined ? ` with the name ${data[0].seriesName}` : ``;
-
-  return `This chart has a total of ${data.length} series. ${data.map((value, index) => {
-    return ` The ${index + 1} series of ${data.length} series is a ${
-      value.seriesType
-    } series${validSeriesName}. The x scale is ${value.xScaleType} and the y scale is ${value.yScaleType}.`;
-  })}
-
-`;
-};
-
 export const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) => {
   const { data } = props;
 
@@ -76,62 +126,20 @@ export const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableState
     return null;
   }
 
-  const classes = 'echDataTable';
+  const classes = 'screen-reader';
 
-  const computeScreenReaderTable = (d: ScreenReaderData[]) => {
-    const dataKeys: JSX.Element[] = [];
-    // go through the number of series in ScreenReaderData
-    for (let seriesIndex = 0; seriesIndex < d.length; seriesIndex++) {
-      if (d.length !== 1) {
-        dataKeys.push(
-          <tr key={`${d[seriesIndex].dataKey}__${seriesIndex}`}>
-            <th key={`${d[seriesIndex].dataValue}__${d[seriesIndex].seriesName}__${seriesIndex}`}>
-              {seriesIndex + 1} series of the total {d.length} series{' '}
-            </th>
-          </tr>,
-        );
-      }
-      // get the index of the key in each series and use the index to get the index of it in the values
-      for (let j = 0; j < d[seriesIndex].dataKey.length; j++) {
-        dataKeys.push(
-          <tr
-            key={`${d[seriesIndex].seriesType}__${d[seriesIndex].dataKey[j]}__${seriesIndex}`}
-            aria-labelledby="alt text for chart data"
-          >
-            <th
-              scope="row"
-              key={`${d[seriesIndex].seriesType}__${d[seriesIndex].dataValue[j]}__${seriesIndex}`}
-              align="center"
-            >
-              {d[seriesIndex].dataKey[j]}
-            </th>
-            {d[seriesIndex].dataValue.map((value, index) => {
-              return (
-                <td
-                  key={`${d[seriesIndex].seriesName}__${d[seriesIndex].dataKey[index]}__${seriesIndex}${index}`}
-                  align="center"
-                >
-                  {value[j]}
-                </td>
-              );
-            })}
-          </tr>,
-        );
-      }
+  const renderDataTable = (data: ScreenReaderData[], classes: string = 'screen-reader') => {
+    if (!data) return [];
+    if (Object.values(SeriesTypes).includes(data[0].seriesType)) {
+      return (
+        <table className={classes}>
+          <tbody>{computeScreenReaderTableForXYCharts(data)}</tbody>
+        </table>
+      );
     }
-    return dataKeys;
   };
 
-  return (
-    <>
-      <p className={classes} aria-label="information about the serie(s) within the chart">
-        {renderAltText(data)}
-      </p>
-      <table className={classes} role="presentation" tabIndex={-1}>
-        <tbody>{computeScreenReaderTable(data)}</tbody>
-      </table>
-    </>
-  );
+  return renderDataTable(data, classes);
 };
 
 const DEFAULT_PROPS = {
@@ -148,4 +156,7 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderDataTableStatePro
 };
 
 /** @internal */
-export const ScreenReaderDataTable = connect(mapStateToProps)(ScreenReaderDataTableComponent);
+export const ScreenReaderDataTable = connect(mapStateToProps)(
+  // @ts-ignore
+  ScreenReaderDataTableComponent,
+);

@@ -142,5 +142,9 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   baseTheme: LIGHT_THEME,
   brushAxis: BrushAxis.X,
   minBrushDelta: 2,
-  dataTable: { showDataTable: false },
+  dataTable: {
+    showDefaultDescription: true,
+    description: undefined,
+    // generatedDescription: getAlternativeChartTextSelector(state),
+  },
 };

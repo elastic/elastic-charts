@@ -26,23 +26,28 @@ export class Playground extends React.Component {
     return (
       <div className="story-chart story-root root">
         <Chart size={[500, 200]}>
-          <Settings dataTable={{ showDataTable: true }} />
+          <Settings
+            dataTable={{
+              showDefaultDescription: true,
+              HeadingLevel: 'h1',
+              description: 'This is a test playground used to see if your code is working as you expect it to',
+            }}
+          />
           <Axis id="count" title="count" position={Position.Left} />
           <Axis id="x" title="goods" position={Position.Bottom} />
-          {new Array(10).fill(0).map((d, i) => {
-            return (
-              // eslint-disable-next-line react/jsx-key
-              <BarSeries
-                id={`bar${i}`}
-                name="short"
-                xScaleType={ScaleType.Linear}
-                yScaleType={ScaleType.Linear}
-                xAccessor="x"
-                yAccessors={['y']}
-                data={[{ x: 1, y: Math.random() }]}
-              />
-            );
-          })}
+          <BarSeries
+            id="bar"
+            name="short"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={[
+              { x: 0, y: 3 },
+              { x: 1, y: 5 },
+              { x: 2, y: 7 },
+            ]}
+          />
         </Chart>
       </div>
     );

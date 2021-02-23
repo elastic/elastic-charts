@@ -868,6 +868,7 @@ describe('compute data for screen reader table', () => {
         ],
         xScaleType: 'ordinal',
         yScaleType: 'linear',
+        splitAccessor: false,
       },
     ];
     expect(expected).toEqual(computeScreenReaderData(formattedDataSeries));
@@ -899,6 +900,7 @@ describe('compute data for screen reader table', () => {
         ],
         xScaleType: 'ordinal',
         yScaleType: 'linear',
+        splitAccessor: false,
       },
     ];
     expect(expected).toEqual(computeScreenReaderData(formattedDataSeries));
@@ -925,6 +927,7 @@ describe('compute data for screen reader table', () => {
         ],
         xScaleType: 'ordinal',
         yScaleType: 'linear',
+        splitAccessor: false,
       },
     ];
     expect(expected).toEqual(computeScreenReaderData(formattedDataSeries));

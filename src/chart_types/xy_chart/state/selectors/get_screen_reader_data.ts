@@ -28,8 +28,8 @@ import { computeSeriesDomainsSelector } from './compute_series_domains';
 /** @internal */
 export const getScreenReaderDataSelector = createCachedSelector(
   [getScreenReaderDataTableSettingsSelector, computeSeriesDomainsSelector],
-  ({ showDataTable }, seriesDomainsAndData): ScreenReaderData[] | [] => {
-    if (!showDataTable) {
+  ({ showDefaultDescription }, seriesDomainsAndData): ScreenReaderData[] | [] => {
+    if (!showDefaultDescription) {
       return [];
     }
     const { formattedDataSeries } = seriesDomainsAndData;

@@ -27,7 +27,10 @@ export const getScreenReaderDataTableSettingsSelector = createCachedSelector(
   [getSettingsSpecSelector],
   ({ dataTable }): DataTableProps => {
     return {
-      showDataTable: dataTable?.showDataTable ?? false,
+      showDefaultDescription: dataTable.showDefaultDescription ?? true,
+      description: dataTable.description ? dataTable.description : undefined,
+      visibleCaption: dataTable.visibleCaption ? dataTable.visibleCaption : undefined,
+      HeadingLevel: dataTable.HeadingLevel ? dataTable.HeadingLevel : 'h2',
     };
   },
 )(getChartIdSelector);
