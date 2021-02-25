@@ -318,6 +318,10 @@ export interface DataTableProps {
    * Whether to show the data table for screen readers defaults to true
    */
   showDefaultDescription: boolean;
+  /** user provided title, label of the chart that can provided outside of the charts library and tie to the chart
+   *
+   */
+  title?: string;
   /**
    * consumer provides a description
    */

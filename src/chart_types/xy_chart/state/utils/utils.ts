@@ -37,7 +37,7 @@ import { GroupId, SpecId } from '../../../../utils/ids';
 import { getRenderingCompareFn, SeriesCompareFn } from '../../../../utils/series_sort';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import { getPredicateFn, Predicate } from '../../../heatmap/utils/common';
-import { XDomain } from '../../domains/types';
+import { XDomain, YDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
 import { isStackedSpec, mergeYDomain } from '../../domains/y_domain';
 import { renderArea } from '../../rendering/area';
@@ -586,7 +586,7 @@ export function getBarIndexKey(
   return [groupId, specId, ...splitAccessors.values(), yAccessor].join('__-__');
 }
 
-function parseDataForKeys(d: DataSeries) {
+function parseDataForKeysStacked(d: DataSeries) {
   if (!d) return [];
   const keysAndValues = Object.entries(d.data[0]);
   const keys = [];
@@ -598,7 +598,7 @@ function parseDataForKeys(d: DataSeries) {
   return keys;
 }
 
-function parseDataForValues(d: DataSeries) {
+function parseDataForValuesStacked(d: DataSeries) {
   if (!d) return [];
   const values: any[] = [];
   // need to go through each data[i] and get the value of the not null undefined
@@ -606,7 +606,7 @@ function parseDataForValues(d: DataSeries) {
     const keysAndValues = Object.entries(value);
     // eslint-disable-next-line array-callback-return
     return keysAndValues.map((val) => {
-      if (val[0] !== 'datum' && val[1] !== null && val[1] !== undefined) {
+      if (val[0] !== 'datum' && val[1] !== null && val[1] !== undefined && typeof val[1] === 'number') {
         return values.push(val[1]);
       }
     });
@@ -614,18 +614,56 @@ function parseDataForValues(d: DataSeries) {
   return values;
 }
 
+function parseDataForKeys(d: DataSeries) {
+  if (!d) return [];
+  const keysAndValues = Object.entries(d.data[0].datum);
+  const keys = [];
+  for (let i = 0; i < keysAndValues.length; i++) {
+    if (keysAndValues[i][0] !== 'datum' && keysAndValues[i][1] !== null && keysAndValues[i][1] !== undefined) {
+      keys.push(keysAndValues[i][0]);
+    }
+  }
+  return keys;
+}
+
+function parseDataForValues(d: DataSeries) {
+  if (!d) return [];
+  const values = [];
+  for (let i = 0; i < d.data.length; i++) {
+    if (d.data[i].datum) {
+      values.push(Object.values(d.data[i].datum));
+    }
+  }
+  return values;
+}
+
 /** @internal */
-export function computeScreenReaderData(data: DataSeries[]): ScreenReaderData[] {
+export function computeScreenReaderData(
+  data: DataSeries[],
+  xDomain: XDomain | undefined,
+  yDomains: YDomain[] | undefined,
+  axisSpecs: AxisSpec[] | undefined,
+): ScreenReaderData[] {
   const formattedScreenReaderDataArray = [];
+  const yDomainsFormatted = {};
+  for (let i = 0; i < yDomains?.length; i++) {
+    if (!yDomainsFormatted.hasOwnProperty(yDomains[i].groupId)) {
+      yDomainsFormatted[yDomains[i].groupId] = yDomains[i].domain;
+    }
+  }
+  const axesTitles = axisSpecs?.map((val) => [val.title, val.groupId]);
   for (let i = 0; i < data.length; i++) {
     const current = {
       seriesName: data[i].spec.name,
       seriesType: data[i].seriesType,
       splitAccessor: data[i].splitAccessors.size > 0,
-      dataKey: parseDataForKeys(data[i]),
-      dataValue: parseDataForValues(data[i]),
+      dataKey: data[i].splitAccessors.size > 0 ? parseDataForKeysStacked(data[i]) : parseDataForKeys(data[i]),
+      dataValue: data[i].splitAccessors.size > 0 ? parseDataForValuesStacked(data[i]) : parseDataForValues(data[i]),
       xScaleType: data[i].spec.xScaleType,
       yScaleType: data[i].spec.yScaleType,
+      xDomain: xDomain!.domain ?? undefined,
+      yDomains: yDomainsFormatted,
+      axesTitles,
     };
     formattedScreenReaderDataArray.push(current);
   }

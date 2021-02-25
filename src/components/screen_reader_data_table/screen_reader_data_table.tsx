@@ -25,6 +25,7 @@ import { SeriesName, SeriesNameConfigOptions, SeriesNameFn, SeriesTypes } from '
 import { GlobalChartState } from '../../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
+import { ContinuousDomain, OrdinalDomain } from '../../utils/domain';
 
 export interface ScreenReaderData {
   seriesName: SeriesName | SeriesNameFn | undefined | SeriesNameConfigOptions;
@@ -34,16 +35,41 @@ export interface ScreenReaderData {
   dataValue: any[];
   xScaleType: ScaleType;
   yScaleType: ScaleType;
+  xDomain: ContinuousDomain | OrdinalDomain | undefined;
+  yDomains: any;
+  axesTitles: (string | undefined)[][] | undefined;
 }
 
 export interface ScreenReaderDataTableStateProps {
   data: ScreenReaderData[];
 }
 
+/** helper function to read out each number  and type of series */
+const readOutSeriesCountandType = (s: { [s: string]: unknown } | ArrayLike<unknown>) => {
+  let returnString = '';
+  for (let i = 0; i < Object.entries(s).length; i++) {
+    const seriesT = Object.entries(s)[i][0];
+    const seriesC = Object.entries(s)[i][1];
+    returnString +=
+      seriesC === 1 ? `There is ${seriesC} ${seriesT} series. ` : `There are ${seriesC} ${seriesT} series. `;
+  }
+  return returnString;
+};
+
+const axesWithTitles = (titles: string | any[] | undefined, domains: { [x: string]: any }) => {
+  let titleDomain = '';
+  for (let i = 0; i < titles!.length; i++) {
+    if (titles![i][0]) {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      titleDomain += `The axis ${titles![i][0]} has the  domain ${domains[titles[i][1]]}. `;
+    }
+  }
+  return titleDomain;
+};
+
 /** @internal */
 export const computeAlternativeChartText = (d: ScreenReaderData[]): string => {
-  // number of series of type (make an object that has the count)
-
+  const namedSeries = d[0].seriesName !== undefined ? `The chart is named ${d[0].seriesName}. ` : '';
   const numberOfSeriesByType = {};
   d.forEach((series) => {
     const { seriesType } = series;
@@ -57,13 +83,29 @@ export const computeAlternativeChartText = (d: ScreenReaderData[]): string => {
     }
   });
 
-  const numberOfSeries =
-    d.length > 1 ? `There are ${d.length} series in this chart.` : `There is one series in this chart`;
+  const mixedSeriesChart =
+    Object.keys(numberOfSeriesByType).length > 1 ? `This chart has different series types in it.` : '';
+  const stackedSeries = d[0].splitAccessor
+    ? `This chart has stacked series in it. The scale type of the y axes are ${d[0].yScaleType}. `
+    : ``;
 
-  // if there is a splitAccessor in the series then it is stacked
-  return !d[0].splitAccessor
-    ? `${numberOfSeries} Each series has ${d[0].dataValue.length} data points. `
-    : `This  chart is a stacked series.`;
+  const multipleSeries = d.length > 1;
+  const types = multipleSeries
+    ? readOutSeriesCountandType(numberOfSeriesByType)
+    : `There is one ${d[0].seriesType} series in this chart.`;
+
+  const YAxes =
+    d[0].axesTitles!.length > 1
+      ? `This chart has multiple y-axes. The y axes are ${d[0].yScaleType}. ${axesWithTitles(
+          d[0].axesTitles,
+          d[0].yDomains,
+        )}`
+      : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        `There is one y-axis titled ${d[0].axesTitles}. Its domain is ${d[0].yDomains[d[0].axesTitles]}. `;
+
+  return `${namedSeries}${mixedSeriesChart} ${stackedSeries} ${
+    mixedSeriesChart !== '' || stackedSeries !== '' ? `It` : `The  chart`
+  } has ${d.length} series in it. ${types} The x axis is ${d[0].xScaleType}. The domain is ${d[0].xDomain}. ${YAxes}`;
 };
 
 const renderKeyHeaders = (keysArray: string[], index: number) => {
@@ -80,7 +122,7 @@ const renderKeyHeaders = (keysArray: string[], index: number) => {
   }
 };
 
-const computeScreenReaderTableForXYCharts = (d: ScreenReaderData[]) => {
+const computeScreenReaderTableForXYCharts = (d: ScreenReaderData[], classes = 'screen-reader') => {
   const dataKeys: JSX.Element[] = [];
   // go through the number of series in ScreenReaderData
   for (let seriesIndex = 0; seriesIndex < d.length; seriesIndex++) {
@@ -93,15 +135,19 @@ const computeScreenReaderTableForXYCharts = (d: ScreenReaderData[]) => {
           </th>
           {renderKeyHeaders(d[seriesIndex].dataKey, seriesIndex)}
         </tr>
-        <tr key={Math.random()}>
+        <tr key={Math.random()} className={classes}>
           <th scope="col" key={Math.random()} />
           <td key={Math.random()}>{seriesIndex + 1}</td>
 
           {
             // eslint-disable-next-line array-callback-return
-            d[seriesIndex].dataValue.map((value, index) => {
+            d[seriesIndex].dataValue.map((value: React.ReactNode, index: number) => {
               if (index % d[0].dataKey.length) {
-                return <td key={Math.random()}>{value}</td>;
+                return (
+                  <td key={Math.random()} className={classes}>
+                    {value}
+                  </td>
+                );
               }
             })
           }
@@ -113,10 +159,18 @@ const computeScreenReaderTableForXYCharts = (d: ScreenReaderData[]) => {
 };
 
 // TODO
-// const computeScreenReaderTableForStackedXYCharts = (d: ScreenReaderData) => {};
-// const computeScreenReaderTableForPartitionCharts = (d: ScreenReaderData) => {};
-// const computeScreenReaderTableForGoalCharts = (d: ScreenReaderData) => {};
-// const computeScreenReaderTableForGaugeXYCharts = (d: ScreenReaderData) => {};
+// const computeScreenReaderTableForStackedXYCharts = (d: ScreenReaderData) => {
+//   return [];
+// };
+// const computeScreenReaderTableForPartitionCharts = (d: ScreenReaderData) => {
+//   return [];
+// };
+// const computeScreenReaderTableForGoalCharts = (d: ScreenReaderData) => {
+//   return [];
+// };
+// const computeScreenReaderTableForGaugeXYCharts = (d: ScreenReaderData) => {
+//   return [];
+// };
 
 /** @internal */
 export const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) => {
@@ -137,6 +191,7 @@ export const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableState
         </table>
       );
     }
+    return [];
   };
 
   return renderDataTable(data, classes);

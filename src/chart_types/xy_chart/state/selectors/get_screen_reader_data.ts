@@ -24,15 +24,16 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getScreenReaderDataTableSettingsSelector } from '../../../../state/selectors/get_screen_reader_settings';
 import { computeScreenReaderData } from '../utils/utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
+import { getAxisSpecsSelector } from './get_specs';
 
 /** @internal */
 export const getScreenReaderDataSelector = createCachedSelector(
-  [getScreenReaderDataTableSettingsSelector, computeSeriesDomainsSelector],
-  ({ showDefaultDescription }, seriesDomainsAndData): ScreenReaderData[] | [] => {
+  [getScreenReaderDataTableSettingsSelector, computeSeriesDomainsSelector, getAxisSpecsSelector],
+  ({ showDefaultDescription }, seriesDomainsAndData, axisSpecs): ScreenReaderData[] | [] => {
     if (!showDefaultDescription) {
       return [];
     }
-    const { formattedDataSeries } = seriesDomainsAndData;
-    return computeScreenReaderData(formattedDataSeries);
+    const { formattedDataSeries, xDomain, yDomains } = seriesDomainsAndData;
+    return computeScreenReaderData(formattedDataSeries, xDomain, yDomains, axisSpecs);
   },
 )(getChartIdSelector);
