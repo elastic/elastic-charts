@@ -17,12 +17,11 @@
  * under the License.
  */
 
-import React from 'react';
+import { $Values } from 'utility-types';
 
-import { Example } from '../stories/wordcloud/1_wordcloud';
-
-export class Playground extends React.Component {
-  render() {
-    return <Example />;
-  }
-}
+export const GoalSubtype = Object.freeze({
+  Goal: 'goal' as const,
+  HorizontalBullet: 'horizontalBullet' as const,
+  VerticalBullet: 'verticalBullet' as const,
+});
+export type GoalSubtype = $Values<typeof GoalSubtype>;

@@ -235,10 +235,10 @@ export const BandedAccessorType: Readonly<{
 export type BandedAccessorType = $Values<typeof BandedAccessorType>;
 
 // @alpha (undocumented)
-export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color;
+export type WordcloudBandFillColorAccessor = (input: WordcloudBandFillColorAccessorInput) => Color;
 
 // @alpha (undocumented)
-export interface BandFillColorAccessorInput {
+export interface WordcloudBandFillColorAccessorInput {
     // (undocumented)
     aboveBaseCount: number;
     // (undocumented)
@@ -869,19 +869,19 @@ export function getNodeName(node: ArrayNode): string;
 export const Goal: React_2.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
 
 // @alpha (undocumented)
-export interface GoalSpec extends Spec {
+export interface WordcloudSpec extends Spec {
     // (undocumented)
     actual: number;
     // (undocumented)
-    bandFillColor: BandFillColorAccessor;
+    bandFillColor: WordcloudBandFillColorAccessor;
     // (undocumented)
     bands: number[];
     // (undocumented)
     base: number;
     // (undocumented)
-    centralMajor: string | BandFillColorAccessor;
+    centralMajor: string | WordcloudBandFillColorAccessor;
     // (undocumented)
-    centralMinor: string | BandFillColorAccessor;
+    centralMinor: string | WordcloudBandFillColorAccessor;
     // (undocumented)
     chartType: typeof ChartTypes.Goal;
     // Warning: (ae-forgotten-export) The symbol "Config" needs to be exported by the entry point index.d.ts
@@ -889,9 +889,9 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     config: RecursivePartial<Config>;
     // (undocumented)
-    labelMajor: string | BandFillColorAccessor;
+    labelMajor: string | WordcloudBandFillColorAccessor;
     // (undocumented)
-    labelMinor: string | BandFillColorAccessor;
+    labelMinor: string | WordcloudBandFillColorAccessor;
     // (undocumented)
     specType: typeof SpecTypes.Series;
     // Warning: (ae-forgotten-export) The symbol "GoalSubtype" needs to be exported by the entry point index.d.ts
@@ -903,7 +903,7 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     ticks: number[];
     // (undocumented)
-    tickValueFormatter: BandFillColorAccessor;
+    tickValueFormatter: WordcloudBandFillColorAccessor;
 }
 
 // @public (undocumented)
