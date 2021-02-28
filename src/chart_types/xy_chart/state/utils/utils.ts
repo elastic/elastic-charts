@@ -462,6 +462,9 @@ function renderGeometries(
         : chartTheme.lineSeriesStyle;
 
       const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
+      ds.data = ds.data.filter(({ datum: { x, y } }) => {
+        return !!x && !!y;
+      });
 
       const renderedLines = renderLine(
         // move the point on half of the bandwidth if we have mixed bars/lines
