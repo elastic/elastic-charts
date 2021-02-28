@@ -20,8 +20,8 @@
 import createCachedSelector from 're-reselect';
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
-import { getSpecOrNull } from './goal_spec';
 import { getPickedShapes } from './picked_shapes';
+import { getSpecOrNull } from './wordcloud_spec';
 
 const EMPTY_TOOLTIP = Object.freeze({
   header: null,

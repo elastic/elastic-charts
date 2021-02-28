@@ -25,7 +25,7 @@ import { getOnElementOutSelector } from '../../../../common/event_handler_select
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getSpecOrNull } from './goal_spec';
+import { getSpecOrNull } from './wordcloud_spec';
 import { getPickedShapesLayerValues } from './picked_shapes';
 
 /**

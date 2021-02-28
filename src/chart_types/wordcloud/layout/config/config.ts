@@ -23,8 +23,6 @@ import { Config } from '../types/config_types';
 
 /** @internal */
 export const configMetadata: Record<string, ConfigItem> = {
-  angleStart: { dflt: Math.PI + Math.PI / 4, min: -TAU, max: TAU, type: 'number' },
-  angleEnd: { dflt: -Math.PI / 4, min: -TAU, max: TAU, type: 'number' },
 
   // shape geometry
   width: { dflt: 300, min: 0, max: 1024, type: 'number', reconfigurable: false },
@@ -41,13 +39,13 @@ export const configMetadata: Record<string, ConfigItem> = {
 
   // general text config
   fontFamily: {
-    dflt: 'Sans-Serif',
+    dflt: 'Impact',
     type: 'string',
   },
 
   // fill text config
-  minFontSize: { dflt: 8, min: 0.1, max: 8, type: 'number', reconfigurable: true },
-  maxFontSize: { dflt: 64, min: 0.1, max: 64, type: 'number' },
+  minFontSize: { dflt: 10, min: 10, max: 50, type: 'number', reconfigurable: true },
+  maxFontSize: { dflt: 70, min: 15, max: 150, type: 'number', reconfigurable: true },
 
   backgroundColor: { dflt: '#ffffff', type: 'color' },
   sectorLineWidth: { dflt: 1, min: 0, max: 4, type: 'number' },

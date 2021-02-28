@@ -21,7 +21,7 @@ import createCachedSelector from 're-reselect';
 
 import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { BulletViewModel } from '../../layout/types/viewmodel_types';
+import { WordcloudViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
@@ -31,7 +31,7 @@ function getCurrentPointerPosition(state: GlobalChartState) {
 /** @internal */
 export const getPickedShapes = createCachedSelector(
   [geometries, getCurrentPointerPosition],
-  (geoms, pointerPosition): BulletViewModel[] => {
+  (geoms, pointerPosition): WordcloudViewModel[] => {
     const picker = geoms.pickQuads;
     const { chartCenter } = geoms;
     const x = pointerPosition.x - chartCenter.x;

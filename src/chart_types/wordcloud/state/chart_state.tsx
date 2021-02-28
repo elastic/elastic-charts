@@ -29,12 +29,12 @@ import { LegendItemLabel } from '../../../state/selectors/get_legend_items_label
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
 import { Wordcloud } from '../renderer/svg/connected_component';
-import { getSpecOrNull } from './selectors/goal_spec';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
+import { getSpecOrNull } from './selectors/wordcloud_spec';
 
 const EMPTY_MAP = new Map();
 const EMPTY_LEGEND_LIST: LegendItem[] = [];

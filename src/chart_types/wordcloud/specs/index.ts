@@ -23,36 +23,8 @@ import { ChartTypes } from '../..';
 import { Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
-import { Color } from '../../../utils/common';
 import { config } from '../layout/config/config';
 import { WordModel, defaultWordcloudSpec } from '../layout/types/viewmodel_types';
-
-/** @alpha */
-export interface WordcloudBandFillColorAccessorInput {
-  value: number;
-  index: number;
-  base: number;
-  startAngle: number;
-  endAngle: number;
-  angleCount: number;
-  padding: number;
-  fontWeight: number;
-  fontFamily: string;
-  fontStyle: string;
-  minFontSize: number;
-  maxFontSize: number;
-  spiral: string;
-  exponent: number;
-  data: [];
-  target: number;
-  highestValue: number;
-  lowestValue: number;
-  aboveBaseCount: number;
-  belowBaseCount: number;
-}
-
-/** @alpha */
-export type WordcloudBandFillColorAccessor = (input: WordcloudBandFillColorAccessorInput) => Color;
 
 const defaultProps = {
   chartType: ChartTypes.Wordcloud,

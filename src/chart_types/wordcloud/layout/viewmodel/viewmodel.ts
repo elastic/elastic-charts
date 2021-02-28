@@ -20,7 +20,7 @@
 import { TextMeasure } from '../../../../common/text_utils';
 import { WordcloudSpec } from '../../specs';
 import { Config } from '../types/config_types';
-import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
+import { WordcloudViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
 
 /** @internal */
 export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, config: Config): ShapeViewModel {
@@ -36,7 +36,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, co
 
   const pickQuads: PickFunction = (x, y) =>
     -innerWidth / 2 <= x && x <= innerWidth / 2 && -innerHeight / 2 <= y && y <= innerHeight / 2
-      ? [bulletViewModel]
+      ? [wordcloudViewModel]
       : [];
 
   const {
@@ -54,7 +54,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, co
     data,
   } = spec;
 
-  const bulletViewModel: BulletViewModel = {
+  const wordcloudViewModel: WordcloudViewModel = {
     startAngle,
     endAngle,
     angleCount,
@@ -73,7 +73,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, co
   return {
     config,
     chartCenter,
-    bulletViewModel,
+    wordcloudViewModel: wordcloudViewModel,
     pickQuads,
   };
 }

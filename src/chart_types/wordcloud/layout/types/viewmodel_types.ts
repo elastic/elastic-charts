@@ -31,7 +31,7 @@ export interface WordModel {
 }
 
 /** @internal */
-export interface BulletViewModel {
+export interface WordcloudViewModel {
   startAngle: number;
   endAngle: number;
   angleCount: number;
@@ -47,12 +47,12 @@ export interface BulletViewModel {
 }
 
 /** @internal */
-export type PickFunction = (x: Pixels, y: Pixels) => Array<BulletViewModel>;
+export type PickFunction = (x: Pixels, y: Pixels) => Array<WordcloudViewModel>;
 
 /** @internal */
 export type ShapeViewModel = {
   config: Config;
-  bulletViewModel: BulletViewModel;
+  wordcloudViewModel: WordcloudViewModel;
   chartCenter: PointObject;
   pickQuads: PickFunction;
 };
@@ -79,7 +79,7 @@ export const defaultWordcloudSpec = {
 };
 
 /** @internal */
-export const nullGoalViewModel = {
+export const nullWordcloudViewModel = {
   ...commonDefaults,
   data: [],
 };
@@ -87,7 +87,7 @@ export const nullGoalViewModel = {
 /** @internal */
 export const nullShapeViewModel = (specifiedConfig?: Config, chartCenter?: PointObject): ShapeViewModel => ({
   config: specifiedConfig || config,
-  bulletViewModel: nullGoalViewModel,
+  wordcloudViewModel: nullWordcloudViewModel,
   chartCenter: chartCenter || { x: 0, y: 0 },
   pickQuads: () => [],
 });

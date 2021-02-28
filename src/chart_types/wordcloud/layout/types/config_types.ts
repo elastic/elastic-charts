@@ -24,9 +24,6 @@ import { Color } from '../../../../utils/common';
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
 /** potential internal */
 export interface Config {
-  angleStart: number;
-  angleEnd: number;
-
   // shape geometry
   width: number;
   height: number;
@@ -38,8 +35,4 @@ export interface Config {
   // fill text config
   minFontSize: Pixels;
   maxFontSize: Pixels;
-
-  // other
-  backgroundColor: Color;
-  sectorLineWidth: Pixels;
 }

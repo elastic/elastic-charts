@@ -198,7 +198,7 @@ class Component extends React.Component<Props> {
       initialized,
       chartContainerDimensions: { width, height },
       forwardStageRef,
-      geometries: { bulletViewModel },
+      geometries: { wordcloudViewModel },
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
@@ -206,20 +206,20 @@ class Component extends React.Component<Props> {
     const conf1 = {
       width,
       height,
-      startAngle: bulletViewModel.startAngle,
-      endAngle: bulletViewModel.endAngle,
-      count: bulletViewModel.angleCount,
-      padding: bulletViewModel.padding,
-      fontWeight: bulletViewModel.fontWeight,
-      fontFamily: bulletViewModel.fontFamily,
-      fontStyle: bulletViewModel.fontStyle,
-      minFontSize: bulletViewModel.minFontSize,
-      maxFontSize: bulletViewModel.maxFontSize,
-      spiral: bulletViewModel.spiral,
-      exponent: bulletViewModel.exponent,
+      startAngle: wordcloudViewModel.startAngle,
+      endAngle: wordcloudViewModel.endAngle,
+      count: wordcloudViewModel.angleCount,
+      padding: wordcloudViewModel.padding,
+      fontWeight: wordcloudViewModel.fontWeight,
+      fontFamily: wordcloudViewModel.fontFamily,
+      fontStyle: wordcloudViewModel.fontStyle,
+      minFontSize: wordcloudViewModel.minFontSize,
+      maxFontSize: wordcloudViewModel.maxFontSize,
+      spiral: wordcloudViewModel.spiral,
+      exponent: wordcloudViewModel.exponent,
     };
 
-    const layout = layoutMaker(conf1, bulletViewModel.data);
+    const layout = layoutMaker(conf1, wordcloudViewModel.data);
 
     let ww;
     layout.on('end', (w) => (ww = w)).start();
