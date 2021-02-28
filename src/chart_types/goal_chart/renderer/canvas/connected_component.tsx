@@ -66,7 +66,6 @@ class Component extends React.Component<Props> {
      */
     this.tryCanvasContext();
     if (this.props.initialized) {
-      console.log('goal componentDidMount')
       this.drawCanvas();
       this.props.onChartRendered();
     }

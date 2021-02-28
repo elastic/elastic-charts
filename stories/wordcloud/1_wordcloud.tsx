@@ -25,7 +25,15 @@ import { WordModel } from '../../src/chart_types/wordcloud/layout/types/viewmode
 import { getRandomNumberGenerator } from '../../src/mocks/utils';
 
 const text =
-  'Truffaut lo-fi kinfolk, vegan roof party palo santo meggings brooklyn. Snackwave artisan man braid DIY retro truffaut tumeric helvetica. Ugh shabby chic PBR&B pork belly vegan pabst, food truck plaid direct trade franzen pour-over chillwave fingerstache. Blog pinterest intelligentsia humblebrag, farm-to-table hashtag umami williamsburg. Bushwick helvetica godard jianbing bicycle rights, salvia hashtag before they sold out lumbersexual. Waistcoat snackwave gentrify mumblecore farm-to-table banjo tbh post-ironic aesthetic. Bushwick selfies poutine kinfolk bicycle rights williamsburg, cray affogato iPhone sustainable. Shoreditch lo-fi tbh, palo santo affogato banh mi narwhal. Pickled pitchfork heirloom vice man bun normcore post-ironic ethical freegan blog. Chillwave readymade activated charcoal, shaman chia literally fixie stumptown jianbing yuccie lo-fi kinfolk coloring book small batch helvetica.';
+  'Webtwo ipsum sifteo twones chegg lijit meevee spotify, joukuu wakoopa greplin. Sclipo octopart wufoo, balihoo. Kiko groupon fleck revver blyve joyent dogster, zoodles zooomr scribd dogster mog. Zinch orkut jabber trulia, sclipo. Chumby imvu rovio ning zoho akismet napster, kippt zillow mzinga zoho.\n' +
+  '\n' +
+  'Zoho cotweet cloudera zinch spock divvyshot edmodo convore, geni palantir geni woopra divvyshot. Zoho imeem convore orkut oooj foodzie airbnb, jabber rovio klout spotify dropio. Insala octopart wikia xobni airbnb quora mzinga elgg, mog quora blekko boxbe plickers zlio. Sococo chumby trulia ebay sococo zoho lijit, spock nuvvo omgpop heekya koofers. Kazaa voki chegg napster mozy koofers, meebo heroku empressr foodzie.\n' +
+  '\n' +
+  'Meevee movity fleck waze palantir glogster ebay, scribd chegg zinch spotify. Zinch vimeo joukuu insala jaiku squidoo, kaboodle quora shopify. Imeem plickers zapier ning eskobo movity omgpop zillow, voxy knewton napster kippt quora gooru. Whrrl chegg klout hulu greplin, dogster balihoo yuntaa. Oovoo ebay kosmix eduvant meebo ning, akismet zapier meevee. Oooooc blekko cotweet nuvvo sclipo zinch movity kaboodle, zooomr insala sclipo loopt hojoki qeyno. Airbnb palantir skype, etsy.\n' +
+  '\n' +
+  'Joost cotweet knewton bubbli, unigo twones. Akismet skype scribd vimeo, skype omgpop kno imvu, shopify dropio. Jajah heroku xobni glogster twones jabber rovio, jaiku blippy wikia jumo oooooc. Jumo lijit tumblr jibjab zooomr sifteo hojoki mog reddit, jabber twitter zinch doostang wakoopa ebay. Yoono klout weebly geni blippy, twitter kno yoono edmodo, joyent joukuu mzinga.\n' +
+  '\n' +
+  'zappos. Ning babblely trulia zooomr vimeo, zimbra plaxo. Zooomr blyve stypi joukuu imvu chumby voxy, ideeli omgpop elgg geni qeyno joyent, loopt reddit eskobo flickr odeo. Heekya plickers wesabe lijit kno, hojoki convore.';
 
 const getRandomNumber = getRandomNumberGenerator();
 const data: WordModel[] = text
@@ -43,17 +51,17 @@ const data: WordModel[] = text
 
 const configs = {
   edit: {
-    startAngle: -15,
-    endAngle: 15,
-    angleCount: 7,
+    startAngle: -45,
+    endAngle: 45,
+    angleCount: 2,
     padding: 0,
-    exponent: 5,
-    fontWeight: 600,
-    minFontSize: 17,
-    maxFontSize: 79,
-    fontFamily: 'Impact',
+    exponent: 3,
+    fontWeight: 100,
+    minFontSize: 10,
+    maxFontSize: 90,
+    fontFamily: 'Arial Narrow',
     fontStyle: 'normal',
-    shape: 'rectangular',
+    shape: 'archimedean',
   },
   single: {
     startAngle: 0,
