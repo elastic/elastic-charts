@@ -78,7 +78,6 @@ class Component extends React.Component<Props> {
     }
     if (this.props.initialized) {
       this.drawCanvas();
-      console.log('goal componentDidUpdate')
       this.props.onChartRendered();
     }
   }
