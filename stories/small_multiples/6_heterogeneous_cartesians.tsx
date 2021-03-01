@@ -72,13 +72,13 @@ export const Example = () => {
       MIN
     </span>
   );
-  const showLegend = boolean('Show Legend', false);
+  const showLegend = boolean('Show Legend', true);
   const onElementClick = action('onElementClick');
 
   return (
     <Chart className="story-chart">
       <Settings onElementClick={onElementClick} showLegend={showLegend} />
-      <Axis id="time" title="metric" position={Position.Bottom} gridLine={{ visible: false }} />
+      <Axis id="time" position={Position.Bottom} gridLine={{ visible: false }} />
       <Axis id="y" title="Day of week" position={Position.Left} gridLine={{ visible: false }} />
 
       <GroupBy
@@ -110,7 +110,7 @@ export const Example = () => {
       />
       <BarSeries
         id="website a"
-        xScaleType={ScaleType.Time}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"
@@ -122,7 +122,7 @@ export const Example = () => {
       />
       <LineSeries
         id="website b"
-        xScaleType={ScaleType.Time}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"
@@ -134,7 +134,7 @@ export const Example = () => {
       />
       <AreaSeries
         id="website c"
-        xScaleType={ScaleType.Time}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"
@@ -152,14 +152,7 @@ Example.story = {
   parameters: {
     options: { selectedPanel: SB_SOURCE_PANEL },
     info: {
-      text: `Similarly to the Vertical Areas example, the above chart shows an example of small multiples technique
-that splits our dataset into multiple sub-series horizontally positioned one aside the other.
-In this case, the \`<GroupBy />\` id is used to specify the horizontal split via the \`splitHorizontally\` prop.
-
-As for single charts, we can merge and handle multiple data-series together and specify a \`by\` accessor to consider
-the specific case. An additional property \`sort\` is available to configure the sorting order of the vertical or
-horizontal split.
-`,
+      text: '',
     },
   },
 };

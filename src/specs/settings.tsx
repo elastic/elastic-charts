@@ -19,12 +19,11 @@
 
 import React, { ComponentType, ReactChild } from 'react';
 
-import { Spec } from '.';
+import { CustomXDomain, Spec } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { LegendStrategy } from '../chart_types/partition_chart/state/selectors/get_highlighted_shapes';
+import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
-import { DomainRange } from '../chart_types/xy_chart/utils/specs';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
 import { CustomTooltip } from '../components/tooltip/types';
@@ -33,7 +32,6 @@ import { LegendPath } from '../state/actions/legend';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
 import { Color, Position, Rendering, Rotation } from '../utils/common';
-import { Domain } from '../utils/domain';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
@@ -121,7 +119,7 @@ export type ElementOverListener = (
   elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>,
 ) => void;
 export type BrushEndListener = (brushArea: XYBrushArea) => void;
-export type LegendItemListener = (series: SeriesIdentifier | null) => void;
+export type LegendItemListener = (series: SeriesIdentifier[]) => void;
 export type PointerUpdateListener = (event: PointerEvent) => void;
 /**
  * Listener to be called when chart render state changes
@@ -270,9 +268,9 @@ export interface ExternalPointerEventsSettings {
  */
 export interface LegendActionProps {
   /**
-   * Series identifier for the given series
+   * Series identifiers for the given series
    */
-  series: SeriesIdentifier;
+  series: SeriesIdentifier[];
   /**
    * Resolved label/name of given series
    */
@@ -309,9 +307,9 @@ export interface LegendColorPickerProps {
    */
   onChange: (color: Color | null) => void;
   /**
-   * Series id for the active series
+   * Series ids for the active series
    */
-  seriesIdentifier: SeriesIdentifier;
+  seriesIdentifiers: SeriesIdentifier[];
 }
 export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 
@@ -410,7 +408,7 @@ export interface SettingsSpec extends Spec {
   onLegendItemMinusClick?: LegendItemListener;
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
-  xDomain?: Domain | DomainRange;
+  xDomain?: CustomXDomain;
   resizeDebounce?: number;
   /**
    * Render slot to render action for legend

@@ -1,3 +1,48 @@
+## [25.0.1](https://github.com/elastic/elastic-charts/compare/v25.0.0...v25.0.1) (2021-02-17)
+
+
+### Reverts
+
+* log scale improvements and options ([#1014](https://github.com/elastic/elastic-charts/issues/1014)) ([2189f92](https://github.com/elastic/elastic-charts/commit/2189f927214f6511add0435b3cd1677134a50011))
+
+# [25.0.0](https://github.com/elastic/elastic-charts/compare/v24.6.0...v25.0.0) (2021-02-16)
+
+
+### Bug Fixes
+
+* group legend items by label and color ([#999](https://github.com/elastic/elastic-charts/issues/999)) ([5d32f23](https://github.com/elastic/elastic-charts/commit/5d32f23487cd458f87b007b841e8bf41bbeccd56))
+
+
+### Features
+
+* **axis:** log scale improvements and options ([#1014](https://github.com/elastic/elastic-charts/issues/1014)) ([0f52688](https://github.com/elastic/elastic-charts/commit/0f52688ba0f187b25d8790d394550abb14179225))
+
+
+### BREAKING CHANGES
+
+* The `LegendActionProps` and the `LegendColorPickerProps`, used to add actions and color picker through the legend now receive an array of `SeriesIdentifiers`
+
+# [24.6.0](https://github.com/elastic/elastic-charts/compare/v24.5.1...v24.6.0) (2021-02-15)
+
+
+### Bug Fixes
+
+* **legend:** width with scroll bar ([#1019](https://github.com/elastic/elastic-charts/issues/1019)) ([45bd0d5](https://github.com/elastic/elastic-charts/commit/45bd0d5322cd547d88d5a618e4ae6e2aa4ec989c))
+
+
+### Features
+
+* sort values in actions by closest to cursor ([#1023](https://github.com/elastic/elastic-charts/issues/1023)) ([e1da4e5](https://github.com/elastic/elastic-charts/commit/e1da4e578f619f19813c7c3172ca2c972fe188a2))
+* **axis:** small multiples axis improvements ([#1004](https://github.com/elastic/elastic-charts/issues/1004)) ([514466f](https://github.com/elastic/elastic-charts/commit/514466f557a5ef9a06ea35f0f091bcf33bfd8ae6))
+* **partition:** drilldown ([#995](https://github.com/elastic/elastic-charts/issues/995)) ([20bbdae](https://github.com/elastic/elastic-charts/commit/20bbdaeade4134fef0e0f486af3693bf348733d4))
+
+## [24.5.1](https://github.com/elastic/elastic-charts/compare/v24.5.0...v24.5.1) (2021-02-05)
+
+
+### Bug Fixes
+
+* missing exported types ([#1005](https://github.com/elastic/elastic-charts/issues/1005)) ([f6806de](https://github.com/elastic/elastic-charts/commit/f6806de28198e2a288039e78d585e3c8383722e7))
+
 # [24.5.0](https://github.com/elastic/elastic-charts/compare/v24.4.0...v24.5.0) (2021-01-30)
 
 

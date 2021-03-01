@@ -17,17 +17,15 @@
  * under the License.
  */
 
-import React, { RefObject } from 'react';
+import { RefObject } from 'react';
 
 import { ChartTypes } from '../..';
-import { Tooltip } from '../../../components/tooltip';
-import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
+import { BackwardRef, GlobalChartState, InternalChartState } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
-import { Partition } from '../renderer/canvas/partition';
-import { HighlighterFromHover } from '../renderer/dom/highlighter_hover';
-import { HighlighterFromLegend } from '../renderer/dom/highlighter_legend';
+import { render } from '../renderer/dom/layered_partition_chart';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getLegendItemsExtra } from './selectors/get_legend_items_extra';
 import { getLegendItemsLabels } from './selectors/get_legend_items_labels';
@@ -84,18 +82,11 @@ export class PartitionState implements InternalChartState {
   }
 
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
-    return (
-      <>
-        <Tooltip getChartContainerRef={containerRef} />
-        <Partition forwardStageRef={forwardStageRef} />
-        <HighlighterFromHover />
-        <HighlighterFromLegend />
-      </>
-    );
+    return render(containerRef, forwardStageRef);
   }
 
   getPointerCursor() {
-    return 'default';
+    return DEFAULT_CSS_CURSOR;
   }
 
   isTooltipVisible(globalState: GlobalChartState) {

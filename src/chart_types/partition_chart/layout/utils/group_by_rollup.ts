@@ -18,9 +18,9 @@
  */
 
 import { CategoryKey } from '../../../../common/category';
+import { Relation } from '../../../../common/text_utils';
 import { LegendPath } from '../../../../state/actions/legend';
 import { Datum, ValueAccessor } from '../../../../utils/common';
-import { Relation } from '../types/types';
 
 export const AGGREGATE_KEY = 'value';
 export const STATISTICS_KEY = 'statistics';
@@ -31,11 +31,11 @@ export const PARENT_KEY = 'parent';
 export const SORT_INDEX_KEY = 'sortIndex';
 export const PATH_KEY = 'path';
 
-interface Statistics {
+export interface Statistics {
   globalAggregate: number;
 }
 
-interface NodeDescriptor {
+export interface NodeDescriptor {
   [AGGREGATE_KEY]: number;
   [DEPTH_KEY]: number;
   [STATISTICS_KEY]: Statistics;
@@ -62,7 +62,7 @@ export const HIERARCHY_ROOT_KEY: Key = '__root_key__';
 
 /** @public */
 export type PrimitiveValue = string | number | null; // there could be more but sufficient for now
-type Key = CategoryKey;
+export type Key = CategoryKey;
 export type Sorter = (a: number, b: number) => number;
 type NodeSorter = (a: ArrayEntry, b: ArrayEntry) => number;
 
@@ -108,6 +108,8 @@ export function groupByRollup(
     identity: () => any;
   },
   factTable: Relation,
+  drilldown: boolean,
+  drilldownSelection: CategoryKey[],
 ): HierarchyOfMaps {
   const statistics: Statistics = {
     globalAggregate: NaN,
@@ -115,26 +117,35 @@ export function groupByRollup(
   const reductionMap: HierarchyOfMaps = factTable.reduce((p: HierarchyOfMaps, n, index) => {
     const keyCount = keyAccessors.length;
     let pointer: HierarchyOfMaps = p;
-    keyAccessors.forEach((keyAccessor, i) => {
-      const key: Key = keyAccessor(n, index);
-      const last = i === keyCount - 1;
-      const node = pointer.get(key);
-      const inputIndices = node?.[INPUT_KEY] ?? [];
-      const childrenMap = node?.[CHILDREN_KEY] ?? new Map();
-      const aggregate = node?.[AGGREGATE_KEY] ?? identity();
-      const reductionValue = reducer(aggregate, valueAccessor(n));
-      pointer.set(key, {
-        [AGGREGATE_KEY]: reductionValue,
-        [STATISTICS_KEY]: statistics,
-        [INPUT_KEY]: [...inputIndices, index],
-        [DEPTH_KEY]: i,
-        ...(!last && { [CHILDREN_KEY]: childrenMap }),
+    keyAccessors
+      .filter(
+        () =>
+          !drilldown ||
+          keyAccessors
+            .slice(0, drilldownSelection.length)
+            .map((keyAccessor) => keyAccessor(n, index))
+            .join(' | ') === drilldownSelection.slice(0, drilldownSelection.length).join(' | '),
+      )
+      .forEach((keyAccessor, i) => {
+        const key: Key = keyAccessor(n, index);
+        const last = i === keyCount - 1;
+        const node = pointer.get(key);
+        const inputIndices = node?.[INPUT_KEY] ?? [];
+        const childrenMap = node?.[CHILDREN_KEY] ?? new Map();
+        const aggregate = node?.[AGGREGATE_KEY] ?? identity();
+        const reductionValue = reducer(aggregate, valueAccessor(n));
+        pointer.set(key, {
+          [AGGREGATE_KEY]: reductionValue,
+          [STATISTICS_KEY]: statistics,
+          [INPUT_KEY]: [...inputIndices, index],
+          [DEPTH_KEY]: i,
+          ...(!last && { [CHILDREN_KEY]: childrenMap }),
+        });
+        if (childrenMap) {
+          // will always be true except when exiting from forEach, ie. upon encountering the leaf node
+          pointer = childrenMap;
+        }
       });
-      if (childrenMap) {
-        // will always be true except when exiting from forEach, ie. upon encountering the leaf node
-        pointer = childrenMap;
-      }
-    });
     return p;
   }, new Map());
   if (reductionMap.get(HIERARCHY_ROOT_KEY) !== undefined) {

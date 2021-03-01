@@ -27,6 +27,7 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { Spec } from '../../../../specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
+import { ContinuousDomain, Range } from '../../../../utils/domain';
 import { SpecId } from '../../../../utils/ids';
 import { PointShape } from '../../../../utils/themes/theme';
 import { getSeriesIndex, XYChartSeriesIdentifier } from '../../utils/series';
@@ -39,7 +40,6 @@ import {
   isHistogramModeEnabled,
   setBarSeriesAccessors,
   getCustomSeriesColors,
-  updateDeselectedDataSeries,
 } from './utils';
 
 function getGeometriesFromSpecs(specs: Spec[]) {
@@ -84,13 +84,15 @@ describe('Chart State utils', () => {
       minInterval: 1,
       type: 'xDomain',
     });
-    expect(domains.yDomain).toEqual([
+    expect(domains.yDomains).toEqual([
       {
         domain: [0, 10],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
       {
         domain: [0, 10],
@@ -98,6 +100,8 @@ describe('Chart State utils', () => {
         groupId: 'group2',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
     ]);
     expect(domains.formattedDataSeries).toMatchSnapshot();
@@ -132,13 +136,15 @@ describe('Chart State utils', () => {
       minInterval: 1,
       type: 'xDomain',
     });
-    expect(domains.yDomain).toEqual([
+    expect(domains.yDomains).toEqual([
       {
         domain: [0, 5],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
       {
         domain: [0, 9],
@@ -146,6 +152,8 @@ describe('Chart State utils', () => {
         groupId: 'group2',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
     ]);
     expect(domains.formattedDataSeries.filter(({ isStacked }) => isStacked)).toMatchSnapshot();
@@ -177,36 +185,6 @@ describe('Chart State utils', () => {
     expect(getSeriesIndex(deselectedSeries, dataSeriesValuesA)).toBe(0);
     expect(getSeriesIndex(deselectedSeries, dataSeriesValuesC)).toBe(-1);
     expect(getSeriesIndex([], dataSeriesValuesA)).toBe(-1);
-  });
-  it('should update a list of SeriesCollectionValue given a selected SeriesCollectionValue item', () => {
-    const dataSeriesValuesA: XYChartSeriesIdentifier = {
-      specId: 'a',
-      yAccessor: 'y1',
-      splitAccessors: new Map(),
-      seriesKeys: ['a', 'b', 'c'],
-      key: 'a',
-    };
-    const dataSeriesValuesB: XYChartSeriesIdentifier = {
-      specId: 'b',
-      yAccessor: 'y1',
-      splitAccessors: new Map(),
-      seriesKeys: ['a', 'b', 'c'],
-      key: 'b',
-    };
-    const dataSeriesValuesC: XYChartSeriesIdentifier = {
-      specId: 'a',
-      yAccessor: 'y1',
-      splitAccessors: new Map(),
-      seriesKeys: ['a', 'b', 'd'],
-      key: 'd',
-    };
-    const selectedSeries = [dataSeriesValuesA, dataSeriesValuesB];
-    const addedSelectedSeries = [dataSeriesValuesA, dataSeriesValuesB, dataSeriesValuesC];
-    const removedSelectedSeries = [dataSeriesValuesB];
-
-    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesC)).toEqual(addedSelectedSeries);
-    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesA)).toEqual(removedSelectedSeries);
-    expect(updateDeselectedDataSeries([], dataSeriesValuesA)).toEqual([dataSeriesValuesA]);
   });
 
   describe('getCustomSeriesColors', () => {
@@ -731,8 +709,8 @@ describe('Chart State utils', () => {
   });
 
   test('can compute xScaleOffset dependent on histogram mode', () => {
-    const domain = [0, 10];
-    const range: [number, number] = [0, 100];
+    const domain: ContinuousDomain = [0, 10];
+    const range: Range = [0, 100];
     const bandwidth = 10;
     const barsPadding = 0.5;
     const scale = new ScaleContinuous(

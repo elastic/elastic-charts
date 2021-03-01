@@ -51,7 +51,14 @@ const data = [
 const numberOptions: NumberTypeKnobOptions = {
   min: 0,
   max: 1,
-  step: 0.01,
+  step: 0.05,
+};
+const colorMap: Record<string, string> = {
+  Rain: 'blue',
+  Sunny: 'orange',
+  Cloudy: 'gray',
+  Clear: 'lightblue',
+  Default: 'red',
 };
 
 export const Example = () => {
@@ -61,9 +68,16 @@ export const Example = () => {
 
   return (
     <Chart className="story-chart">
-      <Settings theme={{ scales: { barsPadding, histogramPadding } }} />
+      <Settings theme={{ scales: { barsPadding, histogramPadding } }} showLegend />
       <Axis id="x" position={Position.Bottom} />
-      <Axis id="y" title="Count" position={Position.Left} />
+      <Axis
+        id="y"
+        title="Humidity %"
+        position={Position.Left}
+        labelFormat={(label) => {
+          return `${label} %`;
+        }}
+      />
 
       <GroupBy id="splitId" by={(_, datum) => datum.split} sort="dataIndex" />
       <SmallMultiples splitHorizontally="splitId" />
@@ -74,6 +88,10 @@ export const Example = () => {
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         data={data}
+        splitSeriesAccessors={['split']}
+        color={(seriesIdentifier) => {
+          return colorMap[seriesIdentifier.splitAccessors.get('split') ?? 'Default'];
+        }}
       />
     </Chart>
   );

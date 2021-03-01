@@ -47,21 +47,21 @@ const data = dg.generateGroupedSeries(numOfDays, 6, 'metric ').map((d) => {
 });
 
 export const Example = () => {
-  const showLegend = boolean('Show Legend', false);
+  const showLegend = boolean('Show Legend', true);
   const onElementClick = action('onElementClick');
   return (
     <Chart className="story-chart">
       <Settings onElementClick={onElementClick} showLegend={showLegend} />
       <Axis
         id="time"
-        title="timestamp"
+        title="Timestamp"
         position={Position.Bottom}
         gridLine={{ visible: false }}
         tickFormat={timeFormatter(niceTimeFormatByDay(numOfDays))}
       />
       <Axis
         id="y"
-        title="metric"
+        title="Metric"
         position={Position.Left}
         gridLine={{ visible: false }}
         tickFormat={(d) => d.toFixed(2)}

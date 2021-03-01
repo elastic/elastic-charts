@@ -19,12 +19,11 @@
 
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
-import { GroupBySpec, SortSeriesByConfig } from '../../../../specs';
+import { CustomXDomain, SortSeriesByConfig } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
-import { Domain } from '../../../../utils/domain';
 import {
   PointGeometry,
   BarGeometry,
@@ -50,18 +49,10 @@ import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../../utils/scales';
-import {
-  DataSeries,
-  getSeriesIndex,
-  getFormattedDataSeries,
-  getDataSeriesFromSpecs,
-  XYChartSeriesIdentifier,
-  getSeriesKey,
-} from '../../utils/series';
+import { DataSeries, getFormattedDataSeries, getDataSeriesFromSpecs, getSeriesKey } from '../../utils/series';
 import {
   AxisSpec,
   BasicSeriesSpec,
-  DomainRange,
   HistogramModeAlignment,
   HistogramModeAlignments,
   isAreaSeriesSpec,
@@ -74,30 +65,10 @@ import {
   YDomainRange,
 } from '../../utils/specs';
 import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales';
+import { SmallMultiplesGroupBy } from '../selectors/get_specs';
 import { isHorizontalRotation } from './common';
 import { getSpecsById, getAxesSpecForSpecId, getSpecDomainGroupId } from './spec';
 import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform } from './types';
-
-/**
- * Adds or removes series from array or series
- * @param series
- * @param target
- * @internal
- */
-export function updateDeselectedDataSeries(
-  series: XYChartSeriesIdentifier[],
-  target: XYChartSeriesIdentifier,
-): XYChartSeriesIdentifier[] {
-  const seriesIndex = getSeriesIndex(series, target);
-  const updatedSeries = series ? [...series] : [];
-
-  if (seriesIndex > -1) {
-    updatedSeries.splice(seriesIndex, 1);
-  } else {
-    updatedSeries.push(target);
-  }
-  return updatedSeries;
-}
 
 /**
  * Return map association between `seriesKey` and only the custom colors string
@@ -110,7 +81,14 @@ export function getCustomSeriesColors(dataSeries: DataSeries[]): Map<SeriesKey, 
 
   dataSeries.forEach((ds) => {
     const { spec, specId } = ds;
-    const seriesKey = getSeriesKey(ds, ds.groupId);
+    const dataSeriesKey = {
+      specId: ds.specId,
+      yAccessor: ds.yAccessor,
+      splitAccessors: ds.splitAccessors,
+      smVerticalAccessorValue: undefined,
+      smHorizontalAccessorValue: undefined,
+    };
+    const seriesKey = getSeriesKey(dataSeriesKey, ds.groupId);
 
     if (!spec || !spec.color) {
       return;
@@ -153,9 +131,9 @@ export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   customYDomainsByGroupId: Map<GroupId, YDomainRange> = new Map(),
   deselectedDataSeries: SeriesIdentifier[] = [],
-  customXDomain?: DomainRange | Domain,
+  customXDomain?: CustomXDomain,
   orderOrdinalBinsBy?: OrderBy,
-  smallMultiples?: { vertical?: GroupBySpec; horizontal?: GroupBySpec },
+  smallMultiples?: SmallMultiplesGroupBy,
   sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
 ): SeriesDomainsAndData {
   const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
@@ -178,8 +156,8 @@ export function computeSeriesDomains(
     seriesSortFn,
   );
 
-  // let's compute the yDomain after computing all stacked values
-  const yDomain = mergeYDomain(formattedDataSeries, customYDomainsByGroupId);
+  // let's compute the yDomains after computing all stacked values
+  const yDomains = mergeYDomain(formattedDataSeries, customYDomainsByGroupId);
 
   // sort small multiples values
   const horizontalPredicate = smallMultiples?.horizontal?.sort ?? Predicate.DataIndex;
@@ -190,7 +168,7 @@ export function computeSeriesDomains(
 
   return {
     xDomain,
-    yDomain,
+    yDomains,
     smHDomain,
     smVDomain,
     formattedDataSeries,
@@ -200,7 +178,7 @@ export function computeSeriesDomains(
 /** @internal */
 export function computeSeriesGeometries(
   seriesSpecs: BasicSeriesSpec[],
-  { xDomain, yDomain, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
+  { xDomain, yDomains, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
   seriesColorMap: Map<SeriesKey, Color>,
   chartTheme: Theme,
   chartRotation: Rotation,
@@ -235,7 +213,7 @@ export function computeSeriesGeometries(
   const { horizontal, vertical } = smallMultiplesScales;
 
   const yScales = computeYScales({
-    yDomains: yDomain,
+    yDomains,
     range: [isHorizontalRotation(chartRotation) ? vertical.bandwidth : horizontal.bandwidth, 0],
   });
 
@@ -397,8 +375,16 @@ function renderGeometries(
       top: topPos,
       left: leftPos,
     };
+    const dataSeriesKey = getSeriesKey(
+      {
+        specId: ds.specId,
+        yAccessor: ds.yAccessor,
+        splitAccessors: ds.splitAccessors,
+      },
+      ds.groupId,
+    );
 
-    const color = seriesColorsMap.get(ds.key) || defaultColor;
+    const color = seriesColorsMap.get(dataSeriesKey) || defaultColor;
 
     if (isBarSeriesSpec(spec)) {
       const key = getBarIndexKey(ds, enableHistogramMode);

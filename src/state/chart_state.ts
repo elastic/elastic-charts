@@ -22,9 +22,9 @@ import React, { RefObject } from 'react';
 import { ChartTypes } from '../chart_types';
 import { GoalState } from '../chart_types/goal_chart/state/chart_state';
 import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
-import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
+import { CategoryKey } from '../common/category';
 import { LegendItem, LegendItemExtraValues } from '../common/legend';
 import { SeriesIdentifier, SeriesKey } from '../common/series_id';
 import { TooltipAnchorPosition, TooltipInfo } from '../components/tooltip/types';
@@ -36,7 +36,7 @@ import { Point } from '../utils/point';
 import { StateActions } from './actions';
 import { CHART_RENDERED } from './actions/chart';
 import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
-import { SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR, CLEAR_TEMPORARY_COLORS } from './actions/colors';
+import { CLEAR_TEMPORARY_COLORS, SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR } from './actions/colors';
 import { DOMElement } from './actions/dom_element';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
 import { LegendPath } from './actions/legend';
@@ -182,10 +182,10 @@ export interface PointerStates {
 /** @internal */
 export interface InteractionsState {
   pointer: PointerStates;
-  highlightedLegendItemKey: PrimitiveValue;
   highlightedLegendPath: LegendPath;
   deselectedDataSeries: SeriesIdentifier[];
   hoveredDOMElement: DOMElement | null;
+  drilldown: CategoryKey[];
 }
 
 /** @internal */
@@ -271,10 +271,10 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
   internalChartState: null,
   interactions: {
     pointer: getInitialPointerState(),
-    highlightedLegendItemKey: null,
     highlightedLegendPath: [],
     deselectedDataSeries: [],
     hoveredDOMElement: null,
+    drilldown: [],
   },
   externalEvents: {
     pointer: null,
@@ -371,27 +371,28 @@ export const chartStoreReducer = (chartId: string) => {
             ...state.colors,
             temporary: {
               ...state.colors.temporary,
-              [action.key]: action.color,
+              ...action.keys.reduce<Record<string, Color | null>>((acc, curr) => {
+                acc[curr] = action.color;
+                return acc;
+              }, {}),
             },
           },
         };
       case SET_PERSISTED_COLOR:
-        const { [action.key]: removedPersistedColor, ...otherPersistentColors } = state.colors.persisted;
         return {
           ...state,
           colors: {
             ...state.colors,
-            persisted: {
-              ...otherPersistentColors,
-              ...(action.color && { [action.key]: action.color }),
-            },
+            persisted: Object.fromEntries(
+              Object.entries(state.colors.persisted).filter(([key]) => !action.keys.includes(key)),
+            ),
           },
         };
       default:
         return getInternalIsInitializedSelector(state) === InitStatus.Initialized
           ? {
               ...state,
-              interactions: interactionsReducer(state.interactions, action, getLegendItemsSelector(state)),
+              interactions: interactionsReducer(state, action, getLegendItemsSelector(state)),
             }
           : state;
     }
@@ -410,17 +411,14 @@ function chartTypeFromSpecs(specs: SpecList): ChartTypes | null {
   return nonGlobalTypes[0];
 }
 
+const constructors: Record<ChartTypes, () => InternalChartState | null> = {
+  [ChartTypes.Goal]: () => new GoalState(),
+  [ChartTypes.Partition]: () => new PartitionState(),
+  [ChartTypes.XYAxis]: () => new XYAxisChartState(),
+  [ChartTypes.Heatmap]: () => new HeatmapState(),
+  [ChartTypes.Global]: () => null,
+}; // with no default, TS signals if a new chart type isn't added here too
+
 function newInternalState(chartType: ChartTypes | null): InternalChartState | null {
-  switch (chartType) {
-    case ChartTypes.Goal:
-      return new GoalState();
-    case ChartTypes.Partition:
-      return new PartitionState();
-    case ChartTypes.XYAxis:
-      return new XYAxisChartState();
-    case ChartTypes.Heatmap:
-      return new HeatmapState();
-    default:
-      return null;
-  }
+  return chartType ? constructors[chartType]() : null;
 }
