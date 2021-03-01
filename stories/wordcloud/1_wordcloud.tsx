@@ -38,6 +38,10 @@ const palettes = {
     const level = getRandomNumber(0, 200);
     return `rgb(${level},${level},${level})`;
   },
+  weight: (d) => {
+    const level = (1 - d.weight**15) * 200;
+    return `rgb(${level},${level},${level})`;
+  },
   euiLight: (d, i) => {
     return euiPalettes.echPaletteForLightBackground.colors[i % euiPalettes.echPaletteForLightBackground.colors.length];
   },
