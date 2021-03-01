@@ -23,45 +23,45 @@ import React from 'react';
 import { Chart, Settings, Wordcloud } from '../../src';
 import { WordModel } from '../../src/chart_types/wordcloud/layout/types/viewmodel_types';
 import { getRandomNumberGenerator } from '../../src/mocks/utils';
+import { palettes as euiPalettes } from '../../src/utils/themes/colors';
 
 const text =
-  'Webtwo ipsum sifteo twones chegg lijit meevee spotify, joukuu wakoopa greplin. Sclipo octopart wufoo, balihoo. Kiko groupon fleck revver blyve joyent dogster, zoodles zooomr scribd dogster mog. Zinch orkut jabber trulia, sclipo. Chumby imvu rovio ning zoho akismet napster, kippt zillow mzinga zoho.\n' +
-  '\n' +
-  'Zoho cotweet cloudera zinch spock divvyshot edmodo convore, geni palantir geni woopra divvyshot. Zoho imeem convore orkut oooj foodzie airbnb, jabber rovio klout spotify dropio. Insala octopart wikia xobni airbnb quora mzinga elgg, mog quora blekko boxbe plickers zlio. Sococo chumby trulia ebay sococo zoho lijit, spock nuvvo omgpop heekya koofers. Kazaa voki chegg napster mozy koofers, meebo heroku empressr foodzie.\n' +
-  '\n' +
-  'Meevee movity fleck waze palantir glogster ebay, scribd chegg zinch spotify. Zinch vimeo joukuu insala jaiku squidoo, kaboodle quora shopify. Imeem plickers zapier ning eskobo movity omgpop zillow, voxy knewton napster kippt quora gooru. Whrrl chegg klout hulu greplin, dogster balihoo yuntaa. Oovoo ebay kosmix eduvant meebo ning, akismet zapier meevee. Oooooc blekko cotweet nuvvo sclipo zinch movity kaboodle, zooomr insala sclipo loopt hojoki qeyno. Airbnb palantir skype, etsy.\n' +
-  '\n' +
-  'Joost cotweet knewton bubbli, unigo twones. Akismet skype scribd vimeo, skype omgpop kno imvu, shopify dropio. Jajah heroku xobni glogster twones jabber rovio, jaiku blippy wikia jumo oooooc. Jumo lijit tumblr jibjab zooomr sifteo hojoki mog reddit, jabber twitter zinch doostang wakoopa ebay. Yoono klout weebly geni blippy, twitter kno yoono edmodo, joyent joukuu mzinga.\n' +
-  '\n' +
+  'Webtwo ipsum sifteo twones chegg lijit meevee spotify, joukuu wakoopa greplin. Sclipo octopart wufoo, balihoo. Kiko groupon fleck revver blyve joyent dogster, zoodles zooomr scribd dogster mog. Zinch orkut jabber trulia, sclipo. Chumby imvu rovio ning zoho akismet napster, kippt zillow mzinga zoho. ' +
+  'Zoho cotweet cloudera zinch spock divvyshot edmodo convore, geni palantir geni woopra divvyshot. Zoho imeem convore orkut oooj foodzie airbnb, jabber rovio klout spotify dropio. Insala octopart wikia xobni airbnb quora mzinga elgg, mog quora blekko boxbe plickers zlio. Sococo chumby trulia ebay sococo zoho lijit, spock nuvvo omgpop heekya koofers. Kazaa voki chegg napster mozy koofers, meebo heroku empressr foodzie. ' +
+  'Meevee movity fleck waze palantir glogster ebay, scribd chegg zinch spotify. Zinch vimeo joukuu insala jaiku squidoo, kaboodle quora shopify. Imeem plickers zapier ning eskobo movity omgpop zillow, voxy knewton napster kippt quora gooru. Whrrl chegg klout hulu greplin, dogster balihoo yuntaa. Oovoo ebay kosmix eduvant meebo ning, akismet zapier meevee. Oooooc blekko cotweet nuvvo sclipo zinch movity kaboodle, zooomr insala sclipo loopt hojoki qeyno. Airbnb palantir skype, etsy. ' +
+  'Joost cotweet knewton bubbli, unigo twones. Akismet skype scribd vimeo, skype omgpop kno imvu, shopify dropio. Jajah heroku xobni glogster twones jabber rovio, jaiku blippy wikia jumo oooooc. Jumo lijit tumblr jibjab zooomr sifteo hojoki mog reddit, jabber twitter zinch doostang wakoopa ebay. Yoono klout weebly geni blippy, twitter kno yoono edmodo, joyent joukuu mzinga. ' +
   'zappos. Ning babblely trulia zooomr vimeo, zimbra plaxo. Zooomr blyve stypi joukuu imvu chumby voxy, ideeli omgpop elgg geni qeyno joyent, loopt reddit eskobo flickr odeo. Heekya plickers wesabe lijit kno, hojoki convore.';
 
+const palettes = {
+  redBlue: () => `rgb(${getRandomNumber(0, 255)},${0},${getRandomNumber(0, 255)})`,
+  greyScale: () => {
+    const level = getRandomNumber(0, 200);
+    return `rgb(${level},${level},${level})`;
+  },
+  euiLight: (d, i) => {
+    return euiPalettes.echPaletteForLightBackground.colors[i % euiPalettes.echPaletteForLightBackground.colors.length];
+  },
+  euiColorBlind: (d, i) => {
+    return euiPalettes.echPaletteColorBlind.colors[i % euiPalettes.echPaletteColorBlind.colors.length];
+  },
+};
+
 const getRandomNumber = getRandomNumberGenerator();
-const data: WordModel[] = text
-  .replace(/[,.]/g, '')
-  .toLowerCase()
-  .split(' ')
-  .filter((d, index, a) => a.indexOf(d) === index)
-  .map(function (d) {
-    return {
-      text: d,
-      weight: getRandomNumber(0, 1, 20),
-      color: `rgb(${getRandomNumber(0, 255)},${0},${getRandomNumber(0, 255)})`,
-    };
-  });
 
 const configs = {
   edit: {
-    startAngle: -45,
-    endAngle: 45,
-    angleCount: 2,
+    startAngle: -90,
+    endAngle: 90,
+    angleCount: 16,
     padding: 0,
-    exponent: 3,
+    exponent: 15,
     fontWeight: 100,
-    minFontSize: 10,
-    maxFontSize: 90,
-    fontFamily: 'Arial Narrow',
-    fontStyle: 'normal',
+    minFontSize: 16,
+    maxFontSize: 50,
+    fontFamily: 'Luminari',
+    fontStyle: 'italic',
     shape: 'archimedean',
+    palette: 'greyScale',
   },
   single: {
     startAngle: 0,
@@ -75,6 +75,7 @@ const configs = {
     fontFamily: 'Arial',
     fontStyle: 'normal',
     shape: 'rectangular',
+    palette: 'greyScale',
   },
   rightAngled: {
     startAngle: 0,
@@ -88,19 +89,21 @@ const configs = {
     fontFamily: 'Arial Narrow',
     fontStyle: 'normal',
     shape: 'rectangular',
+    palette: 'greyScale',
   },
   multiple: {
     startAngle: -90,
     endAngle: 90,
-    angleCount: 12,
+    angleCount: 16,
     padding: 0,
-    exponent: 7,
+    exponent: 15,
     fontWeight: 100,
-    minFontSize: 17,
-    maxFontSize: 79,
+    minFontSize: 16,
+    maxFontSize: 50,
     fontFamily: 'Luminari',
     fontStyle: 'italic',
     shape: 'archimedean',
+    palette: 'greyScale',
   },
   squareWords: {
     startAngle: -45,
@@ -114,6 +117,7 @@ const configs = {
     fontFamily: 'Arial Narrow',
     fontStyle: 'normal',
     shape: 'archimedean',
+    palette: 'redBlue',
   },
   smallWaves: {
     startAngle: -15,
@@ -127,8 +131,30 @@ const configs = {
     fontFamily: 'Impact',
     fontStyle: 'normal',
     shape: 'rectangular',
+    palette: 'greyScale',
   },
 };
+
+const rawData = text
+  .replace(/[,.]/g, '')
+  .toLowerCase()
+  .split(' ')
+  .filter((d, index, a) => a.indexOf(d) === index)
+  .map(function (d) {
+    return {
+      text: d,
+      weight: getRandomNumber(0, 1, 20),
+    };
+  });
+
+function data(text: string, paletteName: string): WordModel[] {
+  return rawData.map(function (d, i) {
+    return {
+      ...d,
+      color: palettes[paletteName](d, i),
+    };
+  });
+}
 
 export const Example = () => {
   const configName = select(
@@ -175,6 +201,13 @@ export const Example = () => {
   const fontStyle = template
     ? startConfig.fontStyle
     : select('fontStyle', { normal: 'normal', italic: 'italic' }, startConfig.fontStyle);
+  const palette = template
+    ? startConfig.palette
+    : select(
+        'palette',
+        Object.keys(palettes).reduce((p, k) => ({ ...p, [k]: k }), {}),
+        startConfig.palette,
+      );
 
   return (
     <Chart className="story-chart">
@@ -193,7 +226,7 @@ export const Example = () => {
         maxFontSize={maxFontSize}
         spiral={spiral}
         exponent={exponent}
-        data={data}
+        data={data(text, palette)}
       />
     </Chart>
   );
