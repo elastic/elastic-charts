@@ -72,11 +72,11 @@ exports[`Chart should render the legend name test 1`] = `
                   </Crosshair>
                 </Connect(Crosshair)>
                 <Connect(XYChart) forwardStageRef={{...}}>
-                  <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} dataTable={{...}} generatedDescription=\\"There is one series in this chart Each series has 3 data points. \\" onChartRendered={[Function (anonymous)]}>
+                  <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} dataTable={{...}} generatedDescription=\\"  The  chart has 1 series in it. There is one bar series in this chart. This chart does not have axes.\\" onChartRendered={[Function (anonymous)]}>
                     <figure>
                       <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\" aria-labelledby={[undefined]} aria-describedby=\\"\\" />
                       <figcaption className=\\"screen-reader\\">
-                        There is one series in this chart Each series has 3 data points. 
+                          The  chart has 1 series in it. There is one bar series in this chart. This chart does not have axes.
                       </figcaption>
                     </figure>
                   </XYChart>
@@ -107,48 +107,6 @@ exports[`Chart should render the legend name test 1`] = `
                 <Connect(BrushTool)>
                   <BrushTool initialized={true} projectionContainer={{...}} mainProjectionArea={{...}} isBrushAvailable={false} isBrushing={false} brushArea={{...}} zIndex={0} dispatch={[Function: dispatch]} />
                 </Connect(BrushTool)>
-                <Connect(ScreenReaderDataTableComponent)>
-                  <ScreenReaderDataTableComponent data={{...}} dispatch={[Function: dispatch]}>
-                    <table className=\\"screen-reader\\">
-                      <tbody>
-                        <tr>
-                          <th scope=\\"row\\" />
-                          <th scope=\\"row\\">
-                            Series Number of total 1
-                             
-                          </th>
-                          <th scope=\\"row\\">
-                             
-                            x
-                             
-                          </th>
-                          <th scope=\\"row\\">
-                             
-                            y1
-                             
-                          </th>
-                          <th scope=\\"row\\">
-                             
-                            initialY1
-                             
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope=\\"col\\" />
-                          <td>
-                            1
-                          </td>
-                          <td>
-                            2
-                          </td>
-                          <td>
-                            2
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </ScreenReaderDataTableComponent>
-                </Connect(ScreenReaderDataTableComponent)>
               </div>
             </ChartContainer>
           </Connect(ChartContainer)>

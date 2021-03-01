@@ -616,7 +616,7 @@ function parseDataForValuesStacked(d: DataSeries) {
 
 function parseDataForKeys(d: DataSeries) {
   if (!d) return [];
-  const keysAndValues = Object.entries(d.data[0].datum);
+  const keysAndValues = Object.entries(d.data[0]);
   const keys = [];
   for (let i = 0; i < keysAndValues.length; i++) {
     if (keysAndValues[i][0] !== 'datum' && keysAndValues[i][1] !== null && keysAndValues[i][1] !== undefined) {
@@ -641,17 +641,17 @@ function parseDataForValues(d: DataSeries) {
 export function computeScreenReaderData(
   data: DataSeries[],
   xDomain: XDomain | undefined,
-  yDomains: YDomain[] | undefined,
+  yDomains: YDomain[],
   axisSpecs: AxisSpec[] | undefined,
 ): ScreenReaderData[] {
   const formattedScreenReaderDataArray = [];
-  const yDomainsFormatted = {};
-  for (let i = 0; i < yDomains?.length; i++) {
+  const yDomainsFormatted: { [s: string]: number[] } = {};
+  for (let i = 0; i < yDomains.length; i++) {
     if (!yDomainsFormatted.hasOwnProperty(yDomains[i].groupId)) {
       yDomainsFormatted[yDomains[i].groupId] = yDomains[i].domain;
     }
   }
-  const axesTitles = axisSpecs?.map((val) => [val.title, val.groupId]);
+  const axesTitles = axisSpecs?.map((val) => [val.title, val.groupId]) || [];
   for (let i = 0; i < data.length; i++) {
     const current = {
       seriesName: data[i].spec.name,

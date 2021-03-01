@@ -19,7 +19,6 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable jest/no-conditional-expect */
 
-import { ScreenReaderData } from '../../../../components/screen_reader_data_table/screen_reader_data_table';
 import { MockDataSeries } from '../../../../mocks/series/series';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
@@ -27,7 +26,7 @@ import { SeededDataGenerator } from '../../../../mocks/utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { Spec } from '../../../../specs';
-import { BARCHART_1Y0G, BARCHART_1Y1G, BARCHART_2Y0G } from '../../../../utils/data_samples/test_dataset';
+import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
 import { ContinuousDomain, Range } from '../../../../utils/domain';
 import { SpecId } from '../../../../utils/ids';
 import { PointShape } from '../../../../utils/themes/theme';
@@ -41,7 +40,6 @@ import {
   isHistogramModeEnabled,
   setBarSeriesAccessors,
   getCustomSeriesColors,
-  computeScreenReaderData,
 } from './utils';
 
 function getGeometriesFromSpecs(specs: Spec[]) {
@@ -846,90 +844,5 @@ describe('Chart State utils', () => {
     seriesMap.set(bar2.id, bar2);
     setBarSeriesAccessors(isHistogramEnabled, seriesMap);
     expect(bar2.stackAccessors).toEqual(['y', 'bar']);
-  });
-});
-
-describe('compute data for screen reader table', () => {
-  test('computes screen reader table data', () => {
-    const barSpec1 = MockSeriesSpec.bar({ id: '', data: BARCHART_1Y0G });
-    const store = MockStore.default();
-    MockStore.addSpecs([barSpec1], store);
-    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
-    const expected: ScreenReaderData[] = [
-      {
-        seriesName: undefined,
-        seriesType: 'bar',
-        dataKey: ['x', 'y'],
-        dataValue: [
-          [0, 1],
-          [1, 2],
-          [2, 10],
-          [3, 6],
-        ],
-        xScaleType: 'ordinal',
-        yScaleType: 'linear',
-        splitAccessor: false,
-      },
-    ];
-    expect(expected).toEqual(computeScreenReaderData(formattedDataSeries));
-  });
-  test('compute empty data', () => {
-    const barSpec1 = MockSeriesSpec.bar({ id: '', data: [] });
-    const store = MockStore.default();
-    MockStore.addSpecs([barSpec1], store);
-    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
-    const result = computeScreenReaderData(formattedDataSeries);
-    const expected: ScreenReaderData[] = [];
-    expect(expected).toEqual(result);
-  });
-  test('compute with two y axes', () => {
-    const barSpec1 = MockSeriesSpec.bar({ id: '', data: BARCHART_2Y0G });
-    const store = MockStore.default();
-    MockStore.addSpecs([barSpec1], store);
-    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
-    const expected: ScreenReaderData[] = [
-      {
-        seriesName: undefined,
-        seriesType: 'bar',
-        dataKey: ['x', 'y1', 'y2'],
-        dataValue: [
-          [0, 1, 3],
-          [1, 2, 7],
-          [2, 1, 2],
-          [3, 6, 10],
-        ],
-        xScaleType: 'ordinal',
-        yScaleType: 'linear',
-        splitAccessor: false,
-      },
-    ];
-    expect(expected).toEqual(computeScreenReaderData(formattedDataSeries));
-  });
-  test('compute with g accessor', () => {
-    const barSpec1 = MockSeriesSpec.bar({ id: '', data: BARCHART_1Y1G });
-    const store = MockStore.default();
-    MockStore.addSpecs([barSpec1], store);
-    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
-    const expected: ScreenReaderData[] = [
-      {
-        seriesName: undefined,
-        seriesType: 'bar',
-        dataKey: ['x', 'g', 'y'],
-        dataValue: [
-          [0, 'a', 1],
-          [0, 'b', 2],
-          [1, 'a', 2],
-          [1, 'b', 3],
-          [2, 'a', 3],
-          [2, 'b', 4],
-          [3, 'a', 4],
-          [3, 'b', 5],
-        ],
-        xScaleType: 'ordinal',
-        yScaleType: 'linear',
-        splitAccessor: false,
-      },
-    ];
-    expect(expected).toEqual(computeScreenReaderData(formattedDataSeries));
   });
 });

@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import React from 'react';
 import { connect } from 'react-redux';
 
 import { ScaleType } from '../../scales/constants';
@@ -36,8 +35,8 @@ export interface ScreenReaderData {
   xScaleType: ScaleType;
   yScaleType: ScaleType;
   xDomain: ContinuousDomain | OrdinalDomain | undefined;
-  yDomains: any;
-  axesTitles: (string | undefined)[][] | undefined;
+  yDomains: { [s: string]: number[] };
+  axesTitles: (string | undefined)[][];
 }
 
 export interface ScreenReaderDataTableStateProps {
@@ -45,7 +44,7 @@ export interface ScreenReaderDataTableStateProps {
 }
 
 /** helper function to read out each number  and type of series */
-const readOutSeriesCountandType = (s: { [s: string]: unknown } | ArrayLike<unknown>) => {
+const readOutSeriesCountandType = (s: { [s: string]: number } | ArrayLike<number>) => {
   let returnString = '';
   for (let i = 0; i < Object.entries(s).length; i++) {
     const seriesT = Object.entries(s)[i][0];
@@ -56,121 +55,91 @@ const readOutSeriesCountandType = (s: { [s: string]: unknown } | ArrayLike<unkno
   return returnString;
 };
 
-const axesWithTitles = (titles: string | any[] | undefined, domains: { [x: string]: any }) => {
+/** helper function to read out each title of the axes */
+const axesWithTitles = (
+  titles: (undefined | string)[][],
+  domains: { [x: string]: number[] | string[] },
+  xDomain: ContinuousDomain | OrdinalDomain | undefined,
+) => {
   let titleDomain = '';
-  for (let i = 0; i < titles!.length; i++) {
-    if (titles![i][0]) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      titleDomain += `The axis ${titles![i][0]} has the  domain ${domains[titles[i][1]]}. `;
-    }
+  for (let i = 0; i < titles.length; i++) {
+    const getTitle = titles[i].length > 1 ? 'The axis is not titled and ' : `The axis named ${titles[i][0]} `;
+    const groupId = titles[i][1];
+    // @ts-ignore
+    const domain = domains[groupId] ? domains[groupId] : xDomain;
+    titleDomain += titles[i][1]
+      ? `${getTitle} has the  domain ${domain.toString()}. `
+      : `${getTitle} has an undefined domain.`;
   }
   return titleDomain;
 };
 
+/** helper function to read out each title for the axes if present */
+const getAxesTitlesAndDomains = (d: ScreenReaderData[]) => {
+  const { axesTitles } = d[0];
+  const firstXAxisTitle =
+    axesTitles[0][0] === undefined ? 'The x axis is not titled' : `The x axis is titled ${axesTitles[0][0]}`;
+  const firstXAxisGroupId = axesTitles[0][1];
+  const multipleTitles = Object.entries(d[0].yDomains).length > 1 || Object.entries(d[0].axesTitles).length > 2;
+  return multipleTitles
+    ? `This chart has multiple y axes. The axes are ${d[0].yScaleType}. ${axesWithTitles(
+        d[0].axesTitles,
+        d[0].yDomains,
+        d[0].xDomain,
+      )}`
+    : `${firstXAxisTitle}. ${
+        firstXAxisGroupId === undefined
+          ? `Its y axis does not have a defined domain.`
+          : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `The y axis domain is ${d[0].yDomains[firstXAxisGroupId]}`
+      }`;
+};
+
+const formatForTimeXAxis = (d: ScreenReaderData[]) => {
+  if (d[0].xDomain === undefined) return 'is undefined';
+  const [startDomain, endDomain] = d[0].xDomain;
+  return d[0].xScaleType !== ScaleType.Time
+    ? `scale type is ${d[0].xScaleType}. The domain is ${startDomain} to ${endDomain}`
+    : `scale type is time with the domain ${new Date(startDomain).toTimeString()} to ${new Date(
+        endDomain,
+      ).toTimeString()}`;
+};
+
 /** @internal */
 export const computeAlternativeChartText = (d: ScreenReaderData[]): string => {
-  const namedSeries = d[0].seriesName !== undefined ? `The chart is named ${d[0].seriesName}. ` : '';
-  const numberOfSeriesByType = {};
+  const numberOfSeriesByType: { [key: string]: number } = {};
   d.forEach((series) => {
     const { seriesType } = series;
-    // @ts-ignore
+
     if (numberOfSeriesByType[seriesType]) {
-      // @ts-ignore
       numberOfSeriesByType[seriesType]++;
     } else {
-      // @ts-ignore
       numberOfSeriesByType[seriesType] = 1;
     }
   });
+
+  const namedSeries = d[0].seriesName !== undefined ? `The chart is named ${d[0].seriesName}. ` : '';
 
   const mixedSeriesChart =
     Object.keys(numberOfSeriesByType).length > 1 ? `This chart has different series types in it.` : '';
   const stackedSeries = d[0].splitAccessor
     ? `This chart has stacked series in it. The scale type of the y axes are ${d[0].yScaleType}. `
-    : ``;
+    : '';
 
   const multipleSeries = d.length > 1;
-  const types = multipleSeries
+  const typesOfSeries = multipleSeries
     ? readOutSeriesCountandType(numberOfSeriesByType)
     : `There is one ${d[0].seriesType} series in this chart.`;
 
-  const YAxes =
-    d[0].axesTitles!.length > 1
-      ? `This chart has multiple y-axes. The y axes are ${d[0].yScaleType}. ${axesWithTitles(
-          d[0].axesTitles,
-          d[0].yDomains,
-        )}`
-      : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        `There is one y-axis titled ${d[0].axesTitles}. Its domain is ${d[0].yDomains[d[0].axesTitles]}. `;
+  const chartHasAxes =
+    d[0].axesTitles.length === 0
+      ? 'This chart does not have axes.'
+      : `The x axis is ${formatForTimeXAxis(d)}. ${getAxesTitlesAndDomains(d)}`;
 
   return `${namedSeries}${mixedSeriesChart} ${stackedSeries} ${
     mixedSeriesChart !== '' || stackedSeries !== '' ? `It` : `The  chart`
-  } has ${d.length} series in it. ${types} The x axis is ${d[0].xScaleType}. The domain is ${d[0].xDomain}. ${YAxes}`;
+  } has ${d.length} series in it. ${typesOfSeries} ${chartHasAxes}`;
 };
-
-const renderKeyHeaders = (keysArray: string[], index: number) => {
-  if (index === 0) {
-    index++;
-    return keysArray.map((val) => {
-      return (
-        <th scope="row" key={Math.random()}>
-          {' '}
-          {val}{' '}
-        </th>
-      );
-    });
-  }
-};
-
-const computeScreenReaderTableForXYCharts = (d: ScreenReaderData[], classes = 'screen-reader') => {
-  const dataKeys: JSX.Element[] = [];
-  // go through the number of series in ScreenReaderData
-  for (let seriesIndex = 0; seriesIndex < d.length; seriesIndex++) {
-    dataKeys.push(
-      <>
-        <tr key={Math.random()}>
-          <th scope="row" key={Math.random()} />
-          <th scope="row" key={Math.random()}>
-            {`Series Number of total ${d.length}`}{' '}
-          </th>
-          {renderKeyHeaders(d[seriesIndex].dataKey, seriesIndex)}
-        </tr>
-        <tr key={Math.random()} className={classes}>
-          <th scope="col" key={Math.random()} />
-          <td key={Math.random()}>{seriesIndex + 1}</td>
-
-          {
-            // eslint-disable-next-line array-callback-return
-            d[seriesIndex].dataValue.map((value: React.ReactNode, index: number) => {
-              if (index % d[0].dataKey.length) {
-                return (
-                  <td key={Math.random()} className={classes}>
-                    {value}
-                  </td>
-                );
-              }
-            })
-          }
-        </tr>
-      </>,
-    );
-  }
-  return dataKeys;
-};
-
-// TODO
-// const computeScreenReaderTableForStackedXYCharts = (d: ScreenReaderData) => {
-//   return [];
-// };
-// const computeScreenReaderTableForPartitionCharts = (d: ScreenReaderData) => {
-//   return [];
-// };
-// const computeScreenReaderTableForGoalCharts = (d: ScreenReaderData) => {
-//   return [];
-// };
-// const computeScreenReaderTableForGaugeXYCharts = (d: ScreenReaderData) => {
-//   return [];
-// };
 
 /** @internal */
 export const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableStateProps) => {
@@ -179,22 +148,6 @@ export const ScreenReaderDataTableComponent = (props: ScreenReaderDataTableState
   if (!data) {
     return null;
   }
-
-  const classes = 'screen-reader';
-
-  const renderDataTable = (data: ScreenReaderData[], classes: string = 'screen-reader') => {
-    if (!data) return [];
-    if (Object.values(SeriesTypes).includes(data[0].seriesType)) {
-      return (
-        <table className={classes}>
-          <tbody>{computeScreenReaderTableForXYCharts(data)}</tbody>
-        </table>
-      );
-    }
-    return [];
-  };
-
-  return renderDataTable(data, classes);
 };
 
 const DEFAULT_PROPS = {
