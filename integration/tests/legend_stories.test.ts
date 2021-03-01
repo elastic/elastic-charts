@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { PartitionLayout } from '../../src';
 import { common } from '../page_objects';
 
 describe('Legend stories', () => {
@@ -66,6 +67,12 @@ describe('Legend stories', () => {
       action,
       delay: 500, // needed for icon to load
     });
+  });
+
+  it('should adjust legend width for scrollbar', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/small-multiples-alpha--grid-lines&knob-Debug=true&knob-Show Legend=true',
+    );
   });
 
   describe('Tooltip placement with legend', () => {
@@ -142,5 +149,25 @@ describe('Legend stories', () => {
       });
       expect(hiddenResults).toEqual([1]);
     });
+  });
+
+  describe('Extra values', () => {
+    it.each([PartitionLayout.sunburst, PartitionLayout.treemap])(
+      'should display flat legend extra values on %s',
+      async (layout) => {
+        await common.expectChartAtUrlToMatchScreenshot(
+          `http://localhost:9001/?path=/story/legend--piechart&knob-Partition Layout=${layout}&knob-flatLegend=true&knob-showLegendExtra=true&knob-legendMaxDepth=2`,
+        );
+      },
+    );
+
+    it.each([PartitionLayout.sunburst, PartitionLayout.treemap])(
+      'should display nested legend extra values on %s',
+      async (layout) => {
+        await common.expectChartAtUrlToMatchScreenshot(
+          `http://localhost:9001/?path=/story/legend--piechart&knob-Partition Layout=${layout}&knob-flatLegend=false&knob-showLegendExtra=true&knob-legendMaxDepth=2`,
+        );
+      },
+    );
   });
 });

@@ -19,15 +19,14 @@
 
 import createCachedSelector from 're-reselect';
 
-import { SeriesKey } from '../../../../commons/series_id';
+import { SeriesKey } from '../../../../common/series_id';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { Color } from '../../../../utils/commons';
+import { Color } from '../../../../utils/common';
 import { getSeriesColors } from '../../utils/series';
 import { getCustomSeriesColors } from '../utils/utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
-import { getSeriesSpecsSelector } from './get_specs';
 
 function getColorOverrides({ colors }: GlobalChartState) {
   return colors;
@@ -35,16 +34,15 @@ function getColorOverrides({ colors }: GlobalChartState) {
 
 /** @internal */
 export const getSeriesColorsSelector = createCachedSelector(
-  [getSeriesSpecsSelector, computeSeriesDomainsSelector, getChartThemeSelector, getColorOverrides],
-  (seriesSpecs, seriesDomainsAndData, chartTheme, colorOverrides): Map<SeriesKey, Color> => {
-    const updatedCustomSeriesColors = getCustomSeriesColors(seriesSpecs, seriesDomainsAndData.seriesCollection);
+  [computeSeriesDomainsSelector, getChartThemeSelector, getColorOverrides],
+  (seriesDomainsAndData, chartTheme, colorOverrides): Map<SeriesKey, Color> => {
+    const updatedCustomSeriesColors = getCustomSeriesColors(seriesDomainsAndData.formattedDataSeries);
 
-    const seriesColorMap = getSeriesColors(
-      seriesDomainsAndData.seriesCollection,
+    return getSeriesColors(
+      seriesDomainsAndData.formattedDataSeries,
       chartTheme.colors,
       updatedCustomSeriesColors,
       colorOverrides,
     );
-    return seriesColorMap;
   },
 )(getChartIdSelector);

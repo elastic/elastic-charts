@@ -23,7 +23,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { partitionGeometries } from '../../state/selectors/geometries';
-import { getHighlightedSectorsSelector } from '../../state/selectors/get_highlighted_shapes';
+import { legendHoverHighlightNodes } from '../../state/selectors/get_highlighted_shapes';
 import { HighlighterComponent, HighlighterProps, DEFAULT_PROPS } from './highlighter';
 
 const legendMapStateToProps = (state: GlobalChartState): HighlighterProps => {
@@ -36,9 +36,9 @@ const legendMapStateToProps = (state: GlobalChartState): HighlighterProps => {
     outerRadius,
     diskCenter,
     config: { partitionLayout },
-  } = partitionGeometries(state);
+  } = partitionGeometries(state)[0];
 
-  const geometries = getHighlightedSectorsSelector(state);
+  const geometries = legendHoverHighlightNodes(state);
   const canvasDimension = getChartContainerDimensionsSelector(state);
   return {
     chartId,

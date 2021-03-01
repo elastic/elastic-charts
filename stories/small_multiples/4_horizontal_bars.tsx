@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -31,7 +32,6 @@ import {
   BarSeries,
   LineAnnotation,
   AnnotationDomainTypes,
-  LIGHT_THEME,
 } from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
@@ -68,12 +68,14 @@ export const Example = () => {
       MIN
     </span>
   );
-  const showLegend = boolean('Show Legend', false);
+  const showLegend = boolean('Show Legend', true);
+  const onElementClick = action('onElementClick');
+  const disableSmallMultiples = boolean('Disable small multiples', false);
 
   return (
     <Chart className="story-chart">
-      <Settings rotation={90} showLegend={showLegend} />
-      <Axis id="time" title="metric" position={Position.Bottom} gridLine={{ visible: false }} />
+      <Settings onElementClick={onElementClick} rotation={90} showLegend={showLegend} />
+      <Axis id="time" position={Position.Bottom} gridLine={{ visible: false }} />
       <Axis id="y" title="Day of week" position={Position.Left} gridLine={{ visible: false }} />
 
       <GroupBy
@@ -83,7 +85,7 @@ export const Example = () => {
         }}
         sort="alphaAsc"
       />
-      <SmallMultiples splitHorizontally="h_split" />
+      {!disableSmallMultiples && <SmallMultiples splitHorizontally="h_split" />}
       <LineAnnotation
         dataValues={[
           {
@@ -105,7 +107,8 @@ export const Example = () => {
       />
       <BarSeries
         id="website a"
-        xScaleType={ScaleType.Time}
+        name={({ splitAccessors }) => `WebA - ${splitAccessors.get('g')}`}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"
@@ -113,11 +116,11 @@ export const Example = () => {
         stackAccessors={['x']}
         splitSeriesAccessors={['g']}
         data={data1}
-        color={[LIGHT_THEME.colors.vizColors[0], 'lightgray']}
       />
       <BarSeries
         id="website b"
-        xScaleType={ScaleType.Time}
+        name={({ splitAccessors }) => `WebB - ${splitAccessors.get('g')}`}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"
@@ -125,11 +128,11 @@ export const Example = () => {
         stackAccessors={['x']}
         splitSeriesAccessors={['g']}
         data={data2}
-        color={[LIGHT_THEME.colors.vizColors[0], 'lightgray']}
       />
       <BarSeries
         id="website c"
-        xScaleType={ScaleType.Time}
+        name={({ splitAccessors }) => `WebC - ${splitAccessors.get('g')}`}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
         xAccessor="x"
@@ -137,7 +140,6 @@ export const Example = () => {
         stackAccessors={['x']}
         splitSeriesAccessors={['g']}
         data={data3}
-        color={[LIGHT_THEME.colors.vizColors[0], 'lightgray']}
       />
     </Chart>
   );

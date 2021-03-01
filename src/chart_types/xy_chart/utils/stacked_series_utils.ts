@@ -27,7 +27,7 @@ import {
   SeriesPoint,
 } from 'd3-shape';
 
-import { SeriesKey } from '../../../commons/series_id';
+import { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { DataSeries, DataSeriesDatum } from './series';
 import { StackMode } from './specs';
@@ -74,7 +74,10 @@ export function formatStackedDataSeriesValues(
   const reorderedArray: Array<D3StackArrayElement> = [];
   const xValueMap: Map<SeriesKey, Map<string | number, DataSeriesDatum>> = new Map();
   // transforming the current set of series into the d3 stack required data structure
-  dataSeries.forEach(({ data, key }) => {
+  dataSeries.forEach(({ data, key, isFiltered }) => {
+    if (isFiltered) {
+      return;
+    }
     const dsMap: Map<string | number, DataSeriesDatum> = new Map();
     data.forEach((d) => {
       const { x, y0, y1 } = d;

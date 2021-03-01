@@ -22,7 +22,7 @@ import { MockSeriesIdentifier } from '../../../mocks/series/series_identifiers';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { Position } from '../../../utils/commons';
+import { Position } from '../../../utils/common';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
 
 const SPEC_ID = 'spec_1';
@@ -67,10 +67,8 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 0,
           y: 0,
-          radius: 0,
           color: 'red',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(spec),
-          styleOverrides: undefined,
           value: {
             accessor: 'y1',
             x: 0,
@@ -88,7 +86,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 50,
           y: 50,
-          radius: 0,
           color: 'red',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(spec),
           value: {
@@ -166,7 +163,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 0,
           y: 50,
-          radius: 0,
           color: 'red',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
@@ -187,7 +183,6 @@ describe('Rendering points - bubble', () => {
           x: 50,
           y: 75,
           color: 'red',
-          radius: 0,
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
             accessor: 'y1',
@@ -216,7 +211,6 @@ describe('Rendering points - bubble', () => {
           x: 0,
           y: 0,
           color: 'blue',
-          radius: 0,
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
             accessor: 'y1',
@@ -236,7 +230,6 @@ describe('Rendering points - bubble', () => {
           x: 50,
           y: 50,
           color: 'blue',
-          radius: 0,
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
             accessor: 'y1',
@@ -292,7 +285,6 @@ describe('Rendering points - bubble', () => {
           x: 0,
           y: 0,
           color: 'red',
-          radius: 0,
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
             accessor: 'y1',
@@ -312,7 +304,6 @@ describe('Rendering points - bubble', () => {
           x: 100,
           y: 50,
           color: 'red',
-          radius: 0,
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
             accessor: 'y1',
@@ -390,7 +381,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 0,
           y: 50,
-          radius: 0,
           color: 'red',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
@@ -410,7 +400,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 100,
           y: 75,
-          radius: 0,
           color: 'red',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
@@ -440,7 +429,6 @@ describe('Rendering points - bubble', () => {
           x: 0,
           y: 0,
           color: 'blue',
-          radius: 0,
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
             accessor: 'y1',
@@ -460,7 +448,6 @@ describe('Rendering points - bubble', () => {
           x: 100,
           y: 50,
           color: 'blue',
-          radius: 0,
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
             accessor: 'y1',
@@ -515,7 +502,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 0,
           y: 0,
-          radius: 0,
           color: 'red',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
@@ -535,7 +521,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 100,
           y: 50,
-          radius: 0,
           color: 'red',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
@@ -599,7 +584,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 0,
           y: 50,
-          radius: 0,
           color: 'red',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
@@ -619,7 +603,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 100,
           y: 75,
-          radius: 0,
           color: 'red',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
           value: {
@@ -649,7 +632,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 0,
           y: 0,
-          radius: 0,
           color: 'blue',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
@@ -669,7 +651,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 100,
           y: 50,
-          radius: 0,
           color: 'blue',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
           value: {
@@ -715,7 +696,7 @@ describe('Rendering points - bubble', () => {
       geometriesIndex,
     } = computeSeriesGeometriesSelector(store.getState());
 
-    test('Can render a splitted bubble', () => {
+    test('Can render a split bubble', () => {
       const [{ value: renderedBubble }] = bubbles;
       expect(renderedBubble.points).toHaveLength(7);
       expect(renderedBubble.color).toBe('red');
@@ -781,7 +762,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 0,
           y: 100,
-          radius: 0,
           color: 'red',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {
@@ -797,7 +777,6 @@ describe('Rendering points - bubble', () => {
         MockPointGeometry.default({
           x: 50,
           y: 0,
-          radius: 0,
           color: 'red',
           seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
           value: {

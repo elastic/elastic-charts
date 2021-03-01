@@ -21,19 +21,20 @@ import createCachedSelector from 're-reselect';
 
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
+import { highlightedGeoms } from '../../layout/utils/highlighted_geoms';
 import { partitionGeometries } from './geometries';
 
-const getHighlightedLegendItemKey = (state: GlobalChartState) => state.interactions.highlightedLegendItemKey;
+const getHighlightedLegendItemPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;
 
 /** @internal */
-// why is it called highlighted... when it's a legend hover related thing, not a hover over the slices?
-export const getHighlightedSectorsSelector = createCachedSelector(
-  [getHighlightedLegendItemKey, partitionGeometries],
-  (highlightedLegendItemKey, geoms): QuadViewModel[] => {
-    if (!highlightedLegendItemKey) {
-      return [];
-    }
-    return geoms.quadViewModel.filter(({ dataName }) => dataName === highlightedLegendItemKey);
+export const legendHoverHighlightNodes = createCachedSelector(
+  [getSettingsSpecSelector, getHighlightedLegendItemPath, partitionGeometries],
+  ({ legendStrategy }, highlightedLegendItemPath, geometries): QuadViewModel[] => {
+    const { quadViewModel } = geometries[0];
+    return highlightedLegendItemPath.length > 0
+      ? highlightedGeoms(legendStrategy, quadViewModel, highlightedLegendItemPath)
+      : [];
   },
 )(getChartIdSelector);

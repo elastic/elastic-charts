@@ -19,17 +19,20 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable jest/no-conditional-expect */
 
-import { MockSeriesCollection } from '../../../../mocks/series/series_identifiers';
-import { MockSeriesSpecs, MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
+import { MockDataSeries } from '../../../../mocks/series/series';
+import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
 import { SeededDataGenerator } from '../../../../mocks/utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { Spec } from '../../../../specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
+import { ContinuousDomain, Range } from '../../../../utils/domain';
 import { SpecId } from '../../../../utils/ids';
-import { SeriesCollectionValue, getSeriesIndex } from '../../utils/series';
+import { PointShape } from '../../../../utils/themes/theme';
+import { getSeriesIndex, XYChartSeriesIdentifier } from '../../utils/series';
 import { BasicSeriesSpec, HistogramModeAlignments, SeriesColorAccessorFn } from '../../utils/specs';
+import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
 import { computeSeriesGeometriesSelector } from '../selectors/compute_series_geometries';
 import {
   computeSeriesDomains,
@@ -37,7 +40,6 @@ import {
   isHistogramModeEnabled,
   setBarSeriesAccessors,
   getCustomSeriesColors,
-  updateDeselectedDataSeries,
 } from './utils';
 
 function getGeometriesFromSpecs(specs: Spec[]) {
@@ -82,13 +84,15 @@ describe('Chart State utils', () => {
       minInterval: 1,
       type: 'xDomain',
     });
-    expect(domains.yDomain).toEqual([
+    expect(domains.yDomains).toEqual([
       {
         domain: [0, 10],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
       {
         domain: [0, 10],
@@ -96,6 +100,8 @@ describe('Chart State utils', () => {
         groupId: 'group2',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
     ]);
     expect(domains.formattedDataSeries).toMatchSnapshot();
@@ -130,115 +136,67 @@ describe('Chart State utils', () => {
       minInterval: 1,
       type: 'xDomain',
     });
-    expect(domains.yDomain).toEqual([
-      {
-        domain: [0, 9],
-        scaleType: ScaleType.Log,
-        groupId: 'group2',
-        isBandScale: false,
-        type: 'yDomain',
-      },
+    expect(domains.yDomains).toEqual([
       {
         domain: [0, 5],
         scaleType: ScaleType.Log,
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
+      },
+      {
+        domain: [0, 9],
+        scaleType: ScaleType.Log,
+        groupId: 'group2',
+        isBandScale: false,
+        type: 'yDomain',
+        logBase: undefined,
+        logMinLimit: undefined,
       },
     ]);
     expect(domains.formattedDataSeries.filter(({ isStacked }) => isStacked)).toMatchSnapshot();
     expect(domains.formattedDataSeries.filter(({ isStacked }) => !isStacked)).toMatchSnapshot();
   });
   it('should check if a SeriesCollectionValue item exists in a list of SeriesCollectionValue', () => {
-    const dataSeriesValuesA: SeriesCollectionValue = {
-      seriesIdentifier: {
-        specId: 'a',
-        yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['a', 'b', 'c'],
-        key: 'a',
-      },
+    const dataSeriesValuesA: XYChartSeriesIdentifier = {
+      specId: 'a',
+      yAccessor: 'y1',
+      splitAccessors: new Map(),
+      seriesKeys: ['a', 'b', 'c'],
+      key: 'a',
     };
-    const dataSeriesValuesB: SeriesCollectionValue = {
-      seriesIdentifier: {
-        specId: 'b',
-        yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['a', 'b', 'c'],
-        key: 'b',
-      },
+    const dataSeriesValuesB: XYChartSeriesIdentifier = {
+      specId: 'b',
+      yAccessor: 'y1',
+      splitAccessors: new Map(),
+      seriesKeys: ['a', 'b', 'c'],
+      key: 'b',
     };
-    const dataSeriesValuesC: SeriesCollectionValue = {
-      seriesIdentifier: {
-        specId: 'c',
-        yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['a', 'b', 'd'],
-        key: 'c',
-      },
+    const dataSeriesValuesC: XYChartSeriesIdentifier = {
+      specId: 'c',
+      yAccessor: 'y1',
+      splitAccessors: new Map(),
+      seriesKeys: ['a', 'b', 'd'],
+      key: 'c',
     };
-    const deselectedSeries = [dataSeriesValuesA.seriesIdentifier, dataSeriesValuesB.seriesIdentifier];
-    expect(getSeriesIndex(deselectedSeries, dataSeriesValuesA.seriesIdentifier)).toBe(0);
-    expect(getSeriesIndex(deselectedSeries, dataSeriesValuesC.seriesIdentifier)).toBe(-1);
-    expect(getSeriesIndex([], dataSeriesValuesA.seriesIdentifier)).toBe(-1);
-  });
-  it('should update a list of SeriesCollectionValue given a selected SeriesCollectionValue item', () => {
-    const dataSeriesValuesA: SeriesCollectionValue = {
-      seriesIdentifier: {
-        specId: 'a',
-        yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['a', 'b', 'c'],
-        key: 'a',
-      },
-    };
-    const dataSeriesValuesB: SeriesCollectionValue = {
-      seriesIdentifier: {
-        specId: 'b',
-        yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['a', 'b', 'c'],
-        key: 'b',
-      },
-    };
-    const dataSeriesValuesC: SeriesCollectionValue = {
-      seriesIdentifier: {
-        specId: 'a',
-        yAccessor: 'y1',
-        splitAccessors: new Map(),
-        seriesKeys: ['a', 'b', 'd'],
-        key: 'd',
-      },
-    };
-    const selectedSeries = [dataSeriesValuesA.seriesIdentifier, dataSeriesValuesB.seriesIdentifier];
-    const addedSelectedSeries = [
-      dataSeriesValuesA.seriesIdentifier,
-      dataSeriesValuesB.seriesIdentifier,
-      dataSeriesValuesC.seriesIdentifier,
-    ];
-    const removedSelectedSeries = [dataSeriesValuesB.seriesIdentifier];
-
-    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesC.seriesIdentifier)).toEqual(addedSelectedSeries);
-    expect(updateDeselectedDataSeries(selectedSeries, dataSeriesValuesA.seriesIdentifier)).toEqual(
-      removedSelectedSeries,
-    );
-    expect(updateDeselectedDataSeries([], dataSeriesValuesA.seriesIdentifier)).toEqual([
-      dataSeriesValuesA.seriesIdentifier,
-    ]);
+    const deselectedSeries = [dataSeriesValuesA, dataSeriesValuesB];
+    expect(getSeriesIndex(deselectedSeries, dataSeriesValuesA)).toBe(0);
+    expect(getSeriesIndex(deselectedSeries, dataSeriesValuesC)).toBe(-1);
+    expect(getSeriesIndex([], dataSeriesValuesA)).toBe(-1);
   });
 
   describe('getCustomSeriesColors', () => {
     const specId1 = 'bar1';
     const specId2 = 'bar2';
     const dg = new SeededDataGenerator();
-    // 4 groups generated
     const data = dg.generateGroupedSeries(50, 4);
-    const targetKey =
-      'groupId{__global__}spec{bar1}yAccessor{y}splitAccessors{g-b}smV{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}smH{__ECH_DEFAULT_SINGLE_PANEL_SM_VALUE__}';
+    const targetKey = 'groupId{__global__}spec{bar1}yAccessor{y}splitAccessors{g-b}';
 
     describe('empty series collection and specs', () => {
       it('should return an empty map', () => {
-        const actual = getCustomSeriesColors(MockSeriesSpecs.empty(), MockSeriesCollection.empty());
+        const actual = getCustomSeriesColors(MockDataSeries.empty());
 
         expect(actual.size).toBe(0);
       });
@@ -248,9 +206,10 @@ describe('Chart State utils', () => {
       it('should return an empty map if no color', () => {
         const barSpec1 = MockSeriesSpec.bar({ id: specId1, data, splitSeriesAccessors: ['g'] });
         const barSpec2 = MockSeriesSpec.bar({ id: specId2, data, splitSeriesAccessors: ['g'] });
-        const barSeriesSpecs = MockSeriesSpecs.fromSpecs([barSpec1, barSpec2]);
-        const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
-        const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection);
+        const store = MockStore.default();
+        MockStore.addSpecs([barSpec1, barSpec2], store);
+        const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+        const actual = getCustomSeriesColors(formattedDataSeries);
 
         expect(actual.size).toBe(0);
       });
@@ -259,9 +218,10 @@ describe('Chart State utils', () => {
         const color = 'green';
         const barSpec1 = MockSeriesSpec.bar({ id: specId1, data, color });
         const barSpec2 = MockSeriesSpec.bar({ id: specId2, data });
-        const barSeriesSpecs = MockSeriesSpecs.fromSpecs([barSpec1, barSpec2]);
-        const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
-        const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection);
+        const store = MockStore.default();
+        MockStore.addSpecs([barSpec1, barSpec2], store);
+        const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+        const actual = getCustomSeriesColors(formattedDataSeries);
 
         expect([...actual.values()]).toEqualArrayOf(color);
       });
@@ -275,14 +235,15 @@ describe('Chart State utils', () => {
           splitSeriesAccessors: ['g'],
         });
         const barSpec2 = MockSeriesSpec.bar({ id: specId2, data, splitSeriesAccessors: ['g'] });
-        const barSeriesSpecs = MockSeriesSpecs.fromSpecs([barSpec1, barSpec2]);
-        const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
+        const store = MockStore.default();
+        MockStore.addSpecs([barSpec1, barSpec2], store);
+        const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
         it('should return color from color array', () => {
-          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection);
+          const actual = getCustomSeriesColors(formattedDataSeries);
 
           expect(actual.size).toBe(4);
-          barSeriesCollection.forEach(({ seriesIdentifier: { specId, key } }) => {
+          formattedDataSeries.forEach(({ specId, key }) => {
             const color = actual.get(key);
             if (specId === specId1) {
               expect(customSeriesColors).toContainEqual(color);
@@ -309,11 +270,12 @@ describe('Chart State utils', () => {
           splitSeriesAccessors: ['g'],
         });
         const barSpec2 = MockSeriesSpec.bar({ id: specId2, data, splitSeriesAccessors: ['g'] });
-        const barSeriesSpecs = MockSeriesSpecs.fromSpecs([barSpec1, barSpec2]);
-        const barSeriesCollection = MockSeriesCollection.fromSpecs(barSeriesSpecs);
+        const store = MockStore.default();
+        MockStore.addSpecs([barSpec1, barSpec2], store);
+        const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
         it('should return color from color function', () => {
-          const actual = getCustomSeriesColors(barSeriesSpecs, barSeriesCollection);
+          const actual = getCustomSeriesColors(formattedDataSeries);
           expect(actual.size).toBe(1);
           expect(actual.get(targetKey)).toBe('aquamarine');
         });
@@ -609,6 +571,7 @@ describe('Chart State utils', () => {
         opacity: 1,
         radius: 2,
         strokeWidth: 1,
+        shape: PointShape.Circle,
       });
     });
     test('can compute area geometries with custom style', () => {
@@ -674,6 +637,7 @@ describe('Chart State utils', () => {
         opacity: 1,
         radius: 2,
         strokeWidth: 1,
+        shape: PointShape.Circle,
       });
     });
     test('can compute bars geometries counts', () => {
@@ -745,8 +709,8 @@ describe('Chart State utils', () => {
   });
 
   test('can compute xScaleOffset dependent on histogram mode', () => {
-    const domain = [0, 10];
-    const range: [number, number] = [0, 100];
+    const domain: ContinuousDomain = [0, 10];
+    const range: Range = [0, 100];
     const bandwidth = 10;
     const barsPadding = 0.5;
     const scale = new ScaleContinuous(

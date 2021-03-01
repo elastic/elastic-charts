@@ -19,10 +19,10 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
-import { config } from '../../src/chart_types/partition_chart/layout/config/config';
+import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings } from '../../src';
+import { config } from '../../src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { arrayToLookup, hueInterpolator } from '../../src/chart_types/partition_chart/layout/utils/calcs';
+import { arrayToLookup, hueInterpolator } from '../../src/common/color_calcs';
 import { mocks } from '../../src/mocks/hierarchical';
 import { countryDimension, regionDimension } from '../../src/mocks/hierarchical/dimension_codes';
 import { palettes } from '../../src/mocks/hierarchical/palettes';
@@ -70,7 +70,8 @@ export const Example = () => (
             fillColor: (d: ShapeTreeNode) =>
               // primarily, pick color based on parent's index, but then perturb by the index within the parent
               interpolatorTurbo(
-                (d.parent.sortIndex + d.sortIndex / d.parent.children.length) / (d.parent.parent.children.length + 1),
+                (d[MODEL_KEY].sortIndex + d.sortIndex / d[MODEL_KEY].children.length) /
+                  (d[MODEL_KEY].parent.children.length + 1),
               ),
           },
         },

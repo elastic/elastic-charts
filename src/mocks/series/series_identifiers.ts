@@ -17,28 +17,9 @@
  * under the License.
  */
 
-import {
-  SeriesCollectionValue,
-  getDataSeriesFromSpecs,
-  XYChartSeriesIdentifier,
-} from '../../chart_types/xy_chart/utils/series';
-import { BasicSeriesSpec, DEFAULT_SINGLE_PANEL_SM_VALUE } from '../../specs';
-import { mergePartial } from '../../utils/commons';
-
-type SeriesCollection = Map<string, SeriesCollectionValue>;
-
-/** @internal */
-export class MockSeriesCollection {
-  static empty(): SeriesCollection {
-    return new Map();
-  }
-
-  static fromSpecs(seriesSpecs: BasicSeriesSpec[]) {
-    const { seriesCollection } = getDataSeriesFromSpecs(seriesSpecs, []);
-
-    return seriesCollection;
-  }
-}
+import { getDataSeriesFromSpecs, XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
+import { BasicSeriesSpec } from '../../specs';
+import { mergePartial } from '../../utils/common';
 
 /** @internal */
 export class MockSeriesIdentifier {
@@ -47,9 +28,7 @@ export class MockSeriesIdentifier {
     yAccessor: 'y',
     seriesKeys: ['a'],
     splitAccessors: new Map().set('g', 'a'),
-    key: `spec{bars}yAccessor{y}splitAccessors{g-a}smV${DEFAULT_SINGLE_PANEL_SM_VALUE}smH${DEFAULT_SINGLE_PANEL_SM_VALUE}`,
-    smHorizontalAccessorValue: DEFAULT_SINGLE_PANEL_SM_VALUE,
-    smVerticalAccessorValue: DEFAULT_SINGLE_PANEL_SM_VALUE,
+    key: 'spec{bars}yAccessor{y}splitAccessors{g-a}',
   };
 
   static default(partial?: Partial<XYChartSeriesIdentifier>) {
@@ -61,7 +40,9 @@ export class MockSeriesIdentifier {
   static fromSpecs(specs: BasicSeriesSpec[]): XYChartSeriesIdentifier[] {
     const { dataSeries } = getDataSeriesFromSpecs(specs);
 
-    return dataSeries.map(({ groupId, seriesType, data, isStacked, stackMode, spec, ...rest }) => rest);
+    return dataSeries.map(
+      ({ groupId, seriesType, data, isStacked, stackMode, spec, insertIndex, isFiltered, ...rest }) => rest,
+    );
   }
 
   static fromSpec(specs: BasicSeriesSpec): XYChartSeriesIdentifier {

@@ -17,11 +17,12 @@
  * under the License.
  */
 
-import { Color } from '../../../../utils/commons';
-import { Pixels, SizeRatio } from '../../../partition_chart/layout/types/geometry_types';
-import { Font, FontFamily, TextAlign, TextBaseline } from '../../../partition_chart/layout/types/types';
+import { Pixels, SizeRatio } from '../../../../common/geometry';
+import { Font, FontFamily, TextAlign, TextBaseline } from '../../../../common/text_utils';
+import { Color } from '../../../../utils/common';
 import { Cell } from './viewmodel_types';
 
+/** potential internal */
 export interface Config {
   width: Pixels;
   height: Pixels;

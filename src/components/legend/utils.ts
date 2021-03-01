@@ -16,19 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { LegendItemExtraValues, LegendItem } from '../../commons/legend';
+import { LegendItemExtraValues, LegendItem } from '../../common/legend';
 
 /** @internal */
 export function getExtra(extraValues: Map<string, LegendItemExtraValues>, item: LegendItem, totalItems: number) {
-  const {
-    seriesIdentifier: { key },
-    defaultExtra,
-    childId,
-  } = item;
-  if (extraValues.size === 0) {
+  const { seriesIdentifiers, defaultExtra, childId, path } = item;
+  // don't show extra if the legend item is associated with multiple series
+  if (extraValues.size === 0 || seriesIdentifiers.length > 1) {
     return defaultExtra?.formatted ?? '';
   }
-  const itemExtraValues = extraValues.get(key);
+  const [{ key }] = seriesIdentifiers;
+  const extraValueKey = path.map(({ index }) => index).join('__');
+  const itemExtraValues = extraValues.has(extraValueKey) ? extraValues.get(extraValueKey) : extraValues.get(key);
   const actionExtra = (childId && itemExtraValues?.get(childId)) ?? null;
   if (extraValues.size !== totalItems) {
     if (actionExtra != null) {

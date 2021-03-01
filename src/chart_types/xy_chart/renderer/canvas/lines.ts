@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { LegendItem } from '../../../../commons/legend';
+import { LegendItem } from '../../../../common/legend';
 import { Rect } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
-import { Rotation } from '../../../../utils/commons';
+import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { LineGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
@@ -65,7 +65,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
         rotation,
         renderingArea,
         (ctx) => {
-          renderPoints(ctx, visiblePoints, line.seriesPointStyle, geometryStyle);
+          renderPoints(ctx, visiblePoints, geometryStyle);
         },
         // TODO: add padding over clipping
         { area: clippings, shouldClip: line.points[0]?.value.mark !== null },

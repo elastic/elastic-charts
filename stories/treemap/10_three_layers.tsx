@@ -21,11 +21,12 @@ import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
-import { config } from '../../src/chart_types/partition_chart/layout/config/config';
+import { config } from '../../src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { hueInterpolator } from '../../src/chart_types/partition_chart/layout/utils/calcs';
+import { hueInterpolator } from '../../src/common/color_calcs';
 import { mocks } from '../../src/mocks/hierarchical';
 import { palettes } from '../../src/mocks/hierarchical/palettes';
+import { keepDistinct } from '../../src/utils/common';
 import { STORYBOOK_LIGHT_THEME } from '../shared';
 import { countryLookup, productLookup, regionLookup } from '../utils/utils';
 
@@ -33,7 +34,7 @@ const interpolator = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b,
 
 const countries = mocks.sunburst
   .map((d: any) => d.dest)
-  .filter((d: any, i: number, a: any[]) => a.indexOf(d) === i)
+  .filter(keepDistinct)
   .sort()
   .reverse();
 

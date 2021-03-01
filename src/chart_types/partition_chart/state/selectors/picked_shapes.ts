@@ -19,10 +19,8 @@
 
 import createCachedSelector from 're-reselect';
 
-import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { QuadViewModel } from '../../layout/types/viewmodel_types';
-import { PARENT_KEY, DEPTH_KEY, AGGREGATE_KEY, CHILDREN_KEY, SORT_INDEX_KEY } from '../../layout/utils/group_by_rollup';
+import { pickedShapes, pickShapesLayerValues } from '../../layout/viewmodel/picked_shapes';
 import { partitionGeometries } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
@@ -32,13 +30,7 @@ function getCurrentPointerPosition(state: GlobalChartState) {
 /** @internal */
 export const getPickedShapes = createCachedSelector(
   [partitionGeometries, getCurrentPointerPosition],
-  (geoms, pointerPosition): QuadViewModel[] => {
-    const picker = geoms.pickQuads;
-    const { diskCenter } = geoms;
-    const x = pointerPosition.x - diskCenter.x;
-    const y = pointerPosition.y - diskCenter.y;
-    return picker(x, y);
-  },
+  pickedShapes,
 )((state) => state.chartId);
 
 /** @internal */
@@ -46,29 +38,3 @@ export const getPickedShapesLayerValues = createCachedSelector(
   [getPickedShapes],
   pickShapesLayerValues,
 )((state) => state.chartId);
-
-/** @internal */
-export function pickShapesLayerValues(pickedShapes: QuadViewModel[]): Array<Array<LayerValue>> {
-  const maxDepth = pickedShapes.reduce((acc, curr) => Math.max(acc, curr.depth), 0);
-  const elements = pickedShapes
-    .filter(({ depth }) => depth === maxDepth)
-    .map<Array<LayerValue>>((model) => {
-      const values: Array<LayerValue> = [];
-      values.push({
-        groupByRollup: model.dataName,
-        value: model.value,
-      });
-      let parent = model[PARENT_KEY];
-      let index = model[PARENT_KEY].sortIndex;
-      while (parent[DEPTH_KEY] > 0) {
-        const value = parent[AGGREGATE_KEY];
-        const dataName = parent[PARENT_KEY][CHILDREN_KEY][index][0];
-        values.push({ groupByRollup: dataName, value });
-
-        parent = parent[PARENT_KEY];
-        index = parent[SORT_INDEX_KEY];
-      }
-      return values.reverse();
-    });
-  return elements;
-}

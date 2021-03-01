@@ -20,8 +20,8 @@
 import classNames from 'classnames';
 import React, { Component, createRef, MouseEventHandler } from 'react';
 
-import { LegendItem, LegendItemExtraValues } from '../../commons/legend';
-import { SeriesIdentifier } from '../../commons/series_id';
+import { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { SeriesIdentifier } from '../../common/series_id';
 import { LegendItemListener, BasicListener, LegendColorPicker, LegendAction } from '../../specs/settings';
 import {
   clearTemporaryColors as clearTemporaryColorsAction,
@@ -33,7 +33,7 @@ import {
   onLegendItemOverAction,
   onToggleDeselectSeriesAction,
 } from '../../state/actions/legend';
-import { Position, Color } from '../../utils/commons';
+import { Position, Color } from '../../utils/common';
 import { deepEqual } from '../../utils/fast_deep_equal';
 import { Color as ItemColor } from './color';
 import { renderExtra } from './extra';
@@ -63,25 +63,16 @@ export interface LegendItemProps {
   toggleDeselectSeriesAction: typeof onToggleDeselectSeriesAction;
 }
 
-/**
- * @internal
- * @param item
- * @param props
- */
+/** @internal */
 export function renderLegendItem(
   item: LegendItem,
   props: Omit<LegendItemProps, 'item'>,
   totalItems: number,
   index: number,
 ) {
-  const {
-    seriesIdentifier: { key },
-    childId,
-  } = item;
-
   return (
     <LegendListItem
-      key={`${key}-${childId}-${index}`}
+      key={`${index}`}
       item={item}
       totalItems={totalItems}
       position={props.position}
@@ -124,8 +115,8 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     return !deepEqual(this.props, nextProps) || !deepEqual(this.state, nextState);
   }
 
-  handleColorClick = (changable: boolean): MouseEventHandler | undefined =>
-    changable
+  handleColorClick = (changeable: boolean): MouseEventHandler | undefined =>
+    changeable
       ? (event) => {
           event.stopPropagation();
           this.toggleIsOpen();
@@ -140,9 +131,9 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     const { onMouseOver, mouseOverAction, item } = this.props;
     // call the settings listener directly if available
     if (onMouseOver) {
-      onMouseOver(item.seriesIdentifier);
+      onMouseOver(item.seriesIdentifiers);
     }
-    mouseOverAction(item.seriesIdentifier.key);
+    mouseOverAction(item.path);
   };
 
   onLegendItemMouseOut = () => {
@@ -157,7 +148,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   /**
    * Returns click function only if toggleable or click listern is provided
    */
-  handleLabelClick = (legendItemId: SeriesIdentifier): MouseEventHandler | undefined => {
+  handleLabelClick = (legendItemId: SeriesIdentifier[]): MouseEventHandler | undefined => {
     const { item, onClick, toggleDeselectSeriesAction } = this.props;
 
     if (!item.isToggleable && !onClick) {
@@ -183,16 +174,16 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       setTemporaryColorAction,
       setPersistedColorAction,
     } = this.props;
-    const { seriesIdentifier, color } = item;
-
+    const { seriesIdentifiers, color } = item;
+    const seriesKeys = seriesIdentifiers.map(({ key }) => key);
     const handleClose = () => {
-      setPersistedColorAction(seriesIdentifier.key, this.shouldClearPersistedColor ? null : color);
+      setPersistedColorAction(seriesKeys, this.shouldClearPersistedColor ? null : color);
       clearTemporaryColorsAction();
       this.toggleIsOpen();
     };
     const handleChange = (c: Color | null) => {
       this.shouldClearPersistedColor = c === null;
-      setTemporaryColorAction(seriesIdentifier.key, c);
+      setTemporaryColorAction(seriesKeys, c);
     };
     if (ColorPicker && this.state.isOpen && this.colorRef.current) {
       return (
@@ -201,7 +192,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           color={color}
           onClose={handleClose}
           onChange={handleChange}
-          seriesIdentifier={seriesIdentifier}
+          seriesIdentifiers={seriesIdentifiers}
         />
       );
     }
@@ -209,13 +200,13 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
 
   render() {
     const { extraValues, item, showExtra, colorPicker, position, totalItems, action: Action } = this.props;
-    const { color, isSeriesHidden, isItemHidden, seriesIdentifier, label } = item;
+    const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label } = item;
     const itemClassNames = classNames('echLegendItem', `echLegendItem--${position}`, {
       'echLegendItem--hidden': isSeriesHidden,
       'echLegendItem__extra--hidden': isItemHidden,
     });
     const hasColorPicker = Boolean(colorPicker);
-    const extra = getExtra(extraValues, item, totalItems);
+    const extra = showExtra && getExtra(extraValues, item, totalItems);
     const style = item.depth
       ? {
           marginLeft: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
@@ -230,6 +221,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           style={style}
           data-ech-series-name={label}
         >
+          <div className="background" />
           <ItemColor
             ref={this.colorRef}
             color={color}
@@ -241,13 +233,13 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           <ItemLabel
             label={label}
             isToggleable={item.isToggleable}
-            onClick={this.handleLabelClick(seriesIdentifier)}
+            onClick={this.handleLabelClick(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
           />
-          {showExtra && extra && renderExtra(extra, isSeriesHidden)}
+          {extra && renderExtra(extra, isSeriesHidden)}
           {Action && (
             <div className="echLegendItem__action">
-              <Action series={seriesIdentifier} color={color} label={label} />
+              <Action series={seriesIdentifiers} color={color} label={label} />
             </div>
           )}
         </li>

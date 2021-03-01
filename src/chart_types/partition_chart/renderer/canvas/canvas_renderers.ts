@@ -17,9 +17,12 @@
  * under the License.
  */
 
-import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
-import { Color } from '../../../../utils/commons';
-import { Pixels } from '../../layout/types/geometry_types';
+import { addOpacity } from '../../../../common/color_calcs';
+import { TAU } from '../../../../common/constants';
+import { Pixels } from '../../../../common/geometry';
+import { cssFontShorthand } from '../../../../common/text_utils';
+import { renderLayers, withContext } from '../../../../renderers/canvas';
+import { Color } from '../../../../utils/common';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
@@ -28,9 +31,6 @@ import {
   ShapeViewModel,
   TextRow,
 } from '../../layout/types/viewmodel_types';
-import { addOpacity } from '../../layout/utils/calcs';
-import { TAU } from '../../layout/utils/constants';
-import { cssFontShorthand } from '../../layout/utils/measure';
 import { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
@@ -40,7 +40,7 @@ const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to a
 
 function renderTextRow(
   ctx: CanvasRenderingContext2D,
-  { fontSize, fillTextColor, rotation, verticalAlignment, leftAlign }: RowSet,
+  { fontSize, fillTextColor, rotation, verticalAlignment, leftAlign, container, clipText }: RowSet,
   linkLabelTextColor: string,
 ) {
   return (currentRow: TextRow) => {
@@ -48,8 +48,16 @@ function renderTextRow(
       ? currentRow.rowAnchorX - currentRow.maximumLength / 2
       : currentRow.rowAnchorX - (Math.cos(rotation) * currentRow.length) / 2;
     const cry = -currentRow.rowAnchorY + (Math.sin(rotation) * currentRow.length) / 2;
+    if (!Number.isFinite(crx) || !Number.isFinite(cry)) {
+      return;
+    }
     withContext(ctx, (ctx) => {
       ctx.scale(1, -1);
+      if (clipText) {
+        ctx.rect(container.x0 + 1, container.y0 + 1, container.x1 - container.x0 - 2, container.y1 - container.y0 - 2);
+        ctx.clip();
+      }
+      ctx.beginPath();
       ctx.translate(crx, cry);
       ctx.rotate(-rotation);
       ctx.fillStyle = fillTextColor ?? linkLabelTextColor;
@@ -58,6 +66,7 @@ function renderTextRow(
         ctx.font = cssFontShorthand(box, fontSize);
         ctx.fillText(box.text, box.width / 2 + box.wordBeginning, 0);
       });
+      ctx.closePath();
     });
     // for debug use: this draws magenta boxes for where the text needs to fit
     // note: `container` is a property of the RowSet, needs to be added
@@ -261,9 +270,6 @@ export function renderPartitionCanvas2d(
     // unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
-      // clear the canvas
-      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000),
-
       // bottom layer: sectors (pie slices, ring sectors etc.)
       (ctx: CanvasRenderingContext2D) =>
         isSunburst(config.partitionLayout) ? renderSectors(ctx, quadViewModel) : renderRectangles(ctx, quadViewModel),

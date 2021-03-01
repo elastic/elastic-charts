@@ -19,7 +19,7 @@
 
 import createCachedSelector from 're-reselect';
 
-import { LegendItem } from '../../../../commons/legend';
+import { LegendItem } from '../../../../common/legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_deselected_data_series';
 import { getColorScale } from './get_color_scale';
@@ -45,9 +45,11 @@ export const computeLegendSelector = createCachedSelector(
       return {
         color,
         label: `> ${tick}`,
-        seriesIdentifier,
+        seriesIdentifiers: [seriesIdentifier],
         isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === seriesIdentifier.key),
         isToggleable: true,
+        path: [{ index: 0, value: seriesIdentifier.key }],
+        keys: [],
       };
     });
   },

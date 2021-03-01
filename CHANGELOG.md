@@ -1,3 +1,72 @@
+## [25.0.1](https://github.com/elastic/elastic-charts/compare/v25.0.0...v25.0.1) (2021-02-17)
+
+
+### Reverts
+
+* log scale improvements and options ([#1014](https://github.com/elastic/elastic-charts/issues/1014)) ([2189f92](https://github.com/elastic/elastic-charts/commit/2189f927214f6511add0435b3cd1677134a50011))
+
+# [25.0.0](https://github.com/elastic/elastic-charts/compare/v24.6.0...v25.0.0) (2021-02-16)
+
+
+### Bug Fixes
+
+* group legend items by label and color ([#999](https://github.com/elastic/elastic-charts/issues/999)) ([5d32f23](https://github.com/elastic/elastic-charts/commit/5d32f23487cd458f87b007b841e8bf41bbeccd56))
+
+
+### Features
+
+* **axis:** log scale improvements and options ([#1014](https://github.com/elastic/elastic-charts/issues/1014)) ([0f52688](https://github.com/elastic/elastic-charts/commit/0f52688ba0f187b25d8790d394550abb14179225))
+
+
+### BREAKING CHANGES
+
+* The `LegendActionProps` and the `LegendColorPickerProps`, used to add actions and color picker through the legend now receive an array of `SeriesIdentifiers`
+
+# [24.6.0](https://github.com/elastic/elastic-charts/compare/v24.5.1...v24.6.0) (2021-02-15)
+
+
+### Bug Fixes
+
+* **legend:** width with scroll bar ([#1019](https://github.com/elastic/elastic-charts/issues/1019)) ([45bd0d5](https://github.com/elastic/elastic-charts/commit/45bd0d5322cd547d88d5a618e4ae6e2aa4ec989c))
+
+
+### Features
+
+* sort values in actions by closest to cursor ([#1023](https://github.com/elastic/elastic-charts/issues/1023)) ([e1da4e5](https://github.com/elastic/elastic-charts/commit/e1da4e578f619f19813c7c3172ca2c972fe188a2))
+* **axis:** small multiples axis improvements ([#1004](https://github.com/elastic/elastic-charts/issues/1004)) ([514466f](https://github.com/elastic/elastic-charts/commit/514466f557a5ef9a06ea35f0f091bcf33bfd8ae6))
+* **partition:** drilldown ([#995](https://github.com/elastic/elastic-charts/issues/995)) ([20bbdae](https://github.com/elastic/elastic-charts/commit/20bbdaeade4134fef0e0f486af3693bf348733d4))
+
+## [24.5.1](https://github.com/elastic/elastic-charts/compare/v24.5.0...v24.5.1) (2021-02-05)
+
+
+### Bug Fixes
+
+* missing exported types ([#1005](https://github.com/elastic/elastic-charts/issues/1005)) ([f6806de](https://github.com/elastic/elastic-charts/commit/f6806de28198e2a288039e78d585e3c8383722e7))
+
+# [24.5.0](https://github.com/elastic/elastic-charts/compare/v24.4.0...v24.5.0) (2021-01-30)
+
+
+### Bug Fixes
+
+* add theme min radius to point shape ([#996](https://github.com/elastic/elastic-charts/issues/996)) ([eb37175](https://github.com/elastic/elastic-charts/commit/eb3717584a5db5a0ea56fdcfea1839c23d92900b))
+* align tooltip z-index to EUI tooltip z-index ([#931](https://github.com/elastic/elastic-charts/issues/931)) ([ffd626b](https://github.com/elastic/elastic-charts/commit/ffd626baa8bc7ba3c00b8f5257ce9bac7d72c660))
+* chart state and series functions cleanup ([#989](https://github.com/elastic/elastic-charts/issues/989)) ([944ac6c](https://github.com/elastic/elastic-charts/commit/944ac6cf1ce12f9993411cf44bb3fa51f25b1241))
+* create unique ids for dot icons ([#971](https://github.com/elastic/elastic-charts/issues/971)) ([e1ce768](https://github.com/elastic/elastic-charts/commit/e1ce76893fe7ccb0e59116d4a8d420aef4655fea))
+* external tooltip legend extra value sync ([#993](https://github.com/elastic/elastic-charts/issues/993)) ([13ad05a](https://github.com/elastic/elastic-charts/commit/13ad05ab19b58a034f81d6b43b8925315b49de6d))
+* **legend:** disable focus and keyboard navigation for legend in partition ch… ([#952](https://github.com/elastic/elastic-charts/issues/952)) ([03bd2f7](https://github.com/elastic/elastic-charts/commit/03bd2f755038117b19e3e5b6459bfc75a51656d4))
+* **legend:** hierarchical legend order should follow the tree paths ([#947](https://github.com/elastic/elastic-charts/issues/947)) ([f9218ad](https://github.com/elastic/elastic-charts/commit/f9218ad842d07a67eef4cbfb1209937db9da6853)), closes [#944](https://github.com/elastic/elastic-charts/issues/944)
+* **legend:** remove ids for circles ([#973](https://github.com/elastic/elastic-charts/issues/973)) ([b3f4f90](https://github.com/elastic/elastic-charts/commit/b3f4f90e006f5b4c9b476460a71685396486cc54))
+
+
+### Features
+
+* **cursor:** improve theme styling for crosshair ([#980](https://github.com/elastic/elastic-charts/issues/980)) ([6c4dafd](https://github.com/elastic/elastic-charts/commit/6c4dafd1cdeed5b61ca4c89790faa707b5c083b5))
+* **legend:**  display pie chart legend extra ([#939](https://github.com/elastic/elastic-charts/issues/939)) ([d14de01](https://github.com/elastic/elastic-charts/commit/d14de010c1d7ced362da274153d7f3c464c3170b))
+* **legend:** add keyboard navigation ([#880](https://github.com/elastic/elastic-charts/issues/880)) ([87c227d](https://github.com/elastic/elastic-charts/commit/87c227da41dc4a6860f7ae895e80586ce8211092))
+* **partition:** Flame and icicle chart ([#965](https://github.com/elastic/elastic-charts/issues/965)) ([3df73d0](https://github.com/elastic/elastic-charts/commit/3df73d0e1f74b66e688a64e477c78d5ed3225f0a))
+* **partition:** legend hover options ([#978](https://github.com/elastic/elastic-charts/issues/978)) ([f810d94](https://github.com/elastic/elastic-charts/commit/f810d94c03f91191e9d86d156b25db22be888a59))
+* **xy:** support multiple point shapes on line, area and bubble charts ([#988](https://github.com/elastic/elastic-charts/issues/988)) ([1392b7d](https://github.com/elastic/elastic-charts/commit/1392b7d8f77087fcb8592a3697e3eadae8db1f33))
+
 # [24.4.0](https://github.com/elastic/elastic-charts/compare/v24.3.0...v24.4.0) (2020-12-09)
 
 
@@ -844,7 +913,7 @@ Non-breaking changes:
 
 ### Bug Fixes
 
-* align series names on splitted series configuration ([#421](https://github.com/elastic/elastic-charts/issues/421)) ([bbecbcc](https://github.com/elastic/elastic-charts/commit/bbecbcc)), closes [#420](https://github.com/elastic/elastic-charts/issues/420)
+* align series names on split series configuration ([#421](https://github.com/elastic/elastic-charts/issues/421)) ([bbecbcc](https://github.com/elastic/elastic-charts/commit/bbecbcc)), closes [#420](https://github.com/elastic/elastic-charts/issues/420)
 
 ## [13.5.2](https://github.com/elastic/elastic-charts/compare/v13.5.1...v13.5.2) (2019-10-10)
 
@@ -1167,7 +1236,7 @@ Non-breaking changes:
 
 ### Bug Fixes
 
-* handle splitted series with group value to 0 ([#289](https://github.com/elastic/elastic-charts/issues/289)) ([0f2217e](https://github.com/elastic/elastic-charts/commit/0f2217e)), closes [#288](https://github.com/elastic/elastic-charts/issues/288)
+* handle split series with group value to 0 ([#289](https://github.com/elastic/elastic-charts/issues/289)) ([0f2217e](https://github.com/elastic/elastic-charts/commit/0f2217e)), closes [#288](https://github.com/elastic/elastic-charts/issues/288)
 
 # [9.0.0](https://github.com/elastic/elastic-charts/compare/v8.1.8...v9.0.0) (2019-08-05)
 

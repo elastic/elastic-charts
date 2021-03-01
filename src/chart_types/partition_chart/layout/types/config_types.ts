@@ -19,10 +19,10 @@
 
 import { $Values as Values } from 'utility-types';
 
-import { Color, StrokeStyle, ValueFormatter } from '../../../../utils/commons';
+import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from '../../../../common/geometry';
+import { Font, FontFamily, PartialFont, TextContrast } from '../../../../common/text_utils';
+import { Color, StrokeStyle, ValueFormatter } from '../../../../utils/common';
 import { PerSideDistance } from '../../../../utils/dimensions';
-import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from './geometry_types';
-import { Font, FontFamily, PartialFont } from './types';
 
 export const PartitionLayout = Object.freeze({
   sunburst: 'sunburst' as const,
@@ -38,8 +38,6 @@ export type PerSidePadding = PerSideDistance;
 
 export type Padding = Pixels | Partial<PerSidePadding>;
 
-export type TextContrast = boolean | number;
-
 interface LabelConfig extends Font {
   textColor: Color;
   textInvertible: boolean;
@@ -51,7 +49,9 @@ interface LabelConfig extends Font {
 }
 
 /** @public */
-export type FillLabelConfig = LabelConfig;
+export interface FillLabelConfig extends LabelConfig {
+  clipText: boolean;
+}
 
 export interface LinkLabelConfig extends LabelConfig {
   fontSize: Pixels; // todo consider putting it in Font
@@ -90,6 +90,8 @@ export interface StaticConfig extends FillFontSizeRange {
   clockwiseSectors: boolean;
   specialFirstInnermostSector: boolean;
   partitionLayout: PartitionLayout;
+  /** @alpha */
+  drilldown: boolean;
 
   // general text config
   fontFamily: FontFamily;
@@ -117,6 +119,7 @@ export interface StaticConfig extends FillFontSizeRange {
 
 export type EasingFunction = (x: Ratio) => Ratio;
 
+/** @alpha */
 export interface AnimKeyframe {
   time: number;
   easingFunction: EasingFunction;
@@ -124,49 +127,9 @@ export interface AnimKeyframe {
 }
 
 export interface Config extends StaticConfig {
+  /** @alpha */
   animation: {
     duration: TimeMs;
     keyframes: Array<AnimKeyframe>;
   };
-}
-
-// switching to `io-ts` style, generic way of combining static and runtime type info - 1st step
-class Type<A> {
-  dflt: A;
-
-  reconfigurable: boolean | string;
-
-  documentation = 'string';
-
-  constructor(dflt: A, reconfigurable: boolean | string, documentation: string) {
-    this.dflt = dflt;
-    this.reconfigurable = reconfigurable;
-    this.documentation = documentation;
-  }
-}
-
-export class Numeric extends Type<number> {
-  min: number;
-
-  max: number;
-
-  type = 'number';
-
-  constructor({
-    dflt,
-    min,
-    max,
-    reconfigurable,
-    documentation,
-  }: {
-    dflt: number;
-    min: number;
-    max: number;
-    reconfigurable: boolean | string;
-    documentation: string;
-  }) {
-    super(dflt, reconfigurable, documentation);
-    this.min = min;
-    this.max = max;
-  }
 }

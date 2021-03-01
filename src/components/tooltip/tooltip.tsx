@@ -23,7 +23,7 @@ import React, { memo, useCallback, useMemo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { isColorValid } from '../../chart_types/partition_chart/layout/utils/calcs';
+import { isColorValid } from '../../common/color_calcs';
 import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import { GlobalChartState, BackwardRef } from '../../state/chart_state';
@@ -35,7 +35,7 @@ import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
-import { Rotation, isDefined } from '../../utils/commons';
+import { Rotation, isDefined } from '../../utils/common';
 import { TooltipPortal, TooltipPortalSettings, AnchorPosition, Placement } from '../portal';
 import { getTooltipSettings } from './get_tooltip_settings';
 import { TooltipInfo, TooltipAnchorPosition } from './types';
@@ -203,9 +203,7 @@ const TooltipComponent = ({
       boundary: boundary === 'chart' && chartRef.current ? chartRef.current : undefined,
     };
   }, [settings, chartRef, rotation]);
-  if (!visible) {
-    return null;
-  }
+
   return (
     <TooltipPortal
       scope="MainTooltip"

@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { SeriesIdentifier } from '../../commons/series_id';
+import { CategoryKey } from '../../common/category';
+import { SeriesIdentifier } from '../../common/series_id';
 
 /** @internal */
 export const ON_LEGEND_ITEM_OVER = 'ON_LEGEND_ITEM_OVER';
@@ -28,9 +29,15 @@ export const ON_LEGEND_ITEM_OUT = 'ON_LEGEND_ITEM_OUT';
 /** @internal */
 export const ON_TOGGLE_DESELECT_SERIES = 'ON_TOGGLE_DESELECT_SERIES';
 
+/** @public */
+export type LegendPathElement = { index: number; value: CategoryKey };
+
+/** @public */
+export type LegendPath = LegendPathElement[];
+
 interface LegendItemOverAction {
   type: typeof ON_LEGEND_ITEM_OVER;
-  legendItemKey: string | null;
+  legendPath: LegendPath;
 }
 interface LegendItemOutAction {
   type: typeof ON_LEGEND_ITEM_OUT;
@@ -39,13 +46,13 @@ interface LegendItemOutAction {
 /** @internal */
 export interface ToggleDeselectSeriesAction {
   type: typeof ON_TOGGLE_DESELECT_SERIES;
-  legendItemId: SeriesIdentifier;
+  legendItemIds: SeriesIdentifier[];
   negate: boolean;
 }
 
 /** @internal */
-export function onLegendItemOverAction(legendItemKey: string | null): LegendItemOverAction {
-  return { type: ON_LEGEND_ITEM_OVER, legendItemKey };
+export function onLegendItemOverAction(legendPath: LegendPath): LegendItemOverAction {
+  return { type: ON_LEGEND_ITEM_OVER, legendPath };
 }
 
 /** @internal */
@@ -55,10 +62,10 @@ export function onLegendItemOutAction(): LegendItemOutAction {
 
 /** @internal */
 export function onToggleDeselectSeriesAction(
-  legendItemId: SeriesIdentifier,
+  legendItemIds: SeriesIdentifier[],
   negate = false,
 ): ToggleDeselectSeriesAction {
-  return { type: ON_TOGGLE_DESELECT_SERIES, legendItemId, negate };
+  return { type: ON_TOGGLE_DESELECT_SERIES, legendItemIds, negate };
 }
 
 /** @internal */

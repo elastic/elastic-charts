@@ -19,8 +19,8 @@
 
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { identity } from '../../../utils/commons';
-import { computeContinuousDataDomain } from '../../../utils/domain';
+import { identity } from '../../../utils/common';
+import { computeContinuousDataDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { getSpecDomainGroupId } from '../state/utils/spec';
@@ -43,11 +43,12 @@ export function mergeYDomain(dataSeries: DataSeries[], domainsByGroupId: Map<Gro
     const [{ spec }] = groupedDataSeries;
     const groupId = getSpecDomainGroupId(spec);
 
-    const stacked = groupedDataSeries.filter(({ isStacked }) => isStacked);
-    const nonStacked = groupedDataSeries.filter(({ isStacked }) => !isStacked);
+    const stacked = groupedDataSeries.filter(({ isStacked, isFiltered }) => isStacked && !isFiltered);
+    const nonStacked = groupedDataSeries.filter(({ isStacked, isFiltered }) => !isStacked && !isFiltered);
     const customDomain = domainsByGroupId.get(groupId);
     const hasNonZeroBaselineTypes = groupedDataSeries.some(
-      ({ seriesType }) => seriesType === SeriesTypes.Bar || seriesType === SeriesTypes.Area,
+      ({ seriesType, isFiltered }) =>
+        seriesType === SeriesTypes.Bar || (seriesType === SeriesTypes.Area && !isFiltered),
     );
     const domain = mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, customDomain);
     if (!domain) {
@@ -74,7 +75,7 @@ function mergeYDomainForGroup(
   const [{ stackMode, spec }] = dataSeries;
   const groupId = getSpecDomainGroupId(spec);
 
-  let domain: number[];
+  let domain: ContinuousDomain;
   if (stackMode === StackMode.Percentage) {
     domain = computeContinuousDataDomain([0, 1], identity, customDomain);
   } else {
@@ -84,6 +85,7 @@ function mergeYDomainForGroup(
     if (customDomain?.fit !== true && shouldScaleToExtent) {
       newCustomDomain.fit = true;
     }
+
     // compute stacked domain
     const stackedDomain = computeYDomain(stacked, hasZeroBaselineSpecs);
 
@@ -120,6 +122,8 @@ function mergeYDomainForGroup(
     scaleType: groupYScaleType,
     groupId,
     domain,
+    logBase: customDomain?.logBase,
+    logMinLimit: customDomain?.logMinLimit,
   };
 }
 

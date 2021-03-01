@@ -35,9 +35,9 @@ import {
 } from '../../src';
 import { BandFillColorAccessorInput } from '../../src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '../../src/chart_types/goal_chart/specs/constants';
-import { config } from '../../src/chart_types/partition_chart/layout/config/config';
+import { config } from '../../src/chart_types/partition_chart/layout/config';
 import { mocks } from '../../src/mocks/hierarchical';
-import { Color } from '../../src/utils/commons';
+import { Color } from '../../src/utils/common';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 import { productLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';

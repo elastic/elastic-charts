@@ -25,8 +25,8 @@ import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../../
 import { MockStore } from '../../../../mocks/store';
 import { ScaleType } from '../../../../scales/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { Position } from '../../../../utils/commons';
-import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../../utils/themes/theme';
+import { Position } from '../../../../utils/common';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../../utils/themes/merge_utils';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { AnnotationDomainTypes } from '../../utils/specs';
 import { AnnotationLineProps } from './types';
@@ -83,14 +83,16 @@ describe('annotation marker', () => {
           x2: 100,
           y2: 80,
         },
-        details: { detailsText: 'foo', headerText: '2' },
-
-        marker: {
-          icon: <div />,
-          color: '#777',
-          dimension: { width: 0, height: 0 },
-          position: { left: -0, top: 80 },
-        },
+        specId: 'foo-line',
+        datum: { dataValue: 2, details: 'foo' },
+        markers: [
+          {
+            icon: <div />,
+            color: '#777',
+            position: { left: -0, top: 80 },
+            alignment: 'left',
+          },
+        ],
       }),
     ];
     expect(dimensions.get(id)).toEqual(expectedDimensions);
@@ -121,13 +123,16 @@ describe('annotation marker', () => {
           x2: 100,
           y2: 80,
         },
-        details: { detailsText: 'foo', headerText: '2' },
-        marker: {
-          icon: <div />,
-          color: '#777',
-          dimension: { width: 0, height: 0 },
-          position: { left: -0, top: 20 },
-        },
+        specId: 'foo-line',
+        datum: { dataValue: 2, details: 'foo' },
+        markers: [
+          {
+            icon: <div />,
+            color: '#777',
+            position: { left: -0, top: 20 },
+            alignment: 'left',
+          },
+        ],
       }),
     ];
     expect(dimensions.get(id)).toEqual(expectedDimensions);
@@ -148,19 +153,22 @@ describe('annotation marker', () => {
 
     const expectedDimensions: AnnotationLineProps[] = [
       MockAnnotationLineProps.default({
-        details: { detailsText: 'foo', headerText: '2' },
+        specId: 'foo-line',
+        datum: { dataValue: 2, details: 'foo' },
         linePathPoints: {
           x1: 20,
           y1: 0,
           x2: 20,
           y2: 100,
         },
-        marker: {
-          icon: <div />,
-          color: '#777',
-          dimension: { width: 0, height: 0 },
-          position: { top: 100, left: 20 },
-        },
+        markers: [
+          {
+            icon: <div />,
+            color: '#777',
+            position: { top: 100, left: 20 },
+            alignment: 'bottom',
+          },
+        ],
       }),
     ];
     expect(dimensions.get(id)).toEqual(expectedDimensions);

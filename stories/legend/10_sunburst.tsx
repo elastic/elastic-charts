@@ -17,11 +17,11 @@
  * under the License.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
-import { config } from '../../src/chart_types/partition_chart/layout/config/config';
+import { Chart, Datum, LegendStrategy, MODEL_KEY, Partition, PartitionLayout, Settings } from '../../src';
+import { config } from '../../src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '../../src/mocks/hierarchical';
 import { STORYBOOK_LIGHT_THEME } from '../shared';
@@ -34,16 +34,33 @@ import {
 } from '../utils/utils';
 
 export const Example = () => {
+  const partitionLayout = select(
+    'Partition Layout',
+    {
+      treemap: PartitionLayout.treemap,
+      sunburst: PartitionLayout.sunburst,
+    },
+    PartitionLayout.sunburst,
+  );
   const flatLegend = boolean('flatLegend', true);
+  const showLegendExtra = boolean('showLegendExtra', false);
   const legendMaxDepth = number('legendMaxDepth', 2, {
     min: 0,
     max: 3,
     step: 1,
   });
+  const legendStrategy = select('legendStrategy', LegendStrategy, LegendStrategy.Key);
 
   return (
     <Chart className="story-chart">
-      <Settings showLegend flatLegend={flatLegend} legendMaxDepth={legendMaxDepth} theme={STORYBOOK_LIGHT_THEME} />
+      <Settings
+        showLegend
+        showLegendExtra={showLegendExtra}
+        flatLegend={flatLegend}
+        legendStrategy={legendStrategy}
+        legendMaxDepth={legendMaxDepth}
+        theme={STORYBOOK_LIGHT_THEME}
+      />
       <Partition
         id="spec_1"
         data={mocks.miniSunburst}
@@ -61,7 +78,7 @@ export const Example = () => {
             groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
             nodeLabel: (d: any) => regionLookup[d].regionName,
             shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.5)(d.parent.sortIndex),
+              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.5)(d[MODEL_KEY].sortIndex),
             },
           },
           {
@@ -69,12 +86,12 @@ export const Example = () => {
             nodeLabel: (d: any) => countryLookup[d].name,
             shape: {
               fillColor: (d: ShapeTreeNode) =>
-                discreteColor(colorBrewerCategoricalStark9, 0.3)(d.parent.parent.sortIndex),
+                discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex),
             },
           },
         ]}
         config={{
-          partitionLayout: PartitionLayout.sunburst,
+          partitionLayout,
           linkLabel: {
             maxCount: 0,
             fontSize: 14,

@@ -17,13 +17,21 @@
  * under the License.
  */
 
-import { StrokeStyle, ValueFormatter, Color } from '../../../../utils/commons';
+import { argsToRGBString, stringToRGB } from '../../../../common/color_library_wrappers';
+import { TAU } from '../../../../common/constants';
+import {
+  Distance,
+  meanAngle,
+  Pixels,
+  PointTuple,
+  Radius,
+  trueBearingToStandardPositionAngle,
+} from '../../../../common/geometry';
+import { Part, TextMeasure } from '../../../../common/text_utils';
+import { StrokeStyle, ValueFormatter, Color } from '../../../../utils/common';
 import { Layer } from '../../specs';
-import { percentValueGetter } from '../config/config';
-import { meanAngle } from '../geometry';
+import { MODEL_KEY, percentValueGetter } from '../config';
 import { Config, PartitionLayout } from '../types/config_types';
-import { Distance, Pixels, PointTuple, Radius } from '../types/geometry_types';
-import { TextMeasure, Part } from '../types/types';
 import {
   nullShapeViewModel,
   OutsideLinksViewModel,
@@ -35,8 +43,7 @@ import {
   ShapeViewModel,
   ValueGetterFunction,
 } from '../types/viewmodel_types';
-import { argsToRGBString, stringToRGB } from '../utils/color_library_wrappers';
-import { TAU } from '../utils/constants';
+import { ringSectorConstruction } from '../utils/circline_geometry';
 import {
   aggregateAccessor,
   ArrayEntry,
@@ -49,13 +56,11 @@ import {
   HierarchyOfArrays,
   pathAccessor,
 } from '../utils/group_by_rollup';
-import { trueBearingToStandardPositionAngle } from '../utils/math';
 import { sunburst } from '../utils/sunburst';
 import { getTopPadding, treemap } from '../utils/treemap';
 import {
   fillTextLayout,
   getRectangleRowGeometry,
-  ringSectorConstruction,
   getSectorRowGeometry,
   inSectorRotation,
   nodeId,
@@ -73,10 +78,14 @@ function topGrooveAccessor(topGroovePx: Pixels) {
 function rectangleFillOrigins(n: ShapeTreeNode): PointTuple {
   return [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
 }
+
+/** potential internal */
 export const ringSectorInnerRadius = (n: ShapeTreeNode): Radius => n.y0px;
 
+/** potential internal */
 export const ringSectorOuterRadius = (n: ShapeTreeNode): Radius => n.y1px;
 
+/** potential internal */
 export const ringSectorMiddleRadius = (n: ShapeTreeNode): Radius => n.yMidPx;
 
 function sectorFillOrigins(fillOutside: boolean) {
@@ -104,7 +113,7 @@ export function makeQuadViewModel(
     const layer = layers[node.depth - 1];
     const fillColorSpec = layer && layer.shape && layer.shape.fillColor;
     const fill = fillColorSpec ?? 'rgba(128,0,0,0.5)';
-    const shapeFillColor = typeof fill === 'function' ? fill(node, node.sortIndex, node.parent.children) : fill;
+    const shapeFillColor = typeof fill === 'function' ? fill(node, node.sortIndex, node[MODEL_KEY].children) : fill;
     const { r, g, b, opacity } = stringToRGB(shapeFillColor);
     const fillColor = argsToRGBString(r, g, b, opacity * opacityMultiplier);
     const strokeWidth = sectorLineWidth;
@@ -407,7 +416,7 @@ function partToShapeTreeNode(treemapLayout: boolean, innerRadius: Radius, ringTh
     dataName: entryKey(node),
     depth: depthAccessor(node),
     value: aggregateAccessor(node),
-    parent: parentAccessor(node),
+    [MODEL_KEY]: parentAccessor(node),
     sortIndex: sortIndexAccessor(node),
     path: pathAccessor(node),
     x0,

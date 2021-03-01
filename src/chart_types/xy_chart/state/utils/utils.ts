@@ -17,14 +17,13 @@
  * under the License.
  */
 
-import { SeriesKey, SeriesIdentifier } from '../../../../commons/series_id';
+import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
-import { GroupBySpec } from '../../../../specs';
+import { CustomXDomain, SortSeriesByConfig } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
-import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/commons';
+import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
-import { Domain } from '../../../../utils/domain';
 import {
   PointGeometry,
   BarGeometry,
@@ -34,8 +33,9 @@ import {
   PerPanel,
 } from '../../../../utils/geometry';
 import { GroupId, SpecId } from '../../../../utils/ids';
+import { getRenderingCompareFn, SeriesCompareFn } from '../../../../utils/series_sort';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
-import { getPredicateFn, Predicate } from '../../../heatmap/utils/commons';
+import { getPredicateFn, Predicate } from '../../../heatmap/utils/common';
 import { XDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
 import { isStackedSpec, mergeYDomain } from '../../domains/y_domain';
@@ -43,25 +43,16 @@ import { renderArea } from '../../rendering/area';
 import { renderBars } from '../../rendering/bars';
 import { renderBubble } from '../../rendering/bubble';
 import { renderLine } from '../../rendering/line';
-import { isDatumFilled } from '../../rendering/utils';
 import { defaultTickFormatter } from '../../utils/axis_utils';
+import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
 import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../../utils/scales';
-import {
-  DataSeries,
-  SeriesCollectionValue,
-  getSeriesIndex,
-  getFormattedDataSeries,
-  getDataSeriesFromSpecs,
-  XYChartSeriesIdentifier,
-  getSeriesKey,
-} from '../../utils/series';
+import { DataSeries, getFormattedDataSeries, getDataSeriesFromSpecs, getSeriesKey } from '../../utils/series';
 import {
   AxisSpec,
   BasicSeriesSpec,
-  DomainRange,
   HistogramModeAlignment,
   HistogramModeAlignments,
   isAreaSeriesSpec,
@@ -72,49 +63,32 @@ import {
   FitConfig,
   isBubbleSeriesSpec,
   YDomainRange,
-  StackMode,
 } from '../../utils/specs';
 import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales';
+import { SmallMultiplesGroupBy } from '../selectors/get_specs';
 import { isHorizontalRotation } from './common';
 import { getSpecsById, getAxesSpecForSpecId, getSpecDomainGroupId } from './spec';
-import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform, LastValues } from './types';
-
-/**
- * Adds or removes series from array or series
- * @param series
- * @param target
- * @internal
- */
-export function updateDeselectedDataSeries(
-  series: XYChartSeriesIdentifier[],
-  target: XYChartSeriesIdentifier,
-): XYChartSeriesIdentifier[] {
-  const seriesIndex = getSeriesIndex(series, target);
-  const updatedSeries = series ? [...series] : [];
-
-  if (seriesIndex > -1) {
-    updatedSeries.splice(seriesIndex, 1);
-  } else {
-    updatedSeries.push(target);
-  }
-  return updatedSeries;
-}
+import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform } from './types';
 
 /**
  * Return map association between `seriesKey` and only the custom colors string
- * @param seriesSpecs
- * @param seriesCollection
  * @internal
+ * @param dataSeries
  */
-export function getCustomSeriesColors(
-  seriesSpecs: BasicSeriesSpec[],
-  seriesCollection: Map<SeriesKey, SeriesCollectionValue>,
-): Map<SeriesKey, Color> {
+export function getCustomSeriesColors(dataSeries: DataSeries[]): Map<SeriesKey, Color> {
   const updatedCustomSeriesColors = new Map<SeriesKey, Color>();
   const counters = new Map<SpecId, number>();
 
-  seriesCollection.forEach(({ seriesIdentifier }, seriesKey) => {
-    const spec = getSpecsById(seriesSpecs, seriesIdentifier.specId);
+  dataSeries.forEach((ds) => {
+    const { spec, specId } = ds;
+    const dataSeriesKey = {
+      specId: ds.specId,
+      yAccessor: ds.yAccessor,
+      splitAccessors: ds.splitAccessors,
+      smVerticalAccessorValue: undefined,
+      smHorizontalAccessorValue: undefined,
+    };
+    const seriesKey = getSeriesKey(dataSeriesKey, ds.groupId);
 
     if (!spec || !spec.color) {
       return;
@@ -127,9 +101,9 @@ export function getCustomSeriesColors(
         // eslint-disable-next-line prefer-destructuring
         color = spec.color;
       } else {
-        const counter = counters.get(seriesIdentifier.specId) || 0;
-        color = Array.isArray(spec.color) ? spec.color[counter % spec.color.length] : spec.color(seriesIdentifier);
-        counters.set(seriesIdentifier.specId, counter + 1);
+        const counter = counters.get(specId) || 0;
+        color = Array.isArray(spec.color) ? spec.color[counter % spec.color.length] : spec.color(ds);
+        counters.set(specId, counter + 1);
       }
     }
 
@@ -138,45 +112,6 @@ export function getCustomSeriesColors(
     }
   });
   return updatedCustomSeriesColors;
-}
-
-function getLastValues(dataSeries: DataSeries[], xDomain: XDomain): Map<SeriesKey, LastValues> {
-  const lastValues = new Map<SeriesKey, LastValues>();
-
-  // we need to get the latest
-  dataSeries.forEach((series) => {
-    if (series.data.length === 0) {
-      return;
-    }
-
-    const last = series.data[series.data.length - 1];
-    if (!last) {
-      return;
-    }
-    if (isDatumFilled(last)) {
-      return;
-    }
-
-    if (last.x !== xDomain.domain[xDomain.domain.length - 1]) {
-      // we have a dataset that is not filled with all x values
-      // and the last value of the series is not the last value for every series
-      // let's skip it
-      return;
-    }
-
-    const { y0, y1, initialY0, initialY1 } = last;
-    const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier, series.groupId);
-
-    if (series.stackMode === StackMode.Percentage) {
-      const y1InPercentage = y1 === null || y0 === null ? null : y1 - y0;
-      lastValues.set(seriesKey, { y0, y1: y1InPercentage });
-      return;
-    }
-    if (initialY0 !== null || initialY1 !== null) {
-      lastValues.set(seriesKey, { y0: initialY0, y1: initialY1 });
-    }
-  });
-  return lastValues;
 }
 
 /**
@@ -188,6 +123,7 @@ function getLastValues(dataSeries: DataSeries[], xDomain: XDomain): Map<SeriesKe
  * @param customXDomain is optional; if not supplied,
  * @param orderOrdinalBinsBy
  * @param smallMultiples
+ * @param sortSeriesBy
  * @returns `SeriesDomainsAndData`
  * @internal
  */
@@ -195,11 +131,12 @@ export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   customYDomainsByGroupId: Map<GroupId, YDomainRange> = new Map(),
   deselectedDataSeries: SeriesIdentifier[] = [],
-  customXDomain?: DomainRange | Domain,
+  customXDomain?: CustomXDomain,
   orderOrdinalBinsBy?: OrderBy,
-  smallMultiples?: { vertical?: GroupBySpec; horizontal?: GroupBySpec },
+  smallMultiples?: SmallMultiplesGroupBy,
+  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
 ): SeriesDomainsAndData {
-  const { dataSeries, xValues, seriesCollection, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
+  const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
     seriesSpecs,
     deselectedDataSeries,
     orderOrdinalBinsBy,
@@ -211,23 +148,16 @@ export function computeSeriesDomains(
   // fill series with missing x values
   const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.scaleType);
 
-  const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.scaleType);
-
-  // let's compute the yDomain after computing all stacked values
-  const yDomain = mergeYDomain(formattedDataSeries, customYDomainsByGroupId);
-
-  // we need to get the last values from the formattedDataSeries
-  // because we change the format if we are on percentage mode
-  const lastValues = getLastValues(formattedDataSeries, xDomain);
-  const updatedSeriesCollection = new Map<SeriesKey, SeriesCollectionValue>();
-  seriesCollection.forEach((value, key) => {
-    const lastValue = lastValues.get(key);
-    const updatedColorSet: SeriesCollectionValue = {
-      ...value,
-      lastValue,
-    };
-    updatedSeriesCollection.set(key, updatedColorSet);
+  const seriesSortFn = getRenderingCompareFn(sortSeriesBy, (a: SeriesIdentifier, b: SeriesIdentifier) => {
+    return defaultXYSeriesSort(a as DataSeries, b as DataSeries);
   });
+
+  const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.scaleType).sort(
+    seriesSortFn,
+  );
+
+  // let's compute the yDomains after computing all stacked values
+  const yDomains = mergeYDomain(formattedDataSeries, customYDomainsByGroupId);
 
   // sort small multiples values
   const horizontalPredicate = smallMultiples?.horizontal?.sort ?? Predicate.DataIndex;
@@ -238,18 +168,17 @@ export function computeSeriesDomains(
 
   return {
     xDomain,
-    yDomain,
+    yDomains,
     smHDomain,
     smVDomain,
     formattedDataSeries,
-    seriesCollection: updatedSeriesCollection,
   };
 }
 
 /** @internal */
 export function computeSeriesGeometries(
   seriesSpecs: BasicSeriesSpec[],
-  { xDomain, yDomain, formattedDataSeries }: SeriesDomainsAndData,
+  { xDomain, yDomains, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
   seriesColorMap: Map<SeriesKey, Color>,
   chartTheme: Theme,
   chartRotation: Rotation,
@@ -258,7 +187,7 @@ export function computeSeriesGeometries(
   enableHistogramMode: boolean,
 ): ComputedGeometries {
   const chartColors: ColorConfig = chartTheme.colors;
-
+  const formattedDataSeries = nonFilteredDataSeries.filter(({ isFiltered }) => !isFiltered);
   const barDataSeries = formattedDataSeries.filter(({ spec }) => isBarSeriesSpec(spec));
   // compute max bar in cluster per panel
   const dataSeriesGroupedByPanel = groupBy(
@@ -284,7 +213,7 @@ export function computeSeriesGeometries(
   const { horizontal, vertical } = smallMultiplesScales;
 
   const yScales = computeYScales({
-    yDomains: yDomain,
+    yDomains,
     range: [isHorizontalRotation(chartRotation) ? vertical.bandwidth : horizontal.bandwidth, 0],
   });
 
@@ -446,8 +375,16 @@ function renderGeometries(
       top: topPos,
       left: leftPos,
     };
+    const dataSeriesKey = getSeriesKey(
+      {
+        specId: ds.specId,
+        yAccessor: ds.yAccessor,
+        splitAccessors: ds.splitAccessors,
+      },
+      ds.groupId,
+    );
 
-    const color = seriesColorsMap.get(ds.key) || defaultColor;
+    const color = seriesColorsMap.get(dataSeriesKey) || defaultColor;
 
     if (isBarSeriesSpec(spec)) {
       const key = getBarIndexKey(ds, enableHistogramMode);

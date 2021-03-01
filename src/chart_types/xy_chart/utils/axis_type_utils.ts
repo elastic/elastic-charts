@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Position } from '../../../utils/commons';
+import { Position } from '../../../utils/common';
 import { CompleteBoundedDomain, LowerBoundedDomain, UpperBoundedDomain, DomainRange } from './specs';
 
 export function isLowerBound(domain: Partial<CompleteBoundedDomain>): domain is LowerBoundedDomain {
@@ -40,12 +40,12 @@ export function isBounded(domain: Partial<CompleteBoundedDomain>): domain is Dom
 }
 
 /** @internal */
-export function isVerticalAxis(axisPosition: Position) {
+export function isVerticalAxis(axisPosition: Position): axisPosition is Extract<Position, 'left' | 'right'> {
   return axisPosition === Position.Left || axisPosition === Position.Right;
 }
 
 /** @internal */
-export function isHorizontalAxis(axisPosition: Position) {
+export function isHorizontalAxis(axisPosition: Position): axisPosition is Extract<Position, 'top' | 'bottom'> {
   return axisPosition === Position.Top || axisPosition === Position.Bottom;
 }
 

@@ -19,27 +19,52 @@
 
 import React, { ComponentType, ReactChild } from 'react';
 
-import { Spec } from '.';
+import { CustomXDomain, Spec } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
-import { DomainRange } from '../chart_types/xy_chart/utils/specs';
-import { SeriesIdentifier } from '../commons/series_id';
+import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
 import { CustomTooltip } from '../components/tooltip/types';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
+import { LegendPath } from '../state/actions/legend';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
-import { Color, Position, Rendering, Rotation } from '../utils/commons';
-import { Domain } from '../utils/domain';
+import { Color, Position, Rendering, Rotation } from '../utils/common';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
+import { SeriesCompareFn } from '../utils/series_sort';
 import { PartialTheme, Theme } from '../utils/themes/theme';
 import { BinAgg, BrushAxis, DEFAULT_SETTINGS_SPEC, Direction, PointerEventType, TooltipType } from './constants';
 
+/** @public */
 export interface LayerValue {
+  /**
+   * The category value as retrieved by the `groupByRollup` callback
+   */
   groupByRollup: PrimitiveValue;
+  /**
+   * Numerical value of the partition
+   */
   value: number;
+  /**
+   * The position index of the sub-partition within its containing partition
+   */
+  sortIndex: number;
+  /**
+   * The depth of the partition in terms of the layered partition tree, where
+   * 0 is root (single, not visualized root of the partitioning tree),
+   * 1 is pie chart slices and innermost layer of sunburst, or 1st level treemap/flame/icicle breakdown
+   * 2 and above are increasingly outer layers
+   * maximum value is on the deepest leaf node
+   */
+  depth: number;
+  /**
+   * It contains the full path of the partition node, which is an array of `{index, value}` tuples
+   * where `index` corresponds to `sortIndex` and `value` corresponds `groupByRollup`
+   */
+  path: LegendPath;
 }
 
 export interface GroupBrushExtent {
@@ -94,7 +119,7 @@ export type ElementOverListener = (
   elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>,
 ) => void;
 export type BrushEndListener = (brushArea: XYBrushArea) => void;
-export type LegendItemListener = (series: SeriesIdentifier | null) => void;
+export type LegendItemListener = (series: SeriesIdentifier[]) => void;
 export type PointerUpdateListener = (event: PointerEvent) => void;
 /**
  * Listener to be called when chart render state changes
@@ -243,9 +268,9 @@ export interface ExternalPointerEventsSettings {
  */
 export interface LegendActionProps {
   /**
-   * Series identifier for the given series
+   * Series identifiers for the given series
    */
-  series: SeriesIdentifier;
+  series: SeriesIdentifier[];
   /**
    * Resolved label/name of given series
    */
@@ -282,9 +307,9 @@ export interface LegendColorPickerProps {
    */
   onChange: (color: Color | null) => void;
   /**
-   * Series id for the active series
+   * Series ids for the active series
    */
-  seriesIdentifier: SeriesIdentifier;
+  seriesIdentifiers: SeriesIdentifier[];
 }
 export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 
@@ -354,6 +379,11 @@ export interface SettingsSpec extends Spec {
    * Display the legend as a flat hierarchy
    */
   flatLegend?: boolean;
+
+  /**
+   * Choose a partition highlighting strategy for hovering over legend items
+   */
+  legendStrategy?: LegendStrategy;
   /**
    * Removes duplicate axes
    *
@@ -378,7 +408,7 @@ export interface SettingsSpec extends Spec {
   onLegendItemMinusClick?: LegendItemListener;
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
-  xDomain?: Domain | DomainRange;
+  xDomain?: CustomXDomain;
   resizeDebounce?: number;
   /**
    * Render slot to render action for legend
@@ -424,10 +454,49 @@ export interface SettingsSpec extends Spec {
    * Orders ordinal x values
    */
   orderOrdinalBinsBy?: OrderBy;
+
+  /**
+   * A compare function or an object of compare functions to sort
+   * series in different part of the chart like tooltip, legend and
+   * the rendering order on the screen. To assign the same compare function.
+   *  @defaultValue the series are sorted in order of appearance in the chart configuration
+   *  @alpha
+   */
+  // sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig;
+
   /**
    * Render component for no results UI
    */
   noResults?: ComponentType | ReactChild;
+}
+
+/**
+ * An object of compare functions to sort
+ * series in different part of the chart like tooltip, legend and rendering order.
+ */
+export interface SortSeriesByConfig {
+  /**
+   * A SeriesSortFn to sort the legend values (top-bottom)
+   * It has precedence over the general one
+   */
+  legend?: SeriesCompareFn;
+  /**
+   * A SeriesSortFn to sort tooltip values (top-bottom)
+   * It has precedence over the general one
+   */
+  tooltip?: SeriesCompareFn;
+  /**
+   * A SeriesSortFn to sort the rendering order of series.
+   * Left/right for cluster, bottom-up for stacked.
+   * It has precedence over the general one
+   * Currently available only on XY charts
+   */
+  rendering?: SeriesCompareFn;
+  /**
+   * The default SeriesSortFn in case no other specific sorting fn are used.
+   * The rendering sorting is applied only to XY charts at the moment
+   */
+  default?: SeriesCompareFn;
 }
 
 /**

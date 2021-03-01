@@ -19,9 +19,9 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
-import { config } from '../../src/chart_types/partition_chart/layout/config/config';
-import { arrayToLookup, hueInterpolator } from '../../src/chart_types/partition_chart/layout/utils/calcs';
+import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings } from '../../src';
+import { config } from '../../src/chart_types/partition_chart/layout/config';
+import { arrayToLookup, hueInterpolator } from '../../src/common/color_calcs';
 import { mocks } from '../../src/mocks/hierarchical';
 import { countryDimension } from '../../src/mocks/hierarchical/dimension_codes';
 import { palettes } from '../../src/mocks/hierarchical/palettes';
@@ -33,10 +33,10 @@ const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 // style calcs
 const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.7]));
 
-const defaultFillColor = (colorMaker: any) => ({ parent }: any) => {
-  const root = parent.parent;
+const defaultFillColor = (colorMaker: any) => ({ [MODEL_KEY]: model }: any) => {
+  const root = model.parent;
   const siblingCountLayer1 = root.children.length;
-  return colorMaker(parent.sortIndex / (siblingCountLayer1 + 1));
+  return colorMaker(model.sortIndex / (siblingCountLayer1 + 1));
 };
 
 export const Example = () => (

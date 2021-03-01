@@ -23,7 +23,7 @@ import { isVerticalAxis } from '../../chart_types/xy_chart/utils/axis_type_utils
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { BBox } from '../../utils/bbox/bbox_calculator';
 import { CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
-import { Position, isDefined } from '../../utils/commons';
+import { Position, isDefined } from '../../utils/common';
 import { GlobalChartState } from '../chart_state';
 import { getChartIdSelector } from './get_chart_id';
 import { getChartThemeSelector } from './get_chart_theme';
@@ -32,10 +32,12 @@ import { getSettingsSpecSelector } from './get_settings_specs';
 
 const getParentDimensionSelector = (state: GlobalChartState) => state.parentDimensions;
 
+const SCROLL_BAR_WIDTH = 6; // ~1em
 const MARKER_WIDTH = 16;
 const MARKER_LEFT_MARGIN = 4;
 const VALUE_LEFT_MARGIN = 4;
 const VERTICAL_PADDING = 4;
+const TOP_MARGIN = 2;
 
 /** @internal */
 export type LegendSizing = BBox & {
@@ -83,8 +85,13 @@ export const getLegendSizeSelector = createCachedSelector(
       MARKER_WIDTH + MARKER_LEFT_MARGIN + bbox.width + (showLegendDisplayValue ? VALUE_LEFT_MARGIN : 0);
     if (isVerticalAxis(position)) {
       const legendItemHeight = bbox.height + VERTICAL_PADDING * 2;
+      const legendHeight = legendItemHeight * labels.length + TOP_MARGIN;
+      const scollBarDimension = legendHeight > parentDimensions.height ? SCROLL_BAR_WIDTH : 0;
+
       return {
-        width: Math.floor(Math.min(legendItemWidth + spacingBuffer + actionDimension, verticalWidth)),
+        width: Math.floor(
+          Math.min(legendItemWidth + spacingBuffer + actionDimension + scollBarDimension, verticalWidth),
+        ),
         height: legendItemHeight,
         margin,
         position,

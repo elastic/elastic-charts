@@ -19,7 +19,7 @@
 import { area } from 'd3-shape';
 
 import { Scale } from '../../../scales';
-import { Color } from '../../../utils/commons';
+import { Color } from '../../../utils/common';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { Dimensions } from '../../../utils/dimensions';
 import { AreaGeometry } from '../../../utils/geometry';
@@ -107,7 +107,7 @@ export function renderArea(
     yScale,
     panel,
     color,
-    seriesStyle.line,
+    seriesStyle.point,
     hasY0Accessors,
     markSizeOptions,
     pointStyleAccessor,

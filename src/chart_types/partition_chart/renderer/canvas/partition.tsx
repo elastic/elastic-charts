@@ -21,19 +21,22 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { clearCanvas } from '../../../../renderers/canvas';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
+import { MODEL_KEY } from '../../layout/config';
 import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { INPUT_KEY } from '../../layout/utils/group_by_rollup';
-import { partitionGeometries } from '../../state/selectors/geometries';
+import { partitionMultiGeometries } from '../../state/selectors/geometries';
 import { renderPartitionCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
+  multiGeometries: ShapeViewModel[];
   chartContainerDimensions: Dimensions;
 }
 
@@ -45,10 +48,11 @@ interface ReactiveChartOwnProps {
 }
 
 type PartitionProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
+
 class PartitionComponent extends React.Component<PartitionProps> {
   static displayName = 'Partition';
 
-  // firstRender = true; // this'll be useful for stable resizing of treemaps
+  // firstRender = true; // this will be useful for stable resizing of treemaps
   private ctx: CanvasRenderingContext2D | null;
 
   // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
@@ -82,21 +86,6 @@ class PartitionComponent extends React.Component<PartitionProps> {
     }
   }
 
-  private drawCanvas() {
-    if (this.ctx) {
-      const { width, height }: Dimensions = this.props.chartContainerDimensions;
-      renderPartitionCanvas2d(this.ctx, this.devicePixelRatio, {
-        ...this.props.geometries,
-        config: { ...this.props.geometries.config, width, height },
-      });
-    }
-  }
-
-  private tryCanvasContext() {
-    const canvas = this.props.forwardStageRef.current;
-    this.ctx = canvas && canvas.getContext('2d');
-  }
-
   handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
     const {
       initialized,
@@ -114,7 +103,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
     const pickedShapes: Array<QuadViewModel> = picker(x, y);
     const datumIndices = new Set();
     pickedShapes.forEach((shape) => {
-      const node = shape.parent;
+      const node = shape[MODEL_KEY];
       const shapeNode = node.children.find(([key]) => key === shape.dataName);
       if (shapeNode) {
         const indices = shapeNode[1][INPUT_KEY] || [];
@@ -149,6 +138,24 @@ class PartitionComponent extends React.Component<PartitionProps> {
       />
     );
   }
+
+  private drawCanvas() {
+    if (this.ctx) {
+      const { width, height }: Dimensions = this.props.chartContainerDimensions;
+      clearCanvas(this.ctx, width * this.devicePixelRatio, height * this.devicePixelRatio);
+      for (const geometries of this.props.multiGeometries) {
+        renderPartitionCanvas2d(this.ctx, this.devicePixelRatio, {
+          ...geometries,
+          config: { ...geometries.config, width, height },
+        });
+      }
+    }
+  }
+
+  private tryCanvasContext() {
+    const canvas = this.props.forwardStageRef.current;
+    this.ctx = canvas && canvas.getContext('2d');
+  }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
@@ -162,6 +169,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
   geometries: nullShapeViewModel(),
+  multiGeometries: [],
   chartContainerDimensions: {
     width: 0,
     height: 0,
@@ -174,9 +182,11 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
+  const multiGeometries = partitionMultiGeometries(state);
   return {
     initialized: true,
-    geometries: partitionGeometries(state),
+    geometries: multiGeometries.length > 0 ? multiGeometries[0] : nullShapeViewModel(),
+    multiGeometries,
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
   };
 };

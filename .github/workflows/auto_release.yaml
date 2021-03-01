@@ -14,7 +14,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '10.x'
+          node-version: '14.x'
       - uses: bahmutov/npm-install@HEAD
       - name: Build check
         run: yarn build
@@ -28,15 +28,7 @@ jobs:
         run: yarn test --ci
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         run: yarn semantic-release
-      - name: Build static storybook
-        run: yarn storybook:build
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./.out
-          force_orphan: true

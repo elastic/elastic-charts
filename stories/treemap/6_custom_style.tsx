@@ -19,9 +19,9 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
-import { config } from '../../src/chart_types/partition_chart/layout/config/config';
-import { arrayToLookup } from '../../src/chart_types/partition_chart/layout/utils/calcs';
+import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings } from '../../src';
+import { config } from '../../src/chart_types/partition_chart/layout/config';
+import { arrayToLookup } from '../../src/common/color_calcs';
 import { mocks } from '../../src/mocks/hierarchical';
 import { countryDimension } from '../../src/mocks/hierarchical/dimension_codes';
 import { STORYBOOK_LIGHT_THEME } from '../shared';
@@ -29,10 +29,10 @@ import { regionLookup } from '../utils/utils';
 
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
-const fillColor = ({ parent }: any) => {
-  const root = parent.parent;
+const fillColor = ({ [MODEL_KEY]: model }: any) => {
+  const root = model.parent;
   const siblingCountLayer1 = root.children.length;
-  const i = parent.sortIndex;
+  const i = model.sortIndex;
   const shade = Math.pow(0.3 + 0.5 * (i / (siblingCountLayer1 - 1)), 1 / 3);
   return `rgb(${Math.round(255 * shade)},${Math.round(255 * shade)},${Math.round(255 * shade)})`;
 };

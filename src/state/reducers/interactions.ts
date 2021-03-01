@@ -17,20 +17,23 @@
  * under the License.
  */
 
-import { getSeriesIndex } from '../../chart_types/xy_chart/utils/series';
-import { LegendItem } from '../../commons/legend';
-import { SeriesIdentifier } from '../../commons/series_id';
+import { ChartTypes } from '../../chart_types';
+import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
+import { LegendItem } from '../../common/legend';
+import { SeriesIdentifier } from '../../common/series_id';
+import { LayerValue } from '../../specs';
 import { getDelta } from '../../utils/point';
-import { ON_KEY_UP, KeyActions } from '../actions/key';
+import { DOMElementActions, ON_DOM_ELEMENT_ENTER, ON_DOM_ELEMENT_LEAVE } from '../actions/dom_element';
+import { KeyActions, ON_KEY_UP } from '../actions/key';
 import {
+  LegendActions,
   ON_LEGEND_ITEM_OUT,
   ON_LEGEND_ITEM_OVER,
   ON_TOGGLE_DESELECT_SERIES,
-  LegendActions,
   ToggleDeselectSeriesAction,
 } from '../actions/legend';
-import { ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE, MouseActions } from '../actions/mouse';
-import { InteractionsState } from '../chart_state';
+import { MouseActions, ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE } from '../actions/mouse';
+import { GlobalChartState, InteractionsState } from '../chart_state';
 import { getInitialPointerState } from '../utils';
 
 /**
@@ -45,10 +48,11 @@ const DRAG_DETECTION_PIXEL_DELTA = 4;
 
 /** @internal */
 export function interactionsReducer(
-  state: InteractionsState,
-  action: LegendActions | MouseActions | KeyActions,
+  globalState: GlobalChartState,
+  action: LegendActions | MouseActions | KeyActions | DOMElementActions,
   legendItems: LegendItem[],
 ): InteractionsState {
+  const { interactions: state } = globalState;
   switch (action.type) {
     case ON_KEY_UP:
       if (action.key === 'Escape') {
@@ -80,6 +84,7 @@ export function interactionsReducer(
     case ON_MOUSE_DOWN:
       return {
         ...state,
+        drilldown: getDrilldownData(globalState),
         pointer: {
           ...state.pointer,
           dragging: false,
@@ -137,45 +142,71 @@ export function interactionsReducer(
     case ON_LEGEND_ITEM_OUT:
       return {
         ...state,
-        highlightedLegendItemKey: null,
+        highlightedLegendPath: [],
       };
     case ON_LEGEND_ITEM_OVER:
+      const { legendPath: highlightedLegendPath } = action;
       return {
         ...state,
-        highlightedLegendItemKey: action.legendItemKey,
+        highlightedLegendPath,
       };
     case ON_TOGGLE_DESELECT_SERIES:
       return {
         ...state,
         deselectedDataSeries: toggleDeselectedDataSeries(action, state.deselectedDataSeries, legendItems),
       };
+
+    case ON_DOM_ELEMENT_ENTER:
+      return {
+        ...state,
+        hoveredDOMElement: action.element,
+      };
+    case ON_DOM_ELEMENT_LEAVE:
+      return {
+        ...state,
+        hoveredDOMElement: null,
+      };
     default:
       return state;
   }
 }
 
-/** @internal */
+/**
+ * Helper functions that currently depend on chart type eg. xy or partition
+ */
+
 function toggleDeselectedDataSeries(
-  { legendItemId: id, negate }: ToggleDeselectSeriesAction,
+  { legendItemIds, negate }: ToggleDeselectSeriesAction,
   deselectedDataSeries: SeriesIdentifier[],
   legendItems: LegendItem[],
 ) {
-  if (negate) {
-    const hidden = getSeriesIndex(deselectedDataSeries, id) > -1;
+  const actionSeriesKeys = legendItemIds.map(({ key }) => key);
+  const deselectedDataSeriesKeys = new Set(deselectedDataSeries.map(({ key }) => key));
+  const legendItemsKeys = legendItems.map(({ seriesIdentifiers }) => seriesIdentifiers);
 
-    if (!hidden && deselectedDataSeries.length === legendItems.length - 1) {
-      return [id];
+  const alreadyDeselected = actionSeriesKeys.every((key) => deselectedDataSeriesKeys.has(key));
+
+  if (negate) {
+    if (!alreadyDeselected && deselectedDataSeries.length === legendItemsKeys.length - 1) {
+      return legendItemIds;
     }
 
-    const items = legendItems.map(({ seriesIdentifier: si }) => si);
-    const index = getSeriesIndex(items, id);
-
-    return [...items.slice(0, index), ...items.slice(index + 1)];
+    return legendItems
+      .map(({ seriesIdentifiers }) => seriesIdentifiers)
+      .flat()
+      .filter(({ key }) => !actionSeriesKeys.includes(key));
   }
 
-  const index = getSeriesIndex(deselectedDataSeries, id);
-  if (index > -1) {
-    return [...deselectedDataSeries.slice(0, index), ...deselectedDataSeries.slice(index + 1)];
+  if (alreadyDeselected) {
+    return deselectedDataSeries.filter(({ key }) => !actionSeriesKeys.includes(key));
   }
-  return [...deselectedDataSeries, id];
+  return [...deselectedDataSeries, ...legendItemIds];
+}
+
+function getDrilldownData(globalState: GlobalChartState) {
+  if (globalState.chartType !== ChartTypes.Partition) {
+    return [];
+  }
+  const layerValues: LayerValue[] = getPickedShapesLayerValues(globalState)[0];
+  return layerValues ? layerValues[layerValues.length - 1].path.map((n) => n.value) : [];
 }

@@ -17,27 +17,24 @@
  * under the License.
  */
 
-import React, { RefObject } from 'react';
+import { RefObject } from 'react';
 
 import { ChartTypes } from '../..';
-import { Tooltip } from '../../../components/tooltip';
-import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
+import { BackwardRef, GlobalChartState, InternalChartState } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
-import { Partition } from '../renderer/canvas/partition';
-import { HighlighterFromHover } from '../renderer/dom/highlighter_hover';
-import { HighlighterFromLegend } from '../renderer/dom/highlighter_legend';
+import { render } from '../renderer/dom/layered_partition_chart';
 import { computeLegendSelector } from './selectors/compute_legend';
+import { getLegendItemsExtra } from './selectors/get_legend_items_extra';
 import { getLegendItemsLabels } from './selectors/get_legend_items_labels';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
-import { getPieSpec } from './selectors/pie_spec';
+import { getPartitionSpec } from './selectors/partition_spec';
 import { getTooltipInfoSelector } from './selectors/tooltip';
-
-const EMPTY_MAP = new Map();
 
 /** @internal */
 export class PartitionState implements InternalChartState {
@@ -56,7 +53,7 @@ export class PartitionState implements InternalChartState {
   }
 
   isInitialized(globalState: GlobalChartState) {
-    return getPieSpec(globalState) !== null ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
+    return getPartitionSpec(globalState) !== null ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
   }
 
   isBrushAvailable() {
@@ -80,27 +77,23 @@ export class PartitionState implements InternalChartState {
     return computeLegendSelector(globalState);
   }
 
-  getLegendExtraValues() {
-    return EMPTY_MAP;
+  getLegendExtraValues(globalState: GlobalChartState) {
+    return getLegendItemsExtra(globalState);
   }
 
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
-    return (
-      <>
-        <Tooltip getChartContainerRef={containerRef} />
-        <Partition forwardStageRef={forwardStageRef} />
-        <HighlighterFromHover />
-        <HighlighterFromLegend />
-      </>
-    );
+    return render(containerRef, forwardStageRef);
   }
 
   getPointerCursor() {
-    return 'default';
+    return DEFAULT_CSS_CURSOR;
   }
 
   isTooltipVisible(globalState: GlobalChartState) {
-    return { visible: isTooltipVisibleSelector(globalState), isExternal: false };
+    return {
+      visible: isTooltipVisibleSelector(globalState),
+      isExternal: false,
+    };
   }
 
   getTooltipInfo(globalState: GlobalChartState) {

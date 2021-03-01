@@ -20,8 +20,8 @@
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 
-import { RgbObject } from '../../chart_types/partition_chart/layout/utils/color_library_wrappers';
 import { renderRect } from '../../chart_types/xy_chart/renderer/canvas/primitives/rect';
+import { RgbObject } from '../../common/color_library_wrappers';
 import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
 import { GlobalChartState } from '../../state/chart_state';
 import { getInternalBrushAreaSelector } from '../../state/selectors/get_internal_brush_area';
@@ -42,6 +42,7 @@ interface StateProps {
   isBrushing: boolean | undefined;
   isBrushAvailable: boolean | undefined;
   brushArea: Dimensions | null;
+  zIndex: number;
 }
 
 const DEFAULT_FILL_COLOR: RgbObject = {
@@ -129,7 +130,7 @@ class BrushToolComponent extends React.Component<Props> {
   }
 
   render() {
-    const { initialized, isBrushAvailable, isBrushing, projectionContainer } = this.props;
+    const { initialized, isBrushAvailable, isBrushing, projectionContainer, zIndex } = this.props;
     if (!initialized || !isBrushAvailable || !isBrushing) {
       this.ctx = null;
       return null;
@@ -144,6 +145,7 @@ class BrushToolComponent extends React.Component<Props> {
         style={{
           width,
           height,
+          zIndex,
         }}
       />
     );
@@ -169,6 +171,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
       isBrushing: false,
       isBrushAvailable: false,
       brushArea: null,
+      zIndex: 0,
     };
   }
   return {
@@ -178,6 +181,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     isBrushAvailable: getInternalIsBrushingAvailableSelector(state),
     isBrushing: getInternalIsBrushingSelector(state),
     brushArea: getInternalBrushAreaSelector(state),
+    zIndex: state.zIndex,
   };
 };
 

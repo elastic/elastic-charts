@@ -20,8 +20,8 @@
 import { color, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, PartialTheme, Settings } from '../../src';
-import { config } from '../../src/chart_types/partition_chart/layout/config/config';
+import { Chart, Datum, Partition, PartitionLayout, PartialTheme, Settings, MODEL_KEY } from '../../src';
+import { config } from '../../src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '../../src/mocks/hierarchical';
 import {
@@ -62,7 +62,7 @@ export const Example = () => {
             groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
             nodeLabel: (d: any) => regionLookup[d].regionName,
             shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.5)(d.parent.sortIndex),
+              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.5)(d[MODEL_KEY].sortIndex),
             },
           },
           {
@@ -70,7 +70,7 @@ export const Example = () => {
             nodeLabel: (d: any) => countryLookup[d].name,
             shape: {
               fillColor: (d: ShapeTreeNode) =>
-                discreteColor(colorBrewerCategoricalStark9, 0.3)(d.parent.parent.sortIndex),
+                discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex),
             },
           },
         ]}
