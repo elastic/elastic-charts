@@ -186,6 +186,7 @@ export interface InteractionsState {
   deselectedDataSeries: SeriesIdentifier[];
   hoveredDOMElement: DOMElement | null;
   drilldown: CategoryKey[];
+  prevDrilldown: CategoryKey[];
 }
 
 /** @internal */
@@ -275,6 +276,7 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     deselectedDataSeries: [],
     hoveredDOMElement: null,
     drilldown: [],
+    prevDrilldown: [],
   },
   externalEvents: {
     pointer: null,

@@ -30,12 +30,23 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { MODEL_KEY } from '../../layout/config';
 import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { INPUT_KEY } from '../../layout/utils/group_by_rollup';
-import { partitionMultiGeometries } from '../../state/selectors/geometries';
+import { isSimpleLinear } from '../../layout/viewmodel/viewmodel';
+import { partitionDrilldownFocus, partitionMultiGeometries } from '../../state/selectors/geometries';
+import { renderLinearPartitionCanvas2d } from './canvas_linear_renderers';
 import { renderPartitionCanvas2d } from './canvas_renderers';
+
+/** @internal */
+export interface ContinuousDomainFocus {
+  currentFocusX0: number;
+  currentFocusX1: number;
+  prevFocusX0: number;
+  prevFocusX1: number;
+}
 
 interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
+  geometriesFoci: ContinuousDomainFocus[];
   multiGeometries: ShapeViewModel[];
   chartContainerDimensions: Dimensions;
 }
@@ -96,11 +107,12 @@ class PartitionComponent extends React.Component<PartitionProps> {
       return;
     }
     const picker = this.props.geometries.pickQuads;
+    const focus = this.props.geometriesFoci[0];
     const box = forwardStageRef.current.getBoundingClientRect();
     const { diskCenter } = this.props.geometries;
     const x = e.clientX - box.left - diskCenter.x;
     const y = e.clientY - box.top - diskCenter.y;
-    const pickedShapes: Array<QuadViewModel> = picker(x, y);
+    const pickedShapes: Array<QuadViewModel> = picker(x, y, focus);
     const datumIndices = new Set();
     pickedShapes.forEach((shape) => {
       const node = shape[MODEL_KEY];
@@ -143,12 +155,17 @@ class PartitionComponent extends React.Component<PartitionProps> {
     if (this.ctx) {
       const { width, height }: Dimensions = this.props.chartContainerDimensions;
       clearCanvas(this.ctx, width * this.devicePixelRatio, height * this.devicePixelRatio);
-      for (const geometries of this.props.multiGeometries) {
-        renderPartitionCanvas2d(this.ctx, this.devicePixelRatio, {
-          ...geometries,
-          config: { ...geometries.config, width, height },
-        });
-      }
+      const {
+        ctx,
+        devicePixelRatio,
+        props: { multiGeometries, geometriesFoci },
+      } = this;
+      multiGeometries.forEach((geometries, geometryIndex) => {
+        const renderer = isSimpleLinear(geometries.config, geometries.layers)
+          ? renderLinearPartitionCanvas2d
+          : renderPartitionCanvas2d;
+        renderer(ctx, devicePixelRatio, geometries, geometriesFoci[geometryIndex]);
+      });
     }
   }
 
@@ -169,6 +186,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
   geometries: nullShapeViewModel(),
+  geometriesFoci: [],
   multiGeometries: [],
   chartContainerDimensions: {
     width: 0,
@@ -188,6 +206,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometries: multiGeometries.length > 0 ? multiGeometries[0] : nullShapeViewModel(),
     multiGeometries,
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
+    geometriesFoci: partitionDrilldownFocus(state),
   };
 };
 
