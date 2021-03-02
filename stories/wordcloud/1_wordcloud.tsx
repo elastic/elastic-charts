@@ -39,7 +39,7 @@ const palettes = {
   vivid: (d, i) => ['#2ec4b6', '#e71d36', '#ff9f1c'][i % 3],
   warm: (d, i) => ['#edc951', '#eb6841', '#cc2a36', '#4f372d', '#00a0b0'][i % 5],
   greenBlues: () => `rgb(${getRandomNumber(0, 10)}, ${getRandomNumber(50, 100)}, ${getRandomNumber(50, 100)})`,
-  redBlue: () => `rgb(${getRandomNumber(0, 255)},${0},${getRandomNumber(0, 255)})`,
+  redBlue: () => `rgb(${getRandomNumber(100, 255)},${0},${getRandomNumber(100, 255)})`,
   greyScale: () => {
     const level = getRandomNumber(0, 200);
     return `rgb(${level},${level},${level})`;
@@ -47,6 +47,12 @@ const palettes = {
   weight: (d) => {
     const level = (1 - d.weight ** 15) * 200;
     return `rgb(${level},${level},${level})`;
+  },
+  colorByWordLength: (d) => {
+    const level = d.text.length;
+    return `rgb(${level < 5 ? level * 60 : level < 7 ? level * 40 : level * 25},${
+      level < 5 ? level * 5 : level < 7 ? level * 10 : level * 5
+    },${level < 5 ? level * 25 : level < 7 ? level * 40 : level * 15})`;
   },
   euiLight: (d, i) => {
     return euiPalettes.echPaletteForLightBackground.colors[i % euiPalettes.echPaletteForLightBackground.colors.length];
@@ -151,7 +157,7 @@ const configs = {
     startAngle: 0,
     endAngle: 0,
     angleCount: 1,
-    padding: 10,
+    padding: 2 + Math.random() * 50,
     exponent: 15,
     fontWeight: 600,
     minFontSize: 12,
@@ -196,6 +202,7 @@ export const Example = () => {
   const spiral = template
     ? startConfig.shape
     : select('shape', { oval: 'archimedean', rectangular: 'rectangular' }, startConfig.shape);
+  const backgroundColor = template ? startConfig.backgroundColor : color('background', startConfig.backgroundColor);
   const startAngle = template
     ? startConfig.startAngle
     : number('startAngle', startConfig.startAngle, { range: true, min: -360, max: 360, step: 1 });
@@ -238,7 +245,6 @@ export const Example = () => {
         startConfig.palette,
       );
 
-  const backgroundColor = template ? startConfig.backgroundColor : color('background', startConfig.backgroundColor);
   return (
     <Chart className="story-chart">
       {/* eslint-disable-next-line no-console */}
