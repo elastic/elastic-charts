@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { number, select } from '@storybook/addon-knobs';
+import { color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Settings, Wordcloud } from '../../src';
@@ -35,6 +35,8 @@ const text =
 const getRandomNumber = getRandomNumberGenerator();
 
 const palettes = {
+  turquoise: (d, i) => ['#5bc0be', '#6fffe9'][i % 2],
+  vivid: (d, i) => ['#2ec4b6', '#e71d36', '#ff9f1c'][i % 3],
   warm: (d, i) => ['#edc951', '#eb6841', '#cc2a36', '#4f372d', '#00a0b0'][i % 5],
   greenBlues: () => `rgb(${getRandomNumber(0, 10)}, ${getRandomNumber(50, 100)}, ${getRandomNumber(50, 100)})`,
   redBlue: () => `rgb(${getRandomNumber(0, 255)},${0},${getRandomNumber(0, 255)})`,
@@ -67,7 +69,8 @@ const configs = {
     fontFamily: 'Luminari',
     fontStyle: 'italic',
     shape: 'archimedean',
-    palette: 'warm',
+    palette: 'turquoise',
+    backgroundColor: '#1c1c24',
   },
   single: {
     startAngle: 0,
@@ -82,6 +85,7 @@ const configs = {
     fontStyle: 'normal',
     shape: 'rectangular',
     palette: 'greyScale',
+    backgroundColor: '#9fa714',
   },
   rightAngled: {
     startAngle: 0,
@@ -96,6 +100,7 @@ const configs = {
     fontStyle: 'normal',
     shape: 'rectangular',
     palette: 'euiLight',
+    backgroundColor: '#ffffff',
   },
   multiple: {
     startAngle: -90,
@@ -110,6 +115,7 @@ const configs = {
     fontStyle: 'italic',
     shape: 'archimedean',
     palette: 'redBlue',
+    backgroundColor: '#1c1c24',
   },
   squareWords: {
     startAngle: -45,
@@ -124,6 +130,7 @@ const configs = {
     fontStyle: 'normal',
     shape: 'archimedean',
     palette: 'weight',
+    backgroundColor: '#4a6960',
   },
   smallWaves: {
     startAngle: -15,
@@ -138,6 +145,7 @@ const configs = {
     fontStyle: 'normal',
     shape: 'rectangular',
     palette: 'euiColorBlind',
+    backgroundColor: '#ffffff',
   },
   sparse: {
     startAngle: 0,
@@ -151,7 +159,8 @@ const configs = {
     fontFamily: 'Courier',
     fontStyle: 'normal',
     shape: 'rectangular',
-    palette: 'greyScale',
+    palette: 'vivid',
+    backgroundColor: '#1c1c24',
   },
 };
 
@@ -229,10 +238,14 @@ export const Example = () => {
         startConfig.palette,
       );
 
+  const backgroundColor = template ? startConfig.backgroundColor : color('background', startConfig.backgroundColor);
   return (
     <Chart className="story-chart">
       {/* eslint-disable-next-line no-console */}
-      <Settings onElementClick={(d) => console.log('onElementClick', d)} />
+      <Settings
+        theme={{ background: { color: backgroundColor } }}
+        onElementClick={(d) => console.log('onElementClick', d)}
+      />
       <Wordcloud
         id="spec_1"
         startAngle={startAngle}
