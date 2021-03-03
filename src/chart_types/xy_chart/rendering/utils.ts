@@ -67,6 +67,26 @@ export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
 export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xScaleOffset: number): ClippedRanges {
   let firstNonNullX: number | null = null;
   let hasNull = false;
+
+  const completeDatasetIsNull = dataset.filter((data) => !isDatumFilled(data)).length === 0;
+
+  if (completeDatasetIsNull)
+    return dataset.reduce<ClippedRanges>((acc, data) => {
+      const xScaled = xScale.scale(data.x);
+      // console.log(data.x,xScaled);
+      if (xScaled === null) {
+        return acc;
+      }
+
+      const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
+      const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
+      if (xValue === endXValue) {
+        acc.push([0, xValue]);
+      }
+
+      return acc;
+    }, []);
+
   return dataset.reduce<ClippedRanges>((acc, data) => {
     const xScaled = xScale.scale(data.x);
     if (xScaled === null) {

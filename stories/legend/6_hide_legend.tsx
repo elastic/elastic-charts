@@ -32,7 +32,7 @@ export const Example = () => {
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
-      {/* <BarSeries
+      <BarSeries
         id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
@@ -60,18 +60,6 @@ export const Example = () => {
           { x: 3, y: 10 },
         ]}
         hideInLegend={hideLineSeriesInLegend}
-      /> */}
-      <LineSeries
-        id="bars"
-        fit="zero"
-        name="amount"
-        xScaleType={ScaleType.Ordinal}
-        xAccessor="x"
-        yAccessors={['y']}
-        data={[
-          { x: 'trousers', y: null },
-          { x: 'pants', y: null },
-        ]}
       />
     </Chart>
   );
