@@ -411,22 +411,22 @@ export function shapeViewModel(
     containerBackgroundColor,
   );
 
-  const pickQuads: PickFunction = (x, y, { currentFocusX0, currentFocusX1 }) => {
-    return quadViewModel.filter(
-      sunburstLayout
-        ? ({ x0, y0px, x1, y1px }) => {
-            const angleX = (Math.atan2(y, x) + TAU / 4 + TAU) % TAU;
-            const yPx = Math.sqrt(x * x + y * y);
-            return x0 <= angleX && angleX <= x1 && y0px <= yPx && yPx <= y1px;
-          }
-        : ({ x0, y0px, x1, y1px }) => {
-            const scale = width / (currentFocusX1 - currentFocusX0);
-            const fx0 = Math.max((x0 - currentFocusX0) * scale, 0);
-            const fx1 = Math.min((x1 - currentFocusX0) * scale, width);
-            return fx0 <= x && x < fx1 && y0px < y && y <= y1px;
-          },
-    );
-  };
+  const pickQuads: PickFunction = sunburstLayout
+    ? (x, y) => {
+        return quadViewModel.filter(({ x0, y0px, x1, y1px }) => {
+          const angleX = (Math.atan2(y, x) + TAU / 4 + TAU) % TAU;
+          const yPx = Math.sqrt(x * x + y * y);
+          return x0 <= angleX && angleX <= x1 && y0px <= yPx && yPx <= y1px;
+        });
+      }
+    : (x, y, { currentFocusX0, currentFocusX1 }) => {
+        return quadViewModel.filter(({ x0, y0px, x1, y1px }) => {
+          const scale = width / (currentFocusX1 - currentFocusX0);
+          const fx0 = Math.max((x0 - currentFocusX0) * scale, 0);
+          const fx1 = Math.min((x1 - currentFocusX0) * scale, width);
+          return fx0 <= x && x < fx1 && y0px < y && y <= y1px;
+        });
+      };
 
   // combined viewModel
   return {
