@@ -345,6 +345,7 @@ export const chartStoreReducer = (chartId: string) => {
       case UPDATE_PARENT_DIMENSION:
         return {
           ...state,
+          interactions: { ...state.interactions, prevDrilldown: state.interactions.drilldown },
           parentDimensions: {
             ...action.dimensions,
           },
