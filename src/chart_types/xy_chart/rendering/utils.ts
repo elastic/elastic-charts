@@ -73,7 +73,6 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
   if (completeDatasetIsNull)
     return dataset.reduce<ClippedRanges>((acc, data) => {
       const xScaled = xScale.scale(data.x);
-      // console.log(data.x,xScaled);
       if (xScaled === null) {
         return acc;
       }
