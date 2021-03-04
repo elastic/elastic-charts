@@ -43,7 +43,6 @@ export const Example = () => {
   const white = useRef<HTMLDivElement | null>(null);
   const blue = useRef<HTMLDivElement | null>(null);
   const boundaryMap: Record<string, TooltipProps['boundary'] | null> = {
-    body: document.body,
     default: undefined,
     red: red.current,
     white: white.current,
@@ -54,7 +53,6 @@ export const Example = () => {
   const boundarySting = select<string>(
     'Boundary Element',
     {
-      'Document Body': 'body',
       Default: 'default',
       'Root (blanchedalmond)': 'root',
       Red: 'red',

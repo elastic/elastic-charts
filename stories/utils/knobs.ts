@@ -210,7 +210,6 @@ export const getFallbackPlacementsKnob = (): Placement[] | undefined => {
 };
 
 const boundaryMap: Record<string, TooltipProps['boundary'] | null> = {
-  body: document.body,
   default: undefined,
   chart: 'chart',
 };
@@ -220,7 +219,6 @@ export const getBoundaryKnob = () => {
     select<string>(
       'Boundary Element',
       {
-        'Document Body': 'body',
         Default: 'default',
         Chart: 'chart',
       },
