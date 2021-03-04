@@ -68,7 +68,7 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
   let firstNonNullX: number | null = null;
   let hasNull = false;
 
-  const completeDatasetIsNull = dataset.filter((data) => !isDatumFilled(data)).length === 0;
+  const completeDatasetIsNull = dataset.every((datum) => isDatumFilled(datum));
 
   if (completeDatasetIsNull)
     return dataset.reduce<ClippedRanges>((acc, data) => {
