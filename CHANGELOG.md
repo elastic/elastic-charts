@@ -1,3 +1,10 @@
+## [25.0.2](https://github.com/elastic/elastic-charts/compare/v25.0.1...v25.0.2) (2021-03-04)
+
+
+### Bug Fixes
+
+* **tooltip:** allow explicit boundary element ([#1049](https://github.com/elastic/elastic-charts/issues/1049)) ([#1056](https://github.com/elastic/elastic-charts/issues/1056)) ([05d6885](https://github.com/elastic/elastic-charts/commit/05d6885f1c58d5f3328fb8f8bc84d3039c82df3d))
+
 ## [25.0.1](https://github.com/elastic/elastic-charts/compare/v25.0.0...v25.0.1) (2021-02-17)
 
 
