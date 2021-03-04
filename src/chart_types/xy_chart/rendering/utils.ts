@@ -70,21 +70,10 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
 
   const completeDatasetIsNull = dataset.every((datum) => isDatumFilled(datum));
 
-  if (completeDatasetIsNull)
-    return dataset.reduce<ClippedRanges>((acc, data) => {
-      const xScaled = xScale.scale(data.x);
-      if (xScaled === null) {
-        return acc;
-      }
-
-      const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
-      const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
-      if (xValue === endXValue) {
-        acc.push([0, xValue]);
-      }
-
-      return acc;
-    }, []);
+  if (completeDatasetIsNull) {
+    const [min, max] = xScale.range;
+    return [[min, max - xScale.step / 2]];
+  }
 
   return dataset.reduce<ClippedRanges>((acc, data) => {
     const xScaled = xScale.scale(data.x);
