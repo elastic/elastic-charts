@@ -19,7 +19,7 @@
 
 import { SeriesIdentifier, SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { BinAgg, Direction, XScaleType } from '../../../specs';
+import { BinAgg, Direction, XScaleType, YDomainRange } from '../../../specs';
 import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
@@ -319,6 +319,7 @@ export function getFormattedDataSeries(
   availableDataSeries: DataSeries[],
   xValues: Set<string | number>,
   xScaleType: ScaleType,
+  domainsByGroupId: Map<GroupId, YDomainRange>,
 ): DataSeries[] {
   const histogramEnabled = isHistogramEnabled(seriesSpecs);
 
@@ -338,8 +339,9 @@ export function getFormattedDataSeries(
   );
 
   const fittedAndStackedDataSeries = stackedGroups.reduce<DataSeries[]>((acc, dataSeries) => {
-    const [{ stackMode }] = dataSeries;
-    const formatted = formatStackedDataSeriesValues(dataSeries, xValues, stackMode);
+    const [{ stackMode, groupId }] = dataSeries;
+    const domain = domainsByGroupId.get(groupId);
+    const formatted = formatStackedDataSeriesValues(dataSeries, xValues, stackMode, domain?.fit);
     return [...acc, ...formatted];
   }, []);
   // get already fitted non stacked dataSeries

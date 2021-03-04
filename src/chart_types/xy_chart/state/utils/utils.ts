@@ -152,9 +152,13 @@ export function computeSeriesDomains(
     return defaultXYSeriesSort(a as DataSeries, b as DataSeries);
   });
 
-  const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.scaleType).sort(
-    seriesSortFn,
-  );
+  const formattedDataSeries = getFormattedDataSeries(
+    seriesSpecs,
+    filledDataSeries,
+    xValues,
+    xDomain.scaleType,
+    customYDomainsByGroupId,
+  ).sort(seriesSortFn);
 
   // let's compute the yDomains after computing all stacked values
   const yDomains = mergeYDomain(formattedDataSeries, customYDomainsByGroupId);

@@ -60,11 +60,16 @@ type D3UnionStack = Record<
   }
 >;
 
+function getfittedBaseline(values: SeriesPoint<Record<string, string | number | null>>[]): number {
+  return Math.min(...values.map(([, y1]) => y1));
+}
+
 /** @internal */
 export function formatStackedDataSeriesValues(
   dataSeries: DataSeries[],
   xValues: Set<string | number>,
   stackMode?: StackMode,
+  fitYDomain?: boolean,
 ): DataSeries[] {
   const dataSeriesKeys = dataSeries.reduce<Record<SeriesKey, DataSeries>>((acc, curr) => {
     acc[curr.key] = curr;
@@ -119,10 +124,12 @@ export function formatStackedDataSeriesValues(
     return acc;
   }, {});
 
-  return Object.keys(unionedYStacks).map((stackedDataSeriesKey) => {
+  return Object.keys(unionedYStacks).map((stackedDataSeriesKey, i) => {
     const dataSeriesProps = dataSeriesKeys[stackedDataSeriesKey];
     const dsMap = xValueMap.get(stackedDataSeriesKey);
     const { y0: y0StackArray, y1: y1StackArray } = unionedYStacks[stackedDataSeriesKey];
+    const fittedInitialBaseline =
+      i === 0 && fitYDomain && stackMode === undefined ? getfittedBaseline(y1StackArray) : null;
     const data = y1StackArray
       .map<DataSeriesDatum | null>((y1Stack, index) => {
         const { x } = y1Stack.data;
@@ -133,9 +140,15 @@ export function formatStackedDataSeriesValues(
         if (!originalData) {
           return null;
         }
-        const [, y0] = y0StackArray[index];
+        let [, y0] = y0StackArray[index];
         const [, y1] = y1Stack;
         const { initialY0, initialY1, mark, datum, filled } = originalData;
+
+        if (fittedInitialBaseline && y0 === 0 && initialY0 === null && i === 0) {
+          // adjust first stacked series to fitted domain if zero
+          y0 = fittedInitialBaseline;
+        }
+
         return {
           x,
           /**

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { select } from '@storybook/addon-knobs';
+import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { AreaSeries, Chart, ScaleType, StackMode, Axis, Position, CurveType } from '../../src';
@@ -24,18 +24,22 @@ import { BABYNAME_DATA } from '../../src/utils/data_samples/babynames';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
-  const stackMode = select<StackMode>(
-    'stackMode',
-    {
-      Silhouette: StackMode.Silhouette,
-      Wiggle: StackMode.Wiggle,
-    },
-    StackMode.Silhouette,
-  );
+  const fit = boolean('fit y domain to data', false);
+  const stackMode =
+    select<StackMode | undefined>(
+      'stackMode',
+      {
+        Silhouette: StackMode.Silhouette,
+        Wiggle: StackMode.Wiggle,
+        None: undefined,
+      },
+      StackMode.Silhouette,
+    ) || undefined;
+
   return (
     <Chart className="story-chart">
       <Axis id="x" position={Position.Bottom} />
-      <Axis id="y" position={Position.Left} />
+      <Axis id="y" position={Position.Left} domain={{ fit }} />
       <AreaSeries
         id="area1"
         xScaleType={ScaleType.Linear}
