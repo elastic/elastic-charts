@@ -313,6 +313,10 @@ export interface LegendColorPickerProps {
 }
 export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 
+/**
+ * Props for the data table component used for screen readers
+ * @public
+ */
 export interface DataTableProps {
   /**
    * Whether to show the data table for screen readers defaults to true
@@ -335,7 +339,10 @@ export interface DataTableProps {
    */
   HeadingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
-
+/**
+ * Extension of DataTableProps
+ * @internal
+ */
 export type InternalDataTableProps = DataTableProps & {
   /**
    * This can be the chart title if provided, that can go in an aria-lable or aria-describedBy (not both)

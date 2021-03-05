@@ -627,16 +627,13 @@ export interface DataSeriesDatum<T = any> {
     y1: number | null;
 }
 
-// Warning: (ae-missing-release-tag) "DataTable" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export type DataTable = DataTableProps;
-
-// Warning: (ae-missing-release-tag) "DataTableProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export interface DataTableProps {
-    showDataTable: boolean;
+    description?: string;
+    HeadingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+    showDefaultDescription: boolean;
+    title?: string;
+    visibleCaption?: string;
 }
 
 // @public (undocumented)
@@ -716,7 +713,7 @@ export const DEFAULT_TOOLTIP_TYPE: "vertical";
 // Warning: (ae-missing-release-tag) "DefaultSettingsProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'legendMaxDepth' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'legendMaxDepth' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'dataTable';
 
 // Warning: (ae-missing-release-tag) "DEPTH_KEY" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1928,7 +1925,7 @@ export interface SettingsSpec extends Spec {
     animateData: boolean;
     baseTheme?: Theme;
     brushAxis?: BrushAxis;
-    dataTable?: DataTable;
+    dataTable: DataTableProps;
     debug: boolean;
     // @alpha
     debugState?: boolean;
