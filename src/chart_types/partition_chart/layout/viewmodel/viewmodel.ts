@@ -29,7 +29,7 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
-import { StrokeStyle, ValueFormatter, Color } from '../../../../utils/common';
+import { StrokeStyle, ValueFormatter, Color, RecursivePartial } from '../../../../utils/common';
 import { Layer } from '../../specs';
 import { MODEL_KEY, percentValueGetter } from '../config';
 import { Config, FillLabelConfig, PartitionLayout } from '../types/config_types';
@@ -251,8 +251,8 @@ export const isFlame = (p: PartitionLayout | undefined) => p === PartitionLayout
 export const isLinear = (p: PartitionLayout | undefined) => isFlame(p) || isIcicle(p);
 
 /** @internal */
-export const isSimpleLinear = (config: Config, layers: Layer[]) =>
-  isLinear(config.partitionLayout) && layers.every((l) => l.fillLabel?.clipText ?? config.fillLabel.clipText);
+export const isSimpleLinear = (config: RecursivePartial<Config>, layers: Layer[]) =>
+  isLinear(config.partitionLayout) && layers.every((l) => l.fillLabel?.clipText ?? config.fillLabel?.clipText);
 
 /** @internal */
 export function shapeViewModel(

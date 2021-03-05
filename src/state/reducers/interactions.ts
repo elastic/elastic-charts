@@ -18,8 +18,7 @@
  */
 
 import { ChartTypes } from '../../chart_types';
-import { isLinear } from '../../chart_types/partition_chart/layout/viewmodel/viewmodel';
-import { getPartitionSpec } from '../../chart_types/partition_chart/state/selectors/partition_spec';
+import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
 import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
 import { LegendItem } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
@@ -207,10 +206,7 @@ function toggleDeselectedDataSeries(
 }
 
 function getDrilldownData(globalState: GlobalChartState) {
-  if (
-    globalState.chartType !== ChartTypes.Partition ||
-    !isLinear(getPartitionSpec(globalState)?.config.partitionLayout) // currently, only icicle/flame has drilldown
-  ) {
+  if (globalState.chartType !== ChartTypes.Partition || !drilldownActive(globalState)) {
     return [];
   }
   const layerValues: LayerValue[] = getPickedShapesLayerValues(globalState)[0];
