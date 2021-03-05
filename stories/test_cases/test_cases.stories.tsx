@@ -27,3 +27,4 @@ export default {
 };
 
 export { Example as noSeries } from './1_no_series';
+export { Example as filterZerosInLogFitDomain } from './2_filter_zero_values_log';

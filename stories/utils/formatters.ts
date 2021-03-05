@@ -47,8 +47,9 @@ export const logBaseMap = {
   [LogBase.Natural]: Math.E,
 };
 
-export const logFormatter = (base: LogBase = LogBase.Common) => (n: number) => {
-  const sign = n < 1 ? '-' : '';
+export const logFormatter = (base: LogBase = LogBase.Common) => (n: number): string => {
+  if (n === 0) return '0';
+  const sign = n < 0 ? '-' : '';
   const nAbs = Math.abs(n);
   const exp = Math.log(nAbs) / Math.log(logBaseMap[base]) + Number.EPSILON;
   const roundedExp = Math.floor(exp);
