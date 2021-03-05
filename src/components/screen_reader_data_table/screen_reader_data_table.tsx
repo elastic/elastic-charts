@@ -66,20 +66,16 @@ const axesWithTitles = (
       const getTitle = titles[i].length === 0 ? 'The axis is not titled and ' : `The axis named ${titles[i][0]} `;
       const groupId = titles[i][1];
       // @ts-ignore
-      const domain = domains[groupId] ? domains[groupId] : domains[xDomain];
-      titleDomain += titles[i][1]
-        ? `${getTitle} has the domain ${domain.toString()}. `
-        : `${getTitle} has an undefined domain.`;
+      const domain = domains[groupId] ? domains[groupId] : domains.xDomain;
+      titleDomain += titles[i][1] ? `${getTitle} has the domain ${domain}. ` : `${getTitle} has an undefined domain.`;
     }
   } else {
     titles.forEach((val) => {
       const getTitle = val.length === 0 ? 'The axis is not titled and ' : `The axis named ${val[0]} `;
       const groupId = val[1];
       // @ts-ignore
-      const domain = domains[groupId] ? domains[groupId] : domains[xDomain];
-      titleDomain += val[1]
-        ? `${getTitle} has the domain ${domain.toString()}. `
-        : `${getTitle} has an undefined domain.`;
+      const domain = domains[groupId] ? domains[groupId] : domains.xDomain;
+      titleDomain += val[1] ? `${getTitle} has the domain ${domain}. ` : `${getTitle} has an undefined domain.`;
     });
   }
 
