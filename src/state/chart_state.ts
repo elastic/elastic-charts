@@ -193,6 +193,7 @@ export interface InteractionsState {
   deselectedDataSeries: SeriesIdentifier[];
   hoveredDOMElement: DOMElement | null;
   drilldown: CategoryKey[];
+  prevDrilldown: CategoryKey[];
 }
 
 /** @internal */
@@ -207,11 +208,14 @@ export interface ColorOverrides {
 }
 
 /** @internal */
+export type ChartId = string;
+
+/** @internal */
 export interface GlobalChartState {
   /**
    * a unique ID for each chart used by re-reselect to memoize selector per chart
    */
-  chartId: string;
+  chartId: ChartId;
   /**
    * The Z-Index of the chart component
    */
@@ -282,6 +286,7 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     deselectedDataSeries: [],
     hoveredDOMElement: null,
     drilldown: [],
+    prevDrilldown: [],
   },
   externalEvents: {
     pointer: null,
@@ -350,6 +355,7 @@ export const chartStoreReducer = (chartId: string) => {
       case UPDATE_PARENT_DIMENSION:
         return {
           ...state,
+          interactions: { ...state.interactions, prevDrilldown: state.interactions.drilldown },
           parentDimensions: {
             ...action.dimensions,
           },
