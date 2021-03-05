@@ -25,6 +25,7 @@ import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
+import { ContinuousDomain, OrdinalDomain } from '../../../../utils/domain';
 import {
   PointGeometry,
   BarGeometry,
@@ -586,49 +587,32 @@ export function getBarIndexKey(
   return [groupId, specId, ...splitAccessors.values(), yAccessor].join('__-__');
 }
 
-function parseDataForKeysStacked(d: DataSeries) {
-  if (!d) return [];
-  const keysAndValues = Object.entries(d.data[0]);
-  const keys = [];
-  for (let i = 0; i < keysAndValues.length; i++) {
-    if (keysAndValues[i][0] !== 'datum' && keysAndValues[i][1] !== null && keysAndValues[i][1] !== undefined) {
-      keys.push(keysAndValues[i][0]);
-    }
-  }
-  return keys;
-}
-
-function parseDataForValuesStacked(d: DataSeries) {
-  if (!d) return [];
-  const values: any[] = [];
-  // need to go through each data[i] and get the value of the not null undefined
-  d.data.map((value) => {
-    const keysAndValues = Object.entries(value);
-    // eslint-disable-next-line array-callback-return
-    return keysAndValues.map((val) => {
-      if (val[0] !== 'datum' && val[1] !== null && val[1] !== undefined && typeof val[1] === 'number') {
-        return values.push(val[1]);
-      }
-    });
-  });
-  return values;
-}
-
 function parseDataForKeys(d: DataSeries) {
-  if (!d) return [];
-  const keysAndValues = Object.entries(d.data[0]);
-  const keys = [];
-  for (let i = 0; i < keysAndValues.length; i++) {
-    if (keysAndValues[i][0] !== 'datum' && keysAndValues[i][1] !== null && keysAndValues[i][1] !== undefined) {
-      keys.push(keysAndValues[i][0]);
-    }
-  }
-  return keys;
+  return (
+    Object.entries(d.data[0]).reduce((result, [key, value]) => {
+      if ((key !== 'datum' && value !== null) || value !== undefined) {
+        result.push(key);
+      }
+      return result;
+    }),
+    []
+  );
 }
 
 function parseDataForValues(d: DataSeries) {
-  if (!d) return [];
   const values = [];
+  // for stacked series
+  if (d.splitAccessors.size > 0) {
+    d.data.forEach((value) => {
+      // eslint-disable-next-line array-callback-return
+      return Object.entries(value).forEach((val) => {
+        if (val[0] !== 'datum' && val[1] !== null && val[1] !== undefined && typeof val[1] === 'number') {
+          return values.push(val[1]);
+        }
+      });
+    });
+  }
+  // otherwise can just take the datum
   for (let i = 0; i < d.data.length; i++) {
     if (d.data[i].datum) {
       values.push(Object.values(d.data[i].datum));
@@ -645,10 +629,15 @@ export function computeScreenReaderData(
   axisSpecs: AxisSpec[] | undefined,
 ): ScreenReaderData[] {
   const formattedScreenReaderDataArray = [];
-  const yDomainsFormatted: { [s: string]: number[] } = {};
+  const DomainsFormatted: {
+    [s: string]: number[] | string[] | OrdinalDomain | ContinuousDomain | (string | number)[];
+  } = {};
+  // add the x domain
+  DomainsFormatted.xDomain = xDomain!.domain;
+  // add the y domains
   for (let i = 0; i < yDomains.length; i++) {
-    if (!yDomainsFormatted.hasOwnProperty(yDomains[i].groupId)) {
-      yDomainsFormatted[yDomains[i].groupId] = yDomains[i].domain;
+    if (!DomainsFormatted.hasOwnProperty(yDomains[i].groupId)) {
+      DomainsFormatted[yDomains[i].groupId] = yDomains[i].domain;
     }
   }
   const axesTitles = axisSpecs?.map((val) => [val.title, val.groupId]) || [];
@@ -657,12 +646,11 @@ export function computeScreenReaderData(
       seriesName: data[i].spec.name,
       seriesType: data[i].seriesType,
       splitAccessor: data[i].splitAccessors.size > 0,
-      dataKey: data[i].splitAccessors.size > 0 ? parseDataForKeysStacked(data[i]) : parseDataForKeys(data[i]),
-      dataValue: data[i].splitAccessors.size > 0 ? parseDataForValuesStacked(data[i]) : parseDataForValues(data[i]),
+      dataKey: parseDataForKeys(data[i]),
+      dataValue: parseDataForValues(data[i]),
       xScaleType: data[i].spec.xScaleType,
       yScaleType: data[i].spec.yScaleType,
-      xDomain: xDomain!.domain ?? undefined,
-      yDomains: yDomainsFormatted,
+      Domains: DomainsFormatted,
       axesTitles,
     };
     formattedScreenReaderDataArray.push(current);
