@@ -23,8 +23,9 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { clearCanvas } from '../../../../renderers/canvas';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { ChartId, GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { MODEL_KEY } from '../../layout/config';
@@ -49,6 +50,7 @@ interface ReactiveChartStateProps {
   geometriesFoci: ContinuousDomainFocus[];
   multiGeometries: ShapeViewModel[];
   chartContainerDimensions: Dimensions;
+  chartId: ChartId;
 }
 
 interface ReactiveChartDispatchProps {
@@ -158,13 +160,13 @@ class PartitionComponent extends React.Component<PartitionProps> {
       const {
         ctx,
         devicePixelRatio,
-        props: { multiGeometries, geometriesFoci },
+        props: { multiGeometries, geometriesFoci, chartId },
       } = this;
       multiGeometries.forEach((geometries, geometryIndex) => {
         const renderer = isSimpleLinear(geometries.config, geometries.layers)
           ? renderLinearPartitionCanvas2d
           : renderPartitionCanvas2d;
-        renderer(ctx, devicePixelRatio, geometries, geometriesFoci[geometryIndex]);
+        renderer(ctx, devicePixelRatio, geometries, geometriesFoci[geometryIndex], chartId);
       });
     }
   }
@@ -185,6 +187,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
+  chartId: '',
   geometries: nullShapeViewModel(),
   geometriesFoci: [],
   multiGeometries: [],
@@ -207,6 +210,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     multiGeometries,
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
     geometriesFoci: partitionDrilldownFocus(state),
+    chartId: getChartIdSelector(state),
   };
 };
 

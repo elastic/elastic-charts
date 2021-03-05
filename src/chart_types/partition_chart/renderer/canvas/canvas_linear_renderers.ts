@@ -18,13 +18,14 @@
  */
 
 import { clearCanvas } from '../../../../renderers/canvas';
+import { ChartId } from '../../../../state/chart_state';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { ContinuousDomainFocus } from './partition';
 
 const linear = (x: number) => x;
 const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
 
-let latestRaf: number;
+const latestRafs: Map<ChartId, number> = new Map();
 
 /** @internal */
 export function renderLinearPartitionCanvas2d(
@@ -32,20 +33,27 @@ export function renderLinearPartitionCanvas2d(
   dpr: number,
   { config: { sectorLineWidth: padding, width, height, animation }, quadViewModel, diskCenter }: ShapeViewModel,
   { currentFocusX0, currentFocusX1, prevFocusX0, prevFocusX1 }: ContinuousDomainFocus,
+  chartId: ChartId,
 ) {
   if (animation?.duration) {
-    window.cancelAnimationFrame(latestRaf);
+    const latestRaf = latestRafs.get(chartId);
+    if (latestRaf !== undefined) {
+      window.cancelAnimationFrame(latestRaf);
+    }
     render(0);
-    latestRaf = window.requestAnimationFrame((epochStartTime) => {
-      const anim = (t: number) => {
-        const unitNormalizedTime = Math.max(0, Math.min(1, (t - epochStartTime) / animation.duration));
-        render(unitNormalizedTime);
-        if (unitNormalizedTime < 1) {
-          latestRaf = window.requestAnimationFrame(anim);
-        }
-      };
-      latestRaf = window.requestAnimationFrame(anim);
-    });
+    latestRafs.set(
+      chartId,
+      window.requestAnimationFrame((epochStartTime) => {
+        const anim = (t: number) => {
+          const unitNormalizedTime = Math.max(0, Math.min(1, (t - epochStartTime) / animation.duration));
+          render(unitNormalizedTime);
+          if (unitNormalizedTime < 1) {
+            latestRafs.set(chartId, window.requestAnimationFrame(anim));
+          }
+        };
+        latestRafs.set(chartId, window.requestAnimationFrame(anim));
+      }),
+    );
   } else {
     render(1);
   }

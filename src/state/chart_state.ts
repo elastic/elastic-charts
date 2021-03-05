@@ -201,11 +201,14 @@ export interface ColorOverrides {
 }
 
 /** @internal */
+export type ChartId = string;
+
+/** @internal */
 export interface GlobalChartState {
   /**
    * a unique ID for each chart used by re-reselect to memoize selector per chart
    */
-  chartId: string;
+  chartId: ChartId;
   /**
    * The Z-Index of the chart component
    */
