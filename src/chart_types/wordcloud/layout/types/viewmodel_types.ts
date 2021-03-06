@@ -44,6 +44,7 @@ export interface WordcloudViewModel {
   spiral: string;
   exponent: number;
   data: WordModel[];
+  weightFun: string;
 }
 
 /** @internal */
@@ -71,6 +72,7 @@ const commonDefaults = {
   spiral: 'archimedean',
   exponent: 3,
   data: [],
+  weightFun: 'exponential',
 };
 
 /** @internal */

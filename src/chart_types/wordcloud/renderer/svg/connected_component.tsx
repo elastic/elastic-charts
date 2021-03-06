@@ -29,6 +29,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
+import { select } from '@storybook/addon-knobs';
 
 function seed() {
   return 0.5;
@@ -71,24 +72,46 @@ function getRotation(startAngle, endAngle, count, text) {
   const angleRange = endAngle - startAngle;
   const count = count ?? 360;
   const interval = count - 1;
-  const angleStep = interval === 0 ? 0: angleRange / interval;
+  const angleStep = interval === 0 ? 0 : angleRange / interval;
   const index = hashWithinRange(text, count);
   return index * angleStep + startAngle;
 }
+
+function exponential(minFontSize, maxFontSize, exponent, weight) {
+  return minFontSize + (maxFontSize - minFontSize) * weight ** exponent;
+}
+
+function linear(minFontSize, maxFontSize, _exponent, weight) {
+  return minFontSize + (maxFontSize - minFontSize) * weight;
+}
+
+function squareRoot(minFontSize, maxFontSize, _exponent, weight) {
+  return minFontSize + (maxFontSize - minFontSize) * Math.sqrt(weight);
+}
+
+function log(minFontSize, maxFontSize, _exponent, weight) {
+  return minFontSize + (maxFontSize - minFontSize) * Math.log2(weight + 1);
+}
+
+const weightFunLookup = { linear, exponential, log, squareRoot };
 
 function layoutMaker(config, data) {
   return d3TagCloud()
     .random(seed)
     .size([getWidth(config), getHeight(config)])
     .words(
-      data.map((d) => ({
-        text: d.text,
-        color: d.color,
-        fontFamily: config.fontFamily ?? 'Impact',
-        style: config.fontStyle ?? 'normal',
-        fontWeight: config.fontWeight ?? 'normal',
-        size: config.minFontSize + (config.maxFontSize - config.minFontSize) * d.weight ** config.exponent,
-      })),
+      data.map((d) => {
+        const weightFun = weightFunLookup[config.weightFun];
+
+        return {
+          text: d.text,
+          color: d.color,
+          fontFamily: config.fontFamily ?? 'Impact',
+          style: config.fontStyle ?? 'normal',
+          fontWeight: config.fontWeight ?? 'normal',
+          size: weightFun(config.minFontSize, config.maxFontSize, config.exponent, d.weight),
+        };
+      }),
     )
     .spiral(config.spiral ?? 'archimedean')
     .padding(config.padding ?? 5)
@@ -102,22 +125,25 @@ function layoutMaker(config, data) {
 const View = ({ words, conf }) => (
   <svg width={getWidth(conf)} height={getHeight(conf)}>
     <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
-      {words.map((d) => (
-        <text
-          style={{
-            transform: `translate(${d.x}, ${d.y}) rotate(${d.rotate})`,
-            fontSize: getFontSize(d),
-            fontStyle: getFontStyle(d),
-            fontFamily: getFont(d),
-            fontWeight: getFontWeight(d),
-            fill: d.color,
-          }}
-          textAnchor={'middle'}
-          transform={`translate(${d.x}, ${d.y}) rotate(${d.rotate})`}
-        >
-          {d.text}
-        </text>
-      ))}
+      {words.map((d) => {
+        //   debugger;
+        return (
+          <text
+            style={{
+              transform: `translate(${d.x}, ${d.y}) rotate(${d.rotate})`,
+              fontSize: getFontSize(d),
+              fontStyle: getFontStyle(d),
+              fontFamily: getFont(d),
+              fontWeight: getFontWeight(d),
+              fill: d.color,
+            }}
+            textAnchor={'middle'}
+            transform={`translate(${d.x}, ${d.y}) rotate(${d.rotate})`}
+          >
+            {d.text}
+          </text>
+        );
+      })}
     </g>
   </svg>
 );
@@ -217,6 +243,7 @@ class Component extends React.Component<Props> {
       maxFontSize: wordcloudViewModel.maxFontSize,
       spiral: wordcloudViewModel.spiral,
       exponent: wordcloudViewModel.exponent,
+      weightFun: wordcloudViewModel.weightFun,
     };
 
     const layout = layoutMaker(conf1, wordcloudViewModel.data);

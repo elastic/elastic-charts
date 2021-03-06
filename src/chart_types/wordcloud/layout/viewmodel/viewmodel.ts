@@ -52,6 +52,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, co
     spiral,
     exponent,
     data,
+    weightFun,
   } = spec;
 
   const wordcloudViewModel: WordcloudViewModel = {
@@ -67,6 +68,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, co
     spiral,
     exponent,
     data,
+    weightFun,
   };
 
   // combined viewModel

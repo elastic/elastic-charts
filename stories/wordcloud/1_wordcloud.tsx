@@ -71,12 +71,13 @@ const configs = {
     exponent: 15,
     fontWeight: 100,
     minFontSize: 15,
-    maxFontSize: 120,
+    maxFontSize: 90,
     fontFamily: 'Luminari',
     fontStyle: 'italic',
     shape: 'archimedean',
     palette: 'turquoise',
     backgroundColor: '#1c1c24',
+    weightFun: 'exponential',
   },
   single: {
     startAngle: 0,
@@ -92,6 +93,7 @@ const configs = {
     shape: 'rectangular',
     palette: 'greyScale',
     backgroundColor: '#9fa714',
+    weightFun: 'exponential',
   },
   rightAngled: {
     startAngle: 0,
@@ -107,6 +109,7 @@ const configs = {
     shape: 'rectangular',
     palette: 'euiLight',
     backgroundColor: '#ffffff',
+    weightFun: 'exponential',
   },
   multiple: {
     startAngle: -90,
@@ -122,6 +125,7 @@ const configs = {
     shape: 'archimedean',
     palette: 'redBlue',
     backgroundColor: '#1c1c24',
+    weightFun: 'exponential',
   },
   squareWords: {
     startAngle: -45,
@@ -137,6 +141,7 @@ const configs = {
     shape: 'archimedean',
     palette: 'weight',
     backgroundColor: '#4a6960',
+    weightFun: 'exponential',
   },
   smallWaves: {
     startAngle: -15,
@@ -152,12 +157,13 @@ const configs = {
     shape: 'rectangular',
     palette: 'euiColorBlind',
     backgroundColor: '#ffffff',
+    weightFun: 'exponential',
   },
   sparse: {
     startAngle: 0,
     endAngle: 0,
     angleCount: 1,
-    padding: 2 + Math.random() * 50,
+    padding: 2 + Math.random() * 20,
     exponent: 15,
     fontWeight: 600,
     minFontSize: 12,
@@ -167,6 +173,7 @@ const configs = {
     shape: 'rectangular',
     palette: 'vivid',
     backgroundColor: '#1c1c24',
+    weightFun: 'exponential',
   },
 };
 
@@ -244,6 +251,13 @@ export const Example = () => {
         Object.keys(palettes).reduce((p, k) => ({ ...p, [k]: k }), {}),
         startConfig.palette,
       );
+  const weightFun = template
+    ? startConfig.weightFun
+    : select(
+        'weightFun',
+        { linear: 'linear', exponential: 'exponential', squareRoot: 'squareRoot', log: 'log' },
+        startConfig.weightFun,
+      );
 
   return (
     <Chart className="story-chart">
@@ -266,6 +280,7 @@ export const Example = () => {
         spiral={spiral}
         exponent={exponent}
         data={data(text, palette)}
+        weightFun={weightFun}
       />
     </Chart>
   );

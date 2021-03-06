@@ -48,6 +48,7 @@ export interface WordcloudSpec extends Spec {
   spiral: string;
   exponent: number;
   data: WordModel[];
+  weightFun: string;
 }
 
 type SpecRequiredProps = Pick<WordcloudSpec, 'id'>;
@@ -70,5 +71,6 @@ export const Wordcloud: React.FunctionComponent<SpecRequiredProps & SpecOptional
     | 'spiral'
     | 'exponent'
     | 'data'
+    | 'weightFun'
   >(defaultProps),
 );
