@@ -19,6 +19,7 @@
 
 import createCachedSelector from 're-reselect';
 
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { configMetadata } from '../../layout/config';
 import { HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
 import { partitionTree } from '../../layout/viewmodel/hierarchy_of_arrays';
@@ -36,4 +37,4 @@ export const getTree = createCachedSelector(
   (partitionSpecs): HierarchyOfArrays => {
     return partitionSpecs.length > 0 ? getTreeForSpec(partitionSpecs[0]) : []; // singleton!
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

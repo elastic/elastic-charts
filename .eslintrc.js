@@ -255,6 +255,7 @@ module.exports = {
     'unicorn/no-null': 0,
     'unicorn/no-fn-reference-in-iterator': 0,
     'unicorn/prefer-query-selector': 0,
+    'unicorn/prefer-array-find': 0,
     'unicorn/no-for-loop': 0,
     'unicorn/no-reduce': 0,
     'unicorn/no-useless-undefined': 0,

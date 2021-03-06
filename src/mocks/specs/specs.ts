@@ -135,6 +135,7 @@ export class MockSeriesSpec {
     valueFormatter: (d: number): string => String(d),
     percentFormatter,
     topGroove: 0,
+    smallMultiples: null,
     layers: [
       {
         groupByRollup: (d: Datum, i: number) => i,
@@ -159,6 +160,7 @@ export class MockSeriesSpec {
     valueFormatter: (d: number): string => String(d),
     percentFormatter,
     topGroove: 20,
+    smallMultiples: null,
     layers: [
       {
         groupByRollup: (d: Datum, i: number) => i,

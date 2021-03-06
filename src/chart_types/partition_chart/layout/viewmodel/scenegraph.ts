@@ -31,7 +31,7 @@ import {
   ValueGetter,
 } from '../types/viewmodel_types';
 import { DEPTH_KEY, HierarchyOfArrays } from '../utils/group_by_rollup';
-import { shapeViewModel } from './viewmodel';
+import { PanelPlacement, shapeViewModel } from './viewmodel';
 
 function rawTextGetter(layers: Layer[]): RawTextGetter {
   return (node: ShapeTreeNode) => {
@@ -50,7 +50,8 @@ export function getShapeViewModel(
   partitionSpec: PartitionSpec,
   parentDimensions: Dimensions,
   tree: HierarchyOfArrays,
-  containerBackgroundColor?: Color,
+  containerBackgroundColor: Color,
+  panelPlacement: PanelPlacement,
 ): ShapeViewModel {
   const { width, height } = parentDimensions;
   const { layers, topGroove, config: specConfig } = partitionSpec;
@@ -62,6 +63,7 @@ export function getShapeViewModel(
     return nullShapeViewModel(config, { x: width / 2, y: height / 2 });
   }
   const valueGetter = valueGetterFunction(partitionSpec.valueGetter);
+
   return shapeViewModel(
     measureText(textMeasurerCtx),
     config,
@@ -73,5 +75,6 @@ export function getShapeViewModel(
     tree,
     topGroove,
     containerBackgroundColor,
+    panelPlacement,
   );
 }

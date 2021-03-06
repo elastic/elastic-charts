@@ -26,16 +26,18 @@ import {
   Pixels,
   PointTuple,
   Radius,
+  SizeRatio,
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
 import { StrokeStyle, ValueFormatter, Color, RecursivePartial } from '../../../../utils/common';
 import { Layer } from '../../specs';
-import { MODEL_KEY, percentValueGetter } from '../config';
+import { config as defaultConfig, MODEL_KEY, percentValueGetter } from '../config';
 import { Config, FillLabelConfig, PartitionLayout } from '../types/config_types';
 import {
   nullShapeViewModel,
   OutsideLinksViewModel,
+  PartitionSmallMultiplesModel,
   PickFunction,
   QuadViewModel,
   RawTextGetter,
@@ -110,6 +112,8 @@ export function makeQuadViewModel(
   layers: Layer[],
   sectorLineWidth: Pixels,
   sectorLineStroke: StrokeStyle,
+  index: number,
+  innerIndex: number,
   fillLabel: FillLabelConfig,
   isSunburstLayout: boolean,
   containerBackgroundColor?: Color,
@@ -130,7 +134,7 @@ export function makeQuadViewModel(
       !isSunburstLayout && textNegligible
         ? 'transparent'
         : fillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor);
-    return { strokeWidth, strokeStyle, fillColor, textColor: color, ...node };
+    return { index, innerIndex, strokeWidth, strokeStyle, fillColor, textColor: color, ...node };
   });
 }
 
@@ -236,6 +240,18 @@ const rawChildNodes = (
 };
 
 /** @internal */
+export interface PanelPlacement extends PartitionSmallMultiplesModel {
+  rowIndex: number;
+  rowCount: number;
+  columnIndex: number;
+  columnCount: number;
+}
+
+function getInterMarginSize(size: Pixels, startMargin: SizeRatio, endMargin: SizeRatio) {
+  return size * (1 - Math.min(1, startMargin + endMargin));
+}
+
+/** @internal */
 export const isTreemap = (p: PartitionLayout | undefined) => p === PartitionLayout.treemap;
 
 /** @internal */
@@ -265,7 +281,8 @@ export function shapeViewModel(
   valueGetter: ValueGetterFunction,
   tree: HierarchyOfArrays,
   topGroove: Pixels,
-  containerBackgroundColor?: Color,
+  containerBackgroundColor: Color,
+  panelPlacement: PanelPlacement,
 ): ShapeViewModel {
   const {
     width,
@@ -281,8 +298,15 @@ export function shapeViewModel(
     partitionLayout,
     sectorLineWidth,
   } = config;
-  const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
-  const innerHeight = height * (1 - Math.min(1, margin.top + margin.bottom));
+
+  const panelWidth = width * panelPlacement.width;
+  const panelHeight = height * panelPlacement.height;
+
+  const panelInnerWidth = getInterMarginSize(panelWidth, margin.left, margin.right);
+  const panelInnerHeight = getInterMarginSize(panelHeight, margin.top, margin.bottom);
+
+  const marginLeftPx = panelWidth * margin.left;
+  const marginTopPx = panelHeight * margin.top;
 
   const treemapLayout = isTreemap(partitionLayout);
   const sunburstLayout = isSunburst(partitionLayout);
@@ -292,10 +316,14 @@ export function shapeViewModel(
 
   const diskCenter = isSunburst(partitionLayout)
     ? {
-        x: width * margin.left + innerWidth / 2,
-        y: height * margin.top + innerHeight / 2,
+        x: width * margin.left + width * panelPlacement.left + panelInnerWidth / 2,
+        y: height * margin.top + height * panelPlacement.top + panelInnerHeight / 2,
       }
-    : { x: width * margin.left, y: height * margin.top };
+    : {
+        x: width * margin.left + width * panelPlacement.left,
+        y: height * margin.top + height * panelPlacement.top,
+      };
+
   // don't render anything if the total, the width or height is not positive
   if (!(width > 0) || !(height > 0) || tree.length === 0) {
     return nullShapeViewModel(config, diskCenter);
@@ -308,8 +336,8 @@ export function shapeViewModel(
     partitionLayout,
     tree,
     topGroove,
-    width,
-    height,
+    panelInnerWidth,
+    panelInnerHeight,
     clockwiseSectors,
     specialFirstInnermostSector,
     maxDepth,
@@ -322,7 +350,7 @@ export function shapeViewModel(
   });
 
   // use the smaller of the two sizes, as a circle fits into a square
-  const circleMaximumSize = Math.min(innerWidth, innerHeight);
+  const circleMaximumSize = Math.min(panelInnerWidth, panelInnerHeight);
   const outerRadius: Radius = Math.min(outerSizeRatio * circleMaximumSize, circleMaximumSize - sectorLineWidth) / 2;
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
   const treeHeight = shownChildNodes.reduce((p: number, n: Part) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
@@ -333,6 +361,8 @@ export function shapeViewModel(
     layers,
     config.sectorLineWidth,
     config.sectorLineStroke,
+    panelPlacement.index,
+    panelPlacement.innerIndex,
     config.fillLabel,
     sunburstLayout,
     containerBackgroundColor,
@@ -396,8 +426,8 @@ export function shapeViewModel(
         });
   const maxLinkedLabelTextLength = config.linkLabel.maxTextLength;
   const linkLabelViewModels = linkTextLayout(
-    width,
-    height,
+    panelInnerWidth, // todo check why we're not passing inter-margin size
+    panelInnerHeight, // todo check why we're not passing inter-margin size
     textMeasure,
     config,
     nodesWithoutRoom,
@@ -407,7 +437,7 @@ export function shapeViewModel(
     valueGetter,
     valueFormatter,
     maxLinkedLabelTextLength,
-    diskCenter,
+    { x: diskCenter.x - marginLeftPx, y: diskCenter.y - marginTopPx },
     containerBackgroundColor,
   );
 
@@ -430,6 +460,13 @@ export function shapeViewModel(
 
   // combined viewModel
   return {
+    index: panelPlacement.index,
+    innerIndex: panelPlacement.innerIndex,
+    width: panelPlacement.width,
+    height: panelPlacement.height,
+    top: panelPlacement.top,
+    left: panelPlacement.left,
+    partitionLayout: config?.partitionLayout ?? defaultConfig.partitionLayout,
     config,
     layers,
     diskCenter,

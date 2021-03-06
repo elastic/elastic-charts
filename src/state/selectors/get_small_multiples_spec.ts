@@ -17,11 +17,11 @@
  * under the License.
  */
 
-import { ChartTypes } from '../../..';
-import { SpecTypes } from '../../../../specs/constants';
-import { SmallMultiplesSpec } from '../../../../specs/small_multiples';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { getSpecsFromStore } from '../../../../state/utils';
+import { ChartTypes } from '../../chart_types';
+import { SpecTypes } from '../../specs/constants';
+import { SmallMultiplesSpec } from '../../specs/small_multiples';
+import { GlobalChartState } from '../chart_state';
+import { getSpecsFromStore } from '../utils';
 
 /**
  * Return the small multiple spec

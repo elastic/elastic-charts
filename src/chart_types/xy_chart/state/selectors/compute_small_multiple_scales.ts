@@ -22,10 +22,10 @@ import createCachedSelector from 're-reselect';
 import { ScaleBand } from '../../../../scales';
 import { DEFAULT_SM_PANEL_PADDING } from '../../../../specs/small_multiples';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getSmallMultipleSpec } from '../../../../state/selectors/get_small_multiples_spec';
 import { OrdinalDomain } from '../../../../utils/domain';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
-import { getSmallMultipleSpec } from './get_small_multiples_spec';
 
 /** @internal */
 export interface SmallMultipleScales {
