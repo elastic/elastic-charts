@@ -49,7 +49,7 @@ nvm install
 
 ### Development environment
 
-You can run the dev environment locally at [http://localhost:9001](http://localhost:9001/) by running:
+You can run the dev environment locally at [http://localhost:9002](http://localhost:9002/) by running:
 
 ```
 yarn
