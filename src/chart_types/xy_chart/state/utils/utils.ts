@@ -606,7 +606,7 @@ function parseDataForValues(d: DataSeries) {
     d.data.forEach((value) => {
       // eslint-disable-next-line array-callback-return
       return Object.entries(value).forEach((val) => {
-        if (val[0] !== 'datum' && val[1] !== null && val[1] !== undefined && typeof val[1] === 'number') {
+        if (val[0] !== 'datum' && Number.isFinite(val[1])) {
           return values.push(val[1]);
         }
       });
