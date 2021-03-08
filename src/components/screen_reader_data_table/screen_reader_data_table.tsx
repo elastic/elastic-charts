@@ -19,12 +19,13 @@
 
 import { connect } from 'react-redux';
 
+import { ComputedScales } from '../../chart_types/xy_chart/state/utils/types';
+import { Scale } from '../../scales';
 import { ScaleType } from '../../scales/constants';
 import { SeriesName, SeriesNameConfigOptions, SeriesNameFn, SeriesTypes } from '../../specs';
 import { GlobalChartState } from '../../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
-import { ContinuousDomain, OrdinalDomain } from '../../utils/domain';
 
 export interface ScreenReaderData {
   seriesName: SeriesName | SeriesNameFn | undefined | SeriesNameConfigOptions;
@@ -32,9 +33,7 @@ export interface ScreenReaderData {
   splitAccessor: boolean;
   dataKey: string[];
   dataValue: any[];
-  xScaleType: ScaleType;
-  yScaleType: ScaleType;
-  Domains: { [s: string]: number[] | string[] | OrdinalDomain | ContinuousDomain | (string | number)[] };
+  scales: ComputedScales;
   axesTitles: (string | undefined)[][];
 }
 
@@ -55,28 +54,19 @@ const readOutSeriesCountandType = (s: { [s: string]: number } | ArrayLike<number
 };
 
 /** helper function to read out each title of the axes */
-const axesWithTitles = (
-  titles: (undefined | string)[][],
-  domains: { [x: string]: number[] | string[] | OrdinalDomain },
-) => {
-  let titleDomain = '';
-  // includes x axes in the domains and want to skip
-  if (titles.length === 4) {
-    for (let i = 1; i < titles.length; i += 2) {
-      const getTitle = titles[i].length === 0 ? 'The axis is not titled and ' : `The axis named ${titles[i][0]} `;
-      const groupId = titles[i][1];
-      // @ts-ignore
-      const domain = domains[groupId] ? domains[groupId] : domains.xDomain;
-      titleDomain += titles[i][1] ? `${getTitle} has the domain ${domain}. ` : `${getTitle} has an undefined domain.`;
-    }
-  } else {
-    titles.forEach((val) => {
-      const getTitle = val.length === 0 ? 'The axis is not titled and ' : `The axis named ${val[0]} `;
-      const groupId = val[1];
-      // @ts-ignore
-      const domain = domains[groupId] ? domains[groupId] : domains.xDomain;
-      titleDomain += val[1] ? `${getTitle} has the domain ${domain}. ` : `${getTitle} has an undefined domain.`;
-    });
+const axesWithTitles = (titles: (undefined | string)[][], scales: ComputedScales) => {
+  let titleDomain = `There are ${scales.yScales.size} y-axes. `;
+
+  for (let i = 1; i < scales.yScales.size + 1; i++) {
+    const axisTitle = titles[i][0];
+    const axisDomain =
+      scales.yScales.get(titles[i][1]!)!.domain === undefined
+        ? 'The axis does not have a defined domain'
+        : `${scales.yScales.get(titles[i][1]!)!.domain}`;
+    titleDomain +=
+      scales.yScales.size === 1
+        ? `The y-axis has the title ${axisTitle} with the domain ${axisDomain}. `
+        : `${i}. A y-axis is named ${axisTitle} with the domain ${axisDomain}. `;
   }
 
   return titleDomain;
@@ -84,29 +74,34 @@ const axesWithTitles = (
 
 /** helper function to read out each title for the axes if present */
 const getAxesTitlesAndDomains = (d: ScreenReaderData[]) => {
-  const { axesTitles } = d[0];
+  const {
+    axesTitles,
+    scales: { xScale, yScales },
+  } = d[0];
   const firstXAxisTitle =
     axesTitles[0][0] === undefined ? 'The x axis is not titled' : `The x axis is titled ${axesTitles[0][0]}`;
   const firstXAxisGroupId = axesTitles[0][1];
-  const multipleTitles = Object.entries(d[0].axesTitles).length > 2;
+  const multipleTitles = Object.entries(d[0].axesTitles).length >= 2;
+  const yAxisGroupId = axesTitles[1][1] ?? '__global__';
   return multipleTitles
-    ? `This chart has multiple axes. The x-axis is ${d[0].xScaleType}. The y-axes are ${
-        d[0].yScaleType
-      }. ${axesWithTitles(d[0].axesTitles, d[0].Domains)}`
+    ? `This chart has multiple axes. The x-axis is ${xScale.type} with a domain of ${xScale.domain}. The y-axes are ${
+        yScales.get(yAxisGroupId)?.type
+      }. ${axesWithTitles(d[0].axesTitles, d[0].scales)}`
     : `${firstXAxisTitle}. ${
         firstXAxisGroupId === undefined
           ? `Its y axis does not have a defined domain.`
           : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            `The y axis domain is ${d[0].Domains[firstXAxisGroupId]}`
+            `The y axis domain is ${yScales.get(yAxisGroupId)?.domain}`
       }`;
 };
 
-const formatForTimeOrOrdinalXAxis = (d: ScreenReaderData[]) => {
-  if (d[0].Domains.xDomain === undefined) return 'is undefined';
-  if (typeof d[0].Domains.xDomain[0] === 'string') return `has an ordinal scale. The domain is ${d[0].Domains.xDomain}`;
-  const [startDomain, endDomain] = d[0].Domains.xDomain;
-  return d[0].xScaleType !== ScaleType.Time
-    ? ` is ${d[0].xScaleType}. The domain is ${startDomain} to ${endDomain}`
+const formatForTimeOrOrdinalXAxis = (xScale: Scale) => {
+  if (xScale.domain === undefined) return 'is undefined';
+  if (xScale.type === 'ordinal') return `has an ordinal scale. The domain is ${xScale.domain.toString()}`;
+  const [startDomain, endDomain] = xScale.domain;
+  return xScale.type !== ScaleType.Time
+    ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      ` is ${xScale.type}. The domain is ${startDomain} to ${endDomain}`
     : `scale type is time with the domain ${new Date(startDomain).toTimeString()} to ${new Date(
         endDomain,
       ).toTimeString()}`;
@@ -114,10 +109,9 @@ const formatForTimeOrOrdinalXAxis = (d: ScreenReaderData[]) => {
 
 /** @internal */
 export const computeAlternativeChartText = (d: ScreenReaderData[]): string => {
+  const { seriesName, axesTitles, splitAccessor, seriesType, scales } = d[0];
   const numberOfSeriesByType: { [key: string]: number } = {};
-  d.forEach((series) => {
-    const { seriesType } = series;
-
+  d.forEach(() => {
     if (numberOfSeriesByType[seriesType]) {
       numberOfSeriesByType[seriesType]++;
     } else {
@@ -125,23 +119,27 @@ export const computeAlternativeChartText = (d: ScreenReaderData[]): string => {
     }
   });
 
-  const namedSeries = d[0].seriesName !== undefined ? `The chart is named ${d[0].seriesName}. ` : '';
+  const namedSeries = seriesName !== undefined ? `The chart is named ${seriesName}. ` : '';
 
   const mixedSeriesChart =
     Object.keys(numberOfSeriesByType).length > 1 ? `This chart has different series types in it.` : '';
-  const stackedSeries = d[0].splitAccessor
-    ? `This chart has stacked series in it. The scale type of the y axes are ${d[0].yScaleType}. `
+
+  const yAxisGroupId = axesTitles[1][1] ?? '__global__';
+  const stackedSeries = splitAccessor
+    ? `This chart has stacked series in it. The scale type of the y axes are ${
+        scales.yScales.get(yAxisGroupId)?.type
+      }. `
     : '';
 
   const multipleSeries = d.length > 1;
   const typesOfSeries = multipleSeries
     ? readOutSeriesCountandType(numberOfSeriesByType)
-    : `There is one ${d[0].seriesType} series in this chart.`;
+    : `There is one ${seriesType} series in this chart.`;
 
   const chartHasAxes =
-    d[0].axesTitles.length === 0
+    axesTitles.length === 0
       ? 'This chart does not have axes.'
-      : `The x axis ${formatForTimeOrOrdinalXAxis(d)}. ${getAxesTitlesAndDomains(d)}`;
+      : `The x axis ${formatForTimeOrOrdinalXAxis(scales.xScale)}. ${getAxesTitlesAndDomains(d)}`;
 
   return `${namedSeries}${mixedSeriesChart} ${stackedSeries} ${
     mixedSeriesChart !== '' || stackedSeries !== '' ? `It` : `The  chart`

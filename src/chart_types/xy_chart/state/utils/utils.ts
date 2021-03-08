@@ -25,7 +25,6 @@ import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
-import { ContinuousDomain, OrdinalDomain } from '../../../../utils/domain';
 import {
   PointGeometry,
   BarGeometry,
@@ -38,7 +37,7 @@ import { GroupId, SpecId } from '../../../../utils/ids';
 import { getRenderingCompareFn, SeriesCompareFn } from '../../../../utils/series_sort';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import { getPredicateFn, Predicate } from '../../../heatmap/utils/common';
-import { XDomain, YDomain } from '../../domains/types';
+import { XDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
 import { isStackedSpec, mergeYDomain } from '../../domains/y_domain';
 import { renderArea } from '../../rendering/area';
@@ -70,7 +69,7 @@ import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales'
 import { SmallMultiplesGroupBy } from '../selectors/get_specs';
 import { isHorizontalRotation } from './common';
 import { getSpecsById, getAxesSpecForSpecId, getSpecDomainGroupId } from './spec';
-import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform } from './types';
+import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform, ComputedScales } from './types';
 
 /**
  * Return map association between `seriesKey` and only the custom colors string
@@ -624,23 +623,12 @@ function parseDataForValues(d: DataSeries) {
 /** @internal */
 export function computeScreenReaderData(
   data: DataSeries[],
-  xDomain: XDomain | undefined,
-  yDomains: YDomain[],
+  scales: ComputedScales,
   axisSpecs: AxisSpec[] | undefined,
 ): ScreenReaderData[] {
   const formattedScreenReaderDataArray = [];
-  const DomainsFormatted: {
-    [s: string]: number[] | string[] | OrdinalDomain | ContinuousDomain | (string | number)[];
-  } = {};
-  // add the x domain
-  DomainsFormatted.xDomain = xDomain!.domain;
-  // add the y domains
-  for (let i = 0; i < yDomains.length; i++) {
-    if (!DomainsFormatted.hasOwnProperty(yDomains[i].groupId)) {
-      DomainsFormatted[yDomains[i].groupId] = yDomains[i].domain;
-    }
-  }
-  const axesTitles = axisSpecs?.map((val) => [val.title, val.groupId]) || [];
+
+  const axesTitles = axisSpecs?.map((val) => [val.title, val.groupId, val.position]) || [];
   for (let i = 0; i < data.length; i++) {
     const current = {
       seriesName: data[i].spec.name,
@@ -648,9 +636,7 @@ export function computeScreenReaderData(
       splitAccessor: data[i].splitAccessors.size > 0,
       dataKey: parseDataForKeys(data[i]),
       dataValue: parseDataForValues(data[i]),
-      xScaleType: data[i].spec.xScaleType,
-      yScaleType: data[i].spec.yScaleType,
-      Domains: DomainsFormatted,
+      scales,
       axesTitles,
     };
     formattedScreenReaderDataArray.push(current);
