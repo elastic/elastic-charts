@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { select, boolean } from '@storybook/addon-knobs';
+import { select, boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { switchTheme } from '../../.storybook/theme_service';
@@ -30,39 +30,53 @@ import {
   Position,
   ScaleType,
   Settings,
-  SettingsSpec,
-  timeFormatter,
+  LegendPositionConfig,
+  VerticalAlignment,
+  HorizontalAlignment,
 } from '../../src';
+import { SeededDataGenerator } from '../../src/mocks/utils';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
-const dateFormatter = timeFormatter('HH:mm');
-
+const dg = new SeededDataGenerator();
+const data = dg.generateGroupedSeries(10, 20);
 export const Example = () => {
-  const data1 = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => [
-    ...d,
-    KIBANA_METRICS.metrics.kibana_os_load[0].metric.label,
-  ]);
-  const data2 = KIBANA_METRICS.metrics.kibana_os_load[1].data.map((d) => [
-    ...d,
-    KIBANA_METRICS.metrics.kibana_os_load[1].metric.label,
-  ]);
-  const data3 = KIBANA_METRICS.metrics.kibana_os_load[2].data.map((d) => [
-    ...d,
-    KIBANA_METRICS.metrics.kibana_os_load[2].metric.label,
-  ]);
-  const allMetrics = [...data3, ...data2, ...data1];
-  const legendPosition: SettingsSpec['legendPosition'] = select(
-    'Legend Position',
+  const numberOfSeries = number('Number of series', 5);
+
+  const floating: LegendPositionConfig['floating'] = boolean('Inside chart', true, 'Legend');
+  const vAlign: LegendPositionConfig['vAlign'] = select(
+    'vAlign',
     {
-      ...Position,
-      TopLeft: [Position.Top, Position.Left],
-      TopRight: [Position.Top, Position.Right],
-      BottomLeft: [Position.Bottom, Position.Left],
-      BottomRight: [Position.Bottom, Position.Right],
+      [Position.Top]: VerticalAlignment.Top,
+      // not yet implemented
+      // [VerticalAlignment.Middle]: VerticalAlignment.Middle,
+      [Position.Bottom]: VerticalAlignment.Bottom,
     },
-    [Position.Top, Position.Right],
+    Position.Top,
+    'Legend',
   );
+
+  const hAlign: LegendPositionConfig['hAlign'] = select(
+    'hAlign',
+    {
+      [Position.Left]: HorizontalAlignment.Left,
+      // not yet implemented
+      // [HorizontalAlignment.Center]: HorizontalAlignment.Center,
+      [Position.Right]: HorizontalAlignment.Right,
+    },
+    Position.Left,
+    'Legend',
+  );
+  const direction: LegendPositionConfig['direction'] = select(
+    'direction',
+    {
+      vertical: 'vertical',
+      horizontal: 'horizontal',
+    },
+    'vertical',
+    'Legend',
+  );
+
   const darkMode = boolean('Dark Mode', false);
   const className = darkMode ? 'story-chart-dark' : 'story-chart';
 
@@ -72,16 +86,15 @@ export const Example = () => {
       <Settings
         showLegend
         showLegendExtra
-        legendPosition={legendPosition}
+        legendPosition={{
+          vAlign,
+          hAlign,
+          direction,
+          floating,
+        }}
         theme={darkMode ? DARK_THEME : LIGHT_THEME}
       />
-      <Axis
-        id="bottom"
-        position={Position.Bottom}
-        title="timestamp per 1 minute"
-        showOverlappingTicks
-        tickFormat={dateFormatter}
-      />
+      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />
       <Axis
         id="left"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
@@ -92,11 +105,11 @@ export const Example = () => {
         id={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
-        xAccessor={0}
-        yAccessors={[1]}
-        stackAccessors={[0]}
-        splitSeriesAccessors={[2]}
-        data={allMetrics}
+        xAccessor="x"
+        yAccessors={['y']}
+        stackAccessors={['x']}
+        splitSeriesAccessors={['g']}
+        data={data.slice(0, numberOfSeries * 10)}
       />
     </Chart>
   );

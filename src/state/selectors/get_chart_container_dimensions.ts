@@ -19,32 +19,22 @@
 
 import createCachedSelector from 're-reselect';
 
-import { isVerticalAxis } from '../../chart_types/xy_chart/utils/axis_type_utils';
 import { Dimensions } from '../../utils/dimensions';
 import { GlobalChartState } from '../chart_state';
 import { getChartIdSelector } from './get_chart_id';
+import { getLegendConfigSelector } from './get_legend_config_selector';
 import { getLegendSizeSelector } from './get_legend_size';
-import { getSettingsSpecSelector } from './get_settings_specs';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
 /** @internal */
 export const getChartContainerDimensionsSelector = createCachedSelector(
-  [getSettingsSpecSelector, getLegendSizeSelector, getParentDimension],
-  ({ showLegend, legendPosition }, legendSize, parentDimensions): Dimensions => {
-    if (!showLegend) {
+  [getLegendConfigSelector, getLegendSizeSelector, getParentDimension],
+  ({ showLegend, legendPosition: { floating, direction } }, legendSize, parentDimensions): Dimensions => {
+    if (!showLegend || floating) {
       return parentDimensions;
     }
-    // when using to legend positions the legend is within the chart area
-    if (Array.isArray(legendPosition)) {
-      return {
-        left: 0,
-        top: 0,
-        width: parentDimensions.width,
-        height: parentDimensions.height,
-      };
-    }
-    if (isVerticalAxis(legendPosition)) {
+    if (direction === 'vertical') {
       return {
         left: 0,
         top: 0,

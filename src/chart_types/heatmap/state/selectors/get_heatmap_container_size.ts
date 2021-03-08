@@ -20,10 +20,9 @@ import createCachedSelector from 're-reselect';
 
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getLegendConfigSelector } from '../../../../state/selectors/get_legend_config_selector';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../utils/dimensions';
-import { isVerticalAxis } from '../../../xy_chart/utils/axis_type_utils';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
@@ -33,12 +32,12 @@ const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
  * @internal
  */
 export const getHeatmapContainerSizeSelector = createCachedSelector(
-  [getParentDimension, getLegendSizeSelector, getHeatmapConfigSelector, getSettingsSpecSelector],
+  [getParentDimension, getLegendSizeSelector, getHeatmapConfigSelector, getLegendConfigSelector],
   (parentDimensions, legendSize, { maxLegendHeight }, { showLegend, legendPosition }): Dimensions => {
-    if (!showLegend || Array.isArray(legendPosition)) {
+    if (!showLegend || legendPosition.floating) {
       return parentDimensions;
     }
-    if (isVerticalAxis(legendPosition)) {
+    if (legendPosition.direction === 'vertical') {
       return {
         left: 0,
         top: 0,

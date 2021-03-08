@@ -65,8 +65,14 @@ export interface TickLabelProps {
   offsetY: number;
   textOffsetX: number;
   textOffsetY: number;
-  align: Extract<HorizontalAlignment, 'left' | 'center' | 'right'>;
-  verticalAlign: Extract<VerticalAlignment, 'top' | 'middle' | 'bottom'>;
+  align: Extract<
+    HorizontalAlignment,
+    typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Center | typeof HorizontalAlignment.Right
+  >;
+  verticalAlign: Extract<
+    VerticalAlignment,
+    typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom
+  >;
 }
 
 export const defaultTickFormatter = (tick: any) => `${tick}`;
@@ -281,14 +287,17 @@ function getUserTextOffsets(dimensions: AxisTicksDimensions, offset: TextOffset)
 
 function getHorizontalTextOffset(
   width: number,
-  alignment: Extract<HorizontalAlignment, 'left' | 'center' | 'right'>,
+  alignment: Extract<
+    HorizontalAlignment,
+    typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Center | typeof HorizontalAlignment.Right
+  >,
 ): number {
   switch (alignment) {
-    case 'left':
+    case HorizontalAlignment.Left:
       return -width / 2;
-    case 'right':
+    case HorizontalAlignment.Right:
       return width / 2;
-    case 'center':
+    case HorizontalAlignment.Center:
     default:
       return 0;
   }
@@ -296,14 +305,17 @@ function getHorizontalTextOffset(
 
 function getVerticalTextOffset(
   height: number,
-  alignment: Extract<VerticalAlignment, 'top' | 'middle' | 'bottom'>,
+  alignment: Extract<
+    VerticalAlignment,
+    typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom
+  >,
 ): number {
   switch (alignment) {
-    case 'top':
+    case VerticalAlignment.Top:
       return -height / 2;
-    case 'bottom':
+    case VerticalAlignment.Bottom:
       return height / 2;
-    case 'middle':
+    case VerticalAlignment.Middle:
     default:
       return 0;
   }
@@ -313,7 +325,7 @@ function getHorizontalAlign(
   position: Position,
   rotation: number,
   alignment: HorizontalAlignment = HorizontalAlignment.Near,
-): Exclude<HorizontalAlignment, 'far' | 'near'> {
+): Exclude<HorizontalAlignment, typeof HorizontalAlignment.Far | typeof HorizontalAlignment.Near> {
   if (
     alignment === HorizontalAlignment.Center ||
     alignment === HorizontalAlignment.Right ||
@@ -354,7 +366,7 @@ function getVerticalAlign(
   position: Position,
   rotation: number,
   alignment: VerticalAlignment = VerticalAlignment.Middle,
-): Exclude<VerticalAlignment, 'far' | 'near'> {
+): Exclude<VerticalAlignment, typeof VerticalAlignment.Far | typeof VerticalAlignment.Near> {
   if (
     alignment === VerticalAlignment.Middle ||
     alignment === VerticalAlignment.Top ||
@@ -389,14 +401,6 @@ function getVerticalAlign(
 
 /**
  * Gets the computed x/y coordinates & alignment properties for an axis tick label.
- * @param isVerticalAxis if the axis is vertical (in contrast to horizontal)
- * @param tickPosition position of tick relative to axis line origin and other ticks along it
- * @param position position of where the axis sits relative to the visualization
- * @param axisSize
- * @param tickDimensions
- * @param showTicks
- * @param textOffset
- * @param textAlignment
  * @internal
  */
 export function getTickLabelProps(

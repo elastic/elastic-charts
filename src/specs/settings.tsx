@@ -32,7 +32,7 @@ import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { LegendPath } from '../state/actions/legend';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
-import { Color, Position, Rendering, Rotation } from '../utils/common';
+import { Color, HorizontalAlignment, Position, Rendering, Rotation, VerticalAlignment } from '../utils/common';
 import { Domain } from '../utils/domain';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
@@ -320,56 +320,30 @@ export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
  */
 export type MarkBuffer = number | ((radius: number) => number);
 
+export type LegendPositionConfig = {
+  vAlign: typeof VerticalAlignment.Top | typeof VerticalAlignment.Bottom; // TODO typeof VerticalAlignment.Middle
+  hAlign: typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Right; // TODO typeof HorizontalAlignment.Center
+  direction: 'horizontal' | 'vertical';
+  /**
+   * Remove the legend from the outside chart area, making it floating above the chart.
+   * @default false
+   */
+  floating: boolean;
+  // TODO add custom number of columns
+  // TODO add grow factor: fill, shrink, fixed column size
+};
+
 /**
- * The Spec used for Chart settings
+ * The legend configuration
  * @public
  */
-export interface SettingsSpec extends Spec {
-  /**
-   * Partial theme to be merged with base
-   *
-   * or
-   *
-   * Array of partial themes to be merged with base
-   * index `0` being the hightest priority
-   *
-   * i.e. `[primary, secondary, tertiary]`
-   */
-  theme?: PartialTheme | PartialTheme[];
-  /**
-   * Full default theme to use as base
-   *
-   * @defaultValue `LIGHT_THEME`
-   */
-  baseTheme?: Theme;
-  rendering: Rendering;
-  rotation: Rotation;
-  animateData: boolean;
+export interface LegendConfig {
   showLegend: boolean;
-  /**
-   * The tooltip configuration {@link TooltipSettings}
-   */
-  tooltip: TooltipSettings;
-  /**
-   * {@inheritDoc ExternalPointerEventsSettings}
-   * @alpha
-   */
-  externalPointerEvents: ExternalPointerEventsSettings;
-  /**
-   * Show debug shadow elements on chart
-   */
-  debug: boolean;
-  /**
-   * Show debug render state on `ChartStatus` component
-   * @alpha
-   */
-  debugState?: boolean;
   /**
    * Set legend position
    */
-  legendPosition:
-    | Position
-    | [typeof Position.Top | typeof Position.Bottom, typeof Position.Left | typeof Position.Right];
+  legendPosition: Position | LegendPositionConfig;
+
   /**
    * Show an extra parameter on each legend item defined by the chart type
    * @defaultValue `false`
@@ -388,6 +362,63 @@ export interface SettingsSpec extends Spec {
    * Choose a partition highlighting strategy for hovering over legend items
    */
   legendStrategy?: LegendStrategy;
+  onLegendItemOver?: LegendItemListener;
+  onLegendItemOut?: BasicListener;
+  onLegendItemClick?: LegendItemListener;
+  onLegendItemPlusClick?: LegendItemListener;
+  onLegendItemMinusClick?: LegendItemListener;
+  /**
+   * Render slot to render action for legend
+   */
+  legendAction?: LegendAction;
+  legendColorPicker?: LegendColorPicker;
+}
+
+/**
+ * The Spec used for Chart settings
+ * @public
+ */
+export interface SettingsSpec extends Spec, LegendConfig {
+  /**
+   * Partial theme to be merged with base
+   *
+   * or
+   *
+   * Array of partial themes to be merged with base
+   * index `0` being the highest priority
+   *
+   * i.e. `[primary, secondary, tertiary]`
+   */
+  theme?: PartialTheme | PartialTheme[];
+  /**
+   * Full default theme to use as base
+   *
+   * @defaultValue `LIGHT_THEME`
+   */
+  baseTheme?: Theme;
+  rendering: Rendering;
+  rotation: Rotation;
+  animateData: boolean;
+
+  /**
+   * The tooltip configuration {@link TooltipSettings}
+   */
+  tooltip: TooltipSettings;
+  /**
+   * {@inheritDoc ExternalPointerEventsSettings}
+   * @alpha
+   */
+  externalPointerEvents: ExternalPointerEventsSettings;
+  /**
+   * Show debug shadow elements on chart
+   */
+  debug: boolean;
+  /**
+   * Show debug render state on `ChartStatus` component
+   * @alpha
+   */
+  debugState?: boolean;
+
   /**
    * Removes duplicate axes
    *
@@ -405,20 +436,12 @@ export interface SettingsSpec extends Spec {
   onElementOut?: BasicListener;
   pointBuffer?: MarkBuffer;
   onBrushEnd?: BrushEndListener;
-  onLegendItemOver?: LegendItemListener;
-  onLegendItemOut?: BasicListener;
-  onLegendItemClick?: LegendItemListener;
-  onLegendItemPlusClick?: LegendItemListener;
-  onLegendItemMinusClick?: LegendItemListener;
+
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
   xDomain?: Domain | DomainRange;
   resizeDebounce?: number;
-  /**
-   * Render slot to render action for legend
-   */
-  legendAction?: LegendAction;
-  legendColorPicker?: LegendColorPicker;
+
   /**
    * Block the brush tool on a specific axis: x, y or both.
    * @defaultValue `x` {@link (BrushAxis:type) | BrushAxis.X}
@@ -520,17 +543,17 @@ export type DefaultSettingsProps =
   | 'rotation'
   | 'resizeDebounce'
   | 'animateData'
-  | 'showLegend'
   | 'debug'
   | 'tooltip'
-  | 'showLegendExtra'
   | 'theme'
-  | 'legendPosition'
-  | 'legendMaxDepth'
   | 'hideDuplicateAxes'
   | 'brushAxis'
   | 'minBrushDelta'
-  | 'externalPointerEvents';
+  | 'externalPointerEvents'
+  | 'showLegend'
+  | 'showLegendExtra'
+  | 'legendPosition'
+  | 'legendMaxDepth';
 
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
 
