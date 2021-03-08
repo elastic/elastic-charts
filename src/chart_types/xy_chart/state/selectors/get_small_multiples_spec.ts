@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChartTypes } from '../../..';
+import { ChartType } from '../../..';
 import { SpecTypes } from '../../../../specs/constants';
 import { SmallMultiplesSpec } from '../../../../specs/small_multiples';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -28,11 +28,7 @@ import { getSpecsFromStore } from '../../../../state/utils';
  * @internal
  */
 export const getSmallMultipleSpec = (state: GlobalChartState) => {
-  const smallMultiples = getSpecsFromStore<SmallMultiplesSpec>(
-    state.specs,
-    ChartTypes.Global,
-    SpecTypes.SmallMultiples,
-  );
+  const smallMultiples = getSpecsFromStore<SmallMultiplesSpec>(state.specs, ChartType.Global, SpecTypes.SmallMultiples);
   if (smallMultiples.length !== 1) {
     return undefined;
   }

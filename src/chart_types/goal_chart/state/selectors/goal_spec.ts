@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChartTypes } from '../../..';
+import { ChartType } from '../../..';
 import { SpecTypes } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getSpecsFromStore } from '../../../../state/utils';
@@ -25,6 +25,6 @@ import { GoalSpec } from '../../specs';
 
 /** @internal */
 export function getSpecOrNull(state: GlobalChartState): GoalSpec | null {
-  const specs = getSpecsFromStore<GoalSpec>(state.specs, ChartTypes.Goal, SpecTypes.Series);
+  const specs = getSpecsFromStore<GoalSpec>(state.specs, ChartType.Goal, SpecTypes.Series);
   return specs.length > 0 ? specs[0] : null;
 }

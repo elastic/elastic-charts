@@ -19,7 +19,7 @@
 
 import createCachedSelector from 're-reselect';
 
-import { ChartTypes } from '../../..';
+import { ChartType } from '../../..';
 import { GroupBySpec, SmallMultiplesSpec } from '../../../../specs';
 import { SpecTypes } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -37,28 +37,28 @@ export interface SmallMultiplesGroupBy {
 
 /** @internal */
 export const getAxisSpecsSelector = createCachedSelector([getSpecs], (specs): AxisSpec[] =>
-  getSpecsFromStore<AxisSpec>(specs, ChartTypes.XYAxis, SpecTypes.Axis),
+  getSpecsFromStore<AxisSpec>(specs, ChartType.XYAxis, SpecTypes.Axis),
 )(getChartIdSelector);
 
 /** @internal */
 export const getSeriesSpecsSelector = createCachedSelector([getSpecs], (specs) => {
-  return getSpecsFromStore<BasicSeriesSpec>(specs, ChartTypes.XYAxis, SpecTypes.Series);
+  return getSpecsFromStore<BasicSeriesSpec>(specs, ChartType.XYAxis, SpecTypes.Series);
 })(getChartIdSelector);
 
 /** @internal */
 export const getAnnotationSpecsSelector = createCachedSelector([getSpecs], (specs) =>
-  getSpecsFromStore<AnnotationSpec>(specs, ChartTypes.XYAxis, SpecTypes.Annotation),
+  getSpecsFromStore<AnnotationSpec>(specs, ChartType.XYAxis, SpecTypes.Annotation),
 )(getChartIdSelector);
 
 /** @internal */
 export const getSmallMultiplesIndexOrderSelector = createCachedSelector([getSpecs], (specs):
   | SmallMultiplesGroupBy
   | undefined => {
-  const smallMultiples = getSpecsFromStore<SmallMultiplesSpec>(specs, ChartTypes.Global, SpecTypes.SmallMultiples);
+  const smallMultiples = getSpecsFromStore<SmallMultiplesSpec>(specs, ChartType.Global, SpecTypes.SmallMultiples);
   if (smallMultiples.length !== 1) {
     return undefined;
   }
-  const indexOrders = getSpecsFromStore<GroupBySpec>(specs, ChartTypes.Global, SpecTypes.IndexOrder);
+  const indexOrders = getSpecsFromStore<GroupBySpec>(specs, ChartType.Global, SpecTypes.IndexOrder);
   const [smallMultiplesConfig] = smallMultiples;
 
   let vertical: GroupBySpec | undefined;

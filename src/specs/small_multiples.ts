@@ -19,7 +19,7 @@
 import React from 'react';
 
 import { Spec } from '.';
-import { ChartTypes } from '../chart_types';
+import { ChartType } from '../chart_types';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { SpecTypes } from './constants';
 
@@ -38,7 +38,7 @@ export interface SmallMultiplesSpec extends Spec {
 
 const DEFAULT_SMALL_MULTIPLES_PROPS = {
   id: '__global__small_multiples___',
-  chartType: ChartTypes.Global,
+  chartType: ChartType.Global,
   specType: SpecTypes.SmallMultiples,
 };
 

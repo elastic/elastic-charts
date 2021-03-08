@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChartTypes } from '../../chart_types';
+import { ChartType } from '../../chart_types';
 import { config, percentFormatter } from '../../chart_types/partition_chart/layout/config';
 import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';
 import { ShapeTreeNode } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
@@ -48,7 +48,7 @@ import { LIGHT_THEME } from '../../utils/themes/light_theme';
 /** @internal */
 export class MockSeriesSpec {
   private static readonly barBase: BarSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Series,
     id: 'spec1',
     seriesType: SeriesTypes.Bar,
@@ -63,7 +63,7 @@ export class MockSeriesSpec {
   };
 
   private static readonly histogramBarBase: HistogramBarSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Series,
     id: 'spec1',
     seriesType: SeriesTypes.Bar,
@@ -78,7 +78,7 @@ export class MockSeriesSpec {
   };
 
   private static readonly areaBase: AreaSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Series,
     id: 'spec1',
     seriesType: SeriesTypes.Area,
@@ -93,7 +93,7 @@ export class MockSeriesSpec {
   };
 
   private static readonly lineBase: LineSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Series,
     id: 'spec1',
     seriesType: SeriesTypes.Line,
@@ -108,7 +108,7 @@ export class MockSeriesSpec {
   };
 
   private static readonly bubbleBase: BubbleSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Series,
     id: 'spec1',
     seriesType: SeriesTypes.Bubble,
@@ -122,7 +122,7 @@ export class MockSeriesSpec {
   };
 
   private static readonly sunburstBase: PartitionSpec = {
-    chartType: ChartTypes.Partition,
+    chartType: ChartType.Partition,
     specType: SpecTypes.Series,
     id: 'spec1',
     config: {
@@ -146,7 +146,7 @@ export class MockSeriesSpec {
   };
 
   private static readonly treemapBase: PartitionSpec = {
-    chartType: ChartTypes.Partition,
+    chartType: ChartType.Partition,
     specType: SpecTypes.Series,
     id: 'spec1',
     config: {
@@ -271,7 +271,7 @@ export class MockGlobalSpec {
 
   private static readonly axisBase: AxisSpec = {
     id: 'yAxis',
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Axis,
     groupId: DEFAULT_GLOBAL_ID,
     hide: false,
@@ -313,7 +313,7 @@ export class MockAnnotationSpec {
   private static readonly lineBase: LineAnnotationSpec = {
     id: 'line_annotation_1',
     groupId: DEFAULT_GLOBAL_ID,
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Annotation,
     annotationType: AnnotationTypes.Line,
     dataValues: [],
@@ -323,7 +323,7 @@ export class MockAnnotationSpec {
   private static readonly rectBase: RectAnnotationSpec = {
     id: 'rect_annotation_1',
     groupId: DEFAULT_GLOBAL_ID,
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Annotation,
     annotationType: AnnotationTypes.Rectangle,
     dataValues: [],

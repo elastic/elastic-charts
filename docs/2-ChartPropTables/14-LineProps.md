@@ -3,7 +3,7 @@
 | Prop | Type | Default | Note |
 |:------|:------:|:---------:|:------|
 | id `(required)`|`string` ||The id of the spec |
-| chartType | `typeof ChartTypes.XYAxis` | ChartTypes.XYAxis  |  |
+| chartType | `typeof ChartType.XYAxis` | ChartType.XYAxis  |  |
 | specType  | `typeof SpecTypes.Series` | SpecTypes.Series  |  |    
 | seriesTypes  | | SeriesTypes.Line |  |
 | groupId  || DEFAULT_GROUP_ID |The ID of the line |

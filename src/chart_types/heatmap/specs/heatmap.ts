@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SeriesScales, Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants';
@@ -31,7 +31,7 @@ import { Config } from '../layout/types/config_types';
 import { Predicate } from '../utils/common';
 
 const defaultProps = {
-  chartType: ChartTypes.Heatmap,
+  chartType: ChartType.Heatmap,
   specType: SpecTypes.Series,
   data: [],
   colors: ['red', 'yellow', 'green'],
@@ -55,7 +55,7 @@ export type HeatmapScaleType =
 /** @alpha */
 export interface HeatmapSpec extends Spec {
   specType: typeof SpecTypes.Series;
-  chartType: typeof ChartTypes.Heatmap;
+  chartType: typeof ChartType.Heatmap;
   data: Datum[];
   colorScale?: HeatmapScaleType;
   ranges?: number[] | [number, number];

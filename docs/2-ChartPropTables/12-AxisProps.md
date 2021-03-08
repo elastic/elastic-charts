@@ -4,7 +4,7 @@ The bar chart with axis example in the `Types of charts` section includes only s
 
 | Prop | Type | Default | Note |
 |:------|:------:|:---------:|:------|
-| chartType | `typeof ChartTypes.XYAxis` | ChartTypes.XYAxis  |  |
+| chartType | `typeof ChartType.XYAxis` | ChartType.XYAxis  |  |
 | specType  | `typeof SpecTypes.Axis` | SpecTypes.Axis  |  |
 | groupId | GroupId | `__global__`  | The ID of the axis group |
 | hide  | boolean  | false  | Hide this axis |

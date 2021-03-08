@@ -18,7 +18,7 @@
  */
 import createCachedSelector from 're-reselect';
 
-import { ChartTypes } from '../../..';
+import { ChartType } from '../../..';
 import { SpecTypes } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
@@ -29,6 +29,6 @@ const getSpecs = (state: GlobalChartState) => state.specs;
 
 /** @internal */
 export const getHeatmapSpecSelector = createCachedSelector([getSpecs], (specs) => {
-  const spec = getSpecsFromStore<HeatmapSpec>(specs, ChartTypes.Heatmap, SpecTypes.Series);
+  const spec = getSpecsFromStore<HeatmapSpec>(specs, ChartType.Heatmap, SpecTypes.Series);
   return spec[0];
 })(getChartIdSelector);

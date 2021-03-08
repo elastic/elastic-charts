@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { MockSeriesSpecs } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes, Direction, BinAgg } from '../../../specs/constants';
@@ -197,7 +197,7 @@ describe('X Domain', () => {
 
   test('Should merge line series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
@@ -214,7 +214,7 @@ describe('X Domain', () => {
       ],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g1',
@@ -243,7 +243,7 @@ describe('X Domain', () => {
   });
   test('Should merge bar series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
@@ -260,7 +260,7 @@ describe('X Domain', () => {
       ],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g1',
@@ -290,7 +290,7 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
@@ -307,7 +307,7 @@ describe('X Domain', () => {
       ],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
@@ -341,7 +341,7 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar series correctly - 2', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
@@ -358,7 +358,7 @@ describe('X Domain', () => {
       ],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
@@ -392,7 +392,7 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar linear/bar ordinal series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
@@ -409,7 +409,7 @@ describe('X Domain', () => {
       ],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
@@ -444,7 +444,7 @@ describe('X Domain', () => {
 
   test('Should fallback to ordinal scale if not array of numbers', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
@@ -462,7 +462,7 @@ describe('X Domain', () => {
       ],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
@@ -509,7 +509,7 @@ describe('X Domain', () => {
 
   test('Should merge multi bar/line ordinal series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
@@ -526,7 +526,7 @@ describe('X Domain', () => {
       ],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
@@ -560,7 +560,7 @@ describe('X Domain', () => {
   });
   test('Should merge multi bar/line time series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
@@ -577,7 +577,7 @@ describe('X Domain', () => {
       ],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
@@ -611,7 +611,7 @@ describe('X Domain', () => {
   });
   test('Should merge multi lines series correctly', () => {
     const ds1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
@@ -628,7 +628,7 @@ describe('X Domain', () => {
       ],
     };
     const ds2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',
@@ -664,7 +664,7 @@ describe('X Domain', () => {
   test('Should merge X multi high volume of data', () => {
     const maxValues = 10000;
     const ds1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds1',
       groupId: 'g1',
@@ -676,7 +676,7 @@ describe('X Domain', () => {
       data: new Array(maxValues).fill(0).map((d, i) => ({ x: i, y: i })),
     };
     const ds2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'ds2',
       groupId: 'g2',

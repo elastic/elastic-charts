@@ -20,7 +20,7 @@
 import { DateTime } from 'luxon';
 import moment from 'moment-timezone';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store/store';
 import { Scale } from '../../../scales';
@@ -118,7 +118,7 @@ describe('Axis computational utils', () => {
     isHidden: false,
   };
   const verticalAxisSpec = MockGlobalSpec.axis({
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Axis,
     id: 'axis_1',
     title: 'Axis 1',
@@ -133,7 +133,7 @@ describe('Axis computational utils', () => {
   });
 
   const horizontalAxisSpec = MockGlobalSpec.axis({
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Axis,
     id: 'axis_2',
     title: 'Axis 2',
@@ -147,7 +147,7 @@ describe('Axis computational utils', () => {
   });
 
   const verticalAxisSpecWTitle = MockGlobalSpec.axis({
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Axis,
     id: 'axis_1',
     groupId: 'group_1',
@@ -161,7 +161,7 @@ describe('Axis computational utils', () => {
     integersOnly: false,
   });
   const xAxisWithTime = MockGlobalSpec.axis({
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Axis,
     id: 'axis_1',
     groupId: 'group_1',

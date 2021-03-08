@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { SpecTypes } from '../../../specs/constants';
 import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisId } from '../../../utils/ids';
@@ -35,7 +35,7 @@ describe('isDuplicateAxis', () => {
   const AXIS_1_ID = 'spec_1';
   const AXIS_2_ID = 'spec_1';
   const axis1: AxisSpec = {
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Axis,
     id: AXIS_1_ID,
     groupId: 'group_1',

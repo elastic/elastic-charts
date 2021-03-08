@@ -19,7 +19,7 @@
 
 import { $Values } from 'utility-types';
 
-import { ChartTypes } from '../chart_types';
+import { ChartType } from '../chart_types';
 import { Position } from '../utils/common';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { SettingsSpec } from './settings';
@@ -118,7 +118,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 
 export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   id: '__global__settings___',
-  chartType: ChartTypes.Global,
+  chartType: ChartType.Global,
   specType: SpecTypes.Settings,
   rendering: 'canvas' as const,
   rotation: 0 as const,

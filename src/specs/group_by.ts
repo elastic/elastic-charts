@@ -19,7 +19,7 @@
 import React from 'react';
 
 import { Spec } from '.';
-import { ChartTypes } from '../chart_types';
+import { ChartType } from '../chart_types';
 import { Predicate } from '../chart_types/heatmap/utils/common';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { SpecTypes } from './constants';
@@ -53,7 +53,7 @@ export interface GroupBySpec extends Spec {
   format?: GroupByFormatter;
 }
 const DEFAULT_GROUP_BY_PROPS = {
-  chartType: ChartTypes.Global,
+  chartType: ChartType.Global,
   specType: SpecTypes.IndexOrder,
 };
 

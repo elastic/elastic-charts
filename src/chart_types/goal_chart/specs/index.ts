@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
@@ -45,7 +45,7 @@ export interface BandFillColorAccessorInput {
 export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color;
 
 const defaultProps = {
-  chartType: ChartTypes.Goal,
+  chartType: ChartType.Goal,
   ...defaultGoalSpec,
   config,
 };
@@ -53,7 +53,7 @@ const defaultProps = {
 /** @alpha */
 export interface GoalSpec extends Spec {
   specType: typeof SpecTypes.Series;
-  chartType: typeof ChartTypes.Goal;
+  chartType: typeof ChartType.Goal;
   subtype: GoalSubtype;
   base: number;
   target: number;

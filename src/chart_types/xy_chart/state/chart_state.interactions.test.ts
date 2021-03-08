@@ -21,7 +21,7 @@
 
 import { Store } from 'redux';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { Rect } from '../../../geoms/types';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -51,7 +51,7 @@ const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
 
 const ordinalBarSeries: BarSeriesSpec = {
-  chartType: ChartTypes.XYAxis,
+  chartType: ChartType.XYAxis,
   specType: SpecTypes.Series,
   id: SPEC_ID,
   groupId: GROUP_ID,
@@ -67,7 +67,7 @@ const ordinalBarSeries: BarSeriesSpec = {
   hideInLegend: false,
 };
 const linearBarSeries: BarSeriesSpec = {
-  chartType: ChartTypes.XYAxis,
+  chartType: ChartType.XYAxis,
   specType: SpecTypes.Series,
   id: SPEC_ID,
   groupId: GROUP_ID,
@@ -692,7 +692,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
     };
     beforeEach(() => {
       leftAxis = {
-        chartType: ChartTypes.XYAxis,
+        chartType: ChartType.XYAxis,
         specType: SpecTypes.Axis,
         hide: true,
         id: 'yaxis',
@@ -704,7 +704,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
         style,
       };
       bottomAxis = {
-        chartType: ChartTypes.XYAxis,
+        chartType: ChartType.XYAxis,
         specType: SpecTypes.Axis,
         hide: true,
         id: 'xaxis',

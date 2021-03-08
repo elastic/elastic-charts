@@ -916,7 +916,7 @@ describe('Rendering points - areas', () => {
 
   // describe('Error guards for scaled values', () => {
   //   const pointSeriesSpec: AreaSeriesSpec = {
-  //     chartType: ChartTypes.XYAxis,
+  //     chartType: ChartType.XYAxis,
   //     specType: SpecTypes.Series,
   //     id: SPEC_ID,
   //     groupId: GROUP_ID,

@@ -19,7 +19,7 @@
 
 import { flatten } from 'lodash';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { MockDataSeries } from '../../../mocks/series';
 import { MockSeriesIdentifier } from '../../../mocks/series/series_identifiers';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
@@ -442,7 +442,7 @@ describe('Series', () => {
   test('should split an array of specs into data series', () => {
     const spec1: LineSeriesSpec = {
       specType: SpecTypes.Series,
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       id: 'spec1',
       groupId: 'group',
       seriesType: SeriesTypes.Line,
@@ -455,7 +455,7 @@ describe('Series', () => {
     };
     const spec2: BasicSeriesSpec = {
       specType: SpecTypes.Series,
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       id: 'spec2',
       groupId: 'group2',
       seriesType: SeriesTypes.Line,
@@ -475,7 +475,7 @@ describe('Series', () => {
   test('should compute data series for stacked specs', () => {
     const spec1: BasicSeriesSpec = {
       specType: SpecTypes.Series,
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       id: 'spec1',
       groupId: 'group',
       seriesType: SeriesTypes.Line,
@@ -488,7 +488,7 @@ describe('Series', () => {
     };
     const spec2: BasicSeriesSpec = {
       specType: SpecTypes.Series,
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       id: 'spec2',
       groupId: 'group2',
       seriesType: SeriesTypes.Line,
@@ -577,7 +577,7 @@ describe('Series', () => {
     const yAccessors = ['y1', 'y2'];
     const splitSpec: BasicSeriesSpec = {
       specType: SpecTypes.Series,
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       id,
       groupId: 'group',
       seriesType: SeriesTypes.Line,

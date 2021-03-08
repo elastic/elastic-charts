@@ -19,7 +19,7 @@
 
 import createCachedSelector from 're-reselect';
 
-import { ChartTypes } from '../../..';
+import { ChartType } from '../../..';
 import { SpecTypes } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getSpecsFromStore } from '../../../../state/utils';
@@ -35,7 +35,7 @@ const getParentDimensions = (state: GlobalChartState) => state.parentDimensions;
 export const geometries = createCachedSelector(
   [getSpecs, getParentDimensions],
   (specs, parentDimensions): ShapeViewModel => {
-    const goalSpecs = getSpecsFromStore<GoalSpec>(specs, ChartTypes.Goal, SpecTypes.Series);
+    const goalSpecs = getSpecsFromStore<GoalSpec>(specs, ChartType.Goal, SpecTypes.Series);
     return goalSpecs.length === 1 ? render(goalSpecs[0], parentDimensions) : nullShapeViewModel();
   },
 )((state) => state.chartId);

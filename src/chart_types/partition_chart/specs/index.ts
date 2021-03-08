@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { Pixels } from '../../../common/geometry';
 import { Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
@@ -49,7 +49,7 @@ export interface Layer {
 }
 
 const defaultProps = {
-  chartType: ChartTypes.Partition,
+  chartType: ChartType.Partition,
   specType: SpecTypes.Series,
   config,
   valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
@@ -69,7 +69,7 @@ const defaultProps = {
 
 export interface PartitionSpec extends Spec {
   specType: typeof SpecTypes.Series;
-  chartType: typeof ChartTypes.Partition;
+  chartType: typeof ChartType.Partition;
   config: RecursivePartial<Config>;
   data: Datum[];
   valueAccessor: ValueAccessor;

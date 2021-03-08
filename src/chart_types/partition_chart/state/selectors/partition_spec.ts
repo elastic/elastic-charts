@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChartTypes } from '../../..';
+import { ChartType } from '../../..';
 import { SpecTypes } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getSpecsFromStore } from '../../../../state/utils';
@@ -25,6 +25,6 @@ import { PartitionSpec } from '../../specs';
 
 /** @internal */
 export function getPartitionSpec(state: GlobalChartState): PartitionSpec | null {
-  const partitionSpecs = getSpecsFromStore<PartitionSpec>(state.specs, ChartTypes.Partition, SpecTypes.Series);
+  const partitionSpecs = getSpecsFromStore<PartitionSpec>(state.specs, ChartType.Partition, SpecTypes.Series);
   return partitionSpecs.length > 0 ? partitionSpecs[0] : null; // singleton!
 }

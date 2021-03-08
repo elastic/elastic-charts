@@ -19,14 +19,14 @@
 
 import React from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
 import { specComponentFactory, getConnect } from '../../../state/spec_factory';
 import { BubbleSeriesSpec, DEFAULT_GLOBAL_ID, SeriesTypes } from '../utils/specs';
 
 const defaultProps = {
-  chartType: ChartTypes.XYAxis,
+  chartType: ChartType.XYAxis,
   specType: SpecTypes.Series,
   seriesType: SeriesTypes.Bubble,
   groupId: DEFAULT_GLOBAL_ID,

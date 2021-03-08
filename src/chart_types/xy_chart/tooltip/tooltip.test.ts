@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { MockBarGeometry } from '../../../mocks';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
@@ -52,7 +52,7 @@ describe('Tooltip formatting', () => {
     y0Accessors: [1],
   });
   const YAXIS_SPEC = MockGlobalSpec.axis({
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Axis,
     id: 'axis_1',
     groupId: SPEC_GROUP_ID_1,

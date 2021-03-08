@@ -19,7 +19,7 @@
 
 import { Store } from 'redux';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
@@ -41,7 +41,7 @@ const nullDisplayValue = {
 };
 
 const spec1: BasicSeriesSpec = {
-  chartType: ChartTypes.XYAxis,
+  chartType: ChartType.XYAxis,
   specType: SpecTypes.Series,
   id: 'spec1',
   name: 'Spec 1 title',
@@ -55,7 +55,7 @@ const spec1: BasicSeriesSpec = {
   hideInLegend: false,
 };
 const spec2: BasicSeriesSpec = {
-  chartType: ChartTypes.XYAxis,
+  chartType: ChartType.XYAxis,
   specType: SpecTypes.Series,
   id: 'spec2',
   groupId: 'group',
@@ -76,7 +76,7 @@ const style: RecursivePartial<AxisStyle> = {
 };
 const axesSpecs: AxisSpec[] = [];
 const axisSpec: AxisSpec = {
-  chartType: ChartTypes.XYAxis,
+  chartType: ChartType.XYAxis,
   specType: SpecTypes.Axis,
   id: 'axis1',
   groupId: 'group1',

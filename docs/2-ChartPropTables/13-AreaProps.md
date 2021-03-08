@@ -10,7 +10,7 @@ Default props are set in the area_series.tsx file
 | xAccessor `(required)`| Accessor |  | The field name of the x value on Datum object |
 | yAccessors `(required)`| Accessor[] |  | An array of field names one per y metric value |
 | data `(required)` | datum[] |  | An array of data |
-| chartType | `typeof ChartTypes.XYAxis` | ChartTypes.XYAxis  |  |
+| chartType | `typeof ChartType.XYAxis` | ChartType.XYAxis  |  |
 | specType | `typeof SpecTypes.Series` | SpecTypes.Series | | 
 | seriesType| `typeof SeriesTypes.Area` | SeriesTypes.Area | |
 | groupId | string | DEFAULT_GLOBAL_ID | | 

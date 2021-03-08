@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -227,7 +227,7 @@ describe('Y Domain', () => {
 
   test('Should split specs by groupId, two groups, non stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'spec1',
       groupId: 'group1',
@@ -239,7 +239,7 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'spec2',
       groupId: 'group2',
@@ -262,7 +262,7 @@ describe('Y Domain', () => {
   });
   test('Should split specs by groupId, two groups, stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'spec1',
       groupId: 'group1',
@@ -275,7 +275,7 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'spec2',
       groupId: 'group2',
@@ -299,7 +299,7 @@ describe('Y Domain', () => {
   });
   test('Should split specs by groupId, 1 group, stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'spec1',
       groupId: 'group',
@@ -312,7 +312,7 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'spec2',
       groupId: 'group',
@@ -334,7 +334,7 @@ describe('Y Domain', () => {
   });
   test('Should 3 split specs by groupId, 2 group, semi/stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'spec1',
       groupId: 'group1',
@@ -347,7 +347,7 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'spec2',
       groupId: 'group1',
@@ -360,7 +360,7 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec3: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Series,
       id: 'spec3',
       groupId: 'group2',

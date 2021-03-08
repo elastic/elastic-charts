@@ -19,7 +19,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
 
-import { ChartTypes } from '../../..';
+import { ChartType } from '../../..';
 import { Chart } from '../../../../components/chart';
 import { MockAnnotationLineProps, MockAnnotationRectProps } from '../../../../mocks/annotations/annotations';
 import { ScaleType } from '../../../../scales/constants';
@@ -144,7 +144,7 @@ describe('Annotation tooltips', () => {
 
     // rect annotation tooltip
     const annotationRectangle: RectAnnotationSpec = {
-      chartType: ChartTypes.XYAxis,
+      chartType: ChartType.XYAxis,
       specType: SpecTypes.Annotation,
       id: 'rect',
       groupId,

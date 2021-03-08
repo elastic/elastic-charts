@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChartTypes } from '../../..';
+import { ChartType } from '../../..';
 import { LegendItem } from '../../../../common/legend';
 import { ScaleType } from '../../../../scales/constants';
 import { SpecTypes } from '../../../../specs';
@@ -54,7 +54,7 @@ describe('Type Checks', () => {
   describe('#isLineAreaOnlyChart', () => {
     it('is an area or line only map', () => {
       const area: AreaSeriesSpec = {
-        chartType: ChartTypes.XYAxis,
+        chartType: ChartType.XYAxis,
         specType: SpecTypes.Series,
         id: 'area',
         groupId: 'group1',
@@ -67,7 +67,7 @@ describe('Type Checks', () => {
         data: BARCHART_1Y1G,
       };
       const line: LineSeriesSpec = {
-        chartType: ChartTypes.XYAxis,
+        chartType: ChartType.XYAxis,
         specType: SpecTypes.Series,
         id: 'line',
         groupId: 'group2',
@@ -81,7 +81,7 @@ describe('Type Checks', () => {
         data: BARCHART_1Y1G,
       };
       const bar: BarSeriesSpec = {
-        chartType: ChartTypes.XYAxis,
+        chartType: ChartType.XYAxis,
         specType: SpecTypes.Series,
         id: 'bar',
         groupId: 'group2',

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
 import { computeSeriesDomains } from '../state/utils/utils';
@@ -32,7 +32,7 @@ describe('Crosshair utils ordinal scales', () => {
   const lineSeries2SpecId = 'lineSeries2';
 
   const barSeries1: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Series,
     id: barSeries1SpecId,
     groupId: 'group1',
@@ -48,7 +48,7 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleType: ScaleType.Linear,
   };
   const barSeries2: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Series,
     id: barSeries2SpecId,
     groupId: 'group1',
@@ -64,7 +64,7 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleType: ScaleType.Linear,
   };
   const lineSeries1: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Series,
     id: lineSeries1SpecId,
     groupId: 'group1',
@@ -80,7 +80,7 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleType: ScaleType.Linear,
   };
   const lineSeries2: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
+    chartType: ChartType.XYAxis,
     specType: SpecTypes.Series,
     id: lineSeries2SpecId,
     groupId: 'group1',
