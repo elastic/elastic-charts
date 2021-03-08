@@ -27,9 +27,9 @@ import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
+import { Logger } from '../../../../utils/logger';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
-import { select } from '@storybook/addon-knobs';
 
 function seed() {
   return 0.5;
@@ -70,10 +70,10 @@ function hashWithinRange(str, max) {
 
 function getRotation(startAngle, endAngle, count, text) {
   const angleRange = endAngle - startAngle;
-  const count = count ?? 360;
+  const angleCount = count ?? 360;
   const interval = count - 1;
   const angleStep = interval === 0 ? 0 : angleRange / interval;
-  const index = hashWithinRange(text, count);
+  const index = hashWithinRange(text, angleCount);
   return index * angleStep + startAngle;
 }
 
@@ -96,23 +96,22 @@ function log(minFontSize, maxFontSize, _exponent, weight) {
 const weightFunLookup = { linear, exponential, log, squareRoot };
 
 function layoutMaker(config, data) {
+  const words = data.map((d) => {
+    const weightFun = weightFunLookup[config.weightFun];
+    return {
+      text: d.text,
+      color: d.color,
+      fontFamily: config.fontFamily ?? 'Impact',
+      style: config.fontStyle ?? 'normal',
+      fontWeight: config.fontWeight ?? 'normal',
+      size: weightFun(config.minFontSize, config.maxFontSize, config.exponent, d.weight),
+    };
+  });
+
   return d3TagCloud()
     .random(seed)
     .size([getWidth(config), getHeight(config)])
-    .words(
-      data.map((d) => {
-        const weightFun = weightFunLookup[config.weightFun];
-
-        return {
-          text: d.text,
-          color: d.color,
-          fontFamily: config.fontFamily ?? 'Impact',
-          style: config.fontStyle ?? 'normal',
-          fontWeight: config.fontWeight ?? 'normal',
-          size: weightFun(config.minFontSize, config.maxFontSize, config.exponent, d.weight),
-        };
-      }),
-    )
+    .words(words)
     .spiral(config.spiral ?? 'archimedean')
     .padding(config.padding ?? 5)
     .rotate((d) => getRotation(config.startAngle, config.endAngle, config.count, d.text))
@@ -126,7 +125,6 @@ const View = ({ words, conf }) => (
   <svg width={getWidth(conf)} height={getHeight(conf)}>
     <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
       {words.map((d) => {
-        //   debugger;
         return (
           <text
             style={{
@@ -250,6 +248,13 @@ class Component extends React.Component<Props> {
 
     let ww;
     layout.on('end', (w) => (ww = w)).start();
+
+    const wordCount = wordcloudViewModel.data.length;
+    const renderedWordCount = ww.length;
+    const notAllWordsFit = wordCount !== renderedWordCount;
+    if (notAllWordsFit) {
+      Logger.warn(`Not all words have been placed: ${renderedWordCount} words rendered out of ${wordCount}`);
+    }
 
     return (
       <>

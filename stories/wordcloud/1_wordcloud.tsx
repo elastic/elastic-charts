@@ -71,7 +71,7 @@ const configs = {
     exponent: 15,
     fontWeight: 100,
     minFontSize: 15,
-    maxFontSize: 90,
+    maxFontSize: 80,
     fontFamily: 'Luminari',
     fontStyle: 'italic',
     shape: 'archimedean',
