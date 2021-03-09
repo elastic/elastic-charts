@@ -124,7 +124,7 @@ export const DEFAULT_LEGEND_CONFIG = {
   showLegend: false,
   showLegendExtra: false,
   legendMaxDepth: Infinity,
-  legendPosition: Position.Left,
+  legendPosition: Position.Right,
 };
 
 export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {

@@ -52,7 +52,7 @@ export const Example = () => {
       // [VerticalAlignment.Middle]: VerticalAlignment.Middle,
       [Position.Bottom]: VerticalAlignment.Bottom,
     },
-    Position.Top,
+    Position.Bottom,
     'Legend',
   );
 
@@ -64,7 +64,7 @@ export const Example = () => {
       // [HorizontalAlignment.Center]: HorizontalAlignment.Center,
       [Position.Right]: HorizontalAlignment.Right,
     },
-    Position.Left,
+    Position.Right,
     'Legend',
   );
   const direction: LegendPositionConfig['direction'] = select(
