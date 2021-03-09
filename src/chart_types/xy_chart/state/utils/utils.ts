@@ -627,7 +627,7 @@ export function computeScreenReaderData(
   axisSpecs: AxisSpec[] | undefined,
 ): ScreenReaderData[] {
   const formattedScreenReaderDataArray = [];
-
+  const { xScale, yScales } = scales;
   const axesTitles = axisSpecs?.map((val) => [val.title, val.groupId, val.position]) || [];
   for (let i = 0; i < data.length; i++) {
     const current = {
@@ -636,7 +636,8 @@ export function computeScreenReaderData(
       splitAccessor: data[i].splitAccessors.size > 0,
       dataKey: parseDataForKeys(data[i]),
       dataValue: parseDataForValues(data[i]),
-      scales,
+      xScale,
+      yScales,
       axesTitles,
     };
     formattedScreenReaderDataArray.push(current);

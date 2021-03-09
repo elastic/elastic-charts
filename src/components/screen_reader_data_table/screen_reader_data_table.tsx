@@ -19,13 +19,13 @@
 
 import { connect } from 'react-redux';
 
-import { ComputedScales } from '../../chart_types/xy_chart/state/utils/types';
 import { Scale } from '../../scales';
 import { ScaleType } from '../../scales/constants';
 import { SeriesName, SeriesNameConfigOptions, SeriesNameFn, SeriesTypes } from '../../specs';
 import { GlobalChartState } from '../../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
+import { GroupId } from '../../utils/ids';
 
 export interface ScreenReaderData {
   seriesName: SeriesName | SeriesNameFn | undefined | SeriesNameConfigOptions;
@@ -33,7 +33,8 @@ export interface ScreenReaderData {
   splitAccessor: boolean;
   dataKey: string[];
   dataValue: any[];
-  scales: ComputedScales;
+  xScale: Scale;
+  yScales: Map<GroupId, Scale>;
   axesTitles: (string | undefined)[][];
 }
 
@@ -54,17 +55,17 @@ const readOutSeriesCountandType = (s: { [s: string]: number } | ArrayLike<number
 };
 
 /** helper function to read out each title of the axes */
-const axesWithTitles = (titles: (undefined | string)[][], scales: ComputedScales) => {
-  let titleDomain = `There are ${scales.yScales.size} y-axes. `;
+const axesWithTitles = (titles: (undefined | string)[][], xScale: Scale, yScales: Map<GroupId, Scale>) => {
+  let titleDomain = `There are ${yScales.size} y-axes. `;
 
-  for (let i = 1; i < scales.yScales.size + 1; i++) {
+  for (let i = 1; i < yScales.size + 1; i++) {
     const axisTitle = titles[i][0];
     const axisDomain =
-      scales.yScales.get(titles[i][1]!)!.domain === undefined
+      yScales.get(titles[i][1]!)!.domain === undefined
         ? 'The axis does not have a defined domain'
-        : `${scales.yScales.get(titles[i][1]!)!.domain}`;
+        : `${yScales.get(titles[i][1]!)!.domain}`;
     titleDomain +=
-      scales.yScales.size === 1
+      yScales.size === 1
         ? `The y-axis has the title ${axisTitle} with the domain ${axisDomain}. `
         : `${i}. A y-axis is named ${axisTitle} with the domain ${axisDomain}. `;
   }
@@ -74,10 +75,7 @@ const axesWithTitles = (titles: (undefined | string)[][], scales: ComputedScales
 
 /** helper function to read out each title for the axes if present */
 const getAxesTitlesAndDomains = (d: ScreenReaderData[]) => {
-  const {
-    axesTitles,
-    scales: { xScale, yScales },
-  } = d[0];
+  const { axesTitles, xScale, yScales } = d[0];
   const firstXAxisTitle =
     axesTitles[0][0] === undefined ? 'The x axis is not titled' : `The x axis is titled ${axesTitles[0][0]}`;
   const firstXAxisGroupId = axesTitles[0][1];
@@ -86,7 +84,7 @@ const getAxesTitlesAndDomains = (d: ScreenReaderData[]) => {
   return multipleTitles
     ? `This chart has multiple axes. The x-axis is ${xScale.type} with a domain of ${xScale.domain}. The y-axes are ${
         yScales.get(yAxisGroupId)?.type
-      }. ${axesWithTitles(d[0].axesTitles, d[0].scales)}`
+      }. ${axesWithTitles(d[0].axesTitles, d[0].xScale, d[0].yScales)}`
     : `${firstXAxisTitle}. ${
         firstXAxisGroupId === undefined
           ? `Its y axis does not have a defined domain.`
@@ -109,7 +107,7 @@ const formatForTimeOrOrdinalXAxis = (xScale: Scale) => {
 
 /** @internal */
 export const computeAlternativeChartText = (d: ScreenReaderData[]): string => {
-  const { seriesName, axesTitles, splitAccessor, seriesType, scales } = d[0];
+  const { seriesName, axesTitles, splitAccessor, seriesType, xScale, yScales } = d[0];
   const numberOfSeriesByType: { [key: string]: number } = {};
   d.forEach(() => {
     if (numberOfSeriesByType[seriesType]) {
@@ -126,9 +124,7 @@ export const computeAlternativeChartText = (d: ScreenReaderData[]): string => {
 
   const yAxisGroupId = axesTitles[1][1] ?? '__global__';
   const stackedSeries = splitAccessor
-    ? `This chart has stacked series in it. The scale type of the y axes are ${
-        scales.yScales.get(yAxisGroupId)?.type
-      }. `
+    ? `This chart has stacked series in it. The scale type of the y axes are ${yScales.get(yAxisGroupId)?.type}. `
     : '';
 
   const multipleSeries = d.length > 1;
@@ -139,7 +135,7 @@ export const computeAlternativeChartText = (d: ScreenReaderData[]): string => {
   const chartHasAxes =
     axesTitles.length === 0
       ? 'This chart does not have axes.'
-      : `The x axis ${formatForTimeOrOrdinalXAxis(scales.xScale)}. ${getAxesTitlesAndDomains(d)}`;
+      : `The x axis ${formatForTimeOrOrdinalXAxis(xScale)}. ${getAxesTitlesAndDomains(d)}`;
 
   return `${namedSeries}${mixedSeriesChart} ${stackedSeries} ${
     mixedSeriesChart !== '' || stackedSeries !== '' ? `It` : `The  chart`

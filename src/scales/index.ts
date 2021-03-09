@@ -34,7 +34,7 @@ export type ScaleBandType = ScaleOrdinalType;
  * A `Scale` interface. A scale can map an input value within a specified domain
  * to an output value from a specified range.
  * The the value is mapped depending on the `type` (linear, log, sqrt, time, ordinal)
- * @internal
+ * @public
  */
 export interface Scale {
   domain: any[];
