@@ -27,7 +27,7 @@ export * from './specs';
 export { DebugState } from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';
-export { SimplePadding } from './utils/dimensions';
+export { SimplePadding, Padding } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
 export { SeriesIdentifier, SeriesKey } from './common/series_id';
 export { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
