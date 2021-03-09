@@ -30,6 +30,7 @@ const rng = getRandomNumberGenerator();
 export const Example = () => {
   const showAxes = boolean('Show axes', false);
   const groups = number('Groups', 5, { min: 2, max: 20, step: 1 });
+  const offset = number('Offset', 10, { min: 0, step: 1 });
   const data = dg.generateGroupedSeries(4, groups).map((d) => {
     return {
       ...d,
@@ -75,7 +76,7 @@ export const Example = () => {
       <div ref={white} style={{ backgroundColor: 'white', padding: 30, height: '100%' }}>
         <div ref={blue} style={{ backgroundColor: 'blue', padding: 30, height: '100%' }}>
           <Chart className="story-chart">
-            <Settings tooltip={{ boundary, boundaryPadding }} />
+            <Settings tooltip={{ boundary, boundaryPadding, offset }} />
             <Axis id="bottom" hide={!showAxes} position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
             <Axis
               id="left"
