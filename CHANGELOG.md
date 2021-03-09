@@ -1,3 +1,10 @@
+## [25.0.3](https://github.com/elastic/elastic-charts/compare/v25.0.2...v25.0.3) (2021-03-09)
+
+
+### Bug Fixes
+
+* **tooltip:** add boundary padding ([#1065](https://github.com/elastic/elastic-charts/issues/1065)) ([#1068](https://github.com/elastic/elastic-charts/issues/1068)) ([9a44036](https://github.com/elastic/elastic-charts/commit/9a440363ac54c2c4b1215b42ed21cb06554a4f92))
+
 ## [25.0.2](https://github.com/elastic/elastic-charts/compare/v25.0.1...v25.0.2) (2021-03-04)
 
 
