@@ -587,15 +587,12 @@ export function getBarIndexKey(
 }
 
 function parseDataForKeys(d: DataSeries) {
-  return (
-    Object.entries(d.data[0]).reduce((result, [key, value]) => {
-      if ((key !== 'datum' && value !== null) || value !== undefined) {
-        result.push(key);
-      }
-      return result;
-    }),
-    []
-  );
+  return Object.entries(d.data[0]).reduce((result, [key, value]) => {
+    if ((key !== 'datum' && value !== null) || value !== undefined) {
+      result.push(key);
+    }
+    return result;
+  });
 }
 
 function parseDataForValues(d: DataSeries) {
@@ -633,7 +630,7 @@ export function computeScreenReaderData(
     const current = {
       seriesName: data[i].spec.name,
       seriesType: data[i].seriesType,
-      splitAccessor: data[i].splitAccessors.size > 0,
+      splitAccessor: data[i].splitAccessors,
       dataKey: parseDataForKeys(data[i]),
       dataValue: parseDataForValues(data[i]),
       xScale,

@@ -30,7 +30,7 @@ import { GroupId } from '../../utils/ids';
 export interface ScreenReaderData {
   seriesName: SeriesName | SeriesNameFn | undefined | SeriesNameConfigOptions;
   seriesType: SeriesTypes;
-  splitAccessor: boolean;
+  splitAccessor: Map<string | number, string | number>;
   dataKey: string[];
   dataValue: any[];
   xScale: Scale;
@@ -117,15 +117,16 @@ export const computeAlternativeChartText = (d: ScreenReaderData[]): string => {
     }
   });
 
-  const namedSeries = seriesName !== undefined ? `The chart is named ${seriesName}. ` : '';
+  const namedSeries = seriesName === undefined ? '' : `The chart is named ${seriesName}. `;
 
   const mixedSeriesChart =
     Object.keys(numberOfSeriesByType).length > 1 ? `This chart has different series types in it.` : '';
 
-  const yAxisGroupId = axesTitles[1][1] ?? '__global__';
-  const stackedSeries = splitAccessor
-    ? `This chart has stacked series in it. The scale type of the y axes are ${yScales.get(yAxisGroupId)?.type}. `
-    : '';
+  const yAxisGroupId = axesTitles.length === 0 || !axesTitles[1][1] ? '' : axesTitles[1][1];
+  const stackedSeries =
+    splitAccessor.size > 1
+      ? `This chart has stacked series in it. The scale type of the y axes are ${yScales.get(yAxisGroupId)?.type}. `
+      : '';
 
   const multipleSeries = d.length > 1;
   const typesOfSeries = multipleSeries

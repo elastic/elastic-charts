@@ -19,33 +19,27 @@
 
 import React from 'react';
 
-import { Chart, Settings, Axis, Position, BarSeries, ScaleType } from '../src';
+import { Chart, Settings, BarSeries, ScaleType } from '../src';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="story-chart story-root root">
         <Chart size={[500, 200]}>
-          <Settings
-            dataTable={{
-              showDefaultDescription: true,
-              HeadingLevel: 'h1',
-              description: 'This is a test playground used to see if your code is working as you expect it to',
-            }}
-          />
-          <Axis id="count" title="count" position={Position.Left} />
-          <Axis id="x" title="goods" position={Position.Bottom} />
+          <Settings showLegend showLegendExtra />
           <BarSeries
-            id="bar"
-            name="short"
+            id="areas"
+            name="area"
             xScaleType={ScaleType.Linear}
             yScaleType={ScaleType.Linear}
-            xAccessor="x"
-            yAccessors={['y']}
+            xAccessor={0}
+            yAccessors={[1]}
+            splitSeriesAccessors={[2]}
             data={[
-              { x: 0, y: 3 },
-              { x: 1, y: 5 },
-              { x: 2, y: 7 },
+              [0, 123, 'group0'],
+              [0, 123, 'group1'],
+              [0, 123, 'group2'],
+              [0, 123, 'group3'],
             ]}
           />
         </Chart>
