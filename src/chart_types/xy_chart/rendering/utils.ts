@@ -22,7 +22,7 @@ import { Scale } from '../../../scales';
 import { getDomainPolarity } from '../../../scales/scale_continuous';
 import { isLogarithmicScale } from '../../../scales/types';
 import { MarkBuffer } from '../../../specs';
-import { getDistance } from '../../../utils/common';
+import { getDistance, round } from '../../../utils/common';
 import { BarGeometry, ClippedRanges, isPointGeometry, PointGeometry } from '../../../utils/geometry';
 import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
@@ -189,12 +189,33 @@ export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
   };
 }
 
+/**
+ * Rounds pixel values to 2 decimals
+ */
+const roundScaledValue = (n: number) => round(n, 2);
+
+/** @internal */
+export function getXScaledValueOrThrowFn(xScale: Scale, xScaleOffset: number): (datum: DataSeriesDatum) => number {
+  return ({ x }) => roundScaledValue(xScale.scaleOrThrow(x) - xScaleOffset);
+}
+
+const SMALL_PIXEL = 0.5;
+/**
+ * Temporary fix for Chromium bug
+ * Shift pixel value imperceptible to the human eye
+ * https://github.com/elastic/elastic-charts/issues/1053#issuecomment-794258500
+ */
+function chromeRenderBugBuffer({ y0, y1 }: DataSeriesDatum): number {
+  return y0 === y1 ? SMALL_PIXEL : 0;
+}
+
 /** @internal */
 export function getY1ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatum) => number {
   const datumAccessor = getYDatumValueFn();
   return (datum) => {
+    const extra = chromeRenderBugBuffer(datum);
     const yValue = datumAccessor(datum);
-    return yScale.scaleOrThrow(yValue);
+    return roundScaledValue(yScale.scaleOrThrow(yValue)) + extra;
   };
 }
 
@@ -204,23 +225,26 @@ export function getY0ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatu
   const domainPolarity = getDomainPolarity(yScale.domain);
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);
 
-  return ({ y0 }) => {
-    if (y0 === null) {
-      if (isLogScale) {
-        // if all positive domain use 1 as baseline, -1 otherwise
-        return yScale.scaleOrThrow(logBaseline);
-      }
-      return yScale.scaleOrThrow(DEFAULT_ZERO_BASELINE);
-    }
-    if (isLogScale) {
-      // wrong y0 polarity
-      if ((domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0)) {
-        // if all positive domain use 1 as baseline, -1 otherwise
-        return yScale.scaleOrThrow(logBaseline);
-      }
-      // if negative value, use -1 as max reference, 1 otherwise
-      return yScale.scaleOrThrow(y0);
-    }
-    return yScale.scaleOrThrow(y0);
-  };
+  return ({ y0 }) =>
+    roundScaledValue(
+      (() => {
+        if (y0 === null) {
+          if (isLogScale) {
+            // if all positive domain use 1 as baseline, -1 otherwise
+            return yScale.scaleOrThrow(logBaseline);
+          }
+          return yScale.scaleOrThrow(DEFAULT_ZERO_BASELINE);
+        }
+        if (isLogScale) {
+          // wrong y0 polarity
+          if ((domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0)) {
+            // if all positive domain use 1 as baseline, -1 otherwise
+            return yScale.scaleOrThrow(logBaseline);
+          }
+          // if negative value, use -1 as max reference, 1 otherwise
+          return yScale.scaleOrThrow(y0);
+        }
+        return yScale.scaleOrThrow(y0);
+      })(),
+    );
 }
