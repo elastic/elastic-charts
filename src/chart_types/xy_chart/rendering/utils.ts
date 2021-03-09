@@ -203,7 +203,8 @@ const SMALL_PIXEL = 0.5;
 /**
  * Temporary fix for Chromium bug
  * Shift pixel value imperceptible to the human eye
- * https://github.com/elastic/elastic-charts/issues/1053#issuecomment-794258500
+ * https://github.com/elastic/elastic-charts/issues/1053
+ * https://bugs.chromium.org/p/chromium/issues/detail?id=1163912
  */
 function chromeRenderBugBuffer({ y0, y1 }: DataSeriesDatum): number {
   return y0 === y1 ? SMALL_PIXEL : 0;
