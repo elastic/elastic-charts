@@ -144,7 +144,5 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   minBrushDelta: 2,
   dataTable: {
     showDefaultDescription: true,
-    description: undefined,
-    // generatedDescription: getAlternativeChartTextSelector(state),
   },
 };

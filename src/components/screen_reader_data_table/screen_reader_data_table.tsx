@@ -54,6 +54,16 @@ const readOutSeriesCountandType = (s: { [s: string]: number } | ArrayLike<number
   return returnString;
 };
 
+const formatForTimeOrOrdinalAxis = (xScale: Scale) => {
+  if (xScale.domain === undefined) return 'is undefined';
+  if (xScale.type === 'ordinal') return `is ordinal.`;
+  const [startDomain, endDomain] = xScale.domain;
+  return xScale.type !== ScaleType.Time
+    ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      ` ${startDomain} to ${endDomain}`
+    : ` ${new Date(startDomain).toTimeString()} to ${new Date(endDomain).toTimeString()}`;
+};
+
 /** helper function to read out each title of the axes */
 const axesWithTitles = (titles: (undefined | string)[][], xScale: Scale, yScales: Map<GroupId, Scale>) => {
   let titleDomain = yScales.size > 1 ? `There are ${yScales.size} y-axes. ` : ' ';
@@ -61,13 +71,12 @@ const axesWithTitles = (titles: (undefined | string)[][], xScale: Scale, yScales
   for (let i = 0; i < numberOfScales; i++) {
     const axisDirection = titles[i][2] === 'top' || titles[i][2] === 'bottom' ? 'x-' : 'y-';
     const scaleType = axisDirection === 'x-' ? xScale.type : yScales.get(titles[i][1]!)?.type;
-    const axisTitle = titles[i][0];
-    const axisDomain =
-      yScales.get(titles[i][1]!)!.domain === undefined
-        ? 'The axis does not have a defined domain'
-        : `${
-            axisDirection === 'y-' ? yScales.get(titles[i][1]!)!.domain.toString() : formatForTimeOrOrdinalAxis(xScale)
-          }`;
+    const axisTitle = typeof titles[i][0] !== 'object' ? '__global__' : titles[i][0];
+    const axisDomain = !yScales.get(axisTitle!)
+      ? 'The axis does not have a defined domain'
+      : `${
+          axisDirection === 'y-' ? yScales.get(titles[i][1]!)!.domain.toString() : formatForTimeOrOrdinalAxis(xScale)
+        }`;
     titleDomain +=
       yScales.size === 1
         ? `The ${axisDirection}axis has the scale type  ${scaleType} and has the title ${axisTitle} with the domain ${axisDomain}. `
@@ -82,7 +91,7 @@ const getAxesTitlesAndDomains = (d: ScreenReaderData[]) => {
   const { axesTitles, yScales } = d[0];
   const firstXAxisTitle =
     axesTitles[0][0] === undefined ? 'The x-axis is not titled' : `The x-axis is titled ${axesTitles[0][0]}`;
-  const firstXAxisGroupId = axesTitles[0][1];
+  const firstXAxisGroupId = typeof axesTitles[0] !== 'object' ? ' ' : axesTitles[0][1];
   const multipleTitles = Object.entries(d[0].axesTitles).length >= 2;
   const yAxisGroupId = typeof axesTitles[1] !== 'object' ? ' ' : axesTitles[1][1];
   return multipleTitles
@@ -93,16 +102,6 @@ const getAxesTitlesAndDomains = (d: ScreenReaderData[]) => {
           : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `The y-axis domain is ${yScales.get(yAxisGroupId!)?.domain}`
       }`;
-};
-
-const formatForTimeOrOrdinalAxis = (xScale: Scale) => {
-  if (xScale.domain === undefined) return 'is undefined';
-  if (xScale.type === 'ordinal') return `is ordinal.`;
-  const [startDomain, endDomain] = xScale.domain;
-  return xScale.type !== ScaleType.Time
-    ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      ` ${startDomain} to ${endDomain}`
-    : ` ${new Date(startDomain).toTimeString()} to ${new Date(endDomain).toTimeString()}`;
 };
 
 /** @internal */

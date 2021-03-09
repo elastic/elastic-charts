@@ -138,16 +138,14 @@ class XYChartComponent extends React.Component<XYChartProps> {
       initialized,
       isChartEmpty,
       chartContainerDimensions: { width, height },
-      dataTable,
+      dataTable: { showDefaultDescription, title, description, HeadingLevel },
       generatedDescription,
     } = this.props;
-
-    const { description, HeadingLevel, showDefaultDescription } = dataTable;
 
     const ariaProps = {
       //   // if there is a label or label id, include an aria-labelledby
       //   // and if there is a label id, use that; otherwise generate and id (for the label that was passed in)
-      'aria-labelledby': description ? description ?? generatedDescription : undefined,
+      'aria-labelledby': title ? description ?? generatedDescription : undefined,
       //   // if there is a description id, prepend that; unless they turned off the default summary, append that
       'aria-describedby': showDefaultDescription
         ? ''
@@ -176,11 +174,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
         />
         {description && (
           // @ts-ignore
-          <HeadingLevel>
-            {' '}
-            {/* id={altTextLabel}> */}
-            {description}
-          </HeadingLevel>
+          <HeadingLevel id={title}>{description}</HeadingLevel>
         )}
         <figcaption className="screen-reader">{generatedDescription}</figcaption>
       </figure>
