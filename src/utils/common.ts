@@ -32,6 +32,13 @@ export const Position = Object.freeze({
 /** @public */
 export type Position = $Values<typeof Position>;
 
+export const LayoutDirection = Object.freeze({
+  Horizontal: 'horizontal' as const,
+  Vertical: 'vertical' as const,
+});
+/** @public */
+export type LayoutDirection = $Values<typeof LayoutDirection>;
+
 /**
  * Color variants that are unique to `@elastic/charts`. These go beyond the standard
  * static color allocations.

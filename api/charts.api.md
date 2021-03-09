@@ -696,7 +696,7 @@ export const DEFAULT_TOOLTIP_TYPE: "vertical";
 // Warning: (ae-missing-release-tag) "DefaultSettingsProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'legendMaxDepth' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth';
 
 // Warning: (ae-missing-release-tag) "DEPTH_KEY" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1240,6 +1240,40 @@ export type LegendPathElement = {
     value: CategoryKey;
 };
 
+// Warning: (ae-missing-release-tag) "LegendPositionConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type LegendPositionConfig = {
+    vAlign: typeof VerticalAlignment.Top | typeof VerticalAlignment.Bottom;
+    hAlign: typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Right;
+    direction: 'horizontal' | 'vertical';
+    floating: boolean;
+};
+
+// @public
+export interface LegendSpec {
+    flatLegend?: boolean;
+    legendAction?: LegendAction;
+    // (undocumented)
+    legendColorPicker?: LegendColorPicker;
+    legendMaxDepth: number;
+    legendPosition: Position | LegendPositionConfig;
+    legendStrategy?: LegendStrategy;
+    // (undocumented)
+    onLegendItemClick?: LegendItemListener;
+    // (undocumented)
+    onLegendItemMinusClick?: LegendItemListener;
+    // (undocumented)
+    onLegendItemOut?: BasicListener;
+    // (undocumented)
+    onLegendItemOver?: LegendItemListener;
+    // (undocumented)
+    onLegendItemPlusClick?: LegendItemListener;
+    // (undocumented)
+    showLegend: boolean;
+    showLegendExtra: boolean;
+}
+
 // @public (undocumented)
 export const LegendStrategy: Readonly<{
     Node: "node";
@@ -1343,8 +1377,6 @@ export interface LineStyle {
 // @public (undocumented)
 export type LowerBoundedDomain = DomainBase & LowerBound;
 
-// Warning: (ae-missing-release-tag) "MarkBuffer" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export type MarkBuffer = number | ((radius: number) => number);
 
@@ -1869,7 +1901,7 @@ export type SeriesTypes = $Values<typeof SeriesTypes>;
 export const Settings: React.FunctionComponent<SettingsSpecProps>;
 
 // @public
-export interface SettingsSpec extends Spec {
+export interface SettingsSpec extends Spec, LegendSpec {
     allowBrushingLastHistogramBucket?: boolean;
     // (undocumented)
     animateData: boolean;
@@ -1880,14 +1912,7 @@ export interface SettingsSpec extends Spec {
     debugState?: boolean;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
-    flatLegend?: boolean;
     hideDuplicateAxes: boolean;
-    legendAction?: LegendAction;
-    // (undocumented)
-    legendColorPicker?: LegendColorPicker;
-    legendMaxDepth: number;
-    legendPosition: Position | [typeof Position.Top | typeof Position.Bottom, typeof Position.Left | typeof Position.Right];
-    legendStrategy?: LegendStrategy;
     minBrushDelta?: number;
     noResults?: ComponentType | ReactChild;
     // (undocumented)
@@ -1898,16 +1923,6 @@ export interface SettingsSpec extends Spec {
     onElementOut?: BasicListener;
     // (undocumented)
     onElementOver?: ElementOverListener;
-    // (undocumented)
-    onLegendItemClick?: LegendItemListener;
-    // (undocumented)
-    onLegendItemMinusClick?: LegendItemListener;
-    // (undocumented)
-    onLegendItemOut?: BasicListener;
-    // (undocumented)
-    onLegendItemOver?: LegendItemListener;
-    // (undocumented)
-    onLegendItemPlusClick?: LegendItemListener;
     // (undocumented)
     onPointerUpdate?: PointerUpdateListener;
     onProjectionClick?: ProjectionClickListener;
@@ -1923,9 +1938,6 @@ export interface SettingsSpec extends Spec {
     // (undocumented)
     rotation: Rotation;
     roundHistogramBrushValues?: boolean;
-    // (undocumented)
-    showLegend: boolean;
-    showLegendExtra: boolean;
     theme?: PartialTheme | PartialTheme[];
     tooltip: TooltipSettings;
     // Warning: (ae-forgotten-export) The symbol "Domain" needs to be exported by the entry point index.d.ts

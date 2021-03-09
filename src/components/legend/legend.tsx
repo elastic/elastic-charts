@@ -24,7 +24,7 @@ import { Dispatch, bindActionCreators } from 'redux';
 
 import { computeChartDimensionsSelector } from '../../chart_types/xy_chart/state/selectors/compute_chart_dimensions';
 import { LegendItem, LegendItemExtraValues } from '../../common/legend';
-import { DEFAULT_LEGEND_CONFIG, LegendConfig } from '../../specs';
+import { DEFAULT_LEGEND_CONFIG, LegendSpec } from '../../specs';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 import {
   onToggleDeselectSeriesAction,
@@ -54,7 +54,7 @@ interface LegendStateProps {
   containerDimensions: Dimensions;
   chartTheme: Theme;
   size: BBox;
-  config: LegendConfig;
+  config: LegendSpec;
   items: LegendItem[];
   extraValues: Map<string, LegendItemExtraValues>;
 }

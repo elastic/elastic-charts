@@ -18,7 +18,7 @@
  */
 import { CSSProperties } from 'react';
 
-import { LegendConfig, LegendPositionConfig } from '../../specs/settings';
+import { LegendSpec, LegendPositionConfig } from '../../specs/settings';
 import { BBox } from '../../utils/bbox/bbox_calculator';
 import { Position } from '../../utils/common';
 import { Dimensions } from '../../utils/dimensions';
@@ -26,7 +26,7 @@ import { Dimensions } from '../../utils/dimensions';
 const INSIDE_PADDING = 10;
 
 export function legendPositionStyle(
-  { legendPosition }: LegendConfig,
+  { legendPosition }: LegendSpec,
   legendSize: BBox,
   chart: Dimensions,
   container: Dimensions,
@@ -92,7 +92,7 @@ const LEGEND_TO_FULL_CONFIG: Record<Position, LegendPositionConfig> = {
 /**
  * @internal
  */
-export function getLegendPositionConfig(position: LegendConfig['legendPosition']): LegendPositionConfig {
+export function getLegendPositionConfig(position: LegendSpec['legendPosition']): LegendPositionConfig {
   if (typeof position === 'object') {
     return position;
   }

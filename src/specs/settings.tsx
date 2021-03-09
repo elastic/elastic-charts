@@ -32,7 +32,15 @@ import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { LegendPath } from '../state/actions/legend';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
-import { Color, HorizontalAlignment, Position, Rendering, Rotation, VerticalAlignment } from '../utils/common';
+import {
+  Color,
+  HorizontalAlignment,
+  LayoutDirection,
+  Position,
+  Rendering,
+  Rotation,
+  VerticalAlignment,
+} from '../utils/common';
 import { Domain } from '../utils/domain';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
@@ -320,10 +328,25 @@ export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
  */
 export type MarkBuffer = number | ((radius: number) => number);
 
+/**
+ * The legend position configuration.
+ * @public
+ */
 export type LegendPositionConfig = {
+  /**
+   * The vertical alignment of the legend
+   */
   vAlign: typeof VerticalAlignment.Top | typeof VerticalAlignment.Bottom; // TODO typeof VerticalAlignment.Middle
+  /**
+   * The horizontal alignment of the legend
+   */
   hAlign: typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Right; // TODO typeof HorizontalAlignment.Center
-  direction: 'horizontal' | 'vertical';
+  /**
+   * The direction of the legend items.
+   * `horizontal` shows all the items listed one a side the other horizontally, wrapping to new lines.
+   * `vertical` shows the items in a vertical list
+   */
+  direction: LayoutDirection;
   /**
    * Remove the legend from the outside chart area, making it floating above the chart.
    * @default false
@@ -337,13 +360,17 @@ export type LegendPositionConfig = {
  * The legend configuration
  * @public
  */
-export interface LegendConfig {
+export interface LegendSpec {
+  /**
+   * Show the legend
+   * @default false
+   */
   showLegend: boolean;
   /**
    * Set legend position
+   * @default Position.Left
    */
   legendPosition: Position | LegendPositionConfig;
-
   /**
    * Show an extra parameter on each legend item defined by the chart type
    * @defaultValue `false`
@@ -357,7 +384,6 @@ export interface LegendConfig {
    * Display the legend as a flat hierarchy
    */
   flatLegend?: boolean;
-
   /**
    * Choose a partition highlighting strategy for hovering over legend items
    */
@@ -378,7 +404,7 @@ export interface LegendConfig {
  * The Spec used for Chart settings
  * @public
  */
-export interface SettingsSpec extends Spec, LegendConfig {
+export interface SettingsSpec extends Spec, LegendSpec {
   /**
    * Partial theme to be merged with base
    *
