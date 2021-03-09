@@ -2221,6 +2221,8 @@ export interface TooltipInfo {
 // @public
 export interface TooltipPortalSettings<B = never> {
     boundary?: HTMLElement | B;
+    // Warning: (ae-forgotten-export) The symbol "Padding" needs to be exported by the entry point index.d.ts
+    boundaryPadding?: Partial<Padding_2> | number;
     fallbackPlacements?: Placement[];
     offset?: number;
     placement?: Placement;
