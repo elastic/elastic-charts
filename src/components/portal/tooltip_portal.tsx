@@ -129,7 +129,6 @@ const TooltipPortalComponent = ({
     }
 
     const { fallbackPlacements, placement, boundary, offset, boundaryPadding } = popperSettings;
-    console.log(addToPadding(boundaryPadding, offset || 10))
     popper.current = createPopper(anchorNode.current, portalNode.current, {
       strategy: 'absolute',
       placement,
