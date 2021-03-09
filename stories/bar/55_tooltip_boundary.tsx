@@ -42,7 +42,7 @@ export const Example = () => {
   const red = useRef<HTMLDivElement | null>(null);
   const white = useRef<HTMLDivElement | null>(null);
   const blue = useRef<HTMLDivElement | null>(null);
-  const boundaryMap: Record<string, TooltipProps['boundary'] | null> = {
+  const getBoundary: Record<string, TooltipProps['boundary'] | null> = {
     default: undefined,
     red: red.current,
     white: white.current,
@@ -62,14 +62,20 @@ export const Example = () => {
     },
     'default',
   );
-  const boundary = boundaryMap[boundarySting] ?? undefined;
+  const boundary = getBoundary[boundarySting] ?? undefined;
+  const boundaryPadding = {
+    top: number('Boundary top padding', 0, { min: 0 }),
+    right: number('Boundary right padding', 0, { min: 0 }),
+    bottom: number('Boundary bottom padding', 0, { min: 0 }),
+    left: number('Boundary left padding', 0, { min: 0 }),
+  };
 
   return (
     <div ref={red} style={{ backgroundColor: 'red', padding: 30, height: '100%' }}>
       <div ref={white} style={{ backgroundColor: 'white', padding: 30, height: '100%' }}>
         <div ref={blue} style={{ backgroundColor: 'blue', padding: 30, height: '100%' }}>
           <Chart className="story-chart">
-            <Settings tooltip={{ boundary }} />
+            <Settings tooltip={{ boundary, boundaryPadding }} />
             <Axis id="bottom" hide={!showAxes} position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
             <Axis
               id="left"
