@@ -646,6 +646,8 @@ export interface DebugState {
     //
     // (undocumented)
     bars?: DebugStateBar[];
+    // Warning: (ae-forgotten-export) The symbol "HeatmapDebugState" needs to be exported by the entry point index.d.ts
+    heatmap?: HeatmapDebugState;
     // Warning: (ae-forgotten-export) The symbol "DebugStateLegend" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
