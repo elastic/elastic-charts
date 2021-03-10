@@ -31,7 +31,7 @@ export interface ScreenReaderData {
   seriesName: SeriesName | SeriesNameFn | undefined | SeriesNameConfigOptions;
   seriesType: SeriesTypes;
   splitAccessor: Map<string | number, string | number>;
-  dataKey: string[];
+  dataKey: (string | number)[];
   dataValue: any[];
   xScale: Scale;
   yScales: Map<GroupId, Scale>;
@@ -71,12 +71,10 @@ const axesWithTitles = (titles: (undefined | string)[][], xScale: Scale, yScales
   for (let i = 0; i < numberOfScales; i++) {
     const axisDirection = titles[i][2] === 'top' || titles[i][2] === 'bottom' ? 'x-' : 'y-';
     const scaleType = axisDirection === 'x-' ? xScale.type : yScales.get(titles[i][1]!)?.type;
-    const axisTitle = typeof titles[i][0] !== 'object' ? '__global__' : titles[i][0];
-    const axisDomain = !yScales.get(axisTitle!)
-      ? 'The axis does not have a defined domain'
-      : `${
-          axisDirection === 'y-' ? yScales.get(titles[i][1]!)!.domain.toString() : formatForTimeOrOrdinalAxis(xScale)
-        }`;
+    const axisTitle = titles[i][0] ? titles[i][0] : '__global__';
+    const yDomain =
+      yScales.get(axisTitle!) === undefined ? yScales.get('__global__'!)?.domain : yScales.get(axisTitle!)?.domain;
+    const axisDomain = `${axisDirection === 'y-' ? `${yDomain}` : `${formatForTimeOrOrdinalAxis(xScale)}`}`;
     titleDomain +=
       yScales.size === 1
         ? `The ${axisDirection}axis has the scale type  ${scaleType} and has the title ${axisTitle} with the domain ${axisDomain}. `

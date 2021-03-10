@@ -19,6 +19,7 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable jest/no-conditional-expect */
 
+import { ScreenReaderData } from '../../../../components/screen_reader_data_table/screen_reader_data_table';
 import { MockDataSeries } from '../../../../mocks/series/series';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
@@ -27,6 +28,7 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { Spec } from '../../../../specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
+import { KIBANA_METRICS } from '../../../../utils/data_samples/test_dataset_kibana';
 import { ContinuousDomain, Range } from '../../../../utils/domain';
 import { SpecId } from '../../../../utils/ids';
 import { PointShape } from '../../../../utils/themes/theme';
@@ -34,12 +36,14 @@ import { getSeriesIndex, XYChartSeriesIdentifier } from '../../utils/series';
 import { BasicSeriesSpec, HistogramModeAlignments, SeriesColorAccessorFn } from '../../utils/specs';
 import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
 import { computeSeriesGeometriesSelector } from '../selectors/compute_series_geometries';
+import { getAxisSpecsSelector } from '../selectors/get_specs';
 import {
   computeSeriesDomains,
   computeXScaleOffset,
   isHistogramModeEnabled,
   setBarSeriesAccessors,
   getCustomSeriesColors,
+  computeScreenReaderData,
 } from './utils';
 
 function getGeometriesFromSpecs(specs: Spec[]) {
@@ -844,5 +848,71 @@ describe('Chart State utils', () => {
     seriesMap.set(bar2.id, bar2);
     setBarSeriesAccessors(isHistogramEnabled, seriesMap);
     expect(bar2.stackAccessors).toEqual(['y', 'bar']);
+  });
+  describe('compute data for screen reader data', () => {
+    test('compute screen reader data works for basic bar chart data', () => {
+      const barSpec1 = MockSeriesSpec.bar({ id: '', data: BARCHART_1Y1G });
+      const store = MockStore.default();
+      MockStore.addSpecs([barSpec1], store);
+      const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+      const { scales } = computeSeriesGeometriesSelector(store.getState());
+      const axisSpecs = getAxisSpecsSelector(store.getState());
+      const expected: ScreenReaderData[] = [
+        {
+          seriesName: undefined,
+          seriesType: 'bar',
+          splitAccessor: new Map(),
+          dataKey: ['x', 0, 'y1', 'datum', 'y0', 'mark', 'initialY0', 'initialY1', 'smH', 'smV'],
+          dataValue: [
+            [0, 'a', 1],
+            [0, 'b', 2],
+            [1, 'a', 2],
+            [1, 'b', 3],
+            [2, 'a', 3],
+            [2, 'b', 4],
+            [3, 'a', 4],
+            [3, 'b', 5],
+          ],
+          xScale: scales.xScale,
+          yScales: scales.yScales,
+          axesTitles: [],
+        },
+      ];
+      expect(computeScreenReaderData(formattedDataSeries, scales, axisSpecs)).toEqual(expected);
+    });
+    test('compute screen reader data works for basic line chart data', () => {
+      const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5);
+      const line = MockSeriesSpec.line({
+        xScaleType: ScaleType.Time,
+        yScaleType: ScaleType.Linear,
+        xAccessor: 0,
+        yAccessors: [1],
+        data,
+      });
+      const store = MockStore.default();
+      MockStore.addSpecs([line], store);
+      const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+      const { scales } = computeSeriesGeometriesSelector(store.getState());
+      const axisSpecs = getAxisSpecsSelector(store.getState());
+      const expected: ScreenReaderData[] = [
+        {
+          axesTitles: [],
+          dataKey: ['x', 1551438000000, 'y1', 'datum', 'y0', 'mark', 'initialY0', 'initialY1', 'smH', 'smV'],
+          dataValue: [
+            [1551438000000, 8.3203125],
+            [1551438030000, 7.9140625],
+            [1551438060000, 7.8671875],
+            [1551438090000, 7.125],
+            [1551438120000, 8.765625],
+          ],
+          seriesName: undefined,
+          seriesType: 'line',
+          splitAccessor: new Map(),
+          xScale: scales.xScale,
+          yScales: scales.yScales,
+        },
+      ];
+      expect(computeScreenReaderData(formattedDataSeries, scales, axisSpecs)).toEqual(expected);
+    });
   });
 });
