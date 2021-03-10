@@ -30,6 +30,7 @@ import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
 import {
   getClippedRanges,
+  getXScaledValueOrThrowFn,
   getY1ScaledValueOrThrowFn,
   getYDatumValueFn,
   isYValueDefinedFn,
@@ -55,12 +56,13 @@ export function renderLine(
   lineGeometry: LineGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
+  const xFn = getXScaledValueOrThrowFn(xScale, xScaleOffset);
   const y1Fn = getY1ScaledValueOrThrowFn(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
   const y1Accessor = getYDatumValueFn();
 
   const pathGenerator = line<DataSeriesDatum>()
-    .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
+    .x(xFn)
     .y(y1Fn)
     .defined((datum) => {
       return definedFn(datum, y1Accessor);
