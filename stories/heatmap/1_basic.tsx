@@ -28,6 +28,7 @@ export const Example = () => {
   const [selection, setSelection] = useState<HeatmapBrushEvent | undefined>();
 
   const persistCellsSelection = boolean('Persist cells selection', true);
+  const debugState = boolean('Enable debug state', true);
 
   const handler = useCallback(() => {
     setSelection(undefined);
@@ -79,7 +80,7 @@ export const Example = () => {
         onBrushEnd={action('onBrushEnd')}
         brushAxis="both"
         xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
-        debugState
+        debugState={debugState}
       />
       <Heatmap
         id="heatmap1"
