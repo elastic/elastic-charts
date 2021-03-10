@@ -18,33 +18,14 @@
  */
 import createCachedSelector from 're-reselect';
 
-import { LegendItem } from '../../../../commons/legend';
-import { Line } from '../../../../geoms/types';
+import { RGBtoString } from '../../../../common/color_library_wrappers';
+import { LegendItem } from '../../../../common/legend';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { DebugState, DebugStateLegend } from '../../../../state/types';
-import { RGBtoString } from '../../../partition_chart/layout/utils/color_library_wrappers';
-import { Cell } from '../../layout/types/viewmodel_types';
+import { Position } from '../../../../utils/common';
 import { computeLegendSelector } from './compute_legend';
 import { geometries } from './geometries';
 import { getHighlightedAreaSelector } from './get_highlighted_area';
-
-type CellDebug = Pick<Cell, 'value' | 'formatted' | 'x' | 'y'> & { fill: string };
-
-interface DebugStateAxis {
-  labels: string[];
-  gridlines: Line[];
-}
-
-interface DebugStateAxes {
-  x: DebugStateAxis;
-  y: DebugStateAxis;
-}
-
-export type HeatmapDebugState = Pick<DebugState, 'legend'> & {
-  cells: CellDebug[];
-  selectedArea: { x: number; y: number; width: number; height: number } | null;
-  axes: DebugStateAxes;
-};
 
 /**
  * Returns a stringified version of the `debugState`
@@ -52,27 +33,43 @@ export type HeatmapDebugState = Pick<DebugState, 'legend'> & {
  */
 export const getDebugStateSelector = createCachedSelector(
   [geometries, computeLegendSelector, getHighlightedAreaSelector],
-  (geoms, legend, pickedArea): HeatmapDebugState => {
+  (geoms, legend, pickedArea): DebugState => {
     return {
+      // Common debug state
       legend: getLegendState(legend),
       axes: {
-        x: {
-          labels: geoms.heatmapViewModel.xValues.map(({ text }) => text),
-          gridlines: geoms.heatmapViewModel.gridLines.x,
-        },
-        y: {
-          labels: geoms.heatmapViewModel.yValues.map(({ text }) => text),
-          gridlines: geoms.heatmapViewModel.gridLines.y,
-        },
+        x: [
+          {
+            id: 'x',
+            position: Position.Left,
+            labels: geoms.heatmapViewModel.xValues.map(({ text }) => text),
+            values: geoms.heatmapViewModel.xValues.map(({ value }) => value),
+            // vertical lines
+            gridlines: geoms.heatmapViewModel.gridLines.x.map((line) => ({ x: line.x1, y: line.y2 })),
+          },
+        ],
+        y: [
+          {
+            id: 'y',
+            position: Position.Bottom,
+            labels: geoms.heatmapViewModel.yValues.map(({ text }) => text),
+            values: geoms.heatmapViewModel.yValues.map(({ value }) => value),
+            // horizontal lines
+            gridlines: geoms.heatmapViewModel.gridLines.y.map((line) => ({ x: line.x2, y: line.y1 })),
+          },
+        ],
       },
-      cells: geoms.heatmapViewModel.cells.map(({ x, y, fill, formatted, value }) => ({
-        x,
-        y,
-        fill: RGBtoString(fill.color),
-        formatted,
-        value,
-      })),
-      selectedArea: pickedArea,
+      // Heatmap debug state
+      heatmap: {
+        cells: geoms.heatmapViewModel.cells.map(({ x, y, fill, formatted, value }) => ({
+          x,
+          y,
+          fill: RGBtoString(fill.color),
+          formatted,
+          value,
+        })),
+        selectedArea: pickedArea,
+      },
     };
   },
 )(getChartIdSelector);
@@ -80,7 +77,7 @@ export const getDebugStateSelector = createCachedSelector(
 function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
   const items = legendItems
     .filter(({ isSeriesHidden }) => !isSeriesHidden)
-    .map(({ label: name, color, seriesIdentifier: { key } }) => ({
+    .map(({ label: name, color, seriesIdentifiers: [{ key }] }) => ({
       key,
       name,
       color,

@@ -32,7 +32,7 @@ import { computeChartDimensionsSelector } from './selectors/compute_chart_dimens
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
-import { getDebugStateSelector, HeatmapDebugState } from './selectors/get_debug_state';
+import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_labels';
 import { getTooltipAnchorSelector } from './selectors/get_tooltip_anchor';
 import { getSpecOrNull } from './selectors/heatmap_spec';
@@ -126,7 +126,7 @@ export class HeatmapState implements InternalChartState {
     return getBrushAreaSelector(globalState);
   }
 
-  getDebugState(globalState: GlobalChartState): HeatmapDebugState {
+  getDebugState(globalState: GlobalChartState) {
     return getDebugStateSelector(globalState);
   }
 
