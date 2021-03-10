@@ -30,7 +30,6 @@ import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
 import {
   getClippedRanges,
-  getXScaledValueOrThrowFn,
   getY0ScaledValueOrThrowFn,
   getY1ScaledValueOrThrowFn,
   getYDatumValueFn,
@@ -58,14 +57,13 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
-  const xFn = getXScaledValueOrThrowFn(xScale, xScaleOffset);
   const y1Fn = getY1ScaledValueOrThrowFn(yScale);
   const y0Fn = getY0ScaledValueOrThrowFn(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
   const y1DatumAccessor = getYDatumValueFn();
   const y0DatumAccessor = getYDatumValueFn('y0');
   const pathGenerator = area<DataSeriesDatum>()
-    .x(xFn)
+    .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
     .y1(y1Fn)
     .y0(y0Fn)
     .defined((datum) => {

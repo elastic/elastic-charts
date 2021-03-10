@@ -189,16 +189,6 @@ export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
   };
 }
 
-/**
- * Rounds pixel values to 2 decimals
- */
-const roundScaledValue = (n: number) => round(n, 2);
-
-/** @internal */
-export function getXScaledValueOrThrowFn(xScale: Scale, xScaleOffset: number): (datum: DataSeriesDatum) => number {
-  return ({ x }) => roundScaledValue(xScale.scaleOrThrow(x) - xScaleOffset);
-}
-
 const SMALL_PIXEL = 0.5;
 /**
  * Temporary fix for Chromium bug
@@ -216,7 +206,7 @@ export function getY1ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatu
   return (datum) => {
     const extra = chromeRenderBugBuffer(datum);
     const yValue = datumAccessor(datum);
-    return roundScaledValue(yScale.scaleOrThrow(yValue)) + extra;
+    return yScale.scaleOrThrow(yValue) + extra;
   };
 }
 
@@ -226,26 +216,23 @@ export function getY0ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatu
   const domainPolarity = getDomainPolarity(yScale.domain);
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);
 
-  return ({ y0 }) =>
-    roundScaledValue(
-      (() => {
-        if (y0 === null) {
-          if (isLogScale) {
-            // if all positive domain use 1 as baseline, -1 otherwise
-            return yScale.scaleOrThrow(logBaseline);
-          }
-          return yScale.scaleOrThrow(DEFAULT_ZERO_BASELINE);
-        }
-        if (isLogScale) {
-          // wrong y0 polarity
-          if ((domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0)) {
-            // if all positive domain use 1 as baseline, -1 otherwise
-            return yScale.scaleOrThrow(logBaseline);
-          }
-          // if negative value, use -1 as max reference, 1 otherwise
-          return yScale.scaleOrThrow(y0);
-        }
-        return yScale.scaleOrThrow(y0);
-      })(),
-    );
+  return ({ y0 }) => {
+    if (y0 === null) {
+      if (isLogScale) {
+        // if all positive domain use 1 as baseline, -1 otherwise
+        return yScale.scaleOrThrow(logBaseline);
+      }
+      return yScale.scaleOrThrow(DEFAULT_ZERO_BASELINE);
+    }
+    if (isLogScale) {
+      // wrong y0 polarity
+      if ((domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0)) {
+        // if all positive domain use 1 as baseline, -1 otherwise
+        return yScale.scaleOrThrow(logBaseline);
+      }
+      // if negative value, use -1 as max reference, 1 otherwise
+      return yScale.scaleOrThrow(y0);
+    }
+    return yScale.scaleOrThrow(y0);
+  };
 }
