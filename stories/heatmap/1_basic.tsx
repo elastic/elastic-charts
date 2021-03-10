@@ -18,9 +18,19 @@
  */
 import { action } from '@storybook/addon-actions';
 import { boolean, button } from '@storybook/addon-knobs';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { debounce } from 'ts-debounce';
 
-import { Chart, Heatmap, HeatmapBrushEvent, niceTimeFormatter, RecursivePartial, ScaleType, Settings } from '../../src';
+import {
+  Chart,
+  DebugState,
+  Heatmap,
+  HeatmapBrushEvent,
+  niceTimeFormatter,
+  RecursivePartial,
+  ScaleType,
+  Settings,
+} from '../../src';
 import { Config } from '../../src/chart_types/heatmap/layout/types/config_types';
 import { SWIM_LANE_DATA } from '../../src/utils/data_samples/test_anomaly_swim_lane';
 
@@ -29,6 +39,7 @@ export const Example = () => {
 
   const persistCellsSelection = boolean('Persist cells selection', true);
   const debugState = boolean('Enable debug state', true);
+  const dataStateAction = action('DataState');
 
   const handler = useCallback(() => {
     setSelection(undefined);
@@ -36,45 +47,63 @@ export const Example = () => {
 
   button('Clear cells selection', handler);
 
-  const config: RecursivePartial<Config> = {
-    grid: {
-      cellHeight: {
-        min: 20,
+  const config: RecursivePartial<Config> = useMemo(
+    () => ({
+      grid: {
+        cellHeight: {
+          min: 20,
+        },
+        stroke: {
+          width: 1,
+          color: '#D3DAE6',
+        },
       },
-      stroke: {
-        width: 1,
-        color: '#D3DAE6',
+      cell: {
+        maxWidth: 'fill',
+        maxHeight: 3,
+        label: {
+          visible: false,
+        },
+        border: {
+          stroke: '#D3DAE6',
+          strokeWidth: 0,
+        },
       },
-    },
-    cell: {
-      maxWidth: 'fill',
-      maxHeight: 3,
-      label: {
-        visible: false,
+      yAxisLabel: {
+        visible: true,
+        width: 'auto',
+        padding: { left: 10, right: 10 },
       },
-      border: {
-        stroke: '#D3DAE6',
-        strokeWidth: 0,
+      xAxisLabel: {
+        formatter: (value: string | number) => {
+          return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
+        },
       },
-    },
-    yAxisLabel: {
-      visible: true,
-      width: 'auto',
-      padding: { left: 10, right: 10 },
-    },
-    xAxisLabel: {
-      formatter: (value: string | number) => {
-        return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
-      },
-    },
-    onBrushEnd: ((e) => {
-      setSelection(e);
-    }) as Config['onBrushEnd'],
-  };
+      onBrushEnd: ((e) => {
+        setSelection(e);
+      }) as Config['onBrushEnd'],
+    }),
+    [],
+  );
+
+  const logDebugstate = debounce(() => {
+    if (!debugState) return;
+
+    const statusEl = document.querySelector<HTMLDivElement>('.echChartStatus');
+
+    if (statusEl) {
+      const dataState = statusEl.dataset.echDebugState
+        ? (JSON.parse(statusEl.dataset.echDebugState) as DebugState)
+        : null;
+      dataStateAction(dataState);
+    }
+  }, 100);
+
   return (
     <Chart className="story-chart">
       <Settings
         onElementClick={action('onElementClick')}
+        onRenderChange={logDebugstate}
         showLegend
         legendPosition="top"
         onBrushEnd={action('onBrushEnd')}
