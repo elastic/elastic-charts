@@ -1,3 +1,36 @@
+# [25.2.0](https://github.com/elastic/elastic-charts/compare/v25.1.1...v25.2.0) (2021-03-09)
+
+
+### Bug Fixes
+
+* **tooltip:** add boundary padding ([#1065](https://github.com/elastic/elastic-charts/issues/1065)) ([25a247e](https://github.com/elastic/elastic-charts/commit/25a247ef043d3ba2a5029f68ebcfebb6493df8ab))
+
+
+### Features
+
+* **partition:** flame and icicle performance and tweening ([#1041](https://github.com/elastic/elastic-charts/issues/1041)) ([a9648a4](https://github.com/elastic/elastic-charts/commit/a9648a40d4aa06f5c715f293121d278543aec94c))
+
+## [25.1.1](https://github.com/elastic/elastic-charts/compare/v25.1.0...v25.1.1) (2021-03-05)
+
+
+### Bug Fixes
+
+* clippedRanges when complete dataset is null ([#1037](https://github.com/elastic/elastic-charts/issues/1037)) ([51418d2](https://github.com/elastic/elastic-charts/commit/51418d2b9feae8b48f568a39975f7152abdf67e5))
+* **tooltip:** allow explicit boundary element ([#1049](https://github.com/elastic/elastic-charts/issues/1049)) ([5cf8461](https://github.com/elastic/elastic-charts/commit/5cf8461530e4cac1c1f9918db54e96bf91cdad39))
+
+# [25.1.0](https://github.com/elastic/elastic-charts/compare/v25.0.1...v25.1.0) (2021-03-01)
+
+
+### Bug Fixes
+
+* rounding values on stacked w percentage charts ([#1039](https://github.com/elastic/elastic-charts/issues/1039)) ([ee63a70](https://github.com/elastic/elastic-charts/commit/ee63a7050f4230e85cd11f83df0d47bc6851cc83))
+
+
+### Features
+
+* **axis:** log scale limit and base options ([#1032](https://github.com/elastic/elastic-charts/issues/1032)) ([b38d110](https://github.com/elastic/elastic-charts/commit/b38d11083b921bb1e2759640cfa9498087c47b52))
+* **partition:** clip text in partition chart fill label ([#1033](https://github.com/elastic/elastic-charts/issues/1033)) ([be9bea0](https://github.com/elastic/elastic-charts/commit/be9bea0f4c4f2a2020dfde7a98d4e9e1baaf8a9a))
+
 ## [25.0.1](https://github.com/elastic/elastic-charts/compare/v25.0.0...v25.0.1) (2021-02-17)
 
 
