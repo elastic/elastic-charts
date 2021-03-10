@@ -17,13 +17,24 @@
  * under the License.
  */
 import { action } from '@storybook/addon-actions';
-import React from 'react';
+import { boolean, button } from '@storybook/addon-knobs';
+import React, { useCallback, useState } from 'react';
 
-import { Chart, Heatmap, niceTimeFormatter, RecursivePartial, ScaleType, Settings } from '../../src';
+import { Chart, Heatmap, HeatmapBrushEvent, niceTimeFormatter, RecursivePartial, ScaleType, Settings } from '../../src';
 import { Config } from '../../src/chart_types/heatmap/layout/types/config_types';
 import { SWIM_LANE_DATA } from '../../src/utils/data_samples/test_anomaly_swim_lane';
 
 export const Example = () => {
+  const [selection, setSelection] = useState<HeatmapBrushEvent | undefined>();
+
+  const persistCellsSelection = boolean('Persist cells selection', true);
+
+  const handler = useCallback(() => {
+    setSelection(undefined);
+  }, []);
+
+  button('Clear cells selection', handler);
+
   const config: RecursivePartial<Config> = {
     grid: {
       cellHeight: {
@@ -55,6 +66,9 @@ export const Example = () => {
         return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
       },
     },
+    onBrushEnd: ((e) => {
+      setSelection(e);
+    }) as Config['onBrushEnd'],
   };
   return (
     <Chart className="story-chart">
@@ -65,6 +79,7 @@ export const Example = () => {
         onBrushEnd={action('onBrushEnd')}
         brushAxis="both"
         xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
+        debugState
       />
       <Heatmap
         id="heatmap1"
@@ -80,6 +95,7 @@ export const Example = () => {
         ySortPredicate="numAsc"
         xScaleType={ScaleType.Time}
         config={config}
+        highlightedData={persistCellsSelection ? selection : undefined}
       />
     </Chart>
   );
