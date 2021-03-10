@@ -33,8 +33,10 @@ import {
   LIGHT_THEME,
   niceTimeFormatByDay,
   timeFormatter,
+  BrushAxis,
 } from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
+import { getChartRotationKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
@@ -51,7 +53,21 @@ export const Example = () => {
   const onElementClick = action('onElementClick');
   return (
     <Chart className="story-chart">
-      <Settings onElementClick={onElementClick} showLegend={showLegend} />
+      <Settings
+        onElementClick={onElementClick}
+        showLegend={showLegend}
+        onBrushEnd={(d) => {
+          if (d.x) {
+            console.log(new Date(d.x[0]).toISOString());
+            console.log(new Date(d.x[1]).toISOString());
+          }
+          if (d.y) {
+            console.log(d.y);
+          }
+        }}
+        brushAxis={BrushAxis.X}
+        // rotation={getChartRotationKnob()}
+      />
       <Axis
         id="time"
         title="Timestamp"
@@ -74,7 +90,11 @@ export const Example = () => {
         }}
         sort="alphaDesc"
       />
-      <SmallMultiples splitVertically="v_split" style={{ verticalPanelPadding: [0, 0.3] }} />
+      <SmallMultiples
+        splitHorizontally="v_split"
+        // splitVertically="v_split"
+        style={{ verticalPanelPadding: [0, 0.3] }}
+      />
       <AreaSeries
         id="line"
         xScaleType={ScaleType.Time}

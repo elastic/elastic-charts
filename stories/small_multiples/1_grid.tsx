@@ -91,6 +91,7 @@ export const Example = () => {
               },
             },
           }}
+          onBrushEnd={(d) => console.log(d)}
         />
         <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: false }} />
         <Axis
