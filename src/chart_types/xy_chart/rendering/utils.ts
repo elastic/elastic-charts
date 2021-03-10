@@ -22,7 +22,7 @@ import { Scale } from '../../../scales';
 import { getDomainPolarity } from '../../../scales/scale_continuous';
 import { isLogarithmicScale } from '../../../scales/types';
 import { MarkBuffer } from '../../../specs';
-import { getDistance, round } from '../../../utils/common';
+import { getDistance } from '../../../utils/common';
 import { BarGeometry, ClippedRanges, isPointGeometry, PointGeometry } from '../../../utils/geometry';
 import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
@@ -192,21 +192,24 @@ export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
 const SMALL_PIXEL = 0.5;
 /**
  * Temporary fix for Chromium bug
- * Shift pixel value imperceptible to the human eye
+ * Shift a small pixel value when pixel diff is <= 0.5px
  * https://github.com/elastic/elastic-charts/issues/1053
  * https://bugs.chromium.org/p/chromium/issues/detail?id=1163912
  */
-function chromeRenderBugBuffer({ y0, y1 }: DataSeriesDatum): number {
-  return y0 === y1 ? SMALL_PIXEL : 0;
+function chromeRenderBugBuffer(y1: number, y0: number): number {
+  const diff = Math.abs(y1 - y0);
+  return diff <= SMALL_PIXEL ? SMALL_PIXEL : 0;
 }
 
 /** @internal */
 export function getY1ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatum) => number {
   const datumAccessor = getYDatumValueFn();
+  const scaleY0Value = getY0ScaledValueOrThrowFn(yScale);
   return (datum) => {
-    const extra = chromeRenderBugBuffer(datum);
-    const yValue = datumAccessor(datum);
-    return yScale.scaleOrThrow(yValue) + extra;
+    const y1Value = yScale.scaleOrThrow(datumAccessor(datum));
+    const y0Value = scaleY0Value(datum);
+    const extra = chromeRenderBugBuffer(y1Value, y0Value);
+    return y1Value + extra;
   };
 }
 
