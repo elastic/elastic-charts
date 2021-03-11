@@ -85,11 +85,7 @@ export const Example = () => {
         }}
         sort="alphaDesc"
       />
-      <SmallMultiples
-        splitHorizontally="v_split"
-        // splitVertically="v_split"
-        style={{ verticalPanelPadding: [0, 0.3] }}
-      />
+      <SmallMultiples splitVertically="v_split" style={{ verticalPanelPadding: [0, 0.3] }} />
       <AreaSeries
         id="line"
         xScaleType={ScaleType.Time}
