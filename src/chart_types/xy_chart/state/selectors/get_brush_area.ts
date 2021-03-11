@@ -66,6 +66,7 @@ export const getBrushAreaSelector = createCachedSelector(
   },
 )(getChartIdSelector);
 
+/** @internal */
 export type PanelPoints = {
   start: Point;
   end: Point;
@@ -75,6 +76,7 @@ export type PanelPoints = {
   vPanelHeight: number;
 };
 
+/** @internal */
 export function getPointsConstraintToSinglePanel(
   startPlotPoint: Point,
   endPlotPoint: Point,
