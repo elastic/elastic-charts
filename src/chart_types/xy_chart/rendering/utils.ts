@@ -209,7 +209,7 @@ export function getY1ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatu
     const y1Value = yScale.scaleOrThrow(datumAccessor(datum));
     const y0Value = scaleY0Value(datum);
     const extra = chromeRenderBugBuffer(y1Value, y0Value);
-    return y1Value + extra;
+    return y1Value - extra;
   };
 }
 
