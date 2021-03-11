@@ -426,8 +426,8 @@ export function shapeViewModel(
         });
   const maxLinkedLabelTextLength = config.linkLabel.maxTextLength;
   const linkLabelViewModels = linkTextLayout(
-    panelInnerWidth, // todo check why we're not passing inter-margin size
-    panelInnerHeight, // todo check why we're not passing inter-margin size
+    panelInnerWidth,
+    panelInnerHeight,
     textMeasure,
     config,
     nodesWithoutRoom,
