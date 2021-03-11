@@ -1,3 +1,10 @@
+## [25.0.4](https://github.com/elastic/elastic-charts/compare/v25.0.3...v25.0.4) (2021-03-11)
+
+
+### Bug Fixes
+
+* **brush:** force brush tool per panel ([#1071](https://github.com/elastic/elastic-charts/issues/1071)) [25.0.x] ([#1073](https://github.com/elastic/elastic-charts/issues/1073)) ([c9ac2c0](https://github.com/elastic/elastic-charts/commit/c9ac2c0969c3351f472dd375dff9d84a4d2e656d)), closes [#1070](https://github.com/elastic/elastic-charts/issues/1070)
+
 ## [25.0.3](https://github.com/elastic/elastic-charts/compare/v25.0.2...v25.0.3) (2021-03-09)
 
 
