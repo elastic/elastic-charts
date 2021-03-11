@@ -89,11 +89,18 @@ export function getPointsConstraintToSinglePanel(
   const vPanelStart = vertical.scale(vPanel) ?? 0;
   const vPanelEnd = vPanelStart + vertical.bandwidth;
 
-  const x = clamp(endPlotPoint.x, hPanelStart, hPanelEnd);
-  const y = clamp(endPlotPoint.y, vPanelStart, vPanelEnd);
+  const start = {
+    x: clamp(startPlotPoint.x, hPanelStart, hPanelEnd),
+    y: clamp(startPlotPoint.y, vPanelStart, vPanelEnd),
+  };
+  const end = {
+    x: clamp(endPlotPoint.x, hPanelStart, hPanelEnd),
+    y: clamp(endPlotPoint.y, vPanelStart, vPanelEnd),
+  };
+
   return {
-    start: startPlotPoint,
-    end: { x, y },
+    start,
+    end,
     hPanelStart,
     hPanelWidth: horizontal.bandwidth,
     vPanelStart,
