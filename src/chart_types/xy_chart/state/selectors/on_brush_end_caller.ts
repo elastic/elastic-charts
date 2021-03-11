@@ -85,7 +85,6 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
             lastDrag,
             onBrushEnd,
           };
-
           if (lastDrag !== null && hasDragged(prevProps, nextProps) && onBrushEnd) {
             const brushArea: XYBrushArea = {};
             const { yScales, xScale } = computedScales;

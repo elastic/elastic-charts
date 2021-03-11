@@ -36,7 +36,6 @@ import {
   BrushAxis,
 } from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
-import { getChartRotationKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
@@ -51,6 +50,7 @@ const data = dg.generateGroupedSeries(numOfDays, 6, 'metric ').map((d) => {
 export const Example = () => {
   const showLegend = boolean('Show Legend', true);
   const onElementClick = action('onElementClick');
+  const tickTimeFormatter = timeFormatter(niceTimeFormatByDay(numOfDays));
   return (
     <Chart className="story-chart">
       <Settings
@@ -58,22 +58,17 @@ export const Example = () => {
         showLegend={showLegend}
         onBrushEnd={(d) => {
           if (d.x) {
-            console.log(new Date(d.x[0]).toISOString());
-            console.log(new Date(d.x[1]).toISOString());
-          }
-          if (d.y) {
-            console.log(d.y);
+            action('brushEventX')(tickTimeFormatter(d.x[0] ?? 0), tickTimeFormatter(d.x[1] ?? 0), d.y);
           }
         }}
         brushAxis={BrushAxis.X}
-        // rotation={getChartRotationKnob()}
       />
       <Axis
         id="time"
         title="Timestamp"
         position={Position.Bottom}
         gridLine={{ visible: false }}
-        tickFormat={timeFormatter(niceTimeFormatByDay(numOfDays))}
+        tickFormat={tickTimeFormatter}
       />
       <Axis
         id="y"
