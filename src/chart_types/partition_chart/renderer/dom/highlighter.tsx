@@ -120,7 +120,20 @@ function renderGeometries(
   // we should render only the deepest geometries of the tree to avoid overlaying highlighted geometries
   const highlightedGeoms = isTreemap(partitionLayout) ? geoms.filter((g) => g.depth >= maxDepth) : geoms;
   const renderGeom = isSunburst(partitionLayout) ? renderSector : renderRectangles;
-  return highlightedGeoms.map((geometry, index) => renderGeom(geometry, `${index}`, style, foci[index], width));
+  return highlightedGeoms.map((geometry, index) =>
+    renderGeom(
+      geometry,
+      `${index}`,
+      style,
+      foci[0] ?? {
+        currentFocusX0: NaN,
+        currentFocusX1: NaN,
+        prevFocusX0: NaN,
+        prevFocusX1: NaN,
+      },
+      width,
+    ),
+  );
 }
 
 /** @internal */
