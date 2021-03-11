@@ -25,7 +25,7 @@ import {
   Chart,
   DebugState,
   Heatmap,
-  HeatmapBrushEvent,
+  HeatmapElementEvent,
   niceTimeFormatter,
   RecursivePartial,
   ScaleType,
@@ -35,7 +35,7 @@ import { Config } from '../../src/chart_types/heatmap/layout/types/config_types'
 import { SWIM_LANE_DATA } from '../../src/utils/data_samples/test_anomaly_swim_lane';
 
 export const Example = () => {
-  const [selection, setSelection] = useState<HeatmapBrushEvent | undefined>();
+  const [selection, setSelection] = useState<{ x: (string | number)[]; y: (string | number)[] } | undefined>();
 
   const persistCellsSelection = boolean('Persist cells selection', true);
   const debugState = boolean('Enable debug state', true);
@@ -80,7 +80,7 @@ export const Example = () => {
         },
       },
       onBrushEnd: ((e) => {
-        setSelection(e);
+        setSelection({ x: e.x, y: e.y });
       }) as Config['onBrushEnd'],
     }),
     [],
@@ -99,10 +99,17 @@ export const Example = () => {
     }
   }, 100);
 
+  // @ts-ignore
+  const onElementClick: ElementClickListener = useCallback((e: HeatmapElementEvent[]) => {
+    const cell = e[0][0];
+    // @ts-ignore
+    setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
+  }, []);
+
   return (
     <Chart className="story-chart">
       <Settings
-        onElementClick={action('onElementClick')}
+        onElementClick={onElementClick}
         onRenderChange={logDebugstate}
         showLegend
         legendPosition="top"
@@ -117,7 +124,6 @@ export const Example = () => {
         ranges={[0, 3, 25, 50, 75]}
         colors={['#ffffff', '#d2e9f7', '#8bc8fb', '#fdec25', '#fba740', '#fe5050']}
         data={SWIM_LANE_DATA.map((v) => ({ ...v, time: v.time * 1000 }))}
-        // highlightedData={{ x: [], y: [] }}
         xAccessor={(d) => d.time}
         yAccessor={(d) => d.laneLabel}
         valueAccessor={(d) => d.value}

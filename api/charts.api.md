@@ -1106,8 +1106,8 @@ export interface HeatmapSpec extends Spec {
     data: Datum[];
     // (undocumented)
     highlightedData?: {
-        x: any[];
-        y: any[];
+        x: Array<string | number>;
+        y: Array<string | number>;
     };
     // (undocumented)
     name?: string;

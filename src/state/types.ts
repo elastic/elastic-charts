@@ -83,7 +83,10 @@ type CellDebug = Pick<Cell, 'value' | 'formatted' | 'x' | 'y'> & { fill: string 
 
 type HeatmapDebugState = {
   cells: CellDebug[];
-  selectedArea: { x: number; y: number; width: number; height: number } | null;
+  selection: {
+    area: { x: number; y: number; width: number; height: number } | null;
+    data: { x: Array<string | number>; y: Array<string | number> } | null;
+  };
 };
 
 /**

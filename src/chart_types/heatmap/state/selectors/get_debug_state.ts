@@ -25,15 +25,16 @@ import { DebugState, DebugStateLegend } from '../../../../state/types';
 import { Position } from '../../../../utils/common';
 import { computeLegendSelector } from './compute_legend';
 import { geometries } from './geometries';
-import { getHighlightedAreaSelector } from './get_highlighted_area';
+import { getHighlightedAreaSelector, getHighlightedDataSelector } from './get_highlighted_area';
+import { getPickedCells } from './get_picked_cells';
 
 /**
  * Returns a stringified version of the `debugState`
  * @internal
  */
 export const getDebugStateSelector = createCachedSelector(
-  [geometries, computeLegendSelector, getHighlightedAreaSelector],
-  (geoms, legend, pickedArea): DebugState => {
+  [geometries, computeLegendSelector, getHighlightedAreaSelector, getPickedCells, getHighlightedDataSelector],
+  (geoms, legend, pickedArea, pickedCells, highlightedData): DebugState => {
     return {
       // Common debug state
       legend: getLegendState(legend),
@@ -68,7 +69,10 @@ export const getDebugStateSelector = createCachedSelector(
           formatted,
           value,
         })),
-        selectedArea: pickedArea,
+        selection: {
+          area: pickedArea,
+          data: highlightedData,
+        },
       },
     };
   },
