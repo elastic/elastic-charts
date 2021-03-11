@@ -144,5 +144,8 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   minBrushDelta: 2,
   dataTable: {
     showDefaultDescription: true,
+    HeadingLevel: 'h2',
+    description: undefined,
+    visibleCaption: undefined,
   },
 };
