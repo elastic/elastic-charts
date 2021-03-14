@@ -37,9 +37,9 @@ import { getTree } from './tree';
 
 const getSpecs = (state: GlobalChartState) => state.specs;
 
-const horizontalSplit = (s: SmallMultiplesSpec) => s.splitHorizontally;
-const verticalSplit = (s: SmallMultiplesSpec) => s.splitVertically;
-const zigzagSplit = (s: SmallMultiplesSpec) => !s.splitVertically && !s.splitHorizontally;
+const horizontalSplit = (s?: SmallMultiplesSpec) => s?.splitHorizontally;
+const verticalSplit = (s?: SmallMultiplesSpec) => s?.splitVertically;
+const zigzagSplit = (s?: SmallMultiplesSpec) => !s?.splitVertically && !s?.splitHorizontally;
 
 /** @internal */
 export const partitionMultiGeometries = createCachedSelector(
@@ -65,34 +65,45 @@ export const partitionMultiGeometries = createCachedSelector(
       Number(smallMultiplesSpec.some(horizontalSplit)) + Number(smallMultiplesSpec.some(verticalSplit)),
     );
 
-    const zigzagColumnCount = Math.ceil(Math.sqrt(partitionSpecs.length));
-    const zigzagRowCount = Math.ceil(partitionSpecs.length / zigzagColumnCount);
+    const { width, height } = parentDimensions;
+    const outerPanelCount = partitionSpecs.length;
+
+    const zigzagColumnCount = Math.ceil(Math.sqrt(outerPanelCount));
+    const zigzagRowCount = Math.ceil(outerPanelCount / zigzagColumnCount);
 
     const categorySplit = smallMultiplesSpec.length > 0;
 
     return partitionSpecs.flatMap((spec, index) => {
       const outerHeight =
         outerSpecDirection === 'vertical'
-          ? 1 / partitionSpecs.length
+          ? 1 / outerPanelCount
           : outerSpecDirection === 'zigzag'
           ? 1 / zigzagRowCount
           : 1;
       const outerWidth =
         outerSpecDirection === 'horizontal'
-          ? 1 / partitionSpecs.length
+          ? 1 / outerPanelCount
           : outerSpecDirection === 'zigzag'
           ? 1 / zigzagColumnCount
           : 1;
-      return (categorySplit ? tree[0][1].children : tree).map((t: ArrayEntry, innerIndex, a) => {
-        const zigzagColumnCount2 = Math.ceil(Math.sqrt(a.length));
-        const zigzagRowCount2 = Math.ceil(a.length / zigzagColumnCount2);
+      const innerPanelTrees = categorySplit ? tree[0][1].children : tree; // todo solve it for x*y breakdown ie. two dimensional grid
+      return innerPanelTrees.map((t: ArrayEntry, innerIndex, a) => {
+        const innerPanelCount = a.length;
+        const outerPanelWidth = width * outerWidth;
+        const outerPanelHeight = height * outerHeight;
+        const outerPanelArea = outerPanelWidth * outerPanelHeight;
+        const innerPanelTargetArea = outerPanelArea / innerPanelCount;
+        const innerPanelTargetHeight = Math.sqrt(innerPanelTargetArea); // attempting squarish inner panels
+        const innerZigzagRowCount = Math.max(1, Math.floor(outerPanelHeight / innerPanelTargetHeight)); // err on the side of landscape aspect ratio
+        const innerZigzagColumnCount = Math.ceil(a.length / innerZigzagRowCount);
+
         return getShapeViewModel(spec, parentDimensions, [t], background.color, smallMultiplesBreakdownCount, {
           index,
           innerIndex,
           partitionLayout: spec.config.partitionLayout ?? config.partitionLayout,
           top:
             (outerSpecDirection === 'vertical'
-              ? index / partitionSpecs.length
+              ? index / outerPanelCount
               : outerSpecDirection === 'zigzag'
               ? Math.floor(index / zigzagColumnCount) / zigzagRowCount
               : 0) +
@@ -100,18 +111,18 @@ export const partitionMultiGeometries = createCachedSelector(
               (innerBreakdownDirection === 'vertical'
                 ? innerIndex / a.length
                 : innerBreakdownDirection === 'zigzag'
-                ? Math.floor(innerIndex / zigzagColumnCount2) / zigzagRowCount2
+                ? Math.floor(innerIndex / innerZigzagColumnCount) / innerZigzagRowCount
                 : 0),
           height:
             outerHeight *
             (innerBreakdownDirection === 'vertical'
               ? 1 / a.length
               : innerBreakdownDirection === 'zigzag'
-              ? 1 / zigzagRowCount2
+              ? 1 / innerZigzagRowCount
               : 1),
           left:
             (outerSpecDirection === 'horizontal'
-              ? index / partitionSpecs.length
+              ? index / outerPanelCount
               : outerSpecDirection === 'zigzag'
               ? (index % zigzagColumnCount) / zigzagColumnCount
               : 0) +
@@ -119,14 +130,14 @@ export const partitionMultiGeometries = createCachedSelector(
               (innerBreakdownDirection === 'horizontal'
                 ? innerIndex / a.length
                 : innerBreakdownDirection === 'zigzag'
-                ? (innerIndex % zigzagColumnCount2) / zigzagColumnCount2
+                ? (innerIndex % innerZigzagColumnCount) / innerZigzagColumnCount
                 : 0),
           width:
             outerWidth *
             (innerBreakdownDirection === 'horizontal'
               ? 1 / a.length
               : innerBreakdownDirection === 'zigzag'
-              ? 1 / zigzagColumnCount2
+              ? 1 / innerZigzagColumnCount
               : 1),
         });
       });
