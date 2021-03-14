@@ -73,7 +73,7 @@ export const partitionMultiGeometries = createCachedSelector(
 
     const categorySplit = smallMultiplesSpec.length > 0;
 
-    return partitionSpecs.flatMap((spec, index) => {
+    const result = partitionSpecs.flatMap((spec, index) => {
       const outerHeight =
         outerSpecDirection === 'vertical'
           ? 1 / outerPanelCount
@@ -142,6 +142,8 @@ export const partitionMultiGeometries = createCachedSelector(
         });
       });
     });
+
+    return result.length === 0 ? [nullShapeViewModel(config, { x: outerWidth, y: outerHeight })] : result;
   },
 )(getChartIdSelector);
 
