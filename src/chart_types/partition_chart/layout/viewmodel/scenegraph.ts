@@ -18,16 +18,16 @@
  */
 
 import { measureText } from '../../../../common/text_utils';
-import { identity, mergePartial, RecursivePartial, Color } from '../../../../utils/common';
+import { Color, identity, mergePartial, RecursivePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
-import { PartitionSpec, Layer } from '../../specs';
+import { Layer, PartitionSpec } from '../../specs';
 import { config as defaultConfig, VALUE_GETTERS } from '../config';
 import { Config } from '../types/config_types';
 import {
+  nullShapeViewModel,
+  RawTextGetter,
   ShapeTreeNode,
   ShapeViewModel,
-  RawTextGetter,
-  nullShapeViewModel,
   ValueGetter,
 } from '../types/viewmodel_types';
 import { DEPTH_KEY, HierarchyOfArrays } from '../utils/group_by_rollup';
@@ -51,6 +51,7 @@ export function getShapeViewModel(
   parentDimensions: Dimensions,
   tree: HierarchyOfArrays,
   containerBackgroundColor: Color,
+  smallMultiplesBreakdownCount: number,
   panelPlacement: PanelPlacement,
 ): ShapeViewModel {
   const { width, height } = parentDimensions;
@@ -75,6 +76,7 @@ export function getShapeViewModel(
     tree,
     topGroove,
     containerBackgroundColor,
+    smallMultiplesBreakdownCount,
     panelPlacement,
   );
 }

@@ -51,68 +51,14 @@ export const Example = () => {
     <Chart className="story-chart">
       <Settings showLegend legendStrategy="pathWithDescendants" flatLegend={false} theme={STORYBOOK_LIGHT_THEME} />
       <GroupBy id="h_split" by={(_, { h }) => h} format={(h) => `${h}`} sort="alphaAsc" />
-      <SmallMultiples {...[] /* id="sm1" */} splitHorizontally="h_split" style={{ verticalPanelPadding: [0, 0] }} />
-      <Partition
-        id="spec_4"
-        data={data}
-        valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={() => ``}
-        layers={
-          [
-            {
-              groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
-              nodeLabel: (d: any) => regionLookup[d].regionName,
-              fillLabel: { maximizeFontSize: boolean('Maximize font size layer 2', false), clipText: true },
-              shape: {
-                fillColor: (d: ShapeTreeNode) =>
-                  discreteColor(colorBrewerCategoricalStark9, 0.5)(d[MODEL_KEY].sortIndex),
-              },
-            },
-            {
-              groupByRollup: (d: Datum) => d.sitc1,
-              nodeLabel: (d: any) => productLookup[d].name,
-              fillLabel: { maximizeFontSize: boolean('Maximize font size layer 1', false), clipText: true },
-              shape: {
-                fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.5)(d.sortIndex),
-              },
-            },
-            {
-              groupByRollup: (d: Datum) => d.dest,
-              nodeLabel: (d: any) => countryLookup[d].name,
-              fillLabel: { maximizeFontSize: boolean('Maximize font size layer 3', false), clipText: true },
-              shape: {
-                fillColor: (d: ShapeTreeNode) =>
-                  discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex),
-              },
-            },
-          ] /* .slice(layerFrom, layerTo) */
+      <SmallMultiples
+        {
+          ...[] /* id="sm1" */
         }
-        config={{
-          partitionLayout: PartitionLayout.icicle,
-          linkLabel: {
-            maxCount: 0,
-            fontSize: 14,
-          },
-          fontFamily: 'Arial',
-          fillLabel: {
-            valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
-            fontStyle: 'italic',
-            textInvertible: true,
-            fontWeight: 500,
-            fontVariant: 'small-caps',
-            valueFont: {
-              fontFamily: 'Menlo',
-              fontStyle: 'normal',
-              fontWeight: 100,
-            },
-          },
-          margin: { top: 0, bottom: 0, left: 0, right: 0 },
-          minFontSize: 1,
-          maxFontSize: 8,
-          idealFontSizeJump: 1.1,
-          backgroundColor: 'rgba(229,229,229,1)',
-          animation: { duration: 500 },
-        }}
+        {
+          ...[] /* splitVertically="h_split" */
+        }
+        style={{ verticalPanelPadding: [0, 0] }}
       />
       <Partition
         id="spec_1"
@@ -253,67 +199,6 @@ export const Example = () => {
           outerSizeRatio: 1,
           emptySizeRatio: 0,
           circlePadding: 4,
-          backgroundColor: 'rgba(229,229,229,1)',
-        }}
-      />
-      <Partition
-        id="spec_3"
-        data={data}
-        valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={() => ``}
-        layers={
-          [
-            {
-              groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
-              nodeLabel: (d: any) => regionLookup[d].regionName,
-              fillLabel: { maximizeFontSize: boolean('Maximize font size layer 2', false) },
-              shape: {
-                fillColor: (d: ShapeTreeNode) =>
-                  discreteColor(colorBrewerCategoricalStark9, 0.5)(d[MODEL_KEY].sortIndex),
-              },
-            },
-            {
-              groupByRollup: (d: Datum) => d.sitc1,
-              nodeLabel: (d: any) => productLookup[d].name,
-              fillLabel: { maximizeFontSize: boolean('Maximize font size layer 1', false) },
-              shape: {
-                fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.5)(d.sortIndex),
-              },
-            },
-            {
-              groupByRollup: (d: Datum) => d.dest,
-              nodeLabel: (d: any) => countryLookup[d].name,
-              fillLabel: { maximizeFontSize: boolean('Maximize font size layer 3', false) },
-              shape: {
-                fillColor: (d: ShapeTreeNode) =>
-                  discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex),
-              },
-            },
-          ] /* .slice(layerFrom, layerTo) */
-        }
-        config={{
-          partitionLayout: PartitionLayout.icicle,
-          linkLabel: {
-            maxCount: 0,
-            fontSize: 14,
-          },
-          fontFamily: 'Arial',
-          fillLabel: {
-            valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
-            fontStyle: 'italic',
-            textInvertible: true,
-            fontWeight: 500,
-            fontVariant: 'small-caps',
-            valueFont: {
-              fontFamily: 'Menlo',
-              fontStyle: 'normal',
-              fontWeight: 100,
-            },
-          },
-          margin: { top: 0, bottom: 0, left: 0, right: 0 },
-          minFontSize: 1,
-          maxFontSize: 8,
-          idealFontSizeJump: 1.1,
           backgroundColor: 'rgba(229,229,229,1)',
         }}
       />
