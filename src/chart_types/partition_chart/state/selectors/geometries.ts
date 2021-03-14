@@ -94,8 +94,10 @@ export const partitionMultiGeometries = createCachedSelector(
         const outerPanelArea = outerPanelWidth * outerPanelHeight;
         const innerPanelTargetArea = outerPanelArea / innerPanelCount;
         const innerPanelTargetHeight = Math.sqrt(innerPanelTargetArea); // attempting squarish inner panels
-        const innerZigzagRowCount = Math.max(1, Math.floor(outerPanelHeight / innerPanelTargetHeight)); // err on the side of landscape aspect ratio
-        const innerZigzagColumnCount = Math.ceil(a.length / innerZigzagRowCount);
+
+        const innerZigzagRowCountEstimate = Math.max(1, Math.floor(outerPanelHeight / innerPanelTargetHeight)); // err on the side of landscape aspect ratio
+        const innerZigzagColumnCount = Math.ceil(a.length / innerZigzagRowCountEstimate);
+        const innerZigzagRowCount = Math.ceil(a.length / innerZigzagColumnCount);
 
         return getShapeViewModel(spec, parentDimensions, [t], background.color, smallMultiplesBreakdownCount, {
           index,
