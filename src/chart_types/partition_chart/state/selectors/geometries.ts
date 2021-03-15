@@ -32,6 +32,7 @@ import { config } from '../../layout/config';
 import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { ArrayEntry } from '../../layout/utils/group_by_rollup';
 import { getShapeViewModel } from '../../layout/viewmodel/scenegraph';
+import { IndexedContinuousDomainFocus } from '../../renderer/canvas/partition';
 import { getPartitionSpecs } from './get_partition_specs';
 import { getTree } from './tree';
 
@@ -98,11 +99,11 @@ export const partitionMultiGeometries = createCachedSelector(
         const innerZigzagRowCountEstimate = Math.max(1, Math.floor(outerPanelHeight / innerPanelTargetHeight)); // err on the side of landscape aspect ratio
         const innerZigzagColumnCount = Math.ceil(a.length / innerZigzagRowCountEstimate);
         const innerZigzagRowCount = Math.ceil(a.length / innerZigzagColumnCount);
-
         return getShapeViewModel(spec, parentDimensions, [t], background.color, smallMultiplesBreakdownCount, {
           index,
           innerIndex,
           partitionLayout: spec.config.partitionLayout ?? config.partitionLayout,
+          panelTitle: t[0],
           top:
             (outerSpecDirection === 'vertical'
               ? index / outerPanelCount
@@ -165,7 +166,7 @@ export const partitionDrilldownFocus = createCachedSelector(
     (state) => state.interactions.drilldown,
     (state) => state.interactions.prevDrilldown,
   ],
-  (multiGeometries, chartDimensions, drilldown, prevDrilldown) =>
+  (multiGeometries, chartDimensions, drilldown, prevDrilldown): IndexedContinuousDomainFocus[] =>
     multiGeometries.map(({ quadViewModel, index, innerIndex }) => {
       const { x0: currentFocusX0, x1: currentFocusX1 } = focusRect(quadViewModel, chartDimensions, drilldown);
       const { x0: prevFocusX0, x1: prevFocusX1 } = focusRect(quadViewModel, chartDimensions, prevDrilldown);

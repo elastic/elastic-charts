@@ -456,13 +456,16 @@ export function shapeViewModel(
 
   // combined viewModel
   return {
+    partitionLayout: config?.partitionLayout ?? defaultConfig.partitionLayout,
+
+    panelTitle: panelPlacement.panelTitle,
     index: panelPlacement.index,
     innerIndex: panelPlacement.innerIndex,
     width: panelPlacement.width,
     height: panelPlacement.height,
     top: panelPlacement.top,
     left: panelPlacement.left,
-    partitionLayout: config?.partitionLayout ?? defaultConfig.partitionLayout,
+
     config,
     layers,
     diskCenter,

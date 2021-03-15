@@ -236,7 +236,16 @@ function renderLinkLabels(
 export function renderPartitionCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
-  { config, quadViewModel, rowSets, outsideLinksViewModel, linkLabelViewModels, diskCenter }: ShapeViewModel,
+  {
+    width,
+    panelTitle,
+    config,
+    quadViewModel,
+    rowSets,
+    outsideLinksViewModel,
+    linkLabelViewModels,
+    diskCenter,
+  }: ShapeViewModel,
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = config;
 
@@ -255,6 +264,11 @@ export function renderPartitionCanvas2d(
     //         text rendering must be y-flipped, which is a bit easier this way
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+
+    // panel titles
+
+    ctx.fillText(panelTitle, diskCenter.x + (config.width * width) / 2, diskCenter.y + 12);
+
     ctx.translate(diskCenter.x, diskCenter.y);
     // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
     // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up

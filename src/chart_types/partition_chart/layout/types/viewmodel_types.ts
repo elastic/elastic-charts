@@ -89,9 +89,13 @@ export interface RowSet {
 }
 
 /** @internal */
-export interface QuadViewModel extends ShapeTreeNode {
+export interface SmallMultiplesIndices {
   index: number;
   innerIndex: number;
+}
+
+/** @internal */
+export interface QuadViewModel extends ShapeTreeNode, SmallMultiplesIndices {
   strokeWidth: number;
   strokeStyle: string;
   fillColor: string;
@@ -107,9 +111,8 @@ export interface OutsideLinksViewModel {
 export type PickFunction = (x: Pixels, y: Pixels, focus: ContinuousDomainFocus) => Array<QuadViewModel>;
 
 /** @internal */
-export interface PartitionSmallMultiplesModel {
-  index: number;
-  innerIndex: number;
+export interface PartitionSmallMultiplesModel extends SmallMultiplesIndices {
+  panelTitle: string;
   partitionLayout: PartitionLayout;
   top: SizeRatio;
   left: SizeRatio;
@@ -140,15 +143,21 @@ const defaultFont: Font = {
 };
 
 /** @internal */
-export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointObject): ShapeViewModel => ({
+export const nullPartitionSmallMultiplesModel = (partitionLayout: PartitionLayout): PartitionSmallMultiplesModel => ({
   index: 0,
   innerIndex: 0,
+  panelTitle: '',
   top: 0,
   left: 0,
   width: 0,
   height: 0,
+  partitionLayout,
+});
+
+/** @internal */
+export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointObject): ShapeViewModel => ({
+  ...nullPartitionSmallMultiplesModel((specifiedConfig || config).partitionLayout),
   config: specifiedConfig || config,
-  partitionLayout: (specifiedConfig || config).partitionLayout,
   layers: [],
   quadViewModel: [],
   rowSets: [],

@@ -24,9 +24,14 @@ import { PointObject } from '../../../../common/geometry';
 import { Dimensions } from '../../../../utils/dimensions';
 import { configMetadata } from '../../layout/config';
 import { PartitionLayout } from '../../layout/types/config_types';
-import { PartitionSmallMultiplesModel, QuadViewModel } from '../../layout/types/viewmodel_types';
+import {
+  nullPartitionSmallMultiplesModel,
+  PartitionSmallMultiplesModel,
+  QuadViewModel,
+  ShapeViewModel,
+} from '../../layout/types/viewmodel_types';
 import { isSunburst, isTreemap } from '../../layout/viewmodel/viewmodel';
-import { ContinuousDomainFocus } from '../canvas/partition';
+import { ContinuousDomainFocus, IndexedContinuousDomainFocus } from '../canvas/partition';
 
 interface HighlightSet extends PartitionSmallMultiplesModel {
   geometries: QuadViewModel[];
@@ -265,13 +270,7 @@ export const DEFAULT_PROPS: HighlighterProps = {
   },
   highlightSets: [
     {
-      index: 0,
-      innerIndex: 0,
-      partitionLayout: configMetadata.partitionLayout.dflt,
-      width: 0,
-      height: 0,
-      left: 0,
-      top: 0,
+      ...nullPartitionSmallMultiplesModel(configMetadata.partitionLayout.dflt),
       geometries: [],
       geometriesFoci: [],
       diskCenter: {
@@ -282,3 +281,23 @@ export const DEFAULT_PROPS: HighlighterProps = {
     },
   ],
 };
+
+/** @internal */
+export function highlightSetMapper(geometries: QuadViewModel[], foci: IndexedContinuousDomainFocus[]) {
+  return (vm: ShapeViewModel): HighlightSet => {
+    return {
+      index: vm.index,
+      innerIndex: vm.innerIndex,
+      panelTitle: vm.panelTitle,
+      partitionLayout: vm.partitionLayout,
+      width: vm.width,
+      height: vm.height,
+      top: vm.top,
+      left: vm.left,
+      diskCenter: vm.diskCenter,
+      outerRadius: vm.outerRadius,
+      geometries: geometries.filter(({ index: i, innerIndex: ii }) => vm.index === i && vm.innerIndex === ii),
+      geometriesFoci: foci.filter(({ index: i, innerIndex: ii }) => vm.index === i && vm.innerIndex === ii),
+    };
+  };
+}

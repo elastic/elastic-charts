@@ -24,7 +24,7 @@ import { getChartContainerDimensionsSelector } from '../../../../state/selectors
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { partitionDrilldownFocus, partitionMultiGeometries } from '../../state/selectors/geometries';
 import { legendHoverHighlightNodes } from '../../state/selectors/get_highlighted_shapes';
-import { HighlighterComponent, HighlighterProps, DEFAULT_PROPS } from './highlighter';
+import { HighlighterComponent, HighlighterProps, DEFAULT_PROPS, highlightSetMapper } from './highlighter';
 
 const legendMapStateToProps = (state: GlobalChartState): HighlighterProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
@@ -41,21 +41,7 @@ const legendMapStateToProps = (state: GlobalChartState): HighlighterProps => {
     initialized: true,
     renderAsOverlay: false,
     canvasDimension,
-    highlightSets: partitionMultiGeometries(state).map(
-      ({ index, innerIndex, outerRadius, diskCenter, width, height, top, left, partitionLayout }) => ({
-        index,
-        innerIndex,
-        partitionLayout,
-        width,
-        height,
-        top,
-        left,
-        geometries: geometries.filter((g) => g.index === index && g.innerIndex === innerIndex), // fixme
-        geometriesFoci: geometriesFoci.filter((g) => g.index === index && g.innerIndex === innerIndex),
-        diskCenter,
-        outerRadius,
-      }),
-    ),
+    highlightSets: partitionMultiGeometries(state).map(highlightSetMapper(geometries, geometriesFoci)),
   };
 };
 
