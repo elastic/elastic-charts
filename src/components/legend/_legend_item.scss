@@ -7,8 +7,8 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   align-items: center;
   position: relative;
   > div:not(.background) {
-    // euiPopover adds a div with height of 19px
-    height: 18px; // prevents color dot from shifting
+    // euiPopover adds a div with height of 19px otherwise
+    height: #{$euiFontSizeXS * $euiLineHeight}; // prevents color dot from shifting // prevents color dot from shifting
   }
   &:not(&--hidden) {
     .echLegendItem__color--changable {
