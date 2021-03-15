@@ -1,4 +1,6 @@
 $legendItemVerticalPadding: $echLegendRowGap / 2;
+$legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
+
 .echLegendItem {
   color: $euiTextColor;
   display: flex;
@@ -6,9 +8,15 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
   justify-content: space-between;
   align-items: center;
   position: relative;
-  > div:not(.background) {
+
+  > *:not(.background) {
     // euiPopover adds a div with height of 19px otherwise
-    height: #{$euiFontSizeXS * $euiLineHeight}; // prevents color dot from shifting // prevents color dot from shifting
+    height: $legendItemHeight; // prevents color dot from shifting
+    margin-left: $euiSizeXS;
+
+    &:last-child {
+      margin-right: $euiSizeXS;
+    }
   }
   &:not(&--hidden) {
     .echLegendItem__color--changable {
@@ -31,22 +39,20 @@ $legendItemVerticalPadding: $echLegendRowGap / 2;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: $euiSizeXS;
-    height: 16px;
-    width: 20px;
+    max-width: calc(#{$legendItemHeight} + #{$euiSizeXS * 2});
+
+    .euiPopover,
+    .euiPopover__anchor,
+    .euiPopover__anchor > *:first-child {
+      // makes custom buttons in eui popover take full action size
+      height: 100%;
+      width: 100%;
+    }
   }
   &__color {
     display: flex;
-    margin-right: $euiSizeXS;
-    margin-left: $euiSizeXS;
     line-height: 1.5;
     align-items: center;
-  }
-  &__visibility {
-    margin-right: $euiSizeXS;
-    &:hover {
-      cursor: pointer;
-    }
   }
   &__label {
     @include euiFontSizeXS;

@@ -107,9 +107,8 @@ const getAction = (hideActions: boolean, anchorPosition: PopoverAnchorPosition):
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100%',
-        marginLeft: 4,
-        marginRight: 4,
+        paddingLeft: 2,
+        paddingRight: 2,
       }}
       onClick={() => setPopoverOpen(!popoverOpen)}
     >
