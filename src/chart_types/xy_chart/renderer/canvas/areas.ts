@@ -24,7 +24,7 @@ import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AreaGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
-import { getGeometryStateStyle, SMALL_PIXEL } from '../../rendering/utils';
+import { getGeometryStateStyle } from '../../rendering/utils';
 import { renderPoints } from './points';
 import { renderLinePaths, renderAreaPath } from './primitives/path';
 import { buildAreaStyles } from './styles/area';
@@ -40,18 +40,9 @@ interface AreaGeometriesProps {
   clippings: Rect;
 }
 
-function getAdjustedPropsForChromeBug({ clippings: { x, y, width, height } }: AreaGeometriesProps) {
-  const value = SMALL_PIXEL;
-  const lineClippings = { x, y: y - value, width, height: height + value };
-  const transformEdgeBuffer = { x: 0, y: value };
-  return { lineClippings, transformEdgeBuffer };
-}
-
 /** @internal */
 export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometriesProps) {
   const { sharedStyle, highlightedLegendItem, areas, rotation, clippings, renderingArea } = props;
-
-  const { lineClippings, transformEdgeBuffer } = getAdjustedPropsForChromeBug(props);
 
   withContext(ctx, (ctx) => {
     areas.forEach(({ panel, value: area }) => {
@@ -75,7 +66,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
           rotation,
           renderingArea,
           (ctx) => {
-            renderAreaLines(ctx, area, sharedStyle, lineClippings, transformEdgeBuffer, highlightedLegendItem);
+            renderAreaLines(ctx, area, sharedStyle, clippings, highlightedLegendItem);
           },
           { area: clippings, shouldClip: true },
         );
@@ -121,18 +112,11 @@ function renderAreaLines(
   glyph: AreaGeometry,
   sharedStyle: SharedGeometryStateStyle,
   clippings: Rect,
-  transformEdgeBuffer: {
-    x: number;
-    y: number;
-  },
   highlightedLegendItem?: LegendItem,
 ) {
   const { lines, color, seriesIdentifier, transform, seriesAreaLineStyle, clippedRanges, hideClippedRanges } = glyph;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
   const stroke = buildLineStyles(color, seriesAreaLineStyle, geometryStateStyle);
-  const finalTransform = {
-    y: transform.y + transformEdgeBuffer.y,
-    x: transform.x + transformEdgeBuffer.x,
-  };
-  renderLinePaths(ctx, finalTransform, lines, stroke, clippedRanges, clippings, hideClippedRanges);
+
+  renderLinePaths(ctx, transform, lines, stroke, clippedRanges, clippings, hideClippedRanges);
 }
