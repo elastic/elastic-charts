@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -44,20 +44,29 @@ import {
 
 const data = mocks.sunburst; // .filter((d) => countryLookup[d.dest].continentCountry.slice(0, 2) === 'eu');
 
-// const [layerFrom, layerTo] = [0, 3];
-
 export const Example = () => {
+  const layout = select(
+    'Inner breakdown layout',
+    {
+      horizontal: 'h',
+      vertical: 'v',
+      zigzag: 'z',
+    },
+    'z',
+  );
+
   return (
     <Chart className="story-chart">
-      <Settings showLegend legendStrategy="pathWithDescendants" flatLegend={false} theme={STORYBOOK_LIGHT_THEME} />
-      <GroupBy id="h_split" by={(_, { h }) => h} format={(h) => `${h}`} sort="alphaAsc" />
+      <Settings
+        showLegend={boolean('Show legend', true)}
+        legendStrategy="pathWithDescendants"
+        flatLegend={false}
+        theme={STORYBOOK_LIGHT_THEME}
+      />
+      <GroupBy id="split" by={(_, { h }) => h} format={(h) => `${h}`} sort="alphaAsc" />
       <SmallMultiples
-        {
-          ...[] /* id="sm1" */
-        }
-        {
-          ...[] /* splitVertically="h_split" */
-        }
+        splitHorizontally={layout === 'h' ? 'split' : undefined}
+        splitVertically={layout === 'v' ? 'split' : undefined}
         style={{ verticalPanelPadding: [0, 0] }}
       />
       <Partition
@@ -82,7 +91,7 @@ export const Example = () => {
                 minFontSize: 2,
                 maxFontSize: 10,
                 idealFontSizeJump: 1.01,
-                maximizeFontSize: boolean('Maximize font size layer 2', false),
+                maximizeFontSize: true,
               },
               shape: {
                 fillColor: 'rgba(0, 0, 0, 0.07)',
@@ -100,7 +109,7 @@ export const Example = () => {
                 minFontSize: 2,
                 maxFontSize: 20,
                 idealFontSizeJump: 1.01,
-                maximizeFontSize: boolean('Maximize font size layer 1', false),
+                maximizeFontSize: true,
               },
               shape: { fillColor: 'rgba(0,0,0,0)' },
             },
@@ -111,7 +120,7 @@ export const Example = () => {
                 fillColor: (d: ShapeTreeNode) =>
                   discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex),
               },
-              fillLabel: { maximizeFontSize: boolean('Maximize font size layer 3', false) },
+              fillLabel: { maximizeFontSize: true },
             },
           ] /* .slice(layerFrom, layerTo) */
         }
@@ -151,7 +160,7 @@ export const Example = () => {
             {
               groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
               nodeLabel: (d: any) => regionLookup[d].regionName,
-              fillLabel: { maximizeFontSize: boolean('Maximize font size layer 2', false) },
+              fillLabel: { maximizeFontSize: true },
               shape: {
                 fillColor: (d: ShapeTreeNode) =>
                   discreteColor(colorBrewerCategoricalStark9, 0.5)(d[MODEL_KEY].sortIndex),
@@ -160,7 +169,7 @@ export const Example = () => {
             {
               groupByRollup: (d: Datum) => d.sitc1,
               nodeLabel: (d: any) => productLookup[d].name,
-              fillLabel: { maximizeFontSize: boolean('Maximize font size layer 1', false) },
+              fillLabel: { maximizeFontSize: true },
               shape: {
                 fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex),
               },
@@ -168,7 +177,7 @@ export const Example = () => {
             {
               groupByRollup: (d: Datum) => d.dest,
               nodeLabel: (d: any) => countryLookup[d].name,
-              fillLabel: { maximizeFontSize: boolean('Maximize font size layer 3', false) },
+              fillLabel: { maximizeFontSize: true },
               shape: {
                 fillColor: (d: ShapeTreeNode) =>
                   discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex),
