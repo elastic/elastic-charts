@@ -189,7 +189,8 @@ export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
   };
 }
 
-const SMALL_PIXEL = 0.5;
+/** @internal */
+export const SMALL_PIXEL = 0.5;
 /**
  * Temporary fix for Chromium bug
  * Shift a small pixel value when pixel diff is <= 0.5px
@@ -197,8 +198,9 @@ const SMALL_PIXEL = 0.5;
  * https://bugs.chromium.org/p/chromium/issues/detail?id=1163912
  */
 function chromeRenderBugBuffer(y1: number, y0: number): number {
-  const diff = Math.abs(y1 - y0);
-  return diff <= SMALL_PIXEL ? SMALL_PIXEL : 0;
+  // const diff = Math.abs(y1 - y0);
+  // return diff <= SMALL_PIXEL ? SMALL_PIXEL : 0;
+  return 0.5;
 }
 
 /** @internal */
