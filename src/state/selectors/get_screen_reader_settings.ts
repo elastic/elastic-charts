@@ -18,7 +18,7 @@
  */
 import createCachedSelector from 're-reselect';
 
-import { DataTableProps } from '../../specs';
+import { DataTableProps, DEFAULT_SETTINGS_SPEC } from '../../specs';
 import { getChartIdSelector } from './get_chart_id';
 import { getSettingsSpecSelector } from './get_settings_specs';
 
@@ -27,10 +27,8 @@ export const getScreenReaderDataTableSettingsSelector = createCachedSelector(
   [getSettingsSpecSelector],
   ({ dataTable }): DataTableProps => {
     return {
-      showDefaultDescription: dataTable.showDefaultDescription ?? true,
-      description: dataTable.description ? dataTable.description : undefined,
-      visibleCaption: dataTable.visibleCaption ? dataTable.visibleCaption : undefined,
-      HeadingLevel: dataTable.HeadingLevel ? dataTable.HeadingLevel : 'h2',
+      ...DEFAULT_SETTINGS_SPEC.dataTable,
+      ...dataTable,
     };
   },
 )(getChartIdSelector);
