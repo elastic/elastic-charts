@@ -1,3 +1,10 @@
+## [25.0.5](https://github.com/elastic/elastic-charts/compare/v25.0.4...v25.0.5) (2021-03-16)
+
+
+### Bug Fixes
+
+* chromium area path render bug ([#1067](https://github.com/elastic/elastic-charts/issues/1067)) ([#1080](https://github.com/elastic/elastic-charts/issues/1080)) ([ba4195b](https://github.com/elastic/elastic-charts/commit/ba4195b6009a9789285393f010c39336bdc0c675))
+
 ## [25.0.4](https://github.com/elastic/elastic-charts/compare/v25.0.3...v25.0.4) (2021-03-11)
 
 
