@@ -61,7 +61,7 @@ const formatForTimeOrOrdinalAxis = (xScale: Scale) => {
   return xScale.type !== ScaleType.Time
     ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       ` ${startDomain} to ${endDomain}`
-    : ` ${new Date(startDomain).toTimeString()} to ${new Date(endDomain).toTimeString()}`;
+    : ` ${new Date(startDomain).toLocaleString()} to ${new Date(endDomain).toLocaleString()}`;
 };
 
 /** helper function to read out each title of the axes */
@@ -75,12 +75,12 @@ const axesWithTitles = (titles: (undefined | string)[][], xScale: Scale, yScales
     const yDomain =
       yScales.get(axisTitle!) === undefined ? yScales.get('__global__'!)?.domain : yScales.get(axisTitle!)?.domain;
     const axisDomain = `${axisDirection === 'y-' ? `${yDomain}` : `${formatForTimeOrOrdinalAxis(xScale)}`}`;
+    // The x axis is temporal scale or The xaxis, named blah blah, is a linear scale
     titleDomain +=
       yScales.size === 1
-        ? `The ${axisDirection}axis has the scale type  ${scaleType} and has the title ${axisTitle} with the domain ${axisDomain}. `
-        : `${i}. A ${axisDirection}axis is the scale type ${scaleType} and is titled ${axisTitle} with the domain ${axisDomain}. `;
+        ? `The ${axisDirection}axis, named ${axisTitle}, is a ${scaleType} scale with the domain ${axisDomain}. `
+        : `${i}. A ${axisDirection}axis, named ${axisTitle}, is a ${scaleType} scale with the domain ${axisDomain}. `;
   }
-
   return titleDomain;
 };
 
