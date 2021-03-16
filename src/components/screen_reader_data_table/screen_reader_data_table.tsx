@@ -103,7 +103,8 @@ const getAxesTitlesAndDomains = (d: ScreenReaderData[]) => {
 };
 
 /** @internal */
-export const computeAlternativeChartText = (d: ScreenReaderData[]): string => {
+export const computeAlternativeChartText = (d: ScreenReaderData[]): string | undefined => {
+  if (d.length === 0) return;
   const { seriesName, axesTitles, splitAccessor, seriesType, yScales } = d[0];
   const numberOfSeriesByType: { [key: string]: number } = {};
   d.forEach((series) => {

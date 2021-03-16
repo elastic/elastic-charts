@@ -351,7 +351,7 @@ export type InternalDataTableProps = DataTableProps & {
   /**
    * Elastic-charts generated description that can go in an aria-label or aria-describedBy (not both)
    */
-  generatedDescription: string;
+  generatedDescription?: string;
 };
 
 /**

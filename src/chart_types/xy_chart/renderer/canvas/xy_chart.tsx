@@ -149,7 +149,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       'aria-labelledby': title ? description ?? generatedDescription : undefined,
       //   // if there is a description id, prepend that; unless they turned off the default summary, append that
       'aria-describedby': showDefaultDescription
-        ? ''
+        ? undefined
         : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           `${generatedDescription}`,
     };
@@ -252,7 +252,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     showDefaultDescription: true,
     description: undefined,
   },
-  generatedDescription: '',
+  generatedDescription: undefined,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
