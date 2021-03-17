@@ -229,7 +229,7 @@ export type IsAny<T, True, False = never> = True | False extends (T extends neve
 // return True if T is `unknown`, otherwise return False
 export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, False, True> : False;
 
-type NonAny = number | boolean | string | symbol | null;
+export type NonAny = number | boolean | string | symbol | null;
 
 export interface MergeOptions {
   /**

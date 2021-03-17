@@ -1191,6 +1191,16 @@ export type IndexedAccessorFn = UnaryAccessorFn | BinaryAccessorFn;
 // @public (undocumented)
 export const INPUT_KEY = "inputIndex";
 
+// Warning: (ae-missing-release-tag) "IsAny" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type IsAny<T, True, False = never> = True | False extends (T extends never ? True : False) ? True : False;
+
+// Warning: (ae-missing-release-tag) "IsUnknown" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, False, True> : False;
+
 // Warning: (ae-missing-release-tag) "Key" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1425,6 +1435,11 @@ export interface NodeDescriptor {
     // (undocumented)
     [AGGREGATE_KEY]: number;
 }
+
+// Warning: (ae-missing-release-tag) "NonAny" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type NonAny = number | boolean | string | symbol | null;
 
 // Warning: (ae-missing-release-tag) "Opacity" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1733,7 +1748,7 @@ export interface RectStyle {
 //
 // @public
 export type RecursivePartial<T> = {
-    [P in keyof T]?: RecursivePartial<T[P]>;
+    [P in keyof T]?: T[P] extends NonAny[] ? T[P] : T[P] extends ReadonlyArray<NonAny> ? T[P] : T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends ReadonlyArray<infer U> ? ReadonlyArray<RecursivePartial<U>> : T[P] extends Set<infer V> ? Set<RecursivePartial<V>> : T[P] extends Map<infer K, infer V> ? Map<K, RecursivePartial<V>> : T[P] extends NonAny ? T[P] : IsUnknown<T[P], 1, 0> extends 1 ? T[P] : RecursivePartial<T[P]>;
 };
 
 // Warning: (ae-missing-release-tag) "RenderChangeListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)

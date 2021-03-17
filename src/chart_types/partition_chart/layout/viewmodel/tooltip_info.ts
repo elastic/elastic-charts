@@ -65,7 +65,7 @@ export function getTooltipInfo(
       value,
       formattedValue: `${valueFormatter(value)} (${percentFormatter(percentValueGetter(shape))})`,
       valueAccessor: shape.depth,
-      // the datum is omitted due to his aggregated and nested nature
+      // the datum is omitted ATM due to the aggregated and nested nature of a partition section
     });
   });
 
