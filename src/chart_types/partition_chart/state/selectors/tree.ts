@@ -19,22 +19,63 @@
 
 import createCachedSelector from 're-reselect';
 
+import { ChartTypes } from '../../..';
+import { GroupByAccessor, GroupBySpec, SmallMultiplesSpec, SpecTypes } from '../../../../specs';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getSpecs } from '../../../../state/selectors/get_settings_specs';
+import { getSmallMultiplesSpecs } from '../../../../state/selectors/get_small_multiples_spec';
+import { getSpecsFromStore } from '../../../../state/utils';
+import { Datum } from '../../../../utils/common';
 import { configMetadata } from '../../layout/config';
 import { HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
 import { partitionTree } from '../../layout/viewmodel/hierarchy_of_arrays';
 import { PartitionSpec } from '../../specs';
 import { getPartitionSpecs } from './get_partition_specs';
 
-function getTreeForSpec(spec: PartitionSpec) {
-  const { data, valueAccessor, layers, config } = spec;
-  return partitionTree(data, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout);
+const getGroupBySpecs = createCachedSelector([getSpecs], (specs) =>
+  getSpecsFromStore<GroupBySpec>(specs, ChartTypes.Global, SpecTypes.IndexOrder),
+)(getChartIdSelector);
+
+/** @internal */
+export type NamedTree = { name: string | number; tree: HierarchyOfArrays };
+
+function getTreesForSpec(spec: PartitionSpec, smSpecs: SmallMultiplesSpec[], groupBySpecs: GroupBySpec[]): NamedTree[] {
+  const { data, valueAccessor, layers, config, smallMultiples: smId } = spec;
+  const smallMultiplesSpec = smSpecs.find((s) => s.id === smId);
+  const groupBySpec = groupBySpecs.find(
+    (s) =>
+      s.id === smallMultiplesSpec?.splitHorizontally ||
+      s.id === smallMultiplesSpec?.splitVertically ||
+      s.id === smallMultiplesSpec?.splitZigzag,
+  );
+  if (groupBySpec) {
+    const accessorSpec = { id: spec.id, chartType: spec.chartType, specType: SpecTypes.Series };
+    const joinFunction = (d: Datum): ReturnType<GroupByAccessor> => groupBySpec.by(accessorSpec, d); // we make it have a clean signature
+    const groups = data.reduce((map: Map<ReturnType<GroupByAccessor>, Datum[]>, next) => {
+      const groupingValue = joinFunction(next);
+      const preexistingGroup = map.get(groupingValue);
+      const group = preexistingGroup ?? [];
+      if (!preexistingGroup) map.set(groupingValue, group);
+      group.push(next);
+      return map;
+    }, new Map<string, HierarchyOfArrays>());
+    return Array.from(groups).map(([groupKey, subData]) => ({
+      name: groupBySpec.format ? groupBySpec.format(groupKey) : groupKey,
+      tree: partitionTree(subData, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout),
+    }));
+  } else {
+    return [
+      {
+        name: '',
+        tree: partitionTree(data, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout),
+      },
+    ];
+  }
 }
 
 /** @internal */
-export const getTree = createCachedSelector(
-  [getPartitionSpecs],
-  (partitionSpecs): HierarchyOfArrays => {
-    return partitionSpecs.length > 0 ? getTreeForSpec(partitionSpecs[0]) : []; // singleton!
-  },
+export const getTrees = createCachedSelector(
+  [getPartitionSpecs, getSmallMultiplesSpecs, getGroupBySpecs],
+  (partitionSpecs, smallMultiplesSpecs, groupBySpecs): NamedTree[] =>
+    partitionSpecs.length > 0 ? getTreesForSpec(partitionSpecs[0], smallMultiplesSpecs, groupBySpecs) : [], // singleton!
 )(getChartIdSelector);

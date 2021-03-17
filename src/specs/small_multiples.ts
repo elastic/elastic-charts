@@ -30,6 +30,7 @@ export const DEFAULT_SM_PANEL_PADDING: [number, number] = [0, 0.1];
 export interface SmallMultiplesSpec extends Spec {
   splitHorizontally?: string;
   splitVertically?: string;
+  splitZigzag?: string;
   style?: {
     verticalPanelPadding?: [number, number];
     horizontalPanelPadding?: [number, number];
@@ -43,7 +44,7 @@ const DEFAULT_SMALL_MULTIPLES_PROPS = {
 };
 
 /** @alpha */
-export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'id' | 'chatType' | 'specType'>>;
+export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, /* 'id' | */ 'chatType' | 'specType'>>;
 
 /** @alpha */
 export const SmallMultiples: React.FunctionComponent<SmallMultiplesProps> = getConnect()(

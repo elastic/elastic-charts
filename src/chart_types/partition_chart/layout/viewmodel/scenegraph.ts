@@ -51,7 +51,6 @@ export function getShapeViewModel(
   parentDimensions: Dimensions,
   tree: HierarchyOfArrays,
   containerBackgroundColor: Color,
-  smallMultiplesBreakdownCount: number,
   panelPlacement: PanelPlacement,
 ): ShapeViewModel {
   const { width, height } = parentDimensions;
@@ -76,7 +75,6 @@ export function getShapeViewModel(
     tree,
     topGroove,
     containerBackgroundColor,
-    smallMultiplesBreakdownCount,
     panelPlacement,
   );
 }

@@ -22,7 +22,7 @@ import createCachedSelector from 're-reselect';
 import { ScaleBand } from '../../../../scales';
 import { DEFAULT_SM_PANEL_PADDING } from '../../../../specs/small_multiples';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getSmallMultipleSpec } from '../../../../state/selectors/get_small_multiples_spec';
+import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
 import { OrdinalDomain } from '../../../../utils/domain';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -38,11 +38,11 @@ export interface SmallMultipleScales {
  * @internal
  */
 export const computeSmallMultipleScalesSelector = createCachedSelector(
-  [computeSeriesDomainsSelector, computeChartDimensionsSelector, getSmallMultipleSpec],
+  [computeSeriesDomainsSelector, computeChartDimensionsSelector, getSmallMultiplesSpec],
   ({ smHDomain, smVDomain }, { chartDimensions: { width, height } }, smSpec): SmallMultipleScales => {
     return {
-      horizontal: getScale(smHDomain, width, smSpec?.style?.horizontalPanelPadding),
-      vertical: getScale(smVDomain, height, smSpec?.style?.verticalPanelPadding),
+      horizontal: getScale(smHDomain, width, smSpec && smSpec[0].style?.horizontalPanelPadding),
+      vertical: getScale(smVDomain, height, smSpec && smSpec[0].style?.verticalPanelPadding),
     };
   },
 )(getChartIdSelector);

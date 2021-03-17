@@ -22,30 +22,26 @@ import createCachedSelector from 're-reselect';
 import { ChartTypes } from '../../..';
 import { CategoryKey } from '../../../../common/category';
 import { SmallMultiplesSpec, SpecTypes } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getSpecs } from '../../../../state/selectors/get_settings_specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { Dimensions } from '../../../../utils/dimensions';
 import { config } from '../../layout/config';
 import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { ArrayEntry } from '../../layout/utils/group_by_rollup';
 import { getShapeViewModel } from '../../layout/viewmodel/scenegraph';
 import { IndexedContinuousDomainFocus } from '../../renderer/canvas/partition';
 import { getPartitionSpecs } from './get_partition_specs';
-import { getTree } from './tree';
-
-const getSpecs = (state: GlobalChartState) => state.specs;
+import { getTrees, NamedTree } from './tree';
 
 const horizontalSplit = (s?: SmallMultiplesSpec) => s?.splitHorizontally;
 const verticalSplit = (s?: SmallMultiplesSpec) => s?.splitVertically;
-const zigzagSplit = (s?: SmallMultiplesSpec) => !s?.splitVertically && !s?.splitHorizontally;
 
 /** @internal */
 export const partitionMultiGeometries = createCachedSelector(
-  [getSpecs, getPartitionSpecs, getChartContainerDimensionsSelector, getTree, getChartThemeSelector],
-  (specs, partitionSpecs, parentDimensions, tree, { background }): ShapeViewModel[] => {
+  [getSpecs, getPartitionSpecs, getChartContainerDimensionsSelector, getTrees, getChartThemeSelector],
+  (specs, partitionSpecs, parentDimensions, trees, { background }): ShapeViewModel[] => {
     const smallMultiplesSpec = getSpecsFromStore<SmallMultiplesSpec>(
       specs,
       ChartTypes.Global,
@@ -61,18 +57,11 @@ export const partitionMultiGeometries = createCachedSelector(
       ? 'vertical'
       : 'zigzag';
 
-    const smallMultiplesBreakdownCount = Math.max(
-      Number(smallMultiplesSpec.some(zigzagSplit)),
-      Number(smallMultiplesSpec.some(horizontalSplit)) + Number(smallMultiplesSpec.some(verticalSplit)),
-    );
-
     const { width, height } = parentDimensions;
     const outerPanelCount = partitionSpecs.length;
 
     const zigzagColumnCount = Math.ceil(Math.sqrt(outerPanelCount));
     const zigzagRowCount = Math.ceil(outerPanelCount / zigzagColumnCount);
-
-    const categorySplit = smallMultiplesSpec.length > 0;
 
     const result = partitionSpecs.flatMap((spec, index) => {
       const outerHeight =
@@ -87,8 +76,9 @@ export const partitionMultiGeometries = createCachedSelector(
           : outerSpecDirection === 'zigzag'
           ? 1 / zigzagColumnCount
           : 1;
-      const innerPanelTrees = categorySplit ? tree[0][1].children : tree; // todo solve it for x*y breakdown ie. two dimensional grid
-      return innerPanelTrees.map((t: ArrayEntry, innerIndex, a) => {
+      // const innerPanelTrees = trees.map((tr) => tr.tree); // todo solve it for x*y breakdown ie. two dimensional grid
+
+      return trees.map(({ name, tree: t }: NamedTree, innerIndex, a) => {
         const innerPanelCount = a.length;
         const outerPanelWidth = width * outerWidth;
         const outerPanelHeight = height * outerHeight;
@@ -99,11 +89,11 @@ export const partitionMultiGeometries = createCachedSelector(
         const innerZigzagRowCountEstimate = Math.max(1, Math.floor(outerPanelHeight / innerPanelTargetHeight)); // err on the side of landscape aspect ratio
         const innerZigzagColumnCount = Math.ceil(a.length / innerZigzagRowCountEstimate);
         const innerZigzagRowCount = Math.ceil(a.length / innerZigzagColumnCount);
-        return getShapeViewModel(spec, parentDimensions, [t], background.color, smallMultiplesBreakdownCount, {
+        return getShapeViewModel(spec, parentDimensions, t, background.color, {
           index,
           innerIndex,
           partitionLayout: spec.config.partitionLayout ?? config.partitionLayout,
-          panelTitle: t[0],
+          panelTitle: String(name),
           top:
             (outerSpecDirection === 'vertical'
               ? index / outerPanelCount

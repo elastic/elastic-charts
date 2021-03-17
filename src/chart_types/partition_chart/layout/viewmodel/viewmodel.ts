@@ -277,7 +277,6 @@ export function shapeViewModel(
   tree: HierarchyOfArrays,
   topGroove: Pixels,
   containerBackgroundColor: Color,
-  smallMultiplesBreakdownCount: number,
   panelPlacement: PanelPlacement,
 ): ShapeViewModel {
   const {
@@ -350,7 +349,7 @@ export function shapeViewModel(
   const outerRadius: Radius = Math.min(outerSizeRatio * circleMaximumSize, circleMaximumSize - sectorLineWidth) / 2;
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
   const treeHeight = shownChildNodes.reduce((p: number, n: Part) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
-  const ringThickness = (outerRadius - innerRadius) / (treeHeight - smallMultiplesBreakdownCount);
+  const ringThickness = (outerRadius - innerRadius) / treeHeight;
   const partToShapeFn = partToShapeTreeNode(!sunburstLayout, innerRadius, ringThickness);
   const quadViewModel = makeQuadViewModel(
     shownChildNodes.slice(1).map(partToShapeFn),

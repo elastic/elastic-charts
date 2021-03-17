@@ -238,6 +238,7 @@ export function renderPartitionCanvas2d(
   dpr: number,
   {
     width,
+    height,
     panelTitle,
     config,
     quadViewModel,
@@ -267,7 +268,13 @@ export function renderPartitionCanvas2d(
 
     // panel titles
 
-    ctx.fillText(panelTitle, diskCenter.x + (config.width * width) / 2, diskCenter.y + 12);
+    ctx.fillText(
+      panelTitle,
+      isSunburst(config.partitionLayout) ? diskCenter.x : diskCenter.x + (config.width * width) / 2,
+      isSunburst(config.partitionLayout)
+        ? diskCenter.y + (config.height * height) / 2 - 12
+        : diskCenter.y + config.height * height - 12,
+    );
 
     ctx.translate(diskCenter.x, diskCenter.y);
     // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
