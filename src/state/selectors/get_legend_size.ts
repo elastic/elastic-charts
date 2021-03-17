@@ -20,7 +20,8 @@
 import createCachedSelector from 're-reselect';
 
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
-import { SettingsSpec } from '../../specs/settings';
+import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
+import { LegendPositionConfig } from '../../specs/settings';
 import { BBox } from '../../utils/bbox/bbox_calculator';
 import { CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { Position, isDefined } from '../../utils/common';
@@ -42,7 +43,7 @@ const TOP_MARGIN = 2;
 /** @internal */
 export type LegendSizing = BBox & {
   margin: number;
-  position: SettingsSpec['legendPosition'];
+  position: LegendPositionConfig;
 };
 
 /** @internal */
@@ -50,7 +51,7 @@ export const getLegendSizeSelector = createCachedSelector(
   [getLegendConfigSelector, getChartThemeSelector, getParentDimensionSelector, getLegendItemsLabelsSelector],
   (legendConfig, theme, parentDimensions, labels): LegendSizing => {
     if (!legendConfig.showLegend) {
-      return { width: 0, height: 0, margin: 0, position: Position.Right };
+      return { width: 0, height: 0, margin: 0, position: LEGEND_TO_FULL_CONFIG[Position.Right] };
     }
 
     const bboxCalculator = new CanvasTextBBoxCalculator();

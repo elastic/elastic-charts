@@ -62,7 +62,8 @@ export function legendPositionStyle(
   };
 }
 
-const LEGEND_TO_FULL_CONFIG: Record<Position, LegendPositionConfig> = {
+/** @internal */
+export const LEGEND_TO_FULL_CONFIG: Record<Position, LegendPositionConfig> = {
   [Position.Left]: {
     vAlign: Position.Top,
     hAlign: Position.Left,

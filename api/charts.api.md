@@ -1210,6 +1210,17 @@ export interface LayerValue {
     value: number;
 }
 
+// Warning: (ae-missing-release-tag) "LayoutDirection" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const LayoutDirection: Readonly<{
+    Horizontal: "horizontal";
+    Vertical: "vertical";
+}>;
+
+// @public (undocumented)
+export type LayoutDirection = $Values<typeof LayoutDirection>;
+
 // @public
 export type LegendAction = ComponentType<LegendActionProps>;
 
@@ -1250,13 +1261,11 @@ export type LegendPathElement = {
     value: CategoryKey;
 };
 
-// Warning: (ae-missing-release-tag) "LegendPositionConfig" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
+// @public
 export type LegendPositionConfig = {
     vAlign: typeof VerticalAlignment.Top | typeof VerticalAlignment.Bottom;
     hAlign: typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Right;
-    direction: 'horizontal' | 'vertical';
+    direction: LayoutDirection;
     floating: boolean;
 };
 
@@ -1279,7 +1288,6 @@ export interface LegendSpec {
     onLegendItemOver?: LegendItemListener;
     // (undocumented)
     onLegendItemPlusClick?: LegendItemListener;
-    // (undocumented)
     showLegend: boolean;
     showLegendExtra: boolean;
 }
@@ -1408,6 +1416,8 @@ export interface LogScaleOptions {
 // @public (undocumented)
 export type LowerBoundedDomain = DomainBase & LowerBound;
 
+// Warning: (ae-missing-release-tag) "MarkBuffer" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
 // @public
 export type MarkBuffer = number | ((radius: number) => number);
 

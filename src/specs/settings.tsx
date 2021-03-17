@@ -366,7 +366,7 @@ export interface LegendSpec {
   showLegend: boolean;
   /**
    * Set legend position
-   * @default Position.Left
+   * @default Position.Right
    */
   legendPosition: Position | LegendPositionConfig;
   /**
