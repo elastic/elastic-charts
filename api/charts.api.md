@@ -1729,12 +1729,11 @@ export interface RectStyle {
     opacity: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "NonAny" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "RecursivePartial" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
 export type RecursivePartial<T> = {
-    [P in keyof T]?: T[P] extends NonAny[] ? T[P] : T[P] extends ReadonlyArray<NonAny> ? T[P] : T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends ReadonlyArray<infer U> ? ReadonlyArray<RecursivePartial<U>> : T[P] extends Set<infer V> ? Set<RecursivePartial<V>> : T[P] extends Map<infer K, infer V> ? Map<K, RecursivePartial<V>> : T[P] extends NonAny ? T[P] : RecursivePartial<T[P]>;
+    [P in keyof T]?: RecursivePartial<T[P]>;
 };
 
 // Warning: (ae-missing-release-tag) "RenderChangeListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2261,6 +2260,7 @@ export type TooltipType = $Values<typeof TooltipType>;
 // @public
 export interface TooltipValue {
     color: Color;
+    datum?: unknown;
     formattedMarkValue?: string | null;
     formattedValue: string;
     isHighlighted: boolean;
