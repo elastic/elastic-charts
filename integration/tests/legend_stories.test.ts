@@ -176,7 +176,7 @@ describe('Legend stories', () => {
       [Position.Top, Position.Right],
       [Position.Bottom, Position.Left],
       [Position.Bottom, Position.Right],
-    ])('should correctly display %s', async (pos1, pos2) => {
+    ])('should correctly display %s %s', async (pos1, pos2) => {
       await common.expectChartAtUrlToMatchScreenshot(
         `http://localhost:9001/?path=/story/legend--inside-chart&knob-Legend Position[0]=${pos1}&knob-Legend Position[1]=${pos2}&knob-Dark Mode=`,
       );
@@ -186,7 +186,7 @@ describe('Legend stories', () => {
       [Position.Top, Position.Right],
       [Position.Bottom, Position.Left],
       [Position.Bottom, Position.Right],
-    ])('should correctly display %s in dark mode', async (pos1, pos2) => {
+    ])('should correctly display %s %s in dark mode', async (pos1, pos2) => {
       await common.expectChartAtUrlToMatchScreenshot(
         `http://localhost:9001/?path=/story/legend--inside-chart&knob-Legend Position[0]=${pos1}&knob-Legend Position[1]=${pos2}&knob-Dark Mode=true`,
       );
