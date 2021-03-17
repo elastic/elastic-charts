@@ -19,6 +19,8 @@
 
 import { PopoverAnchorPosition } from '@elastic/eui';
 import { select, array, number, optionsKnob } from '@storybook/addon-knobs';
+import { SelectTypeKnobValue } from '@storybook/addon-knobs/dist/components/types';
+import { startCase, kebabCase } from 'lodash';
 
 import { Rotation, Position, Placement, TooltipProps } from '../../src';
 import { TooltipType } from '../../src/specs/constants';
@@ -62,6 +64,41 @@ export const getTooltipTypeKnob = (
     defaultValue,
     groupId,
   );
+
+/**
+ * Generates storybook knobs from const enum
+ *
+ * TODO: cleanup types to infer T
+ */
+export const getKnobsFromEnum = <T extends SelectTypeKnobValue, O extends Record<keyof O, T>>(
+  name: string,
+  options: O,
+  defaultValue: T,
+  {
+    group,
+    allowUndefined,
+    include,
+    exclude,
+  }: {
+    group?: string;
+    allowUndefined?: boolean;
+    include?: Array<T>;
+    exclude?: Array<T>;
+  } = {},
+): T | undefined =>
+  select<T>(
+    name,
+    (Object.entries<T>(options) as [keyof O, T][])
+      .filter(([, v]) => !include || include.includes(v))
+      .filter(([, v]) => !exclude || !exclude.includes(v))
+      .reduce<O>((acc, [key, value]) => {
+        // @ts-ignore
+        acc[startCase(kebabCase(key))] = value;
+        return acc;
+      }, (allowUndefined ? { Undefined: undefined } : ({} as unknown)) as O),
+    defaultValue,
+    group,
+  ) || undefined;
 
 export const getPositionKnob = (name = 'chartRotation', defaultValue = Position.Right) =>
   select<Position>(
@@ -172,17 +209,24 @@ export const getFallbackPlacementsKnob = (): Placement[] | undefined => {
   return knob;
 };
 
-export const getBoundaryKnob = () =>
-  // @ts-ignore
-  select<TooltipProps['boundary']>(
-    'Boundary Element',
-    {
-      Chart: 'chart',
-      'Document Body': document.body,
-      Default: undefined,
-    },
-    undefined,
-  );
+const boundaryMap: Record<string, TooltipProps['boundary'] | null> = {
+  default: undefined,
+  chart: 'chart',
+};
+
+export const getBoundaryKnob = () => {
+  const boundaryString =
+    select<string>(
+      'Boundary Element',
+      {
+        Default: 'default',
+        Chart: 'chart',
+      },
+      'default',
+    ) ?? '';
+
+  return boundaryMap[boundaryString] ?? undefined;
+};
 
 export const getVerticalTextAlignmentKnob = (group?: string) =>
   select<VerticalAlignment | undefined>(

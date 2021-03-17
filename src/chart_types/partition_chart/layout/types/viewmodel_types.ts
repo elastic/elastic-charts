@@ -30,6 +30,8 @@ import {
 import { Font, VerticalAlignments } from '../../../../common/text_utils';
 import { LegendPath } from '../../../../state/actions/legend';
 import { Color } from '../../../../utils/common';
+import { ContinuousDomainFocus } from '../../renderer/canvas/partition';
+import { Layer } from '../../specs';
 import { config, MODEL_KEY, ValueGetterName } from '../config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
@@ -82,6 +84,7 @@ export interface RowSet {
   verticalAlignment: VerticalAlignments;
   leftAlign: boolean; // might be generalized into horizontalAlign - if needed
   container?: any;
+  clipText?: boolean;
 }
 
 /** @internal */
@@ -89,6 +92,7 @@ export interface QuadViewModel extends ShapeTreeNode {
   strokeWidth: number;
   strokeStyle: string;
   fillColor: string;
+  textColor: string;
 }
 
 /** @internal */
@@ -97,11 +101,12 @@ export interface OutsideLinksViewModel {
 }
 
 /** @internal */
-export type PickFunction = (x: Pixels, y: Pixels) => Array<QuadViewModel>;
+export type PickFunction = (x: Pixels, y: Pixels, focus: ContinuousDomainFocus) => Array<QuadViewModel>;
 
 /** @internal */
 export type ShapeViewModel = {
   config: Config;
+  layers: Layer[];
   quadViewModel: QuadViewModel[];
   rowSets: RowSet[];
   linkLabelViewModels: LinkLabelsViewModelSpec;
@@ -123,6 +128,7 @@ const defaultFont: Font = {
 /** @internal */
 export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointObject): ShapeViewModel => ({
   config: specifiedConfig || config,
+  layers: [],
   quadViewModel: [],
   rowSets: [],
   linkLabelViewModels: {

@@ -19,7 +19,6 @@
 
 import { LegendItem } from '../../../common/legend';
 import { Scale } from '../../../scales';
-import { LOG_MIN_ABS_DOMAIN } from '../../../scales/constants';
 import { getDomainPolarity } from '../../../scales/scale_continuous';
 import { isLogarithmicScale } from '../../../scales/types';
 import { MarkBuffer } from '../../../specs';
@@ -68,6 +67,11 @@ export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
 export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xScaleOffset: number): ClippedRanges {
   let firstNonNullX: number | null = null;
   let hasNull = false;
+
+  const completeDatasetIsNull = dataset.every((datum) => isDatumFilled(datum));
+
+  if (completeDatasetIsNull) return [[xScale.range[0], xScale.range[1]]];
+
   return dataset.reduce<ClippedRanges>((acc, data) => {
     const xScaled = xScale.scale(data.x);
     if (xScaled === null) {
@@ -163,11 +167,6 @@ export function isPointOnGeometry(
  * The default zero baseline for area charts.
  */
 const DEFAULT_ZERO_BASELINE = 0;
-/**
- * The zero baseline for log scales.
- * We are currently limiting to 1 as min accepted domain for a log scale.
- */
-const DEFAULT_LOG_ZERO_BASELINE = LOG_MIN_ABS_DOMAIN;
 
 /** @internal */
 export type YDefinedFn = (
@@ -191,11 +190,26 @@ export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
 }
 
 /** @internal */
+export const CHROME_PINCH_BUG_EPSILON = 0.5;
+/**
+ * Temporary fix for Chromium bug
+ * Shift a small pixel value when pixel diff is <= 0.5px
+ * https://github.com/elastic/elastic-charts/issues/1053
+ * https://bugs.chromium.org/p/chromium/issues/detail?id=1163912
+ */
+function chromeRenderBugBuffer(y1: number, y0: number): number {
+  const diff = Math.abs(y1 - y0);
+  return diff <= CHROME_PINCH_BUG_EPSILON ? 0.5 : 0;
+}
+
+/** @internal */
 export function getY1ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatum) => number {
   const datumAccessor = getYDatumValueFn();
+  const scaleY0Value = getY0ScaledValueOrThrowFn(yScale);
   return (datum) => {
-    const yValue = datumAccessor(datum);
-    return yScale.scaleOrThrow(yValue);
+    const y1Value = yScale.scaleOrThrow(datumAccessor(datum));
+    const y0Value = scaleY0Value(datum);
+    return y1Value - chromeRenderBugBuffer(y1Value, y0Value);
   };
 }
 
@@ -203,12 +217,13 @@ export function getY1ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatu
 export function getY0ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatum) => number {
   const isLogScale = isLogarithmicScale(yScale);
   const domainPolarity = getDomainPolarity(yScale.domain);
+  const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);
 
   return ({ y0 }) => {
     if (y0 === null) {
       if (isLogScale) {
         // if all positive domain use 1 as baseline, -1 otherwise
-        return yScale.scaleOrThrow(domainPolarity >= 0 ? DEFAULT_LOG_ZERO_BASELINE : -DEFAULT_LOG_ZERO_BASELINE);
+        return yScale.scaleOrThrow(logBaseline);
       }
       return yScale.scaleOrThrow(DEFAULT_ZERO_BASELINE);
     }
@@ -216,7 +231,7 @@ export function getY0ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatu
       // wrong y0 polarity
       if ((domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0)) {
         // if all positive domain use 1 as baseline, -1 otherwise
-        return yScale.scaleOrThrow(domainPolarity >= 0 ? DEFAULT_LOG_ZERO_BASELINE : -DEFAULT_LOG_ZERO_BASELINE);
+        return yScale.scaleOrThrow(logBaseline);
       }
       // if negative value, use -1 as max reference, 1 otherwise
       return yScale.scaleOrThrow(y0);
