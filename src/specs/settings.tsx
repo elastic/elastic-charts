@@ -347,7 +347,7 @@ export type LegendPositionConfig = {
   direction: LayoutDirection;
   /**
    * Remove the legend from the outside chart area, making it floating above the chart.
-   * @default false
+   * @defaultValue false
    */
   floating: boolean;
   // TODO add custom number of columns
@@ -361,12 +361,12 @@ export type LegendPositionConfig = {
 export interface LegendSpec {
   /**
    * Show the legend
-   * @default false
+   * @defaultValue false
    */
   showLegend: boolean;
   /**
    * Set legend position
-   * @default Position.Right
+   * @defaultValue Position.Right
    */
   legendPosition: Position | LegendPositionConfig;
   /**
