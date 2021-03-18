@@ -22,7 +22,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 
-import { computeChartDimensionsSelector } from '../../chart_types/xy_chart/state/selectors/compute_chart_dimensions';
 import { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { DEFAULT_LEGEND_CONFIG, LegendSpec } from '../../specs';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
@@ -34,6 +33,7 @@ import {
 import { GlobalChartState } from '../../state/chart_state';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
+import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get_internal_main_projection_area';
 import { getInternalProjectionContainerAreaSelector } from '../../state/selectors/get_internal_projection_container_area';
 import { getLegendConfigSelector } from '../../state/selectors/get_legend_config_selector';
 import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
@@ -160,7 +160,7 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
   const { debug } = getSettingsSpecSelector(state);
   return {
     debug,
-    chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
+    chartDimensions: getInternalMainProjectionAreaSelector(state),
     containerDimensions: getInternalProjectionContainerAreaSelector(state),
     chartTheme: getChartThemeSelector(state),
     size: getLegendSizeSelector(state),
