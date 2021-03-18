@@ -22,8 +22,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { LegendItem } from '../../../../common/legend';
-import { computeAlternativeChartText } from '../../../../components/screen_reader_data_table/screen_reader_data_table';
-import { DataTableProps, InternalDataTableProps } from '../../../../specs/settings';
+import { DataTableProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
@@ -51,7 +50,6 @@ import {
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
-import { getScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { Geometries, Transform } from '../../state/utils/types';
@@ -81,7 +79,6 @@ export interface ReactiveChartStateProps {
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
   dataTable: DataTableProps;
-  generatedDescription: InternalDataTableProps['generatedDescription'];
 }
 
 interface ReactiveChartDispatchProps {
@@ -139,20 +136,8 @@ class XYChartComponent extends React.Component<XYChartProps> {
       initialized,
       isChartEmpty,
       chartContainerDimensions: { width, height },
-      dataTable: { showDefaultDescription, title, description, HeadingLevel },
-      generatedDescription,
+      dataTable: { HeadingLevel },
     } = this.props;
-
-    const ariaProps = {
-      //   // if there is a label or label id, include an aria-labelledby
-      //   // and if there is a label id, use that; otherwise generate and id (for the label that was passed in)
-      'aria-labelledby': title ? description ?? generatedDescription : undefined,
-      //   // if there is a description id, prepend that; unless they turned off the default summary, append that
-      'aria-describedby': showDefaultDescription
-        ? undefined
-        : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          `${generatedDescription}`,
-    };
 
     if (!initialized || isChartEmpty) {
       this.ctx = null;
@@ -171,13 +156,11 @@ class XYChartComponent extends React.Component<XYChartProps> {
           }}
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
-          {...ariaProps}
         />
-        {description && (
-          // @ts-ignore
-          <HeadingLevel id={title}>{description}</HeadingLevel>
-        )}
-        <figcaption className="screen-reader">{generatedDescription}</figcaption>
+        {/* @ts-ignore */}
+        <HeadingLevel id="alt_text" className="screen-reader">
+          This is a chart
+        </HeadingLevel>
       </figure>
     );
   }
@@ -252,7 +235,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     showDefaultDescription: true,
     description: undefined,
   },
-  generatedDescription: undefined,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -281,7 +263,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
     dataTable: getScreenReaderDataTableSettingsSelector(state),
-    generatedDescription: computeAlternativeChartText(getScreenReaderDataSelector(state)),
   };
 };
 
