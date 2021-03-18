@@ -32,7 +32,10 @@ describe('Baseline Visual tests for all stories', () => {
     describe.each(stories)('%s', (_title, encodedTitle, delay) => {
       it('visually looks correct', async () => {
         const url = `http://localhost:9001?id=${encodedGroup}--${encodedTitle}`;
-        await common.expectChartAtUrlToMatchScreenshot(url, { delay });
+        const action = async () => {
+          await common.disableAnimations();
+        };
+        await common.expectChartAtUrlToMatchScreenshot(url, { delay, action });
       });
     });
   });
