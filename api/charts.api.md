@@ -631,7 +631,7 @@ export interface DataSeriesDatum<T = any> {
 export interface DataTableProps {
     description?: string;
     HeadingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-    showDefaultDescription: boolean;
+    showDefaultDescription?: boolean;
     title?: string;
     visibleCaption?: string;
 }
