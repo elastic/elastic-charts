@@ -18,7 +18,6 @@
  */
 
 import { ChartTypes } from '../../chart_types';
-import { Predicate } from '../../chart_types/heatmap/utils/common';
 import { config, percentFormatter } from '../../chart_types/partition_chart/layout/config';
 import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';
 import { ShapeTreeNode } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
@@ -41,6 +40,7 @@ import {
   AnnotationDomainTypes,
   AxisSpec,
 } from '../../chart_types/xy_chart/utils/specs';
+import { Predicate } from '../../common/predicate';
 import { ScaleType } from '../../scales/constants';
 import { SettingsSpec, SpecTypes, DEFAULT_SETTINGS_SPEC, SmallMultiplesSpec, GroupBySpec, Spec } from '../../specs';
 import { Datum, mergePartial, Position, RecursivePartial } from '../../utils/common';

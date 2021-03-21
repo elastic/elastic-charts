@@ -20,6 +20,7 @@
 import createCachedSelector from 're-reselect';
 
 import { ChartTypes } from '../../..';
+import { getPredicateFn } from '../../../../common/predicate';
 import { GroupByAccessor, GroupBySpec, SmallMultiplesSpec, SpecTypes } from '../../../../specs';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSpecs } from '../../../../state/selectors/get_settings_specs';
@@ -48,21 +49,30 @@ function getTreesForSpec(spec: PartitionSpec, smSpecs: SmallMultiplesSpec[], gro
       s.id === smallMultiplesSpec?.splitVertically ||
       s.id === smallMultiplesSpec?.splitZigzag,
   );
+
   if (groupBySpec) {
+    const { by, sort, format = (name) => String(name) } = groupBySpec;
     const accessorSpec = { id: spec.id, chartType: spec.chartType, specType: SpecTypes.Series };
-    const joinFunction = (d: Datum): ReturnType<GroupByAccessor> => groupBySpec.by(accessorSpec, d); // we make it have a clean signature
     const groups = data.reduce((map: Map<ReturnType<GroupByAccessor>, Datum[]>, next) => {
-      const groupingValue = joinFunction(next);
+      const groupingValue = by(accessorSpec, next);
       const preexistingGroup = map.get(groupingValue);
       const group = preexistingGroup ?? [];
       if (!preexistingGroup) map.set(groupingValue, group);
       group.push(next);
       return map;
     }, new Map<string, HierarchyOfArrays>());
-    return Array.from(groups).map(([groupKey, subData]) => ({
-      name: groupBySpec.format ? groupBySpec.format(groupKey) : groupKey,
-      tree: partitionTree(subData, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout),
-    }));
+    return Array.from(groups)
+      .sort(getPredicateFn(sort))
+      .map(([groupKey, subData]) => ({
+        name: format(groupKey),
+        tree: partitionTree(
+          subData,
+          valueAccessor,
+          layers,
+          configMetadata.partitionLayout.dflt,
+          config.partitionLayout,
+        ),
+      }));
   } else {
     return [
       {
