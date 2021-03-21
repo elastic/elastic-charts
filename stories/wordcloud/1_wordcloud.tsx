@@ -35,29 +35,29 @@ const text =
 const getRandomNumber = getRandomNumberGenerator();
 
 const palettes = {
-  turquoise: (d, i) => ['#5bc0be', '#6fffe9'][i % 2],
-  vivid: (d, i) => ['#2ec4b6', '#e71d36', '#ff9f1c'][i % 3],
-  warm: (d, i) => ['#edc951', '#eb6841', '#cc2a36', '#4f372d', '#00a0b0'][i % 5],
+  turquoise: (d: RawDatum, i: number) => ['#5bc0be', '#6fffe9'][i % 2],
+  vivid: (d: RawDatum, i: number) => ['#2ec4b6', '#e71d36', '#ff9f1c'][i % 3],
+  warm: (d: RawDatum, i: number) => ['#edc951', '#eb6841', '#cc2a36', '#4f372d', '#00a0b0'][i % 5],
   greenBlues: () => `rgb(${getRandomNumber(0, 10)}, ${getRandomNumber(50, 100)}, ${getRandomNumber(50, 100)})`,
   redBlue: () => `rgb(${getRandomNumber(100, 255)},${0},${getRandomNumber(100, 255)})`,
   greyScale: () => {
     const level = getRandomNumber(0, 200);
     return `rgb(${level},${level},${level})`;
   },
-  weight: (d) => {
+  weight: (d: RawDatum) => {
     const level = (1 - d.weight ** 15) * 200;
     return `rgb(${level},${level},${level})`;
   },
-  colorByWordLength: (d) => {
+  colorByWordLength: (d: RawDatum) => {
     const level = d.text.length;
     return `rgb(${level < 5 ? level * 60 : level < 7 ? level * 40 : level * 25},${
       level < 5 ? level * 5 : level < 7 ? level * 10 : level * 5
     },${level < 5 ? level * 25 : level < 7 ? level * 40 : level * 15})`;
   },
-  euiLight: (d, i) => {
+  euiLight: (d: RawDatum, i: number) => {
     return euiPalettes.echPaletteForLightBackground.colors[i % euiPalettes.echPaletteForLightBackground.colors.length];
   },
-  euiColorBlind: (d, i) => {
+  euiColorBlind: (d: RawDatum, i: number) => {
     return euiPalettes.echPaletteColorBlind.colors[i % euiPalettes.echPaletteColorBlind.colors.length];
   },
 };
@@ -189,7 +189,12 @@ const rawData = text
     };
   });
 
-function data(text: string, paletteName: string): WordModel[] {
+interface RawDatum {
+  text: string;
+  weight: number;
+}
+
+function sampleData(text: string, paletteName: keyof typeof palettes): WordModel[] {
   return rawData.map(function (d, i) {
     return {
       ...d,
@@ -238,12 +243,19 @@ export const Example = () => {
     ? startConfig.fontFamily
     : select(
         'fontFamily',
-        { Arial: 'Arial', 'Arial Narrow': 'Arial Narrow', Courier: 'Courier', Impact: 'Impact', Luminari: 'Luminari' },
+        {
+          Arial: 'Arial',
+          'Arial Narrow': 'Arial Narrow',
+          Courier: 'Courier',
+          Impact: 'Impact',
+          Luminari: 'Luminari',
+        },
         startConfig.fontFamily,
       );
   const fontStyle = template
     ? startConfig.fontStyle
     : select('fontStyle', { normal: 'normal', italic: 'italic' }, startConfig.fontStyle);
+
   const palette = template
     ? startConfig.palette
     : select(
@@ -279,7 +291,7 @@ export const Example = () => {
         maxFontSize={maxFontSize}
         spiral={spiral}
         exponent={exponent}
-        data={data(text, palette)}
+        data={sampleData(text, palette as keyof typeof palettes)}
         weightFun={weightFun}
       />
     </Chart>

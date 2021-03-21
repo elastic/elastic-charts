@@ -28,38 +28,38 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
-import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { Configs, Datum, nullShapeViewModel, ShapeViewModel, Word } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
 
 function seed() {
   return 0.5;
 }
 
-function getFont(d) {
+function getFont(d: Word) {
   return d.fontFamily;
 }
 
-function getFontStyle(d) {
+function getFontStyle(d: Word) {
   return d.style;
 }
 
-function getFontWeight(d) {
+function getFontWeight(d: Word) {
   return d.fontWeight;
 }
 
-function getWidth(conf) {
+function getWidth(conf: Configs) {
   return conf.width ?? 500;
 }
 
-function getHeight(conf) {
+function getHeight(conf: Configs) {
   return conf.height ?? 500;
 }
 
-function getFontSize(d) {
+function getFontSize(d: Word) {
   return d.size;
 }
 
-function hashWithinRange(str, max) {
+function hashWithinRange(str: string, max: number) {
   str = JSON.stringify(str);
   let hash = 0;
   for (const ch of str) {
@@ -68,7 +68,7 @@ function hashWithinRange(str, max) {
   return Math.abs(hash) % max;
 }
 
-function getRotation(startAngle, endAngle, count, text) {
+function getRotation(startAngle: number, endAngle: number, count: number, text: string) {
   const angleRange = endAngle - startAngle;
   const angleCount = count ?? 360;
   const interval = count - 1;
@@ -77,56 +77,56 @@ function getRotation(startAngle, endAngle, count, text) {
   return index * angleStep + startAngle;
 }
 
-function exponential(minFontSize, maxFontSize, exponent, weight) {
+function exponential(minFontSize: number, maxFontSize: number, exponent: number, weight: number) {
   return minFontSize + (maxFontSize - minFontSize) * weight ** exponent;
 }
 
-function linear(minFontSize, maxFontSize, _exponent, weight) {
+function linear(minFontSize: number, maxFontSize: number, _exponent: number, weight: number) {
   return minFontSize + (maxFontSize - minFontSize) * weight;
 }
 
-function squareRoot(minFontSize, maxFontSize, _exponent, weight) {
+function squareRoot(minFontSize: number, maxFontSize: number, _exponent: number, weight: number) {
   return minFontSize + (maxFontSize - minFontSize) * Math.sqrt(weight);
 }
 
-function log(minFontSize, maxFontSize, _exponent, weight) {
+function log(minFontSize: number, maxFontSize: number, _exponent: number, weight: number) {
   return minFontSize + (maxFontSize - minFontSize) * Math.log2(weight + 1);
 }
 
 const weightFunLookup = { linear, exponential, log, squareRoot };
 
-function layoutMaker(config, data) {
+function layoutMaker(config: Configs, data: Datum[]) {
   const words = data.map((d) => {
     const weightFun = weightFunLookup[config.weightFun];
     return {
       text: d.text,
       color: d.color,
-      fontFamily: config.fontFamily ?? 'Impact',
-      style: config.fontStyle ?? 'normal',
-      fontWeight: config.fontWeight ?? 'normal',
+      fontFamily: config.fontFamily,
+      style: config.fontStyle,
+      fontWeight: config.fontWeight,
       size: weightFun(config.minFontSize, config.maxFontSize, config.exponent, d.weight),
     };
   });
-
   return d3TagCloud()
     .random(seed)
     .size([getWidth(config), getHeight(config)])
     .words(words)
     .spiral(config.spiral ?? 'archimedean')
     .padding(config.padding ?? 5)
-    .rotate((d) => getRotation(config.startAngle, config.endAngle, config.count, d.text))
+    .rotate((d: Word) => getRotation(config.startAngle, config.endAngle, config.count, d.text))
     .font(getFont)
     .fontStyle(getFontStyle)
     .fontWeight(getFontWeight)
-    .fontSize((d) => getFontSize(d));
+    .fontSize((d: Word) => getFontSize(d));
 }
 
-const View = ({ words, conf }) => (
+const View = ({ words, conf }: { words: Word[]; conf: Configs }) => (
   <svg width={getWidth(conf)} height={getHeight(conf)}>
     <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
-      {words.map((d) => {
+      {words.map((d, i) => {
         return (
           <text
+            key={String(i)}
             style={{
               transform: `translate(${d.x}, ${d.y}) rotate(${d.rotate})`,
               fontSize: getFontSize(d),
@@ -135,7 +135,7 @@ const View = ({ words, conf }) => (
               fontWeight: getFontWeight(d),
               fill: d.color,
             }}
-            textAnchor={'middle'}
+            textAnchor="middle"
             transform={`translate(${d.x}, ${d.y}) rotate(${d.rotate})`}
           >
             {d.text}
@@ -227,7 +227,7 @@ class Component extends React.Component<Props> {
     if (!initialized || width === 0 || height === 0) {
       return null;
     }
-    const conf1 = {
+    const conf1: Configs = {
       width,
       height,
       startAngle: wordcloudViewModel.startAngle,
@@ -247,15 +247,14 @@ class Component extends React.Component<Props> {
     const layout = layoutMaker(conf1, wordcloudViewModel.data);
 
     let ww;
-    layout.on('end', (w) => (ww = w)).start();
+    layout.on('end', (w: Word[]) => (ww = w)).start();
 
     const wordCount = wordcloudViewModel.data.length;
-    const renderedWordCount = ww.length;
+    const renderedWordCount: number = ((ww as unknown) as Word[]).length;
     const notAllWordsFit = wordCount !== renderedWordCount;
     if (notAllWordsFit) {
       Logger.warn(`Not all words have been placed: ${renderedWordCount} words rendered out of ${wordCount}`);
     }
-
     return (
       <>
         <canvas
@@ -269,7 +268,7 @@ class Component extends React.Component<Props> {
             height,
           }}
         />
-        <View words={ww} conf={conf1} />
+        <View words={(ww as unknown) as Word[]} conf={conf1} />
       </>
     );
   }

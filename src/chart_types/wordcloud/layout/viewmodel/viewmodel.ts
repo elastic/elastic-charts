@@ -75,7 +75,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, co
   return {
     config,
     chartCenter,
-    wordcloudViewModel: wordcloudViewModel,
+    wordcloudViewModel,
     pickQuads,
   };
 }

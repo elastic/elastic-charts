@@ -24,7 +24,7 @@ import { Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { config } from '../layout/config/config';
-import { WordModel, defaultWordcloudSpec } from '../layout/types/viewmodel_types';
+import { WordModel, defaultWordcloudSpec, WeightFun } from '../layout/types/viewmodel_types';
 
 const defaultProps = {
   chartType: ChartTypes.Wordcloud,
@@ -48,7 +48,7 @@ export interface WordcloudSpec extends Spec {
   spiral: string;
   exponent: number;
   data: WordModel[];
-  weightFun: string;
+  weightFun: WeightFun;
 }
 
 type SpecRequiredProps = Pick<WordcloudSpec, 'id'>;

@@ -30,6 +30,51 @@ export interface WordModel {
   color: Color;
 }
 
+/** @public */
+export type WeightFun = 'log' | 'linear' | 'exponential' | 'squareRoot';
+
+/** @internal */
+export interface Word {
+  color: string;
+  font: string;
+  fontFamily: string;
+  fontWeight: number;
+  hasText: boolean;
+  height: number;
+  padding: number;
+  rotate: number;
+  size: number;
+  style: string;
+  text: string;
+  weight: number;
+  x: number;
+  x0: number;
+  x1: number;
+  xoff: number;
+  y: number;
+  y0: number;
+  y1: number;
+  yoff: number;
+}
+
+/** @internal */
+export interface Configs {
+  count: number;
+  endAngle: number;
+  exponent: number;
+  fontFamily: string;
+  fontStyle: string;
+  fontWeight: number;
+  height: number;
+  maxFontSize: number;
+  minFontSize: number;
+  padding: number;
+  spiral: string;
+  startAngle: number;
+  weightFun: WeightFun;
+  width: number;
+}
+
 /** @internal */
 export interface WordcloudViewModel {
   startAngle: number;
@@ -44,7 +89,16 @@ export interface WordcloudViewModel {
   spiral: string;
   exponent: number;
   data: WordModel[];
-  weightFun: string;
+  weightFun: WeightFun;
+  // specType: string;
+}
+
+/** @internal */
+export interface Datum {
+  text: string;
+  weight: number;
+  color: string;
+  fontFamily: string;
 }
 
 /** @internal */
@@ -58,7 +112,7 @@ export type ShapeViewModel = {
   pickQuads: PickFunction;
 };
 
-const commonDefaults = {
+const commonDefaults: WordcloudViewModel = {
   specType: SpecTypes.Series,
   startAngle: -20,
   endAngle: 20,
@@ -81,7 +135,7 @@ export const defaultWordcloudSpec = {
 };
 
 /** @internal */
-export const nullWordcloudViewModel = {
+export const nullWordcloudViewModel: WordcloudViewModel = {
   ...commonDefaults,
   data: [],
 };
