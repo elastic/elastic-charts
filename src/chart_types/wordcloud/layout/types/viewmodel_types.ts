@@ -20,6 +20,7 @@
 import { Pixels, PointObject } from '../../../../common/geometry';
 import { SpecTypes } from '../../../../specs/constants';
 import { Color } from '../../../../utils/common';
+import { Logger } from '../../../../utils/logger';
 import { config } from '../config/config';
 import { Config } from './config_types';
 
@@ -72,8 +73,11 @@ export interface Configs {
   spiral: string;
   startAngle: number;
   weightFun: WeightFun;
+  outOfRoomCallback: OutOfRoomCallback;
   width: number;
 }
+
+export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
 
 /** @internal */
 export interface WordcloudViewModel {
@@ -90,6 +94,7 @@ export interface WordcloudViewModel {
   exponent: number;
   data: WordModel[];
   weightFun: WeightFun;
+  outOfRoomCallback: OutOfRoomCallback;
   // specType: string;
 }
 
@@ -98,7 +103,6 @@ export interface Datum {
   text: string;
   weight: number;
   color: string;
-  fontFamily: string;
 }
 
 /** @internal */
@@ -127,6 +131,9 @@ const commonDefaults: WordcloudViewModel = {
   exponent: 3,
   data: [],
   weightFun: 'exponential',
+  outOfRoomCallback: (wordCount, renderedWordCount) => {
+    Logger.warn(`Not all words have been placed: ${renderedWordCount} words rendered out of ${wordCount}`);
+  },
 };
 
 /** @internal */

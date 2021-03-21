@@ -53,6 +53,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, co
     exponent,
     data,
     weightFun,
+    outOfRoomCallback,
   } = spec;
 
   const wordcloudViewModel: WordcloudViewModel = {
@@ -69,6 +70,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, co
     exponent,
     data,
     weightFun,
+    outOfRoomCallback,
   };
 
   // combined viewModel

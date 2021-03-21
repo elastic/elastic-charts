@@ -24,7 +24,7 @@ import { Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { config } from '../layout/config/config';
-import { WordModel, defaultWordcloudSpec, WeightFun } from '../layout/types/viewmodel_types';
+import { WordModel, defaultWordcloudSpec, WeightFun, OutOfRoomCallback } from '../layout/types/viewmodel_types';
 
 const defaultProps = {
   chartType: ChartTypes.Wordcloud,
@@ -49,6 +49,7 @@ export interface WordcloudSpec extends Spec {
   exponent: number;
   data: WordModel[];
   weightFun: WeightFun;
+  outOfRoomCallback: OutOfRoomCallback;
 }
 
 type SpecRequiredProps = Pick<WordcloudSpec, 'id'>;
@@ -72,5 +73,6 @@ export const Wordcloud: React.FunctionComponent<SpecRequiredProps & SpecOptional
     | 'exponent'
     | 'data'
     | 'weightFun'
+    | 'outOfRoomCallback'
   >(defaultProps),
 );

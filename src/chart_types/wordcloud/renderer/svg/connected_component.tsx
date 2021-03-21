@@ -250,11 +250,17 @@ class Component extends React.Component<Props> {
     layout.on('end', (w: Word[]) => (ww = w)).start();
 
     const wordCount = wordcloudViewModel.data.length;
-    const renderedWordCount: number = ((ww as unknown) as Word[]).length;
+    const renderedWordObjects = (ww as unknown) as Word[];
+    const renderedWordCount: number = renderedWordObjects.length;
     const notAllWordsFit = wordCount !== renderedWordCount;
-    if (notAllWordsFit) {
-      Logger.warn(`Not all words have been placed: ${renderedWordCount} words rendered out of ${wordCount}`);
+    if (notAllWordsFit && wordcloudViewModel.outOfRoomCallback instanceof Function) {
+      wordcloudViewModel.outOfRoomCallback(
+        wordCount,
+        renderedWordCount,
+        renderedWordObjects.map((word) => word.text),
+      );
     }
+
     return (
       <>
         <canvas
@@ -268,7 +274,7 @@ class Component extends React.Component<Props> {
             height,
           }}
         />
-        <View words={(ww as unknown) as Word[]} conf={conf1} />
+        <View words={renderedWordObjects} conf={conf1} />
       </>
     );
   }

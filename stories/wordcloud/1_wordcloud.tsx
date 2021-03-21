@@ -293,6 +293,11 @@ export const Example = () => {
         exponent={exponent}
         data={sampleData(text, palette as keyof typeof palettes)}
         weightFun={weightFun}
+        outOfRoomCallback={(wordCount: number, renderedWordCount: number, renderedWords: string[]) => {
+          console.log(
+            `Managed to render ${renderedWordCount} words out of ${wordCount} words: ${renderedWords.join(', ')}`,
+          );
+        }}
       />
     </Chart>
   );
