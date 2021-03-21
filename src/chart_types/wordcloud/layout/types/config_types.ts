@@ -19,7 +19,6 @@
 
 import { Pixels, SizeRatio } from '../../../../common/geometry';
 import { FontFamily } from '../../../../common/text_utils';
-import { Color } from '../../../../utils/common';
 
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
 /** potential internal */

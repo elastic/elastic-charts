@@ -25,7 +25,7 @@ import { Logger } from '../../../../utils/logger';
 import { config } from '../config/config';
 import { Config } from './config_types';
 
-/** @internal */
+/** @public */
 export interface WordModel {
   text: string;
   weight: number;
