@@ -58,7 +58,7 @@ export const Example = () => {
   return (
     <Chart className="story-chart">
       <Settings
-        showLegend={boolean('Show legend', true)}
+        showLegend={boolean('Show legend', false)}
         legendStrategy="pathWithDescendants"
         flatLegend={false}
         theme={STORYBOOK_LIGHT_THEME}
@@ -126,66 +126,6 @@ export const Example = () => {
           outerSizeRatio: 1,
           emptySizeRatio: 0,
           circlePadding: 4,
-          backgroundColor: 'rgba(229,229,229,1)',
-        }}
-      />
-      <Partition
-        id="spec_1"
-        data={data}
-        valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-        smallMultiples="sm1"
-        layers={
-          [
-            {
-              groupByRollup: (d: Datum) => d.sitc1,
-              nodeLabel: (d: any) => productLookup[d].name.toUpperCase(),
-              fillLabel: {
-                valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
-                fontFamily: 'Helvetica',
-                textColor: 'black',
-                textInvertible: false,
-                fontWeight: 900,
-                minFontSize: 2,
-                maxFontSize: 20,
-                idealFontSizeJump: 1.01,
-                maximizeFontSize: true,
-              },
-              shape: { fillColor: 'rgba(0,0,0,0)' },
-            },
-            {
-              groupByRollup: (d: Datum) => d.dest,
-              nodeLabel: (d: any) => countryLookup[d].name,
-              shape: {
-                fillColor: (d: ShapeTreeNode) =>
-                  discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].sortIndex),
-              },
-              fillLabel: { maximizeFontSize: true },
-            },
-          ] /* .slice(layerFrom, layerTo) */
-        }
-        config={{
-          partitionLayout: PartitionLayout.treemap,
-          linkLabel: {
-            maxCount: 0,
-            fontSize: 14,
-          },
-          fontFamily: 'Arial',
-          fillLabel: {
-            valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
-            fontStyle: 'italic',
-            textInvertible: true,
-            fontWeight: 900,
-            valueFont: {
-              fontFamily: 'Menlo',
-              fontStyle: 'normal',
-              fontWeight: 100,
-            },
-          },
-          margin: { top: 0, bottom: 0, left: 0, right: 0 },
-          minFontSize: 1,
-          maxFontSize: 12,
-          idealFontSizeJump: 1.1,
           backgroundColor: 'rgba(229,229,229,1)',
         }}
       />
