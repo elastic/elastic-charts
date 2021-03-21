@@ -17,8 +17,9 @@
  * under the License.
  */
 
+import { $Values as Values } from 'utility-types';
+
 import { Pixels, PointObject } from '../../../../common/geometry';
-import { SpecTypes } from '../../../../specs/constants';
 import { Color } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { config } from '../config/config';
@@ -31,8 +32,15 @@ export interface WordModel {
   color: Color;
 }
 
+export const WeightFun = Object.freeze({
+  log: 'log' as const,
+  linear: 'linear' as const,
+  exponential: 'exponential' as const,
+  squareRoot: 'squareRoot' as const,
+});
+
 /** @public */
-export type WeightFun = 'log' | 'linear' | 'exponential' | 'squareRoot';
+export type WeightFun = Values<typeof WeightFun>;
 
 /** @internal */
 export interface Word {
@@ -73,7 +81,6 @@ export interface Configs {
   spiral: string;
   startAngle: number;
   weightFun: WeightFun;
-  outOfRoomCallback: OutOfRoomCallback;
   width: number;
 }
 
@@ -117,7 +124,6 @@ export type ShapeViewModel = {
 };
 
 const commonDefaults: WordcloudViewModel = {
-  specType: SpecTypes.Series,
   startAngle: -20,
   endAngle: 20,
   angleCount: 5,

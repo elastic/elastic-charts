@@ -18,12 +18,10 @@
  */
 
 import { ConfigItem, configMap } from '../../../../common/config_objects';
-import { TAU } from '../../../../common/constants';
 import { Config } from '../types/config_types';
 
 /** @internal */
 export const configMetadata: Record<string, ConfigItem> = {
-
   // shape geometry
   width: { dflt: 300, min: 0, max: 1024, type: 'number', reconfigurable: false },
   height: { dflt: 150, min: 0, max: 1024, type: 'number', reconfigurable: false },

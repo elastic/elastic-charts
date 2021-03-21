@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { measureText } from '../../../../common/text_utils';
 import { mergePartial, RecursivePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { config as defaultConfig } from '../../layout/config/config';
@@ -29,13 +28,13 @@ import { WordcloudSpec } from '../../specs';
 /** @internal */
 export function render(spec: WordcloudSpec, parentDimensions: Dimensions): ShapeViewModel {
   const { width, height } = parentDimensions;
-  const { config: specConfig } = spec;
+  const { config } = spec;
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
-  const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
-  const config: Config = mergePartial(defaultConfig, partialConfig);
+  const partialConfig: RecursivePartial<Config> = { ...config, width, height };
+  const cfg: Config = mergePartial(defaultConfig, partialConfig);
   if (!textMeasurerCtx) {
-    return nullShapeViewModel(config, { x: width / 2, y: height / 2 });
+    return nullShapeViewModel(cfg, { x: width / 2, y: height / 2 });
   }
-  return shapeViewModel(measureText(textMeasurerCtx), spec, config);
+  return shapeViewModel(spec, cfg);
 }

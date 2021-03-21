@@ -21,7 +21,7 @@ import { color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Settings, Wordcloud } from '../../src';
-import { WordModel } from '../../src/chart_types/wordcloud/layout/types/viewmodel_types';
+import { WeightFun, WordModel } from '../../src/chart_types/wordcloud/layout/types/viewmodel_types';
 import { getRandomNumberGenerator } from '../../src/mocks/utils';
 import { palettes as euiPalettes } from '../../src/utils/themes/colors';
 
@@ -77,7 +77,7 @@ const configs = {
     shape: 'archimedean',
     palette: 'turquoise',
     backgroundColor: '#1c1c24',
-    weightFun: 'exponential',
+    weightFun: WeightFun.exponential,
   },
   single: {
     startAngle: 0,
@@ -93,7 +93,7 @@ const configs = {
     shape: 'rectangular',
     palette: 'greyScale',
     backgroundColor: '#9fa714',
-    weightFun: 'exponential',
+    weightFun: WeightFun.exponential,
   },
   rightAngled: {
     startAngle: 0,
@@ -109,7 +109,7 @@ const configs = {
     shape: 'rectangular',
     palette: 'euiLight',
     backgroundColor: '#ffffff',
-    weightFun: 'exponential',
+    weightFun: WeightFun.exponential,
   },
   multiple: {
     startAngle: -90,
@@ -125,7 +125,7 @@ const configs = {
     shape: 'archimedean',
     palette: 'redBlue',
     backgroundColor: '#1c1c24',
-    weightFun: 'exponential',
+    weightFun: WeightFun.exponential,
   },
   squareWords: {
     startAngle: -45,
@@ -141,7 +141,7 @@ const configs = {
     shape: 'archimedean',
     palette: 'weight',
     backgroundColor: '#4a6960',
-    weightFun: 'exponential',
+    weightFun: WeightFun.exponential,
   },
   smallWaves: {
     startAngle: -15,
@@ -157,13 +157,13 @@ const configs = {
     shape: 'rectangular',
     palette: 'euiColorBlind',
     backgroundColor: '#ffffff',
-    weightFun: 'exponential',
+    weightFun: WeightFun.exponential,
   },
   sparse: {
     startAngle: 0,
     endAngle: 0,
     angleCount: 1,
-    padding: 2 + Math.random() * 20,
+    padding: getRandomNumber(2, 22),
     exponent: 15,
     fontWeight: 600,
     minFontSize: 12,
@@ -173,7 +173,7 @@ const configs = {
     shape: 'rectangular',
     palette: 'vivid',
     backgroundColor: '#1c1c24',
-    weightFun: 'exponential',
+    weightFun: WeightFun.exponential,
   },
 };
 
@@ -182,7 +182,7 @@ const rawData = text
   .toLowerCase()
   .split(' ')
   .filter((d, index, a) => a.indexOf(d) === index)
-  .map(function (d) {
+  .map(function wordMapper(d) {
     return {
       text: d,
       weight: getRandomNumber(0, 1, 20),
@@ -194,8 +194,8 @@ interface RawDatum {
   weight: number;
 }
 
-function sampleData(text: string, paletteName: keyof typeof palettes): WordModel[] {
-  return rawData.map(function (d, i) {
+function sampleData(txt: string, paletteName: keyof typeof palettes): WordModel[] {
+  return rawData.map(function rawMapper(d, i) {
     return {
       ...d,
       color: palettes[paletteName](d, i),
@@ -267,7 +267,12 @@ export const Example = () => {
     ? startConfig.weightFun
     : select(
         'weightFun',
-        { linear: 'linear', exponential: 'exponential', squareRoot: 'squareRoot', log: 'log' },
+        {
+          linear: WeightFun.linear,
+          exponential: WeightFun.exponential,
+          squareRoot: WeightFun.squareRoot,
+          log: WeightFun.log,
+        },
         startConfig.weightFun,
       );
 
@@ -276,7 +281,10 @@ export const Example = () => {
       {/* eslint-disable-next-line no-console */}
       <Settings
         theme={{ background: { color: backgroundColor } }}
-        onElementClick={(d) => console.log('onElementClick', d)}
+        onElementClick={(d) => {
+          // eslint-disable-next-line no-console
+          console.log('onElementClick', d);
+        }}
       />
       <Wordcloud
         id="spec_1"
@@ -294,6 +302,7 @@ export const Example = () => {
         data={sampleData(text, palette as keyof typeof palettes)}
         weightFun={weightFun}
         outOfRoomCallback={(wordCount: number, renderedWordCount: number, renderedWords: string[]) => {
+          // eslint-disable-next-line no-console
           console.log(
             `Managed to render ${renderedWordCount} words out of ${wordCount} words: ${renderedWords.join(', ')}`,
           );

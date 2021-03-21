@@ -17,13 +17,12 @@
  * under the License.
  */
 
-import { TextMeasure } from '../../../../common/text_utils';
 import { WordcloudSpec } from '../../specs';
 import { Config } from '../types/config_types';
 import { WordcloudViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
 
 /** @internal */
-export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, config: Config): ShapeViewModel {
+export function shapeViewModel(spec: WordcloudSpec, config: Config): ShapeViewModel {
   const { width, height, margin } = config;
 
   const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
@@ -33,11 +32,6 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, co
     x: width * margin.left + innerWidth / 2,
     y: height * margin.top + innerHeight / 2,
   };
-
-  const pickQuads: PickFunction = (x, y) =>
-    -innerWidth / 2 <= x && x <= innerWidth / 2 && -innerHeight / 2 <= y && y <= innerHeight / 2
-      ? [wordcloudViewModel]
-      : [];
 
   const {
     startAngle,
@@ -72,6 +66,11 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: WordcloudSpec, co
     weightFun,
     outOfRoomCallback,
   };
+
+  const pickQuads: PickFunction = (x, y) =>
+    -innerWidth / 2 <= x && x <= innerWidth / 2 && -innerHeight / 2 <= y && y <= innerHeight / 2
+      ? [wordcloudViewModel]
+      : [];
 
   // combined viewModel
   return {

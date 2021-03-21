@@ -23,11 +23,14 @@ import { ChartTypes } from '../..';
 import { Spec } from '../../../specs';
 import { SpecTypes } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
+import { RecursivePartial } from '../../../utils/common';
+import { Config } from '../../partition_chart/layout/types/config_types';
 import { config } from '../layout/config/config';
 import { WordModel, defaultWordcloudSpec, WeightFun, OutOfRoomCallback } from '../layout/types/viewmodel_types';
 
 const defaultProps = {
   chartType: ChartTypes.Wordcloud,
+  specType: SpecTypes.Series,
   ...defaultWordcloudSpec,
   config,
 };
@@ -36,6 +39,7 @@ const defaultProps = {
 export interface WordcloudSpec extends Spec {
   specType: typeof SpecTypes.Series;
   chartType: typeof ChartTypes.Wordcloud;
+  config: RecursivePartial<Config>;
   startAngle: number;
   endAngle: number;
   angleCount: number;
@@ -61,6 +65,7 @@ export const Wordcloud: React.FunctionComponent<SpecRequiredProps & SpecOptional
     WordcloudSpec,
     | 'chartType'
     | 'startAngle'
+    | 'config'
     | 'endAngle'
     | 'angleCount'
     | 'padding'

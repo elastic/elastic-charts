@@ -27,7 +27,6 @@ import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
-import { Logger } from '../../../../utils/logger';
 import { Configs, Datum, nullShapeViewModel, ShapeViewModel, Word } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
 
