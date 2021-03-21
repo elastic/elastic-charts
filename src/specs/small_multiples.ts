@@ -44,7 +44,7 @@ const DEFAULT_SMALL_MULTIPLES_PROPS = {
 };
 
 /** @alpha */
-export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, /* 'id' | */ 'chatType' | 'specType'>>;
+export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'chatType' | 'specType'>>;
 
 /** @alpha */
 export const SmallMultiples: React.FunctionComponent<SmallMultiplesProps> = getConnect()(

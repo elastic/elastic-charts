@@ -2035,7 +2035,7 @@ export interface SimplePadding {
 export const SmallMultiples: React_2.FunctionComponent<SmallMultiplesProps>;
 
 // @alpha (undocumented)
-export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'id' | 'chatType' | 'specType'>>;
+export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'chatType' | 'specType'>>;
 
 // @alpha (undocumented)
 export interface SmallMultiplesSpec extends Spec {
@@ -2043,6 +2043,8 @@ export interface SmallMultiplesSpec extends Spec {
     splitHorizontally?: string;
     // (undocumented)
     splitVertically?: string;
+    // (undocumented)
+    splitZigzag?: string;
     // (undocumented)
     style?: {
         verticalPanelPadding?: [number, number];
