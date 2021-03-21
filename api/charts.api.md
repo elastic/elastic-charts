@@ -647,6 +647,8 @@ export interface DebugState {
     //
     // (undocumented)
     bars?: DebugStateBar[];
+    // Warning: (ae-forgotten-export) The symbol "HeatmapDebugState" needs to be exported by the entry point index.d.ts
+    heatmap?: HeatmapDebugState;
     // Warning: (ae-forgotten-export) The symbol "DebugStateLegend" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
@@ -1105,8 +1107,8 @@ export interface HeatmapSpec extends Spec {
     data: Datum[];
     // (undocumented)
     highlightedData?: {
-        x: any[];
-        y: any[];
+        x: Array<string | number>;
+        y: Array<string | number>;
     };
     // (undocumented)
     name?: string;
@@ -1445,6 +1447,12 @@ export interface OrderBy {
 // @public (undocumented)
 export type OrdinalDomain = (number | string)[];
 
+// Warning: (ae-forgotten-export) The symbol "PerSideDistance" needs to be exported by the entry point index.d.ts
+// Warning: (ae-missing-release-tag) "Padding" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type Padding = PerSideDistance;
+
 // Warning: (ae-missing-release-tag) "PARENT_KEY" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1485,7 +1493,10 @@ export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
 // Warning: (ae-forgotten-export) The symbol "LabelConfig" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export type PartitionFillLabel = LabelConfig;
+export interface PartitionFillLabel extends LabelConfig {
+    // (undocumented)
+    clipText: boolean;
+}
 
 // Warning: (ae-missing-release-tag) "Layer" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2219,6 +2230,7 @@ export interface TooltipInfo {
 // @public
 export interface TooltipPortalSettings<B = never> {
     boundary?: HTMLElement | B;
+    boundaryPadding?: Partial<Padding> | number;
     fallbackPlacements?: Placement[];
     offset?: number;
     placement?: Placement;
@@ -2443,8 +2455,8 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // src/chart_types/heatmap/layout/types/config_types.ts:29:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:61:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:62:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:130:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:131:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:132:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:133:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
