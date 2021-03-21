@@ -26,8 +26,8 @@ import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getSpecOrNull } from './wordcloud_spec';
 import { getPickedShapesLayerValues } from './picked_shapes';
+import { getSpecOrNull } from './wordcloud_spec';
 
 /**
  * Will call the onElementClick listener every time the following preconditions are met:
