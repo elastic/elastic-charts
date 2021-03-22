@@ -43,7 +43,7 @@ export type RelativeBandsPadding = [
 ];
 
 /** @internal */
-export const DEFAULT_SM_PANEL_PADDING: RelativeBandsPadding = [0, 0];
+export const DEFAULT_SM_PANEL_PADDING: RelativeBandsPadding = [0, 0.1];
 
 /**
  * Specifies styling and stylistic layout attributes relating to small multiples
