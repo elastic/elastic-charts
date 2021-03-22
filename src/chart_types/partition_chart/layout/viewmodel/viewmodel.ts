@@ -26,10 +26,10 @@ import {
   Pixels,
   PointTuple,
   Radius,
-  SizeRatio,
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
+import { SmallMultiplesStyle, StartEndRatio } from '../../../../specs';
 import { StrokeStyle, ValueFormatter, Color, RecursivePartial } from '../../../../utils/common';
 import { Layer } from '../../specs';
 import { config as defaultConfig, MODEL_KEY, percentValueGetter } from '../config';
@@ -69,6 +69,25 @@ import {
   nodeId,
 } from './fill_text_layout';
 import { linkTextLayout } from './link_text_layout';
+
+/** @internal */
+export const isTreemap = (p: PartitionLayout | undefined) => p === PartitionLayout.treemap;
+
+/** @internal */
+export const isSunburst = (p: PartitionLayout | undefined) => p === PartitionLayout.sunburst;
+
+/** @internal */
+export const isIcicle = (p: PartitionLayout | undefined) => p === PartitionLayout.icicle;
+
+/** @internal */
+export const isFlame = (p: PartitionLayout | undefined) => p === PartitionLayout.flame;
+
+/** @internal */
+export const isLinear = (p: PartitionLayout | undefined) => isFlame(p) || isIcicle(p);
+
+/** @internal */
+export const isSimpleLinear = (config: RecursivePartial<Config>, layers: Layer[]) =>
+  isLinear(config.partitionLayout) && layers.every((l) => l.fillLabel?.clipText ?? config.fillLabel?.clipText);
 
 function grooveAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
@@ -242,28 +261,9 @@ const rawChildNodes = (
 /** @internal */
 export type PanelPlacement = PartitionSmallMultiplesModel;
 
-function getInterMarginSize(size: Pixels, startMargin: SizeRatio, endMargin: SizeRatio) {
+function getInterMarginSize(size: Pixels, [startMargin, endMargin]: StartEndRatio) {
   return size * (1 - Math.min(1, startMargin + endMargin));
 }
-
-/** @internal */
-export const isTreemap = (p: PartitionLayout | undefined) => p === PartitionLayout.treemap;
-
-/** @internal */
-export const isSunburst = (p: PartitionLayout | undefined) => p === PartitionLayout.sunburst;
-
-/** @internal */
-export const isIcicle = (p: PartitionLayout | undefined) => p === PartitionLayout.icicle;
-
-/** @internal */
-export const isFlame = (p: PartitionLayout | undefined) => p === PartitionLayout.flame;
-
-/** @internal */
-export const isLinear = (p: PartitionLayout | undefined) => isFlame(p) || isIcicle(p);
-
-/** @internal */
-export const isSimpleLinear = (config: RecursivePartial<Config>, layers: Layer[]) =>
-  isLinear(config.partitionLayout) && layers.every((l) => l.fillLabel?.clipText ?? config.fillLabel?.clipText);
 
 /** @internal */
 export function shapeViewModel(
@@ -277,6 +277,7 @@ export function shapeViewModel(
   tree: HierarchyOfArrays,
   topGroove: Pixels,
   containerBackgroundColor: Color,
+  smallMultiplesStyle: SmallMultiplesStyle,
   panelPlacement: PanelPlacement,
 ): ShapeViewModel {
   const {
@@ -294,14 +295,17 @@ export function shapeViewModel(
     sectorLineWidth,
   } = config;
 
-  const panelWidth = width * panelPlacement.width;
-  const panelHeight = height * panelPlacement.height;
+  const innerWidth = getInterMarginSize(width, [margin.left, margin.right]);
+  const innerHeight = getInterMarginSize(height, [margin.top, margin.bottom]);
 
-  const panelInnerWidth = getInterMarginSize(panelWidth, margin.left, margin.right);
-  const panelInnerHeight = getInterMarginSize(panelHeight, margin.top, margin.bottom);
+  const panelWidth = innerWidth * panelPlacement.width;
+  const panelHeight = innerHeight * panelPlacement.height;
 
-  const marginLeftPx = panelWidth * margin.left;
-  const marginTopPx = panelHeight * margin.top;
+  const panelInnerWidth = getInterMarginSize(panelWidth, smallMultiplesStyle.horizontalPanelPadding);
+  const panelInnerHeight = getInterMarginSize(panelHeight, smallMultiplesStyle.verticalPanelPadding);
+
+  const marginLeftPx = width * margin.left + panelWidth * smallMultiplesStyle.horizontalPanelPadding[0];
+  const marginTopPx = height * margin.top + panelHeight * smallMultiplesStyle.verticalPanelPadding[0];
 
   const treemapLayout = isTreemap(partitionLayout);
   const sunburstLayout = isSunburst(partitionLayout);
@@ -311,12 +315,12 @@ export function shapeViewModel(
 
   const diskCenter = isSunburst(partitionLayout)
     ? {
-        x: width * margin.left + width * panelPlacement.left + panelInnerWidth / 2,
-        y: height * margin.top + height * panelPlacement.top + panelInnerHeight / 2,
+        x: marginLeftPx + width * panelPlacement.left + panelInnerWidth / 2,
+        y: marginTopPx + height * panelPlacement.top + panelInnerHeight / 2,
       }
     : {
-        x: width * margin.left + width * panelPlacement.left,
-        y: height * margin.top + height * panelPlacement.top,
+        x: marginLeftPx + width * panelPlacement.left,
+        y: marginTopPx + height * panelPlacement.top,
       };
 
   // don't render anything if the total, the width or height is not positive

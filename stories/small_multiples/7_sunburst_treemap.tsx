@@ -74,7 +74,7 @@ export const Example = () => {
         splitHorizontally={layout === 'h' ? 'split' : undefined}
         splitVertically={layout === 'v' ? 'split' : undefined}
         splitZigzag={layout === 'z' ? 'split' : undefined}
-        style={{ verticalPanelPadding: [0, 0] }}
+        style={{ horizontalPanelPadding: [0.05, 0.05], verticalPanelPadding: [0.15, 0] }}
       />
       <Partition
         id="spec_2"

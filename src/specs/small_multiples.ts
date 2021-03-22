@@ -20,21 +20,31 @@ import React from 'react';
 
 import { Spec } from '.';
 import { ChartTypes } from '../chart_types';
+import { Ratio } from '../common/geometry';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { SpecTypes } from './constants';
 
+/**
+ * Can be used for margin or padding start/end (eg. left/right or top/bottom)
+ * @alpha
+ */
+export type StartEndRatio = [Ratio, Ratio];
+
 /** @internal */
-export const DEFAULT_SM_PANEL_PADDING: [number, number] = [0, 0.1];
+export const DEFAULT_SM_PANEL_PADDING: StartEndRatio = [0, 0.1];
+
+/** @alpha */
+export interface SmallMultiplesStyle {
+  horizontalPanelPadding: StartEndRatio;
+  verticalPanelPadding: StartEndRatio;
+}
 
 /** @alpha */
 export interface SmallMultiplesSpec extends Spec {
   splitHorizontally?: string;
   splitVertically?: string;
   splitZigzag?: string;
-  style?: {
-    verticalPanelPadding?: [number, number];
-    horizontalPanelPadding?: [number, number];
-  };
+  style?: Partial<SmallMultiplesStyle>;
 }
 
 const DEFAULT_SMALL_MULTIPLES_PROPS = {

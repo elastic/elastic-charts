@@ -18,6 +18,7 @@
  */
 
 import { measureText } from '../../../../common/text_utils';
+import { SmallMultiplesStyle } from '../../../../specs';
 import { Color, identity, mergePartial, RecursivePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Layer, PartitionSpec } from '../../specs';
@@ -51,6 +52,7 @@ export function getShapeViewModel(
   parentDimensions: Dimensions,
   tree: HierarchyOfArrays,
   containerBackgroundColor: Color,
+  smallMultiplesStyle: SmallMultiplesStyle,
   panelPlacement: PanelPlacement,
 ): ShapeViewModel {
   const { width, height } = parentDimensions;
@@ -75,6 +77,7 @@ export function getShapeViewModel(
     tree,
     topGroove,
     containerBackgroundColor,
+    smallMultiplesStyle,
     panelPlacement,
   );
 }

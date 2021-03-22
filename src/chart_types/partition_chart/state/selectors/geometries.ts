@@ -33,7 +33,7 @@ import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/
 import { getShapeViewModel } from '../../layout/viewmodel/scenegraph';
 import { IndexedContinuousDomainFocus } from '../../renderer/canvas/partition';
 import { getPartitionSpecs } from './get_partition_specs';
-import { getTrees, NamedTree } from './tree';
+import { getTrees, StyledTree } from './tree';
 
 const horizontalSplit = (s?: SmallMultiplesSpec) => s?.splitHorizontally;
 const verticalSplit = (s?: SmallMultiplesSpec) => s?.splitVertically;
@@ -42,7 +42,7 @@ const verticalSplit = (s?: SmallMultiplesSpec) => s?.splitVertically;
 export const partitionMultiGeometries = createCachedSelector(
   [getSpecs, getPartitionSpecs, getChartContainerDimensionsSelector, getTrees, getChartThemeSelector],
   (specs, partitionSpecs, parentDimensions, trees, { background }): ShapeViewModel[] => {
-    const smallMultiplesSpec = getSpecsFromStore<SmallMultiplesSpec>(
+    const smallMultiplesSpecs = getSpecsFromStore<SmallMultiplesSpec>(
       specs,
       ChartTypes.Global,
       SpecTypes.SmallMultiples,
@@ -51,9 +51,9 @@ export const partitionMultiGeometries = createCachedSelector(
     // todo make it part of configuration
     const outerSpecDirection = ['horizontal', 'vertical', 'zigzag'][0];
 
-    const innerBreakdownDirection = horizontalSplit(smallMultiplesSpec[0])
+    const innerBreakdownDirection = horizontalSplit(smallMultiplesSpecs[0])
       ? 'horizontal'
-      : verticalSplit(smallMultiplesSpec[0])
+      : verticalSplit(smallMultiplesSpecs[0])
       ? 'vertical'
       : 'zigzag';
 
@@ -76,9 +76,8 @@ export const partitionMultiGeometries = createCachedSelector(
           : outerSpecDirection === 'zigzag'
           ? 1 / zigzagColumnCount
           : 1;
-      // const innerPanelTrees = trees.map((tr) => tr.tree); // todo solve it for x*y breakdown ie. two dimensional grid
 
-      return trees.map(({ name, tree: t }: NamedTree, innerIndex, a) => {
+      return trees.map(({ name, style, tree: t }: StyledTree, innerIndex, a) => {
         const innerPanelCount = a.length;
         const outerPanelWidth = width * outerWidth;
         const outerPanelHeight = height * outerHeight;
@@ -89,7 +88,7 @@ export const partitionMultiGeometries = createCachedSelector(
         const innerZigzagRowCountEstimate = Math.max(1, Math.floor(outerPanelHeight / innerPanelTargetHeight)); // err on the side of landscape aspect ratio
         const innerZigzagColumnCount = Math.ceil(a.length / innerZigzagRowCountEstimate);
         const innerZigzagRowCount = Math.ceil(a.length / innerZigzagColumnCount);
-        return getShapeViewModel(spec, parentDimensions, t, background.color, {
+        return getShapeViewModel(spec, parentDimensions, t, background.color, style, {
           index,
           innerIndex,
           partitionLayout: spec.config.partitionLayout ?? config.partitionLayout,

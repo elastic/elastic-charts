@@ -21,7 +21,14 @@ import createCachedSelector from 're-reselect';
 
 import { ChartTypes } from '../../..';
 import { getPredicateFn } from '../../../../common/predicate';
-import { GroupByAccessor, GroupBySpec, SmallMultiplesSpec, SpecTypes } from '../../../../specs';
+import {
+  DEFAULT_SM_PANEL_PADDING,
+  GroupByAccessor,
+  GroupBySpec,
+  SmallMultiplesSpec,
+  SmallMultiplesStyle,
+  SpecTypes,
+} from '../../../../specs';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSpecs } from '../../../../state/selectors/get_settings_specs';
 import { getSmallMultiplesSpecs } from '../../../../state/selectors/get_small_multiples_spec';
@@ -38,16 +45,21 @@ const getGroupBySpecs = createCachedSelector([getSpecs], (specs) =>
 )(getChartIdSelector);
 
 /** @internal */
-export type NamedTree = { name: string | number; tree: HierarchyOfArrays };
+export type StyledTree = { name: string | number; style: SmallMultiplesStyle; tree: HierarchyOfArrays };
 
-function getTreesForSpec(spec: PartitionSpec, smSpecs: SmallMultiplesSpec[], groupBySpecs: GroupBySpec[]): NamedTree[] {
+function getTreesForSpec(
+  spec: PartitionSpec,
+  smSpecs: SmallMultiplesSpec[],
+  groupBySpecs: GroupBySpec[],
+): StyledTree[] {
   const { data, valueAccessor, layers, config, smallMultiples: smId } = spec;
-  const smallMultiplesSpec = smSpecs.find((s) => s.id === smId);
+  const smSpec = smSpecs.find((s) => s.id === smId);
+  const smStyle: SmallMultiplesStyle = {
+    horizontalPanelPadding: smSpec ? smSpec.style?.horizontalPanelPadding ?? DEFAULT_SM_PANEL_PADDING : [0, 0],
+    verticalPanelPadding: smSpec ? smSpec.style?.verticalPanelPadding ?? DEFAULT_SM_PANEL_PADDING : [0, 0],
+  };
   const groupBySpec = groupBySpecs.find(
-    (s) =>
-      s.id === smallMultiplesSpec?.splitHorizontally ||
-      s.id === smallMultiplesSpec?.splitVertically ||
-      s.id === smallMultiplesSpec?.splitZigzag,
+    (s) => s.id === smSpec?.splitHorizontally || s.id === smSpec?.splitVertically || s.id === smSpec?.splitZigzag,
   );
 
   if (groupBySpec) {
@@ -65,6 +77,7 @@ function getTreesForSpec(spec: PartitionSpec, smSpecs: SmallMultiplesSpec[], gro
       .sort(getPredicateFn(sort))
       .map(([groupKey, subData]) => ({
         name: format(groupKey),
+        style: smStyle,
         tree: partitionTree(
           subData,
           valueAccessor,
@@ -77,6 +90,7 @@ function getTreesForSpec(spec: PartitionSpec, smSpecs: SmallMultiplesSpec[], gro
     return [
       {
         name: '',
+        style: smStyle,
         tree: partitionTree(data, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout),
       },
     ];
@@ -86,6 +100,6 @@ function getTreesForSpec(spec: PartitionSpec, smSpecs: SmallMultiplesSpec[], gro
 /** @internal */
 export const getTrees = createCachedSelector(
   [getPartitionSpecs, getSmallMultiplesSpecs, getGroupBySpecs],
-  (partitionSpecs, smallMultiplesSpecs, groupBySpecs): NamedTree[] =>
+  (partitionSpecs, smallMultiplesSpecs, groupBySpecs): StyledTree[] =>
     partitionSpecs.length > 0 ? getTreesForSpec(partitionSpecs[0], smallMultiplesSpecs, groupBySpecs) : [], // singleton!
 )(getChartIdSelector);
