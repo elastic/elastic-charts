@@ -17,18 +17,21 @@
  * under the License.
  */
 
-import { $Values } from 'utility-types';
+import { Pixels, SizeRatio } from '../../../../common/geometry';
+import { FontFamily } from '../../../../common/text_utils';
 
-/**
- * Available chart types
- * @public
- */
-export const ChartTypes = Object.freeze({
-  Global: 'global' as const,
-  Goal: 'goal' as const,
-  Partition: 'partition' as const,
-  XYAxis: 'xy_axis' as const,
-  Heatmap: 'heatmap' as const,
-  Wordcloud: 'wordcloud' as const,
-});
-export type ChartTypes = $Values<typeof ChartTypes>;
+// todo switch to `io-ts` style, generic way of combining static and runtime type info
+/** potential internal */
+export interface Config {
+  // shape geometry
+  width: number;
+  height: number;
+  margin: { left: SizeRatio; right: SizeRatio; top: SizeRatio; bottom: SizeRatio };
+
+  // general text config
+  fontFamily: FontFamily;
+
+  // fill text config
+  minFontSize: Pixels;
+  maxFontSize: Pixels;
+}

@@ -17,18 +17,14 @@
  * under the License.
  */
 
-import { $Values } from 'utility-types';
+import { ChartTypes } from '../../..';
+import { SpecTypes } from '../../../../specs/constants';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { getSpecsFromStore } from '../../../../state/utils';
+import { WordcloudSpec } from '../../specs';
 
-/**
- * Available chart types
- * @public
- */
-export const ChartTypes = Object.freeze({
-  Global: 'global' as const,
-  Goal: 'goal' as const,
-  Partition: 'partition' as const,
-  XYAxis: 'xy_axis' as const,
-  Heatmap: 'heatmap' as const,
-  Wordcloud: 'wordcloud' as const,
-});
-export type ChartTypes = $Values<typeof ChartTypes>;
+/** @internal */
+export function getSpecOrNull(state: GlobalChartState): WordcloudSpec | null {
+  const specs = getSpecsFromStore<WordcloudSpec>(state.specs, ChartTypes.Wordcloud, SpecTypes.Series);
+  return specs.length > 0 ? specs[0] : null;
+}

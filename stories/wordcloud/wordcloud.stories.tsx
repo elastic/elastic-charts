@@ -17,18 +17,13 @@
  * under the License.
  */
 
-import { $Values } from 'utility-types';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-/**
- * Available chart types
- * @public
- */
-export const ChartTypes = Object.freeze({
-  Global: 'global' as const,
-  Goal: 'goal' as const,
-  Partition: 'partition' as const,
-  XYAxis: 'xy_axis' as const,
-  Heatmap: 'heatmap' as const,
-  Wordcloud: 'wordcloud' as const,
-});
-export type ChartTypes = $Values<typeof ChartTypes>;
+export default {
+  title: 'Wordcloud (@alpha)',
+  parameters: {
+    options: { selectedPanel: SB_SOURCE_PANEL },
+  },
+};
+
+export { Example as simpleWordcloud } from './1_wordcloud';
