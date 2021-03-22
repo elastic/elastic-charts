@@ -21,6 +21,7 @@ import React, { RefObject } from 'react';
 
 import { ChartTypes } from '../..';
 import { BrushTool } from '../../../components/brush/brush';
+import { ScreenReaderData } from '../../../components/screen_reader/screen_reader';
 import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
@@ -135,5 +136,10 @@ export class HeatmapState implements InternalChartState {
     this.onElementOutCaller(globalState);
     this.onElementClickCaller(globalState);
     this.onBrushEndCaller(globalState);
+  }
+
+  // TODO
+  getScreenReaderData(): ScreenReaderData[] {
+    return [];
   }
 }

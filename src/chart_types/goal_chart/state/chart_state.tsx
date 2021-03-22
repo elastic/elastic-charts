@@ -22,6 +22,7 @@ import React, { RefObject } from 'react';
 import { ChartTypes } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { LegendItem } from '../../../common/legend';
+import { ScreenReaderData } from '../../../components/screen_reader/screen_reader';
 import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
@@ -138,5 +139,10 @@ export class GoalState implements InternalChartState {
   // TODO
   getDebugState(): DebugState {
     return {};
+  }
+
+  // TODO
+  getScreenReaderData(): ScreenReaderData[] {
+    return [];
   }
 }

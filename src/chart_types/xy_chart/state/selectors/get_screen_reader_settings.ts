@@ -17,33 +17,20 @@
  * under the License.
  */
 
-import React from 'react';
+import createCachedSelector from 're-reselect';
 
-import { Chart, BarSeries, ScaleType, Settings } from '../src';
+import { DEFAULT_SETTINGS_SPEC } from '../../../../specs/constants';
+import { DataTableProps } from '../../../../specs/settings';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 
-export class Playground extends React.Component {
-  render() {
-    return (
-      <div className="story-chart story-root root">
-        <Chart size={[500, 200]}>
-          <Settings showLegend showLegendExtra />
-          <BarSeries
-            id="areas"
-            name="area"
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor={0}
-            yAccessors={[1]}
-            splitSeriesAccessors={[2]}
-            data={[
-              [0, 123, 'group0'],
-              [0, 123, 'group1'],
-              [0, 123, 'group2'],
-              [0, 123, 'group3'],
-            ]}
-          />
-        </Chart>
-      </div>
-    );
-  }
-}
+/** @internal */
+export const getScreenReaderDataTableSettingsSelector = createCachedSelector(
+  [getSettingsSpecSelector],
+  ({ dataTable }): DataTableProps => {
+    return {
+      ...DEFAULT_SETTINGS_SPEC.dataTable,
+      ...dataTable,
+    };
+  },
+)(getChartIdSelector);

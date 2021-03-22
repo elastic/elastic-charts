@@ -314,6 +314,14 @@ export interface LegendColorPickerProps {
 export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 
 /**
+ * Props for the data table component used for screen readers
+ * @public
+ */
+export interface DataTableProps {
+  showDefaultDescription?: boolean;
+  HeadingLevel?: 'h2';
+}
+/**
  * Buffer between cursor and point to trigger interaction
  */
 export type MarkBuffer = number | ((radius: number) => number);
@@ -468,6 +476,10 @@ export interface SettingsSpec extends Spec {
    * Render component for no results UI
    */
   noResults?: ComponentType | ReactChild;
+  /**
+   * Data table generated for screen readers
+   */
+  dataTable: DataTableProps;
 }
 
 /**
@@ -526,7 +538,8 @@ export type DefaultSettingsProps =
   | 'hideDuplicateAxes'
   | 'brushAxis'
   | 'minBrushDelta'
-  | 'externalPointerEvents';
+  | 'externalPointerEvents'
+  | 'dataTable';
 
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
 

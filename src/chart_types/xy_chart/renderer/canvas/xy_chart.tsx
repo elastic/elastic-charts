@@ -22,6 +22,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { LegendItem } from '../../../../common/legend';
+import { DataTableProps } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
@@ -48,6 +49,7 @@ import {
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
+import { getScreenReaderDataTableSettingsSelector } from '../../state/selectors/get_screen_reader_settings';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { Geometries, Transform } from '../../state/utils/types';
@@ -76,6 +78,7 @@ export interface ReactiveChartStateProps {
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
+  dataTable: DataTableProps;
 }
 
 interface ReactiveChartDispatchProps {
@@ -145,6 +148,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
     this.ctx = canvas && canvas.getContext('2d');
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   render() {
     const {
       forwardStageRef,
@@ -159,16 +163,23 @@ class XYChartComponent extends React.Component<XYChartProps> {
     }
 
     return (
-      <canvas
-        ref={forwardStageRef}
-        className="echCanvasRenderer"
-        width={width * this.devicePixelRatio}
-        height={height * this.devicePixelRatio}
-        style={{
-          width,
-          height,
-        }}
-      />
+      <figure>
+        <canvas
+          ref={forwardStageRef}
+          className="echCanvasRenderer"
+          width={width * this.devicePixelRatio}
+          height={height * this.devicePixelRatio}
+          style={{
+            width,
+            height,
+          }}
+          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+          role="presentation"
+        />
+        <h2 id="alt_text" className="screen-reader">
+          This is a chart
+        </h2>
+      </figure>
     );
   }
 }
@@ -220,6 +231,9 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationDimensions: new Map(),
   annotationSpecs: [],
   panelGeoms: [],
+  dataTable: {
+    showDefaultDescription: true,
+  },
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -248,6 +262,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
+    dataTable: getScreenReaderDataTableSettingsSelector(state),
   };
 };
 

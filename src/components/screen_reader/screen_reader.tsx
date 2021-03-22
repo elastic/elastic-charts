@@ -17,33 +17,18 @@
  * under the License.
  */
 
-import React from 'react';
+import { Scale } from '../../scales';
+import { SeriesName, SeriesNameConfigOptions, SeriesNameFn, SeriesTypes } from '../../specs';
+import { GroupId } from '../../utils/ids';
 
-import { Chart, BarSeries, ScaleType, Settings } from '../src';
-
-export class Playground extends React.Component {
-  render() {
-    return (
-      <div className="story-chart story-root root">
-        <Chart size={[500, 200]}>
-          <Settings showLegend showLegendExtra />
-          <BarSeries
-            id="areas"
-            name="area"
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor={0}
-            yAccessors={[1]}
-            splitSeriesAccessors={[2]}
-            data={[
-              [0, 123, 'group0'],
-              [0, 123, 'group1'],
-              [0, 123, 'group2'],
-              [0, 123, 'group3'],
-            ]}
-          />
-        </Chart>
-      </div>
-    );
-  }
+/** @internal */
+export interface ScreenReaderData {
+  seriesName: SeriesName | SeriesNameFn | SeriesNameConfigOptions | undefined;
+  seriesType: SeriesTypes;
+  splitAccessor: Map<string | number, string | number>;
+  dataKey: (string | number)[];
+  dataValue: any[];
+  xScale: Scale;
+  yScales: Map<GroupId, Scale>;
+  axesTitles: (string | undefined)[][];
 }
