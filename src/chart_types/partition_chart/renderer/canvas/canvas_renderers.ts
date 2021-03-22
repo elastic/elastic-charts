@@ -267,13 +267,14 @@ export function renderPartitionCanvas2d(
     ctx.textBaseline = 'middle';
 
     // panel titles
-
     ctx.fillText(
       panelTitle,
       isSunburst(config.partitionLayout) ? diskCenter.x : diskCenter.x + (config.width * width) / 2,
       isSunburst(config.partitionLayout)
-        ? diskCenter.y + (config.height * height) / 2 - 12
-        : diskCenter.y + config.height * height - 12,
+        ? config.linkLabel.maxCount > 0
+          ? diskCenter.y - (config.height * height) / 2 + 12
+          : diskCenter.y - Math.min(config.width * width, config.height * height) / 2 - 12
+        : diskCenter.y + 12,
     );
 
     ctx.translate(diskCenter.x, diskCenter.y);
