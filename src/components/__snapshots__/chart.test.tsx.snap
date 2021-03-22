@@ -54,7 +54,7 @@ exports[`Chart should render the legend name test 1`] = `
         <Connect(SpecsParserComponent)>
           <SpecsParserComponent specParsed={[Function (anonymous)]} specUnmounted={[Function (anonymous)]}>
             <Connect(SpecInstance) debug={true} rendering=\\"svg\\" showLegend={true}>
-              <SpecInstance debug={true} rendering=\\"svg\\" showLegend={true} upsertSpec={[Function (anonymous)]} removeSpec={[Function (anonymous)]} id=\\"__global__settings___\\" chartType=\\"global\\" specType=\\"settings\\" rotation={0} animateData={true} resizeDebounce={10} tooltip={{...}} externalPointerEvents={{...}} legendMaxDepth={Infinity} legendPosition=\\"right\\" showLegendExtra={false} hideDuplicateAxes={false} baseTheme={{...}} brushAxis=\\"x\\" minBrushDelta={2} />
+              <SpecInstance debug={true} rendering=\\"svg\\" showLegend={true} upsertSpec={[Function (anonymous)]} removeSpec={[Function (anonymous)]} id=\\"__global__settings___\\" chartType=\\"global\\" specType=\\"settings\\" rotation={0} animateData={true} resizeDebounce={10} tooltip={{...}} externalPointerEvents={{...}} legendMaxDepth={Infinity} legendPosition=\\"right\\" showLegendExtra={false} hideDuplicateAxes={false} baseTheme={{...}} brushAxis=\\"x\\" minBrushDelta={2} dataTable={{...}} />
             </Connect(SpecInstance)>
             <Connect(SpecInstance) id=\\"test\\" data={{...}}>
               <SpecInstance id=\\"test\\" data={{...}} upsertSpec={[Function (anonymous)]} removeSpec={[Function (anonymous)]} chartType=\\"xy_axis\\" specType=\\"series\\" seriesType=\\"bar\\" groupId=\\"__global__\\" xScaleType=\\"ordinal\\" yScaleType=\\"linear\\" xAccessor=\\"x\\" yAccessors={{...}} yScaleToDataExtent={false} hideInLegend={false} enableHistogramMode={false} />
@@ -72,8 +72,13 @@ exports[`Chart should render the legend name test 1`] = `
                   </Crosshair>
                 </Connect(Crosshair)>
                 <Connect(XYChart) forwardStageRef={{...}}>
-                  <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} onChartRendered={[Function (anonymous)]}>
-                    <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} />
+                  <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} dataTable={{...}} onChartRendered={[Function (anonymous)]}>
+                    <figure>
+                      <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\" />
+                      <h2 id=\\"alt_text\\" className=\\"screen-reader\\">
+                        This is a chart
+                      </h2>
+                    </figure>
                   </XYChart>
                 </Connect(XYChart)>
                 <Connect(Tooltip) getChartContainerRef={[Function (anonymous)]}>
