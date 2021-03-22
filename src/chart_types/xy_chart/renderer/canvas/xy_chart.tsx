@@ -163,23 +163,19 @@ class XYChartComponent extends React.Component<XYChartProps> {
     }
 
     return (
-      <figure>
-        <canvas
-          ref={forwardStageRef}
-          className="echCanvasRenderer"
-          width={width * this.devicePixelRatio}
-          height={height * this.devicePixelRatio}
-          style={{
-            width,
-            height,
-          }}
-          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-          role="presentation"
-        />
-        <h2 id="alt_text" className="screen-reader">
-          This is a chart
-        </h2>
-      </figure>
+      <canvas
+        ref={forwardStageRef}
+        className="echCanvasRenderer"
+        width={width * this.devicePixelRatio}
+        height={height * this.devicePixelRatio}
+        style={{
+          width,
+          height,
+        }}
+        aria-label="This is a chart"
+        // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+        role="img"
+      />
     );
   }
 }
