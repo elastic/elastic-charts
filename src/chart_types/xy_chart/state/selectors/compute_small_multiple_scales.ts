@@ -20,7 +20,7 @@
 import createCachedSelector from 're-reselect';
 
 import { ScaleBand } from '../../../../scales';
-import { DEFAULT_SM_PANEL_PADDING, StartEndRatio } from '../../../../specs/small_multiples';
+import { DEFAULT_SM_PANEL_PADDING, RelativeBandsPadding } from '../../../../specs/small_multiples';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
 import { OrdinalDomain } from '../../../../utils/domain';
@@ -50,7 +50,11 @@ export const computeSmallMultipleScalesSelector = createCachedSelector(
 /**
  * @internal
  */
-export function getScale(domain: OrdinalDomain, maxRange: number, padding: StartEndRatio = DEFAULT_SM_PANEL_PADDING) {
+export function getScale(
+  domain: OrdinalDomain,
+  maxRange: number,
+  padding: RelativeBandsPadding = DEFAULT_SM_PANEL_PADDING,
+) {
   const singlePanelSmallMultiple = domain.length <= 1;
   const defaultDomain = domain.length === 0 ? [undefined] : domain;
   return new ScaleBand(defaultDomain, [0, maxRange], undefined, singlePanelSmallMultiple ? 0 : padding);

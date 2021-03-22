@@ -29,7 +29,7 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
-import { SmallMultiplesStyle, StartEndRatio } from '../../../../specs';
+import { SmallMultiplesStyle, RelativeBandsPadding } from '../../../../specs';
 import { StrokeStyle, ValueFormatter, Color, RecursivePartial } from '../../../../utils/common';
 import { Layer } from '../../specs';
 import { config as defaultConfig, MODEL_KEY, percentValueGetter } from '../config';
@@ -261,7 +261,7 @@ const rawChildNodes = (
 /** @internal */
 export type PanelPlacement = PartitionSmallMultiplesModel;
 
-function getInterMarginSize(size: Pixels, [startMargin, endMargin]: StartEndRatio) {
+function getInterMarginSize(size: Pixels, [startMargin, endMargin]: RelativeBandsPadding) {
   return size * (1 - Math.min(1, startMargin + endMargin));
 }
 

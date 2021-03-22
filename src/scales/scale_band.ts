@@ -22,6 +22,7 @@ import { scaleBand, scaleQuantize, ScaleQuantize, ScaleBand as D3ScaleBand } fro
 import { Scale, ScaleBandType } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Ratio } from '../common/geometry';
+import { RelativeBandsPadding } from '../specs';
 import { maxValueWithUpperLimit, stringifyNullsUndefined } from '../utils/common';
 import { Range } from '../utils/domain';
 import { ScaleType } from './constants';
@@ -68,7 +69,7 @@ export class ScaleBand implements Scale {
      * A number between 0 and 1.
      * @defaultValue 0
      */
-    barsPadding: Ratio | [Ratio, Ratio] = 0,
+    barsPadding: Ratio | RelativeBandsPadding = 0,
   ) {
     this.type = ScaleType.Ordinal;
     this.d3Scale = scaleBand<NonNullable<PrimitiveValue>>();

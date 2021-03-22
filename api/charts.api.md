@@ -1679,6 +1679,9 @@ export type ProjectedValues = {
 // @public
 export type ProjectionClickListener = (values: ProjectedValues) => void;
 
+// @public
+export type Ratio = number;
+
 // Warning: (ae-missing-release-tag) "RawTextGetter" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1736,6 +1739,20 @@ export interface RectStyle {
 export type RecursivePartial<T> = {
     [P in keyof T]?: T[P] extends NonAny[] ? T[P] : T[P] extends ReadonlyArray<NonAny> ? T[P] : T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends ReadonlyArray<infer U> ? ReadonlyArray<RecursivePartial<U>> : T[P] extends Set<infer V> ? Set<RecursivePartial<V>> : T[P] extends Map<infer K, infer V> ? Map<K, RecursivePartial<V>> : T[P] extends NonAny ? T[P] : RecursivePartial<T[P]>;
 };
+
+// @alpha
+export type RelativeBandsPadding = [
+    /**
+     * Outer padding specifies the padding size *next to* a small multiples panel that's on the edge of the small
+     * multiples grid, expressed as a proportion (ratio) of the panel size
+     */
+    Ratio,
+    /**
+     * Inner padding specifies the padding size *between* small multiples panels in the small multiples grid,
+     * expressed as a proportion (ratio) of the panel size
+     */
+    Ratio
+];
 
 // Warning: (ae-missing-release-tag) "RenderChangeListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -2039,17 +2056,16 @@ export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'chatType' | 
 
 // @alpha (undocumented)
 export interface SmallMultiplesSpec extends Spec {
-    // (undocumented)
     splitHorizontally?: string;
-    // (undocumented)
     splitVertically?: string;
-    // (undocumented)
     splitZigzag?: string;
-    // (undocumented)
-    style?: {
-        verticalPanelPadding?: [number, number];
-        horizontalPanelPadding?: [number, number];
-    };
+    style?: Partial<SmallMultiplesStyle>;
+}
+
+// @alpha
+export interface SmallMultiplesStyle {
+    horizontalPanelPadding: RelativeBandsPadding;
+    verticalPanelPadding: RelativeBandsPadding;
 }
 
 // Warning: (ae-missing-release-tag) "SORT_INDEX_KEY" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
