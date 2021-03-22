@@ -298,6 +298,10 @@ export function highlightSetMapper(geometries: QuadViewModel[], foci: IndexedCon
       outerRadius: vm.outerRadius,
       geometries: geometries.filter(({ index: i, innerIndex: ii }) => vm.index === i && vm.innerIndex === ii),
       geometriesFoci: foci.filter(({ index: i, innerIndex: ii }) => vm.index === i && vm.innerIndex === ii),
+      innerRowIndex: vm.innerRowIndex,
+      innerColumnIndex: vm.innerColumnIndex,
+      innerRowCount: vm.innerRowCount,
+      innerColumnCount: vm.innerColumnCount,
     };
   };
 }

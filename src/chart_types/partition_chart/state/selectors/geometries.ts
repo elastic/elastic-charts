@@ -21,6 +21,7 @@ import createCachedSelector from 're-reselect';
 
 import { ChartTypes } from '../../..';
 import { CategoryKey } from '../../../../common/category';
+import { Pixels, Ratio } from '../../../../common/geometry';
 import { SmallMultiplesSpec, SpecTypes } from '../../../../specs';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
@@ -37,6 +38,10 @@ import { getTrees, StyledTree } from './tree';
 
 const horizontalSplit = (s?: SmallMultiplesSpec) => s?.splitHorizontally;
 const verticalSplit = (s?: SmallMultiplesSpec) => s?.splitVertically;
+
+function getInterMarginSize(size: Pixels, startMargin: Ratio, endMargin: Ratio) {
+  return size * (1 - Math.min(1, startMargin + endMargin));
+}
 
 /** @internal */
 export const partitionMultiGeometries = createCachedSelector(
@@ -57,30 +62,33 @@ export const partitionMultiGeometries = createCachedSelector(
       ? 'vertical'
       : 'zigzag';
 
-    const { width, height } = parentDimensions;
-    const outerPanelCount = partitionSpecs.length;
+    const { width: marginedWidth, height: marginedHeight } = parentDimensions;
 
+    const outerPanelCount = partitionSpecs.length;
     const zigzagColumnCount = Math.ceil(Math.sqrt(outerPanelCount));
     const zigzagRowCount = Math.ceil(outerPanelCount / zigzagColumnCount);
 
-    const result = partitionSpecs.flatMap((spec, index) => {
-      const outerHeight =
-        outerSpecDirection === 'vertical'
-          ? 1 / outerPanelCount
-          : outerSpecDirection === 'zigzag'
-          ? 1 / zigzagRowCount
-          : 1;
-      const outerWidth =
-        outerSpecDirection === 'horizontal'
-          ? 1 / outerPanelCount
-          : outerSpecDirection === 'zigzag'
-          ? 1 / zigzagColumnCount
-          : 1;
+    const outerWidthRatio =
+      outerSpecDirection === 'horizontal'
+        ? 1 / outerPanelCount
+        : outerSpecDirection === 'zigzag'
+        ? 1 / zigzagColumnCount
+        : 1;
+    const outerHeightRatio =
+      outerSpecDirection === 'vertical'
+        ? 1 / outerPanelCount
+        : outerSpecDirection === 'zigzag'
+        ? 1 / zigzagRowCount
+        : 1;
 
+    const chartWidth = getInterMarginSize(marginedWidth, config.margin.left, config.margin.right);
+    const chartHeight = getInterMarginSize(marginedHeight, config.margin.top, config.margin.bottom);
+
+    const result = partitionSpecs.flatMap((spec, index) => {
       return trees.map(({ name, style, tree: t }: StyledTree, innerIndex, a) => {
         const innerPanelCount = a.length;
-        const outerPanelWidth = width * outerWidth;
-        const outerPanelHeight = height * outerHeight;
+        const outerPanelWidth = chartWidth * outerWidthRatio;
+        const outerPanelHeight = chartHeight * outerHeightRatio;
         const outerPanelArea = outerPanelWidth * outerPanelHeight;
         const innerPanelTargetArea = outerPanelArea / innerPanelCount;
         const innerPanelTargetHeight = Math.sqrt(innerPanelTargetArea); // attempting squarish inner panels
@@ -88,54 +96,88 @@ export const partitionMultiGeometries = createCachedSelector(
         const innerZigzagRowCountEstimate = Math.max(1, Math.floor(outerPanelHeight / innerPanelTargetHeight)); // err on the side of landscape aspect ratio
         const innerZigzagColumnCount = Math.ceil(a.length / innerZigzagRowCountEstimate);
         const innerZigzagRowCount = Math.ceil(a.length / innerZigzagColumnCount);
+        const innerRowCount =
+          innerBreakdownDirection === 'vertical'
+            ? a.length
+            : innerBreakdownDirection === 'zigzag'
+            ? innerZigzagRowCount
+            : 1;
+        const innerColumnCount =
+          innerBreakdownDirection === 'vertical'
+            ? 1
+            : innerBreakdownDirection === 'zigzag'
+            ? innerZigzagColumnCount
+            : a.length;
+        const innerRowIndex =
+          innerBreakdownDirection === 'vertical'
+            ? innerIndex
+            : innerBreakdownDirection === 'zigzag'
+            ? Math.floor(innerIndex / innerZigzagColumnCount)
+            : 0;
+        const innerColumnIndex =
+          innerBreakdownDirection === 'vertical'
+            ? 0
+            : innerBreakdownDirection === 'zigzag'
+            ? innerIndex % innerZigzagColumnCount
+            : innerIndex;
+        const topOuterRatio =
+          outerSpecDirection === 'vertical'
+            ? index / outerPanelCount
+            : outerSpecDirection === 'zigzag'
+            ? Math.floor(index / zigzagColumnCount) / zigzagRowCount
+            : 0;
+        const topInnerRatio =
+          outerHeightRatio *
+          (innerBreakdownDirection === 'vertical'
+            ? innerIndex / a.length
+            : innerBreakdownDirection === 'zigzag'
+            ? Math.floor(innerIndex / innerZigzagColumnCount) / innerZigzagRowCount
+            : 0);
+        const panelHeightRatio =
+          outerHeightRatio *
+          (innerBreakdownDirection === 'vertical'
+            ? 1 / a.length
+            : innerBreakdownDirection === 'zigzag'
+            ? 1 / innerZigzagRowCount
+            : 1);
+        const leftOuterRatio =
+          outerSpecDirection === 'horizontal'
+            ? index / outerPanelCount
+            : outerSpecDirection === 'zigzag'
+            ? (index % zigzagColumnCount) / zigzagColumnCount
+            : 0;
+        const leftInnerRatio =
+          outerWidthRatio *
+          (innerBreakdownDirection === 'horizontal'
+            ? innerIndex / a.length
+            : innerBreakdownDirection === 'zigzag'
+            ? (innerIndex % innerZigzagColumnCount) / innerZigzagColumnCount
+            : 0);
+        const panelWidthRatio =
+          outerWidthRatio *
+          (innerBreakdownDirection === 'horizontal'
+            ? 1 / a.length
+            : innerBreakdownDirection === 'zigzag'
+            ? 1 / innerZigzagColumnCount
+            : 1);
         return getShapeViewModel(spec, parentDimensions, t, background.color, style, {
           index,
           innerIndex,
           partitionLayout: spec.config.partitionLayout ?? config.partitionLayout,
           panelTitle: String(name),
-          top:
-            (outerSpecDirection === 'vertical'
-              ? index / outerPanelCount
-              : outerSpecDirection === 'zigzag'
-              ? Math.floor(index / zigzagColumnCount) / zigzagRowCount
-              : 0) +
-            outerHeight *
-              (innerBreakdownDirection === 'vertical'
-                ? innerIndex / a.length
-                : innerBreakdownDirection === 'zigzag'
-                ? Math.floor(innerIndex / innerZigzagColumnCount) / innerZigzagRowCount
-                : 0),
-          height:
-            outerHeight *
-            (innerBreakdownDirection === 'vertical'
-              ? 1 / a.length
-              : innerBreakdownDirection === 'zigzag'
-              ? 1 / innerZigzagRowCount
-              : 1),
-          left:
-            (outerSpecDirection === 'horizontal'
-              ? index / outerPanelCount
-              : outerSpecDirection === 'zigzag'
-              ? (index % zigzagColumnCount) / zigzagColumnCount
-              : 0) +
-            outerWidth *
-              (innerBreakdownDirection === 'horizontal'
-                ? innerIndex / a.length
-                : innerBreakdownDirection === 'zigzag'
-                ? (innerIndex % innerZigzagColumnCount) / innerZigzagColumnCount
-                : 0),
-          width:
-            outerWidth *
-            (innerBreakdownDirection === 'horizontal'
-              ? 1 / a.length
-              : innerBreakdownDirection === 'zigzag'
-              ? 1 / innerZigzagColumnCount
-              : 1),
+          top: topOuterRatio + topInnerRatio,
+          height: panelHeightRatio,
+          left: leftOuterRatio + leftInnerRatio,
+          width: panelWidthRatio,
+          innerRowCount,
+          innerColumnCount,
+          innerRowIndex,
+          innerColumnIndex,
         });
       });
     });
 
-    return result.length === 0 ? [nullShapeViewModel(config, { x: outerWidth, y: outerHeight })] : result;
+    return result.length === 0 ? [nullShapeViewModel(config, { x: outerWidthRatio, y: outerHeightRatio })] : result;
   },
 )(getChartIdSelector);
 

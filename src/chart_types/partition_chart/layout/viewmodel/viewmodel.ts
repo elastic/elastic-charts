@@ -265,6 +265,11 @@ function getInterMarginSize(size: Pixels, [startMargin, endMargin]: RelativeBand
   return size * (1 - Math.min(1, startMargin + endMargin));
 }
 
+function bandwidth(range: Pixels, bandCount: number, [outer, inner]: RelativeBandsPadding) {
+  // same convention as d3.scaleBand https://observablehq.com/@d3/d3-scaleband
+  return range / (2 * outer + bandCount + bandCount * inner - inner);
+}
+
 /** @internal */
 export function shapeViewModel(
   textMeasure: TextMeasure,
@@ -298,14 +303,26 @@ export function shapeViewModel(
   const innerWidth = getInterMarginSize(width, [margin.left, margin.right]);
   const innerHeight = getInterMarginSize(height, [margin.top, margin.bottom]);
 
-  const panelWidth = innerWidth * panelPlacement.width;
-  const panelHeight = innerHeight * panelPlacement.height;
+  const panelInnerWidth = bandwidth(
+    innerWidth,
+    panelPlacement.innerColumnCount,
+    smallMultiplesStyle.horizontalPanelPadding,
+  );
 
-  const panelInnerWidth = getInterMarginSize(panelWidth, smallMultiplesStyle.horizontalPanelPadding);
-  const panelInnerHeight = getInterMarginSize(panelHeight, smallMultiplesStyle.verticalPanelPadding);
+  const panelInnerHeight = bandwidth(
+    innerHeight,
+    panelPlacement.innerRowCount,
+    smallMultiplesStyle.verticalPanelPadding,
+  );
 
-  const marginLeftPx = width * margin.left + panelWidth * smallMultiplesStyle.horizontalPanelPadding[0];
-  const marginTopPx = height * margin.top + panelHeight * smallMultiplesStyle.verticalPanelPadding[0];
+  const marginLeftPx =
+    width * margin.left +
+    panelInnerWidth * smallMultiplesStyle.horizontalPanelPadding[0] +
+    panelPlacement.innerColumnIndex * (panelInnerWidth * (1 + smallMultiplesStyle.horizontalPanelPadding[1]));
+  const marginTopPx =
+    height * margin.top +
+    panelInnerHeight * smallMultiplesStyle.verticalPanelPadding[0] +
+    panelPlacement.innerRowIndex * (panelInnerHeight * (1 + smallMultiplesStyle.verticalPanelPadding[1]));
 
   const treemapLayout = isTreemap(partitionLayout);
   const sunburstLayout = isSunburst(partitionLayout);
@@ -315,12 +332,12 @@ export function shapeViewModel(
 
   const diskCenter = isSunburst(partitionLayout)
     ? {
-        x: marginLeftPx + width * panelPlacement.left + panelInnerWidth / 2,
-        y: marginTopPx + height * panelPlacement.top + panelInnerHeight / 2,
+        x: marginLeftPx + panelInnerWidth / 2,
+        y: marginTopPx + panelInnerHeight / 2,
       }
     : {
-        x: marginLeftPx + width * panelPlacement.left,
-        y: marginTopPx + height * panelPlacement.top,
+        x: marginLeftPx,
+        y: marginTopPx,
       };
 
   // don't render anything if the total, the width or height is not positive
@@ -436,7 +453,10 @@ export function shapeViewModel(
     valueGetter,
     valueFormatter,
     maxLinkedLabelTextLength,
-    { x: diskCenter.x - marginLeftPx, y: diskCenter.y - marginTopPx },
+    {
+      x: width * panelPlacement.left + panelInnerWidth / 2,
+      y: height * panelPlacement.top + panelInnerHeight / 2,
+    },
     containerBackgroundColor,
   );
 
@@ -468,6 +488,10 @@ export function shapeViewModel(
     height: panelPlacement.height,
     top: panelPlacement.top,
     left: panelPlacement.left,
+    innerRowCount: panelPlacement.innerRowCount,
+    innerColumnCount: panelPlacement.innerColumnCount,
+    innerRowIndex: panelPlacement.innerRowIndex,
+    innerColumnIndex: panelPlacement.innerColumnIndex,
 
     config,
     layers,

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { boolean, select } from '@storybook/addon-knobs';
+import { boolean, select, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -74,7 +74,36 @@ export const Example = () => {
         splitHorizontally={layout === 'h' ? 'split' : undefined}
         splitVertically={layout === 'v' ? 'split' : undefined}
         splitZigzag={layout === 'z' ? 'split' : undefined}
-        style={{ horizontalPanelPadding: [0.05, 0.05], verticalPanelPadding: [0.15, 0] }}
+        style={{
+          horizontalPanelPadding: [
+            number('Horizontal outer pad', 0.15, {
+              range: true,
+              min: 0,
+              max: 0.5,
+              step: 0.05,
+            }),
+            number('Horizontal inner pad', 0.05, {
+              range: true,
+              min: 0,
+              max: 0.5,
+              step: 0.05,
+            }),
+          ],
+          verticalPanelPadding: [
+            number('Vertical outer pad', 0.15, {
+              range: true,
+              min: 0,
+              max: 0.5,
+              step: 0.05,
+            }),
+            number('Vertical inner pad', 0.05, {
+              range: true,
+              min: 0,
+              max: 0.5,
+              step: 0.05,
+            }),
+          ],
+        }}
       />
       <Partition
         id="spec_2"
