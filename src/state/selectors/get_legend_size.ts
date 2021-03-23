@@ -24,7 +24,7 @@ import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
 import { LegendPositionConfig } from '../../specs/settings';
 import { BBox } from '../../utils/bbox/bbox_calculator';
 import { CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
-import { Position, isDefined } from '../../utils/common';
+import { Position, isDefined, LayoutDirection } from '../../utils/common';
 import { GlobalChartState } from '../chart_state';
 import { getChartIdSelector } from './get_chart_id';
 import { getChartThemeSelector } from './get_chart_theme';
@@ -87,7 +87,7 @@ export const getLegendSizeSelector = createCachedSelector(
     const legendItemWidth =
       MARKER_WIDTH + MARKER_LEFT_MARGIN + bbox.width + (showLegendDisplayValue ? VALUE_LEFT_MARGIN : 0);
 
-    if (legendPosition.direction === 'vertical') {
+    if (legendPosition.direction === LayoutDirection.Vertical) {
       const legendItemHeight = bbox.height + VERTICAL_PADDING * 2;
       const legendHeight = legendItemHeight * labels.length + TOP_MARGIN;
       const scrollBarDimension = legendHeight > parentDimensions.height ? SCROLL_BAR_WIDTH : 0;

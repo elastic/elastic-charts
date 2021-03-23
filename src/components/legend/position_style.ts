@@ -20,7 +20,7 @@ import { CSSProperties } from 'react';
 
 import { LegendSpec, LegendPositionConfig } from '../../specs/settings';
 import { BBox } from '../../utils/bbox/bbox_calculator';
-import { Position } from '../../utils/common';
+import { LayoutDirection, Position } from '../../utils/common';
 import { Dimensions } from '../../utils/dimensions';
 
 const INSIDE_PADDING = 10;
@@ -39,7 +39,7 @@ export function legendPositionStyle(
 
   const { Left, Right, Top, Bottom } = Position;
 
-  if (direction === 'vertical') {
+  if (direction === LayoutDirection.Vertical) {
     return {
       position: 'absolute',
       zIndex: 1,
@@ -67,25 +67,25 @@ export const LEGEND_TO_FULL_CONFIG: Record<Position, LegendPositionConfig> = {
   [Position.Left]: {
     vAlign: Position.Top,
     hAlign: Position.Left,
-    direction: 'vertical',
+    direction: LayoutDirection.Vertical,
     floating: false,
   },
   [Position.Top]: {
     vAlign: Position.Top,
     hAlign: Position.Left,
-    direction: 'horizontal',
+    direction: LayoutDirection.Horizontal,
     floating: false,
   },
   [Position.Bottom]: {
     vAlign: Position.Bottom,
     hAlign: Position.Left,
-    direction: 'horizontal',
+    direction: LayoutDirection.Horizontal,
     floating: false,
   },
   [Position.Right]: {
     vAlign: Position.Top,
     hAlign: Position.Right,
-    direction: 'vertical',
+    direction: LayoutDirection.Vertical,
     floating: false,
   },
 };
@@ -94,8 +94,5 @@ export const LEGEND_TO_FULL_CONFIG: Record<Position, LegendPositionConfig> = {
  * @internal
  */
 export function getLegendPositionConfig(position: LegendSpec['legendPosition']): LegendPositionConfig {
-  if (typeof position === 'object') {
-    return position;
-  }
-  return LEGEND_TO_FULL_CONFIG[position];
+  return typeof position === 'object' ? position : LEGEND_TO_FULL_CONFIG[position];
 }

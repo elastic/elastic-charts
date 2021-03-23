@@ -22,6 +22,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLegendConfigSelector } from '../../../../state/selectors/get_legend_config_selector';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
+import { LayoutDirection } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
 
@@ -37,7 +38,7 @@ export const getHeatmapContainerSizeSelector = createCachedSelector(
     if (!showLegend || legendPosition.floating) {
       return parentDimensions;
     }
-    if (legendPosition.direction === 'vertical') {
+    if (legendPosition.direction === LayoutDirection.Vertical) {
       return {
         left: 0,
         top: 0,

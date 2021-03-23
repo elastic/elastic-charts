@@ -19,6 +19,7 @@
 
 import { LegendPositionConfig } from '../../specs/settings';
 import { BBox } from '../../utils/bbox/bbox_calculator';
+import { LayoutDirection } from '../../utils/common';
 import { Margins } from '../../utils/dimensions';
 import { LegendStyle as ThemeLegendStyle } from '../../utils/themes/theme';
 
@@ -56,7 +57,7 @@ export function getLegendListStyle(
 ): LegendListStyle {
   const { top: paddingTop, bottom: paddingBottom, left: paddingLeft, right: paddingRight } = chartMargins;
 
-  if (direction === 'horizontal') {
+  if (direction === LayoutDirection.Horizontal) {
     return {
       paddingLeft,
       paddingRight,
@@ -74,7 +75,7 @@ export function getLegendListStyle(
  * @internal
  */
 export function getLegendStyle(direction: LegendPositionConfig['direction'], size: BBox, margin: number): LegendStyle {
-  if (direction === 'vertical') {
+  if (direction === LayoutDirection.Vertical) {
     const width = `${size.width}px`;
     return {
       width,

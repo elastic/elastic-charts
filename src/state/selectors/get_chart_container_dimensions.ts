@@ -19,6 +19,7 @@
 
 import createCachedSelector from 're-reselect';
 
+import { LayoutDirection } from '../../utils/common';
 import { Dimensions } from '../../utils/dimensions';
 import { GlobalChartState } from '../chart_state';
 import { getChartIdSelector } from './get_chart_id';
@@ -34,7 +35,7 @@ export const getChartContainerDimensionsSelector = createCachedSelector(
     if (!showLegend || floating) {
       return parentDimensions;
     }
-    if (direction === 'vertical') {
+    if (direction === LayoutDirection.Vertical) {
       return {
         left: 0,
         top: 0,

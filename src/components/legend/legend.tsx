@@ -41,6 +41,7 @@ import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_i
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { BBox } from '../../utils/bbox/bbox_calculator';
+import { HorizontalAlignment, LayoutDirection, VerticalAlignment } from '../../utils/common';
 import { Dimensions } from '../../utils/dimensions';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { Theme } from '../../utils/themes/theme';
@@ -82,22 +83,22 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     return null;
   }
 
-  const legendPositionConfig = getLegendPositionConfig(config.legendPosition);
-  const legendContainerStyle = getLegendStyle(legendPositionConfig.direction, size, legend.margin);
-  const legendListStyle = getLegendListStyle(legendPositionConfig.direction, chartMargins, legend);
+  const positionConfig = getLegendPositionConfig(config.legendPosition);
+  const containerStyle = getLegendStyle(positionConfig.direction, size, legend.margin);
+  const listStyle = getLegendListStyle(positionConfig.direction, chartMargins, legend);
 
   const legendClasses = classNames('echLegend', {
     'echLegend--debug': debug,
-    'echLegend--horizontal': legendPositionConfig.direction === 'horizontal',
-    'echLegend--vertical': legendPositionConfig.direction === 'vertical',
-    'echLegend--left': legendPositionConfig.hAlign === 'left',
-    'echLegend--right': legendPositionConfig.hAlign === 'right',
-    'echLegend--top': legendPositionConfig.vAlign === 'top',
-    'echLegend--bottom': legendPositionConfig.vAlign === 'bottom',
+    'echLegend--horizontal': positionConfig.direction === LayoutDirection.Horizontal,
+    'echLegend--vertical': positionConfig.direction === LayoutDirection.Vertical,
+    'echLegend--left': positionConfig.hAlign === HorizontalAlignment.Left,
+    'echLegend--right': positionConfig.hAlign === HorizontalAlignment.Right,
+    'echLegend--top': positionConfig.vAlign === VerticalAlignment.Top,
+    'echLegend--bottom': positionConfig.vAlign === VerticalAlignment.Bottom,
   });
 
   const itemProps: Omit<LegendItemProps, 'item'> = {
-    legendPositionConfig,
+    positionConfig,
     totalItems: items.length,
     extraValues: props.extraValues,
     showExtra: config.showLegendExtra,
@@ -113,11 +114,11 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     colorPicker: config.legendColorPicker,
     action: config.legendAction,
   };
-  const legendPositionStyleS = legendPositionStyle(config, size, chartDimensions, containerDimensions);
+  const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
   return (
-    <div className={legendClasses} style={legendPositionStyleS}>
-      <div style={legendContainerStyle} className="echLegendListContainer">
-        <ul style={legendListStyle} className="echLegendList">
+    <div className={legendClasses} style={positionStyle}>
+      <div style={containerStyle} className="echLegendListContainer">
+        <ul style={listStyle} className="echLegendList">
           {items.map((item, index) => renderLegendItem(item, itemProps, items.length, index))}
         </ul>
       </div>

@@ -39,7 +39,7 @@ import {
   onLegendItemOverAction,
   onToggleDeselectSeriesAction,
 } from '../../state/actions/legend';
-import { Color } from '../../utils/common';
+import { Color, LayoutDirection } from '../../utils/common';
 import { deepEqual } from '../../utils/fast_deep_equal';
 import { Color as ItemColor } from './color';
 import { renderExtra } from './extra';
@@ -53,7 +53,7 @@ export const LEGEND_HIERARCHY_MARGIN = 10;
 export interface LegendItemProps {
   item: LegendItem;
   totalItems: number;
-  legendPositionConfig: LegendPositionConfig;
+  positionConfig: LegendPositionConfig;
   extraValues: Map<string, LegendItemExtraValues>;
   showExtra: boolean;
   colorPicker?: LegendColorPicker;
@@ -175,12 +175,12 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   }
 
   render() {
-    const { extraValues, item, showExtra, colorPicker, totalItems, action: Action, legendPositionConfig } = this.props;
+    const { extraValues, item, showExtra, colorPicker, totalItems, action: Action, positionConfig } = this.props;
     const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label } = item;
     const itemClassNames = classNames('echLegendItem', {
       'echLegendItem--hidden': isSeriesHidden,
       'echLegendItem__extra--hidden': isItemHidden,
-      'echLegendItem--vertical': legendPositionConfig.direction === 'vertical',
+      'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
     });
     const hasColorPicker = Boolean(colorPicker);
     const extra = showExtra && getExtra(extraValues, item, totalItems);

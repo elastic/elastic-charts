@@ -33,6 +33,7 @@ import {
   LegendPositionConfig,
   VerticalAlignment,
   HorizontalAlignment,
+  LayoutDirection,
 } from '../../src';
 import { SeededDataGenerator } from '../../src/mocks/utils';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
@@ -70,10 +71,9 @@ export const Example = () => {
   const direction: LegendPositionConfig['direction'] = select(
     'direction',
     {
-      vertical: 'vertical',
-      horizontal: 'horizontal',
+      ...LayoutDirection,
     },
-    'vertical',
+    LayoutDirection.Vertical,
     'Legend',
   );
 

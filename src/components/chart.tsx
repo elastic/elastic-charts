@@ -31,6 +31,7 @@ import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import { getLegendConfigSelector } from '../state/selectors/get_legend_config_selector';
 import { ChartSize, getChartSize } from '../utils/chart_size';
+import { LayoutDirection } from '../utils/common';
 import { ChartBackground } from './chart_background';
 import { ChartContainer } from './chart_container';
 import { ChartResizer } from './chart_resizer';
@@ -91,7 +92,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const enhancer = getMiddlware(id);
     this.chartStore = createStore(storeReducer, enhancer);
     this.state = {
-      legendDirection: 'vertical',
+      legendDirection: LayoutDirection.Vertical,
     };
     this.unsubscribeToStore = this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
@@ -165,7 +166,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const { size, className } = this.props;
     const containerSizeStyle = getChartSize(size);
     const chartClassNames = classNames('echChart', className, {
-      'echChart--column': this.state.legendDirection === 'horizontal',
+      'echChart--column': this.state.legendDirection === LayoutDirection.Horizontal,
     });
 
     return (

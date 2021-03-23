@@ -24,7 +24,7 @@ exports[`Chart should render the legend name test 1`] = `
           <div className=\\"echLegend echLegend--debug echLegend--vertical echLegend--right echLegend--top\\" style={{...}}>
             <div style={{...}} className=\\"echLegendListContainer\\">
               <ul style={{...}} className=\\"echLegendList\\">
-                <LegendItem item={{...}} legendPositionConfig={{...}} totalItems={1} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[undefined]} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[undefined]} action={[undefined]}>
+                <LegendItem item={{...}} positionConfig={{...}} totalItems={1} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[undefined]} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[undefined]} action={[undefined]}>
                   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"test\\">
                     <div className=\\"background\\" />
                     <ForwardRef color=\\"#1EA593\\" seriesName=\\"test\\" isSeriesHidden={false} hasColorPicker={false} onClick={[undefined]}>

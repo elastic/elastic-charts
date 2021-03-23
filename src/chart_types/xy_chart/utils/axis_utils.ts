@@ -66,7 +66,7 @@ export interface TickLabelProps {
   offsetY: number;
   textOffsetX: number;
   textOffsetY: number;
-  align: Extract<
+  horizontalAlign: Extract<
     HorizontalAlignment,
     typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Center | typeof HorizontalAlignment.Right
   >;
@@ -420,11 +420,11 @@ export function getTickLabelProps(
   const labelPadding = getSimplePadding(tickLabel.padding);
   const isLeftAxis = position === Position.Left;
   const isAxisTop = position === Position.Top;
-  const align = getHorizontalAlign(position, rotation, textAlignment?.horizontal);
+  const horizontalAlign = getHorizontalAlign(position, rotation, textAlignment?.horizontal);
   const verticalAlign = getVerticalAlign(position, rotation, textAlignment?.vertical);
 
   const userOffsets = getUserTextOffsets(tickDimensions, textOffset);
-  const textOffsetX = getHorizontalTextOffset(maxLabelTextWidth, align) + userOffsets.local.x;
+  const textOffsetX = getHorizontalTextOffset(maxLabelTextWidth, horizontalAlign) + userOffsets.local.x;
   const textOffsetY = getVerticalTextOffset(maxLabelTextHeight, verticalAlign) + userOffsets.local.y;
 
   if (isVerticalAxis(position)) {
@@ -438,7 +438,7 @@ export function getTickLabelProps(
       offsetY: userOffsets.global.y,
       textOffsetY,
       textOffsetX,
-      align,
+      horizontalAlign,
       verticalAlign,
     };
   }
@@ -452,7 +452,7 @@ export function getTickLabelProps(
     offsetY: offsetY + userOffsets.global.y,
     textOffsetX,
     textOffsetY,
-    align,
+    horizontalAlign,
     verticalAlign,
   };
 }
