@@ -1192,6 +1192,16 @@ export type IndexedAccessorFn = UnaryAccessorFn | BinaryAccessorFn;
 // @public (undocumented)
 export const INPUT_KEY = "inputIndex";
 
+// Warning: (ae-missing-release-tag) "IsAny" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type IsAny<T, True, False = never> = True | False extends (T extends never ? True : False) ? True : False;
+
+// Warning: (ae-missing-release-tag) "IsUnknown" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, False, True> : False;
+
 // Warning: (ae-missing-release-tag) "Key" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1426,6 +1436,11 @@ export interface NodeDescriptor {
     // (undocumented)
     [AGGREGATE_KEY]: number;
 }
+
+// Warning: (ae-missing-release-tag) "NonAny" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type NonAny = number | boolean | string | symbol | null;
 
 // Warning: (ae-missing-release-tag) "Opacity" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1680,9 +1695,6 @@ export type ProjectedValues = {
 // @public
 export type ProjectionClickListener = (values: ProjectedValues) => void;
 
-// @public
-export type Ratio = number;
-
 // Warning: (ae-missing-release-tag) "RawTextGetter" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1733,18 +1745,11 @@ export interface RectStyle {
     opacity: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "NonAny" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "RecursivePartial" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
 export type RecursivePartial<T> = {
-    [P in keyof T]?: T[P] extends NonAny[] ? T[P] : T[P] extends ReadonlyArray<NonAny> ? T[P] : T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends ReadonlyArray<infer U> ? ReadonlyArray<RecursivePartial<U>> : T[P] extends Set<infer V> ? Set<RecursivePartial<V>> : T[P] extends Map<infer K, infer V> ? Map<K, RecursivePartial<V>> : T[P] extends NonAny ? T[P] : RecursivePartial<T[P]>;
-};
-
-// @alpha
-export type RelativeBandsPadding = {
-    outer: Ratio;
-    inner: Ratio;
+    [P in keyof T]?: T[P] extends NonAny[] ? T[P] : T[P] extends ReadonlyArray<NonAny> ? T[P] : T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends ReadonlyArray<infer U> ? ReadonlyArray<RecursivePartial<U>> : T[P] extends Set<infer V> ? Set<RecursivePartial<V>> : T[P] extends Map<infer K, infer V> ? Map<K, RecursivePartial<V>> : T[P] extends NonAny ? T[P] : IsUnknown<T[P], 1, 0> extends 1 ? T[P] : RecursivePartial<T[P]>;
 };
 
 // Warning: (ae-missing-release-tag) "RenderChangeListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2045,20 +2050,19 @@ export interface SimplePadding {
 export const SmallMultiples: React_2.FunctionComponent<SmallMultiplesProps>;
 
 // @alpha (undocumented)
-export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'chatType' | 'specType'>>;
+export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'id' | 'chatType' | 'specType'>>;
 
 // @alpha (undocumented)
 export interface SmallMultiplesSpec extends Spec {
+    // (undocumented)
     splitHorizontally?: string;
+    // (undocumented)
     splitVertically?: string;
-    splitZigzag?: string;
-    style?: Partial<SmallMultiplesStyle>;
-}
-
-// @alpha
-export interface SmallMultiplesStyle {
-    horizontalPanelPadding: RelativeBandsPadding;
-    verticalPanelPadding: RelativeBandsPadding;
+    // (undocumented)
+    style?: {
+        verticalPanelPadding?: [number, number];
+        horizontalPanelPadding?: [number, number];
+    };
 }
 
 // Warning: (ae-missing-release-tag) "SORT_INDEX_KEY" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2272,6 +2276,7 @@ export type TooltipType = $Values<typeof TooltipType>;
 // @public
 export interface TooltipValue {
     color: Color;
+    datum?: unknown;
     formattedMarkValue?: string | null;
     formattedValue: string;
     isHighlighted: boolean;
@@ -2465,8 +2470,8 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // src/chart_types/heatmap/layout/types/config_types.ts:29:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:61:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:62:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:139:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:132:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:133:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
