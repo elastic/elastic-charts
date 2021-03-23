@@ -75,34 +75,34 @@ export const Example = () => {
         splitVertically={layout === 'v' ? 'split' : undefined}
         splitZigzag={layout === 'z' ? 'split' : undefined}
         style={{
-          horizontalPanelPadding: [
-            number('Horizontal outer pad', 0.15, {
+          horizontalPanelPadding: {
+            outer: number('Horizontal outer pad', 0.15, {
               range: true,
               min: 0,
               max: 0.5,
               step: 0.05,
             }),
-            number('Horizontal inner pad', 0.05, {
+            inner: number('Horizontal inner pad', 0.05, {
               range: true,
               min: 0,
               max: 0.5,
               step: 0.05,
             }),
-          ],
-          verticalPanelPadding: [
-            number('Vertical outer pad', 0.15, {
+          },
+          verticalPanelPadding: {
+            outer: number('Vertical outer pad', 0.15, {
               range: true,
               min: 0,
               max: 0.5,
               step: 0.05,
             }),
-            number('Vertical inner pad', 0.05, {
+            inner: number('Vertical inner pad', 0.05, {
               range: true,
               min: 0,
               max: 0.5,
               step: 0.05,
             }),
-          ],
+          },
         }}
       />
       <Partition

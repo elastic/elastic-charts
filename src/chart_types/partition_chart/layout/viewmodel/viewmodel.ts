@@ -26,6 +26,7 @@ import {
   Pixels,
   PointTuple,
   Radius,
+  Ratio,
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
@@ -261,11 +262,11 @@ const rawChildNodes = (
 /** @internal */
 export type PanelPlacement = PartitionSmallMultiplesModel;
 
-function getInterMarginSize(size: Pixels, [startMargin, endMargin]: RelativeBandsPadding) {
+function getInterMarginSize(size: Pixels, startMargin: Ratio, endMargin: Ratio) {
   return size * (1 - Math.min(1, startMargin + endMargin));
 }
 
-function bandwidth(range: Pixels, bandCount: number, [outer, inner]: RelativeBandsPadding) {
+function bandwidth(range: Pixels, bandCount: number, { outer, inner }: RelativeBandsPadding) {
   // same convention as d3.scaleBand https://observablehq.com/@d3/d3-scaleband
   return range / (2 * outer + bandCount + bandCount * inner - inner);
 }
@@ -306,8 +307,8 @@ export function shapeViewModel(
     sectorLineWidth,
   } = config;
 
-  const innerWidth = getInterMarginSize(width, [margin.left, margin.right]);
-  const innerHeight = getInterMarginSize(height, [margin.top, margin.bottom]);
+  const innerWidth = getInterMarginSize(width, margin.left, margin.right);
+  const innerHeight = getInterMarginSize(height, margin.top, margin.bottom);
 
   const panelInnerWidth = bandwidth(innerWidth, panel.innerColumnCount, smallMultiplesStyle.horizontalPanelPadding);
 
@@ -315,12 +316,12 @@ export function shapeViewModel(
 
   const marginLeftPx =
     width * margin.left +
-    panelInnerWidth * smallMultiplesStyle.horizontalPanelPadding[0] +
-    panel.innerColumnIndex * (panelInnerWidth * (1 + smallMultiplesStyle.horizontalPanelPadding[1]));
+    panelInnerWidth * smallMultiplesStyle.horizontalPanelPadding.outer +
+    panel.innerColumnIndex * (panelInnerWidth * (1 + smallMultiplesStyle.horizontalPanelPadding.inner));
   const marginTopPx =
     height * margin.top +
-    panelInnerHeight * smallMultiplesStyle.verticalPanelPadding[0] +
-    panel.innerRowIndex * (panelInnerHeight * (1 + smallMultiplesStyle.verticalPanelPadding[1]));
+    panelInnerHeight * smallMultiplesStyle.verticalPanelPadding.outer +
+    panel.innerRowIndex * (panelInnerHeight * (1 + smallMultiplesStyle.verticalPanelPadding.inner));
 
   const treemapLayout = isTreemap(partitionLayout);
   const sunburstLayout = isSunburst(partitionLayout);

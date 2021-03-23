@@ -29,21 +29,21 @@ import { SpecTypes } from './constants';
  * Todo: this will soon change to `{outer, inner}` for explicit specification
  * @alpha
  */
-export type RelativeBandsPadding = [
+export type RelativeBandsPadding = {
   /**
    * Outer padding specifies the padding size *next to* a small multiples panel that's on the edge of the small
    * multiples grid, expressed as a proportion (ratio) of the panel size
    */
-  Ratio,
+  outer: Ratio;
   /**
    * Inner padding specifies the padding size *between* small multiples panels in the small multiples grid,
    * expressed as a proportion (ratio) of the panel size
    */
-  Ratio,
-];
+  inner: Ratio;
+};
 
 /** @internal */
-export const DEFAULT_SM_PANEL_PADDING: RelativeBandsPadding = [0, 0.1];
+export const DEFAULT_SM_PANEL_PADDING: RelativeBandsPadding = { outer: 0, inner: 0.1 };
 
 /**
  * Specifies styling and stylistic layout attributes relating to small multiples

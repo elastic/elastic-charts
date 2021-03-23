@@ -1742,18 +1742,10 @@ export type RecursivePartial<T> = {
 };
 
 // @alpha
-export type RelativeBandsPadding = [
-    /**
-     * Outer padding specifies the padding size *next to* a small multiples panel that's on the edge of the small
-     * multiples grid, expressed as a proportion (ratio) of the panel size
-     */
-    Ratio,
-    /**
-     * Inner padding specifies the padding size *between* small multiples panels in the small multiples grid,
-     * expressed as a proportion (ratio) of the panel size
-     */
-    Ratio
-];
+export type RelativeBandsPadding = {
+    outer: Ratio;
+    inner: Ratio;
+};
 
 // Warning: (ae-missing-release-tag) "RenderChangeListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //

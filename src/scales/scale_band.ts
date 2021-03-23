@@ -76,10 +76,10 @@ export class ScaleBand implements Scale {
     this.d3Scale.domain(domain);
     this.d3Scale.range(range);
     let safeBarPadding = 0;
-    if (Array.isArray(barsPadding)) {
-      this.d3Scale.paddingInner(barsPadding[1]);
-      this.d3Scale.paddingOuter(barsPadding[0]);
-      this.barsPadding = barsPadding[1];
+    if (typeof barsPadding === 'object') {
+      this.d3Scale.paddingInner(barsPadding.inner);
+      this.d3Scale.paddingOuter(barsPadding.outer);
+      this.barsPadding = barsPadding.inner;
     } else {
       safeBarPadding = maxValueWithUpperLimit(barsPadding, 0, 1);
       this.d3Scale.paddingInner(safeBarPadding);

@@ -301,8 +301,8 @@ export class MockGlobalSpec {
     chartType: ChartTypes.Global,
     specType: SpecTypes.SmallMultiples,
     style: {
-      verticalPanelPadding: [0, 0],
-      horizontalPanelPadding: [0, 0],
+      verticalPanelPadding: { outer: 0, inner: 0 },
+      horizontalPanelPadding: { outer: 0, inner: 0 },
     },
   };
 

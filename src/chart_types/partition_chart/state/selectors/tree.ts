@@ -55,8 +55,12 @@ function getTreesForSpec(
   const { data, valueAccessor, layers, config, smallMultiples: smId } = spec;
   const smSpec = smSpecs.find((s) => s.id === smId);
   const smStyle: SmallMultiplesStyle = {
-    horizontalPanelPadding: smSpec ? smSpec.style?.horizontalPanelPadding ?? DEFAULT_SM_PANEL_PADDING : [0, 0],
-    verticalPanelPadding: smSpec ? smSpec.style?.verticalPanelPadding ?? DEFAULT_SM_PANEL_PADDING : [0, 0],
+    horizontalPanelPadding: smSpec
+      ? smSpec.style?.horizontalPanelPadding ?? DEFAULT_SM_PANEL_PADDING
+      : { outer: 0, inner: 0 },
+    verticalPanelPadding: smSpec
+      ? smSpec.style?.verticalPanelPadding ?? DEFAULT_SM_PANEL_PADDING
+      : { outer: 0, inner: 0 },
   };
   const groupBySpec = groupBySpecs.find(
     (s) => s.id === smSpec?.splitHorizontally || s.id === smSpec?.splitVertically || s.id === smSpec?.splitZigzag,
