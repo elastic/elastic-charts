@@ -232,6 +232,9 @@ function renderLinkLabels(
   });
 }
 
+const midlineOffset = 0.35; // 0.35 is a [common constant](http://tavmjong.free.fr/SVG/TEXT_IN_A_BOX/index.html) representing half height
+const innerPad = midlineOffset * panelTitleFontSize; // todo replace it with theme.axisPanelTitle.padding.inner
+
 /** @internal */
 export function renderPartitionCanvas2d(
   ctx: CanvasRenderingContext2D,
@@ -265,7 +268,7 @@ export function renderPartitionCanvas2d(
     //     - due to using the math x/y convention (+y is up) while Canvas uses screen convention (+y is down)
     //         text rendering must be y-flipped, which is a bit easier this way
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.textBaseline = 'bottom';
 
     // panel titles
     ctx.fillText(
@@ -273,10 +276,12 @@ export function renderPartitionCanvas2d(
       isSunburst(config.partitionLayout) ? diskCenter.x : diskCenter.x + (config.width * width) / 2,
       isSunburst(config.partitionLayout)
         ? config.linkLabel.maxCount > 0
-          ? diskCenter.y - (config.height * height) / 2 + 12
-          : diskCenter.y - outerRadius - panelTitleFontSize
+          ? diskCenter.y - (config.height * height) / 2 + panelTitleFontSize
+          : diskCenter.y - outerRadius - innerPad
         : diskCenter.y + 12,
     );
+
+    ctx.textBaseline = 'middle';
 
     ctx.translate(diskCenter.x, diskCenter.y);
     // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
