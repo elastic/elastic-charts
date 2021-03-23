@@ -43,6 +43,7 @@ export {
 } from './chart_types/partition_chart/layout/types/config_types';
 export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
 export * from './chart_types/goal_chart/specs/index';
+export * from './chart_types/wordcloud/specs/index';
 export {
   Accessor,
   AccessorFn,
@@ -80,6 +81,9 @@ export {
   VerticalAlignment,
   HorizontalAlignment,
   RecursivePartial,
+  NonAny,
+  IsAny,
+  IsUnknown,
   ColorVariant,
   Color,
   LabelAccessor,
@@ -92,3 +96,4 @@ export { DataGenerator } from './utils/data_generators/data_generator';
 export * from './utils/themes/merge_utils';
 export { MODEL_KEY } from './chart_types/partition_chart/layout/config';
 export { LegendStrategy } from './chart_types/partition_chart/layout/utils/highlighted_geoms';
+export { Ratio } from './common/geometry';
