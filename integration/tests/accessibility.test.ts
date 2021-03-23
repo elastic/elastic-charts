@@ -26,7 +26,9 @@ describe('Accessibility tree', () => {
       '#story-root',
     );
     // digging into the accessibility tree for the canvas element
-    const expectedAriaLabel = tree.children[3].name;
-    expect(expectedAriaLabel).toBe('This is a chart');
+    const expectedAriaLabel = tree.children.filter((value) => {
+      return value.name === 'This is a chart';
+    });
+    expect(expectedAriaLabel[0].name).toBe('This is a chart');
   });
 });
