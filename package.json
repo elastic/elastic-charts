@@ -1,7 +1,7 @@
 {
   "name": "@elastic/charts",
   "description": "Elastic-Charts data visualization library",
-  "version": "25.1.1",
+  "version": "25.3.0",
   "author": "Marco Vettorello <marco.vettorello@elastic.co>",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -17,6 +17,7 @@
   "scripts": {
     "autoprefix:css": "echo 'Autoprefixing...' && yarn postcss dist/*.css --no-map --use autoprefixer -d dist",
     "api:check": "yarn build:ts && yarn api:extract",
+    "api:check:local": "yarn api:check --local",
     "api:extract": "yarn api-extractor run --verbose",
     "backport": "backport",
     "build": "yarn build:ts && yarn build:css",
@@ -59,6 +60,7 @@
     "chroma-js": "^2.1.0",
     "classnames": "^2.2.6",
     "d3-array": "^1.2.4",
+    "d3-cloud": "^1.2.5",
     "d3-collection": "^1.0.7",
     "d3-color": "^1.4.0",
     "d3-interpolate": "^1.4.0",
