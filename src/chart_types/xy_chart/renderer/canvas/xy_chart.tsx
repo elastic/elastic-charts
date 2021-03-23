@@ -169,7 +169,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
           width,
           height,
         }}
-        aria-label="This is a chart"
+        aria-label="Chart"
         // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
         role="img"
       />
