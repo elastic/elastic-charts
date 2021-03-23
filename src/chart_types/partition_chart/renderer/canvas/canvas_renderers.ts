@@ -32,7 +32,7 @@ import {
   TextRow,
 } from '../../layout/types/viewmodel_types';
 import { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
-import { isSunburst } from '../../layout/viewmodel/viewmodel';
+import { isSunburst, panelTitleFontSize } from '../../layout/viewmodel/viewmodel';
 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
@@ -246,6 +246,7 @@ export function renderPartitionCanvas2d(
     outsideLinksViewModel,
     linkLabelViewModels,
     diskCenter,
+    outerRadius,
   }: ShapeViewModel,
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = config;
@@ -273,7 +274,7 @@ export function renderPartitionCanvas2d(
       isSunburst(config.partitionLayout)
         ? config.linkLabel.maxCount > 0
           ? diskCenter.y - (config.height * height) / 2 + 12
-          : diskCenter.y - Math.min(config.width * width, config.height * height) / 2 - 12
+          : diskCenter.y - outerRadius - panelTitleFontSize
         : diskCenter.y + 12,
     );
 

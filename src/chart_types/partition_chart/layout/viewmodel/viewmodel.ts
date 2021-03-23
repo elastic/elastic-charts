@@ -270,6 +270,12 @@ function bandwidth(range: Pixels, bandCount: number, [outer, inner]: RelativeBan
   return range / (2 * outer + bandCount + bandCount * inner - inner);
 }
 
+/**
+ * Todo move it to config
+ * @internal
+ */
+export const panelTitleFontSize = 16;
+
 /** @internal */
 export function shapeViewModel(
   textMeasure: TextMeasure,
@@ -283,7 +289,7 @@ export function shapeViewModel(
   topGroove: Pixels,
   containerBackgroundColor: Color,
   smallMultiplesStyle: SmallMultiplesStyle,
-  panelPlacement: PanelPlacement,
+  panel: PanelPlacement,
 ): ShapeViewModel {
   const {
     width,
@@ -303,26 +309,18 @@ export function shapeViewModel(
   const innerWidth = getInterMarginSize(width, [margin.left, margin.right]);
   const innerHeight = getInterMarginSize(height, [margin.top, margin.bottom]);
 
-  const panelInnerWidth = bandwidth(
-    innerWidth,
-    panelPlacement.innerColumnCount,
-    smallMultiplesStyle.horizontalPanelPadding,
-  );
+  const panelInnerWidth = bandwidth(innerWidth, panel.innerColumnCount, smallMultiplesStyle.horizontalPanelPadding);
 
-  const panelInnerHeight = bandwidth(
-    innerHeight,
-    panelPlacement.innerRowCount,
-    smallMultiplesStyle.verticalPanelPadding,
-  );
+  const panelInnerHeight = bandwidth(innerHeight, panel.innerRowCount, smallMultiplesStyle.verticalPanelPadding);
 
   const marginLeftPx =
     width * margin.left +
     panelInnerWidth * smallMultiplesStyle.horizontalPanelPadding[0] +
-    panelPlacement.innerColumnIndex * (panelInnerWidth * (1 + smallMultiplesStyle.horizontalPanelPadding[1]));
+    panel.innerColumnIndex * (panelInnerWidth * (1 + smallMultiplesStyle.horizontalPanelPadding[1]));
   const marginTopPx =
     height * margin.top +
     panelInnerHeight * smallMultiplesStyle.verticalPanelPadding[0] +
-    panelPlacement.innerRowIndex * (panelInnerHeight * (1 + smallMultiplesStyle.verticalPanelPadding[1]));
+    panel.innerRowIndex * (panelInnerHeight * (1 + smallMultiplesStyle.verticalPanelPadding[1]));
 
   const treemapLayout = isTreemap(partitionLayout);
   const sunburstLayout = isSunburst(partitionLayout);
@@ -366,7 +364,10 @@ export function shapeViewModel(
   });
 
   // use the smaller of the two sizes, as a circle fits into a square
-  const circleMaximumSize = Math.min(panelInnerWidth, panelInnerHeight);
+  const circleMaximumSize = Math.min(
+    panelInnerWidth,
+    panelInnerHeight - (panel.panelTitle.length > 0 ? panelTitleFontSize * 2 : 0),
+  );
   const outerRadius: Radius = Math.min(outerSizeRatio * circleMaximumSize, circleMaximumSize - sectorLineWidth) / 2;
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
   const treeHeight = shownChildNodes.reduce((p: number, n: Part) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
@@ -377,8 +378,8 @@ export function shapeViewModel(
     layers,
     config.sectorLineWidth,
     config.sectorLineStroke,
-    panelPlacement.index,
-    panelPlacement.innerIndex,
+    panel.index,
+    panel.innerIndex,
     config.fillLabel,
     sunburstLayout,
     containerBackgroundColor,
@@ -454,8 +455,8 @@ export function shapeViewModel(
     valueFormatter,
     maxLinkedLabelTextLength,
     {
-      x: width * panelPlacement.left + panelInnerWidth / 2,
-      y: height * panelPlacement.top + panelInnerHeight / 2,
+      x: width * panel.left + panelInnerWidth / 2,
+      y: height * panel.top + panelInnerHeight / 2,
     },
     containerBackgroundColor,
   );
@@ -481,17 +482,17 @@ export function shapeViewModel(
   return {
     partitionLayout: config?.partitionLayout ?? defaultConfig.partitionLayout,
 
-    panelTitle: panelPlacement.panelTitle,
-    index: panelPlacement.index,
-    innerIndex: panelPlacement.innerIndex,
-    width: panelPlacement.width,
-    height: panelPlacement.height,
-    top: panelPlacement.top,
-    left: panelPlacement.left,
-    innerRowCount: panelPlacement.innerRowCount,
-    innerColumnCount: panelPlacement.innerColumnCount,
-    innerRowIndex: panelPlacement.innerRowIndex,
-    innerColumnIndex: panelPlacement.innerColumnIndex,
+    panelTitle: panel.panelTitle,
+    index: panel.index,
+    innerIndex: panel.innerIndex,
+    width: panel.width,
+    height: panel.height,
+    top: panel.top,
+    left: panel.left,
+    innerRowCount: panel.innerRowCount,
+    innerColumnCount: panel.innerColumnCount,
+    innerRowIndex: panel.innerRowIndex,
+    innerColumnIndex: panel.innerColumnIndex,
 
     config,
     layers,

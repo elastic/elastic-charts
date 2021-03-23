@@ -67,7 +67,7 @@ export const Example = () => {
         id="split"
         by={(_, d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2)}
         format={(name) => regionLookup[name].regionName}
-        sort="alphaAsc"
+        sort={select('Panel order', { alphaAsc: 'alphaAsc', alphaDesc: 'alphaDesc' }, 'alphaAsc')}
       />
       <SmallMultiples
         id="sm"
