@@ -468,6 +468,7 @@ export const ChartTypes: Readonly<{
     Partition: "partition";
     XYAxis: "xy_axis";
     Heatmap: "heatmap";
+    Wordcloud: "wordcloud";
 }>;
 
 // @public (undocumented)
@@ -1191,6 +1192,16 @@ export type IndexedAccessorFn = UnaryAccessorFn | BinaryAccessorFn;
 // @public (undocumented)
 export const INPUT_KEY = "inputIndex";
 
+// Warning: (ae-missing-release-tag) "IsAny" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type IsAny<T, True, False = never> = True | False extends (T extends never ? True : False) ? True : False;
+
+// Warning: (ae-missing-release-tag) "IsUnknown" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, False, True> : False;
+
 // Warning: (ae-missing-release-tag) "Key" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1425,6 +1436,11 @@ export interface NodeDescriptor {
     // (undocumented)
     [AGGREGATE_KEY]: number;
 }
+
+// Warning: (ae-missing-release-tag) "NonAny" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export type NonAny = number | boolean | string | symbol | null;
 
 // Warning: (ae-missing-release-tag) "Opacity" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1679,6 +1695,9 @@ export type ProjectedValues = {
 // @public
 export type ProjectionClickListener = (values: ProjectedValues) => void;
 
+// @public
+export type Ratio = number;
+
 // Warning: (ae-missing-release-tag) "RawTextGetter" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -1729,12 +1748,17 @@ export interface RectStyle {
     opacity: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "NonAny" needs to be exported by the entry point index.d.ts
 // Warning: (ae-missing-release-tag) "RecursivePartial" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public
 export type RecursivePartial<T> = {
-    [P in keyof T]?: T[P] extends NonAny[] ? T[P] : T[P] extends ReadonlyArray<NonAny> ? T[P] : T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends ReadonlyArray<infer U> ? ReadonlyArray<RecursivePartial<U>> : T[P] extends Set<infer V> ? Set<RecursivePartial<V>> : T[P] extends Map<infer K, infer V> ? Map<K, RecursivePartial<V>> : T[P] extends NonAny ? T[P] : RecursivePartial<T[P]>;
+    [P in keyof T]?: T[P] extends NonAny[] ? T[P] : T[P] extends ReadonlyArray<NonAny> ? T[P] : T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends ReadonlyArray<infer U> ? ReadonlyArray<RecursivePartial<U>> : T[P] extends Set<infer V> ? Set<RecursivePartial<V>> : T[P] extends Map<infer K, infer V> ? Map<K, RecursivePartial<V>> : T[P] extends NonAny ? T[P] : IsUnknown<T[P], 1, 0> extends 1 ? T[P] : RecursivePartial<T[P]>;
+};
+
+// @alpha
+export type RelativeBandsPadding = {
+    outer: Ratio;
+    inner: Ratio;
 };
 
 // Warning: (ae-missing-release-tag) "RenderChangeListener" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2035,19 +2059,20 @@ export interface SimplePadding {
 export const SmallMultiples: React_2.FunctionComponent<SmallMultiplesProps>;
 
 // @alpha (undocumented)
-export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'id' | 'chatType' | 'specType'>>;
+export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'chatType' | 'specType'>>;
 
 // @alpha (undocumented)
 export interface SmallMultiplesSpec extends Spec {
-    // (undocumented)
     splitHorizontally?: string;
-    // (undocumented)
     splitVertically?: string;
-    // (undocumented)
-    style?: {
-        verticalPanelPadding?: [number, number];
-        horizontalPanelPadding?: [number, number];
-    };
+    splitZigzag?: string;
+    style?: Partial<SmallMultiplesStyle>;
+}
+
+// @alpha
+export interface SmallMultiplesStyle {
+    horizontalPanelPadding: RelativeBandsPadding;
+    verticalPanelPadding: RelativeBandsPadding;
 }
 
 // Warning: (ae-missing-release-tag) "SORT_INDEX_KEY" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
@@ -2261,6 +2286,7 @@ export type TooltipType = $Values<typeof TooltipType>;
 // @public
 export interface TooltipValue {
     color: Color;
+    datum?: unknown;
     formattedMarkValue?: string | null;
     formattedValue: string;
     isHighlighted: boolean;
@@ -2352,6 +2378,56 @@ export interface Visible {
     visible: boolean;
 }
 
+// Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
+//
+// @alpha (undocumented)
+export const Wordcloud: React_2.FunctionComponent<SpecRequiredProps_9 & SpecOptionalProps_9>;
+
+// @alpha (undocumented)
+export interface WordcloudSpec extends Spec {
+    // (undocumented)
+    angleCount: number;
+    // (undocumented)
+    chartType: typeof ChartTypes.Wordcloud;
+    // (undocumented)
+    config: RecursivePartial<PartitionConfig>;
+    // Warning: (ae-forgotten-export) The symbol "WordModel" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    data: WordModel[];
+    // (undocumented)
+    endAngle: number;
+    // (undocumented)
+    exponent: number;
+    // (undocumented)
+    fontFamily: string;
+    // (undocumented)
+    fontStyle: string;
+    // (undocumented)
+    fontWeight: number;
+    // (undocumented)
+    maxFontSize: number;
+    // (undocumented)
+    minFontSize: number;
+    // Warning: (ae-forgotten-export) The symbol "OutOfRoomCallback" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    outOfRoomCallback: OutOfRoomCallback;
+    // (undocumented)
+    padding: number;
+    // (undocumented)
+    specType: typeof SpecTypes.Series;
+    // (undocumented)
+    spiral: string;
+    // (undocumented)
+    startAngle: number;
+    // Warning: (ae-forgotten-export) The symbol "WeightFun" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    weightFun: WeightFun;
+}
+
 // Warning: (ae-missing-release-tag) "XScaleType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -2404,8 +2480,8 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // src/chart_types/heatmap/layout/types/config_types.ts:29:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:61:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:62:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:132:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:133:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:139:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
