@@ -23,7 +23,6 @@ import { ChartTypes } from '../..';
 import { LegendItemExtraValues } from '../../../common/legend';
 import { SeriesKey } from '../../../common/series_id';
 import { BrushTool } from '../../../components/brush/brush';
-import { ScreenReaderData } from '../../../components/screen_reader';
 import { Tooltip } from '../../../components/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
@@ -159,10 +158,5 @@ export class XYAxisChartState implements InternalChartState {
 
   getDebugState(globalState: GlobalChartState) {
     return getDebugStateSelector(globalState);
-  }
-
-  // TODO
-  getScreenReaderData(): ScreenReaderData[] {
-    return [];
   }
 }
