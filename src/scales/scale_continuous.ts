@@ -27,6 +27,7 @@ import {
   ScaleLogarithmic,
   ScalePower,
   ScaleTime,
+  ScaleContinuousNumeric,
 } from 'd3-scale';
 import { $Values, Required } from 'utility-types';
 
@@ -285,6 +286,10 @@ export class ScaleContinuous implements Scale {
     }
 
     this.d3Scale.domain(this.domain);
+    if (type !== ScaleType.Time) {
+      (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(this.domain).nice();
+      this.domain = this.d3Scale.domain();
+    }
 
     const safeBarPadding = maxValueWithUpperLimit(barsPadding, 0, 1);
     this.barsPadding = safeBarPadding;
