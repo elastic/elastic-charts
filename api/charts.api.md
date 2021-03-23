@@ -628,14 +628,6 @@ export interface DataSeriesDatum<T = any> {
     y1: number | null;
 }
 
-// @public
-export interface DataTableProps {
-    // (undocumented)
-    HeadingLevel?: 'h2';
-    // (undocumented)
-    showDefaultDescription?: boolean;
-}
-
 // @public (undocumented)
 export type Datum = any;
 
@@ -715,7 +707,7 @@ export const DEFAULT_TOOLTIP_TYPE: "vertical";
 // Warning: (ae-missing-release-tag) "DefaultSettingsProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'legendMaxDepth' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'dataTable';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'legendMaxDepth' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
 
 // Warning: (ae-missing-release-tag) "DEPTH_KEY" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1956,7 +1948,6 @@ export interface SettingsSpec extends Spec {
     animateData: boolean;
     baseTheme?: Theme;
     brushAxis?: BrushAxis;
-    dataTable: DataTableProps;
     debug: boolean;
     // @alpha
     debugState?: boolean;
