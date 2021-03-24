@@ -127,7 +127,6 @@ const View = ({ words, conf }: { words: Word[]; conf: Configs }) => (
           <text
             key={String(i)}
             style={{
-              transform: `translate(${d.x}, ${d.y}) rotate(${d.rotate})`,
               fontSize: getFontSize(d),
               fontStyle: getFontStyle(d),
               fontFamily: getFont(d),
