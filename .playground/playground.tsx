@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { Example } from '../stories/icicle/03_cpu_profile_flame';
+import { Example } from '../stories/small_multiples/7_sunbursts';
 
 export class Playground extends React.Component {
   render() {
