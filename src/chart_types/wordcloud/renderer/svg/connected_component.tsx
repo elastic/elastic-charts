@@ -92,18 +92,18 @@ function log(minFontSize: number, maxFontSize: number, _exponent: number, weight
   return minFontSize + (maxFontSize - minFontSize) * Math.log2(weight + 1);
 }
 
-const weightFunLookup = { linear, exponential, log, squareRoot };
+const weightFnLookup = { linear, exponential, log, squareRoot };
 
 function layoutMaker(config: Configs, data: Datum[]) {
   const words = data.map((d) => {
-    const weightFun = weightFunLookup[config.weightFun];
+    const weightFn = weightFnLookup[config.weightFn];
     return {
       text: d.text,
       color: d.color,
       fontFamily: config.fontFamily,
       style: config.fontStyle,
       fontWeight: config.fontWeight,
-      size: weightFun(config.minFontSize, config.maxFontSize, config.exponent, d.weight),
+      size: weightFn(config.minFontSize, config.maxFontSize, config.exponent, d.weight),
     };
   });
   return d3TagCloud()
@@ -240,7 +240,7 @@ class Component extends React.Component<Props> {
       maxFontSize: wordcloudViewModel.maxFontSize,
       spiral: wordcloudViewModel.spiral,
       exponent: wordcloudViewModel.exponent,
-      weightFun: wordcloudViewModel.weightFun,
+      weightFn: wordcloudViewModel.weightFn,
     };
 
     const layout = layoutMaker(conf1, wordcloudViewModel.data);
