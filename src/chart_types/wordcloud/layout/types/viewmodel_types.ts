@@ -21,7 +21,6 @@ import { $Values as Values } from 'utility-types';
 
 import { Pixels, PointObject } from '../../../../common/geometry';
 import { Color } from '../../../../utils/common';
-import { Logger } from '../../../../utils/logger';
 import { config } from '../config/config';
 import { Config } from './config_types';
 
@@ -137,9 +136,7 @@ const commonDefaults: WordcloudViewModel = {
   exponent: 3,
   data: [],
   weightFn: 'exponential',
-  outOfRoomCallback: (wordCount, renderedWordCount) => {
-    Logger.warn(`Not all words have been placed: ${renderedWordCount} words rendered out of ${wordCount}`);
-  },
+  outOfRoomCallback: () => {},
 };
 
 /** @internal */
