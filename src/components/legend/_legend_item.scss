@@ -14,7 +14,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     height: $legendItemHeight; // prevents color dot from shifting
     margin-left: $euiSizeXS;
 
-    &:last-child {
+    &:last-child:not(.echLegendItem__extra) {
       margin-right: $euiSizeXS;
     }
   }
