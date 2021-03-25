@@ -116,7 +116,7 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
   /**
    * timeout for waiting on element to appear in DOM
    *
-   * @default 10000
+   * @defaultValue 10000
    */
   timeout?: number;
   /**
