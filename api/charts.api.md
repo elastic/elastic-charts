@@ -707,7 +707,7 @@ export const DEFAULT_TOOLTIP_TYPE: "vertical";
 // Warning: (ae-missing-release-tag) "DefaultSettingsProps" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'showLegend' | 'debug' | 'tooltip' | 'showLegendExtra' | 'theme' | 'legendPosition' | 'legendMaxDepth' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents';
 
 // Warning: (ae-missing-release-tag) "DEPTH_KEY" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
@@ -1221,17 +1221,6 @@ export interface LayerValue {
     value: number;
 }
 
-// Warning: (ae-missing-release-tag) "LayoutDirection" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
-// @public (undocumented)
-export const LayoutDirection: Readonly<{
-    Horizontal: "horizontal";
-    Vertical: "vertical";
-}>;
-
-// @public (undocumented)
-export type LayoutDirection = $Values<typeof LayoutDirection>;
-
 // @public
 export type LegendAction = ComponentType<LegendActionProps>;
 
@@ -1271,37 +1260,6 @@ export type LegendPathElement = {
     index: number;
     value: CategoryKey;
 };
-
-// @public
-export type LegendPositionConfig = {
-    vAlign: typeof VerticalAlignment.Top | typeof VerticalAlignment.Bottom;
-    hAlign: typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Right;
-    direction: LayoutDirection;
-    floating: boolean;
-};
-
-// @public
-export interface LegendSpec {
-    flatLegend?: boolean;
-    legendAction?: LegendAction;
-    // (undocumented)
-    legendColorPicker?: LegendColorPicker;
-    legendMaxDepth: number;
-    legendPosition: Position | LegendPositionConfig;
-    legendStrategy?: LegendStrategy;
-    // (undocumented)
-    onLegendItemClick?: LegendItemListener;
-    // (undocumented)
-    onLegendItemMinusClick?: LegendItemListener;
-    // (undocumented)
-    onLegendItemOut?: BasicListener;
-    // (undocumented)
-    onLegendItemOver?: LegendItemListener;
-    // (undocumented)
-    onLegendItemPlusClick?: LegendItemListener;
-    showLegend: boolean;
-    showLegendExtra: boolean;
-}
 
 // @public (undocumented)
 export const LegendStrategy: Readonly<{
@@ -1984,7 +1942,7 @@ export type SeriesTypes = $Values<typeof SeriesTypes>;
 export const Settings: React_2.FunctionComponent<SettingsSpecProps>;
 
 // @public
-export interface SettingsSpec extends Spec, LegendSpec {
+export interface SettingsSpec extends Spec {
     allowBrushingLastHistogramBucket?: boolean;
     // (undocumented)
     animateData: boolean;
@@ -1995,7 +1953,14 @@ export interface SettingsSpec extends Spec, LegendSpec {
     debugState?: boolean;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
+    flatLegend?: boolean;
     hideDuplicateAxes: boolean;
+    legendAction?: LegendAction;
+    // (undocumented)
+    legendColorPicker?: LegendColorPicker;
+    legendMaxDepth: number;
+    legendPosition: Position;
+    legendStrategy?: LegendStrategy;
     minBrushDelta?: number;
     noResults?: ComponentType | ReactChild;
     // (undocumented)
@@ -2006,6 +1971,16 @@ export interface SettingsSpec extends Spec, LegendSpec {
     onElementOut?: BasicListener;
     // (undocumented)
     onElementOver?: ElementOverListener;
+    // (undocumented)
+    onLegendItemClick?: LegendItemListener;
+    // (undocumented)
+    onLegendItemMinusClick?: LegendItemListener;
+    // (undocumented)
+    onLegendItemOut?: BasicListener;
+    // (undocumented)
+    onLegendItemOver?: LegendItemListener;
+    // (undocumented)
+    onLegendItemPlusClick?: LegendItemListener;
     // (undocumented)
     onPointerUpdate?: PointerUpdateListener;
     onProjectionClick?: ProjectionClickListener;
@@ -2021,6 +1996,9 @@ export interface SettingsSpec extends Spec, LegendSpec {
     // (undocumented)
     rotation: Rotation;
     roundHistogramBrushValues?: boolean;
+    // (undocumented)
+    showLegend: boolean;
+    showLegendExtra: boolean;
     theme?: PartialTheme | PartialTheme[];
     tooltip: TooltipSettings;
     // (undocumented)
@@ -2444,10 +2422,10 @@ export interface WordcloudSpec extends Spec {
     spiral: string;
     // (undocumented)
     startAngle: number;
-    // Warning: (ae-forgotten-export) The symbol "WeightFn" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "WeightFun" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    weightFn: WeightFn;
+    weightFun: WeightFun;
 }
 
 // Warning: (ae-missing-release-tag) "XScaleType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
