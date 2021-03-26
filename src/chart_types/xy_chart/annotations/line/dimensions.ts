@@ -283,8 +283,12 @@ function getAnchorPosition(
   isXDomain: boolean,
   isChartHorizontal: boolean,
   specMarkerPosition?: Position,
-  axisPosition?: Position,
+  axisPosition?: Position | undefined,
 ): Position {
+  // catch the case of a chart with no axes nor specMarkerPosition for a vertical line annotation
+  if (!axisPosition && !specMarkerPosition && isXDomain) {
+    return Position.Bottom;
+  }
   const dflPositionFromAxis = getDefaultMarkerPositionFromAxis(isXDomain, isChartHorizontal, axisPosition);
 
   if (specMarkerPosition !== undefined) {
