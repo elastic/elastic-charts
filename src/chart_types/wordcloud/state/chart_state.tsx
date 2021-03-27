@@ -22,8 +22,7 @@ import React from 'react';
 import { ChartTypes } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { LegendItem } from '../../../common/legend';
-import { Tooltip } from '../../../components/tooltip';
-import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import { InternalChartState, GlobalChartState } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
 import { DebugState } from '../../../state/types';
@@ -84,13 +83,8 @@ export class WordcloudState implements InternalChartState {
     return EMPTY_MAP;
   }
 
-  chartRenderer(containerRef: BackwardRef) {
-    return (
-      <>
-        <Tooltip getChartContainerRef={containerRef} />
-        <Wordcloud />
-      </>
-    );
+  chartRenderer() {
+    return <Wordcloud />;
   }
 
   getPointerCursor() {

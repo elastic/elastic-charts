@@ -46,7 +46,7 @@ export const getTooltipInfoSelector = createCachedSelector(
         label: 'Word count',
         color: 'white',
         isHighlighted: false,
-        isVisible: true,
+        isVisible: false,
         seriesIdentifier: {
           specId: spec.id,
           key: spec.id,
