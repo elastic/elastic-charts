@@ -167,17 +167,17 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
                 index,
                 innerIndex,
                 partitionLayout,
-                top: topRatio,
-                left: leftRatio,
-                width: widthRatio,
-                height: heightRatio,
+                marginLeftPx,
+                marginTopPx,
+                panelInnerWidth,
+                panelInnerHeight,
               }) => (
                 <mask key={`${index}__${innerIndex}`} id={maskId(index, innerIndex)}>
                   <rect
-                    x={width * leftRatio}
-                    y={height * topRatio}
-                    width={width * widthRatio}
-                    height={height * heightRatio}
+                    x={marginLeftPx}
+                    y={marginTopPx}
+                    width={panelInnerWidth}
+                    height={panelInnerHeight}
                     fill="white"
                   />
                   <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
@@ -302,6 +302,10 @@ export function highlightSetMapper(geometries: QuadViewModel[], foci: IndexedCon
       innerColumnIndex: vm.innerColumnIndex,
       innerRowCount: vm.innerRowCount,
       innerColumnCount: vm.innerColumnCount,
+      marginLeftPx: vm.marginLeftPx,
+      marginTopPx: vm.marginTopPx,
+      panelInnerWidth: vm.panelInnerWidth,
+      panelInnerHeight: vm.panelInnerHeight,
     };
   };
 }

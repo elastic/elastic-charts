@@ -30,7 +30,12 @@ function makeKey(...keyParts: CategoryKey[]): string {
   return keyParts.join('---');
 }
 
-function compareTreePaths({ path: a }: QuadViewModel, { path: b }: QuadViewModel): number {
+function compareTreePaths(
+  { index: oiA, innerIndex: iiA, path: a }: QuadViewModel,
+  { index: oiB, innerIndex: iiB, path: b }: QuadViewModel,
+): number {
+  if (oiA !== oiB) return oiA - oiB;
+  if (iiA !== iiB) return iiA - iiB;
   for (let i = 0; i < Math.min(a.length, b.length); i++) {
     const diff = a[i].index - b[i].index;
     if (diff) {

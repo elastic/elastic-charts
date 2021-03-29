@@ -24,7 +24,7 @@ import {
   Chart,
   Datum,
   GroupBy,
-  MODEL_KEY,
+  LegendStrategy,
   Partition,
   PartitionLayout,
   Settings,
@@ -33,16 +33,30 @@ import {
 } from '../../src';
 import { config } from '../../src/chart_types/partition_chart/layout/config';
 import { mocks } from '../../src/mocks/hierarchical';
+import { keepDistinct } from '../../src/utils/common';
 import { STORYBOOK_LIGHT_THEME } from '../shared';
-import {
-  discreteColor,
-  colorBrewerCategoricalStark9,
-  countryLookup,
-  productLookup,
-  regionLookup,
-} from '../utils/utils';
+import { colorBrewerCategoricalPastel12, countryLookup, productLookup, regionLookup } from '../utils/utils';
 
 const data = mocks.sunburst; // .filter((d) => countryLookup[d.dest].continentCountry.slice(0, 2) === 'eu');
+
+const productToColor = new Map(
+  data
+    .map((d) => d.sitc1)
+    .filter(keepDistinct)
+    .sort()
+    .map((sitc1, i) => [sitc1, `rgb(${colorBrewerCategoricalPastel12[i % 12].join(',')})`]),
+);
+
+const countryToColor = new Map(
+  data
+    .map((d) => d.dest)
+    .filter(keepDistinct)
+    .sort()
+    .map((dest, i, a) => {
+      const luma = Math.floor(64 + 128 * (i / a.length));
+      return [dest, `rgb(${luma},${luma},${luma})`];
+    }),
+);
 
 export const Example = () => {
   const layout = select(
@@ -59,8 +73,8 @@ export const Example = () => {
     <Chart className="story-chart">
       <Settings
         showLegend={boolean('Show legend', true)}
-        legendStrategy="pathWithDescendants"
-        flatLegend={false}
+        legendStrategy={LegendStrategy.Node}
+        flatLegend={boolean('Flat legend', false)}
         theme={STORYBOOK_LIGHT_THEME}
       />
       <GroupBy
@@ -118,7 +132,7 @@ export const Example = () => {
               nodeLabel: (d: any) => productLookup[d].name,
               fillLabel: { maximizeFontSize: true },
               shape: {
-                fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex),
+                fillColor: (d: ShapeTreeNode) => productToColor.get(d.dataName)!,
               },
             },
             {
@@ -126,8 +140,7 @@ export const Example = () => {
               nodeLabel: (d: any) => countryLookup[d].name,
               fillLabel: { maximizeFontSize: true },
               shape: {
-                fillColor: (d: ShapeTreeNode) =>
-                  discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].sortIndex),
+                fillColor: (d: ShapeTreeNode) => countryToColor.get(d.dataName)!,
               },
             },
           ] /* .slice(layerFrom, layerTo) */
@@ -149,7 +162,7 @@ export const Example = () => {
               fontWeight: 100,
             },
           },
-          margin: { top: 0, bottom: 0, left: 0, right: 0 },
+          margin: { top: 0.01, bottom: 0.01, left: 0.01, right: 0.01 },
           minFontSize: 1,
           idealFontSizeJump: 1.1,
           outerSizeRatio: 1,
