@@ -148,7 +148,7 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
   renderAsMask() {
     const {
       chartId,
-      canvasDimension: { width, height },
+      canvasDimension: { width },
       highlightSets,
     } = this.props;
 
@@ -196,10 +196,10 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
               index,
               innerIndex,
               partitionLayout,
-              top: topRatio,
-              left: leftRatio,
-              width: widthRatio,
-              height: heightRatio,
+              marginLeftPx,
+              marginTopPx,
+              panelInnerWidth,
+              panelInnerHeight,
             }) =>
               isSunburst(partitionLayout) ? (
                 <circle
@@ -213,10 +213,10 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
               ) : (
                 <rect
                   key={`${index}__${innerIndex}`}
-                  x={width * leftRatio}
-                  y={height * topRatio}
-                  width={width * widthRatio}
-                  height={height * heightRatio}
+                  x={marginLeftPx}
+                  y={marginTopPx}
+                  width={panelInnerWidth}
+                  height={panelInnerHeight}
                   mask={`url(#${maskId(index, innerIndex)})`}
                   className="echHighlighter__mask"
                 />
