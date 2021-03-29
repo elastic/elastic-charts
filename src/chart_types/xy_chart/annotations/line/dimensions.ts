@@ -285,12 +285,7 @@ function getAnchorPosition(
   specMarkerPosition?: Position,
   axisPosition?: Position | undefined,
 ): Position {
-  // catch the case of a chart with no axes nor specMarkerPosition for a vertical line annotation
-  if (!axisPosition && !specMarkerPosition && isXDomain) {
-    return Position.Bottom;
-  }
   const dflPositionFromAxis = getDefaultMarkerPositionFromAxis(isXDomain, isChartHorizontal, axisPosition);
-
   if (specMarkerPosition !== undefined) {
     // validate specMarkerPosition against domain
     const validatedPosFromMarkerPos = validateMarkerPosition(isXDomain, isChartHorizontal, specMarkerPosition);
@@ -301,7 +296,7 @@ function getAnchorPosition(
 
 function validateMarkerPosition(isXDomain: boolean, isHorizontal: boolean, position: Position): Position | undefined {
   if ((isXDomain && isHorizontal) || (!isXDomain && !isHorizontal)) {
-    return position === Position.Top || position === Position.Bottom ? position : undefined;
+    return position === Position.Top || position === Position.Bottom ? position : Position.Bottom;
   }
   return position === Position.Left || position === Position.Right ? position : undefined;
 }
@@ -314,7 +309,7 @@ function getDefaultMarkerPositionFromAxis(
   if (axisPosition) {
     return axisPosition;
   }
-  if ((isXDomain && isHorizontal) || (!isXDomain && !isHorizontal)) {
+  if (!isXDomain && isHorizontal) {
     return Position.Left;
   }
   return Position.Bottom;
