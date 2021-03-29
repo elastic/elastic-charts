@@ -154,10 +154,13 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
 
     const maskId = (ind: number, ind2: number) => `echHighlighterMask__${chartId}__${ind}__${ind2}`;
 
+    const someGeometriesHighlighted = highlightSets.some(({ geometries }) => geometries.length > 0);
+    const renderedHighlightSet = someGeometriesHighlighted ? highlightSets : [];
+
     return (
       <>
         <defs>
-          {highlightSets
+          {renderedHighlightSet
             .filter(({ geometries }) => geometries.length > 0)
             .map(
               ({
@@ -172,7 +175,7 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
                 panelInnerWidth,
                 panelInnerHeight,
               }) => (
-                <mask key={`${index}__${innerIndex}`} id={maskId(index, innerIndex)}>
+                <mask key={maskId(index, innerIndex)} id={maskId(index, innerIndex)}>
                   <rect
                     x={marginLeftPx}
                     y={marginTopPx}
@@ -187,41 +190,39 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
               ),
             )}
         </defs>
-        {highlightSets
-          .filter(({ geometries }) => geometries.length > 0)
-          .map(
-            ({
-              diskCenter,
-              outerRadius,
-              index,
-              innerIndex,
-              partitionLayout,
-              marginLeftPx,
-              marginTopPx,
-              panelInnerWidth,
-              panelInnerHeight,
-            }) =>
-              isSunburst(partitionLayout) ? (
-                <circle
-                  key={`${index}__${innerIndex}`}
-                  cx={diskCenter.x}
-                  cy={diskCenter.y}
-                  r={outerRadius}
-                  mask={`url(#${maskId(index, innerIndex)})`}
-                  className="echHighlighter__mask"
-                />
-              ) : (
-                <rect
-                  key={`${index}__${innerIndex}`}
-                  x={marginLeftPx}
-                  y={marginTopPx}
-                  width={panelInnerWidth}
-                  height={panelInnerHeight}
-                  mask={`url(#${maskId(index, innerIndex)})`}
-                  className="echHighlighter__mask"
-                />
-              ),
-          )}
+        {renderedHighlightSet.map(
+          ({
+            diskCenter,
+            outerRadius,
+            index,
+            innerIndex,
+            partitionLayout,
+            marginLeftPx,
+            marginTopPx,
+            panelInnerWidth,
+            panelInnerHeight,
+          }) =>
+            isSunburst(partitionLayout) ? (
+              <circle
+                key={`${index}__${innerIndex}`}
+                cx={diskCenter.x}
+                cy={diskCenter.y}
+                r={outerRadius}
+                mask={`url(#${maskId(index, innerIndex)})`}
+                className="echHighlighter__mask"
+              />
+            ) : (
+              <rect
+                key={`${index}__${innerIndex}`}
+                x={marginLeftPx}
+                y={marginTopPx}
+                width={panelInnerWidth}
+                height={panelInnerHeight}
+                mask={`url(#${maskId(index, innerIndex)})`}
+                className="echHighlighter__mask"
+              />
+            ),
+        )}
       </>
     );
   }
