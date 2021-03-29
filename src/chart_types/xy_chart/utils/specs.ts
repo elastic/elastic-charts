@@ -44,6 +44,7 @@ import {
 } from '../../../utils/themes/theme';
 import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 import { AnnotationTooltipFormatter, CustomAnnotationTooltip } from '../annotations/types';
+import { ScaleConfig } from '../scales/get_scale_config';
 import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
 
 /** @public */
@@ -452,7 +453,7 @@ export interface SeriesScales {
    * The x axis scale type
    * @defaultValue `ordinal` {@link (ScaleType:type) | ScaleType.Ordinal}
    */
-  xScaleType: XScaleType;
+  xScaleType: XScaleType | ScaleConfig<XScaleType>;
   /**
    * If using a ScaleType.Time this timezone identifier is required to
    * compute a nice set of xScale ticks. Can be any IANA zone supported by
@@ -464,7 +465,7 @@ export interface SeriesScales {
    * The y axis scale type
    * @defaultValue `linear` {@link (ScaleType:type) | ScaleType.Linear}
    */
-  yScaleType: ScaleContinuousType;
+  yScaleType: ScaleContinuousType | ScaleConfig<ScaleContinuousType>;
   /**
    * if true, the min y value is set to the minimum domain value, 0 otherwise
    * @deprecated use `domain.fit` instead

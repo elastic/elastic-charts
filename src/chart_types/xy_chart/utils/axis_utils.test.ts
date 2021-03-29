@@ -35,6 +35,7 @@ import { AxisId, GroupId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { AxisStyle, TextOffset } from '../../../utils/themes/theme';
 import { XDomain, YDomain } from '../domains/types';
+import { getXScaleConfig, getYScaleConfig } from '../scales/get_scale_config';
 import { computeAxesGeometriesSelector } from '../state/selectors/compute_axes_geometries';
 import { computeAxisTicksDimensionsSelector } from '../state/selectors/compute_axis_ticks_dimensions';
 import { getScale, SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
@@ -191,14 +192,14 @@ describe('Axis computational utils', () => {
   });
   const xDomain: XDomain = {
     type: 'xDomain',
-    scaleType: ScaleType.Linear,
+    scaleConfig: getXScaleConfig(ScaleType.Linear),
     domain: [0, 1],
     isBandScale: false,
     minInterval: 0,
   };
 
   const yDomain: YDomain = {
-    scaleType: ScaleType.Linear,
+    scaleConfig: getYScaleConfig(ScaleType.Linear),
     groupId: 'group_1',
     type: 'yDomain',
     domain: [0, 1],
@@ -281,7 +282,7 @@ describe('Axis computational utils', () => {
     const bboxCalculator = new SvgTextBBoxCalculator();
     const xDomain: XDomain = {
       type: 'xDomain',
-      scaleType: ScaleType.Time,
+      scaleConfig: getXScaleConfig(ScaleType.Time),
       domain: [1551438000000, 1551441300000],
       isBandScale: false,
       minInterval: 0,
@@ -419,7 +420,7 @@ describe('Axis computational utils', () => {
         { label: '0.7', position: 30 + rotationalOffset, value: 0.7 },
         { label: '0.8', position: 20 + rotationalOffset, value: 0.8 },
         { label: '0.9', position: 10 + rotationalOffset, value: 0.9 },
-        { label: '1', position: 0 + rotationalOffset, value: 1 },
+        { label: '1', position: rotationalOffset, value: 1 },
       ];
       expect(axisPositions).toEqual(expectedAxisPositions);
     });
@@ -428,7 +429,7 @@ describe('Axis computational utils', () => {
       const enableHistogramMode = true;
       const xBandDomain: XDomain = {
         type: 'xDomain',
-        scaleType: ScaleType.Linear,
+        scaleConfig: getXScaleConfig(ScaleType.Linear),
         domain: [0, 100],
         isBandScale: true,
         minInterval: 10,
@@ -450,7 +451,7 @@ describe('Axis computational utils', () => {
       const enableHistogramMode = true;
       const xBandDomain: XDomain = {
         type: 'xDomain',
-        scaleType: ScaleType.Time,
+        scaleConfig: getXScaleConfig(ScaleType.Time),
         domain: [1560438420000, 1560438510000],
         isBandScale: true,
         minInterval: 90000,
@@ -489,7 +490,7 @@ describe('Axis computational utils', () => {
       const enableHistogramMode = true;
       const xBandDomain: XDomain = {
         type: 'xDomain',
-        scaleType: ScaleType.Time,
+        scaleConfig: getXScaleConfig(ScaleType.Time),
         domain: [1560438420000, 1560438420000], // a single datum scale will have the same value for domain start & end
         isBandScale: true,
         minInterval: 90000,
@@ -1528,7 +1529,7 @@ describe('Axis computational utils', () => {
       isBandScale: false,
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
-      scaleType: ScaleType.Time,
+      scaleConfig: getXScaleConfig(ScaleType.Time),
     };
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
@@ -1563,7 +1564,7 @@ describe('Axis computational utils', () => {
       timeZone: 'utc+1',
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
-      scaleType: ScaleType.Time,
+      scaleConfig: getXScaleConfig(ScaleType.Time),
     };
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
@@ -1605,7 +1606,7 @@ describe('Axis computational utils', () => {
       isBandScale: false,
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
-      scaleType: ScaleType.Time,
+      scaleConfig: getXScaleConfig(ScaleType.Time),
     };
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
@@ -1645,7 +1646,7 @@ describe('Axis computational utils', () => {
       isBandScale: false,
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
-      scaleType: ScaleType.Time,
+      scaleConfig: getXScaleConfig(ScaleType.Time),
     };
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;

@@ -25,6 +25,7 @@ import { SpecTypes } from '../../../specs/constants';
 import { Position } from '../../../utils/common';
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';
 import { Logger } from '../../../utils/logger';
+import { getYScaleConfig } from '../scales/get_scale_config';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
 import { BasicSeriesSpec, SeriesTypes, DEFAULT_GLOBAL_ID, StackMode } from '../utils/specs';
 import { coerceYScaleTypes, groupSeriesByYGroup } from './y_domain';
@@ -88,7 +89,7 @@ describe('Y Domain', () => {
         type: 'yDomain',
         groupId: DEFAULT_GLOBAL_ID,
         domain: [2, 12],
-        scaleType: ScaleType.Linear,
+        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
       },
     ]);
@@ -116,7 +117,7 @@ describe('Y Domain', () => {
         type: 'yDomain',
         groupId: DEFAULT_GLOBAL_ID,
         domain: [0, 12],
-        scaleType: ScaleType.Linear,
+        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
       },
     ]);
@@ -151,14 +152,14 @@ describe('Y Domain', () => {
       {
         groupId: 'a',
         domain: [2, 12],
-        scaleType: ScaleType.Linear,
+        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
         type: 'yDomain',
       },
       {
         groupId: 'b',
         domain: [2, 10],
-        scaleType: ScaleType.Log,
+        scaleConfig: getYScaleConfig(ScaleType.Log),
         isBandScale: false,
         type: 'yDomain',
       },
@@ -189,7 +190,7 @@ describe('Y Domain', () => {
       {
         groupId: 'a',
         domain: [0, 17],
-        scaleType: ScaleType.Linear,
+        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
         type: 'yDomain',
       },
@@ -218,7 +219,7 @@ describe('Y Domain', () => {
       {
         groupId: 'a',
         domain: [0, 12],
-        scaleType: ScaleType.Linear,
+        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
         type: 'yDomain',
       },
@@ -384,8 +385,9 @@ describe('Y Domain', () => {
   });
 
   test('Should return a default Scale Linear for YScaleType when there are no specs', () => {
-    const specs: Pick<BasicSeriesSpec, 'yScaleType'>[] = [];
-    expect(coerceYScaleTypes(specs)).toBe(ScaleType.Linear);
+    const specs: BasicSeriesSpec['yScaleType'][] = [];
+    const specScaleConfigs = specs.map(getYScaleConfig);
+    expect(coerceYScaleTypes(specScaleConfigs)).toEqual(getYScaleConfig(ScaleType.Linear));
   });
 
   test('Should merge Y domain accounting for custom domain limits: complete bounded domain', () => {
@@ -409,7 +411,7 @@ describe('Y Domain', () => {
         type: 'yDomain',
         groupId: 'a',
         domain: [0, 20],
-        scaleType: ScaleType.Linear,
+        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
       },
     ]);
@@ -435,7 +437,7 @@ describe('Y Domain', () => {
         type: 'yDomain',
         groupId: 'a',
         domain: [0, 12],
-        scaleType: ScaleType.Linear,
+        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
       },
     ]);
@@ -484,7 +486,7 @@ describe('Y Domain', () => {
         type: 'yDomain',
         groupId: 'a',
         domain: [2, 20],
-        scaleType: ScaleType.Linear,
+        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
       },
     ]);
@@ -533,7 +535,7 @@ describe('Y Domain', () => {
       {
         groupId: 'a',
         domain: [0, 1],
-        scaleType: ScaleType.Linear,
+        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
         type: 'yDomain',
       },
@@ -562,7 +564,7 @@ describe('Y Domain', () => {
         type: 'yDomain',
         groupId: 'a',
         domain: [0, 1],
-        scaleType: ScaleType.Linear,
+        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
       },
     ]);

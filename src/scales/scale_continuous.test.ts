@@ -21,6 +21,7 @@ import { DateTime, Settings } from 'luxon';
 
 import { ScaleContinuous, ScaleBand } from '.';
 import { XDomain } from '../chart_types/xy_chart/domains/types';
+import { getXScaleConfig } from '../chart_types/xy_chart/scales/get_scale_config';
 import { computeXScale } from '../chart_types/xy_chart/utils/scales';
 import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
@@ -105,7 +106,7 @@ describe('Scale Continuous', () => {
       domain: [0, 2],
       isBandScale: true,
       minInterval: 1,
-      scaleType: ScaleType.Linear,
+      scaleConfig: getXScaleConfig(ScaleType.Linear),
       type: 'xDomain',
     };
 
@@ -146,7 +147,7 @@ describe('Scale Continuous', () => {
       domain: [0, 100],
       isBandScale: true,
       minInterval: 10,
-      scaleType: ScaleType.Linear,
+      scaleConfig: getXScaleConfig(ScaleType.Linear),
       type: 'xDomain',
     };
     // we tweak the maxRange removing the bandwidth to correctly compute

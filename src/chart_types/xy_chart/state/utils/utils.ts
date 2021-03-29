@@ -146,15 +146,18 @@ export function computeSeriesDomains(
   const xDomain = mergeXDomain(seriesSpecs, xValues, customXDomain, fallbackScale);
 
   // fill series with missing x values
-  const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.scaleType);
+  const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.scaleConfig.type);
 
   const seriesSortFn = getRenderingCompareFn(sortSeriesBy, (a: SeriesIdentifier, b: SeriesIdentifier) => {
     return defaultXYSeriesSort(a as DataSeries, b as DataSeries);
   });
 
-  const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.scaleType).sort(
-    seriesSortFn,
-  );
+  const formattedDataSeries = getFormattedDataSeries(
+    seriesSpecs,
+    filledDataSeries,
+    xValues,
+    xDomain.scaleConfig.type,
+  ).sort(seriesSortFn);
 
   // let's compute the yDomains after computing all stacked values
   const yDomains = mergeYDomain(formattedDataSeries, customYDomainsByGroupId);

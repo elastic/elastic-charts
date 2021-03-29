@@ -23,11 +23,13 @@ import { identity } from '../../../utils/common';
 import { computeContinuousDataDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
+import { getYScaleConfig, ScaleConfig } from '../scales/get_scale_config';
 import { getSpecDomainGroupId } from '../state/utils/spec';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { groupBy } from '../utils/group_data_series';
 import { DataSeries } from '../utils/series';
 import { BasicSeriesSpec, YDomainRange, SeriesTypes, StackMode } from '../utils/specs';
+import { areAllNiceDomain } from './nice';
 import { YDomain } from './types';
 
 export type YBasicSeriesSpec = Pick<
@@ -68,9 +70,7 @@ function mergeYDomainForGroup(
   if (dataSeries.length === 0) {
     return null;
   }
-  const yScaleTypes = dataSeries.map(({ spec: { yScaleType } }) => ({
-    yScaleType,
-  }));
+  const yScaleTypes = dataSeries.map(({ spec: { yScaleType } }) => getYScaleConfig(yScaleType));
   const groupYScaleType = coerceYScaleTypes(yScaleTypes);
   const [{ stackMode, spec }] = dataSeries;
   const groupId = getSpecDomainGroupId(spec);
@@ -119,7 +119,7 @@ function mergeYDomainForGroup(
   return {
     type: 'yDomain',
     isBandScale: false,
-    scaleType: groupYScaleType,
+    scaleConfig: groupYScaleType,
     groupId,
     domain,
     logBase: customDomain?.logBase,
@@ -213,19 +213,23 @@ export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean)
  * @returns {ScaleContinuousType}
  * @internal
  */
-export function coerceYScaleTypes(scales: { yScaleType: ScaleContinuousType }[]): ScaleContinuousType {
-  const scaleTypes = new Set<ScaleContinuousType>();
-  scales.forEach(({ yScaleType }) => {
-    scaleTypes.add(yScaleType);
-  });
-  return coerceYScale(scaleTypes);
-}
-
-function coerceYScale(scaleTypes: Set<ScaleContinuousType>): ScaleContinuousType {
-  if (scaleTypes.size === 1) {
-    const scales = scaleTypes.values();
-    const { value } = scales.next();
-    return value;
-  }
-  return ScaleType.Linear;
+export function coerceYScaleTypes(scales: ScaleConfig<ScaleContinuousType>[]): ScaleConfig<ScaleContinuousType> {
+  const scaleCollection = scales.reduce(
+    (acc, scale) => {
+      acc.types.add(scale.type);
+      acc.nice.push(scale.nice);
+      return acc;
+    },
+    {
+      types: new Set<ScaleContinuousType>(),
+      nice: [] as Array<boolean>,
+    },
+  );
+  const nice = areAllNiceDomain(scaleCollection.nice);
+  return scaleCollection.types.size === 1
+    ? { type: scaleCollection.types.values().next().value, nice }
+    : {
+        type: ScaleType.Linear,
+        nice,
+      };
 }

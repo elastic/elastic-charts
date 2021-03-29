@@ -23,8 +23,10 @@ import { ScaleType } from '../../../scales/constants';
 import { compareByValueAsc, identity } from '../../../utils/common';
 import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
+import { getXScaleConfig, ScaleConfig } from '../scales/get_scale_config';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { BasicSeriesSpec, CustomXDomain, SeriesTypes, XScaleType } from '../utils/specs';
+import { areAllNiceDomain } from './nice';
 import { XDomain } from './types';
 
 /**
@@ -40,21 +42,18 @@ export function mergeXDomain(
   specs: Optional<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>, 'seriesType'>[],
   xValues: Set<string | number>,
   customXDomain?: CustomXDomain,
-  fallbackScale?: XScaleType,
+  fallbackScale?: ScaleConfig<XScaleType>,
 ): XDomain {
-  const mainXScaleType = convertXScaleTypes(specs);
-  if (!mainXScaleType) {
-    throw new Error(`Cannot merge the domain. Missing X scale types ${JSON.stringify(specs)}`);
-  }
+  const { scaleConfig, isBandScale, timeZone } = convertXScaleTypes(specs);
 
   const values = [...xValues.values()];
   let seriesXComputedDomains;
   let minInterval = 0;
 
-  if (mainXScaleType.scaleType === ScaleType.Ordinal || fallbackScale === ScaleType.Ordinal) {
-    if (mainXScaleType.scaleType !== ScaleType.Ordinal) {
+  if (scaleConfig.type === ScaleType.Ordinal || fallbackScale?.type === ScaleType.Ordinal) {
+    if (scaleConfig.type !== ScaleType.Ordinal) {
       Logger.warn(
-        `Each X value in a ${mainXScaleType.scaleType} x scale needs be be a number. Using ordinal x scale as fallback.`,
+        `Each X value in a ${scaleConfig.type} x scale needs be be a number. Using ordinal x scale as fallback.`,
       );
     }
 
@@ -63,10 +62,10 @@ export function mergeXDomain(
       if (Array.isArray(customXDomain)) {
         seriesXComputedDomains = customXDomain;
       } else {
-        if (fallbackScale === ScaleType.Ordinal) {
+        if (fallbackScale?.type === ScaleType.Ordinal) {
           Logger.warn(`xDomain ignored for fallback ordinal scale. Options to resolve:
 
-1) Correct data to match ${mainXScaleType.scaleType} scale type (see previous warning)
+1) Correct data to match ${scaleConfig.type} scale type (see previous warning)
 2) Change xScaleType to ordinal and set xDomain to Domain array`);
         } else {
           Logger.warn(
@@ -119,11 +118,11 @@ export function mergeXDomain(
 
   return {
     type: 'xDomain',
-    scaleType: fallbackScale ?? mainXScaleType.scaleType,
-    isBandScale: mainXScaleType.isBandScale,
+    scaleConfig: fallbackScale ?? scaleConfig,
+    isBandScale,
     domain: seriesXComputedDomains,
     minInterval,
-    timeZone: mainXScaleType.timeZone,
+    timeZone,
     logBase: customXDomain && 'logBase' in customXDomain ? customXDomain.logBase : undefined,
   };
 }
@@ -184,35 +183,54 @@ export function findMinInterval(xValues: number[]): number {
 export function convertXScaleTypes(
   specs: Optional<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>, 'seriesType'>[],
 ): {
-  scaleType: XScaleType;
+  scaleConfig: ScaleConfig<XScaleType>;
   isBandScale: boolean;
   timeZone?: string;
-} | null {
+} {
   const seriesTypes = new Set<string | undefined>();
   const scaleTypes = new Set<ScaleType>();
   const timeZones = new Set<string>();
+  const niceDomainConfigs: Array<boolean> = [];
   specs.forEach((spec) => {
+    const scaleConfig = getXScaleConfig(spec.xScaleType);
+    niceDomainConfigs.push(scaleConfig.nice);
     seriesTypes.add(spec.seriesType);
-    scaleTypes.add(spec.xScaleType);
+    scaleTypes.add(scaleConfig.type);
     if (spec.timeZone) {
       timeZones.add(spec.timeZone.toLowerCase());
     }
   });
   if (specs.length === 0 || seriesTypes.size === 0 || scaleTypes.size === 0) {
-    return null;
+    return {
+      scaleConfig: {
+        type: ScaleType.Linear,
+        nice: true,
+      },
+      isBandScale: false,
+    };
   }
+  const nice = areAllNiceDomain(niceDomainConfigs);
   const isBandScale = seriesTypes.has(SeriesTypes.Bar);
   if (scaleTypes.size === 1) {
     const scaleType = scaleTypes.values().next().value;
-    let timeZone: string | undefined;
-    if (scaleType === ScaleType.Time) {
-      timeZone = timeZones.size > 1 ? 'utc' : timeZones.values().next().value;
-    }
-    return { scaleType, isBandScale, timeZone };
+    const timeZone = timeZones.size > 1 ? 'utc' : timeZones.values().next().value;
+    return { scaleConfig: { type: scaleType, nice }, isBandScale, timeZone };
   }
 
   if (scaleTypes.size > 1 && scaleTypes.has(ScaleType.Ordinal)) {
-    return { scaleType: ScaleType.Ordinal, isBandScale };
+    return {
+      scaleConfig: {
+        type: ScaleType.Ordinal,
+        nice,
+      },
+      isBandScale,
+    };
   }
-  return { scaleType: ScaleType.Linear, isBandScale };
+  return {
+    scaleConfig: {
+      type: ScaleType.Linear,
+      nice,
+    },
+    isBandScale,
+  };
 }

@@ -21,6 +21,7 @@ import { ChartTypes } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
 import { Dimensions } from '../../../utils/dimensions';
+import { getXScaleConfig } from '../scales/get_scale_config';
 import { computeSeriesDomains } from '../state/utils/utils';
 import { computeXScale } from '../utils/scales';
 import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
@@ -1460,7 +1461,7 @@ describe('Crosshair utils linear scale', () => {
           domain: [0.5, 3.5],
           isBandScale: true,
           minInterval: 1,
-          scaleType: ScaleType.Linear,
+          scaleConfig: getXScaleConfig(ScaleType.Linear),
           type: 'xDomain',
         },
         totalBarsInCluster: 1,
@@ -1491,7 +1492,7 @@ describe('Crosshair utils linear scale', () => {
           domain: [-0.5, 2.5],
           isBandScale: true,
           minInterval: 1,
-          scaleType: ScaleType.Linear,
+          scaleConfig: getXScaleConfig(ScaleType.Linear),
           type: 'xDomain',
         },
         totalBarsInCluster: barSeries.length,
@@ -1522,7 +1523,7 @@ describe('Crosshair utils linear scale', () => {
           domain: [0.5, 3.5],
           isBandScale: true,
           minInterval: 1,
-          scaleType: ScaleType.Linear,
+          scaleConfig: getXScaleConfig(ScaleType.Linear),
           type: 'xDomain',
         },
         totalBarsInCluster: 1,
@@ -1553,7 +1554,7 @@ describe('Crosshair utils linear scale', () => {
           domain: [-0.5, 2.5],
           isBandScale: true,
           minInterval: 1,
-          scaleType: ScaleType.Linear,
+          scaleConfig: getXScaleConfig(ScaleType.Linear),
           type: 'xDomain',
         },
         totalBarsInCluster: barSeries.length,

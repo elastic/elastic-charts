@@ -22,6 +22,7 @@ import { MockSeriesSpecs } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes, Direction, BinAgg } from '../../../specs/constants';
 import { Logger } from '../../../utils/logger';
+import { getXScaleConfig } from '../scales/get_scale_config';
 import { getDataSeriesFromSpecs } from '../utils/series';
 import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
 import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
@@ -33,16 +34,10 @@ jest.mock('../../../utils/logger', () => ({
 }));
 
 describe('X Domain', () => {
-  test('Should return null when missing specs or specs types', () => {
+  test('Should return a default scale when missing specs or specs types', () => {
     const seriesSpecs: BasicSeriesSpec[] = [];
     const mainXScale = convertXScaleTypes(seriesSpecs);
-    expect(mainXScale).toBe(null);
-  });
-
-  test('should throw if we miss calling merge X domain without specs configured', () => {
-    expect(() => {
-      mergeXDomain([], new Set());
-    }).toThrow();
+    expect(mainXScale).not.toBeNull();
   });
 
   test('Should return correct scale type with single bar', () => {
@@ -54,7 +49,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleType: ScaleType.Linear,
+      scaleConfig: getXScaleConfig(ScaleType.Linear),
       isBandScale: true,
     });
   });
@@ -68,7 +63,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleType: ScaleType.Ordinal,
+      scaleConfig: getXScaleConfig(ScaleType.Ordinal),
       isBandScale: true,
     });
   });
@@ -82,7 +77,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleType: ScaleType.Linear,
+      scaleConfig: getXScaleConfig(ScaleType.Linear),
       isBandScale: false,
     });
   });
@@ -96,7 +91,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleType: ScaleType.Time,
+      scaleConfig: getXScaleConfig(ScaleType.Time),
       isBandScale: false,
       timeZone: 'utc-3',
     });
@@ -116,7 +111,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleType: ScaleType.Time,
+      scaleConfig: getXScaleConfig(ScaleType.Time),
       isBandScale: false,
       timeZone: 'utc-3',
     });
@@ -136,7 +131,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleType: ScaleType.Time,
+      scaleConfig: getXScaleConfig(ScaleType.Time),
       isBandScale: false,
       timeZone: 'utc',
     });
@@ -155,7 +150,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleType: ScaleType.Ordinal,
+      scaleConfig: getXScaleConfig(ScaleType.Ordinal),
       isBandScale: false,
     });
   });
@@ -172,7 +167,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleType: ScaleType.Ordinal,
+      scaleConfig: getXScaleConfig(ScaleType.Ordinal),
       isBandScale: true,
     });
   });
@@ -190,7 +185,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleType: ScaleType.Linear,
+      scaleConfig: getXScaleConfig(ScaleType.Linear),
       isBandScale: true,
     });
   });
@@ -497,14 +492,14 @@ describe('X Domain', () => {
         ],
         xValues,
         customDomain,
-        ScaleType.Ordinal,
+        { type: ScaleType.Ordinal, nice: false },
       );
 
     expect(getResult).not.toThrow();
 
     const mergedDomain = getResult();
     expect(mergedDomain.domain).toEqual([0, 'a', 2, 5, 7]);
-    expect(mergedDomain.scaleType).toEqual(ScaleType.Ordinal);
+    expect(mergedDomain.scaleConfig.type).toEqual(ScaleType.Ordinal);
   });
 
   test('Should merge multi bar/line ordinal series correctly', () => {

@@ -27,7 +27,10 @@ describe('Series scales', () => {
     isBandScale: true,
     domain: [0, 3],
     minInterval: 1,
-    scaleType: ScaleType.Linear,
+    scaleConfig: {
+      type: ScaleType.Linear,
+      nice: false,
+    },
   };
 
   const xDomainOrdinal: XDomain = {
@@ -35,7 +38,10 @@ describe('Series scales', () => {
     isBandScale: true,
     domain: ['a', 'b'],
     minInterval: 1,
-    scaleType: ScaleType.Ordinal,
+    scaleConfig: {
+      type: ScaleType.Ordinal,
+      nice: false,
+    },
   };
 
   test('should compute X Scale linear min, max with bands', () => {
@@ -69,7 +75,10 @@ describe('Series scales', () => {
         isBandScale: true,
         domain: [singleDomainValue, singleDomainValue],
         minInterval,
-        scaleType: ScaleType.Linear,
+        scaleConfig: {
+          type: ScaleType.Linear,
+          nice: false,
+        },
       };
       const enableHistogramMode = true;
 
@@ -92,7 +101,10 @@ describe('Series scales', () => {
         isBandScale: true,
         domain: [singleDomainValue, singleDomainValue],
         minInterval,
-        scaleType: ScaleType.Linear,
+        scaleConfig: {
+          type: ScaleType.Linear,
+          nice: false,
+        },
       };
       const enableHistogramMode = false;
 
@@ -126,7 +138,10 @@ describe('Series scales', () => {
       isBandScale: true,
       domain: [0, 3],
       minInterval: 1,
-      scaleType: ScaleType.Linear,
+      scaleConfig: {
+        type: ScaleType.Linear,
+        nice: false,
+      },
     };
     const maxRange = 120;
     const scaleOver0 = computeXScale({

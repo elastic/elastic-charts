@@ -151,6 +151,7 @@ interface ScaleData {
   domain: any[];
   /** The data output range */
   range: Range;
+  nice?: boolean;
 }
 
 /**
@@ -261,8 +262,10 @@ export class ScaleContinuous implements Scale {
 
   private readonly d3Scale: D3Scale;
 
-  constructor(scaleData: ScaleData, options?: Partial<ScaleOptions>) {
-    const { type, domain, range } = scaleData;
+  constructor(
+    { type = ScaleType.Linear, domain = [0, 1], range = [0, 1], nice = false }: ScaleData,
+    options?: Partial<ScaleOptions>,
+  ) {
     const {
       bandwidth,
       minInterval,
@@ -286,8 +289,8 @@ export class ScaleContinuous implements Scale {
     }
 
     this.d3Scale.domain(this.domain);
-    if (type !== ScaleType.Time) {
-      (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(this.domain).nice();
+    if (nice && type !== ScaleType.Time) {
+      (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(this.domain).nice(ticks);
       this.domain = this.d3Scale.domain();
     }
 

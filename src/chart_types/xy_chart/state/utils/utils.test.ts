@@ -30,6 +30,7 @@ import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/tes
 import { ContinuousDomain, Range } from '../../../../utils/domain';
 import { SpecId } from '../../../../utils/ids';
 import { PointShape } from '../../../../utils/themes/theme';
+import { getXScaleConfig, getYScaleConfig } from '../../scales/get_scale_config';
 import { getSeriesIndex, XYChartSeriesIdentifier } from '../../utils/series';
 import { BasicSeriesSpec, HistogramModeAlignments, SeriesColorAccessorFn } from '../../utils/specs';
 import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
@@ -80,14 +81,14 @@ describe('Chart State utils', () => {
     expect(domains.xDomain).toEqual({
       domain: [0, 3],
       isBandScale: false,
-      scaleType: ScaleType.Linear,
+      scaleConfig: getXScaleConfig(ScaleType.Linear),
       minInterval: 1,
       type: 'xDomain',
     });
     expect(domains.yDomains).toEqual([
       {
         domain: [0, 10],
-        scaleType: ScaleType.Log,
+        scaleConfig: getYScaleConfig(ScaleType.Log),
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
@@ -96,7 +97,7 @@ describe('Chart State utils', () => {
       },
       {
         domain: [0, 10],
-        scaleType: ScaleType.Log,
+        scaleConfig: getYScaleConfig(ScaleType.Log),
         groupId: 'group2',
         isBandScale: false,
         type: 'yDomain',
@@ -132,14 +133,14 @@ describe('Chart State utils', () => {
     expect(domains.xDomain).toEqual({
       domain: [0, 3],
       isBandScale: false,
-      scaleType: ScaleType.Linear,
+      scaleConfig: getXScaleConfig(ScaleType.Linear),
       minInterval: 1,
       type: 'xDomain',
     });
     expect(domains.yDomains).toEqual([
       {
         domain: [0, 5],
-        scaleType: ScaleType.Log,
+        scaleConfig: getYScaleConfig(ScaleType.Log),
         groupId: 'group1',
         isBandScale: false,
         type: 'yDomain',
@@ -148,7 +149,7 @@ describe('Chart State utils', () => {
       },
       {
         domain: [0, 9],
-        scaleType: ScaleType.Log,
+        scaleConfig: getYScaleConfig(ScaleType.Log),
         groupId: 'group2',
         isBandScale: false,
         type: 'yDomain',
