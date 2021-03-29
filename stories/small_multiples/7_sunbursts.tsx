@@ -58,7 +58,7 @@ export const Example = () => {
   return (
     <Chart className="story-chart">
       <Settings
-        showLegend={boolean('Show legend', false)}
+        showLegend={boolean('Show legend', true)}
         legendStrategy="pathWithDescendants"
         flatLegend={false}
         theme={STORYBOOK_LIGHT_THEME}
