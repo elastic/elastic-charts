@@ -286,27 +286,12 @@ export const DEFAULT_PROPS: HighlighterProps = {
 /** @internal */
 export function highlightSetMapper(geometries: QuadViewModel[], foci: IndexedContinuousDomainFocus[]) {
   return (vm: ShapeViewModel): HighlightSet => {
+    const { index } = vm;
+    const { innerIndex } = vm;
     return {
-      index: vm.index,
-      innerIndex: vm.innerIndex,
-      panelTitle: vm.panelTitle,
-      partitionLayout: vm.partitionLayout,
-      width: vm.width,
-      height: vm.height,
-      top: vm.top,
-      left: vm.left,
-      diskCenter: vm.diskCenter,
-      outerRadius: vm.outerRadius,
-      geometries: geometries.filter(({ index: i, innerIndex: ii }) => vm.index === i && vm.innerIndex === ii),
-      geometriesFoci: foci.filter(({ index: i, innerIndex: ii }) => vm.index === i && vm.innerIndex === ii),
-      innerRowIndex: vm.innerRowIndex,
-      innerColumnIndex: vm.innerColumnIndex,
-      innerRowCount: vm.innerRowCount,
-      innerColumnCount: vm.innerColumnCount,
-      marginLeftPx: vm.marginLeftPx,
-      marginTopPx: vm.marginTopPx,
-      panelInnerWidth: vm.panelInnerWidth,
-      panelInnerHeight: vm.panelInnerHeight,
+      ...vm,
+      geometries: geometries.filter(({ index: i, innerIndex: ii }) => index === i && innerIndex === ii),
+      geometriesFoci: foci.filter(({ index: i, innerIndex: ii }) => index === i && innerIndex === ii),
     };
   };
 }

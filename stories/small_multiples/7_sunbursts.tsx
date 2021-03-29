@@ -53,7 +53,7 @@ const countryToColor = new Map(
     .filter(keepDistinct)
     .sort()
     .map((dest, i, a) => {
-      const luma = Math.floor(64 + 128 * (i / a.length));
+      const luma = Math.floor(96 + 128 * ((a.length - i - 1) / a.length));
       return [dest, `rgb(${luma},${luma},${luma})`];
     }),
 );
@@ -73,7 +73,7 @@ export const Example = () => {
     <Chart className="story-chart">
       <Settings
         showLegend={boolean('Show legend', true)}
-        legendStrategy={LegendStrategy.Node}
+        legendStrategy={LegendStrategy.Key}
         flatLegend={boolean('Flat legend', false)}
         theme={STORYBOOK_LIGHT_THEME}
       />
