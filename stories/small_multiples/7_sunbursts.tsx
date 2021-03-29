@@ -74,7 +74,7 @@ export const Example = () => {
       <Settings
         showLegend={boolean('Show legend', true)}
         legendStrategy={LegendStrategy.Key}
-        flatLegend={boolean('Flat legend', false)}
+        flatLegend={boolean('Flat legend', true)}
         theme={STORYBOOK_LIGHT_THEME}
       />
       <GroupBy

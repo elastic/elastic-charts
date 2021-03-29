@@ -59,8 +59,8 @@ export function getLegendItems(
 
   const excluded: Set<string> = new Set();
   const items = quadViewModel.filter(({ depth, dataName, fillColor }) => {
-    if (legendMaxDepth != null) {
-      return depth <= legendMaxDepth;
+    if (legendMaxDepth !== null && depth > legendMaxDepth) {
+      return false;
     }
     if (!useHierarchicalLegend) {
       const key = makeKey(dataName, fillColor);
