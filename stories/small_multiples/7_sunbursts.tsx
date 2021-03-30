@@ -125,26 +125,24 @@ export const Example = () => {
         valueAccessor={(d: Datum) => d.exportVal as number}
         valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         smallMultiples="sm"
-        layers={
-          [
-            {
-              groupByRollup: (d: Datum) => d.sitc1,
-              nodeLabel: (d: any) => productLookup[d].name,
-              fillLabel: { maximizeFontSize: true },
-              shape: {
-                fillColor: (d: ShapeTreeNode) => productToColor.get(d.dataName)!,
-              },
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: any) => productLookup[d].name,
+            fillLabel: { maximizeFontSize: true },
+            shape: {
+              fillColor: (d: ShapeTreeNode) => productToColor.get(d.dataName)!,
             },
-            {
-              groupByRollup: (d: Datum) => d.dest,
-              nodeLabel: (d: any) => countryLookup[d].name,
-              fillLabel: { maximizeFontSize: true },
-              shape: {
-                fillColor: (d: ShapeTreeNode) => countryToColor.get(d.dataName)!,
-              },
+          },
+          {
+            groupByRollup: (d: Datum) => d.dest,
+            nodeLabel: (d: any) => countryLookup[d].name,
+            fillLabel: { maximizeFontSize: true },
+            shape: {
+              fillColor: (d: ShapeTreeNode) => countryToColor.get(d.dataName)!,
             },
-          ] /* .slice(layerFrom, layerTo) */
-        }
+          },
+        ]}
         config={{
           partitionLayout: PartitionLayout.sunburst,
           linkLabel: {

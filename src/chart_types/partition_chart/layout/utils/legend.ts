@@ -21,7 +21,6 @@ import { CategoryKey } from '../../../../common/category';
 import { map } from '../../../../common/iterables';
 import { LegendItem } from '../../../../common/legend';
 import { LegendPositionConfig } from '../../../../specs/settings';
-import { identity } from '../../../../utils/common';
 import { isHierarchicalLegend } from '../../../../utils/legend';
 import { Layer } from '../../specs';
 import { QuadViewModel } from '../types/viewmodel_types';
@@ -45,10 +44,6 @@ function compareTreePaths(
   return a.length - b.length; // if one path is fully contained in the other, then parent (shorter) goes first
 }
 
-function compareNames({ dataName: a }: QuadViewModel, { dataName: b }: QuadViewModel): number {
-  return a < b ? -1 : a > b ? 1 : 0;
-}
-
 /** @internal */
 export function getLegendItems(
   id: string,
@@ -60,6 +55,17 @@ export function getLegendItems(
 ): LegendItem[] {
   const uniqueNames = new Set(map(({ dataName, fillColor }) => makeKey(dataName, fillColor), quadViewModel));
   const useHierarchicalLegend = isHierarchicalLegend(flatLegend, legendPosition);
+
+  const formattedLabel = ({ dataName, depth }: QuadViewModel) => {
+    const formatter = layers[depth - 1]?.nodeLabel;
+    return formatter ? formatter(dataName) : dataName;
+  };
+
+  function compareNames(aItem: QuadViewModel, bItem: QuadViewModel): number {
+    const a = formattedLabel(aItem);
+    const b = formattedLabel(bItem);
+    return a < b ? -1 : a > b ? 1 : 0;
+  }
 
   const excluded: Set<string> = new Set();
   const items = quadViewModel.filter(({ depth, dataName, fillColor }) => {
@@ -78,11 +84,11 @@ export function getLegendItems(
 
   items.sort(flatLegend ? compareNames : compareTreePaths);
 
-  return items.map<LegendItem>(({ dataName, fillColor, depth, path }) => {
-    const formatter = layers[depth - 1]?.nodeLabel ?? identity;
+  return items.map<LegendItem>((item) => {
+    const { dataName, fillColor, depth, path } = item;
     return {
       color: fillColor,
-      label: formatter(dataName),
+      label: formattedLabel(item),
       childId: dataName,
       depth: useHierarchicalLegend ? depth - 1 : 0,
       path,
