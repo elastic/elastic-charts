@@ -45,6 +45,10 @@ function compareTreePaths(
   return a.length - b.length; // if one path is fully contained in the other, then parent (shorter) goes first
 }
 
+function compareNames({ dataName: a }: QuadViewModel, { dataName: b }: QuadViewModel): number {
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
 /** @internal */
 export function getLegendItems(
   id: string,
@@ -72,7 +76,7 @@ export function getLegendItems(
     return true;
   });
 
-  items.sort(compareTreePaths);
+  items.sort(flatLegend ? compareNames : compareTreePaths);
 
   return items.map<LegendItem>(({ dataName, fillColor, depth, path }) => {
     const formatter = layers[depth - 1]?.nodeLabel ?? identity;
