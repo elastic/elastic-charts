@@ -54,9 +54,7 @@
     "ts:prune": "ts-prune",
     "watch": "yarn test --watch",
     "index:check": "ts-node scripts/index_check.ts",
-    "tsdocs:check": "ts-node scripts/tsdoc_check.ts",
-    "lint:test": "node --inspect ./node_modules/eslint/bin/eslint src/utils/geometry.ts",
-    "lint:check": "eslint src/utils/geometry.ts"
+    "tsdocs:check": "ts-node scripts/tsdoc_check.ts"
   },
   "dependencies": {
     "@popperjs/core": "^2.4.0",
