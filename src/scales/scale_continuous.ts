@@ -117,6 +117,7 @@ export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit?: 
   return [min, max];
 }
 
+/** @internal */
 export const LogBase = Object.freeze({
   /**
    * log base `10`
@@ -133,6 +134,7 @@ export const LogBase = Object.freeze({
 });
 /**
  * Log bases
+ * @internal
  */
 export type LogBase = $Values<typeof LogBase>;
 
@@ -154,6 +156,7 @@ interface ScaleData {
 
 /**
  * Options specific to log scales
+ * @internal
  */
 export interface LogScaleOptions {
   /**
@@ -229,7 +232,7 @@ const defaultScaleOptions: ScaleOptions = {
 
 /**
  * Continuous scale
- * @public
+ * @internal
  */
 export class ScaleContinuous implements Scale {
   readonly bandwidth: number;

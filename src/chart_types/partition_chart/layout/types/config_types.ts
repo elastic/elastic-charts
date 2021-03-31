@@ -131,7 +131,7 @@ export interface StaticConfig extends FillFontSizeRange {
   sectorLineStroke: StrokeStyle;
 }
 
-/** @public */
+/** @internal */
 export type EasingFunction = (x: Ratio) => Ratio;
 
 /** @alpha */
