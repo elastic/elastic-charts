@@ -84,6 +84,7 @@ export interface FillFontSizeRange {
   maximizeFontSize: boolean;
 }
 
+/** @internal */
 export interface RelativeMargins {
   left: SizeRatio;
   right: SizeRatio;
@@ -92,7 +93,7 @@ export interface RelativeMargins {
 }
 
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
-/** potential internal */
+/** @internal */
 export interface StaticConfig extends FillFontSizeRange {
   // shape geometry
   width: number;
