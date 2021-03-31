@@ -33,6 +33,7 @@ export const Position = Object.freeze({
 /** @public */
 export type Position = $Values<typeof Position>;
 
+/** @public */
 export const LayoutDirection = Object.freeze({
   Horizontal: 'horizontal' as const,
   Vertical: 'vertical' as const,
@@ -142,6 +143,7 @@ export function compareByValueAsc(a: number | string, b: number | string): numbe
   return a > b ? 1 : -1;
 }
 
+/** @internal */
 export function clamp(value: number, lowerBound: number, upperBound: number) {
   return minValueWithLowerLimit(value, upperBound, lowerBound);
 }
@@ -240,12 +242,19 @@ export type RecursivePartial<T> = {
     : RecursivePartial<T[P]>; // recurse for all non-array and non-primitive values
 };
 
-// return True if T is `any`, otherwise return False
+/**
+ * return True if T is `any`, otherwise return False
+ * @internal
+ */
 export type IsAny<T, True, False = never> = True | False extends (T extends never ? True : False) ? True : False;
 
-// return True if T is `unknown`, otherwise return False
+/**
+ * return True if T is `unknown`, otherwise return False
+ * @internal
+ */
 export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, False, True> : False;
 
+/** @internal */
 export type NonAny = number | boolean | string | symbol | null;
 
 /** @public */

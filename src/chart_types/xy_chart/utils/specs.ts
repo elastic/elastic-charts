@@ -51,6 +51,7 @@ export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 /** @public */
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
 
+/** @public */
 export const SeriesTypes = Object.freeze({
   Area: 'area' as const,
   Bar: 'bar' as const,
