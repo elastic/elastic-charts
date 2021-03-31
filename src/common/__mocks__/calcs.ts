@@ -19,7 +19,5 @@
 
 const module = jest.requireActual('../color_calcs.ts');
 
-/** @internal */
 export const getBackgroundWithContainerColorFromUser = jest.fn(module.getBackgroundWithContainerColorFromUser);
-/** @internal */
 export const makeHighContrastColor = jest.fn(module.makeHighContrastColor);

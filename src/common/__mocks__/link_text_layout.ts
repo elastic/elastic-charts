@@ -19,5 +19,4 @@
 
 const module = jest.requireActual('../../link_text_layout.ts');
 
-/** @internal */
 export const linkTextLayout = jest.fn(module.linkTextLayout);

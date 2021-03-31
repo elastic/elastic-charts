@@ -19,5 +19,4 @@
 
 const module = jest.requireActual('../../viewmodel/fill_text_layout.ts');
 
-/** @internal */
 export const getTextColorIfTextInvertible = jest.fn(module.getTextColorIfTextInvertible);
