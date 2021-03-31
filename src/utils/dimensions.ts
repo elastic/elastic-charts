@@ -49,7 +49,7 @@ export interface PerSideDistance {
  */
 export type Margins = PerSideDistance;
 
-/** @internal */
+/** @public */
 export type Padding = PerSideDistance;
 
 /**

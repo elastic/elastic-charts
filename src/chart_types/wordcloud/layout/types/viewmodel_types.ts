@@ -84,7 +84,7 @@ export interface Configs {
   width: number;
 }
 
-/** @internal */
+/** @public */
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
 
 /** @internal */

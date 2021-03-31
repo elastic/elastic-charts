@@ -244,17 +244,17 @@ export type RecursivePartial<T> = {
 
 /**
  * return True if T is `any`, otherwise return False
- * @internal
+ * @public
  */
 export type IsAny<T, True, False = never> = True | False extends (T extends never ? True : False) ? True : False;
 
 /**
  * return True if T is `unknown`, otherwise return False
- * @internal
+ * @public
  */
 export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, False, True> : False;
 
-/** @internal */
+/** @public */
 export type NonAny = number | boolean | string | symbol | null;
 
 /** @public */

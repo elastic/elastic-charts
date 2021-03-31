@@ -84,7 +84,7 @@ export interface FillFontSizeRange {
   maximizeFontSize: boolean;
 }
 
-/** @internal */
+/** @public */
 export interface RelativeMargins {
   left: SizeRatio;
   right: SizeRatio;
@@ -93,7 +93,7 @@ export interface RelativeMargins {
 }
 
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
-/** @internal */
+/** @public */
 export interface StaticConfig extends FillFontSizeRange {
   // shape geometry
   width: number;
@@ -131,7 +131,7 @@ export interface StaticConfig extends FillFontSizeRange {
   sectorLineStroke: StrokeStyle;
 }
 
-/** @internal */
+/** @alpha */
 export type EasingFunction = (x: Ratio) => Ratio;
 
 /** @alpha */
