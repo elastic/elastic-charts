@@ -8,7 +8,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   justify-content: space-between;
   align-items: center;
   position: relative;
-  padding-left: 5px;
+  margin-left: 5px;
 
   > *:not(.background) {
     // euiPopover adds a div with height of 19px otherwise
