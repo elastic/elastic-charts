@@ -35,7 +35,7 @@ const superStringMap: Record<string, string> = {
 };
 
 export const getSuperScriptNumber = (n: number) =>
-  `${n > 0 ? '' : '⁻'}${Math.abs(n)
+  `${n >= 0 ? '' : '⁻'}${Math.abs(n)
     .toString()
     .split('')
     .map((c) => superStringMap[c])
