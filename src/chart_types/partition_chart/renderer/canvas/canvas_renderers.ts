@@ -32,7 +32,7 @@ import {
   TextRow,
 } from '../../layout/types/viewmodel_types';
 import { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
-import { isSunburst } from '../../layout/viewmodel/viewmodel';
+import { isSunburst, panelTitleFontSize } from '../../layout/viewmodel/viewmodel';
 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
@@ -40,7 +40,7 @@ const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to a
 
 function renderTextRow(
   ctx: CanvasRenderingContext2D,
-  { fontSize, fillTextColor, rotation, verticalAlignment, leftAlign }: RowSet,
+  { fontSize, fillTextColor, rotation, verticalAlignment, leftAlign, container, clipText }: RowSet,
   linkLabelTextColor: string,
 ) {
   return (currentRow: TextRow) => {
@@ -48,8 +48,16 @@ function renderTextRow(
       ? currentRow.rowAnchorX - currentRow.maximumLength / 2
       : currentRow.rowAnchorX - (Math.cos(rotation) * currentRow.length) / 2;
     const cry = -currentRow.rowAnchorY + (Math.sin(rotation) * currentRow.length) / 2;
+    if (!Number.isFinite(crx) || !Number.isFinite(cry)) {
+      return;
+    }
     withContext(ctx, (ctx) => {
       ctx.scale(1, -1);
+      if (clipText) {
+        ctx.rect(container.x0 + 1, container.y0 + 1, container.x1 - container.x0 - 2, container.y1 - container.y0 - 2);
+        ctx.clip();
+      }
+      ctx.beginPath();
       ctx.translate(crx, cry);
       ctx.rotate(-rotation);
       ctx.fillStyle = fillTextColor ?? linkLabelTextColor;
@@ -58,6 +66,7 @@ function renderTextRow(
         ctx.font = cssFontShorthand(box, fontSize);
         ctx.fillText(box.text, box.width / 2 + box.wordBeginning, 0);
       });
+      ctx.closePath();
     });
     // for debug use: this draws magenta boxes for where the text needs to fit
     // note: `container` is a property of the RowSet, needs to be added
@@ -223,11 +232,25 @@ function renderLinkLabels(
   });
 }
 
+const midlineOffset = 0.35; // 0.35 is a [common constant](http://tavmjong.free.fr/SVG/TEXT_IN_A_BOX/index.html) representing half height
+const innerPad = midlineOffset * panelTitleFontSize; // todo replace it with theme.axisPanelTitle.padding.inner
+
 /** @internal */
 export function renderPartitionCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
-  { config, quadViewModel, rowSets, outsideLinksViewModel, linkLabelViewModels, diskCenter }: ShapeViewModel,
+  {
+    width,
+    height,
+    panelTitle,
+    config,
+    quadViewModel,
+    rowSets,
+    outsideLinksViewModel,
+    linkLabelViewModels,
+    diskCenter,
+    outerRadius,
+  }: ShapeViewModel,
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = config;
 
@@ -245,7 +268,21 @@ export function renderPartitionCanvas2d(
     //     - due to using the math x/y convention (+y is up) while Canvas uses screen convention (+y is down)
     //         text rendering must be y-flipped, which is a bit easier this way
     ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+
+    // panel titles
+    ctx.fillText(
+      panelTitle,
+      isSunburst(config.partitionLayout) ? diskCenter.x : diskCenter.x + (config.width * width) / 2,
+      isSunburst(config.partitionLayout)
+        ? config.linkLabel.maxCount > 0
+          ? diskCenter.y - (config.height * height) / 2 + panelTitleFontSize
+          : diskCenter.y - outerRadius - innerPad
+        : diskCenter.y + 12,
+    );
+
     ctx.textBaseline = 'middle';
+
     ctx.translate(diskCenter.x, diskCenter.y);
     // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
     // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up

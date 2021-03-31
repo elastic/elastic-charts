@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, PrimitiveValue, Settings } from '../../src';
@@ -29,7 +30,7 @@ const color = palette.slice().reverse();
 
 const getLayerSpec = (maxDepth: number = 30) =>
   [...new Array(maxDepth + 1)].map((_, depth) => ({
-    groupByRollup: (d: Datum) => d.layers[depth],
+    groupByRollup: (d: Datum) => data.dictionary[d.layers[depth]],
     nodeLabel: (d: PrimitiveValue) => String(d),
     showAccessor: (d: PrimitiveValue) => d !== undefined,
     shape: {
@@ -38,12 +39,13 @@ const getLayerSpec = (maxDepth: number = 30) =>
   }));
 
 export const Example = () => {
+  const clipText = boolean("Allow, and clip, texts that wouldn't otherwise fit", true);
   return (
     <Chart className="story-chart">
       <Settings theme={STORYBOOK_LIGHT_THEME} />
       <Partition
         id="spec_1"
-        data={data}
+        data={data.facts}
         valueAccessor={(d: Datum) => d.value as number}
         valueFormatter={() => ''}
         layers={getLayerSpec()}
@@ -51,6 +53,15 @@ export const Example = () => {
           ...config,
           partitionLayout: PartitionLayout.icicle,
           drilldown: true,
+          fillLabel: {
+            ...config.fillLabel,
+            clipText,
+            padding: { left: 0, right: 0, top: 0, bottom: 0 },
+          },
+          minFontSize: clipText ? 9 : 6,
+          maxFontSize: clipText ? 9 : 20,
+          maxRowCount: 1,
+          animation: { duration: 500 },
         }}
       />
     </Chart>

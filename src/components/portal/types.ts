@@ -19,6 +19,8 @@
 
 import { $Values } from 'utility-types';
 
+import { Padding } from '../../utils/dimensions';
+
 /**
  * Placement used in positioning tooltip
  * @public
@@ -68,7 +70,7 @@ export interface PortalAnchorRef {
   /**
    * Anchor ref element to use as position reference
    *
-   * @default document.body
+   * @defaultValue document.body
    */
   ref: HTMLElement | null;
 }
@@ -100,6 +102,13 @@ export interface TooltipPortalSettings<B = never> {
    * @defaultValue parent scroll container
    */
   boundary?: HTMLElement | B;
+  /**
+   * Boundary element padding.
+   * Used to reduce extents of boundary placement when magins or paddings are used on boundary
+   *
+   * @defaultValue 0
+   */
+  boundaryPadding?: Partial<Padding> | number;
   /**
    * Custom tooltip offset
    */

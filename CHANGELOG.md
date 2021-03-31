@@ -1,3 +1,81 @@
+# [26.1.0](https://github.com/elastic/elastic-charts/compare/v26.0.0...v26.1.0) (2021-03-26)
+
+
+### Features
+
+* **a11y:** add basic aria-label to canvas element ([#1084](https://github.com/elastic/elastic-charts/issues/1084)) ([1a5aef7](https://github.com/elastic/elastic-charts/commit/1a5aef772315786eba8c623f728a72475d7f91d4))
+* **xy_charts:** render legend inside the chart ([#1031](https://github.com/elastic/elastic-charts/issues/1031)) ([ba88122](https://github.com/elastic/elastic-charts/commit/ba8812213d6d6463f66f267cc095928d1a7a2abe)), closes [#861](https://github.com/elastic/elastic-charts/issues/861)
+
+# [26.0.0](https://github.com/elastic/elastic-charts/compare/v25.4.0...v26.0.0) (2021-03-23)
+
+
+### Features
+
+* **partition:** small multiples ([#1076](https://github.com/elastic/elastic-charts/issues/1076)) ([282082b](https://github.com/elastic/elastic-charts/commit/282082b0316d8e2fe5229761112cd209d70802b8))
+
+
+### BREAKING CHANGES
+
+* **partition:** clarifies the inner/outer padding notation `<SmallMultiples style={{horizontalPanelPadding, verticalPanelPadding}}` from `[outer, inner]` to `{outer, inner}`—they still have the same effect
+
+# [25.4.0](https://github.com/elastic/elastic-charts/compare/v25.3.0...v25.4.0) (2021-03-23)
+
+
+### Bug Fixes
+
+* chromium area path render bug ([#1067](https://github.com/elastic/elastic-charts/issues/1067)) ([e16d15d](https://github.com/elastic/elastic-charts/commit/e16d15d92add87f0bfe580a7301975915c10c381))
+
+
+### Features
+
+* **tooltip:** expose datum in the TooltipValue ([#1082](https://github.com/elastic/elastic-charts/issues/1082)) ([0246784](https://github.com/elastic/elastic-charts/commit/0246784bf4f88b374b7a28ffa4a60380f4c162b4)), closes [#1042](https://github.com/elastic/elastic-charts/issues/1042)
+* **wordcloud:** wordcloud ([#1038](https://github.com/elastic/elastic-charts/issues/1038)) ([f08f4c9](https://github.com/elastic/elastic-charts/commit/f08f4c9b7472d8c81a0fa56cd7dc7018eed637ad))
+
+# [25.3.0](https://github.com/elastic/elastic-charts/compare/v25.2.0...v25.3.0) (2021-03-11)
+
+
+### Bug Fixes
+
+* **brush:** force brush tool per panel ([#1071](https://github.com/elastic/elastic-charts/issues/1071)) ([8f866fc](https://github.com/elastic/elastic-charts/commit/8f866fca9c99ebf675fd31bf57b4b63d9f2eed09)), closes [#1070](https://github.com/elastic/elastic-charts/issues/1070)
+
+
+### Features
+
+* debug state for the heatmap chart  ([#976](https://github.com/elastic/elastic-charts/issues/976)) ([2ae2bbc](https://github.com/elastic/elastic-charts/commit/2ae2bbcb85e26c62a18cad2d4d6a4e4fc1ab29eb))
+
+# [25.2.0](https://github.com/elastic/elastic-charts/compare/v25.1.1...v25.2.0) (2021-03-09)
+
+
+### Bug Fixes
+
+* **tooltip:** add boundary padding ([#1065](https://github.com/elastic/elastic-charts/issues/1065)) ([25a247e](https://github.com/elastic/elastic-charts/commit/25a247ef043d3ba2a5029f68ebcfebb6493df8ab))
+
+
+### Features
+
+* **partition:** flame and icicle performance and tweening ([#1041](https://github.com/elastic/elastic-charts/issues/1041)) ([a9648a4](https://github.com/elastic/elastic-charts/commit/a9648a40d4aa06f5c715f293121d278543aec94c))
+
+## [25.1.1](https://github.com/elastic/elastic-charts/compare/v25.1.0...v25.1.1) (2021-03-05)
+
+
+### Bug Fixes
+
+* clippedRanges when complete dataset is null ([#1037](https://github.com/elastic/elastic-charts/issues/1037)) ([51418d2](https://github.com/elastic/elastic-charts/commit/51418d2b9feae8b48f568a39975f7152abdf67e5))
+* **tooltip:** allow explicit boundary element ([#1049](https://github.com/elastic/elastic-charts/issues/1049)) ([5cf8461](https://github.com/elastic/elastic-charts/commit/5cf8461530e4cac1c1f9918db54e96bf91cdad39))
+
+# [25.1.0](https://github.com/elastic/elastic-charts/compare/v25.0.1...v25.1.0) (2021-03-01)
+
+
+### Bug Fixes
+
+* rounding values on stacked w percentage charts ([#1039](https://github.com/elastic/elastic-charts/issues/1039)) ([ee63a70](https://github.com/elastic/elastic-charts/commit/ee63a7050f4230e85cd11f83df0d47bc6851cc83))
+
+
+### Features
+
+* **axis:** log scale limit and base options ([#1032](https://github.com/elastic/elastic-charts/issues/1032)) ([b38d110](https://github.com/elastic/elastic-charts/commit/b38d11083b921bb1e2759640cfa9498087c47b52))
+* **partition:** clip text in partition chart fill label ([#1033](https://github.com/elastic/elastic-charts/issues/1033)) ([be9bea0](https://github.com/elastic/elastic-charts/commit/be9bea0f4c4f2a2020dfde7a98d4e9e1baaf8a9a))
+
 ## [25.0.1](https://github.com/elastic/elastic-charts/compare/v25.0.0...v25.0.1) (2021-02-17)
 
 

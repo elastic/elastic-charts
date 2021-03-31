@@ -29,6 +29,7 @@ export const ChartTypes = Object.freeze({
   Partition: 'partition' as const,
   XYAxis: 'xy_axis' as const,
   Heatmap: 'heatmap' as const,
+  Wordcloud: 'wordcloud' as const,
 });
 /** @public */
 export type ChartTypes = $Values<typeof ChartTypes>;

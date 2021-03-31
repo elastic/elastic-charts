@@ -52,7 +52,9 @@ interface LabelConfig extends Font {
 }
 
 /** @public */
-export type FillLabelConfig = LabelConfig;
+export interface FillLabelConfig extends LabelConfig {
+  clipText: boolean;
+}
 
 /** @public */
 export interface LinkLabelConfig extends LabelConfig {
@@ -82,15 +84,20 @@ export interface FillFontSizeRange {
   maximizeFontSize: boolean;
 }
 
-/**
- * todo switch to `io-ts` style, generic way of combining static and runtime type info
- * @public
- */
+export interface RelativeMargins {
+  left: SizeRatio;
+  right: SizeRatio;
+  top: SizeRatio;
+  bottom: SizeRatio;
+}
+
+// todo switch to `io-ts` style, generic way of combining static and runtime type info
+/** potential internal */
 export interface StaticConfig extends FillFontSizeRange {
   // shape geometry
   width: number;
   height: number;
-  margin: { left: SizeRatio; right: SizeRatio; top: SizeRatio; bottom: SizeRatio };
+  margin: RelativeMargins;
   emptySizeRatio: SizeRatio;
   outerSizeRatio: SizeRatio;
   clockwiseSectors: boolean;

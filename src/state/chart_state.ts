@@ -23,6 +23,7 @@ import { ChartTypes } from '../chart_types';
 import { GoalState } from '../chart_types/goal_chart/state/chart_state';
 import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
+import { WordcloudState } from '../chart_types/wordcloud/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { CategoryKey } from '../common/category';
 import { LegendItem, LegendItemExtraValues } from '../common/legend';
@@ -187,6 +188,7 @@ export interface InteractionsState {
   deselectedDataSeries: SeriesIdentifier[];
   hoveredDOMElement: DOMElement | null;
   drilldown: CategoryKey[];
+  prevDrilldown: CategoryKey[];
 }
 
 /** @internal */
@@ -201,11 +203,14 @@ export interface ColorOverrides {
 }
 
 /** @internal */
+export type ChartId = string;
+
+/** @internal */
 export interface GlobalChartState {
   /**
    * a unique ID for each chart used by re-reselect to memoize selector per chart
    */
-  chartId: string;
+  chartId: ChartId;
   /**
    * The Z-Index of the chart component
    */
@@ -276,6 +281,7 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     deselectedDataSeries: [],
     hoveredDOMElement: null,
     drilldown: [],
+    prevDrilldown: [],
   },
   externalEvents: {
     pointer: null,
@@ -344,6 +350,7 @@ export const chartStoreReducer = (chartId: string) => {
       case UPDATE_PARENT_DIMENSION:
         return {
           ...state,
+          interactions: { ...state.interactions, prevDrilldown: state.interactions.drilldown },
           parentDimensions: {
             ...action.dimensions,
           },
@@ -417,6 +424,7 @@ const constructors: Record<ChartTypes, () => InternalChartState | null> = {
   [ChartTypes.Partition]: () => new PartitionState(),
   [ChartTypes.XYAxis]: () => new XYAxisChartState(),
   [ChartTypes.Heatmap]: () => new HeatmapState(),
+  [ChartTypes.Wordcloud]: () => new WordcloudState(),
   [ChartTypes.Global]: () => null,
 }; // with no default, TS signals if a new chart type isn't added here too
 

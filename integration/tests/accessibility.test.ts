@@ -17,15 +17,18 @@
  * under the License.
  */
 
-module.exports = {
-  roots: ['<rootDir>'],
-  preset: 'ts-jest',
-  clearMocks: true,
-  globalSetup: './setup.js',
-  globalTeardown: './teardown.js',
-  globals: {
-    'ts-jest': {
-      tsConfig: '../tsconfig.jest.json',
-    },
-  },
-};
+import { common } from '../page_objects/common';
+
+describe('Accessibility tree', () => {
+  it('should show the aria-label for the canvas element in the accessibility tree', async () => {
+    const tree = await common.testAccessibilityTree(
+      'http://localhost:9001/iframe.html?id=annotations-lines--x-continuous-domain',
+      '#story-root',
+    );
+    // digging into the accessibility tree for the canvas element
+    const expectedAriaLabel = tree.children.filter((value) => {
+      return value.name === 'Chart';
+    });
+    expect(expectedAriaLabel[0].name).toBe('Chart');
+  });
+});

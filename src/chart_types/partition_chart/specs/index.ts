@@ -58,6 +58,7 @@ const defaultProps = {
   valueFormatter: (d: number): string => String(d),
   percentFormatter,
   topGroove: 20,
+  smallMultiples: null,
   layers: [
     {
       groupByRollup: (d: Datum, i: number) => i,
@@ -79,6 +80,7 @@ export interface PartitionSpec extends Spec {
   valueGetter: ValueGetter;
   percentFormatter: ValueFormatter;
   topGroove: Pixels;
+  smallMultiples: string | null;
   layers: Layer[];
 }
 
@@ -89,6 +91,13 @@ type SpecOptionalProps = Partial<Omit<PartitionSpec, 'chartType' | 'specType' | 
 export const Partition: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     PartitionSpec,
-    'valueAccessor' | 'valueGetter' | 'valueFormatter' | 'layers' | 'config' | 'percentFormatter' | 'topGroove'
+    | 'valueAccessor'
+    | 'valueGetter'
+    | 'valueFormatter'
+    | 'layers'
+    | 'config'
+    | 'percentFormatter'
+    | 'topGroove'
+    | 'smallMultiples'
   >(defaultProps),
 );

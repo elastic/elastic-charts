@@ -24,17 +24,17 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { highlightedGeoms } from '../../layout/utils/highlighted_geoms';
-import { partitionGeometries } from './geometries';
+import { partitionMultiGeometries } from './geometries';
 
 const getHighlightedLegendItemPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;
 
 /** @internal */
 export const legendHoverHighlightNodes = createCachedSelector(
-  [getSettingsSpecSelector, getHighlightedLegendItemPath, partitionGeometries],
-  ({ legendStrategy }, highlightedLegendItemPath, geometries): QuadViewModel[] => {
-    const { quadViewModel } = geometries[0];
-    return highlightedLegendItemPath.length > 0
-      ? highlightedGeoms(legendStrategy, quadViewModel, highlightedLegendItemPath)
-      : [];
+  [getSettingsSpecSelector, getHighlightedLegendItemPath, partitionMultiGeometries],
+  ({ legendStrategy, flatLegend }, highlightedLegendItemPath, geometries): QuadViewModel[] => {
+    if (highlightedLegendItemPath.length === 0) return [];
+    return geometries.flatMap(({ quadViewModel }) =>
+      highlightedGeoms(legendStrategy, flatLegend, quadViewModel, highlightedLegendItemPath),
+    );
   },
 )(getChartIdSelector);

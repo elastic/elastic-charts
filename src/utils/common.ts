@@ -23,6 +23,23 @@ import { v1 as uuidV1 } from 'uuid';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Point } from './point';
 
+/** @public */
+export const Position = Object.freeze({
+  Top: 'top' as const,
+  Bottom: 'bottom' as const,
+  Left: 'left' as const,
+  Right: 'right' as const,
+});
+/** @public */
+export type Position = $Values<typeof Position>;
+
+export const LayoutDirection = Object.freeze({
+  Horizontal: 'horizontal' as const,
+  Vertical: 'vertical' as const,
+});
+/** @public */
+export type LayoutDirection = $Values<typeof LayoutDirection>;
+
 /**
  * Color variants that are unique to `@elastic/charts`. These go beyond the standard
  * static color allocations.
@@ -45,15 +62,15 @@ export type ColorVariant = $Values<typeof ColorVariant>;
 /** @public */
 export const HorizontalAlignment = Object.freeze({
   Center: 'center' as const,
-  Right: 'right' as const,
-  Left: 'left' as const,
+  Right: Position.Right,
+  Left: Position.Left,
   /**
    * Aligns to near side of axis depending on position
    *
    * Examples:
    * - Left Axis, `Near` will push the label to the `Right`, _near_ the axis
    * - Right Axis, `Near` will push the axis labels to the `Left`
-   * - Top/Bottom Axes, `Near` will default to `center`
+   * - Top/Bottom Axes, `Near` will default to `Center`
    */
   Near: 'near' as const,
   /**
@@ -62,10 +79,11 @@ export const HorizontalAlignment = Object.freeze({
    * Examples:
    * - Left Axis, `Far` will push the label to the `Left`, _far_ from the axis
    * - Right Axis, `Far` will push the axis labels to the `Right`
-   * - Top/Bottom Axes, `Far` will default to `center`
+   * - Top/Bottom Axes, `Far` will default to `Center`
    */
   Far: 'far' as const,
 });
+
 /**
  * Horizontal text alignment
  * @public
@@ -75,15 +93,15 @@ export type HorizontalAlignment = $Values<typeof HorizontalAlignment>;
 /** @public */
 export const VerticalAlignment = Object.freeze({
   Middle: 'middle' as const,
-  Top: 'top' as const,
-  Bottom: 'bottom' as const,
+  Top: Position.Top,
+  Bottom: Position.Bottom,
   /**
    * Aligns to near side of axis depending on position
    *
    * Examples:
    * - Top Axis, `Near` will push the label to the `Right`, _near_ the axis
    * - Bottom Axis, `Near` will push the axis labels to the `Left`
-   * - Left/Right Axes, `Near` will default to `middle`
+   * - Left/Right Axes, `Near` will default to `Middle`
    */
   Near: 'near' as const,
   /**
@@ -92,10 +110,11 @@ export const VerticalAlignment = Object.freeze({
    * Examples:
    * - Top Axis, `Far` will push the label to the `Top`, _far_ from the axis
    * - Bottom Axis, `Far` will push the axis labels to the `Bottom`
-   * - Left/Right Axes, `Far` will default to `middle`
+   * - Left/Right Axes, `Far` will default to `Middle`
    */
   Far: 'far' as const,
 });
+
 /**
  * Vertical text alignment
  * @public
@@ -113,16 +132,6 @@ export type Color = string; // todo static/runtime type it this for proper color
 /** @public */
 export type StrokeStyle = Color; // now narrower than string | CanvasGradient | CanvasPattern
 
-/** @public */
-export const Position = Object.freeze({
-  Top: 'top' as const,
-  Bottom: 'bottom' as const,
-  Left: 'left' as const,
-  Right: 'right' as const,
-});
-/** @public */
-export type Position = $Values<typeof Position>;
-
 /** @internal */
 export function identity<T>(value: T): T {
   return value;
@@ -131,6 +140,10 @@ export function identity<T>(value: T): T {
 /** @internal */
 export function compareByValueAsc(a: number | string, b: number | string): number {
   return a > b ? 1 : -1;
+}
+
+export function clamp(value: number, lowerBound: number, upperBound: number) {
+  return minValueWithLowerLimit(value, upperBound, lowerBound);
 }
 
 /**
@@ -220,17 +233,26 @@ export type RecursivePartial<T> = {
     ? Set<RecursivePartial<V>>
     : T[P] extends Map<infer K, infer V> // checks for Maps
     ? Map<K, RecursivePartial<V>>
-    : T[P] extends NonAny // checks for primative values
+    : T[P] extends NonAny // checks for primitive values
     ? T[P]
-    : RecursivePartial<T[P]>; // recurse for all non-array and non-primative values
+    : IsUnknown<T[P], 1, 0> extends 1
+    ? T[P]
+    : RecursivePartial<T[P]>; // recurse for all non-array and non-primitive values
 };
-type NonAny = number | boolean | string | symbol | null;
+
+// return True if T is `any`, otherwise return False
+export type IsAny<T, True, False = never> = True | False extends (T extends never ? True : False) ? True : False;
+
+// return True if T is `unknown`, otherwise return False
+export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, False, True> : False;
+
+export type NonAny = number | boolean | string | symbol | null;
 
 /** @public */
 export interface MergeOptions {
   /**
    * Includes all available keys of every provided partial at a given level.
-   * This is opposite to normal behavoir, which only uses keys from the base
+   * This is opposite to normal behavior, which only uses keys from the base
    * object to merge values.
    *
    * @defaultValue false
@@ -258,7 +280,7 @@ export function getPartialValue<T>(base: T, partial?: RecursivePartial<T>, parti
  * @internal
  */
 export function getAllKeys(object: any, objects: any[] = []): string[] {
-  const initalKeys = object instanceof Map ? [...object.keys()] : Object.keys(object);
+  const initialKeys = object instanceof Map ? [...object.keys()] : Object.keys(object);
 
   return objects.reduce((keys: any[], obj) => {
     if (obj && typeof obj === 'object') {
@@ -267,7 +289,7 @@ export function getAllKeys(object: any, objects: any[] = []): string[] {
     }
 
     return keys;
-  }, initalKeys);
+  }, initialKeys);
 }
 
 /** @internal */

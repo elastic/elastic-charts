@@ -121,6 +121,17 @@ export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
  */
 export const DEFAULT_TOOLTIP_SNAP = true;
 
+/**
+ * Default legend config
+ * @internal
+ */
+export const DEFAULT_LEGEND_CONFIG = {
+  showLegend: false,
+  showLegendExtra: false,
+  legendMaxDepth: Infinity,
+  legendPosition: Position.Right,
+};
+
 /** @public */
 export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   id: '__global__settings___',
@@ -129,7 +140,6 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   rendering: 'canvas' as const,
   rotation: 0 as const,
   animateData: true,
-  showLegend: false,
   resizeDebounce: 10,
   debug: false,
   tooltip: {
@@ -141,11 +151,10 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
       visible: false,
     },
   },
-  legendMaxDepth: Infinity,
-  legendPosition: Position.Right,
-  showLegendExtra: false,
   hideDuplicateAxes: false,
   baseTheme: LIGHT_THEME,
   brushAxis: BrushAxis.X,
   minBrushDelta: 2,
+
+  ...DEFAULT_LEGEND_CONFIG,
 };
