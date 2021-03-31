@@ -52,7 +52,6 @@ function computeYDomainLineAnnotationDimensions(
   // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
   // but we are displaying a line annotation
 
-  const alignment = getAnchorPosition(false, isHorizontalChartRotation, specMarkerPosition, axisPosition);
   const lineProps: AnnotationLineProps[] = [];
   const [domainStart, domainEnd] = yScale.domain;
 
@@ -84,6 +83,14 @@ function computeYDomainLineAnnotationDimensions(
 
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;
+        const linePathPoints = getYLinePath({ width, height }, annotationValueYPosition);
+        const alignment = getAnchorPosition(
+          false,
+          // isHorizontalChartRotation,
+          chartRotation,
+          specMarkerPosition,
+          axisPosition,
+        );
 
         const position = getMarkerPositionForYAnnotation(
           panelSize,
@@ -92,8 +99,6 @@ function computeYDomainLineAnnotationDimensions(
           annotationValueYPosition,
           dimension,
         );
-
-        const linePathPoints = getYLinePath({ width, height }, annotationValueYPosition);
 
         const lineProp: AnnotationLineProps = {
           specId,
@@ -147,7 +152,6 @@ function computeXDomainLineAnnotationDimensions(
 
   const lineProps: AnnotationLineProps[] = [];
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
-  const alignment = getAnchorPosition(true, isHorizontalChartRotation, specMarkerPosition, axisPosition);
   const panelSize = getPanelSize({ vertical, horizontal });
 
   dataValues.forEach((datum: LineAnnotationDatum) => {
@@ -197,6 +201,15 @@ function computeXDomainLineAnnotationDimensions(
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;
 
+        const linePathPoints = getXLinePath({ width, height }, annotationValueXPosition);
+        const alignment = getAnchorPosition(
+          true,
+          // isHorizontalChartRotation,
+          chartRotation,
+          specMarkerPosition,
+          axisPosition,
+        );
+
         const position = getMarkerPositionForXAnnotation(
           panelSize,
           chartRotation,
@@ -204,8 +217,6 @@ function computeXDomainLineAnnotationDimensions(
           annotationValueXPosition,
           dimension,
         );
-
-        const linePathPoints = getXLinePath({ width, height }, annotationValueXPosition);
 
         const lineProp: AnnotationLineProps = {
           specId,
@@ -281,35 +292,41 @@ export function computeLineAnnotationDimensions(
 
 function getAnchorPosition(
   isXDomain: boolean,
-  isChartHorizontal: boolean,
+  chartRotation: number,
   specMarkerPosition?: Position,
-  axisPosition?: Position | undefined,
+  axisPosition?: Position,
 ): Position {
-  const dflPositionFromAxis = getDefaultMarkerPositionFromAxis(isXDomain, isChartHorizontal, axisPosition);
+  const dflPositionFromAxis = getDefaultMarkerPositionFromAxis(isXDomain, chartRotation, axisPosition);
   if (specMarkerPosition !== undefined) {
     // validate specMarkerPosition against domain
-    const validatedPosFromMarkerPos = validateMarkerPosition(isXDomain, isChartHorizontal, specMarkerPosition);
+    const validatedPosFromMarkerPos = validateMarkerPosition(isXDomain, chartRotation, specMarkerPosition);
     return validatedPosFromMarkerPos ?? dflPositionFromAxis;
   }
   return dflPositionFromAxis;
 }
 
-function validateMarkerPosition(isXDomain: boolean, isHorizontal: boolean, position: Position): Position | undefined {
-  if ((isXDomain && isHorizontal) || (!isXDomain && !isHorizontal)) {
-    return position === Position.Top || position === Position.Bottom ? position : Position.Bottom;
+function validateMarkerPosition(isXDomain: boolean, chartRotation: number, position: Position): Position | undefined {
+  if (
+    (isXDomain && (chartRotation === 0 || chartRotation === 180)) ||
+    (!isXDomain && (chartRotation === 90 || chartRotation === -90))
+  ) {
+    return position === Position.Top || position === Position.Bottom ? position : undefined;
   }
   return position === Position.Left || position === Position.Right ? position : undefined;
 }
 
 function getDefaultMarkerPositionFromAxis(
   isXDomain: boolean,
-  isHorizontal: boolean,
+  chartRotation: number,
   axisPosition?: Position,
 ): Position {
   if (axisPosition) {
     return axisPosition;
   }
-  if (!isXDomain && isHorizontal) {
+  if (
+    (isXDomain && (chartRotation === 90 || chartRotation === -90)) ||
+    (!isXDomain && (chartRotation === 0 || chartRotation === 180))
+  ) {
     return Position.Left;
   }
   return Position.Bottom;

@@ -18,6 +18,7 @@
  */
 
 import { boolean } from '@storybook/addon-knobs';
+import marked from 'marked';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings } from '../../../src';
@@ -66,10 +67,9 @@ export const Example = () => {
 Example.story = {
   parameters: {
     info: {
-      text: `On Ordinal Bar charts, you can draw a rectangular annotation the same way it's done within a linear bar chart.
+      text: marked(`On Ordinal Bar charts, you can draw a rectangular annotation the same way it's done within a linear bar chart.
 The annotation will cover fully the extent defined by the \`coordinate\` object, extending to the max/min domain values any
-missing/out-of-range parameters.
-      `,
+missing/out-of-range parameters.`),
     },
   },
 };

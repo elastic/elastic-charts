@@ -19,6 +19,7 @@
 
 import { action } from '@storybook/addon-actions';
 import { text } from '@storybook/addon-knobs';
+import marked from 'marked';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, AccessorFn, ElementClickListener } from '../../src';
@@ -57,7 +58,7 @@ Example.story = {
   parameters: {
     options: { selectedPanel: SB_SOURCE_PANEL },
     info: {
-      text: `An \`AccessorFn\` can be used as any accessor including: \`xAccessor\`, \`yAccessors\`, \`y0Accessors\` and \`splitSeriesAccessors\`.
+      text: marked(`An \`AccessorFn\` can be used as any accessor including: \`xAccessor\`, \`yAccessors\`, \`y0Accessors\` and \`splitSeriesAccessors\`.
 
 This enables serialization of complex values, without needing to transform raw data.
 
@@ -76,7 +77,7 @@ If no \`fieldName\` is provided, the default value will be set using the index \
 Try changing the \`fieldName\` for the y and split accessor functions in the storybook knobs.
 
 **Note: All \`fieldName\` and \`Accessor\` values should be unique. Any duplicated values will be ignored.**
-      `,
+      `),
     },
   },
 };

@@ -28,7 +28,9 @@ import {
   BarSeries,
   ScaleType,
   Position,
+  Settings,
 } from '../../src';
+import { getChartRotationKnob } from '../utils/knobs';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
@@ -45,8 +47,10 @@ export const Example = () => {
     [Position.Top, Position.Left, Position.Bottom, Position.Right, 'undefined'],
     'undefined',
   );
+  const chartRotation = getChartRotationKnob();
   return (
     <Chart className="story-chart">
+      <Settings rotation={chartRotation} />
       <LineAnnotation
         domainType={AnnotationDomainTypes.XDomain}
         id="ann"
@@ -61,7 +65,6 @@ export const Example = () => {
         marker={<div style={{ background: 'yellow' }}>Horizontal</div>}
         markerPosition={markerPositionHorizontal === 'undefined' ? undefined : markerPositionHorizontal}
       />
-
       <BarSeries
         id="bars"
         name="amount"
