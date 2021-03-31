@@ -49,7 +49,7 @@ describe('Test cases stories', () => {
     );
   });
 
-  it('should render marker with annotations with -90 deg rotation', async () => {
+  it('should render marker with annotations with neg 90 deg rotation', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/iframe.html?id=test-cases--no-axes-annotation-bug-fix&knob-horizontal marker position=undefined&knob-vertical marker position=undefined&knob-chartRotation=-90',
     );
