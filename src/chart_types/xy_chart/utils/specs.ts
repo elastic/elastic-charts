@@ -44,7 +44,7 @@ import {
 } from '../../../utils/themes/theme';
 import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 import { AnnotationTooltipFormatter, CustomAnnotationTooltip } from '../annotations/types';
-import { ScaleConfig } from '../scales/get_scale_config';
+import { APIScale } from '../scales/types';
 import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
 
 /** @public */
@@ -264,11 +264,11 @@ interface DomainBase {
   /**
    * Custom minInterval for the domain which will affect data bucket size.
    * The minInterval cannot be greater than the computed minimum interval between any two adjacent data points.
-   * Further, if you specify a custom numeric minInterval for a timeseries, please note that due to the restriction
+   * Further, if you specify a custom numeric minInterval for a time-series, please note that due to the restriction
    * above, the specified numeric minInterval will be interpreted as a fixed interval.
-   * This means that, for example, if you have yearly timeseries data that ranges from 2016 to 2019 and you manually
+   * This means that, for example, if you have yearly time-series data that ranges from 2016 to 2019 and you manually
    * compute the interval between 2016 and 2017, you'll have 366 days due to 2016 being a leap year.  This will not
-   * be a valid interval because it is greater than the computed minInterval of 365 days betwen the other years.
+   * be a valid interval because it is greater than the computed minInterval of 365 days between the other years.
    */
   minInterval?: number;
 }
@@ -453,7 +453,7 @@ export interface SeriesScales {
    * The x axis scale type
    * @defaultValue `ordinal` {@link (ScaleType:type) | ScaleType.Ordinal}
    */
-  xScaleType: XScaleType | ScaleConfig<XScaleType>;
+  xScaleType: XScaleType | APIScale<XScaleType>;
   /**
    * If using a ScaleType.Time this timezone identifier is required to
    * compute a nice set of xScale ticks. Can be any IANA zone supported by
@@ -465,7 +465,7 @@ export interface SeriesScales {
    * The y axis scale type
    * @defaultValue `linear` {@link (ScaleType:type) | ScaleType.Linear}
    */
-  yScaleType: ScaleContinuousType | ScaleConfig<ScaleContinuousType>;
+  yScaleType: ScaleContinuousType | APIScale<ScaleContinuousType>;
   /**
    * if true, the min y value is set to the minimum domain value, 0 otherwise
    * @deprecated use `domain.fit` instead

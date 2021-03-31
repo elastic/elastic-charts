@@ -18,8 +18,10 @@
  */
 
 import { ChartTypes } from '../..';
+import { MockGlobalSpec } from '../../../mocks/specs/specs';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
+import { getAPIScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { computeSeriesDomains } from '../state/utils/utils';
 import { computeXScale } from '../utils/scales';
 import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
@@ -96,22 +98,36 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleType: ScaleType.Linear,
   };
 
-  const domainGroup = new Map([['group1', { fit: true }]]);
-
   const barSeries = [barSeries1];
-  const barSeriesDomains = computeSeriesDomains(barSeries, domainGroup);
+
+  const barSeriesDomains = computeSeriesDomains(
+    barSeries,
+    getAPIScaleConfigs([], barSeries, MockGlobalSpec.settings()),
+  );
 
   const multiBarSeries = [barSeries1, barSeries2];
-  const multiBarSeriesDomains = computeSeriesDomains(multiBarSeries, domainGroup);
+  const multiBarSeriesDomains = computeSeriesDomains(
+    multiBarSeries,
+    getAPIScaleConfigs([], multiBarSeries, MockGlobalSpec.settings()),
+  );
 
   const lineSeries = [lineSeries1];
-  const lineSeriesDomains = computeSeriesDomains(lineSeries, domainGroup);
+  const lineSeriesDomains = computeSeriesDomains(
+    lineSeries,
+    getAPIScaleConfigs([], lineSeries, MockGlobalSpec.settings()),
+  );
 
   const multiLineSeries = [lineSeries1, lineSeries2];
-  const multiLineSeriesDomains = computeSeriesDomains(multiLineSeries, domainGroup);
+  const multiLineSeriesDomains = computeSeriesDomains(
+    multiLineSeries,
+    getAPIScaleConfigs([], multiLineSeries, MockGlobalSpec.settings()),
+  );
 
   const mixedLinesBars = [lineSeries1, lineSeries2, barSeries1, barSeries2];
-  const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBars, domainGroup);
+  const mixedLinesBarsSeriesDomains = computeSeriesDomains(
+    mixedLinesBars,
+    getAPIScaleConfigs([], mixedLinesBars, MockGlobalSpec.settings()),
+  );
 
   const barSeriesScale = computeXScale({
     xDomain: barSeriesDomains.xDomain,

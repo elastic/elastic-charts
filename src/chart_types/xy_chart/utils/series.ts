@@ -28,7 +28,8 @@ import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
 import { groupSeriesByYGroup, isHistogramEnabled, isStackedSpec } from '../domains/y_domain';
-import { ScaleConfig } from '../scales/get_scale_config';
+import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
+import { APIScale } from '../scales/types';
 import { SmallMultiplesGroupBy } from '../state/selectors/get_specs';
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
@@ -360,7 +361,7 @@ export function getDataSeriesFromSpecs(
   xValues: Set<string | number>;
   smVValues: Set<string | number>;
   smHValues: Set<string | number>;
-  fallbackScale?: ScaleConfig<XScaleType>;
+  fallbackScale?: APIScale<XScaleType>;
 } {
   let globalDataSeries: DataSeries[] = [];
   const mutatedXValueSums = new Map<string | number, number>();
@@ -455,7 +456,7 @@ export function getDataSeriesFromSpecs(
     // keep the user order for ordinal scales
     xValues,
     ...smallMultipleUniqueValues,
-    fallbackScale: !isOrdinalScale && !isNumberArray ? { type: ScaleType.Ordinal, nice: false } : undefined,
+    fallbackScale: !isOrdinalScale && !isNumberArray ? X_SCALE_DEFAULT : undefined,
   };
 }
 

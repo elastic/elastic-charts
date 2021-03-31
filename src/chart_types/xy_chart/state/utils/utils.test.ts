@@ -23,6 +23,7 @@ import { MockDataSeries } from '../../../../mocks/series/series';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
 import { SeededDataGenerator } from '../../../../mocks/utils';
+import { MockXDomain, MockYDomain } from '../../../../mocks/xy/domains';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { Spec } from '../../../../specs';
@@ -30,11 +31,11 @@ import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/tes
 import { ContinuousDomain, Range } from '../../../../utils/domain';
 import { SpecId } from '../../../../utils/ids';
 import { PointShape } from '../../../../utils/themes/theme';
-import { getXScaleConfig, getYScaleConfig } from '../../scales/get_scale_config';
 import { getSeriesIndex, XYChartSeriesIdentifier } from '../../utils/series';
 import { BasicSeriesSpec, HistogramModeAlignments, SeriesColorAccessorFn } from '../../utils/specs';
 import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
 import { computeSeriesGeometriesSelector } from '../selectors/compute_series_geometries';
+import { getAPIScaleConfigs } from '../selectors/get_api_scale_configs';
 import {
   computeSeriesDomains,
   computeXScaleOffset,
@@ -77,33 +78,30 @@ describe('Chart State utils', () => {
       yAccessors: ['y'],
       data: BARCHART_1Y0G,
     });
-    const domains = computeSeriesDomains([spec1, spec2], new Map());
-    expect(domains.xDomain).toEqual({
-      domain: [0, 3],
-      isBandScale: false,
-      scaleConfig: getXScaleConfig(ScaleType.Linear),
-      minInterval: 1,
-      type: 'xDomain',
-    });
+    const apiScaleConfig = getAPIScaleConfigs([], [spec1, spec2], MockGlobalSpec.settings());
+    const domains = computeSeriesDomains([spec1, spec2], apiScaleConfig);
+    expect(domains.xDomain).toEqual(
+      MockXDomain.fromScaleType(ScaleType.Linear, {
+        domain: [0, 3],
+        isBandScale: false,
+        minInterval: 1,
+      }),
+    );
     expect(domains.yDomains).toEqual([
-      {
+      MockYDomain.fromScaleType(ScaleType.Log, {
         domain: [0, 10],
-        scaleConfig: getYScaleConfig(ScaleType.Log),
         groupId: 'group1',
         isBandScale: false,
-        type: 'yDomain',
         logBase: undefined,
         logMinLimit: undefined,
-      },
-      {
+      }),
+      MockYDomain.fromScaleType(ScaleType.Log, {
         domain: [0, 10],
-        scaleConfig: getYScaleConfig(ScaleType.Log),
         groupId: 'group2',
         isBandScale: false,
-        type: 'yDomain',
         logBase: undefined,
         logMinLimit: undefined,
-      },
+      }),
     ]);
     expect(domains.formattedDataSeries).toMatchSnapshot();
   });
@@ -129,33 +127,30 @@ describe('Chart State utils', () => {
       stackAccessors: ['x'],
       data: BARCHART_1Y1G,
     });
-    const domains = computeSeriesDomains([spec1, spec2], new Map());
-    expect(domains.xDomain).toEqual({
-      domain: [0, 3],
-      isBandScale: false,
-      scaleConfig: getXScaleConfig(ScaleType.Linear),
-      minInterval: 1,
-      type: 'xDomain',
-    });
+    const apiScaleConfig = getAPIScaleConfigs([], [spec1, spec2], MockGlobalSpec.settings());
+    const domains = computeSeriesDomains([spec1, spec2], apiScaleConfig);
+    expect(domains.xDomain).toEqual(
+      MockXDomain.fromScaleType(ScaleType.Log, {
+        domain: [0, 3],
+        isBandScale: false,
+        minInterval: 1,
+      }),
+    );
     expect(domains.yDomains).toEqual([
-      {
+      MockYDomain.fromScaleType(ScaleType.Log, {
         domain: [0, 5],
-        scaleConfig: getYScaleConfig(ScaleType.Log),
         groupId: 'group1',
         isBandScale: false,
-        type: 'yDomain',
         logBase: undefined,
         logMinLimit: undefined,
-      },
-      {
+      }),
+      MockYDomain.fromScaleType(ScaleType.Log, {
         domain: [0, 9],
-        scaleConfig: getYScaleConfig(ScaleType.Log),
         groupId: 'group2',
         isBandScale: false,
-        type: 'yDomain',
         logBase: undefined,
         logMinLimit: undefined,
-      },
+      }),
     ]);
     expect(domains.formattedDataSeries.filter(({ isStacked }) => isStacked)).toMatchSnapshot();
     expect(domains.formattedDataSeries.filter(({ isStacked }) => !isStacked)).toMatchSnapshot();
@@ -764,7 +759,7 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     });
     const histogramBar = MockSeriesSpec.histogramBar({
-      id: 'histo',
+      id: 'histogram',
       groupId: 'group2',
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,

@@ -18,11 +18,12 @@
  */
 
 import { ChartTypes } from '../..';
-import { MockSeriesSpecs } from '../../../mocks/specs';
+import { MockGlobalSpec, MockSeriesSpec, MockSeriesSpecs } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes, Direction, BinAgg } from '../../../specs/constants';
 import { Logger } from '../../../utils/logger';
-import { getXScaleConfig } from '../scales/get_scale_config';
+import { getXAPIScale } from '../scales/get_api_scales';
+import { getAPIScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { getDataSeriesFromSpecs } from '../utils/series';
 import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
 import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
@@ -49,7 +50,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleConfig: getXScaleConfig(ScaleType.Linear),
+      ...getXAPIScale(ScaleType.Linear),
       isBandScale: true,
     });
   });
@@ -63,7 +64,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleConfig: getXScaleConfig(ScaleType.Ordinal),
+      ...getXAPIScale(ScaleType.Ordinal),
       isBandScale: true,
     });
   });
@@ -77,7 +78,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleConfig: getXScaleConfig(ScaleType.Linear),
+      ...getXAPIScale(ScaleType.Linear),
       isBandScale: false,
     });
   });
@@ -91,7 +92,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleConfig: getXScaleConfig(ScaleType.Time),
+      ...getXAPIScale(ScaleType.Time),
       isBandScale: false,
       timeZone: 'utc-3',
     });
@@ -111,7 +112,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleConfig: getXScaleConfig(ScaleType.Time),
+      ...getXAPIScale(ScaleType.Time),
       isBandScale: false,
       timeZone: 'utc-3',
     });
@@ -131,7 +132,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleConfig: getXScaleConfig(ScaleType.Time),
+      ...getXAPIScale(ScaleType.Time),
       isBandScale: false,
       timeZone: 'utc',
     });
@@ -150,7 +151,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleConfig: getXScaleConfig(ScaleType.Ordinal),
+      ...getXAPIScale(ScaleType.Ordinal),
       isBandScale: false,
     });
   });
@@ -167,7 +168,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleConfig: getXScaleConfig(ScaleType.Ordinal),
+      ...getXAPIScale(ScaleType.Ordinal),
       isBandScale: true,
     });
   });
@@ -185,7 +186,7 @@ describe('X Domain', () => {
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
     expect(mainXScale).toEqual({
-      scaleConfig: getXScaleConfig(ScaleType.Linear),
+      ...getXAPIScale(ScaleType.Linear),
       isBandScale: true,
     });
   });
@@ -224,16 +225,9 @@ describe('X Domain', () => {
       ],
     };
     const specDataSeries: BasicSeriesSpec[] = [ds1, ds2];
+    const apiScalesConfig = getAPIScaleConfigs([], specDataSeries, MockGlobalSpec.settings());
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(
-      [
-        {
-          seriesType: SeriesTypes.Line,
-          xScaleType: ScaleType.Linear,
-        },
-      ],
-      xValues,
-    );
+    const mergedDomain = mergeXDomain(apiScalesConfig.x, xValues);
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
   test('Should merge bar series correctly', () => {
@@ -270,17 +264,9 @@ describe('X Domain', () => {
       ],
     };
     const specDataSeries = [ds1, ds2];
-
+    const apiScalesConfig = getAPIScaleConfigs([], specDataSeries, MockGlobalSpec.settings());
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(
-      [
-        {
-          seriesType: SeriesTypes.Bar,
-          xScaleType: ScaleType.Linear,
-        },
-      ],
-      xValues,
-    );
+    const mergedDomain = mergeXDomain(apiScalesConfig.x, xValues);
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
   test('Should merge multi bar series correctly', () => {
@@ -317,21 +303,9 @@ describe('X Domain', () => {
       ],
     };
     const specDataSeries = [ds1, ds2];
-
+    const apiScalesConfig = getAPIScaleConfigs([], specDataSeries, MockGlobalSpec.settings());
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(
-      [
-        {
-          seriesType: SeriesTypes.Bar,
-          xScaleType: ScaleType.Linear,
-        },
-        {
-          seriesType: SeriesTypes.Bar,
-          xScaleType: ScaleType.Linear,
-        },
-      ],
-      xValues,
-    );
+    const mergedDomain = mergeXDomain(apiScalesConfig.x, xValues);
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
   test('Should merge multi bar series correctly - 2', () => {
@@ -370,19 +344,9 @@ describe('X Domain', () => {
     const specDataSeries = [ds1, ds2];
 
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(
-      [
-        {
-          seriesType: SeriesTypes.Bar,
-          xScaleType: ScaleType.Linear,
-        },
-        {
-          seriesType: SeriesTypes.Bar,
-          xScaleType: ScaleType.Linear,
-        },
-      ],
-      xValues,
-    );
+    const apiScalesConfig = getAPIScaleConfigs([], specDataSeries, MockGlobalSpec.settings());
+
+    const mergedDomain = mergeXDomain(apiScalesConfig.x, xValues);
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
   test('Should merge multi bar linear/bar ordinal series correctly', () => {
@@ -419,21 +383,9 @@ describe('X Domain', () => {
       ],
     };
     const specDataSeries = [ds1, ds2];
-
+    const apiScalesConfig = getAPIScaleConfigs([], specDataSeries, MockGlobalSpec.settings());
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(
-      [
-        {
-          seriesType: SeriesTypes.Bar,
-          xScaleType: ScaleType.Linear,
-        },
-        {
-          seriesType: SeriesTypes.Bar,
-          xScaleType: ScaleType.Ordinal,
-        },
-      ],
-      xValues,
-    );
+    const mergedDomain = mergeXDomain(apiScalesConfig.x, xValues);
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
 
@@ -478,28 +430,15 @@ describe('X Domain', () => {
     };
 
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const getResult = () =>
-      mergeXDomain(
-        [
-          {
-            seriesType: SeriesTypes.Bar,
-            xScaleType: ScaleType.Linear,
-          },
-          {
-            seriesType: SeriesTypes.Bar,
-            xScaleType: ScaleType.Linear,
-          },
-        ],
-        xValues,
-        customDomain,
-        { type: ScaleType.Ordinal, nice: false },
-      );
+    const apiScalesConfig = getAPIScaleConfigs([], specDataSeries, MockGlobalSpec.settings({ xDomain: customDomain }));
+
+    const getResult = () => mergeXDomain(apiScalesConfig.x, xValues, { type: ScaleType.Ordinal, nice: false });
 
     expect(getResult).not.toThrow();
 
     const mergedDomain = getResult();
     expect(mergedDomain.domain).toEqual([0, 'a', 2, 5, 7]);
-    expect(mergedDomain.scaleConfig.type).toEqual(ScaleType.Ordinal);
+    expect(mergedDomain.type).toEqual(ScaleType.Ordinal);
   });
 
   test('Should merge multi bar/line ordinal series correctly', () => {
@@ -538,19 +477,9 @@ describe('X Domain', () => {
     const specDataSeries = [ds1, ds2];
 
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(
-      [
-        {
-          seriesType: SeriesTypes.Bar,
-          xScaleType: ScaleType.Linear,
-        },
-        {
-          seriesType: SeriesTypes.Line,
-          xScaleType: ScaleType.Ordinal,
-        },
-      ],
-      xValues,
-    );
+    const apiScalesConfig = getAPIScaleConfigs([], specDataSeries, MockGlobalSpec.settings());
+
+    const mergedDomain = mergeXDomain(apiScalesConfig.x, xValues);
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
   test('Should merge multi bar/line time series correctly', () => {
@@ -589,19 +518,9 @@ describe('X Domain', () => {
     const specDataSeries = [ds1, ds2];
 
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(
-      [
-        {
-          seriesType: SeriesTypes.Bar,
-          xScaleType: ScaleType.Ordinal,
-        },
-        {
-          seriesType: SeriesTypes.Line,
-          xScaleType: ScaleType.Time,
-        },
-      ],
-      xValues,
-    );
+    const apiScalesConfig = getAPIScaleConfigs([], specDataSeries, MockGlobalSpec.settings());
+
+    const mergedDomain = mergeXDomain(apiScalesConfig.x, xValues);
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
   test('Should merge multi lines series correctly', () => {
@@ -640,19 +559,9 @@ describe('X Domain', () => {
     const specDataSeries = [ds1, ds2];
 
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(
-      [
-        {
-          seriesType: SeriesTypes.Line,
-          xScaleType: ScaleType.Ordinal,
-        },
-        {
-          seriesType: SeriesTypes.Line,
-          xScaleType: ScaleType.Linear,
-        },
-      ],
-      xValues,
-    );
+    const apiScalesConfig = getAPIScaleConfigs([], specDataSeries, MockGlobalSpec.settings());
+
+    const mergedDomain = mergeXDomain(apiScalesConfig.x, xValues);
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
 
@@ -685,20 +594,9 @@ describe('X Domain', () => {
     const specDataSeries = [ds1, ds2];
 
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
+    const apiScalesConfig = getAPIScaleConfigs([], specDataSeries, MockGlobalSpec.settings());
 
-    const mergedDomain = mergeXDomain(
-      [
-        {
-          seriesType: SeriesTypes.Area,
-          xScaleType: ScaleType.Linear,
-        },
-        {
-          seriesType: SeriesTypes.Line,
-          xScaleType: ScaleType.Ordinal,
-        },
-      ],
-      xValues,
-    );
+    const mergedDomain = mergeXDomain(apiScalesConfig.x, xValues);
     expect(mergedDomain.domain.length).toEqual(maxValues);
   });
   test('should compute minInterval an ordered list of numbers', () => {
@@ -709,7 +607,7 @@ describe('X Domain', () => {
     const minInterval = findMinInterval([2, 10, 3, 1, 5]);
     expect(minInterval).toBe(1);
   });
-  test('should compute minInterval an list grether than 9', () => {
+  test('should compute minInterval an list greater than 9', () => {
     const minInterval = findMinInterval([0, 2, 4, 6, 8, 10, 20, 30, 40, 50, 80]);
     expect(minInterval).toBe(2);
   });
@@ -732,15 +630,19 @@ describe('X Domain', () => {
   test('should account for custom domain when merging a linear domain: complete bounded domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
     const xDomain = { min: 0, max: 3 };
-    const specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
-      { seriesType: SeriesTypes.Line, xScaleType: ScaleType.Linear },
-    ];
+    const specs = [MockSeriesSpec.line({ xScaleType: ScaleType.Linear })];
 
-    const basicMergedDomain = mergeXDomain(specs, xValues, xDomain);
+    const basicMergedDomain = mergeXDomain(
+      getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain })).x,
+      xValues,
+    );
     expect(basicMergedDomain.domain).toEqual([0, 3]);
 
     const arrayXDomain = [1, 2];
-    let { domain } = mergeXDomain(specs, xValues, arrayXDomain);
+    let { domain } = mergeXDomain(
+      getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain: arrayXDomain })).x,
+      xValues,
+    );
     expect(domain).toEqual([1, 5]);
     const warnMessage = 'xDomain for continuous scale should be a DomainRange object, not an array';
     expect(Logger.warn).toBeCalledWith(warnMessage);
@@ -748,7 +650,10 @@ describe('X Domain', () => {
     (Logger.warn as jest.Mock).mockClear();
 
     const invalidXDomain = { min: 10, max: 0 };
-    domain = mergeXDomain(specs, xValues, invalidXDomain).domain;
+    domain = mergeXDomain(
+      getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
+      xValues,
+    ).domain;
     expect(domain).toEqual([1, 5]);
     expect(Logger.warn).toBeCalledWith('custom xDomain is invalid, min is greater than max. Custom domain is ignored.');
   });
@@ -756,15 +661,16 @@ describe('X Domain', () => {
   test('should account for custom domain when merging a linear domain: lower bounded domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
     const xDomain = { min: 0 };
-    const specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
-      { seriesType: SeriesTypes.Line, xScaleType: ScaleType.Linear },
-    ];
+    const specs = [MockSeriesSpec.line({ xScaleType: ScaleType.Linear })];
 
-    const mergedDomain = mergeXDomain(specs, xValues, xDomain);
+    const mergedDomain = mergeXDomain(getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain })).x, xValues);
     expect(mergedDomain.domain).toEqual([0, 5]);
 
     const invalidXDomain = { min: 10 };
-    const { domain } = mergeXDomain(specs, xValues, invalidXDomain);
+    const { domain } = mergeXDomain(
+      getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
+      xValues,
+    );
     expect(domain).toEqual([1, 5]);
     expect(Logger.warn).toBeCalledWith(
       'custom xDomain is invalid, custom min is greater than computed max. Custom domain is ignored.',
@@ -774,15 +680,16 @@ describe('X Domain', () => {
   test('should account for custom domain when merging a linear domain: upper bounded domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
     const xDomain = { max: 3 };
-    const specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
-      { seriesType: SeriesTypes.Line, xScaleType: ScaleType.Linear },
-    ];
+    const specs = [MockSeriesSpec.line({ xScaleType: ScaleType.Linear })];
 
-    const mergedDomain = mergeXDomain(specs, xValues, xDomain);
+    const mergedDomain = mergeXDomain(getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain })).x, xValues);
     expect(mergedDomain.domain).toEqual([1, 3]);
 
     const invalidXDomain = { max: -1 };
-    const { domain } = mergeXDomain(specs, xValues, invalidXDomain);
+    const { domain } = mergeXDomain(
+      getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
+      xValues,
+    );
     expect(domain).toEqual([1, 5]);
     expect(Logger.warn).toBeCalledWith(
       'custom xDomain is invalid, computed min is greater than custom max. Custom domain is ignored.',
@@ -792,14 +699,18 @@ describe('X Domain', () => {
   test('should account for custom domain when merging an ordinal domain', () => {
     const xValues = new Set(['a', 'b', 'c', 'd']);
     const xDomain = ['a', 'b', 'c'];
-    const specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
-      { seriesType: SeriesTypes.Bar, xScaleType: ScaleType.Ordinal },
-    ];
-    const basicMergedDomain = mergeXDomain(specs, xValues, xDomain);
+    const specs = [MockSeriesSpec.bar({ xScaleType: ScaleType.Ordinal })];
+    const basicMergedDomain = mergeXDomain(
+      getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain })).x,
+      xValues,
+    );
     expect(basicMergedDomain.domain).toEqual(['a', 'b', 'c']);
 
     const objectXDomain = { max: 10, min: 0 };
-    const { domain } = mergeXDomain(specs, xValues, objectXDomain);
+    const { domain } = mergeXDomain(
+      getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain: objectXDomain })).x,
+      xValues,
+    );
     expect(domain).toEqual(['a', 'b', 'c', 'd']);
     const warnMessage =
       'xDomain for ordinal scale should be an array of values, not a DomainRange object. xDomain is ignored.';
@@ -808,25 +719,29 @@ describe('X Domain', () => {
 
   describe('should account for custom minInterval', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
-    const specs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType'>[] = [
-      { seriesType: SeriesTypes.Bar, xScaleType: ScaleType.Linear },
-    ];
+    const specs = [MockSeriesSpec.bar({ xScaleType: ScaleType.Linear })];
 
     test('with valid minInterval', () => {
       const xDomain = { minInterval: 0.5 };
-      const mergedDomain = mergeXDomain(specs, xValues, xDomain);
+      const mergedDomain = mergeXDomain(getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain })).x, xValues);
       expect(mergedDomain.minInterval).toEqual(0.5);
     });
 
     test('with valid minInterval greater than computed minInterval for single datum set', () => {
       const xDomain = { minInterval: 10 };
-      const mergedDomain = mergeXDomain(specs, new Set([5]), xDomain);
+      const mergedDomain = mergeXDomain(
+        getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain })).x,
+        new Set([5]),
+      );
       expect(mergedDomain.minInterval).toEqual(10);
     });
 
     test('with invalid minInterval greater than computed minInterval for multi data set', () => {
       const invalidXDomain = { minInterval: 10 };
-      const { minInterval } = mergeXDomain(specs, xValues, invalidXDomain);
+      const { minInterval } = mergeXDomain(
+        getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
+        xValues,
+      );
       expect(minInterval).toEqual(1);
       const expectedWarning =
         'custom xDomain is invalid, custom minInterval is greater than computed minInterval. Using computed minInterval.';
@@ -835,7 +750,10 @@ describe('X Domain', () => {
 
     test('with invalid minInterval less than 0', () => {
       const invalidXDomain = { minInterval: -1 };
-      const { minInterval } = mergeXDomain(specs, xValues, invalidXDomain);
+      const { minInterval } = mergeXDomain(
+        getAPIScaleConfigs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
+        xValues,
+      );
       expect(minInterval).toEqual(1);
       const expectedWarning =
         'custom xDomain is invalid, custom minInterval is less than 0. Using computed minInterval.';

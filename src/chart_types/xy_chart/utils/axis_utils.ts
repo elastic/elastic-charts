@@ -167,7 +167,6 @@ export function getScaleForAxisSpec(
     const yScales = computeYScales({
       yDomains,
       range,
-      ticks: axisSpec.ticks,
       integersOnly: axisSpec.integersOnly,
     });
     if (yScales.has(axisSpec.groupId)) {
@@ -181,7 +180,6 @@ export function getScaleForAxisSpec(
     range,
     barsPadding,
     enableHistogramMode,
-    ticks: axisSpec.ticks,
     integersOnly: axisSpec.integersOnly,
   });
 }
@@ -390,14 +388,6 @@ function getVerticalAlign(
 
 /**
  * Gets the computed x/y coordinates & alignment properties for an axis tick label.
- * @param isVerticalAxis if the axis is vertical (in contrast to horizontal)
- * @param tickPosition position of tick relative to axis line origin and other ticks along it
- * @param position position of where the axis sits relative to the visualization
- * @param axisSize
- * @param tickDimensions
- * @param showTicks
- * @param textOffset
- * @param textAlignment
  * @internal
  */
 export function getTickLabelProps(

@@ -108,7 +108,7 @@ export function shapeViewModel(
   let xValues = xDomain.domain as any[];
 
   const timeScale =
-    xDomain.scaleConfig.type === ScaleType.Time
+    xDomain.type === ScaleType.Time
       ? new ScaleContinuous(
           {
             type: ScaleType.Time,
@@ -314,7 +314,7 @@ export function shapeViewModel(
    * @param y
    */
   const pickHighlightedArea: PickHighlightedArea = (x: Array<string | number>, y: Array<string | number>) => {
-    if (xDomain.scaleConfig.type !== ScaleType.Time) {
+    if (xDomain.type !== ScaleType.Time) {
       return null;
     }
     const [startValue, endValue] = x;

@@ -16,13 +16,3 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import React from 'react';
-
-import { Example } from '../stories/line/2_w_axis';
-
-export class Playground extends React.Component {
-  render() {
-    return <Example />;
-  }
-}

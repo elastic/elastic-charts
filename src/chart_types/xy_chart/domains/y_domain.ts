@@ -23,12 +23,13 @@ import { identity } from '../../../utils/common';
 import { computeContinuousDataDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
-import { getYScaleConfig, ScaleConfig } from '../scales/get_scale_config';
+import { APIScale } from '../scales/types';
+import { APIScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { getSpecDomainGroupId } from '../state/utils/spec';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { groupBy } from '../utils/group_data_series';
 import { DataSeries } from '../utils/series';
-import { BasicSeriesSpec, YDomainRange, SeriesTypes, StackMode } from '../utils/specs';
+import { BasicSeriesSpec, SeriesTypes, StackMode } from '../utils/specs';
 import { areAllNiceDomain } from './nice';
 import { YDomain } from './types';
 
@@ -38,21 +39,17 @@ export type YBasicSeriesSpec = Pick<
 > & { stackMode?: StackMode; enableHistogramMode?: boolean };
 
 /** @internal */
-export function mergeYDomain(dataSeries: DataSeries[], domainsByGroupId: Map<GroupId, YDomainRange>): YDomain[] {
+export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: APIScaleConfigs['y']): YDomain[] {
   const dataSeriesByGroupId = groupBy(dataSeries, ({ spec }) => getSpecDomainGroupId(spec), true);
 
   return dataSeriesByGroupId.reduce<YDomain[]>((acc, groupedDataSeries) => {
-    const [{ spec }] = groupedDataSeries;
-    const groupId = getSpecDomainGroupId(spec);
-
     const stacked = groupedDataSeries.filter(({ isStacked, isFiltered }) => isStacked && !isFiltered);
     const nonStacked = groupedDataSeries.filter(({ isStacked, isFiltered }) => !isStacked && !isFiltered);
-    const customDomain = domainsByGroupId.get(groupId);
     const hasNonZeroBaselineTypes = groupedDataSeries.some(
       ({ seriesType, isFiltered }) =>
         seriesType === SeriesTypes.Bar || (seriesType === SeriesTypes.Area && !isFiltered),
     );
-    const domain = mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, customDomain);
+    const domain = mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, yScaleAPIConfig);
     if (!domain) {
       return acc;
     }
@@ -64,16 +61,16 @@ function mergeYDomainForGroup(
   stacked: DataSeries[],
   nonStacked: DataSeries[],
   hasZeroBaselineSpecs: boolean,
-  customDomain?: YDomainRange,
+  yAPIScaleConfig: APIScaleConfigs['y'],
 ): YDomain | null {
   const dataSeries = [...stacked, ...nonStacked];
   if (dataSeries.length === 0) {
     return null;
   }
-  const yScaleTypes = dataSeries.map(({ spec: { yScaleType } }) => getYScaleConfig(yScaleType));
-  const groupYScaleType = coerceYScaleTypes(yScaleTypes);
+
   const [{ stackMode, spec }] = dataSeries;
   const groupId = getSpecDomainGroupId(spec);
+  const { customDomain, type, nice, ticks } = yAPIScaleConfig[groupId];
 
   let domain: ContinuousDomain;
   if (stackMode === StackMode.Percentage) {
@@ -117,13 +114,14 @@ function mergeYDomainForGroup(
     }
   }
   return {
-    type: 'yDomain',
+    type,
+    nice,
     isBandScale: false,
-    scaleConfig: groupYScaleType,
     groupId,
     domain,
     logBase: customDomain?.logBase,
     logMinLimit: customDomain?.logMinLimit,
+    ticks,
   };
 }
 
@@ -213,16 +211,19 @@ export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean)
  * @returns {ScaleContinuousType}
  * @internal
  */
-export function coerceYScaleTypes(scales: ScaleConfig<ScaleContinuousType>[]): ScaleConfig<ScaleContinuousType> {
-  const scaleCollection = scales.reduce(
+export function coerceYScaleTypes(scales: APIScale<ScaleContinuousType>[]): APIScale<ScaleContinuousType> {
+  const scaleCollection = scales.reduce<{
+    types: Set<ScaleContinuousType>;
+    nice: Array<boolean>;
+  }>(
     (acc, scale) => {
       acc.types.add(scale.type);
       acc.nice.push(scale.nice);
       return acc;
     },
     {
-      types: new Set<ScaleContinuousType>(),
-      nice: [] as Array<boolean>,
+      types: new Set(),
+      nice: [],
     },
   );
   const nice = areAllNiceDomain(scaleCollection.nice);

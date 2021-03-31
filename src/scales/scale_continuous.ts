@@ -278,7 +278,6 @@ export class ScaleContinuous implements Scale {
       logBase,
       logMinLimit,
     } = mergePartial(defaultScaleOptions, options, { mergeOptionalPartialValues: true });
-
     this.d3Scale = SCALES[type]();
 
     if (type === ScaleType.Log) {

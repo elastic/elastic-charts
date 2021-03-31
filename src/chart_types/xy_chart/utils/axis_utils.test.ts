@@ -23,6 +23,7 @@ import moment from 'moment-timezone';
 import { ChartTypes } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store/store';
+import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
@@ -34,8 +35,6 @@ import { OrdinalDomain } from '../../../utils/domain';
 import { AxisId, GroupId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { AxisStyle, TextOffset } from '../../../utils/themes/theme';
-import { XDomain, YDomain } from '../domains/types';
-import { getXScaleConfig, getYScaleConfig } from '../scales/get_scale_config';
 import { computeAxesGeometriesSelector } from '../state/selectors/compute_axes_geometries';
 import { computeAxisTicksDimensionsSelector } from '../state/selectors/compute_axis_ticks_dimensions';
 import { getScale, SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
@@ -190,21 +189,17 @@ describe('Axis computational utils', () => {
       [1, 1],
     ],
   });
-  const xDomain: XDomain = {
-    type: 'xDomain',
-    scaleConfig: getXScaleConfig(ScaleType.Linear),
+  const xDomain = MockXDomain.fromScaleType(ScaleType.Linear, {
     domain: [0, 1],
     isBandScale: false,
     minInterval: 0,
-  };
+  });
 
-  const yDomain: YDomain = {
-    scaleConfig: getYScaleConfig(ScaleType.Linear),
+  const yDomain = MockYDomain.fromScaleType(ScaleType.Linear, {
     groupId: 'group_1',
-    type: 'yDomain',
     domain: [0, 1],
     isBandScale: false,
-  };
+  });
 
   const getSmScales = (smHDomain: OrdinalDomain = [], smVDomain: OrdinalDomain = []): SmallMultipleScales => ({
     horizontal: getScale(smHDomain, chartDim.width),
@@ -280,14 +275,12 @@ describe('Axis computational utils', () => {
 
   test('should compute axis dimensions with timeZone', () => {
     const bboxCalculator = new SvgTextBBoxCalculator();
-    const xDomain: XDomain = {
-      type: 'xDomain',
-      scaleConfig: getXScaleConfig(ScaleType.Time),
+    const xDomain = MockXDomain.fromScaleType(ScaleType.Time, {
       domain: [1551438000000, 1551441300000],
       isBandScale: false,
       minInterval: 0,
       timeZone: 'utc',
-    };
+    });
     let axisDimensions = computeAxisTicksDimensions(
       xAxisWithTime,
       xDomain,
@@ -427,13 +420,11 @@ describe('Axis computational utils', () => {
 
     test('should extend ticks to domain + minInterval in histogram mode for linear scale', () => {
       const enableHistogramMode = true;
-      const xBandDomain: XDomain = {
-        type: 'xDomain',
-        scaleConfig: getXScaleConfig(ScaleType.Linear),
+      const xBandDomain = MockXDomain.fromScaleType(ScaleType.Linear, {
         domain: [0, 100],
         isBandScale: true,
         minInterval: 10,
-      };
+      });
       const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
       const histogramAxisPositions = getAvailableTicks(
         horizontalAxisSpec,
@@ -449,13 +440,11 @@ describe('Axis computational utils', () => {
 
     test('should extend ticks to domain + minInterval in histogram mode for time scale', () => {
       const enableHistogramMode = true;
-      const xBandDomain: XDomain = {
-        type: 'xDomain',
-        scaleConfig: getXScaleConfig(ScaleType.Time),
+      const xBandDomain = MockXDomain.fromScaleType(ScaleType.Time, {
         domain: [1560438420000, 1560438510000],
         isBandScale: true,
         minInterval: 90000,
-      };
+      });
       const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
       const histogramAxisPositions = getAvailableTicks(
         horizontalAxisSpec,
@@ -488,13 +477,11 @@ describe('Axis computational utils', () => {
 
     test('should extend ticks to domain + minInterval in histogram mode for a scale with single datum', () => {
       const enableHistogramMode = true;
-      const xBandDomain: XDomain = {
-        type: 'xDomain',
-        scaleConfig: getXScaleConfig(ScaleType.Time),
+      const xBandDomain = MockXDomain.fromScaleType(ScaleType.Time, {
         domain: [1560438420000, 1560438420000], // a single datum scale will have the same value for domain start & end
         isBandScale: true,
         minInterval: 90000,
-      };
+      });
       const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
       const histogramAxisPositions = getAvailableTicks(
         horizontalAxisSpec,
@@ -1524,13 +1511,11 @@ describe('Axis computational utils', () => {
       style,
       tickFormat: formatter,
     };
-    const xDomainTime: XDomain = {
-      type: 'xDomain',
+    const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
       isBandScale: false,
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
-      scaleConfig: getXScaleConfig(ScaleType.Time),
-    };
+    });
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
@@ -1558,14 +1543,12 @@ describe('Axis computational utils', () => {
       tickFormat: (d, options) =>
         DateTime.fromMillis(d, { setZone: true, zone: options?.timeZone ?? 'utc+1' }).toFormat('HH:mm'),
     };
-    const xDomainTime: XDomain = {
-      type: 'xDomain',
+    const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
       isBandScale: false,
       timeZone: 'utc+1',
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
-      scaleConfig: getXScaleConfig(ScaleType.Time),
-    };
+    });
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
     const tickFormatOption = { timeZone: xDomainTime.timeZone };
@@ -1601,13 +1584,11 @@ describe('Axis computational utils', () => {
       style,
       tickFormat: formatter,
     };
-    const xDomainTime: XDomain = {
-      type: 'xDomain',
+    const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
       isBandScale: false,
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
-      scaleConfig: getXScaleConfig(ScaleType.Time),
-    };
+    });
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
@@ -1641,13 +1622,11 @@ describe('Axis computational utils', () => {
       style,
       tickFormat: formatter,
     };
-    const xDomainTime: XDomain = {
-      type: 'xDomain',
+    const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
       isBandScale: false,
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
-      scaleConfig: getXScaleConfig(ScaleType.Time),
-    };
+    });
     const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };

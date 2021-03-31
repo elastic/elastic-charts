@@ -46,7 +46,6 @@ interface XScaleOptions {
   range: Range;
   barsPadding?: number;
   enableHistogramMode?: boolean;
-  ticks?: number;
   integersOnly?: boolean;
   logBase?: LogBase;
   logMinLimit?: number;
@@ -57,11 +56,11 @@ interface XScaleOptions {
  * @internal
  */
 export function computeXScale(options: XScaleOptions): Scale {
-  const { xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, ticks, integersOnly } = options;
-  const { scaleConfig, minInterval, domain, isBandScale, timeZone, logBase } = xDomain;
+  const { xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly } = options;
+  const { type, nice, minInterval, domain, isBandScale, timeZone, logBase, ticks } = xDomain;
   const rangeDiff = Math.abs(range[1] - range[0]);
   const isInverse = range[1] < range[0];
-  if (scaleConfig.type === ScaleType.Ordinal) {
+  if (type === ScaleType.Ordinal) {
     const dividend = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
     const bandwidth = rangeDiff / (domain.length * dividend);
     return new ScaleBand(domain, range, bandwidth, barsPadding);
@@ -80,10 +79,10 @@ export function computeXScale(options: XScaleOptions): Scale {
 
     return new ScaleContinuous(
       {
-        type: scaleConfig.type,
+        type,
         domain: adjustedDomain,
         range: [start, end],
-        nice: scaleConfig.nice,
+        nice,
       },
       {
         bandwidth: totalBarsInCluster > 0 ? bandwidth / totalBarsInCluster : bandwidth,
@@ -98,7 +97,7 @@ export function computeXScale(options: XScaleOptions): Scale {
     );
   }
   return new ScaleContinuous(
-    { type: scaleConfig.type, domain, range, nice: scaleConfig.nice },
+    { type, domain, range, nice },
     {
       bandwidth: 0,
       minInterval,
@@ -115,7 +114,6 @@ export function computeXScale(options: XScaleOptions): Scale {
 interface YScaleOptions {
   yDomains: YDomain[];
   range: Range;
-  ticks?: number;
   integersOnly?: boolean;
 }
 
@@ -124,8 +122,8 @@ interface YScaleOptions {
  * @internal
  */
 export function computeYScales(options: YScaleOptions): Map<GroupId, Scale> {
-  const { yDomains, range, ticks, integersOnly } = options;
-  return yDomains.reduce((yScales, { scaleConfig: { type, nice }, domain, groupId, logBase, logMinLimit }) => {
+  const { yDomains, range, integersOnly } = options;
+  return yDomains.reduce((yScales, { type, nice, ticks, domain, groupId, logBase, logMinLimit }) => {
     const yScale = new ScaleContinuous(
       {
         type,

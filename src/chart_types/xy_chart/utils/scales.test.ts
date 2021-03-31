@@ -17,32 +17,22 @@
  * under the License.
  */
 
+import { MockXDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
-import { XDomain } from '../domains/types';
 import { computeXScale } from './scales';
 
 describe('Series scales', () => {
-  const xDomainLinear: XDomain = {
-    type: 'xDomain',
+  const xDomainLinear = MockXDomain.fromScaleType(ScaleType.Linear, {
     isBandScale: true,
     domain: [0, 3],
     minInterval: 1,
-    scaleConfig: {
-      type: ScaleType.Linear,
-      nice: false,
-    },
-  };
+  });
 
-  const xDomainOrdinal: XDomain = {
-    type: 'xDomain',
+  const xDomainOrdinal = MockXDomain.fromScaleType(ScaleType.Ordinal, {
     isBandScale: true,
     domain: ['a', 'b'],
     minInterval: 1,
-    scaleConfig: {
-      type: ScaleType.Ordinal,
-      nice: false,
-    },
-  };
+  });
 
   test('should compute X Scale linear min, max with bands', () => {
     const scale = computeXScale({ xDomain: xDomainLinear, totalBarsInCluster: 1, range: [0, 120] });
@@ -70,20 +60,15 @@ describe('Series scales', () => {
     const minInterval = 1;
 
     test('should return extended domain & range when in histogram mode', () => {
-      const xDomainSingleValue: XDomain = {
-        type: 'xDomain',
+      const xDomain = MockXDomain.fromScaleType(ScaleType.Linear, {
         isBandScale: true,
         domain: [singleDomainValue, singleDomainValue],
         minInterval,
-        scaleConfig: {
-          type: ScaleType.Linear,
-          nice: false,
-        },
-      };
+      });
       const enableHistogramMode = true;
 
       const scale = computeXScale({
-        xDomain: xDomainSingleValue,
+        xDomain,
         totalBarsInCluster: 1,
         range: [0, maxRange],
         barsPadding: 0,
@@ -96,20 +81,15 @@ describe('Series scales', () => {
     });
 
     test('should return unextended domain & range when not in histogram mode', () => {
-      const xDomainSingleValue: XDomain = {
-        type: 'xDomain',
+      const xDomain = MockXDomain.fromScaleType(ScaleType.Linear, {
         isBandScale: true,
         domain: [singleDomainValue, singleDomainValue],
         minInterval,
-        scaleConfig: {
-          type: ScaleType.Linear,
-          nice: false,
-        },
-      };
+      });
       const enableHistogramMode = false;
 
       const scale = computeXScale({
-        xDomain: xDomainSingleValue,
+        xDomain,
         totalBarsInCluster: 1,
         range: [0, maxRange],
         barsPadding: 0,
@@ -133,16 +113,11 @@ describe('Series scales', () => {
   });
 
   describe('bandwidth when totalBarsInCluster is greater than 0 or less than 0', () => {
-    const xDomainLinear: XDomain = {
-      type: 'xDomain',
+    const xDomainLinear = MockXDomain.fromScaleType(ScaleType.Linear, {
       isBandScale: true,
       domain: [0, 3],
       minInterval: 1,
-      scaleConfig: {
-        type: ScaleType.Linear,
-        nice: false,
-      },
-    };
+    });
     const maxRange = 120;
     const scaleOver0 = computeXScale({
       xDomain: xDomainLinear,

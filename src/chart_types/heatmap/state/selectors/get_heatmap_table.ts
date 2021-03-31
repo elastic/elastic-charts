@@ -24,6 +24,7 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getAccessorValue } from '../../../../utils/accessor';
 import { mergeXDomain } from '../../../xy_chart/domains/x_domain';
+import { getXAPIScale } from '../../../xy_chart/scales/get_api_scales';
 import { HeatmapTable } from './compute_chart_dimensions';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 
@@ -72,7 +73,10 @@ export const getHeatmapTableSelector = createCachedSelector(
       },
     );
 
-    resultData.xDomain = mergeXDomain([{ xScaleType: spec.xScaleType }], resultData.xValues, xDomain);
+    resultData.xDomain = mergeXDomain(
+      { ...getXAPIScale(spec.xScaleType), isBandScale: false, ticks: 10, customDomain: xDomain },
+      resultData.xValues,
+    );
 
     // sort values by their predicates
     if (spec.xScaleType === ScaleType.Ordinal) {

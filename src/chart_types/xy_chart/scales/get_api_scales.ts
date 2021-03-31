@@ -20,30 +20,25 @@ import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { BasicSeriesSpec, XScaleType } from '../utils/specs';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from './scale_defaults';
+import { APIScale } from './types';
 
 /** @internal */
-export interface ScaleConfig<T extends ScaleType> {
-  type: T;
-  nice: boolean;
+export function getXAPIScale(scaleType: BasicSeriesSpec['xScaleType']): APIScale<XScaleType> {
+  return getDefaultAPIScale<XScaleType>(scaleType, { type: X_SCALE_DEFAULT.type, nice: X_SCALE_DEFAULT.nice });
 }
 
 /** @internal */
-export function getXScaleConfig(scaleType: BasicSeriesSpec['xScaleType']): ScaleConfig<XScaleType> {
-  return getScaleConfig<XScaleType>(scaleType, X_SCALE_DEFAULT);
+export function getYAPIScale(scaleType: BasicSeriesSpec['yScaleType']): APIScale<ScaleContinuousType> {
+  return getDefaultAPIScale(scaleType, { type: Y_SCALE_DEFAULT.type, nice: Y_SCALE_DEFAULT.nice });
 }
 
 /** @internal */
-export function getYScaleConfig(scaleType: BasicSeriesSpec['yScaleType']): ScaleConfig<ScaleContinuousType> {
-  return getScaleConfig(scaleType, Y_SCALE_DEFAULT);
-}
-
-/** @internal */
-function getScaleConfig<T extends ScaleType>(scaleType: T | ScaleConfig<T>, defaults: ScaleConfig<T>): ScaleConfig<T> {
-  if (typeof scaleType === 'object') {
-    return scaleType;
+function getDefaultAPIScale<T extends ScaleType>(type: T | APIScale<T>, defaults: APIScale<T>): APIScale<T> {
+  if (typeof type === 'object') {
+    return type;
   }
   return {
     ...defaults,
-    type: scaleType,
+    type,
   };
 }

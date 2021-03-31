@@ -16,13 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { ScaleType } from '../../../scales/constants';
 
-import React from 'react';
-
-import { Example } from '../stories/line/2_w_axis';
-
-export class Playground extends React.Component {
-  render() {
-    return <Example />;
-  }
+/** @public */
+export interface APIScale<T extends ScaleType> {
+  type: T;
+  nice: boolean;
 }

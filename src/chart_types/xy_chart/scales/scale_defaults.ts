@@ -22,10 +22,12 @@ import { ScaleType } from '../../../scales/constants';
 export const X_SCALE_DEFAULT = {
   type: ScaleType.Ordinal,
   nice: false,
+  ticks: 10,
 };
 
 /** @internal */
 export const Y_SCALE_DEFAULT = {
   type: ScaleType.Linear,
   nice: false,
+  ticks: 10,
 };

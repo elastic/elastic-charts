@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { Axis, Chart, LineSeries, niceTimeFormatByDay, Position, ScaleType, timeFormatter } from '../../src';
+import { Axis, Chart, LineSeries, niceTimeFormatByDay, Position, ScaleType, Settings, timeFormatter } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -27,6 +27,7 @@ const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 
 export const Example = () => (
   <Chart className="story-chart">
+    <Settings xDomain={{ max: 2 }} />
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis
       id="left"
@@ -40,7 +41,12 @@ export const Example = () => (
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
+      data={[
+        [0, 0],
+        [1, 1],
+        [2, 10],
+        [3, 3],
+      ]}
     />
   </Chart>
 );

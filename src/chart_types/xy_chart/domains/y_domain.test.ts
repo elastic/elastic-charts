@@ -20,12 +20,12 @@
 import { ChartTypes } from '../..';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
+import { MockYDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
 import { SpecTypes } from '../../../specs/constants';
 import { Position } from '../../../utils/common';
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';
 import { Logger } from '../../../utils/logger';
-import { getYScaleConfig } from '../scales/get_scale_config';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
 import { BasicSeriesSpec, SeriesTypes, DEFAULT_GLOBAL_ID, StackMode } from '../utils/specs';
 import { coerceYScaleTypes, groupSeriesByYGroup } from './y_domain';
@@ -85,13 +85,11 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: DEFAULT_GLOBAL_ID,
         domain: [2, 12],
-        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
-      },
+      }),
     ]);
   });
   test('Should merge Y domain for zero baseline charts', () => {
@@ -113,13 +111,11 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: DEFAULT_GLOBAL_ID,
         domain: [0, 12],
-        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
-      },
+      }),
     ]);
   });
   test('Should merge Y domain different group', () => {
@@ -149,20 +145,16 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [2, 12],
-        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
-        type: 'yDomain',
-      },
-      {
+      }),
+      MockYDomain.fromScaleType(ScaleType.Log, {
         groupId: 'b',
         domain: [2, 10],
-        scaleConfig: getYScaleConfig(ScaleType.Log),
         isBandScale: false,
-        type: 'yDomain',
-      },
+      }),
     ]);
   });
   test('Should merge Y domain same group all stacked', () => {
@@ -187,13 +179,11 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 17],
-        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
-        type: 'yDomain',
-      },
+      }),
     ]);
   });
   test('Should merge Y domain same group partially stacked', () => {
@@ -216,13 +206,11 @@ describe('Y Domain', () => {
     );
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
     expect(yDomains).toEqual([
-      {
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 12],
-        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
-        type: 'yDomain',
-      },
+      }),
     ]);
   });
 
@@ -385,9 +373,10 @@ describe('Y Domain', () => {
   });
 
   test('Should return a default Scale Linear for YScaleType when there are no specs', () => {
-    const specs: BasicSeriesSpec['yScaleType'][] = [];
-    const specScaleConfigs = specs.map(getYScaleConfig);
-    expect(coerceYScaleTypes(specScaleConfigs)).toEqual(getYScaleConfig(ScaleType.Linear));
+    expect(coerceYScaleTypes([])).toEqual({
+      nice: false,
+      type: ScaleType.Linear,
+    });
   });
 
   test('Should merge Y domain accounting for custom domain limits: complete bounded domain', () => {
@@ -407,13 +396,11 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 20],
-        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
-      },
+      }),
     ]);
   });
   test('Should merge Y domain accounting for custom domain limits: partial lower bounded domain', () => {
@@ -433,13 +420,11 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 12],
-        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
-      },
+      }),
     ]);
   });
   test('Should not merge Y domain with invalid custom domain limits: partial lower bounded domain', () => {
@@ -482,13 +467,11 @@ describe('Y Domain', () => {
 
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [2, 20],
-        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
-      },
+      }),
     ]);
   });
   test('Should not merge Y domain with invalid custom domain limits: partial upper bounded domain', () => {
@@ -532,13 +515,11 @@ describe('Y Domain', () => {
 
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
     expect(yDomains).toEqual([
-      {
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 1],
-        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
-        type: 'yDomain',
-      },
+      }),
     ]);
   });
   test('Should merge Y domain with as percentage regadless of custom domains', () => {
@@ -560,13 +541,11 @@ describe('Y Domain', () => {
     );
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 1],
-        scaleConfig: getYScaleConfig(ScaleType.Linear),
         isBandScale: false,
-      },
+      }),
     ]);
   });
 });

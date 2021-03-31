@@ -24,7 +24,7 @@ import { SortSeriesByConfig, TickFormatterOptions } from '../../../specs';
 import { Color } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
-import { getXScaleConfig } from '../scales/get_scale_config';
+import { getXAPIScale } from '../scales/get_api_scales';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { LastValues } from '../state/utils/types';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
@@ -138,7 +138,7 @@ export function computeLegend(
 
     const lastValue = lastValues.get(key);
     const seriesIdentifier = getSeriesIdentifierFromDataSeries(series);
-    const scaleConf = getXScaleConfig(spec.xScaleType);
+    const scaleConf = getXAPIScale(spec.xScaleType);
     legendItems.push({
       color,
       label: labelY1,
