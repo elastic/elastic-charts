@@ -17,25 +17,21 @@
  * under the License.
  */
 
-const path = require('path');
+import { Pixels, SizeRatio } from '../../../../common/geometry';
+import { FontFamily } from '../../../../common/text_utils';
 
-const webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
+// todo switch to `io-ts` style, generic way of combining static and runtime type info
+/** potential internal */
+export interface Config {
+  // shape geometry
+  width: number;
+  height: number;
+  margin: { left: SizeRatio; right: SizeRatio; top: SizeRatio; bottom: SizeRatio };
 
-const config = require(path.join(__dirname, '..', '.playground', 'webpack.config.js'));
+  // general text config
+  fontFamily: FontFamily;
 
-module.exports = async () =>
-  await new Promise((resolve, reject) => {
-    const compiler = webpack(config);
-    const server = new WebpackDevServer(compiler);
-    compiler.hooks.done.tap('done', () => {
-      resolve();
-      global.__WP_SERVER__ = server;
-    });
-
-    server.listen(8080, 'localhost', (err) => {
-      if (err) {
-        reject(err);
-      }
-    });
-  });
+  // fill text config
+  minFontSize: Pixels;
+  maxFontSize: Pixels;
+}

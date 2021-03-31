@@ -19,19 +19,18 @@
 
 import { LayerValue } from '../../../../specs';
 import { Point } from '../../../../utils/point';
+import { ContinuousDomainFocus } from '../../renderer/canvas/partition';
 import { MODEL_KEY } from '../config';
 import { QuadViewModel, ShapeViewModel } from '../types/viewmodel_types';
 import { AGGREGATE_KEY, DEPTH_KEY, getNodeName, PARENT_KEY, PATH_KEY, SORT_INDEX_KEY } from '../utils/group_by_rollup';
 
 /** @internal */
-export const pickedShapes = (models: ShapeViewModel[], pointerPosition: Point): QuadViewModel[] => {
-  const geoms = models[0];
-  const picker = geoms.pickQuads;
-  const { diskCenter } = geoms;
-  const x = pointerPosition.x - diskCenter.x;
-  const y = pointerPosition.y - diskCenter.y;
-  return picker(x, y);
-};
+export const pickedShapes = (
+  models: ShapeViewModel[],
+  { x, y }: Point,
+  foci: ContinuousDomainFocus[],
+): QuadViewModel[] =>
+  models.flatMap(({ diskCenter, pickQuads }) => pickQuads(x - diskCenter.x, y - diskCenter.y, foci[0]));
 
 /** @internal */
 export function pickShapesLayerValues(shapes: QuadViewModel[]): LayerValue[][] {

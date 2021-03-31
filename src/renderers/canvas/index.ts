@@ -40,8 +40,6 @@ export function withContext(ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRend
 /** @internal */
 export function clearCanvas(ctx: CanvasRenderingContext2D, width: Coordinate, height: Coordinate) {
   withContext(ctx, (ctx) => {
-    // two steps, as the backgroundColor may have a non-one opacity
-    // todo we should avoid `fillRect` by setting the <canvas> element background via CSS
     ctx.clearRect(-width, -height, 2 * width, 2 * height); // remove past contents
   });
 }
@@ -74,10 +72,6 @@ export function withClip(
 
 /**
  * Create clip from a set of clipped ranges
- *
- * @param clippedRanges ranges to be clipped from rendering
- * @param clippings the general clipping
- * @param negate show, rather than exclude, only selected ranges
  * @internal
  */
 export function withClipRanges(
@@ -89,24 +83,24 @@ export function withClipRanges(
 ) {
   withContext(ctx, (context) => {
     const { length } = clippedRanges;
-    const { width, height } = clippings;
+    const { width, height, y } = clippings;
     context.beginPath();
     if (negate) {
       clippedRanges.forEach(([x0, x1]) => {
-        context.rect(x0, 0, x1 - x0, height);
+        context.rect(x0, y, x1 - x0, height);
       });
     } else {
       if (length > 0) {
-        context.rect(0, 0, clippedRanges[0][0], height);
+        context.rect(0, -0.5, clippedRanges[0][0], height);
         const lastX = clippedRanges[length - 1][1];
-        context.rect(lastX, 0, width - lastX, height);
+        context.rect(lastX, y, width - lastX, height);
       }
 
       if (length > 1) {
         for (let i = 1; i < length; i++) {
           const [, x0] = clippedRanges[i - 1];
           const [x1] = clippedRanges[i];
-          context.rect(x0, 0, x1 - x0, height);
+          context.rect(x0, y, x1 - x0, height);
         }
       }
     }

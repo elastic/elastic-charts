@@ -19,6 +19,7 @@
 
 import { argsToRGBString, stringToRGB } from '../../../../common/color_library_wrappers';
 import { TAU } from '../../../../common/constants';
+import { fillTextColor } from '../../../../common/fill_text_color';
 import {
   Distance,
   meanAngle,
@@ -28,13 +29,15 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
-import { StrokeStyle, ValueFormatter, Color } from '../../../../utils/common';
+import { SmallMultiplesStyle } from '../../../../specs';
+import { StrokeStyle, ValueFormatter, Color, RecursivePartial } from '../../../../utils/common';
 import { Layer } from '../../specs';
-import { MODEL_KEY, percentValueGetter } from '../config';
-import { Config, PartitionLayout } from '../types/config_types';
+import { config as defaultConfig, MODEL_KEY, percentValueGetter } from '../config';
+import { Config, FillLabelConfig, PartitionLayout } from '../types/config_types';
 import {
   nullShapeViewModel,
   OutsideLinksViewModel,
+  PartitionSmallMultiplesModel,
   PickFunction,
   QuadViewModel,
   RawTextGetter,
@@ -66,6 +69,25 @@ import {
   nodeId,
 } from './fill_text_layout';
 import { linkTextLayout } from './link_text_layout';
+
+/** @internal */
+export const isTreemap = (p: PartitionLayout | undefined) => p === PartitionLayout.treemap;
+
+/** @internal */
+export const isSunburst = (p: PartitionLayout | undefined) => p === PartitionLayout.sunburst;
+
+/** @internal */
+export const isIcicle = (p: PartitionLayout | undefined) => p === PartitionLayout.icicle;
+
+/** @internal */
+export const isFlame = (p: PartitionLayout | undefined) => p === PartitionLayout.flame;
+
+/** @internal */
+export const isLinear = (p: PartitionLayout | undefined) => isFlame(p) || isIcicle(p);
+
+/** @internal */
+export const isSimpleLinear = (config: RecursivePartial<Config>, layers: Layer[]) =>
+  isLinear(config.partitionLayout) && layers.every((l) => l.fillLabel?.clipText ?? config.fillLabel?.clipText);
 
 function grooveAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
@@ -101,12 +123,19 @@ function sectorFillOrigins(fillOutside: boolean) {
   };
 }
 
+const minRectHeightForText: Pixels = 8;
+
 /** @internal */
 export function makeQuadViewModel(
   childNodes: ShapeTreeNode[],
   layers: Layer[],
   sectorLineWidth: Pixels,
   sectorLineStroke: StrokeStyle,
+  index: number,
+  innerIndex: number,
+  fillLabel: FillLabelConfig,
+  isSunburstLayout: boolean,
+  containerBackgroundColor?: Color,
 ): Array<QuadViewModel> {
   return childNodes.map((node) => {
     const opacityMultiplier = 1; // could alter in the future, eg. in response to interactions
@@ -118,7 +147,13 @@ export function makeQuadViewModel(
     const fillColor = argsToRGBString(r, g, b, opacity * opacityMultiplier);
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
-    return { strokeWidth, strokeStyle, fillColor, ...node };
+    const textNegligible = node.y1px - node.y0px < minRectHeightForText;
+    const { textColor, textInvertible, textContrast } = { ...fillLabel, ...layer.fillLabel };
+    const color =
+      !isSunburstLayout && textNegligible
+        ? 'transparent'
+        : fillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor);
+    return { index, innerIndex, strokeWidth, strokeStyle, fillColor, textColor: color, ...node };
   });
 }
 
@@ -198,8 +233,8 @@ const rawChildNodes = (
       const treemapValueToAreaScale = treemapInnerArea / totalValue;
       const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);
       return treemap(tree, treemapAreaAccessor, topGrooveAccessor(topGroove), grooveAccessor, {
-        x0: -width / 2,
-        y0: -height / 2,
+        x0: 0,
+        y0: 0,
         width,
         height,
       });
@@ -207,18 +242,10 @@ const rawChildNodes = (
     case PartitionLayout.icicle:
     case PartitionLayout.flame:
       const icicleLayout = isIcicle(partitionLayout);
-      const multiplier = icicleLayout ? -1 : 1;
       const icicleValueToAreaScale = width / totalValue;
       const icicleAreaAccessor = (e: ArrayEntry) => icicleValueToAreaScale * mapEntryValue(e);
       const icicleRowHeight = height / maxDepth;
-      const result = sunburst(
-        tree,
-        icicleAreaAccessor,
-        { x0: -width / 2, y0: (multiplier * height) / 2 - icicleRowHeight },
-        true,
-        false,
-        icicleRowHeight,
-      );
+      const result = sunburst(tree, icicleAreaAccessor, { x0: 0, y0: -icicleRowHeight }, true, false, icicleRowHeight);
       return icicleLayout
         ? result
         : result.map(({ y0, y1, ...rest }) => ({ y0: height - y1, y1: height - y0, ...rest }));
@@ -231,10 +258,14 @@ const rawChildNodes = (
   }
 };
 
-export const isTreemap = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.treemap;
-export const isSunburst = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.sunburst;
-const isIcicle = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.icicle;
-const isFlame = (partitionLayout: PartitionLayout) => partitionLayout === PartitionLayout.flame;
+/** @internal */
+export type PanelPlacement = PartitionSmallMultiplesModel;
+
+/**
+ * Todo move it to config
+ * @internal
+ */
+export const panelTitleFontSize = 16;
 
 /** @internal */
 export function shapeViewModel(
@@ -247,12 +278,13 @@ export function shapeViewModel(
   valueGetter: ValueGetterFunction,
   tree: HierarchyOfArrays,
   topGroove: Pixels,
-  containerBackgroundColor?: Color,
+  containerBackgroundColor: Color,
+  smallMultiplesStyle: SmallMultiplesStyle,
+  panel: PanelPlacement,
 ): ShapeViewModel {
   const {
     width,
     height,
-    margin,
     emptySizeRatio,
     outerSizeRatio,
     fillOutside,
@@ -263,23 +295,30 @@ export function shapeViewModel(
     partitionLayout,
     sectorLineWidth,
   } = config;
-  const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
-  const innerHeight = height * (1 - Math.min(1, margin.top + margin.bottom));
 
-  const diskCenter = {
-    x: width * margin.left + innerWidth / 2,
-    y: height * margin.top + innerHeight / 2,
-  };
+  const { marginLeftPx, marginTopPx, panelInnerWidth, panelInnerHeight } = panel;
+
+  const treemapLayout = isTreemap(partitionLayout);
+  const sunburstLayout = isSunburst(partitionLayout);
+  const icicleLayout = isIcicle(partitionLayout);
+  const flameLayout = isFlame(partitionLayout);
+  const simpleLinear = isSimpleLinear(config, layers);
+
+  const diskCenter = isSunburst(partitionLayout)
+    ? {
+        x: marginLeftPx + panelInnerWidth / 2,
+        y: marginTopPx + panelInnerHeight / 2,
+      }
+    : {
+        x: marginLeftPx,
+        y: marginTopPx,
+      };
 
   // don't render anything if the total, the width or height is not positive
   if (!(width > 0) || !(height > 0) || tree.length === 0) {
     return nullShapeViewModel(config, diskCenter);
   }
 
-  const treemapLayout = isTreemap(partitionLayout);
-  const sunburstLayout = isSunburst(partitionLayout);
-  const icicleLayout = isIcicle(partitionLayout);
-  const flameLayout = isFlame(partitionLayout);
   const longestPath = ([, { children, path }]: ArrayEntry): number =>
     children.length > 0 ? children.reduce((p, n) => Math.max(p, longestPath(n)), 0) : path.length;
   const maxDepth = longestPath(tree[0]) - 2; // don't include the root node
@@ -287,8 +326,8 @@ export function shapeViewModel(
     partitionLayout,
     tree,
     topGroove,
-    width,
-    height,
+    panelInnerWidth,
+    panelInnerHeight,
     clockwiseSectors,
     specialFirstInnermostSector,
     maxDepth,
@@ -301,7 +340,10 @@ export function shapeViewModel(
   });
 
   // use the smaller of the two sizes, as a circle fits into a square
-  const circleMaximumSize = Math.min(innerWidth, innerHeight);
+  const circleMaximumSize = Math.min(
+    panelInnerWidth,
+    panelInnerHeight - (panel.panelTitle.length > 0 ? panelTitleFontSize * 2 : 0),
+  );
   const outerRadius: Radius = Math.min(outerSizeRatio * circleMaximumSize, circleMaximumSize - sectorLineWidth) / 2;
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
   const treeHeight = shownChildNodes.reduce((p: number, n: Part) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
@@ -312,6 +354,11 @@ export function shapeViewModel(
     layers,
     config.sectorLineWidth,
     config.sectorLineStroke,
+    panel.index,
+    panel.innerIndex,
+    config.fillLabel,
+    sunburstLayout,
+    containerBackgroundColor,
   );
 
   // fill text
@@ -334,13 +381,13 @@ export function shapeViewModel(
         ringSectorConstruction(config, innerRadius, ringThickness),
         getSectorRowGeometry,
         inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
-        containerBackgroundColor,
       )
+    : simpleLinear
+    ? () => [] // no multirow layout needed for simpleLinear partitions
     : fillTextLayout(
         rectangleConstruction(treeHeight, treemapLayout ? topGroove : null),
         getRectangleRowGeometry,
         () => 0,
-        containerBackgroundColor,
       );
   const rowSets: RowSet[] = getRowSets(
     textMeasure,
@@ -372,8 +419,8 @@ export function shapeViewModel(
         });
   const maxLinkedLabelTextLength = config.linkLabel.maxTextLength;
   const linkLabelViewModels = linkTextLayout(
-    width,
-    height,
+    panelInnerWidth,
+    panelInnerHeight,
     textMeasure,
     config,
     nodesWithoutRoom,
@@ -383,24 +430,52 @@ export function shapeViewModel(
     valueGetter,
     valueFormatter,
     maxLinkedLabelTextLength,
-    diskCenter,
+    {
+      x: width * panel.left + panelInnerWidth / 2,
+      y: height * panel.top + panelInnerHeight / 2,
+    },
     containerBackgroundColor,
   );
 
-  const pickQuads: PickFunction = (x, y) =>
-    quadViewModel.filter(
-      treemapLayout || icicleLayout || flameLayout
-        ? ({ x0, y0, x1, y1 }) => x0 <= x && x <= x1 && y0 <= y && y <= y1
-        : ({ x0, y0px, x1, y1px }) => {
-            const angleX = (Math.atan2(y, x) + TAU / 4 + TAU) % TAU;
-            const yPx = Math.sqrt(x * x + y * y);
-            return x0 <= angleX && angleX <= x1 && y0px <= yPx && yPx <= y1px;
-          },
-    );
+  const pickQuads: PickFunction = sunburstLayout
+    ? (x, y) => {
+        return quadViewModel.filter(({ x0, y0px, x1, y1px }) => {
+          const angleX = (Math.atan2(y, x) + TAU / 4 + TAU) % TAU;
+          const yPx = Math.sqrt(x * x + y * y);
+          return x0 <= angleX && angleX <= x1 && y0px <= yPx && yPx <= y1px;
+        });
+      }
+    : (x, y, { currentFocusX0, currentFocusX1 }) => {
+        return quadViewModel.filter(({ x0, y0px, x1, y1px }) => {
+          const scale = width / (currentFocusX1 - currentFocusX0);
+          const fx0 = Math.max((x0 - currentFocusX0) * scale, 0);
+          const fx1 = Math.min((x1 - currentFocusX0) * scale, width);
+          return fx0 <= x && x < fx1 && y0px < y && y <= y1px;
+        });
+      };
 
   // combined viewModel
   return {
+    partitionLayout: config?.partitionLayout ?? defaultConfig.partitionLayout,
+
+    panelTitle: panel.panelTitle,
+    index: panel.index,
+    innerIndex: panel.innerIndex,
+    width: panel.width,
+    height: panel.height,
+    top: panel.top,
+    left: panel.left,
+    innerRowCount: panel.innerRowCount,
+    innerColumnCount: panel.innerColumnCount,
+    innerRowIndex: panel.innerRowIndex,
+    innerColumnIndex: panel.innerColumnIndex,
+    marginLeftPx: panel.marginLeftPx,
+    marginTopPx: panel.marginTopPx,
+    panelInnerWidth: panel.panelInnerWidth,
+    panelInnerHeight: panel.panelInnerHeight,
+
     config,
+    layers,
     diskCenter,
     quadViewModel,
     rowSets,

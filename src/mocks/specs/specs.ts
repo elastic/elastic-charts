@@ -40,8 +40,9 @@ import {
   AnnotationDomainTypes,
   AxisSpec,
 } from '../../chart_types/xy_chart/utils/specs';
+import { Predicate } from '../../common/predicate';
 import { ScaleType } from '../../scales/constants';
-import { SettingsSpec, SpecTypes, DEFAULT_SETTINGS_SPEC } from '../../specs';
+import { SettingsSpec, SpecTypes, DEFAULT_SETTINGS_SPEC, SmallMultiplesSpec, GroupBySpec, Spec } from '../../specs';
 import { Datum, mergePartial, Position, RecursivePartial } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 
@@ -134,6 +135,7 @@ export class MockSeriesSpec {
     valueFormatter: (d: number): string => String(d),
     percentFormatter,
     topGroove: 0,
+    smallMultiples: null,
     layers: [
       {
         groupByRollup: (d: Datum, i: number) => i,
@@ -158,6 +160,7 @@ export class MockSeriesSpec {
     valueFormatter: (d: number): string => String(d),
     percentFormatter,
     topGroove: 20,
+    smallMultiples: null,
     layers: [
       {
         groupByRollup: (d: Datum, i: number) => i,
@@ -293,6 +296,24 @@ export class MockGlobalSpec {
     },
   };
 
+  private static readonly smallMultipleBase: SmallMultiplesSpec = {
+    id: 'smallMultiple',
+    chartType: ChartTypes.Global,
+    specType: SpecTypes.SmallMultiples,
+    style: {
+      verticalPanelPadding: { outer: 0, inner: 0 },
+      horizontalPanelPadding: { outer: 0, inner: 0 },
+    },
+  };
+
+  private static readonly groupByBase: GroupBySpec = {
+    id: 'groupBy',
+    chartType: ChartTypes.Global,
+    specType: SpecTypes.IndexOrder,
+    by: ({ id }: Spec) => id,
+    sort: Predicate.DataIndex,
+  };
+
   static settings(partial?: Partial<SettingsSpec>): SettingsSpec {
     return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBase, partial, { mergeOptionalPartialValues: true });
   }
@@ -305,6 +326,18 @@ export class MockGlobalSpec {
 
   static axis(partial?: Partial<AxisSpec>): AxisSpec {
     return mergePartial<AxisSpec>(MockGlobalSpec.axisBase, partial, { mergeOptionalPartialValues: true });
+  }
+
+  static smallMultiple(partial?: Partial<SmallMultiplesSpec>): SmallMultiplesSpec {
+    return mergePartial<SmallMultiplesSpec>(MockGlobalSpec.smallMultipleBase, partial, {
+      mergeOptionalPartialValues: true,
+    });
+  }
+
+  static groupBy(partial?: Partial<GroupBySpec>): GroupBySpec {
+    return mergePartial<GroupBySpec>(MockGlobalSpec.groupByBase, partial, {
+      mergeOptionalPartialValues: true,
+    });
   }
 }
 
