@@ -37,22 +37,22 @@ export const Example = () => {
         domain={{ fit, logMinLimit }}
         tickFormat={logFormatter(LogBase.Common)}
       />
-      <Axis id="x" position={Position.Bottom} />
+      <Axis id="x" position={Position.Bottom} integersOnly />
       <AreaSeries
         id="bars"
         name="amount"
-        xScaleType={ScaleType.Ordinal}
+        xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Log}
         areaSeriesStyle={{ point: { visible: true } }}
         data={[
-          { x: 'a', y: 100 },
-          { x: 'b', y: 0 },
-          { x: 'c', y: 10 },
-          { x: 'd', y: 0 },
-          { x: 'e', y: 1 },
-          { x: 'f', y: 0 },
-          { x: 'g', y: 0.01 },
-          { x: 'h', y: 0 },
+          { x: 1, y: 100 },
+          { x: 2, y: 0 },
+          { x: 3, y: 10 },
+          { x: 4, y: 0 },
+          { x: 5, y: 1 },
+          { x: 6, y: 0 },
+          { x: 7, y: 0.01 },
+          { x: 8, y: 0 },
         ]}
       />
     </Chart>
