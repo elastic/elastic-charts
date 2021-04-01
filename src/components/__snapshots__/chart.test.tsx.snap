@@ -73,7 +73,18 @@ exports[`Chart should render the legend name test 1`] = `
                 </Connect(Crosshair)>
                 <Connect(XYChart) forwardStageRef={{...}}>
                   <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} onChartRendered={[Function (anonymous)]}>
-                    <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} aria-label=\\"Chart\\" role=\\"img\\" />
+                    <figure>
+                      <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} aria-label=\\"Chart\\" role=\\"presentation\\">
+                        <dl className=\\"screen-reader\\">
+                          <dt>
+                            Chart type(s)
+                          </dt>
+                          <dd>
+                            bars
+                          </dd>
+                        </dl>
+                      </canvas>
+                    </figure>
                   </XYChart>
                 </Connect(XYChart)>
                 <Connect(Tooltip) getChartContainerRef={[Function (anonymous)]}>

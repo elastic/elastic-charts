@@ -152,6 +152,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       initialized,
       isChartEmpty,
       chartContainerDimensions: { width, height },
+      geometries,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
@@ -159,20 +160,36 @@ class XYChartComponent extends React.Component<XYChartProps> {
       return null;
     }
 
+    const seriesTypes: string[] = [];
+    Object.entries(geometries).forEach((value) => {
+      if (value[1].length > 0) {
+        seriesTypes.push(value[0]);
+      }
+    });
+
     return (
-      <canvas
-        ref={forwardStageRef}
-        className="echCanvasRenderer"
-        width={width * this.devicePixelRatio}
-        height={height * this.devicePixelRatio}
-        style={{
-          width,
-          height,
-        }}
-        aria-label="Chart"
-        // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-        role="img"
-      />
+      <figure>
+        <canvas
+          ref={forwardStageRef}
+          className="echCanvasRenderer"
+          width={width * this.devicePixelRatio}
+          height={height * this.devicePixelRatio}
+          style={{
+            width,
+            height,
+          }}
+          aria-label="Chart"
+          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+          role="presentation"
+        >
+          <dl className="screen-reader">
+            <dt>Chart type(s)</dt>
+            {seriesTypes.map((value, index) => {
+              return <dd key={index}>{value}</dd>;
+            })}
+          </dl>
+        </canvas>
+      </figure>
     );
   }
 }
