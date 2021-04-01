@@ -213,7 +213,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             onClick={this.handleLabelClick(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
           />
-          {extra && renderExtra(extra, isSeriesHidden)}
+          {extra && !isSeriesHidden && renderExtra(extra)}
           {Action && (
             <div className="echLegendItem__action">
               <Action series={seriesIdentifiers} color={color} label={label} />
