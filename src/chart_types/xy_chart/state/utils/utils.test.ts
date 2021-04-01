@@ -130,7 +130,7 @@ describe('Chart State utils', () => {
     const apiScaleConfig = getAPIScaleConfigs([], [spec1, spec2], MockGlobalSpec.settings());
     const domains = computeSeriesDomains([spec1, spec2], apiScaleConfig);
     expect(domains.xDomain).toEqual(
-      MockXDomain.fromScaleType(ScaleType.Log, {
+      MockXDomain.fromScaleType(ScaleType.Linear, {
         domain: [0, 3],
         isBandScale: false,
         minInterval: 1,
