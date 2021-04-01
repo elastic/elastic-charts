@@ -20,15 +20,26 @@
 import { common } from '../page_objects/common';
 
 describe('Accessibility tree', () => {
-  it('should show the aria-label for the canvas element in the accessibility tree', async () => {
+  it('should include the series types if one type of series', async () => {
     const tree = await common.testAccessibilityTree(
       'http://localhost:9001/iframe.html?id=annotations-lines--x-continuous-domain',
-      '#story-root',
+      '.echCanvasRenderer',
     );
-    // digging into the accessibility tree for the canvas element
-    const expectedAriaLabel = tree.children.filter((value) => {
-      return value.name === 'Chart';
+    // the legend has bars and lines as value.descriptions not value.name
+    const hasTextOfChartTypes = tree.children.filter((value) => {
+      return value.name === 'bars';
     });
-    expect(expectedAriaLabel[0].name).toBe('Chart');
+    expect(hasTextOfChartTypes.length).toBe(1);
+  });
+  it('should include the series types if multiple types of series', async () => {
+    const tree = await common.testAccessibilityTree(
+      'http://localhost:9001/iframe.html?id=mixed-charts--bars-and-lines',
+      '.echCanvasRenderer',
+    );
+    // the legend has bars and lines as value.descriptions not value.name
+    const hasTextOfChartTypes = tree.children.filter((value) => {
+      return value.name === 'bars' || value.name === 'lines';
+    });
+    expect(hasTextOfChartTypes.length).toBe(2);
   });
 });

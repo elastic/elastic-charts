@@ -183,10 +183,16 @@ class XYChartComponent extends React.Component<XYChartProps> {
           role="presentation"
         >
           <dl className="screen-reader">
-            <dt>Chart type(s)</dt>
-            {seriesTypes.map((value, index) => {
-              return <dd key={index}>{value}</dd>;
-            })}
+            {seriesTypes.length > 0 ? (
+              <dt>
+                Chart type(s)
+                {seriesTypes.map((value, index) => {
+                  return <dd key={`${index}`}>{value}</dd>;
+                })}
+              </dt>
+            ) : (
+              <dt>No series in chart</dt>
+            )}
           </dl>
         </canvas>
       </figure>

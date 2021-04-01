@@ -78,10 +78,10 @@ exports[`Chart should render the legend name test 1`] = `
                         <dl className=\\"screen-reader\\">
                           <dt>
                             Chart type(s)
+                            <dd>
+                              bars
+                            </dd>
                           </dt>
-                          <dd>
-                            bars
-                          </dd>
                         </dl>
                       </canvas>
                     </figure>
