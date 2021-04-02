@@ -17,60 +17,65 @@
  * under the License.
  */
 
-import { boolean, select } from '@storybook/addon-knobs';
+import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
   AnnotationDomainType,
-  Axis,
-  BarSeries,
+  LineAnnotationDatum,
   Chart,
   LineAnnotation,
-  LineAnnotationDatum,
+  BarSeries,
   ScaleType,
+  Position,
   Settings,
-} from '../../../src';
-import { Icon } from '../../../src/components/icons/icon';
-import { Position } from '../../../src/utils/common';
-import { getChartRotationKnob, arrayKnobs } from '../../utils/knobs';
+} from '../../src';
+import { getChartRotationKnob } from '../utils/knobs';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
 export const Example = () => {
-  const debug = boolean('debug', false);
-  const markerPosition = select(
-    'marker position',
+  const markerPositionHorizontal = select(
+    'horizontal marker position',
     [Position.Top, Position.Left, Position.Bottom, Position.Right, 'undefined'],
     'undefined',
   );
-  const rotation = getChartRotationKnob();
-  const dataValues = generateAnnotationData(arrayKnobs('annotation values', ['a', 'c']));
+  const markerPositionVertical = select(
+    'vertical marker position',
+    [Position.Top, Position.Left, Position.Bottom, Position.Right, 'undefined'],
+    'undefined',
+  );
+  const chartRotation = getChartRotationKnob();
   return (
     <Chart className="story-chart">
-      <Settings debug={debug} rotation={rotation} />
+      <Settings rotation={chartRotation} />
       <LineAnnotation
-        id="annotation_1"
         domainType={AnnotationDomainType.XDomain}
-        dataValues={dataValues}
-        marker={<Icon type="alert" />}
-        markerPosition={markerPosition === 'undefined' ? undefined : markerPosition}
+        id="ann"
+        dataValues={[{ dataValue: 'bags' }]}
+        marker={<div style={{ background: 'red' }}>Vertical</div>}
+        markerPosition={markerPositionVertical === 'undefined' ? undefined : markerPositionVertical}
       />
-      <Axis id="top" position={Position.Top} title="x-domain axis (top)" />
-      <Axis id="bottom" position={Position.Bottom} title="x-domain axis (bottom)" />
-      <Axis id="left" title="y-domain axis" position={Position.Left} />
+      <LineAnnotation
+        domainType={AnnotationDomainType.YDomain}
+        id="ann1"
+        dataValues={generateAnnotationData([30])}
+        marker={<div style={{ background: 'yellow' }}>Horizontal</div>}
+        markerPosition={markerPositionHorizontal === 'undefined' ? undefined : markerPositionHorizontal}
+      />
       <BarSeries
         id="bars"
+        name="amount"
         xScaleType={ScaleType.Ordinal}
-        yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
         data={[
-          { x: 'a', y: 2 },
-          { x: 'b', y: 7 },
-          { x: 'c', y: 3 },
-          { x: 'd', y: 6 },
+          { x: 'trousers', y: 390, val: 1222 },
+          { x: 'watches', y: 23, val: 1222 },
+          { x: 'bags', y: 750, val: 1222 },
+          { x: 'cocktail dresses', y: 854, val: 1222 },
         ]}
       />
     </Chart>
