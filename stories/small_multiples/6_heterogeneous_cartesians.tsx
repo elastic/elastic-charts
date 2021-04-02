@@ -32,7 +32,7 @@ import {
   Settings,
   BarSeries,
   LineAnnotation,
-  AnnotationDomainTypes,
+  AnnotationDomainType,
   LIGHT_THEME,
   LineSeries,
   AreaSeries,
@@ -98,7 +98,7 @@ export const Example = () => {
           },
         ]}
         id="threshold"
-        domainType={AnnotationDomainTypes.YDomain}
+        domainType={AnnotationDomainType.YDomain}
         marker={marker}
         style={{
           line: {
