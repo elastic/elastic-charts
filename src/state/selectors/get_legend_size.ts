@@ -83,8 +83,7 @@ export const getLegendSizeSelector = createCachedSelector(
     } = theme;
 
     const actionDimension = isDefined(legendAction) ? 24 : 0; // max width plus margin
-    const legendItemWidth =
-      SHARED_MARGIN + MARKER_WIDTH + SHARED_MARGIN + bbox.width + (showLegendDisplayValue ? SHARED_MARGIN : 0);
+    const legendItemWidth = MARKER_WIDTH + SHARED_MARGIN + bbox.width + (showLegendDisplayValue ? SHARED_MARGIN : 0);
 
     if (legendPosition.direction === LayoutDirection.Vertical) {
       const legendItemHeight = bbox.height + VERTICAL_PADDING * 2;
