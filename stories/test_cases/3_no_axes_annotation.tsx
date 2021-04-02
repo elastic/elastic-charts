@@ -21,10 +21,10 @@ import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
+  AnnotationDomainType,
   LineAnnotationDatum,
   Chart,
   LineAnnotation,
-  AnnotationDomainTypes,
   BarSeries,
   ScaleType,
   Position,
@@ -52,14 +52,14 @@ export const Example = () => {
     <Chart className="story-chart">
       <Settings rotation={chartRotation} />
       <LineAnnotation
-        domainType={AnnotationDomainTypes.XDomain}
+        domainType={AnnotationDomainType.XDomain}
         id="ann"
         dataValues={[{ dataValue: 'bags' }]}
         marker={<div style={{ background: 'red' }}>Vertical</div>}
         markerPosition={markerPositionVertical === 'undefined' ? undefined : markerPositionVertical}
       />
       <LineAnnotation
-        domainType={AnnotationDomainTypes.YDomain}
+        domainType={AnnotationDomainType.YDomain}
         id="ann1"
         dataValues={generateAnnotationData([30])}
         marker={<div style={{ background: 'yellow' }}>Horizontal</div>}
