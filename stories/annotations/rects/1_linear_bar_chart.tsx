@@ -18,7 +18,6 @@
  */
 
 import { boolean, select } from '@storybook/addon-knobs';
-import marked from 'marked';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings } from '../../../src';
@@ -91,7 +90,7 @@ export const Example = () => {
 Example.story = {
   parameters: {
     info: {
-      text: marked(`A \`<RectAnnotation />\` can be used to create a rectangular annotation.
+      text: `A \`<RectAnnotation />\` can be used to create a rectangular annotation.
 As for most chart component, the required props are: \`id\` to uniquely identify the annotation and
 a \`dataValues\` prop that describes one or more annotations.
 
@@ -128,7 +127,7 @@ coordinates: {
 This annotation will cover the X axis starting from the \`0\` value to the \`1\` value included. The \`y\` is covered from 0 to 7.
 In a barchart with linear or ordinal x scale, the interval covered by the annotation fully include the \`x0\` and \`x1\` values.
 If one value is out of the relative domain, we will clip the annotation to the max/min value of the chart domain.
-      `),
+      `,
     },
   },
 };

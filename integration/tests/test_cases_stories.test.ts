@@ -36,28 +36,16 @@ describe('Test cases stories', () => {
       { waitSelector: '.echReactiveChart_noResults' },
     );
   });
+});
 
-  it('should render marker with annotations with no rotations', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/iframe.html?id=test-cases--no-axes-annotation-bug-fix&knob-horizontal marker position=undefined&knob-vertical marker position=undefined&knob-chartRotation=0',
-    );
-  });
-
-  it('should render marker with annotations with 90 deg rotation', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/iframe.html?id=test-cases--no-axes-annotation-bug-fix&knob-horizontal marker position=undefined&knob-vertical marker position=undefined&knob-chartRotation=90',
-    );
-  });
-
-  it('should render marker with annotations with neg 90 deg rotation', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/iframe.html?id=test-cases--no-axes-annotation-bug-fix&knob-horizontal marker position=undefined&knob-vertical marker position=undefined&knob-chartRotation=-90',
-    );
-  });
-
-  it('should render marker with annotations with 180 deg rotation', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/iframe.html?id=test-cases--no-axes-annotation-bug-fix&knob-horizontal marker position=undefined&knob-vertical marker position=undefined&knob-chartRotation=180',
-    );
+describe('annotation marker rotation', () => {
+  [0, 90, -90, 180].forEach((rotation) => {
+    it(`should render marker with annotations with ${
+      rotation === -90 ? 'negative 90' : rotation
+    } degree rotations`, async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/iframe.html?id=test-cases--no-axes-annotation-bug-fix&knob-horizontal marker position=undefined&knob-vertical marker position=undefined&knob-chartRotation=${rotation}`,
+      );
+    });
   });
 });
