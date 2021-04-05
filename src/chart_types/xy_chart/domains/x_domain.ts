@@ -24,7 +24,7 @@ import { compareByValueAsc, identity } from '../../../utils/common';
 import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
-import { BasicSeriesSpec, CustomXDomain, SeriesTypes, XScaleType } from '../utils/specs';
+import { BasicSeriesSpec, CustomXDomain, SeriesType, XScaleType } from '../utils/specs';
 import { XDomain } from './types';
 
 /**
@@ -76,7 +76,7 @@ export function mergeXDomain(
       }
     }
   } else {
-    seriesXComputedDomains = computeContinuousDataDomain(values, identity, {
+    seriesXComputedDomains = computeContinuousDataDomain(values, identity, mainXScaleType.scaleType, {
       fit: true,
     });
     let customMinInterval: undefined | number;
@@ -201,7 +201,7 @@ export function convertXScaleTypes(
   if (specs.length === 0 || seriesTypes.size === 0 || scaleTypes.size === 0) {
     return null;
   }
-  const isBandScale = seriesTypes.has(SeriesTypes.Bar);
+  const isBandScale = seriesTypes.has(SeriesType.Bar);
   if (scaleTypes.size === 1) {
     const scaleType = scaleTypes.values().next().value;
     let timeZone: string | undefined;

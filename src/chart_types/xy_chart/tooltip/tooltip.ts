@@ -34,7 +34,9 @@ import {
   TickFormatterOptions,
 } from '../utils/specs';
 
+/** @internal */
 export const Y0_ACCESSOR_POSTFIX = ' - lower';
+/** @internal */
 export const Y1_ACCESSOR_POSTFIX = ' - upper';
 
 /** @internal */
@@ -66,7 +68,7 @@ export function getHighligthedValues(
 
 /** @internal */
 export function formatTooltip(
-  { color, value: { x, y, mark, accessor }, seriesIdentifier }: IndexedGeometry,
+  { color, value: { x, y, mark, accessor, datum }, seriesIdentifier }: IndexedGeometry,
   spec: BasicSeriesSpec,
   isHeader: boolean,
   isHighlighted: boolean,
@@ -104,5 +106,6 @@ export function formatTooltip(
     color,
     isHighlighted: isHeader ? false : isHighlighted,
     isVisible,
+    datum,
   };
 }

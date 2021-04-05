@@ -24,8 +24,13 @@ import { Color } from '../utils/common';
 
 type RGB = number;
 type A = number;
+/** @internal */
 export type RgbTuple = [RGB, RGB, RGB, RGB?];
+/** @public */
 export type RgbObject = { r: RGB; g: RGB; b: RGB; opacity: A };
+
+/** @internal */
+export type RgbaTuple = [RGB, RGB, RGB, RGB];
 
 /** @internal */
 export const defaultColor: RgbObject = { r: 255, g: 0, b: 0, opacity: 1 };

@@ -17,6 +17,18 @@
  * under the License.
  */
 
-module.exports = async () => {
-  await global.__WP_SERVER__.close();
+const PUBLIC_TAG = '@public';
+const INTERNAL_TAG = '@internal';
+const ALPHA_TAG = '@alpha';
+const BETA_TAG = '@beta';
+
+// default tag to apply when missing
+const DEFAULT_TAG = INTERNAL_TAG;
+
+module.exports = {
+  PUBLIC_TAG,
+  INTERNAL_TAG,
+  ALPHA_TAG,
+  BETA_TAG,
+  DEFAULT_TAG,
 };

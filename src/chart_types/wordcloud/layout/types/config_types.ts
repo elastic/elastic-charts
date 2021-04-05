@@ -17,15 +17,21 @@
  * under the License.
  */
 
-module.exports = {
-  roots: ['<rootDir>'],
-  preset: 'ts-jest',
-  clearMocks: true,
-  globalSetup: './setup.js',
-  globalTeardown: './teardown.js',
-  globals: {
-    'ts-jest': {
-      tsConfig: '../tsconfig.jest.json',
-    },
-  },
-};
+import { Pixels, SizeRatio } from '../../../../common/geometry';
+import { FontFamily } from '../../../../common/text_utils';
+
+// todo switch to `io-ts` style, generic way of combining static and runtime type info
+/** @public */
+export interface Config {
+  // shape geometry
+  width: number;
+  height: number;
+  margin: { left: SizeRatio; right: SizeRatio; top: SizeRatio; bottom: SizeRatio };
+
+  // general text config
+  fontFamily: FontFamily;
+
+  // fill text config
+  minFontSize: Pixels;
+  maxFontSize: Pixels;
+}

@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
@@ -24,7 +25,20 @@ import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { isBrushingSelector } from './is_brushing';
 
 /**
- *
+ * @internal
+ */
+export const getHighlightedDataSelector = createCachedSelector(
+  [getHeatmapSpecSelector, isBrushingSelector],
+  (spec, isBrushing) => {
+    if (!spec.highlightedData || isBrushing) {
+      return null;
+    }
+    return spec.highlightedData;
+  },
+)(getChartIdSelector);
+
+/**
+ * Returns rect position of the highlighted selection.
  * @internal
  */
 export const getHighlightedAreaSelector = createCachedSelector(

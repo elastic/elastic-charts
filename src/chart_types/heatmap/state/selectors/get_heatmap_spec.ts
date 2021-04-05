@@ -16,19 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import createCachedSelector from 're-reselect';
 
-import { ChartTypes } from '../../..';
-import { SpecTypes } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { ChartType } from '../../..';
+import { SpecType } from '../../../../specs';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getSpecs } from '../../../../state/selectors/get_settings_specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { HeatmapSpec } from '../../specs';
 
-const getSpecs = (state: GlobalChartState) => state.specs;
-
 /** @internal */
 export const getHeatmapSpecSelector = createCachedSelector([getSpecs], (specs) => {
-  const spec = getSpecsFromStore<HeatmapSpec>(specs, ChartTypes.Heatmap, SpecTypes.Series);
+  const spec = getSpecsFromStore<HeatmapSpec>(specs, ChartType.Heatmap, SpecType.Series);
   return spec[0];
 })(getChartIdSelector);

@@ -29,32 +29,31 @@ module.exports = {
     'react-hooks',
     'jsx-a11y',
     'prettier',
+    'elastic-charts',
   ],
   rules: {
-    /**
+    /*
      * deprecated to be deleted
      */
-    // https://github.com/typescript-eslint/typescript-eslint/issues/2077
-    '@typescript-eslint/camelcase': 0,
+    '@typescript-eslint/camelcase': 0, // https://github.com/typescript-eslint/typescript-eslint/issues/2077
 
-    /**
+    /*
      *****************************************
      * Rules with high processing demand
      *****************************************
      */
-    'import/no-restricted-paths':
-      process.env.NODE_ENV === 'production'
-        ? [
-            'error',
-            {
-              zones: [
-                { target: './src', from: './src/index.ts' },
-                { target: './src', from: './', except: ['./src', './node_modules/'] },
-              ],
-            },
-          ]
-        : 0,
     'import/namespace': process.env.NODE_ENV === 'production' ? 2 : 0,
+
+    /**
+     **************************************************************
+     * Rules that ensure sufficient freedom of expressing intent
+     **************************************************************
+     */
+    'no-else-return': 'off',
+    'no-param-reassign': [1, { props: false }],
+    '@typescript-eslint/comma-spacing': 0,
+    'unicorn/no-nested-ternary': 0,
+    '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
 
     /**
      *****************************************
@@ -81,8 +80,6 @@ module.exports = {
     'global-require': 1,
     'import/no-dynamic-require': 1,
     'no-shadow': 1,
-    'no-param-reassign': [1, { props: false }],
-    '@typescript-eslint/comma-spacing': 0,
     'react/no-array-index-key': 1,
     'react/prefer-stateless-function': 1,
     'react/require-default-props': 'off',
@@ -92,9 +89,8 @@ module.exports = {
     'jsx-a11y/click-events-have-key-events': 1,
     '@typescript-eslint/member-ordering': 1,
     eqeqeq: 1,
-    'unicorn/no-nested-ternary': 0,
 
-    /**
+    /*
      * Standard rules
      */
     'no-restricted-syntax': 0, // this is a good rule, for-of is good
@@ -107,7 +103,6 @@ module.exports = {
     'no-bitwise': 0,
     'no-void': 0,
     yoda: 0,
-    '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'no-restricted-globals': 0,
     'no-case-declarations': 0,
     'no-return-await': 0,
@@ -255,6 +250,7 @@ module.exports = {
     'unicorn/no-null': 0,
     'unicorn/no-fn-reference-in-iterator': 0,
     'unicorn/prefer-query-selector': 0,
+    'unicorn/prefer-array-find': 0,
     'unicorn/no-for-loop': 0,
     'unicorn/no-reduce': 0,
     'unicorn/no-useless-undefined': 0,
@@ -300,6 +296,7 @@ module.exports = {
         ' * under the License.',
         ' ',
       ],
+      2,
     ],
   },
   env: {
@@ -332,6 +329,38 @@ module.exports = {
     {
       files: ['src/**/*.{ts?(x),js}'],
       rules: {
+        /*
+         * Custom elastic-charts rules
+         */
+        'elastic-charts/no-different-release-tag': 2,
+        'elastic-charts/require-release-tag': 2,
+        'elastic-charts/require-tsdocs': 2,
+        'elastic-charts/require-documentation': 1,
+
+        /*
+         *****************************************
+         * Rules with high processing demand
+         *****************************************
+         */
+        'import/no-restricted-paths':
+          process.env.NODE_ENV === 'production'
+            ? [
+                'error',
+                {
+                  zones: [
+                    { target: './src', from: './src/index.ts' },
+                    { target: './src', from: './', except: ['./src', './node_modules/'] },
+                  ],
+                },
+              ]
+            : 0,
+
+        'import/no-internal-modules': [
+          'error',
+          {
+            allow: ['**/src/**'],
+          },
+        ],
         'no-underscore-dangle': 2,
         'import/no-unresolved': 'error',
         'import/no-extraneous-dependencies': [
@@ -400,8 +429,11 @@ module.exports = {
       },
     },
     {
-      files: ['*.test.ts?(x)'],
+      files: ['*.test.ts?(x)', '**/__mocks__/**/*.ts?(x)'],
       rules: {
+        'elastic-charts/require-release-tag': 0,
+        'elastic-charts/require-tsdocs': 0,
+        'elastic-charts/require-documentation': 0,
         'unicorn/error-message': 0,
       },
     },

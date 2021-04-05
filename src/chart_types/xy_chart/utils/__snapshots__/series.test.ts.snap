@@ -22099,7 +22099,7 @@ Array [
         "initialY1": 1,
         "mark": null,
         "x": 1,
-        "y0": 0,
+        "y0": 1,
         "y1": 1,
       },
       Object {
@@ -22113,7 +22113,7 @@ Array [
         "initialY1": 2,
         "mark": null,
         "x": 2,
-        "y0": 0,
+        "y0": 1,
         "y1": 2,
       },
       Object {
@@ -22127,7 +22127,7 @@ Array [
         "initialY1": 3,
         "mark": null,
         "x": 3,
-        "y0": 0,
+        "y0": 1,
         "y1": 3,
       },
       Object {
@@ -22141,7 +22141,7 @@ Array [
         "initialY1": 4,
         "mark": null,
         "x": 4,
-        "y0": 0,
+        "y0": 1,
         "y1": 4,
       },
     ],

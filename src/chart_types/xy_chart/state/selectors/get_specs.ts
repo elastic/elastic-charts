@@ -19,15 +19,13 @@
 
 import createCachedSelector from 're-reselect';
 
-import { ChartTypes } from '../../..';
+import { ChartType } from '../../..';
 import { GroupBySpec, SmallMultiplesSpec } from '../../../../specs';
-import { SpecTypes } from '../../../../specs/constants';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { SpecType } from '../../../../specs/constants';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getSpecs } from '../../../../state/selectors/get_settings_specs';
 import { getSpecsFromStore } from '../../../../state/utils';
-import { AxisSpec, BasicSeriesSpec, AnnotationSpec } from '../../utils/specs';
-
-const getSpecs = (state: GlobalChartState) => state.specs;
+import { AnnotationSpec, AxisSpec, BasicSeriesSpec } from '../../utils/specs';
 
 /** @internal */
 export interface SmallMultiplesGroupBy {
@@ -37,42 +35,27 @@ export interface SmallMultiplesGroupBy {
 
 /** @internal */
 export const getAxisSpecsSelector = createCachedSelector([getSpecs], (specs): AxisSpec[] =>
-  getSpecsFromStore<AxisSpec>(specs, ChartTypes.XYAxis, SpecTypes.Axis),
+  getSpecsFromStore<AxisSpec>(specs, ChartType.XYAxis, SpecType.Axis),
 )(getChartIdSelector);
 
 /** @internal */
 export const getSeriesSpecsSelector = createCachedSelector([getSpecs], (specs) => {
-  return getSpecsFromStore<BasicSeriesSpec>(specs, ChartTypes.XYAxis, SpecTypes.Series);
+  return getSpecsFromStore<BasicSeriesSpec>(specs, ChartType.XYAxis, SpecType.Series);
 })(getChartIdSelector);
 
 /** @internal */
 export const getAnnotationSpecsSelector = createCachedSelector([getSpecs], (specs) =>
-  getSpecsFromStore<AnnotationSpec>(specs, ChartTypes.XYAxis, SpecTypes.Annotation),
+  getSpecsFromStore<AnnotationSpec>(specs, ChartType.XYAxis, SpecType.Annotation),
 )(getChartIdSelector);
 
 /** @internal */
 export const getSmallMultiplesIndexOrderSelector = createCachedSelector([getSpecs], (specs):
   | SmallMultiplesGroupBy
   | undefined => {
-  const smallMultiples = getSpecsFromStore<SmallMultiplesSpec>(specs, ChartTypes.Global, SpecTypes.SmallMultiples);
-  if (smallMultiples.length !== 1) {
-    return undefined;
-  }
-  const indexOrders = getSpecsFromStore<GroupBySpec>(specs, ChartTypes.Global, SpecTypes.IndexOrder);
-  const [smallMultiplesConfig] = smallMultiples;
-
-  let vertical: GroupBySpec | undefined;
-  let horizontal: GroupBySpec | undefined;
-
-  if (smallMultiplesConfig.splitVertically) {
-    vertical = indexOrders.find((d) => d.id === smallMultiplesConfig.splitVertically);
-  }
-  if (smallMultiplesConfig.splitHorizontally) {
-    horizontal = indexOrders.find((d) => d.id === smallMultiplesConfig.splitHorizontally);
-  }
-
+  const [smallMultiples] = getSpecsFromStore<SmallMultiplesSpec>(specs, ChartType.Global, SpecType.SmallMultiples);
+  const groupBySpecs = getSpecsFromStore<GroupBySpec>(specs, ChartType.Global, SpecType.IndexOrder);
   return {
-    vertical,
-    horizontal,
+    horizontal: groupBySpecs.find((s) => s.id === smallMultiples?.splitHorizontally),
+    vertical: groupBySpecs.find((s) => s.id === smallMultiples?.splitVertically),
   };
 })(getChartIdSelector);

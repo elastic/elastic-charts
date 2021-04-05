@@ -17,25 +17,13 @@
  * under the License.
  */
 
-const path = require('path');
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-const webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
+export default {
+  title: 'Wordcloud (@alpha)',
+  parameters: {
+    options: { selectedPanel: SB_SOURCE_PANEL },
+  },
+};
 
-const config = require(path.join(__dirname, '..', '.playground', 'webpack.config.js'));
-
-module.exports = async () =>
-  await new Promise((resolve, reject) => {
-    const compiler = webpack(config);
-    const server = new WebpackDevServer(compiler);
-    compiler.hooks.done.tap('done', () => {
-      resolve();
-      global.__WP_SERVER__ = server;
-    });
-
-    server.listen(8080, 'localhost', (err) => {
-      if (err) {
-        reject(err);
-      }
-    });
-  });
+export { Example as simpleWordcloud } from './1_wordcloud';

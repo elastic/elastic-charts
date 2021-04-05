@@ -19,10 +19,11 @@
 
 import React, { RefObject } from 'react';
 
-import { ChartTypes } from '../chart_types';
+import { ChartType } from '../chart_types';
 import { GoalState } from '../chart_types/goal_chart/state/chart_state';
 import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
+import { WordcloudState } from '../chart_types/wordcloud/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { CategoryKey } from '../common/category';
 import { LegendItem, LegendItemExtraValues } from '../common/legend';
@@ -49,6 +50,7 @@ import { LegendItemLabel } from './selectors/get_legend_items_labels';
 import { DebugState } from './types';
 import { getInitialPointerState } from './utils';
 
+/** @internal */
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
 /**
@@ -59,7 +61,7 @@ export interface InternalChartState {
   /**
    * The chart type
    */
-  chartType: ChartTypes;
+  chartType: ChartType;
   isInitialized(globalState: GlobalChartState): InitStatus;
   /**
    * Returns a JSX element with the chart rendered (lenged excluded)
@@ -186,6 +188,7 @@ export interface InteractionsState {
   deselectedDataSeries: SeriesIdentifier[];
   hoveredDOMElement: DOMElement | null;
   drilldown: CategoryKey[];
+  prevDrilldown: CategoryKey[];
 }
 
 /** @internal */
@@ -200,11 +203,14 @@ export interface ColorOverrides {
 }
 
 /** @internal */
+export type ChartId = string;
+
+/** @internal */
 export interface GlobalChartState {
   /**
    * a unique ID for each chart used by re-reselect to memoize selector per chart
    */
-  chartId: string;
+  chartId: ChartId;
   /**
    * The Z-Index of the chart component
    */
@@ -229,7 +235,7 @@ export interface GlobalChartState {
   /**
    * the chart type depending on the used specs
    */
-  chartType: ChartTypes | null;
+  chartType: ChartType | null;
   /**
    * a chart-type-dependant class that is used to render and share chart-type dependant functions
    */
@@ -275,6 +281,7 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     deselectedDataSeries: [],
     hoveredDOMElement: null,
     drilldown: [],
+    prevDrilldown: [],
   },
   externalEvents: {
     pointer: null,
@@ -343,6 +350,7 @@ export const chartStoreReducer = (chartId: string) => {
       case UPDATE_PARENT_DIMENSION:
         return {
           ...state,
+          interactions: { ...state.interactions, prevDrilldown: state.interactions.drilldown },
           parentDimensions: {
             ...action.dimensions,
           },
@@ -399,10 +407,10 @@ export const chartStoreReducer = (chartId: string) => {
   };
 };
 
-function chartTypeFromSpecs(specs: SpecList): ChartTypes | null {
+function chartTypeFromSpecs(specs: SpecList): ChartType | null {
   const nonGlobalTypes = Object.values(specs)
     .map((s) => s.chartType)
-    .filter((type) => type !== ChartTypes.Global)
+    .filter((type) => type !== ChartType.Global)
     .filter(keepDistinct);
   if (nonGlobalTypes.length !== 1) {
     Logger.warn(`${nonGlobalTypes.length === 0 ? 'Zero' : 'Multiple'} chart types in the same configuration`);
@@ -411,14 +419,15 @@ function chartTypeFromSpecs(specs: SpecList): ChartTypes | null {
   return nonGlobalTypes[0];
 }
 
-const constructors: Record<ChartTypes, () => InternalChartState | null> = {
-  [ChartTypes.Goal]: () => new GoalState(),
-  [ChartTypes.Partition]: () => new PartitionState(),
-  [ChartTypes.XYAxis]: () => new XYAxisChartState(),
-  [ChartTypes.Heatmap]: () => new HeatmapState(),
-  [ChartTypes.Global]: () => null,
+const constructors: Record<ChartType, () => InternalChartState | null> = {
+  [ChartType.Goal]: () => new GoalState(),
+  [ChartType.Partition]: () => new PartitionState(),
+  [ChartType.XYAxis]: () => new XYAxisChartState(),
+  [ChartType.Heatmap]: () => new HeatmapState(),
+  [ChartType.Wordcloud]: () => new WordcloudState(),
+  [ChartType.Global]: () => null,
 }; // with no default, TS signals if a new chart type isn't added here too
 
-function newInternalState(chartType: ChartTypes | null): InternalChartState | null {
+function newInternalState(chartType: ChartType | null): InternalChartState | null {
   return chartType ? constructors[chartType]() : null;
 }

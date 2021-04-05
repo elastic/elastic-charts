@@ -19,10 +19,10 @@
 
 import React from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { Pixels } from '../../../common/geometry';
 import { Spec } from '../../../specs';
-import { SpecTypes } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
+import { SpecType } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
 import {
@@ -40,6 +40,7 @@ import { AGGREGATE_KEY, PrimitiveValue } from '../layout/utils/group_by_rollup';
 
 interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {}
 
+/** @public */
 export interface Layer {
   groupByRollup: IndexedAccessorFn;
   nodeLabel?: LabelAccessor;
@@ -49,14 +50,15 @@ export interface Layer {
 }
 
 const defaultProps = {
-  chartType: ChartTypes.Partition,
-  specType: SpecTypes.Series,
+  chartType: ChartType.Partition,
+  specType: SpecType.Series,
   config,
   valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
   valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
   valueFormatter: (d: number): string => String(d),
   percentFormatter,
   topGroove: 20,
+  smallMultiples: null,
   layers: [
     {
       groupByRollup: (d: Datum, i: number) => i,
@@ -67,9 +69,10 @@ const defaultProps = {
   ],
 };
 
+/** @public */
 export interface PartitionSpec extends Spec {
-  specType: typeof SpecTypes.Series;
-  chartType: typeof ChartTypes.Partition;
+  specType: typeof SpecType.Series;
+  chartType: typeof ChartType.Partition;
   config: RecursivePartial<Config>;
   data: Datum[];
   valueAccessor: ValueAccessor;
@@ -77,15 +80,24 @@ export interface PartitionSpec extends Spec {
   valueGetter: ValueGetter;
   percentFormatter: ValueFormatter;
   topGroove: Pixels;
+  smallMultiples: string | null;
   layers: Layer[];
 }
 
 type SpecRequiredProps = Pick<PartitionSpec, 'id' | 'data'>;
 type SpecOptionalProps = Partial<Omit<PartitionSpec, 'chartType' | 'specType' | 'id' | 'data'>>;
 
+/** @public */
 export const Partition: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     PartitionSpec,
-    'valueAccessor' | 'valueGetter' | 'valueFormatter' | 'layers' | 'config' | 'percentFormatter' | 'topGroove'
+    | 'valueAccessor'
+    | 'valueGetter'
+    | 'valueFormatter'
+    | 'layers'
+    | 'config'
+    | 'percentFormatter'
+    | 'topGroove'
+    | 'smallMultiples'
   >(defaultProps),
 );

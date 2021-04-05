@@ -1,3 +1,99 @@
+# [28.0.0](https://github.com/elastic/elastic-charts/compare/v27.0.0...v28.0.0) (2021-04-02)
+
+
+### Bug Fixes
+
+* **annotations:** provide fallback for line annotation markers ([#1091](https://github.com/elastic/elastic-charts/issues/1091)) ([0bd61f1](https://github.com/elastic/elastic-charts/commit/0bd61f198743461c267eed74706797b49508e250))
+* **legend:** action sizing ui and focus states ([#1102](https://github.com/elastic/elastic-charts/issues/1102)) ([3a76a2c](https://github.com/elastic/elastic-charts/commit/3a76a2c3977983f8eec1c88d0b4cb73bc5d1e8ee))
+* **legend:** stop legend color picker dot twitching ([#1101](https://github.com/elastic/elastic-charts/issues/1101)) ([c89b767](https://github.com/elastic/elastic-charts/commit/c89b767c698b677cef96da365901dc046d6e27a8))
+
+
+### Code Refactoring
+
+* rename enum types to singular ([#1064](https://github.com/elastic/elastic-charts/issues/1064)) ([396b3d1](https://github.com/elastic/elastic-charts/commit/396b3d1aefc995b89c6acb369c19a82f2a68d7b5)), closes [#767](https://github.com/elastic/elastic-charts/issues/767)
+
+
+### BREAKING CHANGES
+
+* `AnnotationDomainTypes`, `AnnotationTypes`, `SeriesTypes`, `ChartTypes`, and `SpecTypes` are renamed to `AnnotationDomainType`, `AnnotationType`, `SeriesType`, `ChartType`, and `SpecType`
+
+# [27.0.0](https://github.com/elastic/elastic-charts/compare/v26.1.0...v27.0.0) (2021-03-31)
+
+
+### Features
+
+* **partitions:** Small multiples legends ([#1094](https://github.com/elastic/elastic-charts/issues/1094)) ([c39d113](https://github.com/elastic/elastic-charts/commit/c39d11388f74bbaef1dc2ed0b4febabd25b35241))
+
+
+### BREAKING CHANGES
+
+* **partitions:** the `flatLegend` (true) option yields alphabetical, formatted name based sorting for unique name/color occurrences, to make it easy for the user to look up names in the legend as it's alphabetically sorted
+
+# [26.1.0](https://github.com/elastic/elastic-charts/compare/v26.0.0...v26.1.0) (2021-03-26)
+
+
+### Features
+
+* **a11y:** add basic aria-label to canvas element ([#1084](https://github.com/elastic/elastic-charts/issues/1084)) ([1a5aef7](https://github.com/elastic/elastic-charts/commit/1a5aef772315786eba8c623f728a72475d7f91d4))
+* **xy_charts:** render legend inside the chart ([#1031](https://github.com/elastic/elastic-charts/issues/1031)) ([ba88122](https://github.com/elastic/elastic-charts/commit/ba8812213d6d6463f66f267cc095928d1a7a2abe)), closes [#861](https://github.com/elastic/elastic-charts/issues/861)
+
+# [26.0.0](https://github.com/elastic/elastic-charts/compare/v25.4.0...v26.0.0) (2021-03-23)
+
+
+### Features
+
+* **partition:** small multiples ([#1076](https://github.com/elastic/elastic-charts/issues/1076)) ([282082b](https://github.com/elastic/elastic-charts/commit/282082b0316d8e2fe5229761112cd209d70802b8))
+
+
+### BREAKING CHANGES
+
+* **partition:** clarifies the inner/outer padding notation `<SmallMultiples style={{horizontalPanelPadding, verticalPanelPadding}}` from `[outer, inner]` to `{outer, inner}`—they still have the same effect
+
+# [25.4.0](https://github.com/elastic/elastic-charts/compare/v25.3.0...v25.4.0) (2021-03-23)
+
+
+### Bug Fixes
+
+* chromium area path render bug ([#1067](https://github.com/elastic/elastic-charts/issues/1067)) ([e16d15d](https://github.com/elastic/elastic-charts/commit/e16d15d92add87f0bfe580a7301975915c10c381))
+
+
+### Features
+
+* **tooltip:** expose datum in the TooltipValue ([#1082](https://github.com/elastic/elastic-charts/issues/1082)) ([0246784](https://github.com/elastic/elastic-charts/commit/0246784bf4f88b374b7a28ffa4a60380f4c162b4)), closes [#1042](https://github.com/elastic/elastic-charts/issues/1042)
+* **wordcloud:** wordcloud ([#1038](https://github.com/elastic/elastic-charts/issues/1038)) ([f08f4c9](https://github.com/elastic/elastic-charts/commit/f08f4c9b7472d8c81a0fa56cd7dc7018eed637ad))
+
+# [25.3.0](https://github.com/elastic/elastic-charts/compare/v25.2.0...v25.3.0) (2021-03-11)
+
+
+### Bug Fixes
+
+* **brush:** force brush tool per panel ([#1071](https://github.com/elastic/elastic-charts/issues/1071)) ([8f866fc](https://github.com/elastic/elastic-charts/commit/8f866fca9c99ebf675fd31bf57b4b63d9f2eed09)), closes [#1070](https://github.com/elastic/elastic-charts/issues/1070)
+
+
+### Features
+
+* debug state for the heatmap chart  ([#976](https://github.com/elastic/elastic-charts/issues/976)) ([2ae2bbc](https://github.com/elastic/elastic-charts/commit/2ae2bbcb85e26c62a18cad2d4d6a4e4fc1ab29eb))
+
+# [25.2.0](https://github.com/elastic/elastic-charts/compare/v25.1.1...v25.2.0) (2021-03-09)
+
+
+### Bug Fixes
+
+* **tooltip:** add boundary padding ([#1065](https://github.com/elastic/elastic-charts/issues/1065)) ([25a247e](https://github.com/elastic/elastic-charts/commit/25a247ef043d3ba2a5029f68ebcfebb6493df8ab))
+
+
+### Features
+
+* **partition:** flame and icicle performance and tweening ([#1041](https://github.com/elastic/elastic-charts/issues/1041)) ([a9648a4](https://github.com/elastic/elastic-charts/commit/a9648a40d4aa06f5c715f293121d278543aec94c))
+
+## [25.1.1](https://github.com/elastic/elastic-charts/compare/v25.1.0...v25.1.1) (2021-03-05)
+
+
+### Bug Fixes
+
+* clippedRanges when complete dataset is null ([#1037](https://github.com/elastic/elastic-charts/issues/1037)) ([51418d2](https://github.com/elastic/elastic-charts/commit/51418d2b9feae8b48f568a39975f7152abdf67e5))
+* **tooltip:** allow explicit boundary element ([#1049](https://github.com/elastic/elastic-charts/issues/1049)) ([5cf8461](https://github.com/elastic/elastic-charts/commit/5cf8461530e4cac1c1f9918db54e96bf91cdad39))
+
 # [25.1.0](https://github.com/elastic/elastic-charts/compare/v25.0.1...v25.1.0) (2021-03-01)
 
 

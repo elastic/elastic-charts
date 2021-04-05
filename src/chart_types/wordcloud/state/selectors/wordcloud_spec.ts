@@ -17,24 +17,14 @@
  * under the License.
  */
 
-import { ChartTypes } from '../../..';
-import { SpecTypes } from '../../../../specs/constants';
-import { SmallMultiplesSpec } from '../../../../specs/small_multiples';
+import { ChartType } from '../../..';
+import { SpecType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getSpecsFromStore } from '../../../../state/utils';
+import { WordcloudSpec } from '../../specs';
 
-/**
- * Return the small multiple spec
- * @internal
- */
-export const getSmallMultipleSpec = (state: GlobalChartState) => {
-  const smallMultiples = getSpecsFromStore<SmallMultiplesSpec>(
-    state.specs,
-    ChartTypes.Global,
-    SpecTypes.SmallMultiples,
-  );
-  if (smallMultiples.length !== 1) {
-    return undefined;
-  }
-  return smallMultiples[0];
-};
+/** @internal */
+export function getSpecOrNull(state: GlobalChartState): WordcloudSpec | null {
+  const specs = getSpecsFromStore<WordcloudSpec>(state.specs, ChartType.Wordcloud, SpecType.Series);
+  return specs.length > 0 ? specs[0] : null;
+}
