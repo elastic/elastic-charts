@@ -61,8 +61,6 @@ export type AnnotationSpec = LineAnnotationSpec | RectAnnotationSpec;
 // @public (undocumented)
 export type AnnotationTooltipFormatter = (details?: string) => JSX.Element | null;
 
-// Warning: (ae-missing-release-tag) "AnnotationType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const AnnotationType: Readonly<{
     Line: "line";
@@ -73,8 +71,6 @@ export const AnnotationType: Readonly<{
 // @public (undocumented)
 export type AnnotationType = $Values<typeof AnnotationType>;
 
-// Warning: (ae-missing-release-tag) "ArcSeriesStyle" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export interface ArcSeriesStyle {
     // (undocumented)
@@ -412,8 +408,6 @@ export interface ChartSizeObject {
     width?: number | string;
 }
 
-// Warning: (ae-missing-release-tag) "ChartType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public
 export const ChartType: Readonly<{
     Global: "global";
@@ -1709,8 +1703,6 @@ export interface SeriesSpec extends Spec {
 // @public (undocumented)
 export type SeriesSpecs<S extends BasicSeriesSpec = BasicSeriesSpec> = Array<S>;
 
-// Warning: (ae-missing-release-tag) "SeriesType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const SeriesType: Readonly<{
     Area: "area";
@@ -1859,8 +1851,6 @@ export interface Spec {
 // @public (undocumented)
 export type SpecId = string;
 
-// Warning: (ae-missing-release-tag) "SpecType" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
-//
 // @public (undocumented)
 export const SpecType: Readonly<{
     Series: "series";
