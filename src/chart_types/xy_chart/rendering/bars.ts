@@ -39,7 +39,7 @@ export function renderBars(
   sharedSeriesStyle: BarSeriesStyle,
   displayValueSettings?: DisplayValueSpec,
   styleAccessor?: BarStyleAccessor,
-  minBarHeight?: number,
+  minBarHeight: number = 0,
   stackMode?: StackMode,
   chartRotation?: number,
 ): {
@@ -54,7 +54,6 @@ export function renderBars(
   // default padding to 1 for now
   const padding = 1;
   const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
-  const absMinHeight = minBarHeight && Math.abs(minBarHeight);
 
   dataSeries.data.forEach((datum) => {
     const { y0, y1, initialY1, filled } = datum;
@@ -92,15 +91,10 @@ export function renderBars(
     let height = y0Scaled - y;
 
     // handle minBarHeight adjustment
-    if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
-      const heightDelta = absMinHeight - Math.abs(height);
-      if (height < 0) {
-        height = -absMinHeight;
-        y += heightDelta;
-      } else {
-        height = absMinHeight;
-        y -= heightDelta;
-      }
+    const isUpsideDown = height < 0;
+    height = Math.max(Math.abs(minBarHeight), Math.abs(height));
+    if (isUpsideDown) {
+      y -= height;
     }
 
     const xScaled = xScale.scale(datum.x);
