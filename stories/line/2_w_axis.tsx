@@ -41,12 +41,7 @@ export const Example = () => (
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
-      data={[
-        [0, 0],
-        [1, 1],
-        [2, 10],
-        [3, 3],
-      ]}
+      data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
     />
   </Chart>
 );

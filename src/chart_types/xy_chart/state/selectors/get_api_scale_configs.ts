@@ -31,14 +31,7 @@ import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../scales/scale_defaults';
 import { APIScale } from '../../scales/types';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { groupBy } from '../../utils/group_data_series';
-import {
-  AxisSpec,
-  BasicSeriesSpec,
-  CustomXDomain,
-  DEFAULT_GLOBAL_ID,
-  XScaleType,
-  YDomainRange,
-} from '../../utils/specs';
+import { AxisSpec, BasicSeriesSpec, CustomXDomain, XScaleType, YDomainRange } from '../../utils/specs';
 import { isHorizontalRotation } from '../utils/common';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { mergeYCustomDomainsByGroupId } from './merge_y_custom_domains';
@@ -99,27 +92,20 @@ export function getAPIScaleConfigs(
   const customDomainByGroupId = mergeYCustomDomainsByGroupId(axisSpecs, settingsSpec.rotation);
 
   const yAxes = axisSpecs.filter((d) => isHorizontalChart === isVerticalAxis(d.position));
-  const y = Object.keys(scaleTypeByGroupId).reduce<APIScaleConfigs['y']>(
-    (acc, groupId) => {
-      const axis = yAxes.find((yAxis) => yAxis.groupId === groupId);
-      const ticks = axis?.ticks ?? Y_SCALE_DEFAULT.ticks;
-      const apiScale = scaleTypeByGroupId[groupId];
-      const customDomain = customDomainByGroupId.get(groupId);
-      if (!acc[groupId]) {
-        acc[groupId] = {
-          customDomain,
-          ...apiScale,
-          ticks,
-        };
-      }
-      acc[groupId].ticks = Math.min(acc[groupId].ticks, ticks);
-      acc[groupId].customDomain = customDomain;
-      return acc;
-    },
-    {
-      [DEFAULT_GLOBAL_ID]: Y_SCALE_DEFAULT,
-    },
-  );
-
+  const y = Object.keys(scaleTypeByGroupId).reduce<APIScaleConfigs['y']>((acc, groupId) => {
+    const axis = yAxes.find((yAxis) => yAxis.groupId === groupId);
+    const ticks = axis?.ticks ?? Y_SCALE_DEFAULT.ticks;
+    const apiScale = scaleTypeByGroupId[groupId];
+    const customDomain = customDomainByGroupId.get(groupId);
+    if (!acc[groupId]) {
+      acc[groupId] = {
+        customDomain,
+        ...apiScale,
+        ticks,
+      };
+    }
+    acc[groupId].ticks = Math.min(acc[groupId].ticks, ticks);
+    return acc;
+  }, {});
   return { x, y };
 }
