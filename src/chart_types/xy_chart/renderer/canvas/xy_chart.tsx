@@ -190,7 +190,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
           role="presentation"
         >
           <dl className="echScreen-reader">
-            <dt>Chart type</dt>
+            <dt> Chart type </dt>
             <dd>{chartSeriesTypes}</dd>
           </dl>
         </canvas>

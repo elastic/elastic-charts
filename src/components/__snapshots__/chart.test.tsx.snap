@@ -77,7 +77,7 @@ exports[`Chart should render the legend name test 1`] = `
                       <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\">
                         <dl className=\\"echScreen-reader\\">
                           <dt>
-                            Chart type
+                             Chart type 
                           </dt>
                           <dd>
                             Bar chart
