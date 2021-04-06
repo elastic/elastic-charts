@@ -55,6 +55,7 @@ import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { AxisSpec, AnnotationSpec } from '../../utils/specs';
 import { renderXYChartCanvas2d } from './renderers';
+import { getNameFunction } from './utils/types';
 
 /** @internal */
 export interface ReactiveChartStateProps {
@@ -162,10 +163,17 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
     const seriesTypes: string[] = [];
     Object.entries(geometries).forEach((value) => {
-      if (value[1].length > 0) {
-        seriesTypes.push(value[0]);
+      if (value[1].length > 0 && value[0]) {
+        seriesTypes.push(getNameFunction(value[0]));
       }
     });
+
+    const series: string[] = [];
+    seriesTypes.map((value: string, index: number) => {
+      return index < seriesTypes.length - 1 ? series.push(value, ' and') : series.push(value);
+    });
+
+    const chartSeriesTypes = seriesTypes.length > 1 ? `Mixed chart: ${series.join(' ')}` : `${seriesTypes[0]}`;
 
     return (
       <figure>
@@ -178,21 +186,12 @@ class XYChartComponent extends React.Component<XYChartProps> {
             width,
             height,
           }}
-          aria-label="Chart"
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
-          <dl className="screen-reader">
-            {seriesTypes.length > 0 ? (
-              <dt>
-                Chart type(s)
-                {seriesTypes.map((value, index) => {
-                  return <dd key={`${index}`}>{value}</dd>;
-                })}
-              </dt>
-            ) : (
-              <dt>No series in chart</dt>
-            )}
+          <dl className="echScreen-reader">
+            <dt>Chart type</dt>
+            <dd>{chartSeriesTypes}</dd>
           </dl>
         </canvas>
       </figure>
