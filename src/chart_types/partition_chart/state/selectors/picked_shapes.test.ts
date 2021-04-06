@@ -98,6 +98,7 @@ describe('Picked shapes selector', () => {
       [
         [
           {
+            smAccessorValue: '',
             groupByRollup: 'b',
             value: 2,
             depth: 1,
@@ -108,6 +109,7 @@ describe('Picked shapes selector', () => {
             ],
           },
           {
+            smAccessorValue: '',
             groupByRollup: 'b',
             value: 1,
             depth: 2,
@@ -149,6 +151,7 @@ describe('Picked shapes selector', () => {
       [
         [
           {
+            smAccessorValue: '',
             groupByRollup: 'b',
             value: 2,
             depth: 1,
@@ -159,6 +162,7 @@ describe('Picked shapes selector', () => {
             ],
           },
           {
+            smAccessorValue: '',
             groupByRollup: 'b',
             value: 1,
             depth: 2,
