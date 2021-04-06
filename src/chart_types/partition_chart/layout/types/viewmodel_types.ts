@@ -122,6 +122,10 @@ export interface PartitionSmallMultiplesModel extends SmallMultiplesIndices {
   innerColumnCount: number;
   innerRowIndex: number;
   innerColumnIndex: number;
+  marginLeftPx: Pixels;
+  marginTopPx: Pixels;
+  panelInnerWidth: Pixels;
+  panelInnerHeight: Pixels;
 }
 
 /** @internal */
@@ -159,6 +163,10 @@ export const nullPartitionSmallMultiplesModel = (partitionLayout: PartitionLayou
   innerColumnCount: 0,
   innerRowIndex: 0,
   innerColumnIndex: 0,
+  marginLeftPx: 0,
+  marginTopPx: 0,
+  panelInnerWidth: 0,
+  panelInnerHeight: 0,
   partitionLayout,
 });
 
@@ -181,8 +189,10 @@ export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointO
   outerRadius: 0,
 });
 
+/** @public */
 export type TreeLevel = number;
 
+/** @public */
 export interface AngleFromTo {
   x0: Radian;
   x1: Radian;
@@ -194,7 +204,9 @@ export interface LayerFromTo {
   y1: TreeLevel;
 }
 
-/** potential internal */
+/**
+ * @public
+ */
 export interface TreeNode extends AngleFromTo {
   x0: Radian;
   x1: Radian;
@@ -203,14 +215,18 @@ export interface TreeNode extends AngleFromTo {
   fill?: Color;
 }
 
-/** potential internal */
+/**
+ * @public
+ */
 export interface SectorGeomSpecY {
   y0px: Distance;
   y1px: Distance;
 }
 
+/** @public */
 export type DataName = CategoryKey; // todo consider narrowing it to eg. primitives
 
+/** @public */
 export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   yMidPx: Distance;
   depth: number;
@@ -221,7 +237,11 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   [MODEL_KEY]: ArrayNode;
 }
 
+/** @public */
 export type RawTextGetter = (node: ShapeTreeNode) => string;
+/** @public */
 export type ValueGetterFunction = (node: ShapeTreeNode) => number;
+/** @public */
 export type ValueGetter = ValueGetterFunction | ValueGetterName;
+/** @public */
 export type NodeColorAccessor = (d: ShapeTreeNode, index: number, array: HierarchyOfArrays) => string;

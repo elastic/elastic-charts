@@ -17,23 +17,21 @@
  * under the License.
  */
 
-import React, { RefObject } from 'react';
+import React from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { LegendItem } from '../../../common/legend';
-import { Tooltip } from '../../../components/tooltip';
-import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import { InternalChartState, GlobalChartState } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
+import { EMPTY_TOOLTIP } from '../../partition_chart/layout/viewmodel/tooltip_info';
 import { Wordcloud } from '../renderer/svg/connected_component';
-import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
-import { getTooltipInfoSelector } from './selectors/tooltip';
 import { getSpecOrNull } from './selectors/wordcloud_spec';
 
 const EMPTY_MAP = new Map();
@@ -42,7 +40,7 @@ const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /** @internal */
 export class WordcloudState implements InternalChartState {
-  chartType = ChartTypes.Wordcloud;
+  chartType = ChartType.Wordcloud;
 
   onElementClickCaller: (state: GlobalChartState) => void;
 
@@ -84,25 +82,20 @@ export class WordcloudState implements InternalChartState {
     return EMPTY_MAP;
   }
 
-  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
-    return (
-      <>
-        <Tooltip getChartContainerRef={containerRef} />
-        <Wordcloud forwardStageRef={forwardStageRef} />
-      </>
-    );
+  chartRenderer() {
+    return <Wordcloud />;
   }
 
   getPointerCursor() {
     return DEFAULT_CSS_CURSOR;
   }
 
-  isTooltipVisible(globalState: GlobalChartState) {
-    return { visible: isTooltipVisibleSelector(globalState), isExternal: false };
+  isTooltipVisible() {
+    return { visible: false, isExternal: false };
   }
 
-  getTooltipInfo(globalState: GlobalChartState) {
-    return getTooltipInfoSelector(globalState);
+  getTooltipInfo() {
+    return EMPTY_TOOLTIP;
   }
 
   getTooltipAnchor(state: GlobalChartState) {

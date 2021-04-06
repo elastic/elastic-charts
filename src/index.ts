@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 export * from './components';
-export { ChartTypes } from './chart_types';
+export { ChartType } from './chart_types';
 export { ChartSize, ChartSizeArray, ChartSizeObject } from './utils/chart_size';
 
 export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
@@ -90,6 +91,7 @@ export {
   ShowAccessor,
   ValueAccessor,
   ValueFormatter,
+  LayoutDirection,
 } from './utils/common';
 export { DataGenerator } from './utils/data_generators/data_generator';
 export * from './utils/themes/merge_utils';

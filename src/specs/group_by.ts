@@ -16,13 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import React from 'react';
 
 import { Spec } from '.';
-import { ChartTypes } from '../chart_types';
+import { ChartType } from '../chart_types';
 import { Predicate } from '../common/predicate';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
-import { SpecTypes } from './constants';
+import { SpecType } from './constants';
 
 /** @alpha */
 export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
@@ -53,8 +54,8 @@ export interface GroupBySpec extends Spec {
   format?: GroupByFormatter;
 }
 const DEFAULT_GROUP_BY_PROPS = {
-  chartType: ChartTypes.Global,
-  specType: SpecTypes.IndexOrder,
+  chartType: ChartType.Global,
+  specType: SpecType.IndexOrder,
 };
 
 type DefaultGroupByProps = 'chartType' | 'specType';

@@ -29,10 +29,11 @@ import { getSpecDomainGroupId } from '../state/utils/spec';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { groupBy } from '../utils/group_data_series';
 import { DataSeries } from '../utils/series';
-import { BasicSeriesSpec, SeriesTypes, StackMode } from '../utils/specs';
+import { BasicSeriesSpec, YDomainRange, SeriesType, StackMode } from '../utils/specs';
 import { areAllNiceDomain } from './nice';
 import { YDomain } from './types';
 
+/** @internal */
 export type YBasicSeriesSpec = Pick<
   BasicSeriesSpec,
   'id' | 'seriesType' | 'yScaleType' | 'groupId' | 'stackAccessors' | 'yScaleToDataExtent' | 'useDefaultGroupDomain'
@@ -46,8 +47,7 @@ export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: APIScale
     const stacked = groupedDataSeries.filter(({ isStacked, isFiltered }) => isStacked && !isFiltered);
     const nonStacked = groupedDataSeries.filter(({ isStacked, isFiltered }) => !isStacked && !isFiltered);
     const hasNonZeroBaselineTypes = groupedDataSeries.some(
-      ({ seriesType, isFiltered }) =>
-        seriesType === SeriesTypes.Bar || (seriesType === SeriesTypes.Area && !isFiltered),
+      ({ seriesType, isFiltered }) => seriesType === SeriesType.Bar || (seriesType === SeriesType.Area && !isFiltered),
     );
     const domain = mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, yScaleAPIConfig);
     if (!domain) {
@@ -74,7 +74,7 @@ function mergeYDomainForGroup(
 
   let domain: ContinuousDomain;
   if (stackMode === StackMode.Percentage) {
-    domain = computeContinuousDataDomain([0, 1], identity, customDomain);
+    domain = computeContinuousDataDomain([0, 1], identity, type, customDomain);
   } else {
     // TODO remove when removing yScaleToDataExtent
     const newCustomDomain = customDomain ? { ...customDomain } : {};
@@ -84,13 +84,13 @@ function mergeYDomainForGroup(
     }
 
     // compute stacked domain
-    const stackedDomain = computeYDomain(stacked, hasZeroBaselineSpecs);
+    const stackedDomain = computeYDomain(stacked, hasZeroBaselineSpecs, type, newCustomDomain);
 
     // compute non stacked domain
-    const nonStackedDomain = computeYDomain(nonStacked, hasZeroBaselineSpecs);
+    const nonStackedDomain = computeYDomain(nonStacked, hasZeroBaselineSpecs, type, newCustomDomain);
 
     // merge stacked and non stacked domain together
-    domain = computeContinuousDataDomain([...stackedDomain, ...nonStackedDomain], identity, newCustomDomain);
+    domain = computeContinuousDataDomain([...stackedDomain, ...nonStackedDomain], identity, type, newCustomDomain);
 
     const [computedDomainMin, computedDomainMax] = domain;
 
@@ -125,7 +125,12 @@ function mergeYDomainForGroup(
   };
 }
 
-function computeYDomain(dataSeries: DataSeries[], hasZeroBaselineSpecs: boolean) {
+function computeYDomain(
+  dataSeries: DataSeries[],
+  hasZeroBaselineSpecs: boolean,
+  scaleType: ScaleType,
+  customDomain?: YDomainRange,
+) {
   const yValues = new Set<any>();
   dataSeries.forEach(({ data }) => {
     for (let i = 0; i < data.length; i++) {
@@ -139,7 +144,12 @@ function computeYDomain(dataSeries: DataSeries[], hasZeroBaselineSpecs: boolean)
   if (yValues.size === 0) {
     return [];
   }
-  return computeContinuousDataDomain([...yValues.values()], identity, null);
+  const domainOptions = {
+    ...customDomain,
+    // padding already applied, set to 0 here to avoid duplicating
+    padding: 0,
+  };
+  return computeContinuousDataDomain([...yValues.values()], identity, scaleType, domainOptions);
 }
 
 /** @internal */
@@ -185,7 +195,7 @@ export function groupSeriesByYGroup(specs: YBasicSeriesSpec[]) {
  * @internal
  */
 export function isHistogramEnabled(specs: YBasicSeriesSpec[]) {
-  return specs.some(({ seriesType, enableHistogramMode }) => seriesType === SeriesTypes.Bar && enableHistogramMode);
+  return specs.some(({ seriesType, enableHistogramMode }) => seriesType === SeriesType.Bar && enableHistogramMode);
 }
 
 /**
@@ -195,7 +205,7 @@ export function isHistogramEnabled(specs: YBasicSeriesSpec[]) {
  * @internal
  */
 export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean) {
-  const isBarAndHistogram = spec.seriesType === SeriesTypes.Bar && histogramEnabled;
+  const isBarAndHistogram = spec.seriesType === SeriesType.Bar && histogramEnabled;
   const hasStackAccessors = spec.stackAccessors && spec.stackAccessors.length > 0;
   return isBarAndHistogram || hasStackAccessors;
 }

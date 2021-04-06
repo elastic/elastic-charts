@@ -18,14 +18,10 @@
  */
 
 module.exports = {
-  roots: ['<rootDir>'],
-  preset: 'ts-jest',
-  clearMocks: true,
-  globalSetup: './setup.js',
-  globalTeardown: './teardown.js',
-  globals: {
-    'ts-jest': {
-      tsConfig: '../tsconfig.jest.json',
-    },
+  rules: {
+    'require-tsdocs': require('./rules/require_tsdocs'),
+    'require-release-tag': require('./rules/require_release_tag'),
+    'require-documentation': require('./rules/require_documentation'),
+    'no-different-release-tag': require('./rules/no_different_release_tag'),
   },
 };

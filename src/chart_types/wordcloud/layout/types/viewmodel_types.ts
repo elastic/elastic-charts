@@ -21,7 +21,6 @@ import { $Values as Values } from 'utility-types';
 
 import { Pixels, PointObject } from '../../../../common/geometry';
 import { Color } from '../../../../utils/common';
-import { Logger } from '../../../../utils/logger';
 import { config } from '../config/config';
 import { Config } from './config_types';
 
@@ -32,7 +31,8 @@ export interface WordModel {
   color: Color;
 }
 
-export const WeightFun = Object.freeze({
+/** @public */
+export const WeightFn = Object.freeze({
   log: 'log' as const,
   linear: 'linear' as const,
   exponential: 'exponential' as const,
@@ -40,7 +40,7 @@ export const WeightFun = Object.freeze({
 });
 
 /** @public */
-export type WeightFun = Values<typeof WeightFun>;
+export type WeightFn = Values<typeof WeightFn>;
 
 /** @internal */
 export interface Word {
@@ -80,10 +80,11 @@ export interface Configs {
   padding: number;
   spiral: string;
   startAngle: number;
-  weightFun: WeightFun;
+  weightFn: WeightFn;
   width: number;
 }
 
+/** @public */
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
 
 /** @internal */
@@ -100,7 +101,7 @@ export interface WordcloudViewModel {
   spiral: string;
   exponent: number;
   data: WordModel[];
-  weightFun: WeightFun;
+  weightFn: WeightFn;
   outOfRoomCallback: OutOfRoomCallback;
   // specType: string;
 }
@@ -136,10 +137,8 @@ const commonDefaults: WordcloudViewModel = {
   spiral: 'archimedean',
   exponent: 3,
   data: [],
-  weightFun: 'exponential',
-  outOfRoomCallback: (wordCount, renderedWordCount) => {
-    Logger.warn(`Not all words have been placed: ${renderedWordCount} words rendered out of ${wordCount}`);
-  },
+  weightFn: 'exponential',
+  outOfRoomCallback: () => {},
 };
 
 /** @internal */

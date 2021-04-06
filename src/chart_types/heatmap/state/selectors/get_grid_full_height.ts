@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import createCachedSelector from 're-reselect';
 
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -46,7 +47,7 @@ export const getGridHeightParamsSelector = createCachedSelector(
   ],
   (
     legendSize,
-    { showLegend, legendPosition },
+    { showLegend },
     { height: containerHeight },
     { xAxisLabel: { padding, visible, fontSize }, grid, maxLegendHeight },
     { yValues },
@@ -54,7 +55,7 @@ export const getGridHeightParamsSelector = createCachedSelector(
     const xAxisHeight = visible ? fontSize : 0;
     const totalVerticalPadding = padding * 2;
     let legendHeight = 0;
-    if (showLegend && isHorizontalLegend(legendPosition)) {
+    if (showLegend && isHorizontalLegend(legendSize.position)) {
       legendHeight = maxLegendHeight ?? legendSize.height;
     }
     const verticalRemainingSpace = containerHeight - xAxisHeight - totalVerticalPadding - legendHeight;

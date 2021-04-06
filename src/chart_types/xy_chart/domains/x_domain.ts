@@ -27,7 +27,7 @@ import { getXAPIScale } from '../scales/get_api_scales';
 import { APIScale } from '../scales/types';
 import { APIScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
-import { BasicSeriesSpec, SeriesTypes, XScaleType } from '../utils/specs';
+import { BasicSeriesSpec, SeriesType, XScaleType } from '../utils/specs';
 import { areAllNiceDomain } from './nice';
 import { XDomain } from './types';
 
@@ -68,7 +68,7 @@ export function mergeXDomain(
       }
     }
   } else {
-    seriesXComputedDomains = computeContinuousDataDomain(values, identity, {
+    seriesXComputedDomains = computeContinuousDataDomain(values, identity, type, {
       fit: true,
     });
     let customMinInterval: undefined | number;
@@ -203,7 +203,7 @@ export function convertXScaleTypes(
     };
   }
   const nice = areAllNiceDomain(niceDomainConfigs);
-  const isBandScale = seriesTypes.has(SeriesTypes.Bar);
+  const isBandScale = seriesTypes.has(SeriesType.Bar);
   if (scaleTypes.size === 1) {
     const scaleType = scaleTypes.values().next().value;
     const timeZone = timeZones.size > 1 ? 'utc' : timeZones.values().next().value;

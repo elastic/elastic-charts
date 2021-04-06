@@ -17,21 +17,18 @@
  * under the License.
  */
 
-import createCachedSelector from 're-reselect';
+const PUBLIC_TAG = '@public';
+const INTERNAL_TAG = '@internal';
+const ALPHA_TAG = '@alpha';
+const BETA_TAG = '@beta';
 
-import { getTooltipType } from '../../../../specs';
-import { TooltipType } from '../../../../specs/constants';
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getTooltipInfoSelector } from './tooltip';
+// default tag to apply when missing
+const DEFAULT_TAG = INTERNAL_TAG;
 
-/** @internal */
-export const isTooltipVisibleSelector = createCachedSelector(
-  [getSettingsSpecSelector, getTooltipInfoSelector],
-  (settingsSpec, tooltipInfo): boolean => {
-    if (getTooltipType(settingsSpec) === TooltipType.None) {
-      return false;
-    }
-    return tooltipInfo.values.length > 0;
-  },
-)(getChartIdSelector);
+module.exports = {
+  PUBLIC_TAG,
+  INTERNAL_TAG,
+  ALPHA_TAG,
+  BETA_TAG,
+  DEFAULT_TAG,
+};

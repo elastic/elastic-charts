@@ -19,12 +19,13 @@
 
 import { $Values } from 'utility-types';
 
-import { ChartTypes } from '../chart_types';
+import { ChartType } from '../chart_types';
 import { Position } from '../utils/common';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { SettingsSpec } from './settings';
 
-export const SpecTypes = Object.freeze({
+/** @public */
+export const SpecType = Object.freeze({
   Series: 'series' as const,
   Axis: 'axis' as const,
   Annotation: 'annotation' as const,
@@ -33,10 +34,11 @@ export const SpecTypes = Object.freeze({
   SmallMultiples: 'small_multiples' as const,
 });
 /** @public */
-export type SpecTypes = $Values<typeof SpecTypes>;
+export type SpecType = $Values<typeof SpecType>;
 
 /**
  * Type of bin aggregations
+ * @public
  */
 export const BinAgg = Object.freeze({
   /**
@@ -53,6 +55,7 @@ export type BinAgg = $Values<typeof BinAgg>;
 
 /**
  * Direction of sorting
+ * @public
  */
 export const Direction = Object.freeze({
   /**
@@ -67,6 +70,7 @@ export const Direction = Object.freeze({
 /** @public */
 export type Direction = $Values<typeof Direction>;
 
+/** @public */
 export const PointerEventType = Object.freeze({
   Over: 'Over' as const,
   Out: 'Out' as const,
@@ -94,6 +98,7 @@ export const TooltipType = Object.freeze({
  */
 export type TooltipType = $Values<typeof TooltipType>;
 
+/** @public */
 export const BrushAxis = Object.freeze({
   X: 'x' as const,
   Y: 'y' as const,
@@ -116,14 +121,25 @@ export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
  */
 export const DEFAULT_TOOLTIP_SNAP = true;
 
+/**
+ * Default legend config
+ * @internal
+ */
+export const DEFAULT_LEGEND_CONFIG = {
+  showLegend: false,
+  showLegendExtra: false,
+  legendMaxDepth: Infinity,
+  legendPosition: Position.Right,
+};
+
+/** @public */
 export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   id: '__global__settings___',
-  chartType: ChartTypes.Global,
-  specType: SpecTypes.Settings,
+  chartType: ChartType.Global,
+  specType: SpecType.Settings,
   rendering: 'canvas' as const,
   rotation: 0 as const,
   animateData: true,
-  showLegend: false,
   resizeDebounce: 10,
   debug: false,
   tooltip: {
@@ -135,11 +151,10 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
       visible: false,
     },
   },
-  legendMaxDepth: Infinity,
-  legendPosition: Position.Right,
-  showLegendExtra: false,
   hideDuplicateAxes: false,
   baseTheme: LIGHT_THEME,
   brushAxis: BrushAxis.X,
   minBrushDelta: 2,
+
+  ...DEFAULT_LEGEND_CONFIG,
 };

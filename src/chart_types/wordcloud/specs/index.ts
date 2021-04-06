@@ -19,26 +19,26 @@
 
 import React from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { Spec } from '../../../specs';
-import { SpecTypes } from '../../../specs/constants';
+import { SpecType } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { RecursivePartial } from '../../../utils/common';
 import { Config } from '../../partition_chart/layout/types/config_types';
 import { config } from '../layout/config/config';
-import { WordModel, defaultWordcloudSpec, WeightFun, OutOfRoomCallback } from '../layout/types/viewmodel_types';
+import { WordModel, defaultWordcloudSpec, WeightFn, OutOfRoomCallback } from '../layout/types/viewmodel_types';
 
 const defaultProps = {
-  chartType: ChartTypes.Wordcloud,
-  specType: SpecTypes.Series,
+  chartType: ChartType.Wordcloud,
+  specType: SpecType.Series,
   ...defaultWordcloudSpec,
   config,
 };
 
 /** @alpha */
 export interface WordcloudSpec extends Spec {
-  specType: typeof SpecTypes.Series;
-  chartType: typeof ChartTypes.Wordcloud;
+  specType: typeof SpecType.Series;
+  chartType: typeof ChartType.Wordcloud;
   config: RecursivePartial<Config>;
   startAngle: number;
   endAngle: number;
@@ -52,7 +52,7 @@ export interface WordcloudSpec extends Spec {
   spiral: string;
   exponent: number;
   data: WordModel[];
-  weightFun: WeightFun;
+  weightFn: WeightFn;
   outOfRoomCallback: OutOfRoomCallback;
 }
 
@@ -77,7 +77,7 @@ export const Wordcloud: React.FunctionComponent<SpecRequiredProps & SpecOptional
     | 'spiral'
     | 'exponent'
     | 'data'
-    | 'weightFun'
+    | 'weightFn'
     | 'outOfRoomCallback'
   >(defaultProps),
 );

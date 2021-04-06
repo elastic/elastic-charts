@@ -33,7 +33,7 @@ import { APIScale } from '../scales/types';
 import { SmallMultiplesGroupBy } from '../state/selectors/get_specs';
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
-import { BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesTypes, StackMode } from './specs';
+import { BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesType, StackMode } from './specs';
 import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
 
 /** @internal */
@@ -69,6 +69,7 @@ export interface DataSeriesDatum<T = any> {
   filled?: FilledValues;
 }
 
+/** @public */
 export interface XYChartSeriesIdentifier extends SeriesIdentifier {
   yAccessor: Accessor;
   splitAccessors: Map<string | number, string | number>; // does the map have a size vs making it optional
@@ -80,7 +81,7 @@ export interface XYChartSeriesIdentifier extends SeriesIdentifier {
 /** @internal */
 export type DataSeries = XYChartSeriesIdentifier & {
   groupId: GroupId;
-  seriesType: SeriesTypes;
+  seriesType: SeriesType;
   data: DataSeriesDatum[];
   isStacked: boolean;
   stackMode: StackMode | undefined;
@@ -90,7 +91,7 @@ export type DataSeries = XYChartSeriesIdentifier & {
 };
 
 /** @internal */
-export type DataSeriesCounts = { [key in SeriesTypes]: number };
+export type DataSeriesCounts = { [key in SeriesType]: number };
 
 /** @internal */
 export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentifier): number {

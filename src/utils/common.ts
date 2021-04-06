@@ -23,9 +23,28 @@ import { v1 as uuidV1 } from 'uuid';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Point } from './point';
 
+/** @public */
+export const Position = Object.freeze({
+  Top: 'top' as const,
+  Bottom: 'bottom' as const,
+  Left: 'left' as const,
+  Right: 'right' as const,
+});
+/** @public */
+export type Position = $Values<typeof Position>;
+
+/** @public */
+export const LayoutDirection = Object.freeze({
+  Horizontal: 'horizontal' as const,
+  Vertical: 'vertical' as const,
+});
+/** @public */
+export type LayoutDirection = $Values<typeof LayoutDirection>;
+
 /**
  * Color variants that are unique to `@elastic/charts`. These go beyond the standard
  * static color allocations.
+ * @public
  */
 export const ColorVariant = Object.freeze({
   /**
@@ -38,19 +57,21 @@ export const ColorVariant = Object.freeze({
    */
   None: '__use__empty__color__' as const,
 });
+/** @public */
 export type ColorVariant = $Values<typeof ColorVariant>;
 
+/** @public */
 export const HorizontalAlignment = Object.freeze({
   Center: 'center' as const,
-  Right: 'right' as const,
-  Left: 'left' as const,
+  Right: Position.Right,
+  Left: Position.Left,
   /**
    * Aligns to near side of axis depending on position
    *
    * Examples:
    * - Left Axis, `Near` will push the label to the `Right`, _near_ the axis
    * - Right Axis, `Near` will push the axis labels to the `Left`
-   * - Top/Bottom Axes, `Near` will default to `center`
+   * - Top/Bottom Axes, `Near` will default to `Center`
    */
   Near: 'near' as const,
   /**
@@ -59,27 +80,29 @@ export const HorizontalAlignment = Object.freeze({
    * Examples:
    * - Left Axis, `Far` will push the label to the `Left`, _far_ from the axis
    * - Right Axis, `Far` will push the axis labels to the `Right`
-   * - Top/Bottom Axes, `Far` will default to `center`
+   * - Top/Bottom Axes, `Far` will default to `Center`
    */
   Far: 'far' as const,
 });
+
 /**
  * Horizontal text alignment
  * @public
  */
 export type HorizontalAlignment = $Values<typeof HorizontalAlignment>;
 
+/** @public */
 export const VerticalAlignment = Object.freeze({
   Middle: 'middle' as const,
-  Top: 'top' as const,
-  Bottom: 'bottom' as const,
+  Top: Position.Top,
+  Bottom: Position.Bottom,
   /**
    * Aligns to near side of axis depending on position
    *
    * Examples:
    * - Top Axis, `Near` will push the label to the `Right`, _near_ the axis
    * - Bottom Axis, `Near` will push the axis labels to the `Left`
-   * - Left/Right Axes, `Near` will default to `middle`
+   * - Left/Right Axes, `Near` will default to `Middle`
    */
   Near: 'near' as const,
   /**
@@ -88,10 +111,11 @@ export const VerticalAlignment = Object.freeze({
    * Examples:
    * - Top Axis, `Far` will push the label to the `Top`, _far_ from the axis
    * - Bottom Axis, `Far` will push the axis labels to the `Bottom`
-   * - Left/Right Axes, `Far` will default to `middle`
+   * - Left/Right Axes, `Far` will default to `Middle`
    */
   Far: 'far' as const,
 });
+
 /**
  * Vertical text alignment
  * @public
@@ -104,17 +128,10 @@ export type Datum = any; // unknown;
 export type Rotation = 0 | 90 | -90 | 180;
 /** @public */
 export type Rendering = 'canvas' | 'svg';
-export type Color = string; // todo static/runtime type it this for proper color string content; several places in the code, and ultimate use, dictate it not be an empty string
-export type StrokeStyle = Color; // now narrower than string | CanvasGradient | CanvasPattern
-
-export const Position = Object.freeze({
-  Top: 'top' as const,
-  Bottom: 'bottom' as const,
-  Left: 'left' as const,
-  Right: 'right' as const,
-});
 /** @public */
-export type Position = $Values<typeof Position>;
+export type Color = string; // todo static/runtime type it this for proper color string content; several places in the code, and ultimate use, dictate it not be an empty string
+/** @public */
+export type StrokeStyle = Color; // now narrower than string | CanvasGradient | CanvasPattern
 
 /** @internal */
 export function identity<T>(value: T): T {
@@ -126,6 +143,7 @@ export function compareByValueAsc(a: number | string, b: number | string): numbe
   return a > b ? 1 : -1;
 }
 
+/** @internal */
 export function clamp(value: number, lowerBound: number, upperBound: number) {
   return minValueWithLowerLimit(value, upperBound, lowerBound);
 }
@@ -202,6 +220,7 @@ export function htmlIdGenerator(idPrefix?: string) {
  *  children?: RecursivePartial<Person>[]
  * }
  * ```
+ * @public
  */
 export type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends NonAny[] // checks for nested any[]
@@ -223,14 +242,22 @@ export type RecursivePartial<T> = {
     : RecursivePartial<T[P]>; // recurse for all non-array and non-primitive values
 };
 
-// return True if T is `any`, otherwise return False
+/**
+ * return True if T is `any`, otherwise return False
+ * @public
+ */
 export type IsAny<T, True, False = never> = True | False extends (T extends never ? True : False) ? True : False;
 
-// return True if T is `unknown`, otherwise return False
+/**
+ * return True if T is `unknown`, otherwise return False
+ * @public
+ */
 export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, False, True> : False;
 
+/** @public */
 export type NonAny = number | boolean | string | symbol | null;
 
+/** @public */
 export interface MergeOptions {
   /**
    * Includes all available keys of every provided partial at a given level.
@@ -335,6 +362,7 @@ export function shallowClone(value: any) {
  * @param partial structure to override values from base
  *
  * @returns new base structure with updated partial values
+ * @internal
  */
 export function mergePartial<T>(
   base: T,
@@ -434,9 +462,13 @@ export function getUniqueValues<T>(fullArray: T[], uniqueProperty: keyof T, filt
   ).filtered;
 }
 
+/** @public */
 export type ValueFormatter = (value: number) => string;
+/** @public */
 export type ValueAccessor = (d: Datum) => number;
+/** @public */
 export type LabelAccessor = (value: PrimitiveValue) => string;
+/** @public */
 export type ShowAccessor = (value: PrimitiveValue) => boolean;
 
 /**
@@ -539,6 +571,7 @@ export const round = (value: number, fractionDigits = 0): number => {
  * Get number/percentage value from string
  *
  * i.e. `'90%'` with relative value of `100` returns `90`
+ * @internal
  */
 export const getPercentageValue = <T>(ratio: string | number, relativeValue: number, defaultValue: T): number | T => {
   if (typeof ratio === 'number') {
@@ -559,12 +592,14 @@ export const getPercentageValue = <T>(ratio: string | number, relativeValue: num
 /**
  * Predicate function, eg. to be called with [].filter, to keep distinct values
  * @example [1, 2, 4, 2, 4, 0, 3, 2].filter(keepDistinct) ==> [1, 2, 4, 0, 3]
+ * @internal
  */
 export const keepDistinct = <T>(d: T, i: number, a: T[]): boolean => a.indexOf(d) === i;
 
 /**
  * Return an object which keys are values of an object and the value is the
  * static one provided
+ * @public
  */
 export function toEntries<T extends Record<string, string>, S>(
   array: T[],
@@ -579,6 +614,7 @@ export function toEntries<T extends Record<string, string>, S>(
 
 /**
  * Safely format values with error handling
+ * @internal
  */
 export const safeFormat = <V = any>(value: V, formatter?: (value: V) => string): string => {
   if (formatter) {
