@@ -77,25 +77,20 @@ export function renderBars(
       }
     } else {
       y = yScale.scale(y1);
-      if (yScale.isInverted) {
-        // use always zero as baseline if y0 is null
-        y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
-      } else {
-        y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
-      }
+      // use always zero as baseline if y0 is null
+      y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
     }
 
     if (y === null || y0Scaled === null) {
       return;
     }
-    let height = y0Scaled - y;
 
-    // handle minBarHeight adjustment
-    const isUpsideDown = height < 0;
-    height = Math.max(Math.abs(minBarHeight), Math.abs(height));
-    if (isUpsideDown) {
-      y -= height;
-    }
+    const absMinHeight = Math.abs(minBarHeight);
+    let height = Math.abs(y0Scaled - y);
+    const lowerY = Math.min(y0Scaled, y);
+    const heightDiff = height - absMinHeight;
+    y = heightDiff < 0 ? lowerY - Math.abs(heightDiff) : lowerY;
+    height = Math.max(height, absMinHeight);
 
     const xScaled = xScale.scale(datum.x);
 
