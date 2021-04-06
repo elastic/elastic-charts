@@ -69,8 +69,8 @@ export function getAPIScaleConfigs(
 
   // x axis
   const xAxes = axisSpecs.filter((d) => isHorizontalChart === isHorizontalAxis(d.position));
-  const xTicks = xAxes.reduce((acc, curr) => {
-    return Math.min(acc, curr.ticks ?? acc);
+  const xTicks = xAxes.reduce<number>((acc, { ticks = X_SCALE_DEFAULT.ticks }) => {
+    return Math.max(acc, ticks);
   }, X_SCALE_DEFAULT.ticks);
 
   const xScaleConfig = convertXScaleTypes(seriesSpecs);
@@ -104,7 +104,7 @@ export function getAPIScaleConfigs(
         ticks,
       };
     }
-    acc[groupId].ticks = Math.min(acc[groupId].ticks, ticks);
+    acc[groupId].ticks = Math.max(acc[groupId].ticks, ticks);
     return acc;
   }, {});
   return { x, y };
