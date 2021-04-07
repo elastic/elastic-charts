@@ -1067,29 +1067,34 @@ function mouseOverTestSuite(scaleType: XScaleType) {
 }
 
 describe('Negative bars click and hover', () => {
-  const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 }, 'chartId');
-  const onElementClick = jest.fn<void, any[]>((): void => undefined);
-  const onElementClickCaller = createOnClickCaller();
-  store.subscribe(() => {
-    onElementClickCaller(store.getState());
+  let store: Store<GlobalChartState>;
+  let onElementClick: jest.Mock<void, any[]>;
+  beforeEach(() => {
+    store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 }, 'chartId');
+    onElementClick = jest.fn<void, any[]>((): void => undefined);
+    const onElementClickCaller = createOnClickCaller();
+    store.subscribe(() => {
+      onElementClickCaller(store.getState());
+    });
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settingsNoMargins({
+          onElementClick,
+        }),
+        MockSeriesSpec.bar({
+          xAccessor: 0,
+          yAccessors: [1],
+          data: [
+            [0, 10],
+            [1, -10],
+            [2, 10],
+          ],
+        }),
+      ],
+      store,
+    );
   });
-  MockStore.addSpecs(
-    [
-      MockGlobalSpec.settingsNoMargins({
-        onElementClick,
-      }),
-      MockSeriesSpec.bar({
-        xAccessor: 0,
-        yAccessors: [1],
-        data: [
-          [0, 10],
-          [1, -10],
-          [2, 10],
-        ],
-      }),
-    ],
-    store,
-  );
+
   test('highlight negative bars', () => {
     store.dispatch(onPointerMove({ x: 50, y: 75 }, 0));
     const highlightedGeoms = getHighlightedGeomsSelector(store.getState());
@@ -1097,11 +1102,12 @@ describe('Negative bars click and hover', () => {
     expect(highlightedGeoms[0].value.datum).toEqual([1, -10]);
   });
   test('click negative bars', () => {
-    store.dispatch(onMouseDown({ x: 50, y: 75 }, 1));
+    store.dispatch(onPointerMove({ x: 50, y: 75 }, 0));
+    store.dispatch(onMouseDown({ x: 50, y: 75 }, 100));
     store.dispatch(onMouseUp({ x: 50, y: 75 }, 200));
 
     expect(onElementClick).toBeCalled();
     const callArgs = onElementClick.mock.calls[0][0];
-    expect(callArgs[0].datum).toEqual([1, -10]);
+    expect(callArgs[0][0].datum).toEqual([1, -10]);
   });
 });
