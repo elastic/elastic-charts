@@ -48,14 +48,14 @@ import {
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
+import { getSeriesTypes } from '../../state/selectors/get_series_types';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { Geometries, Transform } from '../../state/utils/types';
 import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
-import { AxisSpec, AnnotationSpec } from '../../utils/specs';
+import { AxisSpec, AnnotationSpec, SeriesType } from '../../utils/specs';
 import { renderXYChartCanvas2d } from './renderers';
-import { getNameFunction } from './utils/types';
 
 /** @internal */
 export interface ReactiveChartStateProps {
@@ -77,6 +77,7 @@ export interface ReactiveChartStateProps {
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
+  seriesTypes: Set<SeriesType>;
 }
 
 interface ReactiveChartDispatchProps {
@@ -153,27 +154,17 @@ class XYChartComponent extends React.Component<XYChartProps> {
       initialized,
       isChartEmpty,
       chartContainerDimensions: { width, height },
-      geometries,
+      seriesTypes,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
       this.ctx = null;
       return null;
     }
-
-    const seriesTypes: string[] = [];
-    Object.entries(geometries).forEach((value) => {
-      if (value[1].length > 0 && value[0]) {
-        seriesTypes.push(getNameFunction(value[0]));
-      }
-    });
-
-    const series: string[] = [];
-    seriesTypes.map((value: string, index: number) => {
-      return index < seriesTypes.length - 1 ? series.push(value, ' and') : series.push(value);
-    });
-
-    const chartSeriesTypes = seriesTypes.length > 1 ? `Mixed chart: ${series.join(' ')}` : `${seriesTypes[0]}`;
+    const multipleSeriesTypes: string[] = [];
+    seriesTypes.forEach((value) => multipleSeriesTypes.push(value));
+    const chartSeriesTypes =
+      seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
 
     return (
       <figure>
@@ -246,6 +237,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationDimensions: new Map(),
   annotationSpecs: [],
   panelGeoms: [],
+  seriesTypes: new Set(),
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -274,6 +266,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
+    seriesTypes: getSeriesTypes(state),
   };
 };
 

@@ -19,25 +19,33 @@
 
 import React from 'react';
 
-import { Chart, BarSeries, ScaleType } from '../src';
+import { Chart, AreaSeries, LineSeries, BarSeries, ScaleType } from '../src';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="App">
         <Chart size={[500, 200]}>
-          {/* <AreaSeries id="lines" name="test2" data={[
+          <AreaSeries
+            id="lines"
+            name="test2"
+            data={[
               { x: 'trousers', y: 300, val: 1232 },
               { x: 'watches', y: 20, val: 1232 },
               { x: 'bags', y: 700, val: 1232 },
               { x: 'cocktail dresses', y: 804, val: 1232 },
-            ]}/>
-            <LineSeries id="lines2" name="test" data={[
+            ]}
+          />
+          <LineSeries
+            id="lines2"
+            name="test"
+            data={[
               { x: 'trousers', y: 300, val: 1232 },
               { x: 'watches', y: 20, val: 1232 },
               { x: 'bags', y: 700, val: 1232 },
               { x: 'cocktail dresses', y: 804, val: 1232 },
-            ]}/> */}
+            ]}
+          />
           <BarSeries
             id="bars"
             name="amount"

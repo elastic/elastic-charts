@@ -17,13 +17,18 @@
  * under the License.
  */
 
+import createCachedSelector from 're-reselect';
+
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { SeriesType } from '../../utils/specs';
+import { getSeriesSpecsSelector } from './get_specs';
+
 /** @internal */
-export const getNameFunction = (key: string): string => {
-  const screenReader: Map<string, string> = new Map();
-  screenReader
-    .set('bars', 'Bar chart')
-    .set('areas', 'Area chart')
-    .set('lines', 'Line chart')
-    .set('bubbles', 'Bubble chart');
-  return screenReader.get(key) ?? 'unknown chart';
-};
+export const getSeriesTypes = createCachedSelector(
+  [getSeriesSpecsSelector],
+  (specs): Set<SeriesType> => {
+    const seriesTypes = new Set<SeriesType>();
+    specs.forEach((value) => seriesTypes.add(value.seriesType));
+    return seriesTypes;
+  },
+)(getChartIdSelector);
