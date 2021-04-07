@@ -22,18 +22,25 @@ import React from 'react';
 import { Chart, Datum, Partition, PrimitiveValue } from '../../src';
 import { config } from '../../src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { mocks } from '../../src/mocks/hierarchical';
+import { AdditiveNumber } from '../../src/utils/accessor';
 import { discreteColor, colorBrewerCategoricalPastel12, productLookup } from '../utils/utils';
 
 export const Example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
-      data={[{ sitc1: 'Other', exportVal: 745168037744 }, ...mocks.pie.slice(0, -2)].map((d, index) => ({
-        ...d,
-        index,
-      }))}
-      valueAccessor={(d: Datum) => d.exportVal as number}
+      data={[
+        { sitc1: '7', exportVal: 3110253391368, other: false },
+        { sitc1: '3', exportVal: 1929578418424, other: false },
+        { sitc1: '5', exportVal: 848173542536, other: false },
+        { sitc1: '8', exportVal: 816837797016, other: false },
+        { sitc1: '6', exportVal: 745168037744, other: false },
+        { sitc1: '9', exportVal: 450507812880, other: false },
+        { sitc1: '2', exportVal: 393895581328, other: false },
+        { sitc1: '0', exportVal: 353335453296, other: false },
+        { sitc1: 'Other', exportVal: 745168037744, other: true },
+      ]}
+      valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
