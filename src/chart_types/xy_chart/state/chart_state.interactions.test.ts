@@ -1101,6 +1101,7 @@ describe('Negative bars click and hover', () => {
     store.dispatch(onMouseUp({ x: 50, y: 75 }, 200));
 
     expect(onElementClick).toBeCalled();
-    expect(onElementClick.mock.calls[0][0]).toEqual([]);
+    const callArgs = onElementClick.mock.calls[0][0];
+    expect(callArgs[0].datum).toEqual([1, -10]);
   });
 });
