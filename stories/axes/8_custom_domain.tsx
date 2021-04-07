@@ -59,7 +59,7 @@ export const Example = () => {
     max: number('X max', 3, xOptions, 'X axis'),
   };
 
-  const showBars = boolean('show bars', false, 'Bar');
+  const showBars = boolean('show bars', true, 'Bar');
   const nice = boolean('nice domain', true);
   return (
     <Chart className="story-chart">
@@ -131,7 +131,7 @@ export const Example = () => {
           },
         }}
       />
-      {!showBars && (
+      {showBars && (
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}

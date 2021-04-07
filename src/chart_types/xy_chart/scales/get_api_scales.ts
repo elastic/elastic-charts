@@ -34,7 +34,7 @@ export function getYAPIScale(scaleType: BasicSeriesSpec['yScaleType']): APIScale
 }
 
 /** @internal */
-function getDefaultAPIScale<T extends ScaleType>(type: T | APIScale<T>, defaults: APIScale<T>): APIScale<T> {
+export function getDefaultAPIScale<T extends ScaleType>(type: T | APIScale<T>, defaults: APIScale<T>): APIScale<T> {
   if (typeof type === 'object') {
     return type;
   }

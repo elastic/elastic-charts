@@ -62,7 +62,6 @@ export const computeAxesGeometriesSelector = createCachedSelector(
     barsPadding,
     seriesSpecs,
     smScales,
-    // apiScaleConfigs,
   ): AxisGeometry[] => {
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
     const { xDomain, yDomains } = seriesDomainsAndData;
