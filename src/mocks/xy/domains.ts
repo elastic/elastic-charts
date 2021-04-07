@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import { XDomain, YDomain } from '../../chart_types/xy_chart/domains/types';
 import { getXAPIScale, getYAPIScale } from '../../chart_types/xy_chart/scales/get_api_scales';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../chart_types/xy_chart/scales/scale_defaults';
@@ -24,6 +25,7 @@ import { ScaleContinuousType } from '../../scales';
 import { ScaleType } from '../../scales/constants';
 import { mergePartial, RecursivePartial } from '../../utils/common';
 
+/** @internal */
 export class MockXDomain {
   private static readonly base: XDomain = {
     ...X_SCALE_DEFAULT,
@@ -46,6 +48,7 @@ export class MockXDomain {
   }
 }
 
+/** @internal */
 export class MockYDomain {
   private static readonly base: YDomain = {
     ...Y_SCALE_DEFAULT,
