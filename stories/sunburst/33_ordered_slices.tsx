@@ -29,7 +29,10 @@ export const Example = () => (
   <Chart className="story-chart">
     <Partition
       id="spec_1"
-      data={[...mocks.pie.slice(0, -2), { sitc1: 'Other', exportVal: 745168037744 }]}
+      data={[{ sitc1: 'Other', exportVal: 745168037744 }, ...mocks.pie.slice(0, -2)].map((d, index) => ({
+        ...d,
+        index,
+      }))}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[

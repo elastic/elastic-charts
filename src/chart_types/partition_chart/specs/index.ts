@@ -35,12 +35,15 @@ import {
 } from '../../../utils/common';
 import { config, percentFormatter } from '../layout/config';
 import { Config, FillFontSizeRange, FillLabelConfig } from '../layout/types/config_types';
-import { ShapeTreeNode, ValueGetter, NodeColorAccessor } from '../layout/types/viewmodel_types';
+import { NodeColorAccessor, ShapeTreeNode, ValueGetter } from '../layout/types/viewmodel_types';
 import { AGGREGATE_KEY, PrimitiveValue } from '../layout/utils/group_by_rollup';
 
 interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {}
 
-/** @public */
+/**
+ * Specification for a given layer in the partition chart
+ * @public
+ */
 export interface Layer {
   groupByRollup: IndexedAccessorFn;
   nodeLabel?: LabelAccessor;
@@ -69,7 +72,10 @@ const defaultProps = {
   ],
 };
 
-/** @public */
+/**
+ * Specifies the partition chart
+ * @public
+ */
 export interface PartitionSpec extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Partition;

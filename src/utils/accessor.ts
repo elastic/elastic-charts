@@ -112,3 +112,17 @@ export function getAccessorValue(datum: Datum, accessor: Accessor | AccessorFn) 
 
   return datum[accessor];
 }
+
+/**
+ * Additive numbers: numbers whose semantics are conducive to addition; eg. counts and sums are additive, but averages aren't
+ * @public
+ */
+export type AdditiveNumber = number;
+
+/**
+ * Accessor function using the parameter signature of [].map/filter/some/every/forEach and returns a number
+ * @public
+ */
+export type ArrayElementNumericAccessor = (
+  ...args: Parameters<OmitThisParameter<typeof Array.prototype.map>>
+) => AdditiveNumber;
