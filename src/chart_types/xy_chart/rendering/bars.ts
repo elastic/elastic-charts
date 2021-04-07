@@ -86,11 +86,20 @@ export function renderBars(
     }
 
     const absMinHeight = Math.abs(minBarHeight);
-    let height = Math.abs(y0Scaled - y);
-    const lowerY = Math.min(y0Scaled, y);
-    const heightDiff = height - absMinHeight;
-    y = heightDiff < 0 ? lowerY - Math.abs(heightDiff) : lowerY;
-    height = Math.max(height, absMinHeight);
+    let height = y0Scaled - y;
+    if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
+      const heightDelta = absMinHeight - Math.abs(height);
+      if (height < 0) {
+        height = -absMinHeight;
+        y += heightDelta;
+      } else {
+        height = absMinHeight;
+        y -= heightDelta;
+      }
+    }
+    const isUpsideDown = height < 0;
+    height = Math.abs(height);
+    y = isUpsideDown ? y - height : y;
 
     const xScaled = xScale.scale(datum.x);
 
