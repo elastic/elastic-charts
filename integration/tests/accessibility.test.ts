@@ -27,9 +27,9 @@ describe('Accessibility tree', () => {
     );
     // the legend has bars and lines as value.descriptions not value.name
     const hasTextOfChartTypes = tree.children.filter((value) => {
-      return value.name === 'Bar chart';
+      return value.name === 'bar chart';
     });
-    expect(hasTextOfChartTypes[0].name).toBe('Bar chart');
+    expect(hasTextOfChartTypes[0].name).toBe('bar chart');
   });
   it('should include the series types if multiple types of series', async () => {
     const tree = await common.testAccessibilityTree(
@@ -38,8 +38,8 @@ describe('Accessibility tree', () => {
     );
     // the legend has bars and lines as value.descriptions not value.name
     const hasTextOfChartTypes = tree.children.filter((value) => {
-      return value.name === 'Mixed chart: Bar chart and Line chart';
+      return value.name === 'Mixed chart: bar and line chart';
     });
-    expect(hasTextOfChartTypes[0].name).toBe('Mixed chart: Bar chart and Line chart');
+    expect(hasTextOfChartTypes[0].name).toBe('Mixed chart: bar and line chart');
   });
 });
