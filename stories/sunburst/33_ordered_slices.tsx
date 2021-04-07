@@ -19,49 +19,75 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PrimitiveValue } from '../../src';
+import { Chart, Datum, MODEL_KEY, Partition } from '../../src';
 import { config } from '../../src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { AdditiveNumber } from '../../src/utils/accessor';
-import { discreteColor, colorBrewerCategoricalPastel12, productLookup } from '../utils/utils';
+import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';
 
-export const Example = () => (
-  <Chart className="story-chart">
-    <Partition
-      id="spec_1"
-      data={[
-        { sitc1: '7', exportVal: 3110253391368, other: false },
-        { sitc1: '3', exportVal: 1929578418424, other: false },
-        { sitc1: '5', exportVal: 848173542536, other: false },
-        { sitc1: '8', exportVal: 816837797016, other: false },
-        { sitc1: '6', exportVal: 745168037744, other: false },
-        { sitc1: '9', exportVal: 450507812880, other: false },
-        { sitc1: '2', exportVal: 393895581328, other: false },
-        { sitc1: '0', exportVal: 353335453296, other: false },
-        { sitc1: 'Other', exportVal: 745168037744, other: true },
-      ]}
-      valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-      layers={[
-        {
-          groupByRollup: (d: Datum) => d.sitc1,
-          nodeLabel: (d: PrimitiveValue) => productLookup[d ?? '']?.name ?? String(d),
-          fillLabel: {
-            textInvertible: true,
-            fontWeight: 100,
-            fontStyle: 'italic',
-            valueFont: {
-              fontFamily: 'Menlo',
-              fontStyle: 'normal',
-              fontWeight: 900,
+const categoricalColors = colorBrewerCategoricalPastel12B.slice(3);
+
+const data = [
+  { region: 'Americas', dest: 'usa', other: false, exportVal: 553359100104 },
+  { region: 'Americas', dest: 'Other', other: true, exportVal: 753359100104 },
+  { region: 'Asia', dest: 'chn', other: false, exportVal: 392617281424 },
+  { region: 'Asia', dest: 'jpn', other: false, exportVal: 177490158520 },
+  { region: 'Asia', dest: 'kor', other: false, exportVal: 177421375512 },
+  { region: 'Asia', dest: 'Other', other: true, exportVal: 277421375512 },
+  { region: 'Europe', dest: 'deu', other: false, exportVal: 253250650864 },
+  { region: 'Europe', dest: 'smr', other: false, exportVal: 135443006088 },
+  { region: 'Europe', dest: 'Other', other: true, exportVal: 205443006088 },
+  { region: 'Africa', dest: 'Other', other: true, exportVal: 305443006088 },
+];
+
+export const Example = () => {
+  return (
+    <Chart className="story-chart">
+      <Partition
+        id="spec_1"
+        data={data}
+        valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
+        valueFormatter={(d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.region,
+            nodeLabel: (d: any) => d,
+            fillLabel: {
+              valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}`,
+              textInvertible: true,
+              fontWeight: 600,
+              fontStyle: 'italic',
+              valueFont: {
+                fontFamily: 'Menlo',
+                fontStyle: 'normal',
+                fontWeight: 100,
+              },
+            },
+            shape: {
+              fillColor: (d: ShapeTreeNode) => discreteColor(categoricalColors)(d.sortIndex),
             },
           },
-          shape: {
-            fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalPastel12)(d.sortIndex),
+          {
+            groupByRollup: (d: Datum) => d.dest,
+            nodeLabel: (d: any) => countryLookup[d]?.name ?? d,
+            fillLabel: {
+              textInvertible: true,
+              fontWeight: 600,
+              fontStyle: 'italic',
+              maxFontSize: 16,
+              valueFont: {
+                fontFamily: 'Menlo',
+                fontStyle: 'normal',
+                fontWeight: 100,
+              },
+            },
+            shape: {
+              fillColor: (d: ShapeTreeNode) => discreteColor(categoricalColors, 0.5)(d[MODEL_KEY].sortIndex),
+            },
           },
-        },
-      ]}
-      config={{ outerSizeRatio: 0.96 }}
-    />
-  </Chart>
-);
+        ]}
+        config={{ outerSizeRatio: 0.96, specialFirstInnermostSector: false, clockwiseSectors: true }}
+      />
+    </Chart>
+  );
+};
