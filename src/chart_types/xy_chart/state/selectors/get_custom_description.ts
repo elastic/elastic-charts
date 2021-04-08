@@ -17,17 +17,14 @@
  * under the License.
  */
 
-import { SB_SOURCE_PANEL } from '../utils/storybook';
+import createCachedSelector from 're-reselect';
 
-export default {
-  title: 'Test Cases',
-  parameters: {
-    options: { selectedPanel: SB_SOURCE_PANEL },
-  },
-};
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 
-export { Example as noSeries } from './1_no_series';
-export { Example as chromePathBugFix } from './2_chrome_path_bug_fix';
-export { Example as noAxesAnnotationBugFix } from './3_no_axes_annotation';
-export { Example as filterZerosInLogFitDomain } from './4_filter_zero_values_log';
-export { Example as addCustomDescription } from './5_a11y_custom_description';
+/** @internal */
+export const getCustomDescription = createCachedSelector([getSettingsSpecSelector], ({ customDescription }):
+  | string
+  | undefined => {
+  return customDescription ?? undefined;
+})(getChartIdSelector);

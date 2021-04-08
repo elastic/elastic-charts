@@ -19,45 +19,22 @@
 
 import React from 'react';
 
-import { Chart, AreaSeries, LineSeries, BarSeries, ScaleType } from '../src';
+import { Chart, AreaSeries, ScaleType, Settings } from '../src';
+import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="App">
         <Chart size={[500, 200]}>
+          <Settings customDescription="This is an area chart showing kibana sample data." />
           <AreaSeries
-            id="lines"
-            name="test2"
-            data={[
-              { x: 'trousers', y: 300, val: 1232 },
-              { x: 'watches', y: 20, val: 1232 },
-              { x: 'bags', y: 700, val: 1232 },
-              { x: 'cocktail dresses', y: 804, val: 1232 },
-            ]}
-          />
-          <LineSeries
-            id="lines2"
-            name="test"
-            data={[
-              { x: 'trousers', y: 300, val: 1232 },
-              { x: 'watches', y: 20, val: 1232 },
-              { x: 'bags', y: 700, val: 1232 },
-              { x: 'cocktail dresses', y: 804, val: 1232 },
-            ]}
-          />
-          <BarSeries
-            id="bars"
-            name="amount"
-            xScaleType={ScaleType.Ordinal}
-            xAccessor="x"
-            yAccessors={['y']}
-            data={[
-              { x: 'trousers', y: 390, val: 1222 },
-              { x: 'watches', y: 23, val: 1222 },
-              { x: 'bags', y: 750, val: 1222 },
-              { x: 'cocktail dresses', y: 854, val: 1222 },
-            ]}
+            id="area"
+            xScaleType={ScaleType.Time}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
           />
         </Chart>
       </div>
