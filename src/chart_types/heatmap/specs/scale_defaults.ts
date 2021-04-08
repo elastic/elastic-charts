@@ -23,5 +23,5 @@ import { ScaleType } from '../../../scales/constants';
 export const X_SCALE_DEFAULT = {
   type: ScaleType.Ordinal,
   nice: false,
-  ticks: 10,
+  desiredTickCount: 10,
 };

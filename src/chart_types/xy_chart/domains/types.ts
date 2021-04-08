@@ -34,7 +34,7 @@ export type XDomain = Pick<LogScaleOptions, 'logBase'> &
     /** if x domain is time, we should also specify the timezone */
     timeZone?: string;
     domain: OrdinalDomain | ContinuousDomain;
-    ticks: number;
+    desiredTickCount: number;
   };
 
 /** @internal */
@@ -43,5 +43,5 @@ export type YDomain = LogScaleOptions &
     isBandScale: false;
     groupId: GroupId;
     domain: ContinuousDomain;
-    ticks: number;
+    desiredTickCount: number;
   };

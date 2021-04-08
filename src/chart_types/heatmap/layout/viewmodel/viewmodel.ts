@@ -119,7 +119,7 @@ export function shapeViewModel(
             nice: false,
           },
           {
-            ticks: getTicks(chartDimensions.width, config.xAxisLabel),
+            desiredTickCount: getTicks(chartDimensions.width, config.xAxisLabel),
             timeZone: config.timeZone,
           },
         )

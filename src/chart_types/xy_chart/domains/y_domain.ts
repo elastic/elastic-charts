@@ -70,7 +70,7 @@ function mergeYDomainForGroup(
 
   const [{ stackMode, spec }] = dataSeries;
   const groupId = getSpecDomainGroupId(spec);
-  const { customDomain, type, nice, ticks } = yAPIScaleConfig[groupId];
+  const { customDomain, type, nice, desiredTickCount } = yAPIScaleConfig[groupId];
 
   let domain: ContinuousDomain;
   if (stackMode === StackMode.Percentage) {
@@ -121,7 +121,7 @@ function mergeYDomainForGroup(
     domain,
     logBase: customDomain?.logBase,
     logMinLimit: customDomain?.logMinLimit,
-    ticks,
+    desiredTickCount,
   };
 }
 

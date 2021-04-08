@@ -39,7 +39,7 @@ import { mergeYCustomDomainsByGroupId } from './merge_y_custom_domains';
 
 /** @internal */
 export type APIScaleConfigBase<T extends ScaleType, D extends CustomXDomain | YDomainRange> = APIScale<T> & {
-  ticks: number;
+  desiredTickCount: number;
   customDomain?: D;
 };
 type APIXScaleConfigBase = APIScaleConfigBase<XScaleType, CustomXDomain>;
@@ -70,15 +70,15 @@ export function getAPIScaleConfigs(
 
   // x axis
   const xAxes = axisSpecs.filter((d) => isHorizontalChart === isHorizontalAxis(d.position));
-  const xTicks = xAxes.reduce<number>((acc, { ticks = X_SCALE_DEFAULT.ticks }) => {
+  const xTicks = xAxes.reduce<number>((acc, { ticks = X_SCALE_DEFAULT.desiredTickCount }) => {
     return Math.max(acc, ticks);
-  }, X_SCALE_DEFAULT.ticks);
+  }, X_SCALE_DEFAULT.desiredTickCount);
 
   const xScaleConfig = convertXScaleTypes(seriesSpecs);
   const x: APIScaleConfigs['x'] = {
     customDomain: settingsSpec.xDomain,
     ...xScaleConfig,
-    ticks: xTicks,
+    desiredTickCount: xTicks,
   };
 
   // y axes
@@ -95,17 +95,17 @@ export function getAPIScaleConfigs(
   const yAxes = axisSpecs.filter((d) => isHorizontalChart === isVerticalAxis(d.position));
   const y = Object.keys(scaleTypeByGroupId).reduce<APIScaleConfigs['y']>((acc, groupId) => {
     const axis = yAxes.find((yAxis) => yAxis.groupId === groupId);
-    const ticks = axis?.ticks ?? Y_SCALE_DEFAULT.ticks;
+    const desiredTickCount = axis?.ticks ?? Y_SCALE_DEFAULT.desiredTickCount;
     const apiScale = scaleTypeByGroupId[groupId];
     const customDomain = customDomainByGroupId.get(groupId);
     if (!acc[groupId]) {
       acc[groupId] = {
         customDomain,
         ...apiScale,
-        ticks,
+        desiredTickCount,
       };
     }
-    acc[groupId].ticks = Math.max(acc[groupId].ticks, ticks);
+    acc[groupId].desiredTickCount = Math.max(acc[groupId].desiredTickCount, desiredTickCount);
     return acc;
   }, {});
   return { x, y };

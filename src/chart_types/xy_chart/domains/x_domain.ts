@@ -40,7 +40,7 @@ export function mergeXDomain(
   xValues: Set<string | number>,
   fallbackScale?: APIScale<XScaleType>,
 ): XDomain {
-  const { type, nice, isBandScale, timeZone, ticks, customDomain } = apiScaleConfig;
+  const { type, nice, isBandScale, timeZone, desiredTickCount, customDomain } = apiScaleConfig;
   const values = [...xValues.values()];
   let seriesXComputedDomains;
   let minInterval = 0;
@@ -119,7 +119,7 @@ export function mergeXDomain(
     minInterval,
     timeZone,
     logBase: customDomain && 'logBase' in customDomain ? customDomain.logBase : undefined,
-    ticks,
+    desiredTickCount,
   };
 }
 

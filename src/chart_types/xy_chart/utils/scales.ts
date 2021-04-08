@@ -57,7 +57,7 @@ interface XScaleOptions {
  */
 export function computeXScale(options: XScaleOptions): Scale {
   const { xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly } = options;
-  const { type, nice, minInterval, domain, isBandScale, timeZone, logBase, ticks } = xDomain;
+  const { type, nice, minInterval, domain, isBandScale, timeZone, logBase, desiredTickCount } = xDomain;
   const rangeDiff = Math.abs(range[1] - range[0]);
   const isInverse = range[1] < range[0];
   if (type === ScaleType.Ordinal) {
@@ -90,7 +90,7 @@ export function computeXScale(options: XScaleOptions): Scale {
         timeZone,
         totalBarsInCluster,
         barsPadding,
-        ticks,
+        desiredTickCount,
         isSingleValueHistogram,
         logBase,
       },
@@ -104,7 +104,7 @@ export function computeXScale(options: XScaleOptions): Scale {
       timeZone,
       totalBarsInCluster,
       barsPadding,
-      ticks,
+      desiredTickCount,
       integersOnly,
       logBase,
     },
@@ -123,7 +123,7 @@ interface YScaleOptions {
  */
 export function computeYScales(options: YScaleOptions): Map<GroupId, Scale> {
   const { yDomains, range, integersOnly } = options;
-  return yDomains.reduce((yScales, { type, nice, ticks, domain, groupId, logBase, logMinLimit }) => {
+  return yDomains.reduce((yScales, { type, nice, desiredTickCount, domain, groupId, logBase, logMinLimit }) => {
     const yScale = new ScaleContinuous(
       {
         type,
@@ -132,7 +132,7 @@ export function computeYScales(options: YScaleOptions): Map<GroupId, Scale> {
         nice,
       },
       {
-        ticks,
+        desiredTickCount,
         integersOnly,
         logBase,
         logMinLimit,

@@ -209,7 +209,7 @@ type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
    * The approximated number of ticks.
    * @defaultValue 10
    */
-  ticks: number;
+  desiredTickCount: number;
   /**
    * true if the scale was adjusted to fit one single value histogram
    */
@@ -226,7 +226,7 @@ const defaultScaleOptions: ScaleOptions = {
   timeZone: 'utc',
   totalBarsInCluster: 1,
   barsPadding: 0,
-  ticks: 10,
+  desiredTickCount: 10,
   isSingleValueHistogram: false,
   integersOnly: false,
   logBase: LogBase.Common,
@@ -275,7 +275,7 @@ export class ScaleContinuous implements Scale {
       timeZone,
       totalBarsInCluster,
       barsPadding,
-      ticks,
+      desiredTickCount,
       isSingleValueHistogram,
       integersOnly,
       logBase,
@@ -292,7 +292,7 @@ export class ScaleContinuous implements Scale {
 
     this.d3Scale.domain(this.domain);
     if (nice && type !== ScaleType.Time) {
-      (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(this.domain).nice(ticks);
+      (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(this.domain).nice(desiredTickCount);
       this.domain = this.d3Scale.domain();
     }
 
@@ -318,7 +318,7 @@ export class ScaleContinuous implements Scale {
       const shiftedDomainMax = endDomain.add(offset, 'minutes').valueOf();
       const tzShiftedScale = scaleUtc().domain([shiftedDomainMin, shiftedDomainMax]);
 
-      const rawTicks = tzShiftedScale.ticks(ticks);
+      const rawTicks = tzShiftedScale.ticks(desiredTickCount);
       const timePerTick = (shiftedDomainMax - shiftedDomainMin) / rawTicks.length;
       const hasHourTicks = timePerTick < 1000 * 60 * 60 * 12;
 
@@ -334,7 +334,7 @@ export class ScaleContinuous implements Scale {
         const intervalCount = Math.floor((this.domain[1] - this.domain[0]) / this.minInterval);
         this.tickValues = new Array(intervalCount + 1).fill(0).map((_, i) => this.domain[0] + i * this.minInterval);
       } else {
-        this.tickValues = this.getTicks(ticks, integersOnly);
+        this.tickValues = this.getTicks(desiredTickCount, integersOnly);
       }
     }
   }

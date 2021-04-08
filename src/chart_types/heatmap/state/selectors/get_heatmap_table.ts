@@ -79,7 +79,7 @@ export const getHeatmapTableSelector = createCachedSelector(
       {
         ...getDefaultAPIScale(spec.xScaleType, X_SCALE_DEFAULT),
         isBandScale: false,
-        ticks: X_SCALE_DEFAULT.ticks,
+        desiredTickCount: X_SCALE_DEFAULT.desiredTickCount,
         customDomain: xDomain,
       },
       resultData.xValues,
