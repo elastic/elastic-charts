@@ -17,11 +17,11 @@
  * under the License.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { ArrayEntry, Chart, Datum, MODEL_KEY, Partition, ShapeTreeNode } from '../../src';
+import { AdditiveNumber, ArrayEntry, Chart, Datum, MODEL_KEY, Partition, ShapeTreeNode } from '../../src';
 import { config } from '../../src/chart_types/partition_chart/layout/config';
-import { AdditiveNumber } from '../../src/utils/accessor';
 import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';
 
 const categoricalColors = colorBrewerCategoricalPastel12B.slice(3);
@@ -60,7 +60,7 @@ export const Example = () => {
         id="spec_1"
         data={data}
         valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
-        sortPredicate={sortPredicate}
+        sortPredicate={boolean('Move "Other" to end', true) ? sortPredicate : null}
         valueFormatter={(d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}`}
         layers={[
           {
