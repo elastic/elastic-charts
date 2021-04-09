@@ -36,7 +36,7 @@ import {
 import { config, percentFormatter } from '../layout/config';
 import { Config, FillFontSizeRange, FillLabelConfig } from '../layout/types/config_types';
 import { NodeColorAccessor, ShapeTreeNode, ValueGetter } from '../layout/types/viewmodel_types';
-import { AGGREGATE_KEY, PrimitiveValue } from '../layout/utils/group_by_rollup';
+import { AGGREGATE_KEY, NodeSorter, PrimitiveValue } from '../layout/utils/group_by_rollup';
 
 interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {}
 
@@ -56,6 +56,7 @@ const defaultProps = {
   chartType: ChartType.Partition,
   specType: SpecType.Series,
   config,
+  sortPredicate: null,
   valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
   valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
   valueFormatter: (d: number): string => String(d),
@@ -83,6 +84,7 @@ export interface PartitionSpec extends Spec {
   data: Datum[];
   valueAccessor: ValueAccessor;
   valueFormatter: ValueFormatter;
+  sortPredicate: NodeSorter | null; // currently, `defaultProps` can only give constant defaults, ie. oblivious to `partititonType` todo refactor `defaultProps` for dual inner/outer API
   valueGetter: ValueGetter;
   percentFormatter: ValueFormatter;
   topGroove: Pixels;
@@ -99,6 +101,7 @@ export const Partition: React.FunctionComponent<SpecRequiredProps & SpecOptional
     PartitionSpec,
     | 'valueAccessor'
     | 'valueGetter'
+    | 'sortPredicate'
     | 'valueFormatter'
     | 'layers'
     | 'config'

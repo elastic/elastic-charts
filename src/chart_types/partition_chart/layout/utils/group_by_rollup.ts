@@ -79,7 +79,12 @@ export type PrimitiveValue = string | number | null; // there could be more but 
 export type Key = CategoryKey;
 /** @public */
 export type Sorter = (a: number, b: number) => number;
-type NodeSorter = (a: ArrayEntry, b: ArrayEntry) => number;
+
+/**
+ * Binary predicate function used for `[].sort`ing partitions represented as ArrayEntries
+ * @public
+ */
+export type NodeSorter = (a: ArrayEntry, b: ArrayEntry) => number;
 
 /** @public */
 export const entryKey = ([key]: ArrayEntry) => key;
@@ -109,8 +114,6 @@ export function sortIndexAccessor(n: ArrayEntry) {
 export function pathAccessor(n: ArrayEntry) {
   return entryValue(n)[PATH_KEY];
 }
-const ascending: Sorter = (a, b) => a - b;
-const descending: Sorter = (a, b) => b - a;
 
 /** @public */
 export function getNodeName(node: ArrayNode) {
@@ -228,17 +231,6 @@ export function mapsToArrays(root: HierarchyOfMaps, sorter: NodeSorter | null): 
 export function mapEntryValue(entry: ArrayEntry) {
   return entryValue(entry)[AGGREGATE_KEY];
 }
-
-/** @internal */
-export function aggregateComparator(accessor: (v: any) => any, sorter: Sorter): NodeSorter {
-  return (a, b) => sorter(accessor(a), accessor(b));
-}
-
-/** @internal */
-export const childOrders = {
-  ascending,
-  descending,
-};
 
 // type MeanReduction = { sum: number; count: number };
 // type MedianReduction = Array<number>;

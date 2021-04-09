@@ -19,9 +19,8 @@
 
 import React from 'react';
 
-import { Chart, Datum, MODEL_KEY, Partition } from '../../src';
+import { ArrayEntry, Chart, Datum, MODEL_KEY, Partition, ShapeTreeNode } from '../../src';
 import { config } from '../../src/chart_types/partition_chart/layout/config';
-import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { AdditiveNumber } from '../../src/utils/accessor';
 import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';
 
@@ -40,6 +39,20 @@ const data = [
   { region: 'Africa', dest: 'Other', other: true, exportVal: 305443006088 },
 ];
 
+const sortPredicate = ([name1, node1]: ArrayEntry, [name2, node2]: ArrayEntry) => {
+  // unconditionally put "Other" to the end (as the "Other" slice may be larger than a regular slice, yet should be at the end)
+  if (name1 === 'Other' && name2 !== 'Other') return 1;
+  if (name2 === 'Other' && name1 !== 'Other') return -1;
+
+  // otherwise, use the decreasing value order
+  return node2.value - node1.value;
+};
+
+/* Equivalent, since math ops cleanly coerce false, true to 0, 1
+const sortPredicate = ([name1, node1]: ArrayEntry, [name2, node2]: ArrayEntry) =>
+  (name1 === 'Other') - (name2 === 'Other') || node2.value - node1.value;
+*/
+
 export const Example = () => {
   return (
     <Chart className="story-chart">
@@ -47,6 +60,7 @@ export const Example = () => {
         id="spec_1"
         data={data}
         valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
+        sortPredicate={sortPredicate}
         valueFormatter={(d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}`}
         layers={[
           {

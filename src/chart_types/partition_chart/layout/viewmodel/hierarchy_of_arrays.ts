@@ -25,18 +25,31 @@ import { Datum, ValueAccessor, ValueFormatter } from '../../../../utils/common';
 import { Layer } from '../../specs';
 import { PartitionLayout } from '../types/config_types';
 import {
-  aggregateComparator,
   aggregators,
-  childOrders,
   CHILDREN_KEY,
   groupByRollup,
   HIERARCHY_ROOT_KEY,
   HierarchyOfArrays,
   mapEntryValue,
   mapsToArrays,
+  NodeSorter,
   Sorter,
 } from '../utils/group_by_rollup';
 import { isSunburst, isTreemap } from './viewmodel';
+
+function aggregateComparator(accessor: (v: any) => any, sorter: Sorter): NodeSorter {
+  return (a, b) => sorter(accessor(a), accessor(b));
+}
+
+const ascending: Sorter = (a, b) => a - b;
+const descending: Sorter = (a, b) => b - a;
+
+const childOrders = {
+  ascending,
+  descending,
+};
+
+const descendingValueNodes = aggregateComparator(mapEntryValue, childOrders.descending);
 
 /**
  * @internal
@@ -45,7 +58,7 @@ export function getHierarchyOfArrays(
   rawFacts: Relation,
   valueAccessor: ValueAccessor,
   groupByRollupAccessors: IndexedAccessorFn[],
-  sorter: Sorter | null = childOrders.descending,
+  sorter: NodeSorter | null = descendingValueNodes,
 ): HierarchyOfArrays {
   const aggregator = aggregators.sum;
 
@@ -62,21 +75,19 @@ export function getHierarchyOfArrays(
   // We can precompute things invariant of how the rectangle is divvied up.
   // By introducing `scale`, we no longer need to deal with the dichotomy of
   // size as data value vs size as number of pixels in the rectangle
-  return mapsToArrays(
-    groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts),
-    sorter && aggregateComparator(mapEntryValue, sorter),
-  );
+  return mapsToArrays(groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts), sorter);
 }
 
 /** @internal */
 export function partitionTree(
   data: Datum[],
   valueAccessor: ValueAccessor,
+  sortPredicate: NodeSorter | null,
   layers: Layer[],
   defaultLayout: PartitionLayout,
   layout: PartitionLayout = defaultLayout,
 ) {
-  const sorter = isTreemap(layout) || isSunburst(layout) ? childOrders.descending : null;
+  const sorter = sortPredicate || (isTreemap(layout) || isSunburst(layout) ? descendingValueNodes : null);
   return getHierarchyOfArrays(
     data,
     valueAccessor,
