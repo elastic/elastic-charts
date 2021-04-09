@@ -100,9 +100,6 @@ export function getAccessorFormatLabel(accessor: AccessorFormat, label: string):
 
 /**
  * Helper function to get accessor value from string, number or function
- *
- * @param  {Datum} datum
- * @param  {AccessorString|AccessorFn} accessor
  * @internal
  */
 export function getAccessorValue(datum: Datum, accessor: Accessor | AccessorFn) {

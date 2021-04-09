@@ -21,6 +21,9 @@ export type AccessorFn = UnaryAccessorFn;
 // @public
 export type AccessorObjectKey = string;
 
+// @public
+export type AdditiveNumber = number;
+
 // @public (undocumented)
 export const AGGREGATE_KEY = "value";
 
@@ -118,6 +121,9 @@ export interface AreaStyle {
     opacity: number;
     visible: boolean;
 }
+
+// @public
+export type ArrayElementNumericAccessor = (...args: Parameters<OmitThisParameter<typeof Array.prototype.map>>) => AdditiveNumber;
 
 // @public (undocumented)
 export type ArrayEntry = [Key, ArrayNode];
@@ -1295,6 +1301,9 @@ export interface NodeDescriptor {
     [AGGREGATE_KEY]: number;
 }
 
+// @public
+export type NodeSorter = (a: ArrayEntry, b: ArrayEntry) => number;
+
 // @public (undocumented)
 export type NonAny = number | boolean | string | symbol | null;
 
@@ -1356,7 +1365,7 @@ export interface PartitionFillLabel extends LabelConfig {
     clipText: boolean;
 }
 
-// @public (undocumented)
+// @public
 export interface PartitionLayer {
     // Warning: (ae-forgotten-export) The symbol "ExtendedFillLabelConfig" needs to be exported by the entry point index.d.ts
     //
@@ -2055,7 +2064,7 @@ export type UnboundedDomainWithInterval = DomainBase;
 export type UpperBoundedDomain = DomainBase & UpperBound;
 
 // @public (undocumented)
-export type ValueAccessor = (d: Datum) => number;
+export type ValueAccessor = (d: Datum) => AdditiveNumber;
 
 // @public (undocumented)
 export type ValueFormatter = (value: number) => string;
