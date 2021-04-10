@@ -60,7 +60,6 @@ export const Example = () => {
         id="spec_1"
         data={data}
         valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
-        sortPredicate={boolean('Move "Other" to end', true) ? sortPredicate : null}
         valueFormatter={(d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}`}
         layers={[
           {
@@ -84,6 +83,7 @@ export const Example = () => {
           {
             groupByRollup: (d: Datum) => d.dest,
             nodeLabel: (d: any) => countryLookup[d]?.name ?? d,
+            sortPredicate: boolean('Move "Other" to end', true) ? sortPredicate : null,
             fillLabel: {
               textInvertible: true,
               fontWeight: 600,

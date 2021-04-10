@@ -58,7 +58,7 @@ export function getHierarchyOfArrays(
   rawFacts: Relation,
   valueAccessor: ValueAccessor,
   groupByRollupAccessors: IndexedAccessorFn[],
-  sorter: NodeSorter | null = descendingValueNodes,
+  sortSpecs: (NodeSorter | null)[],
 ): HierarchyOfArrays {
   const aggregator = aggregators.sum;
 
@@ -75,25 +75,26 @@ export function getHierarchyOfArrays(
   // We can precompute things invariant of how the rectangle is divvied up.
   // By introducing `scale`, we no longer need to deal with the dichotomy of
   // size as data value vs size as number of pixels in the rectangle
-  return mapsToArrays(groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts), sorter);
+  return mapsToArrays(groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts), sortSpecs);
 }
+
+const sorter = (layout: PartitionLayout) => ({ sortPredicate }: Layer) =>
+  sortPredicate || (isTreemap(layout) || isSunburst(layout) ? descendingValueNodes : null);
 
 /** @internal */
 export function partitionTree(
   data: Datum[],
   valueAccessor: ValueAccessor,
-  sortPredicate: NodeSorter | null,
   layers: Layer[],
   defaultLayout: PartitionLayout,
-  layout: PartitionLayout = defaultLayout,
+  partitionLayout: PartitionLayout = defaultLayout,
 ) {
-  const sorter = sortPredicate || (isTreemap(layout) || isSunburst(layout) ? descendingValueNodes : null);
   return getHierarchyOfArrays(
     data,
     valueAccessor,
     // eslint-disable-next-line no-shadow
     [() => HIERARCHY_ROOT_KEY, ...layers.map(({ groupByRollup }) => groupByRollup)],
-    sorter,
+    [null, ...layers.map(sorter(partitionLayout))],
   );
 }
 

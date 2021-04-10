@@ -1381,6 +1381,8 @@ export interface PartitionLayer {
     };
     // (undocumented)
     showAccessor?: ShowAccessor;
+    // (undocumented)
+    sortPredicate?: NodeSorter | null;
 }
 
 // @public (undocumented)

@@ -57,7 +57,7 @@ function getTreesForSpec(
   smSpecs: SmallMultiplesSpec[],
   groupBySpecs: GroupBySpec[],
 ): StyledTree[] {
-  const { data, valueAccessor, sortPredicate, layers, config, smallMultiples: smId } = spec;
+  const { data, valueAccessor, layers, config, smallMultiples: smId } = spec;
   const smSpec = smSpecs.find((s) => s.id === smId);
   const smStyle: SmallMultiplesStyle = {
     horizontalPanelPadding: smSpec
@@ -91,7 +91,6 @@ function getTreesForSpec(
         tree: partitionTree(
           subData,
           valueAccessor,
-          sortPredicate,
           layers,
           configMetadata.partitionLayout.dflt,
           config.partitionLayout,
@@ -103,14 +102,7 @@ function getTreesForSpec(
         name: '',
         smAccessorValue: '',
         style: smStyle,
-        tree: partitionTree(
-          data,
-          valueAccessor,
-          sortPredicate,
-          layers,
-          configMetadata.partitionLayout.dflt,
-          config.partitionLayout,
-        ),
+        tree: partitionTree(data, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout),
       },
     ];
   }
