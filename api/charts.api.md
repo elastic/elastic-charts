@@ -122,9 +122,6 @@ export interface AreaStyle {
     visible: boolean;
 }
 
-// @public
-export type ArrayElementNumericAccessor = (...args: Parameters<OmitThisParameter<typeof Array.prototype.map>>) => AdditiveNumber;
-
 // @public (undocumented)
 export type ArrayEntry = [Key, ArrayNode];
 

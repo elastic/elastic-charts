@@ -115,11 +115,3 @@ export function getAccessorValue(datum: Datum, accessor: Accessor | AccessorFn) 
  * @public
  */
 export type AdditiveNumber = number;
-
-/**
- * Accessor function using the parameter signature of [].map/filter/some/every/forEach and returns a number
- * @public
- */
-export type ArrayElementNumericAccessor = (
-  ...args: Parameters<OmitThisParameter<typeof Array.prototype.map>>
-) => AdditiveNumber;
