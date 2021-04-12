@@ -42,6 +42,7 @@ describe('Annotations stories', () => {
       );
     });
   });
+
   describe('Render within domain', () => {
     it('cover from 0 to end domain', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
@@ -69,6 +70,7 @@ describe('Annotations stories', () => {
       );
     });
   });
+
   describe('Render with zero domain or fit to domain', () => {
     it('show annotation when yDomain is not zero value', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
@@ -101,6 +103,7 @@ describe('Annotations stories', () => {
       );
     });
   });
+
   describe('Render with no group id provided', () => {
     it('show annotation when group id is provided no y0 nor y1 values specified', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
@@ -125,6 +128,14 @@ describe('Annotations stories', () => {
     it('does not show annotation when no group id provided and y0 and y1 values specified', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
         'http://localhost:9001/?path=/story/annotations-rects--with-group-id&knob-enable%20annotation=true&knob-Annotation%20groupId=&knob-x0=5&knob-x1=10&knob-enable%20y0%20and%20y1%20values=true&knob-y0=0&knob-y1=3',
+      );
+    });
+  });
+
+  describe('Advanced markers', () => {
+    it.each<number>([0, 15, 30])('renders marker annotation within chart canvas - day: %i', async (day) => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/annotations-lines--advanced-markers&knob-Debug=true&knob-show legend=true&knob-Annotation day=${day}`,
       );
     });
   });
