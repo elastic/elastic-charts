@@ -161,8 +161,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       this.ctx = null;
       return null;
     }
-    const multipleSeriesTypes: string[] = [];
-    seriesTypes.forEach((value) => multipleSeriesTypes.push(value));
+
     const chartSeriesTypes =
       seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
 
@@ -181,7 +180,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
           role="presentation"
         >
           <dl className="echScreen-reader">
-            <dt> Chart type </dt>
+            <dt>Chart type</dt>
             <dd>{chartSeriesTypes}</dd>
           </dl>
         </canvas>
