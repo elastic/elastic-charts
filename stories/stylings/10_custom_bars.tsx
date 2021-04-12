@@ -20,7 +20,7 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, RecursivePartial, Theme } from '../../src';
 import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
@@ -55,7 +55,7 @@ export const Example = () => {
     },
   };
 
-  const theme = {
+  const theme: RecursivePartial<Theme> = {
     barSeriesStyle: {
       rectBorder: {
         stroke: color('theme border stroke', 'red', 'Chart Global Theme'),
@@ -64,8 +64,8 @@ export const Example = () => {
       },
       rect: {
         opacity: range('theme opacity ', 0, 1, 0.9, 'Chart Global Theme', 0.1),
-        pixelWidth: changeRectWidthPixel ? rectWidthPixel : undefined,
-        ratioWidth: changeRectWidthRatio ? rectWidthRatio : undefined,
+        widthPixel: changeRectWidthPixel ? rectWidthPixel : undefined,
+        widthRatio: changeRectWidthRatio ? rectWidthRatio : undefined,
       },
     },
   };
