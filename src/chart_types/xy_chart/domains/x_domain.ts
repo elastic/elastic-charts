@@ -23,9 +23,8 @@ import { ScaleType } from '../../../scales/constants';
 import { compareByValueAsc, identity } from '../../../utils/common';
 import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
-import { getXAPIScale } from '../scales/get_api_scales';
-import { APIScale } from '../scales/types';
-import { APIScaleConfigs } from '../state/selectors/get_api_scale_configs';
+import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scales';
+import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { BasicSeriesSpec, SeriesType, XScaleType } from '../utils/specs';
 import { areAllNiceDomain } from './nice';
@@ -36,16 +35,15 @@ import { XDomain } from './types';
  * @internal
  */
 export function mergeXDomain(
-  apiScaleConfig: APIScaleConfigs['x'],
+  { type, nice, isBandScale, timeZone, desiredTickCount, customDomain }: ScaleConfigs['x'],
   xValues: Set<string | number>,
-  fallbackScale?: APIScale<XScaleType>,
+  fallbackScale?: XScaleType,
 ): XDomain {
-  const { type, nice, isBandScale, timeZone, desiredTickCount, customDomain } = apiScaleConfig;
   const values = [...xValues.values()];
   let seriesXComputedDomains;
   let minInterval = 0;
 
-  if (type === ScaleType.Ordinal || fallbackScale?.type === ScaleType.Ordinal) {
+  if (type === ScaleType.Ordinal || fallbackScale === ScaleType.Ordinal) {
     if (type !== ScaleType.Ordinal) {
       Logger.warn(`Each X value in a ${type} x scale needs be be a number. Using ordinal x scale as fallback.`);
     }
@@ -55,7 +53,7 @@ export function mergeXDomain(
       if (Array.isArray(customDomain)) {
         seriesXComputedDomains = customDomain;
       } else {
-        if (fallbackScale?.type === ScaleType.Ordinal) {
+        if (fallbackScale === ScaleType.Ordinal) {
           Logger.warn(`xDomain ignored for fallback ordinal scale. Options to resolve:
 
 1) Correct data to match ${type} scale type (see previous warning)
@@ -110,10 +108,8 @@ export function mergeXDomain(
   }
 
   return {
-    ...(fallbackScale ?? {
-      type,
-      nice,
-    }),
+    type: fallbackScale ?? type,
+    nice,
     isBandScale,
     domain: seriesXComputedDomains,
     minInterval,
@@ -177,8 +173,10 @@ export function findMinInterval(xValues: number[]): number {
  * @internal
  */
 export function convertXScaleTypes(
-  specs: Optional<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>, 'seriesType'>[],
-): APIScale<XScaleType> & {
+  specs: Optional<Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'xNice' | 'timeZone'>, 'seriesType'>[],
+): {
+  type: XScaleType;
+  nice: boolean;
   isBandScale: boolean;
   timeZone?: string;
 } {
@@ -187,10 +185,9 @@ export function convertXScaleTypes(
   const timeZones = new Set<string>();
   const niceDomainConfigs: Array<boolean> = [];
   specs.forEach((spec) => {
-    const scaleConfig = getXAPIScale(spec.xScaleType);
-    niceDomainConfigs.push(scaleConfig.nice);
+    niceDomainConfigs.push(getXNiceFromSpec(spec.xNice));
     seriesTypes.add(spec.seriesType);
-    scaleTypes.add(scaleConfig.type);
+    scaleTypes.add(getXScaleTypeFromSpec(spec.xScaleType));
     if (spec.timeZone) {
       timeZones.add(spec.timeZone.toLowerCase());
     }

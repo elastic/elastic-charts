@@ -64,7 +64,7 @@ import {
   isBubbleSeriesSpec,
 } from '../../utils/specs';
 import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales';
-import { APIScaleConfigs } from '../selectors/get_api_scale_configs';
+import { ScaleConfigs } from '../selectors/get_api_scale_configs';
 import { SmallMultiplesGroupBy } from '../selectors/get_specs';
 import { isHorizontalRotation } from './common';
 import { getSpecsById, getAxesSpecForSpecId, getSpecDomainGroupId } from './spec';
@@ -120,7 +120,7 @@ export function getCustomSeriesColors(dataSeries: DataSeries[]): Map<SeriesKey, 
  */
 export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
-  apiScaleConfigs: APIScaleConfigs,
+  scaleConfigs: ScaleConfigs,
   deselectedDataSeries: SeriesIdentifier[] = [],
   orderOrdinalBinsBy?: OrderBy,
   smallMultiples?: SmallMultiplesGroupBy,
@@ -133,7 +133,7 @@ export function computeSeriesDomains(
     smallMultiples,
   );
   // compute the x domain merging any custom domain
-  const xDomain = mergeXDomain(apiScaleConfigs.x, xValues, fallbackScale);
+  const xDomain = mergeXDomain(scaleConfigs.x, xValues, fallbackScale);
 
   // fill series with missing x values
   const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.type);
@@ -147,7 +147,7 @@ export function computeSeriesDomains(
   );
 
   // let's compute the yDomains after computing all stacked values
-  const yDomains = mergeYDomain(formattedDataSeries, apiScaleConfigs.y);
+  const yDomains = mergeYDomain(formattedDataSeries, scaleConfigs.y);
 
   // sort small multiples values
   const horizontalPredicate = smallMultiples?.horizontal?.sort ?? Predicate.DataIndex;

@@ -135,10 +135,8 @@ export const Example = () => {
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
-          yScaleType={{
-            type: ScaleType.Linear,
-            nice,
-          }}
+          yScaleType={ScaleType.Linear}
+          yNice={nice}
           xAccessor="x"
           yAccessors={['y']}
           data={[
@@ -151,14 +149,10 @@ export const Example = () => {
       )}
       <LineSeries
         id="lines"
-        xScaleType={{
-          type: ScaleType.Linear,
-          nice,
-        }}
-        yScaleType={{
-          type: ScaleType.Linear,
-          nice,
-        }}
+        xScaleType={ScaleType.Linear}
+        xNice={nice}
+        yScaleType={ScaleType.Linear}
+        yNice={nice}
         groupId="group2"
         xAccessor="x"
         yAccessors={['y']}

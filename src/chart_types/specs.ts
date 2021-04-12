@@ -28,8 +28,6 @@ export {
   RectAnnotation,
 } from './xy_chart/specs';
 
-export { APIScale } from './xy_chart/scales/types';
-
 export * from './xy_chart/utils/specs';
 
 export { Partition } from './partition_chart/specs';

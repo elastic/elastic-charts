@@ -24,7 +24,7 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { SeriesDomainsAndData } from '../utils/types';
 import { computeSeriesDomains } from '../utils/utils';
-import { getAPIScaleConfigsSelector } from './get_api_scale_configs';
+import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getSeriesSpecsSelector, getSmallMultiplesIndexOrderSelector } from './get_specs';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
@@ -36,12 +36,12 @@ export const computeSeriesDomainsSelector = createCachedSelector(
     getDeselectedSeriesSelector,
     getSettingsSpecSelector,
     getSmallMultiplesIndexOrderSelector,
-    getAPIScaleConfigsSelector,
+    getScaleConfigsFromSpecsSelector,
   ],
-  (seriesSpecs, deselectedDataSeries, settingsSpec, smallMultiples, apiScaleConfigs): SeriesDomainsAndData => {
+  (seriesSpecs, deselectedDataSeries, settingsSpec, smallMultiples, scaleConfigs): SeriesDomainsAndData => {
     return computeSeriesDomains(
       seriesSpecs,
-      apiScaleConfigs,
+      scaleConfigs,
       deselectedDataSeries,
       settingsSpec.orderOrdinalBinsBy,
       smallMultiples,

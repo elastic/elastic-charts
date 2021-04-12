@@ -18,28 +18,25 @@
  */
 
 import { ScaleContinuousType } from '../../../scales';
-import { ScaleType } from '../../../scales/constants';
 import { BasicSeriesSpec, XScaleType } from '../utils/specs';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from './scale_defaults';
-import { APIScale } from './types';
 
 /** @internal */
-export function getXAPIScale(scaleType: BasicSeriesSpec['xScaleType']): APIScale<XScaleType> {
-  return getDefaultAPIScale<XScaleType>(scaleType, { type: X_SCALE_DEFAULT.type, nice: X_SCALE_DEFAULT.nice });
+export function getXScaleTypeFromSpec(type?: BasicSeriesSpec['xScaleType']): XScaleType {
+  return type ?? X_SCALE_DEFAULT.type;
 }
 
 /** @internal */
-export function getYAPIScale(scaleType: BasicSeriesSpec['yScaleType']): APIScale<ScaleContinuousType> {
-  return getDefaultAPIScale(scaleType, { type: Y_SCALE_DEFAULT.type, nice: Y_SCALE_DEFAULT.nice });
+export function getXNiceFromSpec(nice?: BasicSeriesSpec['xNice']): boolean {
+  return nice ?? X_SCALE_DEFAULT.nice;
 }
 
 /** @internal */
-export function getDefaultAPIScale<T extends ScaleType>(type: T | APIScale<T>, defaults: APIScale<T>): APIScale<T> {
-  if (typeof type === 'object') {
-    return type;
-  }
-  return {
-    ...defaults,
-    type,
-  };
+export function getYScaleTypeFromSpec(type?: BasicSeriesSpec['yScaleType']): ScaleContinuousType {
+  return type ?? Y_SCALE_DEFAULT.type;
+}
+
+/** @internal */
+export function getYNiceFromSpec(nice?: BasicSeriesSpec['yNice']): boolean {
+  return nice ?? Y_SCALE_DEFAULT.nice;
 }

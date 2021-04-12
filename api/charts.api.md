@@ -72,14 +72,6 @@ export const AnnotationType: Readonly<{
 export type AnnotationType = $Values<typeof AnnotationType>;
 
 // @public (undocumented)
-export interface APIScale<T extends ScaleType> {
-    // (undocumented)
-    nice: boolean;
-    // (undocumented)
-    type: T;
-}
-
-// @public (undocumented)
 export interface ArcSeriesStyle {
     // (undocumented)
     arc: ArcStyle;
@@ -1677,10 +1669,12 @@ export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean)
 // @public (undocumented)
 export interface SeriesScales {
     timeZone?: string;
-    xScaleType: XScaleType | APIScale<XScaleType>;
+    xNice?: boolean;
+    xScaleType: XScaleType;
+    yNice?: boolean;
     // @deprecated
     yScaleToDataExtent?: boolean;
-    yScaleType: ScaleContinuousType | APIScale<ScaleContinuousType>;
+    yScaleType: ScaleContinuousType;
 }
 
 // @public (undocumented)

@@ -36,7 +36,7 @@ import { getSeriesIndex, XYChartSeriesIdentifier } from '../../utils/series';
 import { BasicSeriesSpec, HistogramModeAlignments, SeriesColorAccessorFn } from '../../utils/specs';
 import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
 import { computeSeriesGeometriesSelector } from '../selectors/compute_series_geometries';
-import { getAPIScaleConfigs } from '../selectors/get_api_scale_configs';
+import { getScaleConfigsFromSpecs } from '../selectors/get_api_scale_configs';
 import {
   computeSeriesDomains,
   computeXScaleOffset,
@@ -79,8 +79,8 @@ describe('Chart State utils', () => {
       yAccessors: ['y'],
       data: BARCHART_1Y0G,
     });
-    const apiScaleConfig = getAPIScaleConfigs([], [spec1, spec2], MockGlobalSpec.settings());
-    const domains = computeSeriesDomains([spec1, spec2], apiScaleConfig);
+    const scaleConfig = getScaleConfigsFromSpecs([], [spec1, spec2], MockGlobalSpec.settings());
+    const domains = computeSeriesDomains([spec1, spec2], scaleConfig);
     expect(domains.xDomain).toEqual(
       MockXDomain.fromScaleType(ScaleType.Linear, {
         domain: [0, 3],
@@ -128,8 +128,8 @@ describe('Chart State utils', () => {
       stackAccessors: ['x'],
       data: BARCHART_1Y1G,
     });
-    const apiScaleConfig = getAPIScaleConfigs([], [spec1, spec2], MockGlobalSpec.settings());
-    const domains = computeSeriesDomains([spec1, spec2], apiScaleConfig);
+    const scaleConfig = getScaleConfigsFromSpecs([], [spec1, spec2], MockGlobalSpec.settings());
+    const domains = computeSeriesDomains([spec1, spec2], scaleConfig);
     expect(domains.xDomain).toEqual(
       MockXDomain.fromScaleType(ScaleType.Linear, {
         domain: [0, 3],

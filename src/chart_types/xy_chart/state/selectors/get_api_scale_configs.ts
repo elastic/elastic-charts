@@ -27,9 +27,8 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { GroupId } from '../../../../utils/ids';
 import { convertXScaleTypes } from '../../domains/x_domain';
 import { coerceYScaleTypes } from '../../domains/y_domain';
-import { getYAPIScale } from '../../scales/get_api_scales';
+import { getYNiceFromSpec, getYScaleTypeFromSpec } from '../../scales/get_api_scales';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../scales/scale_defaults';
-import { APIScale } from '../../scales/types';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { groupBy } from '../../utils/group_data_series';
 import { AxisSpec, BasicSeriesSpec, CustomXDomain, XScaleType, YDomainRange } from '../../utils/specs';
@@ -38,34 +37,36 @@ import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { mergeYCustomDomainsByGroupId } from './merge_y_custom_domains';
 
 /** @internal */
-export type APIScaleConfigBase<T extends ScaleType, D extends CustomXDomain | YDomainRange> = APIScale<T> & {
+export type ScaleConfigBase<T extends ScaleType, D extends CustomXDomain | YDomainRange> = {
+  type: T;
+  nice: boolean;
   desiredTickCount: number;
   customDomain?: D;
 };
-type APIXScaleConfigBase = APIScaleConfigBase<XScaleType, CustomXDomain>;
-type APIYScaleConfigBase = APIScaleConfigBase<ScaleContinuousType, YDomainRange>;
+type XScaleConfigBase = ScaleConfigBase<XScaleType, CustomXDomain>;
+type YScaleConfigBase = ScaleConfigBase<ScaleContinuousType, YDomainRange>;
 
 /** @internal */
-export interface APIScaleConfigs {
-  x: APIXScaleConfigBase & {
+export interface ScaleConfigs {
+  x: XScaleConfigBase & {
     isBandScale: boolean;
     timeZone?: string;
   };
-  y: Record<GroupId, APIYScaleConfigBase>;
+  y: Record<GroupId, YScaleConfigBase>;
 }
 
 /** @internal */
-export const getAPIScaleConfigsSelector = createCachedSelector(
+export const getScaleConfigsFromSpecsSelector = createCachedSelector(
   [getAxisSpecsSelector, getSeriesSpecsSelector, getSettingsSpecSelector],
-  getAPIScaleConfigs,
+  getScaleConfigsFromSpecs,
 )(getChartIdSelector);
 
 /** @internal */
-export function getAPIScaleConfigs(
+export function getScaleConfigsFromSpecs(
   axisSpecs: AxisSpec[],
   seriesSpecs: BasicSeriesSpec[],
   settingsSpec: SettingsSpec,
-): APIScaleConfigs {
+): ScaleConfigs {
   const isHorizontalChart = isHorizontalRotation(settingsSpec.rotation);
 
   // x axis
@@ -75,17 +76,20 @@ export function getAPIScaleConfigs(
   }, X_SCALE_DEFAULT.desiredTickCount);
 
   const xScaleConfig = convertXScaleTypes(seriesSpecs);
-  const x: APIScaleConfigs['x'] = {
+  const x: ScaleConfigs['x'] = {
     customDomain: settingsSpec.xDomain,
     ...xScaleConfig,
     desiredTickCount: xTicks,
   };
 
   // y axes
-  const scaleTypeByGroupId = groupBy(seriesSpecs, ['groupId'], true).reduce<
-    Record<GroupId, APIScale<ScaleContinuousType>>
+  const scaleConfigsByGroupId = groupBy(seriesSpecs, ['groupId'], true).reduce<
+    Record<GroupId, { nice: boolean; type: ScaleContinuousType }>
   >((acc, series) => {
-    const yScaleTypes = series.map(({ yScaleType }) => getYAPIScale(yScaleType));
+    const yScaleTypes = series.map(({ yScaleType, yNice }) => ({
+      nice: getYNiceFromSpec(yNice),
+      type: getYScaleTypeFromSpec(yScaleType),
+    }));
     acc[series[0].groupId] = coerceYScaleTypes(yScaleTypes);
     return acc;
   }, {});
@@ -93,15 +97,15 @@ export function getAPIScaleConfigs(
   const customDomainByGroupId = mergeYCustomDomainsByGroupId(axisSpecs, settingsSpec.rotation);
 
   const yAxes = axisSpecs.filter((d) => isHorizontalChart === isVerticalAxis(d.position));
-  const y = Object.keys(scaleTypeByGroupId).reduce<APIScaleConfigs['y']>((acc, groupId) => {
+  const y = Object.keys(scaleConfigsByGroupId).reduce<ScaleConfigs['y']>((acc, groupId) => {
     const axis = yAxes.find((yAxis) => yAxis.groupId === groupId);
     const desiredTickCount = axis?.ticks ?? Y_SCALE_DEFAULT.desiredTickCount;
-    const apiScale = scaleTypeByGroupId[groupId];
+    const scaleConfig = scaleConfigsByGroupId[groupId];
     const customDomain = customDomainByGroupId.get(groupId);
     if (!acc[groupId]) {
       acc[groupId] = {
         customDomain,
-        ...apiScale,
+        ...scaleConfig,
         desiredTickCount,
       };
     }

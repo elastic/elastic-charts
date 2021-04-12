@@ -44,7 +44,6 @@ import {
 } from '../../../utils/themes/theme';
 import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 import { AnnotationTooltipFormatter, CustomAnnotationTooltip } from '../annotations/types';
-import { APIScale } from '../scales/types';
 import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
 
 /** @public */
@@ -462,7 +461,12 @@ export interface SeriesScales {
    * The x axis scale type
    * @defaultValue `ordinal` {@link (ScaleType:type) | ScaleType.Ordinal}
    */
-  xScaleType: XScaleType | APIScale<XScaleType>;
+  xScaleType: XScaleType;
+  /**
+   * Extends the x domain so that it starts and ends on nice round values.
+   * @defaultValue `false`
+   */
+  xNice?: boolean;
   /**
    * If using a ScaleType.Time this timezone identifier is required to
    * compute a nice set of xScale ticks. Can be any IANA zone supported by
@@ -474,7 +478,12 @@ export interface SeriesScales {
    * The y axis scale type
    * @defaultValue `linear` {@link (ScaleType:type) | ScaleType.Linear}
    */
-  yScaleType: ScaleContinuousType | APIScale<ScaleContinuousType>;
+  yScaleType: ScaleContinuousType;
+  /**
+   * Extends the y domain so that it starts and ends on nice round values.
+   * @defaultValue `false`
+   */
+  yNice?: boolean;
   /**
    * if true, the min y value is set to the minimum domain value, 0 otherwise
    * @deprecated use `domain.fit` instead

@@ -25,7 +25,7 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getAccessorValue } from '../../../../utils/accessor';
 import { mergeXDomain } from '../../../xy_chart/domains/x_domain';
-import { getDefaultAPIScale } from '../../../xy_chart/scales/get_api_scales';
+import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../../../xy_chart/scales/get_api_scales';
 import { X_SCALE_DEFAULT } from '../../specs/scale_defaults';
 import { HeatmapTable } from './compute_chart_dimensions';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
@@ -77,7 +77,8 @@ export const getHeatmapTableSelector = createCachedSelector(
 
     resultData.xDomain = mergeXDomain(
       {
-        ...getDefaultAPIScale(spec.xScaleType, X_SCALE_DEFAULT),
+        type: getXScaleTypeFromSpec(spec.xScaleType),
+        nice: getXNiceFromSpec(),
         isBandScale: false,
         desiredTickCount: X_SCALE_DEFAULT.desiredTickCount,
         customDomain: xDomain,

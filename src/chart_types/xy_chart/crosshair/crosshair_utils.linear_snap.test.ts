@@ -23,7 +23,7 @@ import { MockXDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
 import { Dimensions } from '../../../utils/dimensions';
-import { getAPIScaleConfigs } from '../state/selectors/get_api_scale_configs';
+import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_configs';
 import { computeSeriesDomains } from '../state/utils/utils';
 import { computeXScale } from '../utils/scales';
 import { BasicSeriesSpec, SeriesType } from '../utils/specs';
@@ -103,31 +103,31 @@ describe('Crosshair utils linear scale', () => {
   const barSeries = [barSeries1];
   const barSeriesDomains = computeSeriesDomains(
     barSeries,
-    getAPIScaleConfigs([], barSeries, MockGlobalSpec.settings()),
+    getScaleConfigsFromSpecs([], barSeries, MockGlobalSpec.settings()),
   );
 
   const multiBarSeries = [barSeries1, barSeries2];
   const multiBarSeriesDomains = computeSeriesDomains(
     multiBarSeries,
-    getAPIScaleConfigs([], multiBarSeries, MockGlobalSpec.settings()),
+    getScaleConfigsFromSpecs([], multiBarSeries, MockGlobalSpec.settings()),
   );
 
   const lineSeries = [lineSeries1];
   const lineSeriesDomains = computeSeriesDomains(
     lineSeries,
-    getAPIScaleConfigs([], lineSeries, MockGlobalSpec.settings()),
+    getScaleConfigsFromSpecs([], lineSeries, MockGlobalSpec.settings()),
   );
 
   const multiLineSeries = [lineSeries1, lineSeries2];
   const multiLineSeriesDomains = computeSeriesDomains(
     multiLineSeries,
-    getAPIScaleConfigs([], multiLineSeries, MockGlobalSpec.settings()),
+    getScaleConfigsFromSpecs([], multiLineSeries, MockGlobalSpec.settings()),
   );
 
   const mixedLinesBars = [lineSeries1, lineSeries2, barSeries1, barSeries2];
   const mixedLinesBarsSeriesDomains = computeSeriesDomains(
     mixedLinesBars,
-    getAPIScaleConfigs([], mixedLinesBars, MockGlobalSpec.settings()),
+    getScaleConfigsFromSpecs([], mixedLinesBars, MockGlobalSpec.settings()),
   );
 
   const barSeriesScale = computeXScale({

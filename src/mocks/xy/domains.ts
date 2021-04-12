@@ -18,7 +18,12 @@
  */
 
 import { XDomain, YDomain } from '../../chart_types/xy_chart/domains/types';
-import { getXAPIScale, getYAPIScale } from '../../chart_types/xy_chart/scales/get_api_scales';
+import {
+  getXNiceFromSpec,
+  getXScaleTypeFromSpec,
+  getYNiceFromSpec,
+  getYScaleTypeFromSpec,
+} from '../../chart_types/xy_chart/scales/get_api_scales';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../chart_types/xy_chart/scales/scale_defaults';
 import { DEFAULT_GLOBAL_ID, XScaleType } from '../../chart_types/xy_chart/utils/specs';
 import { ScaleContinuousType } from '../../scales';
@@ -42,7 +47,8 @@ export class MockXDomain {
   static fromScaleType(scaleType: XScaleType, partial?: RecursivePartial<XDomain>) {
     return mergePartial<XDomain>(MockXDomain.base, partial, { mergeOptionalPartialValues: true }, [
       {
-        ...getXAPIScale(scaleType),
+        type: getXScaleTypeFromSpec(scaleType),
+        nice: getXNiceFromSpec(),
       },
     ]);
   }
@@ -64,7 +70,8 @@ export class MockYDomain {
   static fromScaleType(scaleType: ScaleContinuousType, partial?: RecursivePartial<YDomain>) {
     return mergePartial<YDomain>(MockYDomain.base, partial, { mergeOptionalPartialValues: true }, [
       {
-        ...getYAPIScale(scaleType),
+        type: getYScaleTypeFromSpec(scaleType),
+        nice: getYNiceFromSpec(),
       },
     ]);
   }

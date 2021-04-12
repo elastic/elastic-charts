@@ -23,8 +23,7 @@ import { identity } from '../../../utils/common';
 import { computeContinuousDataDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
-import { APIScale } from '../scales/types';
-import { APIScaleConfigs } from '../state/selectors/get_api_scale_configs';
+import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { getSpecDomainGroupId } from '../state/utils/spec';
 import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { groupBy } from '../utils/group_data_series';
@@ -40,7 +39,7 @@ export type YBasicSeriesSpec = Pick<
 > & { stackMode?: StackMode; enableHistogramMode?: boolean };
 
 /** @internal */
-export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: APIScaleConfigs['y']): YDomain[] {
+export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: ScaleConfigs['y']): YDomain[] {
   const dataSeriesByGroupId = groupBy(dataSeries, ({ spec }) => getSpecDomainGroupId(spec), true);
 
   return dataSeriesByGroupId.reduce<YDomain[]>((acc, groupedDataSeries) => {
@@ -61,7 +60,7 @@ function mergeYDomainForGroup(
   stacked: DataSeries[],
   nonStacked: DataSeries[],
   hasZeroBaselineSpecs: boolean,
-  yAPIScaleConfig: APIScaleConfigs['y'],
+  yScaleConfig: ScaleConfigs['y'],
 ): YDomain | null {
   const dataSeries = [...stacked, ...nonStacked];
   if (dataSeries.length === 0) {
@@ -70,7 +69,7 @@ function mergeYDomainForGroup(
 
   const [{ stackMode, spec }] = dataSeries;
   const groupId = getSpecDomainGroupId(spec);
-  const { customDomain, type, nice, desiredTickCount } = yAPIScaleConfig[groupId];
+  const { customDomain, type, nice, desiredTickCount } = yScaleConfig[groupId];
 
   let domain: ContinuousDomain;
   if (stackMode === StackMode.Percentage) {
@@ -221,7 +220,9 @@ export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean)
  * @returns {ScaleContinuousType}
  * @internal
  */
-export function coerceYScaleTypes(scales: APIScale<ScaleContinuousType>[]): APIScale<ScaleContinuousType> {
+export function coerceYScaleTypes(
+  scales: Array<{ type: ScaleContinuousType; nice: boolean }>,
+): { type: ScaleContinuousType; nice: boolean } {
   const scaleCollection = scales.reduce<{
     types: Set<ScaleContinuousType>;
     nice: Array<boolean>;
