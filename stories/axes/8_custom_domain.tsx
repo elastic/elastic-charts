@@ -23,14 +23,17 @@ import React from 'react';
 import { Axis, BarSeries, Chart, LIGHT_THEME, LineSeries, Position, ScaleType, Settings } from '../../src';
 
 export const Example = () => {
+  const customXDomain = boolean('customize X domain', true, 'X axis');
+  const customBarYDomain = boolean('customize Y domain', true, 'Bar');
+  const customLineYDomain = boolean('customize Y domain', true, 'Line');
   const options = {
     range: true,
-    min: 0,
+    min: -10,
     max: 20,
     step: 0.1,
   };
   const barDomain = {
-    min: number('Bar min', 0, options, 'Bar'),
+    min: number('Bar min', -5, options, 'Bar'),
     max: number('Bar max', 7, options, 'Bar'),
   };
 
@@ -60,23 +63,20 @@ export const Example = () => {
   };
 
   const showBars = boolean('show bars', true, 'Bar');
-  const nice = boolean('nice domain', true);
+  const niceDomainBar = boolean('nice domain', true, 'Bar');
+  const niceDomainLine = boolean('nice domain', true, 'Line');
   return (
     <Chart className="story-chart">
       <Settings
         showLegend={false}
         theme={{ chartPaddings: { top: 0, left: 10, right: 10, bottom: 0 } }}
-        xDomain={xDomain}
+        xDomain={customXDomain ? xDomain : undefined}
       />
       <Axis
         id="bottom"
         position={Position.Bottom}
         title="X axis"
-        // showOverlappingTicks
         style={{
-          // tickLabel: {
-          //   padding: 5,
-          // },
           tickLine: {
             visible: true,
           },
@@ -87,7 +87,7 @@ export const Example = () => {
         title="Bar"
         position={Position.Right}
         tickFormat={(d) => Number(d).toFixed(2)}
-        domain={barDomain}
+        domain={customBarYDomain ? barDomain : undefined}
         hide={boolean('Hide bar axis', false, 'Bar')}
         ticks={barTicks}
         style={{
@@ -112,7 +112,7 @@ export const Example = () => {
         groupId="group2"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
-        domain={lineDomain}
+        domain={customLineYDomain ? lineDomain : undefined}
         hide={boolean('Hide line axis', false, 'Line')}
         ticks={lineTicks}
         style={{
@@ -136,13 +136,13 @@ export const Example = () => {
           id="bars"
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
-          yNice={nice}
+          yNice={niceDomainBar}
           xAccessor="x"
           yAccessors={['y']}
           data={[
             { x: 0, y: 2 },
             { x: 1, y: 7 },
-            { x: 2, y: 3 },
+            { x: 2, y: -3 },
             { x: 3, y: 6 },
           ]}
         />
@@ -150,9 +150,9 @@ export const Example = () => {
       <LineSeries
         id="lines"
         xScaleType={ScaleType.Linear}
-        xNice={nice}
+        xNice={niceDomainLine}
         yScaleType={ScaleType.Linear}
-        yNice={nice}
+        yNice={niceDomainLine}
         groupId="group2"
         xAccessor="x"
         yAccessors={['y']}
