@@ -474,6 +474,16 @@ class CommonPage {
     });
     return accessibilitySnapshot;
   }
+
+  /**
+   * Get HTML for element to test aria labels etc
+   */
+  // eslint-disable-next-line class-methods-use-this
+  async getElementHTML(url: string) {
+    await this.loadElementFromURL(url);
+
+    return await page.evaluate(() => new XMLSerializer().serializeToString(document));
+  }
 }
 
 export const common = new CommonPage();

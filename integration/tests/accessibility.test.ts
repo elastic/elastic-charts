@@ -42,4 +42,14 @@ describe('Accessibility tree', () => {
     });
     expect(hasTextOfChartTypes[0].name).toBe('Mixed chart: bar and line chart');
   });
+  it('should allow a custom description if consumer passes one', async () => {
+    // point to a URL where the custom description is set to 'test test test'
+    const entireHTML = await common.getElementHTML(
+      'http://localhost:9001/iframe.html?id=test-cases--add-custom-description&knob-custom description for screen readers=test test test test',
+    );
+    // find the index within in the HTML where the #get_custom_description is
+    const elementIndex = entireHTML.indexOf('<p id="get_custom_description"');
+    const paragraphCustomDescription = entireHTML.slice(elementIndex, elementIndex + 54);
+    expect(paragraphCustomDescription).toBe('<p id="get_custom_description">test test test test</p>');
+  });
 });
