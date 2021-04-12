@@ -119,14 +119,11 @@ export function renderBars(
 
     const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
 
-    let x = xScaled + xScale.bandwidth * orderIndex;
-
     const maxPixelWidth = clamp(seriesStyle.rect.widthRatio ?? 1, 0, 1) * xScale.bandwidth;
     const minPixelWidth = clamp(seriesStyle.rect.widthPixel ?? 0, 0, maxPixelWidth);
 
     const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
-
-    x = x + xScale.bandwidth / 2 - width / 2;
+    const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
     const originalY1Value = stackMode === StackMode.Percentage ? y1 - (y0 ?? 0) : initialY1;
     const formattedDisplayValue =
