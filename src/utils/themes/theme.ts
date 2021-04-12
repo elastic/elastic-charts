@@ -19,7 +19,7 @@
 
 import { $Values } from 'utility-types';
 
-import { Pixels } from '../../common/geometry';
+import { Pixels, Ratio } from '../../common/geometry';
 import { Color, ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, SimplePadding } from '../dimensions';
 
@@ -400,7 +400,9 @@ export interface RectStyle {
   /** the opacity of each rect on the theme/series */
   opacity: number;
   /** The width of the rect in pixel */
-  width?: Pixels;
+  widthPixel?: Pixels;
+  /** The ratio of the width limited to [0,1] */
+  widthRatio?: Ratio;
 }
 
 /** @public */
