@@ -23,7 +23,7 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 
 /** @internal */
-export const isSeriesTypesA11y = createCachedSelector(
+export const isDefaultDescriptionDisabled = createCachedSelector(
   [getSettingsSpecSelector],
   ({ disableGeneratedSeriesTypes }): boolean => {
     return disableGeneratedSeriesTypes;

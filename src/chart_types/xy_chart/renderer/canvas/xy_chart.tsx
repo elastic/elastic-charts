@@ -52,7 +52,7 @@ import { getHighlightedSeriesSelector } from '../../state/selectors/get_highligh
 import { getSeriesTypes } from '../../state/selectors/get_series_types';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
-import { isSeriesTypesA11y } from '../../state/selectors/is_series_types_a11y';
+import { isDefaultDescriptionDisabled } from '../../state/selectors/is_default_description_disabled';
 import { Geometries, Transform } from '../../state/utils/types';
 import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
@@ -281,7 +281,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     panelGeoms: computePanelsSelectors(state),
     seriesTypes: getSeriesTypes(state),
     customDescription: getCustomDescription(state),
-    disableGeneratedSeriesTypes: isSeriesTypesA11y(state),
+    disableGeneratedSeriesTypes: isDefaultDescriptionDisabled(state),
   };
 };
 
