@@ -186,15 +186,17 @@ class XYChartComponent extends React.Component<XYChartProps> {
           role="presentation"
           aria-describedby="get_custom_description"
         >
-          <dl className="echScreen-reader">
-            <p id="get_custom_description">{customDescription}</p>
-            {!disableGeneratedSeriesTypes && (
-              <>
-                <dt> Chart type </dt>
-                <dd>{chartSeriesTypes}</dd>
-              </>
-            )}
-          </dl>
+          {(customDescription || !disableGeneratedSeriesTypes) && (
+            <div className="echScreenReaderOnly">
+              {customDescription && <p id="get_custom_description">{customDescription}</p>}
+              {!disableGeneratedSeriesTypes && (
+                <dl>
+                  <dt> Chart type </dt>
+                  <dd>{chartSeriesTypes}</dd>
+                </dl>
+              )}
+            </div>
+          )}
         </canvas>
       </figure>
     );
