@@ -39,7 +39,8 @@ function range(title: string, min: number, max: number, value: number, groupId?:
 
 export const Example = () => {
   const applyBarStyle = boolean('apply bar style (bar 1 series)', true, 'Chart Global Theme');
-
+  const changeRectWidth = boolean('enable custom rect width', false, 'Chart Global Theme');
+  const rectWidth = range('rect width (px)', 0, 100, 30, 'Chart Global Theme', 1);
   const barSeriesStyle = {
     rectBorder: {
       stroke: color('border stroke', 'blue', 'Bar 1 Style'),
@@ -61,6 +62,7 @@ export const Example = () => {
       },
       rect: {
         opacity: range('theme opacity ', 0, 1, 0.9, 'Chart Global Theme', 0.1),
+        width: changeRectWidth ? rectWidth : undefined,
       },
     },
   };

@@ -20,7 +20,7 @@
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { Color, mergePartial } from '../../../utils/common';
+import { clamp, Color, mergePartial } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
@@ -107,8 +107,22 @@ export function renderBars(
       return;
     }
 
-    const x = xScaled + xScale.bandwidth * orderIndex;
-    const width = xScale.bandwidth;
+    const seriesIdentifier: XYChartSeriesIdentifier = {
+      key: dataSeries.key,
+      specId: dataSeries.specId,
+      yAccessor: dataSeries.yAccessor,
+      splitAccessors: dataSeries.splitAccessors,
+      seriesKeys: dataSeries.seriesKeys,
+      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
+      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
+    };
+
+    const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
+
+    let x = xScaled + xScale.bandwidth * orderIndex;
+    const width = clamp(seriesStyle.rect.width ?? xScale.bandwidth, 0, xScale.bandwidth);
+    x = x + xScale.bandwidth / 2 - width / 2;
+
     const originalY1Value = stackMode === StackMode.Percentage ? y1 - (y0 ?? 0) : initialY1;
     const formattedDisplayValue =
       displayValueSettings && displayValueSettings.valueFormatter
@@ -155,18 +169,6 @@ export function renderBars(
             isValueContainedInElement: displayValueSettings.isValueContainedInElement,
           }
         : undefined;
-
-    const seriesIdentifier: XYChartSeriesIdentifier = {
-      key: dataSeries.key,
-      specId: dataSeries.specId,
-      yAccessor: dataSeries.yAccessor,
-      splitAccessors: dataSeries.splitAccessors,
-      seriesKeys: dataSeries.seriesKeys,
-      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
-      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
-    };
-
-    const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
 
     const barGeometry: BarGeometry = {
       displayValue,
