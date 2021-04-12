@@ -617,7 +617,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'customDescription' | 'disableGeneratedSeriesTypes';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -1731,9 +1731,11 @@ export interface SettingsSpec extends Spec, LegendSpec {
     animateData: boolean;
     baseTheme?: Theme;
     brushAxis?: BrushAxis;
+    customDescription?: string;
     debug: boolean;
     // @alpha
     debugState?: boolean;
+    disableGeneratedSeriesTypes: boolean;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
     hideDuplicateAxes: boolean;
