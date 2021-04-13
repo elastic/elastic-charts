@@ -141,23 +141,31 @@ class PartitionComponent extends React.Component<PartitionProps> {
       forwardStageRef,
       initialized,
       chartContainerDimensions: { width, height },
+      geometries: { partitionLayout },
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
     }
-
     return (
-      <canvas
-        ref={forwardStageRef}
-        className="echCanvasRenderer"
-        width={width * this.devicePixelRatio}
-        height={height * this.devicePixelRatio}
-        onMouseMove={this.handleMouseMove.bind(this)}
-        style={{
-          width,
-          height,
-        }}
-      />
+      <figure>
+        <canvas
+          ref={forwardStageRef}
+          className="echCanvasRenderer"
+          width={width * this.devicePixelRatio}
+          height={height * this.devicePixelRatio}
+          onMouseMove={this.handleMouseMove.bind(this)}
+          style={{
+            width,
+            height,
+          }}
+          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+          role="presentation"
+        />
+        <dl className="echScreenReaderOnly">
+          <dt>Chart type</dt>
+          <dd>{partitionLayout}</dd>
+        </dl>
+      </figure>
     );
   }
 

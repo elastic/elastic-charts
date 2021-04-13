@@ -179,7 +179,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
-          <dl className="echScreen-reader">
+          <dl className="echScreenReaderOnly">
             <dt>Chart type</dt>
             <dd>{chartSeriesTypes}</dd>
           </dl>

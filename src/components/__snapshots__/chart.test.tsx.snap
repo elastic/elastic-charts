@@ -75,7 +75,7 @@ exports[`Chart should render the legend name test 1`] = `
                   <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} seriesTypes={{...}} onChartRendered={[Function (anonymous)]}>
                     <figure>
                       <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\">
-                        <dl className=\\"echScreen-reader\\">
+                        <dl className=\\"echScreenReaderOnly\\">
                           <dt>
                             Chart type
                           </dt>
