@@ -1680,7 +1680,9 @@ export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean)
 // @public (undocumented)
 export interface SeriesScales {
     timeZone?: string;
+    xNice?: boolean;
     xScaleType: XScaleType;
+    yNice?: boolean;
     // @deprecated
     yScaleToDataExtent?: boolean;
     yScaleType: ScaleContinuousType;
