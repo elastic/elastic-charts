@@ -97,6 +97,17 @@ type HeatmapDebugState = {
   };
 };
 
+/** @public */
+export type PartitionDebugState = {
+  panelTitle: string;
+  partitions: Array<{
+    name: string;
+    depth: number;
+    color: string;
+    value: number;
+  }>;
+};
+
 /**
  * Describes _visible_ chart state for use in functional tests
  *
@@ -111,4 +122,5 @@ export interface DebugState {
   bars?: DebugStateBar[];
   /** Heatmap chart debug state */
   heatmap?: HeatmapDebugState;
+  partition?: PartitionDebugState[];
 }

@@ -66,13 +66,13 @@ class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
 }
 
 const mapStateToProps = (state: GlobalChartState): ChartStatusStateProps => {
-  const settings = getSettingsSpecSelector(state);
+  const { onRenderChange, debug } = getSettingsSpecSelector(state);
 
   return {
     rendered: state.chartRendered,
     renderedCount: state.chartRenderedCount,
-    onRenderChange: settings.onRenderChange,
-    debugState: settings.debugState ? getDebugStateSelector(state) : null,
+    onRenderChange,
+    debugState: debug ? getDebugStateSelector(state) : null,
   };
 };
 
