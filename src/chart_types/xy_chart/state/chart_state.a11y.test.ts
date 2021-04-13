@@ -17,63 +17,61 @@
  * under the License.
  */
 
-import { Store, createStore } from 'redux';
+import { Store } from 'redux';
 
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
-import { updateParentDimensions } from '../../../state/actions/chart_settings';
-import { upsertSpec, specParsed } from '../../../state/actions/specs';
-import { GlobalChartState, chartStoreReducer } from '../../../state/chart_state';
-import { getCustomDescription } from './selectors/get_custom_description';
-import { isDefaultDescriptionDisabled } from './selectors/is_default_description_disabled';
+import { MockStore } from '../../../mocks/store/store';
+import { GlobalChartState } from '../../../state/chart_state';
+import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
 
 describe('custom description for screen readers', () => {
   let store: Store<GlobalChartState>;
   beforeEach(() => {
-    const storeReducer = chartStoreReducer('chartId');
-    store = createStore(storeReducer);
-    store.dispatch(
-      upsertSpec(
+    store = MockStore.default();
+    MockStore.addSpecs(
+      [
         MockSeriesSpec.bar({
           data: [
             { x: 1, y: 10 },
             { x: 2, y: 5 },
           ],
         }),
-      ),
+      ],
+      store,
     );
-    store.dispatch(upsertSpec(MockGlobalSpec.settings()));
-    store.dispatch(specParsed());
-    store.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
+    MockStore.addSpecs([MockGlobalSpec.settings()], store);
   });
   it('should test defaults', () => {
     const state = store.getState();
-    const customDescriptionValue = getCustomDescription(state);
-    const defaultGeneratedSeriesTypes = isDefaultDescriptionDisabled(state);
-    expect(customDescriptionValue).toBeUndefined();
-    expect(defaultGeneratedSeriesTypes).toBeFalse();
+    const descriptionValue = getSettingsSpecSelector(state).description;
+    const defaultGeneratedSeriesTypes = getSettingsSpecSelector(state).useDefaultSummary;
+    expect(descriptionValue).toBeUndefined();
+    expect(defaultGeneratedSeriesTypes).toBeTrue();
   });
   it('should allow user to set a custom description for chart', () => {
-    store.dispatch(
-      upsertSpec(
+    MockStore.addSpecs(
+      [
         MockGlobalSpec.settings({
-          customDescription: 'This is sample Kibana data',
+          description: 'This is sample Kibana data',
         }),
-      ),
+      ],
+      store,
     );
     const state = store.getState();
-    const customDescriptionValue = getCustomDescription(state);
-    expect(customDescriptionValue).toBe('This is sample Kibana data');
+    const descriptionValue = getSettingsSpecSelector(state).description;
+    expect(descriptionValue).toBe('This is sample Kibana data');
   });
   it('should be able to disable generated descriptions', () => {
-    store.dispatch(
-      upsertSpec(
+    MockStore.addSpecs(
+      [
         MockGlobalSpec.settings({
-          disableGeneratedSeriesTypes: true,
+          useDefaultSummary: false,
         }),
-      ),
+      ],
+      store,
     );
     const state = store.getState();
-    const disableGeneratedSeriesTypes = isDefaultDescriptionDisabled(state);
-    expect(disableGeneratedSeriesTypes).toBe(true);
+    const disableGeneratedSeriesTypes = getSettingsSpecSelector(state).useDefaultSummary;
+    expect(disableGeneratedSeriesTypes).toBe(false);
   });
 });

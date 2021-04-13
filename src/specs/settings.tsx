@@ -551,12 +551,12 @@ export interface SettingsSpec extends Spec, LegendSpec {
   /**
    * User can provide a custom description to be read by a screen reader about their chart
    */
-  customDescription?: string;
+  description?: string;
   /**
    * Disable the automated charts series types from being provided for screen readers
-   * @defaultValue false
+   * @defaultValue true
    */
-  disableGeneratedSeriesTypes: boolean;
+  useDefaultSummary: boolean;
 }
 
 /**
@@ -618,8 +618,8 @@ export type DefaultSettingsProps =
   | 'showLegendExtra'
   | 'legendPosition'
   | 'legendMaxDepth'
-  | 'customDescription'
-  | 'disableGeneratedSeriesTypes';
+  | 'description'
+  | 'useDefaultSummary';
 
 /** @public */
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;

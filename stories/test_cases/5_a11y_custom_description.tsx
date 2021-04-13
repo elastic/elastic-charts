@@ -24,11 +24,11 @@ import { AreaSeries, Chart, ScaleType, Settings } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 
 export const Example = () => {
-  const automatedSeries = boolean('Disable the default generated series types of charts for screen readers', false);
+  const automatedSeries = boolean('Use the default generated series types of charts for screen readers', true);
   const customDescriptionForScreenReaders = text('custom description for screen readers', '');
   return (
     <Chart className="story-chart">
-      <Settings customDescription={customDescriptionForScreenReaders} disableGeneratedSeriesTypes={automatedSeries} />
+      <Settings description={customDescriptionForScreenReaders} useDefaultSummary={automatedSeries} />
       <AreaSeries
         id="area"
         xScaleType={ScaleType.Time}

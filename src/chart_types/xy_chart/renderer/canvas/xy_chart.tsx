@@ -25,6 +25,7 @@ import { LegendItem } from '../../../../common/legend';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
@@ -47,12 +48,10 @@ import {
 } from '../../state/selectors/compute_per_panel_axes_geoms';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
-import { getCustomDescription } from '../../state/selectors/get_custom_description';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
 import { getSeriesTypes } from '../../state/selectors/get_series_types';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
-import { isDefaultDescriptionDisabled } from '../../state/selectors/is_default_description_disabled';
 import { Geometries, Transform } from '../../state/utils/types';
 import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
@@ -80,8 +79,9 @@ export interface ReactiveChartStateProps {
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
   seriesTypes: Set<SeriesType>;
-  customDescription: string | undefined;
-  disableGeneratedSeriesTypes: boolean;
+  description?: string;
+  useDefaultSummary: boolean;
+  chartId: string;
 }
 
 interface ReactiveChartDispatchProps {
@@ -159,8 +159,9 @@ class XYChartComponent extends React.Component<XYChartProps> {
       isChartEmpty,
       chartContainerDimensions: { width, height },
       seriesTypes,
-      customDescription,
-      disableGeneratedSeriesTypes,
+      description,
+      useDefaultSummary,
+      chartId,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
@@ -170,7 +171,6 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
     const chartSeriesTypes =
       seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
-
     return (
       <figure>
         <canvas
@@ -184,14 +184,14 @@ class XYChartComponent extends React.Component<XYChartProps> {
           }}
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
-          aria-describedby="get_custom_description"
+          {...(description ? { 'aria-describedby': `${chartId}--${chartSeriesTypes.length}` } : {})}
         >
-          {(customDescription || !disableGeneratedSeriesTypes) && (
+          {(description || useDefaultSummary) && (
             <div className="echScreenReaderOnly">
-              {customDescription && <p id="get_custom_description">{customDescription}</p>}
-              {!disableGeneratedSeriesTypes && (
+              {description && <p id={`${chartId}--${chartSeriesTypes.length}`}>{description}</p>}
+              {useDefaultSummary && (
                 <dl>
-                  <dt> Chart type </dt>
+                  <dt>Chart type</dt>
                   <dd>{chartSeriesTypes}</dd>
                 </dl>
               )}
@@ -251,8 +251,9 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationSpecs: [],
   panelGeoms: [],
   seriesTypes: new Set(),
-  customDescription: undefined,
-  disableGeneratedSeriesTypes: false,
+  description: undefined,
+  useDefaultSummary: true,
+  chartId: '',
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -282,8 +283,9 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
     seriesTypes: getSeriesTypes(state),
-    customDescription: getCustomDescription(state),
-    disableGeneratedSeriesTypes: isDefaultDescriptionDisabled(state),
+    description: getSettingsSpecSelector(state).description,
+    useDefaultSummary: getSettingsSpecSelector(state).useDefaultSummary,
+    chartId: getChartIdSelector(state),
   };
 };
 
