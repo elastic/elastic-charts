@@ -99,15 +99,18 @@ type HeatmapDebugState = {
 };
 
 /** @public */
+export type SinglePartitionDebugState = {
+  name: string;
+  depth: number;
+  color: string;
+  value: number;
+  coords: [Pixels, Pixels];
+};
+
+/** @public */
 export type PartitionDebugState = {
   panelTitle: string;
-  partitions: Array<{
-    name: string;
-    depth: number;
-    color: string;
-    value: number;
-    coords: [Pixels, Pixels];
-  }>;
+  partitions: Array<SinglePartitionDebugState>;
 };
 
 /**
