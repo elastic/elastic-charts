@@ -171,6 +171,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
     const chartSeriesTypes =
       seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
+    const chartIdDescription = `${chartId}--description`;
     return (
       <figure>
         <canvas
@@ -184,11 +185,11 @@ class XYChartComponent extends React.Component<XYChartProps> {
           }}
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
-          {...(description ? { 'aria-describedby': `${chartId}--${chartSeriesTypes.length}` } : {})}
+          {...(description ? { 'aria-describedby': chartIdDescription } : {})}
         >
           {(description || useDefaultSummary) && (
             <div className="echScreenReaderOnly">
-              {description && <p id={`${chartId}--${chartSeriesTypes.length}`}>{description}</p>}
+              {description && <p id={chartIdDescription}>{description}</p>}
               {useDefaultSummary && (
                 <dl>
                   <dt>Chart type</dt>
@@ -262,11 +263,12 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
 
   const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
+  const { debug, description, useDefaultSummary } = getSettingsSpecSelector(state);
 
   return {
     initialized: true,
     isChartEmpty: isChartEmptySelector(state),
-    debug: getSettingsSpecSelector(state).debug,
+    debug,
     geometries,
     geometriesIndex,
     theme: getChartThemeSelector(state),
@@ -283,8 +285,8 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
     seriesTypes: getSeriesTypes(state),
-    description: getSettingsSpecSelector(state).description,
-    useDefaultSummary: getSettingsSpecSelector(state).useDefaultSummary,
+    description,
+    useDefaultSummary,
     chartId: getChartIdSelector(state),
   };
 };

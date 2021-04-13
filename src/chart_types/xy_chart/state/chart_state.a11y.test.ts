@@ -36,17 +36,16 @@ describe('custom description for screen readers', () => {
             { x: 2, y: 5 },
           ],
         }),
+        MockGlobalSpec.settings(),
       ],
       store,
     );
-    MockStore.addSpecs([MockGlobalSpec.settings()], store);
   });
   it('should test defaults', () => {
     const state = store.getState();
-    const descriptionValue = getSettingsSpecSelector(state).description;
-    const defaultGeneratedSeriesTypes = getSettingsSpecSelector(state).useDefaultSummary;
-    expect(descriptionValue).toBeUndefined();
-    expect(defaultGeneratedSeriesTypes).toBeTrue();
+    const { description, useDefaultSummary } = getSettingsSpecSelector(state);
+    expect(description).toBeUndefined();
+    expect(useDefaultSummary).toBeTrue();
   });
   it('should allow user to set a custom description for chart', () => {
     MockStore.addSpecs(
@@ -58,8 +57,8 @@ describe('custom description for screen readers', () => {
       store,
     );
     const state = store.getState();
-    const descriptionValue = getSettingsSpecSelector(state).description;
-    expect(descriptionValue).toBe('This is sample Kibana data');
+    const { description } = getSettingsSpecSelector(state);
+    expect(description).toBe('This is sample Kibana data');
   });
   it('should be able to disable generated descriptions', () => {
     MockStore.addSpecs(
@@ -71,7 +70,7 @@ describe('custom description for screen readers', () => {
       store,
     );
     const state = store.getState();
-    const disableGeneratedSeriesTypes = getSettingsSpecSelector(state).useDefaultSummary;
-    expect(disableGeneratedSeriesTypes).toBe(false);
+    const { useDefaultSummary } = getSettingsSpecSelector(state);
+    expect(useDefaultSummary).toBe(false);
   });
 });
