@@ -18,6 +18,7 @@
  */
 
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
+import { Pixels } from '../common/geometry';
 import type { Position } from '../utils/common';
 import type { GeometryValue } from '../utils/geometry';
 
@@ -105,6 +106,7 @@ export type PartitionDebugState = {
     depth: number;
     color: string;
     value: number;
+    coords: [Pixels, Pixels];
   }>;
 };
 
