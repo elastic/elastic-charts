@@ -40,6 +40,7 @@ describe.each([
   [PartitionLayout.treemap, 9, 6],
   [PartitionLayout.flame, 9, 6],
   [PartitionLayout.icicle, 9, 6],
+  [PartitionLayout.mosaic, 9, 6],
 ])('Partition - debug state %s', (partitionLayout, numberOfElements, numberOfCalls) => {
   type TestDatum = { cat1: string; cat2: string; val: number };
   const specJSON = {
