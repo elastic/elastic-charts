@@ -21,6 +21,9 @@ export type AccessorFn = UnaryAccessorFn;
 // @public
 export type AccessorObjectKey = string;
 
+// @public
+export type AdditiveNumber = number;
+
 // @public (undocumented)
 export const AGGREGATE_KEY = "value";
 
@@ -1299,6 +1302,9 @@ export interface NodeDescriptor {
     [AGGREGATE_KEY]: number;
 }
 
+// @public
+export type NodeSorter = (a: ArrayEntry, b: ArrayEntry) => number;
+
 // @public (undocumented)
 export type NonAny = number | boolean | string | symbol | null;
 
@@ -1360,7 +1366,7 @@ export interface PartitionFillLabel extends LabelConfig {
     clipText: boolean;
 }
 
-// @public (undocumented)
+// @public
 export interface PartitionLayer {
     // Warning: (ae-forgotten-export) The symbol "ExtendedFillLabelConfig" needs to be exported by the entry point index.d.ts
     //
@@ -1376,6 +1382,8 @@ export interface PartitionLayer {
     };
     // (undocumented)
     showAccessor?: ShowAccessor;
+    // (undocumented)
+    sortPredicate?: NodeSorter | null;
 }
 
 // @public (undocumented)
@@ -1384,6 +1392,7 @@ export const PartitionLayout: Readonly<{
     treemap: "treemap";
     icicle: "icicle";
     flame: "flame";
+    mosaic: "mosaic";
 }>;
 
 // @public (undocumented)
@@ -1557,6 +1566,8 @@ export interface RectBorderStyle {
 export interface RectStyle {
     fill?: Color | ColorVariant;
     opacity: number;
+    widthPixel?: Pixels;
+    widthRatio?: Ratio;
 }
 
 // @public
@@ -1673,7 +1684,9 @@ export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean)
 // @public (undocumented)
 export interface SeriesScales {
     timeZone?: string;
+    xNice?: boolean;
     xScaleType: XScaleType;
+    yNice?: boolean;
     // @deprecated
     yScaleToDataExtent?: boolean;
     yScaleType: ScaleContinuousType;
@@ -2059,7 +2072,7 @@ export type UnboundedDomainWithInterval = DomainBase;
 export type UpperBoundedDomain = DomainBase & UpperBound;
 
 // @public (undocumented)
-export type ValueAccessor = (d: Datum) => number;
+export type ValueAccessor = (d: Datum) => AdditiveNumber;
 
 // @public (undocumented)
 export type ValueFormatter = (value: number) => string;
@@ -2184,8 +2197,8 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // src/chart_types/heatmap/layout/types/config_types.ts:31:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:63:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:64:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:148:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:149:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:149:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:150:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
