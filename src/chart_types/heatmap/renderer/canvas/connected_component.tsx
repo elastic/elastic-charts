@@ -97,6 +97,7 @@ class Component extends React.Component<Props> {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   render() {
     const {
       initialized,
@@ -107,16 +108,25 @@ class Component extends React.Component<Props> {
       return null;
     }
     return (
-      <canvas
-        ref={forwardStageRef}
-        className="echCanvasRenderer"
-        width={width * this.devicePixelRatio}
-        height={height * this.devicePixelRatio}
-        style={{
-          width,
-          height,
-        }}
-      />
+      <figure>
+        <canvas
+          ref={forwardStageRef}
+          className="echCanvasRenderer"
+          width={width * this.devicePixelRatio}
+          height={height * this.devicePixelRatio}
+          style={{
+            width,
+            height,
+          }}
+          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+          role="presentation"
+        >
+          <dl className="echScreenReaderOnly">
+            <dt>Chart type</dt>
+            <dd>Heatmap</dd>
+          </dl>
+        </canvas>
+      </figure>
     );
   }
 }

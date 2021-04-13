@@ -121,6 +121,7 @@ function layoutMaker(config: Configs, data: Datum[]) {
 
 const View = ({ words, conf }: { words: Word[]; conf: Configs }) => (
   <svg width={getWidth(conf)} height={getHeight(conf)}>
+    <title>Chart type: word cloud</title>
     <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
       {words.map((d, i) => {
         return (
