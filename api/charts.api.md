@@ -1562,6 +1562,8 @@ export interface RectBorderStyle {
 export interface RectStyle {
     fill?: Color | ColorVariant;
     opacity: number;
+    widthPixel?: Pixels;
+    widthRatio?: Ratio;
 }
 
 // @public
@@ -1678,7 +1680,9 @@ export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean)
 // @public (undocumented)
 export interface SeriesScales {
     timeZone?: string;
+    xNice?: boolean;
     xScaleType: XScaleType;
+    yNice?: boolean;
     // @deprecated
     yScaleToDataExtent?: boolean;
     yScaleType: ScaleContinuousType;

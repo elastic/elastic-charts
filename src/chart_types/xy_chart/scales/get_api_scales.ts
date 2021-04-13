@@ -17,18 +17,26 @@
  * under the License.
  */
 
-import { SB_SOURCE_PANEL } from '../utils/storybook';
+import { ScaleContinuousType } from '../../../scales';
+import { BasicSeriesSpec, XScaleType } from '../utils/specs';
+import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from './scale_defaults';
 
-export default {
-  title: 'Test Cases',
-  parameters: {
-    options: { selectedPanel: SB_SOURCE_PANEL },
-  },
-};
+/** @internal */
+export function getXScaleTypeFromSpec(type?: BasicSeriesSpec['xScaleType']): XScaleType {
+  return type ?? X_SCALE_DEFAULT.type;
+}
 
-export { Example as noSeries } from './1_no_series';
-export { Example as chromePathBugFix } from './2_chrome_path_bug_fix';
-export { Example as noAxesAnnotationBugFix } from './3_no_axes_annotation';
-export { Example as filterZerosInLogFitDomain } from './4_filter_zero_values_log';
-export { Example as legendScrollBarSizing } from './5_legend_scroll_bar_sizing';
-export { Example as addCustomDescription } from './6_a11y_custom_description';
+/** @internal */
+export function getXNiceFromSpec(nice?: BasicSeriesSpec['xNice']): boolean {
+  return nice ?? X_SCALE_DEFAULT.nice;
+}
+
+/** @internal */
+export function getYScaleTypeFromSpec(type?: BasicSeriesSpec['yScaleType']): ScaleContinuousType {
+  return type ?? Y_SCALE_DEFAULT.type;
+}
+
+/** @internal */
+export function getYNiceFromSpec(nice?: BasicSeriesSpec['yNice']): boolean {
+  return nice ?? Y_SCALE_DEFAULT.nice;
+}
