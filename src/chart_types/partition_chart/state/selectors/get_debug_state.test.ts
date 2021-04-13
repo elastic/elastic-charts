@@ -80,7 +80,10 @@ describe.each([
       onElementClickCaller(store.getState());
     });
     MockStore.addSpecs(
-      [MockSeriesSpec.sunburst(specJSON), MockGlobalSpec.settings({ debug: true, onElementClick: onClickListener })],
+      [
+        MockSeriesSpec.sunburst(specJSON),
+        MockGlobalSpec.settings({ debugState: true, onElementClick: onClickListener }),
+      ],
       store,
     );
     debugState = getDebugStateSelector(store.getState());
