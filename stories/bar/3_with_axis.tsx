@@ -37,8 +37,6 @@ export const Example = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        groupId="IDgroupId"
-        useDefaultGroupDomain="IDUseDefaultGroupDomain"
         data={[
           { x: 0, y: 2 },
           { x: 1, y: 7 },
