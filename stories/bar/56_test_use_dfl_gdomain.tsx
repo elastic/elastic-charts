@@ -17,33 +17,34 @@
  * under the License.
  */
 
-import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, DARK_THEME, LIGHT_THEME, Position, ScaleType, Settings } from '../../src';
+import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
 
 export const Example = () => {
-  const darkmode = boolean('darkmode', false);
-  const className = darkmode ? 'story-chart-dark' : 'story-chart';
   return (
-    <Chart className={className}>
-      <Settings baseTheme={darkmode ? DARK_THEME : LIGHT_THEME} />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
-      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+    <Chart className="story-chart">
+      <Axis id="bottom" position={Position.Bottom} />
+      <Axis id="right" groupId="mainGroup" position={Position.Left} ticks={5} />
 
       <BarSeries
-        id="bars"
-        xScaleType={ScaleType.Linear}
+        id="groupB"
+        groupId="other"
+        useDefaultGroupDomain="mainGroup"
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
+        yNice
         xAccessor="x"
         yAccessors={['y']}
-        groupId="IDgroupId"
-        useDefaultGroupDomain="IDUseDefaultGroupDomain"
+        splitSeriesAccessors={['g']}
+        stackAccessors={['g']}
         data={[
-          { x: 0, y: 2 },
-          { x: 1, y: 7 },
-          { x: 2, y: 3 },
-          { x: 3, y: 6 },
+          { x: 'A', y: 10, g: 'ga' },
+          { x: 'A', y: 10, g: 'gb' },
+          { x: 'A', y: 10, g: 'gc' },
+          { x: 'B', y: 10, g: 'ga' },
+          { x: 'B', y: 10, g: 'gb' },
+          { x: 'B', y: 10, g: 'gc' },
         ]}
       />
     </Chart>
