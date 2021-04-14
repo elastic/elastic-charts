@@ -549,6 +549,15 @@ export interface SettingsSpec extends Spec, LegendSpec {
    */
   noResults?: ComponentType | ReactChild;
   /**
+   * User can specify the heading level for the label
+   * @defaultValue 'h2'
+   */
+  HeadingLevel: 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  /**
+   * User can set a label
+   */
+  label?: string;
+  /**
    * User can provide a custom description to be read by a screen reader about their chart
    */
   description?: string;
@@ -619,7 +628,9 @@ export type DefaultSettingsProps =
   | 'legendPosition'
   | 'legendMaxDepth'
   | 'description'
-  | 'useDefaultSummary';
+  | 'useDefaultSummary'
+  | 'label'
+  | 'HeadingLevel';
 
 /** @public */
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;

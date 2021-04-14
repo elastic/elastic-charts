@@ -156,6 +156,7 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   brushAxis: BrushAxis.X,
   minBrushDelta: 2,
   useDefaultSummary: true,
+  HeadingLevel: 'h2',
 
   ...DEFAULT_LEGEND_CONFIG,
 };

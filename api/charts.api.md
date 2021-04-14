@@ -617,7 +617,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'description' | 'useDefaultSummary';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'description' | 'useDefaultSummary' | 'label' | 'HeadingLevel';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -1742,7 +1742,9 @@ export interface SettingsSpec extends Spec, LegendSpec {
     description?: string;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
+    HeadingLevel: 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
     hideDuplicateAxes: boolean;
+    label?: string;
     minBrushDelta?: number;
     noResults?: ComponentType | ReactChild;
     // (undocumented)

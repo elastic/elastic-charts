@@ -82,6 +82,8 @@ export interface ReactiveChartStateProps {
   description?: string;
   useDefaultSummary: boolean;
   chartId: string;
+  label?: string;
+  HeadingLevel: 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 
 interface ReactiveChartDispatchProps {
@@ -162,6 +164,8 @@ class XYChartComponent extends React.Component<XYChartProps> {
       description,
       useDefaultSummary,
       chartId,
+      label,
+      HeadingLevel,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
@@ -172,6 +176,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
     const chartSeriesTypes =
       seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
     const chartIdDescription = `${chartId}--description`;
+    const chartIdLabel = `${chartId}--label`;
     return (
       <figure>
         <canvas
@@ -187,6 +192,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
           role="presentation"
           {...(description ? { 'aria-describedby': chartIdDescription } : {})}
         >
+          {label && <HeadingLevel id={chartIdLabel}>{label}</HeadingLevel>}
           {(description || useDefaultSummary) && (
             <div className="echScreenReaderOnly">
               {description && <p id={chartIdDescription}>{description}</p>}
@@ -255,6 +261,8 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   description: undefined,
   useDefaultSummary: true,
   chartId: '',
+  label: undefined,
+  HeadingLevel: 'h2',
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -263,7 +271,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
 
   const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
-  const { debug, description, useDefaultSummary } = getSettingsSpecSelector(state);
+  const { debug, description, useDefaultSummary, label, HeadingLevel } = getSettingsSpecSelector(state);
 
   return {
     initialized: true,
@@ -288,6 +296,8 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     description,
     useDefaultSummary,
     chartId: getChartIdSelector(state),
+    label,
+    HeadingLevel,
   };
 };
 
