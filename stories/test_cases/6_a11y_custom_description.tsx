@@ -28,7 +28,7 @@ export const Example = () => {
   const customDescriptionForScreenReaders = text('add a description for screen readers', '');
   const customLabelForScreenReaders = text('add a label for screen readers', '');
   const headingLevelForScreenReaders = customLabelForScreenReaders
-    ? select('heading level for label', { H2: 'h2', H3: 'h3', H4: 'h4', H5: 'h5', H6: 'h6' }, 'h2')
+    ? select('heading level for label', { P: 'p', H1: 'h1', H2: 'h2', H3: 'h3', H4: 'h4', H5: 'h5', H6: 'h6' }, 'h2')
     : undefined;
   return (
     <Chart className="story-chart">

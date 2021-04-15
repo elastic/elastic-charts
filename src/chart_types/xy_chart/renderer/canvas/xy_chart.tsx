@@ -83,7 +83,8 @@ export interface ReactiveChartStateProps {
   useDefaultSummary: boolean;
   chartId: string;
   label?: string;
-  HeadingLevel: 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  labelledBy?: string;
+  HeadingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
 }
 
 interface ReactiveChartDispatchProps {
@@ -165,6 +166,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       useDefaultSummary,
       chartId,
       label,
+      labelledBy,
       HeadingLevel,
     } = this.props;
 
@@ -176,9 +178,14 @@ class XYChartComponent extends React.Component<XYChartProps> {
     const chartSeriesTypes =
       seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
     const chartIdDescription = `${chartId}--description`;
-    const chartIdLabel = `${chartId}--label`;
+    const chartIdLabel = label ? `${chartId}--label` : undefined;
+
+    const ariaProps = {
+      'aria-labelledby': labelledBy || label ? labelledBy ?? chartIdLabel : '',
+      'aria-describedby': `${labelledBy || ''} ${useDefaultSummary ? chartIdLabel : ''}`,
+    };
     return (
-      <figure>
+      <figure {...ariaProps}>
         <canvas
           ref={forwardStageRef}
           className="echCanvasRenderer"
@@ -190,7 +197,6 @@ class XYChartComponent extends React.Component<XYChartProps> {
           }}
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
-          {...(description ? { 'aria-describedby': chartIdDescription } : {})}
         >
           {label && <HeadingLevel id={chartIdLabel}>{label}</HeadingLevel>}
           {(description || useDefaultSummary) && (
@@ -262,6 +268,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   useDefaultSummary: true,
   chartId: '',
   label: undefined,
+  labelledBy: undefined,
   HeadingLevel: 'h2',
 };
 
@@ -271,7 +278,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
 
   const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
-  const { debug, description, useDefaultSummary, label, HeadingLevel } = getSettingsSpecSelector(state);
+  const { debug, description, useDefaultSummary, label, labelledBy, HeadingLevel } = getSettingsSpecSelector(state);
 
   return {
     initialized: true,
@@ -297,6 +304,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     useDefaultSummary,
     chartId: getChartIdSelector(state),
     label,
+    labelledBy,
     HeadingLevel,
   };
 };

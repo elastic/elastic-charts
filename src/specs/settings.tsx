@@ -552,11 +552,15 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * User can specify the heading level for the label
    * @defaultValue 'h2'
    */
-  HeadingLevel: 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  HeadingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
   /**
    * User can set a label
    */
   label?: string;
+  /**
+   * User can set a string to the aria-labelled by
+   * */
+  labelledBy?: string;
   /**
    * User can provide a custom description to be read by a screen reader about their chart
    */
