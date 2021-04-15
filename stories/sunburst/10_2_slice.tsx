@@ -26,7 +26,7 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example = () => (
   <Chart className="story-chart">
-    <Settings debug />
+    <Settings debugState />
     <Partition
       id="spec_1"
       data={mocks.pie.slice(0, 2)}

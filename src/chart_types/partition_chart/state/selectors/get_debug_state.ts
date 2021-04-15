@@ -33,16 +33,16 @@ export const getDebugStateSelector = createCachedSelector(
   (geoms): DebugState => {
     return {
       partition: geoms.reduce<PartitionDebugState[]>((acc, { panelTitle, config, quadViewModel, diskCenter }) => {
-        const partitions: PartitionDebugState['partitions'] = quadViewModel.map((quadViewModel) => {
-          const { dataName, depth, fillColor, value } = quadViewModel;
+        const partitions: PartitionDebugState['partitions'] = quadViewModel.map((model) => {
+          const { dataName, depth, fillColor, value } = model;
           return {
             name: dataName,
             depth,
             color: fillColor,
             value,
             coords: isSunburst(config.partitionLayout)
-              ? getCoordsForSector(quadViewModel, diskCenter)
-              : getCoordsForRectangle(quadViewModel, diskCenter),
+              ? getCoordsForSector(model, diskCenter)
+              : getCoordsForRectangle(model, diskCenter),
           };
         });
         acc.push({
@@ -60,13 +60,13 @@ function getCoordsForSector({ x0, x1, y1px, y0px }: QuadViewModel, diskCenter: P
   const X1 = x1 - TAU / 4;
   const cr = y0px + (y1px - y0px) / 2;
   const angle = X0 + (X1 - X0) / 2;
-  const x = Math.cos(angle) * cr + diskCenter.x;
-  const y = Math.sin(angle) * cr + diskCenter.y;
+  const x = Math.round(Math.cos(angle) * cr + diskCenter.x);
+  const y = Math.round(Math.sin(angle) * cr + diskCenter.y);
   return [x, y];
 }
 
 function getCoordsForRectangle({ x0, x1, y1px, y0px }: QuadViewModel, diskCenter: PointObject): [Pixels, Pixels] {
-  const y = y0px + (y1px - y0px) / 2 + diskCenter.y;
-  const x = x0 + (x1 - x0) / 2 + diskCenter.x;
+  const y = Math.round(y0px + (y1px - y0px) / 2 + diskCenter.y);
+  const x = Math.round(x0 + (x1 - x0) / 2 + diskCenter.x);
   return [x, y];
 }
