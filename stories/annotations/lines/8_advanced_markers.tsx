@@ -74,6 +74,7 @@ export const Example = () => {
   const showLegend = boolean('show legend', true);
   const rotation = getChartRotationKnob();
   const side = getPositionKnob('Side', Position.Bottom);
+  const padding = number('TickLine padding for markerBody', 30, { step: 5, min: 0, max: 100 });
   const start = moment('4/1/2020').startOf('d');
   const metric = number('Annotation metric', maxMetric, { step: 1, min: 0, max: maxMetric, range: true });
   const isVerticalSide = isVerticalAxis(side);
@@ -87,11 +88,11 @@ export const Example = () => {
         integersOnly
         tickFormat={looseFormatter}
         position={side === Position.Right ? Position.Right : Position.Left}
-        style={{ tickLine: { padding: isVerticalSide ? 30 : 0 } }}
+        style={{ tickLine: { padding: isVerticalSide ? padding : 0 } }}
       />
       <Axis
         id="x"
-        style={{ tickLine: { padding: isVerticalSide ? 0 : 30 } }}
+        style={{ tickLine: { padding: isVerticalSide ? 0 : padding } }}
         tickFormat={looseFormatter}
         position={side === Position.Top ? Position.Top : Position.Bottom}
       />
@@ -133,7 +134,8 @@ Example.story = {
     info: {
       text: `The \`markerBody\` on the \`LineAnnotationSpec\` will be dynamically positioned to show content that would otherwise be hidden or overflow the chart.
         The \`marker\` prop (also on the \`LineAnnotationSpec\`) however, will always be positioned centered on the given \`dataValue\`.
-        These can be used interchangeably to provide a content-rich annotation without losing the data reference.`,
+        These can be used interchangeably to provide a content-rich annotation without losing the data reference.
+        **Note: you will need to provide the necessary axis padding for the \`markerBody\` content as this is _not_ currently accounted for in the chart dimensioning**`,
     },
   },
 };
