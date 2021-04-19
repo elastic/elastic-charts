@@ -37,7 +37,7 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'ma
 };
 
 const MARKER_TRANSFORMS = {
-  [Position.Right]: 'translate(-50%, 0%)',
+  [Position.Right]: 'translate(0%, -50%)',
   [Position.Left]: 'translate(-100%, -50%)',
   [Position.Top]: 'translate(-50%, -100%)',
   [Position.Bottom]: 'translate(-50%, 0%)',
