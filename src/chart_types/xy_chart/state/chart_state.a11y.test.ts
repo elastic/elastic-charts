@@ -24,7 +24,7 @@ import { MockStore } from '../../../mocks/store/store';
 import { GlobalChartState } from '../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
 
-describe('custom description for screen readers', () => {
+describe('test accessibility prop defaults', () => {
   let store: Store<GlobalChartState>;
   beforeEach(() => {
     store = MockStore.default();
@@ -43,9 +43,30 @@ describe('custom description for screen readers', () => {
   });
   it('should test defaults', () => {
     const state = store.getState();
-    const { description, useDefaultSummary } = getSettingsSpecSelector(state);
+    const { description, useDefaultSummary, HeadingLevel, label, labelledBy } = getSettingsSpecSelector(state);
     expect(description).toBeUndefined();
     expect(useDefaultSummary).toBeTrue();
+    expect(HeadingLevel).toBe('h2');
+    expect(label).toBeUndefined();
+    expect(labelledBy).toBeUndefined();
+  });
+});
+describe('custom description for screen readers', () => {
+  let store: Store<GlobalChartState>;
+  beforeEach(() => {
+    store = MockStore.default();
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          data: [
+            { x: 1, y: 10 },
+            { x: 2, y: 5 },
+          ],
+        }),
+        MockGlobalSpec.settings(),
+      ],
+      store,
+    );
   });
   it('should allow user to set a custom description for chart', () => {
     MockStore.addSpecs(
@@ -72,5 +93,62 @@ describe('custom description for screen readers', () => {
     const state = store.getState();
     const { useDefaultSummary } = getSettingsSpecSelector(state);
     expect(useDefaultSummary).toBe(false);
+  });
+});
+describe('custom labels for screen readers', () => {
+  let store: Store<GlobalChartState>;
+  beforeEach(() => {
+    store = MockStore.default();
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          data: [
+            { x: 1, y: 10 },
+            { x: 2, y: 5 },
+          ],
+        }),
+        MockGlobalSpec.settings(),
+      ],
+      store,
+    );
+  });
+  it('should allow label set by the user', () => {
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settings({
+          label: 'Label set by user',
+        }),
+      ],
+      store,
+    );
+    const state = store.getState();
+    const { label } = getSettingsSpecSelector(state);
+    expect(label).toBeTruthy();
+  });
+  it('should allow labelledBy set by the user', () => {
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settings({
+          labelledBy: 'Label',
+        }),
+      ],
+      store,
+    );
+    const state = store.getState();
+    const { labelledBy } = getSettingsSpecSelector(state);
+    expect(labelledBy).toBeTruthy();
+  });
+  it('should allow users to specify valid heading levels', () => {
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settings({
+          HeadingLevel: 'h5',
+        }),
+      ],
+      store,
+    );
+    const state = store.getState();
+    const { HeadingLevel } = getSettingsSpecSelector(state);
+    expect(HeadingLevel).toBe('h5');
   });
 });
