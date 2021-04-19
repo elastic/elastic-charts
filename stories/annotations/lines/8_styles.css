@@ -1,0 +1,26 @@
+/*
+ * Used to rotate text while maintaining correct parent dimensions
+ * https://www.kizu.ru/rotated-text/
+ */
+
+.rotated-text {
+  display: inline-block;
+  overflow: hidden;
+
+  width: 1.5em;
+  line-height: 1.5;
+}
+
+.rotated-text__inner {
+  display: inline-block;
+  white-space: nowrap;
+
+  transform: translate(0,100%) rotate(-90deg);
+  transform-origin: 0 0;
+}
+
+.rotated-text__inner:after {
+  content: "";
+  float: left;
+  margin-top: 100%;
+}

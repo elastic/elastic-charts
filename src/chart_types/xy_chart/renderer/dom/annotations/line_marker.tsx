@@ -77,7 +77,7 @@ export function LineMarker({
 
     popper.current = createPopper(iconRef.current, testRef.current, {
       strategy: 'absolute',
-      placement: 'bottom',
+      placement: alignment,
       modifiers: [
         {
           name: 'offset',
@@ -91,9 +91,16 @@ export function LineMarker({
             boundary: chartAreaRef.current,
           },
         },
+        {
+          name: 'flip',
+          options: {
+            // prevents default flip modifier
+            fallbackPlacements: [],
+          },
+        },
       ],
     });
-  }, [chartAreaRef]);
+  }, [chartAreaRef, alignment]);
 
   useEffect(() => {
     if (!popper.current && body) {

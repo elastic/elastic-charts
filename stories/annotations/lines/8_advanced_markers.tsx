@@ -31,48 +31,109 @@ import {
   ScaleType,
   LineAnnotation,
   AnnotationDomainType,
+  LineAnnotationSpec,
 } from '../../../src';
+import { isVerticalAxis } from '../../../src/chart_types/xy_chart/utils/axis_type_utils';
+import { getChartRotationKnob, getPositionKnob } from '../../utils/knobs';
+import { SB_KNOBS_PANEL } from '../../utils/storybook';
+
+import './8_styles.css';
+
+const style = {
+  line: {
+    strokeWidth: 1,
+    stroke: 'red',
+    opacity: 1,
+  },
+};
+
+const iconMap = {
+  [Position.Top]: 'arrowDown',
+  [Position.Right]: 'arrowLeft',
+  [Position.Bottom]: 'arrowUp',
+  [Position.Left]: 'arrowRight',
+};
+
+const getMarkerBody = (valueCb: (v: any) => string, isVertical: boolean): LineAnnotationSpec['markerBody'] => ({
+  dataValue,
+}) =>
+  isVertical ? (
+    <div className="rotated-text">
+      <div className="rotated-text__inner">{valueCb(dataValue)}</div>
+    </div>
+  ) : (
+    <div>{valueCb(dataValue)}</div>
+  );
+
+/** formats values correctly for any rotation/side combination */
+const looseFormatter = (d: any) => (d < 100 ? d : moment(d).format('L'));
 
 export const Example = () => {
-  const days = 30;
-  const start = moment('4/1/2020').startOf('d');
+  const maxMetric = 30;
   const debug = boolean('Debug', true);
   const showLegend = boolean('show legend', true);
-  const hour = number('Annotation day', days, { step: 1, min: 0, max: days, range: true });
+  const rotation = getChartRotationKnob();
+  const side = getPositionKnob('Side', Position.Bottom);
+  const start = moment('4/1/2020').startOf('d');
+  const metric = number('Annotation metric', maxMetric, { step: 1, min: 0, max: maxMetric, range: true });
+  const isVerticalSide = isVerticalAxis(side);
+  const isYDomain = rotation === -90 || rotation === 90 ? !isVerticalSide : isVerticalSide;
+
   return (
     <Chart className="story-chart">
-      <Settings debug={debug} showLegend={showLegend} />
-      <Axis id="count" integersOnly position={Position.Left} />
+      <Settings debug={debug} showLegend={showLegend} rotation={rotation} />
+      <Axis
+        id="count"
+        integersOnly
+        tickFormat={looseFormatter}
+        position={side === Position.Right ? Position.Right : Position.Left}
+        style={{ tickLine: { padding: isVerticalSide ? 30 : 0 } }}
+      />
       <Axis
         id="x"
-        style={{ tickLine: { padding: 30 } }}
-        title="time"
-        tickFormat={(d) => moment(d).format('L')}
-        position={Position.Bottom}
+        style={{ tickLine: { padding: isVerticalSide ? 0 : 30 } }}
+        tickFormat={looseFormatter}
+        position={side === Position.Top ? Position.Top : Position.Bottom}
       />
-      <LineAnnotation
-        id="annotation_1"
-        domainType={AnnotationDomainType.XDomain}
-        dataValues={[{ dataValue: start.clone().add(hour, 'd').valueOf() }]}
-        style={{
-          line: {
-            strokeWidth: 1,
-            stroke: 'red',
-            opacity: 1,
-          },
-        }}
-        markerPosition={Position.Bottom}
-        hideTooltips
-        marker={<EuiIcon type="arrowUp" />}
-        markerBody={({ dataValue }) => <div>{moment(dataValue).format('lll')}</div>}
-      />
+      {isYDomain ? (
+        <LineAnnotation
+          id="annotation_y"
+          domainType={AnnotationDomainType.YDomain}
+          dataValues={[{ dataValue: metric }]}
+          style={style}
+          hideTooltips
+          marker={<EuiIcon type={iconMap[side]} />}
+          markerBody={getMarkerBody((v) => `The value is ${v} right here!`, isVerticalSide)}
+        />
+      ) : (
+        <LineAnnotation
+          id="annotation_x"
+          domainType={AnnotationDomainType.XDomain}
+          dataValues={[{ dataValue: start.clone().add(metric, 'd').valueOf() }]}
+          style={style}
+          hideTooltips
+          marker={<EuiIcon type={iconMap[side]} />}
+          markerBody={getMarkerBody((v) => moment(v).format('lll'), isVerticalSide)}
+        />
+      )}
       <HistogramBarSeries
         id="bars"
         xScaleType={ScaleType.Time}
-        data={Array.from({ length: days })
+        data={Array.from({ length: maxMetric })
           .fill(0)
-          .map((_, i) => ({ x: start.clone().add(i, 'd').valueOf(), y: 1 }))}
+          .map((_, i) => ({ x: start.clone().add(i, 'd').valueOf(), y: maxMetric }))}
       />
     </Chart>
   );
+};
+
+Example.story = {
+  parameters: {
+    options: { selectedPanel: SB_KNOBS_PANEL },
+    info: {
+      text: `The \`markerBody\` on the \`LineAnnotationSpec\` will be dynamically positioned to show content that would otherwise be hidden or overflow the chart.
+        The \`marker\` prop (also on the \`LineAnnotationSpec\`) however, will always be positioned centered on the given \`dataValue\`.
+        These can be used interchangeably to provide a content-rich annotation without losing the data reference.`,
+    },
+  },
 };
