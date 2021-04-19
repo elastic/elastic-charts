@@ -120,10 +120,14 @@ describe('Annotations stories', () => {
   });
 
   describe('Advanced markers', () => {
-    it.each<number>([0, 15, 30])('renders marker annotation within chart canvas - day: %i', async (day) => {
-      await common.expectChartAtUrlToMatchScreenshot(
-        `http://localhost:9001/?path=/story/annotations-lines--advanced-markers&knob-Debug=true&knob-show legend=true&knob-Annotation day=${day}`,
-      );
+    describe.each<Position>(Object.values(Position))('Annotation marker side - %s', (side) => {
+      eachRotation.describe((rotation) => {
+        it.each<number>([0, 15, 30])('renders marker annotation within chart canvas - metric: %i', async (metric) => {
+          await common.expectChartAtUrlToMatchScreenshot(
+            `http://localhost:9001/?path=/story/annotations-lines--advanced-markers&knob-Debug=&knob-show legend=true&knob-chartRotation=${rotation}&knob-Side=${side}&knob-TickLine padding for markerBody=30&knob-Annotation metric=${metric}`,
+          );
+        });
+      });
     });
   });
 });
