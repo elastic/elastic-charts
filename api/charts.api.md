@@ -586,6 +586,10 @@ export interface DebugState {
     //
     // (undocumented)
     lines?: DebugStateLine[];
+    // Warning: (ae-forgotten-export) The symbol "PartitionDebugState" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    partition?: PartitionDebugState[];
 }
 
 // @public (undocumented)
@@ -621,7 +625,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'description' | 'useDefaultSummary';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -1567,6 +1571,8 @@ export interface RectBorderStyle {
 export interface RectStyle {
     fill?: Color | ColorVariant;
     opacity: number;
+    widthPixel?: Pixels;
+    widthRatio?: Ratio;
 }
 
 // @public
@@ -1683,7 +1689,9 @@ export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean)
 // @public (undocumented)
 export interface SeriesScales {
     timeZone?: string;
+    xNice?: boolean;
     xScaleType: XScaleType;
+    yNice?: boolean;
     // @deprecated
     yScaleToDataExtent?: boolean;
     yScaleType: ScaleContinuousType;
@@ -1740,6 +1748,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     debug: boolean;
     // @alpha
     debugState?: boolean;
+    description?: string;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
     hideDuplicateAxes: boolean;
@@ -1770,6 +1779,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     roundHistogramBrushValues?: boolean;
     theme?: PartialTheme | PartialTheme[];
     tooltip: TooltipSettings;
+    useDefaultSummary: boolean;
     // (undocumented)
     xDomain?: CustomXDomain;
 }
