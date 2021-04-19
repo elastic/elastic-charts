@@ -45,6 +45,7 @@ export class MockAnnotationLineProps {
         ...MockAnnotationLineProps.base.datum,
         ...partial?.datum,
       },
+      0,
       smVerticalValue,
       smHorizontalValue,
     );
