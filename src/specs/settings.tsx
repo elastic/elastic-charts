@@ -552,7 +552,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * User can specify the heading level for the label
    * @defaultValue 'h2'
    */
-  HeadingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
+  headingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
   /**
    * User can set a label
    */
@@ -634,7 +634,7 @@ export type DefaultSettingsProps =
   | 'accessibilityDescription'
   | 'useDefaultSummary'
   | 'ariaLabel'
-  | 'HeadingLevel';
+  | 'headingLevel';
 
 /** @public */
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;

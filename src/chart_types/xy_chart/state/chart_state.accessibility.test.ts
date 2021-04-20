@@ -46,13 +46,13 @@ describe('test accessibility prop defaults', () => {
     const {
       accessibilityDescription,
       useDefaultSummary,
-      HeadingLevel,
+      headingLevel,
       ariaLabel,
       ariaLabelledBy,
     } = getSettingsSpecSelector(state);
     expect(accessibilityDescription).toBeUndefined();
     expect(useDefaultSummary).toBeTrue();
-    expect(HeadingLevel).toBe('h2');
+    expect(headingLevel).toBe('p');
     expect(ariaLabel).toBeUndefined();
     expect(ariaLabelledBy).toBeUndefined();
   });
@@ -148,13 +148,13 @@ describe('custom labels for screen readers', () => {
     MockStore.addSpecs(
       [
         MockGlobalSpec.settings({
-          HeadingLevel: 'h5',
+          headingLevel: 'h5',
         }),
       ],
       store,
     );
     const state = store.getState();
-    const { HeadingLevel } = getSettingsSpecSelector(state);
-    expect(HeadingLevel).toBe('h5');
+    const { headingLevel } = getSettingsSpecSelector(state);
+    expect(headingLevel).toBe('h5');
   });
 });

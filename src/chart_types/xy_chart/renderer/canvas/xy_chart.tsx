@@ -84,7 +84,7 @@ export interface ReactiveChartStateProps {
   chartId: string;
   ariaLabel?: string;
   ariaLabelledBy?: string;
-  HeadingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
+  headingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
 }
 
 interface ReactiveChartDispatchProps {
@@ -171,7 +171,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       chartId,
       ariaLabel,
       ariaLabelledBy,
-      HeadingLevel,
+      headingLevel,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
@@ -192,6 +192,54 @@ class XYChartComponent extends React.Component<XYChartProps> {
     if (ariaLabelledBy || useDefaultSummary) {
       ariaProps['aria-describedby'] = `${ariaLabelledBy || ''} ${useDefaultSummary ? chartIdLabel : undefined}`;
     }
+
+    const ChartLabel = (heading: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p', id: string, label?: string) => {
+      if (!label) return null;
+      switch (heading) {
+        case 'h1':
+          return (
+            <h1 id={id} aria-label={label}>
+              {label}
+            </h1>
+          );
+        case 'h2':
+          return (
+            <h2 id={id} aria-label={label}>
+              {label}
+            </h2>
+          );
+        case 'h3':
+          return (
+            <h3 id={id} aria-label={label}>
+              {label}
+            </h3>
+          );
+        case 'h4':
+          return (
+            <h4 id={id} aria-label={label}>
+              {label}
+            </h4>
+          );
+        case 'h5':
+          return (
+            <h5 id={id} aria-label={label}>
+              {label}
+            </h5>
+          );
+        case 'h6':
+          return (
+            <h6 id={id} aria-label={label}>
+              {label}
+            </h6>
+          );
+        default:
+          return (
+            <p id={id} aria-label={label}>
+              {label}
+            </p>
+          );
+      }
+    };
     return (
       <figure {...ariaProps}>
         <canvas
@@ -206,7 +254,8 @@ class XYChartComponent extends React.Component<XYChartProps> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
-          {ariaLabel && <HeadingLevel id={chartIdLabel}>{ariaLabel}</HeadingLevel>}
+          {/* @ts-ignore */}
+          <ChartLabel id={chartIdLabel} label={ariaLabel} heading={headingLevel} />
           {(accessibilityDescription || useDefaultSummary) && (
             <div className="echScreenReaderOnly">
               {accessibilityDescription && <p id={chartIdDescription}>{accessibilityDescription}</p>}
@@ -277,7 +326,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   chartId: '',
   ariaLabel: undefined,
   ariaLabelledBy: undefined,
-  HeadingLevel: 'h2',
+  headingLevel: 'h2',
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -292,7 +341,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     useDefaultSummary,
     ariaLabel,
     ariaLabelledBy,
-    HeadingLevel,
+    headingLevel,
   } = getSettingsSpecSelector(state);
 
   return {
@@ -320,7 +369,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     chartId: getChartIdSelector(state),
     ariaLabel,
     ariaLabelledBy,
-    HeadingLevel,
+    headingLevel,
   };
 };
 

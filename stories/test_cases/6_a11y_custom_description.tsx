@@ -36,7 +36,7 @@ export const Example = () => {
         accessibilityDescription={customDescriptionForScreenReaders}
         useDefaultSummary={automatedSeries}
         ariaLabel={customLabelForScreenReaders}
-        HeadingLevel={headingLevelForScreenReaders}
+        headingLevel={headingLevelForScreenReaders}
       />
       <AreaSeries
         id="area"
