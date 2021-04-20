@@ -79,11 +79,11 @@ export interface ReactiveChartStateProps {
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
   seriesTypes: Set<SeriesType>;
-  description?: string;
+  accessibilityDescription?: string;
   useDefaultSummary: boolean;
   chartId: string;
-  label?: string;
-  labelledBy?: string;
+  ariaLabel?: string;
+  ariaLabelledBy?: string;
   HeadingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
 }
 
@@ -94,6 +94,10 @@ interface ReactiveChartOwnProps {
   forwardStageRef: RefObject<HTMLCanvasElement>;
 }
 const CLIPPING_MARGINS = 0.5;
+
+type AriaProps = {
+  [key: string]: string | undefined;
+};
 
 type XYChartProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
 class XYChartComponent extends React.Component<XYChartProps> {
@@ -162,11 +166,11 @@ class XYChartComponent extends React.Component<XYChartProps> {
       isChartEmpty,
       chartContainerDimensions: { width, height },
       seriesTypes,
-      description,
+      accessibilityDescription,
       useDefaultSummary,
       chartId,
-      label,
-      labelledBy,
+      ariaLabel,
+      ariaLabelledBy,
       HeadingLevel,
     } = this.props;
 
@@ -178,12 +182,16 @@ class XYChartComponent extends React.Component<XYChartProps> {
     const chartSeriesTypes =
       seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
     const chartIdDescription = `${chartId}--description`;
-    const chartIdLabel = label ? `${chartId}--label` : undefined;
+    const chartIdLabel = ariaLabel ? `${chartId}--label` : undefined;
 
-    const ariaProps = {
-      'aria-labelledby': labelledBy || label ? labelledBy ?? chartIdLabel : '',
-      'aria-describedby': `${labelledBy || ''} ${useDefaultSummary ? chartIdLabel : ''}`,
-    };
+    const ariaProps: AriaProps = {};
+
+    if (ariaLabelledBy || ariaLabel) {
+      ariaProps['aria-labelledby'] = ariaLabelledBy ?? chartIdLabel;
+    }
+    if (ariaLabelledBy || useDefaultSummary) {
+      ariaProps['aria-describedby'] = `${ariaLabelledBy || ''} ${useDefaultSummary ? chartIdLabel : undefined}`;
+    }
     return (
       <figure {...ariaProps}>
         <canvas
@@ -198,10 +206,10 @@ class XYChartComponent extends React.Component<XYChartProps> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
-          {label && <HeadingLevel id={chartIdLabel}>{label}</HeadingLevel>}
-          {(description || useDefaultSummary) && (
+          {ariaLabel && <HeadingLevel id={chartIdLabel}>{ariaLabel}</HeadingLevel>}
+          {(accessibilityDescription || useDefaultSummary) && (
             <div className="echScreenReaderOnly">
-              {description && <p id={chartIdDescription}>{description}</p>}
+              {accessibilityDescription && <p id={chartIdDescription}>{accessibilityDescription}</p>}
               {useDefaultSummary && (
                 <dl>
                   <dt>Chart type</dt>
@@ -264,11 +272,11 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationSpecs: [],
   panelGeoms: [],
   seriesTypes: new Set(),
-  description: undefined,
+  accessibilityDescription: undefined,
   useDefaultSummary: true,
   chartId: '',
-  label: undefined,
-  labelledBy: undefined,
+  ariaLabel: undefined,
+  ariaLabelledBy: undefined,
   HeadingLevel: 'h2',
 };
 
@@ -278,7 +286,14 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
 
   const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
-  const { debug, description, useDefaultSummary, label, labelledBy, HeadingLevel } = getSettingsSpecSelector(state);
+  const {
+    debug,
+    accessibilityDescription,
+    useDefaultSummary,
+    ariaLabel,
+    ariaLabelledBy,
+    HeadingLevel,
+  } = getSettingsSpecSelector(state);
 
   return {
     initialized: true,
@@ -300,11 +315,11 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
     seriesTypes: getSeriesTypes(state),
-    description,
+    accessibilityDescription,
     useDefaultSummary,
     chartId: getChartIdSelector(state),
-    label,
-    labelledBy,
+    ariaLabel,
+    ariaLabelledBy,
     HeadingLevel,
   };
 };

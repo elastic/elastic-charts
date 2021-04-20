@@ -43,12 +43,18 @@ describe('test accessibility prop defaults', () => {
   });
   it('should test defaults', () => {
     const state = store.getState();
-    const { description, useDefaultSummary, HeadingLevel, label, labelledBy } = getSettingsSpecSelector(state);
-    expect(description).toBeUndefined();
+    const {
+      accessibilityDescription,
+      useDefaultSummary,
+      HeadingLevel,
+      ariaLabel,
+      ariaLabelledBy,
+    } = getSettingsSpecSelector(state);
+    expect(accessibilityDescription).toBeUndefined();
     expect(useDefaultSummary).toBeTrue();
     expect(HeadingLevel).toBe('h2');
-    expect(label).toBeUndefined();
-    expect(labelledBy).toBeUndefined();
+    expect(ariaLabel).toBeUndefined();
+    expect(ariaLabelledBy).toBeUndefined();
   });
 });
 describe('custom description for screen readers', () => {
@@ -72,14 +78,14 @@ describe('custom description for screen readers', () => {
     MockStore.addSpecs(
       [
         MockGlobalSpec.settings({
-          description: 'This is sample Kibana data',
+          accessibilityDescription: 'This is sample Kibana data',
         }),
       ],
       store,
     );
     const state = store.getState();
-    const { description } = getSettingsSpecSelector(state);
-    expect(description).toBe('This is sample Kibana data');
+    const { accessibilityDescription } = getSettingsSpecSelector(state);
+    expect(accessibilityDescription).toBe('This is sample Kibana data');
   });
   it('should be able to disable generated descriptions', () => {
     MockStore.addSpecs(
@@ -116,27 +122,27 @@ describe('custom labels for screen readers', () => {
     MockStore.addSpecs(
       [
         MockGlobalSpec.settings({
-          label: 'Label set by user',
+          ariaLabel: 'Label set by user',
         }),
       ],
       store,
     );
     const state = store.getState();
-    const { label } = getSettingsSpecSelector(state);
-    expect(label).toBeTruthy();
+    const { ariaLabel } = getSettingsSpecSelector(state);
+    expect(ariaLabel).toBeTruthy();
   });
   it('should allow labelledBy set by the user', () => {
     MockStore.addSpecs(
       [
         MockGlobalSpec.settings({
-          labelledBy: 'Label',
+          ariaLabelledBy: 'Label',
         }),
       ],
       store,
     );
     const state = store.getState();
-    const { labelledBy } = getSettingsSpecSelector(state);
-    expect(labelledBy).toBeTruthy();
+    const { ariaLabelledBy } = getSettingsSpecSelector(state);
+    expect(ariaLabelledBy).toBeTruthy();
   });
   it('should allow users to specify valid heading levels', () => {
     MockStore.addSpecs(

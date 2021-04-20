@@ -556,15 +556,15 @@ export interface SettingsSpec extends Spec, LegendSpec {
   /**
    * User can set a label
    */
-  label?: string;
+  ariaLabel?: string;
   /**
    * User can set a string to the aria-labelled by
    * */
-  labelledBy?: string;
+  ariaLabelledBy?: string;
   /**
    * User can provide a custom description to be read by a screen reader about their chart
    */
-  description?: string;
+  accessibilityDescription?: string;
   /**
    * Disable the automated charts series types from being provided for screen readers
    * @defaultValue true
@@ -631,9 +631,9 @@ export type DefaultSettingsProps =
   | 'showLegendExtra'
   | 'legendPosition'
   | 'legendMaxDepth'
-  | 'description'
+  | 'accessibilityDescription'
   | 'useDefaultSummary'
-  | 'label'
+  | 'ariaLabel'
   | 'HeadingLevel';
 
 /** @public */

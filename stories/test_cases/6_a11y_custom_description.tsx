@@ -33,9 +33,9 @@ export const Example = () => {
   return (
     <Chart className="story-chart">
       <Settings
-        description={customDescriptionForScreenReaders}
+        accessibilityDescription={customDescriptionForScreenReaders}
         useDefaultSummary={automatedSeries}
-        label={customLabelForScreenReaders}
+        ariaLabel={customLabelForScreenReaders}
         HeadingLevel={headingLevelForScreenReaders}
       />
       <AreaSeries
