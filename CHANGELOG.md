@@ -1,3 +1,10 @@
+## [25.0.6](https://github.com/elastic/elastic-charts/compare/v25.0.5...v25.0.6) (2021-04-20)
+
+
+### Bug Fixes
+
+* **xy:** negative bar highlight and click [25.0.x] ([#1126](https://github.com/elastic/elastic-charts/issues/1126)) ([95ac3ea](https://github.com/elastic/elastic-charts/commit/95ac3eac6b3a47a5ed8eb752e570fa109dbc8d7a))
+
 ## [25.0.5](https://github.com/elastic/elastic-charts/compare/v25.0.4...v25.0.5) (2021-03-16)
 
 
