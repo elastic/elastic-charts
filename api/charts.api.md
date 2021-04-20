@@ -621,7 +621,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'description' | 'useDefaultSummary' | 'label' | 'HeadingLevel';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'accessibilityDescription' | 'useDefaultSummary' | 'ariaLabel' | 'HeadingLevel';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -1735,21 +1735,21 @@ export const Settings: React_2.FunctionComponent<SettingsSpecProps>;
 
 // @public
 export interface SettingsSpec extends Spec, LegendSpec {
+    accessibilityDescription?: string;
     allowBrushingLastHistogramBucket?: boolean;
     // (undocumented)
     animateData: boolean;
+    ariaLabel?: string;
+    ariaLabelledBy?: string;
     baseTheme?: Theme;
     brushAxis?: BrushAxis;
     debug: boolean;
     // @alpha
     debugState?: boolean;
-    description?: string;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
     HeadingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
     hideDuplicateAxes: boolean;
-    label?: string;
-    labelledBy?: string;
     minBrushDelta?: number;
     noResults?: ComponentType | ReactChild;
     // (undocumented)
