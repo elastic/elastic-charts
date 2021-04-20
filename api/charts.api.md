@@ -621,7 +621,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'accessibilityDescription' | 'useDefaultSummary' | 'ariaLabel' | 'HeadingLevel';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'accessibilityDescription' | 'useDefaultSummary' | 'ariaLabel' | 'headingLevel';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -1748,7 +1748,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     debugState?: boolean;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
-    HeadingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
+    headingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
     hideDuplicateAxes: boolean;
     minBrushDelta?: number;
     noResults?: ComponentType | ReactChild;
