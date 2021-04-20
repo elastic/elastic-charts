@@ -772,9 +772,9 @@ export type LineAnnotationSpec = BaseAnnotationSpec<
   LineAnnotationStyle
 > & {
   domainType: AnnotationDomainType;
-  /** Custom marker icon centered on data value */
+  /** Optional Custom marker icon centered on data value */
   marker?: ReactNode | ComponentWithAnnotationDatum;
-  /** Custom marker body, moves to be contained within chart area */
+  /** Optional marker body, always contained within chart area */
   markerBody?: ReactNode | ComponentWithAnnotationDatum;
   /**
    * Custom marker dimensions; will be computed internally
