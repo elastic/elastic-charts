@@ -86,7 +86,7 @@ export function renderBars(
 
     const absMinHeight = Math.abs(minBarHeight);
     let height = y0Scaled - y;
-    if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
+    if (height !== 0 && Math.abs(height) < absMinHeight) {
       const heightDelta = absMinHeight - Math.abs(height);
       if (height < 0) {
         height = -absMinHeight;
