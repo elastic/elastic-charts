@@ -37,9 +37,7 @@ import { isVerticalAxis } from '../../../src/chart_types/xy_chart/utils/axis_typ
 import { getChartRotationKnob, getPositionKnob } from '../../utils/knobs';
 import { SB_KNOBS_PANEL } from '../../utils/storybook';
 
-import './8_styles.css';
-
-const style = {
+const annotationStyle = {
   line: {
     strokeWidth: 1,
     stroke: 'red',
@@ -54,12 +52,38 @@ const iconMap = {
   [Position.Left]: 'arrowRight',
 };
 
+/**
+ * Used to rotate text while maintaining correct parent dimensions
+ * https://www.kizu.ru/rotated-text/
+ */
 const getMarkerBody = (valueCb: (v: any) => string, isVertical: boolean): LineAnnotationSpec['markerBody'] => ({
   dataValue,
 }) =>
   isVertical ? (
-    <div className="rotated-text">
-      <div className="rotated-text__inner">{valueCb(dataValue)}</div>
+    <div
+      style={{
+        display: 'inline-block',
+        overflow: 'hidden',
+        width: '1.5em',
+        lineHeight: 1.5,
+      }}
+    >
+      <div
+        style={{
+          display: 'inline-block',
+          whiteSpace: 'nowrap',
+          transform: 'translate(0, 100%) rotate(-90deg)',
+          transformOrigin: '0 0',
+        }}
+      >
+        {valueCb(dataValue)}
+        <div
+          style={{
+            float: 'left',
+            marginTop: '100%',
+          }}
+        />
+      </div>
     </div>
   ) : (
     <div>{valueCb(dataValue)}</div>
@@ -88,11 +112,11 @@ export const Example = () => {
         integersOnly
         tickFormat={looseFormatter}
         position={side === Position.Right ? Position.Right : Position.Left}
-        style={{ tickLine: { padding: isVerticalSide ? padding : 0 } }}
+        style={{ tickLine: { padding: isVerticalSide ? padding : undefined } }}
       />
       <Axis
         id="x"
-        style={{ tickLine: { padding: isVerticalSide ? 0 : padding } }}
+        style={{ tickLine: { padding: isVerticalSide ? undefined : padding } }}
         tickFormat={looseFormatter}
         position={side === Position.Top ? Position.Top : Position.Bottom}
       />
@@ -101,7 +125,7 @@ export const Example = () => {
           id="annotation_y"
           domainType={AnnotationDomainType.YDomain}
           dataValues={[{ dataValue: metric }]}
-          style={style}
+          style={annotationStyle}
           hideTooltips
           marker={<EuiIcon type={iconMap[side]} />}
           markerBody={getMarkerBody((v) => `The value is ${v} right here!`, isVerticalSide)}
@@ -111,7 +135,7 @@ export const Example = () => {
           id="annotation_x"
           domainType={AnnotationDomainType.XDomain}
           dataValues={[{ dataValue: start.clone().add(metric, 'd').valueOf() }]}
-          style={style}
+          style={annotationStyle}
           hideTooltips
           marker={<EuiIcon type={iconMap[side]} />}
           markerBody={getMarkerBody((v) => moment(v).format('lll'), isVerticalSide)}
