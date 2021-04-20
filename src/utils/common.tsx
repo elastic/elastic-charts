@@ -559,19 +559,19 @@ export function isDefined<T>(value?: T): value is NonNullable<T> {
  *
  * @internal
  */
-export const isDefinedFrom = <T,>(typeCheck: (value: RecursivePartial<T>) => boolean) => (
-  value?: RecursivePartial<T>,
-): value is NonNullable<T> => {
-  if (value === undefined) {
-    return false;
-  }
+export function isDefinedFrom<T>(typeCheck: (value: RecursivePartial<T>) => boolean) {
+  return (value?: RecursivePartial<T>): value is NonNullable<T> => {
+    if (value === undefined) {
+      return false;
+    }
 
-  try {
-    return typeCheck(value);
-  } catch {
-    return false;
-  }
-};
+    try {
+      return typeCheck(value);
+    } catch {
+      return false;
+    }
+  };
+}
 
 /**
  * Returns rounded number to given decimals
@@ -591,7 +591,7 @@ export const round = (value: number, fractionDigits = 0): number => {
  * i.e. `'90%'` with relative value of `100` returns `90`
  * @internal
  */
-export const getPercentageValue = <T,>(ratio: string | number, relativeValue: number, defaultValue: T): number | T => {
+export function getPercentageValue<T>(ratio: string | number, relativeValue: number, defaultValue: T): number | T {
   if (typeof ratio === 'number') {
     return Math.abs(ratio);
   }
@@ -605,14 +605,16 @@ export const getPercentageValue = <T,>(ratio: string | number, relativeValue: nu
   const num = Number.parseFloat(ratioStr);
 
   return num && !isNaN(num) ? Math.abs(num) : defaultValue;
-};
+}
 
 /**
  * Predicate function, eg. to be called with [].filter, to keep distinct values
  * @example [1, 2, 4, 2, 4, 0, 3, 2].filter(keepDistinct) ==> [1, 2, 4, 0, 3]
  * @internal
  */
-export const keepDistinct = <T,>(d: T, i: number, a: T[]): boolean => a.indexOf(d) === i;
+export function keepDistinct<T>(d: T, i: number, a: T[]): boolean {
+  return a.indexOf(d) === i;
+}
 
 /**
  * Return an object which keys are values of an object and the value is the
@@ -634,7 +636,7 @@ export function toEntries<T extends Record<string, string>, S>(
  * Safely format values with error handling
  * @internal
  */
-export const safeFormat = <V extends unknown = any>(value: V, formatter?: (value: V) => string): string => {
+export function safeFormat<V = any>(value: V, formatter?: (value: V) => string): string {
   if (formatter) {
     try {
       return formatter(value);
@@ -644,4 +646,4 @@ export const safeFormat = <V extends unknown = any>(value: V, formatter?: (value
   }
 
   return `${value}`;
-};
+}
