@@ -118,7 +118,7 @@ export function LineMarker({
   return (
     <div
       className="echAnnotation"
-      key={`annotation-${specId}-${id}`}
+      key={`annotation-${id}`}
       onMouseEnter={() => {
         onDOMElementEnter({
           createdBySpecId: specId,

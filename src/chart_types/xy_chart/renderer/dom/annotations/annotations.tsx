@@ -83,7 +83,7 @@ function renderAnnotationLineMarkers(
     acc.push(
       <LineMarker
         {...props}
-        key={`annotation-${props.specId}-${props.id}`}
+        key={`annotation-${props.id}`}
         chartAreaRef={chartAreaRef}
         chartDimensions={chartDimensions}
         onDOMElementEnter={onDOMElementEnter}
