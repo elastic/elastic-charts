@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, timeFormatter } from '../../src';
+import { AreaSeries, Axis, Chart, Placement, Position, ScaleType, Settings, timeFormatter } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -27,6 +27,7 @@ const dateFormatter = timeFormatter('HH:mm');
 
 export const Example = () => (
   <Chart className="story-chart">
+    <Settings tooltip={{ stickTo: Position.Top, placement: Placement.RightStart, offset: 5 }} rotation={0} />
     <Axis
       id="bottom"
       title="timestamp per 1 minute"

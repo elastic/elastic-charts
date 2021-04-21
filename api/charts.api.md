@@ -2005,6 +2005,7 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
     headerFormatter?: TooltipValueFormatter;
     unit?: string;
     customTooltip?: CustomTooltip;
+    stickTo?: Position;
 };
 
 // @public
