@@ -200,47 +200,19 @@ class XYChartComponent extends React.Component<XYChartProps> {
       if (!label) return null;
       switch (heading) {
         case 'h1':
-          return (
-            <h1 id={id} aria-label={label}>
-              {label}
-            </h1>
-          );
+          return <h1 id={id}>{label}</h1>;
         case 'h2':
-          return (
-            <h2 id={id} aria-label={label}>
-              {label}
-            </h2>
-          );
+          return <h2 id={id}>{label}</h2>;
         case 'h3':
-          return (
-            <h3 id={id} aria-label={label}>
-              {label}
-            </h3>
-          );
+          return <h3 id={id}>{label}</h3>;
         case 'h4':
-          return (
-            <h4 id={id} aria-label={label}>
-              {label}
-            </h4>
-          );
+          return <h4 id={id}>{label}</h4>;
         case 'h5':
-          return (
-            <h5 id={id} aria-label={label}>
-              {label}
-            </h5>
-          );
+          return <h5 id={id}>{label}</h5>;
         case 'h6':
-          return (
-            <h6 id={id} aria-label={label}>
-              {label}
-            </h6>
-          );
+          return <h6 id={id}>{label}</h6>;
         default:
-          return (
-            <p id={id} aria-label={label}>
-              {label}
-            </p>
-          );
+          return <p id={id}>{label}</p>;
       }
     };
     return (
