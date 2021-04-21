@@ -70,7 +70,6 @@ describe('Legend stories', () => {
     };
     await common.expectChartAtUrlToMatchScreenshot('http://localhost:9001/?path=/story/legend--actions', {
       action,
-      delay: 500, // needed for icon to load
     });
   });
 
