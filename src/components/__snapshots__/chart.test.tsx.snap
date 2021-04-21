@@ -73,7 +73,7 @@ exports[`Chart should render the legend name test 1`] = `
                 </Connect(Crosshair)>
                 <Connect(XYChart) forwardStageRef={{...}}>
                   <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} seriesTypes={{...}} accessibilityDescription={[undefined]} useDefaultSummary={true} chartId=\\"chart1\\" ariaLabel={[undefined]} ariaLabelledBy={[undefined]} headingLevel=\\"p\\" onChartRendered={[Function (anonymous)]}>
-                    <figure aria-describedby=\\" undefined\\">
+                    <figure aria-describedby=\\"undefined chart1--series-types\\">
                       <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\">
                         <ChartLabel id={[undefined]} label={[undefined]} heading=\\"p\\" />
                         <div className=\\"echScreenReaderOnly\\">
@@ -81,7 +81,7 @@ exports[`Chart should render the legend name test 1`] = `
                             <dt>
                               Chart type
                             </dt>
-                            <dd>
+                            <dd id=\\"chart1--series-types\\">
                               bar chart
                             </dd>
                           </dl>

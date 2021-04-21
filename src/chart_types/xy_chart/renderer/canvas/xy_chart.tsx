@@ -183,14 +183,17 @@ class XYChartComponent extends React.Component<XYChartProps> {
       seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
     const chartIdDescription = `${chartId}--description`;
     const chartIdLabel = ariaLabel ? `${chartId}--label` : undefined;
+    const idForChartSeriesTypes = `${chartId}--series-types`;
 
     const ariaProps: AriaProps = {};
 
     if (ariaLabelledBy || ariaLabel) {
       ariaProps['aria-labelledby'] = ariaLabelledBy ?? chartIdLabel;
     }
-    if (ariaLabelledBy || useDefaultSummary) {
-      ariaProps['aria-describedby'] = `${ariaLabelledBy || ''} ${useDefaultSummary ? chartIdLabel : undefined}`;
+    if (accessibilityDescription || useDefaultSummary) {
+      ariaProps['aria-describedby'] = `${accessibilityDescription ? chartIdDescription : undefined} ${
+        useDefaultSummary ? idForChartSeriesTypes : undefined
+      }`;
     }
 
     const ChartLabel = (heading: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p', id: string, label?: string) => {
@@ -262,7 +265,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
               {useDefaultSummary && (
                 <dl>
                   <dt>Chart type</dt>
-                  <dd>{chartSeriesTypes}</dd>
+                  <dd id={idForChartSeriesTypes}>{chartSeriesTypes}</dd>
                 </dl>
               )}
             </div>
