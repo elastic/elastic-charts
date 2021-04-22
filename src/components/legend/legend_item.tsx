@@ -242,5 +242,5 @@ export function renderLegendItem(
   totalItems: number,
   index: number,
 ) {
-  return <LegendListItem key={`${index}`} item={item} totalItems={totalItems} {...props} />;
+  return <LegendListItem key={`${index}`} item={item} {...props} />;
 }
