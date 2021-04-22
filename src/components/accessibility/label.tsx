@@ -17,23 +17,13 @@
  * under the License.
  */
 
-import { getStorybookInfo } from '../helpers';
-import { common } from '../page_objects';
+import React from 'react';
 
-// mock required for importing trick, otherwise .scss files will throw an error
-jest.mock('../../storybook/theme_service.ts', () => ({
-  switchTheme: () => undefined,
-}));
+import { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
-const storyGroups = getStorybookInfo();
-
-describe('Baseline Visual tests for all stories', () => {
-  describe.each(storyGroups)('%s', (_group, encodedGroup, stories) => {
-    describe.each(stories)('%s', (_title, encodedTitle) => {
-      it('visually looks correct', async () => {
-        const url = `http://localhost:9001?id=${encodedGroup}--${encodedTitle}`;
-        await common.expectChartAtUrlToMatchScreenshot(url);
-      });
-    });
-  });
-});
+/** @internal */
+export function Label(props: A11ySettings) {
+  if (!props.label) return null;
+  const Heading = props.labelHeadingLevel;
+  return <Heading id={props.labelId}>{props.label}</Heading>;
+}

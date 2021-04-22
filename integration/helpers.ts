@@ -77,6 +77,7 @@ function encodeString(string: string) {
  */
 const storiesToSkip: Record<string, string[]> = {
   // Interactions: ['Some story name'],
+  'Test Cases': ['No Series'],
 };
 
 /**
