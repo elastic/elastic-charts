@@ -29,7 +29,7 @@ import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
   A11ySettings,
-  DEFAULT_A11_SETTINGS,
+  DEFAULT_A11Y_SETTINGS,
   getA11ySettingsSelector,
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
@@ -248,7 +248,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationSpecs: [],
   panelGeoms: [],
   seriesTypes: new Set(),
-  a11ySettings: DEFAULT_A11_SETTINGS,
+  a11ySettings: DEFAULT_A11Y_SETTINGS,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
