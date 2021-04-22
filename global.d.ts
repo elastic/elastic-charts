@@ -25,7 +25,7 @@ declare global {
       /**
        * Node enviroment
        */
-      NODE_ENV: 'development' | 'production';
+      NODE_ENV: 'development' | 'production' | 'test';
       /**
        * Port used for dev servers including:
        *  - storybook

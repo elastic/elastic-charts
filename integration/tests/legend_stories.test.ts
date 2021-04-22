@@ -57,7 +57,6 @@ describe('Legend stories', () => {
       {
         action,
         waitSelector: common.chartWaitSelector,
-        delay: 500, // needed for popover animation to complete
       },
     );
   });
