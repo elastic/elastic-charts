@@ -98,8 +98,15 @@ function renderRectangles(
 function renderSector(geometry: QuadViewModel, key: string, style: SVGStyle) {
   const { x0, x1, y0px, y1px } = geometry;
   if ((Math.abs(x0 - x1) + TAU) % TAU < EPSILON) {
-    const props = style.color ? { stroke: style.color } : { className: style.strokeClassName };
-    return <circle key={key} r={(y0px + y1px) / 2} {...props} fill="none" strokeWidth={y1px - y0px} />;
+    const isRoot = y0px === 0;
+    const props = {
+      r: isRoot ? y1px : (y0px + y1px) / 2,
+      fill: isRoot ? style.color : 'none',
+      stroke: !isRoot ? style.color : 'none',
+      className: style.color ? undefined : isRoot ? style.fillClassName : style.strokeClassName,
+      strokeWidth: isRoot ? undefined : y1px - y0px,
+    };
+    return <circle key={key} {...props} />;
   }
   const X0 = x0 - TAU / 4;
   const X1 = x1 - TAU / 4;
