@@ -20,5 +20,5 @@
     "stripInternal": true,
     "resolveJsonModule": true
   },
-  "files": ["./global.d.ts"]
+  "files": ["./global.d.ts", "scripts/custom_matchers.ts"]
 }
