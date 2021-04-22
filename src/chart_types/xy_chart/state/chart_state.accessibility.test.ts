@@ -22,6 +22,7 @@ import { Store } from 'redux';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store/store';
 import { GlobalChartState } from '../../../state/chart_state';
+import { DEFAULT_A11_SETTINGS } from '../../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
 
 describe('test accessibility prop defaults', () => {
@@ -44,15 +45,15 @@ describe('test accessibility prop defaults', () => {
   it('should test defaults', () => {
     const state = store.getState();
     const {
-      accessibilityDescription,
-      useDefaultSummary,
-      headingLevel,
+      ariaDescription,
+      ariaUseDefaultSummary,
+      ariaLabelHeadingLevel,
       ariaLabel,
       ariaLabelledBy,
     } = getSettingsSpecSelector(state);
-    expect(accessibilityDescription).toBeUndefined();
-    expect(useDefaultSummary).toBeTrue();
-    expect(headingLevel).toBe('p');
+    expect(ariaDescription).toBeUndefined();
+    expect(ariaUseDefaultSummary).toBeTrue();
+    expect(ariaLabelHeadingLevel).toBe(DEFAULT_A11_SETTINGS.labelHeadingLevel);
     expect(ariaLabel).toBeUndefined();
     expect(ariaLabelledBy).toBeUndefined();
   });
@@ -78,27 +79,27 @@ describe('custom description for screen readers', () => {
     MockStore.addSpecs(
       [
         MockGlobalSpec.settings({
-          accessibilityDescription: 'This is sample Kibana data',
+          ariaDescription: 'This is sample Kibana data',
         }),
       ],
       store,
     );
     const state = store.getState();
-    const { accessibilityDescription } = getSettingsSpecSelector(state);
-    expect(accessibilityDescription).toBe('This is sample Kibana data');
+    const { ariaDescription } = getSettingsSpecSelector(state);
+    expect(ariaDescription).toBe('This is sample Kibana data');
   });
   it('should be able to disable generated descriptions', () => {
     MockStore.addSpecs(
       [
         MockGlobalSpec.settings({
-          useDefaultSummary: false,
+          ariaUseDefaultSummary: false,
         }),
       ],
       store,
     );
     const state = store.getState();
-    const { useDefaultSummary } = getSettingsSpecSelector(state);
-    expect(useDefaultSummary).toBe(false);
+    const { ariaUseDefaultSummary } = getSettingsSpecSelector(state);
+    expect(ariaUseDefaultSummary).toBe(false);
   });
 });
 describe('custom labels for screen readers', () => {
@@ -129,32 +130,32 @@ describe('custom labels for screen readers', () => {
     );
     const state = store.getState();
     const { ariaLabel } = getSettingsSpecSelector(state);
-    expect(ariaLabel).toBeTruthy();
+    expect(ariaLabel).toBe('Label set by user');
   });
   it('should allow labelledBy set by the user', () => {
     MockStore.addSpecs(
       [
         MockGlobalSpec.settings({
-          ariaLabelledBy: 'Label',
+          ariaLabelledBy: 'label-id',
         }),
       ],
       store,
     );
     const state = store.getState();
     const { ariaLabelledBy } = getSettingsSpecSelector(state);
-    expect(ariaLabelledBy).toBeTruthy();
+    expect(ariaLabelledBy).toBe('label-id');
   });
   it('should allow users to specify valid heading levels', () => {
     MockStore.addSpecs(
       [
         MockGlobalSpec.settings({
-          headingLevel: 'h5',
+          ariaLabelHeadingLevel: 'h5',
         }),
       ],
       store,
     );
     const state = store.getState();
-    const { headingLevel } = getSettingsSpecSelector(state);
-    expect(headingLevel).toBe('h5');
+    const { ariaLabelHeadingLevel } = getSettingsSpecSelector(state);
+    expect(ariaLabelHeadingLevel).toBe('h5');
   });
 });

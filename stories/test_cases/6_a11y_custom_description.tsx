@@ -33,10 +33,10 @@ export const Example = () => {
   return (
     <Chart className="story-chart">
       <Settings
-        accessibilityDescription={customDescriptionForScreenReaders}
-        useDefaultSummary={automatedSeries}
+        ariaDescription={customDescriptionForScreenReaders}
+        ariaUseDefaultSummary={automatedSeries}
         ariaLabel={customLabelForScreenReaders}
-        headingLevel={headingLevelForScreenReaders}
+        ariaLabelHeadingLevel={headingLevelForScreenReaders}
       />
       <AreaSeries
         id="area"

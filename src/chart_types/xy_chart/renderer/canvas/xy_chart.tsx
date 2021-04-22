@@ -22,10 +22,16 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { LegendItem } from '../../../../common/legend';
+import { Description } from '../../../../components/accessibility/description';
+import { Label } from '../../../../components/accessibility/label';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
+import {
+  A11ySettings,
+  DEFAULT_A11_SETTINGS,
+  getA11ySettingsSelector,
+} from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
@@ -79,12 +85,7 @@ export interface ReactiveChartStateProps {
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
   seriesTypes: Set<SeriesType>;
-  accessibilityDescription?: string;
-  useDefaultSummary: boolean;
-  chartId: string;
-  ariaLabel?: string;
-  ariaLabelledBy?: string;
-  headingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
+  a11ySettings: A11ySettings;
 }
 
 interface ReactiveChartDispatchProps {
@@ -94,10 +95,6 @@ interface ReactiveChartOwnProps {
   forwardStageRef: RefObject<HTMLCanvasElement>;
 }
 const CLIPPING_MARGINS = 0.5;
-
-type AriaProps = {
-  [key: string]: string | undefined;
-};
 
 type XYChartProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
 class XYChartComponent extends React.Component<XYChartProps> {
@@ -166,12 +163,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       isChartEmpty,
       chartContainerDimensions: { width, height },
       seriesTypes,
-      accessibilityDescription,
-      useDefaultSummary,
-      chartId,
-      ariaLabel,
-      ariaLabelledBy,
-      headingLevel,
+      a11ySettings,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
@@ -181,42 +173,9 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
     const chartSeriesTypes =
       seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
-    const chartIdDescription = `${chartId}--description`;
-    const chartIdLabel = ariaLabel ? `${chartId}--label` : undefined;
-    const idForChartSeriesTypes = `${chartId}--series-types`;
 
-    const ariaProps: AriaProps = {};
-
-    if (ariaLabelledBy || ariaLabel) {
-      ariaProps['aria-labelledby'] = ariaLabelledBy ?? chartIdLabel;
-    }
-    if (accessibilityDescription || useDefaultSummary) {
-      ariaProps['aria-describedby'] = `${accessibilityDescription ? chartIdDescription : undefined} ${
-        useDefaultSummary ? idForChartSeriesTypes : undefined
-      }`;
-    }
-
-    const ChartLabel = (heading: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p', id: string, label?: string) => {
-      if (!label) return null;
-      switch (heading) {
-        case 'h1':
-          return <h1 id={id}>{label}</h1>;
-        case 'h2':
-          return <h2 id={id}>{label}</h2>;
-        case 'h3':
-          return <h3 id={id}>{label}</h3>;
-        case 'h4':
-          return <h4 id={id}>{label}</h4>;
-        case 'h5':
-          return <h5 id={id}>{label}</h5>;
-        case 'h6':
-          return <h6 id={id}>{label}</h6>;
-        default:
-          return <p id={id}>{label}</p>;
-      }
-    };
     return (
-      <figure {...ariaProps}>
+      <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <canvas
           ref={forwardStageRef}
           className="echCanvasRenderer"
@@ -229,19 +188,16 @@ class XYChartComponent extends React.Component<XYChartProps> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
-          {/* @ts-ignore */}
-          <ChartLabel id={chartIdLabel} label={ariaLabel} heading={headingLevel} />
-          {(accessibilityDescription || useDefaultSummary) && (
-            <div className="echScreenReaderOnly">
-              {accessibilityDescription && <p id={chartIdDescription}>{accessibilityDescription}</p>}
-              {useDefaultSummary && (
-                <dl>
-                  <dt>Chart type</dt>
-                  <dd id={idForChartSeriesTypes}>{chartSeriesTypes}</dd>
-                </dl>
-              )}
-            </div>
-          )}
+          <div className="echScreenReaderOnly">
+            <Label {...a11ySettings} />
+            <Description {...a11ySettings} />
+            {a11ySettings.defaultSummaryId && (
+              <dl id={a11ySettings.defaultSummaryId}>
+                <dt>Chart type</dt>
+                <dd>{chartSeriesTypes}</dd>
+              </dl>
+            )}
+          </div>
         </canvas>
       </figure>
     );
@@ -296,12 +252,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationSpecs: [],
   panelGeoms: [],
   seriesTypes: new Set(),
-  accessibilityDescription: undefined,
-  useDefaultSummary: true,
-  chartId: '',
-  ariaLabel: undefined,
-  ariaLabelledBy: undefined,
-  headingLevel: 'h2',
+  a11ySettings: DEFAULT_A11_SETTINGS,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -310,14 +261,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
 
   const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
-  const {
-    debug,
-    accessibilityDescription,
-    useDefaultSummary,
-    ariaLabel,
-    ariaLabelledBy,
-    headingLevel,
-  } = getSettingsSpecSelector(state);
+  const { debug } = getSettingsSpecSelector(state);
 
   return {
     initialized: true,
@@ -339,12 +283,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
     seriesTypes: getSeriesTypes(state),
-    accessibilityDescription,
-    useDefaultSummary,
-    chartId: getChartIdSelector(state),
-    ariaLabel,
-    ariaLabelledBy,
-    headingLevel,
+    a11ySettings: getA11ySettingsSelector(state),
   };
 };
 
