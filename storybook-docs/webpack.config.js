@@ -37,8 +37,6 @@ const scssLoaders = [
 ];
 
 module.exports = async ({ config }) => {
-  // config.plugins.push(new webpack.EnvironmentPlugin({ RNG_SEED: null }));
-
   // Replace default css rules with nonce
   config.module.rules = config.module.rules.filter(({ test }) => !test.test('.css'));
   config.module.rules.push({

@@ -32,14 +32,19 @@ import { DataGenerator, RandomNumberGenerator } from '../utils/data_generators/d
 export const forcedType = <T extends Record<string, unknown>>(obj: Partial<T>): T => obj as T;
 
 /**
- * Return rng function with optional `min`, `max` and `fractionDigits` params
+ * Returns rng seed from `process.env`
+ * @internal
+ */
+export const getRNGSeed = (fallback?: string): string | undefined =>
+  process.env.RNG_SEED ?? (process.env.STORYBOOK_VRT ? 'elastic-charts' : fallback);
+
+/**
+ * Returns rng function with optional `min`, `max` and `fractionDigits` params
  *
  * @param string seed for deterministic algorithm
  * @internal
  */
-export const getRandomNumberGenerator = (
-  seed = process.env.RNG_SEED ?? (process.env.STORYBOOK_VRT ? 'elastic-charts' : undefined),
-): RandomNumberGenerator => {
+export const getRandomNumberGenerator = (seed = getRNGSeed()): RandomNumberGenerator => {
   const rng = seedrandom(seed);
 
   /**
