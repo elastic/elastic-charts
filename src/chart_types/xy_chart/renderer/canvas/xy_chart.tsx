@@ -194,7 +194,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
             {a11ySettings.defaultSummaryId && (
               <dl id={a11ySettings.defaultSummaryId}>
                 <dt>Chart type</dt>
-                <dd>{chartSeriesTypes}</dd>
+                <dd id={a11ySettings.defaultSummaryId}>{chartSeriesTypes}</dd>
               </dl>
             )}
           </div>
