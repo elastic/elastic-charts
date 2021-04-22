@@ -33,9 +33,9 @@ declare global {
        */
       PORT?: string;
       /**
-       * Flag to run storybook against local running server
+       * Timezone flag used on jest.ts.config.js
        */
-      STORYBOOK_VRT: string;
+      TZ: string;
       /**
        * Flag used to enable a more suitable version of storybook for visual regression tests.
        *
