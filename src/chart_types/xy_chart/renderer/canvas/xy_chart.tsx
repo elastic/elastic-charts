@@ -24,6 +24,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { LegendItem } from '../../../../common/legend';
 import { Description } from '../../../../components/accessibility/description';
 import { Label } from '../../../../components/accessibility/label';
+import { Types } from '../../../../components/accessibility/types';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -191,12 +192,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
           <div className="echScreenReaderOnly">
             <Label {...a11ySettings} />
             <Description {...a11ySettings} />
-            {a11ySettings.defaultSummaryId && (
-              <dl id={a11ySettings.defaultSummaryId}>
-                <dt>Chart type</dt>
-                <dd id={a11ySettings.defaultSummaryId}>{chartSeriesTypes}</dd>
-              </dl>
-            )}
+            <Types {...a11ySettings} chartSeriesTypes={chartSeriesTypes} />
           </div>
         </canvas>
       </figure>
