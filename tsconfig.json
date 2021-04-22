@@ -17,8 +17,8 @@
     "allowJs": false,
     "skipLibCheck": true,
     "downlevelIteration": true,
-    "typeRoots": ["./node_modules/@types/", "./global.d.ts"],
     "stripInternal": true,
     "resolveJsonModule": true
-  }
+  },
+  "files": ["./global.d.ts"]
 }
