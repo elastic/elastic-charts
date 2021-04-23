@@ -1,3 +1,31 @@
+# [29.0.0](https://github.com/elastic/elastic-charts/compare/v28.2.0...v29.0.0) (2021-04-22)
+
+
+### Features
+
+* **a11y:** add label for screen readers ([#1121](https://github.com/elastic/elastic-charts/issues/1121)) ([920e585](https://github.com/elastic/elastic-charts/commit/920e5856d4c52416c0ea394e5605bb756266b178)), closes [#1096](https://github.com/elastic/elastic-charts/issues/1096)
+* **annotations:** marker body with dynamic positioning ([#1116](https://github.com/elastic/elastic-charts/issues/1116)) ([601abac](https://github.com/elastic/elastic-charts/commit/601abacc4247755ad1203439e6e95c6fa8574ab2))
+
+
+### BREAKING CHANGES
+
+* **a11y:** `description` prop in `<Settings/>` is renamed to `ariaDescription`
+
+Co-authored-by: Marco Vettorello <vettorello.marco@gmail.com>
+
+# [28.2.0](https://github.com/elastic/elastic-charts/compare/v28.1.0...v28.2.0) (2021-04-15)
+
+
+### Bug Fixes
+
+* **xy:** consider `useDefaultGroupDomain` on scale config ([#1119](https://github.com/elastic/elastic-charts/issues/1119)) ([c1b59f2](https://github.com/elastic/elastic-charts/commit/c1b59f249a1fdfc5d6f714de8db99cbf7a16c6eb)), closes [#1087](https://github.com/elastic/elastic-charts/issues/1087)
+
+
+### Features
+
+* **a11y:** allow user to pass custom description for screen readers ([#1111](https://github.com/elastic/elastic-charts/issues/1111)) ([2ee1b91](https://github.com/elastic/elastic-charts/commit/2ee1b912f58cff4964786ce6586b07390bbed0b3)), closes [#1097](https://github.com/elastic/elastic-charts/issues/1097)
+* **partition:** add debuggable state ([#1117](https://github.com/elastic/elastic-charts/issues/1117)) ([d7fc206](https://github.com/elastic/elastic-charts/commit/d7fc2068ca5febba06e25cf67b91cf9d203bc5d3)), closes [#917](https://github.com/elastic/elastic-charts/issues/917)
+
 # [28.1.0](https://github.com/elastic/elastic-charts/compare/v28.0.1...v28.1.0) (2021-04-13)
 
 
