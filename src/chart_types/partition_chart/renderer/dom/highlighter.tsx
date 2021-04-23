@@ -95,18 +95,25 @@ function renderRectangles(
 /**
  * Render an SVG path or circle from a partition chart QuadViewModel
  */
-function renderSector(geometry: QuadViewModel, key: string, style: SVGStyle) {
+function renderSector(geometry: QuadViewModel, key: string, { color, fillClassName, strokeClassName }: SVGStyle) {
   const { x0, x1, y0px, y1px } = geometry;
   if ((Math.abs(x0 - x1) + TAU) % TAU < EPSILON) {
-    const isRoot = y0px === 0;
-    const props = {
-      r: isRoot ? y1px : (y0px + y1px) / 2,
-      fill: isRoot ? style.color : 'none',
-      stroke: !isRoot ? style.color : 'none',
-      className: style.color ? undefined : isRoot ? style.fillClassName : style.strokeClassName,
-      strokeWidth: isRoot ? undefined : y1px - y0px,
-    };
-    return <circle key={key} {...props} />;
+    const props =
+      y0px === 0
+        ? {
+            key,
+            r: y1px,
+            stroke: 'none',
+            ...(color ? { fill: color } : { className: fillClassName }),
+          }
+        : {
+            key,
+            r: (y0px + y1px) / 2,
+            strokeWidth: y1px - y0px,
+            fill: 'none',
+            ...(color ? { stroke: color } : { className: strokeClassName }),
+          };
+    return <circle {...props} />;
   }
   const X0 = x0 - TAU / 4;
   const X1 = x1 - TAU / 4;
@@ -117,7 +124,7 @@ function renderSector(geometry: QuadViewModel, key: string, style: SVGStyle) {
     getSectorShapeFromCanvasArc(0, 0, y1px, X1, X0, true),
     'Z',
   ].join(' ');
-  const props = style.color ? { fill: style.color } : { className: style.fillClassName };
+  const props = color ? { fill: color } : { className: fillClassName };
   return <path key={key} d={path} {...props} />;
 }
 
