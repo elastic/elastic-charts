@@ -298,6 +298,7 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
 export const chartStoreReducer = (chartId: string) => {
   const initialState = getInitialState(chartId);
   return (state = initialState, action: StateActions): GlobalChartState => {
+    console.log(state, action);
     switch (action.type) {
       case Z_INDEX_EVENT:
         return {

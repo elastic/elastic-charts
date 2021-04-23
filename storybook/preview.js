@@ -17,9 +17,6 @@
  * under the License.
  */
 
-import { withInfo } from '@storybook/addon-info';
-import { withKnobs } from '@storybook/addon-knobs';
-import { addDecorator, configure, addParameters } from '@storybook/react';
 import { create } from '@storybook/theming';
 
 import { preloadIcons } from './preload_icons';
@@ -34,7 +31,8 @@ if (process.env.STORYBOOK_VRT) {
   document.querySelector('html')?.classList.add('disable-animations');
 }
 
-addParameters({
+export const parameters = {
+  layout: 'fullscreen',
   options: {
     theme: create({
       base: 'light',
@@ -58,9 +56,9 @@ addParameters({
     },
   },
   docs: {},
-});
+};
 
-addDecorator(withKnobs);
-addDecorator(withInfo);
+// addDecorator(withKnobs);
+// addDecorator(withInfo);
 
-configure(require.context('../stories', true, /\.stories\.tsx?$/), module);
+// configure(require.context('../stories', true, /\.stories\.tsx?$/), module);

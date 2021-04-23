@@ -20,14 +20,15 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings, CustomTooltip } from '../../src';
+import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../src';
+import type { CustomTooltip } from '../../src';
 import { config } from '../../src/chart_types/partition_chart/layout/config';
 import { mocks } from '../../src/mocks/hierarchical';
 import { STORYBOOK_LIGHT_THEME } from '../shared';
 import { getPlacementKnob, getFallbackPlacementsKnob, getBoundaryKnob } from '../utils/knobs';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
 
-const CustomTooltip: CustomTooltip = ({ values }) => (
+const Tooltip: CustomTooltip = ({ values }) => (
   <div
     style={{
       padding: 10,
@@ -47,7 +48,7 @@ export const Example = () => {
     placement: getPlacementKnob('Tooltip placement'),
     fallbackPlacements: getFallbackPlacementsKnob(),
     boundary: getBoundaryKnob(),
-    customTooltip: boolean('Custom Tooltip', false) ? CustomTooltip : undefined,
+    customTooltip: boolean('Custom Tooltip', false) ? Tooltip : undefined,
   };
   return (
     <Chart className="story-chart">
