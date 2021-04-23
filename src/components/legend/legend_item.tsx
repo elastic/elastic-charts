@@ -126,11 +126,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
    */
   handleLabelClick = (legendItemId: SeriesIdentifier[]): MouseEventHandler | undefined => {
     const { item, onClick, toggleDeselectSeriesAction, totalItems } = this.props;
-    if (totalItems <= 1) {
-      return;
-    }
-
-    if (!item.isToggleable && !onClick) {
+    if (totalItems <= 1 || (!item.isToggleable && !onClick)) {
       return;
     }
 

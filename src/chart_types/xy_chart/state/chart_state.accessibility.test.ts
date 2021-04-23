@@ -52,7 +52,7 @@ describe('test accessibility prop defaults', () => {
       ariaLabelledBy,
     } = getSettingsSpecSelector(state);
     expect(ariaDescription).toBeUndefined();
-    expect(ariaUseDefaultSummary).toBeTruthy();
+    expect(ariaUseDefaultSummary).toBeTrue();
     expect(ariaLabelHeadingLevel).toBe(DEFAULT_A11_SETTINGS.labelHeadingLevel);
     expect(ariaLabel).toBeUndefined();
     expect(ariaLabelledBy).toBeUndefined();
