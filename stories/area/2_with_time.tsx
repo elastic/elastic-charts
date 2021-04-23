@@ -38,7 +38,7 @@ export const Example = () => (
         offset: number('placement offset', 5),
       }}
       rotation={0}
-    />{' '}
+    />
     <Axis
       id="bottom"
       title="timestamp per 1 minute"
