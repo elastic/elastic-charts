@@ -130,10 +130,6 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       return;
     }
 
-    if (legendItemId.length === 0) {
-      return;
-    }
-
     if (!item.isToggleable && !onClick) {
       return;
     }

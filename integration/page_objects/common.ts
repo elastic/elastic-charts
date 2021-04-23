@@ -19,8 +19,6 @@
 
 import Url from 'url';
 
-import { AXNode } from 'puppeteer';
-
 import { DRAG_DETECTION_TIMEOUT } from '../../src/state/reducers/interactions';
 // @ts-ignore
 import defaults from '../defaults';
@@ -456,24 +454,11 @@ class CommonPage {
   }
 
   /**
-   * puppeteer accessibility functionality
-   * @param {string} [url]
-   * @param {string} [waitSelector]
-   */
-  async testAccessibilityTree(url: string, waitSelector: string): Promise<AXNode> {
-    await this.loadElementFromURL(url, waitSelector);
-    const accessibilitySnapshot = await page.accessibility.snapshot().then((value) => {
-      return value;
-    });
-    return accessibilitySnapshot;
-  }
-
-  /**
    * Get HTML for element to test aria labels etc
    */
   // eslint-disable-next-line class-methods-use-this
   async getElementHTML(url: string) {
-    await this.loadElementFromURL(url);
+    await this.loadElementFromURL(url, '.echCanvasRenderer');
     // https://github.com/puppeteer/puppeteer/issues/406#issuecomment-323555639
     return await page.evaluate(() => new XMLSerializer().serializeToString(document));
   }
