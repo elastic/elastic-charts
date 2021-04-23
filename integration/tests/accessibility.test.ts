@@ -19,17 +19,27 @@
 
 import { common } from '../page_objects/common';
 
-describe('Accessibility', () => {
-  it('should include the series types if one type of series', async () => {
-    const html = await common.getElementHTML(
-      'http://localhost:9001/iframe.html?id=annotations-lines--x-continuous-domain',
-    );
-    const startIndex = html.indexOf('<dd>');
-    expect(html.slice(startIndex, startIndex + 13)).toBe('<dd>bar chart');
-  });
+describe('Accessibility tree', () => {
+  // it('should include the series types if one type of series', async () => {
+  //   const tree = await common.testAccessibilityTree(
+  //     'http://localhost:9001/iframe.html?id=annotations-lines--x-continuous-domain',
+  //     '.echCanvasRenderer',
+  //   );
+  //   // the legend has bars and lines as value.descriptions not value.name
+  //   const hasTextOfChartTypes = tree.children.filter((value) => {
+  //     return value.name === 'bar chart';
+  //   });
+  //   expect(hasTextOfChartTypes[0].name).toBe('bar chart');
+  // });
   it('should include the series types if multiple types of series', async () => {
-    const html = await common.getElementHTML('http://localhost:9001/iframe.html?id=mixed-charts--bars-and-lines');
-    const startIndex = html.indexOf('<dd>');
-    expect(html.slice(startIndex, startIndex + 30)).toBe('<dd>Mixed chart: bar and line ');
+    const tree = await common.testAccessibilityTree(
+      'http://localhost:9001/iframe.html?id=mixed-charts--bars-and-lines',
+      '.echCanvasRenderer',
+    );
+    // the legend has bars and lines as value.descriptions not value.name
+    const hasTextOfChartTypes = tree.children.filter((value) => {
+      return value.name === 'Mixed chart: bar and line chart';
+    });
+    expect(hasTextOfChartTypes[0].name).toBe('Mixed chart: bar and line chart');
   });
 });
