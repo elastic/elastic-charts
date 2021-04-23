@@ -121,9 +121,9 @@ function layoutMaker(config: Configs, data: Datum[]) {
 
 const uniqeWordCloudId = `test--description`;
 const View = ({ words, conf }: { words: Word[]; conf: Configs }) => (
-  <svg width={getWidth(conf)} height={getHeight(conf)}>
+  <svg width={getWidth(conf)} height={getHeight(conf)} role="img">
     <title className="echScreenReaderOnly" id={uniqeWordCloudId}>
-      Chart type: word cloud
+      Chart type: Word Cloud
     </title>
     <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
       {words.map((d, i) => {
