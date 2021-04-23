@@ -218,7 +218,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           />
           <ItemLabel
             label={label}
-            isToggleable={item.isToggleable}
+            isToggleable={totalItems > 1 ? item.isToggleable : false}
             onClick={this.handleLabelClick(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
           />
