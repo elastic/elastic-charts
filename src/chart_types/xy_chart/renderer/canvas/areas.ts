@@ -41,7 +41,7 @@ interface AreaGeometriesProps {
 }
 
 /** @internal */
-export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometriesProps) {
+export function renderAreas(imgCanvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, props: AreaGeometriesProps) {
   const { sharedStyle, highlightedLegendItem, areas, rotation, clippings, renderingArea } = props;
 
   withContext(ctx, (ctx) => {
@@ -54,7 +54,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
           rotation,
           renderingArea,
           (ctx) => {
-            renderArea(ctx, area, sharedStyle, clippings, highlightedLegendItem);
+            renderArea(imgCanvas, ctx, area, sharedStyle, clippings, highlightedLegendItem);
           },
           { area: clippings, shouldClip: true },
         );
@@ -95,6 +95,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, props: AreaGeometries
 }
 
 function renderArea(
+  imgCanvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   glyph: AreaGeometry,
   sharedStyle: SharedGeometryStateStyle,
@@ -104,7 +105,7 @@ function renderArea(
   const { area, color, transform, seriesIdentifier, seriesAreaStyle, clippedRanges, hideClippedRanges } = glyph;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
   const fill = buildAreaStyles(color, seriesAreaStyle, geometryStateStyle);
-  renderAreaPath(ctx, transform, area, fill, clippedRanges, clippings, hideClippedRanges);
+  renderAreaPath(imgCanvas, ctx, transform, area, fill, clippedRanges, clippings, hideClippedRanges);
 }
 
 function renderAreaLines(

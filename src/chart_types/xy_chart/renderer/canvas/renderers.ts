@@ -39,6 +39,10 @@ export function renderXYChartCanvas2d(
   clippings: Rect,
   props: ReactiveChartStateProps,
 ) {
+  const imgCanvas = document.createElement('canvas');
+  imgCanvas.width = 30;
+  imgCanvas.height = 30;
+
   withContext(ctx, (ctx) => {
     // let's set the devicePixelRatio once and for all; then we'll never worry about it again
     ctx.scale(dpr, dpr);
@@ -120,7 +124,7 @@ export function renderXYChartCanvas2d(
       // rendering areas
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          renderAreas(ctx, {
+          renderAreas(imgCanvas, ctx, {
             areas: geometries.areas,
             clippings,
             renderingArea,

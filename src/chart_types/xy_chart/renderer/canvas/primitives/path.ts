@@ -24,28 +24,72 @@ import { ClippedRanges } from '../../../../../utils/geometry';
 import { Point } from '../../../../../utils/point';
 import { renderMultiLine } from './line';
 
-// function drawCheckeredBackground(can: HTMLCanvasElement, nRow: number, nCol: number, fill: Fill) {
-//   const ctx = can.getContext('2d');
-//   if (ctx != null) {
-//     let w = can.width;
-//     let h = can.height;
+function linePaths(orientation: string, s: number) {
+  switch (orientation) {
+    case '0/8':
+    case 'vertical':
+      return `M ${s / 2}, 0 l 0, ${s}`;
+    case '1/8':
+      return `M ${-s / 4},${s} l ${s / 2},${-s} M ${s / 4},${s} l ${s / 2},${-s} M ${(s * 3) / 4},${s} l ${
+        s / 2
+      },${-s}`;
+    case '2/8':
+    case 'diagonal':
+      return `M 0,${s} l ${s},${-s} M ${-s / 4},${s / 4} l ${s / 2},${-s / 2} M ${(3 / 4) * s},${(5 / 4) * s} l ${
+        s / 2
+      },${-s / 2}`;
+    case '3/8':
+      return `M 0,${(3 / 4) * s} l ${s},${-s / 2} M 0,${s / 4} l ${s},${-s / 2} M 0,${(s * 5) / 4} l ${s},${-s / 2}`;
+    case '4/8':
+    case 'horizontal':
+      return `M 0,${s / 2} l ${s},0`;
+    case '5/8':
+      return `M 0,${-s / 4} l ${s},${s / 2}M 0,${s / 4} l ${s},${s / 2} M 0,${(s * 3) / 4} l ${s},${s / 2}`;
+    case '6/8':
+      return `M 0,0 l ${s},${s} M ${-s / 4},${(3 / 4) * s} l ${s / 2},${s / 2} M ${(s * 3) / 4},${-s / 4} l ${s / 2},${
+        s / 2
+      }`;
+    case '7/8':
+      return `M ${-s / 4},0 l ${s / 2},${s} M ${s / 4},0 l ${s / 2},${s} M ${(s * 3) / 4},0 l ${s / 2},${s}`;
+    default:
+      return `M ${s / 2}, 0 l 0, ${s}`;
+  }
+}
 
-//     nRow = nRow || 8; // default number of rows
-//     nCol = nCol || 8; // default number of columns
+function drawPattern(type: string, can: HTMLCanvasElement, fill: Fill, size: number) {
+  const ctx = can.getContext('2d');
 
-//     w /= nCol; // width of a block
-//     h /= nRow; // height of a block
+  if (ctx !== null) {
+    if (type.indexOf('line') === 0) {
+      ctx.strokeStyle = 'black';
+      ctx.beginPath();
+      ctx.stroke(new Path2D(linePaths(type.slice(4), size)));
+      return;
+    }
 
-//     for (let i = 0; i < nRow; ++i) {
-//       for (let j = 0, col = nCol / 2; j < col; ++j) {
-//         ctx.rect(2 * j * w + (i % 2 ? 0 : w), i * h, w, h);
-//       }
-//     }
+    switch (type) {
+      case 'circle':
+        ctx.strokeStyle = 'black';
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, 5, 0, 2 * Math.PI);
+        ctx.stroke();
+        break;
+      case 'circleFill':
+        ctx.strokeStyle = 'black';
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, 2, 0, 2 * Math.PI);
+        ctx.fill();
+        break;
+      default:
+        break;
+    }
+  }
 
-//     ctx.fillStyle = RGBtoString(fill.color);
-//     ctx.fill();
-//   }
-// }
+  // if (ctx != null) {
+  //   ctx.fillStyle = RGBtoString(fill.color);
+  //   ctx.fill();
+  // }
+}
 
 /** @internal */
 export function renderLinePaths(
@@ -80,6 +124,7 @@ export function renderLinePaths(
 
 /** @internal */
 export function renderAreaPath(
+  imgCanvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   transform: Point,
   area: string,
@@ -88,54 +133,41 @@ export function renderAreaPath(
   clippings: Rect,
   hideClippedRanges = false,
 ) {
-  const imgCanvas = document.createElement('canvas');
-  imgCanvas.width = 100;
-  imgCanvas.height = 100;
-  const imgCtx = imgCanvas.getContext('2d');
-  const img = new Image();
-  img.src = require('../images/pattern.svg');
-
-  img.addEventListener('load', function () {
-    if (imgCtx != null) {
-      imgCtx.drawImage(img, 0, 0, 200, 200);
-      if (clippedRanges.length > 0) {
-        withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
-          ctx.translate(transform.x, transform.y);
-          renderPathFill(ctx, imgCanvas, area, fill);
-        });
-        if (hideClippedRanges) {
-          return;
-        }
-        withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
-          ctx.translate(transform.x, transform.y);
-          const { opacity } = fill.color;
-          const color = {
-            ...fill.color,
-            opacity: opacity / 2,
-          };
-          renderPathFill(ctx, imgCanvas, area, { ...fill, color });
-        });
-        return;
-      }
-      withContext(ctx, (ctx) => {
-        ctx.translate(transform.x, transform.y);
-        renderPathFill(ctx, imgCanvas, area, fill);
-      });
+  drawPattern('line3/8', imgCanvas, fill, 30);
+  if (clippedRanges.length > 0) {
+    withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
+      ctx.translate(transform.x, transform.y);
+      renderPathFill(ctx, imgCanvas, area, fill);
+    });
+    if (hideClippedRanges) {
+      return;
     }
+    withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
+      ctx.translate(transform.x, transform.y);
+      const { opacity } = fill.color;
+      const color = {
+        ...fill.color,
+        opacity: opacity / 2,
+      };
+      renderPathFill(ctx, imgCanvas, area, { ...fill, color });
+    });
+    return;
+  }
+  withContext(ctx, (ctx) => {
+    ctx.translate(transform.x, transform.y);
+    renderPathFill(ctx, imgCanvas, area, fill);
   });
-  // drawCheckeredBackground(imgCanvas, 10, 10, fill);
+  // drawPattern(imgCanvas, fill);
 }
 
 function renderPathFill(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvasElement, path: string, fill: Fill) {
   const path2d = new Path2D(path);
   const pattern = ctx.createPattern(imgCanvas, 'repeat');
+  ctx.fillStyle = RGBtoString(fill.color);
+  ctx.fill(path2d);
   if (pattern) {
     ctx.fillStyle = pattern;
-    ctx.beginPath();
-    ctx.fill(path2d);
-    return;
   }
-  ctx.fillStyle = RGBtoString(fill.color);
   ctx.beginPath();
   ctx.fill(path2d);
 }
