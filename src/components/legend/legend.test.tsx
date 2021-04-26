@@ -288,4 +288,31 @@ describe('Legend', () => {
       });
     });
   });
+  describe('disable toggle and click for one legend item', () => {
+    it('should not be able to click or focus if there is only one legend item in total legend items', () => {
+      const onLegendItemClick = jest.fn();
+      const data = [{ x: 2, y: 5 }];
+      const wrapper = mount(
+        <Chart>
+          <Settings showLegend showLegendExtra onLegendItemClick={onLegendItemClick} />
+          <BarSeries
+            id="areas"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor="x"
+            yAccessors={['y']}
+            data={data}
+          />
+        </Chart>,
+      );
+      const legendWrapper = wrapper.find(Legend);
+      const legendItems = legendWrapper.find(LegendListItem);
+      expect(legendItems.length).toBe(1);
+      legendItems.forEach((legendItem) => {
+        // the click is only enabled on the title
+        legendItem.find('.echLegendItem__label').simulate('click');
+        expect(onLegendItemClick).toBeCalledTimes(0);
+      });
+    });
+  });
 });

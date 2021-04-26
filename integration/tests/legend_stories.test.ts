@@ -150,34 +150,6 @@ describe('Legend stories', () => {
       });
       expect(hiddenResults).toEqual([1]);
     });
-    it('should not hide label when only one legend item', async () => {
-      await common.loadElementFromURL(
-        'http://localhost:9001/iframe.html?id=annotations-lines--x-continuous-domain',
-        '.echLegendItem__label',
-      );
-      await common.clickMouseRelativeToDOMElement(
-        {
-          bottom: 180,
-          left: 330,
-        },
-        '.echChartStatus[data-ech-render-complete=true]',
-      );
-      // Make the first index legend item is not hidden
-      await page.keyboard.press('Tab');
-      await page.keyboard.press('Enter');
-
-      const hiddenResults: number[] = [];
-      // Filter the labels
-      const labels = page.evaluate(() =>
-        Array.from(document.getElementsByClassName('echLegendItem'), (e) => e.outerHTML),
-      );
-      (await labels).forEach((label, index) => {
-        if (label.includes('Activate to show series')) {
-          hiddenResults.push(index);
-        }
-      });
-      expect(hiddenResults).toEqual([]);
-    });
   });
 
   describe('Extra values', () => {
