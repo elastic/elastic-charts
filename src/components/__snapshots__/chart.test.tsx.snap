@@ -78,7 +78,7 @@ exports[`Chart should render the legend name test 1`] = `
                           <Types label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" chartSeriesTypes=\\"bar chart\\">
                             <dl id=\\"chart1--defaultSummary\\">
                               <dt>
-                                Chart type
+                                Chart type:
                               </dt>
                               <dd id=\\"chart1--defaultSummary\\">
                                 bar chart
