@@ -31,10 +31,7 @@ describe('Accessibility', () => {
         <BarSeries id="test" data={[{ x: 0, y: 2 }]} />
       </Chart>,
     );
-    const html = wrapper.html();
-    const ddTagStartIndex = html.indexOf('<dd>');
-    const ddTag = html.slice(ddTagStartIndex, ddTagStartIndex + 18);
-    expect(ddTag).toBe('<dd>bar chart</dd>');
+    expect(wrapper.find('dd').first().text()).toBe('bar chart');
   });
   it('should include the series types if multiple types of series', () => {
     const wrapper = mount(
@@ -44,9 +41,6 @@ describe('Accessibility', () => {
         <LineSeries id="test2" data={[{ x: 3, y: 5 }]} />
       </Chart>,
     );
-    const html = wrapper.html();
-    const ddTagStartIndex = html.indexOf('<dd>');
-    const ddTag = html.slice(ddTagStartIndex, ddTagStartIndex + 40);
-    expect(ddTag).toBe('<dd>Mixed chart: bar and line chart</dd>');
+    expect(wrapper.find('dd').first().text()).toBe('Mixed chart: bar and line chart');
   });
 });
