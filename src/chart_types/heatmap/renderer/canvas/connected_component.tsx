@@ -134,7 +134,7 @@ class Component extends React.Component<Props> {
           <div className="echScreenReaderOnly">
             <Label {...a11ySettings} />
             <Description {...a11ySettings} />
-            <Types {...a11ySettings} chartSeriesTypes="Goal chart" />
+            <Types {...a11ySettings} chartSeriesTypes="heatmap chart" />
           </div>
         </canvas>
       </figure>

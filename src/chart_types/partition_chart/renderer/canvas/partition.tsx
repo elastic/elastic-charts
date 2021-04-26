@@ -21,9 +21,17 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { Description } from '../../../../components/accessibility/description';
+import { Label } from '../../../../components/accessibility/label';
+import { Types } from '../../../../components/accessibility/types';
 import { clearCanvas } from '../../../../renderers/canvas';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { ChartId, GlobalChartState } from '../../../../state/chart_state';
+import {
+  A11ySettings,
+  DEFAULT_A11Y_SETTINGS,
+  getA11ySettingsSelector,
+} from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
@@ -59,6 +67,7 @@ interface ReactiveChartStateProps {
   multiGeometries: ShapeViewModel[];
   chartContainerDimensions: Dimensions;
   chartId: ChartId;
+  a11ySettings: A11ySettings;
 }
 
 interface ReactiveChartDispatchProps {
@@ -142,6 +151,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
       initialized,
       chartContainerDimensions: { width, height },
       geometries: { partitionLayout },
+      a11ySettings,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
@@ -161,10 +171,11 @@ class PartitionComponent extends React.Component<PartitionProps> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         />
-        <dl className="echScreenReaderOnly">
-          <dt>Chart type</dt>
-          <dd>{partitionLayout}</dd>
-        </dl>
+        <div className="echScreenReaderOnly">
+          <Label {...a11ySettings} />
+          <Description {...a11ySettings} />
+          <Types {...a11ySettings} chartSeriesTypes={partitionLayout} />
+        </div>
       </figure>
     );
   }
@@ -213,6 +224,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     left: 0,
     top: 0,
   },
+  a11ySettings: DEFAULT_A11Y_SETTINGS,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -227,6 +239,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
     geometriesFoci: partitionDrilldownFocus(state),
     chartId: getChartIdSelector(state),
+    a11ySettings: getA11ySettingsSelector(state),
   };
 };
 

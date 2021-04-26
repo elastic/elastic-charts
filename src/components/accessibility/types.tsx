@@ -30,7 +30,7 @@ export function Types(props: A11ySettings & SeriesTypesProps) {
   if (!props.defaultSummaryId) return null;
   return (
     <dl id={props.defaultSummaryId}>
-      <dt>Chart type</dt>
+      <dt>Chart type:</dt>
       <dd id={props.defaultSummaryId}>{props.chartSeriesTypes}</dd>
     </dl>
   );
