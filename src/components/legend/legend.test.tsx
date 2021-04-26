@@ -295,18 +295,10 @@ describe('Legend', () => {
       const wrapper = mount(
         <Chart>
           <Settings showLegend showLegendExtra onLegendItemClick={onLegendItemClick} />
-          <BarSeries
-            id="areas"
-            xScaleType={ScaleType.Linear}
-            yScaleType={ScaleType.Linear}
-            xAccessor="x"
-            yAccessors={['y']}
-            data={data}
-          />
+          <BarSeries id="areas" xScaleType={ScaleType.Linear} yScaleType={ScaleType.Linear} data={data} />
         </Chart>,
       );
-      const legendWrapper = wrapper.find(Legend);
-      const legendItems = legendWrapper.find(LegendListItem);
+      const legendItems = wrapper.find(LegendListItem);
       expect(legendItems.length).toBe(1);
       legendItems.forEach((legendItem) => {
         // the click is only enabled on the title
