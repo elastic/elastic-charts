@@ -28,7 +28,9 @@ import { toMatchImageSnapshot } from '../jest_env_setup';
 
 const port = process.env.PORT || defaults.PORT;
 const host = process.env.HOST || defaults.HOST;
+const VRT_V2 = process.env.VRT_V2 || defaults.VRT_V2;
 const baseUrl = `http://${host}:${port}/iframe.html`;
+const baseUrlV2 = `http://${host}:${port}`;
 
 // Use to log console statements from within the page.evaluate blocks
 // @ts-ignore
@@ -148,9 +150,22 @@ class CommonPage {
    * @param url
    */
   static parseUrl(url: string): string {
+    if (VRT_V2) {
+      const { query } = Url.parse(url, true);
+      const { id, ...rest } = query;
+      return Url.format({
+        protocol: 'http',
+        hostname: host,
+        port,
+        query: {
+          path: `/story/${id}`,
+          ...rest,
+          'knob-debug': false,
+        },
+      });
+    }
     const { query } = Url.parse(url);
-
-    return `${baseUrl}?${query}${query ? '&' : ''}knob-debug=false`;
+    return `${VRT_V2 ? baseUrlV2 : baseUrl}?${query}${query ? '&' : ''}knob-debug=false`;
   }
 
   /**

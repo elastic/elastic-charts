@@ -17,9 +17,19 @@
  * under the License.
  */
 
-module.exports = {
-  PORT: '9009',
-  HOST: process.env.DEBUG === 'true' ? 'localhost' : 'host.docker.internal',
-  LOCAL_STORYBOOK_VRT: false,
-  VRT_V2: false,
+// module.exports = function lazyImportTemplate(index, path) {
+//   return `
+// const Component${index} = React.lazy(() => {
+//   return import('../../${path}').then((module) => {
+//     return { default: module.Example };
+//   });
+// });`.trim();
+// };
+
+module.exports = function lazyImportTemplate(index, path) {
+  return `
+const Component${index} = React.lazy(() => new Promise(async resolve => {
+  const module = await import('../../${path}');
+  resolve({ default: module.Example });
+}));`.trim();
 };

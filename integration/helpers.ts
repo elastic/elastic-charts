@@ -90,6 +90,18 @@ const storiesToDelay: Record<string, Record<string, number>> = {
 };
 
 export function getStorybookInfo(): StoryGroupInfo[] {
+  if (process.env.VRT_V2) {
+    const examples = require('./tmp/examples.json');
+    return examples.map((d: any) => {
+      return [
+        d.groupTitle,
+        d.slugifiedGroupTitle,
+        d.exampleFiles.map((example: any) => {
+          return [example.name, example.slugifiedName, 0];
+        }),
+      ];
+    });
+  }
   configure(requireAllStories(__dirname, '../stories'), module);
 
   return getStorybook()
