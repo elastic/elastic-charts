@@ -22,9 +22,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { LegendItem } from '../../../../common/legend';
-import { Description } from '../../../../components/accessibility/description';
-import { Label } from '../../../../components/accessibility/label';
-import { Types } from '../../../../components/accessibility/types';
+import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -163,17 +161,14 @@ class XYChartComponent extends React.Component<XYChartProps> {
       initialized,
       isChartEmpty,
       chartContainerDimensions: { width, height },
-      seriesTypes,
       a11ySettings,
+      seriesTypes,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
       this.ctx = null;
       return null;
     }
-
-    const chartSeriesTypes =
-      seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
 
     return (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
@@ -189,11 +184,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
-          <div className="echScreenReaderOnly">
-            <Label {...a11ySettings} />
-            <Description {...a11ySettings} />
-            <Types {...a11ySettings} chartSeriesTypes={chartSeriesTypes} />
-          </div>
+          <ScreenReaderSummary a11ySettings={a11ySettings} seriesTypes={seriesTypes} />
         </canvas>
       </figure>
     );

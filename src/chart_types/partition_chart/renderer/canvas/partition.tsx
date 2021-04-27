@@ -21,9 +21,7 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { Description } from '../../../../components/accessibility/description';
-import { Label } from '../../../../components/accessibility/label';
-import { Types } from '../../../../components/accessibility/types';
+import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { clearCanvas } from '../../../../renderers/canvas';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { ChartId, GlobalChartState } from '../../../../state/chart_state';
@@ -157,7 +155,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
       return null;
     }
     return (
-      <figure>
+      <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <canvas
           ref={forwardStageRef}
           className="echCanvasRenderer"
@@ -171,11 +169,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         />
-        <div className="echScreenReaderOnly">
-          <Label {...a11ySettings} />
-          <Description {...a11ySettings} />
-          <Types {...a11ySettings} chartSeriesTypes={partitionLayout} />
-        </div>
+        <ScreenReaderSummary a11ySettings={a11ySettings} seriesTypes={new Set(partitionLayout)} />
       </figure>
     );
   }

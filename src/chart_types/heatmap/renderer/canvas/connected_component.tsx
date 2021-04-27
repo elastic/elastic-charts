@@ -21,9 +21,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { Description } from '../../../../components/accessibility/description';
-import { Label } from '../../../../components/accessibility/label';
-import { Types } from '../../../../components/accessibility/types';
+import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -118,7 +116,7 @@ class Component extends React.Component<Props> {
       return null;
     }
     return (
-      <figure>
+      <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <canvas
           ref={forwardStageRef}
           className="echCanvasRenderer"
@@ -131,11 +129,7 @@ class Component extends React.Component<Props> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
-          <div className="echScreenReaderOnly">
-            <Label {...a11ySettings} />
-            <Description {...a11ySettings} />
-            <Types {...a11ySettings} chartSeriesTypes="heatmap chart" />
-          </div>
+          <ScreenReaderSummary a11ySettings={a11ySettings} seriesTypes={new Set('heat map chart')} />
         </canvas>
       </figure>
     );

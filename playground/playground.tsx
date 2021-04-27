@@ -19,13 +19,14 @@
 
 import React from 'react';
 
-import { Chart, AreaSeries, LineSeries, BarSeries, ScaleType } from '../src';
+import { Chart, AreaSeries, LineSeries, BarSeries, ScaleType, Settings } from '../src';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="App">
         <Chart size={[500, 200]}>
+          <Settings ariaDescription="This is a custom description" />
           <AreaSeries
             id="lines"
             name="test2"
