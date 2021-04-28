@@ -30,7 +30,7 @@ import '../../storybook/style.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { VRTPage } from './vrt_page';
-import { appendIconComponentCache } from '../node_modules/@elastic/eui/es/components/icon/icon';
+import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon';
 appendIconComponentCache({
   arrowUp: require('@elastic/eui/es/components/icon/assets/arrow_up').icon,
   arrowLeft: require('@elastic/eui/es/components/icon/assets/arrow_left').icon,

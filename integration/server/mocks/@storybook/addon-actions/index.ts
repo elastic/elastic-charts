@@ -17,6 +17,6 @@
  * under the License.
  */
 
-module.exports = function routeComponentTemplate(index, url) {
-  return `{path === '${url}' && <Component${index} />}`;
-};
+export function action() {
+  return () => {};
+}

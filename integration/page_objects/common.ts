@@ -455,9 +455,9 @@ class CommonPage {
     }
 
     // activate peripheral visibility
-    await page.evaluate(() => {
-      document.querySelector('html')!.classList.add('echVisualTesting');
-    });
+    // await page.evaluate(() => {
+    //   document.querySelector('html')!.classList.add('echVisualTesting');
+    // });
   }
 
   /**

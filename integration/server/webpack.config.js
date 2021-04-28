@@ -34,7 +34,11 @@ module.exports = {
   devServer: {
     host: '0.0.0.0',
     port: 9002,
+    compress: true,
+    clientLogLevel: 'silent',
     disableHostCheck: true,
+    liveReload: false,
+    stats: 'errors-only',
   },
   module: {
     rules: [
@@ -107,6 +111,7 @@ module.exports = {
   resolve: {
     alias: {
       '@storybook/addon-knobs': path.resolve(__dirname, 'mocks/@storybook/addon-knobs'),
+      '@storybook/addon-actions': path.resolve(__dirname, 'mocks/@storybook/addon-actions'),
     },
     extensions: ['.tsx', '.ts', '.js'],
   },
@@ -119,6 +124,7 @@ module.exports = {
       hash: true,
       template: './index.ejs',
       filename: 'index.html',
+      favicon: '../../public/favicon.ico',
     }),
     new webpack.EnvironmentPlugin({ RNG_SEED: null }),
   ],

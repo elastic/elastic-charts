@@ -27,7 +27,6 @@ function getKnobKey(name: string, groupId?: string) {
 
 export function boolean(name: string, dftValue: boolean, groupId?: string) {
   const params = getParams();
-  console.log('boolean params', JSON.stringify(params));
   const key = getKnobKey(name, groupId);
   const param = params.get(key);
   if (param === '' || param == null) {
@@ -42,6 +41,10 @@ export function number(name: string, dftValue: number, options?: any, groupId?: 
   return Number.parseFloat(params.get(key) ?? `${dftValue}`);
 }
 
+export function radios(name: string, options: unknown, dftValue: string, groupId?: string) {
+  return text(name, dftValue, groupId);
+}
+
 export function color(name: string, dftValue: string, groupId?: string) {
   return text(name, dftValue, groupId);
 }
@@ -53,8 +56,10 @@ export function select(name: string, b: unknown, dftValue: string, groupId?: str
 export function text(name: string, dftValue: string, groupId?: string) {
   const params = getParams();
   const key = getKnobKey(name, groupId);
-  if (params.has(key)) {
-    return params.get(key);
+  const value = params.get(key);
+  if (value != null) {
+    // the # used for the color knob needs to be escaped on the URL and unescaped here
+    return unescape(value);
   }
   return dftValue;
 }
@@ -76,4 +81,8 @@ export function array(name: string, dftValues: unknown[], options: any, groupId?
 
 export function optionsKnob(name: string, values: unknown, dftValues: unknown[], options: any, groupId?: string) {
   return array(name, dftValues, options, groupId);
+}
+
+export function button() {
+  // NOP
 }

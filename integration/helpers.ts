@@ -79,6 +79,10 @@ const storiesToSkip: Record<string, string[]> = {
   // Interactions: ['Some story name'],
   'Test Cases': ['No Series'],
 };
+const storiesToSkipV2: Record<string, string[]> = {
+  // Interactions: ['Some story name'],
+  'Test Cases': ['noSeries'],
+};
 
 /**
  * Delays for stories to skip in all vrt based on group.
@@ -96,9 +100,11 @@ export function getStorybookInfo(): StoryGroupInfo[] {
       return [
         d.groupTitle,
         d.slugifiedGroupTitle,
-        d.exampleFiles.map((example: any) => {
-          return [example.name, example.slugifiedName, 0];
-        }),
+        d.exampleFiles
+          .filter(({ name }: any) => name && !storiesToSkipV2[d.groupTitle]?.includes(name))
+          .map((example: any) => {
+            return [example.name, example.slugifiedName, 0];
+          }),
       ];
     });
   }
