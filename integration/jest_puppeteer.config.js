@@ -19,12 +19,9 @@
 
 const getConfig = require('jest-puppeteer-docker/lib/config');
 
-const isDebug = process.env.DEBUG === 'true';
-const baseConfig = isDebug ? {} : getConfig();
-const defaults = require('./defaults');
+const { debug, port, isLocalVRTServer, isLegacyVRTServer } = require('./config');
 
-const port = process.env.PORT || defaults.PORT;
-const useLocalStorybook = process.env.LOCAL_STORYBOOK_VRT || defaults.LOCAL_STORYBOOK_VRT;
+const baseConfig = debug ? {} : getConfig();
 
 const defaultViewport = {
   width: 800,
@@ -41,7 +38,7 @@ const sharedConfig = {
  * https://github.com/smooth-code/jest-puppeteer/tree/master/packages/jest-environment-puppeteer#jest-puppeteerconfigjs
  */
 const customConfig = {
-  ...(isDebug
+  ...(debug
     ? {
         launch: {
           args: ['--no-sandbox'], // required to connect puppeteer to chromium devtools ws
@@ -59,13 +56,22 @@ const customConfig = {
           ...sharedConfig,
         },
       }),
-  server: useLocalStorybook
+  server: isLocalVRTServer
     ? null
     : {
-        command: `yarn start --port=${port} --quiet`,
+        command: isLegacyVRTServer
+          ? `yarn start --port=${port} --quiet`
+          : `yarn test:integration:server --port=${port}`,
         port,
-        usedPortAction: 'error',
+        usedPortAction: 'kill',
         launchTimeout: 120000,
+        ...(!isLegacyVRTServer && {
+          waitOnScheme: {
+            resources: [`http://localhost:${port}`],
+            delay: 1000,
+            interval: 100,
+          },
+        }),
         debug: true,
       },
   ...baseConfig,

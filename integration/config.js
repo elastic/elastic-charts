@@ -18,8 +18,9 @@
  */
 
 module.exports = {
-  PORT: '9009',
-  HOST: process.env.DEBUG === 'true' ? 'localhost' : 'host.docker.internal',
-  LOCAL_STORYBOOK_VRT: false,
-  VRT_V2: false,
+  debug: process.env.DEBUG === 'true',
+  port: process.env.PORT || '9009',
+  hostname: process.env.DEBUG === 'true' ? 'localhost' : 'host.docker.internal',
+  isLocalVRTServer: process.env.LOCAL_VRT_SERVER === 'true',
+  isLegacyVRTServer: process.env.LEGACY_VRT_SERVER === 'true',
 };
