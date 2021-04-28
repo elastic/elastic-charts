@@ -51,7 +51,7 @@
     "test:integration:debug": "DEBUG=true yarn test:integration:local",
     "test:integration:local": "LOCAL_VRT_SERVER=true PORT=9001 yarn test:integration",
     "test:integration:local:legacy": "LOCAL_VRT_SERVER=true PORT=9002 test:integration:legacy",
-    "test:integration:generate": "yarn test:integration:generate:examples && test:integration:generate:page",
+    "test:integration:generate": "yarn test:integration:generate:examples && yarn test:integration:generate:page",
     "test:integration:generate:examples": "./scripts/extract_examples.sh",
     "test:integration:generate:page": "./scripts/compile_vrt_page.sh",
     "test:integration:server": "cd integration/server && RNG_SEED='elastic-charts' webpack serve --content-base integration/server",

@@ -23,7 +23,7 @@ import { AXNode } from 'puppeteer';
 
 import { DRAG_DETECTION_TIMEOUT } from '../../src/state/reducers/interactions';
 // @ts-ignore
-import { port, hostname, isLegacyVRTServer } from '../config';
+import { port, hostname, debug, isLegacyVRTServer } from '../config';
 import { toMatchImageSnapshot } from '../jest_env_setup';
 
 const legacyBaseUrl = `http://${hostname}:${port}/iframe.html`;
@@ -203,7 +203,7 @@ class CommonPage {
       await Promise.all(options.hiddenSelectors.map(this.toggleElementVisibility));
     }
 
-    if (options?.debug && process.env.DEBUG === 'true') {
+    if (options?.debug && debug) {
       await jestPuppeteer.debug();
     }
 
@@ -450,10 +450,12 @@ class CommonPage {
       await this.waitForElement(waitSelector, timeout);
     }
 
-    // activate peripheral visibility
-    // await page.evaluate(() => {
-    //   document.querySelector('html')!.classList.add('echVisualTesting');
-    // });
+    if (isLegacyVRTServer) {
+      // activate peripheral visibility
+      await page.evaluate(() => {
+        document.querySelector('html')!.classList.add('echVisualTesting');
+      });
+    }
   }
 
   /**

@@ -20,10 +20,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const _ = require('lodash');
+const lodash = require('lodash');
 const slugify = require('slugify');
 const ts = require('typescript');
 
+/**
+ * Simple utility function to recursively read a dir
+ */
 function readdirSync(dir, fileList = []) {
   if (fs.statSync(dir).isDirectory()) {
     fs.readdirSync(dir).map((fileName) => readdirSync(fileList[fileList.push(path.join(dir, fileName)) - 1], fileList));
@@ -31,75 +34,85 @@ function readdirSync(dir, fileList = []) {
   return fileList;
 }
 
+/**
+ * For each `*.stories.ts` file, compile their AST with Typescript and extract:
+ * - the default exports object (in particular the title used on the story)
+ * - for each named exports, extract their names + file paths
+ */
 function extractExamples(exampleRelativePath = 'stories') {
+  // eslint-disable-next-line no-console
   console.log('Extract examples from', path.join(process.cwd(), exampleRelativePath));
 
-  const fileNames = readdirSync(exampleRelativePath).filter((item) => _.includes(item, '.stories.ts'));
+  const fileNames = readdirSync(exampleRelativePath).filter((item) => lodash.includes(item, '.stories.ts'));
 
+  // eslint-disable-next-line no-console
   console.log('Total example files:', fileNames.length);
 
-  const mods = fileNames.map((groupFile) => {
-    const examples = [];
-    let groupTitle = '';
-    // https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#using-the-type-checker
-    // Build a program using the set of root file names in fileNames
-    const program = ts.createProgram([groupFile], {
-      module: ts.ModuleKind.ES2015,
-      moduleResolution: ts.ModuleResolutionKind.NodeJs,
-      target: ts.ScriptTarget.ES5,
-    });
-    // Visit every sourceFile in the program
-    program
-      .getSourceFiles()
-      .filter((sourceFile) => _.includes(sourceFile.fileName, groupFile))
-      .forEach((sourceFile) => {
-        // Walk the tree to search for classes
-        ts.forEachChild(sourceFile, (node) => {
-          if (node.kind === ts.SyntaxKind.ExportAssignment) {
-            groupTitle = node.expression.properties.find((p) => p.name.escapedText === 'title').initializer.text;
-          }
-          if (node.kind === ts.SyntaxKind.ExportDeclaration) {
-            examples.push({
-              filename: node.moduleSpecifier.text,
-              name: node.exportClause.elements[0].name.escapedText,
-            });
-          }
-        });
+  return fileNames
+    .map((groupFile) => {
+      const examples = [];
+      let groupTitle = '';
+      // https://github.com/Microsoft/TypeScript/wiki/Using-the-Compiler-API#using-the-type-checker
+      // Build a program using the set of root file names in fileNames
+      const program = ts.createProgram([groupFile], {
+        module: ts.ModuleKind.ES2015,
+        moduleResolution: ts.ModuleResolutionKind.NodeJs,
+        target: ts.ScriptTarget.ES5,
       });
-    return {
-      groupFile,
-      groupTitle,
-      examples,
-    };
-  });
-
-  return mods.map(({ groupFile, groupTitle, examples }) => {
-    const slugifiedGroupTitle = slugify(groupTitle.toLowerCase().split('/').join('-'), {
-      lower: true,
-      strict: true,
-    });
-    const exampleFiles = examples.map(({ name, filename }) => {
-      const urlPath = name
-        .replace(/([A-Z])/g, '-$1')
-        .trim()
-        .toLocaleLowerCase();
-      const slugifiedURLPath = slugify(urlPath, { lower: true, strict: true });
-      const url = `/story/${slugifiedGroupTitle}--${slugifiedURLPath}`;
+      // Visit every sourceFile in the program
+      program
+        .getSourceFiles()
+        .filter((sourceFile) => lodash.includes(sourceFile.fileName, groupFile))
+        .forEach((sourceFile) => {
+          ts.forEachChild(sourceFile, (node) => {
+            // get the default export
+            if (node.kind === ts.SyntaxKind.ExportAssignment) {
+              groupTitle = node.expression.properties.find((p) => p.name.escapedText === 'title').initializer.text;
+            }
+            // get the named export
+            if (node.kind === ts.SyntaxKind.ExportDeclaration) {
+              examples.push({
+                filename: node.moduleSpecifier.text,
+                name: node.exportClause.elements[0].name.escapedText,
+              });
+            }
+          });
+        });
       return {
-        slugifiedName: slugifiedURLPath,
-        name,
-        filename,
-        url,
-        filePath: path.join(path.relative(process.cwd(), path.dirname(groupFile)), filename),
+        groupFile,
+        groupTitle,
+        examples,
+      };
+    })
+    .map(({ groupFile, groupTitle, examples }) => {
+      // slugify the group title
+      const slugifiedGroupTitle = slugify(groupTitle.toLowerCase().split('/').join('-'), {
+        lower: true,
+        strict: true,
+      });
+      const exampleFiles = examples.map(({ name, filename }) => {
+        const urlPath = name
+          .replace(/([A-Z])/g, '-$1')
+          .trim()
+          .toLocaleLowerCase();
+        // slugify the story name
+        const slugifiedURLPath = slugify(urlPath, { lower: true, strict: true });
+        const url = `/story/${slugifiedGroupTitle}--${slugifiedURLPath}`;
+        return {
+          slugifiedName: slugifiedURLPath,
+          name,
+          filename,
+          url,
+          filePath: path.join(path.relative(process.cwd(), path.dirname(groupFile)), filename),
+        };
+      });
+      return {
+        groupFile,
+        slugifiedGroupTitle,
+        groupTitle,
+        exampleFiles,
       };
     });
-    return {
-      groupFile,
-      slugifiedGroupTitle,
-      groupTitle,
-      exampleFiles,
-    };
-  });
 }
 
 function extractAndSaveExamples() {

@@ -17,19 +17,11 @@
  * under the License.
  */
 
-// module.exports = function lazyImportTemplate(index, path) {
-//   return `
-// const Component${index} = React.lazy(() => {
-//   return import('../../${path}').then((module) => {
-//     return { default: module.Example };
-//   });
-// });`.trim();
-// };
-
 module.exports = function lazyImportTemplate(index, path) {
   return `
-const Component${index} = React.lazy(() => new Promise(async resolve => {
-  const module = await import('../../${path}');
-  resolve({ default: module.Example });
-}));`.trim();
+const Component${index} = React.lazy(() => {
+  return import('../../${path}').then((module) => {
+    return { default: module.Example };
+  });
+});`;
 };
