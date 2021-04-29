@@ -20,14 +20,9 @@
 import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { SeriesType } from '../../utils/specs';
-import { getSeriesSpecsSelector } from './get_specs';
+import { getSpecOrNull } from './goal_spec';
 
 /** @internal */
-export const getSeriesTypesSelector = createCachedSelector([getSeriesSpecsSelector], (specs): string => {
-  const seriesTypes = new Set<SeriesType>();
-  specs.forEach((value) => seriesTypes.add(value.seriesType));
-  const chartSeriesTypes =
-    seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
-  return chartSeriesTypes;
+export const getSeriesTypesSelector = createCachedSelector([getSpecOrNull], (spec) => {
+  return `${spec?.subtype ?? 'goal'} chart`;
 })(getChartIdSelector);

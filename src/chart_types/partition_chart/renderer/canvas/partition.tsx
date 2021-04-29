@@ -168,8 +168,9 @@ class PartitionComponent extends React.Component<PartitionProps> {
           }}
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
-        />
-        <ScreenReaderSummary a11ySettings={a11ySettings} seriesTypes={new Set(partitionLayout)} />
+        >
+          <ScreenReaderSummary a11ySettings={a11ySettings} seriesTypes={partitionLayout} />
+        </canvas>
       </figure>
     );
   }

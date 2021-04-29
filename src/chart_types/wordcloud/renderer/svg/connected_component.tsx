@@ -123,7 +123,7 @@ const uniqeWordCloudId = `test--description`;
 const View = ({ words, conf }: { words: Word[]; conf: Configs }) => (
   <svg width={getWidth(conf)} height={getHeight(conf)} role="img">
     <title className="echScreenReaderOnly" id={uniqeWordCloudId}>
-      Chart type: Word Cloud
+      Chart type: Word cloud chart
     </title>
     <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
       {words.map((d, i) => {

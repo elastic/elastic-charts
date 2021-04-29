@@ -39,6 +39,7 @@ import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getHighlightedValuesSelector } from './selectors/get_highlighted_values';
 import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_labels';
+import { getSeriesTypesSelector } from './selectors/get_series_types';
 import { getSeriesSpecsSelector } from './selectors/get_specs';
 import { getTooltipAnchorPositionSelector } from './selectors/get_tooltip_position';
 import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
@@ -158,5 +159,9 @@ export class XYAxisChartState implements InternalChartState {
 
   getDebugState(globalState: GlobalChartState) {
     return getDebugStateSelector(globalState);
+  }
+
+  getSeriesTypes(globalState: GlobalChartState) {
+    return getSeriesTypesSelector(globalState);
   }
 }

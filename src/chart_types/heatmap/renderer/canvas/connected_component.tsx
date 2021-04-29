@@ -41,6 +41,7 @@ interface ReactiveChartStateProps {
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
+  seriesTypes: string;
 }
 
 interface ReactiveChartDispatchProps {
@@ -111,6 +112,7 @@ class Component extends React.Component<Props> {
       chartContainerDimensions: { width, height },
       forwardStageRef,
       a11ySettings,
+      seriesTypes,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
@@ -129,7 +131,7 @@ class Component extends React.Component<Props> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
-          <ScreenReaderSummary a11ySettings={a11ySettings} seriesTypes={new Set('heat map chart')} />
+          <ScreenReaderSummary a11ySettings={a11ySettings} seriesTypes={seriesTypes} />
         </canvas>
       </figure>
     );
@@ -154,6 +156,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     top: 0,
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
+  seriesTypes: 'heatmap chart',
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -165,6 +168,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometries: geometries(state),
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
+    seriesTypes: 'heatmap chart',
   };
 };
 

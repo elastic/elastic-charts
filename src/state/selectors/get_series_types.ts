@@ -17,17 +17,11 @@
  * under the License.
  */
 
-import createCachedSelector from 're-reselect';
-
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { SeriesType } from '../../utils/specs';
-import { getSeriesSpecsSelector } from './get_specs';
+import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getSeriesTypesSelector = createCachedSelector([getSeriesSpecsSelector], (specs): string => {
-  const seriesTypes = new Set<SeriesType>();
-  specs.forEach((value) => seriesTypes.add(value.seriesType));
-  const chartSeriesTypes =
-    seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
-  return chartSeriesTypes;
-})(getChartIdSelector);
+export const getSeriesTypesSelector = (state: GlobalChartState) => {
+  if (state.internalChartState) {
+    return state.internalChartState.getSeriesTypes(state);
+  }
+};

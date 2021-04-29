@@ -69,11 +69,11 @@ exports[`Chart should render the legend name test 1`] = `
                   <Crosshair theme={{...}} chartRotation={0} cursorPosition={[undefined]} cursorCrossLinePosition={[undefined]} tooltipType=\\"vertical\\" fromExternalEvent={[undefined]} zIndex={0} dispatch={[Function: dispatch]} />
                 </Connect(Crosshair)>
                 <Connect(XYChart) forwardStageRef={{...}}>
-                  <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} seriesTypes={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
+                  <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} seriesTypes=\\"bar chart\\" a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
                     <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\">
                       <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\">
-                        <Connect(ScreenReaderSummaryComponent) a11ySettings={{...}} seriesTypes={{...}}>
-                          <ScreenReaderSummaryComponent a11ySettings={{...}} seriesTypes={{...}} dispatch={[Function: dispatch]}>
+                        <Connect(ScreenReaderSummaryComponent) a11ySettings={{...}} seriesTypes=\\"bar chart\\">
+                          <ScreenReaderSummaryComponent a11ySettings={{...}} seriesTypes=\\"bar chart\\" dispatch={[Function: dispatch]}>
                             <div className=\\"echScreenReaderOnly\\">
                               <Label label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" />
                               <Description label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" />

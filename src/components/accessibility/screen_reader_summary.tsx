@@ -20,8 +20,6 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
-import { getSeriesTypes } from '../../chart_types/xy_chart/state/selectors/get_series_types';
-import { SeriesType } from '../../specs';
 import { GlobalChartState } from '../../state/chart_state';
 import {
   A11ySettings,
@@ -29,23 +27,22 @@ import {
   getA11ySettingsSelector,
 } from '../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
+import { getSeriesTypesSelector } from '../../state/selectors/get_series_types';
 import { Description } from './description';
 import { Label } from './label';
 import { Types } from './types';
 
 interface ScreenReaderSummaryProps {
-  seriesTypes: Set<SeriesType | string>;
+  seriesTypes: string;
   a11ySettings: A11ySettings;
 }
 
 const ScreenReaderSummaryComponent = ({ seriesTypes, a11ySettings }: ScreenReaderSummaryProps) => {
-  const chartSeriesTypes =
-    seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
   return (
     <div className="echScreenReaderOnly">
       <Label {...a11ySettings} />
       <Description {...a11ySettings} />
-      <Types {...a11ySettings} chartSeriesTypes={chartSeriesTypes} />
+      <Types {...a11ySettings} chartSeriesTypes={seriesTypes} />
     </div>
   );
 };
@@ -55,7 +52,7 @@ const mapStateToProps = (state: GlobalChartState) => {
     return DEFAULT_A11Y_SETTINGS;
   }
   return {
-    seriesTypes: getSeriesTypes(state),
+    seriesTypes: getSeriesTypesSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
   };
 };

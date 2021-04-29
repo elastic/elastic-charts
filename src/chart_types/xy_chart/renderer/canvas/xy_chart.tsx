@@ -54,13 +54,13 @@ import {
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
-import { getSeriesTypes } from '../../state/selectors/get_series_types';
+import { getSeriesTypesSelector } from '../../state/selectors/get_series_types';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { Geometries, Transform } from '../../state/utils/types';
 import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
-import { AxisSpec, AnnotationSpec, SeriesType } from '../../utils/specs';
+import { AxisSpec, AnnotationSpec } from '../../utils/specs';
 import { renderXYChartCanvas2d } from './renderers';
 
 /** @internal */
@@ -83,7 +83,7 @@ export interface ReactiveChartStateProps {
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
-  seriesTypes: Set<SeriesType>;
+  seriesTypes: string;
   a11ySettings: A11ySettings;
 }
 
@@ -238,7 +238,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationDimensions: new Map(),
   annotationSpecs: [],
   panelGeoms: [],
-  seriesTypes: new Set(),
+  seriesTypes: '',
   a11ySettings: DEFAULT_A11Y_SETTINGS,
 };
 
@@ -269,7 +269,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
-    seriesTypes: getSeriesTypes(state),
+    seriesTypes: getSeriesTypesSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
   };
 };
