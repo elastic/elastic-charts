@@ -148,7 +148,6 @@ class PartitionComponent extends React.Component<PartitionProps> {
       forwardStageRef,
       initialized,
       chartContainerDimensions: { width, height },
-      geometries: { partitionLayout },
       a11ySettings,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
@@ -169,7 +168,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
-          <ScreenReaderSummary a11ySettings={a11ySettings} seriesTypes={partitionLayout} />
+          <ScreenReaderSummary />
         </canvas>
       </figure>
     );

@@ -114,7 +114,6 @@ class Component extends React.Component<Props> {
       chartContainerDimensions: { width, height },
       forwardStageRef,
       a11ySettings,
-      seriesTypes,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
@@ -135,7 +134,7 @@ class Component extends React.Component<Props> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
-          <ScreenReaderSummary a11ySettings={a11ySettings} seriesTypes={seriesTypes} />
+          <ScreenReaderSummary />
         </canvas>
       </figure>
     );

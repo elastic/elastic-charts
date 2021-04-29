@@ -24,5 +24,5 @@ import { getPartitionSpec } from './partition_spec';
 
 /** @internal */
 export const getSeriesTypesSelector = createCachedSelector([getPartitionSpec], (partitionSpec): string => {
-  return `${partitionSpec?.chartType} chart` ?? 'Partition chart';
+  return `${partitionSpec?.config.partitionLayout} chart` ?? 'Partition chart';
 })(getChartIdSelector);

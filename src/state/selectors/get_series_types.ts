@@ -24,4 +24,5 @@ export const getSeriesTypesSelector = (state: GlobalChartState) => {
   if (state.internalChartState) {
     return state.internalChartState.getSeriesTypes(state);
   }
+  return '';
 };

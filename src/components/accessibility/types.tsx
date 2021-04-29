@@ -21,12 +21,12 @@ import React from 'react';
 
 import { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
-interface SeriesTypesProps {
+interface ScreenReaderTypesProps {
   chartSeriesTypes: string;
 }
 
 /** @internal */
-export function Types(props: A11ySettings & SeriesTypesProps) {
+export function ScreenReaderTypes(props: A11ySettings & ScreenReaderTypesProps) {
   if (!props.defaultSummaryId) return null;
   return (
     <dl id={props.defaultSummaryId}>

@@ -28,28 +28,33 @@ import {
 } from '../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getSeriesTypesSelector } from '../../state/selectors/get_series_types';
-import { Description } from './description';
-import { Label } from './label';
-import { Types } from './types';
+import { ScreenReaderDescription } from './description';
+import { ScreenReaderLabel } from './label';
+import { ScreenReaderTypes } from './types';
 
-interface ScreenReaderSummaryProps {
-  seriesTypes: string;
+interface ScreenReaderSummaryStateProps {
   a11ySettings: A11ySettings;
+  seriesTypes: string;
 }
 
-const ScreenReaderSummaryComponent = ({ seriesTypes, a11ySettings }: ScreenReaderSummaryProps) => {
+const ScreenReaderSummaryComponent = ({ a11ySettings, seriesTypes }: ScreenReaderSummaryStateProps) => {
   return (
     <div className="echScreenReaderOnly">
-      <Label {...a11ySettings} />
-      <Description {...a11ySettings} />
-      <Types {...a11ySettings} chartSeriesTypes={seriesTypes} />
+      <ScreenReaderLabel {...a11ySettings} />
+      <ScreenReaderDescription {...a11ySettings} />
+      <ScreenReaderTypes {...a11ySettings} chartSeriesTypes={seriesTypes} />
     </div>
   );
 };
 
-const mapStateToProps = (state: GlobalChartState) => {
+const DEFAULT_SCREEN_READER_SUMMARY = {
+  a11ySettings: DEFAULT_A11Y_SETTINGS,
+  seriesTypes: '',
+};
+
+const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryStateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
-    return DEFAULT_A11Y_SETTINGS;
+    return DEFAULT_SCREEN_READER_SUMMARY;
   }
   return {
     seriesTypes: getSeriesTypesSelector(state),
