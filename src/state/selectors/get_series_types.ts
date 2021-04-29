@@ -20,9 +20,10 @@
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getSeriesTypesSelector = (state: GlobalChartState) => {
+export const getSeriesTypesSelector = (state: GlobalChartState): string => {
   if (state.internalChartState) {
     return state.internalChartState.getSeriesTypes(state);
   }
-  return '';
+  // need to return something so there is always a string returned
+  return 'unknown chart type';
 };
