@@ -77,13 +77,11 @@ function encodeString(string: string) {
 /**
  * Stories to skip in all vrt based on group.
  */
-const storiesToSkip: Record<string, string[]> = {
-  // Interactions: ['Some story name'],
-  'Test Cases': ['No Series'],
-};
-const storiesToSkipV2: Record<string, string[]> = {
-  // Interactions: ['Some story name'],
-  'Test Cases': ['noSeries'],
+const storiesToSkip: Record<string, Record<string, string[]>> = {
+  'Test Cases': {
+    storybook: ['No Series'],
+    examples: ['noSeries'],
+  },
 };
 
 /**
@@ -103,7 +101,7 @@ export function getStorybookInfo(): StoryGroupInfo[] {
       .filter(({ kind }) => kind)
       .map(({ kind: group, stories: storiesRaw }) => {
         const stories: StoryInfo[] = storiesRaw
-          .filter(({ name }) => name && !storiesToSkip[group]?.includes(name))
+          .filter(({ name }) => name && !storiesToSkip[group]?.storybook.includes(name))
           .map(({ name: title }) => {
             // cleans story name to match url params
             const encodedTitle = encodeString(title);
@@ -124,7 +122,7 @@ export function getStorybookInfo(): StoryGroupInfo[] {
         d.groupTitle,
         d.slugifiedGroupTitle,
         d.exampleFiles
-          .filter(({ name }: any) => name && !storiesToSkipV2[d.groupTitle]?.includes(name))
+          .filter(({ name }: any) => name && !storiesToSkip[d.groupTitle]?.examples.includes(name))
           .map((example: any) => {
             return [example.name, example.slugifiedName, 0];
           }),
