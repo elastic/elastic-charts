@@ -69,8 +69,10 @@ const customConfig = {
           waitOnScheme: {
             // using localhost as the server is running on the local machine
             resources: [`http://localhost:${port}`],
+            // delay for the initial check request
             delay: 1000,
-            interval: 100,
+            // interval for subsequent requests
+            interval: 250,
           },
         }),
         debug: true,

@@ -117,18 +117,22 @@ export function getStorybookInfo(): StoryGroupInfo[] {
       })
       .filter(([, , stories]) => stories.length > 0);
   }
-  const examples = require('./tmp/examples.json');
-  return examples.map((d: any) => {
-    return [
-      d.groupTitle,
-      d.slugifiedGroupTitle,
-      d.exampleFiles
-        .filter(({ name }: any) => name && !storiesToSkipV2[d.groupTitle]?.includes(name))
-        .map((example: any) => {
-          return [example.name, example.slugifiedName, 0];
-        }),
-    ];
-  });
+  try {
+    const examples = require('./tmp/examples.json');
+    return examples.map((d: any) => {
+      return [
+        d.groupTitle,
+        d.slugifiedGroupTitle,
+        d.exampleFiles
+          .filter(({ name }: any) => name && !storiesToSkipV2[d.groupTitle]?.includes(name))
+          .map((example: any) => {
+            return [example.name, example.slugifiedName, 0];
+          }),
+      ];
+    });
+  } catch {
+    throw new Error('A required file is not available, please run yarn test:integration:generate');
+  }
 }
 
 const rotationCases: [string, Rotation][] = [
