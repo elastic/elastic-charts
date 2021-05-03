@@ -25,6 +25,11 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
+import {
+  A11ySettings,
+  DEFAULT_A11Y_SETTINGS,
+  getA11ySettingsSelector,
+} from '../../../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Configs, Datum, nullShapeViewModel, ShapeViewModel, Word } from '../../layout/types/viewmodel_types';
@@ -152,6 +157,7 @@ interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
+  a11ySettings: A11ySettings;
 }
 
 interface ReactiveChartDispatchProps {
@@ -180,6 +186,7 @@ class Component extends React.Component<Props> {
       initialized,
       chartContainerDimensions: { width, height },
       geometries: { wordcloudViewModel },
+      a11ySettings,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
@@ -218,7 +225,11 @@ class Component extends React.Component<Props> {
       );
     }
 
-    return <View words={renderedWordObjects} conf={conf1} />;
+    return (
+      <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
+        <View words={renderedWordObjects} conf={conf1} />
+      </figure>
+    );
   }
 }
 
@@ -239,6 +250,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     left: 0,
     top: 0,
   },
+  a11ySettings: DEFAULT_A11Y_SETTINGS,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -249,6 +261,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     initialized: true,
     geometries: geometries(state),
     chartContainerDimensions: state.parentDimensions,
+    a11ySettings: getA11ySettingsSelector(state),
   };
 };
 
