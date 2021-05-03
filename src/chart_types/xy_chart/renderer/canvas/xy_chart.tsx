@@ -53,7 +53,6 @@ import {
 } from '../../state/selectors/compute_per_panel_axes_geoms';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
-import { getChartTypeDescriptionSelector } from '../../state/selectors/get_chart_type_description';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
@@ -83,7 +82,6 @@ export interface ReactiveChartStateProps {
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
-  chartTypeDescription: string;
   a11ySettings: A11ySettings;
 }
 
@@ -237,7 +235,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationDimensions: new Map(),
   annotationSpecs: [],
   panelGeoms: [],
-  chartTypeDescription: '',
   a11ySettings: DEFAULT_A11Y_SETTINGS,
 };
 
@@ -268,7 +265,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
-    chartTypeDescription: getChartTypeDescriptionSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
   };
 };
