@@ -26,7 +26,7 @@ export class Playground extends React.Component {
     return (
       <div className="App">
         <Chart size={[500, 200]}>
-          <Settings ariaDescription="This is a custom description" />
+          <Settings ariaLabel="This is a custom aria-label" ariaLabelledBy="labeled by here" />
           <AreaSeries
             id="lines"
             name="test2"
