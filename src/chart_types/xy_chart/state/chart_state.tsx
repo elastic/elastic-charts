@@ -35,11 +35,11 @@ import { Highlighter } from '../renderer/dom/highlighter';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
+import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getHighlightedValuesSelector } from './selectors/get_highlighted_values';
 import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_labels';
-import { getSeriesTypesSelector } from './selectors/get_series_types';
 import { getSeriesSpecsSelector } from './selectors/get_specs';
 import { getTooltipAnchorPositionSelector } from './selectors/get_tooltip_position';
 import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
@@ -161,7 +161,7 @@ export class XYAxisChartState implements InternalChartState {
     return getDebugStateSelector(globalState);
   }
 
-  getSeriesTypes(globalState: GlobalChartState) {
-    return getSeriesTypesSelector(globalState);
+  getChartTypeDescription(globalState: GlobalChartState) {
+    return getChartTypeDescriptionSelector(globalState);
   }
 }

@@ -157,7 +157,7 @@ export interface InternalChartState {
   /**
    * Get the series types for the screen reader summary component
    */
-  getSeriesTypes(globalState: GlobalChartState): string;
+  getChartTypeDescription(globalState: GlobalChartState): string;
 }
 
 /** @internal */

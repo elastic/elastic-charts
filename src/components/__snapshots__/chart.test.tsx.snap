@@ -69,15 +69,15 @@ exports[`Chart should render the legend name test 1`] = `
                   <Crosshair theme={{...}} chartRotation={0} cursorPosition={[undefined]} cursorCrossLinePosition={[undefined]} tooltipType=\\"vertical\\" fromExternalEvent={[undefined]} zIndex={0} dispatch={[Function: dispatch]} />
                 </Connect(Crosshair)>
                 <Connect(XYChart) forwardStageRef={{...}}>
-                  <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} seriesTypes=\\"bar chart\\" a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
+                  <XYChart forwardStageRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
                     <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\">
                       <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\">
                         <Connect(ScreenReaderSummaryComponent)>
-                          <ScreenReaderSummaryComponent seriesTypes=\\"bar chart\\" a11ySettings={{...}} dispatch={[Function: dispatch]}>
+                          <ScreenReaderSummaryComponent chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} dispatch={[Function: dispatch]}>
                             <div className=\\"echScreenReaderOnly\\">
                               <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" />
                               <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" />
-                              <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" chartSeriesTypes=\\"bar chart\\">
+                              <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" chartTypeDescription=\\"bar chart\\">
                                 <dl id=\\"chart1--defaultSummary\\">
                                   <dt>
                                     Chart type:

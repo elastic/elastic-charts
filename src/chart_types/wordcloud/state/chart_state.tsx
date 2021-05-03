@@ -113,7 +113,7 @@ export class WordcloudState implements InternalChartState {
     this.onElementClickCaller(globalState);
   }
 
-  getSeriesTypes() {
+  getChartTypeDescription() {
     return 'Word cloud chart';
   }
 

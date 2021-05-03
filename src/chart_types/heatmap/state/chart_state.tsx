@@ -130,7 +130,7 @@ export class HeatmapState implements InternalChartState {
     return getDebugStateSelector(globalState);
   }
 
-  getSeriesTypes() {
+  getChartTypeDescription() {
     return 'Heatmap chart';
   }
 

@@ -22,7 +22,7 @@ import React from 'react';
 import { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
 interface ScreenReaderTypesProps {
-  chartSeriesTypes: string;
+  chartTypeDescription: string;
 }
 
 /** @internal */
@@ -31,7 +31,7 @@ export function ScreenReaderTypes(props: A11ySettings & ScreenReaderTypesProps) 
   return (
     <dl id={props.defaultSummaryId}>
       <dt>Chart type:</dt>
-      <dd id={props.defaultSummaryId}>{props.chartSeriesTypes}</dd>
+      <dd id={props.defaultSummaryId}>{props.chartTypeDescription}</dd>
     </dl>
   );
 }

@@ -17,12 +17,13 @@
  * under the License.
  */
 
-import createCachedSelector from 're-reselect';
-
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getPartitionSpec } from './partition_spec';
+import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getSeriesTypesSelector = createCachedSelector([getPartitionSpec], (partitionSpec): string => {
-  return `${partitionSpec?.config.partitionLayout} chart` ?? 'Partition chart';
-})(getChartIdSelector);
+export const getChartTypeDescriptionSelector = (state: GlobalChartState): string => {
+  if (state.internalChartState) {
+    return state.internalChartState.getChartTypeDescription(state);
+  }
+  // need to return something so there is always a string returned
+  return 'unknown chart type';
+};

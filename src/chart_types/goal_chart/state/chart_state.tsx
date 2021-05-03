@@ -29,7 +29,7 @@ import { LegendItemLabel } from '../../../state/selectors/get_legend_items_label
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
 import { Goal } from '../renderer/canvas/connected_component';
-import { getSeriesTypesSelector } from './selectors/get_series_types';
+import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getSpecOrNull } from './selectors/goal_spec';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
@@ -121,8 +121,8 @@ export class GoalState implements InternalChartState {
     this.onElementClickCaller(globalState);
   }
 
-  getSeriesTypes(globalState: GlobalChartState) {
-    return getSeriesTypesSelector(globalState);
+  getChartTypeDescription(globalState: GlobalChartState) {
+    return getChartTypeDescriptionSelector(globalState);
   }
 
   // TODO

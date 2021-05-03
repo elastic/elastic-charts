@@ -17,13 +17,12 @@
  * under the License.
  */
 
-import { GlobalChartState } from '../chart_state';
+import createCachedSelector from 're-reselect';
+
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getSpecOrNull } from './goal_spec';
 
 /** @internal */
-export const getSeriesTypesSelector = (state: GlobalChartState): string => {
-  if (state.internalChartState) {
-    return state.internalChartState.getSeriesTypes(state);
-  }
-  // need to return something so there is always a string returned
-  return 'unknown chart type';
-};
+export const getChartTypeDescriptionSelector = createCachedSelector([getSpecOrNull], (spec) => {
+  return `${spec?.subtype ?? 'goal'} chart`;
+})(getChartIdSelector);

@@ -33,7 +33,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
-import { getSeriesTypesSelector } from '../../state/selectors/get_series_types';
+import { getChartTypeDescriptionSelector } from '../../state/selectors/get_chart_type_description';
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
@@ -41,7 +41,7 @@ interface ReactiveChartStateProps {
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
-  seriesTypes: string;
+  chartTypeDescription: string;
 }
 
 interface ReactiveChartDispatchProps {
@@ -174,7 +174,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     top: 0,
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
-  seriesTypes: 'goal chart',
+  chartTypeDescription: 'goal chart',
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -186,7 +186,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometries: geometries(state),
     chartContainerDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
-    seriesTypes: getSeriesTypesSelector(state),
+    chartTypeDescription: getChartTypeDescriptionSelector(state),
   };
 };
 
