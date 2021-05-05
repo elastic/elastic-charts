@@ -1692,8 +1692,6 @@ export interface SeriesScales {
     xNice?: boolean;
     xScaleType: XScaleType;
     yNice?: boolean;
-    // @deprecated
-    yScaleToDataExtent?: boolean;
     yScaleType: ScaleContinuousType;
 }
 
