@@ -35,7 +35,7 @@ import { ScaleContinuousType, Scale } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { maxValueWithUpperLimit, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
-import { ContinuousDomain, Range } from '../utils/domain';
+import { constrainPadding, ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
 
 /**
@@ -54,6 +54,8 @@ const SCALES = {
   [ScaleType.Sqrt]: scaleSqrt,
   [ScaleType.Time]: scaleUtc,
 };
+
+const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
 
 /**
  * As log(0) = -Infinite, a log scale domain must be strictly-positive
@@ -206,6 +208,18 @@ type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
    */
   barsPadding: number;
   /**
+   * Pixel value to extend the domain. Applied __before__ nicing.
+   *
+   * Does not apply to time scales
+   * @defaultValue 0
+   */
+  domainPixelPadding: number;
+  /**
+   * Constrains domain pixel padding to the zero baseline
+   * Does not apply to time scales
+   */
+  constrainDomainPadding?: boolean;
+  /**
    * The approximated number of ticks.
    * @defaultValue 10
    */
@@ -226,6 +240,7 @@ const defaultScaleOptions: ScaleOptions = {
   timeZone: 'utc',
   totalBarsInCluster: 1,
   barsPadding: 0,
+  domainPixelPadding: 0,
   desiredTickCount: 10,
   isSingleValueHistogram: false,
   integersOnly: false,
@@ -251,7 +266,7 @@ export class ScaleContinuous implements Scale {
 
   readonly domain: any[];
 
-  readonly range: number[];
+  readonly range: Range;
 
   readonly isInverted: boolean;
 
@@ -280,6 +295,8 @@ export class ScaleContinuous implements Scale {
       integersOnly,
       logBase,
       logMinLimit,
+      domainPixelPadding,
+      constrainDomainPadding,
     } = mergePartial(defaultScaleOptions, options, { mergeOptionalPartialValues: true });
     this.d3Scale = SCALES[type]();
 
@@ -291,6 +308,7 @@ export class ScaleContinuous implements Scale {
     }
 
     this.d3Scale.domain(this.domain);
+
     if (nice && type !== ScaleType.Time) {
       (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(this.domain).nice(desiredTickCount);
       this.domain = this.d3Scale.domain();
@@ -309,6 +327,38 @@ export class ScaleContinuous implements Scale {
     this.timeZone = timeZone;
     this.totalBarsInCluster = totalBarsInCluster;
     this.isSingleValueHistogram = isSingleValueHistogram;
+
+    const [r1, r2] = this.range;
+    const totalRange = Math.abs(r1 - r2);
+
+    if (type !== ScaleType.Time && domainPixelPadding && !isUnitRange(range) && domainPixelPadding * 2 < totalRange) {
+      const scaleCopy = this.d3Scale.copy() as ScaleContinuousNumeric<PrimitiveValue, number>;
+      let newDomain = this.domain.slice();
+      let delta = domainPixelPadding;
+
+      // no close form solution, iterate 3 times for numerical solution
+      for (let iteration = 0; iteration <= 3; iteration++) {
+        // approximate new start and end by extrapolation
+        const newStart = scaleCopy.invert(r1 < r2 ? r1 - delta : r1 + delta);
+        const newEnd = scaleCopy.invert(r2 > r1 ? r2 + delta : r2 - delta);
+
+        newDomain = constrainPadding(newDomain[0], newDomain[1], newStart, newEnd, constrainDomainPadding);
+        scaleCopy.domain(newDomain);
+
+        const lowerDelta = Math.abs(r1 - scaleCopy(this.domain[0]));
+        const upperDelta = Math.abs(r2 - scaleCopy(this.domain[1]));
+        // Update delta with error in numerical solution
+        delta = Math.abs(Math.max(lowerDelta, upperDelta) - domainPixelPadding);
+      }
+
+      if (nice) {
+        (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(newDomain).nice(desiredTickCount);
+        this.domain = this.d3Scale.domain();
+      } else {
+        this.domain = newDomain;
+        this.d3Scale.domain(newDomain);
+      }
+    }
 
     if (type === ScaleType.Time) {
       const startDomain = getMomentWithTz(this.domain[0], this.timeZone);
@@ -466,6 +516,8 @@ export class ScaleContinuous implements Scale {
   isValueInDomain(value: number) {
     return value >= this.domain[0] && value <= this.domain[1];
   }
+
+  handleDomainPadding() {}
 }
 
 /** @internal */

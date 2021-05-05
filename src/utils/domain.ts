@@ -20,9 +20,8 @@
 import { extent } from 'd3-array';
 
 import { ScaleType } from '../scales/constants';
-import { YDomainRange } from '../specs';
+import { DomainPaddingUnit, YDomainRange } from '../specs';
 import { AccessorFn } from './accessor';
-import { getPercentageValue } from './common';
 
 /** @public */
 export type OrdinalDomain = (number | string)[];
@@ -30,6 +29,27 @@ export type OrdinalDomain = (number | string)[];
 export type ContinuousDomain = [min: number, max: number];
 /** @public */
 export type Range = [min: number, max: number];
+
+/**
+ * Returns padded domain given constrain
+ * @internal */
+export function constrainPadding(
+  start: number,
+  end: number,
+  newStart: number,
+  newEnd: number,
+  constrain: boolean = true,
+): [number, number] {
+  if (constrain) {
+    if (start < end) {
+      return [start >= 0 && newStart < 0 ? 0 : newStart, end <= 0 && newEnd > 0 ? 0 : newEnd];
+    }
+
+    return [end >= 0 && newEnd < 0 ? 0 : newEnd, start <= 0 && newStart > 0 ? 0 : newStart];
+  }
+
+  return [newStart, newEnd];
+}
 
 /** @internal */
 export function computeOrdinalDataDomain(
@@ -49,14 +69,12 @@ export function computeOrdinalDataDomain(
 }
 
 function getPaddedRange(start: number, end: number, domainOptions?: YDomainRange): [number, number] {
-  if (!domainOptions?.padding) {
+  if (!domainOptions || !domainOptions.padding || domainOptions.paddingUnit === DomainPaddingUnit.Pixel) {
     return [start, end];
   }
 
-  let computedPadding = 0;
-
-  const delta = Math.abs(end - start);
-  computedPadding = getPercentageValue(domainOptions.padding, delta, 0);
+  const { padding, paddingUnit = DomainPaddingUnit.Domain } = domainOptions;
+  const computedPadding = paddingUnit === DomainPaddingUnit.Domain ? padding : padding * Math.abs(end - start);
 
   if (computedPadding === 0) {
     return [start, end];
@@ -65,11 +83,7 @@ function getPaddedRange(start: number, end: number, domainOptions?: YDomainRange
   const newStart = start - computedPadding;
   const newEnd = end + computedPadding;
 
-  if (domainOptions.constrainPadding ?? true) {
-    return [start >= 0 && newStart < 0 ? 0 : newStart, end <= 0 && newEnd > 0 ? 0 : newEnd];
-  }
-
-  return [newStart, newEnd];
+  return constrainPadding(start, end, newStart, newEnd, domainOptions.constrainPadding);
 }
 
 /** @internal */
