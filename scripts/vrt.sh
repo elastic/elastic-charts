@@ -16,4 +16,4 @@ fi
 
 rm -rf ./integration/tests/__image_snapshots__/__diff_output__
 
-jest --verbose --rootDir=integration -c=integration/jest.config.js --runInBand
+jest --verbose --rootDir=integration -c=integration/jest.config.js --runInBand "$@"
