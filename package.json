@@ -33,7 +33,7 @@
     "lint": "NODE_ENV=production eslint --quiet --ext .tsx,.ts,.js .",
     "lint:fix": "yarn lint --fix",
     "prettier:check": "prettier --check \"**/*.{json,html,css,scss}\"",
-    "playground": "cd playground && webpack serve --port=9888",
+    "playground": "cd playground && webpack serve",
     "playground:ie": "cd playground && webpack serve --host=0.0.0.0 --disable-host-check --useLocalIp",
     "pq": "pretty-quick",
     "semantic-release": "semantic-release",
