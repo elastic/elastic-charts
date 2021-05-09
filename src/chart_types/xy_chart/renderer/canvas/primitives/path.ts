@@ -22,74 +22,44 @@ import { Rect, Stroke, Fill } from '../../../../../geoms/types';
 import { withContext, withClipRanges } from '../../../../../renderers/canvas';
 import { ClippedRanges } from '../../../../../utils/geometry';
 import { Point } from '../../../../../utils/point';
+import { drawPattern } from '../../../../../utils/themes/textures';
+import { TexturedStyles } from '../../../../../utils/themes/theme';
 import { renderMultiLine } from './line';
 
-function linePaths(orientation: string, s: number) {
-  switch (orientation) {
-    case '0/8':
-    case 'vertical':
-      return `M ${s / 2}, 0 l 0, ${s}`;
-    case '1/8':
-      return `M ${-s / 4},${s} l ${s / 2},${-s} M ${s / 4},${s} l ${s / 2},${-s} M ${(s * 3) / 4},${s} l ${
-        s / 2
-      },${-s}`;
-    case '2/8':
-    case 'diagonal':
-      return `M 0,${s} l ${s},${-s} M ${-s / 4},${s / 4} l ${s / 2},${-s / 2} M ${(3 / 4) * s},${(5 / 4) * s} l ${
-        s / 2
-      },${-s / 2}`;
-    case '3/8':
-      return `M 0,${(3 / 4) * s} l ${s},${-s / 2} M 0,${s / 4} l ${s},${-s / 2} M 0,${(s * 5) / 4} l ${s},${-s / 2}`;
-    case '4/8':
-    case 'horizontal':
-      return `M 0,${s / 2} l ${s},0`;
-    case '5/8':
-      return `M 0,${-s / 4} l ${s},${s / 2}M 0,${s / 4} l ${s},${s / 2} M 0,${(s * 3) / 4} l ${s},${s / 2}`;
-    case '6/8':
-      return `M 0,0 l ${s},${s} M ${-s / 4},${(3 / 4) * s} l ${s / 2},${s / 2} M ${(s * 3) / 4},${-s / 4} l ${s / 2},${
-        s / 2
-      }`;
-    case '7/8':
-      return `M ${-s / 4},0 l ${s / 2},${s} M ${s / 4},0 l ${s / 2},${s} M ${(s * 3) / 4},0 l ${s / 2},${s}`;
-    default:
-      return `M ${s / 2}, 0 l 0, ${s}`;
-  }
-}
+// function drawPattern(type: string, can: HTMLCanvasElement, fill: Fill, size: number) {
+//   const ctx = can.getContext('2d');
 
-function drawPattern(type: string, can: HTMLCanvasElement, fill: Fill, size: number) {
-  const ctx = can.getContext('2d');
+//   if (ctx !== null) {
+//     if (type.indexOf('line') === 0) {
+//       ctx.strokeStyle = 'black';
+//       ctx.beginPath();
+//       ctx.stroke(new Path2D(linePaths(type.slice(4), size)));
+//       return;
+//     }
 
-  if (ctx !== null) {
-    if (type.indexOf('line') === 0) {
-      ctx.strokeStyle = 'black';
-      ctx.beginPath();
-      ctx.stroke(new Path2D(linePaths(type.slice(4), size)));
-      return;
-    }
+//     switch (type) {
+//       case 'circle':
+//         ctx.strokeStyle = 'black';
+//         ctx.beginPath();
+//         ctx.arc(size / 2, size / 2, 5, 0, 2 * Math.PI);
+//         ctx.stroke();
+//         break;
+//       case 'circleFill':
+//         ctx.strokeStyle = 'black';
+//         ctx.beginPath();
+//         ctx.arc(size / 2, size / 2, 2, 0, 2 * Math.PI);
+//         ctx.fill();
+//         break;
+//       default:
+//         break;
+//     }
+//   }
 
-    switch (type) {
-      case 'circle':
-        ctx.strokeStyle = 'black';
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, 5, 0, 2 * Math.PI);
-        ctx.stroke();
-        break;
-      case 'circleFill':
-        ctx.strokeStyle = 'black';
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, 2, 0, 2 * Math.PI);
-        ctx.fill();
-        break;
-      default:
-        break;
-    }
-  }
-
-  // if (ctx != null) {
-  //   ctx.fillStyle = RGBtoString(fill.color);
-  //   ctx.fill();
-  // }
-}
+//   // if (ctx != null) {
+//   //   ctx.fillStyle = RGBtoString(fill.color);
+//   //   ctx.fill();
+//   // }
+// }
 
 /** @internal */
 export function renderLinePaths(
@@ -133,11 +103,17 @@ export function renderAreaPath(
   clippings: Rect,
   hideClippedRanges = false,
 ) {
-  drawPattern('line3/8', imgCanvas, fill, 30);
+  const textures: TexturedStyles = {
+    type: 'square',
+    stroke: 'black',
+    rotation: 1.5,
+    scale: 20,
+  };
+  const pattern = drawPattern(ctx, textures, imgCanvas);
   if (clippedRanges.length > 0) {
     withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
       ctx.translate(transform.x, transform.y);
-      renderPathFill(ctx, imgCanvas, area, fill);
+      renderPathFill(ctx, area, fill, pattern);
     });
     if (hideClippedRanges) {
       return;
@@ -149,20 +125,19 @@ export function renderAreaPath(
         ...fill.color,
         opacity: opacity / 2,
       };
-      renderPathFill(ctx, imgCanvas, area, { ...fill, color });
+      renderPathFill(ctx, area, { ...fill, color }, pattern);
     });
     return;
   }
   withContext(ctx, (ctx) => {
     ctx.translate(transform.x, transform.y);
-    renderPathFill(ctx, imgCanvas, area, fill);
+    renderPathFill(ctx, area, fill, pattern);
   });
   // drawPattern(imgCanvas, fill);
 }
 
-function renderPathFill(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvasElement, path: string, fill: Fill) {
+function renderPathFill(ctx: CanvasRenderingContext2D, path: string, fill: Fill, pattern: CanvasPattern | null) {
   const path2d = new Path2D(path);
-  const pattern = ctx.createPattern(imgCanvas, 'repeat');
   ctx.fillStyle = RGBtoString(fill.color);
   ctx.fill(path2d);
   if (pattern) {

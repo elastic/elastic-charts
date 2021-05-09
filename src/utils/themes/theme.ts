@@ -370,7 +370,26 @@ export interface LineStyle {
 }
 
 /** @public */
+export interface TexturedStyles {
+  type: 'line' | 'circle' | 'square' | 'triangle' | 'cross';
+  /* To fill the stoke with Color or ColorVariant */
+  stroke: Color | ColorVariant;
+  /* The angle of rotation required in radians */
+  rotation: number;
+  /* The opacity of each texture on the theme/series */
+  opacity?: number;
+  /* If the polygon textures should be filled or empty */
+  fill?: 0 | 1;
+  path?: string;
+  /* The size of the textures,defaulted as 10 */
+  scale?: number;
+  spacing?: number;
+}
+
+/** @public */
 export interface AreaStyle {
+  /* applying textures to the area on the theme/series */
+  texture?: TexturedStyles;
   /** is the area is visible or hidden ? */
   visible: boolean;
   /** a static fill color if defined, if not it will use the color of the series */

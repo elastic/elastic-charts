@@ -40,8 +40,6 @@ export function renderXYChartCanvas2d(
   props: ReactiveChartStateProps,
 ) {
   const imgCanvas = document.createElement('canvas');
-  imgCanvas.width = 30;
-  imgCanvas.height = 30;
 
   withContext(ctx, (ctx) => {
     // let's set the devicePixelRatio once and for all; then we'll never worry about it again
