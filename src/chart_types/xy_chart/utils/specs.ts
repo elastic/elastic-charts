@@ -377,6 +377,11 @@ export interface SeriesSpec extends Spec {
   data: Datum[];
   /** The type of series you are looking to render */
   seriesType: SeriesType;
+  /**
+   * Allows the user to specify if a series should show  null values in the tooltip
+   * @defaultValue `false`
+   */
+  showNullValuesInTooltip?: boolean;
   /** Set colors for specific series */
   color?: SeriesColorAccessor;
   /**

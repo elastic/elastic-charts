@@ -68,16 +68,20 @@ function getElementAtCursorPosition(
     return geometriesIndex.find(externalPointerEvent.value, { x: -1, y: -1 });
   }
   const xValue = scales.xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys);
+
   if (!xValue) {
     return [];
   }
-  // get the elements at cursor position
-  return geometriesIndex
-    .find(
-      xValue?.value,
-      orientedProjectedPointerPosition,
-      orientedProjectedPointerPosition.horizontalPanelValue,
-      orientedProjectedPointerPosition.verticalPanelValue,
-    )
-    .sort(sortClosestToPoint(orientedProjectedPointerPosition));
+
+  return (
+    geometriesIndex
+      .find(
+        xValue.value,
+        orientedProjectedPointerPosition,
+        orientedProjectedPointerPosition.horizontalPanelValue,
+        orientedProjectedPointerPosition.verticalPanelValue,
+      )
+      // @ts-ignore
+      .sort(sortClosestToPoint(orientedProjectedPointerPosition))
+  );
 }

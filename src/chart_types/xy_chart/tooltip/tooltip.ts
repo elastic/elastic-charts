@@ -45,7 +45,6 @@ export function getHighligthedValues(
   defaultValue?: string,
 ): Map<SeriesKey, LegendItemExtraValues> {
   const seriesTooltipValues = new Map<SeriesKey, LegendItemExtraValues>();
-
   tooltipValues.forEach(({ formattedValue, seriesIdentifier, valueAccessor }) => {
     const seriesValue = defaultValue || formattedValue;
     const current: LegendItemExtraValues = seriesTooltipValues.get(seriesIdentifier.key) ?? new Map();

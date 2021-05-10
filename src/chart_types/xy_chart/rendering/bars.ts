@@ -37,6 +37,7 @@ export function renderBars(
   panel: Dimensions,
   color: Color,
   sharedSeriesStyle: BarSeriesStyle,
+  showNullValuesInTooltip?: boolean,
   displayValueSettings?: DisplayValueSpec,
   styleAccessor?: BarStyleAccessor,
   minBarHeight: number = 0,
@@ -57,8 +58,9 @@ export function renderBars(
 
   dataSeries.data.forEach((datum) => {
     const { y0, y1, initialY1, filled } = datum;
+
     // don't create a bar if the initialY1 value is null.
-    if (y1 === null || initialY1 === null || (filled && filled.y1 !== undefined)) {
+    if (!showNullValuesInTooltip && (y1 === null || initialY1 === null || (filled && filled.y1 !== undefined))) {
       return;
     }
     // don't create a bar if not within the xScale domain
@@ -81,24 +83,27 @@ export function renderBars(
       y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
     }
 
-    if (y === null || y0Scaled === null) {
+    if (!showNullValuesInTooltip && (y === null || y0Scaled === null)) {
       return;
     }
 
     const absMinHeight = Math.abs(minBarHeight);
-    let height = y0Scaled - y;
+    let height = y0Scaled === null || y === null ? 0 : y0Scaled - y;
     if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
       const heightDelta = absMinHeight - Math.abs(height);
       if (height < 0) {
         height = -absMinHeight;
+        // @ts-ignore
         y += heightDelta;
       } else {
         height = absMinHeight;
+        // @ts-ignore
         y -= heightDelta;
       }
     }
     const isUpsideDown = height < 0;
     height = Math.abs(height);
+    // @ts-ignore
     y = isUpsideDown ? y - height : y;
 
     const xScaled = xScale.scale(datum.x);
@@ -124,7 +129,7 @@ export function renderBars(
 
     const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
     const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
-
+    // @ts-ignore
     const originalY1Value = stackMode === StackMode.Percentage ? y1 - (y0 ?? 0) : initialY1;
     const formattedDisplayValue =
       displayValueSettings && displayValueSettings.valueFormatter
@@ -175,6 +180,7 @@ export function renderBars(
     const barGeometry: BarGeometry = {
       displayValue,
       x,
+      // @ts-ignore
       y,
       transform: {
         x: 0,

@@ -377,6 +377,7 @@ function renderGeometries(
     const color = seriesColorsMap.get(dataSeriesKey) || defaultColor;
 
     if (isBarSeriesSpec(spec)) {
+      const { showNullValuesInTooltip } = spec;
       const key = getBarIndexKey(ds, enableHistogramMode);
       const shift = barIndexOrder.indexOf(key);
 
@@ -403,6 +404,7 @@ function renderGeometries(
         panel,
         color,
         barSeriesStyle,
+        showNullValuesInTooltip,
         displayValueSettings,
         spec.styleAccessor,
         spec.minBarHeight,
@@ -472,7 +474,6 @@ function renderGeometries(
         spec.pointStyleAccessor,
         hasFitFnConfigured(spec.fit),
       );
-
       geometriesIndex.merge(renderedLines.indexedGeometryMap);
       lines.push({
         panel,

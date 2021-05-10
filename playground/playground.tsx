@@ -19,44 +19,45 @@
 
 import React from 'react';
 
-import { Chart, AreaSeries, LineSeries, BarSeries, ScaleType } from '../src';
+import { Chart, LineSeries, BarSeries, AreaSeries } from '../src';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="App">
         <Chart size={[500, 200]}>
-          <AreaSeries
-            id="lines"
-            name="test2"
-            data={[
-              { x: 'trousers', y: 300, val: 1232 },
-              { x: 'watches', y: 20, val: 1232 },
-              { x: 'bags', y: 700, val: 1232 },
-              { x: 'cocktail dresses', y: 804, val: 1232 },
-            ]}
-          />
           <LineSeries
             id="lines2"
-            name="test"
+            name="lines"
+            showNullValuesInTooltip
             data={[
-              { x: 'trousers', y: 300, val: 1232 },
-              { x: 'watches', y: 20, val: 1232 },
-              { x: 'bags', y: 700, val: 1232 },
-              { x: 'cocktail dresses', y: 804, val: 1232 },
+              { x: 0, y: 300, val: 1232 },
+              { x: 1, y: 20, val: 1232 },
+              { x: 2, y: null, val: 1232 },
+              { x: 3, y: 804, val: 1232 },
+            ]}
+          />
+          <AreaSeries
+            showNullValuesInTooltip
+            id="area"
+            name="area"
+            data={[
+              { x: 0, y: null, val: 1232 },
+              { x: 1, y: null, val: 1232 },
+              { x: 2, y: null, val: 1232 },
+              { x: 3, y: 804, val: 1232 },
             ]}
           />
           <BarSeries
             id="bars"
-            name="amount"
-            xScaleType={ScaleType.Ordinal}
-            xAccessor="x"
+            showNullValuesInTooltip
+            name="bars"
             yAccessors={['y']}
             data={[
-              { x: 'trousers', y: 390, val: 1222 },
-              { x: 'watches', y: 23, val: 1222 },
-              { x: 'bags', y: 750, val: 1222 },
-              { x: 'cocktail dresses', y: 854, val: 1222 },
+              { x: 0, y: 390, val: 1222 },
+              { x: 1, y: null, val: 1222 },
+              { x: 2, y: 750, val: 1222 },
+              { x: 3, y: null, val: 1222 },
             ]}
           />
         </Chart>
