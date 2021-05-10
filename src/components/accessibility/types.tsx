@@ -29,7 +29,7 @@ interface ScreenReaderTypesProps {
 export function ScreenReaderTypes(props: A11ySettings & ScreenReaderTypesProps) {
   if (!props.defaultSummaryId) return null;
   return (
-    <dl id={props.defaultSummaryId}>
+    <dl>
       <dt>Chart type:</dt>
       <dd id={props.defaultSummaryId}>{props.chartTypeDescription}</dd>
     </dl>
