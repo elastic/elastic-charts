@@ -20,6 +20,7 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
+import { percentFormatter, percentValueGetter } from '../../chart_types/partition_chart/layout/config';
 import { ShapeViewModel } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
 import { partitionMultiGeometries } from '../../chart_types/partition_chart/state/selectors/geometries';
 import { GlobalChartState } from '../../state/chart_state';
@@ -43,6 +44,22 @@ const formatPartitionDataHeaders = (partitionSpec: ShapeViewModel[]) => {
   });
 };
 
+const formatPartitionDataRows = (partitionSpec: ShapeViewModel[]) => {
+  return partitionSpec.map((val) => {
+    return val.linkLabelViewModels.linkLabels.map((value, index) => {
+      return <td key={index}>{value.valueText}</td>;
+    });
+  });
+};
+
+const formatPartitionDataSlicePercentage = (partitionSpec: ShapeViewModel[]) => {
+  return partitionSpec.map((node) => {
+    return node.quadViewModel.map((value, index) => {
+      return <td key={index}>{percentFormatter(percentValueGetter(value))}</td>;
+    });
+  });
+};
+
 const ScreenReaderSunburstTableComponent = ({ a11ySettings, partitionSpec }: ScreenReaderSunburstTableStateProps) => {
   const { tableCaption } = a11ySettings;
 
@@ -59,7 +76,8 @@ const ScreenReaderSunburstTableComponent = ({ a11ySettings, partitionSpec }: Scr
         <tbody>
           <tr>
             <th scope="row">{formatPartitionDataHeaders(partitionSpec)}</th>
-            <td>300 Million</td>
+            {formatPartitionDataRows(partitionSpec)}
+            <tr>{formatPartitionDataSlicePercentage(partitionSpec)}</tr>
           </tr>
         </tbody>
       </table>
