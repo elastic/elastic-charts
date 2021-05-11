@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { Rotation, Placement } from '../../src';
+import { Placement } from '../../src';
+import { eachRotation } from '../helpers';
 import { common } from '../page_objects';
 
 describe('Interactions', () => {
@@ -29,12 +30,7 @@ describe('Interactions', () => {
       const right = 20;
 
       describe.each<string>(['default', 'chart'])('Boundary El - %s', (boundary) => {
-        describe.each<[string, Rotation]>([
-          ['0', 0],
-          ['90', 90],
-          ['180', 180],
-          ['negative 90', -90],
-        ])('rotation - %s', (_, rotation) => {
+        eachRotation.describe((rotation) => {
           describe.each<Placement>([Placement.Right, Placement.Left, Placement.Top, Placement.Bottom])(
             'Placement - %s',
             (placement) => {
@@ -156,14 +152,14 @@ describe('Interactions', () => {
       );
     });
 
-    it('should render corrent tooltip for split and y accessors', async () => {
+    it('should render current tooltip for split and y accessors', async () => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        'http://localhost:9001/iframe.html?id=bar-chart--bar-chart-2-y-2-g',
+        'http://localhost:9001/?path=/story/bar-chart--bar-chart2y2g',
         { left: 330, top: 40 },
       );
     });
 
-    it('should render corrent tooltip in dark theme', async () => {
+    it('should render current tooltip in dark theme', async () => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(
         'http://localhost:9001/?path=/story/stylings--dark-theme',
         { left: 120, bottom: 80 },

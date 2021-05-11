@@ -19,16 +19,15 @@
 
 import Url from 'url';
 
+import { JSDOM } from 'jsdom';
 import { AXNode } from 'puppeteer';
 
 import { DRAG_DETECTION_TIMEOUT } from '../../src/state/reducers/interactions';
 // @ts-ignore
-import defaults from '../defaults';
+import { port, hostname, debug, isLegacyVRTServer } from '../config';
 import { toMatchImageSnapshot } from '../jest_env_setup';
 
-const port = process.env.PORT || defaults.PORT;
-const host = process.env.HOST || defaults.HOST;
-const baseUrl = `http://${host}:${port}/iframe.html`;
+const legacyBaseUrl = `http://${hostname}:${port}/iframe.html`;
 
 // Use to log console statements from within the page.evaluate blocks
 // @ts-ignore
@@ -148,9 +147,22 @@ class CommonPage {
    * @param url
    */
   static parseUrl(url: string): string {
-    const { query } = Url.parse(url);
-
-    return `${baseUrl}?${query}${query ? '&' : ''}knob-debug=false`;
+    if (isLegacyVRTServer) {
+      const { query } = Url.parse(url);
+      return `${legacyBaseUrl}?${query}${query ? '&' : ''}knob-debug=false`;
+    }
+    const { query } = Url.parse(url, true);
+    const { id, ...rest } = query;
+    return Url.format({
+      protocol: 'http',
+      hostname,
+      port,
+      query: {
+        path: `/story/${id}`,
+        ...rest,
+        'knob-debug': false,
+      },
+    });
   }
 
   /**
@@ -192,7 +204,7 @@ class CommonPage {
       await Promise.all(options.hiddenSelectors.map(this.toggleElementVisibility));
     }
 
-    if (options?.debug && process.env.DEBUG === 'true') {
+    if (options?.debug && debug) {
       await jestPuppeteer.debug();
     }
 
@@ -388,7 +400,6 @@ class CommonPage {
     options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
   ) {
     const action = async () => {
-      await this.disableAnimations();
       // click to focus within the chart
       await this.clickMouseRelativeToDOMElement({ top: 0, left: 0 }, this.chartSelector);
       // eslint-disable-next-line no-restricted-syntax
@@ -440,16 +451,12 @@ class CommonPage {
       await this.waitForElement(waitSelector, timeout);
     }
 
-    // activate peripheral visibility
-    await page.evaluate(() => {
-      document.querySelector('html')!.classList.add('echVisualTesting');
-    });
-  }
-
-  async disableAnimations() {
-    await page.evaluate(() => {
-      document.querySelector('#story-root')!.classList.add('disable-animations');
-    });
+    if (isLegacyVRTServer) {
+      // activate peripheral visibility
+      await page.evaluate(() => {
+        document.querySelector('html')!.classList.add('echVisualTesting');
+      });
+    }
   }
 
   /**
@@ -479,10 +486,10 @@ class CommonPage {
    * Get HTML for element to test aria labels etc
    */
   // eslint-disable-next-line class-methods-use-this
-  async getElementHTML(url: string) {
-    await this.loadElementFromURL(url);
-    // https://github.com/puppeteer/puppeteer/issues/406#issuecomment-323555639
-    return await page.evaluate(() => new XMLSerializer().serializeToString(document));
+  async getSelectorHTML(url: string, tagName: string) {
+    await this.loadElementFromURL(url, '.echCanvasRenderer');
+    const xml = await page.evaluate(() => new XMLSerializer().serializeToString(document));
+    return new JSDOM(xml, { contentType: 'text/xml' }).window.document.getElementsByTagName(tagName);
   }
 }
 

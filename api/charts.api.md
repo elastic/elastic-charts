@@ -8,6 +8,7 @@ import { $Values } from 'utility-types';
 import { ComponentType } from 'react';
 import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
+import { ReactNode } from 'react';
 
 // @public
 export type Accessor = AccessorObjectKey | AccessorArrayIndex;
@@ -457,6 +458,9 @@ export type ColorVariant = $Values<typeof ColorVariant>;
 // @public (undocumented)
 export type CompleteBoundedDomain = DomainBase & LowerBound & UpperBound;
 
+// @public
+export type ComponentWithAnnotationDatum = ComponentType<LineAnnotationDatum>;
+
 // @public (undocumented)
 export type ContinuousDomain = [min: number, max: number];
 
@@ -621,7 +625,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'description' | 'useDefaultSummary';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -1197,7 +1201,8 @@ export interface LineAnnotationDatum {
 // @public (undocumented)
 export type LineAnnotationSpec = BaseAnnotationSpec<typeof AnnotationType.Line, LineAnnotationDatum, LineAnnotationStyle> & {
     domainType: AnnotationDomainType;
-    marker?: JSX.Element;
+    marker?: ReactNode | ComponentWithAnnotationDatum;
+    markerBody?: ReactNode | ComponentWithAnnotationDatum;
     markerDimensions?: {
         width: number;
         height: number;
@@ -1738,12 +1743,17 @@ export interface SettingsSpec extends Spec, LegendSpec {
     allowBrushingLastHistogramBucket?: boolean;
     // (undocumented)
     animateData: boolean;
+    ariaDescribedBy?: string;
+    ariaDescription?: string;
+    ariaLabel?: string;
+    ariaLabelHeadingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
+    ariaLabelledBy?: string;
+    ariaUseDefaultSummary: boolean;
     baseTheme?: Theme;
     brushAxis?: BrushAxis;
     debug: boolean;
     // @alpha
     debugState?: boolean;
-    description?: string;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
     hideDuplicateAxes: boolean;
@@ -1774,7 +1784,6 @@ export interface SettingsSpec extends Spec, LegendSpec {
     roundHistogramBrushValues?: boolean;
     theme?: PartialTheme | PartialTheme[];
     tooltip: TooltipSettings;
-    useDefaultSummary: boolean;
     // (undocumented)
     xDomain?: CustomXDomain;
 }
@@ -2009,6 +2018,7 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
     headerFormatter?: TooltipValueFormatter;
     unit?: string;
     customTooltip?: CustomTooltip;
+    stickTo?: Position;
 };
 
 // @public

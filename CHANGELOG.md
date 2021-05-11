@@ -1,3 +1,31 @@
+# [29.1.0](https://github.com/elastic/elastic-charts/compare/v29.0.0...v29.1.0) (2021-04-23)
+
+
+### Bug Fixes
+
+* **interaction:** remove unnecessary elements ([#1131](https://github.com/elastic/elastic-charts/issues/1131)) ([411042f](https://github.com/elastic/elastic-charts/commit/411042fdbc8252a217f2e655fc12c0723c39cad1)), closes [#1074](https://github.com/elastic/elastic-charts/issues/1074)
+* **partition:**  fix safari highlight bug on single slice ([#1132](https://github.com/elastic/elastic-charts/issues/1132)) ([4a04063](https://github.com/elastic/elastic-charts/commit/4a04063d68a3db27990eb460c00d7007aad4f169)), closes [#1085](https://github.com/elastic/elastic-charts/issues/1085)
+
+
+### Features
+
+* **tooltip:** add stickTo option ([#1122](https://github.com/elastic/elastic-charts/issues/1122)) ([12417e2](https://github.com/elastic/elastic-charts/commit/12417e2c03588202da0567cd0056393f00d990e6)), closes [#921](https://github.com/elastic/elastic-charts/issues/921)
+
+# [29.0.0](https://github.com/elastic/elastic-charts/compare/v28.2.0...v29.0.0) (2021-04-22)
+
+
+### Features
+
+* **a11y:** add label for screen readers ([#1121](https://github.com/elastic/elastic-charts/issues/1121)) ([920e585](https://github.com/elastic/elastic-charts/commit/920e5856d4c52416c0ea394e5605bb756266b178)), closes [#1096](https://github.com/elastic/elastic-charts/issues/1096)
+* **annotations:** marker body with dynamic positioning ([#1116](https://github.com/elastic/elastic-charts/issues/1116)) ([601abac](https://github.com/elastic/elastic-charts/commit/601abacc4247755ad1203439e6e95c6fa8574ab2))
+
+
+### BREAKING CHANGES
+
+* **a11y:** `description` prop in `<Settings/>` is renamed to `ariaDescription`
+
+Co-authored-by: Marco Vettorello <vettorello.marco@gmail.com>
+
 # [28.2.0](https://github.com/elastic/elastic-charts/compare/v28.1.0...v28.2.0) (2021-04-15)
 
 
