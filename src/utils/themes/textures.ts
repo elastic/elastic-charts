@@ -40,7 +40,7 @@ export function drawPattern(
   textureStyle: TexturedStyles,
   canvas: HTMLCanvasElement,
 ) {
-  const { type, stroke, opacity, scale, fill } = textureStyle;
+  const { type, stroke, opacity, scale, rotation, fill } = textureStyle;
   const size = scale || 10;
   canvas.width = size;
   canvas.height = size;
@@ -49,6 +49,11 @@ export function drawPattern(
   if (ctx !== null) {
     ctx.globalAlpha = opacity || 1;
     ctx.strokeStyle = stroke;
+
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(rotation);
+    ctx.translate(-canvas.width / 2, -canvas.height / 2);
+
     switch (type) {
       case 'circle':
         ctx.beginPath();

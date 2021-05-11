@@ -106,7 +106,7 @@ export function renderAreaPath(
   const textures: TexturedStyles = {
     type: 'square',
     stroke: 'black',
-    rotation: 1.5,
+    rotation: 0.7,
     scale: 20,
   };
   const pattern = drawPattern(ctx, textures, imgCanvas);

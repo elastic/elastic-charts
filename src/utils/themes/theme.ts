@@ -371,6 +371,7 @@ export interface LineStyle {
 
 /** @public */
 export interface TexturedStyles {
+  /* typed of texture designs currently supported */
   type: 'line' | 'circle' | 'square' | 'triangle' | 'cross';
   /* To fill the stoke with Color or ColorVariant */
   stroke: Color | ColorVariant;
@@ -380,9 +381,9 @@ export interface TexturedStyles {
   opacity?: number;
   /* If the polygon textures should be filled or empty */
   fill?: 0 | 1;
-  path?: string;
   /* The size of the textures,defaulted as 10 */
   scale?: number;
+  path?: string;
   spacing?: number;
 }
 
