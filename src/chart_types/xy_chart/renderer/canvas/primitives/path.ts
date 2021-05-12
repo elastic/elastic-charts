@@ -26,41 +26,6 @@ import { drawPattern } from '../../../../../utils/themes/textures';
 import { TexturedStyles } from '../../../../../utils/themes/theme';
 import { renderMultiLine } from './line';
 
-// function drawPattern(type: string, can: HTMLCanvasElement, fill: Fill, size: number) {
-//   const ctx = can.getContext('2d');
-
-//   if (ctx !== null) {
-//     if (type.indexOf('line') === 0) {
-//       ctx.strokeStyle = 'black';
-//       ctx.beginPath();
-//       ctx.stroke(new Path2D(linePaths(type.slice(4), size)));
-//       return;
-//     }
-
-//     switch (type) {
-//       case 'circle':
-//         ctx.strokeStyle = 'black';
-//         ctx.beginPath();
-//         ctx.arc(size / 2, size / 2, 5, 0, 2 * Math.PI);
-//         ctx.stroke();
-//         break;
-//       case 'circleFill':
-//         ctx.strokeStyle = 'black';
-//         ctx.beginPath();
-//         ctx.arc(size / 2, size / 2, 2, 0, 2 * Math.PI);
-//         ctx.fill();
-//         break;
-//       default:
-//         break;
-//     }
-//   }
-
-//   // if (ctx != null) {
-//   //   ctx.fillStyle = RGBtoString(fill.color);
-//   //   ctx.fill();
-//   // }
-// }
-
 /** @internal */
 export function renderLinePaths(
   context: CanvasRenderingContext2D,
@@ -94,8 +59,8 @@ export function renderLinePaths(
 
 /** @internal */
 export function renderAreaPath(
-  imgCanvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
+  imgCanvas: HTMLCanvasElement,
   transform: Point,
   area: string,
   fill: Fill,

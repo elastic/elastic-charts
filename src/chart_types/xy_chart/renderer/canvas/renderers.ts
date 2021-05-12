@@ -122,7 +122,7 @@ export function renderXYChartCanvas2d(
       // rendering areas
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          renderAreas(imgCanvas, ctx, {
+          renderAreas(ctx, imgCanvas, {
             areas: geometries.areas,
             clippings,
             renderingArea,
