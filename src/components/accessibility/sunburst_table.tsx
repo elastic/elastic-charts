@@ -20,9 +20,12 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
-import { percentFormatter, percentValueGetter } from '../../chart_types/partition_chart/layout/config';
 import { ShapeViewModel } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
 import { partitionMultiGeometries } from '../../chart_types/partition_chart/state/selectors/geometries';
+import {
+  getScreenReaderDataSelector,
+  LabelsInterface,
+} from '../../chart_types/partition_chart/state/selectors/get_screen_reader_data';
 import { GlobalChartState } from '../../state/chart_state';
 import {
   A11ySettings,
@@ -33,53 +36,43 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../state/select
 
 interface ScreenReaderSunburstTableStateProps {
   a11ySettings: A11ySettings;
-  partitionSpec: ShapeViewModel[];
+  screenReaderData: LabelsInterface[];
+  shapeViewModel: ShapeViewModel[];
 }
 
-const formatPartitionDataHeaders = (partitionSpec: ShapeViewModel[]) => {
-  return partitionSpec.map((val) => {
-    return val.linkLabelViewModels.linkLabels.map((value, index) => {
-      return <th key={index}>{value.text}</th>;
-    });
+const renderTableContent = (data: LabelsInterface[]) => {
+  return data.map((value, i) => {
+    return (
+      <tr key={`row--${i}`}>
+        <th scope="row">{value.fullFormattedName}</th>
+        <td>{value.valueText}</td>
+        <td>{value.percentage}</td>
+      </tr>
+    );
   });
 };
 
-const formatPartitionDataRows = (partitionSpec: ShapeViewModel[]) => {
-  return partitionSpec.map((val) => {
-    return val.linkLabelViewModels.linkLabels.map((value, index) => {
-      return <td key={index}>{value.valueText}</td>;
-    });
-  });
-};
-
-const formatPartitionDataSlicePercentage = (partitionSpec: ShapeViewModel[]) => {
-  return partitionSpec.map((node) => {
-    return node.quadViewModel.map((value, index) => {
-      return <td key={index}>{percentFormatter(percentValueGetter(value))}</td>;
-    });
-  });
-};
-
-const ScreenReaderSunburstTableComponent = ({ a11ySettings, partitionSpec }: ScreenReaderSunburstTableStateProps) => {
+const ScreenReaderSunburstTableComponent = ({
+  a11ySettings,
+  shapeViewModel,
+  screenReaderData,
+}: ScreenReaderSunburstTableStateProps) => {
   const { tableCaption } = a11ySettings;
-
   return (
     <div className="echScreenReaderOnly screenReaderTable">
       <table>
         <caption>{tableCaption}</caption>
         <thead>
-          {partitionSpec.map((value) => {
+          {shapeViewModel.map((value: { panelTitle: any; layers: any[] }) => {
             const title = value.panelTitle;
-            return value.layers.map((val, index) => <tr key={index}>{`${title || `Category`}`}</tr>);
+            return value.layers.map((val: any, index: React.Key | null | undefined) => (
+              <th key={index} scope="col">{`${title || `Category`}`}</th>
+            ));
           })}
+          <th scope="col">Value</th>
+          <th scope="col">Percentage</th>
         </thead>
-        <tbody>
-          <tr>
-            <th scope="row">{formatPartitionDataHeaders(partitionSpec)}</th>
-            {formatPartitionDataRows(partitionSpec)}
-            <tr>{formatPartitionDataSlicePercentage(partitionSpec)}</tr>
-          </tr>
-        </tbody>
+        <tbody>{renderTableContent(screenReaderData)}</tbody>
       </table>
     </div>
   );
@@ -87,7 +80,8 @@ const ScreenReaderSunburstTableComponent = ({ a11ySettings, partitionSpec }: Scr
 
 const DEFAULT_SCREEN_READER_SUMMARY = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
-  partitionSpec: [],
+  screenReaderData: [],
+  shapeViewModel: [],
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderSunburstTableStateProps => {
@@ -96,7 +90,8 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderSunburstTableStat
   }
   return {
     a11ySettings: getA11ySettingsSelector(state),
-    partitionSpec: partitionMultiGeometries(state),
+    screenReaderData: getScreenReaderDataSelector(state),
+    shapeViewModel: partitionMultiGeometries(state),
   };
 };
 /** @internal */

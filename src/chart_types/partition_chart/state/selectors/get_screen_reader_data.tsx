@@ -34,7 +34,8 @@ import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
 import { getTrees } from './tree';
 
-interface LabelsInterface {
+/** @internal */
+export interface LabelsInterface {
   fullFormattedName: string;
   valueText: number;
   depth: number;
@@ -85,16 +86,13 @@ const getScreenReaderDataForPartitions = (
   legendMaxDepth: number,
   trees: { tree: HierarchyOfArrays }[],
 ) => {
-  const labels: LabelsInterface[] = specs.flatMap((spec) =>
-    getFlattenedLabels(spec.layers, trees[0].tree, legendMaxDepth),
-  );
-  return labels;
+  return specs.flatMap((spec) => getFlattenedLabels(spec.layers, trees[0].tree, legendMaxDepth));
 };
 
 /** @internal */
 export const getScreenReaderDataSelector = createCachedSelector(
   [getPartitionSpecs, getSettingsSpecSelector, getTrees, partitionMultiGeometries],
   (specs, { legendMaxDepth }, trees) => {
-    getScreenReaderDataForPartitions(specs, legendMaxDepth, trees);
+    return getScreenReaderDataForPartitions(specs, legendMaxDepth, trees);
   },
 )(getChartIdSelector);
