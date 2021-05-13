@@ -50,7 +50,7 @@ function flatSlicesNames(
     }
     // preventing errors from external formatters
     if (formattedValue != null && formattedValue !== '' && formattedValue !== HIERARCHY_ROOT_KEY) {
-      // save only the max depth, so we can compute the the max extension of the legend
+      // save only the max depth, so we can compute the max extension of the legend
       keys.set(formattedValue, Math.max(depth, keys.get(formattedValue) ?? 0));
     }
 
