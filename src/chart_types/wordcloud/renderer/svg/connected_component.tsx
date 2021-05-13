@@ -23,6 +23,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -126,9 +127,7 @@ function layoutMaker(config: Configs, data: Datum[]) {
 
 const View = ({ words, conf }: { words: Word[]; conf: Configs }) => (
   <svg width={getWidth(conf)} height={getHeight(conf)} role="img">
-    <title className="echScreenReaderOnly" id={`${DEFAULT_A11Y_SETTINGS.descriptionId}--description`}>
-      Chart type: Word cloud chart
-    </title>
+    <ScreenReaderSummary />
     <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
       {words.map((d, i) => {
         return (

@@ -41,7 +41,6 @@ interface ReactiveChartStateProps {
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
-  seriesTypes: string;
 }
 
 interface ReactiveChartDispatchProps {
@@ -155,7 +154,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     top: 0,
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
-  seriesTypes: 'heatmap chart',
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -167,7 +165,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometries: geometries(state),
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
-    seriesTypes: 'heatmap chart',
   };
 };
 
