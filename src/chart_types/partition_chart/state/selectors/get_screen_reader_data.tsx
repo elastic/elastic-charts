@@ -21,14 +21,7 @@ import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { MODEL_KEY } from '../../layout/config';
-import {
-  CHILDREN_KEY,
-  DEPTH_KEY,
-  HierarchyOfArrays,
-  HIERARCHY_ROOT_KEY,
-  STATISTICS_KEY,
-} from '../../layout/utils/group_by_rollup';
+import { flatSlicesNames, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
 import { Layer, PartitionSpec } from '../../specs';
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
@@ -36,46 +29,15 @@ import { getTrees } from './tree';
 
 /** @internal */
 export interface LabelsInterface {
-  fullFormattedName: string;
+  label: string;
   valueText: number;
   depth: number;
   percentage: string;
 }
 
-// modifying the legend_labels.ts flatSliceName() to have a different return type
-const flatLabelsNames = (layers: Layer[], depth: number, tree: HierarchyOfArrays, labels: LabelsInterface[] = []) => {
-  if (tree.length === 0) return labels;
-  for (let i = 0; i < tree.length; i++) {
-    const branch = tree[i];
-    const arrayNode = branch[1];
-    const label = branch[0]; // instead of key
-
-    // format the key with the layer formatter
-    const layer = layers[depth - 1];
-    const formatter = layer?.nodeLabel;
-    let formattedValue = '';
-    if (label != null) {
-      formattedValue = formatter ? formatter(label) : `${label}`;
-    }
-    // preventing errors from external formatters
-    if (formattedValue != null && formattedValue !== '' && formattedValue !== HIERARCHY_ROOT_KEY) {
-      // save only the max depth, so we can compute the max extension of the legend
-      const current: LabelsInterface = {
-        fullFormattedName: formattedValue,
-        depth: arrayNode[MODEL_KEY][DEPTH_KEY],
-        valueText: arrayNode.value,
-        percentage: `${Math.round((arrayNode.value / arrayNode[STATISTICS_KEY].globalAggregate) * 100)}%`,
-      };
-      labels.push(current);
-    }
-    const children = arrayNode[CHILDREN_KEY];
-    flatLabelsNames(layers, depth + 1, children, labels);
-  }
-  return labels;
-};
-
+/** @internal */
 const getFlattenedLabels = (layers: Layer[], tree: HierarchyOfArrays, legendMaxDepth: number = 0) => {
-  return flatLabelsNames(layers, 0, tree).filter(({ depth }) => depth <= legendMaxDepth);
+  return flatSlicesNames(layers, 0, tree).filter((val) => val.depth <= legendMaxDepth);
 };
 
 /**

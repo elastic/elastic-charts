@@ -20,7 +20,9 @@
 import { CategoryKey } from '../../../../common/category';
 import { Relation } from '../../../../common/text_utils';
 import { LegendPath } from '../../../../state/actions/legend';
+import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { Datum, ValueAccessor } from '../../../../utils/common';
+import { Layer } from '../../specs';
 
 /** @public */
 export const AGGREGATE_KEY = 'value';
@@ -297,3 +299,46 @@ export const aggregators = {
   //   },
   // },
 };
+
+/** @internal */
+export function flatSlicesNames(
+  layers: Layer[],
+  depth: number,
+  tree: HierarchyOfArrays,
+  keys: Map<LegendItemLabel['label'], any> = new Map(),
+) {
+  if (tree.length === 0) {
+    return [];
+  }
+
+  for (let i = 0; i < tree.length; i++) {
+    const branch = tree[i];
+    const arrayNode = branch[1];
+    const key = branch[0];
+
+    // format the key with the layer formatter
+    const layer = layers[depth - 1];
+    const formatter = layer?.nodeLabel;
+    let formattedValue = '';
+    if (key != null) {
+      formattedValue = formatter ? formatter(key) : `${key}`;
+    }
+    // preventing errors from external formatters
+    if (formattedValue != null && formattedValue !== '' && formattedValue !== HIERARCHY_ROOT_KEY) {
+      const current = new Map();
+      current.set('depth', Math.max(depth, keys.get(formattedValue)?.get(depth) ?? 0));
+      current.set('percentage', `${Math.round((arrayNode.value / arrayNode[STATISTICS_KEY].globalAggregate) * 100)}%`);
+      current.set('valueText', arrayNode.value);
+      keys.set(formattedValue, current);
+    }
+
+    const children = arrayNode[CHILDREN_KEY];
+    flatSlicesNames(layers, depth + 1, children, keys);
+  }
+  return [...keys.keys()].map((k) => ({
+    label: k,
+    depth: keys.get(k)?.get('depth') ?? 0,
+    percentage: keys.get(k)?.get('percentage'),
+    valueText: keys.get(k)?.get('valueText'),
+  }));
+}

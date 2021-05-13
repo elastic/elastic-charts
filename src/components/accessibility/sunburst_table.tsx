@@ -26,6 +26,7 @@ import {
   getScreenReaderDataSelector,
   LabelsInterface,
 } from '../../chart_types/partition_chart/state/selectors/get_screen_reader_data';
+import { getPartitionSpecs } from '../../chart_types/partition_chart/state/selectors/partition_spec';
 import { GlobalChartState } from '../../state/chart_state';
 import {
   A11ySettings,
@@ -33,19 +34,21 @@ import {
   getA11ySettingsSelector,
 } from '../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
+import { ValueFormatter } from '../../utils/common';
 
 interface ScreenReaderSunburstTableStateProps {
   a11ySettings: A11ySettings;
   screenReaderData: LabelsInterface[];
   shapeViewModel: ShapeViewModel[];
+  formatter: ValueFormatter;
 }
 
-const renderTableContent = (data: LabelsInterface[]) => {
-  return data.map((value, i) => {
+const renderTableContent = (data: any[], formatter?: ValueFormatter) => {
+  return data.map((value: LabelsInterface, i: any) => {
     return (
       <tr key={`row--${i}`}>
-        <th scope="row">{value.fullFormattedName}</th>
-        <td>{value.valueText}</td>
+        <th scope="row">{value.label}</th>
+        <td>{formatter ? formatter(value.valueText) : value.valueText}</td>
         <td>{value.percentage}</td>
       </tr>
     );
@@ -56,6 +59,7 @@ const ScreenReaderSunburstTableComponent = ({
   a11ySettings,
   shapeViewModel,
   screenReaderData,
+  formatter,
 }: ScreenReaderSunburstTableStateProps) => {
   const { tableCaption } = a11ySettings;
   return (
@@ -72,7 +76,7 @@ const ScreenReaderSunburstTableComponent = ({
           <th scope="col">Value</th>
           <th scope="col">Percentage</th>
         </thead>
-        <tbody>{renderTableContent(screenReaderData)}</tbody>
+        <tbody>{renderTableContent(screenReaderData, formatter)}</tbody>
       </table>
     </div>
   );
@@ -82,6 +86,7 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   screenReaderData: [],
   shapeViewModel: [],
+  formatter: (value: number) => value.toString(),
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderSunburstTableStateProps => {
@@ -92,6 +97,7 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderSunburstTableStat
     a11ySettings: getA11ySettingsSelector(state),
     screenReaderData: getScreenReaderDataSelector(state),
     shapeViewModel: partitionMultiGeometries(state),
+    formatter: getPartitionSpecs(state)[0].valueFormatter,
   };
 };
 /** @internal */
