@@ -22,6 +22,7 @@ import createCachedSelector from 're-reselect';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { flatSlicesNames, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
+import { isFlame, isIcicle } from '../../layout/viewmodel/viewmodel';
 import { Layer, PartitionSpec } from '../../specs';
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
@@ -55,6 +56,6 @@ const getScreenReaderDataForPartitions = (
 export const getScreenReaderDataSelector = createCachedSelector(
   [getPartitionSpecs, getSettingsSpecSelector, getTrees, partitionMultiGeometries],
   (specs, { legendMaxDepth }, trees) => {
-    return getScreenReaderDataForPartitions(specs, legendMaxDepth, trees);
+    return !isIcicle || !isFlame ? getScreenReaderDataForPartitions(specs, legendMaxDepth, trees) : [];
   },
 )(getChartIdSelector);
