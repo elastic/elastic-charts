@@ -126,8 +126,7 @@ function layoutMaker(config: Configs, data: Datum[]) {
 }
 
 const View = ({ words, conf }: { words: Word[]; conf: Configs }) => (
-  <svg width={getWidth(conf)} height={getHeight(conf)} role="img">
-    <ScreenReaderSummary />
+  <svg width={getWidth(conf)} height={getHeight(conf)} role="presentation">
     <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
       {words.map((d, i) => {
         return (
@@ -226,6 +225,7 @@ class Component extends React.Component<Props> {
     return (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <View words={renderedWordObjects} conf={conf1} />
+        <ScreenReaderSummary />
       </figure>
     );
   }
