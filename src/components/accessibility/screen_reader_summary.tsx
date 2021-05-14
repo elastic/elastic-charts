@@ -61,5 +61,6 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryStateProps
     a11ySettings: getA11ySettingsSelector(state),
   };
 };
+
 /** @internal */
 export const ScreenReaderSummary = memo(connect(mapStateToProps)(ScreenReaderSummaryComponent));
