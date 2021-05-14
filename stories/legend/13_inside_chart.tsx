@@ -45,6 +45,12 @@ export const Example = () => {
   const numberOfSeries = number('Number of series', 5);
 
   const floating: LegendPositionConfig['floating'] = boolean('Inside chart', true, 'Legend');
+  const floatingColumns: LegendPositionConfig['floatingColumns'] = number(
+    'floating columns',
+    1,
+    { min: 1, max: 10, range: true, step: 1 },
+    'Legend',
+  );
   const vAlign: LegendPositionConfig['vAlign'] = select(
     'vAlign',
     {
@@ -91,6 +97,7 @@ export const Example = () => {
           hAlign,
           direction,
           floating,
+          floatingColumns,
         }}
         theme={darkMode ? DARK_THEME : LIGHT_THEME}
       />

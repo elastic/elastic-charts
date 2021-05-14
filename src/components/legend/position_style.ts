@@ -71,24 +71,28 @@ export const LEGEND_TO_FULL_CONFIG: Record<Position, LegendPositionConfig> = {
     hAlign: Position.Left,
     direction: LayoutDirection.Vertical,
     floating: false,
+    floatingColumns: 1,
   },
   [Position.Top]: {
     vAlign: Position.Top,
     hAlign: Position.Left,
     direction: LayoutDirection.Horizontal,
     floating: false,
+    floatingColumns: 1,
   },
   [Position.Bottom]: {
     vAlign: Position.Bottom,
     hAlign: Position.Left,
     direction: LayoutDirection.Horizontal,
     floating: false,
+    floatingColumns: 1,
   },
   [Position.Right]: {
     vAlign: Position.Top,
     hAlign: Position.Right,
     direction: LayoutDirection.Vertical,
     floating: false,
+    floatingColumns: 1,
   },
 };
 
