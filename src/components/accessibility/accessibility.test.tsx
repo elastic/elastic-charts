@@ -20,27 +20,83 @@
 import { mount } from 'enzyme';
 import React from 'react';
 
-import { BarSeries, LineSeries, Settings } from '../../specs';
+import { config } from '../../chart_types/partition_chart/layout/config';
+import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';
+import { arrayToLookup } from '../../common/color_calcs';
+import { mocks } from '../../mocks/hierarchical';
+import { productDimension } from '../../mocks/hierarchical/dimension_codes';
+import { BarSeries, LineSeries, Partition, Settings } from '../../specs';
+import { Datum } from '../../utils/common';
 import { Chart } from '../chart';
 
 describe('Accessibility', () => {
-  it('should include the series types if one type of series', () => {
-    const wrapper = mount(
-      <Chart size={[100, 100]} id="chart1">
-        <Settings debug rendering="svg" showLegend />
-        <BarSeries id="test" data={[{ x: 0, y: 2 }]} />
-      </Chart>,
-    );
-    expect(wrapper.find('dd').first().text()).toBe('bar chart');
+  describe('Screen reader summary xy charts', () => {
+    it('should include the series types if one type of series', () => {
+      const wrapper = mount(
+        <Chart size={[100, 100]} id="chart1">
+          <Settings debug rendering="svg" showLegend />
+          <BarSeries id="test" data={[{ x: 0, y: 2 }]} />
+        </Chart>,
+      );
+      expect(wrapper.find('dd').first().text()).toBe('bar chart');
+    });
+    it('should include the series types if multiple types of series', () => {
+      const wrapper = mount(
+        <Chart size={[100, 100]} id="chart1">
+          <Settings debug rendering="svg" showLegend />
+          <BarSeries id="test" data={[{ x: 0, y: 2 }]} />
+          <LineSeries id="test2" data={[{ x: 3, y: 5 }]} />
+        </Chart>,
+      );
+      expect(wrapper.find('dd').first().text()).toBe('Mixed chart: bar and line chart');
+    });
   });
-  it('should include the series types if multiple types of series', () => {
-    const wrapper = mount(
-      <Chart size={[100, 100]} id="chart1">
-        <Settings debug rendering="svg" showLegend />
-        <BarSeries id="test" data={[{ x: 0, y: 2 }]} />
-        <LineSeries id="test2" data={[{ x: 3, y: 5 }]} />
-      </Chart>,
-    );
-    expect(wrapper.find('dd').first().text()).toBe('Mixed chart: bar and line chart');
+
+  describe('Screen reader summary, other chart types', () => {
+    it('should include the series type if partition chart', () => {
+      const productLookup = arrayToLookup((d: any) => d.sitc1, productDimension);
+      const wrapper = mount(
+        <Chart size={[100, 100]} id="chart1">
+          <Partition
+            id="spec_1"
+            data={mocks.pie}
+            valueAccessor={(d: Datum) => d.exportVal as number}
+            valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+            layers={[
+              {
+                groupByRollup: (d: Datum) => d.sitc1,
+                nodeLabel: (d: Datum) => productLookup[d].name,
+              },
+            ]}
+          />
+        </Chart>,
+      );
+      expect(wrapper.find('dd').first().text()).toBe('sunburst chart');
+    });
+    it('should include series type if treemap type', () => {
+      const productLookup = arrayToLookup((d: any) => d.sitc1, productDimension);
+      const wrapper = mount(
+        <Chart size={[100, 100]} id="chart1">
+          <Partition
+            id="spec_1"
+            data={mocks.pie}
+            valueAccessor={(d: Datum) => d.exportVal as number}
+            valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+            layers={[
+              {
+                groupByRollup: (d: Datum) => d.sitc1,
+                nodeLabel: (d: Datum) => productLookup[d].name,
+              },
+            ]}
+            config={{
+              partitionLayout: PartitionLayout.treemap,
+            }}
+          />
+        </Chart>,
+      );
+      expect(wrapper.find('dd').first().text()).toBe('treemap chart');
+    });
   });
+
+  describe('Data table for screen readers', () => {});
 });
