@@ -9,13 +9,6 @@
     }
   }
 
-  &--vertical {
-    .echLegendList {
-      display: grid;
-      grid-template-columns: 1fr;
-    }
-  }
-
   &--top,
   &--left {
     order: 0;
