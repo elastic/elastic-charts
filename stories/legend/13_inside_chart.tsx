@@ -47,7 +47,7 @@ export const Example = () => {
   const floating: LegendPositionConfig['floating'] = boolean('Inside chart', true, 'Legend');
   const floatingColumns: LegendPositionConfig['floatingColumns'] = number(
     'floating columns',
-    1,
+    2,
     { min: 1, max: 10, range: true, step: 1 },
     'Legend',
   );
