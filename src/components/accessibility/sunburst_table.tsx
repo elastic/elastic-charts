@@ -48,7 +48,7 @@ const renderTableContent = (data: any[], formatter?: ValueFormatter) => {
     return (
       <tr key={`row--${i}`}>
         <th scope="row">{value.label}</th>
-        <td>{formatter ? formatter(value.valueText) : value.valueText}</td>
+        <td>{formatter && formatter(value.valueText) ? formatter(value.valueText) : value.valueText}</td>
         <td>{value.percentage}</td>
       </tr>
     );
