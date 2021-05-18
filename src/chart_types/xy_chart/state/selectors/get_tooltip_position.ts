@@ -60,7 +60,6 @@ export const getTooltipAnchorPositionSelector = createCachedSelector(
     };
 
     return getTooltipAnchorPosition(
-      chartDimensions,
       settings.rotation,
       cursorBandPosition,
       projectedPointerPosition,
