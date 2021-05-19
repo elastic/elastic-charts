@@ -17,13 +17,10 @@
  * under the License.
  */
 
-import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { Layer } from '../../specs';
-import { flatSlicesNames, HierarchyOfArrays } from './group_by_rollup';
+import { HierarchyOfArrays, flatSlicesNames } from './group_by_rollup';
 
 /** @internal */
 export function getLegendLabels(layers: Layer[], tree: HierarchyOfArrays, legendMaxDepth: number) {
-  return flatSlicesNames(layers, 0, tree).reduce((acc, val) => {
-    return val.depth <= legendMaxDepth ? acc.concat({ label: val.label, depth: val.depth }) : acc;
-  }, [] as LegendItemLabel[]);
+  return flatSlicesNames(layers, 0, tree).filter(({ depth }) => depth <= legendMaxDepth);
 }

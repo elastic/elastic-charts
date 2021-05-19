@@ -314,7 +314,7 @@ export function flatSlicesNames(
   for (const [key, arrayNode] of tree) {
     const formattedValue = key === null ? '' : formatter ? formatter(key) : `${key}`;
     // preventing errors from external formatters
-    if (formattedValue != null && formattedValue !== '' && formattedValue !== HIERARCHY_ROOT_KEY) {
+    if (formattedValue && formattedValue !== HIERARCHY_ROOT_KEY) {
       keys.set(formattedValue, {
         label: formattedValue,
         depth: Math.max(depth, keys.get(formattedValue)?.depth ?? 0),
