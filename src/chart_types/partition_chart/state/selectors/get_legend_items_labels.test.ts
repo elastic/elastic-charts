@@ -73,66 +73,98 @@ describe('Partition - Legend items labels', () => {
       {
         depth: 1,
         label: 'aaa',
+        percentage: '54%',
+        valueText: 7,
       },
       {
         depth: 2,
         label: 'aa',
+        percentage: '15%',
+        valueText: 2,
       },
       {
         depth: 3,
         label: '1',
+        percentage: '23%',
+        valueText: 3,
       },
       {
         depth: 3,
         label: '3',
+        percentage: '8%',
+        valueText: 1,
       },
       {
         depth: 2,
         label: 'bb',
+        percentage: '15%',
+        valueText: 2,
       },
       {
         depth: 3,
         label: '4',
+        percentage: '8%',
+        valueText: 1,
       },
       {
         depth: 3,
         label: '5',
+        percentage: '8%',
+        valueText: 1,
       },
       {
         depth: 3,
         label: '6',
+        percentage: '8%',
+        valueText: 1,
       },
       {
         depth: 1,
         label: 'bbb',
+        percentage: '46%',
+        valueText: 6,
       },
       {
         depth: 3,
         label: '7',
+        percentage: '8%',
+        valueText: 1,
       },
       {
         depth: 3,
         label: '8',
+        percentage: '8%',
+        valueText: 1,
       },
       {
         depth: 3,
         label: '9',
+        percentage: '8%',
+        valueText: 1,
       },
       {
         depth: 3,
         label: '10',
+        percentage: '8%',
+        valueText: 1,
       },
       {
         depth: 2,
         label: 'cc',
+        percentage: '15%',
+        valueText: 2,
       },
       {
         depth: 3,
         label: '11',
+        percentage: '8%',
+        valueText: 1,
       },
       {
         depth: 3,
         label: '12',
+        percentage: '8%',
+        valueText: 1,
       },
     ]);
   });
@@ -146,10 +178,14 @@ describe('Partition - Legend items labels', () => {
       {
         depth: 1,
         label: 'aaa',
+        percentage: '54%',
+        valueText: 7,
       },
       {
         depth: 1,
         label: 'bbb',
+        percentage: '46%',
+        valueText: 6,
       },
     ]);
   });
@@ -163,22 +199,32 @@ describe('Partition - Legend items labels', () => {
       {
         depth: 1,
         label: 'aaa',
+        percentage: '54%',
+        valueText: 7,
       },
       {
         depth: 2,
         label: 'aa',
+        percentage: '15%',
+        valueText: 2,
       },
       {
         depth: 2,
         label: 'bb',
+        percentage: '15%',
+        valueText: 2,
       },
       {
         depth: 1,
         label: 'bbb',
+        percentage: '46%',
+        valueText: 6,
       },
       {
         depth: 2,
         label: 'cc',
+        percentage: '15%',
+        valueText: 2,
       },
     ]);
   });
