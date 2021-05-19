@@ -20,7 +20,6 @@
 import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { flatSlicesNames, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
 import { Layer, PartitionSpec } from '../../specs';
 import { partitionMultiGeometries } from './geometries';
@@ -36,27 +35,22 @@ export interface LabelsInterface {
 }
 
 /** @internal */
-const getFlattenedLabels = (layers: Layer[], tree: HierarchyOfArrays, legendMaxDepth: number = 0) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  return flatSlicesNames(layers, 0, tree).filter((val) => val.depth <= legendMaxDepth);
+const getFlattenedLabels = (layers: Layer[], tree: HierarchyOfArrays) => {
+  return flatSlicesNames(layers, 0, tree);
 };
 
 /**
  * @internal
  */
-const getScreenReaderDataForPartitions = (
-  specs: PartitionSpec[],
-  legendMaxDepth: number,
-  trees: { tree: HierarchyOfArrays }[],
-) => {
-  return specs.flatMap((spec) => getFlattenedLabels(spec.layers, trees[0].tree, legendMaxDepth));
+const getScreenReaderDataForPartitions = (specs: PartitionSpec[], trees: { tree: HierarchyOfArrays }[]) => {
+  return specs.flatMap((spec) => getFlattenedLabels(spec.layers, trees[0].tree));
 };
 
 /** @internal */
 export const getScreenReaderDataSelector = createCachedSelector(
-  [getPartitionSpecs, getSettingsSpecSelector, getTrees, partitionMultiGeometries],
-  (specs, { legendMaxDepth }, trees) => {
-    const lengthOfResults = getScreenReaderDataForPartitions(specs, legendMaxDepth, trees).length;
+  [getPartitionSpecs, getTrees, partitionMultiGeometries],
+  (specs, trees) => {
+    const lengthOfResults = getScreenReaderDataForPartitions(specs, trees).length;
     // how to control how much is calculated
     return lengthOfResults > 20
       ? [
@@ -67,6 +61,6 @@ export const getScreenReaderDataSelector = createCachedSelector(
             percentage: 'N/A',
           },
         ]
-      : getScreenReaderDataForPartitions(specs, legendMaxDepth, trees);
+      : getScreenReaderDataForPartitions(specs, trees);
   },
 )(getChartIdSelector);
