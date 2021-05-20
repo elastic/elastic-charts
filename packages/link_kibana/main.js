@@ -141,13 +141,17 @@ to link charts with another application use ${chalk.cyan(
     await linkPackage(echDir, kibanaPath, packageName);
 
     cps.push(
-      await spawnWatch('yarn build:watch --preserveWatchOutput --pretty', packageName, {
-        cwd: echDir,
-        errorStr: 'error TS',
-        stopStr: 'Found 0 errors. Watching for file changes',
-        startStr: 'File change detected. Starting incremental compilation',
-        onUpdate: () => replaceModules(echDir, kibanaPath, linkedPackages),
-      }),
+      await spawnWatch(
+        'yarn build:watch --preserveWatchOutput --pretty --noUnusedLocals false --target ES2018 --noUnusedLocals false ',
+        packageName,
+        {
+          cwd: echDir,
+          errorStr: 'error TS',
+          stopStr: 'Found 0 errors. Watching for file changes',
+          startStr: 'File change detected. Starting incremental compilation',
+          onUpdate: () => replaceModules(echDir, kibanaPath, linkedPackages),
+        },
+      ),
     );
 
     const kbnSharedPackage = path.join(kibanaPath, 'packages/kbn-ui-shared-deps');
@@ -182,13 +186,17 @@ to link charts with another application use ${chalk.cyan(
 
     if (action === 'Watch mode') {
       cps.push(
-        await spawnWatch('yarn build:watch --preserveWatchOutput', packageName, {
-          cwd: echDir,
-          errorStr: ': error TS',
-          stopStr: 'Found 0 errors. Watching for file changes',
-          startStr: 'File change detected. Starting incremental compilation',
-          onUpdate: () => replaceModules(echDir, kibanaPath, linkedPackages),
-        }),
+        await spawnWatch(
+          'yarn build:watch --preserveWatchOutput --pretty --noUnusedLocals false --target ES2018',
+          packageName,
+          {
+            cwd: echDir,
+            errorStr: ': error TS',
+            stopStr: 'Found 0 errors. Watching for file changes',
+            startStr: 'File change detected. Starting incremental compilation',
+            onUpdate: () => replaceModules(echDir, kibanaPath, linkedPackages),
+          },
+        ),
       );
 
       const kbnSharedPackage = path.join(kibanaPath, 'packages/kbn-ui-shared-deps');
