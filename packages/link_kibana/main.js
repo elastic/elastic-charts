@@ -146,7 +146,7 @@ to link charts with another application use ${chalk.cyan(
         errorStr: 'error TS',
         stopStr: 'Found 0 errors. Watching for file changes',
         startStr: 'File change detected. Starting incremental compilation',
-        onUpdate: () => replaceModules(echDir, kibanaPath, linkedPackages, echPackageContent),
+        onUpdate: () => replaceModules(echDir, kibanaPath, linkedPackages),
       }),
     );
 
@@ -187,7 +187,7 @@ to link charts with another application use ${chalk.cyan(
           errorStr: ': error TS',
           stopStr: 'Found 0 errors. Watching for file changes',
           startStr: 'File change detected. Starting incremental compilation',
-          onUpdate: () => replaceModules(echDir, kibanaPath, linkedPackages, echPackageContent),
+          onUpdate: () => replaceModules(echDir, kibanaPath, linkedPackages),
         }),
       );
 

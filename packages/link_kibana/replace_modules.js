@@ -24,7 +24,7 @@ const chalk = require('chalk');
 const glob = require('glob');
 const ora = require('ora');
 
-const addConsoleFlag = (dirPath, packageContent) => {
+const addConsoleFlag = (dirPath) => {
   const filePath = path.join(dirPath, 'dist/index.js');
   try {
     const existingContent = fs.readFileSync(filePath, 'utf8');
@@ -32,13 +32,11 @@ const addConsoleFlag = (dirPath, packageContent) => {
     if (!existingContent.includes('LINKED CONSOLE FLAG')) {
       const appendContent = `
 // LINKED CONSOLE FLAG
-window.ech_linked_package = JSON.parse(\`${JSON.stringify(packageContent)}\`);
 console.log(
-  '%cLinked ${packageContent.name}!',
+  '\\n%cLinked @elastic/charts!',
   'font-weight: bold; font-size: 30px;color: #f04d9a; text-shadow: 2px 2px 0 #14abf5 , 4px 4px 0 #fec709 , 6px 6px 0 #00c1b4',
+  '\\n\\ndir:', '${dirPath}\\n\\n'
 );
-console.log('Linked charts dir:', '${dirPath}');
-console.log('Linked charts package:', window.ech_linked_package);
 `;
       fs.appendFileSync(filePath, appendContent);
     }
@@ -47,7 +45,7 @@ console.log('Linked charts package:', window.ech_linked_package);
   }
 };
 
-const replaceModules = async (libDir, appDir, linkedPackages, packageContent) => {
+const replaceModules = async (libDir, appDir, linkedPackages) => {
   if (linkedPackages.length === 0) return;
 
   const spinner = ora(`Replacing package links ${chalk.dim(`(${linkedPackages.join(',')})`)}`).start();
@@ -76,7 +74,7 @@ const replaceModules = async (libDir, appDir, linkedPackages, packageContent) =>
           fs.writeFileSync(fullPath, newFileContent);
         }
       });
-      addConsoleFlag(libDir, packageContent);
+      addConsoleFlag(libDir);
 
       spinner.succeed();
       resolve();
