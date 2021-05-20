@@ -468,5 +468,11 @@ module.exports = {
         ],
       },
     },
+    {
+      files: ['packages/link_kibana/**/*.js'],
+      rules: {
+        'no-console': 0,
+      },
+    },
   ],
 };
