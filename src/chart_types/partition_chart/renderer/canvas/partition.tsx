@@ -22,7 +22,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { ScreenReaderSummary } from '../../../../components/accessibility';
-import { ScreenReaderSunburstTable } from '../../../../components/accessibility/sunburst_table';
+import { ScreenReaderPartitionTable } from '../../../../components/accessibility/partitions_data_table';
 import { clearCanvas } from '../../../../renderers/canvas';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { ChartId, GlobalChartState } from '../../../../state/chart_state';
@@ -170,7 +170,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
           role="presentation"
         >
           <ScreenReaderSummary />
-          <ScreenReaderSunburstTable />
+          <ScreenReaderPartitionTable />
         </canvas>
       </figure>
     );

@@ -46,21 +46,25 @@ const getScreenReaderDataForPartitions = (specs: PartitionSpec[], trees: { tree:
   return specs.flatMap((spec) => getFlattenedLabels(spec.layers, trees[0].tree));
 };
 
+/**
+ * @internal
+ */
+const getTopVisibleScreenReaderData = (
+  specs: PartitionSpec[],
+  trees: { tree: HierarchyOfArrays }[],
+): LabelsInterface[] => {
+  const screenReaderData = specs.flatMap((spec) => getFlattenedLabels(spec.layers, trees[0].tree));
+  return screenReaderData;
+};
+
 /** @internal */
 export const getScreenReaderDataSelector = createCachedSelector(
   [getPartitionSpecs, getTrees, partitionMultiGeometries],
   (specs, trees) => {
     const lengthOfResults = getScreenReaderDataForPartitions(specs, trees).length;
     // how to control how much is calculated
-    return lengthOfResults > 20
-      ? [
-          {
-            label: `There are ${lengthOfResults} data points in this chart`,
-            depth: 0,
-            valueText: lengthOfResults,
-            percentage: 'N/A',
-          },
-        ]
+    return lengthOfResults > 10
+      ? getTopVisibleScreenReaderData(specs, trees)
       : getScreenReaderDataForPartitions(specs, trees);
   },
 )(getChartIdSelector);

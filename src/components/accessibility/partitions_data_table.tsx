@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { ShapeViewModel } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
@@ -36,36 +36,82 @@ import {
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { ValueFormatter } from '../../utils/common';
 
-interface ScreenReaderSunburstTableStateProps {
+interface ScreenReaderPartitionTableProps {
   a11ySettings: A11ySettings;
   screenReaderData: LabelsInterface[];
   shapeViewModel: ShapeViewModel[];
   formatter: ValueFormatter;
+  configMaxCount: number | undefined;
 }
 
-const renderTableContent = (data: any[], formatter?: ValueFormatter) => {
-  return data.map((value: LabelsInterface, i: any) => {
-    return (
-      <tr key={`row--${i}`}>
-        <th scope="row">{value.label}</th>
-        <td>{formatter && formatter(value.valueText) ? formatter(value.valueText) : value.valueText}</td>
-        <td>{value.percentage}</td>
-      </tr>
-    );
-  });
+const renderTableRows = (value: LabelsInterface, index: number, formatter: ValueFormatter | undefined) => {
+  return (
+    <tr key={`row--${index}`}>
+      <th scope="row">{value.label}</th>
+      <td>{formatter && formatter(value.valueText) ? formatter(value.valueText) : value.valueText}</td>
+      <td>{value.percentage}</td>
+    </tr>
+  );
 };
 
-const ScreenReaderSunburstTableComponent = ({
+const handleShowOnlyLimitedRows = (
+  data: LabelsInterface[],
+  configMaxCount: number,
+  count: number,
+  setCount: (arg0: number) => void,
+  formatter?: ValueFormatter,
+) => {
+  // renders all the table rows
+  const visiblePages = data.slice(0, count * configMaxCount);
+  const currentVisible = visiblePages.map((value: LabelsInterface, i: number) => {
+    return renderTableRows(value, i, formatter);
+  });
+
+  return (
+    <>
+      {currentVisible}
+      <button type="button" key={Math.random()} onKeyPress={() => setCount(count + 1)}>
+        Click to show more cells
+      </button>
+    </>
+  );
+};
+
+const renderTableContent = (
+  data: any[],
+  configMaxCount: number | undefined,
+  count: number,
+  setCount: React.Dispatch<React.SetStateAction<number>>,
+  formatter?: ValueFormatter,
+) => {
+  return data.length < 200 || !configMaxCount
+    ? data.map((value: LabelsInterface, i: number) => {
+        return (
+          <tr key={`row--${i}`}>
+            <th scope="row">{value.label}</th>
+            <td>{formatter && formatter(value.valueText) ? formatter(value.valueText) : value.valueText}</td>
+            <td>{value.percentage}</td>
+          </tr>
+        );
+      })
+    : handleShowOnlyLimitedRows(data, configMaxCount, count, setCount, formatter);
+};
+
+const ScreenReaderPartitionTableComponent = ({
   a11ySettings,
   shapeViewModel,
   screenReaderData,
   formatter,
-}: ScreenReaderSunburstTableStateProps) => {
+  configMaxCount,
+}: ScreenReaderPartitionTableProps) => {
+  const [count, setCount] = useState(1);
   const { tableCaption } = a11ySettings;
   return (
     <div className="echScreenReaderOnly screenReaderTable">
       <table>
-        <caption>{tableCaption}</caption>
+        <caption>
+          {tableCaption === '' ? `There are ${screenReaderData.length} results in this table` : tableCaption}
+        </caption>
         <thead>
           {shapeViewModel.map((value: { panelTitle: any; layers: any[] }) => {
             const title = value.panelTitle;
@@ -76,7 +122,7 @@ const ScreenReaderSunburstTableComponent = ({
           <th scope="col">Value</th>
           <th scope="col">Percentage</th>
         </thead>
-        <tbody>{renderTableContent(screenReaderData, formatter)}</tbody>
+        <tbody>{renderTableContent(screenReaderData, configMaxCount, count, setCount, formatter)}</tbody>
       </table>
     </div>
   );
@@ -87,9 +133,10 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
   screenReaderData: [],
   shapeViewModel: [],
   formatter: (value: number) => value.toString(),
+  configMaxCount: undefined,
 };
 
-const mapStateToProps = (state: GlobalChartState): ScreenReaderSunburstTableStateProps => {
+const mapStateToProps = (state: GlobalChartState): ScreenReaderPartitionTableProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_SCREEN_READER_SUMMARY;
   }
@@ -98,7 +145,8 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderSunburstTableStat
     screenReaderData: getScreenReaderDataSelector(state),
     shapeViewModel: partitionMultiGeometries(state),
     formatter: getPartitionSpecs(state)[0].valueFormatter,
+    configMaxCount: getPartitionSpecs(state)[0].config.linkLabel?.maxCount,
   };
 };
 /** @internal */
-export const ScreenReaderSunburstTable = memo(connect(mapStateToProps)(ScreenReaderSunburstTableComponent));
+export const ScreenReaderPartitionTable = memo(connect(mapStateToProps)(ScreenReaderPartitionTableComponent));
