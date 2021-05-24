@@ -20,9 +20,9 @@
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, DomainPaddingUnit, Position, ScaleType } from '../../src';
+import { Axis, Chart, DomainPaddingUnit, Position, ScaleType } from '../../src';
 import { computeContinuousDataDomain } from '../../src/utils/domain';
-import { getKnobsFromEnum } from '../utils/knobs';
+import { getKnobsFromEnum, getXYSeriesTypeKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const logDomains = (data: any[], customDomain: any) => {
@@ -66,6 +66,7 @@ export const Example = () => {
     },
     'all negative',
   );
+  const SeriesType = getXYSeriesTypeKnob();
   const shouldLogDomains = boolean('console log domains', true);
 
   let data;
@@ -96,8 +97,8 @@ export const Example = () => {
         tickFormat={(d: any) => Number(d).toFixed(2)}
       />
 
-      <BarSeries
-        id="bars"
+      <SeriesType
+        id="series"
         yNice={nice}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}

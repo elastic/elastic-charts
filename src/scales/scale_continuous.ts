@@ -33,9 +33,10 @@ import { $Values, Required } from 'utility-types';
 
 import { ScaleContinuousType, Scale } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
 import { maxValueWithUpperLimit, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
-import { constrainPadding, ContinuousDomain, Range } from '../utils/domain';
+import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
 
 /**
@@ -118,6 +119,45 @@ export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit?: 
     return [-fallbackLimit, max];
   }
   return [min, max];
+}
+
+function getPixelPaddedDomain(
+  chartHeight: number,
+  domain: [number, number],
+  desiredPixelPadding: number,
+  constrainDomainPadding?: boolean,
+) {
+  const inverted = domain[1] < domain[0];
+  const orderedDomain: [number, number] = inverted ? (domain.slice().reverse() as [number, number]) : domain;
+  const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
+    orderedDomain,
+    [2 * desiredPixelPadding, 2 * desiredPixelPadding],
+    chartHeight,
+  );
+  let paddedDomainLo = orderedDomain[0] - desiredPixelPadding / scaleMultiplier;
+  let paddedDomainHigh = orderedDomain[1] + desiredPixelPadding / scaleMultiplier;
+
+  if (constrainDomainPadding) {
+    if (paddedDomainLo < 0 && orderedDomain[0] >= 0) {
+      const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
+        [0, orderedDomain[1]],
+        [0, 2 * desiredPixelPadding],
+        chartHeight,
+      );
+      paddedDomainLo = 0;
+      paddedDomainHigh = orderedDomain[1] + desiredPixelPadding / scaleMultiplier;
+    } else if (paddedDomainHigh > 0 && orderedDomain[1] <= 0) {
+      const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
+        [orderedDomain[0], 0],
+        [2 * desiredPixelPadding, 0],
+        chartHeight,
+      );
+      paddedDomainLo = orderedDomain[0] - desiredPixelPadding / scaleMultiplier;
+      paddedDomainHigh = 0;
+    }
+  }
+
+  return inverted ? [paddedDomainHigh, paddedDomainLo] : [paddedDomainLo, paddedDomainHigh];
 }
 
 /** @public */
@@ -332,24 +372,12 @@ export class ScaleContinuous implements Scale {
     const totalRange = Math.abs(r1 - r2);
 
     if (type !== ScaleType.Time && domainPixelPadding && !isUnitRange(range) && domainPixelPadding * 2 < totalRange) {
-      const scaleCopy = this.d3Scale.copy() as ScaleContinuousNumeric<PrimitiveValue, number>;
-      let newDomain = this.domain.slice();
-      let delta = domainPixelPadding;
-
-      // no close form solution, iterate 3 times for numerical solution
-      for (let iteration = 0; iteration <= 3; iteration++) {
-        // approximate new start and end by extrapolation
-        const newStart = scaleCopy.invert(r1 < r2 ? r1 - delta : r1 + delta);
-        const newEnd = scaleCopy.invert(r2 > r1 ? r2 + delta : r2 - delta);
-
-        newDomain = constrainPadding(newDomain[0], newDomain[1], newStart, newEnd, constrainDomainPadding);
-        scaleCopy.domain(newDomain);
-
-        const lowerDelta = Math.abs(r1 - scaleCopy(this.domain[0]));
-        const upperDelta = Math.abs(r2 - scaleCopy(this.domain[1]));
-        // Update delta with error in numerical solution
-        delta = Math.abs(Math.max(lowerDelta, upperDelta) - domainPixelPadding);
-      }
+      const newDomain = getPixelPaddedDomain(
+        totalRange,
+        this.domain as [number, number],
+        domainPixelPadding,
+        constrainDomainPadding,
+      );
 
       if (nice) {
         (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(newDomain).nice(desiredTickCount);
