@@ -19,6 +19,7 @@
 
 import { $Values } from 'utility-types';
 
+import { Rect } from '../../geoms/types';
 import { Padding } from '../../utils/dimensions';
 
 /**
@@ -50,12 +51,7 @@ export const Placement = Object.freeze({
 export type Placement = $Values<typeof Placement>;
 
 /** @internal */
-export interface AnchorPosition {
-  left: number;
-  top: number;
-  width?: number;
-  height?: number;
-}
+export type AnchorPosition = Rect;
 
 /**
  * Used to position tooltip relative to invisible anchor via ref element

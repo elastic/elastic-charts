@@ -241,6 +241,11 @@ export interface TooltipValue {
  */
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
 
+/** @internal */
+export type TooltipStickTo =
+  | Exclude<VerticalAlignment, 'far' | 'near'>
+  | Exclude<HorizontalAlignment, 'far' | 'near'>
+  | 'mousePosition';
 /**
  * The advanced configuration for the tooltip
  * @public
@@ -271,8 +276,9 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
   customTooltip?: CustomTooltip;
   /**
    * Stick the tooltip to a specific position within the current cursor
+   * @defaultValue mousePosition
    */
-  stickTo?: Position;
+  stickTo?: TooltipStickTo;
 };
 
 /**

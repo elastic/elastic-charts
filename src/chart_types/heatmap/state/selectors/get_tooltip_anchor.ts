@@ -37,15 +37,18 @@ export const getTooltipAnchorSelector = createCachedSelector(
       const firstShape = shapes[0];
       return {
         isRotated: false,
-        x1: firstShape.x + chartDimensions.left + firstShape.width / 2,
-        y1: firstShape.y - chartDimensions.top + firstShape.height,
+        x: firstShape.x + chartDimensions.left,
+        width: firstShape.width,
+        y: firstShape.y - chartDimensions.top,
+        height: firstShape.height,
       };
     }
     return {
       isRotated: false,
-
-      x1: position.x,
-      y1: position.y,
+      x: position.x,
+      width: 0,
+      y: position.y,
+      height: 0,
     };
   },
 )(getChartIdSelector);

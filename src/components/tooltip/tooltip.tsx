@@ -173,17 +173,8 @@ const TooltipComponent = ({
     if (!position || !visible) {
       return null;
     }
-
-    const { x0, x1, y0, y1 } = position;
-    const width = x0 !== undefined ? x1 - x0 : 0;
-    const height = y0 !== undefined ? y1 - y0 : 0;
-    return {
-      left: x1 - width,
-      width,
-      top: y1 - height,
-      height,
-    };
-  }, [visible, position?.x0, position?.x1, position?.y0, position?.y1]); // eslint-disable-line react-hooks/exhaustive-deps
+    return position;
+  }, [visible, position?.x, position?.y, position?.width, position?.height]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const popperSettings = useMemo((): TooltipPortalSettings | undefined => {
     if (!settings || typeof settings === 'string') {

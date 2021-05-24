@@ -50,22 +50,10 @@ export interface TooltipAnchorPosition {
    * true if the x axis is vertical
    */
   isRotated?: boolean;
-  /**
-   * the top position of the anchor
-   */
-  y0?: number;
-  /**
-   * the bottom position of the anchor
-   */
-  y1: number;
-  /**
-   * the right position of anchor
-   */
-  x0?: number;
-  /**
-   * the left position of the anchor
-   */
-  x1: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
   /**
    * the padding to add between the tooltip position and the final position
    */
