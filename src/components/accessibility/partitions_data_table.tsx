@@ -58,7 +58,6 @@ const handleShowOnlyLimitedRows = (
   data: LabelsInterface[],
   configMaxCount: number,
   count: number,
-  setCount: (arg0: number) => void,
   formatter?: ValueFormatter,
 ) => {
   // renders all the table rows
@@ -67,21 +66,13 @@ const handleShowOnlyLimitedRows = (
     return renderTableRows(value, i, formatter);
   });
 
-  return (
-    <>
-      {currentVisible}
-      <button type="button" key={Math.random()} onKeyPress={() => setCount(count + 1)}>
-        Click to show more cells
-      </button>
-    </>
-  );
+  return <>{currentVisible}</>;
 };
 
 const renderTableContent = (
   data: any[],
   configMaxCount: number | undefined,
   count: number,
-  setCount: React.Dispatch<React.SetStateAction<number>>,
   formatter?: ValueFormatter,
 ) => {
   return data.length < 200 || !configMaxCount
@@ -94,7 +85,7 @@ const renderTableContent = (
           </tr>
         );
       })
-    : handleShowOnlyLimitedRows(data, configMaxCount, count, setCount, formatter);
+    : handleShowOnlyLimitedRows(data, configMaxCount, count, formatter);
 };
 
 const ScreenReaderPartitionTableComponent = ({
@@ -113,16 +104,27 @@ const ScreenReaderPartitionTableComponent = ({
           {tableCaption === '' ? `There are ${screenReaderData.length} results in this table` : tableCaption}
         </caption>
         <thead>
-          {shapeViewModel.map((value: { panelTitle: any; layers: any[] }) => {
-            const title = value.panelTitle;
-            return value.layers.map((val: any, index: React.Key | null | undefined) => (
-              <th key={index} scope="col">{`${title || `Category`}`}</th>
-            ));
-          })}
-          <th scope="col">Value</th>
-          <th scope="col">Percentage</th>
+          <tr>
+            {shapeViewModel.map((value: { panelTitle: any; layers: any[] }) => {
+              const title = value.panelTitle;
+              return value.layers.map((val: any, index: React.Key | null | undefined) => (
+                <th key={index} scope="col">{`${title || `Category`}`}</th>
+              ));
+            })}
+            <th scope="col">Value</th>
+            <th scope="col">Percentage</th>
+          </tr>
         </thead>
-        <tbody>{renderTableContent(screenReaderData, configMaxCount, count, setCount, formatter)}</tbody>
+        <tbody>{renderTableContent(screenReaderData, configMaxCount, count, formatter)}</tbody>
+        <tfoot>
+          <tr>
+            <td>
+              <button type="button" key={Math.random()} onKeyPress={() => setCount(count + 1)}>
+                Click to show more cells
+              </button>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   );
