@@ -92,6 +92,7 @@ const exec = async (command, message, { cwd, errorMsg, errorStr, debug } = {}) =
           spinner.fail();
           printErrorMsg();
           errors.forEach(printError);
+          reject();
           return;
         }
       }
