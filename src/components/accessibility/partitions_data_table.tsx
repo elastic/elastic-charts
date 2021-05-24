@@ -40,11 +40,11 @@ interface ScreenReaderPartitionTableProps {
   a11ySettings: A11ySettings;
   screenReaderData: LabelsInterface[];
   shapeViewModel: ShapeViewModel[];
-  formatter: ValueFormatter;
-  configMaxCount: number | undefined;
+  formatter?: ValueFormatter;
+  configMaxCount?: number;
 }
 
-const renderTableRows = (value: LabelsInterface, index: number, formatter: ValueFormatter | undefined) => {
+const renderTableRows = (value: LabelsInterface, index: number, formatter?: ValueFormatter) => {
   return (
     <tr key={`row--${index}`}>
       <th scope="row">{value.label}</th>
@@ -66,24 +66,13 @@ const handleShowOnlyLimitedRows = (
     return renderTableRows(value, i, formatter);
   });
 
-  return <>{currentVisible}</>;
+  return currentVisible;
 };
 
-const renderTableContent = (
-  data: any[],
-  configMaxCount: number | undefined,
-  count: number,
-  formatter?: ValueFormatter,
-) => {
+const renderTableContent = (data: any[], count: number, formatter?: ValueFormatter, configMaxCount?: number) => {
   return data.length < 200 || !configMaxCount
     ? data.map((value: LabelsInterface, i: number) => {
-        return (
-          <tr key={`row--${i}`}>
-            <th scope="row">{value.label}</th>
-            <td>{formatter && formatter(value.valueText) ? formatter(value.valueText) : value.valueText}</td>
-            <td>{value.percentage}</td>
-          </tr>
-        );
+        return renderTableRows(value, i, formatter);
       })
     : handleShowOnlyLimitedRows(data, configMaxCount, count, formatter);
 };
@@ -115,16 +104,18 @@ const ScreenReaderPartitionTableComponent = ({
             <th scope="col">Percentage</th>
           </tr>
         </thead>
-        <tbody>{renderTableContent(screenReaderData, configMaxCount, count, formatter)}</tbody>
-        <tfoot>
-          <tr>
-            <td>
-              <button type="button" key={Math.random()} onKeyPress={() => setCount(count + 1)}>
-                Click to show more cells
-              </button>
-            </td>
-          </tr>
-        </tfoot>
+        <tbody>{renderTableContent(screenReaderData, count, formatter, configMaxCount)}</tbody>
+        {configMaxCount && (
+          <tfoot>
+            <tr>
+              <td>
+                <button type="button" key={Math.random()} onKeyPress={() => setCount(count + 1)}>
+                  Click to show more cells
+                </button>
+              </td>
+            </tr>
+          </tfoot>
+        )}
       </table>
     </div>
   );
