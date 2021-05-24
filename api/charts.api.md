@@ -2018,11 +2018,14 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
     headerFormatter?: TooltipValueFormatter;
     unit?: string;
     customTooltip?: CustomTooltip;
-    stickTo?: Position;
+    stickTo?: TooltipStickTo;
 };
 
 // @public
 export type TooltipSettings = TooltipType | TooltipProps;
+
+// @public
+export type TooltipStickTo = Exclude<VerticalAlignment, 'far' | 'near'> | Exclude<HorizontalAlignment, 'far' | 'near'> | 'mousePosition';
 
 // @public
 export const TooltipType: Readonly<{

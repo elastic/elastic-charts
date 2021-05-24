@@ -241,7 +241,10 @@ export interface TooltipValue {
  */
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
 
-/** @internal */
+/**
+ * The position to stick the tooltip to
+ * @public
+ */
 export type TooltipStickTo =
   | Exclude<VerticalAlignment, 'far' | 'near'>
   | Exclude<HorizontalAlignment, 'far' | 'near'>
