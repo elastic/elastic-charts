@@ -60,30 +60,6 @@ export const Example = () => (
       yAccessors={[1]}
       data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
     />
-    <AreaSeries
-      id="area2"
-      xScaleType={ScaleType.Time}
-      yScaleType={ScaleType.Linear}
-      xAccessor={0}
-      yAccessors={[1]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
-    />
-    <AreaSeries
-      id="area3"
-      xScaleType={ScaleType.Time}
-      yScaleType={ScaleType.Linear}
-      xAccessor={0}
-      yAccessors={[1]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[2].data}
-    />
-    <AreaSeries
-      id="area4"
-      xScaleType={ScaleType.Time}
-      yScaleType={ScaleType.Linear}
-      xAccessor={0}
-      yAccessors={[1]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
-    />
   </Chart>
 );
 
