@@ -18,7 +18,7 @@
  */
 
 const { createHash } = require('crypto');
-const fs = require('fs').promises;
+const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
@@ -29,7 +29,7 @@ const { exec } = require('./process_utils');
 
 const exists = async (somePath) => {
   try {
-    await fs.access(somePath, fs.constants.F_OK);
+    await fs.promises.access(somePath, fs.constants.F_OK);
     return true;
   } catch (error) {
     if (error.code !== 'ENOENT') throw new Error(error);
@@ -47,7 +47,7 @@ const getPackageInfo = async (pkgDir) => {
   const filePath = pkgDir.endsWith('/package.json') ? pkgDir : path.join(pkgDir, 'package.json');
 
   try {
-    return JSON.parse(await fs.readFile(filePath, 'utf8'));
+    return JSON.parse(await fs.promises.readFile(filePath, { encoding: 'utf8' }));
   } catch (error) {
     if (error.code === 'ENOENT') {
       throw new Error(`Missing package.json file at ${filePath}`);
@@ -58,7 +58,7 @@ const getPackageInfo = async (pkgDir) => {
 
 const createDir = async (dirPath) => {
   try {
-    await fs.mkdir(dirPath);
+    await fs.promises.mkdir(dirPath);
   } catch (error) {
     if (error.code !== 'EEXIST') throw new Error(error);
   }
@@ -71,10 +71,10 @@ const createDir = async (dirPath) => {
 const getTempDir = async (cwd, packageName) => {
   const tempPrefix = `link_${snakeCase(packageName)}_`;
   const repoHash = hashValue(cwd);
-  const tempPkgDirName = (await fs.readdir(os.tmpdir())).find((p) => p.startsWith(tempPrefix));
+  const tempPkgDirName = (await fs.promises.readdir(os.tmpdir())).find((p) => p.startsWith(tempPrefix));
   const tempPkgDir = tempPkgDirName
     ? path.join(os.tmpdir(), tempPkgDirName)
-    : await fs.mkdtemp(path.join(os.tmpdir(), tempPrefix));
+    : await fs.promises.mkdtemp(path.join(os.tmpdir(), tempPrefix));
   const tempRepoDir = path.join(tempPkgDir, repoHash);
   await createDir(tempRepoDir);
 
@@ -84,7 +84,7 @@ const getTempDir = async (cwd, packageName) => {
 const getLinkInfo = async (tempPath) => {
   try {
     const infoPath = path.join(tempPath, 'link.json');
-    return JSON.parse(await fs.readFile(infoPath, 'utf8'));
+    return JSON.parse(await fs.promises.readFile(infoPath, { encoding: 'utf8' }));
   } catch {
     return { links: [] };
   }
@@ -94,7 +94,7 @@ const writeLinkInfo = async (tempPath, linkInfo) => {
   const infoPath = path.join(tempPath, 'link.json');
   const data = JSON.stringify(linkInfo, null, 2);
 
-  await fs.writeFile(infoPath, data, 'utf8');
+  await fs.promises.writeFile(infoPath, data, { encoding: 'utf8' });
 };
 
 const isLinked = (dirPath, linkPath) => {
@@ -136,16 +136,16 @@ const linkPackage = async (target, linkPath, packageName) => {
   const linkPackagePath = path.join(linkPath, 'node_modules', packageName);
   const relativeLinkPath = path.relative(target, linkPackagePath);
   if (await exists(linkPackagePath)) {
-    await fs.rm(linkPackagePath, { recursive: true, force: true });
+    await fs.promises.rm(linkPackagePath, { recursive: true, force: true });
   }
-  await fs.symlink(target, relativeLinkPath);
+  await fs.promises.symlink(target, relativeLinkPath);
 };
 
 const unlinkPackage = async (linkPath, packageName) => {
   const linkPackagePath = path.join(linkPath, 'node_modules', packageName);
 
   if (isLinked(linkPackagePath)) {
-    await fs.unlink(linkPackagePath);
+    await fs.promises.unlink(linkPackagePath);
   }
 
   return await restorePackage(linkPath, packageName);
