@@ -472,6 +472,7 @@ module.exports = {
       files: ['packages/link_kibana/**/*.js'],
       rules: {
         'no-console': 0,
+        'promise/no-promise-in-callback': 0,
       },
     },
   ],

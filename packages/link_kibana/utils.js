@@ -115,13 +115,14 @@ const isLinked = (dirPath, linkPath) => {
   return true;
 };
 
-const restorePackage = async (appDir, packageName) => {
+const restorePackage = async (appDir, packageName, debug) => {
   try {
     const errorMsg = `Unable to restore ${chalk.cyan(packageName)} package in ${chalk.cyan(path.basename(appDir))}`;
     await exec(
       `yarn add ${packageName} --force --exact`,
       `Restoring ${chalk.cyan(packageName)} in ${chalk.cyan(path.basename(appDir))}`,
       {
+        debug,
         cwd: appDir,
         errorMsg,
       },
@@ -141,14 +142,14 @@ const linkPackage = async (target, linkPath, packageName) => {
   await fs.promises.symlink(target, relativeLinkPath);
 };
 
-const unlinkPackage = async (linkPath, packageName) => {
+const unlinkPackage = async (linkPath, packageName, debug) => {
   const linkPackagePath = path.join(linkPath, 'node_modules', packageName);
 
   if (isLinked(linkPackagePath)) {
     await fs.promises.unlink(linkPackagePath);
   }
 
-  return await restorePackage(linkPath, packageName);
+  return await restorePackage(linkPath, packageName, debug);
 };
 
 module.exports = {

@@ -52,6 +52,7 @@ module.exports = async () => {
   process.on('SIGINT', cleanExit); // catch ctrl-c
   process.on('SIGTERM', cleanExit); // catch kill
 
+  const debug = process.argv.includes('--debug');
   const echDir = process.cwd();
   const echPackageContent = await getPackageInfo(echDir);
   const packageName = echPackageContent.name;
@@ -145,6 +146,7 @@ to link charts with another application use ${chalk.cyan(
         'yarn build:watch --preserveWatchOutput --pretty --noUnusedLocals false --target ES2018 --noUnusedLocals false ',
         packageName,
         {
+          debug,
           cwd: echDir,
           errorStr: 'error TS',
           stopStr: 'Found 0 errors. Watching for file changes',
@@ -157,6 +159,7 @@ to link charts with another application use ${chalk.cyan(
     const kbnSharedPackage = path.join(kibanaPath, 'packages/kbn-ui-shared-deps');
     cps.push(
       await spawnWatch('yarn kbn:watch', '@kbn/ui-shared-dep', {
+        debug,
         cwd: kbnSharedPackage,
         errorStr: 'ERROR',
         stopStr: 'webpack completed',
@@ -190,6 +193,7 @@ to link charts with another application use ${chalk.cyan(
           'yarn build:watch --preserveWatchOutput --pretty --noUnusedLocals false --target ES2018',
           packageName,
           {
+            debug,
             cwd: echDir,
             errorStr: ': error TS',
             stopStr: 'Found 0 errors. Watching for file changes',
@@ -202,6 +206,7 @@ to link charts with another application use ${chalk.cyan(
       const kbnSharedPackage = path.join(kibanaPath, 'packages/kbn-ui-shared-deps');
       cps.push(
         await spawnWatch('yarn kbn:watch', '@kbn/ui-shared-dep', {
+          debug,
           cwd: kbnSharedPackage,
           errorStr: 'ERROR',
           stopStr: 'webpack completed',
@@ -212,31 +217,40 @@ to link charts with another application use ${chalk.cyan(
       return;
     }
 
-    await exec('yarn build', `Restoring build ${chalk.dim(packageName)}`, { cwd: echDir, errorStr: ': error TS' });
-    const chartsFileRestored = await unlinkPackage(linkInfo.path, packageName);
+    try {
+      await exec('yarn build', `Restoring build ${chalk.dim(packageName)}`, {
+        debug,
+        cwd: echDir,
+        errorStr: ': error TS',
+      });
+      const chartsFileRestored = await unlinkPackage(linkInfo.path, packageName, debug);
 
-    await writeLinkInfo(tempDir, {});
+      await writeLinkInfo(tempDir, {});
 
-    if (chartsFileRestored) {
-      try {
-        const kbnSharedPackage = path.join(kibanaPath, 'packages/kbn-ui-shared-deps');
-        await exec('yarn build --dev', `Restoring build ${chalk.dim('@kbn/ui-shared-dep')}`, {
-          errorStr: 'ERROR',
-          cwd: kbnSharedPackage,
-        });
+      if (chartsFileRestored) {
+        try {
+          const kbnSharedPackage = path.join(kibanaPath, 'packages/kbn-ui-shared-deps');
+          await exec('yarn build --dev', `Restoring build ${chalk.dim('@kbn/ui-shared-dep')}`, {
+            debug,
+            errorStr: 'ERROR',
+            cwd: kbnSharedPackage,
+          });
 
-        console.log(`
-  Unlink Successful. Kibana has been restored to the pre-linked state.
-  Please refresh kibana to see restored state.`);
-        return;
-      } catch {
-        // fallthrough
+          console.log(`
+    Unlink Successful. Kibana has been restored to the pre-linked state.
+    Please refresh kibana to see restored state.`);
+          return;
+        } catch {
+          // fallthrough
+        }
       }
-    }
 
-    console.log(`
-Unlink Complete. Kibana was ${chalk.underline('not')} restored to the pre-linked state. Please run ${chalk.cyan(
-      'yarn kbn bootstrap --no-cache',
-    )}`);
+      console.log(`
+  Unlink Complete. Kibana was ${chalk.underline('not')} restored to the pre-linked state. Please run ${chalk.cyan(
+        'yarn kbn bootstrap --no-cache',
+      )}`);
+    } catch {
+      console.log(`Unlink Failed. Please fix issues above or run with ${chalk.underline('--debug')} flag.`);
+    }
   }
 };

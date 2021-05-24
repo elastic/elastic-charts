@@ -39,16 +39,39 @@ const parseBuffer = (buf) => {
   );
 };
 
+const debugLog = (...args) => console.log(...['\nDEBUG: ', ...args].map((a) => chalk.blue(a)));
+
 const printErrorMsg = () => {
   console.log(chalk.redBright.bold('\n  An Error occured, please resolve the issue(s) below:\n'));
 };
 
-const exec = async (command, message, { cwd, errorMsg, errorStr } = {}) => {
+const printNodeVersionError = (error, cwd) => {
+  if (error.toString().includes('The engine "node" is incompatible with this module')) {
+    const [, newVersion] = /Expected version "(.+?)"/.exec(error.toString()) ?? [];
+    console.log(`You must update your node version, please run the commands below and try again
+
+cd ${cwd}
+nvm install ${newVersion} && nvm use
+
+cd ${process.cwd()}
+yarn link:kibana
+
+If you don't use nvm please install the expected node version.
+`);
+  }
+};
+
+const exec = async (command, message, { cwd, errorMsg, errorStr, debug } = {}) => {
   const spinner = ora(message).start();
-  await new Promise((resolve) => {
+  await new Promise((resolve, reject) => {
     childProcess.exec(command, { cwd, timeout: 2 * 60 * 1000 }, (error, stdoutBuf, stderrBuf) => {
       const stdout = parseBuffer(stdoutBuf);
       const stderr = parseBuffer(stderrBuf);
+      if (debug) {
+        if (stdout) debugLog('stdout:\n\n', stdout);
+        if (stderr) debugLog('stderr:\n\n', stderr);
+        if (error) debugLog('error:\n\n', error);
+      }
 
       if (stdout && !spinner.isSpinning) {
         spinner.start();
@@ -75,6 +98,9 @@ const exec = async (command, message, { cwd, errorMsg, errorStr } = {}) => {
 
       if (error) {
         spinner.fail(errorMsg || error);
+        printError(error);
+        printNodeVersionError(error, cwd);
+        reject(error);
         return;
       }
 
@@ -84,7 +110,7 @@ const exec = async (command, message, { cwd, errorMsg, errorStr } = {}) => {
   });
 };
 
-const spawnWatch = (command, packageName, { cwd, startStr, stopStr, onUpdate, errorStr } = {}) =>
+const spawnWatch = (command, packageName, { cwd, startStr, stopStr, onUpdate, errorStr, debug } = {}) =>
   new Promise((resolve, reject) => {
     console.log(`Starting build of ${chalk.cyan.bold(packageName)} in detatched watch mode`);
     let spinner = ora(`Building initial files ${chalk.dim(packageName)}`).start();
@@ -98,6 +124,7 @@ const spawnWatch = (command, packageName, { cwd, startStr, stopStr, onUpdate, er
       let hasError = false;
       cp.stdout.on('data', (dataBuffer) => {
         const stdout = parseBuffer(dataBuffer);
+        if (debug && stdout) debugLog('stdout:\n\n', stdout);
         if (startStr && !spinner.isSpinning && stdout.includes(startStr)) {
           spinner = ora(`Building changed files ${chalk.dim(packageName)}`).start();
           return;
@@ -126,6 +153,7 @@ const spawnWatch = (command, packageName, { cwd, startStr, stopStr, onUpdate, er
       if (errorStr) {
         cp.stderr.on('data', (dataBuffer) => {
           const stderr = parseBuffer(dataBuffer);
+          if (debug && stderr) debugLog('stderr:\n\n', stderr);
           if (stderr.includes(errorStr)) {
             if (!hasError) {
               spinner.fail();
@@ -141,9 +169,10 @@ const spawnWatch = (command, packageName, { cwd, startStr, stopStr, onUpdate, er
     }
 
     cp.on('error', (error) => {
+      printError(error);
       spinner.fail(error);
+      printNodeVersionError(error, cwd);
       reject(error);
-      throw new Error(error);
     });
 
     return cp;
