@@ -68,13 +68,14 @@ export function computeOrdinalDataDomain(
   return sorted ? uniqueValues.sort((a, b) => `${a}`.localeCompare(`${b}`)) : uniqueValues;
 }
 
-function getPaddedRange(start: number, end: number, domainOptions?: YDomainRange): [number, number] {
+function getPaddedDomain(start: number, end: number, domainOptions?: YDomainRange): [number, number] {
   if (!domainOptions || !domainOptions.padding || domainOptions.paddingUnit === DomainPaddingUnit.Pixel) {
     return [start, end];
   }
 
   const { padding, paddingUnit = DomainPaddingUnit.Domain } = domainOptions;
-  const computedPadding = paddingUnit === DomainPaddingUnit.Domain ? padding : padding * Math.abs(end - start);
+  const absPadding = Math.abs(padding);
+  const computedPadding = paddingUnit === DomainPaddingUnit.Domain ? absPadding : absPadding * Math.abs(end - start);
 
   if (computedPadding === 0) {
     return [start, end];
@@ -88,11 +89,14 @@ function getPaddedRange(start: number, end: number, domainOptions?: YDomainRange
 
 /** @internal */
 export function computeDomainExtent(
-  [start, end]: [number, number] | [undefined, undefined],
+  domain: [number, number] | [undefined, undefined],
   domainOptions?: YDomainRange,
 ): [number, number] {
-  if (start != null && end != null) {
-    const [paddedStart, paddedEnd] = getPaddedRange(start, end, domainOptions);
+  if (domain[0] == null || domain[1] == null) return [0, 0];
+
+  const inverted = domain[0] > domain[1];
+  const paddedDomain = (([start, end]: Range): Range => {
+    const [paddedStart, paddedEnd] = getPaddedDomain(start, end, domainOptions);
 
     if (paddedStart >= 0 && paddedEnd >= 0) {
       return domainOptions?.fit ? [paddedStart, paddedEnd] : [0, paddedEnd];
@@ -102,10 +106,9 @@ export function computeDomainExtent(
     }
 
     return [paddedStart, paddedEnd];
-  }
+  })(inverted ? (domain.slice().reverse() as Range) : domain);
 
-  // if either start or end are null
-  return [0, 0];
+  return inverted ? (paddedDomain.slice().reverse() as Range) : paddedDomain;
 }
 
 /**

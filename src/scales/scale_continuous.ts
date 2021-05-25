@@ -280,6 +280,7 @@ const defaultScaleOptions: ScaleOptions = {
   timeZone: 'utc',
   totalBarsInCluster: 1,
   barsPadding: 0,
+  constrainDomainPadding: true,
   domainPixelPadding: 0,
   desiredTickCount: 10,
   isSingleValueHistogram: false,
