@@ -79,7 +79,7 @@ export const getA11ySettingsSelector = createCachedSelector(
       // concat all the ids
       descriptionId: describeBy.length > 0 ? describeBy.join(' ') : undefined,
       defaultSummaryId,
-      tableCaption: ariaTableCaption ?? '',
+      tableCaption: ariaTableCaption,
     };
   },
 )(getChartIdSelector);

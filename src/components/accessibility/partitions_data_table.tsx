@@ -62,11 +62,9 @@ const handleShowOnlyLimitedRows = (
 ) => {
   // renders all the table rows
   const visiblePages = data.slice(0, count * configMaxCount);
-  const currentVisible = visiblePages.map((value: LabelsInterface, i: number) => {
+  return visiblePages.map((value: LabelsInterface, i: number) => {
     return renderTableRows(value, i, formatter);
   });
-
-  return currentVisible;
 };
 
 const renderTableContent = (data: any[], count: number, formatter?: ValueFormatter, configMaxCount?: number) => {
@@ -102,7 +100,9 @@ const ScreenReaderPartitionTableComponent = ({
     <div className="echScreenReaderOnly screenReaderTable">
       <table>
         <caption>
-          {tableCaption === '' ? `There are ${screenReaderData.length} results in this table` : tableCaption}
+          {tableCaption === 'Table of the data for screen reader navigation'
+            ? `There are ${screenReaderData.length} results in this table`
+            : tableCaption}
         </caption>
         <thead>
           <tr>
