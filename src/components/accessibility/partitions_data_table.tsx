@@ -86,6 +86,18 @@ const ScreenReaderPartitionTableComponent = ({
 }: ScreenReaderPartitionTableProps) => {
   const [count, setCount] = useState(1);
   const { tableCaption } = a11ySettings;
+  const showMoreCellsButton =
+    configMaxCount && screenReaderData.length > 200 ? (
+      <tfoot>
+        <tr>
+          <td>
+            <button type="button" key={Math.random()} onKeyPress={() => setCount(count + 1)}>
+              Click to show more cells
+            </button>
+          </td>
+        </tr>
+      </tfoot>
+    ) : null;
   return (
     <div className="echScreenReaderOnly screenReaderTable">
       <table>
@@ -105,17 +117,7 @@ const ScreenReaderPartitionTableComponent = ({
           </tr>
         </thead>
         <tbody>{renderTableContent(screenReaderData, count, formatter, configMaxCount)}</tbody>
-        {configMaxCount && (
-          <tfoot>
-            <tr>
-              <td>
-                <button type="button" key={Math.random()} onKeyPress={() => setCount(count + 1)}>
-                  Click to show more cells
-                </button>
-              </td>
-            </tr>
-          </tfoot>
-        )}
+        {showMoreCellsButton}
       </table>
     </div>
   );
