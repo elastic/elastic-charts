@@ -32,7 +32,7 @@ export const Example = () => (
   <Chart className="story-chart">
     <Settings
       tooltip={{
-        stickTo: getStickToKnob('stickTo', 'mousePosition'),
+        stickTo: getStickToKnob('stickTo'),
         placement: getPlacementKnob('placement', undefined),
         fallbackPlacements: [getPlacementKnob('fallback placement', Placement.LeftStart)].filter(isDefined),
         offset: number('placement offset', 5),

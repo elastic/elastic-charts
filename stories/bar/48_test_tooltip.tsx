@@ -27,6 +27,7 @@ import {
   getChartRotationKnob,
   getFallbackPlacementsKnob,
   getPlacementKnob,
+  getStickToKnob,
   getTooltipTypeKnob,
 } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
@@ -47,6 +48,7 @@ const CustomTooltip = () => (
 export const Example = () => {
   const rotation = getChartRotationKnob();
   const tooltipOptions = {
+    stickTo: getStickToKnob('stickTo'),
     placement: getPlacementKnob('Tooltip placement'),
     fallbackPlacements: getFallbackPlacementsKnob(),
     type: getTooltipTypeKnob(),

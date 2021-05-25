@@ -19,7 +19,7 @@
 
 import React, { ComponentType, ReactChild } from 'react';
 
-import { CustomXDomain, GroupByAccessor, Spec } from '.';
+import { CustomXDomain, GroupByAccessor, Spec, TooltipStickTo } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
@@ -241,14 +241,6 @@ export interface TooltipValue {
  */
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
 
-/**
- * The position to stick the tooltip to
- * @public
- */
-export type TooltipStickTo =
-  | Exclude<VerticalAlignment, 'far' | 'near'>
-  | Exclude<HorizontalAlignment, 'far' | 'near'>
-  | 'mousePosition';
 /**
  * The advanced configuration for the tooltip
  * @public

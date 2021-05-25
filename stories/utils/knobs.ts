@@ -140,18 +140,12 @@ export const getPlacementKnob = (name = 'placement', defaultValue?: Placement, g
   return value || undefined;
 };
 
-export const getStickToKnob = (name = 'stickTo', defaultValue?: 'mousePosition', groupId?: string) => {
+export const getStickToKnob = (name = 'stickTo', defaultValue = TooltipStickTo.MousePosition, groupId?: string) => {
   const value = select<TooltipStickTo | undefined>(
     name,
     {
       Default: undefined,
-      Top: VerticalAlignment.Top,
-      Bottom: VerticalAlignment.Bottom,
-      Middle: VerticalAlignment.Middle,
-      Left: HorizontalAlignment.Left,
-      Right: HorizontalAlignment.Right,
-      Center: HorizontalAlignment.Center,
-      mousePosition: 'mousePosition',
+      ...TooltipStickTo,
     },
     defaultValue,
     groupId,

@@ -2025,7 +2025,18 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
 export type TooltipSettings = TooltipType | TooltipProps;
 
 // @public
-export type TooltipStickTo = Exclude<VerticalAlignment, 'far' | 'near'> | Exclude<HorizontalAlignment, 'far' | 'near'> | 'mousePosition';
+export const TooltipStickTo: Readonly<{
+    Top: "top";
+    Bottom: "bottom";
+    Middle: "middle";
+    Left: "left";
+    Right: "right";
+    Center: "center";
+    MousePosition: "MousePosition";
+}>;
+
+// @public (undocumented)
+export type TooltipStickTo = $Values<typeof TooltipStickTo>;
 
 // @public
 export const TooltipType: Readonly<{

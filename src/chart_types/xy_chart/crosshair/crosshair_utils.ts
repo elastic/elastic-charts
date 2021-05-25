@@ -21,8 +21,8 @@ import { TooltipAnchorPosition } from '../../../components/tooltip/types';
 import { Line, Rect } from '../../../geoms/types';
 import { Scale } from '../../../scales';
 import { isContinuousScale } from '../../../scales/types';
-import { TooltipProps } from '../../../specs/settings';
-import { HorizontalAlignment, Rotation, VerticalAlignment } from '../../../utils/common';
+import { TooltipStickTo } from '../../../specs/constants';
+import { Rotation } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { Point } from '../../../utils/point';
 import { isHorizontalRotation, isVerticalRotation } from '../state/utils/common';
@@ -176,18 +176,18 @@ export function getTooltipAnchorPosition(
   cursorBandPosition: Rect,
   cursorPosition: { x: number; y: number },
   panel: Dimensions,
-  stickTo: TooltipProps['stickTo'] = 'mousePosition',
+  stickTo: TooltipStickTo = TooltipStickTo.MousePosition,
 ): TooltipAnchorPosition {
   const { x, y, width, height } = cursorBandPosition;
   const isRotated = isVerticalRotation(chartRotation);
   // horizontal movement of cursor
   if (!isRotated) {
     const stickY =
-      stickTo === 'mousePosition'
+      stickTo === TooltipStickTo.MousePosition
         ? cursorPosition.y + panel.top
-        : stickTo === VerticalAlignment.Middle
+        : stickTo === TooltipStickTo.Middle
         ? y + height / 2
-        : stickTo === VerticalAlignment.Bottom
+        : stickTo === TooltipStickTo.Bottom
         ? y + height
         : y; // VerticalAlignment.Top is also ok with that value
     return {
@@ -198,11 +198,11 @@ export function getTooltipAnchorPosition(
     };
   }
   const stickX =
-    stickTo === 'mousePosition'
+    stickTo === TooltipStickTo.MousePosition
       ? cursorPosition.x + panel.left
-      : stickTo === HorizontalAlignment.Right
+      : stickTo === TooltipStickTo.Right
       ? x + width
-      : stickTo === HorizontalAlignment.Center
+      : stickTo === TooltipStickTo.Center
       ? x + width / 2
       : x; // HorizontalAlignment.Left
   return {
