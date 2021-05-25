@@ -44,9 +44,18 @@ interface ScreenReaderPartitionTableProps {
   configMaxCount?: number;
 }
 
-const renderTableRows = (value: LabelsInterface, index: number, formatter?: ValueFormatter) => {
+const renderTableRows = (
+  value: LabelsInterface,
+  index: number,
+  count: number,
+  configMaxCount?: number,
+  formatter?: ValueFormatter,
+) => {
   return (
-    <tr key={`row--${index}`}>
+    <tr
+      key={`row--${index}`}
+      className={configMaxCount && configMaxCount * (count - 1) === index ? `startOfConfigMaxCount` : undefined}
+    >
       <th scope="row">{value.label}</th>
       <td>{formatter && formatter(value.valueText) ? formatter(value.valueText) : value.valueText}</td>
       <td>{value.percentage}</td>
@@ -55,24 +64,22 @@ const renderTableRows = (value: LabelsInterface, index: number, formatter?: Valu
 };
 
 const handleShowOnlyLimitedRows = (
-  data: LabelsInterface[],
   configMaxCount: number,
   count: number,
+  data: LabelsInterface[],
   formatter?: ValueFormatter,
 ) => {
-  // renders all the table rows
-  const visiblePages = data.slice(0, count * configMaxCount);
-  return visiblePages.map((value: LabelsInterface, i: number) => {
-    return renderTableRows(value, i, formatter);
+  return data.map((value: LabelsInterface, i: number) => {
+    return renderTableRows(value, i, count, configMaxCount, formatter);
   });
 };
 
 const renderTableContent = (data: any[], count: number, formatter?: ValueFormatter, configMaxCount?: number) => {
   return data.length < 200 || !configMaxCount
     ? data.map((value: LabelsInterface, i: number) => {
-        return renderTableRows(value, i, formatter);
+        return renderTableRows(value, i, count, configMaxCount, formatter);
       })
-    : handleShowOnlyLimitedRows(data, configMaxCount, count, formatter);
+    : handleShowOnlyLimitedRows(configMaxCount, count, (data = data.slice(0, count * configMaxCount)), formatter);
 };
 
 const ScreenReaderPartitionTableComponent = ({
@@ -84,18 +91,32 @@ const ScreenReaderPartitionTableComponent = ({
 }: ScreenReaderPartitionTableProps) => {
   const [count, setCount] = useState(1);
   const { tableCaption } = a11ySettings;
+
+  const handleMoreData = () => {
+    setCount(count + 1);
+    const nextTableRowElementToRead = document.getElementsByClassName('startOfConfigMaxCount')[-1];
+    nextTableRowElementToRead.hasAttribute('focus');
+    return handleShowOnlyLimitedRows(
+      configMaxCount!,
+      count,
+      screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!),
+      formatter,
+    );
+  };
+
   const showMoreCellsButton =
     configMaxCount && screenReaderData.length > 200 ? (
       <tfoot>
         <tr>
           <td>
-            <button type="button" key={Math.random()} onKeyPress={() => setCount(count + 1)}>
-              Click to show more cells
+            <button type="submit" key={Math.random()} onClick={() => handleMoreData()}>
+              Click to show more data
             </button>
           </td>
         </tr>
       </tfoot>
     ) : null;
+
   return (
     <div className="echScreenReaderOnly screenReaderTable">
       <table>
