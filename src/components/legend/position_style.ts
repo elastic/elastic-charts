@@ -49,7 +49,7 @@ export function legendPositionStyle(
       left: hAlign === Left ? chart.left + INSIDE_PADDING : undefined,
       top: vAlign === Top ? chart.top : undefined,
       bottom: vAlign === Bottom ? container.height - chart.top - chart.height : undefined,
-      height: legendSize.height >= chart.height ? chart.height : undefined,
+      height: !floating && legendSize.height >= chart.height ? chart.height : undefined,
     };
   }
 
@@ -60,7 +60,7 @@ export function legendPositionStyle(
     left: chart.left + INSIDE_PADDING,
     top: vAlign === Top ? chart.top : undefined,
     bottom: vAlign === Bottom ? container.height - chart.top - chart.height : undefined,
-    height: legendSize.height >= chart.height ? chart.height : undefined,
+    height: !floating && legendSize.height >= chart.height ? chart.height : undefined,
   };
 }
 
