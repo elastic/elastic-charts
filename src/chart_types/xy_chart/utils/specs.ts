@@ -337,7 +337,7 @@ export interface YDomainBase {
   /**
    * Unit of padding dimension
    *
-   * @defultValue 'domain'
+   * @defaultValue 'domain'
    */
   paddingUnit?: DomainPaddingUnit;
   /**
