@@ -62,7 +62,7 @@ export function getLegendListStyle(
     return {
       paddingLeft,
       paddingRight,
-      gridTemplateColumns: `repeat(auto-fill, minmax(${legendStyle.verticalWidth}px, auto))`,
+      gridTemplateColumns: `repeat(auto-fill, minmax(${legendStyle.verticalWidth}px, 1fr))`,
     };
   }
 
