@@ -1146,6 +1146,7 @@ export type LegendPositionConfig = {
     hAlign: typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Right;
     direction: LayoutDirection;
     floating: boolean;
+    floatingColumns?: number;
 };
 
 // @public

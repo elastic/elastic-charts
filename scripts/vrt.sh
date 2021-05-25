@@ -5,7 +5,7 @@ export TZ=UTC
 export JEST_PUPPETEER_CONFIG=integration/jest_puppeteer.config.js
 FILE=integration/tmp/examples.json
 
-if [[ ! -z "${LOCAL_VRT_SERVER}" ]] && [[ ! -f "$FILE" ]]; then
+if [[ -n "${LOCAL_VRT_SERVER}" ]] && [[ ! -f "$FILE" ]]; then
   echo
   echo -e "\033[31m$FILE does not exist"
   echo -e "Please run yarn test:integration:generate first"
