@@ -35,7 +35,8 @@ const addConsoleFlag = (dirPath) => {
 console.log(
   '\\n%cLinked @elastic/charts!',
   'font-weight: bold; font-size: 30px;color: #f04d9a; text-shadow: 2px 2px 0 #14abf5 , 4px 4px 0 #fec709 , 6px 6px 0 #00c1b4',
-  '\\n\\ndir:', '${dirPath}\\n\\n'
+  '\\n\\nlast updated ' + require('moment')(${Date.now()}).fromNow(),
+  '\\ndir:', '${dirPath}\\n\\n',
 );
 `;
       fs.appendFileSync(filePath, appendContent);
