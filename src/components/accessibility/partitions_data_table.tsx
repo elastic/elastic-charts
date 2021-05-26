@@ -54,7 +54,7 @@ const renderTableRows = (
   return (
     <tr
       key={`row--${index}`}
-      className={configMaxCount && configMaxCount * (count - 1) === index ? `startOfConfigMaxCount` : undefined}
+      id={configMaxCount && configMaxCount * (count - 1) === index ? `startOfConfigMaxCount` : undefined}
     >
       <th scope="row">{value.label}</th>
       <td>{formatter && formatter(value.valueText) ? formatter(value.valueText) : value.valueText}</td>
@@ -63,7 +63,7 @@ const renderTableRows = (
   );
 };
 
-const handleShowOnlyLimitedRows = (
+const showOnlyLimitedRows = (
   configMaxCount: number,
   count: number,
   data: LabelsInterface[],
@@ -79,7 +79,7 @@ const renderTableContent = (data: any[], count: number, formatter?: ValueFormatt
     ? data.map((value: LabelsInterface, i: number) => {
         return renderTableRows(value, i, count, configMaxCount, formatter);
       })
-    : handleShowOnlyLimitedRows(configMaxCount, count, (data = data.slice(0, count * configMaxCount)), formatter);
+    : showOnlyLimitedRows(configMaxCount, count, (data = data.slice(0, count * configMaxCount)), formatter);
 };
 
 const ScreenReaderPartitionTableComponent = ({
@@ -94,14 +94,10 @@ const ScreenReaderPartitionTableComponent = ({
 
   const handleMoreData = () => {
     setCount(count + 1);
-    const nextTableRowElementToRead = document.getElementsByClassName('startOfConfigMaxCount')[-1];
-    nextTableRowElementToRead.hasAttribute('focus');
-    return handleShowOnlyLimitedRows(
-      configMaxCount!,
-      count,
-      screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!),
-      formatter,
-    );
+    const nextSliceOfData = screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!);
+
+    // generate the next group of data
+    return showOnlyLimitedRows(configMaxCount!, count, nextSliceOfData, formatter);
   };
 
   const showMoreCellsButton =
@@ -118,7 +114,7 @@ const ScreenReaderPartitionTableComponent = ({
     ) : null;
 
   return (
-    <div className="echScreenReaderOnly screenReaderTable">
+    <div className="echScreenReaderOnly echScreenReaderTable">
       <table>
         <caption>
           {tableCaption === 'Table of the data for screen reader navigation'

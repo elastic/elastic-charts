@@ -21,7 +21,7 @@ import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { flatSlicesNames, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
-import { Layer, PartitionSpec } from '../../specs';
+import { PartitionSpec } from '../../specs';
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
 import { getTrees } from './tree';
@@ -34,16 +34,11 @@ export interface LabelsInterface {
   percentage: string;
 }
 
-/** @internal */
-const getFlattenedLabels = (layers: Layer[], tree: HierarchyOfArrays) => {
-  return flatSlicesNames(layers, 0, tree);
-};
-
 /**
  * @internal
  */
 const getScreenReaderDataForPartitions = (specs: PartitionSpec[], trees: { tree: HierarchyOfArrays }[]) => {
-  return specs.flatMap((spec) => getFlattenedLabels(spec.layers, trees[0].tree));
+  return specs.flatMap((spec) => flatSlicesNames(spec.layers, 0, trees[0].tree));
 };
 
 /**
@@ -53,7 +48,7 @@ const getTopVisibleScreenReaderData = (
   specs: PartitionSpec[],
   trees: { tree: HierarchyOfArrays }[],
 ): LabelsInterface[] => {
-  const screenReaderData = specs.flatMap((spec) => getFlattenedLabels(spec.layers, trees[0].tree));
+  const screenReaderData = specs.flatMap((spec) => flatSlicesNames(spec.layers, 0, trees[0].tree));
   return screenReaderData;
 };
 
