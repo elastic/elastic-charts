@@ -43,19 +43,3 @@ export interface TooltipInfo {
  * @public
  */
 export type CustomTooltip = ComponentType<TooltipInfo>;
-
-/** @internal */
-export interface TooltipAnchorPosition {
-  /**
-   * true if the x axis is vertical
-   */
-  isRotated?: boolean;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  /**
-   * the padding to add between the tooltip position and the final position
-   */
-  padding?: number;
-}

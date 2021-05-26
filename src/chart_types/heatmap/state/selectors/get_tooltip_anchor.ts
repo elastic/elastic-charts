@@ -19,7 +19,7 @@
 
 import createCachedSelector from 're-reselect';
 
-import { TooltipAnchorPosition } from '../../../../components/tooltip/types';
+import { AnchorPosition } from '../../../../components/portal/types';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -32,11 +32,10 @@ function getCurrentPointerPosition(state: GlobalChartState) {
 /** @internal */
 export const getTooltipAnchorSelector = createCachedSelector(
   [getPickedShapes, computeChartDimensionsSelector, getCurrentPointerPosition],
-  (shapes, chartDimensions, position): TooltipAnchorPosition => {
+  (shapes, chartDimensions, position): AnchorPosition => {
     if (Array.isArray(shapes) && shapes.length > 0) {
       const firstShape = shapes[0];
       return {
-        isRotated: false,
         x: firstShape.x + chartDimensions.left,
         width: firstShape.width,
         y: firstShape.y - chartDimensions.top,
@@ -44,7 +43,6 @@ export const getTooltipAnchorSelector = createCachedSelector(
       };
     }
     return {
-      isRotated: false,
       x: position.x,
       width: 0,
       y: position.y,

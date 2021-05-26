@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
@@ -54,6 +54,7 @@ export const Example = () => {
     type: getTooltipTypeKnob(),
     boundary: getBoundaryKnob(),
     customTooltip: boolean('Custom Tooltip', false) ? CustomTooltip : undefined,
+    offset: number('Tooltip offset', 10, { min: 0, max: 20, range: true, step: 1 }),
   };
   const showAxes = boolean('Show axes', false);
   const showLegend = boolean('Show Legend', false);

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { TooltipAnchorPosition } from '../../../components/tooltip/types';
+import { AnchorPosition } from '../../../components/portal/types';
 import { Line, Rect } from '../../../geoms/types';
 import { Scale } from '../../../scales';
 import { isContinuousScale } from '../../../scales/types';
@@ -177,7 +177,7 @@ export function getTooltipAnchorPosition(
   cursorPosition: { x: number; y: number },
   panel: Dimensions,
   stickTo: TooltipStickTo = TooltipStickTo.MousePosition,
-): TooltipAnchorPosition {
+): AnchorPosition {
   const { x, y, width, height } = cursorBandPosition;
   const isRotated = isVerticalRotation(chartRotation);
   // horizontal movement of cursor
@@ -189,7 +189,7 @@ export function getTooltipAnchorPosition(
         ? y + height / 2
         : stickTo === TooltipStickTo.Bottom
         ? y + height
-        : y; // VerticalAlignment.Top is also ok with that value
+        : y; // TooltipStickTo.Top is also ok with that value
     return {
       x,
       width,
@@ -204,7 +204,7 @@ export function getTooltipAnchorPosition(
       ? x + width
       : stickTo === TooltipStickTo.Center
       ? x + width / 2
-      : x; // HorizontalAlignment.Left
+      : x; // TooltipStickTo.Left
   return {
     x: stickX,
     width: 0,
