@@ -20,7 +20,8 @@
 import { $Values } from 'utility-types';
 
 import { ChartType } from '../chart_types';
-import { HorizontalAlignment, Position, VerticalAlignment } from '../utils/common';
+import { BOTTOM, CENTER, LEFT, MIDDLE, RIGHT, TOP } from '../common/constants';
+import { Position } from '../utils/common';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { SettingsSpec } from './settings';
 
@@ -112,12 +113,12 @@ export type BrushAxis = $Values<typeof BrushAxis>;
  * @public
  */
 export const TooltipStickTo = Object.freeze({
-  Top: VerticalAlignment.Top,
-  Bottom: VerticalAlignment.Bottom,
-  Middle: VerticalAlignment.Middle,
-  Left: HorizontalAlignment.Left,
-  Right: HorizontalAlignment.Right,
-  Center: HorizontalAlignment.Center,
+  Top: TOP,
+  Bottom: BOTTOM,
+  Middle: MIDDLE,
+  Left: LEFT,
+  Right: RIGHT,
+  Center: CENTER,
   MousePosition: 'MousePosition' as const,
 });
 /** @public */
