@@ -17,4 +17,78 @@
  * under the License.
  */
 
-describe('Get screen reader data', () => {});
+import { Store } from 'redux';
+
+import { MockSeriesSpec } from '../../../../mocks/specs/specs';
+import { MockStore } from '../../../../mocks/store';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
+import { getScreenReaderDataSelector } from './get_screen_reader_data';
+
+describe('Get screen reader data', () => {
+  type TestDatum = [string, string, string, number];
+  const spec1 = MockSeriesSpec.sunburst({
+    data: [
+      ['aaa', 'aa', '1', 1],
+      ['aaa', 'aa', '3', 1],
+      ['aaa', 'bb', '4', 1],
+    ],
+    valueAccessor: (d: TestDatum) => d[3],
+    layers: [
+      {
+        groupByRollup: (datum: TestDatum) => datum[0],
+        nodeLabel: (d: PrimitiveValue) => String(d),
+      },
+      {
+        groupByRollup: (datum: TestDatum) => datum[1],
+        nodeLabel: (d: PrimitiveValue) => String(d),
+      },
+      {
+        groupByRollup: (datum: TestDatum) => datum[2],
+        nodeLabel: (d: PrimitiveValue) => String(d),
+      },
+    ],
+  });
+
+  const specNoSlice = MockSeriesSpec.sunburst({
+    data: [],
+    valueAccessor: (d: TestDatum) => d[3],
+    layers: [
+      {
+        groupByRollup: (datum: TestDatum) => datum[0],
+        nodeLabel: (d: PrimitiveValue) => String(d),
+      },
+      {
+        groupByRollup: (datum: TestDatum) => datum[1],
+        nodeLabel: (d: PrimitiveValue) => String(d),
+      },
+      {
+        groupByRollup: (datum: TestDatum) => datum[2],
+        nodeLabel: (d: PrimitiveValue) => String(d),
+      },
+    ],
+  });
+  let store: Store<GlobalChartState>;
+
+  beforeEach(() => {
+    store = MockStore.default();
+  });
+
+  it('should test defaults', () => {
+    MockStore.addSpecs([spec1], store);
+    const expected = getScreenReaderDataSelector(store.getState());
+    expect(expected).toEqual([
+      { depth: 1, label: 'aaa', percentage: '100%', valueText: 3 },
+      { depth: 2, label: 'aa', percentage: '67%', valueText: 2 },
+      { depth: 3, label: '1', percentage: '33%', valueText: 1 },
+      { depth: 3, label: '3', percentage: '33%', valueText: 1 },
+      { depth: 2, label: 'bb', percentage: '33%', valueText: 1 },
+      { depth: 3, label: '4', percentage: '33%', valueText: 1 },
+    ]);
+  });
+  it('should compute screen reader data for no slices in pie', () => {
+    MockStore.addSpecs([specNoSlice], store);
+    const expected = getScreenReaderDataSelector(store.getState());
+    expect(expected).toEqual([]);
+  });
+});
