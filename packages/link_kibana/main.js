@@ -139,8 +139,6 @@ to link charts with another application use ${chalk.cyan(
       return;
     }
 
-    await linkPackage(echDir, kibanaPath, packageName);
-
     cps.push(
       await spawnWatch(
         'yarn build:watch --preserveWatchOutput --pretty --noUnusedLocals false --target ES2018 --noUnusedLocals false ',
@@ -155,6 +153,9 @@ to link charts with another application use ${chalk.cyan(
         },
       ),
     );
+
+    // must be run after first build so all assests are visibile to kibana
+    await linkPackage(echDir, kibanaPath, packageName);
 
     const kbnSharedPackage = path.join(kibanaPath, 'packages/kbn-ui-shared-deps');
     cps.push(
