@@ -28,9 +28,8 @@ const addConsoleFlag = (dirPath) => {
   const filePath = path.join(dirPath, 'dist/index.js');
   try {
     const existingContent = fs.readFileSync(filePath, 'utf8');
+    const appendContent = `
 
-    if (!existingContent.includes('LINKED CONSOLE FLAG')) {
-      const appendContent = `
 // LINKED CONSOLE FLAG
 console.log(
   '\\n%cLinked @elastic/charts!',
@@ -39,6 +38,11 @@ console.log(
   '\\ndir:', '${dirPath}\\n\\n',
 );
 `;
+
+    if (existingContent.includes('// LINKED CONSOLE FLAG')) {
+      const newContent = existingContent.replace(/(\n)*\/\/ linked console flag(.|\n)+$/gi, appendContent);
+      fs.writeFileSync(filePath, newContent);
+    } else {
       fs.appendFileSync(filePath, appendContent);
     }
   } catch {

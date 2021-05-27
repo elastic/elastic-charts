@@ -77,7 +77,7 @@ module.exports = async () => {
   if (action === 'Link') {
     const { appLinkRelativePath } = await inquirer.prompt({
       name: 'appLinkRelativePath',
-      message: 'Enter path to applitcation directory to link',
+      message: 'Enter path to application directory to link',
       default: '../kibana',
     });
     const kibanaPath = path.resolve(echDir, appLinkRelativePath);
