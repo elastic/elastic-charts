@@ -71,7 +71,32 @@ exports[`Chart should render the legend name test 1`] = `
                 <Connect(XYChart) forwardCanvasRef={{...}}>
                   <XYChart forwardCanvasRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
                     <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\">
+<<<<<<< HEAD:packages/charts/src/components/__snapshots__/chart.test.tsx.snap
                       <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\" />
+=======
+                      <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\">
+                        <Connect(ScreenReaderSummaryComponent)>
+                          <ScreenReaderSummaryComponent a11ySettings={{...}} goalChartLabels={{...}} dispatch={[Function: dispatch]}>
+                            <div className=\\"echScreenReaderOnly\\">
+                              <ScreenReaderLabel goalChartLabel=\\"\\" label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption=\\"Table of the data for screen reader navigation\\" />
+                              <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption=\\"Table of the data for screen reader navigation\\" />
+                              <Connect(ScreenReaderTypesComponent) label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption=\\"Table of the data for screen reader navigation\\">
+                                <ScreenReaderTypesComponent label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption=\\"Table of the data for screen reader navigation\\" chartTypeDescription=\\"bar chart\\" chartType={[undefined]} goalChartData={{...}} dispatch={[Function: dispatch]}>
+                                  <dl>
+                                    <dt>
+                                      Chart type:
+                                    </dt>
+                                    <dd id=\\"chart1--defaultSummary\\">
+                                      bar chart
+                                    </dd>
+                                  </dl>
+                                </ScreenReaderTypesComponent>
+                              </Connect(ScreenReaderTypesComponent)>
+                            </div>
+                          </ScreenReaderSummaryComponent>
+                        </Connect(ScreenReaderSummaryComponent)>
+                      </canvas>
+>>>>>>> 1acd57d2 (test: update test):src/components/__snapshots__/chart.test.tsx.snap
                     </figure>
                     <Connect(ScreenReaderSummaryComponent)>
                       <ScreenReaderSummaryComponent chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} dispatch={[Function: dispatch]}>
