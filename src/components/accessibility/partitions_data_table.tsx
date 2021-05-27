@@ -74,12 +74,12 @@ const showOnlyLimitedRows = (
   });
 };
 
-const renderTableContent = (data: any[], count: number, formatter?: ValueFormatter, configMaxCount?: number) => {
-  return data.length < 200 || !configMaxCount
-    ? data.map((value: LabelsInterface, i: number) => {
+const renderTableContent = (d: any[], count: number, formatter?: ValueFormatter, configMaxCount?: number) => {
+  return d.length < 200 || !configMaxCount
+    ? d.map((value: LabelsInterface, i: number) => {
         return renderTableRows(value, i, count, configMaxCount, formatter);
       })
-    : showOnlyLimitedRows(configMaxCount, count, (data = data.slice(0, count * configMaxCount)), formatter);
+    : showOnlyLimitedRows(configMaxCount, count, d.slice(0, count * configMaxCount), formatter);
 };
 
 const ScreenReaderPartitionTableComponent = ({
@@ -105,7 +105,7 @@ const ScreenReaderPartitionTableComponent = ({
       <tfoot>
         <tr>
           <td>
-            <button type="submit" key={Math.random()} onClick={() => handleMoreData()}>
+            <button type="submit" key={Math.random()} onClick={() => handleMoreData()} tabIndex={-1}>
               Click to show more data
             </button>
           </td>
@@ -123,10 +123,10 @@ const ScreenReaderPartitionTableComponent = ({
         </caption>
         <thead>
           <tr>
-            {shapeViewModel.map((value: { panelTitle: any; layers: any[] }) => {
+            {shapeViewModel.map((value: { panelTitle: string; layers: any[] }) => {
               const title = value.panelTitle;
-              return value.layers.map((val: any, index: React.Key | null | undefined) => (
-                <th key={index} scope="col">{`${title || `Category`}`}</th>
+              return value.layers.map((val: any, index: number) => (
+                <th key={`table header--${index}`} scope="col">{`${title || `Category`}`}</th>
               ));
             })}
             <th scope="col">Value</th>
@@ -157,7 +157,8 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderPartitionTablePro
     screenReaderData: getScreenReaderDataSelector(state),
     shapeViewModel: partitionMultiGeometries(state),
     formatter: getPartitionSpecs(state)[0].valueFormatter,
-    configMaxCount: getPartitionSpecs(state)[0].config.linkLabel?.maxCount,
+    configMaxCount:
+      getPartitionSpecs(state)[0].config.linkLabel?.maxCount || getPartitionSpecs(state)[0].config.maxRowCount,
   };
 };
 /** @internal */
