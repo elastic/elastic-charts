@@ -17,13 +17,6 @@
  * under the License.
  */
 
-import React from 'react';
+const main = require('./main');
 
-import { A11ySettings } from '../../state/selectors/get_accessibility_config';
-
-/** @internal */
-export function ScreenReaderLabel(props: A11ySettings) {
-  if (!props.label) return null;
-  const Heading = props.labelHeadingLevel;
-  return <Heading id={props.labelId}>{props.label}</Heading>;
-}
+void main();
