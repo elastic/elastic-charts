@@ -125,6 +125,7 @@ export const Example = () => {
           },
           barSeriesStyle: {
             rect: {
+              texture,
               fill: showFill ? undefined : 'transparent',
             },
             rectBorder: {
