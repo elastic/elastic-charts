@@ -52,51 +52,53 @@ describe('Accessibility', () => {
     });
   });
 
-  describe('Screen reader summary, other chart types', () => {
+  describe('Partition charts accessibility', () => {
+    const productLookup = arrayToLookup((d: any) => d.sitc1, productDimension);
+    const sunburstWrapper = mount(
+      <Chart size={[100, 100]} id="chart1">
+        <Partition
+          id="spec_1"
+          data={mocks.pie}
+          valueAccessor={(d: Datum) => d.exportVal as number}
+          valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+          layers={[
+            {
+              groupByRollup: (d: Datum) => d.sitc1,
+              nodeLabel: (d: Datum) => productLookup[d].name,
+            },
+          ]}
+        />
+      </Chart>,
+    );
+
+    const treemapWrapper = mount(
+      <Chart size={[100, 100]} id="chart1">
+        <Partition
+          id="spec_1"
+          data={mocks.pie}
+          valueAccessor={(d: Datum) => d.exportVal as number}
+          valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+          layers={[
+            {
+              groupByRollup: (d: Datum) => d.sitc1,
+              nodeLabel: (d: Datum) => productLookup[d].name,
+            },
+          ]}
+          config={{
+            partitionLayout: PartitionLayout.treemap,
+          }}
+        />
+      </Chart>,
+    );
+
     it('should include the series type if partition chart', () => {
-      const productLookup = arrayToLookup((d: any) => d.sitc1, productDimension);
-      const wrapper = mount(
-        <Chart size={[100, 100]} id="chart1">
-          <Partition
-            id="spec_1"
-            data={mocks.pie}
-            valueAccessor={(d: Datum) => d.exportVal as number}
-            valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-            layers={[
-              {
-                groupByRollup: (d: Datum) => d.sitc1,
-                nodeLabel: (d: Datum) => productLookup[d].name,
-              },
-            ]}
-          />
-        </Chart>,
-      );
-      expect(wrapper.find('dd').first().text()).toBe('sunburst chart');
+      expect(sunburstWrapper.find('dd').first().text()).toBe('sunburst chart');
     });
     it('should include series type if treemap type', () => {
-      const productLookup = arrayToLookup((d: any) => d.sitc1, productDimension);
-      const wrapper = mount(
-        <Chart size={[100, 100]} id="chart1">
-          <Partition
-            id="spec_1"
-            data={mocks.pie}
-            valueAccessor={(d: Datum) => d.exportVal as number}
-            valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-            layers={[
-              {
-                groupByRollup: (d: Datum) => d.sitc1,
-                nodeLabel: (d: Datum) => productLookup[d].name,
-              },
-            ]}
-            config={{
-              partitionLayout: PartitionLayout.treemap,
-            }}
-          />
-        </Chart>,
-      );
-      expect(wrapper.find('dd').first().text()).toBe('treemap chart');
+      expect(treemapWrapper.find('dd').first().text()).toBe('treemap chart');
+    });
+    it('should test defaults for screen reader data  table', () => {
+      expect(sunburstWrapper.find('tr').first().text()).toBe('CategoryValuePercentage');
     });
   });
-
-  describe('Data table for screen readers', () => {});
 });
