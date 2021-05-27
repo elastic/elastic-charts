@@ -22,7 +22,17 @@ import { select, array, number, optionsKnob } from '@storybook/addon-knobs';
 import { SelectTypeKnobValue } from '@storybook/addon-knobs/dist/components/types';
 import { startCase, kebabCase } from 'lodash';
 
-import { Rotation, Position, Placement, TooltipProps } from '../../src';
+import {
+  Rotation,
+  Position,
+  Placement,
+  TooltipProps,
+  SeriesType,
+  AreaSeries,
+  BarSeries,
+  BubbleSeries,
+  LineSeries,
+} from '../../src';
 import { TooltipType } from '../../src/specs/constants';
 import { VerticalAlignment, HorizontalAlignment } from '../../src/utils/common';
 
@@ -257,3 +267,35 @@ export const getHorizontalTextAlignmentKnob = (group?: string) =>
     undefined,
     group,
   ) || undefined;
+
+const seriesTypeMap = {
+  [SeriesType.Bar]: BarSeries,
+  [SeriesType.Line]: LineSeries,
+  [SeriesType.Area]: AreaSeries,
+  [SeriesType.Bubble]: BubbleSeries,
+};
+
+export const getXYSeriesTypeKnob = (
+  name = 'SeriesType',
+  value: SeriesType = SeriesType.Bar,
+  groupId?: string,
+  options?: { ignore: SeriesType[] },
+) => {
+  return select<SeriesType>(
+    name,
+    Object.fromEntries(Object.entries(SeriesType).filter(([, type]) => !(options?.ignore ?? []).includes(type))),
+    value,
+    groupId,
+  );
+};
+
+export const getXYSeriesKnob = (
+  name = 'SeriesType',
+  value: SeriesType = SeriesType.Bar,
+  groupId?: string,
+  options?: { ignore: SeriesType[] },
+) => {
+  const spectType = getXYSeriesTypeKnob(name, value, groupId, options);
+
+  return seriesTypeMap[spectType];
+};

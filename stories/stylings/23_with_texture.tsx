@@ -22,6 +22,7 @@ import React from 'react';
 
 import {
   AreaSeries,
+  BarSeries,
   Axis,
   Chart,
   CurveType,
@@ -32,9 +33,13 @@ import {
   TextureShape,
   LIGHT_THEME,
 } from '../../src';
-import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
-import { getKnobsFromEnum } from '../utils/knobs';
+import { SeededDataGenerator } from '../../src/mocks/utils';
+import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
+
+const dg = new SeededDataGenerator();
+const barData = dg.generateBasicSeries(4);
+const areaData = dg.generateBasicSeries(20, 10);
 
 const group = {
   texture: 'Texture',
@@ -61,7 +66,7 @@ const getTextureKnobs = (useCustomPath: boolean): TexturedStyles => ({
   dash: array('Stroke dash', [], ',', group.texture).map((n) => parseInt(n, 10)),
   fill: boolean('Use fill color', true, group.texture) ? color('Fill color', DEFAULT_COLOR, group.texture) : undefined,
   rotation: number('Rotation (degrees)', 45, { min: -365, max: 365 }, group.pattern),
-  opacity: number('Opacity', 0.7, { min: 0, max: 1, step: 0.1 }, group.texture),
+  opacity: number('Opacity', 1, { min: 0, max: 1, step: 0.1 }, group.texture),
   shapeRotation: number('Shape rotation (degrees)', 0, { min: -365, max: 365 }, group.texture),
   size: useCustomPath
     ? number('Shape size - custom path', 20, { min: 0 }, group.texture)
@@ -78,13 +83,12 @@ const getTextureKnobs = (useCustomPath: boolean): TexturedStyles => ({
 });
 
 export const Example = () => {
-  const start = KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0];
-  const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20).map((d) => [(d[0] - start) / 30000, d[1]]);
   const useCustomPath = boolean('Use custom path', false, group.texture);
   const texture: TexturedStyles = getTextureKnobs(useCustomPath);
   const opacity = number('Series opacity', 1, { min: 0, max: 1, step: 0.1 }, group.series);
   const showFill = boolean('Show series fill', false, group.series);
   const seriesColor = color('Series color', DEFAULT_COLOR, group.series);
+  const SeriesType = getXYSeriesKnob('Series type', 'area', group.series, { ignore: ['bubble', 'line'] });
 
   return (
     <Chart className="story-chart">
@@ -93,33 +97,33 @@ export const Example = () => {
           areaSeriesStyle: {
             area: {
               texture,
+              opacity,
+              fill: showFill ? undefined : 'transparent',
+            },
+          },
+          barSeriesStyle: {
+            rect: {
+              fill: showFill ? undefined : 'transparent',
+              opacity,
+              texture,
+            },
+            rectBorder: {
+              visible: true,
+              strokeWidth: 2,
             },
           },
         }}
       />
-      <Axis id="bottom" title="index" position={Position.Bottom} />
-      <Axis
-        id="left"
-        title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
 
-      <AreaSeries
-        id="area"
-        areaSeriesStyle={{
-          area: {
-            opacity,
-            fill: showFill ? undefined : 'transparent',
-          },
-        }}
+      <Axis id="bottom" title="index" position={Position.Bottom} />
+      <Axis id="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+
+      <SeriesType
+        id="series"
         color={seriesColor}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
-        stackAccessors={['t']}
-        xAccessor={0}
-        yAccessors={[1]}
-        data={data}
+        data={barData}
         curve={CurveType.CURVE_MONOTONE_X}
       />
     </Chart>

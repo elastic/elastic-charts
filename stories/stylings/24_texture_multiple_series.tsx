@@ -17,26 +17,15 @@
  * under the License.
  */
 
-import { array, boolean, color, number, button } from '@storybook/addon-knobs';
+import { boolean, color, number, button } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
 
-import {
-  AreaSeries,
-  Axis,
-  Chart,
-  CurveType,
-  Position,
-  ScaleType,
-  TexturedStyles,
-  Settings,
-  TextureShape,
-} from '../../src';
+import { Axis, Chart, CurveType, Position, TexturedStyles, Settings, TextureShape } from '../../src';
 import { getRandomNumberGenerator, SeededDataGenerator, getRandomEntryFn } from '../../src/mocks/utils';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
-import { getKnobsFromEnum } from '../utils/knobs';
+import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
-const DEFAULT_COLOR = 'black';
 const group = {
   random: 'Randomized parameters',
   default: 'Default parameters',
@@ -117,16 +106,30 @@ export const Example = () => {
   const [count, setCount] = useState(0);
   button('Randomize', () => setCount((i) => i + 1), group.random);
   const n = number('Total series', 4, { min: 0, max: 10, step: 1 }) ?? 2;
-  const chartColor = color('Chart color', DEFAULT_COLOR);
+  const showFill = boolean('Show series fill', false);
+  const chartColor = color('Chart color', '#000');
   const random = getRandomKnobs();
+  const SeriesType = getXYSeriesKnob('Series type', 'area', undefined, { ignore: ['bubble', 'line'] });
+  const texture = getDefaultTextureKnobs();
 
   return (
     <Chart className="story-chart" data-count={count}>
       <Settings
+        showLegend
         theme={{
           areaSeriesStyle: {
             area: {
-              texture: getDefaultTextureKnobs(),
+              texture,
+              fill: showFill ? undefined : 'transparent',
+            },
+          },
+          barSeriesStyle: {
+            rect: {
+              fill: showFill ? undefined : 'transparent',
+            },
+            rectBorder: {
+              visible: true,
+              strokeWidth: 2,
             },
           },
         }}
@@ -140,7 +143,7 @@ export const Example = () => {
       />
 
       {new Array(n).fill(0).map((v, i) => (
-        <AreaSeries
+        <SeriesType
           key={i}
           id={`series-${i}`}
           areaSeriesStyle={{
@@ -148,9 +151,12 @@ export const Example = () => {
               texture: getTexture(random),
             },
           }}
+          barSeriesStyle={{
+            rect: {
+              texture: getTexture(random),
+            },
+          }}
           color={chartColor}
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
           stackAccessors={['yes']}
           data={data[i]}
           curve={CurveType.CURVE_MONOTONE_X}

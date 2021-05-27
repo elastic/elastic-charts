@@ -49,7 +49,7 @@ function createPattern(
   ctx: CanvasRenderingContext2D,
   patternCanvas: HTMLCanvasElement,
   baseColor: Color | ColorVariant,
-  getOpacity: OpacityFn,
+  fillOpacity: OpacityFn,
   textureStyle?: TexturedStyles,
 ): CanvasPattern | undefined {
   const pCtx = patternCanvas.getContext('2d');
@@ -61,7 +61,7 @@ function createPattern(
   patternCanvas.width = size + spacing.x;
   patternCanvas.height = size + spacing.y;
 
-  pCtx.globalAlpha = opacity ?? getOpacity(1);
+  pCtx.globalAlpha = opacity ? fillOpacity(opacity, 1) : fillOpacity(1);
   pCtx.lineWidth = strokeWidth;
 
   pCtx.strokeStyle = getColorFromVariant(baseColor, stroke ?? ColorVariant.Series);
@@ -91,10 +91,10 @@ export const getTextureStyles = (
   ctx: CanvasRenderingContext2D,
   patternCanvas: HTMLCanvasElement,
   baseColor: Color | ColorVariant,
-  getOpacity: OpacityFn,
+  fillOpacity: OpacityFn,
   texture?: TexturedStyles,
 ): Texture | undefined => {
-  const pattern = createPattern(ctx, patternCanvas, baseColor, getOpacity, texture);
+  const pattern = createPattern(ctx, patternCanvas, baseColor, fillOpacity, texture);
 
   if (!pattern || !texture) return;
 

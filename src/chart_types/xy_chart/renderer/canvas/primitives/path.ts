@@ -108,13 +108,9 @@ function renderPathFill(ctx: CanvasRenderingContext2D, path: string, fill: Fill)
 
     ctx.fillStyle = fill.texture.pattern;
 
-    if (rotation || fill.texture.offset) {
-      const fullSize = ctx.canvas.clientWidth * ctx.canvas.clientHeight;
-      ctx.translate(-fullSize / 2, -fullSize / 2);
-      ctx.fillRect(0, 0, fullSize, fullSize);
-    } else {
-      ctx.beginPath();
-      ctx.fill(path2d);
-    }
+    // Use oversized rect to fill rotation/offset beyond path
+    const rotationRectFillSize = ctx.canvas.clientWidth * ctx.canvas.clientHeight;
+    ctx.translate(-rotationRectFillSize / 2, -rotationRectFillSize / 2);
+    ctx.fillRect(0, 0, rotationRectFillSize, rotationRectFillSize);
   }
 }

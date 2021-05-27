@@ -465,6 +465,8 @@ export interface RectStyle {
   /** The ratio of the width limited to [0,1]. If expressed together with `widthPixel` then the `widthRatio`
    * will express the max available size, where the `widthPixel` express the derived/min width. */
   widthRatio?: Ratio;
+  /** applying textures to the bar on the theme/series */
+  texture?: TexturedStyles;
 }
 
 /** @public */

@@ -39,7 +39,8 @@ export function buildAreaStyles(
   themeAreaStyle: AreaStyle,
   geometryStateStyle: GeometryStateStyle,
 ): Fill {
-  const fillOpacity: OpacityFn = (opacity) => opacity * themeAreaStyle.opacity * geometryStateStyle.opacity;
+  const fillOpacity: OpacityFn = (opacity, seriesOpacity = themeAreaStyle.opacity) =>
+    opacity * seriesOpacity * geometryStateStyle.opacity;
   const texture = getTextureStyles(ctx, imgCanvas, baseColor, fillOpacity, themeAreaStyle.texture);
   const color = stringToRGB(getColorFromVariant(baseColor, themeAreaStyle.fill), fillOpacity);
 

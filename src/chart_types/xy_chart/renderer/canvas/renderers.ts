@@ -116,7 +116,16 @@ export function renderXYChartCanvas2d(
       // rendering bars
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
-          renderBars(ctx, geometries.bars, sharedStyle, clippings, renderingArea, highlightedLegendItem, rotation);
+          renderBars(
+            ctx,
+            imgCanvas,
+            geometries.bars,
+            sharedStyle,
+            clippings,
+            renderingArea,
+            highlightedLegendItem,
+            rotation,
+          );
         });
       },
       // rendering areas
