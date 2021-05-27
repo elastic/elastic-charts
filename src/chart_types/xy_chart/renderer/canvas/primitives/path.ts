@@ -20,10 +20,9 @@
 import { RGBtoString } from '../../../../../common/color_library_wrappers';
 import { Rect, Stroke, Fill } from '../../../../../geoms/types';
 import { withContext, withClipRanges } from '../../../../../renderers/canvas';
+import { getRadians } from '../../../../../utils/common';
 import { ClippedRanges } from '../../../../../utils/geometry';
 import { Point } from '../../../../../utils/point';
-import { drawPattern } from '../../../../../utils/themes/textures';
-import { TexturedStyles } from '../../../../../utils/themes/theme';
 import { renderMultiLine } from './line';
 
 /** @internal */
@@ -60,7 +59,6 @@ export function renderLinePaths(
 /** @internal */
 export function renderAreaPath(
   ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
   transform: Point,
   area: string,
   fill: Fill,
@@ -68,17 +66,10 @@ export function renderAreaPath(
   clippings: Rect,
   hideClippedRanges = false,
 ) {
-  const textures: TexturedStyles = {
-    type: 'square',
-    stroke: 'black',
-    rotation: 0.7,
-    scale: 20,
-  };
-  const pattern = drawPattern(ctx, textures, imgCanvas);
   if (clippedRanges.length > 0) {
     withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
       ctx.translate(transform.x, transform.y);
-      renderPathFill(ctx, area, fill, pattern);
+      renderPathFill(ctx, area, fill);
     });
     if (hideClippedRanges) {
       return;
@@ -90,24 +81,40 @@ export function renderAreaPath(
         ...fill.color,
         opacity: opacity / 2,
       };
-      renderPathFill(ctx, area, { ...fill, color }, pattern);
+      renderPathFill(ctx, area, { ...fill, color });
     });
     return;
   }
   withContext(ctx, (ctx) => {
     ctx.translate(transform.x, transform.y);
-    renderPathFill(ctx, area, fill, pattern);
+    renderPathFill(ctx, area, fill);
   });
-  // drawPattern(imgCanvas, fill);
 }
 
-function renderPathFill(ctx: CanvasRenderingContext2D, path: string, fill: Fill, pattern: CanvasPattern | null) {
+function renderPathFill(ctx: CanvasRenderingContext2D, path: string, fill: Fill) {
   const path2d = new Path2D(path);
   ctx.fillStyle = RGBtoString(fill.color);
   ctx.fill(path2d);
-  if (pattern) {
-    ctx.fillStyle = pattern;
+
+  if (fill.texture) {
+    ctx.clip(path2d);
+
+    const rotation = getRadians(fill.texture.rotation ?? 0);
+    const { offset } = fill.texture;
+
+    if (offset && offset.global) ctx.translate(offset?.x ?? 0, offset?.y ?? 0);
+    if (rotation) ctx.rotate(rotation);
+    if (offset && !offset.global) ctx.translate(offset?.x ?? 0, offset?.y ?? 0);
+
+    ctx.fillStyle = fill.texture.pattern;
+
+    if (rotation || fill.texture.offset) {
+      const fullSize = ctx.canvas.clientWidth * ctx.canvas.clientHeight;
+      ctx.translate(-fullSize / 2, -fullSize / 2);
+      ctx.fillRect(0, 0, fullSize, fullSize);
+    } else {
+      ctx.beginPath();
+      ctx.fill(path2d);
+    }
   }
-  ctx.beginPath();
-  ctx.fill(path2d);
 }

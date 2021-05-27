@@ -22,6 +22,7 @@ import { $Values } from 'utility-types';
 import { Pixels, Ratio } from '../../common/geometry';
 import { Color, ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, SimplePadding } from '../dimensions';
+import { Point } from '../point';
 
 /** @public */
 export interface Visible {
@@ -370,26 +371,65 @@ export interface LineStyle {
 }
 
 /** @public */
-export interface TexturedStyles {
-  /* typed of texture designs currently supported */
-  type: 'line' | 'circle' | 'square' | 'triangle' | 'cross';
-  /* To fill the stoke with Color or ColorVariant */
-  stroke: Color | ColorVariant;
-  /* The angle of rotation required in radians */
-  rotation: number;
-  /* The opacity of each texture on the theme/series */
+export const TextureShape = Object.freeze({
+  ...PointShape,
+  Line: 'line' as const,
+});
+/** @public */
+export type TextureShape = $Values<typeof TextureShape>;
+
+interface TexturedStylesBase {
+  /** polygon fill color for texture */
+  fill?: Color | ColorVariant;
+  /** polygon stroke color for texture */
+  stroke?: Color | ColorVariant;
+  /** polygon stroke width for texture  */
+  strokeWidth?: number;
+  /** polygon opacity for texture  */
   opacity?: number;
-  /* If the polygon textures should be filled or empty */
-  fill?: 0 | 1;
-  /* The size of the textures,defaulted as 10 */
-  scale?: number;
-  path?: string;
-  spacing?: number;
+  /** polygon opacity for texture  */
+  dash?: number[];
+  /** polygon opacity for texture  */
+  size?: number;
+  /**
+   * The angle of rotation for entire texture
+   * in degrees
+   */
+  rotation?: number;
+  /**
+   * The angle of rotation for polygons
+   * in degrees
+   */
+  shapeRotation?: number;
+  /** texture spacing between polygons */
+  spacing?: Partial<Point> | number;
+  /** overall origin offset of pattern */
+  offset?: Partial<Point> & {
+    /** apply offset along global coordinate axes */
+    global?: boolean;
+  };
 }
+
+interface TexturedShapeStyles extends TexturedStylesBase {
+  /** typed of texture designs currently supported */
+  shape: TextureShape;
+}
+
+interface TexturedPathStyles extends TexturedStylesBase {
+  /** path for polygon texture */
+  path: string | Path2D;
+}
+
+/**
+ * @public
+ *
+ * Texture style config for area spec
+ */
+export type TexturedStyles = TexturedPathStyles | TexturedShapeStyles;
 
 /** @public */
 export interface AreaStyle {
-  /* applying textures to the area on the theme/series */
+  /** applying textures to the area on the theme/series */
   texture?: TexturedStyles;
   /** is the area is visible or hidden ? */
   visible: boolean;

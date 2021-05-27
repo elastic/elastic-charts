@@ -43,6 +43,8 @@ export { Example as stackedGrouped } from './15_stacked_grouped';
 export { Example as withNegativeValues } from './17_negative';
 export { Example as withNegativeAndPositive } from './18_negative_positive';
 export { Example as withNegativeBand } from './19_negative_band';
+export { Example as withTexture } from './20_with_texture';
+export { Example as textureMultipleSeries } from './21_texture_multiple_series';
 
 export { Example as testLinear } from './11_test_linear';
 export { Example as testTime } from './12_test_time';

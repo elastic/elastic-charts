@@ -17,10 +17,12 @@
  * under the License.
  */
 
+import { Color, ColorVariant } from '../../../../../../dist';
 import { OpacityFn, stringToRGB } from '../../../../../common/color_library_wrappers';
 import { Fill } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
 import { GeometryStateStyle, AreaStyle } from '../../../../../utils/themes/theme';
+import { getTextureStyles } from '../../../utils/texture';
 
 /**
  * Return the rendering props for an area. The color of the area will be overwritten
@@ -31,13 +33,18 @@ import { GeometryStateStyle, AreaStyle } from '../../../../../utils/themes/theme
  * @internal
  */
 export function buildAreaStyles(
-  baseColor: string,
+  ctx: CanvasRenderingContext2D,
+  imgCanvas: HTMLCanvasElement,
+  baseColor: Color | ColorVariant,
   themeAreaStyle: AreaStyle,
   geometryStateStyle: GeometryStateStyle,
 ): Fill {
   const fillOpacity: OpacityFn = (opacity) => opacity * themeAreaStyle.opacity * geometryStateStyle.opacity;
-  const fillColor = stringToRGB(getColorFromVariant(baseColor, themeAreaStyle.fill), fillOpacity);
+  const texture = getTextureStyles(ctx, imgCanvas, baseColor, fillOpacity, themeAreaStyle.texture);
+  const color = stringToRGB(getColorFromVariant(baseColor, themeAreaStyle.fill), fillOpacity);
+
   return {
-    color: fillColor,
+    color,
+    texture,
   };
 }

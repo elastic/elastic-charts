@@ -104,8 +104,9 @@ function renderArea(
 ) {
   const { area, color, transform, seriesIdentifier, seriesAreaStyle, clippedRanges, hideClippedRanges } = glyph;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const fill = buildAreaStyles(color, seriesAreaStyle, geometryStateStyle);
-  renderAreaPath(ctx, imgCanvas, transform, area, fill, clippedRanges, clippings, hideClippedRanges);
+  const styles = buildAreaStyles(ctx, imgCanvas, color, seriesAreaStyle, geometryStateStyle);
+
+  renderAreaPath(ctx, transform, area, styles, clippedRanges, clippings, hideClippedRanges);
 }
 
 function renderAreaLines(
@@ -117,7 +118,7 @@ function renderAreaLines(
 ) {
   const { lines, color, seriesIdentifier, transform, seriesAreaLineStyle, clippedRanges, hideClippedRanges } = glyph;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const stroke = buildLineStyles(color, seriesAreaLineStyle, geometryStateStyle);
+  const styles = buildLineStyles(color, seriesAreaLineStyle, geometryStateStyle);
 
-  renderLinePaths(ctx, transform, lines, stroke, clippedRanges, clippings, hideClippedRanges);
+  renderLinePaths(ctx, transform, lines, styles, clippedRanges, clippings, hideClippedRanges);
 }
