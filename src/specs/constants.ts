@@ -157,6 +157,5 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   minBrushDelta: 2,
   ariaUseDefaultSummary: true,
   ariaLabelHeadingLevel: 'p',
-  ariaTableCaption: 'Table of the data for screen reader navigation',
   ...DEFAULT_LEGEND_CONFIG,
 };

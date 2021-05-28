@@ -124,7 +124,7 @@ const ScreenReaderPartitionTableComponent = ({
     <div className="echScreenReaderOnly echScreenReaderTable">
       <table>
         <caption>
-          {tableCaption === 'Table of the data for screen reader navigation'
+          {!tableCaption
             ? `This is the tabular representation of the ${shapeViewModel[0].partitionLayout} chart data. The table ${
                 configMaxCount && screenReaderData.length > 200
                   ? `represent only ${configMaxCount} our of ${screenReaderData.length} number of data points`

@@ -37,13 +37,12 @@ export type A11ySettings = {
   description?: string;
   descriptionId?: string;
   defaultSummaryId?: string;
-  tableCaption: string;
+  tableCaption?: string;
 };
 
 /** @internal */
 export const DEFAULT_A11Y_SETTINGS: A11ySettings = {
   labelHeadingLevel: DEFAULT_SETTINGS_SPEC.ariaLabelHeadingLevel,
-  tableCaption: DEFAULT_SETTINGS_SPEC.ariaTableCaption,
 };
 
 /** @internal */
