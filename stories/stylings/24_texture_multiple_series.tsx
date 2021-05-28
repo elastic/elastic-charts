@@ -109,7 +109,7 @@ export const Example = () => {
   const showFill = boolean('Show series fill', false);
   const chartColor = color('Chart color', '#000');
   const random = getRandomKnobs();
-  const SeriesType = getXYSeriesKnob('Series type', 'area', undefined, { ignore: ['bubble', 'line'] });
+  const [SeriesType] = getXYSeriesKnob('Series type', 'area', undefined, { ignore: ['bubble', 'line'] });
   const texture = getDefaultTextureKnobs();
 
   return (

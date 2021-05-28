@@ -21,6 +21,7 @@ import { PopoverAnchorPosition } from '@elastic/eui';
 import { select, array, number, optionsKnob } from '@storybook/addon-knobs';
 import { SelectTypeKnobValue } from '@storybook/addon-knobs/dist/components/types';
 import { startCase, kebabCase } from 'lodash';
+import { $Values } from 'utility-types';
 
 import {
   Rotation,
@@ -294,8 +295,8 @@ export const getXYSeriesKnob = (
   value: SeriesType = SeriesType.Bar,
   groupId?: string,
   options?: { ignore: SeriesType[] },
-) => {
+): [$Values<typeof seriesTypeMap>, SeriesType] => {
   const spectType = getXYSeriesTypeKnob(name, value, groupId, options);
 
-  return seriesTypeMap[spectType];
+  return [seriesTypeMap[spectType], spectType];
 };

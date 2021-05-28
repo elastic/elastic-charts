@@ -21,8 +21,6 @@ import { array, boolean, color, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
-  AreaSeries,
-  BarSeries,
   Axis,
   Chart,
   CurveType,
@@ -88,7 +86,7 @@ export const Example = () => {
   const opacity = number('Series opacity', 1, { min: 0, max: 1, step: 0.1 }, group.series);
   const showFill = boolean('Show series fill', false, group.series);
   const seriesColor = color('Series color', DEFAULT_COLOR, group.series);
-  const SeriesType = getXYSeriesKnob('Series type', 'area', group.series, { ignore: ['bubble', 'line'] });
+  const [SeriesType, seriesType] = getXYSeriesKnob('Series type', 'area', group.series, { ignore: ['bubble', 'line'] });
 
   return (
     <Chart className="story-chart">
@@ -123,7 +121,7 @@ export const Example = () => {
         color={seriesColor}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
-        data={barData}
+        data={seriesType === 'bar' ? barData : areaData}
         curve={CurveType.CURVE_MONOTONE_X}
       />
     </Chart>
