@@ -17,7 +17,15 @@
  * under the License.
  */
 
-export * from './series';
-export * from './geometries';
-export * from './theme';
-export * from './canvas';
+/** @internal */
+export const getMockCanvasContext2D = (): CanvasRenderingContext2D => {
+  const ctx = document.createElement('canvas').getContext('2d');
+  if (ctx) return ctx;
+
+  throw new Error('Unable to create mock context');
+};
+
+/** @internal */
+export const getMockCanvas = (): HTMLCanvasElement => {
+  return document.createElement('canvas');
+};
