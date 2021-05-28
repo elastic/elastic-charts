@@ -17,10 +17,9 @@
  * under the License.
  */
 
-import { Color, ColorVariant } from '../../../../../../dist';
 import { OpacityFn, stringToRGB } from '../../../../../common/color_library_wrappers';
 import { Fill } from '../../../../../geoms/types';
-import { getColorFromVariant } from '../../../../../utils/common';
+import { Color, ColorVariant, getColorFromVariant } from '../../../../../utils/common';
 import { GeometryStateStyle, AreaStyle } from '../../../../../utils/themes/theme';
 import { getTextureStyles } from '../../../utils/texture';
 

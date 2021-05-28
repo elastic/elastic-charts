@@ -378,7 +378,8 @@ export const TextureShape = Object.freeze({
 /** @public */
 export type TextureShape = $Values<typeof TextureShape>;
 
-interface TexturedStylesBase {
+/** @public */
+export interface TexturedStylesBase {
   /** polygon fill color for texture */
   fill?: Color | ColorVariant;
   /** polygon stroke color for texture */
@@ -410,12 +411,14 @@ interface TexturedStylesBase {
   };
 }
 
-interface TexturedShapeStyles extends TexturedStylesBase {
+/** @public */
+export interface TexturedShapeStyles extends TexturedStylesBase {
   /** typed of texture designs currently supported */
   shape: TextureShape;
 }
 
-interface TexturedPathStyles extends TexturedStylesBase {
+/** @public */
+export interface TexturedPathStyles extends TexturedStylesBase {
   /** path for polygon texture */
   path: string | Path2D;
 }
