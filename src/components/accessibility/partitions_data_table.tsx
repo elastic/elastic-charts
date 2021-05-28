@@ -48,8 +48,8 @@ const renderTableRows = (
   value: LabelsInterface,
   index: number,
   count: number,
-  configMaxCount?: number,
   formatter?: ValueFormatter,
+  configMaxCount: number = 0,
 ) => {
   return (
     <tr
@@ -64,22 +64,22 @@ const renderTableRows = (
 };
 
 const showOnlyLimitedRows = (
-  configMaxCount: number,
   count: number,
   data: LabelsInterface[],
   formatter?: ValueFormatter,
+  configMaxCount: number = 0,
 ) => {
   return data.map((value: LabelsInterface, i: number) => {
-    return renderTableRows(value, i, count, configMaxCount, formatter);
+    return renderTableRows(value, i, count, formatter, configMaxCount);
   });
 };
 
 const renderTableContent = (d: any[], count: number, formatter?: ValueFormatter, configMaxCount?: number) => {
   return d.length < 200 || !configMaxCount
     ? d.map((value: LabelsInterface, i: number) => {
-        return renderTableRows(value, i, count, configMaxCount, formatter);
+        return renderTableRows(value, i, count, formatter, configMaxCount);
       })
-    : showOnlyLimitedRows(configMaxCount, count, d.slice(0, count * configMaxCount), formatter);
+    : showOnlyLimitedRows(count, d.slice(0, count * configMaxCount), formatter, configMaxCount);
 };
 
 const ScreenReaderPartitionTableComponent = ({
@@ -97,7 +97,7 @@ const ScreenReaderPartitionTableComponent = ({
 
     const nextSliceOfData = screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!);
     // generate the next group of data
-    showOnlyLimitedRows(configMaxCount!, count, nextSliceOfData, formatter);
+    showOnlyLimitedRows(count, nextSliceOfData, formatter, configMaxCount);
     const { activeElement } = document;
     const nextElementForFocus = document.getElementById('startOfConfigMaxCount');
     if (activeElement !== nextElementForFocus) {
@@ -161,7 +161,6 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
   screenReaderData: [],
   shapeViewModel: [],
   formatter: (value: number) => value.toString(),
-  configMaxCount: undefined,
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderPartitionTableProps => {

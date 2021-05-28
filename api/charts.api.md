@@ -1747,7 +1747,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     ariaLabel?: string;
     ariaLabelHeadingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
     ariaLabelledBy?: string;
-    ariaTableCaption: string;
+    ariaTableCaption?: string;
     ariaUseDefaultSummary: boolean;
     baseTheme?: Theme;
     brushAxis?: BrushAxis;
