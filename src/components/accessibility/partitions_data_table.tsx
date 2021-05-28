@@ -105,7 +105,7 @@ const ScreenReaderPartitionTableComponent = ({
       <tfoot>
         <tr>
           <td>
-            <button type="submit" key={Math.random()} onClick={() => handleMoreData()} tabIndex={-1}>
+            <button type="submit" onClick={() => handleMoreData()} tabIndex={-1}>
               Click to show more data
             </button>
           </td>
@@ -118,7 +118,13 @@ const ScreenReaderPartitionTableComponent = ({
       <table>
         <caption>
           {tableCaption === 'Table of the data for screen reader navigation'
-            ? `There are ${screenReaderData.length} results in this table`
+            ? `This is the tabular representation of the ${shapeViewModel[0].partitionLayout} chart data. The table ${
+                configMaxCount && screenReaderData.length > 200
+                  ? `represent only ${configMaxCount} our of ${screenReaderData.length} number of data points`
+                  : `fully represent the dataset of ${screenReaderData.length} data point${
+                      screenReaderData.length > 1 ? 's' : ''
+                    }`
+              }`
             : tableCaption}
         </caption>
         <thead>
