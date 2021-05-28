@@ -113,7 +113,7 @@ export const Example = () => {
         }}
       />
 
-      <Axis id="bottom" title="index" position={Position.Bottom} />
+      <Axis id="bottom" position={Position.Bottom} />
       <Axis id="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <SeriesType

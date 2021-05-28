@@ -269,7 +269,7 @@ export const getHorizontalTextAlignmentKnob = (group?: string) =>
     group,
   ) || undefined;
 
-const seriesTypeMap = {
+export const XYSeriesTypeMap = {
   [SeriesType.Bar]: BarSeries,
   [SeriesType.Line]: LineSeries,
   [SeriesType.Area]: AreaSeries,
@@ -295,8 +295,8 @@ export const getXYSeriesKnob = (
   value: SeriesType = SeriesType.Bar,
   groupId?: string,
   options?: { ignore: SeriesType[] },
-): [$Values<typeof seriesTypeMap>, SeriesType] => {
+): [$Values<typeof XYSeriesTypeMap>, SeriesType] => {
   const spectType = getXYSeriesTypeKnob(name, value, groupId, options);
 
-  return [seriesTypeMap[spectType], spectType];
+  return [XYSeriesTypeMap[spectType], spectType];
 };

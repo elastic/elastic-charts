@@ -22,7 +22,6 @@ import React, { useState } from 'react';
 
 import { Axis, Chart, CurveType, Position, TexturedStyles, Settings, TextureShape } from '../../src';
 import { getRandomNumberGenerator, SeededDataGenerator, getRandomEntryFn } from '../../src/mocks/utils';
-import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
@@ -106,8 +105,9 @@ export const Example = () => {
   const [count, setCount] = useState(0);
   button('Randomize', () => setCount((i) => i + 1), group.random);
   const n = number('Total series', 4, { min: 0, max: 10, step: 1 }) ?? 2;
+  const showLegend = boolean('Show legend', false);
   const showFill = boolean('Show series fill', false);
-  const chartColor = color('Chart color', '#000');
+  const chartColor = color('Chart color', 'rgba(0,0,0,1)');
   const random = getRandomKnobs();
   const [SeriesType] = getXYSeriesKnob('Series type', 'area', undefined, { ignore: ['bubble', 'line'] });
   const texture = getDefaultTextureKnobs();
@@ -115,7 +115,7 @@ export const Example = () => {
   return (
     <Chart className="story-chart" data-count={count}>
       <Settings
-        showLegend
+        showLegend={showLegend}
         theme={{
           areaSeriesStyle: {
             area: {
@@ -135,13 +135,9 @@ export const Example = () => {
           },
         }}
       />
-      <Axis id="bottom" title="index" position={Position.Bottom} />
-      <Axis
-        id="left"
-        title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+
+      <Axis id="bottom" position={Position.Bottom} />
+      <Axis id="left" position={Position.Left} />
 
       {new Array(n).fill(0).map((v, i) => (
         <SeriesType
