@@ -54,7 +54,7 @@ const renderTableRows = (
   return (
     <tr
       key={`row--${index}`}
-      id={configMaxCount && configMaxCount * (count - 1) === index ? `startOfConfigMaxCount` : undefined}
+      id={configMaxCount && configMaxCount * (count - 1) === index ? 'startOfConfigMaxCount' : undefined}
     >
       <th scope="row">{value.label}</th>
       <td>{formatter && formatter(value.valueText) ? formatter(value.valueText) : value.valueText}</td>
@@ -94,10 +94,17 @@ const ScreenReaderPartitionTableComponent = ({
 
   const handleMoreData = () => {
     setCount(count + 1);
-    const nextSliceOfData = screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!);
 
+    const nextSliceOfData = screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!);
     // generate the next group of data
-    return showOnlyLimitedRows(configMaxCount!, count, nextSliceOfData, formatter);
+    showOnlyLimitedRows(configMaxCount!, count, nextSliceOfData, formatter);
+    const { activeElement } = document;
+    const nextElementForFocus = document.getElementById('startOfConfigMaxCount');
+    if (activeElement !== nextElementForFocus) {
+      event?.preventDefault(); // avoid going past the button
+      // user can press the left arrow and it goes to the next beginning of the tr
+      nextElementForFocus?.focus();
+    }
   };
 
   const showMoreCellsButton =
@@ -139,7 +146,10 @@ const ScreenReaderPartitionTableComponent = ({
             <th scope="col">Percentage</th>
           </tr>
         </thead>
-        <tbody>{renderTableContent(screenReaderData, count, formatter, configMaxCount)}</tbody>
+        {/* eslint-disable-next-line jsx-a11y/role-supports-aria-props */}
+        <tbody aria-activedescendant="startOfConfigMaxCount" tabIndex={-1}>
+          {renderTableContent(screenReaderData, count, formatter, configMaxCount)}
+        </tbody>
         {showMoreCellsButton}
       </table>
     </div>
