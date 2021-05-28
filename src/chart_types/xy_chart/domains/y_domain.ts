@@ -35,7 +35,7 @@ import { YDomain } from './types';
 /** @internal */
 export type YBasicSeriesSpec = Pick<
   BasicSeriesSpec,
-  'id' | 'seriesType' | 'yScaleType' | 'groupId' | 'stackAccessors' | 'yScaleToDataExtent' | 'useDefaultGroupDomain'
+  'id' | 'seriesType' | 'yScaleType' | 'groupId' | 'stackAccessors' | 'useDefaultGroupDomain'
 > & { stackMode?: StackMode; enableHistogramMode?: boolean };
 
 /** @internal */
@@ -76,12 +76,6 @@ function mergeYDomainForGroup(
   if (stackMode === StackMode.Percentage) {
     domain = computeContinuousDataDomain([0, 1], identity, type, customDomain);
   } else {
-    // TODO remove when removing yScaleToDataExtent
-    const shouldScaleToExtent = dataSeries.some(({ spec: { yScaleToDataExtent } }) => yScaleToDataExtent);
-    if (customDomain?.fit !== true && shouldScaleToExtent) {
-      newCustomDomain.fit = true;
-    }
-
     // compute stacked domain
     const stackedDomain = computeYDomain(stacked, hasZeroBaselineSpecs, type, newCustomDomain);
 
