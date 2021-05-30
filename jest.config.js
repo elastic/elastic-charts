@@ -22,7 +22,11 @@ module.exports = {
   roots: ['<rootDir>/packages/elastic-charts/src'],
   preset: 'ts-jest',
   setupFilesAfterEnv: ['<rootDir>/scripts/setup_enzyme.ts', '<rootDir>/scripts/custom_matchers.ts'],
-  coveragePathIgnorePatterns: ['<rootDir>/packages/elastic-charts/src/mocks/', '<rootDir>/**/node_modules/'],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/packages/elastic-charts/src/mocks',
+    '<rootDir>/packages/elastic-charts/src/utils/d3-delaunay',
+    '/node_modules/',
+  ],
   clearMocks: true,
   globals: {
     'ts-jest': {
