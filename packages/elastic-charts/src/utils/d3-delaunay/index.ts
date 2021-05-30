@@ -1,25 +1,3 @@
-/* eslint-disable file-header/file-header */
-
-/**
- * @notice
- * This product includes code that is adapted d3-delaunay@5.2.1,
- * which is available under a "ISC" license.
- *
- * Copyright 2018 Observable, Inc.
- *
- * Permission to use, copy, modify, and/or distribute this software for any purpose
- * with or without fee is hereby granted, provided that the above copyright notice
- * and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
- * REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
- * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
- * OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
- * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
- * THIS SOFTWARE.
- */
-
 // @ts-nocheck
 
 /**
@@ -117,6 +95,7 @@ type PolygonI = Point[];
 
 /**
  * A rectangular area [x, y, width, height].
+ * @internal
  */
 export type Bounds = number[];
 
@@ -336,7 +315,9 @@ class Delaunator {
     const cy = (minY + maxY) / 2;
 
     let minDist = Infinity;
-    let i0, i1, i2;
+    let i0;
+    let i1;
+    let i2;
 
     // pick a seed point close to the center
     for (let i = 0; i < n; i++) {
@@ -464,8 +445,8 @@ class Delaunator {
       }
 
       start = hullPrev[start];
-      let e = start,
-        q;
+      let e = start;
+      let q;
       while (((q = hullNext[e]), !orient(x, y, coords[2 * e], coords[2 * e + 1], coords[2 * q], coords[2 * q + 1]))) {
         e = q;
         if (e === start) {
@@ -780,31 +761,37 @@ class Path {
     this._x0 = this._y0 = this._x1 = this._y1 = null; // start of current subpath // end of current subpath
     this._ = '';
   }
+
   moveTo(x, y) {
     this._ += `M${(this._x0 = this._x1 = +x)},${(this._y0 = this._y1 = +y)}`;
   }
+
   closePath() {
     if (this._x1 !== null) {
       (this._x1 = this._x0), (this._y1 = this._y0);
       this._ += 'Z';
     }
   }
+
   lineTo(x, y) {
     this._ += `L${(this._x1 = +x)},${(this._y1 = +y)}`;
   }
+
   arc(x, y, r) {
     (x = +x), (y = +y), (r = +r);
     const x0 = x + r;
     const y0 = y;
     if (r < 0) throw new Error('negative radius');
     if (this._x1 === null) this._ += `M${x0},${y0}`;
-    else if (Math.abs(this._x1 - x0) > epsilon || Math.abs(this._y1 - y0) > epsilon) this._ += 'L' + x0 + ',' + y0;
+    else if (Math.abs(this._x1 - x0) > epsilon || Math.abs(this._y1 - y0) > epsilon) this._ += `L${x0},${y0}`;
     if (!r) return;
     this._ += `A${r},${r},0,1,1,${x - r},${y}A${r},${r},0,1,1,${(this._x1 = x0)},${(this._y1 = y0)}`;
   }
+
   rect(x, y, w, h) {
     this._ += `M${(this._x0 = this._x1 = +x)},${(this._y0 = this._y1 = +y)}h${+w}v${+h}h${-w}Z`;
   }
+
   value() {
     return this._ || null;
   }
@@ -814,20 +801,25 @@ class Polygon {
   constructor() {
     this._ = [];
   }
+
   moveTo(x, y) {
     this._.push([x, y]);
   }
+
   closePath() {
     this._.push(this._[0].slice());
   }
+
   lineTo(x, y) {
     this._.push([x, y]);
   }
+
   value() {
     return this._.length ? this._ : null;
   }
 }
 
+/** @internal */
 export class Voronoi<P> implements VoronoiI<P> {
   xmin: number;
   ymin: number;
@@ -860,11 +852,13 @@ export class Voronoi<P> implements VoronoiI<P> {
     (this.ymax = ymax), (this.ymin = ymin);
     this._init();
   }
+
   update() {
     this.delaunay.update();
     this._init();
     return this;
   }
+
   _init() {
     const {
       delaunay: { points, hull, triangles },
@@ -911,12 +905,12 @@ export class Voronoi<P> implements VoronoiI<P> {
 
     // Compute exterior cell rays.
     let h = hull[hull.length - 1];
-    let p0,
-      p1 = h * 4;
-    let x0,
-      x1 = points[2 * h];
-    let y0,
-      y1 = points[2 * h + 1];
+    let p0;
+    let p1 = h * 4;
+    let x0;
+    let x1 = points[2 * h];
+    let y0;
+    let y1 = points[2 * h + 1];
     vectors.fill(0);
     for (let i = 0; i < hull.length; ++i) {
       h = hull[i];
@@ -926,6 +920,7 @@ export class Voronoi<P> implements VoronoiI<P> {
       vectors[p0 + 3] = vectors[p1 + 1] = x1 - x0;
     }
   }
+
   /**
    * Renders the mesh of Voronoi cells to the specified context.
    * The specified context must implement the context.moveTo and context.lineTo methods from the CanvasPathMethods API.
@@ -949,8 +944,8 @@ export class Voronoi<P> implements VoronoiI<P> {
       const yj = circumcenters[tj + 1];
       this._renderSegment(xi, yi, xj, yj, context);
     }
-    let h0,
-      h1 = hull[hull.length - 1];
+    let h0;
+    let h1 = hull[hull.length - 1];
     for (let i = 0; i < hull.length; ++i) {
       (h0 = h1), (h1 = hull[i]);
       const t = Math.floor(inedges[h1] / 3) * 2;
@@ -962,6 +957,7 @@ export class Voronoi<P> implements VoronoiI<P> {
     }
     return buffer && buffer.value();
   }
+
   /**
    * Renders the viewport extent to the specified context.
    * The specified context must implement the context.rect method from the CanvasPathMethods API.
@@ -990,6 +986,7 @@ export class Voronoi<P> implements VoronoiI<P> {
     context.closePath();
     return buffer && buffer.value();
   }
+
   *cellPolygons() {
     const {
       delaunay: { points },
@@ -999,11 +996,13 @@ export class Voronoi<P> implements VoronoiI<P> {
       if (cell) yield cell;
     }
   }
+
   cellPolygon(i) {
     const polygon = new Polygon();
     this.renderCell(i, polygon);
     return polygon.value();
   }
+
   _renderSegment(x0, y0, x1, y1, context) {
     let S;
     const c0 = this._regioncode(x0, y0);
@@ -1016,10 +1015,12 @@ export class Voronoi<P> implements VoronoiI<P> {
       context.lineTo(S[2], S[3]);
     }
   }
+
   contains(i, x, y) {
     if (((x = +x), x !== x) || ((y = +y), y !== y)) return false;
     return this.delaunay._step(i, x, y) === i;
   }
+
   *neighbors(i) {
     const ci = this._clip(i);
     if (ci)
@@ -1042,6 +1043,7 @@ export class Voronoi<P> implements VoronoiI<P> {
           }
       }
   }
+
   _cell(i) {
     const {
       circumcenters,
@@ -1060,6 +1062,7 @@ export class Voronoi<P> implements VoronoiI<P> {
     } while (e !== e0 && e !== -1);
     return points;
   }
+
   _clip(i) {
     // degenerate case (1 valid point: return the box)
     if (i === 0 && this.delaunay.hull.length === 1) {
@@ -1073,16 +1076,18 @@ export class Voronoi<P> implements VoronoiI<P> {
       ? this._clipInfinite(i, points, V[v], V[v + 1], V[v + 2], V[v + 3])
       : this._clipFinite(i, points);
   }
+
   _clipFinite(i, points) {
     const n = points.length;
     let P = null;
-    let x0,
-      y0,
-      x1 = points[n - 2],
-      y1 = points[n - 1];
-    let c0,
-      c1 = this._regioncode(x1, y1);
-    let e0, e1;
+    let x0;
+    let y0;
+    let x1 = points[n - 2];
+    let y1 = points[n - 1];
+    let c0;
+    let c1 = this._regioncode(x1, y1);
+    let e0;
+    let e1;
     for (let j = 0; j < n; j += 2) {
       (x0 = x1), (y0 = y1), (x1 = points[j]), (y1 = points[j + 1]);
       (c0 = c1), (c1 = this._regioncode(x1, y1));
@@ -1091,7 +1096,11 @@ export class Voronoi<P> implements VoronoiI<P> {
         if (P) P.push(x1, y1);
         else P = [x1, y1];
       } else {
-        let S, sx0, sy0, sx1, sy1;
+        let S;
+        let sx0;
+        let sy0;
+        let sx1;
+        let sy1;
         if (c0 === 0) {
           if ((S = this._clipSegment(x0, y0, x1, y1, c0, c1)) === null) continue;
           [sx0, sy0, sx1, sy1] = S;
@@ -1117,13 +1126,14 @@ export class Voronoi<P> implements VoronoiI<P> {
     }
     return P;
   }
+
   _clipSegment(x0, y0, x1, y1, c0, c1) {
     while (true) {
       if (c0 === 0 && c1 === 0) return [x0, y0, x1, y1];
       if (c0 & c1) return null;
-      let x,
-        y,
-        c = c0 || c1;
+      let x;
+      let y;
+      const c = c0 || c1;
       if (c & 0b1000) (x = x0 + ((x1 - x0) * (this.ymax - y0)) / (y1 - y0)), (y = this.ymax);
       else if (c & 0b0100) (x = x0 + ((x1 - x0) * (this.ymin - y0)) / (y1 - y0)), (y = this.ymin);
       else if (c & 0b0010) (y = y0 + ((y1 - y0) * (this.xmax - x0)) / (x1 - x0)), (x = this.xmax);
@@ -1132,9 +1142,10 @@ export class Voronoi<P> implements VoronoiI<P> {
       else (x1 = x), (y1 = y), (c1 = this._regioncode(x1, y1));
     }
   }
+
   _clipInfinite(i, points, vx0, vy0, vxn, vyn) {
-    let P = Array.from(points),
-      p;
+    let P = Array.from(points);
+    let p;
     if ((p = this._project(P[0], P[1], vx0, vy0))) P.unshift(p[0], p[1]);
     if ((p = this._project(P[P.length - 2], P[P.length - 1], vxn, vyn))) P.push(p[0], p[1]);
     if ((P = this._clipFinite(i, P))) {
@@ -1147,9 +1158,11 @@ export class Voronoi<P> implements VoronoiI<P> {
     }
     return P;
   }
+
   _edge(i, e0, e1, P, j) {
     while (e0 !== e1) {
-      let x, y;
+      let x;
+      let y;
       switch (e0) {
         case 0b0101:
           e0 = 0b0100;
@@ -1182,19 +1195,20 @@ export class Voronoi<P> implements VoronoiI<P> {
     }
     if (P.length > 4) {
       for (let i = 0; i < P.length; i += 2) {
-        const j = (i + 2) % P.length,
-          k = (i + 4) % P.length;
+        const j = (i + 2) % P.length;
+        const k = (i + 4) % P.length;
         if ((P[i] === P[j] && P[j] === P[k]) || (P[i + 1] === P[j + 1] && P[j + 1] === P[k + 1]))
           P.splice(j, 2), (i -= 2);
       }
     }
     return j;
   }
+
   _project(x0, y0, vx, vy) {
-    let t = Infinity,
-      c,
-      x,
-      y;
+    let t = Infinity;
+    let c;
+    let x;
+    let y;
     if (vy < 0) {
       // top
       if (y0 <= this.ymin) return null;
@@ -1215,12 +1229,14 @@ export class Voronoi<P> implements VoronoiI<P> {
     }
     return [x, y];
   }
+
   _edgecode(x, y) {
     return (
       (x === this.xmin ? 0b0001 : x === this.xmax ? 0b0010 : 0b0000) |
       (y === this.ymin ? 0b0100 : y === this.ymax ? 0b1000 : 0b0000)
     );
   }
+
   _regioncode(x, y) {
     return (
       (x < this.xmin ? 0b0001 : x > this.xmax ? 0b0010 : 0b0000) |
@@ -1243,12 +1259,12 @@ function pointY(p) {
 function collinear(d) {
   const { triangles, coords } = d;
   for (let i = 0; i < triangles.length; i += 3) {
-    const a = 2 * triangles[i],
-      b = 2 * triangles[i + 1],
-      c = 2 * triangles[i + 2],
-      cross =
-        (coords[c] - coords[a]) * (coords[b + 1] - coords[a + 1]) -
-        (coords[b] - coords[a]) * (coords[c + 1] - coords[a + 1]);
+    const a = 2 * triangles[i];
+    const b = 2 * triangles[i + 1];
+    const c = 2 * triangles[i + 2];
+    const cross =
+      (coords[c] - coords[a]) * (coords[b + 1] - coords[a + 1]) -
+      (coords[b] - coords[a]) * (coords[c + 1] - coords[a + 1]);
     if (cross > 1e-10) return false;
   }
   return true;
@@ -1258,6 +1274,7 @@ function jitter(x, y, r) {
   return [x + Math.sin(x + y) * r, y + Math.cos(x - y) * r];
 }
 
+/** @internal */
 export class Delaunay<P> implements DelaunayI<P> {
   /**
    * The coordinates of the points as an array [x0, y0, x1, y1, ...].
@@ -1312,6 +1329,7 @@ export class Delaunay<P> implements DelaunayI<P> {
       'length' in points ? flatArray(points, fx, fy, that) : Float64Array.from(flatIterable(points, fx, fy, that)),
     );
   }
+
   /**
    * Returns the Delaunay triangulation for the given flat array [x0, y0, x1, y1, …] of points.
    */
@@ -1322,24 +1340,26 @@ export class Delaunay<P> implements DelaunayI<P> {
     this.points = this._delaunator.coords;
     this._init();
   }
+
   update() {
     this._delaunator.update();
     this._init();
     return this;
   }
+
   _init() {
-    const d = this._delaunator,
-      points = this.points;
+    const d = this._delaunator;
+    const points = this.points;
 
     // check for collinear
     if (d.hull && d.hull.length > 2 && collinear(d)) {
       this.collinear = Int32Array.from({ length: points.length / 2 }, (_, i) => i).sort(
         (i, j) => points[2 * i] - points[2 * j] || points[2 * i + 1] - points[2 * j + 1],
       ); // for exact neighbors
-      const e = this.collinear[0],
-        f = this.collinear[this.collinear.length - 1],
-        bounds = [points[2 * e], points[2 * e + 1], points[2 * f], points[2 * f + 1]],
-        r = 1e-8 * Math.sqrt((bounds[3] - bounds[1]) ** 2 + (bounds[2] - bounds[0]) ** 2);
+      const e = this.collinear[0];
+      const f = this.collinear[this.collinear.length - 1];
+      const bounds = [points[2 * e], points[2 * e + 1], points[2 * f], points[2 * f + 1]];
+      const r = 1e-8 * Math.sqrt((bounds[3] - bounds[1]) ** 2 + (bounds[2] - bounds[0]) ** 2);
       for (let i = 0, n = points.length / 2; i < n; ++i) {
         const p = jitter(points[2 * i], points[2 * i + 1], r);
         points[2 * i] = p[0];
@@ -1378,9 +1398,11 @@ export class Delaunay<P> implements DelaunayI<P> {
       if (hull.length === 2) inedges[hull[1]] = 0;
     }
   }
+
   voronoi(bounds) {
     return new Voronoi(this, bounds);
   }
+
   *neighbors(i) {
     const { inedges, hull, _hullIndex, halfedges, triangles, collinear } = this;
 
@@ -1394,8 +1416,8 @@ export class Delaunay<P> implements DelaunayI<P> {
 
     const e0 = inedges[i];
     if (e0 === -1) return; // coincident point
-    let e = e0,
-      p0 = -1;
+    let e = e0;
+    let p0 = -1;
     do {
       yield (p0 = triangles[e]);
       e = e % 3 === 2 ? e - 2 : e + 1;
@@ -1408,6 +1430,7 @@ export class Delaunay<P> implements DelaunayI<P> {
       }
     } while (e !== e0);
   }
+
   find(x, y, i = 0) {
     if (((x = +x), x !== x) || ((y = +y), y !== y)) return -1;
     const i0 = i;
@@ -1415,6 +1438,7 @@ export class Delaunay<P> implements DelaunayI<P> {
     while ((c = this._step(i, x, y)) >= 0 && c !== i && c !== i0) i = c;
     return c;
   }
+
   _step(i, x, y) {
     const { inedges, hull, _hullIndex, halfedges, triangles, points } = this;
     if (inedges[i] === -1 || !points.length) return (i + 1) % (points.length >> 1);
@@ -1423,7 +1447,7 @@ export class Delaunay<P> implements DelaunayI<P> {
     const e0 = inedges[i];
     let e = e0;
     do {
-      let t = triangles[e];
+      const t = triangles[e];
       const dt = (x - points[t * 2]) ** 2 + (y - points[t * 2 + 1]) ** 2;
       if (dt < dc) (dc = dt), (c = t);
       e = e % 3 === 2 ? e - 2 : e + 1;
@@ -1431,14 +1455,13 @@ export class Delaunay<P> implements DelaunayI<P> {
       e = halfedges[e];
       if (e === -1) {
         e = hull[(_hullIndex[i] + 1) % hull.length];
-        if (e !== t) {
-          if ((x - points[e * 2]) ** 2 + (y - points[e * 2 + 1]) ** 2 < dc) return e;
-        }
+        if (e !== t && (x - points[e * 2]) ** 2 + (y - points[e * 2 + 1]) ** 2 < dc) return e;
         break;
       }
     } while (e !== e0);
     return c;
   }
+
   /**
    * Renders the edges of the Delaunay triangulation to the specified context.
    * The specified context must implement the context.moveTo and context.lineTo methods from the CanvasPathMethods API.
@@ -1457,6 +1480,7 @@ export class Delaunay<P> implements DelaunayI<P> {
     this.renderHull(context);
     return buffer && buffer.value();
   }
+
   /**
    * Renders the input points of the Delaunay triangulation to the specified context as circles with the specified radius.
    * If radius is not specified, it defaults to 2.
@@ -1466,13 +1490,14 @@ export class Delaunay<P> implements DelaunayI<P> {
     const buffer = context == null ? (context = new Path()) : undefined;
     const { points } = this;
     for (let i = 0, n = points.length; i < n; i += 2) {
-      const x = points[i],
-        y = points[i + 1];
+      const x = points[i];
+      const y = points[i + 1];
       context.moveTo(x + r, y);
       context.arc(x, y, r, 0, tau);
     }
     return buffer && buffer.value();
   }
+
   /**
    * Renders the convex hull of the Delaunay triangulation to the specified context.
    * The specified context must implement the context.moveTo and context.lineTo methods from the CanvasPathMethods API.
@@ -1480,8 +1505,8 @@ export class Delaunay<P> implements DelaunayI<P> {
   renderHull(context: MoveContext & LineContext): void {
     const buffer = context == null ? (context = new Path()) : undefined;
     const { hull, points } = this;
-    const h = hull[0] * 2,
-      n = hull.length;
+    const h = hull[0] * 2;
+    const n = hull.length;
     context.moveTo(points[h], points[h + 1]);
     for (let i = 1; i < n; ++i) {
       const h = 2 * hull[i];
@@ -1490,11 +1515,13 @@ export class Delaunay<P> implements DelaunayI<P> {
     context.closePath();
     return buffer && buffer.value();
   }
+
   hullPolygon() {
     const polygon = new Polygon();
     this.renderHull(polygon);
     return polygon.value();
   }
+
   /**
    * Renders triangle i of the Delaunay triangulation to the specified context.
    * The specified context must implement the context.moveTo, context.lineTo and context.closePath methods from the CanvasPathMethods API.
@@ -1511,12 +1538,14 @@ export class Delaunay<P> implements DelaunayI<P> {
     context.closePath();
     return buffer && buffer.value();
   }
+
   *trianglePolygons() {
     const { triangles } = this;
     for (let i = 0, n = triangles.length / 3; i < n; ++i) {
       yield this.trianglePolygon(i);
     }
   }
+
   trianglePolygon(i) {
     const polygon = new Polygon();
     this.renderTriangle(i, polygon);

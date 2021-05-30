@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DisplayValueStyle, HorizontalAlignment, VerticalAlignment } from '../../src';
+import { DisplayValueStyle, HorizontalAlignment, VerticalAlignment } from '../../packages/elastic-charts/src';
 import { eachRotation } from '../helpers';
 import { common } from '../page_objects';
 

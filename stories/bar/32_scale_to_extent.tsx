@@ -20,8 +20,8 @@
 import { boolean, select, text } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType } from '../../src';
-import { computeContinuousDataDomain } from '../../src/utils/domain';
+import { Axis, BarSeries, Chart, Position, ScaleType } from '../../packages/elastic-charts/src';
+import { computeContinuousDataDomain } from '../../packages/elastic-charts/src/utils/domain';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const logDomains = (data: any[], customDomain: any) => {

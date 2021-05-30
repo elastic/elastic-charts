@@ -29,7 +29,7 @@ import {
   ScaleType,
   Position,
   Settings,
-} from '../../src';
+} from '../../packages/elastic-charts/src';
 import { getChartRotationKnob } from '../utils/knobs';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {

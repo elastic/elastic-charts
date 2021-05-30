@@ -34,8 +34,8 @@ import {
   Position,
   SeriesNameFn,
   DebugState,
-} from '../../src';
-import { SeededDataGenerator } from '../../src/mocks/utils';
+} from '../../packages/elastic-charts/src';
+import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
 
 export const Example = () => {
   const debug = boolean('debug', false);

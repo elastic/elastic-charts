@@ -20,8 +20,8 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../src';
-import * as TestDatasets from '../../src/utils/data_samples/test_dataset';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../packages/elastic-charts/src';
+import * as TestDatasets from '../../packages/elastic-charts/src/utils/data_samples/test_dataset';
 import {
   getBoundaryKnob,
   getChartRotationKnob,

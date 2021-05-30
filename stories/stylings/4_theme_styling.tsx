@@ -34,9 +34,9 @@ import {
   Settings,
   LIGHT_THEME,
   DARK_THEME,
-} from '../../src';
-import { SeededDataGenerator } from '../../src/mocks/utils';
-import { palettes } from '../../src/utils/themes/colors';
+} from '../../packages/elastic-charts/src';
+import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
+import { palettes } from '../../packages/elastic-charts/src/utils/themes/colors';
 import { switchTheme } from '../../storybook/theme_service';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {

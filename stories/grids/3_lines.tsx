@@ -32,8 +32,8 @@ import {
   PartialTheme,
   StrokeStyle,
   StrokeDashArray,
-} from '../../src';
-import { SeededDataGenerator } from '../../src/mocks/utils';
+} from '../../packages/elastic-charts/src';
+import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
 import { getTooltipTypeKnob } from '../utils/knobs';
 
 const dg = new SeededDataGenerator();

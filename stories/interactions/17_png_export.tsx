@@ -32,13 +32,13 @@ import {
   Datum,
   Goal,
   ChartType,
-} from '../../src';
-import { BandFillColorAccessorInput } from '../../src/chart_types/goal_chart/specs';
-import { GoalSubtype } from '../../src/chart_types/goal_chart/specs/constants';
-import { config } from '../../src/chart_types/partition_chart/layout/config';
-import { mocks } from '../../src/mocks/hierarchical';
-import { Color } from '../../src/utils/common';
-import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
+} from '../../packages/elastic-charts/src';
+import { BandFillColorAccessorInput } from '../../packages/elastic-charts/src/chart_types/goal_chart/specs';
+import { GoalSubtype } from '../../packages/elastic-charts/src/chart_types/goal_chart/specs/constants';
+import { config } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/config';
+import { mocks } from '../../packages/elastic-charts/src/mocks/hierarchical';
+import { Color } from '../../packages/elastic-charts/src/utils/common';
+import { KIBANA_METRICS } from '../../packages/elastic-charts/src/utils/data_samples/test_dataset_kibana';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 import { productLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 

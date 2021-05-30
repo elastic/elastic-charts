@@ -22,9 +22,9 @@ import { select, array, number, optionsKnob } from '@storybook/addon-knobs';
 import { SelectTypeKnobValue } from '@storybook/addon-knobs/dist/components/types';
 import { startCase, kebabCase } from 'lodash';
 
-import { Rotation, Position, Placement, TooltipProps } from '../../src';
-import { TooltipType } from '../../src/specs/constants';
-import { VerticalAlignment, HorizontalAlignment } from '../../src/utils/common';
+import { Rotation, Position, Placement, TooltipProps } from '../../packages/elastic-charts/src';
+import { TooltipType } from '../../packages/elastic-charts/src/specs/constants';
+import { VerticalAlignment, HorizontalAlignment } from '../../packages/elastic-charts/src/utils/common';
 
 export const getPositiveNumberKnob = (name: string, value: number, groupId?: string) =>
   number(name, value, { min: 0 }, groupId);

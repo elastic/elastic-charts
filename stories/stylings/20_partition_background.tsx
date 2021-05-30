@@ -20,10 +20,18 @@
 import { color, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, PartialTheme, Settings, MODEL_KEY } from '../../src';
-import { config } from '../../src/chart_types/partition_chart/layout/config';
-import { ShapeTreeNode } from '../../src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { mocks } from '../../src/mocks/hierarchical';
+import {
+  Chart,
+  Datum,
+  Partition,
+  PartitionLayout,
+  PartialTheme,
+  Settings,
+  MODEL_KEY,
+} from '../../packages/elastic-charts/src';
+import { config } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/config';
+import { ShapeTreeNode } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
+import { mocks } from '../../packages/elastic-charts/src/mocks/hierarchical';
 import {
   discreteColor,
   colorBrewerCategoricalStark9,

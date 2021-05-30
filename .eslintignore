@@ -1,9 +1,10 @@
 # Force include
 !.*.js
+!packages/elastic-charts/.*.js
 
 # Ignore
 wiki
-node_modules
+**/node_modules
 coverage
 license_header.js
 
@@ -14,5 +15,6 @@ license_header.js
 .git
 
 # Compiled source
-src/utils/d3-delaunay/*
+packages/elastic-charts/src/utils/d3-delaunay
 **/dist
+**/tmp

@@ -19,9 +19,9 @@
 
 import React from 'react';
 
-import { BarSeries, Chart, ScaleType, Settings, RecursivePartial, Theme } from '../../src';
-import { SeededDataGenerator } from '../../src/mocks/utils';
-import { TooltipType } from '../../src/specs/constants';
+import { BarSeries, Chart, ScaleType, Settings, RecursivePartial, Theme } from '../../packages/elastic-charts/src';
+import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
+import { TooltipType } from '../../packages/elastic-charts/src/specs/constants';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();

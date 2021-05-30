@@ -20,8 +20,17 @@
 import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, RecursivePartial, AxisStyle } from '../../src';
-import { SeededDataGenerator } from '../../src/mocks/utils';
+import {
+  AreaSeries,
+  Axis,
+  Chart,
+  Position,
+  ScaleType,
+  Settings,
+  RecursivePartial,
+  AxisStyle,
+} from '../../packages/elastic-charts/src';
+import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
 
 export const Example = () => {
   const dg = new SeededDataGenerator();

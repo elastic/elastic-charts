@@ -19,11 +19,11 @@
 
 import React from 'react';
 
-import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings } from '../../src';
-import { config } from '../../src/chart_types/partition_chart/layout/config';
-import { arrayToLookup } from '../../src/common/color_calcs';
-import { mocks } from '../../src/mocks/hierarchical';
-import { countryDimension } from '../../src/mocks/hierarchical/dimension_codes';
+import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings } from '../../packages/elastic-charts/src';
+import { config } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/config';
+import { arrayToLookup } from '../../packages/elastic-charts/src/common/color_calcs';
+import { mocks } from '../../packages/elastic-charts/src/mocks/hierarchical';
+import { countryDimension } from '../../packages/elastic-charts/src/mocks/hierarchical/dimension_codes';
 import { STORYBOOK_LIGHT_THEME } from '../shared';
 import { regionLookup } from '../utils/utils';
 

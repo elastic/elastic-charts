@@ -20,7 +20,15 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Settings, Chart, Position, ScaleType, DEFAULT_GLOBAL_ID } from '../../src';
+import {
+  Axis,
+  BarSeries,
+  Settings,
+  Chart,
+  Position,
+  ScaleType,
+  DEFAULT_GLOBAL_ID,
+} from '../../packages/elastic-charts/src';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {

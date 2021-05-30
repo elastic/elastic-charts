@@ -20,8 +20,8 @@
 import { color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '../../src';
-import { SeededDataGenerator } from '../../src/mocks/utils';
+import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '../../packages/elastic-charts/src';
+import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(

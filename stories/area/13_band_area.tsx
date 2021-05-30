@@ -30,9 +30,9 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
-} from '../../src';
-import { getRandomNumberGenerator } from '../../src/mocks/utils';
-import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
+} from '../../packages/elastic-charts/src';
+import { getRandomNumberGenerator } from '../../packages/elastic-charts/src/mocks/utils';
+import { KIBANA_METRICS } from '../../packages/elastic-charts/src/utils/data_samples/test_dataset_kibana';
 
 const dateFormatter = timeFormatter('HH:mm');
 

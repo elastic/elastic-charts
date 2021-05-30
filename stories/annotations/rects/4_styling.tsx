@@ -20,9 +20,9 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings } from '../../../src';
-import { Icon } from '../../../src/components/icons/icon';
-import { Position } from '../../../src/utils/common';
+import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings } from '../../../packages/elastic-charts/src';
+import { Icon } from '../../../packages/elastic-charts/src/components/icons/icon';
+import { Position } from '../../../packages/elastic-charts/src/utils/common';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 export const Example = () => {

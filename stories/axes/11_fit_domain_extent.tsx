@@ -20,8 +20,8 @@
 import { boolean, select, text } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, LineSeries, Position, ScaleType } from '../../src';
-import { SeededDataGenerator } from '../../src/mocks/utils';
+import { Axis, Chart, LineSeries, Position, ScaleType } from '../../packages/elastic-charts/src';
+import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
 
 export const Example = () => {
   const dg = new SeededDataGenerator();

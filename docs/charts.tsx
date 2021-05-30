@@ -31,9 +31,9 @@ import {
   AnnotationDomainType,
   Axis,
   LineAnnotationDatum,
-} from '../src';
-import { Icon } from '../src/components/icons/icon';
-import { KIBANA_METRICS } from '../src/utils/data_samples/test_dataset_kibana';
+} from '../packages/elastic-charts/src';
+import { Icon } from '../packages/elastic-charts/src/components/icons/icon';
+import { KIBANA_METRICS } from '../packages/elastic-charts/src/utils/data_samples/test_dataset_kibana';
 import { arrayKnobs, getChartRotationKnob } from '../stories/utils/knobs';
 
 export default {

@@ -33,9 +33,9 @@ import {
   VerticalAlignment,
   HorizontalAlignment,
   LayoutDirection,
-} from '../../src';
-import { SeededDataGenerator } from '../../src/mocks/utils';
-import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
+} from '../../packages/elastic-charts/src';
+import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
+import { KIBANA_METRICS } from '../../packages/elastic-charts/src/utils/data_samples/test_dataset_kibana';
 import { switchTheme } from '../../storybook/theme_service';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Fit } from '../../src';
+import { Fit } from '../../packages/elastic-charts/src';
 import { common } from '../page_objects';
 
 describe('Mixed series stories', () => {

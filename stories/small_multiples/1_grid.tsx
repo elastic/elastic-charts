@@ -38,8 +38,8 @@ import {
   AnnotationDomainType,
   Rotation,
   RectAnnotation,
-} from '../../src';
-import { getRandomNumberGenerator, SeededDataGenerator } from '../../src/mocks/utils';
+} from '../../packages/elastic-charts/src';
+import { getRandomNumberGenerator, SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const getRandomNumber = getRandomNumberGenerator();

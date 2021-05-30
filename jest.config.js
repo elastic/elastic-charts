@@ -19,10 +19,10 @@
 
 module.exports = {
   testMatch: ['**/?(*.)+(test).[jt]s?(x)'],
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/packages/elastic-charts/src'],
   preset: 'ts-jest',
   setupFilesAfterEnv: ['<rootDir>/scripts/setup_enzyme.ts', '<rootDir>/scripts/custom_matchers.ts'],
-  coveragePathIgnorePatterns: ['<rootDir>/src/mocks/', '<rootDir>/node_modules/'],
+  coveragePathIgnorePatterns: ['<rootDir>/packages/elastic-charts/src/mocks/', '<rootDir>/**/node_modules/'],
   clearMocks: true,
   globals: {
     'ts-jest': {
