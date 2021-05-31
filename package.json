@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "autoprefix:css": "echo 'Autoprefixing...' && yarn postcss dist/*.css --no-map --use autoprefixer -d dist",
-    "api:check": "yarn build:ts && yarn api:extract",
+    "api:check": "yarn build:clean && tsc -p ./tsconfig.lib.json && yarn api:extract",
     "api:check:local": "yarn api:check --local",
     "api:extract": "yarn api-extractor run --verbose",
     "backport": "backport",
@@ -24,7 +24,7 @@
     "build:ts": "yarn build:clean && yarn build:compile && yarn build:check",
     "build:css": "yarn build:sass && yarn autoprefix:css && yarn concat:sass",
     "build:clean": "echo 'Cleaning dist...' && rm -rf ./dist",
-    "build:compile": "echo 'Compiling...' && tsc -p ./tsconfig.lib.json && tsc -p ./tsconfig.lib-nocomments.json",
+    "build:compile": "echo 'Compiling...' && tsc -p ./tsconfig.lib.json --incremental && tsc -p ./tsconfig.lib-nocomments.json --incremental",
     "build:sass": "echo 'Building sass...' && node-sass src/theme_light.scss dist/theme_light.css --output-style compressed && node-sass src/theme_dark.scss dist/theme_dark.css --output-style compressed && node-sass src/theme_only_light.scss dist/theme_only_light.css --output-style compressed && node-sass src/theme_only_dark.scss dist/theme_only_dark.css --output-style compressed",
     "build:check": "echo 'Type checking dist...' && tsc -p ./tsconfig.lib-check.json",
     "build:watch": "echo 'Watching build...' && yarn build:clean && yarn build:css && tsc -p ./tsconfig.lib.json -w",
