@@ -24,7 +24,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { ScreenReaderSummary } from '../../../../components/accessibility';
-import { SettingsSpec } from '../../../../specs/settings';
+import { SettingsSpec, WordCloudElementEvent } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -147,16 +147,16 @@ const View = ({
     <svg width={getWidth(conf)} height={getHeight(conf)} role="presentation">
       <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
         {words.map((d, i) => {
-          const { datum } = d;
+          const elements: WordCloudElementEvent[] = [[d.datum, { specId, key: specId }]];
           const actions = {
             ...(onElementClick && {
               onClick: () => {
-                onElementClick?.([[datum, { specId, key: specId }]]);
+                onElementClick?.(elements);
               },
             }),
             ...(onElementOver && {
               onMouseOver: () => {
-                onElementOver?.([[datum, { specId, key: specId }]]);
+                onElementOver?.(elements);
               },
             }),
             ...(onElementOut && {
