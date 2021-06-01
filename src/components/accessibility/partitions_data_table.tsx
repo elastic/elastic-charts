@@ -34,7 +34,7 @@ import {
   getA11ySettingsSelector,
 } from '../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
-import { ValueFormatter } from '../../utils/common';
+import { isNil, ValueFormatter } from '../../utils/common';
 
 interface ScreenReaderPartitionTableProps {
   a11ySettings: A11ySettings;
@@ -44,12 +44,14 @@ interface ScreenReaderPartitionTableProps {
   configMaxCount?: number;
 }
 
+const maxRowsToShow = 200;
+
 const renderTableRows = (
   value: LabelsInterface,
   index: number,
   count: number,
   formatter?: ValueFormatter,
-  configMaxCount: number = 0,
+  configMaxCount?: number,
 ) => {
   return (
     <tr
@@ -69,7 +71,7 @@ const showOnlyLimitedRows = (
   count: number,
   data: LabelsInterface[],
   formatter?: ValueFormatter,
-  configMaxCount: number = 0,
+  configMaxCount?: number,
 ) => {
   return data.map((value: LabelsInterface, i: number) => {
     return renderTableRows(value, i, count, formatter, configMaxCount);
@@ -77,11 +79,11 @@ const showOnlyLimitedRows = (
 };
 
 const renderTableContent = (d: any[], count: number, formatter?: ValueFormatter, configMaxCount?: number) => {
-  return d.length < 200 || !configMaxCount
+  return d.length < maxRowsToShow || !configMaxCount
     ? d.map((value: LabelsInterface, i: number) => {
-        return renderTableRows(value, i, count, formatter, configMaxCount);
+        return renderTableRows(value, i, count, formatter);
       })
-    : showOnlyLimitedRows(count, d.slice(0, count * configMaxCount), formatter, configMaxCount);
+    : showOnlyLimitedRows(count, d.slice(0, count * configMaxCount), formatter);
 };
 
 const ScreenReaderPartitionTableComponent = ({
@@ -99,7 +101,7 @@ const ScreenReaderPartitionTableComponent = ({
 
     const nextSliceOfData = screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!);
     // generate the next group of data
-    showOnlyLimitedRows(count, nextSliceOfData, formatter, configMaxCount);
+    showOnlyLimitedRows(count, nextSliceOfData, formatter);
     const { activeElement } = document;
     const nextElementForFocus = document.getElementById('startOfConfigMaxCount');
     if (activeElement !== nextElementForFocus) {
@@ -110,7 +112,7 @@ const ScreenReaderPartitionTableComponent = ({
   };
 
   const showMoreCellsButton =
-    configMaxCount && screenReaderData.length > 200 ? (
+    configMaxCount && screenReaderData.length > maxRowsToShow ? (
       <tfoot>
         <tr>
           <td>
@@ -126,11 +128,11 @@ const ScreenReaderPartitionTableComponent = ({
     <div className="echScreenReaderOnly echScreenReaderTable">
       <table>
         <caption>
-          {!tableCaption
-            ? `This is the tabular representation of the ${shapeViewModel[0].partitionLayout} chart data. The table ${
-                configMaxCount && screenReaderData.length > 200
-                  ? `represent only ${configMaxCount} our of ${screenReaderData.length} number of data points`
-                  : `fully represent the dataset of ${screenReaderData.length} data point${
+          {isNil(tableCaption)
+            ? `The table ${
+                configMaxCount && screenReaderData.length > maxRowsToShow
+                  ? `represents only ${configMaxCount} of the ${screenReaderData.length} data points`
+                  : `fully represents the dataset of ${screenReaderData.length} data point${
                       screenReaderData.length > 1 ? 's' : ''
                     }`
               }`
