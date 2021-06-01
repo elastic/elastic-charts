@@ -98,7 +98,7 @@ describe('Accessibility', () => {
       expect(treemapWrapper.find('dd').first().text()).toBe('treemap chart');
     });
     it('should test defaults for screen reader data  table', () => {
-      expect(sunburstWrapper.find('tr').first().text()).toBe('CategoryValuePercentage');
+      expect(sunburstWrapper.find('tr').first().text()).toBe('CategoryDepthParentValuePercentage');
     });
   });
 });

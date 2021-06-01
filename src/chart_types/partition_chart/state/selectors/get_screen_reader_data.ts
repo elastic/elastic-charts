@@ -30,6 +30,7 @@ import { getTrees } from './tree';
 export interface LabelsInterface {
   label: string;
   valueText: number;
+  parentName: string | undefined;
   depth: number;
   percentage: string;
 }

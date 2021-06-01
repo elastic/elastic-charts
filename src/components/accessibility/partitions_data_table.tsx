@@ -57,6 +57,8 @@ const renderTableRows = (
       id={configMaxCount && configMaxCount * (count - 1) === index ? 'startOfConfigMaxCount' : undefined}
     >
       <th scope="row">{value.label}</th>
+      <td>{value.depth}</td>
+      <td>{value.parentName}</td>
       <td>{formatter && formatter(value.valueText) ? formatter(value.valueText) : value.valueText}</td>
       <td>{value.percentage}</td>
     </tr>
@@ -142,6 +144,8 @@ const ScreenReaderPartitionTableComponent = ({
                 <th key={`table header--${index}`} scope="col">{`${title || `Category`}`}</th>
               ));
             })}
+            <th scope="col">Depth</th>
+            <th scope="col">Parent</th>
             <th scope="col">Value</th>
             <th scope="col">Percentage</th>
           </tr>

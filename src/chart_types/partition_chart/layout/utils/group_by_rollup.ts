@@ -307,22 +307,24 @@ export function flatSlicesNames(
   depth: number,
   tree: HierarchyOfArrays,
   keys: Map<LegendItemLabel['label'], LabelsInterface> = new Map(),
+  parentsName?: string,
 ) {
   // format the key with the layer formatter if applicable
   const formatter = layers[depth - 1]?.nodeLabel;
-
   for (const [key, arrayNode] of tree) {
     const formattedValue = key === null ? '' : formatter ? formatter(key) : `${key}`;
+
     // preventing errors from external formatters
     if (formattedValue && formattedValue !== HIERARCHY_ROOT_KEY) {
       keys.set(formattedValue, {
         label: formattedValue,
         depth: Math.max(depth, keys.get(formattedValue)?.depth ?? 0),
+        parentName: parentsName && parentsName === '__root_key__' ? 'null' : parentsName,
         percentage: `${Math.round((arrayNode.value / arrayNode[STATISTICS_KEY].globalAggregate) * 100)}%`,
         valueText: arrayNode.value,
       });
     }
-    flatSlicesNames(layers, depth + 1, arrayNode[CHILDREN_KEY], keys);
+    flatSlicesNames(layers, depth + 1, arrayNode[CHILDREN_KEY], keys, formattedValue);
   }
   return [...keys.values()];
 }
