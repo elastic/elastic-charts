@@ -67,23 +67,9 @@ const renderTableRows = (
   );
 };
 
-const showOnlyLimitedRows = (
-  count: number,
-  data: LabelsInterface[],
-  formatter?: ValueFormatter,
-  configMaxCount?: number,
-) => {
-  return data.map((value: LabelsInterface, i: number) => {
-    return renderTableRows(value, i, count, formatter, configMaxCount);
-  });
-};
-
 const renderTableContent = (d: any[], count: number, formatter?: ValueFormatter, configMaxCount?: number) => {
-  return d.length < maxRowsToShow || !configMaxCount
-    ? d.map((value: LabelsInterface, i: number) => {
-        return renderTableRows(value, i, count, formatter);
-      })
-    : showOnlyLimitedRows(count, d.slice(0, count * configMaxCount), formatter);
+  const showCount = configMaxCount && d.length > maxRowsToShow ? configMaxCount : Infinity;
+  return d.slice(0, showCount * count).map((value, i) => renderTableRows(value, i, count, formatter));
 };
 
 const ScreenReaderPartitionTableComponent = ({
@@ -101,7 +87,7 @@ const ScreenReaderPartitionTableComponent = ({
 
     const nextSliceOfData = screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!);
     // generate the next group of data
-    showOnlyLimitedRows(count, nextSliceOfData, formatter);
+    renderTableContent(nextSliceOfData, count, formatter, configMaxCount);
     const { activeElement } = document;
     const nextElementForFocus = document.getElementById('startOfConfigMaxCount');
     if (activeElement !== nextElementForFocus) {
