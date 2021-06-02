@@ -112,7 +112,7 @@ const ScreenReaderPartitionTableComponent = ({
   };
 
   const showMoreCellsButton =
-    configMaxCount && screenReaderData.length > maxRowsToShow ? (
+    configMaxCount && screenReaderData.length > maxRowsToShow && count < screenReaderData.length ? (
       <tfoot>
         <tr>
           <td>
