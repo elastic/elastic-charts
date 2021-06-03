@@ -69,7 +69,15 @@ const renderTableRows = (
 
 const renderTableContent = (d: any[], count: number, formatter?: ValueFormatter, configMaxCount?: number) => {
   const showCount = configMaxCount && d.length > maxRowsToShow ? configMaxCount : Infinity;
-  return d.slice(0, showCount * count).map((value, i) => renderTableRows(value, i, count, formatter));
+  return d.slice(0, showCount * count).map((value, i) => renderTableRows(value, i, count, formatter, configMaxCount));
+};
+
+const handleFocus = () => {
+  const nextElementForFocus = document.getElementById('startOfConfigMaxCount') as HTMLElement;
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+    return nextElementForFocus.focus();
+  }
 };
 
 const ScreenReaderPartitionTableComponent = ({
@@ -84,17 +92,11 @@ const ScreenReaderPartitionTableComponent = ({
 
   const handleMoreData = () => {
     setCount(count + 1);
-
     const nextSliceOfData = screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!);
     // generate the next group of data
     renderTableContent(nextSliceOfData, count, formatter, configMaxCount);
-    const { activeElement } = document;
-    const nextElementForFocus = document.getElementById('startOfConfigMaxCount');
-    if (activeElement !== nextElementForFocus) {
-      event?.preventDefault(); // avoid going past the button
-      // user can press the left arrow and it goes to the next beginning of the tr
-      nextElementForFocus?.focus();
-    }
+    // Set active element to the startOfConfigMaxCount
+    handleFocus();
   };
 
   const showMoreCellsButton =
@@ -139,9 +141,7 @@ const ScreenReaderPartitionTableComponent = ({
           </tr>
         </thead>
         {/* eslint-disable-next-line jsx-a11y/role-supports-aria-props */}
-        <tbody aria-activedescendant="startOfConfigMaxCount" tabIndex={-1}>
-          {renderTableContent(screenReaderData, count, formatter, configMaxCount)}
-        </tbody>
+        <tbody>{renderTableContent(screenReaderData, count, formatter, configMaxCount)}</tbody>
         {showMoreCellsButton}
       </table>
     </div>
