@@ -151,17 +151,17 @@ const View = ({
           const actions = {
             ...(onElementClick && {
               onClick: () => {
-                onElementClick?.(elements);
+                onElementClick(elements);
               },
             }),
             ...(onElementOver && {
               onMouseOver: () => {
-                onElementOver?.(elements);
+                onElementOver(elements);
               },
             }),
             ...(onElementOut && {
               onMouseOut: () => {
-                onElementOut?.();
+                onElementOut();
               },
             }),
           };
