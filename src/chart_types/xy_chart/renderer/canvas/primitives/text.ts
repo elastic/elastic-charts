@@ -58,12 +58,10 @@ export function renderText(
       ctx.scale(scale, scale);
       const shadowSize = font.shadowSize ?? 0;
       if (font.shadow && shadowSize > 0) {
-        ctx.save();
         ctx.lineJoin = 'round';
         ctx.lineWidth = shadowSize;
         ctx.strokeStyle = font.shadow;
         ctx.strokeText(text, 0, 0);
-        ctx.restore();
       }
       ctx.fillText(text, 0, 0);
     });
