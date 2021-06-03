@@ -296,6 +296,8 @@ export const DomainPaddingUnit = Object.freeze({
   Domain: 'domain' as const,
   /**
    * Spatial pixel value (aka screenspace) not dependent on domain.
+   *
+   * @alpha
    */
   Pixel: 'pixel' as const,
   /**
