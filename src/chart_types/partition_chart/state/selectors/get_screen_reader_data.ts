@@ -29,8 +29,9 @@ import { getTrees } from './tree';
 /** @internal */
 export interface LabelsInterface {
   smTitle?: string;
-  label: LabelsInterface | string;
-  valueText: number | string;
+  label: string;
+  value: number;
+  formattedValueText: number | string;
   parentName: string | undefined;
   depth: number;
   percentage: string;

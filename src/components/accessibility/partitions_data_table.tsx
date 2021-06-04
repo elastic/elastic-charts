@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { memo, useState } from 'react';
+import React, { createRef, memo, RefObject, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { ShapeViewModel } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
@@ -45,42 +45,6 @@ interface ScreenReaderPartitionTableProps {
 
 const maxRowsToShow = 200;
 
-const renderTableRows = (
-  value: LabelsInterface,
-  index: number,
-  count: number,
-  moreThanOneLayer: boolean,
-  configMaxCount?: number,
-) => {
-  return (
-    <tr
-      key={`row--${index}`}
-      id={configMaxCount && configMaxCount * (count - 1) === index ? 'startOfConfigMaxCount' : undefined}
-    >
-      <th scope="row">{value.label}</th>
-      {moreThanOneLayer && <td>{value.depth}</td>}
-      {moreThanOneLayer && <td>{value.parentName}</td>}
-      <td>{value.valueText}</td>
-      <td>{value.percentage}</td>
-    </tr>
-  );
-};
-
-const renderTableContent = (d: any[], count: number, moreThanOneLayer: boolean, configMaxCount?: number) => {
-  const showCount = configMaxCount && d.length > maxRowsToShow ? configMaxCount : Infinity;
-  return d
-    .slice(0, showCount * count)
-    .map((value, i) => renderTableRows(value, i, count, moreThanOneLayer, configMaxCount));
-};
-
-const handleFocus = () => {
-  const nextElementForFocus = document.getElementById('startOfConfigMaxCount') as HTMLElement;
-  if (document.activeElement instanceof HTMLElement) {
-    document.activeElement.blur();
-    return nextElementForFocus.focus();
-  }
-};
-
 const ScreenReaderPartitionTableComponent = ({
   a11ySettings,
   shapeViewModel,
@@ -88,17 +52,50 @@ const ScreenReaderPartitionTableComponent = ({
   configMaxCount,
 }: ScreenReaderPartitionTableProps) => {
   const [count, setCount] = useState(1);
+  const tableRowRef = createRef<HTMLTableRowElement>();
   const { tableCaption } = a11ySettings;
-  const moreThanOneLayer =
-    screenReaderData.filter((value) => !!(value.depth > 1 || value.parentName !== 'null')).length > 0;
+  const moreThanOneLayer = shapeViewModel[0].layers.length > 1;
+
+  const renderTableRows = (
+    value: LabelsInterface,
+    index: number,
+    c: number,
+    layers: boolean,
+    ref: RefObject<HTMLTableRowElement>,
+    maxRows?: number,
+  ) => {
+    return (
+      <tr key={`row--${index}`} ref={maxRows && maxRows * (c - 1) === index ? ref : undefined} tabIndex={-1}>
+        <th scope="row">{value.label}</th>
+        {layers && <td>{value.depth}</td>}
+        {layers && <td>{value.parentName}</td>}
+        <td>{value.value}</td>
+        <td>{value.percentage}</td>
+      </tr>
+    );
+  };
+
+  const renderTableContent = (
+    d: any[],
+    c: number,
+    layers: boolean,
+    ref: RefObject<HTMLTableRowElement>,
+    maxRows?: number,
+  ) => {
+    const showCount = maxRows && d.length > maxRowsToShow ? maxRows : Infinity;
+    return d.slice(0, showCount * c).map((value, i) => renderTableRows(value, i, c, layers, ref, maxRows));
+  };
 
   const handleMoreData = () => {
     setCount(count + 1);
     const nextSliceOfData = screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!);
     // generate the next group of data
-    renderTableContent(nextSliceOfData, count, moreThanOneLayer, configMaxCount);
-    // Set active element to the startOfConfigMaxCount
-    handleFocus();
+    if (tableRowRef.current) {
+      tableRowRef.current.focus();
+    }
+    return renderTableContent(nextSliceOfData, count, moreThanOneLayer, tableRowRef, configMaxCount);
+    // // Set active element to the startOfConfigMaxCount
+    // return tableRowRef.current ? tableRowRef.current.focus() : undefined;
   };
 
   const showMoreCellsButton =
@@ -143,7 +140,7 @@ const ScreenReaderPartitionTableComponent = ({
           </tr>
         </thead>
         {/* eslint-disable-next-line jsx-a11y/role-supports-aria-props */}
-        <tbody>{renderTableContent(screenReaderData, count, moreThanOneLayer, configMaxCount)}</tbody>
+        <tbody>{renderTableContent(screenReaderData, count, moreThanOneLayer, tableRowRef, configMaxCount)}</tbody>
         {showMoreCellsButton}
       </table>
     </div>
@@ -154,7 +151,6 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   screenReaderData: [],
   shapeViewModel: [],
-  formatter: (value: number) => value.toString(),
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderPartitionTableProps => {
