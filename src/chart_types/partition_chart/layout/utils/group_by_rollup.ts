@@ -20,7 +20,6 @@
 import { CategoryKey } from '../../../../common/category';
 import { Relation } from '../../../../common/text_utils';
 import { LegendPath } from '../../../../state/actions/legend';
-import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { Datum, ValueAccessor } from '../../../../utils/common';
 import { Layer } from '../../specs';
 import { LabelsInterface } from '../../state/selectors/get_screen_reader_data';
@@ -306,7 +305,7 @@ export function flatSlicesNames(
   layers: Layer[],
   depth: number,
   tree: HierarchyOfArrays,
-  keys: Map<LegendItemLabel['label'], LabelsInterface> = new Map(),
+  keys: LabelsInterface[] = [],
   parentsName?: string,
 ) {
   // format the key with the layer formatter if applicable
@@ -316,9 +315,9 @@ export function flatSlicesNames(
 
     // preventing errors from external formatters
     if (formattedValue && formattedValue !== HIERARCHY_ROOT_KEY) {
-      keys.set(formattedValue, {
+      keys.push({
         label: formattedValue,
-        depth: Math.max(depth, keys.get(formattedValue)?.depth ?? 0),
+        depth,
         parentName: parentsName && parentsName === '__root_key__' ? 'null' : parentsName,
         percentage: `${Math.round((arrayNode.value / arrayNode[STATISTICS_KEY].globalAggregate) * 100)}%`,
         valueText: arrayNode.value,
@@ -326,5 +325,5 @@ export function flatSlicesNames(
     }
     flatSlicesNames(layers, depth + 1, arrayNode[CHILDREN_KEY], keys, formattedValue);
   }
-  return [...keys.values()];
+  return keys;
 }

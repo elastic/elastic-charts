@@ -20,6 +20,7 @@
 import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getLegendLabels } from '../../layout/utils/legend_labels';
 import { getPartitionSpecs } from './get_partition_specs';
@@ -28,6 +29,6 @@ import { getTrees } from './tree';
 /** @internal */
 export const getLegendItemsLabels = createCachedSelector(
   [getPartitionSpecs, getSettingsSpecSelector, getTrees],
-  (specs, { legendMaxDepth, showLegend }, trees) =>
+  (specs, { legendMaxDepth, showLegend }, trees): LegendItemLabel[] =>
     specs.flatMap((spec) => (showLegend ? getLegendLabels(spec.layers, trees[0].tree, legendMaxDepth) : [])), // singleton! wrt inner small multiples
 )(getChartIdSelector);
