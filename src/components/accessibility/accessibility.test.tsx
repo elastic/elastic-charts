@@ -54,6 +54,8 @@ describe('Accessibility', () => {
 
   describe('Partition charts accessibility', () => {
     const productLookup = arrayToLookup((d: any) => d.sitc1, productDimension);
+    type TestDatum = { cat1: string; cat2: string; val: number };
+
     const sunburstWrapper = mount(
       <Chart size={[100, 100]} id="chart1">
         <Partition
@@ -91,6 +93,32 @@ describe('Accessibility', () => {
       </Chart>,
     );
 
+    const sunburstLayerWrapper = mount(
+      <Chart className="story-chart">
+        <Settings showLegend flatLegend={false} legendMaxDepth={2} />
+        <Partition
+          id="spec_1"
+          data={[
+            { cat1: 'A', cat2: 'A', val: 1 },
+            { cat1: 'A', cat2: 'B', val: 1 },
+            { cat1: 'B', cat2: 'A', val: 1 },
+            { cat1: 'B', cat2: 'B', val: 1 },
+            { cat1: 'C', cat2: 'A', val: 1 },
+            { cat1: 'C', cat2: 'B', val: 1 },
+          ]}
+          valueAccessor={(d: TestDatum) => d.val}
+          layers={[
+            {
+              groupByRollup: (d: TestDatum) => d.cat1,
+            },
+            {
+              groupByRollup: (d: TestDatum) => d.cat2,
+            },
+          ]}
+        />
+      </Chart>,
+    );
+
     it('should include the series type if partition chart', () => {
       expect(sunburstWrapper.find('dd').first().text()).toBe('sunburst chart');
     });
@@ -98,7 +126,10 @@ describe('Accessibility', () => {
       expect(treemapWrapper.find('dd').first().text()).toBe('treemap chart');
     });
     it('should test defaults for screen reader data  table', () => {
-      expect(sunburstWrapper.find('tr').first().text()).toBe('CategoryDepthParentValuePercentage');
+      expect(sunburstWrapper.find('tr').first().text()).toBe('CategoryValuePercentage');
+    });
+    it('should  include additional columns if a multilayer pie chart', () => {
+      expect(sunburstLayerWrapper.find('tr').first().text()).toBe('CategoryCategoryDepthParentValuePercentage');
     });
   });
 });
