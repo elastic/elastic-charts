@@ -43,12 +43,14 @@ import { getPanelSize, hasSMDomain } from './panel';
 import { computeXScale, computeYScales } from './scales';
 import { AxisSpec, TickFormatterOptions, TickFormatter } from './specs';
 
+/** @internal */
 export interface AxisTick {
   value: number | string;
   label: string;
   position: number;
 }
 
+/** @internal */
 export interface AxisTicksDimensions {
   tickValues: string[] | number[];
   tickLabels: string[];
@@ -59,6 +61,7 @@ export interface AxisTicksDimensions {
   isHidden: boolean;
 }
 
+/** @internal */
 export interface TickLabelProps {
   x: number;
   y: number;
@@ -66,10 +69,17 @@ export interface TickLabelProps {
   offsetY: number;
   textOffsetX: number;
   textOffsetY: number;
-  align: Extract<HorizontalAlignment, 'left' | 'center' | 'right'>;
-  verticalAlign: Extract<VerticalAlignment, 'top' | 'middle' | 'bottom'>;
+  horizontalAlign: Extract<
+    HorizontalAlignment,
+    typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Center | typeof HorizontalAlignment.Right
+  >;
+  verticalAlign: Extract<
+    VerticalAlignment,
+    typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom
+  >;
 }
 
+/** @internal */
 export const defaultTickFormatter = (tick: any) => `${tick}`;
 
 /**
@@ -167,7 +177,6 @@ export function getScaleForAxisSpec(
     const yScales = computeYScales({
       yDomains,
       range,
-      ticks: axisSpec.ticks,
       integersOnly: axisSpec.integersOnly,
     });
     if (yScales.has(axisSpec.groupId)) {
@@ -181,7 +190,6 @@ export function getScaleForAxisSpec(
     range,
     barsPadding,
     enableHistogramMode,
-    ticks: axisSpec.ticks,
     integersOnly: axisSpec.integersOnly,
   });
 }
@@ -282,14 +290,17 @@ function getUserTextOffsets(dimensions: AxisTicksDimensions, offset: TextOffset)
 
 function getHorizontalTextOffset(
   width: number,
-  alignment: Extract<HorizontalAlignment, 'left' | 'center' | 'right'>,
+  alignment: Extract<
+    HorizontalAlignment,
+    typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Center | typeof HorizontalAlignment.Right
+  >,
 ): number {
   switch (alignment) {
-    case 'left':
+    case HorizontalAlignment.Left:
       return -width / 2;
-    case 'right':
+    case HorizontalAlignment.Right:
       return width / 2;
-    case 'center':
+    case HorizontalAlignment.Center:
     default:
       return 0;
   }
@@ -297,14 +308,17 @@ function getHorizontalTextOffset(
 
 function getVerticalTextOffset(
   height: number,
-  alignment: Extract<VerticalAlignment, 'top' | 'middle' | 'bottom'>,
+  alignment: Extract<
+    VerticalAlignment,
+    typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom
+  >,
 ): number {
   switch (alignment) {
-    case 'top':
+    case VerticalAlignment.Top:
       return -height / 2;
-    case 'bottom':
+    case VerticalAlignment.Bottom:
       return height / 2;
-    case 'middle':
+    case VerticalAlignment.Middle:
     default:
       return 0;
   }
@@ -314,7 +328,7 @@ function getHorizontalAlign(
   position: Position,
   rotation: number,
   alignment: HorizontalAlignment = HorizontalAlignment.Near,
-): Exclude<HorizontalAlignment, 'far' | 'near'> {
+): Exclude<HorizontalAlignment, typeof HorizontalAlignment.Far | typeof HorizontalAlignment.Near> {
   if (
     alignment === HorizontalAlignment.Center ||
     alignment === HorizontalAlignment.Right ||
@@ -355,7 +369,7 @@ function getVerticalAlign(
   position: Position,
   rotation: number,
   alignment: VerticalAlignment = VerticalAlignment.Middle,
-): Exclude<VerticalAlignment, 'far' | 'near'> {
+): Exclude<VerticalAlignment, typeof VerticalAlignment.Far | typeof VerticalAlignment.Near> {
   if (
     alignment === VerticalAlignment.Middle ||
     alignment === VerticalAlignment.Top ||
@@ -390,14 +404,6 @@ function getVerticalAlign(
 
 /**
  * Gets the computed x/y coordinates & alignment properties for an axis tick label.
- * @param isVerticalAxis if the axis is vertical (in contrast to horizontal)
- * @param tickPosition position of tick relative to axis line origin and other ticks along it
- * @param position position of where the axis sits relative to the visualization
- * @param axisSize
- * @param tickDimensions
- * @param showTicks
- * @param textOffset
- * @param textAlignment
  * @internal
  */
 export function getTickLabelProps(
@@ -416,11 +422,11 @@ export function getTickLabelProps(
   const labelPadding = getSimplePadding(tickLabel.padding);
   const isLeftAxis = position === Position.Left;
   const isAxisTop = position === Position.Top;
-  const align = getHorizontalAlign(position, rotation, textAlignment?.horizontal);
+  const horizontalAlign = getHorizontalAlign(position, rotation, textAlignment?.horizontal);
   const verticalAlign = getVerticalAlign(position, rotation, textAlignment?.vertical);
 
   const userOffsets = getUserTextOffsets(tickDimensions, textOffset);
-  const textOffsetX = getHorizontalTextOffset(maxLabelTextWidth, align) + userOffsets.local.x;
+  const textOffsetX = getHorizontalTextOffset(maxLabelTextWidth, horizontalAlign) + userOffsets.local.x;
   const textOffsetY = getVerticalTextOffset(maxLabelTextHeight, verticalAlign) + userOffsets.local.y;
 
   if (isVerticalAxis(position)) {
@@ -434,7 +440,7 @@ export function getTickLabelProps(
       offsetY: userOffsets.global.y,
       textOffsetY,
       textOffsetX,
-      align,
+      horizontalAlign,
       verticalAlign,
     };
   }
@@ -448,7 +454,7 @@ export function getTickLabelProps(
     offsetY: offsetY + userOffsets.global.y,
     textOffsetX,
     textOffsetY,
-    align,
+    horizontalAlign,
     verticalAlign,
   };
 }
@@ -721,10 +727,12 @@ export function getAxisPosition(
   return { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement };
 }
 
+/** @internal */
 export function shouldShowTicks({ visible, strokeWidth, size }: AxisStyle['tickLine'], axisHidden: boolean): boolean {
   return !axisHidden && visible && size > 0 && strokeWidth >= MIN_STROKE_WIDTH;
 }
 
+/** @internal */
 export interface AxisGeometry {
   anchorPoint: Point;
   size: Size;

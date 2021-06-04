@@ -19,9 +19,28 @@
 
 /** @internal */
 export const DEFAULT_CSS_CURSOR = 'default';
-/** potential internal */
+/**
+ * @internal
+ */
 export const TAU = 2 * Math.PI;
-/** potential internal */
+/**
+ * @internal
+ */
 export const RIGHT_ANGLE = TAU / 4;
-/** potential internal */
+/**
+ * @internal
+ */
 export const GOLDEN_RATIO = 1.618;
+
+/** @public */
+export const TOP = 'top' as const;
+/** @public */
+export const BOTTOM = 'bottom' as const;
+/** @public */
+export const LEFT = 'left' as const;
+/** @public */
+export const RIGHT = 'right' as const;
+/** @public */
+export const MIDDLE = 'middle' as const;
+/** @public */
+export const CENTER = 'center' as const;

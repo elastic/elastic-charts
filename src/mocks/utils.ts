@@ -27,15 +27,24 @@ import { DataGenerator, RandomNumberGenerator } from '../utils/data_generators/d
  * SHOULD NOT BE USED OUTSIDE OF TESTS!!!
  *
  * @param obj partial object type
+ * @internal
  */
 export const forcedType = <T extends Record<string, unknown>>(obj: Partial<T>): T => obj as T;
 
 /**
- * Return rng function with optional `min`, `max` and `fractionDigits` params
- *
- * @param string process.env.RNG_SEED
+ * Returns rng seed from `process.env`
+ * @internal
  */
-export const getRandomNumberGenerator = (seed = process.env.RNG_SEED): RandomNumberGenerator => {
+export const getRNGSeed = (fallback?: string): string | undefined =>
+  process.env.RNG_SEED ?? (process.env.VRT ? 'elastic-charts' : fallback);
+
+/**
+ * Returns rng function with optional `min`, `max` and `fractionDigits` params
+ *
+ * @param string seed for deterministic algorithm
+ * @internal
+ */
+export const getRandomNumberGenerator = (seed = getRNGSeed()): RandomNumberGenerator => {
   const rng = seedrandom(seed);
 
   /**
@@ -56,6 +65,7 @@ export const getRandomNumberGenerator = (seed = process.env.RNG_SEED): RandomNum
   };
 };
 
+/** @internal */
 export class SeededDataGenerator extends DataGenerator {
   constructor(frequency = 500) {
     super(frequency, getRandomNumberGenerator());

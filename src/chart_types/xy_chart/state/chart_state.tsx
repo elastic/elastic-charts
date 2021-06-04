@@ -19,7 +19,7 @@
 
 import React, { RefObject } from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { LegendItemExtraValues } from '../../../common/legend';
 import { SeriesKey } from '../../../common/series_id';
 import { BrushTool } from '../../../components/brush/brush';
@@ -35,6 +35,7 @@ import { Highlighter } from '../renderer/dom/highlighter';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
+import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getHighlightedValuesSelector } from './selectors/get_highlighted_values';
@@ -54,7 +55,7 @@ import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 
 /** @internal */
 export class XYAxisChartState implements InternalChartState {
-  chartType: ChartTypes;
+  chartType: ChartType;
 
   legendId: string;
 
@@ -75,7 +76,7 @@ export class XYAxisChartState implements InternalChartState {
     this.onBrushEndCaller = createOnBrushEndCaller();
     this.onPointerMoveCaller = createOnPointerMoveCaller();
 
-    this.chartType = ChartTypes.XYAxis;
+    this.chartType = ChartType.XYAxis;
     this.legendId = htmlIdGenerator()('legend');
   }
 
@@ -119,13 +120,13 @@ export class XYAxisChartState implements InternalChartState {
     return getHighlightedValuesSelector(globalState);
   }
 
-  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
+  chartRenderer(containerRef: BackwardRef, forwardCanvasRef: RefObject<HTMLCanvasElement>) {
     return (
       <>
         <Crosshair />
-        <XYChart forwardStageRef={forwardStageRef} />
+        <XYChart forwardCanvasRef={forwardCanvasRef} />
         <Tooltip getChartContainerRef={containerRef} />
-        <Annotations getChartContainerRef={containerRef} />
+        <Annotations getChartContainerRef={containerRef} chartAreaRef={forwardCanvasRef} />
         <Highlighter />
         <BrushTool />
       </>
@@ -158,5 +159,9 @@ export class XYAxisChartState implements InternalChartState {
 
   getDebugState(globalState: GlobalChartState) {
     return getDebugStateSelector(globalState);
+  }
+
+  getChartTypeDescription(globalState: GlobalChartState) {
+    return getChartTypeDescriptionSelector(globalState);
   }
 }

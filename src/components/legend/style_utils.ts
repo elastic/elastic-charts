@@ -17,10 +17,10 @@
  * under the License.
  */
 
+import { LegendPositionConfig } from '../../specs/settings';
 import { BBox } from '../../utils/bbox/bbox_calculator';
-import { Position } from '../../utils/common';
+import { clamp, LayoutDirection } from '../../utils/common';
 import { Margins } from '../../utils/dimensions';
-import { isHorizontalLegend } from '../../utils/legend';
 import { LegendStyle as ThemeLegendStyle } from '../../utils/themes/theme';
 
 /** @internal */
@@ -51,13 +51,14 @@ export interface LegendListStyle {
  * @internal
  */
 export function getLegendListStyle(
-  position: Position,
+  { direction, floating, floatingColumns }: LegendPositionConfig,
   chartMargins: Margins,
   legendStyle: ThemeLegendStyle,
+  totalItems: number,
 ): LegendListStyle {
   const { top: paddingTop, bottom: paddingBottom, left: paddingLeft, right: paddingRight } = chartMargins;
 
-  if (isHorizontalLegend(position)) {
+  if (direction === LayoutDirection.Horizontal) {
     return {
       paddingLeft,
       paddingRight,
@@ -68,18 +69,21 @@ export function getLegendListStyle(
   return {
     paddingTop,
     paddingBottom,
+    ...(floating && {
+      gridTemplateColumns: `repeat(${clamp(floatingColumns ?? 1, 1, totalItems)}, auto)`,
+    }),
   };
 }
 /**
  * Get the legend global style
  * @internal
  */
-export function getLegendStyle(position: Position, size: BBox, margin: number): LegendStyle {
-  if (position === Position.Left || position === Position.Right) {
+export function getLegendStyle({ direction, floating }: LegendPositionConfig, size: BBox, margin: number): LegendStyle {
+  if (direction === LayoutDirection.Vertical) {
     const width = `${size.width}px`;
     return {
-      width,
-      maxWidth: width,
+      width: floating ? undefined : width,
+      maxWidth: floating ? undefined : width,
       marginLeft: margin,
       marginRight: margin,
     };

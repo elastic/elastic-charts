@@ -1,3 +1,147 @@
+# [29.2.0](https://github.com/elastic/elastic-charts/compare/v29.1.0...v29.2.0) (2021-05-25)
+
+
+### Bug Fixes
+
+* **legend:** disable handleLabelClick for one legend item ([#1134](https://github.com/elastic/elastic-charts/issues/1134)) ([a7242af](https://github.com/elastic/elastic-charts/commit/a7242af3fe22db0b5cd4d8776e150972a665f242)), closes [#1055](https://github.com/elastic/elastic-charts/issues/1055)
+
+
+### Features
+
+* **a11y:** add alt text for all chart types  ([#1118](https://github.com/elastic/elastic-charts/issues/1118)) ([9e42229](https://github.com/elastic/elastic-charts/commit/9e42229b9fba27ca4396d76f45f4bf5785e445b0)), closes [#1107](https://github.com/elastic/elastic-charts/issues/1107)
+* **legend:** specify number of columns on floating legend ([#1159](https://github.com/elastic/elastic-charts/issues/1159)) ([c2e4652](https://github.com/elastic/elastic-charts/commit/c2e465224d3e56790f6c9d3c5e0f4083051c38e1)), closes [#1158](https://github.com/elastic/elastic-charts/issues/1158)
+* simple screenspace constraint solver ([#1141](https://github.com/elastic/elastic-charts/issues/1141)) ([eb11480](https://github.com/elastic/elastic-charts/commit/eb11480e2c8a1651c6449decc46b3cdf7311f68f))
+
+# [29.1.0](https://github.com/elastic/elastic-charts/compare/v29.0.0...v29.1.0) (2021-04-23)
+
+
+### Bug Fixes
+
+* **interaction:** remove unnecessary elements ([#1131](https://github.com/elastic/elastic-charts/issues/1131)) ([411042f](https://github.com/elastic/elastic-charts/commit/411042fdbc8252a217f2e655fc12c0723c39cad1)), closes [#1074](https://github.com/elastic/elastic-charts/issues/1074)
+* **partition:**  fix safari highlight bug on single slice ([#1132](https://github.com/elastic/elastic-charts/issues/1132)) ([4a04063](https://github.com/elastic/elastic-charts/commit/4a04063d68a3db27990eb460c00d7007aad4f169)), closes [#1085](https://github.com/elastic/elastic-charts/issues/1085)
+
+
+### Features
+
+* **tooltip:** add stickTo option ([#1122](https://github.com/elastic/elastic-charts/issues/1122)) ([12417e2](https://github.com/elastic/elastic-charts/commit/12417e2c03588202da0567cd0056393f00d990e6)), closes [#921](https://github.com/elastic/elastic-charts/issues/921)
+
+# [29.0.0](https://github.com/elastic/elastic-charts/compare/v28.2.0...v29.0.0) (2021-04-22)
+
+
+### Features
+
+* **a11y:** add label for screen readers ([#1121](https://github.com/elastic/elastic-charts/issues/1121)) ([920e585](https://github.com/elastic/elastic-charts/commit/920e5856d4c52416c0ea394e5605bb756266b178)), closes [#1096](https://github.com/elastic/elastic-charts/issues/1096)
+* **annotations:** marker body with dynamic positioning ([#1116](https://github.com/elastic/elastic-charts/issues/1116)) ([601abac](https://github.com/elastic/elastic-charts/commit/601abacc4247755ad1203439e6e95c6fa8574ab2))
+
+
+### BREAKING CHANGES
+
+* **a11y:** `description` prop in `<Settings/>` is renamed to `ariaDescription`
+
+Co-authored-by: Marco Vettorello <vettorello.marco@gmail.com>
+
+# [28.2.0](https://github.com/elastic/elastic-charts/compare/v28.1.0...v28.2.0) (2021-04-15)
+
+
+### Bug Fixes
+
+* **xy:** consider `useDefaultGroupDomain` on scale config ([#1119](https://github.com/elastic/elastic-charts/issues/1119)) ([c1b59f2](https://github.com/elastic/elastic-charts/commit/c1b59f249a1fdfc5d6f714de8db99cbf7a16c6eb)), closes [#1087](https://github.com/elastic/elastic-charts/issues/1087)
+
+
+### Features
+
+* **a11y:** allow user to pass custom description for screen readers ([#1111](https://github.com/elastic/elastic-charts/issues/1111)) ([2ee1b91](https://github.com/elastic/elastic-charts/commit/2ee1b912f58cff4964786ce6586b07390bbed0b3)), closes [#1097](https://github.com/elastic/elastic-charts/issues/1097)
+* **partition:** add debuggable state ([#1117](https://github.com/elastic/elastic-charts/issues/1117)) ([d7fc206](https://github.com/elastic/elastic-charts/commit/d7fc2068ca5febba06e25cf67b91cf9d203bc5d3)), closes [#917](https://github.com/elastic/elastic-charts/issues/917)
+
+# [28.1.0](https://github.com/elastic/elastic-charts/compare/v28.0.1...v28.1.0) (2021-04-13)
+
+
+### Bug Fixes
+
+* **legend:** sizing for short labels with scrollbar ([#1115](https://github.com/elastic/elastic-charts/issues/1115)) ([6e1f223](https://github.com/elastic/elastic-charts/commit/6e1f223d5126c2707101d269ebaa5dc117ac61c4))
+* **xy:** negative bar highlight and click ([#1109](https://github.com/elastic/elastic-charts/issues/1109)) ([ec17cb2](https://github.com/elastic/elastic-charts/commit/ec17cb2eb2f13e0be4370a2dc89d3872f9b6de5a)), closes [#1100](https://github.com/elastic/elastic-charts/issues/1100)
+
+
+### Features
+
+* **a11y:** improve chart figure ([#1104](https://github.com/elastic/elastic-charts/issues/1104)) ([815cf39](https://github.com/elastic/elastic-charts/commit/815cf39873e3e1f0a526dd88bb06c2b87f22f9e8))
+* **partition:** order slices and sectors ([#1112](https://github.com/elastic/elastic-charts/issues/1112)) ([74df29b](https://github.com/elastic/elastic-charts/commit/74df29b5554eaa5b88c670c71321ce676683da6f))
+* **partitions:** small multipies events pass on smAccessorValue ([#1106](https://github.com/elastic/elastic-charts/issues/1106)) ([a3234fe](https://github.com/elastic/elastic-charts/commit/a3234feee9e579cf7bdb21d487f80c8200a0fa73))
+* **xy:** optionally rounds the domain to nice values ([#1087](https://github.com/elastic/elastic-charts/issues/1087)) ([f644cc4](https://github.com/elastic/elastic-charts/commit/f644cc4653bf4bea3180057b981f80bdcabee00f))
+* **xy:** specify pixel and ratio width for bars ([#1114](https://github.com/elastic/elastic-charts/issues/1114)) ([58de413](https://github.com/elastic/elastic-charts/commit/58de413564a5f0b9a8bef9f5cb2119cdde18794f))
+* mosaic ([#1113](https://github.com/elastic/elastic-charts/issues/1113)) ([64bdd88](https://github.com/elastic/elastic-charts/commit/64bdd88836210a4c4c997dc207859c3fbd773d80))
+
+## [28.0.1](https://github.com/elastic/elastic-charts/compare/v28.0.0...v28.0.1) (2021-04-06)
+
+
+### Bug Fixes
+
+* filter out zero values on fitted log domains ([#1057](https://github.com/elastic/elastic-charts/issues/1057)) ([88d71ff](https://github.com/elastic/elastic-charts/commit/88d71ff810d33756d5c568b7f5c603a84837490d))
+
+# [28.0.0](https://github.com/elastic/elastic-charts/compare/v27.0.0...v28.0.0) (2021-04-02)
+
+
+### Bug Fixes
+
+* **annotations:** provide fallback for line annotation markers ([#1091](https://github.com/elastic/elastic-charts/issues/1091)) ([0bd61f1](https://github.com/elastic/elastic-charts/commit/0bd61f198743461c267eed74706797b49508e250))
+* **legend:** action sizing ui and focus states ([#1102](https://github.com/elastic/elastic-charts/issues/1102)) ([3a76a2c](https://github.com/elastic/elastic-charts/commit/3a76a2c3977983f8eec1c88d0b4cb73bc5d1e8ee))
+* **legend:** stop legend color picker dot twitching ([#1101](https://github.com/elastic/elastic-charts/issues/1101)) ([c89b767](https://github.com/elastic/elastic-charts/commit/c89b767c698b677cef96da365901dc046d6e27a8))
+
+
+### Code Refactoring
+
+* rename enum types to singular ([#1064](https://github.com/elastic/elastic-charts/issues/1064)) ([396b3d1](https://github.com/elastic/elastic-charts/commit/396b3d1aefc995b89c6acb369c19a82f2a68d7b5)), closes [#767](https://github.com/elastic/elastic-charts/issues/767)
+
+
+### BREAKING CHANGES
+
+* `AnnotationDomainTypes`, `AnnotationTypes`, `SeriesTypes`, `ChartTypes`, and `SpecTypes` are renamed to `AnnotationDomainType`, `AnnotationType`, `SeriesType`, `ChartType`, and `SpecType`
+
+# [27.0.0](https://github.com/elastic/elastic-charts/compare/v26.1.0...v27.0.0) (2021-03-31)
+
+
+### Features
+
+* **partitions:** Small multiples legends ([#1094](https://github.com/elastic/elastic-charts/issues/1094)) ([c39d113](https://github.com/elastic/elastic-charts/commit/c39d11388f74bbaef1dc2ed0b4febabd25b35241))
+
+
+### BREAKING CHANGES
+
+* **partitions:** the `flatLegend` (true) option yields alphabetical, formatted name based sorting for unique name/color occurrences, to make it easy for the user to look up names in the legend as it's alphabetically sorted
+
+# [26.1.0](https://github.com/elastic/elastic-charts/compare/v26.0.0...v26.1.0) (2021-03-26)
+
+
+### Features
+
+* **a11y:** add basic aria-label to canvas element ([#1084](https://github.com/elastic/elastic-charts/issues/1084)) ([1a5aef7](https://github.com/elastic/elastic-charts/commit/1a5aef772315786eba8c623f728a72475d7f91d4))
+* **xy_charts:** render legend inside the chart ([#1031](https://github.com/elastic/elastic-charts/issues/1031)) ([ba88122](https://github.com/elastic/elastic-charts/commit/ba8812213d6d6463f66f267cc095928d1a7a2abe)), closes [#861](https://github.com/elastic/elastic-charts/issues/861)
+
+# [26.0.0](https://github.com/elastic/elastic-charts/compare/v25.4.0...v26.0.0) (2021-03-23)
+
+
+### Features
+
+* **partition:** small multiples ([#1076](https://github.com/elastic/elastic-charts/issues/1076)) ([282082b](https://github.com/elastic/elastic-charts/commit/282082b0316d8e2fe5229761112cd209d70802b8))
+
+
+### BREAKING CHANGES
+
+* **partition:** clarifies the inner/outer padding notation `<SmallMultiples style={{horizontalPanelPadding, verticalPanelPadding}}` from `[outer, inner]` to `{outer, inner}`—they still have the same effect
+
+# [25.4.0](https://github.com/elastic/elastic-charts/compare/v25.3.0...v25.4.0) (2021-03-23)
+
+
+### Bug Fixes
+
+* chromium area path render bug ([#1067](https://github.com/elastic/elastic-charts/issues/1067)) ([e16d15d](https://github.com/elastic/elastic-charts/commit/e16d15d92add87f0bfe580a7301975915c10c381))
+
+
+### Features
+
+* **tooltip:** expose datum in the TooltipValue ([#1082](https://github.com/elastic/elastic-charts/issues/1082)) ([0246784](https://github.com/elastic/elastic-charts/commit/0246784bf4f88b374b7a28ffa4a60380f4c162b4)), closes [#1042](https://github.com/elastic/elastic-charts/issues/1042)
+* **wordcloud:** wordcloud ([#1038](https://github.com/elastic/elastic-charts/issues/1038)) ([f08f4c9](https://github.com/elastic/elastic-charts/commit/f08f4c9b7472d8c81a0fa56cd7dc7018eed637ad))
+
 # [25.3.0](https://github.com/elastic/elastic-charts/compare/v25.2.0...v25.3.0) (2021-03-11)
 
 

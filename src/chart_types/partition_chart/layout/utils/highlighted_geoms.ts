@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import { $Values as Values } from 'utility-types';
 
 import { LegendPath } from '../../../../state/actions/legend';
@@ -88,9 +89,10 @@ const defaultStrategy: LegendStrategy = LegendStrategy.Key;
 /** @internal */
 export function highlightedGeoms(
   legendStrategy: LegendStrategy | undefined,
+  flatLegend: boolean | undefined,
   quadViewModel: QuadViewModel[],
   highlightedLegendItemPath: LegendPath,
 ) {
-  const pickedLogic: LegendStrategy = legendStrategy ?? defaultStrategy;
+  const pickedLogic: LegendStrategy = flatLegend ? LegendStrategy.Key : legendStrategy ?? defaultStrategy;
   return quadViewModel.filter(legendStrategies[pickedLogic](highlightedLegendItemPath));
 }

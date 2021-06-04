@@ -17,13 +17,16 @@
  * under the License.
  */
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
+import { MockGlobalSpec } from '../../../mocks/specs/specs';
+import { MockXDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
-import { SpecTypes } from '../../../specs/constants';
+import { SpecType } from '../../../specs/constants';
 import { Dimensions } from '../../../utils/dimensions';
+import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_configs';
 import { computeSeriesDomains } from '../state/utils/utils';
 import { computeXScale } from '../utils/scales';
-import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
+import { BasicSeriesSpec, SeriesType } from '../utils/specs';
 import { getCursorBandPosition, getSnapPosition } from './crosshair_utils';
 
 describe('Crosshair utils linear scale', () => {
@@ -33,11 +36,11 @@ describe('Crosshair utils linear scale', () => {
   const lineSeries2SpecId = 'lineSeries2';
 
   const barSeries1: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: barSeries1SpecId,
     groupId: 'group1',
-    seriesType: SeriesTypes.Bar,
+    seriesType: SeriesType.Bar,
     data: [
       [0, 0],
       [1, 0],
@@ -49,11 +52,11 @@ describe('Crosshair utils linear scale', () => {
     yScaleType: ScaleType.Linear,
   };
   const barSeries2: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: barSeries2SpecId,
     groupId: 'group1',
-    seriesType: SeriesTypes.Bar,
+    seriesType: SeriesType.Bar,
     data: [
       [0, 2],
       [1, 2],
@@ -65,11 +68,11 @@ describe('Crosshair utils linear scale', () => {
     yScaleType: ScaleType.Linear,
   };
   const lineSeries1: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: lineSeries1SpecId,
     groupId: 'group1',
-    seriesType: SeriesTypes.Line,
+    seriesType: SeriesType.Line,
     data: [
       [0, 0],
       [1, 0],
@@ -81,11 +84,11 @@ describe('Crosshair utils linear scale', () => {
     yScaleType: ScaleType.Linear,
   };
   const lineSeries2: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: lineSeries2SpecId,
     groupId: 'group1',
-    seriesType: SeriesTypes.Line,
+    seriesType: SeriesType.Line,
     data: [
       [0, 2],
       [1, 2],
@@ -97,22 +100,35 @@ describe('Crosshair utils linear scale', () => {
     yScaleType: ScaleType.Linear,
   };
 
-  const domainGroup = new Map([['group1', { fit: true }]]);
-
   const barSeries = [barSeries1];
-  const barSeriesDomains = computeSeriesDomains(barSeries, domainGroup);
+  const barSeriesDomains = computeSeriesDomains(
+    barSeries,
+    getScaleConfigsFromSpecs([], barSeries, MockGlobalSpec.settings()),
+  );
 
   const multiBarSeries = [barSeries1, barSeries2];
-  const multiBarSeriesDomains = computeSeriesDomains(multiBarSeries, domainGroup);
+  const multiBarSeriesDomains = computeSeriesDomains(
+    multiBarSeries,
+    getScaleConfigsFromSpecs([], multiBarSeries, MockGlobalSpec.settings()),
+  );
 
   const lineSeries = [lineSeries1];
-  const lineSeriesDomains = computeSeriesDomains(lineSeries, domainGroup);
+  const lineSeriesDomains = computeSeriesDomains(
+    lineSeries,
+    getScaleConfigsFromSpecs([], lineSeries, MockGlobalSpec.settings()),
+  );
 
   const multiLineSeries = [lineSeries1, lineSeries2];
-  const multiLineSeriesDomains = computeSeriesDomains(multiLineSeries, domainGroup);
+  const multiLineSeriesDomains = computeSeriesDomains(
+    multiLineSeries,
+    getScaleConfigsFromSpecs([], multiLineSeries, MockGlobalSpec.settings()),
+  );
 
   const mixedLinesBars = [lineSeries1, lineSeries2, barSeries1, barSeries2];
-  const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBars, domainGroup);
+  const mixedLinesBarsSeriesDomains = computeSeriesDomains(
+    mixedLinesBars,
+    getScaleConfigsFromSpecs([], mixedLinesBars, MockGlobalSpec.settings()),
+  );
 
   const barSeriesScale = computeXScale({
     xDomain: barSeriesDomains.xDomain,
@@ -296,10 +312,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 0,
-          y1: 0,
-          y2: 100,
+          x: 0,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -314,10 +330,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 0,
-          y1: 0,
-          y2: 100,
+          x: 0,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -332,10 +348,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 40,
-          x2: 40,
-          y1: 0,
-          y2: 100,
+          x: 40,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -350,10 +366,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 90,
-          x2: 90,
-          y1: 0,
-          y2: 100,
+          x: 90,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -385,10 +401,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 0,
-          y1: 0,
-          y2: 100,
+          x: 0,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -403,10 +419,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 0,
-          y1: 0,
-          y2: 100,
+          x: 0,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -421,10 +437,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 0,
-          y1: 0,
-          y2: 100,
+          x: 0,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -439,10 +455,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 60,
-          x2: 60,
-          y1: 0,
-          y2: 100,
+          x: 60,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -457,10 +473,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 120,
-          x2: 120,
-          y1: 0,
-          y2: 100,
+          x: 120,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -494,10 +510,10 @@ describe('Crosshair utils linear scale', () => {
         );
 
         expect(bandPosition).toEqual({
-          x1: 120,
-          x2: 120,
-          y1: 0,
-          y2: 100,
+          x: 120,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -512,10 +528,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 120,
-          x2: 120,
-          y1: 0,
-          y2: 100,
+          x: 120,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -530,10 +546,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 80,
-          x2: 80,
-          y1: 0,
-          y2: 100,
+          x: 80,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -548,10 +564,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 30,
-          x2: 30,
-          y1: 0,
-          y2: 100,
+          x: 30,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -584,10 +600,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 120,
-          x2: 120,
-          y1: 0,
-          y2: 100,
+          x: 120,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -602,10 +618,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 120,
-          x2: 120,
-          y1: 0,
-          y2: 100,
+          x: 120,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -620,10 +636,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 120,
-          x2: 120,
-          y1: 0,
-          y2: 100,
+          x: 120,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -638,10 +654,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 60,
-          x2: 60,
-          y1: 0,
-          y2: 100,
+          x: 60,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -656,10 +672,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 0,
-          y1: 0,
-          y2: 100,
+          x: 0,
+          width: 0,
+          y: 0,
+          height: 100,
         });
       });
 
@@ -692,10 +708,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 0,
-          y2: 0,
+          x: 0,
+          width: 120,
+          y: 0,
+          height: 0,
         });
       });
 
@@ -710,10 +726,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 45,
-          y2: 45,
+          x: 0,
+          width: 120,
+          y: 45,
+          height: 0,
         });
       });
 
@@ -728,10 +744,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 0,
-          y2: 0,
+          x: 0,
+          width: 120,
+          y: 0,
+          height: 0,
         });
       });
 
@@ -746,10 +762,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 0,
-          y2: 0,
+          x: 0,
+          width: 120,
+          y: 0,
+          height: 0,
         });
       });
 
@@ -782,10 +798,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 0,
-          y2: 0,
+          x: 0,
+          width: 120,
+          y: 0,
+          height: 0,
         });
       });
 
@@ -800,10 +816,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 60,
-          y2: 60,
+          x: 0,
+          width: 120,
+          y: 60,
+          height: 0,
         });
       });
 
@@ -818,10 +834,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 0,
-          y2: 0,
+          x: 0,
+          width: 120,
+          y: 0,
+          height: 0,
         });
       });
 
@@ -836,10 +852,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 0,
-          y2: 0,
+          x: 0,
+          width: 120,
+          y: 0,
+          height: 0,
         });
       });
 
@@ -854,10 +870,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 0,
-          y2: 0,
+          x: 0,
+          width: 120,
+          y: 0,
+          height: 0,
         });
       });
 
@@ -890,10 +906,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 100,
-          y2: 100,
+          x: 0,
+          width: 120,
+          y: 100,
+          height: 0,
         });
       });
 
@@ -908,10 +924,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 55,
-          y2: 55,
+          x: 0,
+          width: 120,
+          y: 55,
+          height: 0,
         });
       });
 
@@ -926,10 +942,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 100,
-          y2: 100,
+          x: 0,
+          width: 120,
+          y: 100,
+          height: 0,
         });
       });
 
@@ -944,10 +960,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 100,
-          y2: 100,
+          x: 0,
+          width: 120,
+          y: 100,
+          height: 0,
         });
       });
 
@@ -980,10 +996,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 100,
-          y2: 100,
+          x: 0,
+          width: 120,
+          y: 100,
+          height: 0,
         });
       });
 
@@ -998,10 +1014,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 40,
-          y2: 40,
+          x: 0,
+          width: 120,
+          y: 40,
+          height: 0,
         });
       });
 
@@ -1016,10 +1032,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 100,
-          y2: 100,
+          x: 0,
+          width: 120,
+          y: 100,
+          height: 0,
         });
       });
 
@@ -1034,10 +1050,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 100,
-          y2: 100,
+          x: 0,
+          width: 120,
+          y: 100,
+          height: 0,
         });
       });
 
@@ -1052,10 +1068,10 @@ describe('Crosshair utils linear scale', () => {
           0,
         );
         expect(bandPosition).toEqual({
-          x1: 0,
-          x2: 120,
-          y1: 100,
-          y2: 100,
+          x: 0,
+          width: 120,
+          y: 100,
+          height: 0,
         });
       });
 
@@ -1456,13 +1472,11 @@ describe('Crosshair utils linear scale', () => {
     const chartDimensions: Dimensions = { top: 0, left: 0, width: 120, height: 120 };
     test('cursor at begin of domain', () => {
       const barSeriesScaleLimited = computeXScale({
-        xDomain: {
+        xDomain: MockXDomain.fromScaleType(ScaleType.Linear, {
           domain: [0.5, 3.5],
           isBandScale: true,
           minInterval: 1,
-          scaleType: ScaleType.Linear,
-          type: 'xDomain',
-        },
+        }),
         totalBarsInCluster: 1,
         range: [0, 120],
       });
@@ -1487,13 +1501,11 @@ describe('Crosshair utils linear scale', () => {
     });
     test('cursor at end of domain', () => {
       const barSeriesScaleLimited = computeXScale({
-        xDomain: {
+        xDomain: MockXDomain.fromScaleType(ScaleType.Linear, {
           domain: [-0.5, 2.5],
           isBandScale: true,
           minInterval: 1,
-          scaleType: ScaleType.Linear,
-          type: 'xDomain',
-        },
+        }),
         totalBarsInCluster: barSeries.length,
         range: [0, 120],
       });
@@ -1518,13 +1530,11 @@ describe('Crosshair utils linear scale', () => {
     });
     test('cursor at top begin of domain', () => {
       const barSeriesScaleLimited = computeXScale({
-        xDomain: {
+        xDomain: MockXDomain.fromScaleType(ScaleType.Linear, {
           domain: [0.5, 3.5],
           isBandScale: true,
           minInterval: 1,
-          scaleType: ScaleType.Linear,
-          type: 'xDomain',
-        },
+        }),
         totalBarsInCluster: 1,
         range: [0, 120],
       });
@@ -1549,13 +1559,11 @@ describe('Crosshair utils linear scale', () => {
     });
     test('cursor at top end of domain', () => {
       const barSeriesScaleLimited = computeXScale({
-        xDomain: {
+        xDomain: MockXDomain.fromScaleType(ScaleType.Linear, {
           domain: [-0.5, 2.5],
           isBandScale: true,
           minInterval: 1,
-          scaleType: ScaleType.Linear,
-          type: 'xDomain',
-        },
+        }),
         totalBarsInCluster: barSeries.length,
         range: [0, 120],
       });

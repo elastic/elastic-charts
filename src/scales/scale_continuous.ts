@@ -27,6 +27,7 @@ import {
   ScaleLogarithmic,
   ScalePower,
   ScaleTime,
+  ScaleContinuousNumeric,
 } from 'd3-scale';
 import { $Values, Required } from 'utility-types';
 
@@ -117,6 +118,7 @@ export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit?: 
   return [min, max];
 }
 
+/** @public */
 export const LogBase = Object.freeze({
   /**
    * log base `10`
@@ -133,6 +135,7 @@ export const LogBase = Object.freeze({
 });
 /**
  * Log bases
+ * @public
  */
 export type LogBase = $Values<typeof LogBase>;
 
@@ -150,10 +153,12 @@ interface ScaleData {
   domain: any[];
   /** The data output range */
   range: Range;
+  nice?: boolean;
 }
 
 /**
  * Options specific to log scales
+ * @public
  */
 export interface LogScaleOptions {
   /**
@@ -204,7 +209,7 @@ type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
    * The approximated number of ticks.
    * @defaultValue 10
    */
-  ticks: number;
+  desiredTickCount: number;
   /**
    * true if the scale was adjusted to fit one single value histogram
    */
@@ -221,7 +226,7 @@ const defaultScaleOptions: ScaleOptions = {
   timeZone: 'utc',
   totalBarsInCluster: 1,
   barsPadding: 0,
-  ticks: 10,
+  desiredTickCount: 10,
   isSingleValueHistogram: false,
   integersOnly: false,
   logBase: LogBase.Common,
@@ -260,21 +265,22 @@ export class ScaleContinuous implements Scale {
 
   private readonly d3Scale: D3Scale;
 
-  constructor(scaleData: ScaleData, options?: Partial<ScaleOptions>) {
-    const { type, domain, range } = scaleData;
+  constructor(
+    { type = ScaleType.Linear, domain = [0, 1], range = [0, 1], nice = false }: ScaleData,
+    options?: Partial<ScaleOptions>,
+  ) {
     const {
       bandwidth,
       minInterval,
       timeZone,
       totalBarsInCluster,
       barsPadding,
-      ticks,
+      desiredTickCount,
       isSingleValueHistogram,
       integersOnly,
       logBase,
       logMinLimit,
     } = mergePartial(defaultScaleOptions, options, { mergeOptionalPartialValues: true });
-
     this.d3Scale = SCALES[type]();
 
     if (type === ScaleType.Log) {
@@ -285,6 +291,10 @@ export class ScaleContinuous implements Scale {
     }
 
     this.d3Scale.domain(this.domain);
+    if (nice && type !== ScaleType.Time) {
+      (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(this.domain).nice(desiredTickCount);
+      this.domain = this.d3Scale.domain();
+    }
 
     const safeBarPadding = maxValueWithUpperLimit(barsPadding, 0, 1);
     this.barsPadding = safeBarPadding;
@@ -308,7 +318,7 @@ export class ScaleContinuous implements Scale {
       const shiftedDomainMax = endDomain.add(offset, 'minutes').valueOf();
       const tzShiftedScale = scaleUtc().domain([shiftedDomainMin, shiftedDomainMax]);
 
-      const rawTicks = tzShiftedScale.ticks(ticks);
+      const rawTicks = tzShiftedScale.ticks(desiredTickCount);
       const timePerTick = (shiftedDomainMax - shiftedDomainMin) / rawTicks.length;
       const hasHourTicks = timePerTick < 1000 * 60 * 60 * 12;
 
@@ -324,7 +334,7 @@ export class ScaleContinuous implements Scale {
         const intervalCount = Math.floor((this.domain[1] - this.domain[0]) / this.minInterval);
         this.tickValues = new Array(intervalCount + 1).fill(0).map((_, i) => this.domain[0] + i * this.minInterval);
       } else {
-        this.tickValues = this.getTicks(ticks, integersOnly);
+        this.tickValues = this.getTicks(desiredTickCount, integersOnly);
       }
     }
   }

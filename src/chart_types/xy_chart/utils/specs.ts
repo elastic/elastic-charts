@@ -17,15 +17,16 @@
  * under the License.
  */
 
+import { ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { TooltipPortalSettings } from '../../../components/portal/types';
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { LogScaleOptions } from '../../../scales/scale_continuous';
 import { Spec } from '../../../specs';
-import { SpecTypes } from '../../../specs/constants';
+import { SpecType } from '../../../specs/constants';
 import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
 import { RecursivePartial, Color, Position, Datum } from '../../../utils/common';
 import { CurveType } from '../../../utils/curves';
@@ -43,7 +44,11 @@ import {
   AxisStyle,
 } from '../../../utils/themes/theme';
 import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
-import { AnnotationTooltipFormatter, CustomAnnotationTooltip } from '../annotations/types';
+import {
+  AnnotationTooltipFormatter,
+  ComponentWithAnnotationDatum,
+  CustomAnnotationTooltip,
+} from '../annotations/types';
 import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
 
 /** @public */
@@ -51,7 +56,8 @@ export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 /** @public */
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
 
-export const SeriesTypes = Object.freeze({
+/** @public */
+export const SeriesType = Object.freeze({
   Area: 'area' as const,
   Bar: 'bar' as const,
   Line: 'line' as const,
@@ -62,7 +68,7 @@ export const SeriesTypes = Object.freeze({
  * XY series type
  * @public
  */
-export type SeriesTypes = $Values<typeof SeriesTypes>;
+export type SeriesType = $Values<typeof SeriesType>;
 
 /**
  * The offset and mode applied when stacking values
@@ -124,6 +130,7 @@ export type SeriesName = string | number | null;
 export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean) => SeriesName;
 /**
  * Accessor mapping to replace names
+ * @public
  */
 export interface SeriesNameConfig {
   /**
@@ -148,6 +155,7 @@ export interface SeriesNameConfig {
    */
   sortIndex?: number;
 }
+/** @public */
 export interface SeriesNameConfigOptions {
   /**
    * Array of accessor naming configs to replace series names
@@ -263,11 +271,11 @@ interface DomainBase {
   /**
    * Custom minInterval for the domain which will affect data bucket size.
    * The minInterval cannot be greater than the computed minimum interval between any two adjacent data points.
-   * Further, if you specify a custom numeric minInterval for a timeseries, please note that due to the restriction
+   * Further, if you specify a custom numeric minInterval for a time-series, please note that due to the restriction
    * above, the specified numeric minInterval will be interpreted as a fixed interval.
-   * This means that, for example, if you have yearly timeseries data that ranges from 2016 to 2019 and you manually
+   * This means that, for example, if you have yearly time-series data that ranges from 2016 to 2019 and you manually
    * compute the interval between 2016 and 2017, you'll have 366 days due to 2016 being a leap year.  This will not
-   * be a valid interval because it is greater than the computed minInterval of 365 days betwen the other years.
+   * be a valid interval because it is greater than the computed minInterval of 365 days between the other years.
    */
   minInterval?: number;
 }
@@ -332,6 +340,7 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 /** @public */
 export type CustomXDomain = (DomainRange & Pick<LogScaleOptions, 'logBase'>) | OrdinalDomain;
 
+/** @public */
 export interface DisplayValueSpec {
   /** Show value label in chart element */
   showValueLabel?: boolean;
@@ -345,9 +354,10 @@ export interface DisplayValueSpec {
   hideClippedValue?: boolean;
 }
 
+/** @public */
 export interface SeriesSpec extends Spec {
-  specType: typeof SpecTypes.Series;
-  chartType: typeof ChartTypes.XYAxis;
+  specType: typeof SpecType.Series;
+  chartType: typeof ChartType.XYAxis;
   /**
    * The name of the spec. Also a mechanism to provide custom series names.
    */
@@ -366,7 +376,7 @@ export interface SeriesSpec extends Spec {
   /** An array of data */
   data: Datum[];
   /** The type of series you are looking to render */
-  seriesType: SeriesTypes;
+  seriesType: SeriesType;
   /** Set colors for specific series */
   color?: SeriesColorAccessor;
   /**
@@ -404,6 +414,7 @@ export interface SeriesSpec extends Spec {
   tickFormat?: TickFormatter;
 }
 
+/** @public */
 export interface Postfixes {
   /**
    * Postfix for y1 accessor when using `y0Accessors`
@@ -426,6 +437,7 @@ export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) 
 /** @public */
 export type SeriesColorAccessor = string | SeriesColorsArray | SeriesColorAccessorFn;
 
+/** @public */
 export interface SeriesAccessors {
   /** The field name of the x value on Datum object */
   xAccessor: Accessor | AccessorFn;
@@ -445,14 +457,21 @@ export interface SeriesAccessors {
   markSizeAccessor?: Accessor | AccessorFn;
 }
 
+/** @public */
 export type XScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
 
+/** @public */
 export interface SeriesScales {
   /**
    * The x axis scale type
    * @defaultValue `ordinal` {@link (ScaleType:type) | ScaleType.Ordinal}
    */
   xScaleType: XScaleType;
+  /**
+   * Extends the x domain so that it starts and ends on nice round values.
+   * @defaultValue `false`
+   */
+  xNice?: boolean;
   /**
    * If using a ScaleType.Time this timezone identifier is required to
    * compute a nice set of xScale ticks. Can be any IANA zone supported by
@@ -466,11 +485,10 @@ export interface SeriesScales {
    */
   yScaleType: ScaleContinuousType;
   /**
-   * if true, the min y value is set to the minimum domain value, 0 otherwise
-   * @deprecated use `domain.fit` instead
+   * Extends the y domain so that it starts and ends on nice round values.
    * @defaultValue `false`
    */
-  yScaleToDataExtent?: boolean;
+  yNice?: boolean;
 }
 
 /** @public */
@@ -486,6 +504,7 @@ export type BasicSeriesSpec = SeriesSpec &
     markFormat?: TickFormatter<number>;
   };
 
+/** @public */
 export type SeriesSpecs<S extends BasicSeriesSpec = BasicSeriesSpec> = Array<S>;
 
 /**
@@ -494,8 +513,8 @@ export type SeriesSpecs<S extends BasicSeriesSpec = BasicSeriesSpec> = Array<S>;
  */
 export type BarSeriesSpec = BasicSeriesSpec &
   Postfixes & {
-    /** @defaultValue `bar` {@link (SeriesTypes:type) | SeriesTypes.Bar} */
-    seriesType: typeof SeriesTypes.Bar;
+    /** @defaultValue `bar` {@link (SeriesType:type) | SeriesType.Bar} */
+    seriesType: typeof SeriesType.Bar;
     /** If true, will stack all BarSeries and align bars to ticks (instead of centered on ticks) */
     enableHistogramMode?: boolean;
     barSeriesStyle?: RecursivePartial<BarSeriesStyle>;
@@ -554,8 +573,8 @@ export type FitConfig = {
  */
 export type LineSeriesSpec = BasicSeriesSpec &
   HistogramConfig & {
-    /** @defaultValue `line` {@link (SeriesTypes:type) | SeriesTypes.Line} */
-    seriesType: typeof SeriesTypes.Line;
+    /** @defaultValue `line` {@link (SeriesType:type) | SeriesType.Line} */
+    seriesType: typeof SeriesType.Line;
     curve?: CurveType;
     lineSeriesStyle?: RecursivePartial<LineSeriesStyle>;
     /**
@@ -574,8 +593,8 @@ export type LineSeriesSpec = BasicSeriesSpec &
  * @alpha
  */
 export type BubbleSeriesSpec = BasicSeriesSpec & {
-  /** @defaultValue `bubble` {@link (SeriesTypes:type) | SeriesTypes.Bubble} */
-  seriesType: typeof SeriesTypes.Bubble;
+  /** @defaultValue `bubble` {@link (SeriesType:type) | SeriesType.Bubble} */
+  seriesType: typeof SeriesType.Bubble;
   bubbleSeriesStyle?: RecursivePartial<BubbleSeriesStyle>;
   /**
    * An optional functional accessor to return custom color or style for point datum
@@ -590,8 +609,8 @@ export type BubbleSeriesSpec = BasicSeriesSpec & {
 export type AreaSeriesSpec = BasicSeriesSpec &
   HistogramConfig &
   Postfixes & {
-    /** @defaultValue `area` {@link (SeriesTypes:type) | SeriesTypes.Area} */
-    seriesType: typeof SeriesTypes.Area;
+    /** @defaultValue `area` {@link (SeriesType:type) | SeriesType.Area} */
+    seriesType: typeof SeriesType.Area;
     /** The type of interpolator to be used to interpolate values between points */
     curve?: CurveType;
     areaSeriesStyle?: RecursivePartial<AreaSeriesStyle>;
@@ -610,6 +629,7 @@ export type AreaSeriesSpec = BasicSeriesSpec &
     fit?: Exclude<Fit, 'explicit'> | FitConfig;
   };
 
+/** @public */
 export interface HistogramConfig {
   /**
    *  Determines how points in the series will align to bands in histogram mode
@@ -618,6 +638,7 @@ export interface HistogramConfig {
   histogramModeAlignment?: HistogramModeAlignment;
 }
 
+/** @public */
 export const HistogramModeAlignments = Object.freeze({
   Start: 'start' as HistogramModeAlignment,
   Center: 'center' as HistogramModeAlignment,
@@ -629,10 +650,11 @@ export type HistogramModeAlignment = 'start' | 'center' | 'end';
 
 /**
  * This spec describe the configuration for a chart axis.
+ * @public
  */
 export interface AxisSpec extends Spec {
-  specType: typeof SpecTypes.Axis;
-  chartType: typeof ChartTypes.XYAxis;
+  specType: typeof SpecType.Axis;
+  chartType: typeof ChartType.XYAxis;
   /** The ID of the spec */
   id: AxisId;
   /** Style options for grid line */
@@ -694,19 +716,20 @@ export type TickFormatterOptions = {
 /** @public */
 export type TickFormatter<V = any> = (value: V, options?: TickFormatterOptions) => string;
 
-export const AnnotationTypes = Object.freeze({
+/** @public */
+export const AnnotationType = Object.freeze({
   Line: 'line' as const,
   Rectangle: 'rectangle' as const,
   Text: 'text' as const,
 });
 /** @public */
-export type AnnotationType = $Values<typeof AnnotationTypes>;
+export type AnnotationType = $Values<typeof AnnotationType>;
 
 /**
  * The domain type enum that can be associated with an annotation
  * @public
  */
-export const AnnotationDomainTypes = Object.freeze({
+export const AnnotationDomainType = Object.freeze({
   XDomain: 'xDomain' as const,
   YDomain: 'yDomain' as const,
 });
@@ -715,7 +738,7 @@ export const AnnotationDomainTypes = Object.freeze({
  * The domain type that can be associated with an annotation
  * @public
  */
-export type AnnotationDomainType = $Values<typeof AnnotationDomainTypes>;
+export type AnnotationDomainType = $Values<typeof AnnotationDomainType>;
 
 /**
  * The descriptive object of a line annotation
@@ -738,13 +761,15 @@ export interface LineAnnotationDatum {
 
 /** @public */
 export type LineAnnotationSpec = BaseAnnotationSpec<
-  typeof AnnotationTypes.Line,
+  typeof AnnotationType.Line,
   LineAnnotationDatum,
   LineAnnotationStyle
 > & {
   domainType: AnnotationDomainType;
-  /** Custom marker */
-  marker?: JSX.Element;
+  /** Optional Custom marker icon centered on data value */
+  marker?: ReactNode | ComponentWithAnnotationDatum;
+  /** Optional marker body, always contained within chart area */
+  markerBody?: ReactNode | ComponentWithAnnotationDatum;
   /**
    * Custom marker dimensions; will be computed internally
    * Any user-supplied values will be overwritten
@@ -779,6 +804,7 @@ export type LineAnnotationSpec = BaseAnnotationSpec<
 
 /**
  * The descriptive object of a rectangular annotation
+ * @public
  */
 export interface RectAnnotationDatum {
   /**
@@ -810,7 +836,7 @@ export interface RectAnnotationDatum {
 
 /** @public */
 export type RectAnnotationSpec = BaseAnnotationSpec<
-  typeof AnnotationTypes.Rectangle,
+  typeof AnnotationType.Rectangle,
   RectAnnotationDatum,
   RectAnnotationStyle
 > & {
@@ -843,14 +869,15 @@ export type AnnotationPortalSettings = TooltipPortalSettings<'chart'> & {
   customTooltipDetails?: AnnotationTooltipFormatter;
 };
 
+/** @public */
 export interface BaseAnnotationSpec<
-  T extends typeof AnnotationTypes.Rectangle | typeof AnnotationTypes.Line,
+  T extends typeof AnnotationType.Rectangle | typeof AnnotationType.Line,
   D extends RectAnnotationDatum | LineAnnotationDatum,
   S extends RectAnnotationStyle | LineAnnotationStyle
 > extends Spec,
     AnnotationPortalSettings {
-  chartType: typeof ChartTypes.XYAxis;
-  specType: typeof SpecTypes.Annotation;
+  chartType: typeof ChartType.XYAxis;
+  specType: typeof SpecType.Annotation;
   /**
    * Annotation type: line, rectangle
    */
@@ -884,32 +911,32 @@ export type AnnotationSpec = LineAnnotationSpec | RectAnnotationSpec;
 
 /** @internal */
 export function isLineAnnotation(spec: AnnotationSpec): spec is LineAnnotationSpec {
-  return spec.annotationType === AnnotationTypes.Line;
+  return spec.annotationType === AnnotationType.Line;
 }
 
 /** @internal */
 export function isRectAnnotation(spec: AnnotationSpec): spec is RectAnnotationSpec {
-  return spec.annotationType === AnnotationTypes.Rectangle;
+  return spec.annotationType === AnnotationType.Rectangle;
 }
 
 /** @internal */
 export function isBarSeriesSpec(spec: BasicSeriesSpec): spec is BarSeriesSpec {
-  return spec.seriesType === SeriesTypes.Bar;
+  return spec.seriesType === SeriesType.Bar;
 }
 
 /** @internal */
 export function isBubbleSeriesSpec(spec: BasicSeriesSpec): spec is BubbleSeriesSpec {
-  return spec.seriesType === SeriesTypes.Bubble;
+  return spec.seriesType === SeriesType.Bubble;
 }
 
 /** @internal */
 export function isLineSeriesSpec(spec: BasicSeriesSpec): spec is LineSeriesSpec {
-  return spec.seriesType === SeriesTypes.Line;
+  return spec.seriesType === SeriesType.Line;
 }
 
 /** @internal */
 export function isAreaSeriesSpec(spec: BasicSeriesSpec): spec is AreaSeriesSpec {
-  return spec.seriesType === SeriesTypes.Area;
+  return spec.seriesType === SeriesType.Area;
 }
 
 /** @internal */

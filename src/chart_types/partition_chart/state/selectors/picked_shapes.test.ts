@@ -19,12 +19,22 @@
 
 import { createStore, Store } from 'redux';
 
+import { Predicate } from '../../../../common/predicate';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs';
-import { SettingsSpec, XYChartElementEvent, PartitionElementEvent, HeatmapElementEvent } from '../../../../specs';
+import {
+  SettingsSpec,
+  XYChartElementEvent,
+  PartitionElementEvent,
+  HeatmapElementEvent,
+  GroupBySpec,
+  SmallMultiplesSpec,
+  WordCloudElementEvent,
+} from '../../../../specs';
 import { updateParentDimensions } from '../../../../state/actions/chart_settings';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../../state/actions/specs';
 import { chartStoreReducer, GlobalChartState } from '../../../../state/chart_state';
+import { Datum } from '../../../../utils/common';
 import { HIERARCHY_ROOT_KEY } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../specs';
 import { partitionGeometries } from './geometries';
@@ -37,6 +47,20 @@ describe('Picked shapes selector', () => {
   }
   function addSeries(store: Store<GlobalChartState>, spec: PartitionSpec, settings?: Partial<SettingsSpec>) {
     store.dispatch(upsertSpec(MockGlobalSpec.settings(settings)));
+    store.dispatch(upsertSpec(spec));
+    store.dispatch(specParsed());
+    store.dispatch(updateParentDimensions({ width: 300, height: 300, top: 0, left: 0 }));
+  }
+  function addSmallMultiplesSeries(
+    store: Store<GlobalChartState>,
+    groupBy: Partial<GroupBySpec>,
+    sm: Partial<SmallMultiplesSpec>,
+    spec: PartitionSpec,
+    settings?: Partial<SettingsSpec>,
+  ) {
+    store.dispatch(upsertSpec(MockGlobalSpec.settings(settings)));
+    store.dispatch(upsertSpec(MockGlobalSpec.groupBy(groupBy)));
+    store.dispatch(upsertSpec(MockGlobalSpec.smallMultiple(sm)));
     store.dispatch(upsertSpec(spec));
     store.dispatch(specParsed());
     store.dispatch(updateParentDimensions({ width: 300, height: 300, top: 0, left: 0 }));
@@ -78,7 +102,7 @@ describe('Picked shapes selector', () => {
   test('treemap check picked geometries', () => {
     const onClickListener = jest.fn<
       undefined,
-      Array<(XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent)[]>
+      Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>[]
     >((): undefined => undefined);
     addSeries(store, treemapSpec, {
       onElementClick: onClickListener,
@@ -98,6 +122,7 @@ describe('Picked shapes selector', () => {
       [
         [
           {
+            smAccessorValue: '',
             groupByRollup: 'b',
             value: 2,
             depth: 1,
@@ -108,6 +133,7 @@ describe('Picked shapes selector', () => {
             ],
           },
           {
+            smAccessorValue: '',
             groupByRollup: 'b',
             value: 1,
             depth: 2,
@@ -126,10 +152,78 @@ describe('Picked shapes selector', () => {
       ],
     ]);
   });
+  test('small multiples pie chart check picked geometries', () => {
+    const onClickListener = jest.fn<
+      undefined,
+      Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>[]
+    >((): undefined => undefined);
+    addSmallMultiplesSeries(
+      store,
+      {
+        id: 'splitGB',
+        by: (_, d: Datum) => d.g1,
+        sort: Predicate.AlphaAsc,
+        format: (d: Datum) => String(d),
+      },
+      { id: 'sm', splitHorizontally: 'splitGB' },
+      MockSeriesSpec.sunburst({
+        smallMultiples: 'sm',
+        valueAccessor: (d: { v: number }) => d.v,
+        data: [
+          { g1: 'a', g2: 'a', v: 1 },
+          { g1: 'a', g2: 'b', v: 1 },
+          { g1: 'b', g2: 'a', v: 1 },
+          { g1: 'b', g2: 'b', v: 1 },
+        ],
+        layers: [
+          {
+            groupByRollup: (datum: { g2: string }) => datum.g2,
+          },
+        ],
+      }),
+      {
+        onElementClick: onClickListener,
+      },
+    );
+    const geometries = partitionGeometries(store.getState())[0];
+    expect(geometries.quadViewModel).toHaveLength(2);
+
+    const onElementClickCaller = createOnElementClickCaller();
+    store.subscribe(() => {
+      onElementClickCaller(store.getState());
+    });
+    const x = 50;
+    const y = 150;
+    store.dispatch(onPointerMove({ x, y }, 0));
+    store.dispatch(onMouseDown({ x, y }, 1));
+    store.dispatch(onMouseUp({ x, y }, 2));
+    expect(onClickListener).toBeCalled();
+    expect(onClickListener.mock.calls[0][0]).toEqual([
+      [
+        [
+          {
+            smAccessorValue: 'a',
+            groupByRollup: 'a',
+            value: 1,
+            depth: 1,
+            sortIndex: 0,
+            path: [
+              { index: 0, value: HIERARCHY_ROOT_KEY },
+              { index: 0, value: 'a' },
+            ],
+          },
+        ],
+        {
+          specId: sunburstSpec.id,
+          key: `spec{${sunburstSpec.id}}`,
+        },
+      ],
+    ]);
+  });
   test('sunburst check picked geometries', () => {
     const onClickListener = jest.fn<
       undefined,
-      Array<(XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent)[]>
+      Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>[]
     >((): undefined => undefined);
     addSeries(store, sunburstSpec, {
       onElementClick: onClickListener,
@@ -149,6 +243,7 @@ describe('Picked shapes selector', () => {
       [
         [
           {
+            smAccessorValue: '',
             groupByRollup: 'b',
             value: 2,
             depth: 1,
@@ -159,6 +254,7 @@ describe('Picked shapes selector', () => {
             ],
           },
           {
+            smAccessorValue: '',
             groupByRollup: 'b',
             value: 1,
             depth: 2,

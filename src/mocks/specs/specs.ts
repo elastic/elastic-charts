@@ -17,8 +17,7 @@
  * under the License.
  */
 
-import { ChartTypes } from '../../chart_types';
-import { Predicate } from '../../chart_types/heatmap/utils/common';
+import { ChartType } from '../../chart_types';
 import { config, percentFormatter } from '../../chart_types/partition_chart/layout/config';
 import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';
 import { ShapeTreeNode } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
@@ -33,26 +32,27 @@ import {
   HistogramBarSeriesSpec,
   LineSeriesSpec,
   BasicSeriesSpec,
-  SeriesTypes,
+  SeriesType,
   BubbleSeriesSpec,
   LineAnnotationSpec,
   RectAnnotationSpec,
-  AnnotationTypes,
-  AnnotationDomainTypes,
+  AnnotationType,
+  AnnotationDomainType,
   AxisSpec,
 } from '../../chart_types/xy_chart/utils/specs';
+import { Predicate } from '../../common/predicate';
 import { ScaleType } from '../../scales/constants';
-import { SettingsSpec, SpecTypes, DEFAULT_SETTINGS_SPEC, SmallMultiplesSpec, GroupBySpec, Spec } from '../../specs';
+import { SettingsSpec, SpecType, DEFAULT_SETTINGS_SPEC, SmallMultiplesSpec, GroupBySpec, Spec } from '../../specs';
 import { Datum, mergePartial, Position, RecursivePartial } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 
 /** @internal */
 export class MockSeriesSpec {
   private static readonly barBase: BarSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: 'spec1',
-    seriesType: SeriesTypes.Bar,
+    seriesType: SeriesType.Bar,
     groupId: DEFAULT_GLOBAL_ID,
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -64,10 +64,10 @@ export class MockSeriesSpec {
   };
 
   private static readonly histogramBarBase: HistogramBarSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: 'spec1',
-    seriesType: SeriesTypes.Bar,
+    seriesType: SeriesType.Bar,
     groupId: DEFAULT_GLOBAL_ID,
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -79,10 +79,10 @@ export class MockSeriesSpec {
   };
 
   private static readonly areaBase: AreaSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: 'spec1',
-    seriesType: SeriesTypes.Area,
+    seriesType: SeriesType.Area,
     groupId: DEFAULT_GLOBAL_ID,
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -94,10 +94,10 @@ export class MockSeriesSpec {
   };
 
   private static readonly lineBase: LineSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: 'spec1',
-    seriesType: SeriesTypes.Line,
+    seriesType: SeriesType.Line,
     groupId: DEFAULT_GLOBAL_ID,
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -109,10 +109,10 @@ export class MockSeriesSpec {
   };
 
   private static readonly bubbleBase: BubbleSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: 'spec1',
-    seriesType: SeriesTypes.Bubble,
+    seriesType: SeriesType.Bubble,
     groupId: DEFAULT_GLOBAL_ID,
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
@@ -123,8 +123,8 @@ export class MockSeriesSpec {
   };
 
   private static readonly sunburstBase: PartitionSpec = {
-    chartType: ChartTypes.Partition,
-    specType: SpecTypes.Series,
+    chartType: ChartType.Partition,
+    specType: SpecType.Series,
     id: 'spec1',
     config: {
       ...config,
@@ -135,6 +135,7 @@ export class MockSeriesSpec {
     valueFormatter: (d: number): string => String(d),
     percentFormatter,
     topGroove: 0,
+    smallMultiples: null,
     layers: [
       {
         groupByRollup: (d: Datum, i: number) => i,
@@ -147,8 +148,8 @@ export class MockSeriesSpec {
   };
 
   private static readonly treemapBase: PartitionSpec = {
-    chartType: ChartTypes.Partition,
-    specType: SpecTypes.Series,
+    chartType: ChartType.Partition,
+    specType: SpecType.Series,
     id: 'spec1',
     config: {
       ...config,
@@ -159,6 +160,7 @@ export class MockSeriesSpec {
     valueFormatter: (d: number): string => String(d),
     percentFormatter,
     topGroove: 20,
+    smallMultiples: null,
     layers: [
       {
         groupByRollup: (d: Datum, i: number) => i,
@@ -216,17 +218,17 @@ export class MockSeriesSpec {
     });
   }
 
-  static byType(type?: SeriesTypes | 'histogram'): BasicSeriesSpec {
+  static byType(type?: SeriesType | 'histogram'): BasicSeriesSpec {
     switch (type) {
-      case SeriesTypes.Line:
+      case SeriesType.Line:
         return MockSeriesSpec.lineBase;
-      case SeriesTypes.Area:
+      case SeriesType.Area:
         return MockSeriesSpec.areaBase;
-      case SeriesTypes.Bubble:
+      case SeriesType.Bubble:
         return MockSeriesSpec.bubbleBase;
       case 'histogram':
         return MockSeriesSpec.histogramBarBase;
-      case SeriesTypes.Bar:
+      case SeriesType.Bar:
       default:
         return MockSeriesSpec.barBase;
     }
@@ -247,6 +249,7 @@ export class MockSeriesSpec {
   }
 }
 
+/** @internal */
 export class MockSeriesSpecs {
   static fromSpecs(specs: BasicSeriesSpec[]): SeriesSpecs {
     return specs;
@@ -272,8 +275,8 @@ export class MockGlobalSpec {
 
   private static readonly axisBase: AxisSpec = {
     id: 'yAxis',
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Axis,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Axis,
     groupId: DEFAULT_GLOBAL_ID,
     hide: false,
     showOverlappingTicks: false,
@@ -296,18 +299,18 @@ export class MockGlobalSpec {
 
   private static readonly smallMultipleBase: SmallMultiplesSpec = {
     id: 'smallMultiple',
-    chartType: ChartTypes.Global,
-    specType: SpecTypes.SmallMultiples,
+    chartType: ChartType.Global,
+    specType: SpecType.SmallMultiples,
     style: {
-      verticalPanelPadding: [0, 0],
-      horizontalPanelPadding: [0, 0],
+      verticalPanelPadding: { outer: 0, inner: 0 },
+      horizontalPanelPadding: { outer: 0, inner: 0 },
     },
   };
 
   private static readonly groupByBase: GroupBySpec = {
     id: 'groupBy',
-    chartType: ChartTypes.Global,
-    specType: SpecTypes.IndexOrder,
+    chartType: ChartType.Global,
+    specType: SpecType.IndexOrder,
     by: ({ id }: Spec) => id,
     sort: Predicate.DataIndex,
   };
@@ -344,19 +347,19 @@ export class MockAnnotationSpec {
   private static readonly lineBase: LineAnnotationSpec = {
     id: 'line_annotation_1',
     groupId: DEFAULT_GLOBAL_ID,
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Annotation,
-    annotationType: AnnotationTypes.Line,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Annotation,
+    annotationType: AnnotationType.Line,
     dataValues: [],
-    domainType: AnnotationDomainTypes.XDomain,
+    domainType: AnnotationDomainType.XDomain,
   };
 
   private static readonly rectBase: RectAnnotationSpec = {
     id: 'rect_annotation_1',
     groupId: DEFAULT_GLOBAL_ID,
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Annotation,
-    annotationType: AnnotationTypes.Rectangle,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Annotation,
+    annotationType: AnnotationType.Rectangle,
     dataValues: [],
   };
 

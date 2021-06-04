@@ -1,19 +1,14 @@
 .echLegend {
-  &--top,
-  &--bottom {
+  .echLegendList {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  &--horizontal {
     .echLegendList {
-      display: grid;
       grid-column-gap: $echLegendColumnGap;
       grid-row-gap: $echLegendRowGap;
       margin-top: $echLegendRowGap;
       margin-bottom: $echLegendRowGap;
-    }
-  }
-
-  &--left,
-  &--right {
-    .echLegendList {
-      flex-direction: column;
     }
   }
 
@@ -37,10 +32,6 @@
     width: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-
-    .echLegendItem--right :focus {
-      margin-right: $euiSizeXS;
-    }
 
     :focus {
       @include euiFocusRing;

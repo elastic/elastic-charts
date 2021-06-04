@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import { MockAnnotationRectProps } from '../../../../mocks/annotations/annotations';
 import { Dimensions } from '../../../../utils/dimensions';
-import { AnnotationTypes } from '../../utils/specs';
+import { AnnotationType } from '../../utils/specs';
 import { AnnotationTooltipState } from '../types';
 import { getRectAnnotationTooltipState } from './tooltip';
 import { AnnotationRectProps } from './types';
@@ -43,10 +44,12 @@ describe('Rect annotation tooltip', () => {
     const visibleTooltip = getRectAnnotationTooltipState(cursorPosition, annotationRects, 0, chartDimensions);
     const expectedVisibleTooltipState: AnnotationTooltipState = {
       isVisible: true,
-      annotationType: AnnotationTypes.Rectangle,
+      annotationType: AnnotationType.Rectangle,
       anchor: {
-        top: cursorPosition.y,
-        left: cursorPosition.x,
+        x: cursorPosition.x,
+        y: cursorPosition.y,
+        width: 0,
+        height: 0,
       },
       datum: { coordinates: { x0: 0, x1: 10, y0: 0, y1: 10 } },
     };

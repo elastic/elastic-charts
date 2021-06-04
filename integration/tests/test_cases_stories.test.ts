@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { eachRotation } from '../helpers';
 import { common } from '../page_objects';
 
 describe('Test cases stories', () => {
@@ -25,7 +26,6 @@ describe('Test cases stories', () => {
       'http://localhost:9001/?path=/story/test-cases--no-series&knob-Show custom no results=true',
       {
         waitSelector: '.echReactiveChart_noResults .euiIcon:not(.euiIcon-isLoading)',
-        delay: 500, // wait for icon to load
       },
     );
   });
@@ -36,4 +36,12 @@ describe('Test cases stories', () => {
       { waitSelector: '.echReactiveChart_noResults' },
     );
   });
+});
+
+describe('annotation marker rotation', () => {
+  eachRotation.it(async (rotation) => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      `http://localhost:9001/iframe.html?id=test-cases--no-axes-annotation-bug-fix&knob-horizontal marker position=undefined&knob-vertical marker position=undefined&knob-chartRotation=${rotation}`,
+    );
+  }, 'should render marker with annotations with %s degree rotations');
 });

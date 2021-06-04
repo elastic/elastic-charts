@@ -28,6 +28,7 @@ import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/the
 import { DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
 import { DEFAULT_HIGHLIGHT_PADDING } from './constants';
 
+/** @internal */
 export interface MarkSizeOptions {
   enabled: boolean;
   ratio?: number;
@@ -183,18 +184,32 @@ export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
     return (
       yValue !== null &&
       !((isLogScale && domainPolarity >= 0 && yValue <= 0) || (domainPolarity < 0 && yValue >= 0)) &&
-      xScale.isValueInDomain(datum.x) &&
-      yScale.isValueInDomain(yValue)
+      xScale.isValueInDomain(datum.x)
     );
   };
 }
 
 /** @internal */
+export const CHROME_PINCH_BUG_EPSILON = 0.5;
+/**
+ * Temporary fix for Chromium bug
+ * Shift a small pixel value when pixel diff is <= 0.5px
+ * https://github.com/elastic/elastic-charts/issues/1053
+ * https://bugs.chromium.org/p/chromium/issues/detail?id=1163912
+ */
+function chromeRenderBugBuffer(y1: number, y0: number): number {
+  const diff = Math.abs(y1 - y0);
+  return diff <= CHROME_PINCH_BUG_EPSILON ? 0.5 : 0;
+}
+
+/** @internal */
 export function getY1ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatum) => number {
   const datumAccessor = getYDatumValueFn();
+  const scaleY0Value = getY0ScaledValueOrThrowFn(yScale);
   return (datum) => {
-    const yValue = datumAccessor(datum);
-    return yScale.scaleOrThrow(yValue);
+    const y1Value = yScale.scaleOrThrow(datumAccessor(datum));
+    const y0Value = scaleY0Value(datum);
+    return y1Value - chromeRenderBugBuffer(y1Value, y0Value);
   };
 }
 

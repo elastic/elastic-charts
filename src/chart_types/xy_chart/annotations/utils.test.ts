@@ -20,8 +20,8 @@
 import { MockGlobalSpec } from '../../../mocks/specs';
 import { Position, Rotation } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
-import { AnnotationDomainTypes } from '../utils/specs';
-import { getAnnotationAxis, getTransformedCursor, invertTranformedCursor } from './utils';
+import { AnnotationDomainType } from '../utils/specs';
+import { getAnnotationAxis, getTransformedCursor, invertTransformedCursor } from './utils';
 
 describe('Annotation utils', () => {
   const groupId = 'foo-group';
@@ -38,15 +38,15 @@ describe('Annotation utils', () => {
   });
 
   test('should get associated axis for an annotation', () => {
-    const noAxis = getAnnotationAxis([], groupId, AnnotationDomainTypes.XDomain, 0);
+    const noAxis = getAnnotationAxis([], groupId, AnnotationDomainType.XDomain, 0);
     expect(noAxis).toBeUndefined();
 
     const localAxesSpecs = [horizontalAxisSpec, verticalAxisSpec];
 
-    const xAnnotationAxisPosition = getAnnotationAxis(localAxesSpecs, groupId, AnnotationDomainTypes.XDomain, 0);
+    const xAnnotationAxisPosition = getAnnotationAxis(localAxesSpecs, groupId, AnnotationDomainType.XDomain, 0);
     expect(xAnnotationAxisPosition).toEqual(Position.Bottom);
 
-    const yAnnotationAxisPosition = getAnnotationAxis(localAxesSpecs, groupId, AnnotationDomainTypes.YDomain, 0);
+    const yAnnotationAxisPosition = getAnnotationAxis(localAxesSpecs, groupId, AnnotationDomainType.YDomain, 0);
     expect(yAnnotationAxisPosition).toEqual(Position.Left);
   });
 
@@ -74,7 +74,7 @@ describe('Annotation utils', () => {
     };
     it.each<Rotation>([0, 90, -90, 180])('Should invert rotated cursor - rotation %d', (rotation) => {
       expect(
-        invertTranformedCursor(
+        invertTransformedCursor(
           getTransformedCursor(cursorPosition, chartDimensions, rotation),
           chartDimensions,
           rotation,
@@ -84,7 +84,7 @@ describe('Annotation utils', () => {
 
     it.each<Rotation>([0, 90, -90, 180])('Should invert rotated projected cursor - rotation %d', (rotation) => {
       expect(
-        invertTranformedCursor(
+        invertTransformedCursor(
           getTransformedCursor(cursorPosition, chartDimensions, rotation, true),
           chartDimensions,
           rotation,

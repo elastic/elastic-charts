@@ -19,22 +19,21 @@
 
 import React from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
-import { SpecTypes } from '../../../specs/constants';
+import { SpecType } from '../../../specs/constants';
 import { specComponentFactory, getConnect } from '../../../state/spec_factory';
-import { AreaSeriesSpec, HistogramModeAlignments, DEFAULT_GLOBAL_ID, SeriesTypes } from '../utils/specs';
+import { AreaSeriesSpec, HistogramModeAlignments, DEFAULT_GLOBAL_ID, SeriesType } from '../utils/specs';
 
 const defaultProps = {
-  chartType: ChartTypes.XYAxis,
-  specType: SpecTypes.Series,
-  seriesType: SeriesTypes.Area,
+  chartType: ChartType.XYAxis,
+  specType: SpecType.Series,
+  seriesType: SeriesType.Area,
   groupId: DEFAULT_GLOBAL_ID,
   xScaleType: ScaleType.Linear,
   yScaleType: ScaleType.Linear,
   xAccessor: 'x',
   yAccessors: ['y'],
-  yScaleToDataExtent: false,
   hideInLegend: false,
   histogramModeAlignment: HistogramModeAlignments.Center,
 };
@@ -42,6 +41,7 @@ const defaultProps = {
 type SpecRequiredProps = Pick<AreaSeriesSpec, 'id' | 'data'>;
 type SpecOptionalProps = Partial<Omit<AreaSeriesSpec, 'chartType' | 'specType' | 'seriesType' | 'id' | 'data'>>;
 
+/** @public */
 export const AreaSeries: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     AreaSeriesSpec,
@@ -51,7 +51,6 @@ export const AreaSeries: React.FunctionComponent<SpecRequiredProps & SpecOptiona
     | 'yScaleType'
     | 'xAccessor'
     | 'yAccessors'
-    | 'yScaleToDataExtent'
     | 'hideInLegend'
     | 'histogramModeAlignment'
   >(defaultProps),

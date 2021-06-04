@@ -24,18 +24,22 @@ import { Font, FontFamily, PartialFont, TextContrast } from '../../../../common/
 import { Color, StrokeStyle, ValueFormatter } from '../../../../utils/common';
 import { PerSideDistance } from '../../../../utils/dimensions';
 
+/** @public */
 export const PartitionLayout = Object.freeze({
   sunburst: 'sunburst' as const,
   treemap: 'treemap' as const,
   icicle: 'icicle' as const,
   flame: 'flame' as const,
+  mosaic: 'mosaic' as const,
 });
 
 /** @public */
 export type PartitionLayout = Values<typeof PartitionLayout>; // could use ValuesType<typeof HierarchicalChartTypes>
 
+/** @public */
 export type PerSidePadding = PerSideDistance;
 
+/** @public */
 export type Padding = Pixels | Partial<PerSidePadding>;
 
 interface LabelConfig extends Font {
@@ -53,6 +57,7 @@ export interface FillLabelConfig extends LabelConfig {
   clipText: boolean;
 }
 
+/** @public */
 export interface LinkLabelConfig extends LabelConfig {
   fontSize: Pixels; // todo consider putting it in Font
   maximumSection: Distance; // use linked labels below this limit
@@ -67,6 +72,7 @@ export interface LinkLabelConfig extends LabelConfig {
   maxTextLength: number;
 }
 
+/** @public */
 export interface FillFontSizeRange {
   minFontSize: Pixels;
   maxFontSize: Pixels;
@@ -79,12 +85,21 @@ export interface FillFontSizeRange {
   maximizeFontSize: boolean;
 }
 
+/** @public */
+export interface RelativeMargins {
+  left: SizeRatio;
+  right: SizeRatio;
+  top: SizeRatio;
+  bottom: SizeRatio;
+}
+
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
+/** @public */
 export interface StaticConfig extends FillFontSizeRange {
   // shape geometry
   width: number;
   height: number;
-  margin: { left: SizeRatio; right: SizeRatio; top: SizeRatio; bottom: SizeRatio };
+  margin: RelativeMargins;
   emptySizeRatio: SizeRatio;
   outerSizeRatio: SizeRatio;
   clockwiseSectors: boolean;
@@ -117,6 +132,7 @@ export interface StaticConfig extends FillFontSizeRange {
   sectorLineStroke: StrokeStyle;
 }
 
+/** @alpha */
 export type EasingFunction = (x: Ratio) => Ratio;
 
 /** @alpha */
@@ -126,6 +142,7 @@ export interface AnimKeyframe {
   keyframeConfig: Partial<StaticConfig>;
 }
 
+/** @public */
 export interface Config extends StaticConfig {
   /** @alpha */
   animation: {

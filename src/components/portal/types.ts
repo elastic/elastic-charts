@@ -50,12 +50,24 @@ export const Placement = Object.freeze({
 export type Placement = $Values<typeof Placement>;
 
 /** @internal */
-export interface AnchorPosition {
-  left: number;
-  top: number;
-  width?: number;
-  height?: number;
-}
+export type AnchorPosition = {
+  /**
+   * the right position of anchor
+   */
+  x: number;
+  /**
+   * the top position of the anchor
+   */
+  y: number;
+  /**
+   * the width of the anchor
+   */
+  width: number;
+  /**
+   * the height of the anchor
+   */
+  height: number;
+};
 
 /**
  * Used to position tooltip relative to invisible anchor via ref element
@@ -70,7 +82,7 @@ export interface PortalAnchorRef {
   /**
    * Anchor ref element to use as position reference
    *
-   * @default document.body
+   * @defaultValue document.body
    */
   ref: HTMLElement | null;
 }
@@ -104,13 +116,14 @@ export interface TooltipPortalSettings<B = never> {
   boundary?: HTMLElement | B;
   /**
    * Boundary element padding.
-   * Used to reduce extents of boundary placement when magins or paddings are used on boundary
+   * Used to reduce extents of boundary placement when margins or paddings are used on boundary
    *
    * @defaultValue 0
    */
   boundaryPadding?: Partial<Padding> | number;
   /**
    * Custom tooltip offset
+   * @defaultValue 10
    */
   offset?: number;
 }

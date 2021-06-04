@@ -29,13 +29,15 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
+import { GroupByAccessor, SmallMultiplesStyle } from '../../../../specs';
 import { StrokeStyle, ValueFormatter, Color, RecursivePartial } from '../../../../utils/common';
 import { Layer } from '../../specs';
-import { MODEL_KEY, percentValueGetter } from '../config';
+import { config as defaultConfig, MODEL_KEY, percentValueGetter } from '../config';
 import { Config, FillLabelConfig, PartitionLayout } from '../types/config_types';
 import {
   nullShapeViewModel,
   OutsideLinksViewModel,
+  PartitionSmallMultiplesModel,
   PickFunction,
   QuadViewModel,
   RawTextGetter,
@@ -58,7 +60,7 @@ import {
   pathAccessor,
 } from '../utils/group_by_rollup';
 import { sunburst } from '../utils/sunburst';
-import { getTopPadding, treemap } from '../utils/treemap';
+import { getTopPadding, LayerLayout, treemap } from '../utils/treemap';
 import {
   fillTextLayout,
   getRectangleRowGeometry,
@@ -67,6 +69,28 @@ import {
   nodeId,
 } from './fill_text_layout';
 import { linkTextLayout } from './link_text_layout';
+
+/** @internal */
+export const isMosaic = (p: PartitionLayout | undefined) => p === PartitionLayout.mosaic;
+
+/** @internal */
+export const isTreemap = (p: PartitionLayout | undefined) => p === PartitionLayout.treemap;
+
+/** @internal */
+export const isSunburst = (p: PartitionLayout | undefined) => p === PartitionLayout.sunburst;
+
+/** @internal */
+export const isIcicle = (p: PartitionLayout | undefined) => p === PartitionLayout.icicle;
+
+/** @internal */
+export const isFlame = (p: PartitionLayout | undefined) => p === PartitionLayout.flame;
+
+/** @internal */
+export const isLinear = (p: PartitionLayout | undefined) => isFlame(p) || isIcicle(p);
+
+/** @internal */
+export const isSimpleLinear = (config: RecursivePartial<Config>, layers: Layer[]) =>
+  isLinear(config.partitionLayout) && layers.every((l) => l.fillLabel?.clipText ?? config.fillLabel?.clipText);
 
 function grooveAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
@@ -80,13 +104,19 @@ function rectangleFillOrigins(n: ShapeTreeNode): PointTuple {
   return [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
 }
 
-/** potential internal */
+/**
+ * @internal
+ */
 export const ringSectorInnerRadius = (n: ShapeTreeNode): Radius => n.y0px;
 
-/** potential internal */
+/**
+ * @internal
+ */
 export const ringSectorOuterRadius = (n: ShapeTreeNode): Radius => n.y1px;
 
-/** potential internal */
+/**
+ * @internal
+ */
 export const ringSectorMiddleRadius = (n: ShapeTreeNode): Radius => n.yMidPx;
 
 function sectorFillOrigins(fillOutside: boolean) {
@@ -110,6 +140,9 @@ export function makeQuadViewModel(
   layers: Layer[],
   sectorLineWidth: Pixels,
   sectorLineStroke: StrokeStyle,
+  smAccessorValue: ReturnType<GroupByAccessor>,
+  index: number,
+  innerIndex: number,
   fillLabel: FillLabelConfig,
   isSunburstLayout: boolean,
   containerBackgroundColor?: Color,
@@ -130,7 +163,7 @@ export function makeQuadViewModel(
       !isSunburstLayout && textNegligible
         ? 'transparent'
         : fillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor);
-    return { strokeWidth, strokeStyle, fillColor, textColor: color, ...node };
+    return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor: color, ...node };
   });
 }
 
@@ -206,15 +239,23 @@ const rawChildNodes = (
       return sunburst(tree, sunburstAreaAccessor, { x0: 0, y0: -1 }, clockwiseSectors, specialFirstInnermostSector);
 
     case PartitionLayout.treemap:
-      const treemapInnerArea = isTreemap(partitionLayout) ? width * height : 1; // assuming 1 x 1 unit square
+    case PartitionLayout.mosaic:
+      const treemapInnerArea = width * height; // assuming 1 x 1 unit square
       const treemapValueToAreaScale = treemapInnerArea / totalValue;
       const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);
-      return treemap(tree, treemapAreaAccessor, topGrooveAccessor(topGroove), grooveAccessor, {
-        x0: 0,
-        y0: 0,
-        width,
-        height,
-      });
+      return treemap(
+        tree,
+        treemapAreaAccessor,
+        topGrooveAccessor(topGroove),
+        grooveAccessor,
+        {
+          x0: 0,
+          y0: 0,
+          width,
+          height,
+        },
+        isMosaic(partitionLayout) ? [LayerLayout.vertical, LayerLayout.horizontal] : [],
+      );
 
     case PartitionLayout.icicle:
     case PartitionLayout.flame:
@@ -236,23 +277,13 @@ const rawChildNodes = (
 };
 
 /** @internal */
-export const isTreemap = (p: PartitionLayout | undefined) => p === PartitionLayout.treemap;
+export type PanelPlacement = PartitionSmallMultiplesModel;
 
-/** @internal */
-export const isSunburst = (p: PartitionLayout | undefined) => p === PartitionLayout.sunburst;
-
-/** @internal */
-export const isIcicle = (p: PartitionLayout | undefined) => p === PartitionLayout.icicle;
-
-/** @internal */
-export const isFlame = (p: PartitionLayout | undefined) => p === PartitionLayout.flame;
-
-/** @internal */
-export const isLinear = (p: PartitionLayout | undefined) => isFlame(p) || isIcicle(p);
-
-/** @internal */
-export const isSimpleLinear = (config: RecursivePartial<Config>, layers: Layer[]) =>
-  isLinear(config.partitionLayout) && layers.every((l) => l.fillLabel?.clipText ?? config.fillLabel?.clipText);
+/**
+ * Todo move it to config
+ * @internal
+ */
+export const panelTitleFontSize = 16;
 
 /** @internal */
 export function shapeViewModel(
@@ -265,12 +296,13 @@ export function shapeViewModel(
   valueGetter: ValueGetterFunction,
   tree: HierarchyOfArrays,
   topGroove: Pixels,
-  containerBackgroundColor?: Color,
+  containerBackgroundColor: Color,
+  smallMultiplesStyle: SmallMultiplesStyle,
+  panel: PanelPlacement,
 ): ShapeViewModel {
   const {
     width,
     height,
-    margin,
     emptySizeRatio,
     outerSizeRatio,
     fillOutside,
@@ -281,10 +313,11 @@ export function shapeViewModel(
     partitionLayout,
     sectorLineWidth,
   } = config;
-  const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
-  const innerHeight = height * (1 - Math.min(1, margin.top + margin.bottom));
+
+  const { marginLeftPx, marginTopPx, panelInnerWidth, panelInnerHeight } = panel;
 
   const treemapLayout = isTreemap(partitionLayout);
+  const mosaicLayout = isMosaic(partitionLayout);
   const sunburstLayout = isSunburst(partitionLayout);
   const icicleLayout = isIcicle(partitionLayout);
   const flameLayout = isFlame(partitionLayout);
@@ -292,10 +325,14 @@ export function shapeViewModel(
 
   const diskCenter = isSunburst(partitionLayout)
     ? {
-        x: width * margin.left + innerWidth / 2,
-        y: height * margin.top + innerHeight / 2,
+        x: marginLeftPx + panelInnerWidth / 2,
+        y: marginTopPx + panelInnerHeight / 2,
       }
-    : { x: width * margin.left, y: height * margin.top };
+    : {
+        x: marginLeftPx,
+        y: marginTopPx,
+      };
+
   // don't render anything if the total, the width or height is not positive
   if (!(width > 0) || !(height > 0) || tree.length === 0) {
     return nullShapeViewModel(config, diskCenter);
@@ -308,8 +345,8 @@ export function shapeViewModel(
     partitionLayout,
     tree,
     topGroove,
-    width,
-    height,
+    panelInnerWidth,
+    panelInnerHeight,
     clockwiseSectors,
     specialFirstInnermostSector,
     maxDepth,
@@ -322,7 +359,10 @@ export function shapeViewModel(
   });
 
   // use the smaller of the two sizes, as a circle fits into a square
-  const circleMaximumSize = Math.min(innerWidth, innerHeight);
+  const circleMaximumSize = Math.min(
+    panelInnerWidth,
+    panelInnerHeight - (panel.panelTitle.length > 0 ? panelTitleFontSize * 2 : 0),
+  );
   const outerRadius: Radius = Math.min(outerSizeRatio * circleMaximumSize, circleMaximumSize - sectorLineWidth) / 2;
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
   const treeHeight = shownChildNodes.reduce((p: number, n: Part) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
@@ -333,6 +373,9 @@ export function shapeViewModel(
     layers,
     config.sectorLineWidth,
     config.sectorLineStroke,
+    panel.smAccessorValue,
+    panel.index,
+    panel.innerIndex,
     config.fillLabel,
     sunburstLayout,
     containerBackgroundColor,
@@ -362,7 +405,7 @@ export function shapeViewModel(
     : simpleLinear
     ? () => [] // no multirow layout needed for simpleLinear partitions
     : fillTextLayout(
-        rectangleConstruction(treeHeight, treemapLayout ? topGroove : null),
+        rectangleConstruction(treeHeight, treemapLayout || mosaicLayout ? topGroove : null),
         getRectangleRowGeometry,
         () => 0,
       );
@@ -376,7 +419,7 @@ export function shapeViewModel(
     layers,
     textFillOrigins,
     !sunburstLayout,
-    !treemapLayout,
+    !(treemapLayout || mosaicLayout),
   );
 
   // whiskers (ie. just lines, no text) for fill text outside the outer radius
@@ -386,7 +429,7 @@ export function shapeViewModel(
   const currentY = [-height, -height, -height, -height];
 
   const nodesWithoutRoom =
-    fillOutside || treemapLayout || icicleLayout || flameLayout
+    fillOutside || treemapLayout || mosaicLayout || icicleLayout || flameLayout
       ? [] // outsideFillNodes and linkLabels are in inherent conflict due to very likely overlaps
       : quadViewModel.filter((n: ShapeTreeNode) => {
           const id = nodeId(n);
@@ -396,8 +439,8 @@ export function shapeViewModel(
         });
   const maxLinkedLabelTextLength = config.linkLabel.maxTextLength;
   const linkLabelViewModels = linkTextLayout(
-    width,
-    height,
+    panelInnerWidth,
+    panelInnerHeight,
     textMeasure,
     config,
     nodesWithoutRoom,
@@ -407,7 +450,10 @@ export function shapeViewModel(
     valueGetter,
     valueFormatter,
     maxLinkedLabelTextLength,
-    diskCenter,
+    {
+      x: width * panel.left + panelInnerWidth / 2,
+      y: height * panel.top + panelInnerHeight / 2,
+    },
     containerBackgroundColor,
   );
 
@@ -430,6 +476,24 @@ export function shapeViewModel(
 
   // combined viewModel
   return {
+    partitionLayout: config?.partitionLayout ?? defaultConfig.partitionLayout,
+    smAccessorValue: panel.smAccessorValue,
+    panelTitle: panel.panelTitle,
+    index: panel.index,
+    innerIndex: panel.innerIndex,
+    width: panel.width,
+    height: panel.height,
+    top: panel.top,
+    left: panel.left,
+    innerRowCount: panel.innerRowCount,
+    innerColumnCount: panel.innerColumnCount,
+    innerRowIndex: panel.innerRowIndex,
+    innerColumnIndex: panel.innerColumnIndex,
+    marginLeftPx: panel.marginLeftPx,
+    marginTopPx: panel.marginTopPx,
+    panelInnerWidth: panel.panelInnerWidth,
+    panelInnerHeight: panel.panelInnerHeight,
+
     config,
     layers,
     diskCenter,

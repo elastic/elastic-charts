@@ -17,12 +17,14 @@
  * under the License.
  */
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
+import { MockGlobalSpec } from '../../../mocks/specs/specs';
 import { ScaleType } from '../../../scales/constants';
-import { SpecTypes } from '../../../specs/constants';
+import { SpecType } from '../../../specs/constants';
+import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_configs';
 import { computeSeriesDomains } from '../state/utils/utils';
 import { computeXScale } from '../utils/scales';
-import { BasicSeriesSpec, SeriesTypes } from '../utils/specs';
+import { BasicSeriesSpec, SeriesType } from '../utils/specs';
 import { getSnapPosition } from './crosshair_utils';
 
 describe('Crosshair utils ordinal scales', () => {
@@ -32,11 +34,11 @@ describe('Crosshair utils ordinal scales', () => {
   const lineSeries2SpecId = 'lineSeries2';
 
   const barSeries1: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: barSeries1SpecId,
     groupId: 'group1',
-    seriesType: SeriesTypes.Bar,
+    seriesType: SeriesType.Bar,
     data: [
       ['a', 0],
       ['b', 0],
@@ -48,11 +50,11 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleType: ScaleType.Linear,
   };
   const barSeries2: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: barSeries2SpecId,
     groupId: 'group1',
-    seriesType: SeriesTypes.Bar,
+    seriesType: SeriesType.Bar,
     data: [
       ['a', 2],
       ['b', 2],
@@ -64,11 +66,11 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleType: ScaleType.Linear,
   };
   const lineSeries1: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: lineSeries1SpecId,
     groupId: 'group1',
-    seriesType: SeriesTypes.Line,
+    seriesType: SeriesType.Line,
     data: [
       ['a', 0],
       ['b', 0],
@@ -80,11 +82,11 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleType: ScaleType.Linear,
   };
   const lineSeries2: BasicSeriesSpec = {
-    chartType: ChartTypes.XYAxis,
-    specType: SpecTypes.Series,
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Series,
     id: lineSeries2SpecId,
     groupId: 'group1',
-    seriesType: SeriesTypes.Line,
+    seriesType: SeriesType.Line,
     data: [
       ['a', 2],
       ['b', 2],
@@ -96,22 +98,36 @@ describe('Crosshair utils ordinal scales', () => {
     yScaleType: ScaleType.Linear,
   };
 
-  const domainGroup = new Map([['group1', { fit: true }]]);
-
   const barSeries = [barSeries1];
-  const barSeriesDomains = computeSeriesDomains(barSeries, domainGroup);
+
+  const barSeriesDomains = computeSeriesDomains(
+    barSeries,
+    getScaleConfigsFromSpecs([], barSeries, MockGlobalSpec.settings()),
+  );
 
   const multiBarSeries = [barSeries1, barSeries2];
-  const multiBarSeriesDomains = computeSeriesDomains(multiBarSeries, domainGroup);
+  const multiBarSeriesDomains = computeSeriesDomains(
+    multiBarSeries,
+    getScaleConfigsFromSpecs([], multiBarSeries, MockGlobalSpec.settings()),
+  );
 
   const lineSeries = [lineSeries1];
-  const lineSeriesDomains = computeSeriesDomains(lineSeries, domainGroup);
+  const lineSeriesDomains = computeSeriesDomains(
+    lineSeries,
+    getScaleConfigsFromSpecs([], lineSeries, MockGlobalSpec.settings()),
+  );
 
   const multiLineSeries = [lineSeries1, lineSeries2];
-  const multiLineSeriesDomains = computeSeriesDomains(multiLineSeries, domainGroup);
+  const multiLineSeriesDomains = computeSeriesDomains(
+    multiLineSeries,
+    getScaleConfigsFromSpecs([], multiLineSeries, MockGlobalSpec.settings()),
+  );
 
   const mixedLinesBars = [lineSeries1, lineSeries2, barSeries1, barSeries2];
-  const mixedLinesBarsSeriesDomains = computeSeriesDomains(mixedLinesBars, domainGroup);
+  const mixedLinesBarsSeriesDomains = computeSeriesDomains(
+    mixedLinesBars,
+    getScaleConfigsFromSpecs([], mixedLinesBars, MockGlobalSpec.settings()),
+  );
 
   const barSeriesScale = computeXScale({
     xDomain: barSeriesDomains.xDomain,

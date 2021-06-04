@@ -19,7 +19,7 @@
 
 import React, { RefObject } from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { LegendItem } from '../../../common/legend';
 import { Tooltip } from '../../../components/tooltip';
@@ -29,6 +29,7 @@ import { LegendItemLabel } from '../../../state/selectors/get_legend_items_label
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
 import { Goal } from '../renderer/canvas/connected_component';
+import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getSpecOrNull } from './selectors/goal_spec';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
@@ -42,7 +43,7 @@ const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /** @internal */
 export class GoalState implements InternalChartState {
-  chartType = ChartTypes.Goal;
+  chartType = ChartType.Goal;
 
   onElementClickCaller: (state: GlobalChartState) => void;
 
@@ -109,8 +110,10 @@ export class GoalState implements InternalChartState {
     const { position } = state.interactions.pointer.current;
     return {
       isRotated: false,
-      x1: position.x,
-      y1: position.y,
+      x: position.x,
+      width: 0,
+      y: position.y,
+      height: 0,
     };
   }
 
@@ -118,6 +121,10 @@ export class GoalState implements InternalChartState {
     this.onElementOverCaller(globalState);
     this.onElementOutCaller(globalState);
     this.onElementClickCaller(globalState);
+  }
+
+  getChartTypeDescription(globalState: GlobalChartState) {
+    return getChartTypeDescriptionSelector(globalState);
   }
 
   // TODO

@@ -19,12 +19,16 @@
 
 import { extent } from 'd3-array';
 
+import { ScaleType } from '../scales/constants';
 import { YDomainRange } from '../specs';
 import { AccessorFn } from './accessor';
 import { getPercentageValue } from './common';
 
+/** @public */
 export type OrdinalDomain = (number | string)[];
+/** @public */
 export type ContinuousDomain = [min: number, max: number];
+/** @public */
 export type Range = [min: number, max: number];
 
 /** @internal */
@@ -99,9 +103,11 @@ export function computeDomainExtent(
 export function computeContinuousDataDomain(
   data: any[],
   accessor: (n: any) => number,
+  scaleType: ScaleType,
   domainOptions?: YDomainRange | null,
 ): ContinuousDomain {
-  const range = extent<any, number>(data, accessor);
+  const filteredData = domainOptions?.fit && scaleType === ScaleType.Log ? data.filter((d) => accessor(d) !== 0) : data;
+  const range = extent<any, number>(filteredData, accessor);
 
   if (domainOptions === null) {
     return [range[0] ?? 0, range[1] ?? 0];

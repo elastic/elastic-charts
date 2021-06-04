@@ -19,28 +19,28 @@
 
 import React from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
-import { SpecTypes } from '../../../specs/constants';
+import { SpecType } from '../../../specs/constants';
 import { specComponentFactory, getConnect } from '../../../state/spec_factory';
-import { LineSeriesSpec, DEFAULT_GLOBAL_ID, HistogramModeAlignments, SeriesTypes } from '../utils/specs';
+import { LineSeriesSpec, DEFAULT_GLOBAL_ID, HistogramModeAlignments, SeriesType } from '../utils/specs';
 
 const defaultProps = {
-  chartType: ChartTypes.XYAxis,
-  specType: SpecTypes.Series,
-  seriesType: SeriesTypes.Line,
+  chartType: ChartType.XYAxis,
+  specType: SpecType.Series,
+  seriesType: SeriesType.Line,
   groupId: DEFAULT_GLOBAL_ID,
   xScaleType: ScaleType.Ordinal,
   yScaleType: ScaleType.Linear,
   xAccessor: 'x',
   yAccessors: ['y'],
-  yScaleToDataExtent: false,
   hideInLegend: false,
   histogramModeAlignment: HistogramModeAlignments.Center,
 };
 type SpecRequiredProps = Pick<LineSeriesSpec, 'id' | 'data'>;
 type SpecOptionalProps = Partial<Omit<LineSeriesSpec, 'chartType' | 'specType' | 'seriesType' | 'id' | 'data'>>;
 
+/** @public */
 export const LineSeries: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     LineSeriesSpec,
@@ -50,7 +50,6 @@ export const LineSeries: React.FunctionComponent<SpecRequiredProps & SpecOptiona
     | 'yScaleType'
     | 'xAccessor'
     | 'yAccessors'
-    | 'yScaleToDataExtent'
     | 'hideInLegend'
     | 'histogramModeAlignment'
   >(defaultProps),

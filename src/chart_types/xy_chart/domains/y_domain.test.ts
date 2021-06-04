@@ -17,16 +17,17 @@
  * under the License.
  */
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
+import { MockYDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
-import { SpecTypes } from '../../../specs/constants';
+import { SpecType } from '../../../specs/constants';
 import { Position } from '../../../utils/common';
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';
 import { Logger } from '../../../utils/logger';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
-import { BasicSeriesSpec, SeriesTypes, DEFAULT_GLOBAL_ID, StackMode } from '../utils/specs';
+import { BasicSeriesSpec, SeriesType, DEFAULT_GLOBAL_ID, StackMode } from '../utils/specs';
 import { coerceYScaleTypes, groupSeriesByYGroup } from './y_domain';
 
 jest.mock('../../../utils/logger', () => ({
@@ -84,13 +85,11 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: DEFAULT_GLOBAL_ID,
         domain: [2, 12],
-        scaleType: ScaleType.Linear,
         isBandScale: false,
-      },
+      }),
     ]);
   });
   test('Should merge Y domain for zero baseline charts', () => {
@@ -112,13 +111,11 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: DEFAULT_GLOBAL_ID,
         domain: [0, 12],
-        scaleType: ScaleType.Linear,
         isBandScale: false,
-      },
+      }),
     ]);
   });
   test('Should merge Y domain different group', () => {
@@ -148,20 +145,16 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [2, 12],
-        scaleType: ScaleType.Linear,
         isBandScale: false,
-        type: 'yDomain',
-      },
-      {
+      }),
+      MockYDomain.fromScaleType(ScaleType.Log, {
         groupId: 'b',
         domain: [2, 10],
-        scaleType: ScaleType.Log,
         isBandScale: false,
-        type: 'yDomain',
-      },
+      }),
     ]);
   });
   test('Should merge Y domain same group all stacked', () => {
@@ -186,13 +179,11 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 17],
-        scaleType: ScaleType.Linear,
         isBandScale: false,
-        type: 'yDomain',
-      },
+      }),
     ]);
   });
   test('Should merge Y domain same group partially stacked', () => {
@@ -215,23 +206,21 @@ describe('Y Domain', () => {
     );
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
     expect(yDomains).toEqual([
-      {
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 12],
-        scaleType: ScaleType.Linear,
         isBandScale: false,
-        type: 'yDomain',
-      },
+      }),
     ]);
   });
 
   test('Should split specs by groupId, two groups, non stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
+      chartType: ChartType.XYAxis,
+      specType: SpecType.Series,
       id: 'spec1',
       groupId: 'group1',
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesType.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -239,11 +228,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
+      chartType: ChartType.XYAxis,
+      specType: SpecType.Series,
       id: 'spec2',
       groupId: 'group2',
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesType.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -262,11 +251,11 @@ describe('Y Domain', () => {
   });
   test('Should split specs by groupId, two groups, stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
+      chartType: ChartType.XYAxis,
+      specType: SpecType.Series,
       id: 'spec1',
       groupId: 'group1',
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesType.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -275,11 +264,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
+      chartType: ChartType.XYAxis,
+      specType: SpecType.Series,
       id: 'spec2',
       groupId: 'group2',
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesType.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -299,11 +288,11 @@ describe('Y Domain', () => {
   });
   test('Should split specs by groupId, 1 group, stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
+      chartType: ChartType.XYAxis,
+      specType: SpecType.Series,
       id: 'spec1',
       groupId: 'group',
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesType.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -312,11 +301,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
+      chartType: ChartType.XYAxis,
+      specType: SpecType.Series,
       id: 'spec2',
       groupId: 'group',
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesType.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -334,11 +323,11 @@ describe('Y Domain', () => {
   });
   test('Should 3 split specs by groupId, 2 group, semi/stacked', () => {
     const spec1: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
+      chartType: ChartType.XYAxis,
+      specType: SpecType.Series,
       id: 'spec1',
       groupId: 'group1',
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesType.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -347,11 +336,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec2: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
+      chartType: ChartType.XYAxis,
+      specType: SpecType.Series,
       id: 'spec2',
       groupId: 'group1',
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesType.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -360,11 +349,11 @@ describe('Y Domain', () => {
       data: BARCHART_1Y0G,
     };
     const spec3: BasicSeriesSpec = {
-      chartType: ChartTypes.XYAxis,
-      specType: SpecTypes.Series,
+      chartType: ChartType.XYAxis,
+      specType: SpecType.Series,
       id: 'spec3',
       groupId: 'group2',
-      seriesType: SeriesTypes.Line,
+      seriesType: SeriesType.Line,
       yScaleType: ScaleType.Log,
       xScaleType: ScaleType.Linear,
       xAccessor: 'x',
@@ -384,8 +373,10 @@ describe('Y Domain', () => {
   });
 
   test('Should return a default Scale Linear for YScaleType when there are no specs', () => {
-    const specs: Pick<BasicSeriesSpec, 'yScaleType'>[] = [];
-    expect(coerceYScaleTypes(specs)).toBe(ScaleType.Linear);
+    expect(coerceYScaleTypes([])).toEqual({
+      nice: false,
+      type: ScaleType.Linear,
+    });
   });
 
   test('Should merge Y domain accounting for custom domain limits: complete bounded domain', () => {
@@ -405,13 +396,11 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 20],
-        scaleType: ScaleType.Linear,
         isBandScale: false,
-      },
+      }),
     ]);
   });
   test('Should merge Y domain accounting for custom domain limits: partial lower bounded domain', () => {
@@ -431,13 +420,11 @@ describe('Y Domain', () => {
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
 
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 12],
-        scaleType: ScaleType.Linear,
         isBandScale: false,
-      },
+      }),
     ]);
   });
   test('Should not merge Y domain with invalid custom domain limits: partial lower bounded domain', () => {
@@ -480,13 +467,11 @@ describe('Y Domain', () => {
 
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [2, 20],
-        scaleType: ScaleType.Linear,
         isBandScale: false,
-      },
+      }),
     ]);
   });
   test('Should not merge Y domain with invalid custom domain limits: partial upper bounded domain', () => {
@@ -530,13 +515,11 @@ describe('Y Domain', () => {
 
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
     expect(yDomains).toEqual([
-      {
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 1],
-        scaleType: ScaleType.Linear,
         isBandScale: false,
-        type: 'yDomain',
-      },
+      }),
     ]);
   });
   test('Should merge Y domain with as percentage regadless of custom domains', () => {
@@ -558,13 +541,11 @@ describe('Y Domain', () => {
     );
     const { yDomains } = computeSeriesDomainsSelector(store.getState());
     expect(yDomains).toEqual([
-      {
-        type: 'yDomain',
+      MockYDomain.fromScaleType(ScaleType.Linear, {
         groupId: 'a',
         domain: [0, 1],
-        scaleType: ScaleType.Linear,
         isBandScale: false,
-      },
+      }),
     ]);
   });
 });

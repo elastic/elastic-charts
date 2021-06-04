@@ -22,7 +22,7 @@ import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Point } from '../../../../utils/point';
 import { isHorizontalRotation } from '../../state/utils/common';
-import { AnnotationTypes } from '../../utils/specs';
+import { AnnotationType } from '../../utils/specs';
 import { AnnotationTooltipState, Bounds } from '../types';
 import { isWithinRectBounds } from './dimensions';
 import { AnnotationRectProps } from './types';
@@ -51,10 +51,12 @@ export function getRectAnnotationTooltipState(
     if (isWithinBounds) {
       return {
         isVisible: true,
-        annotationType: AnnotationTypes.Rectangle,
+        annotationType: AnnotationType.Rectangle,
         anchor: {
-          left: cursorPosition.x,
-          top: cursorPosition.y,
+          x: cursorPosition.x,
+          y: cursorPosition.y,
+          width: 0,
+          height: 0,
         },
         datum,
       };

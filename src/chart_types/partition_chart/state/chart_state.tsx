@@ -19,7 +19,7 @@
 
 import { RefObject } from 'react';
 
-import { ChartTypes } from '../..';
+import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { BackwardRef, GlobalChartState, InternalChartState } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
@@ -27,6 +27,8 @@ import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
 import { render } from '../renderer/dom/layered_partition_chart';
 import { computeLegendSelector } from './selectors/compute_legend';
+import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
+import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getLegendItemsExtra } from './selectors/get_legend_items_extra';
 import { getLegendItemsLabels } from './selectors/get_legend_items_labels';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
@@ -38,7 +40,7 @@ import { getTooltipInfoSelector } from './selectors/tooltip';
 
 /** @internal */
 export class PartitionState implements InternalChartState {
-  chartType = ChartTypes.Partition;
+  chartType = ChartType.Partition;
 
   onElementClickCaller: (state: GlobalChartState) => void;
 
@@ -104,8 +106,10 @@ export class PartitionState implements InternalChartState {
     const { position } = state.interactions.pointer.current;
     return {
       isRotated: false,
-      x1: position.x,
-      y1: position.y,
+      x: position.x,
+      width: 0,
+      y: position.y,
+      height: 0,
     };
   }
 
@@ -130,8 +134,11 @@ export class PartitionState implements InternalChartState {
     return null;
   }
 
-  // TODO
-  getDebugState(): DebugState {
-    return {};
+  getDebugState(state: GlobalChartState): DebugState {
+    return getDebugStateSelector(state);
+  }
+
+  getChartTypeDescription(state: GlobalChartState): string {
+    return getChartTypeDescriptionSelector(state);
   }
 }

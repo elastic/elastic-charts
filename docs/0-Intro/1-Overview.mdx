@@ -143,7 +143,7 @@ export interface SeriesSpec {
   /** An array of data */
   data: Datum[];
   /** The type of series you are looking to render */
-  seriesType: SeriesTypes;
+  seriesType: SeriesType;
   /** Set colors for specific series */
   customSeriesColors?: CustomSeriesColors;
   /** If the series should appear in the legend
@@ -187,11 +187,6 @@ export interface SeriesScales {
    * @default ScaleType.Linear
    */
   yScaleType: ScaleContinuousType;
-  /**
-   * if true, the min y value is set to the minimum domain value, 0 otherwise
-   * @default false
-   */
-  yScaleToDataExtent: boolean;
 }
 ```
 
@@ -201,7 +196,7 @@ A `BarSeriesSpec` for example is the following intersection type:
 export type BarSeriesSpec = SeriesSpec &
   SeriesAccessors &
   SeriesScales & {
-    seriesType: SeriesTypes.Bar;
+    seriesType: SeriesType.Bar;
   };
 ```
 

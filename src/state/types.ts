@@ -18,9 +18,11 @@
  */
 
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
+import { Pixels } from '../common/geometry';
 import type { Position } from '../utils/common';
 import type { GeometryValue } from '../utils/geometry';
 
+/** @public */
 export interface DebugStateAxis {
   id: string;
   position: Position;
@@ -33,17 +35,20 @@ export interface DebugStateAxis {
   }[];
 }
 
+/** @public */
 export interface DebugStateAxes {
   x: DebugStateAxis[];
   y: DebugStateAxis[];
 }
 
+/** @public */
 export interface DebugStateLegendItem {
   key: string;
   name: string;
   color: string;
 }
 
+/** @public */
 export interface DebugStateLegend {
   items: DebugStateLegendItem[];
 }
@@ -54,6 +59,7 @@ interface DebugStateBase {
   color: string;
 }
 
+/** @public */
 export type DebugStateValue = Pick<GeometryValue, 'x' | 'y' | 'mark'>;
 
 interface DebugStateLineConfig {
@@ -63,8 +69,10 @@ interface DebugStateLineConfig {
   visiblePoints: boolean;
 }
 
+/** @public */
 export interface DebugStateLine extends DebugStateBase, DebugStateLineConfig {}
 
+/** @public */
 export type DebugStateArea = Omit<DebugStateLine, 'points' | 'visiblePoints'> & {
   path: string;
   lines: {
@@ -73,6 +81,7 @@ export type DebugStateArea = Omit<DebugStateLine, 'points' | 'visiblePoints'> & 
   };
 };
 
+/** @public */
 export type DebugStateBar = DebugStateBase & {
   visible: boolean;
   bars: DebugStateValue[];
@@ -89,10 +98,26 @@ type HeatmapDebugState = {
   };
 };
 
+/** @public */
+export type SinglePartitionDebugState = {
+  name: string;
+  depth: number;
+  color: string;
+  value: number;
+  coords: [Pixels, Pixels];
+};
+
+/** @public */
+export type PartitionDebugState = {
+  panelTitle: string;
+  partitions: Array<SinglePartitionDebugState>;
+};
+
 /**
  * Describes _visible_ chart state for use in functional tests
  *
  * TODO: add other chart types to debug state
+ * @public
  */
 export interface DebugState {
   legend?: DebugStateLegend;
@@ -102,4 +127,5 @@ export interface DebugState {
   bars?: DebugStateBar[];
   /** Heatmap chart debug state */
   heatmap?: HeatmapDebugState;
+  partition?: PartitionDebugState[];
 }

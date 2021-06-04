@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 export * from './components';
-export { ChartTypes } from './chart_types';
+export { ChartType } from './chart_types';
 export { ChartSize, ChartSizeArray, ChartSizeObject } from './utils/chart_size';
 
 export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
@@ -32,7 +33,11 @@ export { SimplePadding, Padding } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
 export { SeriesIdentifier, SeriesKey } from './common/series_id';
 export { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
-export { AnnotationTooltipFormatter, CustomAnnotationTooltip } from './chart_types/xy_chart/annotations/types';
+export {
+  AnnotationTooltipFormatter,
+  CustomAnnotationTooltip,
+  ComponentWithAnnotationDatum,
+} from './chart_types/xy_chart/annotations/types';
 export { GeometryValue, BandedAccessorType } from './utils/geometry';
 export { LegendPath, LegendPathElement } from './state/actions/legend';
 export { CategoryKey } from './common/category';
@@ -43,6 +48,8 @@ export {
 } from './chart_types/partition_chart/layout/types/config_types';
 export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
 export * from './chart_types/goal_chart/specs/index';
+export * from './chart_types/wordcloud/specs/index';
+
 export {
   Accessor,
   AccessorFn,
@@ -80,14 +87,20 @@ export {
   VerticalAlignment,
   HorizontalAlignment,
   RecursivePartial,
+  NonAny,
+  IsAny,
+  IsUnknown,
   ColorVariant,
   Color,
   LabelAccessor,
   ShowAccessor,
   ValueAccessor,
   ValueFormatter,
+  LayoutDirection,
 } from './utils/common';
 export { DataGenerator } from './utils/data_generators/data_generator';
 export * from './utils/themes/merge_utils';
 export { MODEL_KEY } from './chart_types/partition_chart/layout/config';
 export { LegendStrategy } from './chart_types/partition_chart/layout/utils/highlighted_geoms';
+export { Ratio } from './common/geometry';
+export { AdditiveNumber } from './utils/accessor';

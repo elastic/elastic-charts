@@ -22,8 +22,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { LegendItem } from '../../../../common/legend';
+import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
+import {
+  A11ySettings,
+  DEFAULT_A11Y_SETTINGS,
+  getA11ySettingsSelector,
+} from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -76,14 +82,16 @@ export interface ReactiveChartStateProps {
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
+  a11ySettings: A11ySettings;
 }
 
 interface ReactiveChartDispatchProps {
   onChartRendered: typeof onChartRendered;
 }
 interface ReactiveChartOwnProps {
-  forwardStageRef: RefObject<HTMLCanvasElement>;
+  forwardCanvasRef: RefObject<HTMLCanvasElement>;
 }
+const CLIPPING_MARGINS = 0.5;
 
 type XYChartProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
 class XYChartComponent extends React.Component<XYChartProps> {
@@ -130,26 +138,28 @@ class XYChartComponent extends React.Component<XYChartProps> {
     if (this.ctx) {
       const { renderingArea, rotation } = this.props;
       const clippings = {
-        x: 0,
-        y: 0,
-        width: [90, -90].includes(rotation) ? renderingArea.height : renderingArea.width,
-        height: [90, -90].includes(rotation) ? renderingArea.width : renderingArea.height,
+        x: -CLIPPING_MARGINS,
+        y: -CLIPPING_MARGINS,
+        width: ([90, -90].includes(rotation) ? renderingArea.height : renderingArea.width) + CLIPPING_MARGINS * 2,
+        height: ([90, -90].includes(rotation) ? renderingArea.width : renderingArea.height) + CLIPPING_MARGINS * 2,
       };
       renderXYChartCanvas2d(this.ctx, this.devicePixelRatio, clippings, this.props);
     }
   }
 
   private tryCanvasContext() {
-    const canvas = this.props.forwardStageRef.current;
+    const canvas = this.props.forwardCanvasRef.current;
     this.ctx = canvas && canvas.getContext('2d');
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   render() {
     const {
-      forwardStageRef,
+      forwardCanvasRef,
       initialized,
       isChartEmpty,
       chartContainerDimensions: { width, height },
+      a11ySettings,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
@@ -158,16 +168,22 @@ class XYChartComponent extends React.Component<XYChartProps> {
     }
 
     return (
-      <canvas
-        ref={forwardStageRef}
-        className="echCanvasRenderer"
-        width={width * this.devicePixelRatio}
-        height={height * this.devicePixelRatio}
-        style={{
-          width,
-          height,
-        }}
-      />
+      <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
+        <canvas
+          ref={forwardCanvasRef}
+          className="echCanvasRenderer"
+          width={width * this.devicePixelRatio}
+          height={height * this.devicePixelRatio}
+          style={{
+            width,
+            height,
+          }}
+          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+          role="presentation"
+        >
+          <ScreenReaderSummary />
+        </canvas>
+      </figure>
     );
   }
 }
@@ -219,6 +235,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationDimensions: new Map(),
   annotationSpecs: [],
   panelGeoms: [],
+  a11ySettings: DEFAULT_A11Y_SETTINGS,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -227,11 +244,12 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
 
   const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
+  const { debug } = getSettingsSpecSelector(state);
 
   return {
     initialized: true,
     isChartEmpty: isChartEmptySelector(state),
-    debug: getSettingsSpecSelector(state).debug,
+    debug,
     geometries,
     geometriesIndex,
     theme: getChartThemeSelector(state),
@@ -247,6 +265,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     panelGeoms: computePanelsSelectors(state),
+    a11ySettings: getA11ySettingsSelector(state),
   };
 };
 

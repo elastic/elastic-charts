@@ -209,171 +209,146 @@ describe('Rendering bars', () => {
       expect(geometries.bars[0].value[0].displayValue?.width).toBe(50);
     });
   });
-  // describe('Multi series bar chart - ordinal', () => {
-  //   const spec1Id = 'bar1';
-  //   const spec2Id = 'bar2';
-  //   const barSeriesSpec1: BarSeriesSpec = {
-  //     chartType: ChartTypes.XYAxis,
-  //     specType: SpecTypes.Series,
-  //     id: spec1Id,
-  //     groupId: GROUP_ID,
-  //     seriesType: SeriesTypes.Bar,
-  //     data: [
-  //       [0, 10],
-  //       [1, 5],
-  //     ],
-  //     xAccessor: 0,
-  //     yAccessors: [1],
-  //     xScaleType: ScaleType.Ordinal,
-  //     yScaleType: ScaleType.Linear,
-  //   };
-  //   const barSeriesSpec2: BarSeriesSpec = {
-  //     chartType: ChartTypes.XYAxis,
-  //     specType: SpecTypes.Series,
-  //     id: spec2Id,
-  //     groupId: GROUP_ID,
-  //     seriesType: SeriesTypes.Bar,
-  //     data: [
-  //       [0, 20],
-  //       [1, 10],
-  //     ],
-  //     xAccessor: 0,
-  //     yAccessors: [1],
-  //     xScaleType: ScaleType.Ordinal,
-  //     yScaleType: ScaleType.Linear,
-  //   };
-  //   const barSeriesMap = [barSeriesSpec1, barSeriesSpec2];
-  //   const barSeriesDomains = computeSeriesDomains(barSeriesMap, new Map());
-  //   const xScale = computeXScale({
-  //     xDomain: barSeriesDomains.xDomain,
-  //     totalBarsInCluster: barSeriesMap.length,
-  //     range: [0, 100],
-  //   });
-  //   const yScales = computeYScales({ yDomains: barSeriesDomains.yDomain, range: [100, 0] });
-  //   const getBarGeometry = MockBarGeometry.fromBaseline(
-  //     {
-  //       x: 0,
-  //       y: 0,
-  //       width: 50,
-  //       height: 100,
-  //       color: 'red',
-  //       value: {
-  //         accessor: 'y1',
-  //         x: 0,
-  //         y: 10,
-  //         mark: null,
-  //       },
-  //       seriesIdentifier: {
-  //         specId: spec1Id,
-  //         key: 'spec{bar1}yAccessor{1}splitAccessors{}',
-  //         yAccessor: 1,
-  //         splitAccessors: new Map(),
-  //         seriesKeys: [1],
-  //       },
-  //     },
-  //     'displayValue',
-  //   );
-  //
-  //   test('can render first spec bars', () => {
-  //     const { barGeometries } = renderBars(
-  //       0,
-  //       barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[0],
-  //       xScale,
-  //       yScales.get(GROUP_ID)!,
-  //       'red',
-  //       LIGHT_THEME.barSeriesStyle,
-  //     );
-  //     expect(barGeometries.length).toEqual(2);
-  //     expect(barGeometries[0]).toEqual(
-  //       getBarGeometry({
-  //         x: 0,
-  //         y: 50,
-  //         width: 25,
-  //         height: 50,
-  //         value: {
-  //           x: 0,
-  //           y: 10,
-  //         },
-  //       }),
-  //     );
-  //     expect(barGeometries[1]).toEqual(
-  //       getBarGeometry({
-  //         x: 50,
-  //         y: 75,
-  //         width: 25,
-  //         height: 25,
-  //         value: {
-  //           x: 1,
-  //           y: 5,
-  //         },
-  //       }),
-  //     );
-  //   });
-  //   test('can render second spec bars', () => {
-  //     const { barGeometries } = renderBars(
-  //       1,
-  //       barSeriesDomains.formattedDataSeries.nonStacked[0].dataSeries[1],
-  //       xScale,
-  //       yScales.get(GROUP_ID)!,
-  //       'blue',
-  //       LIGHT_THEME.barSeriesStyle,
-  //     );
-  //     const getBarGeometry = MockBarGeometry.fromBaseline(
-  //       {
-  //         x: 0,
-  //         y: 0,
-  //         width: 50,
-  //         height: 100,
-  //         color: 'blue',
-  //         value: {
-  //           accessor: 'y1',
-  //           x: 0,
-  //           y: 10,
-  //         },
-  //         seriesIdentifier: {
-  //           specId: spec2Id,
-  //           key: 'spec{bar2}yAccessor{1}splitAccessors{}',
-  //           yAccessor: 1,
-  //           splitAccessors: new Map(),
-  //           seriesKeys: [1],
-  //         },
-  //       },
-  //       'displayValue',
-  //     );
-  //     expect(barGeometries.length).toEqual(2);
-  //     expect(barGeometries[0]).toEqual(
-  //       getBarGeometry({
-  //         x: 25,
-  //         y: 0,
-  //         width: 25,
-  //         height: 100,
-  //         value: {
-  //           x: 0,
-  //           y: 20,
-  //         },
-  //       }),
-  //     );
-  //     expect(barGeometries[1]).toEqual(
-  //       getBarGeometry({
-  //         x: 75,
-  //         y: 50,
-  //         width: 25,
-  //         height: 50,
-  //         value: {
-  //           x: 1,
-  //           y: 10,
-  //         },
-  //       }),
-  //     );
-  //   });
-  // });
+  describe('Multi series bar chart - ordinal', () => {
+    const spec1Id = 'bar1';
+    const spec2Id = 'bar2';
+    const barSeriesSpec1 = MockSeriesSpec.bar({
+      id: spec1Id,
+      groupId: GROUP_ID,
+      data: [
+        [0, 10],
+        [1, 5],
+      ],
+      xAccessor: 0,
+      yAccessors: [1],
+      xScaleType: ScaleType.Ordinal,
+      yScaleType: ScaleType.Linear,
+    });
+    const barSeriesSpec2 = MockSeriesSpec.bar({
+      id: spec2Id,
+      groupId: GROUP_ID,
+      data: [
+        [0, 20],
+        [1, 10],
+      ],
+      xAccessor: 0,
+      yAccessors: [1],
+      xScaleType: ScaleType.Ordinal,
+      yScaleType: ScaleType.Linear,
+    });
+    const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+    MockStore.addSpecs(
+      [
+        barSeriesSpec1,
+        barSeriesSpec2,
+        MockGlobalSpec.settingsNoMargins({ theme: { colors: { vizColors: ['red', 'blue'] } } }),
+      ],
+      store,
+    );
+
+    const getBarGeometry = MockBarGeometry.fromBaseline(
+      {
+        x: 0,
+        y: 0,
+        width: 50,
+        height: 100,
+        color: 'red',
+        value: {
+          accessor: 'y1',
+          x: 0,
+          y: 10,
+          mark: null,
+        },
+        seriesIdentifier: MockSeriesIdentifier.fromSpec(barSeriesSpec1),
+      },
+      'displayValue',
+    );
+    const {
+      geometries: { bars },
+    } = computeSeriesGeometriesSelector(store.getState());
+
+    test('can render first spec bars', () => {
+      expect(bars[0].value.length).toEqual(2);
+      expect(bars[0].value[0]).toEqual(
+        getBarGeometry({
+          x: 0,
+          y: 50,
+          width: 25,
+          height: 50,
+          value: {
+            x: 0,
+            y: 10,
+            datum: [0, 10],
+          },
+        }),
+      );
+      expect(bars[0].value[1]).toEqual(
+        getBarGeometry({
+          x: 50,
+          y: 75,
+          width: 25,
+          height: 25,
+          value: {
+            x: 1,
+            y: 5,
+            datum: [1, 5],
+          },
+        }),
+      );
+    });
+    test('can render second spec bars', () => {
+      const getBarGeometry = MockBarGeometry.fromBaseline(
+        {
+          x: 0,
+          y: 0,
+          width: 50,
+          height: 100,
+          color: 'blue',
+          value: {
+            accessor: 'y1',
+            x: 0,
+            y: 10,
+          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(barSeriesSpec2),
+        },
+        'displayValue',
+      );
+      expect(bars[1].value.length).toEqual(2);
+      expect(bars[1].value[0]).toEqual(
+        getBarGeometry({
+          x: 25,
+          y: 0,
+          width: 25,
+          height: 100,
+          value: {
+            x: 0,
+            y: 20,
+            datum: [0, 20],
+          },
+        }),
+      );
+      expect(bars[1].value[1]).toEqual(
+        getBarGeometry({
+          x: 75,
+          y: 50,
+          width: 25,
+          height: 50,
+          value: {
+            x: 1,
+            y: 10,
+            datum: [1, 10],
+          },
+        }),
+      );
+    });
+  });
   // describe('Single series bar chart - linear', () => {
   //   const barSeriesSpec: BarSeriesSpec = {
-  //     chartType: ChartTypes.XYAxis,
-  //     specType: SpecTypes.Series,
+  //     chartType: ChartType.XYAxis,
+  //     specType: SpecType.Series,
   //     id: SPEC_ID,
   //     groupId: GROUP_ID,
-  //     seriesType: SeriesTypes.Bar,
+  //     seriesType: SeriesType.Bar,
   //     data: [
   //       [0, 10],
   //       [1, 5],
@@ -441,11 +416,11 @@ describe('Rendering bars', () => {
   // });
   // describe('Single series bar chart - log', () => {
   //   const barSeriesSpec: BarSeriesSpec = {
-  //     chartType: ChartTypes.XYAxis,
-  //     specType: SpecTypes.Series,
+  //     chartType: ChartType.XYAxis,
+  //     specType: SpecType.Series,
   //     id: SPEC_ID,
   //     groupId: GROUP_ID,
-  //     seriesType: SeriesTypes.Bar,
+  //     seriesType: SeriesType.Bar,
   //     data: [
   //       [1, 0],
   //       [2, 1],
@@ -487,11 +462,11 @@ describe('Rendering bars', () => {
   //   const spec1Id = 'bar1';
   //   const spec2Id = 'bar2';
   //   const barSeriesSpec1: BarSeriesSpec = {
-  //     chartType: ChartTypes.XYAxis,
-  //     specType: SpecTypes.Series,
+  //     chartType: ChartType.XYAxis,
+  //     specType: SpecType.Series,
   //     id: spec1Id,
   //     groupId: GROUP_ID,
-  //     seriesType: SeriesTypes.Bar,
+  //     seriesType: SeriesType.Bar,
   //     data: [
   //       [0, 10],
   //       [1, 5],
@@ -502,11 +477,11 @@ describe('Rendering bars', () => {
   //     yScaleType: ScaleType.Linear,
   //   };
   //   const barSeriesSpec2: BarSeriesSpec = {
-  //     chartType: ChartTypes.XYAxis,
-  //     specType: SpecTypes.Series,
+  //     chartType: ChartType.XYAxis,
+  //     specType: SpecType.Series,
   //     id: spec2Id,
   //     groupId: GROUP_ID,
-  //     seriesType: SeriesTypes.Bar,
+  //     seriesType: SeriesType.Bar,
   //     data: [
   //       [0, 20],
   //       [1, 10],
@@ -623,11 +598,11 @@ describe('Rendering bars', () => {
   //   const spec1Id = 'bar1';
   //   const spec2Id = 'bar2';
   //   const barSeriesSpec1: BarSeriesSpec = {
-  //     chartType: ChartTypes.XYAxis,
-  //     specType: SpecTypes.Series,
+  //     chartType: ChartType.XYAxis,
+  //     specType: SpecType.Series,
   //     id: spec1Id,
   //     groupId: GROUP_ID,
-  //     seriesType: SeriesTypes.Bar,
+  //     seriesType: SeriesType.Bar,
   //     data: [
   //       [1546300800000, 10],
   //       [1546387200000, 5],
@@ -638,11 +613,11 @@ describe('Rendering bars', () => {
   //     yScaleType: ScaleType.Linear,
   //   };
   //   const barSeriesSpec2: BarSeriesSpec = {
-  //     chartType: ChartTypes.XYAxis,
-  //     specType: SpecTypes.Series,
+  //     chartType: ChartType.XYAxis,
+  //     specType: SpecType.Series,
   //     id: spec2Id,
   //     groupId: GROUP_ID,
-  //     seriesType: SeriesTypes.Bar,
+  //     seriesType: SeriesType.Bar,
   //     data: [
   //       [1546300800000, 20],
   //       [1546387200000, 10],
@@ -762,11 +737,11 @@ describe('Rendering bars', () => {
   // });
   // describe('Remove points datum is not in domain', () => {
   //   const barSeriesSpec: BarSeriesSpec = {
-  //     chartType: ChartTypes.XYAxis,
-  //     specType: SpecTypes.Series,
+  //     chartType: ChartType.XYAxis,
+  //     specType: SpecType.Series,
   //     id: SPEC_ID,
   //     groupId: GROUP_ID,
-  //     seriesType: SeriesTypes.Bar,
+  //     seriesType: SeriesType.Bar,
   //     data: [
   //       [0, 0],
   //       [1, 1],
@@ -830,11 +805,11 @@ describe('Rendering bars', () => {
   //     [18, 100000],
   //   ];
   //   const barSeriesSpec: BarSeriesSpec = {
-  //     chartType: ChartTypes.XYAxis,
-  //     specType: SpecTypes.Series,
+  //     chartType: ChartType.XYAxis,
+  //     specType: SpecType.Series,
   //     id: SPEC_ID,
   //     groupId: GROUP_ID,
-  //     seriesType: SeriesTypes.Bar,
+  //     seriesType: SeriesType.Bar,
   //     data,
   //     xAccessor: 0,
   //     yAccessors: [1],

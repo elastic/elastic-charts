@@ -41,6 +41,7 @@ import {
   ShapeViewModel,
 } from '../types/viewmodel_types';
 
+/** @public */
 export interface HeatmapCellDatum {
   x: string | number;
   y: string | number;
@@ -48,6 +49,7 @@ export interface HeatmapCellDatum {
   originalIndex: number;
 }
 
+/** @internal */
 export interface TextBox extends Box {
   value: string | number;
   x: number;
@@ -108,15 +110,16 @@ export function shapeViewModel(
   let xValues = xDomain.domain as any[];
 
   const timeScale =
-    xDomain.scaleType === ScaleType.Time
+    xDomain.type === ScaleType.Time
       ? new ScaleContinuous(
           {
             type: ScaleType.Time,
             domain: xDomain.domain,
             range: [0, chartDimensions.width],
+            nice: false,
           },
           {
-            ticks: getTicks(chartDimensions.width, config.xAxisLabel),
+            desiredTickCount: getTicks(chartDimensions.width, config.xAxisLabel),
             timeZone: config.timeZone,
           },
         )
@@ -313,7 +316,7 @@ export function shapeViewModel(
    * @param y
    */
   const pickHighlightedArea: PickHighlightedArea = (x: Array<string | number>, y: Array<string | number>) => {
-    if (xDomain.scaleType !== ScaleType.Time) {
+    if (xDomain.type !== ScaleType.Time) {
       return null;
     }
     const [startValue, endValue] = x;

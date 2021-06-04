@@ -57,8 +57,7 @@ type PortalTooltipProps = {
   chartId: string;
 };
 
-function addToPadding(padding?: Partial<Padding> | number, extra: number = 0): Padding | number | undefined {
-  if (!padding) return undefined;
+function addToPadding(padding: Partial<Padding> | number = 0, extra: number = 0): Padding | number | undefined {
   if (typeof padding === 'number') return padding + extra;
 
   const { top = 0, right = 0, bottom = 0, left = 0 } = padding;
@@ -200,9 +199,8 @@ const TooltipPortalComponent = ({
       return;
     }
 
-    const { left, top, width, height } = position;
-    anchorNode.current.style.left = `${left}px`;
-    anchorNode.current.style.top = `${top}px`;
+    const { x, y, width, height } = position;
+    anchorNode.current.style.transform = `translate(${x}px, ${y}px)`;
 
     if (isDefined(width)) {
       anchorNode.current.style.width = `${width}px`;
@@ -212,7 +210,7 @@ const TooltipPortalComponent = ({
       anchorNode.current.style.height = `${height}px`;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, anchorNode, position?.left, position?.top, position?.width, position?.height]);
+  }, [visible, anchorNode, position?.x, position?.y, position?.width, position?.height]);
 
   useEffect(() => {
     if (!position) {

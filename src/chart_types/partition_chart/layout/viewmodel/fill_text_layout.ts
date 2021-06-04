@@ -30,8 +30,8 @@ import {
   wrapToTau,
 } from '../../../../common/geometry';
 import { logarithm } from '../../../../common/math';
-import { integerSnap, monotonicHillClimb } from '../../../../common/optimize';
 import { Box, Font, PartialFont, TextMeasure, VerticalAlignments } from '../../../../common/text_utils';
+import { integerSnap, monotonicHillClimb } from '../../../../solvers/monotonic_hill_climb';
 import { ValueFormatter } from '../../../../utils/common';
 import { Layer } from '../../specs';
 import { Config, Padding } from '../types/config_types';
@@ -47,8 +47,10 @@ import {
 import { conjunctiveConstraint, INFINITY_RADIUS, makeRowCircline } from '../utils/circline_geometry';
 import { RectangleConstruction } from './viewmodel';
 
-/** @internal */
-// todo pick a better unique key for the slices (D3 doesn't keep track of an index)
+/**
+ * todo pick a better unique key for the slices (D3 doesn't keep track of an index)
+ * @internal
+ */
 export function nodeId(node: ShapeTreeNode): string {
   return `${node.x0}|${node.y0}`;
 }

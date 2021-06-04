@@ -27,17 +27,10 @@ import { AGGREGATE_KEY, DEPTH_KEY, getNodeName, PARENT_KEY, PATH_KEY, SORT_INDEX
 /** @internal */
 export const pickedShapes = (
   models: ShapeViewModel[],
-  pointerPosition: Point,
+  { x, y }: Point,
   foci: ContinuousDomainFocus[],
-): QuadViewModel[] => {
-  const geoms = models[0];
-  const focus = foci[0];
-  const picker = geoms.pickQuads;
-  const { diskCenter } = geoms;
-  const x = pointerPosition.x - diskCenter.x;
-  const y = pointerPosition.y - diskCenter.y;
-  return picker(x, y, focus);
-};
+): QuadViewModel[] =>
+  models.flatMap(({ diskCenter, pickQuads }) => pickQuads(x - diskCenter.x, y - diskCenter.y, foci[0]));
 
 /** @internal */
 export function pickShapesLayerValues(shapes: QuadViewModel[]): LayerValue[][] {
@@ -45,19 +38,22 @@ export function pickShapesLayerValues(shapes: QuadViewModel[]): LayerValue[][] {
   return shapes
     .filter(({ depth }) => depth === maxDepth) // eg. lowest layer in a treemap, where layers overlap in screen space; doesn't apply to sunburst/flame
     .map<Array<LayerValue>>((viewModel) => {
-      const values: Array<LayerValue> = [];
-      values.push({
-        groupByRollup: viewModel.dataName,
-        value: viewModel[AGGREGATE_KEY],
-        depth: viewModel[DEPTH_KEY],
-        sortIndex: viewModel[SORT_INDEX_KEY],
-        path: viewModel[PATH_KEY],
-      });
+      const values: Array<LayerValue> = [
+        {
+          smAccessorValue: viewModel.smAccessorValue,
+          groupByRollup: viewModel.dataName,
+          value: viewModel[AGGREGATE_KEY],
+          depth: viewModel[DEPTH_KEY],
+          sortIndex: viewModel[SORT_INDEX_KEY],
+          path: viewModel[PATH_KEY],
+        },
+      ];
       let node = viewModel[MODEL_KEY];
       while (node[DEPTH_KEY] > 0) {
         const value = node[AGGREGATE_KEY];
         const dataName = getNodeName(node);
         values.push({
+          smAccessorValue: viewModel.smAccessorValue,
           groupByRollup: dataName,
           value,
           depth: node[DEPTH_KEY],

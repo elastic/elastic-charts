@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import { action } from '@storybook/addon-actions';
 import { boolean, text } from '@storybook/addon-knobs';
 import { startCase } from 'lodash';
@@ -131,7 +132,7 @@ export const Example = () => {
       <SmallMultiples
         splitVertically="v_split"
         splitHorizontally="h_split"
-        style={{ verticalPanelPadding: [0, 0.3] }}
+        style={{ verticalPanelPadding: { outer: 0, inner: 0.3 } }}
       />
 
       <LineSeries

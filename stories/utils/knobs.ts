@@ -22,7 +22,7 @@ import { select, array, number, optionsKnob } from '@storybook/addon-knobs';
 import { SelectTypeKnobValue } from '@storybook/addon-knobs/dist/components/types';
 import { startCase, kebabCase } from 'lodash';
 
-import { Rotation, Position, Placement, TooltipProps } from '../../src';
+import { Rotation, Position, Placement, TooltipProps, TooltipStickTo } from '../../src';
 import { TooltipType } from '../../src/specs/constants';
 import { VerticalAlignment, HorizontalAlignment } from '../../src/utils/common';
 
@@ -100,7 +100,7 @@ export const getKnobsFromEnum = <T extends SelectTypeKnobValue, O extends Record
     group,
   ) || undefined;
 
-export const getPositionKnob = (name = 'chartRotation', defaultValue = Position.Right) =>
+export const getPositionKnob = (name = 'chartRotation', defaultValue: Position = Position.Right) =>
   select<Position>(
     name,
     {
@@ -132,6 +132,20 @@ export const getPlacementKnob = (name = 'placement', defaultValue?: Placement, g
       Auto: Placement.Auto,
       AutoStart: Placement.AutoStart,
       AutoEnd: Placement.AutoEnd,
+    },
+    defaultValue,
+    groupId,
+  );
+
+  return value || undefined;
+};
+
+export const getStickToKnob = (name = 'stickTo', defaultValue = TooltipStickTo.MousePosition, groupId?: string) => {
+  const value = select<TooltipStickTo | undefined>(
+    name,
+    {
+      Default: undefined,
+      ...TooltipStickTo,
     },
     defaultValue,
     groupId,

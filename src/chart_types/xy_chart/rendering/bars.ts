@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { Color, mergePartial } from '../../../utils/common';
+import { clamp, Color, mergePartial } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
@@ -38,7 +39,7 @@ export function renderBars(
   sharedSeriesStyle: BarSeriesStyle,
   displayValueSettings?: DisplayValueSpec,
   styleAccessor?: BarStyleAccessor,
-  minBarHeight?: number,
+  minBarHeight: number = 0,
   stackMode?: StackMode,
   chartRotation?: number,
 ): {
@@ -53,7 +54,6 @@ export function renderBars(
   // default padding to 1 for now
   const padding = 1;
   const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
-  const absMinHeight = minBarHeight && Math.abs(minBarHeight);
 
   dataSeries.data.forEach((datum) => {
     const { y0, y1, initialY1, filled } = datum;
@@ -77,20 +77,16 @@ export function renderBars(
       }
     } else {
       y = yScale.scale(y1);
-      if (yScale.isInverted) {
-        // use always zero as baseline if y0 is null
-        y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
-      } else {
-        y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
-      }
+      // use always zero as baseline if y0 is null
+      y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
     }
 
     if (y === null || y0Scaled === null) {
       return;
     }
-    let height = y0Scaled - y;
 
-    // handle minBarHeight adjustment
+    const absMinHeight = Math.abs(minBarHeight);
+    let height = y0Scaled - y;
     if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
       const heightDelta = absMinHeight - Math.abs(height);
       if (height < 0) {
@@ -101,6 +97,9 @@ export function renderBars(
         y -= heightDelta;
       }
     }
+    const isUpsideDown = height < 0;
+    height = Math.abs(height);
+    y = isUpsideDown ? y - height : y;
 
     const xScaled = xScale.scale(datum.x);
 
@@ -108,8 +107,24 @@ export function renderBars(
       return;
     }
 
-    const x = xScaled + xScale.bandwidth * orderIndex;
-    const width = xScale.bandwidth;
+    const seriesIdentifier: XYChartSeriesIdentifier = {
+      key: dataSeries.key,
+      specId: dataSeries.specId,
+      yAccessor: dataSeries.yAccessor,
+      splitAccessors: dataSeries.splitAccessors,
+      seriesKeys: dataSeries.seriesKeys,
+      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
+      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
+    };
+
+    const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
+
+    const maxPixelWidth = clamp(seriesStyle.rect.widthRatio ?? 1, 0, 1) * xScale.bandwidth;
+    const minPixelWidth = clamp(seriesStyle.rect.widthPixel ?? 0, 0, maxPixelWidth);
+
+    const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
+    const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
+
     const originalY1Value = stackMode === StackMode.Percentage ? y1 - (y0 ?? 0) : initialY1;
     const formattedDisplayValue =
       displayValueSettings && displayValueSettings.valueFormatter
@@ -156,18 +171,6 @@ export function renderBars(
             isValueContainedInElement: displayValueSettings.isValueContainedInElement,
           }
         : undefined;
-
-    const seriesIdentifier: XYChartSeriesIdentifier = {
-      key: dataSeries.key,
-      specId: dataSeries.specId,
-      yAccessor: dataSeries.yAccessor,
-      splitAccessors: dataSeries.splitAccessors,
-      seriesKeys: dataSeries.seriesKeys,
-      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
-      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
-    };
-
-    const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
 
     const barGeometry: BarGeometry = {
       displayValue,

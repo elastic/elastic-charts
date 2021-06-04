@@ -33,7 +33,7 @@ import { AnnotationLineProps } from '../../annotations/line/types';
 import { AnnotationRectProps } from '../../annotations/rect/types';
 import { computeRectAnnotationTooltipState } from '../../annotations/tooltip';
 import { AnnotationTooltipState, AnnotationDimensions } from '../../annotations/types';
-import { AxisSpec, AnnotationSpec, AnnotationTypes } from '../../utils/specs';
+import { AxisSpec, AnnotationSpec, AnnotationType } from '../../utils/specs';
 import { ComputedGeometries } from '../utils/types';
 import { computeAnnotationDimensionsSelector } from './compute_annotations';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -107,7 +107,7 @@ function getAnnotationTooltipState(
   if (
     tooltipState &&
     tooltipState.isVisible &&
-    tooltipState.annotationType === AnnotationTypes.Rectangle &&
+    tooltipState.annotationType === AnnotationType.Rectangle &&
     isChartTooltipDisplayed
   ) {
     return null;
@@ -133,9 +133,7 @@ function getTooltipStateForDOMElements(
   }
   const dimension = (annotationDimensions.get(hoveredDOMElement.createdBySpecId) ?? [])
     .filter(isAnnotationLineProps)
-    .find((d) => {
-      return d.id === hoveredDOMElement.id && d.datum === hoveredDOMElement.datum;
-    });
+    .find(({ id }) => id === hoveredDOMElement.id);
 
   if (!dimension) {
     return null;
@@ -143,11 +141,13 @@ function getTooltipStateForDOMElements(
 
   return {
     isVisible: true,
-    annotationType: AnnotationTypes.Line,
+    annotationType: AnnotationType.Line,
     datum: dimension.datum,
     anchor: {
-      top: (dimension.markers[0]?.position.top ?? 0) + dimension.panel.top + chartDimensions.top,
-      left: (dimension.markers[0]?.position.left ?? 0) + dimension.panel.left + chartDimensions.left,
+      y: (dimension.markers[0]?.position.top ?? 0) + dimension.panel.top + chartDimensions.top,
+      x: (dimension.markers[0]?.position.left ?? 0) + dimension.panel.left + chartDimensions.left,
+      width: 0,
+      height: 0,
     },
     customTooltipDetails: spec.customTooltipDetails,
     customTooltip: spec.customTooltip,

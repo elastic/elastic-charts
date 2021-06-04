@@ -19,20 +19,21 @@
 
 import createCachedSelector from 're-reselect';
 
-import { ChartTypes } from '../../chart_types';
-import { SpecTypes, DEFAULT_SETTINGS_SPEC } from '../../specs/constants';
+import { ChartType } from '../../chart_types';
+import { SpecType, DEFAULT_SETTINGS_SPEC } from '../../specs/constants';
 import { SettingsSpec } from '../../specs/settings';
 import { GlobalChartState } from '../chart_state';
 import { getSpecsFromStore } from '../utils';
 import { getChartIdSelector } from './get_chart_id';
 
-const getSpecs = (state: GlobalChartState) => state.specs;
+/** @internal */
+export const getSpecs = (state: GlobalChartState) => state.specs;
 
 /** @internal */
 export const getSettingsSpecSelector = createCachedSelector(
   [getSpecs],
   (specs): SettingsSpec => {
-    const settingsSpecs = getSpecsFromStore<SettingsSpec>(specs, ChartTypes.Global, SpecTypes.Settings);
+    const settingsSpecs = getSpecsFromStore<SettingsSpec>(specs, ChartType.Global, SpecType.Settings);
     if (settingsSpecs.length === 1) {
       return settingsSpecs[0];
     }

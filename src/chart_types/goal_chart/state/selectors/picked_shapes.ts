@@ -21,6 +21,7 @@ import createCachedSelector from 're-reselect';
 
 import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { BulletViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from './geometries';
 
@@ -38,7 +39,7 @@ export const getPickedShapes = createCachedSelector(
     const y = pointerPosition.y - chartCenter.y;
     return picker(x, y);
   },
-)((state) => state.chartId);
+)(getChartIdSelector);
 
 /** @internal */
 export const getPickedShapesLayerValues = createCachedSelector(
@@ -47,6 +48,7 @@ export const getPickedShapesLayerValues = createCachedSelector(
     const elements = pickedShapes.map<Array<LayerValue>>((model) => {
       const values: Array<LayerValue> = [];
       values.push({
+        smAccessorValue: '',
         groupByRollup: 'Actual',
         value: model.actual,
         sortIndex: 0,
@@ -57,4 +59,4 @@ export const getPickedShapesLayerValues = createCachedSelector(
     });
     return elements;
   },
-)((state) => state.chartId);
+)(getChartIdSelector);

@@ -34,13 +34,6 @@ export interface ChartDimensions {
    */
   chartDimensions: Dimensions;
   /**
-   * Dimensions relative to echChart element
-   */
-  offset: {
-    top: number;
-    left: number;
-  };
-  /**
    * Margin to account for ending text overflow
    */
   leftMargin: number;
@@ -49,12 +42,6 @@ export interface ChartDimensions {
 /**
  * Compute the chart dimensions. It's computed removing from the parent dimensions
  * the axis spaces, the legend and any other specified style margin and padding.
- * @param parentDimensions the parent dimension
- * @param theme
- * @param axisDimensions the axis dimensions
- * @param axesStyles
- * @param axisSpecs the axis specs
- * @param legendSizing
  * @internal
  */
 export function computeChartDimensions(
@@ -63,10 +50,6 @@ export function computeChartDimensions(
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
-  legendSizing: {
-    top: number;
-    left: number;
-  },
   smSpec?: SmallMultiplesSpec,
 ): ChartDimensions {
   if (parentDimensions.width <= 0 || parentDimensions.height <= 0) {
@@ -78,10 +61,6 @@ export function computeChartDimensions(
         top: 0,
       },
       leftMargin: 0,
-      offset: {
-        left: 0,
-        top: 0,
-      },
     };
   }
 
@@ -99,10 +78,6 @@ export function computeChartDimensions(
       left,
       width: chartWidth - chartPaddings.left - chartPaddings.right,
       height: chartHeight - chartPaddings.top - chartPaddings.bottom,
-    },
-    offset: {
-      top: legendSizing.top,
-      left: legendSizing.left,
     },
   };
 }
