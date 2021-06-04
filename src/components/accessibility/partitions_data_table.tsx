@@ -50,6 +50,7 @@ const renderTableRows = (
   value: LabelsInterface,
   index: number,
   count: number,
+  moreThanOneLayer: boolean,
   formatter?: ValueFormatter,
   configMaxCount?: number,
 ) => {
@@ -59,17 +60,25 @@ const renderTableRows = (
       id={configMaxCount && configMaxCount * (count - 1) === index ? 'startOfConfigMaxCount' : undefined}
     >
       <th scope="row">{value.label}</th>
-      <td>{value.depth}</td>
-      <td>{value.parentName}</td>
+      {moreThanOneLayer && <td>{value.depth}</td>}
+      {moreThanOneLayer && <td>{value.parentName}</td>}
       <td>{formatter && formatter(value.valueText) ? formatter(value.valueText) : value.valueText}</td>
       <td>{value.percentage}</td>
     </tr>
   );
 };
 
-const renderTableContent = (d: any[], count: number, formatter?: ValueFormatter, configMaxCount?: number) => {
+const renderTableContent = (
+  d: any[],
+  count: number,
+  moreThanOneLayer: boolean,
+  formatter?: ValueFormatter,
+  configMaxCount?: number,
+) => {
   const showCount = configMaxCount && d.length > maxRowsToShow ? configMaxCount : Infinity;
-  return d.slice(0, showCount * count).map((value, i) => renderTableRows(value, i, count, formatter, configMaxCount));
+  return d
+    .slice(0, showCount * count)
+    .map((value, i) => renderTableRows(value, i, count, moreThanOneLayer, formatter, configMaxCount));
 };
 
 const handleFocus = () => {
@@ -89,12 +98,14 @@ const ScreenReaderPartitionTableComponent = ({
 }: ScreenReaderPartitionTableProps) => {
   const [count, setCount] = useState(1);
   const { tableCaption } = a11ySettings;
+  const moreThanOneLayer =
+    screenReaderData.filter((value) => !!(value.depth > 1 || value.parentName !== 'null')).length > 0;
 
   const handleMoreData = () => {
     setCount(count + 1);
     const nextSliceOfData = screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!);
     // generate the next group of data
-    renderTableContent(nextSliceOfData, count, formatter, configMaxCount);
+    renderTableContent(nextSliceOfData, count, moreThanOneLayer, formatter, configMaxCount);
     // Set active element to the startOfConfigMaxCount
     handleFocus();
   };
@@ -134,14 +145,14 @@ const ScreenReaderPartitionTableComponent = ({
                 <th key={`table header--${index}`} scope="col">{`${title || `Category`}`}</th>
               ));
             })}
-            <th scope="col">Depth</th>
-            <th scope="col">Parent</th>
+            {moreThanOneLayer && <th scope="col">Depth</th>}
+            {moreThanOneLayer && <th scope="col">Parent</th>}
             <th scope="col">Value</th>
             <th scope="col">Percentage</th>
           </tr>
         </thead>
         {/* eslint-disable-next-line jsx-a11y/role-supports-aria-props */}
-        <tbody>{renderTableContent(screenReaderData, count, formatter, configMaxCount)}</tbody>
+        <tbody>{renderTableContent(screenReaderData, count, moreThanOneLayer, formatter, configMaxCount)}</tbody>
         {showMoreCellsButton}
       </table>
     </div>
