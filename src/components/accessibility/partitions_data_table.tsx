@@ -34,13 +34,12 @@ import {
   getA11ySettingsSelector,
 } from '../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
-import { isNil, ValueFormatter } from '../../utils/common';
+import { isNil } from '../../utils/common';
 
 interface ScreenReaderPartitionTableProps {
   a11ySettings: A11ySettings;
   screenReaderData: LabelsInterface[];
   shapeViewModel: ShapeViewModel[];
-  formatter?: ValueFormatter;
   configMaxCount?: number;
 }
 
@@ -51,7 +50,6 @@ const renderTableRows = (
   index: number,
   count: number,
   moreThanOneLayer: boolean,
-  formatter?: ValueFormatter,
   configMaxCount?: number,
 ) => {
   return (
@@ -62,23 +60,17 @@ const renderTableRows = (
       <th scope="row">{value.label}</th>
       {moreThanOneLayer && <td>{value.depth}</td>}
       {moreThanOneLayer && <td>{value.parentName}</td>}
-      <td>{formatter && formatter(value.valueText) ? formatter(value.valueText) : value.valueText}</td>
+      <td>{value.valueText}</td>
       <td>{value.percentage}</td>
     </tr>
   );
 };
 
-const renderTableContent = (
-  d: any[],
-  count: number,
-  moreThanOneLayer: boolean,
-  formatter?: ValueFormatter,
-  configMaxCount?: number,
-) => {
+const renderTableContent = (d: any[], count: number, moreThanOneLayer: boolean, configMaxCount?: number) => {
   const showCount = configMaxCount && d.length > maxRowsToShow ? configMaxCount : Infinity;
   return d
     .slice(0, showCount * count)
-    .map((value, i) => renderTableRows(value, i, count, moreThanOneLayer, formatter, configMaxCount));
+    .map((value, i) => renderTableRows(value, i, count, moreThanOneLayer, configMaxCount));
 };
 
 const handleFocus = () => {
@@ -93,7 +85,6 @@ const ScreenReaderPartitionTableComponent = ({
   a11ySettings,
   shapeViewModel,
   screenReaderData,
-  formatter,
   configMaxCount,
 }: ScreenReaderPartitionTableProps) => {
   const [count, setCount] = useState(1);
@@ -105,7 +96,7 @@ const ScreenReaderPartitionTableComponent = ({
     setCount(count + 1);
     const nextSliceOfData = screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!);
     // generate the next group of data
-    renderTableContent(nextSliceOfData, count, moreThanOneLayer, formatter, configMaxCount);
+    renderTableContent(nextSliceOfData, count, moreThanOneLayer, configMaxCount);
     // Set active element to the startOfConfigMaxCount
     handleFocus();
   };
@@ -152,7 +143,7 @@ const ScreenReaderPartitionTableComponent = ({
           </tr>
         </thead>
         {/* eslint-disable-next-line jsx-a11y/role-supports-aria-props */}
-        <tbody>{renderTableContent(screenReaderData, count, moreThanOneLayer, formatter, configMaxCount)}</tbody>
+        <tbody>{renderTableContent(screenReaderData, count, moreThanOneLayer, configMaxCount)}</tbody>
         {showMoreCellsButton}
       </table>
     </div>
@@ -174,7 +165,6 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderPartitionTablePro
     a11ySettings: getA11ySettingsSelector(state),
     screenReaderData: getScreenReaderDataSelector(state),
     shapeViewModel: partitionMultiGeometries(state),
-    formatter: getPartitionSpecs(state)[0].valueFormatter,
     configMaxCount:
       getPartitionSpecs(state)[0].config.linkLabel?.maxCount || getPartitionSpecs(state)[0].config.maxRowCount,
   };

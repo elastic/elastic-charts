@@ -26,5 +26,5 @@ export interface LegendItemLabel {
 }
 
 /** @internal */
-export const getLegendItemsLabelsSelector = (state: GlobalChartState): LegendItemLabel[] =>
+export const getLegendItemsLabelsSelector = (state: GlobalChartState) =>
   state.internalChartState?.getLegendItemsLabels(state) ?? [];
