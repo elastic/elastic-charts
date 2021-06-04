@@ -69,7 +69,7 @@ const ScreenReaderPartitionTableComponent = ({
         <th scope="row">{value.label}</th>
         {layers && <td>{value.depth}</td>}
         {layers && <td>{value.parentName}</td>}
-        <td>{value.value}</td>
+        <td>{value.valueText}</td>
         <td>{value.percentage}</td>
       </tr>
     );

@@ -30,18 +30,18 @@ import { getTrees } from './tree';
 export interface LabelsInterface {
   smTitle?: string;
   label: string;
-  value: number;
-  formattedValueText: number | string;
   parentName: string | undefined;
   depth: number;
   percentage: string;
+  value: number;
+  valueText: string;
 }
 
 /**
  * @internal
  */
 const getScreenReaderDataForPartitions = (specs: PartitionSpec[], trees: { tree: HierarchyOfArrays }[]) => {
-  return specs.flatMap((spec) => flatSlicesNames(spec.layers, 0, trees[0].tree));
+  return specs.flatMap((spec) => flatSlicesNames(spec.layers, 0, trees[0].tree, spec.valueFormatter));
 };
 
 /** @internal */
