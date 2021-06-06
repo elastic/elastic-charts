@@ -1,7 +1,7 @@
 {
   "name": "elastic-charts-mono",
   "description": "Mono repo for @elastic/charts",
-  "author": "Marco Vettorello <marco.vettorello@elastic.co>",
+  "author": "Elastic DataVis",
   "license": "Apache-2.0",
   "private": "true",
   "repository": "git@github.com:elastic/elastic-charts.git",
@@ -9,6 +9,7 @@
     "packages/*"
   ],
   "scripts": {
+    "prepublish": "echo 'This package os not published, see pacakges/*' && exit 1",
     "autoprefix:css": "lerna run --loglevel=silent --scope @elastic/charts autoprefix:css",
     "api:check": "lerna run --loglevel=silent --scope @elastic/charts api:check",
     "api:check:local": "lerna run --loglevel=silent --scope @elastic/charts api:check:local",

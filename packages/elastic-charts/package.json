@@ -2,7 +2,7 @@
   "name": "@elastic/charts",
   "description": "Elastic-Charts data visualization library",
   "version": "29.2.0",
-  "author": "Marco Vettorello <marco.vettorello@elastic.co>",
+  "author": "Elastic DataVis",
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "module": "dist/index.js",
