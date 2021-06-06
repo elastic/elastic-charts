@@ -78,12 +78,12 @@ describe('Get screen reader data', () => {
     MockStore.addSpecs([spec1], store);
     const expected = getScreenReaderDataSelector(store.getState());
     expect(expected).toEqual([
-      { depth: 1, label: 'aaa', parentName: 'null', percentage: '100%', valueText: 3 },
-      { depth: 2, label: 'aa', parentName: 'aaa', percentage: '67%', valueText: 2 },
-      { depth: 3, label: '1', parentName: 'aa', percentage: '33%', valueText: 1 },
-      { depth: 3, label: '3', parentName: 'aa', percentage: '33%', valueText: 1 },
-      { depth: 2, label: 'bb', parentName: 'aaa', percentage: '33%', valueText: 1 },
-      { depth: 3, label: '4', parentName: 'bb', percentage: '33%', valueText: 1 },
+      { depth: 1, label: 'aaa', parentName: 'null', percentage: '100%', valueText: '3', value: 3 },
+      { depth: 2, label: 'aa', parentName: 'aaa', percentage: '67%', valueText: '2', value: 2 },
+      { depth: 3, label: '1', parentName: 'aa', percentage: '33%', valueText: '1', value: 1 },
+      { depth: 3, label: '3', parentName: 'aa', percentage: '33%', valueText: '1', value: 1 },
+      { depth: 2, label: 'bb', parentName: 'aaa', percentage: '33%', valueText: '1', value: 1 },
+      { depth: 3, label: '4', parentName: 'bb', percentage: '33%', valueText: '1', value: 1 },
     ]);
   });
   it('should compute screen reader data for no slices in pie', () => {

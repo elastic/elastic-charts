@@ -20,7 +20,8 @@
 import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { flatSlicesNames, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
+import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { flatSlicesNames, flatSlicesSmallMultiplesNames, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../specs';
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
@@ -40,14 +41,23 @@ export interface LabelsInterface {
 /**
  * @internal
  */
-const getScreenReaderDataForPartitions = (specs: PartitionSpec[], trees: { tree: HierarchyOfArrays }[]) => {
-  return specs.flatMap((spec) => flatSlicesNames(spec.layers, 0, trees[0].tree, spec.valueFormatter));
+const getScreenReaderDataForPartitions = (
+  specs: PartitionSpec[],
+  trees: { tree: HierarchyOfArrays }[],
+  shapes: ShapeViewModel[],
+) => {
+  const isSmallMultiples = shapes[0].smAccessorValue.toString().length > 0;
+  return isSmallMultiples
+    ? shapes.flatMap((shape) =>
+        flatSlicesSmallMultiplesNames(shape.layers, 0, shape.panelTitle, trees[0].tree, specs[0].valueFormatter),
+      )
+    : specs.flatMap((spec) => flatSlicesNames(spec.layers, 0, trees[0].tree, spec.valueFormatter));
 };
 
 /** @internal */
 export const getScreenReaderDataSelector = createCachedSelector(
   [getPartitionSpecs, getTrees, partitionMultiGeometries],
-  (specs, trees) => {
-    return getScreenReaderDataForPartitions(specs, trees);
+  (specs, trees, shapeViewModel) => {
+    return getScreenReaderDataForPartitions(specs, trees, shapeViewModel);
   },
 )(getChartIdSelector);

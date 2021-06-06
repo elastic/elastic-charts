@@ -331,3 +331,37 @@ export function flatSlicesNames(
   }
   return keys;
 }
+
+/** @internal */
+export function flatSlicesSmallMultiplesNames(
+  layers: Layer[],
+  depth: number,
+  panelTitle: string,
+  tree: HierarchyOfArrays,
+  valueFormatter: { (value: number): string; (arg0: number): any } | undefined,
+  keys: LabelsInterface[] = [],
+  parentsName?: string,
+) {
+  // format the key with the layer formatter if applicable
+  const formatter = layers[depth - 1]?.nodeLabel;
+
+  for (const [key, arrayNode] of tree) {
+    const formattedLabel = key === null ? '' : formatter ? formatter(key) : `${key}`;
+    const formattedValue = valueFormatter ? valueFormatter(arrayNode.value) : `${arrayNode.value}`;
+
+    // preventing errors from external formatters
+    if (formattedLabel && formattedLabel !== HIERARCHY_ROOT_KEY && formattedValue) {
+      keys.push({
+        smTitle: panelTitle,
+        label: formattedLabel,
+        depth,
+        parentName: parentsName && parentsName === HIERARCHY_ROOT_KEY ? 'null' : parentsName,
+        percentage: `${Math.round((arrayNode.value / arrayNode[STATISTICS_KEY].globalAggregate) * 100)}%`,
+        value: arrayNode.value,
+        valueText: formattedValue,
+      });
+    }
+    flatSlicesNames(layers, depth + 1, arrayNode[CHILDREN_KEY], valueFormatter, keys, formattedLabel);
+  }
+  return keys;
+}
