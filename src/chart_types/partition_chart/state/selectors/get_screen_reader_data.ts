@@ -21,15 +21,14 @@ import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { flatSlicesNames, flatSlicesSmallMultiplesNames, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
+import { STATISTICS_KEY } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../specs';
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
-import { getTrees } from './tree';
 
 /** @internal */
-export interface LabelsInterface {
-  smTitle?: string;
+export interface PartitionSectionData {
+  panelTitle?: string;
   label: string;
   parentName: string | undefined;
   depth: number;
@@ -38,26 +37,54 @@ export interface LabelsInterface {
   valueText: string;
 }
 
+/** @internal */
+export interface PartitionData {
+  hasMultipleLayers: boolean;
+  isSmallMultiple: boolean;
+  data: PartitionSectionData[];
+}
 /**
  * @internal
  */
 const getScreenReaderDataForPartitions = (
-  specs: PartitionSpec[],
-  trees: { tree: HierarchyOfArrays }[],
-  shapes: ShapeViewModel[],
-) => {
-  const isSmallMultiples = shapes[0].smAccessorValue.toString().length > 0;
-  return isSmallMultiples
-    ? shapes.flatMap((shape) =>
-        flatSlicesSmallMultiplesNames(shape.layers, 0, shape.panelTitle, trees[0].tree, specs[0].valueFormatter),
-      )
-    : specs.flatMap((spec) => flatSlicesNames(spec.layers, 0, trees[0].tree, spec.valueFormatter));
+  [{ valueFormatter }]: PartitionSpec[],
+  shapeViewModels: ShapeViewModel[],
+): PartitionSectionData[] => {
+  return shapeViewModels.flatMap(({ quadViewModel, layers, panelTitle }) =>
+    quadViewModel.map(({ depth, value, dataName, parent, path }) => {
+      const label = layers[depth - 1]?.nodeLabel?.(dataName) ?? dataName;
+      const parentValue = path.length > 1 ? path[path.length - 2].value : undefined;
+      const parentName =
+        depth > 1 && parentValue ? layers[depth - 2]?.nodeLabel?.(parentValue) ?? path[path.length - 1].value : 'none';
+
+      return {
+        panelTitle,
+        depth,
+        label,
+        parentName,
+        percentage: `${Math.round((value / parent[STATISTICS_KEY].globalAggregate) * 100)}%`,
+        value,
+        valueText: valueFormatter ? valueFormatter(value) : `${value}`,
+      };
+    }),
+  );
 };
 
 /** @internal */
 export const getScreenReaderDataSelector = createCachedSelector(
-  [getPartitionSpecs, getTrees, partitionMultiGeometries],
-  (specs, trees, shapeViewModel) => {
-    return getScreenReaderDataForPartitions(specs, trees, shapeViewModel);
+  [getPartitionSpecs, partitionMultiGeometries],
+  (specs, shapeViewModel): PartitionData => {
+    if (specs.length === 0) {
+      return {
+        hasMultipleLayers: false,
+        isSmallMultiple: false,
+        data: [],
+      };
+    }
+    return {
+      hasMultipleLayers: specs[0].layers.length > 1,
+      isSmallMultiple: shapeViewModel.length > 1,
+      data: getScreenReaderDataForPartitions(specs, shapeViewModel),
+    };
   },
 )(getChartIdSelector);

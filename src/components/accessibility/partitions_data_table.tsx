@@ -17,16 +17,14 @@
  * under the License.
  */
 
-import React, { createRef, memo, RefObject, useState } from 'react';
+import React, { createRef, memo, useState } from 'react';
 import { connect } from 'react-redux';
 
-import { ShapeViewModel } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
-import { partitionMultiGeometries } from '../../chart_types/partition_chart/state/selectors/geometries';
 import {
   getScreenReaderDataSelector,
-  LabelsInterface,
+  PartitionData,
 } from '../../chart_types/partition_chart/state/selectors/get_screen_reader_data';
-import { getPartitionSpecs } from '../../chart_types/partition_chart/state/selectors/partition_spec';
+import { SettingsSpec } from '../../specs/settings';
 import { GlobalChartState } from '../../state/chart_state';
 import {
   A11ySettings,
@@ -34,114 +32,90 @@ import {
   getA11ySettingsSelector,
 } from '../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
+import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { isNil } from '../../utils/common';
 
 interface ScreenReaderPartitionTableProps {
   a11ySettings: A11ySettings;
-  screenReaderData: LabelsInterface[];
-  shapeViewModel: ShapeViewModel[];
-  configMaxCount?: number;
+  partitionData: PartitionData;
+  debug: SettingsSpec['debug'];
 }
 
-const maxRowsToShow = 200;
+// this currently limit the number of pages shown to the user
+const TABLE_PAGINATION = 5;
 
 const ScreenReaderPartitionTableComponent = ({
   a11ySettings,
-  shapeViewModel,
-  screenReaderData,
-  configMaxCount,
+  partitionData,
+  debug,
 }: ScreenReaderPartitionTableProps) => {
   const [count, setCount] = useState(1);
   const tableRowRef = createRef<HTMLTableRowElement>();
   const { tableCaption } = a11ySettings;
-  const moreThanOneLayer = shapeViewModel[0].layers.length > 1;
 
-  const renderTableRows = (
-    value: LabelsInterface,
-    index: number,
-    c: number,
-    layers: boolean,
-    ref: RefObject<HTMLTableRowElement>,
-    maxRows?: number,
-  ) => {
-    return (
-      <tr key={`row--${index}`} ref={maxRows && maxRows * (c - 1) === index ? ref : undefined} tabIndex={-1}>
-        <th scope="row">{value.label}</th>
-        {layers && <td>{value.depth}</td>}
-        {layers && <td>{value.parentName}</td>}
-        <td>{value.valueText}</td>
-        <td>{value.percentage}</td>
-      </tr>
-    );
-  };
-
-  const renderTableContent = (
-    d: any[],
-    c: number,
-    layers: boolean,
-    ref: RefObject<HTMLTableRowElement>,
-    maxRows?: number,
-  ) => {
-    const showCount = maxRows && d.length > maxRowsToShow ? maxRows : Infinity;
-    return d.slice(0, showCount * c).map((value, i) => renderTableRows(value, i, c, layers, ref, maxRows));
-  };
-
+  const rowLimit = TABLE_PAGINATION * count;
   const handleMoreData = () => {
     setCount(count + 1);
-    const nextSliceOfData = screenReaderData.slice(count * configMaxCount!, count * configMaxCount! + configMaxCount!);
     // generate the next group of data
     if (tableRowRef.current) {
       tableRowRef.current.focus();
     }
-    return renderTableContent(nextSliceOfData, count, moreThanOneLayer, tableRowRef, configMaxCount);
-    // // Set active element to the startOfConfigMaxCount
-    // return tableRowRef.current ? tableRowRef.current.focus() : undefined;
   };
 
-  const showMoreCellsButton =
-    configMaxCount && screenReaderData.length > maxRowsToShow && count < screenReaderData.length ? (
-      <tfoot>
-        <tr>
-          <td>
-            <button type="submit" onClick={() => handleMoreData()} tabIndex={-1}>
-              Click to show more data
-            </button>
-          </td>
-        </tr>
-      </tfoot>
-    ) : null;
+  const { isSmallMultiple, data, hasMultipleLayers } = partitionData;
+  const tableLength = data.length;
+  const showMoreRows = rowLimit < tableLength;
 
   return (
-    <div className="echScreenReaderOnly echScreenReaderTable">
+    <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
       <table>
         <caption>
           {isNil(tableCaption)
             ? `The table ${
-                configMaxCount && screenReaderData.length > maxRowsToShow
-                  ? `represents only ${configMaxCount} of the ${screenReaderData.length} data points`
-                  : `fully represents the dataset of ${screenReaderData.length} data point${
-                      screenReaderData.length > 1 ? 's' : ''
-                    }`
+                showMoreRows
+                  ? `represents only ${rowLimit} of the ${tableLength} data points`
+                  : `fully represents the dataset of ${tableLength} data point${tableLength > 1 ? 's' : ''}`
               }`
             : tableCaption}
         </caption>
         <thead>
           <tr>
-            {shapeViewModel.map((value: { panelTitle: string; layers: any[] }) => {
-              const title = value.panelTitle;
-              return value.layers.map((val: any, index: number) => (
-                <th key={`table header--${index}`} scope="col">{`${title || `Category`}`}</th>
-              ));
-            })}
-            {moreThanOneLayer && <th scope="col">Depth</th>}
-            {moreThanOneLayer && <th scope="col">Parent</th>}
+            {isSmallMultiple && <th scope="col">Small multiple title</th>}
+            {hasMultipleLayers && <th scope="col">Depth</th>}
+            <th scope="col">Label</th>
+            {hasMultipleLayers && <th scope="col">Parent</th>}
             <th scope="col">Value</th>
             <th scope="col">Percentage</th>
           </tr>
         </thead>
-        {/* eslint-disable-next-line jsx-a11y/role-supports-aria-props */}
-        <tbody>{renderTableContent(screenReaderData, count, moreThanOneLayer, tableRowRef, configMaxCount)}</tbody>
-        {showMoreCellsButton}
+
+        <tbody>
+          {partitionData.data
+            .slice(0, rowLimit)
+            .map(({ panelTitle, depth, label, parentName, valueText, percentage }, index) => {
+              return (
+                <tr key={`row--${index}`} ref={rowLimit === index ? tableRowRef : undefined} tabIndex={-1}>
+                  {isSmallMultiple && <td>{panelTitle}</td>}
+                  {hasMultipleLayers && <td>{depth}</td>}
+                  <th>{label}</th>
+                  {hasMultipleLayers && <td>{parentName}</td>}
+                  <td>{valueText}</td>
+                  <td>{percentage}</td>
+                </tr>
+              );
+            })}
+        </tbody>
+        {showMoreRows && (
+          <tfoot>
+            <tr>
+              <td>
+                <button type="submit" onClick={() => handleMoreData()} tabIndex={-1}>
+                  Click to show more data
+                </button>
+              </td>
+            </tr>
+          </tfoot>
+        )}
       </table>
     </div>
   );
@@ -149,8 +123,12 @@ const ScreenReaderPartitionTableComponent = ({
 
 const DEFAULT_SCREEN_READER_SUMMARY = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
-  screenReaderData: [],
-  shapeViewModel: [],
+  partitionData: {
+    isSmallMultiple: false,
+    hasMultipleLayers: false,
+    data: [],
+  },
+  debug: false,
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderPartitionTableProps => {
@@ -159,10 +137,8 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderPartitionTablePro
   }
   return {
     a11ySettings: getA11ySettingsSelector(state),
-    screenReaderData: getScreenReaderDataSelector(state),
-    shapeViewModel: partitionMultiGeometries(state),
-    configMaxCount:
-      getPartitionSpecs(state)[0].config.linkLabel?.maxCount || getPartitionSpecs(state)[0].config.maxRowCount,
+    partitionData: getScreenReaderDataSelector(state),
+    debug: getSettingsSpecSelector(state).debug,
   };
 };
 /** @internal */

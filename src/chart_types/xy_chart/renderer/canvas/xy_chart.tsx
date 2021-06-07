@@ -168,22 +168,23 @@ class XYChartComponent extends React.Component<XYChartProps> {
     }
 
     return (
-      <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
-        <canvas
-          ref={forwardCanvasRef}
-          className="echCanvasRenderer"
-          width={width * this.devicePixelRatio}
-          height={height * this.devicePixelRatio}
-          style={{
-            width,
-            height,
-          }}
-          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-          role="presentation"
-        >
-          <ScreenReaderSummary />
-        </canvas>
-      </figure>
+      <>
+        <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
+          <canvas
+            ref={forwardCanvasRef}
+            className="echCanvasRenderer"
+            width={width * this.devicePixelRatio}
+            height={height * this.devicePixelRatio}
+            style={{
+              width,
+              height,
+            }}
+            // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+            role="presentation"
+          />
+        </figure>
+        <ScreenReaderSummary />
+      </>
     );
   }
 }

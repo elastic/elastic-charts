@@ -21,8 +21,6 @@ import { CategoryKey } from '../../../../common/category';
 import { Relation } from '../../../../common/text_utils';
 import { LegendPath } from '../../../../state/actions/legend';
 import { Datum, ValueAccessor } from '../../../../utils/common';
-import { Layer } from '../../specs';
-import { LabelsInterface } from '../../state/selectors/get_screen_reader_data';
 
 /** @public */
 export const AGGREGATE_KEY = 'value';
@@ -299,69 +297,3 @@ export const aggregators = {
   //   },
   // },
 };
-
-/** @internal */
-export function flatSlicesNames(
-  layers: Layer[],
-  depth: number,
-  tree: HierarchyOfArrays,
-  valueFormatter: { (value: number): string; (arg0: number): any } | undefined,
-  keys: LabelsInterface[] = [],
-  parentsName?: string,
-) {
-  // format the key with the layer formatter if applicable
-  const formatter = layers[depth - 1]?.nodeLabel;
-
-  for (const [key, arrayNode] of tree) {
-    const formattedLabel = key === null ? '' : formatter ? formatter(key) : `${key}`;
-    const formattedValue = valueFormatter ? valueFormatter(arrayNode.value) : `${arrayNode.value}`;
-
-    // preventing errors from external formatters
-    if (formattedLabel && formattedLabel !== HIERARCHY_ROOT_KEY && formattedValue) {
-      keys.push({
-        label: formattedLabel,
-        depth,
-        parentName: parentsName && parentsName === HIERARCHY_ROOT_KEY ? 'null' : parentsName,
-        percentage: `${Math.round((arrayNode.value / arrayNode[STATISTICS_KEY].globalAggregate) * 100)}%`,
-        value: arrayNode.value,
-        valueText: formattedValue,
-      });
-    }
-    flatSlicesNames(layers, depth + 1, arrayNode[CHILDREN_KEY], valueFormatter, keys, formattedLabel);
-  }
-  return keys;
-}
-
-/** @internal */
-export function flatSlicesSmallMultiplesNames(
-  layers: Layer[],
-  depth: number,
-  panelTitle: string,
-  tree: HierarchyOfArrays,
-  valueFormatter: { (value: number): string; (arg0: number): any } | undefined,
-  keys: LabelsInterface[] = [],
-  parentsName?: string,
-) {
-  // format the key with the layer formatter if applicable
-  const formatter = layers[depth - 1]?.nodeLabel;
-
-  for (const [key, arrayNode] of tree) {
-    const formattedLabel = key === null ? '' : formatter ? formatter(key) : `${key}`;
-    const formattedValue = valueFormatter ? valueFormatter(arrayNode.value) : `${arrayNode.value}`;
-
-    // preventing errors from external formatters
-    if (formattedLabel && formattedLabel !== HIERARCHY_ROOT_KEY && formattedValue) {
-      keys.push({
-        smTitle: panelTitle,
-        label: formattedLabel,
-        depth,
-        parentName: parentsName && parentsName === HIERARCHY_ROOT_KEY ? 'null' : parentsName,
-        percentage: `${Math.round((arrayNode.value / arrayNode[STATISTICS_KEY].globalAggregate) * 100)}%`,
-        value: arrayNode.value,
-        valueText: formattedValue,
-      });
-    }
-    flatSlicesNames(layers, depth + 1, arrayNode[CHILDREN_KEY], valueFormatter, keys, formattedLabel);
-  }
-  return keys;
-}
