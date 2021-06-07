@@ -9,7 +9,7 @@
     "packages/*"
   ],
   "scripts": {
-    "prepublish": "echo 'This package os not published, see pacakges/*' && exit 1",
+    "prepack": "echo 'This package is not published, see pacakges/*' && exit 1",
     "autoprefix:css": "lerna run --loglevel=silent --scope @elastic/charts autoprefix:css",
     "api:check": "lerna run --loglevel=silent --scope @elastic/charts api:check",
     "api:check:local": "lerna run --loglevel=silent --scope @elastic/charts api:check:local",
