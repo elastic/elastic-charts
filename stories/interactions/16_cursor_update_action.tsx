@@ -96,6 +96,7 @@ export const Example = () => {
           showLegend
           showLegendExtra
           onPointerUpdate={pointerUpdate}
+          onProjectionUpdate={action('onProjectionUpdate')}
           externalPointerEvents={{
             tooltip: { visible: topVisible, placement: topPlacement },
           }}

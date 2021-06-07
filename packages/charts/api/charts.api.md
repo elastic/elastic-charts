@@ -1546,6 +1546,9 @@ export type ProjectedValues = {
 export type ProjectionClickListener = (values: ProjectedValues) => void;
 
 // @public
+export type ProjectionUpdateListener = (values: ProjectedValues) => void;
+
+// @public
 export type Ratio = number;
 
 // @public (undocumented)
@@ -1784,6 +1787,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     // (undocumented)
     onPointerUpdate?: PointerUpdateListener;
     onProjectionClick?: ProjectionClickListener;
+    onProjectionUpdate?: ProjectionUpdateListener;
     // (undocumented)
     onRenderChange?: RenderChangeListener;
     orderOrdinalBinsBy?: OrderBy;

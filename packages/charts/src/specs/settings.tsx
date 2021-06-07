@@ -131,6 +131,11 @@ export type ProjectedValues = {
  * The listener type for click on the projection area.
  */
 export type ProjectionClickListener = (values: ProjectedValues) => void;
+/**
+ * @public
+ * The listener type for mouse move on the projection area.
+ */
+export type ProjectionUpdateListener = (values: ProjectedValues) => void;
 
 /** @public */
 export type ElementClickListener = (
@@ -496,6 +501,12 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * X axis point, and an array of Y values for every groupId used in the chart.
    */
   onProjectionClick?: ProjectionClickListener;
+  /**
+   * Attach a listener for mouse move on the projection area.
+   * The listener will be called with the current x value snapped to the closest
+   * X axis point, and an array of Y values for every groupId used in the chart.
+   */
+  onProjectionUpdate?: ProjectionUpdateListener;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
   onElementOut?: BasicListener;
