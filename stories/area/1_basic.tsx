@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { AreaSeries, Chart, ScaleType } from '../../src';
+import { AreaSeries, Chart, ScaleType, TextureShape } from '../../src';
 import { KIBANA_METRICS } from '../../src/utils/data_samples/test_dataset_kibana';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -34,6 +34,17 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1]}
         data={data}
+        areaSeriesStyle={{
+          area: {
+            texture: {
+              shape: TextureShape.Line,
+              strokeWidth: 1,
+              stroke: 'black',
+              opacity: 1,
+              size: 20,
+            },
+          },
+        }}
       />
     </Chart>
   );
