@@ -19,8 +19,8 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, SeriesNameFn } from '../../packages/elastic-charts/src';
-import * as TestDatasets from '../../packages/elastic-charts/src/utils/data_samples/test_dataset';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, SeriesNameFn } from '../../packages/charts/src';
+import * as TestDatasets from '../../packages/charts/src/utils/data_samples/test_dataset';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {

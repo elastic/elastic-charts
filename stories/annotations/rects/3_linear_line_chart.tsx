@@ -28,9 +28,9 @@ import {
   ScaleType,
   Settings,
   RectAnnotationDatum,
-} from '../../../packages/elastic-charts/src';
-import { Position } from '../../../packages/elastic-charts/src/utils/common';
-import { BandedAccessorType } from '../../../packages/elastic-charts/src/utils/geometry';
+} from '../../../packages/charts/src';
+import { Position } from '../../../packages/charts/src/utils/common';
+import { BandedAccessorType } from '../../../packages/charts/src/utils/geometry';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 export const Example = () => {

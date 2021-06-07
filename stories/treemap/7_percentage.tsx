@@ -19,19 +19,13 @@
 
 import React from 'react';
 
-import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings } from '../../packages/elastic-charts/src';
-import {
-  config,
-  percentValueGetter,
-} from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/config';
-import { ShapeTreeNode } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { arrayToLookup, hueInterpolator } from '../../packages/elastic-charts/src/common/color_calcs';
-import { mocks } from '../../packages/elastic-charts/src/mocks/hierarchical';
-import {
-  countryDimension,
-  regionDimension,
-} from '../../packages/elastic-charts/src/mocks/hierarchical/dimension_codes';
-import { palettes } from '../../packages/elastic-charts/src/mocks/hierarchical/palettes';
+import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings } from '../../packages/charts/src';
+import { config, percentValueGetter } from '../../packages/charts/src/chart_types/partition_chart/layout/config';
+import { ShapeTreeNode } from '../../packages/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
+import { arrayToLookup, hueInterpolator } from '../../packages/charts/src/common/color_calcs';
+import { mocks } from '../../packages/charts/src/mocks/hierarchical';
+import { countryDimension, regionDimension } from '../../packages/charts/src/mocks/hierarchical/dimension_codes';
+import { palettes } from '../../packages/charts/src/mocks/hierarchical/palettes';
 import { STORYBOOK_LIGHT_THEME } from '../shared';
 
 const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);

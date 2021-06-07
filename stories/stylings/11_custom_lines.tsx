@@ -20,15 +20,7 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Axis,
-  Chart,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
-  LineSeriesStyle,
-} from '../../packages/elastic-charts/src';
+import { Axis, Chart, LineSeries, Position, ScaleType, Settings, LineSeriesStyle } from '../../packages/charts/src';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(

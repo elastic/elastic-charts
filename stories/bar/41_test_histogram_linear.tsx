@@ -34,8 +34,8 @@ import {
   RectAnnotation,
   ScaleType,
   Settings,
-} from '../../packages/elastic-charts/src';
-import * as TestDatasets from '../../packages/elastic-charts/src/utils/data_samples/test_dataset';
+} from '../../packages/charts/src';
+import * as TestDatasets from '../../packages/charts/src/utils/data_samples/test_dataset';
 import { getChartRotationKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 

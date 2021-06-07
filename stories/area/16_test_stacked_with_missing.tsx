@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { Chart, CurveType, AreaSeries, Position, Axis, ScaleType } from '../../packages/elastic-charts/src';
+import { Chart, CurveType, AreaSeries, Position, Axis, ScaleType } from '../../packages/charts/src';
 
 export const Example = () => (
   <Chart className="story-chart">

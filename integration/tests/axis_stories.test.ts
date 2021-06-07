@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Position } from '../../packages/elastic-charts/src';
+import { Position } from '../../packages/charts/src';
 import { eachRotation } from '../helpers';
 import { common } from '../page_objects';
 

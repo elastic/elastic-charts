@@ -28,7 +28,7 @@ import {
   Settings,
   niceTimeFormatter,
   StackMode,
-} from '../../packages/elastic-charts/src';
+} from '../../packages/charts/src';
 
 export const Example = () => (
   <Chart className="story-chart">

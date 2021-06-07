@@ -29,8 +29,8 @@ import {
   ScaleType,
   Settings,
   StackMode,
-} from '../../packages/elastic-charts/src';
-import DATA from '../../packages/elastic-charts/src/utils/data_samples/4_time_series.json';
+} from '../../packages/charts/src';
+import DATA from '../../packages/charts/src/utils/data_samples/4_time_series.json';
 
 const dataNames = Object.keys(DATA);
 export const Example = () => {

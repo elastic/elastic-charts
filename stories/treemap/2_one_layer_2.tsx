@@ -19,12 +19,12 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout } from '../../packages/elastic-charts/src';
-import { config } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/config';
-import { ShapeTreeNode } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { arrayToLookup } from '../../packages/elastic-charts/src/common/color_calcs';
-import { mocks } from '../../packages/elastic-charts/src/mocks/hierarchical';
-import { productDimension } from '../../packages/elastic-charts/src/mocks/hierarchical/dimension_codes';
+import { Chart, Datum, Partition, PartitionLayout } from '../../packages/charts/src';
+import { config } from '../../packages/charts/src/chart_types/partition_chart/layout/config';
+import { ShapeTreeNode } from '../../packages/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
+import { arrayToLookup } from '../../packages/charts/src/common/color_calcs';
+import { mocks } from '../../packages/charts/src/mocks/hierarchical';
+import { productDimension } from '../../packages/charts/src/mocks/hierarchical/dimension_codes';
 import { discreteColor, colorBrewerCategoricalPastel12 } from '../utils/utils';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);

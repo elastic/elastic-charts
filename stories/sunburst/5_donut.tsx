@@ -19,9 +19,9 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../packages/elastic-charts/src';
-import { config } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/config';
-import { mocks } from '../../packages/elastic-charts/src/mocks/hierarchical';
+import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../packages/charts/src';
+import { config } from '../../packages/charts/src/chart_types/partition_chart/layout/config';
+import { mocks } from '../../packages/charts/src/mocks/hierarchical';
 import { STORYBOOK_LIGHT_THEME } from '../shared';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 

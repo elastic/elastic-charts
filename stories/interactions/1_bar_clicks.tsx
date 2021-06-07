@@ -30,7 +30,7 @@ import {
   Settings,
   TooltipValue,
   TooltipValueFormatter,
-} from '../../packages/elastic-charts/src';
+} from '../../packages/charts/src';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),

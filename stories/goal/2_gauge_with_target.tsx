@@ -20,10 +20,10 @@
 import { number, color, array } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Goal } from '../../packages/elastic-charts/src';
-import { BandFillColorAccessorInput } from '../../packages/elastic-charts/src/chart_types/goal_chart/specs';
-import { GoalSubtype } from '../../packages/elastic-charts/src/chart_types/goal_chart/specs/constants';
-import { Color } from '../../packages/elastic-charts/src/utils/common';
+import { Chart, Goal } from '../../packages/charts/src';
+import { BandFillColorAccessorInput } from '../../packages/charts/src/chart_types/goal_chart/specs';
+import { GoalSubtype } from '../../packages/charts/src/chart_types/goal_chart/specs/constants';
+import { Color } from '../../packages/charts/src/utils/common';
 
 const subtype = GoalSubtype.Goal;
 

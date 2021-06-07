@@ -29,9 +29,9 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
-} from '../../packages/elastic-charts/src';
-import { isDefined } from '../../packages/elastic-charts/src/utils/common';
-import { KIBANA_METRICS } from '../../packages/elastic-charts/src/utils/data_samples/test_dataset_kibana';
+} from '../../packages/charts/src';
+import { isDefined } from '../../packages/charts/src/utils/common';
+import { KIBANA_METRICS } from '../../packages/charts/src/utils/data_samples/test_dataset_kibana';
 import { getChartRotationKnob, getPlacementKnob, getStickToKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 

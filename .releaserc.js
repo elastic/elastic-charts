@@ -18,7 +18,7 @@ module.exports = {
       '@semantic-release/npm',
       {
         // must point to the child package
-        pkgRoot: 'packages/elastic-charts',
+        pkgRoot: 'packages/charts',
       },
     ],
     '@semantic-release/git',

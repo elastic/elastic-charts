@@ -54,7 +54,7 @@ module.exports = async () => {
 
   const debug = process.argv.includes('--debug');
   const cwd = process.cwd();
-  const echDir = path.resolve(cwd, 'packages/elastic-charts');
+  const echDir = path.resolve(cwd, 'packages/charts');
   const echPackageContent = await getPackageInfo(echDir);
   const packageName = echPackageContent.name;
 

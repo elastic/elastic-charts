@@ -29,7 +29,7 @@ import {
   SmallMultiples,
   Settings,
   BarSeries,
-} from '../../packages/elastic-charts/src';
+} from '../../packages/charts/src';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const data = [

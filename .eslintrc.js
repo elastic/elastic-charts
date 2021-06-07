@@ -319,7 +319,7 @@ module.exports = {
     'import/resolver': {
       node: {
         extensions: ['.mjs', '.js', '.json', '.ts', '.d.ts', '.tsx'],
-        moduleDirectory: ['node_modules', 'packages/elastic-charts/src/'],
+        moduleDirectory: ['node_modules', 'packages/charts/src/'],
       },
     },
     react: {
@@ -328,7 +328,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['packages/elastic-charts/src/**/*.{ts?(x),js}'],
+      files: ['packages/charts/src/**/*.{ts?(x),js}'],
       rules: {
         /*
          * Custom elastic-charts rules
@@ -349,11 +349,11 @@ module.exports = {
                 'error',
                 {
                   zones: [
-                    { target: './packages/elastic-charts/src', from: './packages/elastic-charts/src/index.ts' },
+                    { target: './packages/charts/src', from: './packages/charts/src/index.ts' },
                     {
-                      target: './packages/elastic-charts/src',
+                      target: './packages/charts/src',
                       from: './',
-                      except: ['./packages/elastic-charts/src', 'node_modules'],
+                      except: ['./packages/charts/src', 'node_modules'],
                     },
                   ],
                 },
@@ -429,7 +429,7 @@ module.exports = {
       },
     },
     {
-      files: ['*.test.ts?(x)', '**/__mocks__/**/*.ts?(x)', 'packages/elastic-charts/src/mocks/**'],
+      files: ['*.test.ts?(x)', '**/__mocks__/**/*.ts?(x)', 'packages/charts/src/mocks/**'],
       rules: {
         'elastic-charts/require-release-tag': 0,
         'elastic-charts/require-tsdocs': 0,

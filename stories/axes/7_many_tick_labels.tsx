@@ -29,8 +29,8 @@ import {
   Settings,
   RecursivePartial,
   AxisStyle,
-} from '../../packages/elastic-charts/src';
-import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
+} from '../../packages/charts/src';
+import { SeededDataGenerator } from '../../packages/charts/src/mocks/utils';
 
 export const Example = () => {
   const dg = new SeededDataGenerator();

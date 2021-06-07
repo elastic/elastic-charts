@@ -31,8 +31,8 @@ import {
   Settings,
   Fit,
   StackMode,
-} from '../../packages/elastic-charts/src';
-import { getRandomNumberGenerator, getRNGSeed } from '../../packages/elastic-charts/src/mocks/utils';
+} from '../../packages/charts/src';
+import { getRandomNumberGenerator, getRNGSeed } from '../../packages/charts/src/mocks/utils';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {

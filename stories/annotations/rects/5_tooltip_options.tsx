@@ -28,9 +28,9 @@ import {
   ScaleType,
   RectAnnotation,
   Settings,
-} from '../../../packages/elastic-charts/src';
-import { CustomAnnotationTooltip } from '../../../packages/elastic-charts/src/chart_types/xy_chart/annotations/types';
-import { Position } from '../../../packages/elastic-charts/src/utils/common';
+} from '../../../packages/charts/src';
+import { CustomAnnotationTooltip } from '../../../packages/charts/src/chart_types/xy_chart/annotations/types';
+import { Position } from '../../../packages/charts/src/utils/common';
 import { getBoundaryKnob, getChartRotationKnob, getFallbackPlacementsKnob, getPlacementKnob } from '../../utils/knobs';
 
 export const Example = () => {

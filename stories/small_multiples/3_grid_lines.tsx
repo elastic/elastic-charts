@@ -35,9 +35,9 @@ import {
   niceTimeFormatByDay,
   timeFormatter,
   AxisSpec,
-} from '../../packages/elastic-charts/src';
-import { isVerticalAxis } from '../../packages/elastic-charts/src/chart_types/xy_chart/utils/axis_type_utils';
-import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
+} from '../../packages/charts/src';
+import { isVerticalAxis } from '../../packages/charts/src/chart_types/xy_chart/utils/axis_type_utils';
+import { SeededDataGenerator } from '../../packages/charts/src/mocks/utils';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();

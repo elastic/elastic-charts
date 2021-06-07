@@ -28,10 +28,10 @@ import {
   Partition,
   PartitionLayout,
   Settings,
-} from '../../packages/elastic-charts/src';
-import { config } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/config';
-import { ShapeTreeNode } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { mocks } from '../../packages/elastic-charts/src/mocks/hierarchical';
+} from '../../packages/charts/src';
+import { config } from '../../packages/charts/src/chart_types/partition_chart/layout/config';
+import { ShapeTreeNode } from '../../packages/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
+import { mocks } from '../../packages/charts/src/mocks/hierarchical';
 import { STORYBOOK_LIGHT_THEME } from '../shared';
 import {
   discreteColor,

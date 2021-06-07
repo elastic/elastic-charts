@@ -29,7 +29,7 @@ import {
   Position,
   ScaleType,
   Settings,
-} from '../../packages/elastic-charts/src';
+} from '../../packages/charts/src';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),

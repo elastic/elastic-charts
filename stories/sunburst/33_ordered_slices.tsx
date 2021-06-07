@@ -28,8 +28,8 @@ import {
   MODEL_KEY,
   Partition,
   ShapeTreeNode,
-} from '../../packages/elastic-charts/src';
-import { config } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/config';
+} from '../../packages/charts/src';
+import { config } from '../../packages/charts/src/chart_types/partition_chart/layout/config';
 import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';
 
 const categoricalColors = colorBrewerCategoricalPastel12B.slice(3);

@@ -31,8 +31,8 @@ import {
   AreaSeries,
   CurveType,
   YDomainBase,
-} from '../../packages/elastic-charts/src';
-import { LogBase, LogScaleOptions } from '../../packages/elastic-charts/src/scales/scale_continuous';
+} from '../../packages/charts/src';
+import { LogBase, LogScaleOptions } from '../../packages/charts/src/scales/scale_continuous';
 import { logBaseMap, logFormatter } from '../utils/formatters';
 import { getKnobsFromEnum } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';

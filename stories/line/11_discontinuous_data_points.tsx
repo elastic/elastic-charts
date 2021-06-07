@@ -30,7 +30,7 @@ import {
   Settings,
   Fit,
   AreaSeries,
-} from '../../packages/elastic-charts/src';
+} from '../../packages/charts/src';
 
 export const Example = () => {
   const fitEnabled = boolean('enable fit function', false);

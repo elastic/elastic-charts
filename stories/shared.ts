@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { PartialTheme } from '../packages/elastic-charts/src';
+import { PartialTheme } from '../packages/charts/src';
 
 export const STORYBOOK_DARK_THEME: PartialTheme = {
   background: {

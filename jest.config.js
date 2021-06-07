@@ -19,12 +19,12 @@
 
 module.exports = {
   testMatch: ['**/?(*.)+(test).[jt]s?(x)'],
-  roots: ['<rootDir>/packages/elastic-charts/src'],
+  roots: ['<rootDir>/packages/charts/src'],
   preset: 'ts-jest',
   setupFilesAfterEnv: ['<rootDir>/scripts/setup_enzyme.ts', '<rootDir>/scripts/custom_matchers.ts'],
   coveragePathIgnorePatterns: [
-    '<rootDir>/packages/elastic-charts/src/mocks',
-    '<rootDir>/packages/elastic-charts/src/utils/d3-delaunay',
+    '<rootDir>/packages/charts/src/mocks',
+    '<rootDir>/packages/charts/src/utils/d3-delaunay',
     '/node_modules/',
   ],
   clearMocks: true,

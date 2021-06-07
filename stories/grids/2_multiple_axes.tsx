@@ -29,7 +29,7 @@ import {
   Position,
   ScaleType,
   Settings,
-} from '../../packages/elastic-charts/src';
+} from '../../packages/charts/src';
 
 function generateGridLineStyle(group: string, gridColor = 'purple'): GridLineStyle {
   const groupId = `${group} axis`;

@@ -27,8 +27,8 @@ import {
   ScaleType,
   Settings,
   SeriesNameConfigOptions,
-} from '../../packages/elastic-charts/src';
-import * as TestDatasets from '../../packages/elastic-charts/src/utils/data_samples/test_dataset';
+} from '../../packages/charts/src';
+import * as TestDatasets from '../../packages/charts/src/utils/data_samples/test_dataset';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {

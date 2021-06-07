@@ -27,8 +27,8 @@ import {
   Position,
   ScaleType,
   timeFormatter,
-} from '../../packages/elastic-charts/src';
-import { KIBANA_METRICS } from '../../packages/elastic-charts/src/utils/data_samples/test_dataset_kibana';
+} from '../../packages/charts/src';
+import { KIBANA_METRICS } from '../../packages/charts/src/utils/data_samples/test_dataset_kibana';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 

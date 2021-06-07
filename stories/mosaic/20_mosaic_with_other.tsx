@@ -28,8 +28,8 @@ import {
   Partition,
   PartitionLayout,
   ShapeTreeNode,
-} from '../../packages/elastic-charts/src';
-import { config } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/config';
+} from '../../packages/charts/src';
+import { config } from '../../packages/charts/src/chart_types/partition_chart/layout/config';
 import { countryLookup } from '../utils/utils';
 
 const categoricalColors = ['rgb(110,110,110)', 'rgb(123,123,123)', 'darkgrey', 'lightgrey'];

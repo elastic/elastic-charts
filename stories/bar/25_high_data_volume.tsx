@@ -19,9 +19,9 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../packages/elastic-charts/src';
-import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
-import { TooltipType } from '../../packages/elastic-charts/src/specs/constants';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../packages/charts/src';
+import { SeededDataGenerator } from '../../packages/charts/src/mocks/utils';
+import { TooltipType } from '../../packages/charts/src/specs/constants';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {

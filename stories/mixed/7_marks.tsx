@@ -22,8 +22,8 @@ import { number, boolean, text } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, LineSeries, Position, ScaleType, Settings } from '../../packages/elastic-charts/src';
-import { getRandomNumberGenerator } from '../../packages/elastic-charts/src/mocks/utils';
+import { AreaSeries, Axis, Chart, LineSeries, Position, ScaleType, Settings } from '../../packages/charts/src';
+import { getRandomNumberGenerator } from '../../packages/charts/src/mocks/utils';
 
 const getRandomNumber = getRandomNumberGenerator();
 const data1 = new Array(100).fill(0).map((_, x) => ({

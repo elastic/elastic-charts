@@ -29,7 +29,7 @@ import {
   BarSeries,
   AreaSeries,
   CurveType,
-} from '../../packages/elastic-charts/src';
+} from '../../packages/charts/src';
 
 export const Example = () => {
   const debug = boolean('debug', true);

@@ -20,16 +20,7 @@
 import { select, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Axis,
-  BarSeries,
-  Chart,
-  Position,
-  ScaleType,
-  Settings,
-  BinAgg,
-  Direction,
-} from '../../packages/elastic-charts/src';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, BinAgg, Direction } from '../../packages/charts/src';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const data = [

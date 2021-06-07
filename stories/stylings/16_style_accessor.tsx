@@ -34,7 +34,7 @@ import {
   PointStyle,
   BarStyleAccessor,
   PointStyleAccessor,
-} from '../../packages/elastic-charts/src';
+} from '../../packages/charts/src';
 
 export const Example = () => {
   const hasThreshold = boolean('threshold', true);

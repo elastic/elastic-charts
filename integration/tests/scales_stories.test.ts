@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { LogBase } from '../../packages/elastic-charts/src/scales/scale_continuous';
+import { LogBase } from '../../packages/charts/src/scales/scale_continuous';
 import { common } from '../page_objects';
 
 describe('Scales stories', () => {

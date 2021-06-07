@@ -21,7 +21,7 @@ import { DateTime } from 'luxon';
 import moment from 'moment';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, SeriesNameFn } from '../../packages/elastic-charts/src';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, SeriesNameFn } from '../../packages/charts/src';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {

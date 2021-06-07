@@ -28,8 +28,8 @@ import {
   LineAnnotation,
   ScaleType,
   Settings,
-} from '../../../packages/elastic-charts/src';
-import { Position } from '../../../packages/elastic-charts/src/utils/common';
+} from '../../../packages/charts/src';
+import { Position } from '../../../packages/charts/src/utils/common';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 export const Example = () => {

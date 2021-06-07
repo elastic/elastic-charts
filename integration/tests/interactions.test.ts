@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Placement } from '../../packages/elastic-charts/src';
+import { Placement } from '../../packages/charts/src';
 import { eachRotation } from '../helpers';
 import { common } from '../page_objects';
 

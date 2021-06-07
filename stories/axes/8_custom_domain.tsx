@@ -29,7 +29,7 @@ import {
   Position,
   ScaleType,
   Settings,
-} from '../../packages/elastic-charts/src';
+} from '../../packages/charts/src';
 
 export const Example = () => {
   const customXDomain = boolean('customize X domain', true, 'X axis');

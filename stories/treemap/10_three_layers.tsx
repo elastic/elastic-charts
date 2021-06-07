@@ -20,13 +20,13 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../packages/elastic-charts/src';
-import { config } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/config';
-import { ShapeTreeNode } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { hueInterpolator } from '../../packages/elastic-charts/src/common/color_calcs';
-import { mocks } from '../../packages/elastic-charts/src/mocks/hierarchical';
-import { palettes } from '../../packages/elastic-charts/src/mocks/hierarchical/palettes';
-import { keepDistinct } from '../../packages/elastic-charts/src/utils/common';
+import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../packages/charts/src';
+import { config } from '../../packages/charts/src/chart_types/partition_chart/layout/config';
+import { ShapeTreeNode } from '../../packages/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
+import { hueInterpolator } from '../../packages/charts/src/common/color_calcs';
+import { mocks } from '../../packages/charts/src/mocks/hierarchical';
+import { palettes } from '../../packages/charts/src/mocks/hierarchical/palettes';
+import { keepDistinct } from '../../packages/charts/src/utils/common';
 import { STORYBOOK_LIGHT_THEME } from '../shared';
 import { countryLookup, productLookup, regionLookup } from '../utils/utils';
 

@@ -21,13 +21,10 @@ import { action } from '@storybook/addon-actions';
 import { color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Settings, Wordcloud } from '../../packages/elastic-charts/src';
-import {
-  WeightFn,
-  WordModel,
-} from '../../packages/elastic-charts/src/chart_types/wordcloud/layout/types/viewmodel_types';
-import { getRandomNumberGenerator } from '../../packages/elastic-charts/src/mocks/utils';
-import { palettes as euiPalettes } from '../../packages/elastic-charts/src/utils/themes/colors';
+import { Chart, Settings, Wordcloud } from '../../packages/charts/src';
+import { WeightFn, WordModel } from '../../packages/charts/src/chart_types/wordcloud/layout/types/viewmodel_types';
+import { getRandomNumberGenerator } from '../../packages/charts/src/mocks/utils';
+import { palettes as euiPalettes } from '../../packages/charts/src/utils/themes/colors';
 
 const text =
   'Webtwo ipsum sifteo twones chegg lijit meevee spotify, joukuu wakoopa greplin. Sclipo octopart wufoo, balihoo. Kiko groupon fleck revver blyve joyent dogster, zoodles zooomr scribd dogster mog. Zinch orkut jabber trulia, sclipo. Chumby imvu rovio ning zoho akismet napster, kippt zillow mzinga zoho. ' +

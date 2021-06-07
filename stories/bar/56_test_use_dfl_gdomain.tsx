@@ -19,7 +19,7 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType } from '../../packages/elastic-charts/src';
+import { Axis, BarSeries, Chart, Position, ScaleType } from '../../packages/charts/src';
 
 export const Example = () => {
   return (

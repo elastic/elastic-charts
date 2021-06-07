@@ -28,7 +28,7 @@ import {
   Position,
   ScaleType,
   Settings,
-} from '../../packages/elastic-charts/src';
+} from '../../packages/charts/src';
 
 export const Example = () => (
   <Chart renderer="canvas" className="story-chart">

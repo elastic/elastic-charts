@@ -20,9 +20,9 @@
 import { color } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, Settings } from '../../packages/elastic-charts/src';
-import { config } from '../../packages/elastic-charts/src/chart_types/partition_chart/layout/config';
-import { mocks } from '../../packages/elastic-charts/src/mocks/hierarchical';
+import { Chart, Datum, Partition, Settings } from '../../packages/charts/src';
+import { config } from '../../packages/charts/src/chart_types/partition_chart/layout/config';
+import { mocks } from '../../packages/charts/src/mocks/hierarchical';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
 export const Example = () => {

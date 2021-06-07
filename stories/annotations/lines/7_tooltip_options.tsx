@@ -30,10 +30,10 @@ import {
   LineAnnotation,
   AnnotationDomainType,
   LineAnnotationDatum,
-} from '../../../packages/elastic-charts/src';
-import { CustomAnnotationTooltip } from '../../../packages/elastic-charts/src/chart_types/xy_chart/annotations/types';
-import { Icon } from '../../../packages/elastic-charts/src/components/icons/icon';
-import { Position } from '../../../packages/elastic-charts/src/utils/common';
+} from '../../../packages/charts/src';
+import { CustomAnnotationTooltip } from '../../../packages/charts/src/chart_types/xy_chart/annotations/types';
+import { Icon } from '../../../packages/charts/src/components/icons/icon';
+import { Position } from '../../../packages/charts/src/utils/common';
 import {
   arrayKnobs,
   getBoundaryKnob,

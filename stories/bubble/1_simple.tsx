@@ -30,8 +30,8 @@ import {
   Settings,
   TooltipType,
   PointShape,
-} from '../../packages/elastic-charts/src';
-import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
+} from '../../packages/charts/src';
+import { SeededDataGenerator } from '../../packages/charts/src/mocks/utils';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();

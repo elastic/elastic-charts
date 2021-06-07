@@ -29,8 +29,8 @@ import {
   ScaleType,
   Settings,
   LIGHT_THEME,
-} from '../../packages/elastic-charts/src';
-import { SeededDataGenerator } from '../../packages/elastic-charts/src/mocks/utils';
+} from '../../packages/charts/src';
+import { SeededDataGenerator } from '../../packages/charts/src/mocks/utils';
 
 const dg = new SeededDataGenerator();
 const data1 = dg.generateGroupedSeries(40, 4);
