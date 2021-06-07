@@ -95,9 +95,10 @@ export const getTextureStyles = (
   texture?: TexturedStyles,
 ): Texture | undefined => {
   const pattern = createPattern(ctx, patternCanvas, baseColor, fillOpacity, texture);
-
   if (!pattern || !texture) return;
 
+  const scale = 1 / window.devicePixelRatio;
+  pattern.setTransform(new DOMMatrix([scale, 0, 0, scale, 0, 0]));
   const { rotation, offset } = texture;
 
   return {
