@@ -160,6 +160,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       isChartEmpty,
       chartContainerDimensions: { width, height },
       a11ySettings,
+      debug,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
@@ -182,8 +183,9 @@ class XYChartComponent extends React.Component<XYChartProps> {
             // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
             role="presentation"
           />
+          {!debug && <ScreenReaderSummary />}
         </figure>
-        <ScreenReaderSummary />
+        {debug && <ScreenReaderSummary />}
       </>
     );
   }
