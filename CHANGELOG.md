@@ -1,3 +1,10 @@
+# [30.1.0-alpha.2](https://github.com/elastic/elastic-charts/compare/v30.1.0-alpha.1...v30.1.0-alpha.2) (2021-06-08)
+
+
+### Bug Fixes
+
+* add txt files to package ([adf6fca](https://github.com/elastic/elastic-charts/commit/adf6fca375eff3253d681bfe9d07595d4f47e4cd))
+
 # [30.1.0-alpha.1](https://github.com/elastic/elastic-charts/compare/v30.0.0...v30.1.0-alpha.1) (2021-06-08)
 
 
