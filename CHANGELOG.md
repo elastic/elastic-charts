@@ -1,3 +1,10 @@
+# [30.1.0-alpha.1](https://github.com/elastic/elastic-charts/compare/v30.0.0...v30.1.0-alpha.1) (2021-06-08)
+
+
+### Features
+
+* **workspaces:** implement src as workspace package ([#1178](https://github.com/elastic/elastic-charts/issues/1178)) ([0cdf3b4](https://github.com/elastic/elastic-charts/commit/0cdf3b4c7660ad577ba5d5ee64ba2b796677e75d))
+
 # [30.0.0](https://github.com/elastic/elastic-charts/compare/v29.2.0...v30.0.0) (2021-06-04)
 
 
