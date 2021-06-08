@@ -47,6 +47,7 @@ const getPath = (textureStyle: TexturedStyles, size: number, stokeWith: number):
 /** @internal */
 function createPattern(
   ctx: CanvasRenderingContext2D,
+  dpi: number,
   patternCanvas: HTMLCanvasElement,
   baseColor: Color | ColorVariant,
   fillOpacity: OpacityFn,
@@ -58,8 +59,10 @@ function createPattern(
   const { size = 10, stroke, strokeWidth = 1, opacity, shapeRotation, fill, dash } = textureStyle;
 
   const spacing = getSpacing(textureStyle);
-  patternCanvas.width = size + spacing.x;
-  patternCanvas.height = size + spacing.y;
+  const cssWidth = size + spacing.x;
+  const cssHeight = size + spacing.y;
+  patternCanvas.width = dpi * cssWidth;
+  patternCanvas.height = dpi * cssHeight;
 
   pCtx.globalAlpha = opacity ? fillOpacity(opacity, 1) : fillOpacity(1);
   pCtx.lineWidth = strokeWidth;
@@ -72,7 +75,8 @@ function createPattern(
   const [path, pathRotation] = getPath(textureStyle, size, strokeWidth);
   const rotation = (shapeRotation ?? 0) + pathRotation;
 
-  pCtx.translate(patternCanvas.width / 2, patternCanvas.height / 2);
+  pCtx.scale(dpi, dpi);
+  pCtx.translate(cssWidth / 2, cssHeight / 2);
 
   if (rotation) pCtx.rotate(getRadians(rotation));
 
@@ -94,10 +98,12 @@ export const getTextureStyles = (
   fillOpacity: OpacityFn,
   texture?: TexturedStyles,
 ): Texture | undefined => {
-  const pattern = createPattern(ctx, patternCanvas, baseColor, fillOpacity, texture);
+  const dpi = window.devicePixelRatio;
+  const pattern = createPattern(ctx, dpi, patternCanvas, baseColor, fillOpacity, texture);
+
   if (!pattern || !texture) return;
 
-  const scale = 1 / window.devicePixelRatio;
+  const scale = 1 / dpi;
   pattern.setTransform(new DOMMatrix([scale, 0, 0, scale, 0, 0]));
   const { rotation, offset } = texture;
 
