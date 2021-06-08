@@ -130,6 +130,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 0, value: 'A' },
           ],
@@ -142,6 +143,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 0, value: 'A' },
             { index: 0, value: 'A' },
@@ -155,6 +157,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 0, value: 'A' },
             { index: 1, value: 'B' },
@@ -168,6 +171,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 1, value: 'B' },
           ],
@@ -180,6 +184,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 1, value: 'B' },
             { index: 0, value: 'A' },
@@ -193,6 +198,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 1, value: 'B' },
             { index: 1, value: 'B' },
@@ -206,6 +212,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'C',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 2, value: 'C' },
           ],
@@ -218,6 +225,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 2, value: 'C' },
             { index: 0, value: 'A' },
@@ -231,6 +239,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             { index: 0, value: HIERARCHY_ROOT_KEY },
             { index: 2, value: 'C' },
             { index: 1, value: 'B' },
@@ -256,6 +265,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             {
               index: 0,
               value: HIERARCHY_ROOT_KEY,
@@ -274,6 +284,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'A',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             {
               index: 0,
               value: HIERARCHY_ROOT_KEY,
@@ -309,6 +320,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'C',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             {
               index: 0,
               value: HIERARCHY_ROOT_KEY,
@@ -327,6 +339,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
           childId: 'B',
           color: 'rgba(128, 0, 0, 0.5)',
           path: [
+            { index: 0, value: '' },
             {
               index: 0,
               value: HIERARCHY_ROOT_KEY,

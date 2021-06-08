@@ -84,7 +84,7 @@ function getTreesForSpec(
     }, new Map<string, HierarchyOfArrays>());
     return Array.from(groups)
       .sort(getPredicateFn(sort))
-      .map(([groupKey, subData]) => ({
+      .map(([groupKey, subData], innerIndex) => ({
         name: format(groupKey),
         smAccessorValue: groupKey,
         style: smStyle,
@@ -94,6 +94,7 @@ function getTreesForSpec(
           layers,
           configMetadata.partitionLayout.dflt,
           config.partitionLayout,
+          [{ index: innerIndex, value: String(groupKey) }],
         ),
       }));
   } else {
@@ -102,7 +103,12 @@ function getTreesForSpec(
         name: '',
         smAccessorValue: '',
         style: smStyle,
-        tree: partitionTree(data, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout),
+        tree: partitionTree(data, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout, [
+          {
+            index: 0,
+            value: '',
+          },
+        ]),
       },
     ];
   }

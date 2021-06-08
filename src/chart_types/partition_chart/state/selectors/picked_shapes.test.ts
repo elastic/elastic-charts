@@ -128,6 +128,7 @@ describe('Picked shapes selector', () => {
             depth: 1,
             sortIndex: 1,
             path: [
+              { index: 0, value: '' },
               { index: 0, value: HIERARCHY_ROOT_KEY },
               { index: 1, value: 'b' },
             ],
@@ -139,6 +140,7 @@ describe('Picked shapes selector', () => {
             depth: 2,
             sortIndex: 1,
             path: [
+              { index: 0, value: '' },
               { index: 0, value: HIERARCHY_ROOT_KEY },
               { index: 1, value: 'b' },
               { index: 1, value: 'b' },
@@ -208,6 +210,7 @@ describe('Picked shapes selector', () => {
             depth: 1,
             sortIndex: 0,
             path: [
+              { index: 0, value: 'a' },
               { index: 0, value: HIERARCHY_ROOT_KEY },
               { index: 0, value: 'a' },
             ],
@@ -249,6 +252,7 @@ describe('Picked shapes selector', () => {
             depth: 1,
             sortIndex: 1,
             path: [
+              { index: 0, value: '' },
               { index: 0, value: HIERARCHY_ROOT_KEY },
               { index: 1, value: 'b' },
             ],
@@ -260,6 +264,7 @@ describe('Picked shapes selector', () => {
             depth: 2,
             sortIndex: 1,
             path: [
+              { index: 0, value: '' },
               { index: 0, value: HIERARCHY_ROOT_KEY },
               { index: 1, value: 'b' },
               { index: 1, value: 'b' },
