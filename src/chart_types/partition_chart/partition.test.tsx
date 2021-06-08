@@ -63,15 +63,9 @@ describe('Retain hierarchy even with arbitrary names', () => {
     it('all distinct labels are present', () => {
       MockStore.addSpecs([MockGlobalSpec.settings({ showLegend: true }), MockSeriesSpec.sunburst(specJSON)], store);
       expect(getLegendItemsLabels(store.getState()).sort(ascByLabel)).toEqual([
-        { depth: 1, label: 'A', parentName: 'null', percentage: '33%', value: 2, valueText: '2' },
-        { depth: 2, label: 'A', parentName: 'A', percentage: '17%', value: 1, valueText: '1' },
-        { depth: 2, label: 'A', parentName: 'B', percentage: '17%', value: 1, valueText: '1' },
-        { depth: 2, label: 'A', parentName: 'C', percentage: '17%', value: 1, valueText: '1' },
-        { depth: 2, label: 'B', parentName: 'A', percentage: '17%', value: 1, valueText: '1' },
-        { depth: 1, label: 'B', parentName: 'null', percentage: '33%', value: 2, valueText: '2' },
-        { depth: 2, label: 'B', parentName: 'B', percentage: '17%', value: 1, valueText: '1' },
-        { depth: 2, label: 'B', parentName: 'C', percentage: '17%', value: 1, valueText: '1' },
-        { depth: 1, label: 'C', parentName: 'null', percentage: '33%', value: 2, valueText: '2' },
+        { depth: 2, label: 'A' },
+        { depth: 2, label: 'B' },
+        { depth: 1, label: 'C' },
       ]);
     });
 
@@ -96,10 +90,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
         ],
         store,
       );
-      expect(getLegendItemsLabels(store.getState())).toEqual([
-        { depth: 1, label: 'A', parentName: 'null', percentage: '100%', valueText: '1', value: 1 },
-        { depth: 2, label: 'A', parentName: 'A', percentage: '100%', value: 1, valueText: '1' },
-      ]);
+      expect(getLegendItemsLabels(store.getState())).toEqual([{ depth: 2, label: 'A' }]);
     });
 
     it('special case: one input, two labels', () => {
@@ -114,8 +105,8 @@ describe('Retain hierarchy even with arbitrary names', () => {
         store,
       );
       expect(getLegendItemsLabels(store.getState()).sort(ascByLabel)).toEqual([
-        { depth: 2, label: 'B', parentName: 'C', percentage: '100%', valueText: '1', value: 1 },
-        { depth: 1, label: 'C', parentName: 'null', percentage: '100%', valueText: '1', value: 1 },
+        { depth: 2, label: 'B' },
+        { depth: 1, label: 'C' },
       ]);
     });
 

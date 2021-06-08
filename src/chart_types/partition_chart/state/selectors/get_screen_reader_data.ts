@@ -43,6 +43,7 @@ export interface PartitionData {
   isSmallMultiple: boolean;
   data: PartitionSectionData[];
 }
+
 /**
  * @internal
  */
@@ -84,7 +85,10 @@ export const getScreenReaderDataSelector = createCachedSelector(
     return {
       hasMultipleLayers: specs[0].layers.length > 1,
       isSmallMultiple: shapeViewModel.length > 1,
-      data: getScreenReaderDataForPartitions(specs, shapeViewModel),
+      data: getScreenReaderDataForPartitions(specs, shapeViewModel).sort(
+        // @ts-ignore
+        (a, b) => a.panelTitle && b.panelTitle && a.panelTitle > b.panelTitle && a.depth < b.depth,
+      ),
     };
   },
 )(getChartIdSelector);

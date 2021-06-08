@@ -42,7 +42,7 @@ interface ScreenReaderPartitionTableProps {
 }
 
 // this currently limit the number of pages shown to the user
-const TABLE_PAGINATION = 5;
+const TABLE_PAGINATION = 10;
 
 const ScreenReaderPartitionTableComponent = ({
   a11ySettings,
