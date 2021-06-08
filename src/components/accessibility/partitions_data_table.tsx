@@ -65,6 +65,13 @@ const ScreenReaderPartitionTableComponent = ({
   const { isSmallMultiple, data, hasMultipleLayers } = partitionData;
   const tableLength = data.length;
   const showMoreRows = rowLimit < tableLength;
+  let countOfCol: number = 3;
+  const totalColumns: number =
+    hasMultipleLayers && isSmallMultiple
+      ? (countOfCol += 3)
+      : hasMultipleLayers || isSmallMultiple
+      ? (countOfCol += 2)
+      : countOfCol;
 
   return (
     <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
@@ -108,7 +115,7 @@ const ScreenReaderPartitionTableComponent = ({
         {showMoreRows && (
           <tfoot>
             <tr>
-              <td>
+              <td colSpan={totalColumns}>
                 <button type="submit" onClick={() => handleMoreData()} tabIndex={-1}>
                   Click to show more data
                 </button>
