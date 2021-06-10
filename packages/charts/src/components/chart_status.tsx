@@ -22,23 +22,32 @@ import { connect } from 'react-redux';
 
 import { RenderChangeListener } from '../specs';
 import { GlobalChartState } from '../state/chart_state';
+import { globalSelectorCache } from '../state/create_selector';
 import { getDebugStateSelector } from '../state/selectors/get_debug_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
 import { DebugState } from '../state/types';
 
 interface ChartStatusStateProps {
+  chartId: string;
   rendered: boolean;
   renderedCount: number;
   onRenderChange?: RenderChangeListener;
   debugState: DebugState | null;
 }
-class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
+
+type Props = ChartStatusStateProps;
+
+class ChartStatusComponent extends React.Component<Props> {
   componentDidMount() {
     this.dispatchRenderChange();
   }
 
   componentDidUpdate() {
     this.dispatchRenderChange();
+  }
+
+  componentWillUnmount() {
+    globalSelectorCache.removeKeyFromAll(this.props.chartId);
   }
 
   dispatchRenderChange = () => {
@@ -69,6 +78,7 @@ const mapStateToProps = (state: GlobalChartState): ChartStatusStateProps => {
   const { onRenderChange, debugState } = getSettingsSpecSelector(state);
 
   return {
+    chartId: state.chartId,
     rendered: state.chartRendered,
     renderedCount: state.chartRenderedCount,
     onRenderChange,
