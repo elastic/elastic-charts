@@ -37,7 +37,7 @@ import { chartStoreReducer, GlobalChartState } from '../../../../state/chart_sta
 import { Datum } from '../../../../utils/common';
 import { HIERARCHY_ROOT_KEY } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../specs';
-import { partitionGeometries } from './geometries';
+import { partitionMultiGeometries } from './geometries';
 import { createOnElementClickCaller } from './on_element_click_caller';
 
 describe('Picked shapes selector', () => {
@@ -92,11 +92,11 @@ describe('Picked shapes selector', () => {
   });
   test('check initial geoms', () => {
     addSeries(store, treemapSpec);
-    const treemapGeometries = partitionGeometries(store.getState())[0];
+    const treemapGeometries = partitionMultiGeometries(store.getState())[0];
     expect(treemapGeometries.quadViewModel).toHaveLength(6);
 
     addSeries(store, sunburstSpec);
-    const sunburstGeometries = partitionGeometries(store.getState())[0];
+    const sunburstGeometries = partitionMultiGeometries(store.getState())[0];
     expect(sunburstGeometries.quadViewModel).toHaveLength(6);
   });
   test('treemap check picked geometries', () => {
@@ -107,7 +107,7 @@ describe('Picked shapes selector', () => {
     addSeries(store, treemapSpec, {
       onElementClick: onClickListener,
     });
-    const geometries = partitionGeometries(store.getState())[0];
+    const geometries = partitionMultiGeometries(store.getState())[0];
     expect(geometries.quadViewModel).toHaveLength(6);
 
     const onElementClickCaller = createOnElementClickCaller();
@@ -187,7 +187,7 @@ describe('Picked shapes selector', () => {
         onElementClick: onClickListener,
       },
     );
-    const geometries = partitionGeometries(store.getState())[0];
+    const geometries = partitionMultiGeometries(store.getState())[0];
     expect(geometries.quadViewModel).toHaveLength(2);
 
     const onElementClickCaller = createOnElementClickCaller();
@@ -231,7 +231,7 @@ describe('Picked shapes selector', () => {
     addSeries(store, sunburstSpec, {
       onElementClick: onClickListener,
     });
-    const geometries = partitionGeometries(store.getState())[0];
+    const geometries = partitionMultiGeometries(store.getState())[0];
     expect(geometries.quadViewModel).toHaveLength(6);
 
     const onElementClickCaller = createOnElementClickCaller();
