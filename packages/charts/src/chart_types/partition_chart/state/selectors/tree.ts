@@ -35,7 +35,7 @@ import { getSmallMultiplesSpecs } from '../../../../state/selectors/get_small_mu
 import { getSpecsFromStore } from '../../../../state/utils';
 import { Datum } from '../../../../utils/common';
 import { configMetadata } from '../../layout/config';
-import { HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
+import { HierarchyOfArrays, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import { partitionTree } from '../../layout/viewmodel/hierarchy_of_arrays';
 import { PartitionSpec } from '../../specs';
 import { getPartitionSpecs } from './get_partition_specs';
@@ -106,7 +106,7 @@ function getTreesForSpec(
         tree: partitionTree(data, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout, [
           {
             index: 0,
-            value: '',
+            value: NULL_SMALL_MULTIPLES_KEY,
           },
         ]),
       },

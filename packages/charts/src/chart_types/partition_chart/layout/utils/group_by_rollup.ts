@@ -72,10 +72,24 @@ interface MapNode extends NodeDescriptor {
   [PARENT_KEY]?: ArrayNode;
 }
 
-/** @internal */
+/**
+ * Used in the first position of a `LegendPath` array, which indicates the stringified value of the `groupBy` value
+ * in case of small multiples, but has no applicable `groupBy` for singleton (non-small-multiples) charts
+ * @public
+ */
+export const NULL_SMALL_MULTIPLES_KEY: Key = '__null_small_multiples_key__';
+
+/**
+ * Indicates that a node is the root of a specific partition chart, eg. the root of a single pie chart, or one pie
+ * chart in a small multiples setting. Used in the second position of a `LegendPath` array
+ * @public
+ */
 export const HIERARCHY_ROOT_KEY: Key = '__root_key__';
 
-/** @public */
+/**
+ * A primitive JavaScript value, possibly further restricted
+ * @public
+ */
 export type PrimitiveValue = string | number | null; // there could be more but sufficient for now
 /** @public */
 export type Key = CategoryKey;
