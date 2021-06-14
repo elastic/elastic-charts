@@ -28,12 +28,7 @@ import { GlobalChartState } from './chart_state';
  * see https://github.com/toomuchdesign/re-reselect/tree/master/src/cache#write-your-custom-cache-object
  */
 class CustomMapCache implements ICacheObject {
-  debug: boolean;
   private cache: any = {};
-
-  constructor(debug: boolean = false) {
-    this.debug = debug;
-  }
 
   set(key: string, selectorFn: () => any) {
     this.cache[key] = selectorFn;
@@ -67,10 +62,10 @@ class GlobalSelectorCache {
     return chartId;
   }
 
-  getNewOptions(debug?: boolean): Options<GlobalChartState, unknown, unknown> {
+  getNewOptions(): Options<GlobalChartState, unknown, unknown> {
     return {
       keySelector: GlobalSelectorCache.keySelector,
-      cacheObject: this.getCacheObject(debug),
+      cacheObject: this.getCacheObject(),
     };
   }
 
@@ -80,8 +75,8 @@ class GlobalSelectorCache {
     });
   }
 
-  private getCacheObject(debug?: boolean): CustomMapCache {
-    const cache = new CustomMapCache(debug);
+  private getCacheObject(): CustomMapCache {
+    const cache = new CustomMapCache();
     this.selectorCaches.push(cache);
 
     return cache;
