@@ -35,9 +35,7 @@ interface ChartStatusStateProps {
   debugState: DebugState | null;
 }
 
-type Props = ChartStatusStateProps;
-
-class ChartStatusComponent extends React.Component<Props> {
+class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
   componentDidMount() {
     this.dispatchRenderChange();
   }
