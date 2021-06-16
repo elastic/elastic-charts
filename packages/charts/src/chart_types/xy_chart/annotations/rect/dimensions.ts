@@ -19,13 +19,15 @@
 
 import { Scale, ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
-import { isDefined } from '../../../../utils/common';
-import { GroupId } from '../../../../utils/ids';
+import { isDefined, Position, Rotation } from '../../../../utils/common';
+import { AxisId, GroupId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
+import { AxisStyle } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { SmallMultipleScales } from '../../state/selectors/compute_small_multiple_scales';
+import { getAxesSpecForSpecId } from '../../state/utils/spec';
 import { getPanelSize } from '../../utils/panel';
-import { RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
+import { AxisSpec, RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
 import { Bounds } from '../types';
 import { AnnotationRectProps } from './types';
 
@@ -42,14 +44,18 @@ export function computeRectAnnotationDimensions(
   annotationSpec: RectAnnotationSpec,
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
+  axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
+  chartRotation: Rotation,
+  getAxisStyle: (id: AxisId) => AxisStyle,
   isHistogram: boolean = false,
 ): AnnotationRectProps[] | null {
-  const { dataValues, groupId } = annotationSpec;
+  const { dataValues, groupId, outside } = annotationSpec;
+  const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
   const yScale = yScales.get(groupId);
-
   const rectsProps: Omit<AnnotationRectProps, 'panel'>[] = [];
   const panelSize = getPanelSize(smallMultiplesScales);
+
   dataValues.forEach((datum: RectAnnotationDatum) => {
     const { x0: initialX0, x1: initialX1, y0: initialY0, y1: initialY1 } = datum.coordinates;
 
@@ -76,14 +82,29 @@ export function computeRectAnnotationDimensions(
     if (!xAndWidth) {
       return;
     }
+
     if (!yScale) {
       if (!isDefined(initialY0) && !isDefined(initialY1)) {
+        const isLeftSide =
+          (chartRotation === 0 && xAxis?.position === Position.Bottom) ||
+          (chartRotation === 180 && xAxis?.position === Position.Top) ||
+          (chartRotation === -90 && yAxis?.position === Position.Right) ||
+          (chartRotation === 90 && yAxis?.position === Position.Left);
+        const orthoDimension = chartRotation === 0 || chartRotation === 180 ? panelSize.height : panelSize.width;
+        const axisId = xAxis?.id ?? yAxis?.id;
+        const tickSize = axisId ? getAxisStyle(axisId).tickLine.size : 0;
         const rectDimensions = {
           ...xAndWidth,
-          y: 0,
-          height: panelSize.height,
+          ...(outside
+            ? {
+                y: isLeftSide ? orthoDimension : -tickSize,
+                height: tickSize,
+              }
+            : {
+                y: 0,
+                height: orthoDimension,
+              }),
         };
-
         rectsProps.push({
           rect: rectDimensions,
           datum,
@@ -111,8 +132,21 @@ export function computeRectAnnotationDimensions(
       scaledY1 = 0;
     }
 
+    const orthoDimension = chartRotation === 90 || chartRotation === -90 ? panelSize.height : panelSize.width;
+    const isLeftSide =
+      (chartRotation === 0 && yAxis?.position === Position.Left) ||
+      (chartRotation === 180 && yAxis?.position === Position.Right) ||
+      (chartRotation === -90 && xAxis?.position === Position.Bottom) ||
+      (chartRotation === 90 && xAxis?.position === Position.Top);
+    const axisId = xAxis?.id ?? yAxis?.id;
+    const tickSize = axisId ? getAxisStyle(axisId).tickLine.size : 0;
     const rectDimensions = {
-      ...xAndWidth,
+      ...(!isDefined(initialX0) && !isDefined(initialX1) && outside
+        ? {
+            x: isLeftSide ? -tickSize : orthoDimension,
+            width: tickSize,
+          }
+        : xAndWidth),
       y: scaledY1,
       height,
     };

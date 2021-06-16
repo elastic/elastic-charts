@@ -20,13 +20,14 @@
 import createCachedSelector from 're-reselect';
 
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { AnnotationId } from '../../../../utils/ids';
+import { AnnotationId, AxisId } from '../../../../utils/ids';
 import { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensions } from '../../annotations/utils';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
+import { getAxesStylesSelector } from './get_axis_styles';
 import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
@@ -34,30 +35,34 @@ import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 export const computeAnnotationDimensionsSelector = createCachedSelector(
   [
     getAnnotationSpecsSelector,
-    computeChartDimensionsSelector,
     getSettingsSpecSelector,
     computeSeriesGeometriesSelector,
     getAxisSpecsSelector,
     isHistogramModeEnabledSelector,
     computeSmallMultipleScalesSelector,
+    getAxesStylesSelector,
+    getChartThemeSelector,
   ],
   (
     annotationSpecs,
-    chartDimensions,
     settingsSpec,
     { scales: { yScales, xScale } },
     axesSpecs,
     isHistogramMode,
     smallMultipleScales,
-  ): Map<AnnotationId, AnnotationDimensions> =>
-    computeAnnotationDimensions(
+    axisStyles,
+    { axes },
+  ): Map<AnnotationId, AnnotationDimensions> => {
+    const getAxisStyle = (id: AxisId) => axisStyles.get(id) ?? axes;
+    return computeAnnotationDimensions(
       annotationSpecs,
-      chartDimensions.chartDimensions,
       settingsSpec.rotation,
       yScales,
       xScale,
       axesSpecs,
       isHistogramMode,
       smallMultipleScales,
-    ),
+      getAxisStyle,
+    );
+  },
 )(getChartIdSelector);
