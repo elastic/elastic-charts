@@ -200,10 +200,10 @@ describe('Series', () => {
         seriesKeys: ['a'],
         key: 'a',
         data: [
-          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
-          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
-          { x: 3, y1: 3, mark: null, y0: null, initialY1: 3, initialY0: null, datum: undefined },
-          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
+          { x: 1, y1: 1, mark: NaN, y0: NaN, initialY1: 1, initialY0: NaN, datum: undefined },
+          { x: 2, y1: 2, mark: NaN, y0: NaN, initialY1: 2, initialY0: NaN, datum: undefined },
+          { x: 3, y1: 3, mark: NaN, y0: NaN, initialY1: 3, initialY0: NaN, datum: undefined },
+          { x: 4, y1: 4, mark: NaN, y0: NaN, initialY1: 4, initialY0: NaN, datum: undefined },
         ],
       }),
       MockDataSeries.default({
@@ -213,10 +213,10 @@ describe('Series', () => {
         seriesKeys: ['b'],
         key: 'b',
         data: [
-          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
-          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
-          { x: 3, y1: 3, mark: null, y0: null, initialY1: 3, initialY0: null, datum: undefined },
-          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
+          { x: 1, y1: 1, mark: NaN, y0: NaN, initialY1: 1, initialY0: NaN, datum: undefined },
+          { x: 2, y1: 2, mark: NaN, y0: NaN, initialY1: 2, initialY0: NaN, datum: undefined },
+          { x: 3, y1: 3, mark: NaN, y0: NaN, initialY1: 3, initialY0: NaN, datum: undefined },
+          { x: 4, y1: 4, mark: NaN, y0: NaN, initialY1: 4, initialY0: NaN, datum: undefined },
         ],
       }),
       MockDataSeries.default({
@@ -226,10 +226,10 @@ describe('Series', () => {
         seriesKeys: ['b'],
         key: 'b',
         data: [
-          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
-          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
-          { x: 3, y1: 3, mark: null, y0: null, initialY1: 3, initialY0: null, datum: undefined },
-          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
+          { x: 1, y1: 1, mark: NaN, y0: NaN, initialY1: 1, initialY0: NaN, datum: undefined },
+          { x: 2, y1: 2, mark: NaN, y0: NaN, initialY1: 2, initialY0: NaN, datum: undefined },
+          { x: 3, y1: 3, mark: NaN, y0: NaN, initialY1: 3, initialY0: NaN, datum: undefined },
+          { x: 4, y1: 4, mark: NaN, y0: NaN, initialY1: 4, initialY0: NaN, datum: undefined },
         ],
       }),
       MockDataSeries.default({
@@ -239,10 +239,10 @@ describe('Series', () => {
         seriesKeys: ['b'],
         key: 'b',
         data: [
-          { x: 1, y1: 1, mark: null, y0: null, initialY1: 1, initialY0: null, datum: undefined },
-          { x: 2, y1: 2, mark: null, y0: null, initialY1: 2, initialY0: null, datum: undefined },
-          { x: 3, y1: 3, mark: null, y0: null, initialY1: 3, initialY0: null, datum: undefined },
-          { x: 4, y1: 4, mark: null, y0: null, initialY1: 4, initialY0: null, datum: undefined },
+          { x: 1, y1: 1, mark: NaN, y0: NaN, initialY1: 1, initialY0: NaN, datum: undefined },
+          { x: 2, y1: 2, mark: NaN, y0: NaN, initialY1: 2, initialY0: NaN, datum: undefined },
+          { x: 3, y1: 3, mark: NaN, y0: NaN, initialY1: 3, initialY0: NaN, datum: undefined },
+          { x: 4, y1: 4, mark: NaN, y0: NaN, initialY1: 4, initialY0: NaN, datum: undefined },
         ],
       }),
     ];
@@ -284,7 +284,7 @@ describe('Series', () => {
         key: 'a',
         data: new Array(maxArrayItems)
           .fill(0)
-          .map((d, i) => ({ x: i, y1: i, mark: null, y0: null, initialY1: i, initialY0: null, datum: undefined })),
+          .map((d, i) => ({ x: i, y1: i, mark: NaN, y0: NaN, initialY1: i, initialY0: NaN, datum: undefined })),
       }),
       MockDataSeries.default({
         specId: 'spec1',
@@ -294,7 +294,7 @@ describe('Series', () => {
         key: 'b',
         data: new Array(maxArrayItems)
           .fill(0)
-          .map((d, i) => ({ x: i, y1: i, mark: null, y0: null, initialY1: i, initialY0: null, datum: undefined })),
+          .map((d, i) => ({ x: i, y1: i, mark: NaN, y0: NaN, initialY1: i, initialY0: NaN, datum: undefined })),
       }),
     ];
     const xValues = new Set(new Array(maxArrayItems).fill(0).map((d, i) => i));

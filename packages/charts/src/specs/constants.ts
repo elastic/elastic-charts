@@ -23,7 +23,6 @@ import { ChartType } from '../chart_types';
 import { BOTTOM, CENTER, LEFT, MIDDLE, RIGHT, TOP } from '../common/constants';
 import { Position } from '../utils/common';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { SettingsSpec } from './settings';
 
 /** @public */
 export const SpecType = Object.freeze({
@@ -149,7 +148,7 @@ export const DEFAULT_LEGEND_CONFIG = {
 };
 
 /** @public */
-export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
+export const DEFAULT_SETTINGS_SPEC = {
   id: '__global__settings___',
   chartType: ChartType.Global,
   specType: SpecType.Settings,
@@ -161,6 +160,8 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   tooltip: {
     type: DEFAULT_TOOLTIP_TYPE,
     snap: DEFAULT_TOOLTIP_SNAP,
+    showOnNullValues: false,
+    showOnFittedValues: false,
   },
   externalPointerEvents: {
     tooltip: {
@@ -172,6 +173,6 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   brushAxis: BrushAxis.X,
   minBrushDelta: 2,
   ariaUseDefaultSummary: true,
-  ariaLabelHeadingLevel: 'p',
+  ariaLabelHeadingLevel: 'p' as const,
   ...DEFAULT_LEGEND_CONFIG,
 };

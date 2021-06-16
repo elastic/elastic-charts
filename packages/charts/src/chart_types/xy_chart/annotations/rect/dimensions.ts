@@ -129,8 +129,8 @@ export function computeRectAnnotationDimensions(
       smallMultiplesScales.horizontal.domain.forEach((hDomainValue) => {
         const panel = {
           ...panelSize,
-          top: smallMultiplesScales.vertical.scaleOrThrow(vDomainValue),
-          left: smallMultiplesScales.horizontal.scaleOrThrow(hDomainValue),
+          top: smallMultiplesScales.vertical.scale(vDomainValue),
+          left: smallMultiplesScales.horizontal.scale(hDomainValue),
         };
         duplicated.push({ ...props, panel });
       });

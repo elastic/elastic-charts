@@ -277,6 +277,16 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
    * @defaultValue mousePosition
    */
   stickTo?: TooltipStickTo;
+  /**
+   * Display tooltip on null values
+   * @defaultValue false
+   */
+  showOnNullValues?: boolean;
+  /**
+   * Display tooltip on fitted values
+   * @defaultValue false
+   */
+  showOnFittedValues?: boolean;
 };
 
 /**
@@ -707,9 +717,25 @@ export function getTooltipType(settings: SettingsSpec, externalTooltip = false):
     return tooltip;
   }
   if (isTooltipProps(tooltip)) {
-    return tooltip.type || defaultType;
+    return tooltip.type ?? defaultType;
   }
   return defaultType;
+}
+
+/** @internal */
+export function getShowTooltipOnNullValues({ tooltip }: SettingsSpec): boolean {
+  if (isTooltipProps(tooltip)) {
+    return tooltip.showOnNullValues ?? DEFAULT_SETTINGS_SPEC.tooltip.showOnNullValues;
+  }
+  return DEFAULT_SETTINGS_SPEC.tooltip.showOnNullValues;
+}
+
+/** @internal */
+export function getShowTooltipOnFittedValues({ tooltip }: SettingsSpec): boolean {
+  if (isTooltipProps(tooltip)) {
+    return tooltip.showOnFittedValues ?? DEFAULT_SETTINGS_SPEC.tooltip.showOnFittedValues;
+  }
+  return DEFAULT_SETTINGS_SPEC.tooltip.showOnFittedValues;
 }
 
 /**

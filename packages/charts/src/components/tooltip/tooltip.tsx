@@ -142,7 +142,10 @@ const TooltipComponent = ({
               <div className="echTooltip__item--container">
                 <span className="echTooltip__label">{label}</span>
                 <span className="echTooltip__value">{formattedValue}</span>
-                {isDefined(markValue) && <span className="echTooltip__markValue">&nbsp;({formattedMarkValue})</span>}
+                {/* TODO move mark definition as part of the data property */}
+                {isDefined(markValue) && !isNaN(markValue) && (
+                  <span className="echTooltip__markValue">&nbsp;({formattedMarkValue})</span>
+                )}
               </div>
             </div>
           );

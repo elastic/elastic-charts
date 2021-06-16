@@ -23,7 +23,7 @@ import { Scale, ScaleBandType } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Ratio } from '../common/geometry';
 import { RelativeBandsPadding } from '../specs';
-import { maxValueWithUpperLimit, stringifyNullsUndefined } from '../utils/common';
+import { isNil, maxValueWithUpperLimit, stringifyNullsUndefined } from '../utils/common';
 import { Range } from '../utils/domain';
 import { ScaleType } from './constants';
 
@@ -104,21 +104,11 @@ export class ScaleBand implements Scale {
     this.minInterval = 0;
   }
 
-  private getScaledValue(value?: PrimitiveValue): number | null {
+  private getScaledValue(value?: PrimitiveValue): number {
     const scaleValue = this.d3Scale(stringifyNullsUndefined(value));
 
-    if (scaleValue === undefined || isNaN(scaleValue)) {
-      return null;
-    }
-
-    return scaleValue;
-  }
-
-  scaleOrThrow(value?: PrimitiveValue): number {
-    const scaleValue = this.scale(value);
-
-    if (scaleValue === null) {
-      throw new Error(`Unable to scale value: ${scaleValue})`);
+    if (isNil(scaleValue)) {
+      return NaN;
     }
 
     return scaleValue;

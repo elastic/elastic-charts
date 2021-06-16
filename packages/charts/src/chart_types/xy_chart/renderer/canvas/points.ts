@@ -34,6 +34,7 @@ import { withPanelTransform } from './utils/panel_transform';
  */
 export function renderPoints(ctx: CanvasRenderingContext2D, points: PointGeometry[], { opacity }: GeometryStateStyle) {
   points
+    .filter(({ value, y }) => !value.isFilled && isFinite(y))
     .map<[Circle, Fill, Stroke, PointShape]>(({ x, y, radius, transform, style }) => {
       const fill: Fill = {
         color: applyOpacity(style.fill.color, opacity),
@@ -49,7 +50,6 @@ export function renderPoints(ctx: CanvasRenderingContext2D, points: PointGeometr
         y: y + transform.y,
         radius,
       };
-
       return [coordinates, fill, stroke, style.shape];
     })
     .sort(([{ radius: a }], [{ radius: b }]) => b - a)

@@ -56,12 +56,12 @@ export function getLastValues(dataSeries: DataSeries[], xDomain: XDomain): Map<S
     const { y0, y1, initialY0, initialY1 } = last;
     const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier, series.groupId);
 
-    if (series.stackMode === StackMode.Percentage) {
-      const y1InPercentage = y1 === null || y0 === null ? null : y1 - y0;
+    if (series.stackMode === StackMode.Percentage && !isNaN(y1 - y0)) {
+      const y1InPercentage = y1 - y0;
       lastValues.set(seriesKey, { y0, y1: y1InPercentage });
       return;
     }
-    if (initialY0 !== null || initialY1 !== null) {
+    if (!isNaN(initialY0) || !isNaN(initialY1)) {
       lastValues.set(seriesKey, { y0: initialY0, y1: initialY1 });
     }
   });

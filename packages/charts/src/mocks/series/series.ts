@@ -102,10 +102,10 @@ export class MockDataSeriesDatum {
   private static readonly base: DataSeriesDatum = {
     x: 1,
     y1: 1,
-    y0: null,
-    mark: null,
-    initialY1: null,
-    initialY0: null,
+    y0: NaN,
+    mark: NaN,
+    initialY1: NaN,
+    initialY0: NaN,
     datum: undefined,
   };
 
@@ -128,9 +128,9 @@ export class MockDataSeriesDatum {
    */
   static simple({
     x,
-    y1 = null,
-    y0 = null,
-    mark = null,
+    y1 = NaN,
+    y0 = NaN,
+    mark = NaN,
     filled,
   }: Partial<DataSeriesDatum> & Pick<DataSeriesDatum, 'x'>): DataSeriesDatum {
     return {

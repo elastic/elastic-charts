@@ -419,14 +419,8 @@ export class ScaleContinuous implements Scale {
     }
   }
 
-  private getScaledValue(value?: PrimitiveValue): number | null {
-    if (typeof value !== 'number' || isNaN(value)) {
-      return null;
-    }
-
-    const scaledValue = this.d3Scale(value);
-
-    return isNaN(scaledValue) ? null : scaledValue;
+  private getScaledValue(value?: PrimitiveValue): number {
+    return typeof value === 'number' ? this.d3Scale(value) : NaN;
   }
 
   getTicks(ticks: number, integersOnly: boolean) {
@@ -440,20 +434,8 @@ export class ScaleContinuous implements Scale {
       : (this.d3Scale as D3ScaleNonTime).ticks(ticks);
   }
 
-  scaleOrThrow(value?: PrimitiveValue): number {
-    const scaleValue = this.scale(value);
-
-    if (scaleValue === null) {
-      throw new Error(`Unable to scale value: ${scaleValue})`);
-    }
-
-    return scaleValue;
-  }
-
   scale(value?: PrimitiveValue) {
-    const scaledValue = this.getScaledValue(value);
-
-    return scaledValue === null ? null : scaledValue + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
+    return this.getScaledValue(value) + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
   }
 
   pureScale(value?: PrimitiveValue) {
@@ -461,11 +443,7 @@ export class ScaleContinuous implements Scale {
       return this.getScaledValue(value);
     }
 
-    if (typeof value !== 'number' || isNaN(value)) {
-      return null;
-    }
-
-    return this.getScaledValue(value + this.minInterval / 2);
+    return typeof value === 'number' ? this.d3Scale(value + this.minInterval / 2) : NaN;
   }
 
   ticks() {

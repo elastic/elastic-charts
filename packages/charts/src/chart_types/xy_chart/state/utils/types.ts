@@ -85,6 +85,6 @@ export interface SeriesDomainsAndData {
 
 /** @internal */
 export interface LastValues {
-  y0: number | null;
-  y1: number | null;
+  y0: number;
+  y1: number;
 }

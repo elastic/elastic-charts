@@ -31,8 +31,8 @@ import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
 import {
   getClippedRanges,
-  getY0ScaledValueOrThrowFn,
-  getY1ScaledValueOrThrowFn,
+  getY0ScaledValue,
+  getY1ScaledValue,
   getYDatumValueFn,
   isYValueDefinedFn,
   MarkSizeOptions,
@@ -58,13 +58,14 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
-  const y1Fn = getY1ScaledValueOrThrowFn(yScale);
-  const y0Fn = getY0ScaledValueOrThrowFn(yScale);
+  const y1Fn = getY1ScaledValue(yScale);
+  const y0Fn = getY0ScaledValue(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
   const y1DatumAccessor = getYDatumValueFn();
   const y0DatumAccessor = getYDatumValueFn('y0');
+  console.log(dataSeries);
   const pathGenerator = area<DataSeriesDatum>()
-    .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
+    .x(({ x }) => xScale.scale(x) - xScaleOffset)
     .y1(y1Fn)
     .y0(y0Fn)
     .defined((datum) => {
@@ -77,7 +78,7 @@ export function renderArea(
   let y1Line: string | null;
 
   try {
-    y1Line = pathGenerator.lineY1()(dataSeries.data);
+    y1Line = pathGenerator.lineY1()(dataSeries.data.filter((d) => isFinite(d.y1)));
   } catch {
     // When values are not scalable
     y1Line = null;
@@ -91,7 +92,7 @@ export function renderArea(
     let y0Line: string | null;
 
     try {
-      y0Line = pathGenerator.lineY0()(dataSeries.data);
+      y0Line = pathGenerator.lineY0()(dataSeries.data.filter((d) => isFinite(d.y1)));
     } catch {
       // When values are not scalable
       y0Line = null;
@@ -118,7 +119,7 @@ export function renderArea(
   let areaPath: string;
 
   try {
-    areaPath = pathGenerator(dataSeries.data) || '';
+    areaPath = pathGenerator(dataSeries.data.filter((d) => isFinite(d.y1))) || '';
   } catch {
     // When values are not scalable
     areaPath = '';

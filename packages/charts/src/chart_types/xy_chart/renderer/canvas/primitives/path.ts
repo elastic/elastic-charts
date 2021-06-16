@@ -108,7 +108,7 @@ function renderPathFill(ctx: CanvasRenderingContext2D, path: string, fill: Fill)
 
     ctx.fillStyle = fill.texture.pattern;
 
-    // Use oversized rect to fill rotation/offset beyond path
+    // Use oversize rect to fill rotation/offset beyond path
     const rotationRectFillSize = ctx.canvas.clientWidth * ctx.canvas.clientHeight;
     ctx.translate(-rotationRectFillSize / 2, -rotationRectFillSize / 2);
     ctx.fillRect(0, 0, rotationRectFillSize, rotationRectFillSize);

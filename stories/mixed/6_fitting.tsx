@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { select, number } from '@storybook/addon-knobs';
+import { select, number, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -175,6 +175,10 @@ export const Example = () => {
               visible: true,
             },
           },
+        }}
+        tooltip={{
+          showOnFittedValues: boolean('Show tooltip on filled values', true),
+          showOnNullValues: boolean('Show tooltip on null values', true),
         }}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

@@ -27,6 +27,7 @@ import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 import { BarStyleAccessor, DisplayValueSpec, StackMode } from '../utils/specs';
+import { isDatumFilled } from './utils';
 
 /** @internal */
 export function renderBars(
@@ -56,38 +57,28 @@ export function renderBars(
   const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
 
   dataSeries.data.forEach((datum) => {
-    const { y0, y1, initialY1, filled } = datum;
-    // don't create a bar if the initialY1 value is null.
-    if (y1 === null || initialY1 === null || (filled && filled.y1 !== undefined)) {
-      return;
-    }
+    const { y0, y1, initialY1 } = datum;
+
     // don't create a bar if not within the xScale domain
     if (!xScale.isValueInDomain(datum.x)) {
       return;
     }
 
-    let y: number | null;
+    let y: number;
     let y0Scaled;
     if (yScale.type === ScaleType.Log) {
-      y = y1 === 0 || y1 === null ? yScale.range[0] : yScale.scale(y1);
-      if (yScale.isInverted) {
-        y0Scaled = y0 === 0 || y0 === null ? yScale.range[1] : yScale.scale(y0);
-      } else {
-        y0Scaled = y0 === 0 || y0 === null ? yScale.range[0] : yScale.scale(y0);
-      }
+      const minRangeIndex = !yScale.isInverted ? 0 : 1;
+      y = y1 === 0 || isNaN(y1) ? yScale.range[minRangeIndex] : yScale.scale(y1);
+      y0Scaled = y0 === 0 || isNaN(y0) ? yScale.range[minRangeIndex] : yScale.scale(y0);
     } else {
       y = yScale.scale(y1);
       // use always zero as baseline if y0 is null
-      y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
-    }
-
-    if (y === null || y0Scaled === null) {
-      return;
+      y0Scaled = isNaN(y0) ? yScale.scale(0) : yScale.scale(y0);
     }
 
     const absMinHeight = Math.abs(minBarHeight);
     let height = y0Scaled - y;
-    if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
+    if (height !== 0 && Math.abs(height) < absMinHeight) {
       const heightDelta = absMinHeight - Math.abs(height);
       if (height < 0) {
         height = -absMinHeight;
@@ -102,10 +93,6 @@ export function renderBars(
     y = isUpsideDown ? y - height : y;
 
     const xScaled = xScale.scale(datum.x);
-
-    if (xScaled === null) {
-      return;
-    }
 
     const seriesIdentifier: XYChartSeriesIdentifier = {
       key: dataSeries.key,
@@ -125,7 +112,7 @@ export function renderBars(
     const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
     const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
-    const originalY1Value = stackMode === StackMode.Percentage ? y1 - (y0 ?? 0) : initialY1;
+    const originalY1Value = stackMode === StackMode.Percentage ? y1 - y0 : initialY1;
     const formattedDisplayValue =
       displayValueSettings && displayValueSettings.valueFormatter
         ? displayValueSettings.valueFormatter(originalY1Value)
@@ -186,9 +173,10 @@ export function renderBars(
       value: {
         x: datum.x,
         y: originalY1Value,
-        mark: null,
+        mark: NaN,
         accessor: BandedAccessorType.Y1,
         datum: datum.datum,
+        isFilled: isDatumFilled(datum),
       },
       seriesIdentifier,
       seriesStyle,

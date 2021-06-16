@@ -49,14 +49,14 @@ export const getTooltipAnchorPositionSelector = createCachedSelector(
       return null;
     }
 
-    const topPos = vertical.scale(projectedPointerPosition.verticalPanelValue) ?? 0;
-    const leftPos = horizontal.scale(projectedPointerPosition.horizontalPanelValue) ?? 0;
+    const topPos = vertical.scale(projectedPointerPosition.verticalPanelValue);
+    const leftPos = horizontal.scale(projectedPointerPosition.horizontalPanelValue);
 
     const panel = {
       width: horizontal.bandwidth,
       height: vertical.bandwidth,
-      top: chartDimensions.chartDimensions.top + topPos,
-      left: chartDimensions.chartDimensions.left + leftPos,
+      top: chartDimensions.chartDimensions.top + (isFinite(topPos) ? topPos : 0),
+      left: chartDimensions.chartDimensions.left + (isFinite(leftPos) ? leftPos : 0),
     };
 
     return getTooltipAnchorPosition(

@@ -78,6 +78,9 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
       barSeriesStyle.displayValue,
       alignment,
     );
+    if (isNaN(bars[i].value.y)) {
+      continue;
+    }
 
     if (displayValue.isValueContainedInElement) {
       const width = rotation === 0 || rotation === 180 ? bars[i].width : bars[i].height;

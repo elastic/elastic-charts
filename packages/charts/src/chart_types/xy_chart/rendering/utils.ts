@@ -40,22 +40,21 @@ export interface MarkSizeOptions {
  * @internal
  */
 export function getYDatumValueFn(valueName: keyof Omit<FilledValues, 'x'> = 'y1') {
-  return (datum: DataSeriesDatum, returnFilled = true): number | null => {
+  return (datum: DataSeriesDatum): number => {
     const value = datum[valueName];
-    if (value !== null || !returnFilled) {
+    if (!isNaN(value)) {
       return value;
     }
-    return datum.filled?.[valueName] ?? null;
+    return datum.filled?.[valueName] ?? NaN;
   };
 }
 
 /**
  *
- * @param param0
  * @internal
  */
-export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
-  return filled?.x !== undefined || filled?.y1 !== undefined || initialY1 === null || initialY1 === undefined;
+export function isDatumFilled({ filled }: DataSeriesDatum) {
+  return filled?.x !== undefined || filled?.y1 !== undefined;
 }
 
 /**
@@ -66,12 +65,12 @@ export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
  * @internal
  */
 export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xScaleOffset: number): ClippedRanges {
-  let firstNonNullX: number | null = null;
+  let firstNonFilledOrNan: number | null = null;
   let hasNull = false;
 
-  const completeDatasetIsNull = dataset.every((datum) => isDatumFilled(datum));
+  const isCompletelyFilled = dataset.every((datum) => isDatumFilled(datum));
 
-  if (completeDatasetIsNull) return [[xScale.range[0], xScale.range[1]]];
+  if (isCompletelyFilled) return [[xScale.range[0], xScale.range[1]]];
 
   return dataset.reduce<ClippedRanges>((acc, data) => {
     const xScaled = xScale.scale(data.x);
@@ -81,23 +80,23 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
 
     const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
 
-    if (isDatumFilled(data)) {
+    if (isDatumFilled(data) || !isFinite(data.initialY1)) {
       const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
-      if (firstNonNullX !== null && xValue === endXValue) {
-        acc.push([firstNonNullX, xValue]);
+      if (firstNonFilledOrNan !== null && xValue === endXValue) {
+        acc.push([firstNonFilledOrNan, xValue]);
       }
       hasNull = true;
     } else {
       if (hasNull) {
-        if (firstNonNullX !== null) {
-          acc.push([firstNonNullX, xValue]);
+        if (firstNonFilledOrNan !== null) {
+          acc.push([firstNonFilledOrNan, xValue]);
         } else {
           acc.push([0, xValue]);
         }
         hasNull = false;
       }
 
-      firstNonNullX = xValue;
+      firstNonFilledOrNan = xValue;
     }
     return acc;
   }, []);
@@ -170,10 +169,7 @@ export function isPointOnGeometry(
 const DEFAULT_ZERO_BASELINE = 0;
 
 /** @internal */
-export type YDefinedFn = (
-  datum: DataSeriesDatum,
-  getValueAccessor: (datum: DataSeriesDatum) => number | null,
-) => boolean;
+export type YDefinedFn = (datum: DataSeriesDatum, getValueAccessor: (d: DataSeriesDatum) => number) => boolean;
 
 /** @internal */
 export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
@@ -182,7 +178,7 @@ export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
   return (datum, getValueAccessor) => {
     const yValue = getValueAccessor(datum);
     return (
-      yValue !== null &&
+      isFinite(yValue) &&
       !((isLogScale && domainPolarity >= 0 && yValue <= 0) || (domainPolarity < 0 && yValue >= 0)) &&
       xScale.isValueInDomain(datum.x)
     );
@@ -203,39 +199,42 @@ function chromeRenderBugBuffer(y1: number, y0: number): number {
 }
 
 /** @internal */
-export function getY1ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatum) => number {
+export function getY1ScaledValue(yScale: Scale): (datum: DataSeriesDatum) => number {
   const datumAccessor = getYDatumValueFn();
-  const scaleY0Value = getY0ScaledValueOrThrowFn(yScale);
+  const scaleY0Value = getY0ScaledValue(yScale);
   return (datum) => {
-    const y1Value = yScale.scaleOrThrow(datumAccessor(datum));
+    const y1Value = yScale.scale(datumAccessor(datum));
+    if (isNaN(y1Value)) {
+      return NaN;
+    }
     const y0Value = scaleY0Value(datum);
     return y1Value - chromeRenderBugBuffer(y1Value, y0Value);
   };
 }
 
 /** @internal */
-export function getY0ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatum) => number {
+export function getY0ScaledValue(yScale: Scale): (datum: DataSeriesDatum) => number {
   const isLogScale = isLogarithmicScale(yScale);
   const domainPolarity = getDomainPolarity(yScale.domain);
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);
 
   return ({ y0 }) => {
-    if (y0 === null) {
+    if (isNaN(y0)) {
       if (isLogScale) {
         // if all positive domain use 1 as baseline, -1 otherwise
-        return yScale.scaleOrThrow(logBaseline);
+        return yScale.scale(logBaseline);
       }
-      return yScale.scaleOrThrow(DEFAULT_ZERO_BASELINE);
+      return yScale.scale(DEFAULT_ZERO_BASELINE);
     }
     if (isLogScale) {
       // wrong y0 polarity
       if ((domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0)) {
         // if all positive domain use 1 as baseline, -1 otherwise
-        return yScale.scaleOrThrow(logBaseline);
+        return yScale.scale(logBaseline);
       }
       // if negative value, use -1 as max reference, 1 otherwise
-      return yScale.scaleOrThrow(y0);
+      return yScale.scale(y0);
     }
-    return yScale.scaleOrThrow(y0);
+    return yScale.scale(y0);
   };
 }

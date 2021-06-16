@@ -38,6 +38,9 @@ export function renderShape(
   withContext(ctx, (ctx) => {
     const [pathFn, rotation] = ShapeRendererFn[shape];
     const { x, y, radius } = coordinates;
+    if (isNaN(x) || isNaN(y)) {
+      return;
+    }
     ctx.translate(x, y);
     ctx.rotate(getRadians(rotation));
     ctx.beginPath();

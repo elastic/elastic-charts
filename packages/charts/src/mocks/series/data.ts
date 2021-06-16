@@ -23,11 +23,11 @@ import { DataSeriesDatum } from '../../chart_types/xy_chart/utils/series';
 export const fitFunctionData: DataSeriesDatum[] = [
   {
     x: 0,
-    y1: null,
-    y0: null,
-    initialY1: null,
-    initialY0: null,
-    mark: null,
+    y1: NaN,
+    y0: NaN,
+    initialY1: NaN,
+    initialY0: NaN,
+    mark: NaN,
     datum: {
       x: 0,
       y: null,
@@ -39,7 +39,7 @@ export const fitFunctionData: DataSeriesDatum[] = [
     y0: 0,
     initialY1: 3,
     initialY0: 0,
-    mark: null,
+    mark: NaN,
     datum: {
       x: 1,
       y: 3,
@@ -51,7 +51,7 @@ export const fitFunctionData: DataSeriesDatum[] = [
     y0: 0,
     initialY1: 5,
     initialY0: 0,
-    mark: null,
+    mark: NaN,
     datum: {
       x: 2,
       y: 5,
@@ -59,11 +59,11 @@ export const fitFunctionData: DataSeriesDatum[] = [
   },
   {
     x: 3,
-    y1: null,
-    y0: null,
-    initialY1: null,
-    initialY0: null,
-    mark: null,
+    y1: NaN,
+    y0: NaN,
+    initialY1: NaN,
+    initialY0: NaN,
+    mark: NaN,
     datum: {
       x: 3,
       y: null,
@@ -75,7 +75,7 @@ export const fitFunctionData: DataSeriesDatum[] = [
     y0: 0,
     initialY1: 4,
     initialY0: 0,
-    mark: null,
+    mark: NaN,
     datum: {
       x: 4,
       y: 4,
@@ -83,11 +83,11 @@ export const fitFunctionData: DataSeriesDatum[] = [
   },
   {
     x: 5,
-    y1: null,
-    y0: null,
-    initialY1: null,
-    initialY0: null,
-    mark: null,
+    y1: NaN,
+    y0: NaN,
+    initialY1: NaN,
+    initialY0: NaN,
+    mark: NaN,
     datum: {
       x: 5,
       y: null,
@@ -111,7 +111,7 @@ export const fitFunctionData: DataSeriesDatum[] = [
     y0: 0,
     initialY1: 6,
     initialY0: 0,
-    mark: null,
+    mark: NaN,
     datum: {
       x: 7,
       y: 6,
@@ -119,11 +119,11 @@ export const fitFunctionData: DataSeriesDatum[] = [
   },
   {
     x: 8,
-    y1: null,
-    y0: null,
-    initialY1: null,
-    initialY0: null,
-    mark: null,
+    y1: NaN,
+    y0: NaN,
+    initialY1: NaN,
+    initialY0: NaN,
+    mark: NaN,
     datum: {
       x: 8,
       y: null,
@@ -131,11 +131,11 @@ export const fitFunctionData: DataSeriesDatum[] = [
   },
   {
     x: 9,
-    y1: null,
-    y0: null,
-    initialY1: null,
-    initialY0: null,
-    mark: null,
+    y1: NaN,
+    y0: NaN,
+    initialY1: NaN,
+    initialY0: NaN,
+    mark: NaN,
     datum: {
       x: 9,
       y: null,
@@ -143,11 +143,11 @@ export const fitFunctionData: DataSeriesDatum[] = [
   },
   {
     x: 10,
-    y1: null,
-    y0: null,
-    initialY1: null,
-    initialY0: null,
-    mark: null,
+    y1: NaN,
+    y0: NaN,
+    initialY1: NaN,
+    initialY0: NaN,
+    mark: NaN,
     datum: {
       x: 10,
       y: null,
@@ -159,7 +159,7 @@ export const fitFunctionData: DataSeriesDatum[] = [
     y0: 0,
     initialY1: 12,
     initialY0: 0,
-    mark: null,
+    mark: NaN,
     datum: {
       x: 11,
       y: 12,
@@ -167,11 +167,11 @@ export const fitFunctionData: DataSeriesDatum[] = [
   },
   {
     x: 12,
-    y1: null,
-    y0: null,
-    initialY1: null,
-    initialY0: null,
-    mark: null,
+    y1: NaN,
+    y0: NaN,
+    initialY1: NaN,
+    initialY0: NaN,
+    mark: NaN,
     datum: {
       x: 12,
       y: null,

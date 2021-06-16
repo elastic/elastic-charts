@@ -24,7 +24,6 @@ import { mergePartial } from '../../utils/common';
 /** @internal */
 export class MockScale {
   private static readonly base: Scale = {
-    scaleOrThrow: jest.fn().mockImplementation((x) => x),
     scale: jest.fn().mockImplementation((x) => x),
     type: ScaleType.Linear,
     step: 0,

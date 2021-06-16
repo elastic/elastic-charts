@@ -46,7 +46,7 @@ export const Example = () => {
     step: 5,
   });
   const data = dg.generateRandomGroupedSeries(size, 4);
-
+  console.log(data);
   return (
     <Chart className="story-chart">
       <Settings

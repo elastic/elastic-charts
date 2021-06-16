@@ -88,10 +88,10 @@ export function formatStackedDataSeriesValues(
         reorderedArray[xIndex] = { x };
       }
       // y0 can be considered as always present
-      reorderedArray[xIndex][`${key}-y0`] = y0;
+      reorderedArray[xIndex][`${key}-y0`] = isNaN(y0) ? 0 : y0;
       // if y0 is available, we have to count y1 as the different of y1 and y0
       // to correctly stack them when stacking banded charts
-      reorderedArray[xIndex][`${key}-y1`] = (y1 ?? 0) - (y0 ?? 0);
+      reorderedArray[xIndex][`${key}-y1`] = (!isNaN(y1) ? y1 : 0) - (!isNaN(y0) ? y0 : 0);
       dsMap.set(x, d);
     });
     xValueMap.set(key, dsMap);

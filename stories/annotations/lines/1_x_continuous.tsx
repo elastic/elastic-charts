@@ -69,7 +69,13 @@ export const Example = () => {
 
   return (
     <Chart className="story-chart">
-      <Settings showLegend showLegendExtra debug={debug} rotation={rotation} />
+      <Settings
+        showLegend
+        showLegendExtra
+        debug={debug}
+        rotation={rotation}
+        tooltip={{ showOnNullValues: false, showOnFittedValues: true }}
+      />
       <LineAnnotation
         id="annotation_1"
         domainType={AnnotationDomainType.XDomain}
@@ -86,9 +92,13 @@ export const Example = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
+        tickFormat={(v) => {
+          return v ?? 'n/a';
+        }}
         data={[
           { x: 0, y: 2 },
           { x: 1, y: 7 },
+          { x: 2, y: null },
           { x: 3, y: 6 },
         ]}
       />

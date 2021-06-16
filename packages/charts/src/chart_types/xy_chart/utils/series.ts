@@ -53,15 +53,15 @@ export interface DataSeriesDatum<T = any> {
   /** the x value */
   x: number | string;
   /** the max y value */
-  y1: number | null;
+  y1: number;
   /** the minimum y value */
-  y0: number | null;
+  y0: number;
   /** initial y1 value, non stacked */
-  initialY1: number | null;
+  initialY1: number;
   /** initial y0 value, non stacked */
-  initialY0: number | null;
+  initialY0: number;
   /** the optional mark metric, used for lines and area series */
-  mark: number | null;
+  mark: number;
   /** initial datum */
   datum: T;
   /** the list of filled values because missing or nulls */
@@ -283,25 +283,24 @@ export function extractYAndMarkFromDatum(
   y0Accessor?: Accessor | AccessorFn,
   markSizeAccessor?: Accessor | AccessorFn,
 ): Pick<DataSeriesDatum, 'y0' | 'y1' | 'mark' | 'datum' | 'initialY0' | 'initialY1'> {
-  const mark =
-    markSizeAccessor === undefined ? null : castToNumber(getAccessorValue(datum, markSizeAccessor), nonNumericValues);
   const y1Value = getAccessorValue(datum, yAccessor);
-  const y1 = castToNumber(y1Value, nonNumericValues);
-  const y0 = y0Accessor ? castToNumber(getAccessorValue(datum, y0Accessor), nonNumericValues) : null;
+  const y1 = parseFloat(y1Value);
+  if (isNaN(y1)) {
+    nonNumericValues.push(datum);
+  }
+  const y0Value = !isNil(y0Accessor) ? getAccessorValue(datum, y0Accessor) : NaN;
+  const y0 = parseFloat(y0Value);
+
+  const markValue = !isNil(markSizeAccessor) ? getAccessorValue(datum, markSizeAccessor) : NaN;
+  const mark = parseFloat(markValue);
+  // save non numeric values for logging
+  if (!isNil(y0Accessor) && isNaN(y0)) {
+    nonNumericValues.push(datum);
+  }
+  if (!isNil(markSizeAccessor) && isNaN(mark)) {
+    nonNumericValues.push(datum);
+  }
   return { y1, datum, y0, mark, initialY0: y0, initialY1: y1 };
-}
-
-function castToNumber(value: any, nonNumericValues: any[]): number | null {
-  if (value === null || value === undefined) {
-    return null;
-  }
-  const num = Number(value);
-
-  if (isNaN(num)) {
-    nonNumericValues.push(value);
-    return null;
-  }
-  return num;
 }
 
 /** Sorts data based on order of xValues */
@@ -330,6 +329,7 @@ export function getFormattedDataSeries(
     seriesSpecs,
     xScaleType,
   );
+  console.log(fittedDataSeries);
 
   // apply fitting for stacked DataSeries by YGroup, Panel
   const stackedDataSeries = fittedDataSeries.filter(({ spec }) => isStackedSpec(spec, histogramEnabled));

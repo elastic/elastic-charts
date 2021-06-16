@@ -22,11 +22,11 @@ import createCachedSelector from 're-reselect';
 import { LegendItemExtraValues } from '../../../../common/legend';
 import { SeriesKey } from '../../../../common/series_id';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getHighligthedValues } from '../../tooltip/tooltip';
+import { getHighlightedValues } from '../../tooltip/tooltip';
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 
 /** @internal */
 export const getHighlightedValuesSelector = createCachedSelector(
   [getTooltipInfoSelector],
-  ({ values }): Map<SeriesKey, LegendItemExtraValues> => getHighligthedValues(values),
+  ({ values }): Map<SeriesKey, LegendItemExtraValues> => getHighlightedValues(values),
 )(getChartIdSelector);

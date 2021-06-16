@@ -99,7 +99,7 @@ export const Example = () => {
           externalPointerEvents={{
             tooltip: { visible: topVisible, placement: topPlacement },
           }}
-          tooltip={{ type: topType }}
+          tooltip={{ type: topType, showOnNullValues: true, showOnFittedValues: true }}
         />
         <Axis
           id="bottom"
@@ -107,7 +107,11 @@ export const Example = () => {
           title={`External tooltip visible: ${topVisible} - boundary: scroll parent`}
           tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
         />
-        <Axis id="left2" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+        <Axis
+          id="left2"
+          position={Position.Left}
+          tickFormat={(d: any) => (isFinite(d) ? Number(d).toFixed(2) : 'n/a')}
+        />
 
         <TopSeries
           id="Top"
@@ -115,7 +119,12 @@ export const Example = () => {
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
-          data={data1.slice(3, 60)}
+          data={data1.slice(3, 60).map((d, i) => {
+            if ([3, 10, 12, 15].includes(i)) {
+              return [d[0], null];
+            }
+            return d;
+          })}
         />
       </Chart>
       <Chart className="story-chart" ref={ref2} size={{ height: '50%' }} id="chart2">

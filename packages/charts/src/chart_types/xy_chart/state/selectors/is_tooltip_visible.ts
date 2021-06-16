@@ -20,18 +20,15 @@
 import createCachedSelector from 're-reselect';
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
-import { getTooltipType } from '../../../../specs';
 import { TooltipType } from '../../../../specs/constants';
 import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { isExternalTooltipVisibleSelector } from '../../../../state/selectors/is_external_tooltip_visible';
 import { Point } from '../../../../utils/point';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
+import { getTooltipTypeSelector } from './get_tooltip_type';
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 import { isAnnotationTooltipVisibleSelector } from './is_annotation_tooltip_visible';
-
-const getTooltipTypeSelector = (state: GlobalChartState): TooltipType => getTooltipType(getSettingsSpecSelector(state));
 
 const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;
 

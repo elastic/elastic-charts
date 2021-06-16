@@ -134,16 +134,4 @@ describe('Scale Band', () => {
       expect(scale.isSingleValue()).toBe(false);
     });
   });
-
-  describe('#scaleOrThrow', () => {
-    const scale = new ScaleBand(['a', 'b'], [0, 100]);
-
-    it('should NOT throw for values in domain', () => {
-      expect(() => scale.scaleOrThrow('a')).not.toThrow();
-    });
-
-    it('should throw for values not in domain', () => {
-      expect(() => scale.scaleOrThrow('c')).toThrow();
-    });
-  });
 });

@@ -28,6 +28,8 @@ import {
   isFollowTooltipType,
   SettingsSpec,
   getTooltipType,
+  getShowTooltipOnNullValues,
+  getShowTooltipOnFittedValues,
 } from '../../../../specs';
 import { TooltipType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -136,9 +138,12 @@ function getTooltipAndHighlightFromValue(
   let header: TooltipValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
   const xValues = new Set<any>();
-
+  const showTooltipOnNullValues = getShowTooltipOnNullValues(settings);
+  const showTooltipOnFittedValues = getShowTooltipOnFittedValues(settings);
   const values = matchingGeoms
-    .filter(({ value: { y } }) => y !== null)
+    .filter(({ value: { y, isFilled } }) => {
+      return (showTooltipOnNullValues && isNaN(y)) || (showTooltipOnFittedValues && isFilled) || !isNaN(y);
+    })
     .reduce<TooltipValue[]>((acc, indexedGeometry) => {
       const {
         seriesIdentifier: { specId },

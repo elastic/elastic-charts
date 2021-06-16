@@ -55,12 +55,12 @@ export function fillSeries(
 
       filledData.splice(index, 0, {
         x: missingValue,
-        y1: null,
-        y0: null,
-        initialY1: null,
-        initialY0: null,
-        mark: null,
-        datum: undefined,
+        y1: NaN,
+        y0: NaN,
+        initialY1: NaN,
+        initialY0: NaN,
+        mark: NaN,
+        datum: NaN,
         filled: {
           x: missingValue,
         },

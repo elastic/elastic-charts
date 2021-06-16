@@ -65,6 +65,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
       if (visiblePoints.length === 0) {
         return;
       }
+
       const geometryStyle = getGeometryStateStyle(line.seriesIdentifier, sharedStyle, highlightedLegendItem);
       withPanelTransform(
         ctx,
@@ -75,7 +76,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
           renderPoints(ctx, visiblePoints, geometryStyle);
         },
         // TODO: add padding over clipping
-        { area: clippings, shouldClip: line.points[0]?.value.mark !== null },
+        { area: clippings, shouldClip: points.length > 0 && !isNaN(points[0].value.mark) },
       );
     });
   });

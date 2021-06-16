@@ -27,9 +27,8 @@ import { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } fr
 import { PointStyleAccessor, StackMode } from '../utils/specs';
 import { buildPointGeometryStyles } from './point_style';
 import {
-  getY0ScaledValueOrThrowFn,
-  getY1ScaledValueOrThrowFn,
-  getYDatumValueFn,
+  getY0ScaledValue,
+  getY1ScaledValue,
   isDatumFilled,
   isYValueDefinedFn,
   MarkSizeOptions,
@@ -59,8 +58,8 @@ export function renderPoints(
     : () => 0;
   const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
 
-  const y1Fn = getY1ScaledValueOrThrowFn(yScale);
-  const y0Fn = getY0ScaledValueOrThrowFn(yScale);
+  const y1Fn = getY1ScaledValue(yScale);
+  const y0Fn = getY0ScaledValue(yScale);
   const yDefined = isYValueDefinedFn(yScale, xScale);
 
   const pointGeometries = dataSeries.data.reduce((acc, datum, dataIndex) => {
@@ -71,32 +70,14 @@ export function renderPoints(
     if (!xScale.isValueInDomain(xValue)) {
       return acc;
     }
-    // don't create the point if it that point was filled
-    if (isDatumFilled(datum)) {
-      return acc;
-    }
-    const x = xScale.scale(xValue);
 
-    if (x === null) {
-      return acc;
-    }
+    const x = xScale.scale(xValue);
 
     const points: PointGeometry[] = [];
     const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = hasY0Accessors ? ['y0', 'y1'] : ['y1'];
 
     yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
-      const valueAccessor = getYDatumValueFn(yDatumKeyName);
-
-      let y: number | null;
-      try {
-        y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
-        // skip rendering point if y1 is null
-        if (y === null) {
-          return;
-        }
-      } catch {
-        return;
-      }
+      const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
 
       const originalY = getDatumYValue(datum, keyIndex === 0, hasY0Accessors, dataSeries.stackMode);
       const seriesIdentifier: XYChartSeriesIdentifier = {
@@ -115,6 +96,9 @@ export function renderPoints(
       const radius = markSizeOptions.enabled
         ? Math.max(getRadius(mark), pointStyle.radius)
         : styleOverrides?.radius ?? pointStyle.radius;
+      // if (!isFinite(y)) {
+      //   debugger;
+      // }
       const pointGeometry: PointGeometry = {
         x,
         y,
@@ -127,6 +111,7 @@ export function renderPoints(
           mark,
           accessor: hasY0Accessors && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
           datum: datum.datum,
+          isFilled: isDatumFilled(datum),
         },
         transform: {
           x: shift,
@@ -137,10 +122,7 @@ export function renderPoints(
         orphan,
       };
       indexedGeometryMap.set(pointGeometry, geometryType);
-      // use the geometry only if the yDatum in contained in the current yScale domain
-      if (yDefined(datum, valueAccessor)) {
-        points.push(pointGeometry);
-      }
+      points.push(pointGeometry);
     });
     return [...acc, ...points];
   }, [] as PointGeometry[]);
@@ -217,13 +199,13 @@ export function getRadiusFn(
   data: DataSeriesDatum[],
   lineWidth: number,
   markSizeRatio: number = 50,
-): (mark: number | null, defaultRadius?: number) => number {
+): (mark: number, defaultRadius?: number) => number {
   if (data.length === 0) {
     return () => 0;
   }
   const { min, max } = data.reduce(
     (acc, { mark }) =>
-      mark === null
+      isNaN(mark)
         ? acc
         : {
             min: Math.min(acc.min, mark / 2),
@@ -234,7 +216,7 @@ export function getRadiusFn(
   const adjustedMarkSizeRatio = Math.min(Math.max(markSizeRatio, 0), 100);
   const radiusStep = (max - min || max * 100) / Math.pow(adjustedMarkSizeRatio, 2);
   return function getRadius(mark, defaultRadius = 0): number {
-    if (mark === null) {
+    if (isNaN(mark)) {
       return defaultRadius;
     }
     const circleRadius = (mark / 2 - min) / radiusStep;
@@ -243,25 +225,25 @@ export function getRadiusFn(
   };
 }
 
-function yAccessorForOrphanCheck(datum: DataSeriesDatum): number | null {
-  return datum.filled?.y1 ? null : datum.y1;
+function yAccessorForOrphanCheck(datum: DataSeriesDatum): number {
+  return datum.filled?.y1 ? NaN : datum.y1;
 }
 
 function isOrphanDataPoint(
   index: number,
   length: number,
-  yDefined: YDefinedFn,
+  yDefinedFn: YDefinedFn,
   prev?: DataSeriesDatum,
   next?: DataSeriesDatum,
 ): boolean {
-  if (index === 0 && (isNil(next) || !yDefined(next, yAccessorForOrphanCheck))) {
+  if (index === 0 && (isNil(next) || !yDefinedFn(next, yAccessorForOrphanCheck))) {
     return true;
   }
-  if (index === length - 1 && (isNil(prev) || !yDefined(prev, yAccessorForOrphanCheck))) {
+  if (index === length - 1 && (isNil(prev) || !yDefinedFn(prev, yAccessorForOrphanCheck))) {
     return true;
   }
   return (
-    (isNil(prev) || !yDefined(prev, yAccessorForOrphanCheck)) &&
-    (isNil(next) || !yDefined(next, yAccessorForOrphanCheck))
+    (isNil(prev) || !yDefinedFn(prev, yAccessorForOrphanCheck)) &&
+    (isNil(next) || !yDefinedFn(next, yAccessorForOrphanCheck))
   );
 }

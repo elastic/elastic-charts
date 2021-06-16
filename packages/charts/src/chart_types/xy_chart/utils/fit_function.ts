@@ -197,10 +197,10 @@ export const fitFunction = (
   if (type === Fit.Zero) {
     return data.map((datum) => ({
       ...datum,
-      y1: datum.y1 === null ? 0 : datum.y1,
+      y1: isNaN(datum.y1) ? 0 : datum.y1,
       filled: {
         ...datum.filled,
-        y1: datum.y1 === null ? 0 : undefined,
+        y1: isNaN(datum.y1) ? 0 : undefined,
       },
     }));
   }
@@ -212,10 +212,10 @@ export const fitFunction = (
 
     return data.map((datum) => ({
       ...datum,
-      y1: datum.y1 === null ? value : datum.y1,
+      y1: isNaN(datum.y1) ? value : datum.y1,
       filled: {
         ...datum.filled,
-        y1: datum.y1 === null ? value : undefined,
+        y1: isNaN(datum.y1) ? value : undefined,
       },
     }));
   }
@@ -231,7 +231,7 @@ export const fitFunction = (
     const currentValue = sortedData[i];
 
     if (
-      currentValue.y1 === null &&
+      isNaN(currentValue.y1) &&
       nextNonNullDatum === null &&
       (type === Fit.Lookahead ||
         type === Fit.Nearest ||
@@ -243,7 +243,7 @@ export const fitFunction = (
       for (j = i + 1; j < sortedData.length; j++) {
         const nextValue = sortedData[j];
 
-        if (nextValue.y1 !== null && nextValue.x !== null) {
+        if (!isNaN(nextValue.y1) && nextValue.x !== null) {
           nextNonNullDatum = {
             ...(nextValue as FullDataSeriesDatum),
             fittingIndex: j,
@@ -253,14 +253,13 @@ export const fitFunction = (
       }
     }
 
-    const newValue =
-      currentValue.y1 === null
-        ? getValue(currentValue, i, previousNonNullDatum, nextNonNullDatum, type, endValue)
-        : currentValue;
+    const newValue = isNaN(currentValue.y1)
+      ? getValue(currentValue, i, previousNonNullDatum, nextNonNullDatum, type, endValue)
+      : currentValue;
 
     newData[i] = newValue;
 
-    if (currentValue.y1 !== null && currentValue.x !== null) {
+    if (!isNaN(currentValue.y1)) {
       previousNonNullDatum = {
         ...(currentValue as FullDataSeriesDatum),
         fittingIndex: i,
