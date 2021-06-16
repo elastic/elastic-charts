@@ -47,7 +47,7 @@ export function computeRectAnnotationDimensions(
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   chartRotation: Rotation,
-  getAxisStyle: (id: AxisId) => AxisStyle,
+  getAxisStyle: (id?: AxisId) => AxisStyle,
   isHistogram: boolean = false,
 ): AnnotationRectProps[] | null {
   const { dataValues, groupId, outside } = annotationSpec;
@@ -91,14 +91,13 @@ export function computeRectAnnotationDimensions(
           (chartRotation === -90 && yAxis?.position === Position.Right) ||
           (chartRotation === 90 && yAxis?.position === Position.Left);
         const orthoDimension = chartRotation === 0 || chartRotation === 180 ? panelSize.height : panelSize.width;
-        const axisId = xAxis?.id ?? yAxis?.id;
-        const tickSize = axisId ? getAxisStyle(axisId).tickLine.size : 0;
+        const outsideDim = getOutsideDimension(getAxisStyle(xAxis?.id ?? yAxis?.id), outside);
         const rectDimensions = {
           ...xAndWidth,
-          ...(outside
+          ...(outsideDim > 0
             ? {
-                y: isLeftSide ? orthoDimension : -tickSize,
-                height: tickSize,
+                y: isLeftSide ? orthoDimension : -outsideDim,
+                height: outsideDim,
               }
             : {
                 y: 0,
@@ -138,13 +137,12 @@ export function computeRectAnnotationDimensions(
       (chartRotation === 180 && yAxis?.position === Position.Right) ||
       (chartRotation === -90 && xAxis?.position === Position.Bottom) ||
       (chartRotation === 90 && xAxis?.position === Position.Top);
-    const axisId = xAxis?.id ?? yAxis?.id;
-    const tickSize = axisId ? getAxisStyle(axisId).tickLine.size : 0;
+    const outsideDim = getOutsideDimension(getAxisStyle(xAxis?.id ?? yAxis?.id), outside);
     const rectDimensions = {
-      ...(!isDefined(initialX0) && !isDefined(initialX1) && outside
+      ...(!isDefined(initialX0) && !isDefined(initialX1) && outsideDim > 0
         ? {
-            x: isLeftSide ? -tickSize : orthoDimension,
-            width: tickSize,
+            x: isLeftSide ? -outsideDim : orthoDimension,
+            width: outsideDim,
           }
         : xAndWidth),
       y: scaledY1,
@@ -275,4 +273,12 @@ function getMin(min: number, value?: number | string | null) {
     return Math.max(value, min);
   }
   return value;
+}
+
+function getOutsideDimension(style: AxisStyle, outside?: boolean): number {
+  if (!outside) return 0;
+
+  const { visible, size, strokeWidth } = style.tickLine;
+
+  return visible && size > 0 && strokeWidth > 0 ? size : 0;
 }

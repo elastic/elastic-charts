@@ -53,7 +53,7 @@ export const computeAnnotationDimensionsSelector = createCachedSelector(
     axisStyles,
     { axes },
   ): Map<AnnotationId, AnnotationDimensions> => {
-    const getAxisStyle = (id: AxisId) => axisStyles.get(id) ?? axes;
+    const getAxisStyle = (id: AxisId = '') => axisStyles.get(id) ?? axes;
     return computeAnnotationDimensions(
       annotationSpecs,
       settingsSpec.rotation,

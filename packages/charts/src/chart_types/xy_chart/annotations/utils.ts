@@ -134,7 +134,7 @@ export function computeAnnotationDimensions(
   axesSpecs: AxisSpec[],
   isHistogramModeEnabled: boolean,
   smallMultipleScales: SmallMultipleScales,
-  getAxisStyle: (id: AxisId) => AxisStyle,
+  getAxisStyle: (id?: AxisId) => AxisStyle,
 ): Map<AnnotationId, AnnotationDimensions> {
   return annotations.reduce<Map<AnnotationId, AnnotationDimensions>>((annotationDimensions, annotationSpec) => {
     const { id } = annotationSpec;

@@ -159,5 +159,11 @@ describe('Annotations stories', () => {
         },
       );
     });
+
+    it('should not render outside when tickLine is not rendered', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/annotations-rects--outside&knob-debug=&knob-chartRotation=180&knob-Tick size=0&knob-Domain axis_Annotations=x&knob-Render outside chart_Annotations=true&knob-Red groupId_Annotations=primary&knob-Blue groupId_Annotations=secondary',
+      );
+    });
   });
 });
