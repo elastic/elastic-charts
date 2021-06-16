@@ -17,9 +17,7 @@
  * under the License.
  */
 
-import createCachedSelector from 're-reselect';
-
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { AnnotationId, AxisId } from '../../../../utils/ids';
@@ -32,7 +30,7 @@ import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 /** @internal */
-export const computeAnnotationDimensionsSelector = createCachedSelector(
+export const computeAnnotationDimensionsSelector = createCustomCachedSelector(
   [
     getAnnotationSpecsSelector,
     getSettingsSpecSelector,
@@ -65,4 +63,4 @@ export const computeAnnotationDimensionsSelector = createCachedSelector(
       getAxisStyle,
     );
   },
-)(getChartIdSelector);
+);
