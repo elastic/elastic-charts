@@ -51,17 +51,14 @@ export interface AxisTick {
   position: number;
 }
 
-interface LabelSizeModel {
+/** @internal */
+export interface AxisViewModel {
+  tickValues: string[] | number[];
+  tickLabels: string[];
   maxLabelBboxWidth: number;
   maxLabelBboxHeight: number;
   maxLabelTextWidth: number;
   maxLabelTextHeight: number;
-}
-
-/** @internal */
-export interface AxisViewModel extends LabelSizeModel {
-  tickValues: string[] | number[];
-  tickLabels: string[];
   isHidden: boolean;
 }
 
@@ -82,13 +79,6 @@ export interface TickLabelProps {
     typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom
   >;
 }
-
-const initialLabelSizeModel = () => ({
-  maxLabelBboxWidth: 0,
-  maxLabelBboxHeight: 0,
-  maxLabelTextWidth: 0,
-  maxLabelTextHeight: 0,
-});
 
 /** @internal */
 export const defaultTickFormatter = (tick: unknown) => `${tick}`;
@@ -139,12 +129,28 @@ export function axisViewModel(
 
   const tickValues = scale.ticks();
   const tickLabels = tickValues.map((d) => tickFormat(d, tickFormatOptions));
-  const dimensions = tickLabel.visible
-    ? tickLabels.reduce(getMaxLabelDimensions(bboxCalculator, tickLabel), initialLabelSizeModel())
-    : initialLabelSizeModel();
+
+  let maxLabelBboxWidth = 0;
+  let maxLabelBboxHeight = 0;
+  let maxLabelTextWidth = 0;
+  let maxLabelTextHeight = 0;
+
+  if (tickLabel.visible) {
+    for (const labelText of tickLabels) {
+      const bbox = bboxCalculator.compute(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
+      const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
+      maxLabelBboxWidth = Math.max(maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
+      maxLabelBboxHeight = Math.max(maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
+      maxLabelTextWidth = Math.max(maxLabelTextWidth, Math.ceil(bbox.width));
+      maxLabelTextHeight = Math.max(maxLabelTextHeight, Math.ceil(bbox.height));
+    }
+  }
 
   return {
-    ...dimensions,
+    maxLabelBboxWidth,
+    maxLabelBboxHeight,
+    maxLabelTextWidth,
+    maxLabelTextHeight,
     tickValues,
     tickLabels,
     isHidden: axisSpec.hide && gridLineVisible,
@@ -204,38 +210,6 @@ export function computeRotatedLabelDimensions(unrotatedDims: BBox, degreesRotati
     height: rotatedHeight,
   };
 }
-
-const getMaxLabelDimensions = (
-  bboxCalculator: BBoxCalculator,
-  { fontSize, fontFamily, rotation }: AxisStyle['tickLabel'],
-) => (
-  acc: Record<string, number>,
-  tickLabel: string,
-): {
-  maxLabelBboxWidth: number;
-  maxLabelBboxHeight: number;
-  maxLabelTextWidth: number;
-  maxLabelTextHeight: number;
-} => {
-  const bbox = bboxCalculator.compute(tickLabel, 0, fontSize, fontFamily);
-  const rotatedBbox = computeRotatedLabelDimensions(bbox, rotation);
-
-  const width = Math.ceil(rotatedBbox.width);
-  const height = Math.ceil(rotatedBbox.height);
-  const labelWidth = Math.ceil(bbox.width);
-  const labelHeight = Math.ceil(bbox.height);
-
-  const prevWidth = acc.maxLabelBboxWidth;
-  const prevHeight = acc.maxLabelBboxHeight;
-  const prevLabelWidth = acc.maxLabelTextWidth;
-  const prevLabelHeight = acc.maxLabelTextHeight;
-  return {
-    maxLabelBboxWidth: prevWidth > width ? prevWidth : width,
-    maxLabelBboxHeight: prevHeight > height ? prevHeight : height,
-    maxLabelTextWidth: prevLabelWidth > labelWidth ? prevLabelWidth : labelWidth,
-    maxLabelTextHeight: prevLabelHeight > labelHeight ? prevLabelHeight : labelHeight,
-  };
-};
 
 function getUserTextOffsets(dimensions: AxisViewModel, offset: TextOffset) {
   const defaults = {
