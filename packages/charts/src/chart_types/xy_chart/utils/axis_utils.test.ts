@@ -44,7 +44,7 @@ import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_
 import {
   AxisTick,
   AxisViewModel,
-  computeAxisTicksDimensions,
+  axisViewModel,
   computeRotatedLabelDimensions,
   getAvailableTicks,
   getAxisPosition,
@@ -226,7 +226,7 @@ describe('Axis computational utils', () => {
 
   test('should compute axis dimensions', () => {
     const bboxCalculator = new SvgTextBBoxCalculator();
-    const axisDimensions = computeAxisTicksDimensions(
+    const axisDimensions = axisViewModel(
       verticalAxisSpec,
       xDomain,
       [yDomain],
@@ -239,7 +239,7 @@ describe('Axis computational utils', () => {
     expect(axisDimensions).toEqual(axis1Dims);
 
     const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
-    const result = computeAxisTicksDimensions(
+    const result = axisViewModel(
       ungroupedAxisSpec,
       xDomain,
       [yDomain],
@@ -260,7 +260,7 @@ describe('Axis computational utils', () => {
   test('should not compute axis dimensions when spec is configured to hide', () => {
     const bboxCalculator = new CanvasTextBBoxCalculator();
     verticalAxisSpec.hide = true;
-    const axisDimensions = computeAxisTicksDimensions(
+    const axisDimensions = axisViewModel(
       verticalAxisSpec,
       xDomain,
       [yDomain],
@@ -281,7 +281,7 @@ describe('Axis computational utils', () => {
       minInterval: 0,
       timeZone: 'utc',
     });
-    let axisDimensions = computeAxisTicksDimensions(
+    let axisDimensions = axisViewModel(
       xAxisWithTime,
       xDomain,
       [yDomain],
@@ -295,7 +295,7 @@ describe('Axis computational utils', () => {
     expect(axisDimensions?.tickLabels[0]).toBe('11:00:00');
     expect(axisDimensions?.tickLabels[11]).toBe('11:55:00');
 
-    axisDimensions = computeAxisTicksDimensions(
+    axisDimensions = axisViewModel(
       xAxisWithTime,
       {
         ...xDomain,
@@ -312,7 +312,7 @@ describe('Axis computational utils', () => {
     expect(axisDimensions?.tickLabels[0]).toBe('14:00:00');
     expect(axisDimensions?.tickLabels[11]).toBe('14:55:00');
 
-    axisDimensions = computeAxisTicksDimensions(
+    axisDimensions = axisViewModel(
       xAxisWithTime,
       {
         ...xDomain,

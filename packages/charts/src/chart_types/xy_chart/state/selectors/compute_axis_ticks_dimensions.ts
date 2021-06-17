@@ -22,12 +22,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { AxisId } from '../../../../utils/ids';
-import {
-  computeAxisTicksDimensions,
-  AxisViewModel,
-  hasDuplicateAxis,
-  defaultTickFormatter,
-} from '../../utils/axis_utils';
+import { axisViewModel, AxisViewModel, hasDuplicateAxis, defaultTickFormatter } from '../../utils/axis_utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
@@ -66,7 +61,7 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
     axesSpecs.forEach((axisSpec) => {
       const { id } = axisSpec;
       const axisStyle = axesStyles.get(id) ?? chartTheme.axes;
-      const dimensions = computeAxisTicksDimensions(
+      const dimensions = axisViewModel(
         axisSpec,
         xDomain,
         yDomains,

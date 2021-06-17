@@ -86,20 +86,9 @@ export const defaultTickFormatter = (tick: any) => `${tick}`;
 /**
  * Compute the ticks values and identify max width and height of the labels
  * so we can compute the max space occupied by the axis component.
- * @param axisSpec the spec of the axis
- * @param xDomain the x domain associated
- * @param yDomains the y domain array
- * @param totalBarsInCluster the total number of grouped series
- * @param bboxCalculator an instance of the boundingbox calculator
- * @param chartRotation the rotation of the chart
- * @param gridLine
- * @param tickLabel
- * @param fallBackTickFormatter
- * @param barsPadding
- * @param enableHistogramMode
  * @internal
  */
-export function computeAxisTicksDimensions(
+export function axisViewModel(
   axisSpec: AxisSpec,
   xDomain: XDomain,
   yDomains: YDomain[],
@@ -132,7 +121,6 @@ export function computeAxisTicksDimensions(
 
   if (!scale) {
     Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
-
     return null;
   }
 
