@@ -29,11 +29,6 @@ import { withContext } from '../../../../../renderers/canvas';
 export const MIN_STROKE_WIDTH = 0.001;
 
 /** @internal */
-export function renderLine(ctx: CanvasRenderingContext2D, line: Line, stroke: Stroke) {
-  renderMultiLine(ctx, [line], stroke);
-}
-
-/** @internal */
 export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | string[], stroke: Stroke) {
   if (stroke.width < MIN_STROKE_WIDTH) {
     return;

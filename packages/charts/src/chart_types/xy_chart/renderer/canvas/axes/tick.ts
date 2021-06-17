@@ -23,7 +23,7 @@ import { Position } from '../../../../../utils/common';
 import { TickStyle } from '../../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../../utils/axis_type_utils';
 import { AxisTick } from '../../../utils/axis_utils';
-import { renderLine } from '../primitives/line';
+import { renderMultiLine } from '../primitives/line';
 
 /** @internal */
 export function renderTick(ctx: CanvasRenderingContext2D, tick: AxisTick, props: AxisProps) {
@@ -50,14 +50,10 @@ function renderVerticalTick(
   const isLeftAxis = position === Position.Left;
   const x1 = isLeftAxis ? axisWidth : 0;
   const x2 = isLeftAxis ? axisWidth - tickSize : tickSize;
-  renderLine(
-    ctx,
-    { x1, y1: tickPosition, x2, y2: tickPosition },
-    {
-      color: stringToRGB(tickStyle.stroke),
-      width: tickStyle.strokeWidth,
-    },
-  );
+  renderMultiLine(ctx, [{ x1, y1: tickPosition, x2, y2: tickPosition }], {
+    color: stringToRGB(tickStyle.stroke),
+    width: tickStyle.strokeWidth,
+  });
 }
 
 function renderHorizontalTick(
@@ -72,12 +68,8 @@ function renderHorizontalTick(
   const y1 = isTopAxis ? axisHeight - tickSize : 0;
   const y2 = isTopAxis ? axisHeight : tickSize;
 
-  renderLine(
-    ctx,
-    { x1: tickPosition, y1, x2: tickPosition, y2 },
-    {
-      color: stringToRGB(tickStyle.stroke),
-      width: tickStyle.strokeWidth,
-    },
-  );
+  renderMultiLine(ctx, [{ x1: tickPosition, y1, x2: tickPosition, y2 }], {
+    color: stringToRGB(tickStyle.stroke),
+    width: tickStyle.strokeWidth,
+  });
 }
