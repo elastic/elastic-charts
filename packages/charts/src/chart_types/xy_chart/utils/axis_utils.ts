@@ -51,14 +51,17 @@ export interface AxisTick {
   position: number;
 }
 
-/** @internal */
-export interface AxisViewModel {
-  tickValues: string[] | number[];
-  tickLabels: string[];
+interface LabelSizeModel {
   maxLabelBboxWidth: number;
   maxLabelBboxHeight: number;
   maxLabelTextWidth: number;
   maxLabelTextHeight: number;
+}
+
+/** @internal */
+export interface AxisViewModel extends LabelSizeModel {
+  tickValues: string[] | number[];
+  tickLabels: string[];
   isHidden: boolean;
 }
 
@@ -79,6 +82,13 @@ export interface TickLabelProps {
     typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom
   >;
 }
+
+const initialLabelSizeModel = () => ({
+  maxLabelBboxWidth: 0,
+  maxLabelBboxHeight: 0,
+  maxLabelTextWidth: 0,
+  maxLabelTextHeight: 0,
+});
 
 /** @internal */
 export const defaultTickFormatter = (tick: unknown) => `${tick}`;
@@ -129,10 +139,9 @@ export function axisViewModel(
 
   const tickValues = scale.ticks();
   const tickLabels = tickValues.map((d) => tickFormat(d, tickFormatOptions));
-  const defaultAcc = { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 };
   const dimensions = tickLabel.visible
-    ? tickLabels.reduce(getMaxLabelDimensions(bboxCalculator, tickLabel), defaultAcc)
-    : defaultAcc;
+    ? tickLabels.reduce(getMaxLabelDimensions(bboxCalculator, tickLabel), initialLabelSizeModel())
+    : initialLabelSizeModel();
 
   return {
     ...dimensions,
