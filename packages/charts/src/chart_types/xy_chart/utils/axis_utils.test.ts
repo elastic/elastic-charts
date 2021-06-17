@@ -50,7 +50,6 @@ import {
   getAxisPosition,
   getAxesGeometries,
   getHorizontalAxisTickLineProps,
-  getMaxLabelDimensions,
   getMinMaxRange,
   getScaleForAxisSpec,
   getTickLabelProps,
@@ -704,18 +703,6 @@ describe('Axis computational utils', () => {
       height: 50,
     });
     expect(minMax).toEqual({ minRange: 50, maxRange: 0 });
-  });
-  test('should get max bbox dimensions for a tick in comparison to previous values', () => {
-    const bboxCalculator = new CanvasTextBBoxCalculator();
-    const reducer = getMaxLabelDimensions(bboxCalculator, LIGHT_THEME.axes.tickLabel);
-
-    const accWithGreaterValues = {
-      maxLabelBboxWidth: 100,
-      maxLabelBboxHeight: 100,
-      maxLabelTextWidth: 100,
-      maxLabelTextHeight: 100,
-    };
-    expect(reducer(accWithGreaterValues, 'foo')).toEqual(accWithGreaterValues);
   });
 
   test('should compute positions and alignment of tick labels along a vertical axis', () => {

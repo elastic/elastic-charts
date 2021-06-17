@@ -205,8 +205,7 @@ export function computeRotatedLabelDimensions(unrotatedDims: BBox, degreesRotati
   };
 }
 
-/** @internal */
-export const getMaxLabelDimensions = (
+const getMaxLabelDimensions = (
   bboxCalculator: BBoxCalculator,
   { fontSize, fontFamily, rotation }: AxisStyle['tickLabel'],
 ) => (
