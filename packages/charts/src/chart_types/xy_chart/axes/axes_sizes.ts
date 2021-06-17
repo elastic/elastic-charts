@@ -36,7 +36,7 @@ export function computeAxesSizes(
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
   smSpec?: SmallMultiplesSpec,
-): { left: number; right: number; top: number; bottom: number; margin: { left: number } } {
+): PerSideDistance & { margin: { left: number } } {
   const axisMainSize = nullPadding();
   const axisLabelOverflow = nullPadding();
 
