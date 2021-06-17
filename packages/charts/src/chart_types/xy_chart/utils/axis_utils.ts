@@ -910,7 +910,7 @@ export function getAxesGeometries(
 }
 
 /** @internal */
-export const isDuplicateAxis = (
+export const hasDuplicateAxis = (
   { position, title }: AxisSpec,
   { tickLabels }: AxisTicksDimensions,
   tickMap: Map<AxisId, AxisTicksDimensions>,

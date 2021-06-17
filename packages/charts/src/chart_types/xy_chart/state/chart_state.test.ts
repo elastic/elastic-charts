@@ -22,7 +22,7 @@ import { SpecType } from '../../../specs/constants';
 import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisId } from '../../../utils/ids';
 import { AxisStyle } from '../../../utils/themes/theme';
-import { AxisTicksDimensions, isDuplicateAxis } from '../utils/axis_utils';
+import { AxisTicksDimensions, hasDuplicateAxis } from '../utils/axis_utils';
 import { AxisSpec } from '../utils/specs';
 
 const style: RecursivePartial<AxisStyle> = {
@@ -71,7 +71,7 @@ describe('isDuplicateAxis', () => {
   it('should return true if axisSpecs and ticks match', () => {
     tickMap.set(AXIS_2_ID, axisTicksDimensions);
     specMap.push(axis2);
-    const result = isDuplicateAxis(axis1, axisTicksDimensions, tickMap, specMap);
+    const result = hasDuplicateAxis(axis1, axisTicksDimensions, tickMap, specMap);
 
     expect(result).toBe(true);
   });
@@ -82,7 +82,7 @@ describe('isDuplicateAxis', () => {
       ...axis2,
       title: 'TESTING',
     });
-    const result = isDuplicateAxis(
+    const result = hasDuplicateAxis(
       {
         ...axis1,
         title: 'TESTING',
@@ -103,7 +103,7 @@ describe('isDuplicateAxis', () => {
     tickMap.set(AXIS_2_ID, newAxisTicksDimensions);
     specMap.push(axis2);
 
-    const result = isDuplicateAxis(axis1, newAxisTicksDimensions, tickMap, specMap);
+    const result = hasDuplicateAxis(axis1, newAxisTicksDimensions, tickMap, specMap);
 
     expect(result).toBe(true);
   });
@@ -114,7 +114,7 @@ describe('isDuplicateAxis', () => {
       ...axis2,
       title: 'TESTING',
     });
-    const result = isDuplicateAxis(
+    const result = hasDuplicateAxis(
       {
         ...axis1,
         title: 'NOT TESTING',
@@ -130,7 +130,7 @@ describe('isDuplicateAxis', () => {
   it('should return false if axisSpecs and ticks match but position is different', () => {
     tickMap.set(AXIS_2_ID, axisTicksDimensions);
     specMap.push(axis2);
-    const result = isDuplicateAxis(
+    const result = hasDuplicateAxis(
       {
         ...axis1,
         position: Position.Top,
@@ -150,7 +150,7 @@ describe('isDuplicateAxis', () => {
     });
     specMap.push(axis2);
 
-    const result = isDuplicateAxis(axis1, axisTicksDimensions, tickMap, specMap);
+    const result = hasDuplicateAxis(axis1, axisTicksDimensions, tickMap, specMap);
 
     expect(result).toBe(false);
   });
@@ -162,14 +162,14 @@ describe('isDuplicateAxis', () => {
     });
     specMap.push(axis2);
 
-    const result = isDuplicateAxis(axis1, axisTicksDimensions, tickMap, specMap);
+    const result = hasDuplicateAxis(axis1, axisTicksDimensions, tickMap, specMap);
 
     expect(result).toBe(false);
   });
 
   it("should return false if can't find spec", () => {
     tickMap.set(AXIS_2_ID, axisTicksDimensions);
-    const result = isDuplicateAxis(axis1, axisTicksDimensions, tickMap, specMap);
+    const result = hasDuplicateAxis(axis1, axisTicksDimensions, tickMap, specMap);
 
     expect(result).toBe(false);
   });

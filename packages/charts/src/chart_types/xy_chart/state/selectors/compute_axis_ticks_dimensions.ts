@@ -25,7 +25,7 @@ import { AxisId } from '../../../../utils/ids';
 import {
   computeAxisTicksDimensions,
   AxisTicksDimensions,
-  isDuplicateAxis,
+  hasDuplicateAxis,
   defaultTickFormatter,
 } from '../../utils/axis_utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -80,7 +80,7 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
       );
       if (
         dimensions &&
-        (!settingsSpec.hideDuplicateAxes || !isDuplicateAxis(axisSpec, dimensions, axesTicksDimensions, axesSpecs))
+        (!settingsSpec.hideDuplicateAxes || !hasDuplicateAxis(axisSpec, dimensions, axesTicksDimensions, axesSpecs))
       ) {
         axesTicksDimensions.set(id, dimensions);
       }
