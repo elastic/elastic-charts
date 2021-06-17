@@ -18,20 +18,19 @@
  */
 
 import { LegendItem } from '../../../../common/legend';
-import { Line } from '../../../../geoms/types';
 import { AxisSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import {
   DebugState,
-  DebugStateValue,
-  DebugStateAxes,
   DebugStateArea,
-  DebugStateLine,
+  DebugStateAxes,
   DebugStateBar,
   DebugStateLegend,
+  DebugStateLine,
+  DebugStateValue,
 } from '../../../../state/types';
-import { AreaGeometry, BandedAccessorType, LineGeometry, BarGeometry, PerPanel } from '../../../../utils/geometry';
-import { FillStyle, Visible, StrokeStyle, Opacity } from '../../../../utils/themes/theme';
+import { AreaGeometry, BandedAccessorType, BarGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
+import { FillStyle, Opacity, StrokeStyle, Visible } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
 import { LinesGrid } from '../../utils/grid_lines';
@@ -83,15 +82,7 @@ function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: Li
       const values = visibleTicks.map(({ value }) => value);
 
       const gridlines = gridLines
-        .reduce<Line[]>((accLines, { lineGroups }) => {
-          const groupLines = lineGroups.find(({ axisId }) => {
-            return axisId === geom.axis.id;
-          });
-          if (!groupLines) {
-            return accLines;
-          }
-          return [...accLines, ...groupLines.lines];
-        }, [])
+        .flatMap(({ lineGroups }) => lineGroups.find(({ axisId }) => axisId === geom.axis.id)?.lines ?? [])
         .map(({ x1, y1 }) => ({ x: x1, y: y1 }));
 
       if (isVerticalAxis(position)) {
@@ -105,14 +96,7 @@ function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: Li
           gridlines: gridlines.reverse(),
         });
       } else {
-        acc.x.push({
-          id,
-          title,
-          position,
-          labels,
-          values,
-          gridlines,
-        });
+        acc.x.push({ id, title, position, labels, values, gridlines });
       }
 
       return acc;
