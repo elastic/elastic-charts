@@ -598,7 +598,8 @@ export function getTitleDimension({
 export function getAxisPosition(
   chartDimensions: Dimensions,
   chartMargins: Margins,
-  { axisTitle, axisPanelTitle }: Pick<AxisStyle, 'axisTitle' | 'axisPanelTitle'>,
+  axisTitle: AxisStyle['axisTitle'],
+  axisPanelTitle: AxisStyle['axisPanelTitle'],
   axisSpec: AxisSpec,
   axisDim: AxisViewModel,
   smScales: SmallMultipleScales,
@@ -706,7 +707,7 @@ export function getAxesGeometries(
         return acc;
       }
 
-      const { tickLine, tickLabel, ...otherStyles } = axesStyles.get(axisId) ?? sharedAxesStyle;
+      const { tickLine, tickLabel, axisTitle, axisPanelTitle } = axesStyles.get(axisId) ?? sharedAxesStyle;
       const labelPadding = getSimplePadding(tickLabel.padding);
       const showTicks = shouldShowTicks(tickLine, axisSpec.hide);
       const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
@@ -715,7 +716,8 @@ export function getAxesGeometries(
       const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getAxisPosition(
         chartDimensions,
         chartMargins,
-        otherStyles,
+        axisTitle,
+        axisPanelTitle,
         axisSpec,
         dimension,
         smScales,

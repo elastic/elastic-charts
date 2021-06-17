@@ -1028,7 +1028,8 @@ describe('Axis computational utils', () => {
     const leftAxisPosition = getAxisPosition(
       chartDim,
       LIGHT_THEME.chartMargins,
-      axisTitleStyles(axisTitleHeight),
+      axisTitleStyles(axisTitleHeight).axisTitle,
+      axisTitleStyles(axisTitleHeight).axisPanelTitle,
       verticalAxisSpec,
       axis1Dims,
       emptySmScales,
@@ -1068,7 +1069,8 @@ describe('Axis computational utils', () => {
     const rightAxisPosition = getAxisPosition(
       chartDim,
       LIGHT_THEME.chartMargins,
-      axisTitleStyles(axisTitleHeight),
+      axisTitleStyles(axisTitleHeight).axisTitle,
+      axisTitleStyles(axisTitleHeight).axisPanelTitle,
       verticalAxisSpec,
       axis1Dims,
       emptySmScales,
@@ -1108,7 +1110,8 @@ describe('Axis computational utils', () => {
     const topAxisPosition = getAxisPosition(
       chartDim,
       LIGHT_THEME.chartMargins,
-      axisTitleStyles(axisTitleHeight),
+      axisTitleStyles(axisTitleHeight).axisTitle,
+      axisTitleStyles(axisTitleHeight).axisPanelTitle,
       horizontalAxisSpec,
       axis1Dims,
       emptySmScales,
@@ -1149,7 +1152,8 @@ describe('Axis computational utils', () => {
     const bottomAxisPosition = getAxisPosition(
       chartDim,
       LIGHT_THEME.chartMargins,
-      axisTitleStyles(axisTitleHeight),
+      axisTitleStyles(axisTitleHeight).axisTitle,
+      axisTitleStyles(axisTitleHeight).axisPanelTitle,
       horizontalAxisSpec,
       axis1Dims,
       emptySmScales,
@@ -1744,7 +1748,8 @@ describe('Axis computational utils', () => {
         const leftAxisPosition = getAxisPosition(
           chartDim,
           LIGHT_THEME.chartMargins,
-          axisStyles,
+          axisStyles.axisTitle,
+          axisStyles.axisPanelTitle,
           { ...verticalAxisSpec, title },
           axis1Dims,
           smScales,
@@ -1778,7 +1783,8 @@ describe('Axis computational utils', () => {
         const rightAxisPosition = getAxisPosition(
           chartDim,
           LIGHT_THEME.chartMargins,
-          axisStyles,
+          axisStyles.axisTitle,
+          axisStyles.axisPanelTitle,
           { ...verticalAxisSpec, title },
           axis1Dims,
           smScales,
@@ -1812,7 +1818,8 @@ describe('Axis computational utils', () => {
         const topAxisPosition = getAxisPosition(
           chartDim,
           LIGHT_THEME.chartMargins,
-          axisStyles,
+          axisStyles.axisTitle,
+          axisStyles.axisPanelTitle,
           { ...horizontalAxisSpec, title },
           axis1Dims,
           smScales,
@@ -1846,7 +1853,8 @@ describe('Axis computational utils', () => {
         const bottomAxisPosition = getAxisPosition(
           chartDim,
           LIGHT_THEME.chartMargins,
-          axisStyles,
+          axisStyles.axisTitle,
+          axisStyles.axisPanelTitle,
           { ...horizontalAxisSpec, title },
           axis1Dims,
           smScales,
