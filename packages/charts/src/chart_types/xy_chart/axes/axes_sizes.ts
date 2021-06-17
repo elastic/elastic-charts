@@ -58,34 +58,36 @@ export function computeAxesSizes(
     const axisDimension = labelPaddingSum + tickDimension + titleDimension + panelTitleDimension;
     const maxAxisHeight = tickLabel.visible ? maxLabelBboxHeight + axisDimension : axisDimension;
     const maxAxisWidth = tickLabel.visible ? maxLabelBboxWidth + axisDimension : axisDimension;
+    const labelHalfWidth = maxLabelBboxWidth / 2;
+    const labelHalfHeight = maxLabelBboxHeight / 2;
 
     switch (position) {
       case Position.Top:
         axisMainSize.top += maxAxisHeight + chartMargins.top;
         // find the max half label size to accommodate the left/right labels
         // TODO use first and last labels
-        axisLabelOverflow.left = Math.max(axisLabelOverflow.left, maxLabelBboxWidth / 2);
-        axisLabelOverflow.right = Math.max(axisLabelOverflow.right, maxLabelBboxWidth / 2);
+        axisLabelOverflow.left = Math.max(axisLabelOverflow.left, labelHalfWidth);
+        axisLabelOverflow.right = Math.max(axisLabelOverflow.right, labelHalfWidth);
         break;
       case Position.Bottom:
         axisMainSize.bottom += maxAxisHeight + chartMargins.bottom;
         // find the max half label size to accommodate the left/right labels
         // TODO use first and last labels
-        axisLabelOverflow.left = Math.max(axisLabelOverflow.left, maxLabelBboxWidth / 2);
-        axisLabelOverflow.right = Math.max(axisLabelOverflow.right, maxLabelBboxWidth / 2);
+        axisLabelOverflow.left = Math.max(axisLabelOverflow.left, labelHalfWidth);
+        axisLabelOverflow.right = Math.max(axisLabelOverflow.right, labelHalfWidth);
         break;
       case Position.Right:
         axisMainSize.right += maxAxisWidth + chartMargins.right;
         // TODO use first and last labels
-        axisLabelOverflow.top = Math.max(axisLabelOverflow.top, maxLabelBboxHeight / 2);
-        axisLabelOverflow.bottom = Math.max(axisLabelOverflow.bottom, maxLabelBboxHeight / 2);
+        axisLabelOverflow.top = Math.max(axisLabelOverflow.top, labelHalfHeight);
+        axisLabelOverflow.bottom = Math.max(axisLabelOverflow.bottom, labelHalfHeight);
         break;
       case Position.Left:
       default:
         axisMainSize.left += maxAxisWidth + chartMargins.left;
         // TODO use first and last labels
-        axisLabelOverflow.top = Math.max(axisLabelOverflow.top, maxLabelBboxHeight / 2);
-        axisLabelOverflow.bottom = Math.max(axisLabelOverflow.bottom, maxLabelBboxHeight / 2);
+        axisLabelOverflow.top = Math.max(axisLabelOverflow.top, labelHalfHeight);
+        axisLabelOverflow.bottom = Math.max(axisLabelOverflow.bottom, labelHalfHeight);
     }
   });
   const left = Math.max(axisLabelOverflow.left + chartMargins.left, axisMainSize.left);
