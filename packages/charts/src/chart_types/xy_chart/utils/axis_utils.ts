@@ -126,8 +126,20 @@ export function axisViewModel(
 
   const tickFormat = axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
   const tickFormatOptions = { timeZone: xDomain.timeZone };
-  const dimensions = computeTickDimensions(scale, tickFormat, bboxCalculator, tickLabel, tickFormatOptions);
-  return { ...dimensions, isHidden: axisSpec.hide && gridLineVisible };
+
+  const tickValues = scale.ticks();
+  const tickLabels = tickValues.map((d) => tickFormat(d, tickFormatOptions));
+  const defaultAcc = { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 };
+  const dimensions = tickLabel.visible
+    ? tickLabels.reduce(getMaxLabelDimensions(bboxCalculator, tickLabel), defaultAcc)
+    : defaultAcc;
+
+  return {
+    ...dimensions,
+    tickValues,
+    tickLabels,
+    isHidden: axisSpec.hide && gridLineVisible,
+  };
 }
 
 /** @internal */
@@ -216,27 +228,6 @@ export const getMaxLabelDimensions = (
     maxLabelTextHeight: prevLabelHeight > labelHeight ? prevLabelHeight : labelHeight,
   };
 };
-
-function computeTickDimensions(
-  scale: Scale,
-  tickFormat: TickFormatter,
-  bboxCalculator: BBoxCalculator,
-  tickLabel: AxisStyle['tickLabel'],
-  tickFormatOptions: TickFormatterOptions,
-) {
-  const tickValues = scale.ticks();
-  const tickLabels = tickValues.map((d) => tickFormat(d, tickFormatOptions));
-  const defaultAcc = { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 };
-  const dimensions = tickLabel.visible
-    ? tickLabels.reduce(getMaxLabelDimensions(bboxCalculator, tickLabel), defaultAcc)
-    : defaultAcc;
-
-  return {
-    ...dimensions,
-    tickValues,
-    tickLabels,
-  };
-}
 
 function getUserTextOffsets(dimensions: AxisViewModel, offset: TextOffset) {
   const defaults = {
