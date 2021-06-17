@@ -24,7 +24,7 @@ import { AxisId } from '../../../utils/ids';
 import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { getSpecsById } from '../state/utils/spec';
 import { isVerticalAxis } from '../utils/axis_type_utils';
-import { AxisTicksDimensions, getTitleDimension, shouldShowTicks } from '../utils/axis_utils';
+import { AxisViewModel, getTitleDimension, shouldShowTicks } from '../utils/axis_utils';
 import { AxisSpec } from '../utils/specs';
 
 const nullPadding = (): PerSideDistance => ({ left: 0, right: 0, top: 0, bottom: 0 });
@@ -32,7 +32,7 @@ const nullPadding = (): PerSideDistance => ({ left: 0, right: 0, top: 0, bottom:
 /** @internal */
 export function computeAxesSizes(
   { axes: sharedAxesStyles, chartMargins }: Theme,
-  axisDimensions: Map<AxisId, AxisTicksDimensions>,
+  axisDimensions: Map<AxisId, AxisViewModel>,
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
   smSpec?: SmallMultiplesSpec,

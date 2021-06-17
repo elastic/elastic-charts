@@ -43,7 +43,7 @@ import { computeGridLinesSelector } from '../state/selectors/get_grid_lines';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 import {
   AxisTick,
-  AxisTicksDimensions,
+  AxisViewModel,
   computeAxisTicksDimensions,
   computeRotatedLabelDimensions,
   getAvailableTicks,
@@ -363,7 +363,7 @@ describe('Axis computational utils', () => {
     expect(xScale).toBeDefined();
   });
 
-  const axisDimensions: AxisTicksDimensions = {
+  const axisDimensions: AxisViewModel = {
     maxLabelBboxWidth: 100,
     maxLabelBboxHeight: 100,
     maxLabelTextHeight: 100,
@@ -1193,7 +1193,7 @@ describe('Axis computational utils', () => {
   test('should not compute axis ticks positions if missaligned specs', () => {
     const axisSpecs = [verticalAxisSpec];
     const axisStyles = new Map();
-    const axisDims = new Map<AxisId, AxisTicksDimensions>();
+    const axisDims = new Map<AxisId, AxisViewModel>();
     axisDims.set('not_a_mapped_one', axis1Dims);
 
     const axisTicksPosition = getAxesGeometries(

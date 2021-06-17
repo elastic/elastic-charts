@@ -52,7 +52,7 @@ export interface AxisTick {
 }
 
 /** @internal */
-export interface AxisTicksDimensions {
+export interface AxisViewModel {
   tickValues: string[] | number[];
   tickLabels: string[];
   maxLabelBboxWidth: number;
@@ -110,7 +110,7 @@ export function computeAxisTicksDimensions(
   fallBackTickFormatter: TickFormatter,
   barsPadding?: number,
   enableHistogramMode?: boolean,
-): AxisTicksDimensions | null {
+): AxisViewModel | null {
   const gridLineVisible = isVerticalAxis(axisSpec.position) ? gridLine.vertical.visible : gridLine.horizontal.visible;
 
   // don't compute anything on this axis if grid is hidden and axis is hidden
@@ -261,7 +261,7 @@ function computeTickDimensions(
   };
 }
 
-function getUserTextOffsets(dimensions: AxisTicksDimensions, offset: TextOffset) {
+function getUserTextOffsets(dimensions: AxisViewModel, offset: TextOffset) {
   const defaults = {
     x: 0,
     y: 0,
@@ -410,7 +410,7 @@ export function getTickLabelProps(
   position: Position,
   rotation: number,
   axisSize: Size,
-  tickDimensions: AxisTicksDimensions,
+  tickDimensions: AxisViewModel,
   showTicks: boolean,
   textOffset: TextOffset,
   textAlignment?: TextAlignment,
@@ -621,7 +621,7 @@ export function enableDuplicatedTicks(
 }
 
 /** @internal */
-export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: AxisTicksDimensions): AxisTick[] {
+export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: AxisViewModel): AxisTick[] {
   // We sort the ticks by position so that we can incrementally compute previousOccupiedSpace
   allTicks.sort((a: AxisTick, b: AxisTick) => a.position - b.position);
 
@@ -672,7 +672,7 @@ export function getAxisPosition(
   chartMargins: Margins,
   { axisTitle, axisPanelTitle }: Pick<AxisStyle, 'axisTitle' | 'axisPanelTitle'>,
   axisSpec: AxisSpec,
-  axisDim: AxisTicksDimensions,
+  axisDim: AxisViewModel,
   smScales: SmallMultipleScales,
   cumTopSum: number,
   cumBottomSum: number,
@@ -742,7 +742,7 @@ export interface AxisGeometry {
     panelTitle?: string; // defined later per panel
     secondary?: boolean; // defined later per panel
   };
-  dimension: AxisTicksDimensions;
+  dimension: AxisViewModel;
   ticks: AxisTick[];
   visibleTicks: AxisTick[];
 }
@@ -756,7 +756,7 @@ export function getAxesGeometries(
   { chartPaddings, chartMargins, axes: sharedAxesStyle }: Theme,
   chartRotation: Rotation,
   axisSpecs: AxisSpec[],
-  axisDimensions: Map<AxisId, AxisTicksDimensions>,
+  axisDimensions: Map<AxisId, AxisViewModel>,
   axesStyles: Map<AxisId, AxisStyle | null>,
   xDomain: XDomain,
   yDomains: YDomain[],
@@ -912,8 +912,8 @@ export function getAxesGeometries(
 /** @internal */
 export const hasDuplicateAxis = (
   { position, title }: AxisSpec,
-  { tickLabels }: AxisTicksDimensions,
-  tickMap: Map<AxisId, AxisTicksDimensions>,
+  { tickLabels }: AxisViewModel,
+  tickMap: Map<AxisId, AxisViewModel>,
   specs: AxisSpec[],
 ): boolean =>
   [...tickMap].some(([axisId, { tickLabels: axisTickLabels }]) => {

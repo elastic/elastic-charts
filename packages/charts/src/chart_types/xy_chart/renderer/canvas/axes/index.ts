@@ -26,7 +26,7 @@ import { AxisStyle } from '../../../../../utils/themes/theme';
 import { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
 import { getSpecsById } from '../../../state/utils/spec';
 import { isVerticalAxis } from '../../../utils/axis_type_utils';
-import { AxisTick, AxisTicksDimensions, shouldShowTicks } from '../../../utils/axis_utils';
+import { AxisTick, AxisViewModel, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisSpec } from '../../../utils/specs';
 import { renderDebugRect } from '../utils/debug';
 import { renderTitle } from './global_title';
@@ -44,7 +44,7 @@ export interface AxisProps {
   axisSpec: AxisSpec;
   size: Size;
   anchorPoint: Point;
-  dimension: AxisTicksDimensions;
+  dimension: AxisViewModel;
   ticks: AxisTick[];
   debug: boolean;
   renderingArea: Dimensions;

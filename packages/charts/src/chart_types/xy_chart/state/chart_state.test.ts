@@ -22,7 +22,7 @@ import { SpecType } from '../../../specs/constants';
 import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisId } from '../../../utils/ids';
 import { AxisStyle } from '../../../utils/themes/theme';
-import { AxisTicksDimensions, hasDuplicateAxis } from '../utils/axis_utils';
+import { AxisViewModel, hasDuplicateAxis } from '../utils/axis_utils';
 import { AxisSpec } from '../utils/specs';
 
 const style: RecursivePartial<AxisStyle> = {
@@ -51,7 +51,7 @@ describe('isDuplicateAxis', () => {
     id: AXIS_2_ID,
     groupId: 'group_2',
   };
-  const axisTicksDimensions: AxisTicksDimensions = {
+  const axisTicksDimensions: AxisViewModel = {
     tickValues: [],
     tickLabels: ['10', '20', '30'],
     maxLabelBboxWidth: 1,
@@ -60,11 +60,11 @@ describe('isDuplicateAxis', () => {
     maxLabelTextHeight: 1,
     isHidden: false,
   };
-  let tickMap: Map<AxisId, AxisTicksDimensions>;
+  let tickMap: Map<AxisId, AxisViewModel>;
   let specMap: AxisSpec[];
 
   beforeEach(() => {
-    tickMap = new Map<AxisId, AxisTicksDimensions>();
+    tickMap = new Map<AxisId, AxisViewModel>();
     specMap = [];
   });
 

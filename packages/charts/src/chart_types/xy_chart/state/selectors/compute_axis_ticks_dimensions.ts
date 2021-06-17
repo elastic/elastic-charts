@@ -24,7 +24,7 @@ import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbo
 import { AxisId } from '../../../../utils/ids';
 import {
   computeAxisTicksDimensions,
-  AxisTicksDimensions,
+  AxisViewModel,
   hasDuplicateAxis,
   defaultTickFormatter,
 } from '../../utils/axis_utils';
@@ -58,11 +58,11 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
     totalBarsInCluster,
     seriesSpecs,
     axesStyles,
-  ): Map<AxisId, AxisTicksDimensions> => {
+  ): Map<AxisId, AxisViewModel> => {
     const { xDomain, yDomains } = seriesDomainsAndData;
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
     const bboxCalculator = new CanvasTextBBoxCalculator();
-    const axesTicksDimensions: Map<AxisId, AxisTicksDimensions> = new Map();
+    const axesTicksDimensions: Map<AxisId, AxisViewModel> = new Map();
     axesSpecs.forEach((axisSpec) => {
       const { id } = axisSpec;
       const axisStyle = axesStyles.get(id) ?? chartTheme.axes;
