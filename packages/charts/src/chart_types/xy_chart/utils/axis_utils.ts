@@ -21,20 +21,20 @@ import { Line } from '../../../geoms/types';
 import { Scale } from '../../../scales';
 import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
 import {
-  Position,
-  Rotation,
-  getUniqueValues,
-  VerticalAlignment,
-  HorizontalAlignment,
   getPercentageValue,
   getRadians,
+  getUniqueValues,
+  HorizontalAlignment,
+  Position,
+  Rotation,
+  VerticalAlignment,
 } from '../../../utils/common';
-import { Dimensions, Margins, getSimplePadding, Size } from '../../../utils/dimensions';
+import { Dimensions, getSimplePadding, Margins, Size } from '../../../utils/dimensions';
 import { Range } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { Point } from '../../../utils/point';
-import { AxisStyle, Theme, TextAlignment, TextOffset } from '../../../utils/themes/theme';
+import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
 import { XDomain, YDomain } from '../domains/types';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
@@ -42,7 +42,7 @@ import { getSpecsById } from '../state/utils/spec';
 import { isVerticalAxis } from './axis_type_utils';
 import { getPanelSize, hasSMDomain } from './panel';
 import { computeXScale, computeYScales } from './scales';
-import { AxisSpec, TickFormatterOptions, TickFormatter } from './specs';
+import { AxisSpec, TickFormatter, TickFormatterOptions } from './specs';
 
 /** @internal */
 export interface AxisTick {
@@ -143,7 +143,6 @@ export function computeAxisTicksDimensions(
     tickLabel,
     { timeZone: xDomain.timeZone },
   );
-
   return {
     ...dimensions,
     isHidden: axisSpec.hide && gridLineVisible,
@@ -525,6 +524,7 @@ function getBottomTopAxisMinMaxRange(chartRotation: Rotation, width: number) {
       return { minRange: 0, maxRange: width };
   }
 }
+
 function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) {
   switch (chartRotation) {
     case 90:
@@ -915,26 +915,15 @@ export const isDuplicateAxis = (
   { tickLabels }: AxisTicksDimensions,
   tickMap: Map<AxisId, AxisTicksDimensions>,
   specs: AxisSpec[],
-): boolean => {
-  const [firstTickLabel] = tickLabels;
-  const [lastTickLabel] = tickLabels.slice(-1);
-
-  let hasDuplicate = false;
-  tickMap.forEach(({ tickLabels: axisTickLabels }, axisId) => {
-    if (
-      !hasDuplicate &&
+): boolean =>
+  [...tickMap].some(([axisId, { tickLabels: axisTickLabels }]) => {
+    const spec = getSpecsById<AxisSpec>(specs, axisId);
+    return (
+      spec?.position === position &&
+      title === spec.title &&
       axisTickLabels &&
       tickLabels.length === axisTickLabels.length &&
-      firstTickLabel === axisTickLabels[0] &&
-      lastTickLabel === axisTickLabels.slice(-1)[0]
-    ) {
-      const spec = getSpecsById<AxisSpec>(specs, axisId);
-
-      if (spec && spec.position === position && title === spec.title) {
-        hasDuplicate = true;
-      }
-    }
+      tickLabels[0] === axisTickLabels[0] &&
+      tickLabels[tickLabels.length - 1] === axisTickLabels[axisTickLabels.length - 1]
+    );
   });
-
-  return hasDuplicate;
-};
