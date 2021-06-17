@@ -45,17 +45,16 @@ export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | s
 
     if (isStringArray(lines)) {
       for (let i = 0; i < lines.length; i++) {
-        const path = lines[i];
-        ctx.stroke(new Path2D(path));
+        ctx.stroke(new Path2D(lines[i]));
       }
-      return;
+    } else {
+      for (let i = 0; i < lines.length; i++) {
+        const { x1, y1, x2, y2 } = lines[i];
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+      }
+      ctx.stroke();
     }
-    for (let i = 0; i < lines.length; i++) {
-      const { x1, y1, x2, y2 } = lines[i];
-      ctx.moveTo(x1, y1);
-      ctx.lineTo(x2, y2);
-    }
-    ctx.stroke();
   });
 }
 
