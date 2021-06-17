@@ -19,7 +19,7 @@
 
 import { SmallMultiplesSpec } from '../../../specs';
 import { Position } from '../../../utils/common';
-import { getSimplePadding } from '../../../utils/dimensions';
+import { getSimplePadding, PerSideDistance } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { getSpecsById } from '../state/utils/spec';
@@ -27,9 +27,9 @@ import { isVerticalAxis } from '../utils/axis_type_utils';
 import { AxisTicksDimensions, getTitleDimension, shouldShowTicks } from '../utils/axis_utils';
 import { AxisSpec } from '../utils/specs';
 
-/**
- * @internal
- */
+const nullPadding = (): PerSideDistance => ({ left: 0, right: 0, top: 0, bottom: 0 });
+
+/** @internal */
 export function computeAxesSizes(
   { axes: sharedAxesStyles, chartMargins }: Theme,
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
@@ -37,18 +37,8 @@ export function computeAxesSizes(
   axisSpecs: AxisSpec[],
   smSpec?: SmallMultiplesSpec,
 ): { left: number; right: number; top: number; bottom: number; margin: { left: number } } {
-  const axisMainSize = {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-  };
-  const axisLabelOverflow = {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-  };
+  const axisMainSize = nullPadding();
+  const axisLabelOverflow = nullPadding();
 
   axisDimensions.forEach(({ maxLabelBboxWidth = 0, maxLabelBboxHeight = 0, isHidden }, id) => {
     const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
