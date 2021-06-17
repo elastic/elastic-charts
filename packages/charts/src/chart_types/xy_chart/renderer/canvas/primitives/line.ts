@@ -18,7 +18,7 @@
  */
 
 import { RGBtoString } from '../../../../../common/color_library_wrappers';
-import { Stroke, Line } from '../../../../../geoms/types';
+import { Line, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
 
 /**
@@ -30,14 +30,10 @@ export const MIN_STROKE_WIDTH = 0.001;
 
 /** @internal */
 export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | string[], stroke: Stroke) {
-  if (stroke.width < MIN_STROKE_WIDTH) {
+  if (stroke.width < MIN_STROKE_WIDTH || lines.length === 0) {
     return;
   }
   withContext(ctx, (ctx) => {
-    const lineLength = lines.length;
-    if (lineLength === 0) {
-      return;
-    }
     ctx.strokeStyle = RGBtoString(stroke.color);
     ctx.lineJoin = 'round';
     ctx.lineWidth = stroke.width;
@@ -48,13 +44,13 @@ export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | s
     ctx.beginPath();
 
     if (isStringArray(lines)) {
-      for (let i = 0; i < lineLength; i++) {
+      for (let i = 0; i < lines.length; i++) {
         const path = lines[i];
         ctx.stroke(new Path2D(path));
       }
       return;
     }
-    for (let i = 0; i < lineLength; i++) {
+    for (let i = 0; i < lines.length; i++) {
       const { x1, y1, x2, y2 } = lines[i];
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
