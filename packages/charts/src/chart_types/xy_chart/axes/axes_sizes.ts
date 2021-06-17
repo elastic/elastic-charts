@@ -28,11 +28,6 @@ import { AxisTicksDimensions, getTitleDimension, shouldShowTicks } from '../util
 import { AxisSpec } from '../utils/specs';
 
 /**
- * Compute the axes required size around the chart
- * @param chartTheme the theme style of the chart
- * @param axisDimensions the axis dimensions
- * @param axesStyles a map with all the custom axis styles
- * @param axisSpecs the axis specs
  * @internal
  */
 export function computeAxesSizes(
