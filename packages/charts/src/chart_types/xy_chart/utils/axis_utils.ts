@@ -81,7 +81,7 @@ export interface TickLabelProps {
 }
 
 /** @internal */
-export const defaultTickFormatter = (tick: any) => `${tick}`;
+export const defaultTickFormatter = (tick: unknown) => `${tick}`;
 
 /**
  * Compute the ticks values and identify max width and height of the labels
@@ -124,27 +124,16 @@ export function axisViewModel(
     return null;
   }
 
-  const dimensions = computeTickDimensions(
-    scale,
-    axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter,
-    bboxCalculator,
-    tickLabel,
-    { timeZone: xDomain.timeZone },
-  );
-  return {
-    ...dimensions,
-    isHidden: axisSpec.hide && gridLineVisible,
-  };
+  const tickFormat = axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
+  const tickFormatOptions = { timeZone: xDomain.timeZone };
+  const dimensions = computeTickDimensions(scale, tickFormat, bboxCalculator, tickLabel, tickFormatOptions);
+  return { ...dimensions, isHidden: axisSpec.hide && gridLineVisible };
 }
 
 /** @internal */
 export function isYDomain(position: Position, chartRotation: Rotation): boolean {
   const isStraightRotation = chartRotation === 0 || chartRotation === 180;
-  if (isVerticalAxis(position)) {
-    return isStraightRotation;
-  }
-
-  return !isStraightRotation;
+  return isVerticalAxis(position) === isStraightRotation;
 }
 
 /** @internal */
@@ -232,14 +221,14 @@ function computeTickDimensions(
   scale: Scale,
   tickFormat: TickFormatter,
   bboxCalculator: BBoxCalculator,
-  tickLabelStyle: AxisStyle['tickLabel'],
-  tickFormatOptions?: TickFormatterOptions,
+  tickLabel: AxisStyle['tickLabel'],
+  tickFormatOptions: TickFormatterOptions,
 ) {
   const tickValues = scale.ticks();
   const tickLabels = tickValues.map((d) => tickFormat(d, tickFormatOptions));
   const defaultAcc = { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 };
-  const dimensions = tickLabelStyle.visible
-    ? tickLabels.reduce(getMaxLabelDimensions(bboxCalculator, tickLabelStyle), defaultAcc)
+  const dimensions = tickLabel.visible
+    ? tickLabels.reduce(getMaxLabelDimensions(bboxCalculator, tickLabel), defaultAcc)
     : defaultAcc;
 
   return {
