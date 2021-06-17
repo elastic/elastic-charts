@@ -30,7 +30,6 @@ import {
   VerticalAlignment,
 } from '../../../utils/common';
 import { Dimensions, getSimplePadding, Margins, Size } from '../../../utils/dimensions';
-import { Range } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { Point } from '../../../utils/point';
@@ -113,8 +112,7 @@ export function axisViewModel(
     yDomains,
     totalBarsInCluster,
     chartRotation,
-    0,
-    1,
+    [0, 1],
     barsPadding,
     enableHistogramMode,
   );
@@ -159,43 +157,23 @@ export function axisViewModel(
 
 /** @internal */
 export function isYDomain(position: Position, chartRotation: Rotation): boolean {
-  const isStraightRotation = chartRotation === 0 || chartRotation === 180;
-  return isVerticalAxis(position) === isStraightRotation;
+  return isVerticalAxis(position) === (chartRotation % 180 === 0);
 }
 
 /** @internal */
 export function getScaleForAxisSpec(
-  axisSpec: AxisSpec,
+  { groupId, integersOnly, position }: AxisSpec,
   xDomain: XDomain,
   yDomains: YDomain[],
   totalBarsInCluster: number,
   chartRotation: Rotation,
-  minRange: number,
-  maxRange: number,
+  range: [number, number],
   barsPadding?: number,
   enableHistogramMode?: boolean,
 ): Scale | null {
-  const axisIsYDomain = isYDomain(axisSpec.position, chartRotation);
-  const range: Range = [minRange, maxRange];
-  if (axisIsYDomain) {
-    const yScales = computeYScales({
-      yDomains,
-      range,
-      integersOnly: axisSpec.integersOnly,
-    });
-    if (yScales.has(axisSpec.groupId)) {
-      return yScales.get(axisSpec.groupId)!;
-    }
-    return null;
-  }
-  return computeXScale({
-    xDomain,
-    totalBarsInCluster,
-    range,
-    barsPadding,
-    enableHistogramMode,
-    integersOnly: axisSpec.integersOnly,
-  });
+  return isYDomain(position, chartRotation)
+    ? computeYScales({ yDomains, range, integersOnly }).get(groupId) ?? null
+    : computeXScale({ xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly });
 }
 
 /** @internal */
@@ -800,8 +778,7 @@ export function getAxesGeometries(
       yDomains,
       totalGroupsCount,
       chartRotation,
-      minMaxRanges.minRange,
-      minMaxRanges.maxRange,
+      [minMaxRanges.minRange, minMaxRanges.maxRange],
       barsPadding,
       enableHistogramMode,
     );

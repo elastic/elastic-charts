@@ -18,6 +18,7 @@
  */
 
 import { DateTime } from 'luxon';
+// @ts-ignore
 import moment from 'moment-timezone';
 
 import { ChartType } from '../..';
@@ -347,7 +348,7 @@ describe('Axis computational utils', () => {
   });
 
   test('should generate a valid scale', () => {
-    const yScale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
+    const yScale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, [100, 0]);
     expect(yScale).toBeDefined();
     expect(yScale?.bandwidth).toBe(0);
     expect(yScale?.domain).toEqual([0, 1]);
@@ -355,10 +356,10 @@ describe('Axis computational utils', () => {
     expect(yScale?.ticks()).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
 
     const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
-    const nullYScale = getScaleForAxisSpec(ungroupedAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
+    const nullYScale = getScaleForAxisSpec(ungroupedAxisSpec, xDomain, [yDomain], 0, 0, [100, 0]);
     expect(nullYScale).toBe(null);
 
-    const xScale = getScaleForAxisSpec(horizontalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
+    const xScale = getScaleForAxisSpec(horizontalAxisSpec, xDomain, [yDomain], 0, 0, [100, 0]);
     expect(xScale).toBeDefined();
   });
 
@@ -379,7 +380,7 @@ describe('Axis computational utils', () => {
 
   describe('getAvailableTicks', () => {
     test('should compute to end of domain when histogram mode not enabled', () => {
-      const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
+      const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, [100, 0]);
       const axisPositions = getAvailableTicks(verticalAxisSpec, scale!, 0, false, (v) => `${v}`, 0);
       const expectedAxisPositions = [
         { label: '0', position: 100, value: 0 },
@@ -399,7 +400,7 @@ describe('Axis computational utils', () => {
 
     test('should compute positions with rotational offset', () => {
       const rotationalOffset = 2;
-      const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, 100, 0);
+      const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, [100, 0]);
       const axisPositions = getAvailableTicks(verticalAxisSpec, scale!, 0, false, (v) => `${v}`, rotationalOffset);
       const expectedAxisPositions = [
         { label: '0', position: 100 + rotationalOffset, value: 0 },
@@ -424,7 +425,7 @@ describe('Axis computational utils', () => {
         isBandScale: true,
         minInterval: 10,
       });
-      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
+      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, [100, 0]);
       const histogramAxisPositions = getAvailableTicks(
         horizontalAxisSpec,
         xScale!,
@@ -444,7 +445,7 @@ describe('Axis computational utils', () => {
         isBandScale: true,
         minInterval: 90000,
       });
-      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
+      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, [100, 0]);
       const histogramAxisPositions = getAvailableTicks(
         horizontalAxisSpec,
         xScale!,
@@ -481,7 +482,7 @@ describe('Axis computational utils', () => {
         isBandScale: true,
         minInterval: 90000,
       });
-      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, 100, 0);
+      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, [100, 0]);
       const histogramAxisPositions = getAvailableTicks(
         horizontalAxisSpec,
         xScale!,
