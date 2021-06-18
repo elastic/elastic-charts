@@ -33,17 +33,10 @@ type TitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'siz
 
 /** @internal */
 export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
-  const {
-    axisSpec: { position, title },
-    axisStyle: { axisTitle },
-  } = props;
-  if (!title || !axisTitle.visible) {
-    return null;
+  if (props.axisSpec.title && props.axisStyle.axisTitle.visible) {
+    const render = isHorizontalAxis(props.axisSpec.position) ? renderHorizontalTitle : renderVerticalTitle;
+    render(ctx, props);
   }
-  if (isHorizontalAxis(position)) {
-    return renderHorizontalTitle(ctx, props);
-  }
-  return renderVerticalTitle(ctx, props);
 }
 
 function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
@@ -68,26 +61,17 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   const labelPadding = getSimplePadding(tickLabel.padding);
   const labelWidth = tickLabel.visible ? labelPadding.outer + maxLabelBboxWidth + labelPadding.inner : 0;
 
-  const top = height + anchorPoint.y;
   const left =
-    (position === Position.Left
-      ? titlePadding.outer
-      : tickDimension + labelWidth + titlePadding.inner + panelTitleDimension) + anchorPoint.x;
+    position === Position.Left
+      ? anchorPoint.x + titlePadding.outer
+      : anchorPoint.x + tickDimension + labelWidth + titlePadding.inner + panelTitleDimension;
+  const top = anchorPoint.y + height;
 
   if (debug) {
     renderDebugRect(ctx, { x: left, y: top, width: height, height: font.fontSize }, undefined, undefined, -90);
   }
 
-  renderText(
-    ctx,
-    {
-      x: left + font.fontSize / 2,
-      y: top - height / 2,
-    },
-    title,
-    font,
-    -90,
-  );
+  renderText(ctx, { x: left + font.fontSize / 2, y: top - height / 2 }, title, font, -90);
 }
 
 function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
@@ -101,10 +85,6 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: TitleProps)
     panelTitle,
   } = props;
 
-  if (!title) {
-    return;
-  }
-
   const font = getFontStyle(axisTitle);
   const titlePadding = getSimplePadding(axisTitle.visible && title ? axisTitle.padding : 0);
   const panelTitleDimension = panelTitle ? getTitleDimension(axisPanelTitle) : 0;
@@ -112,11 +92,11 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: TitleProps)
   const labelPadding = getSimplePadding(tickLabel.padding);
   const labelHeight = tickLabel.visible ? maxLabelBboxHeight + labelPadding.outer + labelPadding.inner : 0;
 
-  const top =
-    (position === Position.Top
-      ? titlePadding.outer
-      : labelHeight + tickDimension + titlePadding.inner + panelTitleDimension) + anchorPoint.y;
   const left = anchorPoint.x;
+  const top =
+    position === Position.Top
+      ? anchorPoint.y + titlePadding.outer
+      : anchorPoint.y + labelHeight + tickDimension + titlePadding.inner + panelTitleDimension;
 
   if (debug) {
     renderDebugRect(ctx, { x: left, y: top, width, height: font.fontSize });
@@ -124,11 +104,8 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: TitleProps)
 
   renderText(
     ctx,
-    {
-      x: left + width / 2,
-      y: top + font.fontSize / 2,
-    },
-    title,
+    { x: left + width / 2, y: top + font.fontSize / 2 },
+    title ?? '', // title is always a string due to caller; consider turning `title` to be obligate string upstream
     font,
   );
 }
