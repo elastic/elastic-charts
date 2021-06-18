@@ -26,17 +26,14 @@ import { AxisTick } from '../../../utils/axis_utils';
 import { renderMultiLine } from '../primitives/line';
 
 /** @internal */
-export function renderTick(ctx: CanvasRenderingContext2D, tick: AxisTick, props: AxisProps) {
-  const {
-    axisSpec: { position },
-    size,
-    axisStyle: { tickLine },
-  } = props;
-  if (isVerticalAxis(position)) {
-    renderVerticalTick(ctx, position, size.width, tickLine.size, tick.position, tickLine);
-  } else {
-    renderHorizontalTick(ctx, position, size.height, tickLine.size, tick.position, tickLine);
-  }
+export function renderTick(
+  ctx: CanvasRenderingContext2D,
+  tick: AxisTick,
+  { axisSpec: { position }, size: { width, height }, axisStyle: { tickLine } }: AxisProps,
+) {
+  const vertical = isVerticalAxis(position); // todo avoid checking it per tick in the future
+  const render = vertical ? renderVerticalTick : renderHorizontalTick;
+  render(ctx, position, vertical ? width : height, tickLine.size, tick.position, tickLine);
 }
 
 function renderVerticalTick(
