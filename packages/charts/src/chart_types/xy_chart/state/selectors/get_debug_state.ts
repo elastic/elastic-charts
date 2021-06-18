@@ -65,11 +65,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
   },
 );
 
-function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: LinesGrid[]): DebugStateAxes | undefined {
-  if (axesSpecs.length === 0) {
-    return;
-  }
-
+function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: LinesGrid[]): DebugStateAxes {
   return axesSpecs.reduce<DebugStateAxes>(
     (acc, { position, title, id }) => {
       const geom = axesGeoms.find(({ axis }) => axis.id === id);
