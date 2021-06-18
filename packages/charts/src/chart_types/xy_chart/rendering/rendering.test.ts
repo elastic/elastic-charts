@@ -463,7 +463,7 @@ describe('Rendering utils', () => {
       const getRadius = getRadiusFn([], 1);
 
       it('should return a function', () => {
-        expect(getRadius).toBeFunction();
+        expect(getRadius).toBeInstanceOf(Function);
       });
 
       it.each<[number, number]>([
@@ -487,7 +487,7 @@ describe('Rendering utils', () => {
       const getRadius = getRadiusFn(data, 1);
 
       it('should return a function', () => {
-        expect(getRadius).toBeFunction();
+        expect(getRadius).toBeInstanceOf(Function);
       });
 
       describe('Dataset validations', () => {
