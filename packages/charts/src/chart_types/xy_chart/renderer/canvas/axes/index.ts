@@ -127,29 +127,21 @@ function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
       renderDebugRect(ctx, { x: 0, y: 0, ...size });
     }
 
-    withContext(ctx, (ctx) => {
-      renderLine(ctx, props);
-    });
+    renderLine(ctx, props);
 
     // TODO: compute axis dimensions per panels
     // For now just rendering axis line
     if (secondary) return;
 
     if (showTicks) {
-      withContext(ctx, (ctx) => {
-        ticks.forEach((tick) => renderTick(ctx, tick, props));
-      });
+      ticks.forEach((tick) => renderTick(ctx, tick, props));
     }
 
     if (axisStyle.tickLabel.visible) {
-      withContext(ctx, (ctx) => {
-        ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props));
-      });
+      ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props));
     }
 
-    withContext(ctx, (ctx) => {
-      const { panelTitle, dimension } = props;
-      renderPanelTitle(ctx, { panelTitle, axisSpec, axisStyle, size, dimension, debug });
-    });
+    const { panelTitle, dimension } = props;
+    renderPanelTitle(ctx, { panelTitle, axisSpec, axisStyle, size, dimension, debug });
   });
 }
