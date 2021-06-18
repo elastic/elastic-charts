@@ -37,7 +37,6 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
     return;
   }
 
-  const horizontal = isHorizontalAxis(props.axisSpec.position);
   const {
     size: { width, height },
     axisSpec: { position, hide: hideAxis, title },
@@ -53,6 +52,7 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   const panelTitleDimension = panelTitle ? getTitleDimension(axisPanelTitle) : 0;
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const labelPadding = getSimplePadding(tickLabel.padding);
+  const horizontal = isHorizontalAxis(props.axisSpec.position);
   const maxLabelBoxSize = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
   const labelSize = tickLabel.visible ? maxLabelBoxSize + labelPadding.outer + labelPadding.inner : 0;
   const offset =
