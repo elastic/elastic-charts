@@ -33,12 +33,11 @@ type TitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'siz
 
 /** @internal */
 export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
-  if (props.axisSpec.title && props.axisStyle.axisTitle.visible) {
-    renderWhateverTitle(ctx, isHorizontalAxis(props.axisSpec.position), props);
+  if (!props.axisSpec.title || !props.axisStyle.axisTitle.visible) {
+    return;
   }
-}
 
-function renderWhateverTitle(ctx: CanvasRenderingContext2D, horizontal: boolean, props: TitleProps) {
+  const horizontal = isHorizontalAxis(props.axisSpec.position);
   const {
     size: { width, height },
     axisSpec: { position, hide: hideAxis, title },
@@ -80,7 +79,7 @@ function renderWhateverTitle(ctx: CanvasRenderingContext2D, horizontal: boolean,
 
   renderText(
     ctx,
-    { x: left + (horizontal ? width : font.fontSize) / 2, y: top + (horizontal ? height : font.fontSize) / 2 },
+    { x: left + (horizontal ? width : font.fontSize) / 2, y: top + (horizontal ? font.fontSize : -height) / 2 },
     title ?? '', // title is always a string due to caller; consider turning `title` to be obligate string upstream
     font,
     horizontal ? 0 : -90,
