@@ -17,22 +17,12 @@
  * under the License.
  */
 
-import { withContext } from '../../../../../renderers/canvas';
-import { Position } from '../../../../../utils/common';
 import { Dimensions, Size } from '../../../../../utils/dimensions';
-import { AxisId } from '../../../../../utils/ids';
 import { Point } from '../../../../../utils/point';
 import { AxisStyle } from '../../../../../utils/themes/theme';
 import { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
-import { getSpecsById } from '../../../state/utils/spec';
-import { AxisTick, AxisViewModel, shouldShowTicks } from '../../../utils/axis_utils';
+import { AxisTick, AxisViewModel } from '../../../utils/axis_utils';
 import { AxisSpec } from '../../../utils/specs';
-import { renderDebugRect } from '../utils/debug';
-import { renderTitle } from './global_title';
-import { renderLine } from './line';
-import { renderPanelTitle } from './panel_title';
-import { renderTick } from './tick';
-import { renderTickLabel } from './tick_label';
 
 /** @internal */
 export interface AxisProps {
@@ -57,81 +47,4 @@ export interface AxesProps {
   sharedAxesStyle: AxisStyle;
   debug: boolean;
   renderingArea: Dimensions;
-}
-
-/** @internal */
-export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
-  const { axesSpecs, perPanelAxisGeoms, axesStyles, sharedAxesStyle, debug, renderingArea } = props;
-  const seenAxesTitleIds = new Set<AxisId>();
-
-  perPanelAxisGeoms.forEach(({ axesGeoms, panelAnchor }) => {
-    axesGeoms.forEach((geometry) => {
-      const {
-        axis: { panelTitle, id, position, secondary },
-        anchorPoint,
-        size,
-        dimension,
-        visibleTicks: ticks,
-        parentSize,
-      } = geometry;
-      const axisSpec = getSpecsById<AxisSpec>(axesSpecs, id);
-
-      if (!axisSpec || !dimension || !position || axisSpec.hide) {
-        return;
-      }
-
-      const axisStyle = axesStyles.get(axisSpec.id) ?? sharedAxesStyle;
-
-      if (!seenAxesTitleIds.has(id)) {
-        seenAxesTitleIds.add(id);
-        renderTitle(ctx, { size: parentSize, debug, panelTitle, anchorPoint, dimension, axisStyle, axisSpec });
-      }
-
-      renderAxis(ctx, {
-        panelTitle,
-        secondary,
-        panelAnchor,
-        axisSpec,
-        anchorPoint,
-        size,
-        dimension,
-        ticks,
-        axisStyle,
-        debug,
-        renderingArea,
-      });
-    });
-  });
-}
-
-function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
-  const { ticks, size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary } = props;
-  const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
-  const { position } = axisSpec;
-  const x = anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x;
-  const y = anchorPoint.y + (position === Position.Bottom ? -1 : 1) * panelAnchor.y;
-
-  withContext(ctx, (ctx) => {
-    ctx.translate(x, y);
-
-    if (debug && !secondary) {
-      renderDebugRect(ctx, { x: 0, y: 0, ...size });
-    }
-
-    renderLine(ctx, props); // render the axis line
-
-    // TODO: compute axis dimensions per panels
-    if (secondary) return; // For now, just render the axis line
-
-    if (showTicks) {
-      ticks.forEach((tick) => renderTick(ctx, tick, props));
-    }
-
-    if (axisStyle.tickLabel.visible) {
-      ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props));
-    }
-
-    const { panelTitle, dimension } = props;
-    renderPanelTitle(ctx, { panelTitle, axisSpec, axisStyle, size, dimension, debug });
-  });
 }
