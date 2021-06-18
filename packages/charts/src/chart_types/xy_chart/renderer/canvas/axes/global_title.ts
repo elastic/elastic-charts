@@ -53,19 +53,15 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   const panelTitleDimension = panelTitle ? getTitleDimension(axisPanelTitle) : 0;
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const labelPadding = getSimplePadding(tickLabel.padding);
-  const labelWidth = tickLabel.visible ? maxLabelBboxWidth + labelPadding.outer + labelPadding.inner : 0;
-  const labelHeight = tickLabel.visible ? maxLabelBboxHeight + labelPadding.outer + labelPadding.inner : 0;
+  const maxLabelBoxSize = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
+  const labelSize = tickLabel.visible ? maxLabelBoxSize + labelPadding.outer + labelPadding.inner : 0;
+  const offset =
+    position === Position.Left || position === Position.Top
+      ? titlePadding.outer
+      : labelSize + tickDimension + titlePadding.inner + panelTitleDimension;
 
-  const left = horizontal
-    ? anchorPoint.x
-    : position === Position.Left
-    ? anchorPoint.x + titlePadding.outer
-    : anchorPoint.x + tickDimension + labelWidth + titlePadding.inner + panelTitleDimension;
-  const top = horizontal
-    ? position === Position.Top
-      ? anchorPoint.y + titlePadding.outer
-      : anchorPoint.y + labelHeight + tickDimension + titlePadding.inner + panelTitleDimension
-    : anchorPoint.y + height;
+  const left = anchorPoint.x + (horizontal ? 0 : offset);
+  const top = anchorPoint.y + (horizontal ? offset : height);
 
   if (debug) {
     renderDebugRect(
@@ -85,74 +81,3 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
     horizontal ? 0 : -90,
   );
 }
-
-/*
-function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
-  const {
-    size: { height },
-    axisSpec: { position, hide: hideAxis, title },
-    dimension: { maxLabelBboxWidth },
-    axisStyle: { axisTitle, axisPanelTitle, tickLine, tickLabel },
-    anchorPoint,
-    debug,
-    panelTitle,
-  } = props;
-
-  const font = getFontStyle(axisTitle);
-  const titlePadding = getSimplePadding(axisTitle.visible && title ? axisTitle.padding : 0);
-  const panelTitleDimension = panelTitle ? getTitleDimension(axisPanelTitle) : 0;
-  const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const labelPadding = getSimplePadding(tickLabel.padding);
-  const labelWidth = tickLabel.visible ? labelPadding.outer + maxLabelBboxWidth + labelPadding.inner : 0;
-
-  const left =
-    position === Position.Left
-      ? anchorPoint.x + titlePadding.outer
-      : anchorPoint.x + tickDimension + labelWidth + titlePadding.inner + panelTitleDimension;
-  const top = anchorPoint.y + height;
-
-  if (debug) {
-    renderDebugRect(ctx, { x: left, y: top, width: height, height: font.fontSize }, undefined, undefined, -90);
-  }
-
-  renderText(ctx, { x: left + font.fontSize / 2, y: top - height / 2 }, title, font, -90);
-}
-*/
-
-/*
-function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
-  const {
-    size: { width },
-    axisSpec: { position, hide: hideAxis, title },
-    dimension: { maxLabelBboxHeight },
-    axisStyle: { axisTitle, axisPanelTitle, tickLine, tickLabel },
-    anchorPoint,
-    debug,
-    panelTitle,
-  } = props;
-
-  const font = getFontStyle(axisTitle);
-  const titlePadding = getSimplePadding(axisTitle.visible && title ? axisTitle.padding : 0);
-  const panelTitleDimension = panelTitle ? getTitleDimension(axisPanelTitle) : 0;
-  const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const labelPadding = getSimplePadding(tickLabel.padding);
-  const labelHeight = tickLabel.visible ? maxLabelBboxHeight + labelPadding.outer + labelPadding.inner : 0;
-
-  const left = anchorPoint.x;
-  const top =
-    position === Position.Top
-      ? anchorPoint.y + titlePadding.outer
-      : anchorPoint.y + labelHeight + tickDimension + titlePadding.inner + panelTitleDimension;
-
-  if (debug) {
-    renderDebugRect(ctx, { x: left, y: top, width, height: font.fontSize });
-  }
-
-  renderText(
-    ctx,
-    { x: left + width / 2, y: top + font.fontSize / 2 },
-    title ?? '', // title is always a string due to caller; consider turning `title` to be obligate string upstream
-    font,
-  );
-}
-*/
