@@ -18,27 +18,20 @@
  */
 
 import { stringToRGB } from '../../../../../common/color_library_wrappers';
-import { withContext } from '../../../../../renderers/canvas';
 import { Point } from '../../../../../utils/point';
 import { PanelGeoms } from '../../../state/selectors/compute_panels';
 import { renderRect } from '../primitives/rect';
 
 /** @internal */
-export function renderGridPanels(ctx: CanvasRenderingContext2D, chartAnchor: Point, panels: PanelGeoms) {
-  withContext(ctx, (ctx) => {
-    ctx.translate(chartAnchor.x, chartAnchor.y);
-    panels.forEach((panel) => {
-      withContext(ctx, (ctx) => {
-        ctx.translate(panel.panelAnchor.x, panel.panelAnchor.y);
-        withContext(ctx, (ctx) => {
-          renderRect(
-            ctx,
-            { x: 0, y: 0, ...panel },
-            { color: stringToRGB('#00000000') },
-            { color: stringToRGB('#000000'), width: 1 },
-          );
-        });
-      });
-    });
-  });
+export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: chartY }: Point, panels: PanelGeoms) {
+  panels.forEach(({ width, height, panelAnchor: { x: panelX, y: panelY } }) =>
+    withContext(ctx, (ctx) =>
+      renderRect(
+        ctx,
+        { x: chartX + panelX, y: chartY + panelY, width, height },
+        { color: stringToRGB('#00000000') },
+        { color: stringToRGB('#000000'), width: 1 },
+      ),
+    ),
+  );
 }
