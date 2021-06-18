@@ -34,19 +34,17 @@ export function renderTick(
   const axisGirth = horizontal ? height : width;
   const tickSize = tickLine.size;
   const tickPosition = tick.position;
+  const isTopOrLeftAxis = position === Position.Top || position === Position.Left;
   if (horizontal) {
-    const isTopAxis = position === Position.Top;
-    const y1 = isTopAxis ? axisGirth - tickSize : 0;
-    const y2 = isTopAxis ? axisGirth : tickSize;
-
+    const y1 = isTopOrLeftAxis ? axisGirth - tickSize : 0;
+    const y2 = isTopOrLeftAxis ? axisGirth : tickSize;
     renderMultiLine(ctx, [{ x1: tickPosition, y1, x2: tickPosition, y2 }], {
       color: stringToRGB(tickLine.stroke),
       width: tickLine.strokeWidth,
     });
   } else {
-    const isLeftAxis = position === Position.Left;
-    const x1 = isLeftAxis ? axisGirth : 0;
-    const x2 = isLeftAxis ? axisGirth - tickSize : tickSize;
+    const x1 = isTopOrLeftAxis ? axisGirth : 0;
+    const x2 = isTopOrLeftAxis ? axisGirth - tickSize : tickSize;
     renderMultiLine(ctx, [{ x1, y1: tickPosition, x2, y2: tickPosition }], {
       color: stringToRGB(tickLine.stroke),
       width: tickLine.strokeWidth,
