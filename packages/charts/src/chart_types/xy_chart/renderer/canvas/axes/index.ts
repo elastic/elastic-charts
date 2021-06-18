@@ -106,26 +106,25 @@ export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
 }
 
 function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
-  withContext(ctx, (ctx) => {
-    const { ticks, size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary } = props;
-    const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
-    const { position } = axisSpec;
-    const isVertical = isVerticalAxis(position);
-    const y = isVertical
-      ? anchorPoint.y + panelAnchor.y
-      : anchorPoint.y + (position === Position.Top ? 1 : -1) * panelAnchor.y;
-    const x = isVertical
-      ? anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x
-      : anchorPoint.x + panelAnchor.x;
-    const translate = { y, x };
+  const { ticks, size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary } = props;
+  const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
+  const { position } = axisSpec;
+  const isVertical = isVerticalAxis(position);
+  const y = isVertical
+    ? anchorPoint.y + panelAnchor.y
+    : anchorPoint.y + (position === Position.Top ? 1 : -1) * panelAnchor.y;
+  const x = isVertical
+    ? anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x
+    : anchorPoint.x + panelAnchor.x;
 
-    ctx.translate(translate.x, translate.y);
+  withContext(ctx, (ctx) => {
+    ctx.translate(x, y);
 
     if (debug && !secondary) {
       renderDebugRect(ctx, { x: 0, y: 0, ...size });
     }
 
-    renderLine(ctx, props);
+    renderLine(ctx, props); // render the axis line
 
     // TODO: compute axis dimensions per panels
     // For now just rendering axis line
