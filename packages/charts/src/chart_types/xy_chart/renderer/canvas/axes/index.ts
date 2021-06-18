@@ -37,7 +37,7 @@ import { renderTickLabel } from './tick_label';
 
 /** @internal */
 export interface AxisProps {
-  panelTitle?: string;
+  panelTitle?: string | undefined;
   secondary?: boolean;
   panelAnchor: Point;
   axisStyle: AxisStyle;
@@ -86,16 +86,7 @@ export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
 
         if (!seenAxesTitleIds.has(id)) {
           seenAxesTitleIds.add(id);
-
-          renderTitle(ctx, {
-            ...props,
-            panelTitle,
-            size: parentSize,
-            anchorPoint,
-            dimension,
-            axisStyle,
-            axisSpec,
-          });
+          renderTitle(ctx, { size: parentSize, debug, panelTitle, anchorPoint, dimension, axisStyle, axisSpec });
         }
 
         renderAxis(ctx, {
@@ -170,7 +161,8 @@ function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
     }
 
     withContext(ctx, (ctx) => {
-      renderPanelTitle(ctx, props);
+      const { panelTitle, dimension } = props;
+      renderPanelTitle(ctx, { panelTitle, axisSpec, axisStyle, size, dimension, debug });
     });
   });
 }
