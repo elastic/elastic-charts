@@ -43,16 +43,18 @@ import { getPanelSize, hasSMDomain } from './panel';
 import { computeXScale, computeYScales } from './scales';
 import { AxisSpec, TickFormatter, TickFormatterOptions } from './specs';
 
+type TickValue = number | string;
+
 /** @internal */
 export interface AxisTick {
-  value: number | string;
+  value: TickValue;
   label: string;
   position: number;
 }
 
 /** @internal */
 export interface AxisViewModel {
-  tickValues: string[] | number[];
+  tickValues: TickValue[];
   tickLabels: string[];
   maxLabelBboxWidth: number;
   maxLabelBboxHeight: number;
