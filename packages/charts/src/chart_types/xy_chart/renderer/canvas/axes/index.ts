@@ -25,7 +25,7 @@ import { Point } from '../../../../../utils/point';
 import { AxisStyle } from '../../../../../utils/themes/theme';
 import { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
 import { getSpecsById } from '../../../state/utils/spec';
-import { isVerticalAxis } from '../../../utils/axis_type_utils';
+import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { AxisTick, AxisViewModel, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisSpec } from '../../../utils/specs';
 import { renderDebugRect } from '../utils/debug';
@@ -109,13 +109,13 @@ function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
   const { ticks, size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary } = props;
   const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
   const { position } = axisSpec;
-  const isVertical = isVerticalAxis(position);
-  const y = isVertical
-    ? anchorPoint.y + panelAnchor.y
-    : anchorPoint.y + (position === Position.Top ? 1 : -1) * panelAnchor.y;
-  const x = isVertical
-    ? anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x
-    : anchorPoint.x + panelAnchor.x;
+  const isHorizontal = isHorizontalAxis(position);
+  const x = isHorizontal
+    ? anchorPoint.x + panelAnchor.x
+    : anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x;
+  const y = isHorizontal
+    ? anchorPoint.y + (position === Position.Top ? 1 : -1) * panelAnchor.y
+    : anchorPoint.y + panelAnchor.y;
 
   withContext(ctx, (ctx) => {
     ctx.translate(x, y);
