@@ -38,15 +38,15 @@ export function renderTick(
   const xy = horizontal
     ? {
         x1: tickPosition,
-        y1: isTopOrLeftAxis ? axisGirth - tickSize : 0,
         x2: tickPosition,
+        y1: isTopOrLeftAxis ? axisGirth - tickSize : 0,
         y2: isTopOrLeftAxis ? axisGirth : tickSize,
       }
     : {
-        x1: isTopOrLeftAxis ? axisGirth : 0,
         y1: tickPosition,
-        x2: isTopOrLeftAxis ? axisGirth - tickSize : tickSize,
         y2: tickPosition,
+        x1: isTopOrLeftAxis ? axisGirth : 0,
+        x2: isTopOrLeftAxis ? axisGirth - tickSize : tickSize,
       };
   renderMultiLine(ctx, [xy], { color: stringToRGB(tickLine.stroke), width: tickLine.strokeWidth });
 }
