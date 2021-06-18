@@ -31,7 +31,7 @@ import {
 } from '../../../../state/types';
 import { AreaGeometry, BandedAccessorType, BarGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
 import { FillStyle, Opacity, StrokeStyle, Visible } from '../../../../utils/themes/theme';
-import { isVerticalAxis } from '../../utils/axis_type_utils';
+import { isHorizontalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
 import { LinesGrid } from '../../utils/grid_lines';
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
@@ -79,28 +79,20 @@ function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: Li
 
       const gridlines = gridLines
         .flatMap(({ lineGroups }) => lineGroups.find(({ axisId }) => axisId === geom.axis.id)?.lines ?? [])
-        .map(({ x1, y1 }) => ({ x: x1, y: y1 }));
+        .map(({ x1: x, y1: y }) => ({ x, y }));
 
-      if (isVerticalAxis(position)) {
-        acc.y.push({
-          id,
-          title,
-          position,
-          // reverse for bottom/up coordinates
-          labels: labels.reverse(),
-          values: values.reverse(),
-          gridlines: gridlines.reverse(),
-        });
-      } else {
-        acc.x.push({ id, title, position, labels, values, gridlines });
-      }
+      acc[isHorizontalAxis(position) ? 'x' : 'y'].push({
+        id,
+        title,
+        position,
+        ...(isHorizontalAxis(position)
+          ? { labels, values, gridlines }
+          : { labels: labels.reverse(), values: values.reverse(), gridlines: gridlines.reverse() }),
+      });
 
       return acc;
     },
-    {
-      y: [],
-      x: [],
-    },
+    { x: [], y: [] },
   );
 }
 
