@@ -21,7 +21,7 @@ import { AxisProps } from '.';
 import { stringToRGB } from '../../../../../common/color_library_wrappers';
 import { Position } from '../../../../../utils/common';
 import { TickStyle } from '../../../../../utils/themes/theme';
-import { isVerticalAxis } from '../../../utils/axis_type_utils';
+import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { AxisTick } from '../../../utils/axis_utils';
 import { renderMultiLine } from '../primitives/line';
 
@@ -31,42 +31,45 @@ export function renderTick(
   tick: AxisTick,
   { axisSpec: { position }, size: { width, height }, axisStyle: { tickLine } }: AxisProps,
 ) {
-  const vertical = isVerticalAxis(position); // todo avoid checking it per tick in the future
-  const render = vertical ? renderVerticalTick : renderHorizontalTick;
-  render(ctx, position, vertical ? width : height, tickLine.size, tick.position, tickLine);
+  const horizontal = isHorizontalAxis(position); // todo avoid checking it per tick in the future
+  const axisGirth = horizontal ? height : width;
+  const tickSize = tickLine.size;
+  const tickPosition = tick.position;
+  const render = horizontal ? renderHorizontalTick : renderVerticalTick;
+  render(ctx, position, axisGirth, tickSize, tickPosition, tickLine);
 }
 
 function renderVerticalTick(
   ctx: CanvasRenderingContext2D,
   position: Position,
-  axisLength: number,
+  axisGirth: number,
   tickSize: number,
   tickPosition: number,
-  tickStyle: TickStyle,
+  tickLine: TickStyle,
 ) {
   const isLeftAxis = position === Position.Left;
-  const x1 = isLeftAxis ? axisLength : 0;
-  const x2 = isLeftAxis ? axisLength - tickSize : tickSize;
+  const x1 = isLeftAxis ? axisGirth : 0;
+  const x2 = isLeftAxis ? axisGirth - tickSize : tickSize;
   renderMultiLine(ctx, [{ x1, y1: tickPosition, x2, y2: tickPosition }], {
-    color: stringToRGB(tickStyle.stroke),
-    width: tickStyle.strokeWidth,
+    color: stringToRGB(tickLine.stroke),
+    width: tickLine.strokeWidth,
   });
 }
 
 function renderHorizontalTick(
   ctx: CanvasRenderingContext2D,
   position: Position,
-  axisLength: number,
+  axisGirth: number,
   tickSize: number,
   tickPosition: number,
-  tickStyle: TickStyle,
+  tickLine: TickStyle,
 ) {
   const isTopAxis = position === Position.Top;
-  const y1 = isTopAxis ? axisLength - tickSize : 0;
-  const y2 = isTopAxis ? axisLength : tickSize;
+  const y1 = isTopAxis ? axisGirth - tickSize : 0;
+  const y2 = isTopAxis ? axisGirth : tickSize;
 
   renderMultiLine(ctx, [{ x1: tickPosition, y1, x2: tickPosition, y2 }], {
-    color: stringToRGB(tickStyle.stroke),
-    width: tickStyle.strokeWidth,
+    color: stringToRGB(tickLine.stroke),
+    width: tickLine.strokeWidth,
   });
 }
