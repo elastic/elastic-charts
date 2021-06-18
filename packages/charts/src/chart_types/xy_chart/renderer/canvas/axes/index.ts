@@ -66,42 +66,40 @@ export function renderAxes(ctx: CanvasRenderingContext2D, props: AxesProps) {
   const seenAxesTitleIds = new Set<AxisId>();
 
   perPanelAxisGeoms.forEach(({ axesGeoms, panelAnchor }) => {
-    withContext(ctx, (ctx) => {
-      axesGeoms.forEach((geometry) => {
-        const {
-          axis: { panelTitle, id, position, secondary },
-          anchorPoint,
-          size,
-          dimension,
-          visibleTicks: ticks,
-          parentSize,
-        } = geometry;
-        const axisSpec = getSpecsById<AxisSpec>(axesSpecs, id);
+    axesGeoms.forEach((geometry) => {
+      const {
+        axis: { panelTitle, id, position, secondary },
+        anchorPoint,
+        size,
+        dimension,
+        visibleTicks: ticks,
+        parentSize,
+      } = geometry;
+      const axisSpec = getSpecsById<AxisSpec>(axesSpecs, id);
 
-        if (!axisSpec || !dimension || !position || axisSpec.hide) {
-          return;
-        }
+      if (!axisSpec || !dimension || !position || axisSpec.hide) {
+        return;
+      }
 
-        const axisStyle = axesStyles.get(axisSpec.id) ?? sharedAxesStyle;
+      const axisStyle = axesStyles.get(axisSpec.id) ?? sharedAxesStyle;
 
-        if (!seenAxesTitleIds.has(id)) {
-          seenAxesTitleIds.add(id);
-          renderTitle(ctx, { size: parentSize, debug, panelTitle, anchorPoint, dimension, axisStyle, axisSpec });
-        }
+      if (!seenAxesTitleIds.has(id)) {
+        seenAxesTitleIds.add(id);
+        renderTitle(ctx, { size: parentSize, debug, panelTitle, anchorPoint, dimension, axisStyle, axisSpec });
+      }
 
-        renderAxis(ctx, {
-          panelTitle,
-          secondary,
-          panelAnchor,
-          axisSpec,
-          anchorPoint,
-          size,
-          dimension,
-          ticks,
-          axisStyle,
-          debug,
-          renderingArea,
-        });
+      renderAxis(ctx, {
+        panelTitle,
+        secondary,
+        panelAnchor,
+        axisSpec,
+        anchorPoint,
+        size,
+        dimension,
+        ticks,
+        axisStyle,
+        debug,
+        renderingArea,
       });
     });
   });
