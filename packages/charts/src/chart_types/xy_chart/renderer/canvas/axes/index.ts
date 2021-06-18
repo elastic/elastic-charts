@@ -119,19 +119,12 @@ function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
     const x = isVertical
       ? anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x
       : anchorPoint.x + panelAnchor.x;
-    const translate = {
-      y,
-      x,
-    };
+    const translate = { y, x };
 
     ctx.translate(translate.x, translate.y);
 
     if (debug && !secondary) {
-      renderDebugRect(ctx, {
-        x: 0,
-        y: 0,
-        ...size,
-      });
+      renderDebugRect(ctx, { x: 0, y: 0, ...size });
     }
 
     withContext(ctx, (ctx) => {
@@ -144,19 +137,13 @@ function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
 
     if (showTicks) {
       withContext(ctx, (ctx) => {
-        ticks.forEach((tick) => {
-          renderTick(ctx, tick, props);
-        });
+        ticks.forEach((tick) => renderTick(ctx, tick, props));
       });
     }
 
     if (axisStyle.tickLabel.visible) {
       withContext(ctx, (ctx) => {
-        ticks
-          .filter((tick) => tick.label !== null)
-          .forEach((tick) => {
-            renderTickLabel(ctx, tick, showTicks, props);
-          });
+        ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props));
       });
     }
 
