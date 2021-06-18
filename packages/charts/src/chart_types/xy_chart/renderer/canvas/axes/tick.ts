@@ -39,14 +39,14 @@ export function renderTick(
 function renderVerticalTick(
   ctx: CanvasRenderingContext2D,
   position: Position,
-  axisWidth: number,
+  axisLength: number,
   tickSize: number,
   tickPosition: number,
   tickStyle: TickStyle,
 ) {
   const isLeftAxis = position === Position.Left;
-  const x1 = isLeftAxis ? axisWidth : 0;
-  const x2 = isLeftAxis ? axisWidth - tickSize : tickSize;
+  const x1 = isLeftAxis ? axisLength : 0;
+  const x2 = isLeftAxis ? axisLength - tickSize : tickSize;
   renderMultiLine(ctx, [{ x1, y1: tickPosition, x2, y2: tickPosition }], {
     color: stringToRGB(tickStyle.stroke),
     width: tickStyle.strokeWidth,
@@ -56,14 +56,14 @@ function renderVerticalTick(
 function renderHorizontalTick(
   ctx: CanvasRenderingContext2D,
   position: Position,
-  axisHeight: number,
+  axisLength: number,
   tickSize: number,
   tickPosition: number,
   tickStyle: TickStyle,
 ) {
   const isTopAxis = position === Position.Top;
-  const y1 = isTopAxis ? axisHeight - tickSize : 0;
-  const y2 = isTopAxis ? axisHeight : tickSize;
+  const y1 = isTopAxis ? axisLength - tickSize : 0;
+  const y2 = isTopAxis ? axisLength : tickSize;
 
   renderMultiLine(ctx, [{ x1: tickPosition, y1, x2: tickPosition, y2 }], {
     color: stringToRGB(tickStyle.stroke),
