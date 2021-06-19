@@ -24,16 +24,12 @@ import { AxisId } from '../../../../../utils/ids';
 import { Point } from '../../../../../utils/point';
 import { PanelGeoms } from '../../../state/selectors/compute_panels';
 import { getSpecsById } from '../../../state/utils/spec';
-import { shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisSpec } from '../../../utils/specs';
-import { AxesProps, AxisProps } from '../axes';
-import { renderTitle } from '../axes/global_title';
-import { renderAxisLine } from '../axes/line';
-import { renderPanelTitle } from '../axes/panel_title';
-import { renderTick } from '../axes/tick';
-import { renderTickLabel } from '../axes/tick_label';
+import { AxesProps, AxisProps, renderAxis } from '../axes';
 import { renderRect } from '../primitives/rect';
 import { renderDebugRect } from '../utils/debug';
+import { renderTitle } from './global_title';
+import { renderPanelTitle } from './panel_title';
 
 /** @internal */
 export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: chartY }: Point, panels: PanelGeoms) {
@@ -50,27 +46,19 @@ export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: 
 }
 
 function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps) {
-  const { ticks, size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary } = props;
-  const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
+  const { size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary } = props;
   const { position } = axisSpec;
   const x = anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x;
   const y = anchorPoint.y + (position === Position.Bottom ? -1 : 1) * panelAnchor.y;
 
   withContext(ctx, (ctx) => {
     ctx.translate(x, y);
-
     if (debug && !secondary) renderDebugRect(ctx, { x: 0, y: 0, ...size });
-
-    renderAxisLine(ctx, props); // render the axis line
-
-    // TODO: compute axis dimensions per panels
-    if (secondary) return; // For now, just render the axis line
-
-    if (showTicks) ticks.forEach((tick) => renderTick(ctx, tick, props));
-    if (axisStyle.tickLabel.visible) ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props));
-
-    const { panelTitle, dimension } = props;
-    renderPanelTitle(ctx, { panelTitle, axisSpec, axisStyle, size, dimension, debug });
+    renderAxis(ctx, props); // For now, just render the axis line TODO: compute axis dimensions per panels
+    if (!secondary) {
+      const { panelTitle, dimension } = props;
+      renderPanelTitle(ctx, { panelTitle, axisSpec, axisStyle, size, dimension, debug }); // fixme axisSpec/Style?
+    }
   });
 }
 

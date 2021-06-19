@@ -21,8 +21,11 @@ import { Dimensions, Size } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
 import { AxisStyle } from '../../../../../utils/themes/theme';
 import { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
-import { AxisTick, AxisViewModel } from '../../../utils/axis_utils';
+import { AxisTick, AxisViewModel, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisSpec } from '../../../utils/specs';
+import { renderAxisLine } from './line';
+import { renderTick } from './tick';
+import { renderTickLabel } from './tick_label';
 
 /** @internal */
 export interface AxisProps {
@@ -47,4 +50,14 @@ export interface AxesProps {
   sharedAxesStyle: AxisStyle;
   debug: boolean;
   renderingArea: Dimensions;
+}
+
+/** @internal */
+export function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
+  const { ticks, axisStyle, axisSpec, secondary } = props;
+  const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
+
+  renderAxisLine(ctx, props); // render the axis line
+  if (!secondary && showTicks) ticks.forEach((tick) => renderTick(ctx, tick, props));
+  if (!secondary && axisStyle.tickLabel.visible) ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props));
 }

@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import { AxisProps } from '.';
 import { Position } from '../../../../../utils/common';
 import { getSimplePadding } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
+import { AxisProps } from '../axes'; // todo revise if it should rely on AxisProps or axis-anything
 import { renderText } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
 import { getFontStyle } from './panel_title';
