@@ -23,12 +23,12 @@ import { Position as P } from '../../../../../utils/common';
 /** @internal */
 export function renderAxisLine(
   ctx: CanvasRenderingContext2D,
-  { axisSpec: { position: p }, size: { width: w, height: h }, axisStyle: { axisLine } }: AxisProps,
+  { axisSpec: { position: p }, size: { width, height }, axisStyle: { axisLine } }: AxisProps,
 ) {
   if (!axisLine.visible) return;
   ctx.beginPath();
-  ctx.moveTo(p === P.Left ? w : 0, p === P.Top ? h : 0);
-  ctx.lineTo(p !== P.Right ? w : 0, p !== P.Bottom ? h : 0);
+  ctx.moveTo(p === P.Left ? width : 0, p === P.Top ? height : 0);
+  ctx.lineTo(p !== P.Right ? width : 0, p !== P.Bottom ? height : 0);
   ctx.strokeStyle = axisLine.stroke;
   ctx.lineWidth = axisLine.strokeWidth;
   ctx.stroke();
