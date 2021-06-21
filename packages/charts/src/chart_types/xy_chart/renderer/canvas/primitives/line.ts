@@ -23,7 +23,7 @@ import { withContext } from '../../../../../renderers/canvas';
 
 /**
  * Canvas2d stroke ignores an exact zero line width
- * todo: decide whether it represents 0, or the minimum stroke width to render, as currently it's mixed in predicates
+ * Any value that's equal to or larger than MIN_STROKE_WIDTH
  * @internal
  */
 export const MIN_STROKE_WIDTH = 0.001;
