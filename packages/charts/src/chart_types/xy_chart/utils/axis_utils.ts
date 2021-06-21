@@ -30,6 +30,7 @@ import {
   VerticalAlignment,
 } from '../../../utils/common';
 import { Dimensions, getSimplePadding, Margins, Size } from '../../../utils/dimensions';
+import { Range } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { Point } from '../../../utils/point';
@@ -169,7 +170,7 @@ export function getScaleForAxisSpec(
   yDomains: YDomain[],
   totalBarsInCluster: number,
   chartRotation: Rotation,
-  range: [number, number],
+  range: Range,
   barsPadding?: number,
   enableHistogramMode?: boolean,
 ): Scale | null {
