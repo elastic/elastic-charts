@@ -220,8 +220,6 @@ describe('Chart State utils', () => {
         const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
         const actual = getCustomSeriesColors(formattedDataSeries);
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         expect([...actual.values()]).toEqualArrayOf(color);
       });
 
