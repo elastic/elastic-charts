@@ -18,7 +18,6 @@
  */
 
 import { DateTime } from 'luxon';
-// @ts-ignore
 import moment from 'moment-timezone';
 
 import { ChartType } from '../..';
