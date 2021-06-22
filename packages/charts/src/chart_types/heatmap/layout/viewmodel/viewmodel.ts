@@ -29,6 +29,7 @@ import { SettingsSpec } from '../../../../specs';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
+import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScaleType } from '../../state/selectors/get_color_scale';
@@ -40,24 +41,22 @@ import {
   PickDragShapeFunction,
   PickHighlightedArea,
   ShapeViewModel,
+  TextBox,
 } from '../types/viewmodel_types';
 
 /** @public */
 export interface HeatmapCellDatum {
-  x: string | number;
-  y: string | number;
+  x: NonNullable<PrimitiveValue>;
+  y: NonNullable<PrimitiveValue>;
   value: number;
   originalIndex: number;
 }
 
-/** @internal */
-export interface TextBox extends Box {
-  value: string | number;
-  x: number;
-  y: number;
-}
-
-function getValuesInRange(values: (string | number)[], startValue: string | number, endValue: string | number) {
+function getValuesInRange(
+  values: NonNullable<PrimitiveValue>[],
+  startValue: NonNullable<PrimitiveValue>,
+  endValue: NonNullable<PrimitiveValue>,
+) {
   const startIndex = values.indexOf(startValue);
   const endIndex = Math.min(values.indexOf(endValue) + 1, values.length);
   return values.slice(startIndex, endIndex);
@@ -100,7 +99,7 @@ export function shapeViewModel(
   const { table, yValues, xDomain } = heatmapTable;
 
   // measure the text width of all rows values to get the grid area width
-  const boxedYValues = yValues.map<Box & { value: string | number }>((value) => {
+  const boxedYValues = yValues.map<Box & { value: NonNullable<PrimitiveValue> }>((value) => {
     return {
       text: config.yAxisLabel.formatter(value),
       value,
@@ -109,9 +108,9 @@ export function shapeViewModel(
   });
 
   // compute the scale for the rows positions
-  const yScale = scaleBand<string | number>().domain(yValues).range([0, height]);
+  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, height]);
 
-  const yInvertedScale = scaleQuantize<string | number>().domain([0, height]).range(yValues);
+  const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, height]).range(yValues);
 
   // TODO: Fix domain type to be `Array<number | string>`
   let xValues = xDomain.domain as any[];
@@ -144,9 +143,9 @@ export function shapeViewModel(
   }
 
   // compute the scale for the columns positions
-  const xScale = scaleBand<string | number>().domain(xValues).range([0, chartDimensions.width]);
+  const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, chartDimensions.width]);
 
-  const xInvertedScale = scaleQuantize<string | number>().domain([0, chartDimensions.width]).range(xValues);
+  const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, chartDimensions.width]).range(xValues);
 
   // compute the cell width (can be smaller then the available size depending on config
   const cellWidth =
@@ -276,8 +275,8 @@ export function shapeViewModel(
     const startY = yInvertedScale(clamp(topLeft[1], 0, currentGridHeight - 1));
     const endY = yInvertedScale(clamp(bottomRight[1], 0, currentGridHeight - 1));
 
-    let allXValuesInRange: Array<string | number> = [];
-    const invertedXValues: Array<string | number> = [];
+    let allXValuesInRange: Array<NonNullable<PrimitiveValue>> = [];
+    const invertedXValues: Array<NonNullable<PrimitiveValue>> = [];
 
     if (timeScale && typeof endX === 'number') {
       invertedXValues.push(startX);
@@ -294,7 +293,7 @@ export function shapeViewModel(
       invertedXValues.push(...allXValuesInRange);
     }
 
-    const allYValuesInRange: Array<string | number> = getValuesInRange(yValues, startY, endY);
+    const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
 
     const cells: Cell[] = [];
 
@@ -317,7 +316,10 @@ export function shapeViewModel(
    * @param x
    * @param y
    */
-  const pickHighlightedArea: PickHighlightedArea = (x: Array<string | number>, y: Array<string | number>) => {
+  const pickHighlightedArea: PickHighlightedArea = (
+    x: Array<NonNullable<PrimitiveValue>>,
+    y: Array<NonNullable<PrimitiveValue>>,
+  ) => {
     const startValue = x[0];
     const endValue = x[x.length - 1];
 
@@ -411,7 +413,7 @@ export function shapeViewModel(
   };
 }
 
-function getCellKey(x: string | number, y: string | number) {
+function getCellKey(x: NonNullable<PrimitiveValue>, y: NonNullable<PrimitiveValue>) {
   return [String(x), String(y)].join('&_&');
 }
 
