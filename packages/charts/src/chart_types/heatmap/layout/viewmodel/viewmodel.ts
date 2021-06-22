@@ -27,6 +27,7 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
@@ -150,6 +151,8 @@ export function shapeViewModel(
   // compute the cell height (we already computed the max size for that)
   const cellHeight = yScale.bandwidth();
 
+  const currentGridHeight = cellHeight * pageSize;
+
   const getTextValue = (
     formatter: (v: any, options: any) => string,
     scaleCallback: (x: any) => number | undefined | null = xScale,
@@ -258,19 +261,20 @@ export function shapeViewModel(
   const pickDragArea: PickDragFunction = (bound) => {
     const [start, end] = bound;
 
-    const { left, top } = chartDimensions;
-    const invertedBounds = {
-      startX: xInvertedScale(Math.min(start.x, end.x) - left),
-      startY: yInvertedScale(Math.min(start.y, end.y) - top),
-      endX: xInvertedScale(Math.max(start.x, end.x) - left),
-      endY: yInvertedScale(Math.max(start.y, end.y) - top),
-    };
+    const { left, top, width } = chartDimensions;
+    const topLeft = [Math.min(start.x, end.x) - left, Math.min(start.y, end.y) - top];
+    const bottomRight = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
+
+    const startX = xInvertedScale(clamp(topLeft[0], 0, width));
+    const endX = xInvertedScale(clamp(bottomRight[0], 0, width));
+    const startY = yInvertedScale(clamp(topLeft[1], 0, currentGridHeight - 1));
+    const endY = yInvertedScale(clamp(bottomRight[1], 0, currentGridHeight - 1));
 
     let allXValuesInRange = [];
     const invertedXValues: Array<string | number> = [];
-    const { startX, endX, startY, endY } = invertedBounds;
-    invertedXValues.push(startX);
-    if (typeof endX === 'number') {
+
+    if (timeScale && typeof endX === 'number') {
+      invertedXValues.push(startX);
       invertedXValues.push(endX + xDomain.minInterval);
       let [startXValue] = invertedXValues;
       if (typeof startXValue === 'number') {
@@ -280,7 +284,6 @@ export function shapeViewModel(
         }
       }
     } else {
-      invertedXValues.push(endX);
       const startXIndex = xValues.indexOf(startX);
       const endXIndex = Math.min(xValues.indexOf(endX) + 1, xValues.length);
       allXValuesInRange = xValues.slice(startXIndex, endXIndex);
@@ -316,25 +319,18 @@ export function shapeViewModel(
    * @param y
    */
   const pickHighlightedArea: PickHighlightedArea = (x: Array<string | number>, y: Array<string | number>) => {
-    if (xDomain.type !== ScaleType.Time) {
-      return null;
-    }
-    const [startValue, endValue] = x;
-
-    if (typeof startValue !== 'number' || typeof endValue !== 'number') {
-      return null;
-    }
-    const start = Math.min(startValue, endValue);
-    const end = Math.max(startValue, endValue);
+    const startValue = x[0];
+    const endValue = x[x.length - 1];
 
     // find X coordinated based on the time range
-    const leftIndex = bisectLeft(xValues, start);
-    const rightIndex = bisectLeft(xValues, end);
+    const leftIndex = typeof startValue === 'number' ? bisectLeft(xValues, startValue) : xValues.indexOf(startValue);
+    const rightIndex = typeof endValue === 'number' ? bisectLeft(xValues, endValue) : xValues.indexOf(endValue);
 
-    const isOutOfRange = rightIndex > xValues.length - 1;
+    const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
+    const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
 
-    const startFromScale = xScale(xValues[leftIndex]);
-    const endFromScale = xScale(isOutOfRange ? xValues[xValues.length - 1] : xValues[rightIndex]);
+    const startFromScale = xScale(isLeftOutOfRange ? xValues[0] : xValues[leftIndex]);
+    const endFromScale = xScale(isRightOutOfRange ? xValues[xValues.length - 1] : xValues[rightIndex]);
 
     if (startFromScale === undefined || endFromScale === undefined) {
       return null;
@@ -343,7 +339,7 @@ export function shapeViewModel(
     const xStart = chartDimensions.left + startFromScale;
 
     // extend the range in case the right boundary has been selected
-    const width = endFromScale - startFromScale + (isOutOfRange ? cellWidth : 0);
+    const width = endFromScale - startFromScale + cellWidth; // (isRightOutOfRange || isLeftOutOfRange ? cellWidth : 0);
 
     // resolve Y coordinated making sure the order is correct
     const { y: yStart, totalHeight } = y
@@ -358,13 +354,13 @@ export function shapeViewModel(
         },
         { y: 0, totalHeight: 0 },
       );
-
-    return {
-      x: xStart,
-      y: yStart,
-      width,
-      height: totalHeight,
+    const area = {
+      x: Math.round(xStart),
+      y: Math.round(yStart),
+      width: Math.round(width),
+      height: Math.round(totalHeight),
     };
+    return area;
   };
 
   /**

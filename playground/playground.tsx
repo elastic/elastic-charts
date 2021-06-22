@@ -19,49 +19,153 @@
 
 import React from 'react';
 
-import { Chart, AreaSeries, LineSeries, BarSeries, ScaleType, Settings } from '../packages/charts/src';
+import { Chart, AreaSeries, LineSeries, BarSeries, ScaleType, Settings, Heatmap } from '../packages/charts/src';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="App">
         <Chart size={[500, 200]}>
-          <Settings ariaLabel="This is a custom aria-label" ariaLabelledBy="labeled by here" />
-          <AreaSeries
-            id="lines"
-            name="test2"
-            data={[
-              { x: 'trousers', y: 300, val: 1232 },
-              { x: 'watches', y: 20, val: 1232 },
-              { x: 'bags', y: 700, val: 1232 },
-              { x: 'cocktail dresses', y: 804, val: 1232 },
-            ]}
-          />
-          <LineSeries
-            id="lines2"
-            name="test"
-            data={[
-              { x: 'trousers', y: 300, val: 1232 },
-              { x: 'watches', y: 20, val: 1232 },
-              { x: 'bags', y: 700, val: 1232 },
-              { x: 'cocktail dresses', y: 804, val: 1232 },
-            ]}
-          />
-          <BarSeries
-            id="bars"
-            name="amount"
+          <Settings onBrushEnd={console.log} brushAxis="both" />
+          <Heatmap
             xScaleType={ScaleType.Ordinal}
-            xAccessor="x"
-            yAccessors={['y']}
-            data={[
-              { x: 'trousers', y: 390, val: 1222 },
-              { x: 'watches', y: 23, val: 1222 },
-              { x: 'bags', y: 750, val: 1222 },
-              { x: 'cocktail dresses', y: 854, val: 1222 },
-            ]}
+            data={DATA}
+            id="111"
+            xAccessor={'6236f697-f919-4d1b-a697-01c5cce7b81b'}
+            yAccessor={'79b13663-d722-4554-8746-b35c4a266673'}
+            valueAccessor={'b6dcf411-56af-4df5-b572-17602e2825f5'}
+            config={{
+              brushTool: {
+                visible: true,
+              },
+              onBrushEnd: console.log,
+            }}
           />
         </Chart>
       </div>
     );
   }
 }
+
+const DATA = [
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Shoes",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 210,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 333,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Shoes",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 44,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 298,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Shoes",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 165,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 215,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Shoes",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': '__other__',
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 89,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Shoes",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 150,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 343,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Shoes",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 165,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 215,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Shoes",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 110,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 205,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Shoes",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': '__other__',
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 83.33333333333333,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Accessories",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 210,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 333,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Accessories",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 155,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 317,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Accessories",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 110,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 193,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Accessories",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': '__other__',
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 65,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Clothing",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 210,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 277.5,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Clothing",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 165,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 248,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Clothing",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 200,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 225,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Men's Clothing",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': '__other__',
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 64.125,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Accessories",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 150,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 343,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Accessories",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 200,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 225,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Accessories",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 115,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 144,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Accessories",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': '__other__',
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 61.46875,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Clothing",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 150,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 343,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Clothing",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 165,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 215,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Clothing",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': 80,
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 210.5,
+  },
+  {
+    '79b13663-d722-4554-8746-b35c4a266673': "Women's Clothing",
+    '6236f697-f919-4d1b-a697-01c5cce7b81b': '__other__',
+    'b6dcf411-56af-4df5-b572-17602e2825f5': 57.96527777777778,
+  },
+];
