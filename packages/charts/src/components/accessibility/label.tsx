@@ -33,12 +33,16 @@ export function ScreenReaderLabel({
   labelId,
   goalChartLabels,
 }: A11ySettings & ScreenReaderLabelProps) {
-  if (!label && !goalChartLabels) return null;
+  if (!label && !goalChartLabels?.majorLabel) return null;
   const Heading = labelHeadingLevel;
+  const goalChartLabelsSection = !goalChartLabels?.majorLabel
+    ? null
+    : `Goal chart label: ${goalChartLabels.majorLabel} ${goalChartLabels.minorLabel}`;
+
   return (
     <Heading id={labelId}>
       {label}
-      {goalChartLabels && `Goal chart label: ${goalChartLabels.majorLabel} ${goalChartLabels.minorLabel}`}
+      {goalChartLabelsSection}
     </Heading>
   );
 }

@@ -76,9 +76,7 @@ exports[`Chart should render the legend name test 1`] = `
                     <Connect(ScreenReaderSummaryComponent)>
                       <ScreenReaderSummaryComponent chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function: dispatch]}>
                         <div className=\\"echScreenReaderOnly\\">
-                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} goalChartLabels={{...}}>
-                            <p id={[undefined]} />
-                          </ScreenReaderLabel>
+                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} goalChartLabels={{...}} />
                           <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} />
                           <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} chartTypeDescription=\\"bar chart\\" goalChartData={{...}}>
                             <dl>
@@ -87,18 +85,6 @@ exports[`Chart should render the legend name test 1`] = `
                               </dt>
                               <dd id=\\"chart1--defaultSummary\\">
                                 bar chart
-                              </dd>
-                              <dd>
-                                Minimum: 0
-                              </dd>
-                              <dd>
-                                Maximum: 100
-                              </dd>
-                              <dd>
-                                Target: 100
-                              </dd>
-                              <dd>
-                                Value: 50
                               </dd>
                             </dl>
                           </ScreenReaderTypes>

@@ -34,14 +34,18 @@ export function ScreenReaderTypes({
   chartTypeDescription,
 }: A11ySettings & ScreenReaderTypesProps) {
   if (!defaultSummaryId && !goalChartData) return null;
+  const validGoalChart =
+    chartTypeDescription === 'goal chart' ||
+    chartTypeDescription === 'horizontalBullet chart' ||
+    chartTypeDescription === 'verticalBullet chart';
   return (
     <dl>
       <dt>Chart type:</dt>
       <dd id={defaultSummaryId}>{chartTypeDescription}</dd>
-      {goalChartData && <dd>{`Minimum: ${goalChartData.minimum}`}</dd>}
-      {goalChartData && <dd>{`Maximum: ${goalChartData.maximum}`}</dd>}
-      {goalChartData && <dd>{`Target: ${goalChartData.target}`}</dd>}
-      {goalChartData && <dd>{`Value: ${goalChartData.value}`}</dd>}
+      {validGoalChart && goalChartData && <dd>{`Minimum: ${goalChartData.minimum}`}</dd>}
+      {validGoalChart && goalChartData && <dd>{`Maximum: ${goalChartData.maximum}`}</dd>}
+      {validGoalChart && goalChartData && <dd>{`Target: ${goalChartData.target}`}</dd>}
+      {validGoalChart && goalChartData && <dd>{`Value: ${goalChartData.value}`}</dd>}
     </dl>
   );
 }
