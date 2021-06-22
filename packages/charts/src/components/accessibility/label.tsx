@@ -38,8 +38,7 @@ export function ScreenReaderLabel({
   return (
     <Heading id={labelId}>
       {label}
-      {goalChartLabels && goalChartLabels.majorLabel}
-      {goalChartLabels && goalChartLabels.minorLabel}
+      {goalChartLabels && `Goal chart label: ${goalChartLabels.majorLabel} ${goalChartLabels.minorLabel}`}
     </Heading>
   );
 }
