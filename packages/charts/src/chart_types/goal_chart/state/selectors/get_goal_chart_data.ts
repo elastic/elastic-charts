@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { geometries } from '../../chart_types/goal_chart/state/selectors/geometries';
-import { createCustomCachedSelector } from '../../state/create_selector';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { geometries } from './geometries';
 
 /** @internal */
 export type GoalChartData = {
@@ -31,7 +31,7 @@ export type GoalChartData = {
 /** @internal */
 export const getGoalChartDataSelector = createCustomCachedSelector(
   [geometries],
-  (geoms: any): GoalChartData => {
+  (geoms): GoalChartData => {
     const goalChartData: GoalChartData = {
       maximum: geoms.bulletViewModel.highestValue,
       minimum: geoms.bulletViewModel.lowestValue,
@@ -41,3 +41,8 @@ export const getGoalChartDataSelector = createCustomCachedSelector(
     return goalChartData;
   },
 );
+
+/** @internal */
+export const getGoalChartLabelsSelector = createCustomCachedSelector([geometries], (geoms) => {
+  return { label: geoms.bulletViewModel.labelMajor, minorLabel: geoms.bulletViewModel.labelMinor };
+});
