@@ -57,6 +57,12 @@ export interface TextBox extends Box {
   y: number;
 }
 
+function getValuesInRange(values: (string | number)[], startValue: string | number, endValue: string | number) {
+  const startIndex = values.indexOf(startValue);
+  const endIndex = Math.min(values.indexOf(endValue) + 1, values.length);
+  return values.slice(startIndex, endIndex);
+}
+
 /**
  * Resolves the maximum number of ticks based on the chart width and sample label based on formatter config.
  */
@@ -270,7 +276,7 @@ export function shapeViewModel(
     const startY = yInvertedScale(clamp(topLeft[1], 0, currentGridHeight - 1));
     const endY = yInvertedScale(clamp(bottomRight[1], 0, currentGridHeight - 1));
 
-    let allXValuesInRange = [];
+    let allXValuesInRange: Array<string | number> = [];
     const invertedXValues: Array<string | number> = [];
 
     if (timeScale && typeof endX === 'number') {
@@ -284,18 +290,11 @@ export function shapeViewModel(
         }
       }
     } else {
-      const startXIndex = xValues.indexOf(startX);
-      const endXIndex = Math.min(xValues.indexOf(endX) + 1, xValues.length);
-      allXValuesInRange = xValues.slice(startXIndex, endXIndex);
+      allXValuesInRange = getValuesInRange(xValues, startX, endX);
       invertedXValues.push(...allXValuesInRange);
     }
 
-    const invertedYValues: Array<string | number> = [];
-
-    const startYIndex = yValues.indexOf(startY);
-    const endYIndex = Math.min(yValues.indexOf(endY) + 1, yValues.length);
-    const allYValuesInRange = yValues.slice(startYIndex, endYIndex);
-    invertedYValues.push(...allYValuesInRange);
+    const allYValuesInRange: Array<string | number> = getValuesInRange(yValues, startY, endY);
 
     const cells: Cell[] = [];
 
@@ -309,7 +308,7 @@ export function shapeViewModel(
     return {
       cells: cells.filter(Boolean),
       x: invertedXValues,
-      y: invertedYValues,
+      y: allYValuesInRange,
     };
   };
 
@@ -354,13 +353,12 @@ export function shapeViewModel(
         },
         { y: 0, totalHeight: 0 },
       );
-    const area = {
+    return {
       x: Math.round(xStart),
       y: Math.round(yStart),
       width: Math.round(width),
       height: Math.round(totalHeight),
     };
-    return area;
   };
 
   /**
