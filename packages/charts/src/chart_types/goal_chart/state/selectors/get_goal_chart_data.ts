@@ -29,6 +29,12 @@ export type GoalChartData = {
 };
 
 /** @internal */
+export type GoalChartLabels = {
+  minorLabel: string;
+  majorLabel: string;
+};
+
+/** @internal */
 export const getGoalChartDataSelector = createCustomCachedSelector(
   [geometries],
   (geoms): GoalChartData => {
@@ -44,5 +50,5 @@ export const getGoalChartDataSelector = createCustomCachedSelector(
 
 /** @internal */
 export const getGoalChartLabelsSelector = createCustomCachedSelector([geometries], (geoms) => {
-  return { label: geoms.bulletViewModel.labelMajor, minorLabel: geoms.bulletViewModel.labelMinor };
+  return { majorLabel: geoms.bulletViewModel.labelMajor, minorLabel: geoms.bulletViewModel.labelMinor };
 });

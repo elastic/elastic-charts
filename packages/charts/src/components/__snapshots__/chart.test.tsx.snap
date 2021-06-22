@@ -74,17 +74,31 @@ exports[`Chart should render the legend name test 1`] = `
                       <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\" />
                     </figure>
                     <Connect(ScreenReaderSummaryComponent)>
-                      <ScreenReaderSummaryComponent chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} dispatch={[Function: dispatch]}>
+                      <ScreenReaderSummaryComponent chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function: dispatch]}>
                         <div className=\\"echScreenReaderOnly\\">
-                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} />
+                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} goalChartLabels={{...}}>
+                            <p id={[undefined]} />
+                          </ScreenReaderLabel>
                           <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} />
-                          <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} chartTypeDescription=\\"bar chart\\">
+                          <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} chartTypeDescription=\\"bar chart\\" goalChartData={{...}}>
                             <dl>
                               <dt>
                                 Chart type:
                               </dt>
                               <dd id=\\"chart1--defaultSummary\\">
                                 bar chart
+                              </dd>
+                              <dd>
+                                Minimum: 0
+                              </dd>
+                              <dd>
+                                Maximum: 100
+                              </dd>
+                              <dd>
+                                Target: 100
+                              </dd>
+                              <dd>
+                                Value: 50
                               </dd>
                             </dl>
                           </ScreenReaderTypes>
