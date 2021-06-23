@@ -154,9 +154,79 @@ describe('Accessibility', () => {
         />
       </Chart>,
     );
+
+    const bandsWithSemanticsAscending = [
+      [200, 'freezing'],
+      [250, 'chilly'],
+      [300, 'brisk'],
+    ];
+
+    const ascendingSemanticValuesGoalChart = mount(
+      <Chart className="story-chart">
+        <Goal
+          id="spec_1"
+          subtype={GoalSubtype.Goal}
+          base={0}
+          target={260}
+          actual={170}
+          // doesn't mess with canvas_renderers.ts
+          // @ts-ignore
+          bands={bandsWithSemanticsAscending.flat().filter((val) => typeof val === 'number')}
+          ticks={[0, 50, 100, 150, 200, 250, 300]}
+          // tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
+          // bandFillColor={({ value }: BandFillColorAccessorInput) => semanticBandFillColor(value)}
+          labelMajor="Revenue 2020 YTD  "
+          labelMinor="(thousand USD)  "
+          centralMajor="170"
+          centralMinor=""
+          config={{ angleStart: Math.PI, angleEnd: 0 }}
+          semanticValues={bandsWithSemanticsAscending}
+        />
+      </Chart>,
+    );
+
+    const bandsWithSemanticsDescending = [
+      [300, 'brisk'],
+      [250, 'chilly'],
+      [200, 'freezing'],
+    ];
+
+    const descendingSemanticValuesGoalChart = mount(
+      <Chart className="story-chart">
+        <Goal
+          id="spec_1"
+          subtype={GoalSubtype.Goal}
+          base={300}
+          target={260}
+          actual={170}
+          // doesn't mess with canvas_renderers.ts
+          // @ts-ignore
+          bands={bandsWithSemanticsDescending.flat().filter((val) => typeof val === 'number')}
+          ticks={[300, 250, 200, 150, 100, 50, 0]}
+          // tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
+          // bandFillColor={({ value }: BandFillColorAccessorInput) => semanticBandFillColor(value)}
+          labelMajor="Revenue 2020 YTD  "
+          labelMinor="(thousand USD)  "
+          centralMajor="170"
+          centralMinor=""
+          config={{ angleStart: Math.PI, angleEnd: 0 }}
+          semanticValues={bandsWithSemanticsDescending}
+        />
+      </Chart>,
+    );
     it('should test defaults for goal charts', () => {
       expect(goalChartWrapper.find('.echScreenReaderOnly').first().text()).toBe(
         'Goal chart label: Revenue 2020 YTD   (thousand USD)  Chart type:goal chartMinimum: 0Maximum: 300Target: 260Value: 170',
+      );
+    });
+    it('should correctly render ascending semantic values', () => {
+      expect(ascendingSemanticValuesGoalChart.find('.echGoalDescription').first().text()).toBe(
+        'values 200 - 250: freezingvalues 250 - 300: chillyvalues above 300: brisk',
+      );
+    });
+    it('should correctly render descending semantic values', () => {
+      expect(descendingSemanticValuesGoalChart.find('.echGoalDescription').first().text()).toBe(
+        'values 300 - 250: briskvalues 250 - 200: chillyvalues below 200: freezing',
       );
     });
   });

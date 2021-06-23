@@ -26,16 +26,12 @@ interface GoalSemanticDescriptionProps {
 /** @internal */
 export const GoalSemanticDescription = ({ semanticValues }: GoalSemanticDescriptionProps) => {
   return (
-    <div className="echScreenReaderOnly">
+    <div className="echScreenReaderOnly echGoalDescription">
       {semanticValues.map(([value, semantic], index) => {
         const nextValue = semanticValues[index + 1];
         const prevValue = semanticValues[index - 1];
         return nextValue !== undefined ? (
-          nextValue[0] > value ? (
-            <dd key={index}>{`values ${value} - ${nextValue[0]}: ${semantic}`}</dd>
-          ) : (
-            <dd key={index}>{`values ${nextValue[0]} - ${value}: ${semantic}`}</dd>
-          )
+          <dd key={index}>{`values ${value} - ${nextValue[0]}: ${semantic}`}</dd>
         ) : prevValue[0] < value ? (
           <dd key={index}>{`values above ${value}: ${semantic}`}</dd>
         ) : (
