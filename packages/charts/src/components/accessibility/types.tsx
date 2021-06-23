@@ -42,10 +42,14 @@ export function ScreenReaderTypes({
     <dl>
       <dt>Chart type:</dt>
       <dd id={defaultSummaryId}>{chartTypeDescription}</dd>
-      {validGoalChart && goalChartData && <dd>{`Minimum: ${goalChartData.minimum}`}</dd>}
-      {validGoalChart && goalChartData && <dd>{`Maximum: ${goalChartData.maximum}`}</dd>}
-      {validGoalChart && goalChartData && <dd>{`Target: ${goalChartData.target}`}</dd>}
-      {validGoalChart && goalChartData && <dd>{`Value: ${goalChartData.value}`}</dd>}
+      {validGoalChart && goalChartData ? (
+        <>
+          <dd>{`Minimum: ${goalChartData.minimum}`}</dd>
+          <dd>{`Maximum: ${goalChartData.maximum}`}</dd>
+          <dd>{`Target: ${goalChartData.target}`}</dd>
+          <dd>{`Value: ${goalChartData.value}`}</dd>
+        </>
+      ) : null}
     </dl>
   );
 }
