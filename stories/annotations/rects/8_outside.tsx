@@ -32,6 +32,7 @@ export const Example = () => {
   const debug = boolean('debug', false);
   const rotation = getChartRotationKnob();
   const tickSize = number('Tick size', 10, { min: 0, max: 20, step: 1 });
+  const hideAxes = boolean('Hide all axes', false);
 
   const domainAxis = select(
     'Domain axis',
@@ -44,7 +45,7 @@ export const Example = () => {
   );
   const isX = domainAxis === 'x';
   const isVert = isX ? rotation === 0 || rotation === 180 : rotation === 90 || rotation === -90;
-  const outside = boolean('Render outside chart', false, 'Annotations');
+  const outside = boolean('Render outside chart', true, 'Annotations');
   const outsideDimension = number('Outside dimension', 5, { min: 0, step: 1 }, 'Annotations');
   const redGroupId = select('Red groupId', vGroups, vGroups.Primary, 'Annotations');
   const blueGroupId = select('Blue groupId', vGroups, vGroups.Secondary, 'Annotations');
@@ -55,18 +56,30 @@ export const Example = () => {
 
       <Axis
         id="left"
+        hide={hideAxes}
         groupId={isVert ? undefined : vGroups.Primary}
         position={Position.Left}
         title={isVert ? 'Left' : 'Primary - Left'}
       />
-      {!isVert && <Axis id="right" groupId={vGroups.Secondary} position={Position.Right} title="Secondary - Right" />}
+      {!isVert && (
+        <Axis
+          id="right"
+          hide={hideAxes}
+          groupId={vGroups.Secondary}
+          position={Position.Right}
+          title="Secondary - Right"
+        />
+      )}
       <Axis
         id="bottom"
+        hide={hideAxes}
         groupId={isVert ? vGroups.Primary : undefined}
         position={Position.Bottom}
         title={isVert ? 'Primary - Bottom' : 'Bottom'}
       />
-      {isVert && <Axis id="top" groupId={vGroups.Secondary} position={Position.Top} title="Secondary - Top" />}
+      {isVert && (
+        <Axis id="top" hide={hideAxes} groupId={vGroups.Secondary} position={Position.Top} title="Secondary - Top" />
+      )}
 
       <RectAnnotation
         groupId={redGroupId}
