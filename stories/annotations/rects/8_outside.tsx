@@ -45,6 +45,7 @@ export const Example = () => {
   const isX = domainAxis === 'x';
   const isVert = isX ? rotation === 0 || rotation === 180 : rotation === 90 || rotation === -90;
   const outside = boolean('Render outside chart', false, 'Annotations');
+  const outsideDimension = number('Outside dimension', 5, { min: 0, step: 1 }, 'Annotations');
   const redGroupId = select('Red groupId', vGroups, vGroups.Primary, 'Annotations');
   const blueGroupId = select('Blue groupId', vGroups, vGroups.Secondary, 'Annotations');
 
@@ -98,6 +99,7 @@ export const Example = () => {
         id="red"
         style={{ fill: '#b62b39' }}
         outside={outside}
+        outsideDimension={outsideDimension}
       />
       <RectAnnotation
         groupId={blueGroupId}
@@ -130,6 +132,7 @@ export const Example = () => {
         id="blue"
         style={{ fill: '#2b5fb6' }}
         outside={outside}
+        outsideDimension={outsideDimension}
       />
 
       <LineSeries

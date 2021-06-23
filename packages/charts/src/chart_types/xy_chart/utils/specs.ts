@@ -899,6 +899,10 @@ export type RectAnnotationSpec = BaseAnnotationSpec<
    * @defaultValue false
    */
   outside?: boolean;
+  /**
+   * Dimension, either height or width, of outside annotation
+   */
+  outsideDimension?: number;
 };
 
 /**

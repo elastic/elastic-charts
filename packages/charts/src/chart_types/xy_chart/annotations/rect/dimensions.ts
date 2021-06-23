@@ -92,10 +92,10 @@ export function computeRectAnnotationDimensions(
           (chartRotation === -90 && yAxis?.position === Position.Right) ||
           (chartRotation === 90 && yAxis?.position === Position.Left);
         const orthoDimension = isHorizontalRotation(chartRotation) ? panelSize.height : panelSize.width;
-        const outsideDim = getOutsideDimension(getAxisStyle(xAxis?.id ?? yAxis?.id), outside);
+        const outsideDim = annotationSpec.outsideDimension ?? getOutsideDimension(getAxisStyle(xAxis?.id ?? yAxis?.id));
         const rectDimensions = {
           ...xAndWidth,
-          ...(outsideDim > 0
+          ...(outside
             ? {
                 y: isLeftSide ? orthoDimension : -outsideDim,
                 height: outsideDim,
@@ -138,9 +138,9 @@ export function computeRectAnnotationDimensions(
       (chartRotation === 180 && yAxis?.position === Position.Right) ||
       (chartRotation === -90 && xAxis?.position === Position.Bottom) ||
       (chartRotation === 90 && xAxis?.position === Position.Top);
-    const outsideDim = getOutsideDimension(getAxisStyle(xAxis?.id ?? yAxis?.id), outside);
+    const outsideDim = annotationSpec.outsideDimension ?? getOutsideDimension(getAxisStyle(xAxis?.id ?? yAxis?.id));
     const rectDimensions = {
-      ...(!isDefined(initialX0) && !isDefined(initialX1) && outsideDim > 0
+      ...(!isDefined(initialX0) && !isDefined(initialX1) && outside
         ? {
             x: isLeftSide ? -outsideDim : orthoDimension,
             width: outsideDim,
@@ -276,9 +276,7 @@ function getMin(min: number, value?: number | string | null) {
   return value;
 }
 
-function getOutsideDimension(style: AxisStyle, outside?: boolean): number {
-  if (!outside) return 0;
-
+function getOutsideDimension(style: AxisStyle): number {
   const { visible, size, strokeWidth } = style.tickLine;
 
   return visible && size > 0 && strokeWidth > 0 ? size : 0;
