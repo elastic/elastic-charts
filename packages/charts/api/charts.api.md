@@ -1576,6 +1576,7 @@ export type RectAnnotationSpec = BaseAnnotationSpec<typeof AnnotationType.Rectan
     renderTooltip?: AnnotationTooltipFormatter;
     zIndex?: number;
     outside?: boolean;
+    outsideDimension?: number;
 };
 
 // @public (undocumented)
