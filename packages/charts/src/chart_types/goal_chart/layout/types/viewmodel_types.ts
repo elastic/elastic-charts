@@ -24,7 +24,8 @@ import { GoalSubtype } from '../../specs/constants';
 import { config } from '../config/config';
 import { Config } from './config_types';
 
-interface BandViewModel {
+/** @internal */
+export interface BandViewModel {
   value: number;
   fillColor: string;
 }
@@ -50,6 +51,7 @@ export interface BulletViewModel {
   lowestValue: number;
   aboveBaseCount: number;
   belowBaseCount: number;
+  semanticValues?: Array<(string | number)[]>;
 }
 
 /** @internal */

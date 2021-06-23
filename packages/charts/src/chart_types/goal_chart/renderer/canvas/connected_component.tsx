@@ -33,6 +33,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
+import { getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
@@ -40,6 +41,7 @@ interface ReactiveChartStateProps {
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
+  semanticValues?: Array<(string | number)[]>;
 }
 
 interface ReactiveChartDispatchProps {
@@ -112,11 +114,11 @@ class Component extends React.Component<Props> {
       chartContainerDimensions: { width, height },
       forwardStageRef,
       a11ySettings,
+      semanticValues,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
     }
-
     return (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <canvas
@@ -132,6 +134,7 @@ class Component extends React.Component<Props> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
+          <p>{semanticValues}</p>
           <ScreenReaderSummary />
         </canvas>
       </figure>
@@ -183,6 +186,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometries: geometries(state),
     chartContainerDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
+    semanticValues: getGoalChartSemanticDataSelector(state),
   };
 };
 

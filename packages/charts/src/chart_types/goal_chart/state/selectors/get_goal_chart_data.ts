@@ -52,3 +52,8 @@ export const getGoalChartDataSelector = createCustomCachedSelector(
 export const getGoalChartLabelsSelector = createCustomCachedSelector([geometries], (geoms) => {
   return { majorLabel: geoms.bulletViewModel.labelMajor, minorLabel: geoms.bulletViewModel.labelMinor };
 });
+
+/** @internal */
+export const getGoalChartSemanticDataSelector = createCustomCachedSelector([geometries], (geoms) => {
+  return geoms.bulletViewModel.semanticValues ?? [];
+});

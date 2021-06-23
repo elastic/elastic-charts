@@ -67,6 +67,7 @@ export interface GoalSpec extends Spec {
   centralMajor: string | BandFillColorAccessor;
   centralMinor: string | BandFillColorAccessor;
   config: RecursivePartial<Config>;
+  semanticValues?: Array<(number | string)[]>;
 }
 
 type SpecRequiredProps = Pick<GoalSpec, 'id' | 'actual'>;

@@ -51,3 +51,4 @@ export { Example as goalNegative } from './21_goal_negative';
 export { Example as horizontalPlusMinus } from './22_horizontal_plusminus';
 export { Example as verticalPlusMinus } from './23_vertical_plusminus';
 export { Example as goalPlusMinus } from './24_goal_plusminus';
+export { Example as goalSemantics } from './25_goal_semantic';
