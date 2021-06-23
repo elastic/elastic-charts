@@ -17,12 +17,11 @@
  * under the License.
  */
 
-import createCachedSelector from 're-reselect';
-
 import { DEFAULT_SETTINGS_SPEC } from '../../specs/constants';
 import { SettingsSpec } from '../../specs/settings';
 import { isDefined } from '../../utils/common';
 import { GlobalChartState } from '../chart_state';
+import { createCustomCachedSelector } from '../create_selector';
 import { getChartIdSelector } from './get_chart_id';
 import { getSettingsSpecSelector } from './get_settings_specs';
 
@@ -37,6 +36,7 @@ export type A11ySettings = {
   description?: string;
   descriptionId?: string;
   defaultSummaryId?: string;
+  tableCaption?: string;
 };
 
 /** @internal */
@@ -45,10 +45,18 @@ export const DEFAULT_A11Y_SETTINGS: A11ySettings = {
 };
 
 /** @internal */
-export const getA11ySettingsSelector = createCachedSelector(
+export const getA11ySettingsSelector = createCustomCachedSelector(
   [getSettingsSpecSelector, getChartIdSelector],
   (
-    { ariaDescription, ariaDescribedBy, ariaLabel, ariaLabelledBy, ariaUseDefaultSummary, ariaLabelHeadingLevel },
+    {
+      ariaDescription,
+      ariaDescribedBy,
+      ariaLabel,
+      ariaLabelledBy,
+      ariaUseDefaultSummary,
+      ariaLabelHeadingLevel,
+      ariaTableCaption,
+    },
     chartId,
   ) => {
     const defaultSummaryId = ariaUseDefaultSummary ? `${chartId}--defaultSummary` : undefined;
@@ -69,9 +77,10 @@ export const getA11ySettingsSelector = createCachedSelector(
       // concat all the ids
       descriptionId: describeBy.length > 0 ? describeBy.join(' ') : undefined,
       defaultSummaryId,
+      tableCaption: ariaTableCaption,
     };
   },
-)(getChartIdSelector);
+);
 
 function isValidHeadingLevel(ariaLabelHeadingLevel: SettingsSpec['ariaLabelHeadingLevel']): boolean {
   return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'].includes(ariaLabelHeadingLevel);

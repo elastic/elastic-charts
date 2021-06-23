@@ -35,22 +35,24 @@ import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions
 import { upsertSpec, specParsed } from '../../../../state/actions/specs';
 import { chartStoreReducer, GlobalChartState } from '../../../../state/chart_state';
 import { Datum } from '../../../../utils/common';
-import { HIERARCHY_ROOT_KEY } from '../../layout/utils/group_by_rollup';
+import { HIERARCHY_ROOT_KEY, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../specs';
-import { partitionGeometries } from './geometries';
+import { partitionMultiGeometries } from './geometries';
 import { createOnElementClickCaller } from './on_element_click_caller';
 
+function initStore() {
+  const storeReducer = chartStoreReducer('chartId');
+  return createStore(storeReducer);
+}
+
 describe('Picked shapes selector', () => {
-  function initStore() {
-    const storeReducer = chartStoreReducer('chartId');
-    return createStore(storeReducer);
-  }
   function addSeries(store: Store<GlobalChartState>, spec: PartitionSpec, settings?: Partial<SettingsSpec>) {
     store.dispatch(upsertSpec(MockGlobalSpec.settings(settings)));
     store.dispatch(upsertSpec(spec));
     store.dispatch(specParsed());
     store.dispatch(updateParentDimensions({ width: 300, height: 300, top: 0, left: 0 }));
   }
+
   function addSmallMultiplesSeries(
     store: Store<GlobalChartState>,
     groupBy: Partial<GroupBySpec>,
@@ -65,6 +67,7 @@ describe('Picked shapes selector', () => {
     store.dispatch(specParsed());
     store.dispatch(updateParentDimensions({ width: 300, height: 300, top: 0, left: 0 }));
   }
+
   let store: Store<GlobalChartState>;
   let treemapSpec: PartitionSpec;
   let sunburstSpec: PartitionSpec;
@@ -92,11 +95,11 @@ describe('Picked shapes selector', () => {
   });
   test('check initial geoms', () => {
     addSeries(store, treemapSpec);
-    const treemapGeometries = partitionGeometries(store.getState())[0];
+    const treemapGeometries = partitionMultiGeometries(store.getState())[0];
     expect(treemapGeometries.quadViewModel).toHaveLength(6);
 
     addSeries(store, sunburstSpec);
-    const sunburstGeometries = partitionGeometries(store.getState())[0];
+    const sunburstGeometries = partitionMultiGeometries(store.getState())[0];
     expect(sunburstGeometries.quadViewModel).toHaveLength(6);
   });
   test('treemap check picked geometries', () => {
@@ -107,7 +110,7 @@ describe('Picked shapes selector', () => {
     addSeries(store, treemapSpec, {
       onElementClick: onClickListener,
     });
-    const geometries = partitionGeometries(store.getState())[0];
+    const geometries = partitionMultiGeometries(store.getState())[0];
     expect(geometries.quadViewModel).toHaveLength(6);
 
     const onElementClickCaller = createOnElementClickCaller();
@@ -128,6 +131,7 @@ describe('Picked shapes selector', () => {
             depth: 1,
             sortIndex: 1,
             path: [
+              { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
               { index: 0, value: HIERARCHY_ROOT_KEY },
               { index: 1, value: 'b' },
             ],
@@ -139,6 +143,7 @@ describe('Picked shapes selector', () => {
             depth: 2,
             sortIndex: 1,
             path: [
+              { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
               { index: 0, value: HIERARCHY_ROOT_KEY },
               { index: 1, value: 'b' },
               { index: 1, value: 'b' },
@@ -185,7 +190,7 @@ describe('Picked shapes selector', () => {
         onElementClick: onClickListener,
       },
     );
-    const geometries = partitionGeometries(store.getState())[0];
+    const geometries = partitionMultiGeometries(store.getState())[0];
     expect(geometries.quadViewModel).toHaveLength(2);
 
     const onElementClickCaller = createOnElementClickCaller();
@@ -208,6 +213,7 @@ describe('Picked shapes selector', () => {
             depth: 1,
             sortIndex: 0,
             path: [
+              { index: 0, value: 'a' },
               { index: 0, value: HIERARCHY_ROOT_KEY },
               { index: 0, value: 'a' },
             ],
@@ -228,7 +234,7 @@ describe('Picked shapes selector', () => {
     addSeries(store, sunburstSpec, {
       onElementClick: onClickListener,
     });
-    const geometries = partitionGeometries(store.getState())[0];
+    const geometries = partitionMultiGeometries(store.getState())[0];
     expect(geometries.quadViewModel).toHaveLength(6);
 
     const onElementClickCaller = createOnElementClickCaller();
@@ -249,6 +255,7 @@ describe('Picked shapes selector', () => {
             depth: 1,
             sortIndex: 1,
             path: [
+              { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
               { index: 0, value: HIERARCHY_ROOT_KEY },
               { index: 1, value: 'b' },
             ],
@@ -260,6 +267,7 @@ describe('Picked shapes selector', () => {
             depth: 2,
             sortIndex: 1,
             path: [
+              { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
               { index: 0, value: HIERARCHY_ROOT_KEY },
               { index: 1, value: 'b' },
               { index: 1, value: 'b' },

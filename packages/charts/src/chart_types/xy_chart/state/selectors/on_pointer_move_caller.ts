@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import createCachedSelector from 're-reselect';
 import { Selector } from 'reselect';
 
 import { ChartType } from '../../..';
 import { Scale } from '../../../../scales';
-import { SettingsSpec, PointerEvent } from '../../../../specs';
+import { PointerEvent } from '../../../../specs';
 import { PointerEventType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
@@ -33,7 +33,7 @@ import { getOrientedProjectedPointerPositionSelector } from './get_oriented_proj
 import { PointerPosition } from './get_projected_pointer_position';
 import { getProjectedScaledValues } from './get_projected_scaled_values';
 
-const getPointerEventSelector = createCachedSelector(
+const getPointerEventSelector = createCustomCachedSelector(
   [
     getChartIdSelector,
     getOrientedProjectedPointerPositionSelector,
@@ -42,7 +42,7 @@ const getPointerEventSelector = createCachedSelector(
   ],
   (chartId, orientedProjectedPointerPosition, seriesGeometries, geometriesIndexKeys): PointerEvent =>
     getPointerEvent(chartId, orientedProjectedPointerPosition, seriesGeometries.scales.xScale, geometriesIndexKeys),
-)(getChartIdSelector);
+);
 
 function getPointerEvent(
   chartId: string,
@@ -117,14 +117,9 @@ export function createOnPointerMoveCaller(): (state: GlobalChartState) => void {
   let selector: Selector<GlobalChartState, void> | null = null;
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.XYAxis) {
-      selector = createCachedSelector(
+      selector = createCustomCachedSelector(
         [getSettingsSpecSelector, getPointerEventSelector, getChartIdSelector, getProjectedScaledValues],
-        (
-          { onPointerUpdate, onProjectionUpdate }: SettingsSpec,
-          nextPointerEvent: PointerEvent,
-          chartId: string,
-          values,
-        ): void => {
+        ({ onPointerUpdate, onProjectionUpdate }, nextPointerEvent, chartId, values): void => {
           if (prevPointerEvent === null) {
             prevPointerEvent = {
               chartId,
@@ -147,9 +142,7 @@ export function createOnPointerMoveCaller(): (state: GlobalChartState) => void {
             if (oldYValues !== yValuesString) onProjectionUpdate(values);
           }
         },
-      )({
-        keySelector: getChartIdSelector,
-      });
+      );
     }
     if (selector) {
       selector(state);

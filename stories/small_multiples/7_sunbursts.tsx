@@ -80,10 +80,12 @@ export const Example = () => {
     <Chart className="story-chart">
       <Settings
         showLegend={boolean('Show legend', true)}
+        showLegendExtra={boolean('Show legend extra', false)}
         legendStrategy={LegendStrategy.Key}
         flatLegend={boolean('Flat legend', true)}
         theme={STORYBOOK_LIGHT_THEME}
         {...onElementListeners}
+        debug={boolean('Debug', false)}
       />
       <GroupBy
         id="split"

@@ -17,24 +17,21 @@
  * under the License.
  */
 
-import createCachedSelector from 're-reselect';
-
 import { LegendItem } from '../../../../common/legend';
-import { Line } from '../../../../geoms/types';
 import { AxisSpec } from '../../../../specs';
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
 import {
   DebugState,
-  DebugStateValue,
-  DebugStateAxes,
   DebugStateArea,
-  DebugStateLine,
+  DebugStateAxes,
   DebugStateBar,
   DebugStateLegend,
+  DebugStateLine,
+  DebugStateValue,
 } from '../../../../state/types';
-import { AreaGeometry, BandedAccessorType, LineGeometry, BarGeometry, PerPanel } from '../../../../utils/geometry';
-import { FillStyle, Visible, StrokeStyle, Opacity } from '../../../../utils/themes/theme';
-import { isVerticalAxis } from '../../utils/axis_type_utils';
+import { AreaGeometry, BandedAccessorType, BarGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
+import { FillStyle, Opacity, StrokeStyle, Visible } from '../../../../utils/themes/theme';
+import { isHorizontalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
 import { LinesGrid } from '../../utils/grid_lines';
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
@@ -47,7 +44,7 @@ import { getAxisSpecsSelector } from './get_specs';
  * Returns a stringified version of the `debugState`
  * @internal
  */
-export const getDebugStateSelector = createCachedSelector(
+export const getDebugStateSelector = createCustomCachedSelector(
   [
     computeSeriesGeometriesSelector,
     computeLegendSelector,
@@ -66,13 +63,9 @@ export const getDebugStateSelector = createCachedSelector(
       bars: getBarsState(seriesNameMap, geometries.bars),
     };
   },
-)(getChartIdSelector);
+);
 
-function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: LinesGrid[]): DebugStateAxes | undefined {
-  if (axesSpecs.length === 0) {
-    return;
-  }
-
+function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: LinesGrid[]): DebugStateAxes {
   return axesSpecs.reduce<DebugStateAxes>(
     (acc, { position, title, id }) => {
       const geom = axesGeoms.find(({ axis }) => axis.id === id);
@@ -85,44 +78,21 @@ function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: Li
       const values = visibleTicks.map(({ value }) => value);
 
       const gridlines = gridLines
-        .reduce<Line[]>((accLines, { lineGroups }) => {
-          const groupLines = lineGroups.find(({ axisId }) => {
-            return axisId === geom.axis.id;
-          });
-          if (!groupLines) {
-            return accLines;
-          }
-          return [...accLines, ...groupLines.lines];
-        }, [])
-        .map(({ x1, y1 }) => ({ x: x1, y: y1 }));
+        .flatMap(({ lineGroups }) => lineGroups.find(({ axisId }) => axisId === geom.axis.id)?.lines ?? [])
+        .map(({ x1: x, y1: y }) => ({ x, y }));
 
-      if (isVerticalAxis(position)) {
-        acc.y.push({
-          id,
-          title,
-          position,
-          // reverse for bottom/up coordinates
-          labels: labels.reverse(),
-          values: values.reverse(),
-          gridlines: gridlines.reverse(),
-        });
-      } else {
-        acc.x.push({
-          id,
-          title,
-          position,
-          labels,
-          values,
-          gridlines,
-        });
-      }
+      acc[isHorizontalAxis(position) ? 'x' : 'y'].push({
+        id,
+        title,
+        position,
+        ...(isHorizontalAxis(position)
+          ? { labels, values, gridlines }
+          : { labels: labels.reverse(), values: values.reverse(), gridlines: gridlines.reverse() }),
+      });
 
       return acc;
     },
-    {
-      y: [],
-      x: [],
-    },
+    { x: [], y: [] },
   );
 }
 
