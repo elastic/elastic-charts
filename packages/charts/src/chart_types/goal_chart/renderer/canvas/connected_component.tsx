@@ -134,8 +134,19 @@ class Component extends React.Component<Props> {
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         >
-          <p>{semanticValues}</p>
           <ScreenReaderSummary />
+          {semanticValues && semanticValues.length > 1 && (
+            <div>
+              {semanticValues.map(([value, semantic], index) => {
+                const nextValue = semanticValues[index + 1];
+                return nextValue !== undefined ? (
+                  <dd key={index}>{`values ${value} - ${nextValue[0]}: ${semantic}`}</dd>
+                ) : (
+                  <dd key={index}>{`values above ${value}: ${semantic}`}</dd>
+                );
+              })}
+            </div>
+          )}
         </canvas>
       </figure>
     );
