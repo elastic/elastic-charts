@@ -21,7 +21,7 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { ScreenReaderSummary } from '../../../../components/accessibility';
+import { GoalSemanticDescription, ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -135,18 +135,7 @@ class Component extends React.Component<Props> {
           role="presentation"
         >
           <ScreenReaderSummary />
-          {semanticValues && semanticValues.length > 1 && (
-            <div>
-              {semanticValues.map(([value, semantic], index) => {
-                const nextValue = semanticValues[index + 1];
-                return nextValue !== undefined ? (
-                  <dd key={index}>{`values ${value} - ${nextValue[0]}: ${semantic}`}</dd>
-                ) : (
-                  <dd key={index}>{`values above ${value}: ${semantic}`}</dd>
-                );
-              })}
-            </div>
-          )}
+          {semanticValues && semanticValues.length > 1 && <GoalSemanticDescription semanticValues={semanticValues} />}
         </canvas>
       </figure>
     );
