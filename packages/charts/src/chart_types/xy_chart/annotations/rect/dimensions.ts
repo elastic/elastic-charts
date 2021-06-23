@@ -25,6 +25,7 @@ import { Point } from '../../../../utils/point';
 import { AxisStyle } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { SmallMultipleScales } from '../../state/selectors/compute_small_multiple_scales';
+import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/common';
 import { getAxesSpecForSpecId } from '../../state/utils/spec';
 import { getPanelSize } from '../../utils/panel';
 import { AxisSpec, RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
@@ -90,7 +91,7 @@ export function computeRectAnnotationDimensions(
           (chartRotation === 180 && xAxis?.position === Position.Top) ||
           (chartRotation === -90 && yAxis?.position === Position.Right) ||
           (chartRotation === 90 && yAxis?.position === Position.Left);
-        const orthoDimension = chartRotation === 0 || chartRotation === 180 ? panelSize.height : panelSize.width;
+        const orthoDimension = isHorizontalRotation(chartRotation) ? panelSize.height : panelSize.width;
         const outsideDim = getOutsideDimension(getAxisStyle(xAxis?.id ?? yAxis?.id), outside);
         const rectDimensions = {
           ...xAndWidth,
@@ -131,7 +132,7 @@ export function computeRectAnnotationDimensions(
       scaledY1 = 0;
     }
 
-    const orthoDimension = chartRotation === 90 || chartRotation === -90 ? panelSize.height : panelSize.width;
+    const orthoDimension = isVerticalRotation(chartRotation) ? panelSize.height : panelSize.width;
     const isLeftSide =
       (chartRotation === 0 && yAxis?.position === Position.Left) ||
       (chartRotation === 180 && yAxis?.position === Position.Right) ||
