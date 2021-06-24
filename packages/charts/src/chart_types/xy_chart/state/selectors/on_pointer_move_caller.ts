@@ -76,7 +76,10 @@ function getPointerEvent(
     type: PointerEventType.Over,
     unit: xScale.unit,
     scale: xScale.type,
-    value: xValue.value,
+    x: xValue.value,
+    y: [],
+    smVerticalValue: null,
+    smHorizontalValue: null,
   };
 }
 
@@ -101,7 +104,7 @@ function hasPointerEventChanged(
     prevPointerEvent.type === PointerEventType.Over &&
     nextPointerEvent.type === PointerEventType.Over &&
     (!compareValue ||
-      prevPointerEvent.value !== nextPointerEvent.value ||
+      prevPointerEvent.x !== nextPointerEvent.x ||
       prevPointerEvent.scale !== nextPointerEvent.scale ||
       prevPointerEvent.unit !== nextPointerEvent.unit)
   ) {
@@ -139,7 +142,11 @@ export function createOnPointerMoveCaller(): (state: GlobalChartState) => void {
             const oldYValues = yValuesString;
             yValuesString = values.y.map(({ value }) => value).join(',');
 
-            if (oldYValues !== yValuesString) onProjectionUpdate(values);
+            if (oldYValues !== yValuesString)
+              onProjectionUpdate({
+                ...nextPointerEvent,
+                ...values,
+              });
           }
         },
       );

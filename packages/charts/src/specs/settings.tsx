@@ -131,11 +131,6 @@ export type ProjectedValues = {
  * The listener type for click on the projection area.
  */
 export type ProjectionClickListener = (values: ProjectedValues) => void;
-/**
- * @public
- * The listener type for mouse move on the projection area.
- */
-export type ProjectionUpdateListener = (values: ProjectedValues) => void;
 
 /** @public */
 export type ElementClickListener = (
@@ -149,7 +144,11 @@ export type ElementOverListener = (
 export type BrushEndListener = (brushArea: XYBrushArea) => void;
 /** @public */
 export type LegendItemListener = (series: SeriesIdentifier[]) => void;
-/** @public */
+/**
+ * The listener type for generic mouse move
+ *
+ * @public
+ */
 export type PointerUpdateListener = (event: PointerEvent) => void;
 /**
  * Listener to be called when chart render state changes
@@ -172,7 +171,7 @@ export interface BasePointerEvent {
  * fired as callback argument for `PointerUpdateListener`
  * @public
  */
-export interface PointerOverEvent extends BasePointerEvent {
+export interface PointerOverEvent extends BasePointerEvent, ProjectedValues {
   type: typeof PointerEventType.Over;
   scale: ScaleContinuousType | ScaleOrdinalType;
   /**
@@ -180,7 +179,6 @@ export interface PointerOverEvent extends BasePointerEvent {
    * @alpha
    */
   unit?: string;
-  value: number | string | null;
 }
 /** @public */
 export interface PointerOutEvent extends BasePointerEvent {
@@ -506,7 +504,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * The listener will be called with the current x value snapped to the closest
    * X axis point, and an array of Y values for every groupId used in the chart.
    */
-  onProjectionUpdate?: ProjectionUpdateListener;
+  onProjectionUpdate?: PointerUpdateListener;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
   onElementOut?: BasicListener;

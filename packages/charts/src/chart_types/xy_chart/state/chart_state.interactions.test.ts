@@ -277,7 +277,10 @@ function mouseOverTestSuite(scaleType: XScaleType) {
       scale: scaleType,
       type: 'Over',
       unit: undefined,
-      value: 0,
+      x: 0,
+      y: [],
+      smVerticalValue: null,
+      smHorizontalValue: null,
     });
 
     // avoid multiple calls for the same value
@@ -288,7 +291,10 @@ function mouseOverTestSuite(scaleType: XScaleType) {
       scale: scaleType,
       type: 'Over',
       unit: undefined,
-      value: 1,
+      x: 1,
+      y: [],
+      smVerticalValue: null,
+      smHorizontalValue: null,
     });
 
     store.dispatch(onPointerMove({ x: chartLeft + 200, y: chartTop + 10 }, 1));
@@ -306,7 +312,10 @@ function mouseOverTestSuite(scaleType: XScaleType) {
         scale: scaleType,
         type: 'Over',
         unit: undefined,
-        value: 0,
+        x: 0,
+        y: [],
+        smVerticalValue: null,
+        smHorizontalValue: null,
       }),
     );
     let cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -318,7 +327,10 @@ function mouseOverTestSuite(scaleType: XScaleType) {
         scale: scaleType,
         type: 'Over',
         unit: undefined,
-        value: 0,
+        x: 0,
+        y: [],
+        smVerticalValue: null,
+        smHorizontalValue: null,
       }),
     );
     cursorBandPosition = getCursorBandPositionSelector(store.getState());
