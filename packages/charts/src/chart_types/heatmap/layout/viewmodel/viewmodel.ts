@@ -356,10 +356,10 @@ export function shapeViewModel(
         { y: 0, totalHeight: 0 },
       );
     return {
-      x: Math.round(xStart),
-      y: Math.round(yStart),
-      width: Math.round(width),
-      height: Math.round(totalHeight),
+      x: xStart,
+      y: yStart,
+      width,
+      height: totalHeight,
     };
   };
 
