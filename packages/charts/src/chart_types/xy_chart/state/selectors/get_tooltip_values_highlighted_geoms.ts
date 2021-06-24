@@ -141,8 +141,8 @@ function getTooltipAndHighlightFromValue(
   const showTooltipOnNullValues = getShowTooltipOnNullValues(settings);
   const showTooltipOnFittedValues = getShowTooltipOnFittedValues(settings);
   const values = matchingGeoms
-    .filter(({ value: { y, isFilled } }) => {
-      return (showTooltipOnNullValues && isNaN(y)) || (showTooltipOnFittedValues && isFilled) || !isNaN(y);
+    .filter(({ value: { y } }) => {
+      return (showTooltipOnNullValues && isNaN(y)) || !isNaN(y);
     })
     .reduce<TooltipValue[]>((acc, indexedGeometry) => {
       const {

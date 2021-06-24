@@ -73,7 +73,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 10],
           },
           transform: {
@@ -92,7 +92,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1, 5],
           },
           transform: {
@@ -169,7 +169,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 10],
           },
           transform: {
@@ -188,7 +188,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1, 5],
           },
           transform: {
@@ -216,7 +216,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 0,
             y: 20,
-            mark: null,
+            mark: NaN,
             datum: [0, 20],
           },
           transform: {
@@ -235,7 +235,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1, 10],
           },
           transform: {
@@ -290,7 +290,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 10],
           },
           transform: {
@@ -309,7 +309,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1, 5],
           },
           transform: {
@@ -387,7 +387,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 10],
           },
           transform: {
@@ -406,7 +406,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1, 5],
           },
           transform: {
@@ -434,7 +434,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 0,
             y: 20,
-            mark: null,
+            mark: NaN,
             datum: [0, 20],
           },
           transform: {
@@ -453,7 +453,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1, 10],
           },
           transform: {
@@ -508,7 +508,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1546300800000,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1546300800000, 10],
           },
           transform: {
@@ -527,7 +527,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1546387200000,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1546387200000, 5],
           },
           transform: {
@@ -590,7 +590,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1546300800000,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1546300800000, 10],
           },
           transform: {
@@ -609,7 +609,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1546387200000,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1546387200000, 5],
           },
           transform: {
@@ -638,7 +638,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1546300800000,
             y: 20,
-            mark: null,
+            mark: NaN,
             datum: [1546300800000, 20],
           },
           transform: {
@@ -657,7 +657,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1546387200000,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1546387200000, 10],
           },
           transform: {
@@ -698,7 +698,7 @@ describe('Rendering points - bubble', () => {
 
     test('Can render a split bubble', () => {
       const [{ value: renderedBubble }] = bubbles;
-      expect(renderedBubble.points).toHaveLength(7);
+      expect(renderedBubble.points.filter(({ y }) => isFinite(y))).toHaveLength(7);
       expect(renderedBubble.color).toBe('red');
       expect(renderedBubble.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(renderedBubble.seriesIdentifier.specId).toEqual(SPEC_ID);
@@ -710,9 +710,9 @@ describe('Rendering points - bubble', () => {
         },
       ] = bubbles;
       // all the points minus the undefined ones on a log scale
-      expect(points.length).toBe(7);
-      // all the points expect null geometries
-      expect(geometriesIndex.size).toEqual(8);
+      expect(points.filter(({ y }) => isFinite(y))).toHaveLength(7);
+      // all the points geometries, NaN included
+      expect(geometriesIndex.size).toEqual(9);
 
       const zeroValueIndexdGeometry = geometriesIndex.find(null, {
         x: 56.25,
@@ -768,7 +768,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 0,
             y: 0,
-            mark: null,
+            mark: NaN,
             datum: [0, 0],
           },
         }),
@@ -783,7 +783,7 @@ describe('Rendering points - bubble', () => {
             accessor: 'y1',
             x: 1,
             y: 1,
-            mark: null,
+            mark: NaN,
             datum: [1, 1],
           },
         }),

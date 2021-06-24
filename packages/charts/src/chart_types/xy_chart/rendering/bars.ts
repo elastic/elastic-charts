@@ -27,7 +27,6 @@ import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 import { BarStyleAccessor, DisplayValueSpec, StackMode } from '../utils/specs';
-import { isDatumFilled } from './utils';
 
 /** @internal */
 export function renderBars(
@@ -176,7 +175,6 @@ export function renderBars(
         mark: NaN,
         accessor: BandedAccessorType.Y1,
         datum: datum.datum,
-        isFilled: isDatumFilled(datum),
       },
       seriesIdentifier,
       seriesStyle,

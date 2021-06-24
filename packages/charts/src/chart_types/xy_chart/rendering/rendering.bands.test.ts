@@ -81,7 +81,7 @@ describe('Rendering bands - areas', () => {
             accessor: 'y0',
             x: 0,
             y: 2,
-            mark: null,
+            mark: NaN,
             datum: [0, 2, 10],
           },
           transform: {
@@ -101,7 +101,7 @@ describe('Rendering bands - areas', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 2, 10],
           },
           transform: {
@@ -120,7 +120,7 @@ describe('Rendering bands - areas', () => {
             accessor: 'y0',
             x: 1,
             y: 3,
-            mark: null,
+            mark: NaN,
             datum: [1, 3, 5],
           },
           transform: {
@@ -139,7 +139,7 @@ describe('Rendering bands - areas', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1, 3, 5],
           },
           transform: {
@@ -189,111 +189,16 @@ describe('Rendering bands - areas', () => {
       expect(transform).toEqual({ x: 12.5, y: 0 });
     });
 
-    test('Can render two points', () => {
+    test('should render points', () => {
       const [
         {
           value: { points },
         },
       ] = areas;
-      expect(points.length).toBe(6);
-      const getPointGeo = MockPointGeometry.fromBaseline(
-        {
-          x: 0,
-          y: 0,
-          color: 'red',
-          value: {
-            accessor: 'y1',
-            x: 0,
-            y: 10,
-            mark: null,
-            datum: [0, 2, 10],
-          },
-          transform: {
-            x: 12.5,
-            y: 0,
-          },
-        },
-        'seriesIdentifier',
-      );
-      expect(points[0]).toMatchObject(
-        getPointGeo({
-          x: 0,
-          y: 80,
-          value: {
-            accessor: 'y0',
-            x: 0,
-            y: 2,
-            mark: null,
-            datum: [0, 2, 10],
-          },
-          // the first point is also an orphan because the next one is null
-          orphan: true,
-        }),
-      );
-      expect(points[1]).toMatchObject(
-        getPointGeo({
-          value: {
-            accessor: 'y1',
-            x: 0,
-            y: 10,
-            mark: null,
-            datum: [0, 2, 10],
-          },
-          orphan: true,
-        }),
-      );
-      expect(points[2]).toMatchObject(
-        getPointGeo({
-          x: 50,
-          y: 70,
-          value: {
-            accessor: 'y0',
-            x: 2,
-            y: 3,
-            mark: null,
-            datum: [2, 3, 5],
-          },
-        }),
-      );
-      expect(points[3]).toMatchObject(
-        getPointGeo({
-          x: 50,
-          y: 50,
-          value: {
-            accessor: 'y1',
-            x: 2,
-            y: 5,
-            mark: null,
-            datum: [2, 3, 5],
-          },
-        }),
-      );
-      expect(points[4]).toMatchObject(
-        getPointGeo({
-          x: 75,
-          y: 70,
-          value: {
-            accessor: 'y0',
-            x: 3,
-            y: 3,
-            mark: null,
-            datum: [3, 3, 5],
-          },
-        }),
-      );
-      expect(points[5]).toMatchObject(
-        getPointGeo({
-          x: 75,
-          y: 50,
-          value: {
-            accessor: 'y1',
-            x: 3,
-            y: 5,
-            mark: null,
-            datum: [3, 3, 5],
-          },
-        }),
-      );
+
+      expect(points).toHaveLength(8);
+      // there are actually 7 points: 3 tuple + one single value with only a valid y1
+      expect(points.filter(({ y }) => isFinite(y))).toHaveLength(7);
     });
   });
   describe('Single series band bar chart - ordinal', () => {
@@ -322,7 +227,7 @@ describe('Rendering bands - areas', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render two bars', () => {
-      expect(bars.length).toBe(3);
+      expect(bars.filter(({ value: { y } }) => !isNaN(y)).length).toBe(3);
       expect(bars[0]).toEqual(
         MockBarGeometry.default({
           x: 0,
@@ -334,44 +239,8 @@ describe('Rendering bands - areas', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 2, 10],
-          },
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(barSeriesSpec),
-          displayValue: undefined,
-          seriesStyle: {
-            displayValue: {
-              fill: '#777',
-              fontFamily: 'sans-serif',
-              fontSize: 8,
-              fontStyle: 'normal',
-              offsetX: 0,
-              offsetY: 0,
-              padding: 0,
-            },
-            rect: {
-              opacity: 1,
-            },
-            rectBorder: {
-              strokeWidth: 1,
-              visible: false,
-            },
-          },
-        }),
-      );
-      expect(bars[1]).toEqual(
-        MockBarGeometry.default({
-          x: 50,
-          y: 50,
-          width: 25,
-          height: 20,
-          color: 'red',
-          value: {
-            accessor: 'y1',
-            x: 2,
-            y: 5,
-            mark: null,
-            datum: [2, 3, 5],
           },
           seriesIdentifier: MockSeriesIdentifier.fromSpec(barSeriesSpec),
           displayValue: undefined,
@@ -397,6 +266,42 @@ describe('Rendering bands - areas', () => {
       );
       expect(bars[2]).toEqual(
         MockBarGeometry.default({
+          x: 50,
+          y: 50,
+          width: 25,
+          height: 20,
+          color: 'red',
+          value: {
+            accessor: 'y1',
+            x: 2,
+            y: 5,
+            mark: NaN,
+            datum: [2, 3, 5],
+          },
+          seriesIdentifier: MockSeriesIdentifier.fromSpec(barSeriesSpec),
+          displayValue: undefined,
+          seriesStyle: {
+            displayValue: {
+              fill: '#777',
+              fontFamily: 'sans-serif',
+              fontSize: 8,
+              fontStyle: 'normal',
+              offsetX: 0,
+              offsetY: 0,
+              padding: 0,
+            },
+            rect: {
+              opacity: 1,
+            },
+            rectBorder: {
+              strokeWidth: 1,
+              visible: false,
+            },
+          },
+        }),
+      );
+      expect(bars[3]).toEqual(
+        MockBarGeometry.default({
           x: 75,
           y: 20,
           width: 25,
@@ -406,7 +311,7 @@ describe('Rendering bands - areas', () => {
             accessor: 'y1',
             x: 3,
             y: 8,
-            mark: null,
+            mark: NaN,
             datum: [3, 4, 8],
           },
           seriesIdentifier: MockSeriesIdentifier.fromSpec(barSeriesSpec),

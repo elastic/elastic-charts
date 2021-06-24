@@ -19,21 +19,34 @@
 
 import React from 'react';
 
-import { AreaSeries, Chart, ScaleType } from '../../packages/charts/src';
+import { AreaSeries, Chart, ScaleType, Settings } from '../../packages/charts/src';
 import { KIBANA_METRICS } from '../../packages/charts/src/utils/data_samples/test_dataset_kibana';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const { data } = KIBANA_METRICS.metrics.kibana_os_load[0];
   return (
-    <Chart className="story-chart">
+    <Chart className="story-chart" size={[90, 100]}>
+      <Settings
+        theme={{
+          chartMargins: { top: 0, left: 0, right: 0, bottom: 0 },
+          chartPaddings: { top: 0, left: 0, right: 0, bottom: 0 },
+        }}
+      />
       <AreaSeries
         id="area"
-        xScaleType={ScaleType.Time}
-        yScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Linear}
+        yScaleType={ScaleType.Log}
         xAccessor={0}
-        yAccessors={[1]}
-        data={data}
+        yAccessors={[2]}
+        y0Accessors={[1]}
+        data={[
+          [-1, 2, 10],
+          [0, 2, 10],
+          [1, 2, null],
+          [2, 3, 5],
+          [3, 3, 5],
+        ]}
       />
     </Chart>
   );

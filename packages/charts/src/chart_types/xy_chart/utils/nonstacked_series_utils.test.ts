@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { MockDataSeries } from '../../../mocks';
+import { MockDataSeries, MockDataSeriesDatum } from '../../../mocks';
 import { MockSeriesSpecs, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -99,104 +99,96 @@ describe('Non-Stacked Series Utils', () => {
       MockStore.addSpecs(STANDARD_DATA_SET, store);
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      expect(formattedDataSeries[0].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: 10,
-        x: 0,
-        y0: null,
-        y1: 10,
-        mark: null,
-      });
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: 20,
-        x: 0,
-        y0: null,
-        y1: 20,
-        mark: null,
-      });
-      expect(formattedDataSeries[2].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: 30,
-        x: 0,
-        y0: null,
-        y1: 30,
-        mark: null,
-      });
+      expect(formattedDataSeries[0].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({ x: 0, y1: 10, initialY1: 10, datum: STANDARD_DATA_SET.data[0] }),
+      );
+      expect(formattedDataSeries[1].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({ x: 0, y1: 20, initialY1: 20, datum: STANDARD_DATA_SET.data[1] }),
+      );
+      expect(formattedDataSeries[2].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({ x: 0, y1: 30, initialY1: 30, datum: STANDARD_DATA_SET.data[2] }),
+      );
     });
     test('format data with nulls', () => {
       const store = MockStore.default();
       MockStore.addSpecs(WITH_NULL_DATASET, store);
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: null,
-        x: 0,
-        y1: null,
-        y0: null,
-        mark: null,
-      });
+      expect(formattedDataSeries[1].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({ x: 0, y1: NaN, datum: WITH_NULL_DATASET.data[1] }),
+      );
     });
     test('format data without nulls with y0 values', () => {
       const store = MockStore.default();
       MockStore.addSpecs(STANDARD_DATA_SET_WY0, store);
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      expect(formattedDataSeries[0].data[0]).toMatchObject({
-        initialY0: 2,
-        initialY1: 10,
-        x: 0,
-        y0: 2,
-        y1: 10,
-        mark: null,
-      });
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
-        initialY0: 4,
-        initialY1: 20,
-        x: 0,
-        y0: 4,
-        y1: 20,
-        mark: null,
-      });
-      expect(formattedDataSeries[2].data[0]).toMatchObject({
-        initialY0: 6,
-        initialY1: 30,
-        x: 0,
-        y0: 6,
-        y1: 30,
-        mark: null,
-      });
+      expect(formattedDataSeries[0].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({
+          x: 0,
+          y1: 10,
+          y0: 2,
+          initialY0: 2,
+          initialY1: 10,
+          datum: STANDARD_DATA_SET_WY0.data[0],
+        }),
+      );
+      expect(formattedDataSeries[1].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: 4,
+          initialY1: 20,
+          x: 0,
+          y0: 4,
+          y1: 20,
+          datum: STANDARD_DATA_SET_WY0.data[1],
+        }),
+      );
+      expect(formattedDataSeries[2].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: 6,
+          initialY1: 30,
+          x: 0,
+          y0: 6,
+          y1: 30,
+          datum: STANDARD_DATA_SET_WY0.data[2],
+        }),
+      );
     });
     test('format data with nulls - fit functions', () => {
       const store = MockStore.default();
       MockStore.addSpecs(WITH_NULL_DATASET_WY0, store);
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      expect(formattedDataSeries[0].data[0]).toMatchObject({
-        initialY0: 2,
-        initialY1: 10,
-        x: 0,
-        y0: 2,
-        y1: 10,
-        mark: null,
-      });
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: null,
-        x: 0,
-        y1: null,
-        y0: null,
-        mark: null,
-      });
-      expect(formattedDataSeries[2].data[0]).toMatchObject({
-        initialY0: 6,
-        initialY1: 30,
-        x: 0,
-        y0: 6,
-        y1: 30,
-        mark: null,
-      });
+      expect(formattedDataSeries[0].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: 2,
+          initialY1: 10,
+          x: 0,
+          y0: 2,
+          y1: 10,
+          datum: WITH_NULL_DATASET_WY0.data[0],
+        }),
+      );
+      expect(formattedDataSeries[1].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: NaN,
+          x: 0,
+          y1: NaN,
+          y0: NaN,
+          datum: WITH_NULL_DATASET_WY0.data[1],
+        }),
+      );
+      expect(formattedDataSeries[2].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: 6,
+          initialY1: 30,
+          x: 0,
+          y0: 6,
+          y1: 30,
+          datum: WITH_NULL_DATASET_WY0.data[2],
+        }),
+      );
     });
     test('format data without nulls on second series', () => {
       const store = MockStore.default();
@@ -209,46 +201,56 @@ describe('Non-Stacked Series Utils', () => {
       expect(formattedDataSeries[0].data.length).toBe(3);
       expect(formattedDataSeries[1].data.length).toBe(2);
 
-      expect(formattedDataSeries[0].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: 1,
-        x: 1,
-        y0: null, // todo check if we can move that to 0
-        y1: 1,
-        mark: null,
-      });
-      expect(formattedDataSeries[0].data[1]).toMatchObject({
-        initialY0: null,
-        initialY1: 2,
-        x: 2,
-        y0: null,
-        y1: 2,
-        mark: null,
-      });
-      expect(formattedDataSeries[0].data[2]).toMatchObject({
-        initialY0: null,
-        initialY1: 4,
-        x: 4,
-        y0: null,
-        y1: 4,
-        mark: null,
-      });
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: 21,
-        x: 1,
-        y0: null,
-        y1: 21,
-        mark: null,
-      });
-      expect(formattedDataSeries[1].data[1]).toMatchObject({
-        initialY0: null,
-        initialY1: 23,
-        x: 3,
-        y0: null,
-        y1: 23,
-        mark: null,
-      });
+      expect(formattedDataSeries[0].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: 1,
+          x: 1,
+          y0: NaN,
+          y1: 1,
+          datum: DATA_SET_WITH_NULL_2.data[0],
+        }),
+      );
+      expect(formattedDataSeries[0].data[1]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: 2,
+          x: 2,
+          y0: NaN,
+          y1: 2,
+          datum: DATA_SET_WITH_NULL_2.data[1],
+        }),
+      );
+      expect(formattedDataSeries[0].data[2]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: 4,
+          x: 4,
+          y0: NaN,
+          y1: 4,
+          datum: DATA_SET_WITH_NULL_2.data[2],
+        }),
+      );
+      expect(formattedDataSeries[1].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: 21,
+          x: 1,
+          y0: NaN,
+          y1: 21,
+          datum: DATA_SET_WITH_NULL_2.data[3],
+        }),
+      );
+      expect(formattedDataSeries[1].data[1]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: 23,
+          x: 3,
+          y0: NaN,
+          y1: 23,
+          datum: DATA_SET_WITH_NULL_2.data[4],
+        }),
+      );
     });
   });
 

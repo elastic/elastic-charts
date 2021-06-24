@@ -88,7 +88,10 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
         (ctx) => {
           renderPoints(ctx, visiblePoints, geometryStateStyle);
         },
-        { area: clippings, shouldClip: points.length > 0 && !isNaN(points[0].value.mark) },
+        {
+          area: clippings,
+          shouldClip: points.length > 0 && points[0].value.mark !== null && !isNaN(points[0].value.mark),
+        },
       );
     });
   });

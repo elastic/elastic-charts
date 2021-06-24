@@ -78,7 +78,6 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
             datum: [0, 10],
           },
           transform: {
@@ -97,7 +96,6 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
             datum: [1, 5],
           },
           transform: {
@@ -176,7 +174,6 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
             datum: [0, 10],
           },
           transform: {
@@ -195,7 +192,6 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
             datum: [1, 5],
           },
           transform: {
@@ -224,7 +220,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 0,
             y: 20,
-            mark: null,
+            mark: NaN,
             datum: [0, 20],
           },
           transform: {
@@ -243,7 +239,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1, 10],
           },
           transform: {
@@ -301,7 +297,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 10],
           },
         }),
@@ -316,7 +312,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1, 5],
           },
         }),
@@ -390,7 +386,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 10],
           },
         }),
@@ -405,7 +401,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1, 5],
           },
         }),
@@ -430,7 +426,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 0,
             y: 20,
-            mark: null,
+            mark: NaN,
             datum: [0, 20],
           },
         }),
@@ -445,7 +441,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1, 10],
           },
         }),
@@ -499,7 +495,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1546300800000,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1546300800000, 10],
           },
         }),
@@ -514,7 +510,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1546387200000,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1546387200000, 5],
           },
         }),
@@ -574,7 +570,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1546300800000,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1546300800000, 10],
           },
         }),
@@ -589,7 +585,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1546387200000,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1546387200000, 5],
           },
         }),
@@ -611,7 +607,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1546300800000,
             y: 20,
-            mark: null,
+            mark: NaN,
             datum: [1546300800000, 20],
           },
           style: {
@@ -635,7 +631,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1546387200000,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1546387200000, 10],
           },
           style: {
@@ -695,18 +691,16 @@ describe('Rendering points - line', () => {
         },
       ] = lines;
       // all the points minus the undefined ones on a log scale
-      expect(points.length).toBe(7);
-      // all the points expect null geometries
-      expect(geometriesIndex.size).toEqual(8);
-      const nullIndexdGeometry = geometriesIndex.find(2)!;
-      expect(nullIndexdGeometry).toEqual([]);
+      expect(points.filter(({ y }) => isFinite(y)).length).toBe(7);
+      // all the points NaN included
+      expect(geometriesIndex.size).toEqual(9);
+      expect(geometriesIndex.find(2)).toBeDefined();
 
-      const zeroValueIndexdGeometry = geometriesIndex.find(5)!;
-      expect(zeroValueIndexdGeometry).toBeDefined();
-      expect(zeroValueIndexdGeometry.length).toBe(1);
+      expect(geometriesIndex.find(5)).toBeDefined();
+
       // the zero value is moved vertically to infinity
-      expect((zeroValueIndexdGeometry[0] as PointGeometry).y).toBe(Infinity);
-      expect((zeroValueIndexdGeometry[0] as PointGeometry).radius).toBe(LIGHT_THEME.lineSeriesStyle.point.radius);
+      expect((geometriesIndex.find(5)[0] as PointGeometry).y).toBe(Infinity);
+      expect((geometriesIndex.find(5)[0] as PointGeometry).radius).toBe(LIGHT_THEME.lineSeriesStyle.point.radius);
     });
   });
   describe('Removing out-of-domain points', () => {
@@ -756,7 +750,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 0,
             y: 0,
-            mark: null,
+            mark: NaN,
             datum: [0, 0],
           },
         }),
@@ -771,7 +765,7 @@ describe('Rendering points - line', () => {
             accessor: 'y1',
             x: 1,
             y: 1,
-            mark: null,
+            mark: NaN,
             datum: [1, 1],
           },
         }),

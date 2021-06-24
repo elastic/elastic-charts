@@ -19,12 +19,24 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../packages/charts/src';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, StackMode } from '../../packages/charts/src';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => (
   <Chart className="story-chart">
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} />
+    <Settings
+      showLegend
+      showLegendExtra
+      legendPosition={Position.Right}
+      theme={{
+        barSeriesStyle: {
+          displayValue: {
+            fill: 'white',
+            fontSize: 10,
+          },
+        },
+      }}
+    />
     <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
@@ -36,10 +48,12 @@ export const Example = () => (
       yAccessors={['y']}
       stackAccessors={['x']}
       splitSeriesAccessors={['g']}
+      displayValueSettings={{ showValueLabel: true }}
+      stackMode={StackMode.Percentage}
       data={[
         { x: 0, y: 2, g: 'a' },
         { x: 1, y: 7, g: 'a' },
-        { x: 2, y: 3, g: 'a' },
+        { x: 2, y: NaN, g: 'a' },
         { x: 3, y: 6, g: 'a' },
         { x: 0, y: 4, g: 'b' },
         { x: 1, y: 5, g: 'b' },

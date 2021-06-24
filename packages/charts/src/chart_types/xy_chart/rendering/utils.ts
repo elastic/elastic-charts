@@ -179,6 +179,7 @@ export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
     const yValue = getValueAccessor(datum);
     return (
       isFinite(yValue) &&
+      !(isLogScale && yValue === 0) &&
       !((isLogScale && domainPolarity >= 0 && yValue <= 0) || (domainPolarity < 0 && yValue >= 0)) &&
       xScale.isValueInDomain(datum.x)
     );

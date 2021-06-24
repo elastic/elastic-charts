@@ -123,7 +123,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 10],
           },
           transform: {
@@ -154,7 +154,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1, 5],
           },
           transform: {
@@ -244,7 +244,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 10],
           },
           transform: {
@@ -275,7 +275,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1, 5],
           },
           transform: {
@@ -311,7 +311,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 0,
             y: 20,
-            mark: null,
+            mark: NaN,
             datum: [0, 20],
           },
           transform: {
@@ -342,7 +342,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1, 10],
           },
           transform: {
@@ -407,7 +407,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 10],
           },
         }),
@@ -422,7 +422,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1, 5],
           },
         }),
@@ -493,7 +493,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 0,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [0, 10],
           },
         }),
@@ -508,7 +508,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1, 5],
           },
         }),
@@ -530,7 +530,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 0,
             y: 20,
-            mark: null,
+            mark: NaN,
             datum: [0, 20],
           },
         }),
@@ -545,7 +545,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1, 10],
           },
         }),
@@ -596,7 +596,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1546300800000,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1546300800000, 10],
           },
         }),
@@ -611,7 +611,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1546387200000,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1546387200000, 5],
           },
         }),
@@ -665,7 +665,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1546300800000,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1546300800000, 10],
           },
         }),
@@ -681,7 +681,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1546387200000,
             y: 5,
-            mark: null,
+            mark: NaN,
             datum: [1546387200000, 5],
           },
         }),
@@ -704,7 +704,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1546300800000,
             y: 20,
-            mark: null,
+            mark: NaN,
             datum: [1546300800000, 20],
           },
         }),
@@ -720,7 +720,7 @@ describe('Rendering points - areas', () => {
             accessor: 'y1',
             x: 1546387200000,
             y: 10,
-            mark: null,
+            mark: NaN,
             datum: [1546387200000, 10],
           },
         }),
@@ -758,14 +758,17 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
 
       const [{ value: firstArea }] = areas;
-      expect(firstArea.lines[0].split('M').length - 1).toBe(3);
-      expect(firstArea.area.split('M').length - 1).toBe(3);
+
+      // the data presents two undetermined points: the null at x=2 and the 0 at x=5
+      // the line should be split into 3 segments, each identifiable by the M SVG operation
+      expect((firstArea.lines[0].match(/M/g) ?? []).length).toBe(3);
+      expect((firstArea.area.match(/M/g) ?? []).length).toBe(3);
       expect(firstArea.color).toBe('red');
       expect(firstArea.seriesIdentifier.seriesKeys).toEqual([1]);
       expect(firstArea.seriesIdentifier.specId).toEqual(SPEC_ID);
       expect(firstArea.transform).toEqual({ x: 0, y: 0 });
     });
-    test('Can render points', () => {
+    test('should render points', () => {
       const {
         geometriesIndex,
         geometries: { areas },
@@ -775,20 +778,19 @@ describe('Rendering points - areas', () => {
           value: { points },
         },
       ] = areas;
-      // all the points minus the undefined ones on a log scale
-      expect(points.length).toBe(7);
-      // all the points expect null geometries
-      expect(geometriesIndex.size).toEqual(8);
-      const nullIndexdGeometry = geometriesIndex.find(2)!;
-      expect(nullIndexdGeometry).toEqual([]);
+      // all the points minus the NaN ones on a log scale
+      expect(points.filter(({ y }) => isFinite(y)).length).toBe(7);
+      // all the points (NaN included)
+      expect(geometriesIndex.size).toEqual(9);
+      // original null value included
+      expect(geometriesIndex.find(2)).toBeDefined();
 
-      const zeroValueIndexdGeometry = geometriesIndex.find(5)!;
-      expect(zeroValueIndexdGeometry).toBeDefined();
-      expect(zeroValueIndexdGeometry.length).toBe(1);
+      expect(geometriesIndex.find(5)).toBeDefined();
+
       // moved to the bottom of the chart
-      expect(zeroValueIndexdGeometry[0].y).toBe(Infinity);
+      expect(geometriesIndex.find(5)[0].y).toBe(Infinity);
       // default area theme point radius
-      expect((zeroValueIndexdGeometry[0] as PointGeometry).radius).toBe(LIGHT_THEME.areaSeriesStyle.point.radius);
+      expect((geometriesIndex.find(5)[0] as PointGeometry).radius).toBe(LIGHT_THEME.areaSeriesStyle.point.radius);
     });
   });
   it('Stacked areas with 0 values', () => {
@@ -825,21 +827,21 @@ describe('Rendering points - areas', () => {
     expect(domains.formattedDataSeries[0].data).toMatchObject([
       {
         datum: [1546300800000, 0],
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 0,
         x: 1546300800000,
         y0: 0,
         y1: 0,
-        mark: null,
+        mark: NaN,
       },
       {
         datum: [1546387200000, 5],
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 5,
         x: 1546387200000,
         y0: 0,
         y1: 0.7142857142857143,
-        mark: null,
+        mark: NaN,
       },
     ]);
   });
@@ -874,42 +876,42 @@ describe('Rendering points - areas', () => {
     expect(domains.formattedDataSeries[0].data).toMatchObject([
       {
         datum: [1546300800000, null],
-        initialY0: null,
-        initialY1: null,
+        initialY0: NaN,
+        initialY1: NaN,
         x: 1546300800000,
         y0: 0,
         y1: 0,
-        mark: null,
+        mark: NaN,
       },
       {
         datum: [1546387200000, 5],
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 5,
         x: 1546387200000,
         y0: 0,
         y1: 5,
-        mark: null,
+        mark: NaN,
       },
     ]);
 
     expect(domains.formattedDataSeries[1].data).toEqual([
       {
         datum: [1546300800000, 3],
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 3,
         x: 1546300800000,
         y0: 0,
         y1: 3,
-        mark: null,
+        mark: NaN,
       },
       {
         datum: [1546387200000, null],
-        initialY0: null,
-        initialY1: null,
+        initialY0: NaN,
+        initialY1: NaN,
         x: 1546387200000,
         y0: 5,
         y1: 5,
-        mark: null,
+        mark: NaN,
       },
     ]);
   });

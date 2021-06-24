@@ -174,28 +174,28 @@ describe('Stacked Series Utils', () => {
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
       expect(formattedDataSeries[0].data[0]).toMatchObject({
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 10,
         x: 0,
         y0: 0,
         y1: 10,
-        mark: null,
+        mark: NaN,
       });
       expect(formattedDataSeries[1].data[0]).toMatchObject({
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 20,
         x: 0,
         y0: 10,
         y1: 30,
-        mark: null,
+        mark: NaN,
       });
       expect(formattedDataSeries[2].data[0]).toMatchObject({
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 30,
         x: 0,
         y0: 30,
         y1: 60,
-        mark: null,
+        mark: NaN,
       });
     });
     test('format data with nulls', () => {
@@ -204,12 +204,11 @@ describe('Stacked Series Utils', () => {
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
       expect(formattedDataSeries[1].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: null,
+        initialY0: NaN,
+        initialY1: NaN,
         x: 0,
         y1: 10,
         y0: 10,
-        mark: null,
       });
     });
     test('format data without nulls with y0 values', () => {
@@ -223,7 +222,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 2,
         y1: 10,
-        mark: null,
+        mark: NaN,
       });
       expect(formattedDataSeries[1].data[0]).toMatchObject({
         initialY0: 4,
@@ -231,7 +230,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 14,
         y1: 30,
-        mark: null,
+        mark: NaN,
       });
       expect(formattedDataSeries[2].data[0]).toMatchObject({
         initialY0: 6,
@@ -239,7 +238,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 36,
         y1: 60,
-        mark: null,
+        mark: NaN,
       });
     });
     test('format data with nulls - missing points', () => {
@@ -253,15 +252,15 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 2,
         y1: 10,
-        mark: null,
+        mark: NaN,
       });
       expect(formattedDataSeries[1].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: null,
+        initialY0: NaN,
+        initialY1: NaN,
         x: 0,
         y1: 10,
         y0: 10,
-        mark: null,
+        mark: NaN,
       });
       expect(formattedDataSeries[2].data[0]).toMatchObject({
         initialY0: 6,
@@ -269,7 +268,7 @@ describe('Stacked Series Utils', () => {
         x: 0,
         y0: 16,
         y1: 40,
-        mark: null,
+        mark: NaN,
       });
     });
     test('format data without nulls on second series', () => {
@@ -282,44 +281,44 @@ describe('Stacked Series Utils', () => {
       expect(formattedDataSeries[1].data).toHaveLength(4);
 
       expect(formattedDataSeries[0].data[0]).toMatchObject({
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 1,
         x: 1,
         y0: 0,
         y1: 1,
-        mark: null,
+        mark: NaN,
       });
       expect(formattedDataSeries[0].data[1]).toMatchObject({
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 2,
         x: 2,
         y0: 0,
         y1: 2,
-        mark: null,
+        mark: NaN,
       });
       expect(formattedDataSeries[0].data[3]).toMatchObject({
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 4,
         x: 4,
         y0: 0,
         y1: 4,
-        mark: null,
+        mark: NaN,
       });
       expect(formattedDataSeries[1].data[0]).toMatchObject({
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 21,
         x: 1,
         y0: 1,
         y1: 22,
-        mark: null,
+        mark: NaN,
       });
       expect(formattedDataSeries[1].data[2]).toMatchObject({
-        initialY0: null,
+        initialY0: NaN,
         initialY1: 23,
         x: 3,
         y0: 0,
         y1: 23,
-        mark: null,
+        mark: NaN,
       });
     });
   });
@@ -341,20 +340,20 @@ describe('Stacked Series Utils', () => {
     const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
     expect(formattedDataSeries[1].data[0]).toMatchObject({
-      initialY0: null,
+      initialY0: NaN,
       initialY1: 0,
       x: 1,
       y0: 0,
       y1: 0,
-      mark: null,
+      mark: NaN,
     });
     expect(formattedDataSeries[0].data[0]).toMatchObject({
-      initialY0: null,
+      initialY0: NaN,
       initialY1: 0,
       x: 1,
       y0: 0,
       y1: 0,
-      mark: null,
+      mark: NaN,
     });
   });
 });

@@ -61,7 +61,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
-          mark: null,
+          mark: NaN,
           datum: [0, 10],
         },
         seriesIdentifier: MockSeriesIdentifier.fromSpec(spec),
@@ -257,7 +257,7 @@ describe('Rendering bars', () => {
           accessor: 'y1',
           x: 0,
           y: 10,
-          mark: null,
+          mark: NaN,
         },
         seriesIdentifier: MockSeriesIdentifier.fromSpec(barSeriesSpec1),
       },
@@ -387,7 +387,7 @@ describe('Rendering bars', () => {
   //           accessor: 'y1',
   //           x: 0,
   //           y: 10,
-  //           mark: null,
+  //           mark: NaN,
   //         },
   //         seriesIdentifier: {
   //           specId: SPEC_ID,
@@ -679,7 +679,7 @@ describe('Rendering bars', () => {
   //           accessor: 'y1',
   //           x: 1546387200000,
   //           y: 5,
-  //           mark: null,
+  //           mark: NaN,
   //         },
   //       }),
   //     );
@@ -704,7 +704,7 @@ describe('Rendering bars', () => {
   //           accessor: 'y1',
   //           x: 1546300800000,
   //           y: 20,
-  //           mark: null,
+  //           mark: NaN,
   //         },
   //         seriesIdentifier: {
   //           specId: spec2Id,
@@ -729,7 +729,7 @@ describe('Rendering bars', () => {
   //           accessor: 'y1',
   //           x: 1546387200000,
   //           y: 10,
-  //           mark: null,
+  //           mark: NaN,
   //         },
   //       }),
   //     );

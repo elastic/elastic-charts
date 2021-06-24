@@ -631,8 +631,8 @@ describe('Series', () => {
 
     datum = extractYAndMarkFromDatum([0, 'invalid', 'invalid'], 1, [], 2);
     expect(datum).toBeDefined();
-    expect(datum?.y1).toBe(null);
-    expect(datum?.y0).toBe(null);
+    expect(datum?.y1).toBeNaN();
+    expect(datum?.y0).toBeNaN();
   });
   describe('#getSeriesNameKeys', () => {
     const data = dg.generateGroupedSeries(50, 2).map((d) => ({ ...d, y2: d.y }));

@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { MockDataSeriesDatum } from '../../../mocks/series/series';
 import { MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -43,7 +44,7 @@ describe('Stacked Series Utils', () => {
   const WITH_NULL_DATASET_WY0 = [
     { x: 0, y0: 2, y1: 10, g: 'a' },
     { x: 0, y1: null, g: 'b' },
-    { x: 0, y0: 6, y1: 90, mark: null, g: 'c' },
+    { x: 0, y0: 6, y1: 90, mark: NaN, g: 'c' },
   ];
   const DATA_SET_WITH_NULL_2 = [
     { x: 1, y1: 10, g: 'a' },
@@ -107,14 +108,16 @@ describe('Stacked Series Utils', () => {
       expect(data0.y0).toBe(0);
       expect(data0.y1).toBe(0.25);
 
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: null,
-        x: 0,
-        y1: 0.25,
-        y0: 0.25,
-        mark: null,
-      });
+      expect(formattedDataSeries[1].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({
+          x: 0,
+          y1: 0.25,
+          y0: 0.25,
+          initialY0: NaN,
+          initialY1: NaN,
+          datum: WITH_NULL_DATASET[1],
+        }),
+      );
 
       const [data2] = formattedDataSeries[2].data;
       expect(data2.initialY1).toBe(30);
@@ -180,8 +183,8 @@ describe('Stacked Series Utils', () => {
       expect(data0.y1).toBe(0.1);
 
       const [data1] = formattedDataSeries[1].data;
-      expect(data1.initialY0).toBe(null);
-      expect(data1.initialY1).toBe(null);
+      expect(data1.initialY0).toBeNaN();
+      expect(data1.initialY1).toBeNaN();
       expect(data1.y0).toBe(0.1);
       expect(data1.y1).toBe(0.1);
 
@@ -212,57 +215,68 @@ describe('Stacked Series Utils', () => {
       expect(formattedDataSeries).toHaveLength(2);
       expect(formattedDataSeries[0].data).toHaveLength(4);
       expect(formattedDataSeries[1].data).toHaveLength(4);
-      expect(formattedDataSeries[0].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: 10,
-        x: 1,
-        y0: 0,
-        y1: 0.1,
-        mark: null,
-      });
-      expect(formattedDataSeries[0].data[1]).toMatchObject({
-        initialY0: null,
-        initialY1: 20,
-        x: 2,
-        y0: 0,
-        y1: 1,
-        mark: null,
-      });
-      expect(formattedDataSeries[0].data[3]).toMatchObject({
-        initialY0: null,
-        initialY1: 40,
-        x: 4,
-        y0: 0,
-        y1: 1,
-        mark: null,
-      });
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
-        initialY0: null,
-        initialY1: 90,
-        x: 1,
-        y0: 0.1,
-        y1: 1,
-        mark: null,
-      });
-      expect(formattedDataSeries[1].data[1]).toMatchObject({
-        initialY0: null,
-        initialY1: null,
-        x: 2,
-        y0: 1,
-        y1: 1,
-        mark: null,
-        filled: {
+      expect(formattedDataSeries[0].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: 10,
+          x: 1,
+          y0: 0,
+          y1: 0.1,
+          datum: DATA_SET_WITH_NULL_2[0],
+        }),
+      );
+      expect(formattedDataSeries[0].data[1]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: 20,
           x: 2,
-        },
-      });
-      expect(formattedDataSeries[1].data[2]).toMatchObject({
-        initialY0: null,
-        initialY1: 30,
-        x: 3,
-        y0: 0,
-        y1: 1,
-        mark: null,
-      });
+          y0: 0,
+          y1: 1,
+          datum: DATA_SET_WITH_NULL_2[1],
+        }),
+      );
+      expect(formattedDataSeries[0].data[3]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: 40,
+          x: 4,
+          y0: 0,
+          y1: 1,
+          datum: DATA_SET_WITH_NULL_2[2],
+        }),
+      );
+      expect(formattedDataSeries[1].data[0]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: 90,
+          x: 1,
+          y0: 0.1,
+          y1: 1,
+          datum: DATA_SET_WITH_NULL_2[3],
+        }),
+      );
+      expect(formattedDataSeries[1].data[1]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: NaN,
+          x: 2,
+          y0: 1,
+          y1: 1,
+          filled: {
+            x: 2,
+          },
+        }),
+      );
+      expect(formattedDataSeries[1].data[2]).toMatchObject(
+        MockDataSeriesDatum.default({
+          initialY0: NaN,
+          initialY1: 30,
+          x: 3,
+          y0: 0,
+          y1: 1,
+          datum: DATA_SET_WITH_NULL_2[4],
+        }),
+      );
     });
   });
 });

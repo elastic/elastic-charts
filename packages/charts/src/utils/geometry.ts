@@ -39,15 +39,14 @@ export type BandedAccessorType = $Values<typeof BandedAccessorType>;
 
 /** @public */
 export interface GeometryValue {
-  x: number | string;
-  y: number;
-  mark: number;
+  x: any;
+  y: any;
+  mark: number | null;
   accessor: BandedAccessorType;
   /**
    * The original datum used for this geometry
    */
-  datum: unknown;
-  isFilled: boolean;
+  datum: any;
 }
 
 /** @internal */

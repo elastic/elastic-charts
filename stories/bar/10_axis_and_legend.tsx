@@ -35,6 +35,7 @@ export const Example = () => (
       yScaleType={ScaleType.Linear}
       xAccessor="x"
       yAccessors={['y']}
+      displayValueSettings={{ showValueLabel: true }}
       data={[
         { x: 0, y: 2 },
         { x: 1, y: 7 },

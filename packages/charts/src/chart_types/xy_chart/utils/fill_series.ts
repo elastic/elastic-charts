@@ -60,7 +60,7 @@ export function fillSeries(
         initialY1: NaN,
         initialY0: NaN,
         mark: NaN,
-        datum: NaN,
+        datum: undefined,
         filled: {
           x: missingValue,
         },

@@ -575,8 +575,8 @@ describe('Fit Function', () => {
             const actual = testModule.fitFunction(sortedDS.data, { type: Fit.None, endValue }, scaleType);
             const finalValues = getYResolvedData(actual);
 
-            expect(finalValues[0]).toBeNull();
-            expect(finalValues[finalValues.length - 1]).toBeNull();
+            expect(finalValues[0]).toBeNaN();
+            expect(finalValues[finalValues.length - 1]).toBeNaN();
           });
 
           it('should set end values - Zero', () => {
@@ -639,8 +639,8 @@ describe('Fit Function', () => {
             const actual = testModule.fitFunction(sortedDS.data, { type: Fit.None, endValue }, scaleType);
             const finalValues = getYResolvedData(actual);
 
-            expect(finalValues[0]).toBeNull();
-            expect(finalValues[finalValues.length - 1]).toBeNull();
+            expect(finalValues[0]).toBeNaN();
+            expect(finalValues[finalValues.length - 1]).toBeNaN();
           });
 
           it('should set end values - Zero', () => {
@@ -805,7 +805,7 @@ describe('Fit Function', () => {
           it('should call getValue for only null values', () => {
             testModule.fitFunction(dataSeries.data, Fit.Lookahead, scaleType);
 
-            const { length } = dataSeries.data.filter(({ y1 }) => y1 === null);
+            const { length } = dataSeries.data.filter(({ y1 }) => isNaN(y1));
 
             expect(testModule.getValue).toBeCalledTimes(length);
           });
@@ -814,7 +814,7 @@ describe('Fit Function', () => {
             const actual = testModule.fitFunction(dataSeries.data, Fit.Lookahead, scaleType);
             const finalValues = getYResolvedData(actual);
 
-            expect(finalValues).toEqual([3, 3, 5, 4, 4, 5, 5, 6, 12, 12, 12, 12, null]);
+            expect(finalValues).toEqual([3, 3, 5, 4, 4, 5, 5, 6, 12, 12, 12, 12, NaN]);
           });
         });
         describe('Nearest', () => {
@@ -881,7 +881,7 @@ describe('Fit Function', () => {
 
           it('should call getValue for only null values', () => {
             testModule.fitFunction(dataSeries.data, Fit.Nearest, scaleType);
-            const { length } = dataSeries.data.filter(({ y1 }) => y1 === null);
+            const { length } = dataSeries.data.filter(({ y1 }) => isNaN(y1));
 
             expect(testModule.getValue).toBeCalledTimes(length);
           });
@@ -958,7 +958,7 @@ describe('Fit Function', () => {
 
           it('should call getValue for only null values', () => {
             testModule.fitFunction(dataSeries.data, Fit.Average, scaleType);
-            const { length } = dataSeries.data.filter(({ y1 }) => y1 === null);
+            const { length } = dataSeries.data.filter(({ y1 }) => isNaN(y1));
 
             expect(testModule.getValue).toBeCalledTimes(length);
           });
@@ -967,7 +967,7 @@ describe('Fit Function', () => {
             const actual = testModule.fitFunction(dataSeries.data, Fit.Average, scaleType);
             const finalValues = getYResolvedData(actual);
 
-            expect(finalValues).toEqual([null, 3, 5, 4.5, 4, 4.5, 5, 6, 9, 9, 9, 12, null]);
+            expect(finalValues).toEqual([NaN, 3, 5, 4.5, 4, 4.5, 5, 6, 9, 9, 9, 12, NaN]);
           });
         });
 
@@ -1035,7 +1035,7 @@ describe('Fit Function', () => {
 
           it('should call getValue for only null values', () => {
             testModule.fitFunction(dataSeries.data, Fit.Linear, scaleType);
-            const { length } = dataSeries.data.filter(({ y1 }) => y1 === null);
+            const { length } = dataSeries.data.filter(({ y1 }) => isNaN(y1));
 
             expect(testModule.getValue).toBeCalledTimes(length);
           });
@@ -1044,7 +1044,7 @@ describe('Fit Function', () => {
             const actual = testModule.fitFunction(dataSeries.data, Fit.Linear, scaleType);
             const finalValues = getYResolvedData(actual);
 
-            expect(finalValues).toEqual([null, 3, 5, 4.5, 4, 4.5, 5, 6, 7.5, 9, 10.5, 12, null]);
+            expect(finalValues).toEqual([NaN, 3, 5, 4.5, 4, 4.5, 5, 6, 7.5, 9, 10.5, 12, NaN]);
           });
         });
       });

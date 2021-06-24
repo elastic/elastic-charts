@@ -690,7 +690,7 @@ describe('Annotation utils', () => {
 
     const emptyOutOfBoundsYDimensions = computeAnnotationDimensionsSelector(store.getState());
 
-    expect(emptyOutOfBoundsYDimensions.get('foo-line')).toHaveLength(0);
+    expect((emptyOutOfBoundsYDimensions.get('foo-line') as AnnotationLineProps[])[0].linePathPoints.y1).toBeNaN();
 
     const outOfBoundsYLineAnnotation = MockAnnotationSpec.line({
       id: annotationId,

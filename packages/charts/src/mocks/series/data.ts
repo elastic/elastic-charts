@@ -99,7 +99,7 @@ export const fitFunctionData: DataSeriesDatum[] = [
     y0: 0,
     initialY1: 5,
     initialY0: 0,
-    mark: null,
+    mark: NaN,
     datum: {
       x: 6,
       y: 5,

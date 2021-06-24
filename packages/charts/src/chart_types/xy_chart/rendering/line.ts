@@ -29,14 +29,7 @@ import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum } from '../utils/series';
 import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
-import {
-  getClippedRanges,
-  getY1ScaledValue,
-  getYDatumValueFn,
-  isDatumFilled,
-  isYValueDefinedFn,
-  MarkSizeOptions,
-} from './utils';
+import { getClippedRanges, getY1ScaledValue, getYDatumValueFn, isYValueDefinedFn, MarkSizeOptions } from './utils';
 
 /** @internal */
 export function renderLine(
@@ -85,7 +78,7 @@ export function renderLine(
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
   let linePath: string;
   try {
-    linePath = pathGenerator(dataSeries.data.filter((d) => isFinite(d.y1) && !isDatumFilled(d))) || '';
+    linePath = pathGenerator(dataSeries.data) || '';
   } catch {
     // When values are not scalable
     linePath = '';

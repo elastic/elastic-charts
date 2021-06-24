@@ -61,7 +61,7 @@ export class MockPointGeometry {
       accessor: 'y0',
       x: 0,
       y: 0,
-      mark: null,
+      mark: NaN,
       datum: { x: 0, y: 0 },
     },
     transform: {
@@ -109,7 +109,7 @@ export class MockBarGeometry {
       accessor: 'y0',
       x: 0,
       y: 0,
-      mark: null,
+      mark: NaN,
       datum: { x: 0, y: 0 },
     },
     seriesStyle: barSeriesStyle,

@@ -60,7 +60,7 @@ describe('Rendering utils', () => {
         accessor: 'y1',
         x: 0,
         y: 0,
-        mark: null,
+        mark: NaN,
         datum: { x: 0, y: 0 },
       },
       x: 0,
@@ -91,7 +91,7 @@ describe('Rendering utils', () => {
         accessor: 'y1',
         x: 0,
         y: 0,
-        mark: null,
+        mark: NaN,
         datum: { x: 0, y: 0 },
       },
       transform: {
@@ -247,7 +247,7 @@ describe('Rendering utils', () => {
       y0: 3,
       initialY1: 4,
       initialY0: 5,
-      mark: null,
+      mark: NaN,
       datum: null,
     };
     const seriesIdentifier: XYChartSeriesIdentifier = {
@@ -341,7 +341,7 @@ describe('Rendering utils', () => {
       y0: 3,
       initialY1: 4,
       initialY0: 5,
-      mark: null,
+      mark: NaN,
       datum: null,
     };
     const seriesIdentifier: XYChartSeriesIdentifier = {
@@ -466,7 +466,7 @@ describe('Rendering utils', () => {
         expect(getRadius).toBeFunction();
       });
 
-      it.each<[number, number]>([
+      it.each<[DataSeriesDatum['mark'], number]>([
         [0, 0],
         [10, 10],
         [1000, 1000],
@@ -513,7 +513,7 @@ describe('Rendering utils', () => {
           33.09,
           5.94,
         ];
-        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedValues[i]]))(
+        it.each<[DataSeriesDatum['mark'], number]>(data.map(({ mark }, i) => [mark, expectedValues[i]]))(
           'should return stepped value from domain - data[%#]',
           (mark, expected) => {
             expect(getRadius(mark)).toBeCloseTo(expected, 1);
@@ -521,8 +521,8 @@ describe('Rendering utils', () => {
         );
       });
 
-      it('should return default values when mark is null', () => {
-        expect(getRadius(null, 111)).toBe(111);
+      it('should return default values when mark is NaN', () => {
+        expect(getRadius(NaN, 111)).toBe(111);
       });
     });
 
@@ -538,22 +538,28 @@ describe('Rendering utils', () => {
       describe('markSizeRatio - -100', () => {
         // Should be treated as 0
         const getRadius = getRadiusFn(data, 1, -100);
-        it.each<[number | null]>(data.map(({ mark }) => [mark]))('should return stepped value - data[%#]', (mark) => {
-          expect(getRadius(mark)).toBe(1);
-        });
+        it.each<[DataSeriesDatum['mark']]>(data.map(({ mark }) => [mark]))(
+          'should return stepped value - data[%#]',
+          (mark) => {
+            expect(getRadius(mark)).toBe(1);
+          },
+        );
       });
 
       describe('markSizeRatio - 0', () => {
         const getRadius = getRadiusFn(data, 1, 0);
-        it.each<[number | null]>(data.map(({ mark }) => [mark]))('should return stepped value - data[%#]', (mark) => {
-          expect(getRadius(mark)).toBe(1);
-        });
+        it.each<[DataSeriesDatum['mark']]>(data.map(({ mark }) => [mark]))(
+          'should return stepped value - data[%#]',
+          (mark) => {
+            expect(getRadius(mark)).toBe(1);
+          },
+        );
       });
 
       describe('markSizeRatio - 1', () => {
         const getRadius = getRadiusFn(data, 1, 1);
         const expectedRadii = [2.62, 2.59, 1, 2.73, 2.63];
-        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
+        it.each<[DataSeriesDatum['mark'], number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
           'should return stepped value - data[%#]',
           (mark, expected) => {
             expect(getRadius(mark)).toBeCloseTo(expected, 1);
@@ -564,7 +570,7 @@ describe('Rendering utils', () => {
       describe('markSizeRatio - 10', () => {
         const getRadius = getRadiusFn(data, 1, 10);
         const expectedRadii = [9.09, 8.56, 1, 11.1, 9.38];
-        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
+        it.each<[DataSeriesDatum['mark'], number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
           'should return stepped value - data[%#]',
           (mark, expected) => {
             expect(getRadius(mark)).toBeCloseTo(expected, 1);
@@ -575,7 +581,7 @@ describe('Rendering utils', () => {
       describe('markSizeRatio - 100', () => {
         const getRadius = getRadiusFn(data, 1, 100);
         const expectedRadii = [80.71, 75.37, 1, 101, 83.61];
-        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
+        it.each<[DataSeriesDatum['mark'], number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
           'should return stepped value - data[%#]',
           (mark, expected) => {
             expect(getRadius(mark)).toBeCloseTo(expected, 1);
@@ -587,7 +593,7 @@ describe('Rendering utils', () => {
         // Should be treated as 100
         const getRadius = getRadiusFn(data, 1, 1000);
         const expectedRadii = [80.71, 75.37, 1, 101, 83.61];
-        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
+        it.each<[DataSeriesDatum['mark'], number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
           'should return stepped value - data[%#]',
           (mark, expected) => {
             expect(getRadius(mark)).toBeCloseTo(expected, 1);

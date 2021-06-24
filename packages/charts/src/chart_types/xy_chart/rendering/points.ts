@@ -26,14 +26,7 @@ import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map'
 import { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
 import { PointStyleAccessor, StackMode } from '../utils/specs';
 import { buildPointGeometryStyles } from './point_style';
-import {
-  getY0ScaledValue,
-  getY1ScaledValue,
-  isDatumFilled,
-  isYValueDefinedFn,
-  MarkSizeOptions,
-  YDefinedFn,
-} from './utils';
+import { getY0ScaledValue, getY1ScaledValue, isYValueDefinedFn, MarkSizeOptions, YDefinedFn } from './utils';
 
 /** @internal */
 export function renderPoints(
@@ -111,7 +104,6 @@ export function renderPoints(
           mark,
           accessor: hasY0Accessors && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
           datum: datum.datum,
-          isFilled: isDatumFilled(datum),
         },
         transform: {
           x: shift,

@@ -58,12 +58,12 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
+  console.log(dataSeries);
   const y1Fn = getY1ScaledValue(yScale);
   const y0Fn = getY0ScaledValue(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
   const y1DatumAccessor = getYDatumValueFn();
   const y0DatumAccessor = getYDatumValueFn('y0');
-  console.log(dataSeries);
   const pathGenerator = area<DataSeriesDatum>()
     .x(({ x }) => xScale.scale(x) - xScaleOffset)
     .y1(y1Fn)
@@ -78,7 +78,7 @@ export function renderArea(
   let y1Line: string | null;
 
   try {
-    y1Line = pathGenerator.lineY1()(dataSeries.data.filter((d) => isFinite(d.y1)));
+    y1Line = pathGenerator.lineY1()(dataSeries.data);
   } catch {
     // When values are not scalable
     y1Line = null;
@@ -92,7 +92,7 @@ export function renderArea(
     let y0Line: string | null;
 
     try {
-      y0Line = pathGenerator.lineY0()(dataSeries.data.filter((d) => isFinite(d.y1)));
+      y0Line = pathGenerator.lineY0()(dataSeries.data);
     } catch {
       // When values are not scalable
       y0Line = null;
@@ -119,7 +119,7 @@ export function renderArea(
   let areaPath: string;
 
   try {
-    areaPath = pathGenerator(dataSeries.data.filter((d) => isFinite(d.y1))) || '';
+    areaPath = pathGenerator(dataSeries.data) || '';
   } catch {
     // When values are not scalable
     areaPath = '';

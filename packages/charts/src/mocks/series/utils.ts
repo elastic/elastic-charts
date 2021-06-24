@@ -32,7 +32,7 @@ export const getFilledNullData = (data: DataSeriesDatum[]): (number | undefined)
  * @internal
  */
 export const getFilledNonNullData = (data: DataSeriesDatum[]): (number | undefined)[] =>
-  data.filter(({ y1, filled }) => y1 !== null && filled?.y1 === undefined).map(({ filled }) => filled?.y1);
+  data.filter(({ y1, filled }) => !isNaN(y1) && filled?.y1 === undefined).map(({ filled }) => filled?.y1);
 
 /**
  * Helper function to return array of rendered x values
@@ -44,7 +44,7 @@ export const getXValueData = (data: DataSeriesDatum[]): (number | string)[] => d
  * Returns value of `y1` or `filled.y1` or null
  * @internal
  */
-export const getYResolvedData = (data: DataSeriesDatum[]): (number | null)[] => {
+export const getYResolvedData = (data: DataSeriesDatum[]): number[] => {
   const datumAccessor = getYDatumValueFn();
   return data.map((d) => {
     return datumAccessor(d);

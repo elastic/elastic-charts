@@ -169,7 +169,7 @@ describe('Crosshair utils ordinal scales', () => {
     expect(snappedPosition?.position).toEqual(80);
 
     snappedPosition = getSnapPosition('x', barSeriesScale);
-    expect(snappedPosition).toBeUndefined();
+    expect(snappedPosition).toEqual({ band: 40, position: NaN });
 
     snappedPosition = getSnapPosition('a', multiBarSeriesScale, 2);
     expect(snappedPosition?.band).toEqual(40);
@@ -197,7 +197,7 @@ describe('Crosshair utils ordinal scales', () => {
     expect(snappedPosition?.position).toEqual(80);
 
     snappedPosition = getSnapPosition('x', lineSeriesScale);
-    expect(snappedPosition).toBeUndefined();
+    expect(snappedPosition).toEqual({ band: 40, position: NaN });
 
     snappedPosition = getSnapPosition('a', multiLineSeriesScale, 2);
     expect(snappedPosition?.band).toEqual(40);
@@ -226,6 +226,6 @@ describe('Crosshair utils ordinal scales', () => {
     expect(snappedPosition?.position).toEqual(80);
 
     snappedPosition = getSnapPosition('x', mixedLinesBarsSeriesScale, 4);
-    expect(snappedPosition).toBeUndefined();
+    expect(snappedPosition).toEqual({ band: 40, position: NaN });
   });
 });

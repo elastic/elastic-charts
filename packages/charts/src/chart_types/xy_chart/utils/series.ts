@@ -329,7 +329,6 @@ export function getFormattedDataSeries(
     seriesSpecs,
     xScaleType,
   );
-  console.log(fittedDataSeries);
 
   // apply fitting for stacked DataSeries by YGroup, Panel
   const stackedDataSeries = fittedDataSeries.filter(({ spec }) => isStackedSpec(spec, histogramEnabled));

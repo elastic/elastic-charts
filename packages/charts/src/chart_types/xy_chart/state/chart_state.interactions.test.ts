@@ -364,7 +364,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           x: 0,
           y: 10,
           accessor: 'y1',
-          mark: null,
+          mark: NaN,
           datum: [0, 10],
         },
         {
@@ -410,7 +410,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           x: 0,
           y: 10,
           accessor: 'y1',
-          mark: null,
+          mark: NaN,
           datum: [0, 10],
         },
         {
@@ -459,7 +459,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           x: 0,
           y: 10,
           accessor: 'y1',
-          mark: null,
+          mark: NaN,
           datum: [0, 10],
         },
         {
@@ -513,7 +513,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           x: (spec.data[0] as Array<any>)[0],
           y: (spec.data[0] as Array<any>)[1],
           accessor: 'y1',
-          mark: null,
+          mark: NaN,
           datum: [(spec.data[0] as Array<any>)[0], (spec.data[0] as Array<any>)[1]],
         },
         {
@@ -546,7 +546,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           x: (spec.data[1] as Array<any>)[0],
           y: (spec.data[1] as Array<any>)[1],
           accessor: 'y1',
-          mark: null,
+          mark: NaN,
           datum: [(spec.data[1] as Array<any>)[0], (spec.data[1] as Array<any>)[1]],
         },
         {
@@ -643,7 +643,7 @@ function mouseOverTestSuite(scaleType: XScaleType) {
           x: 1,
           y: 5,
           accessor: 'y1',
-          mark: null,
+          mark: NaN,
           datum: [1, 5],
         },
         {

@@ -411,7 +411,7 @@ describe('Legends', () => {
   });
   it('should return correct legendSizingLabel with linear scale and showExtraLegend set to true', () => {
     const formatter = (d: string | number) => `${Number(d).toFixed(2)} dogs`;
-    const lastValues = { y0: null, y1: 14 };
+    const lastValues = { y0: NaN, y1: 14 };
     const showExtraLegend = true;
     const xScaleIsLinear = ScaleType.Linear;
 
@@ -423,7 +423,7 @@ describe('Legends', () => {
   });
   it('should return formatted to null with ordinal scale and showExtraLegend set to true', () => {
     const formatter = (d: string | number) => `${Number(d).toFixed(2)} dogs`;
-    const lastValues = { y0: null, y1: 14 };
+    const lastValues = { y0: NaN, y1: 14 };
 
     expect(getLegendExtra(true, ScaleType.Ordinal, formatter, 'y1', lastValues)).toMatchObject({
       raw: 14,
@@ -433,7 +433,7 @@ describe('Legends', () => {
   });
   it('should return legendSizingLabel null with showLegendExtra set to false', () => {
     const formatter = (d: string | number) => `${Number(d).toFixed(2)} dogs`;
-    const lastValues = { y0: null, y1: 14 };
+    const lastValues = { y0: NaN, y1: 14 };
     const showLegendExtra = false;
 
     expect(getLegendExtra(showLegendExtra, ScaleType.Ordinal, formatter, 'y1', lastValues)).toMatchObject({
