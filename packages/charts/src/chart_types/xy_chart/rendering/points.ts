@@ -20,7 +20,7 @@
 import { Scale } from '../../../scales';
 import { Color, isNil } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
-import { BandedAccessorType, PointGeometry } from '../../../utils/geometry';
+import { BandedAccessorType, GeometryValue, PointGeometry } from '../../../utils/geometry';
 import { PointStyle } from '../../../utils/themes/theme';
 import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
@@ -89,9 +89,7 @@ export function renderPoints(
       const radius = markSizeOptions.enabled
         ? Math.max(getRadius(mark), pointStyle.radius)
         : styleOverrides?.radius ?? pointStyle.radius;
-      // if (!isFinite(y)) {
-      //   debugger;
-      // }
+
       const pointGeometry: PointGeometry = {
         x,
         y,
@@ -191,13 +189,13 @@ export function getRadiusFn(
   data: DataSeriesDatum[],
   lineWidth: number,
   markSizeRatio: number = 50,
-): (mark: number, defaultRadius?: number) => number {
+): (mark: GeometryValue['mark'], defaultRadius?: number) => number {
   if (data.length === 0) {
     return () => 0;
   }
   const { min, max } = data.reduce(
     (acc, { mark }) =>
-      isNaN(mark)
+      mark === null || isNaN(mark)
         ? acc
         : {
             min: Math.min(acc.min, mark / 2),
@@ -208,7 +206,7 @@ export function getRadiusFn(
   const adjustedMarkSizeRatio = Math.min(Math.max(markSizeRatio, 0), 100);
   const radiusStep = (max - min || max * 100) / Math.pow(adjustedMarkSizeRatio, 2);
   return function getRadius(mark, defaultRadius = 0): number {
-    if (isNaN(mark)) {
+    if (mark == null) {
       return defaultRadius;
     }
     const circleRadius = (mark / 2 - min) / radiusStep;
@@ -224,18 +222,18 @@ function yAccessorForOrphanCheck(datum: DataSeriesDatum): number {
 function isOrphanDataPoint(
   index: number,
   length: number,
-  yDefinedFn: YDefinedFn,
+  isYDefined: YDefinedFn,
   prev?: DataSeriesDatum,
   next?: DataSeriesDatum,
 ): boolean {
-  if (index === 0 && (isNil(next) || !yDefinedFn(next, yAccessorForOrphanCheck))) {
+  if (index === 0 && (isNil(next) || !isYDefined(next, yAccessorForOrphanCheck))) {
     return true;
   }
-  if (index === length - 1 && (isNil(prev) || !yDefinedFn(prev, yAccessorForOrphanCheck))) {
+  if (index === length - 1 && (isNil(prev) || !isYDefined(prev, yAccessorForOrphanCheck))) {
     return true;
   }
   return (
-    (isNil(prev) || !yDefinedFn(prev, yAccessorForOrphanCheck)) &&
-    (isNil(next) || !yDefinedFn(next, yAccessorForOrphanCheck))
+    (isNil(prev) || !isYDefined(prev, yAccessorForOrphanCheck)) &&
+    (isNil(next) || !isYDefined(next, yAccessorForOrphanCheck))
   );
 }

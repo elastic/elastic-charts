@@ -521,8 +521,8 @@ describe('Rendering utils', () => {
         );
       });
 
-      it('should return default values when mark is NaN', () => {
-        expect(getRadius(NaN, 111)).toBe(111);
+      it('should return default values when mark is null', () => {
+        expect(getRadius(null, 111)).toBe(111);
       });
     });
 

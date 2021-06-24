@@ -27,7 +27,7 @@ import { Rect } from '../../../geoms/types';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { SettingsSpec, XScaleType, XYBrushArea } from '../../../specs';
+import { ElementOverListener, SettingsSpec, XScaleType, XYBrushArea, XYChartElementEvent } from '../../../specs';
 import { SpecType, TooltipType, BrushAxis } from '../../../specs/constants';
 import { onExternalPointerEvent } from '../../../state/actions/events';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
@@ -218,15 +218,15 @@ describe('Chart state pointer interactions', () => {
 
 function mouseOverTestSuite(scaleType: XScaleType) {
   let store: Store<GlobalChartState>;
-  let onOverListener: jest.Mock<undefined>;
+  let onOverListener: jest.Mock<ReturnType<ElementOverListener>, Parameters<ElementOverListener>>;
   let onOutListener: jest.Mock<undefined>;
   let onPointerUpdateListener: jest.Mock<undefined>;
   const spec = scaleType === ScaleType.Ordinal ? ordinalBarSeries : linearBarSeries;
   beforeEach(() => {
     store = initStore(spec);
-    onOverListener = jest.fn((): undefined => undefined);
-    onOutListener = jest.fn((): undefined => undefined);
-    onPointerUpdateListener = jest.fn((): undefined => undefined);
+    onOverListener = jest.fn();
+    onOutListener = jest.fn();
+    onPointerUpdateListener = jest.fn();
     const settingsWithListeners: SettingsSpec = {
       ...settingSpec,
       onElementOver: onOverListener,
@@ -358,24 +358,13 @@ function mouseOverTestSuite(scaleType: XScaleType) {
     expect(tooltipInfo.highlightedGeometries.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
-    expect(onOverListener.mock.calls[0][0]).toEqual([
-      [
-        {
-          x: 0,
-          y: 10,
-          accessor: 'y1',
-          mark: NaN,
-          datum: [0, 10],
-        },
-        {
-          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-          seriesKeys: [1],
-          specId: 'spec_1',
-          splitAccessors: new Map(),
-          yAccessor: 1,
-        },
-      ],
-    ]);
+    const overValues = onOverListener.mock.calls[0][0];
+    // a single element
+    expect(overValues).toHaveLength(1);
+    // get the element
+    const element = overValues[0] as XYChartElementEvent;
+    expect(element[0].datum).toEqual([0, 10]);
+    expect(element[0].accessor).toEqual('y1');
 
     store.dispatch(onPointerMove({ x: chartLeft - 1, y: chartTop - 1 }, 1));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
@@ -404,24 +393,15 @@ function mouseOverTestSuite(scaleType: XScaleType) {
     expect(tooltipInfo.tooltip.values.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
-    expect(onOverListener.mock.calls[0][0]).toEqual([
-      [
-        {
-          x: 0,
-          y: 10,
-          accessor: 'y1',
-          mark: NaN,
-          datum: [0, 10],
-        },
-        {
-          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-          seriesKeys: [1],
-          specId: 'spec_1',
-          splitAccessors: new Map(),
-          yAccessor: 1,
-        },
-      ],
-    ]);
+
+    const overValues = onOverListener.mock.calls[0][0];
+    // a single element
+    expect(overValues).toHaveLength(1);
+    // get the element
+    const element = overValues[0] as XYChartElementEvent;
+    expect(element[0].datum).toEqual([0, 10]);
+    expect(element[0].accessor).toEqual('y1');
+
     store.dispatch(onPointerMove({ x: chartLeft - 1, y: chartTop + 89 }, 1));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
     expect(projectedPointerPosition).toMatchObject({ x: -1, y: 89 });
@@ -453,24 +433,13 @@ function mouseOverTestSuite(scaleType: XScaleType) {
     expect(tooltipInfo.tooltip.values.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
-    expect(onOverListener.mock.calls[0][0]).toEqual([
-      [
-        {
-          x: 0,
-          y: 10,
-          accessor: 'y1',
-          mark: NaN,
-          datum: [0, 10],
-        },
-        {
-          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-          seriesKeys: [1],
-          specId: 'spec_1',
-          splitAccessors: new Map(),
-          yAccessor: 1,
-        },
-      ],
-    ]);
+    const overValues = onOverListener.mock.calls[0][0];
+    // a single element
+    expect(overValues).toHaveLength(1);
+    // get the element
+    const element = overValues[0] as XYChartElementEvent;
+    expect(element[0].datum).toEqual([0, 10]);
+    expect(element[0].accessor).toEqual('y1');
 
     store.dispatch(onPointerMove({ x: chartLeft + 45 + scaleOffset, y: chartTop + 0 }, 1));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
@@ -507,24 +476,14 @@ function mouseOverTestSuite(scaleType: XScaleType) {
     expect(tooltipInfo.tooltip.values.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(1);
     expect(onOutListener).toBeCalledTimes(0);
-    expect(onOverListener.mock.calls[0][0]).toEqual([
-      [
-        {
-          x: (spec.data[0] as Array<any>)[0],
-          y: (spec.data[0] as Array<any>)[1],
-          accessor: 'y1',
-          mark: NaN,
-          datum: [(spec.data[0] as Array<any>)[0], (spec.data[0] as Array<any>)[1]],
-        },
-        {
-          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-          seriesKeys: [1],
-          specId: 'spec_1',
-          splitAccessors: new Map(),
-          yAccessor: 1,
-        },
-      ],
-    ]);
+
+    let overValues = onOverListener.mock.calls[0][0];
+    // a single element
+    expect(overValues).toHaveLength(1);
+    // get the element
+    let element = overValues[0] as XYChartElementEvent;
+    expect(element[0].datum).toEqual([0, 10]);
+    expect(element[0].accessor).toEqual('y1');
 
     store.dispatch(onPointerMove({ x: chartLeft + 45 + scaleOffset, y: chartTop + 89 }, 1));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
@@ -540,24 +499,14 @@ function mouseOverTestSuite(scaleType: XScaleType) {
     // we are over the second bar here
     expect(tooltipInfo.highlightedGeometries.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(2);
-    expect(onOverListener.mock.calls[1][0]).toEqual([
-      [
-        {
-          x: (spec.data[1] as Array<any>)[0],
-          y: (spec.data[1] as Array<any>)[1],
-          accessor: 'y1',
-          mark: NaN,
-          datum: [(spec.data[1] as Array<any>)[0], (spec.data[1] as Array<any>)[1]],
-        },
-        {
-          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-          seriesKeys: [1],
-          specId: 'spec_1',
-          splitAccessors: new Map(),
-          yAccessor: 1,
-        },
-      ],
-    ]);
+
+    overValues = onOverListener.mock.calls[1][0];
+    // a single element
+    expect(overValues).toHaveLength(1);
+    // get the element
+    element = overValues[0] as XYChartElementEvent;
+    expect(element[0].datum).toEqual([1, 5]);
+    expect(element[0].accessor).toEqual('y1');
 
     expect(onOutListener).toBeCalledTimes(0);
 
@@ -637,24 +586,15 @@ function mouseOverTestSuite(scaleType: XScaleType) {
     expect(tooltipInfo.highlightedGeometries.length).toBe(1);
     expect(tooltipInfo.tooltip.values.length).toBe(1);
     expect(onOverListener).toBeCalledTimes(1);
-    expect(onOverListener.mock.calls[0][0]).toEqual([
-      [
-        {
-          x: 1,
-          y: 5,
-          accessor: 'y1',
-          mark: NaN,
-          datum: [1, 5],
-        },
-        {
-          key: 'groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}',
-          seriesKeys: [1],
-          specId: 'spec_1',
-          splitAccessors: new Map(),
-          yAccessor: 1,
-        },
-      ],
-    ]);
+
+    const overValues = onOverListener.mock.calls[0][0];
+    // a single element
+    expect(overValues).toHaveLength(1);
+    // get the element
+    const element = overValues[0] as XYChartElementEvent;
+    expect(element[0].datum).toEqual([1, 5]);
+    expect(element[0].accessor).toEqual('y1');
+
     expect(onOutListener).toBeCalledTimes(0);
   });
 
