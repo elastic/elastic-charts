@@ -626,7 +626,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -1473,18 +1473,16 @@ export interface PointerOutEvent extends BasePointerEvent {
 }
 
 // @public
-export interface PointerOverEvent extends BasePointerEvent {
+export interface PointerOverEvent extends BasePointerEvent, ProjectedValues {
     // (undocumented)
     scale: ScaleContinuousType | ScaleOrdinalType;
     // (undocumented)
     type: typeof PointerEventType.Over;
     // @alpha
     unit?: string;
-    // (undocumented)
-    value: number | string | null;
 }
 
-// @public (undocumented)
+// @public
 export type PointerUpdateListener = (event: PointerEvent_2) => void;
 
 // @public (undocumented)
@@ -1550,9 +1548,6 @@ export type ProjectedValues = {
 
 // @public
 export type ProjectionClickListener = (values: ProjectedValues) => void;
-
-// @public
-export type ProjectionUpdateListener = (values: ProjectedValues) => void;
 
 // @public
 export type Ratio = number;
@@ -1796,15 +1791,15 @@ export interface SettingsSpec extends Spec, LegendSpec {
     // (undocumented)
     onPointerUpdate?: PointerUpdateListener;
     onProjectionClick?: ProjectionClickListener;
-    onProjectionUpdate?: ProjectionUpdateListener;
+    onProjectionUpdate?: PointerUpdateListener;
     // (undocumented)
     onRenderChange?: RenderChangeListener;
     orderOrdinalBinsBy?: OrderBy;
     // (undocumented)
     pointBuffer?: MarkBuffer;
+    pointerUpdateDebounce?: number;
     // (undocumented)
     rendering: Rendering;
-    // (undocumented)
     resizeDebounce?: number;
     // (undocumented)
     rotation: Rotation;
