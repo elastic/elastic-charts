@@ -20,18 +20,17 @@
 import { Selector } from 'reselect';
 
 import { ChartType } from '../../..';
-import { Scale } from '../../../../scales';
-import { PointerEvent } from '../../../../specs';
+import { PointerEvent, PointerOverEvent } from '../../../../specs';
 import { PointerEventType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { ComputedScales } from '../utils/types';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
 import { PointerPosition } from './get_projected_pointer_position';
-import { getProjectedScaledValues } from './get_projected_scaled_values';
 
 const getPointerEventSelector = createCustomCachedSelector(
   [
@@ -41,13 +40,13 @@ const getPointerEventSelector = createCustomCachedSelector(
     getGeometriesIndexKeysSelector,
   ],
   (chartId, orientedProjectedPointerPosition, seriesGeometries, geometriesIndexKeys): PointerEvent =>
-    getPointerEvent(chartId, orientedProjectedPointerPosition, seriesGeometries.scales.xScale, geometriesIndexKeys),
+    getPointerEvent(chartId, orientedProjectedPointerPosition, seriesGeometries.scales, geometriesIndexKeys),
 );
 
 function getPointerEvent(
   chartId: string,
   orientedProjectedPointerPosition: PointerPosition,
-  xScale: Scale | undefined,
+  { xScale, yScales }: ComputedScales,
   geometriesIndexKeys: any[],
 ): PointerEvent {
   // update the cursorBandPosition based on chart configuration
@@ -57,7 +56,7 @@ function getPointerEvent(
       type: PointerEventType.Out,
     };
   }
-  const { x, y } = orientedProjectedPointerPosition;
+  const { x, y, verticalPanelValue, horizontalPanelValue } = orientedProjectedPointerPosition;
   if (x === -1 || y === -1) {
     return {
       chartId,
@@ -77,16 +76,30 @@ function getPointerEvent(
     unit: xScale.unit,
     scale: xScale.type,
     x: xValue.value,
-    y: [],
-    smVerticalValue: null,
-    smHorizontalValue: null,
+    y: [...yScales.entries()].map(([groupId, yScale]) => {
+      return { value: yScale.invert(y), groupId };
+    }),
+    smVerticalValue: verticalPanelValue,
+    smHorizontalValue: horizontalPanelValue,
   };
+}
+
+function isSameEventValue(a: PointerOverEvent, b: PointerOverEvent, checkYValues = false) {
+  return (
+    a.x === b.x &&
+    a.scale === b.scale &&
+    a.unit === b.unit &&
+    (!checkYValues ||
+      a.y.every((y, i) => {
+        return y.value === b.y[i]?.value;
+      }))
+  );
 }
 
 function hasPointerEventChanged(
   prevPointerEvent: PointerEvent,
   nextPointerEvent: PointerEvent | null,
-  compareValue: boolean,
+  checkYValues = false,
 ) {
   if (nextPointerEvent && prevPointerEvent.type !== nextPointerEvent.type) {
     return true;
@@ -103,10 +116,7 @@ function hasPointerEventChanged(
     nextPointerEvent &&
     prevPointerEvent.type === PointerEventType.Over &&
     nextPointerEvent.type === PointerEventType.Over &&
-    (!compareValue ||
-      prevPointerEvent.x !== nextPointerEvent.x ||
-      prevPointerEvent.scale !== nextPointerEvent.scale ||
-      prevPointerEvent.unit !== nextPointerEvent.unit)
+    !isSameEventValue(prevPointerEvent, nextPointerEvent, checkYValues)
   ) {
     return true;
   }
@@ -115,14 +125,13 @@ function hasPointerEventChanged(
 
 /** @internal */
 export function createOnPointerMoveCaller(): (state: GlobalChartState) => void {
-  let yValuesString: string = '';
   let prevPointerEvent: PointerEvent | null = null;
   let selector: Selector<GlobalChartState, void> | null = null;
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.XYAxis) {
       selector = createCustomCachedSelector(
-        [getSettingsSpecSelector, getPointerEventSelector, getChartIdSelector, getProjectedScaledValues],
-        ({ onPointerUpdate, onProjectionUpdate }, nextPointerEvent, chartId, values): void => {
+        [getSettingsSpecSelector, getPointerEventSelector, getChartIdSelector],
+        ({ onPointerUpdate, onProjectionUpdate }, nextPointerEvent, chartId): void => {
           if (prevPointerEvent === null) {
             prevPointerEvent = {
               chartId,
@@ -135,19 +144,11 @@ export function createOnPointerMoveCaller(): (state: GlobalChartState) => void {
           // we have to update the prevPointerEvents before possibly calling the onPointerUpdate
           // to avoid a recursive loop of calls caused by the impossibility to update the prevPointerEvent
           prevPointerEvent = nextPointerEvent;
-          if (onPointerUpdate && hasPointerEventChanged(tempPrev, nextPointerEvent, true))
-            onPointerUpdate(nextPointerEvent);
 
-          if (onProjectionUpdate && values && hasPointerEventChanged(tempPrev, nextPointerEvent, false)) {
-            const oldYValues = yValuesString;
-            yValuesString = values.y.map(({ value }) => value).join(',');
+          if (onPointerUpdate && hasPointerEventChanged(tempPrev, nextPointerEvent)) onPointerUpdate(nextPointerEvent);
 
-            if (oldYValues !== yValuesString)
-              onProjectionUpdate({
-                ...nextPointerEvent,
-                ...values,
-              });
-          }
+          if (onProjectionUpdate && hasPointerEventChanged(tempPrev, nextPointerEvent, true))
+            onProjectionUpdate(nextPointerEvent);
         },
       );
     }

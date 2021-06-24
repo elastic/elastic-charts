@@ -18,7 +18,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, select } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -97,6 +97,7 @@ export const Example = () => {
           showLegendExtra
           onPointerUpdate={pointerUpdate}
           onProjectionUpdate={action('onProjectionUpdate')}
+          pointerUpdateDebounce={number('point update debounce', 20, { min: 0, max: 200, step: 10 })}
           externalPointerEvents={{
             tooltip: { visible: topVisible, placement: topPlacement },
           }}

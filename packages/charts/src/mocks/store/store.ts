@@ -17,12 +17,14 @@
  * under the License.
  */
 
+import { Cancelable } from 'lodash';
 import { createStore, Store } from 'redux';
 
 import { DEFAULT_SETTINGS_SPEC, Spec } from '../../specs';
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
 import { chartStoreReducer, GlobalChartState } from '../../state/chart_state';
+import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 
 /** @internal */
 export class MockStore {
@@ -57,5 +59,18 @@ export class MockStore {
     store: Store<GlobalChartState>,
   ) {
     store.dispatch(updateParentDimensions({ width, height, top, left }));
+  }
+
+  /**
+   * flush all debounced listeners
+   *
+   * See packages/charts/src/__mocks__/ts-debounce.ts
+   */
+  static flush(store: Store<GlobalChartState>) {
+    const settings = getSettingsSpecSelector(store.getState());
+
+    // debounce mocked as lodash.debounce to enable flush
+    if (settings.onPointerUpdate) ((settings.onPointerUpdate as unknown) as Cancelable).flush();
+    if (settings.onProjectionUpdate) ((settings.onProjectionUpdate as unknown) as Cancelable).flush();
   }
 }

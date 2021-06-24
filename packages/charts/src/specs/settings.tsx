@@ -514,7 +514,16 @@ export interface SettingsSpec extends Spec, LegendSpec {
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
   xDomain?: CustomXDomain;
+
+  /**
+   * debounce delay used for resizing chart
+   */
   resizeDebounce?: number;
+
+  /**
+   * debounce delay used for onPointerUpdate and onProjectionUpdate listeners
+   */
+  pointerUpdateDebounce?: number;
 
   /**
    * Block the brush tool on a specific axis: x, y or both.
@@ -648,6 +657,7 @@ export type DefaultSettingsProps =
   | 'rendering'
   | 'rotation'
   | 'resizeDebounce'
+  | 'pointerUpdateDebounce'
   | 'animateData'
   | 'debug'
   | 'tooltip'
