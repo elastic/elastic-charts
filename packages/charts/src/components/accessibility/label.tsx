@@ -33,16 +33,28 @@ export function ScreenReaderLabel({
   labelId,
   goalChartLabels,
 }: A11ySettings & ScreenReaderLabelProps) {
-  if (!label && !goalChartLabels?.majorLabel) return null;
   const Heading = labelHeadingLevel;
-  const goalChartLabelsSection = !goalChartLabels?.majorLabel
-    ? null
-    : `Goal chart label: ${goalChartLabels.majorLabel} ${goalChartLabels.minorLabel}`;
+
+  if (!label && !goalChartLabels?.majorLabel && !goalChartLabels?.minorLabel) return null;
+
+  let unifiedLabel = '';
+  if (!label && goalChartLabels?.majorLabel) {
+    unifiedLabel = goalChartLabels?.majorLabel;
+  } else if (label && !goalChartLabels?.majorLabel) {
+    unifiedLabel = label;
+  } else if (label && goalChartLabels?.majorLabel && label !== goalChartLabels?.majorLabel) {
+    unifiedLabel = `${label}; Chart visible label: ${goalChartLabels?.majorLabel}`;
+  }
 
   return (
-    <Heading id={labelId}>
-      {label}
-      {goalChartLabelsSection}
-    </Heading>
+    <>
+      {unifiedLabel && (
+        <Heading id={labelId}>
+          {label}
+          {unifiedLabel}
+        </Heading>
+      )}
+      {goalChartLabels?.minorLabel && <p>{goalChartLabels?.minorLabel}</p>}
+    </>
   );
 }
