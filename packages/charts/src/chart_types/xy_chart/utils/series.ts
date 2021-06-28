@@ -27,6 +27,7 @@ import { Color, Datum, isNil } from '../../../utils/common';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
+import { DatumMetadata, getDatumNumericProperty } from '../data/validate_datum';
 import { groupSeriesByYGroup, isHistogramEnabled, isStackedSpec } from '../domains/y_domain';
 import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
 import { SmallMultiplesGroupBy } from '../state/selectors/get_specs';
@@ -39,16 +40,6 @@ import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_se
 export const SERIES_DELIMITER = ' - ';
 
 /** @public */
-export interface FilledValues {
-  /** the x value */
-  x?: number | string;
-  /** the max y value */
-  y1?: number;
-  /** the minimum y value */
-  y0?: number;
-}
-
-/** @public */
 export interface DataSeriesDatum<T = any> {
   /** the x value */
   x: number | string;
@@ -56,16 +47,16 @@ export interface DataSeriesDatum<T = any> {
   y1: number;
   /** the minimum y value */
   y0: number;
-  /** initial y1 value, non stacked */
-  initialY1: number;
-  /** initial y0 value, non stacked */
-  initialY0: number;
   /** the optional mark metric, used for lines and area series */
   mark: number;
   /** initial datum */
   datum: T;
-  /** the list of filled values because missing or nulls */
-  filled?: FilledValues;
+  metadata: {
+    x: DatumMetadata<string | number>;
+    y1: DatumMetadata<number>;
+    y0: DatumMetadata<number>;
+    mark: DatumMetadata<number>;
+  };
 }
 
 /** @public */
@@ -160,24 +151,51 @@ export function splitSeriesDataByAccessors(
     }
 
     xValues.push(x);
-    let sum = xValueSums.get(x) ?? 0;
 
     // extract small multiples aggregation values
     const smH = groupBySpec?.horizontal?.by?.(spec, datum);
     const smV = groupBySpec?.vertical?.by?.(spec, datum);
 
+    const splitAccessorFieldNames = [...splitAccessors.values()].map((a, si) => getAccessorFieldName(a, si));
+
     yAccessors.forEach((accessor, index) => {
-      const cleanedDatum = extractYAndMarkFromDatum(
+      // extract validated data
+      const y1 = getDatumNumericProperty(datum, accessor);
+      const y0 = getDatumNumericProperty(datum, y0Accessors && y0Accessors[index]);
+      const mark = getDatumNumericProperty(datum, markSizeAccessor);
+      const newDatum: DataSeriesDatum = {
+        x,
+        y1: y1.validated,
+        y0: y0.validated,
+        mark: mark.validated,
         datum,
-        accessor,
-        nonNumericValues,
-        y0Accessors && y0Accessors[index],
-        markSizeAccessor,
-      );
+        metadata: {
+          x: {
+            hasAccessor: true,
+            value: x,
+            isNil: false,
+            validated: x,
+            isFilled: false,
+          },
+          y1,
+          y0,
+          mark,
+        },
+      };
+      if (y1.hasAccessor && y1.isNil) {
+        nonNumericValues.push(y1.value);
+      }
+      if (y0.hasAccessor && y0.isNil) {
+        nonNumericValues.push(y0.value);
+      }
+      if (mark.hasAccessor && mark.isNil) {
+        nonNumericValues.push(mark.value);
+      }
+
+      xValueSums.set(x, (xValueSums.get(x) ?? 0) + (isFinite(y1.validated) ? y1.validated : 0));
 
       const accessorStr = getAccessorFieldName(accessor, index);
-      const splitAccessorStrs = [...splitAccessors.values()].map((a, si) => getAccessorFieldName(a, si));
-      const seriesKeys = [...splitAccessorStrs, accessorStr];
+      const seriesKeys = [...splitAccessorFieldNames, accessorStr];
       const seriesIdentifier: Omit<XYChartSeriesIdentifier, 'key'> = {
         specId,
         seriesKeys,
@@ -187,8 +205,7 @@ export function splitSeriesDataByAccessors(
         ...(!isNil(smH) && { smHorizontalAccessorValue: smH }),
       };
       const seriesKey = getSeriesKey(seriesIdentifier, groupId);
-      sum += cleanedDatum.y1 ?? 0;
-      const newDatum = { x, ...cleanedDatum, smH, smV };
+
       const series = dataSeries.get(seriesKey);
       if (series) {
         series.data.push(newDatum);
@@ -208,8 +225,6 @@ export function splitSeriesDataByAccessors(
           isFiltered: false,
         });
       }
-
-      xValueSums.set(x, sum);
     });
   }
 
@@ -270,37 +285,6 @@ function getSplitAccessors(
     });
   }
   return splitAccessors;
-}
-
-/**
- * Extract y1 and y0 and mark properties from Datum. Casting them to numbers or null
- * @internal
- */
-export function extractYAndMarkFromDatum(
-  datum: Datum,
-  yAccessor: Accessor | AccessorFn,
-  nonNumericValues: any[],
-  y0Accessor?: Accessor | AccessorFn,
-  markSizeAccessor?: Accessor | AccessorFn,
-): Pick<DataSeriesDatum, 'y0' | 'y1' | 'mark' | 'datum' | 'initialY0' | 'initialY1'> {
-  const y1Value = getAccessorValue(datum, yAccessor);
-  const y1 = parseFloat(y1Value);
-  if (isNaN(y1)) {
-    nonNumericValues.push(datum);
-  }
-  const y0Value = !isNil(y0Accessor) ? getAccessorValue(datum, y0Accessor) : NaN;
-  const y0 = parseFloat(y0Value);
-
-  const markValue = !isNil(markSizeAccessor) ? getAccessorValue(datum, markSizeAccessor) : NaN;
-  const mark = parseFloat(markValue);
-  // save non numeric values for logging
-  if (!isNil(y0Accessor) && isNaN(y0)) {
-    nonNumericValues.push(datum);
-  }
-  if (!isNil(markSizeAccessor) && isNaN(mark)) {
-    nonNumericValues.push(datum);
-  }
-  return { y1, datum, y0, mark, initialY0: y0, initialY1: y1 };
 }
 
 /** Sorts data based on order of xValues */

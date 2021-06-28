@@ -25,7 +25,7 @@ import { MarkBuffer } from '../../../specs';
 import { getDistance } from '../../../utils/common';
 import { BarGeometry, ClippedRanges, isPointGeometry, PointGeometry } from '../../../utils/geometry';
 import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/themes/theme';
-import { DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
+import { DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 import { DEFAULT_HIGHLIGHT_PADDING } from './constants';
 
 /** @internal */
@@ -35,17 +35,15 @@ export interface MarkSizeOptions {
 }
 
 /**
- * Returns value of `y1` or `filled.y1` or null by default.
- * Passing a filled key (x, y1, y0) it will return that value or the filled one
  * @internal
  */
-export function getYDatumValueFn(valueName: keyof Omit<FilledValues, 'x'> = 'y1') {
+export function getYDatumValueFn(valueName: 'y1' | 'y0' = 'y1') {
   return (datum: DataSeriesDatum): number => {
     const value = datum[valueName];
     if (!isNaN(value)) {
       return value;
     }
-    return datum.filled?.[valueName] ?? NaN;
+    return datum.metadata[valueName].isFilled ? datum.metadata[valueName].validated : NaN;
   };
 }
 
@@ -53,8 +51,8 @@ export function getYDatumValueFn(valueName: keyof Omit<FilledValues, 'x'> = 'y1'
  *
  * @internal
  */
-export function isDatumFilled({ filled }: DataSeriesDatum) {
-  return filled?.x !== undefined || filled?.y1 !== undefined;
+export function isDatumFilled({ metadata }: DataSeriesDatum) {
+  return metadata.x.isFilled || metadata.y1.isFilled || metadata.y0.isFilled || metadata.mark.isFilled;
 }
 
 /**
@@ -80,7 +78,7 @@ export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xSca
 
     const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
 
-    if (isDatumFilled(data) || !isFinite(data.initialY1)) {
+    if (isDatumFilled(data) || !isFinite(data.metadata.y1.validated)) {
       const endXValue = xScale.range[1] - xScale.bandwidth * (2 / 3);
       if (firstNonFilledOrNan !== null && xValue === endXValue) {
         acc.push([firstNonFilledOrNan, xValue]);

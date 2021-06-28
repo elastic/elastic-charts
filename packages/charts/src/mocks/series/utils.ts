@@ -25,14 +25,14 @@ import { DataSeriesDatum } from '../../chart_types/xy_chart/utils/series';
  * @internal
  */
 export const getFilledNullData = (data: DataSeriesDatum[]): (number | undefined)[] =>
-  data.filter(({ filled }) => filled?.y1 !== undefined).map(({ filled }) => filled?.y1);
+  data.filter(({ metadata }) => metadata.y1.isFilled && metadata.y1.isNil).map(({ y1 }) => y1);
 
 /**
  * Helper function to return array of rendered y1 values
  * @internal
  */
 export const getFilledNonNullData = (data: DataSeriesDatum[]): (number | undefined)[] =>
-  data.filter(({ y1, filled }) => !isNaN(y1) && filled?.y1 === undefined).map(({ filled }) => filled?.y1);
+  data.filter(({ y1, metadata }) => !isNaN(y1) && !metadata.y1.isFilled).map(({ metadata }) => metadata.y1.validated);
 
 /**
  * Helper function to return array of rendered x values

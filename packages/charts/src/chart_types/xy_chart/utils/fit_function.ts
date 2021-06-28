@@ -66,9 +66,12 @@ export const getValue = (
     return {
       ...current,
       y1,
-      filled: {
-        ...current.filled,
-        y1,
+      metadata: {
+        ...current.metadata,
+        y1: {
+          ...current.metadata.y1,
+          isFilled: true,
+        },
       },
     };
   }
@@ -77,9 +80,12 @@ export const getValue = (
     return {
       ...current,
       y1,
-      filled: {
-        ...current.filled,
-        y1,
+      metadata: {
+        ...current.metadata,
+        y1: {
+          ...current.metadata.y1,
+          isFilled: true,
+        },
       },
     };
   }
@@ -89,9 +95,12 @@ export const getValue = (
       return {
         ...current,
         y1,
-        filled: {
-          ...current.filled,
-          y1,
+        metadata: {
+          ...current.metadata,
+          y1: {
+            ...current.metadata.y1,
+            isFilled: true,
+          },
         },
       };
     }
@@ -107,9 +116,12 @@ export const getValue = (
         return {
           ...current,
           y1: y1Delta,
-          filled: {
-            ...current.filled,
-            y1: y1Delta,
+          metadata: {
+            ...current.metadata,
+            y1: {
+              ...current.metadata.y1,
+              isFilled: true,
+            },
           },
         };
       }
@@ -119,9 +131,12 @@ export const getValue = (
         return {
           ...current,
           y1: linearInterpolatedY1,
-          filled: {
-            ...current.filled,
-            y1: linearInterpolatedY1,
+          metadata: {
+            ...current.metadata,
+            y1: {
+              ...current.metadata.y1,
+              isFilled: true,
+            },
           },
         };
       }
@@ -131,9 +146,12 @@ export const getValue = (
     return {
       ...current,
       y1: nearestY1,
-      filled: {
-        ...current.filled,
-        y1: nearestY1,
+      metadata: {
+        ...current.metadata,
+        y1: {
+          ...current.metadata.y1,
+          isFilled: true,
+        },
       },
     };
   }
@@ -146,9 +164,12 @@ export const getValue = (
   return {
     ...current,
     y1: endValue,
-    filled: {
-      ...current.filled,
-      y1: endValue,
+    metadata: {
+      ...current.metadata,
+      y1: {
+        ...current.metadata.y1,
+        isFilled: true,
+      },
     },
   };
 };
@@ -194,30 +215,26 @@ export const fitFunction = (
     return data;
   }
 
-  if (type === Fit.Zero) {
-    return data.map((datum) => ({
-      ...datum,
-      y1: isNaN(datum.y1) ? 0 : datum.y1,
-      filled: {
-        ...datum.filled,
-        y1: isNaN(datum.y1) ? 0 : undefined,
-      },
-    }));
-  }
-
-  if (type === Fit.Explicit) {
-    if (value === undefined) {
+  if (type === Fit.Zero || type === Fit.Explicit) {
+    const valueToFill = type === Fit.Zero ? 0 : value;
+    if (valueToFill === undefined) {
       return data;
     }
+    return data.map((datum) => {
+      const toFill = datum.metadata.y1.isNil || isNaN(datum.metadata.y1.validated);
 
-    return data.map((datum) => ({
-      ...datum,
-      y1: isNaN(datum.y1) ? value : datum.y1,
-      filled: {
-        ...datum.filled,
-        y1: isNaN(datum.y1) ? value : undefined,
-      },
-    }));
+      return {
+        ...datum,
+        y1: toFill ? valueToFill : datum.y1,
+        metadata: {
+          ...datum.metadata,
+          y1: {
+            ...datum.metadata.y1,
+            isFilled: toFill,
+          },
+        },
+      };
+    });
   }
 
   const sortedData =
@@ -229,9 +246,10 @@ export const fitFunction = (
   for (let i = 0; i < sortedData.length; i++) {
     let j = i;
     const currentValue = sortedData[i];
+    const isCurrentValueNaN = isNaN(currentValue.y1);
 
     if (
-      isNaN(currentValue.y1) &&
+      isCurrentValueNaN &&
       nextNonNullDatum === null &&
       (type === Fit.Lookahead ||
         type === Fit.Nearest ||
@@ -253,13 +271,11 @@ export const fitFunction = (
       }
     }
 
-    const newValue = isNaN(currentValue.y1)
+    newData[i] = isCurrentValueNaN
       ? getValue(currentValue, i, previousNonNullDatum, nextNonNullDatum, type, endValue)
       : currentValue;
 
-    newData[i] = newValue;
-
-    if (!isNaN(currentValue.y1)) {
+    if (!isCurrentValueNaN) {
       previousNonNullDatum = {
         ...(currentValue as FullDataSeriesDatum),
         fittingIndex: i,

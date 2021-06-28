@@ -58,7 +58,6 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
-  console.log(dataSeries);
   const y1Fn = getY1ScaledValue(yScale);
   const y0Fn = getY0ScaledValue(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);

@@ -19,6 +19,7 @@
 
 import { $Values } from 'utility-types';
 
+import { DatumMetadata } from '../chart_types/xy_chart/data/validate_datum';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { Fill, Stroke } from '../geoms/types';
 import { Color } from './common';
@@ -75,6 +76,11 @@ export interface PointGeometry {
   style: PointGeometryStyle;
   panel: Dimensions;
   orphan: boolean;
+  metadata: {
+    x: DatumMetadata<string | number>;
+    y: DatumMetadata<number>;
+    radius: DatumMetadata<number>;
+  };
 }
 /** @internal */
 export interface PointGeometryStyle {

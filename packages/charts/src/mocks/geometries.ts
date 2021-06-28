@@ -24,6 +24,7 @@ import { mergePartial, RecursivePartial } from '../utils/common';
 import { AreaGeometry, PointGeometry, BarGeometry, LineGeometry, BubbleGeometry } from '../utils/geometry';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { PointShape } from '../utils/themes/theme';
+import { MockDatumMetadata } from './series/metadata';
 import { MockSeriesIdentifier } from './series/series_identifiers';
 
 const DEFAULT_MOCK_POINT_COLOR = 'red';
@@ -75,13 +76,41 @@ export class MockPointGeometry {
       top: 0,
     },
     orphan: false,
+    metadata: {
+      x: {
+        value: 0,
+        validated: 0,
+        hasAccessor: true,
+        isFilled: false,
+        isNil: false,
+      },
+      y: {
+        value: 0,
+        validated: 0,
+        hasAccessor: true,
+        isFilled: false,
+        isNil: false,
+      },
+      radius: {
+        value: lineSeriesStyle.point.radius,
+        validated: lineSeriesStyle.point.radius,
+        hasAccessor: true,
+        isFilled: false,
+        isNil: false,
+      },
+    },
   };
 
   static default(partial?: RecursivePartial<PointGeometry>) {
     const color = partial?.color ?? DEFAULT_MOCK_POINT_COLOR;
     const style = buildPointGeometryStyles(color, lineSeriesStyle.point);
+    const metadata = {
+      x: MockDatumMetadata.primitive({ value: partial?.value?.x, validated: partial?.value?.x }),
+      y: MockDatumMetadata.simpleNumeric(partial?.value?.y),
+      radius: MockDatumMetadata.simpleNumeric(partial?.value?.mark),
+    };
     return mergePartial<PointGeometry>(MockPointGeometry.base, partial, { mergeOptionalPartialValues: true }, [
-      { style },
+      { style, metadata },
     ]);
   }
 

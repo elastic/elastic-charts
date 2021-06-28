@@ -26,6 +26,7 @@ import { mergePartial } from '../../utils/common';
 import { MockSeriesSpec } from '../specs';
 import { getRandomNumberGenerator } from '../utils';
 import { fitFunctionData } from './data';
+import { MockDatumMetadata } from './metadata';
 
 const rng = getRandomNumberGenerator();
 
@@ -104,9 +105,19 @@ export class MockDataSeriesDatum {
     y1: 1,
     y0: NaN,
     mark: NaN,
-    initialY1: NaN,
-    initialY0: NaN,
     datum: undefined,
+    metadata: {
+      x: {
+        validated: 1,
+        value: 1,
+        isFilled: false,
+        isNil: false,
+        hasAccessor: true,
+      },
+      y1: MockDatumMetadata.simpleNumeric(1),
+      y0: MockDatumMetadata.simpleNumeric(undefined),
+      mark: MockDatumMetadata.simpleNumeric(undefined),
+    },
   };
 
   static default(partial?: Partial<DataSeriesDatum>): DataSeriesDatum {
@@ -123,21 +134,29 @@ export class MockDataSeriesDatum {
     y1 = NaN,
     y0 = NaN,
     mark = NaN,
-    filled,
   }: Partial<DataSeriesDatum> & Pick<DataSeriesDatum, 'x'>): DataSeriesDatum {
     return {
       x,
       y1,
       y0,
       mark,
-      initialY1: y1,
-      initialY0: y0,
       datum: {
         x,
         y1,
         y0,
       },
-      ...(filled && filled),
+      metadata: {
+        x: {
+          validated: x,
+          value: x,
+          isFilled: false,
+          isNil: false,
+          hasAccessor: true,
+        },
+        y1: MockDatumMetadata.simpleNumeric(y1),
+        y0: MockDatumMetadata.simpleNumeric(y0),
+        mark: MockDatumMetadata.simpleNumeric(mark),
+      },
     };
   }
 

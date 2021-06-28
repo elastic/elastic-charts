@@ -56,7 +56,7 @@ export function renderBars(
   const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
 
   dataSeries.data.forEach((datum) => {
-    const { y0, y1, initialY1 } = datum;
+    const { y0, y1, metadata } = datum;
 
     // don't create a bar if not within the xScale domain
     if (!xScale.isValueInDomain(datum.x)) {
@@ -111,7 +111,7 @@ export function renderBars(
     const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
     const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
-    const originalY1Value = stackMode === StackMode.Percentage ? y1 - y0 : initialY1;
+    const originalY1Value = stackMode === StackMode.Percentage ? y1 - y0 : metadata.y1.validated;
     const formattedDisplayValue =
       displayValueSettings && displayValueSettings.valueFormatter
         ? displayValueSettings.valueFormatter(originalY1Value)

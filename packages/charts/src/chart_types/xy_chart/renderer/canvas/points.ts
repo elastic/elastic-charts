@@ -34,7 +34,8 @@ import { withPanelTransform } from './utils/panel_transform';
  */
 export function renderPoints(ctx: CanvasRenderingContext2D, points: PointGeometry[], { opacity }: GeometryStateStyle) {
   points
-    .filter(({ value, y }) => !value.isFilled && isFinite(y))
+    // do not render non-finite y values and the filled ones
+    .filter(({ metadata, y }) => isFinite(y) && !metadata.y.isFilled)
     .map<[Circle, Fill, Stroke, PointShape]>(({ x, y, radius, transform, style }) => {
       const fill: Fill = {
         color: applyOpacity(style.fill.color, opacity),

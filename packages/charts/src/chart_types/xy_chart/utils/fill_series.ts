@@ -57,12 +57,37 @@ export function fillSeries(
         x: missingValue,
         y1: NaN,
         y0: NaN,
-        initialY1: NaN,
-        initialY0: NaN,
         mark: NaN,
         datum: undefined,
-        filled: {
-          x: missingValue,
+        metadata: {
+          x: {
+            hasAccessor: true,
+            isNil: false,
+            value: missingValue,
+            validated: missingValue,
+            isFilled: true,
+          },
+          y1: {
+            hasAccessor: false,
+            isNil: false,
+            value: NaN,
+            validated: NaN,
+            isFilled: false,
+          },
+          y0: {
+            hasAccessor: false,
+            isNil: false,
+            value: NaN,
+            validated: NaN,
+            isFilled: false,
+          },
+          mark: {
+            hasAccessor: false,
+            isNil: false,
+            value: NaN,
+            validated: NaN,
+            isFilled: false,
+          },
         },
       });
     }

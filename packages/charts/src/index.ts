@@ -32,7 +32,7 @@ export { ContinuousDomain, OrdinalDomain } from './utils/domain';
 export { SimplePadding, Padding } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
 export { SeriesIdentifier, SeriesKey } from './common/series_id';
-export { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
+export { XYChartSeriesIdentifier, DataSeriesDatum } from './chart_types/xy_chart/utils/series';
 export {
   AnnotationTooltipFormatter,
   CustomAnnotationTooltip,

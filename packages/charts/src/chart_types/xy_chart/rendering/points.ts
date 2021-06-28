@@ -23,7 +23,7 @@ import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, GeometryValue, PointGeometry } from '../../../utils/geometry';
 import { PointStyle } from '../../../utils/themes/theme';
 import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
+import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 import { PointStyleAccessor, StackMode } from '../utils/specs';
 import { buildPointGeometryStyles } from './point_style';
 import { getY0ScaledValue, getY1ScaledValue, isYValueDefinedFn, MarkSizeOptions, YDefinedFn } from './utils';
@@ -67,7 +67,7 @@ export function renderPoints(
     const x = xScale.scale(xValue);
 
     const points: PointGeometry[] = [];
-    const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = hasY0Accessors ? ['y0', 'y1'] : ['y1'];
+    const yDatumKeyNames = hasY0Accessors ? ['y0', 'y1'] : ['y1'];
 
     yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
       const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
@@ -110,6 +110,11 @@ export function renderPoints(
         seriesIdentifier,
         panel,
         orphan,
+        metadata: {
+          x: datum.metadata.x,
+          y: yDatumKeyName === 'y1' ? datum.metadata.y1 : datum.metadata.y0,
+          radius: datum.metadata.mark,
+        },
       };
       indexedGeometryMap.set(pointGeometry, geometryType);
       points.push(pointGeometry);
@@ -151,7 +156,7 @@ export function getPointStyleOverrides(
  * @param stackMode an optional stack mode
  */
 function getDatumYValue(
-  { y1, y0, initialY1, initialY0 }: DataSeriesDatum,
+  { y1, y0, metadata }: DataSeriesDatum,
   lookingForY0: boolean,
   isBandChart: boolean,
   stackMode?: StackMode,
@@ -166,13 +171,13 @@ function getDatumYValue(
       : // in all other cases for band charts, I want to get back the original/initial value of y0 and y1
       // not the computed value
       lookingForY0
-      ? initialY0
-      : initialY1;
+      ? metadata.y0.validated
+      : metadata.y1.validated;
   }
   // if not a band chart get use the original/initial value in every case except for stack as percentage
   // in this case, we should take the difference between the bottom position of the bar and the top position
   // of the bar
-  return stackMode === StackMode.Percentage ? (y1 ?? 0) - (y0 ?? 0) : initialY1;
+  return stackMode === StackMode.Percentage ? (y1 ?? 0) - (y0 ?? 0) : metadata.y1.validated;
 }
 
 /**
@@ -216,7 +221,7 @@ export function getRadiusFn(
 }
 
 function yAccessorForOrphanCheck(datum: DataSeriesDatum): number {
-  return datum.filled?.y1 ? NaN : datum.y1;
+  return datum.metadata.y1.isFilled ? NaN : datum.y1;
 }
 
 function isOrphanDataPoint(

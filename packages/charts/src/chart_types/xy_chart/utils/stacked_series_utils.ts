@@ -135,7 +135,7 @@ export function formatStackedDataSeriesValues(
         }
         const [, y0] = y0StackArray[index];
         const [, y1] = y1Stack;
-        const { initialY0, initialY1, mark, datum, filled } = originalData;
+        const { mark, datum, metadata } = originalData;
         return {
           x,
           /**
@@ -146,11 +146,9 @@ export function formatStackedDataSeriesValues(
            */
           y1: clampIfStackedAsPercentage(y1, stackMode),
           y0: clampIfStackedAsPercentage(y0, stackMode),
-          initialY0,
-          initialY1,
           mark,
           datum,
-          filled,
+          metadata,
         };
       })
       .filter((d) => d !== null) as DataSeriesDatum[];

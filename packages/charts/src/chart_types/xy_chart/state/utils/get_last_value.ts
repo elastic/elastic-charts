@@ -53,7 +53,7 @@ export function getLastValues(dataSeries: DataSeries[], xDomain: XDomain): Map<S
       return;
     }
 
-    const { y0, y1, initialY0, initialY1 } = last;
+    const { y0, y1, metadata } = last;
     const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier, series.groupId);
 
     if (series.stackMode === StackMode.Percentage && !isNaN(y1 - y0)) {
@@ -61,8 +61,8 @@ export function getLastValues(dataSeries: DataSeries[], xDomain: XDomain): Map<S
       lastValues.set(seriesKey, { y0, y1: y1InPercentage });
       return;
     }
-    if (!isNaN(initialY0) || !isNaN(initialY1)) {
-      lastValues.set(seriesKey, { y0: initialY0, y1: initialY1 });
+    if (!isNaN(metadata.y0.validated) || !isNaN(metadata.y1.validated)) {
+      lastValues.set(seriesKey, { y0: metadata.y0.validated, y1: metadata.y1.validated });
     }
   });
   return lastValues;

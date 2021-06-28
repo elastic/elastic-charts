@@ -21,3 +21,4 @@ export * from './series';
 
 /** @internal */
 export * from './utils';
+export { MockDatumMetadata } from './metadata';

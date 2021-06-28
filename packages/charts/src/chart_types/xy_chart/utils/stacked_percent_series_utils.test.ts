@@ -73,17 +73,17 @@ describe('Stacked Series Utils', () => {
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
       const [data0] = formattedDataSeries[0].data;
-      expect(data0.initialY1).toBe(10);
+      expect(data0.metadata.y1.validated).toBe(10);
       expect(data0.y0).toBe(0);
       expect(data0.y1).toBe(0.1);
 
       const [data1] = formattedDataSeries[1].data;
-      expect(data1.initialY1).toBe(20);
+      expect(data1.metadata.y1.validated).toBe(20);
       expect(data1.y0).toBe(0.1);
       expect(data1.y1).toBeCloseTo(0.3);
 
       const [data2] = formattedDataSeries[2].data;
-      expect(data2.initialY1).toBe(70);
+      expect(data2.metadata.y1.validated).toBe(70);
       expect(data2.y0).toBeCloseTo(0.3);
       expect(data2.y1).toBe(1);
     });

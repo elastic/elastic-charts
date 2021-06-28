@@ -493,7 +493,7 @@ describe('Fit Function', () => {
       dataSeries = MockDataSeries.fitFunction();
     });
 
-    describe('allow mutliple fit config types', () => {
+    describe('allow multiple fit config types', () => {
       it('should allow string config', () => {
         testModule.fitFunction(dataSeries.data, Fit.None, ScaleType.Linear);
 
