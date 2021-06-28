@@ -17,8 +17,6 @@
  * under the License.
  */
 
-import { MockPointGeometry } from '../../../mocks';
-import { MockSeriesIdentifier } from '../../../mocks/series/series_identifiers';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
@@ -63,44 +61,8 @@ describe('Rendering points - bubble', () => {
         },
       ] = bubbles;
 
-      expect(points[0]).toEqual(
-        MockPointGeometry.default({
-          x: 0,
-          y: 0,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(spec),
-          value: {
-            accessor: 'y1',
-            x: 0,
-            y: 10,
-            mark: null,
-            datum: [0, 10],
-          },
-          transform: {
-            x: 25,
-            y: 0,
-          },
-        }),
-      );
-      expect(points[1]).toEqual(
-        MockPointGeometry.default({
-          x: 50,
-          y: 50,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(spec),
-          value: {
-            accessor: 'y1',
-            x: 1,
-            y: 5,
-            mark: null,
-            datum: [1, 5],
-          },
-          transform: {
-            x: 25,
-            y: 0,
-          },
-        }),
-      );
+      expect(points[0]).toMatchSnapshot();
+      expect(points[1]).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -158,45 +120,9 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toEqual(
-        MockPointGeometry.default({
-          x: 0,
-          y: 50,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
-          value: {
-            accessor: 'y1',
-            x: 0,
-            y: 10,
-            mark: null,
-            datum: [0, 10],
-          },
-          transform: {
-            x: 25,
-            y: 0,
-          },
-        }),
-      );
-      expect(points[1]).toEqual(
-        MockPointGeometry.default({
-          x: 50,
-          y: 75,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
-          value: {
-            accessor: 'y1',
-            x: 1,
-            y: 5,
-            mark: null,
-            datum: [1, 5],
-          },
-          transform: {
-            x: 25,
-            y: 0,
-          },
-        }),
-      );
+      expect(points).toHaveLength(2);
+      expect(points[0]).toMatchSnapshot();
+      expect(points[1]).toMatchSnapshot();
     });
     test('can render second spec points', () => {
       const [
@@ -205,45 +131,9 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toEqual(
-        MockPointGeometry.default({
-          x: 0,
-          y: 0,
-          color: 'blue',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
-          value: {
-            accessor: 'y1',
-            x: 0,
-            y: 20,
-            mark: null,
-            datum: [0, 20],
-          },
-          transform: {
-            x: 25,
-            y: 0,
-          },
-        }),
-      );
-      expect(points[1]).toEqual(
-        MockPointGeometry.default({
-          x: 50,
-          y: 50,
-          color: 'blue',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
-          value: {
-            accessor: 'y1',
-            x: 1,
-            y: 10,
-            mark: null,
-            datum: [1, 10],
-          },
-          transform: {
-            x: 25,
-            y: 0,
-          },
-        }),
-      );
+      expect(points).toHaveLength(2);
+      expect(points[0]).toMatchSnapshot();
+      expect(points[1]).toMatchSnapshot();
     });
   });
   describe('Single series bubble chart - linear', () => {
@@ -280,44 +170,9 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points[0]).toEqual(
-        MockPointGeometry.default({
-          x: 0,
-          y: 0,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
-          value: {
-            accessor: 'y1',
-            x: 0,
-            y: 10,
-            mark: null,
-            datum: [0, 10],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
-      expect(points[1]).toEqual(
-        MockPointGeometry.default({
-          x: 100,
-          y: 50,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
-          value: {
-            accessor: 'y1',
-            x: 1,
-            y: 5,
-            mark: null,
-            datum: [1, 5],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
+      expect(points).toHaveLength(2);
+      expect(points[0]).toMatchSnapshot();
+      expect(points[1]).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -376,45 +231,9 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toEqual(
-        MockPointGeometry.default({
-          x: 0,
-          y: 50,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
-          value: {
-            accessor: 'y1',
-            x: 0,
-            y: 10,
-            mark: null,
-            datum: [0, 10],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
-      expect(points[1]).toEqual(
-        MockPointGeometry.default({
-          x: 100,
-          y: 75,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
-          value: {
-            accessor: 'y1',
-            x: 1,
-            y: 5,
-            mark: null,
-            datum: [1, 5],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
+      expect(points).toHaveLength(2);
+      expect(points[0]).toMatchSnapshot();
+      expect(points[1]).toMatchSnapshot();
     });
     test('can render second spec points', () => {
       const [
@@ -423,45 +242,9 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toEqual(
-        MockPointGeometry.default({
-          x: 0,
-          y: 0,
-          color: 'blue',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
-          value: {
-            accessor: 'y1',
-            x: 0,
-            y: 20,
-            mark: null,
-            datum: [0, 20],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
-      expect(points[1]).toEqual(
-        MockPointGeometry.default({
-          x: 100,
-          y: 50,
-          color: 'blue',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
-          value: {
-            accessor: 'y1',
-            x: 1,
-            y: 10,
-            mark: null,
-            datum: [1, 10],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
+      expect(points).toHaveLength(2);
+      expect(points[0]).toMatchSnapshot();
+      expect(points[1]).toMatchSnapshot();
     });
   });
   describe('Single series bubble chart - time', () => {
@@ -498,44 +281,9 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points[0]).toEqual(
-        MockPointGeometry.default({
-          x: 0,
-          y: 0,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
-          value: {
-            accessor: 'y1',
-            x: 1546300800000,
-            y: 10,
-            mark: null,
-            datum: [1546300800000, 10],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
-      expect(points[1]).toEqual(
-        MockPointGeometry.default({
-          x: 100,
-          y: 50,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
-          value: {
-            accessor: 'y1',
-            x: 1546387200000,
-            y: 5,
-            mark: null,
-            datum: [1546387200000, 5],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
+      expect(points).toHaveLength(2);
+      expect(points[0]).toMatchSnapshot();
+      expect(points[1]).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -579,45 +327,9 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toEqual(
-        MockPointGeometry.default({
-          x: 0,
-          y: 50,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
-          value: {
-            accessor: 'y1',
-            x: 1546300800000,
-            y: 10,
-            mark: null,
-            datum: [1546300800000, 10],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
-      expect(points[1]).toEqual(
-        MockPointGeometry.default({
-          x: 100,
-          y: 75,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec1),
-          value: {
-            accessor: 'y1',
-            x: 1546387200000,
-            y: 5,
-            mark: null,
-            datum: [1546387200000, 5],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
+      expect(points).toHaveLength(2);
+      expect(points[0]).toMatchSnapshot();
+      expect(points[1]).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(4);
     });
     test('can render second spec points', () => {
@@ -627,45 +339,9 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toEqual(
-        MockPointGeometry.default({
-          x: 0,
-          y: 0,
-          color: 'blue',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
-          value: {
-            accessor: 'y1',
-            x: 1546300800000,
-            y: 20,
-            mark: null,
-            datum: [1546300800000, 20],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
-      expect(points[1]).toEqual(
-        MockPointGeometry.default({
-          x: 100,
-          y: 50,
-          color: 'blue',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec2),
-          value: {
-            accessor: 'y1',
-            x: 1546387200000,
-            y: 10,
-            mark: null,
-            datum: [1546387200000, 10],
-          },
-          transform: {
-            x: 0,
-            y: 0,
-          },
-        }),
-      );
+      expect(points).toHaveLength(2);
+      expect(points[0]).toMatchSnapshot();
+      expect(points[1]).toMatchSnapshot();
     });
   });
   describe('Single series bubble chart - y log', () => {
@@ -755,39 +431,11 @@ describe('Rendering points - bubble', () => {
         },
       ] = bubbles;
       // will not render the 4th point that is out of x domain
-      expect(points.length).toBe(3);
+      expect(points).toHaveLength(3);
       // will keep the 3rd point as an indexedGeometry
       expect(geometriesIndex.size).toEqual(3);
-      expect(points[0]).toEqual(
-        MockPointGeometry.default({
-          x: 0,
-          y: 99.5,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
-          value: {
-            accessor: 'y1',
-            x: 0,
-            y: 0,
-            mark: null,
-            datum: [0, 0],
-          },
-        }),
-      );
-      expect(points[1]).toEqual(
-        MockPointGeometry.default({
-          x: 50,
-          y: 0,
-          color: 'red',
-          seriesIdentifier: MockSeriesIdentifier.fromSpec(pointSeriesSpec),
-          value: {
-            accessor: 'y1',
-            x: 1,
-            y: 1,
-            mark: null,
-            datum: [1, 1],
-          },
-        }),
-      );
+      expect(points[0]).toMatchSnapshot();
+      expect(points[1]).toMatchSnapshot();
     });
   });
 });
