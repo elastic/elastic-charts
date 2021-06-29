@@ -626,7 +626,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -1485,6 +1485,16 @@ export interface PointerOverEvent extends BasePointerEvent, ProjectedValues {
 // @public
 export type PointerUpdateListener = (event: PointerEvent_2) => void;
 
+// @public
+export const PointerUpdateTrigger: Readonly<{
+    X: "x";
+    Y: "y";
+    Both: "both";
+}>;
+
+// @public (undocumented)
+export type PointerUpdateTrigger = $Values<typeof PointerUpdateTrigger>;
+
 // @public (undocumented)
 export const PointShape: Readonly<{
     Circle: "circle";
@@ -1791,13 +1801,13 @@ export interface SettingsSpec extends Spec, LegendSpec {
     // (undocumented)
     onPointerUpdate?: PointerUpdateListener;
     onProjectionClick?: ProjectionClickListener;
-    onProjectionUpdate?: PointerUpdateListener;
     // (undocumented)
     onRenderChange?: RenderChangeListener;
     orderOrdinalBinsBy?: OrderBy;
     // (undocumented)
     pointBuffer?: MarkBuffer;
     pointerUpdateDebounce?: number;
+    pointerUpdateTrigger: PointerUpdateTrigger;
     // (undocumented)
     rendering: Rendering;
     resizeDebounce?: number;

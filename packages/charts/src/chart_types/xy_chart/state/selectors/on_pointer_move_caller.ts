@@ -20,7 +20,7 @@
 import { Selector } from 'reselect';
 
 import { ChartType } from '../../..';
-import { PointerEvent, PointerOverEvent } from '../../../../specs';
+import { PointerEvent, PointerOverEvent, PointerUpdateTrigger } from '../../../../specs';
 import { PointerEventType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -84,22 +84,20 @@ function getPointerEvent(
   };
 }
 
-function isSameEventValue(a: PointerOverEvent, b: PointerOverEvent, checkYValues = false) {
+function isSameEventValue(a: PointerOverEvent, b: PointerOverEvent, changeTrigger: PointerUpdateTrigger) {
+  const checkX = changeTrigger === PointerUpdateTrigger.X || changeTrigger === PointerUpdateTrigger.Both;
+  const checkY = changeTrigger === PointerUpdateTrigger.Y || changeTrigger === PointerUpdateTrigger.Both;
+
   return (
-    a.x === b.x &&
-    a.scale === b.scale &&
-    a.unit === b.unit &&
-    (!checkYValues ||
-      a.y.every((y, i) => {
-        return y.value === b.y[i]?.value;
-      }))
+    (!checkX || (a.x === b.x && a.scale === b.scale && a.unit === b.unit)) &&
+    (!checkY || a.y.every((y, i) => y.value === b.y[i]?.value))
   );
 }
 
 function hasPointerEventChanged(
   prevPointerEvent: PointerEvent,
   nextPointerEvent: PointerEvent | null,
-  checkYValues = false,
+  changeTrigger: PointerUpdateTrigger,
 ) {
   if (nextPointerEvent && prevPointerEvent.type !== nextPointerEvent.type) {
     return true;
@@ -116,7 +114,7 @@ function hasPointerEventChanged(
     nextPointerEvent &&
     prevPointerEvent.type === PointerEventType.Over &&
     nextPointerEvent.type === PointerEventType.Over &&
-    !isSameEventValue(prevPointerEvent, nextPointerEvent, checkYValues)
+    !isSameEventValue(prevPointerEvent, nextPointerEvent, changeTrigger)
   ) {
     return true;
   }
@@ -131,7 +129,7 @@ export function createOnPointerMoveCaller(): (state: GlobalChartState) => void {
     if (selector === null && state.chartType === ChartType.XYAxis) {
       selector = createCustomCachedSelector(
         [getSettingsSpecSelector, getPointerEventSelector, getChartIdSelector],
-        ({ onPointerUpdate, onProjectionUpdate }, nextPointerEvent, chartId): void => {
+        ({ onPointerUpdate, pointerUpdateTrigger }, nextPointerEvent, chartId): void => {
           if (prevPointerEvent === null) {
             prevPointerEvent = {
               chartId,
@@ -145,10 +143,8 @@ export function createOnPointerMoveCaller(): (state: GlobalChartState) => void {
           // to avoid a recursive loop of calls caused by the impossibility to update the prevPointerEvent
           prevPointerEvent = nextPointerEvent;
 
-          if (onPointerUpdate && hasPointerEventChanged(tempPrev, nextPointerEvent)) onPointerUpdate(nextPointerEvent);
-
-          if (onProjectionUpdate && hasPointerEventChanged(tempPrev, nextPointerEvent, true))
-            onProjectionUpdate(nextPointerEvent);
+          if (onPointerUpdate && hasPointerEventChanged(tempPrev, nextPointerEvent, pointerUpdateTrigger))
+            onPointerUpdate(nextPointerEvent);
         },
       );
     }

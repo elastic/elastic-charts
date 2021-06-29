@@ -49,7 +49,6 @@ function handleListenerDebouncing(settings: SettingsSpec): SettingsSpec {
   const delay = settings.pointerUpdateDebounce ?? DEFAULT_POINTER_UPDATE_DEBOUNCE;
 
   if (settings.onPointerUpdate) settings.onPointerUpdate = debounce(settings.onPointerUpdate, delay);
-  if (settings.onProjectionUpdate) settings.onProjectionUpdate = debounce(settings.onProjectionUpdate, delay);
 
   return settings;
 }

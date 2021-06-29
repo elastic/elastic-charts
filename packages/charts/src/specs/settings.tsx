@@ -45,7 +45,15 @@ import { GeometryValue } from '../utils/geometry';
 import { GroupId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
 import { PartialTheme, Theme } from '../utils/themes/theme';
-import { BinAgg, BrushAxis, DEFAULT_SETTINGS_SPEC, Direction, PointerEventType, TooltipType } from './constants';
+import {
+  BinAgg,
+  BrushAxis,
+  DEFAULT_SETTINGS_SPEC,
+  Direction,
+  PointerEventType,
+  PointerUpdateTrigger,
+  TooltipType,
+} from './constants';
 
 /** @public */
 export interface LayerValue {
@@ -499,18 +507,11 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * X axis point, and an array of Y values for every groupId used in the chart.
    */
   onProjectionClick?: ProjectionClickListener;
-  /**
-   * Attach a listener for mouse move on the projection area.
-   * The listener will be called with the current x value snapped to the closest
-   * X axis point, and an array of Y values for every groupId used in the chart.
-   */
-  onProjectionUpdate?: PointerUpdateListener;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
   onElementOut?: BasicListener;
   pointBuffer?: MarkBuffer;
   onBrushEnd?: BrushEndListener;
-
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
   xDomain?: CustomXDomain;
@@ -521,9 +522,20 @@ export interface SettingsSpec extends Spec, LegendSpec {
   resizeDebounce?: number;
 
   /**
-   * debounce delay used for onPointerUpdate and onProjectionUpdate listeners
+   * debounce delay used for onPointerUpdate listener
    */
   pointerUpdateDebounce?: number;
+
+  /**
+   * trigger for onPointerUpdate listener.
+   *
+   *  - `'x'` - only triggers lister when x value changes
+   *  - `'y'` - only triggers lister when y values change
+   *  - `'both'` - triggers lister when x or y values change
+   *
+   * @defaultValue 'x'
+   */
+  pointerUpdateTrigger: PointerUpdateTrigger;
 
   /**
    * Block the brush tool on a specific axis: x, y or both.
@@ -658,6 +670,7 @@ export type DefaultSettingsProps =
   | 'rotation'
   | 'resizeDebounce'
   | 'pointerUpdateDebounce'
+  | 'pointerUpdateTrigger'
   | 'animateData'
   | 'debug'
   | 'tooltip'

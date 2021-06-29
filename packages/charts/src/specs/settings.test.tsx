@@ -128,7 +128,6 @@ describe('Settings spec component', () => {
     const onBrushEnd = jest.fn();
     const onLegendEvent = jest.fn();
     const onPointerUpdateEvent = jest.fn();
-    const onProjectionUpdateEvent = jest.fn();
     const onRenderChangeEvent = jest.fn();
 
     const updatedProps: Partial<SettingsSpec> = {
@@ -142,7 +141,6 @@ describe('Settings spec component', () => {
       onLegendItemPlusClick: onLegendEvent,
       onLegendItemMinusClick: onLegendEvent,
       onPointerUpdate: onPointerUpdateEvent,
-      onProjectionUpdate: onProjectionUpdateEvent,
       onRenderChange: onRenderChangeEvent,
     };
 
@@ -162,7 +160,6 @@ describe('Settings spec component', () => {
 
     // check for debounced functions
     expect(settingSpec.onPointerUpdate).toBeDefined();
-    expect(settingSpec.onProjectionUpdate).toBeDefined();
   });
 
   test('should allow partial theme', () => {

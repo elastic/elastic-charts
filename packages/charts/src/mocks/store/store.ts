@@ -20,11 +20,12 @@
 import { Cancelable } from 'lodash';
 import { createStore, Store } from 'redux';
 
-import { DEFAULT_SETTINGS_SPEC, Spec } from '../../specs';
+import { DEFAULT_SETTINGS_SPEC, SettingsSpec, Spec, SpecType } from '../../specs';
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
 import { chartStoreReducer, GlobalChartState } from '../../state/chart_state';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
+import { mergePartial } from '../../utils/common';
 
 /** @internal */
 export class MockStore {
@@ -62,6 +63,21 @@ export class MockStore {
   }
 
   /**
+   * udpate settings spec in store
+   */
+  static updateSettings(store: Store<GlobalChartState>, newSettings: Partial<SettingsSpec>) {
+    const specs = Object.values(store.getState().specs).map((s) => {
+      if (s.specType === SpecType.Settings) {
+        return mergePartial(s, newSettings);
+      }
+
+      return s;
+    });
+
+    MockStore.addSpecs(specs, store);
+  }
+
+  /**
    * flush all debounced listeners
    *
    * See packages/charts/src/__mocks__/ts-debounce.ts
@@ -71,6 +87,5 @@ export class MockStore {
 
     // debounce mocked as lodash.debounce to enable flush
     if (settings.onPointerUpdate) ((settings.onPointerUpdate as unknown) as Cancelable).flush();
-    if (settings.onProjectionUpdate) ((settings.onProjectionUpdate as unknown) as Cancelable).flush();
   }
 }
