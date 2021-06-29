@@ -94,7 +94,6 @@ export function getLegendItems(
       path,
       seriesIdentifiers: [{ key: dataName, specId: id }],
       keys: [],
-      shape: 'dot',
     };
   });
 }

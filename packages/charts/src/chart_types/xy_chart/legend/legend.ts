@@ -148,10 +148,10 @@ export function computeLegend(
     const seriesIdentifier = getSeriesIdentifierFromDataSeries(series);
     const xScaleType = getXScaleTypeFromSpec(spec.xScaleType);
 
-    let shape = 'circle' as IconType;
+    let shape = 'dot' as IconType;
     if (spec.seriesType === 'bubble') {
       const { bubbleSeriesStyle } = spec as BubbleSeriesSpec;
-      shape = bubbleSeriesStyle?.point?.shape ?? 'circle';
+      shape = bubbleSeriesStyle?.point?.shape ?? 'dot';
     }
     legendItems.push({
       color,
