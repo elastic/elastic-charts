@@ -22,12 +22,17 @@ import React, { SVGAttributes, memo } from 'react';
 
 import { deepEqual } from '../../utils/fast_deep_equal';
 import { AlertIcon } from './assets/alert';
+import { DiamondIcon } from './assets/diamond';
 import { DotIcon } from './assets/dot';
 import { EmptyIcon } from './assets/empty';
 import { EyeIcon } from './assets/eye';
 import { EyeClosedIcon } from './assets/eye_closed';
 import { ListIcon } from './assets/list';
+import { PlusIcon } from './assets/plus';
 import { QuestionInCircle } from './assets/question_in_circle';
+import { SquareIcon } from './assets/square';
+import { TriangleIcon } from './assets/triangle';
+import { XIcon } from './assets/x';
 
 const typeToIconMap = {
   alert: AlertIcon,
@@ -37,13 +42,19 @@ const typeToIconMap = {
   eyeClosed: EyeClosedIcon,
   list: ListIcon,
   questionInCircle: QuestionInCircle,
+  circle: DotIcon,
+  x: XIcon,
+  plus: PlusIcon,
+  diamond: DiamondIcon,
+  square: SquareIcon,
+  triangle: TriangleIcon,
 };
 
 /** @internal */
 export type IconColor = string;
 
 /** @internal */
-export type IconType = keyof typeof typeToIconMap;
+export type IconType = keyof typeof typeToIconMap & string;
 
 interface IconProps {
   className?: string;
@@ -64,7 +75,6 @@ function IconComponent({ type, color, className, tabIndex, ...rest }: IconCompon
   }
 
   const classes = classNames('echIcon', className);
-
   const Svg = (type && typeToIconMap[type]) || EmptyIcon;
 
   /*

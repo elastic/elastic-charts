@@ -48,6 +48,7 @@ export const computeLegendSelector = createCustomCachedSelector(
         isToggleable: true,
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [],
+        shape: 'dot',
       };
     });
   },

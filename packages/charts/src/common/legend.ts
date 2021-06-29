@@ -18,6 +18,7 @@
  */
 
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { IconType } from '../components/icons/icon';
 import { LegendPath } from '../state/actions/legend';
 import { Color } from '../utils/common';
 import { CategoryKey, CategoryLabel } from './category';
@@ -47,6 +48,7 @@ export type LegendItem = {
   // TODO: Remove when partition layers are toggleable
   isToggleable?: boolean;
   keys: Array<string | number>;
+  shape?: IconType;
 };
 
 /** @internal */

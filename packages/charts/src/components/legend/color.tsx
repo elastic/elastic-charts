@@ -19,12 +19,13 @@
 
 import React, { MouseEventHandler, forwardRef, memo } from 'react';
 
-import { Icon } from '../icons/icon';
+import { Icon, IconType } from '../icons/icon';
 
 interface ColorProps {
   color: string;
   seriesName: string;
   hasColorPicker: boolean;
+  shape: IconType;
   isSeriesHidden?: boolean;
   onClick?: MouseEventHandler;
 }
@@ -35,7 +36,7 @@ interface ColorProps {
  */
 export const Color = memo(
   forwardRef<HTMLButtonElement, ColorProps>(
-    ({ color, seriesName, isSeriesHidden = false, hasColorPicker, onClick }, ref) => {
+    ({ color, seriesName, isSeriesHidden = false, hasColorPicker, onClick, shape }, ref) => {
       if (isSeriesHidden) {
         return (
           <div className="echLegendItem__color" title="series hidden">
@@ -61,7 +62,7 @@ export const Color = memo(
 
       return (
         <div className="echLegendItem__color" title="series color">
-          <Icon type="dot" color={color} aria-label={`series color: ${color}`} />
+          <Icon type={shape} color={color} aria-label={`series color: ${color}`} />
         </div>
       );
     },

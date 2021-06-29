@@ -176,6 +176,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   render() {
     const { extraValues, item, showExtra, colorPicker, totalItems, action: Action, positionConfig } = this.props;
     const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label } = item;
+    const { shape = 'circle' } = item;
 
     if (isItemHidden) return null;
 
@@ -207,6 +208,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             isSeriesHidden={isSeriesHidden}
             hasColorPicker={hasColorPicker}
             onClick={this.handleColorClick(hasColorPicker)}
+            shape={shape}
           />
           <ItemLabel
             label={label}

@@ -19,6 +19,7 @@
 
 import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
+import { IconType } from '../../../components/icons/icon';
 import { ScaleType } from '../../../scales/constants';
 import { SortSeriesByConfig, TickFormatterOptions } from '../../../specs';
 import { Color } from '../../../utils/common';
@@ -39,7 +40,14 @@ import {
   isDataSeriesBanded,
   getSeriesIdentifierFromDataSeries,
 } from '../utils/series';
-import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
+import {
+  AxisSpec,
+  BasicSeriesSpec,
+  Postfixes,
+  isAreaSeriesSpec,
+  isBarSeriesSpec,
+  BubbleSeriesSpec,
+} from '../utils/specs';
 
 /** @internal */
 export interface FormattedLastValues {
@@ -139,6 +147,12 @@ export function computeLegend(
     const lastValue = lastValues.get(key);
     const seriesIdentifier = getSeriesIdentifierFromDataSeries(series);
     const xScaleType = getXScaleTypeFromSpec(spec.xScaleType);
+
+    let shape = 'circle' as IconType;
+    if (spec.seriesType === 'bubble') {
+      const { bubbleSeriesStyle } = spec as BubbleSeriesSpec;
+      shape = bubbleSeriesStyle?.point?.shape ?? 'circle';
+    }
     legendItems.push({
       color,
       label: labelY1,
@@ -150,6 +164,7 @@ export function computeLegend(
       defaultExtra: getLegendExtra(showLegendExtra, xScaleType, formatter, 'y1', lastValue),
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
+      shape,
     });
     if (banded) {
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
@@ -164,6 +179,7 @@ export function computeLegend(
         defaultExtra: getLegendExtra(showLegendExtra, xScaleType, formatter, 'y0', lastValue),
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
+        shape,
       });
     }
   });
