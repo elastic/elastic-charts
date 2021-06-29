@@ -105,8 +105,7 @@ describe('Rendering points - areas', () => {
 
     test('Can render two points', () => {
       const { points } = areaGeometry;
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -166,15 +165,13 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
       const [{ value: firstArea }] = areas;
       expect(firstArea.points.length).toEqual(2);
-      expect(firstArea.points[0]).toMatchSnapshot();
-      expect(firstArea.points[1]).toMatchSnapshot();
+      expect(firstArea.points).toMatchSnapshot();
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const [, { value: secondArea }] = areas;
       expect(secondArea.points.length).toEqual(2);
-      expect(secondArea.points[0]).toMatchSnapshot();
-      expect(secondArea.points[1]).toMatchSnapshot();
+      expect(secondArea.points).toMatchSnapshot();
     });
     test('has the right number of geometry in the indexes', () => {
       const { areas } = geometries.geometries;
@@ -215,8 +212,7 @@ describe('Rendering points - areas', () => {
     test('Can render two points', () => {
       const { areas } = geometries.geometries;
       const [{ value: firstArea }] = areas;
-      expect(firstArea.points[0]).toMatchSnapshot();
-      expect(firstArea.points[1]).toMatchSnapshot();
+      expect(firstArea.points).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
   });
@@ -272,16 +268,14 @@ describe('Rendering points - areas', () => {
       const { areas } = geometries.geometries;
       const [{ value: firstArea }] = areas;
       expect(firstArea.points.length).toEqual(2);
-      expect(firstArea.points[0]).toMatchSnapshot();
-      expect(firstArea.points[1]).toMatchSnapshot();
+      expect(firstArea.points).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const [, { value: secondArea }] = areas;
       expect(secondArea.points.length).toEqual(2);
-      expect(secondArea.points[0]).toMatchSnapshot();
-      expect(secondArea.points[1]).toMatchSnapshot();
+      expect(secondArea.points).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(secondArea.points.length);
     });
   });
@@ -317,8 +311,7 @@ describe('Rendering points - areas', () => {
     test('Can render two points', () => {
       const { areas } = geometries.geometries;
       const [{ value: firstArea }] = areas;
-      expect(firstArea.points[0]).toMatchSnapshot();
-      expect(firstArea.points[1]).toMatchSnapshot();
+      expect(firstArea.points).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
   });
@@ -356,18 +349,14 @@ describe('Rendering points - areas', () => {
     test('can render first spec points', () => {
       const { areas } = geometries.geometries;
       const [{ value: firstArea }] = areas;
-      expect(firstArea.points.length).toEqual(2);
-      expect(firstArea.points[0]).toMatchSnapshot();
-      expect(firstArea.points[1]).toMatchSnapshot();
+      expect(firstArea.points).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(firstArea.points.length);
     });
     test('can render second spec points', () => {
       const { areas } = geometries.geometries;
       const [, { value: secondArea }] = areas;
 
-      expect(secondArea.points.length).toEqual(2);
-      expect(secondArea.points[0]).toMatchSnapshot();
-      expect(secondArea.points[1]).toMatchSnapshot();
+      expect(secondArea.points).toMatchSnapshot();
       expect(geometries.geometriesIndex.size).toEqual(secondArea.points.length);
     });
   });
@@ -496,7 +485,6 @@ describe('Rendering points - areas', () => {
     const domains = computeSeriesDomainsSelector(store.getState());
 
     expect(domains.formattedDataSeries[0].data).toMatchSnapshot();
-
     expect(domains.formattedDataSeries[1].data).toMatchSnapshot();
   });
 });

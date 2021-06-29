@@ -68,11 +68,7 @@ describe('Rendering bands - areas', () => {
           value: { points },
         },
       ] = areas;
-      expect(points).toHaveLength(4);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
-      expect(points[2]).toMatchSnapshot();
-      expect(points[3]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
     });
   });
   describe('Single band area chart with null values', () => {
@@ -120,13 +116,7 @@ describe('Rendering bands - areas', () => {
           value: { points },
         },
       ] = areas;
-      expect(points).toHaveLength(6);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
-      expect(points[2]).toMatchSnapshot();
-      expect(points[3]).toMatchSnapshot();
-      expect(points[4]).toMatchSnapshot();
-      expect(points[5]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
     });
   });
   describe('Single series band bar chart - ordinal', () => {
@@ -155,10 +145,7 @@ describe('Rendering bands - areas', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render two bars', () => {
-      expect(bars.length).toBe(3);
-      expect(bars[0]).toMatchSnapshot();
-      expect(bars[1]).toMatchSnapshot();
-      expect(bars[2]).toMatchSnapshot();
+      expect(bars).toMatchSnapshot();
     });
   });
 });

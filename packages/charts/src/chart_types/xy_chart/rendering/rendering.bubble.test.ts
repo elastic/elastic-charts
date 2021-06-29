@@ -61,8 +61,7 @@ describe('Rendering points - bubble', () => {
         },
       ] = bubbles;
 
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -120,9 +119,7 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points).toHaveLength(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
     });
     test('can render second spec points', () => {
       const [
@@ -131,9 +128,7 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points).toHaveLength(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
     });
   });
   describe('Single series bubble chart - linear', () => {
@@ -170,9 +165,7 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points).toHaveLength(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -231,9 +224,7 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points).toHaveLength(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
     });
     test('can render second spec points', () => {
       const [
@@ -242,9 +233,7 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points).toHaveLength(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
     });
   });
   describe('Single series bubble chart - time', () => {
@@ -281,9 +270,7 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points).toHaveLength(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -327,9 +314,7 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points).toHaveLength(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(4);
     });
     test('can render second spec points', () => {
@@ -339,9 +324,7 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      expect(points).toHaveLength(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
     });
   });
   describe('Single series bubble chart - y log', () => {
@@ -434,8 +417,7 @@ describe('Rendering points - bubble', () => {
       expect(points).toHaveLength(3);
       // will keep the 3rd point as an indexedGeometry
       expect(geometriesIndex.size).toEqual(3);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
     });
   });
 });

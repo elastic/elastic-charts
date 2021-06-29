@@ -48,9 +48,7 @@ describe('Rendering bars', () => {
     );
     const { geometries } = computeSeriesGeometriesSelector(store.getState());
 
-    expect(geometries.bars[0].value[0]).toMatchSnapshot();
-    expect(geometries.bars[0].value[1]).toMatchSnapshot();
-    expect(geometries.bars[0].value).toHaveLength(2);
+    expect(geometries.bars[0].value).toMatchSnapshot();
   });
 
   describe('Single series bar chart - ordinal', () => {
@@ -219,14 +217,10 @@ describe('Rendering bars', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('can render first spec bars', () => {
-      expect(bars[0].value).toHaveLength(2);
-      expect(bars[0].value[0]).toMatchSnapshot();
-      expect(bars[0].value[1]).toMatchSnapshot();
+      expect(bars[0].value).toMatchSnapshot();
     });
     test('can render second spec bars', () => {
-      expect(bars[1].value.length).toEqual(2);
-      expect(bars[1].value[0]).toMatchSnapshot();
-      expect(bars[1].value[1]).toMatchSnapshot();
+      expect(bars[1].value).toMatchSnapshot();
     });
   });
 });

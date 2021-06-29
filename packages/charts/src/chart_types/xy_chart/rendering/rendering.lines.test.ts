@@ -66,8 +66,7 @@ describe('Rendering points - line', () => {
         },
       ] = lines;
 
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -127,9 +126,7 @@ describe('Rendering points - line', () => {
           value: { points },
         },
       ] = lines;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
@@ -139,9 +136,7 @@ describe('Rendering points - line', () => {
           value: { points },
         },
       ] = lines;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -181,8 +176,7 @@ describe('Rendering points - line', () => {
           value: { points },
         },
       ] = lines;
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -241,9 +235,7 @@ describe('Rendering points - line', () => {
           value: { points },
         },
       ] = lines;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
@@ -253,9 +245,7 @@ describe('Rendering points - line', () => {
           value: { points },
         },
       ] = lines;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -295,8 +285,7 @@ describe('Rendering points - line', () => {
           value: { points },
         },
       ] = lines;
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -341,18 +330,14 @@ describe('Rendering points - line', () => {
       const {
         value: { points },
       } = firstLine;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
     test('can render second spec points', () => {
       const {
         value: { points },
       } = secondLine;
-      expect(points.length).toEqual(2);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
       expect(geometriesIndex.size).toEqual(points.length);
     });
   });
@@ -450,8 +435,7 @@ describe('Rendering points - line', () => {
       expect(points.length).toBe(3);
       // will keep the 3rd point as an indexedGeometry
       expect(geometriesIndex.size).toEqual(3);
-      expect(points[0]).toMatchSnapshot();
-      expect(points[1]).toMatchSnapshot();
+      expect(points).toMatchSnapshot();
     });
   });
 });
