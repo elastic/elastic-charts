@@ -173,8 +173,6 @@ describe('Accessibility', () => {
           // @ts-ignore
           bands={bandsWithSemanticsAscending.flat().filter((val) => typeof val === 'number')}
           ticks={[0, 50, 100, 150, 200, 250, 300]}
-          // tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-          // bandFillColor={({ value }: BandFillColorAccessorInput) => semanticBandFillColor(value)}
           labelMajor="Revenue 2020 YTD  "
           labelMinor="(thousand USD)  "
           centralMajor="170"
