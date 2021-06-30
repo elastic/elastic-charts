@@ -48,12 +48,7 @@ export function ScreenReaderLabel({
 
   return (
     <>
-      {unifiedLabel && (
-        <Heading id={labelId}>
-          {label}
-          {unifiedLabel}
-        </Heading>
-      )}
+      {unifiedLabel && <Heading id={labelId}>{unifiedLabel}</Heading>}
       {goalChartLabels?.minorLabel && <p>{goalChartLabels?.minorLabel}</p>}
     </>
   );
