@@ -135,7 +135,7 @@ class Component extends React.Component<Props> {
           role="presentation"
         >
           <ScreenReaderSummary />
-          {semanticValues && semanticValues.length > 1 && <GoalSemanticDescription semanticValues={semanticValues} />}
+          <GoalSemanticDescription semanticValues={semanticValues ?? []} {...a11ySettings} />
         </canvas>
       </figure>
     );

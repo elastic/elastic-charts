@@ -19,25 +19,22 @@
 
 import React from 'react';
 
+import { A11ySettings } from '../../state/selectors/get_accessibility_config';
+
 interface GoalSemanticDescriptionProps {
   semanticValues: Array<(string | number)[]>;
 }
 
 /** @internal */
-export const GoalSemanticDescription = ({ semanticValues }: GoalSemanticDescriptionProps) => {
-  return (
-    <div className="echScreenReaderOnly echGoalDescription">
-      {semanticValues.map(([value, semantic], index) => {
-        const nextValue = semanticValues[index + 1];
-        const prevValue = semanticValues[index - 1];
-        return nextValue !== undefined ? (
-          <dd key={index}>{`values ${value} - ${nextValue[0]}: ${semantic}`}</dd>
-        ) : prevValue[0] < value ? (
-          <dd key={index}>{`values above ${value}: ${semantic}`}</dd>
-        ) : (
-          <dd key={index}>{`values below ${value}: ${semantic}`}</dd>
-        );
-      })}
-    </div>
-  );
+export const GoalSemanticDescription = ({ semanticValues, labelId }: A11ySettings & GoalSemanticDescriptionProps) => {
+  return semanticValues.length > 1 ? (
+    <dl className="echScreenReaderOnly echGoalDescription" key={`goalChart--${labelId}`}>
+      {semanticValues.map(([value, semantic], index) => (
+        <>
+          <dt key={`value-key--${index}-${value}`}>{value}</dt>
+          <dd key={`value-dd--${index}-${value}`}>{semantic}</dd>
+        </>
+      ))}
+    </dl>
+  ) : null;
 };

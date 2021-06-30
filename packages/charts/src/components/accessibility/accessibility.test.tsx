@@ -219,12 +219,12 @@ describe('Accessibility', () => {
     });
     it('should correctly render ascending semantic values', () => {
       expect(ascendingSemanticValuesGoalChart.find('.echGoalDescription').first().text()).toBe(
-        'values 200 - 250: freezingvalues 250 - 300: chillyvalues above 300: brisk',
+        '200freezing250chilly300brisk',
       );
     });
     it('should correctly render descending semantic values', () => {
       expect(descendingSemanticValuesGoalChart.find('.echGoalDescription').first().text()).toBe(
-        'values 300 - 250: briskvalues 250 - 200: chillyvalues below 200: freezing',
+        '300brisk250chilly200freezing',
       );
     });
   });
