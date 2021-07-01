@@ -42,7 +42,6 @@ export const Example = () => {
     return acc;
   }, {});
 
-  // @ts-ignore
   const semanticBandFillColor = (x: number): Color => colorMap[x];
 
   return (

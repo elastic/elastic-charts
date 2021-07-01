@@ -31,7 +31,7 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
-import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { BandViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
 import { getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
 import { renderCanvas2d } from './canvas_renderers';
@@ -41,7 +41,7 @@ interface ReactiveChartStateProps {
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
-  bandLabels: string[];
+  bandLabels: BandViewModel[];
 }
 
 interface ReactiveChartDispatchProps {
@@ -135,7 +135,7 @@ class Component extends React.Component<Props> {
           role="presentation"
         >
           <ScreenReaderSummary />
-          <GoalSemanticDescription bandLabels={bandLabels ?? []} {...a11ySettings} />
+          <GoalSemanticDescription bandLabels={bandLabels} {...a11ySettings} />
         </canvas>
       </figure>
     );

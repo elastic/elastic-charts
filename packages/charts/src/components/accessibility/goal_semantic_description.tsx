@@ -19,20 +19,21 @@
 
 import React from 'react';
 
+import { BandViewModel } from '../../chart_types/goal_chart/layout/types/viewmodel_types';
 import { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
 interface GoalSemanticDescriptionProps {
-  bandLabels: string[];
+  bandLabels: BandViewModel[];
 }
 
 /** @internal */
 export const GoalSemanticDescription = ({ bandLabels, labelId }: A11ySettings & GoalSemanticDescriptionProps) => {
   return bandLabels.length > 1 ? (
     <dl className="echScreenReaderOnly echGoalDescription" key={`goalChart--${labelId}`}>
-      {bandLabels.map(([value, semantic], index) => (
+      {bandLabels.map(({ value, text }, index) => (
         <>
           <dt key={`value-key--${index}-${value}`}>{value}</dt>
-          <dd key={`value-dd--${index}-${value}`}>{semantic}</dd>
+          <dd key={`value-dd--${index}-${value}`}>{text}</dd>
         </>
       ))}
     </dl>

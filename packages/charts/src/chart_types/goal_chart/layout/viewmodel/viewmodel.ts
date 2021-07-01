@@ -81,6 +81,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: GoalSpec, config:
     bands: bands.map((value: number, index: number) => ({
       value,
       fillColor: bandFillColor({ value, index, ...callbackArgs }),
+      text: bandLabels,
     })),
     ticks: ticks.map((value: number, index: number) => ({
       value,
@@ -96,7 +97,6 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: GoalSpec, config:
     lowestValue,
     aboveBaseCount,
     belowBaseCount,
-    bandLabels,
   };
 
   // combined viewModel

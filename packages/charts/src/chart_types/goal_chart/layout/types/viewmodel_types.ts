@@ -28,6 +28,7 @@ import { Config } from './config_types';
 export interface BandViewModel {
   value: number;
   fillColor: string;
+  text: string[];
 }
 
 interface TickViewModel {
@@ -51,7 +52,6 @@ export interface BulletViewModel {
   lowestValue: number;
   aboveBaseCount: number;
   belowBaseCount: number;
-  bandLabels: string[];
 }
 
 /** @internal */
@@ -78,7 +78,6 @@ const commonDefaults = {
 export const defaultGoalSpec = {
   ...commonDefaults,
   bands: [50, 75, 100],
-  bandLabels: [],
   bandFillColor: ({ value, base, highestValue, lowestValue }: BandFillColorAccessorInput) => {
     const aboveBase = value > base;
     const ratio = aboveBase
@@ -93,13 +92,13 @@ export const defaultGoalSpec = {
   labelMinor: ({}: BandFillColorAccessorInput) => 'unit',
   centralMajor: ({ base }: BandFillColorAccessorInput) => String(base),
   centralMinor: ({ target }: BandFillColorAccessorInput) => String(target),
+  bandLabels: [],
 };
 
 /** @internal */
 export const nullGoalViewModel = {
   ...commonDefaults,
   bands: [],
-  bandLabels: [],
   ticks: [],
   labelMajor: '',
   labelMinor: '',

@@ -166,8 +166,6 @@ describe('Accessibility', () => {
           base={0}
           target={260}
           actual={170}
-          // doesn't mess with canvas_renderers.ts
-          // @ts-ignore
           bands={bandsAscending}
           ticks={[0, 50, 100, 150, 200, 250, 300]}
           labelMajor="Revenue 2020 YTD  "
