@@ -25,8 +25,8 @@ interface ColorProps {
   color: string;
   seriesName: string;
   hasColorPicker: boolean;
-  shape: IconType;
   isSeriesHidden?: boolean;
+  shape?: IconType;
   onClick?: MouseEventHandler;
 }
 

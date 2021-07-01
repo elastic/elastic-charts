@@ -19,45 +19,47 @@
 
 import React from 'react';
 
-import { Chart, AreaSeries, LineSeries, BarSeries, ScaleType, Settings } from '../packages/charts/src';
+import { Axis, Chart, BubbleSeries, Settings, Position } from '../packages/charts/src';
 
 export class Playground extends React.Component {
   render() {
     return (
       <div className="App">
-        <Chart size={[500, 200]}>
-          <Settings ariaLabel="This is a custom aria-label" ariaLabelledBy="labeled by here" />
-          <AreaSeries
-            id="lines"
+        <Chart size={[500, 500]}>
+          <Settings ariaLabel="This is a custom aria-label" ariaLabelledBy="labeled by here" showLegend />
+          <Axis id="horizontal" position={Position.Bottom} />
+          <Axis id="vertical" position={Position.Left} />
+          <BubbleSeries
+            id="bubble1"
+            name="test1"
+            bubbleSeriesStyle={{ point: { shape: 'diamond' } }}
+            data={[
+              { x: 0, y: 350 },
+              { x: 1, y: 201 },
+              { x: 2, y: 550 },
+              { x: 3, y: 604 },
+            ]}
+          />
+          <BubbleSeries
+            id="bubble2"
             name="test2"
+            bubbleSeriesStyle={{ point: { shape: 'plus' } }}
             data={[
-              { x: 'trousers', y: 300, val: 1232 },
-              { x: 'watches', y: 20, val: 1232 },
-              { x: 'bags', y: 700, val: 1232 },
-              { x: 'cocktail dresses', y: 804, val: 1232 },
+              { x: 0, y: 300 },
+              { x: 1, y: 20 },
+              { x: 2, y: 700 },
+              { x: 3, y: 804 },
             ]}
           />
-          <LineSeries
-            id="lines2"
-            name="test"
+          <BubbleSeries
+            id="bubble3"
+            name="test3"
+            bubbleSeriesStyle={{ point: { shape: 'triangle' } }}
             data={[
-              { x: 'trousers', y: 300, val: 1232 },
-              { x: 'watches', y: 20, val: 1232 },
-              { x: 'bags', y: 700, val: 1232 },
-              { x: 'cocktail dresses', y: 804, val: 1232 },
-            ]}
-          />
-          <BarSeries
-            id="bars"
-            name="amount"
-            xScaleType={ScaleType.Ordinal}
-            xAccessor="x"
-            yAccessors={['y']}
-            data={[
-              { x: 'trousers', y: 390, val: 1222 },
-              { x: 'watches', y: 23, val: 1222 },
-              { x: 'bags', y: 750, val: 1222 },
-              { x: 'cocktail dresses', y: 854, val: 1222 },
+              { x: 0, y: 390 },
+              { x: 1, y: 123 },
+              { x: 2, y: 750 },
+              { x: 3, y: 854 },
             ]}
           />
         </Chart>

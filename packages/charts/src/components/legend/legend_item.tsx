@@ -176,7 +176,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   render() {
     const { extraValues, item, showExtra, colorPicker, totalItems, action: Action, positionConfig } = this.props;
     const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label } = item;
-    const { shape = 'circle' } = item;
+    const { shape = 'dot' } = item;
 
     if (isItemHidden) return null;
 

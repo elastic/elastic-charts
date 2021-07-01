@@ -47,6 +47,8 @@ import {
   isAreaSeriesSpec,
   isBarSeriesSpec,
   BubbleSeriesSpec,
+  LineSeriesSpec,
+  AreaSeriesSpec,
 } from '../utils/specs';
 
 /** @internal */
@@ -152,6 +154,12 @@ export function computeLegend(
     if (spec.seriesType === 'bubble') {
       const { bubbleSeriesStyle } = spec as BubbleSeriesSpec;
       shape = bubbleSeriesStyle?.point?.shape ?? 'dot';
+    } else if (spec.seriesType === 'line') {
+      const { lineSeriesStyle } = spec as LineSeriesSpec;
+      shape = lineSeriesStyle?.point?.shape ?? 'dot';
+    } else if (spec.seriesType === 'area') {
+      const { areaSeriesStyle } = spec as AreaSeriesSpec;
+      shape = areaSeriesStyle?.point?.shape ?? 'dot';
     }
     legendItems.push({
       color,

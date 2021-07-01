@@ -25,10 +25,7 @@ import { IconComponentProps } from '../icon';
 export function DiamondIcon(extraProps: IconComponentProps) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" {...extraProps}>
-      <path
-        d="M5.64196714,9.1954304 L11.722162,11.222162 L9.6954304,5.14196714 L4.12191842,3.62191842 L5.64196714,9.1954304 Z M2.69669914,2.19669914 L10.4748737,4.31801948 L13.3033009,12.8033009 L4.81801948,9.97487373 L2.69669914,2.19669914 Z"
-        transform="rotate(45 8 7.5)"
-      />
+      <path d="M 8 13 L 13 7 L 13 7 L 8 1 L 3 7 Z M 8 -1 L 15 7 L 8 15 L 1 7 L 8 -1 Z" />
     </svg>
   );
 }
