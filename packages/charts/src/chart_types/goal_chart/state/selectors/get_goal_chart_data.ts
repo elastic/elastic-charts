@@ -55,5 +55,5 @@ export const getGoalChartLabelsSelector = createCustomCachedSelector([geometries
 
 /** @internal */
 export const getGoalChartSemanticDataSelector = createCustomCachedSelector([geometries], (geoms) => {
-  return geoms.bulletViewModel.semanticValues ?? [];
+  return geoms.bulletViewModel.bandLabels ?? [];
 });

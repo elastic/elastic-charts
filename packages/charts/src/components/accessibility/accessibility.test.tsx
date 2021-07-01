@@ -155,11 +155,8 @@ describe('Accessibility', () => {
       </Chart>,
     );
 
-    const bandsWithSemanticsAscending = [
-      [200, 'freezing'],
-      [250, 'chilly'],
-      [300, 'brisk'],
-    ];
+    const bandsSemanticsAscending = ['freezing', 'chilly', 'brisk'];
+    const bandsAscending = [200, 250, 300];
 
     const ascendingSemanticValuesGoalChart = mount(
       <Chart className="story-chart">
@@ -171,23 +168,20 @@ describe('Accessibility', () => {
           actual={170}
           // doesn't mess with canvas_renderers.ts
           // @ts-ignore
-          bands={bandsWithSemanticsAscending.flat().filter((val) => typeof val === 'number')}
+          bands={bandsAscending}
           ticks={[0, 50, 100, 150, 200, 250, 300]}
           labelMajor="Revenue 2020 YTD  "
           labelMinor="(thousand USD)  "
           centralMajor="170"
           centralMinor=""
           config={{ angleStart: Math.PI, angleEnd: 0 }}
-          semanticValues={bandsWithSemanticsAscending}
+          bandLabels={bandsSemanticsAscending}
         />
       </Chart>,
     );
 
-    const bandsWithSemanticsDescending = [
-      [300, 'brisk'],
-      [250, 'chilly'],
-      [200, 'freezing'],
-    ];
+    const bandsWithSemantics = ['brisk', 'chilly', 'freezing'];
+    const bands = [300, 250, 200];
 
     const descendingSemanticValuesGoalChart = mount(
       <Chart className="story-chart">
@@ -198,17 +192,14 @@ describe('Accessibility', () => {
           target={260}
           actual={170}
           // doesn't mess with canvas_renderers.ts
-          // @ts-ignore
-          bands={bandsWithSemanticsDescending.flat().filter((val) => typeof val === 'number')}
+          bands={bands}
           ticks={[300, 250, 200, 150, 100, 50, 0]}
-          // tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-          // bandFillColor={({ value }: BandFillColorAccessorInput) => semanticBandFillColor(value)}
           labelMajor="Revenue 2020 YTD  "
           labelMinor="(thousand USD)  "
           centralMajor="170"
           centralMinor=""
           config={{ angleStart: Math.PI, angleEnd: 0 }}
-          semanticValues={bandsWithSemanticsDescending}
+          bandLabels={bandsWithSemantics}
         />
       </Chart>,
     );

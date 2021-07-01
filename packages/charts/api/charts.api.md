@@ -783,6 +783,8 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     bandFillColor: BandFillColorAccessor;
     // (undocumented)
+    bandLabels?: Array<(number | string)[]>;
+    // (undocumented)
     bands: number[];
     // (undocumented)
     base: number;
@@ -800,8 +802,6 @@ export interface GoalSpec extends Spec {
     labelMajor: string | BandFillColorAccessor;
     // (undocumented)
     labelMinor: string | BandFillColorAccessor;
-    // (undocumented)
-    semanticValues?: Array<(number | string)[]>;
     // (undocumented)
     specType: typeof SpecType.Series;
     // Warning: (ae-forgotten-export) The symbol "GoalSubtype" needs to be exported by the entry point index.d.ts

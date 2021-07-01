@@ -27,11 +27,8 @@ import { Color } from '../../packages/charts/src/utils/common';
 const subtype = GoalSubtype.Goal;
 
 export const Example = () => {
-  const bandsWithSemantics = [
-    [200, 'freezing'],
-    [250, 'chilly'],
-    [300, 'brisk'],
-  ];
+  const bandsWithSemantics = ['freezing', 'chilly', 'brisk'];
+  const bands = [200, 250, 300];
 
   const opacityMap: { [k: string]: number } = {
     '200': 0.2,
@@ -39,17 +36,14 @@ export const Example = () => {
     '300': 0.05,
   };
 
-  const colorMap: { [k: number]: [Color, string] } = bandsWithSemantics.reduce<{ [k: number]: [Color, string] }>(
-    (acc, [band, semantic]) => {
-      const defaultValue = opacityMap[band];
-      acc[band as number] = [`rgba(0, 0, 0, ${defaultValue.toFixed(2)})`, semantic as string];
-      return acc;
-    },
-    {},
-  );
+  const colorMap: { [k: number]: Color } = bands.reduce<{ [k: number]: Color }>((acc, band) => {
+    const defaultValue = opacityMap[band];
+    acc[band] = `rgba(0, 0, 0, ${defaultValue.toFixed(2)})`;
+    return acc;
+  }, {});
 
   // @ts-ignore
-  const semanticBandFillColor = (x: number): Color => colorMap[x[0]] ?? colorMap[x][0];
+  const semanticBandFillColor = (x: number): Color => colorMap[x];
 
   return (
     <Chart className="story-chart">
@@ -60,8 +54,7 @@ export const Example = () => {
         target={260}
         actual={170}
         // doesn't mess with canvas_renderers.ts
-        // @ts-ignore
-        bands={bandsWithSemantics.flat().filter((val) => typeof val === 'number')}
+        bands={bands}
         ticks={[0, 50, 100, 150, 200, 250, 300]}
         tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
         bandFillColor={({ value }: BandFillColorAccessorInput) => semanticBandFillColor(value)}
@@ -70,7 +63,7 @@ export const Example = () => {
         centralMajor="170"
         centralMinor=""
         config={{ angleStart: Math.PI, angleEnd: 0 }}
-        semanticValues={bandsWithSemantics}
+        bandLabels={bandsWithSemantics}
       />
     </Chart>
   );

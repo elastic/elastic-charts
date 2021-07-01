@@ -67,7 +67,7 @@ export interface GoalSpec extends Spec {
   centralMajor: string | BandFillColorAccessor;
   centralMinor: string | BandFillColorAccessor;
   config: RecursivePartial<Config>;
-  semanticValues?: Array<(number | string)[]>;
+  bandLabels: string[];
 }
 
 type SpecRequiredProps = Pick<GoalSpec, 'id' | 'actual'>;
@@ -84,6 +84,7 @@ export const Goal: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps
     | 'target'
     | 'actual'
     | 'bands'
+    | 'bandLabels'
     | 'ticks'
     | 'bandFillColor'
     | 'tickValueFormatter'

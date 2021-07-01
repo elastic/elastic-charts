@@ -52,7 +52,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: GoalSpec, config:
     labelMinor,
     centralMajor,
     centralMinor,
-    semanticValues,
+    bandLabels,
   } = spec;
 
   const [lowestValue, highestValue] = [base, target, actual, ...bands, ...ticks].reduce(
@@ -96,7 +96,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: GoalSpec, config:
     lowestValue,
     aboveBaseCount,
     belowBaseCount,
-    semanticValues,
+    bandLabels,
   };
 
   // combined viewModel

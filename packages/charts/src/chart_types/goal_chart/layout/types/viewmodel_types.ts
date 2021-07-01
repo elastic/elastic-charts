@@ -51,7 +51,7 @@ export interface BulletViewModel {
   lowestValue: number;
   aboveBaseCount: number;
   belowBaseCount: number;
-  semanticValues?: Array<(string | number)[]>;
+  bandLabels: string[];
 }
 
 /** @internal */
@@ -78,6 +78,7 @@ const commonDefaults = {
 export const defaultGoalSpec = {
   ...commonDefaults,
   bands: [50, 75, 100],
+  bandLabels: [],
   bandFillColor: ({ value, base, highestValue, lowestValue }: BandFillColorAccessorInput) => {
     const aboveBase = value > base;
     const ratio = aboveBase
@@ -98,6 +99,7 @@ export const defaultGoalSpec = {
 export const nullGoalViewModel = {
   ...commonDefaults,
   bands: [],
+  bandLabels: [],
   ticks: [],
   labelMajor: '',
   labelMinor: '',

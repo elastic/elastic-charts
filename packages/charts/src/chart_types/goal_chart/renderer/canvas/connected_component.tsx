@@ -41,7 +41,7 @@ interface ReactiveChartStateProps {
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
-  semanticValues?: Array<(string | number)[]>;
+  bandLabels: string[];
 }
 
 interface ReactiveChartDispatchProps {
@@ -114,7 +114,7 @@ class Component extends React.Component<Props> {
       chartContainerDimensions: { width, height },
       forwardStageRef,
       a11ySettings,
-      semanticValues,
+      bandLabels,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
@@ -135,7 +135,7 @@ class Component extends React.Component<Props> {
           role="presentation"
         >
           <ScreenReaderSummary />
-          <GoalSemanticDescription semanticValues={semanticValues ?? []} {...a11ySettings} />
+          <GoalSemanticDescription bandLabels={bandLabels ?? []} {...a11ySettings} />
         </canvas>
       </figure>
     );
@@ -175,6 +175,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     top: 0,
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
+  bandLabels: [],
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -186,7 +187,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometries: geometries(state),
     chartContainerDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
-    semanticValues: getGoalChartSemanticDataSelector(state),
+    bandLabels: getGoalChartSemanticDataSelector(state),
   };
 };
 

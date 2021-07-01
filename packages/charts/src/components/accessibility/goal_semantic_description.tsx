@@ -22,14 +22,14 @@ import React from 'react';
 import { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
 interface GoalSemanticDescriptionProps {
-  semanticValues: Array<(string | number)[]>;
+  bandLabels: string[];
 }
 
 /** @internal */
-export const GoalSemanticDescription = ({ semanticValues, labelId }: A11ySettings & GoalSemanticDescriptionProps) => {
-  return semanticValues.length > 1 ? (
+export const GoalSemanticDescription = ({ bandLabels, labelId }: A11ySettings & GoalSemanticDescriptionProps) => {
+  return bandLabels.length > 1 ? (
     <dl className="echScreenReaderOnly echGoalDescription" key={`goalChart--${labelId}`}>
-      {semanticValues.map(([value, semantic], index) => (
+      {bandLabels.map(([value, semantic], index) => (
         <>
           <dt key={`value-key--${index}-${value}`}>{value}</dt>
           <dd key={`value-dd--${index}-${value}`}>{semantic}</dd>
