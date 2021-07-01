@@ -783,7 +783,7 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     bandFillColor: BandFillColorAccessor;
     // (undocumented)
-    bandLabels?: Array<(number | string)[]>;
+    bandLabels: string[];
     // (undocumented)
     bands: number[];
     // (undocumented)
