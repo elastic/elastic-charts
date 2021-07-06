@@ -32,8 +32,8 @@ export const GoalSemanticDescription = ({ bandLabels, labelId }: A11ySettings & 
     <dl className="echScreenReaderOnly echGoalDescription" key={`goalChart--${labelId}`}>
       {bandLabels.map(({ value, text }, index) => (
         <>
-          <dt key={`value-key--${index}-${value}`}>{value}</dt>
-          <dd key={`value-dd--${index}-${value}`}>{text}</dd>
+          <dt key={`value-dt--${index}-${value}`}>{value}</dt>
+          <dd key={`value-dd--${index}-${value}`}>{text[index]}</dd>
         </>
       ))}
     </dl>
