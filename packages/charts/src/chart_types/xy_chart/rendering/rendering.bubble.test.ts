@@ -370,8 +370,8 @@ describe('Rendering points - bubble', () => {
       ] = bubbles;
       // all the points minus the undefined ones on a log scale
       expect(points.length).toBe(7);
-      // all the points expect null geometries
-      expect(geometriesIndex.size).toEqual(8);
+      // all the points including null geometries
+      expect(geometriesIndex.size).toEqual(9);
 
       const zeroValueIndexdGeometry = geometriesIndex.find(null, {
         x: 56.25,
