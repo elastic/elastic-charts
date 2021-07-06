@@ -2097,6 +2097,7 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
     unit?: string;
     customTooltip?: CustomTooltip;
     stickTo?: TooltipStickTo;
+    showNullValues?: boolean;
 };
 
 // @public
