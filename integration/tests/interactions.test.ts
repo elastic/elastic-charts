@@ -341,4 +341,33 @@ describe('Interactions', () => {
       );
     });
   });
+  describe('should show null values in tooltip if configured', () => {
+    it('show N/A tooltip for areas', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/interactions--interaction-with-null-values&knob-Series type=area&knob-show null values=true',
+        { left: 300, top: 80 },
+        {
+          screenshotSelector: '#story-root',
+        },
+      );
+    });
+    it('show N/A tooltip for bars', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/interactions--interaction-with-null-values&knob-Series type=bar&knob-show null values=true',
+        { left: 300, top: 80 },
+        {
+          screenshotSelector: '#story-root',
+        },
+      );
+    });
+    it('hide tooltip if configured', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/interactions--interaction-with-null-values&knob-Series type=bar&knob-show null values=false',
+        { left: 282, top: 80 },
+        {
+          screenshotSelector: '#story-root',
+        },
+      );
+    });
+  });
 });
