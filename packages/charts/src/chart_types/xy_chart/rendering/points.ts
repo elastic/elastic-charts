@@ -72,9 +72,6 @@ export function renderPoints(
       return acc;
     }
     // don't create the point if it that point was filled
-    if (isDatumFilled(datum)) {
-      return acc;
-    }
     const x = xScale.scale(xValue);
 
     if (x === null) {
@@ -90,12 +87,8 @@ export function renderPoints(
       let y: number | null;
       try {
         y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
-        // skip rendering point if y1 is null
-        if (y === null) {
-          return;
-        }
       } catch {
-        return;
+        y = null;
       }
 
       const originalY = getDatumYValue(datum, keyIndex === 0, hasY0Accessors, dataSeries.stackMode);
@@ -117,7 +110,7 @@ export function renderPoints(
         : styleOverrides?.radius ?? pointStyle.radius;
       const pointGeometry: PointGeometry = {
         x,
-        y,
+        y: y === null ? NaN : y,
         radius,
         color,
         style,
@@ -138,7 +131,7 @@ export function renderPoints(
       };
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
-      if (yDefined(datum, valueAccessor)) {
+      if (y !== null && yDefined(datum, valueAccessor) && !isDatumFilled(datum)) {
         points.push(pointGeometry);
       }
     });

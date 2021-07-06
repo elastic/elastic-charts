@@ -160,6 +160,16 @@ export const DEFAULT_LEGEND_CONFIG = {
   legendPosition: Position.Right,
 };
 
+/**
+ * Default tooltip config
+ * @internal
+ */
+export const DEFAULT_TOOLTIP_CONFIG = {
+  type: DEFAULT_TOOLTIP_TYPE,
+  snap: DEFAULT_TOOLTIP_SNAP,
+  showNullValues: false,
+};
+
 /** @public */
 export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   id: '__global__settings___',
@@ -170,10 +180,7 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   animateData: true,
   resizeDebounce: 10,
   debug: false,
-  tooltip: {
-    type: DEFAULT_TOOLTIP_TYPE,
-    snap: DEFAULT_TOOLTIP_SNAP,
-  },
+  tooltip: DEFAULT_TOOLTIP_CONFIG,
   pointerUpdateTrigger: PointerUpdateTrigger.X,
   externalPointerEvents: {
     tooltip: {

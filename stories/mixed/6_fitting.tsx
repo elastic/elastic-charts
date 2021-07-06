@@ -31,7 +31,6 @@ import {
   Settings,
   Fit,
   SeriesType,
-  BarSeries,
 } from '../../packages/charts/src';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
@@ -106,7 +105,6 @@ export const Example = () => {
     {
       Area: SeriesType.Area,
       Line: SeriesType.Line,
-      Bar: SeriesType.Bar,
     },
     SeriesType.Area,
   );
@@ -196,7 +194,7 @@ export const Example = () => {
           }}
           data={dataset}
         />
-      ) : seriesType === SeriesType.Line ? (
+      ) : (
         <LineSeries
           id="test"
           xScaleType={xScaleType}
@@ -209,15 +207,6 @@ export const Example = () => {
             value: fit === Fit.Explicit ? value : undefined,
             endValue: endValue === 'none' ? undefined : parsedEndValue,
           }}
-          data={dataset}
-        />
-      ) : (
-        <BarSeries
-          id="test"
-          xScaleType={xScaleType}
-          yScaleType={ScaleType.Linear}
-          xAccessor="x"
-          yAccessors={['y']}
           data={dataset}
         />
       )}
