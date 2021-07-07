@@ -57,3 +57,8 @@ export const getGoalChartLabelsSelector = createCustomCachedSelector([geometries
 export const getGoalChartSemanticDataSelector = createCustomCachedSelector([geometries], (geoms) => {
   return geoms.bulletViewModel.bands ?? [];
 });
+
+/** @internal */
+export const getFirstTickValueSelector = createCustomCachedSelector([geometries], (geoms) => {
+  return geoms.bulletViewModel.ticks[0].value;
+});

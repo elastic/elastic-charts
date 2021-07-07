@@ -33,7 +33,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { Dimensions } from '../../../../utils/dimensions';
 import { BandViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
-import { getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
+import { getFirstTickValueSelector, getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
@@ -42,6 +42,7 @@ interface ReactiveChartStateProps {
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
   bandLabels: BandViewModel[];
+  firstValue: number;
 }
 
 interface ReactiveChartDispatchProps {
@@ -115,6 +116,7 @@ class Component extends React.Component<Props> {
       forwardStageRef,
       a11ySettings,
       bandLabels,
+      firstValue,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
@@ -135,7 +137,7 @@ class Component extends React.Component<Props> {
           role="presentation"
         >
           <ScreenReaderSummary />
-          <GoalSemanticDescription bandLabels={bandLabels} {...a11ySettings} />
+          <GoalSemanticDescription bandLabels={bandLabels} firstValue={firstValue} {...a11ySettings} />
         </canvas>
       </figure>
     );
@@ -176,6 +178,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   bandLabels: [],
+  firstValue: 0,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -188,6 +191,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     chartContainerDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
     bandLabels: getGoalChartSemanticDataSelector(state),
+    firstValue: getFirstTickValueSelector(state),
   };
 };
 

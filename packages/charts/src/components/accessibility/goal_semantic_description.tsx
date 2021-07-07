@@ -24,18 +24,31 @@ import { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
 interface GoalSemanticDescriptionProps {
   bandLabels: BandViewModel[];
+  firstValue: number;
 }
 
 /** @internal */
-export const GoalSemanticDescription = ({ bandLabels, labelId }: A11ySettings & GoalSemanticDescriptionProps) => {
+export const GoalSemanticDescription = ({
+  bandLabels,
+  labelId,
+  firstValue,
+}: A11ySettings & GoalSemanticDescriptionProps) => {
   return bandLabels.length > 1 ? (
     <dl className="echScreenReaderOnly echGoalDescription" key={`goalChart--${labelId}`}>
-      {bandLabels.map(({ value, text }, index) => (
-        <>
-          <dt key={`value-dt--${index}-${value}`}>{value}</dt>
-          <dd key={`value-dd--${index}-${value}`}>{text[index]}</dd>
-        </>
-      ))}
+      {bandLabels.map(({ value, text }, index) => {
+        const prevValue = bandLabels[index - 1];
+        return prevValue !== undefined ? (
+          <>
+            <dt key={`dt--${index}`}>{`${prevValue.value} - ${value}`}</dt>
+            <dd key={`dd--${index}`}>{`${text[index]}`}</dd>
+          </>
+        ) : (
+          <>
+            <dt key={`dt--${index}`}>{`${firstValue} - ${value}`}</dt>
+            <dd key={`dd--${index}`}>{`${text[index]}`}</dd>
+          </>
+        );
+      })}
     </dl>
   ) : null;
 };

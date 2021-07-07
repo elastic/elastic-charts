@@ -27,7 +27,7 @@ import { Color } from '../../packages/charts/src/utils/common';
 const subtype = GoalSubtype.Goal;
 
 export const Example = () => {
-  const bandsWithSemantics = ['freezing', 'chilly', 'brisk'];
+  const bandLabels = ['freezing', 'chilly', 'brisk'];
   const bands = [200, 250, 300];
 
   const opacityMap: { [k: string]: number } = {
@@ -42,7 +42,7 @@ export const Example = () => {
     return acc;
   }, {});
 
-  const semanticBandFillColor = (x: number): Color => colorMap[x];
+  const bandFillColor = (x: number): Color => colorMap[x];
 
   return (
     <Chart className="story-chart">
@@ -56,13 +56,13 @@ export const Example = () => {
         bands={bands}
         ticks={[0, 50, 100, 150, 200, 250, 300]}
         tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-        bandFillColor={({ value }: BandFillColorAccessorInput) => semanticBandFillColor(value)}
+        bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
         labelMajor="Revenue 2020 YTD  "
         labelMinor="(thousand USD)  "
         centralMajor="170"
         centralMinor=""
         config={{ angleStart: Math.PI, angleEnd: 0 }}
-        bandLabels={bandsWithSemantics}
+        bandLabels={bandLabels}
       />
     </Chart>
   );

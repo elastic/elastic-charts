@@ -155,10 +155,10 @@ describe('Accessibility', () => {
       </Chart>,
     );
 
-    const bandsSemanticsAscending = ['freezing', 'chilly', 'brisk'];
+    const bandLabelsAscending = ['freezing', 'chilly', 'brisk'];
     const bandsAscending = [200, 250, 300];
 
-    const ascendingSemanticValuesGoalChart = mount(
+    const ascendingBandLabelsGoalChart = mount(
       <Chart className="story-chart">
         <Goal
           id="spec_1"
@@ -173,31 +173,7 @@ describe('Accessibility', () => {
           centralMajor="170"
           centralMinor=""
           config={{ angleStart: Math.PI, angleEnd: 0 }}
-          bandLabels={bandsSemanticsAscending}
-        />
-      </Chart>,
-    );
-
-    const bandsWithSemantics = ['brisk', 'chilly', 'freezing'];
-    const bands = [300, 250, 200];
-
-    const descendingSemanticValuesGoalChart = mount(
-      <Chart className="story-chart">
-        <Goal
-          id="spec_1"
-          subtype={GoalSubtype.Goal}
-          base={300}
-          target={260}
-          actual={170}
-          // doesn't mess with canvas_renderers.ts
-          bands={bands}
-          ticks={[300, 250, 200, 150, 100, 50, 0]}
-          labelMajor="Revenue 2020 YTD  "
-          labelMinor="(thousand USD)  "
-          centralMajor="170"
-          centralMinor=""
-          config={{ angleStart: Math.PI, angleEnd: 0 }}
-          bandLabels={bandsWithSemantics}
+          bandLabels={bandLabelsAscending}
         />
       </Chart>,
     );
@@ -207,13 +183,8 @@ describe('Accessibility', () => {
       );
     });
     it('should correctly render ascending semantic values', () => {
-      expect(ascendingSemanticValuesGoalChart.find('.echGoalDescription').first().text()).toBe(
-        '200freezing250chilly300brisk',
-      );
-    });
-    it('should correctly render descending semantic values', () => {
-      expect(descendingSemanticValuesGoalChart.find('.echGoalDescription').first().text()).toBe(
-        '300brisk250chilly200freezing',
+      expect(ascendingBandLabelsGoalChart.find('.echGoalDescription').first().text()).toBe(
+        '0 - 200freezing200 - 250chilly250 - 300brisk',
       );
     });
   });
