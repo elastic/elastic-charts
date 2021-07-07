@@ -28,9 +28,9 @@ const dataGen = new SeededDataGenerator();
 function generateDataWithAdditional(num: number) {
   return [...dataGen.generateSimpleSeries(num), { x: num, y: 0.25, g: 0 }, { x: num + 1, y: 8, g: 0 }];
 }
-const frozenDataSmallVolume = generateDataWithAdditional(10);
-const frozenDataMediumVolume = generateDataWithAdditional(50);
-const frozenDataHighVolume = generateDataWithAdditional(1500);
+const frozenDataSmallVolume = generateDataWithAdditional(5);
+const frozenDataMediumVolume = generateDataWithAdditional(30);
+const frozenDataHighVolume = generateDataWithAdditional(500);
 
 const frozenData: { [key: string]: any[] } = {
   s: frozenDataSmallVolume,
@@ -39,6 +39,7 @@ const frozenData: { [key: string]: any[] } = {
 };
 
 export const Example = () => {
+  const singleSeries = boolean('show single series', false);
   const showValueLabel = boolean('show value label', true);
   const isAlternatingValueLabel = boolean('alternating value label', false);
   const isValueContainedInElement = boolean('contain value label within bar element', false);
@@ -49,6 +50,7 @@ export const Example = () => {
     isAlternatingValueLabel,
     isValueContainedInElement,
     hideClippedValue,
+    // valueFormatter: (d) => d?.toFixed(1) ?? '',
   };
 
   const debug = boolean('debug', false);
@@ -106,26 +108,28 @@ export const Example = () => {
         stackAccessors={stackAccessors}
         data={data}
       />
-      <BarSeries
-        id="bars2"
-        displayValueSettings={displayValueSettings}
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y']}
-        stackAccessors={['x']}
-        splitSeriesAccessors={['g']}
-        data={[
-          { x: 0, y: 2, g: 'a' },
-          { x: 1, y: 7, g: 'a' },
-          { x: 2, y: 3, g: 'a' },
-          { x: 3, y: 6, g: 'a' },
-          { x: 0, y: 4, g: 'b' },
-          { x: 1, y: 5, g: 'b' },
-          { x: 2, y: 8, g: 'b' },
-          { x: 3, y: 2, g: 'b' },
-        ]}
-      />
+      {!singleSeries && (
+        <BarSeries
+          id="bars2"
+          displayValueSettings={displayValueSettings}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          stackAccessors={['x']}
+          splitSeriesAccessors={['g']}
+          data={[
+            { x: 0, y: 2, g: 'a' },
+            { x: 1, y: 7, g: 'a' },
+            { x: 2, y: 3, g: 'a' },
+            { x: 3, y: 6, g: 'a' },
+            { x: 0, y: 4, g: 'b' },
+            { x: 1, y: 5, g: 'b' },
+            { x: 2, y: 8, g: 'b' },
+            { x: 3, y: 2, g: 'b' },
+          ]}
+        />
+      )}
     </Chart>
   );
 };

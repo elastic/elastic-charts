@@ -138,7 +138,7 @@ export function renderBars(
         : formattedDisplayValue;
 
     const { displayValueWidth, fixedFontScale } = computeBoxWidth(
-      displayValueText || '',
+      displayValueText ?? '',
       { padding, fontSize, fontFamily, bboxCalculator, width },
       displayValueSettings,
     );
@@ -160,7 +160,7 @@ export function renderBars(
     const bboxWidthFactor = isHorizontalRotation ? textScalingFactor : 1;
 
     const displayValue =
-      displayValueSettings && displayValueSettings.showValueLabel
+      displayValueSettings && displayValueText && displayValueSettings.showValueLabel
         ? {
             fontScale: textScalingFactor,
             fontSize: fixedFontScale,
