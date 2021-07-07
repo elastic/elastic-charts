@@ -18,18 +18,37 @@
  */
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
-import { PickDragFunction } from '../../layout/types/viewmodel_types';
 import { geometries } from './geometries';
 
 /** @internal */
-export const getPickedCells = createCustomCachedSelector(
-  [geometries, getLastDragSelector],
-  (geoms, dragState): ReturnType<PickDragFunction> | null => {
-    if (!dragState) {
-      return null;
-    }
+export type GoalChartData = {
+  maximum: number;
+  minimum: number;
+  target: number;
+  value: number;
+};
 
-    return geoms.pickDragArea([dragState.start.position, dragState.end.position]);
+/** @internal */
+export type GoalChartLabels = {
+  minorLabel: string;
+  majorLabel: string;
+};
+
+/** @internal */
+export const getGoalChartDataSelector = createCustomCachedSelector(
+  [geometries],
+  (geoms): GoalChartData => {
+    const goalChartData: GoalChartData = {
+      maximum: geoms.bulletViewModel.highestValue,
+      minimum: geoms.bulletViewModel.lowestValue,
+      target: geoms.bulletViewModel.target,
+      value: geoms.bulletViewModel.actual,
+    };
+    return goalChartData;
   },
 );
+
+/** @internal */
+export const getGoalChartLabelsSelector = createCustomCachedSelector([geometries], (geoms) => {
+  return { majorLabel: geoms.bulletViewModel.labelMajor, minorLabel: geoms.bulletViewModel.labelMinor };
+});
