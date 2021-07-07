@@ -63,6 +63,7 @@ export const computeLegendSelector = createCustomCachedSelector(
       settings.showLegendExtra,
       siDataSeriesMap,
       deselectedDataSeries,
+      chartTheme,
       // @ts-ignore
       settings.sortSeriesBy,
     );

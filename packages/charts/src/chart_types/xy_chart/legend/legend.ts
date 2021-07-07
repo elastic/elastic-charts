@@ -25,6 +25,7 @@ import { SortSeriesByConfig, TickFormatterOptions } from '../../../specs';
 import { Color } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
+import { PointShape, Theme } from '../../../utils/themes/theme';
 import { getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { LastValues } from '../state/utils/types';
@@ -46,9 +47,8 @@ import {
   Postfixes,
   isAreaSeriesSpec,
   isBarSeriesSpec,
-  BubbleSeriesSpec,
-  LineSeriesSpec,
-  AreaSeriesSpec,
+  isBubbleSeriesSpec,
+  isLineSeriesSpec,
 } from '../utils/specs';
 
 /** @internal */
@@ -111,6 +111,7 @@ export function computeLegend(
   showLegendExtra: boolean,
   serialIdentifierDataSeriesMap: Record<string, DataSeries>,
   deselectedDataSeries: SeriesIdentifier[] = [],
+  theme: Theme,
   sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
@@ -150,16 +151,13 @@ export function computeLegend(
     const seriesIdentifier = getSeriesIdentifierFromDataSeries(series);
     const xScaleType = getXScaleTypeFromSpec(spec.xScaleType);
 
-    let shape = 'dot' as IconType;
-    if (spec.seriesType === 'bubble') {
-      const { bubbleSeriesStyle } = spec as BubbleSeriesSpec;
-      shape = bubbleSeriesStyle?.point?.shape ?? 'dot';
-    } else if (spec.seriesType === 'line') {
-      const { lineSeriesStyle } = spec as LineSeriesSpec;
-      shape = lineSeriesStyle?.point?.shape ?? 'dot';
-    } else if (spec.seriesType === 'area') {
-      const { areaSeriesStyle } = spec as AreaSeriesSpec;
-      shape = areaSeriesStyle?.point?.shape ?? 'dot';
+    let shape = PointShape.Circle as IconType;
+    if (isBubbleSeriesSpec(spec)) {
+      shape = spec.bubbleSeriesStyle?.point?.shape ?? theme.bubbleSeriesStyle.point.shape;
+    } else if (isLineSeriesSpec(spec)) {
+      shape = spec.lineSeriesStyle?.point?.shape ?? theme.lineSeriesStyle.point.shape;
+    } else if (isAreaSeriesSpec(spec)) {
+      shape = spec.areaSeriesStyle?.point?.shape ?? theme.areaSeriesStyle.point.shape;
     }
     legendItems.push({
       color,
