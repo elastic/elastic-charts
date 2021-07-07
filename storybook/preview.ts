@@ -31,6 +31,38 @@ if (process.env.VRT) {
   document.querySelector('html')?.classList.add('disable-animations');
 }
 
-export const parameters = {};
+export const parameters = {
+  backgrounds: {
+    grid: {
+      disable: true,
+    },
+    values: [
+      {
+        name: 'Black',
+        value: '#000',
+      },
+      {
+        name: 'White',
+        value: '#fff',
+      },
+      {
+        name: 'Pink',
+        value: '#f04d9a',
+      },
+      {
+        name: 'Blue',
+        value: '#14abf5',
+      },
+      {
+        name: 'Yellow',
+        value: '#fec709',
+      },
+      {
+        name: 'Green',
+        value: '#00c1b4',
+      },
+    ],
+  },
+};
 
 export const decorators = [StoryWrapper];
