@@ -8,5 +8,10 @@
     "../**/*.d.ts",
     "../scripts/custom_matchers.ts"
   ],
+  "compilerOptions": {
+    "paths": {
+      "/@elastic/charts/*": ["../packages/charts/*"],
+    }
+  },
   "exclude": ["../**/*.test.*"]
 }

@@ -1,0 +1,43 @@
+{
+  "name": "charts-storybook",
+  "description": "Storybook demo for @elastic/charts library",
+  "license": "Apache-2.0",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "yarn storybook",
+    "start-docs": "start-storybook -p 8001 -c storybook-docs --ci",
+    "storybook": "VRT=true start-storybook -s ../public -p 9001 -c . --ci --no-version-updates",
+    "storybook:build": "rm -rf .out && build-storybook -s ./public -c storybook -o .out",
+    "typecheck": "tsc -p ./tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.32",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "@elastic/charts": "^30.2.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^6.3.0",
+    "@storybook/addon-knobs": "^6.3.0",
+    "@storybook/addon-postcss": "^2.0.0",
+    "@storybook/addon-links": "^6.3.0",
+    "@storybook/addon-storysource": "^6.3.0",
+    "@storybook/core": "^6.3.0",
+    "@storybook/react": "^6.3.0",
+    "@storybook/core-common": "^6.3.0",
+    "@storybook/source-loader": "^6.3.0",
+    "@storybook/theming": "^6.3.0",
+    "typescript": "^4.1.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2",
+    "@webpack-cli/serve": "^1.3.1",
+    "style-loader": "^2.0.0",
+    "css-loader": "^5.2.4",
+    "autoprefixer": "^9.0.0",
+    "sass-loader": "^10.1.1",
+    "ts-loader": "^7.0.5",
+    "terser-webpack-plugin": "^4.2.3"
+  }
+}

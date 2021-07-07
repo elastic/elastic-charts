@@ -31,7 +31,9 @@ const scssLoaders = [
   {
     loader: 'postcss-loader',
     options: {
-      plugins: [require('autoprefixer')],
+      postcssOptions: {
+        plugins: [require('autoprefixer')],
+      },
     },
   },
   'sass-loader',
@@ -53,7 +55,7 @@ module.exports = async ({ config }) => {
         numCyclesDetected = 0;
       },
       onDetected({ paths, compilation }) {
-        if (!/^node_modules\/.+/.test(paths[0])) {
+        if (!/node_modules\/.+/.test(paths[0])) {
           numCyclesDetected++;
           compilation.warnings.push(new Error(paths.join(' -> ')));
         }
@@ -92,7 +94,7 @@ module.exports = async ({ config }) => {
   });
 
   // Replace default css rules with nonce
-  config.module.rules = config.module.rules.filter(({ test }) => !test.test('.css'));
+  config.module.rules = config.module.rules.filter((r) => !r?.test?.test?.('.css'));
   config.module.rules.push({
     test: /\.css$/,
     use: [
@@ -146,6 +148,10 @@ module.exports = async ({ config }) => {
   });
 
   config.resolve.extensions.push('.ts', '.tsx');
+
+  config.resolve.alias = {
+    '@elastic/charts': path.resolve(__dirname, '../packages/charts/'),
+  };
 
   return await config;
 };

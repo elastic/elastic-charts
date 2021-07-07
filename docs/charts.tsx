@@ -34,7 +34,7 @@ import {
 } from '../packages/charts/src';
 import { Icon } from '../packages/charts/src/components/icons/icon';
 import { KIBANA_METRICS } from '../packages/charts/src/utils/data_samples/test_dataset_kibana';
-import { arrayKnobs, getChartRotationKnob } from '../stories/utils/knobs';
+import { arrayKnobs, getChartRotationKnob } from '../storybook/stories/utils/knobs';
 
 export default {
   title: 'Introduction',
@@ -68,9 +68,7 @@ export const Basic = () => {
     </Chart>
   );
 };
-Basic.story = {
-  name: 'basic',
-};
+Basic.storyName = 'basic';
 
 export const AreaBasic = () => {
   const toggleSpec = boolean('toggle area spec', true);
@@ -92,9 +90,7 @@ export const AreaBasic = () => {
     </Chart>
   );
 };
-AreaBasic.story = {
-  name: 'area basic',
-};
+AreaBasic.storyName = 'area basic';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
@@ -149,9 +145,7 @@ export const lineBasicXDomainContinuous = () => {
     </Chart>
   );
 };
-lineBasicXDomainContinuous.story = {
-  name: '[line] basic xDomain continuous',
-};
+lineBasicXDomainContinuous.storyName = '[line] basic xDomain continuous';
 
 export const lineBasicXDomainOrdinal = () => {
   const dataValues = generateAnnotationData(arrayKnobs('annotation values', ['a', 'c']));
@@ -184,6 +178,4 @@ export const lineBasicXDomainOrdinal = () => {
     </Chart>
   );
 };
-lineBasicXDomainOrdinal.story = {
-  name: '[line] basic xDomain ordinal',
-};
+lineBasicXDomainOrdinal.storyName = '[line] basic xDomain ordinal';

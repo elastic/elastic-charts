@@ -207,7 +207,20 @@ module.exports = {
       'error',
       {
         'newlines-between': 'always',
-        groups: ['builtin', 'external', ['parent', 'sibling', 'index', 'internal']],
+        groups: ['builtin', 'external', 'unknown', ['parent', 'sibling', 'index', 'internal']],
+
+        // seperates internal published packages from external packages
+        pathGroups: [
+          {
+            pattern: '@elastic/charts',
+            group: 'unknown',
+          },
+          {
+            pattern: '@elastic/charts/**',
+            group: 'unknown',
+          },
+        ],
+        pathGroupsExcludedImportTypes: ['builtin'],
         alphabetize: { order: 'asc', caseInsensitive: true }, // todo replace with directory gradient ordering
       },
     ],
