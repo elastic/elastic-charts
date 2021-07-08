@@ -21,7 +21,7 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { ScreenReaderSummary } from '../../../../components/accessibility';
+import { GoalSemanticDescription, ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -31,8 +31,9 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
-import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { BandViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
+import { getFirstTickValueSelector, getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
@@ -40,6 +41,8 @@ interface ReactiveChartStateProps {
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
+  bandLabels: BandViewModel[];
+  firstValue: number;
 }
 
 interface ReactiveChartDispatchProps {
@@ -112,11 +115,12 @@ class Component extends React.Component<Props> {
       chartContainerDimensions: { width, height },
       forwardStageRef,
       a11ySettings,
+      bandLabels,
+      firstValue,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
     }
-
     return (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <canvas
@@ -133,6 +137,7 @@ class Component extends React.Component<Props> {
           role="presentation"
         >
           <ScreenReaderSummary />
+          <GoalSemanticDescription bandLabels={bandLabels} firstValue={firstValue} {...a11ySettings} />
         </canvas>
       </figure>
     );
@@ -172,6 +177,8 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     top: 0,
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
+  bandLabels: [],
+  firstValue: 0,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -183,6 +190,8 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometries: geometries(state),
     chartContainerDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
+    bandLabels: getGoalChartSemanticDataSelector(state),
+    firstValue: getFirstTickValueSelector(state),
   };
 };
 
