@@ -19,13 +19,12 @@
 
 import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
-import { IconType } from '../../../components/icons/icon';
 import { ScaleType } from '../../../scales/constants';
 import { SortSeriesByConfig, TickFormatterOptions } from '../../../specs';
-import { Color } from '../../../utils/common';
+import { Color, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
-import { PointShape, Theme } from '../../../utils/themes/theme';
+import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { LastValues } from '../state/utils/types';
@@ -101,12 +100,22 @@ export function getLegendExtra(
 }
 
 /** @internal */
+function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefined {
+  if (isBubbleSeriesSpec(spec)) {
+    return mergePartial(theme.bubbleSeriesStyle.point, spec.bubbleSeriesStyle?.point);
+  } else if (isLineSeriesSpec(spec)) {
+    return mergePartial(theme.lineSeriesStyle.point, spec.lineSeriesStyle?.point);
+  } else if (isAreaSeriesSpec(spec)) {
+    return mergePartial(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point);
+  }
+}
+
+/** @internal */
 export function computeLegend(
   dataSeries: DataSeries[],
   lastValues: Map<SeriesKey, LastValues>,
   seriesColors: Map<SeriesKey, Color>,
   specs: BasicSeriesSpec[],
-  defaultColor: string,
   axesSpecs: AxisSpec[],
   showLegendExtra: boolean,
   serialIdentifierDataSeriesMap: Record<string, DataSeries>,
@@ -115,6 +124,7 @@ export function computeLegend(
   sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
+  const defaultColor = theme.colors.defaultVizColor;
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
@@ -151,14 +161,8 @@ export function computeLegend(
     const seriesIdentifier = getSeriesIdentifierFromDataSeries(series);
     const xScaleType = getXScaleTypeFromSpec(spec.xScaleType);
 
-    let shape = PointShape.Circle as IconType;
-    if (isBubbleSeriesSpec(spec)) {
-      shape = spec.bubbleSeriesStyle?.point?.shape ?? theme.bubbleSeriesStyle.point.shape;
-    } else if (isLineSeriesSpec(spec)) {
-      shape = spec.lineSeriesStyle?.point?.shape ?? theme.lineSeriesStyle.point.shape;
-    } else if (isAreaSeriesSpec(spec)) {
-      shape = spec.areaSeriesStyle?.point?.shape ?? theme.areaSeriesStyle.point.shape;
-    }
+    const pointStyle = getPointStyle(spec, theme);
+
     legendItems.push({
       color,
       label: labelY1,
@@ -170,7 +174,7 @@ export function computeLegend(
       defaultExtra: getLegendExtra(showLegendExtra, xScaleType, formatter, 'y1', lastValue),
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
-      shape,
+      pointStyle,
     });
     if (banded) {
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
@@ -185,7 +189,7 @@ export function computeLegend(
         defaultExtra: getLegendExtra(showLegendExtra, xScaleType, formatter, 'y0', lastValue),
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
-        shape,
+        pointStyle,
       });
     }
   });

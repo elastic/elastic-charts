@@ -18,31 +18,57 @@
  */
 
 import React, { MouseEventHandler, forwardRef, memo } from 'react';
+import { Required } from 'utility-types';
 
-import { Icon, IconType } from '../icons/icon';
+import { ShapeRendererFn } from '../../chart_types/xy_chart/renderer/shapes_paths';
+import { PointStyle } from '../../utils/themes/theme';
+import { Icon } from '../icons/icon';
 
 interface ColorProps {
   color: string;
   seriesName: string;
   hasColorPicker: boolean;
   isSeriesHidden?: boolean;
-  shape?: IconType;
+  pointStyle?: PointStyle;
   onClick?: MouseEventHandler;
 }
-
+const MARKER_SIZE = 16;
 /**
  * Color component used by the legend item
  * @internal
  */
 export const Color = memo(
   forwardRef<HTMLButtonElement, ColorProps>(
-    ({ color, seriesName, isSeriesHidden = false, hasColorPicker, onClick, shape }, ref) => {
+    ({ color, seriesName, isSeriesHidden = false, hasColorPicker, onClick, pointStyle }, ref) => {
       if (isSeriesHidden) {
         return (
           <div className="echLegendItem__color" title="series hidden">
             {/* changing the default viewBox for the eyeClosed icon to keep the same dimensions */}
             <Icon type="eyeClosed" viewBox="-3 -3 22 22" aria-label={`series ${seriesName} is hidden`} />
           </div>
+        );
+      }
+
+      function renderShape({ shape, fill, stroke, strokeWidth, opacity }: Required<PointStyle, 'shape'>) {
+        const [shapeFn, rotation] = ShapeRendererFn[shape];
+        const adjustedStrokeWidth = strokeWidth; // the ratio radius/ strokewidth * number
+        const adjustedSize = MARKER_SIZE - strokeWidth; // or 0 depending on the shape;
+        return (
+          <svg height={MARKER_SIZE} width={MARKER_SIZE}>
+            <g
+              transform={`
+                translate(${MARKER_SIZE / 2}, ${MARKER_SIZE / 2})
+                rotate(${rotation})`}
+            >
+              <path
+                d={shapeFn(adjustedSize / 2)}
+                stroke={stroke ?? color}
+                strokeWidth={adjustedStrokeWidth}
+                fill={fill}
+                opacity={opacity}
+              />
+            </g>
+          </svg>
         );
       }
 
@@ -61,8 +87,14 @@ export const Color = memo(
       }
 
       return (
+        // split up here the logic for icon vs svg path
         <div className="echLegendItem__color" title="series color">
-          <Icon type={shape} color={color} aria-label={`series color: ${color}`} />
+          {pointStyle?.shape ? (
+            // @ts-ignore
+            renderShape(pointStyle)
+          ) : (
+            <Icon type="dot" color={color} aria-label={`series color: ${color}`} />
+          )}
         </div>
       );
     },

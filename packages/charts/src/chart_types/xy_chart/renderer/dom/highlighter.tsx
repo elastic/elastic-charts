@@ -50,7 +50,8 @@ function getTransformForPanel(panel: Dimensions, rotation: Rotation, { left, top
   return `translate(${left + panel.left + x}, ${top + panel.top + y}) rotate(${rotation})`;
 }
 
-function renderPath(geom: PointGeometry) {
+/** @internal */
+export function renderPath(geom: PointGeometry) {
   // keep the highlighter radius to a minimum
   const radius = Math.max(geom.radius, DEFAULT_HIGHLIGHT_PADDING);
   const [shapeFn, rotate] = ShapeRendererFn[geom.style.shape];

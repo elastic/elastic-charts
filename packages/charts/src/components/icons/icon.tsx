@@ -54,7 +54,7 @@ const typeToIconMap = {
 export type IconColor = string;
 
 /** @internal */
-export type IconType = keyof typeof typeToIconMap | undefined;
+export type IconType = keyof typeof typeToIconMap;
 
 interface IconProps {
   className?: string;
