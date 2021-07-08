@@ -90,7 +90,9 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
       continue;
     }
     if (debug) {
-      renderDebugRect(ctx, rect);
+      withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
+        renderDebugRect(ctx, rect);
+      });
     }
     const { width, height } = textLines;
     const linesLength = textLines.lines.length;
