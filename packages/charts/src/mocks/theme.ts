@@ -107,6 +107,7 @@ export class MockStyles {
         fill: 'blue',
         opacity: 1,
         radius: 10,
+        shape: 'diamond',
       },
       partial,
       { mergeOptionalPartialValues: true },

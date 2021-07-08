@@ -20,7 +20,6 @@
 import { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_deselected_data_series';
-import { PointShape } from '../../../../utils/themes/theme';
 import { getColorScale } from './get_color_scale';
 import { getSpecOrNull } from './heatmap_spec';
 
@@ -49,7 +48,6 @@ export const computeLegendSelector = createCustomCachedSelector(
         isToggleable: true,
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [],
-        shape: PointShape.Circle,
       };
     });
   },

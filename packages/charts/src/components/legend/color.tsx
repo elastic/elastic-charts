@@ -87,9 +87,8 @@ export const Color = memo(
       }
 
       return (
-        // split up here the logic for icon vs svg path
         <div className="echLegendItem__color" title="series color">
-          {pointStyle?.shape ? (
+          {pointStyle?.shape && pointStyle?.visible ? (
             // @ts-ignore
             renderShape(pointStyle)
           ) : (
