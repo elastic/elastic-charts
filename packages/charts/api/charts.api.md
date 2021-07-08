@@ -646,6 +646,7 @@ export type Direction = $Values<typeof Direction>;
 // @public (undocumented)
 export interface DisplayValueSpec {
     hideClippedValue?: boolean;
+    hideGeomClippedValues?: boolean;
     isAlternatingValueLabel?: boolean;
     isValueContainedInElement?: boolean;
     showValueLabel?: boolean;

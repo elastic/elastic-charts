@@ -126,16 +126,11 @@ export function renderBars(
     const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
     const originalY1Value = stackMode === StackMode.Percentage ? y1 - (y0 ?? 0) : initialY1;
-    const formattedDisplayValue =
-      displayValueSettings && displayValueSettings.valueFormatter
-        ? displayValueSettings.valueFormatter(originalY1Value)
-        : undefined;
+    const formattedDisplayValue = displayValueSettings?.valueFormatter?.(originalY1Value);
 
     // only show displayValue for even bars if showOverlappingValue
     const displayValueText =
-      displayValueSettings && displayValueSettings.isAlternatingValueLabel && barGeometries.length % 2
-        ? undefined
-        : formattedDisplayValue;
+      displayValueSettings?.isAlternatingValueLabel && barGeometries.length % 2 ? undefined : formattedDisplayValue;
 
     const { displayValueWidth, fixedFontScale } = computeBoxWidth(
       displayValueText ?? '',
@@ -155,12 +150,12 @@ export function renderBars(
       fontSize,
     );
 
-    const hideClippedValue = displayValueSettings ? displayValueSettings.hideClippedValue : undefined;
+    const hideClippedValue = displayValueSettings?.hideClippedValue ?? false;
     // Based on rotation scale the width of the text box
     const bboxWidthFactor = isHorizontalRotation ? textScalingFactor : 1;
 
-    const displayValue =
-      displayValueSettings && displayValueText && displayValueSettings.showValueLabel
+    const displayValue: BarGeometry['displayValue'] | undefined =
+      displayValueText && displayValueSettings?.showValueLabel
         ? {
             fontScale: textScalingFactor,
             fontSize: fixedFontScale,
@@ -168,7 +163,8 @@ export function renderBars(
             width: bboxWidthFactor * displayValueWidth,
             height: textScalingFactor * fixedFontScale,
             hideClippedValue,
-            isValueContainedInElement: displayValueSettings.isValueContainedInElement,
+            hideGeomClippedValues: displayValueSettings?.hideGeomClippedValues ?? false,
+            isValueContainedInElement: displayValueSettings?.isValueContainedInElement ?? false,
           }
         : undefined;
 

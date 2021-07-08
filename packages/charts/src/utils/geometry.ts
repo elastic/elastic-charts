@@ -102,13 +102,14 @@ export interface BarGeometry {
   };
   color: Color;
   displayValue?: {
-    fontScale?: number;
+    fontScale: number;
     fontSize: number;
     text: any;
     width: number;
     height: number;
-    hideClippedValue?: boolean;
-    isValueContainedInElement?: boolean;
+    hideClippedValue: boolean;
+    hideGeomClippedValues: boolean;
+    isValueContainedInElement: boolean;
   };
   seriesIdentifier: XYChartSeriesIdentifier;
   value: GeometryValue;

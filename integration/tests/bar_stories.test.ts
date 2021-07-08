@@ -133,6 +133,11 @@ describe('Bar series stories', () => {
         });
       });
     });
+    it('clip both geometry and chart area values', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/bar-chart--with-value-label&knob-show single series=&knob-show value label=true&knob-alternating value label=&knob-contain value label within bar element=&knob-hide clipped value=true&knob-hide geom clipped values=true&knob-debug=&knob-value font size=11&knob-value color=%23000&knob-offsetX=0&knob-offsetY=10&knob-data volume size=s&knob-split series=&knob-stacked series=&knob-chartRotation=0&knob-legend=right',
+      );
+    });
   });
 
   describe('functional accessors', () => {

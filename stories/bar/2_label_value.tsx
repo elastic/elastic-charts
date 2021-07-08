@@ -44,13 +44,13 @@ export const Example = () => {
   const isAlternatingValueLabel = boolean('alternating value label', false);
   const isValueContainedInElement = boolean('contain value label within bar element', false);
   const hideClippedValue = boolean('hide clipped value', false);
-
+  const hideGeomClippedValues = boolean('hide geom clipped values', false);
   const displayValueSettings = {
     showValueLabel,
     isAlternatingValueLabel,
     isValueContainedInElement,
     hideClippedValue,
-    // valueFormatter: (d) => d?.toFixed(1) ?? '',
+    hideGeomClippedValues,
   };
 
   const debug = boolean('debug', false);
@@ -58,13 +58,13 @@ export const Example = () => {
   const theme = {
     barSeriesStyle: {
       displayValue: {
-        fontSize: number('value font size', 10),
+        fontSize: Number(number('value font size', 10)),
         fontFamily: "'Open Sans', Helvetica, Arial, sans-serif",
         fontStyle: 'normal',
         padding: 0,
         fill: color('value color', '#000'),
-        offsetX: number('offsetX', 0),
-        offsetY: number('offsetY', 0),
+        offsetX: Number(number('offsetX', 0)),
+        offsetY: Number(number('offsetY', 0)),
       },
     },
   };

@@ -386,16 +386,36 @@ export type CustomXDomain = (DomainRange & Pick<LogScaleOptions, 'logBase'>) | O
 
 /** @public */
 export interface DisplayValueSpec {
-  /** Show value label in chart element */
+  /**
+   * Show value label in chart element
+   * @defaultValue false
+   */
   showValueLabel?: boolean;
-  /** If value labels are shown, skips every other label */
+  /**
+   * If value labels are shown, skips every other label
+   * @defaultValue false
+   */
   isAlternatingValueLabel?: boolean;
-  /** Function for formatting values; will use axis tickFormatter if none specified */
+  /**
+   * Function for formatting values; will use axis tickFormatter if none specified
+   * @defaultValue false
+   */
   valueFormatter?: TickFormatter;
-  /** If true will contain value label within element, else dimensions are computed based on value */
+  /**
+   * If true will contain value label within element, else dimensions are computed based on value
+   * @defaultValue false
+   */
   isValueContainedInElement?: boolean;
-  /** If true will hide values that are clipped at chart edges */
+  /**
+   * If true will hide values that are clipped at chart edges
+   * @defaultValue false
+   */
   hideClippedValue?: boolean;
+  /**
+   * If true will hide values that overflows the bar geometry
+   * @defaultValue false
+   */
+  hideGeomClippedValues?: boolean;
 }
 
 /** @public */
