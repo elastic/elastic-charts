@@ -85,7 +85,6 @@ export function renderCanvas2d(
     const vertical = subtype === GoalSubtype.VerticalBullet;
 
     const domain = [lowestValue, highestValue];
-
     const data = {
       base: { value: base },
       ...Object.fromEntries(bands.map(({ value }, index) => [`qualitative_${index}`, { value }])),

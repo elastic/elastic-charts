@@ -24,9 +24,11 @@ import { GoalSubtype } from '../../specs/constants';
 import { config } from '../config/config';
 import { Config } from './config_types';
 
-interface BandViewModel {
+/** @internal */
+export interface BandViewModel {
   value: number;
   fillColor: string;
+  text: string[];
 }
 
 interface TickViewModel {
@@ -90,6 +92,7 @@ export const defaultGoalSpec = {
   labelMinor: ({}: BandFillColorAccessorInput) => 'unit',
   centralMajor: ({ base }: BandFillColorAccessorInput) => String(base),
   centralMinor: ({ target }: BandFillColorAccessorInput) => String(target),
+  bandLabels: [],
 };
 
 /** @internal */
