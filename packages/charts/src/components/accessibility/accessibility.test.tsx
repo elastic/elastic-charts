@@ -154,9 +154,37 @@ describe('Accessibility', () => {
         />
       </Chart>,
     );
+
+    const bandLabelsAscending = ['freezing', 'chilly', 'brisk'];
+    const bandsAscending = [200, 250, 300];
+
+    const ascendingBandLabelsGoalChart = mount(
+      <Chart className="story-chart">
+        <Goal
+          id="spec_1"
+          subtype={GoalSubtype.Goal}
+          base={0}
+          target={260}
+          actual={170}
+          bands={bandsAscending}
+          ticks={[0, 50, 100, 150, 200, 250, 300]}
+          labelMajor="Revenue 2020 YTD  "
+          labelMinor="(thousand USD)  "
+          centralMajor="170"
+          centralMinor=""
+          config={{ angleStart: Math.PI, angleEnd: 0 }}
+          bandLabels={bandLabelsAscending}
+        />
+      </Chart>,
+    );
     it('should test defaults for goal charts', () => {
       expect(goalChartWrapper.find('.echScreenReaderOnly').first().text()).toBe(
         'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:$260Value:170',
+      );
+    });
+    it('should correctly render ascending semantic values', () => {
+      expect(ascendingBandLabelsGoalChart.find('.echGoalDescription').first().text()).toBe(
+        '0 - 200freezing200 - 250chilly250 - 300brisk',
       );
     });
   });

@@ -52,6 +52,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: GoalSpec, config:
     labelMinor,
     centralMajor,
     centralMinor,
+    bandLabels,
   } = spec;
 
   const [lowestValue, highestValue] = [base, target, actual, ...bands, ...ticks].reduce(
@@ -80,6 +81,7 @@ export function shapeViewModel(textMeasure: TextMeasure, spec: GoalSpec, config:
     bands: bands.map((value: number, index: number) => ({
       value,
       fillColor: bandFillColor({ value, index, ...callbackArgs }),
+      text: bandLabels,
     })),
     ticks: ticks.map((value: number, index: number) => ({
       value,
