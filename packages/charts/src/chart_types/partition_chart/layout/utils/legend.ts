@@ -12,6 +12,7 @@ import { LegendItem } from '../../../../common/legend';
 import { LegendPositionConfig } from '../../../../specs/settings';
 import { isHierarchicalLegend } from '../../../../utils/legend';
 import { Layer } from '../../specs';
+import { PartitionLayout } from '../types/config_types';
 import { QuadViewModel } from '../types/viewmodel_types';
 
 function makeKey(...keyParts: CategoryKey[]): string {
@@ -41,6 +42,7 @@ export function getLegendItems(
   legendMaxDepth: number,
   legendPosition: LegendPositionConfig,
   quadViewModel: QuadViewModel[],
+  partitionLayout: PartitionLayout | undefined,
 ): LegendItem[] {
   const uniqueNames = new Set(map(({ dataName, fillColor }) => makeKey(dataName, fillColor), quadViewModel));
   const useHierarchicalLegend = isHierarchicalLegend(flatLegend, legendPosition);
@@ -54,6 +56,16 @@ export function getLegendItems(
     const a = formattedLabel(aItem);
     const b = formattedLabel(bItem);
     return a < b ? -1 : a > b ? 1 : 0;
+  }
+
+  function compareIndices(aItem: QuadViewModel, bItem: QuadViewModel): number {
+    const aDepth = aItem.depth;
+    const bDepth = bItem.depth;
+    return aDepth - bDepth || aItem.path[aDepth + 1].index - bItem.path[bDepth + 1].index;
+  }
+
+  function descendingValues(aItem: QuadViewModel, bItem: QuadViewModel): number {
+    return aItem.depth - bItem.depth || bItem.value - aItem.value;
   }
 
   const excluded: Set<string> = new Set();
@@ -71,7 +83,15 @@ export function getLegendItems(
     return true;
   });
 
-  items.sort(flatLegend ? compareNames : compareTreePaths);
+  items.sort(
+    partitionLayout === PartitionLayout.waffle // waffle has inherent top to bottom descending order
+      ? descendingValues
+      : partitionLayout === PartitionLayout.mosaic // mosaic has inherent top to bottom ascending order
+      ? compareIndices
+      : flatLegend
+      ? compareNames
+      : compareTreePaths,
+  );
 
   return items.map<LegendItem>((item) => {
     const { dataName, fillColor, depth, path } = item;

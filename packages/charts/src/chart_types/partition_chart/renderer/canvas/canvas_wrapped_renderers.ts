@@ -1,9 +1,20 @@
 /*
- * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
- * or more contributor license agreements. Licensed under the Elastic License
- * 2.0 and the Server Side Public License, v 1; you may not use this file except
- * in compliance with, at your election, the Elastic License 2.0 or the Server
- * Side Public License, v 1.
+ * Licensed to Elasticsearch B.V. under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Elasticsearch B.V. licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { ChartId } from '../../../../state/chart_state';
@@ -18,7 +29,7 @@ const MAX_PADDING_RATIO = 0.25;
 const latestRafs: Map<ChartId, number> = new Map();
 
 /** @internal */
-export function renderLinearPartitionCanvas2d(
+export function renderWrappedPartitionCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   {
@@ -27,7 +38,6 @@ export function renderLinearPartitionCanvas2d(
     diskCenter,
     width: panelWidth,
     height: panelHeight,
-    layers,
   }: ShapeViewModel,
   { currentFocusX0, currentFocusX1, prevFocusX0, prevFocusX1 }: ContinuousDomainFocus,
   chartId: ChartId,
@@ -70,15 +80,18 @@ export function renderLinearPartitionCanvas2d(
     const focusX0 = t * currentFocusX0 + (1 - t) * prevFocusX0 || 0;
     const focusX1 = t * currentFocusX1 + (1 - t) * prevFocusX1 || 0;
     const scale = containerWidth / (focusX1 - focusX0);
+    const cornerRatio = 0.2;
 
     ctx.save();
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
     ctx.scale(dpr, dpr);
     ctx.translate(diskCenter.x, diskCenter.y);
     ctx.clearRect(0, 0, width, height);
 
-    quadViewModel.forEach(({ fillColor, x0, x1, y0px: y0, y1px: y1, dataName, textColor, depth }) => {
+    quadViewModel.forEach(({ fillColor, x0, x1, y0px: y0, y1px: y1 }) => {
       if (y1 - y0 <= padding) return;
 
       const fx0 = Math.max((x0 - focusX0) * scale, 0);
@@ -86,23 +99,25 @@ export function renderLinearPartitionCanvas2d(
 
       if (fx1 < 0 || fx0 > width) return;
 
-      const layer = layers[depth - 1]; // depth === 0 corresponds to root layer (above API `layers`)
-      const formatter = layer?.nodeLabel ?? String;
-
-      const label = formatter(dataName);
       const fWidth = fx1 - fx0;
       const fPadding = Math.min(padding, MAX_PADDING_RATIO * fWidth);
+      const paintedWidth = fWidth - fPadding;
+      const paintedHeight = y1 - y0 - padding;
+      const cornerRadius = 2 * cornerRatio * Math.min(paintedWidth, paintedHeight);
+      const halfRadius = cornerRadius / 2;
 
       ctx.fillStyle = fillColor;
+      ctx.strokeStyle = fillColor;
+      ctx.lineWidth = cornerRadius;
       ctx.beginPath();
-      ctx.rect(fx0 + fPadding, y0 + padding / 2, fWidth - fPadding, y1 - y0 - padding);
+      ctx.rect(
+        fx0 + fPadding + halfRadius,
+        y0 + padding / 2 + halfRadius,
+        paintedWidth - cornerRadius,
+        paintedHeight - cornerRadius,
+      );
       ctx.fill();
-      if (textColor === 'transparent' || label === '' || fWidth < 4) return;
-      ctx.fillStyle = textColor;
-      ctx.save();
-      ctx.clip(); // undoing a clip needs context save/restore, which is why it's wrapped in a save/restore
-      ctx.fillText(label, fx0 + 3 * fPadding, (y0 + y1) / 2);
-      ctx.restore();
+      ctx.stroke();
     });
 
     ctx.restore();

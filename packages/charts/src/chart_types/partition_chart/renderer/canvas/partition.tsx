@@ -33,10 +33,11 @@ import {
   SmallMultiplesDescriptors,
 } from '../../layout/types/viewmodel_types';
 import { INPUT_KEY } from '../../layout/utils/group_by_rollup';
-import { isSimpleLinear } from '../../layout/viewmodel/viewmodel';
+import { isSimpleLinear, isWaffle } from '../../layout/viewmodel/viewmodel';
 import { partitionDrilldownFocus, partitionMultiGeometries } from '../../state/selectors/geometries';
 import { renderLinearPartitionCanvas2d } from './canvas_linear_renderers';
 import { renderPartitionCanvas2d } from './canvas_renderers';
+import { renderWrappedPartitionCanvas2d } from './canvas_wrapped_renderers';
 
 /** @internal */
 export interface ContinuousDomainFocus {
@@ -63,6 +64,7 @@ interface ReactiveChartStateProps {
 interface ReactiveChartDispatchProps {
   onChartRendered: typeof onChartRendered;
 }
+
 interface ReactiveChartOwnProps {
   forwardStageRef: RefObject<HTMLCanvasElement>;
 }
@@ -181,6 +183,8 @@ class PartitionComponent extends React.Component<PartitionProps> {
       multiGeometries.forEach((geometries, geometryIndex) => {
         const renderer = isSimpleLinear(geometries.config, geometries.layers)
           ? renderLinearPartitionCanvas2d
+          : isWaffle(geometries.config.partitionLayout)
+          ? renderWrappedPartitionCanvas2d
           : renderPartitionCanvas2d;
         renderer(ctx, devicePixelRatio, geometries, geometriesFoci[geometryIndex], chartId);
       });
