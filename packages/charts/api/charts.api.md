@@ -120,7 +120,6 @@ export interface AreaSeriesStyle {
 export interface AreaStyle {
     fill?: Color | ColorVariant;
     opacity: number;
-    texture?: TexturedStyles;
     visible: boolean;
 }
 
@@ -626,7 +625,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -667,7 +666,7 @@ export type DisplayValueStyle = Omit<TextStyle, 'fill' | 'fontSize'> & {
     } | {
         textInvertible: boolean;
         textContrast?: number | boolean;
-        textBorder?: number;
+        textBorder?: number | boolean;
     };
     alignment?: {
         horizontal: Exclude<HorizontalAlignment, 'far' | 'near'>;
@@ -675,24 +674,14 @@ export type DisplayValueStyle = Omit<TextStyle, 'fill' | 'fontSize'> & {
     };
 };
 
-// @public
-export const DomainPaddingUnit: Readonly<{
-    Domain: "domain";
-    Pixel: "pixel";
-    DomainRatio: "domainRatio";
-}>;
-
-// @public
-export type DomainPaddingUnit = $Values<typeof DomainPaddingUnit>;
-
 // @public (undocumented)
 export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain | UnboundedDomainWithInterval;
 
 // @public (undocumented)
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>) => void;
+export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>) => void;
 
 // @public (undocumented)
-export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>) => void;
+export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent>) => void;
 
 // @public (undocumented)
 export const entryKey: ([key]: ArrayEntry) => string;
@@ -782,8 +771,6 @@ export interface GoalSpec extends Spec {
     actual: number;
     // (undocumented)
     bandFillColor: BandFillColorAccessor;
-    // (undocumented)
-    bandLabels: string[];
     // (undocumented)
     bands: number[];
     // (undocumented)
@@ -1029,9 +1016,6 @@ export interface HeatmapSpec extends Spec {
     ySortPredicate: Predicate;
 }
 
-// @public
-export const HIERARCHY_ROOT_KEY: Key;
-
 // @public (undocumented)
 export type HierarchyOfArrays = Array<ArrayEntry>;
 
@@ -1137,7 +1121,7 @@ export interface LegendColorPickerProps {
 // @public (undocumented)
 export type LegendItemListener = (series: SeriesIdentifier[]) => void;
 
-// @public
+// @public (undocumented)
 export type LegendPath = LegendPathElement[];
 
 // @public (undocumented)
@@ -1330,9 +1314,6 @@ export type NodeSorter = (a: ArrayEntry, b: ArrayEntry) => number;
 // @public (undocumented)
 export type NonAny = number | boolean | string | symbol | null;
 
-// @public
-export const NULL_SMALL_MULTIPLES_KEY: Key;
-
 // @public (undocumented)
 export interface Opacity {
     opacity: number;
@@ -1348,9 +1329,6 @@ export interface OrderBy {
 
 // @public (undocumented)
 export type OrdinalDomain = (number | string)[];
-
-// @public (undocumented)
-export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
 
 // Warning: (ae-forgotten-export) The symbol "PerSideDistance" needs to be exported by the entry point index.d.ts
 //
@@ -1475,27 +1453,19 @@ export interface PointerOutEvent extends BasePointerEvent {
 }
 
 // @public
-export interface PointerOverEvent extends BasePointerEvent, ProjectedValues {
+export interface PointerOverEvent extends BasePointerEvent {
     // (undocumented)
     scale: ScaleContinuousType | ScaleOrdinalType;
     // (undocumented)
     type: typeof PointerEventType.Over;
     // @alpha
     unit?: string;
+    // (undocumented)
+    value: number | string | null;
 }
 
-// @public
-export type PointerUpdateListener = (event: PointerEvent_2) => void;
-
-// @public
-export const PointerUpdateTrigger: Readonly<{
-    X: "x";
-    Y: "y";
-    Both: "both";
-}>;
-
 // @public (undocumented)
-export type PointerUpdateTrigger = $Values<typeof PointerUpdateTrigger>;
+export type PointerUpdateListener = (event: PointerEvent_2) => void;
 
 // @public (undocumented)
 export const PointShape: Readonly<{
@@ -1544,7 +1514,7 @@ export interface Postfixes {
     y1AccessorFormat?: string;
 }
 
-// @public
+// @public (undocumented)
 export type PrimitiveValue = string | number | null;
 
 // @public
@@ -1585,8 +1555,6 @@ export interface RectAnnotationDatum {
 export type RectAnnotationSpec = BaseAnnotationSpec<typeof AnnotationType.Rectangle, RectAnnotationDatum, RectAnnotationStyle> & {
     renderTooltip?: AnnotationTooltipFormatter;
     zIndex?: number;
-    outside?: boolean;
-    outsideDimension?: number;
 };
 
 // @public (undocumented)
@@ -1604,7 +1572,6 @@ export interface RectBorderStyle {
 export interface RectStyle {
     fill?: Color | ColorVariant;
     opacity: number;
-    texture?: TexturedStyles;
     widthPixel?: Pixels;
     widthRatio?: Ratio;
 }
@@ -1808,10 +1775,9 @@ export interface SettingsSpec extends Spec, LegendSpec {
     orderOrdinalBinsBy?: OrderBy;
     // (undocumented)
     pointBuffer?: MarkBuffer;
-    pointerUpdateDebounce?: number;
-    pointerUpdateTrigger: PointerUpdateTrigger;
     // (undocumented)
     rendering: Rendering;
+    // (undocumented)
     resizeDebounce?: number;
     // (undocumented)
     rotation: Rotation;
@@ -1985,50 +1951,6 @@ export interface TextStyle {
 }
 
 // @public (undocumented)
-export interface TexturedPathStyles extends TexturedStylesBase {
-    path: string | Path2D;
-}
-
-// @public (undocumented)
-export interface TexturedShapeStyles extends TexturedStylesBase {
-    shape: TextureShape;
-}
-
-// @public
-export type TexturedStyles = TexturedPathStyles | TexturedShapeStyles;
-
-// @public (undocumented)
-export interface TexturedStylesBase {
-    dash?: number[];
-    fill?: Color | ColorVariant;
-    offset?: Partial<Point> & {
-        global?: boolean;
-    };
-    opacity?: number;
-    rotation?: number;
-    shapeRotation?: number;
-    size?: number;
-    // Warning: (ae-forgotten-export) The symbol "Point" needs to be exported by the entry point index.d.ts
-    spacing?: Partial<Point> | number;
-    stroke?: Color | ColorVariant;
-    strokeWidth?: number;
-}
-
-// @public (undocumented)
-export const TextureShape: Readonly<{
-    Line: "line";
-    Circle: "circle";
-    Square: "square";
-    Diamond: "diamond";
-    Plus: "plus";
-    X: "x";
-    Triangle: "triangle";
-}>;
-
-// @public (undocumented)
-export type TextureShape = $Values<typeof TextureShape>;
-
-// @public (undocumented)
 export interface Theme {
     // (undocumented)
     arcSeriesStyle: ArcSeriesStyle;
@@ -2096,25 +2018,11 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
     headerFormatter?: TooltipValueFormatter;
     unit?: string;
     customTooltip?: CustomTooltip;
-    stickTo?: TooltipStickTo;
+    stickTo?: Position;
 };
 
 // @public
 export type TooltipSettings = TooltipType | TooltipProps;
-
-// @public
-export const TooltipStickTo: Readonly<{
-    Top: "top";
-    Bottom: "bottom";
-    Middle: "middle";
-    Left: "left";
-    Right: "right";
-    Center: "center";
-    MousePosition: "MousePosition";
-}>;
-
-// @public (undocumented)
-export type TooltipStickTo = $Values<typeof TooltipStickTo>;
 
 // @public
 export const TooltipType: Readonly<{
@@ -2207,57 +2115,11 @@ export interface Visible {
     visible: boolean;
 }
 
-// @public (undocumented)
-export const WeightFn: Readonly<{
-    log: "log";
-    linear: "linear";
-    exponential: "exponential";
-    squareRoot: "squareRoot";
-}>;
-
-// @public (undocumented)
-export type WeightFn = $Values<typeof WeightFn>;
-
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha (undocumented)
 export const Wordcloud: React_2.FunctionComponent<SpecRequiredProps_9 & SpecOptionalProps_9>;
-
-// @public (undocumented)
-export interface WordcloudConfigs {
-    // (undocumented)
-    count: number;
-    // (undocumented)
-    endAngle: number;
-    // (undocumented)
-    exponent: number;
-    // (undocumented)
-    fontFamily: string;
-    // (undocumented)
-    fontStyle: string;
-    // (undocumented)
-    fontWeight: number;
-    // (undocumented)
-    height: number;
-    // (undocumented)
-    maxFontSize: number;
-    // (undocumented)
-    minFontSize: number;
-    // (undocumented)
-    padding: number;
-    // (undocumented)
-    spiral: string;
-    // (undocumented)
-    startAngle: number;
-    // (undocumented)
-    weightFn: WeightFn;
-    // (undocumented)
-    width: number;
-}
-
-// @public (undocumented)
-export type WordCloudElementEvent = [WordModel, SeriesIdentifier];
 
 // @alpha (undocumented)
 export interface WordcloudSpec extends Spec {
@@ -2266,7 +2128,9 @@ export interface WordcloudSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartType.Wordcloud;
     // (undocumented)
-    config: RecursivePartial<WordcloudConfigs>;
+    config: RecursivePartial<PartitionConfig>;
+    // Warning: (ae-forgotten-export) The symbol "WordModel" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     data: WordModel[];
     // (undocumented)
@@ -2283,6 +2147,8 @@ export interface WordcloudSpec extends Spec {
     maxFontSize: number;
     // (undocumented)
     minFontSize: number;
+    // Warning: (ae-forgotten-export) The symbol "OutOfRoomCallback" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     outOfRoomCallback: OutOfRoomCallback;
     // (undocumented)
@@ -2293,18 +2159,10 @@ export interface WordcloudSpec extends Spec {
     spiral: string;
     // (undocumented)
     startAngle: number;
+    // Warning: (ae-forgotten-export) The symbol "WeightFn" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     weightFn: WeightFn;
-}
-
-// @public (undocumented)
-export interface WordModel {
-    // (undocumented)
-    color: Color;
-    // (undocumented)
-    text: string;
-    // (undocumented)
-    weight: number;
 }
 
 // @public (undocumented)
@@ -2339,8 +2197,7 @@ export interface XYChartSeriesIdentifier extends SeriesIdentifier {
 export interface YDomainBase {
     constrainPadding?: boolean;
     fit?: boolean;
-    padding?: number;
-    paddingUnit?: DomainPaddingUnit;
+    padding?: number | string;
 }
 
 // @public (undocumented)
