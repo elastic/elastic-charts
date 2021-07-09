@@ -35,17 +35,16 @@ interface ColorProps {
   onClick?: MouseEventHandler;
 }
 const MARKER_SIZE = 16;
-
 const getCustomization = (pointStyle: PointStyle, seriesType: SeriesType): boolean | undefined =>
   // bubble charts will always have the circle icon vs dot
   seriesType === 'bubble' ||
   (pointStyle.shape !== PointShape.Circle && seriesType === 'area') ||
   (pointStyle.shape !== PointShape.Circle && seriesType === 'line')
-    ? seriesType === 'bubble' ||
+    ? pointStyle.radius !== 2 ||
+      seriesType === 'bubble' ||
       pointStyle?.visible ||
       pointStyle.stroke !== 'white' ||
-      pointStyle.fill !== 'blue' ||
-      pointStyle.radius !== 2
+      pointStyle.fill !== 'blue'
     : false;
 
 /**
@@ -66,7 +65,6 @@ export const Color = memo(
 
       function renderShape({ shape, fill, stroke, strokeWidth, opacity }: Required<PointStyle, 'shape'>) {
         const [shapeFn, rotation] = ShapeRendererFn[shape];
-        // const adjustedStrokeWidth = shape === 'circle' || shape === 'square' ? strokeWidth : 0;
         const adjustedSize = MARKER_SIZE - strokeWidth;
         return (
           <svg height={MARKER_SIZE} width={MARKER_SIZE}>
@@ -76,7 +74,9 @@ export const Color = memo(
                 rotate(${rotation})`}
             >
               <path
-                d={shapeFn(shape === 'diamond' ? adjustedSize / 3 : adjustedSize / 2)}
+                d={shapeFn(
+                  shape === 'triangle' || shape === 'plus' || shape === 'x' ? adjustedSize / 2 : adjustedSize / 3,
+                )}
                 stroke={stroke ?? color}
                 strokeWidth={strokeWidth}
                 fill={fill}
