@@ -39,7 +39,8 @@ const getCustomization = (pointStyle: PointStyle, seriesType: SeriesType): boole
   // bubble charts will always have the circle icon vs dot
   seriesType === 'bubble' ||
   (pointStyle.shape !== PointShape.Circle && seriesType === 'area') ||
-  (pointStyle.shape !== PointShape.Circle && seriesType === 'line')
+  (pointStyle.shape !== PointShape.Circle && seriesType === 'line') ||
+  pointStyle.fill !== 'blue'
     ? pointStyle.radius !== 2 ||
       seriesType === 'bubble' ||
       pointStyle?.visible ||
