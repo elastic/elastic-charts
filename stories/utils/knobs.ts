@@ -289,6 +289,7 @@ export const XYSeriesTypeMap = {
   [SeriesType.Line]: LineSeries,
   [SeriesType.Area]: AreaSeries,
   [SeriesType.Bubble]: BubbleSeries,
+  [SeriesType.NonXY]: 'not Cartesian series',
 };
 
 export const getXYSeriesTypeKnob = (

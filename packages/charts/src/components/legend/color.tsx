@@ -21,25 +21,40 @@ import React, { MouseEventHandler, forwardRef, memo } from 'react';
 import { Required } from 'utility-types';
 
 import { ShapeRendererFn } from '../../chart_types/xy_chart/renderer/shapes_paths';
-import { PointStyle } from '../../utils/themes/theme';
+import { SeriesType } from '../../specs';
+import { PointShape, PointStyle } from '../../utils/themes/theme';
 import { Icon } from '../icons/icon';
 
 interface ColorProps {
   color: string;
   seriesName: string;
   hasColorPicker: boolean;
+  seriesType: SeriesType;
   isSeriesHidden?: boolean;
   pointStyle?: PointStyle;
   onClick?: MouseEventHandler;
 }
 const MARKER_SIZE = 16;
+
+const getCustomization = (pointStyle: PointStyle, seriesType: SeriesType): boolean | undefined =>
+  // bubble charts will always have the circle icon vs dot
+  seriesType === 'bubble' ||
+  (pointStyle.shape !== PointShape.Circle && seriesType === 'area') ||
+  (pointStyle.shape !== PointShape.Circle && seriesType === 'line')
+    ? seriesType === 'bubble' ||
+      pointStyle?.visible ||
+      pointStyle.stroke !== 'white' ||
+      pointStyle.fill !== 'blue' ||
+      pointStyle.radius !== 2
+    : false;
+
 /**
  * Color component used by the legend item
  * @internal
  */
 export const Color = memo(
   forwardRef<HTMLButtonElement, ColorProps>(
-    ({ color, seriesName, isSeriesHidden = false, hasColorPicker, onClick, pointStyle }, ref) => {
+    ({ color, seriesName, isSeriesHidden = false, hasColorPicker, onClick, pointStyle, seriesType }, ref) => {
       if (isSeriesHidden) {
         return (
           <div className="echLegendItem__color" title="series hidden">
@@ -51,8 +66,8 @@ export const Color = memo(
 
       function renderShape({ shape, fill, stroke, strokeWidth, opacity }: Required<PointStyle, 'shape'>) {
         const [shapeFn, rotation] = ShapeRendererFn[shape];
-        const adjustedStrokeWidth = strokeWidth; // the ratio radius/ strokewidth * number
-        const adjustedSize = MARKER_SIZE - strokeWidth; // or 0 depending on the shape;
+        // const adjustedStrokeWidth = shape === 'circle' || shape === 'square' ? strokeWidth : 0;
+        const adjustedSize = MARKER_SIZE - strokeWidth;
         return (
           <svg height={MARKER_SIZE} width={MARKER_SIZE}>
             <g
@@ -61,9 +76,9 @@ export const Color = memo(
                 rotate(${rotation})`}
             >
               <path
-                d={shapeFn(adjustedSize / 2)}
+                d={shapeFn(shape === 'diamond' ? adjustedSize / 3 : adjustedSize / 2)}
                 stroke={stroke ?? color}
-                strokeWidth={adjustedStrokeWidth}
+                strokeWidth={strokeWidth}
                 fill={fill}
                 opacity={opacity}
               />
@@ -88,7 +103,7 @@ export const Color = memo(
 
       return (
         <div className="echLegendItem__color" title="series color">
-          {pointStyle?.shape && pointStyle?.visible ? (
+          {pointStyle && getCustomization(pointStyle, seriesType) ? (
             // @ts-ignore
             renderShape(pointStyle)
           ) : (

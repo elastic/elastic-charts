@@ -155,7 +155,7 @@ export function computeLegend(
     // Use this to get axis spec w/ tick formatter
     const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
     const formatter = spec.tickFormat ?? yAxis?.tickFormat ?? defaultTickFormatter;
-    const { hideInLegend } = spec;
+    const { hideInLegend, seriesType } = spec;
 
     const lastValue = lastValues.get(key);
     const seriesIdentifier = getSeriesIdentifierFromDataSeries(series);
@@ -175,6 +175,7 @@ export function computeLegend(
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
       pointStyle,
+      seriesType,
     });
     if (banded) {
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
@@ -190,6 +191,7 @@ export function computeLegend(
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
         pointStyle,
+        seriesType,
       });
     }
   });

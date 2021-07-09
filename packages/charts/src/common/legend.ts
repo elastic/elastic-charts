@@ -18,6 +18,7 @@
  */
 
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { SeriesType } from '../specs';
 import { LegendPath } from '../state/actions/legend';
 import { Color } from '../utils/common';
 import { PointStyle } from '../utils/themes/theme';
@@ -49,6 +50,7 @@ export type LegendItem = {
   isToggleable?: boolean;
   keys: Array<string | number>;
   pointStyle?: PointStyle;
+  seriesType?: SeriesType;
 };
 
 /** @internal */

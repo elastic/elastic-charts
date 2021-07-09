@@ -22,6 +22,7 @@ import React, { Component, createRef, MouseEventHandler } from 'react';
 
 import { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
+import { SeriesType } from '../../specs';
 import {
   LegendItemListener,
   BasicListener,
@@ -56,6 +57,7 @@ export interface LegendItemProps {
   positionConfig: LegendPositionConfig;
   extraValues: Map<string, LegendItemExtraValues>;
   showExtra: boolean;
+  seriesType?: SeriesType;
   colorPicker?: LegendColorPicker;
   action?: LegendAction;
   onClick?: LegendItemListener;
@@ -175,7 +177,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
 
   render() {
     const { extraValues, item, showExtra, colorPicker, totalItems, action: Action, positionConfig } = this.props;
-    const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, pointStyle } = item;
+    const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, pointStyle, seriesType } = item;
 
     if (isItemHidden) return null;
 
@@ -208,6 +210,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             hasColorPicker={hasColorPicker}
             onClick={this.handleColorClick(hasColorPicker)}
             pointStyle={pointStyle}
+            seriesType={seriesType ?? 'non-xy'}
           />
           <ItemLabel
             label={label}

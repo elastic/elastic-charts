@@ -62,6 +62,7 @@ export const SeriesType = Object.freeze({
   Bar: 'bar' as const,
   Line: 'line' as const,
   Bubble: 'bubble' as const,
+  NonXY: 'non-xy' as const,
 });
 
 /**
