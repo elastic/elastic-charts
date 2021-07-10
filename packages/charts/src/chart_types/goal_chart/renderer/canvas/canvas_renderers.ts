@@ -7,7 +7,7 @@
  */
 
 import { GOLDEN_RATIO } from '../../../../common/constants';
-import { cssFontShorthand } from '../../../../common/text_utils';
+import { cssFontShorthand, Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { GoalSubtype } from '../../specs/constants';
@@ -22,6 +22,104 @@ const marginRatio = 0.05; // same ratio on each side
 const maxTickFontSize = 24;
 const maxLabelFontSize = 32;
 const maxCentralFontSize = 38;
+
+class Section {
+  protected readonly x: number;
+  protected readonly y: number;
+  protected readonly xTo: number;
+  protected readonly yTo: number;
+  protected readonly lineWidth: number;
+  protected readonly strokeStyle: string;
+
+  constructor(x: number, y: number, xTo: number, yTo: number, lineWidth: number, strokeStyle: string) {
+    this.x = x;
+    this.y = y;
+    this.xTo = xTo;
+    this.yTo = yTo;
+    this.lineWidth = lineWidth;
+    this.strokeStyle = strokeStyle;
+  }
+
+  render(ctx: CanvasRenderingContext2D) {
+    ctx.lineWidth = this.lineWidth;
+    ctx.strokeStyle = this.strokeStyle;
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(this.xTo, this.yTo);
+  }
+}
+
+class Arc {
+  protected readonly x: number;
+  protected readonly y: number;
+  protected readonly radius: number;
+  protected readonly startAngle: number;
+  protected readonly endAngle: number;
+  protected readonly anticlockwise: boolean;
+  protected readonly lineWidth: number;
+  protected readonly strokeStyle: string;
+
+  constructor(
+    x: number,
+    y: number,
+    radius: number,
+    startAngle: number,
+    endAngle: number,
+    anticlockwise: boolean,
+    lineWidth: number,
+    strokeStyle: string,
+  ) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.startAngle = startAngle;
+    this.endAngle = endAngle;
+    this.anticlockwise = anticlockwise;
+    this.lineWidth = lineWidth;
+    this.strokeStyle = strokeStyle;
+  }
+
+  render(ctx: CanvasRenderingContext2D) {
+    ctx.lineWidth = this.lineWidth;
+    ctx.strokeStyle = this.strokeStyle;
+    ctx.arc(this.x, this.y, this.radius, this.startAngle, this.endAngle, this.anticlockwise);
+  }
+}
+
+class Text {
+  protected readonly x: number;
+  protected readonly y: number;
+  protected readonly text: string;
+  protected readonly textAlign: CanvasTextAlign;
+  protected readonly textBaseline: CanvasTextBaseline;
+  protected readonly fontShape: Font;
+  protected readonly fontSize: number;
+
+  constructor(
+    x: number,
+    y: number,
+    text: string,
+    textAlign: CanvasTextAlign,
+    textBaseline: CanvasTextBaseline,
+    fontShape: Font,
+    fontSize: number,
+  ) {
+    this.x = x;
+    this.y = y;
+    this.text = text;
+    this.textAlign = textAlign;
+    this.textBaseline = textBaseline;
+    this.fontShape = fontShape;
+    this.fontSize = fontSize;
+  }
+
+  render(ctx: CanvasRenderingContext2D) {
+    ctx.textAlign = this.textAlign;
+    ctx.textBaseline = this.textBaseline;
+    ctx.font = cssFontShorthand(this.fontShape, this.fontSize);
+    ctx.scale(1, -1);
+    ctx.fillText(this.text, this.x, this.y);
+  }
+}
 
 function get<T>(o: { [k: string]: any }, name: string, dflt: T) {
   return name in o ? o[name] || dflt : dflt;
