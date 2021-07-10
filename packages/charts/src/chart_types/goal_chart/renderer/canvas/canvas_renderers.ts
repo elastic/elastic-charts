@@ -279,20 +279,18 @@ export function renderCanvas2d(
                     ctx.fillText(data[at].text, textX, textY);
                   }
                 } else {
-                  ctx.translate(
-                    vertical ? axisNormalOffset : axisTangentOffset,
-                    vertical ? axisTangentOffset : axisNormalOffset,
-                  );
+                  const translateX = vertical ? axisNormalOffset : axisTangentOffset;
+                  const translateY = vertical ? axisTangentOffset : axisNormalOffset;
                   const atPx = data[at] && linearScale(data[at].value);
                   if (aes.shape === 'line') {
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = aes.fillColor;
                     const fromPx = at ? atPx - 1 : linearScale(data[from].value);
                     const toPx = at ? atPx + 1 : linearScale(data[to].value);
-                    const x0 = vertical ? 0 : fromPx;
-                    const y0 = vertical ? fromPx : 0;
-                    const x1 = vertical ? 0 : toPx;
-                    const y1 = vertical ? toPx : 0;
+                    const x0 = vertical ? translateX : translateX + fromPx;
+                    const y0 = vertical ? translateY + fromPx : translateY;
+                    const x1 = vertical ? translateX : translateX + toPx;
+                    const y1 = vertical ? translateY + toPx : translateY;
                     ctx.moveTo(x0, y0);
                     ctx.lineTo(x1, y1);
                   } else if (aes.shape === 'text') {
@@ -301,7 +299,7 @@ export function renderCanvas2d(
                     ctx.font = cssFontShorthand(fontShape, tickFontSize);
                     ctx.scale(1, -1);
                     ctx.translate(vertical ? 0 : atPx, vertical ? -atPx : 0);
-                    ctx.fillText(data[at].text, 0, 0);
+                    ctx.fillText(data[at].text, translateX, -translateY);
                   }
                 }
                 ctx.stroke();
