@@ -36,6 +36,163 @@ export function renderCanvas2d(
   // eslint-disable-next-line no-empty-pattern
   const {} = config;
 
+  const {
+    subtype,
+    lowestValue,
+    highestValue,
+    base,
+    target,
+    actual,
+    bands,
+    ticks,
+    labelMajor,
+    labelMinor,
+    centralMajor,
+    centralMinor,
+  } = bulletViewModel;
+
+  const circular = subtype === GoalSubtype.Goal;
+  const vertical = subtype === GoalSubtype.VerticalBullet;
+
+  const domain = [lowestValue, highestValue];
+  const data = {
+    base: { value: base },
+    ...Object.fromEntries(bands.map(({ value }, index) => [`qualitative_${index}`, { value }])),
+    target: { value: target },
+    actual: { value: actual },
+    labelMajor: { value: domain[circular || !vertical ? 0 : 1], text: labelMajor },
+    labelMinor: { value: domain[circular || !vertical ? 0 : 1], text: labelMinor },
+    ...Object.assign({}, ...ticks.map(({ value, text }, i) => ({ [`tick_${i}`]: { value, text } }))),
+    ...(circular
+      ? {
+          centralMajor: { value: 0, text: centralMajor },
+          centralMinor: { value: 0, text: centralMinor },
+        }
+      : {}),
+  };
+
+  const minSize = Math.min(config.width, config.height);
+
+  const referenceSize =
+    Math.min(
+      circular ? referenceCircularSizeCap : referenceBulletSizeCap,
+      circular ? minSize : vertical ? config.height : config.width,
+    ) *
+    (1 - 2 * marginRatio);
+
+  const barThickness = Math.min(
+    circular ? baselineArcThickness : baselineBarThickness,
+    referenceSize * barThicknessMinSizeRatio,
+  );
+
+  const tickLength = barThickness * Math.pow(1 / GOLDEN_RATIO, 3);
+  const tickOffset = -tickLength / 2 - barThickness / 2;
+  const tickFontSize = Math.min(maxTickFontSize, referenceSize / 25);
+  const labelFontSize = Math.min(maxLabelFontSize, referenceSize / 18);
+  const centralFontSize = Math.min(maxCentralFontSize, referenceSize / 14);
+
+  const geoms = [
+    ...bulletViewModel.bands.map((b, i) => ({
+      order: 0,
+      landmarks: {
+        from: i ? `qualitative_${i - 1}` : 'base',
+        to: `qualitative_${i}`,
+      },
+      aes: {
+        shape: 'line',
+        fillColor: b.fillColor,
+        lineWidth: barThickness,
+      },
+    })),
+    {
+      order: 1,
+      landmarks: { from: 'base', to: 'actual' },
+      aes: { shape: 'line', fillColor: 'black', lineWidth: tickLength },
+    },
+    {
+      order: 2,
+      landmarks: { at: 'target' },
+      aes: { shape: 'line', fillColor: 'black', lineWidth: barThickness / GOLDEN_RATIO },
+    },
+    ...bulletViewModel.ticks.map((b, i) => ({
+      order: 3,
+      landmarks: { at: `tick_${i}` },
+      aes: {
+        shape: 'line',
+        fillColor: 'darkgrey',
+        lineWidth: tickLength,
+        axisNormalOffset: tickOffset,
+      },
+    })),
+    ...bulletViewModel.ticks.map((b, i) => ({
+      order: 4,
+      landmarks: { at: `tick_${i}` },
+      aes: {
+        shape: 'text',
+        textAlign: vertical ? 'right' : 'center',
+        textBaseline: vertical ? 'middle' : 'top',
+        fillColor: 'black',
+        fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '500', fontFamily: 'sans-serif' },
+        axisNormalOffset: -barThickness,
+      },
+    })),
+    {
+      order: 5,
+      landmarks: { at: 'labelMajor' },
+      aes: {
+        shape: 'text',
+        axisNormalOffset: 0,
+        axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
+        textAlign: vertical ? 'center' : 'right',
+        textBaseline: 'bottom',
+        fillColor: 'black',
+        fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
+      },
+    },
+    {
+      order: 5,
+      landmarks: { at: 'labelMinor' },
+      aes: {
+        shape: 'text',
+        axisNormalOffset: 0,
+        axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
+        textAlign: vertical ? 'center' : 'right',
+        textBaseline: 'top',
+        fillColor: 'black',
+        fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
+      },
+    },
+    ...(circular
+      ? [
+          {
+            order: 6,
+            landmarks: { at: 'centralMajor' },
+            aes: {
+              shape: 'text',
+              textAlign: 'center',
+              textBaseline: 'bottom',
+              fillColor: 'black',
+              fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
+            },
+          },
+          {
+            order: 6,
+            landmarks: { at: 'centralMinor' },
+            aes: {
+              shape: 'text',
+              textAlign: 'center',
+              textBaseline: 'top',
+              fillColor: 'black',
+              fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
+            },
+          },
+        ]
+      : []),
+  ];
+
+  const maxWidth = geoms.reduce((p, g) => Math.max(p, get<number>(g.aes, 'lineWidth', 0)), 0);
+  const r = 0.5 * referenceSize - maxWidth / 2;
+
   withContext(ctx, (ctx) => {
     // set some defaults for the overall rendering
 
@@ -54,163 +211,6 @@ export function renderCanvas2d(
     // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
     // - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
     ctx.scale(1, -1);
-
-    const {
-      subtype,
-      lowestValue,
-      highestValue,
-      base,
-      target,
-      actual,
-      bands,
-      ticks,
-      labelMajor,
-      labelMinor,
-      centralMajor,
-      centralMinor,
-    } = bulletViewModel;
-
-    const circular = subtype === GoalSubtype.Goal;
-    const vertical = subtype === GoalSubtype.VerticalBullet;
-
-    const domain = [lowestValue, highestValue];
-    const data = {
-      base: { value: base },
-      ...Object.fromEntries(bands.map(({ value }, index) => [`qualitative_${index}`, { value }])),
-      target: { value: target },
-      actual: { value: actual },
-      labelMajor: { value: domain[circular || !vertical ? 0 : 1], text: labelMajor },
-      labelMinor: { value: domain[circular || !vertical ? 0 : 1], text: labelMinor },
-      ...Object.assign({}, ...ticks.map(({ value, text }, i) => ({ [`tick_${i}`]: { value, text } }))),
-      ...(circular
-        ? {
-            centralMajor: { value: 0, text: centralMajor },
-            centralMinor: { value: 0, text: centralMinor },
-          }
-        : {}),
-    };
-
-    const minSize = Math.min(config.width, config.height);
-
-    const referenceSize =
-      Math.min(
-        circular ? referenceCircularSizeCap : referenceBulletSizeCap,
-        circular ? minSize : vertical ? config.height : config.width,
-      ) *
-      (1 - 2 * marginRatio);
-
-    const barThickness = Math.min(
-      circular ? baselineArcThickness : baselineBarThickness,
-      referenceSize * barThicknessMinSizeRatio,
-    );
-
-    const tickLength = barThickness * Math.pow(1 / GOLDEN_RATIO, 3);
-    const tickOffset = -tickLength / 2 - barThickness / 2;
-    const tickFontSize = Math.min(maxTickFontSize, referenceSize / 25);
-    const labelFontSize = Math.min(maxLabelFontSize, referenceSize / 18);
-    const centralFontSize = Math.min(maxCentralFontSize, referenceSize / 14);
-
-    const geoms = [
-      ...bulletViewModel.bands.map((b, i) => ({
-        order: 0,
-        landmarks: {
-          from: i ? `qualitative_${i - 1}` : 'base',
-          to: `qualitative_${i}`,
-        },
-        aes: {
-          shape: 'line',
-          fillColor: b.fillColor,
-          lineWidth: barThickness,
-        },
-      })),
-      {
-        order: 1,
-        landmarks: { from: 'base', to: 'actual' },
-        aes: { shape: 'line', fillColor: 'black', lineWidth: tickLength },
-      },
-      {
-        order: 2,
-        landmarks: { at: 'target' },
-        aes: { shape: 'line', fillColor: 'black', lineWidth: barThickness / GOLDEN_RATIO },
-      },
-      ...bulletViewModel.ticks.map((b, i) => ({
-        order: 3,
-        landmarks: { at: `tick_${i}` },
-        aes: {
-          shape: 'line',
-          fillColor: 'darkgrey',
-          lineWidth: tickLength,
-          axisNormalOffset: tickOffset,
-        },
-      })),
-      ...bulletViewModel.ticks.map((b, i) => ({
-        order: 4,
-        landmarks: { at: `tick_${i}` },
-        aes: {
-          shape: 'text',
-          textAlign: vertical ? 'right' : 'center',
-          textBaseline: vertical ? 'middle' : 'top',
-          fillColor: 'black',
-          fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '500', fontFamily: 'sans-serif' },
-          axisNormalOffset: -barThickness,
-        },
-      })),
-      {
-        order: 5,
-        landmarks: { at: 'labelMajor' },
-        aes: {
-          shape: 'text',
-          axisNormalOffset: 0,
-          axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
-          textAlign: vertical ? 'center' : 'right',
-          textBaseline: 'bottom',
-          fillColor: 'black',
-          fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
-        },
-      },
-      {
-        order: 5,
-        landmarks: { at: 'labelMinor' },
-        aes: {
-          shape: 'text',
-          axisNormalOffset: 0,
-          axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
-          textAlign: vertical ? 'center' : 'right',
-          textBaseline: 'top',
-          fillColor: 'black',
-          fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
-        },
-      },
-      ...(circular
-        ? [
-            {
-              order: 6,
-              landmarks: { at: 'centralMajor' },
-              aes: {
-                shape: 'text',
-                textAlign: 'center',
-                textBaseline: 'bottom',
-                fillColor: 'black',
-                fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
-              },
-            },
-            {
-              order: 6,
-              landmarks: { at: 'centralMinor' },
-              aes: {
-                shape: 'text',
-                textAlign: 'center',
-                textBaseline: 'top',
-                fillColor: 'black',
-                fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
-              },
-            },
-          ]
-        : []),
-    ];
-
-    const maxWidth = geoms.reduce((p, g) => Math.max(p, get<number>(g.aes, 'lineWidth', 0)), 0);
-    const r = 0.5 * referenceSize - maxWidth / 2;
 
     renderLayers(ctx, [
       // clear the canvas
