@@ -250,6 +250,7 @@ export function renderCanvas2d(
               const strokeStyle = get(aes, 'fillColor', '');
               withContext(ctx, (ctx) => {
                 ctx.beginPath();
+
                 if (aes.shape === 'text') {
                   const { text } = data[at];
                   const label = at.slice(0, 5) === 'label';
@@ -270,37 +271,36 @@ export function renderCanvas2d(
                     : (vertical ? -axisTangentOffset - scaledValue : -axisNormalOffset);
                   ctx.fillText(text, textX, textY);
                 }
-                if (circular) {
-                  if (aes.shape === 'line') {
-                    ctx.lineWidth = lineWidth;
-                    ctx.strokeStyle = strokeStyle;
-                    const cx = pxRangeMid;
-                    const cy = 0;
-                    const radius = at ? r + axisNormalOffset : r;
-                    const startAngle = at ? angleScale(data[at].value) + Math.PI / 360 : angleScale(data[from].value);
-                    const endAngle = at ? angleScale(data[at].value) - Math.PI / 360 : angleScale(data[to].value);
-                    // looking forward to the replacement of prettier as it removes coder added readability via parens
-                    // prettier-ignore
-                    const anticlockwise = at || clockwise === (data[from].value < data[to].value);
-                    ctx.arc(cx, cy, radius, startAngle, endAngle, anticlockwise);
-                  }
-                } else {
+
+                if (aes.shape === 'line' && circular) {
+                  ctx.lineWidth = lineWidth;
+                  ctx.strokeStyle = strokeStyle;
+                  const cx = pxRangeMid;
+                  const cy = 0;
+                  const radius = at ? r + axisNormalOffset : r;
+                  const startAngle = at ? angleScale(data[at].value) + Math.PI / 360 : angleScale(data[from].value);
+                  const endAngle = at ? angleScale(data[at].value) - Math.PI / 360 : angleScale(data[to].value);
+                  // prettier-ignore
+                  const anticlockwise = at || clockwise === (data[from].value < data[to].value);
+                  ctx.arc(cx, cy, radius, startAngle, endAngle, anticlockwise);
+                }
+
+                if (aes.shape === 'line' && !circular) {
                   const translateX = vertical ? axisNormalOffset : axisTangentOffset;
                   const translateY = vertical ? axisTangentOffset : axisNormalOffset;
                   const atPx = data[at] && linearScale(data[at].value);
-                  if (aes.shape === 'line') {
-                    ctx.lineWidth = lineWidth;
-                    ctx.strokeStyle = aes.fillColor;
-                    const fromPx = at ? atPx - 1 : linearScale(data[from].value);
-                    const toPx = at ? atPx + 1 : linearScale(data[to].value);
-                    const x0 = vertical ? translateX : translateX + fromPx;
-                    const y0 = vertical ? translateY + fromPx : translateY;
-                    const x1 = vertical ? translateX : translateX + toPx;
-                    const y1 = vertical ? translateY + toPx : translateY;
-                    ctx.moveTo(x0, y0);
-                    ctx.lineTo(x1, y1);
-                  }
+                  ctx.lineWidth = lineWidth;
+                  ctx.strokeStyle = aes.fillColor;
+                  const fromPx = at ? atPx - 1 : linearScale(data[from].value);
+                  const toPx = at ? atPx + 1 : linearScale(data[to].value);
+                  const x0 = vertical ? translateX : translateX + fromPx;
+                  const y0 = vertical ? translateY + fromPx : translateY;
+                  const x1 = vertical ? translateX : translateX + toPx;
+                  const y1 = vertical ? translateY + toPx : translateY;
+                  ctx.moveTo(x0, y0);
+                  ctx.lineTo(x1, y1);
                 }
+
                 ctx.stroke();
               });
             });
