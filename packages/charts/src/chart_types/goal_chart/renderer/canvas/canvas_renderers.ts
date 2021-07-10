@@ -250,6 +250,28 @@ export function renderCanvas2d(
               const strokeStyle = get(aes, 'fillColor', '');
               withContext(ctx, (ctx) => {
                 ctx.beginPath();
+                if (aes.shape === 'text') {
+                  const { text } = data[at];
+                  const label = at.slice(0, 5) === 'label';
+                  const central = at.slice(0, 7) === 'central';
+                  const fontSize = label ? labelFontSize : central && circular ? centralFontSize : tickFontSize;
+                  ctx.textAlign = circular ? 'center' : textAlign;
+                  ctx.textBaseline = label || central || !circular ? textBaseline : 'middle';
+                  ctx.font = cssFontShorthand(fontShape, fontSize);
+                  if (circular) {
+                    const angle = angleScale(data[at].value);
+                    const textX = label || central ? 0 : (r - GOLDEN_RATIO * barThickness) * Math.cos(angle);
+                    const textY = label ? r : central ? 0 : -(r - GOLDEN_RATIO * barThickness) * Math.sin(angle);
+                    ctx.scale(1, -1);
+                    ctx.fillText(text, textX, textY);
+                  } else {
+                    const atPx = data[at] && linearScale(data[at].value);
+                    const textX = vertical ? axisNormalOffset : axisTangentOffset + atPx;
+                    const textY = vertical ? -axisTangentOffset - atPx : -axisNormalOffset;
+                    ctx.scale(1, -1);
+                    ctx.fillText(text, textX, textY);
+                  }
+                }
                 if (circular) {
                   if (aes.shape === 'line') {
                     ctx.lineWidth = lineWidth;
@@ -263,20 +285,6 @@ export function renderCanvas2d(
                     // prettier-ignore
                     const anticlockwise = at || clockwise === (data[from].value < data[to].value);
                     ctx.arc(cx, cy, radius, startAngle, endAngle, anticlockwise);
-                  } else if (aes.shape === 'text') {
-                    const label = at.slice(0, 5) === 'label';
-                    const central = at.slice(0, 7) === 'central';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = label || central ? textBaseline : 'middle';
-                    ctx.font = cssFontShorthand(
-                      fontShape,
-                      label ? labelFontSize : central ? centralFontSize : tickFontSize,
-                    );
-                    ctx.scale(1, -1);
-                    const angle = angleScale(data[at].value);
-                    const textX = label || central ? 0 : (r - GOLDEN_RATIO * barThickness) * Math.cos(angle);
-                    const textY = label ? r : central ? 0 : -(r - GOLDEN_RATIO * barThickness) * Math.sin(angle);
-                    ctx.fillText(data[at].text, textX, textY);
                   }
                 } else {
                   const translateX = vertical ? axisNormalOffset : axisTangentOffset;
@@ -293,13 +301,6 @@ export function renderCanvas2d(
                     const y1 = vertical ? translateY + toPx : translateY;
                     ctx.moveTo(x0, y0);
                     ctx.lineTo(x1, y1);
-                  } else if (aes.shape === 'text') {
-                    ctx.textAlign = textAlign;
-                    ctx.textBaseline = textBaseline;
-                    ctx.font = cssFontShorthand(fontShape, tickFontSize);
-                    ctx.scale(1, -1);
-                    ctx.translate(vertical ? 0 : atPx, vertical ? -atPx : 0);
-                    ctx.fillText(data[at].text, translateX, -translateY);
                   }
                 }
                 ctx.stroke();
