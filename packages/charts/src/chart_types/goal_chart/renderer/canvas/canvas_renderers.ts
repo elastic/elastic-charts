@@ -91,6 +91,8 @@ export function renderCanvas2d(
   const labelFontSize = Math.min(maxLabelFontSize, referenceSize / 18);
   const centralFontSize = Math.min(maxCentralFontSize, referenceSize / 14);
 
+  const shape = circular ? 'arc' : 'line';
+
   const geoms = [
     ...bulletViewModel.bands.map((b, i) => ({
       order: 0,
@@ -98,31 +100,22 @@ export function renderCanvas2d(
         from: i ? `qualitative_${i - 1}` : 'base',
         to: `qualitative_${i}`,
       },
-      aes: {
-        shape: 'line',
-        fillColor: b.fillColor,
-        lineWidth: barThickness,
-      },
+      aes: { shape, fillColor: b.fillColor, lineWidth: barThickness },
     })),
     {
       order: 1,
       landmarks: { from: 'base', to: 'actual' },
-      aes: { shape: 'line', fillColor: 'black', lineWidth: tickLength },
+      aes: { shape, fillColor: 'black', lineWidth: tickLength },
     },
     {
       order: 2,
       landmarks: { at: 'target' },
-      aes: { shape: 'line', fillColor: 'black', lineWidth: barThickness / GOLDEN_RATIO },
+      aes: { shape, fillColor: 'black', lineWidth: barThickness / GOLDEN_RATIO },
     },
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 3,
       landmarks: { at: `tick_${i}` },
-      aes: {
-        shape: 'line',
-        fillColor: 'darkgrey',
-        lineWidth: tickLength,
-        axisNormalOffset: tickOffset,
-      },
+      aes: { shape, fillColor: 'darkgrey', lineWidth: tickLength, axisNormalOffset: tickOffset },
     })),
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 4,
@@ -272,7 +265,7 @@ export function renderCanvas2d(
                   ctx.fillText(text, textX, textY);
                 }
 
-                if (aes.shape === 'line' && circular) {
+                if (aes.shape === 'arc') {
                   ctx.lineWidth = lineWidth;
                   ctx.strokeStyle = strokeStyle;
                   const cx = pxRangeMid;
@@ -285,7 +278,7 @@ export function renderCanvas2d(
                   ctx.arc(cx, cy, radius, startAngle, endAngle, anticlockwise);
                 }
 
-                if (aes.shape === 'line' && !circular) {
+                if (aes.shape === 'line') {
                   const translateX = vertical ? axisNormalOffset : axisTangentOffset;
                   const translateY = vertical ? axisTangentOffset : axisNormalOffset;
                   const atPx = data[at] && linearScale(data[at].value);
