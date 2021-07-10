@@ -254,15 +254,15 @@ export function renderCanvas2d(
                   if (aes.shape === 'line') {
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = strokeStyle;
-                    const x = pxRangeMid;
-                    const y = 0;
+                    const cx = pxRangeMid;
+                    const cy = 0;
                     const radius = at ? r + axisNormalOffset : r;
                     const startAngle = at ? angleScale(data[at].value) + Math.PI / 360 : angleScale(data[from].value);
                     const endAngle = at ? angleScale(data[at].value) - Math.PI / 360 : angleScale(data[to].value);
                     // looking forward to the replacement of prettier as it removes coder added readability via parens
                     // prettier-ignore
                     const anticlockwise = at || clockwise === (data[from].value < data[to].value);
-                    ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+                    ctx.arc(cx, cy, radius, startAngle, endAngle, anticlockwise);
                   } else if (aes.shape === 'text') {
                     const label = at.slice(0, 5) === 'label';
                     const central = at.slice(0, 7) === 'central';
@@ -274,15 +274,9 @@ export function renderCanvas2d(
                     );
                     ctx.scale(1, -1);
                     const angle = angleScale(data[at].value);
-                    if (label) {
-                      ctx.translate(0, r);
-                    } else if (!central) {
-                      ctx.translate(
-                        (r - GOLDEN_RATIO * barThickness) * Math.cos(angle),
-                        -(r - GOLDEN_RATIO * barThickness) * Math.sin(angle),
-                      );
-                    }
-                    ctx.fillText(data[at].text, 0, 0);
+                    const textX = label || central ? 0 : (r - GOLDEN_RATIO * barThickness) * Math.cos(angle);
+                    const textY = label ? r : central ? 0 : -(r - GOLDEN_RATIO * barThickness) * Math.sin(angle);
+                    ctx.fillText(data[at].text, textX, textY);
                   }
                 } else {
                   ctx.translate(
@@ -294,15 +288,23 @@ export function renderCanvas2d(
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = aes.fillColor;
                     if (at) {
-                      const atFromPx = atPx - 1;
-                      const atToPx = atPx + 1;
-                      ctx.moveTo(vertical ? 0 : atFromPx, vertical ? atFromPx : 0);
-                      ctx.lineTo(vertical ? 0 : atToPx, vertical ? atToPx : 0);
+                      const fromPx = atPx - 1;
+                      const toPx = atPx + 1;
+                      const x0 = vertical ? 0 : fromPx;
+                      const y0 = vertical ? fromPx : 0;
+                      ctx.moveTo(x0, y0);
+                      const x1 = vertical ? 0 : toPx;
+                      const y1 = vertical ? toPx : 0;
+                      ctx.lineTo(x1, y1);
                     } else {
                       const fromPx = linearScale(data[from].value);
                       const toPx = linearScale(data[to].value);
-                      ctx.moveTo(vertical ? 0 : fromPx, vertical ? fromPx : 0);
-                      ctx.lineTo(vertical ? 0 : toPx, vertical ? toPx : 0);
+                      const x0 = vertical ? 0 : fromPx;
+                      const y0 = vertical ? fromPx : 0;
+                      ctx.moveTo(x0, y0);
+                      const x1 = vertical ? 0 : toPx;
+                      const y1 = vertical ? toPx : 0;
+                      ctx.lineTo(x1, y1);
                     }
                   } else if (aes.shape === 'text') {
                     ctx.textAlign = textAlign;
