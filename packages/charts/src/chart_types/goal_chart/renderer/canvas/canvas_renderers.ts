@@ -254,26 +254,15 @@ export function renderCanvas2d(
                   if (aes.shape === 'line') {
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = strokeStyle;
-                    if (at) {
-                      ctx.arc(
-                        pxRangeMid,
-                        0,
-                        r + axisNormalOffset,
-                        angleScale(data[at].value) + Math.PI / 360,
-                        angleScale(data[at].value) - Math.PI / 360,
-                        true,
-                      );
-                    } else {
-                      const dataClockwise = data[from].value < data[to].value;
-                      ctx.arc(
-                        pxRangeMid,
-                        0,
-                        r,
-                        angleScale(data[from].value),
-                        angleScale(data[to].value),
-                        clockwise === dataClockwise,
-                      );
-                    }
+                    const x = pxRangeMid;
+                    const y = 0;
+                    const radius = at ? r + axisNormalOffset : r;
+                    const startAngle = at ? angleScale(data[at].value) + Math.PI / 360 : angleScale(data[from].value);
+                    const endAngle = at ? angleScale(data[at].value) - Math.PI / 360 : angleScale(data[to].value);
+                    // looking forward to the replacement of prettier as it removes coder added readability via parens
+                    // prettier-ignore
+                    const anticlockwise = at || clockwise === (data[from].value < data[to].value);
+                    ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
                   } else if (aes.shape === 'text') {
                     const label = at.slice(0, 5) === 'label';
                     const central = at.slice(0, 7) === 'central';
