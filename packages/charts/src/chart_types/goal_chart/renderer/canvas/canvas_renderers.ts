@@ -258,17 +258,16 @@ export function renderCanvas2d(
                   ctx.textAlign = circular ? 'center' : textAlign;
                   ctx.textBaseline = label || central || !circular ? textBaseline : 'middle';
                   ctx.font = cssFontShorthand(fontShape, fontSize);
+                  ctx.scale(1, -1);
                   if (circular) {
-                    const angle = angleScale(data[at].value);
-                    const textX = label || central ? 0 : (r - GOLDEN_RATIO * barThickness) * Math.cos(angle);
-                    const textY = label ? r : central ? 0 : -(r - GOLDEN_RATIO * barThickness) * Math.sin(angle);
-                    ctx.scale(1, -1);
+                    const scaledValue = angleScale(data[at].value);
+                    const textX = label || central ? 0 : (r - GOLDEN_RATIO * barThickness) * Math.cos(scaledValue);
+                    const textY = label ? r : central ? 0 : -(r - GOLDEN_RATIO * barThickness) * Math.sin(scaledValue);
                     ctx.fillText(text, textX, textY);
                   } else {
-                    const atPx = data[at] && linearScale(data[at].value);
-                    const textX = vertical ? axisNormalOffset : axisTangentOffset + atPx;
-                    const textY = vertical ? -axisTangentOffset - atPx : -axisNormalOffset;
-                    ctx.scale(1, -1);
+                    const scaledValue = data[at] && linearScale(data[at].value);
+                    const textX = vertical ? axisNormalOffset : axisTangentOffset + scaledValue;
+                    const textY = vertical ? -axisTangentOffset - scaledValue : -axisNormalOffset;
                     ctx.fillText(text, textX, textY);
                   }
                 }
