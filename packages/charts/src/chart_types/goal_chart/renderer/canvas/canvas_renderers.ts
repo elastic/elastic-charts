@@ -287,25 +287,14 @@ export function renderCanvas2d(
                   if (aes.shape === 'line') {
                     ctx.lineWidth = lineWidth;
                     ctx.strokeStyle = aes.fillColor;
-                    if (at) {
-                      const fromPx = atPx - 1;
-                      const toPx = atPx + 1;
-                      const x0 = vertical ? 0 : fromPx;
-                      const y0 = vertical ? fromPx : 0;
-                      ctx.moveTo(x0, y0);
-                      const x1 = vertical ? 0 : toPx;
-                      const y1 = vertical ? toPx : 0;
-                      ctx.lineTo(x1, y1);
-                    } else {
-                      const fromPx = linearScale(data[from].value);
-                      const toPx = linearScale(data[to].value);
-                      const x0 = vertical ? 0 : fromPx;
-                      const y0 = vertical ? fromPx : 0;
-                      ctx.moveTo(x0, y0);
-                      const x1 = vertical ? 0 : toPx;
-                      const y1 = vertical ? toPx : 0;
-                      ctx.lineTo(x1, y1);
-                    }
+                    const fromPx = at ? atPx - 1 : linearScale(data[from].value);
+                    const toPx = at ? atPx + 1 : linearScale(data[to].value);
+                    const x0 = vertical ? 0 : fromPx;
+                    const y0 = vertical ? fromPx : 0;
+                    const x1 = vertical ? 0 : toPx;
+                    const y1 = vertical ? toPx : 0;
+                    ctx.moveTo(x0, y0);
+                    ctx.lineTo(x1, y1);
                   } else if (aes.shape === 'text') {
                     ctx.textAlign = textAlign;
                     ctx.textBaseline = textBaseline;
