@@ -234,8 +234,7 @@ export function renderCanvas2d(
               const at = get(landmarks, 'at', '');
               const from = get(landmarks, 'from', '');
               const to = get(landmarks, 'to', '');
-              const textAlign = get(aes, 'textAlign', '');
-              const textBaseline = get(aes, 'textBaseline', '');
+              const textAlign = circular ? 'center' : get(aes, 'textAlign', '');
               const fontShape = get(aes, 'fontShape', '');
               const axisNormalOffset = get(aes, 'axisNormalOffset', 0);
               const axisTangentOffset = get(aes, 'axisTangentOffset', 0);
@@ -248,26 +247,28 @@ export function renderCanvas2d(
                   const { text } = data[at];
                   const label = at.slice(0, 5) === 'label';
                   const central = at.slice(0, 7) === 'central';
-                  const fontSize = label ? labelFontSize : central && circular ? centralFontSize : tickFontSize;
-                  ctx.textAlign = circular ? 'center' : textAlign;
-                  ctx.textBaseline = label || central || !circular ? textBaseline : 'middle';
-                  ctx.font = cssFontShorthand(fontShape, fontSize);
-                  ctx.scale(1, -1);
+                  const textBaseline = label || central || !circular ? get(aes, 'textBaseline', '') : 'middle';
+                  const fontSize =
+                    circular && label ? labelFontSize : circular && central ? centralFontSize : tickFontSize;
                   const scaledValue = circular ? angleScale(data[at].value) : data[at] && linearScale(data[at].value);
                   // prettier-ignore
-                  const textX = circular
+                  const x = circular
                     ? (label || central ? 0 : (r - GOLDEN_RATIO * barThickness) * Math.cos(scaledValue))
                     : (vertical ? axisNormalOffset : axisTangentOffset + scaledValue);
                   // prettier-ignore
-                  const textY = circular
+                  const y = circular
                     ? (label ? r : central ? 0 : -(r - GOLDEN_RATIO * barThickness) * Math.sin(scaledValue))
                     : (vertical ? -axisTangentOffset - scaledValue : -axisNormalOffset);
-                  ctx.fillText(text, textX, textY);
+                  const font = cssFontShorthand(fontShape, fontSize);
+
+                  ctx.textAlign = textAlign;
+                  ctx.textBaseline = textBaseline;
+                  ctx.font = font;
+                  ctx.scale(1, -1);
+                  ctx.fillText(text, x, y);
                 }
 
                 if (aes.shape === 'arc') {
-                  ctx.lineWidth = lineWidth;
-                  ctx.strokeStyle = strokeStyle;
                   const cx = pxRangeMid;
                   const cy = 0;
                   const radius = at ? r + axisNormalOffset : r;
@@ -275,6 +276,9 @@ export function renderCanvas2d(
                   const endAngle = at ? angleScale(data[at].value) - Math.PI / 360 : angleScale(data[to].value);
                   // prettier-ignore
                   const anticlockwise = at || clockwise === (data[from].value < data[to].value);
+
+                  ctx.lineWidth = lineWidth;
+                  ctx.strokeStyle = strokeStyle;
                   ctx.arc(cx, cy, radius, startAngle, endAngle, anticlockwise);
                 }
 
@@ -282,14 +286,15 @@ export function renderCanvas2d(
                   const translateX = vertical ? axisNormalOffset : axisTangentOffset;
                   const translateY = vertical ? axisTangentOffset : axisNormalOffset;
                   const atPx = data[at] && linearScale(data[at].value);
-                  ctx.lineWidth = lineWidth;
-                  ctx.strokeStyle = aes.fillColor;
                   const fromPx = at ? atPx - 1 : linearScale(data[from].value);
                   const toPx = at ? atPx + 1 : linearScale(data[to].value);
                   const x0 = vertical ? translateX : translateX + fromPx;
                   const y0 = vertical ? translateY + fromPx : translateY;
                   const x1 = vertical ? translateX : translateX + toPx;
                   const y1 = vertical ? translateY + toPx : translateY;
+
+                  ctx.lineWidth = lineWidth;
+                  ctx.strokeStyle = strokeStyle;
                   ctx.moveTo(x0, y0);
                   ctx.lineTo(x1, y1);
                 }
