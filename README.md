@@ -81,7 +81,7 @@ You can find documentation around creating and submitting new features in [CONTR
 
 ## License
 
-[Apache Licensed][license]. Read the [FAQ][faq] for details.
+[Dual-licensed under Elastic v2 and Server Side Public License, v 1][license] Read the [FAQ][faq] for details.
 
 [license]: LICENSE.txt
 [faq]: FAQ.md
@@ -90,6 +90,3 @@ You can find documentation around creating and submitting new features in [CONTR
 [overview]: wiki/overview.md
 [theming]: wiki/theming.md
 [contributing]: CONTRIBUTING.md
-
-
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Felastic%2Felastic-charts.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Felastic%2Felastic-charts?ref=badge_large)
