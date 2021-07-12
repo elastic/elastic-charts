@@ -81,8 +81,6 @@ You can find documentation around creating and submitting new features in [CONTR
 
 ## License
 
-## License
-
 [Dual-licensed under Elastic v2 and Server Side Public License, v 1][license] Read the [FAQ][faq] for details.
 
 [license]: LICENSE.txt
