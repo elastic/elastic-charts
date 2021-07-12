@@ -83,10 +83,10 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
       const width = rotation === 0 || rotation === 180 ? bars[i].width : bars[i].height;
       textLines = wrapLines(ctx, textLines.lines[0], font, fontSize, width, 100);
     }
-    if (displayValue.hideClippedValue && isOverflow(rect, renderingArea, rotation)) {
+    if (displayValue.hideIfOverflowsChartEdges && isOverflow(rect, renderingArea, rotation)) {
       continue;
     }
-    if (displayValue.hideGeomClippedValues && overflow) {
+    if (displayValue.hideIfOverflowsBarGeometry && overflow) {
       continue;
     }
     if (debug) {
@@ -124,6 +124,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     }
   }
 }
+
 function repositionTextLine(
   origin: Point,
   chartRotation: Rotation,

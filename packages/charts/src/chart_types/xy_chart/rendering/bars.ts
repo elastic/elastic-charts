@@ -26,7 +26,7 @@ import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
-import { BarStyleAccessor, DisplayValueSpec, StackMode } from '../utils/specs';
+import { BarStyleAccessor, DisplayValueSpec, LabelOverflowConstraint, StackMode } from '../utils/specs';
 
 /** @internal */
 export function renderBars(
@@ -149,8 +149,15 @@ export function renderBars(
       fixedFontScale,
       fontSize,
     );
+    const hideIfOverflows: Set<LabelOverflowConstraint> = new Set(
+      displayValueSettings?.hideIfOverflows ?? [
+        LabelOverflowConstraint.ChartEdges,
+        LabelOverflowConstraint.BarGeometry,
+      ],
+    );
 
-    const hideClippedValue = displayValueSettings?.hideClippedValue ?? false;
+    const hideIfOverflowsChartEdges = hideIfOverflows.has(LabelOverflowConstraint.ChartEdges);
+    const hideIfOverflowsBarGeometry = hideIfOverflows.has(LabelOverflowConstraint.BarGeometry);
     // Based on rotation scale the width of the text box
     const bboxWidthFactor = isHorizontalRotation ? textScalingFactor : 1;
 
@@ -162,8 +169,8 @@ export function renderBars(
             text: displayValueText,
             width: bboxWidthFactor * displayValueWidth,
             height: textScalingFactor * fixedFontScale,
-            hideClippedValue,
-            hideGeomClippedValues: displayValueSettings?.hideGeomClippedValues ?? false,
+            hideIfOverflowsChartEdges,
+            hideIfOverflowsBarGeometry,
             isValueContainedInElement: displayValueSettings?.isValueContainedInElement ?? false,
           }
         : undefined;

@@ -20,7 +20,16 @@
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '../../packages/charts/src';
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  DisplayValueSpec,
+  LabelOverflowConstraint,
+  Position,
+  ScaleType,
+  Settings,
+} from '../../packages/charts/src';
 import { SeededDataGenerator } from '../../packages/charts/src/mocks/utils';
 import { getChartRotationKnob } from '../utils/knobs';
 
@@ -42,13 +51,20 @@ export const Example = () => {
   const showValueLabel = boolean('show value label', true);
   const isAlternatingValueLabel = boolean('alternating value label', false);
   const isValueContainedInElement = boolean('contain value label within bar element', false);
-  const hideClippedValue = boolean('hide clipped value', false);
-
+  const overflowChartEdges = boolean('hide label if overflows chart edges', false);
+  const overflowBarGeometry = boolean('hide label if overflows bar geometry', false);
+  const hideIfOverflows: DisplayValueSpec['hideIfOverflows'] = [];
+  if (overflowChartEdges) {
+    hideIfOverflows.push(LabelOverflowConstraint.ChartEdges);
+  }
+  if (overflowBarGeometry) {
+    hideIfOverflows.push(LabelOverflowConstraint.BarGeometry);
+  }
   const displayValueSettings = {
     showValueLabel,
     isAlternatingValueLabel,
     isValueContainedInElement,
-    hideClippedValue,
+    hideIfOverflows,
   };
 
   const debug = boolean('debug', false);

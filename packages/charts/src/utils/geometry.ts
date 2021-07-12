@@ -107,8 +107,8 @@ export interface BarGeometry {
     text: any;
     width: number;
     height: number;
-    hideClippedValue: boolean;
-    hideGeomClippedValues: boolean;
+    hideIfOverflowsChartEdges: boolean;
+    hideIfOverflowsBarGeometry: boolean;
     isValueContainedInElement: boolean;
   };
   seriesIdentifier: XYChartSeriesIdentifier;
