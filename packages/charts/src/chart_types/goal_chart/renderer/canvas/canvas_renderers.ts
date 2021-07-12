@@ -289,6 +289,75 @@ export function renderCanvas2d(
   const maxWidth = geoms.reduce((p, g) => Math.max(p, get<number>(g.aes, 'lineWidth', 0)), 0);
   const r = 0.5 * referenceSize - maxWidth / 2;
 
+  const fullSize = referenceSize;
+  const labelSize = fullSize / 2;
+  const pxRangeFrom = -fullSize / 2 + (circular || vertical ? 0 : labelSize);
+  const pxRangeTo = fullSize / 2 + (!circular && vertical ? -2 * labelFontSize : 0);
+  const pxRangeMid = (pxRangeFrom + pxRangeTo) / 2;
+  const pxRange = pxRangeTo - pxRangeFrom;
+
+  const domainExtent = domain[1] - domain[0];
+
+  const linearScale = (x: number) => pxRangeFrom + (pxRange * (x - domain[0])) / domainExtent;
+
+  const { angleStart, angleEnd } = config;
+  const angleRange = angleEnd - angleStart;
+  const angleScale = (x: number) => angleStart + (angleRange * (x - domain[0])) / domainExtent;
+  const clockwise = angleStart > angleEnd; // todo refine this crude approach
+
+  const geomObjects = geoms
+    .slice()
+    .sort((a, b) => a.order - b.order)
+    .map(({ landmarks, aes }) => {
+      const at = get(landmarks, 'at', '');
+      const from = get(landmarks, 'from', '');
+      const to = get(landmarks, 'to', '');
+      const textAlign = circular ? 'center' : get(aes, 'textAlign', '');
+      const fontShape = get(aes, 'fontShape', '');
+      const axisNormalOffset = get(aes, 'axisNormalOffset', 0);
+      const axisTangentOffset = get(aes, 'axisTangentOffset', 0);
+      const lineWidth = get(aes, 'lineWidth', 0);
+      const strokeStyle = get(aes, 'fillColor', '');
+      if (aes.shape === 'text') {
+        const { text } = data[at];
+        const label = at.slice(0, 5) === 'label';
+        const central = at.slice(0, 7) === 'central';
+        const textBaseline = label || central || !circular ? get(aes, 'textBaseline', '') : 'middle';
+        const fontSize = circular && label ? labelFontSize : circular && central ? centralFontSize : tickFontSize;
+        const scaledValue = circular ? angleScale(data[at].value) : data[at] && linearScale(data[at].value);
+        // prettier-ignore
+        const x = circular
+          ? (label || central ? 0 : (r - GOLDEN_RATIO * barThickness) * Math.cos(scaledValue))
+          : (vertical ? axisNormalOffset : axisTangentOffset + scaledValue);
+        // prettier-ignore
+        const y = circular
+          ? (label ? r : central ? 0 : -(r - GOLDEN_RATIO * barThickness) * Math.sin(scaledValue))
+          : (vertical ? -axisTangentOffset - scaledValue : -axisNormalOffset);
+        return new Text(x, y, text, textAlign, textBaseline, fontShape, fontSize);
+      } else if (aes.shape === 'arc') {
+        const cx = pxRangeMid;
+        const cy = 0;
+        const radius = at ? r + axisNormalOffset : r;
+        const startAngle = at ? angleScale(data[at].value) + Math.PI / 360 : angleScale(data[from].value);
+        const endAngle = at ? angleScale(data[at].value) - Math.PI / 360 : angleScale(data[to].value);
+        // prettier-ignore
+        const anticlockwise = at || clockwise === (data[from].value < data[to].value);
+        return new Arc(cx, cy, radius, startAngle, endAngle, anticlockwise, lineWidth, strokeStyle);
+      } else {
+        // if (aes.shape === 'line')
+        const translateX = vertical ? axisNormalOffset : axisTangentOffset;
+        const translateY = vertical ? axisTangentOffset : axisNormalOffset;
+        const atPx = data[at] && linearScale(data[at].value);
+        const fromPx = at ? atPx - 1 : linearScale(data[from].value);
+        const toPx = at ? atPx + 1 : linearScale(data[to].value);
+        const x0 = vertical ? translateX : translateX + fromPx;
+        const y0 = vertical ? translateY + fromPx : translateY;
+        const x1 = vertical ? translateX : translateX + toPx;
+        const y1 = vertical ? translateY + toPx : translateY;
+        return new Section(x0, y0, x1, y1, lineWidth, strokeStyle);
+      }
+    });
+
   withContext(ctx, (ctx) => {
     // set some defaults for the overall rendering
 
@@ -314,79 +383,6 @@ export function renderCanvas2d(
 
       (context: CanvasRenderingContext2D) =>
         withContext(context, (ctx) => {
-          const fullSize = referenceSize;
-          const labelSize = fullSize / 2;
-          const pxRangeFrom = -fullSize / 2 + (circular || vertical ? 0 : labelSize);
-          const pxRangeTo = fullSize / 2 + (!circular && vertical ? -2 * labelFontSize : 0);
-          const pxRangeMid = (pxRangeFrom + pxRangeTo) / 2;
-          const pxRange = pxRangeTo - pxRangeFrom;
-
-          const domainExtent = domain[1] - domain[0];
-
-          const linearScale = (x: number) => pxRangeFrom + (pxRange * (x - domain[0])) / domainExtent;
-
-          const { angleStart, angleEnd } = config;
-          const angleRange = angleEnd - angleStart;
-          const angleScale = (x: number) => angleStart + (angleRange * (x - domain[0])) / domainExtent;
-          const clockwise = angleStart > angleEnd; // todo refine this crude approach
-
-          const geomObjects = geoms
-            .slice()
-            .sort((a, b) => a.order - b.order)
-            .map(({ landmarks, aes }) => {
-              const at = get(landmarks, 'at', '');
-              const from = get(landmarks, 'from', '');
-              const to = get(landmarks, 'to', '');
-              const textAlign = circular ? 'center' : get(aes, 'textAlign', '');
-              const fontShape = get(aes, 'fontShape', '');
-              const axisNormalOffset = get(aes, 'axisNormalOffset', 0);
-              const axisTangentOffset = get(aes, 'axisTangentOffset', 0);
-              const lineWidth = get(aes, 'lineWidth', 0);
-              const strokeStyle = get(aes, 'fillColor', '');
-              if (aes.shape === 'text') {
-                const { text } = data[at];
-                const label = at.slice(0, 5) === 'label';
-                const central = at.slice(0, 7) === 'central';
-                const textBaseline = label || central || !circular ? get(aes, 'textBaseline', '') : 'middle';
-                const fontSize =
-                  circular && label ? labelFontSize : circular && central ? centralFontSize : tickFontSize;
-                const scaledValue = circular ? angleScale(data[at].value) : data[at] && linearScale(data[at].value);
-                // prettier-ignore
-                const x = circular
-                  ? (label || central ? 0 : (r - GOLDEN_RATIO * barThickness) * Math.cos(scaledValue))
-                  : (vertical ? axisNormalOffset : axisTangentOffset + scaledValue);
-                // prettier-ignore
-                const y = circular
-                  ? (label ? r : central ? 0 : -(r - GOLDEN_RATIO * barThickness) * Math.sin(scaledValue))
-                  : (vertical ? -axisTangentOffset - scaledValue : -axisNormalOffset);
-
-                return new Text(x, y, text, textAlign, textBaseline, fontShape, fontSize);
-              } else if (aes.shape === 'arc') {
-                const cx = pxRangeMid;
-                const cy = 0;
-                const radius = at ? r + axisNormalOffset : r;
-                const startAngle = at ? angleScale(data[at].value) + Math.PI / 360 : angleScale(data[from].value);
-                const endAngle = at ? angleScale(data[at].value) - Math.PI / 360 : angleScale(data[to].value);
-                // prettier-ignore
-                const anticlockwise = at || clockwise === (data[from].value < data[to].value);
-
-                return new Arc(cx, cy, radius, startAngle, endAngle, anticlockwise, lineWidth, strokeStyle);
-              } else {
-                // if (aes.shape === 'line')
-                const translateX = vertical ? axisNormalOffset : axisTangentOffset;
-                const translateY = vertical ? axisTangentOffset : axisNormalOffset;
-                const atPx = data[at] && linearScale(data[at].value);
-                const fromPx = at ? atPx - 1 : linearScale(data[from].value);
-                const toPx = at ? atPx + 1 : linearScale(data[to].value);
-                const x0 = vertical ? translateX : translateX + fromPx;
-                const y0 = vertical ? translateY + fromPx : translateY;
-                const x1 = vertical ? translateX : translateX + toPx;
-                const y1 = vertical ? translateY + toPx : translateY;
-
-                return new Section(x0, y0, x1, y1, lineWidth, strokeStyle);
-              }
-            });
-
           geomObjects.forEach((obj) => withContext(ctx, (ctx) => obj.render(ctx)));
         }),
     ]);
