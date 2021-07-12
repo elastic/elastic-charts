@@ -53,7 +53,7 @@ export function renderBars(
 
     // prettier-ignore
     const y0Scaled = yScale.type === ScaleType.Log
-      ? (y0 === 0 || y0 === null ? yScale.range[yScale.isInverted ? 1 : 0] : yScale.scale(y0))
+      ? (y0 ?? 0) > 0 ? yScale.scale(y0) : yScale.range[yScale.isInverted ? 1 : 0]
       : yScale.scale(y0 || 0);
 
     const absMinHeight = Math.abs(minBarHeight);
