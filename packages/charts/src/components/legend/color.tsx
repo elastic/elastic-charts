@@ -38,15 +38,14 @@ const MARKER_SIZE = 16;
 const getCustomization = (pointStyle: PointStyle, seriesType: SeriesType): boolean | undefined =>
   // bubble charts will always have the circle icon vs dot
   seriesType === 'bubble' ||
-  (pointStyle.shape !== PointShape.Circle && seriesType === 'area') ||
-  (pointStyle.shape !== PointShape.Circle && seriesType === 'line') ||
-  pointStyle.fill !== 'blue'
-    ? pointStyle.radius !== 2 ||
-      seriesType === 'bubble' ||
-      pointStyle?.visible ||
-      pointStyle.stroke !== 'white' ||
-      pointStyle.fill !== 'blue'
-    : false;
+  (seriesType === 'line' && pointStyle.shape !== PointShape.Circle) ||
+  (seriesType === 'area' && pointStyle.shape !== PointShape.Circle)
+    ? // not the default radius from theme
+      pointStyle.radius !== 2 ||
+      // always want the circle svg vs dot.tsx with bubble chart
+      seriesType === 'bubble'
+    : // how to check the fill and stroke different than defaults
+      false;
 
 /**
  * Color component used by the legend item

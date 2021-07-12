@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { select } from '@storybook/addon-knobs';
+import { color, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -34,9 +34,29 @@ import {
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
-  const shapeKnobArea = select('area series marker shape', PointShape, PointShape.Circle);
-  const shapeKnobLine = select('line series marker shape', PointShape, PointShape.Circle);
-  const shapeKnobBubble = select('bubble marker series shape', PointShape, PointShape.Circle);
+  const shapeKnobArea = select(
+    'area series marker shape',
+    ['circle', 'diamond', 'square', 'triangle', 'plus', 'x'],
+    PointShape.Circle,
+  );
+  const strokeKnobArea = color('area series stroke color', '#54B399');
+  const fillKnobArea = color('area series fill color', 'white');
+
+  const shapeKnobLine = select(
+    'line series marker shape',
+    ['circle', 'diamond', 'square', 'triangle', 'plus', 'x'],
+    PointShape.Circle,
+  );
+  const strokeKnobLine = color('line series stroke color', '#6092C0');
+  const fillKnobLine = color('line series fill color', 'white');
+
+  const shapeKnobBubble = select(
+    'bubble marker series shape',
+    ['circle', 'diamond', 'square', 'triangle', 'plus', 'x'],
+    PointShape.Circle,
+  );
+  const strokeKnobBubble = color('bubble series stroke color', '#D36086');
+  const fillKnobBubble = color('bubble series fill color', 'white');
 
   return (
     <Chart className="story-chart">
@@ -48,6 +68,8 @@ export const Example = () => {
         areaSeriesStyle={{
           point: {
             shape: shapeKnobArea,
+            stroke: strokeKnobArea,
+            fill: fillKnobArea,
           },
         }}
         xScaleType={ScaleType.Linear}
@@ -64,6 +86,8 @@ export const Example = () => {
         lineSeriesStyle={{
           point: {
             shape: shapeKnobLine,
+            stroke: strokeKnobLine,
+            fill: fillKnobLine,
           },
         }}
         xScaleType={ScaleType.Linear}
@@ -79,8 +103,10 @@ export const Example = () => {
         id="bubbles"
         bubbleSeriesStyle={{
           point: {
-            shape: shapeKnobBubble,
             radius: 20,
+            shape: shapeKnobBubble,
+            stroke: strokeKnobBubble,
+            fill: fillKnobBubble,
           },
         }}
         xScaleType={ScaleType.Linear}
