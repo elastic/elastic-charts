@@ -18,15 +18,16 @@ interface ColorProps {
   color: string;
   seriesName: string;
   hasColorPicker: boolean;
-  seriesType: SeriesType;
+  seriesType?: SeriesType;
   isSeriesHidden?: boolean;
   pointStyle?: PointStyle;
   onClick?: MouseEventHandler;
 }
 const MARKER_SIZE = 16;
 const getCustomization = (pointStyle: PointStyle, seriesType: SeriesType): boolean | undefined =>
-  // bubble charts will always have the circle icon vs dot
-  seriesType === 'bubble' ||
+  (seriesType &&
+    // bubble charts will always have the circle icon vs dot
+    seriesType === 'bubble') ||
   (seriesType === 'line' && pointStyle.shape !== PointShape.Circle) ||
   (seriesType === 'area' && pointStyle.shape !== PointShape.Circle)
     ? // not the default radius from theme
@@ -92,7 +93,7 @@ export const Color = memo(
 
       return (
         <div className="echLegendItem__color" title="series color">
-          {pointStyle && getCustomization(pointStyle, seriesType) ? (
+          {pointStyle && getCustomization(pointStyle, seriesType!) ? (
             // @ts-ignore
             renderShape(pointStyle)
           ) : (

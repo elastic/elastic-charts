@@ -199,7 +199,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             hasColorPicker={hasColorPicker}
             onClick={this.handleColorClick(hasColorPicker)}
             pointStyle={pointStyle}
-            seriesType={seriesType ?? 'non-xy'}
+            seriesType={seriesType}
           />
           <ItemLabel
             label={label}
