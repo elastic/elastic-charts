@@ -59,7 +59,7 @@ export function renderBars(
     const absMinHeight = Math.abs(minBarHeight);
 
     // prettier-ignore
-    let y = isNil(y0Scaled)
+    const rawY = isNil(y0Scaled)
       ? 0
       : (yScale.type === ScaleType.Log
           ? (y1 ? yScale.scale(y1) ?? 0 : yScale.range[0])
@@ -67,17 +67,15 @@ export function renderBars(
       );
 
     // safeguard against null y values
-    let height = (y0Scaled ?? 0) - y;
+    const rawHeight = (y0Scaled ?? 0) - rawY;
 
-    const heightDelta = absMinHeight - Math.abs(height);
-    if (heightDelta > 0) {
-      const heightSign = Math.sign(height);
-      height = heightSign * absMinHeight;
-      y -= heightSign * heightDelta;
-    }
+    const heightDelta = absMinHeight - Math.abs(rawHeight);
+    const heightSign = Math.sign(rawHeight);
+    const height = heightDelta > 0 ? heightSign * absMinHeight : rawHeight;
+    const y = heightDelta > 0 ? rawY - heightSign * heightDelta : rawY;
     const isUpsideDown = height < 0;
-    height = Math.abs(height);
-    y = isUpsideDown ? y - height : y;
+    const absHeight = Math.abs(height);
+    const topY = isUpsideDown ? y - absHeight : y;
 
     const xScaled = xScale.scale(datum.x);
 
@@ -153,13 +151,13 @@ export function renderBars(
     const barGeometry: BarGeometry = {
       displayValue,
       x,
-      y,
+      y: topY,
       transform: {
         x: 0,
         y: 0,
       },
       width,
-      height,
+      height: absHeight,
       color,
       value: {
         x: datum.x,
