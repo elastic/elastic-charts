@@ -1762,7 +1762,6 @@ export const SeriesType: Readonly<{
     Bar: "bar";
     Line: "line";
     Bubble: "bubble";
-    NonXY: "non-xy";
 }>;
 
 // @public
