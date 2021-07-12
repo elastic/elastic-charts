@@ -20,7 +20,6 @@ import { Spec } from '../../../../specs';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
 import { ContinuousDomain, Range } from '../../../../utils/domain';
 import { SpecId } from '../../../../utils/ids';
-import { PointShape } from '../../../../utils/themes/theme';
 import { getSeriesIndex, XYChartSeriesIdentifier } from '../../utils/series';
 import { BasicSeriesSpec, HistogramModeAlignments, SeriesColorAccessorFn } from '../../utils/specs';
 import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
@@ -209,7 +208,7 @@ describe('Chart State utils', () => {
         const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
         const actual = getCustomSeriesColors(formattedDataSeries);
 
-        expect([...actual.values()]).toEqualArrayOf(color);
+        expect([...actual.values()]).toEqual(color);
       });
 
       describe('with customSeriesColors array', () => {
@@ -557,7 +556,6 @@ describe('Chart State utils', () => {
         opacity: 1,
         radius: 2,
         strokeWidth: 1,
-        shape: PointShape.Circle,
       });
     });
     test('can compute area geometries with custom style', () => {
@@ -623,7 +621,6 @@ describe('Chart State utils', () => {
         opacity: 1,
         radius: 2,
         strokeWidth: 1,
-        shape: PointShape.Circle,
       });
     });
     test('can compute bars geometries counts', () => {

@@ -31,7 +31,7 @@ export const LIGHT_THEME: Theme = {
       fill: 'white',
       radius: 2,
       opacity: 1,
-      shape: PointShape.Circle,
+      // shape: PointShape.Circle,
     },
   },
   bubbleSeriesStyle: {
@@ -60,7 +60,7 @@ export const LIGHT_THEME: Theme = {
       fill: 'white',
       radius: 2,
       opacity: 1,
-      shape: PointShape.Circle,
+      // shape: PointShape.Circle,
     },
   },
   barSeriesStyle: {
