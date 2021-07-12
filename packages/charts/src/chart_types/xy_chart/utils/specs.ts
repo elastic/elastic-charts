@@ -422,7 +422,7 @@ export interface DisplayValueSpec {
    * An option to hide the value label on certain conditions:
    * - `barGeometry` the label is not rendered if the width/height overflows the associated bar geometry,
    * - `chartEdges` the label is not rendered if it overflows the chart projection area.
-   * @defaultValue: ['barGeometry', 'chartEdges']
+   * @defaultValue ['barGeometry', 'chartEdges']
    */
   hideIfOverflows?: Array<LabelOverflowConstraint>;
 }
