@@ -208,7 +208,7 @@ describe('Chart State utils', () => {
         const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
         const actual = getCustomSeriesColors(formattedDataSeries);
 
-        expect([...actual.values()]).toEqual(color);
+        expect([...actual.values()]).toContainEqual(color);
       });
 
       describe('with customSeriesColors array', () => {
