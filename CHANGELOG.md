@@ -1,3 +1,20 @@
+# [32.0.0](https://github.com/elastic/elastic-charts/compare/v31.1.0...v32.0.0) (2021-07-12)
+
+
+### chore
+
+* **license:** elastic license 2.0 ([#1242](https://github.com/elastic/elastic-charts/issues/1242)) ([67fa0a3](https://github.com/elastic/elastic-charts/commit/67fa0a3b0d9e90db4057431099111ae0e8a21de3)), closes [#1213](https://github.com/elastic/elastic-charts/issues/1213)
+
+
+### Features
+
+* **a11y:** allow user to add optional semantic meaning to goal/gauge charts ([#1218](https://github.com/elastic/elastic-charts/issues/1218)) ([87629e2](https://github.com/elastic/elastic-charts/commit/87629e23e7cc8aef125a8b6d2b87092085abe2bd)), closes [#1161](https://github.com/elastic/elastic-charts/issues/1161)
+
+
+### BREAKING CHANGES
+
+* **license:** the library is released now under Elastic License 2.0 and SSPL
+
 # [31.1.0](https://github.com/elastic/elastic-charts/compare/v31.0.0...v31.1.0) (2021-07-06)
 
 
