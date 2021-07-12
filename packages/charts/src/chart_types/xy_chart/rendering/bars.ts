@@ -51,39 +51,29 @@ export function renderBars(
       return;
     }
 
-    let y: number | null;
-    let y0Scaled;
-    if (yScale.type === ScaleType.Log) {
-      y = y1 === 0 || y1 === null ? yScale.range[0] : yScale.scale(y1);
-      if (yScale.isInverted) {
-        y0Scaled = y0 === 0 || y0 === null ? yScale.range[1] : yScale.scale(y0);
-      } else {
-        y0Scaled = y0 === 0 || y0 === null ? yScale.range[0] : yScale.scale(y0);
-      }
-    } else {
-      y = yScale.scale(y1);
-      // use always zero as baseline if y0 is null
-      y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
-    }
+    // prettier-ignore
+    const y0Scaled = yScale.type === ScaleType.Log
+      ? (y0 === 0 || y0 === null ? yScale.range[yScale.isInverted ? 1 : 0] : yScale.scale(y0))
+      : yScale.scale(y0 || 0);
 
     const absMinHeight = Math.abs(minBarHeight);
 
+    // prettier-ignore
+    let y = isNil(y0Scaled)
+      ? 0
+      : (yScale.type === ScaleType.Log
+          ? (y1 ? yScale.scale(y1) ?? 0 : yScale.range[0])
+          : yScale.scale(y1) ?? 0
+      );
+
     // safeguard against null y values
-    let height = isNil(y0Scaled) || isNil(y) ? 0 : y0Scaled - y;
+    let height = (y0Scaled ?? 0) - y;
 
-    if (isNil(y0Scaled) || isNil(y)) {
-      y = 0;
-    }
-
-    if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
-      const heightDelta = absMinHeight - Math.abs(height);
-      if (height < 0) {
-        height = -absMinHeight;
-        y += heightDelta;
-      } else {
-        height = absMinHeight;
-        y -= heightDelta;
-      }
+    const heightDelta = absMinHeight - Math.abs(height);
+    if (heightDelta > 0) {
+      const heightSign = Math.sign(height);
+      height = heightSign * absMinHeight;
+      y -= heightSign * heightDelta;
     }
     const isUpsideDown = height < 0;
     height = Math.abs(height);
