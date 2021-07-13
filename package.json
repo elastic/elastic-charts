@@ -41,7 +41,7 @@
     "test:tz-ny": "TZ=America/New_York jest --verbose --config=jest.tz.config.js",
     "test:tz-jp": "TZ=Asia/Tokyo jest --verbose --config=jest.tz.config.js",
     "test:integration": "./scripts/vrt.sh",
-    "test:integration:local": "LOCAL_VRT_SERVER=true PORT=9002 yarn test:integration",
+    "test:integration:local": "LOCAL_VRT_SERVER=true PORT=9001 yarn test:integration",
     "test:integration:debug": "DEBUG=true yarn test:integration:local",
     "test:integration:legacy": "LEGACY_VRT_SERVER=true yarn test:integration",
     "test:integration:local:legacy": "LOCAL_VRT_SERVER=true PORT=9002 yarn test:integration:legacy",
