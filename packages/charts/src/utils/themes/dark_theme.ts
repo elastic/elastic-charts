@@ -32,6 +32,7 @@ export const DARK_THEME: Theme = {
       radius: 2,
       opacity: 1,
       shape: PointShape.Circle,
+      stroke: '#1EA593',
     },
   },
   bubbleSeriesStyle: {
@@ -42,6 +43,7 @@ export const DARK_THEME: Theme = {
       radius: 2,
       opacity: 1,
       shape: PointShape.Circle,
+      stroke: '#1EA593',
     },
   },
   areaSeriesStyle: {
@@ -61,6 +63,7 @@ export const DARK_THEME: Theme = {
       radius: 1,
       opacity: 1,
       shape: PointShape.Circle,
+      stroke: '#1EA593',
     },
   },
   barSeriesStyle: {
