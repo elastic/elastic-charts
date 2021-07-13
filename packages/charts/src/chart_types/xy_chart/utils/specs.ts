@@ -424,7 +424,7 @@ export interface DisplayValueSpec {
    * - `chartEdges` the label is not rendered if it overflows the chart projection area.
    * @defaultValue ['barGeometry', 'chartEdges']
    */
-  hideIfOverflows?: Array<LabelOverflowConstraint>;
+  overflowConstraints?: Array<LabelOverflowConstraint>;
 }
 
 /** @public */

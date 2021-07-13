@@ -645,10 +645,10 @@ export type Direction = $Values<typeof Direction>;
 
 // @public (undocumented)
 export interface DisplayValueSpec {
-    hideIfOverflows?: Array<LabelOverflowConstraint>;
     isAlternatingValueLabel?: boolean;
     // @deprecated
     isValueContainedInElement?: boolean;
+    overflowConstraints?: Array<LabelOverflowConstraint>;
     showValueLabel?: boolean;
     valueFormatter?: TickFormatter;
 }

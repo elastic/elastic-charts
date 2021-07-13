@@ -53,18 +53,18 @@ export const Example = () => {
   const isValueContainedInElement = boolean('contain value label within bar element', false);
   const overflowChartEdges = boolean('hide label if overflows chart edges', false);
   const overflowBarGeometry = boolean('hide label if overflows bar geometry', false);
-  const hideIfOverflows: DisplayValueSpec['hideIfOverflows'] = [];
+  const overflowConstraints: DisplayValueSpec['overflowConstraints'] = [];
   if (overflowChartEdges) {
-    hideIfOverflows.push(LabelOverflowConstraint.ChartEdges);
+    overflowConstraints.push(LabelOverflowConstraint.ChartEdges);
   }
   if (overflowBarGeometry) {
-    hideIfOverflows.push(LabelOverflowConstraint.BarGeometry);
+    overflowConstraints.push(LabelOverflowConstraint.BarGeometry);
   }
   const displayValueSettings = {
     showValueLabel,
     isAlternatingValueLabel,
     isValueContainedInElement,
-    hideIfOverflows,
+    overflowConstraints,
   };
 
   const debug = boolean('debug', false);

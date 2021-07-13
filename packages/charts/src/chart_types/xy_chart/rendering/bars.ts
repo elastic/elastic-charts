@@ -150,7 +150,7 @@ export function renderBars(
       fontSize,
     );
     const overflowConstraints: Set<LabelOverflowConstraint> = new Set(
-      displayValueSettings?.hideIfOverflows ?? [
+      displayValueSettings?.overflowConstraints ?? [
         LabelOverflowConstraint.ChartEdges,
         LabelOverflowConstraint.BarGeometry,
       ],
