@@ -149,15 +149,13 @@ export function renderBars(
       fixedFontScale,
       fontSize,
     );
-    const hideIfOverflows: Set<LabelOverflowConstraint> = new Set(
+    const overflowConstraints: Set<LabelOverflowConstraint> = new Set(
       displayValueSettings?.hideIfOverflows ?? [
         LabelOverflowConstraint.ChartEdges,
         LabelOverflowConstraint.BarGeometry,
       ],
     );
 
-    const hideIfOverflowsChartEdges = hideIfOverflows.has(LabelOverflowConstraint.ChartEdges);
-    const hideIfOverflowsBarGeometry = hideIfOverflows.has(LabelOverflowConstraint.BarGeometry);
     // Based on rotation scale the width of the text box
     const bboxWidthFactor = isHorizontalRotation ? textScalingFactor : 1;
 
@@ -169,8 +167,7 @@ export function renderBars(
             text: displayValueText,
             width: bboxWidthFactor * displayValueWidth,
             height: textScalingFactor * fixedFontScale,
-            hideIfOverflowsChartEdges,
-            hideIfOverflowsBarGeometry,
+            overflowConstraints,
             isValueContainedInElement: displayValueSettings?.isValueContainedInElement ?? false,
           }
         : undefined;

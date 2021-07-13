@@ -20,6 +20,7 @@
 import { $Values } from 'utility-types';
 
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { LabelOverflowConstraint } from '../chart_types/xy_chart/utils/specs';
 import { Fill, Stroke } from '../geoms/types';
 import { Color } from './common';
 import { Dimensions } from './dimensions';
@@ -107,8 +108,7 @@ export interface BarGeometry {
     text: any;
     width: number;
     height: number;
-    hideIfOverflowsChartEdges: boolean;
-    hideIfOverflowsBarGeometry: boolean;
+    overflowConstraints: Set<LabelOverflowConstraint>;
     isValueContainedInElement: boolean;
   };
   seriesIdentifier: XYChartSeriesIdentifier;

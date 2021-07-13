@@ -26,6 +26,7 @@ import { Dimensions } from '../../../../../utils/dimensions';
 import { BarGeometry } from '../../../../../utils/geometry';
 import { Point } from '../../../../../utils/point';
 import { Theme, TextAlignment } from '../../../../../utils/themes/theme';
+import { LabelOverflowConstraint } from '../../../utils/specs';
 import { renderText, wrapLines } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
 import { withPanelTransform } from '../utils/panel_transform';
@@ -56,7 +57,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     if (!displayValue) {
       continue;
     }
-    const { text, fontSize, fontScale } = displayValue;
+    const { text, fontSize, fontScale, overflowConstraints, isValueContainedInElement } = displayValue;
     let textLines = {
       lines: [text],
       width: displayValue.width,
@@ -79,14 +80,14 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
       alignment,
     );
 
-    if (displayValue.isValueContainedInElement) {
+    if (isValueContainedInElement) {
       const width = rotation === 0 || rotation === 180 ? bars[i].width : bars[i].height;
       textLines = wrapLines(ctx, textLines.lines[0], font, fontSize, width, 100);
     }
-    if (displayValue.hideIfOverflowsChartEdges && isOverflow(rect, renderingArea, rotation)) {
+    if (overflowConstraints.has(LabelOverflowConstraint.ChartEdges) && isOverflow(rect, renderingArea, rotation)) {
       continue;
     }
-    if (displayValue.hideIfOverflowsBarGeometry && overflow) {
+    if (overflowConstraints.has(LabelOverflowConstraint.BarGeometry) && overflow) {
       continue;
     }
     if (debug) {
