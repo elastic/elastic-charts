@@ -7,9 +7,11 @@
  */
 
 import { GOLDEN_RATIO } from '../../../../common/constants';
+import { PointObject } from '../../../../common/geometry';
 import { cssFontShorthand, Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
-import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { Config } from '../../layout/types/config_types';
+import { BulletViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { GoalSubtype } from '../../specs/constants';
 
 // fixme turn these into config, or capitalize as constants
@@ -129,15 +131,7 @@ function get<T>(o: { [k: string]: any }, name: string, dflt: T) {
   return name in o ? o[name] || dflt : dflt;
 }
 
-/** @internal */
-export function renderCanvas2d(
-  ctx: CanvasRenderingContext2D,
-  dpr: number,
-  { config, bulletViewModel, chartCenter }: ShapeViewModel,
-) {
-  // eslint-disable-next-line no-empty-pattern
-  const {} = config;
-
+function extracted(bulletViewModel: BulletViewModel, config: Config, chartCenter: PointObject) {
   const {
     subtype,
     lowestValue,
@@ -356,6 +350,16 @@ export function renderCanvas2d(
         return new Section(x0, y0, x1, y1, lineWidth, strokeStyle);
       }
     });
+  return geomObjects;
+}
+
+/** @internal */
+export function renderCanvas2d(
+  ctx: CanvasRenderingContext2D,
+  dpr: number,
+  { config, bulletViewModel, chartCenter }: ShapeViewModel,
+) {
+  const geomObjects: (Text | Arc | Section)[] = extracted(bulletViewModel, config, chartCenter);
 
   withContext(ctx, (ctx) => {
     // set some defaults for the overall rendering
