@@ -10,7 +10,7 @@ import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { SortSeriesByConfig, TickFormatterOptions } from '../../../specs';
-import { Color, mergePartial } from '../../../utils/common';
+import { Color, MergeOptions, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
@@ -90,12 +90,13 @@ export function getLegendExtra(
 
 /** @internal */
 function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefined {
+  const mergeOptions: MergeOptions = { mergeOptionalPartialValues: true };
   if (isBubbleSeriesSpec(spec)) {
-    return mergePartial(theme.bubbleSeriesStyle.point, spec.bubbleSeriesStyle?.point);
+    return mergePartial(theme.bubbleSeriesStyle.point, spec.bubbleSeriesStyle?.point, mergeOptions);
   } else if (isLineSeriesSpec(spec)) {
-    return mergePartial(theme.lineSeriesStyle.point, spec.lineSeriesStyle?.point);
+    return mergePartial(theme.lineSeriesStyle.point, spec.lineSeriesStyle?.point, mergeOptions);
   } else if (isAreaSeriesSpec(spec)) {
-    return mergePartial(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point);
+    return mergePartial(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point, mergeOptions);
   }
 }
 
@@ -130,7 +131,6 @@ export function computeLegend(
     );
 
     const color = seriesColors.get(dataSeriesKey) || defaultColor;
-
     const hasSingleSeries = dataSeries.length === 1;
     const name = getSeriesName(series, hasSingleSeries, false, spec);
     const isSeriesHidden = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, series) >= 0 : false;

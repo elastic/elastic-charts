@@ -59,4 +59,6 @@ describe('Legend icons', () => {
   //   const legendIconWrapper = wrapperColorChange.find(LegendIcon);
   //   expect(new Array(legendIconWrapper.props).forEach((val: any) => val === 'stroke').color).toEqual('#ff1a1a');
   // });
+
+  // use specifies no shape, then it shouldn't pointStyles, just the color, access the pointStyles defaults built into it
 });

@@ -9,24 +9,28 @@
 import React from 'react';
 
 import { ShapeRendererFn } from '../../chart_types/xy_chart/renderer/shapes_paths';
-import { Color } from '../../utils/common';
-import { PointStyle } from '../../utils/themes/theme';
-import { Icon } from '../icons/icon';
+import { Color, isNil } from '../../utils/common';
+import { PointShape, PointStyle } from '../../utils/themes/theme';
 
 interface LegendIconProps {
   pointStyle?: PointStyle;
   color: Color;
 }
 
-const MARKER_SIZE = 16;
+const MARKER_SIZE = 12;
+
+// to limit size, set a min and max
+const getRatio = (radius: number | undefined, strokeWidth: number) =>
+  isNil(radius) ? strokeWidth : ((MARKER_SIZE / 2) * strokeWidth) / radius / 2;
+
 /** @internal */
 export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
-  if (!pointStyle || !pointStyle.shape) {
-    return <Icon type="dot" color={color} aria-label={`series color: ${color}`} />;
-  }
-  const { shape, fill, stroke, strokeWidth, opacity } = pointStyle;
-  const [shapeFn, rotation] = ShapeRendererFn[shape];
-  const adjustedSize = MARKER_SIZE - strokeWidth;
+  const { shape, fill, stroke, strokeWidth = 1, opacity, radius } = pointStyle ?? { radius: 4 };
+
+  const adjustedFill = shape ? fill ?? color : color;
+  const adjustedStrokeWidth = getRatio(radius, strokeWidth);
+  const [shapeFn, rotation] = ShapeRendererFn[shape ?? PointShape.Circle];
+  const adjustedSize = MARKER_SIZE - adjustedStrokeWidth;
   return (
     <svg height={MARKER_SIZE} width={MARKER_SIZE} aria-label={`series color: ${color}`}>
       <g
@@ -35,10 +39,10 @@ export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
             rotate(${rotation})`}
       >
         <path
-          d={shapeFn(shape === 'triangle' || shape === 'plus' || shape === 'x' ? adjustedSize / 2 : adjustedSize / 3)}
+          d={shapeFn(adjustedSize / 2)}
           stroke={stroke ?? color}
-          strokeWidth={strokeWidth}
-          fill={color || fill}
+          strokeWidth={adjustedStrokeWidth < 1.5 || adjustedStrokeWidth > radius * 2 ? 1.5 : adjustedStrokeWidth}
+          fill={adjustedFill}
           opacity={opacity}
         />
       </g>
