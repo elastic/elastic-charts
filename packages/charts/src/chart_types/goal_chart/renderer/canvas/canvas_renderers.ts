@@ -121,7 +121,6 @@ class Text {
     ctx.textAlign = this.textAlign;
     ctx.textBaseline = this.textBaseline;
     ctx.font = cssFontShorthand(this.fontShape, this.fontSize);
-    ctx.scale(1, -1);
     ctx.fillText(this.text, this.x, this.y);
   }
 }
@@ -336,24 +335,24 @@ export function renderCanvas2d(
         return new Text(x + chartCenter.x, y + chartCenter.y, text, textAlign, textBaseline, fontShape, fontSize);
       } else if (aes.shape === 'arc') {
         const cx = chartCenter.x + pxRangeMid;
-        const cy = -chartCenter.y;
+        const cy = chartCenter.y;
         const radius = at ? r + axisNormalOffset : r;
         const startAngle = at ? angleScale(data[at].value) + Math.PI / 360 : angleScale(data[from].value);
         const endAngle = at ? angleScale(data[at].value) - Math.PI / 360 : angleScale(data[to].value);
         // prettier-ignore
         const anticlockwise = at || clockwise === (data[from].value < data[to].value);
-        return new Arc(cx, cy, radius, startAngle, endAngle, anticlockwise, lineWidth, strokeStyle);
+        return new Arc(cx, cy, radius, -startAngle, -endAngle, !anticlockwise, lineWidth, strokeStyle);
       } else {
         // if (aes.shape === 'line')
         const translateX = chartCenter.x + (vertical ? axisNormalOffset : axisTangentOffset);
-        const translateY = -chartCenter.y + (vertical ? axisTangentOffset : axisNormalOffset);
+        const translateY = chartCenter.y - (vertical ? axisTangentOffset : axisNormalOffset);
         const atPx = data[at] && linearScale(data[at].value);
         const fromPx = at ? atPx - 1 : linearScale(data[from].value);
         const toPx = at ? atPx + 1 : linearScale(data[to].value);
         const x0 = vertical ? translateX : translateX + fromPx;
-        const y0 = vertical ? translateY + fromPx : translateY;
+        const y0 = vertical ? translateY - fromPx : translateY;
         const x1 = vertical ? translateX : translateX + toPx;
-        const y1 = vertical ? translateY + toPx : translateY;
+        const y1 = vertical ? translateY - toPx : translateY;
         return new Section(x0, y0, x1, y1, lineWidth, strokeStyle);
       }
     });
@@ -374,7 +373,6 @@ export function renderCanvas2d(
     // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
     // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
     // - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
-    ctx.scale(1, -1);
 
     renderLayers(ctx, [
       // clear the canvas
