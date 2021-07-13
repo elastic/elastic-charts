@@ -38,7 +38,7 @@ export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
           d={shapeFn(shape === 'triangle' || shape === 'plus' || shape === 'x' ? adjustedSize / 2 : adjustedSize / 3)}
           stroke={stroke ?? color}
           strokeWidth={strokeWidth}
-          fill={fill}
+          fill={color || fill}
           opacity={opacity}
         />
       </g>

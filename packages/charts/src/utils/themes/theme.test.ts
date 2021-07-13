@@ -16,7 +16,7 @@ import {
   mergeWithDefaultAnnotationRect,
   mergeWithDefaultTheme,
 } from './merge_utils';
-import { AreaSeriesStyle, LineSeriesStyle, PartialTheme, Theme } from './theme';
+import { AreaSeriesStyle, LineSeriesStyle, PartialTheme, PointShape, Theme } from './theme';
 
 describe('Theme', () => {
   let CLONED_LIGHT_THEME: Theme;
@@ -166,6 +166,7 @@ describe('Theme', () => {
         ...lineSeriesStyle,
         point: {
           ...lineSeriesStyle.point,
+          shape: PointShape.Circle,
         },
       });
       const customDarkTheme = mergeWithDefaultTheme(
@@ -178,6 +179,7 @@ describe('Theme', () => {
         ...lineSeriesStyle,
         point: {
           ...lineSeriesStyle.point,
+          shape: PointShape.Circle,
         },
       });
     });
@@ -211,6 +213,7 @@ describe('Theme', () => {
         ...areaSeriesStyle,
         point: {
           ...areaSeriesStyle.point,
+          shape: PointShape.Circle,
         },
       });
       const customDarkTheme = mergeWithDefaultTheme(
@@ -223,6 +226,7 @@ describe('Theme', () => {
         ...areaSeriesStyle,
         point: {
           ...areaSeriesStyle.point,
+          shape: PointShape.Circle,
         },
       });
     });
