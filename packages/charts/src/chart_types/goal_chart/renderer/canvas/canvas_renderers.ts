@@ -333,10 +333,10 @@ export function renderCanvas2d(
         const y = circular
           ? (label ? r : central ? 0 : -(r - GOLDEN_RATIO * barThickness) * Math.sin(scaledValue))
           : (vertical ? -axisTangentOffset - scaledValue : -axisNormalOffset);
-        return new Text(x, y, text, textAlign, textBaseline, fontShape, fontSize);
+        return new Text(x + chartCenter.x, y + chartCenter.y, text, textAlign, textBaseline, fontShape, fontSize);
       } else if (aes.shape === 'arc') {
-        const cx = pxRangeMid;
-        const cy = 0;
+        const cx = chartCenter.x + pxRangeMid;
+        const cy = -chartCenter.y;
         const radius = at ? r + axisNormalOffset : r;
         const startAngle = at ? angleScale(data[at].value) + Math.PI / 360 : angleScale(data[from].value);
         const endAngle = at ? angleScale(data[at].value) - Math.PI / 360 : angleScale(data[to].value);
@@ -345,8 +345,8 @@ export function renderCanvas2d(
         return new Arc(cx, cy, radius, startAngle, endAngle, anticlockwise, lineWidth, strokeStyle);
       } else {
         // if (aes.shape === 'line')
-        const translateX = vertical ? axisNormalOffset : axisTangentOffset;
-        const translateY = vertical ? axisTangentOffset : axisNormalOffset;
+        const translateX = chartCenter.x + (vertical ? axisNormalOffset : axisTangentOffset);
+        const translateY = -chartCenter.y + (vertical ? axisTangentOffset : axisNormalOffset);
         const atPx = data[at] && linearScale(data[at].value);
         const fromPx = at ? atPx - 1 : linearScale(data[from].value);
         const toPx = at ? atPx + 1 : linearScale(data[to].value);
@@ -371,7 +371,6 @@ export function renderCanvas2d(
     //         text rendering must be y-flipped, which is a bit easier this way
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.translate(chartCenter.x, chartCenter.y);
     // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
     // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
     // - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
