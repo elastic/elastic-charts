@@ -25,12 +25,14 @@ module.exports = {
     ...(isDryRun
       ? []
       : [
-          'semantic-release-slack-bot',
-          {
-            notifyOnSuccess: true,
-            notifyOnFail: true,
-            markdownReleaseNotes: true,
-          },
+          [
+            'semantic-release-slack-bot',
+            {
+              notifyOnSuccess: true,
+              notifyOnFail: true,
+              markdownReleaseNotes: true,
+            },
+          ],
         ]),
   ],
 };
