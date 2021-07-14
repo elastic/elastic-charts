@@ -17,13 +17,13 @@ interface LegendIconProps {
   color: Color;
 }
 
-const MARKER_SIZE = 12;
+const MARKER_SIZE = 8;
 
 // to limit size, set a min and max
 const getRatio = (radius: number | undefined, strokeWidth: number) => {
-  const adjustedRadius = isNil(radius) ? strokeWidth : ((MARKER_SIZE / 2) * strokeWidth) / radius / 2;
+  const adjustedRadius = isNil(radius) ? strokeWidth : ((MARKER_SIZE / 2) * strokeWidth) / (radius * 2);
   if (1.5 > adjustedRadius) return 1.5;
-  return Math.max(adjustedRadius, radius ?? strokeWidth * 2);
+  return Math.min(adjustedRadius, (radius ?? strokeWidth) * 2);
 };
 
 /** @internal */
@@ -35,16 +35,16 @@ export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
   const [shapeFn, rotation] = ShapeRendererFn[shape ?? PointShape.Circle];
   const adjustedSize = MARKER_SIZE - adjustedStrokeWidth;
   return (
-    <svg height={MARKER_SIZE} width={MARKER_SIZE} aria-label={`series color: ${color}`}>
+    <svg width={MARKER_SIZE * 2} height={MARKER_SIZE * 2} viewBox="0 0 16 16" aria-label={`series color: ${color}`}>
       <g
         transform={`
-            translate(${MARKER_SIZE / 2}, ${MARKER_SIZE / 2})
+            translate(${MARKER_SIZE}, ${MARKER_SIZE})
             rotate(${rotation})`}
       >
         <path
           d={pointStyle?.shape === PointShape.Diamond ? shapeFn(adjustedSize / 3) : shapeFn(adjustedSize / 2)}
           stroke={stroke ?? color}
-          strokeWidth={adjustedStrokeWidth < 1.5 || adjustedStrokeWidth > radius * 2 ? 1.5 : adjustedStrokeWidth}
+          strokeWidth={adjustedStrokeWidth}
           fill={adjustedFill}
           opacity={opacity}
         />

@@ -74,6 +74,7 @@ export const Example = () => {
         id="lines"
         lineSeriesStyle={{
           point: {
+            radius: 20,
             shape: shapeKnobLine,
             stroke: strokeKnobLine,
             fill: fillKnobLine,
