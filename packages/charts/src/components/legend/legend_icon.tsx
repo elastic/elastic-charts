@@ -42,7 +42,7 @@ export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
             rotate(${rotation})`}
       >
         <path
-          d={shapeFn(adjustedSize / 2)}
+          d={pointStyle?.shape === PointShape.Diamond ? shapeFn(adjustedSize / 3) : shapeFn(adjustedSize / 2)}
           stroke={stroke ?? color}
           strokeWidth={adjustedStrokeWidth < 1.5 || adjustedStrokeWidth > radius * 2 ? 1.5 : adjustedStrokeWidth}
           fill={adjustedFill}
