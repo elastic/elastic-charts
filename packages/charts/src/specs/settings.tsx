@@ -38,6 +38,7 @@ import {
   BinAgg,
   BrushAxis,
   DEFAULT_SETTINGS_SPEC,
+  DEFAULT_TOOLTIP_CONFIG,
   Direction,
   PointerEventType,
   PointerUpdateTrigger,
@@ -277,6 +278,12 @@ export type TooltipProps = TooltipPortalSettings<'chart'> & {
    * @defaultValue mousePosition
    */
   stickTo?: TooltipStickTo;
+
+  /**
+   * Show null values on the tooltip
+   * @defaultValue false
+   */
+  showNullValues?: boolean;
 };
 
 /**
@@ -731,6 +738,23 @@ export function getTooltipType(settings: SettingsSpec, externalTooltip = false):
     return tooltip.type || defaultType;
   }
   return defaultType;
+}
+
+/**
+ * Return snowNullValues or the default
+ * @internal
+ */
+export function getShowNullValues(settings: SettingsSpec): TooltipProps['showNullValues'] {
+  const { tooltip } = settings;
+  if (tooltip === undefined || tooltip === null) {
+    return DEFAULT_TOOLTIP_CONFIG.showNullValues;
+  }
+  if (isTooltipType(tooltip)) {
+    return DEFAULT_TOOLTIP_CONFIG.showNullValues;
+  }
+  if (isTooltipProps(tooltip)) {
+    return tooltip.showNullValues ?? DEFAULT_TOOLTIP_CONFIG.showNullValues;
+  }
 }
 
 /**
