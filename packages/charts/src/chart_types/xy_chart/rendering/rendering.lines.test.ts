@@ -374,10 +374,10 @@ describe('Rendering points - line', () => {
       ] = lines;
       // all the points minus the undefined ones on a log scale
       expect(points.length).toBe(7);
-      // all the points expect null geometries
-      expect(geometriesIndex.size).toEqual(8);
+      // all the points including null geometries
+      expect(geometriesIndex.size).toEqual(9);
       const nullIndexdGeometry = geometriesIndex.find(2)!;
-      expect(nullIndexdGeometry).toEqual([]);
+      expect(nullIndexdGeometry).toHaveLength(1);
 
       const zeroValueIndexdGeometry = geometriesIndex.find(5)!;
       expect(zeroValueIndexdGeometry).toBeDefined();
