@@ -161,7 +161,8 @@ export function renderCanvas2d(
                 y: xValue.y,
               },
               xValue.text,
-              config.xAxisLabel,
+              { ...config.xAxisLabel, align: 'left' },
+              90,
             );
           });
         }),

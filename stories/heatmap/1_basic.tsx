@@ -41,7 +41,7 @@ export const Example = () => {
   const persistCellsSelection = boolean('Persist cells selection', true);
   const debugState = boolean('Enable debug state', true);
   const dataStateAction = action('DataState');
-
+  const xAxisVisible = boolean('X Axis visible', true);
   const handler = useCallback(() => {
     setSelection(undefined);
   }, []);
@@ -52,7 +52,7 @@ export const Example = () => {
     () => ({
       grid: {
         cellHeight: {
-          min: 20,
+          min: 10,
         },
         stroke: {
           width: 1,
@@ -76,6 +76,7 @@ export const Example = () => {
         padding: { left: 10, right: 10 },
       },
       xAxisLabel: {
+        visible: xAxisVisible,
         formatter: (value: string | number) => {
           return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
         },
@@ -84,7 +85,7 @@ export const Example = () => {
         setSelection({ x: e.x, y: e.y });
       }) as Config['onBrushEnd'],
     }),
-    [],
+    [xAxisVisible],
   );
 
   const logDebugstate = debounce(() => {

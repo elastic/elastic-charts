@@ -17,11 +17,15 @@
  * under the License.
  */
 
+import { max as d3Max } from 'd3-array';
+
+import { Box, measureText } from '../../../../common/text_utils';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { isHorizontalLegend } from '../../../../utils/legend';
+// import { config } from '../../layout/config/config';
 import { Config } from '../../layout/types/config_types';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapTableSelector } from './get_heatmap_table';
@@ -47,19 +51,40 @@ export const getGridHeightParamsSelector = createCustomCachedSelector(
     legendSize,
     { showLegend },
     { height: containerHeight },
-    { xAxisLabel: { padding, visible, fontSize }, grid, maxLegendHeight },
-    { yValues },
+    config,
+    // { xAxisLabel: { padding, visible, fontSize, formatter }, grid, maxLegendHeight },
+    { table, yValues },
   ): GridHeightParams => {
-    const xAxisHeight = visible ? fontSize : 0;
-    const totalVerticalPadding = padding * 2;
+    // where the x axis height gets taken into account
+
+    // TODO - only do all of this when the x axis tick labels are rotated
+    const xValues = table.map((entry) => entry.x);
+    const formattedXValues = xValues.map(config.xAxisLabel.formatter);
+    const boxedXValues = formattedXValues.map<Box & { value: string | number }>((value) => {
+      return {
+        text: String(value),
+        value,
+        ...config.xAxisLabel,
+      };
+    });
+    // console.log('formattedXValues:', formattedXValues);
+    const textMeasurer = document.createElement('canvas');
+    const textMeasurerCtx = textMeasurer.getContext('2d');
+    const textMeasure = measureText(textMeasurerCtx!);
+
+    const measuredXValues = textMeasure(config.xAxisLabel.fontSize, boxedXValues);
+    const xAxisHeightMeasured: number = d3Max(measuredXValues, ({ width }) => width) ?? 0;
+    // const xAxisHeight = visible ? fontSize : 0;
+    const xAxisHeight = config.xAxisLabel.visible ? xAxisHeightMeasured : 0;
+    const totalVerticalPadding = config.xAxisLabel.padding * 2;
     let legendHeight = 0;
     if (showLegend && isHorizontalLegend(legendSize.position)) {
-      legendHeight = maxLegendHeight ?? legendSize.height;
+      legendHeight = config.maxLegendHeight ?? legendSize.height;
     }
     const verticalRemainingSpace = containerHeight - xAxisHeight - totalVerticalPadding - legendHeight;
 
     // compute the grid cell height
-    const gridCellHeight = getGridCellHeight(yValues, grid, verticalRemainingSpace);
+    const gridCellHeight = getGridCellHeight(yValues, config.grid, verticalRemainingSpace);
     const height = gridCellHeight * yValues.length;
 
     const pageSize =

@@ -68,14 +68,15 @@ function getValuesInRange(
 function getTicks(chartWidth: number, xAxisLabelConfig: Config['xAxisLabel']): number {
   const bboxCompute = new CanvasTextBBoxCalculator();
   const labelSample = xAxisLabelConfig.formatter(Date.now());
-  const { width } = bboxCompute.compute(
+  // TODO - use width or height depending on x axis tick label rotation
+  const { height } = bboxCompute.compute(
     labelSample,
     xAxisLabelConfig.padding,
     xAxisLabelConfig.fontSize,
     xAxisLabelConfig.fontFamily,
   );
   bboxCompute.destroy();
-  const maxTicks = Math.floor(chartWidth / width);
+  const maxTicks = Math.floor(chartWidth / height);
   // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
   // to many ticks creating nice rounded tick values
   // TODO add support for limiting the number of tick in {@link ScaleContinuous}
