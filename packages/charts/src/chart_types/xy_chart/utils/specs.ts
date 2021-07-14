@@ -374,17 +374,46 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 export type CustomXDomain = (DomainRange & Pick<LogScaleOptions, 'logBase'>) | OrdinalDomain;
 
 /** @public */
+export const LabelOverflowConstraint = Object.freeze({
+  BarGeometry: 'barGeometry' as const,
+  ChartEdges: 'chartEdges' as const,
+});
+
+/** @public */
+export type LabelOverflowConstraint = $Values<typeof LabelOverflowConstraint>;
+
+/** @public */
 export interface DisplayValueSpec {
-  /** Show value label in chart element */
+  /**
+   * Show value label in chart element
+   * @defaultValue false
+   */
   showValueLabel?: boolean;
-  /** If value labels are shown, skips every other label */
+  /**
+   * If value labels are shown, skips every other label
+   * @defaultValue false
+   */
   isAlternatingValueLabel?: boolean;
-  /** Function for formatting values; will use axis tickFormatter if none specified */
+  /**
+   * Function for formatting values; will use axis tickFormatter if none specified
+   * @defaultValue false
+   */
   valueFormatter?: TickFormatter;
-  /** If true will contain value label within element, else dimensions are computed based on value */
+  /**
+   * If true will contain value label within element, else dimensions are computed based on value
+   * @deprecated This feature is deprecated and will be removed. Wrapping numbers into multiple lines
+   * is not considered a good practice.
+   * @defaultValue false
+   */
   isValueContainedInElement?: boolean;
-  /** If true will hide values that are clipped at chart edges */
-  hideClippedValue?: boolean;
+
+  /**
+   * An option to hide the value label on certain conditions:
+   * - `barGeometry` the label is not rendered if the width/height overflows the associated bar geometry,
+   * - `chartEdges` the label is not rendered if it overflows the chart projection area.
+   * @defaultValue ['barGeometry', 'chartEdges']
+   */
+  overflowConstraints?: Array<LabelOverflowConstraint>;
 }
 
 /** @public */

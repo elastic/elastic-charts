@@ -645,9 +645,10 @@ export type Direction = $Values<typeof Direction>;
 
 // @public (undocumented)
 export interface DisplayValueSpec {
-    hideClippedValue?: boolean;
     isAlternatingValueLabel?: boolean;
+    // @deprecated
     isValueContainedInElement?: boolean;
+    overflowConstraints?: Array<LabelOverflowConstraint>;
     showValueLabel?: boolean;
     valueFormatter?: TickFormatter;
 }
@@ -1092,6 +1093,15 @@ export type Key = CategoryKey;
 
 // @public (undocumented)
 export type LabelAccessor = (value: PrimitiveValue) => string;
+
+// @public (undocumented)
+export const LabelOverflowConstraint: Readonly<{
+    BarGeometry: "barGeometry";
+    ChartEdges: "chartEdges";
+}>;
+
+// @public (undocumented)
+export type LabelOverflowConstraint = $Values<typeof LabelOverflowConstraint>;
 
 // @public (undocumented)
 export interface LayerValue {
