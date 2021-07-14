@@ -30,13 +30,11 @@ exports[`Chart should render the legend name test 1`] = `
                     <ForwardRef color=\\"#1EA593\\" seriesName=\\"test\\" isSeriesHidden={false} hasColorPicker={false} onClick={[undefined]} pointStyle={[undefined]}>
                       <div className=\\"echLegendItem__color\\" title=\\"series color\\">
                         <LegendIcon pointStyle={[undefined]} color=\\"#1EA593\\">
-                          <Icon type=\\"dot\\" color=\\"#1EA593\\" aria-label=\\"series color: #1EA593\\">
-                            <DotIcon className=\\"echIcon\\" color=\\"#1EA593\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"series color: #1EA593\\">
-                              <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"#1EA593\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"series color: #1EA593\\">
-                                <circle cx={8} cy={8} r={4} />
-                              </svg>
-                            </DotIcon>
-                          </Icon>
+                          <svg height={12} width={12} aria-label=\\"series color: #1EA593\\">
+                            <g transform=\\"\\\\n            translate(6, 6)\\\\n            rotate(0)\\">
+                              <path d=\\"M -5.625 0 a 5.625,5.625 0 1,0 11.25,0 a 5.625,5.625 0 1,0 -11.25,0\\" stroke=\\"#1EA593\\" strokeWidth={1.5} fill=\\"#1EA593\\" opacity={[undefined]} />
+                            </g>
+                          </svg>
                         </LegendIcon>
                       </div>
                     </ForwardRef>

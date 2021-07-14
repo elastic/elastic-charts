@@ -20,8 +20,11 @@ interface LegendIconProps {
 const MARKER_SIZE = 12;
 
 // to limit size, set a min and max
-const getRatio = (radius: number | undefined, strokeWidth: number) =>
-  isNil(radius) ? strokeWidth : ((MARKER_SIZE / 2) * strokeWidth) / radius / 2;
+const getRatio = (radius: number | undefined, strokeWidth: number) => {
+  const adjustedRadius = isNil(radius) ? strokeWidth : ((MARKER_SIZE / 2) * strokeWidth) / radius / 2;
+  if (1.5 > adjustedRadius) return 1.5;
+  return Math.max(adjustedRadius, radius ?? strokeWidth * 2);
+};
 
 /** @internal */
 export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
