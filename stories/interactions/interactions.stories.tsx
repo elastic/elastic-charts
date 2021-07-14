@@ -35,4 +35,5 @@ export { Example as brushDisabledOnOrdinalXAxis } from './13_brush_disabled_ordi
 export { Example as crosshairWithTimeAxis } from './14_crosshair_time';
 export { Example as renderChangeAction } from './15_render_change';
 export { Example as cursorUpdateAction } from './16_cursor_update_action';
+export { Example as interactionWithNullValues } from './18_null_values';
 export { Example as pngExportAction } from './17_png_export';
