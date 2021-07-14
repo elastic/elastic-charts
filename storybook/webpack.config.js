@@ -23,6 +23,7 @@ const CircularDependencyPlugin = require('circular-dependency-plugin');
 const webpack = require('webpack');
 
 const nonce = 'Pk1rZ1XDlMuYe8ubWV3Lh0BzwrTigJQ=';
+
 const scssLoaders = [
   {
     loader: 'css-loader',
@@ -49,6 +50,7 @@ module.exports = async ({ config }) => {
       VRT: process.env.VRT ?? null,
     }),
   );
+
   config.plugins.push(
     new CircularDependencyPlugin({
       onStart() {
@@ -82,8 +84,8 @@ module.exports = async ({ config }) => {
 
   config.module.rules.push({
     test: /\.tsx?$/,
-    include: [path.resolve(__dirname, '../stories/')],
-    exclude: [path.resolve(__dirname, '../stories/utils')],
+    include: [path.resolve(__dirname, './stories/')],
+    exclude: [path.resolve(__dirname, './stories/utils')],
     loaders: [
       {
         loader: require.resolve('@storybook/source-loader'),
@@ -95,6 +97,7 @@ module.exports = async ({ config }) => {
 
   // Replace default css rules with nonce
   config.module.rules = config.module.rules.filter((r) => !r?.test?.test?.('.css'));
+
   config.module.rules.push({
     test: /\.css$/,
     use: [
@@ -115,29 +118,11 @@ module.exports = async ({ config }) => {
 
   config.module.rules.push({
     test: /\.scss$/,
-    include: [path.resolve(__dirname, '../storybook'), path.resolve(__dirname, '../node_modules/@elastic')],
+    include: [path.resolve(__dirname, './'), path.resolve(__dirname, '../node_modules/@elastic')],
     use: [
       {
         loader: 'style-loader',
         options: {
-          attributes: {
-            nonce,
-          },
-        },
-      },
-      ...scssLoaders,
-    ],
-  });
-
-  // Used for lazy loaded scss files
-  config.module.rules.push({
-    test: /\.scss$/,
-    resourceQuery: /^\?lazy$/,
-    use: [
-      {
-        loader: 'style-loader',
-        options: {
-          injectType: 'lazyStyleTag',
           attributes: {
             nonce,
           },

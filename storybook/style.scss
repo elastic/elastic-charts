@@ -1,24 +1,38 @@
-@import '~@elastic/eui/src/theme_light';
+@import '~@elastic/eui/dist/eui_theme_light';
 
 html {
-  background-color: white;
+  .sb-show-main {
+    padding: 0 !important;
+  }
+
+  &.light-theme {
+    @import '~@elastic/eui/dist/eui_theme_light';
+    @import '~@elastic/charts/src/theme_light';
+
+    .echChart {
+      background: white;
+    }
+  }
+
+  &.dark-theme {
+    @import '~@elastic/eui/dist/eui_theme_dark';
+    @import '~@elastic/charts/src/theme_dark';
+
+    .echChart {
+      background: #1a1b20;
+    }
+  }
 }
 
-.story-chart {
-  box-sizing: border-box;
-  background: white;
-}
-
-.story-chart-dark {
-  box-sizing: border-box;
-  background: #1a1b20;
+.euiPageHeader {
+  margin-bottom: 0 !important;
 }
 
 .echInvisible {
   visibility: hidden;
 }
 
-#root {
+#story-wrapper {
   padding: 20px;
   width: 100%;
   height: 400px;

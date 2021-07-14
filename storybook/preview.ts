@@ -24,45 +24,12 @@ import { switchTheme } from './theme_service';
 import './style.scss';
 
 switchTheme('light');
-preloadIcons();
 
 if (process.env.VRT) {
   preloadIcons();
   document.querySelector('html')?.classList.add('disable-animations');
 }
 
-export const parameters = {
-  backgrounds: {
-    grid: {
-      disable: true,
-    },
-    values: [
-      {
-        name: 'Black',
-        value: '#000',
-      },
-      {
-        name: 'White',
-        value: '#fff',
-      },
-      {
-        name: 'Pink',
-        value: '#f04d9a',
-      },
-      {
-        name: 'Blue',
-        value: '#14abf5',
-      },
-      {
-        name: 'Yellow',
-        value: '#fec709',
-      },
-      {
-        name: 'Green',
-        value: '#00c1b4',
-      },
-    ],
-  },
-};
+export const parameters = {};
 
 export const decorators = [StoryWrapper];

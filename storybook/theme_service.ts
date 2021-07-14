@@ -17,22 +17,15 @@
  * under the License.
  */
 
-/* eslint-disable import/no-unresolved */
-// @ts-ignore
-import themeDark from '../packages/charts/src/theme_dark.scss?lazy';
-// @ts-ignore
-import themeLight from '../packages/charts/src/theme_light.scss?lazy';
-/* eslint-enable */
-
 export function switchTheme(theme: string) {
   switch (theme) {
     case 'light':
-      themeDark.unuse();
-      themeLight.use();
+      document.querySelector('html')?.classList.add('light-theme');
+      document.querySelector('html')?.classList.remove('dark-theme');
       return;
     case 'dark':
     default:
-      themeLight.unuse();
-      themeDark.use();
+      document.querySelector('html')?.classList.remove('light-theme');
+      document.querySelector('html')?.classList.add('dark-theme');
   }
 }

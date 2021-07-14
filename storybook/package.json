@@ -5,7 +5,6 @@
   "version": "0.0.1",
   "scripts": {
     "start": "yarn storybook",
-    "start-docs": "start-storybook -p 8001 -c storybook-docs --ci",
     "storybook": "VRT=true start-storybook -s ../public -p 9001 -c . --ci --no-version-updates",
     "storybook:build": "rm -rf .out && build-storybook -s ./public -c storybook -o .out",
     "typecheck": "tsc -p ./tsconfig.json --noEmit"
@@ -13,7 +12,7 @@
   "dependencies": {
     "@elastic/charts": "^30.2.0",
     "@elastic/datemath": "^5.0.3",
-    "@elastic/eui": "^30.2.0",
+    "@elastic/eui": "^34.6.0",
     "luxon": "^1.27.0",
     "moment-timezone": "^0.5.32",
     "moment": "^2.29.1",

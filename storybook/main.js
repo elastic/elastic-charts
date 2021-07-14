@@ -27,6 +27,7 @@ module.exports = {
         outline: false,
         controls: false,
         docs: false,
+        backgrounds: false,
       },
     },
     '@storybook/addon-knobs',
