@@ -72,12 +72,23 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
       horizontal ? 0 : -90,
     );
   }
-
-  renderText(
-    ctx,
-    { x: left + (horizontal ? width : font.fontSize) / 2, y: top + (horizontal ? font.fontSize : -height) / 2 },
-    title ?? '', // title is always a string due to caller; consider turning `title` to be obligate string upstream
-    font,
-    horizontal ? 0 : -90,
-  );
+  if (position === Position.Left) {
+    const textWidth = ctx.measureText(title ?? '').width;
+    renderText(
+      ctx,
+      { x: textWidth, y: font.fontSize },
+      title ?? '', // title is always a string due to caller; consider turning `title` to be obligate string upstream
+      font,
+      0,
+      // horizontal ? 0 : -90,
+    );
+  } else {
+    renderText(
+      ctx,
+      { x: left + (horizontal ? width : font.fontSize) / 2, y: top + (horizontal ? font.fontSize : -height) / 2 },
+      title ?? '', // title is always a string due to caller; consider turning `title` to be obligate string upstream
+      font,
+      horizontal ? 0 : -90,
+    );
+  }
 }

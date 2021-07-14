@@ -84,7 +84,7 @@ export function computeAxesSizes(
       default:
         axisMainSize.left += maxAxisWidth + chartMargins.left;
         // TODO use first and last labels
-        axisLabelOverflow.top = Math.max(axisLabelOverflow.top, maxLabelBboxHeight / 2);
+        axisLabelOverflow.top = 20; // Math.max(axisLabelOverflow.top, maxLabelBboxHeight / 2);
         axisLabelOverflow.bottom = Math.max(axisLabelOverflow.bottom, maxLabelBboxHeight / 2);
     }
   });

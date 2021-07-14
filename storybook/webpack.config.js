@@ -37,14 +37,15 @@ const scssLoaders = [
   'sass-loader',
 ];
 
-const MAX_CYCLES = 0;
+const MAX_CYCLES = 15;
 let numCyclesDetected = 0;
 
 module.exports = async ({ config }) => {
   config.plugins.push(
     new webpack.EnvironmentPlugin({
       RNG_SEED: null,
-      VRT: process.env.VRT ?? null,
+      VRT: true,
+      // VRT: process.env.VRT ?? null,
     }),
   );
   config.plugins.push(
