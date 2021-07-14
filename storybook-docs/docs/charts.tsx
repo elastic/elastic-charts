@@ -31,10 +31,11 @@ import {
   AnnotationDomainType,
   Axis,
   LineAnnotationDatum,
-} from '../packages/charts/src';
-import { Icon } from '../packages/charts/src/components/icons/icon';
-import { KIBANA_METRICS } from '../packages/charts/src/utils/data_samples/test_dataset_kibana';
-import { arrayKnobs, getChartRotationKnob } from '../storybook/stories/utils/knobs';
+} from '@elastic/charts';
+import { Icon } from '@elastic/charts/src/components/icons/icon';
+import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
+
+import { arrayKnobs, getChartRotationKnob } from '../../storybook/stories/utils/knobs';
 
 export default {
   title: 'Introduction',

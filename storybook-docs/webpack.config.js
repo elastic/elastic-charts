@@ -30,7 +30,9 @@ const scssLoaders = [
   {
     loader: 'postcss-loader',
     options: {
-      plugins: [require('autoprefixer')],
+      postcssOptions: {
+        plugins: [require('autoprefixer')],
+      },
     },
   },
   'sass-loader',
@@ -38,7 +40,8 @@ const scssLoaders = [
 
 module.exports = async ({ config }) => {
   // Replace default css rules with nonce
-  config.module.rules = config.module.rules.filter(({ test }) => !test.test('.css'));
+  config.module.rules = config.module.rules.filter((r) => !r?.test?.test?.('.css'));
+
   config.module.rules.push({
     test: /\.css$/,
     use: [
@@ -73,24 +76,6 @@ module.exports = async ({ config }) => {
     ],
   });
 
-  // Used for lazy loaded scss files
-  config.module.rules.push({
-    test: /\.scss$/,
-    resourceQuery: /^\?lazy$/,
-    use: [
-      {
-        loader: 'style-loader',
-        options: {
-          injectType: 'lazyStyleTag',
-          attributes: {
-            nonce,
-          },
-        },
-      },
-      ...scssLoaders,
-    ],
-  });
-
   config.module.rules.push({
     test: /\.(ts|tsx)$/,
     use: [
@@ -112,6 +97,7 @@ module.exports = async ({ config }) => {
       },
     ],
   });
+
   config.module.rules.push({
     test: /\.mdx$/,
     use: [
@@ -131,6 +117,10 @@ module.exports = async ({ config }) => {
   });
 
   config.resolve.extensions.push('.ts', '.tsx', '.mdx');
+
+  config.resolve.alias = {
+    '@elastic/charts': path.resolve(__dirname, '../packages/charts/'),
+  };
 
   return await config;
 };

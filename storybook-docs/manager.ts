@@ -17,7 +17,16 @@
  * under the License.
  */
 
-import '@storybook/addon-actions/register';
-import '@storybook/addon-knobs/register';
-import '@storybook/addon-docs/register';
-import '@storybook/addon-links/register';
+import { addons } from '@storybook/addons';
+import { create } from '@storybook/theming';
+
+addons.setConfig({
+  theme: create({
+    base: 'light',
+    brandTitle: 'Elastic Charts',
+    brandUrl: 'https://github.com/elastic/elastic-charts',
+    brandImage: 'logo-name.svg',
+  }),
+  panelPosition: 'right',
+  sidebarAnimations: true,
+});

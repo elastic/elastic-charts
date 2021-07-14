@@ -7,10 +7,10 @@
     "../**/*.d.ts",
     "../scripts/custom_matchers.ts"
   ],
+  "exclude": ["../**/*.test.*"],
   "compilerOptions": {
     "paths": {
-      "/@elastic/charts/*": ["../packages/charts/*"],
+      "/@elastic/charts/*": ["../packages/charts/*"]
     }
-  },
-  "exclude": ["../**/*.test.*"]
+  }
 }

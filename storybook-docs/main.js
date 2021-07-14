@@ -17,15 +17,23 @@
  * under the License.
  */
 
-export function switchTheme(theme: string) {
-  switch (theme) {
-    case 'light':
-      document.querySelector('html')?.classList.add('light-theme');
-      document.querySelector('html')?.classList.remove('dark-theme');
-      return;
-    case 'dark':
-    default:
-      document.querySelector('html')?.classList.remove('light-theme');
-      document.querySelector('html')?.classList.add('dark-theme');
-  }
-}
+module.exports = {
+  stories: ['./docs/**/*.ts', './docs/**/*.tsx', './docs/**/*.mdx'],
+  addons: [
+    {
+      name: '@storybook/addon-essentials',
+      options: {
+        viewport: false,
+        outline: false,
+        controls: false,
+        backgrounds: false,
+      },
+    },
+    '@storybook/addon-knobs',
+    '@storybook/addon-postcss',
+    '@storybook/addon-storysource',
+  ],
+  typescript: {
+    reactDocgen: 'react-docgen-typescript',
+  },
+};
