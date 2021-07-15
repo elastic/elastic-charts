@@ -25,15 +25,11 @@ export const GoalSemanticDescription = ({
   return bandLabels[0].text.length > 1 ? (
     <dl className="echScreenReaderOnly echGoalDescription" key={`goalChart--${labelId}`}>
       {bandLabels.map(({ value, text }, index) => {
+        if (firstValue === value) return;
         const prevValue = bandLabels[index - 1];
-        return prevValue !== undefined ? (
+        return (
           <Fragment key={`dtdd--${value}--${text[index]}`}>
-            <dt>{`${prevValue.value} - ${value}`}</dt>
-            <dd>{`${text[index]}`}</dd>
-          </Fragment>
-        ) : firstValue === value ? null : (
-          <Fragment key={`dtdd--${value}--${text[index]}`}>
-            <dt>{`${firstValue} - ${value}`}</dt>
+            <dt>{`${prevValue?.value ?? firstValue} - ${value}`}</dt>
             <dd>{`${text[index]}`}</dd>
           </Fragment>
         );
