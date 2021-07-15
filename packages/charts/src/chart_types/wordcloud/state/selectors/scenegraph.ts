@@ -19,6 +19,6 @@ export function render(spec: WordcloudSpec, parentDimensions: Dimensions): Shape
   const { width, height } = parentDimensions;
   const { config } = spec;
   const partialConfig: RecursivePartial<Config> = { ...config, width, height };
-  const cfg: Config = mergePartial(defaultConfig, partialConfig);
+  const cfg: Config = mergePartial(defaultConfig, partialConfig, { mergeOptionalPartialValues: true });
   return shapeViewModel(spec, cfg);
 }
