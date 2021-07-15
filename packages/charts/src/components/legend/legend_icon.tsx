@@ -19,23 +19,27 @@ interface LegendIconProps {
 
 const MARKER_SIZE = 8;
 
-// to limit size, set a min and max
-const getRatio = (radius: number | undefined, strokeWidth: number) => {
+/** to limit size, set a min and max */
+const getAdjustedRadius = (radius: number | undefined, strokeWidth: number) => {
   const adjustedRadius = isNil(radius) ? strokeWidth : ((MARKER_SIZE / 2) * strokeWidth) / (radius * 2);
-  if (1.5 > adjustedRadius) return 1.5;
-  return Math.min(adjustedRadius, (radius ?? strokeWidth) * 2);
+
+  return Math.max(Math.min(adjustedRadius, (radius ?? strokeWidth) * 2), 1);
 };
 
 /** @internal */
 export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
-  const { shape, fill, stroke, strokeWidth = 1, opacity, radius } = pointStyle ?? { radius: 4 };
+  const { radius = 4, fill, strokeWidth = 1, stroke, shape = PointShape.Circle, opacity = 1 } = pointStyle?.shape
+    ? pointStyle ?? {}
+    : {
+        fill: color,
+        stroke: color,
+      };
 
-  const adjustedFill = shape ? fill ?? color : color;
-  const adjustedStrokeWidth = getRatio(radius, strokeWidth);
-  const [shapeFn, rotation] = ShapeRendererFn[shape ?? PointShape.Circle];
+  const adjustedStrokeWidth = getAdjustedRadius(radius, strokeWidth);
+  const [shapeFn, rotation] = ShapeRendererFn[shape];
   const adjustedSize = MARKER_SIZE - adjustedStrokeWidth;
   return (
-    <svg width={MARKER_SIZE * 2} height={MARKER_SIZE * 2} viewBox="0 0 16 16" aria-label={`series color: ${color}`}>
+    <svg width={MARKER_SIZE * 2} height={MARKER_SIZE * 2} aria-label={`series color: ${color}`}>
       <g
         transform={`
             translate(${MARKER_SIZE}, ${MARKER_SIZE})
@@ -43,9 +47,9 @@ export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
       >
         <path
           d={pointStyle?.shape === PointShape.Diamond ? shapeFn(adjustedSize / 3) : shapeFn(adjustedSize / 2)}
-          stroke={stroke ?? color}
+          stroke={shape ? stroke ?? color : undefined}
           strokeWidth={adjustedStrokeWidth}
-          fill={adjustedFill}
+          fill={fill}
           opacity={opacity}
         />
       </g>
