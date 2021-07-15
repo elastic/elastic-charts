@@ -17,6 +17,7 @@ import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp } from '../../../../utils/common';
+import { snapDateToInterval } from '../../../../utils/data/date_time';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
@@ -122,10 +123,11 @@ export function shapeViewModel(
 
   if (timeScale) {
     const result = [];
-    let [timePoint] = xValues;
-    while (timePoint < xValues[1]) {
-      result.push(timePoint);
-      timePoint += xDomain.minInterval;
+    const [timePoint] = xValues;
+    let startDomainPoint = snapDateToInterval(timePoint, 'fixed', `${xDomain.minInterval}ms`, 'start');
+    while (startDomainPoint < xValues[1]) {
+      result.push(startDomainPoint);
+      startDomainPoint += xDomain.minInterval;
     }
 
     xValues = result;
