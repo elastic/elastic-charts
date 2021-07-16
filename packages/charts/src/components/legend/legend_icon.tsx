@@ -28,11 +28,17 @@ const getAdjustedRadius = (radius: number | undefined, strokeWidth: number) => {
 
 /** @internal */
 export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
-  const { radius = 4, fill, strokeWidth = 1, stroke, shape = PointShape.Circle, opacity = 1 } = pointStyle?.shape
+  const {
+    radius = 4,
+    fill,
+    strokeWidth = 1,
+    stroke = color,
+    shape = PointShape.Circle,
+    opacity = 1,
+  } = pointStyle?.shape
     ? pointStyle ?? {}
     : {
         fill: color,
-        stroke: color,
       };
 
   const adjustedStrokeWidth = getAdjustedRadius(radius, strokeWidth);
