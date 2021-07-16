@@ -93,7 +93,7 @@ const ScreenReaderPartitionTableComponent = ({
                 <tr key={`row--${index}`} ref={rowLimit === index ? tableRowRef : undefined} tabIndex={-1}>
                   {isSmallMultiple && <td>{panelTitle}</td>}
                   {hasMultipleLayers && <td>{depth}</td>}
-                  <th>{label}</th>
+                  <th scope="row">{label}</th>
                   {hasMultipleLayers && <td>{parentName}</td>}
                   <td>{valueText}</td>
                   <td>{percentage}</td>

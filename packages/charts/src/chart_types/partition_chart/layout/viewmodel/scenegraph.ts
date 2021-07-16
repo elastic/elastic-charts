@@ -49,7 +49,7 @@ export function getShapeViewModel(
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
   const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
-  const config: Config = mergePartial(defaultConfig, partialConfig);
+  const config: Config = mergePartial(defaultConfig, partialConfig, { mergeOptionalPartialValues: true });
   if (!textMeasurerCtx) {
     return nullShapeViewModel(config, { x: width / 2, y: height / 2 });
   }
