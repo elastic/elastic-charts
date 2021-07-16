@@ -22,7 +22,7 @@ export const GoalSemanticDescription = ({
   labelId,
   firstValue,
 }: A11ySettings & GoalSemanticDescriptionProps) => {
-  return bandLabels[0].text.length > 1 ? (
+  return bandLabels[0] && bandLabels[0].text.length > 1 ? (
     <dl className="echScreenReaderOnly echGoalDescription" key={`goalChart--${labelId}`}>
       {bandLabels.map(({ value, text }, index) => {
         if (firstValue === value) return;
