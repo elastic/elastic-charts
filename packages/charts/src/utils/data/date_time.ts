@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { unitOfTime } from 'moment';
 import moment from 'moment-timezone';
+
+import { TimeMs } from '../../common/geometry';
 
 /** @internal */
 export function getMomentWithTz(date: number | Date, timeZone?: string) {
@@ -21,83 +22,96 @@ export function getMomentWithTz(date: number | Date, timeZone?: string) {
 }
 
 /** @internal */
-export type UnixTimestamp = number;
+export type UnixTimestamp = TimeMs;
+
+type CalendarIntervalUnit =
+  | 'minute'
+  | 'm'
+  | 'hour'
+  | 'h'
+  | 'day'
+  | 'd'
+  | 'week'
+  | 'w'
+  | 'month'
+  | 'M'
+  | 'quarter'
+  | 'q'
+  | 'year'
+  | 'y';
+
+type FixedIntervalUnit = 'ms' | 's' | 'm' | 'h' | 'd';
+
+const FIXED_UNIT_TO_BASE: Record<FixedIntervalUnit, TimeMs> = {
+  ms: 1,
+  s: 1000,
+  m: 1000 * 60,
+  h: 1000 * 60 * 60,
+  d: 1000 * 60 * 60 * 24,
+};
+
+/** @internal */
+export type CalendarInterval = {
+  type: 'calendar';
+  unit: CalendarIntervalUnit;
+  quantity: number;
+};
+/** @internal */
+export type FixedInterval = {
+  type: 'fixed';
+  unit: FixedIntervalUnit;
+  quantity: number;
+};
+function isCalendarInterval(interval: CalendarInterval | FixedInterval): interval is CalendarInterval {
+  return interval.type === 'calendar';
+}
 
 /** @internal */
 export function snapDateToInterval(
   date: number | Date,
-  interval: 'calendar' | 'fixed',
-  unit: string,
+  interval: CalendarInterval | FixedInterval,
   snapTo: 'start' | 'end',
   timeZone?: string,
 ): UnixTimestamp {
   const momentDate = getMomentWithTz(date, timeZone);
-
-  return interval === 'calendar'
-    ? calendarIntervalSnap(momentDate, unit, snapTo).valueOf()
-    : fixedIntervalSnap(momentDate, unit, snapTo).valueOf();
+  return isCalendarInterval(interval)
+    ? calendarIntervalSnap(momentDate, interval, snapTo).valueOf()
+    : fixedIntervalSnap(momentDate, interval, snapTo).valueOf();
 }
 
-function calendarIntervalSnap(date: moment.Moment, unit: string, snapTo: 'start' | 'end') {
-  const momentUnitName = esCalendarIntervalsToMoment(unit);
-  if (!momentUnitName) {
-    return date;
-  }
+function calendarIntervalSnap(date: moment.Moment, interval: CalendarInterval, snapTo: 'start' | 'end') {
+  const momentUnitName = esCalendarIntervalsToMoment(interval);
   return snapTo === 'start' ? date.startOf(momentUnitName) : date.endOf(momentUnitName);
 }
-function fixedIntervalSnap(date: moment.Moment, unit: string, snapTo: 'start' | 'end') {
-  const unitMultiplier = esFixedIntervalsToMomentUnit(unit);
-  if (isNaN(unitMultiplier)) {
-    return date;
-  }
-
+function fixedIntervalSnap(date: moment.Moment, interval: FixedInterval, snapTo: 'start' | 'end') {
+  const unitMultiplier = interval.quantity * FIXED_UNIT_TO_BASE[interval.unit];
   const roundedDate = Math.floor(date.valueOf() / unitMultiplier) * unitMultiplier;
   return snapTo === 'start' ? roundedDate : roundedDate + unitMultiplier - 1;
 }
 
-function esFixedIntervalsToMomentUnit(unit: string): number {
-  if (unit.endsWith('ms')) {
-    return getNumericalUnit(unit, 'ms');
-  }
-  if (unit.endsWith('s')) {
-    return getNumericalUnit(unit, 's') * 1000;
-  }
-  if (unit.endsWith('m')) {
-    return getNumericalUnit(unit, 'm') * 1000 * 60;
-  }
-  if (unit.endsWith('h')) {
-    return getNumericalUnit(unit, 'h') * 1000 * 60 * 60;
-  }
-  if (unit.endsWith('d')) {
-    return getNumericalUnit(unit, 'd') * 1000 * 60 * 60 * 24;
-  }
-  return NaN;
-}
-
-function getNumericalUnit(unit: string, intervalLabel: string) {
-  return Number.parseFloat(unit.slice(0, unit.indexOf(intervalLabel)));
-}
-
-function esCalendarIntervalsToMoment(unit: string): unitOfTime.StartOf | undefined {
-  if (unit === 'minute' || unit === '1m') {
-    return 'minutes';
-  }
-  if (unit === 'hour' || unit === '1h') {
-    return 'hour';
-  }
-  if (unit === 'day' || unit === '1d') {
-    return 'day';
-  }
-  if (unit === 'week' || unit === '1w') {
-    return 'week';
-  }
-  if (unit === 'month' || unit === '1M') {
-    return 'month';
-  }
-  if (unit === 'quarter' || unit === '1q') {
-    return 'quarter';
-  }
-  if (unit === 'year' || unit === '1y') {
-    return 'year';
+function esCalendarIntervalsToMoment(interval: CalendarInterval): moment.unitOfTime.StartOf {
+  // eslint-disable-next-line default-case
+  switch (interval.unit) {
+    case 'minute':
+    case 'm':
+      return 'minutes';
+    case 'hour':
+    case 'h':
+      return 'hour';
+    case 'day':
+    case 'd':
+      return 'day';
+    case 'week':
+    case 'w':
+      return 'week';
+    case 'month':
+    case 'M':
+      return 'month';
+    case 'quarter':
+    case 'q':
+      return 'quarter';
+    case 'year':
+    case 'y':
+      return 'year';
   }
 }

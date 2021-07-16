@@ -16,7 +16,7 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp } from '../../../../utils/common';
+import { clamp, range } from '../../../../utils/common';
 import { snapDateToInterval } from '../../../../utils/data/date_time';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
@@ -102,9 +102,6 @@ export function shapeViewModel(
 
   const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, height]).range(yValues);
 
-  // TODO: Fix domain type to be `Array<number | string>`
-  let xValues = xDomain.domain as any[];
-
   const timeScale =
     xDomain.type === ScaleType.Time
       ? new ScaleContinuous(
@@ -121,18 +118,17 @@ export function shapeViewModel(
         )
       : null;
 
-  if (timeScale) {
-    const result = [];
-    const [timePoint] = xValues;
-    let startDomainPoint = snapDateToInterval(timePoint, 'fixed', `${xDomain.minInterval}ms`, 'start');
-    while (startDomainPoint < xValues[1]) {
-      result.push(startDomainPoint);
-      startDomainPoint += xDomain.minInterval;
-    }
-
-    xValues = result;
-  }
-
+  const xValues = timeScale
+    ? range(
+        snapDateToInterval(
+          xDomain.domain[0] as number,
+          { type: 'fixed', unit: 'ms', quantity: xDomain.minInterval },
+          'start',
+        ),
+        xDomain.domain[1] as number,
+        xDomain.minInterval,
+      )
+    : xDomain.domain;
   // compute the scale for the columns positions
   const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, chartDimensions.width]);
 
@@ -300,8 +296,12 @@ export function shapeViewModel(
     const endValue = x[x.length - 1];
 
     // find X coordinated based on the time range
-    const leftIndex = typeof startValue === 'number' ? bisectLeft(xValues, startValue) : xValues.indexOf(startValue);
-    const rightIndex = typeof endValue === 'number' ? bisectLeft(xValues, endValue) : xValues.indexOf(endValue) + 1;
+    // the xValues array is casted as any because the slight incompatible type of d3 bisect.
+    // it works anyway without problems also if the data is a mix of string and numbers
+    const leftIndex =
+      typeof startValue === 'number' ? bisectLeft(xValues as any, startValue) : xValues.indexOf(startValue);
+    const rightIndex =
+      typeof endValue === 'number' ? bisectLeft(xValues as any, endValue) : xValues.indexOf(endValue) + 1;
 
     const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
