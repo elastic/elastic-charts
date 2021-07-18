@@ -22,7 +22,7 @@ import { Point } from '../../../../../utils/point';
 import { AxisStyle } from '../../../../../utils/themes/theme';
 import { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
 import { AxisTick, AxisViewModel, shouldShowTicks } from '../../../utils/axis_utils';
-import { AxisSpec } from '../../../utils/specs';
+import { AxisSpec, TitlePosition } from '../../../utils/specs';
 import { renderAxisLine } from './line';
 import { renderTick } from './tick';
 import { renderTickLabel } from './tick_label';
@@ -30,6 +30,7 @@ import { renderTickLabel } from './tick_label';
 /** @internal */
 export interface AxisProps {
   panelTitle?: string | undefined;
+  titlePosition?: TitlePosition;
   secondary?: boolean;
   panelAnchor: Point;
   axisStyle: AxisStyle;

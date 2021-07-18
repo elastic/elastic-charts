@@ -739,6 +739,12 @@ export interface AxisSpec extends Spec {
   ticks?: number;
   /** The axis title */
   title?: string;
+  /**
+   * The position of the title, top only has any effect on vertical
+   * axes where it puts the title above the ticks.
+   * @defaultValue 'middle'
+   */
+  titlePosition?: TitlePosition;
   /** Custom style overrides */
   style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
   /** If specified, it constrains the domain for these values */
@@ -759,6 +765,9 @@ export type TickFormatterOptions = {
 
 /** @public */
 export type TickFormatter<V = any> = (value: V, options?: TickFormatterOptions) => string;
+
+/** @public */
+export type TitlePosition = 'middle' | 'top';
 
 /** @public */
 export const AnnotationType = Object.freeze({

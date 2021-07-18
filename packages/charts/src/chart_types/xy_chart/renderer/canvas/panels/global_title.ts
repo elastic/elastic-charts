@@ -27,7 +27,10 @@ import { renderText } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
 import { getFontStyle } from './panel_title';
 
-type TitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'> & {
+type TitleProps = Pick<
+  AxisProps,
+  'panelTitle' | 'titlePosition' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'
+> & {
   anchorPoint: Point;
 };
 
@@ -39,7 +42,7 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
 
   const {
     size: { width, height },
-    axisSpec: { position, hide: hideAxis, title },
+    axisSpec: { position, hide: hideAxis, title, titlePosition },
     dimension: { maxLabelBboxWidth, maxLabelBboxHeight },
     axisStyle: { axisTitle, axisPanelTitle, tickLine, tickLabel },
     anchorPoint,
@@ -53,32 +56,33 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const labelPadding = getSimplePadding(tickLabel.padding);
   const horizontal = isHorizontalAxis(props.axisSpec.position);
+  const isTop = titlePosition === 'top';
   const maxLabelBoxSize = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
   const labelSize = tickLabel.visible ? maxLabelBoxSize + labelPadding.outer + labelPadding.inner : 0;
   const offset =
     position === Position.Left || position === Position.Top
       ? titlePadding.outer
-      : labelSize + tickDimension + titlePadding.inner + panelTitleDimension;
+      : labelSize + tickDimension + titlePadding.inner + panelTitleDimension; // the amount that the text is pushed in from the top of the text
 
   const left = anchorPoint.x + (horizontal ? 0 : offset);
-  const top = anchorPoint.y + (horizontal ? offset : height);
+  const top = anchorPoint.y + (horizontal ? offset : isTop ? font.fontSize - anchorPoint.y : height);
 
   if (debug) {
+    const textWidth = ctx.measureText(title ?? '').width;
     renderDebugRect(
       ctx,
-      { x: left, y: top, width: horizontal ? width : height, height: font.fontSize },
+      { x: left, y: top, width: horizontal ? width : isTop ? textWidth : height, height: font.fontSize },
       undefined,
       undefined,
-      horizontal ? 0 : -90,
+      horizontal || isTop ? 0 : -90,
     );
   }
-  if (position === Position.Left) {
-    const textWidth = ctx.measureText(title ?? '').width;
+  if (position === Position.Left && titlePosition === 'top') {
     renderText(
       ctx,
-      { x: textWidth, y: font.fontSize },
+      { x: left, y: top + font.fontSize / 2 },
       title ?? '', // title is always a string due to caller; consider turning `title` to be obligate string upstream
-      font,
+      { ...font, align: 'left' },
       0,
       // horizontal ? 0 : -90,
     );

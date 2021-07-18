@@ -72,7 +72,13 @@ export const Example = () => {
         rotation={select('rotation', { 0: 0, 90: 90, '-90': -90, 180: 180 }, 0)}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
-      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+      <Axis
+        id="left2"
+        title="Left axis"
+        position={Position.Left}
+        tickFormat={(d) => Number(d).toFixed(2)}
+        titlePosition={select('title position', { top: 'top', middle: 'middle' }, 'top')}
+      />
 
       <BarSeries
         id="bars"

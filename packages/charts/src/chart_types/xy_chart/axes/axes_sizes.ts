@@ -47,12 +47,13 @@ export function computeAxesSizes(
     }
     const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(id) ?? sharedAxesStyles;
     const showTicks = shouldShowTicks(tickLine, axisSpec.hide);
-    const { position, title } = axisSpec;
+    const { position, title, titlePosition } = axisSpec;
     const labelPadding = getSimplePadding(tickLabel.padding);
     const labelPaddingSum = tickLabel.visible ? labelPadding.inner + labelPadding.outer : 0;
 
     const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
-    const titleDimension = title ? getTitleDimension(axisTitle) : 0;
+    // only give the title space on the left if it's in the middle of the axis
+    const titleDimension = title && titlePosition !== 'top' ? getTitleDimension(axisTitle) : 0;
     const hasPanelTitle = Boolean(isVerticalAxis(position) ? smSpec?.splitVertically : smSpec?.splitHorizontally);
     const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
     const axisDimension = labelPaddingSum + tickDimension + titleDimension + panelTitleDimension;
