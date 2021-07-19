@@ -51,7 +51,6 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
   if (!initialized || dragShape === null) return null;
 
   const maskId = `echHighlighterMask__${chartId}`;
-
   return (
     <svg className="echHighlighter" width="100%" height="100%">
       <defs>
@@ -59,7 +58,7 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
           {brushMask.visible && (
             <rect
               x={0}
-              y={0}
+              y={canvasDimension.top}
               width={canvasDimension.width + canvasDimension.left}
               height={canvasDimension.height}
               fill="#eee"
@@ -89,7 +88,7 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
         {brushMask.visible && (
           <rect
             x={0}
-            y={0}
+            y={canvasDimension.top}
             width={canvasDimension.width + canvasDimension.left}
             height={canvasDimension.height}
             mask={`url(#${maskId})`}

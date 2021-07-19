@@ -36,7 +36,7 @@ export const getTooltipAnchorSelector = createCustomCachedSelector(
       return {
         x: firstShape.x + chartDimensions.left,
         width: firstShape.width,
-        y: firstShape.y - chartDimensions.top,
+        y: firstShape.y + chartDimensions.top,
         height: firstShape.height,
       };
     }

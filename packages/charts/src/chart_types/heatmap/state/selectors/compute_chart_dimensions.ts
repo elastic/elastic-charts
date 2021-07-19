@@ -65,11 +65,11 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     heatmapTable,
     config,
     rightOverflow,
-    { height },
+    { height, gridCellHeight, pageSize },
     { showLegend, legendPosition },
   ): Dimensions => {
     let { width, left } = chartContainerDimensions;
-    const { top } = chartContainerDimensions;
+    let { top } = chartContainerDimensions;
     const { padding } = config.yAxisLabel;
 
     const textMeasurer = document.createElement('canvas');
@@ -105,6 +105,11 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
       legendWidth = legendSize.width - legendSize.margin * 2;
     }
     width -= legendWidth;
+
+    if (config.xAxisLabel.position === 'top') {
+      // move the top down to make space for the x axis labels
+      top = chartContainerDimensions.height - gridCellHeight * pageSize - legendSize.height;
+    }
 
     return {
       height,

@@ -69,14 +69,14 @@ function getTicks(chartWidth: number, xAxisLabelConfig: Config['xAxisLabel']): n
   const bboxCompute = new CanvasTextBBoxCalculator();
   const labelSample = xAxisLabelConfig.formatter(Date.now());
   // TODO - use width or height depending on x axis tick label rotation
-  const { height } = bboxCompute.compute(
+  const { width, height } = bboxCompute.compute(
     labelSample,
     xAxisLabelConfig.padding,
     xAxisLabelConfig.fontSize,
     xAxisLabelConfig.fontFamily,
   );
   bboxCompute.destroy();
-  const maxTicks = Math.floor(chartWidth / height);
+  const maxTicks = Math.floor(chartWidth / (Math.abs(xAxisLabelConfig.labelRotation) === 90 ? height : width));
   // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
   // to many ticks creating nice rounded tick values
   // TODO add support for limiting the number of tick in {@link ScaleContinuous}
@@ -168,7 +168,10 @@ export function shapeViewModel(
       value,
       ...config.xAxisLabel,
       x: chartDimensions.left + (scaleCallback(value) || 0),
-      y: cellHeight * pageSize + config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
+      y:
+        (config.xAxisLabel.position === 'top' ? 0 : cellHeight * pageSize) +
+        config.xAxisLabel.fontSize / 2 +
+        config.xAxisLabel.padding,
     };
   };
 
@@ -191,7 +194,7 @@ export function shapeViewModel(
       ...d,
       // position of the Y labels
       x: chartDimensions.left - rightPadding,
-      y: cellHeight / 2 + (yScale(d.value) || 0),
+      y: chartDimensions.top + (cellHeight / 2 + (yScale(d.value) || 0)),
     };
   });
 
@@ -249,7 +252,7 @@ export function shapeViewModel(
       return [];
     }
     const xValue = xInvertedScale(x - chartDimensions.left);
-    const yValue = yInvertedScale(y);
+    const yValue = yInvertedScale(y - chartDimensions.top);
     if (xValue === undefined || yValue === undefined) {
       return [];
     }
@@ -275,6 +278,14 @@ export function shapeViewModel(
     const endX = xInvertedScale(clamp(bottomRight[0], 0, width));
     const startY = yInvertedScale(clamp(topLeft[1], 0, currentGridHeight - 1));
     const endY = yInvertedScale(clamp(bottomRight[1], 0, currentGridHeight - 1));
+
+    // console.log('pickDragArea');
+    // console.log('start:', start);
+    // console.log('end:', end);
+    // console.log('topLeft:', topLeft);
+    // console.log('bottomRight:', bottomRight);
+    // console.log('startY:', startY);
+    // console.log('endY:', endY);
 
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
@@ -343,7 +354,7 @@ export function shapeViewModel(
       );
     return {
       x: xStart,
-      y: yStart,
+      y: yStart + chartDimensions.top,
       width,
       height: totalHeight,
     };
@@ -362,13 +373,13 @@ export function shapeViewModel(
   for (let i = 0; i < xValues.length + 1; i++) {
     const x = chartDimensions.left + i * cellWidth;
     const y1 = chartDimensions.top;
-    const y2 = cellHeight * pageSize;
+    const y2 = y1 + cellHeight * pageSize;
     xLines.push({ x1: x, y1, x2: x, y2 });
   }
   // horizontal lines
   const yLines = [];
   for (let i = 0; i < pageSize + 1; i++) {
-    const y = i * cellHeight;
+    const y = chartDimensions.top + i * cellHeight;
     yLines.push({ x1: chartDimensions.left, y1: y, x2: chartDimensions.width + chartDimensions.left, y2: y });
   }
 

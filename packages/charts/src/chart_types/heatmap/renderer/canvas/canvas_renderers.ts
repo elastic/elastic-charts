@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Font } from '../../../../common/text_utils';
+import { Font, TextAlign } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
@@ -153,6 +153,13 @@ export function renderCanvas2d(
           if (!config.xAxisLabel.visible) {
             return;
           }
+          const labelRot = config.xAxisLabel.labelRotation;
+          let textAlign: TextAlign = 'center';
+          if (labelRot === 90) {
+            textAlign = 'left';
+          } else if (labelRot === -90) {
+            textAlign = 'right';
+          }
           heatmapViewModel.xValues.forEach((xValue) => {
             renderText(
               ctx,
@@ -161,8 +168,8 @@ export function renderCanvas2d(
                 y: xValue.y,
               },
               xValue.text,
-              { ...config.xAxisLabel, align: 'left' },
-              90,
+              { ...config.xAxisLabel, align: textAlign },
+              config.xAxisLabel.labelRotation,
             );
           });
         }),

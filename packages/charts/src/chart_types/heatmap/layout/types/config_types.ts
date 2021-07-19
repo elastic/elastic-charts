@@ -19,7 +19,7 @@
 
 import { Pixels, SizeRatio } from '../../../../common/geometry';
 import { Font, FontFamily, TextAlign, TextBaseline } from '../../../../common/text_utils';
-import { Color } from '../../../../utils/common';
+import { Color, Rotation } from '../../../../utils/common';
 import { Cell } from './viewmodel_types';
 
 /**
@@ -64,6 +64,8 @@ export interface Config {
     baseline: TextBaseline;
     visible: boolean;
     padding: number;
+    labelRotation: Rotation;
+    position: 'top' | 'bottom';
     formatter: (value: string | number) => string;
   };
   yAxisLabel: Font & {

@@ -18,7 +18,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, button } from '@storybook/addon-knobs';
+import { boolean, button, select } from '@storybook/addon-knobs';
 import React, { useCallback, useMemo, useState } from 'react';
 import { debounce } from 'ts-debounce';
 
@@ -42,6 +42,9 @@ export const Example = () => {
   const debugState = boolean('Enable debug state', true);
   const dataStateAction = action('DataState');
   const xAxisVisible = boolean('X Axis visible', true);
+  const xAxisLabelRotation = select('X Axis Label Rotation', [0, 90, -90, 180], 0);
+  const xAxisPosition = select('X Axis Position', ['top', 'bottom'], 'top');
+  const showLegend = boolean('Show Legend', false);
   const handler = useCallback(() => {
     setSelection(undefined);
   }, []);
@@ -77,6 +80,8 @@ export const Example = () => {
       },
       xAxisLabel: {
         visible: xAxisVisible,
+        labelRotation: xAxisLabelRotation,
+        position: xAxisPosition,
         formatter: (value: string | number) => {
           return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
         },
@@ -85,7 +90,7 @@ export const Example = () => {
         setSelection({ x: e.x, y: e.y });
       }) as Config['onBrushEnd'],
     }),
-    [xAxisVisible],
+    [xAxisVisible, xAxisLabelRotation, xAxisPosition],
   );
 
   const logDebugstate = debounce(() => {
@@ -113,7 +118,7 @@ export const Example = () => {
       <Settings
         onElementClick={onElementClick}
         onRenderChange={logDebugstate}
-        showLegend
+        showLegend={showLegend}
         legendPosition="top"
         onBrushEnd={action('onBrushEnd')}
         brushAxis="both"

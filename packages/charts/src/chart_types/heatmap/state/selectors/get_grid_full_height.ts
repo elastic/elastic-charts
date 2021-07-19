@@ -58,24 +58,32 @@ export const getGridHeightParamsSelector = createCustomCachedSelector(
     // where the x axis height gets taken into account
 
     // TODO - only do all of this when the x axis tick labels are rotated
-    const xValues = table.map((entry) => entry.x);
-    const formattedXValues = xValues.map(config.xAxisLabel.formatter);
-    const boxedXValues = formattedXValues.map<Box & { value: string | number }>((value) => {
-      return {
-        text: String(value),
-        value,
-        ...config.xAxisLabel,
-      };
-    });
-    // console.log('formattedXValues:', formattedXValues);
-    const textMeasurer = document.createElement('canvas');
-    const textMeasurerCtx = textMeasurer.getContext('2d');
-    const textMeasure = measureText(textMeasurerCtx!);
+    const { labelRotation } = config.xAxisLabel;
 
-    const measuredXValues = textMeasure(config.xAxisLabel.fontSize, boxedXValues);
-    const xAxisHeightMeasured: number = d3Max(measuredXValues, ({ width }) => width) ?? 0;
-    // const xAxisHeight = visible ? fontSize : 0;
-    const xAxisHeight = config.xAxisLabel.visible ? xAxisHeightMeasured : 0;
+    let xAxisHeight = 0;
+    if (config.xAxisLabel.visible) {
+      if (Math.abs(labelRotation) === 90) {
+        const xValues = table.map((entry) => entry.x);
+        const formattedXValues = xValues.map(config.xAxisLabel.formatter);
+        const boxedXValues = formattedXValues.map<Box & { value: string | number }>((value) => {
+          return {
+            text: String(value),
+            value,
+            ...config.xAxisLabel,
+          };
+        });
+
+        const textMeasurer = document.createElement('canvas');
+        const textMeasurerCtx = textMeasurer.getContext('2d');
+        const textMeasure = measureText(textMeasurerCtx!);
+
+        const measuredXValues = textMeasure(config.xAxisLabel.fontSize, boxedXValues);
+        xAxisHeight = d3Max(measuredXValues, ({ width }) => width) ?? 0;
+      } else {
+        xAxisHeight = config.xAxisLabel.fontSize;
+      }
+    }
+
     const totalVerticalPadding = config.xAxisLabel.padding * 2;
     let legendHeight = 0;
     if (showLegend && isHorizontalLegend(legendSize.position)) {

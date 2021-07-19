@@ -63,6 +63,8 @@ export const config: Config = {
     align: 'center' as CanvasTextAlign,
     baseline: 'verticalAlign' as CanvasTextBaseline,
     padding: 6,
+    labelRotation: 0,
+    position: 'top',
     formatter: String,
   },
   yAxisLabel: {
