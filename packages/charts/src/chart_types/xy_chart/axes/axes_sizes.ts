@@ -50,10 +50,11 @@ export function computeAxesSizes(
     const { position, title, titlePosition } = axisSpec;
     const labelPadding = getSimplePadding(tickLabel.padding);
     const labelPaddingSum = tickLabel.visible ? labelPadding.inner + labelPadding.outer : 0;
+    const isTitleTop = titlePosition === 'top';
 
     const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
     // only give the title space on the left if it's in the middle of the axis
-    const titleDimension = title && titlePosition !== 'top' ? getTitleDimension(axisTitle) : 0;
+    const titleDimension = title && !isTitleTop ? getTitleDimension(axisTitle) : 0;
     const hasPanelTitle = Boolean(isVerticalAxis(position) ? smSpec?.splitVertically : smSpec?.splitHorizontally);
     const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
     const axisDimension = labelPaddingSum + tickDimension + titleDimension + panelTitleDimension;
@@ -78,14 +79,17 @@ export function computeAxesSizes(
       case Position.Right:
         axisMainSize.right += maxAxisWidth + chartMargins.right;
         // TODO use first and last labels
-        axisLabelOverflow.top = Math.max(axisLabelOverflow.top, maxLabelBboxHeight / 2);
+        axisLabelOverflow.top =
+          (isTitleTop ? axisTitle.fontSize : 0) + Math.max(axisLabelOverflow.top, maxLabelBboxHeight / 2);
         axisLabelOverflow.bottom = Math.max(axisLabelOverflow.bottom, maxLabelBboxHeight / 2);
         break;
       case Position.Left:
       default:
         axisMainSize.left += maxAxisWidth + chartMargins.left;
         // TODO use first and last labels
-        axisLabelOverflow.top = 20; // Math.max(axisLabelOverflow.top, maxLabelBboxHeight / 2);
+        axisLabelOverflow.top =
+          (isTitleTop ? axisTitle.fontSize + getSimplePadding(axisTitle.padding).inner : 0) +
+          Math.max(axisLabelOverflow.top, maxLabelBboxHeight / 2);
         axisLabelOverflow.bottom = Math.max(axisLabelOverflow.bottom, maxLabelBboxHeight / 2);
     }
   });

@@ -20,10 +20,11 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType } from '../../packages/charts/src';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '../../packages/charts/src';
 
 export const Example = () => (
   <Chart className="story-chart">
+    <Settings debug={boolean('debug', false)} />
     <Axis
       id="bottom"
       position={Position.Bottom}
@@ -36,6 +37,7 @@ export const Example = () => (
       title="left"
       position={Position.Left}
       tickFormat={(d) => Number(d).toFixed(2)}
+      titlePosition={boolean('left axis title top', false) ? 'top' : 'middle'}
       hide={boolean('hide left axis', false)}
     />
     <Axis id="top" position={Position.Top} title="top" showOverlappingTicks hide={boolean('hide top axis', false)} />
@@ -44,6 +46,7 @@ export const Example = () => (
       title="right"
       position={Position.Right}
       tickFormat={(d) => Number(d).toFixed(2)}
+      titlePosition={boolean('right axis title top', false) ? 'top' : 'middle'}
       hide={boolean('hide right axis', false)}
     />
 

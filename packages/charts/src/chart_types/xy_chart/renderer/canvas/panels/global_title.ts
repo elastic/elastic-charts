@@ -64,25 +64,34 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
       ? titlePadding.outer
       : labelSize + tickDimension + titlePadding.inner + panelTitleDimension; // the amount that the text is pushed in from the top of the text
 
-  const left = anchorPoint.x + (horizontal ? 0 : offset);
+  const left = isTop
+    ? position === Position.Left
+      ? 0
+      : anchorPoint.x + offset
+    : anchorPoint.x + (horizontal ? 0 : offset);
   const top = anchorPoint.y + (horizontal ? offset : isTop ? font.fontSize - anchorPoint.y : height);
 
   if (debug) {
     const textWidth = ctx.measureText(title ?? '').width;
     renderDebugRect(
       ctx,
-      { x: left, y: top, width: horizontal ? width : isTop ? textWidth : height, height: font.fontSize },
+      {
+        x: left,
+        y: top,
+        width: horizontal ? width : isTop ? (position === Position.Left ? textWidth : -textWidth) : height,
+        height: font.fontSize,
+      },
       undefined,
       undefined,
       horizontal || isTop ? 0 : -90,
     );
   }
-  if (position === Position.Left && titlePosition === 'top') {
+  if (titlePosition === 'top') {
     renderText(
       ctx,
       { x: left, y: top + font.fontSize / 2 },
       title ?? '', // title is always a string due to caller; consider turning `title` to be obligate string upstream
-      { ...font, align: 'left' },
+      { ...font, align: position === Position.Left ? 'left' : 'right' },
       0,
       // horizontal ? 0 : -90,
     );

@@ -30,6 +30,7 @@ import {
   Position,
   ScaleType,
   Settings,
+  TitlePosition,
 } from '../../packages/charts/src';
 
 function createThemeAction(title: string, min: number, max: number, value: number) {
@@ -50,7 +51,10 @@ function renderAxisWithOptions(position: Position, seriesGroup: string, show: bo
   const axisTitle = `${position} axis (${seriesGroup})`;
 
   const showAxis = boolean(`show ${axisTitle} axis`, show, `${position} axes`);
-
+  let titlePos: TitlePosition = 'middle';
+  if (position === Position.Left || position === Position.Right) {
+    titlePos = boolean(`${position} axis title top`, false, `${position} axes`) ? 'top' : 'middle';
+  }
   if (!showAxis) {
     return null;
   }
@@ -59,6 +63,7 @@ function renderAxisWithOptions(position: Position, seriesGroup: string, show: bo
     id: axisTitle,
     position,
     title: axisTitle,
+    titlePosition: titlePos,
     showOverlappingTicks: true,
   };
 
