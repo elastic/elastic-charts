@@ -23,6 +23,7 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
@@ -32,8 +33,8 @@ export const Example = () => {
     type: TooltipType.Follow,
   };
   return (
-    <Chart className="story-chart">
-      <Settings tooltip={tooltipProps} />
+    <Chart>
+      <Settings tooltip={tooltipProps} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

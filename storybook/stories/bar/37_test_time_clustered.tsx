@@ -20,9 +20,10 @@
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, timeFormatter } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
@@ -42,7 +43,8 @@ export const Example = () => {
     [start.plus({ minute: 8 }).toMillis(), 1, 4],
   ];
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="index" position={Position.Bottom} tickFormat={dateFormatter} />
       <Axis
         id="left"

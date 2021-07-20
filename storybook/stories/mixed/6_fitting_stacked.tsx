@@ -24,6 +24,7 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings, Fit, StackMode } from '@elastic/charts';
 import { getRandomNumberGenerator, getRNGSeed } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
@@ -164,7 +165,7 @@ export const Example = () => {
   const rng = getRandomNumberGenerator(rngSeed);
   const tickFormat = stackMode === 'percentage' ? (d: any) => numeral(d).format('0[.]00%') : undefined;
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         showLegendExtra
@@ -175,6 +176,7 @@ export const Example = () => {
             },
           },
         }}
+        baseTheme={useBaseTheme()}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left" title="Left axis" position={Position.Left} tickFormat={tickFormat} />
@@ -236,5 +238,5 @@ export const Example = () => {
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_KNOBS_PANEL },
+  options: { selectedPanel: SB_KNOBS_PANEL },
 };

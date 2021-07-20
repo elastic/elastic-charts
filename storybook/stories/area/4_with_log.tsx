@@ -19,9 +19,10 @@
 
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, timeFormatter } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dateFormatter = timeFormatter('HH:mm');
@@ -29,7 +30,8 @@ const dateFormatter = timeFormatter('HH:mm');
 export const Example = () => {
   const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => (d[1] < 7 ? [d[0], null] : [d[0], d[1] - 10]));
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="index" position={Position.Bottom} tickFormat={dateFormatter} />
       <Axis
         id="left"
@@ -53,5 +55,5 @@ export const Example = () => {
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_SOURCE_PANEL },
+  options: { selectedPanel: SB_SOURCE_PANEL },
 };

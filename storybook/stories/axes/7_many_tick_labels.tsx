@@ -23,6 +23,8 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, RecursivePartial, AxisStyle } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => {
   const dg = new SeededDataGenerator();
   const data = dg.generateSimpleSeries(31);
@@ -34,8 +36,8 @@ export const Example = () => {
   };
 
   return (
-    <Chart className="story-chart">
-      <Settings debug />
+    <Chart>
+      <Settings debug baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks style={customStyle} />
       <AreaSeries
         id="lines"

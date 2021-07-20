@@ -25,7 +25,7 @@ import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/c
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 import {
   discreteColor,
   colorBrewerCategoricalStark9,
@@ -35,8 +35,8 @@ import {
 } from '../utils/utils';
 
 export const Example = () => (
-  <Chart className="story-chart">
-    <Settings showLegend legendStrategy="pathWithDescendants" theme={STORYBOOK_LIGHT_THEME} />
+  <Chart>
+    <Settings showLegend legendStrategy="pathWithDescendants" baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.miniSunburst}
@@ -98,3 +98,7 @@ export const Example = () => (
     />
   </Chart>
 );
+
+Example.parameters = {
+  backgrounds: { default: 'White' },
+};

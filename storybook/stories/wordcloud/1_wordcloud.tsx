@@ -26,6 +26,8 @@ import { WeightFn, WordModel } from '@elastic/charts/src/chart_types/wordcloud/l
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { palettes as euiPalettes } from '@elastic/charts/src/utils/themes/colors';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 const text =
   'Webtwo ipsum sifteo twones chegg lijit meevee spotify, joukuu wakoopa greplin. Sclipo octopart wufoo, balihoo. Kiko groupon fleck revver blyve joyent dogster, zoodles zooomr scribd dogster mog. Zinch orkut jabber trulia, sclipo. Chumby imvu rovio ning zoho akismet napster, kippt zillow mzinga zoho. ' +
   'Zoho cotweet cloudera zinch spock divvyshot edmodo convore, geni palantir geni woopra divvyshot. Zoho imeem convore orkut oooj foodzie airbnb, jabber rovio klout spotify dropio. Insala octopart wikia xobni airbnb quora mzinga elgg, mog quora blekko boxbe plickers zlio. Sococo chumby trulia ebay sococo zoho lijit, spock nuvvo omgpop heekya koofers. Kazaa voki chegg napster mozy koofers, meebo heroku empressr foodzie. ' +
@@ -278,9 +280,10 @@ export const Example = () => {
       );
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         theme={{ background: { color: backgroundColor } }}
+        baseTheme={useBaseTheme()}
         onElementClick={(d) => {
           const datum = d[0][0] as WordModel;
           action('onElementClick')(`${datum.text}: ${datum.weight}`);
@@ -313,4 +316,8 @@ export const Example = () => {
       />
     </Chart>
   );
+};
+
+Example.parameters = {
+  backgrounds: { disable: true },
 };

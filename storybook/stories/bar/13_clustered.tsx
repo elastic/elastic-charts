@@ -20,13 +20,13 @@
 import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, LIGHT_THEME, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
 export const Example = () => {
-  const theme = {
-    ...LIGHT_THEME,
+  const theme: PartialTheme = {
     scales: {
       histogramPadding: number('histogram padding', 0.05, {
         range: true,
@@ -43,12 +43,13 @@ export const Example = () => {
     },
   };
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         showLegendExtra
         legendPosition={Position.Right}
         theme={theme}
+        baseTheme={useBaseTheme()}
         rotation={getChartRotationKnob()}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

@@ -24,8 +24,6 @@ import {
   Axis,
   BarSeries,
   Chart,
-  DARK_THEME,
-  LIGHT_THEME,
   LineSeries,
   niceTimeFormatByDay,
   Position,
@@ -36,17 +34,13 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { switchTheme } from '../../theme_service';
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const hideBars = boolean('hideBars', false);
   const formatter = timeFormatter(niceTimeFormatByDay(1));
-  const darkmode = boolean('darkmode', false);
-  const className = darkmode ? 'story-chart-dark' : 'story-chart';
-  const defaultTheme = darkmode ? DARK_THEME : LIGHT_THEME;
-  switchTheme(darkmode ? 'dark' : 'light');
   const chartRotation = getChartRotationKnob();
   const numberFormatter = (d: any) => Number(d).toFixed(2);
 
@@ -67,11 +61,11 @@ export const Example = () => {
   };
 
   return (
-    <Chart className={className}>
+    <Chart>
       <Settings
         debug={boolean('debug', false)}
         tooltip={tooltipProps}
-        baseTheme={defaultTheme}
+        baseTheme={useBaseTheme()}
         rotation={chartRotation}
       />
       <Axis
@@ -123,5 +117,5 @@ export const Example = () => {
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_KNOBS_PANEL },
+  options: { selectedPanel: SB_KNOBS_PANEL },
 };

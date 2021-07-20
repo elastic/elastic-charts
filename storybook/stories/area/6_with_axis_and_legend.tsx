@@ -22,13 +22,14 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dateFormatter = timeFormatter('HH:mm');
 
 export const Example = () => (
-  <Chart className="story-chart">
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} />
+  <Chart>
+    <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
     <Axis
       id="bottom"
       title="timestamp per 1 minute"
@@ -56,5 +57,5 @@ export const Example = () => (
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_SOURCE_PANEL },
+  options: { selectedPanel: SB_SOURCE_PANEL },
 };

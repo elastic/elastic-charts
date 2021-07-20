@@ -22,8 +22,19 @@ import { DateTime } from 'luxon';
 import moment from 'moment-timezone';
 import React from 'react';
 
-import { Axis, Chart, LineSeries, Position, ScaleType, niceTimeFormatter, TickFormatter } from '@elastic/charts';
+import {
+  Axis,
+  Chart,
+  LineSeries,
+  Position,
+  ScaleType,
+  niceTimeFormatter,
+  TickFormatter,
+  Settings,
+} from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
@@ -41,7 +52,8 @@ export const Example = () => {
 
   const duplicateTicksInAxis = boolean('Show duplicate ticks in x axis', false);
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} tickFormat={formatter} showDuplicatedTicks={duplicateTicksInAxis} />
       <Axis
         id="left"

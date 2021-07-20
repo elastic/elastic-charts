@@ -20,9 +20,10 @@
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, DomainPaddingUnit, LineSeries, Position, ScaleType } from '@elastic/charts';
+import { Axis, Chart, DomainPaddingUnit, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getKnobsFromEnum } from '../utils/knobs';
 
 export const Example = () => {
@@ -58,7 +59,8 @@ export const Example = () => {
   );
 
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis
         domain={{ fit, padding, paddingUnit, constrainPadding }}

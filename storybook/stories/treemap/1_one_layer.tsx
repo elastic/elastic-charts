@@ -26,7 +26,7 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 
@@ -36,8 +36,8 @@ const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, 
 const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
 export const Example = () => (
-  <Chart className="story-chart">
-    <Settings theme={STORYBOOK_LIGHT_THEME} debugState />
+  <Chart>
+    <Settings debugState baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.pie}
@@ -62,3 +62,7 @@ export const Example = () => (
     />
   </Chart>
 );
+
+Example.parameters = {
+  backgrounds: { default: 'White' },
+};

@@ -33,6 +33,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
@@ -90,7 +91,7 @@ export const Example = () => {
   const [SeriesType, seriesType] = getXYSeriesKnob('Series type', 'area', group.series, { ignore: ['bubble', 'line'] });
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         theme={{
           areaSeriesStyle: {
@@ -112,6 +113,7 @@ export const Example = () => {
             },
           },
         }}
+        baseTheme={useBaseTheme()}
       />
 
       <Axis id="bottom" position={Position.Bottom} />
@@ -131,5 +133,5 @@ export const Example = () => {
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_KNOBS_PANEL },
+  options: { selectedPanel: SB_KNOBS_PANEL },
 };

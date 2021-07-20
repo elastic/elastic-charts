@@ -24,6 +24,7 @@ import React from 'react';
 import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 const rng = getRandomNumberGenerator();
@@ -53,7 +54,7 @@ export const Example = () => {
   });
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         tooltip={{
           type: TooltipType.Follow,
@@ -62,6 +63,7 @@ export const Example = () => {
         theme={{
           markSizeRatio,
         }}
+        baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
         pointBuffer={(r) => 20 / r}
         {...onElementListeners}
@@ -84,5 +86,5 @@ export const Example = () => {
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_KNOBS_PANEL },
+  options: { selectedPanel: SB_KNOBS_PANEL },
 };

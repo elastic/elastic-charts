@@ -22,6 +22,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, BinAgg, Direction } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const data = [
@@ -68,7 +69,7 @@ export const Example = () => {
       BinAgg.Sum,
     ) || undefined;
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         orderOrdinalBinsBy={
           orderOrdinalBinsBy
@@ -80,6 +81,7 @@ export const Example = () => {
         }
         showLegend
         showLegendExtra
+        baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
       />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />

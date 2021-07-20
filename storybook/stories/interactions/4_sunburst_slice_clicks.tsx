@@ -23,7 +23,7 @@ import React from 'react';
 
 import { Chart, Position, Settings, Partition, PartitionLayout } from '@elastic/charts';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 import {
   indexInterpolatedFillColor,
   interpolatorCET2s,
@@ -65,11 +65,11 @@ export const Example = () => {
     'sunburst',
   );
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         showLegendExtra
-        theme={STORYBOOK_LIGHT_THEME}
+        baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
         {...onElementListeners}
       />
@@ -114,6 +114,7 @@ export const Example = () => {
 };
 
 Example.parameters = {
+  backgrounds: { default: 'White' },
   docs: {
     description: {
       story: `The \`onElementClick\` receive an argument with the following type definition: \`Array<[Array<LayerValue>, SeriesIdentifier]>\`.

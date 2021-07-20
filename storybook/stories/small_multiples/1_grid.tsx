@@ -41,6 +41,7 @@ import {
 } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const getRandomNumber = getRandomNumberGenerator();
@@ -71,7 +72,7 @@ export const Example = () => {
       >
         rotate {rot}
       </button>
-      <Chart className="story-chart" size={[800, 400]}>
+      <Chart size={[800, 400]}>
         <Settings
           rotation={rot}
           showLegend={showLegend}
@@ -94,6 +95,7 @@ export const Example = () => {
               },
             },
           }}
+          baseTheme={useBaseTheme()}
           onBrushEnd={action('brushEvent')}
         />
         <Axis id="time" title="horizontal" position={Position.Bottom} gridLine={{ visible: false }} />

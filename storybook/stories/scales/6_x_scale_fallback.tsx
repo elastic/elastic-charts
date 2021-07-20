@@ -22,11 +22,13 @@ import React from 'react';
 
 import { Axis, Chart, BarSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => {
   const includeString = boolean('include string is x data', true);
   return (
-    <Chart className="story-chart">
-      <Settings xDomain={{ min: 0, max: 10 }} />
+    <Chart>
+      <Settings xDomain={{ min: 0, max: 10 }} baseTheme={useBaseTheme()} />
       <Axis id="y" title="count" position={Position.Left} />
       <Axis id="x" title={includeString ? 'ordinal fallback scale' : 'linear scale'} position={Position.Bottom} />
       <BarSeries

@@ -25,7 +25,7 @@ import { arrayToLookup } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { countryDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 import { regionLookup } from '../utils/utils';
 
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
@@ -40,14 +40,13 @@ const fillColor = ({ [MODEL_KEY]: model }: any) => {
 
 export const Example = () => (
   <Chart
-    className="story-chart"
     size={
       {
         /* height: 800 */
       }
     }
   >
-    <Settings theme={STORYBOOK_LIGHT_THEME} />
+    <Settings baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.sunburst}
@@ -93,3 +92,7 @@ export const Example = () => (
     />
   </Chart>
 );
+
+Example.parameters = {
+  backgrounds: { default: 'White' },
+};

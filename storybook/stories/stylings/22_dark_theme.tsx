@@ -30,13 +30,12 @@ import {
   Position,
   ScaleType,
   Settings,
-  LIGHT_THEME,
-  DARK_THEME,
   TooltipType,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { switchTheme } from '../../theme_service';
+import { useBaseTheme } from '../../use_base_theme';
+import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const data1 = dg.generateGroupedSeries(40, 4);
@@ -44,15 +43,12 @@ const data2 = dg.generateSimpleSeries(40);
 const data3 = dg.generateSimpleSeries(40);
 
 export const Example = () => {
-  const darkMode = boolean('Dark Mode', true);
   const hideBars = boolean('Hide Bars', false);
-  const className = darkMode ? 'story-chart-dark' : 'story-chart';
-  switchTheme(darkMode ? 'dark' : 'light');
 
   return (
-    <Chart className={className}>
+    <Chart>
       <Settings
-        baseTheme={darkMode ? DARK_THEME : LIGHT_THEME}
+        baseTheme={useBaseTheme()}
         debug={boolean('Debug', false)}
         showLegend
         showLegendExtra
@@ -94,4 +90,10 @@ export const Example = () => {
       />
     </Chart>
   );
+};
+
+Example.parameters = {
+  themes: {
+    default: 'Dark',
+  },
 };

@@ -21,7 +21,9 @@ import { select } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { Axis, Chart, LineSeries, Position, ScaleType } from '@elastic/charts';
+import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 const today = Date.now();
 const UTC_DATE = DateTime.fromISO('2019-01-01T00:00:00.000Z').toMillis();
@@ -82,7 +84,8 @@ export const Example = () => {
       break;
   }
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="time" position={Position.Bottom} tickFormat={tooltipFn} />
       <Axis id="y" position={Position.Left} />
       <LineSeries

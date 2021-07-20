@@ -22,14 +22,15 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, StackMode } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const stackedAsPercentage = boolean('stacked as percentage', true);
   const clusterBars = boolean('cluster', true);
   return (
-    <Chart className="story-chart">
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
+    <Chart>
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis
         id="left2"

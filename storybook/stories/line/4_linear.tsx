@@ -19,13 +19,25 @@
 
 import React from 'react';
 
-import { Axis, Chart, LineSeries, niceTimeFormatByDay, Position, ScaleType, timeFormatter } from '@elastic/charts';
+import {
+  Axis,
+  Chart,
+  LineSeries,
+  niceTimeFormatByDay,
+  Position,
+  ScaleType,
+  Settings,
+  timeFormatter,
+} from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 
 export const Example = () => (
-  <Chart className="story-chart">
+  <Chart>
+    <Settings baseTheme={useBaseTheme()} />
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis
       id="left"

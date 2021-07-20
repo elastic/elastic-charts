@@ -18,7 +18,7 @@
  */
 
 import { button, select } from '@storybook/addon-knobs';
-import React, { RefObject } from 'react';
+import React from 'react';
 
 import {
   Axis,
@@ -40,6 +40,7 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { Color } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 import { productLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
@@ -77,45 +78,47 @@ export const Example = () => {
   button('Export PNG', handler);
   const selectedChart = select('chart type', [ChartType.XYAxis, ChartType.Partition, ChartType.Goal], ChartType.XYAxis);
 
-  switch (selectedChart) {
-    case ChartType.Partition:
-      return renderPartitionChart(chartRef);
-    case ChartType.Goal:
-      return renderGoalchart(chartRef);
-    case ChartType.XYAxis:
-    default:
-      return renderXYAxisChart(chartRef);
-  }
-};
-
-function renderPartitionChart(chartRef: RefObject<Chart>) {
   return (
     <Chart ref={chartRef}>
-      <Partition
-        id="spec_1"
-        data={mocks.pie}
-        valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-        layers={[
-          {
-            groupByRollup: (d: Datum) => d.sitc1,
-            nodeLabel: (d: Datum) => productLookup[d].name,
-            fillLabel: { textInvertible: true },
-            shape: {
-              fillColor: indexInterpolatedFillColor(interpolatorCET2s),
-            },
-          },
-        ]}
+      <Settings
+        baseTheme={useBaseTheme()}
+        showLegend={selectedChart === ChartType.XYAxis}
+        showLegendExtra={selectedChart === ChartType.XYAxis}
       />
+      {selectedChart === ChartType.Partition
+        ? renderPartitionChart()
+        : selectedChart === ChartType.Goal
+        ? renderGoalchart()
+        : renderXYAxisChart()}
     </Chart>
+  );
+};
+
+function renderPartitionChart() {
+  return (
+    <Partition
+      id="spec_1"
+      data={mocks.pie}
+      valueAccessor={(d: Datum) => d.exportVal as number}
+      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      layers={[
+        {
+          groupByRollup: (d: Datum) => d.sitc1,
+          nodeLabel: (d: Datum) => productLookup[d].name,
+          fillLabel: { textInvertible: true },
+          shape: {
+            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
+          },
+        },
+      ]}
+    />
   );
 }
 
-function renderXYAxisChart(chartRef: RefObject<Chart>) {
+function renderXYAxisChart() {
   const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 100);
   return (
-    <Chart className="story-chart" ref={chartRef}>
-      <Settings showLegend showLegendExtra />
+    <>
       <Axis
         id="time"
         position={Position.Bottom}
@@ -131,11 +134,11 @@ function renderXYAxisChart(chartRef: RefObject<Chart>) {
         yAccessors={[1]}
         data={data}
       />
-    </Chart>
+    </>
   );
 }
 
-function renderGoalchart(chartRef: RefObject<Chart>) {
+function renderGoalchart() {
   const subtype = GoalSubtype.Goal;
 
   const colorMap: { [k: number]: Color } = {
@@ -147,27 +150,25 @@ function renderGoalchart(chartRef: RefObject<Chart>) {
   const bandFillColor = (x: number): Color => colorMap[x];
 
   return (
-    <Chart className="story-chart" ref={chartRef}>
-      <Goal
-        id="spec_1"
-        subtype={subtype}
-        base={0}
-        target={260}
-        actual={280}
-        bands={[200, 250, 300]}
-        ticks={[0, 50, 100, 150, 200, 250, 300]}
-        tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-        bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
-        labelMajor=""
-        labelMinor=""
-        centralMajor="280 MB/s"
-        centralMinor=""
-        config={{
-          angleStart: Math.PI + (Math.PI - (2 * Math.PI) / 3) / 2,
-          angleEnd: -(Math.PI - (2 * Math.PI) / 3) / 2,
-        }}
-      />
-    </Chart>
+    <Goal
+      id="spec_1"
+      subtype={subtype}
+      base={0}
+      target={260}
+      actual={280}
+      bands={[200, 250, 300]}
+      ticks={[0, 50, 100, 150, 200, 250, 300]}
+      tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
+      bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
+      labelMajor=""
+      labelMinor=""
+      centralMajor="280 MB/s"
+      centralMinor=""
+      config={{
+        angleStart: Math.PI + (Math.PI - (2 * Math.PI) / 3) / 2,
+        angleEnd: -(Math.PI - (2 * Math.PI) / 3) / 2,
+      }}
+    />
   );
 }
 

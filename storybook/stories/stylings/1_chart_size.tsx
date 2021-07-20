@@ -19,17 +19,18 @@
 
 import React from 'react';
 
-import { BarSeries, Chart, ScaleType, Settings, RecursivePartial, Theme } from '@elastic/charts';
+import { BarSeries, Chart, ScaleType, Settings, PartialTheme } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
 const data2 = dg.generateSimpleSeries(40);
 
 export const Example = () => {
-  const theme: RecursivePartial<Theme> = {
+  const theme: PartialTheme = {
     chartMargins: {
       bottom: 0,
       left: 0,
@@ -39,8 +40,8 @@ export const Example = () => {
   };
   return (
     <div>
-      <Chart className="story-chart" size={{ width: 100, height: 50 }}>
-        <Settings tooltip={TooltipType.None} theme={theme} />
+      <Chart size={{ width: 100, height: 50 }}>
+        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -50,8 +51,8 @@ export const Example = () => {
           data={data2}
         />
       </Chart>
-      <Chart className="story-chart" size={{ height: 50 }}>
-        <Settings tooltip={TooltipType.None} theme={theme} />
+      <Chart size={{ height: 50 }}>
+        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -61,8 +62,8 @@ export const Example = () => {
           data={data2}
         />
       </Chart>
-      <Chart className="story-chart" size={['50%', 50]}>
-        <Settings tooltip={TooltipType.None} theme={theme} />
+      <Chart size={['50%', 50]}>
+        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -72,8 +73,8 @@ export const Example = () => {
           data={data2}
         />
       </Chart>
-      <Chart className="story-chart" size={[undefined, 50]}>
-        <Settings tooltip={TooltipType.None} theme={theme} />
+      <Chart size={[undefined, 50]}>
+        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -83,8 +84,8 @@ export const Example = () => {
           data={data2}
         />
       </Chart>
-      <Chart className="story-chart" size={50}>
-        <Settings tooltip={TooltipType.None} theme={theme} />
+      <Chart size={50}>
+        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -100,5 +101,5 @@ export const Example = () => {
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_SOURCE_PANEL },
+  options: { selectedPanel: SB_SOURCE_PANEL },
 };

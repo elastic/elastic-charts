@@ -23,6 +23,8 @@ import React from 'react';
 import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { timeFormatter } from '@elastic/charts/src/utils/data/formatters';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data1 = [
@@ -50,8 +52,8 @@ export const Example = () => {
   const dateFormatter = timeFormatter('HH:mm:ss');
 
   return (
-    <Chart className="story-chart">
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
+    <Chart>
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"
         position={Position.Bottom}

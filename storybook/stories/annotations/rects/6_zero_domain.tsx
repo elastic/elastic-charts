@@ -23,6 +23,8 @@ import React from 'react';
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
 import { Position } from '@elastic/charts/src/utils/common';
 
+import { useBaseTheme } from '../../../use_base_theme';
+
 const getKnobs = () => {
   const minY = number('min y', 0);
   const maxY = number('max y', 20);
@@ -45,9 +47,9 @@ export const Example = () => {
   const fit = xAxisKnobs.minY === xAxisKnobs.maxY ? boolean('fit to the domain', false) : undefined;
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <RectAnnotation id="rect" dataValues={[{ coordinates: xAxisKnobs }]} style={{ fill: 'red' }} />
-      <Settings />
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
       <Axis domain={{ fit }} id="left" title="y-domain axis" position={Position.Left} />
       <BarSeries

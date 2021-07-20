@@ -23,6 +23,8 @@ import React, { FC } from 'react';
 
 import { Chart, Settings, Axis, Position } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 const NoResults: FC<{ msg: string }> = ({ msg }) => (
   <EuiFlexItem>
     <EuiFlexGroup direction="column" alignItems="center" justifyContent="center">
@@ -41,10 +43,10 @@ export const Example = () => {
   const noResultsMsg = text('Custom No Results message', 'No Results');
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Axis id="count" title="count" position={Position.Left} />
       <Axis id="x" title="goods" position={Position.Bottom} />
-      <Settings noResults={customNoResults ? <NoResults msg={noResultsMsg} /> : undefined} />
+      <Settings noResults={customNoResults ? <NoResults msg={noResultsMsg} /> : undefined} baseTheme={useBaseTheme()} />
     </Chart>
   );
 };

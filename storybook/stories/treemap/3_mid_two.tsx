@@ -27,7 +27,7 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { countryDimension, regionDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 
 const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
@@ -35,8 +35,8 @@ const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.7]));
 
 export const Example = () => (
-  <Chart className="story-chart">
-    <Settings showLegend theme={STORYBOOK_LIGHT_THEME} />
+  <Chart>
+    <Settings showLegend baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.sunburst}
@@ -88,3 +88,7 @@ export const Example = () => (
     />
   </Chart>
 );
+
+Example.parameters = {
+  backgrounds: { default: 'White' },
+};

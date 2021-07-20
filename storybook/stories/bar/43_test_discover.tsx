@@ -31,6 +31,7 @@ import {
   timeFormatter,
 } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const TEST_DATASET_DISCOVER = {
@@ -58,8 +59,8 @@ export const Example = () => {
 
   const useCustomMinInterval = boolean('use custom minInterval of 30s', true);
   return (
-    <Chart className="story-chart">
-      <Settings xDomain={useCustomMinInterval ? xDomain : undefined} />
+    <Chart>
+      <Settings xDomain={useCustomMinInterval ? xDomain : undefined} baseTheme={useBaseTheme()} />
       <Axis id="discover-histogram-left-axis" position={Position.Left} title={TEST_DATASET_DISCOVER.yAxisLabel} />
       <Axis
         id="discover-histogram-bottom-axis"

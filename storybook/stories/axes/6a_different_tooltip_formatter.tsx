@@ -23,6 +23,7 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
@@ -40,8 +41,9 @@ export const Example = () => {
   const catLineFormat = text('Cat line unit', 'cats', 'Y axis');
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
+        baseTheme={useBaseTheme()}
         showLegendExtra
         showLegend={showLegend}
         tooltip={{

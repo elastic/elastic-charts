@@ -22,11 +22,14 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => (
-  <Chart className="story-chart">
+  <Chart>
     <Settings
       showLegend
       showLegendExtra
+      baseTheme={useBaseTheme()}
       legendPosition={Position.Right}
       onLegendItemClick={action('onLegendItemClick')}
       onLegendItemOver={action('onLegendItemOver')}

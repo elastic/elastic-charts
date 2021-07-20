@@ -22,6 +22,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, SeriesNameConfigOptions } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
@@ -42,8 +43,8 @@ export const Example = () => {
     delimiter: ' | ',
   };
   return (
-    <Chart className="story-chart">
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
+    <Chart>
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
@@ -63,5 +64,5 @@ export const Example = () => {
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_SOURCE_PANEL },
+  options: { selectedPanel: SB_SOURCE_PANEL },
 };

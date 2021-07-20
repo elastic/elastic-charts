@@ -20,7 +20,19 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
 
-import { AreaSeries, Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
+import {
+  AreaSeries,
+  Axis,
+  BarSeries,
+  Chart,
+  LineSeries,
+  Position,
+  ScaleType,
+  Settings,
+  useBaseTheme,
+} from '@elastic/charts';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),
@@ -29,8 +41,14 @@ const onElementListeners = {
 };
 
 export const Example = () => (
-  <Chart className="story-chart">
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} {...onElementListeners} />
+  <Chart>
+    <Settings
+      showLegend
+      showLegendExtra
+      legendPosition={Position.Right}
+      {...onElementListeners}
+      baseTheme={useBaseTheme()}
+    />
     <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 

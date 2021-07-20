@@ -36,7 +36,7 @@ import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/c
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalPastel12, countryLookup, productLookup, regionLookup } from '../utils/utils';
 
 const data = mocks.sunburst; // .filter((d) => countryLookup[d.dest].continentCountry.slice(0, 2) === 'eu');
@@ -78,13 +78,13 @@ export const Example = () => {
   );
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend={boolean('Show legend', true)}
         showLegendExtra={boolean('Show legend extra', false)}
         legendStrategy={LegendStrategy.Key}
         flatLegend={boolean('Flat legend', true)}
-        theme={STORYBOOK_LIGHT_THEME}
+        baseTheme={useBaseTheme()}
         {...onElementListeners}
         debug={boolean('Debug', false)}
       />
@@ -182,4 +182,8 @@ export const Example = () => {
       />
     </Chart>
   );
+};
+
+Example.parameters = {
+  backgrounds: { default: 'White' },
 };

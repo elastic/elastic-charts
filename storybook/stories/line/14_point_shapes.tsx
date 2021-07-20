@@ -33,12 +33,14 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20);
 const shapes = Object.values(PointShape);
 export const Example = () => (
-  <Chart className="story-chart">
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} />
+  <Chart>
+    <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis
       id="left"

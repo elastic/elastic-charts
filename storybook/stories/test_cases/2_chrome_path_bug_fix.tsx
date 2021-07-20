@@ -22,6 +22,7 @@ import React from 'react';
 
 import { AreaSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
@@ -79,8 +80,8 @@ export const Example = () => {
   ].map((d) => ({ ...d, x: moment(d.x).valueOf() }));
 
   return (
-    <Chart className="story-chart">
-      <Settings />
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <AreaSeries
         id="test3"
         stackMode="percentage"
@@ -96,5 +97,5 @@ export const Example = () => {
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_KNOBS_PANEL },
+  options: { selectedPanel: SB_KNOBS_PANEL },
 };

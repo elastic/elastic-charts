@@ -24,6 +24,7 @@ import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings } from '@e
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
+import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 export const Example = () => {
@@ -102,8 +103,8 @@ export const Example = () => {
   const hideTooltips = boolean('hide tooltips', false);
 
   return (
-    <Chart className="story-chart">
-      <Settings debug={debug} rotation={rotation} />
+    <Chart>
+      <Settings debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
       <RectAnnotation
         dataValues={dataValues}
         id="rect"

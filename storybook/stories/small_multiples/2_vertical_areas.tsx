@@ -38,6 +38,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
@@ -54,8 +55,9 @@ export const Example = () => {
   const onElementClick = action('onElementClick');
   const tickTimeFormatter = timeFormatter(niceTimeFormatByDay(numOfDays));
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
+        baseTheme={useBaseTheme()}
         onElementClick={onElementClick}
         showLegend={showLegend}
         onBrushEnd={(d) => {

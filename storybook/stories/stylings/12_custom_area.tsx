@@ -20,7 +20,9 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, LineSeriesStyle } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, LineSeriesStyle, PartialTheme } from '@elastic/charts';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
@@ -97,7 +99,7 @@ function generateAreaSeriesStyleKnobs(
 export const Example = () => {
   const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
 
-  const chartTheme = {
+  const chartTheme: PartialTheme = {
     areaSeriesStyle: generateAreaSeriesStyleKnobs('Chart Global Theme', 'chartTheme'),
   };
 
@@ -114,8 +116,14 @@ export const Example = () => {
   const areaStyle2 = generateAreaSeriesStyleKnobs('Area 2 Style', 'area2', 'blue', 'violet', 2, 5, 4, undefined, 'red');
 
   return (
-    <Chart renderer="canvas" className="story-chart">
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} theme={chartTheme} />
+    <Chart renderer="canvas">
+      <Settings
+        showLegend
+        showLegendExtra
+        legendPosition={Position.Right}
+        theme={chartTheme}
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <AreaSeries

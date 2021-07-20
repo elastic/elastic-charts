@@ -23,11 +23,13 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
 export const Example = () => (
-  <Chart className="story-chart">
+  <Chart>
     <Settings
+      baseTheme={useBaseTheme()}
       onBrushEnd={action('onBrushEnd')}
       rotation={getChartRotationKnob()}
       roundHistogramBrushValues={boolean('roundHistogramBrushValues', false)}

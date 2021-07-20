@@ -22,6 +22,8 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings, LineSeriesStyle } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
     title,
@@ -83,8 +85,14 @@ export const Example = () => {
   const dataset3 = dataset1.map((datum) => ({ ...datum, y: datum.y - 2 }));
 
   return (
-    <Chart renderer="canvas" className="story-chart">
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} theme={chartTheme} />
+    <Chart renderer="canvas">
+      <Settings
+        showLegend
+        showLegendExtra
+        legendPosition={Position.Right}
+        theme={chartTheme}
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <LineSeries

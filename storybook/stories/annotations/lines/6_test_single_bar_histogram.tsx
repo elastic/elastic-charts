@@ -20,9 +20,19 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AnnotationDomainType, Axis, BarSeries, Chart, LineAnnotation, ScaleType, Settings } from '@elastic/charts';
+import {
+  AnnotationDomainType,
+  Axis,
+  BarSeries,
+  Chart,
+  LineAnnotation,
+  ScaleType,
+  Settings,
+  useBaseTheme,
+} from '@elastic/charts';
 import { Position } from '@elastic/charts/src/utils/common';
 
+import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 export const Example = () => {
@@ -55,8 +65,8 @@ export const Example = () => {
   };
 
   return (
-    <Chart className="story-chart">
-      <Settings debug={debug} rotation={rotation} xDomain={xDomain} />
+    <Chart>
+      <Settings debug={debug} rotation={rotation} xDomain={xDomain} baseTheme={useBaseTheme()} />
       <LineAnnotation
         id="annotation_1"
         domainType={AnnotationDomainType.XDomain}

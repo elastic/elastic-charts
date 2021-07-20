@@ -23,12 +23,14 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, niceTimeFormatter, Position, ScaleType, Settings, StackMode } from '@elastic/charts';
 import DATA from '@elastic/charts/src/utils/data_samples/4_time_series.json';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 const dataNames = Object.keys(DATA);
 export const Example = () => {
   const stackedAsPercentage = boolean('stacked as percentage', true);
   return (
-    <Chart className="story-chart">
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
+    <Chart>
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"
         position={Position.Bottom}

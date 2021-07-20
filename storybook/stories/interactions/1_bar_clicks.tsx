@@ -32,6 +32,8 @@ import {
   TooltipValueFormatter,
 } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 const onElementListeners = {
   onElementClick: action('onElementClick'),
   onElementOver: action('onElementOver'),
@@ -59,10 +61,11 @@ export const Example = () => {
   };
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         showLegendExtra
+        baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
         {...onElementListeners}
         tooltip={tooltipProps}

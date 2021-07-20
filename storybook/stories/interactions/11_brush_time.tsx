@@ -35,6 +35,7 @@ import {
   Settings,
 } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
 export const Example = () => {
@@ -51,8 +52,9 @@ export const Example = () => {
     action('onBrushEnd')(formatter(x[0]), formatter(x[1]));
   };
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
+        baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
         onBrushEnd={brushEndListener}
         onElementClick={action('onElementClick')}

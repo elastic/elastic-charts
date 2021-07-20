@@ -20,7 +20,9 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { BarSeries, Chart, ScaleType, Settings, DARK_THEME, LIGHT_THEME } from '@elastic/charts';
+import { BarSeries, Chart, ScaleType, Settings } from '@elastic/charts';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const darkmode = boolean('darkmode', false);
@@ -37,7 +39,7 @@ export const Example = () => {
   const specId = toggleSpec ? 'bars1' : 'bars2';
   return (
     <Chart className={className}>
-      <Settings baseTheme={darkmode ? DARK_THEME : LIGHT_THEME} />
+      <Settings baseTheme={useBaseTheme()} />
       <BarSeries
         id={specId}
         name="Simple bar series"

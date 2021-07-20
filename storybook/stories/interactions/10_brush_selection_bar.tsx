@@ -23,6 +23,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { isVerticalRotation } from '@elastic/charts/src/chart_types/xy_chart/state/utils/common';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
 export const Example = () => {
@@ -30,8 +31,8 @@ export const Example = () => {
   const isVertical = isVerticalRotation(rotation);
 
   return (
-    <Chart className="story-chart">
-      <Settings onBrushEnd={action('onBrushEnd')} rotation={rotation} />
+    <Chart>
+      <Settings onBrushEnd={action('onBrushEnd')} rotation={rotation} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"
         position={Position.Bottom}

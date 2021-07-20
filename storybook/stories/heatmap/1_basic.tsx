@@ -35,6 +35,8 @@ import {
 import { Config } from '@elastic/charts/src/chart_types/heatmap/layout/types/config_types';
 import { SWIM_LANE_DATA } from '@elastic/charts/src/utils/data_samples/test_anomaly_swim_lane';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => {
   const [selection, setSelection] = useState<{ x: (string | number)[]; y: (string | number)[] } | undefined>();
 
@@ -108,7 +110,7 @@ export const Example = () => {
   }, []);
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         onElementClick={onElementClick}
         onRenderChange={logDebugstate}
@@ -118,6 +120,7 @@ export const Example = () => {
         brushAxis="both"
         xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
         debugState={debugState}
+        baseTheme={useBaseTheme()}
       />
       <Heatmap
         id="heatmap1"

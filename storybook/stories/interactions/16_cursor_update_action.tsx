@@ -38,6 +38,7 @@ import {
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getTooltipTypeKnob, getPlacementKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -104,10 +105,11 @@ export const Example = () => {
 
   return (
     <>
-      <Chart className="story-chart" ref={ref1} size={{ height: '50%' }} id="chart1">
+      <Chart ref={ref1} size={{ height: '50%' }} id="chart1">
         <Settings
           showLegend
           showLegendExtra
+          baseTheme={useBaseTheme()}
           onPointerUpdate={pointerUpdate}
           pointerUpdateDebounce={debounceDelay}
           pointerUpdateTrigger={trigger}
@@ -133,7 +135,7 @@ export const Example = () => {
           data={data1.slice(3, 60)}
         />
       </Chart>
-      <Chart className="story-chart" ref={ref2} size={{ height: '50%' }} id="chart2">
+      <Chart ref={ref2} size={{ height: '50%' }} id="chart2">
         <Settings
           showLegend
           showLegendExtra
@@ -173,8 +175,8 @@ export const Example = () => {
 };
 
 Example.parameters = {
-    info: {
-      text: 'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.',
-    },
-    options: { selectedPanel: SB_SOURCE_PANEL },
+  info: {
+    text: 'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.',
+  },
+  options: { selectedPanel: SB_SOURCE_PANEL },
 };

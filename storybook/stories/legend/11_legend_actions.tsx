@@ -44,6 +44,7 @@ import {
 } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getPositionKnob, getEuiPopoverPositionKnob } from '../utils/knobs';
 
 const getAction =
@@ -155,9 +156,10 @@ export const Example = () => {
   const euiPopoverPosition = getEuiPopoverPositionKnob();
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
+        baseTheme={useBaseTheme()}
         showLegendExtra={showLegendExtra}
         legendPosition={legendPosition}
         legendAction={hideActions ? undefined : getAction(euiPopoverPosition)}

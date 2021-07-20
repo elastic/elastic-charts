@@ -22,6 +22,7 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 const vGroups = {
@@ -52,8 +53,13 @@ export const Example = () => {
   const blueGroupId = select('Blue groupId', vGroups, vGroups.Secondary, 'Annotations');
 
   return (
-    <Chart className="story-chart">
-      <Settings debug={debug} rotation={rotation} theme={{ axes: { tickLine: { size: tickSize } } }} />
+    <Chart>
+      <Settings
+        debug={debug}
+        rotation={rotation}
+        theme={{ axes: { tickLine: { size: tickSize } } }}
+        baseTheme={useBaseTheme()}
+      />
 
       <Axis
         id="left"

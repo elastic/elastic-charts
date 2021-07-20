@@ -22,6 +22,8 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PartialTheme } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => {
   const theme: PartialTheme = {
     legend: {
@@ -30,8 +32,8 @@ export const Example = () => {
   };
 
   return (
-    <Chart className="story-chart">
-      <Settings theme={theme} showLegend showLegendExtra legendPosition={Position.Right} />
+    <Chart>
+      <Settings theme={theme} showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

@@ -22,6 +22,8 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
     title,
@@ -65,9 +67,10 @@ export const Example = () => {
     },
   };
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         theme={theme}
+        baseTheme={useBaseTheme()}
         debug={boolean('debug', true)}
         rotation={select('rotation', { 0: 0, 90: 90, '-90': -90, 180: 180 }, 0)}
       />

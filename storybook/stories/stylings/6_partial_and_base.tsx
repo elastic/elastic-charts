@@ -20,8 +20,10 @@
 import { color } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings, LIGHT_THEME } from '@elastic/charts';
+import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const data1 = dg.generateGroupedSeries(40, 4);
@@ -37,12 +39,12 @@ export const Example = () => {
   };
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         showLegendExtra
         theme={customPartialTheme}
-        baseTheme={LIGHT_THEME}
+        baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

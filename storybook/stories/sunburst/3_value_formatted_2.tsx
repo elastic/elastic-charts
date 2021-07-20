@@ -19,15 +19,17 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition } from '@elastic/charts';
+import { Chart, Datum, Partition, Settings } from '@elastic/charts';
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, colorBrewerCategoricalPastel12, productLookup } from '../utils/utils';
 
 export const Example = () => (
-  <Chart className="story-chart">
+  <Chart>
+    <Settings baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.pie}

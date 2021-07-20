@@ -20,9 +20,10 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Chart, ScaleType, StackMode, Axis, Position, CurveType } from '@elastic/charts';
+import { AreaSeries, Chart, ScaleType, StackMode, Axis, Position, CurveType, Settings } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
@@ -35,7 +36,8 @@ export const Example = () => {
     StackMode.Silhouette,
   );
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="x" position={Position.Bottom} />
       <Axis id="y" position={Position.Left} />
       <AreaSeries

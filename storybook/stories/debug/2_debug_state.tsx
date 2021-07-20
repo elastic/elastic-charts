@@ -37,6 +37,8 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => {
   const debug = boolean('debug', false);
   const debugState = boolean('debugState', true);
@@ -66,8 +68,15 @@ export const Example = () => {
   }, 100);
 
   return (
-    <Chart className="story-chart">
-      <Settings onRenderChange={logDebugstate} debug={debug} debugState={debugState} showLegend showLegendExtra />
+    <Chart>
+      <Settings
+        onRenderChange={logDebugstate}
+        debug={debug}
+        debugState={debugState}
+        showLegend
+        showLegendExtra
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

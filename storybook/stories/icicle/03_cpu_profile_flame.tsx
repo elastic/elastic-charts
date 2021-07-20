@@ -23,7 +23,7 @@ import React from 'react';
 import { Chart, Datum, Partition, PartitionLayout, PrimitiveValue, Settings } from '@elastic/charts';
 import data from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock.json';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 import { config } from '../utils/hierarchical_input_utils';
 import { discreteColor, viridis18 as palette } from '../utils/utils';
 
@@ -42,8 +42,8 @@ const getLayerSpec = (maxDepth: number = 30) =>
 export const Example = () => {
   const clipText = boolean("Allow, and clip, texts that wouldn't otherwise fit", true);
   return (
-    <Chart className="story-chart">
-      <Settings theme={STORYBOOK_LIGHT_THEME} />
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"
         data={data.facts}
@@ -67,4 +67,8 @@ export const Example = () => {
       />
     </Chart>
   );
+};
+
+Example.parameters = {
+  backgrounds: { default: 'White' },
 };

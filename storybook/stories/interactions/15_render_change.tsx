@@ -22,11 +22,19 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 const onRenderChange = action('onRenderChange');
 
 export const Example = () => (
-  <Chart className="story-chart">
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} onRenderChange={onRenderChange} />
+  <Chart>
+    <Settings
+      showLegend
+      showLegendExtra
+      legendPosition={Position.Right}
+      onRenderChange={onRenderChange}
+      baseTheme={useBaseTheme()}
+    />
     <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 

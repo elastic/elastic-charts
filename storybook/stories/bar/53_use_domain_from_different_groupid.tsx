@@ -22,6 +22,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Settings, Chart, Position, ScaleType, DEFAULT_GLOBAL_ID } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
@@ -58,8 +59,8 @@ export const Example = () => {
   );
 
   return (
-    <Chart renderer="canvas" className="story-chart">
-      <Settings />
+    <Chart renderer="canvas">
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} />
       <Axis id="left y" title="GREEN" position={Position.Right} />
       <Axis id="right 1 y" groupId={groupId1} title="BLUE" position={Position.Right} />

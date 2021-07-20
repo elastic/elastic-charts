@@ -23,6 +23,7 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } from '@elastic/charts';
 import { TSVB_DATASET } from '@elastic/charts/src/utils/data_samples/test_dataset_tsvb';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { arrayKnobs } from '../utils/knobs';
 
 export const Example = () => {
@@ -62,8 +63,13 @@ export const Example = () => {
     );
   });
   return (
-    <Chart className="story-chart">
-      <Settings showLegend legendPosition={legendPosition} showLegendExtra={showLegendDisplayValue} />
+    <Chart>
+      <Settings
+        showLegend
+        legendPosition={legendPosition}
+        showLegendExtra={showLegendDisplayValue}
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       {seriesComponents}

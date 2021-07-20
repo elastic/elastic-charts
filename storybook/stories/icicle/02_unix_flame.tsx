@@ -21,7 +21,7 @@ import React from 'react';
 
 import { Chart, Datum, LegendStrategy, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 import { config, getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
 import { plasma18 as palette } from '../utils/utils';
 
@@ -29,14 +29,14 @@ const color = [...palette].reverse();
 
 export const Example = () => {
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         flatLegend
         legendPosition="right"
         legendStrategy={LegendStrategy.PathWithDescendants}
         legendMaxDepth={maxDepth}
-        theme={STORYBOOK_LIGHT_THEME}
+        baseTheme={useBaseTheme()}
       />
       <Partition
         id="spec_1"
@@ -48,4 +48,8 @@ export const Example = () => {
       />
     </Chart>
   );
+};
+
+Example.parameters = {
+  backgrounds: { default: 'White' },
 };

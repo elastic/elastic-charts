@@ -24,6 +24,7 @@ import React from 'react';
 import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, LineSeries } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
@@ -49,7 +50,7 @@ export const Example = () => {
   });
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         theme={{
@@ -60,6 +61,7 @@ export const Example = () => {
             },
           },
         }}
+        baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
         pointBuffer={(r) => 20 / r}
         {...onElementListeners}
@@ -93,5 +95,5 @@ Example.text = 'testing';
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_KNOBS_PANEL },
+  options: { selectedPanel: SB_KNOBS_PANEL },
 };

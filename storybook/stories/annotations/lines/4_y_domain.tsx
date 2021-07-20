@@ -33,6 +33,7 @@ import {
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
+import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob, arrayKnobs } from '../../utils/knobs';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
@@ -55,8 +56,8 @@ export const Example = () => {
   const axisPosition = isLeft ? Position.Left : Position.Right;
 
   return (
-    <Chart className="story-chart">
-      <Settings debug={debug} rotation={rotation} />
+    <Chart>
+      <Settings debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
       <LineAnnotation
         id="annotation_1"
         domainType={AnnotationDomainType.YDomain}

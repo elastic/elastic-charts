@@ -20,15 +20,16 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
 export const Example = () => {
   const hasCustomDomain = boolean('has custom domain', false);
   const xDomain = hasCustomDomain ? ['a', 'b'] : undefined;
 
-  const theme = {
+  const theme: PartialTheme = {
     scales: {
       barsPadding: number('bars padding', 0.25, {
         range: true,
@@ -39,8 +40,8 @@ export const Example = () => {
     },
   };
   return (
-    <Chart className="story-chart">
-      <Settings xDomain={xDomain} rotation={getChartRotationKnob()} theme={theme} />
+    <Chart>
+      <Settings xDomain={xDomain} rotation={getChartRotationKnob()} theme={theme} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

@@ -20,8 +20,9 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Axis, Position, AreaSeries, ScaleType, LogBase } from '@elastic/charts';
+import { Chart, Axis, Position, AreaSeries, ScaleType, LogBase, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { logFormatter } from '../utils/formatters';
 
 /**
@@ -31,7 +32,8 @@ export const Example = () => {
   const fit = boolean('fit', true);
   const logMinLimit = number('logMinLimit', 0.001);
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Axis
         id="count"
         position={Position.Left}

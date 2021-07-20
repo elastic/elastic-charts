@@ -20,10 +20,13 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => (
-  <Chart className="story-chart">
+  <Chart>
+    <Settings baseTheme={useBaseTheme()} />
     <Axis
       id="bottom"
       position={Position.Bottom}

@@ -23,6 +23,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob, getPositionKnob } from '../utils/knobs';
 
 const dataGen = new SeededDataGenerator();
@@ -85,9 +86,10 @@ export const Example = () => {
   const splitSeriesAccessors = isSplitSeries ? ['g'] : undefined;
   const stackAccessors = isStackedSeries ? ['x'] : undefined;
   return (
-    <Chart renderer="canvas" className="story-chart">
+    <Chart renderer="canvas">
       <Settings
         theme={theme}
+        baseTheme={useBaseTheme()}
         debug={debug}
         rotation={getChartRotationKnob()}
         showLegend

@@ -20,9 +20,10 @@
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, DomainPaddingUnit, Position, ScaleType } from '@elastic/charts';
+import { Axis, Chart, DomainPaddingUnit, Position, ScaleType, Settings } from '@elastic/charts';
 import { computeContinuousDataDomain } from '@elastic/charts/src/utils/domain';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -87,7 +88,8 @@ export const Example = () => {
   }
 
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="top" position={Position.Top} title="Top axis" />
       <Axis
         id="left"

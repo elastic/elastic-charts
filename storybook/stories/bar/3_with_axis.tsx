@@ -17,17 +17,16 @@
  * under the License.
  */
 
-import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, DARK_THEME, LIGHT_THEME, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const darkmode = boolean('darkmode', false);
-  const className = darkmode ? 'story-chart-dark' : 'story-chart';
   return (
-    <Chart className={className}>
-      <Settings baseTheme={darkmode ? DARK_THEME : LIGHT_THEME} />
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

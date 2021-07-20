@@ -35,6 +35,7 @@ import {
 } from '@elastic/charts';
 import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/axis_type_utils';
 
+import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob, getPositionKnob } from '../../utils/knobs';
 import { SB_KNOBS_PANEL } from '../../utils/storybook';
 
@@ -106,8 +107,8 @@ export const Example = () => {
   const isYDomain = rotation === -90 || rotation === 90 ? !isVerticalSide : isVerticalSide;
 
   return (
-    <Chart className="story-chart">
-      <Settings debug={debug} showLegend={showLegend} rotation={rotation} />
+    <Chart>
+      <Settings debug={debug} showLegend={showLegend} rotation={rotation} baseTheme={useBaseTheme()} />
       <Axis
         id="count"
         integersOnly
@@ -157,7 +158,7 @@ Example.parameters = {
   options: { selectedPanel: SB_KNOBS_PANEL },
   docs: {
     description: {
-      story:  `The \`markerBody\` on the \`LineAnnotationSpec\` will be dynamically positioned to show content that would otherwise be hidden or overflow the chart.
+      story: `The \`markerBody\` on the \`LineAnnotationSpec\` will be dynamically positioned to show content that would otherwise be hidden or overflow the chart.
         The \`marker\` prop (also on the \`LineAnnotationSpec\`) however, will always be positioned centered on the given \`dataValue\`.
         These can be used interchangeably to provide a content-rich annotation without losing the data reference.
         **Note: you will need to provide the necessary axis padding for the \`markerBody\` content as this is _not_ currently accounted for in the chart dimensioning**`,

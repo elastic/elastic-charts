@@ -24,6 +24,7 @@ import React from 'react';
 import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
@@ -49,7 +50,7 @@ export const Example = () => {
   const data = dg.generateRandomGroupedSeries(size, 4);
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         tooltip={{
@@ -59,6 +60,7 @@ export const Example = () => {
         theme={{
           markSizeRatio,
         }}
+        baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
         pointBuffer={(r) => 20 / r}
         {...onElementListeners}
@@ -82,5 +84,5 @@ export const Example = () => {
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_KNOBS_PANEL },
+  options: { selectedPanel: SB_KNOBS_PANEL },
 };

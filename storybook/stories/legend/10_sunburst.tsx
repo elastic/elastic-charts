@@ -25,7 +25,7 @@ import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/c
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 import {
   discreteColor,
   colorBrewerCategoricalStark9,
@@ -53,14 +53,14 @@ export const Example = () => {
   const legendStrategy = select('legendStrategy', LegendStrategy, LegendStrategy.Key);
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         showLegendExtra={showLegendExtra}
         flatLegend={flatLegend}
         legendStrategy={legendStrategy}
         legendMaxDepth={legendMaxDepth}
-        theme={STORYBOOK_LIGHT_THEME}
+        baseTheme={useBaseTheme()}
       />
       <Partition
         id="spec_1"
@@ -123,10 +123,11 @@ export const Example = () => {
 };
 
 Example.parameters = {
+  backgrounds: { default: 'White' },
   docs: {
     description: {
       story: `To flatten a hierarchical legend (like the rendered in a pie chart or a treemap when using a multi-layer configuration) you can
-add the \`flatLegend\` prop into the \`<Settings />\` component.
+add the \`flatLegend\` prop into the \`<Settings  baseTheme={useBaseTheme()} />\` component.
 
 To limit displayed hierarchy to a specific depth, you can use the \`legendMaxDepth\` prop. The first layer will have a depth of \`1\`.`,
     },

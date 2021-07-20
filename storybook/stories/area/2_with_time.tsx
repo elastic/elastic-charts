@@ -24,13 +24,14 @@ import { AreaSeries, Axis, Chart, Placement, Position, ScaleType, Settings, time
 import { isDefined } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob, getPlacementKnob, getStickToKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dateFormatter = timeFormatter('HH:mm');
 
 export const Example = () => (
-  <Chart className="story-chart">
+  <Chart>
     <Settings
       tooltip={{
         stickTo: getStickToKnob('stickTo'),
@@ -38,6 +39,7 @@ export const Example = () => (
         fallbackPlacements: [getPlacementKnob('fallback placement', Placement.LeftStart)].filter(isDefined),
         offset: number('placement offset', 5),
       }}
+      baseTheme={useBaseTheme()}
       rotation={getChartRotationKnob()}
     />
     <Axis
@@ -66,5 +68,5 @@ export const Example = () => (
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_SOURCE_PANEL },
+  options: { selectedPanel: SB_SOURCE_PANEL },
 };

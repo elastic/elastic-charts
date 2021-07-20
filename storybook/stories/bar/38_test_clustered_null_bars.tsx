@@ -19,9 +19,10 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 // for testing purposes only
@@ -37,7 +38,8 @@ export const Example = () => {
     [4, 4, 6, 'b'],
   ];
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis
         id="left"

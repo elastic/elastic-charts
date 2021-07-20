@@ -23,6 +23,8 @@ import React from 'react';
 import { AreaSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => {
   const automatedSeries = boolean('Use the default generated series types of charts for screen readers', true);
   const customDescriptionForScreenReaders = text('add a description for screen readers', '');
@@ -31,8 +33,9 @@ export const Example = () => {
     ? select('heading level for label', { P: 'p', H1: 'h1', H2: 'h2', H3: 'h3', H4: 'h4', H5: 'h5', H6: 'h6' }, 'h2')
     : undefined;
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
+        baseTheme={useBaseTheme()}
         ariaDescription={customDescriptionForScreenReaders}
         ariaUseDefaultSummary={automatedSeries}
         ariaLabel={customLabelForScreenReaders}

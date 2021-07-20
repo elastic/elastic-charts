@@ -20,9 +20,10 @@
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
 const dataGen = new SeededDataGenerator();
@@ -64,7 +65,7 @@ export const Example = () => {
   const maxFontSize = number('Max font size', 25);
   const minFontSize = number('Min font size', 10);
 
-  const theme = {
+  const theme: PartialTheme = {
     barSeriesStyle: {
       displayValue: {
         fontSize: useFixedFontSize ? fixedFontSize : { max: maxFontSize, min: minFontSize },
@@ -72,7 +73,8 @@ export const Example = () => {
         fontStyle: 'normal',
         padding: 0,
         fill: useInverted
-          ? { textInverted: useInverted, textContrast: true, textBorder: borderSize }
+          ? // @ts-ignore
+            { textInverted: useInverted, textContrast: true, textBorder: borderSize }
           : { color: valueColor, borderColor, borderWidth: borderSize },
         offsetX: number('offsetX', 0),
         offsetY: number('offsetY', 0),
@@ -119,8 +121,15 @@ export const Example = () => {
   const splitSeriesAccessors = isSplitSeries ? ['g'] : undefined;
   const stackAccessors = isStackedSeries ? ['x'] : undefined;
   return (
-    <Chart renderer="canvas" className="story-chart">
-      <Settings theme={theme} debug={debug} rotation={getChartRotationKnob()} showLegend showLegendExtra />
+    <Chart renderer="canvas">
+      <Settings
+        theme={theme}
+        baseTheme={useBaseTheme()}
+        debug={debug}
+        rotation={getChartRotationKnob()}
+        showLegend
+        showLegendExtra
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
       <BarSeries

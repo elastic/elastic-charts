@@ -39,6 +39,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
@@ -78,8 +79,8 @@ export const Example = () => {
   const onElementClick = action('onElementClick');
 
   return (
-    <Chart className="story-chart">
-      <Settings onElementClick={onElementClick} showLegend={showLegend} />
+    <Chart>
+      <Settings onElementClick={onElementClick} showLegend={showLegend} baseTheme={useBaseTheme()} />
       <Axis id="time" position={Position.Bottom} gridLine={{ visible: false }} />
       <Axis id="y" title="Day of week" position={Position.Left} gridLine={{ visible: false }} />
 

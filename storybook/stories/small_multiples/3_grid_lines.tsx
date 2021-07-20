@@ -39,6 +39,7 @@ import {
 import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/axis_type_utils';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
@@ -105,7 +106,7 @@ export const Example = () => {
   const onElementClick = action('onElementClick');
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         debug={debug}
         onElementClick={onElementClick}
@@ -117,6 +118,7 @@ export const Example = () => {
             },
           },
         }}
+        baseTheme={useBaseTheme()}
         onBrushEnd={(d) => {
           if (d.x) {
             action('brushEvent')(tickTimeFormatter(d.x[0] ?? 0), tickTimeFormatter(d.x[1] ?? 0));

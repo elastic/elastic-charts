@@ -20,8 +20,19 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { ScaleType, Position, Chart, Axis, GroupBy, SmallMultiples, Settings, BarSeries } from '@elastic/charts';
+import {
+  ScaleType,
+  Position,
+  Chart,
+  Axis,
+  GroupBy,
+  SmallMultiples,
+  Settings,
+  BarSeries,
+  useBaseTheme,
+} from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const data = [
@@ -68,8 +79,8 @@ export const Example = () => {
   const histogramPadding = number('histogramPadding', 0, numberOptions);
 
   return (
-    <Chart className="story-chart">
-      <Settings theme={{ scales: { barsPadding, histogramPadding } }} showLegend />
+    <Chart>
+      <Settings theme={{ scales: { barsPadding, histogramPadding } }} showLegend baseTheme={useBaseTheme()} />
       <Axis id="x" position={Position.Bottom} />
       <Axis
         id="y"

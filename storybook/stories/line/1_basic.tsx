@@ -20,8 +20,10 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, LineSeries, ScaleType } from '@elastic/charts';
+import { Chart, LineSeries, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const toggleSpec = boolean('toggle line spec', true);
@@ -31,7 +33,8 @@ export const Example = () => {
   const specId = toggleSpec ? 'lines1' : 'lines2';
 
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <LineSeries
         id={specId}
         xScaleType={ScaleType.Time}

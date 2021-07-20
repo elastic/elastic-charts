@@ -33,6 +33,7 @@ import {
   DEFAULT_CHART_PADDING,
 } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getVerticalTextAlignmentKnob, getHorizontalTextAlignmentKnob, getPositiveNumberKnob } from '../utils/knobs';
 
 const getAxisKnobs = (group?: string, gridLines = false): RecursivePartial<AxisStyle> => ({
@@ -144,8 +145,8 @@ export const Example = () => {
   };
 
   return (
-    <Chart className="story-chart">
-      <Settings debug={debug} theme={theme} />
+    <Chart>
+      <Settings debug={debug} theme={theme} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"
         hide={boolean('hide axis', false, Position.Bottom)}

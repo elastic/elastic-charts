@@ -19,11 +19,13 @@
 
 import React from 'react';
 
-import { Chart, Goal } from '@elastic/charts';
+import { Chart, Goal, Settings } from '@elastic/charts';
 import { config } from '@elastic/charts/src/chart_types/goal_chart/layout/config/config';
 import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 import { Color } from '@elastic/charts/src/utils/common';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 const q1 = 255 - 255 * 0.4;
 const q2 = 255 - 255 * 0.25;
@@ -42,7 +44,8 @@ const colorMap: { [k: number]: Color } = {
 const bandFillColor = (x: number): Color => colorMap[x];
 
 export const Example = () => (
-  <Chart className="story-chart">
+  <Chart>
+    <Settings baseTheme={useBaseTheme()} />
     <Goal
       id="spec_1"
       subtype={subtype}

@@ -20,8 +20,18 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, HistogramBarSeries, Position, ScaleType, Settings } from '@elastic/charts';
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  HistogramBarSeries,
+  PartialTheme,
+  Position,
+  ScaleType,
+  Settings,
+} from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -33,7 +43,7 @@ export const Example = () => {
     { x: 'c', y: 0 },
     { x: 'd', y: 6 },
   ];
-  const theme = {
+  const theme: PartialTheme = {
     scales: {
       barsPadding: number('bars padding', 0.25, {
         range: true,
@@ -46,8 +56,13 @@ export const Example = () => {
 
   const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
   return (
-    <Chart className="story-chart">
-      <Settings rotation={getChartRotationKnob()} theme={theme} debug={boolean('debug', true)} />
+    <Chart>
+      <Settings
+        rotation={getChartRotationKnob()}
+        theme={theme}
+        baseTheme={useBaseTheme()}
+        debug={boolean('debug', true)}
+      />
       <Axis id="discover-histogram-left-axis" position={Position.Left} title="left axis" />
       <Axis id="discover-histogram-bottom-axis" position={Position.Bottom} title="bottom axis" />
       {hasHistogramBarSeries && (

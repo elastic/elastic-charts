@@ -22,6 +22,7 @@ import React from 'react';
 
 import { AreaSeries, Axis, Chart, Fit, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
@@ -44,10 +45,11 @@ export const Example = () => {
   ];
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         theme={{ areaSeriesStyle: { point: { visible: true } }, lineSeriesStyle: { point: { visible: false } } }}
+        baseTheme={useBaseTheme()}
         xDomain={{ minInterval: 1 }}
       />
       <Axis id="bottom" title="timestamp" position={Position.Bottom} showOverlappingTicks />
@@ -79,5 +81,5 @@ export const Example = () => {
 };
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_SOURCE_PANEL },
+  options: { selectedPanel: SB_SOURCE_PANEL },
 };

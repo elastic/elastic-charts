@@ -36,6 +36,8 @@ import {
   PointStyleAccessor,
 } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => {
   const hasThreshold = boolean('threshold', true);
   const threshold = number('min threshold', 3);
@@ -54,7 +56,7 @@ export const Example = () => {
     (g.specId === 'line' || g.specId === 'area') && d.y1! > threshold ? pointStyle : null;
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         theme={{
           areaSeriesStyle: {
@@ -63,6 +65,7 @@ export const Example = () => {
             },
           },
         }}
+        baseTheme={useBaseTheme()}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />

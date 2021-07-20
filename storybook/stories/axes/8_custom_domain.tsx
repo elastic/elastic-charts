@@ -22,6 +22,8 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, LIGHT_THEME, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => {
   const customXDomain = boolean('customize X domain', true, 'X axis');
   const customBarYDomain = boolean('customize Y domain', true, 'Bar');
@@ -66,10 +68,11 @@ export const Example = () => {
   const niceDomainBar = boolean('nice domain', true, 'Bar');
   const niceDomainLine = boolean('nice domain', true, 'Line');
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend={false}
         theme={{ chartPaddings: { top: 0, left: 10, right: 10, bottom: 0 } }}
+        baseTheme={useBaseTheme()}
         xDomain={customXDomain ? xDomain : undefined}
       />
       <Axis

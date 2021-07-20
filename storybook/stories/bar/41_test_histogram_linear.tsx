@@ -30,6 +30,7 @@ import {
   HistogramModeAlignments,
   LineAnnotation,
   LineSeries,
+  PartialTheme,
   Position,
   RectAnnotation,
   ScaleType,
@@ -37,6 +38,7 @@ import {
 } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -52,7 +54,7 @@ export const Example = () => {
     },
   };
 
-  const theme = {
+  const theme: PartialTheme = {
     scales: {
       barsPadding: number('bars padding', 0.25, {
         range: true,
@@ -106,8 +108,13 @@ export const Example = () => {
 
   const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
   return (
-    <Chart className="story-chart">
-      <Settings rotation={getChartRotationKnob()} theme={theme} debug={boolean('debug', true)} />
+    <Chart>
+      <Settings
+        rotation={getChartRotationKnob()}
+        theme={theme}
+        debug={boolean('debug', true)}
+        baseTheme={useBaseTheme()}
+      />
       <LineAnnotation
         id="line-annotation"
         domainType={AnnotationDomainType.XDomain}

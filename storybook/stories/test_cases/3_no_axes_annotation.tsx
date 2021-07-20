@@ -31,6 +31,7 @@ import {
   Settings,
 } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
@@ -50,8 +51,8 @@ export const Example = () => {
   );
   const chartRotation = getChartRotationKnob();
   return (
-    <Chart className="story-chart">
-      <Settings rotation={chartRotation} />
+    <Chart>
+      <Settings rotation={chartRotation} baseTheme={useBaseTheme()} />
       <LineAnnotation
         domainType={AnnotationDomainType.XDomain}
         id="ann"

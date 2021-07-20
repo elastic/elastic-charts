@@ -34,6 +34,7 @@ import {
 } from '@elastic/charts';
 import { LogBase, LogScaleOptions } from '@elastic/charts/src/scales/scale_continuous';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { logBaseMap, logFormatter } from '../utils/formatters';
 import { getKnobsFromEnum } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
@@ -137,8 +138,8 @@ export const Example = () => {
   const Series = seriesMap[type];
 
   return (
-    <Chart className="story-chart">
-      <Settings xDomain={xLogKnobs} />
+    <Chart>
+      <Settings xDomain={xLogKnobs} baseTheme={useBaseTheme()} />
       <Axis id="y" position={Position.Left} domain={yLogKnobs} tickFormat={logFormatter(yLogKnobs.logBase)} />
       <Axis
         id="x"

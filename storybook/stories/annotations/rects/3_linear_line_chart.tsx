@@ -24,6 +24,7 @@ import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings, RectAnnot
 import { Position } from '@elastic/charts/src/utils/common';
 import { BandedAccessorType } from '@elastic/charts/src/utils/geometry';
 
+import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 export const Example = () => {
@@ -84,8 +85,8 @@ export const Example = () => {
   const xAxisPosition = isBottom ? Position.Bottom : Position.Top;
 
   return (
-    <Chart className="story-chart">
-      <Settings debug={debug} rotation={rotation} />
+    <Chart>
+      <Settings debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
       <RectAnnotation dataValues={dataValuesGreen} id="rect3" style={{ fill: 'lightgreen' }} />
       <RectAnnotation dataValues={dataValuesBlue} id="rect2" style={{ fill: 'blue' }} />
       <RectAnnotation dataValues={dataValuesRed} id="rect1" style={{ fill: 'red' }} />

@@ -23,6 +23,7 @@ import React, { useState } from 'react';
 import { Axis, Chart, CurveType, Position, TexturedStyles, Settings, TextureShape } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator, getRandomEntryFn } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
@@ -114,7 +115,7 @@ export const Example = () => {
   const texture = getDefaultTextureKnobs();
 
   return (
-    <Chart className="story-chart" data-count={count}>
+    <Chart data-count={count}>
       <Settings
         showLegend={showLegend}
         theme={{
@@ -135,6 +136,7 @@ export const Example = () => {
             },
           },
         }}
+        baseTheme={useBaseTheme()}
       />
 
       <Axis id="bottom" position={Position.Bottom} />
@@ -166,5 +168,5 @@ export const Example = () => {
 
 // storybook configuration
 Example.parameters = {
-    options: { selectedPanel: SB_KNOBS_PANEL },
+  options: { selectedPanel: SB_KNOBS_PANEL },
 };

@@ -24,14 +24,14 @@ import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/cha
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
 
 export const Example = () => {
   const showDebug = boolean('show table for debugging', false);
   return (
-    <Chart className="story-chart">
-      <Settings showLegend legendMaxDepth={1} theme={STORYBOOK_LIGHT_THEME} debug={showDebug} />
+    <Chart>
+      <Settings showLegend legendMaxDepth={1} baseTheme={useBaseTheme()} debug={showDebug} />
       <Partition
         id="spec_1"
         data={mocks.sunburst}
@@ -85,4 +85,8 @@ export const Example = () => {
       />
     </Chart>
   );
+};
+
+Example.parameters = {
+  backgrounds: { default: 'White' },
 };

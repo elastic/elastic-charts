@@ -21,7 +21,7 @@ import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 import { config, getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
 import { viridis18 as palette } from '../utils/utils';
 
@@ -29,8 +29,8 @@ const color = palette.slice().reverse();
 
 export const Example = () => {
   return (
-    <Chart className="story-chart">
-      <Settings showLegend flatLegend legendMaxDepth={maxDepth} theme={STORYBOOK_LIGHT_THEME} />
+    <Chart>
+      <Settings showLegend flatLegend legendMaxDepth={maxDepth} baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"
         data={getFlatData()}
@@ -41,4 +41,8 @@ export const Example = () => {
       />
     </Chart>
   );
+};
+
+Example.parameters = {
+  backgrounds: { default: 'White' },
 };

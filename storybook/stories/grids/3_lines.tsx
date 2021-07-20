@@ -35,6 +35,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getTooltipTypeKnob } from '../utils/knobs';
 
 const dg = new SeededDataGenerator();
@@ -84,11 +85,12 @@ export const Example = () => {
     },
   };
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         debug={boolean('debug', false)}
         tooltip={getTooltipTypeKnob('Tooltip type', TooltipType.Crosshairs)}
         theme={theme}
+        baseTheme={useBaseTheme()}
       />
       <Axis {...getAxisKnobs(Position.Left)} />
       <Axis {...getAxisKnobs(Position.Bottom)} />

@@ -23,17 +23,17 @@ import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/cha
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
 export const Example = () => (
-  <Chart className="story-chart">
-    <Settings theme={STORYBOOK_LIGHT_THEME} />
+  <Chart>
+    <Settings baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.pie
         .slice(0, 2)
-        .concat(mocks.pie.slice(2, 3).map((s) => ({ ...s, exportVal: (undefined as unknown) as number })))
+        .concat(mocks.pie.slice(2, 3).map((s) => ({ ...s, exportVal: undefined as unknown as number })))
         .concat(mocks.pie.slice(3))}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
@@ -51,3 +51,7 @@ export const Example = () => (
     />
   </Chart>
 );
+
+Example.parameters = {
+  backgrounds: { default: 'White' },
+};

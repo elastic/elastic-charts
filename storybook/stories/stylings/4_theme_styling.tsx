@@ -32,13 +32,12 @@ import {
   Position,
   ScaleType,
   Settings,
-  LIGHT_THEME,
-  DARK_THEME,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
-import { switchTheme } from '../../theme_service';
+import { useBaseTheme } from '../../use_base_theme';
+import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
@@ -151,15 +150,11 @@ export const Example = () => {
     },
   };
 
-  const darkmode = boolean('darkmode', false, 'Colors');
-  const className = darkmode ? 'story-chart-dark' : 'story-chart';
-  switchTheme(darkmode ? 'dark' : 'light');
-
   return (
-    <Chart className={className}>
+    <Chart>
       <Settings
         theme={theme}
-        baseTheme={darkmode ? DARK_THEME : LIGHT_THEME}
+        baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
         showLegend
         showLegendExtra

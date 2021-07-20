@@ -20,9 +20,19 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AdditiveNumber, ArrayEntry, Chart, Datum, MODEL_KEY, Partition, ShapeTreeNode } from '@elastic/charts';
+import {
+  AdditiveNumber,
+  ArrayEntry,
+  Chart,
+  Datum,
+  MODEL_KEY,
+  Partition,
+  Settings,
+  ShapeTreeNode,
+} from '@elastic/charts';
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';
 
 const categoricalColors = colorBrewerCategoricalPastel12B.slice(3);
@@ -56,7 +66,8 @@ const sortPredicate = ([name1, node1]: ArrayEntry, [name2, node2]: ArrayEntry) =
 
 export const Example = () => {
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"
         data={data}

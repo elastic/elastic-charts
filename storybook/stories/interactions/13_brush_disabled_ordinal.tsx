@@ -22,11 +22,12 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
 export const Example = () => (
-  <Chart className="story-chart">
-    <Settings onBrushEnd={action('onBrushEnd')} rotation={getChartRotationKnob()} />
+  <Chart>
+    <Settings onBrushEnd={action('onBrushEnd')} rotation={getChartRotationKnob()} baseTheme={useBaseTheme()} />
     <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks />
     <Axis id="left" title="left" position={Position.Left} />
     <LineSeries

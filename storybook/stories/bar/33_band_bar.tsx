@@ -20,9 +20,11 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, timeFormatter } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -37,7 +39,8 @@ export const Example = () => {
   const fit = boolean('fit Y domain', true);
   const useFunctions = boolean('use fn accessors', false);
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"
         title="timestamp per 1 minute"

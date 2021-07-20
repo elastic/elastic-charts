@@ -35,6 +35,7 @@ import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
@@ -57,16 +58,12 @@ export const Example = () => {
   const rotation = getChartRotationKnob();
 
   const dataValues = generateTimeAnnotationData([
-    1551438150000,
-    1551438180000,
-    1551438390000,
-    1551438450000,
-    1551438480000,
+    1551438150000, 1551438180000, 1551438390000, 1551438450000, 1551438480000,
   ]);
 
   return (
-    <Chart className="story-chart">
-      <Settings debug={debug} rotation={rotation} />
+    <Chart>
+      <Settings debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
       <LineAnnotation
         id="annotation_1"
         domainType={AnnotationDomainType.XDomain}

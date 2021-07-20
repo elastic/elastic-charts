@@ -27,10 +27,12 @@ import {
   MODEL_KEY,
   Partition,
   PartitionLayout,
+  Settings,
   ShapeTreeNode,
 } from '@elastic/charts';
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup } from '../utils/utils';
 
 const categoricalColors = ['rgb(110,110,110)', 'rgb(123,123,123)', 'darkgrey', 'lightgrey'];
@@ -50,7 +52,8 @@ const data = [
 
 export const Example = () => {
   return (
-    <Chart className="story-chart">
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"
         data={data}

@@ -31,13 +31,14 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 
 export const Example = () => (
-  <Chart className="story-chart">
-    <Settings xDomain={{ max: 2 }} />
+  <Chart>
+    <Settings xDomain={{ max: 2 }} baseTheme={useBaseTheme()} />
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis
       id="left"

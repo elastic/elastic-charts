@@ -34,6 +34,7 @@ import {
 } from '@elastic/charts';
 import { isVerticalRotation } from '@elastic/charts/src/chart_types/xy_chart/state/utils/common';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
 export const Example = () => {
@@ -50,8 +51,9 @@ export const Example = () => {
     action('onBrushEnd')(dateFormatter(x[0]), dateFormatter(x[1]));
   };
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
+        baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
         onBrushEnd={brushEndListener}
         onElementClick={action('onElementClick')}

@@ -23,6 +23,8 @@ import React from 'react';
 import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
     title,
@@ -58,8 +60,14 @@ export const Example = () => {
   };
 
   return (
-    <Chart className="story-chart">
-      <Settings showLegend showLegendExtra theme={[primaryTheme, secondaryTheme]} legendPosition={Position.Right} />
+    <Chart>
+      <Settings
+        showLegend
+        showLegendExtra
+        theme={[primaryTheme, secondaryTheme]}
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <Axis id="top" position={Position.Top} title="Top axis" showOverlappingTicks />

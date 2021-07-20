@@ -22,6 +22,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { arrayKnobs } from '../utils/knobs';
 
 export const Example = () => {
@@ -38,8 +39,8 @@ export const Example = () => {
   const xDomain = arrayKnobs('xDomain', ['a', 'b', 'c', 'd', 0, 1, 2, 3]);
 
   return (
-    <Chart className="story-chart">
-      <Settings showLegend={false} xDomain={xDomain} />
+    <Chart>
+      <Settings showLegend={false} xDomain={xDomain} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis
         id="left"

@@ -24,8 +24,6 @@ import {
   AreaSeries,
   Axis,
   Chart,
-  DARK_THEME,
-  LIGHT_THEME,
   Position,
   ScaleType,
   Settings,
@@ -37,7 +35,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { switchTheme } from '../../theme_service';
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
@@ -90,12 +88,8 @@ export const Example = () => {
     'Legend',
   );
 
-  const darkMode = boolean('Dark Mode', false);
-  const className = darkMode ? 'story-chart-dark' : 'story-chart';
-
-  switchTheme(darkMode ? 'dark' : 'light');
   return (
-    <Chart className={className}>
+    <Chart>
       <Settings
         showLegend
         showLegendExtra
@@ -106,7 +100,7 @@ export const Example = () => {
           floating,
           floatingColumns,
         }}
-        theme={darkMode ? DARK_THEME : LIGHT_THEME}
+        baseTheme={useBaseTheme()}
       />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />
       <Axis

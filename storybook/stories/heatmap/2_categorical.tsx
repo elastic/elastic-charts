@@ -24,13 +24,21 @@ import React from 'react';
 import { Chart, Heatmap, ScaleType, Settings } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => {
   const data = BABYNAME_DATA.filter(([year]) => year > 1950);
   const values = data.map((d) => +d[3]);
   const [min, max] = extent(values);
   return (
-    <Chart className="story-chart">
-      <Settings onElementClick={action('onElementClick')} showLegend legendPosition="right" brushAxis="both" />
+    <Chart>
+      <Settings
+        onElementClick={action('onElementClick')}
+        showLegend
+        legendPosition="right"
+        brushAxis="both"
+        baseTheme={useBaseTheme()}
+      />
       <Heatmap
         id="heatmap2"
         colorScale={ScaleType.Linear}

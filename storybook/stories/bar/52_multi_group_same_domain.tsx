@@ -22,6 +22,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Settings, Chart, Position, ScaleType } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
@@ -59,8 +60,8 @@ export const Example = () => {
   const useDefaultDomain = boolean('Use the same data domain for each group', false);
 
   return (
-    <Chart renderer="canvas" className="story-chart">
-      <Settings />
+    <Chart renderer="canvas">
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} />
       <Axis
         id="left y"

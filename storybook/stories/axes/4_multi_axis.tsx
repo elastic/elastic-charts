@@ -20,17 +20,9 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Axis,
-  BarSeries,
-  Chart,
-  LIGHT_THEME,
-  mergeWithDefaultTheme,
-  PartialTheme,
-  Position,
-  ScaleType,
-  Settings,
-} from '@elastic/charts';
+import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 function createThemeAction(title: string, min: number, max: number, value: number) {
   return number(
@@ -66,7 +58,7 @@ function renderAxisWithOptions(position: Position, seriesGroup: string, show: bo
 }
 
 export const Example = () => {
-  const theme: PartialTheme = {
+  const customTheme: PartialTheme = {
     chartMargins: {
       left: createThemeAction('margin left', 0, 50, 0),
       right: createThemeAction('margin right', 0, 50, 0),
@@ -80,13 +72,11 @@ export const Example = () => {
       bottom: createThemeAction('padding bottom', 0, 50, 0),
     },
   };
-  const customTheme = mergeWithDefaultTheme(theme, LIGHT_THEME);
-
   const seriesGroup1 = 'group1';
   const seriesGroup2 = 'group2';
   return (
-    <Chart size={[500, 300]} className="story-chart">
-      <Settings showLegend={false} theme={customTheme} debug={boolean('debug', true)} />
+    <Chart size={[500, 300]}>
+      <Settings showLegend={false} theme={customTheme} debug={boolean('debug', true)} baseTheme={useBaseTheme()} />
       {renderAxisWithOptions(Position.Top, seriesGroup1, false)}
       {renderAxisWithOptions(Position.Top, seriesGroup2, true)}
       {renderAxisWithOptions(Position.Left, seriesGroup1, false)}

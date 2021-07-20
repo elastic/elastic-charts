@@ -23,6 +23,7 @@ import React from 'react';
 
 import { Axis, LineSeries, Chart, Position, ScaleType, Settings, Direction } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 /**
@@ -53,8 +54,9 @@ export const Example = () => {
   const orderOrdinalBinsBy = boolean('enable orderOrdinalBinsBy', true);
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
+        baseTheme={useBaseTheme()}
         orderOrdinalBinsBy={
           orderOrdinalBinsBy
             ? {

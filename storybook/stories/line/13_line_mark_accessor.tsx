@@ -23,6 +23,8 @@ import React from 'react';
 import { Axis, Chart, Position, ScaleType, Settings, LineSeries } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 const rng = getRandomNumberGenerator();
 const bubbleData = new Array(30).fill(0).map((_, i) => ({
   x: i,
@@ -41,7 +43,7 @@ export const Example = () => {
   const visible = boolean('show line points', true);
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         theme={{
@@ -52,6 +54,7 @@ export const Example = () => {
             },
           },
         }}
+        baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />

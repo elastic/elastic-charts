@@ -22,9 +22,11 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 export const Example = () => (
-  <Chart className="story-chart">
-    <Settings hideDuplicateAxes={boolean('hideDuplicateAxes', true)} />
+  <Chart>
+    <Settings hideDuplicateAxes={boolean('hideDuplicateAxes', true)} baseTheme={useBaseTheme()} />
     <Axis id="bottom" position={Position.Bottom} />
     <Axis id="y1" position={Position.Left} tickFormat={(d) => `${d}%`} />
     <Axis id="y2" position={Position.Left} tickFormat={(d) => `${d}%`} />

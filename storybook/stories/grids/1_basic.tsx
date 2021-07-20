@@ -20,7 +20,19 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, GridLineStyle, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  GridLineStyle,
+  LineSeries,
+  PartialTheme,
+  Position,
+  ScaleType,
+  Settings,
+} from '@elastic/charts';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 function generateGridLineStyle(group: string, gridColor = 'purple'): GridLineStyle {
   const groupId = `${group} axis`;
@@ -86,7 +98,7 @@ export const Example = () => {
   const toggleHorizontalAxisGridLineStyle = boolean('use axis gridLine horizontally', false, 'left axis');
   const bottomAxisThemeGridLineStyle = generateGridLineStyle('Vertical Axis Theme', 'violet');
   const leftAxisThemeGridLineStyle = generateGridLineStyle('Horizontal Axis Theme', 'hotpink');
-  const theme = {
+  const theme: PartialTheme = {
     axes: {
       gridLine: { vertical: leftAxisThemeGridLineStyle, horizontal: bottomAxisThemeGridLineStyle },
     },
@@ -94,8 +106,8 @@ export const Example = () => {
   const integersOnlyLeft = boolean('left axis show only integer values', false, 'left axis');
   const integersOnlyRight = boolean('right axis show only intger values', false, 'right axis');
   return (
-    <Chart className="story-chart">
-      <Settings debug={boolean('debug', false)} theme={theme} />
+    <Chart>
+      <Settings debug={boolean('debug', false)} theme={theme} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"
         position={Position.Bottom}

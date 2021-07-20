@@ -22,6 +22,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings, Position } from '@elastic/charts';
 
+import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 export const Example = () => {
@@ -52,8 +53,8 @@ export const Example = () => {
   );
 
   return (
-    <Chart className="story-chart">
-      <Settings debug={debug} rotation={rotation} />
+    <Chart>
+      <Settings debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
       <RectAnnotation
         id="rect"
         dataValues={[

@@ -22,7 +22,7 @@ import React from 'react';
 
 import { Chart, LegendStrategy, Partition, Settings } from '@elastic/charts';
 
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const flatLegend = boolean('flatLegend', false);
@@ -35,13 +35,13 @@ export const Example = () => {
   type TestDatum = { cat1: string; cat2: string; val: number };
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         showLegend
         flatLegend={flatLegend}
         legendStrategy={select('legendStrategy', LegendStrategy, LegendStrategy.Key)}
         legendMaxDepth={legendMaxDepth}
-        theme={STORYBOOK_LIGHT_THEME}
+        baseTheme={useBaseTheme()}
       />
       <Partition
         id="spec_1"
@@ -68,6 +68,7 @@ export const Example = () => {
 };
 
 Example.parameters = {
+  backgrounds: { default: 'White' },
   docs: {
     description: {
       story: `Nested legend with reused node labels means that they can reoccur in various points of the legend tree.`,

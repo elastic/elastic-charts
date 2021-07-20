@@ -22,6 +22,8 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
+
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
     title,
@@ -59,9 +61,10 @@ export const Example = () => {
   const withRightTitle = boolean('right axis with title', true);
   const withTopTitle = boolean('top axis with title', true);
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings
         theme={theme}
+        baseTheme={useBaseTheme()}
         debug={boolean('debug', true)}
         showLegend
         showLegendExtra
