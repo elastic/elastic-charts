@@ -16,8 +16,8 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, range } from '../../../../utils/common';
-import { snapDateToInterval } from '../../../../utils/data/date_time';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
@@ -120,7 +120,7 @@ export function shapeViewModel(
 
   const xValues = timeScale
     ? range(
-        snapDateToInterval(
+        snapDateToESInterval(
           xDomain.domain[0] as number,
           { type: 'fixed', unit: 'ms', quantity: xDomain.minInterval },
           'start',
