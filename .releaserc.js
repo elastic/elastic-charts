@@ -28,6 +28,7 @@ module.exports = {
           [
             'semantic-release-slack-bot',
             {
+              packageName: '@elastic/charts',
               notifyOnSuccess: true,
               notifyOnFail: true,
               markdownReleaseNotes: true,

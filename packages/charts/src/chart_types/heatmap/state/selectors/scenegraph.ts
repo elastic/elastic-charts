@@ -37,7 +37,7 @@ export function render(
   const { width, height } = chartDimensions;
   const { config: specConfig } = spec;
   const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
-  const config = mergePartial<Config>(defaultConfig, partialConfig);
+  const config = mergePartial<Config>(defaultConfig, partialConfig, { mergeOptionalPartialValues: true });
   return shapeViewModel(
     measureText(textMeasurerCtx),
     spec,

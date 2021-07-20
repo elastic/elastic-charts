@@ -54,6 +54,7 @@ module.exports = {
     '@typescript-eslint/comma-spacing': 0,
     'unicorn/no-nested-ternary': 0,
     '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+    'no-extra-parens': 'off', // it was already off by default; this line addition is just for documentation purposes
 
     /**
      *****************************************
