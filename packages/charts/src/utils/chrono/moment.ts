@@ -13,25 +13,31 @@ import { CalendarIntervalUnit, CalendarObj, DateTime, FixedIntervalUnit, Minutes
 /** @internal */
 export const timeObjFromCalendarObj = (
   yearMonthDayHour: Partial<CalendarObj>,
-  timeZone: string = 'local',
+  timeZone: string = 'browser',
 ): moment.Moment =>
-  moment.tz(
-    {
-      ...yearMonthDayHour,
-      month: typeof yearMonthDayHour.month === 'number' ? yearMonthDayHour.month - 1 : undefined,
-    },
-    timeZone,
-  );
+  timeZone
+    ? moment.tz(
+        {
+          ...yearMonthDayHour,
+          month: typeof yearMonthDayHour.month === 'number' ? yearMonthDayHour.month - 1 : undefined,
+        },
+        timeZone,
+      )
+    : moment({
+        ...yearMonthDayHour,
+        month: typeof yearMonthDayHour.month === 'number' ? yearMonthDayHour.month - 1 : undefined,
+      });
 
 /** @internal */
-export const timeObjFromUnixTimestamp = (unixTimestamp: UnixTimestamp, timeZone: string = 'local'): moment.Moment =>
-  moment.tz(unixTimestamp, timeZone);
+export const timeObjFromUnixTimestamp = (unixTimestamp: UnixTimestamp, timeZone?: string): moment.Moment =>
+  timeZone ? moment.tz(unixTimestamp, timeZone) : moment(unixTimestamp);
 
 /** @internal */
-export const timeObjFromDate = (date: Date, timeZone: string = 'local'): moment.Moment => moment.tz(date, timeZone);
+export const timeObjFromDate = (date: Date, timeZone?: string): moment.Moment =>
+  timeZone ? moment.tz(date, timeZone) : moment(date);
 
 /** @internal */
-export const timeObjFromAny = (time: DateTime, timeZone: string = 'local'): moment.Moment => {
+export const timeObjFromAny = (time: DateTime, timeZone?: string): moment.Moment => {
   return typeof time === 'number'
     ? timeObjFromUnixTimestamp(time, timeZone)
     : time instanceof Date
@@ -39,8 +45,6 @@ export const timeObjFromAny = (time: DateTime, timeZone: string = 'local'): mome
     : timeObjFromCalendarObj(time, timeZone);
 };
 
-/** @internal */
-export const timeObjFromEpochSeconds = (timeZone: string, seconds: number) => moment.tz(seconds * 1000, timeZone);
 /** @internal */
 export const timeObjToSeconds = (t: moment.Moment) => t.unix();
 /** @internal */

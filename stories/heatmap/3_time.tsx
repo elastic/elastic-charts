@@ -79,10 +79,10 @@ export const Example = () => {
 
   return (
     <>
-      <div style={{ fontFamily: 'monospace', fontSize: 10, paddingBottom: 5 }}>
-        {DateTime.fromMillis(start.toMillis() + startTimeOffset).toISO()} to{' '}
-        {DateTime.fromMillis(end.toMillis() + endTimeOffset).toISO()}
-      </div>
+      {/* <div style={{ fontFamily: 'monospace', fontSize: 10, paddingBottom: 5 }}> */}
+      {/*  {DateTime.fromMillis(start.toMillis() + startTimeOffset).toISO()} to{' '} */}
+      {/*  {DateTime.fromMillis(end.toMillis() + endTimeOffset).toISO()} */}
+      {/* </div> */}
       <Chart className="story-chart">
         <Settings
           xDomain={{
