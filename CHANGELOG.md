@@ -1,3 +1,10 @@
+## [32.0.1](https://github.com/elastic/elastic-charts/compare/v32.0.0...v32.0.1) (2021-07-20)
+
+
+### Bug Fixes
+
+* **xy:** interaction in linear/log x scales ([#1258](https://github.com/elastic/elastic-charts/issues/1258)) ([#1259](https://github.com/elastic/elastic-charts/issues/1259)) ([ca8fd30](https://github.com/elastic/elastic-charts/commit/ca8fd308bd5a54ba94bbd0935268a52034bf46f3))
+
 # [32.0.0](https://github.com/elastic/elastic-charts/compare/v31.1.0...v32.0.0) (2021-07-12)
 
 
