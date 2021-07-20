@@ -1,3 +1,31 @@
+## [33.0.2](https://github.com/elastic/elastic-charts/compare/v33.0.1...v33.0.2) (2021-07-20)
+
+
+### Bug Fixes
+
+* **xy:** interaction in linear/log x scales ([#1258](https://github.com/elastic/elastic-charts/issues/1258)) ([db94db2](https://github.com/elastic/elastic-charts/commit/db94db25e0e4fb977ef812a4547d8bc121c9db29))
+
+## [33.0.1](https://github.com/elastic/elastic-charts/compare/v33.0.0...v33.0.1) (2021-07-16)
+
+
+### Bug Fixes
+
+* **a11y:** goal chart bugs ([#1256](https://github.com/elastic/elastic-charts/issues/1256)) ([5ff47dd](https://github.com/elastic/elastic-charts/commit/5ff47dd016725822e2a46dbd01a2849907d11bf3))
+* slackbot package name ([#1254](https://github.com/elastic/elastic-charts/issues/1254)) ([7999020](https://github.com/elastic/elastic-charts/commit/7999020c762d397c5bd5198be6ffb99559adb8c7))
+
+# [33.0.0](https://github.com/elastic/elastic-charts/compare/v32.0.0...v33.0.0) (2021-07-14)
+
+
+### Features
+
+* **xy:** add null bars to geometry indexing ([#1226](https://github.com/elastic/elastic-charts/issues/1226)) ([20b81a9](https://github.com/elastic/elastic-charts/commit/20b81a9228d49d4516930671169e9503aaad8d1d)), closes [#950](https://github.com/elastic/elastic-charts/issues/950)
+* **xy:** hide labels that protrude the bar geometry ([#1233](https://github.com/elastic/elastic-charts/issues/1233)) ([be1fb3d](https://github.com/elastic/elastic-charts/commit/be1fb3de28b62731b0d972b922e469ebc8c8b36f)), closes [#1234](https://github.com/elastic/elastic-charts/issues/1234)
+
+
+### BREAKING CHANGES
+
+* **xy:** an API change is introduced: `hideClippedValue` is removed in favor of `overflowConstraints?: Array<LabelOverflowConstraint>;`. The array can contain one or multiple overflow constraints enumerated as `LabelOverflowConstraint`
+
 # [32.0.0](https://github.com/elastic/elastic-charts/compare/v31.1.0...v32.0.0) (2021-07-12)
 
 

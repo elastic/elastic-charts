@@ -38,7 +38,7 @@ export function ScreenReaderTypes({
           <dt>Maximum:</dt>
           <dd>{goalChartData.maximum}</dd>
           <dt>Target:</dt>
-          <dd>${goalChartData.target}</dd>
+          <dd>{goalChartData.target}</dd>
           <dd>Value:</dd>
           <dt>{goalChartData.value}</dt>
         </>
