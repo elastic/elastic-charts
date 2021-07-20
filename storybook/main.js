@@ -22,6 +22,7 @@ module.exports = {
   addons: [
     {
       name: '@storybook/addon-essentials',
+      // Many of these could be used in the future, keeping here for now
       options: {
         viewport: false,
         outline: false,
@@ -30,8 +31,10 @@ module.exports = {
         backgrounds: false,
       },
     },
+    '@storybook/addon-backgrounds', // custom
     '@storybook/addon-knobs',
     '@storybook/addon-postcss',
     '@storybook/addon-storysource',
+    'storybook-addon-themes',
   ],
 };

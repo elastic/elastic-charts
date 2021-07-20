@@ -31,38 +31,49 @@ import {
 import { DecoratorFunction } from '@storybook/addons';
 import React from 'react';
 
+import { ThemeName, ThemeProvider, BackgroundProvider } from './use_base_theme';
+
 export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => {
+  if (!Story) return <div>No Story</div>;
+
+  const themeName = context.globals?.themes?.value ?? ThemeName.Light;
+  const backgroundColor = context.globals?.backgrounds?.value;
+
   return (
-    <div id="wrapper">
-      <EuiPage paddingSize="none">
-        <EuiPageBody paddingSize="none">
-          <EuiPageHeader restrictWidth pageTitle={context.kind} description={context.name} paddingSize="l">
-            <EuiHorizontalRule />
-          </EuiPageHeader>
+    <ThemeProvider value={themeName}>
+      <BackgroundProvider value={backgroundColor}>
+        <div id="wrapper">
+          <EuiPage paddingSize="none">
+            <EuiPageBody paddingSize="none">
+              <EuiPageHeader restrictWidth pageTitle={context.kind} description={context.name} paddingSize="l">
+                <EuiHorizontalRule />
+              </EuiPageHeader>
 
-          <EuiPageContent
-            hasBorder={false}
-            hasShadow={false}
-            paddingSize="none"
-            borderRadius="none"
-            color="transparent"
-          >
-            <EuiPageContentBody restrictWidth>
-              <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
-                <EuiFlexItem grow={false}>
-                  <div id="story-wrapper">
-                    <Story />
-                  </div>
-                </EuiFlexItem>
+              <EuiPageContent
+                hasBorder={false}
+                hasShadow={false}
+                paddingSize="none"
+                borderRadius="none"
+                color="transparent"
+              >
+                <EuiPageContentBody restrictWidth>
+                  <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
+                    <EuiFlexItem grow={false}>
+                      <div id="story-wrapper">
+                        <Story />
+                      </div>
+                    </EuiFlexItem>
 
-                <EuiFlexItem style={{ padding: 24 }}>
-                  <EuiMarkdownFormat>{context?.parameters?.docs?.description.story}</EuiMarkdownFormat>
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPageContentBody>
-          </EuiPageContent>
-        </EuiPageBody>
-      </EuiPage>
-    </div>
+                    <EuiFlexItem style={{ padding: 24 }}>
+                      <EuiMarkdownFormat>{context?.parameters?.docs?.description?.story}</EuiMarkdownFormat>
+                    </EuiFlexItem>
+                  </EuiFlexGroup>
+                </EuiPageContentBody>
+              </EuiPageContent>
+            </EuiPageBody>
+          </EuiPage>
+        </div>
+      </BackgroundProvider>
+    </ThemeProvider>
   );
 };
