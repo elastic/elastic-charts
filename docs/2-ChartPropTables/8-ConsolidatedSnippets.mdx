@@ -18,7 +18,7 @@ import { TSVB_DATASET } from '@elastic/charts/src/utils/data_samples/test_datase
 
 Basic Bar
 ``` js
-<Chart className={'story-chart'}>
+<Chart>
     <BarSeries
     id={'bars1'}
     name={'Simple bar series'}
@@ -38,7 +38,7 @@ Basic Bar
 
 Bar with axes
 ```js
-<Chart className={'story-chart'}>
+<Chart>
     <Settings theme={LIGHT_THEME} />
     <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
@@ -65,7 +65,7 @@ Bar with axes
 
 Stacked bar chart
 ```js
-<Chart className={'story-chart'}>
+<Chart>
   <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
   <Axis
@@ -98,7 +98,7 @@ Stacked bar chart
 
 Basic area chart
 ```js
-<Chart className={'story-chart'}>
+<Chart>
   <AreaSeries
     id={'areas1'}
     xScaleType={ScaleType.Time}
@@ -112,7 +112,7 @@ Basic area chart
 
 Area chart with axes components
 ```js
-<Chart className={'story-chart'}>
+<Chart>
   <Axis
     id={'bottom'}
     title={'timestamp per 1 minute'}
@@ -139,7 +139,7 @@ Area chart with axes components
 
 Stacked area chart
 ```js
-<Chart className={'story-chart'}>
+<Chart>
   <Settings showLegend={true} legendPosition={Position.Right}/>
   <Axis
     id={'bottom'}
@@ -189,7 +189,7 @@ Stacked area chart
 
 Basic line chart
 ```js
-<Chart className={'story-chart'}>
+<Chart>
     <LineSeries
     id={'lines1'}
     xScaleType={ScaleType.Time}
@@ -203,7 +203,7 @@ Basic line chart
 
 Linear x axis line chart
 ```js
-<Chart className={'story-chart'}>
+<Chart>
     <Axis
     id={'bottom'}
     position={Position.Bottom}
@@ -230,7 +230,7 @@ Linear x axis line chart
 
 Stacked line chart
 ```js
-<Chart className={'story-chart'}>
+<Chart>
     <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis
     id={'bottom'}

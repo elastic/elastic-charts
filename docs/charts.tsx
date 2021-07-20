@@ -43,8 +43,6 @@ export default {
 };
 
 export const Basic = () => {
-  const darkmode = boolean('darkmode', false);
-  const className = darkmode ? 'story-chart-dark' : 'story-chart';
   const toggleSpec = boolean('toggle bar spec', true);
   const data1 = [
     { x: 0, y: 2 },
@@ -56,7 +54,7 @@ export const Basic = () => {
   const data = toggleSpec ? data1 : data2;
   const specId = toggleSpec ? 'bars1' : 'bars2';
   return (
-    <Chart className={className}>
+    <Chart>
       <BarSeries
         id={specId}
         name="Simple bar series"

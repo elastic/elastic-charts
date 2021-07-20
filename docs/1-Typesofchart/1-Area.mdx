@@ -23,7 +23,7 @@ Area charts often used to show overall trends over time rather than specific val
 
 [source](https://datavizproject.com/data-type/area-chart/)
 
-<Chart className={'story-chart'}>
+<Chart>
   <AreaSeries
     id={'areas1'}
     xScaleType={ScaleType.Time}
@@ -41,7 +41,7 @@ The code snippet for the area chart above is found in the details section below.
 <details>
 
 ```js
-<Chart className={'story-chart'}>
+<Chart>
   <AreaSeries
     id={'areas1'}
     xScaleType={ScaleType.Time}
@@ -56,7 +56,7 @@ The code snippet for the area chart above is found in the details section below.
 
 Here is the same chart including axes
 
-<Chart className={'story-chart'}>
+<Chart>
   <Axis
     id={'bottom'}
     title={'timestamp per 1 minute'}
@@ -91,7 +91,7 @@ To only have an area chart without axes, do not include the `<Axis/>` components
 <details>
 
 ```js
-<Chart className={'story-chart'}>
+<Chart>
   <Axis
     id={'bottom'}
     title={'timestamp per 1 minute'}

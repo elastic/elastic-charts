@@ -25,8 +25,6 @@ import { BarSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const darkmode = boolean('darkmode', false);
-  const className = darkmode ? 'story-chart-dark' : 'story-chart';
   const toggleSpec = boolean('toggle bar spec', true);
   const data1 = [
     { x: 0, y: 2 },
@@ -38,7 +36,7 @@ export const Example = () => {
   const data = toggleSpec ? data1 : data2;
   const specId = toggleSpec ? 'bars1' : 'bars2';
   return (
-    <Chart className={className}>
+    <Chart>
       <Settings baseTheme={useBaseTheme()} />
       <BarSeries
         id={specId}

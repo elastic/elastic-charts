@@ -22,7 +22,7 @@ import BarWAxisPropsTable from '../2-ChartPropTables/10-BarWAxisProps.md';
 
 [source](https://datavizproject.com/data-type/bar-chart/)
 
-<Chart className={'story-chart'}>
+<Chart>
     <BarSeries
     id={'bars1'}
     name={'Simple bar series'}
@@ -46,7 +46,7 @@ Below is a very basic bar chart from Elastic Charts. A bar chart is a chart with
 Bar charts provide a visual presentation of categorical data. Categorical data is a grouping of data into discrete groups, such as months of the year, age group, shoe sizes, and animals. These categories are usually qualitative. Bars on the chart may be arranged in any order.
 
 ``` js
-<Chart className={'story-chart'}>
+<Chart>
     <BarSeries
     id={'bars1'}
     name={'Simple bar series'}
@@ -75,7 +75,7 @@ Additonal prop tables for the following bar charts can be found in `Chart Refere
 
 This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `time`.
 
-<Chart className={'story-chart'}>
+<Chart>
     <Settings theme={LIGHT_THEME} />
     <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
@@ -105,7 +105,7 @@ This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `
 <details>
 
 ```js
-<Chart className={'story-chart'}>
+<Chart>
     <Settings theme={LIGHT_THEME} />
     <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
@@ -135,7 +135,7 @@ This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `
 
 And below is an example of an `ordinal` x axis bar chart
 
-<Chart className={'story-chart'}>
+<Chart>
     <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
     id={'left2'}
@@ -162,7 +162,7 @@ And below is an example of an `ordinal` x axis bar chart
 
 ```js
 
-<Chart className={'story-chart'}>
+<Chart>
     <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
     id={'left2'}
@@ -190,7 +190,7 @@ And below is an example of an `ordinal` x axis bar chart
 </details>
 
 Here is an example of a `time` x axis
-<Chart className={'story-chart'}>
+<Chart>
     <Settings debug={boolean('debug', false)} />
     <Axis
         id={'bottom'}
@@ -219,7 +219,7 @@ Here is an example of a `time` x axis
 <details>
 
 ```js
-<Chart className={'story-chart'}>
+<Chart>
     <Settings debug={boolean('debug', false)} />
     <Axis
         id={'bottom'}

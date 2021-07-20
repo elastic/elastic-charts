@@ -20,7 +20,7 @@
 import { color } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
+import { Chart, Datum, PartialTheme, Partition, PartitionLayout, Settings } from '@elastic/charts';
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
@@ -28,13 +28,13 @@ import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
 export const Example = () => {
-  const partialCustomTheme = {
+  const partialCustomTheme: PartialTheme = {
     background: {
       color: color('Change background container color', '#1c1c24'),
     },
   };
   return (
-    <Chart className="story-chart-dark">
+    <Chart>
       <Settings theme={partialCustomTheme} baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"
@@ -63,5 +63,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
+  themes: { default: 'Dark' },
   backgrounds: { disable: true },
 };

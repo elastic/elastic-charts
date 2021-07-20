@@ -96,7 +96,7 @@ describe('Accessibility', () => {
     );
 
     const sunburstLayerWrapper = mount(
-      <Chart className="story-chart">
+      <Chart>
         <Settings showLegend flatLegend={false} legendMaxDepth={2} />
         <Partition
           id="spec_1"
@@ -137,7 +137,7 @@ describe('Accessibility', () => {
 
   describe('Goal chart type accessibility', () => {
     const goalChartWrapper = mount(
-      <Chart className="story-chart">
+      <Chart>
         <Goal
           id="spec_1"
           subtype={GoalSubtype.Goal}

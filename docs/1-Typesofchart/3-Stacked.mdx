@@ -26,7 +26,7 @@ The stackAccessors prop is an array of fields that indicates the stack membershi
 
 
 ## Stacked bar chart examples
-<Chart className={'story-chart'}>
+<Chart>
   <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
   <Axis
@@ -60,7 +60,7 @@ The code for the chart above can be found below.
 <details>
 
 ```js
-<Chart className={'story-chart'}>
+<Chart>
   <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
   <Axis
@@ -95,7 +95,7 @@ The code for the chart above can be found below.
 ***
 ## Stacked area chart examples
 
-<Chart className={'story-chart'}>
+<Chart>
   <Settings showLegend={true} legendPosition={Position.Right}/>
   <Axis
   id={'bottom'}
@@ -145,7 +145,7 @@ The code for the chart above can be found below.
 <details>
 
 ```js
-<Chart className={'story-chart'}>
+<Chart>
   <Settings showLegend={true} legendPosition={Position.Right}/>
   <Axis
     id={'bottom'}
@@ -194,7 +194,7 @@ The code for the chart above can be found below.
 ```
 </details>
 
-<Chart className={'story-chart'}>
+<Chart>
   <Settings showLegend />
   <Axis id={'bottom'} title={'timestamp per 1 minute'} position={Position.Bottom} showOverlappingTicks={true} tickFormat={timeFormatter('HH:mm')}/>
   <Axis
@@ -228,7 +228,7 @@ The code for the chart above can be found below.
 
 <details>
 ```js
-<Chart className={'story-chart'}>
+<Chart>
   <Settings showLegend />
   <Axis id={'bottom'} title={'timestamp per 1 minute'} position={Position.Bottom} showOverlappingTicks={true} tickFormat={timeFormatter('HH:mm')}/>
   <Axis
@@ -262,7 +262,7 @@ The code for the chart above can be found below.
 ```
 </details>
 
-<Chart renderer="canvas" className={'story-chart'}>
+<Chart renderer="canvas">
   <Axis id={'bottom'} title={'index'} position={Position.Bottom} />
   <Axis
     id={'left'}
@@ -331,7 +331,7 @@ The code for the chart above can be found below.
 <details>
 
 ```js
-<Chart renderer="canvas" className={'story-chart'}>
+<Chart renderer="canvas">
   <Axis id={'bottom'} title={'index'} position={Position.Bottom} />
   <Axis
     id={'left'}
@@ -405,7 +405,7 @@ The code for the chart above can be found below.
 
 This chart shows multiple line series with an axis and legend.
 
-<Chart className={'story-chart'}>
+<Chart>
   <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis
     id={'bottom'}
@@ -450,7 +450,7 @@ This chart shows multiple line series with an axis and legend.
 
 Compare the above chart with the following below. The difference between the two charts is the addition of `stackAccessors={[0]}` in the `<LineSeries />` components.
 
-<Chart className={'story-chart'}>
+<Chart>
     <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis
     id={'bottom'}
@@ -499,7 +499,7 @@ Compare the above chart with the following below. The difference between the two
 <details>
 
 ```js
-<Chart className={'story-chart'}>
+<Chart>
     <Settings showLegend={true} legendPosition={Position.Right} />
   <Axis
     id={'bottom'}
