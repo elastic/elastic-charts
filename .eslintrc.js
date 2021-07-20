@@ -117,13 +117,7 @@ module.exports = {
     'implicit-arrow-linebreak': 0,
     'function-call-argument-newline': ['error', 'consistent'],
     'array-bracket-newline': ['error', 'consistent'],
-    'array-element-newline': [
-      'error',
-      {
-        ArrayExpression: 'consistent',
-        ArrayPattern: 'consistent',
-      },
-    ],
+    'array-element-newline': 0,
     'object-curly-newline': [
       'error',
       {
