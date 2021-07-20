@@ -35,7 +35,7 @@ import {
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { arrayKnobs, getChartRotationKnob } from '../../storybook/stories/utils/knobs';
+import { arrayKnobs, getChartRotationKnob } from '../storybook/stories/utils/knobs';
 
 export default {
   title: 'Introduction',
@@ -79,7 +79,7 @@ export const AreaBasic = () => {
   const specId = toggleSpec ? 'areas1' : 'areas2';
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <AreaSeries
         id={specId}
         xScaleType={ScaleType.Time}
@@ -120,7 +120,7 @@ export const lineBasicXDomainContinuous = () => {
   const axisPosition = isBottom ? Position.Bottom : Position.Top;
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings showLegend debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
       <LineAnnotation
         id="anno_1"
@@ -152,7 +152,7 @@ export const lineBasicXDomainOrdinal = () => {
   const dataValues = generateAnnotationData(arrayKnobs('annotation values', ['a', 'c']));
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
       <LineAnnotation
         id="anno_1"
