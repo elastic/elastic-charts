@@ -54,9 +54,9 @@ export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
         <path
           d={shape === PointShape.Diamond ? shapeFn(adjustedSize / 3) : shapeFn(adjustedSize / 2)}
           stroke={shape ? stroke ?? color : undefined}
-          strokeWidth={adjustedStrokeWidth}
+          strokeWidth={adjustedStrokeWidth > 1 ? 1 : adjustedStrokeWidth}
           fill={fill}
-          opacity={opacity}
+          opacity={opacity > 0.5 ? opacity : 1}
         />
       </g>
     </svg>

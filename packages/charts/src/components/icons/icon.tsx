@@ -40,7 +40,6 @@ interface IconProps {
   'data-test-subj'?: string;
   type?: IconType;
   color?: IconColor;
-  fillColor?: IconColor;
 }
 
 /** @internal */
