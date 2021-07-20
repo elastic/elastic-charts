@@ -498,7 +498,7 @@ export class ScaleContinuous implements Scale {
     }
     const currentValue = data[leftIndex - 1];
     // pure linear scale
-    if (this.minInterval === 0) {
+    if (this.bandwidth === 0) {
       const nextValue = data[leftIndex];
       const nextDiff = Math.abs(nextValue - invertedValue);
       const prevDiff = Math.abs(invertedValue - currentValue);
