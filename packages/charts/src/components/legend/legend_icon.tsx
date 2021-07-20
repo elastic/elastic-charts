@@ -26,21 +26,21 @@ const getAdjustedRadius = (radius: number | undefined, strokeWidth: number) => {
   return Math.max(Math.min(adjustedRadius, (radius ?? strokeWidth) * 2), 1);
 };
 
+/** helper function to determine styling */
+const getStyles = (color: Color, pointStyle: PointStyle) => {
+  return {
+    radius: pointStyle?.radius ?? 4,
+    fill: pointStyle?.fill ?? color,
+    strokeWidth: pointStyle?.strokeWidth ?? 1,
+    stroke: pointStyle?.stroke ?? color,
+    shape: pointStyle?.shape ?? PointShape.Circle,
+    opacity: pointStyle?.opacity ?? 1,
+  };
+};
+
 /** @internal */
 export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
-  const {
-    radius = 4,
-    fill,
-    strokeWidth = 1,
-    stroke = color,
-    shape = PointShape.Circle,
-    opacity = 1,
-  } = pointStyle?.shape
-    ? pointStyle ?? {}
-    : {
-        fill: color,
-      };
-
+  const { radius, fill, shape, stroke, strokeWidth, opacity } = getStyles(color, pointStyle!);
   const adjustedStrokeWidth = getAdjustedRadius(radius, strokeWidth);
   const [shapeFn, rotation] = ShapeRendererFn[shape];
   const adjustedSize = MARKER_SIZE - adjustedStrokeWidth;
@@ -52,7 +52,7 @@ export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
             rotate(${rotation})`}
       >
         <path
-          d={pointStyle?.shape === PointShape.Diamond ? shapeFn(adjustedSize / 3) : shapeFn(adjustedSize / 2)}
+          d={shape === PointShape.Diamond ? shapeFn(adjustedSize / 3) : shapeFn(adjustedSize / 2)}
           stroke={shape ? stroke ?? color : undefined}
           strokeWidth={adjustedStrokeWidth}
           fill={fill}
