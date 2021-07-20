@@ -68,6 +68,18 @@ describe('Computed chart dimensions', () => {
     position: Position.Left,
     tickFormat: (value: any) => `${value}`,
   };
+  const axisLeftTitleTopSpec: AxisSpec = {
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Axis,
+    id: 'axis_1',
+    groupId: 'group_1',
+    hide: false,
+    titlePosition: 'top',
+    showOverlappingTicks: false,
+    showOverlappingLabels: false,
+    position: Position.Left,
+    tickFormat: (value: any) => `${value}`,
+  };
   const legend: LegendStyle = {
     verticalWidth: 10,
     horizontalHeight: 10,
@@ -107,12 +119,36 @@ describe('Computed chart dimensions', () => {
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
     expect(chartDimensions).toMatchSnapshot();
   });
+  test('should be padded by a left axis with title on top', () => {
+    // |margin|titleFontSize|titlePadding|maxLabelBboxWidth|tickPadding|tickSize|padding|
+    // \10|10|10|10|10|10|10| = 70px from left
+    const axisDims = new Map<AxisId, AxisViewModel>();
+    const axisStyles = new Map();
+    const axisSpecs = [axisLeftTitleTopSpec];
+    axisDims.set('axis_1', axis1Dims);
+    const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisStyles, axisSpecs);
+    expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
+    expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
+    expect(chartDimensions).toMatchSnapshot();
+  });
   test('should be padded by a right axis', () => {
     // |padding|tickSize|tickPadding|maxLabelBBoxWidth|titlePadding|titleFontSize\margin|
     // \10|10|10|10|10|10|10| = 70px from right
     const axisDims = new Map<AxisId, AxisViewModel>();
     const axisStyles = new Map();
     const axisSpecs = [{ ...axisLeftSpec, position: Position.Right }];
+    axisDims.set('axis_1', axis1Dims);
+    const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisStyles, axisSpecs);
+    expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
+    expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
+    expect(chartDimensions).toMatchSnapshot();
+  });
+  test('should be padded by a right axis with title on top', () => {
+    // |padding|tickSize|tickPadding|maxLabelBBoxWidth|titlePadding|titleFontSize\margin|
+    // \10|10|10|10|10|10|10| = 70px from right
+    const axisDims = new Map<AxisId, AxisViewModel>();
+    const axisStyles = new Map();
+    const axisSpecs = [{ ...axisLeftTitleTopSpec, position: Position.Right }];
     axisDims.set('axis_1', axis1Dims);
     const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisStyles, axisSpecs);
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);

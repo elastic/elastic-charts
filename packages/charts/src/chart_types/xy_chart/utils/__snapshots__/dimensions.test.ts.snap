@@ -27,11 +27,29 @@ Object {
 }
 `;
 
+exports[`Computed chart dimensions should be padded by a left axis with title on top 1`] = `
+Object {
+  "height": 30,
+  "left": 50,
+  "top": 45,
+  "width": 30,
+}
+`;
+
 exports[`Computed chart dimensions should be padded by a right axis 1`] = `
 Object {
   "height": 50,
   "left": 20,
   "top": 25,
+  "width": 30,
+}
+`;
+
+exports[`Computed chart dimensions should be padded by a right axis with title on top 1`] = `
+Object {
+  "height": 40,
+  "left": 20,
+  "top": 35,
   "width": 30,
 }
 `;
