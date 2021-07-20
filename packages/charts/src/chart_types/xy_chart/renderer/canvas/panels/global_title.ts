@@ -62,12 +62,12 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   const offset =
     position === Position.Left || position === Position.Top
       ? titlePadding.outer
-      : labelSize + tickDimension + titlePadding.inner + panelTitleDimension; // the amount that the text is pushed in from the top of the text
+      : labelSize + tickDimension + titlePadding.inner + panelTitleDimension;
 
   const left = isTop
     ? position === Position.Left
-      ? 0
-      : anchorPoint.x + offset
+      ? anchorPoint.x
+      : anchorPoint.x + labelSize + tickDimension
     : anchorPoint.x + (horizontal ? 0 : offset);
   const top = anchorPoint.y + (horizontal ? offset : isTop ? font.fontSize - anchorPoint.y : height);
 
