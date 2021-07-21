@@ -1,3 +1,21 @@
+# [31.2.0](https://github.com/Metrika-Inc/metrika-charts/compare/v31.1.0...v31.2.0) (2021-07-21)
+
+
+### Bug Fixes
+
+* **heatmap:** correctly place x axis text in all cases ([1cf37d4](https://github.com/Metrika-Inc/metrika-charts/commit/1cf37d449bc4f46ddd4753bba9b4fa68a2a227d0))
+* **xychart:** when axis title is on top, it correctly lines up with axis labels vertically ([12839b5](https://github.com/Metrika-Inc/metrika-charts/commit/12839b5f00444f18d7c2824bfd19accbf0b0d520))
+
+
+### Features
+
+* **a11y:** allow user to add optional semantic meaning to goal/gauge charts ([#1218](https://github.com/Metrika-Inc/metrika-charts/issues/1218)) ([87629e2](https://github.com/Metrika-Inc/metrika-charts/commit/87629e23e7cc8aef125a8b6d2b87092085abe2bd)), closes [#1161](https://github.com/Metrika-Inc/metrika-charts/issues/1161)
+* **heatmap:** added the ability to customize the position and rotation of the x axis labels ([8280b64](https://github.com/Metrika-Inc/metrika-charts/commit/8280b64f048dd7a495502c8758de2d87177f2921))
+* **heatmap:** hard code x-axis labels sideways ([26ebe5e](https://github.com/Metrika-Inc/metrika-charts/commit/26ebe5ee71c948365af321251e27393eba079a70))
+* **xychart:** basic customization support for putting the axis title on top of the chart ([79865ba](https://github.com/Metrika-Inc/metrika-charts/commit/79865baf54dc3b881835c266079569b956c68073))
+* **xychart:** hard code left axis label to top of graph ([f10ff72](https://github.com/Metrika-Inc/metrika-charts/commit/f10ff729a39d18ab3f32c682f139a297e1852a6c))
+* **xychart:** the title for the right axis can now also go on top ([b2087a1](https://github.com/Metrika-Inc/metrika-charts/commit/b2087a14da0045e501b442acd07b263cf363c9ee))
+
 # [31.1.0](https://github.com/elastic/elastic-charts/compare/v31.0.0...v31.1.0) (2021-07-06)
 
 
