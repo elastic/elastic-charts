@@ -40,4 +40,4 @@ export { Example as partitionLabels } from './21_partition_labels';
 export { Example as darkTheme } from './22_dark_theme';
 export { Example as withTexture } from './23_with_texture';
 export { Example as textureMultipleSeries } from './24_texture_multiple_series';
-export { Example as shapeLegendMultipleSeries } from './25_mixed_chart_shapes';
+export { Example as mixedPointShapes } from './25_mixed_point_shapes';

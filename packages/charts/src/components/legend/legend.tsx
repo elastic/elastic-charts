@@ -40,6 +40,7 @@ import { getLegendStyle, getLegendListStyle } from './style_utils';
 
 interface LegendStateProps {
   debug: boolean;
+  alignLegendPointStyles?: boolean;
   chartDimensions: Dimensions;
   containerDimensions: Dimensions;
   chartTheme: Theme;
@@ -63,6 +64,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     items,
     size,
     debug,
+    alignLegendPointStyles,
     chartTheme: { chartMargins, legend },
     chartDimensions,
     containerDimensions,
@@ -89,6 +91,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
 
   const itemProps: Omit<LegendItemProps, 'item'> = {
     positionConfig,
+    alignLegendPointStyles,
     totalItems: items.length,
     extraValues: props.extraValues,
     showExtra: config.showLegendExtra,
@@ -109,7 +112,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     <div className={legendClasses} style={positionStyle}>
       <div style={containerStyle} className="echLegendListContainer">
         <ul style={listStyle} className="echLegendList">
-          {items.map((item, index) => renderLegendItem(item, itemProps, items.length, index))}
+          {items.map((item, index) => renderLegendItem(item, itemProps, index))}
         </ul>
       </div>
     </div>
@@ -148,9 +151,10 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
   if (!config.showLegend) {
     return EMPTY_DEFAULT_STATE;
   }
-  const { debug } = getSettingsSpecSelector(state);
+  const { debug, alignLegendPointStyles } = getSettingsSpecSelector(state);
   return {
     debug,
+    alignLegendPointStyles,
     chartDimensions: getInternalMainProjectionAreaSelector(state),
     containerDimensions: getInternalProjectionContainerAreaSelector(state),
     chartTheme: getChartThemeSelector(state),

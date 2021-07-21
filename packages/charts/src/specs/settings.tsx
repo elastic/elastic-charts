@@ -444,6 +444,12 @@ export interface LegendSpec {
    */
   legendAction?: LegendAction;
   legendColorPicker?: LegendColorPicker;
+  /**
+   * Aligns legend point styles to match series point styles
+   *
+   * This does *NOT* align point-specific styles via `pointStyleAccessor`
+   */
+  alignLegendPointStyles?: boolean;
 }
 
 /**
