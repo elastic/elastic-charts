@@ -29,7 +29,6 @@ import {
   Position,
   ScaleType,
   Settings,
-  useBaseTheme,
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';

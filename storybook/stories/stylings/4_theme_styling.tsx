@@ -37,7 +37,6 @@ import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(

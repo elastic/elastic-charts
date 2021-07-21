@@ -28,7 +28,6 @@ import {
   LineAnnotation,
   ScaleType,
   Settings,
-  useBaseTheme,
 } from '@elastic/charts';
 import { Position } from '@elastic/charts/src/utils/common';
 

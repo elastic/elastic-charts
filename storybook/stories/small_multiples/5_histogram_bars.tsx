@@ -29,7 +29,6 @@ import {
   SmallMultiples,
   Settings,
   BarSeries,
-  useBaseTheme,
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
