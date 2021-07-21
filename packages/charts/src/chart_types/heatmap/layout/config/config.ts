@@ -65,6 +65,7 @@ export const config: Config = {
     padding: 6,
     labelRotation: 0,
     position: 'top',
+    removeDuplicateTicks: true,
     formatter: String,
   },
   yAxisLabel: {

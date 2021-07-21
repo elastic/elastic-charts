@@ -28,3 +28,4 @@ export default {
 
 export { Example as basic } from './1_basic';
 export { Example as categorical } from './2_categorical';
+export { Example as remove_duplicates } from './3_duplicate_ticks';

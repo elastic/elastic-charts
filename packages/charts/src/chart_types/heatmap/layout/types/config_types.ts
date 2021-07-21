@@ -66,6 +66,7 @@ export interface Config {
     padding: number;
     labelRotation: Rotation;
     position: 'top' | 'bottom';
+    removeDuplicateTicks: boolean;
     formatter: (value: string | number) => string;
   };
   yAxisLabel: Font & {

@@ -27,7 +27,7 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp } from '../../../../utils/common';
+import { clamp, getUniqueValues } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
@@ -176,7 +176,7 @@ export function shapeViewModel(
   };
 
   // compute the position of each column label
-  const textXValues: Array<TextBox> = timeScale
+  let textXValues: Array<TextBox> = timeScale
     ? timeScale.ticks().map<TextBox>(getTextValue(config.xAxisLabel.formatter, (x: any) => timeScale.scale(x)))
     : xValues.map<TextBox>((textBox: any) => {
         return {
@@ -184,6 +184,9 @@ export function shapeViewModel(
           x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
         };
       });
+  if (config.xAxisLabel.removeDuplicateTicks === true) {
+    textXValues = getUniqueValues(textXValues, 'text');
+  }
 
   const { padding } = config.yAxisLabel;
   const rightPadding = typeof padding === 'number' ? padding : padding.right ?? 0;
