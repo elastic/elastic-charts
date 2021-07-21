@@ -1,13 +1,13 @@
 {
-  "name": "@elastic/charts",
-  "description": "Elastic-Charts data visualization library",
-  "version": "30.0.0",
-  "author": "Elastic DataVis",
+  "name": "@metrika/charts",
+  "description": "Data visualization library based on elastic-charts",
+  "version": "30.0.3",
+  "author": "Elastic DataVis, Metrika",
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "git@github.com:elastic/elastic-charts.git",
+  "repository": "git@github.com:Metrika-Inc/metrika-charts.git",
   "publishConfig": {
     "access": "public"
   },
