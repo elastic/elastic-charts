@@ -15,8 +15,8 @@ import { Config } from '../../packages/charts/src/chart_types/heatmap/layout/typ
 import { getRandomNumberGenerator } from '../../packages/charts/src/mocks/utils';
 
 const rng = getRandomNumberGenerator();
-const start = DateTime.fromISO('2021-03-27T20:00:00', { zone: 'CET' });
-const end = DateTime.fromISO('2021-03-28T11:00:00', { zone: 'CET' });
+const start = DateTime.fromISO('2021-03-27T20:00:00');
+const end = DateTime.fromISO('2021-03-28T11:00:00');
 const data = [...new Array(14)].flatMap((d, i) => {
   return [
     [start.plus({ hour: i }).toMillis(), 'cat A', rng(0, 10)],
@@ -79,10 +79,10 @@ export const Example = () => {
 
   return (
     <>
-      {/* <div style={{ fontFamily: 'monospace', fontSize: 10, paddingBottom: 5 }}> */}
-      {/*  {DateTime.fromMillis(start.toMillis() + startTimeOffset).toISO()} to{' '} */}
-      {/*  {DateTime.fromMillis(end.toMillis() + endTimeOffset).toISO()} */}
-      {/* </div> */}
+      <div style={{ fontFamily: 'monospace', fontSize: 10, paddingBottom: 5 }}>
+        {DateTime.fromMillis(start.toMillis() + startTimeOffset).toISO()} to{' '}
+        {DateTime.fromMillis(end.toMillis() + endTimeOffset).toISO()}
+      </div>
       <Chart className="story-chart">
         <Settings
           xDomain={{
