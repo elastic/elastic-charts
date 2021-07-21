@@ -46,14 +46,14 @@ export const Color = memo(
             title="change series color"
             ref={ref}
           >
-            <Icon type="dot" color={color} aria-label={`Change series color, currently ${color}`} />
+            <LegendIcon pointStyle={pointStyle} color={color} ariaLabel={`Change series color, currently ${color}`} />
           </button>
         );
       }
 
       return (
         <div className="echLegendItem__color" title="series color">
-          <LegendIcon pointStyle={pointStyle} color={color} />
+          <LegendIcon pointStyle={pointStyle} color={color} ariaLabel={`series color: ${color}`} />
         </div>
       );
     },

@@ -14,6 +14,7 @@ import { PointShape, PointStyle } from '../../utils/themes/theme';
 
 interface LegendIconProps {
   pointStyle?: PointStyle;
+  ariaLabel: string;
   color: Color;
 }
 
@@ -42,13 +43,13 @@ const getStyles = (color: Color, styles?: Partial<PointStyle>): Partial<Omit<Poi
 };
 
 /** @internal */
-export const LegendIcon = ({ pointStyle, color }: LegendIconProps) => {
+export const LegendIcon = ({ pointStyle, color, ariaLabel }: LegendIconProps) => {
   const { fill, shape = PointShape.Circle, stroke, strokeWidth, opacity } = getStyles(color, pointStyle);
   const [shapeFn, rotation] = ShapeRendererFn[shape];
 
   const adjustedSize = MARKER_SIZE - (strokeWidth ?? 0);
   return (
-    <svg width={MARKER_SIZE * 2} height={MARKER_SIZE * 2} aria-label={`series color: ${color}`}>
+    <svg width={MARKER_SIZE * 2} height={MARKER_SIZE * 2} aria-label={ariaLabel}>
       <g
         transform={`
           translate(${MARKER_SIZE}, ${MARKER_SIZE})
