@@ -28,14 +28,23 @@ const getAdjustedRadius = (radius: number | undefined, strokeWidth: number) => {
 
 /** helper function to determine styling */
 const getStyles = (color: Color, pointStyle: PointStyle) => {
-  return {
-    radius: pointStyle?.radius ?? 4,
-    fill: pointStyle?.fill ?? color,
-    strokeWidth: pointStyle?.strokeWidth ?? 1,
-    stroke: pointStyle?.stroke ?? color,
-    shape: pointStyle?.shape ?? PointShape.Circle,
-    opacity: pointStyle?.opacity ?? 1,
-  };
+  return pointStyle && pointStyle.shape
+    ? {
+        radius: pointStyle?.radius ?? 4,
+        fill: pointStyle?.fill ?? color,
+        strokeWidth: pointStyle?.strokeWidth ?? 1,
+        stroke: pointStyle?.stroke ?? color,
+        shape: pointStyle?.shape ?? PointShape.Circle,
+        opacity: pointStyle?.opacity ?? 1,
+      }
+    : {
+        radius: pointStyle?.radius ?? 4,
+        fill: color,
+        strokeWidth: pointStyle?.strokeWidth ?? 1,
+        stroke: pointStyle?.stroke ?? color,
+        shape: pointStyle?.shape ?? PointShape.Circle,
+        opacity: pointStyle?.opacity ?? 1,
+      };
 };
 
 /** @internal */
