@@ -966,6 +966,7 @@ export interface HeatmapConfig {
         padding: number;
         labelRotation: Rotation;
         position: 'top' | 'bottom';
+        removeDuplicateTicks: boolean;
         formatter: (value: string | number) => string;
     };
     // (undocumented)
