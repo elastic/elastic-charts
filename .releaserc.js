@@ -22,15 +22,5 @@ module.exports = {
       },
     ],
     '@semantic-release/git',
-    ...(isDryRun
-      ? []
-      : [
-          'semantic-release-slack-bot',
-          {
-            notifyOnSuccess: true,
-            notifyOnFail: true,
-            markdownReleaseNotes: true,
-          },
-        ]),
   ],
 };
