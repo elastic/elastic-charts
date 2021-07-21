@@ -9,16 +9,7 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
 
-import {
-  AreaSeries,
-  Axis,
-  BarSeries,
-  Chart,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
-} from '@elastic/charts';
+import { AreaSeries, Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 

@@ -147,18 +147,17 @@ export function shapeViewModel(
 
   const currentGridHeight = cellHeight * pageSize;
 
-  const getTextValue = (
-    formatter: (v: any, options: any) => string,
-    scaleCallback: (x: any) => number | undefined | null = xScale,
-  ) => (value: any): TextBox => {
-    return {
-      text: formatter(value, { timeZone: config.timeZone }),
-      value,
-      ...config.xAxisLabel,
-      x: chartDimensions.left + (scaleCallback(value) || 0),
-      y: cellHeight * pageSize + config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
+  const getTextValue =
+    (formatter: (v: any, options: any) => string, scaleCallback: (x: any) => number | undefined | null = xScale) =>
+    (value: any): TextBox => {
+      return {
+        text: formatter(value, { timeZone: config.timeZone }),
+        value,
+        ...config.xAxisLabel,
+        x: chartDimensions.left + (scaleCallback(value) || 0),
+        y: cellHeight * pageSize + config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
+      };
     };
-  };
 
   // compute the position of each column label
   const textXValues: Array<TextBox> = timeScale

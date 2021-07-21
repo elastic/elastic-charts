@@ -244,7 +244,7 @@ class Component extends React.Component<Props> {
     layout.on('end', (w: Word[]) => (ww = w)).start();
 
     const wordCount = wordcloudViewModel.data.length;
-    const renderedWordObjects = (ww as unknown) as Word[];
+    const renderedWordObjects = ww as unknown as Word[];
     const renderedWordCount: number = renderedWordObjects.length;
     const notAllWordsFit = wordCount !== renderedWordCount;
     if (notAllWordsFit && wordcloudViewModel.outOfRoomCallback instanceof Function) {

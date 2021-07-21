@@ -169,14 +169,8 @@ function ringSectorOuterRadius(innerRadius: Radian, ringThickness: Distance) {
 /** @internal */
 export function ringSectorConstruction(config: Config, innerRadius: Radius, ringThickness: Distance) {
   return (ringSector: ShapeTreeNode): RingSectorConstruction => {
-    const {
-      circlePadding,
-      radialPadding,
-      fillOutside,
-      radiusOutside,
-      fillRectangleWidth,
-      fillRectangleHeight,
-    } = config;
+    const { circlePadding, radialPadding, fillOutside, radiusOutside, fillRectangleWidth, fillRectangleHeight } =
+      config;
     const radiusGetter = fillOutside ? ringSectorOuterRadius : ringSectorInnerRadius;
     const geometricInnerRadius = radiusGetter(innerRadius, ringThickness)(ringSector);
     const innerR = geometricInnerRadius + circlePadding * 2;

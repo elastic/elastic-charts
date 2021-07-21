@@ -75,6 +75,6 @@ export class MockStore {
     const settings = getSettingsSpecSelector(store.getState());
 
     // debounce mocked as lodash.debounce to enable flush
-    if (settings.onPointerUpdate) ((settings.onPointerUpdate as unknown) as Cancelable).flush();
+    if (settings.onPointerUpdate) (settings.onPointerUpdate as unknown as Cancelable).flush();
   }
 }

@@ -24,18 +24,15 @@ export type GoalChartLabels = {
 };
 
 /** @internal */
-export const getGoalChartDataSelector = createCustomCachedSelector(
-  [geometries],
-  (geoms): GoalChartData => {
-    const goalChartData: GoalChartData = {
-      maximum: geoms.bulletViewModel.highestValue,
-      minimum: geoms.bulletViewModel.lowestValue,
-      target: geoms.bulletViewModel.target,
-      value: geoms.bulletViewModel.actual,
-    };
-    return goalChartData;
-  },
-);
+export const getGoalChartDataSelector = createCustomCachedSelector([geometries], (geoms): GoalChartData => {
+  const goalChartData: GoalChartData = {
+    maximum: geoms.bulletViewModel.highestValue,
+    minimum: geoms.bulletViewModel.lowestValue,
+    target: geoms.bulletViewModel.target,
+    value: geoms.bulletViewModel.actual,
+  };
+  return goalChartData;
+});
 
 /** @internal */
 export const getGoalChartLabelsSelector = createCustomCachedSelector([geometries], (geoms) => {

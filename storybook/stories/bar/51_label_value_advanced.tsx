@@ -9,7 +9,7 @@
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis,
+import {Axis,
   BarSeries,
   Chart,
   DisplayValueSpec,

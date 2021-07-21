@@ -27,6 +27,7 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
+
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const chartTypes: Record<string, any> = {

@@ -9,17 +9,7 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Axis,
-  Chart,
-  CurveType,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
-  Fit,
-  AreaSeries,
-} from '@elastic/charts';
+import { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings, Fit, AreaSeries } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 

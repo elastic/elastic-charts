@@ -9,16 +9,7 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  ScaleType,
-  Position,
-  Chart,
-  Axis,
-  GroupBy,
-  SmallMultiples,
-  Settings,
-  BarSeries,
-} from '@elastic/charts';
+import { ScaleType, Position, Chart, Axis, GroupBy, SmallMultiples, Settings, BarSeries } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';

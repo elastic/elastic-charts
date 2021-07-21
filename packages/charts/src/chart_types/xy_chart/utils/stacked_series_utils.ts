@@ -30,15 +30,14 @@ export interface StackedValues {
 }
 
 /** @internal */
-export const datumXSortPredicate = (xScaleType: ScaleType, sortedXValues?: (string | number)[]) => (
-  a: { x: number | string },
-  b: { x: number | string },
-) => {
-  if (xScaleType === ScaleType.Ordinal || typeof a.x === 'string' || typeof b.x === 'string') {
-    return sortedXValues ? sortedXValues.indexOf(a.x) - sortedXValues.indexOf(b.x) : 0;
-  }
-  return a.x - b.x;
-};
+export const datumXSortPredicate =
+  (xScaleType: ScaleType, sortedXValues?: (string | number)[]) =>
+  (a: { x: number | string }, b: { x: number | string }) => {
+    if (xScaleType === ScaleType.Ordinal || typeof a.x === 'string' || typeof b.x === 'string') {
+      return sortedXValues ? sortedXValues.indexOf(a.x) - sortedXValues.indexOf(b.x) : 0;
+    }
+    return a.x - b.x;
+  };
 
 type D3StackArrayElement = Record<SeriesKey, string | number | null>;
 type D3UnionStack = Record<
