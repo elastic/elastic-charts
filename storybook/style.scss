@@ -1,38 +1,71 @@
 @import '~@elastic/eui/dist/eui_theme_light';
 
 html {
-  .sb-show-main {
-    padding: 0 !important;
-  }
-
   &.light-theme {
     @import '~@elastic/eui/dist/eui_theme_light';
     @import '~@elastic/charts/src/theme_light';
+    @import '~@elastic/eui/src/global_styling/variables/_colors.scss';
 
-    .echChart {
-      background: white;
+    body, .echChart {
+      background: $euiPageBackgroundColor !important;
     }
   }
 
   &.dark-theme {
     @import '~@elastic/eui/dist/eui_theme_dark';
     @import '~@elastic/charts/src/theme_dark';
+    @import '~@elastic/eui/src/themes/eui/eui_colors_dark.scss';
 
-    .echChart {
-      background: #1a1b20;
+    body, .echChart {
+      background: $euiPageBackgroundColor !important;
+    }
+  }
+
+  &.disable-animations {
+    *,
+    *::after,
+    *::before {
+      transition-delay: 0s !important;
+      transition-duration: 0s !important;
+      animation-delay: -0.0001s !important;
+      animation-duration: 0s !important;
+      animation-play-state: paused !important;
+      caret-color: transparent !important;
+    }
+
+    .echLegend .echLegendListContainer :focus {
+      animation-duration: 0s !important; // remove focus animation but keep border
+    }
+
+    .euiSaturation:focus .euiSaturation__indicator {
+      animation: none !important; // fix color picker dot
+    }
+  }
+
+  &.echVisualTesting {
+    background: blanchedalmond !important;
+
+    #story-header {
+      display: none;
+    }
+
+    #root {
+      padding-top: 200px;
+      padding-bottom: 200px;
     }
   }
 }
 
-.euiPageHeader {
-  margin-bottom: 0 !important;
+body {
+  min-height: 100%;
 }
 
-.echInvisible {
-  visibility: hidden;
+#root {
+  z-index: 200;
+  position: relative;
 }
 
-#story-wrapper {
+#story-root {
   padding: 20px;
   width: 100%;
   height: 400px;
@@ -42,42 +75,38 @@ html {
   background-color: blanchedalmond;
 }
 
-html.disable-animations {
-  *,
-  *::after,
-  *::before {
-    transition-delay: 0s !important;
-    transition-duration: 0s !important;
-    animation-delay: -0.0001s !important;
-    animation-duration: 0s !important;
-    animation-play-state: paused !important;
-    caret-color: transparent !important;
-  }
+#story-header {
+  padding: 20px 40px 16px;
+}
 
-  .echLegend .echLegendListContainer :focus {
-    animation-duration: 0s !important; // remove focus animation but keep border
-  }
+.sb-show-main {
+  padding: 0 !important;
+}
 
-  .euiSaturation:focus .euiSaturation__indicator {
-    animation: none !important; // fix color picker dot
-  }
+.echChart {
+  box-sizing: border-box;
+}
+
+.echInvisible {
+  visibility: hidden;
+}
+
+#story-root + div table {
+  border: 1px solid gray;
+}
+
+#story-root + div table th {
+  border: 1px solid gray;
+  padding: 5px;
+}
+
+#story-root + div table td {
+  border: 1px solid gray;
+  padding: 5px;
 }
 
 .Pane.vertical.Pane1 {
   background: red;
-}
-
-html.echVisualTesting {
-  background-color: blanchedalmond;
-
-  #root > div:not(#story-root) {
-    display: none;
-  }
-
-  #root {
-    padding-top: 200px;
-    padding-bottom: 200px;
-  }
 }
 
 // for using EuiWrappingPopover in stories

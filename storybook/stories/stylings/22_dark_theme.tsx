@@ -35,7 +35,6 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const data1 = dg.generateGroupedSeries(40, 4);
@@ -93,7 +92,5 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  themes: {
-    default: 'Dark',
-  },
+  themes: { default: 'Dark' },
 };

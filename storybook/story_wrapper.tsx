@@ -19,14 +19,10 @@
 
 import {
   EuiMarkdownFormat,
-  EuiPage,
-  EuiPageBody,
-  EuiPageContent,
-  EuiPageContentBody,
-  EuiPageHeader,
   EuiFlexGroup,
   EuiFlexItem,
   EuiHorizontalRule,
+  EuiText,
 } from '@elastic/eui';
 import { DecoratorFunction } from '@storybook/addons';
 import React from 'react';
@@ -38,41 +34,46 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
 
   const themeName = context.globals?.themes?.value ?? ThemeName.Light;
   const backgroundColor = context.globals?.backgrounds?.value;
+  const markdown = context?.parameters?.docs?.description?.story;
 
   return (
     <ThemeProvider value={themeName}>
       <BackgroundProvider value={backgroundColor}>
-        <div id="wrapper">
-          <EuiPage paddingSize="none">
-            <EuiPageBody paddingSize="none">
-              <EuiPageHeader restrictWidth pageTitle={context.kind} description={context.name} paddingSize="l">
-                <EuiHorizontalRule />
-              </EuiPageHeader>
+        <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
+          <EuiFlexItem id="story-header" grow={false}>
 
-              <EuiPageContent
-                hasBorder={false}
-                hasShadow={false}
-                paddingSize="none"
-                borderRadius="none"
-                color="transparent"
-              >
-                <EuiPageContentBody restrictWidth>
-                  <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
-                    <EuiFlexItem grow={false}>
-                      <div id="story-wrapper">
-                        <Story />
-                      </div>
-                    </EuiFlexItem>
+            <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
+              <EuiFlexItem>
+                <EuiText>
+                  <h1 style={{ fontWeight: 200 }}>{context.kind}</h1>
+                </EuiText>
+              </EuiFlexItem>
 
-                    <EuiFlexItem style={{ padding: 24 }}>
-                      <EuiMarkdownFormat>{context?.parameters?.docs?.description?.story}</EuiMarkdownFormat>
-                    </EuiFlexItem>
-                  </EuiFlexGroup>
-                </EuiPageContentBody>
-              </EuiPageContent>
-            </EuiPageBody>
-          </EuiPage>
-        </div>
+              <EuiFlexItem>
+                <EuiText>
+                  <h2  style={{ fontWeight: 500 }}>{context.name}</h2>
+                </EuiText>
+              </EuiFlexItem>
+
+              <EuiHorizontalRule />
+
+            </EuiFlexGroup>
+          </EuiFlexItem>
+
+          <EuiFlexItem grow={false}>
+            <div id="story-root">
+              <Story />
+            </div>
+          </EuiFlexItem>
+
+          {
+            markdown && (
+              <EuiFlexItem style={{ padding: 24 }}>
+                <EuiMarkdownFormat>{markdown}</EuiMarkdownFormat>
+              </EuiFlexItem>
+            )
+          }
+        </EuiFlexGroup>
       </BackgroundProvider>
     </ThemeProvider>
   );
