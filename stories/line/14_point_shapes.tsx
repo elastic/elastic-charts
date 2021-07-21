@@ -27,7 +27,7 @@ const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20);
 const shapes = Object.values(PointShape);
 export const Example = () => (
   <Chart className="story-chart">
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} />
+    <Settings showLegend showLegendExtra legendPosition={Position.Right} alignLegendPointStyles />
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis
       id="left"

@@ -18,7 +18,7 @@ describe('Legend icons', () => {
   it('should test default dot icons', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend showLegendExtra />
+        <Settings showLegend showLegendExtra alignLegendPointStyles />
         <LineSeries
           id="areas"
           name="area"
@@ -35,10 +35,11 @@ describe('Legend icons', () => {
     expect(legendIconWrapper.exists).toBeTruthy();
     expect(legendIconWrapper.first().getElement().props.color).toEqual('#1EA593');
   });
-  it('should change color', () => {
+
+  it('should align styles - stroke', () => {
     const wrapperColorChange = mount(
       <Chart>
-        <Settings showLegend showLegendExtra />
+        <Settings showLegend showLegendExtra alignLegendPointStyles />
         <AreaSeries
           id="areas"
           name="area"
@@ -60,5 +61,28 @@ describe('Legend icons', () => {
     expect(legendIconWrapper.getElement().props.pointStyle.stroke).toEqual('#ff1a1a');
   });
 
-  // use specifies no shape, then it shouldn't pointStyles, just the color, access the pointStyles defaults built into it
+  it('should not align styles - stroke', () => {
+    const wrapperColorChange = mount(
+      <Chart>
+        <Settings showLegend showLegendExtra alignLegendPointStyles={false} />
+        <AreaSeries
+          id="areas"
+          name="area"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          splitSeriesAccessors={[2]}
+          areaSeriesStyle={{
+            point: {
+              stroke: '#ff1a1a',
+            },
+          }}
+          data={[[0, 123, 'group0']]}
+        />
+      </Chart>,
+    );
+    const legendIconWrapper = wrapperColorChange.find(LegendIcon);
+    expect(legendIconWrapper.getElement().props.pointStyle).toBeUndefined();
+  });
 });

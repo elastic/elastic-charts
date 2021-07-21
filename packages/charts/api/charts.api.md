@@ -1167,6 +1167,7 @@ export type LegendPositionConfig = {
 
 // @public
 export interface LegendSpec {
+    alignLegendPointStyles?: boolean;
     flatLegend?: boolean;
     legendAction?: LegendAction;
     // (undocumented)

@@ -20,19 +20,19 @@ exports[`Chart should render the legend name test 1`] = `
         </Resizer>
       </Connect(Resizer)>
       <Connect(LegendComponent)>
-        <LegendComponent debug={true} chartDimensions={{...}} containerDimensions={{...}} chartTheme={{...}} size={{...}} items={{...}} extraValues={{...}} config={{...}} onToggleDeselectSeriesAction={[Function (anonymous)]} onItemOutAction={[Function (anonymous)]} onItemOverAction={[Function (anonymous)]} clearTemporaryColors={[Function (anonymous)]} setTemporaryColor={[Function (anonymous)]} setPersistedColor={[Function (anonymous)]}>
+        <LegendComponent debug={true} alignLegendPointStyles={[undefined]} chartDimensions={{...}} containerDimensions={{...}} chartTheme={{...}} size={{...}} items={{...}} extraValues={{...}} config={{...}} onToggleDeselectSeriesAction={[Function (anonymous)]} onItemOutAction={[Function (anonymous)]} onItemOverAction={[Function (anonymous)]} clearTemporaryColors={[Function (anonymous)]} setTemporaryColor={[Function (anonymous)]} setPersistedColor={[Function (anonymous)]}>
           <div className=\\"echLegend echLegend--debug echLegend--vertical echLegend--right echLegend--top\\" style={{...}}>
             <div style={{...}} className=\\"echLegendListContainer\\">
               <ul style={{...}} className=\\"echLegendList\\">
-                <LegendItem item={{...}} positionConfig={{...}} totalItems={1} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[undefined]} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[undefined]} action={[undefined]}>
+                <LegendItem item={{...}} positionConfig={{...}} alignLegendPointStyles={[undefined]} totalItems={1} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[undefined]} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[undefined]} action={[undefined]}>
                   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"test\\">
                     <div className=\\"background\\" />
                     <ForwardRef color=\\"#1EA593\\" seriesName=\\"test\\" isSeriesHidden={false} hasColorPicker={false} onClick={[undefined]} pointStyle={[undefined]}>
                       <div className=\\"echLegendItem__color\\" title=\\"series color\\">
                         <LegendIcon pointStyle={[undefined]} color=\\"#1EA593\\">
                           <svg width={16} height={16} aria-label=\\"series color: #1EA593\\">
-                            <g transform=\\"\\\\n            translate(8, 8)\\\\n            rotate(0)\\">
-                              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"#1EA593\\" strokeWidth={1} fill=\\"#1EA593\\" opacity={1} />
+                            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+                              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"#1EA593\\" opacity={[undefined]} />
                             </g>
                           </svg>
                         </LegendIcon>
