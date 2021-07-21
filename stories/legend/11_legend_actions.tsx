@@ -16,6 +16,9 @@ import {
   EuiSpacer,
   EuiButton,
   PopoverAnchorPosition,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiButtonIcon,
 } from '@elastic/eui';
 import { boolean } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
@@ -118,7 +121,7 @@ const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ se
   );
 };
 
-const renderColorPicker = (anchorPosition: PopoverAnchorPosition): LegendColorPicker => ({
+export const renderEuiColorPicker = (anchorPosition: PopoverAnchorPosition): LegendColorPicker => ({
   anchor,
   color,
   onClose,
@@ -127,9 +130,30 @@ const renderColorPicker = (anchorPosition: PopoverAnchorPosition): LegendColorPi
   <EuiWrappingPopover isOpen button={anchor} closePopover={onClose} anchorPosition={anchorPosition} ownFocus>
     <EuiColorPicker display="inline" color={color} onChange={onChange} />
     <EuiSpacer size="m" />
-    <EuiButton fullWidth size="s" onClick={onClose}>
-      Done
-    </EuiButton>
+    <EuiFlexGroup gutterSize="none" alignItems="center" direction="row">
+      <EuiFlexItem grow={false}>
+        <EuiButton size="s" fill onClick={onClose} title="Confirm color selection">
+          Done
+        </EuiButton>
+      </EuiFlexItem>
+
+      <EuiFlexItem>
+        <EuiSpacer size="m" />
+      </EuiFlexItem>
+
+      <EuiFlexItem grow={false}>
+        <EuiButtonIcon
+          display="base"
+          iconType="cross"
+          color="danger"
+          title="Clear color selection"
+          onClick={() => {
+            onChange(null);
+            onClose();
+          }}
+        />
+      </EuiFlexItem>
+    </EuiFlexGroup>
   </EuiWrappingPopover>
 );
 
@@ -147,7 +171,7 @@ export const Example = () => {
         showLegendExtra={showLegendExtra}
         legendPosition={legendPosition}
         legendAction={hideActions ? undefined : getAction(euiPopoverPosition)}
-        legendColorPicker={showColorPicker ? renderColorPicker(euiPopoverPosition) : undefined}
+        legendColorPicker={showColorPicker ? renderEuiColorPicker(euiPopoverPosition) : undefined}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
