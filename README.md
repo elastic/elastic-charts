@@ -4,10 +4,6 @@
 </h1>
 <p align="center">
   <img alt="Build Status" src="https://github.com/elastic/elastic-charts/workflows/Unit%20testing/badge.svg?branch=master">
-  <a href="https://codecov.io/gh/elastic/elastic-charts">
-    <img src="https://codecov.io/gh/elastic/elastic-charts/branch/master/graph/badge.svg" />
-  </a>
-<a href="https://app.fossa.io/projects/git%2Bgithub.com%2Felastic%2Felastic-charts?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Felastic%2Felastic-charts.svg?type=shield"/></a>
   <a href="https://www.npmjs.com/@elastic/charts"><img alt="NPM version" src="https://img.shields.io/npm/v/@elastic/charts.svg?style=flat"></a>
   <a href="http://commitizen.github.io/cz-cli/"><img alt="Commitizen friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg"></a>
   <a href="https://elastic.github.io/elastic-charts">
@@ -15,13 +11,9 @@
   </a>
 </p>
 
-🚨 **WARNING** While open source, the intended consumers of this repository are Elastic products. Read the [FAQ][faq] for details.
 
----
 
-You should check out our [living style guide][docs], which contains many examples on how charts look and feel, and how to use them in your products.
-
-You could also check and fork the [codesandbox](https://codesandbox.io/s/elastic-charts-playground-87y7g?file=/src/App.tsx) example here to play with the code directly
+Check out our [living style guide][docs], which contains many examples on how charts look and feel, and how to use them in your products or fork the [codesandbox](https://codesandbox.io/s/elastic-charts-playground-87y7g?file=/src/App.tsx) example here to play directly with the library.
 
 ## Installation
 
@@ -81,7 +73,7 @@ You can find documentation around creating and submitting new features in [CONTR
 
 ## License
 
-[Apache Licensed][license]. Read the [FAQ][faq] for details.
+[Dual-licensed under Elastic v2 and Server Side Public License, v 1][license] Read the [FAQ][faq] for details.
 
 [license]: LICENSE.txt
 [faq]: FAQ.md
@@ -90,6 +82,3 @@ You can find documentation around creating and submitting new features in [CONTR
 [overview]: wiki/overview.md
 [theming]: wiki/theming.md
 [contributing]: CONTRIBUTING.md
-
-
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Felastic%2Felastic-charts.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Felastic%2Felastic-charts?ref=badge_large)

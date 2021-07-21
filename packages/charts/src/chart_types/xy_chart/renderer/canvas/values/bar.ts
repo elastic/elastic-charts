@@ -1,20 +1,9 @@
 /*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
  */
 
 import { colorIsDark, getTextColorIfTextInvertible } from '../../../../../common/color_calcs';
@@ -26,6 +15,7 @@ import { Dimensions } from '../../../../../utils/dimensions';
 import { BarGeometry } from '../../../../../utils/geometry';
 import { Point } from '../../../../../utils/point';
 import { Theme, TextAlignment } from '../../../../../utils/themes/theme';
+import { LabelOverflowConstraint } from '../../../utils/specs';
 import { renderText, wrapLines } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
 import { withPanelTransform } from '../utils/panel_transform';
@@ -56,7 +46,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     if (!displayValue) {
       continue;
     }
-    const { text, fontSize, fontScale } = displayValue;
+    const { text, fontSize, fontScale, overflowConstraints, isValueContainedInElement } = displayValue;
     let textLines = {
       lines: [text],
       width: displayValue.width,
@@ -71,7 +61,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
       textOpacity: 1,
     };
 
-    const { x, y, align, baseline, rect } = positionText(
+    const { x, y, align, baseline, rect, overflow } = positionText(
       bars[i],
       displayValue,
       rotation,
@@ -79,15 +69,20 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
       alignment,
     );
 
-    if (displayValue.isValueContainedInElement) {
+    if (isValueContainedInElement) {
       const width = rotation === 0 || rotation === 180 ? bars[i].width : bars[i].height;
       textLines = wrapLines(ctx, textLines.lines[0], font, fontSize, width, 100);
     }
-    if (displayValue.hideClippedValue && isOverflow(rect, renderingArea, rotation)) {
+    if (overflowConstraints.has(LabelOverflowConstraint.ChartEdges) && isOverflow(rect, renderingArea, rotation)) {
+      continue;
+    }
+    if (overflowConstraints.has(LabelOverflowConstraint.BarGeometry) && overflow) {
       continue;
     }
     if (debug) {
-      renderDebugRect(ctx, rect);
+      withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
+        renderDebugRect(ctx, rect);
+      });
     }
     const { width, height } = textLines;
     const linesLength = textLines.lines.length;
@@ -119,6 +114,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     }
   }
 }
+
 function repositionTextLine(
   origin: Point,
   chartRotation: Rotation,
@@ -264,7 +260,7 @@ function positionText(
   chartRotation: Rotation,
   offsets: { offsetX: number; offsetY: number },
   alignment?: TextAlignment,
-): { x: number; y: number; align: TextAlign; baseline: TextBaseline; rect: Rect } {
+): { x: number; y: number; align: TextAlign; baseline: TextBaseline; rect: Rect; overflow: boolean } {
   const { offsetX, offsetY } = offsets;
 
   const { alignmentOffsetX, alignmentOffsetY } = computeAlignmentOffset(geom, valueBox, chartRotation, alignment);
@@ -284,6 +280,7 @@ function positionText(
           width: valueBox.width,
           height: valueBox.height,
         },
+        overflow: valueBox.width > geom.width || valueBox.height > geom.height,
       };
     }
     case CHART_DIRECTION.RightToLeft: {
@@ -300,6 +297,7 @@ function positionText(
           width: valueBox.height,
           height: valueBox.width,
         },
+        overflow: valueBox.height > geom.width || valueBox.width > geom.height,
       };
     }
     case CHART_DIRECTION.LeftToRight: {
@@ -316,6 +314,7 @@ function positionText(
           width: valueBox.height,
           height: valueBox.width,
         },
+        overflow: valueBox.height > geom.width || valueBox.width > geom.height,
       };
     }
     case CHART_DIRECTION.BottomUp:
@@ -333,6 +332,7 @@ function positionText(
           width: valueBox.width,
           height: valueBox.height,
         },
+        overflow: valueBox.width > geom.width || valueBox.height > geom.height,
       };
     }
   }

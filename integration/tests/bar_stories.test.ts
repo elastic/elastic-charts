@@ -1,20 +1,9 @@
 /*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
  */
 
 import { DisplayValueStyle, HorizontalAlignment, VerticalAlignment } from '../../packages/charts/src';
@@ -132,6 +121,11 @@ describe('Bar series stories', () => {
           });
         });
       });
+    });
+    it('clip both geometry and chart area values', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/bar-chart--with-value-label&knob-show single series=&knob-show value label=true&knob-alternating value label=&knob-contain value label within bar element=&knob-hide label if overflows chart edges=true&knob-hide label if overflows bar geometry=true&knob-debug=&knob-value font size=11&knob-value color=%23000&knob-offsetX=0&knob-offsetY=10&knob-data volume size=s&knob-split series=&knob-stacked series=&knob-chartRotation=0&knob-legend=right',
+      );
     });
   });
 

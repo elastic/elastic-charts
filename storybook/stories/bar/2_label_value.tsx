@@ -1,26 +1,24 @@
 /*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
  */
 
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  DisplayValueSpec,
+  LabelOverflowConstraint,
+  Position,
+  ScaleType,
+  Settings,
+} from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -30,9 +28,9 @@ const dataGen = new SeededDataGenerator();
 function generateDataWithAdditional(num: number) {
   return [...dataGen.generateSimpleSeries(num), { x: num, y: 0.25, g: 0 }, { x: num + 1, y: 8, g: 0 }];
 }
-const frozenDataSmallVolume = generateDataWithAdditional(10);
-const frozenDataMediumVolume = generateDataWithAdditional(50);
-const frozenDataHighVolume = generateDataWithAdditional(1500);
+const frozenDataSmallVolume = generateDataWithAdditional(5);
+const frozenDataMediumVolume = generateDataWithAdditional(30);
+const frozenDataHighVolume = generateDataWithAdditional(500);
 
 const frozenData: { [key: string]: any[] } = {
   s: frozenDataSmallVolume,
@@ -41,16 +39,24 @@ const frozenData: { [key: string]: any[] } = {
 };
 
 export const Example = () => {
+  const singleSeries = boolean('show single series', false);
   const showValueLabel = boolean('show value label', true);
   const isAlternatingValueLabel = boolean('alternating value label', false);
   const isValueContainedInElement = boolean('contain value label within bar element', false);
-  const hideClippedValue = boolean('hide clipped value', false);
-
+  const overflowChartEdges = boolean('hide label if overflows chart edges', false);
+  const overflowBarGeometry = boolean('hide label if overflows bar geometry', false);
+  const overflowConstraints: DisplayValueSpec['overflowConstraints'] = [];
+  if (overflowChartEdges) {
+    overflowConstraints.push(LabelOverflowConstraint.ChartEdges);
+  }
+  if (overflowBarGeometry) {
+    overflowConstraints.push(LabelOverflowConstraint.BarGeometry);
+  }
   const displayValueSettings = {
     showValueLabel,
     isAlternatingValueLabel,
     isValueContainedInElement,
-    hideClippedValue,
+    overflowConstraints,
   };
 
   const debug = boolean('debug', false);
@@ -58,13 +64,13 @@ export const Example = () => {
   const theme = {
     barSeriesStyle: {
       displayValue: {
-        fontSize: number('value font size', 10),
+        fontSize: Number(number('value font size', 10)),
         fontFamily: "'Open Sans', Helvetica, Arial, sans-serif",
         fontStyle: 'normal',
         padding: 0,
         fill: color('value color', '#000'),
-        offsetX: number('offsetX', 0),
-        offsetY: number('offsetY', 0),
+        offsetX: Number(number('offsetX', 0)),
+        offsetY: Number(number('offsetY', 0)),
       },
     },
   };
@@ -109,26 +115,28 @@ export const Example = () => {
         stackAccessors={stackAccessors}
         data={data}
       />
-      <BarSeries
-        id="bars2"
-        displayValueSettings={displayValueSettings}
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y']}
-        stackAccessors={['x']}
-        splitSeriesAccessors={['g']}
-        data={[
-          { x: 0, y: 2, g: 'a' },
-          { x: 1, y: 7, g: 'a' },
-          { x: 2, y: 3, g: 'a' },
-          { x: 3, y: 6, g: 'a' },
-          { x: 0, y: 4, g: 'b' },
-          { x: 1, y: 5, g: 'b' },
-          { x: 2, y: 8, g: 'b' },
-          { x: 3, y: 2, g: 'b' },
-        ]}
-      />
+      {!singleSeries && (
+        <BarSeries
+          id="bars2"
+          displayValueSettings={displayValueSettings}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          stackAccessors={['x']}
+          splitSeriesAccessors={['g']}
+          data={[
+            { x: 0, y: 2, g: 'a' },
+            { x: 1, y: 7, g: 'a' },
+            { x: 2, y: 3, g: 'a' },
+            { x: 3, y: 6, g: 'a' },
+            { x: 0, y: 4, g: 'b' },
+            { x: 1, y: 5, g: 'b' },
+            { x: 2, y: 8, g: 'b' },
+            { x: 3, y: 2, g: 'b' },
+          ]}
+        />
+      )}
     </Chart>
   );
 };

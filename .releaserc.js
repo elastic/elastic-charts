@@ -25,12 +25,15 @@ module.exports = {
     ...(isDryRun
       ? []
       : [
-          'semantic-release-slack-bot',
-          {
-            notifyOnSuccess: true,
-            notifyOnFail: true,
-            markdownReleaseNotes: true,
-          },
+          [
+            'semantic-release-slack-bot',
+            {
+              packageName: '@elastic/charts',
+              notifyOnSuccess: true,
+              notifyOnFail: true,
+              markdownReleaseNotes: true,
+            },
+          ],
         ]),
   ],
 };

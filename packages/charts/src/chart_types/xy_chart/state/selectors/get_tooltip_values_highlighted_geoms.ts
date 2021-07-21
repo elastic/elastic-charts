@@ -1,20 +1,9 @@
 /*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
  */
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
@@ -26,6 +15,7 @@ import {
   isFollowTooltipType,
   SettingsSpec,
   getTooltipType,
+  getShowNullValues,
 } from '../../../../specs';
 import { TooltipType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -134,66 +124,67 @@ function getTooltipAndHighlightFromValue(
   let header: TooltipValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
   const xValues = new Set<any>();
+  const hideNullValues = !getShowNullValues(settings);
+  const values = matchingGeoms.reduce<TooltipValue[]>((acc, indexedGeometry) => {
+    if (hideNullValues && indexedGeometry.value.y === null) {
+      return acc;
+    }
+    const {
+      seriesIdentifier: { specId },
+    } = indexedGeometry;
+    const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, specId);
 
-  const values = matchingGeoms
-    .filter(({ value: { y } }) => y !== null)
-    .reduce<TooltipValue[]>((acc, indexedGeometry) => {
-      const {
-        seriesIdentifier: { specId },
-      } = indexedGeometry;
-      const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, specId);
+    // safe guard check
+    if (!spec) {
+      return acc;
+    }
+    const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
 
-      // safe guard check
-      if (!spec) {
-        return acc;
-      }
-      const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
+    // yScales is ensured by the enclosing if
+    const yScale = scales.yScales.get(getSpecDomainGroupId(spec));
+    if (!yScale) {
+      return acc;
+    }
 
-      // yScales is ensured by the enclosing if
-      const yScale = scales.yScales.get(getSpecDomainGroupId(spec));
-      if (!yScale) {
-        return acc;
-      }
+    // check if the pointer is on the geometry (avoid checking if using external pointer event)
+    let isHighlighted = false;
+    if (
+      (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
+      isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
+    ) {
+      isHighlighted = true;
+      highlightedGeometries.push(indexedGeometry);
+    }
 
-      // check if the pointer is on the geometry (avoid checking if using external pointer event)
-      let isHighlighted = false;
-      if (
-        (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
-        isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
-      ) {
-        isHighlighted = true;
-        highlightedGeometries.push(indexedGeometry);
-      }
+    // if it's a follow tooltip, and no element is highlighted
+    // do _not_ add element into tooltip list
+    if (!isHighlighted && isFollowTooltipType(tooltipType)) {
+      return acc;
+    }
 
-      // if it's a follow tooltip, and no element is highlighted
-      // do _not_ add element into tooltip list
-      if (!isHighlighted && isFollowTooltipType(tooltipType)) {
-        return acc;
-      }
+    // format the tooltip values
+    const yAxisFormatSpec = [0, 180].includes(chartRotation) ? yAxis : xAxis;
+    const formattedTooltip = formatTooltip(
+      indexedGeometry,
+      spec,
+      false,
+      isHighlighted,
+      hasSingleSeries,
+      yAxisFormatSpec,
+    );
 
-      // format the tooltip values
-      const yAxisFormatSpec = [0, 180].includes(chartRotation) ? yAxis : xAxis;
-      const formattedTooltip = formatTooltip(
-        indexedGeometry,
-        spec,
-        false,
-        isHighlighted,
-        hasSingleSeries,
-        yAxisFormatSpec,
-      );
+    // format only one time the x value
+    if (!header) {
+      // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
+      const xAxisFormatSpec = [0, 180].includes(chartRotation) ? xAxis : yAxis;
+      const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
+      header = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
+    }
 
-      // format only one time the x value
-      if (!header) {
-        // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
-        const xAxisFormatSpec = [0, 180].includes(chartRotation) ? xAxis : yAxis;
-        const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
-        header = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
-      }
+    xValues.add(indexedGeometry.value.x);
 
-      xValues.add(indexedGeometry.value.x);
-
-      return [...acc, formattedTooltip];
-    }, []);
+    return [...acc, formattedTooltip];
+  }, []);
 
   if (values.length > 1 && xValues.size === values.length) {
     // TODO: remove after tooltip redesign

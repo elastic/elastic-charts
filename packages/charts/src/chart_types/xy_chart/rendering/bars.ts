@@ -1,32 +1,21 @@
 /*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
  */
 
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, Color, mergePartial } from '../../../utils/common';
+import { clamp, Color, isNil, mergePartial } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
-import { BarStyleAccessor, DisplayValueSpec, StackMode } from '../utils/specs';
+import { BarStyleAccessor, DisplayValueSpec, LabelOverflowConstraint, StackMode } from '../utils/specs';
 
 /** @internal */
 export function renderBars(
@@ -57,10 +46,6 @@ export function renderBars(
 
   dataSeries.data.forEach((datum) => {
     const { y0, y1, initialY1, filled } = datum;
-    // don't create a bar if the initialY1 value is null.
-    if (y1 === null || initialY1 === null || (filled && filled.y1 !== undefined)) {
-      return;
-    }
     // don't create a bar if not within the xScale domain
     if (!xScale.isValueInDomain(datum.x)) {
       return;
@@ -81,12 +66,15 @@ export function renderBars(
       y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
     }
 
-    if (y === null || y0Scaled === null) {
-      return;
+    const absMinHeight = Math.abs(minBarHeight);
+
+    // safeguard against null y values
+    let height = isNil(y0Scaled) || isNil(y) ? 0 : y0Scaled - y;
+
+    if (isNil(y0Scaled) || isNil(y)) {
+      y = 0;
     }
 
-    const absMinHeight = Math.abs(minBarHeight);
-    let height = y0Scaled - y;
     if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
       const heightDelta = absMinHeight - Math.abs(height);
       if (height < 0) {
@@ -125,20 +113,15 @@ export function renderBars(
     const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
     const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
-    const originalY1Value = stackMode === StackMode.Percentage ? y1 - (y0 ?? 0) : initialY1;
-    const formattedDisplayValue =
-      displayValueSettings && displayValueSettings.valueFormatter
-        ? displayValueSettings.valueFormatter(originalY1Value)
-        : undefined;
+    const originalY1Value = stackMode === StackMode.Percentage ? (isNil(y1) ? null : y1 - (y0 ?? 0)) : initialY1;
+    const formattedDisplayValue = displayValueSettings?.valueFormatter?.(originalY1Value);
 
     // only show displayValue for even bars if showOverlappingValue
     const displayValueText =
-      displayValueSettings && displayValueSettings.isAlternatingValueLabel && barGeometries.length % 2
-        ? undefined
-        : formattedDisplayValue;
+      displayValueSettings?.isAlternatingValueLabel && barGeometries.length % 2 ? undefined : formattedDisplayValue;
 
     const { displayValueWidth, fixedFontScale } = computeBoxWidth(
-      displayValueText || '',
+      displayValueText ?? '',
       { padding, fontSize, fontFamily, bboxCalculator, width },
       displayValueSettings,
     );
@@ -154,21 +137,26 @@ export function renderBars(
       fixedFontScale,
       fontSize,
     );
+    const overflowConstraints: Set<LabelOverflowConstraint> = new Set(
+      displayValueSettings?.overflowConstraints ?? [
+        LabelOverflowConstraint.ChartEdges,
+        LabelOverflowConstraint.BarGeometry,
+      ],
+    );
 
-    const hideClippedValue = displayValueSettings ? displayValueSettings.hideClippedValue : undefined;
     // Based on rotation scale the width of the text box
     const bboxWidthFactor = isHorizontalRotation ? textScalingFactor : 1;
 
-    const displayValue =
-      displayValueSettings && displayValueSettings.showValueLabel
+    const displayValue: BarGeometry['displayValue'] | undefined =
+      displayValueText && displayValueSettings?.showValueLabel
         ? {
             fontScale: textScalingFactor,
             fontSize: fixedFontScale,
             text: displayValueText,
             width: bboxWidthFactor * displayValueWidth,
             height: textScalingFactor * fixedFontScale,
-            hideClippedValue,
-            isValueContainedInElement: displayValueSettings.isValueContainedInElement,
+            overflowConstraints,
+            isValueContainedInElement: displayValueSettings?.isValueContainedInElement ?? false,
           }
         : undefined;
 
@@ -195,7 +183,10 @@ export function renderBars(
       panel,
     };
     indexedGeometryMap.set(barGeometry);
-    barGeometries.push(barGeometry);
+
+    if (y1 !== null && initialY1 !== null && filled?.y1 === undefined) {
+      barGeometries.push(barGeometry);
+    }
   });
 
   bboxCalculator.destroy();

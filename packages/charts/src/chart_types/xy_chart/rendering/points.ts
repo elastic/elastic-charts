@@ -1,20 +1,9 @@
 /*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
  */
 
 import { Scale } from '../../../scales';
@@ -72,9 +61,6 @@ export function renderPoints(
       return acc;
     }
     // don't create the point if it that point was filled
-    if (isDatumFilled(datum)) {
-      return acc;
-    }
     const x = xScale.scale(xValue);
 
     if (x === null) {
@@ -90,12 +76,8 @@ export function renderPoints(
       let y: number | null;
       try {
         y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
-        // skip rendering point if y1 is null
-        if (y === null) {
-          return;
-        }
       } catch {
-        return;
+        y = null;
       }
 
       const originalY = getDatumYValue(datum, keyIndex === 0, hasY0Accessors, dataSeries.stackMode);
@@ -117,7 +99,7 @@ export function renderPoints(
         : styleOverrides?.radius ?? pointStyle.radius;
       const pointGeometry: PointGeometry = {
         x,
-        y,
+        y: y === null ? NaN : y,
         radius,
         color,
         style,
@@ -138,7 +120,7 @@ export function renderPoints(
       };
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
-      if (yDefined(datum, valueAccessor)) {
+      if (y !== null && yDefined(datum, valueAccessor) && !isDatumFilled(datum)) {
         points.push(pointGeometry);
       }
     });

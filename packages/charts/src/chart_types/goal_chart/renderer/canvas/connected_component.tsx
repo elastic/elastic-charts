@@ -1,27 +1,16 @@
 /*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
  */
 
 import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { ScreenReaderSummary } from '../../../../components/accessibility';
+import { GoalSemanticDescription, ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -31,15 +20,20 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
-import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { geometries } from '../../state/selectors/geometries';
+import { BandViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { Mark } from '../../layout/viewmodel/geoms';
+import { geometries, getPrimitiveGeoms } from '../../state/selectors/geometries';
+import { getFirstTickValueSelector, getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
+  geoms: Mark[];
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
+  bandLabels: BandViewModel[];
+  firstValue: number;
 }
 
 interface ReactiveChartDispatchProps {
@@ -51,6 +45,7 @@ interface ReactiveChartOwnProps {
 }
 
 type Props = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
+
 class Component extends React.Component<Props> {
   static displayName = 'Goal';
 
@@ -112,11 +107,12 @@ class Component extends React.Component<Props> {
       chartContainerDimensions: { width, height },
       forwardStageRef,
       a11ySettings,
+      bandLabels,
+      firstValue,
     } = this.props;
     if (!initialized || width === 0 || height === 0) {
       return null;
     }
-
     return (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <canvas
@@ -133,6 +129,7 @@ class Component extends React.Component<Props> {
           role="presentation"
         >
           <ScreenReaderSummary />
+          <GoalSemanticDescription bandLabels={bandLabels} firstValue={firstValue} {...a11ySettings} />
         </canvas>
       </figure>
     );
@@ -145,11 +142,7 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      const { width, height }: Dimensions = this.props.chartContainerDimensions;
-      renderCanvas2d(this.ctx, this.devicePixelRatio, {
-        ...this.props.geometries,
-        config: { ...this.props.geometries.config, width, height },
-      });
+      renderCanvas2d(this.ctx, this.devicePixelRatio, this.props.geoms);
     }
   }
 }
@@ -165,6 +158,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
   geometries: nullShapeViewModel(),
+  geoms: [],
   chartContainerDimensions: {
     width: 0,
     height: 0,
@@ -172,6 +166,8 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     top: 0,
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
+  bandLabels: [],
+  firstValue: 0,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -183,6 +179,9 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometries: geometries(state),
     chartContainerDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
+    bandLabels: getGoalChartSemanticDataSelector(state),
+    firstValue: getFirstTickValueSelector(state),
+    geoms: getPrimitiveGeoms(state),
   };
 };
 

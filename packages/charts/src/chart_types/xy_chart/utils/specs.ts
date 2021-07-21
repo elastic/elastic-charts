@@ -1,20 +1,9 @@
 /*
- * Licensed to Elasticsearch B.V. under one or more contributor
- * license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright
- * ownership. Elasticsearch B.V. licenses this file to you under
- * the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
  */
 
 import { ReactNode } from 'react';
@@ -385,17 +374,46 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 export type CustomXDomain = (DomainRange & Pick<LogScaleOptions, 'logBase'>) | OrdinalDomain;
 
 /** @public */
+export const LabelOverflowConstraint = Object.freeze({
+  BarGeometry: 'barGeometry' as const,
+  ChartEdges: 'chartEdges' as const,
+});
+
+/** @public */
+export type LabelOverflowConstraint = $Values<typeof LabelOverflowConstraint>;
+
+/** @public */
 export interface DisplayValueSpec {
-  /** Show value label in chart element */
+  /**
+   * Show value label in chart element
+   * @defaultValue false
+   */
   showValueLabel?: boolean;
-  /** If value labels are shown, skips every other label */
+  /**
+   * If value labels are shown, skips every other label
+   * @defaultValue false
+   */
   isAlternatingValueLabel?: boolean;
-  /** Function for formatting values; will use axis tickFormatter if none specified */
+  /**
+   * Function for formatting values; will use axis tickFormatter if none specified
+   * @defaultValue false
+   */
   valueFormatter?: TickFormatter;
-  /** If true will contain value label within element, else dimensions are computed based on value */
+  /**
+   * If true will contain value label within element, else dimensions are computed based on value
+   * @deprecated This feature is deprecated and will be removed. Wrapping numbers into multiple lines
+   * is not considered a good practice.
+   * @defaultValue false
+   */
   isValueContainedInElement?: boolean;
-  /** If true will hide values that are clipped at chart edges */
-  hideClippedValue?: boolean;
+
+  /**
+   * An option to hide the value label on certain conditions:
+   * - `barGeometry` the label is not rendered if the width/height overflows the associated bar geometry,
+   * - `chartEdges` the label is not rendered if it overflows the chart projection area.
+   * @defaultValue ['barGeometry', 'chartEdges']
+   */
+  overflowConstraints?: Array<LabelOverflowConstraint>;
 }
 
 /** @public */
