@@ -18,7 +18,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, button, select } from '@storybook/addon-knobs';
+import { boolean, button, select, number } from '@storybook/addon-knobs';
 import React, { useCallback, useMemo, useState } from 'react';
 import { debounce } from 'ts-debounce';
 
@@ -35,21 +35,25 @@ import {
 import { Config } from '../../packages/charts/src/chart_types/heatmap/layout/types/config_types';
 import { SWIM_LANE_DATA } from '../../packages/charts/src/utils/data_samples/test_anomaly_swim_lane';
 
+const X_AXIS = 'X Axis';
+
 export const Example = () => {
   const [selection, setSelection] = useState<{ x: (string | number)[]; y: (string | number)[] } | undefined>();
 
   const persistCellsSelection = boolean('Persist cells selection', true);
   const debugState = boolean('Enable debug state', true);
   const dataStateAction = action('DataState');
-  const xAxisVisible = boolean('X Axis visible', true);
-  const xAxisLabelRotation = select('X Axis Label Rotation', [0, 90, -90, 180], 0);
-  const xAxisPosition = select('X Axis Position', ['top', 'bottom'], 'top');
   const showLegend = boolean('Show Legend', false);
   const handler = useCallback(() => {
     setSelection(undefined);
   }, []);
 
   button('Clear cells selection', handler);
+
+  const xAxisVisible = boolean('X Axis visible', true, X_AXIS);
+  const xAxisLabelRotation = select('X Axis Label Rotation', [0, 90, -90, 180], 0, X_AXIS);
+  const xAxisPosition = select('X Axis Position', ['top', 'bottom'], 'top', X_AXIS);
+  const xAxisPadding = number('X Axis padding', 0, { range: true, min: 0, max: 30, step: 1 }, X_AXIS);
 
   const config: RecursivePartial<Config> = useMemo(
     () => ({
@@ -82,6 +86,7 @@ export const Example = () => {
         visible: xAxisVisible,
         labelRotation: xAxisLabelRotation,
         position: xAxisPosition,
+        padding: xAxisPadding,
         formatter: (value: string | number) => {
           return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
         },
@@ -90,7 +95,7 @@ export const Example = () => {
         setSelection({ x: e.x, y: e.y });
       }) as Config['onBrushEnd'],
     }),
-    [xAxisVisible, xAxisLabelRotation, xAxisPosition],
+    [xAxisVisible, xAxisLabelRotation, xAxisPosition, xAxisPadding],
   );
 
   const logDebugstate = debounce(() => {

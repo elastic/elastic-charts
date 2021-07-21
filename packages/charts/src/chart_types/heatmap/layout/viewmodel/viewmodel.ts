@@ -170,7 +170,7 @@ export function shapeViewModel(
       x: chartDimensions.left + (scaleCallback(value) || 0),
       y:
         (config.xAxisLabel.position === 'top' ? 0 : cellHeight * pageSize) +
-        config.xAxisLabel.fontSize / 2 +
+        (Math.abs(config.xAxisLabel.labelRotation) === 90 ? 0 : config.xAxisLabel.fontSize / 2) +
         config.xAxisLabel.padding,
     };
   };
