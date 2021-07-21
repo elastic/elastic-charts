@@ -1,5 +1,3 @@
-const isDryRun = process.argv.includes('--dry-run');
-
 /**
  * Semantic release is currently a 1:1 relationship between repo and package.
  * This is fine for our use case as we currently only publish a single package.
