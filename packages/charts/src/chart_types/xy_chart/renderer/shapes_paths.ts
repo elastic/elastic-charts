@@ -30,7 +30,7 @@ const triangle: SVGPathFn = (r: number) => {
  */
 const square = (rotation = 0): SVGPathFn => (r: number) => {
   const d = getRadians(rotation);
-  const s = Math.cos(d) + Math.sin(d);
+  const s = Math.abs(Math.cos(d) + Math.sin(d));
   // scaled r to account for rotation;
   const sr = s > 0 ? r / s : r;
   return `M ${-sr} ${-sr} L ${-sr} ${sr} L ${sr} ${sr} L ${sr} ${-sr} Z`;
