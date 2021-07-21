@@ -13,6 +13,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSpecs } from '../../../../state/selectors/get_settings_specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { geoms, Mark } from '../../layout/viewmodel/geoms';
 import { GoalSpec } from '../../specs';
 import { render } from './scenegraph';
 
@@ -24,5 +25,14 @@ export const geometries = createCustomCachedSelector(
   (specs, parentDimensions): ShapeViewModel => {
     const goalSpecs = getSpecsFromStore<GoalSpec>(specs, ChartType.Goal, SpecType.Series);
     return goalSpecs.length === 1 ? render(goalSpecs[0], parentDimensions) : nullShapeViewModel();
+  },
+);
+
+/** @internal */
+export const getPrimitiveGeoms = createCustomCachedSelector(
+  [geometries, getParentDimensions],
+  (shapeViewModel: ShapeViewModel, { width, height }): Mark[] => {
+    const { config, chartCenter, bulletViewModel } = shapeViewModel;
+    return geoms(bulletViewModel, { ...config, width, height }, chartCenter);
   },
 );

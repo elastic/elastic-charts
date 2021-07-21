@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import { BandViewModel } from '../../chart_types/goal_chart/layout/types/viewmodel_types';
 import { A11ySettings } from '../../state/selectors/get_accessibility_config';
@@ -22,20 +22,16 @@ export const GoalSemanticDescription = ({
   labelId,
   firstValue,
 }: A11ySettings & GoalSemanticDescriptionProps) => {
-  return bandLabels.length > 1 ? (
+  return bandLabels[0] && bandLabels[0].text.length > 1 ? (
     <dl className="echScreenReaderOnly echGoalDescription" key={`goalChart--${labelId}`}>
       {bandLabels.map(({ value, text }, index) => {
+        if (firstValue === value) return;
         const prevValue = bandLabels[index - 1];
-        return prevValue !== undefined ? (
-          <>
-            <dt key={`dt--${index}`}>{`${prevValue.value} - ${value}`}</dt>
-            <dd key={`dd--${index}`}>{`${text[index]}`}</dd>
-          </>
-        ) : (
-          <>
-            <dt key={`dt--${index}`}>{`${firstValue} - ${value}`}</dt>
-            <dd key={`dd--${index}`}>{`${text[index]}`}</dd>
-          </>
+        return (
+          <Fragment key={`dtdd--${value}--${text[index]}`}>
+            <dt>{`${prevValue?.value ?? firstValue} - ${value}`}</dt>
+            <dd>{`${text[index]}`}</dd>
+          </Fragment>
         );
       })}
     </dl>
