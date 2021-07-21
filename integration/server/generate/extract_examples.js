@@ -39,7 +39,7 @@ function readdirSync(dir, fileList = []) {
  * - the default exports object (in particular the title used on the story)
  * - for each named exports, extract their names + file paths
  */
-function extractExamples(exampleRelativePath = 'stories') {
+function extractExamples(exampleRelativePath = 'storybook/stories') {
   // eslint-disable-next-line no-console
   console.log('Extract examples from', path.join(process.cwd(), exampleRelativePath));
 

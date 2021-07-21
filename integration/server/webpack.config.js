@@ -65,45 +65,21 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        oneOf: [
+        use: [
+          'style-loader',
           {
-            resourceQuery: /^\?lazy$/,
-            use: [
-              {
-                loader: 'style-loader',
-                options: {
-                  injectType: 'lazyStyleTag',
-                },
-              },
-              {
-                loader: 'css-loader',
-                options: { importLoaders: 1 },
-              },
-              {
-                loader: 'postcss-loader',
-                options: {
-                  plugins: [require('autoprefixer')],
-                },
-              },
-              'sass-loader',
-            ],
+            loader: 'css-loader',
+            options: { importLoaders: 1 },
           },
           {
-            use: [
-              'style-loader',
-              {
-                loader: 'css-loader',
-                options: { importLoaders: 1 },
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [require('autoprefixer')],
               },
-              {
-                loader: 'postcss-loader',
-                options: {
-                  plugins: [require('autoprefixer')],
-                },
-              },
-              'sass-loader',
-            ],
+            },
           },
+          'sass-loader',
         ],
       },
     ],
