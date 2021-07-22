@@ -17,7 +17,7 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
 
   const themeName = context.globals?.themes?.value ?? ThemeName.Light;
   const backgroundColor = context.globals?.backgrounds?.value;
-  const markdown = context?.parameters?.docs?.description?.story;
+  const markdown = context?.parameters?.markdown;
 
   return (
     <ThemeProvider value={themeName}>
@@ -33,7 +33,7 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
 
               <EuiFlexItem>
                 <EuiText>
-                  <h2 style={{ fontWeight: 500 }}>{context.name}</h2>
+                  <h2 style={{ fontWeight: 400 }}>{context.name}</h2>
                 </EuiText>
               </EuiFlexItem>
 

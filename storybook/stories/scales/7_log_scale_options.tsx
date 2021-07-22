@@ -150,9 +150,7 @@ export const Example = () => {
 
 Example.parameters = {
   options: { selectedPanel: SB_SOURCE_PANEL },
-  docs: {
-    description: {
-      story: `With the \`domain.fit\` option enabled, Log scales will try to best fit the y axis data without setting a baseline to a hardcoded value, currently 1.
+  markdown: `With the \`domain.fit\` option enabled, Log scales will try to best fit the y axis data without setting a baseline to a hardcoded value, currently 1.
       If you provide a \`logMinLimit\` on the \`Axis.domain\` prop, the scale will be limited to that value.
       This is _not_ the same as min domain value, such that if all values are greater than \`logMinLimit\`,
       the domain min will be determined solely by the dataset.\n\nThe \`domain.logBase\` and \`xDomain.logBase\` options
@@ -160,6 +158,4 @@ Example.parameters = {
       [\`Common\`](https://en.wikipedia.org/wiki/Common_logarithm) (base 10),
       [\`Binary\`](https://en.wikipedia.org/wiki/Binary_logarithm) (base 2),
       [\`Natural\`](https://en.wikipedia.org/wiki/Natural_logarithm) (base e), the default is \`Common\``,
-    },
-  },
 };

@@ -9,7 +9,8 @@
 import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {Axis,
+import {
+  Axis,
   BarSeries,
   Chart,
   DisplayValueSpec,
@@ -78,8 +79,7 @@ export const Example = () => {
         fontStyle: 'normal',
         padding: 0,
         fill: useInverted
-          ? // @ts-ignore
-            { textInverted: useInverted, textContrast: true, textBorder: borderSize }
+          ? { textInvertible: useInverted, textContrast: true, textBorder: borderSize }
           : { color: valueColor, borderColor, borderWidth: borderSize },
         offsetX: number('offsetX', 0),
         offsetY: number('offsetY', 0),

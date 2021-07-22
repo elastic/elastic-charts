@@ -43,10 +43,6 @@ export const Example = () => (
 );
 
 Example.parameters = {
-  docs: {
-    description: {
-      story:
-        'The `Theme.chartMargins` does not contain the legend element. Adding legend margins via `Theme.legend.margin` allows adding margins to the Left/right or Top/Bottom of the legend.',
-    },
-  },
+  markdown:
+    'The `Theme.chartMargins` does not contain the legend element. Adding legend margins via `Theme.legend.margin` allows adding margins to the Left/right or Top/Bottom of the legend.',
 };

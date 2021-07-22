@@ -145,12 +145,8 @@ export const Example = () => {
 
 Example.parameters = {
   options: { selectedPanel: SB_KNOBS_PANEL },
-  docs: {
-    description: {
-      story: `The \`markerBody\` on the \`LineAnnotationSpec\` will be dynamically positioned to show content that would otherwise be hidden or overflow the chart.
-        The \`marker\` prop (also on the \`LineAnnotationSpec\`) however, will always be positioned centered on the given \`dataValue\`.
-        These can be used interchangeably to provide a content-rich annotation without losing the data reference.
-        **Note: you will need to provide the necessary axis padding for the \`markerBody\` content as this is _not_ currently accounted for in the chart dimensioning**`,
-    },
-  },
+  markdown: `The \`markerBody\` on the \`LineAnnotationSpec\` will be dynamically positioned to show content that would otherwise be hidden or overflow the chart.
+    The \`marker\` prop (also on the \`LineAnnotationSpec\`) however, will always be positioned centered on the given \`dataValue\`.
+    These can be used interchangeably to provide a content-rich annotation without losing the data reference.
+    **Note: you will need to provide the necessary axis padding for the \`markerBody\` content as this is _not_ currently accounted for in the chart dimensioning**`,
 };

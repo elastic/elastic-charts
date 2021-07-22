@@ -57,12 +57,8 @@ export const Example = () => {
 
 Example.parameters = {
   options: { selectedPanel: SB_SOURCE_PANEL },
-  docs: {
-    description: {
-      story: `You can apply different formatter between tick values in the tooltip and legend by using
+  markdown: `You can apply different formatter between tick values in the tooltip and legend by using
       different values for \`tickFormat\` and \`labelFormat\`.
 
 Use a [numeraljs](http://numeraljs.com/) format with the knobs to see the difference`,
-    },
-  },
 };

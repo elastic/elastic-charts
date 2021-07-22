@@ -138,9 +138,7 @@ export const Example = () => {
 };
 Example.parameters = {
   options: { selectedPanel: SB_SOURCE_PANEL },
-  docs: {
-    description: {
-      story: `Similarly to the Vertical Areas example, the above chart shows an example of small multiples technique
+  markdown: `Similarly to the Vertical Areas example, the above chart shows an example of small multiples technique
 that splits our dataset into multiple sub-series horizontally positioned one aside the other.
 In this case, the \`<GroupBy />\` id is used to specify the horizontal split via the \`splitHorizontally\` prop.
 
@@ -148,6 +146,4 @@ As for single charts, we can merge and handle multiple data-series together and 
 the specific case. An additional property \`sort\` is available to configure the sorting order of the vertical or
 horizontal split.
 `,
-    },
-  },
 };

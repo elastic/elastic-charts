@@ -142,9 +142,4 @@ export const Example = () => {
 
 Example.parameters = {
   options: { selectedPanel: SB_SOURCE_PANEL },
-  docs: {
-    description: {
-      story: '',
-    },
-  },
 };

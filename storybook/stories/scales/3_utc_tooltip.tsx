@@ -41,11 +41,7 @@ export const Example = () => (
 
 Example.parameters = {
   options: { selectedPanel: SB_SOURCE_PANEL },
-  docs: {
-    description: {
-      story: `The default timezone is UTC. If you want to visualize data in UTC,
+  markdown: `The default timezone is UTC. If you want to visualize data in UTC,
       but you are in a different timezone, remember to format the millis from \`tickFormat\`
       to UTC. In this Example be able to see the first value on \`2019-01-01  00:00:00.000 \``,
-    },
-  },
 };

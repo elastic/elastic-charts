@@ -44,10 +44,6 @@ export const Example = () => (
 );
 
 Example.parameters = {
-  docs: {
-    description: {
-      story:
-        'Sends an event every time the chart render state changes. This is provided to bind attributes to the chart for visulaization loading checks.',
-    },
-  },
+  markdown:
+    'Sends an event every time the chart render state changes. This is provided to bind attributes to the chart for visulaization loading checks.',
 };

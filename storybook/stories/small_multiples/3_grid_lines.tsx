@@ -143,13 +143,9 @@ export const Example = () => {
 };
 Example.parameters = {
   options: { selectedPanel: SB_SOURCE_PANEL },
-  docs: {
-    description: {
-      story: `It is possible to add either a vertical and horizontal \`<GroupBy/>\` operations to create a grid of
+  markdown: `It is possible to add either a vertical and horizontal \`<GroupBy/>\` operations to create a grid of
 small multiples.
 The assignment of the series colors can be handled by defining an accessor in the \`color\` prop of the series that
 consider the \`smHorizontalAccessorValue\` or \`smVerticalAccessorValue\` values when returning the assigned color.
 `,
-    },
-  },
 };

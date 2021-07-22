@@ -89,9 +89,5 @@ export const Example = () => {
 // storybook configuration
 Example.parameters = {
   options: { selectedPanel: SB_SOURCE_PANEL },
-  docs: {
-    description: {
-      story: 'Using a single axis with different unit types is discouraged. ',
-    },
-  },
+  markdown: 'Using a single axis with different unit types is discouraged. ',
 };

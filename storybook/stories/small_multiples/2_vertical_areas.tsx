@@ -94,16 +94,12 @@ export const Example = () => {
 };
 Example.parameters = {
   options: { selectedPanel: SB_SOURCE_PANEL },
-  docs: {
-    description: {
-      story: `The above chart shows an example of small multiples technique that splits our dataset into multiple
+  markdown: `The above chart shows an example of small multiples technique that splits our dataset into multiple
       sub-series vertically positioned one below the other.
       The configuration is obtained by defining a \`<GroupBy />\` operation component that define the property used to
-       divide/group my dataset(via to the \`by\` props) and using the specified \`id\` of that operation inside the
-       \`<SmallMultiples splitVertically="id_of_group_by_op" />\` component.
+      divide/group my dataset(via to the \`by\` props) and using the specified \`id\` of that operation inside the
+      \`<SmallMultiples splitVertically="id_of_group_by_op" />\` component.
 
 Each charts has the same vertical and horizontal axis scale.
 `,
-    },
-  },
 };

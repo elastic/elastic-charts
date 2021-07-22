@@ -88,11 +88,7 @@ export const Example = () => {
 // storybook configuration
 Example.parameters = {
   options: { selectedPanel: SB_KNOBS_PANEL },
-  docs: {
-    description: {
-      story: `You can specify a \`groupId\` in the \`useDefaultGroupDomain\` prop.
+  markdown: `You can specify a \`groupId\` in the \`useDefaultGroupDomain\` prop.
 This will allows you to match and merge the data domain of two different groups and reuse it on multiple series group.
       `,
-    },
-  },
 };

@@ -217,11 +217,7 @@ export const Example = () => {
 };
 Example.parameters = {
   options: { selectedPanel: SB_SOURCE_PANEL },
-  docs: {
-    description: {
-      story: `If your data is in UTC timezone, your tooltip and axis labels can be configured
+  markdown: `If your data is in UTC timezone, your tooltip and axis labels can be configured
       to visualize the time translated to your local timezone. You should be able to see the
       first value on \`2019-01-01  01:00:00.000 \``,
-    },
-  },
 };

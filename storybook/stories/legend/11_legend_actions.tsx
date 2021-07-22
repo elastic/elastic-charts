@@ -171,10 +171,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  docs: {
-    description: {
-      story:
-        'The `legendAction` action prop allows you to pass a render function/component that will render next to the legend item.\n\n __Note:__ the context menu, color picker and popover are supplied by [eui](https://elastic.github.io/eui/#).',
-    },
-  },
+  markdown:
+    'The `legendAction` action prop allows you to pass a render function/component that will render next to the legend item.\n\n __Note:__ the context menu, color picker and popover are supplied by [eui](https://elastic.github.io/eui/#).',
 };

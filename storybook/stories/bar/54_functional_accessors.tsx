@@ -55,9 +55,7 @@ export const Example = () => {
 
 Example.parameters = {
   options: { selectedPanel: SB_SOURCE_PANEL },
-  docs: {
-    description: {
-      story: `An \`AccessorFn\` can be used as any accessor including: \`xAccessor\`, \`yAccessors\`, \`y0Accessors\` and \`splitSeriesAccessors\`.
+  markdown: `An \`AccessorFn\` can be used as any accessor including: \`xAccessor\`, \`yAccessors\`, \`y0Accessors\` and \`splitSeriesAccessors\`.
 
 This enables serialization of complex values, without needing to transform raw data.
 
@@ -77,6 +75,4 @@ Try changing the \`fieldName\` for the y and split accessor functions in the sto
 
 **Note: All \`fieldName\` and \`Accessor\` values should be unique. Any duplicated values will be ignored.**
       `,
-    },
-  },
 };

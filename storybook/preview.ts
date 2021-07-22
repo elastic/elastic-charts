@@ -19,9 +19,9 @@ if (process.env.VRT) {
 
 export const parameters = {
   globals: {
-    // Required for reading globals from query param
+    // Required for reading globals from query param, disabled for now
     // See https://github.com/storybookjs/storybook/issues/15632#issuecomment-883542827
-    backgrounds: {},
+    // backgrounds: {},
   },
   themes: {
     default: 'Light',
@@ -37,7 +37,6 @@ export const parameters = {
   },
   backgrounds: {
     clearable: true,
-    default: 'White',
     values: [
       { name: 'White', value: '#fff' }, // $euiColorEmptyShade
       { name: 'Black', value: '#1D1E24' }, // $euiColorEmptyShade

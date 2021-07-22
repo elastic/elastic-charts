@@ -38,10 +38,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  docs: {
-    description: {
-      story:
-        'Using string values with a `Linear` scale will attempt to fallback to an `Ordinal` scale. Notice how the custom `xDomain` is ignored when the scale falls back to `Ordinal`.',
-    },
-  },
+  markdown:
+    'Using string values with a `Linear` scale will attempt to fallback to an `Ordinal` scale. Notice how the custom `xDomain` is ignored when the scale falls back to `Ordinal`.',
 };

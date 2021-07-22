@@ -104,15 +104,11 @@ export const Example = () => {
 
 Example.parameters = {
   backgrounds: { default: 'White' },
-  docs: {
-    description: {
-      story: `The \`onElementClick\` receive an argument with the following type definition: \`Array<[Array<LayerValue>, SeriesIdentifier]>\`.
+  markdown: `The \`onElementClick\` receive an argument with the following type definition: \`Array<[Array<LayerValue>, SeriesIdentifier]>\`.
 
 Usually the outer array contains only one item but, in a near future, we will group smaller slices into a single one during the interaction.
 
 For every clicked slice, you will have an array of \`LayerValue\`s and a \`SeriesIdentifier\`. The array of \`LayerValues\` is sorted
 in the same way as the \`layers\` props, and helps you to idenfity the \`groupByRollup\` value and the slice value on every sunburst level.
       `,
-    },
-  },
 };

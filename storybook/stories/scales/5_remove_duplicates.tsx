@@ -40,9 +40,5 @@ export const Example = () => (
 );
 
 Example.parameters = {
-  docs: {
-    description: {
-      story: 'hideDuplicateAxes will remove redundant axes that have the same min and max labels and position',
-    },
-  },
+  markdown: 'hideDuplicateAxes will remove redundant axes that have the same min and max labels and position',
 };

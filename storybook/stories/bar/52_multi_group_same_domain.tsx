@@ -121,9 +121,7 @@ export const Example = () => {
 // storybook configuration
 Example.parameters = {
   options: { selectedPanel: SB_KNOBS_PANEL },
-  docs: {
-    description: {
-      story: `You can group together series specifying a \`groupId\` prop on the series.
+  markdown: `You can group together series specifying a \`groupId\` prop on the series.
 In the case of barchart, series with the same \`groupId\` will be grouped and eventually stacked together.
 
 The data Y domain of each group, specified by \`groupId\`, is computed independently. This is reflected also on the rendering
@@ -134,6 +132,4 @@ Use \`useDefaultGroupDomain\` if the same domain is required on every series. If
 the group id applied by default on every series with no specific groupId. You can also pass a \`string\` to use a different \`groupId\`
 see next storybook example.
       `,
-    },
-  },
 };

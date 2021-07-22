@@ -31,6 +31,7 @@
     "cz": "git-cz",
     "lint": "NODE_ENV=production eslint --quiet --ext .tsx,.ts,.js .",
     "lint:fix": "yarn lint --fix",
+    "lint:fix:it": "NODE_ENV=production eslint --quiet --fix --ext .tsx,.ts,.js",
     "prettier:check": "prettier --check \"**/*.{json,html,css,scss}\"",
     "playground": "cd playground && webpack serve",
     "pq": "pretty-quick",

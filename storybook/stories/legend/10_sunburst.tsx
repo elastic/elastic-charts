@@ -113,12 +113,8 @@ export const Example = () => {
 
 Example.parameters = {
   backgrounds: { default: 'White' },
-  docs: {
-    description: {
-      story: `To flatten a hierarchical legend (like the rendered in a pie chart or a treemap when using a multi-layer configuration) you can
+  markdown: `To flatten a hierarchical legend (like the rendered in a pie chart or a treemap when using a multi-layer configuration) you can
 add the \`flatLegend\` prop into the \`<Settings  baseTheme={useBaseTheme()} />\` component.
 
 To limit displayed hierarchy to a specific depth, you can use the \`legendMaxDepth\` prop. The first layer will have a depth of \`1\`.`,
-    },
-  },
 };

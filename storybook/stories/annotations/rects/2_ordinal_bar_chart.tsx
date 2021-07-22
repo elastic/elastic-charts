@@ -55,11 +55,7 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  docs: {
-    description: {
-      story: `On Ordinal Bar charts, you can draw a rectangular annotation the same way it's done within a linear bar chart.
+  markdown: `On Ordinal Bar charts, you can draw a rectangular annotation the same way it's done within a linear bar chart.
 The annotation will cover fully the extent defined by the \`coordinate\` object, extending to the max/min domain values any
 missing/out-of-range parameters.`,
-    },
-  },
 };

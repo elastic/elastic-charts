@@ -39,11 +39,7 @@ export const Example = () => (
 
 Example.parameters = {
   options: { selectedPanel: SB_SOURCE_PANEL },
-  docs: {
-    description: {
-      story: `You can visualize data in a different timezone than your local or UTC zones.
+  markdown: `You can visualize data in a different timezone than your local or UTC zones.
       Specify the \`timeZone={'utc-6'}\` property with the correct timezone and
       remember to apply the same timezone also to each formatted tick in \`tickFormat\``,
-    },
-  },
 };
