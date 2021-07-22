@@ -25,6 +25,7 @@ export const parameters = {
     // Required for reading globals from query param, disabled for now
     // See https://github.com/storybookjs/storybook/issues/15632#issuecomment-883542827
     // backgrounds: {},
+    // themes: {}, this does not work
   },
   themes: {
     default: 'Light',

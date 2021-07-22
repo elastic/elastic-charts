@@ -40,16 +40,27 @@ export function useGlobalsParameters() {
   /**
    * Handles setting global context values. Stub for theme and background addons
    */
-  function setParams<T extends WithParameters>({ parameters }: T) {
-    const newThemeName = parameters?.themes?.default ?? 'Light';
-    setBackgroundColor(parameters?.backgrounds?.value ?? 'White');
+  function setParams<T extends WithParameters>({ parameters }: T, params: URLSearchParams) {
+    const globals = getGlobalParams(params);
+    const newThemeName = parameters?.themes?.default ?? globals.themes;
     setThemeName(newThemeName);
     setTheme(newThemeName);
+    setBackgroundColor(parameters?.backgrounds?.value ?? globals.backgrounds);
   }
 
   return {
     themeName,
     backgroundColor,
     setParams,
+  };
+}
+
+function getGlobalParams(params: URLSearchParams) {
+  const globals = params.get('globals') ?? '';
+  const map = Object.fromEntries(globals.split(';').map((pair: string) => pair.split(':')));
+
+  return {
+    backgrounds: map['backgrounds.value'],
+    themes: map['themes.value'] ?? 'Light',
   };
 }

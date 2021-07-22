@@ -45,14 +45,15 @@ html {
   }
 
   &.echVisualTesting {
-    background: blanchedalmond !important;
+    &, body, #root {
+      background: blanchedalmond !important;
+    }
 
     #story-header {
       display: none;
     }
 
     #root {
-      background: blanchedalmond !important;
       padding-top: 200px;
       padding-bottom: 200px;
     }

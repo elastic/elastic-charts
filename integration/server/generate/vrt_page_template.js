@@ -49,9 +49,10 @@ export function VRTPage() {
     backgroundColor,
     setParams,
   } = useGlobalsParameters();
+  const urlParams = new URL(window.location.toString()).searchParams;
   ${imports.join('\n  ')}
 
-  const path = new URL(window.location.toString()).searchParams.get('path');
+  const path = urlParams.get('path');
   if(!path) {
     return (<>
     <h1>missing url path</h1>
