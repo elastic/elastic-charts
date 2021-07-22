@@ -6,13 +6,13 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
     <div className=\\"background\\" />
     <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splita\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"#0c7b93\\" aria-label=\\"Change series color, currently #0c7b93\\">
-          <DotIcon className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"#0c7b93\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splita\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -26,13 +26,13 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
     <div className=\\"background\\" />
     <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splitb\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"#0c7b93\\" aria-label=\\"Change series color, currently #0c7b93\\">
-          <DotIcon className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"#0c7b93\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitb\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -46,13 +46,13 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
     <div className=\\"background\\" />
     <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splitc\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"#0c7b93\\" aria-label=\\"Change series color, currently #0c7b93\\">
-          <DotIcon className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"#0c7b93\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitc\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -66,13 +66,13 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
     <div className=\\"background\\" />
     <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splitd\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"#0c7b93\\" aria-label=\\"Change series color, currently #0c7b93\\">
-          <DotIcon className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"#0c7b93\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitd\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -90,13 +90,13 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
     <div className=\\"background\\" />
     <ForwardRef color=\\"red\\" seriesName=\\"splita\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splita\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -110,13 +110,13 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
     <div className=\\"background\\" />
     <ForwardRef color=\\"red\\" seriesName=\\"splitb\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitb\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -130,13 +130,13 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
     <div className=\\"background\\" />
     <ForwardRef color=\\"red\\" seriesName=\\"splitc\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitc\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -150,13 +150,13 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
     <div className=\\"background\\" />
     <ForwardRef color=\\"red\\" seriesName=\\"splitd\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitd\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -188,13 +188,13 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
     <div className=\\"background\\" />
     <ForwardRef color=\\"red\\" seriesName=\\"splita\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splita\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -221,13 +221,13 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
     <div className=\\"background\\" />
     <ForwardRef color=\\"red\\" seriesName=\\"splitb\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitb\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -241,13 +241,13 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
     <div className=\\"background\\" />
     <ForwardRef color=\\"red\\" seriesName=\\"splitc\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitc\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -261,13 +261,13 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
     <div className=\\"background\\" />
     <ForwardRef color=\\"red\\" seriesName=\\"splitd\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitd\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>

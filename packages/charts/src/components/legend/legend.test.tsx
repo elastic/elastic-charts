@@ -244,7 +244,7 @@ describe('Legend', () => {
       clickFirstColor();
       wrapper.find('#change').simulate('click').first();
       const dot = wrapper.find('.echLegendItem__color svg');
-      expect(dot.exists(`[color="${customColor}"]`)).toBe(true);
+      expect(dot.first().html().includes(`${customColor}`)).toBe(true);
     });
 
     it('should match snapshot after onClose is called', () => {
