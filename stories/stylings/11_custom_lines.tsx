@@ -55,7 +55,6 @@ function generateLineAndPointSeriesStyleKnobs(
 
 export const Example = () => {
   const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
-  const alignLegendPointStyles = boolean('align legend point style', true, 'Chart Global Theme');
   const lineSeriesStyle1 = generateLineAndPointSeriesStyleKnobs('Line 1 style', 'line1', 'lime', 'green', 4, 10, 6);
   const lineSeriesStyle2 = generateLineAndPointSeriesStyleKnobs('Line 2 style', 'line2', 'blue', 'violet', 2, 5, 4);
 
@@ -74,13 +73,7 @@ export const Example = () => {
 
   return (
     <Chart renderer="canvas" className="story-chart">
-      <Settings
-        alignLegendPointStyles={alignLegendPointStyles}
-        showLegend
-        showLegendExtra
-        legendPosition={Position.Right}
-        theme={chartTheme}
-      />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} theme={chartTheme} />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <LineSeries

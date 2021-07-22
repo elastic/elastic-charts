@@ -37,7 +37,6 @@ export const Example = () => {
         showLegend
         showLegendExtra
         legendPosition={Position.Right}
-        alignLegendPointStyles
         legendColorPicker={showColorPicker ? renderEuiColorPicker('leftCenter') : undefined}
       />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />

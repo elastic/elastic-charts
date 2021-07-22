@@ -85,7 +85,6 @@ function generateAreaSeriesStyleKnobs(
 
 export const Example = () => {
   const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
-  const alignLegendPointStyles = boolean('align legend point style', true, 'Chart Global Theme');
 
   const chartTheme = {
     areaSeriesStyle: generateAreaSeriesStyleKnobs('Chart Global Theme', 'chartTheme'),
@@ -105,13 +104,7 @@ export const Example = () => {
 
   return (
     <Chart renderer="canvas" className="story-chart">
-      <Settings
-        alignLegendPointStyles={alignLegendPointStyles}
-        showLegend
-        showLegendExtra
-        legendPosition={Position.Right}
-        theme={chartTheme}
-      />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} theme={chartTheme} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <AreaSeries

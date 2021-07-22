@@ -40,7 +40,6 @@ import { getLegendStyle, getLegendListStyle } from './style_utils';
 
 interface LegendStateProps {
   debug: boolean;
-  alignLegendPointStyles?: boolean;
   chartDimensions: Dimensions;
   containerDimensions: Dimensions;
   chartTheme: Theme;
@@ -64,7 +63,6 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     items,
     size,
     debug,
-    alignLegendPointStyles,
     chartTheme: { chartMargins, legend },
     chartDimensions,
     containerDimensions,
@@ -91,7 +89,6 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
 
   const itemProps: Omit<LegendItemProps, 'item'> = {
     positionConfig,
-    alignLegendPointStyles,
     totalItems: items.length,
     extraValues: props.extraValues,
     showExtra: config.showLegendExtra,
@@ -151,10 +148,9 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
   if (!config.showLegend) {
     return EMPTY_DEFAULT_STATE;
   }
-  const { debug, alignLegendPointStyles } = getSettingsSpecSelector(state);
+  const { debug } = getSettingsSpecSelector(state);
   return {
     debug,
-    alignLegendPointStyles,
     chartDimensions: getInternalMainProjectionAreaSelector(state),
     containerDimensions: getInternalProjectionContainerAreaSelector(state),
     chartTheme: getChartThemeSelector(state),

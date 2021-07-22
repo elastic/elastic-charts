@@ -30,7 +30,7 @@ const getAdjustedStrokeWidth = (radius?: number, strokeWidth?: number) => {
 
 /** helper function to determine styling */
 const getStyles = (color: Color, styles?: Partial<PointStyle>): Partial<Omit<PointStyle, 'radius'>> => {
-  if (!styles) return { fill: color };
+  if (!styles || !styles.visible) return { fill: color }; // BarSeries
 
   const { radius, fill, strokeWidth, stroke, shape, opacity } = styles;
   return {
@@ -44,7 +44,7 @@ const getStyles = (color: Color, styles?: Partial<PointStyle>): Partial<Omit<Poi
 
 /** @internal */
 export const LegendIcon = ({ pointStyle, color, ariaLabel }: LegendIconProps) => {
-  const { fill, shape = PointShape.Circle, stroke, strokeWidth, opacity } = getStyles(color, pointStyle);
+  const { fill = color, shape = PointShape.Circle, stroke, strokeWidth, opacity } = getStyles(color, pointStyle);
   const [shapeFn, rotation] = ShapeRendererFn[shape];
 
   const adjustedSize = MARKER_SIZE - (strokeWidth ?? 0);

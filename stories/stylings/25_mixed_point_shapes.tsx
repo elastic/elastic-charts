@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean, color, select } from '@storybook/addon-knobs';
+import { color, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -23,8 +23,6 @@ import {
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
-  const alignLegendPointStyles = boolean('align legend point style', true);
-
   const shapeKnobArea = select(
     'area series marker shape',
     ['circle', 'diamond', 'square', 'triangle', 'plus', 'x'],
@@ -51,7 +49,7 @@ export const Example = () => {
 
   return (
     <Chart className="story-chart">
-      <Settings showLegend alignLegendPointStyles={alignLegendPointStyles} />
+      <Settings showLegend />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <AreaSeries
