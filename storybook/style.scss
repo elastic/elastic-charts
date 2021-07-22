@@ -7,7 +7,8 @@ html {
     @import '~@elastic/eui/src/global_styling/variables/_colors.scss';
 
     body, .echChart {
-      background: $euiPageBackgroundColor !important;
+      background: white !important;
+      // background: $euiPageBackgroundColor !important;
     }
   }
 
@@ -17,7 +18,8 @@ html {
     @import '~@elastic/eui/src/themes/eui/eui_colors_dark.scss';
 
     body, .echChart {
-      background: $euiPageBackgroundColor !important;
+      background: #1a1b20 !important;
+      // background: $euiPageBackgroundColor !important;
     }
   }
 

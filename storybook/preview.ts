@@ -6,6 +6,9 @@
  * Side Public License, v 1.
  */
 
+// import euiDarkVars from '@elastic/eui/dist/eui_theme_dark.json';
+// import euiLightVars from '@elastic/eui/dist/eui_theme_light.json';
+
 import { preloadIcons } from './preload_icons';
 import { StoryWrapper } from './story_wrapper';
 import { ThemeName } from './use_base_theme';
@@ -38,8 +41,10 @@ export const parameters = {
   backgrounds: {
     clearable: true,
     values: [
-      { name: 'White', value: '#fff' }, // $euiColorEmptyShade
-      { name: 'Black', value: '#1D1E24' }, // $euiColorEmptyShade
+      { name: 'White', value: '#fff' },
+      // { name: 'White', value: euiLightVars.euiPageBackgroundColor },
+      { name: 'Black', value: '#1D1E24' },
+      // { name: 'Black', value: euiDarkVars.euiPageBackgroundColor },
       { name: 'Red', value: '#f04d9a' },
       { name: 'Blue', value: '#14abf5' },
       { name: 'Yellow', value: '#fec709' },
