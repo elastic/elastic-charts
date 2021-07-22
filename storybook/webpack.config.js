@@ -129,7 +129,8 @@ module.exports = async ({ config }) => {
   config.resolve.extensions.push('.ts', '.tsx');
 
   config.resolve.alias = {
-    '@elastic/charts': path.resolve(__dirname, '../packages/charts/'),
+    '@elastic/charts$': path.resolve(__dirname, '../packages/charts/src'),
+    '@elastic/charts/': path.resolve(__dirname, '../packages/charts/'),
   };
 
   return await config;

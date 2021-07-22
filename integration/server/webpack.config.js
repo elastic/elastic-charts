@@ -77,6 +77,8 @@ module.exports = {
     alias: {
       '@storybook/addon-knobs': path.resolve(__dirname, 'mocks/@storybook/addon-knobs'),
       '@storybook/addon-actions': path.resolve(__dirname, 'mocks/@storybook/addon-actions'),
+      '@elastic/charts$': path.resolve(__dirname, '../../packages/charts/src'),
+      '@elastic/charts/': path.resolve(__dirname, '../../packages/charts/'),
     },
     extensions: ['.tsx', '.ts', '.js'],
   },
