@@ -9,7 +9,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
         <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"#0c7b93\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"#0c7b93\\" strokeWidth={1} fill=\\"#0c7b93\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>
@@ -29,7 +29,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
         <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"#0c7b93\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"#0c7b93\\" strokeWidth={1} fill=\\"#0c7b93\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>
@@ -49,7 +49,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
         <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"#0c7b93\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"#0c7b93\\" strokeWidth={1} fill=\\"#0c7b93\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>
@@ -69,7 +69,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
         <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"#0c7b93\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"#0c7b93\\" strokeWidth={1} fill=\\"#0c7b93\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>
@@ -93,7 +93,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
         <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>
@@ -113,7 +113,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
         <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>
@@ -133,7 +133,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
         <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>
@@ -153,7 +153,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
         <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>
@@ -191,7 +191,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
         <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>
@@ -224,7 +224,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
         <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>
@@ -244,7 +244,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
         <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>
@@ -264,7 +264,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
         <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
           <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"red\\" opacity={[undefined]} />
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
             </g>
           </svg>
         </LegendIcon>

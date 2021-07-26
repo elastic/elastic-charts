@@ -32,7 +32,7 @@ exports[`Chart should render the legend name test 1`] = `
                         <LegendIcon pointStyle={[undefined]} color=\\"#1EA593\\" ariaLabel=\\"series color: #1EA593\\">
                           <svg width={16} height={16} aria-label=\\"series color: #1EA593\\">
                             <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
-                              <path d=\\"M -4 0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0\\" stroke={[undefined]} strokeWidth={[undefined]} fill=\\"#1EA593\\" opacity={[undefined]} />
+                              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"#1EA593\\" strokeWidth={1} fill=\\"#1EA593\\" opacity={1} />
                             </g>
                           </svg>
                         </LegendIcon>
