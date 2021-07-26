@@ -28,13 +28,7 @@ const fillColor = ({ [MODEL_KEY]: model }: any) => {
 };
 
 export const Example = () => (
-  <Chart
-    size={
-      {
-        /* height: 800 */
-      }
-    }
-  >
+  <Chart>
     <Settings baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"

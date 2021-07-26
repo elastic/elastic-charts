@@ -8,8 +8,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "storybook",
-      "storybook-docs"
+      "storybook"
     ]
   },
   "scripts": {

@@ -8,6 +8,8 @@
 
 import { useState } from 'react';
 
+import { parameters } from '../../../storybook/preview';
+
 interface WithParameters {
   (): JSX.Element;
   parameters?: {
@@ -33,6 +35,11 @@ function setTheme(name: string) {
   }
 }
 
+function colorLookup(name?: string) {
+  if (!name) return;
+  return parameters.backgrounds.values.find((c) => c.name === name)?.value;
+}
+
 export function useGlobalsParameters() {
   const [themeName, setThemeName] = useState<string>('Light');
   const [backgroundColor, setBackgroundColor] = useState<string | undefined>('White');
@@ -42,10 +49,10 @@ export function useGlobalsParameters() {
    */
   function setParams<T extends WithParameters>({ parameters }: T, params: URLSearchParams) {
     const globals = getGlobalParams(params);
-    const newThemeName = parameters?.themes?.default ?? globals.themes;
+    const newThemeName = globals.themes ?? parameters?.themes?.default ?? 'Light';
     setThemeName(newThemeName);
     setTheme(newThemeName);
-    setBackgroundColor(parameters?.backgrounds?.value ?? globals.backgrounds);
+    setBackgroundColor(globals.backgrounds ?? colorLookup(parameters?.backgrounds?.default));
   }
 
   return {
@@ -55,12 +62,19 @@ export function useGlobalsParameters() {
   };
 }
 
+/**
+ * Converts url color param from !hex(fff) to #fff
+ */
+function parseColor(c?: string) {
+  return c && c.replace(/!hex\((.+)\)/, '#$1');
+}
+
 function getGlobalParams(params: URLSearchParams) {
   const globals = params.get('globals') ?? '';
   const map = Object.fromEntries(globals.split(';').map((pair: string) => pair.split(':')));
 
   return {
-    backgrounds: map['backgrounds.value'],
-    themes: map['themes.value'] ?? 'Light',
+    backgrounds: parseColor(map['backgrounds.value']),
+    themes: map['themes.value'],
   };
 }
