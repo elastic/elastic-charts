@@ -169,10 +169,10 @@ export function fitText(
   const response = (v: number) => measure(fontSize, [{ ...font, text: desiredText.slice(0, Math.max(0, v)) }])[0].width;
   const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
   const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(desiredText, visibleLength);
-  const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...font, text }])[0];
+  const { width, actualBoundingBoxAscent, actualBoundingBoxDescent } = measure(fontSize, [{ ...font, text }])[0];
   return {
     width,
-    verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
+    verticalOffset: -(actualBoundingBoxDescent + actualBoundingBoxAscent) / 2, // meaning, `middle`
     text,
   };
 }

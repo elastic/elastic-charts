@@ -307,9 +307,9 @@ function tryFontSize<C>(
     // model text pieces, obtaining their width at the current font size
     const measurements = measure(fontSize, boxes);
     const allMeasuredBoxes: RowBox[] = measurements.map(
-      ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
+      ({ width, actualBoundingBoxDescent, actualBoundingBoxAscent }: TextMetrics, i: number) => ({
         width,
-        verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`,
+        verticalOffset: -(actualBoundingBoxDescent + actualBoundingBoxAscent) / 2, // meaning, `middle`,
         wordBeginning: NaN,
         ...boxes[i],
         fontSize, // iterated fontSize overrides a possible more global fontSize
