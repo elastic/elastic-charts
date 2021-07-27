@@ -27,7 +27,7 @@ function range(title: string, min: number, max: number, value: number, groupId?:
   );
 }
 
-function generateLineSeriesStyleKnobs(
+function generateLineAndPointSeriesStyleKnobs(
   groupName: string,
   tag: string,
   pointFill?: string,
@@ -50,7 +50,7 @@ function generateLineSeriesStyleKnobs(
       opacity: range(`point.opacity (${tag})`, 0, 1, 1, groupName, 0.01),
       stroke: color(`point.stroke (${tag})`, pointStroke || 'black', groupName),
       fill: color(`point.fill (${tag})`, pointFill || 'lightgray', groupName),
-      strokeWidth: range(`point.strokeWidth (${tag})`, 0, 5, pointStrokeWidth || 2, groupName, 0.01),
+      strokeWidth: range(`point.strokeWidth (${tag})`, 0, 50, pointStrokeWidth || 2, groupName, 0.01),
     },
   };
 }
@@ -67,7 +67,7 @@ function generateAreaSeriesStyleKnobs(
   areaFill?: string,
 ) {
   return {
-    ...generateLineSeriesStyleKnobs(
+    ...generateLineAndPointSeriesStyleKnobs(
       groupName,
       tag,
       pointFill,

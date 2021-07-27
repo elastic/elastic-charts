@@ -172,10 +172,10 @@ function nodeToLinkLabel({
       0,
       rightSide ? rectWidth - diskCenter.x - translateX - widthAdjustment : diskCenter.x + translateX - widthAdjustment,
     );
-    const { text, width, verticalOffset } =
+    const { text, width } =
       linkLabel.fontSize / 2 <= cy + diskCenter.y && cy + diskCenter.y <= rectHeight - linkLabel.fontSize / 2
         ? fitText(measure, labelText, allottedLabelWidth, linkLabel.fontSize, labelFont)
-        : { text: '', width: 0, verticalOffset: 0 };
+        : { text: '', width: 0 };
 
     return {
       linkLabels,
@@ -184,7 +184,6 @@ function nodeToLinkLabel({
       valueText,
       width,
       valueWidth,
-      verticalOffset,
       textAlign: rightSide ? 'left' : 'right',
     };
   };

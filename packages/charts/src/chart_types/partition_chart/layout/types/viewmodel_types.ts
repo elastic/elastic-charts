@@ -37,14 +37,12 @@ export type LinkLabelVM = {
   valueText: string;
   width: Distance;
   valueWidth: Distance;
-  verticalOffset: Distance;
 };
 
 /** @internal */
 export interface RowBox extends Font {
   text: string;
   width: Distance;
-  verticalOffset: Distance;
   wordBeginning: Distance;
 }
 

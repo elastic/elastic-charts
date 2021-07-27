@@ -27,7 +27,7 @@ function range(title: string, min: number, max: number, value: number, groupId?:
   );
 }
 
-function generateLineSeriesStyleKnobs(
+function generateLineAndPointSeriesStyleKnobs(
   groupName: string,
   tag: string,
   pointFill?: string,
@@ -57,11 +57,11 @@ function generateLineSeriesStyleKnobs(
 
 export const Example = () => {
   const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
-  const lineSeriesStyle1 = generateLineSeriesStyleKnobs('Line 1 style', 'line1', 'lime', 'green', 4, 10, 6);
-  const lineSeriesStyle2 = generateLineSeriesStyleKnobs('Line 2 style', 'line2', 'blue', 'violet', 2, 5, 4);
+  const lineSeriesStyle1 = generateLineAndPointSeriesStyleKnobs('Line 1 style', 'line1', 'lime', 'green', 4, 10, 6);
+  const lineSeriesStyle2 = generateLineAndPointSeriesStyleKnobs('Line 2 style', 'line2', 'blue', 'violet', 2, 5, 4);
 
   const chartTheme = {
-    lineSeriesStyle: generateLineSeriesStyleKnobs('Chart Global Theme', 'chartTheme'),
+    lineSeriesStyle: generateLineAndPointSeriesStyleKnobs('Chart Global Theme', 'chartTheme'),
   };
 
   const dataset1 = [
