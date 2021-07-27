@@ -19,6 +19,7 @@ import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbo
 import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
+import { ContinuousDomain } from '../../../../utils/domain';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
@@ -121,11 +122,11 @@ export function shapeViewModel(
   const xValues = timeScale
     ? range(
         snapDateToESInterval(
-          xDomain.domain[0] as number,
+          (xDomain.domain as ContinuousDomain)[0],
           { type: 'fixed', unit: 'ms', quantity: xDomain.minInterval },
           'start',
         ),
-        xDomain.domain[1] as number,
+        (xDomain.domain as ContinuousDomain)[1],
         xDomain.minInterval,
       )
     : xDomain.domain;
@@ -295,13 +296,10 @@ export function shapeViewModel(
     const startValue = x[0];
     const endValue = x[x.length - 1];
 
-    // find X coordinated based on the time range
-    // the xValues array is casted as any because the slight incompatible type of d3 bisect.
-    // it works anyway without problems also if the data is a mix of string and numbers
     const leftIndex =
-      typeof startValue === 'number' ? bisectLeft(xValues as any, startValue) : xValues.indexOf(startValue);
+      typeof startValue === 'number' ? bisectLeft(xValues as number[], startValue) : xValues.indexOf(startValue);
     const rightIndex =
-      typeof endValue === 'number' ? bisectLeft(xValues as any, endValue) : xValues.indexOf(endValue) + 1;
+      typeof endValue === 'number' ? bisectLeft(xValues as number[], endValue) : xValues.indexOf(endValue) + 1;
 
     const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
