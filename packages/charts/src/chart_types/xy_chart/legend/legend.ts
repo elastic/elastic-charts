@@ -10,9 +10,10 @@ import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { SortSeriesByConfig, TickFormatterOptions } from '../../../specs';
-import { Color } from '../../../utils/common';
+import { Color, MergeOptions, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
+import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { LastValues } from '../state/utils/types';
@@ -28,7 +29,15 @@ import {
   isDataSeriesBanded,
   getSeriesIdentifierFromDataSeries,
 } from '../utils/series';
-import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
+import {
+  AxisSpec,
+  BasicSeriesSpec,
+  Postfixes,
+  isAreaSeriesSpec,
+  isBarSeriesSpec,
+  isBubbleSeriesSpec,
+  isLineSeriesSpec,
+} from '../utils/specs';
 
 /** @internal */
 export interface FormattedLastValues {
@@ -80,19 +89,32 @@ export function getLegendExtra(
 }
 
 /** @internal */
+function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefined {
+  const mergeOptions: MergeOptions = { mergeOptionalPartialValues: true };
+  if (isBubbleSeriesSpec(spec)) {
+    return mergePartial(theme.bubbleSeriesStyle.point, spec.bubbleSeriesStyle?.point, mergeOptions);
+  } else if (isLineSeriesSpec(spec)) {
+    return mergePartial(theme.lineSeriesStyle.point, spec.lineSeriesStyle?.point, mergeOptions);
+  } else if (isAreaSeriesSpec(spec)) {
+    return mergePartial(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point, mergeOptions);
+  }
+}
+
+/** @internal */
 export function computeLegend(
   dataSeries: DataSeries[],
   lastValues: Map<SeriesKey, LastValues>,
   seriesColors: Map<SeriesKey, Color>,
   specs: BasicSeriesSpec[],
-  defaultColor: string,
   axesSpecs: AxisSpec[],
   showLegendExtra: boolean,
   serialIdentifierDataSeriesMap: Record<string, DataSeries>,
   deselectedDataSeries: SeriesIdentifier[] = [],
+  theme: Theme,
   sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
+  const defaultColor = theme.colors.defaultVizColor;
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
@@ -109,7 +131,6 @@ export function computeLegend(
     );
 
     const color = seriesColors.get(dataSeriesKey) || defaultColor;
-
     const hasSingleSeries = dataSeries.length === 1;
     const name = getSeriesName(series, hasSingleSeries, false, spec);
     const isSeriesHidden = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, series) >= 0 : false;
@@ -128,6 +149,9 @@ export function computeLegend(
     const lastValue = lastValues.get(key);
     const seriesIdentifier = getSeriesIdentifierFromDataSeries(series);
     const xScaleType = getXScaleTypeFromSpec(spec.xScaleType);
+
+    const pointStyle = getPointStyle(spec, theme);
+
     legendItems.push({
       color,
       label: labelY1,
@@ -139,6 +163,7 @@ export function computeLegend(
       defaultExtra: getLegendExtra(showLegendExtra, xScaleType, formatter, 'y1', lastValue),
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
+      pointStyle,
     });
     if (banded) {
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
@@ -153,6 +178,7 @@ export function computeLegend(
         defaultExtra: getLegendExtra(showLegendExtra, xScaleType, formatter, 'y0', lastValue),
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
+        pointStyle,
       });
     }
   });

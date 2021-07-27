@@ -109,7 +109,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     <div className={legendClasses} style={positionStyle}>
       <div style={containerStyle} className="echLegendListContainer">
         <ul style={listStyle} className="echLegendList">
-          {items.map((item, index) => renderLegendItem(item, itemProps, items.length, index))}
+          {items.map((item, index) => renderLegendItem(item, itemProps, index))}
         </ul>
       </div>
     </div>
