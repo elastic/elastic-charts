@@ -9,7 +9,6 @@
 import { BrushAxis } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../utils/dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -26,7 +25,6 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     getIsDragging,
     getMouseDownPosition,
     getCurrentPointerPosition,
-    getChartRotationSelector,
     getSettingsSpecSelector,
     computeChartDimensionsSelector,
     getHeatmapContainerSizeSelector,
@@ -36,7 +34,6 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     isDragging,
     mouseDownPosition,
     end,
-    chartRotation,
     { brushAxis },
     chartDimensions,
     containerDimensions,
