@@ -4,15 +4,15 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
 "<LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splita\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splita\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splita\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"#0c7b93\\" aria-label=\\"Change series color, currently #0c7b93\\">
-          <DotIcon className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"#0c7b93\\" strokeWidth={1} fill=\\"#0c7b93\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splita\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -24,15 +24,15 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
 </LegendItem><LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splitb\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splitb\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splitb\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"#0c7b93\\" aria-label=\\"Change series color, currently #0c7b93\\">
-          <DotIcon className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"#0c7b93\\" strokeWidth={1} fill=\\"#0c7b93\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitb\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -44,15 +44,15 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
 </LegendItem><LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splitc\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splitc\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splitc\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"#0c7b93\\" aria-label=\\"Change series color, currently #0c7b93\\">
-          <DotIcon className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"#0c7b93\\" strokeWidth={1} fill=\\"#0c7b93\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitc\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -64,15 +64,15 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
 </LegendItem><LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splitd\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splitd\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"#0c7b93\\" seriesName=\\"splitd\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"#0c7b93\\" aria-label=\\"Change series color, currently #0c7b93\\">
-          <DotIcon className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"#0c7b93\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently #0c7b93\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"#0c7b93\\" ariaLabel=\\"Change series color, currently #0c7b93\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently #0c7b93\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"#0c7b93\\" strokeWidth={1} fill=\\"#0c7b93\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitd\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -88,15 +88,15 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
 "<LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splita\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"red\\" seriesName=\\"splita\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"red\\" seriesName=\\"splita\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splita\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -108,15 +108,15 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
 </LegendItem><LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splitb\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"red\\" seriesName=\\"splitb\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"red\\" seriesName=\\"splitb\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitb\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -128,15 +128,15 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
 </LegendItem><LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splitc\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"red\\" seriesName=\\"splitc\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"red\\" seriesName=\\"splitc\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitc\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -148,15 +148,15 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
 </LegendItem><LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splitd\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"red\\" seriesName=\\"splitd\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"red\\" seriesName=\\"splitd\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitd\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -186,15 +186,15 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
 "<LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splita\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"red\\" seriesName=\\"splita\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"red\\" seriesName=\\"splita\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splita\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -219,15 +219,15 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
 </LegendItem><LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splitb\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"red\\" seriesName=\\"splitb\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"red\\" seriesName=\\"splitb\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitb\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -239,15 +239,15 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
 </LegendItem><LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splitc\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"red\\" seriesName=\\"splitc\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"red\\" seriesName=\\"splitc\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitc\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
@@ -259,15 +259,15 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
 </LegendItem><LegendItem item={{...}} positionConfig={{...}} totalItems={4} extraValues={{...}} showExtra={false} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[Function: mockConstructor] { _isMockFunction: true, getMockImplementation: [Function (anonymous)], mock: { calls: [], instances: [], invocationCallOrder: [], results: [] }, mockClear: [Function (anonymous)], mockReset: [Function (anonymous)], mockRestore: [Function (anonymous)], mockReturnValueOnce: [Function (anonymous)], mockResolvedValueOnce: [Function (anonymous)], mockRejectedValueOnce: [Function (anonymous)], mockReturnValue: [Function (anonymous)], mockResolvedValue: [Function (anonymous)], mockRejectedValue: [Function (anonymous)], mockImplementationOnce: [Function (anonymous)], mockImplementation: [Function (anonymous)], mockReturnThis: [Function (anonymous)], mockName: [Function (anonymous)], getMockName: [Function (anonymous)] }} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[Function (anonymous)]} action={[undefined]}>
   <li className=\\"echLegendItem echLegendItem--vertical\\" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={[undefined]} data-ech-series-name=\\"splitd\\">
     <div className=\\"background\\" />
-    <ForwardRef color=\\"red\\" seriesName=\\"splitd\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]}>
+    <ForwardRef color=\\"red\\" seriesName=\\"splitd\\" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
       <button type=\\"button\\" onClick={[Function (anonymous)]} className=\\"echLegendItem__color echLegendItem__color--changable\\" title=\\"change series color\\">
-        <Icon type=\\"dot\\" color=\\"red\\" aria-label=\\"Change series color, currently red\\">
-          <DotIcon className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-            <svg width={16} height={16} viewBox=\\"0 0 16 16\\" xmlns=\\"http://www.w3.org/2000/svg\\" className=\\"echIcon\\" color=\\"red\\" tabIndex={[undefined]} focusable=\\"false\\" aria-label=\\"Change series color, currently red\\">
-              <circle cx={8} cy={8} r={4} />
-            </svg>
-          </DotIcon>
-        </Icon>
+        <LegendIcon pointStyle={[undefined]} color=\\"red\\" ariaLabel=\\"Change series color, currently red\\">
+          <svg width={16} height={16} aria-label=\\"Change series color, currently red\\">
+            <g transform=\\"\\\\n          translate(8, 8)\\\\n          rotate(0)\\\\n        \\">
+              <path d=\\"M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0\\" stroke=\\"red\\" strokeWidth={1} fill=\\"red\\" opacity={1} />
+            </g>
+          </svg>
+        </LegendIcon>
       </button>
     </ForwardRef>
     <Label label=\\"splitd\\" isToggleable={true} onClick={[Function (anonymous)]} isSeriesHidden={false}>
