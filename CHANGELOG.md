@@ -1,3 +1,17 @@
+# [31.3.0](https://github.com/Metrika-Inc/metrika-charts/compare/v31.2.0...v31.3.0) (2021-07-27)
+
+
+### Bug Fixes
+
+* **heatmap:** fixed tooltip not being shown for bottom values when x axis is on top ([bb27900](https://github.com/Metrika-Inc/metrika-charts/commit/bb27900885ede50da109e5a0c614233d700f1282))
+* fix api listing ([8664f49](https://github.com/Metrika-Inc/metrika-charts/commit/8664f4953670e90d2c9c674fbc6c74ef7cba726b))
+* updated the api markdown file ([081f0cf](https://github.com/Metrika-Inc/metrika-charts/commit/081f0cf8c669f4fc336bb59c938d0f00947fd6c1))
+
+
+### Features
+
+* **heatmap:** option to remove duplicate x axis labels ([1b2b29e](https://github.com/Metrika-Inc/metrika-charts/commit/1b2b29e90ee604e71112495513a74d17860fb324))
+
 # [31.2.0](https://github.com/Metrika-Inc/metrika-charts/compare/v31.1.0...v31.2.0) (2021-07-21)
 
 
