@@ -13,6 +13,7 @@ import { getChartRotationSelector } from '../../../../state/selectors/get_chart_
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../utils/dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getBrushedHighlightedShapesSelector } from './get_brushed_highlighted_shapes';
 import { getHeatmapContainerSizeSelector } from './get_heatmap_container_size';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
@@ -29,6 +30,7 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     getSettingsSpecSelector,
     computeChartDimensionsSelector,
     getHeatmapContainerSizeSelector,
+    getBrushedHighlightedShapesSelector,
   ],
   (
     isDragging,
@@ -38,6 +40,7 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     { brushAxis },
     chartDimensions,
     containerDimensions,
+    dragShape,
   ): Dimensions | null => {
     if (!isDragging || !mouseDownPosition) {
       return null;
@@ -48,13 +51,14 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     };
 
     const reachXAxis = containerDimensions.height < end.y + start.y;
+
     switch (brushAxis) {
       case BrushAxis.Both:
         return {
           top: start.y,
           left: start.x,
           width: end.x - start.x - chartDimensions.left,
-          height: reachXAxis ? containerDimensions.height - start.y : end.y - start.y,
+          height: reachXAxis ? dragShape!.height - start.y : end.y - start.y,
         };
       default:
         return { top: start.y, left: start.x, width: end.x - start.x - chartDimensions.left, height: end.y - start.y };
