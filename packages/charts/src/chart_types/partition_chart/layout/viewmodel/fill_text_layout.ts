@@ -306,15 +306,12 @@ function tryFontSize<C>(
 
     // model text pieces, obtaining their width at the current font size
     const measurements = measure(fontSize, boxes);
-    const allMeasuredBoxes: RowBox[] = measurements.map(
-      ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
-        width,
-        verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`,
-        wordBeginning: NaN,
-        ...boxes[i],
-        fontSize, // iterated fontSize overrides a possible more global fontSize
-      }),
-    );
+    const allMeasuredBoxes: RowBox[] = measurements.map(({ width }: TextMetrics, i: number) => ({
+      width,
+      wordBeginning: NaN,
+      ...boxes[i],
+      fontSize, // iterated fontSize overrides a possible more global fontSize
+    }));
     const linePitch = fontSize;
 
     // rowSet building starts
