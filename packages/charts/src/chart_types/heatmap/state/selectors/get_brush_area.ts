@@ -39,7 +39,7 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     containerDimensions,
     dragShape,
   ): Dimensions | null => {
-    if (!isDragging || !mouseDownPosition) {
+    if (!isDragging || !mouseDownPosition || !dragShape) {
       return null;
     }
     const start = {
@@ -55,7 +55,7 @@ export const getBrushAreaSelector = createCustomCachedSelector(
           top: start.y,
           left: start.x,
           width: end.x - start.x - chartDimensions.left,
-          height: reachXAxis ? dragShape!.height - start.y : end.y - start.y,
+          height: reachXAxis ? dragShape.height - start.y : end.y - start.y,
         };
       default:
         return { top: start.y, left: start.x, width: end.x - start.x - chartDimensions.left, height: end.y - start.y };
