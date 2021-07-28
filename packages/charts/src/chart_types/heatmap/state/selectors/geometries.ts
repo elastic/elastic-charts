@@ -37,7 +37,7 @@ export const geometries = createCustomCachedSelector(
     chartDimensions,
     settingSpec,
     heatmapTable,
-    colorScale,
+    { ticks, scale: colorScale },
     legendItems,
     deselectedSeries,
     gridHeightParams,
@@ -47,7 +47,6 @@ export const geometries = createCustomCachedSelector(
         return Number(specId);
       }),
     );
-    const { ticks } = colorScale;
     const ranges = ticks.reduce<Array<[number, number | null]>>((acc, d, i) => {
       if (deselectedTicks.has(d)) {
         const rangeEnd = i + 1 === ticks.length ? null : ticks[i + 1];

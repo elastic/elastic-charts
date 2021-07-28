@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { extent as d3Extent } from 'd3-array';
 import { interpolateHcl } from 'd3-interpolate';
 import {
   ScaleLinear,
@@ -21,20 +20,32 @@ import {
 
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { HeatmapSpec } from '../../specs/heatmap';
+import { HeatmapTable } from './compute_chart_dimensions';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
-type ScaleModelType<Type, Config> = {
-  type: Type;
-  config: Config;
+type ScaleModelType<S> = {
+  scale: S;
   ticks: number[];
 };
-type ScaleLinearType = ScaleModelType<typeof ScaleType.Linear, ScaleLinear<string, string>>;
-type ScaleQuantizeType = ScaleModelType<typeof ScaleType.Quantize, ScaleQuantize<string>>;
-type ScaleQuantileType = ScaleModelType<typeof ScaleType.Quantile, ScaleQuantile<string>>;
-type ScaleThresholdType = ScaleModelType<typeof ScaleType.Threshold, ScaleThreshold<number, string>>;
+
+type ScaleLinearType = ScaleModelType<ScaleLinear<string, string>>;
+type ScaleQuantizeType = ScaleModelType<ScaleQuantize<string>>;
+type ScaleQuantileType = ScaleModelType<ScaleQuantile<string>>;
+type ScaleThresholdType = ScaleModelType<ScaleThreshold<number, string>>;
+
 /** @internal */
 export type ColorScaleType = ScaleLinearType | ScaleQuantizeType | ScaleQuantileType | ScaleThresholdType;
+
+const DEFAULT_COLORS = ['green', 'red'];
+
+const SCALE_TYPE_TO_SCALE_FN = {
+  [ScaleType.Linear]: getLinearScale,
+  [ScaleType.Quantile]: getQuantileScale,
+  [ScaleType.Quantize]: getQuantizedScale,
+  [ScaleType.Threshold]: getThresholdScale,
+};
 
 /**
  * @internal
@@ -43,41 +54,61 @@ export type ColorScaleType = ScaleLinearType | ScaleQuantizeType | ScaleQuantile
 export const getColorScale = createCustomCachedSelector(
   [getHeatmapSpecSelector, getHeatmapTableSelector],
   (spec, heatmapTable) => {
-    const { colors, colorScale: colorScaleSpec } = spec;
-
-    // compute the color scale based domain and colors
-    const { ranges = heatmapTable.extent } = spec;
-    const colorRange = colors ?? ['green', 'red'];
-
-    const colorScale = {
-      type: colorScaleSpec,
-    } as ColorScaleType;
-    if (colorScale.type === ScaleType.Quantize) {
-      colorScale.config = scaleQuantize<string>()
-        .domain(d3Extent(ranges) as [number, number])
-        .range(colorRange);
-      colorScale.ticks = colorScale.config.ticks(spec.colors.length);
-    } else if (colorScale.type === ScaleType.Quantile) {
-      colorScale.config = scaleQuantile<string>().domain(ranges).range(colorRange);
-      colorScale.ticks = colorScale.config.quantiles();
-    } else if (colorScale.type === ScaleType.Threshold) {
-      colorScale.config = scaleThreshold<number, string>().domain(ranges).range(colorRange);
-      colorScale.ticks = colorScale.config.domain();
-    } else {
-      colorScale.config = scaleLinear<string>().domain(ranges).interpolate(interpolateHcl).range(colorRange);
-      colorScale.ticks = addBaselineOnLinearScale(ranges[0], ranges[1], colorScale.config.ticks(6));
-    }
-    return colorScale;
+    return SCALE_TYPE_TO_SCALE_FN[spec.colorScale ?? ScaleType.Linear](spec, heatmapTable);
   },
 );
 
-function addBaselineOnLinearScale(min: number, max: number, ticks: Array<number>): Array<number> {
-  if (min < 0 && max < 0) {
-    return [...ticks, 0];
-  }
-  if (min >= 0 && max >= 0) {
-    return [0, ...ticks];
-  }
+function getQuantizedScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleQuantizeType {
+  const dataExtent = spec.ranges ?? heatmapTable.extent;
+  const colors = spec.colors ?? DEFAULT_COLORS;
+  // we use the data extent or only the first two values in the `ranges` prop
+  const domain: [number, number] = [dataExtent[0], dataExtent[1]];
+  const scale = scaleQuantize<string>().domain(domain).range(colors);
+  // quantize scale works as the linear one, we should manually
+  // compute the ticks corresponding to the quantized segments
+  const numOfSegments = colors.length;
+  const interval = (domain[1] - domain[0]) / numOfSegments;
+  const ticks = colors.map((d, i) => domain[0] + interval * i);
 
-  return ticks;
+  return {
+    scale,
+    ticks,
+  };
+}
+
+function getQuantileScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleQuantileType {
+  const colors = spec.colors ?? DEFAULT_COLORS;
+  const domain = heatmapTable.table.map(({ value }) => value);
+  const scale = scaleQuantile<string>().domain(domain).range(colors);
+  // the ticks array should contain all quantiles + the minimum value
+  const ticks = [heatmapTable.extent[0], ...scale.quantiles()];
+  return {
+    scale,
+    ticks,
+  };
+}
+
+function getThresholdScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleThresholdType {
+  const colors = spec.colors ?? DEFAULT_COLORS;
+  const scale = scaleThreshold<number, string>()
+    .domain(spec.ranges ?? heatmapTable.extent)
+    .range(colors);
+  // the ticks array should contain all the thresholds + the minimum value
+  const ticks = [heatmapTable.extent[0], ...scale.domain()];
+  return {
+    scale,
+    ticks,
+  };
+}
+
+function getLinearScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleLinearType {
+  const domain = spec.ranges ?? heatmapTable.extent;
+  const colors = spec.colors ?? DEFAULT_COLORS;
+  const scale = scaleLinear<string>().domain(domain).interpolate(interpolateHcl).range(colors).clamp(true);
+  // adding initial and final range/extent value if they are rounded values.
+  const ticks = [...new Set([domain[0], ...scale.ticks(6)])];
+  return {
+    scale,
+    ticks,
+  };
 }

@@ -79,7 +79,7 @@ export function shapeViewModel(
   settingsSpec: SettingsSpec,
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
-  colorScale: ColorScaleType,
+  colorScale: ColorScaleType['scale'],
   filterRanges: Array<[number, number | null]>,
   { height, pageSize }: GridHeightParams,
 ): ShapeViewModel {
@@ -188,7 +188,7 @@ export function shapeViewModel(
     const x = xScale(String(d.x));
     const y = yScale(String(d.y))! + gridStrokeWidth;
     const yIndex = yValues.indexOf(d.y);
-    const color = colorScale.config(d.value);
+    const color = colorScale(d.value);
     if (x === undefined || y === undefined || yIndex === -1) {
       return acc;
     }
@@ -393,9 +393,9 @@ function getCellKey(x: NonNullable<PrimitiveValue>, y: NonNullable<PrimitiveValu
 
 function isFilteredValue(filterRanges: Array<[number, number | null]>, value: number) {
   return filterRanges.some(([min, max]) => {
-    if (max !== null && value > min && value < max) {
+    if (max !== null && value >= min && value < max) {
       return true;
     }
-    return max === null && value > min;
+    return max === null && value >= min;
   });
 }

@@ -7,25 +7,36 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { extent } from 'd3-array';
+import { select, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Heatmap, ScaleType, Settings } from '../../packages/charts/src';
 import { BABYNAME_DATA } from '../../packages/charts/src/utils/data_samples/babynames';
 
 export const Example = () => {
-  const data = BABYNAME_DATA.filter(([year]) => year > 1950);
-  const values = data.map((d) => +d[3]);
-  const [min, max] = extent(values);
+  const data = BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960);
+  const colorScale = select(
+    'color scale',
+    {
+      [ScaleType.Linear]: ScaleType.Linear,
+      [ScaleType.Quantile]: ScaleType.Quantile,
+      [ScaleType.Quantize]: ScaleType.Quantize,
+      [ScaleType.Threshold]: ScaleType.Threshold,
+    },
+    ScaleType.Linear,
+  );
+  const ranges = text('ranges', 'auto');
+  const colors = text('colors', 'green, yellow, red');
+
   return (
     <Chart className="story-chart">
       <Settings onElementClick={action('onElementClick')} showLegend legendPosition="right" brushAxis="both" />
       <Heatmap
         id="heatmap2"
-        colorScale={ScaleType.Linear}
-        ranges={[min!, (max! - min!) / 2, max!]}
-        colors={['green', 'yellow', 'red']}
-        data={BABYNAME_DATA.filter(([year]) => year > 1950)}
+        colorScale={colorScale}
+        ranges={ranges === 'auto' ? undefined : ranges.split(',').map((d) => Number(d.trim()))}
+        colors={colors.split(',').map((d) => d.trim())}
+        data={data}
         xAccessor={(d) => d[2]}
         yAccessor={(d) => d[0]}
         valueAccessor={(d) => d[3]}

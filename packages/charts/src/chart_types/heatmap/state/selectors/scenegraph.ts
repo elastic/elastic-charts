@@ -25,7 +25,7 @@ export function render(
   settingsSpec: SettingsSpec,
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
-  colorScale: ColorScaleType,
+  colorScale: ColorScaleType['scale'],
   filterRanges: Array<[number, number | null]>,
   gridHeightParams: GridHeightParams,
 ): ShapeViewModel {

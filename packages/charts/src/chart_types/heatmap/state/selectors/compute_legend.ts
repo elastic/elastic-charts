@@ -12,18 +12,17 @@ import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_des
 import { getColorScale } from './get_color_scale';
 import { getSpecOrNull } from './heatmap_spec';
 
+const EMPTY_LEGEND: LegendItem[] = [];
 /** @internal */
 export const computeLegendSelector = createCustomCachedSelector(
   [getSpecOrNull, getColorScale, getDeselectedSeriesSelector],
-  (spec, colorScale, deselectedDataSeries): LegendItem[] => {
-    const legendItems: LegendItem[] = [];
-
-    if (colorScale === null || spec === null) {
-      return legendItems;
+  (spec, { ticks, scale }, deselectedDataSeries): LegendItem[] => {
+    if (spec === null) {
+      return EMPTY_LEGEND;
     }
 
-    return colorScale.ticks.map((tick) => {
-      const color = colorScale.config(tick);
+    return ticks.map((tick, i) => {
+      const color = scale(tick);
       const seriesIdentifier = {
         key: String(tick),
         specId: String(tick),
@@ -31,7 +30,7 @@ export const computeLegendSelector = createCustomCachedSelector(
 
       return {
         color,
-        label: `> ${spec.valueFormatter ? spec.valueFormatter(tick) : tick}`,
+        label: `>${i === 0 ? '=' : ''} ${spec.valueFormatter ? spec.valueFormatter(tick) : tick}`,
         seriesIdentifiers: [seriesIdentifier],
         isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === seriesIdentifier.key),
         isToggleable: true,
