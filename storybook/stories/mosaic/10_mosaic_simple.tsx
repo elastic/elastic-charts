@@ -63,10 +63,11 @@ export const Example = () => {
     PartitionLayout.mosaic,
   );
   return (
-    <Chart>
+    <Chart className="story-chart">
       <Settings
         showLegend={boolean('Show legend', true)}
         showLegendExtra={boolean('Show legend values', true)}
+        flatLegend={boolean('Flat legend', false)}
         baseTheme={useBaseTheme()}
       />
       <Partition
