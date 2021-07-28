@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-import { Example } from '../stories/waffle/1_simple';
+export default {
+  title: 'Waffle (@alpha)',
+  parameters: {
+    options: { selectedPanel: SB_SOURCE_PANEL },
+  },
+};
 
-export class Playground extends React.Component {
-  render() {
-    return <Example />;
-  }
-}
+export { Example as simple } from './1_simple';
