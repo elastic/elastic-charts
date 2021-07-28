@@ -6,16 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { ChartId } from '../../../../state/chart_state';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { ContinuousDomainFocus } from './partition';
+import { AnimationState, ContinuousDomainFocus } from './partition';
 
 const linear = (x: number) => x;
 const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
 
 const MAX_PADDING_RATIO = 0.25;
-
-const latestRafs: Map<ChartId, number> = new Map();
 
 /** @internal */
 export function renderWrappedPartitionCanvas2d(
@@ -29,29 +26,23 @@ export function renderWrappedPartitionCanvas2d(
     height: panelHeight,
   }: ShapeViewModel,
   { currentFocusX0, currentFocusX1, prevFocusX0, prevFocusX1 }: ContinuousDomainFocus,
-  chartId: ChartId,
+  animationState: AnimationState,
 ) {
   if (animation?.duration) {
-    const latestRaf = latestRafs.get(chartId);
-    if (latestRaf !== undefined) {
-      window.cancelAnimationFrame(latestRaf);
-    }
+    window.cancelAnimationFrame(animationState.rafId);
     render(0);
     const focusChanged = currentFocusX0 !== prevFocusX0 || currentFocusX1 !== prevFocusX1;
     if (focusChanged) {
-      latestRafs.set(
-        chartId,
-        window.requestAnimationFrame((epochStartTime) => {
-          const anim = (t: number) => {
-            const unitNormalizedTime = Math.max(0, Math.min(1, (t - epochStartTime) / animation.duration));
-            render(unitNormalizedTime);
-            if (unitNormalizedTime < 1) {
-              latestRafs.set(chartId, window.requestAnimationFrame(anim));
-            }
-          };
-          latestRafs.set(chartId, window.requestAnimationFrame(anim));
-        }),
-      );
+      animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
+        const anim = (t: number) => {
+          const unitNormalizedTime = Math.max(0, Math.min(1, (t - epochStartTime) / animation.duration));
+          render(unitNormalizedTime);
+          if (unitNormalizedTime < 1) {
+            animationState.rafId = window.requestAnimationFrame(anim);
+          }
+        };
+        animationState.rafId = window.requestAnimationFrame(anim);
+      });
     }
   } else {
     render(1);

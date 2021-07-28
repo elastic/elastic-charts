@@ -71,11 +71,15 @@ interface ReactiveChartOwnProps {
 
 type PartitionProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
 
+/** @internal */
+export type AnimationState = { rafId: number };
+
 class PartitionComponent extends React.Component<PartitionProps> {
   static displayName = 'Partition';
 
   // firstRender = true; // this will be useful for stable resizing of treemaps
   private ctx: CanvasRenderingContext2D | null;
+  private animationState: AnimationState;
 
   // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
   private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
@@ -84,6 +88,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
     super(props);
     this.ctx = null;
     this.devicePixelRatio = window.devicePixelRatio;
+    this.animationState = { rafId: NaN };
   }
 
   componentDidMount() {
@@ -178,7 +183,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
       const {
         ctx,
         devicePixelRatio,
-        props: { multiGeometries, geometriesFoci, chartId },
+        props: { multiGeometries, geometriesFoci },
       } = this;
       multiGeometries.forEach((geometries, geometryIndex) => {
         const renderer = isSimpleLinear(geometries.config, geometries.layers)
@@ -186,7 +191,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
           : isWaffle(geometries.config.partitionLayout)
           ? renderWrappedPartitionCanvas2d
           : renderPartitionCanvas2d;
-        renderer(ctx, devicePixelRatio, geometries, geometriesFoci[geometryIndex], chartId);
+        renderer(ctx, devicePixelRatio, geometries, geometriesFoci[geometryIndex], this.animationState);
       });
     }
   }
