@@ -1,3 +1,18 @@
+## [33.0.2](https://github.com/elastic/elastic-charts/compare/v33.0.1...v33.0.2) (2021-07-20)
+
+
+### Bug Fixes
+
+* **xy:** interaction in linear/log x scales ([#1258](https://github.com/elastic/elastic-charts/issues/1258)) ([db94db2](https://github.com/elastic/elastic-charts/commit/db94db25e0e4fb977ef812a4547d8bc121c9db29))
+
+## [33.0.1](https://github.com/elastic/elastic-charts/compare/v33.0.0...v33.0.1) (2021-07-16)
+
+
+### Bug Fixes
+
+* **a11y:** goal chart bugs ([#1256](https://github.com/elastic/elastic-charts/issues/1256)) ([5ff47dd](https://github.com/elastic/elastic-charts/commit/5ff47dd016725822e2a46dbd01a2849907d11bf3))
+* slackbot package name ([#1254](https://github.com/elastic/elastic-charts/issues/1254)) ([7999020](https://github.com/elastic/elastic-charts/commit/7999020c762d397c5bd5198be6ffb99559adb8c7))
+
 # [33.0.0](https://github.com/elastic/elastic-charts/compare/v32.0.0...v33.0.0) (2021-07-14)
 
 

@@ -21,13 +21,15 @@ import {
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { BandViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { geometries } from '../../state/selectors/geometries';
+import { Mark } from '../../layout/viewmodel/geoms';
+import { geometries, getPrimitiveGeoms } from '../../state/selectors/geometries';
 import { getFirstTickValueSelector, getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
+  geoms: Mark[];
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
   bandLabels: BandViewModel[];
@@ -43,6 +45,7 @@ interface ReactiveChartOwnProps {
 }
 
 type Props = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
+
 class Component extends React.Component<Props> {
   static displayName = 'Goal';
 
@@ -139,11 +142,7 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      const { width, height }: Dimensions = this.props.chartContainerDimensions;
-      renderCanvas2d(this.ctx, this.devicePixelRatio, {
-        ...this.props.geometries,
-        config: { ...this.props.geometries.config, width, height },
-      });
+      renderCanvas2d(this.ctx, this.devicePixelRatio, this.props.geoms);
     }
   }
 }
@@ -159,6 +158,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
   geometries: nullShapeViewModel(),
+  geoms: [],
   chartContainerDimensions: {
     width: 0,
     height: 0,
@@ -181,6 +181,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     a11ySettings: getA11ySettingsSelector(state),
     bandLabels: getGoalChartSemanticDataSelector(state),
     firstValue: getFirstTickValueSelector(state),
+    geoms: getPrimitiveGeoms(state),
   };
 };
 

@@ -118,7 +118,7 @@ const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ se
   );
 };
 
-const renderColorPicker = (anchorPosition: PopoverAnchorPosition): LegendColorPicker => ({
+export const renderEuiColorPicker = (anchorPosition: PopoverAnchorPosition): LegendColorPicker => ({
   anchor,
   color,
   onClose,
@@ -147,7 +147,7 @@ export const Example = () => {
         showLegendExtra={showLegendExtra}
         legendPosition={legendPosition}
         legendAction={hideActions ? undefined : getAction(euiPopoverPosition)}
-        legendColorPicker={showColorPicker ? renderColorPicker(euiPopoverPosition) : undefined}
+        legendColorPicker={showColorPicker ? renderEuiColorPicker(euiPopoverPosition) : undefined}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
