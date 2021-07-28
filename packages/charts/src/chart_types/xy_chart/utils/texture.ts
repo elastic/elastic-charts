@@ -18,7 +18,7 @@ const getSpacing = ({ spacing }: TexturedStyles): Point => ({
   y: typeof spacing === 'number' ? spacing : spacing?.y ?? 0,
 });
 
-const getPath = (textureStyle: TexturedStyles, size: number, stokeWith: number): [path: Path2D, rotation: number] => {
+const getPath = (textureStyle: TexturedStyles, size: number, strokeWidth: number): [path: Path2D, rotation: number] => {
   if ('path' in textureStyle) {
     const path = typeof textureStyle.path === 'string' ? new Path2D(textureStyle.path) : textureStyle.path;
 
@@ -26,11 +26,11 @@ const getPath = (textureStyle: TexturedStyles, size: number, stokeWith: number):
   }
   const [pathFn, rotation] = TextureRendererFn[textureStyle.shape];
   // Prevents clipping shapes near edge
-  const stokeWidthPadding = [TextureShape.Circle, TextureShape.Square].includes(textureStyle.shape as any)
-    ? stokeWith
+  const strokeWidthPadding = [TextureShape.Circle, TextureShape.Square].includes(textureStyle.shape as any)
+    ? strokeWidth
     : 0;
 
-  return [new Path2D(pathFn((size - stokeWidthPadding) / 2)), rotation];
+  return [new Path2D(pathFn((size - strokeWidthPadding) / 2)), rotation];
 };
 
 /** @internal */

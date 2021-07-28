@@ -47,11 +47,11 @@ export const computeLegendSelector = createCustomCachedSelector(
       lastValues,
       seriesColors,
       seriesSpecs,
-      chartTheme.colors.defaultVizColor,
       axesSpecs,
       settings.showLegendExtra,
       siDataSeriesMap,
       deselectedDataSeries,
+      chartTheme,
       // @ts-ignore
       settings.sortSeriesBy,
     );
