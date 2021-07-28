@@ -14,14 +14,13 @@ import { ScreenReaderSummary, ScreenReaderPartitionTable } from '../../../../com
 import { clearCanvas } from '../../../../renderers/canvas';
 import { SettingsSpec } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { ChartId, GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,
   getA11ySettingsSelector,
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -56,7 +55,6 @@ interface ReactiveChartStateProps {
   geometriesFoci: ContinuousDomainFocus[];
   multiGeometries: ShapeViewModel[];
   chartContainerDimensions: Dimensions;
-  chartId: ChartId;
   a11ySettings: A11ySettings;
   debug: SettingsSpec['debug'];
 }
@@ -212,7 +210,6 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
-  chartId: '',
   geometries: nullShapeViewModel(),
   geometriesFoci: [],
   multiGeometries: [],
@@ -237,7 +234,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     multiGeometries,
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
     geometriesFoci: partitionDrilldownFocus(state),
-    chartId: getChartIdSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
     debug: getSettingsSpecSelector(state).debug,
   };
