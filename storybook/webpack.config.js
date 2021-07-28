@@ -33,7 +33,7 @@ const MAX_CYCLES = 0;
 let numCyclesDetected = 0;
 
 module.exports = async ({ config }) => {
-  const FAST = Boolean(JSON.parse(process.env.VRT)) ?? false;
+  const FAST = Boolean(JSON.parse(process.env.FAST ?? false));
 
   config.plugins.push(
     new webpack.EnvironmentPlugin({

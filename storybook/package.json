@@ -6,7 +6,8 @@
   "scripts": {
     "start": "yarn storybook",
     "storybook": "VRT=true FAST=true start-storybook -s ../public -p 9001 -c . --ci --no-version-updates",
-    "storybook:build": "rm -rf ../.out && build-storybook -s ../public -c storybook -o ../.out",
+    "build": "yarn storybook:build",
+    "storybook:build": "rm -rf ../.out && build-storybook -s ../public -c . -o ../.out",
     "typecheck": "tsc -p ./tsconfig.json --noEmit"
   },
   "dependencies": {
