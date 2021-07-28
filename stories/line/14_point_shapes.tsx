@@ -66,7 +66,7 @@ export const Example = () => {
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
-        color="lightgray"
+        color="lightgray" // never overridden
         pointStyleAccessor={(datum) => {
           return {
             shape: shapes[datum.datum[2] % shapes.length],
