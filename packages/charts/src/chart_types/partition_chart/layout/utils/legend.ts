@@ -58,12 +58,6 @@ export function getLegendItems(
     return a < b ? -1 : a > b ? 1 : 0;
   }
 
-  function compareIndices(aItem: QuadViewModel, bItem: QuadViewModel): number {
-    const aDepth = aItem.depth;
-    const bDepth = bItem.depth;
-    return aDepth - bDepth || aItem.path[aDepth + 1].index - bItem.path[bDepth + 1].index;
-  }
-
   function descendingValues(aItem: QuadViewModel, bItem: QuadViewModel): number {
     return aItem.depth - bItem.depth || bItem.value - aItem.value;
   }
@@ -86,8 +80,6 @@ export function getLegendItems(
   items.sort(
     partitionLayout === PartitionLayout.waffle // waffle has inherent top to bottom descending order
       ? descendingValues
-      : partitionLayout === PartitionLayout.mosaic // mosaic has inherent top to bottom ascending order
-      ? compareIndices
       : flatLegend
       ? compareNames
       : compareTreePaths,

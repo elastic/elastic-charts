@@ -65,7 +65,7 @@ export const Example = () => {
       <Settings
         showLegend={boolean('Show legend', true)}
         showLegendExtra={boolean('Show legend values', true)}
-        flatLegend={boolean('Flat legend', true)}
+        flatLegend={boolean('Flat legend', false)}
       />
       <Partition
         id="spec_1"
