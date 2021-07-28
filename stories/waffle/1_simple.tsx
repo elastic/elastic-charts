@@ -34,6 +34,14 @@ export const Example = () => {
               fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9.slice(1))(d.sortIndex),
             },
           },
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+            fillLabel: { textInvertible: true },
+            shape: {
+              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9.slice(1))(d.sortIndex),
+            },
+          },
         ]}
         config={{
           partitionLayout: PartitionLayout.waffle,

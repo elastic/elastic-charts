@@ -16,9 +16,8 @@ import { getPartitionSpecs } from './get_partition_specs';
 /** @internal */
 export const computeLegendSelector = createCustomCachedSelector(
   [getPartitionSpecs, getLegendConfigSelector, partitionMultiGeometries],
-  (specs, lelele, geometries): LegendItem[] =>
+  (specs, { flatLegend, legendMaxDepth, legendPosition }, geometries): LegendItem[] =>
     specs.flatMap((partitionSpec, i) => {
-      const { flatLegend, legendMaxDepth, legendPosition } = lelele;
       const quadViewModel = geometries.filter((g) => g.index === i).flatMap((g) => g.quadViewModel);
       return getLegendItems(
         partitionSpec.id,
