@@ -50,6 +50,7 @@ import {
 } from '../utils/group_by_rollup';
 import { sunburst } from '../utils/sunburst';
 import { getTopPadding, LayerLayout, treemap } from '../utils/treemap';
+import { waffle } from '../utils/waffle';
 import {
   fillTextLayout,
   getRectangleRowGeometry,
@@ -73,6 +74,9 @@ export const isIcicle = (p: PartitionLayout | undefined) => p === PartitionLayou
 
 /** @internal */
 export const isFlame = (p: PartitionLayout | undefined) => p === PartitionLayout.flame;
+
+/** @internal */
+export const isWaffle = (p: PartitionLayout | undefined) => p === PartitionLayout.waffle;
 
 /** @internal */
 export const isLinear = (p: PartitionLayout | undefined) => isFlame(p) || isIcicle(p);
@@ -246,6 +250,14 @@ const rawChildNodes = (
         isMosaic(partitionLayout) ? [LayerLayout.vertical, LayerLayout.horizontal] : [],
       );
 
+    case PartitionLayout.waffle:
+      return waffle(tree, totalValue, {
+        x0: 0,
+        y0: 0,
+        width,
+        height,
+      });
+
     case PartitionLayout.icicle:
     case PartitionLayout.flame:
       const icicleLayout = isIcicle(partitionLayout);
@@ -311,6 +323,7 @@ export function shapeViewModel(
   const icicleLayout = isIcicle(partitionLayout);
   const flameLayout = isFlame(partitionLayout);
   const simpleLinear = isSimpleLinear(config, layers);
+  const waffleLayout = isWaffle(partitionLayout);
 
   const diskCenter = isSunburst(partitionLayout)
     ? {
@@ -391,13 +404,14 @@ export function shapeViewModel(
         getSectorRowGeometry,
         inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
       )
-    : simpleLinear
-    ? () => [] // no multirow layout needed for simpleLinear partitions
+    : simpleLinear || waffleLayout
+    ? () => [] // no multirow layout needed for simpleLinear partitions; no text at all for waffles
     : fillTextLayout(
         rectangleConstruction(treeHeight, treemapLayout || mosaicLayout ? topGroove : null),
         getRectangleRowGeometry,
         () => 0,
       );
+
   const rowSets: RowSet[] = getRowSets(
     textMeasure,
     rawTextGetter,
@@ -418,7 +432,7 @@ export function shapeViewModel(
   const currentY = [-height, -height, -height, -height];
 
   const nodesWithoutRoom =
-    fillOutside || treemapLayout || mosaicLayout || icicleLayout || flameLayout
+    fillOutside || treemapLayout || mosaicLayout || icicleLayout || flameLayout || waffleLayout
       ? [] // outsideFillNodes and linkLabels are in inherent conflict due to very likely overlaps
       : quadViewModel.filter((n: ShapeTreeNode) => {
           const id = nodeId(n);

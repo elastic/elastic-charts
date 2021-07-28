@@ -62,7 +62,11 @@ export const Example = () => {
   );
   return (
     <Chart className="story-chart">
-      <Settings showLegend={boolean('Show legend', true)} showLegendExtra={boolean('Show legend values', true)} />
+      <Settings
+        showLegend={boolean('Show legend', true)}
+        showLegendExtra={boolean('Show legend values', true)}
+        flatLegend={boolean('Flat legend', false)}
+      />
       <Partition
         id="spec_1"
         data={data}

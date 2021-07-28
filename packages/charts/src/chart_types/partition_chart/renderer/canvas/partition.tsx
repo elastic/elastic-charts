@@ -14,14 +14,13 @@ import { ScreenReaderSummary, ScreenReaderPartitionTable } from '../../../../com
 import { clearCanvas } from '../../../../renderers/canvas';
 import { SettingsSpec } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { ChartId, GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,
   getA11ySettingsSelector,
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -33,10 +32,11 @@ import {
   SmallMultiplesDescriptors,
 } from '../../layout/types/viewmodel_types';
 import { INPUT_KEY } from '../../layout/utils/group_by_rollup';
-import { isSimpleLinear } from '../../layout/viewmodel/viewmodel';
+import { isSimpleLinear, isWaffle } from '../../layout/viewmodel/viewmodel';
 import { partitionDrilldownFocus, partitionMultiGeometries } from '../../state/selectors/geometries';
 import { renderLinearPartitionCanvas2d } from './canvas_linear_renderers';
 import { renderPartitionCanvas2d } from './canvas_renderers';
+import { renderWrappedPartitionCanvas2d } from './canvas_wrapped_renderers';
 
 /** @internal */
 export interface ContinuousDomainFocus {
@@ -55,7 +55,6 @@ interface ReactiveChartStateProps {
   geometriesFoci: ContinuousDomainFocus[];
   multiGeometries: ShapeViewModel[];
   chartContainerDimensions: Dimensions;
-  chartId: ChartId;
   a11ySettings: A11ySettings;
   debug: SettingsSpec['debug'];
 }
@@ -63,17 +62,22 @@ interface ReactiveChartStateProps {
 interface ReactiveChartDispatchProps {
   onChartRendered: typeof onChartRendered;
 }
+
 interface ReactiveChartOwnProps {
   forwardStageRef: RefObject<HTMLCanvasElement>;
 }
 
 type PartitionProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
 
+/** @internal */
+export type AnimationState = { rafId: number };
+
 class PartitionComponent extends React.Component<PartitionProps> {
   static displayName = 'Partition';
 
   // firstRender = true; // this will be useful for stable resizing of treemaps
   private ctx: CanvasRenderingContext2D | null;
+  private animationState: AnimationState;
 
   // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
   private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
@@ -82,6 +86,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
     super(props);
     this.ctx = null;
     this.devicePixelRatio = window.devicePixelRatio;
+    this.animationState = { rafId: NaN };
   }
 
   componentDidMount() {
@@ -176,13 +181,15 @@ class PartitionComponent extends React.Component<PartitionProps> {
       const {
         ctx,
         devicePixelRatio,
-        props: { multiGeometries, geometriesFoci, chartId },
+        props: { multiGeometries, geometriesFoci },
       } = this;
       multiGeometries.forEach((geometries, geometryIndex) => {
         const renderer = isSimpleLinear(geometries.config, geometries.layers)
           ? renderLinearPartitionCanvas2d
+          : isWaffle(geometries.config.partitionLayout)
+          ? renderWrappedPartitionCanvas2d
           : renderPartitionCanvas2d;
-        renderer(ctx, devicePixelRatio, geometries, geometriesFoci[geometryIndex], chartId);
+        renderer(ctx, devicePixelRatio, geometries, geometriesFoci[geometryIndex], this.animationState);
       });
     }
   }
@@ -203,7 +210,6 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
-  chartId: '',
   geometries: nullShapeViewModel(),
   geometriesFoci: [],
   multiGeometries: [],
@@ -228,7 +234,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     multiGeometries,
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
     geometriesFoci: partitionDrilldownFocus(state),
-    chartId: getChartIdSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
     debug: getSettingsSpecSelector(state).debug,
   };

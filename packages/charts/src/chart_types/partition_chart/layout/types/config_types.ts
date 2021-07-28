@@ -20,6 +20,7 @@ export const PartitionLayout = Object.freeze({
   icicle: 'icicle' as const,
   flame: 'flame' as const,
   mosaic: 'mosaic' as const,
+  waffle: 'waffle' as const,
 });
 
 /** @public */
