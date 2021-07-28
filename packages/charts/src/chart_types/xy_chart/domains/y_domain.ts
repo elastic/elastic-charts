@@ -207,7 +207,9 @@ export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean)
  * @returns {ScaleContinuousType}
  * @internal
  */
-export function coerceYScaleTypes(scales: Array<{ type: ScaleContinuousType; nice: boolean }>): {
+export function coerceYScaleTypes(
+  scales: Array<{ type: ScaleContinuousType; nice: boolean }>,
+): {
   type: ScaleContinuousType;
   nice: boolean;
 } {

@@ -70,17 +70,15 @@ export function getHierarchyOfArrays(
   return mapsToArrays(groupByRollup(groupByRollupAccessors, valueAccessor, aggregator, facts), sortSpecs, innerGroups);
 }
 
-const sorter =
-  (layout: PartitionLayout) =>
-  ({ sortPredicate }: Layer, i: number) =>
-    sortPredicate ||
-    (isTreemap(layout) || isSunburst(layout)
-      ? descendingValueNodes
-      : isMosaic(layout)
-      ? i === 2
-        ? ascendingValueNodes
-        : descendingValueNodes
-      : null);
+const sorter = (layout: PartitionLayout) => ({ sortPredicate }: Layer, i: number) =>
+  sortPredicate ||
+  (isTreemap(layout) || isSunburst(layout)
+    ? descendingValueNodes
+    : isMosaic(layout)
+    ? i === 2
+      ? ascendingValueNodes
+      : descendingValueNodes
+    : null);
 
 /** @internal */
 export function partitionTree(

@@ -32,42 +32,41 @@ const onCloseAction = action('onClose');
 export const Example = () => {
   const [colors, setColors] = useState<Record<SeriesKey, Color | null>>({});
   const CustomColorPicker: LegendColorPicker = useMemo(
-    () =>
-      ({ anchor, color, onClose, seriesIdentifiers, onChange }) => {
-        const handleClose = () => {
-          onClose();
-          onCloseAction();
-          setColors((prevColors) => ({
-            ...prevColors,
-            ...toEntries(seriesIdentifiers, 'key', color),
-          }));
-        };
-        const handleChange = (c: Color | null) => {
-          setColors((prevColors) => ({
-            ...prevColors,
-            ...toEntries(seriesIdentifiers, 'key', c),
-          }));
-          onChange(c);
-          onChangeAction(c);
-        };
+    () => ({ anchor, color, onClose, seriesIdentifiers, onChange }) => {
+      const handleClose = () => {
+        onClose();
+        onCloseAction();
+        setColors((prevColors) => ({
+          ...prevColors,
+          ...toEntries(seriesIdentifiers, 'key', color),
+        }));
+      };
+      const handleChange = (c: Color | null) => {
+        setColors((prevColors) => ({
+          ...prevColors,
+          ...toEntries(seriesIdentifiers, 'key', c),
+        }));
+        onChange(c);
+        onChangeAction(c);
+      };
 
-        return (
-          <>
-            <EuiWrappingPopover isOpen button={anchor} closePopover={handleClose} anchorPosition="leftCenter" ownFocus>
-              <EuiColorPicker display="inline" color={color} onChange={handleChange} />
-              <EuiSpacer size="m" />
-              <EuiFlexItem grow={false}>
-                <EuiButtonEmpty size="s" onClick={() => handleChange(null)}>
-                  Clear color
-                </EuiButtonEmpty>
-              </EuiFlexItem>
-              <EuiButton fullWidth size="s" onClick={handleClose}>
-                Done
-              </EuiButton>
-            </EuiWrappingPopover>
-          </>
-        );
-      },
+      return (
+        <>
+          <EuiWrappingPopover isOpen button={anchor} closePopover={handleClose} anchorPosition="leftCenter" ownFocus>
+            <EuiColorPicker display="inline" color={color} onChange={handleChange} />
+            <EuiSpacer size="m" />
+            <EuiFlexItem grow={false}>
+              <EuiButtonEmpty size="s" onClick={() => handleChange(null)}>
+                Clear color
+              </EuiButtonEmpty>
+            </EuiFlexItem>
+            <EuiButton fullWidth size="s" onClick={handleClose}>
+              Done
+            </EuiButton>
+          </EuiWrappingPopover>
+        </>
+      );
+    },
     [setColors],
   );
   CustomColorPicker.displayName = 'CustomColorPicker';

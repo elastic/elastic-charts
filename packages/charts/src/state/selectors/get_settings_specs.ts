@@ -23,13 +23,16 @@ export const getSpecs = (state: GlobalChartState) => state.specs;
 /**
  * @internal
  */
-export const getSettingsSpecSelector = createCustomCachedSelector([getSpecs], (specs): SettingsSpec => {
-  const settingsSpecs = getSpecsFromStore<SettingsSpec>(specs, ChartType.Global, SpecType.Settings);
-  if (settingsSpecs.length === 1) {
-    return handleListenerDebouncing(settingsSpecs[0]);
-  }
-  return DEFAULT_SETTINGS_SPEC;
-});
+export const getSettingsSpecSelector = createCustomCachedSelector(
+  [getSpecs],
+  (specs): SettingsSpec => {
+    const settingsSpecs = getSpecsFromStore<SettingsSpec>(specs, ChartType.Global, SpecType.Settings);
+    if (settingsSpecs.length === 1) {
+      return handleListenerDebouncing(settingsSpecs[0]);
+    }
+    return DEFAULT_SETTINGS_SPEC;
+  },
+);
 
 function handleListenerDebouncing(settings: SettingsSpec): SettingsSpec {
   const delay = settings.pointerUpdateDebounce ?? DEFAULT_POINTER_UPDATE_DEBOUNCE;

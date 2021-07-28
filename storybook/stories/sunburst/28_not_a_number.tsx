@@ -22,7 +22,7 @@ export const Example = () => (
       id="spec_1"
       data={mocks.pie
         .slice(0, 2)
-        .concat(mocks.pie.slice(2, 3).map((s) => ({ ...s, exportVal: undefined as unknown as number })))
+        .concat(mocks.pie.slice(2, 3).map((s) => ({ ...s, exportVal: (undefined as unknown) as number })))
         .concat(mocks.pie.slice(3))}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}

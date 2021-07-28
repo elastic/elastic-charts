@@ -945,7 +945,7 @@ export type AnnotationPortalSettings = TooltipPortalSettings<'chart'> & {
 export interface BaseAnnotationSpec<
   T extends typeof AnnotationType.Rectangle | typeof AnnotationType.Line,
   D extends RectAnnotationDatum | LineAnnotationDatum,
-  S extends RectAnnotationStyle | LineAnnotationStyle,
+  S extends RectAnnotationStyle | LineAnnotationStyle
 > extends Spec,
     AnnotationPortalSettings {
   chartType: typeof ChartType.XYAxis;

@@ -33,15 +33,13 @@ const getPanelTitle = (
   return safeFormat(value, formatter);
 };
 
-const isPrimaryColumnFn =
-  ({ horizontal: { domain } }: SmallMultipleScales) =>
-  (position: Position, horizontalValue: any) =>
-    isVerticalAxis(position) && domain[0] === horizontalValue;
+const isPrimaryColumnFn = ({ horizontal: { domain } }: SmallMultipleScales) => (
+  position: Position,
+  horizontalValue: any,
+) => isVerticalAxis(position) && domain[0] === horizontalValue;
 
-const isPrimaryRowFn =
-  ({ vertical: { domain } }: SmallMultipleScales) =>
-  (position: Position, verticalValue: any) =>
-    isHorizontalAxis(position) && domain[0] === verticalValue;
+const isPrimaryRowFn = ({ vertical: { domain } }: SmallMultipleScales) => (position: Position, verticalValue: any) =>
+  isHorizontalAxis(position) && domain[0] === verticalValue;
 
 /** @internal */
 export const computePerPanelAxesGeomsSelector = createCustomCachedSelector(

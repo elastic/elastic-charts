@@ -33,8 +33,13 @@ describe('test accessibility prop defaults', () => {
   });
   it('should test defaults', () => {
     const state = store.getState();
-    const { ariaDescription, ariaUseDefaultSummary, ariaLabelHeadingLevel, ariaLabel, ariaLabelledBy } =
-      getSettingsSpecSelector(state);
+    const {
+      ariaDescription,
+      ariaUseDefaultSummary,
+      ariaLabelHeadingLevel,
+      ariaLabel,
+      ariaLabelledBy,
+    } = getSettingsSpecSelector(state);
     expect(ariaDescription).toBeUndefined();
     expect(ariaUseDefaultSummary).toBeTrue();
     expect(ariaLabelHeadingLevel).toBe(DEFAULT_A11Y_SETTINGS.labelHeadingLevel);

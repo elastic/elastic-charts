@@ -20,10 +20,7 @@
     "resolveJsonModule": true,
     "typeRoots": ["./node_modules/@types", "./**/*.d.ts", "./scripts/custom_matchers.ts"],
     "paths": {
-      "*": [
-        "./declarations/*",
-        "./*"
-      ],
+      "*": ["./declarations/*", "./*"],
       "/@elastic/charts$": ["./packages/charts/src"],
       "/@elastic/charts/src/*": ["./packages/charts/src/*"]
     }

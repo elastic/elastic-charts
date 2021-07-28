@@ -47,38 +47,38 @@ const iconMap = {
  * Used to rotate text while maintaining correct parent dimensions
  * https://www.kizu.ru/rotated-text/
  */
-const getMarkerBody =
-  (valueCb: (v: any) => string, isVertical: boolean): LineAnnotationSpec['markerBody'] =>
-  ({ dataValue }) =>
-    isVertical ? (
+const getMarkerBody = (valueCb: (v: any) => string, isVertical: boolean): LineAnnotationSpec['markerBody'] => ({
+  dataValue,
+}) =>
+  isVertical ? (
+    <div
+      style={{
+        display: 'inline-block',
+        overflow: 'hidden',
+        width: '1.5em',
+        lineHeight: 1.5,
+      }}
+    >
       <div
         style={{
           display: 'inline-block',
-          overflow: 'hidden',
-          width: '1.5em',
-          lineHeight: 1.5,
+          whiteSpace: 'nowrap',
+          transform: 'translate(0, 100%) rotate(-90deg)',
+          transformOrigin: '0 0',
         }}
       >
+        {valueCb(dataValue)}
         <div
           style={{
-            display: 'inline-block',
-            whiteSpace: 'nowrap',
-            transform: 'translate(0, 100%) rotate(-90deg)',
-            transformOrigin: '0 0',
+            float: 'left',
+            marginTop: '100%',
           }}
-        >
-          {valueCb(dataValue)}
-          <div
-            style={{
-              float: 'left',
-              marginTop: '100%',
-            }}
-          />
-        </div>
+        />
       </div>
-    ) : (
-      <div>{valueCb(dataValue)}</div>
-    );
+    </div>
+  ) : (
+    <div>{valueCb(dataValue)}</div>
+  );
 
 /** formats values correctly for any rotation/side combination */
 const looseFormatter = (d: any) => (d < 100 ? d : moment(d).format('L'));

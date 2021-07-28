@@ -350,7 +350,7 @@ module.exports = {
                     {
                       target: './packages/charts/src',
                       from: './',
-                      except: ['./packages/charts/src', 'node_modules'],
+                      except: ['./packages/charts/src', './node_modules', './packages/charts/node_modules'],
                     },
                   ],
                 },

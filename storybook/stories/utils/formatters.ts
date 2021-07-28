@@ -36,16 +36,14 @@ export const logBaseMap = {
   [LogBase.Natural]: Math.E,
 };
 
-export const logFormatter =
-  (base: LogBase = LogBase.Common) =>
-  (n: number): string => {
-    if (n === 0) return '0';
-    const sign = n < 0 ? '-' : '';
-    const nAbs = Math.abs(n);
-    const exp = Math.log(nAbs) / Math.log(logBaseMap[base]) + Number.EPSILON;
-    const roundedExp = Math.floor(exp);
-    const constant = numeral(nAbs / Math.pow(logBaseMap[base], roundedExp)).format('0[.]00');
-    const baseLabel = base === LogBase.Natural ? 'e' : logBaseMap[base];
-    const expString = getSuperScriptNumber(roundedExp);
-    return `${sign}${constant} x ${baseLabel}${expString}`;
-  };
+export const logFormatter = (base: LogBase = LogBase.Common) => (n: number): string => {
+  if (n === 0) return '0';
+  const sign = n < 0 ? '-' : '';
+  const nAbs = Math.abs(n);
+  const exp = Math.log(nAbs) / Math.log(logBaseMap[base]) + Number.EPSILON;
+  const roundedExp = Math.floor(exp);
+  const constant = numeral(nAbs / Math.pow(logBaseMap[base], roundedExp)).format('0[.]00');
+  const baseLabel = base === LogBase.Natural ? 'e' : logBaseMap[base];
+  const expString = getSuperScriptNumber(roundedExp);
+  return `${sign}${constant} x ${baseLabel}${expString}`;
+};

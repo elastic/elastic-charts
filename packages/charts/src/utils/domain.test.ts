@@ -198,7 +198,8 @@ describe('utils/domain', () => {
 
         it('should allow max past baseline as 0, even if original domain is less than zero', () => {
           expect(computeDomainExtent([-65, -5], { fit: true, padding: 15, constrainPadding: false })).toEqual([
-            -80, 10,
+            -80,
+            10,
           ]);
         });
       });
@@ -208,7 +209,8 @@ describe('utils/domain', () => {
       // Note: domain pixel padding computed in continuous scale
       it('should not change domain when using Pixel padding unit', () => {
         expect(computeDomainExtent([5, 65], { fit: true, padding: 15, paddingUnit: DomainPaddingUnit.Pixel })).toEqual([
-          5, 65,
+          5,
+          65,
         ]);
       });
       it('should handle DomainRatio padding unit', () => {
