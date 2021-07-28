@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -24,6 +23,7 @@ import {
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { boolean } from '../storybook/node_modules/@storybook/addon-knobs';
 import { arrayKnobs, getChartRotationKnob } from '../storybook/stories/utils/knobs';
 
 export default {

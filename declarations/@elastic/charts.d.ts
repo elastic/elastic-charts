@@ -6,12 +6,9 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+/*
+ * This file is required to point at src types when using workspaces inside other workspaces.
+ * Without this the types will point at node_modules which may not be correct version.
+ */
 
-import { Example } from '../storybook/stories/goal/22_horizontal_plusminus';
-
-export class Playground extends React.Component {
-  render() {
-    return <Example />;
-  }
-}
+export * from '../../packages/charts/src';
