@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -20,10 +19,12 @@ import {
   AnnotationDomainType,
   Axis,
   LineAnnotationDatum,
-} from '../packages/charts/src';
-import { Icon } from '../packages/charts/src/components/icons/icon';
-import { KIBANA_METRICS } from '../packages/charts/src/utils/data_samples/test_dataset_kibana';
-import { arrayKnobs, getChartRotationKnob } from '../stories/utils/knobs';
+} from '@elastic/charts';
+import { Icon } from '@elastic/charts/src/components/icons/icon';
+import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
+
+import { boolean } from '@storybook/addon-knobs';
+import { arrayKnobs, getChartRotationKnob } from '../storybook/stories/utils/knobs';
 
 export default {
   title: 'Introduction',
@@ -31,8 +32,6 @@ export default {
 };
 
 export const Basic = () => {
-  const darkmode = boolean('darkmode', false);
-  const className = darkmode ? 'story-chart-dark' : 'story-chart';
   const toggleSpec = boolean('toggle bar spec', true);
   const data1 = [
     { x: 0, y: 2 },
@@ -44,7 +43,7 @@ export const Basic = () => {
   const data = toggleSpec ? data1 : data2;
   const specId = toggleSpec ? 'bars1' : 'bars2';
   return (
-    <Chart className={className}>
+    <Chart>
       <BarSeries
         id={specId}
         name="Simple bar series"
@@ -57,9 +56,7 @@ export const Basic = () => {
     </Chart>
   );
 };
-Basic.story = {
-  name: 'basic',
-};
+Basic.storyName = 'basic';
 
 export const AreaBasic = () => {
   const toggleSpec = boolean('toggle area spec', true);
@@ -69,7 +66,7 @@ export const AreaBasic = () => {
   const specId = toggleSpec ? 'areas1' : 'areas2';
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <AreaSeries
         id={specId}
         xScaleType={ScaleType.Time}
@@ -81,9 +78,7 @@ export const AreaBasic = () => {
     </Chart>
   );
 };
-AreaBasic.story = {
-  name: 'area basic',
-};
+AreaBasic.storyName = 'area basic';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
@@ -112,7 +107,7 @@ export const lineBasicXDomainContinuous = () => {
   const axisPosition = isBottom ? Position.Bottom : Position.Top;
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings showLegend debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
       <LineAnnotation
         id="anno_1"
@@ -138,15 +133,13 @@ export const lineBasicXDomainContinuous = () => {
     </Chart>
   );
 };
-lineBasicXDomainContinuous.story = {
-  name: '[line] basic xDomain continuous',
-};
+lineBasicXDomainContinuous.storyName = '[line] basic xDomain continuous';
 
 export const lineBasicXDomainOrdinal = () => {
   const dataValues = generateAnnotationData(arrayKnobs('annotation values', ['a', 'c']));
 
   return (
-    <Chart className="story-chart">
+    <Chart>
       <Settings debug={boolean('debug', false)} rotation={getChartRotationKnob()} />
       <LineAnnotation
         id="anno_1"
@@ -173,6 +166,4 @@ export const lineBasicXDomainOrdinal = () => {
     </Chart>
   );
 };
-lineBasicXDomainOrdinal.story = {
-  name: '[line] basic xDomain ordinal',
-};
+lineBasicXDomainOrdinal.storyName = '[line] basic xDomain ordinal';

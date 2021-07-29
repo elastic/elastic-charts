@@ -9,9 +9,9 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
-} from '../../packages/charts/src';
-import { KIBANA_METRICS } from '../../packages/charts/src/utils/data_samples/test_dataset_kibana';
-import { TSVB_DATASET } from '../../packages/charts/src/utils/data_samples/test_dataset_tsvb';
+} from '@elastic/charts';
+import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
+import { TSVB_DATASET } from '@elastic/charts/src/utils/data_samples/test_dataset_tsvb';
 
 <Meta title="Types of charts/Line Charts/Basic and with axes" />
 
@@ -23,7 +23,7 @@ A line chart is similar to the spline graph, but the spline graph draws a curved
 
 [source](https://datavizproject.com/data-type/line-chart/)
 
-<Chart className={'story-chart'}>
+<Chart>
     <LineSeries
     id={'lines1'}
     xScaleType={ScaleType.Time}
@@ -40,7 +40,7 @@ The data is generated from kibana metrics data
 <details>
 
 ```js
-<Chart className={'story-chart'}>
+<Chart>
     <LineSeries
     id={'lines1'}
     xScaleType={ScaleType.Time}
@@ -55,7 +55,7 @@ The data is generated from kibana metrics data
 
 Here is a `linear x axis` line chart
 
-<Chart className={'story-chart'}>
+<Chart>
     <Axis
     id={'bottom'}
     position={Position.Bottom}
@@ -89,7 +89,7 @@ Notice how the `<Axis position={Position.Left}/>` includes a tickFormat prop to 
 <details>
 
 ```js
-<Chart className={'story-chart'}>
+<Chart>
 
     <Axis
     id={'bottom'}

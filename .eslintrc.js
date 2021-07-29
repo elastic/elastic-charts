@@ -118,13 +118,7 @@ module.exports = {
     'implicit-arrow-linebreak': 0,
     'function-call-argument-newline': ['error', 'consistent'],
     'array-bracket-newline': ['error', 'consistent'],
-    'array-element-newline': [
-      'error',
-      {
-        ArrayExpression: 'consistent',
-        ArrayPattern: 'consistent',
-      },
-    ],
+    'array-element-newline': 0,
     'object-curly-newline': [
       'error',
       {
@@ -208,7 +202,20 @@ module.exports = {
       'error',
       {
         'newlines-between': 'always',
-        groups: ['builtin', 'external', ['parent', 'sibling', 'index', 'internal']],
+        groups: ['builtin', 'external', 'unknown', ['parent', 'sibling', 'index', 'internal']],
+
+        // seperates internal published packages from external packages
+        pathGroups: [
+          {
+            pattern: '@elastic/charts',
+            group: 'unknown',
+          },
+          {
+            pattern: '@elastic/charts/**',
+            group: 'unknown',
+          },
+        ],
+        pathGroupsExcludedImportTypes: ['builtin'],
         alphabetize: { order: 'asc', caseInsensitive: true }, // todo replace with directory gradient ordering
       },
     ],
@@ -343,7 +350,7 @@ module.exports = {
                     {
                       target: './packages/charts/src',
                       from: './',
-                      except: ['./packages/charts/src', 'node_modules'],
+                      except: ['./packages/charts/src', './node_modules', './packages/charts/node_modules'],
                     },
                   ],
                 },
