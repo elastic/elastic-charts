@@ -130,7 +130,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     };
   };
 
-  renderColorPicker(colorRef: React.RefObject<HTMLButtonElement>) {
+  renderColorPicker() {
     const {
       colorPicker: ColorPicker,
       item,
@@ -144,9 +144,6 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       setPersistedColorAction(seriesKeys, this.shouldClearPersistedColor ? null : color);
       clearTemporaryColorsAction();
       this.toggleIsOpen();
-      if (colorRef.current) {
-        colorRef.current.focus();
-      }
     };
     const handleChange = (c: Color | null) => {
       this.shouldClearPersistedColor = c === null;
@@ -214,7 +211,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             </div>
           )}
         </li>
-        {this.renderColorPicker(this.colorRef)}
+        {this.renderColorPicker()}
       </>
     );
   }
