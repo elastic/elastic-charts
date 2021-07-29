@@ -24,7 +24,11 @@ export interface Value {
 }
 
 /** @public */
-export interface Cell extends Rect {
+export interface Cell {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
   yIndex: number;
   fill: Fill;
   stroke: Stroke;
@@ -59,7 +63,7 @@ export interface HeatmapViewModel {
 }
 
 /** @internal */
-export function isPickedCells(v: any): v is Cell[] {
+export function isPickedCells(v: unknown): v is Cell[] {
   return Array.isArray(v);
 }
 
@@ -79,7 +83,10 @@ export type PickDragShapeFunction = (points: [Point, Point]) => Rect | null;
  * Used mainly for the Highlighter that shows the rounded selected area.
  * @internal
  */
-export type PickHighlightedArea = (x: any[], y: any[]) => Rect | null;
+export type PickHighlightedArea = (
+  x: Array<NonNullable<PrimitiveValue>>,
+  y: Array<NonNullable<PrimitiveValue>>,
+) => Rect | null;
 
 /** @internal */
 export type DragShape = ReturnType<PickDragShapeFunction>;

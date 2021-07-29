@@ -10,9 +10,7 @@ import { Rect } from '../../../../geoms/types';
 import { Dimensions } from '../../../../utils/dimensions';
 import { RectAnnotationDatum } from '../../utils/specs';
 
-/**
- * @internal
- */
+/** @internal */
 export interface AnnotationRectProps {
   datum: RectAnnotationDatum;
   rect: Rect;
