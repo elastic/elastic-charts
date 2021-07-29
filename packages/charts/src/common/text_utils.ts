@@ -32,8 +32,6 @@ export const FONT_VARIANTS = Object.freeze(['normal', 'small-caps'] as const);
 export type FontVariant = typeof FONT_VARIANTS[number];
 /** @public */
 export type FontWeight = typeof FONT_WEIGHTS[number];
-/** @internal */
-export type NumericFontWeight = number & typeof FONT_WEIGHTS[number];
 /** @public */
 export const FONT_STYLES = Object.freeze(['normal', 'italic', 'oblique', 'inherit', 'initial', 'unset'] as const);
 /** @public */
