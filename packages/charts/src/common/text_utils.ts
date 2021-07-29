@@ -11,7 +11,7 @@ import { $Values as Values } from 'utility-types';
 import { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 import { Datum } from '../utils/common';
-import { Pixels } from './geometry';
+import { Pixels, Rectangle } from './geometry';
 
 /** @public */
 export const FONT_VARIANTS = Object.freeze(['normal', 'small-caps'] as const);
@@ -85,18 +85,6 @@ export interface Box extends Font {
 
 /** @internal */
 export type Relation = Array<Datum>;
-
-/** @internal */
-export interface Origin {
-  x0: number;
-  y0: number;
-}
-
-/** @internal */
-export interface Rectangle extends Origin {
-  x1: number;
-  y1: number;
-}
 
 /** @internal */
 export interface Part extends Rectangle {

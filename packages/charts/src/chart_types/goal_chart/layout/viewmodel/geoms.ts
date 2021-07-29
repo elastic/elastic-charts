@@ -7,7 +7,7 @@
  */
 
 import { GOLDEN_RATIO } from '../../../../common/constants';
-import { PointObject } from '../../../../common/geometry';
+import { PointObject, Rectangle } from '../../../../common/geometry';
 import { cssFontShorthand, Font } from '../../../../common/text_utils';
 import { GoalSubtype } from '../../specs/constants';
 import { Config } from '../types/config_types';
@@ -25,6 +25,7 @@ const maxCentralFontSize = 38;
 
 /** @internal */
 export interface Mark {
+  boundingBox: (ctx: CanvasRenderingContext2D) => Rectangle;
   render: (ctx: CanvasRenderingContext2D) => void;
 }
 
@@ -44,6 +45,10 @@ export class Section implements Mark {
     this.yTo = yTo;
     this.lineWidth = lineWidth;
     this.strokeStyle = strokeStyle;
+  }
+
+  boundingBox() {
+    return { x0: NaN, y0: NaN, x1: NaN, y1: NaN };
   }
 
   render(ctx: CanvasRenderingContext2D) {
@@ -87,6 +92,10 @@ export class Arc implements Mark {
     this.strokeStyle = strokeStyle;
   }
 
+  boundingBox() {
+    return { x0: NaN, y0: NaN, x1: NaN, y1: NaN };
+  }
+
   render(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.lineWidth = this.lineWidth;
@@ -122,6 +131,10 @@ export class Text implements Mark {
     this.textBaseline = textBaseline;
     this.fontShape = fontShape;
     this.fontSize = fontSize;
+  }
+
+  boundingBox() {
+    return { x0: NaN, y0: NaN, x1: NaN, y1: NaN };
   }
 
   render(ctx: CanvasRenderingContext2D) {
