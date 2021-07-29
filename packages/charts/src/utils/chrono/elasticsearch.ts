@@ -52,6 +52,23 @@ export interface ESFixedInterval {
   quantity: number;
 }
 
+const esCalendarIntervalToChronoInterval: Record<ESCalendarIntervalUnit, CalendarIntervalUnit | FixedIntervalUnit> = {
+  minute: 'minute',
+  m: 'minute',
+  hour: 'hour',
+  h: 'hour',
+  day: 'day',
+  d: 'day',
+  week: 'week',
+  w: 'week',
+  month: 'month',
+  M: 'month',
+  quarter: 'quarter',
+  q: 'quarter',
+  year: 'year',
+  y: 'year',
+};
+
 /** @internal */
 export function snapDateToESInterval(
   date: number | Date,
@@ -75,9 +92,10 @@ function esCalendarIntervalSnap(
   timeZone?: string,
 ) {
   return snapTo === 'start'
-    ? startOf(date, timeZone, esCalendarIntervalToChronoInterval(interval.unit))
-    : endOf(date, timeZone, esCalendarIntervalToChronoInterval(interval.unit));
+    ? startOf(date, timeZone, esCalendarIntervalToChronoInterval[interval.unit])
+    : endOf(date, timeZone, esCalendarIntervalToChronoInterval[interval.unit]);
 }
+
 function esFixedIntervalSnap(
   date: number | Date,
   interval: ESFixedInterval,
@@ -88,32 +106,4 @@ function esFixedIntervalSnap(
   const unixTimestamp = getUnixTimestamp(date, timeZone);
   const roundedDate = Math.floor(unixTimestamp / unitMultiplier) * unitMultiplier;
   return snapTo === 'start' ? roundedDate : roundedDate + unitMultiplier - 1;
-}
-
-function esCalendarIntervalToChronoInterval(unit: ESCalendarIntervalUnit): CalendarIntervalUnit | FixedIntervalUnit {
-  switch (unit) {
-    case 'minute':
-    case 'm':
-      return 'minute';
-    case 'hour':
-    case 'h':
-      return 'hour';
-    case 'day':
-    case 'd':
-      return 'day';
-    case 'week':
-    case 'w':
-      return 'week';
-    case 'month':
-    case 'M':
-      return 'month';
-    case 'quarter':
-    case 'q':
-      return 'quarter';
-    case 'year':
-    case 'y':
-      return 'year';
-    default:
-      return 'hour';
-  }
 }
