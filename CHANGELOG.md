@@ -1,3 +1,16 @@
+# [33.1.0](https://github.com/elastic/elastic-charts/compare/v33.0.2...v33.1.0) (2021-07-28)
+
+
+### Bug Fixes
+
+* persisted color via color picker ([#1265](https://github.com/elastic/elastic-charts/issues/1265)) ([4205a7f](https://github.com/elastic/elastic-charts/commit/4205a7fc85ecb2fc36a65a64f8b8c667637586aa))
+
+
+### Features
+
+* **legend:** add point shape styles to legend item ([#1227](https://github.com/elastic/elastic-charts/issues/1227)) ([46be1d1](https://github.com/elastic/elastic-charts/commit/46be1d153dcf8369caff8a2092a1e38966139afb))
+* **partition:** waffle chart ([#1255](https://github.com/elastic/elastic-charts/issues/1255)) ([156662a](https://github.com/elastic/elastic-charts/commit/156662a3ffa60d08c2ea94a8aa3778c13b533530))
+
 ## [33.0.2](https://github.com/elastic/elastic-charts/compare/v33.0.1...v33.0.2) (2021-07-20)
 
 

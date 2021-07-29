@@ -1,9 +1,9 @@
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '../../packages/charts/src';
-import { mocks } from '../../packages/charts/src/mocks/hierarchical/index';
-import { config } from '../../packages/charts/src/chart_types/partition_chart/layout/config';
-import { ShapeTreeNode } from '../../packages/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
+import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
+import { mocks } from '@elastic/charts/src/mocks/hierarchical/index';
+import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import {
-  categoricalFillColor,
+  discreteColor,
   colorBrewerCategoricalStark9,
   countryLookup,
   indexInterpolatedFillColor,
@@ -12,7 +12,7 @@ import {
   productLookup,
   regionLookup,
 } from '../../stories/utils/utils';
-import { Meta, Story } from "@storybook/addon-docs/blocks";
+import { Meta, Story } from "@storybook/addon-docs";
 
 <Meta title="Introduction/Elastic Charts Overview" />
 
@@ -281,7 +281,7 @@ config: {
 `textInvertible` will have to be set to true for `textContrast` to be set as well. To see an example of where this applies, please see the Partitions Background story within Stylings. Charts are included below but are static.
 If you have `textInvertible` set to true, but do not have `textContrast` set to true, then the red slices, Europe, North America, and Asia, will have white text:
 
-<Chart className="story-chart">
+<Chart>
   <Settings theme={{background : {color: `rgba(155, 155, 155, 1)`}}} />
   <Partition
     id="spec_1"
@@ -294,7 +294,7 @@ If you have `textInvertible` set to true, but do not have `textContrast` set to 
         nodeLabel: (d) => productLookup[d].name,
         shape: {
           fillColor: (d) => {
-            return categoricalFillColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex);
+            return discreteColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex);
           },
         },
       },
@@ -303,7 +303,7 @@ If you have `textInvertible` set to true, but do not have `textContrast` set to 
         nodeLabel: (d) => regionLookup[d].regionName,
         shape: {
           fillColor: (d) => {
-            return categoricalFillColor(colorBrewerCategoricalStark9, 0.5)(d.parent.sortIndex);
+            return discreteColor(colorBrewerCategoricalStark9, 0.5)(d.parent.sortIndex);
           },
         },
       },
@@ -312,7 +312,7 @@ If you have `textInvertible` set to true, but do not have `textContrast` set to 
         nodeLabel: (d) => countryLookup[d].name,
         shape: {
           fillColor: (d) => {
-            return categoricalFillColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex);
+            return discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex);
           },
         },
       },
@@ -351,7 +351,7 @@ If you have `textInvertible` set to true, but do not have `textContrast` set to 
 
 Now if you set the `textContrast` to true as well, these slices also become black in text color:
 
-<Chart className="story-chart">
+<Chart>
   <Settings theme={{background : {color: `rgba(155, 155, 155, 1)`}}} />
   <Partition
     id="spec_1"
@@ -364,7 +364,7 @@ Now if you set the `textContrast` to true as well, these slices also become blac
         nodeLabel: (d) => productLookup[d].name,
         shape: {
           fillColor: (d) => {
-            return categoricalFillColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex);
+            return discreteColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex);
           },
         },
       },
@@ -373,7 +373,7 @@ Now if you set the `textContrast` to true as well, these slices also become blac
         nodeLabel: (d) => regionLookup[d].regionName,
         shape: {
           fillColor: (d) => {
-            return categoricalFillColor(colorBrewerCategoricalStark9, 0.5)(d.parent.sortIndex);
+            return discreteColor(colorBrewerCategoricalStark9, 0.5)(d.parent.sortIndex);
           },
         },
       },
@@ -382,7 +382,7 @@ Now if you set the `textContrast` to true as well, these slices also become blac
         nodeLabel: (d) => countryLookup[d].name,
         shape: {
           fillColor: (d) => {
-            return categoricalFillColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex);
+            return discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex);
           },
         },
       },

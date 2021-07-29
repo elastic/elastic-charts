@@ -1,26 +1,76 @@
-@import '../node_modules/@elastic/eui/src/theme_light.scss';
+@import '~@elastic/eui/dist/eui_theme_light';
 
 html {
-  background-color: white;
+  &.light-theme {
+    @import '~@elastic/eui/dist/eui_theme_light';
+    @import '~@elastic/charts/src/theme_light';
+    @import '~@elastic/eui/src/global_styling/variables/_colors.scss';
+
+    body,
+    .echChart {
+      background: white !important;
+      // background: $euiPageBackgroundColor !important;
+    }
+  }
+
+  &.dark-theme {
+    @import '~@elastic/eui/dist/eui_theme_dark';
+    @import '~@elastic/charts/src/theme_dark';
+    @import '~@elastic/eui/src/themes/eui/eui_colors_dark.scss';
+
+    body,
+    .echChart {
+      background: #1a1b20 !important;
+      // background: $euiPageBackgroundColor !important;
+    }
+  }
+
+  &.disable-animations {
+    *,
+    *::after,
+    *::before {
+      transition-delay: 0s !important;
+      transition-duration: 0s !important;
+      animation-delay: -0.0001s !important;
+      animation-duration: 0s !important;
+      animation-play-state: paused !important;
+      caret-color: transparent !important;
+    }
+
+    .echLegend .echLegendListContainer :focus {
+      animation-duration: 0s !important; // remove focus animation but keep border
+    }
+
+    .euiSaturation:focus .euiSaturation__indicator {
+      animation: none !important; // fix color picker dot
+    }
+  }
+
+  &.echVisualTesting {
+    &,
+    body,
+    #root {
+      background: blanchedalmond !important;
+    }
+
+    #story-header {
+      display: none;
+    }
+
+    #root {
+      padding-top: 200px;
+      padding-bottom: 200px;
+    }
+  }
+}
+
+body {
+  min-height: 100%;
 }
 
 #root {
   z-index: 200;
   position: relative;
-}
-
-.story-chart {
-  box-sizing: border-box;
-  background: white;
-}
-
-.story-chart-dark {
-  box-sizing: border-box;
-  background: #1a1b20;
-}
-
-.echInvisible {
-  visibility: hidden;
 }
 
 #story-root {
@@ -33,25 +83,20 @@ html {
   background-color: blanchedalmond;
 }
 
-html.disable-animations {
-  *,
-  *::after,
-  *::before {
-    transition-delay: 0s !important;
-    transition-duration: 0s !important;
-    animation-delay: -0.0001s !important;
-    animation-duration: 0s !important;
-    animation-play-state: paused !important;
-    caret-color: transparent !important;
-  }
+#story-header {
+  padding: 20px 40px 16px;
+}
 
-  .echLegend .echLegendListContainer :focus {
-    animation-duration: 0s !important; // remove focus animation but keep border
-  }
+.sb-show-main {
+  padding: 0 !important;
+}
 
-  .euiSaturation:focus .euiSaturation__indicator {
-    animation: none !important; // fix color picker dot
-  }
+.echChart {
+  box-sizing: border-box;
+}
+
+.echInvisible {
+  visibility: hidden;
 }
 
 #story-root + div table {
@@ -70,19 +115,6 @@ html.disable-animations {
 
 .Pane.vertical.Pane1 {
   background: red;
-}
-
-html.echVisualTesting {
-  background-color: blanchedalmond;
-
-  #root > div:not(#story-root) {
-    display: none;
-  }
-
-  #root {
-    padding-top: 200px;
-    padding-bottom: 200px;
-  }
 }
 
 // for using EuiWrappingPopover in stories

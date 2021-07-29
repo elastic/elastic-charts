@@ -27,8 +27,8 @@ export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: 
       renderRect(
         ctx,
         { x: chartX + panelX, y: chartY + panelY, width, height },
-        { color: stringToRGB('#00000000') },
-        { color: stringToRGB('#000000'), width: 1 },
+        { color: stringToRGB('rgba(0,0,0,0)') },
+        { color: stringToRGB('rgb(0,0,0)'), width: 1 },
       ),
     ),
   );
