@@ -105,9 +105,10 @@ describe('d3 Utils', () => {
     describe('hsl colors', () => {
       it('should return RgbObject', () => {
         expect(stringToRGB('hsl(0,0%,50%)')).toMatchObject({
-          r: 127.5,
-          g: 127.5,
-          b: 127.5,
+          r: 128,
+          g: 128,
+          b: 128,
+          opacity: 1,
         });
       });
 
@@ -117,9 +118,9 @@ describe('d3 Utils', () => {
 
       it('should return correct RgbObject for alpha value of 0', () => {
         expect(stringToRGB('hsla(0,0%,50%,0)')).toEqual({
-          r: 127.5,
-          g: 127.5,
-          b: 127.5,
+          r: 128,
+          g: 128,
+          b: 128,
           opacity: 0,
         });
       });
@@ -160,6 +161,27 @@ describe('d3 Utils', () => {
 
       it('should use OpacityFn to compute opacity override', () => {
         expect(stringToRGB('rgba(50,50,50,0.25)', (o) => o * 2).opacity).toBe(0.5);
+      });
+    });
+
+    describe('Edge Cases', () => {
+      it.each([
+        [undefined, { r: 255, g: 0, b: 0, opacity: 1 }],
+        ['', { r: 255, g: 0, b: 0, opacity: 1 }],
+        ['bad', { r: 187, g: 170, b: 221, opacity: 1 }],
+        ['#00000000', { r: 0, g: 0, b: 0, opacity: 0 }],
+        ['#000000', { r: 0, g: 0, b: 0, opacity: 1 }],
+        ['#6092c000', { r: 96, g: 146, b: 192, opacity: 0 }],
+        ['#6092c06b', { r: 96, g: 146, b: 192, opacity: 0.42 }],
+        ['blue', { r: 0, g: 0, b: 255, opacity: 1 }],
+        ['hsl(20, 100%, 40%)', { r: 204, g: 68, b: 0, opacity: 1 }],
+        ['hsla(20, 100%, 40%, 0.5)', { r: 204, g: 68, b: 0, opacity: 0.5 }],
+        ['hsla(20, 100%, 40%, 0)', { r: 204, g: 68, b: 0, opacity: 0 }],
+        ['rgb(0,128,128)', { r: 0, g: 128, b: 128, opacity: 1 }],
+        ['rgba(0,128,128,0.5)', { r: 0, g: 128, b: 128, opacity: 0.5 }],
+        ['rgba(0,128,128,0)', { r: 0, g: 128, b: 128, opacity: 0 }],
+      ])('input: $1', (input, output) => {
+        expect(stringToRGB(input)).toEqual(output);
       });
     });
   });
