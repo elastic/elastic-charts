@@ -9,7 +9,7 @@
 import { ChartType } from '../../..';
 import { Pixels } from '../../../../common/geometry';
 import { Box } from '../../../../common/text_utils';
-import { Fill, Line, Stroke } from '../../../../geoms/types';
+import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { config } from '../config/config';
@@ -24,12 +24,8 @@ export interface Value {
 }
 
 /** @public */
-export interface Cell {
-  x: number;
-  y: number;
+export interface Cell extends Rect {
   yIndex: number;
-  width: number;
-  height: number;
   fill: Fill;
   stroke: Stroke;
   value: number;
@@ -74,9 +70,7 @@ export type PickFunction = (x: Pixels, y: Pixels) => Cell[] | TextBox;
 export type PickDragFunction = (points: [Point, Point]) => HeatmapBrushEvent;
 
 /** @internal */
-export type PickDragShapeFunction = (
-  points: [Point, Point],
-) => { x: number; y: number; width: number; height: number } | null;
+export type PickDragShapeFunction = (points: [Point, Point]) => Rect | null;
 
 /**
  * From x and y coordinates in the data domain space to a canvas projected rectangle
@@ -85,10 +79,7 @@ export type PickDragShapeFunction = (
  * Used mainly for the Highlighter that shows the rounded selected area.
  * @internal
  */
-export type PickHighlightedArea = (
-  x: any[],
-  y: any[],
-) => { x: number; y: number; width: number; height: number } | null;
+export type PickHighlightedArea = (x: any[], y: any[]) => Rect | null;
 
 /** @internal */
 export type DragShape = ReturnType<PickDragShapeFunction>;
