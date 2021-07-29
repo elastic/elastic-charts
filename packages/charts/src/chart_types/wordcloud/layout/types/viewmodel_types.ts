@@ -8,7 +8,7 @@
 
 import { $Values as Values } from 'utility-types';
 
-import { Pixels, PointObject } from '../../../../common/geometry';
+import { Pixels, PointObject, Rectangle } from '../../../../common/geometry';
 import { Color } from '../../../../utils/common';
 import { config } from '../config/config';
 import { Config } from './config_types';
@@ -32,7 +32,7 @@ export const WeightFn = Object.freeze({
 export type WeightFn = Values<typeof WeightFn>;
 
 /** @internal */
-export interface Word {
+export interface Word extends Rectangle {
   color: string;
   font: string;
   fontFamily: string;
@@ -46,12 +46,8 @@ export interface Word {
   text: string;
   weight: number;
   x: number;
-  x0: number;
-  x1: number;
   xoff: number;
   y: number;
-  y0: number;
-  y1: number;
   yoff: number;
   datum: WordModel;
 }
