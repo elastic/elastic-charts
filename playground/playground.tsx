@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Example } from '../storybook/stories/goal/22_horizontal_plusminus';
+import { Example } from '../stories/goal/22_horizontal_plusminus';
 
 export class Playground extends React.Component {
   render() {
