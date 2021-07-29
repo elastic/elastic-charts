@@ -12,6 +12,7 @@ const CircularDependencyPlugin = require('circular-dependency-plugin');
 const webpack = require('webpack');
 
 const nonce = 'Pk1rZ1XDlMuYe8ubWV3Lh0BzwrTigJQ=';
+
 const scssLoaders = [
   {
     loader: 'css-loader',
@@ -20,7 +21,9 @@ const scssLoaders = [
   {
     loader: 'postcss-loader',
     options: {
-      plugins: [require('autoprefixer')],
+      postcssOptions: {
+        plugins: [require('autoprefixer')],
+      },
     },
   },
   'sass-loader',
@@ -30,32 +33,38 @@ const MAX_CYCLES = 0;
 let numCyclesDetected = 0;
 
 module.exports = async ({ config }) => {
+  const FAST = Boolean(JSON.parse(process.env.FAST ?? false));
+
   config.plugins.push(
     new webpack.EnvironmentPlugin({
+      FAST,
       RNG_SEED: null,
       VRT: process.env.VRT ?? null,
     }),
   );
-  config.plugins.push(
-    new CircularDependencyPlugin({
-      onStart() {
-        numCyclesDetected = 0;
-      },
-      onDetected({ paths, compilation }) {
-        if (!/^node_modules\/.+/.test(paths[0])) {
-          numCyclesDetected++;
-          compilation.warnings.push(new Error(paths.join(' -> ')));
-        }
-      },
-      onEnd({ compilation }) {
-        if (numCyclesDetected > MAX_CYCLES) {
-          compilation.errors.push(
-            new Error(`Detected ${numCyclesDetected} cycles which exceeds configured limit of ${MAX_CYCLES}`),
-          );
-        }
-      },
-    }),
-  );
+
+  if (!FAST) {
+    config.plugins.push(
+      new CircularDependencyPlugin({
+        onStart() {
+          numCyclesDetected = 0;
+        },
+        onDetected({ paths, compilation }) {
+          if (!/node_modules\/.+/.test(paths[0])) {
+            numCyclesDetected++;
+            compilation.warnings.push(new Error(paths.join(' -> ')));
+          }
+        },
+        onEnd({ compilation }) {
+          if (numCyclesDetected > MAX_CYCLES) {
+            compilation.errors.push(
+              new Error(`Detected ${numCyclesDetected} cycles which exceeds configured limit of ${MAX_CYCLES}`),
+            );
+          }
+        },
+      }),
+    );
+  }
 
   config.module.rules.push({
     test: /\.tsx?$/,
@@ -69,8 +78,8 @@ module.exports = async ({ config }) => {
 
   config.module.rules.push({
     test: /\.tsx?$/,
-    include: [path.resolve(__dirname, '../stories/')],
-    exclude: [path.resolve(__dirname, '../stories/utils')],
+    include: [path.resolve(__dirname, './stories/')],
+    exclude: [path.resolve(__dirname, './stories/utils')],
     loaders: [
       {
         loader: require.resolve('@storybook/source-loader'),
@@ -81,7 +90,8 @@ module.exports = async ({ config }) => {
   });
 
   // Replace default css rules with nonce
-  config.module.rules = config.module.rules.filter(({ test }) => !test.test('.css'));
+  config.module.rules = config.module.rules.filter((r) => !r?.test?.test?.('.css'));
+
   config.module.rules.push({
     test: /\.css$/,
     use: [
@@ -102,29 +112,11 @@ module.exports = async ({ config }) => {
 
   config.module.rules.push({
     test: /\.scss$/,
-    include: [path.resolve(__dirname, '../storybook'), path.resolve(__dirname, '../node_modules/@elastic')],
+    include: [path.resolve(__dirname, './'), path.resolve(__dirname, '../node_modules/@elastic')],
     use: [
       {
         loader: 'style-loader',
         options: {
-          attributes: {
-            nonce,
-          },
-        },
-      },
-      ...scssLoaders,
-    ],
-  });
-
-  // Used for lazy loaded scss files
-  config.module.rules.push({
-    test: /\.scss$/,
-    resourceQuery: /^\?lazy$/,
-    use: [
-      {
-        loader: 'style-loader',
-        options: {
-          injectType: 'lazyStyleTag',
           attributes: {
             nonce,
           },
@@ -135,6 +127,11 @@ module.exports = async ({ config }) => {
   });
 
   config.resolve.extensions.push('.ts', '.tsx');
+
+  config.resolve.alias = {
+    '@elastic/charts$': path.resolve(__dirname, '../packages/charts/src'),
+    '@elastic/charts/': path.resolve(__dirname, '../packages/charts/'),
+  };
 
   return await config;
 };
