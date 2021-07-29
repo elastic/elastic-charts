@@ -13,29 +13,15 @@ import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb
 import { Datum } from '../utils/common';
 import { Pixels, Rectangle } from './geometry';
 
+const FONT_WEIGHTS_NUMERIC = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+const FONT_WEIGHTS_ALPHA = ['normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset'];
+
+/** @public */
+export const FONT_WEIGHTS = Object.freeze([...FONT_WEIGHTS_NUMERIC, ...FONT_WEIGHTS_ALPHA] as const);
 /** @public */
 export const FONT_VARIANTS = Object.freeze(['normal', 'small-caps'] as const);
 /** @public */
 export type FontVariant = typeof FONT_VARIANTS[number];
-/** @public */
-export const FONT_WEIGHTS = Object.freeze([
-  100,
-  200,
-  300,
-  400,
-  500,
-  600,
-  700,
-  800,
-  900,
-  'normal',
-  'bold',
-  'lighter',
-  'bolder',
-  'inherit',
-  'initial',
-  'unset',
-] as const);
 /** @public */
 export type FontWeight = typeof FONT_WEIGHTS[number];
 /** @internal */
