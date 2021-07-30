@@ -643,3 +643,13 @@ export function safeFormat<V = any>(value: V, formatter?: (value: V) => string):
 
   return `${value}`;
 }
+
+/** @internal */
+export function range(start: number, stop: number, step: number): Array<number> {
+  const length = Math.trunc(Math.max(0, Math.ceil((stop - start) / step)));
+  const output = new Array(length);
+  for (let i = 0; i < length; i++) {
+    output[i] = start + i * step;
+  }
+  return output;
+}
