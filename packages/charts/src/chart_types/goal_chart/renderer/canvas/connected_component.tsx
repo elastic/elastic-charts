@@ -24,6 +24,7 @@ import { BandViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/
 import { Mark } from '../../layout/viewmodel/geoms';
 import { geometries, getPrimitiveGeoms } from '../../state/selectors/geometries';
 import { getFirstTickValueSelector, getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
+import { fullBoundingBox } from '../../state/selectors/picked_shapes';
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
@@ -96,9 +97,12 @@ class Component extends React.Component<Props> {
     const picker = geometries.pickQuads;
     const box = forwardStageRef.current.getBoundingClientRect();
     const { chartCenter } = geometries;
-    const x = e.clientX - box.left - chartCenter.x;
-    const y = e.clientY - box.top - chartCenter.y;
-    return picker(x, y);
+    const x = e.clientX - box.left;
+    const y = e.clientY - box.top;
+    const capture = fullBoundingBox(this.ctx, this.props.geoms);
+    if (capture.x0 <= x && x <= capture.x1 && capture.y0 <= y && y <= capture.y1) {
+      return picker(x - chartCenter.x, y - chartCenter.y);
+    }
   }
 
   render() {

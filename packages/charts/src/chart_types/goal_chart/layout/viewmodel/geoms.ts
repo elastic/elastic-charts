@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { GOLDEN_RATIO } from '../../../../common/constants';
-import { PointObject, Rectangle } from '../../../../common/geometry';
+import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
+import { PointObject, Radian, Rectangle } from '../../../../common/geometry';
 import { cssFontShorthand, Font } from '../../../../common/text_utils';
 import { GoalSubtype } from '../../specs/constants';
 import { Config } from '../types/config_types';
@@ -22,10 +22,11 @@ const marginRatio = 0.05; // same ratio on each side
 const maxTickFontSize = 24;
 const maxLabelFontSize = 32;
 const maxCentralFontSize = 38;
+const arcBoxSamplePitch: Radian = (5 / 360) * TAU; // 5-degree pitch ie. a circle is 72 steps
 
 /** @internal */
 export interface Mark {
-  boundingBox: (ctx: CanvasRenderingContext2D) => Rectangle;
+  boundingBoxes: (ctx: CanvasRenderingContext2D) => Rectangle[];
   render: (ctx: CanvasRenderingContext2D) => void;
 }
 
@@ -47,8 +48,18 @@ export class Section implements Mark {
     this.strokeStyle = strokeStyle;
   }
 
-  boundingBox() {
-    return { x0: NaN, y0: NaN, x1: NaN, y1: NaN };
+  boundingBoxes() {
+    // modifying with half the line width is a simple yet imprecise method for ensuring that the
+    // entire ink is in the bounding box; depending on orientation and line ending, the bounding
+    // box may overstate the data ink bounding box, which is preferable to understating it
+    return [
+      {
+        x0: Math.min(this.x, this.xTo) - this.lineWidth / 2,
+        y0: Math.min(this.y, this.yTo) - this.lineWidth / 2,
+        x1: Math.max(this.x, this.xTo) + this.lineWidth / 2,
+        y1: Math.max(this.y, this.yTo) + this.lineWidth / 2,
+      },
+    ];
   }
 
   render(ctx: CanvasRenderingContext2D) {
@@ -66,8 +77,8 @@ export class Arc implements Mark {
   protected readonly x: number;
   protected readonly y: number;
   protected readonly radius: number;
-  protected readonly startAngle: number;
-  protected readonly endAngle: number;
+  protected readonly startAngle: Radian;
+  protected readonly endAngle: Radian;
   protected readonly anticlockwise: boolean;
   protected readonly lineWidth: number;
   protected readonly strokeStyle: string;
@@ -92,8 +103,34 @@ export class Arc implements Mark {
     this.strokeStyle = strokeStyle;
   }
 
-  boundingBox() {
-    return { x0: NaN, y0: NaN, x1: NaN, y1: NaN };
+  boundingBoxes() {
+    const box = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
+
+    // instead of an analytical solution, we approximate with a GC-free grid sampler
+
+    const angleFrom: Radian = Math.floor(this.startAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
+    const angleTo: Radian = Math.ceil(this.endAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
+
+    for (let angle: Radian = angleFrom; angle <= angleTo; angle += arcBoxSamplePitch) {
+      // unit vector for the angle direction
+      const vx = Math.cos(angle);
+      const vy = Math.sin(angle);
+
+      // inner point of the sector
+      const innerX = this.x + vx * this.radius - this.lineWidth / 2;
+      const innerY = this.y + vy * this.radius - this.lineWidth / 2;
+
+      // outer point of the sector
+      const outerX = innerX + vx * this.lineWidth;
+      const outerY = innerY + vy * this.lineWidth;
+
+      box.x0 = Math.min(box.x0, innerX, outerX);
+      box.y0 = Math.min(box.y0, innerY, outerY);
+      box.x1 = Math.max(box.x1, innerX, outerX);
+      box.y1 = Math.max(box.y1, innerY, outerY);
+    }
+
+    return Number.isFinite(box.x0) ? [box] : [];
   }
 
   render(ctx: CanvasRenderingContext2D) {
@@ -133,15 +170,28 @@ export class Text implements Mark {
     this.fontSize = fontSize;
   }
 
-  boundingBox() {
-    return { x0: NaN, y0: NaN, x1: NaN, y1: NaN };
-  }
-
-  render(ctx: CanvasRenderingContext2D) {
-    ctx.beginPath();
+  setCanvasTextState(ctx: CanvasRenderingContext2D) {
     ctx.textAlign = this.textAlign;
     ctx.textBaseline = this.textBaseline;
     ctx.font = cssFontShorthand(this.fontShape, this.fontSize);
+  }
+
+  boundingBoxes(ctx: CanvasRenderingContext2D) {
+    this.setCanvasTextState(ctx);
+    const box = ctx.measureText(this.text);
+    return [
+      {
+        x0: box.actualBoundingBoxLeft + this.x,
+        y0: box.actualBoundingBoxAscent + this.y,
+        x1: box.actualBoundingBoxRight + this.x,
+        y1: box.actualBoundingBoxDescent + this.y,
+      },
+    ];
+  }
+
+  render(ctx: CanvasRenderingContext2D) {
+    this.setCanvasTextState(ctx);
+    ctx.beginPath();
     ctx.fillText(this.text, this.x, this.y);
   }
 }
