@@ -16,8 +16,10 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp } from '../../../../utils/common';
+import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
+import { clamp, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
+import { ContinuousDomain } from '../../../../utils/domain';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
@@ -101,9 +103,6 @@ export function shapeViewModel(
 
   const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, height]).range(yValues);
 
-  // TODO: Fix domain type to be `Array<number | string>`
-  let xValues = xDomain.domain as any[];
-
   const timeScale =
     xDomain.type === ScaleType.Time
       ? new ScaleContinuous(
@@ -120,17 +119,17 @@ export function shapeViewModel(
         )
       : null;
 
-  if (timeScale) {
-    const result = [];
-    let [timePoint] = xValues;
-    while (timePoint < xValues[1]) {
-      result.push(timePoint);
-      timePoint += xDomain.minInterval;
-    }
-
-    xValues = result;
-  }
-
+  const xValues = timeScale
+    ? range(
+        snapDateToESInterval(
+          (xDomain.domain as ContinuousDomain)[0],
+          { type: 'fixed', unit: 'ms', quantity: xDomain.minInterval },
+          'start',
+        ),
+        (xDomain.domain as ContinuousDomain)[1],
+        xDomain.minInterval,
+      )
+    : xDomain.domain;
   // compute the scale for the columns positions
   const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, chartDimensions.width]);
 
@@ -297,9 +296,10 @@ export function shapeViewModel(
     const startValue = x[0];
     const endValue = x[x.length - 1];
 
-    // find X coordinated based on the time range
-    const leftIndex = typeof startValue === 'number' ? bisectLeft(xValues, startValue) : xValues.indexOf(startValue);
-    const rightIndex = typeof endValue === 'number' ? bisectLeft(xValues, endValue) : xValues.indexOf(endValue) + 1;
+    const leftIndex =
+      typeof startValue === 'number' ? bisectLeft(xValues as number[], startValue) : xValues.indexOf(startValue);
+    const rightIndex =
+      typeof endValue === 'number' ? bisectLeft(xValues as number[], endValue) : xValues.indexOf(endValue) + 1;
 
     const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
