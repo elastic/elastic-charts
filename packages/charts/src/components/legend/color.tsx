@@ -8,13 +8,16 @@
 
 import React, { MouseEventHandler, forwardRef, memo } from 'react';
 
+import { PointStyle } from '../../utils/themes/theme';
 import { Icon } from '../icons/icon';
+import { LegendIcon } from './legend_icon';
 
 interface ColorProps {
   color: string;
   seriesName: string;
   hasColorPicker: boolean;
   isSeriesHidden?: boolean;
+  pointStyle?: PointStyle;
   onClick?: MouseEventHandler;
 }
 
@@ -24,7 +27,7 @@ interface ColorProps {
  */
 export const Color = memo(
   forwardRef<HTMLButtonElement, ColorProps>(
-    ({ color, seriesName, isSeriesHidden = false, hasColorPicker, onClick }, ref) => {
+    ({ color, seriesName, isSeriesHidden = false, hasColorPicker, onClick, pointStyle }, ref) => {
       if (isSeriesHidden) {
         return (
           <div className="echLegendItem__color" title="series hidden">
@@ -43,14 +46,14 @@ export const Color = memo(
             title="change series color"
             ref={ref}
           >
-            <Icon type="dot" color={color} aria-label={`Change series color, currently ${color}`} />
+            <LegendIcon pointStyle={pointStyle} color={color} ariaLabel={`Change series color, currently ${color}`} />
           </button>
         );
       }
 
       return (
         <div className="echLegendItem__color" title="series color">
-          <Icon type="dot" color={color} aria-label={`series color: ${color}`} />
+          <LegendIcon pointStyle={pointStyle} color={color} ariaLabel={`series color: ${color}`} />
         </div>
       );
     },

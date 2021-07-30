@@ -54,45 +54,21 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        oneOf: [
+        use: [
+          'style-loader',
           {
-            resourceQuery: /^\?lazy$/,
-            use: [
-              {
-                loader: 'style-loader',
-                options: {
-                  injectType: 'lazyStyleTag',
-                },
-              },
-              {
-                loader: 'css-loader',
-                options: { importLoaders: 1 },
-              },
-              {
-                loader: 'postcss-loader',
-                options: {
-                  plugins: [require('autoprefixer')],
-                },
-              },
-              'sass-loader',
-            ],
+            loader: 'css-loader',
+            options: { importLoaders: 1 },
           },
           {
-            use: [
-              'style-loader',
-              {
-                loader: 'css-loader',
-                options: { importLoaders: 1 },
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [require('autoprefixer')],
               },
-              {
-                loader: 'postcss-loader',
-                options: {
-                  plugins: [require('autoprefixer')],
-                },
-              },
-              'sass-loader',
-            ],
+            },
           },
+          'sass-loader',
         ],
       },
     ],
@@ -101,6 +77,8 @@ module.exports = {
     alias: {
       '@storybook/addon-knobs': path.resolve(__dirname, 'mocks/@storybook/addon-knobs'),
       '@storybook/addon-actions': path.resolve(__dirname, 'mocks/@storybook/addon-actions'),
+      '@elastic/charts$': path.resolve(__dirname, '../../packages/charts/src'),
+      '@elastic/charts/': path.resolve(__dirname, '../../packages/charts/'),
     },
     extensions: ['.tsx', '.ts', '.js'],
   },

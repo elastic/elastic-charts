@@ -53,7 +53,6 @@ function IconComponent({ type, color, className, tabIndex, ...rest }: IconCompon
   }
 
   const classes = classNames('echIcon', className);
-
   const Svg = (type && typeToIconMap[type]) || EmptyIcon;
 
   /*

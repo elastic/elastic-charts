@@ -28,8 +28,13 @@
  * SOFTWARE.
  */
 
-/** @internal */
-export function deepEqual(a: any, b: any): boolean {
+/**
+ * Deep object equality (i.e. ==)
+ *
+ * partial - returns true if partial b matches a
+ * @internal
+ */
+export function deepEqual(a: any, b: any, partial = false): boolean {
   if (a === b) return true;
 
   if (a && b && typeof a === 'object' && typeof b === 'object') {
@@ -66,7 +71,7 @@ export function deepEqual(a: any, b: any): boolean {
 
     const keys = Object.keys(a);
     length = keys.length;
-    if (length !== Object.keys(b).length) return false;
+    if (length !== Object.keys(b).length && !partial) return false;
 
     for (i = length; i-- !== 0; ) if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
 

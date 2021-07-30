@@ -8,9 +8,10 @@
 
 module.exports = function lazyImportTemplate(index, path) {
   return `
-const Component${index} = React.lazy(() => {
-  return import('../../${path}').then((module) => {
-    return { default: module.Example };
-  });
-});`;
+  const Component${index} = React.lazy(() => {
+    return import('../../${path}').then((module) => {
+      setParams(module.Example, urlParams);
+      return { default: module.Example };
+    });
+  });`;
 };
