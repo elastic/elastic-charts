@@ -382,13 +382,20 @@ export const chartStoreReducer = (chartId: string) => {
           },
         };
       case SET_PERSISTED_COLOR:
+        const persisted = action.keys.reduce<Record<string, Color>>((acc, curr) => {
+          if (action.color) {
+            acc[curr] = action.color;
+          } else {
+            delete acc[curr];
+          }
+          return acc;
+        }, state.colors.persisted);
+
         return {
           ...state,
           colors: {
             ...state.colors,
-            persisted: Object.fromEntries(
-              Object.entries(state.colors.persisted).filter(([key]) => !action.keys.includes(key)),
-            ),
+            persisted,
           },
         };
       default:

@@ -62,15 +62,13 @@ export function stringToRGB(cssColorSpecifier?: string, opacity?: number | Opaci
  * @param cssColorSpecifier
  */
 function getColor(cssColorSpecifier: string = ''): RgbObject {
-  const endRegEx = /,\s*0+(\.0*)?\s*\)$/;
-  // TODO: make this check more robust
-  const color: D3RGBColor =
-    /^(rgba|hsla)\(/i.test(cssColorSpecifier) && endRegEx.test(cssColorSpecifier)
-      ? {
-          ...d3Rgb(cssColorSpecifier.replace(endRegEx, ',1)')),
-          opacity: 0,
-        }
-      : d3Rgb(cssColorSpecifier);
+  if (!chroma.valid(cssColorSpecifier)) return defaultColor;
+
+  const chromaColor = chroma(cssColorSpecifier);
+  const color: D3RGBColor = {
+    ...d3Rgb(chromaColor.alpha(1).css()),
+    opacity: chromaColor.alpha(),
+  };
 
   return validateColor(color) ?? defaultColor;
 }

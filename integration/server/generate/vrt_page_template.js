@@ -40,27 +40,39 @@ ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElemen
 function pageTemplate(imports, routes, urls) {
   return `
 import React, { Suspense } from 'react';
-
-${imports.join('\n')}
+import { ThemeProvider, BackgroundProvider } from '../../storybook/use_base_theme';
+import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
 
 export function VRTPage() {
-  const path = new URL(window.location.toString()).searchParams.get('path');
+  const {
+    themeName,
+    backgroundColor,
+    setParams,
+  } = useGlobalsParameters();
+  const urlParams = new URL(window.location.toString()).searchParams;
+  ${imports.join('\n  ')}
+
+  const path = urlParams.get('path');
   if(!path) {
     return (<>
     <h1>missing url path</h1>
       <ul>
-      ${urls
-        .map((url) => {
-          return `<li><a href="?path=${url}">${url.slice(7)}</a></li>`;
-        })
-        .join('\n')}
+        ${urls
+          .map((url) => {
+            return `<li><a href="?path=${url}">${url.slice(7)}</a></li>`;
+          })
+          .join('\n        ')}
       </ul>
     </>);
   }
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-     ${routes.join('\n     ')}
-    </Suspense>
+    <ThemeProvider value={themeName as any}>
+      <BackgroundProvider value={backgroundColor}>
+        <Suspense fallback={<div>Loading...</div>}>
+          ${routes.join('\n          ')}
+        </Suspense>
+      </BackgroundProvider>
+    </ThemeProvider>
   );
 }
 

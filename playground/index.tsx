@@ -11,7 +11,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import '../packages/charts/src/theme_light.scss';
-import '../node_modules/@elastic/eui/dist/eui_theme_light.css';
+import '@elastic/eui/dist/eui_theme_light.css';
+
 import { Playground } from './playground';
 
 ReactDOM.render(<Playground />, document.getElementById('root') as HTMLElement);
