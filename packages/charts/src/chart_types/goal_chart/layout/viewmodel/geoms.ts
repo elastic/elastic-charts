@@ -181,8 +181,8 @@ export class Text implements Mark {
     const box = ctx.measureText(this.text);
     return [
       {
-        x0: box.actualBoundingBoxLeft + this.x,
-        y0: box.actualBoundingBoxAscent + this.y,
+        x0: -box.actualBoundingBoxLeft + this.x,
+        y0: -box.actualBoundingBoxAscent + this.y,
         x1: box.actualBoundingBoxRight + this.x,
         y1: box.actualBoundingBoxDescent + this.y,
       },
