@@ -10,10 +10,11 @@ import { BrushAxis } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getBrushedHighlightedShapesSelector } from './get_brushed_highlighted_shapes';
-import { getHeatmapContainerSizeSelector } from './get_heatmap_container_size';
+import { getGridHeightParamsSelector } from './get_grid_full_height';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
 const getIsDragging = (state: GlobalChartState) => state.interactions.pointer.dragging;
@@ -27,18 +28,10 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     getCurrentPointerPosition,
     getSettingsSpecSelector,
     computeChartDimensionsSelector,
-    getHeatmapContainerSizeSelector,
     getBrushedHighlightedShapesSelector,
+    getGridHeightParamsSelector,
   ],
-  (
-    isDragging,
-    mouseDownPosition,
-    end,
-    { brushAxis },
-    chartDimensions,
-    containerDimensions,
-    dragShape,
-  ): Dimensions | null => {
+  (isDragging, mouseDownPosition, end, { brushAxis }, chartDimensions, dragShape, gridParams): Dimensions | null => {
     if (!isDragging || !mouseDownPosition || !dragShape) {
       return null;
     }
@@ -47,7 +40,7 @@ export const getBrushAreaSelector = createCustomCachedSelector(
       y: mouseDownPosition.position.y,
     };
 
-    const reachXAxis = containerDimensions.height < end.y + start.y;
+    const clampedEndY = clamp(end.y, 0, gridParams.height * gridParams.pageSize);
 
     switch (brushAxis) {
       case BrushAxis.Both:
@@ -55,10 +48,15 @@ export const getBrushAreaSelector = createCustomCachedSelector(
           top: start.y,
           left: start.x,
           width: end.x - start.x - chartDimensions.left,
-          height: reachXAxis ? dragShape.height - start.y : end.y - start.y,
+          height: clampedEndY - start.y,
         };
       default:
-        return { top: start.y, left: start.x, width: end.x - start.x - chartDimensions.left, height: end.y - start.y };
+        return {
+          top: start.y,
+          left: start.x,
+          width: end.x - start.x - chartDimensions.left,
+          height: clampedEndY - start.y,
+        };
     }
   },
 );
