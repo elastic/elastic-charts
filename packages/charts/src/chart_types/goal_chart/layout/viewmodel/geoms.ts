@@ -50,6 +50,8 @@ export class Section implements Mark {
   }
 
   boundingBoxes() {
+    if (this.lineWidth === 0) return [];
+
     // modifying with half the line width is a simple yet imprecise method for ensuring that the
     // entire ink is in the bounding box; depending on orientation and line ending, the bounding
     // box may overstate the data ink bounding box, which is preferable to understating it
@@ -105,6 +107,8 @@ export class Arc implements Mark {
   }
 
   boundingBoxes() {
+    if (this.lineWidth === 0) return [];
+
     const box = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
 
     // instead of an analytical solution, we approximate with a GC-free grid sampler
@@ -180,6 +184,8 @@ export class Text implements Mark {
   }
 
   boundingBoxes(ctx: CanvasRenderingContext2D) {
+    if (this.text.length === 0) return [];
+
     this.setCanvasTextState(ctx);
     const box = ctx.measureText(this.text);
     return [
