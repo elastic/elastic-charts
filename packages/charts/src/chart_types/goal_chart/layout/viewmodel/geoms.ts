@@ -116,14 +116,16 @@ export class Arc implements Mark {
       // unit vector for the angle direction
       const vx = Math.cos(angle);
       const vy = Math.sin(angle);
+      const innerRadius = this.radius - this.lineWidth / 2;
+      const outerRadius = this.radius + this.lineWidth / 2;
 
       // inner point of the sector
-      const innerX = this.x + vx * this.radius - this.lineWidth / 2;
-      const innerY = this.y + vy * this.radius - this.lineWidth / 2;
+      const innerX = this.x + vx * innerRadius;
+      const innerY = this.y + vy * innerRadius;
 
       // outer point of the sector
-      const outerX = innerX + vx * this.lineWidth;
-      const outerY = innerY + vy * this.lineWidth;
+      const outerX = this.x + vx * outerRadius;
+      const outerY = this.y + vy * outerRadius;
 
       box.x0 = Math.min(box.x0, innerX - capturePad, outerX - capturePad);
       box.y0 = Math.min(box.y0, innerY - capturePad, outerY - capturePad);
