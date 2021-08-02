@@ -7,7 +7,7 @@
  */
 
 import { stringToRGB } from '../../../../../common/color_library_wrappers';
-import { Fill, Stroke } from '../../../../../geoms/types';
+import { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { getMockCanvas, getMockCanvasContext2D, MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
 import { getTextureStyles } from '../../../utils/texture';
@@ -36,6 +36,12 @@ describe('Bar styles', () => {
     let themeRectStyle = MockStyles.rect();
     let themeRectBorderStyle = MockStyles.rectBorder();
     let geometryStateStyle = MockStyles.geometryState();
+    const rect: Rect = {
+      x: 5,
+      y: 5,
+      width: 20,
+      height: 20,
+    };
 
     function setDefaults() {
       baseColor = COLOR;
@@ -45,7 +51,15 @@ describe('Bar styles', () => {
     }
 
     beforeEach(() => {
-      result = buildBarStyles(ctx, imgCanvas, baseColor, themeRectStyle, themeRectBorderStyle, geometryStateStyle);
+      result = buildBarStyles(
+        ctx,
+        imgCanvas,
+        baseColor,
+        themeRectStyle,
+        themeRectBorderStyle,
+        geometryStateStyle,
+        rect,
+      );
     });
 
     it('should call getColorFromVariant with correct args for fill', () => {

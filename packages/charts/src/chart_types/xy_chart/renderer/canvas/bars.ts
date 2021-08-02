@@ -64,6 +64,7 @@ function renderPerPanelBars(
       (ctx) => {
         bars.forEach((barGeometry) => {
           const { x, y, width, height, color, seriesStyle, seriesIdentifier } = barGeometry;
+          const rect = { x, y, width, height };
           const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
           const { fill, stroke } = buildBarStyles(
             ctx,
@@ -72,8 +73,8 @@ function renderPerPanelBars(
             seriesStyle.rect,
             seriesStyle.rectBorder,
             geometryStateStyle,
+            rect,
           );
-          const rect = { x, y, width, height };
           withContext(ctx, (ctx) => {
             renderRect(ctx, rect, fill, stroke);
           });
