@@ -23,6 +23,7 @@ const maxTickFontSize = 24;
 const maxLabelFontSize = 32;
 const maxCentralFontSize = 38;
 const arcBoxSamplePitch: Radian = (5 / 360) * TAU; // 5-degree pitch ie. a circle is 72 steps
+const capturePad = 16; // mouse hover is detected in the padding too; eg. for Fitts law
 
 /** @internal */
 export interface Mark {
@@ -54,10 +55,10 @@ export class Section implements Mark {
     // box may overstate the data ink bounding box, which is preferable to understating it
     return [
       {
-        x0: Math.min(this.x, this.xTo) - this.lineWidth / 2,
-        y0: Math.min(this.y, this.yTo) - this.lineWidth / 2,
-        x1: Math.max(this.x, this.xTo) + this.lineWidth / 2,
-        y1: Math.max(this.y, this.yTo) + this.lineWidth / 2,
+        x0: Math.min(this.x, this.xTo) - this.lineWidth / 2 - capturePad,
+        y0: Math.min(this.y, this.yTo) - this.lineWidth / 2 - capturePad,
+        x1: Math.max(this.x, this.xTo) + this.lineWidth / 2 + capturePad,
+        y1: Math.max(this.y, this.yTo) + this.lineWidth / 2 + capturePad,
       },
     ];
   }
@@ -124,10 +125,10 @@ export class Arc implements Mark {
       const outerX = innerX + vx * this.lineWidth;
       const outerY = innerY + vy * this.lineWidth;
 
-      box.x0 = Math.min(box.x0, innerX, outerX);
-      box.y0 = Math.min(box.y0, innerY, outerY);
-      box.x1 = Math.max(box.x1, innerX, outerX);
-      box.y1 = Math.max(box.y1, innerY, outerY);
+      box.x0 = Math.min(box.x0, innerX - capturePad, outerX - capturePad);
+      box.y0 = Math.min(box.y0, innerY - capturePad, outerY - capturePad);
+      box.x1 = Math.max(box.x1, innerX + capturePad, outerX + capturePad);
+      box.y1 = Math.max(box.y1, innerY + capturePad, outerY + capturePad);
     }
 
     return Number.isFinite(box.x0) ? [box] : [];
@@ -181,10 +182,10 @@ export class Text implements Mark {
     const box = ctx.measureText(this.text);
     return [
       {
-        x0: -box.actualBoundingBoxLeft + this.x,
-        y0: -box.actualBoundingBoxAscent + this.y,
-        x1: box.actualBoundingBoxRight + this.x,
-        y1: box.actualBoundingBoxDescent + this.y,
+        x0: -box.actualBoundingBoxLeft + this.x - capturePad,
+        y0: -box.actualBoundingBoxAscent + this.y - capturePad,
+        x1: box.actualBoundingBoxRight + this.x + capturePad,
+        y1: box.actualBoundingBoxDescent + this.y + capturePad,
       },
     ];
   }
