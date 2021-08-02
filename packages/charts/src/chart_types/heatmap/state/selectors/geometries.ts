@@ -44,16 +44,24 @@ export const geometries = createCustomCachedSelector(
         return Number(specId);
       }),
     );
-    const ranges = ticks.reduce<Array<[number, number | null]>>((acc, { tick }, i) => {
+    const visibilityFilterRanges = ticks.reduce<Array<[number, number]>>((acc, { tick }, i) => {
       if (deselectedTicks.has(tick)) {
-        const rangeEnd = i + 1 === ticks.length ? null : ticks[i + 1].tick;
+        const rangeEnd = ticks.length === i + 1 ? Infinity : ticks[i + 1].tick;
         acc.push([tick, rangeEnd]);
       }
       return acc;
     }, []);
 
     return heatmapSpec
-      ? render(heatmapSpec, settingSpec, chartDimensions, heatmapTable, colorScale, ranges, gridHeightParams)
+      ? render(
+          heatmapSpec,
+          settingSpec,
+          chartDimensions,
+          heatmapTable,
+          colorScale,
+          visibilityFilterRanges,
+          gridHeightParams,
+        )
       : nullShapeViewModel();
   },
 );

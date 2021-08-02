@@ -26,7 +26,7 @@ export function render(
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
   colorScale: ColorScaleType['scale'],
-  filterRanges: Array<[number, number | null]>,
+  visibilityFilterRanges: Array<[number, number]>,
   gridHeightParams: GridHeightParams,
 ): ShapeViewModel {
   const textMeasurer = document.createElement('canvas');
@@ -46,7 +46,7 @@ export function render(
     chartDimensions,
     heatmapTable,
     colorScale,
-    filterRanges,
+    visibilityFilterRanges,
     gridHeightParams,
   );
 }
