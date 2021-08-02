@@ -37,10 +37,10 @@ describe('Bar styles', () => {
     let themeRectBorderStyle = MockStyles.rectBorder();
     let geometryStateStyle = MockStyles.geometryState();
     const rect: Rect = {
-      x: 5,
-      y: 5,
-      width: 20,
-      height: 20,
+      height: 250,
+      width: 200,
+      x: 560,
+      y: 30,
     };
 
     function setDefaults() {
