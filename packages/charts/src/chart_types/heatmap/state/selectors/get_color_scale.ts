@@ -54,9 +54,29 @@ const SCALE_TYPE_TO_SCALE_FN = {
 export const getColorScale = createCustomCachedSelector(
   [getHeatmapSpecSelector, getHeatmapTableSelector],
   (spec, heatmapTable) => {
-    return SCALE_TYPE_TO_SCALE_FN[spec.colorScale ?? ScaleType.Linear](spec, heatmapTable);
+    const { scale, ticks } = SCALE_TYPE_TO_SCALE_FN[spec.colorScale ?? ScaleType.Linear](spec, heatmapTable);
+    return {
+      scale,
+      ...dedupTicks(ticks, spec),
+    };
   },
 );
+
+function dedupTicks(ticks: number[], spec: HeatmapSpec) {
+  return ticks.reduce<{ uniqueTicks: string[]; ticks: Array<{ tick: number; formattedTick: string }> }>(
+    (acc, curr) => {
+      const formattedTick = `${spec.valueFormatter ? spec.valueFormatter(curr) : curr}`;
+      if (acc.uniqueTicks.includes(formattedTick)) {
+        return acc;
+      }
+      return {
+        uniqueTicks: [...acc.uniqueTicks, formattedTick],
+        ticks: [...acc.ticks, { tick: curr, formattedTick }],
+      };
+    },
+    { uniqueTicks: [], ticks: [] },
+  );
+}
 
 function getQuantizedScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleQuantizeType {
   const dataExtent = spec.ranges ?? heatmapTable.extent;
@@ -81,7 +101,7 @@ function getQuantileScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleQ
   const domain = heatmapTable.table.map(({ value }) => value);
   const scale = scaleQuantile<string>().domain(domain).range(colors);
   // the ticks array should contain all quantiles + the minimum value
-  const ticks = [heatmapTable.extent[0], ...scale.quantiles()];
+  const ticks = [...new Set([heatmapTable.extent[0], ...scale.quantiles()])];
   return {
     scale,
     ticks,
@@ -94,7 +114,7 @@ function getThresholdScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): Scale
     .domain(spec.ranges ?? heatmapTable.extent)
     .range(colors);
   // the ticks array should contain all the thresholds + the minimum value
-  const ticks = [heatmapTable.extent[0], ...scale.domain()];
+  const ticks = [...new Set([heatmapTable.extent[0], ...scale.domain()])];
   return {
     scale,
     ticks,

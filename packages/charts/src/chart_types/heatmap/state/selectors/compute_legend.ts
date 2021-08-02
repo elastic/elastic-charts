@@ -21,7 +21,7 @@ export const computeLegendSelector = createCustomCachedSelector(
       return EMPTY_LEGEND;
     }
 
-    return ticks.map((tick, i) => {
+    return ticks.map(({ tick, formattedTick }, i) => {
       const color = scale(tick);
       const seriesIdentifier = {
         key: String(tick),
@@ -30,7 +30,7 @@ export const computeLegendSelector = createCustomCachedSelector(
 
       return {
         color,
-        label: `>${i === 0 ? '=' : ''} ${spec.valueFormatter ? spec.valueFormatter(tick) : tick}`,
+        label: `>${i === 0 ? '=' : ''} ${formattedTick}`,
         seriesIdentifiers: [seriesIdentifier],
         isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === seriesIdentifier.key),
         isToggleable: true,

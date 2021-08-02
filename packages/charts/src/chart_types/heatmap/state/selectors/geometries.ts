@@ -15,7 +15,6 @@ import { getColorScale } from './get_color_scale';
 import { getGridHeightParamsSelector } from './get_grid_full_height';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
-import { getLegendItemsLabelsSelector } from './get_legend_items_labels';
 import { render } from './scenegraph';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
@@ -28,7 +27,6 @@ export const geometries = createCustomCachedSelector(
     getSettingsSpecSelector,
     getHeatmapTableSelector,
     getColorScale,
-    getLegendItemsLabelsSelector,
     getDeselectedSeriesSelector,
     getGridHeightParamsSelector,
   ],
@@ -38,7 +36,6 @@ export const geometries = createCustomCachedSelector(
     settingSpec,
     heatmapTable,
     { ticks, scale: colorScale },
-    legendItems,
     deselectedSeries,
     gridHeightParams,
   ): ShapeViewModel => {
@@ -47,10 +44,10 @@ export const geometries = createCustomCachedSelector(
         return Number(specId);
       }),
     );
-    const ranges = ticks.reduce<Array<[number, number | null]>>((acc, d, i) => {
-      if (deselectedTicks.has(d)) {
-        const rangeEnd = i + 1 === ticks.length ? null : ticks[i + 1];
-        acc.push([d, rangeEnd]);
+    const ranges = ticks.reduce<Array<[number, number | null]>>((acc, { tick }, i) => {
+      if (deselectedTicks.has(tick)) {
+        const rangeEnd = i + 1 === ticks.length ? null : ticks[i + 1].tick;
+        acc.push([tick, rangeEnd]);
       }
       return acc;
     }, []);
