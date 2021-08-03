@@ -113,10 +113,17 @@ export class Arc implements Mark {
 
     // instead of an analytical solution, we approximate with a GC-free grid sampler
 
-    const angleFrom: Radian = Math.floor(this.startAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
-    const angleTo: Radian = Math.ceil(this.endAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
+    // full circle rotations such that `startAngle' and `endAngle` are positive
+    const rotationCount = Math.ceil(Math.max(0, -this.startAngle, -this.endAngle) / TAU);
+    const startAngle = this.startAngle + rotationCount * TAU;
+    const endAngle = this.endAngle + rotationCount * TAU;
 
-    for (let angle: Radian = angleFrom; angle <= angleTo; angle += arcBoxSamplePitch) {
+    // snapping to the closest `arcBoxSamplePitch` increment
+    const angleFrom: Radian = Math.round(startAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
+    const angleTo: Radian = Math.round(endAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
+    const signedIncrement = arcBoxSamplePitch * Math.sign(angleTo - angleFrom) * (this.anticlockwise ? -1 : 1);
+
+    for (let angle: Radian = angleFrom; angle <= angleTo; angle += signedIncrement) {
       // unit vector for the angle direction
       const vx = Math.cos(angle);
       const vy = Math.sin(angle);
@@ -135,6 +142,8 @@ export class Arc implements Mark {
       box.y0 = Math.min(box.y0, innerY - capturePad, outerY - capturePad);
       box.x1 = Math.max(box.x1, innerX + capturePad, outerX + capturePad);
       box.y1 = Math.max(box.y1, innerY + capturePad, outerY + capturePad);
+
+      if (signedIncrement === 0) break; // happens if fromAngle === toAngle
     }
 
     return Number.isFinite(box.x0) ? [box] : [];
