@@ -121,7 +121,7 @@ export class Arc implements Mark {
     // snapping to the closest `arcBoxSamplePitch` increment
     const angleFrom: Radian = Math.round(startAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
     const angleTo: Radian = Math.round(endAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
-    const signedIncrement = arcBoxSamplePitch * Math.sign(angleTo - angleFrom) * (this.anticlockwise ? -1 : 1);
+    const signedIncrement = arcBoxSamplePitch * Math.sign(angleTo - angleFrom);
 
     for (let angle: Radian = angleFrom; angle <= angleTo; angle += signedIncrement) {
       // unit vector for the angle direction
