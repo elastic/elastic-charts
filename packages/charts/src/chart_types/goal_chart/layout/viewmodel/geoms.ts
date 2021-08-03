@@ -76,6 +76,9 @@ export class Section implements Mark {
 }
 
 /** @internal */
+export const initialBoundingBox = (): Rectangle => ({ x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity });
+
+/** @internal */
 export class Arc implements Mark {
   protected readonly x: number;
   protected readonly y: number;
@@ -109,7 +112,7 @@ export class Arc implements Mark {
   boundingBoxes() {
     if (this.lineWidth === 0) return [];
 
-    const box = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
+    const box = initialBoundingBox();
 
     // instead of an analytical solution, we approximate with a GC-free grid sampler
 

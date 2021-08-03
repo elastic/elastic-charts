@@ -11,16 +11,15 @@ import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { BulletViewModel } from '../../layout/types/viewmodel_types';
-import { Mark } from '../../layout/viewmodel/geoms';
+import { initialBoundingBox, Mark } from '../../layout/viewmodel/geoms';
 import { geometries, getPrimitiveGeoms } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;
 }
 
-/** @internal */
-export function fullBoundingBox(ctx: CanvasRenderingContext2D | null, geoms: Mark[]) {
-  const box = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
+function fullBoundingBox(ctx: CanvasRenderingContext2D | null, geoms: Mark[]) {
+  const box = initialBoundingBox();
   if (ctx) {
     for (const g of geoms) {
       for (const { x0, y0, x1, y1 } of g.boundingBoxes(ctx)) {
