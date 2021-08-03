@@ -50,19 +50,19 @@ export class Section implements Mark {
   }
 
   boundingBoxes() {
-    if (this.lineWidth === 0) return [];
-
     // modifying with half the line width is a simple yet imprecise method for ensuring that the
     // entire ink is in the bounding box; depending on orientation and line ending, the bounding
     // box may overstate the data ink bounding box, which is preferable to understating it
-    return [
-      {
-        x0: Math.min(this.x, this.xTo) - this.lineWidth / 2 - capturePad,
-        y0: Math.min(this.y, this.yTo) - this.lineWidth / 2 - capturePad,
-        x1: Math.max(this.x, this.xTo) + this.lineWidth / 2 + capturePad,
-        y1: Math.max(this.y, this.yTo) + this.lineWidth / 2 + capturePad,
-      },
-    ];
+    return this.lineWidth === 0
+      ? []
+      : [
+          {
+            x0: Math.min(this.x, this.xTo) - this.lineWidth / 2 - capturePad,
+            y0: Math.min(this.y, this.yTo) - this.lineWidth / 2 - capturePad,
+            x1: Math.max(this.x, this.xTo) + this.lineWidth / 2 + capturePad,
+            y1: Math.max(this.y, this.yTo) + this.lineWidth / 2 + capturePad,
+          },
+        ];
   }
 
   render(ctx: CanvasRenderingContext2D) {
