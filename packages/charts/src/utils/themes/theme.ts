@@ -199,6 +199,15 @@ export interface BackgroundStyle {
    */
   color: string;
 }
+
+/** @internal */
+export interface LegendLabelOptions {
+  /**
+   * Allows multiline labels
+   */
+  multiline: boolean;
+}
+
 /** @public */
 export interface LegendStyle {
   /**
@@ -225,6 +234,10 @@ export interface LegendStyle {
    * TODO: make SimplePadding when after axis changes are added
    */
   margin: number;
+  /**
+   * Options to control legend labels
+   */
+  labelOptions?: LegendLabelOptions;
 }
 /** @public */
 export interface Theme {

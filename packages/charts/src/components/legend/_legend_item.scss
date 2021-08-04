@@ -9,9 +9,14 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   align-items: center;
   position: relative;
 
-  > *:not(.background) {
+  // wrapper is needed to isolate color icon when wrapped or not
+  .colorWrapper > *:first-of-type {
     // euiPopover adds a div with height of 19px otherwise
-    height: $legendItemHeight; // prevents color dot from shifting
+    // this prevents color dot from shifting when wrapped
+    height: $legendItemHeight;
+  }
+
+  > *:not(.background) {
     margin-left: $euiSizeXS;
 
     &:last-child:not(.echLegendItem__extra) {
@@ -43,6 +48,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     display: flex;
     justify-content: center;
     align-items: center;
+    height: $legendItemHeight;
     max-width: calc(#{$legendItemHeight} + #{$euiSizeXS * 2});
 
     .euiPopover,
@@ -62,12 +68,15 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
 
   &__label {
     @include euiFontSizeXS;
-    @include euiTextTruncate;
     flex: 1 1 auto;
     text-align: left;
     vertical-align: baseline;
     letter-spacing: unset;
     align-items: center;
+
+    &:not(&--multiline) {
+      @include euiTextTruncate;
+    }
 
     &--clickable {
       &:hover {

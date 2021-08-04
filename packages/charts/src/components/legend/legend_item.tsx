@@ -30,6 +30,7 @@ import {
 } from '../../state/actions/legend';
 import { Color, LayoutDirection } from '../../utils/common';
 import { deepEqual } from '../../utils/fast_deep_equal';
+import { LegendLabelOptions } from '../../utils/themes/theme';
 import { Color as ItemColor } from './color';
 import { renderExtra } from './extra';
 import { Label as ItemLabel } from './label';
@@ -45,6 +46,7 @@ export interface LegendItemProps {
   positionConfig: LegendPositionConfig;
   extraValues: Map<string, LegendItemExtraValues>;
   showExtra: boolean;
+  labelOptions?: LegendLabelOptions;
   colorPicker?: LegendColorPicker;
   action?: LegendAction;
   onClick?: LegendItemListener;
@@ -163,7 +165,16 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   }
 
   render() {
-    const { extraValues, item, showExtra, colorPicker, totalItems, action: Action, positionConfig } = this.props;
+    const {
+      extraValues,
+      item,
+      showExtra,
+      colorPicker,
+      totalItems,
+      action: Action,
+      positionConfig,
+      labelOptions,
+    } = this.props;
     const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, pointStyle } = item;
 
     if (isItemHidden) return null;
@@ -189,17 +200,20 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           data-ech-series-name={label}
         >
           <div className="background" />
-          <ItemColor
-            ref={this.colorRef}
-            color={color}
-            seriesName={label}
-            isSeriesHidden={isSeriesHidden}
-            hasColorPicker={hasColorPicker}
-            onClick={this.handleColorClick(hasColorPicker)}
-            pointStyle={pointStyle}
-          />
+          <div className="colorWrapper">
+            <ItemColor
+              ref={this.colorRef}
+              color={color}
+              seriesName={label}
+              isSeriesHidden={isSeriesHidden}
+              hasColorPicker={hasColorPicker}
+              onClick={this.handleColorClick(hasColorPicker)}
+              pointStyle={pointStyle}
+            />
+          </div>
           <ItemLabel
             label={label}
+            options={labelOptions}
             isToggleable={totalItems > 1 && item.isToggleable}
             onClick={this.handleLabelClick(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
