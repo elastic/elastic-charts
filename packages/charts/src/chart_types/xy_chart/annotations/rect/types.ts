@@ -6,19 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { Rect } from '../../../../geoms/types';
 import { Dimensions } from '../../../../utils/dimensions';
 import { RectAnnotationDatum } from '../../utils/specs';
 
-/**
- * @internal
- */
+/** @internal */
 export interface AnnotationRectProps {
   datum: RectAnnotationDatum;
-  rect: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
+  rect: Rect;
   panel: Dimensions;
 }

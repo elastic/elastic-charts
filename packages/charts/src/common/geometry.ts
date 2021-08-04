@@ -96,3 +96,15 @@ export function meanAngle(a: Radian, b: Radian) {
 export function trueBearingToStandardPositionAngle(alphaIn: number) {
   return wrapToTau(RIGHT_ANGLE - alphaIn);
 }
+
+/** @internal */
+export interface Origin {
+  x0: number;
+  y0: number;
+}
+
+/** @internal */
+export interface Rectangle extends Origin {
+  x1: number;
+  y1: number;
+}

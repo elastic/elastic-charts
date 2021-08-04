@@ -55,6 +55,7 @@ module.exports = {
     'unicorn/no-nested-ternary': 0,
     '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'no-extra-parens': 'off', // it was already off by default; this line addition is just for documentation purposes
+    '@typescript-eslint/restrict-template-expressions': 0, // it's OK to use numbers etc. in string templates
 
     /**
      *****************************************
@@ -65,7 +66,6 @@ module.exports = {
     '@typescript-eslint/no-unsafe-member-access': 0,
     '@typescript-eslint/no-unsafe-return': 0,
     '@typescript-eslint/explicit-module-boundary-types': 0,
-    '@typescript-eslint/restrict-template-expressions': 1,
     '@typescript-eslint/restrict-plus-operands': 0, // rule is broken
     '@typescript-eslint/no-unsafe-call': 1,
     '@typescript-eslint/unbound-method': 1,

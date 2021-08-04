@@ -8,17 +8,11 @@
 
 /** @internal */
 export const DEFAULT_CSS_CURSOR = 'default';
-/**
- * @internal
- */
+/** @internal */
 export const TAU = 2 * Math.PI;
-/**
- * @internal
- */
+/** @internal */
 export const RIGHT_ANGLE = TAU / 4;
-/**
- * @internal
- */
+/** @internal */
 export const GOLDEN_RATIO = 1.618;
 
 /** @public */
