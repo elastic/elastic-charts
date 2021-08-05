@@ -6,7 +6,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
 
   // wrapper is needed to isolate color icon when wrapped or not
