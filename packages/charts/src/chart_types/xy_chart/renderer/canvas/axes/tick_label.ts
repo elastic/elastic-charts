@@ -26,7 +26,16 @@ export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, s
   const { rotation: tickLabelRotation, alignment, offset } = labelStyle;
 
   const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;
-  const { x, y, offsetX, offsetY, textOffsetX, textOffsetY, horizontalAlign, verticalAlign } = getTickLabelProps(
+  const {
+    x: x0,
+    y: y0,
+    offsetX,
+    offsetY,
+    textOffsetX,
+    textOffsetY,
+    horizontalAlign,
+    verticalAlign,
+  } = getTickLabelProps(
     axisStyle,
     tick.position,
     position,
@@ -38,38 +47,25 @@ export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, s
     alignment,
   );
 
+  const x = x0 + offsetX;
+  const y = y0 + offsetY;
+  const center = { x, y };
   if (debug) {
     // full text container
     renderDebugRectCenterRotated(
       ctx,
-      {
-        x: x + offsetX,
-        y: y + offsetY,
-      },
-      {
-        x: x + offsetX,
-        y: y + offsetY,
-        height: maxLabelTextHeight,
-        width: maxLabelTextWidth,
-      },
+      center,
+      { ...center, height: maxLabelTextHeight, width: maxLabelTextWidth },
       undefined,
       undefined,
       tickLabelRotation,
     );
     // rotated text container
-    if (![0, -90, 90, 180].includes(tickLabelRotation)) {
+    if (tickLabelRotation % 90 !== 0) {
       renderDebugRectCenterRotated(
         ctx,
-        {
-          x: x + offsetX,
-          y: y + offsetY,
-        },
-        {
-          x: x + offsetX,
-          y: y + offsetY,
-          height: maxLabelBboxHeight,
-          width: maxLabelBboxWidth,
-        },
+        center,
+        { ...center, height: maxLabelBboxHeight, width: maxLabelBboxWidth },
         undefined,
         undefined,
         0,
@@ -87,10 +83,7 @@ export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, s
   withContext(ctx, (ctx) => {
     renderText(
       ctx,
-      {
-        x: x + offsetX,
-        y: y + offsetY,
-      },
+      center,
       labelFormat ? labelFormat(tick.value) : tick.label,
       {
         ...font,
@@ -100,10 +93,7 @@ export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, s
         baseline: verticalAlign as CanvasTextBaseline,
       },
       tickLabelRotation,
-      {
-        x: textOffsetX,
-        y: textOffsetY,
-      },
+      { x: textOffsetX, y: textOffsetY },
     );
   });
 }
