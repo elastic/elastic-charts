@@ -14,64 +14,39 @@ import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';
 
 /** @internal */
-export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, showTicks: boolean, props: AxisProps) {
-  const {
-    axisSpec: { position, labelFormat },
-    dimension: axisTicksDimensions,
-    size,
-    debug,
-    axisStyle,
-  } = props;
+export function renderTickLabel(
+  ctx: CanvasRenderingContext2D,
+  tick: AxisTick,
+  showTicks: boolean,
+  { axisSpec: { position, labelFormat }, dimension, size, debug, axisStyle }: AxisProps,
+) {
   const labelStyle = axisStyle.tickLabel;
   const { rotation: tickLabelRotation, alignment, offset } = labelStyle;
-
-  const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;
-  const {
-    x: x0,
-    y: y0,
-    offsetX,
-    offsetY,
-    textOffsetX,
-    textOffsetY,
-    horizontalAlign,
-    verticalAlign,
-  } = getTickLabelProps(
+  const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth: width, maxLabelTextHeight: height } = dimension;
+  const tickLabelProps = getTickLabelProps(
     axisStyle,
     tick.position,
     position,
     tickLabelRotation,
     size,
-    axisTicksDimensions,
+    dimension,
     showTicks,
     offset,
     alignment,
   );
+  const { textOffsetX, textOffsetY, horizontalAlign, verticalAlign } = tickLabelProps;
 
-  const x = x0 + offsetX;
-  const y = y0 + offsetY;
-  const center = { x, y };
+  const center = { x: tickLabelProps.x + tickLabelProps.offsetX, y: tickLabelProps.y + tickLabelProps.offsetY };
+
   if (debug) {
     // full text container
-    renderDebugRectCenterRotated(
-      ctx,
-      center,
-      { ...center, height: maxLabelTextHeight, width: maxLabelTextWidth },
-      undefined,
-      undefined,
-      tickLabelRotation,
-    );
+    renderDebugRectCenterRotated(ctx, center, { ...center, width, height }, undefined, undefined, tickLabelRotation);
     // rotated text container
     if (tickLabelRotation % 90 !== 0) {
-      renderDebugRectCenterRotated(
-        ctx,
-        center,
-        { ...center, height: maxLabelBboxHeight, width: maxLabelBboxWidth },
-        undefined,
-        undefined,
-        0,
-      );
+      renderDebugRectCenterRotated(ctx, center, { ...center, width: maxLabelBboxWidth, height: maxLabelBboxHeight });
     }
   }
+
   const font: Font = {
     fontFamily: labelStyle.fontFamily,
     fontStyle: labelStyle.fontStyle ? (labelStyle.fontStyle as FontStyle) : 'normal',
