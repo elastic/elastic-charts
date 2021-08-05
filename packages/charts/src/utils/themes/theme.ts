@@ -200,7 +200,7 @@ export interface BackgroundStyle {
   color: string;
 }
 
-/** @internal */
+/** @public */
 export interface LegendLabelOptions {
   /**
    * Allows multiline labels
