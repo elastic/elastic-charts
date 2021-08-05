@@ -31,25 +31,23 @@ export function renderText(
   scale: number = 1,
 ) {
   withRotatedOrigin(ctx, origin, degree, (ctx) => {
-    withContext(ctx, (ctx) => {
-      ctx.fillStyle = font.fill;
-      ctx.textAlign = font.align;
-      ctx.textBaseline = font.baseline;
-      ctx.font = cssFontShorthand(font, font.fontSize);
-      if (translation?.x || translation?.y) {
-        ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
-      }
-      ctx.translate(origin.x, origin.y);
-      ctx.scale(scale, scale);
-      const shadowSize = font.shadowSize ?? 0;
-      if (font.shadow && shadowSize > 0) {
-        ctx.lineJoin = 'round';
-        ctx.lineWidth = shadowSize;
-        ctx.strokeStyle = font.shadow;
-        ctx.strokeText(text, 0, 0);
-      }
-      ctx.fillText(text, 0, 0);
-    });
+    ctx.fillStyle = font.fill;
+    ctx.textAlign = font.align;
+    ctx.textBaseline = font.baseline;
+    ctx.font = cssFontShorthand(font, font.fontSize);
+    if (translation?.x || translation?.y) {
+      ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
+    }
+    ctx.translate(origin.x, origin.y);
+    ctx.scale(scale, scale);
+    const shadowSize = font.shadowSize ?? 0;
+    if (font.shadow && shadowSize > 0) {
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = shadowSize;
+      ctx.strokeStyle = font.shadow;
+      ctx.strokeText(text, 0, 0);
+    }
+    ctx.fillText(text, 0, 0);
   });
 }
 
