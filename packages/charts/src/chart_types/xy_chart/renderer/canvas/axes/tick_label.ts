@@ -20,28 +20,26 @@ export function renderTickLabel(
   { axisSpec: { position, labelFormat }, dimension, size, debug, axisStyle }: AxisProps,
 ) {
   const labelStyle = axisStyle.tickLabel;
-  const { rotation: tickLabelRotation, alignment, offset } = labelStyle;
-  const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth: width, maxLabelTextHeight: height } = dimension;
   const tickLabelProps = getTickLabelProps(
     axisStyle,
     tick.position,
     position,
-    tickLabelRotation,
+    labelStyle.rotation,
     size,
     dimension,
     showTicks,
-    offset,
-    alignment,
+    labelStyle.offset,
+    labelStyle.alignment,
   );
-  const { textOffsetX, textOffsetY, horizontalAlign, verticalAlign } = tickLabelProps;
 
   const center = { x: tickLabelProps.x + tickLabelProps.offsetX, y: tickLabelProps.y + tickLabelProps.offsetY };
 
   if (debug) {
+    const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth: width, maxLabelTextHeight: height } = dimension;
     // full text container
-    renderDebugRectCenterRotated(ctx, center, { ...center, width, height }, undefined, undefined, tickLabelRotation);
+    renderDebugRectCenterRotated(ctx, center, { ...center, width, height }, undefined, undefined, labelStyle.rotation);
     // rotated text container
-    if (tickLabelRotation % 90 !== 0) {
+    if (labelStyle.rotation % 90 !== 0) {
       renderDebugRectCenterRotated(ctx, center, { ...center, width: maxLabelBboxWidth, height: maxLabelBboxHeight });
     }
   }
@@ -62,10 +60,10 @@ export function renderTickLabel(
       ...font,
       fontSize: labelStyle.fontSize,
       fill: labelStyle.fill,
-      align: horizontalAlign as CanvasTextAlign,
-      baseline: verticalAlign as CanvasTextBaseline,
+      align: tickLabelProps.horizontalAlign as CanvasTextAlign,
+      baseline: tickLabelProps.verticalAlign as CanvasTextBaseline,
     },
-    tickLabelRotation,
-    { x: textOffsetX, y: textOffsetY },
+    labelStyle.rotation,
+    { x: tickLabelProps.textOffsetX, y: tickLabelProps.textOffsetY },
   );
 }
