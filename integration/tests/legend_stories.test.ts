@@ -48,6 +48,12 @@ describe('Legend stories', () => {
     );
   });
 
+  it('should breakup multiline legend labels with long continous words', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/legend--inside-chart&globals=backgrounds.value:transparent;themes.value:Light&knob-Inside chart_Legend=&knob-Legend position_Legend=right&knob-Multiline_Label options=true&knob-Multiline_Legend=true&knob-Number of series=5&knob-Popover position_Legend=leftCenter&knob-Series with long name=3&knob-direction_Legend=vertical&knob-floating columns_Legend=2&knob-hAlign_Legend=right&knob-long label_Legend=a few separate words then averyongcontinuouswordthatneedstobebrokenup&knob-vAlign_Legend=bottom&knob-multiline label_Legend=true',
+    );
+  });
+
   it('should render color picker on mouse click', async () => {
     const action = async () => {
       await common.clickMouseRelativeToDOMElement({ left: 0, top: 0 }, '.echLegendItem__color');

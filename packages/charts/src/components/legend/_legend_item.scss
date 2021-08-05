@@ -73,6 +73,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     vertical-align: baseline;
     letter-spacing: unset;
     align-items: center;
+    hyphens: auto;
 
     &:not(&--multiline) {
       @include euiTextTruncate;
