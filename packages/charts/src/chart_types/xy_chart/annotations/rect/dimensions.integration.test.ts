@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Rect } from '../../../../geoms/types';
 import { MockSeriesSpec, MockAnnotationSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
 import { ScaleType } from '../../../../scales/constants';
@@ -17,12 +18,7 @@ function expectAnnotationAtPosition(
   data: Array<{ x: number; y: number }>,
   type: 'line' | 'bar' | 'histogram',
   dataValues: RectAnnotationDatum[],
-  expectedRect: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  },
+  expectedRect: Rect,
   numOfSpecs = 1,
   xScaleType: typeof ScaleType.Ordinal | typeof ScaleType.Linear | typeof ScaleType.Time = ScaleType.Linear,
 ) {
