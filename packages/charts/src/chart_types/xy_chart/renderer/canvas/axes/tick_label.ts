@@ -55,20 +55,18 @@ export function renderTickLabel(
     textColor: labelStyle.fill,
     textOpacity: 1,
   };
-  withContext(ctx, (ctx) => {
-    renderText(
-      ctx,
-      center,
-      labelFormat ? labelFormat(tick.value) : tick.label,
-      {
-        ...font,
-        fontSize: labelStyle.fontSize,
-        fill: labelStyle.fill,
-        align: horizontalAlign as CanvasTextAlign,
-        baseline: verticalAlign as CanvasTextBaseline,
-      },
-      tickLabelRotation,
-      { x: textOffsetX, y: textOffsetY },
-    );
-  });
+  renderText(
+    ctx,
+    center,
+    labelFormat ? labelFormat(tick.value) : tick.label,
+    {
+      ...font,
+      fontSize: labelStyle.fontSize,
+      fill: labelStyle.fill,
+      align: horizontalAlign as CanvasTextAlign,
+      baseline: verticalAlign as CanvasTextBaseline,
+    },
+    tickLabelRotation,
+    { x: textOffsetX, y: textOffsetY },
+  );
 }
