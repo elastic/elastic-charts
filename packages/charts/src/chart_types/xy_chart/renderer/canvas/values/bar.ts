@@ -8,7 +8,7 @@
 
 import { colorIsDark, getTextColorIfTextInvertible } from '../../../../../common/color_calcs';
 import { fillTextColor } from '../../../../../common/fill_text_color';
-import { Font, FontStyle, TextAlign, TextBaseline } from '../../../../../common/text_utils';
+import { Font, TextAlign, TextBaseline } from '../../../../../common/text_utils';
 import { Rect } from '../../../../../geoms/types';
 import { Rotation, VerticalAlignment, HorizontalAlignment } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
@@ -54,7 +54,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     };
     const font: Font = {
       fontFamily,
-      fontStyle: fontStyle ? (fontStyle as FontStyle) : 'normal',
+      fontStyle: fontStyle ?? 'normal',
       fontVariant: 'normal',
       fontWeight: 'normal',
       textColor: 'black',

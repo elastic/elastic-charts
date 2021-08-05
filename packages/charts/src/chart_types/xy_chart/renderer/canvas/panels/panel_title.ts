@@ -6,10 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { FontStyle } from '../../../../../common/text_utils';
 import { Position } from '../../../../../utils/common';
 import { getSimplePadding } from '../../../../../utils/dimensions';
-import { AxisStyle } from '../../../../../utils/themes/theme'; // todo revise if it should rely on axis-anything
+import { TextStyle } from '../../../../../utils/themes/theme'; // todo revise if it should rely on axis-anything
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisProps } from '../axes';
@@ -114,17 +113,12 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: PanelTitleP
 }
 
 /** @internal */
-export function getFontStyle({
-  fontFamily,
-  fontStyle,
-  fill,
-  fontSize,
-}: AxisStyle['axisTitle'] | AxisStyle['axisPanelTitle']): TextFont {
+export function getFontStyle({ fontFamily, fontStyle, fill, fontSize }: TextStyle): TextFont {
   return {
     fontFamily,
     fontVariant: 'normal',
-    fontStyle: fontStyle ? (fontStyle as FontStyle) : 'normal',
-    fontWeight: 'normal',
+    fontStyle: fontStyle ?? 'normal',
+    fontWeight: 'bold',
     textColor: fill,
     textOpacity: 1,
     fill,

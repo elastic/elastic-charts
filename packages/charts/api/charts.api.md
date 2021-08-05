@@ -745,6 +745,12 @@ export type FitConfig = {
     endValue?: number | 'nearest';
 };
 
+// @public (undocumented)
+export const FONT_STYLES: readonly ["normal", "italic", "oblique", "inherit", "initial", "unset"];
+
+// @public (undocumented)
+export type FontStyle = typeof FONT_STYLES[number];
+
 // @public
 export interface GeometryStateStyle {
     opacity: number;
@@ -1996,7 +2002,7 @@ export interface TextStyle {
     // (undocumented)
     fontSize: number;
     // (undocumented)
-    fontStyle?: string;
+    fontStyle?: FontStyle;
     // (undocumented)
     padding: number | SimplePadding;
 }
@@ -2253,7 +2259,7 @@ export interface WordcloudConfigs {
     // (undocumented)
     fontFamily: string;
     // (undocumented)
-    fontStyle: string;
+    fontStyle: FontStyle;
     // (undocumented)
     fontWeight: number;
     // (undocumented)
@@ -2294,7 +2300,7 @@ export interface WordcloudSpec extends Spec {
     // (undocumented)
     fontFamily: string;
     // (undocumented)
-    fontStyle: string;
+    fontStyle: FontStyle;
     // (undocumented)
     fontWeight: number;
     // (undocumented)

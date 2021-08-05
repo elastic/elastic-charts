@@ -7,7 +7,6 @@
  */
 
 import { AxisProps } from '.';
-import { FontStyle } from '../../../../../common/text_utils';
 import { AxisTick, getTickLabelProps } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';
@@ -50,7 +49,7 @@ export function renderTickLabel(
     labelFormat ? labelFormat(tick.value) : tick.label,
     {
       fontFamily: labelStyle.fontFamily,
-      fontStyle: labelStyle.fontStyle ? (labelStyle.fontStyle as FontStyle) : 'normal',
+      fontStyle: labelStyle.fontStyle ?? 'normal',
       fontVariant: 'normal',
       fontWeight: 'normal',
       textColor: labelStyle.fill,
