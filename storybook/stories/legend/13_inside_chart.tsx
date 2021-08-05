@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { select, boolean, number } from '@storybook/addon-knobs';
+import { select, boolean, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -76,6 +76,7 @@ export const Example = () => {
     LayoutDirection.Vertical,
     'Legend',
   );
+  const multiline = boolean('multiline label', false, 'Legend');
 
   return (
     <Chart>
@@ -88,6 +89,9 @@ export const Example = () => {
           direction,
           floating,
           floatingColumns,
+        }}
+        theme={{
+          legend: { labelOptions: { multiline } },
         }}
         baseTheme={useBaseTheme()}
       />
@@ -110,7 +114,7 @@ export const Example = () => {
           if (i >= seriesWithLongName * 10 && i < seriesWithLongName * 10 + 10) {
             return {
               ...d,
-              g: 'long name',
+              g: text('long label', 'long name', 'Legend'),
             };
           }
           return d;

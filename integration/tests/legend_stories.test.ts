@@ -27,12 +27,24 @@ describe('Legend stories', () => {
   });
   it('should 0 legend buffer', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/legend--legend-spacing-buffer&knob-legend buffer value=0',
+      'http://localhost:9001/?path=/story/legend--legend-spacing-buffer&knob-legend buffer value=0&knob-multiline Legend labels=false',
     );
   });
   it('should have the same order as nested with no indent even if there are repeated labels', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/legend--piechart-repeated-labels&knob-flatLegend=true&knob-legendMaxDepth=2',
+    );
+  });
+
+  it('should correctly render multiline nested legend labels', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/legend--piechart&globals=backgrounds.value:!hex(fff);themes.value:Light&knob-Hide color picker=true&knob-Hide color picker_Legend=true&knob-Inside chart_Legend=true&knob-Legend position=right&knob-Legend position_Legend=right&knob-Multiline_Label options=true&knob-Multiline_Legend=true&knob-Number of series=5&knob-Popover position=leftCenter&knob-Popover position_Legend=leftCenter&knob-Series with long name=3&knob-direction_Legend=vertical&knob-floating columns_Legend=2&knob-hAlign_Legend=right&knob-legend buffer value=80&knob-legend margins=20&knob-long label text_Legend=Non do aliqua veniam dolore ipsum eu aliquip. Culpa in duis amet non velit qui non ullamco sit adipisicing. Ut sunt Lorem mollit exercitation deserunt officia sunt ipsum eu amet.&knob-multiline Legend labels=true&knob-vAlign_Legend=bottom&knob-Partition Layout=sunburst&knob-flatLegend=&knob-showLegendExtra=&knob-legendMaxDepth=2&knob-legendStrategy=key&knob-Multiline=true',
+    );
+  });
+
+  it('should correctly render very long multiline legend labels', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/legend--legend-spacing-buffer&globals=backgrounds.value:transparent;themes.value:Light&knob-Hide color picker=true&knob-Hide color picker_Legend=true&knob-Inside chart_Legend=true&knob-Legend position=right&knob-Legend position_Legend=right&knob-Multiline=true&knob-Multiline_Label options=true&knob-Multiline_Legend=true&knob-Number of series=5&knob-Partition Layout=sunburst&knob-Popover position=leftCenter&knob-Popover position_Legend=leftCenter&knob-Series with long name=3&knob-direction_Legend=vertical&knob-flatLegend=true&knob-floating columns_Legend=2&knob-hAlign_Legend=right&knob-legend buffer value=80&knob-legend margins=20&knob-legendMaxDepth=3&knob-legendStrategy=key&knob-long label text_Legend=Non do aliqua veniam dolore ipsum eu aliquip. Culpa in duis amet non velit qui non ullamco sit adipisicing. Ut sunt Lorem mollit exercitation deserunt officia sunt ipsum eu amet.&knob-multiline Legend labels=true&knob-showLegendExtra=true&knob-use long labels=true&knob-vAlign_Legend=bottom',
     );
   });
 
@@ -160,25 +172,40 @@ describe('Legend stories', () => {
       },
     );
   });
+
   describe('Legend inside chart', () => {
+    const getPositionalUrl = (p1: string, p2: string, others: string = '') =>
+      `http://localhost:9001/?path=/story/legend--inside-chart&knob-vAlign_Legend=${p1}&knob-hAlign_Legend=${p2}${others}`;
+
     it.each([
       [Position.Top, Position.Left],
       [Position.Top, Position.Right],
       [Position.Bottom, Position.Left],
       [Position.Bottom, Position.Right],
-    ])('should correctly display %s %s', async (pos1, pos2) => {
-      await common.expectChartAtUrlToMatchScreenshot(
-        `http://localhost:9001/?path=/story/legend--inside-chart&knob-Legend Position[0]=${pos1}&knob-Legend Position[1]=${pos2}&globals=themes.value:Light`,
-      );
+    ])('should correctly display %s %s', async (p1, p2) => {
+      await common.expectChartAtUrlToMatchScreenshot(getPositionalUrl(p1, p2, '&globals=themes.value:Light'));
     });
+
     it.each([
       [Position.Top, Position.Left],
       [Position.Top, Position.Right],
       [Position.Bottom, Position.Left],
       [Position.Bottom, Position.Right],
-    ])('should correctly display %s %s in dark mode', async (pos1, pos2) => {
+    ])('should correctly display %s %s in dark mode', async (p1, p2) => {
+      await common.expectChartAtUrlToMatchScreenshot(getPositionalUrl(p1, p2, '&globals=themes.value:Dark'));
+    });
+
+    it.each([
+      [Position.Top, Position.Left],
+      [Position.Top, Position.Right],
+      [Position.Bottom, Position.Left],
+      [Position.Bottom, Position.Right],
+    ])('should correctly display %s %s in multiline mode', async (p1, p2) => {
+      const longLabel =
+        'Non do aliqua veniam dolore ipsum eu aliquip. Culpa in duis amet non velit qui non ullamco sit adipisicing. Ut sunt Lorem mollit exercitation deserunt officia sunt ipsum eu amet.';
+
       await common.expectChartAtUrlToMatchScreenshot(
-        `http://localhost:9001/?path=/story/legend--inside-chart&knob-Legend Position[0]=${pos1}&knob-Legend Position[1]=${pos2}&globals=themes.value:Dark`,
+        getPositionalUrl(p1, p2, `&knob-multiline label_Legend=true&knob-long label_Legend=${longLabel}`),
       );
     });
   });

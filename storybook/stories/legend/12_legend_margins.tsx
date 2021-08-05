@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { number } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
@@ -23,6 +23,9 @@ export const Example = () => (
           margin: number('legend margins', 20, {
             min: 0,
           }),
+          labelOptions: {
+            multiline: boolean('multiline Legend labels', true),
+          },
         },
       }}
       baseTheme={useBaseTheme()}
