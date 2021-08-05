@@ -20,7 +20,7 @@ import {
   EuiFlexItem,
   EuiButtonIcon,
 } from '@elastic/eui';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
 
 import {
@@ -164,7 +164,7 @@ const getLabelOptionKnobs = (): LegendLabelOptions => {
   const group = 'Label options';
 
   return {
-    multiline: boolean('Multiline', false, group),
+    maxLines: number('max label lines', 1, { min: 0, step: 1 }, group),
   };
 };
 

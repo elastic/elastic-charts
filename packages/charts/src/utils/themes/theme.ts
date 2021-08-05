@@ -203,9 +203,13 @@ export interface BackgroundStyle {
 /** @public */
 export interface LegendLabelOptions {
   /**
-   * Allows multiline labels
+   * Sets maxlines allowable before truncating
+   *
+   * Setting value to `0` will _never_ truncate the text
+   *
+   * @defaultValue 1
    */
-  multiline: boolean;
+  maxLines: number;
 }
 
 /** @public */
@@ -237,7 +241,7 @@ export interface LegendStyle {
   /**
    * Options to control legend labels
    */
-  labelOptions?: LegendLabelOptions;
+  labelOptions: LegendLabelOptions;
 }
 /** @public */
 export interface Theme {

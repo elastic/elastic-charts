@@ -18,7 +18,7 @@ export const Example = () => {
     legend: {
       spacingBuffer: number('legend buffer value', 80),
       labelOptions: {
-        multiline: boolean('multiline Legend labels', true),
+        maxLines: number('max legend label lines', 0, { min: 0, step: 1 }),
       },
     },
   };

@@ -40,7 +40,7 @@ export const Example = () => {
     step: 1,
   });
   const legendStrategy = select('legendStrategy', LegendStrategy, LegendStrategy.Key as LegendStrategy);
-  const multiline = boolean('Multiline', false);
+  const maxLines = number('max legend label lines', 1, { min: 0, step: 1 });
 
   return (
     <Chart>
@@ -51,7 +51,7 @@ export const Example = () => {
         legendStrategy={legendStrategy}
         legendMaxDepth={legendMaxDepth}
         baseTheme={useBaseTheme()}
-        theme={{ legend: { labelOptions: { multiline } } }}
+        theme={{ legend: { labelOptions: { maxLines } } }}
       />
       <Partition
         id="spec_1"

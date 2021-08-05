@@ -76,7 +76,7 @@ export const Example = () => {
     LayoutDirection.Vertical,
     'Legend',
   );
-  const multiline = boolean('multiline label', false, 'Legend');
+  const maxLines = number('max label lines', 1, { min: 0, step: 1 }, 'Legend');
 
   return (
     <Chart>
@@ -91,7 +91,7 @@ export const Example = () => {
           floatingColumns,
         }}
         theme={{
-          legend: { labelOptions: { multiline } },
+          legend: { labelOptions: { maxLines } },
         }}
         baseTheme={useBaseTheme()}
       />

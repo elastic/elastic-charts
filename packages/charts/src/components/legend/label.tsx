@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { MouseEventHandler } from 'react';
+import React, { KeyboardEventHandler, MouseEventHandler, useCallback } from 'react';
 
 import { LegendLabelOptions } from '../../utils/themes/theme';
 
@@ -15,33 +15,52 @@ interface LabelProps {
   label: string;
   isSeriesHidden?: boolean;
   isToggleable?: boolean;
-  onClick?: MouseEventHandler;
-  options?: LegendLabelOptions;
+  onToggle?: (negate: boolean) => void;
+  options: LegendLabelOptions;
 }
 /**
  * Label component used to display text in legend item
  * @internal
  */
-export function Label({ label, isToggleable, onClick, isSeriesHidden, options }: LabelProps) {
+export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }: LabelProps) {
+  const maxLines = Math.abs(options.maxLines);
   const labelClassNames = classNames('echLegendItem__label', {
-    'echLegendItem__label--clickable': Boolean(onClick),
-    'echLegendItem__label--multiline': options?.multiline,
+    'echLegendItem__label--clickable': Boolean(onToggle),
+    'echLegendItem__label--singleline': maxLines === 1,
+    'echLegendItem__label--multiline': maxLines > 1,
   });
 
+  const onClick: MouseEventHandler = useCallback(({ shiftKey }) => onToggle?.(shiftKey), [onToggle]);
+  const onKeyDown: KeyboardEventHandler = useCallback(
+    ({ key, shiftKey }) => {
+      if (key === ' ' || key === 'Enter') onToggle?.(shiftKey);
+    },
+    [onToggle],
+  );
+
+  const title = options.maxLines > 0 ? label : ''; // full text already visible
+  const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
+
   return isToggleable ? (
-    <button
-      type="button"
+    // This div is required to allow multiline text truncation, all ARIA requirements are still met
+    // https://stackoverflow.com/questions/68673034/webkit-line-clamp-does-not-apply-to-buttons
+    <div
+      role="button"
+      tabIndex={0}
       className={labelClassNames}
-      title={options?.multiline ? '' : label} // full text already visible
+      title={title}
       onClick={onClick}
+      onKeyDown={onKeyDown}
+      aria-pressed={isSeriesHidden}
+      style={clampStyles}
       aria-label={
         isSeriesHidden ? `${label}; Activate to show series in graph` : `${label}; Activate to hide series in graph`
       }
     >
       {label}
-    </button>
+    </div>
   ) : (
-    <div className={labelClassNames} title={label} onClick={onClick}>
+    <div className={labelClassNames} title={label} style={clampStyles}>
       {label}
     </div>
   );

@@ -170,6 +170,9 @@ export const LIGHT_THEME: Theme = {
     horizontalHeight: 64,
     spacingBuffer: 10,
     margin: 0,
+    labelOptions: {
+      maxLines: 1,
+    },
   },
   crosshair: {
     band: {

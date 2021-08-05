@@ -46,7 +46,7 @@ export interface LegendItemProps {
   positionConfig: LegendPositionConfig;
   extraValues: Map<string, LegendItemExtraValues>;
   showExtra: boolean;
-  labelOptions?: LegendLabelOptions;
+  labelOptions: LegendLabelOptions;
   colorPicker?: LegendColorPicker;
   action?: LegendAction;
   onClick?: LegendItemListener;
@@ -115,19 +115,19 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   /**
    * Returns click function only if toggleable or click listern is provided
    */
-  handleLabelClick = (legendItemId: SeriesIdentifier[]): MouseEventHandler | undefined => {
+  onLabelToggle = (legendItemId: SeriesIdentifier[]): ((negate: boolean) => void) | undefined => {
     const { item, onClick, toggleDeselectSeriesAction, totalItems } = this.props;
     if (totalItems <= 1 || (!item.isToggleable && !onClick)) {
       return;
     }
 
-    return ({ shiftKey }) => {
+    return (negate) => {
       if (onClick) {
         onClick(legendItemId);
       }
 
       if (item.isToggleable) {
-        toggleDeselectSeriesAction(legendItemId, shiftKey);
+        toggleDeselectSeriesAction(legendItemId, negate);
       }
     };
   };
@@ -215,7 +215,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             label={label}
             options={labelOptions}
             isToggleable={totalItems > 1 && item.isToggleable}
-            onClick={this.handleLabelClick(seriesIdentifiers)}
+            onToggle={this.onLabelToggle(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
           />
           {extra && !isSeriesHidden && renderExtra(extra)}

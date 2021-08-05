@@ -75,15 +75,20 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     align-items: center;
     hyphens: auto;
 
-    &:not(&--multiline) {
+    &--singleline {
       @include euiTextTruncate;
     }
 
-    &--clickable {
-      &:hover {
-        cursor: pointer;
-        text-decoration: underline;
-      }
+    &--multiline:is(div) { // div to prevent changing to button
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2; // number of lines to show, overridden in element styles
+    }
+
+    &--clickable:hover {
+      cursor: pointer;
+      text-decoration: underline;
     }
   }
 

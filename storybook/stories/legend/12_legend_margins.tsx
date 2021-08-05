@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
@@ -24,7 +24,7 @@ export const Example = () => (
             min: 0,
           }),
           labelOptions: {
-            multiline: boolean('multiline Legend labels', true),
+            maxLines: number('max legend label lines', 2, { min: 0, step: 1 }),
           },
         },
       }}
