@@ -8,7 +8,6 @@
 
 import { AxisProps } from '.';
 import { Font, FontStyle } from '../../../../../common/text_utils';
-import { withContext } from '../../../../../renderers/canvas';
 import { AxisTick, getTickLabelProps } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';

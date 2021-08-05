@@ -7,7 +7,7 @@
  */
 
 import { cssFontShorthand, Font, measureText, TextAlign, TextBaseline } from '../../../../../common/text_utils';
-import { withContext, withRotatedOrigin } from '../../../../../renderers/canvas';
+import { withRotatedOrigin } from '../../../../../renderers/canvas';
 import { Point } from '../../../../../utils/point';
 
 /** @internal */
@@ -35,9 +35,7 @@ export function renderText(
     ctx.textAlign = font.align;
     ctx.textBaseline = font.baseline;
     ctx.font = cssFontShorthand(font, font.fontSize);
-    if (translation?.x || translation?.y) {
-      ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
-    }
+    ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
     ctx.translate(origin.x, origin.y);
     ctx.scale(scale, scale);
     const shadowSize = font.shadowSize ?? 0;
