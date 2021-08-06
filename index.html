@@ -1,9 +1,13 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Storybook</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>html, body {
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Storybook</title><meta name="viewport" content="width=device-width,initial-scale=1"/><style>html, body {
     overflow: hidden;
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
+  }
+
+  * {
+    box-sizing: border-box;
   }</style><script>/* globals window */
   /* eslint-disable no-underscore-dangle */
   try {
@@ -13,7 +17,39 @@
   } catch (e) {
     // eslint-disable-next-line no-console
     console.warn('unable to connect to top frame for connecting dev tools');
-  }</script><style>#root[hidden],
+  }
+
+  window.onerror = function onerror(message, source, line, column, err) {
+    if (window.CONFIG_TYPE !== 'DEVELOPMENT') return;
+    // eslint-disable-next-line no-var, vars-on-top
+    var xhr = new window.XMLHttpRequest();
+    xhr.open('POST', '/runtime-error');
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.send(
+      JSON.stringify({
+        /* eslint-disable object-shorthand */
+        message: message,
+        source: source,
+        line: line,
+        column: column,
+        error: err && { message: err.message, name: err.name, stack: err.stack },
+        origin: 'manager',
+        /* eslint-enable object-shorthand */
+      })
+    );
+  };</script><style>#root[hidden],
       #docs-root[hidden] {
         display: none !important;
-      }</style></head><body><div id="root"></div><div id="docs-root"></div><script>window['DOCS_MODE'] = false;</script><script src="runtime~main.516e0b25d130db6628ea.bundle.js"></script><script src="vendors~main.c25bf62237bfd888a19c.bundle.js"></script><script src="main.318dcbdade9e56ec5e12.bundle.js"></script></body></html>
+      }</style></head><body><div id="root"></div><div id="docs-root"></div><script>window['CONFIG_TYPE'] = "PRODUCTION";
+            
+        
+            
+              window['LOGLEVEL'] = "info";
+            
+        
+            
+        
+            
+        
+            
+              window['DOCS_MODE'] = false;</script><script src="runtime~main.d5422ee7547bb147f9f8.manager.bundle.js"></script><script src="vendors~main.047eac4ebfb91c61e730.manager.bundle.js"></script><script src="main.d7b75060e986d921fd71.manager.bundle.js"></script></body></html>
