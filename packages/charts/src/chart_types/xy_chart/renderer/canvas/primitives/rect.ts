@@ -34,16 +34,14 @@ export function renderRect(
     if (fill.texture) {
       const { texture } = fill;
       withContext(ctx, (ctx) => {
-        ctx.beginPath();
-        ctx.rect(x, y, width, height);
         ctx.clip();
 
         const rotation = degToRad(texture.rotation ?? 0);
         const { offset } = texture;
 
-        if (offset && offset.global) ctx.translate(offset?.x ?? 0, offset?.y ?? 0);
+        if (offset?.global) ctx.translate(offset.x ?? 0, offset.y ?? 0);
         if (rotation) ctx.rotate(rotation);
-        if (offset && !offset.global) ctx.translate(offset?.x ?? 0, offset?.y ?? 0);
+        if (offset && !offset.global) ctx.translate(offset.x ?? 0, offset.y ?? 0);
 
         ctx.fillStyle = texture.pattern;
 
