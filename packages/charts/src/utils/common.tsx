@@ -180,7 +180,7 @@ export function getColorFromVariant(seriesColor: Color, color?: Color | ColorVar
 }
 
 /** @internal */
-export const getRadians = (angle: Degrees): Radian => (angle / 180) * Math.PI;
+export const degToRad = (angle: Degrees): Radian => (angle / 180) * Math.PI;
 
 /**
  * This function returns a function to generate ids.

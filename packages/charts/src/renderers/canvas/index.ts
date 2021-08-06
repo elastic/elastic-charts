@@ -8,7 +8,7 @@
 
 import { Coordinate } from '../../common/geometry';
 import { Rect } from '../../geoms/types';
-import { getRadians } from '../../utils/common';
+import { degToRad } from '../../utils/common';
 import { ClippedRanges } from '../../utils/geometry';
 import { Point } from '../../utils/point';
 
@@ -109,7 +109,7 @@ export function withRotatedOrigin(
   withContext(ctx, (ctx) => {
     const { x, y } = origin;
     ctx.translate(x, y);
-    ctx.rotate(getRadians(rotation));
+    ctx.rotate(degToRad(rotation));
     ctx.translate(-x, -y);
     fn(ctx);
   });

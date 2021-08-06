@@ -8,7 +8,7 @@
 
 import { OpacityFn } from '../../../common/color_library_wrappers';
 import { Texture } from '../../../geoms/types';
-import { Color, ColorVariant, getColorFromVariant, getRadians } from '../../../utils/common';
+import { Color, ColorVariant, getColorFromVariant, degToRad } from '../../../utils/common';
 import { Point } from '../../../utils/point';
 import { TexturedStyles, TextureShape } from '../../../utils/themes/theme';
 import { TextureRendererFn } from '../renderer/shapes_paths';
@@ -67,7 +67,7 @@ function createPattern(
   pCtx.scale(dpi, dpi);
   pCtx.translate(cssWidth / 2, cssHeight / 2);
 
-  if (rotation) pCtx.rotate(getRadians(rotation));
+  if (rotation) pCtx.rotate(degToRad(rotation));
 
   pCtx.beginPath();
 

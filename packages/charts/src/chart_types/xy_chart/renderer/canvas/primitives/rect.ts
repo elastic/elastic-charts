@@ -9,7 +9,7 @@
 import { RGBtoString } from '../../../../../common/color_library_wrappers';
 import { Rect, Fill, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
-import { getRadians } from '../../../../../utils/common';
+import { degToRad } from '../../../../../utils/common';
 
 /** @internal */
 export function renderRect(
@@ -40,7 +40,7 @@ export function renderRect(
         drawRect(ctx, { x, y, width, height });
         ctx.clip();
 
-        const rotation = getRadians(texture.rotation ?? 0);
+        const rotation = degToRad(texture.rotation ?? 0);
         const { offset } = texture;
 
         if (offset && offset.global) ctx.translate(offset?.x ?? 0, offset?.y ?? 0);
