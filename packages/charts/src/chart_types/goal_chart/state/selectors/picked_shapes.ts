@@ -6,25 +6,53 @@
  * Side Public License, v 1.
  */
 
+import { Rectangle } from '../../../../common/geometry';
 import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { BulletViewModel } from '../../layout/types/viewmodel_types';
-import { geometries } from './geometries';
+import { initialBoundingBox, Mark } from '../../layout/viewmodel/geoms';
+import { geometries, getPrimitiveGeoms } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;
 }
 
+function fullBoundingBox(ctx: CanvasRenderingContext2D | null, geoms: Mark[]) {
+  const box = initialBoundingBox();
+  if (ctx) {
+    for (const g of geoms) {
+      for (const { x0, y0, x1, y1 } of g.boundingBoxes(ctx)) {
+        box.x0 = Math.min(box.x0, x0, x1);
+        box.y0 = Math.min(box.y0, y0, y1);
+        box.x1 = Math.max(box.x1, x0, x1);
+        box.y1 = Math.max(box.y1, y0, y1);
+      }
+    }
+  }
+  return box;
+}
+
+/** @internal */
+export const getCaptureBoundingBox = createCustomCachedSelector(
+  [getPrimitiveGeoms],
+  (geoms): Rectangle => {
+    const textMeasurer = document.createElement('canvas');
+    const ctx = textMeasurer.getContext('2d');
+    return fullBoundingBox(ctx, geoms);
+  },
+);
+
 /** @internal */
 export const getPickedShapes = createCustomCachedSelector(
-  [geometries, getCurrentPointerPosition],
-  (geoms, pointerPosition): BulletViewModel[] => {
+  [geometries, getCurrentPointerPosition, getCaptureBoundingBox],
+  (geoms, pointerPosition, capture): BulletViewModel[] => {
     const picker = geoms.pickQuads;
     const { chartCenter } = geoms;
-    const x = pointerPosition.x - chartCenter.x;
-    const y = pointerPosition.y - chartCenter.y;
-    return picker(x, y);
+    const { x, y } = pointerPosition;
+    return capture.x0 <= x && x <= capture.x1 && capture.y0 <= y && y <= capture.y1
+      ? picker(x - chartCenter.x, y - chartCenter.y)
+      : [];
   },
 );
 
@@ -32,7 +60,7 @@ export const getPickedShapes = createCustomCachedSelector(
 export const getPickedShapesLayerValues = createCustomCachedSelector(
   [getPickedShapes],
   (pickedShapes): Array<Array<LayerValue>> => {
-    const elements = pickedShapes.map<Array<LayerValue>>((model) => {
+    return pickedShapes.map<Array<LayerValue>>((model) => {
       const values: Array<LayerValue> = [];
       values.push({
         smAccessorValue: '',
@@ -44,6 +72,5 @@ export const getPickedShapesLayerValues = createCustomCachedSelector(
       });
       return values.reverse();
     });
-    return elements;
   },
 );

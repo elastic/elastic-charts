@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { GOLDEN_RATIO } from '../../../../common/constants';
-import { PointObject } from '../../../../common/geometry';
+import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
+import { PointObject, Radian, Rectangle } from '../../../../common/geometry';
 import { cssFontShorthand, Font } from '../../../../common/text_utils';
 import { GoalSubtype } from '../../specs/constants';
 import { Config } from '../types/config_types';
@@ -22,9 +22,12 @@ const marginRatio = 0.05; // same ratio on each side
 const maxTickFontSize = 24;
 const maxLabelFontSize = 32;
 const maxCentralFontSize = 38;
+const arcBoxSamplePitch: Radian = (5 / 360) * TAU; // 5-degree pitch ie. a circle is 72 steps
+const capturePad = 16; // mouse hover is detected in the padding too; eg. for Fitts law
 
 /** @internal */
 export interface Mark {
+  boundingBoxes: (ctx: CanvasRenderingContext2D) => Rectangle[];
   render: (ctx: CanvasRenderingContext2D) => void;
 }
 
@@ -46,6 +49,22 @@ export class Section implements Mark {
     this.strokeStyle = strokeStyle;
   }
 
+  boundingBoxes() {
+    // modifying with half the line width is a simple yet imprecise method for ensuring that the
+    // entire ink is in the bounding box; depending on orientation and line ending, the bounding
+    // box may overstate the data ink bounding box, which is preferable to understating it
+    return this.lineWidth === 0
+      ? []
+      : [
+          {
+            x0: Math.min(this.x, this.xTo) - this.lineWidth / 2 - capturePad,
+            y0: Math.min(this.y, this.yTo) - this.lineWidth / 2 - capturePad,
+            x1: Math.max(this.x, this.xTo) + this.lineWidth / 2 + capturePad,
+            y1: Math.max(this.y, this.yTo) + this.lineWidth / 2 + capturePad,
+          },
+        ];
+  }
+
   render(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.lineWidth = this.lineWidth;
@@ -57,12 +76,15 @@ export class Section implements Mark {
 }
 
 /** @internal */
+export const initialBoundingBox = (): Rectangle => ({ x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity });
+
+/** @internal */
 export class Arc implements Mark {
   protected readonly x: number;
   protected readonly y: number;
   protected readonly radius: number;
-  protected readonly startAngle: number;
-  protected readonly endAngle: number;
+  protected readonly startAngle: Radian;
+  protected readonly endAngle: Radian;
   protected readonly anticlockwise: boolean;
   protected readonly lineWidth: number;
   protected readonly strokeStyle: string;
@@ -85,6 +107,49 @@ export class Arc implements Mark {
     this.anticlockwise = anticlockwise;
     this.lineWidth = lineWidth;
     this.strokeStyle = strokeStyle;
+  }
+
+  boundingBoxes() {
+    if (this.lineWidth === 0) return [];
+
+    const box = initialBoundingBox();
+
+    // instead of an analytical solution, we approximate with a GC-free grid sampler
+
+    // full circle rotations such that `startAngle' and `endAngle` are positive
+    const rotationCount = Math.ceil(Math.max(0, -this.startAngle, -this.endAngle) / TAU);
+    const startAngle = this.startAngle + rotationCount * TAU;
+    const endAngle = this.endAngle + rotationCount * TAU;
+
+    // snapping to the closest `arcBoxSamplePitch` increment
+    const angleFrom: Radian = Math.round(startAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
+    const angleTo: Radian = Math.round(endAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
+    const signedIncrement = arcBoxSamplePitch * Math.sign(angleTo - angleFrom);
+
+    for (let angle: Radian = angleFrom; angle <= angleTo; angle += signedIncrement) {
+      // unit vector for the angle direction
+      const vx = Math.cos(angle);
+      const vy = Math.sin(angle);
+      const innerRadius = this.radius - this.lineWidth / 2;
+      const outerRadius = this.radius + this.lineWidth / 2;
+
+      // inner point of the sector
+      const innerX = this.x + vx * innerRadius;
+      const innerY = this.y + vy * innerRadius;
+
+      // outer point of the sector
+      const outerX = this.x + vx * outerRadius;
+      const outerY = this.y + vy * outerRadius;
+
+      box.x0 = Math.min(box.x0, innerX - capturePad, outerX - capturePad);
+      box.y0 = Math.min(box.y0, innerY - capturePad, outerY - capturePad);
+      box.x1 = Math.max(box.x1, innerX + capturePad, outerX + capturePad);
+      box.y1 = Math.max(box.y1, innerY + capturePad, outerY + capturePad);
+
+      if (signedIncrement === 0) break; // happens if fromAngle === toAngle
+    }
+
+    return Number.isFinite(box.x0) ? [box] : [];
   }
 
   render(ctx: CanvasRenderingContext2D) {
@@ -124,11 +189,30 @@ export class Text implements Mark {
     this.fontSize = fontSize;
   }
 
-  render(ctx: CanvasRenderingContext2D) {
-    ctx.beginPath();
+  setCanvasTextState(ctx: CanvasRenderingContext2D) {
     ctx.textAlign = this.textAlign;
     ctx.textBaseline = this.textBaseline;
     ctx.font = cssFontShorthand(this.fontShape, this.fontSize);
+  }
+
+  boundingBoxes(ctx: CanvasRenderingContext2D) {
+    if (this.text.length === 0) return [];
+
+    this.setCanvasTextState(ctx);
+    const box = ctx.measureText(this.text);
+    return [
+      {
+        x0: -box.actualBoundingBoxLeft + this.x - capturePad,
+        y0: -box.actualBoundingBoxAscent + this.y - capturePad,
+        x1: box.actualBoundingBoxRight + this.x + capturePad,
+        y1: box.actualBoundingBoxDescent + this.y + capturePad,
+      },
+    ];
+  }
+
+  render(ctx: CanvasRenderingContext2D) {
+    this.setCanvasTextState(ctx);
+    ctx.beginPath();
     ctx.fillText(this.text, this.x, this.y);
   }
 }

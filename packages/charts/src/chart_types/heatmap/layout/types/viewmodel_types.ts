@@ -9,7 +9,7 @@
 import { ChartType } from '../../..';
 import { Pixels } from '../../../../common/geometry';
 import { Box } from '../../../../common/text_utils';
-import { Fill, Line, Stroke } from '../../../../geoms/types';
+import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { config } from '../config/config';
@@ -27,9 +27,9 @@ export interface Value {
 export interface Cell {
   x: number;
   y: number;
-  yIndex: number;
   width: number;
   height: number;
+  yIndex: number;
   fill: Fill;
   stroke: Stroke;
   value: number;
@@ -63,7 +63,7 @@ export interface HeatmapViewModel {
 }
 
 /** @internal */
-export function isPickedCells(v: any): v is Cell[] {
+export function isPickedCells(v: unknown): v is Cell[] {
   return Array.isArray(v);
 }
 
@@ -74,9 +74,7 @@ export type PickFunction = (x: Pixels, y: Pixels) => Cell[] | TextBox;
 export type PickDragFunction = (points: [Point, Point]) => HeatmapBrushEvent;
 
 /** @internal */
-export type PickDragShapeFunction = (
-  points: [Point, Point],
-) => { x: number; y: number; width: number; height: number } | null;
+export type PickDragShapeFunction = (points: [Point, Point]) => Rect | null;
 
 /**
  * From x and y coordinates in the data domain space to a canvas projected rectangle
@@ -86,9 +84,9 @@ export type PickDragShapeFunction = (
  * @internal
  */
 export type PickHighlightedArea = (
-  x: any[],
-  y: any[],
-) => { x: number; y: number; width: number; height: number } | null;
+  x: Array<NonNullable<PrimitiveValue>>,
+  y: Array<NonNullable<PrimitiveValue>>,
+) => Rect | null;
 
 /** @internal */
 export type DragShape = ReturnType<PickDragShapeFunction>;
