@@ -73,13 +73,14 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     vertical-align: baseline;
     letter-spacing: unset;
     align-items: center;
-    hyphens: auto;
 
     &--singleline {
       @include euiTextTruncate;
     }
 
-    &--multiline:is(div) { // div to prevent changing to button
+    // div to prevent changing to button
+    &--multiline:is(div) {
+      hyphens: auto;
       overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
