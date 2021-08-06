@@ -19,10 +19,6 @@ export function renderRect(
   stroke?: Stroke,
   disableBoardOffset: boolean = false,
 ) {
-  if (!fill && !stroke) {
-    return;
-  }
-
   if (fill) {
     const borderOffset = !disableBoardOffset && stroke && stroke.width > 0.001 ? stroke.width : 0;
     const x = rect.x + borderOffset;
@@ -30,14 +26,16 @@ export function renderRect(
     const width = rect.width - borderOffset * 2;
     const height = rect.height - borderOffset * 2;
 
-    drawRect(ctx, { x, y, width, height });
+    ctx.beginPath();
+    ctx.rect(x, y, width, height);
     ctx.fillStyle = RGBtoString(fill.color);
     ctx.fill();
 
     if (fill.texture) {
       const { texture } = fill;
       withContext(ctx, (ctx) => {
-        drawRect(ctx, { x, y, width, height });
+        ctx.beginPath();
+        ctx.rect(x, y, width, height);
         ctx.clip();
 
         const rotation = degToRad(texture.rotation ?? 0);
@@ -66,7 +64,8 @@ export function renderRect(
 
     ctx.strokeStyle = RGBtoString(stroke.color);
     ctx.lineWidth = stroke.width;
-    drawRect(ctx, { x, y, width, height });
+    ctx.beginPath();
+    ctx.rect(x, y, width, height);
     if (stroke.dash) {
       ctx.setLineDash(stroke.dash);
     } else {
@@ -76,15 +75,4 @@ export function renderRect(
 
     ctx.stroke();
   }
-}
-
-/** @internal */
-function drawRect(ctx: CanvasRenderingContext2D, rect: Rect) {
-  const { x, y, width, height } = rect;
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.lineTo(x + width, y);
-  ctx.lineTo(x + width, y + height);
-  ctx.lineTo(x, y + height);
-  ctx.lineTo(x, y);
 }
