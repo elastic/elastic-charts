@@ -7,7 +7,7 @@
  */
 
 import { RGBtoString } from '../../../../../common/color_library_wrappers';
-import { Rect, Fill, Stroke } from '../../../../../geoms/types';
+import { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
 import { degToRad } from '../../../../../utils/common';
 import { MIN_STROKE_WIDTH } from './line';
@@ -15,19 +15,14 @@ import { MIN_STROKE_WIDTH } from './line';
 /** @internal */
 export function renderRect(
   ctx: CanvasRenderingContext2D,
-  rect: Rect,
+  { x, y, width, height }: Rect,
   fill: Fill,
   stroke: Stroke,
   disableBorderOffset: boolean = false,
 ) {
-  const borderOffset = disableBorderOffset || stroke.width < MIN_STROKE_WIDTH ? 0 : stroke.width;
-  const x = rect.x + borderOffset;
-  const y = rect.y + borderOffset;
-  const width = rect.width - borderOffset * 2;
-  const height = rect.height - borderOffset * 2;
-
+  const borderWidth = disableBorderOffset || stroke.width < MIN_STROKE_WIDTH ? 0 : stroke.width;
   ctx.beginPath();
-  ctx.rect(x, y, width, height);
+  ctx.rect(x + borderWidth, y + borderWidth, width - borderWidth * 2, height - borderWidth * 2);
   ctx.fillStyle = RGBtoString(fill.color);
   ctx.fill();
 
@@ -52,16 +47,10 @@ export function renderRect(
   }
 
   if (stroke.width >= MIN_STROKE_WIDTH) {
-    const borderOffset = disableBorderOffset ? 0 : stroke.width / 2;
-    const x = rect.x + borderOffset;
-    const y = rect.y + borderOffset;
-    const width = rect.width - borderOffset * 2;
-    const height = rect.height - borderOffset * 2;
-
     ctx.strokeStyle = RGBtoString(stroke.color);
     ctx.lineWidth = stroke.width;
     ctx.beginPath();
-    ctx.rect(x, y, width, height);
+    ctx.rect(x + borderWidth / 2, y + borderWidth / 2, width - borderWidth, height - borderWidth);
     ctx.setLineDash(stroke.dash ?? []); // no dash if stroke.dash is undefined
     ctx.stroke();
   }
