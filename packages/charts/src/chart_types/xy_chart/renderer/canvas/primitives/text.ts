@@ -28,13 +28,14 @@ export function renderText(
   text: string,
   font: TextFont,
   angle: Degrees = 0,
-  translation?: Partial<Point>,
+  translateX: number = 0,
+  translateY: number = 0,
   scale: number = 1,
 ) {
   withContext(ctx, (ctx) => {
     ctx.translate(origin.x, origin.y);
     ctx.rotate(degToRad(angle));
-    ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
+    ctx.translate(translateX, translateY);
     ctx.scale(scale, scale);
     ctx.fillStyle = font.textColor;
     ctx.textAlign = font.align;

@@ -106,7 +106,8 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
             shadowSize,
           },
           -rotation,
-          undefined,
+          0,
+          0,
           fontScale,
         );
       });

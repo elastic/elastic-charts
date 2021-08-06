@@ -59,6 +59,7 @@ export function renderTickLabel(
       baseline: tickLabelProps.verticalAlign,
     },
     labelStyle.rotation,
-    { x: tickLabelProps.textOffsetX, y: tickLabelProps.textOffsetY },
+    tickLabelProps.textOffsetX,
+    tickLabelProps.textOffsetY,
   );
 }
