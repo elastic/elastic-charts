@@ -6,8 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { Degrees } from '../../../../../common/geometry';
 import { cssFontShorthand, Font, measureText, TextAlign, TextBaseline } from '../../../../../common/text_utils';
-import { withRotatedOrigin } from '../../../../../renderers/canvas';
+import { withContext } from '../../../../../renderers/canvas';
+import { degToRad } from '../../../../../utils/common';
 import { Point } from '../../../../../utils/point';
 
 /** @internal */
@@ -25,18 +27,19 @@ export function renderText(
   origin: Point,
   text: string,
   font: TextFont,
-  degree: number = 0,
+  angle: Degrees = 0,
   translation?: Partial<Point>,
   scale: number = 1,
 ) {
-  withRotatedOrigin(ctx, origin, degree, (ctx) => {
+  withContext(ctx, (ctx) => {
+    ctx.translate(origin.x, origin.y);
+    ctx.rotate(degToRad(angle));
+    ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
+    ctx.scale(scale, scale);
     ctx.fillStyle = font.textColor;
     ctx.textAlign = font.align;
     ctx.textBaseline = font.baseline;
     ctx.font = cssFontShorthand(font, font.fontSize);
-    ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
-    ctx.translate(origin.x, origin.y);
-    ctx.scale(scale, scale);
     const shadowSize = font.shadowSize ?? 0;
     if (font.shadow && shadowSize > 0) {
       ctx.lineJoin = 'round';
