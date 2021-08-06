@@ -8,51 +8,70 @@
 
 import { useState } from 'react';
 
-import { parameters } from '../../../storybook/preview';
+import { BackgroundParameter } from '../../../storybook/node_modules/storybook-addon-background-toggle';
+import { ThemeParameter } from '../../../storybook/node_modules/storybook-addon-theme-toggle';
+import { ThemeName } from '../../../storybook/use_base_theme';
 
-interface WithParameters {
-  (): JSX.Element;
-  parameters?: {
-    backgrounds?: {
-      default?: string;
-      [key: string]: any;
-    };
-    themes?: {
-      default: string;
-      [key: string]: any;
-    };
-    [key: string]: any;
-  };
+interface Globals {
+  theme?: string;
+  background?: string;
 }
 
-function setTheme(name: string) {
-  if (name === 'Light') {
-    document.querySelector('html')?.classList.add('light-theme');
-    document.querySelector('html')?.classList.remove('dark-theme');
-  } else {
-    document.querySelector('html')?.classList.add('dark-theme');
-    document.querySelector('html')?.classList.remove('light-theme');
+type Parameters = BackgroundParameter & ThemeParameter;
+interface WithParameters {
+  parameters?: Parameters;
+  (): JSX.Element;
+}
+
+const combineClasses = (classes: string | string[]) => (typeof classes === 'string' ? [classes] : classes);
+const getThemeAllClasses = ({ themes }: Required<ThemeParameter>['theme']) =>
+  themes.reduce<string[]>((acc, t) => {
+    if (!t.class) return acc;
+    return [...acc, ...(typeof t.class === 'string' ? [t.class] : t.class)];
+  }, []);
+const getTargetSelector = ({ selector }: Required<ThemeParameter>['theme']) =>
+  (Array.isArray(selector) ? selector.join(', ') : selector) ?? 'body';
+
+function setTheme(themeId: string, themeParams?: ThemeParameter['theme']) {
+  if (!themeParams) return;
+
+  const theme = themeParams.themes.find((t) => t.id === themeId);
+  const selector = getTargetSelector(themeParams);
+  const targets = selector ? document.querySelectorAll<HTMLElement>(selector) : null;
+
+  if (targets) {
+    const all = getThemeAllClasses(themeParams);
+    const classes = theme?.class ? combineClasses(theme.class) : null;
+
+    targets.forEach((e) => {
+      all.forEach((c) => e.classList.remove(c));
+      if (classes) classes.forEach((c) => e.classList.add(c));
+    });
   }
 }
 
-function colorLookup(name?: string) {
-  if (!name) return;
-  return parameters.backgrounds.values.find((c) => c.name === name)?.value;
+function getBackground(backgroundId?: string, background?: BackgroundParameter['background']) {
+  if (!backgroundId || !background) return '';
+
+  const id = backgroundId ?? background?.default;
+  const option = (background?.options ?? []).find((c) => c.id === id);
+
+  return option ? option.background ?? option.color : '';
 }
 
 export function useGlobalsParameters() {
-  const [themeName, setThemeName] = useState<string>('Light');
-  const [backgroundColor, setBackgroundColor] = useState<string | undefined>('White');
+  const [themeName, setThemeName] = useState<string>(ThemeName.Light);
+  const [backgroundColor, setBackgroundColor] = useState<string | undefined>('white');
 
   /**
    * Handles setting global context values. Stub for theme and background addons
    */
   function setParams<T extends WithParameters>({ parameters }: T, params: URLSearchParams) {
-    const globals = getGlobalParams(params);
-    const newThemeName = globals.themes ?? parameters?.themes?.default ?? 'Light';
+    const globals = getGlobalParams(params) as Globals;
+    const newThemeName = globals.theme ?? ThemeName.Light;
     setThemeName(newThemeName);
-    setTheme(newThemeName);
-    setBackgroundColor(globals.backgrounds ?? colorLookup(parameters?.backgrounds?.default));
+    setTheme(newThemeName, parameters?.theme);
+    setBackgroundColor(getBackground(globals.background, parameters?.background));
   }
 
   return {
@@ -62,19 +81,7 @@ export function useGlobalsParameters() {
   };
 }
 
-/**
- * Converts url color param from !hex(fff) to #fff
- */
-function parseColor(c?: string) {
-  return c && c.replace(/!hex\((.+)\)/, '#$1');
-}
-
 function getGlobalParams(params: URLSearchParams) {
   const globals = params.get('globals') ?? '';
-  const map = Object.fromEntries(globals.split(';').map((pair: string) => pair.split(':')));
-
-  return {
-    backgrounds: parseColor(map['backgrounds.value']),
-    themes: map['themes.value'],
-  };
+  return Object.fromEntries(globals.split(';').map((pair: string) => pair.split(':')));
 }

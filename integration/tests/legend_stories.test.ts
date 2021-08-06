@@ -168,7 +168,7 @@ describe('Legend stories', () => {
       [Position.Bottom, Position.Right],
     ])('should correctly display %s %s', async (pos1, pos2) => {
       await common.expectChartAtUrlToMatchScreenshot(
-        `http://localhost:9001/?path=/story/legend--inside-chart&knob-Legend Position[0]=${pos1}&knob-Legend Position[1]=${pos2}&globals=themes.value:Light`,
+        `http://localhost:9001/?path=/story/legend--inside-chart&knob-Legend Position[0]=${pos1}&knob-Legend Position[1]=${pos2}&globals=theme:light`,
       );
     });
     it.each([
@@ -178,7 +178,7 @@ describe('Legend stories', () => {
       [Position.Bottom, Position.Right],
     ])('should correctly display %s %s in dark mode', async (pos1, pos2) => {
       await common.expectChartAtUrlToMatchScreenshot(
-        `http://localhost:9001/?path=/story/legend--inside-chart&knob-Legend Position[0]=${pos1}&knob-Legend Position[1]=${pos2}&globals=themes.value:Dark`,
+        `http://localhost:9001/?path=/story/legend--inside-chart&knob-Legend Position[0]=${pos1}&knob-Legend Position[1]=${pos2}&globals=theme:dark`,
       );
     });
   });

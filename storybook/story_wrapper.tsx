@@ -15,13 +15,13 @@ import { ThemeName, ThemeProvider, BackgroundProvider } from './use_base_theme';
 export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => {
   if (!Story) return <div>No Story</div>;
 
-  const themeName = context.globals?.themes?.value ?? ThemeName.Light;
-  const backgroundColor = context.globals?.backgrounds?.value;
+  const themeName = context.globals?.theme ?? ThemeName.Light;
+  const background = context.globals?.background;
   const markdown = context?.parameters?.markdown;
 
   return (
     <ThemeProvider value={themeName}>
-      <BackgroundProvider value={backgroundColor}>
+      <BackgroundProvider value={background}>
         <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
           <EuiFlexItem id="story-header" grow={false}>
             <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
@@ -43,7 +43,7 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
 
           <EuiFlexItem grow={false}>
             <div id="story-root">
-              <Story />
+              <Story {...context} />
             </div>
           </EuiFlexItem>
 
