@@ -1149,7 +1149,7 @@ export type LegendItemListener = (series: SeriesIdentifier[]) => void;
 
 // @public (undocumented)
 export interface LegendLabelOptions {
-    multiline: boolean;
+    maxLines: number;
 }
 
 // @public
@@ -1209,7 +1209,7 @@ export type LegendStrategy = $Values<typeof LegendStrategy>;
 // @public (undocumented)
 export interface LegendStyle {
     horizontalHeight: number;
-    labelOptions?: LegendLabelOptions;
+    labelOptions: LegendLabelOptions;
     margin: number;
     spacingBuffer: number;
     verticalWidth: number;
