@@ -11,6 +11,7 @@ import { $Values, isPrimitive } from 'utility-types';
 import { v1 as uuidV1 } from 'uuid';
 
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { Degrees, Radian } from '../common/geometry';
 import { AdditiveNumber } from './accessor';
 import { Point } from './point';
 
@@ -178,12 +179,8 @@ export function getColorFromVariant(seriesColor: Color, color?: Color | ColorVar
   return color || seriesColor;
 }
 
-/**
- * Converts degree to radians
- * @param angle - in degrees
- * @public
- */
-export const getRadians = (angle: number) => (angle * Math.PI) / 180;
+/** @internal */
+export const getRadians = (angle: Degrees): Radian => (angle / 180) * Math.PI;
 
 /**
  * This function returns a function to generate ids.
