@@ -16,32 +16,30 @@ import { MIN_STROKE_WIDTH } from './line';
 export function renderRect(
   ctx: CanvasRenderingContext2D,
   { x, y, width, height }: Rect,
-  fill: Fill,
+  { color, texture }: Fill,
   stroke: Stroke,
   disableBorderOffset: boolean = false,
 ) {
-  const borderWidth = disableBorderOffset || stroke.width < MIN_STROKE_WIDTH ? 0 : stroke.width;
+  const borderWidth = !disableBorderOffset && stroke.width >= MIN_STROKE_WIDTH ? stroke.width : 0;
+
   ctx.beginPath();
   ctx.rect(x + borderWidth, y + borderWidth, width - borderWidth * 2, height - borderWidth * 2);
-  ctx.fillStyle = RGBtoString(fill.color);
+  ctx.fillStyle = RGBtoString(color);
   ctx.fill();
 
-  if (fill.texture) {
-    const { texture } = fill;
-    const { offset } = texture;
-    const rotation = degToRad(texture.rotation ?? 0);
+  if (texture) {
+    const { offset, pattern, rotation } = texture;
     withContext(ctx, (ctx) => {
       ctx.clip();
 
       if (offset?.global) ctx.translate(offset.x ?? 0, offset.y ?? 0);
-      if (rotation) ctx.rotate(rotation);
+      ctx.rotate(degToRad(rotation ?? 0));
       if (offset && !offset.global) ctx.translate(offset.x ?? 0, offset.y ?? 0);
 
-      ctx.fillStyle = texture.pattern;
-
-      // Use oversized rect to fill rotation/offset beyond path
+      // Use oversize rect to fill rotation/offset beyond path
       const rotationRectFillSize = ctx.canvas.clientWidth * ctx.canvas.clientHeight;
       ctx.translate(-rotationRectFillSize / 2, -rotationRectFillSize / 2);
+      ctx.fillStyle = pattern;
       ctx.fillRect(0, 0, rotationRectFillSize, rotationRectFillSize);
     });
   }
