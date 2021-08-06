@@ -25,22 +25,16 @@ export function withPanelTransform(
   },
 ) {
   const transform = computeChartTransform(panel, rotation);
-  const left = renderingArea.left + panel.left + transform.x;
-  const top = renderingArea.top + panel.top + transform.y;
   withContext(context, (ctx) => {
-    ctx.translate(left, top);
+    ctx.translate(renderingArea.left + panel.left + transform.x, renderingArea.top + panel.top + transform.y);
     ctx.rotate(degToRad(rotation));
 
     if (clippings?.shouldClip) {
       const { x, y, width, height } = clippings.area;
-      ctx.save();
       ctx.beginPath();
       ctx.rect(x, y, width, height);
       ctx.clip();
     }
     fn(ctx);
-    if (clippings?.shouldClip) {
-      ctx.restore();
-    }
   });
 }
