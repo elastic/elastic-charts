@@ -121,7 +121,6 @@ export function getFontStyle({ fontFamily, fontStyle, fill, fontSize }: TextStyl
     fontWeight: 'bold',
     textColor: fill,
     textOpacity: 1,
-    fill,
     align: 'center',
     baseline: 'middle',
     fontSize,

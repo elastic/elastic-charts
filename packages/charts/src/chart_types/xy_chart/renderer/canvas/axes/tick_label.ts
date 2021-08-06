@@ -55,7 +55,6 @@ export function renderTickLabel(
       textColor: labelStyle.fill,
       textOpacity: 1,
       fontSize: labelStyle.fontSize,
-      fill: labelStyle.fill,
       align: tickLabelProps.horizontalAlign,
       baseline: tickLabelProps.verticalAlign,
     },

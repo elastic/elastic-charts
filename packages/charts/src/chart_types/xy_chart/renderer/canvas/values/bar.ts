@@ -52,12 +52,14 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
       width: displayValue.width,
       height: displayValue.height,
     };
+    const shadowSize = getTextBorderSize(fill);
+    const { fillColor, shadowColor } = getTextColors(fill, bars[i].color, shadowSize);
     const font: Font = {
       fontFamily,
       fontStyle: fontStyle ?? 'normal',
       fontVariant: 'normal',
       fontWeight: 'normal',
-      textColor: 'black',
+      textColor: fillColor,
       textOpacity: 1,
     };
 
@@ -86,8 +88,6 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     }
     const { width, height } = textLines;
     const linesLength = textLines.lines.length;
-    const shadowSize = getTextBorderSize(fill);
-    const { fillColor, shadowColor } = getTextColors(fill, bars[i].color, shadowSize);
 
     for (let j = 0; j < linesLength; j++) {
       const textLine = textLines.lines[j];
@@ -99,7 +99,6 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
           textLine,
           {
             ...font,
-            fill: fillColor,
             fontSize,
             align,
             baseline,

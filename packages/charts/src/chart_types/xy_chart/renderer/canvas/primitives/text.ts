@@ -12,7 +12,6 @@ import { Point } from '../../../../../utils/point';
 
 /** @internal */
 export type TextFont = Font & {
-  fill: string;
   fontSize: number;
   align: TextAlign;
   baseline: TextBaseline;
@@ -31,7 +30,7 @@ export function renderText(
   scale: number = 1,
 ) {
   withRotatedOrigin(ctx, origin, degree, (ctx) => {
-    ctx.fillStyle = font.fill;
+    ctx.fillStyle = font.textColor;
     ctx.textAlign = font.align;
     ctx.textBaseline = font.baseline;
     ctx.font = cssFontShorthand(font, font.fontSize);
