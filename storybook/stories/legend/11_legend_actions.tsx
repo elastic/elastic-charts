@@ -20,7 +20,7 @@ import {
   EuiFlexItem,
   EuiButtonIcon,
 } from '@elastic/eui';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
 
 import {
@@ -33,6 +33,7 @@ import {
   LegendAction,
   XYChartSeriesIdentifier,
   LegendColorPicker,
+  LegendLabelOptions,
 } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
@@ -159,17 +160,27 @@ export const renderEuiColorPicker = (anchorPosition: PopoverAnchorPosition): Leg
   </EuiWrappingPopover>
 );
 
+const getLabelOptionKnobs = (): LegendLabelOptions => {
+  const group = 'Label options';
+
+  return {
+    maxLines: number('max label lines', 1, { min: 0, step: 1 }, group),
+  };
+};
+
 export const Example = () => {
-  const hideActions = boolean('Hide legend action', false);
-  const showLegendExtra = !boolean('Hide legend extra', false);
-  const showColorPicker = !boolean('Hide color picker', true);
-  const legendPosition = getPositionKnob('Legend position');
-  const euiPopoverPosition = getEuiPopoverPositionKnob();
+  const hideActions = boolean('Hide legend action', false, 'Legend');
+  const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
+  const showColorPicker = !boolean('Hide color picker', true, 'Legend');
+  const legendPosition = getPositionKnob('Legend position', undefined, 'Legend');
+  const euiPopoverPosition = getEuiPopoverPositionKnob(undefined, undefined, 'Legend');
+  const labelOptions = getLabelOptionKnobs();
 
   return (
     <Chart>
       <Settings
         showLegend
+        theme={{ legend: { labelOptions } }}
         baseTheme={useBaseTheme()}
         showLegendExtra={showLegendExtra}
         legendPosition={legendPosition}

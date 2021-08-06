@@ -46,8 +46,7 @@
   }
 
   &__label {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
+    hyphens: auto;
     min-width: 1px;
     flex: 1 1 auto;
   }
