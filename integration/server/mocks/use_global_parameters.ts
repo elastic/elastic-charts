@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 import { BackgroundParameter } from '../../../storybook/node_modules/storybook-addon-background-toggle';
 import { ThemeParameter } from '../../../storybook/node_modules/storybook-addon-theme-toggle';
-import { parameters } from '../../../storybook/preview';
+import { parameters as globalParams } from '../../../storybook/preview';
 import { ThemeName } from '../../../storybook/use_base_theme';
 
 interface Globals {
@@ -19,13 +19,9 @@ interface Globals {
 }
 
 type Parameters = BackgroundParameter & ThemeParameter;
-interface WithParameters {
-  parameters?: Parameters;
-  (): JSX.Element;
-}
 
-const themeParams = parameters.theme!;
-const backgroundParams = parameters.background!;
+const themeParams = globalParams.theme!;
+const backgroundParams = globalParams.background!;
 
 const combineClasses = (classes: string | string[]) => (typeof classes === 'string' ? [classes] : classes);
 const getThemeAllClasses = ({ themes }: Required<ThemeParameter>['theme']) =>
@@ -67,7 +63,7 @@ export function useGlobalsParameters() {
   /**
    * Handles setting global context values. Stub for theme and background addons
    */
-  function setParams<T extends WithParameters>({ parameters }: T, params: URLSearchParams) {
+  function setParams(params: URLSearchParams, parameters?: Parameters) {
     const globals = getGlobalParams(params) as Globals;
     const themeId = globals.theme ?? parameters?.theme?.default ?? themeParams.default ?? ThemeName.Light;
     const backgroundId = globals.background ?? parameters?.background?.default ?? backgroundParams.default;

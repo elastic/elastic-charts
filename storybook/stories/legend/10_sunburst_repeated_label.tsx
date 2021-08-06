@@ -57,6 +57,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  backgrounds: { default: 'white' },
+  background: { default: 'white' },
   markdown: `Nested legend with reused node labels means that they can reoccur in various points of the legend tree.`,
 };
