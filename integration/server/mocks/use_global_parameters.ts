@@ -10,6 +10,7 @@ import { useState } from 'react';
 
 import { BackgroundParameter } from '../../../storybook/node_modules/storybook-addon-background-toggle';
 import { ThemeParameter } from '../../../storybook/node_modules/storybook-addon-theme-toggle';
+import { parameters } from '../../../storybook/preview';
 import { ThemeName } from '../../../storybook/use_base_theme';
 
 interface Globals {
@@ -23,6 +24,9 @@ interface WithParameters {
   (): JSX.Element;
 }
 
+const themeParams = parameters.theme!;
+const backgroundParams = parameters.background!;
+
 const combineClasses = (classes: string | string[]) => (typeof classes === 'string' ? [classes] : classes);
 const getThemeAllClasses = ({ themes }: Required<ThemeParameter>['theme']) =>
   themes.reduce<string[]>((acc, t) => {
@@ -32,9 +36,7 @@ const getThemeAllClasses = ({ themes }: Required<ThemeParameter>['theme']) =>
 const getTargetSelector = ({ selector }: Required<ThemeParameter>['theme']) =>
   (Array.isArray(selector) ? selector.join(', ') : selector) ?? 'body';
 
-function setTheme(themeId: string, themeParams?: ThemeParameter['theme']) {
-  if (!themeParams) return;
-
+function setTheme(themeId: string) {
   const theme = themeParams.themes.find((t) => t.id === themeId);
   const selector = getTargetSelector(themeParams);
   const targets = selector ? document.querySelectorAll<HTMLElement>(selector) : null;
@@ -50,11 +52,10 @@ function setTheme(themeId: string, themeParams?: ThemeParameter['theme']) {
   }
 }
 
-function getBackground(backgroundId?: string, background?: BackgroundParameter['background']) {
-  if (!backgroundId || !background) return '';
+function getBackground(backgroundId?: string) {
+  if (!backgroundId) return '';
 
-  const id = backgroundId ?? background?.default;
-  const option = (background?.options ?? []).find((c) => c.id === id);
+  const option = (backgroundParams.options ?? []).find(({ id }) => id === backgroundId);
 
   return option ? option.background ?? option.color : '';
 }
@@ -68,10 +69,11 @@ export function useGlobalsParameters() {
    */
   function setParams<T extends WithParameters>({ parameters }: T, params: URLSearchParams) {
     const globals = getGlobalParams(params) as Globals;
-    const newThemeName = globals.theme ?? ThemeName.Light;
-    setThemeName(newThemeName);
-    setTheme(newThemeName, parameters?.theme);
-    setBackgroundColor(getBackground(globals.background, parameters?.background));
+    const themeId = globals.theme ?? parameters?.theme?.default ?? themeParams.default ?? ThemeName.Light;
+    const backgroundId = globals.background ?? parameters?.background?.default ?? backgroundParams.default;
+    setThemeName(themeId);
+    setTheme(themeId);
+    setBackgroundColor(getBackground(backgroundId));
   }
 
   return {
