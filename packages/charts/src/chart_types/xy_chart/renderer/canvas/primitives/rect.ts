@@ -10,6 +10,7 @@ import { RGBtoString } from '../../../../../common/color_library_wrappers';
 import { Rect, Fill, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
 import { degToRad } from '../../../../../utils/common';
+import { MIN_STROKE_WIDTH } from './line';
 
 /** @internal */
 export function renderRect(
@@ -33,11 +34,10 @@ export function renderRect(
 
     if (fill.texture) {
       const { texture } = fill;
+      const { offset } = texture;
+      const rotation = degToRad(texture.rotation ?? 0);
       withContext(ctx, (ctx) => {
         ctx.clip();
-
-        const rotation = degToRad(texture.rotation ?? 0);
-        const { offset } = texture;
 
         if (offset?.global) ctx.translate(offset.x ?? 0, offset.y ?? 0);
         if (rotation) ctx.rotate(rotation);
@@ -53,8 +53,8 @@ export function renderRect(
     }
   }
 
-  if (stroke && stroke.width > 0.001) {
-    const borderOffset = !disableBoardOffset && stroke && stroke.width > 0.001 ? stroke.width / 2 : 0;
+  if (stroke && stroke.width > MIN_STROKE_WIDTH) {
+    const borderOffset = disableBoardOffset ? 0 : stroke.width / 2;
     const x = rect.x + borderOffset;
     const y = rect.y + borderOffset;
     const width = rect.width - borderOffset * 2;
@@ -64,13 +64,7 @@ export function renderRect(
     ctx.lineWidth = stroke.width;
     ctx.beginPath();
     ctx.rect(x, y, width, height);
-    if (stroke.dash) {
-      ctx.setLineDash(stroke.dash);
-    } else {
-      // Setting linecap with dash causes solid line
-      ctx.lineCap = 'square';
-    }
-
+    ctx.setLineDash(stroke.dash ?? []); // no dash if stroke.dash is undefined
     ctx.stroke();
   }
 }
