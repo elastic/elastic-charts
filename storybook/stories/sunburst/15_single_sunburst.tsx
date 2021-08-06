@@ -85,5 +85,5 @@ export const Example = () => (
 );
 
 Example.parameters = {
-  backgrounds: { default: 'White' },
+  background: { default: 'white' },
 };
