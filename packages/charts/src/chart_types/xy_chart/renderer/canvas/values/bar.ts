@@ -92,24 +92,9 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     for (let j = 0; j < linesLength; j++) {
       const textLine = textLines.lines[j];
       const origin = repositionTextLine({ x, y }, rotation, j, linesLength, { height, width });
+      const fontAugment = { fontSize, align, baseline, shadow: shadowColor, shadowSize };
       withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
-        renderText(
-          ctx,
-          origin,
-          textLine,
-          {
-            ...font,
-            fontSize,
-            align,
-            baseline,
-            shadow: shadowColor,
-            shadowSize,
-          },
-          -rotation,
-          0,
-          0,
-          fontScale,
-        );
+        renderText(ctx, origin, textLine, { ...font, ...fontAugment }, -rotation, 0, 0, fontScale);
       });
     }
   }
