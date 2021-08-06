@@ -189,7 +189,7 @@ describe('Legend stories', () => {
       [Position.Bottom, Position.Left],
       [Position.Bottom, Position.Right],
     ])('should correctly display %s %s', async (p1, p2) => {
-      await common.expectChartAtUrlToMatchScreenshot(getPositionalUrl(p1, p2, '&globals=themes.value:Light'));
+      await common.expectChartAtUrlToMatchScreenshot(getPositionalUrl(p1, p2, '&globals=theme.value:light'));
     });
 
     it.each([
@@ -198,7 +198,7 @@ describe('Legend stories', () => {
       [Position.Bottom, Position.Left],
       [Position.Bottom, Position.Right],
     ])('should correctly display %s %s in dark mode', async (p1, p2) => {
-      await common.expectChartAtUrlToMatchScreenshot(getPositionalUrl(p1, p2, '&globals=themes.value:Dark'));
+      await common.expectChartAtUrlToMatchScreenshot(getPositionalUrl(p1, p2, '&globals=theme.value:dark'));
     });
 
     const longLabel =
