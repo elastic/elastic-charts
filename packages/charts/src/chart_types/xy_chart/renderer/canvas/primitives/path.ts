@@ -55,17 +55,13 @@ export function renderAreaPath(
   hideClippedRanges = false,
 ) {
   if (clippedRanges.length === 0) {
-    withContext(ctx, (ctx) => {
-      renderPathFill(ctx, area, fill, transform);
-    });
+    withContext(ctx, (ctx) => renderPathFill(ctx, area, fill, transform));
   } else {
-    withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
-      renderPathFill(ctx, area, fill, transform);
-    });
+    withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => renderPathFill(ctx, area, fill, transform));
     if (!hideClippedRanges) {
-      withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
-        renderPathFill(ctx, area, { ...fill, color: { ...fill.color, opacity: fill.color.opacity / 2 } }, transform);
-      });
+      withClipRanges(ctx, clippedRanges, clippings, true, (ctx) =>
+        renderPathFill(ctx, area, { ...fill, color: { ...fill.color, opacity: fill.color.opacity / 2 } }, transform),
+      );
     }
   }
 }
