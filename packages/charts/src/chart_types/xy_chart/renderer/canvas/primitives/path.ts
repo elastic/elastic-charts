@@ -7,8 +7,8 @@
  */
 
 import { RGBtoString } from '../../../../../common/color_library_wrappers';
-import { Rect, Stroke, Fill } from '../../../../../geoms/types';
-import { withContext, withClipRanges } from '../../../../../renderers/canvas';
+import { Fill, Rect, Stroke } from '../../../../../geoms/types';
+import { withClipRanges, withContext } from '../../../../../renderers/canvas';
 import { ClippedRanges } from '../../../../../utils/geometry';
 import { Point } from '../../../../../utils/point';
 import { renderMultiLine } from './line';
@@ -58,28 +58,22 @@ export function renderAreaPath(
     withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
       renderPathFill(ctx, area, fill, transform);
     });
-    if (hideClippedRanges) {
-      return;
+    if (!hideClippedRanges) {
+      withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
+        renderPathFill(ctx, area, { ...fill, color: { ...fill.color, opacity: fill.color.opacity / 2 } }, transform);
+      });
     }
-    withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
-      const { opacity } = fill.color;
-      const color = {
-        ...fill.color,
-        opacity: opacity / 2,
-      };
-      renderPathFill(ctx, area, { ...fill, color }, transform);
+  } else {
+    withContext(ctx, (ctx) => {
+      renderPathFill(ctx, area, fill, transform);
     });
-    return;
   }
-  withContext(ctx, (ctx) => {
-    renderPathFill(ctx, area, fill, transform);
-  });
 }
 
 function renderPathFill(ctx: CanvasRenderingContext2D, path: string, fill: Fill, { x, y }: Point) {
+  ctx.translate(x, y);
   const path2d = new Path2D(path);
   ctx.fillStyle = RGBtoString(fill.color);
-  ctx.translate(x, y);
   ctx.fill(path2d);
 
   if (fill.texture) {
