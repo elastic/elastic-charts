@@ -54,7 +54,11 @@ export function renderAreaPath(
   clippings: Rect,
   hideClippedRanges = false,
 ) {
-  if (clippedRanges.length > 0) {
+  if (clippedRanges.length === 0) {
+    withContext(ctx, (ctx) => {
+      renderPathFill(ctx, area, fill, transform);
+    });
+  } else {
     withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
       renderPathFill(ctx, area, fill, transform);
     });
@@ -63,10 +67,6 @@ export function renderAreaPath(
         renderPathFill(ctx, area, { ...fill, color: { ...fill.color, opacity: fill.color.opacity / 2 } }, transform);
       });
     }
-  } else {
-    withContext(ctx, (ctx) => {
-      renderPathFill(ctx, area, fill, transform);
-    });
   }
 }
 
