@@ -56,32 +56,30 @@ export function renderAreaPath(
 ) {
   if (clippedRanges.length > 0) {
     withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
-      ctx.translate(transform.x, transform.y);
-      renderPathFill(ctx, area, fill);
+      renderPathFill(ctx, area, fill, transform);
     });
     if (hideClippedRanges) {
       return;
     }
     withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
-      ctx.translate(transform.x, transform.y);
       const { opacity } = fill.color;
       const color = {
         ...fill.color,
         opacity: opacity / 2,
       };
-      renderPathFill(ctx, area, { ...fill, color });
+      renderPathFill(ctx, area, { ...fill, color }, transform);
     });
     return;
   }
   withContext(ctx, (ctx) => {
-    ctx.translate(transform.x, transform.y);
-    renderPathFill(ctx, area, fill);
+    renderPathFill(ctx, area, fill, transform);
   });
 }
 
-function renderPathFill(ctx: CanvasRenderingContext2D, path: string, fill: Fill) {
+function renderPathFill(ctx: CanvasRenderingContext2D, path: string, fill: Fill, { x, y }: Point) {
   const path2d = new Path2D(path);
   ctx.fillStyle = RGBtoString(fill.color);
+  ctx.translate(x, y);
   ctx.fill(path2d);
 
   if (fill.texture) {
