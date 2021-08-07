@@ -8,7 +8,7 @@
 
 import { OpacityFn } from '../../../common/color_library_wrappers';
 import { Texture } from '../../../geoms/types';
-import { Color, ColorVariant, getColorFromVariant, degToRad } from '../../../utils/common';
+import { Color, ColorVariant, degToRad, getColorFromVariant } from '../../../utils/common';
 import { Point } from '../../../utils/point';
 import { TexturedStyles, TextureShape } from '../../../utils/themes/theme';
 import { TextureRendererFn } from '../renderer/shapes_paths';
@@ -41,9 +41,9 @@ function createPattern(
   baseColor: Color | ColorVariant,
   fillOpacity: OpacityFn,
   textureStyle?: TexturedStyles,
-): CanvasPattern | undefined {
+): CanvasPattern | null {
   const pCtx = patternCanvas.getContext('2d');
-  if (!textureStyle || !pCtx) return;
+  if (!textureStyle || !pCtx) return null;
 
   const { size = 10, stroke, strokeWidth = 1, opacity, shapeRotation, fill, dash } = textureStyle;
 
@@ -62,12 +62,12 @@ function createPattern(
   if (fill) pCtx.fillStyle = getColorFromVariant(baseColor, fill);
 
   const [path, pathRotation] = getPath(textureStyle, size, strokeWidth);
-  const rotation = (shapeRotation ?? 0) + pathRotation;
+  const itemRotation = (shapeRotation ?? 0) + pathRotation;
 
   pCtx.scale(dpi, dpi);
   pCtx.translate(cssWidth / 2, cssHeight / 2);
 
-  if (rotation) pCtx.rotate(degToRad(rotation));
+  if (itemRotation) pCtx.rotate(degToRad(itemRotation));
 
   pCtx.beginPath();
 
@@ -76,7 +76,16 @@ function createPattern(
     if (fill) pCtx.fill(path);
   }
 
-  return ctx.createPattern(patternCanvas, 'repeat') ?? undefined;
+  const pattern = ctx.createPattern(patternCanvas, 'repeat')!; // HTMLCanvasElement always yields a CanvasPattern anyway
+
+  const { offset, rotation } = textureStyle;
+  const matrix = new DOMMatrix([1 / dpi, 0, 0, 1 / dpi, 0, 0]);
+  if (offset?.global) matrix.translateSelf(offset.x ?? 0, offset.y ?? 0);
+  matrix.rotateSelf(rotation ?? 0);
+  if (offset && !offset.global) matrix.translateSelf(offset.x ?? 0, offset.y ?? 0);
+
+  pattern.setTransform(matrix);
+  return pattern;
 }
 
 /** @internal */
@@ -92,8 +101,6 @@ export const getTextureStyles = (
 
   if (!pattern || !texture) return;
 
-  const scale = 1 / dpi;
-  pattern.setTransform(new DOMMatrix([scale, 0, 0, scale, 0, 0]));
   const { rotation, offset } = texture;
 
   return {

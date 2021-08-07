@@ -24,6 +24,7 @@ import { Dimensions } from '../../utils/dimensions';
 interface OwnProps {
   fillColor?: RgbObject;
 }
+
 interface StateProps {
   initialized: boolean;
   mainProjectionArea: Dimensions;
