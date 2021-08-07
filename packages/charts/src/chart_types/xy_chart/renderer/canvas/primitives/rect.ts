@@ -25,6 +25,7 @@ export function renderRect(
     ctx.beginPath();
     ctx.rect(x + borderOffset / 2, y + borderOffset / 2, width - borderOffset, height - borderOffset);
     ctx.setLineDash(stroke.dash ?? []); // no dash if stroke.dash is undefined
+    ctx.lineCap = stroke.dash?.length ? 'butt' : 'square';
     ctx.stroke();
   }
 
