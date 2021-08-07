@@ -18,18 +18,18 @@ export function renderRect(
   stroke: Stroke,
   disableBorderOffset: boolean = false,
 ) {
-  const borderWidth = !disableBorderOffset && stroke.width >= MIN_STROKE_WIDTH ? stroke.width : 0;
+  const borderOffset = !disableBorderOffset && stroke.width >= MIN_STROKE_WIDTH ? stroke.width : 0;
   if (stroke.width >= MIN_STROKE_WIDTH) {
     ctx.strokeStyle = RGBtoString(stroke.color);
     ctx.lineWidth = stroke.width;
     ctx.beginPath();
-    ctx.rect(x + borderWidth / 2, y + borderWidth / 2, width - borderWidth, height - borderWidth);
+    ctx.rect(x + borderOffset / 2, y + borderOffset / 2, width - borderOffset, height - borderOffset);
     ctx.setLineDash(stroke.dash ?? []); // no dash if stroke.dash is undefined
     ctx.stroke();
   }
 
   ctx.beginPath();
-  ctx.rect(x + borderWidth, y + borderWidth, width - borderWidth * 2, height - borderWidth * 2);
+  ctx.rect(x + borderOffset, y + borderOffset, width - borderOffset * 2, height - borderOffset * 2);
   ctx.fillStyle = RGBtoString(color);
   ctx.fill();
 
