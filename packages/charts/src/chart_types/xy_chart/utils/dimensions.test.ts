@@ -62,6 +62,9 @@ describe('Computed chart dimensions', () => {
     horizontalHeight: 10,
     spacingBuffer: 10,
     margin: 0,
+    labelOptions: {
+      maxLines: 1,
+    },
   };
   const defaultTheme = LIGHT_THEME;
   const chartTheme = {

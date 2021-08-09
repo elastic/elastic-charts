@@ -101,7 +101,7 @@ export const getKnobsFromEnum = <T extends SelectTypeKnobValue, O extends Record
     group,
   ) || undefined;
 
-export const getPositionKnob = (name = 'chartRotation', defaultValue: Position = Position.Right) =>
+export const getPositionKnob = (name = 'chartRotation', defaultValue: Position = Position.Right, group?: string) =>
   select<Position>(
     name,
     {
@@ -111,6 +111,7 @@ export const getPositionKnob = (name = 'chartRotation', defaultValue: Position =
       Bottom: Position.Bottom,
     },
     defaultValue,
+    group,
   );
 
 export const getPlacementKnob = (name = 'placement', defaultValue?: Placement, groupId?: string) => {
@@ -158,6 +159,7 @@ export const getStickToKnob = (name = 'stickTo', defaultValue = TooltipStickTo.M
 export const getEuiPopoverPositionKnob = (
   name = 'Popover position',
   defaultValue: PopoverAnchorPosition = 'leftCenter',
+  group?: string,
 ) =>
   select<PopoverAnchorPosition>(
     name,
@@ -176,6 +178,7 @@ export const getEuiPopoverPositionKnob = (
       rightDown: 'rightDown',
     },
     defaultValue,
+    group,
   );
 
 export function arrayKnobs(name: string, values: (string | number)[]): (string | number)[] {

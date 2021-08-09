@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { number } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PartialTheme } from '@elastic/charts';
@@ -17,8 +17,12 @@ export const Example = () => {
   const theme: PartialTheme = {
     legend: {
       spacingBuffer: number('legend buffer value', 80),
+      labelOptions: {
+        maxLines: number('max legend label lines', 0, { min: 0, step: 1 }),
+      },
     },
   };
+  const longLabels = boolean('use long labels', false);
 
   return (
     <Chart>
@@ -27,7 +31,7 @@ export const Example = () => {
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id="bars 1"
+        id={longLabels ? 'Elit exercitation dolore fugiat aliquip Lorem commodo' : 'bars 1'}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -40,7 +44,11 @@ export const Example = () => {
         ]}
       />
       <BarSeries
-        id="bars 2"
+        id={
+          longLabels
+            ? 'Laborum consectetur ut esse aute sunt adipisicing laboris reprehenderit eu officia labore in laborum'
+            : 'bars 2'
+        }
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"

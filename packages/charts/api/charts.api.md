@@ -1147,6 +1147,11 @@ export interface LegendColorPickerProps {
 // @public (undocumented)
 export type LegendItemListener = (series: SeriesIdentifier[]) => void;
 
+// @public (undocumented)
+export interface LegendLabelOptions {
+    maxLines: number;
+}
+
 // @public
 export type LegendPath = LegendPathElement[];
 
@@ -1204,6 +1209,7 @@ export type LegendStrategy = $Values<typeof LegendStrategy>;
 // @public (undocumented)
 export interface LegendStyle {
     horizontalHeight: number;
+    labelOptions: LegendLabelOptions;
     margin: number;
     spacingBuffer: number;
     verticalWidth: number;

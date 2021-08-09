@@ -10,6 +10,7 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { Rectangle } from '../../../../common/geometry';
 import { GoalSemanticDescription, ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -21,9 +22,10 @@ import {
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { BandViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { Mark } from '../../layout/viewmodel/geoms';
+import { initialBoundingBox, Mark } from '../../layout/viewmodel/geoms';
 import { geometries, getPrimitiveGeoms } from '../../state/selectors/geometries';
 import { getFirstTickValueSelector, getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
+import { getCaptureBoundingBox } from '../../state/selectors/picked_shapes';
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
@@ -34,6 +36,7 @@ interface ReactiveChartStateProps {
   a11ySettings: A11ySettings;
   bandLabels: BandViewModel[];
   firstValue: number;
+  captureBoundingBox: Rectangle;
 }
 
 interface ReactiveChartDispatchProps {
@@ -89,6 +92,7 @@ class Component extends React.Component<Props> {
       chartContainerDimensions: { width, height },
       forwardStageRef,
       geometries,
+      captureBoundingBox: capture,
     } = this.props;
     if (!forwardStageRef.current || !this.ctx || !initialized || width === 0 || height === 0) {
       return;
@@ -96,9 +100,11 @@ class Component extends React.Component<Props> {
     const picker = geometries.pickQuads;
     const box = forwardStageRef.current.getBoundingClientRect();
     const { chartCenter } = geometries;
-    const x = e.clientX - box.left - chartCenter.x;
-    const y = e.clientY - box.top - chartCenter.y;
-    return picker(x, y);
+    const x = e.clientX - box.left;
+    const y = e.clientY - box.top;
+    if (capture.x0 <= x && x <= capture.x1 && capture.y0 <= y && y <= capture.y1) {
+      return picker(x - chartCenter.x, y - chartCenter.y);
+    }
   }
 
   render() {
@@ -168,6 +174,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   bandLabels: [],
   firstValue: 0,
+  captureBoundingBox: initialBoundingBox(),
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -182,6 +189,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     bandLabels: getGoalChartSemanticDataSelector(state),
     firstValue: getFirstTickValueSelector(state),
     geoms: getPrimitiveGeoms(state),
+    captureBoundingBox: getCaptureBoundingBox(state),
   };
 };
 
