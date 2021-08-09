@@ -18,10 +18,10 @@ import { mergePartial } from '@elastic/charts/src/utils/common';
  * @internal
  */
 export const ThemeName = Object.freeze({
-  Light: 'Light' as const,
-  Dark: 'Dark' as const,
-  EUILight: 'EUI Light' as const,
-  EUIDark: 'EUI Dark' as const,
+  Light: 'light' as const,
+  Dark: 'dark' as const,
+  EUILight: 'eui-light' as const,
+  EUIDark: 'eui-dark' as const,
 });
 /** @internal */
 export type ThemeName = $Values<typeof ThemeName>;

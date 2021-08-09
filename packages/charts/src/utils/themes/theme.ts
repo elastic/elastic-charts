@@ -199,6 +199,19 @@ export interface BackgroundStyle {
    */
   color: string;
 }
+
+/** @public */
+export interface LegendLabelOptions {
+  /**
+   * Sets maxlines allowable before truncating
+   *
+   * Setting value to `0` will _never_ truncate the text
+   *
+   * @defaultValue 1
+   */
+  maxLines: number;
+}
+
 /** @public */
 export interface LegendStyle {
   /**
@@ -225,6 +238,10 @@ export interface LegendStyle {
    * TODO: make SimplePadding when after axis changes are added
    */
   margin: number;
+  /**
+   * Options to control legend labels
+   */
+  labelOptions: LegendLabelOptions;
 }
 /** @public */
 export interface Theme {

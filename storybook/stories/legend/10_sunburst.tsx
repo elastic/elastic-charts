@@ -39,7 +39,8 @@ export const Example = () => {
     max: 3,
     step: 1,
   });
-  const legendStrategy = select('legendStrategy', LegendStrategy, LegendStrategy.Key);
+  const legendStrategy = select('legendStrategy', LegendStrategy, LegendStrategy.Key as LegendStrategy);
+  const maxLines = number('max legend label lines', 1, { min: 0, step: 1 });
 
   return (
     <Chart>
@@ -50,6 +51,7 @@ export const Example = () => {
         legendStrategy={legendStrategy}
         legendMaxDepth={legendMaxDepth}
         baseTheme={useBaseTheme()}
+        theme={{ legend: { labelOptions: { maxLines } } }}
       />
       <Partition
         id="spec_1"
@@ -112,7 +114,7 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  backgrounds: { default: 'White' },
+  background: { default: 'white' },
   markdown: `To flatten a hierarchical legend (like the rendered in a pie chart or a treemap when using a multi-layer configuration) you can
 add the \`flatLegend\` prop into the \`<Settings  baseTheme={useBaseTheme()} />\` component.
 
