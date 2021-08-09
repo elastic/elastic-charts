@@ -6,13 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { TextMeasure } from '../../../../common/text_utils';
 import { GoalSpec } from '../../specs';
 import { Config } from '../types/config_types';
 import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
 
 /** @internal */
-export function shapeViewModel(textMeasure: TextMeasure, spec: GoalSpec, config: Config): ShapeViewModel {
+export function shapeViewModel(spec: GoalSpec, config: Config): ShapeViewModel {
   const { width, height, margin } = config;
 
   const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));

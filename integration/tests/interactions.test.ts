@@ -366,6 +366,7 @@ describe('Interactions', () => {
         { left: 282, top: 80 },
         {
           screenshotSelector: '#story-root',
+          delay: 1000,
         },
       );
     });

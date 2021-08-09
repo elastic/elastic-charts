@@ -1,3 +1,17 @@
+# [33.2.0](https://github.com/elastic/elastic-charts/compare/v33.1.0...v33.2.0) (2021-08-06)
+
+
+### Bug Fixes
+
+* heatmap snap domain to interval ([#1253](https://github.com/elastic/elastic-charts/issues/1253)) ([b439182](https://github.com/elastic/elastic-charts/commit/b4391821045c95ff2cb2ef6a33b925034eeba98d)), closes [#1165](https://github.com/elastic/elastic-charts/issues/1165)
+* hex colors to allow alpha channel ([#1274](https://github.com/elastic/elastic-charts/issues/1274)) ([03b4f42](https://github.com/elastic/elastic-charts/commit/03b4f425781faa6df83c82f48e9635d418958ef4))
+
+
+### Features
+
+* **bullet:** the tooltip shows up around the drawn part of the chart only ([#1278](https://github.com/elastic/elastic-charts/issues/1278)) ([a96cbb4](https://github.com/elastic/elastic-charts/commit/a96cbb44feefc5e7ccfa249b8aecdfab81249fdd))
+* **legend:** multiline labels with maxLines option ([#1285](https://github.com/elastic/elastic-charts/issues/1285)) ([e0eb096](https://github.com/elastic/elastic-charts/commit/e0eb096aa41fb8ba24b4e397b7fe0a0ecbd2cfcd))
+
 # [33.1.0](https://github.com/elastic/elastic-charts/compare/v33.0.2...v33.1.0) (2021-07-28)
 
 

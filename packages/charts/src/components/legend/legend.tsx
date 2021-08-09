@@ -103,6 +103,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     toggleDeselectSeriesAction: props.onToggleDeselectSeriesAction,
     colorPicker: config.legendColorPicker,
     action: config.legendAction,
+    labelOptions: legend.labelOptions,
   };
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
   return (

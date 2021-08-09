@@ -52,6 +52,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  themes: { default: 'Dark' },
+  theme: { default: 'dark' },
   backgrounds: { disable: true },
 };
