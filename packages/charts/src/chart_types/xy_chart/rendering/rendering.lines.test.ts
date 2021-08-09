@@ -8,6 +8,7 @@
 
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
+import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { Position } from '../../../utils/common';
 import { PointGeometry } from '../../../utils/geometry';
@@ -425,6 +426,53 @@ describe('Rendering points - line', () => {
       // will keep the 3rd point as an indexedGeometry
       expect(geometriesIndex.size).toEqual(3);
       expect(points).toMatchSnapshot();
+    });
+  });
+
+  describe('polarity', () => {
+    let polarity = 1;
+    let points: PointGeometry[] = [];
+    let yScaleType: ScaleContinuousType = ScaleType.Linear;
+
+    beforeEach(() => {
+      const pointSeriesSpec = MockSeriesSpec.line({
+        id: SPEC_ID,
+        data: [
+          { x: 1, y: 0 },
+          { x: 2, y: 0 },
+          { x: 3, y: polarity },
+          { x: 4, y: 0 },
+        ],
+        xScaleType: ScaleType.Linear,
+        yScaleType,
+      });
+      const axis = MockGlobalSpec.axis({ position: Position.Left });
+      const store = MockStore.default();
+      MockStore.addSpecs([pointSeriesSpec, axis], store);
+      // eslint-disable-next-line prefer-destructuring
+      points = computeSeriesGeometriesSelector(store.getState()).geometries.lines[0].value.points;
+    });
+
+    describe.each([
+      ['positive', 1],
+      ['negative', -1],
+    ])('%s', (_, pol) => {
+      beforeAll(() => {
+        polarity = pol;
+      });
+
+      describe.each([ScaleType.Linear, ScaleType.Log])('%s', (scaleType) => {
+        beforeAll(() => {
+          yScaleType = scaleType;
+        });
+
+        test('should render correct number of points', () => {
+          const isLog = scaleType === ScaleType.Log;
+
+          expect(points.length).toBe(isLog ? 1 : 4);
+          expect(points).toMatchSnapshot();
+        });
+      });
     });
   });
 });
