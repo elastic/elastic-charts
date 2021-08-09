@@ -24,11 +24,11 @@ export const Example = () => {
     },
     ScaleType.Linear,
   );
-  const now = moment();
+  const start = moment(1628547917775);
   const data = new Array(12).fill(0).map((_, i) => {
     return {
       y: i === 10 ? (negative ? -1 : 1) : 0,
-      x: now.add(1, 'm').valueOf(),
+      x: start.add(1, 'm').valueOf(),
     };
   });
   return (
