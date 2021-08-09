@@ -7,7 +7,7 @@
  */
 
 import { stringToRGB, OpacityFn } from '../../../../../common/color_library_wrappers';
-import { Stroke, Fill } from '../../../../../geoms/types';
+import { Stroke, Fill, Rect } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
 import { GeometryStateStyle, RectStyle, RectBorderStyle } from '../../../../../utils/themes/theme';
 import { getTextureStyles } from '../../../utils/texture';
@@ -31,6 +31,7 @@ export function buildBarStyles(
   themeRectStyle: RectStyle,
   themeRectBorderStyle: RectBorderStyle,
   geometryStateStyle: GeometryStateStyle,
+  rect: Rect,
 ): { fill: Fill; stroke: Stroke } {
   const fillOpacity: OpacityFn = (opacity, seriesOpacity = themeRectStyle.opacity) =>
     opacity * seriesOpacity * geometryStateStyle.opacity;
@@ -47,7 +48,10 @@ export function buildBarStyles(
   const strokeColor = stringToRGB(getColorFromVariant(baseColor, themeRectBorderStyle.stroke), strokeOpacity);
   const stroke: Stroke = {
     color: strokeColor,
-    width: themeRectBorderStyle.visible ? themeRectBorderStyle.strokeWidth : 0,
+    width:
+      themeRectBorderStyle.visible && rect.height > themeRectBorderStyle.strokeWidth
+        ? themeRectBorderStyle.strokeWidth
+        : 0,
   };
   return { fill, stroke };
 }
