@@ -100,10 +100,11 @@ export const getLegendSizeSelector = createCustomCachedSelector(
     }
 
     // top or bottom legend
-    const isSingleLine = (parentDimensions.width - 20) / verticalWidth > labels.length;
+    const width = Math.floor(Math.min(legendItemWidth + spacingBuffer + actionDimension, verticalWidth));
+    const isSingleLine = (parentDimensions.width - 20) / width > labels.length;
     return {
       height: isSingleLine ? bbox.height + 16 : bbox.height * 2 + 24,
-      width: Math.floor(Math.min(legendItemWidth + spacingBuffer + actionDimension, verticalWidth)),
+      width,
       margin,
       position: legendPosition,
     };

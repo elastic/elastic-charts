@@ -5,7 +5,6 @@
   }
   &--horizontal {
     .echLegendList {
-      grid-column-gap: $echLegendColumnGap;
       grid-row-gap: $echLegendRowGap;
       margin-top: $echLegendRowGap;
       margin-bottom: $echLegendRowGap;
