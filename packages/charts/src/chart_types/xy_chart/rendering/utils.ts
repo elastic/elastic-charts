@@ -153,6 +153,15 @@ export function isPointOnGeometry(
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
 }
 
+const getScaleTypeValueValidator = (yScale: Scale): ((n: number) => boolean) => {
+  if (!isLogarithmicScale(yScale)) return () => true;
+
+  const domainPolarity = getDomainPolarity(yScale.domain);
+  return (yValue: number) => {
+    return !((domainPolarity >= 0 && yValue <= 0) || (domainPolarity < 0 && yValue >= 0));
+  };
+};
+
 /**
  * The default zero baseline for area charts.
  */
@@ -166,15 +175,10 @@ export type YDefinedFn = (
 
 /** @internal */
 export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
-  const isLogScale = isLogarithmicScale(yScale);
-  const domainPolarity = getDomainPolarity(yScale.domain);
+  const validator = getScaleTypeValueValidator(yScale);
   return (datum, getValueAccessor) => {
     const yValue = getValueAccessor(datum);
-    return (
-      yValue !== null &&
-      !((isLogScale && domainPolarity >= 0 && yValue <= 0) || (domainPolarity < 0 && yValue >= 0)) &&
-      xScale.isValueInDomain(datum.x)
-    );
+    return yValue !== null && validator(yValue) && xScale.isValueInDomain(datum.x);
   };
 }
 
