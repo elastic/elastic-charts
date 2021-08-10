@@ -467,10 +467,7 @@ describe('Rendering points - line', () => {
         });
 
         test('should render correct number of points', () => {
-          const isLog = scaleType === ScaleType.Log;
-
-          expect(points.length).toBe(isLog ? 1 : 4);
-          expect(points).toMatchSnapshot();
+          expect(points.length).toBe(scaleType === ScaleType.Log ? 1 : 4);
         });
       });
     });
