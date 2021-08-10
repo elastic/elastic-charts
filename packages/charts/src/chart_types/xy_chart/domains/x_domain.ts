@@ -184,7 +184,7 @@ export function guessMinInterval([start, end]: number[], scaleType: ScaleContinu
       : Math.round(domainGap / DEFAULT_INTERVAL_COUNT);
 
   Logger.warn(
-    `The minInterval given a only single data point has been approximated as ${
+    `The minInterval, given only a single data point, has been approximated as ${
       scaleType === ScaleType.Time ? moment.duration(value).humanize() : value
     }. This is not ideal as this data point likely does not coincide with the proper interval. Please set the minInterval in the xDomain.`,
   );
