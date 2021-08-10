@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject, useCallback } from 'react';
+import React, { MouseEventHandler, RefObject, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -48,6 +48,7 @@ interface AnnotationsStateProps {
   annotationSpecs: AnnotationSpec[];
   chartId: string;
   zIndex: number;
+  onClickHandler?: MouseEventHandler<Element>;
 }
 
 interface AnnotationsOwnProps {
@@ -63,6 +64,7 @@ function renderAnnotationLineMarkers(
   annotationLines: AnnotationLineProps[],
   onDOMElementEnter: typeof onDOMElementEnterAction,
   onDOMElementLeave: typeof onDOMElementLeaveAction,
+  onClickHandler?: MouseEventHandler<Element>,
 ) {
   return annotationLines.reduce<JSX.Element[]>((acc, props: AnnotationLineProps) => {
     if (props.markers.length === 0) {
@@ -77,6 +79,7 @@ function renderAnnotationLineMarkers(
         chartDimensions={chartDimensions}
         onDOMElementEnter={onDOMElementEnter}
         onDOMElementLeave={onDOMElementLeave}
+        onClickHandler={onClickHandler ?? undefined}
       />,
     );
 
@@ -96,6 +99,7 @@ const AnnotationsComponent = ({
   onPointerMove,
   onDOMElementEnter,
   onDOMElementLeave,
+  onClickHandler,
 }: AnnotationsProps) => {
   const renderAnnotationMarkers = useCallback((): JSX.Element[] => {
     const markers: JSX.Element[] = [];
@@ -114,13 +118,22 @@ const AnnotationsComponent = ({
           annotationLines,
           onDOMElementEnter,
           onDOMElementLeave,
+          onClickHandler,
         );
         markers.push(...lineMarkers);
       }
     });
 
     return markers;
-  }, [annotationDimensions, annotationSpecs, chartAreaRef, chartDimensions, onDOMElementEnter, onDOMElementLeave]);
+  }, [
+    annotationDimensions,
+    annotationSpecs,
+    chartAreaRef,
+    chartDimensions,
+    onDOMElementEnter,
+    onDOMElementLeave,
+    onClickHandler,
+  ]);
 
   const onScroll = useCallback(() => {
     onPointerMove({ x: -1, y: -1 }, Date.now());

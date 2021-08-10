@@ -23,3 +23,4 @@ export { Example as tooltipOptions } from './5_tooltip_options';
 export { Example as zeroDomain } from './6_zero_domain';
 export { Example as withGroupId } from './7_with_group_id';
 export { Example as outside } from './8_outside';
+export { Example as clickHandleRectAnnotation } from './9_click_handler';

@@ -34,5 +34,7 @@ export const RectAnnotation: React.FunctionComponent<
       >
     >
 > = getConnect()(
-  specComponentFactory<RectAnnotationSpec, 'groupId' | 'annotationType' | 'zIndex' | 'style'>(defaultProps),
+  specComponentFactory<RectAnnotationSpec, 'groupId' | 'annotationType' | 'zIndex' | 'style' | 'onClickHandler'>(
+    defaultProps,
+  ),
 );

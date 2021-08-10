@@ -18,10 +18,11 @@ interface AnnotationTooltipProps {
   chartId: string;
   zIndex: number;
   onScroll?: () => void;
+  onClick?: () => void;
 }
 
 /** @internal */
-export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }: AnnotationTooltipProps) => {
+export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, onClick, zIndex }: AnnotationTooltipProps) => {
   const renderTooltip = useCallback(() => {
     if (!state || !state.isVisible) {
       return null;
@@ -37,10 +38,16 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }
     }
   };
 
+  const handleClick = () => {};
+
   useEffect(() => {
     if (onScroll) {
       window.addEventListener('scroll', handleScroll, true);
       return () => window.removeEventListener('scroll', handleScroll, true);
+    }
+    if (onClick) {
+      window.addEventListener('click', handleClick, true);
+      return () => window.removeEventListener('click', handleClick, true);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
