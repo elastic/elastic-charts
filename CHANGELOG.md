@@ -1,3 +1,11 @@
+## [31.3.1](https://github.com/Metrika-Inc/metrika-charts/compare/v31.3.0...v31.3.1) (2021-08-10)
+
+
+### Bug Fixes
+
+* **heatmap:** the legend grid tries to fit the content better if possible ([93cb503](https://github.com/Metrika-Inc/metrika-charts/commit/93cb5034d735c1886d60fc0779d8cc5e11a9c822))
+* **legend:** minor styling change to improve layout ([2f6e75b](https://github.com/Metrika-Inc/metrika-charts/commit/2f6e75b5d483497ac0867a79722d31f12263a43c))
+
 # [31.3.0](https://github.com/Metrika-Inc/metrika-charts/compare/v31.2.0...v31.3.0) (2021-07-27)
 
 
