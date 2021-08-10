@@ -6,8 +6,10 @@
  * Side Public License, v 1.
  */
 
+import moment from 'moment-timezone';
 import { Optional } from 'utility-types';
 
+import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { compareByValueAsc, identity } from '../../../utils/common';
 import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../utils/domain';
@@ -18,6 +20,8 @@ import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_
 import { BasicSeriesSpec, SeriesType, XScaleType } from '../utils/specs';
 import { areAllNiceDomain } from './nice';
 import { XDomain } from './types';
+
+const DEFAULT_INTERVAL_COUNT = 7;
 
 /**
  * Merge X domain value between a set of chart specification.
@@ -92,7 +96,9 @@ export function mergeXDomain(
         }
       }
     }
-    const computedMinInterval = findMinInterval(values as number[]);
+
+    const computedMinInterval =
+      findMinInterval(values as number[]) ?? guessMinInterval(seriesXComputedDomains, fallbackScale ?? type);
     minInterval = getMinInterval(computedMinInterval, xValues.size, customMinInterval);
   }
 
@@ -127,18 +133,75 @@ function getMinInterval(computedMinInterval: number, size: number, customMinInte
   return customMinInterval;
 }
 
+const approximatedOptions: {
+  unit: moment.unitOfTime.Base;
+  min?: number;
+  max?: number;
+}[] = [
+  { unit: 'year' },
+  { unit: 'day', min: 6, max: 8 },
+  { unit: 'week', max: 52 },
+  { unit: 'day', max: 32 },
+  { unit: 'hour', max: 24 },
+  { unit: 'minute', max: 60 },
+  { unit: 'second', max: 60 },
+  { unit: 'millisecond', max: 1000 },
+];
+
 /**
- * Find the minimum interval between xValues.
- * Default to 0 if an empty array, 1 if one item array
+ * Finds the nearest rounded unit of time that falls between a defined min and max
+ * iteratively starting from the largest unit of time going to the smallest
+ *
+ * TODO: build in rules to apply multiplier of the unit interval (e.g. 12h)
+ */
+function approximateNearestDuration(value: number): number {
+  if (!value) return value;
+
+  for (let i = 0; i < approximatedOptions.length; i++) {
+    const { unit, min = 1, max = 10 } = approximatedOptions[i];
+    const unitInterval = moment.duration(1, unit).asMilliseconds();
+    const unitDiff = Math.floor(value / unitInterval);
+
+    if ((unitDiff > min && unitDiff <= max) || (unit === 'year' && unitDiff > max)) {
+      return unitInterval;
+    }
+  }
+
+  return Math.round(value);
+}
+
+/**
+ * Guess minInterval when only single value exists
  * @internal
  */
-export function findMinInterval(xValues: number[]): number {
+export function guessMinInterval([start, end]: number[], scaleType: ScaleContinuousType): number {
+  const domainGap = Math.abs(start - end);
+  const value =
+    scaleType === ScaleType.Time
+      ? approximateNearestDuration(domainGap)
+      : Math.round(domainGap / DEFAULT_INTERVAL_COUNT);
+
+  Logger.warn(
+    `The minInterval given a only single data point has been approximated as ${
+      scaleType === ScaleType.Time ? moment.duration(value).humanize() : value
+    }. This is not ideal as this data point likely does not coincide with the proper interval. Please set the minInterval in the xDomain.`,
+  );
+
+  return value;
+}
+
+/**
+ * Find the minimum interval between xValues.
+ * Default to 0 if an empty array, null if one item array
+ * @internal
+ */
+export function findMinInterval(xValues: number[]): number | null {
   const valuesLength = xValues.length;
   if (valuesLength <= 0) {
     return 0;
   }
   if (valuesLength === 1) {
-    return 1;
+    return null;
   }
   const sortedValues = xValues.slice().sort(compareByValueAsc);
   let i;

@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import moment from 'moment';
+
 import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec, MockSeriesSpecs } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
@@ -15,7 +17,7 @@ import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scale
 import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_configs';
 import { getDataSeriesFromSpecs } from '../utils/series';
 import { BasicSeriesSpec, SeriesType } from '../utils/specs';
-import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
+import { convertXScaleTypes, findMinInterval, guessMinInterval, mergeXDomain } from './x_domain';
 
 jest.mock('../../../utils/logger', () => ({
   Logger: {
@@ -621,7 +623,7 @@ describe('X Domain', () => {
   });
   test('should compute minInterval a single element array', () => {
     const minInterval = findMinInterval([100]);
-    expect(minInterval).toBe(1);
+    expect(minInterval).toBe(null);
   });
   test('should compute minInterval a empty element array', () => {
     const minInterval = findMinInterval([]);
@@ -860,6 +862,40 @@ describe('X Domain', () => {
         direction: Direction.Descending,
       });
       expect(xValues).toEqual(new Set([1, 2, 3, 4]));
+    });
+  });
+
+  describe('Approximated intervals', () => {
+    describe('#guessMinInterval', () => {
+      it('should return default count for non time scales', () => {
+        expect(guessMinInterval([0, 70], ScaleType.Linear)).toBe(70 / 7);
+      });
+
+      type ExampleRow = [
+        duration: number, // in unit time
+        unit: moment.unitOfTime.Base,
+        minInterval: number, // in intervalUnit time
+        intervalUnit: moment.unitOfTime.Base,
+      ];
+      it.each<ExampleRow>([
+        [40, 'years', 1, 'year'],
+        [10, 'years', 1, 'year'],
+        [52, 'weeks', 1, 'week'],
+        [4, 'weeks', 1, 'week'],
+        [1, 'week', 1, 'day'],
+        [8, 'days', 1, 'day'],
+        [7, 'days', 1, 'day'],
+        [1, 'days', 1, 'hour'],
+        [24, 'hours', 1, 'hour'],
+        [1, 'hour', 1, 'minute'],
+        [60, 'minutes', 1, 'minute'],
+      ])('should guess correct interval for duration of %d %s', (duration, unit, minInterval, intervalUnit) => {
+        const start = moment(1609480800000);
+        const end = start.clone().add(duration, unit).valueOf();
+        const expected = moment.duration(minInterval, intervalUnit ?? unit).asMilliseconds();
+
+        expect(guessMinInterval([start.valueOf(), end], ScaleType.Time)).toBe(expected);
+      });
     });
   });
 });
