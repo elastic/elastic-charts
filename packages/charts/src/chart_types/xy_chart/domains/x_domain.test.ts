@@ -868,7 +868,7 @@ describe('X Domain', () => {
   describe('Approximated intervals', () => {
     describe('#guessMinInterval', () => {
       it('should return default count for non time scales', () => {
-        expect(guessMinInterval([0, 70], ScaleType.Linear)).toBe(70 / 7);
+        expect(guessMinInterval([0, 120], ScaleType.Linear)).toBe(120 / 12);
       });
 
       type ExampleRow = [
