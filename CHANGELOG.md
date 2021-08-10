@@ -1,3 +1,10 @@
+## [33.2.2](https://github.com/elastic/elastic-charts/compare/v33.2.1...v33.2.2) (2021-08-10)
+
+
+### Bug Fixes
+
+* polarity value filtering on non-log scales ([#1292](https://github.com/elastic/elastic-charts/issues/1292)) ([e75ad0b](https://github.com/elastic/elastic-charts/commit/e75ad0b7101b19ce23123f80f968948ba840473f))
+
 ## [33.2.1](https://github.com/elastic/elastic-charts/compare/v33.2.0...v33.2.1) (2021-08-09)
 
 
