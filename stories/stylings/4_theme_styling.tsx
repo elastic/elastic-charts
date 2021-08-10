@@ -148,10 +148,19 @@ export const Example = () => {
       ),
       defaultVizColor: DEFAULT_MISSING_COLOR,
     },
+    legend: {
+      verticalWidth: range('veticalWidth', 0, 300, 200),
+    },
   };
 
   const darkmode = boolean('darkmode', false, 'Colors');
   const className = darkmode ? 'story-chart-dark' : 'story-chart';
+  const legendPos = select(
+    'legend pos',
+    { top: Position.Top, left: Position.Left, right: Position.Right, bottom: Position.Bottom },
+    'right',
+  );
+  const doShowLegendExtra = boolean('show legend extra', true);
   switchTheme(darkmode ? 'dark' : 'light');
 
   return (
@@ -161,8 +170,8 @@ export const Example = () => {
         baseTheme={darkmode ? DARK_THEME : LIGHT_THEME}
         debug={boolean('debug', false)}
         showLegend
-        showLegendExtra
-        legendPosition={Position.Right}
+        showLegendExtra={doShowLegendExtra}
+        legendPosition={legendPos}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />

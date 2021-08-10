@@ -83,6 +83,7 @@ export const getLegendSizeSelector = createCustomCachedSelector(
     const actionDimension = isDefined(legendAction) ? 24 : 0; // max width plus margin
     const legendItemWidth = MARKER_WIDTH + SHARED_MARGIN + bbox.width + (showLegendDisplayValue ? SHARED_MARGIN : 0);
 
+    // left or right side legend
     if (legendPosition.direction === LayoutDirection.Vertical) {
       const legendItemHeight = bbox.height + VERTICAL_PADDING * 2;
       const legendHeight = legendItemHeight * labels.length + TOP_MARGIN;
@@ -97,7 +98,9 @@ export const getLegendSizeSelector = createCustomCachedSelector(
         position: legendPosition,
       };
     }
-    const isSingleLine = (parentDimensions.width - 20) / 200 > labels.length;
+
+    // top or bottom legend
+    const isSingleLine = (parentDimensions.width - 20) / verticalWidth > labels.length;
     return {
       height: isSingleLine ? bbox.height + 16 : bbox.height * 2 + 24,
       width: Math.floor(Math.min(legendItemWidth + spacingBuffer + actionDimension, verticalWidth)),

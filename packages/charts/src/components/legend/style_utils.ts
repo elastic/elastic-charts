@@ -55,6 +55,7 @@ export function getLegendListStyle(
   chartMargins: Margins,
   legendStyle: ThemeLegendStyle,
   totalItems: number,
+  legendSize: BBox,
 ): LegendListStyle {
   const { top: paddingTop, bottom: paddingBottom, left: paddingLeft, right: paddingRight } = chartMargins;
 
@@ -62,7 +63,7 @@ export function getLegendListStyle(
     return {
       paddingLeft,
       paddingRight,
-      gridTemplateColumns: `repeat(auto-fill, minmax(${legendStyle.verticalWidth}px, 1fr))`,
+      gridTemplateColumns: `repeat(auto-fill, minmax(${Math.min(legendSize.width, legendStyle.verticalWidth)}px, 1fr))`,
     };
   }
 
