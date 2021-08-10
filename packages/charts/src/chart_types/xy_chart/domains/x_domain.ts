@@ -21,7 +21,7 @@ import { BasicSeriesSpec, SeriesType, XScaleType } from '../utils/specs';
 import { areAllNiceDomain } from './nice';
 import { XDomain } from './types';
 
-const DEFAULT_INTERVAL_COUNT = 7;
+const DEFAULT_INTERVAL_COUNT = 12;
 
 /**
  * Merge X domain value between a set of chart specification.
@@ -179,6 +179,8 @@ export function guessMinInterval([start, end]: number[], scaleType: ScaleContinu
   const value =
     scaleType === ScaleType.Time
       ? approximateNearestDuration(domainGap)
+      : domainGap === 0
+      ? 1
       : Math.round(domainGap / DEFAULT_INTERVAL_COUNT);
 
   Logger.warn(
