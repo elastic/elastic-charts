@@ -9,8 +9,6 @@ const isDryRun = process.argv.includes('--dry-run');
  * see https://github.com/semantic-release/semantic-release/issues/193
  */
 
-const path = require('path');
-
 module.exports = {
   plugins: [
     '@semantic-release/commit-analyzer',
@@ -21,7 +19,16 @@ module.exports = {
       '@semantic-release/npm',
       {
         // must point to the child package
-        pkgRoot: path.resolve(__dirname, './packages/charts'),
+        pkgRoot: './packages/charts',
+      },
+    ],
+    [
+      '@semantic-release/exec',
+      {
+        // npm plugin not updating package.json
+        // eslint-disable-next-line no-template-curly-in-string
+        prepareCmd: 'npm version ${nextRelease.version} --force --no-git-tag-version --allow-same-version',
+        execCwd: './packages/charts',
       },
     ],
     '@semantic-release/git',
