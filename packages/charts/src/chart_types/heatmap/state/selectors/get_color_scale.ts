@@ -47,6 +47,7 @@ const SCALE_TYPE_TO_SCALE_FN = {
   [ScaleType.Quantize]: getQuantizedScale,
   [ScaleType.Threshold]: getThresholdScale,
 };
+const DEFAULT_COLOR_SCALE_TYPE = ScaleType.Linear;
 
 /**
  * @internal
@@ -55,7 +56,7 @@ const SCALE_TYPE_TO_SCALE_FN = {
 export const getColorScale = createCustomCachedSelector(
   [getHeatmapSpecSelector, getHeatmapTableSelector],
   (spec, heatmapTable) => {
-    const { scale, bands } = SCALE_TYPE_TO_SCALE_FN[spec.colorScale ?? ScaleType.Linear](spec, heatmapTable);
+    const { scale, bands } = SCALE_TYPE_TO_SCALE_FN[spec.colorScale ?? DEFAULT_COLOR_SCALE_TYPE](spec, heatmapTable);
     return {
       scale,
       bands: dedupBands(bands, spec),

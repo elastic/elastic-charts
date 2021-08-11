@@ -30,7 +30,7 @@ export const computeLegendSelector = createCustomCachedSelector(
 
       return {
         color,
-        label: `>${i === 0 ? '=' : ''} ${formattedStart}`,
+        label: `${i === 0 ? '≥' : '>'} ${formattedStart}`,
         seriesIdentifiers: [seriesIdentifier],
         isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === seriesIdentifier.key),
         isToggleable: true,
