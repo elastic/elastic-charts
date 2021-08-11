@@ -19,7 +19,7 @@ export function renderRect(
   stroke?: Stroke,
   disableBoardOffset: boolean = false,
 ) {
-  if (!fill && !stroke) {
+  if ((!fill && !stroke) || !rect.height) {
     return;
   }
 

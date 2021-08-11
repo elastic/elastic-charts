@@ -23,6 +23,9 @@ export const Example = () => (
           margin: number('legend margins', 20, {
             min: 0,
           }),
+          labelOptions: {
+            maxLines: number('max legend label lines', 2, { min: 0, step: 1 }),
+          },
         },
       }}
       baseTheme={useBaseTheme()}

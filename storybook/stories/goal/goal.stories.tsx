@@ -34,6 +34,7 @@ export { Example as threeQuarters } from './17_three_quarters';
 export { Example as fullCircle } from './17_total_circle';
 export { Example as smallGap } from './17_very_small_gap';
 export { Example as sideGauge } from './18_side_gauge';
+export { Example as sideGaugeInverted } from './18_side_gauge_inverted_angle_relation';
 export { Example as horizontalNegative } from './19_horizontal_negative';
 export { Example as verticalNegative } from './20_vertical_negative';
 export { Example as goalNegative } from './21_goal_negative';
