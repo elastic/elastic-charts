@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { EuiColorPicker, EuiPopover, EuiButton, EuiSpacer, EuiFlexItem, EuiButtonEmpty } from '@elastic/eui';
+import { EuiColorPicker, EuiWrappingPopover, EuiButton, EuiSpacer, EuiFlexItem, EuiButtonEmpty } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
 import React, { useState, useMemo } from 'react';
 
@@ -52,7 +52,7 @@ export const Example = () => {
 
       return (
         <>
-          <EuiPopover isOpen button={anchor} closePopover={handleClose} anchorPosition="leftCenter">
+          <EuiWrappingPopover isOpen button={anchor} closePopover={handleClose} anchorPosition="leftCenter">
             <EuiColorPicker display="inline" color={color} onChange={handleChange} />
             <EuiSpacer size="m" />
             <EuiFlexItem grow={false}>
@@ -63,7 +63,7 @@ export const Example = () => {
             <EuiButton fullWidth size="s" onClick={handleClose}>
               Done
             </EuiButton>
-          </EuiPopover>
+          </EuiWrappingPopover>
         </>
       );
     },
