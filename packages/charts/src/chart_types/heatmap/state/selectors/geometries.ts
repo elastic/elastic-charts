@@ -35,19 +35,19 @@ export const geometries = createCustomCachedSelector(
     chartDimensions,
     settingSpec,
     heatmapTable,
-    { ticks, scale: colorScale },
+    { bands, scale: colorScale },
     deselectedSeries,
     gridHeightParams,
   ): ShapeViewModel => {
-    const deselectedTicks = new Set(
+    const deselectedRanges = new Set(
       deselectedSeries.map(({ specId }) => {
         return Number(specId);
       }),
     );
-    const visibilityFilterRanges = ticks.reduce<Array<[number, number]>>((acc, { tick }, i) => {
-      if (deselectedTicks.has(tick)) {
-        const rangeEnd = ticks.length === i + 1 ? Infinity : ticks[i + 1].tick;
-        acc.push([tick, rangeEnd]);
+    const visibilityFilterRanges = bands.reduce<Array<[number, number]>>((acc, { start }, i) => {
+      if (deselectedRanges.has(start)) {
+        const rangeEnd = bands.length === i + 1 ? Infinity : bands[i + 1].start;
+        acc.push([start, rangeEnd]);
       }
       return acc;
     }, []);
