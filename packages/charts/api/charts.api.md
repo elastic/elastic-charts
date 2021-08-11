@@ -6,6 +6,7 @@
 
 import { $Values } from 'utility-types';
 import { ComponentType } from 'react';
+import { MouseEventHandler } from 'react';
 import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
 import { ReactNode } from 'react';
@@ -1604,6 +1605,7 @@ export type RectAnnotationSpec = BaseAnnotationSpec<typeof AnnotationType.Rectan
     zIndex?: number;
     outside?: boolean;
     outsideDimension?: number;
+    onClickHandler?: MouseEventHandler<Element>;
 };
 
 // @public (undocumented)

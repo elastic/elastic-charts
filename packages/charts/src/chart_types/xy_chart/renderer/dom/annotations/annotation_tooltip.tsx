@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { useCallback, useMemo, useEffect, RefObject } from 'react';
+import React, { useCallback, useMemo, useEffect, RefObject, MouseEventHandler } from 'react';
 
 import { TooltipPortal, Placement, TooltipPortalSettings } from '../../../../../components/portal';
 import { AnnotationTooltipState } from '../../../annotations/types';
@@ -18,11 +18,18 @@ interface AnnotationTooltipProps {
   chartId: string;
   zIndex: number;
   onScroll?: () => void;
-  onClick?: () => void;
+  onClickHandler?: MouseEventHandler<Element>;
 }
 
 /** @internal */
-export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, onClick, zIndex }: AnnotationTooltipProps) => {
+export const AnnotationTooltip = ({
+  state,
+  chartRef,
+  chartId,
+  onScroll,
+  zIndex,
+  onClickHandler,
+}: AnnotationTooltipProps) => {
   const renderTooltip = useCallback(() => {
     if (!state || !state.isVisible) {
       return null;
@@ -38,14 +45,16 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, onClick,
     }
   };
 
-  const handleClick = () => {};
+  const handleClick = () => {
+    if (onClickHandler) return onClickHandler;
+  };
 
   useEffect(() => {
     if (onScroll) {
       window.addEventListener('scroll', handleScroll, true);
       return () => window.removeEventListener('scroll', handleScroll, true);
     }
-    if (onClick) {
+    if (onclick) {
       window.addEventListener('click', handleClick, true);
       return () => window.removeEventListener('click', handleClick, true);
     }
@@ -82,6 +91,7 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, onClick,
       }}
       visible={state?.isVisible ?? false}
       settings={popperSettings}
+      onClickHandler={onClickHandler}
     >
       {renderTooltip()}
     </TooltipPortal>
