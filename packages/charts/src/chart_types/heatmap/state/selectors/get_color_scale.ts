@@ -79,10 +79,10 @@ function dedupTicks(ticks: number[], spec: HeatmapSpec) {
 }
 
 function getQuantizedScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleQuantizeType {
-  const dataExtent = spec.ranges ?? heatmapTable.extent;
-  const colors = spec.colors ?? DEFAULT_COLORS;
+  const domain =
+    Array.isArray(spec.ranges) && spec.ranges.length > 1 ? (spec.ranges as [number, number]) : heatmapTable.extent;
+  const colors = spec.colors?.length > 0 ? spec.colors : DEFAULT_COLORS;
   // we use the data extent or only the first two values in the `ranges` prop
-  const domain: [number, number] = [dataExtent[0], dataExtent[1]];
   const scale = scaleQuantize<string>().domain(domain).range(colors);
   // quantize scale works as the linear one, we should manually
   // compute the ticks corresponding to the quantized segments
@@ -110,11 +110,10 @@ function getQuantileScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleQ
 
 function getThresholdScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleThresholdType {
   const colors = spec.colors ?? DEFAULT_COLORS;
-  const scale = scaleThreshold<number, string>()
-    .domain(spec.ranges ?? heatmapTable.extent)
-    .range(colors);
+  const domain = spec.ranges ?? heatmapTable.extent;
+  const scale = scaleThreshold<number, string>().domain(domain).range(colors);
   // the ticks array should contain all the thresholds + the minimum value
-  const ticks = [...new Set([heatmapTable.extent[0], ...scale.domain()])];
+  const ticks = [...new Set([heatmapTable.extent[0], ...domain])];
   return {
     scale,
     ticks,
