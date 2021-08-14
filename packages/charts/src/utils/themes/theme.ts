@@ -168,6 +168,23 @@ export interface GridLineStyle {
   opacity: number;
   dash: number[];
 }
+
+/**
+ * @public
+ */
+export interface GoalStyles {
+  progressLine: Pick<StrokeStyle, 'stroke'>;
+  targetLine: Pick<StrokeStyle, 'stroke'>;
+  tickLine: Pick<StrokeStyle, 'stroke'>;
+  tickLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+  majorLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+  minorLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+  majorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+  minorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+  minFontSize: number;
+  maxFontSize: number;
+}
+
 /** @public */
 export interface ScalesConfig {
   /**
@@ -303,6 +320,7 @@ export interface Theme {
    * This can then be used to calculate the contrast of the text for partition charts.
    */
   background: BackgroundStyle;
+  goal: GoalStyles;
 }
 
 /** @public */

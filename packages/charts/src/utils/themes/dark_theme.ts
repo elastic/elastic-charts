@@ -194,4 +194,42 @@ export const DARK_THEME: Theme = {
   background: {
     color: 'transparent',
   },
+  goal: {
+    minFontSize: 8,
+    maxFontSize: 64,
+    tickLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: '#999',
+    },
+    majorLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: '#D4D4D4',
+    },
+    minorLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: '#D4D4D4',
+    },
+    majorCenterLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: '#D4D4D4',
+    },
+    minorCenterLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: '#D4D4D4',
+    },
+    targetLine: {
+      stroke: 'white',
+    },
+    tickLine: {
+      stroke: '#444',
+    },
+    progressLine: {
+      stroke: 'white',
+    },
+  },
 };

@@ -481,7 +481,7 @@ export type ValueFormatter = (value: number) => string;
 /** @public */
 export type ValueAccessor = (d: Datum) => AdditiveNumber;
 /** @public */
-export type LabelAccessor = (value: PrimitiveValue) => string;
+export type LabelAccessor<T = PrimitiveValue> = (value: T) => string;
 /** @public */
 export type ShowAccessor = (value: PrimitiveValue) => boolean;
 

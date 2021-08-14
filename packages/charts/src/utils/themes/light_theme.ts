@@ -194,4 +194,42 @@ export const LIGHT_THEME: Theme = {
   background: {
     color: 'transparent',
   },
+  goal: {
+    minFontSize: 8,
+    maxFontSize: 64,
+    tickLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: '#777',
+    },
+    majorLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: '#333',
+    },
+    minorLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: '#333',
+    },
+    majorCenterLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: '#333',
+    },
+    minorCenterLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: '#333',
+    },
+    targetLine: {
+      stroke: 'black',
+    },
+    tickLine: {
+      stroke: '#eaeaea',
+    },
+    progressLine: {
+      stroke: 'black',
+    },
+  },
 };
