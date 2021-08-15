@@ -113,8 +113,6 @@ export const Example = () => {
   );
 };
 
-Example.story = {
-  parameters: {
-    options: { selectedPanel: SB_KNOBS_PANEL },
-  },
+Example.parameters = {
+  options: { selectedPanel: SB_KNOBS_PANEL },
 };

@@ -4,24 +4,40 @@ html {
   &.light-theme {
     @import '~@elastic/eui/dist/eui_theme_light';
     @import '~@elastic/charts/src/theme_light';
-    @import '~@elastic/eui/src/global_styling/variables/_colors.scss';
 
     body,
     .echChart {
       background: white !important;
-      // background: $euiPageBackgroundColor !important;
     }
   }
 
   &.dark-theme {
     @import '~@elastic/eui/dist/eui_theme_dark';
     @import '~@elastic/charts/src/theme_dark';
-    @import '~@elastic/eui/src/themes/eui/eui_colors_dark.scss';
 
     body,
     .echChart {
-      background: #1a1b20 !important;
-      // background: $euiPageBackgroundColor !important;
+      background: black !important;
+    }
+  }
+
+  &.eui {
+    &.dark-theme {
+      @import '~@elastic/eui/src/themes/eui/eui_colors_dark.scss';
+
+      body,
+      .echChart {
+        background: $euiColorEmptyShade !important;
+      }
+    }
+
+    &.light-theme {
+      @import '~@elastic/eui/src/global_styling/variables/_colors.scss';
+
+      body,
+      .echChart {
+        background: $euiColorEmptyShade !important;
+      }
     }
   }
 
