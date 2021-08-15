@@ -29,7 +29,7 @@ interface TickViewModel {
 export interface BulletViewModel {
   subtype: string;
   base: number;
-  target: number;
+  target?: number;
   actual: number;
   bands: Array<BandViewModel>;
   ticks: Array<TickViewModel>;
@@ -58,7 +58,6 @@ const commonDefaults = {
   specType: SpecType.Series,
   subtype: GoalSubtype.Goal,
   base: 0,
-  target: 100,
   actual: 50,
   ticks: [0, 25, 50, 75, 100],
 };

@@ -228,7 +228,7 @@ export interface BandFillColorAccessorInput {
     // (undocumented)
     lowestValue: number;
     // (undocumented)
-    target: number;
+    target?: number;
     // (undocumented)
     value: number;
 }
@@ -810,7 +810,7 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     subtype: GoalSubtype;
     // (undocumented)
-    target: number;
+    target?: number;
     // (undocumented)
     ticks: number[];
     // (undocumented)

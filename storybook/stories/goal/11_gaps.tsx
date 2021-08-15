@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Goal, Settings } from '@elastic/charts';
@@ -28,24 +29,29 @@ const colorMap: { [k: number]: Color } = {
 
 const bandFillColor = (x: number): Color => colorMap[x];
 
-export const Example = () => (
-  <Chart>
-    <Settings baseTheme={useBaseTheme()} />
-    <Goal
-      id="spec_1"
-      subtype={subtype}
-      base={0}
-      target={260}
-      actual={280}
-      bands={[199, 201, 249, 251, 300]}
-      ticks={[0, 50, 100, 150, 200, 250, 300]}
-      tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-      bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
-      labelMajor="Revenue 2020 YTD  "
-      labelMinor="(thousand USD)  "
-      centralMajor="280"
-      centralMinor="target: 260"
-      config={config}
-    />
-  </Chart>
-);
+export const Example = () => {
+  const showTarget = boolean('show target', true);
+  const target = number('target', 260);
+
+  return (
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
+      <Goal
+        id="spec_1"
+        subtype={subtype}
+        base={0}
+        target={showTarget ? target : undefined}
+        actual={280}
+        bands={[199, 201, 249, 251, 300]}
+        ticks={[0, 50, 100, 150, 200, 250, 300]}
+        tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
+        bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
+        labelMajor="Revenue 2020 YTD  "
+        labelMinor="(thousand USD)  "
+        centralMajor="280"
+        centralMinor="target: 260"
+        config={config}
+      />
+    </Chart>
+  );
+};

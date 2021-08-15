@@ -294,11 +294,15 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
       landmarks: { from: 'base', to: 'actual' },
       aes: { shape, fillColor: 'black', lineWidth: tickLength },
     },
-    {
-      order: 2,
-      landmarks: { at: 'target' },
-      aes: { shape, fillColor: 'black', lineWidth: barThickness / GOLDEN_RATIO },
-    },
+    ...(target
+      ? [
+          {
+            order: 2,
+            landmarks: { at: 'target' },
+            aes: { shape, fillColor: 'black', lineWidth: barThickness / GOLDEN_RATIO },
+          },
+        ]
+      : []),
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 3,
       landmarks: { at: `tick_${i}` },

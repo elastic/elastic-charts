@@ -43,7 +43,7 @@ export function shapeViewModel(spec: GoalSpec, config: Config): ShapeViewModel {
     bandLabels,
   } = spec;
 
-  const [lowestValue, highestValue] = [base, target, actual, ...bands, ...ticks].reduce(
+  const [lowestValue, highestValue] = [base, ...(target ? [target] : []), actual, ...bands, ...ticks].reduce(
     ([min, max], value) => [Math.min(min, value), Math.max(max, value)],
     [Infinity, -Infinity],
   );
