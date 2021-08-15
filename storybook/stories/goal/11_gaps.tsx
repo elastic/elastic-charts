@@ -49,7 +49,7 @@ export const Example = () => {
         labelMajor="Revenue 2020 YTD  "
         labelMinor="(thousand USD)  "
         centralMajor="280"
-        centralMinor="target: 260"
+        centralMinor={showTarget ? `target: ${target}` : undefined}
         config={config}
       />
     </Chart>

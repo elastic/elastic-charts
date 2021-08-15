@@ -79,7 +79,7 @@ export const defaultGoalSpec = {
   // eslint-disable-next-line no-empty-pattern
   labelMinor: ({}: BandFillColorAccessorInput) => 'unit',
   centralMajor: ({ base }: BandFillColorAccessorInput) => String(base),
-  centralMinor: ({ target }: BandFillColorAccessorInput) => String(target),
+  centralMinor: ({ target }: BandFillColorAccessorInput) => (target ? String(target) : ''),
   bandLabels: [],
 };
 
