@@ -16,25 +16,25 @@ const EMPTY_LEGEND: LegendItem[] = [];
 /** @internal */
 export const computeLegendSelector = createCustomCachedSelector(
   [getSpecOrNull, getColorScale, getDeselectedSeriesSelector],
-  (spec, { bands, scale }, deselectedDataSeries): LegendItem[] => {
+  (spec, { bands }, deselectedDataSeries): LegendItem[] => {
     if (spec === null) {
       return EMPTY_LEGEND;
     }
 
-    return bands.map(({ start, formattedStart }, i) => {
-      const color = scale(start);
-      const seriesIdentifier = {
-        key: String(start),
-        specId: String(start),
-      };
-
+    return bands.map(({ label, color }) => {
       return {
+        // the band label is considered unique by construction
+        seriesIdentifiers: [
+          {
+            key: label,
+            specId: label,
+          },
+        ],
         color,
-        label: `${i === 0 ? '≥' : '>'} ${formattedStart}`,
-        seriesIdentifiers: [seriesIdentifier],
-        isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === seriesIdentifier.key),
+        label,
+        isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === label),
         isToggleable: true,
-        path: [{ index: 0, value: seriesIdentifier.key }],
+        path: [{ index: 0, value: label }],
         keys: [],
       };
     });

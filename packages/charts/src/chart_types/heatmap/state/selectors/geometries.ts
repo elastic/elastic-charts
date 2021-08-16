@@ -39,29 +39,21 @@ export const geometries = createCustomCachedSelector(
     deselectedSeries,
     gridHeightParams,
   ): ShapeViewModel => {
-    const deselectedRanges = new Set(
+    // instead of using the specId, each legend item is associated with an unique band label
+    const disabledBandLabels = new Set(
       deselectedSeries.map(({ specId }) => {
-        return Number(specId);
+        return specId;
       }),
     );
-    const visibilityFilterRanges = bands.reduce<Array<[number, number]>>((acc, { start }, i) => {
-      if (deselectedRanges.has(start)) {
-        const rangeEnd = bands.length === i + 1 ? Infinity : bands[i + 1].start;
-        acc.push([start, rangeEnd]);
-      }
-      return acc;
-    }, []);
+
+    const bandsToHide: Array<[number, number]> = bands
+      .filter(({ label }) => {
+        return disabledBandLabels.has(label);
+      })
+      .map(({ start, end }) => [start, end]);
 
     return heatmapSpec
-      ? render(
-          heatmapSpec,
-          settingSpec,
-          chartDimensions,
-          heatmapTable,
-          colorScale,
-          visibilityFilterRanges,
-          gridHeightParams,
-        )
+      ? render(heatmapSpec, settingSpec, chartDimensions, heatmapTable, colorScale, bandsToHide, gridHeightParams)
       : nullShapeViewModel();
   },
 );

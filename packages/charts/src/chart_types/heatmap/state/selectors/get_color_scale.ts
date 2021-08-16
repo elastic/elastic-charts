@@ -20,7 +20,7 @@ import {
 
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { identity } from '../../../../utils/common';
+import { Color, identity } from '../../../../utils/common';
 import { HeatmapSpec } from '../../specs/heatmap';
 import { HeatmapTable } from './compute_chart_dimensions';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
@@ -30,6 +30,8 @@ type ScaleModelType<S> = {
   scale: S;
   bands: Array<{ start: number }>;
 };
+
+type Band = { start: number; end: number; label: string; color: Color };
 
 type ScaleLinearType = ScaleModelType<ScaleLinear<string, string>>;
 type ScaleQuantizeType = ScaleModelType<ScaleQuantize<string>>;
@@ -59,21 +61,23 @@ export const getColorScale = createCustomCachedSelector(
     const { scale, bands } = SCALE_TYPE_TO_SCALE_FN[spec.colorScale ?? DEFAULT_COLOR_SCALE_TYPE](spec, heatmapTable);
     return {
       scale,
-      bands: dedupBands(bands, spec),
+      bands: dedupBands(bands, spec, scale),
     };
   },
 );
 
-function dedupBands(bands: Array<{ start: number }>, spec: HeatmapSpec) {
+function dedupBands(
+  bands: Array<{ start: number }>,
+  spec: HeatmapSpec,
+  scale: ScaleLinear<string, string> | ScaleQuantile<string> | ScaleQuantize<string> | ScaleThreshold<number, string>,
+) {
   const formatter = spec.valueFormatter ?? identity;
-  const bandsWithFormattedStarts = bands.reduce<Map<string, { start: number; formattedStart: string }>>(
-    (acc, { start }) => {
-      const formattedStart = `${formatter(start)}`;
-      acc.set(formattedStart, { start, formattedStart });
-      return acc;
-    },
-    new Map(),
-  );
+  const bandsWithFormattedStarts = bands.reduce<Map<string, Band>>((acc, { start }, index, array) => {
+    const label = `≥ ${formatter(start)}`;
+    const end = array.length === index + 1 ? Infinity : array[index + 1].start;
+    acc.set(label, { start, end, label, color: scale(start) });
+    return acc;
+  }, new Map());
   return [...bandsWithFormattedStarts.values()];
 }
 

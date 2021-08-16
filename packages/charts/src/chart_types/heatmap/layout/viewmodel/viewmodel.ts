@@ -82,7 +82,7 @@ export function shapeViewModel(
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
   colorScale: ColorScaleType['scale'],
-  visibilityFilterRanges: Array<[number, number]>,
+  bandsToHide: Array<[number, number]>,
   { height, pageSize }: GridHeightParams,
 ): ShapeViewModel {
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
@@ -208,7 +208,7 @@ export function shapeViewModel(
         width: config.cell.border.strokeWidth,
       },
       value: d.value,
-      visible: !isValueVisible(d.value, visibilityFilterRanges),
+      visible: !isValueHidden(d.value, bandsToHide),
       formatted: spec.valueFormatter(d.value),
     };
     return acc;
@@ -391,6 +391,6 @@ function getCellKey(x: NonNullable<PrimitiveValue>, y: NonNullable<PrimitiveValu
   return [String(x), String(y)].join('&_&');
 }
 
-function isValueVisible(value: number, visibilityFilterRanges: Array<[number, number]>) {
-  return visibilityFilterRanges.some(([min, max]) => min <= value && value < max);
+function isValueHidden(value: number, rangesToHide: Array<[number, number]>) {
+  return rangesToHide.some(([min, max]) => min <= value && value < max);
 }
