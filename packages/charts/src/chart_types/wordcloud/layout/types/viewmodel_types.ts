@@ -9,6 +9,7 @@
 import { $Values as Values } from 'utility-types';
 
 import { Pixels, PointObject, Rectangle } from '../../../../common/geometry';
+import { FontStyle } from '../../../../common/text_utils';
 import { Color } from '../../../../utils/common';
 import { config } from '../config/config';
 import { Config } from './config_types';
@@ -58,7 +59,7 @@ export interface Configs {
   endAngle: number;
   exponent: number;
   fontFamily: string;
-  fontStyle: string;
+  fontStyle: FontStyle;
   fontWeight: number;
   height: number;
   maxFontSize: number;
@@ -81,7 +82,7 @@ export interface WordcloudViewModel {
   padding: number;
   fontWeight: number;
   fontFamily: string;
-  fontStyle: string;
+  fontStyle: FontStyle;
   minFontSize: number;
   maxFontSize: number;
   spiral: string;

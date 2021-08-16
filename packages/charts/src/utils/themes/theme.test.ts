@@ -16,7 +16,7 @@ import {
   mergeWithDefaultAnnotationRect,
   mergeWithDefaultTheme,
 } from './merge_utils';
-import { AreaSeriesStyle, LineSeriesStyle, PartialTheme, Theme } from './theme';
+import { AreaSeriesStyle, LineSeriesStyle, PartialTheme, TextStyle, Theme } from './theme';
 
 describe('Theme', () => {
   let CLONED_LIGHT_THEME: Theme;
@@ -49,10 +49,10 @@ describe('Theme', () => {
         opacity: 1,
       };
 
-      const customDetailsConfig = {
+      const customDetailsConfig: TextStyle = {
         fontSize: 50,
         fontFamily: 'custom-font-family',
-        fontStyle: 'custom-font-style',
+        fontStyle: 'italic',
         fill: 'custom-fill',
         padding: 20,
       };
@@ -235,7 +235,7 @@ describe('Theme', () => {
           },
           displayValue: {
             fontSize: 10,
-            fontStyle: 'custom-font-style',
+            fontStyle: 'italic',
           },
         },
       };
@@ -299,7 +299,7 @@ describe('Theme', () => {
       const partialTheme: PartialTheme = {
         axes: {
           axisTitle: {
-            fontStyle: 'elastic_charts',
+            fontStyle: 'normal',
           },
           axisLine: {
             stroke: 'elastic_charts',

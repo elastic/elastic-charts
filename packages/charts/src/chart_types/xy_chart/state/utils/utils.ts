@@ -177,14 +177,7 @@ export function computeSeriesGeometries(
 
   const barIndexByPanel = Object.keys(dataSeriesGroupedByPanel).reduce<Record<string, string[]>>((acc, panelKey) => {
     const panelBars = dataSeriesGroupedByPanel[panelKey];
-    const barDataSeriesByBarIndex = groupBy(
-      panelBars,
-      (d) => {
-        return getBarIndexKey(d, enableHistogramMode);
-      },
-      false,
-    );
-
+    const barDataSeriesByBarIndex = groupBy(panelBars, (d) => getBarIndexKey(d, enableHistogramMode), false);
     acc[panelKey] = Object.keys(barDataSeriesByBarIndex);
     return acc;
   }, {});
@@ -212,9 +205,7 @@ export function computeSeriesGeometries(
     chartRotation,
   );
 
-  const totalBarsInCluster = Object.values(barIndexByPanel).reduce((acc, curr) => {
-    return Math.max(acc, curr.length);
-  }, 0);
+  const totalBarsInCluster = Object.values(barIndexByPanel).reduce((acc, curr) => Math.max(acc, curr.length), 0);
 
   const xScale = computeXScale({
     xDomain,
@@ -520,31 +511,10 @@ function renderGeometries(
 
 /** @internal */
 export function computeChartTransform({ width, height }: Size, chartRotation: Rotation): Transform {
-  if (chartRotation === 90) {
-    return {
-      x: width,
-      y: 0,
-      rotate: 90,
-    };
-  }
-  if (chartRotation === -90) {
-    return {
-      x: 0,
-      y: height,
-      rotate: -90,
-    };
-  }
-  if (chartRotation === 180) {
-    return {
-      x: width,
-      y: height,
-      rotate: 180,
-    };
-  }
   return {
-    x: 0,
-    y: 0,
-    rotate: 0,
+    x: chartRotation === 90 || chartRotation === 180 ? width : 0,
+    y: chartRotation === -90 || chartRotation === 180 ? height : 0,
+    rotate: chartRotation,
   };
 }
 
