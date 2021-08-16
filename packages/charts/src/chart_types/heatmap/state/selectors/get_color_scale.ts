@@ -28,7 +28,7 @@ import { getHeatmapTableSelector } from './get_heatmap_table';
 
 type ScaleModelType<S> = {
   scale: S;
-  bands: Array<{ start: number }>;
+  colorThresholds: number[];
 };
 
 type Band = { start: number; end: number; label: string; color: Color };
@@ -58,27 +58,26 @@ const DEFAULT_COLOR_SCALE_TYPE = ScaleType.Linear;
 export const getColorScale = createCustomCachedSelector(
   [getHeatmapSpecSelector, getHeatmapTableSelector],
   (spec, heatmapTable) => {
-    const { scale, bands } = SCALE_TYPE_TO_SCALE_FN[spec.colorScale ?? DEFAULT_COLOR_SCALE_TYPE](spec, heatmapTable);
-    return {
-      scale,
-      bands: dedupBands(bands, spec, scale),
-    };
+    const colorScaleType = spec.colorScale ?? DEFAULT_COLOR_SCALE_TYPE;
+    const { scale, colorThresholds } = SCALE_TYPE_TO_SCALE_FN[colorScaleType](spec, heatmapTable);
+    const bands = bandsFromThresholds(colorThresholds, spec, scale);
+    return { scale, bands };
   },
 );
 
-function dedupBands(
-  bands: Array<{ start: number }>,
+function bandsFromThresholds(
+  colorThresholds: number[],
   spec: HeatmapSpec,
   scale: ScaleLinear<string, string> | ScaleQuantile<string> | ScaleQuantize<string> | ScaleThreshold<number, string>,
 ) {
   const formatter = spec.valueFormatter ?? identity;
-  const bandsWithFormattedStarts = bands.reduce<Map<string, Band>>((acc, { start }, index, array) => {
-    const label = `≥ ${formatter(start)}`;
-    const end = array.length === index + 1 ? Infinity : array[index + 1].start;
-    acc.set(label, { start, end, label, color: scale(start) });
+  const bands = colorThresholds.reduce<Map<string, Band>>((acc, threshold, i, thresholds) => {
+    const label = `≥ ${formatter(threshold)}`;
+    const end = thresholds.length === i + 1 ? Infinity : thresholds[i + 1];
+    acc.set(label, { start: threshold, end, label, color: scale(threshold) });
     return acc;
   }, new Map());
-  return [...bandsWithFormattedStarts.values()];
+  return [...bands.values()];
 }
 
 function getQuantizedScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleQuantizeType {
@@ -88,39 +87,32 @@ function getQuantizedScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): Scale
   // we use the data extent or only the first two values in the `ranges` prop
   const scale = scaleQuantize<string>().domain(domain).range(colors);
   // quantize scale works as the linear one, we should manually
-  // compute the start of each band corresponding to the quantized segments
+  // compute the start of each color threshold corresponding to the quantized segments
   const numOfSegments = colors.length;
   const interval = (domain[1] - domain[0]) / numOfSegments;
-  const bands = colors.map((color, i) => ({ start: domain[0] + interval * i }));
+  const colorThresholds = colors.map((color, i) => domain[0] + interval * i);
 
-  return {
-    scale,
-    bands,
-  };
+  return { scale, colorThresholds };
 }
 
 function getQuantileScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleQuantileType {
   const colors = spec.colors ?? DEFAULT_COLORS;
   const domain = heatmapTable.table.map(({ value }) => value);
   const scale = scaleQuantile<string>().domain(domain).range(colors);
-  // the bands array should contain all quantiles + the minimum value
-  const bands = [...new Set([heatmapTable.extent[0], ...scale.quantiles()])].map((start) => ({ start }));
-  return {
-    scale,
-    bands,
-  };
+  // the colorThresholds array should contain all quantiles + the minimum value
+  const colorThresholds = [...new Set([heatmapTable.extent[0], ...scale.quantiles()])];
+
+  return { scale, colorThresholds };
 }
 
 function getThresholdScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleThresholdType {
   const colors = spec.colors ?? DEFAULT_COLORS;
   const domain = spec.ranges ?? heatmapTable.extent;
   const scale = scaleThreshold<number, string>().domain(domain).range(colors);
-  // the start band array should contain all the thresholds + the minimum value
-  const bands = [...new Set([heatmapTable.extent[0], ...domain])].map((start) => ({ start }));
-  return {
-    scale,
-    bands,
-  };
+  // the colorThresholds array should contain all the thresholds + the minimum value
+  const colorThresholds = [...new Set([heatmapTable.extent[0], ...domain])];
+
+  return { scale, colorThresholds };
 }
 
 function getLinearScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleLinearType {
@@ -128,9 +120,7 @@ function getLinearScale(spec: HeatmapSpec, heatmapTable: HeatmapTable): ScaleLin
   const colors = spec.colors ?? DEFAULT_COLORS;
   const scale = scaleLinear<string>().domain(domain).interpolate(interpolateHcl).range(colors).clamp(true);
   // adding initial and final range/extent value if they are rounded values.
-  const bands = [...new Set([domain[0], ...scale.ticks(6)])].map((start) => ({ start }));
-  return {
-    scale,
-    bands,
-  };
+  const colorThresholds = [...new Set([domain[0], ...scale.ticks(6)])];
+
+  return { scale, colorThresholds };
 }

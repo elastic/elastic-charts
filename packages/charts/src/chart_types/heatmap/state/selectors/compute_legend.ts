@@ -24,12 +24,7 @@ export const computeLegendSelector = createCustomCachedSelector(
     return bands.map(({ label, color }) => {
       return {
         // the band label is considered unique by construction
-        seriesIdentifiers: [
-          {
-            key: label,
-            specId: label,
-          },
-        ],
+        seriesIdentifiers: [{ key: label, specId: label }],
         color,
         label,
         isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === label),
