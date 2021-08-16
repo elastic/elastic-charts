@@ -1,3 +1,10 @@
+## [33.2.4](https://github.com/elastic/elastic-charts/compare/v33.2.3...v33.2.4) (2021-08-16)
+
+
+### Bug Fixes
+
+* add LICENSE file into the published package ([#1305](https://github.com/elastic/elastic-charts/issues/1305)) ([54520f0](https://github.com/elastic/elastic-charts/commit/54520f044bc00e27f9c9975dedd8ede28fcf3336))
+
 ## [33.2.3](https://github.com/elastic/elastic-charts/compare/v33.2.2...v33.2.3) (2021-08-16)
 
 

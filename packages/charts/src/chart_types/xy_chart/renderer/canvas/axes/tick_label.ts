@@ -7,103 +7,59 @@
  */
 
 import { AxisProps } from '.';
-import { Font, FontStyle } from '../../../../../common/text_utils';
-import { withContext } from '../../../../../renderers/canvas';
 import { AxisTick, getTickLabelProps } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';
 
 /** @internal */
-export function renderTickLabel(ctx: CanvasRenderingContext2D, tick: AxisTick, showTicks: boolean, props: AxisProps) {
-  const {
-    axisSpec: { position, labelFormat },
-    dimension: axisTicksDimensions,
-    size,
-    debug,
-    axisStyle,
-  } = props;
+export function renderTickLabel(
+  ctx: CanvasRenderingContext2D,
+  tick: AxisTick,
+  showTicks: boolean,
+  { axisSpec: { position, labelFormat }, dimension, size, debug, axisStyle }: AxisProps,
+) {
   const labelStyle = axisStyle.tickLabel;
-  const { rotation: tickLabelRotation, alignment, offset } = labelStyle;
-
-  const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth, maxLabelTextHeight } = axisTicksDimensions;
-  const { x, y, offsetX, offsetY, textOffsetX, textOffsetY, horizontalAlign, verticalAlign } = getTickLabelProps(
+  const tickLabelProps = getTickLabelProps(
     axisStyle,
     tick.position,
     position,
-    tickLabelRotation,
+    labelStyle.rotation,
     size,
-    axisTicksDimensions,
+    dimension,
     showTicks,
-    offset,
-    alignment,
+    labelStyle.offset,
+    labelStyle.alignment,
   );
 
+  const center = { x: tickLabelProps.x + tickLabelProps.offsetX, y: tickLabelProps.y + tickLabelProps.offsetY };
+
   if (debug) {
+    const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth: width, maxLabelTextHeight: height } = dimension;
     // full text container
-    renderDebugRectCenterRotated(
-      ctx,
-      {
-        x: x + offsetX,
-        y: y + offsetY,
-      },
-      {
-        x: x + offsetX,
-        y: y + offsetY,
-        height: maxLabelTextHeight,
-        width: maxLabelTextWidth,
-      },
-      undefined,
-      undefined,
-      tickLabelRotation,
-    );
+    renderDebugRectCenterRotated(ctx, center, { ...center, width, height }, undefined, undefined, labelStyle.rotation);
     // rotated text container
-    if (![0, -90, 90, 180].includes(tickLabelRotation)) {
-      renderDebugRectCenterRotated(
-        ctx,
-        {
-          x: x + offsetX,
-          y: y + offsetY,
-        },
-        {
-          x: x + offsetX,
-          y: y + offsetY,
-          height: maxLabelBboxHeight,
-          width: maxLabelBboxWidth,
-        },
-        undefined,
-        undefined,
-        0,
-      );
+    if (labelStyle.rotation % 90 !== 0) {
+      renderDebugRectCenterRotated(ctx, center, { ...center, width: maxLabelBboxWidth, height: maxLabelBboxHeight });
     }
   }
-  const font: Font = {
-    fontFamily: labelStyle.fontFamily,
-    fontStyle: labelStyle.fontStyle ? (labelStyle.fontStyle as FontStyle) : 'normal',
-    fontVariant: 'normal',
-    fontWeight: 'normal',
-    textColor: labelStyle.fill,
-    textOpacity: 1,
-  };
-  withContext(ctx, (ctx) => {
-    renderText(
-      ctx,
-      {
-        x: x + offsetX,
-        y: y + offsetY,
-      },
-      labelFormat ? labelFormat(tick.value) : tick.label,
-      {
-        ...font,
-        fontSize: labelStyle.fontSize,
-        fill: labelStyle.fill,
-        align: horizontalAlign as CanvasTextAlign,
-        baseline: verticalAlign as CanvasTextBaseline,
-      },
-      tickLabelRotation,
-      {
-        x: textOffsetX,
-        y: textOffsetY,
-      },
-    );
-  });
+
+  renderText(
+    ctx,
+    center,
+    labelFormat ? labelFormat(tick.value) : tick.label,
+    {
+      fontFamily: labelStyle.fontFamily,
+      fontStyle: labelStyle.fontStyle ?? 'normal',
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      textColor: labelStyle.fill,
+      textOpacity: 1,
+      fontSize: labelStyle.fontSize,
+      align: tickLabelProps.horizontalAlign,
+      baseline: tickLabelProps.verticalAlign,
+    },
+    labelStyle.rotation,
+    tickLabelProps.textOffsetX,
+    tickLabelProps.textOffsetY,
+  );
 }

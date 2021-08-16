@@ -8,7 +8,7 @@
 
 import { Fill, Stroke, Rect } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
-import { getRadians } from '../../../../../utils/common';
+import { degToRad } from '../../../../../utils/common';
 import { Point } from '../../../../../utils/point';
 import { renderRect } from '../primitives/rect';
 
@@ -40,7 +40,7 @@ export function renderDebugRect(
 ) {
   withContext(ctx, (ctx) => {
     ctx.translate(rect.x, rect.y);
-    ctx.rotate(getRadians(rotation));
+    ctx.rotate(degToRad(rotation));
     renderRect(
       ctx,
       {
@@ -68,7 +68,7 @@ export function renderDebugRectCenterRotated(
 
   withContext(ctx, (ctx) => {
     ctx.translate(x, y);
-    ctx.rotate(getRadians(rotation));
+    ctx.rotate(degToRad(rotation));
     ctx.translate(-x, -y);
     renderRect(
       ctx,

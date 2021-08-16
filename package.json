@@ -55,8 +55,7 @@
     "typecheck:src": "lerna run --loglevel=silent --scope @elastic/charts typecheck --stream --no-prefix",
     "typecheck:all": "tsc -p ./tsconfig.json --noEmit",
     "ts:prune": "ts-prune",
-    "link:kibana": "node ./packages/link_kibana",
-    "postversion": "node ./packages/charts/scripts/move_txt_files.js"
+    "link:kibana": "node ./packages/link_kibana"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
