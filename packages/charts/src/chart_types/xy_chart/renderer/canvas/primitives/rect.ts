@@ -19,7 +19,7 @@ export function renderRect(
   disableBorderOffset: boolean = false,
 ) {
   const borderOffset = !disableBorderOffset && stroke.width >= MIN_STROKE_WIDTH ? stroke.width : 0;
-  if (stroke.width >= MIN_STROKE_WIDTH && height >= borderOffset) {
+  if (stroke.width >= MIN_STROKE_WIDTH && height >= borderOffset && width >= borderOffset) {
     ctx.strokeStyle = RGBtoString(stroke.color);
     ctx.lineWidth = stroke.width;
     ctx.beginPath();
