@@ -34,7 +34,7 @@
     "prettier:check": "prettier --check \"**/*.{json,html,css,scss}\"",
     "playground": "cd playground && webpack serve",
     "pq": "pretty-quick",
-    "semantic-release": "semantic-release",
+    "semantic-release": "semantic-release --debug",
     "start": "yarn storybook",
     "storybook": "lerna run --scope charts-storybook start --stream --no-prefix",
     "storybook:build": "lerna run --scope charts-storybook build --stream --no-prefix",
