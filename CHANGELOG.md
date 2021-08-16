@@ -1,3 +1,10 @@
+## [33.2.3](https://github.com/elastic/elastic-charts/compare/v33.2.2...v33.2.3) (2021-08-16)
+
+
+### Bug Fixes
+
+* **heatmap:** compute nice legend items from color scale  ([#1273](https://github.com/elastic/elastic-charts/issues/1273)) ([0d392ae](https://github.com/elastic/elastic-charts/commit/0d392ae9ff7f09303b3643bbca7a24ccde39f84a)), closes [#1166](https://github.com/elastic/elastic-charts/issues/1166) [#1191](https://github.com/elastic/elastic-charts/issues/1191) [#1192](https://github.com/elastic/elastic-charts/issues/1192)
+
 ## [33.2.2](https://github.com/elastic/elastic-charts/compare/v33.2.1...v33.2.2) (2021-08-10)
 
 
