@@ -34,7 +34,7 @@
     "prettier:check": "prettier --check \"**/*.{json,html,css,scss}\"",
     "playground": "cd playground && webpack serve",
     "pq": "pretty-quick",
-    "semantic-release": "semantic-release",
+    "semantic-release": "semantic-release --debug",
     "start": "yarn storybook",
     "storybook": "lerna run --scope charts-storybook start --stream --no-prefix",
     "storybook:build": "lerna run --scope charts-storybook build --stream --no-prefix",
@@ -55,7 +55,8 @@
     "typecheck:src": "lerna run --loglevel=silent --scope @elastic/charts typecheck --stream --no-prefix",
     "typecheck:all": "tsc -p ./tsconfig.json --noEmit",
     "ts:prune": "ts-prune",
-    "link:kibana": "node ./packages/link_kibana"
+    "link:kibana": "node ./packages/link_kibana",
+    "postversion": "node ./packages/charts/scripts/move_txt_files.js"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
