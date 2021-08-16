@@ -15,6 +15,7 @@ import {
   Chart,
   DisplayValueSpec,
   LabelOverflowConstraint,
+  PartialTheme,
   Position,
   ScaleType,
   Settings,
@@ -61,7 +62,7 @@ export const Example = () => {
 
   const debug = boolean('debug', false);
 
-  const theme = {
+  const theme: PartialTheme = {
     barSeriesStyle: {
       displayValue: {
         fontSize: Number(number('value font size', 10)),

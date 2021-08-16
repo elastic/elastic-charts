@@ -9,6 +9,7 @@
 import { $Values } from 'utility-types';
 
 import { Pixels, Ratio } from '../../common/geometry';
+import { FontStyle } from '../../common/text_utils';
 import { Color, ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, SimplePadding } from '../dimensions';
 import { Point } from '../point';
@@ -22,7 +23,7 @@ export interface Visible {
 export interface TextStyle {
   fontSize: number;
   fontFamily: string;
-  fontStyle?: string;
+  fontStyle?: FontStyle;
   fill: Color;
   padding: number | SimplePadding;
 }

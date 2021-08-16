@@ -95,7 +95,6 @@ export const LIGHT_THEME: Theme = {
     axisTitle: {
       visible: true,
       fontSize: 12,
-      fontStyle: 'bold',
       fontFamily: 'sans-serif',
       padding: {
         inner: 8,
@@ -106,7 +105,6 @@ export const LIGHT_THEME: Theme = {
     axisPanelTitle: {
       visible: true,
       fontSize: 10,
-      fontStyle: 'bold',
       fontFamily: 'sans-serif',
       padding: {
         inner: 8,

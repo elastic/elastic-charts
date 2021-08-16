@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Settings, Wordcloud } from '@elastic/charts';
+import { Chart, Settings, Wordcloud, FontStyle } from '@elastic/charts';
 import { WeightFn, WordModel } from '@elastic/charts/src/chart_types/wordcloud/layout/types/viewmodel_types';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { palettes as euiPalettes } from '@elastic/charts/src/utils/themes/colors';
@@ -244,9 +244,9 @@ export const Example = () => {
         },
         startConfig.fontFamily,
       );
-  const fontStyle = template
-    ? startConfig.fontStyle
-    : select('fontStyle', { normal: 'normal', italic: 'italic' }, startConfig.fontStyle);
+  const fontStyle: FontStyle = template
+    ? (startConfig.fontStyle as FontStyle)
+    : select<FontStyle>('fontStyle', { normal: 'normal', italic: 'italic' }, startConfig.fontStyle as FontStyle);
 
   const palette = template
     ? startConfig.palette
