@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { BackgroundParameter } from '../../../storybook/node_modules/storybook-addon-background-toggle';
 import { ThemeParameter } from '../../../storybook/node_modules/storybook-addon-theme-toggle';
 import { parameters as globalParams } from '../../../storybook/preview';
-import { ThemeName } from '../../../storybook/use_base_theme';
+import { ThemeId } from '../../../storybook/use_base_theme';
 
 interface Globals {
   theme?: string;
@@ -57,7 +57,7 @@ function getBackground(backgroundId?: string) {
 }
 
 export function useGlobalsParameters() {
-  const [themeName, setThemeName] = useState<string>(ThemeName.Light);
+  const [themeName, setThemeName] = useState<string>(ThemeId.Light);
   const [backgroundColor, setBackgroundColor] = useState<string | undefined>('white');
 
   /**
@@ -65,7 +65,7 @@ export function useGlobalsParameters() {
    */
   function setParams(params: URLSearchParams, parameters?: Parameters) {
     const globals = getGlobalParams(params) as Globals;
-    const themeId = globals.theme ?? parameters?.theme?.default ?? themeParams.default ?? ThemeName.Light;
+    const themeId = globals.theme ?? parameters?.theme?.default ?? themeParams.default ?? ThemeId.Light;
     const backgroundId = globals.background ?? parameters?.background?.default ?? backgroundParams.default;
     setThemeName(themeId);
     setTheme(themeId);
