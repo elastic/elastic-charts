@@ -439,9 +439,6 @@ export const Example = () => {
   );
 };
 
-// storybook configuration
-Example.story = {
-  parameters: {
-    options: { selectedPanel: SB_SOURCE_PANEL },
-  },
+Example.parameters = {
+  options: { selectedPanel: SB_SOURCE_PANEL },
 };
