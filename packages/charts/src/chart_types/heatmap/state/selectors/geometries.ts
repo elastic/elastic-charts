@@ -15,7 +15,6 @@ import { getColorScale } from './get_color_scale';
 import { getGridHeightParamsSelector } from './get_grid_full_height';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
-import { getLegendItemsLabelsSelector } from './get_legend_items_labels';
 import { render } from './scenegraph';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
@@ -28,7 +27,6 @@ export const geometries = createCustomCachedSelector(
     getSettingsSpecSelector,
     getHeatmapTableSelector,
     getColorScale,
-    getLegendItemsLabelsSelector,
     getDeselectedSeriesSelector,
     getGridHeightParamsSelector,
   ],
@@ -37,27 +35,25 @@ export const geometries = createCustomCachedSelector(
     chartDimensions,
     settingSpec,
     heatmapTable,
-    colorScale,
-    legendItems,
+    { bands, scale: colorScale },
     deselectedSeries,
     gridHeightParams,
   ): ShapeViewModel => {
-    const deselectedTicks = new Set(
+    // instead of using the specId, each legend item is associated with an unique band label
+    const disabledBandLabels = new Set(
       deselectedSeries.map(({ specId }) => {
-        return Number(specId);
+        return specId;
       }),
     );
-    const { ticks } = colorScale;
-    const ranges = ticks.reduce<Array<[number, number | null]>>((acc, d, i) => {
-      if (deselectedTicks.has(d)) {
-        const rangeEnd = i + 1 === ticks.length ? null : ticks[i + 1];
-        acc.push([d, rangeEnd]);
-      }
-      return acc;
-    }, []);
+
+    const bandsToHide: Array<[number, number]> = bands
+      .filter(({ label }) => {
+        return disabledBandLabels.has(label);
+      })
+      .map(({ start, end }) => [start, end]);
 
     return heatmapSpec
-      ? render(heatmapSpec, settingSpec, chartDimensions, heatmapTable, colorScale, ranges, gridHeightParams)
+      ? render(heatmapSpec, settingSpec, chartDimensions, heatmapTable, colorScale, bandsToHide, gridHeightParams)
       : nullShapeViewModel();
   },
 );

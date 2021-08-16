@@ -159,11 +159,6 @@ export const Example = () => {
   );
 };
 
-Example.story = {
-  parameters: {
-    info: {
-      text: '',
-    },
-    options: { selectedPanel: SB_SOURCE_PANEL },
-  },
+Example.parameters = {
+  options: { selectedPanel: SB_SOURCE_PANEL },
 };
