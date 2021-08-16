@@ -1,3 +1,11 @@
+## [31.3.2](https://github.com/Metrika-Inc/metrika-charts/compare/v31.3.1...v31.3.2) (2021-08-16)
+
+
+### Bug Fixes
+
+* **heatmap:** prevented time series data from rendering multiple labels on the x axis per column ([04779d5](https://github.com/Metrika-Inc/metrika-charts/commit/04779d514abf36433b3fc87faadd87578c590ec1))
+* **heatmap:** proper layout when the legend is on the side ([967c705](https://github.com/Metrika-Inc/metrika-charts/commit/967c7053004aa3484c1d8da65bb6c84a89bf4214))
+
 ## [31.3.1](https://github.com/Metrika-Inc/metrika-charts/compare/v31.3.0...v31.3.1) (2021-08-10)
 
 
