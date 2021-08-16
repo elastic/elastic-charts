@@ -160,7 +160,19 @@ export function renderCanvas2d(
           } else if (labelRot === -90) {
             textAlign = 'right';
           }
-          heatmapViewModel.xValues.forEach((xValue) => {
+          const numVerticalGrids = heatmapViewModel.gridLines.x.length;
+          const numXLabels = heatmapViewModel.xValues.length;
+          let filteredXValues;
+          // if we are going to have more x labels than grid lines
+          // then we only render every nth x value, where n is numXLabels / numVerticalGrids
+          // this has the effect of only rendering one x axis label for each column in siutations
+          // where there would otherwise be too many
+          if (numXLabels > numVerticalGrids) {
+            const decreaseFactor = Math.ceil(numXLabels / numVerticalGrids);
+            filteredXValues = heatmapViewModel.xValues.filter((_, i) => i % decreaseFactor === 0);
+          }
+
+          (filteredXValues ?? heatmapViewModel.xValues).forEach((xValue) => {
             renderText(
               ctx,
               {
