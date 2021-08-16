@@ -14,6 +14,13 @@ module.exports = {
     '@semantic-release/commit-analyzer',
     '@semantic-release/release-notes-generator',
     '@semantic-release/changelog',
+    [
+      '@semantic-release/exec',
+      {
+        prepareCmd: 'node ./packages/charts/scripts/move_txt_files.js',
+        execCwd: '.',
+      },
+    ],
     '@semantic-release/github',
     [
       '@semantic-release/npm',
