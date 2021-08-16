@@ -40,7 +40,7 @@ export const getBrushAreaSelector = createCustomCachedSelector(
       y: mouseDownPosition.position.y,
     };
 
-    const clampedEndY = clamp(end.y, 0, gridParams.height * gridParams.pageSize);
+    const clampedEndY = clamp(end.y, 0, gridParams.gridCellHeight * gridParams.pageSize);
 
     switch (brushAxis) {
       case BrushAxis.Both:
