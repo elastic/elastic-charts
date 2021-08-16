@@ -10,48 +10,56 @@ import { EUI_CHARTS_THEME_DARK, EUI_CHARTS_THEME_LIGHT } from '@elastic/eui/dist
 import { createContext, useContext } from 'react';
 import { $Values } from 'utility-types';
 
-import { Theme, LIGHT_THEME, DARK_THEME } from '@elastic/charts';
+import { Theme, LIGHT_THEME, DARK_THEME, DEFAULT_CHART_MARGINS } from '@elastic/charts';
 import { mergePartial } from '@elastic/charts/src/utils/common';
+
+import { parameters } from './preview';
 
 /**
  * Available themes
  * @internal
  */
-export const ThemeName = Object.freeze({
+export const ThemeId = Object.freeze({
   Light: 'light' as const,
   Dark: 'dark' as const,
   EUILight: 'eui-light' as const,
   EUIDark: 'eui-dark' as const,
 });
 /** @internal */
-export type ThemeName = $Values<typeof ThemeName>;
+export type ThemeId = $Values<typeof ThemeId>;
 
-const ThemeContext = createContext<ThemeName>(ThemeName.Light);
+const ThemeContext = createContext<ThemeId>(ThemeId.Light);
 const BackgroundContext = createContext<string | undefined>(undefined);
 
 export const ThemeProvider = ThemeContext.Provider;
 export const BackgroundProvider = BackgroundContext.Provider;
 
 const themeMap = {
-  [ThemeName.Light]: LIGHT_THEME,
-  [ThemeName.Dark]: DARK_THEME,
-  [ThemeName.EUILight]: mergePartial(LIGHT_THEME, EUI_CHARTS_THEME_LIGHT.theme, { mergeOptionalPartialValues: true }),
-  [ThemeName.EUIDark]: mergePartial(DARK_THEME, EUI_CHARTS_THEME_DARK.theme, { mergeOptionalPartialValues: true }),
+  [ThemeId.Light]: LIGHT_THEME,
+  [ThemeId.Dark]: DARK_THEME,
+  [ThemeId.EUILight]: mergePartial(LIGHT_THEME, EUI_CHARTS_THEME_LIGHT.theme, { mergeOptionalPartialValues: true }),
+  [ThemeId.EUIDark]: mergePartial(DARK_THEME, EUI_CHARTS_THEME_DARK.theme, { mergeOptionalPartialValues: true }),
+};
+
+const getBackground = (colorId: string) => {
+  const option = (parameters?.background?.options ?? []).find(({ id }) => id === colorId);
+  return option?.background ?? option?.color ?? '#fff';
 };
 
 export const useBaseTheme = (): Theme => {
-  const themeName = useContext(ThemeContext);
-  const background = useContext(BackgroundContext);
+  const themeId = useContext(ThemeContext);
+  const backgroundId = useContext(BackgroundContext);
+  const theme = themeMap[themeId] ?? LIGHT_THEME;
 
-  return background
-    ? mergePartial(
-        themeMap[themeName],
-        {
-          background: {
-            color: background,
-          },
-        },
-        { mergeOptionalPartialValues: true },
-      )
-    : themeMap[themeName];
+  return mergePartial(
+    theme,
+    {
+      // eui chart theme has no margin for some reason. This is just for consistency.
+      chartMargins: DEFAULT_CHART_MARGINS,
+      background: {
+        color: backgroundId && getBackground(backgroundId),
+      },
+    },
+    { mergeOptionalPartialValues: true },
+  );
 };

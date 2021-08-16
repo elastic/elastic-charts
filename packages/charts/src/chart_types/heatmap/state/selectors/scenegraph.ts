@@ -25,8 +25,8 @@ export function render(
   settingsSpec: SettingsSpec,
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
-  colorScale: ColorScaleType,
-  filterRanges: Array<[number, number | null]>,
+  colorScale: ColorScaleType['scale'],
+  bandsToHide: Array<[number, number]>,
   gridHeightParams: GridHeightParams,
 ): ShapeViewModel {
   const textMeasurer = document.createElement('canvas');
@@ -46,7 +46,7 @@ export function render(
     chartDimensions,
     heatmapTable,
     colorScale,
-    filterRanges,
+    bandsToHide,
     gridHeightParams,
   );
 }

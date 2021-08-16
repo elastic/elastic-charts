@@ -11,52 +11,52 @@ export const SWIM_LANE_DATA = [
   {
     laneLabel: 'i-71a7f77b',
     time: 1572847200,
-    value: 1.393504,
+    value: 0,
   },
   {
     laneLabel: 'i-71a7f77b',
     time: 1572892200,
-    value: 98.22463906512188,
+    value: 3,
   },
   {
     laneLabel: 'i-71a7f77b',
     time: 1572894000,
-    value: 35.80307,
+    value: 25,
   },
   {
     laneLabel: 'i-71a7f77b',
     time: 1572895800,
-    value: 0.22128246815642463,
+    value: 50,
   },
   {
     laneLabel: 'i-71a7f77b',
     time: 1572897600,
-    value: 0.28036102544259556,
+    value: 75,
   },
   {
     laneLabel: 'i-71a7f77b',
     time: 1572899400,
-    value: 23.045729601789432,
+    value: 1,
   },
   {
     laneLabel: 'i-71a7f77b',
     time: 1572901200,
-    value: 0.5144934818824536,
+    value: 2,
   },
   {
     laneLabel: 'i-71a7f77b',
     time: 1572903000,
-    value: 0.2689519481619711,
+    value: 24,
   },
   {
     laneLabel: 'i-71a7f77b',
     time: 1572904800,
-    value: 0.2141724473865323,
+    value: 49,
   },
   {
     laneLabel: 'i-71a7f77b',
     time: 1572906600,
-    value: 0.10464817254089763,
+    value: 74,
   },
   {
     laneLabel: 'i-71a7f77b',

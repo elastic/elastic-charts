@@ -76,19 +76,6 @@ module.exports = async ({ config }) => {
     },
   });
 
-  config.module.rules.push({
-    test: /\.tsx?$/,
-    include: [path.resolve(__dirname, './stories/')],
-    exclude: [path.resolve(__dirname, './stories/utils')],
-    loaders: [
-      {
-        loader: require.resolve('@storybook/source-loader'),
-        options: { parser: 'typescript' },
-      },
-    ],
-    enforce: 'pre',
-  });
-
   // Replace default css rules with nonce
   config.module.rules = config.module.rules.filter((r) => !r?.test?.test?.('.css'));
 
