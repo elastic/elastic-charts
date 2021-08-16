@@ -23,15 +23,11 @@ module.exports = {
       },
     ],
     [
-      '@semantic-release/exec',
+      '@semantic-release/git',
       {
-        // npm plugin not updating package.json
-        // eslint-disable-next-line no-template-curly-in-string
-        prepareCmd: 'npm version ${nextRelease.version} --force --no-git-tag-version --allow-same-version',
-        execCwd: './packages/charts',
+        assets: ['./packages/charts/package.json', 'CHANGELOG.md'],
       },
     ],
-    '@semantic-release/git',
     ...(isDryRun
       ? []
       : [
