@@ -108,8 +108,14 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
 
     if (config.xAxisLabel.position === 'top') {
       // move the top down to make space for the x axis labels
-      top = chartContainerDimensions.height - gridCellHeight * pageSize - legendSize.height;
+      top = chartContainerDimensions.height - gridCellHeight * pageSize;
     }
+    let legendHeight = 0;
+    if (showLegend && (legendPosition === Position.Top || legendPosition === Position.Bottom)) {
+      legendHeight = legendSize.height;
+      top -= legendSize.height;
+    }
+    height -= legendHeight;
 
     return {
       height,

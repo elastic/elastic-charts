@@ -18,19 +18,29 @@
  */
 
 import { action } from '@storybook/addon-actions';
+import { select } from '@storybook/addon-knobs';
 import { extent } from 'd3-array';
 import React from 'react';
 
-import { Chart, Heatmap, ScaleType, Settings } from '../../packages/charts/src';
+import { Chart, Heatmap, Position, ScaleType, Settings } from '../../packages/charts/src';
 import { BABYNAME_DATA } from '../../packages/charts/src/utils/data_samples/babynames';
 
 export const Example = () => {
   const data = BABYNAME_DATA.filter(([year]) => year > 1950);
   const values = data.map((d) => +d[3]);
   const [min, max] = extent(values);
+
+  const legendPos = select('Legend position', ['top', 'right', 'bottom'], 'top');
+  const xAxisPosition = select('X Axis Position', ['top', 'bottom'], 'top');
+
   return (
     <Chart className="story-chart">
-      <Settings onElementClick={action('onElementClick')} showLegend legendPosition="right" brushAxis="both" />
+      <Settings
+        onElementClick={action('onElementClick')}
+        showLegend
+        legendPosition={legendPos as Position}
+        brushAxis="both"
+      />
       <Heatmap
         id="heatmap2"
         colorScale={ScaleType.Linear}
@@ -44,6 +54,10 @@ export const Example = () => {
         xSortPredicate="alphaAsc"
         config={{
           grid: {
+            // cellHeight: {
+            //   min: 0,
+            //   max: 20,
+            // },
             stroke: {
               width: 0,
             },
@@ -61,6 +75,9 @@ export const Example = () => {
           },
           yAxisLabel: {
             visible: true,
+          },
+          xAxisLabel: {
+            position: xAxisPosition,
           },
           onBrushEnd: action('onBrushEnd'),
         }}
