@@ -14,4 +14,10 @@ describe('Goal stories', () => {
       'http://localhost:9001/?path=/story/goal-alpha--gaps&knob-show target=false&knob-target=260',
     );
   });
+  it('should render actual tooltip color on hover', async () => {
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/goal-alpha--gaps&knob-show target=false&knob-target=260&globals=background:white',
+      { right: 245, bottom: 120 },
+    );
+  });
 });
