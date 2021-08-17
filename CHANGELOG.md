@@ -1,3 +1,19 @@
+# [34.0.0](https://github.com/elastic/elastic-charts/compare/v33.2.4...v34.0.0) (2021-08-16)
+
+
+### Code Refactoring
+
+* **cartesian:** cartesian rendering iteration ([#1286](https://github.com/elastic/elastic-charts/issues/1286)) ([b2ae4f7](https://github.com/elastic/elastic-charts/commit/b2ae4f792e2e3aecbb240880634eee175dead1f3)), closes [#1202](https://github.com/elastic/elastic-charts/issues/1202)
+
+
+### BREAKING CHANGES
+
+* **cartesian:** - `TextStyle.fontStyle` is no longer a `string`, it's the more specific `FontStyle`
+- For symmetry, `fontStyle` in word cloud is also switching from `string` to `FontStyle`
+- Certain text configurations included both `fill` and `textColor` for the text color; `fill` got removed, because `textColor` is part of the public `Font` type, and because `textColor` has clearer meaning than `fill`. Yet, some of the code used the `fill` property and/or made the `fill` property also mandatory. So, userland code needs to remove some `fill` property, and might need to ensure that the correct value is going into `textColor`
+- `getRadians` got unpublished 
+- No attempt to draw a rect border if there's not enough width/height for at least the specified border width (ie. width/height being at least twice the border width)
+
 ## [33.2.4](https://github.com/elastic/elastic-charts/compare/v33.2.3...v33.2.4) (2021-08-16)
 
 
