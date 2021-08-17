@@ -7,7 +7,7 @@
  */
 
 import { createPopper, Instance } from '@popperjs/core';
-import React, { RefObject, useRef, useEffect, useCallback, MouseEventHandler } from 'react';
+import React, { RefObject, useRef, useEffect, useCallback } from 'react';
 
 import {
   DOMElementType,
@@ -23,7 +23,7 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'ma
   chartDimensions: Dimensions;
   onDOMElementEnter: typeof onDOMElementEnterAction;
   onDOMElementLeave: typeof onDOMElementLeaveAction;
-  onClickHandler?: MouseEventHandler;
+  onLineMarkerClickHandler?: (v: any) => void;
 };
 
 const MARKER_TRANSFORMS = {
@@ -51,7 +51,7 @@ export function LineMarker({
   chartDimensions,
   onDOMElementEnter,
   onDOMElementLeave,
-  onClickHandler,
+  onLineMarkerClickHandler,
 }: LineMarkerProps) {
   const iconRef = useRef<HTMLDivElement | null>(null);
   const testRef = useRef<HTMLDivElement | null>(null);
@@ -118,7 +118,7 @@ export function LineMarker({
           datum,
         });
       }}
-      onClick={onClickHandler ?? undefined}
+      onClick={onLineMarkerClickHandler ?? undefined}
       onMouseLeave={onDOMElementLeave}
       style={{ ...style, ...transform }}
       type="button"

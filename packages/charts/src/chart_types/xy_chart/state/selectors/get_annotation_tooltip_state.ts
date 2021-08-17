@@ -126,6 +126,7 @@ function getTooltipStateForDOMElements(
   }
 
   return {
+    id: spec.id,
     isVisible: true,
     annotationType: AnnotationType.Line,
     datum: dimension.datum,

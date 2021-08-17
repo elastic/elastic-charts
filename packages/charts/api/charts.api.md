@@ -42,6 +42,14 @@ export interface AngleFromTo {
     x1: Radian;
 }
 
+// @public (undocumented)
+export interface AnnotationClick {
+    // (undocumented)
+    annotationId: string;
+    // (undocumented)
+    func: ElementClickListener;
+}
+
 // @public
 export const AnnotationDomainType: Readonly<{
     XDomain: "xDomain";
@@ -1814,6 +1822,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     hideDuplicateAxes: boolean;
     minBrushDelta?: number;
     noResults?: ComponentType | ReactChild;
+    onAnnotationClick?: AnnotationClick[];
     // (undocumented)
     onBrushEnd?: BrushEndListener;
     // (undocumented)
@@ -1825,7 +1834,6 @@ export interface SettingsSpec extends Spec, LegendSpec {
     // (undocumented)
     onPointerUpdate?: PointerUpdateListener;
     onProjectionClick?: ProjectionClickListener;
-    onRectAnnotationClick?: ElementClickListener;
     // (undocumented)
     onRenderChange?: RenderChangeListener;
     orderOrdinalBinsBy?: OrderBy;

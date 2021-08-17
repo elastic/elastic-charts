@@ -46,7 +46,7 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     }
     if (
       highlightedGeometries.length > 0 &&
-      (settingsSpec.onElementClick || settingsSpec.onElementOver || settingsSpec.onRectAnnotationClick)
+      (settingsSpec.onElementClick || settingsSpec.onElementOver || settingsSpec.onAnnotationClick)
     ) {
       return 'pointer';
     }

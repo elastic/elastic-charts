@@ -45,6 +45,7 @@ export function computeRectAnnotationTooltipState(
       annotationDimension as AnnotationRectProps[],
       chartRotation,
       chartDimensions,
+      spec.id,
     );
 
     if (rectAnnotationTooltipState) {

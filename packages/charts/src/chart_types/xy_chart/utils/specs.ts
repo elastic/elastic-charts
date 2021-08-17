@@ -952,6 +952,10 @@ export interface BaseAnnotationSpec<
   S extends RectAnnotationStyle | LineAnnotationStyle
 > extends Spec,
     AnnotationPortalSettings {
+  /**
+   * Id provided by the user for the annotation
+   */
+  id: string;
   chartType: typeof ChartType.XYAxis;
   specType: typeof SpecType.Annotation;
   /**

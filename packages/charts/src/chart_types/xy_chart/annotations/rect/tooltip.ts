@@ -22,6 +22,7 @@ export function getRectAnnotationTooltipState(
   annotationRects: AnnotationRectProps[],
   rotation: Rotation,
   chartDimensions: Dimensions,
+  id?: string,
 ): AnnotationTooltipState | null {
   const totalAnnotationRect = annotationRects.length;
 
@@ -39,6 +40,7 @@ export function getRectAnnotationTooltipState(
     const isWithinBounds = isWithinRectBounds(cursorPosition, bounds);
     if (isWithinBounds) {
       return {
+        id,
         isVisible: true,
         annotationType: AnnotationType.Rectangle,
         anchor: {

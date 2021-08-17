@@ -446,6 +446,12 @@ export interface LegendSpec {
   legendColorPicker?: LegendColorPicker;
 }
 
+/** @public */
+export interface AnnotationClick {
+  func: ElementClickListener;
+  annotationId: string;
+}
+
 /**
  * The Spec used for Chart settings
  * @public
@@ -512,9 +518,9 @@ export interface SettingsSpec extends Spec, LegendSpec {
   onRenderChange?: RenderChangeListener;
   xDomain?: CustomXDomain;
   /**
-   * allows user to set a click handler to the rectangular annotations
+   * allows user to set a click handler to the annotations
    */
-  onRectAnnotationClick?: ElementClickListener;
+  onAnnotationClick?: AnnotationClick[];
 
   /**
    * debounce delay used for resizing chart

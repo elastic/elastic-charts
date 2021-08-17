@@ -37,20 +37,11 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }
     }
   };
 
-  // const handleClick = () => {
-  //   if (onClickHandler) return onClickHandler;
-  // };
-
   useEffect(() => {
     if (onScroll) {
       window.addEventListener('scroll', handleScroll, true);
       return () => window.removeEventListener('scroll', handleScroll, true);
     }
-
-    //   if (onclick) {
-    //     window.addEventListener('click', handleClick, true);
-    //     return () => window.removeEventListener('click', handleClick, true);
-    //   }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const popperSettings = useMemo((): TooltipPortalSettings | undefined => {

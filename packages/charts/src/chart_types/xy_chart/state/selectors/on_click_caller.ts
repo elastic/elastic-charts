@@ -49,7 +49,7 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
       ],
       (
         lastClick: PointerState | null,
-        { onElementClick, onProjectionClick, onRectAnnotationClick }: SettingsSpec,
+        { onElementClick, onProjectionClick, onAnnotationClick }: SettingsSpec,
         indexedGeometries: IndexedGeometry[],
         values,
         tooltipState,
@@ -58,8 +58,8 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
           return;
         }
         const elementClickFired = tryFiringOnElementClick(indexedGeometries, onElementClick);
-        if (onRectAnnotationClick && tooltipState) {
-          tryFiringOnRectAnnotationClick(tooltipState?.datum, onRectAnnotationClick);
+        if (onAnnotationClick && tooltipState) {
+          tryFiringOnAnnotationClick(tooltipState, onAnnotationClick);
         } else if (!elementClickFired) {
           tryFiringOnProjectionClick(values, onProjectionClick);
         }
@@ -95,13 +95,18 @@ function tryFiringOnProjectionClick(
   return true;
 }
 
-function tryFiringOnRectAnnotationClick(
+function tryFiringOnAnnotationClick(
   annotationState: Datum,
-  onRectAnnotationClick: SettingsSpec['onRectAnnotationClick'],
-) {
-  if (annotationState && onRectAnnotationClick) {
-    onRectAnnotationClick(annotationState.datum);
-    return true;
+  onAnnotationClick: SettingsSpec['onAnnotationClick'],
+): boolean {
+  if (annotationState && onAnnotationClick && onAnnotationClick.length > 0) {
+    // eslint-disable-next-line array-callback-return
+    onAnnotationClick.map(({ func, annotationId }) => {
+      if (annotationState.id === annotationId) {
+        func(annotationState.datum);
+        return true;
+      }
+    });
   }
   return false;
 }

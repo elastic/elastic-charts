@@ -7,6 +7,7 @@
  */
 
 // import { action } from '@storybook/addon-actions';
+
 import React from 'react';
 
 import {
@@ -17,21 +18,41 @@ import {
   ScaleType,
   Settings,
   Position,
-  // ElementClickListener,
+  AnnotationDomainType,
+  LineAnnotation,
+  AnnotationClick,
 } from '@elastic/charts';
+import { Icon } from '@elastic/charts/src/components/icons/icon';
 
 import { useBaseTheme } from '../../../use_base_theme';
 
 export const Example = () => {
-  // eslint-disable-next-line no-console
-  const handleClick = () => console.log('\n\n\n\n\n clicked the rect annotation!');
-  // const handleClick: ElementClickListener = () => action('clicked series key');
+  const handleRect1Click: AnnotationClick = {
+    // eslint-disable-next-line no-console
+    func: () => console.log('\n\n\n\n\n clicked the rect annotation!'),
+    annotationId: 'rect1',
+  };
+
+  const handleRect2Click: AnnotationClick = {
+    // eslint-disable-next-line no-console
+    func: () => console.log('\n\n\n\n\n clicked the second rect annotation!'),
+    annotationId: 'rect2',
+  };
+
+  const handleLineMarkerClick: AnnotationClick = {
+    annotationId: 'line_annotation',
+    // eslint-disable-next-line no-console
+    func: () => console.log('line marker was clicked!'),
+  };
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} onRectAnnotationClick={handleClick} />
+      <Settings
+        baseTheme={useBaseTheme()}
+        onAnnotationClick={[handleRect1Click, handleRect2Click, handleLineMarkerClick]}
+      />
       <RectAnnotation
-        id="rect"
+        id="rect1"
         dataValues={[
           {
             coordinates: {
@@ -44,7 +65,28 @@ export const Example = () => {
           },
         ]}
         style={{ fill: 'red' }}
-        // onClickHandler={handleClick}
+      />
+      <RectAnnotation
+        id="rect2"
+        dataValues={[
+          {
+            coordinates: {
+              x0: 1,
+              x1: 2,
+              y0: 1,
+              y1: 5,
+            },
+            details: 'details about this other annotation',
+          },
+        ]}
+        style={{ fill: 'blue' }}
+      />
+      <LineAnnotation
+        id="line_annotation"
+        domainType={AnnotationDomainType.XDomain}
+        dataValues={[{ dataValue: 2, details: `detail-${0}` }]}
+        marker={<Icon type="alert" />}
+        markerPosition={Position.Top}
       />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
       <Axis id="left" title="y-domain axis" position={Position.Left} />
