@@ -26,10 +26,10 @@ export function withContext(ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRend
 
 /** @internal */
 export function clearCanvas(ctx: CanvasRenderingContext2D) {
-  withContext(ctx, (context) => {
-    context.setTransform(1, 0, 0, 1, 0, 0);
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-  });
+  const preexistingTransform = ctx.getTransform();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctx.setTransform(preexistingTransform);
 }
 
 // order of rendering is important; determined by the order of layers in the array
