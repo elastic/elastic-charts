@@ -129,8 +129,9 @@ class XYChartComponent extends React.Component<XYChartProps> {
   private drawCanvas() {
     if (this.ctx) {
       const { renderingArea, rotation } = this.props;
-      const width = ([90, -90].includes(rotation) ? renderingArea.height : renderingArea.width) + CLIPPING_MARGINS * 2;
-      const height = ([90, -90].includes(rotation) ? renderingArea.width : renderingArea.height) + CLIPPING_MARGINS * 2;
+      const vertical = Math.abs(rotation) === 90;
+      const width = (vertical ? renderingArea.height : renderingArea.width) + CLIPPING_MARGINS * 2;
+      const height = (vertical ? renderingArea.width : renderingArea.height) + CLIPPING_MARGINS * 2;
       const clippings = { x: -CLIPPING_MARGINS, y: -CLIPPING_MARGINS, width, height };
       renderXYChartCanvas2d(this.ctx, this.devicePixelRatio, clippings, this.props);
     }
