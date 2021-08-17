@@ -18,7 +18,7 @@ import { renderTickLabel } from './tick_label';
 
 /** @internal */
 export interface AxisProps {
-  panelTitle?: string | undefined;
+  panelTitle?: string;
   secondary?: boolean;
   panelAnchor: Point;
   axisStyle: AxisStyle;

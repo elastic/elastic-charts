@@ -12,30 +12,24 @@ import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_des
 import { getColorScale } from './get_color_scale';
 import { getSpecOrNull } from './heatmap_spec';
 
+const EMPTY_LEGEND: LegendItem[] = [];
 /** @internal */
 export const computeLegendSelector = createCustomCachedSelector(
   [getSpecOrNull, getColorScale, getDeselectedSeriesSelector],
-  (spec, colorScale, deselectedDataSeries): LegendItem[] => {
-    const legendItems: LegendItem[] = [];
-
-    if (colorScale === null || spec === null) {
-      return legendItems;
+  (spec, { bands }, deselectedDataSeries): LegendItem[] => {
+    if (spec === null) {
+      return EMPTY_LEGEND;
     }
 
-    return colorScale.ticks.map((tick) => {
-      const color = colorScale.config(tick);
-      const seriesIdentifier = {
-        key: String(tick),
-        specId: String(tick),
-      };
-
+    return bands.map(({ label, color }) => {
       return {
+        // the band label is considered unique by construction
+        seriesIdentifiers: [{ key: label, specId: label }],
         color,
-        label: `> ${spec.valueFormatter ? spec.valueFormatter(tick) : tick}`,
-        seriesIdentifiers: [seriesIdentifier],
-        isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === seriesIdentifier.key),
+        label,
+        isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === label),
         isToggleable: true,
-        path: [{ index: 0, value: seriesIdentifier.key }],
+        path: [{ index: 0, value: label }],
         keys: [],
       };
     });
