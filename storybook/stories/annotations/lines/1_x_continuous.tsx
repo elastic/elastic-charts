@@ -16,6 +16,7 @@ import {
   Chart,
   LineAnnotation,
   LineAnnotationDatum,
+  LineAnnotationStyle,
   ScaleType,
   Settings,
 } from '@elastic/charts';
@@ -40,7 +41,7 @@ export const Example = () => {
   const data = arrayKnobs('data values', [2.5, 7.2]);
   const dataValues = generateAnnotationData(data);
 
-  const style = {
+  const style: LineAnnotationStyle = {
     line: {
       strokeWidth: 3,
       stroke: '#f00',
@@ -49,7 +50,6 @@ export const Example = () => {
     details: {
       fontSize: 12,
       fontFamily: 'Arial',
-      fontStyle: 'bold',
       fill: 'gray',
       padding: 0,
     },

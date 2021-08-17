@@ -21,7 +21,7 @@ if (process.env.VRT) {
   document.querySelector('html')?.classList.add('disable-animations');
 }
 
-type Parameter = ThemeParameter & BackgroundParameter;
+type Parameter = ThemeParameter & BackgroundParameter & { viewport: any };
 
 const euiLogoUrl =
   'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0ibm9uZSIgdmlld0JveD0iMCAwIDMyIDMyIj4KICA8cGF0aCBmaWxsPSIjRkY5NTdEIiBkPSJNMTggMjVjLS41LTUuNS01LjUtMTAuNS0xMS0xMWw3LTdjLjUgNS41IDUuNSAxMC41IDExIDExbC03IDd6Ii8+CiAgPGNpcmNsZSBjeD0iNyIgY3k9IjciIHI9IjciIGZpbGw9IiNGMDRFOTgiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSI3IiBmaWxsPSIjRkVDNTE0Ii8+CiAgPHBhdGggZmlsbD0iIzAwQkZCMyIgZD0iTTMxIDE0Yy03LjE4IDAtMTMtNS44Mi0xMy0xM2gxM3YxM3oiLz4KICA8cGF0aCBmaWxsPSIjMUJBOUY1IiBkPSJNMSAxOGM3LjE4IDAgMTMgNS44MiAxMyAxM0gxVjE4eiIvPgo8L3N2Zz4K';
@@ -71,6 +71,18 @@ export const parameters: Parameter = {
       { id: 'yellow', title: 'Yellow', color: '#fec709' },
       { id: 'green', title: 'Green', color: '#00c1b4' },
     ],
+  },
+  viewport: {
+    viewports: {
+      vrt: {
+        // to match vrt default viewport to help with mouse positioning
+        name: 'VRT Viewport',
+        styles: {
+          width: '800px',
+          height: '600px',
+        },
+      },
+    },
   },
 };
 
