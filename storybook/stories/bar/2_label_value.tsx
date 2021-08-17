@@ -18,6 +18,7 @@ import {
   Position,
   ScaleType,
   Settings,
+  PartialTheme,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -61,7 +62,7 @@ export const Example = () => {
 
   const debug = boolean('debug', false);
 
-  const theme = {
+  const theme: PartialTheme = {
     barSeriesStyle: {
       displayValue: {
         fontSize: Number(number('value font size', 10)),
