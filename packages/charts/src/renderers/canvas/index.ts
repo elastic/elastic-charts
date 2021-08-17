@@ -8,9 +8,7 @@
 
 import { Coordinate } from '../../common/geometry';
 import { Rect } from '../../geoms/types';
-import { getRadians } from '../../utils/common';
 import { ClippedRanges } from '../../utils/geometry';
-import { Point } from '../../utils/point';
 
 /**
  * withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
@@ -96,21 +94,5 @@ export function withClipRanges(
     }
     context.clip();
     fun(context);
-  });
-}
-
-/** @internal */
-export function withRotatedOrigin(
-  ctx: CanvasRenderingContext2D,
-  origin: Point,
-  rotation: number = 0,
-  fn: (ctx: CanvasRenderingContext2D) => void,
-) {
-  withContext(ctx, (ctx) => {
-    const { x, y } = origin;
-    ctx.translate(x, y);
-    ctx.rotate(getRadians(rotation));
-    ctx.translate(-x, -y);
-    fn(ctx);
   });
 }

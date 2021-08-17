@@ -8,7 +8,7 @@
 
 import { Rect } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
-import { getRadians, Rotation } from '../../../../../utils/common';
+import { degToRad, Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { computeChartTransform } from '../../../state/utils/utils';
 
@@ -25,22 +25,16 @@ export function withPanelTransform(
   },
 ) {
   const transform = computeChartTransform(panel, rotation);
-  const left = renderingArea.left + panel.left + transform.x;
-  const top = renderingArea.top + panel.top + transform.y;
   withContext(context, (ctx) => {
-    ctx.translate(left, top);
-    ctx.rotate(getRadians(rotation));
+    ctx.translate(renderingArea.left + panel.left + transform.x, renderingArea.top + panel.top + transform.y);
+    ctx.rotate(degToRad(rotation));
 
     if (clippings?.shouldClip) {
       const { x, y, width, height } = clippings.area;
-      ctx.save();
       ctx.beginPath();
       ctx.rect(x, y, width, height);
       ctx.clip();
     }
     fn(ctx);
-    if (clippings?.shouldClip) {
-      ctx.restore();
-    }
   });
 }

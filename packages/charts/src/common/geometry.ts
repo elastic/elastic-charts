@@ -35,6 +35,8 @@ export type Radian = Cartesian; // we measure angle in radians, and there's unit
 export type Distance = Cartesian;
 
 /** @internal */
+export type Degrees = number; // angle degrees
+/** @internal */
 export interface PointObject {
   x: Coordinate;
   y: Coordinate;

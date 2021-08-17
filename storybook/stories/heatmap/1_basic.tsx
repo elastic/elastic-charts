@@ -78,7 +78,7 @@ export const Example = () => {
     [],
   );
 
-  const logDebugstate = debounce(() => {
+  const logDebugState = debounce(() => {
     if (!debugState) return;
 
     const statusEl = document.querySelector<HTMLDivElement>('.echChartStatus');
@@ -102,9 +102,9 @@ export const Example = () => {
     <Chart>
       <Settings
         onElementClick={onElementClick}
-        onRenderChange={logDebugstate}
+        onRenderChange={logDebugState}
         showLegend
-        legendPosition="top"
+        legendPosition="right"
         onBrushEnd={action('onBrushEnd')}
         brushAxis="both"
         xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}

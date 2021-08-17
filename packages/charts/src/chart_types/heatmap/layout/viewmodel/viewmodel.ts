@@ -81,8 +81,8 @@ export function shapeViewModel(
   settingsSpec: SettingsSpec,
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
-  colorScale: ColorScaleType,
-  filterRanges: Array<[number, number | null]>,
+  colorScale: ColorScaleType['scale'],
+  bandsToHide: Array<[number, number]>,
   { height, pageSize }: GridHeightParams,
 ): ShapeViewModel {
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
@@ -187,7 +187,7 @@ export function shapeViewModel(
     const x = xScale(String(d.x));
     const y = yScale(String(d.y))! + gridStrokeWidth;
     const yIndex = yValues.indexOf(d.y);
-    const color = colorScale.config(d.value);
+    const color = colorScale(d.value);
     if (x === undefined || y === undefined || yIndex === -1) {
       return acc;
     }
@@ -208,7 +208,7 @@ export function shapeViewModel(
         width: config.cell.border.strokeWidth,
       },
       value: d.value,
-      visible: !isFilteredValue(filterRanges, d.value),
+      visible: !isValueHidden(d.value, bandsToHide),
       formatted: spec.valueFormatter(d.value),
     };
     return acc;
@@ -391,11 +391,6 @@ function getCellKey(x: NonNullable<PrimitiveValue>, y: NonNullable<PrimitiveValu
   return [String(x), String(y)].join('&_&');
 }
 
-function isFilteredValue(filterRanges: Array<[number, number | null]>, value: number) {
-  return filterRanges.some(([min, max]) => {
-    if (max !== null && value > min && value < max) {
-      return true;
-    }
-    return max === null && value > min;
-  });
+function isValueHidden(value: number, rangesToHide: Array<[number, number]>) {
+  return rangesToHide.some(([min, max]) => min <= value && value < max);
 }

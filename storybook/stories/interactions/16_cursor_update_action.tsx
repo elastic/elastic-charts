@@ -164,8 +164,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  info: {
-    text: 'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.',
-  },
+  markdown: 'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.',
   options: { selectedPanel: SB_SOURCE_PANEL },
 };
