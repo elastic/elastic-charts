@@ -44,7 +44,10 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     if (xPos < 0 || xPos >= chartDimensions.width || yPos < 0 || yPos >= chartDimensions.height) {
       return DEFAULT_CSS_CURSOR;
     }
-    if (highlightedGeometries.length > 0 && (settingsSpec.onElementClick || settingsSpec.onElementOver)) {
+    if (
+      highlightedGeometries.length > 0 &&
+      (settingsSpec.onElementClick || settingsSpec.onElementOver || settingsSpec.onRectAnnotationClick)
+    ) {
       return 'pointer';
     }
     if (projectedValues !== null && settingsSpec.onProjectionClick) {

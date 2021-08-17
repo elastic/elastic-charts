@@ -15,8 +15,10 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { isClicking } from '../../../../state/utils';
+import { Datum } from '../../../../utils/common';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
 import { XYChartSeriesIdentifier } from '../../utils/series';
+import { getAnnotationTooltipStateSelector } from './get_annotation_tooltip_state';
 import { getProjectedScaledValues } from './get_projected_scaled_values';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 
@@ -38,18 +40,27 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
       return;
     }
     selector = createCustomCachedSelector(
-      [getLastClickSelector, getSettingsSpecSelector, getHighlightedGeomsSelector, getProjectedScaledValues],
+      [
+        getLastClickSelector,
+        getSettingsSpecSelector,
+        getHighlightedGeomsSelector,
+        getProjectedScaledValues,
+        getAnnotationTooltipStateSelector,
+      ],
       (
         lastClick: PointerState | null,
-        { onElementClick, onProjectionClick }: SettingsSpec,
+        { onElementClick, onProjectionClick, onRectAnnotationClick }: SettingsSpec,
         indexedGeometries: IndexedGeometry[],
         values,
+        tooltipState,
       ): void => {
         if (!isClicking(prevClick, lastClick)) {
           return;
         }
         const elementClickFired = tryFiringOnElementClick(indexedGeometries, onElementClick);
-        if (!elementClickFired) {
+        if (onRectAnnotationClick && tooltipState) {
+          tryFiringOnRectAnnotationClick(tooltipState?.datum, onRectAnnotationClick);
+        } else if (!elementClickFired) {
           tryFiringOnProjectionClick(values, onProjectionClick);
         }
         prevClick = lastClick;
@@ -65,7 +76,6 @@ function tryFiringOnElementClick(
   if (indexedGeometries.length === 0 || !onElementClick) {
     return false;
   }
-
   const elements = indexedGeometries.map<[GeometryValue, XYChartSeriesIdentifier]>(({ value, seriesIdentifier }) => [
     value,
     seriesIdentifier,
@@ -83,4 +93,15 @@ function tryFiringOnProjectionClick(
   }
   onProjectionClick(values);
   return true;
+}
+
+function tryFiringOnRectAnnotationClick(
+  annotationState: Datum,
+  onRectAnnotationClick: SettingsSpec['onRectAnnotationClick'],
+) {
+  if (annotationState && onRectAnnotationClick) {
+    onRectAnnotationClick(annotationState.datum);
+    return true;
+  }
+  return false;
 }

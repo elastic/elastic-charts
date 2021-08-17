@@ -511,6 +511,10 @@ export interface SettingsSpec extends Spec, LegendSpec {
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
   xDomain?: CustomXDomain;
+  /**
+   * allows user to set a click handler to the rectangular annotations
+   */
+  onRectAnnotationClick?: ElementClickListener;
 
   /**
    * debounce delay used for resizing chart

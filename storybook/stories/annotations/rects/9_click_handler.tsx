@@ -6,18 +6,30 @@
  * Side Public License, v 1.
  */
 
+// import { action } from '@storybook/addon-actions';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings, Position } from '@elastic/charts';
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  RectAnnotation,
+  ScaleType,
+  Settings,
+  Position,
+  // ElementClickListener,
+} from '@elastic/charts';
 
 import { useBaseTheme } from '../../../use_base_theme';
 
 export const Example = () => {
   // eslint-disable-next-line no-console
-  const handleClick = () => console.log('clicked the rect annotation!');
+  const handleClick = () => console.log('\n\n\n\n\n clicked the rect annotation!');
+  // const handleClick: ElementClickListener = () => action('clicked series key');
+
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings baseTheme={useBaseTheme()} onRectAnnotationClick={handleClick} />
       <RectAnnotation
         id="rect"
         dataValues={[
@@ -32,7 +44,7 @@ export const Example = () => {
           },
         ]}
         style={{ fill: 'red' }}
-        onClickHandler={handleClick}
+        // onClickHandler={handleClick}
       />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
       <Axis id="left" title="y-domain axis" position={Position.Left} />
