@@ -27,7 +27,7 @@ export function withContext(ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRend
 /** @internal */
 export function clearCanvas(ctx: CanvasRenderingContext2D) {
   const preexistingTransform = ctx.getTransform();
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.resetTransform(); // in the living standard, same as ctx.setTransform(1,0,0,1,0,0)
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.setTransform(preexistingTransform);
 }
