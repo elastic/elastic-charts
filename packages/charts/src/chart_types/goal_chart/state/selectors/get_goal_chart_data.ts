@@ -13,7 +13,7 @@ import { geometries } from './geometries';
 export type GoalChartData = {
   maximum: number;
   minimum: number;
-  target: number;
+  target?: number;
   value: number;
 };
 
