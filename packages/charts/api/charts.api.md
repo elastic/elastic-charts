@@ -1825,6 +1825,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     // (undocumented)
     onPointerUpdate?: PointerUpdateListener;
     onProjectionClick?: ProjectionClickListener;
+    onRectAnnotationClick?: ElementClickListener;
     // (undocumented)
     onRenderChange?: RenderChangeListener;
     orderOrdinalBinsBy?: OrderBy;
