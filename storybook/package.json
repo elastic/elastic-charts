@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@storybook/addon-actions": "~6.2.9",
+    "@storybook/addon-viewport": "~6.2.9",
     "@storybook/addon-knobs": "^6.3.0",
     "@storybook/addon-links": "~6.2.9",
     "@storybook/addon-postcss": "^2.0.0",
