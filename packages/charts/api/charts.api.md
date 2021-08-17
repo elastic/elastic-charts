@@ -237,7 +237,7 @@ export interface BandFillColorAccessorInput {
     // (undocumented)
     lowestValue: number;
     // (undocumented)
-    target: number;
+    target?: number;
     // (undocumented)
     value: number;
 }
@@ -282,6 +282,7 @@ export interface BaseAnnotationSpec<T extends typeof AnnotationType.Rectangle | 
     dataValues: D[];
     groupId: GroupId;
     hideTooltips?: boolean;
+    id: string;
     // (undocumented)
     specType: typeof SpecType.Annotation;
     style?: Partial<S>;
@@ -825,7 +826,7 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     subtype: GoalSubtype;
     // (undocumented)
-    target: number;
+    target?: number;
     // (undocumented)
     ticks: number[];
     // (undocumented)
