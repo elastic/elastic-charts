@@ -746,6 +746,12 @@ export type FitConfig = {
     endValue?: number | 'nearest';
 };
 
+// @public (undocumented)
+export const FONT_STYLES: readonly ["normal", "italic", "oblique", "inherit", "initial", "unset"];
+
+// @public (undocumented)
+export type FontStyle = typeof FONT_STYLES[number];
+
 // @public
 export interface GeometryStateStyle {
     opacity: number;
@@ -901,7 +907,6 @@ export interface HeatmapConfig {
         label: Font & {
             fontSize: Pixels;
             maxWidth: Pixels | 'fill';
-            fill: string;
             align: TextAlign;
             baseline: TextBaseline;
             visible: boolean;
@@ -960,7 +965,6 @@ export interface HeatmapConfig {
         name: string;
         fontSize: Pixels;
         width: Pixels | 'auto';
-        fill: string;
         align: TextAlign;
         baseline: TextBaseline;
         visible: boolean;
@@ -974,7 +978,6 @@ export interface HeatmapConfig {
         width: Pixels | 'auto' | {
             max: Pixels;
         };
-        fill: string;
         baseline: TextBaseline;
         visible: boolean;
         padding: number | {
@@ -1998,7 +2001,7 @@ export interface TextStyle {
     // (undocumented)
     fontSize: number;
     // (undocumented)
-    fontStyle?: string;
+    fontStyle?: FontStyle;
     // (undocumented)
     padding: number | SimplePadding;
 }
@@ -2255,7 +2258,7 @@ export interface WordcloudConfigs {
     // (undocumented)
     fontFamily: string;
     // (undocumented)
-    fontStyle: string;
+    fontStyle: FontStyle;
     // (undocumented)
     fontWeight: number;
     // (undocumented)
@@ -2296,7 +2299,7 @@ export interface WordcloudSpec extends Spec {
     // (undocumented)
     fontFamily: string;
     // (undocumented)
-    fontStyle: string;
+    fontStyle: FontStyle;
     // (undocumented)
     fontWeight: number;
     // (undocumented)
@@ -2370,8 +2373,8 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // Warnings were encountered during analysis:
 //
 // src/chart_types/heatmap/layout/types/config_types.ts:20:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:52:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:53:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:51:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:52:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:139:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 

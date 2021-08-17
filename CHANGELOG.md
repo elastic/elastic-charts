@@ -1,3 +1,33 @@
+# [34.0.0](https://github.com/elastic/elastic-charts/compare/v33.2.4...v34.0.0) (2021-08-16)
+
+
+### Code Refactoring
+
+* **cartesian:** cartesian rendering iteration ([#1286](https://github.com/elastic/elastic-charts/issues/1286)) ([b2ae4f7](https://github.com/elastic/elastic-charts/commit/b2ae4f792e2e3aecbb240880634eee175dead1f3)), closes [#1202](https://github.com/elastic/elastic-charts/issues/1202)
+
+
+### BREAKING CHANGES
+
+* **cartesian:** - `TextStyle.fontStyle` is no longer a `string`, it's the more specific `FontStyle`
+- For symmetry, `fontStyle` in word cloud is also switching from `string` to `FontStyle`
+- Certain text configurations included both `fill` and `textColor` for the text color; `fill` got removed, because `textColor` is part of the public `Font` type, and because `textColor` has clearer meaning than `fill`. Yet, some of the code used the `fill` property and/or made the `fill` property also mandatory. So, userland code needs to remove some `fill` property, and might need to ensure that the correct value is going into `textColor`
+- `getRadians` got unpublished 
+- No attempt to draw a rect border if there's not enough width/height for at least the specified border width (ie. width/height being at least twice the border width)
+
+## [33.2.4](https://github.com/elastic/elastic-charts/compare/v33.2.3...v33.2.4) (2021-08-16)
+
+
+### Bug Fixes
+
+* add LICENSE file into the published package ([#1305](https://github.com/elastic/elastic-charts/issues/1305)) ([54520f0](https://github.com/elastic/elastic-charts/commit/54520f044bc00e27f9c9975dedd8ede28fcf3336))
+
+## [33.2.3](https://github.com/elastic/elastic-charts/compare/v33.2.2...v33.2.3) (2021-08-16)
+
+
+### Bug Fixes
+
+* **heatmap:** compute nice legend items from color scale  ([#1273](https://github.com/elastic/elastic-charts/issues/1273)) ([0d392ae](https://github.com/elastic/elastic-charts/commit/0d392ae9ff7f09303b3643bbca7a24ccde39f84a)), closes [#1166](https://github.com/elastic/elastic-charts/issues/1166) [#1191](https://github.com/elastic/elastic-charts/issues/1191) [#1192](https://github.com/elastic/elastic-charts/issues/1192)
+
 ## [33.2.2](https://github.com/elastic/elastic-charts/compare/v33.2.1...v33.2.2) (2021-08-10)
 
 
