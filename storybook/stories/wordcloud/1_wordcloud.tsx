@@ -244,7 +244,7 @@ export const Example = () => {
         },
         startConfig.fontFamily,
       );
-  const fontStyle: FontStyle = template
+  const fontStyle = template
     ? (startConfig.fontStyle as FontStyle)
     : select<FontStyle>('fontStyle', { normal: 'normal', italic: 'italic' }, startConfig.fontStyle as FontStyle);
 

@@ -22,7 +22,7 @@ export interface BandFillColorAccessorInput {
   value: number;
   index: number;
   base: number;
-  target: number;
+  target?: number;
   highestValue: number;
   lowestValue: number;
   aboveBaseCount: number;
@@ -46,7 +46,7 @@ export interface GoalSpec extends Spec {
   chartType: typeof ChartType.Goal;
   subtype: GoalSubtype;
   base: number;
-  target: number;
+  target?: number;
   actual: number;
   bands: number[];
   ticks: number[];

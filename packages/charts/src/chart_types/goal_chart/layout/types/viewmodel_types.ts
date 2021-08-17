@@ -31,7 +31,7 @@ interface TickViewModel {
 export interface BulletViewModel {
   subtype: string;
   base: number;
-  target: number;
+  target?: number;
   actual: number;
   bands: Array<BandViewModel>;
   ticks: Array<TickViewModel>;
@@ -62,7 +62,6 @@ const commonDefaults = {
   specType: SpecType.Series,
   subtype: GoalSubtype.Goal,
   base: 0,
-  target: 100,
   actual: 50,
   ticks: [0, 25, 50, 75, 100],
 };
@@ -79,7 +78,7 @@ export const defaultGoalSpec = {
   labelMajor: ({ base }: BandFillColorAccessorInput) => String(base),
   labelMinor: () => 'unit',
   centralMajor: ({ base }: BandFillColorAccessorInput) => String(base),
-  centralMinor: ({ target }: BandFillColorAccessorInput) => String(target),
+  centralMinor: ({ target }: BandFillColorAccessorInput) => (target ? String(target) : ''),
   bandLabels: [],
   angleStart: Math.PI + Math.PI / 4,
   angleEnd: -Math.PI / 4,

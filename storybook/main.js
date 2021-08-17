@@ -11,6 +11,7 @@ module.exports = {
   addons: [
     '@storybook/addon-knobs',
     '@storybook/addon-postcss',
+    '@storybook/addon-viewport',
     'storybook-addon-theme-toggle',
     'storybook-addon-background-toggle',
     // https://github.com/storybookjs/storybook/issues/12199

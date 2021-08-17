@@ -15,10 +15,10 @@ import {
   Chart,
   DisplayValueSpec,
   LabelOverflowConstraint,
-  PartialTheme,
   Position,
   ScaleType,
   Settings,
+  PartialTheme,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 

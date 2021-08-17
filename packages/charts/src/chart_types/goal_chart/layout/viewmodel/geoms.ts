@@ -306,11 +306,15 @@ export function geoms(
       landmarks: { from: 'base', to: 'actual' },
       aes: { shape, fillColor: config.progressLine.stroke, lineWidth: tickLength },
     },
-    {
-      order: 2,
-      landmarks: { at: 'target' },
-      aes: { shape, fillColor: config.targetLine.stroke, lineWidth: barThickness / GOLDEN_RATIO },
-    },
+    ...(target
+      ? [
+          {
+            order: 2,
+            landmarks: { at: 'target' },
+            aes: { shape, fillColor: config.targetLine.stroke, lineWidth: barThickness / GOLDEN_RATIO },
+          },
+        ]
+      : []),
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 3,
       landmarks: { at: `tick_${i}` },
