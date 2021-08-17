@@ -224,7 +224,7 @@ export const LIGHT_THEME: Theme = {
       stroke: 'black',
     },
     tickLine: {
-      stroke: '#eaeaea',
+      stroke: 'darkgrey',
     },
     progressLine: {
       stroke: 'black',
