@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { Coordinate } from '../../common/geometry';
 import { Rect } from '../../geoms/types';
 import { ClippedRanges } from '../../utils/geometry';
 
@@ -26,9 +25,10 @@ export function withContext(ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRend
 }
 
 /** @internal */
-export function clearCanvas(ctx: CanvasRenderingContext2D, width: Coordinate, height: Coordinate) {
-  withContext(ctx, (ctx) => {
-    ctx.clearRect(-width, -height, 2 * width, 2 * height); // remove past contents
+export function clearCanvas(ctx: CanvasRenderingContext2D) {
+  withContext(ctx, (context) => {
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
   });
 }
 

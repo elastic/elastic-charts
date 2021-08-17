@@ -30,10 +30,9 @@ export function renderCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, geomO
 
     renderLayers(ctx, [
       // clear the canvas
-      (context: CanvasRenderingContext2D) => clearCanvas(context, 200000, 200000),
-
+      clearCanvas,
       (context: CanvasRenderingContext2D) =>
-        withContext(context, (ctx) => geomObjects.forEach((obj) => withContext(ctx, (ctx) => obj.render(ctx)))),
+        geomObjects.forEach((obj) => withContext(context, (ctxt) => obj.render(ctxt))),
     ]);
   });
 }
