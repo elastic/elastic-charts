@@ -48,7 +48,6 @@ interface AnnotationsStateProps {
   annotationSpecs: AnnotationSpec[];
   chartId: string;
   zIndex: number;
-  onLineMarkerClickHandler?: (v: any) => void;
 }
 
 interface AnnotationsOwnProps {
@@ -64,7 +63,6 @@ function renderAnnotationLineMarkers(
   annotationLines: AnnotationLineProps[],
   onDOMElementEnter: typeof onDOMElementEnterAction,
   onDOMElementLeave: typeof onDOMElementLeaveAction,
-  onLineMarkerClickHandler?: (v: any) => void,
 ) {
   return annotationLines.reduce<JSX.Element[]>((acc, props: AnnotationLineProps) => {
     if (props.markers.length === 0) {
@@ -79,7 +77,6 @@ function renderAnnotationLineMarkers(
         chartDimensions={chartDimensions}
         onDOMElementEnter={onDOMElementEnter}
         onDOMElementLeave={onDOMElementLeave}
-        onLineMarkerClickHandler={onLineMarkerClickHandler}
       />,
     );
 
@@ -99,7 +96,6 @@ const AnnotationsComponent = ({
   onPointerMove,
   onDOMElementEnter,
   onDOMElementLeave,
-  onLineMarkerClickHandler,
 }: AnnotationsProps) => {
   const renderAnnotationMarkers = useCallback((): JSX.Element[] => {
     const markers: JSX.Element[] = [];
@@ -118,22 +114,13 @@ const AnnotationsComponent = ({
           annotationLines,
           onDOMElementEnter,
           onDOMElementLeave,
-          onLineMarkerClickHandler,
         );
         markers.push(...lineMarkers);
       }
     });
 
     return markers;
-  }, [
-    annotationDimensions,
-    annotationSpecs,
-    chartAreaRef,
-    chartDimensions,
-    onDOMElementEnter,
-    onDOMElementLeave,
-    onLineMarkerClickHandler,
-  ]);
+  }, [annotationDimensions, annotationSpecs, chartAreaRef, chartDimensions, onDOMElementEnter, onDOMElementLeave]);
 
   const onScroll = useCallback(() => {
     onPointerMove({ x: -1, y: -1 }, Date.now());

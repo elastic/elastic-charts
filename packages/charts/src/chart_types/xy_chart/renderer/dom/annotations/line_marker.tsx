@@ -23,7 +23,6 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'ma
   chartDimensions: Dimensions;
   onDOMElementEnter: typeof onDOMElementEnterAction;
   onDOMElementLeave: typeof onDOMElementLeaveAction;
-  onLineMarkerClickHandler?: (v: any) => void;
 };
 
 const MARKER_TRANSFORMS = {
@@ -51,7 +50,6 @@ export function LineMarker({
   chartDimensions,
   onDOMElementEnter,
   onDOMElementLeave,
-  onLineMarkerClickHandler,
 }: LineMarkerProps) {
   const iconRef = useRef<HTMLDivElement | null>(null);
   const testRef = useRef<HTMLDivElement | null>(null);
@@ -107,7 +105,7 @@ export function LineMarker({
   void popper?.current?.update?.();
 
   return (
-    <button
+    <div
       className="echAnnotation"
       key={`annotation-${id}`}
       onMouseEnter={() => {
@@ -118,10 +116,8 @@ export function LineMarker({
           datum,
         });
       }}
-      onClick={onLineMarkerClickHandler ?? undefined}
       onMouseLeave={onDOMElementLeave}
       style={{ ...style, ...transform }}
-      type="button"
     >
       <div ref={iconRef} className="echAnnotation__icon">
         {renderWithProps(icon, datum)}
@@ -131,6 +127,6 @@ export function LineMarker({
           {renderWithProps(body, datum)}
         </div>
       )}
-    </button>
+    </div>
   );
 }
