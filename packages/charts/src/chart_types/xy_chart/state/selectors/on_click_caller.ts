@@ -15,8 +15,8 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { isClicking } from '../../../../state/utils';
-import { Datum } from '../../../../utils/common';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
+import { AnnotationTooltipState } from '../../annotations/types';
 import { XYChartSeriesIdentifier } from '../../utils/series';
 import { getAnnotationTooltipStateSelector } from './get_annotation_tooltip_state';
 import { getProjectedScaledValues } from './get_projected_scaled_values';
@@ -96,17 +96,30 @@ function tryFiringOnProjectionClick(
 }
 
 function tryFiringOnAnnotationClick(
-  annotationState: Datum,
+  annotationState: AnnotationTooltipState,
   onAnnotationClick: SettingsSpec['onAnnotationClick'],
 ): boolean {
-  if (annotationState && onAnnotationClick && onAnnotationClick.length > 0) {
-    // eslint-disable-next-line array-callback-return
-    onAnnotationClick.map(({ func, annotationId }) => {
-      if (annotationState.id === annotationId) {
-        func(annotationState.datum);
-        return true;
-      }
-    });
+  if (annotationState && onAnnotationClick) {
+    const rectangularAnnotations = [];
+    const lineAnnotations = [];
+    if (annotationState.annotationType === 'rectangle') {
+      rectangularAnnotations.push({
+        id: annotationState.id,
+        datum: {
+          // @ts-ignore
+          coordinates: annotationState.datum.coordinates,
+          details: annotationState.datum.details,
+        },
+      });
+    } else if (annotationState.annotationType === 'line') {
+      lineAnnotations.push({
+        id: annotationState.id,
+        // @ts-ignore
+        datum: { dataValue: annotationState.datum.dataValue, details: annotationState.datum.details },
+      });
+    }
+    onAnnotationClick({ rects: rectangularAnnotations, lines: lineAnnotations });
+    return true;
   }
   return false;
 }

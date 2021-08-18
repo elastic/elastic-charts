@@ -61,7 +61,7 @@ export interface AnnotationMarker {
 
 /** @internal */
 export interface AnnotationTooltipState {
-  id?: string;
+  id: string;
   isVisible: true;
   annotationType: AnnotationType;
   datum: LineAnnotationDatum | RectAnnotationDatum;

@@ -22,7 +22,7 @@ export function getRectAnnotationTooltipState(
   annotationRects: AnnotationRectProps[],
   rotation: Rotation,
   chartDimensions: Dimensions,
-  id?: string,
+  id: string,
 ): AnnotationTooltipState | null {
   const totalAnnotationRect = annotationRects.length;
 

@@ -9,6 +9,7 @@
 module.exports = {
   stories: ['./stories/**/*.stories.ts', './stories/**/*.stories.tsx'],
   addons: [
+    '@storybook/addon-actions',
     '@storybook/addon-knobs',
     '@storybook/addon-postcss',
     '@storybook/addon-viewport',

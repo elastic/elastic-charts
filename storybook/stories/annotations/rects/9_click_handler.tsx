@@ -8,6 +8,7 @@
 
 // import { action } from '@storybook/addon-actions';
 
+import { action } from '@storybook/addon-actions';
 import React from 'react';
 
 import {
@@ -20,37 +21,17 @@ import {
   Position,
   AnnotationDomainType,
   LineAnnotation,
-  AnnotationClick,
 } from '@elastic/charts';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 
 import { useBaseTheme } from '../../../use_base_theme';
 
 export const Example = () => {
-  const handleRect1Click: AnnotationClick = {
-    // eslint-disable-next-line no-console
-    func: () => console.log('\n\n\n\n\n clicked the rect annotation!'),
-    annotationId: 'rect1',
-  };
-
-  const handleRect2Click: AnnotationClick = {
-    // eslint-disable-next-line no-console
-    func: () => console.log('\n\n\n\n\n clicked the second rect annotation!'),
-    annotationId: 'rect2',
-  };
-
-  const handleLineMarkerClick: AnnotationClick = {
-    annotationId: 'line_annotation',
-    // eslint-disable-next-line no-console
-    func: () => console.log('line marker was clicked!'),
-  };
+  const onAnnotationClick = action('onAnnotationClick');
 
   return (
-    <Chart>
-      <Settings
-        baseTheme={useBaseTheme()}
-        onAnnotationClick={[handleRect1Click, handleRect2Click, handleLineMarkerClick]}
-      />
+    <Chart size={[500, 500]}>
+      <Settings baseTheme={useBaseTheme()} onAnnotationClick={onAnnotationClick} />
       <RectAnnotation
         id="rect1"
         dataValues={[
@@ -104,8 +85,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-Example.parameters = {
-  markdown: ``,
 };

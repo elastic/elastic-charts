@@ -13,7 +13,7 @@ import { Store } from 'redux';
 
 import { ChartType } from '../..';
 import { Rect } from '../../../geoms/types';
-import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
+import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { SettingsSpec, XYBrushArea } from '../../../specs';
@@ -24,7 +24,7 @@ import { GlobalChartState } from '../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
 import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisStyle } from '../../../utils/themes/theme';
-import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesType } from '../utils/specs';
+import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesType, AnnotationDomainType } from '../utils/specs';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
 import { getProjectedPointerPositionSelector } from './selectors/get_projected_pointer_position';
@@ -1168,5 +1168,68 @@ describe('Negative bars click and hover', () => {
     expect(onElementClick).toBeCalled();
     const callArgs = onElementClick.mock.calls[0][0];
     expect(callArgs[0][0].datum).toEqual([1, -10]);
+  });
+});
+
+describe('Clickable annotations', () => {
+  let store: Store<GlobalChartState>;
+  let onAnnotationClick: jest.Mock<void, any[]>;
+  beforeEach(() => {
+    store = MockStore.default({ width: 500, height: 500, top: 0, left: 0 }, 'chartId');
+    onAnnotationClick = jest.fn<void, any[]>((data: any): void => data);
+    const onAnnotationClickCaller = createOnClickCaller();
+    store.subscribe(() => {
+      onAnnotationClickCaller(store.getState());
+    });
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settingsNoMargins({
+          onAnnotationClick,
+        }),
+        MockSeriesSpec.bar({
+          xScaleType: ScaleType.Linear,
+          yScaleType: ScaleType.Linear,
+          xAccessor: 'x',
+          yAccessors: ['y'],
+          data: [
+            { x: 0, y: 2 },
+            { x: 1, y: 3 },
+            { x: 3, y: 6 },
+          ],
+        }),
+        MockAnnotationSpec.rect({
+          id: 'rect1',
+          dataValues: [
+            {
+              coordinates: {
+                x0: 0,
+                x1: 1,
+                y0: 0,
+                y1: 4,
+              },
+              details: 'details about this annotation',
+            },
+          ],
+          style: { fill: 'red' },
+        }),
+        MockAnnotationSpec.line({
+          id: 'line_annotation',
+          domainType: AnnotationDomainType.XDomain,
+          dataValues: [{ dataValue: 2, details: 'foo' }],
+          // marker: <div /> ,
+          markerPosition: Position.Top,
+        }),
+      ],
+      store,
+    );
+  });
+  test('click rect1 annotation', () => {
+    store.dispatch(onPointerMove({ x: 130, y: 217 }, 0));
+    store.dispatch(onMouseDown({ x: 130, y: 217 }, 100));
+    store.dispatch(onMouseUp({ x: 130, y: 217 }, 200));
+
+    expect(onAnnotationClick).toBeCalled();
+    const callArgs = onAnnotationClick.mock.calls[0][0];
+    expect(callArgs.rects[0].id).toEqual('rect1');
   });
 });
