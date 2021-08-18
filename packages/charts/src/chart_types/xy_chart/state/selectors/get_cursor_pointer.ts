@@ -44,10 +44,15 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     if (xPos < 0 || xPos >= chartDimensions.width || yPos < 0 || yPos >= chartDimensions.height) {
       return DEFAULT_CSS_CURSOR;
     }
-    if (
-      highlightedGeometries.length > 0 &&
-      (settingsSpec.onElementClick || settingsSpec.onElementOver || settingsSpec.onAnnotationClick)
-    ) {
+    if (highlightedGeometries.length > 0 && (settingsSpec.onElementClick || settingsSpec.onElementOver)) {
+      return 'pointer';
+    }
+
+    // no pointer if there is a onAnnotionClick but there is a highlighted geometry
+    if (highlightedGeometries.length > 0 && (!settingsSpec.onElementClick || !settingsSpec.onElementOver)) {
+      return DEFAULT_CSS_CURSOR;
+    }
+    if (settingsSpec.onAnnotationClick) {
       return 'pointer';
     }
     if (projectedValues !== null && settingsSpec.onProjectionClick) {
