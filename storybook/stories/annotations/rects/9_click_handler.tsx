@@ -30,7 +30,7 @@ export const Example = () => {
   const onAnnotationClick = action('onAnnotationClick');
 
   return (
-    <Chart size={[500, 500]}>
+    <Chart>
       <Settings baseTheme={useBaseTheme()} onAnnotationClick={onAnnotationClick} />
       <RectAnnotation
         id="rect1"

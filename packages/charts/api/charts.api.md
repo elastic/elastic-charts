@@ -43,12 +43,10 @@ export interface AngleFromTo {
 }
 
 // @public (undocumented)
-export interface AnnotationClick {
-    // (undocumented)
-    annotationId: string;
-    // (undocumented)
-    func: ElementClickListener;
-}
+export type AnnotationClickListener = (annotations: {
+    rects: RectAnnotationEvent[];
+    lines: LineAnnotationEvent[];
+}) => void;
 
 // @public
 export const AnnotationDomainType: Readonly<{
@@ -1823,7 +1821,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     hideDuplicateAxes: boolean;
     minBrushDelta?: number;
     noResults?: ComponentType | ReactChild;
-    onAnnotationClick?: AnnotationClick[];
+    onAnnotationClick?: AnnotationClickListener;
     // (undocumented)
     onBrushEnd?: BrushEndListener;
     // (undocumented)
@@ -2387,6 +2385,8 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // src/chart_types/heatmap/layout/types/config_types.ts:52:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:139:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
+// src/specs/settings.tsx:165:3 - (ae-forgotten-export) The symbol "RectAnnotationEvent" needs to be exported by the entry point index.d.ts
+// src/specs/settings.tsx:166:3 - (ae-forgotten-export) The symbol "LineAnnotationEvent" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
