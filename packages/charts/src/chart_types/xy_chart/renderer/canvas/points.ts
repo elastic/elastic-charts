@@ -52,21 +52,9 @@ export function renderPointGroup(
     .map<[Circle, Fill, Stroke, Dimensions, PointShape]>(
       ({ x, y, radius, transform, style, seriesIdentifier: { key }, panel }) => {
         const { opacity } = geometryStateStyles[key];
-        const fill: Fill = {
-          color: applyOpacity(style.fill.color, opacity),
-        };
-
-        const stroke: Stroke = {
-          ...style.stroke,
-          color: applyOpacity(style.stroke.color, opacity),
-        };
-
-        const coordinates: Circle = {
-          x: x + transform.x,
-          y,
-          radius,
-        };
-
+        const fill: Fill = { color: applyOpacity(style.fill.color, opacity) };
+        const stroke: Stroke = { ...style.stroke, color: applyOpacity(style.stroke.color, opacity) };
+        const coordinates: Circle = { x: x + transform.x, y, radius };
         return [coordinates, fill, stroke, panel, style.shape];
       },
     )
@@ -77,17 +65,12 @@ export function renderPointGroup(
         panel,
         rotation,
         renderingArea,
-        (ctx) => {
-          renderShape(ctx, shape, coordinates, fill, stroke);
-        },
+        () => renderShape(ctx, shape, coordinates, fill, stroke),
         { area: clippings, shouldClip },
       );
     });
 }
 
 function applyOpacity(color: RgbObject, opacity: number): RgbObject {
-  return {
-    ...color,
-    opacity: color.opacity * opacity,
-  };
+  return { ...color, opacity: color.opacity * opacity };
 }
