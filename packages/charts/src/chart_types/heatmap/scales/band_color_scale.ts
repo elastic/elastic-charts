@@ -11,7 +11,7 @@ import { Color } from '../../../utils/common';
 import { ColorBand, HeatmapBandsColorScale } from '../specs/heatmap';
 import { ColorScale } from '../state/selectors/get_color_scale';
 
-const TRANSPARENT_COLOR: Color = 'rgba(255, 0, 0, 0)';
+const TRANSPARENT_COLOR: Color = 'rgba(0, 0, 0, 0)';
 
 function defaultColorBandFormatter(start: number, end: number) {
   const finiteStart = Number.isFinite(start);
