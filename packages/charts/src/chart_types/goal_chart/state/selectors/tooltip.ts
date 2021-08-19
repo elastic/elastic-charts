@@ -8,6 +8,7 @@
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { BandViewModel } from '../../layout/types/viewmodel_types';
 import { getSpecOrNull } from './goal_spec';
 import { getPickedShapes } from './picked_shapes';
 
@@ -15,6 +16,11 @@ const EMPTY_TOOLTIP = Object.freeze({
   header: null,
   values: [],
 });
+
+const getBandColor = (value: number, bands: BandViewModel[]) =>
+  bands.find(({ value: v }) => {
+    return v >= value;
+  })?.fillColor ?? 'white';
 
 /** @internal */
 export const getTooltipInfoSelector = createCustomCachedSelector(
@@ -29,19 +35,19 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
       values: [],
     };
 
-    pickedShapes.forEach((shape) => {
+    pickedShapes.forEach(({ actual: value, bands }) => {
       tooltipInfo.values.push({
         label: 'Actual',
-        color: 'white',
+        color: getBandColor(value, bands),
         isHighlighted: false,
         isVisible: true,
         seriesIdentifier: {
           specId: spec.id,
           key: spec.id,
         },
-        value: shape.actual,
-        formattedValue: `${shape.actual}`,
-        datum: shape.actual,
+        value,
+        formattedValue: `${value}`,
+        datum: value,
       });
     });
 

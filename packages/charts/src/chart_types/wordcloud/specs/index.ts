@@ -9,6 +9,7 @@
 import React from 'react';
 
 import { ChartType } from '../..';
+import { FontStyle } from '../../../common/text_utils';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
@@ -42,7 +43,7 @@ export interface WordcloudSpec extends Spec {
   padding: number;
   fontWeight: number;
   fontFamily: string;
-  fontStyle: string;
+  fontStyle: FontStyle;
   minFontSize: number;
   maxFontSize: number;
   spiral: string;

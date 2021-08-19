@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { Degrees } from '../../../../../common/geometry';
 import { cssFontShorthand, Font, measureText, TextAlign, TextBaseline } from '../../../../../common/text_utils';
-import { withContext, withRotatedOrigin } from '../../../../../renderers/canvas';
+import { withContext } from '../../../../../renderers/canvas';
+import { degToRad } from '../../../../../utils/common';
 import { Point } from '../../../../../utils/point';
 
 /** @internal */
 export type TextFont = Font & {
-  fill: string;
   fontSize: number;
   align: TextAlign;
   baseline: TextBaseline;
@@ -26,30 +27,28 @@ export function renderText(
   origin: Point,
   text: string,
   font: TextFont,
-  degree: number = 0,
-  translation?: Partial<Point>,
+  angle: Degrees = 0,
+  translateX: number = 0,
+  translateY: number = 0,
   scale: number = 1,
 ) {
-  withRotatedOrigin(ctx, origin, degree, (ctx) => {
-    withContext(ctx, (ctx) => {
-      ctx.fillStyle = font.fill;
-      ctx.textAlign = font.align;
-      ctx.textBaseline = font.baseline;
-      ctx.font = cssFontShorthand(font, font.fontSize);
-      if (translation?.x || translation?.y) {
-        ctx.translate(translation?.x ?? 0, translation?.y ?? 0);
-      }
-      ctx.translate(origin.x, origin.y);
-      ctx.scale(scale, scale);
-      const shadowSize = font.shadowSize ?? 0;
-      if (font.shadow && shadowSize > 0) {
-        ctx.lineJoin = 'round';
-        ctx.lineWidth = shadowSize;
-        ctx.strokeStyle = font.shadow;
-        ctx.strokeText(text, 0, 0);
-      }
-      ctx.fillText(text, 0, 0);
-    });
+  withContext(ctx, () => {
+    ctx.translate(origin.x, origin.y);
+    ctx.rotate(degToRad(angle));
+    ctx.translate(translateX, translateY);
+    ctx.scale(scale, scale);
+    ctx.fillStyle = font.textColor;
+    ctx.textAlign = font.align;
+    ctx.textBaseline = font.baseline;
+    ctx.font = cssFontShorthand(font, font.fontSize);
+    const shadowSize = font.shadowSize ?? 0;
+    if (font.shadow && shadowSize > 0) {
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = shadowSize;
+      ctx.strokeStyle = font.shadow;
+      ctx.strokeText(text, 0, 0);
+    }
+    ctx.fillText(text, 0, 0);
   });
 }
 

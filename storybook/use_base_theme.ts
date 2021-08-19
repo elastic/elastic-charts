@@ -13,7 +13,7 @@ import { $Values } from 'utility-types';
 import { Theme, LIGHT_THEME, DARK_THEME, DEFAULT_CHART_MARGINS } from '@elastic/charts';
 import { mergePartial } from '@elastic/charts/src/utils/common';
 
-import { parameters } from './preview';
+import { storybookParameters } from './parameters';
 
 /**
  * Available themes
@@ -42,7 +42,7 @@ const themeMap = {
 };
 
 const getBackground = (colorId: string) => {
-  const option = (parameters?.background?.options ?? []).find(({ id }) => id === colorId);
+  const option = (storybookParameters?.background?.options ?? []).find(({ id }) => id === colorId);
   return option?.background ?? option?.color ?? '#fff';
 };
 

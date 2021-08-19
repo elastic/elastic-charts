@@ -10,7 +10,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 
 import { renderRect } from '../../chart_types/xy_chart/renderer/canvas/primitives/rect';
-import { RgbObject } from '../../common/color_library_wrappers';
+import { RgbObject, stringToRGB } from '../../common/color_library_wrappers';
 import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
 import { GlobalChartState } from '../../state/chart_state';
 import { getInternalBrushAreaSelector } from '../../state/selectors/get_internal_brush_area';
@@ -24,6 +24,7 @@ import { Dimensions } from '../../utils/dimensions';
 interface OwnProps {
   fillColor?: RgbObject;
 }
+
 interface StateProps {
   initialized: boolean;
   mainProjectionArea: Dimensions;
@@ -101,11 +102,12 @@ class BrushToolComponent extends React.Component<Props> {
 
   private drawCanvas = () => {
     const { brushArea, mainProjectionArea, fillColor } = this.props;
-    if (!this.ctx || !brushArea) {
+    const { ctx } = this;
+    if (!ctx || !brushArea) {
       return;
     }
     const { top, left, width, height } = brushArea;
-    withContext(this.ctx, (ctx) => {
+    withContext(ctx, () => {
       ctx.scale(this.devicePixelRatio, this.devicePixelRatio);
       withClip(
         ctx,
@@ -115,20 +117,14 @@ class BrushToolComponent extends React.Component<Props> {
           width: mainProjectionArea.width,
           height: mainProjectionArea.height,
         },
-        (ctx) => {
-          clearCanvas(ctx, 200000, 200000);
+        () => {
+          clearCanvas(ctx);
           ctx.translate(mainProjectionArea.left, mainProjectionArea.top);
           renderRect(
             ctx,
-            {
-              x: left,
-              y: top,
-              width,
-              height,
-            },
-            {
-              color: fillColor ?? DEFAULT_FILL_COLOR,
-            },
+            { x: left, y: top, width, height },
+            { color: fillColor ?? DEFAULT_FILL_COLOR },
+            { width: 0, color: stringToRGB('transparent') },
           );
         },
       );

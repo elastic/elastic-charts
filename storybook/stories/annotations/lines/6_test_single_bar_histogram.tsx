@@ -9,7 +9,16 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AnnotationDomainType, Axis, BarSeries, Chart, LineAnnotation, ScaleType, Settings } from '@elastic/charts';
+import {
+  AnnotationDomainType,
+  Axis,
+  BarSeries,
+  Chart,
+  LineAnnotation,
+  LineAnnotationStyle,
+  ScaleType,
+  Settings,
+} from '@elastic/charts';
 import { Position } from '@elastic/charts/src/utils/common';
 
 import { useBaseTheme } from '../../../use_base_theme';
@@ -25,7 +34,7 @@ export const Example = () => {
     },
   ];
 
-  const style = {
+  const style: LineAnnotationStyle = {
     line: {
       strokeWidth: 3,
       stroke: '#f00',
@@ -34,7 +43,6 @@ export const Example = () => {
     details: {
       fontSize: 12,
       fontFamily: 'Arial',
-      fontStyle: 'bold',
       fill: 'gray',
       padding: 0,
     },

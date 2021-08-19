@@ -8,7 +8,7 @@
 
 import { Circle, Fill, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
-import { getRadians } from '../../../../../utils/common';
+import { degToRad } from '../../../../../utils/common';
 import { PointShape } from '../../../../../utils/themes/theme';
 import { ShapeRendererFn } from '../../shapes_paths';
 import { fillAndStroke } from './utils';
@@ -24,11 +24,11 @@ export function renderShape(
   if (!stroke || !fill) {
     return;
   }
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     const [pathFn, rotation] = ShapeRendererFn[shape];
     const { x, y, radius } = coordinates;
     ctx.translate(x, y);
-    ctx.rotate(getRadians(rotation));
+    ctx.rotate(degToRad(rotation));
     ctx.beginPath();
 
     const path = new Path2D(pathFn(radius));

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { getRadians } from '../../../utils/common';
+import { degToRad } from '../../../utils/common';
 import { PointShape, TextureShape } from '../../../utils/themes/theme';
 
 /** @internal */
@@ -29,7 +29,7 @@ const triangle: SVGPathFn = (r: number) => {
  * Returns shape function based on rotation of square in degrees
  */
 const square = (rotation = 0): SVGPathFn => (r: number) => {
-  const d = getRadians(rotation);
+  const d = degToRad(rotation);
   const s = Math.abs(Math.cos(d) + Math.sin(d));
   // scaled r to account for rotation;
   const sr = s > 0 ? r / s : r;

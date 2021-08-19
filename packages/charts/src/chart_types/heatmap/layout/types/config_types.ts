@@ -48,7 +48,6 @@ export interface Config {
     name: string;
     fontSize: Pixels;
     width: Pixels | 'auto';
-    fill: string;
     align: TextAlign;
     baseline: TextBaseline;
     visible: boolean;
@@ -59,7 +58,6 @@ export interface Config {
     name: string;
     fontSize: Pixels;
     width: Pixels | 'auto' | { max: Pixels };
-    fill: string;
     baseline: TextBaseline;
     visible: boolean;
     padding: number | { left?: number; right?: number; top?: number; bottom?: number };
@@ -86,7 +84,6 @@ export interface Config {
     label: Font & {
       fontSize: Pixels;
       maxWidth: Pixels | 'fill';
-      fill: string;
       align: TextAlign;
       baseline: TextBaseline;
       visible: boolean;

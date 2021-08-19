@@ -41,7 +41,6 @@ export const config: Config = {
     name: 'X Value',
     visible: true,
     width: 'auto',
-    fill: 'black',
     fontSize: 12,
     fontFamily: 'Sans-Serif',
     fontStyle: 'normal',
@@ -58,7 +57,6 @@ export const config: Config = {
     name: 'Y Value',
     visible: true,
     width: 'auto',
-    fill: 'black',
     fontSize: 12,
     fontFamily: 'Sans-Serif',
     fontStyle: 'normal',
@@ -91,7 +89,6 @@ export const config: Config = {
     label: {
       visible: true,
       maxWidth: 'fill',
-      fill: 'black',
       fontSize: 10,
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',

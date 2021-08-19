@@ -94,7 +94,6 @@ export const DARK_THEME: Theme = {
   axes: {
     axisTitle: {
       fontSize: 12,
-      fontStyle: 'bold',
       fontFamily: 'sans-serif',
       padding: {
         inner: 8,
@@ -105,7 +104,6 @@ export const DARK_THEME: Theme = {
     },
     axisPanelTitle: {
       fontSize: 10,
-      fontStyle: 'bold',
       fontFamily: 'sans-serif',
       padding: {
         inner: 8,

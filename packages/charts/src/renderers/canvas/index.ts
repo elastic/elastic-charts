@@ -6,11 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { Coordinate } from '../../common/geometry';
 import { Rect } from '../../geoms/types';
-import { getRadians } from '../../utils/common';
 import { ClippedRanges } from '../../utils/geometry';
-import { Point } from '../../utils/point';
 
 /**
  * withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
@@ -21,16 +18,17 @@ import { Point } from '../../utils/point';
  * @param fun
  * @internal
  */
-export function withContext(ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRenderingContext2D) => void) {
+export function withContext(ctx: CanvasRenderingContext2D, fun: (context: CanvasRenderingContext2D) => void) {
   ctx.save();
   fun(ctx);
   ctx.restore();
 }
 
 /** @internal */
-export function clearCanvas(ctx: CanvasRenderingContext2D, width: Coordinate, height: Coordinate) {
-  withContext(ctx, (ctx) => {
-    ctx.clearRect(-width, -height, 2 * width, 2 * height); // remove past contents
+export function clearCanvas(ctx: CanvasRenderingContext2D) {
+  withContext(ctx, () => {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   });
 }
 
@@ -47,14 +45,14 @@ export function withClip(
   fun: (ctx: CanvasRenderingContext2D) => void,
   shouldClip = true,
 ) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     if (shouldClip) {
       const { x, y, width, height } = clippings;
       ctx.beginPath();
       ctx.rect(x, y, width, height);
       ctx.clip();
     }
-    withContext(ctx, (ctx) => {
+    withContext(ctx, () => {
       fun(ctx);
     });
   });
@@ -71,46 +69,30 @@ export function withClipRanges(
   negate = false,
   fun: (ctx: CanvasRenderingContext2D) => void,
 ) {
-  withContext(ctx, (context) => {
+  withContext(ctx, () => {
     const { length } = clippedRanges;
     const { width, height, y } = clippings;
-    context.beginPath();
+    ctx.beginPath();
     if (negate) {
       clippedRanges.forEach(([x0, x1]) => {
-        context.rect(x0, y, x1 - x0, height);
+        ctx.rect(x0, y, x1 - x0, height);
       });
     } else {
       if (length > 0) {
-        context.rect(0, -0.5, clippedRanges[0][0], height);
+        ctx.rect(0, -0.5, clippedRanges[0][0], height);
         const lastX = clippedRanges[length - 1][1];
-        context.rect(lastX, y, width - lastX, height);
+        ctx.rect(lastX, y, width - lastX, height);
       }
 
       if (length > 1) {
         for (let i = 1; i < length; i++) {
           const [, x0] = clippedRanges[i - 1];
           const [x1] = clippedRanges[i];
-          context.rect(x0, y, x1 - x0, height);
+          ctx.rect(x0, y, x1 - x0, height);
         }
       }
     }
-    context.clip();
-    fun(context);
-  });
-}
-
-/** @internal */
-export function withRotatedOrigin(
-  ctx: CanvasRenderingContext2D,
-  origin: Point,
-  rotation: number = 0,
-  fn: (ctx: CanvasRenderingContext2D) => void,
-) {
-  withContext(ctx, (ctx) => {
-    const { x, y } = origin;
-    ctx.translate(x, y);
-    ctx.rotate(getRadians(rotation));
-    ctx.translate(-x, -y);
-    fn(ctx);
+    ctx.clip();
+    fun(ctx);
   });
 }
