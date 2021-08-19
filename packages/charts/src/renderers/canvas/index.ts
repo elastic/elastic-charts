@@ -18,7 +18,7 @@ import { ClippedRanges } from '../../utils/geometry';
  * @param fun
  * @internal
  */
-export function withContext(ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRenderingContext2D) => void) {
+export function withContext(ctx: CanvasRenderingContext2D, fun: (context: CanvasRenderingContext2D) => void) {
   ctx.save();
   fun(ctx);
   ctx.restore();
@@ -26,9 +26,9 @@ export function withContext(ctx: CanvasRenderingContext2D, fun: (ctx: CanvasRend
 
 /** @internal */
 export function clearCanvas(ctx: CanvasRenderingContext2D) {
-  withContext(ctx, (context) => {
-    context.setTransform(1, 0, 0, 1, 0, 0);
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+  withContext(ctx, () => {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   });
 }
 
@@ -45,14 +45,14 @@ export function withClip(
   fun: (ctx: CanvasRenderingContext2D) => void,
   shouldClip = true,
 ) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     if (shouldClip) {
       const { x, y, width, height } = clippings;
       ctx.beginPath();
       ctx.rect(x, y, width, height);
       ctx.clip();
     }
-    withContext(ctx, (ctx) => {
+    withContext(ctx, () => {
       fun(ctx);
     });
   });
@@ -69,30 +69,30 @@ export function withClipRanges(
   negate = false,
   fun: (ctx: CanvasRenderingContext2D) => void,
 ) {
-  withContext(ctx, (context) => {
+  withContext(ctx, () => {
     const { length } = clippedRanges;
     const { width, height, y } = clippings;
-    context.beginPath();
+    ctx.beginPath();
     if (negate) {
       clippedRanges.forEach(([x0, x1]) => {
-        context.rect(x0, y, x1 - x0, height);
+        ctx.rect(x0, y, x1 - x0, height);
       });
     } else {
       if (length > 0) {
-        context.rect(0, -0.5, clippedRanges[0][0], height);
+        ctx.rect(0, -0.5, clippedRanges[0][0], height);
         const lastX = clippedRanges[length - 1][1];
-        context.rect(lastX, y, width - lastX, height);
+        ctx.rect(lastX, y, width - lastX, height);
       }
 
       if (length > 1) {
         for (let i = 1; i < length; i++) {
           const [, x0] = clippedRanges[i - 1];
           const [x1] = clippedRanges[i];
-          context.rect(x0, y, x1 - x0, height);
+          ctx.rect(x0, y, x1 - x0, height);
         }
       }
     }
-    context.clip();
-    fun(context);
+    ctx.clip();
+    fun(ctx);
   });
 }

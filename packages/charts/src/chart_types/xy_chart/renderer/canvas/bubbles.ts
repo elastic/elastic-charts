@@ -29,7 +29,7 @@ interface BubbleGeometriesDataProps {
 
 /** @internal */
 export function renderBubbles(ctx: CanvasRenderingContext2D, props: BubbleGeometriesDataProps) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     const { bubbles, sharedStyle, highlightedLegendItem, clippings, rotation, renderingArea } = props;
     const geometryStyles: Record<SeriesKey, GeometryStateStyle> = {};
     const pointStyles: Record<SeriesKey, PointStyle> = {};

@@ -32,7 +32,7 @@ export function renderText(
   translateY: number = 0,
   scale: number = 1,
 ) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.translate(origin.x, origin.y);
     ctx.rotate(degToRad(angle));
     ctx.translate(translateX, translateY);

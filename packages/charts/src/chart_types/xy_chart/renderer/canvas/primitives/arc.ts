@@ -32,7 +32,7 @@ export function renderArc(ctx: CanvasRenderingContext2D, arc: Arc, fill?: Fill, 
   if (!fill && !stroke) {
     return;
   }
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     const { x, y, radius, startAngle, endAngle } = arc;
     ctx.translate(x, y);
     ctx.beginPath();

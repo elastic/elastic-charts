@@ -22,7 +22,7 @@ export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | s
   if (stroke.width < MIN_STROKE_WIDTH || lines.length === 0) {
     return;
   }
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.strokeStyle = RGBtoString(stroke.color);
     ctx.lineJoin = 'round';
     ctx.lineWidth = stroke.width;
