@@ -43,19 +43,8 @@ export function renderBubbles(ctx: CanvasRenderingContext2D, props: BubbleGeomet
       acc.push(...points);
       return acc;
     }, []);
-    if (allPoints.length === 0) {
-      return;
-    }
 
-    renderPointGroup(
-      ctx,
-      allPoints,
-      geometryStyles,
-      rotation,
-      renderingArea,
-      clippings,
-      // TODO: add padding over clipping
-      allPoints[0]?.value.mark !== null,
-    );
+    const shouldClip = allPoints[0]?.value.mark !== null; // TODO: add padding over clipping
+    renderPointGroup(ctx, allPoints, geometryStyles, rotation, renderingArea, clippings, shouldClip);
   });
 }
