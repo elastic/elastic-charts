@@ -44,10 +44,13 @@
 ### Checklist
 
 <!-- Delete any items that are not applicable to this PR. -->
-- [ ] The proper chart type label was added (e.g. :xy, :partition) if the PR involves a specific chart type
-- [ ] The proper feature label was added (e.g. :interactions, :axis) if the PR involves a specific chart feature
-- [ ] Whenever possible, please check if the closing issue is connected to a running GH project
-- [ ] Any consumer-facing exports were added to `packages/charts/src/index.ts` (and stories only import from `../src` except for test data & storybook)
-- [ ] This was checked for cross-browser compatibility
-- [ ] Proper documentation or storybook story was added for features that require explanation or tutorials
-- [ ] Unit tests were updated or added to match the most common scenarios
+- [ ] The code changes are specific to a chart type, the chart type label is attached (e.g. `:xy`, `:partition`)
+- [ ] The code changes are specific to one or more features, one or more feature labels are attached (e.g. `:interactions`, `:axis`)
+- [ ] `Theme` API change is introduced, the `:theme` label is attached and the EUI team is pinged
+- [ ] The closing issue/s is connected to a running GH project (if not, recheck with the team the priority)
+- [ ] Any new public API export must be added to the `packages/charts/src/index.ts`
+- [ ] Unit tests are added/updated to match the most common scenarios
+- [ ] The feature requires a specific explanation, documentation and/or a storybook story is added
+- [ ] Any added stories must import from `@elastic/charts` except for test data & storybook
+- [ ] The code is checked for cross-browser compatibility (Chrome, Firefox, Edge)
+- [ ] The visual changes are tested with every available theme (darkmode, lightmode, EUI related) 
