@@ -27,11 +27,8 @@ export function getBandsColorScale(
   const ascendingSortFn = getPredicateFn('numAsc', 'start');
   const bands = colorScale.bands
     .reduce<Required<ColorBand>[]>((acc, { start, end, color, label }) => {
-      // filter out wrongly configured bands
-      if (start > end) {
-        return acc;
-      }
-      acc.push({ start, end, color, label: label ?? labelFormatter(start, end) });
+      // admit only proper bands
+      if (start < end) acc.push({ start, end, color, label: label ?? labelFormatter(start, end) });
       return acc;
     }, [])
     .sort(ascendingSortFn);

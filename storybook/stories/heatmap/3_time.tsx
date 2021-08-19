@@ -98,7 +98,7 @@ export const Example = () => {
             bands: [
               { color: '#ca0020', start: -5, end: -3 },
               { color: '#f4a582', start: -3, end: -1 },
-              { color: 'rgb(206,206,206)', start: -1, end: 1 },
+              { color: '#cecece', start: -1, end: 1 },
               { color: '#92c5de', start: 1, end: 3 },
               { color: '#0571b0', start: 3, end: 5 },
             ],
