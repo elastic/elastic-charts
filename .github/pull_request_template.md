@@ -44,13 +44,12 @@
 ### Checklist
 
 <!-- Delete any items that are not applicable to this PR. -->
-- [ ] The code changes are specific to a chart type, the chart type label is attached (e.g. `:xy`, `:partition`)
-- [ ] The code changes are specific to one or more features, one or more feature labels are attached (e.g. `:interactions`, `:axis`)
-- [ ] `Theme` API change is introduced, the `:theme` label is attached and the EUI team is pinged
-- [ ] The closing issue/s is connected to a running GH project (if not, recheck with the team the priority)
-- [ ] Any new public API export must be added to the `packages/charts/src/index.ts`
-- [ ] Unit tests are added/updated to match the most common scenarios
-- [ ] The feature requires a specific explanation, documentation and/or a storybook story is added
-- [ ] Any added stories must import from `@elastic/charts` except for test data & storybook
-- [ ] The code is checked for cross-browser compatibility (Chrome, Firefox, Edge)
-- [ ] The visual changes are tested with every available theme (darkmode, lightmode, EUI related) 
+- [ ] The proper **chart type** label has been added (e.g. `:xy`, `:partition`)
+- [ ] The proper **feature** labels have been added (e.g. `:interactions`, `:axis`)
+- [ ] The `:theme` label has been added and the @elastic/eui-design team has been pinged when there are `Theme` API changes
+- [ ] All related issues have been linked (i.e. closes #123, fixes #123)
+- [ ] New public API exports have been added to `packages/charts/src/index.ts`
+- [ ] Unit tests have been added or updated to match the most common scenarios
+- [ ] The proper documentation and/or storybook story has been added or updated
+- [ ] The code has been checked for cross-browser compatibility (Chrome, Firefox, Safari, Edge)
+- [ ] Visual changes have been tested with all available themes including `dark`, `light`, `eui-dark` & `eui-light`
