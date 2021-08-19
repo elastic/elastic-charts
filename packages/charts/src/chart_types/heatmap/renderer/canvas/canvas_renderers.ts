@@ -15,25 +15,25 @@ import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 
 /** @internal */
 export function renderCanvas2d(
-  globalCtx: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D,
   dpr: number,
   { config, heatmapViewModel }: ShapeViewModel,
 ) {
   // eslint-disable-next-line no-empty-pattern
   const {} = config;
-  withContext(globalCtx, (context) => {
+  withContext(ctx, () => {
     // set some defaults for the overall rendering
 
     // let's set the devicePixelRatio once and for all; then we'll never worry about it again
-    context.scale(dpr, dpr);
+    ctx.scale(dpr, dpr);
 
     // all texts are currently center-aligned because
     //     - the calculations manually compute and lay out text (word) boxes, so we can choose whatever
     //     - but center/middle has mathematical simplicity and the most unassuming thing
     //     - due to using the math x/y convention (+y is up) while Canvas uses screen convention (+y is down)
     //         text rendering must be y-flipped, which is a bit easier this way
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     // ctx.translate(chartCenter.x, chartCenter.y);
     // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
     // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
@@ -48,19 +48,18 @@ export function renderCanvas2d(
       return yIndex < heatmapViewModel.pageSize;
     });
 
-    renderLayers(context, [
+    renderLayers(ctx, [
       // clear the canvas
-      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, config.width, config.height),
-
+      clearCanvas,
       (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, (ctx) => {
+        withContext(ctx, () => {
           // render grid
           renderMultiLine(ctx, heatmapViewModel.gridLines.x, heatmapViewModel.gridLines.stroke);
           renderMultiLine(ctx, heatmapViewModel.gridLines.y, heatmapViewModel.gridLines.stroke);
         });
       },
       (ctx: CanvasRenderingContext2D) =>
-        withContext(ctx, (ctx) => {
+        withContext(ctx, () => {
           // render cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
@@ -72,7 +71,7 @@ export function renderCanvas2d(
           });
         }),
       (ctx: CanvasRenderingContext2D) =>
-        withContext(ctx, (ctx) => {
+        withContext(ctx, () => {
           // render text on cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
@@ -95,7 +94,7 @@ export function renderCanvas2d(
           });
         }),
       (ctx: CanvasRenderingContext2D) =>
-        withContext(ctx, (ctx) => {
+        withContext(ctx, () => {
           // render text on Y axis
           if (!config.yAxisLabel.visible) {
             return;
@@ -137,7 +136,7 @@ export function renderCanvas2d(
           });
         }),
       (ctx: CanvasRenderingContext2D) =>
-        withContext(ctx, (ctx) => {
+        withContext(ctx, () => {
           // render text on X axis
           if (!config.xAxisLabel.visible) {
             return;

@@ -31,7 +31,7 @@ interface LineGeometriesDataProps {
 
 /** @internal */
 export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometriesDataProps) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     const { lines, sharedStyle, highlightedLegendItem, clippings, renderingArea, rotation } = props;
 
     lines.forEach(({ panel, value: line }) => {

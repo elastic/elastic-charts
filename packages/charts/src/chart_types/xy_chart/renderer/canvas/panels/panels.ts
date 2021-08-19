@@ -23,7 +23,7 @@ import { renderPanelTitle } from './panel_title';
 /** @internal */
 export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: chartY }: Point, panels: PanelGeoms) {
   panels.forEach(({ width, height, panelAnchor: { x: panelX, y: panelY } }) =>
-    withContext(ctx, (ctx) =>
+    withContext(ctx, () =>
       renderRect(
         ctx,
         { x: chartX + panelX, y: chartY + panelY, width, height },
@@ -40,7 +40,7 @@ function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps) {
   const x = anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x;
   const y = anchorPoint.y + (position === Position.Bottom ? -1 : 1) * panelAnchor.y;
 
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.translate(x, y);
     if (debug && !secondary) renderDebugRect(ctx, { x: 0, y: 0, ...size });
     renderAxis(ctx, props); // For now, just render the axis line TODO: compute axis dimensions per panels

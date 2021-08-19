@@ -27,11 +27,11 @@ export function renderGrids(ctx: CanvasRenderingContext2D, props: GridProps) {
     perPanelGridLines,
     renderingArea: { left, top },
   } = props;
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.translate(left, top);
 
     perPanelGridLines.forEach(({ lineGroups, panelAnchor: { x, y } }) => {
-      withContext(ctx, (ctx) => {
+      withContext(ctx, () => {
         ctx.translate(x, y);
         lineGroups.forEach(({ lines, stroke }) => {
           renderMultiLine(ctx, lines, stroke);

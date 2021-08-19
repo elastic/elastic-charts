@@ -80,11 +80,12 @@ class BrushToolComponent extends React.Component<Props> {
 
   private drawCanvas = () => {
     const { brushArea, mainProjectionArea, fillColor } = this.props;
-    if (!this.ctx || !brushArea) {
+    const { ctx } = this;
+    if (!ctx || !brushArea) {
       return;
     }
     const { top, left, width, height } = brushArea;
-    withContext(this.ctx, (ctx) => {
+    withContext(ctx, () => {
       ctx.scale(this.devicePixelRatio, this.devicePixelRatio);
       withClip(
         ctx,
@@ -94,20 +95,13 @@ class BrushToolComponent extends React.Component<Props> {
           width: mainProjectionArea.width,
           height: mainProjectionArea.height,
         },
-        (ctx) => {
-          clearCanvas(ctx, 200000, 200000);
+        () => {
+          clearCanvas(ctx);
           ctx.translate(mainProjectionArea.left, mainProjectionArea.top);
           renderRect(
             ctx,
-            {
-              x: left,
-              y: top,
-              width,
-              height,
-            },
-            {
-              color: fillColor ?? DEFAULT_FILL_COLOR,
-            },
+            { x: left, y: top, width, height },
+            { color: fillColor ?? DEFAULT_FILL_COLOR },
             { width: 0, color: stringToRGB('transparent') },
           );
         },
