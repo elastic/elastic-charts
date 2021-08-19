@@ -13,7 +13,7 @@ import { withContext } from '../../../../renderers/canvas';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { BubbleGeometry, PerPanel, PointGeometry } from '../../../../utils/geometry';
-import { SharedGeometryStateStyle, GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
+import { SharedGeometryStateStyle, GeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
 import { renderPointGroup } from './points';
 
@@ -32,22 +32,17 @@ export function renderBubbles(ctx: CanvasRenderingContext2D, props: BubbleGeomet
   withContext(ctx, () => {
     const { bubbles, sharedStyle, highlightedLegendItem, clippings, rotation, renderingArea } = props;
     const geometryStyles: Record<SeriesKey, GeometryStateStyle> = {};
-    const pointStyles: Record<SeriesKey, PointStyle> = {};
 
-    const allPoints = bubbles.reduce<PointGeometry[]>(
-      (acc, { value: { seriesIdentifier, seriesPointStyle, points } }) => {
-        geometryStyles[seriesIdentifier.key] = getGeometryStateStyle(
-          seriesIdentifier,
-          sharedStyle,
-          highlightedLegendItem,
-        );
-        pointStyles[seriesIdentifier.key] = seriesPointStyle;
+    const allPoints = bubbles.reduce<PointGeometry[]>((acc, { value: { seriesIdentifier, points } }) => {
+      geometryStyles[seriesIdentifier.key] = getGeometryStateStyle(
+        seriesIdentifier,
+        sharedStyle,
+        highlightedLegendItem,
+      );
 
-        acc.push(...points);
-        return acc;
-      },
-      [],
-    );
+      acc.push(...points);
+      return acc;
+    }, []);
     if (allPoints.length === 0) {
       return;
     }
@@ -55,7 +50,6 @@ export function renderBubbles(ctx: CanvasRenderingContext2D, props: BubbleGeomet
     renderPointGroup(
       ctx,
       allPoints,
-      pointStyles,
       geometryStyles,
       rotation,
       renderingArea,

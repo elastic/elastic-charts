@@ -12,7 +12,7 @@ import { Circle, Fill, Rect, Stroke } from '../../../../geoms/types';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PointGeometry } from '../../../../utils/geometry';
-import { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
+import { GeometryStateStyle } from '../../../../utils/themes/theme';
 import { renderShape } from './primitives/shapes';
 import { withPanelTransform } from './utils/panel_transform';
 
@@ -41,7 +41,6 @@ export function renderPoints(ctx: CanvasRenderingContext2D, points: PointGeometr
 export function renderPointGroup(
   ctx: CanvasRenderingContext2D,
   points: PointGeometry[],
-  themeStyles: Record<SeriesKey, PointStyle>,
   geometryStateStyles: Record<SeriesKey, GeometryStateStyle>,
   rotation: Rotation,
   renderingArea: Dimensions,
