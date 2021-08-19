@@ -44,10 +44,12 @@
 ### Checklist
 
 <!-- Delete any items that are not applicable to this PR. -->
-- [ ] The proper chart type label was added (e.g. :xy, :partition) if the PR involves a specific chart type
-- [ ] The proper feature label was added (e.g. :interactions, :axis) if the PR involves a specific chart feature
-- [ ] Whenever possible, please check if the closing issue is connected to a running GH project
-- [ ] Any consumer-facing exports were added to `packages/charts/src/index.ts` (and stories only import from `../src` except for test data & storybook)
-- [ ] This was checked for cross-browser compatibility
-- [ ] Proper documentation or storybook story was added for features that require explanation or tutorials
-- [ ] Unit tests were updated or added to match the most common scenarios
+- [ ] The proper **chart type** label has been added (e.g. `:xy`, `:partition`)
+- [ ] The proper **feature** labels have been added (e.g. `:interactions`, `:axis`)
+- [ ] The `:theme` label has been added and the @elastic/eui-design team has been pinged when there are `Theme` API changes
+- [ ] All related issues have been linked (i.e. closes #123, fixes #123)
+- [ ] New public API exports have been added to `packages/charts/src/index.ts`
+- [ ] Unit tests have been added or updated to match the most common scenarios
+- [ ] The proper documentation and/or storybook story has been added or updated
+- [ ] The code has been checked for cross-browser compatibility (Chrome, Firefox, Safari, Edge)
+- [ ] Visual changes have been tested with all available themes including `dark`, `light`, `eui-dark` & `eui-light`
