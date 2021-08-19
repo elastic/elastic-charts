@@ -49,14 +49,7 @@ export function renderXYChartCanvas2d(
       debug,
       panelGeoms,
     } = props;
-    const transform = {
-      x: renderingArea.left + chartTransform.x,
-      y: renderingArea.top + chartTransform.y,
-    };
-    // painter's algorithm, like that of SVG: the sequence determines what overdraws what; first element of the array is drawn first
-    // (of course, with SVG, it's for ambiguous situations only, eg. when 3D transforms with different Z values aren't used, but
-    // unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
-    // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
+    const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
     renderLayers(ctx, [
       clearCanvas,
 
