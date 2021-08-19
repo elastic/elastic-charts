@@ -8,14 +8,13 @@
 
 import { LegendItem } from '../../../../common/legend';
 import { Rect } from '../../../../geoms/types';
-import { withContext } from '../../../../renderers/canvas';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { BarGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
 import { renderRect } from './primitives/rect';
-import { buildBarStyles } from './styles/bar';
+import { buildBarStyle } from './styles/bar';
 import { withPanelTransform } from './utils/panel_transform';
 
 /** @internal */
@@ -37,19 +36,11 @@ export function renderBars(
       renderingArea,
       () =>
         bars.forEach((barGeometry) => {
-          const { x, y, width, height, color, seriesStyle, seriesIdentifier } = barGeometry;
+          const { x, y, width, height, color, seriesStyle: style, seriesIdentifier } = barGeometry;
           const rect = { x, y, width, height };
           const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-          const { fill, stroke } = buildBarStyles(
-            ctx,
-            imgCanvas,
-            color,
-            seriesStyle.rect,
-            seriesStyle.rectBorder,
-            geometryStateStyle,
-            rect,
-          );
-          withContext(ctx, () => renderRect(ctx, rect, fill, stroke));
+          const barStyle = buildBarStyle(ctx, imgCanvas, color, style.rect, style.rectBorder, geometryStateStyle, rect);
+          renderRect(ctx, rect, barStyle.fill, barStyle.stroke);
         }),
       { area: clippings, shouldClip: true },
     ),

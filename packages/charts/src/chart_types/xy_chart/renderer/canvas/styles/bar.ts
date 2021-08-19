@@ -20,7 +20,7 @@ import { getTextureStyles } from '../../../utils/texture';
  * of the themeRectBorderStyle parameter if present.
  * @internal
  */
-export function buildBarStyles(
+export function buildBarStyle(
   ctx: CanvasRenderingContext2D,
   imgCanvas: HTMLCanvasElement,
   baseColor: string,
