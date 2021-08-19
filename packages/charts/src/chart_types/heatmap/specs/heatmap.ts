@@ -24,8 +24,6 @@ const defaultProps = {
   chartType: ChartType.Heatmap,
   specType: SpecType.Series,
   data: [],
-  colors: ['red', 'yellow', 'green'],
-  colorScale: ScaleType.Linear,
   xAccessor: ({ x }: { x: string | number }) => x,
   yAccessor: ({ y }: { y: string | number }) => y,
   xScaleType: X_SCALE_DEFAULT.type,
@@ -44,13 +42,27 @@ export type HeatmapScaleType =
   | typeof ScaleType.Threshold;
 
 /** @alpha */
+export type ColorBand = {
+  start: number;
+  end: number;
+  color: Color;
+  label?: string;
+};
+
+/** @alpha */
+export interface HeatmapBandsColorScale {
+  type: 'bands';
+  bands: Array<ColorBand>;
+  /** called on ColorBands without a provided label */
+  labelFormatter?: (start: number, end: number) => string;
+}
+
+/** @alpha */
 export interface HeatmapSpec extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Heatmap;
   data: Datum[];
-  colorScale?: HeatmapScaleType;
-  ranges?: number[] | [number, number];
-  colors: Color[];
+  colorScale: HeatmapBandsColorScale;
   xAccessor: Accessor | AccessorFn;
   yAccessor: Accessor | AccessorFn;
   valueAccessor: Accessor | AccessorFn;
@@ -65,14 +77,13 @@ export interface HeatmapSpec extends Spec {
 
 /** @alpha */
 export const Heatmap: React.FunctionComponent<
-  Pick<HeatmapSpec, 'id' | 'data'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>
+  Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>
 > = getConnect()(
   specComponentFactory<
     HeatmapSpec,
     | 'xAccessor'
     | 'yAccessor'
     | 'valueAccessor'
-    | 'colors'
     | 'data'
     | 'ySortPredicate'
     | 'xSortPredicate'
