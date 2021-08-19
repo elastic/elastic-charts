@@ -63,15 +63,14 @@ export function renderXYChartCanvas2d(
       // render panel grid
       () => debug && renderGridPanels(ctx, transform, panelGeoms),
 
-      () => {
+      () =>
         renderGrids(ctx, {
           axesSpecs,
           renderingArea,
           perPanelGridLines,
           axesStyles,
           sharedAxesStyle,
-        });
-      },
+        }),
 
       () =>
         renderPanelSubstrates(ctx, {
@@ -132,7 +131,7 @@ export function renderXYChartCanvas2d(
           renderingArea,
         }),
 
-      () => {
+      () =>
         geometries.bars.forEach(({ value: bars, panel }) =>
           withContext(ctx, () =>
             renderBarValues(ctx, {
@@ -144,8 +143,7 @@ export function renderXYChartCanvas2d(
               barSeriesStyle,
             }),
           ),
-        );
-      },
+        ),
 
       // rendering foreground annotations
       () => renderAnnotations(ctx, { annotationDimensions, annotationSpecs, rotation, renderingArea }, false),
