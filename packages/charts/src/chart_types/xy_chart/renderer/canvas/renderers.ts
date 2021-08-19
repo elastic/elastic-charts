@@ -126,16 +126,14 @@ export function renderXYChartCanvas2d(
 
       () =>
         geometries.bars.forEach(({ value: bars, panel }) =>
-          withContext(ctx, () =>
-            renderBarValues(ctx, {
-              bars,
-              panel,
-              renderingArea,
-              rotation,
-              debug,
-              barSeriesStyle,
-            }),
-          ),
+          renderBarValues(ctx, {
+            bars,
+            panel,
+            renderingArea,
+            rotation,
+            debug,
+            barSeriesStyle,
+          }),
         ),
 
       // rendering foreground annotations
@@ -151,11 +149,7 @@ export function renderXYChartCanvas2d(
             ctx,
             { x: left, y: top, width, height },
             { color: stringToRGB('transparent') },
-            {
-              color: stringToRGB('red'),
-              width: 4,
-              dash: [4, 4],
-            },
+            { color: stringToRGB('red'), width: 4, dash: [4, 4] },
           );
 
           const renderer = geometriesIndex.triangulation([0, 0, width, height])?.render;
