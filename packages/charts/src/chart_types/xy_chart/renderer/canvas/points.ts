@@ -23,13 +23,14 @@ import { withPanelTransform } from './utils/panel_transform';
  */
 export function renderPoints(ctx: CanvasRenderingContext2D, points: PointGeometry[], { opacity }: GeometryStateStyle) {
   points
+    .slice()
+    .sort(({ radius: a }, { radius: b }) => b - a)
     .map(({ x, y, radius, transform, style: { fill, stroke, shape } }) => ({
       coordinates: { x: x + transform.x, y: y + transform.y, radius },
       fill: { color: applyOpacity(fill.color, opacity) },
       stroke: { ...stroke, color: applyOpacity(stroke.color, opacity) },
       shape,
     }))
-    .sort(({ coordinates: { radius: a } }, { coordinates: { radius: b } }) => b - a)
     .forEach(({ coordinates, fill, stroke, shape }) => renderShape(ctx, shape, coordinates, fill, stroke));
 }
 
