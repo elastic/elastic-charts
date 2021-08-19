@@ -40,7 +40,7 @@ function renderTextRow(
     if (!Number.isFinite(crx) || !Number.isFinite(cry)) {
       return;
     }
-    withContext(ctx, (ctx) => {
+    withContext(ctx, () => {
       ctx.scale(1, -1);
       if (clipText) {
         ctx.rect(container.x0 + 1, container.y0 + 1, container.x1 - container.x0 - 2, container.y1 - container.y0 - 2);
@@ -59,7 +59,7 @@ function renderTextRow(
     });
     // for debug use: this draws magenta boxes for where the text needs to fit
     // note: `container` is a property of the RowSet, needs to be added
-    // withContext(ctx, (ctx) => {
+    // withContext(ctx, () => {
     //   ctx.scale(1, -1);
     //   ctx.rotate(-rotation);
     //   ctx.beginPath();
@@ -129,7 +129,7 @@ function renderTaperedBorder(
 }
 
 function renderSectors(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach((quad: QuadViewModel) => {
       if (quad.x0 === quad.x1) return; // no slice will be drawn, and it avoids some division by zero as well
@@ -139,7 +139,7 @@ function renderSectors(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewMod
 }
 
 function renderRectangles(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
       // only draw a shape if it would show up at all
@@ -168,7 +168,7 @@ function renderFillOutsideLinks(
   linkLabelTextColor: string,
   linkLabelLineWidth: Pixels,
 ) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.lineWidth = linkLabelLineWidth;
     ctx.strokeStyle = linkLabelTextColor;
     outsideLinksViewModel.forEach(({ points }) => {
@@ -192,7 +192,7 @@ function renderLinkLabels(
   const labelColor = addOpacity(labelFontSpec.textColor, labelFontSpec.textOpacity);
   const valueColor = addOpacity(valueFontSpec.textColor, valueFontSpec.textOpacity);
   const labelValueGap = linkLabelFontSize / 2; // one en space
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.lineWidth = linkLabelLineWidth;
     linkLabels.forEach(({ linkLabels, translate, textAlign, text, valueText, width, valueWidth }: LinkLabelVM) => {
       // label lines
@@ -202,7 +202,7 @@ function renderLinkLabels(
       ctx.strokeStyle = strokeColor ?? linkLineColor;
 
       ctx.stroke();
-      withContext(ctx, (ctx) => {
+      withContext(ctx, () => {
         ctx.translate(...translate);
         ctx.scale(1, -1); // flip for text rendering not to be upside down
         ctx.textAlign = textAlign;
@@ -245,7 +245,7 @@ export function renderPartitionCanvas2d(
 
   const linkLineColor = addOpacity(linkLabel.textColor, linkLabel.textOpacity);
 
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     // set some defaults for the overall rendering
 
     // let's set the devicePixelRatio once and for all; then we'll never worry about it again
