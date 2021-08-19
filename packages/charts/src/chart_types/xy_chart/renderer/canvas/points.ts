@@ -12,7 +12,7 @@ import { Circle, Fill, Rect, Stroke } from '../../../../geoms/types';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PointGeometry } from '../../../../utils/geometry';
-import { GeometryStateStyle, PointShape, PointStyle } from '../../../../utils/themes/theme';
+import { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
 import { renderShape } from './primitives/shapes';
 import { withPanelTransform } from './utils/panel_transform';
 
@@ -51,16 +51,12 @@ export function renderPointGroup(
   points
     .slice()
     .sort(({ radius: a }, { radius: b }) => b - a)
-    .map<[Circle, Fill, Stroke, Dimensions, PointShape]>(
-      ({ x, y, radius, transform, style, seriesIdentifier: { key }, panel }) => {
-        const { opacity } = geometryStateStyles[key];
-        const fill: Fill = { color: applyOpacity(style.fill.color, opacity) };
-        const stroke: Stroke = { ...style.stroke, color: applyOpacity(style.stroke.color, opacity) };
-        const coordinates: Circle = { x: x + transform.x, y, radius };
-        return [coordinates, fill, stroke, panel, style.shape];
-      },
-    )
-    .forEach(([coordinates, fill, stroke, panel, shape]) => {
+    .forEach(({ x, y, radius, transform, style, seriesIdentifier: { key }, panel }) => {
+      const { opacity } = geometryStateStyles[key];
+      const fill: Fill = { color: applyOpacity(style.fill.color, opacity) };
+      const stroke: Stroke = { ...style.stroke, color: applyOpacity(style.stroke.color, opacity) };
+      const coordinates: Circle = { x: x + transform.x, y, radius };
+      const { shape } = style;
       withPanelTransform(
         ctx,
         panel,
