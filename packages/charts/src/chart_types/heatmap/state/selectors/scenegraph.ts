@@ -16,7 +16,7 @@ import { ShapeViewModel, nullShapeViewModel } from '../../layout/types/viewmodel
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from './compute_chart_dimensions';
-import { ColorScaleType } from './get_color_scale';
+import { ColorScale } from './get_color_scale';
 import { GridHeightParams } from './get_grid_full_height';
 
 /** @internal */
@@ -25,7 +25,7 @@ export function render(
   settingsSpec: SettingsSpec,
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
-  colorScale: ColorScaleType['scale'],
+  colorScale: ColorScale,
   bandsToHide: Array<[number, number]>,
   gridHeightParams: GridHeightParams,
 ): ShapeViewModel {
