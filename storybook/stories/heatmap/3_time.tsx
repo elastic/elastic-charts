@@ -18,11 +18,11 @@ const start = DateTime.fromISO('2021-03-27T20:00:00');
 const end = DateTime.fromISO('2021-03-28T11:00:00');
 const data = [...new Array(14)].flatMap((d, i) => {
   return [
-    [start.plus({ hour: i }).toMillis(), 'cat A', rng(0, 10)],
-    [start.plus({ hour: i }).toMillis(), 'cat B', rng(0, 10)],
-    [start.plus({ hour: i }).toMillis(), 'cat C', rng(0, 10)],
-    [start.plus({ hour: i }).toMillis(), 'cat D', rng(0, 10)],
-    [start.plus({ hour: i }).toMillis(), 'cat E', rng(0, 10)],
+    [start.plus({ hour: i }).toMillis(), 'cat A', rng(-5, 5)],
+    [start.plus({ hour: i }).toMillis(), 'cat B', rng(-5, 5)],
+    [start.plus({ hour: i }).toMillis(), 'cat C', rng(-5, 5)],
+    [start.plus({ hour: i }).toMillis(), 'cat D', rng(-5, 5)],
+    [start.plus({ hour: i }).toMillis(), 'cat E', rng(-5, 5)],
   ];
 });
 
@@ -34,8 +34,8 @@ export const Example = () => {
           min: 20,
         },
         stroke: {
-          width: 0,
-          color: '#D3DAE6',
+          width: 0.5,
+          color: 'transparent',
         },
       },
       cell: {
@@ -89,11 +89,21 @@ export const Example = () => {
             max: end.toMillis() + endTimeOffset,
             minInterval: 1000 * 60 * 60,
           }}
+          showLegend
         />
         <Heatmap
           id="heatmap1"
-          colorScale={ScaleType.Linear}
-          colors={['white', 'blue']}
+          colorScale={{
+            type: 'bands',
+            bands: [
+              { color: '#ca0020', start: -5, end: -3 },
+              { color: '#f4a582', start: -3, end: -1 },
+              { color: 'rgb(206,206,206)', start: -1, end: 1 },
+              { color: '#92c5de', start: 1, end: 3 },
+              { color: '#0571b0', start: 3, end: 5 },
+            ],
+            labelFormatter: (s, e) => `[${s}, ${e})`,
+          }}
           data={data}
           xAccessor={(d) => d[0]}
           yAccessor={(d) => d[1]}
