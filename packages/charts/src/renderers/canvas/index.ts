@@ -18,9 +18,9 @@ import { ClippedRanges } from '../../utils/geometry';
  * @param fun
  * @internal
  */
-export function withContext(ctx: CanvasRenderingContext2D, fun: () => void) {
+export function withContext(ctx: CanvasRenderingContext2D, fun: (context: CanvasRenderingContext2D) => void) {
   ctx.save();
-  fun();
+  fun(ctx);
   ctx.restore();
 }
 
