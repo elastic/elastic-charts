@@ -148,10 +148,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
       a11ySettings,
       debug,
     } = this.props;
-    if (!initialized || width === 0 || height === 0) {
-      return null;
-    }
-    return (
+    return width === 0 || height === 0 || !initialized ? null : (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <canvas
           ref={forwardStageRef}
@@ -176,20 +173,15 @@ class PartitionComponent extends React.Component<PartitionProps> {
 
   private drawCanvas() {
     if (this.ctx) {
-      const { width, height }: Dimensions = this.props.chartContainerDimensions;
-      clearCanvas(this.ctx, width * this.devicePixelRatio, height * this.devicePixelRatio);
-      const {
-        ctx,
-        devicePixelRatio,
-        props: { multiGeometries, geometriesFoci },
-      } = this;
-      multiGeometries.forEach((geometries, geometryIndex) => {
+      const { ctx, devicePixelRatio, props } = this;
+      clearCanvas(ctx);
+      props.multiGeometries.forEach((geometries, geometryIndex) => {
         const renderer = isSimpleLinear(geometries.config, geometries.layers)
           ? renderLinearPartitionCanvas2d
           : isWaffle(geometries.config.partitionLayout)
           ? renderWrappedPartitionCanvas2d
           : renderPartitionCanvas2d;
-        renderer(ctx, devicePixelRatio, geometries, geometriesFoci[geometryIndex], this.animationState);
+        renderer(ctx, devicePixelRatio, geometries, props.geometriesFoci[geometryIndex], this.animationState);
       });
     }
   }
@@ -201,12 +193,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
-  bindActionCreators(
-    {
-      onChartRendered,
-    },
-    dispatch,
-  );
+  bindActionCreators({ onChartRendered }, dispatch);
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,

@@ -50,8 +50,7 @@ export function renderCanvas2d(
 
     renderLayers(context, [
       // clear the canvas
-      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, config.width, config.height),
-
+      clearCanvas,
       (ctx: CanvasRenderingContext2D) => {
         withContext(ctx, (ctx) => {
           // render grid
