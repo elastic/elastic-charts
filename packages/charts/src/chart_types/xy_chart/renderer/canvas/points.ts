@@ -49,6 +49,8 @@ export function renderPointGroup(
   shouldClip: boolean,
 ) {
   points
+    .slice()
+    .sort(({ radius: a }, { radius: b }) => b - a)
     .map<[Circle, Fill, Stroke, Dimensions, PointShape]>(
       ({ x, y, radius, transform, style, seriesIdentifier: { key }, panel }) => {
         const { opacity } = geometryStateStyles[key];
@@ -58,7 +60,6 @@ export function renderPointGroup(
         return [coordinates, fill, stroke, panel, style.shape];
       },
     )
-    .sort(([{ radius: a }], [{ radius: b }]) => b - a)
     .forEach(([coordinates, fill, stroke, panel, shape]) => {
       withPanelTransform(
         ctx,
