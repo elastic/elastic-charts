@@ -22,36 +22,20 @@ import { withPanelTransform } from './utils/panel_transform';
 export function renderBars(
   ctx: CanvasRenderingContext2D,
   imgCanvas: HTMLCanvasElement,
-  barGeometries: Array<PerPanel<BarGeometry[]>>,
+  geoms: Array<PerPanel<BarGeometry[]>>,
   sharedStyle: SharedGeometryStateStyle,
   clippings: Rect,
-  renderingArea: Dimensions,
-  highlightedLegendItem?: LegendItem,
-  rotation?: Rotation,
-) {
-  withContext(ctx, () =>
-    barGeometries.forEach(
-      renderPerPanelBars(ctx, imgCanvas, clippings, sharedStyle, renderingArea, highlightedLegendItem, rotation),
-    ),
-  );
-}
-
-function renderPerPanelBars(
-  ctx: CanvasRenderingContext2D,
-  imgCanvas: HTMLCanvasElement,
-  clippings: Rect,
-  sharedStyle: SharedGeometryStateStyle,
   renderingArea: Dimensions,
   highlightedLegendItem?: LegendItem,
   rotation: Rotation = 0,
 ) {
-  return ({ panel, value: bars }: PerPanel<BarGeometry[]>) =>
+  geoms.forEach(({ panel, value: bars }: PerPanel<BarGeometry[]>) =>
     withPanelTransform(
       ctx,
       panel,
       rotation,
       renderingArea,
-      () => {
+      () =>
         bars.forEach((barGeometry) => {
           const { x, y, width, height, color, seriesStyle, seriesIdentifier } = barGeometry;
           const rect = { x, y, width, height };
@@ -66,8 +50,8 @@ function renderPerPanelBars(
             rect,
           );
           withContext(ctx, () => renderRect(ctx, rect, fill, stroke));
-        });
-      },
+        }),
       { area: clippings, shouldClip: true },
-    );
+    ),
+  );
 }
