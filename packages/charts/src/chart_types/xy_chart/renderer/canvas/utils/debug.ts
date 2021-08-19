@@ -38,7 +38,7 @@ export function renderDebugRect(
   stroke = DEFAULT_DEBUG_STROKE,
   rotation: number = 0,
 ) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.translate(rect.x, rect.y);
     ctx.rotate(degToRad(rotation));
     renderRect(
@@ -66,7 +66,7 @@ export function renderDebugRectCenterRotated(
 ) {
   const { x, y } = center;
 
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.translate(x, y);
     ctx.rotate(degToRad(rotation));
     ctx.translate(-x, -y);

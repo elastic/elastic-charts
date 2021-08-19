@@ -80,11 +80,12 @@ class BrushToolComponent extends React.Component<Props> {
 
   private drawCanvas = () => {
     const { brushArea, mainProjectionArea, fillColor } = this.props;
-    if (!this.ctx || !brushArea) {
+    const { ctx } = this;
+    if (!ctx || !brushArea) {
       return;
     }
     const { top, left, width, height } = brushArea;
-    withContext(this.ctx, (ctx) => {
+    withContext(ctx, () => {
       ctx.scale(this.devicePixelRatio, this.devicePixelRatio);
       withClip(
         ctx,

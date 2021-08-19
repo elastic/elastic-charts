@@ -24,7 +24,7 @@ export function renderShape(
   if (!stroke || !fill) {
     return;
   }
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     const [pathFn, rotation] = ShapeRendererFn[shape];
     const { x, y, radius } = coordinates;
     ctx.translate(x, y);

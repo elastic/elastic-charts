@@ -11,7 +11,7 @@ import { Mark } from '../../layout/viewmodel/geoms';
 
 /** @internal */
 export function renderCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, geomObjects: Mark[]) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     // set some defaults for the overall rendering
 
     // let's set the devicePixelRatio once and for all; then we'll never worry about it again
@@ -31,7 +31,7 @@ export function renderCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, geomO
     renderLayers(ctx, [
       // clear the canvas
       clearCanvas,
-      (context) => geomObjects.forEach(({ render }) => withContext(context, render)),
+      () => geomObjects.forEach(({ render }) => withContext(ctx, () => render(ctx))),
     ]);
   });
 }
