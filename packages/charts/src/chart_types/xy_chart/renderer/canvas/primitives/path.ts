@@ -24,24 +24,22 @@ export function renderLinePaths(
   hideClippedRanges = false,
 ) {
   if (clippedRanges.length > 0) {
-    withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
+    withClipRanges(ctx, clippedRanges, clippings, false, () => {
       ctx.translate(transform.x, transform.y);
       renderMultiLine(ctx, linePaths, stroke);
     });
-    if (hideClippedRanges) {
-      return;
+    if (!hideClippedRanges) {
+      withClipRanges(ctx, clippedRanges, clippings, true, () => {
+        ctx.translate(transform.x, transform.y);
+        renderMultiLine(ctx, linePaths, { ...stroke, dash: [5, 5] });
+      });
     }
-    withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
+  } else {
+    withContext(ctx, () => {
       ctx.translate(transform.x, transform.y);
-      renderMultiLine(ctx, linePaths, { ...stroke, dash: [5, 5] });
+      renderMultiLine(ctx, linePaths, stroke);
     });
-    return;
   }
-
-  withContext(ctx, () => {
-    ctx.translate(transform.x, transform.y);
-    renderMultiLine(ctx, linePaths, stroke);
-  });
 }
 
 /** @internal */
@@ -57,9 +55,9 @@ export function renderAreaPath(
   if (clippedRanges.length === 0) {
     withContext(ctx, () => renderPathFill(ctx, area, fill, transform));
   } else {
-    withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => renderPathFill(ctx, area, fill, transform));
+    withClipRanges(ctx, clippedRanges, clippings, false, () => renderPathFill(ctx, area, fill, transform));
     if (!hideClippedRanges) {
-      withClipRanges(ctx, clippedRanges, clippings, true, (ctx) =>
+      withClipRanges(ctx, clippedRanges, clippings, true, () =>
         renderPathFill(ctx, area, { ...fill, color: { ...fill.color, opacity: fill.color.opacity / 2 } }, transform),
       );
     }

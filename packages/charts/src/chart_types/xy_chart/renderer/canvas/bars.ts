@@ -29,18 +29,11 @@ export function renderBars(
   highlightedLegendItem?: LegendItem,
   rotation?: Rotation,
 ) {
-  withContext(ctx, () => {
-    const barRenderer = renderPerPanelBars(
-      ctx,
-      imgCanvas,
-      clippings,
-      sharedStyle,
-      renderingArea,
-      highlightedLegendItem,
-      rotation,
-    );
-    barGeometries.forEach(barRenderer);
-  });
+  withContext(ctx, () =>
+    barGeometries.forEach(
+      renderPerPanelBars(ctx, imgCanvas, clippings, sharedStyle, renderingArea, highlightedLegendItem, rotation),
+    ),
+  );
 }
 
 function renderPerPanelBars(
@@ -52,16 +45,13 @@ function renderPerPanelBars(
   highlightedLegendItem?: LegendItem,
   rotation: Rotation = 0,
 ) {
-  return ({ panel, value: bars }: PerPanel<BarGeometry[]>) => {
-    if (bars.length === 0) {
-      return;
-    }
+  return ({ panel, value: bars }: PerPanel<BarGeometry[]>) =>
     withPanelTransform(
       ctx,
       panel,
       rotation,
       renderingArea,
-      (ctx) => {
+      () => {
         bars.forEach((barGeometry) => {
           const { x, y, width, height, color, seriesStyle, seriesIdentifier } = barGeometry;
           const rect = { x, y, width, height };
@@ -75,12 +65,9 @@ function renderPerPanelBars(
             geometryStateStyle,
             rect,
           );
-          withContext(ctx, () => {
-            renderRect(ctx, rect, fill, stroke);
-          });
+          withContext(ctx, () => renderRect(ctx, rect, fill, stroke));
         });
       },
       { area: clippings, shouldClip: true },
     );
-  };
 }

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { withContext } from '../../../../../renderers/canvas';
 import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { AnnotationId } from '../../../../../utils/ids';
@@ -34,20 +35,22 @@ export function renderAnnotations(
   { annotationDimensions, annotationSpecs, rotation, renderingArea }: AnnotationProps,
   renderOnBackground: boolean = true,
 ) {
-  annotationDimensions.forEach((annotation, id) => {
-    const spec = getSpecsById<AnnotationSpec>(annotationSpecs, id);
-    if (!spec) {
-      return null;
-    }
-    const isBackground = !spec.zIndex || (spec.zIndex && spec.zIndex <= 0);
-    if ((isBackground && renderOnBackground) || (!isBackground && !renderOnBackground)) {
-      if (isLineAnnotation(spec)) {
-        const lineStyle = mergeWithDefaultAnnotationLine(spec.style);
-        renderLineAnnotations(ctx, annotation as AnnotationLineProps[], lineStyle, rotation, renderingArea);
-      } else if (isRectAnnotation(spec)) {
-        const rectStyle = mergeWithDefaultAnnotationRect(spec.style);
-        renderRectAnnotations(ctx, annotation as AnnotationRectProps[], rectStyle, rotation, renderingArea);
+  withContext(ctx, () =>
+    annotationDimensions.forEach((annotation, id) => {
+      const spec = getSpecsById<AnnotationSpec>(annotationSpecs, id);
+      if (!spec) {
+        return null;
       }
-    }
-  });
+      const isBackground = !spec.zIndex || (spec.zIndex && spec.zIndex <= 0);
+      if ((isBackground && renderOnBackground) || (!isBackground && !renderOnBackground)) {
+        if (isLineAnnotation(spec)) {
+          const lineStyle = mergeWithDefaultAnnotationLine(spec.style);
+          renderLineAnnotations(ctx, annotation as AnnotationLineProps[], lineStyle, rotation, renderingArea);
+        } else if (isRectAnnotation(spec)) {
+          const rectStyle = mergeWithDefaultAnnotationRect(spec.style);
+          renderRectAnnotations(ctx, annotation as AnnotationRectProps[], rectStyle, rotation, renderingArea);
+        }
+      }
+    }),
+  );
 }

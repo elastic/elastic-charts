@@ -12,26 +12,13 @@ import { fillAndStroke } from './utils';
 
 /** @internal */
 export function renderCircle(ctx: CanvasRenderingContext2D, circle: Circle, fill?: Fill, stroke?: Stroke) {
-  if (!fill && !stroke) {
-    return;
+  if (fill || stroke) {
+    renderArc(ctx, { ...circle, startAngle: 0, endAngle: Math.PI * 2 }, fill, stroke);
   }
-  renderArc(
-    ctx,
-    {
-      ...circle,
-      startAngle: 0,
-      endAngle: Math.PI * 2,
-    },
-    fill,
-    stroke,
-  );
 }
 
 /** @internal */
 export function renderArc(ctx: CanvasRenderingContext2D, arc: Arc, fill?: Fill, stroke?: Stroke) {
-  if (!fill && !stroke) {
-    return;
-  }
   withContext(ctx, () => {
     const { x, y, radius, startAngle, endAngle } = arc;
     ctx.translate(x, y);

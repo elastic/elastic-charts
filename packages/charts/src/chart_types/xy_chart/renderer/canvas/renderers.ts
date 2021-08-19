@@ -8,7 +8,7 @@
 
 import { stringToRGB } from '../../../../common/color_library_wrappers';
 import { Rect } from '../../../../geoms/types';
-import { withContext, renderLayers, clearCanvas } from '../../../../renderers/canvas';
+import { clearCanvas, isCanvasRenderer, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderAnnotations } from './annotations';
 import { renderAreas } from './areas';
 import { renderBars } from './bars';
@@ -58,15 +58,12 @@ export function renderXYChartCanvas2d(
     // unlike SVG and esp. WebGL, Canvas2d doesn't support the 3rd dimension well, see ctx.transform / ctx.setTransform).
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
-      // clear the canvas
       clearCanvas,
+
       // render panel grid
-      (ctx: CanvasRenderingContext2D) => {
-        if (debug) {
-          renderGridPanels(ctx, transform, panelGeoms);
-        }
-      },
-      (ctx: CanvasRenderingContext2D) => {
+      () => debug && renderGridPanels(ctx, transform, panelGeoms),
+
+      () => {
         renderGrids(ctx, {
           axesSpecs,
           renderingArea,
@@ -75,7 +72,8 @@ export function renderXYChartCanvas2d(
           sharedAxesStyle,
         });
       },
-      (ctx: CanvasRenderingContext2D) => {
+
+      () =>
         renderPanelSubstrates(ctx, {
           axesSpecs,
           perPanelAxisGeoms,
@@ -83,67 +81,48 @@ export function renderXYChartCanvas2d(
           debug,
           axesStyles,
           sharedAxesStyle,
-        });
-      },
+        }),
+
       // rendering background annotations
-      (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, () => {
-          renderAnnotations(
-            ctx,
-            {
-              rotation,
-              renderingArea,
-              annotationDimensions,
-              annotationSpecs,
-            },
-            true,
-          );
-        });
-      },
+      () => renderAnnotations(ctx, { rotation, renderingArea, annotationDimensions, annotationSpecs }, true),
 
       // rendering bars
-      (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, () => {
-          renderBars(
-            ctx,
-            imgCanvas,
-            geometries.bars,
-            sharedStyle,
-            clippings,
-            renderingArea,
-            highlightedLegendItem,
-            rotation,
-          );
-        });
-      },
+      () =>
+        renderBars(
+          ctx,
+          imgCanvas,
+          geometries.bars,
+          sharedStyle,
+          clippings,
+          renderingArea,
+          highlightedLegendItem,
+          rotation,
+        ),
+
       // rendering areas
-      (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, () => {
-          renderAreas(ctx, imgCanvas, {
-            areas: geometries.areas,
-            clippings,
-            renderingArea,
-            rotation,
-            highlightedLegendItem,
-            sharedStyle,
-          });
-        });
-      },
+      () =>
+        renderAreas(ctx, imgCanvas, {
+          areas: geometries.areas,
+          clippings,
+          renderingArea,
+          rotation,
+          highlightedLegendItem,
+          sharedStyle,
+        }),
+
       // rendering lines
-      (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, () => {
-          renderLines(ctx, {
-            lines: geometries.lines,
-            clippings,
-            renderingArea,
-            rotation,
-            highlightedLegendItem,
-            sharedStyle,
-          });
-        });
-      },
+      () =>
+        renderLines(ctx, {
+          lines: geometries.lines,
+          clippings,
+          renderingArea,
+          rotation,
+          highlightedLegendItem,
+          sharedStyle,
+        }),
+
       // rendering bubbles
-      (ctx: CanvasRenderingContext2D) => {
+      () =>
         renderBubbles(ctx, {
           bubbles: geometries.bubbles,
           clippings,
@@ -151,11 +130,11 @@ export function renderXYChartCanvas2d(
           sharedStyle,
           rotation,
           renderingArea,
-        });
-      },
-      (ctx: CanvasRenderingContext2D) => {
-        geometries.bars.forEach(({ value: bars, panel }) => {
-          withContext(ctx, () => {
+        }),
+
+      () => {
+        geometries.bars.forEach(({ value: bars, panel }) =>
+          withContext(ctx, () =>
             renderBarValues(ctx, {
               bars,
               panel,
@@ -163,44 +142,24 @@ export function renderXYChartCanvas2d(
               rotation,
               debug,
               barSeriesStyle,
-            });
-          });
-        });
+            }),
+          ),
+        );
       },
+
       // rendering foreground annotations
-      (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, () => {
-          renderAnnotations(
-            ctx,
-            {
-              annotationDimensions,
-              annotationSpecs,
-              rotation,
-              renderingArea,
-            },
-            false,
-          );
-        });
-      },
+      () => renderAnnotations(ctx, { annotationDimensions, annotationSpecs, rotation, renderingArea }, false),
+
       // rendering debugger
-      (ctx: CanvasRenderingContext2D) => {
-        if (!debug) {
-          return;
-        }
+      () =>
+        debug &&
         withContext(ctx, () => {
           const { left, top, width, height } = renderingArea;
 
           renderDebugRect(
             ctx,
-            {
-              x: left,
-              y: top,
-              width,
-              height,
-            },
-            {
-              color: stringToRGB('transparent'),
-            },
+            { x: left, y: top, width, height },
+            { color: stringToRGB('transparent') },
             {
               color: stringToRGB('red'),
               width: 4,
@@ -208,19 +167,17 @@ export function renderXYChartCanvas2d(
             },
           );
 
-          const triangulation = geometriesIndex.triangulation([0, 0, width, height]);
-
-          if (triangulation) {
+          const renderer = geometriesIndex.triangulation([0, 0, width, height])?.render;
+          if (isCanvasRenderer(renderer)) {
             ctx.beginPath();
             ctx.translate(left, top);
             ctx.setLineDash([5, 5]);
-            triangulation.render(ctx);
+            renderer(ctx);
             ctx.lineWidth = 1;
             ctx.strokeStyle = 'blue';
             ctx.stroke();
           }
-        });
-      },
+        }),
     ]);
   });
 }
