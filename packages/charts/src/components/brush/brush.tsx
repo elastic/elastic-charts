@@ -94,20 +94,13 @@ class BrushToolComponent extends React.Component<Props> {
           width: mainProjectionArea.width,
           height: mainProjectionArea.height,
         },
-        (ctx) => {
-          clearCanvas(ctx, 200000, 200000);
-          ctx.translate(mainProjectionArea.left, mainProjectionArea.top);
+        (context) => {
+          clearCanvas(context);
+          context.translate(mainProjectionArea.left, mainProjectionArea.top);
           renderRect(
-            ctx,
-            {
-              x: left,
-              y: top,
-              width,
-              height,
-            },
-            {
-              color: fillColor ?? DEFAULT_FILL_COLOR,
-            },
+            context,
+            { x: left, y: top, width, height },
+            { color: fillColor ?? DEFAULT_FILL_COLOR },
             { width: 0, color: stringToRGB('transparent') },
           );
         },

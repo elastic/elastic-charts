@@ -59,7 +59,7 @@ export function renderXYChartCanvas2d(
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
       // clear the canvas
-      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000),
+      clearCanvas,
       // render panel grid
       (ctx: CanvasRenderingContext2D) => {
         if (debug) {
