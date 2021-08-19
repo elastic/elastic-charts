@@ -8,11 +8,11 @@
 
 import { RgbObject } from '../../../../common/color_library_wrappers';
 import { SeriesKey } from '../../../../common/series_id';
-import { Circle, Stroke, Fill, Rect } from '../../../../geoms/types';
+import { Circle, Fill, Rect, Stroke } from '../../../../geoms/types';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PointGeometry } from '../../../../utils/geometry';
-import { PointStyle, GeometryStateStyle, PointShape } from '../../../../utils/themes/theme';
+import { GeometryStateStyle, PointShape, PointStyle } from '../../../../utils/themes/theme';
 import { renderShape } from './primitives/shapes';
 import { withPanelTransform } from './utils/panel_transform';
 
@@ -23,26 +23,14 @@ import { withPanelTransform } from './utils/panel_transform';
  */
 export function renderPoints(ctx: CanvasRenderingContext2D, points: PointGeometry[], { opacity }: GeometryStateStyle) {
   points
-    .map<[Circle, Fill, Stroke, PointShape]>(({ x, y, radius, transform, style }) => {
-      const fill: Fill = {
-        color: applyOpacity(style.fill.color, opacity),
-      };
-
-      const stroke: Stroke = {
-        ...style.stroke,
-        color: applyOpacity(style.stroke.color, opacity),
-      };
-
-      const coordinates: Circle = {
-        x: x + transform.x,
-        y: y + transform.y,
-        radius,
-      };
-
-      return [coordinates, fill, stroke, style.shape];
-    })
-    .sort(([{ radius: a }], [{ radius: b }]) => b - a)
-    .forEach(([coordinates, fill, stroke, shape]) => renderShape(ctx, shape, coordinates, fill, stroke));
+    .map(({ x, y, radius, transform, style: { fill, stroke, shape } }) => ({
+      coordinates: { x: x + transform.x, y: y + transform.y, radius },
+      fill: { color: applyOpacity(fill.color, opacity) },
+      stroke: { ...stroke, color: applyOpacity(stroke.color, opacity) },
+      shape,
+    }))
+    .sort(({ coordinates: { radius: a } }, { coordinates: { radius: b } }) => b - a)
+    .forEach(({ coordinates, fill, stroke, shape }) => renderShape(ctx, shape, coordinates, fill, stroke));
 }
 
 /**
