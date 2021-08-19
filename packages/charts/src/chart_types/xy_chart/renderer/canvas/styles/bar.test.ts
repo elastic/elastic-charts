@@ -51,15 +51,7 @@ describe('Bar styles', () => {
     }
 
     beforeEach(() => {
-      result = buildBarStyle(
-        ctx,
-        imgCanvas,
-        baseColor,
-        themeRectStyle,
-        themeRectBorderStyle,
-        geometryStateStyle,
-        rect,
-      );
+      result = buildBarStyle(ctx, imgCanvas, baseColor, themeRectStyle, themeRectBorderStyle, geometryStateStyle, rect);
     });
 
     it('should call getColorFromVariant with correct args for fill', () => {
