@@ -67,7 +67,7 @@ export function withClipRanges(
   ctx: CanvasRenderingContext2D,
   clippedRanges: ClippedRanges,
   clippings: Rect,
-  negate = false,
+  negate: boolean,
   fun: CanvasRenderer,
 ) {
   withContext(ctx, () => {
