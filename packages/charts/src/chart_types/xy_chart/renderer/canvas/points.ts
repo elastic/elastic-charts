@@ -25,13 +25,12 @@ export function renderPoints(ctx: CanvasRenderingContext2D, points: PointGeometr
   points
     .slice()
     .sort(({ radius: a }, { radius: b }) => b - a)
-    .map(({ x, y, radius, transform, style: { fill, stroke, shape } }) => ({
-      coordinates: { x: x + transform.x, y: y + transform.y, radius },
-      fill: { color: applyOpacity(fill.color, opacity) },
-      stroke: { ...stroke, color: applyOpacity(stroke.color, opacity) },
-      shape,
-    }))
-    .forEach(({ coordinates, fill, stroke, shape }) => renderShape(ctx, shape, coordinates, fill, stroke));
+    .forEach(({ x, y, radius, transform, style }) => {
+      const coordinates = { x: x + transform.x, y: y + transform.y, radius };
+      const fill = { color: applyOpacity(style.fill.color, opacity) };
+      const stroke = { ...style.stroke, color: applyOpacity(style.stroke.color, opacity) };
+      return renderShape(ctx, style.shape, coordinates, fill, stroke);
+    });
 }
 
 /**
