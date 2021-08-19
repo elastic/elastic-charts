@@ -66,32 +66,26 @@ export function withClip(ctx: CanvasRenderingContext2D, clippings: Rect, fun: Ca
 export function withClipRanges(
   ctx: CanvasRenderingContext2D,
   clippedRanges: ClippedRanges,
-  clippings: Rect,
+  { width, height, y }: Rect,
   negate: boolean,
   fun: CanvasRenderer,
 ) {
   withContext(ctx, () => {
-    const { length } = clippedRanges;
-    const { width, height, y } = clippings;
-    ctx.beginPath();
-    if (negate) {
-      clippedRanges.forEach(([x0, x1]) => ctx.rect(x0, y, x1 - x0, height));
-    } else {
-      if (length > 0) {
-        ctx.rect(0, -0.5, clippedRanges[0][0], height);
-        const lastX = clippedRanges[length - 1][1];
+    if (clippedRanges.length > 0) {
+      ctx.beginPath();
+      if (negate) {
+        clippedRanges.forEach(([x0, x1]) => ctx.rect(x0, y, x1 - x0, height));
+      } else {
+        const firstX = clippedRanges[0][0];
+        const lastX = clippedRanges[clippedRanges.length - 1][1];
+        ctx.rect(0, -0.5, firstX, height);
         ctx.rect(lastX, y, width - lastX, height);
+        clippedRanges.forEach(([, x0], i) => {
+          if (i < clippedRanges.length - 1) ctx.rect(x0, y, clippedRanges[i + 1][0] - x0, height);
+        });
       }
-
-      if (length > 1) {
-        for (let i = 1; i < length; i++) {
-          const [, x0] = clippedRanges[i - 1];
-          const [x1] = clippedRanges[i];
-          ctx.rect(x0, y, x1 - x0, height);
-        }
-      }
+      ctx.clip();
     }
-    ctx.clip();
     fun(ctx);
   });
 }
