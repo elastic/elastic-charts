@@ -23,7 +23,7 @@ import { ContinuousDomain } from '../../../../utils/domain';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
-import { ColorScaleType } from '../../state/selectors/get_color_scale';
+import { ColorScale } from '../../state/selectors/get_color_scale';
 import { GridHeightParams } from '../../state/selectors/get_grid_full_height';
 import { Config } from '../types/config_types';
 import {
@@ -81,7 +81,7 @@ export function shapeViewModel(
   settingsSpec: SettingsSpec,
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
-  colorScale: ColorScaleType['scale'],
+  colorScale: ColorScale,
   bandsToHide: Array<[number, number]>,
   { height, pageSize }: GridHeightParams,
 ): ShapeViewModel {

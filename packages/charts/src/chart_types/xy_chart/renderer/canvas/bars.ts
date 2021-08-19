@@ -29,7 +29,7 @@ export function renderBars(
   highlightedLegendItem?: LegendItem,
   rotation?: Rotation,
 ) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     const barRenderer = renderPerPanelBars(
       ctx,
       imgCanvas,
@@ -75,7 +75,7 @@ function renderPerPanelBars(
             geometryStateStyle,
             rect,
           );
-          withContext(ctx, (ctx) => {
+          withContext(ctx, () => {
             renderRect(ctx, rect, fill, stroke);
           });
         });

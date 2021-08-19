@@ -14,7 +14,7 @@ import { computeChartTransform } from '../../../state/utils/utils';
 
 /** @internal */
 export function withPanelTransform(
-  context: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D,
   panel: Dimensions,
   rotation: Rotation,
   renderingArea: Dimensions,
@@ -25,7 +25,7 @@ export function withPanelTransform(
   },
 ) {
   const transform = computeChartTransform(panel, rotation);
-  withContext(context, (ctx) => {
+  withContext(ctx, () => {
     ctx.translate(renderingArea.left + panel.left + transform.x, renderingArea.top + panel.top + transform.y);
     ctx.rotate(degToRad(rotation));
 

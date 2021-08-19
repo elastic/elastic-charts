@@ -15,7 +15,7 @@ import { renderMultiLine } from './line';
 
 /** @internal */
 export function renderLinePaths(
-  context: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D,
   transform: Point,
   linePaths: Array<string>,
   stroke: Stroke,
@@ -24,21 +24,21 @@ export function renderLinePaths(
   hideClippedRanges = false,
 ) {
   if (clippedRanges.length > 0) {
-    withClipRanges(context, clippedRanges, clippings, false, (ctx) => {
+    withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
       ctx.translate(transform.x, transform.y);
       renderMultiLine(ctx, linePaths, stroke);
     });
     if (hideClippedRanges) {
       return;
     }
-    withClipRanges(context, clippedRanges, clippings, true, (ctx) => {
+    withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
       ctx.translate(transform.x, transform.y);
       renderMultiLine(ctx, linePaths, { ...stroke, dash: [5, 5] });
     });
     return;
   }
 
-  withContext(context, (ctx) => {
+  withContext(ctx, () => {
     ctx.translate(transform.x, transform.y);
     renderMultiLine(ctx, linePaths, stroke);
   });
@@ -55,7 +55,7 @@ export function renderAreaPath(
   hideClippedRanges = false,
 ) {
   if (clippedRanges.length === 0) {
-    withContext(ctx, (ctx) => renderPathFill(ctx, area, fill, transform));
+    withContext(ctx, () => renderPathFill(ctx, area, fill, transform));
   } else {
     withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => renderPathFill(ctx, area, fill, transform));
     if (!hideClippedRanges) {

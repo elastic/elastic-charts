@@ -51,7 +51,7 @@ export function getLegendListStyle(
     return {
       paddingLeft,
       paddingRight,
-      gridTemplateColumns: `repeat(auto-fill, minmax(${legendStyle.verticalWidth}px, 1fr))`,
+      gridTemplateColumns: totalItems === 1 ? '1fr' : `repeat(auto-fill, minmax(${legendStyle.verticalWidth}px, 1fr))`,
     };
   }
 

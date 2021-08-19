@@ -29,7 +29,7 @@ export function renderXYChartCanvas2d(
 ) {
   const imgCanvas = document.createElement('canvas');
 
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     // let's set the devicePixelRatio once and for all; then we'll never worry about it again
     ctx.scale(dpr, dpr);
     const {
@@ -59,7 +59,7 @@ export function renderXYChartCanvas2d(
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
       // clear the canvas
-      (ctx: CanvasRenderingContext2D) => clearCanvas(ctx, 200000, 200000),
+      clearCanvas,
       // render panel grid
       (ctx: CanvasRenderingContext2D) => {
         if (debug) {
@@ -87,7 +87,7 @@ export function renderXYChartCanvas2d(
       },
       // rendering background annotations
       (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, (ctx) => {
+        withContext(ctx, () => {
           renderAnnotations(
             ctx,
             {
@@ -103,7 +103,7 @@ export function renderXYChartCanvas2d(
 
       // rendering bars
       (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, (ctx) => {
+        withContext(ctx, () => {
           renderBars(
             ctx,
             imgCanvas,
@@ -118,7 +118,7 @@ export function renderXYChartCanvas2d(
       },
       // rendering areas
       (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, (ctx) => {
+        withContext(ctx, () => {
           renderAreas(ctx, imgCanvas, {
             areas: geometries.areas,
             clippings,
@@ -131,7 +131,7 @@ export function renderXYChartCanvas2d(
       },
       // rendering lines
       (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, (ctx) => {
+        withContext(ctx, () => {
           renderLines(ctx, {
             lines: geometries.lines,
             clippings,
@@ -155,7 +155,7 @@ export function renderXYChartCanvas2d(
       },
       (ctx: CanvasRenderingContext2D) => {
         geometries.bars.forEach(({ value: bars, panel }) => {
-          withContext(ctx, (ctx) => {
+          withContext(ctx, () => {
             renderBarValues(ctx, {
               bars,
               panel,
@@ -169,7 +169,7 @@ export function renderXYChartCanvas2d(
       },
       // rendering foreground annotations
       (ctx: CanvasRenderingContext2D) => {
-        withContext(ctx, (ctx) => {
+        withContext(ctx, () => {
           renderAnnotations(
             ctx,
             {
@@ -187,7 +187,7 @@ export function renderXYChartCanvas2d(
         if (!debug) {
           return;
         }
-        withContext(ctx, (ctx) => {
+        withContext(ctx, () => {
           const { left, top, width, height } = renderingArea;
 
           renderDebugRect(

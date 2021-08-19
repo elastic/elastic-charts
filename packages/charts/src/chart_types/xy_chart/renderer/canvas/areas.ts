@@ -33,7 +33,7 @@ interface AreaGeometriesProps {
 export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvasElement, props: AreaGeometriesProps) {
   const { sharedStyle, highlightedLegendItem, areas, rotation, clippings, renderingArea } = props;
 
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     areas.forEach(({ panel, value: area }) => {
       const { seriesAreaLineStyle, seriesAreaStyle } = area;
       if (seriesAreaStyle.visible) {
