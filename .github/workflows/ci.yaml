@@ -1,4 +1,4 @@
-name: '@elastic/charts - CI'
+name: '@elastic/charts CI'
 
 concurrency:
   group: ${{ github.head_ref || github.ref }}
