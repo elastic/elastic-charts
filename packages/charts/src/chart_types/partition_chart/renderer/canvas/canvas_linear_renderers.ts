@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { TRANSPARENT_COLOR } from '../../../../common/color';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { AnimationState, ContinuousDomainFocus } from './partition';
 
@@ -88,7 +89,7 @@ export function renderLinearPartitionCanvas2d(
       ctx.beginPath();
       ctx.rect(fx0 + fPadding, y0 + padding / 2, fWidth - fPadding, y1 - y0 - padding);
       ctx.fill();
-      if (textColor === 'transparent' || label === '' || fWidth < 4) return;
+      if (textColor === 'transparent' || textColor === TRANSPARENT_COLOR || label === '' || fWidth < 4) return;
       ctx.fillStyle = textColor;
       ctx.save();
       ctx.clip(); // undoing a clip needs context save/restore, which is why it's wrapped in a save/restore

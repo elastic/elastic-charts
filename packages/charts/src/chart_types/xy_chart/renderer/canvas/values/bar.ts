@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { BLACK_COLOR, TRANSPARENT_COLOR, WHITE_COLOR } from '../../../../../common/color';
 import { colorIsDark, getTextColorIfTextInvertible } from '../../../../../common/color_calcs';
 import { fillTextColor } from '../../../../../common/fill_text_color';
 import { Font, TextAlign, TextBaseline } from '../../../../../common/text_utils';
@@ -341,11 +342,11 @@ function isOverflow(rect: Rect, chartDimensions: Dimensions, chartRotation: Rota
   return false;
 }
 
-const DEFAULT_VALUE_COLOR = 'black';
+const DEFAULT_VALUE_COLOR = BLACK_COLOR;
 // a little bit of alpha makes black font more readable
 const DEFAULT_VALUE_BORDER_COLOR = 'rgba(255, 255, 255, 0.8)';
-const DEFAULT_VALUE_BORDER_SOLID_COLOR = 'rgb(255, 255, 255)';
-const TRANSPARENT_COLOR = 'rgba(0,0,0,0)';
+const DEFAULT_VALUE_BORDER_SOLID_COLOR = WHITE_COLOR;
+
 type ValueFillDefinition = Theme['barSeriesStyle']['displayValue']['fill'];
 
 function getTextColors(
@@ -368,7 +369,7 @@ function getTextColors(
       fillDefinition.textInvertible,
       fillDefinition.textContrast || false,
       geometryColor,
-      'white',
+      WHITE_COLOR,
     ) || DEFAULT_VALUE_COLOR;
 
   // If the border is too wide it can overlap between a letter or another

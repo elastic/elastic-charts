@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { TRANSPARENT_COLOR } from '../../../../common/color';
 import { RGBtoString } from '../../../../common/color_library_wrappers';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -38,7 +39,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
           // X-axis value
           tooltipInfo.values.push({
             label: config.xAxisLabel.name,
-            color: 'transparent',
+            color: TRANSPARENT_COLOR,
             isHighlighted: false,
             isVisible: true,
             seriesIdentifier: {
@@ -53,7 +54,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
           // Y-axis value
           tooltipInfo.values.push({
             label: config.yAxisLabel.name,
-            color: 'transparent',
+            color: TRANSPARENT_COLOR,
             isHighlighted: false,
             isVisible: true,
             seriesIdentifier: {
@@ -83,7 +84,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
     } else {
       tooltipInfo.values.push({
         label: ``,
-        color: 'transparent',
+        color: TRANSPARENT_COLOR,
         isHighlighted: false,
         isVisible: true,
         seriesIdentifier: {

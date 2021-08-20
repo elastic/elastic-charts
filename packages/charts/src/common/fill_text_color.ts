@@ -9,7 +9,7 @@
 import chroma from 'chroma-js';
 
 import { Logger } from '../utils/logger';
-import { Color } from './color';
+import { Color, WHITE_COLOR } from './color';
 import {
   colorIsDark,
   combineColors,
@@ -50,7 +50,7 @@ export function fillTextColor(
       colorIsDark(textColor),
       textColor,
       false,
-      'white', // never used
+      WHITE_COLOR, // never used
     );
   }
 

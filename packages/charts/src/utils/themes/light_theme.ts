@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { BLACK_COLOR, TRANSPARENT_COLOR, WHITE_COLOR } from '../../common/color';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import {
@@ -28,7 +29,7 @@ export const LIGHT_THEME: Theme = {
     point: {
       visible: true,
       strokeWidth: 1,
-      fill: 'white',
+      fill: WHITE_COLOR,
       radius: 2,
       opacity: 1,
     },
@@ -37,7 +38,7 @@ export const LIGHT_THEME: Theme = {
     point: {
       visible: true,
       strokeWidth: 1,
-      fill: 'white',
+      fill: WHITE_COLOR,
       radius: 2,
       opacity: 1,
     },
@@ -55,7 +56,7 @@ export const LIGHT_THEME: Theme = {
     point: {
       visible: false,
       strokeWidth: 1,
-      fill: 'white',
+      fill: WHITE_COLOR,
       radius: 2,
       opacity: 1,
     },
@@ -81,7 +82,7 @@ export const LIGHT_THEME: Theme = {
   arcSeriesStyle: {
     arc: {
       visible: true,
-      stroke: 'black',
+      stroke: BLACK_COLOR,
       strokeWidth: 1,
       opacity: 1,
     },
@@ -190,6 +191,6 @@ export const LIGHT_THEME: Theme = {
     },
   },
   background: {
-    color: 'transparent',
+    color: TRANSPARENT_COLOR,
   },
 };

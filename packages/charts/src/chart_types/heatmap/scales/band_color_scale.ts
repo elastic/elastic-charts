@@ -6,13 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../../../common/color';
+import { TRANSPARENT_COLOR } from '../../../common/color';
 import { getPredicateFn } from '../../../common/predicate';
 import { safeFormat, ValueFormatter } from '../../../utils/common';
 import { ColorBand, HeatmapBandsColorScale } from '../specs/heatmap';
 import { ColorScale } from '../state/selectors/get_color_scale';
-
-const TRANSPARENT_COLOR: Color = 'rgba(0, 0, 0, 0)';
 
 function defaultColorBandFormatter(valueFormatter?: ValueFormatter) {
   return (startValue: number, endValue: number) => {

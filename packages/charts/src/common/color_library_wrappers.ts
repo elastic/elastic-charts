@@ -9,7 +9,7 @@
 import chroma from 'chroma-js';
 import { rgb as d3Rgb, RGBColor as D3RGBColor } from 'd3-color';
 
-import { Color } from './color';
+import { Color, RED_RGBOBJ_COLOR, TRANSPARENT_RBGOBJ_COLOR } from './color';
 
 type RGB = number;
 type A = number;
@@ -22,11 +22,12 @@ export type RgbObject = { r: RGB; g: RGB; b: RGB; opacity: A };
 export type RgbaTuple = [RGB, RGB, RGB, RGB];
 
 /** @internal */
-export const defaultColor: RgbObject = { r: 255, g: 0, b: 0, opacity: 1 };
-/** @internal */
-export const transparentColor: RgbObject = { r: 0, g: 0, b: 0, opacity: 0 };
-/** @internal */
-export const defaultD3Color: D3RGBColor = d3Rgb(defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.opacity);
+export const defaultD3Color: D3RGBColor = d3Rgb(
+  RED_RGBOBJ_COLOR.r,
+  RED_RGBOBJ_COLOR.g,
+  RED_RGBOBJ_COLOR.b,
+  RED_RGBOBJ_COLOR.opacity,
+);
 
 /** @internal */
 export type OpacityFn = (opacity: number, seriesOpacity?: number) => number;
@@ -34,7 +35,7 @@ export type OpacityFn = (opacity: number, seriesOpacity?: number) => number;
 /** @internal */
 export function stringToRGB(cssColorSpecifier?: string, opacity?: number | OpacityFn): RgbObject {
   if (cssColorSpecifier === 'transparent') {
-    return transparentColor;
+    return TRANSPARENT_RBGOBJ_COLOR;
   }
   const color = getColor(cssColorSpecifier);
 
@@ -62,7 +63,7 @@ export function stringToRGB(cssColorSpecifier?: string, opacity?: number | Opaci
  * @param cssColorSpecifier
  */
 function getColor(cssColorSpecifier: string = ''): RgbObject {
-  if (!chroma.valid(cssColorSpecifier)) return defaultColor;
+  if (!chroma.valid(cssColorSpecifier)) return RED_RGBOBJ_COLOR;
 
   const chromaColor = chroma(cssColorSpecifier);
   const color: D3RGBColor = {
@@ -70,7 +71,7 @@ function getColor(cssColorSpecifier: string = ''): RgbObject {
     opacity: chromaColor.alpha(),
   };
 
-  return validateColor(color) ?? defaultColor;
+  return validateColor(color) ?? RED_RGBOBJ_COLOR;
 }
 
 /** @internal */

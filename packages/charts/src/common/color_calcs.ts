@@ -8,7 +8,7 @@
 
 import chroma from 'chroma-js';
 
-import { Color } from './color';
+import { BLACK_COLOR, Color, TRANSPARENT_COLOR, WHITE_COLOR } from './color';
 import { RgbaTuple, RGBATupleToString, RgbTuple, stringToRGB } from './color_library_wrappers';
 import { Ratio } from './geometry';
 import { TextContrast } from './text_utils';
@@ -64,7 +64,7 @@ export function combineColors(foregroundColor: Color, backgroundColor: Color): C
   const combinedAlpha = alpha1 + alpha2 * (1 - alpha1);
 
   if (combinedAlpha === 0) {
-    return 'rgba(0,0,0,0)';
+    return TRANSPARENT_COLOR;
   }
 
   const combinedRed = Math.round((red1 * alpha1 + red2 * alpha2 * (1 - alpha1)) / combinedAlpha);
@@ -102,10 +102,10 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
   let highContrastTextColor = foreground;
   const isBackgroundDark = colorIsDark(background);
   // determine whether white or black text is ideal contrast vs a grey that just passes the ratio
-  if (isBackgroundDark && chroma.deltaE('black', foreground) === 0) {
-    highContrastTextColor = '#fff';
-  } else if (lightness > 0.5 && chroma.deltaE('white', foreground) === 0) {
-    highContrastTextColor = '#000';
+  if (isBackgroundDark && chroma.deltaE(BLACK_COLOR, foreground) === 0) {
+    highContrastTextColor = WHITE_COLOR;
+  } else if (lightness > 0.5 && chroma.deltaE(WHITE_COLOR, foreground) === 0) {
+    highContrastTextColor = BLACK_COLOR;
   }
   const precision = 1e8;
   let contrast = getContrast(highContrastTextColor, background);
@@ -176,7 +176,7 @@ export function getTextColorIfTextInvertible(
         : makeHighContrastColor(`rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`, backgroundColor, textContrast)
       : makeHighContrastColor(textColor, backgroundColor, textContrast);
   }
-  return 'black'; // this should never happen; added it as previously function return type included undefined; todo
+  return BLACK_COLOR; // this should never happen; added it as previously function return type included undefined; todo
 }
 
 /**
@@ -187,9 +187,7 @@ export function getTextColorIfTextInvertible(
  */
 export function getOnPaperColorSet(textColor: Color, sectorLineStroke: Color, containerBackgroundColor?: Color) {
   // determine the ideal contrast color for the link labels
-  const validBackgroundColor = isColorValid(containerBackgroundColor)
-    ? containerBackgroundColor
-    : 'rgba(255, 255, 255, 0)';
+  const validBackgroundColor = isColorValid(containerBackgroundColor) ? containerBackgroundColor : TRANSPARENT_COLOR;
   const contrastTextColor = containerBackgroundColor
     ? makeHighContrastColor(textColor, validBackgroundColor)
     : textColor;
