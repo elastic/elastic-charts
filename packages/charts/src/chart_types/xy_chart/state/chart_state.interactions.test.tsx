@@ -9,9 +9,11 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable jest/no-conditional-expect */
 
+import React from 'react';
 import { Store } from 'redux';
 
 import { ChartType } from '../..';
+import { Icon } from '../../../components/icons/icon';
 import { Rect } from '../../../geoms/types';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store';
@@ -23,8 +25,9 @@ import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mo
 import { GlobalChartState } from '../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
 import { Position, RecursivePartial } from '../../../utils/common';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/merge_utils';
 import { AxisStyle } from '../../../utils/themes/theme';
-import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesType } from '../utils/specs';
+import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesType, AnnotationDomainType } from '../utils/specs';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
 import { getProjectedPointerPositionSelector } from './selectors/get_projected_pointer_position';
@@ -1286,5 +1289,48 @@ describe('Clickable annotations', () => {
     expect(onAnnotationClick).toBeCalled();
     const callArgs = onAnnotationClick.mock.calls[0][0];
     expect(callArgs.rects[0].id).toEqual('rect2');
+  });
+  test('click line marker annotation', () => {
+    const store = MockStore.default({ width: 500, height: 500, top: 0, left: 0 }, 'chartId');
+    const onAnnotationClick = jest.fn<void, any[]>((data: any): void => data);
+    const onAnnotationClickCaller = createOnClickCaller();
+    store.subscribe(() => {
+      onAnnotationClickCaller(store.getState());
+    });
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.settingsNoMargins({
+          onAnnotationClick,
+        }),
+        MockSeriesSpec.bar({
+          xScaleType: ScaleType.Linear,
+          yScaleType: ScaleType.Linear,
+          xAccessor: 'x',
+          yAccessors: ['y'],
+          data: [
+            { x: 0, y: 2 },
+            { x: 1, y: 3 },
+            { x: 3, y: 6 },
+          ],
+        }),
+        MockAnnotationSpec.line({
+          id: 'line1',
+          domainType: AnnotationDomainType.XDomain,
+          dataValues: [{ dataValue: 2, details: `detail-foo}` }],
+          marker: <Icon type="alert" />,
+          markerPosition: Position.Top,
+          style: DEFAULT_ANNOTATION_LINE_STYLE,
+        }),
+      ],
+      store,
+    );
+    // the line marker
+    store.dispatch(onPointerMove({ x: 10, y: 10 }, 0));
+    store.dispatch(onMouseDown({ x: 10, y: 10 }, 100));
+    store.dispatch(onMouseUp({ x: 10, y: 10 }, 200));
+
+    expect(onAnnotationClick).toBeCalled();
+    const callArgs = onAnnotationClick.mock.calls[0][0];
+    expect(callArgs.rects[0].id).toEqual('line1');
   });
 });
