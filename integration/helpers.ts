@@ -14,6 +14,7 @@ import path from 'path';
 import { getStorybook, configure } from '@storybook/react';
 
 import { Rotation } from '../packages/charts/src';
+import { ThemeId } from '../storybook/use_base_theme';
 // @ts-ignore
 import { isLegacyVRTServer } from './config';
 
@@ -141,6 +142,23 @@ export const eachRotation = {
   describe(fn: (rotation: Rotation) => any, title = 'rotation - %s') {
     // eslint-disable-next-line jest/valid-title, jest/valid-describe
     return describe.each<[string, Rotation]>(rotationCases)(title, (_, r) => fn(r));
+  },
+};
+
+const themeIds = Object.values(ThemeId);
+
+/**
+ * This is a wrapper around it.each for Themes
+ * Returns the requried query params to trigger correct theme
+ */
+export const eachTheme = {
+  it(fn: (theme: ThemeId, urlParam: string) => any, title = 'theme - %s') {
+    // eslint-disable-next-line jest/valid-title
+    return it.each<ThemeId>(themeIds)(title, (theme) => fn(theme, `&globals=theme:${theme}`));
+  },
+  describe(fn: (theme: ThemeId, urlParam: string) => any, title = 'theme - %s') {
+    // eslint-disable-next-line jest/valid-title, jest/valid-describe
+    return describe.each<ThemeId>(themeIds)(title, (theme) => fn(theme, `&globals=theme:${theme}`));
   },
 };
 

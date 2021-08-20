@@ -130,7 +130,6 @@ jobs:
       - name: Testing
         run: yarn test --coverage --ci
 
-
   build-sb:
     name: Build Storybook
     needs: setup

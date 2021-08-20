@@ -6,18 +6,18 @@
  * Side Public License, v 1.
  */
 
-import { ConfigItem, configMap } from '../../../../common/config_objects';
+import { ConfigItem } from '../../../../common/config_objects';
 import { TAU } from '../../../../common/constants';
-import { Config } from '../types/config_types';
 
-/** @internal */
+/**
+ * Keeping for future config validation checks
+ * @internal
+ */
 export const configMetadata: Record<string, ConfigItem> = {
   angleStart: { dflt: Math.PI + Math.PI / 4, min: -TAU, max: TAU, type: 'number' },
   angleEnd: { dflt: -Math.PI / 4, min: -TAU, max: TAU, type: 'number' },
 
   // shape geometry
-  width: { dflt: 300, min: 0, max: 1024, type: 'number', reconfigurable: false },
-  height: { dflt: 150, min: 0, max: 1024, type: 'number', reconfigurable: false },
   margin: {
     type: 'group',
     values: {
@@ -41,6 +41,3 @@ export const configMetadata: Record<string, ConfigItem> = {
   backgroundColor: { dflt: '#ffffff', type: 'color' },
   sectorLineWidth: { dflt: 1, min: 0, max: 4, type: 'number' },
 };
-
-/** @internal */
-export const config: Config = configMap<Config>((item: ConfigItem) => item.dflt, configMetadata);
