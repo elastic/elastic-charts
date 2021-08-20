@@ -7,7 +7,7 @@
  */
 
 import { Rect } from '../../../../../geoms/types';
-import { withContext } from '../../../../../renderers/canvas';
+import { CanvasRenderer, withContext } from '../../../../../renderers/canvas';
 import { degToRad, Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { computeChartTransform } from '../../../state/utils/utils';
@@ -18,7 +18,7 @@ export function withPanelTransform(
   panel: Dimensions,
   rotation: Rotation,
   renderingArea: Dimensions,
-  fn: (ctx: CanvasRenderingContext2D) => void,
+  fn: CanvasRenderer,
   clippings?: {
     area: Rect;
     shouldClip?: boolean;

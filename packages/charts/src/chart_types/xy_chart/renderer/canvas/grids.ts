@@ -33,9 +33,7 @@ export function renderGrids(ctx: CanvasRenderingContext2D, props: GridProps) {
     perPanelGridLines.forEach(({ lineGroups, panelAnchor: { x, y } }) => {
       withContext(ctx, () => {
         ctx.translate(x, y);
-        lineGroups.forEach(({ lines, stroke }) => {
-          renderMultiLine(ctx, lines, stroke);
-        });
+        lineGroups.forEach(({ lines, stroke }) => renderMultiLine(ctx, lines, stroke));
       });
     });
   });

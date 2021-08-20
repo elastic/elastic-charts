@@ -9,6 +9,7 @@
 import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
 import { PointObject, Radian, Rectangle } from '../../../../common/geometry';
 import { cssFontShorthand, Font } from '../../../../common/text_utils';
+import { CanvasRenderer } from '../../../../renderers/canvas';
 import { GoalSubtype } from '../../specs/constants';
 import { Config } from '../types/config_types';
 import { BulletViewModel } from '../types/viewmodel_types';
@@ -28,7 +29,7 @@ const capturePad = 16; // mouse hover is detected in the padding too; eg. for Fi
 /** @internal */
 export interface Mark {
   boundingBoxes: (ctx: CanvasRenderingContext2D) => Rectangle[];
-  render: (ctx: CanvasRenderingContext2D) => void;
+  render: CanvasRenderer;
 }
 
 /** @internal */

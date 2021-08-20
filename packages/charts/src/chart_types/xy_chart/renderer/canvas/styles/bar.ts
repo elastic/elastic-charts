@@ -18,13 +18,9 @@ import { getTextureStyles } from '../../../utils/texture';
  * of the themeRectStyle parameter if present.
  * The stroke color of the bar will be overwritten by the stroke color
  * of the themeRectBorderStyle parameter if present.
- * @param baseColor the assigned color of the bar for this series
- * @param themeRectStyle the theme style of the rectangle for the bar series
- * @param themeRectBorderStyle the theme style of the rectangle borders for the bar series
- * @param geometryStateStyle the highlight geometry style
  * @internal
  */
-export function buildBarStyles(
+export function buildBarStyle(
   ctx: CanvasRenderingContext2D,
   imgCanvas: HTMLCanvasElement,
   baseColor: string,

@@ -8,7 +8,7 @@
 
 import { RGBtoString } from '../../../../../common/color_library_wrappers';
 import { Fill, Rect, Stroke } from '../../../../../geoms/types';
-import { withClipRanges, withContext } from '../../../../../renderers/canvas';
+import { withClipRanges } from '../../../../../renderers/canvas';
 import { ClippedRanges } from '../../../../../utils/geometry';
 import { Point } from '../../../../../utils/point';
 import { renderMultiLine } from './line';
@@ -23,25 +23,16 @@ export function renderLinePaths(
   clippings: Rect,
   hideClippedRanges = false,
 ) {
-  if (clippedRanges.length > 0) {
-    withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => {
-      ctx.translate(transform.x, transform.y);
-      renderMultiLine(ctx, linePaths, stroke);
-    });
-    if (hideClippedRanges) {
-      return;
-    }
-    withClipRanges(ctx, clippedRanges, clippings, true, (ctx) => {
-      ctx.translate(transform.x, transform.y);
-      renderMultiLine(ctx, linePaths, { ...stroke, dash: [5, 5] });
-    });
-    return;
-  }
-
-  withContext(ctx, () => {
+  withClipRanges(ctx, clippedRanges, clippings, false, () => {
     ctx.translate(transform.x, transform.y);
     renderMultiLine(ctx, linePaths, stroke);
   });
+  if (clippedRanges.length > 0 && !hideClippedRanges) {
+    withClipRanges(ctx, clippedRanges, clippings, true, () => {
+      ctx.translate(transform.x, transform.y);
+      renderMultiLine(ctx, linePaths, { ...stroke, dash: [5, 5] });
+    });
+  }
 }
 
 /** @internal */
@@ -54,15 +45,11 @@ export function renderAreaPath(
   clippings: Rect,
   hideClippedRanges = false,
 ) {
-  if (clippedRanges.length === 0) {
-    withContext(ctx, () => renderPathFill(ctx, area, fill, transform));
-  } else {
-    withClipRanges(ctx, clippedRanges, clippings, false, (ctx) => renderPathFill(ctx, area, fill, transform));
-    if (!hideClippedRanges) {
-      withClipRanges(ctx, clippedRanges, clippings, true, (ctx) =>
-        renderPathFill(ctx, area, { ...fill, color: { ...fill.color, opacity: fill.color.opacity / 2 } }, transform),
-      );
-    }
+  withClipRanges(ctx, clippedRanges, clippings, false, () => renderPathFill(ctx, area, fill, transform));
+  if (clippedRanges.length > 0 && !hideClippedRanges) {
+    withClipRanges(ctx, clippedRanges, clippings, true, () =>
+      renderPathFill(ctx, area, { ...fill, color: { ...fill.color, opacity: fill.color.opacity / 2 } }, transform),
+    );
   }
 }
 

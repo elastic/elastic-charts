@@ -115,7 +115,7 @@ const AnnotationsComponent = ({
           onDOMElementEnter,
           onDOMElementLeave,
         );
-        markers.push(...lineMarkers);
+        lineMarkers.forEach((m) => markers.push(m));
       }
     });
 

@@ -42,9 +42,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
           panel,
           rotation,
           renderingArea,
-          (ctx) => {
-            renderArea(ctx, imgCanvas, area, sharedStyle, clippings, highlightedLegendItem);
-          },
+          () => renderArea(ctx, imgCanvas, area, sharedStyle, clippings, highlightedLegendItem),
           { area: clippings, shouldClip: true },
         );
       }
@@ -54,9 +52,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
           panel,
           rotation,
           renderingArea,
-          (ctx) => {
-            renderAreaLines(ctx, area, sharedStyle, clippings, highlightedLegendItem);
-          },
+          () => renderAreaLines(ctx, area, sharedStyle, clippings, highlightedLegendItem),
           { area: clippings, shouldClip: true },
         );
       }
@@ -74,9 +70,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
         panel,
         rotation,
         renderingArea,
-        (ctx) => {
-          renderPoints(ctx, visiblePoints, geometryStateStyle);
-        },
+        () => renderPoints(ctx, visiblePoints, geometryStateStyle),
         { area: clippings, shouldClip: points[0]?.value.mark !== null },
       );
     });

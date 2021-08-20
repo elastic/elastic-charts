@@ -41,64 +41,51 @@ export function renderCanvas2d(
     // ctx.scale(1, -1);
 
     // TODO this should be filtered by the pageSize AND the pageNumber
-    const filteredCells = heatmapViewModel.cells.filter((cell) => {
-      return cell.yIndex < heatmapViewModel.pageSize;
-    });
-    const filteredYValues = heatmapViewModel.yValues.filter((value, yIndex) => {
-      return yIndex < heatmapViewModel.pageSize;
-    });
+    const filteredCells = heatmapViewModel.cells.filter((cell) => cell.yIndex < heatmapViewModel.pageSize);
+    const filteredYValues = heatmapViewModel.yValues.filter((value, yIndex) => yIndex < heatmapViewModel.pageSize);
 
     renderLayers(ctx, [
-      // clear the canvas
       clearCanvas,
-      (ctx: CanvasRenderingContext2D) => {
+
+      () => {
         withContext(ctx, () => {
           // render grid
           renderMultiLine(ctx, heatmapViewModel.gridLines.x, heatmapViewModel.gridLines.stroke);
           renderMultiLine(ctx, heatmapViewModel.gridLines.y, heatmapViewModel.gridLines.stroke);
         });
       },
-      (ctx: CanvasRenderingContext2D) =>
+
+      () =>
         withContext(ctx, () => {
           // render cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
-            if (!cell.visible) {
-              return;
-            }
-            renderRect(ctx, cell, cell.fill, cell.stroke);
+            if (cell.visible) renderRect(ctx, cell, cell.fill, cell.stroke);
           });
         }),
-      (ctx: CanvasRenderingContext2D) =>
+
+      () =>
+        config.cell.label.visible &&
         withContext(ctx, () => {
           // render text on cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
-          if (!config.cell.label.visible) {
-            return;
-          }
           filteredCells.forEach((cell) => {
-            if (!cell.visible) {
-              return;
-            }
-            renderText(
-              ctx,
-              {
-                x: cell.x + cell.width / 2,
-                y: cell.y + cell.height / 2,
-              },
-              cell.formatted,
-              config.cell.label,
-            );
+            if (cell.visible)
+              renderText(
+                ctx,
+                { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 },
+                cell.formatted,
+                config.cell.label,
+              );
           });
         }),
-      (ctx: CanvasRenderingContext2D) =>
-        withContext(ctx, () => {
-          // render text on Y axis
-          if (!config.yAxisLabel.visible) {
-            return;
-          }
+
+      () =>
+        // render text on Y axis
+        config.yAxisLabel.visible &&
+        withContext(ctx, () =>
           filteredYValues.forEach((yValue) => {
             const font: Font = {
               fontFamily: config.yAxisLabel.fontFamily,
@@ -118,41 +105,26 @@ export function renderCanvas2d(
               config.yAxisLabel.fontSize,
               heatmapViewModel.gridOrigin.x - horizontalPadding,
               16,
-              {
-                shouldAddEllipsis: true,
-                wrapAtWord: false,
-              },
+              { shouldAddEllipsis: true, wrapAtWord: false },
             ).lines;
             renderText(
               ctx,
-              {
-                x: yValue.x,
-                y: yValue.y,
-              },
+              { x: yValue.x, y: yValue.y },
               resultText,
               // the alignment for y axis labels is fixed to the right
               { ...config.yAxisLabel, align: 'right' },
             );
-          });
-        }),
-      (ctx: CanvasRenderingContext2D) =>
-        withContext(ctx, () => {
-          // render text on X axis
-          if (!config.xAxisLabel.visible) {
-            return;
-          }
-          heatmapViewModel.xValues.forEach((xValue) => {
-            renderText(
-              ctx,
-              {
-                x: xValue.x,
-                y: xValue.y,
-              },
-              xValue.text,
-              config.xAxisLabel,
-            );
-          });
-        }),
+          }),
+        ),
+
+      () =>
+        // render text on X axis
+        config.xAxisLabel.visible &&
+        withContext(ctx, () =>
+          heatmapViewModel.xValues.forEach((xValue) =>
+            renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel),
+          ),
+        ),
     ]);
   });
 }
