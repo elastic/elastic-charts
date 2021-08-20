@@ -198,27 +198,27 @@ export const LIGHT_THEME: Theme = {
     tickLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: '#777',
+      fill: 'black',
     },
     majorLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: '#333',
+      fill: 'black',
     },
     minorLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: '#333',
+      fill: 'black',
     },
     majorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: '#333',
+      fill: 'black',
     },
     minorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: '#333',
+      fill: 'black',
     },
     targetLine: {
       stroke: 'black',

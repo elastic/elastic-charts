@@ -198,33 +198,33 @@ export const DARK_THEME: Theme = {
     tickLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: '#999',
+      fill: 'white',
     },
     majorLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: '#D4D4D4',
+      fill: 'white',
     },
     minorLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: '#D4D4D4',
+      fill: 'white',
     },
     majorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: '#D4D4D4',
+      fill: 'white',
     },
     minorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: '#D4D4D4',
+      fill: 'white',
     },
     targetLine: {
       stroke: 'white',
     },
     tickLine: {
-      stroke: '#444',
+      stroke: 'snow',
     },
     progressLine: {
       stroke: 'white',
