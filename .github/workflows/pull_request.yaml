@@ -10,10 +10,10 @@ env:
 on:
   push:
     branches:
-      - "!gh-pages"
+      - '!gh-pages'
   pull_request:
     branches:
-      - "!gh-pages"
+      - '!gh-pages'
 
 jobs:
   setup:
@@ -135,7 +135,6 @@ jobs:
         run: yarn test:tz --ci
       - name: Testing
         run: yarn test --coverage --ci
-
 
   build-sb:
     name: Build Storybook
