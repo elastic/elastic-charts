@@ -211,7 +211,7 @@ export const BandedAccessorType: Readonly<{
 export type BandedAccessorType = $Values<typeof BandedAccessorType>;
 
 // @alpha (undocumented)
-export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color;
+export type BandFillColorAccessor = (input: BandFillColorAccessorInput, colorScale: chroma.Scale) => Color;
 
 // @alpha (undocumented)
 export interface BandFillColorAccessorInput {
@@ -792,9 +792,16 @@ export function getNodeName(node: ArrayNode): string;
 export const Goal: React_2.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
 
 // @alpha (undocumented)
+export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
+
+// @alpha (undocumented)
 export interface GoalSpec extends Spec {
     // (undocumented)
     actual: number;
+    // (undocumented)
+    angleEnd: number;
+    // (undocumented)
+    angleStart: number;
     // (undocumented)
     bandFillColor: BandFillColorAccessor;
     // (undocumented)
@@ -804,19 +811,19 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     base: number;
     // (undocumented)
-    centralMajor: string | BandFillColorAccessor;
+    centralMajor: string | GoalLabelAccessor;
     // (undocumented)
-    centralMinor: string | BandFillColorAccessor;
+    centralMinor: string | GoalLabelAccessor;
     // (undocumented)
     chartType: typeof ChartType.Goal;
     // Warning: (ae-forgotten-export) The symbol "Config" needs to be exported by the entry point index.d.ts
     //
+    // @deprecated
+    config?: RecursivePartial<Config>;
     // (undocumented)
-    config: RecursivePartial<Config>;
+    labelMajor: string | GoalLabelAccessor;
     // (undocumented)
-    labelMajor: string | BandFillColorAccessor;
-    // (undocumented)
-    labelMinor: string | BandFillColorAccessor;
+    labelMinor: string | GoalLabelAccessor;
     // (undocumented)
     specType: typeof SpecType.Series;
     // Warning: (ae-forgotten-export) The symbol "GoalSubtype" needs to be exported by the entry point index.d.ts
@@ -828,7 +835,31 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     ticks: number[];
     // (undocumented)
-    tickValueFormatter: BandFillColorAccessor;
+    tickValueFormatter: GoalLabelAccessor;
+}
+
+// @public (undocumented)
+export interface GoalStyles {
+    // (undocumented)
+    majorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    // (undocumented)
+    majorLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    // (undocumented)
+    maxFontSize: number;
+    // (undocumented)
+    minFontSize: number;
+    // (undocumented)
+    minorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    // (undocumented)
+    minorLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    // (undocumented)
+    progressLine: Pick<StrokeStyle, 'stroke'>;
+    // (undocumented)
+    targetLine: Pick<StrokeStyle, 'stroke'>;
+    // (undocumented)
+    tickLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    // (undocumented)
+    tickLine: Pick<StrokeStyle, 'stroke'>;
 }
 
 // @public (undocumented)
@@ -1106,7 +1137,7 @@ export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, Fal
 export type Key = CategoryKey;
 
 // @public (undocumented)
-export type LabelAccessor = (value: PrimitiveValue) => string;
+export type LabelAccessor<T = PrimitiveValue> = (value: T) => string;
 
 // @public (undocumented)
 export const LabelOverflowConstraint: Readonly<{
@@ -2075,6 +2106,8 @@ export interface Theme {
     colors: ColorConfig;
     // (undocumented)
     crosshair: CrosshairStyle;
+    // (undocumented)
+    goal: GoalStyles;
     // (undocumented)
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;
