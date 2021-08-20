@@ -57,8 +57,8 @@ export interface GoalSpec extends Spec {
   centralMajor: string | GoalLabelAccessor;
   centralMinor: string | GoalLabelAccessor;
   /**
-   * properties have been migrated to the theme or spec
-   * @deprecated
+   * @deprecated properties have been migrated to the theme or spec.
+   * To be removed with partition, heatmap and wordmap configs.
    */
   config?: RecursivePartial<Config>;
   angleStart: number;
