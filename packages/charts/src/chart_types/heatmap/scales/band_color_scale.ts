@@ -17,7 +17,7 @@ function defaultColorBandFormatter(start: number, end: number, valueFormatter?: 
   const finiteStart = Number.isFinite(start);
   const finiteEnd = Number.isFinite(end);
   const startLabel = safeFormat(start, valueFormatter);
-  const endLabel = safeFormat(start, valueFormatter);
+  const endLabel = safeFormat(end, valueFormatter);
   return !finiteStart && finiteEnd
     ? `< ${endLabel}`
     : finiteStart && !finiteEnd
