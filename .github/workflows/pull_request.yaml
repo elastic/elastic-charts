@@ -7,13 +7,7 @@ concurrency:
 env:
   ECH_NODE_VERSION: '14.x'
 
-on:
-  push:
-    branches:
-      - "!gh-pages"
-  pull_request:
-    branches:
-      - "!gh-pages"
+on: [push, pull_request]
 
 jobs:
   setup:
