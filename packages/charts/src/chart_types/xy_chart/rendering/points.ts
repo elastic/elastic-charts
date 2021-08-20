@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../common/color';
 import { Scale } from '../../../scales';
-import { Color, isNil } from '../../../utils/common';
+import { isNil } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, PointGeometry } from '../../../utils/geometry';
 import { PointStyle } from '../../../utils/themes/theme';

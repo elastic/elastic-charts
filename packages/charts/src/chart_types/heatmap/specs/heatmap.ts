@@ -9,13 +9,14 @@
 import React from 'react';
 
 import { ChartType } from '../..';
+import { Color } from '../../../common/color';
 import { Predicate } from '../../../common/predicate';
 import { ScaleType } from '../../../scales/constants';
 import { SeriesScales, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
-import { Color, Datum, RecursivePartial } from '../../../utils/common';
+import { Datum, RecursivePartial } from '../../../utils/common';
 import { config } from '../layout/config/config';
 import { Config } from '../layout/types/config_types';
 import { X_SCALE_DEFAULT } from './scale_defaults';

@@ -8,7 +8,7 @@
 
 import chroma from 'chroma-js';
 
-import { Color } from '../utils/common';
+import { Color } from './color';
 import { RgbaTuple, RGBATupleToString, RgbTuple, stringToRGB } from './color_library_wrappers';
 import { Ratio } from './geometry';
 import { TextContrast } from './text_utils';

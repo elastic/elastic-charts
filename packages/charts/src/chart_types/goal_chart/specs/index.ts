@@ -9,10 +9,11 @@
 import React from 'react';
 
 import { ChartType } from '../..';
+import { Color } from '../../../common/color';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
-import { Color, RecursivePartial } from '../../../utils/common';
+import { RecursivePartial } from '../../../utils/common';
 import { config } from '../layout/config/config';
 import { Config } from '../layout/types/config_types';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';

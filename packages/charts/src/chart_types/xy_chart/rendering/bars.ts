@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../common/color';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, Color, isNil, mergePartial } from '../../../utils/common';
+import { clamp, isNil, mergePartial } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';

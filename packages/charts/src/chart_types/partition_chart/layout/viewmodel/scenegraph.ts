@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../common/color';
 import { measureText } from '../../../../common/text_utils';
 import { SmallMultiplesStyle } from '../../../../specs';
-import { Color, identity, mergePartial, RecursivePartial } from '../../../../utils/common';
+import { identity, mergePartial, RecursivePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Layer, PartitionSpec } from '../../specs';
 import { config as defaultConfig, VALUE_GETTERS } from '../config';

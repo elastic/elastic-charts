@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../common/color';
 import { getOnPaperColorSet } from '../../../../common/color_calcs';
 import { TAU } from '../../../../common/constants';
 import {
@@ -17,7 +18,7 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { cutToLength, fitText, Font, measureOneBoxWidth, TextMeasure } from '../../../../common/text_utils';
-import { Color, ValueFormatter } from '../../../../utils/common';
+import { ValueFormatter } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { Config, LinkLabelConfig } from '../types/config_types';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';

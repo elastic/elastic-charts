@@ -9,6 +9,7 @@
 import classNames from 'classnames';
 import React, { Component, createRef, MouseEventHandler } from 'react';
 
+import { Color } from '../../common/color';
 import { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
 import {
@@ -28,7 +29,7 @@ import {
   onLegendItemOverAction,
   onToggleDeselectSeriesAction,
 } from '../../state/actions/legend';
-import { Color, LayoutDirection } from '../../utils/common';
+import { LayoutDirection } from '../../utils/common';
 import { deepEqual } from '../../utils/fast_deep_equal';
 import { LegendLabelOptions } from '../../utils/themes/theme';
 import { Color as ItemColor } from './color';

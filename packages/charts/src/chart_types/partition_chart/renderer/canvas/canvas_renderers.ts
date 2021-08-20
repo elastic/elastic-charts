@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../common/color';
 import { addOpacity } from '../../../../common/color_calcs';
 import { TAU } from '../../../../common/constants';
 import { Pixels } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
-import { Color } from '../../../../utils/common';
 import { MIN_STROKE_WIDTH } from '../../../xy_chart/renderer/canvas/primitives/line';
 import {
   LinkLabelVM,

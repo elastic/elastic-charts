@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../common/color';
 import { OpacityFn } from '../../../common/color_library_wrappers';
 import { Texture } from '../../../geoms/types';
-import { Color, ColorVariant, degToRad, getColorFromVariant } from '../../../utils/common';
+import { ColorVariant, degToRad, getColorFromVariant } from '../../../utils/common';
 import { Point } from '../../../utils/point';
 import { TexturedStyles, TextureShape } from '../../../utils/themes/theme';
 import { TextureRendererFn } from '../renderer/shapes_paths';

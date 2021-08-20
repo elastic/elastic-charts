@@ -8,8 +8,9 @@
 
 import { ComponentType, ReactNode } from 'react';
 
+import { Color } from '../../../common/color';
 import { TooltipPortalSettings } from '../../../components/portal';
-import { Position, Color } from '../../../utils/common';
+import { Position } from '../../../utils/common';
 import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../utils/specs';
 import { AnnotationLineProps } from './line/types';
 import { AnnotationRectProps } from './rect/types';

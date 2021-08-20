@@ -81,7 +81,6 @@ export {
   IsAny,
   IsUnknown,
   ColorVariant,
-  Color,
   LabelAccessor,
   ShowAccessor,
   ValueAccessor,
@@ -95,3 +94,4 @@ export { LegendStrategy } from './chart_types/partition_chart/layout/utils/highl
 export { Ratio } from './common/geometry';
 export { AdditiveNumber } from './utils/accessor';
 export { FontStyle, FONT_STYLES } from './common/text_utils';
+export { Color } from './common/color';

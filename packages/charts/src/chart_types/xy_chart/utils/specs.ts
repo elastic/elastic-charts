@@ -10,6 +10,7 @@ import { ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
+import { Color } from '../../../common/color';
 import { TooltipPortalSettings } from '../../../components/portal/types';
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
@@ -17,7 +18,7 @@ import { LogScaleOptions } from '../../../scales/scale_continuous';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
-import { RecursivePartial, Color, Position, Datum } from '../../../utils/common';
+import { RecursivePartial, Position, Datum } from '../../../utils/common';
 import { CurveType } from '../../../utils/curves';
 import { OrdinalDomain } from '../../../utils/domain';
 import { AxisId, GroupId } from '../../../utils/ids';

@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../common/color';
 import { Scale } from '../../../scales';
-import { Color } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BubbleGeometry } from '../../../utils/geometry';
 import { BubbleSeriesStyle } from '../../../utils/themes/theme';

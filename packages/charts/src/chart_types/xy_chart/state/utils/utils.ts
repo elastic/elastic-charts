@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../common/color';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
 import { SortSeriesByConfig } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
-import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
+import { mergePartial, Rotation, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import {

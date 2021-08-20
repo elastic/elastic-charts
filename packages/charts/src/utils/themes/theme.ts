@@ -8,9 +8,10 @@
 
 import { $Values } from 'utility-types';
 
+import { Color } from '../../common/color';
 import { Pixels, Ratio } from '../../common/geometry';
 import { FontStyle } from '../../common/text_utils';
-import { Color, ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
+import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, SimplePadding } from '../dimensions';
 import { Point } from '../point';
 

@@ -12,8 +12,8 @@ import { Chart, Goal, Settings } from '@elastic/charts';
 import { config } from '@elastic/charts/src/chart_types/goal_chart/layout/config/config';
 import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
-import { Color } from '@elastic/charts/src/utils/common';
 
+import { Color } from '../../../packages/charts/src/common/color';
 import { useBaseTheme } from '../../use_base_theme';
 
 const q1 = 255 - 255 * 0.4;

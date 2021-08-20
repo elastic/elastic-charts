@@ -8,8 +8,8 @@
 
 import { area } from 'd3-shape';
 
+import { Color } from '../../../common/color';
 import { Scale } from '../../../scales';
-import { Color } from '../../../utils/common';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { Dimensions } from '../../../utils/dimensions';
 import { AreaGeometry } from '../../../utils/geometry';

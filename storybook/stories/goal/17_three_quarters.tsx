@@ -11,8 +11,8 @@ import React from 'react';
 import { Chart, Goal, Settings } from '@elastic/charts';
 import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
-import { Color } from '@elastic/charts/src/utils/common';
 
+import { Color } from '../../../packages/charts/src/common/color';
 import { useBaseTheme } from '../../use_base_theme';
 
 const subtype = GoalSubtype.Goal;

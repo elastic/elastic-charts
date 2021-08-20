@@ -7,6 +7,7 @@
  */
 
 import { CategoryKey } from '../../../../common/category';
+import { Color } from '../../../../common/color';
 import {
   Coordinate,
   Distance,
@@ -20,7 +21,6 @@ import {
 import { Font, VerticalAlignments } from '../../../../common/text_utils';
 import { GroupByAccessor } from '../../../../specs';
 import { LegendPath } from '../../../../state/actions/legend';
-import { Color } from '../../../../utils/common';
 import { ContinuousDomainFocus } from '../../renderer/canvas/partition';
 import { Layer } from '../../specs';
 import { config, MODEL_KEY, ValueGetterName } from '../config';

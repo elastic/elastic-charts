@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../common/color';
 import { argsToRGBString, stringToRGB } from '../../../../common/color_library_wrappers';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
@@ -19,7 +20,7 @@ import {
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
 import { GroupByAccessor, SmallMultiplesStyle } from '../../../../specs';
-import { StrokeStyle, ValueFormatter, Color, RecursivePartial } from '../../../../utils/common';
+import { StrokeStyle, ValueFormatter, RecursivePartial } from '../../../../utils/common';
 import { Layer } from '../../specs';
 import { config as defaultConfig, MODEL_KEY, percentValueGetter } from '../config';
 import { Config, FillLabelConfig, PartitionLayout } from '../types/config_types';

@@ -8,8 +8,8 @@
 
 import chroma from 'chroma-js';
 
-import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
+import { Color } from './color';
 import {
   colorIsDark,
   combineColors,

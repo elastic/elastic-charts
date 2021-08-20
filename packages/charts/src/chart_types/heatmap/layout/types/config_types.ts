@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../common/color';
 import { Pixels, SizeRatio } from '../../../../common/geometry';
 import { Font, FontFamily, TextAlign, TextBaseline } from '../../../../common/text_utils';
-import { Color } from '../../../../utils/common';
 import { Cell } from './viewmodel_types';
 
 /**

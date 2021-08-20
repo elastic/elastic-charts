@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../common/color';
 import { SeriesKey } from '../../../../common/series_id';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { Color } from '../../../../utils/common';
 import { getSeriesColors } from '../../utils/series';
 import { getCustomSeriesColors } from '../utils/utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';

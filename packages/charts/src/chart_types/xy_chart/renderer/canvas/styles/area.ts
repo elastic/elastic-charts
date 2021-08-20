@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../../common/color';
 import { OpacityFn, stringToRGB } from '../../../../../common/color_library_wrappers';
 import { Fill } from '../../../../../geoms/types';
-import { Color, ColorVariant, getColorFromVariant } from '../../../../../utils/common';
+import { ColorVariant, getColorFromVariant } from '../../../../../utils/common';
 import { GeometryStateStyle, AreaStyle } from '../../../../../utils/themes/theme';
 import { getTextureStyles } from '../../../utils/texture';
 

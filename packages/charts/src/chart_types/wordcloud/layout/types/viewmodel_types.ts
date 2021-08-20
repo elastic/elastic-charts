@@ -8,9 +8,9 @@
 
 import { $Values as Values } from 'utility-types';
 
+import { Color } from '../../../../common/color';
 import { Pixels, PointObject, Rectangle } from '../../../../common/geometry';
 import { FontStyle } from '../../../../common/text_utils';
-import { Color } from '../../../../utils/common';
 import { config } from '../config/config';
 import { Config } from './config_types';
 
