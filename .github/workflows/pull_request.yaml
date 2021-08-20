@@ -21,14 +21,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Runs first to cache node_modules for later runs
-      - name: Setup node
+      - name: Check out repository
         uses: actions/checkout@v2
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
-      - uses: bahmutov/npm-install@v1
+      - name: Install and cache node_modules
+        uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
 
@@ -38,14 +40,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # ----- Common setup from cache -----
-      - name: Setup node
+      - name: Check out repository
         uses: actions/checkout@v2
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
-      - uses: bahmutov/npm-install@v1
+      - name: Install node_modules
+        uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
       # -----------------------------------
@@ -59,14 +63,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # ----- Common setup from cache -----
-      - name: Setup node
+      - name: Check out repository
         uses: actions/checkout@v2
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
-      - uses: bahmutov/npm-install@v1
+      - name: Install node_modules
+        uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
       # -----------------------------------
@@ -80,14 +86,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # ----- Common setup from cache -----
-      - name: Setup node
+      - name: Check out repository
         uses: actions/checkout@v2
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
-      - uses: bahmutov/npm-install@v1
+      - name: Install node_modules
+        uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
       # -----------------------------------
@@ -109,14 +117,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # ----- Common setup from cache -----
-      - name: Setup node
+      - name: Check out repository
         uses: actions/checkout@v2
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
-      - uses: bahmutov/npm-install@v1
+      - name: Install node_modules
+        uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
       # -----------------------------------
