@@ -8,7 +8,7 @@
 
 import { RGBtoString } from '../../../../../common/color_library_wrappers';
 import { Fill, Rect, Stroke } from '../../../../../geoms/types';
-import { withClipRanges, withContext } from '../../../../../renderers/canvas';
+import { withClipRanges } from '../../../../../renderers/canvas';
 import { ClippedRanges } from '../../../../../utils/geometry';
 import { Point } from '../../../../../utils/point';
 import { renderMultiLine } from './line';
@@ -23,21 +23,14 @@ export function renderLinePaths(
   clippings: Rect,
   hideClippedRanges = false,
 ) {
-  if (clippedRanges.length > 0) {
-    withClipRanges(ctx, clippedRanges, clippings, false, () => {
+  withClipRanges(ctx, clippedRanges, clippings, false, () => {
+    ctx.translate(transform.x, transform.y);
+    renderMultiLine(ctx, linePaths, stroke);
+  });
+  if (clippedRanges.length > 0 && !hideClippedRanges) {
+    withClipRanges(ctx, clippedRanges, clippings, true, () => {
       ctx.translate(transform.x, transform.y);
-      renderMultiLine(ctx, linePaths, stroke);
-    });
-    if (!hideClippedRanges) {
-      withClipRanges(ctx, clippedRanges, clippings, true, () => {
-        ctx.translate(transform.x, transform.y);
-        renderMultiLine(ctx, linePaths, { ...stroke, dash: [5, 5] });
-      });
-    }
-  } else {
-    withContext(ctx, () => {
-      ctx.translate(transform.x, transform.y);
-      renderMultiLine(ctx, linePaths, stroke);
+      renderMultiLine(ctx, linePaths, { ...stroke, dash: [5, 5] });
     });
   }
 }
