@@ -6,4 +6,5 @@
  * Side Public License, v 1.
  */
 
-export * from './heatmap';
+export { Heatmap } from './heatmap';
+export type { HeatmapSpec } from './heatmap';

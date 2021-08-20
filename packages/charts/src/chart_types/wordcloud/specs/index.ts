@@ -30,7 +30,8 @@ const defaultProps = {
   config,
 };
 
-export { WordModel, WeightFn, OutOfRoomCallback, WordcloudConfigs };
+export { WeightFn };
+export type { WordModel, WordcloudConfigs, OutOfRoomCallback };
 
 /** @alpha */
 export interface WordcloudSpec extends Spec {

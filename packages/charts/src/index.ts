@@ -8,38 +8,38 @@
 
 export * from './components';
 export { ChartType } from './chart_types';
-export { ChartSize, ChartSizeArray, ChartSizeObject } from './utils/chart_size';
+export type { ChartSize, ChartSizeArray, ChartSizeObject } from './utils/chart_size';
 
-export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
+export type { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
 
 // Everything related to the specs types and react-components
 export * from './specs';
-export { DebugState } from './state/types';
+export type { DebugState } from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';
-export { ContinuousDomain, OrdinalDomain } from './utils/domain';
-export { SimplePadding, Padding } from './utils/dimensions';
+export type { ContinuousDomain, OrdinalDomain } from './utils/domain';
+export type { SimplePadding, Padding } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
-export { SeriesIdentifier, SeriesKey } from './common/series_id';
-export { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
-export {
+export type { SeriesIdentifier, SeriesKey } from './common/series_id';
+export type { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
+export type {
   AnnotationTooltipFormatter,
   CustomAnnotationTooltip,
   ComponentWithAnnotationDatum,
 } from './chart_types/xy_chart/annotations/types';
-export { GeometryValue, BandedAccessorType } from './utils/geometry';
-export { LegendPath, LegendPathElement } from './state/actions/legend';
-export { CategoryKey } from './common/category';
-export {
+export type { GeometryValue, BandedAccessorType } from './utils/geometry';
+export type { LegendPath, LegendPathElement } from './state/actions/legend';
+export type { CategoryKey } from './common/category';
+export type {
   Config as PartitionConfig,
   FillLabelConfig as PartitionFillLabel,
   PartitionLayout,
 } from './chart_types/partition_chart/layout/types/config_types';
-export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
-export * from './chart_types/goal_chart/specs/index';
-export * from './chart_types/wordcloud/specs/index';
+export type { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
+// export * from './chart_types/goal_chart/specs/index';
+// export * from './chart_types/wordcloud/specs/index';
 
-export {
+export type {
   Accessor,
   AccessorFn,
   IndexedAccessorFn,
@@ -47,11 +47,11 @@ export {
   AccessorObjectKey,
   AccessorArrayIndex,
 } from './utils/accessor';
-export { CustomTooltip, TooltipInfo } from './components/tooltip/types';
+export type { CustomTooltip, TooltipInfo } from './components/tooltip/types';
 
 // scales
 export { ScaleType } from './scales/constants';
-export { ScaleContinuousType, ScaleOrdinalType, ScaleBandType, LogBase, LogScaleOptions } from './scales';
+export type { ScaleContinuousType, ScaleOrdinalType, ScaleBandType, LogBase, LogScaleOptions } from './scales';
 
 // theme
 export * from './utils/themes/theme';
@@ -64,14 +64,14 @@ export * from './chart_types/partition_chart/layout/types/viewmodel_types';
 export * from './chart_types/partition_chart/layout/utils/group_by_rollup';
 
 // heatmap
-export { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
-export { Config as HeatmapConfig, HeatmapBrushEvent } from './chart_types/heatmap/layout/types/config_types';
-export { ColorBand, HeatmapBandsColorScale } from './chart_types/heatmap/specs/heatmap';
+export type { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
+export type { Config as HeatmapConfig, HeatmapBrushEvent } from './chart_types/heatmap/layout/types/config_types';
+export type { ColorBand, HeatmapBandsColorScale } from './chart_types/heatmap/specs/heatmap';
 
 // utilities
-export {
+export { Position } from './utils/common';
+export type {
   Datum,
-  Position,
   Rendering,
   Rotation,
   VerticalAlignment,
@@ -92,6 +92,7 @@ export { DataGenerator } from './utils/data_generators/data_generator';
 export * from './utils/themes/merge_utils';
 export { MODEL_KEY } from './chart_types/partition_chart/layout/config';
 export { LegendStrategy } from './chart_types/partition_chart/layout/utils/highlighted_geoms';
-export { Ratio } from './common/geometry';
-export { AdditiveNumber } from './utils/accessor';
-export { FontStyle, FONT_STYLES } from './common/text_utils';
+export type { Ratio } from './common/geometry';
+export type { AdditiveNumber } from './utils/accessor';
+export type { FontStyle } from './common/text_utils';
+export { FONT_STYLES } from './common/text_utils';
