@@ -7,28 +7,15 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { select, text } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Heatmap, ScaleType, Settings } from '@elastic/charts';
+import { Chart, Heatmap, Settings } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const data = BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960);
-  const colorScale = select(
-    'color scale',
-    {
-      [ScaleType.Linear]: ScaleType.Linear,
-      [ScaleType.Quantile]: ScaleType.Quantile,
-      [ScaleType.Quantize]: ScaleType.Quantize,
-      [ScaleType.Threshold]: ScaleType.Threshold,
-    },
-    ScaleType.Linear,
-  );
-  const ranges = text('ranges', 'auto');
-  const colors = text('colors', 'green, yellow, red');
 
   return (
     <Chart>
@@ -41,9 +28,16 @@ export const Example = () => {
       />
       <Heatmap
         id="heatmap2"
-        colorScale={colorScale}
-        ranges={ranges === 'auto' ? undefined : ranges.split(',').map((d) => Number(d.trim()))}
-        colors={colors.split(',').map((d) => d.trim())}
+        colorScale={{
+          type: 'bands',
+          bands: [
+            { start: -Infinity, end: 1000, color: '#ffffcc' },
+            { start: 1000, end: 5000, color: '#a1dab4' },
+            { start: 5000, end: 10000, color: '#41b6c4' },
+            { start: 10000, end: 50000, color: '#2c7fb8' },
+            { start: 50000, end: Infinity, color: '#253494' },
+          ],
+        }}
         data={data}
         xAccessor={(d) => d[2]}
         yAccessor={(d) => d[0]}
@@ -63,7 +57,7 @@ export const Example = () => {
               visible: true,
             },
             border: {
-              stroke: 'white',
+              stroke: 'transparent',
               strokeWidth: 1,
             },
           },

@@ -49,8 +49,8 @@ export const Example = () => {
           min: 20,
         },
         stroke: {
-          width: 1,
-          color: '#D3DAE6',
+          width: 0.5,
+          color: '#bababa',
         },
       },
       cell: {
@@ -60,7 +60,7 @@ export const Example = () => {
           visible: false,
         },
         border: {
-          stroke: '#D3DAE6',
+          stroke: 'transparent',
           strokeWidth: 0,
         },
       },
@@ -116,9 +116,16 @@ export const Example = () => {
       />
       <Heatmap
         id="heatmap1"
-        colorScale={ScaleType.Threshold}
-        ranges={[0, 3, 25, 50, 75]}
-        colors={['#ffffff', '#d2e9f7', '#8bc8fb', '#fdec25', '#fba740', '#fe5050']}
+        colorScale={{
+          type: 'bands',
+          bands: [
+            { start: -Infinity, end: 3, color: '#d2e9f7' },
+            { start: 3, end: 25, color: '#8bc8fb' },
+            { start: 25, end: 50, color: '#fdec25' },
+            { start: 50, end: 75, color: '#fba740' },
+            { start: 75, end: Infinity, color: '#fe5050' },
+          ],
+        }}
         data={SWIM_LANE_DATA.map((v) => ({ ...v, time: v.time * 1000 }))}
         xAccessor={(d) => d.time}
         yAccessor={(d) => d.laneLabel}
