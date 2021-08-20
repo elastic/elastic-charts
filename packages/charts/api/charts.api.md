@@ -443,6 +443,14 @@ export function childrenAccessor(n: ArrayEntry): HierarchyOfArrays;
 // @public (undocumented)
 export type Color = string;
 
+// @alpha (undocumented)
+export type ColorBand = {
+    start: number;
+    end: number;
+    color: Color;
+    label?: string;
+};
+
 // @public (undocumented)
 export interface ColorConfig {
     // (undocumented)
@@ -881,7 +889,16 @@ export interface GroupBySpec extends Spec {
 export type GroupId = string;
 
 // @alpha (undocumented)
-export const Heatmap: React_2.FunctionComponent<Pick<HeatmapSpec, 'id' | 'data'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>>;
+export const Heatmap: React_2.FunctionComponent<Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>>;
+
+// @alpha (undocumented)
+export interface HeatmapBandsColorScale {
+    // (undocumented)
+    bands: Array<ColorBand>;
+    labelFormatter?: (start: number, end: number) => string;
+    // (undocumented)
+    type: 'bands';
+}
 
 // @public (undocumented)
 export type HeatmapBrushEvent = {
@@ -1005,11 +1022,7 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartType.Heatmap;
     // (undocumented)
-    colors: Color[];
-    // Warning: (ae-forgotten-export) The symbol "HeatmapScaleType" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    colorScale?: HeatmapScaleType;
+    colorScale: HeatmapBandsColorScale;
     // (undocumented)
     config: RecursivePartial<HeatmapConfig>;
     // (undocumented)
@@ -1021,8 +1034,6 @@ export interface HeatmapSpec extends Spec {
     };
     // (undocumented)
     name?: string;
-    // (undocumented)
-    ranges?: number[] | [number, number];
     // (undocumented)
     specType: typeof SpecType.Series;
     // (undocumented)

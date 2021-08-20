@@ -66,6 +66,7 @@ export * from './chart_types/partition_chart/layout/utils/group_by_rollup';
 // heatmap
 export { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
 export { Config as HeatmapConfig, HeatmapBrushEvent } from './chart_types/heatmap/layout/types/config_types';
+export { ColorBand, HeatmapBandsColorScale } from './chart_types/heatmap/specs/heatmap';
 
 // utilities
 export {

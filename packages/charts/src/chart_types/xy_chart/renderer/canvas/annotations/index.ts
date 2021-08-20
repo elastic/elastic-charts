@@ -36,11 +36,8 @@ export function renderAnnotations(
 ) {
   annotationDimensions.forEach((annotation, id) => {
     const spec = getSpecsById<AnnotationSpec>(annotationSpecs, id);
-    if (!spec) {
-      return null;
-    }
-    const isBackground = !spec.zIndex || (spec.zIndex && spec.zIndex <= 0);
-    if ((isBackground && renderOnBackground) || (!isBackground && !renderOnBackground)) {
+    const isBackground = (spec?.zIndex ?? 0) <= 0;
+    if (spec && isBackground === renderOnBackground) {
       if (isLineAnnotation(spec)) {
         const lineStyle = mergeWithDefaultAnnotationLine(spec.style);
         renderLineAnnotations(ctx, annotation as AnnotationLineProps[], lineStyle, rotation, renderingArea);

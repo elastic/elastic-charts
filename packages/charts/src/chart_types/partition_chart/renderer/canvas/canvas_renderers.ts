@@ -12,6 +12,7 @@ import { Pixels } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { Color } from '../../../../utils/common';
+import { MIN_STROKE_WIDTH } from '../../../xy_chart/renderer/canvas/primitives/line';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
@@ -132,8 +133,7 @@ function renderSectors(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewMod
   withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach((quad: QuadViewModel) => {
-      if (quad.x0 === quad.x1) return; // no slice will be drawn, and it avoids some division by zero as well
-      renderTaperedBorder(ctx, quad);
+      if (quad.x0 !== quad.x1) renderTaperedBorder(ctx, quad);
     });
   });
 }
@@ -152,7 +152,7 @@ function renderRectangles(ctx: CanvasRenderingContext2D, quadViewModel: QuadView
         ctx.lineTo(x1, y0px);
         ctx.lineTo(x0, y0px);
         ctx.fill();
-        if (strokeWidth > 0.001) {
+        if (strokeWidth > MIN_STROKE_WIDTH) {
           // Canvas2d stroke ignores an exact zero line width
           ctx.lineWidth = strokeWidth;
           ctx.stroke();
@@ -186,7 +186,7 @@ function renderLinkLabels(
   ctx: CanvasRenderingContext2D,
   linkLabelFontSize: Pixels,
   linkLabelLineWidth: Pixels,
-  { linkLabels, labelFontSpec, valueFontSpec, strokeColor }: LinkLabelsViewModelSpec,
+  { linkLabels: allLinkLabels, labelFontSpec, valueFontSpec, strokeColor }: LinkLabelsViewModelSpec,
   linkLineColor: Color,
 ) {
   const labelColor = addOpacity(labelFontSpec.textColor, labelFontSpec.textOpacity);
@@ -194,7 +194,7 @@ function renderLinkLabels(
   const labelValueGap = linkLabelFontSize / 2; // one en space
   withContext(ctx, () => {
     ctx.lineWidth = linkLabelLineWidth;
-    linkLabels.forEach(({ linkLabels, translate, textAlign, text, valueText, width, valueWidth }: LinkLabelVM) => {
+    allLinkLabels.forEach(({ linkLabels, translate, textAlign, text, valueText, width, valueWidth }: LinkLabelVM) => {
       // label lines
       ctx.beginPath();
       ctx.moveTo(...linkLabels[0]);
@@ -288,19 +288,17 @@ export function renderPartitionCanvas2d(
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
       // bottom layer: sectors (pie slices, ring sectors etc.)
-      (ctx: CanvasRenderingContext2D) =>
+      () =>
         isSunburst(config.partitionLayout) ? renderSectors(ctx, quadViewModel) : renderRectangles(ctx, quadViewModel),
 
       // all the fill-based, potentially multirow text, whether inside or outside the sector
-      (ctx: CanvasRenderingContext2D) => renderRowSets(ctx, rowSets, linkLineColor),
+      () => renderRowSets(ctx, rowSets, linkLineColor),
 
       // the link lines for the outside-fill text
-      (ctx: CanvasRenderingContext2D) =>
-        renderFillOutsideLinks(ctx, outsideLinksViewModel, linkLineColor, linkLabel.lineWidth),
+      () => renderFillOutsideLinks(ctx, outsideLinksViewModel, linkLineColor, linkLabel.lineWidth),
 
       // all the text and link lines for single-row outside texts
-      (ctx: CanvasRenderingContext2D) =>
-        renderLinkLabels(ctx, linkLabel.fontSize, linkLabel.lineWidth, linkLabelViewModels, linkLineColor),
+      () => renderLinkLabels(ctx, linkLabel.fontSize, linkLabel.lineWidth, linkLabelViewModels, linkLineColor),
     ]);
   });
 }

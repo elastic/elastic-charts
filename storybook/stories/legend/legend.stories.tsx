@@ -29,3 +29,4 @@ export { Example as piechart } from './10_sunburst';
 export { Example as piechartRepeatedLabels } from './10_sunburst_repeated_label';
 export { Example as actions } from './11_legend_actions';
 export { Example as margins } from './12_legend_margins';
+export { Example as singleSeries } from './14_single_series';

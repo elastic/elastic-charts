@@ -175,8 +175,14 @@ export class MockSeriesSpec {
     chartType: ChartType.Heatmap,
     specType: SpecType.Series,
     data: [],
-    colors: ['red', 'yellow', 'green'],
-    colorScale: ScaleType.Linear,
+    colorScale: {
+      type: 'bands',
+      bands: [
+        { start: 0, end: 10, color: 'red' },
+        { start: 10, end: 20, color: 'yellow' },
+        { start: 20, end: 30, color: 'green' },
+      ],
+    },
     xAccessor: ({ x }: { x: string | number }) => x,
     yAccessor: ({ y }: { y: string | number }) => y,
     xScaleType: X_SCALE_DEFAULT.type,

@@ -13,20 +13,10 @@ import { Point } from '../../../../../utils/point';
 import { renderRect } from '../primitives/rect';
 
 const DEFAULT_DEBUG_FILL: Fill = {
-  color: {
-    r: 238,
-    g: 130,
-    b: 238,
-    opacity: 0.2,
-  },
+  color: { r: 238, g: 130, b: 238, opacity: 0.2 },
 };
 const DEFAULT_DEBUG_STROKE: Stroke = {
-  color: {
-    r: 0,
-    g: 0,
-    b: 0,
-    opacity: 0.2,
-  },
+  color: { r: 0, g: 0, b: 0, opacity: 0.2 },
   width: 1,
 };
 
@@ -41,17 +31,7 @@ export function renderDebugRect(
   withContext(ctx, () => {
     ctx.translate(rect.x, rect.y);
     ctx.rotate(degToRad(rotation));
-    renderRect(
-      ctx,
-      {
-        ...rect,
-        x: 0,
-        y: 0,
-      },
-      fill,
-      stroke,
-      true,
-    );
+    renderRect(ctx, { ...rect, x: 0, y: 0 }, fill, stroke, true);
   });
 }
 
@@ -70,15 +50,6 @@ export function renderDebugRectCenterRotated(
     ctx.translate(x, y);
     ctx.rotate(degToRad(rotation));
     ctx.translate(-x, -y);
-    renderRect(
-      ctx,
-      {
-        ...rect,
-        x: x - rect.width / 2,
-        y: y - rect.height / 2,
-      },
-      fill,
-      stroke,
-    );
+    renderRect(ctx, { ...rect, x: x - rect.width / 2, y: y - rect.height / 2 }, fill, stroke);
   });
 }

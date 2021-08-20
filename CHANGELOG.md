@@ -1,3 +1,24 @@
+## [34.1.1](https://github.com/elastic/elastic-charts/compare/v34.1.0...v34.1.1) (2021-08-20)
+
+
+### Bug Fixes
+
+* **heatmap:** reuse the valueFormatter in legend ([#1318](https://github.com/elastic/elastic-charts/issues/1318)) ([e6a75d7](https://github.com/elastic/elastic-charts/commit/e6a75d759ea72b2d3b18f977d0e7bc5ff7e75177))
+
+# [34.1.0](https://github.com/elastic/elastic-charts/compare/v34.0.0...v34.1.0) (2021-08-19)
+
+
+### Bug Fixes
+
+* **goal:** tooltip actual color ([#1302](https://github.com/elastic/elastic-charts/issues/1302)) ([dbe9d36](https://github.com/elastic/elastic-charts/commit/dbe9d36db891be44ff14deb35a02dbebc3926a48))
+* **heatmap:** improve legend item ([#1317](https://github.com/elastic/elastic-charts/issues/1317)) ([49c35ce](https://github.com/elastic/elastic-charts/commit/49c35ce2f62c3ea861c184fc1b68693ab739eaad))
+* **legend:** no truncation with single value ([#1316](https://github.com/elastic/elastic-charts/issues/1316)) ([7ec8a9f](https://github.com/elastic/elastic-charts/commit/7ec8a9fa60d4ccdbfe941b16168d29443c4b034a))
+
+
+### Features
+
+* **goal:** optional target tick ([#1301](https://github.com/elastic/elastic-charts/issues/1301)) ([88adf22](https://github.com/elastic/elastic-charts/commit/88adf22c5a9e6a6c0917e57e4c9b464a097491ab))
+
 # [34.0.0](https://github.com/elastic/elastic-charts/compare/v33.2.4...v34.0.0) (2021-08-16)
 
 
