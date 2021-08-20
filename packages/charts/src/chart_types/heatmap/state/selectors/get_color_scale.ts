@@ -22,4 +22,4 @@ export type ColorScale = (value: number) => Color;
 export const getColorScale = createCustomCachedSelector([getHeatmapSpecSelector], (spec): {
   scale: ColorScale;
   bands: Required<ColorBand>[];
-} => getBandsColorScale(spec.colorScale));
+} => getBandsColorScale(spec.colorScale, spec.valueFormatter));
