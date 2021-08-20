@@ -40,11 +40,11 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
   if (!initialized || dragShape === null) return null;
 
   const maskId = `echHighlighterMask__${chartId}`;
-
   return (
     <svg className="echHighlighter" width="100%" height="100%">
       <defs>
         <mask id={maskId}>
+          {/* the entire chart */}
           {brushMask.visible && (
             <rect
               x={0}
@@ -56,6 +56,7 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
           )}
           {brushArea.visible && (
             <>
+              {/* the rectangle box */}
               <rect
                 x={dragShape.x}
                 y={dragShape.y}
@@ -63,6 +64,7 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
                 height={dragShape.height}
                 fill={brushArea.fill}
               />
+              {/* the left axis labels */}
               <rect
                 x={0}
                 y={dragShape.y}
@@ -75,6 +77,7 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
         </mask>
       </defs>
       <g>
+        {/* the entire chart */}
         {brushMask.visible && (
           <rect
             x={0}
@@ -87,6 +90,7 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
         )}
         {brushArea.visible && (
           <>
+            {/* top line for the box */}
             <line
               x1={dragShape.x}
               y1={dragShape.y}
@@ -95,6 +99,7 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
               stroke={brushArea.stroke}
               strokeWidth={brushArea.strokeWidth}
             />
+            {/* bottom line */}
             <line
               x1={dragShape.x}
               y1={dragShape.y + dragShape.height}
@@ -103,6 +108,7 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
               stroke={brushArea.stroke}
               strokeWidth={brushArea.strokeWidth}
             />
+            {/* left line */}
             <line
               x1={dragShape.x}
               y1={dragShape.y}
@@ -111,6 +117,7 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
               stroke={brushArea.stroke}
               strokeWidth={brushArea.strokeWidth}
             />
+            {/* right line */}
             <line
               x1={dragShape.x + dragShape.width}
               y1={dragShape.y}

@@ -41,7 +41,8 @@ export class IndexedGeometrySpatialMap {
 
   set(points: PointGeometry[]) {
     this.maxRadius = Math.max(this.maxRadius, ...points.map(({ radius }) => radius));
-    this.pointGeometries.push(...points);
+    const { pointGeometries } = this;
+    points.forEach((p) => pointGeometries.push(p));
     this.points.push(
       ...points.map<IndexedGeometrySpatialMapPoint>(({ x, y }) => {
         // TODO: handle coincident points better
@@ -81,7 +82,7 @@ export class IndexedGeometrySpatialMap {
         // Set next starting search index for faster lookup
         this.searchStartIndex = index;
         elements.push(geometry);
-        elements.push(...this.getRadialNeighbors(index, point, new Set([index])));
+        this.getRadialNeighbors(index, point, new Set([index])).forEach((g) => elements.push(g));
       }
     }
 
@@ -114,7 +115,7 @@ export class IndexedGeometrySpatialMap {
 
         if (getDistance(geometry, point) < Math.min(this.maxRadius, DEFAULT_HIGHLIGHT_PADDING)) {
           // Gets neighbors based on relation to maxRadius
-          acc.push(...this.getRadialNeighbors(i, point, visitedIndices));
+          this.getRadialNeighbors(i, point, visitedIndices).forEach((g) => acc.push(g));
         }
       }
 

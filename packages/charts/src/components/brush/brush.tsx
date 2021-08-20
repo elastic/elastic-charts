@@ -78,6 +78,28 @@ class BrushToolComponent extends React.Component<Props> {
     }
   }
 
+  render() {
+    const { initialized, isBrushAvailable, isBrushing, projectionContainer, zIndex } = this.props;
+    if (!initialized || !isBrushAvailable || !isBrushing) {
+      this.ctx = null;
+      return null;
+    }
+    const { width, height } = projectionContainer;
+    return (
+      <canvas
+        ref={this.canvasRef}
+        className="echBrushTool"
+        width={width * this.devicePixelRatio}
+        height={height * this.devicePixelRatio}
+        style={{
+          width,
+          height,
+          zIndex,
+        }}
+      />
+    );
+  }
+
   private drawCanvas = () => {
     const { brushArea, mainProjectionArea, fillColor } = this.props;
     const { ctx } = this;
@@ -112,28 +134,6 @@ class BrushToolComponent extends React.Component<Props> {
   private tryCanvasContext() {
     const canvas = this.canvasRef.current;
     this.ctx = canvas && canvas.getContext('2d');
-  }
-
-  render() {
-    const { initialized, isBrushAvailable, isBrushing, projectionContainer, zIndex } = this.props;
-    if (!initialized || !isBrushAvailable || !isBrushing) {
-      this.ctx = null;
-      return null;
-    }
-    const { width, height } = projectionContainer;
-    return (
-      <canvas
-        ref={this.canvasRef}
-        className="echBrushTool"
-        width={width * this.devicePixelRatio}
-        height={height * this.devicePixelRatio}
-        style={{
-          width,
-          height,
-          zIndex,
-        }}
-      />
-    );
   }
 }
 

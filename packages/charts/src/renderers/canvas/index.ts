@@ -9,6 +9,14 @@
 import { Rect } from '../../geoms/types';
 import { ClippedRanges } from '../../utils/geometry';
 
+/** @internal */
+export type CanvasRenderer = (ctx: CanvasRenderingContext2D) => void;
+
+/** @internal */
+export function isCanvasRenderer(thing: unknown): thing is CanvasRenderer {
+  return thing instanceof Function; // can't / needn't check more than this for it to pass
+}
+
 /**
  * withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
  * The idea is that you just set what's needed for the enclosed snippet, which may temporarily override values in the
@@ -18,7 +26,7 @@ import { ClippedRanges } from '../../utils/geometry';
  * @param fun
  * @internal
  */
-export function withContext(ctx: CanvasRenderingContext2D, fun: (context: CanvasRenderingContext2D) => void) {
+export function withContext(ctx: CanvasRenderingContext2D, fun: CanvasRenderer) {
   ctx.save();
   fun(ctx);
   ctx.restore();
@@ -34,17 +42,12 @@ export function clearCanvas(ctx: CanvasRenderingContext2D) {
 
 // order of rendering is important; determined by the order of layers in the array
 /** @internal */
-export function renderLayers(ctx: CanvasRenderingContext2D, layers: Array<(ctx: CanvasRenderingContext2D) => void>) {
+export function renderLayers(ctx: CanvasRenderingContext2D, layers: Array<CanvasRenderer>) {
   layers.forEach((renderLayer) => renderLayer(ctx));
 }
 
 /** @internal */
-export function withClip(
-  ctx: CanvasRenderingContext2D,
-  clippings: Rect,
-  fun: (ctx: CanvasRenderingContext2D) => void,
-  shouldClip = true,
-) {
+export function withClip(ctx: CanvasRenderingContext2D, clippings: Rect, fun: CanvasRenderer, shouldClip = true) {
   withContext(ctx, () => {
     if (shouldClip) {
       const { x, y, width, height } = clippings;
@@ -52,9 +55,7 @@ export function withClip(
       ctx.rect(x, y, width, height);
       ctx.clip();
     }
-    withContext(ctx, () => {
-      fun(ctx);
-    });
+    withContext(ctx, () => fun(ctx));
   });
 }
 
@@ -65,34 +66,26 @@ export function withClip(
 export function withClipRanges(
   ctx: CanvasRenderingContext2D,
   clippedRanges: ClippedRanges,
-  clippings: Rect,
-  negate = false,
-  fun: (ctx: CanvasRenderingContext2D) => void,
+  { width, height, y }: Rect,
+  negate: boolean,
+  fun: CanvasRenderer,
 ) {
   withContext(ctx, () => {
-    const { length } = clippedRanges;
-    const { width, height, y } = clippings;
-    ctx.beginPath();
-    if (negate) {
-      clippedRanges.forEach(([x0, x1]) => {
-        ctx.rect(x0, y, x1 - x0, height);
-      });
-    } else {
-      if (length > 0) {
-        ctx.rect(0, -0.5, clippedRanges[0][0], height);
-        const lastX = clippedRanges[length - 1][1];
+    if (clippedRanges.length > 0) {
+      ctx.beginPath();
+      if (negate) {
+        clippedRanges.forEach(([x0, x1]) => ctx.rect(x0, y, x1 - x0, height));
+      } else {
+        const firstX = clippedRanges[0][0];
+        const lastX = clippedRanges[clippedRanges.length - 1][1];
+        ctx.rect(0, -0.5, firstX, height);
         ctx.rect(lastX, y, width - lastX, height);
+        clippedRanges.forEach(([, x0], i) => {
+          if (i < clippedRanges.length - 1) ctx.rect(x0, y, clippedRanges[i + 1][0] - x0, height);
+        });
       }
-
-      if (length > 1) {
-        for (let i = 1; i < length; i++) {
-          const [, x0] = clippedRanges[i - 1];
-          const [x1] = clippedRanges[i];
-          ctx.rect(x0, y, x1 - x0, height);
-        }
-      }
+      ctx.clip();
     }
-    ctx.clip();
     fun(ctx);
   });
 }
