@@ -159,6 +159,8 @@ jobs:
         with:
           name: sb-output
           path: .out
+          if-no-files-found: error
+          retention-days: 1
 
   deploy:
     name: Deploy Storybook
@@ -169,6 +171,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: sb-output
+          path: .out
 
       - name: Deploy master
         if: github.ref == 'refs/heads/master'
