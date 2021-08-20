@@ -1216,7 +1216,6 @@ describe('Clickable annotations', () => {
           id: 'line_annotation',
           domainType: AnnotationDomainType.XDomain,
           dataValues: [{ dataValue: 2, details: 'foo' }],
-          // marker: <div /> ,
           markerPosition: Position.Top,
         }),
       ],

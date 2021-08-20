@@ -48,7 +48,7 @@ export const getPointerCursorSelector = createCustomCachedSelector(
       return 'pointer';
     }
 
-    // no pointer if there is a onAnnotionClick but there is a highlighted geometry
+    // no pointer if there is a onAnnotationClick but there is a highlighted geometry
     if (highlightedGeometries.length > 0 && (!settingsSpec.onElementClick || !settingsSpec.onElementOver)) {
       return DEFAULT_CSS_CURSOR;
     }

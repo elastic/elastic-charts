@@ -7,7 +7,7 @@
  */
 
 import { createPopper, Instance } from '@popperjs/core';
-import { useRef, useEffect, useCallback, ReactNode, useMemo, MouseEventHandler } from 'react';
+import { useRef, useEffect, useCallback, ReactNode, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 
 import { mergePartial, isDefined } from '../../utils/common';
@@ -44,10 +44,6 @@ type PortalTooltipProps = {
    * Chart Id to add new anchor for each chart on the page
    */
   chartId: string;
-  /**
-   * onClickHandler attached to the portal
-   */
-  onClickHandler?: MouseEventHandler<Element>;
 };
 
 function addToPadding(padding: Partial<Padding> | number = 0, extra: number = 0): Padding | number | undefined {
