@@ -64,6 +64,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     renderer: 'canvas',
   };
 
+  // just a comment to test
+
   private unsubscribeToStore: Unsubscribe;
 
   private chartStore: Store<GlobalChartState>;
