@@ -9,7 +9,13 @@
 import { Selector } from 'reselect';
 
 import { ChartType } from '../../..';
-import { ProjectedValues, SettingsSpec } from '../../../../specs';
+import {
+  AnnotationType,
+  LineAnnotationDatum,
+  ProjectedValues,
+  RectAnnotationDatum,
+  SettingsSpec,
+} from '../../../../specs';
 import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
@@ -58,7 +64,7 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
           return;
         }
         const elementClickFired = tryFiringOnElementClick(indexedGeometries, onElementClick);
-        if (onAnnotationClick && tooltipState) {
+        if (!elementClickFired && onAnnotationClick && tooltipState) {
           tryFiringOnAnnotationClick(tooltipState, onAnnotationClick);
         } else if (!elementClickFired) {
           tryFiringOnProjectionClick(values, onProjectionClick);
@@ -100,25 +106,20 @@ function tryFiringOnAnnotationClick(
   onAnnotationClick: SettingsSpec['onAnnotationClick'],
 ): boolean {
   if (annotationState && onAnnotationClick) {
-    const rectangularAnnotations = [];
-    const lineAnnotations = [];
-    if (annotationState.annotationType === 'rectangle') {
-      rectangularAnnotations.push({
+    const rects = [];
+    const lines = [];
+    if (annotationState.annotationType === AnnotationType.Rectangle) {
+      rects.push({
         id: annotationState.id,
-        datum: {
-          // @ts-ignore
-          coordinates: annotationState.datum.coordinates,
-          details: annotationState.datum.details,
-        },
+        datum: annotationState.datum as RectAnnotationDatum,
       });
-    } else if (annotationState.annotationType === 'line') {
-      lineAnnotations.push({
+    } else if (annotationState.annotationType === AnnotationType.Line) {
+      lines.push({
         id: annotationState.id,
-        // @ts-ignore
-        datum: { dataValue: annotationState.datum.dataValue, details: annotationState.datum.details },
+        datum: annotationState.datum as LineAnnotationDatum,
       });
     }
-    onAnnotationClick({ rects: rectangularAnnotations, lines: lineAnnotations });
+    onAnnotationClick({ rects, lines });
     return true;
   }
   return false;

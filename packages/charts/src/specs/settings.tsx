@@ -158,8 +158,10 @@ export type PointerUpdateListener = (event: PointerEvent) => void;
 export type RenderChangeListener = (isRendered: boolean) => void;
 /** @public */
 export type BasicListener = () => undefined | void;
-type RectAnnotationEvent = { id: SpecId; datum: RectAnnotationDatum };
-type LineAnnotationEvent = { id: SpecId; datum: LineAnnotationDatum };
+/** @public */
+export type RectAnnotationEvent = { id: SpecId; datum: RectAnnotationDatum };
+/** @public */
+export type LineAnnotationEvent = { id: SpecId; datum: LineAnnotationDatum };
 /** @public */
 export type AnnotationClickListener = (annotations: {
   rects: RectAnnotationEvent[];

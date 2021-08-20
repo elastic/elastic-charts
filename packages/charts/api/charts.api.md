@@ -6,7 +6,6 @@
 
 import { $Values } from 'utility-types';
 import { ComponentType } from 'react';
-import { MouseEventHandler } from 'react';
 import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
 import { ReactNode } from 'react';
@@ -280,7 +279,6 @@ export interface BaseAnnotationSpec<T extends typeof AnnotationType.Rectangle | 
     dataValues: D[];
     groupId: GroupId;
     hideTooltips?: boolean;
-    id: string;
     // (undocumented)
     specType: typeof SpecType.Annotation;
     style?: Partial<S>;
@@ -1254,6 +1252,12 @@ export interface LineAnnotationDatum {
 }
 
 // @public (undocumented)
+export type LineAnnotationEvent = {
+    id: SpecId;
+    datum: LineAnnotationDatum;
+};
+
+// @public (undocumented)
 export type LineAnnotationSpec = BaseAnnotationSpec<typeof AnnotationType.Line, LineAnnotationDatum, LineAnnotationStyle> & {
     domainType: AnnotationDomainType;
     marker?: ReactNode | ComponentWithAnnotationDatum;
@@ -1621,12 +1625,17 @@ export interface RectAnnotationDatum {
 }
 
 // @public (undocumented)
+export type RectAnnotationEvent = {
+    id: SpecId;
+    datum: RectAnnotationDatum;
+};
+
+// @public (undocumented)
 export type RectAnnotationSpec = BaseAnnotationSpec<typeof AnnotationType.Rectangle, RectAnnotationDatum, RectAnnotationStyle> & {
     renderTooltip?: AnnotationTooltipFormatter;
     zIndex?: number;
     outside?: boolean;
     outsideDimension?: number;
-    onClickHandler?: MouseEventHandler<Element>;
 };
 
 // @public (undocumented)
@@ -2396,8 +2405,6 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // src/chart_types/heatmap/layout/types/config_types.ts:52:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:139:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
-// src/specs/settings.tsx:165:3 - (ae-forgotten-export) The symbol "RectAnnotationEvent" needs to be exported by the entry point index.d.ts
-// src/specs/settings.tsx:166:3 - (ae-forgotten-export) The symbol "LineAnnotationEvent" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
