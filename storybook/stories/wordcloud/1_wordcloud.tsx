@@ -246,7 +246,7 @@ export const Example = () => {
       );
   const fontStyle = template
     ? (startConfig.fontStyle as FontStyle)
-    : select('fontStyle', { normal: 'normal', italic: 'italic' }, startConfig.fontStyle as FontStyle);
+    : select<FontStyle>('fontStyle', { normal: 'normal', italic: 'italic' }, startConfig.fontStyle as FontStyle);
 
   const palette = template
     ? startConfig.palette
