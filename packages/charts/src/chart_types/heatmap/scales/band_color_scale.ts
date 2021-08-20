@@ -7,28 +7,35 @@
  */
 
 import { getPredicateFn } from '../../../common/predicate';
-import { Color } from '../../../utils/common';
+import { Color, safeFormat, ValueFormatter } from '../../../utils/common';
 import { ColorBand, HeatmapBandsColorScale } from '../specs/heatmap';
 import { ColorScale } from '../state/selectors/get_color_scale';
 
 const TRANSPARENT_COLOR: Color = 'rgba(0, 0, 0, 0)';
 
-function defaultColorBandFormatter(start: number, end: number) {
+function defaultColorBandFormatter(start: number, end: number, valueFormatter?: ValueFormatter) {
   const finiteStart = Number.isFinite(start);
   const finiteEnd = Number.isFinite(end);
-  return !finiteStart && finiteEnd ? `< ${end}` : finiteStart && !finiteEnd ? `≥ ${start}` : `${start} - ${end}`;
+  const startLabel = safeFormat(start, valueFormatter);
+  const endLabel = safeFormat(start, valueFormatter);
+  return !finiteStart && finiteEnd
+    ? `< ${endLabel}`
+    : finiteStart && !finiteEnd
+    ? `≥ ${startLabel}`
+    : `${startLabel} - ${endLabel}`;
 }
 
 /** @internal */
 export function getBandsColorScale(
   colorScale: HeatmapBandsColorScale,
+  valueFormatter?: ValueFormatter,
 ): { scale: ColorScale; bands: Required<ColorBand>[] } {
   const labelFormatter = colorScale.labelFormatter ?? defaultColorBandFormatter;
   const ascendingSortFn = getPredicateFn('numAsc', 'start');
   const bands = colorScale.bands
     .reduce<Required<ColorBand>[]>((acc, { start, end, color, label }) => {
       // admit only proper bands
-      if (start < end) acc.push({ start, end, color, label: label ?? labelFormatter(start, end) });
+      if (start < end) acc.push({ start, end, color, label: label ?? labelFormatter(start, end, valueFormatter) });
       return acc;
     }, [])
     .sort(ascendingSortFn);
