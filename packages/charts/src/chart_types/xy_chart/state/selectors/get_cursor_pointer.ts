@@ -36,7 +36,7 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     projectedValues,
     { chartDimensions },
     isBrushAvailable,
-    tooltipState,
+    annotationTooltipState,
   ): string => {
     const { x, y } = currentPointerPosition;
     // get positions relative to chart
@@ -50,12 +50,7 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     if (highlightedGeometries.length > 0 && (settingsSpec.onElementClick || settingsSpec.onElementOver)) {
       return 'pointer';
     }
-
-    // no pointer if there is a onAnnotationClick but there is a highlighted geometry
-    if (highlightedGeometries.length > 0 && (!settingsSpec.onElementClick || !settingsSpec.onElementOver)) {
-      return DEFAULT_CSS_CURSOR;
-    }
-    if (settingsSpec.onAnnotationClick && tooltipState) {
+    if (highlightedGeometries.length === 0 && settingsSpec.onAnnotationClick && annotationTooltipState) {
       return 'pointer';
     }
     if (projectedValues !== null && settingsSpec.onProjectionClick) {

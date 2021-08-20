@@ -68,6 +68,7 @@ function getAnnotationTooltipState(
     annotationDimensions,
     hoveredDOMElement,
   );
+
   if (hoveredTooltip) {
     return hoveredTooltip;
   }
