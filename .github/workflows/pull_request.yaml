@@ -134,6 +134,7 @@ jobs:
   build-sb:
     name: Build Storybook
     needs: setup
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       # ----- Common setup from cache -----
