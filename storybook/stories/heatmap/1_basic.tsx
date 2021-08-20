@@ -119,8 +119,8 @@ export const Example = () => {
         colorScale={{
           type: 'bands',
           bands: [
-            { start: -Infinity, end: 3, color: '#d2e9f7' },
-            { start: 3, end: 25, color: '#8bc8fb' },
+            { start: -Infinity, end: 3.5, color: '#d2e9f7' },
+            { start: 3.5, end: 25, color: '#8bc8fb' },
             { start: 25, end: 50, color: '#fdec25' },
             { start: 50, end: 75, color: '#fba740' },
             { start: 75, end: Infinity, color: '#fe5050' },
@@ -130,7 +130,7 @@ export const Example = () => {
         xAccessor={(d) => d.time}
         yAccessor={(d) => d.laneLabel}
         valueAccessor={(d) => d.value}
-        valueFormatter={(d) => d.toFixed(0.2)}
+        valueFormatter={(d) => `${Number(d.toFixed(2))}℃`}
         ySortPredicate="numAsc"
         xScaleType={ScaleType.Time}
         config={config}

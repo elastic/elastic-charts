@@ -1,3 +1,10 @@
+## [34.1.1](https://github.com/elastic/elastic-charts/compare/v34.1.0...v34.1.1) (2021-08-20)
+
+
+### Bug Fixes
+
+* **heatmap:** reuse the valueFormatter in legend ([#1318](https://github.com/elastic/elastic-charts/issues/1318)) ([e6a75d7](https://github.com/elastic/elastic-charts/commit/e6a75d759ea72b2d3b18f977d0e7bc5ff7e75177))
+
 # [34.1.0](https://github.com/elastic/elastic-charts/compare/v34.0.0...v34.1.0) (2021-08-19)
 
 
