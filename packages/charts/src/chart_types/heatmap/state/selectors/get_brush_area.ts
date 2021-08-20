@@ -9,10 +9,12 @@
 import { BrushAxis } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getBrushedHighlightedShapesSelector } from './get_brushed_highlighted_shapes';
+import { getGridHeightParamsSelector } from './get_grid_full_height';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
 const getIsDragging = (state: GlobalChartState) => state.interactions.pointer.dragging;
@@ -24,22 +26,37 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     getIsDragging,
     getMouseDownPosition,
     getCurrentPointerPosition,
-    getChartRotationSelector,
     getSettingsSpecSelector,
     computeChartDimensionsSelector,
+    getBrushedHighlightedShapesSelector,
+    getGridHeightParamsSelector,
   ],
-  (isDragging, mouseDownPosition, end, chartRotation, { brushAxis }, chartDimensions): Dimensions | null => {
-    if (!isDragging || !mouseDownPosition) {
+  (isDragging, mouseDownPosition, end, { brushAxis }, chartDimensions, dragShape, gridParams): Dimensions | null => {
+    if (!isDragging || !mouseDownPosition || !dragShape) {
       return null;
     }
     const start = {
       x: mouseDownPosition.position.x - chartDimensions.left,
       y: mouseDownPosition.position.y,
     };
+
+    const clampedEndY = clamp(end.y, 0, gridParams.gridCellHeight * gridParams.pageSize);
+
     switch (brushAxis) {
       case BrushAxis.Both:
+        return {
+          top: start.y,
+          left: start.x,
+          width: end.x - start.x - chartDimensions.left,
+          height: clampedEndY - start.y,
+        };
       default:
-        return { top: start.y, left: start.x, width: end.x - start.x - chartDimensions.left, height: end.y - start.y };
+        return {
+          top: start.y,
+          left: start.x,
+          width: end.x - start.x - chartDimensions.left,
+          height: clampedEndY - start.y,
+        };
     }
   },
 );

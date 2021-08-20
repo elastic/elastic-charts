@@ -41,6 +41,9 @@ export const Example = () => {
 
   const config: RecursivePartial<Config> = useMemo(
     () => ({
+      brushTool: {
+        visible: true,
+      },
       grid: {
         cellHeight: {
           min: 20,
