@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { MouseEventHandler, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
@@ -921,10 +921,6 @@ export type RectAnnotationSpec = BaseAnnotationSpec<
    * Dimension, either height or width, of outside annotation
    */
   outsideDimension?: number;
-  /**
-   * Allows the consumer to pass an on click event for the annotation
-   */
-  onClickHandler?: MouseEventHandler<Element>;
 };
 
 /**
