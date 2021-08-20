@@ -70,8 +70,8 @@ const commonDefaults = {
 export const defaultGoalSpec = {
   ...commonDefaults,
   bands: [50, 75, 100],
-  bandFillColor: ({ value, highestValue, lowestValue }: BandFillColorAccessorInput, colorScale: chroma.Scale) => {
-    const func = colorScale(chroma.brewer.Greens).gamma(0.5).domain([highestValue, lowestValue]);
+  bandFillColor: ({ value, highestValue, lowestValue }: BandFillColorAccessorInput) => {
+    const func = chroma.scale(chroma.brewer.Greens).gamma(0.5).domain([highestValue, lowestValue]);
     return func(value).css();
   },
   tickValueFormatter: ({ value }: BandFillColorAccessorInput) => String(value),

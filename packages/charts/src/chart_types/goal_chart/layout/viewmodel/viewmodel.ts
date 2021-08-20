@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import chroma from 'chroma-js';
-
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSpec } from '../../specs';
@@ -72,10 +70,7 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     actual,
     bands: bands.map((value: number, index: number) => ({
       value,
-      fillColor: bandFillColor(
-        { value, index, ...callbackArgs },
-        (chroma.scale.bind(chroma) as unknown) as chroma.Scale,
-      ),
+      fillColor: bandFillColor({ value, index, ...callbackArgs }),
       text: bandLabels,
     })),
     ticks: ticks.map((value: number, index: number) => ({

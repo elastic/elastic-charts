@@ -211,7 +211,7 @@ export const BandedAccessorType: Readonly<{
 export type BandedAccessorType = $Values<typeof BandedAccessorType>;
 
 // @alpha (undocumented)
-export type BandFillColorAccessor = (input: BandFillColorAccessorInput, colorScale: chroma.Scale) => Color;
+export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color;
 
 // @alpha (undocumented)
 export interface BandFillColorAccessorInput {

@@ -30,7 +30,7 @@ export interface BandFillColorAccessorInput {
 }
 
 /** @alpha */
-export type BandFillColorAccessor = (input: BandFillColorAccessorInput, colorScale: chroma.Scale) => Color;
+export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color;
 
 /** @alpha */
 export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
