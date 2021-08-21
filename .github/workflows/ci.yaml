@@ -25,7 +25,7 @@ jobs:
           node-version: ${{ env.ECH_NODE_VERSION }}
       - name: Check cache
         id: cacheCheck
-        uses: ech/npm_cache_check@v1
+        uses: ./.github/actions/npm_cache_check
       - name: Install and cache node_modules
         if: steps.cacheCheck.outputs.cacheHit == false
         uses: bahmutov/npm-install@v1
