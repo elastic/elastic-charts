@@ -26,19 +26,23 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Validate check runs
         id: validate
+        if: ${{ success() }}
         shell: python
+        # TODO: find a better way to do this, the check-runs api has no usable id other than name
         run: |
           count = ${{ fromJson(steps.check.outputs.data).total_count }}
-          statusStr = "${{ join(fromJson(steps.check.outputs.data).check_runs.*.status) }}"
-          conclusionStr = "${{ join(fromJson(steps.check.outputs.data).check_runs.*.conclusion) }}"
-          isComplete = all(status == "completed" for status in statusStr.split(","))
-          isSuccess = all(conclusion == "success" for conclusion in conclusionStr.split(","))
+          checks = ${{ toJson(fromJson(steps.check.outputs.data).check_runs) }}
+          allSuccess = True
 
-          print(f"::set-output name=allSuccess::{count >= 7 and isComplete and isSuccess}")
+          for check in checks:
+            if check["name"] in ["Eslint", Prettier", "Unit tests", "API Changes"]:
+                allSuccess = allSuccess and check["status"] == "completed" and check["conclusion"] == "success"
+
+          print(f"::set-output name=allSuccess::{str(count >= 7 and allSuccess).lower()}")
       - run: echo ${{ steps.validate.outputs.allSuccess }}
 
   checks:
-    name: Checks
+    name: Release Checks
     runs-on: ubuntu-latest
     needs: status
     if: needs.status.outputs.allSuccess == false
