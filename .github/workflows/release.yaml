@@ -35,7 +35,7 @@ jobs:
           allSuccess = True
 
           for check in checks:
-            if check["name"] in ["Eslint", Prettier", "Unit tests", "API Changes"]:
+            if check["name"] in ["Eslint", "Prettier", "Unit tests", "API Changes"]:
                 allSuccess = allSuccess and check["status"] == "completed" and check["conclusion"] == "success"
 
           print(f"::set-output name=allSuccess::{str(count >= 7 and allSuccess).lower()}")
