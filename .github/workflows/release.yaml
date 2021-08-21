@@ -40,25 +40,12 @@ jobs:
                 allSuccess = allSuccess and check["status"] == "completed" and check["conclusion"] == "success"
 
           print(f"::set-output name=allSuccess::{str(count >= 7 and allSuccess).lower()}")
-      - run: echo ${{ steps.validate.outputs.allSuccess }}
-      - run: echo ${{ steps.validate.outputs.allSuccess == 'true' }}
-      - run: echo ${{ steps.validate.outputs.allSuccess == true }}
-      - run: echo ${{ steps.validate.outputs.allSuccess == 1 }}
-      - run: echo ${{ steps.validate.outputs.allSuccess == 'false' }}
-      - run: echo ${{ steps.validate.outputs.allSuccess == false }}
-      - run: echo ${{ steps.validate.outputs.allSuccess == 0 }}
 
   test:
     runs-on: ubuntu-latest
     needs: status
     steps:
-      - run: echo ${{ needs.status.outputs.allSuccess }}
-      - run: echo ${{ needs.status.outputs.allSuccess == 'true' }}
-      - run: echo ${{ needs.status.outputs.allSuccess == true }}
-      - run: echo ${{ needs.status.outputs.allSuccess == 1 }}
-      - run: echo ${{ needs.status.outputs.allSuccess == 'false' }}
-      - run: echo ${{ needs.status.outputs.allSuccess == false }}
-      - run: echo ${{ needs.status.outputs.allSuccess == 0 }}
+      - run: echo ${{ toJson(needs.status) }}
 
   checks:
     name: Release Checks
