@@ -1,24 +1,24 @@
 "use strict";
 
-var hasha = require('hasha');
-
 var os = require('os');
 
 var path = require('path');
 
+var cache = require('@actions/cache');
+
 var core = require('@actions/core');
 
-var cache = require('@actions/cache');
+var hasha = require('hasha');
 
 var cwd = process.cwd();
 var yarnFilename = path.join(cwd, 'yarn.lock');
 var lockHash = hasha.fromFileSync(yarnFilename);
 
 if (!lockHash) {
-  throw new Error("could not compute hash from file \"".concat(lockInfo.lockFilename, "\""));
+  throw new Error("could not compute hash from file \"".concat(yarnFilename, "\""));
 }
 
-core.debug("lock filename ".concat(lockInfo.lockFilename));
+core.debug("lock filename ".concat(yarnFilename));
 core.debug("file hash ".concat(lockHash));
 var homeDirectory = os.homedir();
 var platformAndArch = "".concat(process.platform, "-").concat(process.arch);
