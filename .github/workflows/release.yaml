@@ -1,0 +1,91 @@
+name: Publish a Release
+
+on:
+  workflow_dispatch:
+    branches:
+      - master
+
+env:
+  ECH_NODE_VERSION: '14.x'
+
+jobs:
+  status:
+    name: Check status
+    runs-on: ubuntu-latest
+    outputs:
+      allSuccess: ${{ steps.validate.outputs.allSuccess }}
+    steps:
+      - name: Get current check runs
+        id: check
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/{repo}/commits/{ref}/check-runs
+          repo: ${{ github.repository }}
+          ref: ${{ github.sha }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Validate check runs
+        id: validate
+        shell: python
+        run: |
+          checks = ${{ fromJson(steps.check.outputs.data).check_runs }}
+          allSuccess = True;
+
+          for check in checks:
+              allSuccess = allSuccess and check["status"] == "completed" and check["conclusion"] == "success"
+
+          print(f"::set-output name=allSuccess::{allSuccess}")
+
+  checks:
+    name: Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.ECH_NODE_VERSION }}
+      - name: Install node_modules
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+
+      - name: Lint check
+        run: yarn lint
+      - name: Prettier check
+        run: yarn prettier:check
+      - name: TimeZone testing
+        run: yarn test:tz --ci
+      - name: Testing
+        run: yarn test --ci
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.ECH_NODE_VERSION }}
+      - name: Install node_modules
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+
+      - name: Build library
+        run: yarn build
+
+      # - name: Release
+      #   env:
+      #     GH_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      #   run: yarn semantic-release
