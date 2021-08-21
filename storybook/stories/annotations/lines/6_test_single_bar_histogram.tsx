@@ -34,7 +34,7 @@ export const Example = () => {
     },
   ];
 
-  const style: LineAnnotationStyle = {
+  const style: Partial<LineAnnotationStyle> = {
     line: {
       strokeWidth: 3,
       stroke: '#f00',

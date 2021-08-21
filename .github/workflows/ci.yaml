@@ -1,4 +1,4 @@
-name: '@elastic/charts - CI'
+name: 'CI Checks'
 
 concurrency:
   group: ${{ github.head_ref || github.ref }}
@@ -7,13 +7,7 @@ concurrency:
 env:
   ECH_NODE_VERSION: '14.x'
 
-on:
-  push:
-    branches:
-      - "!gh-pages"
-  pull_request:
-    branches:
-      - "!gh-pages"
+on: [push, pull_request]
 
 jobs:
   setup:
@@ -136,10 +130,10 @@ jobs:
       - name: Testing
         run: yarn test --coverage --ci
 
-
   build-sb:
     name: Build Storybook
     needs: setup
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       # ----- Common setup from cache -----
@@ -164,6 +158,8 @@ jobs:
         with:
           name: sb-output
           path: .out
+          if-no-files-found: error
+          retention-days: 1
 
   deploy:
     name: Deploy Storybook
@@ -174,6 +170,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: sb-output
+          path: .out
 
       - name: Deploy master
         if: github.ref == 'refs/heads/master'

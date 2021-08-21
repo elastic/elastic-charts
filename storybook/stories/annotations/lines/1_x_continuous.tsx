@@ -41,7 +41,7 @@ export const Example = () => {
   const data = arrayKnobs('data values', [2.5, 7.2]);
   const dataValues = generateAnnotationData(data);
 
-  const style: LineAnnotationStyle = {
+  const style: Partial<LineAnnotationStyle> = {
     line: {
       strokeWidth: 3,
       stroke: '#f00',

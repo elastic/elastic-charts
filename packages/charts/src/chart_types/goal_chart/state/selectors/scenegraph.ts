@@ -8,17 +8,50 @@
 
 import { mergePartial, RecursivePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
-import { config as defaultConfig } from '../../layout/config/config';
+import { PartialTheme, Theme } from '../../../../utils/themes/theme';
 import { Config } from '../../layout/types/config_types';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { GoalSpec } from '../../specs';
 
+/**
+ * Helper to map old config to theme
+ * remove when `spec.config` is fully deprecated
+ */
+const mapConfigToTheme = ({
+  margin,
+  backgroundColor,
+  minFontSize,
+  maxFontSize,
+  fontFamily,
+}: RecursivePartial<Config> = {}): PartialTheme => ({
+  chartMargins: margin,
+  background: {
+    color: backgroundColor,
+  },
+  goal: {
+    minFontSize,
+    maxFontSize,
+    tickLabel: {
+      fontFamily,
+    },
+    majorLabel: {
+      fontFamily,
+    },
+    minorLabel: {
+      fontFamily,
+    },
+  },
+});
+
 /** @internal */
-export function render(spec: GoalSpec, parentDimensions: Dimensions): ShapeViewModel {
-  const { width, height } = parentDimensions;
-  const { config: specConfig } = spec;
-  const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
-  const config: Config = mergePartial(defaultConfig, partialConfig, { mergeOptionalPartialValues: true });
-  return shapeViewModel(spec, config);
+export function render(spec: GoalSpec, parentDimensions: Dimensions, theme: Theme): ShapeViewModel {
+  // override theme and spec with old deprecated config options
+  const mergedTheme: Theme = mergePartial(theme, mapConfigToTheme(spec.config), { mergeOptionalPartialValues: true });
+  const mergedSpec: GoalSpec = mergePartial(spec, {
+    angleEnd: spec?.config?.angleEnd,
+    angleStart: spec?.config?.angleStart,
+  });
+
+  return shapeViewModel(mergedSpec, mergedTheme, parentDimensions);
 }
