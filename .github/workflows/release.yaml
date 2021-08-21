@@ -41,12 +41,6 @@ jobs:
 
           print(f"::set-output name=allSuccess::{str(count >= 7 and allSuccess).lower()}")
 
-  test:
-    runs-on: ubuntu-latest
-    needs: status
-    steps:
-      - run: echo ${{ toJson(needs.status) }}
-
   checks:
     name: Release Checks
     runs-on: ubuntu-latest
@@ -75,9 +69,18 @@ jobs:
       - name: Testing
         run: yarn test --ci
 
+  test:
+    runs-on: ubuntu-latest
+    needs: status
+    steps:
+      - run: echo ${{ needs.status.outputs.allSuccess || needs.checks.result == "success" }}
+      - run: echo ${{ needs.status.outputs.allSuccess }}
+      - run: echo ${{ needs.checks.result == "success" }}
+
   release:
     name: Release
-    needs: checks
+    needs: [status, checks]
+    if: ${{ needs.status.outputs.allSuccess || needs.checks.result == "success" }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
