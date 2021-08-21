@@ -30,8 +30,9 @@ jobs:
         shell: python
         # TODO: find a better way to do this, the check-runs api has no usable id other than name
         run: |
+          import json
           count = ${{ fromJson(steps.check.outputs.data).total_count }}
-          checks = ${{ toJson(fromJson(steps.check.outputs.data).check_runs) }}
+          checks = json.loads("""${{ toJson(fromJson(steps.check.outputs.data).check_runs) }}""")
           allSuccess = True
 
           for check in checks:
