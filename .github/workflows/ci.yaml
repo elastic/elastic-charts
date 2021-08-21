@@ -25,6 +25,8 @@ jobs:
           node-version: ${{ env.ECH_NODE_VERSION }}
       - name: Check cache
         id: cacheCheck
+        run: |
+          npm i @actions/cache@1.0.7 @actions/core@1.5.0 hasha@5.2.2
         uses: ./.github/actions/npm_cache_check
       - name: Install and cache node_modules
         if: steps.cacheCheck.outputs.cacheHit == false
