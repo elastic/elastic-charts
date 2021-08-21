@@ -13,7 +13,7 @@ jobs:
     name: Check status
     runs-on: ubuntu-latest
     outputs:
-      allSuccess: ${{ steps.validate.outputs.allSuccess }}
+      allSuccess: ${{ steps.validate.outputs.allSuccess == 'true' }}
     steps:
       - name: Get current check runs
         id: check
