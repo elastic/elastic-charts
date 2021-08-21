@@ -29,8 +29,8 @@ jobs:
         shell: python
         run: |
           count = ${{ fromJson(steps.check.outputs.data).total_count }}
-          statusStr = "${{ join(fromJson(steps.check.outputs.data).check_runs.*.status) }}""
-          conclusionStr = "${{ join(fromJson(steps.check.outputs.data).check_runs.*.conclusion) }}""
+          statusStr = "${{ join(fromJson(steps.check.outputs.data).check_runs.*.status) }}"
+          conclusionStr = "${{ join(fromJson(steps.check.outputs.data).check_runs.*.conclusion) }}"
           isComplete = all(status == "completed" for status in statusStr.split(","))
           isSuccess = all(conclusion == "success" for conclusion in conclusionStr.split(","))
 
