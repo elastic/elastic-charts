@@ -13,7 +13,7 @@ jobs:
     name: Check status
     runs-on: ubuntu-latest
     outputs:
-      allSuccess: ${{ steps.validate.outputs.allSuccess }}
+      allSuccess: ${{ steps.validate.outputs.allSuccess == 'true' }}
     steps:
       - name: Get current check runs
         id: check
@@ -26,19 +26,26 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Validate check runs
         id: validate
+        if: ${{ success() }}
         shell: python
+        # TODO: find a better way to do this, the check-runs api has no usable id other than name
         run: |
-          checks = ${{ fromJson(steps.check.outputs.data).check_runs }}
-          allSuccess = True;
+          import json
+          count = ${{ fromJson(steps.check.outputs.data).total_count }}
+          checks = json.loads("""${{ toJson(fromJson(steps.check.outputs.data).check_runs) }}""")
+          allSuccess = True
 
           for check in checks:
-              allSuccess = allSuccess and check["status"] == "completed" and check["conclusion"] == "success"
+            if check["name"] in ["Eslint", "Prettier", "Unit tests", "API Changes"]:
+                allSuccess = allSuccess and check["status"] == "completed" and check["conclusion"] == "success"
 
-          print(f"::set-output name=allSuccess::{allSuccess}")
+          print(f"::set-output name=allSuccess::{str(count >= 7 and allSuccess).lower()}")
 
   checks:
-    name: Checks
+    name: Release Checks
     runs-on: ubuntu-latest
+    needs: status
+    if: needs.status.outputs.allSuccess
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -62,8 +69,18 @@ jobs:
       - name: Testing
         run: yarn test --ci
 
+  test:
+    runs-on: ubuntu-latest
+    needs: [status, checks]
+    steps:
+      - run: echo ${{ needs.status.outputs.allSuccess || needs.checks.result == 'success' }}
+      - run: echo ${{ needs.status.outputs.allSuccess }}
+      - run: echo ${{ needs.checks.result == 'success' }}
+
   release:
     name: Release
+    needs: [status, checks]
+    if: ${{ needs.status.outputs.allSuccess || needs.checks.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
