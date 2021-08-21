@@ -73,14 +73,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: [status, checks]
     steps:
-      - run: echo ${{ needs.status.outputs.allSuccess || needs.checks.result == "success" }}
+      - run: echo ${{ needs.status.outputs.allSuccess || needs.checks.result == 'success' }}
       - run: echo ${{ needs.status.outputs.allSuccess }}
-      - run: echo ${{ needs.checks.result == "success" }}
+      - run: echo ${{ needs.checks.result == 'success' }}
 
   release:
     name: Release
     needs: [status, checks]
-    if: ${{ needs.status.outputs.allSuccess || needs.checks.result == "success" }}
+    if: ${{ needs.status.outputs.allSuccess || needs.checks.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
