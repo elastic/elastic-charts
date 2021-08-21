@@ -71,7 +71,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: status
+    needs: [status, checks]
     steps:
       - run: echo ${{ needs.status.outputs.allSuccess || needs.checks.result == "success" }}
       - run: echo ${{ needs.status.outputs.allSuccess }}
