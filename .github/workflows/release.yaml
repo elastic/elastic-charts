@@ -29,16 +29,19 @@ jobs:
         shell: python
         run: |
           count = ${{ fromJson(steps.check.outputs.data).total_count }}
-          statusStr = ${{ join(fromJson(steps.check.outputs.data).check_runs.*.status) }}
-          conclusionStr = ${{ join(fromJson(steps.check.outputs.data).check_runs.*.conclusion) }}
+          statusStr = "${{ join(fromJson(steps.check.outputs.data).check_runs.*.status) }}""
+          conclusionStr = "${{ join(fromJson(steps.check.outputs.data).check_runs.*.conclusion) }}""
           isComplete = all(status == "completed" for status in statusStr.split(","))
           isSuccess = all(conclusion == "success" for conclusion in conclusionStr.split(","))
 
           print(f"::set-output name=allSuccess::{count >= 7 and isComplete and isSuccess}")
+      - run: echo ${{ steps.validate.outputs.allSuccess }}
 
   checks:
     name: Checks
     runs-on: ubuntu-latest
+    needs: status
+    if: needs.status.outputs.allSuccess == false
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -64,6 +67,7 @@ jobs:
 
   release:
     name: Release
+    needs: checks
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
