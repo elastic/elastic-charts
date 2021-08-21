@@ -41,12 +41,30 @@ jobs:
 
           print(f"::set-output name=allSuccess::{str(count >= 7 and allSuccess).lower()}")
       - run: echo ${{ steps.validate.outputs.allSuccess }}
+      - run: echo ${{ steps.validate.outputs.allSuccess == 'true' }}
+      - run: echo ${{ steps.validate.outputs.allSuccess == true }}
+      - run: echo ${{ steps.validate.outputs.allSuccess == 1 }}
+      - run: echo ${{ steps.validate.outputs.allSuccess == 'false' }}
+      - run: echo ${{ steps.validate.outputs.allSuccess == false }}
+      - run: echo ${{ steps.validate.outputs.allSuccess == 0 }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: status
+    steps:
+      - run: echo ${{ needs.status.outputs.allSuccess }}
+      - run: echo ${{ needs.status.outputs.allSuccess == 'true' }}
+      - run: echo ${{ needs.status.outputs.allSuccess == true }}
+      - run: echo ${{ needs.status.outputs.allSuccess == 1 }}
+      - run: echo ${{ needs.status.outputs.allSuccess == 'false' }}
+      - run: echo ${{ needs.status.outputs.allSuccess == false }}
+      - run: echo ${{ needs.status.outputs.allSuccess == 0 }}
 
   checks:
     name: Release Checks
     runs-on: ubuntu-latest
     needs: status
-    if: needs.status.outputs.allSuccess == false
+    if: needs.status.outputs.allSuccess
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
