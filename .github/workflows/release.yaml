@@ -28,13 +28,13 @@ jobs:
         id: validate
         shell: python
         run: |
-          checks = ${{ fromJson(steps.check.outputs.data).check_runs }}
-          allSuccess = True;
+          count = ${{ fromJson(steps.check.outputs.data).total_count }}
+          statusStr = ${{ join(fromJson(steps.check.outputs.data).check_runs.*.status, ",") }}
+          conclusionStr = ${{ join(fromJson(steps.check.outputs.data).check_runs.*.conclusion, ",") }}
+          isComplete = all(status == "completed" for status in statusStr.split(","))
+          isSuccess = all(conclusion == "success" for conclusion in conclusionStr.split(","))
 
-          for check in checks:
-              allSuccess = allSuccess and check["status"] == "completed" and check["conclusion"] == "success"
-
-          print(f"::set-output name=allSuccess::{allSuccess}")
+          print(f"::set-output name=allSuccess::{count >= 7 and isComplete and isSuccess}")
 
   checks:
     name: Checks
