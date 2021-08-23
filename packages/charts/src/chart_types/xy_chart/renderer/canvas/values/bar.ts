@@ -95,28 +95,9 @@ function textLineOrigin(
 ) {
   const { x, y } = origin;
   const { width, height } = box;
-  let lineX: number;
-  let lineY: number;
-  switch (chartRotation) {
-    case 180:
-      lineX = x;
-      lineY = y - (i - max + 1) * height;
-      break;
-    case -90:
-      lineX = x;
-      lineY = y;
-      break;
-    case 90:
-      lineX = x;
-      lineY = y - (i - max + 1) * width;
-      break;
-    case 0:
-    default:
-      lineX = x;
-      lineY = y + i * height;
-  }
-
-  return { x: lineX, y: lineY };
+  const size = Math.abs(chartRotation) === 90 ? width : height;
+  const sizeMultiplier = chartRotation > 0 ? -(i - max + 1) : chartRotation === 0 ? i : 0;
+  return { x, y: y + size * sizeMultiplier };
 }
 
 function computeHorizontalOffset(
