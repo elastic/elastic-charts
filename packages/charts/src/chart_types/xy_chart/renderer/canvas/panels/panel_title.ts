@@ -81,25 +81,22 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: PanelTitleP
     panelTitle,
   } = props;
 
-  if (!panelTitle) {
-    return;
+  if (panelTitle && axisPanelTitle.visible) {
+    const font = getFontStyle(axisPanelTitle);
+    const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
+    const titleDimension = title ? getTitleDimension(axisTitle) : 0;
+    const tickLabelPad = tickLabel.padding;
+    const labelHeight = tickLabel.visible ? maxLabelBboxHeight + outerPad(tickLabelPad) + innerPad(tickLabelPad) : 0;
+
+    const top =
+      position === Position.Top
+        ? titleDimension + outerPad(axisPanelTitle.padding)
+        : labelHeight + tickDimension + innerPad(axisPanelTitle.padding);
+
+    if (debug) renderDebugRect(ctx, { x: 0, y: top, width, height: font.fontSize });
+
+    renderText(ctx, { x: width / 2, y: top + font.fontSize / 2 }, panelTitle, font);
   }
-
-  const font = getFontStyle(axisPanelTitle);
-  const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const panelTitlePadding = axisPanelTitle.visible && panelTitle ? axisPanelTitle.padding : 0;
-  const titleDimension = title ? getTitleDimension(axisTitle) : 0;
-  const tickLabelPad = tickLabel.padding;
-  const labelHeight = tickLabel.visible ? maxLabelBboxHeight + outerPad(tickLabelPad) + innerPad(tickLabelPad) : 0;
-
-  const top =
-    position === Position.Top
-      ? titleDimension + outerPad(panelTitlePadding)
-      : labelHeight + tickDimension + innerPad(panelTitlePadding);
-
-  if (debug) renderDebugRect(ctx, { x: 0, y: top, width, height: font.fontSize });
-
-  renderText(ctx, { x: width / 2, y: top + font.fontSize / 2 }, panelTitle, font);
 }
 
 /** @internal */
