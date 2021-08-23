@@ -13,7 +13,6 @@ import { Rect } from '../../../../../geoms/types';
 import { HorizontalAlignment, Rotation, VerticalAlignment } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { BarGeometry } from '../../../../../utils/geometry';
-import { Point } from '../../../../../utils/point';
 import { TextAlignment, Theme } from '../../../../../utils/themes/theme';
 import { LabelOverflowConstraint } from '../../../utils/specs';
 import { renderText, wrapLines } from '../primitives/text';
@@ -77,7 +76,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     if (debug) withPanelTransform(ctx, panel, rotation, renderingArea, () => renderDebugRect(ctx, rect));
 
     lines.forEach((textLine, j) => {
-      const origin = textLineOrigin({ x, y }, rotation, j, lines.length, { width, height });
+      const origin = lineOrigin(x, y, rotation, j, lines.length, width, height);
       const fontAugment = { fontSize, align, baseline, shadow: shadowColor, shadowSize };
       withPanelTransform(ctx, panel, rotation, renderingArea, () =>
         renderText(ctx, origin, textLine, { ...font, ...fontAugment }, -rotation, 0, 0, fontScale),
@@ -86,17 +85,9 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
   });
 }
 
-function textLineOrigin(
-  origin: Point,
-  chartRotation: Rotation,
-  i: number,
-  max: number,
-  box: { height: number; width: number },
-) {
-  const { x, y } = origin;
-  const { width, height } = box;
-  const size = Math.abs(chartRotation) === 90 ? width : height;
-  const sizeMultiplier = chartRotation > 0 ? -(i - max + 1) : chartRotation === 0 ? i : 0;
+function lineOrigin(x: number, y: number, rotation: Rotation, i: number, max: number, width: number, height: number) {
+  const size = Math.abs(rotation) === 90 ? width : height;
+  const sizeMultiplier = rotation > 0 ? -(i - max + 1) : rotation === 0 ? i : 0;
   return { x, y: y + size * sizeMultiplier };
 }
 
