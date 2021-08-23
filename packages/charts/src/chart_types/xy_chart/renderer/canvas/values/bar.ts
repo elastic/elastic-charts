@@ -91,112 +91,6 @@ function lineOrigin(x: number, y: number, rotation: Rotation, i: number, max: nu
   return { x, y: y + size * sizeMultiplier };
 }
 
-function computeHorizontalOffset(
-  geom: BarGeometry,
-  valueBox: { width: number; height: number },
-  chartRotation: Rotation,
-  { horizontal }: Partial<TextAlignment> = {},
-) {
-  switch (chartRotation) {
-    case CHART_DIRECTION.LeftToRight: {
-      if (horizontal === HorizontalAlignment.Left) {
-        return geom.height - valueBox.width;
-      }
-      if (horizontal === HorizontalAlignment.Center) {
-        return geom.height / 2 - valueBox.width / 2;
-      }
-      break;
-    }
-    case CHART_DIRECTION.RightToLeft: {
-      if (horizontal === HorizontalAlignment.Right) {
-        return geom.height - valueBox.width;
-      }
-      if (horizontal === HorizontalAlignment.Center) {
-        return geom.height / 2 - valueBox.width / 2;
-      }
-      break;
-    }
-    case CHART_DIRECTION.TopToBottom: {
-      if (horizontal === HorizontalAlignment.Left) {
-        return geom.width / 2 - valueBox.width / 2;
-      }
-      if (horizontal === HorizontalAlignment.Right) {
-        return -geom.width / 2 + valueBox.width / 2;
-      }
-      break;
-    }
-    case CHART_DIRECTION.BottomUp:
-    default: {
-      if (horizontal === HorizontalAlignment.Left) {
-        return -geom.width / 2 + valueBox.width / 2;
-      }
-      if (horizontal === HorizontalAlignment.Right) {
-        return geom.width / 2 - valueBox.width / 2;
-      }
-    }
-  }
-  return 0;
-}
-
-function computeVerticalOffset(
-  geom: BarGeometry,
-  valueBox: { width: number; height: number },
-  chartRotation: Rotation,
-  { vertical }: Partial<TextAlignment> = {},
-) {
-  switch (chartRotation) {
-    case CHART_DIRECTION.LeftToRight: {
-      if (vertical === VerticalAlignment.Bottom) {
-        return geom.width - valueBox.height;
-      }
-      if (vertical === VerticalAlignment.Middle) {
-        return geom.width / 2 - valueBox.height / 2;
-      }
-      break;
-    }
-    case CHART_DIRECTION.RightToLeft: {
-      if (vertical === VerticalAlignment.Bottom) {
-        return -geom.width + valueBox.height;
-      }
-      if (vertical === VerticalAlignment.Middle) {
-        return -geom.width / 2 + valueBox.height / 2;
-      }
-      break;
-    }
-    case CHART_DIRECTION.TopToBottom: {
-      if (vertical === VerticalAlignment.Top) {
-        return geom.height - valueBox.height;
-      }
-      if (vertical === VerticalAlignment.Middle) {
-        return geom.height / 2 - valueBox.height / 2;
-      }
-      break;
-    }
-    case CHART_DIRECTION.BottomUp:
-    default: {
-      if (vertical === VerticalAlignment.Bottom) {
-        return geom.height - valueBox.height;
-      }
-      if (vertical === VerticalAlignment.Middle) {
-        return geom.height / 2 - valueBox.height / 2;
-      }
-    }
-  }
-  return 0;
-}
-
-function computeAlignmentOffset(
-  geom: BarGeometry,
-  valueBox: { width: number; height: number },
-  chartRotation: Rotation,
-  textAlignment: Partial<TextAlignment> = {},
-) {
-  return {
-    alignmentOffsetX: computeHorizontalOffset(geom, valueBox, chartRotation, textAlignment),
-    alignmentOffsetY: computeVerticalOffset(geom, valueBox, chartRotation, textAlignment),
-  };
-}
-
 function positionText(
   geom: BarGeometry,
   valueBox: { width: number; height: number },
@@ -206,10 +100,23 @@ function positionText(
 ): { x: number; y: number; align: TextAlign; baseline: TextBaseline; rect: Rect; overflow: boolean } {
   const { offsetX, offsetY } = offsets;
 
-  const { alignmentOffsetX, alignmentOffsetY } = computeAlignmentOffset(geom, valueBox, chartRotation, alignment);
+  const horizontal = alignment?.horizontal;
+  const vertical = alignment?.vertical;
 
   switch (chartRotation) {
     case CHART_DIRECTION.TopToBottom: {
+      const alignmentOffsetX =
+        horizontal === HorizontalAlignment.Left
+          ? geom.width / 2 - valueBox.width / 2
+          : horizontal === HorizontalAlignment.Right
+          ? -geom.width / 2 + valueBox.width / 2
+          : 0;
+      const alignmentOffsetY =
+        vertical === VerticalAlignment.Top
+          ? geom.height - valueBox.height
+          : vertical === VerticalAlignment.Middle
+          ? geom.height / 2 - valueBox.height / 2
+          : 0;
       const x = geom.x + geom.width / 2 - offsetX + alignmentOffsetX;
       const y = geom.y + offsetY + alignmentOffsetY;
       return {
@@ -217,16 +124,23 @@ function positionText(
         y,
         align: 'center',
         baseline: 'bottom',
-        rect: {
-          x: x - valueBox.width / 2,
-          y,
-          width: valueBox.width,
-          height: valueBox.height,
-        },
+        rect: { x: x - valueBox.width / 2, y, width: valueBox.width, height: valueBox.height },
         overflow: valueBox.width > geom.width || valueBox.height > geom.height,
       };
     }
     case CHART_DIRECTION.RightToLeft: {
+      const alignmentOffsetX =
+        horizontal === HorizontalAlignment.Right
+          ? geom.height - valueBox.width
+          : horizontal === HorizontalAlignment.Center
+          ? geom.height / 2 - valueBox.width / 2
+          : 0;
+      const alignmentOffsetY =
+        vertical === VerticalAlignment.Bottom
+          ? -geom.width + valueBox.height
+          : vertical === VerticalAlignment.Middle
+          ? -geom.width / 2 + valueBox.height / 2
+          : 0;
       const x = geom.x + geom.width + offsetY + alignmentOffsetY;
       const y = geom.y - offsetX + alignmentOffsetX;
       return {
@@ -234,16 +148,23 @@ function positionText(
         y,
         align: 'left',
         baseline: 'top',
-        rect: {
-          x: x - valueBox.height,
-          y,
-          width: valueBox.height,
-          height: valueBox.width,
-        },
+        rect: { x: x - valueBox.height, y, width: valueBox.height, height: valueBox.width },
         overflow: valueBox.height > geom.width || valueBox.width > geom.height,
       };
     }
     case CHART_DIRECTION.LeftToRight: {
+      const alignmentOffsetX =
+        horizontal === HorizontalAlignment.Left
+          ? geom.height - valueBox.width
+          : horizontal === HorizontalAlignment.Center
+          ? geom.height / 2 - valueBox.width / 2
+          : 0;
+      const alignmentOffsetY =
+        vertical === VerticalAlignment.Bottom
+          ? geom.width - valueBox.height
+          : vertical === VerticalAlignment.Middle
+          ? geom.width / 2 - valueBox.height / 2
+          : 0;
       const x = geom.x - offsetY + alignmentOffsetY;
       const y = geom.y + offsetX + alignmentOffsetX;
       return {
@@ -251,17 +172,24 @@ function positionText(
         y,
         align: 'right',
         baseline: 'top',
-        rect: {
-          x,
-          y,
-          width: valueBox.height,
-          height: valueBox.width,
-        },
+        rect: { x, y, width: valueBox.height, height: valueBox.width },
         overflow: valueBox.height > geom.width || valueBox.width > geom.height,
       };
     }
     case CHART_DIRECTION.BottomUp:
     default: {
+      const alignmentOffsetX =
+        horizontal === HorizontalAlignment.Left
+          ? -geom.width / 2 + valueBox.width / 2
+          : horizontal === HorizontalAlignment.Right
+          ? geom.width / 2 - valueBox.width / 2
+          : 0;
+      const alignmentOffsetY =
+        vertical === VerticalAlignment.Bottom
+          ? geom.height - valueBox.height
+          : vertical === VerticalAlignment.Middle
+          ? geom.height / 2 - valueBox.height / 2
+          : 0;
       const x = geom.x + geom.width / 2 - offsetX + alignmentOffsetX;
       const y = geom.y - offsetY + alignmentOffsetY;
       return {
@@ -269,12 +197,7 @@ function positionText(
         y,
         align: 'center',
         baseline: 'top',
-        rect: {
-          x: x - valueBox.width / 2,
-          y,
-          width: valueBox.width,
-          height: valueBox.height,
-        },
+        rect: { x: x - valueBox.width / 2, y, width: valueBox.width, height: valueBox.height },
         overflow: valueBox.width > geom.width || valueBox.height > geom.height,
       };
     }
