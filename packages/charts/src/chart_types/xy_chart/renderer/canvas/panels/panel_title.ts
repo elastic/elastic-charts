@@ -34,7 +34,7 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: PanelTitlePro
   const {
     size: { height },
     axisSpec: { position, hide: hideAxis, title },
-    dimension: { maxLabelBboxWidth },
+    dimension,
     axisStyle: { axisTitle, axisPanelTitle, tickLine, tickLabel },
     debug,
     panelTitle,
@@ -44,12 +44,13 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: PanelTitlePro
     const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
     const titleDimension = title ? getTitleDimension(axisTitle) : 0;
     const tickLabelPad = tickLabel.padding;
-    const labelWidth = tickLabel.visible ? outerPad(tickLabelPad) + maxLabelBboxWidth + innerPad(tickLabelPad) : 0;
+    const maxLabelBboxSize = dimension.maxLabelBboxWidth;
+    const labelSize = tickLabel.visible ? maxLabelBboxSize + outerPad(tickLabelPad) + innerPad(tickLabelPad) : 0;
     const top = height;
     const left =
       position === Position.Left
         ? titleDimension + outerPad(axisPanelTitle.padding)
-        : tickDimension + labelWidth + innerPad(axisPanelTitle.padding);
+        : tickDimension + labelSize + innerPad(axisPanelTitle.padding);
 
     if (debug) renderDebugRect(ctx, { x: left, y: top, width: height, height: font.fontSize }, -90);
 
@@ -61,7 +62,7 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: PanelTitleP
   const {
     size: { width },
     axisSpec: { position, hide: hideAxis, title },
-    dimension: { maxLabelBboxHeight },
+    dimension,
     axisStyle: { axisTitle, axisPanelTitle, tickLine, tickLabel },
     debug,
     panelTitle,
@@ -72,12 +73,13 @@ function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: PanelTitleP
     const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
     const titleDimension = title ? getTitleDimension(axisTitle) : 0;
     const tickLabelPad = tickLabel.padding;
-    const labelHeight = tickLabel.visible ? maxLabelBboxHeight + outerPad(tickLabelPad) + innerPad(tickLabelPad) : 0;
+    const maxLabelBboxSize = dimension.maxLabelBboxHeight;
+    const labelSize = tickLabel.visible ? maxLabelBboxSize + outerPad(tickLabelPad) + innerPad(tickLabelPad) : 0;
 
     const top =
       position === Position.Top
         ? titleDimension + outerPad(axisPanelTitle.padding)
-        : labelHeight + tickDimension + innerPad(axisPanelTitle.padding);
+        : labelSize + tickDimension + innerPad(axisPanelTitle.padding);
 
     if (debug) renderDebugRect(ctx, { x: 0, y: top, width, height: font.fontSize });
 
