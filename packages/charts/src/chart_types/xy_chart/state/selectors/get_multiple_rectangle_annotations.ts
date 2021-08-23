@@ -42,10 +42,10 @@ export const getMultipleRectangleAnnotations = createCustomCachedSelector(
     getTooltipInfoSelector,
     getHoveredDOMElement,
   ],
-  getAnnotationTooltipState,
+  getMultipleRectangularAnnotationTooltipState,
 );
 
-function getAnnotationTooltipState(
+function getMultipleRectangularAnnotationTooltipState(
   cursorPosition: Point,
   {
     chartDimensions,
@@ -60,6 +60,7 @@ function getAnnotationTooltipState(
   tooltip: TooltipInfo,
   hoveredDOMElement: DOMElement | null,
 ): AnnotationTooltipState[] | null {
+  // capture line marker
   const hoveredTooltip = getTooltipStateForDOMElements(
     chartDimensions,
     annotationSpecs,
@@ -69,15 +70,6 @@ function getAnnotationTooltipState(
 
   if (hoveredTooltip) {
     return [hoveredTooltip];
-  }
-  // get positions relative to chart
-  if (cursorPosition.x < 0 || cursorPosition.y < 0) {
-    return null;
-  }
-  const { xScale, yScales } = geometries.scales;
-  // only if we have a valid cursor position and the necessary scale
-  if (!xScale || !yScales) {
-    return null;
   }
   const tooltipState = computeMultipleRectAnnotationTooltipState(
     cursorPosition,

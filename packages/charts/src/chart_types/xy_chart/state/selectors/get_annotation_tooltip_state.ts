@@ -47,8 +47,7 @@ export const getAnnotationTooltipStateSelector = createCustomCachedSelector(
   getAnnotationTooltipState,
 );
 
-/** @internal */
-export function getAnnotationTooltipState(
+function getAnnotationTooltipState(
   cursorPosition: Point,
   {
     chartDimensions,
