@@ -50,16 +50,14 @@ export function renderPanelTitle(
       ? titleDimension + outerPad(axisPanelTitle.padding)
       : tickDimension + labelSize + innerPad(axisPanelTitle.padding);
 
-  const left = anchorPoint.x + (horizontal ? 0 : offset);
-  const top = anchorPoint.y + (horizontal ? offset : height);
-  const x = horizontal ? width / 2 : offset + font.fontSize / 2;
-  const y = horizontal ? offset + font.fontSize / 2 : height / 2;
+  const x = anchorPoint.x + (horizontal ? 0 : offset);
+  const y = anchorPoint.y + (horizontal ? offset : height);
+  const textX = horizontal ? width / 2 : offset + font.fontSize / 2;
+  const textY = horizontal ? offset + font.fontSize / 2 : height / 2;
   const rotation = horizontal ? 0 : -90;
 
-  if (debug)
-    renderDebugRect(ctx, { x: left, y: top, width: horizontal ? width : height, height: font.fontSize }, rotation);
-
-  renderText(ctx, { x, y }, panelTitle, font, rotation);
+  if (debug) renderDebugRect(ctx, { x, y, width: horizontal ? width : height, height: font.fontSize }, rotation);
+  renderText(ctx, { x: textX, y: textY }, panelTitle, font, rotation);
 }
 
 /** @internal */
