@@ -9,7 +9,6 @@
 import { Position } from '../../../../../utils/common';
 import { innerPad, outerPad } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
-import { TextStyle } from '../../../../../utils/themes/theme'; // todo revise if it should rely on axis-anything
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisProps } from '../axes';
@@ -30,19 +29,14 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   renderUnifiedTitle(ctx, props, false);
 }
 
-function getFontStyle({ fontFamily, fontStyle, fill, fontSize }: TextStyle): TextFont {
-  return {
-    fontFamily,
-    fontVariant: 'normal',
-    fontStyle: fontStyle ?? 'normal',
-    fontWeight: 'bold',
-    textColor: fill,
-    textOpacity: 1,
-    align: 'center',
-    baseline: 'middle',
-    fontSize,
-  };
-}
+const titleFontDefaults: Omit<TextFont, 'fontFamily' | 'textColor' | 'fontSize'> = {
+  fontVariant: 'normal',
+  fontStyle: 'normal', // may be overridden (happens if prop on axis style is defined)
+  fontWeight: 'bold',
+  textOpacity: 1,
+  align: 'center',
+  baseline: 'middle',
+};
 
 function renderUnifiedTitle(
   ctx: CanvasRenderingContext2D,
@@ -65,7 +59,7 @@ function renderUnifiedTitle(
     return;
   }
   const horizontal = isHorizontalAxis(position);
-  const font = getFontStyle(axisTitleToUse);
+  const font: TextFont = { ...titleFontDefaults, ...axisTitleToUse, textColor: axisTitleToUse.fill };
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const maxLabelBoxSize = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
   const labelSize = tickLabel.visible ? maxLabelBoxSize + innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
@@ -76,7 +70,6 @@ function renderUnifiedTitle(
     position === Position.Left || position === Position.Top
       ? outerPad(titlePadding) + (panel ? otherTitleDimension : 0)
       : tickDimension + labelSize + innerPad(titlePadding) + (panel ? 0 : otherTitleDimension);
-
   const x = anchorPoint.x + (horizontal ? 0 : offset);
   const y = anchorPoint.y + (horizontal ? offset : height);
   const textX = panel
