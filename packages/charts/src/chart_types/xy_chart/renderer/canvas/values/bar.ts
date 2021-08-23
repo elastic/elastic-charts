@@ -10,11 +10,11 @@ import { colorIsDark, getTextColorIfTextInvertible } from '../../../../../common
 import { fillTextColor } from '../../../../../common/fill_text_color';
 import { Font, TextAlign, TextBaseline } from '../../../../../common/text_utils';
 import { Rect } from '../../../../../geoms/types';
-import { Rotation, VerticalAlignment, HorizontalAlignment } from '../../../../../utils/common';
+import { HorizontalAlignment, Rotation, VerticalAlignment } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { BarGeometry } from '../../../../../utils/geometry';
 import { Point } from '../../../../../utils/point';
-import { Theme, TextAlignment } from '../../../../../utils/themes/theme';
+import { TextAlignment, Theme } from '../../../../../utils/themes/theme';
 import { LabelOverflowConstraint } from '../../../utils/specs';
 import { renderText, wrapLines } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
@@ -45,11 +45,6 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
       return;
     }
     const { text, fontSize, fontScale, overflowConstraints, isValueContainedInElement } = bar.displayValue;
-    let textLines = {
-      lines: [text],
-      width: bar.displayValue.width,
-      height: bar.displayValue.height,
-    };
     const shadowSize = getTextBorderSize(fill);
     const { fillColor, shadowColor } = getTextColors(fill, bar.color, shadowSize);
     const font: Font = {
@@ -69,10 +64,9 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
       alignment,
     );
 
-    if (isValueContainedInElement) {
-      const width = rotation === 0 || rotation === 180 ? bar.width : bar.height;
-      textLines = wrapLines(ctx, textLines.lines[0], font, fontSize, width, 100);
-    }
+    const textLines = isValueContainedInElement
+      ? wrapLines(ctx, text, font, fontSize, rotation === 0 || rotation === 180 ? bar.width : bar.height, 100)
+      : { lines: [text], width: bar.displayValue.width, height: bar.displayValue.height };
     if (overflowConstraints.has(LabelOverflowConstraint.ChartEdges) && isOverflow(rect, renderingArea, rotation)) {
       return;
     }
