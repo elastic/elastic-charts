@@ -205,21 +205,10 @@ function positionText(
 }
 
 function isOverflow(rect: Rect, chartDimensions: Dimensions, chartRotation: Rotation) {
-  let cWidth = chartDimensions.width;
-  let cHeight = chartDimensions.height;
-  if (chartRotation === 90 || chartRotation === -90) {
-    cWidth = chartDimensions.height;
-    cHeight = chartDimensions.width;
-  }
-
-  if (rect.x < 0 || rect.x + rect.width > cWidth) {
-    return true;
-  }
-  if (rect.y < 0 || rect.y + rect.height > cHeight) {
-    return true;
-  }
-
-  return false;
+  const vertical = Math.abs(chartRotation) === 90;
+  const cWidth = vertical ? chartDimensions.height : chartDimensions.width;
+  const cHeight = vertical ? chartDimensions.width : chartDimensions.height;
+  return rect.x < 0 || rect.x + rect.width > cWidth || rect.y < 0 || rect.y + rect.height > cHeight;
 }
 
 const DEFAULT_VALUE_COLOR = 'black';
