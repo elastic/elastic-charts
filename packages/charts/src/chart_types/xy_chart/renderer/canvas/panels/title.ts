@@ -52,22 +52,14 @@ export function renderPanelTitle(
 
   const left = anchorPoint.x + (horizontal ? 0 : offset);
   const top = anchorPoint.y + (horizontal ? offset : height);
+  const x = horizontal ? width / 2 : offset + font.fontSize / 2;
+  const y = horizontal ? offset + font.fontSize / 2 : height / 2;
+  const rotation = horizontal ? 0 : -90;
 
-  if (debug) {
-    renderDebugRect(
-      ctx,
-      { x: left, y: top, width: horizontal ? width : height, height: font.fontSize },
-      horizontal ? 0 : -90,
-    );
-  }
+  if (debug)
+    renderDebugRect(ctx, { x: left, y: top, width: horizontal ? width : height, height: font.fontSize }, rotation);
 
-  renderText(
-    ctx,
-    { x: horizontal ? width / 2 : offset, y: horizontal ? offset + font.fontSize / 2 : height - height / 2 },
-    panelTitle, // title is always a string due to caller; consider turning `title` to be obligate string upstream
-    font,
-    horizontal ? 0 : -90,
-  );
+  renderText(ctx, { x, y }, panelTitle, font, rotation);
 }
 
 /** @internal */
