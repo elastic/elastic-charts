@@ -64,18 +64,17 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
       alignment,
     );
 
-    const textLines = isValueContainedInElement
-      ? wrapLines(ctx, text, font, fontSize, rotation === 0 || rotation === 180 ? bar.width : bar.height, 100)
-      : { lines: [text], width: bar.displayValue.width, height: bar.displayValue.height };
     if (overflowConstraints.has(LabelOverflowConstraint.ChartEdges) && isOverflow(rect, renderingArea, rotation)) {
       return;
     }
     if (overflowConstraints.has(LabelOverflowConstraint.BarGeometry) && overflow) {
       return;
     }
-    if (debug) withPanelTransform(ctx, panel, rotation, renderingArea, () => renderDebugRect(ctx, rect));
+    const { width, height, lines } = isValueContainedInElement
+      ? wrapLines(ctx, text, font, fontSize, rotation === 0 || rotation === 180 ? bar.width : bar.height, 100)
+      : { lines: [text], width: bar.displayValue.width, height: bar.displayValue.height };
 
-    const { width, height, lines } = textLines;
+    if (debug) withPanelTransform(ctx, panel, rotation, renderingArea, () => renderDebugRect(ctx, rect));
 
     lines.forEach((textLine, j) => {
       const origin = repositionTextLine({ x, y }, rotation, j, lines.length, { width, height });
