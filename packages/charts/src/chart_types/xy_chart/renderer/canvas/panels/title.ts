@@ -41,13 +41,13 @@ export function renderTitle(
     anchorPoint,
   }: TitleProps,
 ) {
-  const axisTitleToUse = panel ? axisPanelTitle : axisTitle;
-  const otherAxisTitleToUse = panel ? axisTitle : axisPanelTitle;
   const titleToRender = panel ? panelTitle : title;
-  const otherTitle = panel ? title : panelTitle;
+  const axisTitleToUse = panel ? axisPanelTitle : axisTitle;
   if (!titleToRender || !axisTitleToUse.visible) {
     return;
   }
+  const otherAxisTitleToUse = panel ? axisTitle : axisPanelTitle;
+  const otherTitle = panel ? title : panelTitle;
   const horizontal = isHorizontalAxis(position);
   const font: TextFont = { ...titleFontDefaults, ...axisTitleToUse, textColor: axisTitleToUse.fill };
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
@@ -55,6 +55,7 @@ export function renderTitle(
   const labelSize = tickLabel.visible ? maxLabelBoxSize + innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
   const otherTitleDimension = otherTitle ? getTitleDimension(otherAxisTitleToUse) : 0;
   const titlePadding = panel || (axisTitleToUse.visible && title) ? axisTitleToUse.padding : 0;
+  const rotation = horizontal ? 0 : -90;
 
   const offset =
     position === Position.Left || position === Position.Top
@@ -73,8 +74,6 @@ export function renderTitle(
       : height / 2
     : y + (horizontal ? font.fontSize / 2 : -height / 2);
 
-  if (debug)
-    renderDebugRect(ctx, { x, y, width: horizontal ? width : height, height: font.fontSize }, horizontal ? 0 : -90);
-
-  renderText(ctx, { x: textX, y: textY }, titleToRender ?? '', font, horizontal ? 0 : -90);
+  if (debug) renderDebugRect(ctx, { x, y, width: horizontal ? width : height, height: font.fontSize }, rotation);
+  renderText(ctx, { x: textX, y: textY }, titleToRender ?? '', font, rotation);
 }
