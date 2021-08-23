@@ -58,17 +58,8 @@ export interface SimplePadding {
  * @internal
  */
 export function getSimplePadding(padding: number | Partial<SimplePadding>, minPadding = 0): SimplePadding {
-  if (typeof padding === 'number') {
-    const adjustedPadding = Math.max(minPadding, padding);
-
-    return {
-      inner: adjustedPadding,
-      outer: adjustedPadding,
-    };
-  }
-
   return {
-    inner: Math.max(minPadding, padding?.inner ?? 0),
-    outer: Math.max(minPadding, padding?.outer ?? 0),
+    inner: Math.max(minPadding, typeof padding === 'number' ? padding : padding?.inner ?? 0),
+    outer: Math.max(minPadding, typeof padding === 'number' ? padding : padding?.outer ?? 0),
   };
 }
