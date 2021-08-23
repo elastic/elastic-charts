@@ -102,6 +102,8 @@ function positionText(
 
   const horizontal = alignment?.horizontal;
   const vertical = alignment?.vertical;
+  const horizontalOverflow = valueBox.width > geom.width || valueBox.height > geom.height;
+  const verticalOverflow = valueBox.height > geom.width || valueBox.width > geom.height;
 
   switch (chartRotation) {
     case CHART_DIRECTION.TopToBottom: {
@@ -119,14 +121,8 @@ function positionText(
           : 0;
       const x = geom.x + geom.width / 2 - offsetX + alignmentOffsetX;
       const y = geom.y + offsetY + alignmentOffsetY;
-      return {
-        x,
-        y,
-        align: 'center',
-        baseline: 'bottom',
-        rect: { x: x - valueBox.width / 2, y, width: valueBox.width, height: valueBox.height },
-        overflow: valueBox.width > geom.width || valueBox.height > geom.height,
-      };
+      const rect = { x: x - valueBox.width / 2, y, width: valueBox.width, height: valueBox.height };
+      return { x, y, rect, align: 'center', baseline: 'bottom', overflow: horizontalOverflow };
     }
     case CHART_DIRECTION.RightToLeft: {
       const alignmentOffsetX =
@@ -143,14 +139,8 @@ function positionText(
           : 0;
       const x = geom.x + geom.width + offsetY + alignmentOffsetY;
       const y = geom.y - offsetX + alignmentOffsetX;
-      return {
-        x,
-        y,
-        align: 'left',
-        baseline: 'top',
-        rect: { x: x - valueBox.height, y, width: valueBox.height, height: valueBox.width },
-        overflow: valueBox.height > geom.width || valueBox.width > geom.height,
-      };
+      const rect = { x: x - valueBox.height, y, width: valueBox.height, height: valueBox.width };
+      return { x, y, rect, align: 'left', baseline: 'top', overflow: verticalOverflow };
     }
     case CHART_DIRECTION.LeftToRight: {
       const alignmentOffsetX =
@@ -167,14 +157,8 @@ function positionText(
           : 0;
       const x = geom.x - offsetY + alignmentOffsetY;
       const y = geom.y + offsetX + alignmentOffsetX;
-      return {
-        x,
-        y,
-        align: 'right',
-        baseline: 'top',
-        rect: { x, y, width: valueBox.height, height: valueBox.width },
-        overflow: valueBox.height > geom.width || valueBox.width > geom.height,
-      };
+      const rect = { x, y, width: valueBox.height, height: valueBox.width };
+      return { x, y, rect, align: 'right', baseline: 'top', overflow: verticalOverflow };
     }
     case CHART_DIRECTION.BottomUp:
     default: {
@@ -192,14 +176,8 @@ function positionText(
           : 0;
       const x = geom.x + geom.width / 2 - offsetX + alignmentOffsetX;
       const y = geom.y - offsetY + alignmentOffsetY;
-      return {
-        x,
-        y,
-        align: 'center',
-        baseline: 'top',
-        rect: { x: x - valueBox.width / 2, y, width: valueBox.width, height: valueBox.height },
-        overflow: valueBox.width > geom.width || valueBox.height > geom.height,
-      };
+      const rect = { x: x - valueBox.width / 2, y, width: valueBox.width, height: valueBox.height };
+      return { x, y, rect, align: 'center', baseline: 'top', overflow: horizontalOverflow };
     }
   }
 }
