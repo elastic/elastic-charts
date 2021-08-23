@@ -20,49 +20,14 @@ type PanelTitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' |
 type TitleProps = PanelTitleProps & { anchorPoint: Point };
 
 /** @internal */
-export function renderPanelTitle(
-  ctx: CanvasRenderingContext2D,
-  {
-    size: { width, height },
-    dimension: { maxLabelBboxWidth, maxLabelBboxHeight },
-    axisSpec: { position, hide: hideAxis, title },
-    axisStyle: { axisPanelTitle, axisTitle, tickLabel, tickLine },
-    panelTitle,
-    debug,
-  }: PanelTitleProps,
-) {
-  if (!panelTitle || !axisPanelTitle.visible) {
-    return null;
-  }
-
-  const anchorPoint = { x: 0, y: 0 };
-
-  const horizontal = isHorizontalAxis(position);
-  const font = getFontStyle(axisPanelTitle);
-  const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const maxLabelBoxSize = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const labelSize = tickLabel.visible ? maxLabelBoxSize + innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
-
-  const titleDimension = title ? getTitleDimension(axisTitle) : 0;
-
-  const offset =
-    position === Position.Left || position === Position.Top
-      ? titleDimension + outerPad(axisPanelTitle.padding)
-      : tickDimension + labelSize + innerPad(axisPanelTitle.padding);
-
-  const x = anchorPoint.x + (horizontal ? 0 : offset);
-  const y = anchorPoint.y + (horizontal ? offset : height);
-  const textX = horizontal ? width / 2 : offset + font.fontSize / 2;
-  const textY = horizontal ? offset + font.fontSize / 2 : height / 2;
-  const rotation = horizontal ? 0 : -90;
-
-  if (debug) renderDebugRect(ctx, { x, y, width: horizontal ? width : height, height: font.fontSize }, rotation);
-  renderText(ctx, { x: textX, y: textY }, panelTitle, font, rotation);
+export function renderPanelTitle(ctx: CanvasRenderingContext2D, props: PanelTitleProps) {
+  const props2: TitleProps = { ...props, anchorPoint: { x: 0, y: 0 } };
+  renderUnifiedTitle(ctx, props2, true);
 }
 
 /** @internal */
 export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
-  renderUnifiedTitle(ctx, props);
+  renderUnifiedTitle(ctx, props, false);
 }
 
 function getFontStyle({ fontFamily, fontStyle, fill, fontSize }: TextStyle): TextFont {
@@ -90,40 +55,44 @@ function renderUnifiedTitle(
     debug,
     anchorPoint,
   }: TitleProps,
+  panel: boolean,
 ) {
-  if (!title || !axisTitle.visible) {
-    return null;
+  const axisTitleToUse = panel ? axisPanelTitle : axisTitle;
+  const otherAxisTitleToUse = panel ? axisTitle : axisPanelTitle;
+  const titleToRender = panel ? panelTitle : title;
+  const otherTitle = panel ? title : panelTitle;
+  if (!titleToRender || !axisTitleToUse.visible) {
+    return;
   }
   const horizontal = isHorizontalAxis(position);
-  const font = getFontStyle(axisTitle);
+  const font = getFontStyle(axisTitleToUse);
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const maxLabelBoxSize = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
   const labelSize = tickLabel.visible ? maxLabelBoxSize + innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
-
-  const panelTitleDimension = panelTitle ? getTitleDimension(axisPanelTitle) : 0;
-  const titlePadding = axisTitle.visible && title ? axisTitle.padding : 0;
+  const otherTitleDimension = otherTitle ? getTitleDimension(otherAxisTitleToUse) : 0;
+  const titlePadding = panel || (axisTitleToUse.visible && title) ? axisTitleToUse.padding : 0;
 
   const offset =
     position === Position.Left || position === Position.Top
-      ? outerPad(titlePadding)
-      : labelSize + tickDimension + innerPad(titlePadding) + panelTitleDimension;
+      ? outerPad(titlePadding) + (panel ? otherTitleDimension : 0)
+      : tickDimension + labelSize + innerPad(titlePadding) + (panel ? 0 : otherTitleDimension);
 
-  const left = anchorPoint.x + (horizontal ? 0 : offset);
-  const top = anchorPoint.y + (horizontal ? offset : height);
+  const x = anchorPoint.x + (horizontal ? 0 : offset);
+  const y = anchorPoint.y + (horizontal ? offset : height);
+  const textX = panel
+    ? horizontal
+      ? width / 2
+      : offset + font.fontSize / 2
+    : x + (horizontal ? width / 2 : font.fontSize / 2);
+  const textY = panel
+    ? horizontal
+      ? offset + font.fontSize / 2
+      : height / 2
+    : y + (horizontal ? font.fontSize / 2 : -height / 2);
 
-  if (debug) {
-    renderDebugRect(
-      ctx,
-      { x: left, y: top, width: horizontal ? width : height, height: font.fontSize },
-      horizontal ? 0 : -90,
-    );
-  }
+  if (debug)
+    renderDebugRect(ctx, { x, y, width: horizontal ? width : height, height: font.fontSize }, horizontal ? 0 : -90);
 
-  renderText(
-    ctx,
-    { x: left + (horizontal ? width : font.fontSize) / 2, y: top + (horizontal ? font.fontSize : -height) / 2 },
-    title ?? '', // title is always a string due to caller; consider turning `title` to be obligate string upstream
-    font,
-    horizontal ? 0 : -90,
-  );
+  // title is always a string due to caller; consider turning `title` to be obligate string upstream
+  renderText(ctx, { x: textX, y: textY }, titleToRender ?? '', font, horizontal ? 0 : -90);
 }
