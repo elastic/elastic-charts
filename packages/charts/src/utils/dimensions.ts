@@ -62,6 +62,5 @@ export const outerPadding = (padding: UnionPadding, minPadding = 0) =>
 
 /** @internal */
 export function getSimplePadding(padding: UnionPadding, minPadding = 0): SimplePadding {
-  // minPadding should be at least one to avoid browser measureText inconsistencies
   return { inner: innerPadding(padding, minPadding), outer: outerPadding(padding, minPadding) };
 }
