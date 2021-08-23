@@ -61,7 +61,25 @@ export function renderPanelTitle(
 }
 
 /** @internal */
-export function renderTitle(
+export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
+  renderUnifiedTitle(ctx, props);
+}
+
+function getFontStyle({ fontFamily, fontStyle, fill, fontSize }: TextStyle): TextFont {
+  return {
+    fontFamily,
+    fontVariant: 'normal',
+    fontStyle: fontStyle ?? 'normal',
+    fontWeight: 'bold',
+    textColor: fill,
+    textOpacity: 1,
+    align: 'center',
+    baseline: 'middle',
+    fontSize,
+  };
+}
+
+function renderUnifiedTitle(
   ctx: CanvasRenderingContext2D,
   {
     size: { width, height },
@@ -108,18 +126,4 @@ export function renderTitle(
     font,
     horizontal ? 0 : -90,
   );
-}
-
-function getFontStyle({ fontFamily, fontStyle, fill, fontSize }: TextStyle): TextFont {
-  return {
-    fontFamily,
-    fontVariant: 'normal',
-    fontStyle: fontStyle ?? 'normal',
-    fontWeight: 'bold',
-    textColor: fill,
-    textOpacity: 1,
-    align: 'center',
-    baseline: 'middle',
-    fontSize,
-  };
 }
