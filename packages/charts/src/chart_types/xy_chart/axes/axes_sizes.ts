@@ -8,7 +8,7 @@
 
 import { SmallMultiplesSpec } from '../../../specs';
 import { Position } from '../../../utils/common';
-import { getSimplePadding, PerSideDistance } from '../../../utils/dimensions';
+import { innerPadding, outerPadding, PerSideDistance } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { getSpecsById } from '../state/utils/spec';
@@ -29,33 +29,30 @@ export function computeAxesSizes(
 
   axisDimensions.forEach(({ maxLabelBboxWidth = 0, maxLabelBboxHeight = 0, isHidden }, id) => {
     const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
-    if (!axisSpec || isHidden) {
+    if (isHidden || !axisSpec) {
       return;
     }
-    const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(id) ?? sharedAxesStyles;
-    const showTicks = shouldShowTicks(tickLine, axisSpec.hide);
     const { position, title } = axisSpec;
-    const labelPadding = getSimplePadding(tickLabel.padding);
-    const labelPaddingSum = tickLabel.visible ? labelPadding.inner + labelPadding.outer : 0;
-
-    const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
-    const titleDimension = title ? getTitleDimension(axisTitle) : 0;
+    const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(id) ?? sharedAxesStyles;
     const hasPanelTitle = Boolean(isVerticalAxis(position) ? smSpec?.splitVertically : smSpec?.splitHorizontally);
     const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
+    const labelPaddingSum = tickLabel.visible ? innerPadding(tickLabel.padding) + outerPadding(tickLabel.padding) : 0;
+    const titleDimension = title ? getTitleDimension(axisTitle) : 0;
+    const tickDimension = shouldShowTicks(tickLine, axisSpec.hide) ? tickLine.size + tickLine.padding : 0;
     const axisDimension = labelPaddingSum + tickDimension + titleDimension + panelTitleDimension;
-    const maxAxisHeight = tickLabel.visible ? maxLabelBboxHeight + axisDimension : axisDimension;
-    const maxAxisWidth = tickLabel.visible ? maxLabelBboxWidth + axisDimension : axisDimension;
 
     // TODO use first and last labels
     if (isVerticalAxis(position)) {
       axisLabelOverflow.top = Math.max(axisLabelOverflow.top, maxLabelBboxHeight / 2);
       axisLabelOverflow.bottom = Math.max(axisLabelOverflow.bottom, maxLabelBboxHeight / 2);
+      const maxAxisWidth = axisDimension + (tickLabel.visible ? maxLabelBboxWidth : 0);
       axisMainSize.left += position === Position.Left ? maxAxisWidth + chartMargins.left : 0;
       axisMainSize.right += position === Position.Right ? maxAxisWidth + chartMargins.right : 0;
     } else {
       // find the max half label size to accommodate the left/right labels
       axisLabelOverflow.left = Math.max(axisLabelOverflow.left, maxLabelBboxWidth / 2);
       axisLabelOverflow.right = Math.max(axisLabelOverflow.right, maxLabelBboxWidth / 2);
+      const maxAxisHeight = axisDimension + (tickLabel.visible ? maxLabelBboxHeight : 0);
       axisMainSize.top += position === Position.Top ? maxAxisHeight + chartMargins.top : 0;
       axisMainSize.bottom += position === Position.Bottom ? maxAxisHeight + chartMargins.bottom : 0;
     }

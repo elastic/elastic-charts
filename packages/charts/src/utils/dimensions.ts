@@ -50,16 +50,18 @@ export interface SimplePadding {
   inner: number;
 }
 
-/**
- * Computes padding from number or `SimplePadding` with optional `minPadding`
- *
- * @param padding
- * @param minPadding should be at least one to avoid browser measureText inconsistencies
- * @internal
- */
-export function getSimplePadding(padding: number | Partial<SimplePadding>, minPadding = 0): SimplePadding {
-  return {
-    inner: Math.max(minPadding, typeof padding === 'number' ? padding : padding?.inner ?? 0),
-    outer: Math.max(minPadding, typeof padding === 'number' ? padding : padding?.outer ?? 0),
-  };
+type UnionPadding = number | Partial<SimplePadding>;
+
+/** @internal */
+export const innerPadding = (padding: UnionPadding, minPadding = 0) =>
+  Math.max(minPadding, typeof padding === 'number' ? padding : padding?.inner ?? 0);
+
+/** @internal */
+export const outerPadding = (padding: UnionPadding, minPadding = 0) =>
+  Math.max(minPadding, typeof padding === 'number' ? padding : padding?.outer ?? 0);
+
+/** @internal */
+export function getSimplePadding(padding: UnionPadding, minPadding = 0): SimplePadding {
+  // minPadding should be at least one to avoid browser measureText inconsistencies
+  return { inner: innerPadding(padding, minPadding), outer: outerPadding(padding, minPadding) };
 }
