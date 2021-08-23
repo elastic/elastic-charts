@@ -18,17 +18,6 @@ import { renderDebugRect } from '../utils/debug';
 type PanelTitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'>;
 type TitleProps = PanelTitleProps & { anchorPoint: Point };
 
-/** @internal */
-export function renderPanelTitle(ctx: CanvasRenderingContext2D, props: PanelTitleProps) {
-  const props2: TitleProps = { ...props, anchorPoint: { x: 0, y: 0 } };
-  renderUnifiedTitle(ctx, props2, true);
-}
-
-/** @internal */
-export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
-  renderUnifiedTitle(ctx, props, false);
-}
-
 const titleFontDefaults: Omit<TextFont, 'fontFamily' | 'textColor' | 'fontSize'> = {
   fontVariant: 'normal',
   fontStyle: 'normal', // may be overridden (happens if prop on axis style is defined)
@@ -38,8 +27,10 @@ const titleFontDefaults: Omit<TextFont, 'fontFamily' | 'textColor' | 'fontSize'>
   baseline: 'middle',
 };
 
-function renderUnifiedTitle(
+/** @internal */
+export function renderTitle(
   ctx: CanvasRenderingContext2D,
+  panel: boolean,
   {
     size: { width, height },
     dimension: { maxLabelBboxWidth, maxLabelBboxHeight },
@@ -49,7 +40,6 @@ function renderUnifiedTitle(
     debug,
     anchorPoint,
   }: TitleProps,
-  panel: boolean,
 ) {
   const axisTitleToUse = panel ? axisPanelTitle : axisTitle;
   const otherAxisTitleToUse = panel ? axisTitle : axisPanelTitle;
@@ -86,6 +76,5 @@ function renderUnifiedTitle(
   if (debug)
     renderDebugRect(ctx, { x, y, width: horizontal ? width : height, height: font.fontSize }, horizontal ? 0 : -90);
 
-  // title is always a string due to caller; consider turning `title` to be obligate string upstream
   renderText(ctx, { x: textX, y: textY }, titleToRender ?? '', font, horizontal ? 0 : -90);
 }
