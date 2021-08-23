@@ -61,6 +61,49 @@ export function computeRectAnnotationTooltipState(
   return null;
 }
 
+/** @internal */
+export function computeMultipleRectAnnotationTooltipState(
+  cursorPosition: Point,
+  annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
+  annotationSpecs: AnnotationSpec[],
+  chartRotation: Rotation,
+  chartDimensions: Dimensions,
+): AnnotationTooltipState[] | null {
+  // allow picking up the last spec added as the top most or use it's zIndex value
+  const sortedAnnotationSpecs = annotationSpecs
+    .filter(isRectAnnotation)
+    .reverse()
+    .sort(({ zIndex: a = Number.MIN_SAFE_INTEGER }, { zIndex: b = Number.MIN_SAFE_INTEGER }) => b - a);
+  const allRectAnnotations: AnnotationTooltipState[] = [];
+  for (let i = 0; i < sortedAnnotationSpecs.length; i++) {
+    const spec = sortedAnnotationSpecs[i];
+    const annotationDimension = annotationDimensions.get(spec.id);
+    if (spec.hideTooltips || !annotationDimension) {
+      continue;
+    }
+    const { customTooltip, customTooltipDetails } = spec;
+
+    const tooltipSettings = getTooltipSettings(spec);
+
+    const rectAnnotationTooltipState = getRectAnnotationTooltipState(
+      cursorPosition,
+      annotationDimension as AnnotationRectProps[],
+      chartRotation,
+      chartDimensions,
+      spec.id,
+    );
+    if (rectAnnotationTooltipState) {
+      allRectAnnotations.push({
+        ...rectAnnotationTooltipState,
+        tooltipSettings,
+        customTooltip,
+        customTooltipDetails: customTooltipDetails ?? spec.renderTooltip,
+      });
+    }
+  }
+  return allRectAnnotations || null;
+}
+
 function getTooltipSettings({
   placement,
   fallbackPlacements,

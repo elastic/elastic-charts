@@ -1290,7 +1290,7 @@ describe('Clickable annotations', () => {
     const callArgs = onAnnotationClick.mock.calls[0][0];
     expect(callArgs.rects[0].id).toEqual('rect2');
   });
-  test('click line marker annotation', () => {
+  test.skip('click line marker annotation', () => {
     const store = MockStore.default({ width: 500, height: 500, top: 0, left: 0 }, 'chartId');
     const onAnnotationClick = jest.fn<void, any[]>((data: any): void => data);
     const onAnnotationClickCaller = createOnClickCaller();

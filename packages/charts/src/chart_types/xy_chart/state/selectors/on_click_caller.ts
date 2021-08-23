@@ -24,7 +24,7 @@ import { isClicking } from '../../../../state/utils';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
 import { AnnotationTooltipState } from '../../annotations/types';
 import { XYChartSeriesIdentifier } from '../../utils/series';
-import { getAnnotationTooltipStateSelector } from './get_annotation_tooltip_state';
+import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annotations';
 import { getProjectedScaledValues } from './get_projected_scaled_values';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 
@@ -51,21 +51,21 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
         getSettingsSpecSelector,
         getHighlightedGeomsSelector,
         getProjectedScaledValues,
-        getAnnotationTooltipStateSelector,
+        getMultipleRectangleAnnotations,
       ],
       (
         lastClick: PointerState | null,
         { onElementClick, onProjectionClick, onAnnotationClick }: SettingsSpec,
         indexedGeometries: IndexedGeometry[],
         values,
-        tooltipState,
+        tooltipStates,
       ): void => {
         if (!isClicking(prevClick, lastClick)) {
           return;
         }
         const elementClickFired = tryFiringOnElementClick(indexedGeometries, onElementClick);
-        if (!elementClickFired && onAnnotationClick && tooltipState) {
-          tryFiringOnAnnotationClick(tooltipState, onAnnotationClick);
+        if (!elementClickFired && onAnnotationClick && tooltipStates) {
+          tryFiringOnAnnotationClick(tooltipStates, onAnnotationClick);
         } else if (!elementClickFired) {
           tryFiringOnProjectionClick(values, onProjectionClick);
         }
@@ -102,23 +102,25 @@ function tryFiringOnProjectionClick(
 }
 
 function tryFiringOnAnnotationClick(
-  annotationState: AnnotationTooltipState,
+  annotationState: AnnotationTooltipState[],
   onAnnotationClick: SettingsSpec['onAnnotationClick'],
 ): boolean {
   if (annotationState && onAnnotationClick) {
-    const rects = [];
-    const lines = [];
-    if (annotationState.annotationType === AnnotationType.Rectangle) {
-      rects.push({
-        id: annotationState.id,
-        datum: annotationState.datum as RectAnnotationDatum,
-      });
-    } else if (annotationState.annotationType === AnnotationType.Line) {
-      lines.push({
-        id: annotationState.id,
-        datum: annotationState.datum as LineAnnotationDatum,
-      });
-    }
+    const rects: { id: string; datum: RectAnnotationDatum }[] = [];
+    const lines: { id: string; datum: LineAnnotationDatum }[] = [];
+    annotationState.forEach((annotation) => {
+      if (annotation.annotationType === AnnotationType.Rectangle) {
+        rects.push({
+          id: annotation.id,
+          datum: annotation.datum as RectAnnotationDatum,
+        });
+      } else if (annotation.annotationType === AnnotationType.Line) {
+        lines.push({
+          id: annotation.id,
+          datum: annotation.datum as LineAnnotationDatum,
+        });
+      }
+    });
     onAnnotationClick({ rects, lines });
     return true;
   }
