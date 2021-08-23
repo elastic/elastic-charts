@@ -21,28 +21,30 @@ type TitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'siz
 };
 
 /** @internal */
-export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
-  if (!props.axisSpec.title || !props.axisStyle.axisTitle.visible) {
-    return;
-  }
-
-  const {
+export function renderTitle(
+  ctx: CanvasRenderingContext2D,
+  {
     size: { width, height },
-    axisSpec: { position, hide: hideAxis, title },
     dimension: { maxLabelBboxWidth, maxLabelBboxHeight },
-    axisStyle: { axisTitle, axisPanelTitle, tickLine, tickLabel },
-    anchorPoint,
-    debug,
+    axisSpec: { position, hide: hideAxis, title },
+    axisStyle: { axisPanelTitle, axisTitle, tickLabel, tickLine },
     panelTitle,
-  } = props;
-
+    debug,
+    anchorPoint,
+  }: TitleProps,
+) {
+  if (!title || !axisTitle.visible) {
+    return null;
+  }
+  const horizontal = isHorizontalAxis(position);
   const font = getFontStyle(axisTitle);
-  const titlePadding = axisTitle.visible && title ? axisTitle.padding : 0;
-  const panelTitleDimension = panelTitle ? getTitleDimension(axisPanelTitle) : 0;
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const horizontal = isHorizontalAxis(props.axisSpec.position);
   const maxLabelBoxSize = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
   const labelSize = tickLabel.visible ? maxLabelBoxSize + innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
+
+  const panelTitleDimension = panelTitle ? getTitleDimension(axisPanelTitle) : 0;
+  const titlePadding = axisTitle.visible && title ? axisTitle.padding : 0;
+
   const offset =
     position === Position.Left || position === Position.Top
       ? outerPad(titlePadding)

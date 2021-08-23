@@ -18,46 +18,51 @@ import { renderDebugRect } from '../utils/debug';
 type PanelTitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'>;
 
 /** @internal */
-export function renderPanelTitle(ctx: CanvasRenderingContext2D, props: PanelTitleProps) {
-  const {
+export function renderPanelTitle(
+  ctx: CanvasRenderingContext2D,
+  {
     size: { width, height },
     dimension: { maxLabelBboxWidth, maxLabelBboxHeight },
     axisSpec: { position, hide: hideAxis, title },
-    axisStyle: { axisPanelTitle, axisTitle, tickLine, tickLabel },
+    axisStyle: { axisPanelTitle, axisTitle, tickLabel, tickLine },
     panelTitle,
     debug,
-  } = props;
+  }: PanelTitleProps,
+) {
   if (!panelTitle || !axisPanelTitle.visible) {
     return null;
   }
-  const horizontalAxis = isHorizontalAxis(position);
 
+  const anchorPoint = { x: 0, y: 0 };
+
+  const horizontal = isHorizontalAxis(position);
   const font = getFontStyle(axisPanelTitle);
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
+  const maxLabelBoxSize = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
+  const labelSize = tickLabel.visible ? maxLabelBoxSize + innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
+
   const titleDimension = title ? getTitleDimension(axisTitle) : 0;
-  const tickLabelPad = tickLabel.padding;
-  const maxLabelBboxSize = horizontalAxis ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const labelSize = tickLabel.visible ? maxLabelBboxSize + outerPad(tickLabelPad) + innerPad(tickLabelPad) : 0;
 
-  if (horizontalAxis) {
-    const top =
-      position === Position.Top
-        ? titleDimension + outerPad(axisPanelTitle.padding)
-        : labelSize + tickDimension + innerPad(axisPanelTitle.padding);
+  const offset =
+    position === Position.Left || position === Position.Top
+      ? titleDimension + outerPad(axisPanelTitle.padding)
+      : tickDimension + labelSize + innerPad(axisPanelTitle.padding);
 
-    if (debug) renderDebugRect(ctx, { x: 0, y: top, width, height: font.fontSize });
+  const left = anchorPoint.x + (horizontal ? 0 : offset);
+  const top = anchorPoint.y + (horizontal ? offset : height);
 
-    renderText(ctx, { x: width / 2, y: top + font.fontSize / 2 }, panelTitle, font);
+  if (debug) {
+    renderDebugRect(
+      ctx,
+      { x: left, y: top, width: horizontal ? width : height, height: font.fontSize },
+      horizontal ? 0 : -90,
+    );
+  }
+
+  if (horizontal) {
+    renderText(ctx, { x: width / 2, y: offset + font.fontSize / 2 }, panelTitle, font);
   } else {
-    const top = height;
-    const left =
-      position === Position.Left
-        ? titleDimension + outerPad(axisPanelTitle.padding)
-        : tickDimension + labelSize + innerPad(axisPanelTitle.padding);
-
-    if (debug) renderDebugRect(ctx, { x: left, y: top, width: height, height: font.fontSize }, -90);
-
-    renderText(ctx, { x: left + font.fontSize / 2, y: top - height / 2 }, panelTitle, font, -90);
+    renderText(ctx, { x: offset + font.fontSize / 2, y: height - height / 2 }, panelTitle, font, -90);
   }
 }
 
