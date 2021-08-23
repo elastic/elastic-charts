@@ -77,7 +77,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     if (debug) withPanelTransform(ctx, panel, rotation, renderingArea, () => renderDebugRect(ctx, rect));
 
     lines.forEach((textLine, j) => {
-      const origin = repositionTextLine({ x, y }, rotation, j, lines.length, { width, height });
+      const origin = textLineOrigin({ x, y }, rotation, j, lines.length, { width, height });
       const fontAugment = { fontSize, align, baseline, shadow: shadowColor, shadowSize };
       withPanelTransform(ctx, panel, rotation, renderingArea, () =>
         renderText(ctx, origin, textLine, { ...font, ...fontAugment }, -rotation, 0, 0, fontScale),
@@ -86,7 +86,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
   });
 }
 
-function repositionTextLine(
+function textLineOrigin(
   origin: Point,
   chartRotation: Rotation,
   i: number,
