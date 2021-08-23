@@ -55,8 +55,6 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
     renderDebugRect(
       ctx,
       { x: left, y: top, width: horizontal ? width : height, height: font.fontSize },
-      undefined,
-      undefined,
       horizontal ? 0 : -90,
     );
   }

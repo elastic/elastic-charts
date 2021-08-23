@@ -39,36 +39,22 @@ function renderVerticalTitle(ctx: CanvasRenderingContext2D, props: PanelTitlePro
     debug,
     panelTitle,
   } = props;
-  if (!panelTitle) {
-    return null;
-  }
-  const font = getFontStyle(axisPanelTitle);
-  const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const panelTitlePadding = axisPanelTitle.visible && panelTitle ? axisPanelTitle.padding : 0;
-  const titleDimension = title ? getTitleDimension(axisTitle) : 0;
-  const labelWidth = tickLabel.visible
-    ? outerPad(tickLabel.padding) + maxLabelBboxWidth + innerPad(tickLabel.padding)
-    : 0;
-  const top = height;
-  const left =
-    position === Position.Left
-      ? titleDimension + outerPad(panelTitlePadding)
-      : tickDimension + labelWidth + innerPad(panelTitlePadding);
+  if (panelTitle && axisPanelTitle.visible) {
+    const font = getFontStyle(axisPanelTitle);
+    const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
+    const titleDimension = title ? getTitleDimension(axisTitle) : 0;
+    const tickLabelPad = tickLabel.padding;
+    const labelWidth = tickLabel.visible ? outerPad(tickLabelPad) + maxLabelBboxWidth + innerPad(tickLabelPad) : 0;
+    const top = height;
+    const left =
+      position === Position.Left
+        ? titleDimension + outerPad(axisPanelTitle.padding)
+        : tickDimension + labelWidth + innerPad(axisPanelTitle.padding);
 
-  if (debug) {
-    renderDebugRect(ctx, { x: left, y: top, width: height, height: font.fontSize }, undefined, undefined, -90);
-  }
+    if (debug) renderDebugRect(ctx, { x: left, y: top, width: height, height: font.fontSize }, -90);
 
-  renderText(
-    ctx,
-    {
-      x: left + font.fontSize / 2,
-      y: top - height / 2,
-    },
-    panelTitle,
-    font,
-    -90,
-  );
+    renderText(ctx, { x: left + font.fontSize / 2, y: top - height / 2 }, panelTitle, font, -90);
+  }
 }
 
 function renderHorizontalTitle(ctx: CanvasRenderingContext2D, props: PanelTitleProps) {

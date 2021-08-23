@@ -40,20 +40,18 @@ const CHART_DIRECTION: Record<string, Rotation> = {
 export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesProps) {
   const { bars, debug, rotation, renderingArea, barSeriesStyle, panel } = props;
   const { fontFamily, fontStyle, fill, alignment } = barSeriesStyle.displayValue;
-  const barsLength = bars.length;
-  for (let i = 0; i < barsLength; i++) {
-    const { displayValue } = bars[i];
-    if (!displayValue) {
-      continue;
+  bars.forEach((bar) => {
+    if (!bar.displayValue) {
+      return;
     }
-    const { text, fontSize, fontScale, overflowConstraints, isValueContainedInElement } = displayValue;
+    const { text, fontSize, fontScale, overflowConstraints, isValueContainedInElement } = bar.displayValue;
     let textLines = {
       lines: [text],
-      width: displayValue.width,
-      height: displayValue.height,
+      width: bar.displayValue.width,
+      height: bar.displayValue.height,
     };
     const shadowSize = getTextBorderSize(fill);
-    const { fillColor, shadowColor } = getTextColors(fill, bars[i].color, shadowSize);
+    const { fillColor, shadowColor } = getTextColors(fill, bar.color, shadowSize);
     const font: Font = {
       fontFamily,
       fontStyle: fontStyle ?? 'normal',
@@ -64,40 +62,35 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     };
 
     const { x, y, align, baseline, rect, overflow } = positionText(
-      bars[i],
-      displayValue,
+      bar,
+      bar.displayValue,
       rotation,
       barSeriesStyle.displayValue,
       alignment,
     );
 
     if (isValueContainedInElement) {
-      const width = rotation === 0 || rotation === 180 ? bars[i].width : bars[i].height;
+      const width = rotation === 0 || rotation === 180 ? bar.width : bar.height;
       textLines = wrapLines(ctx, textLines.lines[0], font, fontSize, width, 100);
     }
     if (overflowConstraints.has(LabelOverflowConstraint.ChartEdges) && isOverflow(rect, renderingArea, rotation)) {
-      continue;
+      return;
     }
     if (overflowConstraints.has(LabelOverflowConstraint.BarGeometry) && overflow) {
-      continue;
+      return;
     }
-    if (debug) {
-      withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
-        renderDebugRect(ctx, rect);
-      });
-    }
-    const { width, height } = textLines;
-    const linesLength = textLines.lines.length;
+    if (debug) withPanelTransform(ctx, panel, rotation, renderingArea, () => renderDebugRect(ctx, rect));
 
-    for (let j = 0; j < linesLength; j++) {
-      const textLine = textLines.lines[j];
-      const origin = repositionTextLine({ x, y }, rotation, j, linesLength, { height, width });
+    const { width, height, lines } = textLines;
+
+    lines.forEach((textLine, j) => {
+      const origin = repositionTextLine({ x, y }, rotation, j, lines.length, { width, height });
       const fontAugment = { fontSize, align, baseline, shadow: shadowColor, shadowSize };
-      withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
-        renderText(ctx, origin, textLine, { ...font, ...fontAugment }, -rotation, 0, 0, fontScale);
-      });
-    }
-  }
+      withPanelTransform(ctx, panel, rotation, renderingArea, () =>
+        renderText(ctx, origin, textLine, { ...font, ...fontAugment }, -rotation, 0, 0, fontScale),
+      );
+    });
+  });
 }
 
 function repositionTextLine(
