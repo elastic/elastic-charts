@@ -59,11 +59,13 @@ export function renderPanelTitle(
     );
   }
 
-  if (horizontal) {
-    renderText(ctx, { x: width / 2, y: offset + font.fontSize / 2 }, panelTitle, font);
-  } else {
-    renderText(ctx, { x: offset + font.fontSize / 2, y: height - height / 2 }, panelTitle, font, -90);
-  }
+  renderText(
+    ctx,
+    { x: horizontal ? width / 2 : offset, y: horizontal ? offset + font.fontSize / 2 : height - height / 2 },
+    panelTitle, // title is always a string due to caller; consider turning `title` to be obligate string upstream
+    font,
+    horizontal ? 0 : -90,
+  );
 }
 
 /** @internal */
