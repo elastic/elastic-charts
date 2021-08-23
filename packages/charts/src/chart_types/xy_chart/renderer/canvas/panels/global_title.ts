@@ -7,7 +7,7 @@
  */
 
 import { Position } from '../../../../../utils/common';
-import { getSimplePadding } from '../../../../../utils/dimensions';
+import { innerPad, outerPad } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
@@ -37,17 +37,16 @@ export function renderTitle(ctx: CanvasRenderingContext2D, props: TitleProps) {
   } = props;
 
   const font = getFontStyle(axisTitle);
-  const titlePadding = getSimplePadding(axisTitle.visible && title ? axisTitle.padding : 0);
+  const titlePadding = axisTitle.visible && title ? axisTitle.padding : 0;
   const panelTitleDimension = panelTitle ? getTitleDimension(axisPanelTitle) : 0;
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const labelPadding = getSimplePadding(tickLabel.padding);
   const horizontal = isHorizontalAxis(props.axisSpec.position);
   const maxLabelBoxSize = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const labelSize = tickLabel.visible ? maxLabelBoxSize + labelPadding.outer + labelPadding.inner : 0;
+  const labelSize = tickLabel.visible ? maxLabelBoxSize + innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
   const offset =
     position === Position.Left || position === Position.Top
-      ? titlePadding.outer
-      : labelSize + tickDimension + titlePadding.inner + panelTitleDimension;
+      ? outerPad(titlePadding)
+      : labelSize + tickDimension + innerPad(titlePadding) + panelTitleDimension;
 
   const left = anchorPoint.x + (horizontal ? 0 : offset);
   const top = anchorPoint.y + (horizontal ? offset : height);

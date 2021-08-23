@@ -8,7 +8,7 @@
 
 import { SmallMultiplesSpec } from '../../../specs';
 import { Position } from '../../../utils/common';
-import { innerPadding, outerPadding, PerSideDistance } from '../../../utils/dimensions';
+import { innerPad, outerPad, PerSideDistance } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { getSpecsById } from '../state/utils/spec';
@@ -36,7 +36,7 @@ export function computeAxesSizes(
     const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(id) ?? sharedAxesStyles;
     const hasPanelTitle = Boolean(isVerticalAxis(position) ? smSpec?.splitVertically : smSpec?.splitHorizontally);
     const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
-    const labelPaddingSum = tickLabel.visible ? innerPadding(tickLabel.padding) + outerPadding(tickLabel.padding) : 0;
+    const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
     const titleDimension = title ? getTitleDimension(axisTitle) : 0;
     const tickDimension = shouldShowTicks(tickLine, axisSpec.hide) ? tickLine.size + tickLine.padding : 0;
     const axisDimension = labelPaddingSum + tickDimension + titleDimension + panelTitleDimension;

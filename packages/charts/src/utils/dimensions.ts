@@ -50,17 +50,10 @@ export interface SimplePadding {
   inner: number;
 }
 
-type UnionPadding = number | Partial<SimplePadding>;
-
 /** @internal */
-export const innerPadding = (padding: UnionPadding, minPadding = 0) =>
+export const innerPad = (padding: number | Partial<SimplePadding>, minPadding = 0) =>
   Math.max(minPadding, typeof padding === 'number' ? padding : padding?.inner ?? 0);
 
 /** @internal */
-export const outerPadding = (padding: UnionPadding, minPadding = 0) =>
+export const outerPad = (padding: number | Partial<SimplePadding>, minPadding = 0) =>
   Math.max(minPadding, typeof padding === 'number' ? padding : padding?.outer ?? 0);
-
-/** @internal */
-export function getSimplePadding(padding: UnionPadding, minPadding = 0): SimplePadding {
-  return { inner: innerPadding(padding, minPadding), outer: outerPadding(padding, minPadding) };
-}
