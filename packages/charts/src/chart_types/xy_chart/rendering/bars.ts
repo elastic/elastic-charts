@@ -36,7 +36,6 @@ export function renderBars(
   sharedSeriesStyle: BarSeriesStyle,
   displayValueSettings?: DisplayValueSpec,
   styleAccessor?: BarStyleAccessor,
-  minBarHeight: number = 0,
   stackMode?: StackMode,
   chartRotation?: number,
 ): BarTuple {
@@ -66,22 +65,15 @@ export function renderBars(
           : yScale.scale(y0)
         : yScale.scale(y0 === null ? 0 : y0);
 
-      const absMinHeight = Math.abs(minBarHeight);
-
       // safeguard against null y values
-      const rawHeight = isNil(y0Scaled) || isNil(y) ? 0 : y0Scaled - y;
+      const signedHeight = isNil(y0Scaled) || isNil(y) ? 0 : y0Scaled - y;
 
       if (isNil(y0Scaled) || isNil(y)) {
         y = 0;
       }
 
-      const clippedHeight =
-        absMinHeight === undefined || rawHeight === 0 || Math.abs(rawHeight) >= absMinHeight
-          ? rawHeight
-          : absMinHeight * (rawHeight < 0 ? -1 : 1);
-
-      const isUpsideDown = clippedHeight < 0;
-      const height = Math.abs(rawHeight);
+      const isUpsideDown = signedHeight < 0;
+      const height = Math.abs(signedHeight);
       y = isUpsideDown ? y - height : y;
 
       const xScaled = xScale.scale(datum.x);

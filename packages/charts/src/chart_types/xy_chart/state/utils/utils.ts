@@ -385,7 +385,6 @@ function renderGeometries(
         barSeriesStyle,
         displayValueSettings,
         spec.styleAccessor,
-        spec.minBarHeight,
         stackMode,
         chartRotation,
       );
