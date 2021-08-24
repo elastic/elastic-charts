@@ -9,7 +9,7 @@
 import { ChartType } from '../../..';
 import { CategoryKey } from '../../../../common/category';
 import { Pixels, Ratio } from '../../../../common/geometry';
-import { Font } from '../../../../common/text_utils';
+import { Font, FONT_STYLES } from '../../../../common/text_utils';
 import { RelativeBandsPadding, SmallMultiplesSpec, SpecType } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
@@ -173,7 +173,7 @@ export const partitionMultiGeometries = createCustomCachedSelector(
           innerRowIndex * (panelInnerHeight * (1 + style.verticalPanelPadding.inner));
 
         const fontFace: Font = {
-          fontStyle: axisPanelTitle.fontStyle ?? 'normal',
+          fontStyle: FONT_STYLES.find((d) => d === axisPanelTitle.fontStyle) ?? 'normal',
           fontFamily: axisPanelTitle.fontFamily,
           fontWeight: 'normal',
           fontVariant: 'normal',
