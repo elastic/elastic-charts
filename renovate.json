@@ -1,5 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    ":ignoreModulesAndTests",
+    ":prHourlyLimit2",
+    ":prConcurrentLimit20"
+  ],
   "ignorePaths": ["./.github/**"],
   "enabledManagers": ["npm"],
   "baseBranches": ["master"],
