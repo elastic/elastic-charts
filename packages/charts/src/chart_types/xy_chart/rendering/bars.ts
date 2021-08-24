@@ -46,7 +46,8 @@ export function renderBars(
   const isInvertedY = yScale.isInverted;
   return withTextMeasure((textMeasure) =>
     dataSeries.data.reduce((barTuple: BarTuple, datum) => {
-      if (!xScale.isValueInDomain(datum.x)) {
+      const xScaled = xScale.scale(datum.x);
+      if (!xScale.isValueInDomain(datum.x) || xScaled === null) {
         return barTuple; // don't create a bar if not within the xScale domain
       }
       const { barGeometries, indexedGeometryMap } = barTuple;
@@ -66,11 +67,6 @@ export function renderBars(
       const isUpsideDown = finiteHeight < 0;
       const finiteY = isNil(y0Scaled) || isNil(rawY) ? 0 : rawY;
       const y = isUpsideDown ? finiteY - height + heightExtension : finiteY - heightExtension;
-      const xScaled = xScale.scale(datum.x);
-
-      if (xScaled === null) {
-        return barTuple;
-      }
 
       const seriesIdentifier: XYChartSeriesIdentifier = {
         key: dataSeries.key,
