@@ -927,7 +927,7 @@ export type RectAnnotationSpec = BaseAnnotationSpec<
   borderLineAnnotation?: BorderLineAnnotationValues;
 };
 
-/** @internal */
+/** @public */
 export interface BorderLineAnnotationValues {
   /**
    * The border position

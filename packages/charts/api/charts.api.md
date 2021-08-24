@@ -305,6 +305,13 @@ export const BinAgg: Readonly<{
 export type BinAgg = $Values<typeof BinAgg>;
 
 // @public (undocumented)
+export interface BorderLineAnnotationValues {
+    borderPosition: Position;
+    marker?: ReactNode | ComponentWithAnnotationDatum;
+    markerPosition: Position;
+}
+
+// @public (undocumented)
 export const BrushAxis: Readonly<{
     X: "x";
     Y: "y";
@@ -1649,6 +1656,7 @@ export type RectAnnotationSpec = BaseAnnotationSpec<typeof AnnotationType.Rectan
     zIndex?: number;
     outside?: boolean;
     outsideDimension?: number;
+    borderLineAnnotation?: BorderLineAnnotationValues;
 };
 
 // @public (undocumented)
