@@ -381,12 +381,13 @@ function renderGeometries(
         xScale,
         yScale,
         panel,
+        chartRotation,
+        spec.minBarHeight ?? 0,
         color,
         barSeriesStyle,
         displayValueSettings,
         spec.styleAccessor,
         stackMode,
-        chartRotation,
       );
       geometriesIndex.merge(renderedBars.indexedGeometryMap);
       bars.push({

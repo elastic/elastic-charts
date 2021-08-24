@@ -32,12 +32,13 @@ export function renderBars(
   xScale: Scale,
   yScale: Scale,
   panel: Dimensions,
+  chartRotation: number,
+  minBarHeight: number,
   color: Color,
   sharedSeriesStyle: BarSeriesStyle,
   displayValueSettings?: DisplayValueSpec,
   styleAccessor?: BarStyleAccessor,
   stackMode?: StackMode,
-  chartRotation?: number,
 ): BarTuple {
   const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
   const initialBarTuple: BarTuple = { barGeometries: [], indexedGeometryMap: new IndexedGeometryMap() } as BarTuple;
@@ -59,10 +60,12 @@ export function renderBars(
         : yScale.scale(y0 === null ? 0 : y0);
 
       const finiteHeight = isNil(y0Scaled) || isNil(rawY) ? 0 : y0Scaled - rawY; // safeguard against null y values
+      const absHeight = Math.abs(finiteHeight);
+      const height = absHeight === 0 ? absHeight : Math.max(minBarHeight, absHeight); // extend nonzero bars
+      const heightExtension = height - absHeight;
       const isUpsideDown = finiteHeight < 0;
-      const height = Math.abs(finiteHeight);
       const finiteY = isNil(y0Scaled) || isNil(rawY) ? 0 : rawY;
-      const y = isUpsideDown ? finiteY - height : finiteY;
+      const y = isUpsideDown ? finiteY - height + heightExtension : finiteY - heightExtension;
       const xScaled = xScale.scale(datum.x);
 
       if (xScaled === null) {
@@ -100,7 +103,7 @@ export function renderBars(
         displayValueSettings,
       );
 
-      const isHorizontalRotation = chartRotation == null || chartRotation % 180 === 0;
+      const isHorizontalRotation = chartRotation % 180 === 0;
       // Pick the right side of the label's box to use as factor reference
       const referenceWidth = Math.max(isHorizontalRotation ? displayValueWidth : fixedFontScale, 1);
 
