@@ -223,7 +223,7 @@ describe('Axis computational utils', () => {
         axes,
         (v) => `${v}`,
       );
-      expect(axisDimensions).toEqual(axis1Dims);
+      expect(axisDimensions).toEqual({ ...axis1Dims, maxLabelBboxWidth: 16, maxLabelTextWidth: 16 }); // textMeasure defaults
 
       const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
       const result = axisViewModel(
