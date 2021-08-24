@@ -15,13 +15,14 @@ import { config as defaultConfig, VALUE_GETTERS } from '../config';
 import { Config } from '../types/config_types';
 import {
   nullShapeViewModel,
+  PartitionSmallMultiplesModel,
   RawTextGetter,
   ShapeTreeNode,
   ShapeViewModel,
   ValueGetter,
 } from '../types/viewmodel_types';
 import { DEPTH_KEY, HierarchyOfArrays } from '../utils/group_by_rollup';
-import { PanelPlacement, shapeViewModel } from './viewmodel';
+import { shapeViewModel } from './viewmodel';
 
 function rawTextGetter(layers: Layer[]): RawTextGetter {
   return (node: ShapeTreeNode) => {
@@ -42,7 +43,7 @@ export function getShapeViewModel(
   tree: HierarchyOfArrays,
   containerBackgroundColor: Color,
   smallMultiplesStyle: SmallMultiplesStyle,
-  panelPlacement: PanelPlacement,
+  panelModel: PartitionSmallMultiplesModel,
 ): ShapeViewModel {
   const { width, height } = parentDimensions;
   const { layers, topGroove, config: specConfig } = partitionSpec;
@@ -67,6 +68,6 @@ export function getShapeViewModel(
     topGroove,
     containerBackgroundColor,
     smallMultiplesStyle,
-    panelPlacement,
+    panelModel,
   );
 }

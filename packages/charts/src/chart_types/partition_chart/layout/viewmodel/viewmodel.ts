@@ -266,15 +266,6 @@ const rawChildNodes = (
 };
 
 /** @internal */
-export type PanelPlacement = PartitionSmallMultiplesModel;
-
-/**
- * Todo move it to config
- * @internal
- */
-export const panelTitleFontSize = 16;
-
-/** @internal */
 export function shapeViewModel(
   textMeasure: TextMeasure,
   config: Config,
@@ -287,7 +278,7 @@ export function shapeViewModel(
   topGroove: Pixels,
   containerBackgroundColor: Color,
   smallMultiplesStyle: SmallMultiplesStyle,
-  panel: PanelPlacement,
+  panelModel: PartitionSmallMultiplesModel,
 ): ShapeViewModel {
   const {
     width,
@@ -303,7 +294,7 @@ export function shapeViewModel(
     sectorLineWidth,
   } = config;
 
-  const { marginLeftPx, marginTopPx, panelInnerWidth, panelInnerHeight } = panel;
+  const { marginLeftPx, marginTopPx, panel } = panelModel;
 
   const treemapLayout = isTreemap(partitionLayout);
   const mosaicLayout = isMosaic(partitionLayout);
@@ -314,8 +305,8 @@ export function shapeViewModel(
 
   const diskCenter = isSunburst(partitionLayout)
     ? {
-        x: marginLeftPx + panelInnerWidth / 2,
-        y: marginTopPx + panelInnerHeight / 2,
+        x: marginLeftPx + panel.innerWidth / 2,
+        y: marginTopPx + panel.innerHeight / 2,
       }
     : {
         x: marginLeftPx,
@@ -334,8 +325,8 @@ export function shapeViewModel(
     partitionLayout,
     tree,
     topGroove,
-    panelInnerWidth,
-    panelInnerHeight,
+    panel.innerWidth,
+    panel.innerHeight,
     clockwiseSectors,
     specialFirstInnermostSector,
     maxDepth,
@@ -349,8 +340,8 @@ export function shapeViewModel(
 
   // use the smaller of the two sizes, as a circle fits into a square
   const circleMaximumSize = Math.min(
-    panelInnerWidth,
-    panelInnerHeight - (panel.panelTitle.length > 0 ? panelTitleFontSize * 2 : 0),
+    panel.innerWidth,
+    panel.innerHeight - (panel.title.length > 0 ? panel.fontSize * 2 : 0),
   );
   const outerRadius: Radius = Math.min(outerSizeRatio * circleMaximumSize, circleMaximumSize - sectorLineWidth) / 2;
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
@@ -362,9 +353,9 @@ export function shapeViewModel(
     layers,
     config.sectorLineWidth,
     config.sectorLineStroke,
-    panel.smAccessorValue,
-    panel.index,
-    panel.innerIndex,
+    panelModel.smAccessorValue,
+    panelModel.index,
+    panelModel.innerIndex,
     config.fillLabel,
     sunburstLayout,
     containerBackgroundColor,
@@ -428,8 +419,8 @@ export function shapeViewModel(
         });
   const maxLinkedLabelTextLength = config.linkLabel.maxTextLength;
   const linkLabelViewModels = linkTextLayout(
-    panelInnerWidth,
-    panelInnerHeight,
+    panel.innerWidth,
+    panel.innerHeight,
     textMeasure,
     config,
     nodesWithoutRoom,
@@ -440,8 +431,8 @@ export function shapeViewModel(
     valueFormatter,
     maxLinkedLabelTextLength,
     {
-      x: width * panel.left + panelInnerWidth / 2,
-      y: height * panel.top + panelInnerHeight / 2,
+      x: width * panelModel.left + panel.innerWidth / 2,
+      y: height * panelModel.top + panel.innerHeight / 2,
     },
     containerBackgroundColor,
   );
@@ -466,22 +457,23 @@ export function shapeViewModel(
   // combined viewModel
   return {
     partitionLayout: config?.partitionLayout ?? defaultConfig.partitionLayout,
-    smAccessorValue: panel.smAccessorValue,
-    panelTitle: panel.panelTitle,
-    index: panel.index,
-    innerIndex: panel.innerIndex,
-    width: panel.width,
-    height: panel.height,
-    top: panel.top,
-    left: panel.left,
-    innerRowCount: panel.innerRowCount,
-    innerColumnCount: panel.innerColumnCount,
-    innerRowIndex: panel.innerRowIndex,
-    innerColumnIndex: panel.innerColumnIndex,
-    marginLeftPx: panel.marginLeftPx,
-    marginTopPx: panel.marginTopPx,
-    panelInnerWidth: panel.panelInnerWidth,
-    panelInnerHeight: panel.panelInnerHeight,
+    smAccessorValue: panelModel.smAccessorValue,
+
+    index: panelModel.index,
+    innerIndex: panelModel.innerIndex,
+    width: panelModel.width,
+    height: panelModel.height,
+    top: panelModel.top,
+    left: panelModel.left,
+    innerRowCount: panelModel.innerRowCount,
+    innerColumnCount: panelModel.innerColumnCount,
+    innerRowIndex: panelModel.innerRowIndex,
+    innerColumnIndex: panelModel.innerColumnIndex,
+    marginLeftPx: panelModel.marginLeftPx,
+    marginTopPx: panelModel.marginTopPx,
+    panel: {
+      ...panelModel.panel,
+    },
 
     config,
     layers,
