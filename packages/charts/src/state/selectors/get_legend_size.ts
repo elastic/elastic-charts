@@ -44,14 +44,9 @@ export const getLegendSizeSelector = createCustomCachedSelector(
     const bbox = withTextMeasure((textMeasure) =>
       labels.reduce(
         (acc, { label, depth }) => {
-          const labelBBox = textMeasure(label, 1, 12, MAGIC_FONT_FAMILY, 1.5, 400);
-          labelBBox.width += depth * LEGEND_HIERARCHY_MARGIN;
-          if (acc.height < labelBBox.height) {
-            acc.height = labelBBox.height;
-          }
-          if (acc.width < labelBBox.width) {
-            acc.width = labelBBox.width;
-          }
+          const { width, height } = textMeasure(label, 1, 12, MAGIC_FONT_FAMILY, 1.5, 400);
+          acc.width = Math.max(acc.width, width + depth * LEGEND_HIERARCHY_MARGIN);
+          acc.height = Math.max(acc.height, height);
           return acc;
         },
         { width: 0, height: 0 },
