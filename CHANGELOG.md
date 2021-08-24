@@ -1,3 +1,10 @@
+## [32.0.2](https://github.com/elastic/elastic-charts/compare/v32.0.1...v32.0.2) (2021-08-24)
+
+
+### Bug Fixes
+
+* **partition:** small multiples panel title color ([#1329](https://github.com/elastic/elastic-charts/issues/1329)) [32.x] ([#1330](https://github.com/elastic/elastic-charts/issues/1330)) ([c60627e](https://github.com/elastic/elastic-charts/commit/c60627eaf1d2e7e8a38de143669528dfe739d207)), closes [#1327](https://github.com/elastic/elastic-charts/issues/1327)
+
 ## [32.0.1](https://github.com/elastic/elastic-charts/compare/v32.0.0...v32.0.1) (2021-07-20)
 
 
