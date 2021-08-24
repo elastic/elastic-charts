@@ -22,6 +22,8 @@
         "packageNames": ["@elastic/eui", "@elastic/datemath"],
         "matchUpdateTypes": ["major", "minor"],
         "reviewers": ["team:datavis"],
+        "matchDepTypes": ["devDependencies"],
+        "matchBaseBranches": ["master"],
         "labels": ["dependencies"],
         "automerge": true,
         "enabled": true
