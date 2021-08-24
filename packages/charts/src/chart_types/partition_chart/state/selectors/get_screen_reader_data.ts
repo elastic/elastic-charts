@@ -38,7 +38,7 @@ const getScreenReaderDataForPartitions = (
   [{ valueFormatter }]: PartitionSpec[],
   shapeViewModels: ShapeViewModel[],
 ): PartitionSectionData[] => {
-  return shapeViewModels.flatMap(({ quadViewModel, layers, panelTitle }) =>
+  return shapeViewModels.flatMap(({ quadViewModel, layers, panel }) =>
     quadViewModel.map(({ depth, value, dataName, parent, path }) => {
       const label = layers[depth - 1]?.nodeLabel?.(dataName) ?? dataName;
       const parentValue = path.length > 1 ? path[path.length - 2].value : undefined;
@@ -46,7 +46,7 @@ const getScreenReaderDataForPartitions = (
         depth > 1 && parentValue ? layers[depth - 2]?.nodeLabel?.(parentValue) ?? path[path.length - 1].value : 'none';
 
       return {
-        panelTitle,
+        panelTitle: panel.title,
         depth,
         label,
         parentName,

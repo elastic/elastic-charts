@@ -12,9 +12,11 @@ import React from 'react';
 
 import {
   Chart,
+  DARK_THEME,
   Datum,
   GroupBy,
   LegendStrategy,
+  LIGHT_THEME,
   Partition,
   PartitionLayout,
   Settings,
@@ -24,7 +26,7 @@ import {
 import { config } from '../../packages/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '../../packages/charts/src/mocks/hierarchical';
 import { keepDistinct } from '../../packages/charts/src/utils/common';
-import { STORYBOOK_LIGHT_THEME } from '../shared';
+import { switchTheme } from '../../storybook/theme_service';
 import { colorBrewerCategoricalPastel12, countryLookup, productLookup, regionLookup } from '../utils/utils';
 
 const data = mocks.sunburst; // .filter((d) => countryLookup[d.dest].continentCountry.slice(0, 2) === 'eu');
@@ -64,15 +66,18 @@ export const Example = () => {
     },
     'z',
   );
+  const darkMode = boolean('darkMode', false);
+  const className = darkMode ? 'story-chart-dark' : 'story-chart';
+  switchTheme(darkMode ? 'dark' : 'light');
 
   return (
-    <Chart className="story-chart">
+    <Chart className={className}>
       <Settings
         showLegend={boolean('Show legend', true)}
         showLegendExtra={boolean('Show legend extra', false)}
         legendStrategy={LegendStrategy.Key}
         flatLegend={boolean('Flat legend', true)}
-        theme={STORYBOOK_LIGHT_THEME}
+        theme={darkMode ? DARK_THEME : LIGHT_THEME}
         {...onElementListeners}
         debug={boolean('Debug', false)}
       />

@@ -103,7 +103,6 @@ export type PickFunction = (x: Pixels, y: Pixels, focus: ContinuousDomainFocus) 
 
 /** @internal */
 export interface PartitionSmallMultiplesModel extends SmallMultiplesDescriptors {
-  panelTitle: string;
   smAccessorValue: number | string;
   partitionLayout: PartitionLayout;
   top: SizeRatio;
@@ -116,8 +115,13 @@ export interface PartitionSmallMultiplesModel extends SmallMultiplesDescriptors 
   innerColumnIndex: number;
   marginLeftPx: Pixels;
   marginTopPx: Pixels;
-  panelInnerWidth: Pixels;
-  panelInnerHeight: Pixels;
+  panel: {
+    title: string;
+    innerWidth: Pixels;
+    innerHeight: Pixels;
+    fontFace: Font;
+    fontSize: number;
+  };
 }
 
 /** @internal */
@@ -147,7 +151,6 @@ export const nullPartitionSmallMultiplesModel = (partitionLayout: PartitionLayou
   index: 0,
   innerIndex: 0,
   smAccessorValue: '',
-  panelTitle: '',
   top: 0,
   left: 0,
   width: 0,
@@ -158,9 +161,21 @@ export const nullPartitionSmallMultiplesModel = (partitionLayout: PartitionLayou
   innerColumnIndex: 0,
   marginLeftPx: 0,
   marginTopPx: 0,
-  panelInnerWidth: 0,
-  panelInnerHeight: 0,
   partitionLayout,
+  panel: {
+    title: '',
+    innerWidth: 0,
+    innerHeight: 0,
+    fontSize: 10,
+    fontFace: {
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      fontFamily: 'sans-serif',
+      fontStyle: 'normal',
+      textOpacity: 1,
+      textColor: 'black',
+    },
+  },
 });
 
 /** @internal */

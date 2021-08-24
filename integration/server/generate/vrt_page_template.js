@@ -33,16 +33,13 @@ appendIconComponentCache({
   visualizeApp: require('@elastic/eui/es/components/icon/assets/app_visualize').icon,
 });
 ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElement);
-
 `.trim();
 }
 
 function pageTemplate(imports, routes, urls) {
   return `
 import React, { Suspense } from 'react';
-
 ${imports.join('\n')}
-
 export function VRTPage() {
   const path = new URL(window.location.toString()).searchParams.get('path');
   if(!path) {
@@ -63,7 +60,6 @@ export function VRTPage() {
     </Suspense>
   );
 }
-
 `.trim();
 }
 
