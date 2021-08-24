@@ -921,7 +921,25 @@ export type RectAnnotationSpec = BaseAnnotationSpec<
    * Dimension, either height or width, of outside annotation
    */
   outsideDimension?: number;
+  /**
+   * Allows users to set a line marker to the border of a rect annotation
+   */
+  borderLineAnnotation?: BorderLineAnnotationValues;
 };
+
+/** @internal */
+export interface BorderLineAnnotationValues {
+  /**
+   * The border position
+   */
+  borderPosition: Position;
+  /**
+   * Allows a custom marker
+   */
+  marker?: ReactNode | ComponentWithAnnotationDatum;
+  /** Position for the marker */
+  markerPosition: Position;
+}
 
 /**
  * Portal settings for annotation tooltips
