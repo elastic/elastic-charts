@@ -13,6 +13,8 @@ import { bindActionCreators, Dispatch } from 'redux';
 import {
   onDOMElementEnter as onDOMElementEnterAction,
   onDOMElementLeave as onDOMElementLeaveAction,
+  onDOMElementClick as onDOMElementClickAction,
+  onDOMElementClick,
 } from '../../../../../state/actions/dom_element';
 import { onPointerMove as onPointerMoveAction } from '../../../../../state/actions/mouse';
 import { GlobalChartState, BackwardRef } from '../../../../../state/chart_state';
@@ -63,6 +65,7 @@ function renderAnnotationLineMarkers(
   annotationLines: AnnotationLineProps[],
   onDOMElementEnter: typeof onDOMElementEnterAction,
   onDOMElementLeave: typeof onDOMElementLeaveAction,
+  onLineMarkerClickHandler: typeof onDOMElementClickAction,
 ) {
   return annotationLines.reduce<JSX.Element[]>((acc, props: AnnotationLineProps) => {
     if (props.markers.length === 0) {
@@ -77,6 +80,7 @@ function renderAnnotationLineMarkers(
         chartDimensions={chartDimensions}
         onDOMElementEnter={onDOMElementEnter}
         onDOMElementLeave={onDOMElementLeave}
+        onLineMarkerClickHandler={onLineMarkerClickHandler}
       />,
     );
 
@@ -114,6 +118,7 @@ const AnnotationsComponent = ({
           annotationLines,
           onDOMElementEnter,
           onDOMElementLeave,
+          onDOMElementClick,
         );
         lineMarkers.forEach((m) => markers.push(m));
       }
