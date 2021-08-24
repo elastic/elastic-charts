@@ -209,12 +209,12 @@ function renderLinkLabels(
         // label text
         ctx.strokeStyle = labelColor;
         ctx.fillStyle = labelColor;
-        ctx.font = `${labelFontSpec.fontStyle} ${labelFontSpec.fontVariant} ${labelFontSpec.fontWeight} ${linkLabelFontSize}px ${labelFontSpec.fontFamily}`;
+        ctx.font = cssFontShorthand(labelFontSpec, linkLabelFontSize);
         ctx.fillText(text, textAlign === 'right' ? -valueWidth - labelValueGap : 0, 0);
         // value text
         ctx.strokeStyle = valueColor;
         ctx.fillStyle = valueColor;
-        ctx.font = `${valueFontSpec.fontStyle} ${valueFontSpec.fontVariant} ${valueFontSpec.fontWeight} ${linkLabelFontSize}px ${valueFontSpec.fontFamily}`;
+        ctx.font = cssFontShorthand(valueFontSpec, linkLabelFontSize);
         ctx.fillText(valueText, textAlign === 'left' ? width + labelValueGap : 0, 0);
       });
     });
