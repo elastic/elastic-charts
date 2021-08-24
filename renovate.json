@@ -18,10 +18,6 @@
     },
     "packageRules": [
       {
-        "packagePatterns": [".*"],
-        "enabled": false
-      },
-      {
         "groupName": "@elastic/eui",
         "packageNames": ["@elastic/eui"],
         "matchUpdateTypes": ["major", "minor"],
