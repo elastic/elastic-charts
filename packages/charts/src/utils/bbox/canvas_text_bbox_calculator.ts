@@ -24,30 +24,21 @@ export type TextMeasure = (
 
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
-  const offscreenCanvas = document.createElement('canvas');
-  offscreenCanvas.style.position = 'absolute';
-  offscreenCanvas.style.top = '-99999px';
-  offscreenCanvas.style.left = '-99999px';
-  const context = offscreenCanvas.getContext('2d');
-  const attachedRoot = document.documentElement;
-  attachedRoot.appendChild(offscreenCanvas);
-  const textMeasure: TextMeasure = (
-    text: string,
-    padding: number,
-    fontSize = 16,
-    fontFamily = 'Arial',
-    lineHeight = 1,
-    fontWeight = 400,
-  ) => {
-    if (!context) {
-      return { width: 0, height: 0 };
-    }
-    context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-    const measure = context.measureText(text);
-    // Padding should be at least one to avoid browser measureText inconsistencies
-    return { width: measure.width + Math.max(padding, 1), height: fontSize * lineHeight };
-  };
+  const canvas = document.createElement('canvas');
+  canvas.style.position = 'absolute';
+  canvas.style.top = '-99999px';
+  canvas.style.left = '-99999px';
+  const ctx = canvas.getContext('2d');
+  const root = document.documentElement;
+  root.appendChild(canvas);
+  const textMeasure: TextMeasure = ctx
+    ? (text: string, padding: number, fontSize = 16, fontFamily = 'Arial', lineHeight = 1, fontWeight = 400) => {
+        ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+        const measure = ctx.measureText(text);
+        return { width: measure.width + Math.max(padding, 1), height: fontSize * lineHeight }; // padding should be at least one to avoid browser measureText inconsistencies
+      }
+    : () => ({ width: 0, height: 0 });
   const result: T = fun(textMeasure);
-  attachedRoot.removeChild(offscreenCanvas);
+  root.removeChild(canvas);
   return result;
 };
