@@ -18,10 +18,6 @@
     },
     "packageRules": [
       {
-        "matchPackagePatterns": [".*"],
-        "enabled": false
-      },
-      {
         "groupName": "@elastic/eui",
         "packageNames": ["@elastic/eui", "@elastic/datemath"],
         "matchUpdateTypes": ["major", "minor"],
@@ -30,6 +26,10 @@
         "labels": ["dependencies"],
         "automerge": true,
         "enabled": true
+      },
+      {
+        "matchPackagePatterns": [".*"],
+        "enabled": false
       }
     ]
   }
