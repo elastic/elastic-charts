@@ -10,18 +10,18 @@ import { EuiMarkdownFormat, EuiFlexGroup, EuiFlexItem, EuiHorizontalRule, EuiTex
 import { DecoratorFunction } from '@storybook/addons';
 import React from 'react';
 
-import { ThemeId, ThemeProvider, BackgroundProvider } from './use_base_theme';
+import { ThemeId, ThemeIdProvider, BackgroundIdProvider } from './use_base_theme';
 
 export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => {
   if (!Story) return <div>No Story</div>;
 
-  const themeName = context.globals?.theme ?? ThemeId.Light;
-  const background = context.globals?.background;
+  const themeId = context.globals?.theme ?? ThemeId.Light;
+  const backgroundId = context.globals?.background;
   const markdown = context?.parameters?.markdown;
 
   return (
-    <ThemeProvider value={themeName}>
-      <BackgroundProvider value={background}>
+    <ThemeIdProvider value={themeId}>
+      <BackgroundIdProvider value={backgroundId}>
         <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
           <EuiFlexItem id="story-header" grow={false}>
             <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
@@ -53,7 +53,7 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
             </EuiFlexItem>
           )}
         </EuiFlexGroup>
-      </BackgroundProvider>
-    </ThemeProvider>
+      </BackgroundIdProvider>
+    </ThemeIdProvider>
   );
 };
