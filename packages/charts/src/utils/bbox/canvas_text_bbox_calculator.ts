@@ -49,7 +49,7 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
 }
 
 /** @internal */
-export const withCanvasTextBBoxCalculator = <T>(fun: (obj: CanvasTextBBoxCalculator) => T) => {
+export const withTextMeasure = <T>(fun: (obj: CanvasTextBBoxCalculator) => T) => {
   const canvasTextBBoxCalculator = new CanvasTextBBoxCalculator();
   const result: T = fun(canvasTextBBoxCalculator);
   canvasTextBBoxCalculator.destroy();

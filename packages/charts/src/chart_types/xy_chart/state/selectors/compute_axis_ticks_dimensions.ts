@@ -9,7 +9,7 @@
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { withCanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { AxisId } from '../../../../utils/ids';
 import { axisViewModel, AxisViewModel, hasDuplicateAxis, defaultTickFormatter } from '../../utils/axis_utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -45,7 +45,7 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
   ): Map<AxisId, AxisViewModel> => {
     const { xDomain, yDomains } = seriesDomainsAndData;
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
-    return withCanvasTextBBoxCalculator((bboxCalculator) => {
+    return withTextMeasure((textMeasure) => {
       const axesTicksDimensions: Map<AxisId, AxisViewModel> = new Map();
       axesSpecs.forEach((axisSpec) => {
         const { id } = axisSpec;
@@ -55,7 +55,7 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
           xDomain,
           yDomains,
           totalBarsInCluster,
-          bboxCalculator,
+          textMeasure,
           settingsSpec.rotation,
           axisStyle,
           fallBackTickFormatter,
