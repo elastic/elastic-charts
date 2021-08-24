@@ -42,6 +42,7 @@ export function renderBars(
 ): BarTuple {
   const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
   const initialBarTuple: BarTuple = { barGeometries: [], indexedGeometryMap: new IndexedGeometryMap() } as BarTuple;
+  const isLogY = yScale.type === ScaleType.Log;
   return withTextMeasure((textMeasure) =>
     dataSeries.data.reduce((barTuple: BarTuple, datum) => {
       if (!xScale.isValueInDomain(datum.x)) {
@@ -49,21 +50,21 @@ export function renderBars(
       }
       const { barGeometries, indexedGeometryMap } = barTuple;
       const { y0, y1, initialY1, filled } = datum;
+      const isNullishY0 = y0 === 0 || y0 === null;
 
       let y: number | null;
-      let y0Scaled;
+      const isInvertedY = yScale.isInverted;
       if (yScale.type === ScaleType.Log) {
         y = y1 === 0 || y1 === null ? yScale.range[0] : yScale.scale(y1);
-        if (yScale.isInverted) {
-          y0Scaled = y0 === 0 || y0 === null ? yScale.range[1] : yScale.scale(y0);
-        } else {
-          y0Scaled = y0 === 0 || y0 === null ? yScale.range[0] : yScale.scale(y0);
-        }
       } else {
         y = yScale.scale(y1);
-        // use always zero as baseline if y0 is null
-        y0Scaled = y0 === null ? yScale.scale(0) : yScale.scale(y0);
       }
+
+      const y0Scaled = isLogY
+        ? isNullishY0
+          ? yScale.range[isInvertedY ? 1 : 0]
+          : yScale.scale(y0)
+        : yScale.scale(y0 === null ? 0 : y0);
 
       const absMinHeight = Math.abs(minBarHeight);
 
