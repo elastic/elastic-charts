@@ -17,6 +17,9 @@ import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 import { BarStyleAccessor, DisplayValueSpec, LabelOverflowConstraint, StackMode } from '../utils/specs';
 
+const PADDING = 1; // default padding for now
+const FONT_SIZE_FACTOR = 0.7; // Take 70% of space for the label text
+
 type BarTuple = {
   barGeometries: BarGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
@@ -37,8 +40,6 @@ export function renderBars(
   stackMode?: StackMode,
   chartRotation?: number,
 ): BarTuple {
-  const padding = 1; // default padding for now
-  const fontSizeFactor = 0.7; // Take 70% of space for the label text
   const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
   const initialBarTuple: BarTuple = { barGeometries: [], indexedGeometryMap: new IndexedGeometryMap() } as BarTuple;
   return withTextMeasure((textMeasure) =>
@@ -121,16 +122,16 @@ export function renderBars(
 
       const { displayValueWidth, fixedFontScale } = computeBoxWidth(
         displayValueText ?? '',
-        { padding, fontSize, fontFamily, textMeasure, width },
+        { padding: PADDING, fontSize, fontFamily, textMeasure, width },
         displayValueSettings,
       );
 
-      const isHorizontalRotation = chartRotation == null || [0, 180].includes(chartRotation);
+      const isHorizontalRotation = chartRotation == null || chartRotation % 180 === 0;
       // Pick the right side of the label's box to use as factor reference
       const referenceWidth = Math.max(isHorizontalRotation ? displayValueWidth : fixedFontScale, 1);
 
       const textScalingFactor = getFinalFontScalingFactor(
-        (width * fontSizeFactor) / referenceWidth,
+        (width * FONT_SIZE_FACTOR) / referenceWidth,
         fixedFontScale,
         fontSize,
       );
