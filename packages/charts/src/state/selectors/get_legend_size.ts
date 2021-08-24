@@ -9,7 +9,7 @@
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
 import { LegendPositionConfig } from '../../specs/settings';
-import { BBox, CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
+import { BBox, withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { Position, isDefined, LayoutDirection } from '../../utils/common';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
@@ -24,6 +24,8 @@ const MARKER_WIDTH = 16;
 const SHARED_MARGIN = 4;
 const VERTICAL_PADDING = 4;
 const TOP_MARGIN = 2;
+const MAGIC_FONT_FAMILY =
+  '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
 /** @internal */
 export type LegendSizing = BBox & {
@@ -39,30 +41,23 @@ export const getLegendSizeSelector = createCustomCachedSelector(
       return { width: 0, height: 0, margin: 0, position: LEGEND_TO_FULL_CONFIG[Position.Right] };
     }
 
-    const bboxCalculator = new CanvasTextBBoxCalculator();
-    const bbox = labels.reduce(
-      (acc, { label, depth }) => {
-        const labelBBox = bboxCalculator.compute(
-          label,
-          1,
-          12,
-          '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
-          1.5,
-          400,
-        );
-        labelBBox.width += depth * LEGEND_HIERARCHY_MARGIN;
-        if (acc.height < labelBBox.height) {
-          acc.height = labelBBox.height;
-        }
-        if (acc.width < labelBBox.width) {
-          acc.width = labelBBox.width;
-        }
-        return acc;
-      },
-      { width: 0, height: 0 },
+    const bbox = withTextMeasure((textMeasure) =>
+      labels.reduce(
+        (acc, { label, depth }) => {
+          const labelBBox = textMeasure(label, 1, 12, MAGIC_FONT_FAMILY, 1.5, 400);
+          labelBBox.width += depth * LEGEND_HIERARCHY_MARGIN;
+          if (acc.height < labelBBox.height) {
+            acc.height = labelBBox.height;
+          }
+          if (acc.width < labelBBox.width) {
+            acc.width = labelBBox.width;
+          }
+          return acc;
+        },
+        { width: 0, height: 0 },
+      ),
     );
 
-    bboxCalculator.destroy();
     const { showLegendExtra: showLegendDisplayValue, legendPosition, legendAction } = legendConfig;
     const {
       legend: { verticalWidth, spacingBuffer, margin },
