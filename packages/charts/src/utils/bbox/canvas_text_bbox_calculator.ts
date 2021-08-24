@@ -47,3 +47,11 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
     this.attachedRoot.removeChild(this.offscreenCanvas);
   }
 }
+
+/** @internal */
+export const withCanvasTextBBoxCalculator = <T>(fun: (obj: CanvasTextBBoxCalculator) => T) => {
+  const canvasTextBBoxCalculator = new CanvasTextBBoxCalculator();
+  const result: T = fun(canvasTextBBoxCalculator);
+  canvasTextBBoxCalculator.destroy();
+  return result;
+};
