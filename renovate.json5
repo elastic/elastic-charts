@@ -1,10 +1,10 @@
 {
   extends: ['config:base'],
-  ignorePaths: ['**/.github/**'],
+  ignorePaths: ['./.github/**'],
   enabledManagers: ['npm'],
   baseBranches: ['master'],
   prConcurrentLimit: 0,
-  prHourlyLimit: 0,
+  prHourlyLimit: 10,
   separateMajorMinor: false,
   rangeStrategy: 'bump',
   semanticCommits: true,
