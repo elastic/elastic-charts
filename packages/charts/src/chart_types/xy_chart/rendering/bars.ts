@@ -58,10 +58,9 @@ export function renderBars(
           : yScale.scale(y0)
         : yScale.scale(y0 === null ? 0 : y0);
 
-      // safeguard against null y values
-      const signedHeight = isNil(y0Scaled) || isNil(rawY) ? 0 : y0Scaled - rawY;
-      const isUpsideDown = signedHeight < 0;
-      const height = Math.abs(signedHeight);
+      const finiteHeight = isNil(y0Scaled) || isNil(rawY) ? 0 : y0Scaled - rawY; // safeguard against null y values
+      const isUpsideDown = finiteHeight < 0;
+      const height = Math.abs(finiteHeight);
       const finiteY = isNil(y0Scaled) || isNil(rawY) ? 0 : rawY;
       const y = isUpsideDown ? finiteY - height : finiteY;
       const xScaled = xScale.scale(datum.x);
