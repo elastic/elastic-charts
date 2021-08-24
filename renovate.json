@@ -18,8 +18,12 @@
     },
     "packageRules": [
       {
+        "matchPackagePatterns": [".*"],
+        "enabled": false
+      },
+      {
         "groupName": "@elastic/eui",
-        "packageNames": ["@elastic/eui"],
+        "packageNames": ["@elastic/eui", "@elastic/datemath"],
         "matchUpdateTypes": ["major", "minor"],
         "reviewers": ["team:datavis"],
         "matchBaseBranches": ["master"],
