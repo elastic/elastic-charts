@@ -37,8 +37,7 @@ export function renderBars(
   stackMode?: StackMode,
   chartRotation?: number,
 ): BarTuple {
-  // default padding to 1 for now
-  const padding = 1;
+  const padding = 1; // default padding for now
   const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
   return withTextMeasure((textMeasure) =>
     dataSeries.data.reduce(
@@ -163,20 +162,11 @@ export function renderBars(
           displayValue,
           x,
           y,
-          transform: {
-            x: 0,
-            y: 0,
-          },
+          transform: { x: 0, y: 0 },
           width,
           height,
           color,
-          value: {
-            x: datum.x,
-            y: originalY1Value,
-            mark: null,
-            accessor: BandedAccessorType.Y1,
-            datum: datum.datum,
-          },
+          value: { x: datum.x, y: originalY1Value, mark: null, accessor: BandedAccessorType.Y1, datum: datum.datum },
           seriesIdentifier,
           seriesStyle,
           panel,
