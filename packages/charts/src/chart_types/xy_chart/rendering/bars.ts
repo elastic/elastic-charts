@@ -50,32 +50,20 @@ export function renderBars(
       }
       const { barGeometries, indexedGeometryMap } = barTuple;
       const { y0, y1, initialY1, filled } = datum;
-      const isNullishY0 = y0 === 0 || y0 === null;
-
-      let y: number | null;
-      if (yScale.type === ScaleType.Log) {
-        y = y1 === 0 || y1 === null ? yScale.range[0] : yScale.scale(y1);
-      } else {
-        y = yScale.scale(y1);
-      }
+      const rawY = isLogY && (y1 === 0 || y1 === null) ? yScale.range[0] : yScale.scale(y1);
 
       const y0Scaled = isLogY
-        ? isNullishY0
+        ? y0 === 0 || y0 === null
           ? yScale.range[isInvertedY ? 1 : 0]
           : yScale.scale(y0)
         : yScale.scale(y0 === null ? 0 : y0);
 
       // safeguard against null y values
-      const signedHeight = isNil(y0Scaled) || isNil(y) ? 0 : y0Scaled - y;
-
-      if (isNil(y0Scaled) || isNil(y)) {
-        y = 0;
-      }
-
+      const signedHeight = isNil(y0Scaled) || isNil(rawY) ? 0 : y0Scaled - rawY;
       const isUpsideDown = signedHeight < 0;
       const height = Math.abs(signedHeight);
-      y = isUpsideDown ? y - height : y;
-
+      const finiteY = isNil(y0Scaled) || isNil(rawY) ? 0 : rawY;
+      const y = isUpsideDown ? finiteY - height : finiteY;
       const xScaled = xScale.scale(datum.x);
 
       if (xScaled === null) {
