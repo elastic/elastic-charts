@@ -13,6 +13,8 @@ import { $Values } from 'utility-types';
 import { Theme, LIGHT_THEME, DARK_THEME, DEFAULT_CHART_MARGINS } from '@elastic/charts';
 import { mergePartial } from '@elastic/charts/src/utils/common';
 
+import { storybookParameters } from './parameters';
+
 /**
  * Available themes
  * @internal
@@ -29,8 +31,8 @@ export type ThemeId = $Values<typeof ThemeId>;
 const ThemeContext = createContext<ThemeId>(ThemeId.Light);
 const BackgroundContext = createContext<string | undefined>(undefined);
 
-export const ThemeProvider = ThemeContext.Provider;
-export const BackgroundProvider = BackgroundContext.Provider;
+export const ThemeIdProvider = ThemeContext.Provider;
+export const BackgroundIdProvider = BackgroundContext.Provider;
 
 const themeMap = {
   [ThemeId.Light]: LIGHT_THEME,
@@ -39,10 +41,19 @@ const themeMap = {
   [ThemeId.EUIDark]: mergePartial(DARK_THEME, EUI_CHARTS_THEME_DARK.theme, { mergeOptionalPartialValues: true }),
 };
 
+const getBackground = (backgroundId?: string) => {
+  if (!backgroundId) {
+    return undefined;
+  }
+  const option = (storybookParameters?.background?.options ?? []).find(({ id }) => id === backgroundId);
+  return option?.background ?? option?.color;
+};
+
 export const useBaseTheme = (): Theme => {
   const themeId = useContext(ThemeContext);
-  const backgroundColor = useContext(BackgroundContext);
+  const backgroundId = useContext(BackgroundContext);
   const theme = themeMap[themeId] ?? LIGHT_THEME;
+  const backgroundColor = getBackground(backgroundId);
 
   return mergePartial(
     theme,
