@@ -137,29 +137,7 @@ export function compareByValueAsc(a: number | string, b: number | string): numbe
 
 /** @internal */
 export function clamp(value: number, lowerBound: number, upperBound: number) {
-  return minValueWithLowerLimit(value, upperBound, lowerBound);
-}
-
-/**
- * Return the minimum value between val1 and val2. The value is bounded from below by lowerLimit
- * @param val1 a numeric value
- * @param val2 a numeric value
- * @param lowerLimit the lower limit
- * @internal
- */
-export function minValueWithLowerLimit(val1: number, val2: number, lowerLimit: number) {
-  return Math.max(Math.min(val1, val2), lowerLimit);
-}
-
-/**
- * Return the maximum value between val1 and val2. The value is bounded from above by upperLimit
- * @param val1 a numeric value
- * @param val2 a numeric value
- * @param upperLimit the upper limit
- * @internal
- */
-export function maxValueWithUpperLimit(val1: number, val2: number, upperLimit: number) {
-  return Math.min(Math.max(val1, val2), upperLimit);
+  return Math.min(Math.max(value, lowerBound), upperBound);
 }
 
 /**
