@@ -23,7 +23,7 @@ jobs:
           repo: ${{ github.repository }}
           ref: ${{ github.sha }}
         env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Validate check runs
         id: validate
         if: ${{ success() }}
@@ -31,8 +31,8 @@ jobs:
         # TODO: find a better way to do this, the check-runs api has no usable id other than name
         run: |
           import json
-          count = ${{ fromJson(steps.check.outputs.data).total_count }}
-          checks = json.loads("""${{ toJson(fromJson(steps.check.outputs.data).check_runs) }}""")
+          count = ${{ fromJSON(steps.check.outputs.data).total_count }}
+          checks = json.loads("""${{ toJSON(fromJSON(steps.check.outputs.data).check_runs) }}""")
           allSuccess = True
 
           for check in checks:
@@ -45,6 +45,9 @@ jobs:
     name: Release Checks
     runs-on: ubuntu-latest
     needs: status
+    # Runs checks when others running on master may be in process
+    # This is likely an edge case unless published shortly following a merge
+    # This also covers a case where master checks did not complete/succeed
     if: needs.status.outputs.allSuccess
     steps:
       - name: Check out repository
@@ -69,14 +72,6 @@ jobs:
       - name: Testing
         run: yarn test --ci
 
-  test:
-    runs-on: ubuntu-latest
-    needs: [status, checks]
-    steps:
-      - run: echo ${{ needs.status.outputs.allSuccess || needs.checks.result == 'success' }}
-      - run: echo ${{ needs.status.outputs.allSuccess }}
-      - run: echo ${{ needs.checks.result == 'success' }}
-
   release:
     name: Release
     needs: [status, checks]
@@ -98,11 +93,10 @@ jobs:
 
       - name: Build library
         run: yarn build
-
-      # - name: Release
-      #   env:
-      #     GH_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      #   run: yarn semantic-release
+      - name: Release
+        env:
+          GH_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: yarn semantic-release
