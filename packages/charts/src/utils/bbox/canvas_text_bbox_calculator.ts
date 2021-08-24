@@ -24,8 +24,7 @@ export type TextMeasure = (
   fontWeight?: number,
 ) => BBox;
 
-/** @internal */
-export class CanvasTextBBoxCalculator implements BBoxCalculator {
+class CanvasTextBBoxCalculator implements BBoxCalculator {
   private attachedRoot: HTMLElement;
 
   private offscreenCanvas: HTMLCanvasElement;
