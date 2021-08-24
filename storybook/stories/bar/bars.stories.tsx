@@ -15,6 +15,7 @@ export default {
   },
 };
 
+export { Example as crowdedLabels } from './58_crowded_labels';
 export { Example as basic } from './1_basic';
 export { Example as withValueLabel } from './2_label_value';
 export { Example as withValueLabelAdvanced } from './51_label_value_advanced';
