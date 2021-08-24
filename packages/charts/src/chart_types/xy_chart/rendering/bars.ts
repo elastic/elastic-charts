@@ -43,6 +43,7 @@ export function renderBars(
   const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
   const initialBarTuple: BarTuple = { barGeometries: [], indexedGeometryMap: new IndexedGeometryMap() } as BarTuple;
   const isLogY = yScale.type === ScaleType.Log;
+  const isInvertedY = yScale.isInverted;
   return withTextMeasure((textMeasure) =>
     dataSeries.data.reduce((barTuple: BarTuple, datum) => {
       if (!xScale.isValueInDomain(datum.x)) {
@@ -53,7 +54,6 @@ export function renderBars(
       const isNullishY0 = y0 === 0 || y0 === null;
 
       let y: number | null;
-      const isInvertedY = yScale.isInverted;
       if (yScale.type === ScaleType.Log) {
         y = y1 === 0 || y1 === null ? yScale.range[0] : yScale.scale(y1);
       } else {
@@ -76,15 +76,14 @@ export function renderBars(
       }
 
       if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
-        const heightDelta = absMinHeight - Math.abs(height);
-        if (height < 0) {
-          height = -absMinHeight;
-          y += heightDelta;
-        } else {
-          height = absMinHeight;
-          y -= heightDelta;
-        }
+        height = height < 0 ? -absMinHeight : absMinHeight;
       }
+
+      if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
+        const heightDelta = absMinHeight - Math.abs(height);
+        y += height < 0 ? heightDelta : -heightDelta;
+      }
+
       const isUpsideDown = height < 0;
       height = Math.abs(height);
       y = isUpsideDown ? y - height : y;
