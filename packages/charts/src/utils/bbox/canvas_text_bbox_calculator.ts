@@ -6,7 +6,23 @@
  * Side Public License, v 1.
  */
 
-import { BBox, BBoxCalculator, DEFAULT_EMPTY_BBOX } from './bbox_calculator';
+import { BBoxCalculator, DEFAULT_EMPTY_BBOX } from './bbox_calculator';
+
+/** @internal */
+export interface BBox {
+  width: number;
+  height: number;
+}
+
+/** @internal */
+export type TextMeasure = (
+  text: string,
+  padding: number,
+  fontSize?: number,
+  fontFamily?: string,
+  lineHeight?: number,
+  fontWeight?: number,
+) => BBox;
 
 /** @internal */
 export class CanvasTextBBoxCalculator implements BBoxCalculator {
@@ -49,9 +65,17 @@ export class CanvasTextBBoxCalculator implements BBoxCalculator {
 }
 
 /** @internal */
-export const withTextMeasure = <T>(fun: (obj: CanvasTextBBoxCalculator) => T) => {
+export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
   const canvasTextBBoxCalculator = new CanvasTextBBoxCalculator();
-  const result: T = fun(canvasTextBBoxCalculator);
+  const textMeasure: TextMeasure = (
+    text: string,
+    padding: number,
+    fontSize = 16,
+    fontFamily = 'Arial',
+    lineHeight = 1,
+    fontWeight = 400,
+  ) => canvasTextBBoxCalculator.compute(text, padding, fontSize, fontFamily, lineHeight, fontWeight);
+  const result: T = fun(textMeasure);
   canvasTextBBoxCalculator.destroy();
   return result;
 };

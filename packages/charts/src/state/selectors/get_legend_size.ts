@@ -9,8 +9,7 @@
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
 import { LegendPositionConfig } from '../../specs/settings';
-import { BBox } from '../../utils/bbox/bbox_calculator';
-import { CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
+import { BBox, CanvasTextBBoxCalculator } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { Position, isDefined, LayoutDirection } from '../../utils/common';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';

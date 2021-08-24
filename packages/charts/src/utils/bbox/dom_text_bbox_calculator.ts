@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { BBox, BBoxCalculator } from './bbox_calculator';
+import { BBoxCalculator } from './bbox_calculator';
+import { BBox } from './canvas_text_bbox_calculator';
 
 /** @internal */
 export class DOMTextBBoxCalculator implements BBoxCalculator {

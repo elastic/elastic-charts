@@ -6,11 +6,7 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export interface BBox {
-  width: number;
-  height: number;
-}
+import { BBox } from './canvas_text_bbox_calculator';
 
 /** @internal */
 export const DEFAULT_EMPTY_BBOX = {

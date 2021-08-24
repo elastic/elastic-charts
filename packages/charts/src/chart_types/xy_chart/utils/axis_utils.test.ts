@@ -16,8 +16,7 @@ import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
-import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { SvgTextBBoxCalculator } from '../../../utils/bbox/svg_text_bbox_calculator';
+import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position, mergePartial } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { OrdinalDomain } from '../../../utils/domain';
@@ -212,112 +211,103 @@ describe('Axis computational utils', () => {
 
   const { axes } = LIGHT_THEME;
 
-  test('should compute axis dimensions', () => {
-    const bboxCalculator = new SvgTextBBoxCalculator();
-    const axisDimensions = axisViewModel(
-      verticalAxisSpec,
-      xDomain,
-      [yDomain],
-      1,
-      bboxCalculator,
-      NO_ROTATION,
-      axes,
-      (v) => `${v}`,
-    );
-    expect(axisDimensions).toEqual(axis1Dims);
+  test('should compute axis dimensions', () =>
+    withTextMeasure((textMeasure) => {
+      const axisDimensions = axisViewModel(
+        verticalAxisSpec,
+        xDomain,
+        [yDomain],
+        1,
+        textMeasure,
+        NO_ROTATION,
+        axes,
+        (v) => `${v}`,
+      );
+      expect(axisDimensions).toEqual(axis1Dims);
 
-    const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
-    const result = axisViewModel(
-      ungroupedAxisSpec,
-      xDomain,
-      [yDomain],
-      1,
-      bboxCalculator,
-      NO_ROTATION,
-      axes,
-      (v) => `${v}`,
-      undefined,
-      false,
-    );
+      const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
+      const result = axisViewModel(
+        ungroupedAxisSpec,
+        xDomain,
+        [yDomain],
+        1,
+        textMeasure,
+        NO_ROTATION,
+        axes,
+        (v) => `${v}`,
+        undefined,
+        false,
+      );
 
-    expect(result).toBeNull();
+      expect(result).toBeNull();
+    }));
 
-    bboxCalculator.destroy();
-  });
-
-  test('should not compute axis dimensions when spec is configured to hide', () => {
-    const bboxCalculator = new CanvasTextBBoxCalculator();
-    verticalAxisSpec.hide = true;
-    const axisDimensions = axisViewModel(
-      verticalAxisSpec,
-      xDomain,
-      [yDomain],
-      1,
-      bboxCalculator,
-      NO_ROTATION,
-      axes,
-      (v) => `${v}`,
-    );
-    expect(axisDimensions).toBe(null);
-  });
+  test('should not compute axis dimensions when spec is configured to hide', () =>
+    withTextMeasure((textMeasure) => {
+      verticalAxisSpec.hide = true;
+      const axisDimensions = axisViewModel(
+        verticalAxisSpec,
+        xDomain,
+        [yDomain],
+        1,
+        textMeasure,
+        NO_ROTATION,
+        axes,
+        (v) => `${v}`,
+      );
+      expect(axisDimensions).toBe(null);
+    }));
 
   test('should compute axis dimensions with timeZone', () => {
-    const bboxCalculator = new SvgTextBBoxCalculator();
-    const xDomain = MockXDomain.fromScaleType(ScaleType.Time, {
-      domain: [1551438000000, 1551441300000],
-      isBandScale: false,
-      minInterval: 0,
-      timeZone: 'utc',
+    withTextMeasure((textMeasure) => {
+      const xDomain = MockXDomain.fromScaleType(ScaleType.Time, {
+        domain: [1551438000000, 1551441300000],
+        isBandScale: false,
+        minInterval: 0,
+        timeZone: 'utc',
+      });
+      let axisDimensions = axisViewModel(
+        xAxisWithTime,
+        xDomain,
+        [yDomain],
+        1,
+        textMeasure,
+        NO_ROTATION,
+        axes,
+        (v) => `${v}`,
+      );
+      expect(axisDimensions).not.toBeNull();
+      expect(axisDimensions?.tickLabels[0]).toBe('11:00:00');
+      expect(axisDimensions?.tickLabels[11]).toBe('11:55:00');
+
+      axisDimensions = axisViewModel(
+        xAxisWithTime,
+        { ...xDomain, timeZone: 'utc+3' },
+        [yDomain],
+        1,
+        textMeasure,
+        NO_ROTATION,
+        axes,
+        (v) => `${v}`,
+      );
+      expect(axisDimensions).not.toBeNull();
+      expect(axisDimensions?.tickLabels[0]).toBe('14:00:00');
+      expect(axisDimensions?.tickLabels[11]).toBe('14:55:00');
+
+      axisDimensions = axisViewModel(
+        xAxisWithTime,
+        { ...xDomain, timeZone: 'utc-3' },
+        [yDomain],
+        1,
+        textMeasure,
+        NO_ROTATION,
+        axes,
+        (v) => `${v}`,
+      );
+      expect(axisDimensions).not.toBeNull();
+      expect(axisDimensions?.tickLabels[0]).toBe('08:00:00');
+      expect(axisDimensions?.tickLabels[11]).toBe('08:55:00');
     });
-    let axisDimensions = axisViewModel(
-      xAxisWithTime,
-      xDomain,
-      [yDomain],
-      1,
-      bboxCalculator,
-      NO_ROTATION,
-      axes,
-      (v) => `${v}`,
-    );
-    expect(axisDimensions).not.toBeNull();
-    expect(axisDimensions?.tickLabels[0]).toBe('11:00:00');
-    expect(axisDimensions?.tickLabels[11]).toBe('11:55:00');
-
-    axisDimensions = axisViewModel(
-      xAxisWithTime,
-      {
-        ...xDomain,
-        timeZone: 'utc+3',
-      },
-      [yDomain],
-      1,
-      bboxCalculator,
-      NO_ROTATION,
-      axes,
-      (v) => `${v}`,
-    );
-    expect(axisDimensions).not.toBeNull();
-    expect(axisDimensions?.tickLabels[0]).toBe('14:00:00');
-    expect(axisDimensions?.tickLabels[11]).toBe('14:55:00');
-
-    axisDimensions = axisViewModel(
-      xAxisWithTime,
-      {
-        ...xDomain,
-        timeZone: 'utc-3',
-      },
-      [yDomain],
-      1,
-      bboxCalculator,
-      NO_ROTATION,
-      axes,
-      (v) => `${v}`,
-    );
-    expect(axisDimensions).not.toBeNull();
-    expect(axisDimensions?.tickLabels[0]).toBe('08:00:00');
-    expect(axisDimensions?.tickLabels[11]).toBe('08:55:00');
-
-    bboxCalculator.destroy();
   });
 
   test('should compute dimensions for the bounding box containing a rotated label', () => {

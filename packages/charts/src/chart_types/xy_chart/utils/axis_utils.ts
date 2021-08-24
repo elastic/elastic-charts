@@ -8,7 +8,7 @@
 
 import { Line } from '../../../geoms/types';
 import { Scale } from '../../../scales';
-import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
+import { BBox, TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import {
   getPercentageValue,
   degToRad,
@@ -84,7 +84,7 @@ export function axisViewModel(
   xDomain: XDomain,
   yDomains: YDomain[],
   totalBarsInCluster: number,
-  bboxCalculator: BBoxCalculator,
+  textMeasure: TextMeasure,
   chartRotation: Rotation,
   { gridLine, tickLabel }: AxisStyle,
   fallBackTickFormatter: TickFormatter,
@@ -127,7 +127,7 @@ export function axisViewModel(
 
   if (tickLabel.visible) {
     for (const labelText of tickLabels) {
-      const bbox = bboxCalculator.compute(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
+      const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
       const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
       maxLabelBboxWidth = Math.max(maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
       maxLabelBboxHeight = Math.max(maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
