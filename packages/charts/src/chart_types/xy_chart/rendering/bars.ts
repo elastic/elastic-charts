@@ -44,12 +44,11 @@ export function renderBars(
   const initialBarTuple: BarTuple = { barGeometries: [], indexedGeometryMap: new IndexedGeometryMap() } as BarTuple;
   return withTextMeasure((textMeasure) =>
     dataSeries.data.reduce((barTuple: BarTuple, datum) => {
+      if (!xScale.isValueInDomain(datum.x)) {
+        return barTuple; // don't create a bar if not within the xScale domain
+      }
       const { barGeometries, indexedGeometryMap } = barTuple;
       const { y0, y1, initialY1, filled } = datum;
-      // don't create a bar if not within the xScale domain
-      if (!xScale.isValueInDomain(datum.x)) {
-        return barTuple;
-      }
 
       let y: number | null;
       let y0Scaled;
