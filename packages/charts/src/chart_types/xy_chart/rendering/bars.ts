@@ -81,7 +81,7 @@ export function renderBars(
           : absMinHeight * (rawHeight < 0 ? -1 : 1);
 
       const isUpsideDown = clippedHeight < 0;
-      const height = Math.abs(clippedHeight);
+      const height = Math.abs(rawHeight);
       y = isUpsideDown ? y - height : y;
 
       const xScaled = xScale.scale(datum.x);
