@@ -24,7 +24,7 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'ma
   chartDimensions: Dimensions;
   onDOMElementEnter: typeof onDOMElementEnterAction;
   onDOMElementLeave: typeof onDOMElementLeaveAction;
-  onLineMarkerClickHandler: typeof onDOMElementClickAction;
+  onDOMElementClick: typeof onDOMElementClickAction;
 };
 
 const MARKER_TRANSFORMS = {
@@ -52,7 +52,7 @@ export function LineMarker({
   chartDimensions,
   onDOMElementEnter,
   onDOMElementLeave,
-  onLineMarkerClickHandler,
+  onDOMElementClick,
 }: LineMarkerProps) {
   const iconRef = useRef<HTMLDivElement | null>(null);
   const testRef = useRef<HTMLDivElement | null>(null);
@@ -107,7 +107,7 @@ export function LineMarker({
 
   void popper?.current?.update?.();
   // want it to be tabbable if interactive if there is a click handler
-  return onLineMarkerClickHandler ? (
+  return onDOMElementClick ? (
     <button
       className="echAnnotation"
       key={`annotation-${id}`}
@@ -120,7 +120,7 @@ export function LineMarker({
         });
       }}
       onMouseLeave={onDOMElementLeave}
-      onClick={onLineMarkerClickHandler}
+      onClick={onDOMElementClick}
       style={{ ...style, ...transform }}
       type="button"
     >

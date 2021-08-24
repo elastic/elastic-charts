@@ -9,16 +9,18 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable jest/no-conditional-expect */
 
+import { mount } from 'enzyme';
 import React from 'react';
 import { Store } from 'redux';
 
 import { ChartType } from '../..';
+import { Chart } from '../../../components/chart';
 import { Icon } from '../../../components/icons/icon';
 import { Rect } from '../../../geoms/types';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { SettingsSpec, XYBrushArea } from '../../../specs';
+import { BarSeries, LineAnnotation, Settings, SettingsSpec, XYBrushArea } from '../../../specs';
 import { SpecType, TooltipType, BrushAxis } from '../../../specs/constants';
 import { onExternalPointerEvent } from '../../../state/actions/events';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
@@ -1290,44 +1292,35 @@ describe('Clickable annotations', () => {
     expect(callArgs.rects[0].id).toEqual('rect2');
   });
   test('click line marker annotation', () => {
-    const store = MockStore.default({ width: 500, height: 500, top: 0, left: 0 }, 'chartId');
-    const onAnnotationClick = jest.fn<void, any[]>((data: any): void => data);
-    const onAnnotationClickCaller = createOnClickCaller();
-    store.subscribe(() => {
-      onAnnotationClickCaller(store.getState());
-    });
-    MockStore.addSpecs(
-      [
-        MockGlobalSpec.settingsNoMargins({
-          onAnnotationClick,
-        }),
-        MockSeriesSpec.bar({
-          xScaleType: ScaleType.Linear,
-          yScaleType: ScaleType.Linear,
-          xAccessor: 'x',
-          yAccessors: ['y'],
-          data: [
+    const wrapper = mount(
+      <Chart size={[500, 500]}>
+        <Settings onAnnotationClick={(data) => data} />
+        <BarSeries
+          id="bar1"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[
             { x: 0, y: 2 },
             { x: 1, y: 3 },
             { x: 3, y: 6 },
-          ],
-        }),
-        MockAnnotationSpec.line({
-          id: 'line1',
-          domainType: AnnotationDomainType.XDomain,
-          dataValues: [{ dataValue: 2, details: `detail-foo}` }],
-          marker: <Icon type="alert" />,
-          markerPosition: Position.Top,
-          // style: DEFAULT_ANNOTATION_LINE_STYLE,
-        }),
-      ],
-      store,
+          ]}
+        />
+        <LineAnnotation
+          id="foo"
+          domainType={AnnotationDomainType.XDomain}
+          dataValues={[{ dataValue: 2, details: 'foo' }]}
+          marker={<Icon type="alert" />}
+          hideTooltips
+          markerPosition={Position.Top}
+        />
+      </Chart>,
     );
     // the line marker
-    store.dispatch(onPointerMove({ x: 8, y: 10 }, 0));
-    store.dispatch(onMouseDown({ x: 8, y: 10 }, 100));
-    store.dispatch(onMouseUp({ x: 8, y: 10 }, 200));
-
-    expect(onAnnotationClick).toBeCalled();
+    const annotation = wrapper.find('.echAnnotation');
+    expect(annotation).toHaveLength(1);
+    annotation.simulate('click');
+    expect(annotation.debug()).toContain('onDOMElementClick');
   });
 });

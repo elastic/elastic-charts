@@ -65,7 +65,6 @@ function renderAnnotationLineMarkers(
   annotationLines: AnnotationLineProps[],
   onDOMElementEnter: typeof onDOMElementEnterAction,
   onDOMElementLeave: typeof onDOMElementLeaveAction,
-  onLineMarkerClickHandler: typeof onDOMElementClickAction,
 ) {
   return annotationLines.reduce<JSX.Element[]>((acc, props: AnnotationLineProps) => {
     if (props.markers.length === 0) {
@@ -80,7 +79,7 @@ function renderAnnotationLineMarkers(
         chartDimensions={chartDimensions}
         onDOMElementEnter={onDOMElementEnter}
         onDOMElementLeave={onDOMElementLeave}
-        onLineMarkerClickHandler={onLineMarkerClickHandler}
+        onDOMElementClick={onDOMElementClick}
       />,
     );
 
@@ -118,7 +117,6 @@ const AnnotationsComponent = ({
           annotationLines,
           onDOMElementEnter,
           onDOMElementLeave,
-          onDOMElementClick,
         );
         lineMarkers.forEach((m) => markers.push(m));
       }
@@ -157,6 +155,7 @@ const mapDispatchToProps = (dispatch: Dispatch): AnnotationsDispatchProps =>
       onPointerMove: onPointerMoveAction,
       onDOMElementLeave: onDOMElementLeaveAction,
       onDOMElementEnter: onDOMElementEnterAction,
+      onDOMElementClick: onDOMElementClickAction,
     },
     dispatch,
   );
