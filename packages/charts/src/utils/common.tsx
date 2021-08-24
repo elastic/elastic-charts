@@ -132,7 +132,7 @@ export function identity<T>(value: T): T {
 
 /** @internal */
 export function compareByValueAsc(a: number | string, b: number | string): number {
-  return a > b ? 1 : -1;
+  return a > b ? 1 : a < b ? -1 : 0;
 }
 
 /** @internal */
