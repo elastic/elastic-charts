@@ -13,8 +13,6 @@ import { $Values } from 'utility-types';
 import { Theme, LIGHT_THEME, DARK_THEME, DEFAULT_CHART_MARGINS } from '@elastic/charts';
 import { mergePartial } from '@elastic/charts/src/utils/common';
 
-import { storybookParameters } from './parameters';
-
 /**
  * Available themes
  * @internal
@@ -41,14 +39,9 @@ const themeMap = {
   [ThemeId.EUIDark]: mergePartial(DARK_THEME, EUI_CHARTS_THEME_DARK.theme, { mergeOptionalPartialValues: true }),
 };
 
-const getBackground = (colorId: string) => {
-  const option = (storybookParameters?.background?.options ?? []).find(({ id }) => id === colorId);
-  return option?.background ?? option?.color ?? '#fff';
-};
-
 export const useBaseTheme = (): Theme => {
   const themeId = useContext(ThemeContext);
-  const backgroundId = useContext(BackgroundContext);
+  const backgroundColor = useContext(BackgroundContext);
   const theme = themeMap[themeId] ?? LIGHT_THEME;
 
   return mergePartial(
@@ -57,7 +50,7 @@ export const useBaseTheme = (): Theme => {
       // eui chart theme has no margin for some reason. This is just for consistency.
       chartMargins: DEFAULT_CHART_MARGINS,
       background: {
-        color: backgroundId && getBackground(backgroundId),
+        color: backgroundColor,
       },
     },
     { mergeOptionalPartialValues: true },
