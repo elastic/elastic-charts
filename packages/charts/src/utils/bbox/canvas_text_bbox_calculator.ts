@@ -25,9 +25,7 @@ export type TextMeasure = (
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
   const canvas = document.createElement('canvas');
-  canvas.style.position = 'absolute';
-  canvas.style.top = '-99999px';
-  canvas.style.left = '-99999px';
+  canvas.style.display = 'none';
   const ctx = canvas.getContext('2d');
   const root = document.documentElement;
   root.appendChild(canvas);
