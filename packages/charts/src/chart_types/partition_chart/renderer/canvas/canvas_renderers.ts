@@ -207,12 +207,10 @@ function renderLinkLabels(
         ctx.scale(1, -1); // flip for text rendering not to be upside down
         ctx.textAlign = textAlign;
         // label text
-        ctx.strokeStyle = labelColor;
         ctx.fillStyle = labelColor;
         ctx.font = cssFontShorthand(labelFontSpec, linkLabelFontSize);
         ctx.fillText(text, textAlign === 'right' ? -valueWidth - labelValueGap : 0, 0);
         // value text
-        ctx.strokeStyle = valueColor;
         ctx.fillStyle = valueColor;
         ctx.font = cssFontShorthand(valueFontSpec, linkLabelFontSize);
         ctx.fillText(valueText, textAlign === 'left' ? width + labelValueGap : 0, 0);
