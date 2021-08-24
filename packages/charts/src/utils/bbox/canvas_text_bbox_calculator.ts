@@ -22,48 +22,15 @@ export type TextMeasure = (
   fontWeight?: number,
 ) => BBox;
 
-class CanvasTextBBoxCalculator {
-  private attachedRoot: HTMLElement;
-
-  private offscreenCanvas: HTMLCanvasElement;
-
-  private context: CanvasRenderingContext2D | null;
-
-  constructor(rootElement?: HTMLElement) {
-    this.offscreenCanvas = document.createElement('canvas');
-    this.offscreenCanvas.style.position = 'absolute';
-    this.offscreenCanvas.style.top = '-99999px';
-    this.offscreenCanvas.style.left = '-99999px';
-    this.context = this.offscreenCanvas.getContext('2d');
-    this.attachedRoot = rootElement || document.documentElement;
-    this.attachedRoot.appendChild(this.offscreenCanvas);
-  }
-
-  compute(text: string, padding: number, fontSize = 16, fontFamily = 'Arial', lineHeight = 1, fontWeight = 400): BBox {
-    if (!this.context) {
-      return { width: 0, height: 0 };
-    }
-    // Padding should be at least one to avoid browser measureText inconsistencies
-    if (padding < 1) {
-      padding = 1;
-    }
-    this.context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-    const measure = this.context.measureText(text);
-
-    return {
-      width: measure.width + padding,
-      height: fontSize * lineHeight,
-    };
-  }
-
-  destroy(): void {
-    this.attachedRoot.removeChild(this.offscreenCanvas);
-  }
-}
-
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
-  const canvasTextBBoxCalculator = new CanvasTextBBoxCalculator();
+  const offscreenCanvas = document.createElement('canvas');
+  offscreenCanvas.style.position = 'absolute';
+  offscreenCanvas.style.top = '-99999px';
+  offscreenCanvas.style.left = '-99999px';
+  const context = offscreenCanvas.getContext('2d');
+  const attachedRoot = document.documentElement;
+  attachedRoot.appendChild(offscreenCanvas);
   const textMeasure: TextMeasure = (
     text: string,
     padding: number,
@@ -71,8 +38,16 @@ export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
     fontFamily = 'Arial',
     lineHeight = 1,
     fontWeight = 400,
-  ) => canvasTextBBoxCalculator.compute(text, padding, fontSize, fontFamily, lineHeight, fontWeight);
+  ) => {
+    if (!context) {
+      return { width: 0, height: 0 };
+    }
+    context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+    const measure = context.measureText(text);
+    // Padding should be at least one to avoid browser measureText inconsistencies
+    return { width: measure.width + Math.max(padding, 1), height: fontSize * lineHeight };
+  };
   const result: T = fun(textMeasure);
-  canvasTextBBoxCalculator.destroy();
+  attachedRoot.removeChild(offscreenCanvas);
   return result;
 };
