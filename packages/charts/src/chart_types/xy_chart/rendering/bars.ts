@@ -69,23 +69,19 @@ export function renderBars(
       const absMinHeight = Math.abs(minBarHeight);
 
       // safeguard against null y values
-      let height = isNil(y0Scaled) || isNil(y) ? 0 : y0Scaled - y;
+      const rawHeight = isNil(y0Scaled) || isNil(y) ? 0 : y0Scaled - y;
 
       if (isNil(y0Scaled) || isNil(y)) {
         y = 0;
       }
 
-      if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
-        height = height < 0 ? -absMinHeight : absMinHeight;
-      }
+      const clippedHeight =
+        absMinHeight === undefined || rawHeight === 0 || Math.abs(rawHeight) >= absMinHeight
+          ? rawHeight
+          : absMinHeight * (rawHeight < 0 ? -1 : 1);
 
-      if (absMinHeight !== undefined && height !== 0 && Math.abs(height) < absMinHeight) {
-        const heightDelta = absMinHeight - Math.abs(height);
-        y += height < 0 ? heightDelta : -heightDelta;
-      }
-
-      const isUpsideDown = height < 0;
-      height = Math.abs(height);
+      const isUpsideDown = clippedHeight < 0;
+      const height = Math.abs(clippedHeight);
       y = isUpsideDown ? y - height : y;
 
       const xScaled = xScale.scale(datum.x);
