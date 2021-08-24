@@ -4,8 +4,6 @@
   "ignorePaths": ["./.github/**"],
   "enabledManagers": ["npm"],
   "baseBranches": ["master"],
-  "prConcurrentLimit": 0,
-  "prHourlyLimit": 10,
   "separateMajorMinor": false,
   "rangeStrategy": "bump",
   "semanticCommits": "enabled",
@@ -19,7 +17,6 @@
     "packageRules": [
       {
         "matchPackagePatterns": [".*"],
-        "excludePackageNames": ["@elastic/eui", "@elastic/datemath"],
         "enabled": false
       },
       {
