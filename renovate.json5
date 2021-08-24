@@ -1,16 +1,8 @@
 {
-  extends: [
-    'config:base',
-  ],
-  ignorePaths: [
-    '**/.github/**',
-  ],
-  enabledManagers: [
-    'npm',
-  ],
-  baseBranches: [
-    'master',
-  ],
+  extends: ['config:base'],
+  ignorePaths: ['**/.github/**'],
+  enabledManagers: ['npm'],
+  baseBranches: ['master'],
   prConcurrentLimit: 0,
   prHourlyLimit: 0,
   separateMajorMinor: false,
