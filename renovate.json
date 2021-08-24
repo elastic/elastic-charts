@@ -7,8 +7,7 @@
   "separateMajorMinor": false,
   "rangeStrategy": "bump",
   "semanticCommits": "enabled",
-  "vulnerabilityAlerts":
-  {
+  "vulnerabilityAlerts": {
     "enabled": false
   },
   "packageRules": [
