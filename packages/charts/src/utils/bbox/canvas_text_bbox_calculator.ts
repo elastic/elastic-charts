@@ -22,20 +22,7 @@ export type TextMeasure = (
   fontWeight?: number,
 ) => BBox;
 
-/** @internal */
-export const DEFAULT_EMPTY_BBOX = {
-  width: 0,
-  height: 0,
-};
-
-/** @internal */
-export interface BBoxCalculator {
-  compute(text: string, padding: number, fontSize?: number, fontFamily?: string): BBox;
-
-  destroy(): void;
-}
-
-class CanvasTextBBoxCalculator implements BBoxCalculator {
+class CanvasTextBBoxCalculator {
   private attachedRoot: HTMLElement;
 
   private offscreenCanvas: HTMLCanvasElement;
@@ -54,7 +41,7 @@ class CanvasTextBBoxCalculator implements BBoxCalculator {
 
   compute(text: string, padding: number, fontSize = 16, fontFamily = 'Arial', lineHeight = 1, fontWeight = 400): BBox {
     if (!this.context) {
-      return DEFAULT_EMPTY_BBOX;
+      return { width: 0, height: 0 };
     }
     // Padding should be at least one to avoid browser measureText inconsistencies
     if (padding < 1) {
