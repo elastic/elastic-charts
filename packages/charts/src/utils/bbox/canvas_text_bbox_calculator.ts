@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { BBoxCalculator, DEFAULT_EMPTY_BBOX } from './bbox_calculator';
-
 /** @internal */
 export interface BBox {
   width: number;
@@ -23,6 +21,19 @@ export type TextMeasure = (
   lineHeight?: number,
   fontWeight?: number,
 ) => BBox;
+
+/** @internal */
+export const DEFAULT_EMPTY_BBOX = {
+  width: 0,
+  height: 0,
+};
+
+/** @internal */
+export interface BBoxCalculator {
+  compute(text: string, padding: number, fontSize?: number, fontFamily?: string): BBox;
+
+  destroy(): void;
+}
 
 class CanvasTextBBoxCalculator implements BBoxCalculator {
   private attachedRoot: HTMLElement;
