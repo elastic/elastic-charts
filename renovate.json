@@ -1,56 +1,33 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
-  ],
-  "ignorePaths": [
-    "./.github/**"
-  ],
-  "enabledManagers": [
-    "npm"
-  ],
-  "baseBranches": [
-    "master"
-  ],
+  "extends": ["config:base"],
+  "ignorePaths": ["./.github/**"],
+  "enabledManagers": ["npm"],
+  "baseBranches": ["master"],
   "separateMajorMinor": false,
   "rangeStrategy": "bump",
   "semanticCommits": "enabled",
-  "vulnerabilityAlerts": {
+  "vulnerabilityAlerts":
+  {
     "enabled": false
   },
-  "npm": {
-    "lockFileMaintenance": {
+  "packageRules": [
+    {
+      "matchPackagePatterns": [".*"],
       "enabled": false
     },
-    "packageRules": [
-      {
-        "matchPackagePatterns": [
-          ".*"
-        ],
-        "enabled": false
-      },
-      {
-        "groupName": "@elastic/eui",
-        "matchPackageNames": [
-          "@elastic/eui",
-          "@elastic/datemath"
-        ],
-        "matchUpdateTypes": [
-          "major",
-          "minor"
-        ],
-        "reviewers": [
-          "team:datavis"
-        ],
-        "matchBaseBranches": [
-          "master"
-        ],
-        "labels": [
-          "dependencies"
-        ],
-        "automerge": true,
-        "enabled": true
-      }
-    ]
-  }
+    {
+      "groupName": "@elastic/eui",
+      "matchPackageNames": ["@elastic/eui", "@elastic/datemath"],
+      "reviewers": ["team:datavis"],
+      "labels": ["dependencies"],
+      "enabled": true
+    },
+    {
+      "matchPackageNames": ["@elastic/eui", "@elastic/datemath"],
+      "matchUpdateTypes": ["major", "minor"],
+      "matchBaseBranches": ["master"],
+      "automerge": true
+    }
+  ]
 }
