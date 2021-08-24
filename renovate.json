@@ -19,6 +19,7 @@
     "packageRules": [
       {
         "matchPackagePatterns": [".*"],
+        "excludePackageNames": ["@elastic/eui", "@elastic/datemath"],
         "enabled": false
       },
       {
