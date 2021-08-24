@@ -21,9 +21,12 @@ import {
   getA11ySettingsSelector,
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../utils/dimensions';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { Theme } from '../../../../utils/themes/theme';
 import { MODEL_KEY } from '../../layout/config';
 import {
   nullShapeViewModel,
@@ -57,6 +60,7 @@ interface ReactiveChartStateProps {
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
   debug: SettingsSpec['debug'];
+  theme: Theme;
 }
 
 interface ReactiveChartDispatchProps {
@@ -181,7 +185,14 @@ class PartitionComponent extends React.Component<PartitionProps> {
           : isWaffle(geometries.config.partitionLayout)
           ? renderWrappedPartitionCanvas2d
           : renderPartitionCanvas2d;
-        renderer(ctx, devicePixelRatio, geometries, props.geometriesFoci[geometryIndex], this.animationState);
+        renderer(
+          ctx,
+          devicePixelRatio,
+          geometries,
+          props.geometriesFoci[geometryIndex],
+          this.animationState,
+          props.theme,
+        );
       });
     }
   }
@@ -208,6 +219,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   debug: false,
+  theme: LIGHT_THEME,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -223,6 +235,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometriesFoci: partitionDrilldownFocus(state),
     a11ySettings: getA11ySettingsSelector(state),
     debug: getSettingsSpecSelector(state).debug,
+    theme: getChartThemeSelector(state),
   };
 };
 

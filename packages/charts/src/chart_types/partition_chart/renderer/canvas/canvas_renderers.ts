@@ -9,9 +9,10 @@
 import { addOpacity } from '../../../../common/color_calcs';
 import { TAU } from '../../../../common/constants';
 import { Pixels } from '../../../../common/geometry';
-import { cssFontShorthand } from '../../../../common/text_utils';
+import { cssFontShorthand, Font } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { Color } from '../../../../utils/common';
+import { Theme } from '../../../../utils/themes/theme';
 import { MIN_STROKE_WIDTH } from '../../../xy_chart/renderer/canvas/primitives/line';
 import {
   LinkLabelVM,
@@ -23,6 +24,7 @@ import {
 } from '../../layout/types/viewmodel_types';
 import { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
 import { isSunburst, panelTitleFontSize } from '../../layout/viewmodel/viewmodel';
+import { AnimationState, ContinuousDomainFocus } from './partition';
 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
@@ -238,6 +240,9 @@ export function renderPartitionCanvas2d(
     diskCenter,
     outerRadius,
   }: ShapeViewModel,
+  domainFocus: ContinuousDomainFocus,
+  animationState: AnimationState,
+  theme: Theme,
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = config;
 
@@ -258,6 +263,16 @@ export function renderPartitionCanvas2d(
     ctx.textBaseline = 'bottom';
 
     // panel titles
+    const panelTitleFont: Font = {
+      fontStyle: theme.axes.axisPanelTitle.fontStyle ?? 'normal',
+      fontFamily: theme.axes.axisPanelTitle.fontFamily,
+      fontWeight: 'normal',
+      fontVariant: 'normal',
+      textColor: theme.axes.axisPanelTitle.fill,
+      textOpacity: 1,
+    };
+    ctx.font = cssFontShorthand(panelTitleFont, theme.axes.axisPanelTitle.fontSize);
+    ctx.fillStyle = panelTitleFont.textColor;
     ctx.fillText(
       panelTitle,
       isSunburst(config.partitionLayout) ? diskCenter.x : diskCenter.x + (config.width * width) / 2,
