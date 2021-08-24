@@ -9,10 +9,9 @@
 import { addOpacity } from '../../../../common/color_calcs';
 import { TAU } from '../../../../common/constants';
 import { Pixels } from '../../../../common/geometry';
-import { cssFontShorthand, Font } from '../../../../common/text_utils';
+import { cssFontShorthand } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { Color } from '../../../../utils/common';
-import { Theme } from '../../../../utils/themes/theme';
 import { MIN_STROKE_WIDTH } from '../../../xy_chart/renderer/canvas/primitives/line';
 import {
   LinkLabelVM,
@@ -23,8 +22,7 @@ import {
   TextRow,
 } from '../../layout/types/viewmodel_types';
 import { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
-import { isSunburst, panelTitleFontSize } from '../../layout/viewmodel/viewmodel';
-import { AnimationState, ContinuousDomainFocus } from './partition';
+import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
@@ -222,7 +220,6 @@ function renderLinkLabels(
 }
 
 const midlineOffset = 0.35; // 0.35 is a [common constant](http://tavmjong.free.fr/SVG/TEXT_IN_A_BOX/index.html) representing half height
-const innerPad = midlineOffset * panelTitleFontSize; // todo replace it with theme.axisPanelTitle.padding.inner
 
 /** @internal */
 export function renderPartitionCanvas2d(
@@ -231,7 +228,6 @@ export function renderPartitionCanvas2d(
   {
     width,
     height,
-    panelTitle,
     config,
     quadViewModel,
     rowSets,
@@ -239,10 +235,8 @@ export function renderPartitionCanvas2d(
     linkLabelViewModels,
     diskCenter,
     outerRadius,
+    panel,
   }: ShapeViewModel,
-  domainFocus: ContinuousDomainFocus,
-  animationState: AnimationState,
-  theme: Theme,
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = config;
 
@@ -263,22 +257,15 @@ export function renderPartitionCanvas2d(
     ctx.textBaseline = 'bottom';
 
     // panel titles
-    const panelTitleFont: Font = {
-      fontStyle: theme.axes.axisPanelTitle.fontStyle ?? 'normal',
-      fontFamily: theme.axes.axisPanelTitle.fontFamily,
-      fontWeight: 'normal',
-      fontVariant: 'normal',
-      textColor: theme.axes.axisPanelTitle.fill,
-      textOpacity: 1,
-    };
-    ctx.font = cssFontShorthand(panelTitleFont, theme.axes.axisPanelTitle.fontSize);
-    ctx.fillStyle = panelTitleFont.textColor;
+    ctx.font = cssFontShorthand(panel.fontFace, panel.fontSize);
+    ctx.fillStyle = panel.fontFace.textColor;
+    const innerPad = midlineOffset * panel.fontSize; // todo replace it with theme.axisPanelTitle.padding.inner
     ctx.fillText(
-      panelTitle,
+      panel.title,
       isSunburst(config.partitionLayout) ? diskCenter.x : diskCenter.x + (config.width * width) / 2,
       isSunburst(config.partitionLayout)
         ? config.linkLabel.maxCount > 0
-          ? diskCenter.y - (config.height * height) / 2 + panelTitleFontSize
+          ? diskCenter.y - (config.height * height) / 2 + panel.fontSize
           : diskCenter.y - outerRadius - innerPad
         : diskCenter.y + 12,
     );
