@@ -18,6 +18,7 @@
 🚨 **WARNING** While open source, the intended consumers of this repository are Elastic products. Read the [FAQ][faq] for details.
 
 ---
+help me
 
 You should check out our [living style guide][docs], which contains many examples on how charts look and feel, and how to use them in your products.
 
