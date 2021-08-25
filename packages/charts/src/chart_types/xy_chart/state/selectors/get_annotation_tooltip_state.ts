@@ -143,6 +143,7 @@ export function getTooltipStateForDOMElements(
     tooltipSettings: getTooltipSettings(spec),
   };
 }
+
 function isAnnotationLineProps(prop: AnnotationLineProps | AnnotationRectProps): prop is AnnotationLineProps {
   return 'linePathPoints' in prop;
 }

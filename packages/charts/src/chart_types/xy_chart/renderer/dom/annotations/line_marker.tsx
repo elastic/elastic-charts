@@ -9,6 +9,8 @@
 import { createPopper, Instance } from '@popperjs/core';
 import React, { RefObject, useRef, useEffect, useCallback } from 'react';
 
+import { DEFAULT_CSS_CURSOR } from '../../../../../common/constants';
+import { AnnotationClickListener } from '../../../../../specs';
 import {
   DOMElementType,
   onDOMElementEnter as onDOMElementEnterAction,
@@ -25,6 +27,7 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'ma
   onDOMElementEnter: typeof onDOMElementEnterAction;
   onDOMElementLeave: typeof onDOMElementLeaveAction;
   onDOMElementClick: typeof onDOMElementClickAction;
+  annotationSpec?: AnnotationClickListener;
 };
 
 const MARKER_TRANSFORMS = {
@@ -53,6 +56,7 @@ export function LineMarker({
   onDOMElementEnter,
   onDOMElementLeave,
   onDOMElementClick,
+  annotationSpec,
 }: LineMarkerProps) {
   const iconRef = useRef<HTMLDivElement | null>(null);
   const testRef = useRef<HTMLDivElement | null>(null);
@@ -61,6 +65,7 @@ export function LineMarker({
     color,
     top: chartDimensions.top + position.top + panel.top,
     left: chartDimensions.left + position.left + panel.left,
+    cursor: annotationSpec ? 'pointer' : DEFAULT_CSS_CURSOR,
   };
   const transform = { transform: getMarkerCentredTransform(alignment, Boolean(dimension)) };
 

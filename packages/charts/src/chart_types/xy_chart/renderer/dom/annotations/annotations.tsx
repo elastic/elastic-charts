@@ -10,6 +10,7 @@ import React, { RefObject, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { AnnotationClickListener } from '../../../../../specs';
 import {
   onDOMElementEnter as onDOMElementEnterAction,
   onDOMElementLeave as onDOMElementLeaveAction,
@@ -22,6 +23,7 @@ import {
   getInternalIsInitializedSelector,
   InitStatus,
 } from '../../../../../state/selectors/get_internal_is_intialized';
+import { getSettingsSpecSelector } from '../../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { AnnotationId } from '../../../../../utils/ids';
 import { AnnotationLineProps } from '../../../annotations/line/types';
@@ -50,6 +52,7 @@ interface AnnotationsStateProps {
   annotationSpecs: AnnotationSpec[];
   chartId: string;
   zIndex: number;
+  onAnnotationClick?: AnnotationClickListener;
 }
 
 interface AnnotationsOwnProps {
@@ -65,12 +68,12 @@ function renderAnnotationLineMarkers(
   annotationLines: AnnotationLineProps[],
   onDOMElementEnter: typeof onDOMElementEnterAction,
   onDOMElementLeave: typeof onDOMElementLeaveAction,
+  onAnnotationClick?: AnnotationClickListener,
 ) {
   return annotationLines.reduce<JSX.Element[]>((acc, props: AnnotationLineProps) => {
     if (props.markers.length === 0) {
       return acc;
     }
-
     acc.push(
       <LineMarker
         {...props}
@@ -80,6 +83,7 @@ function renderAnnotationLineMarkers(
         onDOMElementEnter={onDOMElementEnter}
         onDOMElementLeave={onDOMElementLeave}
         onDOMElementClick={onDOMElementClick}
+        annotationSpec={onAnnotationClick}
       />,
     );
 
@@ -99,6 +103,7 @@ const AnnotationsComponent = ({
   onPointerMove,
   onDOMElementEnter,
   onDOMElementLeave,
+  onAnnotationClick,
 }: AnnotationsProps) => {
   const renderAnnotationMarkers = useCallback((): JSX.Element[] => {
     const markers: JSX.Element[] = [];
@@ -117,13 +122,22 @@ const AnnotationsComponent = ({
           annotationLines,
           onDOMElementEnter,
           onDOMElementLeave,
+          onAnnotationClick,
         );
         lineMarkers.forEach((m) => markers.push(m));
       }
     });
 
     return markers;
-  }, [annotationDimensions, annotationSpecs, chartAreaRef, chartDimensions, onDOMElementEnter, onDOMElementLeave]);
+  }, [
+    annotationDimensions,
+    annotationSpecs,
+    chartAreaRef,
+    chartDimensions,
+    onDOMElementEnter,
+    onDOMElementLeave,
+    onAnnotationClick,
+  ]);
 
   const onScroll = useCallback(() => {
     onPointerMove({ x: -1, y: -1 }, Date.now());
@@ -171,6 +185,7 @@ const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
       tooltipState: null,
       chartId,
       zIndex,
+      onAnnotationClick: undefined,
     };
   }
   return {
@@ -181,6 +196,7 @@ const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
     tooltipState: getAnnotationTooltipStateSelector(state),
     chartId,
     zIndex,
+    onAnnotationClick: getSettingsSpecSelector(state).onAnnotationClick,
   };
 };
 

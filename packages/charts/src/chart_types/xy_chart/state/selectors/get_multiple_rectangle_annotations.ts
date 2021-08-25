@@ -78,6 +78,7 @@ function getMultipleRectangularAnnotationTooltipState(
     chartRotation,
     chartDimensions,
   );
+
   // If there's a highlighted chart element tooltip value, don't show annotation tooltip
   const isChartTooltipDisplayed = tooltip.values.some(({ isHighlighted }) => isHighlighted);
   tooltipState?.forEach((rectAnnotation) => {
