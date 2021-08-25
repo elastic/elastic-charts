@@ -9,7 +9,7 @@
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
@@ -37,13 +37,11 @@ export const getXAxisRightOverflow = createCustomCachedSelector(
         timeZone,
       },
     );
-    const bboxCompute = new CanvasTextBBoxCalculator();
-    const maxTextWidth = timeScale.ticks().reduce((acc, d) => {
-      const text = formatter(d);
-      const textSize = bboxCompute.compute(text, padding, fontSize, fontFamily, 1);
-      return Math.max(acc, textSize.width + padding);
-    }, 0);
-    bboxCompute.destroy();
-    return maxTextWidth / 2;
+    return withTextMeasure(
+      (textMeasure) =>
+        timeScale.ticks().reduce((acc, d) => {
+          return Math.max(acc, textMeasure(formatter(d), padding, fontSize, fontFamily, 1).width + padding);
+        }, 0) / 2,
+    );
   },
 );
