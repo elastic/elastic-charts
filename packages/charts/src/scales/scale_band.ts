@@ -12,7 +12,7 @@ import { Scale, ScaleBandType } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Ratio } from '../common/geometry';
 import { RelativeBandsPadding } from '../specs';
-import { maxValueWithUpperLimit, stringifyNullsUndefined } from '../utils/common';
+import { clamp, stringifyNullsUndefined } from '../utils/common';
 import { Range } from '../utils/domain';
 import { ScaleType } from './constants';
 
@@ -70,7 +70,7 @@ export class ScaleBand implements Scale {
       this.d3Scale.paddingOuter(barsPadding.outer);
       this.barsPadding = barsPadding.inner;
     } else {
-      safeBarPadding = maxValueWithUpperLimit(barsPadding, 0, 1);
+      safeBarPadding = clamp(barsPadding, 0, 1);
       this.d3Scale.paddingInner(safeBarPadding);
       this.barsPadding = safeBarPadding;
       this.d3Scale.paddingOuter(safeBarPadding / 2);

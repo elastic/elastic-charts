@@ -148,6 +148,7 @@ export function renderXYChartCanvas2d(
           renderDebugRect(
             ctx,
             { x: left, y: top, width, height },
+            0,
             { color: stringToRGB('transparent') },
             { color: stringToRGB('red'), width: 4, dash: [4, 4] },
           );

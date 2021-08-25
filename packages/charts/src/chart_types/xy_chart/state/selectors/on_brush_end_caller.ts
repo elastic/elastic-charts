@@ -15,7 +15,7 @@ import { BrushAxis } from '../../../../specs/constants';
 import { DragState, GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { maxValueWithUpperLimit, minValueWithLowerLimit, Rotation } from '../../../../utils/common';
+import { clamp, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { hasDragged, DragCheckProps } from '../../../../utils/events';
 import { GroupId } from '../../../../utils/ids';
@@ -163,8 +163,8 @@ function getXBrushExtent(
 
   const maxDomainValue = xScale.domain[1] + (allowBrushingLastHistogramBucket ? xScale.minInterval : 0);
 
-  const minValue = minValueWithLowerLimit(minPosScaled, maxPosScaled, xScale.domain[0]);
-  const maxValue = maxValueWithUpperLimit(minPosScaled, maxPosScaled, maxDomainValue);
+  const minValue = clamp(minPosScaled, xScale.domain[0], maxPosScaled);
+  const maxValue = clamp(minPosScaled, maxPosScaled, maxDomainValue);
 
   return [minValue, maxValue];
 }
@@ -212,8 +212,8 @@ function getYBrushExtents(
 
     const minPosScaled = yScale.invert(minPos);
     const maxPosScaled = yScale.invert(maxPos);
-    const minValue = minValueWithLowerLimit(minPosScaled, maxPosScaled, yScale.domain[0]);
-    const maxValue = maxValueWithUpperLimit(minPosScaled, maxPosScaled, yScale.domain[1]);
+    const minValue = clamp(minPosScaled, yScale.domain[0], maxPosScaled);
+    const maxValue = clamp(minPosScaled, maxPosScaled, yScale.domain[1]);
     yValues.push({ extent: [minValue, maxValue], groupId });
   });
   return yValues.length === 0 ? undefined : yValues;

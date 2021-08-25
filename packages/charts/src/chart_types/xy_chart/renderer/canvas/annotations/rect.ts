@@ -25,22 +25,12 @@ export function renderRectAnnotations(
 ) {
   const fillColor = stringToRGB(rectStyle.fill);
   fillColor.opacity *= rectStyle.opacity;
-  const fill: Fill = {
-    color: fillColor,
-  };
+  const fill: Fill = { color: fillColor };
   const strokeColor = stringToRGB(rectStyle.stroke);
   strokeColor.opacity *= rectStyle.opacity;
-  const stroke: Stroke = {
-    color: strokeColor,
-    width: rectStyle.strokeWidth,
-  };
+  const stroke: Stroke = { color: strokeColor, width: rectStyle.strokeWidth };
 
-  const rectsLength = annotations.length;
-
-  for (let i = 0; i < rectsLength; i++) {
-    const { rect, panel } = annotations[i];
-    withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
-      renderRect(ctx, rect, fill, stroke);
-    });
-  }
+  annotations.forEach(({ rect, panel }) =>
+    withPanelTransform(ctx, panel, rotation, renderingArea, () => renderRect(ctx, rect, fill, stroke)),
+  );
 }
