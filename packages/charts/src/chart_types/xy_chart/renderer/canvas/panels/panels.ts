@@ -17,8 +17,7 @@ import { AxisSpec } from '../../../utils/specs';
 import { AxesProps, AxisProps, renderAxis } from '../axes';
 import { renderRect } from '../primitives/rect';
 import { renderDebugRect } from '../utils/debug';
-import { renderTitle } from './global_title';
-import { renderPanelTitle } from './panel_title';
+import { renderTitle } from './title';
 
 /** @internal */
 export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: chartY }: Point, panels: PanelGeoms) {
@@ -46,7 +45,7 @@ function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps) {
     renderAxis(ctx, props); // For now, just render the axis line TODO: compute axis dimensions per panels
     if (!secondary) {
       const { panelTitle, dimension } = props;
-      renderPanelTitle(ctx, { panelTitle, axisSpec, axisStyle, size, dimension, debug }); // fixme axisSpec/Style?
+      renderTitle(ctx, true, { panelTitle, axisSpec, axisStyle, size, dimension, debug, anchorPoint: { x: 0, y: 0 } }); // fixme axisSpec/Style?
     }
   });
 }
@@ -76,7 +75,7 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
 
       if (!seenAxesTitleIds.has(id)) {
         seenAxesTitleIds.add(id);
-        renderTitle(ctx, { size: parentSize, debug, panelTitle, anchorPoint, dimension, axisStyle, axisSpec });
+        renderTitle(ctx, false, { size: parentSize, debug, panelTitle, anchorPoint, dimension, axisStyle, axisSpec });
       }
 
       renderPanel(ctx, {

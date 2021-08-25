@@ -24,9 +24,9 @@ const DEFAULT_DEBUG_STROKE: Stroke = {
 export function renderDebugRect(
   ctx: CanvasRenderingContext2D,
   rect: Rect,
+  rotation: number = 0,
   fill = DEFAULT_DEBUG_FILL, // violet
   stroke = DEFAULT_DEBUG_STROKE,
-  rotation: number = 0,
 ) {
   withContext(ctx, () => {
     ctx.translate(rect.x, rect.y);

@@ -7,7 +7,7 @@
  */
 
 import {
-  maxValueWithUpperLimit,
+  clamp,
   compareByValueAsc,
   identity,
   hasPartialObjectToMerge,
@@ -16,7 +16,6 @@ import {
   getPartialValue,
   getAllKeys,
   shallowClone,
-  minValueWithLowerLimit,
   getColorFromVariant,
   ColorVariant,
   isUniqueArray,
@@ -26,23 +25,15 @@ import {
 
 describe('common utilities', () => {
   test('return value bounded above', () => {
-    expect(maxValueWithUpperLimit(0, 0, 1)).toBe(0);
-    expect(maxValueWithUpperLimit(1, 0, 1)).toBe(1);
+    expect(clamp(0, 0, 1)).toBe(0);
+    expect(clamp(1, 0, 1)).toBe(1);
 
-    expect(maxValueWithUpperLimit(1.1, 0, 1)).toBe(1);
-    expect(maxValueWithUpperLimit(-0.1, 0, 1)).toBe(0);
+    expect(clamp(1.1, 0, 1)).toBe(1);
+    expect(clamp(-0.1, 0, 1)).toBe(0);
 
-    expect(maxValueWithUpperLimit(0.1, 0, 1)).toBe(0.1);
-    expect(maxValueWithUpperLimit(0.8, 0, 1)).toBe(0.8);
+    expect(clamp(0.1, 0, 1)).toBe(0.1);
+    expect(clamp(0.8, 0, 1)).toBe(0.8);
   });
-  test('return value bounded below', () => {
-    expect(minValueWithLowerLimit(10, 20, 0)).toBe(10);
-    expect(minValueWithLowerLimit(20, 10, 0)).toBe(10);
-
-    expect(minValueWithLowerLimit(10, -20, 0)).toBe(0);
-    expect(minValueWithLowerLimit(-20, 10, 0)).toBe(0);
-  });
-
   test('identity', () => {
     expect(identity('text')).toBe('text');
     expect(identity(2)).toBe(2);
@@ -65,6 +56,7 @@ describe('common utilities', () => {
       bar: number;
       test?: TestType;
     }
+
     const base: TestType = {
       foo: 'elastic',
       bar: 123,
@@ -229,6 +221,7 @@ describe('common utilities', () => {
 
   describe('mergePartial', () => {
     let baseClone: TestType;
+
     interface TestType {
       string: string;
       number: number;
@@ -237,6 +230,7 @@ describe('common utilities', () => {
       array2: number[];
       nested: Partial<TestType>;
     }
+
     type PartialTestType = RecursivePartial<TestType>;
     const base: TestType = {
       string: 'string1',
@@ -260,6 +254,7 @@ describe('common utilities', () => {
 
     describe('Union types', () => {
       type TestObject = { string1?: string; string2?: string };
+
       interface TestUnionType {
         union: 'val1' | 'val2' | TestObject | string[];
       }
@@ -771,6 +766,7 @@ describe('common utilities', () => {
           animals: Set<string>;
           numbers?: Set<number>;
         }
+
         const result = mergePartial<Test>(
           {
             animals: new Set(['cat', 'dog']),
@@ -927,6 +923,7 @@ describe('common utilities', () => {
           value3: string;
           value4?: OptionalTestType;
         }
+
         const defaultBase: OptionalTestType = {
           value1: 'foo',
           value3: 'bar',
@@ -1079,6 +1076,7 @@ describe('#isDefinedFrom', () => {
   interface Test {
     a?: number | string | boolean | null;
   }
+
   it('should filter out undefined values from complex types', () => {
     const values: Partial<Test>[] = [
       {

@@ -9,6 +9,7 @@
 import { ChartType } from '../../..';
 import { CategoryKey } from '../../../../common/category';
 import { Pixels, Ratio } from '../../../../common/geometry';
+import { Font } from '../../../../common/text_utils';
 import { RelativeBandsPadding, SmallMultiplesSpec, SpecType } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
@@ -38,7 +39,7 @@ function bandwidth(range: Pixels, bandCount: number, { outer, inner }: RelativeB
 /** @internal */
 export const partitionMultiGeometries = createCustomCachedSelector(
   [getSpecs, getPartitionSpecs, getChartContainerDimensionsSelector, getTrees, getChartThemeSelector],
-  (specs, partitionSpecs, parentDimensions, trees, { background }): ShapeViewModel[] => {
+  (specs, partitionSpecs, parentDimensions, trees, { background, axes: { axisPanelTitle } }): ShapeViewModel[] => {
     const smallMultiplesSpecs = getSpecsFromStore<SmallMultiplesSpec>(specs, ChartType.Global, SpecType.SmallMultiples);
 
     // todo make it part of configuration
@@ -171,11 +172,19 @@ export const partitionMultiGeometries = createCustomCachedSelector(
           panelInnerHeight * style.verticalPanelPadding.outer +
           innerRowIndex * (panelInnerHeight * (1 + style.verticalPanelPadding.inner));
 
+        const fontFace: Font = {
+          fontStyle: axisPanelTitle.fontStyle ?? 'normal',
+          fontFamily: axisPanelTitle.fontFamily,
+          fontWeight: 'normal',
+          fontVariant: 'normal',
+          textColor: axisPanelTitle.fill,
+          textOpacity: 1,
+        };
         return getShapeViewModel(spec, parentDimensions, t, background.color, style, {
           index,
           innerIndex,
           partitionLayout: spec.config.partitionLayout ?? config.partitionLayout,
-          panelTitle: String(name),
+
           smAccessorValue,
           top: topOuterRatio + topInnerRatio,
           height: panelHeightRatio,
@@ -187,8 +196,13 @@ export const partitionMultiGeometries = createCustomCachedSelector(
           innerColumnIndex,
           marginLeftPx,
           marginTopPx,
-          panelInnerWidth,
-          panelInnerHeight,
+          panel: {
+            title: String(name),
+            innerWidth: panelInnerWidth,
+            innerHeight: panelInnerHeight,
+            fontFace,
+            fontSize: axisPanelTitle.fontSize,
+          },
         });
       });
     });

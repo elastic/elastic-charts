@@ -23,7 +23,7 @@ import { $Values, Required } from 'utility-types';
 import { ScaleContinuousType, Scale } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
-import { maxValueWithUpperLimit, mergePartial } from '../utils/common';
+import { clamp, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
 import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
@@ -345,7 +345,7 @@ export class ScaleContinuous implements Scale {
       this.domain = this.d3Scale.domain();
     }
 
-    const safeBarPadding = maxValueWithUpperLimit(barsPadding, 0, 1);
+    const safeBarPadding = clamp(barsPadding, 0, 1);
     this.barsPadding = safeBarPadding;
     this.bandwidth = bandwidth * (1 - safeBarPadding);
     this.bandwidthPadding = bandwidth * safeBarPadding;

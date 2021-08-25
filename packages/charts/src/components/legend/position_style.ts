@@ -9,7 +9,7 @@
 import { CSSProperties } from 'react';
 
 import { LegendSpec, LegendPositionConfig } from '../../specs/settings';
-import { BBox } from '../../utils/bbox/bbox_calculator';
+import { BBox } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { LayoutDirection, Position } from '../../utils/common';
 import { Dimensions } from '../../utils/dimensions';
 

@@ -10,25 +10,23 @@
   "vulnerabilityAlerts": {
     "enabled": false
   },
-  "npm": {
-    "lockFileMaintenance": {
+  "packageRules": [
+    {
+      "matchPackagePatterns": [".*"],
       "enabled": false
     },
-    "packageRules": [
-      {
-        "matchPackagePatterns": [".*"],
-        "enabled": false
-      },
-      {
-        "groupName": "@elastic/eui",
-        "matchPackageNames": ["@elastic/eui", "@elastic/datemath"],
-        "matchUpdateTypes": ["major", "minor"],
-        "reviewers": ["team:datavis"],
-        "matchBaseBranches": ["master"],
-        "labels": ["dependencies"],
-        "automerge": true,
-        "enabled": true
-      }
-    ]
-  }
+    {
+      "groupName": "@elastic/eui",
+      "matchPackageNames": ["@elastic/eui", "@elastic/datemath"],
+      "reviewers": ["team:datavis"],
+      "labels": ["dependencies"],
+      "enabled": true
+    },
+    {
+      "matchPackageNames": ["@elastic/eui", "@elastic/datemath"],
+      "matchUpdateTypes": ["major", "minor"],
+      "matchBaseBranches": ["master"],
+      "automerge": true
+    }
+  ]
 }

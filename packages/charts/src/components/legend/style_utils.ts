@@ -7,7 +7,7 @@
  */
 
 import { LegendPositionConfig } from '../../specs/settings';
-import { BBox } from '../../utils/bbox/bbox_calculator';
+import { BBox } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, LayoutDirection } from '../../utils/common';
 import { Margins } from '../../utils/dimensions';
 import { LegendStyle as ThemeLegendStyle } from '../../utils/themes/theme';

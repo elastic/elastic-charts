@@ -15,7 +15,7 @@ import { Box, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
-import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -56,21 +56,16 @@ function getValuesInRange(
 /**
  * Resolves the maximum number of ticks based on the chart width and sample label based on formatter config.
  */
-function getTicks(chartWidth: number, xAxisLabelConfig: Config['xAxisLabel']): number {
-  const bboxCompute = new CanvasTextBBoxCalculator();
-  const labelSample = xAxisLabelConfig.formatter(Date.now());
-  const { width } = bboxCompute.compute(
-    labelSample,
-    xAxisLabelConfig.padding,
-    xAxisLabelConfig.fontSize,
-    xAxisLabelConfig.fontFamily,
-  );
-  bboxCompute.destroy();
-  const maxTicks = Math.floor(chartWidth / width);
-  // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
-  // to many ticks creating nice rounded tick values
-  // TODO add support for limiting the number of tick in {@link ScaleContinuous}
-  return maxTicks / 2;
+function getTicks(chartWidth: number, { formatter, padding, fontSize, fontFamily }: Config['xAxisLabel']): number {
+  return withTextMeasure((textMeasure) => {
+    const labelSample = formatter(Date.now());
+    const { width } = textMeasure(labelSample, padding, fontSize, fontFamily);
+    const maxTicks = Math.floor(chartWidth / width);
+    // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
+    // to many ticks creating nice rounded tick values
+    // TODO add support for limiting the number of tick in {@link ScaleContinuous}
+    return maxTicks / 2;
+  });
 }
 
 /** @internal */

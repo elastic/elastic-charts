@@ -22,14 +22,12 @@ interface GridProps {
 }
 
 /** @internal */
-export function renderGrids(ctx: CanvasRenderingContext2D, props: GridProps) {
-  const {
-    perPanelGridLines,
-    renderingArea: { left, top },
-  } = props;
+export function renderGrids(
+  ctx: CanvasRenderingContext2D,
+  { perPanelGridLines, renderingArea: { left, top } }: GridProps,
+) {
   withContext(ctx, () => {
     ctx.translate(left, top);
-
     perPanelGridLines.forEach(({ lineGroups, panelAnchor: { x, y } }) => {
       withContext(ctx, () => {
         ctx.translate(x, y);

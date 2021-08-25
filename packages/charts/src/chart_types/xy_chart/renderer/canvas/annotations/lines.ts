@@ -31,9 +31,7 @@ export function renderLineAnnotations(
     dash: lineStyle.line.dash,
   };
 
-  annotations.forEach(({ linePathPoints, panel }) => {
-    withPanelTransform(ctx, panel, rotation, renderingArea, (ctx) => {
-      renderMultiLine(ctx, [linePathPoints], stroke);
-    });
-  });
+  annotations.forEach(({ linePathPoints, panel }) =>
+    withPanelTransform(ctx, panel, rotation, renderingArea, () => renderMultiLine(ctx, [linePathPoints], stroke)),
+  );
 }
