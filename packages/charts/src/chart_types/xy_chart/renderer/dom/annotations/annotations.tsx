@@ -30,7 +30,7 @@ import { getAnnotationTooltipStateSelector } from '../../../state/selectors/get_
 import { getAnnotationSpecsSelector } from '../../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../../state/selectors/is_chart_empty';
 import { getSpecsById } from '../../../state/utils/spec';
-import { isLineAnnotation, AnnotationSpec } from '../../../utils/specs';
+import { isLineAnnotation, AnnotationSpec, hasLineAnnotationBorder } from '../../../utils/specs';
 import { AnnotationTooltip } from './annotation_tooltip';
 import { LineMarker } from './line_marker';
 
@@ -106,7 +106,7 @@ const AnnotationsComponent = ({
         return;
       }
 
-      if (isLineAnnotation(annotationSpec)) {
+      if (hasLineAnnotationBorder(annotationSpec) || isLineAnnotation(annotationSpec)) {
         const annotationLines = dimensions as AnnotationLineProps[];
         const lineMarkers = renderAnnotationLineMarkers(
           chartAreaRef,

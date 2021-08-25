@@ -31,11 +31,11 @@ export const Example = () => {
             details: 'details about this annotation',
           },
         ]}
-        style={{ fill: 'red' }}
-        borderLineAnnotation={{
-          borderPosition: Position.Left,
+        style={{
+          fill: 'red',
           marker: <Icon type="alert" />,
           markerPosition: Position.Top,
+          lineBorderPosition: Position.Left,
         }}
       />
       <Axis id="horizontal" position={Position.Bottom} title="x-domain axis" />

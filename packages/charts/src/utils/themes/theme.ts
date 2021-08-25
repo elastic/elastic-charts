@@ -6,11 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
+import { ComponentWithAnnotationDatum } from '../..';
 import { Pixels, Ratio } from '../../common/geometry';
 import { FontStyle } from '../../common/text_utils';
-import { Color, ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
+import { Color, ColorVariant, HorizontalAlignment, Position, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, SimplePadding } from '../dimensions';
 import { Point } from '../point';
 
@@ -571,4 +573,22 @@ export interface LineAnnotationStyle {
 }
 
 /** @public */
-export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray>;
+export interface LineAnnotationBorderStyle {
+  /**
+   * The border position
+   */
+  lineBorderPosition?: Position;
+  /**
+   * Allows a custom marker
+   */
+  marker?: ReactNode | ComponentWithAnnotationDatum;
+  /** Position for the marker */
+  markerPosition?: Position;
+}
+
+/** @public */
+export type RectAnnotationStyle = StrokeStyle &
+  FillStyle &
+  Opacity &
+  Partial<StrokeDashArray> &
+  LineAnnotationBorderStyle;

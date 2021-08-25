@@ -305,13 +305,6 @@ export const BinAgg: Readonly<{
 export type BinAgg = $Values<typeof BinAgg>;
 
 // @public (undocumented)
-export interface BorderLineAnnotationValues {
-    borderPosition: Position;
-    marker?: ReactNode | ComponentWithAnnotationDatum;
-    markerPosition: Position;
-}
-
-// @public (undocumented)
 export const BrushAxis: Readonly<{
     X: "x";
     Y: "y";
@@ -1276,6 +1269,13 @@ export const LIGHT_THEME: Theme;
 // @public (undocumented)
 export const LineAnnotation: React_2.FunctionComponent<SpecRequiredProps_5 & SpecOptionalProps_5>;
 
+// @public (undocumented)
+export interface LineAnnotationBorderStyle {
+    lineBorderPosition?: Position;
+    marker?: ReactNode | ComponentWithAnnotationDatum;
+    markerPosition?: Position;
+}
+
 // @public
 export interface LineAnnotationDatum {
     dataValue: any;
@@ -1637,7 +1637,7 @@ export type Ratio = number;
 export type RawTextGetter = (node: ShapeTreeNode) => string;
 
 // @public (undocumented)
-export const RectAnnotation: React_2.FunctionComponent<Pick<RectAnnotationSpec, 'id' | 'dataValues'> & Partial<Omit<RectAnnotationSpec, 'chartType' | 'specType' | 'seriesType' | 'id' | 'dataValues' | 'domainType' | 'annotationType'>>>;
+export const RectAnnotation: React_2.FunctionComponent<Pick<RectAnnotationSpec, 'id' | 'dataValues'> & Partial<Omit<RectAnnotationSpec, 'chartType' | 'specType' | 'seriesType' | 'id' | 'dataValues' | 'domainType' | 'annotationType' | 'lineAnnotationBorder'>>>;
 
 // @public
 export interface RectAnnotationDatum {
@@ -1656,11 +1656,10 @@ export type RectAnnotationSpec = BaseAnnotationSpec<typeof AnnotationType.Rectan
     zIndex?: number;
     outside?: boolean;
     outsideDimension?: number;
-    borderLineAnnotation?: BorderLineAnnotationValues;
 };
 
 // @public (undocumented)
-export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray>;
+export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray> & LineAnnotationBorderStyle;
 
 // @public (undocumented)
 export interface RectBorderStyle {

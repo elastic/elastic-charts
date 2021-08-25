@@ -22,6 +22,7 @@ const defaultProps = {
   zIndex: -1,
   style: DEFAULT_ANNOTATION_RECT_STYLE,
   outside: false,
+  lineAnnotationBorder: null,
 };
 
 /** @public */
@@ -30,7 +31,14 @@ export const RectAnnotation: React.FunctionComponent<
     Partial<
       Omit<
         RectAnnotationSpec,
-        'chartType' | 'specType' | 'seriesType' | 'id' | 'dataValues' | 'domainType' | 'annotationType'
+        | 'chartType'
+        | 'specType'
+        | 'seriesType'
+        | 'id'
+        | 'dataValues'
+        | 'domainType'
+        | 'annotationType'
+        | 'lineAnnotationBorder'
       >
     >
 > = getConnect()(

@@ -23,6 +23,10 @@ export function renderRectAnnotations(
   rotation: Rotation,
   renderingArea: Dimensions,
 ) {
+  // render the line marker annotation with the Rectangular Annotation
+  if (rectStyle.lineBorderPosition) {
+    // renderLineAnnotations();
+  }
   const fillColor = stringToRGB(rectStyle.fill);
   fillColor.opacity *= rectStyle.opacity;
   const fill: Fill = { color: fillColor };
