@@ -21,7 +21,7 @@ import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 /** @internal */
-export const computeAxesGeometriesSelector = createCustomCachedSelector(
+export const computeAxesGeometriesSelector = createCustomCachedSelector(// compute node
   [
     computeChartDimensionsSelector,
     getChartThemeSelector,
