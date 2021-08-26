@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { BLACK_COLOR } from '../../../../common/color';
+import { Colors } from '../../../../common/color';
 import { TAU } from '../../../../common/constants';
 import { PointObject } from '../../../../common/geometry';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -189,7 +189,7 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
                     fill="white"
                   />
                   <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
-                    {renderGeometries(geometries, partitionLayout, { color: BLACK_COLOR }, geometriesFoci, width)}
+                    {renderGeometries(geometries, partitionLayout, { color: Colors.Black.rgba }, geometriesFoci, width)}
                   </g>
                 </mask>
               ),

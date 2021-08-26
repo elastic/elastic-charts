@@ -7,40 +7,40 @@
  */
 
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
-import { BLACK_COLOR, WHITE_COLOR } from './color';
+import { Colors } from './color';
 import { makeHighContrastColor, combineColors } from './color_calcs';
 
 describe('calcs', () => {
   describe('test makeHighContrastColor', () => {
     it('hex input - should change white text to black when background is white', () => {
-      expect(makeHighContrastColor('#fff', '#fff')).toBe(BLACK_COLOR);
+      expect(makeHighContrastColor('#fff', '#fff')).toBe(Colors.Black.rgba);
     });
     it('rgb input - should change white text to black when background is white', () => {
-      expect(makeHighContrastColor('rgb(255, 255, 255)', 'rgb(255, 255, 255)')).toBe(BLACK_COLOR);
+      expect(makeHighContrastColor('rgb(255, 255, 255)', 'rgb(255, 255, 255)')).toBe(Colors.Black.rgba);
     });
     it('rgba input - should change white text to black when background is white', () => {
-      expect(makeHighContrastColor('rgba(255, 255, 255, 1)', 'rgba(255, 255, 255, 1)')).toBe(BLACK_COLOR);
+      expect(makeHighContrastColor('rgba(255, 255, 255, 1)', 'rgba(255, 255, 255, 1)')).toBe(Colors.Black.rgba);
     });
     it('word input - should change white text to black when background is white', () => {
-      expect(makeHighContrastColor(WHITE_COLOR, WHITE_COLOR)).toBe(BLACK_COLOR);
+      expect(makeHighContrastColor(Colors.White.rgba, Colors.White.rgba)).toBe(Colors.Black.rgba);
     });
     // test contrast computation
     it('should provide at least 4.5 contrast', () => {
-      const foreground = WHITE_COLOR;
+      const foreground = Colors.White.rgba;
       const background = 'rgba(255, 255, 51, 0.3)'; // light yellow
-      expect(makeHighContrastColor(foreground, background)).toBe(BLACK_COLOR);
+      expect(makeHighContrastColor(foreground, background)).toBe(Colors.Black.rgba);
     });
     it('should use black text for hex value', () => {
-      const foreground = WHITE_COLOR;
+      const foreground = Colors.White.rgba;
       const background = '#7874B2'; // Thailand color
-      expect(makeHighContrastColor(foreground, background)).toBe(BLACK_COLOR);
+      expect(makeHighContrastColor(foreground, background)).toBe(Colors.Black.rgba);
     });
     it('should switch to black text if background color is in rgba() format - Thailand', () => {
-      const containerBackground = WHITE_COLOR;
+      const containerBackground = Colors.White.rgba;
       const background = 'rgba(120, 116, 178, 0.7)';
       const resultForCombined = 'rgba(161, 158, 201, 1)'; // 0.3 'rgba(215, 213, 232, 1)'; // 0.5 - 'rgba(188, 186, 217, 1)'; //0.7 - ;
       expect(combineColors(background, containerBackground)).toBe(resultForCombined);
-      expect(makeHighContrastColor(WHITE_COLOR, resultForCombined)).toBe(BLACK_COLOR);
+      expect(makeHighContrastColor(Colors.White.rgba, resultForCombined)).toBe(Colors.Black.rgba);
     });
   });
   describe('test the combineColors function', () => {

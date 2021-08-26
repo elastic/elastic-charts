@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { BLACK_COLOR } from '../../../../common/color';
+import { Colors } from '../../../../common/color';
 import { Config } from '../types/config_types';
 
 /** @internal */
@@ -23,7 +23,7 @@ export const config: Config = {
 
   brushArea: {
     visible: true,
-    fill: BLACK_COLOR,
+    fill: Colors.Black.rgba,
     stroke: '#69707D', // euiColorDarkShade,
     strokeWidth: 2,
   },
@@ -45,7 +45,7 @@ export const config: Config = {
     fontSize: 12,
     fontFamily: 'Sans-Serif',
     fontStyle: 'normal',
-    textColor: BLACK_COLOR,
+    textColor: Colors.Black.rgba,
     fontVariant: 'normal',
     fontWeight: 'normal',
     textOpacity: 1,
@@ -61,7 +61,7 @@ export const config: Config = {
     fontSize: 12,
     fontFamily: 'Sans-Serif',
     fontStyle: 'normal',
-    textColor: BLACK_COLOR,
+    textColor: Colors.Black.rgba,
     fontVariant: 'normal',
     fontWeight: 'normal',
     textOpacity: 1,
@@ -93,7 +93,7 @@ export const config: Config = {
       fontSize: 10,
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',
-      textColor: BLACK_COLOR,
+      textColor: Colors.Black.rgba,
       fontVariant: 'normal',
       fontWeight: 'normal',
       textOpacity: 1,

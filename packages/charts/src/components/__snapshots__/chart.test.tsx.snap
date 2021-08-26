@@ -5,7 +5,7 @@ exports[`Chart should render the legend name test 1`] = `
   <Provider store={{...}}>
     <div className=\\"echChart\\" style={{...}}>
       <Connect(ChartBackground)>
-        <ChartBackground backgroundColor=\\"transparent\\" dispatch={[Function: dispatch]}>
+        <ChartBackground backgroundColor=\\"rgba(0, 0, 0, 0)\\" dispatch={[Function: dispatch]}>
           <div className=\\"echChartBackground\\" style={{...}} />
         </ChartBackground>
       </Connect(ChartBackground)>
@@ -96,7 +96,7 @@ exports[`Chart should render the legend name test 1`] = `
                   </XYChart>
                 </Connect(XYChart)>
                 <Connect(Tooltip) getChartContainerRef={[Function (anonymous)]}>
-                  <Tooltip getChartContainerRef={[Function (anonymous)]} visible={false} zIndex={0} info={{...}} position={{...}} headerFormatter={[undefined]} settings={{...}} rotation={0} chartId=\\"chart1\\" backgroundColor=\\"transparent\\" onPointerMove={[Function (anonymous)]} />
+                  <Tooltip getChartContainerRef={[Function (anonymous)]} visible={false} zIndex={0} info={{...}} position={{...}} headerFormatter={[undefined]} settings={{...}} rotation={0} chartId=\\"chart1\\" backgroundColor=\\"rgba(0, 0, 0, 0)\\" onPointerMove={[Function (anonymous)]} />
                 </Connect(Tooltip)>
                 <Connect(Annotations) getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}}>
                   <Annotations getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}} isChartEmpty={false} chartDimensions={{...}} annotationDimensions={{...}} annotationSpecs={{...}} tooltipState={{...}} chartId=\\"chart1\\" zIndex={0} onPointerMove={[Function (anonymous)]} onDOMElementLeave={[Function (anonymous)]} onDOMElementEnter={[Function (anonymous)]}>

@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { RED_COLOR } from '../../common/color';
+import { Colors } from '../../common/color';
 import { Margins } from '../dimensions';
 import { SharedGeometryStateStyle } from './theme';
 
 /** @public */
-export const DEFAULT_MISSING_COLOR = RED_COLOR;
+export const DEFAULT_MISSING_COLOR = Colors.Red.rgba;
 
 /** @public */
 export const DEFAULT_CHART_PADDING: Margins = {

@@ -12,15 +12,21 @@ import { RgbObject } from './color_library_wrappers';
 export type Color = string; // todo static/runtime type it this for proper color string content; several places in the code, and ultimate use, dictate it not be an empty string
 
 /** @internal */
-export const TRANSPARENT_COLOR: Color = 'rgba(0, 0, 0, 0)';
-/** @internal */
-export const WHITE_COLOR: Color = 'rgba(255, 255, 255, 1)';
-/** @internal */
-export const BLACK_COLOR: Color = 'rgba(0, 0, 0, 1)';
-/** @internal */
-export const RED_COLOR: Color = 'rgba(255, 0, 0, 1)';
-
-/** @internal */
-export const RED_RGBOBJ_COLOR: RgbObject = { r: 255, g: 0, b: 0, opacity: 1 };
-/** @internal */
-export const TRANSPARENT_RBGOBJ_COLOR: RgbObject = { r: 0, g: 0, b: 0, opacity: 0 };
+export const Colors: Record<string, { rgba: Color; rgbaChannels: RgbObject }> = {
+  Red: {
+    rgba: 'rgba(255, 0, 0, 1)',
+    rgbaChannels: { r: 255, g: 0, b: 0, opacity: 1 },
+  },
+  White: {
+    rgba: 'rgba(255, 255, 255, 1)',
+    rgbaChannels: { r: 255, g: 255, b: 255, opacity: 1 },
+  },
+  Black: {
+    rgba: 'rgba(0, 0, 0, 1)',
+    rgbaChannels: { r: 0, g: 0, b: 0, opacity: 1 },
+  },
+  Transparent: {
+    rgba: 'rgba(0, 0, 0, 0)',
+    rgbaChannels: { r: 0, g: 0, b: 0, opacity: 0 },
+  },
+};

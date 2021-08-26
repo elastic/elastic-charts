@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { BLACK_COLOR, TRANSPARENT_COLOR, WHITE_COLOR } from '../../../../../common/color';
+import { Colors } from '../../../../../common/color';
 import { colorIsDark, getTextColorIfTextInvertible } from '../../../../../common/color_calcs';
 import { fillTextColor } from '../../../../../common/fill_text_color';
 import { Font, TextAlign, TextBaseline } from '../../../../../common/text_utils';
@@ -342,10 +342,10 @@ function isOverflow(rect: Rect, chartDimensions: Dimensions, chartRotation: Rota
   return false;
 }
 
-const DEFAULT_VALUE_COLOR = BLACK_COLOR;
+const DEFAULT_VALUE_COLOR = Colors.Black.rgba;
 // a little bit of alpha makes black font more readable
 const DEFAULT_VALUE_BORDER_COLOR = 'rgba(255, 255, 255, 0.8)';
-const DEFAULT_VALUE_BORDER_SOLID_COLOR = WHITE_COLOR;
+const DEFAULT_VALUE_BORDER_SOLID_COLOR = Colors.White.rgba;
 
 type ValueFillDefinition = Theme['barSeriesStyle']['displayValue']['fill'];
 
@@ -355,12 +355,12 @@ function getTextColors(
   borderSize: number,
 ): { fillColor: string; shadowColor: string } {
   if (typeof fillDefinition === 'string') {
-    return { fillColor: fillDefinition, shadowColor: TRANSPARENT_COLOR };
+    return { fillColor: fillDefinition, shadowColor: Colors.Transparent.rgba };
   }
   if ('color' in fillDefinition) {
     return {
       fillColor: fillDefinition.color,
-      shadowColor: fillDefinition.borderColor || TRANSPARENT_COLOR,
+      shadowColor: fillDefinition.borderColor || Colors.Transparent.rgba,
     };
   }
   const fillColor =
@@ -369,7 +369,7 @@ function getTextColors(
       fillDefinition.textInvertible,
       fillDefinition.textContrast || false,
       geometryColor,
-      WHITE_COLOR,
+      Colors.White.rgba,
     ) || DEFAULT_VALUE_COLOR;
 
   // If the border is too wide it can overlap between a letter or another
@@ -383,8 +383,8 @@ function getTextColors(
           defaultBorderColor,
           false,
           geometryColor,
-        ) || TRANSPARENT_COLOR
-      : TRANSPARENT_COLOR;
+        ) || Colors.Transparent.rgba
+      : Colors.Transparent.rgba;
 
   return {
     fillColor,

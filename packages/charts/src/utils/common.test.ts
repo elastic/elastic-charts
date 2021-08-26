@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { TRANSPARENT_COLOR } from '../common/color';
+import { Colors } from '../common/color';
 import {
   maxValueWithUpperLimit,
   compareByValueAsc,
@@ -1020,7 +1020,7 @@ describe('common utilities', () => {
     });
 
     it('should return transparent if ColorVariant is None', () => {
-      expect(getColorFromVariant(seriesColor, ColorVariant.None)).toBe(TRANSPARENT_COLOR);
+      expect(getColorFromVariant(seriesColor, ColorVariant.None)).toBe(Colors.Transparent.rgba);
     });
 
     it('should return color if Color is passed', () => {

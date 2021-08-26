@@ -12,7 +12,7 @@ import React, { memo, useCallback, useMemo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { TRANSPARENT_COLOR } from '../../common/color';
+import { Colors } from '../../common/color';
 import { isColorValid } from '../../common/color_calcs';
 import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
@@ -115,7 +115,7 @@ const TooltipComponent = ({
             echTooltip__rowHighlighted: isHighlighted,
           });
           const adjustedBGColor =
-            isColorValid(color) && chroma(color).alpha() === 0 ? TRANSPARENT_COLOR : backgroundColor;
+            isColorValid(color) && chroma(color).alpha() === 0 ? Colors.Transparent.rgba : backgroundColor;
 
           return (
             <div
@@ -211,7 +211,7 @@ const HIDDEN_TOOLTIP_PROPS = {
   settings: {},
   rotation: 0 as Rotation,
   chartId: '',
-  backgroundColor: TRANSPARENT_COLOR,
+  backgroundColor: Colors.Transparent.rgba,
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>

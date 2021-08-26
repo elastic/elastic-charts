@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { BLACK_COLOR } from '../../../../common/color';
+import { Colors } from '../../../../common/color';
 import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
@@ -93,7 +93,7 @@ export function renderCanvas2d(
               fontStyle: config.yAxisLabel.fontStyle ? config.yAxisLabel.fontStyle : 'normal',
               fontVariant: 'normal',
               fontWeight: 'normal',
-              textColor: BLACK_COLOR,
+              textColor: Colors.Black.rgba,
               textOpacity: 1,
             };
             const { padding } = config.yAxisLabel;

@@ -7,7 +7,7 @@
  */
 
 import { CategoryKey } from '../../../../common/category';
-import { BLACK_COLOR, Color } from '../../../../common/color';
+import { Colors, Color } from '../../../../common/color';
 import {
   Coordinate,
   Distance,
@@ -136,7 +136,7 @@ const defaultFont: Font = {
   fontVariant: 'normal',
   fontFamily: '',
   fontWeight: 'normal',
-  textColor: BLACK_COLOR,
+  textColor: Colors.Black.rgba,
   textOpacity: 1,
 };
 

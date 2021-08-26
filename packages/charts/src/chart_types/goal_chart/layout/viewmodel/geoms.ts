@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { BLACK_COLOR } from '../../../../common/color';
+import { Colors } from '../../../../common/color';
 import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
 import { PointObject, Radian, Rectangle } from '../../../../common/geometry';
 import { cssFontShorthand, Font } from '../../../../common/text_utils';
@@ -294,14 +294,14 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
     {
       order: 1,
       landmarks: { from: 'base', to: 'actual' },
-      aes: { shape, fillColor: BLACK_COLOR, lineWidth: tickLength },
+      aes: { shape, fillColor: Colors.Black.rgba, lineWidth: tickLength },
     },
     ...(target
       ? [
           {
             order: 2,
             landmarks: { at: 'target' },
-            aes: { shape, fillColor: BLACK_COLOR, lineWidth: barThickness / GOLDEN_RATIO },
+            aes: { shape, fillColor: Colors.Black.rgba, lineWidth: barThickness / GOLDEN_RATIO },
           },
         ]
       : []),
@@ -317,7 +317,7 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
         shape: 'text',
         textAlign: vertical ? 'right' : 'center',
         textBaseline: vertical ? 'middle' : 'top',
-        fillColor: BLACK_COLOR,
+        fillColor: Colors.Black.rgba,
         fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '500', fontFamily: 'sans-serif' },
         axisNormalOffset: -barThickness,
       },
@@ -331,7 +331,7 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
         axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
         textAlign: vertical ? 'center' : 'right',
         textBaseline: 'bottom',
-        fillColor: BLACK_COLOR,
+        fillColor: Colors.Black.rgba,
         fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
       },
     },
@@ -344,7 +344,7 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
         axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
         textAlign: vertical ? 'center' : 'right',
         textBaseline: 'top',
-        fillColor: BLACK_COLOR,
+        fillColor: Colors.Black.rgba,
         fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
       },
     },
@@ -357,7 +357,7 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
               shape: 'text',
               textAlign: 'center',
               textBaseline: 'bottom',
-              fillColor: BLACK_COLOR,
+              fillColor: Colors.Black.rgba,
               fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
             },
           },
@@ -368,7 +368,7 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
               shape: 'text',
               textAlign: 'center',
               textBaseline: 'top',
-              fillColor: BLACK_COLOR,
+              fillColor: Colors.Black.rgba,
               fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
             },
           },

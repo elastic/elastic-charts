@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { TRANSPARENT_COLOR } from '../../../common/color';
+import { Colors } from '../../../common/color';
 import { getPredicateFn } from '../../../common/predicate';
 import { safeFormat, ValueFormatter } from '../../../utils/common';
 import { ColorBand, HeatmapBandsColorScale } from '../specs/heatmap';
@@ -49,6 +49,6 @@ function getBandScale(bands: ColorBand[]): ColorScale {
         return color;
       }
     }
-    return TRANSPARENT_COLOR;
+    return Colors.Transparent.rgba;
   };
 }

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RED_COLOR } from '../../../../common/color';
+import { Colors } from '../../../../common/color';
 import { Line } from '../../../../geoms/types';
 import { Scale } from '../../../../scales';
 import { isContinuousScale, isBandScale } from '../../../../scales/types';
@@ -38,7 +38,7 @@ function computeYDomainLineAnnotationDimensions(
     style,
   } = annotationSpec;
   const lineStyle = mergeWithDefaultAnnotationLine(style);
-  const color = lineStyle?.line?.stroke ?? RED_COLOR;
+  const color = lineStyle?.line?.stroke ?? Colors.Red.rgba;
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
   // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
   // but we are displaying a line annotation
@@ -135,7 +135,7 @@ function computeXDomainLineAnnotationDimensions(
     style,
   } = annotationSpec;
   const lineStyle = mergeWithDefaultAnnotationLine(style);
-  const color = lineStyle?.line?.stroke ?? RED_COLOR;
+  const color = lineStyle?.line?.stroke ?? Colors.Red.rgba;
 
   const lineProps: AnnotationLineProps[] = [];
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
