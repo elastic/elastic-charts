@@ -48,5 +48,6 @@ export function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
 
   renderAxisLine(ctx, props); // render the axis line
   if (!secondary && showTicks) ticks.forEach((tick) => renderTick(ctx, tick, props));
+  debugger;
   if (!secondary && axisStyle.tickLabel.visible) ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props));
 }
