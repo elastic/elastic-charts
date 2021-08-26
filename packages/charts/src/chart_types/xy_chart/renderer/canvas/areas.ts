@@ -33,7 +33,7 @@ interface AreaGeometriesProps {
 export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvasElement, props: AreaGeometriesProps) {
   const { sharedStyle, highlightedLegendItem, areas, rotation, clippings, renderingArea } = props;
 
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     areas.forEach(({ panel, value: area }) => {
       const { seriesAreaLineStyle, seriesAreaStyle } = area;
       if (seriesAreaStyle.visible) {
@@ -42,9 +42,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
           panel,
           rotation,
           renderingArea,
-          (ctx) => {
-            renderArea(ctx, imgCanvas, area, sharedStyle, clippings, highlightedLegendItem);
-          },
+          () => renderArea(ctx, imgCanvas, area, sharedStyle, clippings, highlightedLegendItem),
           { area: clippings, shouldClip: true },
         );
       }
@@ -54,9 +52,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
           panel,
           rotation,
           renderingArea,
-          (ctx) => {
-            renderAreaLines(ctx, area, sharedStyle, clippings, highlightedLegendItem);
-          },
+          () => renderAreaLines(ctx, area, sharedStyle, clippings, highlightedLegendItem),
           { area: clippings, shouldClip: true },
         );
       }
@@ -74,9 +70,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
         panel,
         rotation,
         renderingArea,
-        (ctx) => {
-          renderPoints(ctx, visiblePoints, geometryStateStyle);
-        },
+        () => renderPoints(ctx, visiblePoints, geometryStateStyle),
         { area: clippings, shouldClip: points[0]?.value.mark !== null },
       );
     });

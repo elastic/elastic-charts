@@ -94,7 +94,6 @@ export const DARK_THEME: Theme = {
   axes: {
     axisTitle: {
       fontSize: 12,
-      fontStyle: 'bold',
       fontFamily: 'sans-serif',
       padding: {
         inner: 8,
@@ -105,7 +104,6 @@ export const DARK_THEME: Theme = {
     },
     axisPanelTitle: {
       fontSize: 10,
-      fontStyle: 'bold',
       fontFamily: 'sans-serif',
       padding: {
         inner: 8,
@@ -193,5 +191,43 @@ export const DARK_THEME: Theme = {
   },
   background: {
     color: 'transparent',
+  },
+  goal: {
+    minFontSize: 8,
+    maxFontSize: 64,
+    tickLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: 'white',
+    },
+    majorLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: 'white',
+    },
+    minorLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: 'white',
+    },
+    majorCenterLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: 'white',
+    },
+    minorCenterLabel: {
+      fontStyle: 'normal',
+      fontFamily: 'sans-serif',
+      fill: 'white',
+    },
+    targetLine: {
+      stroke: 'white',
+    },
+    tickLine: {
+      stroke: 'snow',
+    },
+    progressLine: {
+      stroke: 'white',
+    },
   },
 };

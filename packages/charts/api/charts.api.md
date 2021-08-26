@@ -228,7 +228,7 @@ export interface BandFillColorAccessorInput {
     // (undocumented)
     lowestValue: number;
     // (undocumented)
-    target: number;
+    target?: number;
     // (undocumented)
     value: number;
 }
@@ -434,6 +434,14 @@ export function childrenAccessor(n: ArrayEntry): HierarchyOfArrays;
 
 // @public (undocumented)
 export type Color = string;
+
+// @alpha (undocumented)
+export type ColorBand = {
+    start: number;
+    end: number;
+    color: Color;
+    label?: string;
+};
 
 // @public (undocumented)
 export interface ColorConfig {
@@ -745,6 +753,12 @@ export type FitConfig = {
     endValue?: number | 'nearest';
 };
 
+// @public (undocumented)
+export const FONT_STYLES: readonly ["normal", "italic", "oblique", "inherit", "initial", "unset"];
+
+// @public (undocumented)
+export type FontStyle = typeof FONT_STYLES[number];
+
 // @public
 export interface GeometryStateStyle {
     opacity: number;
@@ -778,9 +792,16 @@ export function getNodeName(node: ArrayNode): string;
 export const Goal: React_2.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
 
 // @alpha (undocumented)
+export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
+
+// @alpha (undocumented)
 export interface GoalSpec extends Spec {
     // (undocumented)
     actual: number;
+    // (undocumented)
+    angleEnd: number;
+    // (undocumented)
+    angleStart: number;
     // (undocumented)
     bandFillColor: BandFillColorAccessor;
     // (undocumented)
@@ -790,19 +811,19 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     base: number;
     // (undocumented)
-    centralMajor: string | BandFillColorAccessor;
+    centralMajor: string | GoalLabelAccessor;
     // (undocumented)
-    centralMinor: string | BandFillColorAccessor;
+    centralMinor: string | GoalLabelAccessor;
     // (undocumented)
     chartType: typeof ChartType.Goal;
     // Warning: (ae-forgotten-export) The symbol "Config" needs to be exported by the entry point index.d.ts
     //
+    // @deprecated (undocumented)
+    config?: RecursivePartial<Config>;
     // (undocumented)
-    config: RecursivePartial<Config>;
+    labelMajor: string | GoalLabelAccessor;
     // (undocumented)
-    labelMajor: string | BandFillColorAccessor;
-    // (undocumented)
-    labelMinor: string | BandFillColorAccessor;
+    labelMinor: string | GoalLabelAccessor;
     // (undocumented)
     specType: typeof SpecType.Series;
     // Warning: (ae-forgotten-export) The symbol "GoalSubtype" needs to be exported by the entry point index.d.ts
@@ -810,11 +831,35 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     subtype: GoalSubtype;
     // (undocumented)
-    target: number;
+    target?: number;
     // (undocumented)
     ticks: number[];
     // (undocumented)
-    tickValueFormatter: BandFillColorAccessor;
+    tickValueFormatter: GoalLabelAccessor;
+}
+
+// @public (undocumented)
+export interface GoalStyles {
+    // (undocumented)
+    majorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    // (undocumented)
+    majorLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    // (undocumented)
+    maxFontSize: number;
+    // (undocumented)
+    minFontSize: number;
+    // (undocumented)
+    minorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    // (undocumented)
+    minorLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    // (undocumented)
+    progressLine: Pick<StrokeStyle, 'stroke'>;
+    // (undocumented)
+    targetLine: Pick<StrokeStyle, 'stroke'>;
+    // (undocumented)
+    tickLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    // (undocumented)
+    tickLine: Pick<StrokeStyle, 'stroke'>;
 }
 
 // @public (undocumented)
@@ -867,7 +912,16 @@ export interface GroupBySpec extends Spec {
 export type GroupId = string;
 
 // @alpha (undocumented)
-export const Heatmap: React_2.FunctionComponent<Pick<HeatmapSpec, 'id' | 'data'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>>;
+export const Heatmap: React_2.FunctionComponent<Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>>;
+
+// @alpha (undocumented)
+export interface HeatmapBandsColorScale {
+    // (undocumented)
+    bands: Array<ColorBand>;
+    labelFormatter?: (start: number, end: number) => string;
+    // (undocumented)
+    type: 'bands';
+}
 
 // @public (undocumented)
 export type HeatmapBrushEvent = {
@@ -900,7 +954,6 @@ export interface HeatmapConfig {
         label: Font & {
             fontSize: Pixels;
             maxWidth: Pixels | 'fill';
-            fill: string;
             align: TextAlign;
             baseline: TextBaseline;
             visible: boolean;
@@ -959,7 +1012,6 @@ export interface HeatmapConfig {
         name: string;
         fontSize: Pixels;
         width: Pixels | 'auto';
-        fill: string;
         align: TextAlign;
         baseline: TextBaseline;
         visible: boolean;
@@ -973,7 +1025,6 @@ export interface HeatmapConfig {
         width: Pixels | 'auto' | {
             max: Pixels;
         };
-        fill: string;
         baseline: TextBaseline;
         visible: boolean;
         padding: number | {
@@ -994,11 +1045,7 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartType.Heatmap;
     // (undocumented)
-    colors: Color[];
-    // Warning: (ae-forgotten-export) The symbol "HeatmapScaleType" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    colorScale?: HeatmapScaleType;
+    colorScale: HeatmapBandsColorScale;
     // (undocumented)
     config: RecursivePartial<HeatmapConfig>;
     // (undocumented)
@@ -1010,8 +1057,6 @@ export interface HeatmapSpec extends Spec {
     };
     // (undocumented)
     name?: string;
-    // (undocumented)
-    ranges?: number[] | [number, number];
     // (undocumented)
     specType: typeof SpecType.Series;
     // (undocumented)
@@ -1092,7 +1137,7 @@ export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, Fal
 export type Key = CategoryKey;
 
 // @public (undocumented)
-export type LabelAccessor = (value: PrimitiveValue) => string;
+export type LabelAccessor<T = PrimitiveValue> = (value: T) => string;
 
 // @public (undocumented)
 export const LabelOverflowConstraint: Readonly<{
@@ -1996,7 +2041,7 @@ export interface TextStyle {
     // (undocumented)
     fontSize: number;
     // (undocumented)
-    fontStyle?: string;
+    fontStyle?: FontStyle;
     // (undocumented)
     padding: number | SimplePadding;
 }
@@ -2061,6 +2106,8 @@ export interface Theme {
     colors: ColorConfig;
     // (undocumented)
     crosshair: CrosshairStyle;
+    // (undocumented)
+    goal: GoalStyles;
     // (undocumented)
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;
@@ -2253,7 +2300,7 @@ export interface WordcloudConfigs {
     // (undocumented)
     fontFamily: string;
     // (undocumented)
-    fontStyle: string;
+    fontStyle: FontStyle;
     // (undocumented)
     fontWeight: number;
     // (undocumented)
@@ -2294,7 +2341,7 @@ export interface WordcloudSpec extends Spec {
     // (undocumented)
     fontFamily: string;
     // (undocumented)
-    fontStyle: string;
+    fontStyle: FontStyle;
     // (undocumented)
     fontWeight: number;
     // (undocumented)
@@ -2368,8 +2415,8 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // Warnings were encountered during analysis:
 //
 // src/chart_types/heatmap/layout/types/config_types.ts:20:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:52:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:53:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:51:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:52:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:139:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 

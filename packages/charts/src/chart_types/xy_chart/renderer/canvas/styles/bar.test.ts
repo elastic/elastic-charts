@@ -11,7 +11,7 @@ import { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { getMockCanvas, getMockCanvasContext2D, MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
 import { getTextureStyles } from '../../../utils/texture';
-import { buildBarStyles } from './bar';
+import { buildBarStyle } from './bar';
 
 import 'jest-canvas-mock';
 
@@ -51,15 +51,7 @@ describe('Bar styles', () => {
     }
 
     beforeEach(() => {
-      result = buildBarStyles(
-        ctx,
-        imgCanvas,
-        baseColor,
-        themeRectStyle,
-        themeRectBorderStyle,
-        geometryStateStyle,
-        rect,
-      );
+      result = buildBarStyle(ctx, imgCanvas, baseColor, themeRectStyle, themeRectBorderStyle, geometryStateStyle, rect);
     });
 
     it('should call getColorFromVariant with correct args for fill', () => {

@@ -7,7 +7,7 @@
  */
 
 import { LegendPositionConfig } from '../../specs/settings';
-import { BBox } from '../../utils/bbox/bbox_calculator';
+import { BBox } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, LayoutDirection } from '../../utils/common';
 import { Margins } from '../../utils/dimensions';
 import { LegendStyle as ThemeLegendStyle } from '../../utils/themes/theme';
@@ -51,7 +51,7 @@ export function getLegendListStyle(
     return {
       paddingLeft,
       paddingRight,
-      gridTemplateColumns: `repeat(auto-fill, minmax(${legendStyle.verticalWidth}px, 1fr))`,
+      gridTemplateColumns: totalItems === 1 ? '1fr' : `repeat(auto-fill, minmax(${legendStyle.verticalWidth}px, 1fr))`,
     };
   }
 

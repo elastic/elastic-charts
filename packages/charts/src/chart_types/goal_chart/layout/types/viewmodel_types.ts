@@ -6,12 +6,14 @@
  * Side Public License, v 1.
  */
 
+import chroma from 'chroma-js';
+
 import { Pixels, PointObject } from '../../../../common/geometry';
 import { SpecType } from '../../../../specs/constants';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { Theme } from '../../../../utils/themes/theme';
 import { BandFillColorAccessorInput } from '../../specs';
 import { GoalSubtype } from '../../specs/constants';
-import { config } from '../config/config';
-import { Config } from './config_types';
 
 /** @internal */
 export interface BandViewModel {
@@ -29,7 +31,7 @@ interface TickViewModel {
 export interface BulletViewModel {
   subtype: string;
   base: number;
-  target: number;
+  target?: number;
   actual: number;
   bands: Array<BandViewModel>;
   ticks: Array<TickViewModel>;
@@ -41,6 +43,8 @@ export interface BulletViewModel {
   lowestValue: number;
   aboveBaseCount: number;
   belowBaseCount: number;
+  angleStart: number;
+  angleEnd: number;
 }
 
 /** @internal */
@@ -48,7 +52,7 @@ export type PickFunction = (x: Pixels, y: Pixels) => Array<BulletViewModel>;
 
 /** @internal */
 export type ShapeViewModel = {
-  config: Config;
+  config: Theme['goal'];
   bulletViewModel: BulletViewModel;
   chartCenter: PointObject;
   pickQuads: PickFunction;
@@ -58,7 +62,6 @@ const commonDefaults = {
   specType: SpecType.Series,
   subtype: GoalSubtype.Goal,
   base: 0,
-  target: 100,
   actual: 50,
   ticks: [0, 25, 50, 75, 100],
 };
@@ -67,21 +70,18 @@ const commonDefaults = {
 export const defaultGoalSpec = {
   ...commonDefaults,
   bands: [50, 75, 100],
-  bandFillColor: ({ value, base, highestValue, lowestValue }: BandFillColorAccessorInput) => {
-    const aboveBase = value > base;
-    const ratio = aboveBase
-      ? (value - base) / (Math.max(base, highestValue) - base)
-      : (value - base) / (Math.min(base, lowestValue) - base);
-    const level = Math.round(255 * ratio);
-    return aboveBase ? `rgb(0, ${level}, 0)` : `rgb( ${level}, 0, 0)`;
+  bandFillColor: ({ value, highestValue, lowestValue }: BandFillColorAccessorInput) => {
+    const func = chroma.scale(chroma.brewer.Greens).gamma(0.5).domain([highestValue, lowestValue]);
+    return func(value).css();
   },
   tickValueFormatter: ({ value }: BandFillColorAccessorInput) => String(value),
   labelMajor: ({ base }: BandFillColorAccessorInput) => String(base),
-  // eslint-disable-next-line no-empty-pattern
-  labelMinor: ({}: BandFillColorAccessorInput) => 'unit',
+  labelMinor: () => 'unit',
   centralMajor: ({ base }: BandFillColorAccessorInput) => String(base),
-  centralMinor: ({ target }: BandFillColorAccessorInput) => String(target),
+  centralMinor: ({ target }: BandFillColorAccessorInput) => (target ? String(target) : ''),
   bandLabels: [],
+  angleStart: Math.PI + Math.PI / 4,
+  angleEnd: -Math.PI / 4,
 };
 
 /** @internal */
@@ -97,12 +97,14 @@ export const nullGoalViewModel = {
   lowestValue: 0,
   aboveBaseCount: 0,
   belowBaseCount: 0,
+  angleStart: 0,
+  angleEnd: 0,
 };
 
 /** @internal */
-export const nullShapeViewModel = (specifiedConfig?: Config, chartCenter?: PointObject): ShapeViewModel => ({
-  config: specifiedConfig || config,
+export const nullShapeViewModel = ({ goal }: Theme = LIGHT_THEME): ShapeViewModel => ({
+  config: goal,
   bulletViewModel: nullGoalViewModel,
-  chartCenter: chartCenter || { x: 0, y: 0 },
+  chartCenter: { x: 0, y: 0 },
   pickQuads: () => [],
 });

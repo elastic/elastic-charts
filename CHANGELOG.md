@@ -1,3 +1,73 @@
+## [34.2.1](https://github.com/elastic/elastic-charts/compare/v34.2.0...v34.2.1) (2021-08-25)
+
+
+### Bug Fixes
+
+* **partition:** small multiples panel title color ([#1329](https://github.com/elastic/elastic-charts/issues/1329)) ([8762d5e](https://github.com/elastic/elastic-charts/commit/8762d5e31d3e7843795b6d1427d10afe0aab4ed8)), closes [#1327](https://github.com/elastic/elastic-charts/issues/1327)
+
+# [34.2.0](https://github.com/elastic/elastic-charts/compare/v34.1.1...v34.2.0) (2021-08-23)
+
+
+### Bug Fixes
+
+* **heatmap:** limit brush tool ([#1270](https://github.com/elastic/elastic-charts/issues/1270)) ([509cf42](https://github.com/elastic/elastic-charts/commit/509cf4209bfd359c2897e381980ff5e05b09ec27)), closes [#1216](https://github.com/elastic/elastic-charts/issues/1216)
+
+
+### Features
+
+* **goal:** dark mode with theme controls ([#1299](https://github.com/elastic/elastic-charts/issues/1299)) ([3a583e5](https://github.com/elastic/elastic-charts/commit/3a583e55a607c810a0764e841a632b42c5447b6a))
+
+## [34.1.1](https://github.com/elastic/elastic-charts/compare/v34.1.0...v34.1.1) (2021-08-20)
+
+
+### Bug Fixes
+
+* **heatmap:** reuse the valueFormatter in legend ([#1318](https://github.com/elastic/elastic-charts/issues/1318)) ([e6a75d7](https://github.com/elastic/elastic-charts/commit/e6a75d759ea72b2d3b18f977d0e7bc5ff7e75177))
+
+# [34.1.0](https://github.com/elastic/elastic-charts/compare/v34.0.0...v34.1.0) (2021-08-19)
+
+
+### Bug Fixes
+
+* **goal:** tooltip actual color ([#1302](https://github.com/elastic/elastic-charts/issues/1302)) ([dbe9d36](https://github.com/elastic/elastic-charts/commit/dbe9d36db891be44ff14deb35a02dbebc3926a48))
+* **heatmap:** improve legend item ([#1317](https://github.com/elastic/elastic-charts/issues/1317)) ([49c35ce](https://github.com/elastic/elastic-charts/commit/49c35ce2f62c3ea861c184fc1b68693ab739eaad))
+* **legend:** no truncation with single value ([#1316](https://github.com/elastic/elastic-charts/issues/1316)) ([7ec8a9f](https://github.com/elastic/elastic-charts/commit/7ec8a9fa60d4ccdbfe941b16168d29443c4b034a))
+
+
+### Features
+
+* **goal:** optional target tick ([#1301](https://github.com/elastic/elastic-charts/issues/1301)) ([88adf22](https://github.com/elastic/elastic-charts/commit/88adf22c5a9e6a6c0917e57e4c9b464a097491ab))
+
+# [34.0.0](https://github.com/elastic/elastic-charts/compare/v33.2.4...v34.0.0) (2021-08-16)
+
+
+### Code Refactoring
+
+* **cartesian:** cartesian rendering iteration ([#1286](https://github.com/elastic/elastic-charts/issues/1286)) ([b2ae4f7](https://github.com/elastic/elastic-charts/commit/b2ae4f792e2e3aecbb240880634eee175dead1f3)), closes [#1202](https://github.com/elastic/elastic-charts/issues/1202)
+
+
+### BREAKING CHANGES
+
+* **cartesian:** - `TextStyle.fontStyle` is no longer a `string`, it's the more specific `FontStyle`
+- For symmetry, `fontStyle` in word cloud is also switching from `string` to `FontStyle`
+- Certain text configurations included both `fill` and `textColor` for the text color; `fill` got removed, because `textColor` is part of the public `Font` type, and because `textColor` has clearer meaning than `fill`. Yet, some of the code used the `fill` property and/or made the `fill` property also mandatory. So, userland code needs to remove some `fill` property, and might need to ensure that the correct value is going into `textColor`
+- `getRadians` got unpublished 
+- No attempt to draw a rect border if there's not enough width/height for at least the specified border width (ie. width/height being at least twice the border width)
+
+## [33.2.4](https://github.com/elastic/elastic-charts/compare/v33.2.3...v33.2.4) (2021-08-16)
+
+
+### Bug Fixes
+
+* add LICENSE file into the published package ([#1305](https://github.com/elastic/elastic-charts/issues/1305)) ([54520f0](https://github.com/elastic/elastic-charts/commit/54520f044bc00e27f9c9975dedd8ede28fcf3336))
+
+## [33.2.3](https://github.com/elastic/elastic-charts/compare/v33.2.2...v33.2.3) (2021-08-16)
+
+
+### Bug Fixes
+
+* **heatmap:** compute nice legend items from color scale  ([#1273](https://github.com/elastic/elastic-charts/issues/1273)) ([0d392ae](https://github.com/elastic/elastic-charts/commit/0d392ae9ff7f09303b3643bbca7a24ccde39f84a)), closes [#1166](https://github.com/elastic/elastic-charts/issues/1166) [#1191](https://github.com/elastic/elastic-charts/issues/1191) [#1192](https://github.com/elastic/elastic-charts/issues/1192)
+
 ## [33.2.2](https://github.com/elastic/elastic-charts/compare/v33.2.1...v33.2.2) (2021-08-10)
 
 

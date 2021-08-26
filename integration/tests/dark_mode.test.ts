@@ -6,20 +6,12 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export interface BBox {
-  width: number;
-  height: number;
-}
+import { common } from '../page_objects/common';
 
-/** @internal */
-export const DEFAULT_EMPTY_BBOX = {
-  width: 0,
-  height: 0,
-};
-
-/** @internal */
-export interface BBoxCalculator {
-  compute(text: string, padding: number, fontSize?: number, fontFamily?: string): BBox;
-  destroy(): void;
-}
+describe('Small multiples - dark mode', () => {
+  it('renders panel titles', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      `http://localhost:9001/?path=/story/small-multiples-alpha--sunbursts&globals=theme:dark;background:black`,
+    );
+  });
+});

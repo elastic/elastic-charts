@@ -14,6 +14,13 @@ module.exports = {
     '@semantic-release/commit-analyzer',
     '@semantic-release/release-notes-generator',
     '@semantic-release/changelog',
+    [
+      '@semantic-release/exec',
+      {
+        prepareCmd: 'node ./packages/charts/scripts/move_txt_files.js',
+        execCwd: '.',
+      },
+    ],
     '@semantic-release/github',
     [
       '@semantic-release/npm',
@@ -23,15 +30,11 @@ module.exports = {
       },
     ],
     [
-      '@semantic-release/exec',
+      '@semantic-release/git',
       {
-        // npm plugin not updating package.json
-        // eslint-disable-next-line no-template-curly-in-string
-        prepareCmd: 'npm version ${nextRelease.version} --force --no-git-tag-version --allow-same-version',
-        execCwd: './packages/charts',
+        assets: ['./packages/charts/package.json', 'CHANGELOG.md'],
       },
     ],
-    '@semantic-release/git',
     ...(isDryRun
       ? []
       : [

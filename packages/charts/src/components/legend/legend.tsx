@@ -29,7 +29,7 @@ import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
 import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
-import { BBox } from '../../utils/bbox/bbox_calculator';
+import { BBox } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { HorizontalAlignment, LayoutDirection, VerticalAlignment } from '../../utils/common';
 import { Dimensions } from '../../utils/dimensions';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';

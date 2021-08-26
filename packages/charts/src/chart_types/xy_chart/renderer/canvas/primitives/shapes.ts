@@ -6,32 +6,38 @@
  * Side Public License, v 1.
  */
 
+import { RGBtoString } from '../../../../../common/color_library_wrappers';
 import { Circle, Fill, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
-import { getRadians } from '../../../../../utils/common';
+import { degToRad } from '../../../../../utils/common';
 import { PointShape } from '../../../../../utils/themes/theme';
 import { ShapeRendererFn } from '../../shapes_paths';
-import { fillAndStroke } from './utils';
+import { MIN_STROKE_WIDTH } from './line';
 
 /** @internal */
 export function renderShape(
   ctx: CanvasRenderingContext2D,
   shape: PointShape,
-  coordinates: Circle,
-  fill?: Fill,
-  stroke?: Stroke,
+  { x, y, radius }: Circle,
+  { color: fillColor }: Fill,
+  { width, dash, color: strokeColor }: Stroke,
 ) {
-  if (!stroke || !fill) {
-    return;
-  }
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     const [pathFn, rotation] = ShapeRendererFn[shape];
-    const { x, y, radius } = coordinates;
     ctx.translate(x, y);
-    ctx.rotate(getRadians(rotation));
+    ctx.rotate(degToRad(rotation));
     ctx.beginPath();
 
     const path = new Path2D(pathFn(radius));
-    fillAndStroke(ctx, fill, stroke, path);
+
+    ctx.fillStyle = RGBtoString(fillColor);
+    ctx.fill(path);
+
+    if (width > MIN_STROKE_WIDTH) {
+      ctx.strokeStyle = RGBtoString(strokeColor);
+      ctx.lineWidth = width;
+      ctx.setLineDash(dash ?? []);
+      ctx.stroke(path);
+    }
   });
 }

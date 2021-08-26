@@ -7,18 +7,16 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { extent } from 'd3-array';
 import React from 'react';
 
-import { Chart, Heatmap, ScaleType, Settings } from '@elastic/charts';
+import { Chart, Heatmap, Settings } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const data = BABYNAME_DATA.filter(([year]) => year > 1950);
-  const values = data.map((d) => +d[3]);
-  const [min, max] = extent(values);
+  const data = BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960);
+
   return (
     <Chart>
       <Settings
@@ -30,10 +28,17 @@ export const Example = () => {
       />
       <Heatmap
         id="heatmap2"
-        colorScale={ScaleType.Linear}
-        ranges={[min!, (max! - min!) / 2, max!]}
-        colors={['green', 'yellow', 'red']}
-        data={BABYNAME_DATA.filter(([year]) => year > 1950)}
+        colorScale={{
+          type: 'bands',
+          bands: [
+            { start: -Infinity, end: 1000, color: '#ffffcc' },
+            { start: 1000, end: 5000, color: '#a1dab4' },
+            { start: 5000, end: 10000, color: '#41b6c4' },
+            { start: 10000, end: 50000, color: '#2c7fb8' },
+            { start: 50000, end: Infinity, color: '#253494' },
+          ],
+        }}
+        data={data}
         xAccessor={(d) => d[2]}
         yAccessor={(d) => d[0]}
         valueAccessor={(d) => d[3]}
@@ -52,7 +57,7 @@ export const Example = () => {
               visible: true,
             },
             border: {
-              stroke: 'white',
+              stroke: 'transparent',
               strokeWidth: 1,
             },
           },

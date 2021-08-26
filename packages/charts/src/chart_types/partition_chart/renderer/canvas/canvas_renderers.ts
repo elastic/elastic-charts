@@ -12,6 +12,7 @@ import { Pixels } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { Color } from '../../../../utils/common';
+import { MIN_STROKE_WIDTH } from '../../../xy_chart/renderer/canvas/primitives/line';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
@@ -21,7 +22,7 @@ import {
   TextRow,
 } from '../../layout/types/viewmodel_types';
 import { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
-import { isSunburst, panelTitleFontSize } from '../../layout/viewmodel/viewmodel';
+import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
 // the burnout avoidance in the center of the pie
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
@@ -40,7 +41,7 @@ function renderTextRow(
     if (!Number.isFinite(crx) || !Number.isFinite(cry)) {
       return;
     }
-    withContext(ctx, (ctx) => {
+    withContext(ctx, () => {
       ctx.scale(1, -1);
       if (clipText) {
         ctx.rect(container.x0 + 1, container.y0 + 1, container.x1 - container.x0 - 2, container.y1 - container.y0 - 2);
@@ -59,7 +60,7 @@ function renderTextRow(
     });
     // for debug use: this draws magenta boxes for where the text needs to fit
     // note: `container` is a property of the RowSet, needs to be added
-    // withContext(ctx, (ctx) => {
+    // withContext(ctx, () => {
     //   ctx.scale(1, -1);
     //   ctx.rotate(-rotation);
     //   ctx.beginPath();
@@ -129,17 +130,16 @@ function renderTaperedBorder(
 }
 
 function renderSectors(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach((quad: QuadViewModel) => {
-      if (quad.x0 === quad.x1) return; // no slice will be drawn, and it avoids some division by zero as well
-      renderTaperedBorder(ctx, quad);
+      if (quad.x0 !== quad.x1) renderTaperedBorder(ctx, quad);
     });
   });
 }
 
 function renderRectangles(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
     quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
       // only draw a shape if it would show up at all
@@ -152,7 +152,7 @@ function renderRectangles(ctx: CanvasRenderingContext2D, quadViewModel: QuadView
         ctx.lineTo(x1, y0px);
         ctx.lineTo(x0, y0px);
         ctx.fill();
-        if (strokeWidth > 0.001) {
+        if (strokeWidth > MIN_STROKE_WIDTH) {
           // Canvas2d stroke ignores an exact zero line width
           ctx.lineWidth = strokeWidth;
           ctx.stroke();
@@ -168,7 +168,7 @@ function renderFillOutsideLinks(
   linkLabelTextColor: string,
   linkLabelLineWidth: Pixels,
 ) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.lineWidth = linkLabelLineWidth;
     ctx.strokeStyle = linkLabelTextColor;
     outsideLinksViewModel.forEach(({ points }) => {
@@ -186,15 +186,15 @@ function renderLinkLabels(
   ctx: CanvasRenderingContext2D,
   linkLabelFontSize: Pixels,
   linkLabelLineWidth: Pixels,
-  { linkLabels, labelFontSpec, valueFontSpec, strokeColor }: LinkLabelsViewModelSpec,
+  { linkLabels: allLinkLabels, labelFontSpec, valueFontSpec, strokeColor }: LinkLabelsViewModelSpec,
   linkLineColor: Color,
 ) {
   const labelColor = addOpacity(labelFontSpec.textColor, labelFontSpec.textOpacity);
   const valueColor = addOpacity(valueFontSpec.textColor, valueFontSpec.textOpacity);
   const labelValueGap = linkLabelFontSize / 2; // one en space
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.lineWidth = linkLabelLineWidth;
-    linkLabels.forEach(({ linkLabels, translate, textAlign, text, valueText, width, valueWidth }: LinkLabelVM) => {
+    allLinkLabels.forEach(({ linkLabels, translate, textAlign, text, valueText, width, valueWidth }: LinkLabelVM) => {
       // label lines
       ctx.beginPath();
       ctx.moveTo(...linkLabels[0]);
@@ -202,19 +202,17 @@ function renderLinkLabels(
       ctx.strokeStyle = strokeColor ?? linkLineColor;
 
       ctx.stroke();
-      withContext(ctx, (ctx) => {
+      withContext(ctx, () => {
         ctx.translate(...translate);
         ctx.scale(1, -1); // flip for text rendering not to be upside down
         ctx.textAlign = textAlign;
         // label text
-        ctx.strokeStyle = labelColor;
         ctx.fillStyle = labelColor;
-        ctx.font = `${labelFontSpec.fontStyle} ${labelFontSpec.fontVariant} ${labelFontSpec.fontWeight} ${linkLabelFontSize}px ${labelFontSpec.fontFamily}`;
+        ctx.font = cssFontShorthand(labelFontSpec, linkLabelFontSize);
         ctx.fillText(text, textAlign === 'right' ? -valueWidth - labelValueGap : 0, 0);
         // value text
-        ctx.strokeStyle = valueColor;
         ctx.fillStyle = valueColor;
-        ctx.font = `${valueFontSpec.fontStyle} ${valueFontSpec.fontVariant} ${valueFontSpec.fontWeight} ${linkLabelFontSize}px ${valueFontSpec.fontFamily}`;
+        ctx.font = cssFontShorthand(valueFontSpec, linkLabelFontSize);
         ctx.fillText(valueText, textAlign === 'left' ? width + labelValueGap : 0, 0);
       });
     });
@@ -222,7 +220,6 @@ function renderLinkLabels(
 }
 
 const midlineOffset = 0.35; // 0.35 is a [common constant](http://tavmjong.free.fr/SVG/TEXT_IN_A_BOX/index.html) representing half height
-const innerPad = midlineOffset * panelTitleFontSize; // todo replace it with theme.axisPanelTitle.padding.inner
 
 /** @internal */
 export function renderPartitionCanvas2d(
@@ -231,7 +228,6 @@ export function renderPartitionCanvas2d(
   {
     width,
     height,
-    panelTitle,
     config,
     quadViewModel,
     rowSets,
@@ -239,13 +235,14 @@ export function renderPartitionCanvas2d(
     linkLabelViewModels,
     diskCenter,
     outerRadius,
+    panel,
   }: ShapeViewModel,
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = config;
 
   const linkLineColor = addOpacity(linkLabel.textColor, linkLabel.textOpacity);
 
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     // set some defaults for the overall rendering
 
     // let's set the devicePixelRatio once and for all; then we'll never worry about it again
@@ -260,12 +257,15 @@ export function renderPartitionCanvas2d(
     ctx.textBaseline = 'bottom';
 
     // panel titles
+    ctx.font = cssFontShorthand(panel.fontFace, panel.fontSize);
+    ctx.fillStyle = panel.fontFace.textColor;
+    const innerPad = midlineOffset * panel.fontSize; // todo replace it with theme.axisPanelTitle.padding.inner
     ctx.fillText(
-      panelTitle,
+      panel.title,
       isSunburst(config.partitionLayout) ? diskCenter.x : diskCenter.x + (config.width * width) / 2,
       isSunburst(config.partitionLayout)
         ? config.linkLabel.maxCount > 0
-          ? diskCenter.y - (config.height * height) / 2 + panelTitleFontSize
+          ? diskCenter.y - (config.height * height) / 2 + panel.fontSize
           : diskCenter.y - outerRadius - innerPad
         : diskCenter.y + 12,
     );
@@ -288,19 +288,17 @@ export function renderPartitionCanvas2d(
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
       // bottom layer: sectors (pie slices, ring sectors etc.)
-      (ctx: CanvasRenderingContext2D) =>
+      () =>
         isSunburst(config.partitionLayout) ? renderSectors(ctx, quadViewModel) : renderRectangles(ctx, quadViewModel),
 
       // all the fill-based, potentially multirow text, whether inside or outside the sector
-      (ctx: CanvasRenderingContext2D) => renderRowSets(ctx, rowSets, linkLineColor),
+      () => renderRowSets(ctx, rowSets, linkLineColor),
 
       // the link lines for the outside-fill text
-      (ctx: CanvasRenderingContext2D) =>
-        renderFillOutsideLinks(ctx, outsideLinksViewModel, linkLineColor, linkLabel.lineWidth),
+      () => renderFillOutsideLinks(ctx, outsideLinksViewModel, linkLineColor, linkLabel.lineWidth),
 
       // all the text and link lines for single-row outside texts
-      (ctx: CanvasRenderingContext2D) =>
-        renderLinkLabels(ctx, linkLabel.fontSize, linkLabel.lineWidth, linkLabelViewModels, linkLineColor),
+      () => renderLinkLabels(ctx, linkLabel.fontSize, linkLabel.lineWidth, linkLabelViewModels, linkLineColor),
     ]);
   });
 }

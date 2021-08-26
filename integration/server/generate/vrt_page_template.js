@@ -44,13 +44,13 @@ ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElemen
 function pageTemplate(imports, routes, urls) {
   return `
 import React, { Suspense } from 'react';
-import { ThemeProvider, BackgroundProvider } from '../../storybook/use_base_theme';
+import { ThemeIdProvider, BackgroundIdProvider } from '../../storybook/use_base_theme';
 import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
 
 export function VRTPage() {
   const {
-    themeName,
-    backgroundColor,
+    themeId,
+    backgroundId,
     setParams,
   } = useGlobalsParameters();
   const urlParams = new URL(window.location.toString()).searchParams;
@@ -70,13 +70,13 @@ export function VRTPage() {
     </>);
   }
   return (
-    <ThemeProvider value={themeName as any}>
-      <BackgroundProvider value={backgroundColor}>
+    <ThemeIdProvider value={themeId as any}>
+      <BackgroundIdProvider value={backgroundId}>
         <Suspense fallback={<div>Loading...</div>}>
           ${routes.join('\n          ')}
         </Suspense>
-      </BackgroundProvider>
-    </ThemeProvider>
+      </BackgroundIdProvider>
+    </ThemeIdProvider>
   );
 }
 

@@ -15,7 +15,7 @@ import { Box, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
-import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -23,7 +23,7 @@ import { ContinuousDomain } from '../../../../utils/domain';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
-import { ColorScaleType } from '../../state/selectors/get_color_scale';
+import { ColorScale } from '../../state/selectors/get_color_scale';
 import { GridHeightParams } from '../../state/selectors/get_grid_full_height';
 import { Config } from '../types/config_types';
 import {
@@ -56,21 +56,16 @@ function getValuesInRange(
 /**
  * Resolves the maximum number of ticks based on the chart width and sample label based on formatter config.
  */
-function getTicks(chartWidth: number, xAxisLabelConfig: Config['xAxisLabel']): number {
-  const bboxCompute = new CanvasTextBBoxCalculator();
-  const labelSample = xAxisLabelConfig.formatter(Date.now());
-  const { width } = bboxCompute.compute(
-    labelSample,
-    xAxisLabelConfig.padding,
-    xAxisLabelConfig.fontSize,
-    xAxisLabelConfig.fontFamily,
-  );
-  bboxCompute.destroy();
-  const maxTicks = Math.floor(chartWidth / width);
-  // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
-  // to many ticks creating nice rounded tick values
-  // TODO add support for limiting the number of tick in {@link ScaleContinuous}
-  return maxTicks / 2;
+function getTicks(chartWidth: number, { formatter, padding, fontSize, fontFamily }: Config['xAxisLabel']): number {
+  return withTextMeasure((textMeasure) => {
+    const labelSample = formatter(Date.now());
+    const { width } = textMeasure(labelSample, padding, fontSize, fontFamily);
+    const maxTicks = Math.floor(chartWidth / width);
+    // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
+    // to many ticks creating nice rounded tick values
+    // TODO add support for limiting the number of tick in {@link ScaleContinuous}
+    return maxTicks / 2;
+  });
 }
 
 /** @internal */
@@ -81,8 +76,8 @@ export function shapeViewModel(
   settingsSpec: SettingsSpec,
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
-  colorScale: ColorScaleType,
-  filterRanges: Array<[number, number | null]>,
+  colorScale: ColorScale,
+  bandsToHide: Array<[number, number]>,
   { height, pageSize }: GridHeightParams,
 ): ShapeViewModel {
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
@@ -187,7 +182,7 @@ export function shapeViewModel(
     const x = xScale(String(d.x));
     const y = yScale(String(d.y))! + gridStrokeWidth;
     const yIndex = yValues.indexOf(d.y);
-    const color = colorScale.config(d.value);
+    const color = colorScale(d.value);
     if (x === undefined || y === undefined || yIndex === -1) {
       return acc;
     }
@@ -208,7 +203,7 @@ export function shapeViewModel(
         width: config.cell.border.strokeWidth,
       },
       value: d.value,
-      visible: !isFilteredValue(filterRanges, d.value),
+      visible: !isValueHidden(d.value, bandsToHide),
       formatted: spec.valueFormatter(d.value),
     };
     return acc;
@@ -391,11 +386,6 @@ function getCellKey(x: NonNullable<PrimitiveValue>, y: NonNullable<PrimitiveValu
   return [String(x), String(y)].join('&_&');
 }
 
-function isFilteredValue(filterRanges: Array<[number, number | null]>, value: number) {
-  return filterRanges.some(([min, max]) => {
-    if (max !== null && value > min && value < max) {
-      return true;
-    }
-    return max === null && value > min;
-  });
+function isValueHidden(value: number, rangesToHide: Array<[number, number]>) {
+  return rangesToHide.some(([min, max]) => min <= value && value < max);
 }

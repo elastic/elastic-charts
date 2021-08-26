@@ -31,7 +31,7 @@ interface LineGeometriesDataProps {
 
 /** @internal */
 export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometriesDataProps) {
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     const { lines, sharedStyle, highlightedLegendItem, clippings, renderingArea, rotation } = props;
 
     lines.forEach(({ panel, value: line }) => {
@@ -43,9 +43,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
           panel,
           rotation,
           renderingArea,
-          (ctx) => {
-            renderLine(ctx, line, sharedStyle, clippings, highlightedLegendItem);
-          },
+          () => renderLine(ctx, line, sharedStyle, clippings, highlightedLegendItem),
           { area: clippings, shouldClip: true },
         );
       }
@@ -60,9 +58,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
         panel,
         rotation,
         renderingArea,
-        (ctx) => {
-          renderPoints(ctx, visiblePoints, geometryStyle);
-        },
+        () => renderPoints(ctx, visiblePoints, geometryStyle),
         // TODO: add padding over clipping
         { area: clippings, shouldClip: line.points[0]?.value.mark !== null },
       );

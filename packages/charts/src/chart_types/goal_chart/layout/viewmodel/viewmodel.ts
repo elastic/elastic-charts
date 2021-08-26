@@ -6,20 +6,20 @@
  * Side Public License, v 1.
  */
 
+import { Dimensions } from '../../../../utils/dimensions';
+import { Theme } from '../../../../utils/themes/theme';
 import { GoalSpec } from '../../specs';
-import { Config } from '../types/config_types';
 import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
 
 /** @internal */
-export function shapeViewModel(spec: GoalSpec, config: Config): ShapeViewModel {
-  const { width, height, margin } = config;
-
-  const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
-  const innerHeight = height * (1 - Math.min(1, margin.top + margin.bottom));
-
+export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Dimensions): ShapeViewModel {
+  const { width, height } = chartDimensions;
+  const { chartMargins: margin } = theme;
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
   const chartCenter = {
-    x: width * margin.left + innerWidth / 2,
-    y: height * margin.top + innerHeight / 2,
+    x: margin.left + innerWidth / 2,
+    y: margin.top + innerHeight / 2,
   };
 
   const pickQuads: PickFunction = (x, y) =>
@@ -41,9 +41,11 @@ export function shapeViewModel(spec: GoalSpec, config: Config): ShapeViewModel {
     centralMajor,
     centralMinor,
     bandLabels,
+    angleStart,
+    angleEnd,
   } = spec;
 
-  const [lowestValue, highestValue] = [base, target, actual, ...bands, ...ticks].reduce(
+  const [lowestValue, highestValue] = [base, ...(target ? [target] : []), actual, ...bands, ...ticks].reduce(
     ([min, max], value) => [Math.min(min, value), Math.max(max, value)],
     [Infinity, -Infinity],
   );
@@ -85,11 +87,12 @@ export function shapeViewModel(spec: GoalSpec, config: Config): ShapeViewModel {
     lowestValue,
     aboveBaseCount,
     belowBaseCount,
+    angleStart,
+    angleEnd,
   };
 
-  // combined viewModel
   return {
-    config,
+    config: theme.goal,
     chartCenter,
     bulletViewModel,
     pickQuads,

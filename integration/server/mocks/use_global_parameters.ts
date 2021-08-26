@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { BackgroundParameter } from '../../../storybook/node_modules/storybook-addon-background-toggle';
 import { ThemeParameter } from '../../../storybook/node_modules/storybook-addon-theme-toggle';
 import { parameters as globalParams } from '../../../storybook/preview';
-import { ThemeName } from '../../../storybook/use_base_theme';
+import { ThemeId } from '../../../storybook/use_base_theme';
 
 interface Globals {
   theme?: string;
@@ -32,7 +32,7 @@ const getThemeAllClasses = ({ themes }: Required<ThemeParameter>['theme']) =>
 const getTargetSelector = ({ selector }: Required<ThemeParameter>['theme']) =>
   (Array.isArray(selector) ? selector.join(', ') : selector) ?? 'body';
 
-function setTheme(themeId: string) {
+function applyThemeCSS(themeId: string) {
   const theme = themeParams.themes.find((t) => t.id === themeId);
   const selector = getTargetSelector(themeParams);
   const targets = selector ? document.querySelectorAll<HTMLElement>(selector) : null;
@@ -48,33 +48,25 @@ function setTheme(themeId: string) {
   }
 }
 
-function getBackground(backgroundId?: string) {
-  if (!backgroundId) return '';
-
-  const option = (backgroundParams.options ?? []).find(({ id }) => id === backgroundId);
-
-  return option ? option.background ?? option.color : '';
-}
-
 export function useGlobalsParameters() {
-  const [themeName, setThemeName] = useState<string>(ThemeName.Light);
-  const [backgroundColor, setBackgroundColor] = useState<string | undefined>('white');
+  const [themeId, setThemeId] = useState<string>(ThemeId.Light);
+  const [backgroundId, setBackgroundId] = useState<string | undefined>('white');
 
   /**
    * Handles setting global context values. Stub for theme and background addons
    */
   function setParams(params: URLSearchParams, parameters?: Parameters) {
     const globals = getGlobalParams(params) as Globals;
-    const themeId = globals.theme ?? parameters?.theme?.default ?? themeParams.default ?? ThemeName.Light;
-    const backgroundId = globals.background ?? parameters?.background?.default ?? backgroundParams.default;
-    setThemeName(themeId);
-    setTheme(themeId);
-    setBackgroundColor(getBackground(backgroundId));
+    const backgroundIdFromParams = globals.background ?? parameters?.background?.default ?? backgroundParams.default;
+    setBackgroundId(backgroundIdFromParams);
+    const themeIdFromParams = globals.theme ?? parameters?.theme?.default ?? themeParams.default ?? ThemeId.Light;
+    setThemeId(themeIdFromParams);
+    applyThemeCSS(themeIdFromParams);
   }
 
   return {
-    themeName,
-    backgroundColor,
+    themeId,
+    backgroundId,
     setParams,
   };
 }

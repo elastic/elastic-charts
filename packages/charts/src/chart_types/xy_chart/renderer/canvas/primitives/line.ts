@@ -22,7 +22,7 @@ export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | s
   if (stroke.width < MIN_STROKE_WIDTH || lines.length === 0) {
     return;
   }
-  withContext(ctx, (ctx) => {
+  withContext(ctx, () => {
     ctx.strokeStyle = RGBtoString(stroke.color);
     ctx.lineJoin = 'round';
     ctx.lineWidth = stroke.width;
@@ -36,9 +36,8 @@ export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | s
       if (typeof line === 'string') {
         ctx.stroke(new Path2D(line));
       } else {
-        const { x1, y1, x2, y2 } = line;
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
+        ctx.moveTo(line.x1, line.y1);
+        ctx.lineTo(line.x2, line.y2);
       }
     }
     ctx.stroke();

@@ -9,6 +9,7 @@
 import { $Values } from 'utility-types';
 
 import { Pixels, Ratio } from '../../common/geometry';
+import { FontStyle } from '../../common/text_utils';
 import { Color, ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, SimplePadding } from '../dimensions';
 import { Point } from '../point';
@@ -22,7 +23,7 @@ export interface Visible {
 export interface TextStyle {
   fontSize: number;
   fontFamily: string;
-  fontStyle?: string;
+  fontStyle?: FontStyle;
   fill: Color;
   padding: number | SimplePadding;
 }
@@ -168,6 +169,23 @@ export interface GridLineStyle {
   opacity: number;
   dash: number[];
 }
+
+/**
+ * @public
+ */
+export interface GoalStyles {
+  progressLine: Pick<StrokeStyle, 'stroke'>;
+  targetLine: Pick<StrokeStyle, 'stroke'>;
+  tickLine: Pick<StrokeStyle, 'stroke'>;
+  tickLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+  majorLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+  minorLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+  majorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+  minorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+  minFontSize: number;
+  maxFontSize: number;
+}
+
 /** @public */
 export interface ScalesConfig {
   /**
@@ -303,6 +321,7 @@ export interface Theme {
    * This can then be used to calculate the contrast of the text for partition charts.
    */
   background: BackgroundStyle;
+  goal: GoalStyles;
 }
 
 /** @public */

@@ -41,13 +41,16 @@ export const Example = () => {
 
   const config: RecursivePartial<Config> = useMemo(
     () => ({
+      brushTool: {
+        visible: true,
+      },
       grid: {
         cellHeight: {
           min: 20,
         },
         stroke: {
-          width: 1,
-          color: '#D3DAE6',
+          width: 0.5,
+          color: '#bababa',
         },
       },
       cell: {
@@ -57,7 +60,7 @@ export const Example = () => {
           visible: false,
         },
         border: {
-          stroke: '#D3DAE6',
+          stroke: 'transparent',
           strokeWidth: 0,
         },
       },
@@ -78,7 +81,7 @@ export const Example = () => {
     [],
   );
 
-  const logDebugstate = debounce(() => {
+  const logDebugState = debounce(() => {
     if (!debugState) return;
 
     const statusEl = document.querySelector<HTMLDivElement>('.echChartStatus');
@@ -102,9 +105,9 @@ export const Example = () => {
     <Chart>
       <Settings
         onElementClick={onElementClick}
-        onRenderChange={logDebugstate}
+        onRenderChange={logDebugState}
         showLegend
-        legendPosition="top"
+        legendPosition="right"
         onBrushEnd={action('onBrushEnd')}
         brushAxis="both"
         xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
@@ -113,14 +116,21 @@ export const Example = () => {
       />
       <Heatmap
         id="heatmap1"
-        colorScale={ScaleType.Threshold}
-        ranges={[0, 3, 25, 50, 75]}
-        colors={['#ffffff', '#d2e9f7', '#8bc8fb', '#fdec25', '#fba740', '#fe5050']}
+        colorScale={{
+          type: 'bands',
+          bands: [
+            { start: -Infinity, end: 3.5, color: '#d2e9f7' },
+            { start: 3.5, end: 25, color: '#8bc8fb' },
+            { start: 25, end: 50, color: '#fdec25' },
+            { start: 50, end: 75, color: '#fba740' },
+            { start: 75, end: Infinity, color: '#fe5050' },
+          ],
+        }}
         data={SWIM_LANE_DATA.map((v) => ({ ...v, time: v.time * 1000 }))}
         xAccessor={(d) => d.time}
         yAccessor={(d) => d.laneLabel}
         valueAccessor={(d) => d.value}
-        valueFormatter={(d) => d.toFixed(0.2)}
+        valueFormatter={(d) => `${Number(d.toFixed(2))}℃`}
         ySortPredicate="numAsc"
         xScaleType={ScaleType.Time}
         config={config}
