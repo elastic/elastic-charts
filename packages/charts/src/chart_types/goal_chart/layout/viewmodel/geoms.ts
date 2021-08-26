@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { Colors } from '../../../../common/color';
 import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
 import { PointObject, Radian, Rectangle } from '../../../../common/geometry';
 import { cssFontShorthand, Font } from '../../../../common/text_utils';
 import { CanvasRenderer } from '../../../../renderers/canvas';
+import { Dimensions } from '../../../../utils/dimensions';
+import { Theme } from '../../../../utils/themes/theme';
 import { GoalSubtype } from '../../specs/constants';
-import { Config } from '../types/config_types';
 import { BulletViewModel } from '../types/viewmodel_types';
 
 const referenceCircularSizeCap = 360; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space
@@ -172,6 +172,7 @@ export class Text implements Mark {
   protected readonly textBaseline: CanvasTextBaseline;
   protected readonly fontShape: Font;
   protected readonly fontSize: number;
+  protected readonly fillStyle: string;
 
   constructor(
     x: number,
@@ -181,6 +182,7 @@ export class Text implements Mark {
     textBaseline: CanvasTextBaseline,
     fontShape: Font,
     fontSize: number,
+    fillStyle: string,
   ) {
     this.x = x;
     this.y = y;
@@ -189,6 +191,7 @@ export class Text implements Mark {
     this.textBaseline = textBaseline;
     this.fontShape = fontShape;
     this.fontSize = fontSize;
+    this.fillStyle = fillStyle;
   }
 
   setCanvasTextState(ctx: CanvasRenderingContext2D) {
@@ -215,6 +218,7 @@ export class Text implements Mark {
   render(ctx: CanvasRenderingContext2D) {
     this.setCanvasTextState(ctx);
     ctx.beginPath();
+    ctx.fillStyle = this.fillStyle;
     ctx.fillText(this.text, this.x, this.y);
   }
 }
@@ -224,7 +228,12 @@ function get<T>(o: { [k: string]: any }, name: string, dflt: T) {
 }
 
 /** @internal */
-export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCenter: PointObject): Mark[] {
+export function geoms(
+  bulletViewModel: BulletViewModel,
+  config: Theme['goal'],
+  partentDimensions: Dimensions,
+  chartCenter: PointObject,
+): Mark[] {
   const {
     subtype,
     lowestValue,
@@ -238,6 +247,8 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
     labelMinor,
     centralMajor,
     centralMinor,
+    angleStart,
+    angleEnd,
   } = bulletViewModel;
 
   const circular = subtype === GoalSubtype.Goal;
@@ -260,12 +271,12 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
       : {}),
   };
 
-  const minSize = Math.min(config.width, config.height);
+  const minSize = Math.min(partentDimensions.width, partentDimensions.height);
 
   const referenceSize =
     Math.min(
       circular ? referenceCircularSizeCap : referenceBulletSizeCap,
-      circular ? minSize : vertical ? config.height : config.width,
+      circular ? minSize : vertical ? partentDimensions.height : partentDimensions.width,
     ) *
     (1 - 2 * marginRatio);
 
@@ -294,21 +305,21 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
     {
       order: 1,
       landmarks: { from: 'base', to: 'actual' },
-      aes: { shape, fillColor: Colors.Black.rgba, lineWidth: tickLength },
+      aes: { shape, fillColor: config.progressLine.stroke, lineWidth: tickLength },
     },
     ...(target
       ? [
           {
             order: 2,
             landmarks: { at: 'target' },
-            aes: { shape, fillColor: Colors.Black.rgba, lineWidth: barThickness / GOLDEN_RATIO },
+            aes: { shape, fillColor: config.targetLine.stroke, lineWidth: barThickness / GOLDEN_RATIO },
           },
         ]
       : []),
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 3,
       landmarks: { at: `tick_${i}` },
-      aes: { shape, fillColor: 'darkgrey', lineWidth: tickLength, axisNormalOffset: tickOffset },
+      aes: { shape, fillColor: config.tickLine.stroke, lineWidth: tickLength, axisNormalOffset: tickOffset },
     })),
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 4,
@@ -317,8 +328,8 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
         shape: 'text',
         textAlign: vertical ? 'right' : 'center',
         textBaseline: vertical ? 'middle' : 'top',
-        fillColor: Colors.Black.rgba,
-        fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '500', fontFamily: 'sans-serif' },
+        fillColor: config.tickLabel.fill,
+        fontShape: { ...config.tickLabel, fontVariant: 'normal', fontWeight: '500' },
         axisNormalOffset: -barThickness,
       },
     })),
@@ -331,8 +342,8 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
         axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
         textAlign: vertical ? 'center' : 'right',
         textBaseline: 'bottom',
-        fillColor: Colors.Black.rgba,
-        fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
+        fillColor: config.majorLabel.fill,
+        fontShape: { ...config.majorLabel, fontVariant: 'normal', fontWeight: '900' },
       },
     },
     {
@@ -344,8 +355,8 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
         axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
         textAlign: vertical ? 'center' : 'right',
         textBaseline: 'top',
-        fillColor: Colors.Black.rgba,
-        fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
+        fillColor: config.minorLabel.fill,
+        fontShape: { ...config.minorLabel, fontVariant: 'normal', fontWeight: '300' },
       },
     },
     ...(circular
@@ -357,8 +368,8 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
               shape: 'text',
               textAlign: 'center',
               textBaseline: 'bottom',
-              fillColor: Colors.Black.rgba,
-              fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '900', fontFamily: 'sans-serif' },
+              fillColor: config.majorCenterLabel.fill,
+              fontShape: { ...config.majorCenterLabel, fontVariant: 'normal', fontWeight: '900' },
             },
           },
           {
@@ -368,8 +379,8 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
               shape: 'text',
               textAlign: 'center',
               textBaseline: 'top',
-              fillColor: Colors.Black.rgba,
-              fontShape: { fontStyle: 'normal', fontVariant: 'normal', fontWeight: '300', fontFamily: 'sans-serif' },
+              fillColor: config.minorCenterLabel.fill,
+              fontShape: { ...config.minorCenterLabel, fontVariant: 'normal', fontWeight: '300' },
             },
           },
         ]
@@ -390,7 +401,6 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
 
   const linearScale = (x: number) => pxRangeFrom + (pxRange * (x - domain[0])) / domainExtent;
 
-  const { angleStart, angleEnd } = config;
   const angleRange = angleEnd - angleStart;
   const angleScale = (x: number) => angleStart + (angleRange * (x - domain[0])) / domainExtent;
   const clockwise = angleStart > angleEnd; // todo refine this crude approach
@@ -423,7 +433,16 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
         const y = circular
           ? (label ? r : central ? 0 : -(r - GOLDEN_RATIO * barThickness) * Math.sin(scaledValue))
           : (vertical ? -axisTangentOffset - scaledValue : -axisNormalOffset);
-        return new Text(x + chartCenter.x, y + chartCenter.y, text, textAlign, textBaseline, fontShape, fontSize);
+        return new Text(
+          x + chartCenter.x,
+          y + chartCenter.y,
+          text,
+          textAlign,
+          textBaseline,
+          fontShape,
+          fontSize,
+          strokeStyle,
+        );
       } else if (aes.shape === 'arc') {
         const cx = chartCenter.x + pxRangeMid;
         const cy = chartCenter.y;
@@ -434,7 +453,6 @@ export function geoms(bulletViewModel: BulletViewModel, config: Config, chartCen
         const anticlockwise = at || clockwise === (data[from].value < data[to].value);
         return new Arc(cx, cy, radius, -startAngle, -endAngle, !anticlockwise, lineWidth, strokeStyle);
       } else {
-        // if (aes.shape === 'line')
         const translateX = chartCenter.x + (vertical ? axisNormalOffset : axisTangentOffset);
         const translateY = chartCenter.y - (vertical ? axisTangentOffset : axisNormalOffset);
         const atPx = data[at] && linearScale(data[at].value);

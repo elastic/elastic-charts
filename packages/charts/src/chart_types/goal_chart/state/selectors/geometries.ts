@@ -10,6 +10,7 @@ import { ChartType } from '../../..';
 import { SpecType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSpecs } from '../../../../state/selectors/get_settings_specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -21,18 +22,18 @@ const getParentDimensions = (state: GlobalChartState) => state.parentDimensions;
 
 /** @internal */
 export const geometries = createCustomCachedSelector(
-  [getSpecs, getParentDimensions],
-  (specs, parentDimensions): ShapeViewModel => {
+  [getSpecs, getParentDimensions, getChartThemeSelector],
+  (specs, parentDimensions, theme): ShapeViewModel => {
     const goalSpecs = getSpecsFromStore<GoalSpec>(specs, ChartType.Goal, SpecType.Series);
-    return goalSpecs.length === 1 ? render(goalSpecs[0], parentDimensions) : nullShapeViewModel();
+    return goalSpecs.length === 1 ? render(goalSpecs[0], parentDimensions, theme) : nullShapeViewModel(theme);
   },
 );
 
 /** @internal */
 export const getPrimitiveGeoms = createCustomCachedSelector(
   [geometries, getParentDimensions],
-  (shapeViewModel: ShapeViewModel, { width, height }): Mark[] => {
-    const { config, chartCenter, bulletViewModel } = shapeViewModel;
-    return geoms(bulletViewModel, { ...config, width, height }, chartCenter);
+  (shapeViewModel, parentDimensions): Mark[] => {
+    const { chartCenter, bulletViewModel, config } = shapeViewModel;
+    return geoms(bulletViewModel, config, parentDimensions, chartCenter);
   },
 );

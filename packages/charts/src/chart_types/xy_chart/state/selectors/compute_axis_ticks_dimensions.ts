@@ -9,7 +9,7 @@
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { AxisId } from '../../../../utils/ids';
 import { axisViewModel, AxisViewModel, hasDuplicateAxis, defaultTickFormatter } from '../../utils/axis_utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -45,31 +45,31 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
   ): Map<AxisId, AxisViewModel> => {
     const { xDomain, yDomains } = seriesDomainsAndData;
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
-    const bboxCalculator = new CanvasTextBBoxCalculator();
-    const axesTicksDimensions: Map<AxisId, AxisViewModel> = new Map();
-    axesSpecs.forEach((axisSpec) => {
-      const { id } = axisSpec;
-      const axisStyle = axesStyles.get(id) ?? chartTheme.axes;
-      const dimensions = axisViewModel(
-        axisSpec,
-        xDomain,
-        yDomains,
-        totalBarsInCluster,
-        bboxCalculator,
-        settingsSpec.rotation,
-        axisStyle,
-        fallBackTickFormatter,
-        barsPadding,
-        isHistogramMode,
-      );
-      if (
-        dimensions &&
-        (!settingsSpec.hideDuplicateAxes || !hasDuplicateAxis(axisSpec, dimensions, axesTicksDimensions, axesSpecs))
-      ) {
-        axesTicksDimensions.set(id, dimensions);
-      }
+    return withTextMeasure((textMeasure) => {
+      const axesTicksDimensions: Map<AxisId, AxisViewModel> = new Map();
+      axesSpecs.forEach((axisSpec) => {
+        const { id } = axisSpec;
+        const axisStyle = axesStyles.get(id) ?? chartTheme.axes;
+        const dimensions = axisViewModel(
+          axisSpec,
+          xDomain,
+          yDomains,
+          totalBarsInCluster,
+          textMeasure,
+          settingsSpec.rotation,
+          axisStyle,
+          fallBackTickFormatter,
+          barsPadding,
+          isHistogramMode,
+        );
+        if (
+          dimensions &&
+          (!settingsSpec.hideDuplicateAxes || !hasDuplicateAxis(axisSpec, dimensions, axesTicksDimensions, axesSpecs))
+        ) {
+          axesTicksDimensions.set(id, dimensions);
+        }
+      });
+      return axesTicksDimensions;
     });
-    bboxCalculator.destroy();
-    return axesTicksDimensions;
   },
 );

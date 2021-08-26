@@ -13,8 +13,7 @@ import { Color } from '../../../common/color';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
-import { RecursivePartial } from '../../../utils/common';
-import { config } from '../layout/config/config';
+import { LabelAccessor, RecursivePartial } from '../../../utils/common';
 import { Config } from '../layout/types/config_types';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
 import { GoalSubtype } from './constants';
@@ -34,10 +33,12 @@ export interface BandFillColorAccessorInput {
 /** @alpha */
 export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color;
 
+/** @alpha */
+export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
+
 const defaultProps = {
   chartType: ChartType.Goal,
   ...defaultGoalSpec,
-  config,
 };
 
 /** @alpha */
@@ -51,12 +52,18 @@ export interface GoalSpec extends Spec {
   bands: number[];
   ticks: number[];
   bandFillColor: BandFillColorAccessor;
-  tickValueFormatter: BandFillColorAccessor;
-  labelMajor: string | BandFillColorAccessor;
-  labelMinor: string | BandFillColorAccessor;
-  centralMajor: string | BandFillColorAccessor;
-  centralMinor: string | BandFillColorAccessor;
-  config: RecursivePartial<Config>;
+  tickValueFormatter: GoalLabelAccessor;
+  labelMajor: string | GoalLabelAccessor;
+  labelMinor: string | GoalLabelAccessor;
+  centralMajor: string | GoalLabelAccessor;
+  centralMinor: string | GoalLabelAccessor;
+  /**
+   * @deprecated properties have been migrated to the theme or spec.
+   * To be removed with partition, heatmap and wordmap configs.
+   */
+  config?: RecursivePartial<Config>;
+  angleStart: number;
+  angleEnd: number;
   bandLabels: string[];
 }
 
@@ -67,7 +74,6 @@ type SpecOptionalProps = Partial<Omit<GoalSpec, 'chartType' | 'specType' | 'id' 
 export const Goal: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     GoalSpec,
-    | 'config'
     | 'chartType'
     | 'subtype'
     | 'base'
@@ -82,5 +88,7 @@ export const Goal: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps
     | 'labelMinor'
     | 'centralMajor'
     | 'centralMinor'
+    | 'angleStart'
+    | 'angleEnd'
   >(defaultProps),
 );

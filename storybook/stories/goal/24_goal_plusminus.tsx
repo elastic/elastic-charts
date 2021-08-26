@@ -9,7 +9,6 @@
 import React from 'react';
 
 import { Chart, Goal, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/goal_chart/layout/config/config';
 import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
@@ -49,7 +48,6 @@ export const Example = () => (
       labelMinor="(thousand USD)  "
       centralMajor="-80"
       centralMinor="target: 260"
-      config={config}
     />
   </Chart>
 );

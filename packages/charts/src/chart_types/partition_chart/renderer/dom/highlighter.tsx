@@ -177,17 +177,10 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
                 partitionLayout,
                 marginLeftPx,
                 marginTopPx,
-                panelInnerWidth,
-                panelInnerHeight,
+                panel: { innerWidth, innerHeight },
               }) => (
                 <mask key={maskId(index, innerIndex)} id={maskId(index, innerIndex)}>
-                  <rect
-                    x={marginLeftPx}
-                    y={marginTopPx}
-                    width={panelInnerWidth}
-                    height={panelInnerHeight}
-                    fill="white"
-                  />
+                  <rect x={marginLeftPx} y={marginTopPx} width={innerWidth} height={innerHeight} fill="white" />
                   <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
                     {renderGeometries(geometries, partitionLayout, { color: Colors.Black.rgba }, geometriesFoci, width)}
                   </g>
@@ -204,8 +197,7 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
             partitionLayout,
             marginLeftPx,
             marginTopPx,
-            panelInnerWidth,
-            panelInnerHeight,
+            panel: { innerWidth, innerHeight },
           }) =>
             isSunburst(partitionLayout) ? (
               <circle
@@ -221,8 +213,8 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
                 key={`${index}__${innerIndex}`}
                 x={marginLeftPx}
                 y={marginTopPx}
-                width={panelInnerWidth}
-                height={panelInnerHeight}
+                width={innerWidth}
+                height={innerHeight}
                 mask={`url(#${maskId(index, innerIndex)})`}
                 className="echHighlighter__mask"
               />

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { number, color, array } from '@storybook/addon-knobs';
+import { number, color, array, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Goal, Settings } from '@elastic/charts';
@@ -31,6 +31,7 @@ export const Example = () => {
     '300': 0.05,
   };
 
+  const useColors = boolean('use custom band colors', false, 'colors');
   const colorMap: { [k: number]: Color } = bands.reduce<{ [k: number]: Color }>((acc, band) => {
     const defaultValue = opacityMap[band] ?? 0;
     acc[band] = color(`color at ${band}`, `rgba(0,0,0,${defaultValue.toFixed(2)})`, 'colors');
@@ -38,6 +39,7 @@ export const Example = () => {
   }, {});
 
   const bandFillColor = (x: number): Color => colorMap[x];
+
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
@@ -50,7 +52,7 @@ export const Example = () => {
         bands={bands}
         ticks={ticks}
         tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-        bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
+        bandFillColor={useColors ? ({ value }: BandFillColorAccessorInput) => bandFillColor(value) : undefined}
         labelMajor="Revenue 2020 YTD  "
         labelMinor="(thousand USD)  "
         centralMajor={`${actual}`}

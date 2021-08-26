@@ -1,3 +1,22 @@
+## [34.2.1](https://github.com/elastic/elastic-charts/compare/v34.2.0...v34.2.1) (2021-08-25)
+
+
+### Bug Fixes
+
+* **partition:** small multiples panel title color ([#1329](https://github.com/elastic/elastic-charts/issues/1329)) ([8762d5e](https://github.com/elastic/elastic-charts/commit/8762d5e31d3e7843795b6d1427d10afe0aab4ed8)), closes [#1327](https://github.com/elastic/elastic-charts/issues/1327)
+
+# [34.2.0](https://github.com/elastic/elastic-charts/compare/v34.1.1...v34.2.0) (2021-08-23)
+
+
+### Bug Fixes
+
+* **heatmap:** limit brush tool ([#1270](https://github.com/elastic/elastic-charts/issues/1270)) ([509cf42](https://github.com/elastic/elastic-charts/commit/509cf4209bfd359c2897e381980ff5e05b09ec27)), closes [#1216](https://github.com/elastic/elastic-charts/issues/1216)
+
+
+### Features
+
+* **goal:** dark mode with theme controls ([#1299](https://github.com/elastic/elastic-charts/issues/1299)) ([3a583e5](https://github.com/elastic/elastic-charts/commit/3a583e55a607c810a0764e841a632b42c5447b6a))
+
 ## [34.1.1](https://github.com/elastic/elastic-charts/compare/v34.1.0...v34.1.1) (2021-08-20)
 
 

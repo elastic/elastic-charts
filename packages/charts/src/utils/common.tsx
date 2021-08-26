@@ -131,34 +131,12 @@ export function identity<T>(value: T): T {
 
 /** @internal */
 export function compareByValueAsc(a: number | string, b: number | string): number {
-  return a > b ? 1 : -1;
+  return a > b ? 1 : a < b ? -1 : 0;
 }
 
 /** @internal */
 export function clamp(value: number, lowerBound: number, upperBound: number) {
-  return minValueWithLowerLimit(value, upperBound, lowerBound);
-}
-
-/**
- * Return the minimum value between val1 and val2. The value is bounded from below by lowerLimit
- * @param val1 a numeric value
- * @param val2 a numeric value
- * @param lowerLimit the lower limit
- * @internal
- */
-export function minValueWithLowerLimit(val1: number, val2: number, lowerLimit: number) {
-  return Math.max(Math.min(val1, val2), lowerLimit);
-}
-
-/**
- * Return the maximum value between val1 and val2. The value is bounded from above by upperLimit
- * @param val1 a numeric value
- * @param val2 a numeric value
- * @param upperLimit the upper limit
- * @internal
- */
-export function maxValueWithUpperLimit(val1: number, val2: number, upperLimit: number) {
-  return Math.min(Math.max(val1, val2), upperLimit);
+  return Math.min(Math.max(value, lowerBound), upperBound);
 }
 
 /**
@@ -477,7 +455,7 @@ export type ValueFormatter = (value: number) => string;
 /** @public */
 export type ValueAccessor = (d: Datum) => AdditiveNumber;
 /** @public */
-export type LabelAccessor = (value: PrimitiveValue) => string;
+export type LabelAccessor<T = PrimitiveValue> = (value: T) => string;
 /** @public */
 export type ShowAccessor = (value: PrimitiveValue) => boolean;
 

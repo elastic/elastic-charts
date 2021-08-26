@@ -8,7 +8,7 @@
 
 import { Line } from '../../../geoms/types';
 import { Scale } from '../../../scales';
-import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
+import { BBox, TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import {
   getPercentageValue,
   degToRad,
@@ -18,7 +18,7 @@ import {
   Rotation,
   VerticalAlignment,
 } from '../../../utils/common';
-import { Dimensions, getSimplePadding, Margins, Size } from '../../../utils/dimensions';
+import { Dimensions, innerPad, Margins, outerPad, Size } from '../../../utils/dimensions';
 import { Range } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
@@ -84,7 +84,7 @@ export function axisViewModel(
   xDomain: XDomain,
   yDomains: YDomain[],
   totalBarsInCluster: number,
-  bboxCalculator: BBoxCalculator,
+  textMeasure: TextMeasure,
   chartRotation: Rotation,
   { gridLine, tickLabel }: AxisStyle,
   fallBackTickFormatter: TickFormatter,
@@ -127,7 +127,7 @@ export function axisViewModel(
 
   if (tickLabel.visible) {
     for (const labelText of tickLabels) {
-      const bbox = bboxCalculator.compute(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
+      const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
       const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
       maxLabelBboxWidth = Math.max(maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
       maxLabelBboxHeight = Math.max(maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
@@ -337,7 +337,7 @@ export function getTickLabelProps(
 ): TickLabelProps {
   const { maxLabelBboxWidth, maxLabelTextWidth, maxLabelBboxHeight, maxLabelTextHeight } = tickDimensions;
   const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
-  const labelPadding = getSimplePadding(tickLabel.padding);
+  const labelInnerPadding = innerPad(tickLabel.padding);
   const isLeftAxis = position === Position.Left;
   const isAxisTop = position === Position.Top;
   const horizontalAlign = getHorizontalAlign(position, rotation, textAlignment?.horizontal);
@@ -348,7 +348,7 @@ export function getTickLabelProps(
   const textOffsetY = getVerticalTextOffset(maxLabelTextHeight, verticalAlign) + userOffsets.local.y;
 
   if (isVerticalAxis(position)) {
-    const x = isLeftAxis ? axisSize.width - tickDimension - labelPadding.inner : tickDimension + labelPadding.inner;
+    const x = isLeftAxis ? axisSize.width - tickDimension - labelInnerPadding : tickDimension + labelInnerPadding;
     const offsetX = (isLeftAxis ? -1 : 1) * (maxLabelBboxWidth / 2);
 
     return {
@@ -367,7 +367,7 @@ export function getTickLabelProps(
 
   return {
     x: tickPosition,
-    y: isAxisTop ? axisSize.height - tickDimension - labelPadding.inner : tickDimension + labelPadding.inner,
+    y: isAxisTop ? axisSize.height - tickDimension - labelInnerPadding : tickDimension + labelInnerPadding,
     offsetX: userOffsets.global.x,
     offsetY: offsetY + userOffsets.global.y,
     textOffsetX,
@@ -581,9 +581,7 @@ export function getTitleDimension({
   fontSize,
   padding,
 }: AxisStyle['axisTitle'] | AxisStyle['axisPanelTitle']): number {
-  if (!visible || fontSize <= 0) return 0;
-  const { inner, outer } = getSimplePadding(padding);
-  return inner + fontSize + outer;
+  return visible && fontSize > 0 ? innerPad(padding) + fontSize + outerPad(padding) : 0;
 }
 
 /** @internal */
@@ -700,10 +698,9 @@ export function getAxesGeometries(
       }
 
       const { tickLine, tickLabel, axisTitle, axisPanelTitle } = axesStyles.get(axisId) ?? sharedAxesStyle;
-      const labelPadding = getSimplePadding(tickLabel.padding);
       const showTicks = shouldShowTicks(tickLine, axisSpec.hide);
       const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
-      const labelPaddingSum = tickLabel.visible ? labelPadding.inner + labelPadding.outer : 0;
+      const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
 
       const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getAxisPosition(
         chartDimensions,

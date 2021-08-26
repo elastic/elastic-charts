@@ -148,6 +148,7 @@ export function renderXYChartCanvas2d(
           renderDebugRect(
             ctx,
             { x: left, y: top, width, height },
+            0,
             { color: Colors.Transparent.rgbaChannels },
             { color: Colors.Red.rgbaChannels, width: 4, dash: [4, 4] },
           );
