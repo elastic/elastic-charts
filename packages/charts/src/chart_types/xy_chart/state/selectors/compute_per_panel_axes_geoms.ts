@@ -58,7 +58,7 @@ export const computePerPanelAxesGeomsSelector = createCustomCachedSelector(
         const usePanelTitle = isVertical ? hasSMDomain(vertical) : hasSMDomain(horizontal);
         const panelTitle = usePanelTitle ? getPanelTitle(isVertical, v, h, groupBySpec) : undefined;
         const secondary = !isPrimaryColumn(position, h) && !isPrimaryRow(position, v);
-
+        debugger;
         return {
           ...geom,
           axis: {

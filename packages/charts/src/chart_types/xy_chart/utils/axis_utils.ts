@@ -566,7 +566,7 @@ export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDi
       if (showOverlappingTicks || showOverlappingLabels) {
         const overlappingTick = {
           ...allTicks[i],
-          label: showOverlappingLabels ? allTicks[i].label : '',
+          label: 1 || showOverlappingLabels ? allTicks[i].label : '',
         };
         visibleTicks.push(overlappingTick);
       }
