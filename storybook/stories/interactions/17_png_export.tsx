@@ -21,6 +21,7 @@ import {
   Datum,
   Goal,
   ChartType,
+  Color,
 } from '@elastic/charts';
 import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
@@ -28,7 +29,6 @@ import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/c
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { Color } from '../../../packages/charts/src/common/color';
 import { useBaseTheme } from '../../use_base_theme';
 import { SB_KNOBS_PANEL } from '../utils/storybook';
 import { productLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
