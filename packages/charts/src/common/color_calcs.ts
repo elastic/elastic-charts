@@ -100,6 +100,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
   // determine the lightness factor of the background color to determine whether to lighten or darken the foreground
   const lightness = chroma(background).get('hsl.l');
   let highContrastTextColor = foreground;
+  const originalhighContrastTextColor = foreground;
   const isBackgroundDark = colorIsDark(background);
   // determine whether white or black text is ideal contrast vs a grey that just passes the ratio
   if (isBackgroundDark && chroma.deltaE('black', foreground) === 0) {
@@ -117,9 +118,14 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
     const scaledOldContrast = Math.round(contrast * precision) / precision;
     contrast = getContrast(highContrastTextColor, background);
     const scaledContrast = Math.round(contrast * precision) / precision;
-    // catch if the ideal contrast may not be possible
+    // catch if the ideal contrast may not be possible, switch to the other extreme color contrast
     if (scaledOldContrast === scaledContrast) {
-      break;
+      const contrastColor =
+        originalhighContrastTextColor === 'rgba(255, 255, 255, 1)' || originalhighContrastTextColor === '#fff'
+          ? '#000'
+          : '#fff';
+      // make sure the new text color hits the ratio, if not, then return the scaledContrast since we tried earlier
+      return getContrast(contrastColor, background) > ratio ? contrastColor : scaledContrast.toString();
     }
   }
   return highContrastTextColor.toString();
