@@ -93,6 +93,7 @@ export const config: Config = {
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',
       textColor: 'black',
+      textContrast: false,
       fontVariant: 'normal',
       fontWeight: 'normal',
       textOpacity: 1,

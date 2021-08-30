@@ -78,6 +78,11 @@ export function renderCanvas2d(
                 { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 },
                 cell.formatted,
                 config.cell.label,
+                0,
+                0,
+                0,
+                1,
+                cell.fill.color,
               );
           });
         }),

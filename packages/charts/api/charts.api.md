@@ -957,6 +957,7 @@ export interface HeatmapConfig {
             align: TextAlign;
             baseline: TextBaseline;
             visible: boolean;
+            textContrast: boolean | number;
         };
         border: {
             strokeWidth: Pixels;
