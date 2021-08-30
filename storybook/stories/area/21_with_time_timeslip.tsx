@@ -74,6 +74,7 @@ export const Example = () => (
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
+      yNice
       areaSeriesStyle={{
         area: { fill: 'rgba(96, 146, 192, 1)', opacity: 0.3 },
         line: { stroke: 'rgba(96, 146, 192, 1)', opacity: 1 },
