@@ -17,7 +17,7 @@ import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const data = BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960);
-  const textContrast = select('set the textContrast parameter in the config', [true, 5, false], false);
+  const textContrast = select('set the textContrast parameter in the config', [true, 5, false], true);
 
   return (
     <Chart>
