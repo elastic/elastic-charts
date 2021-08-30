@@ -50,7 +50,7 @@ export const Example = () => (
         axisTitle: { visible: true },
       }}
       labelFormat={(d) => {
-        return `${new Intl.DateTimeFormat('en-GB', { timeStyle: 'long' }).format(d)}    `;
+        return `${new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(d)}    `;
       }}
     />
     <Axis
