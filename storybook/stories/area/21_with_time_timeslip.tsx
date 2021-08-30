@@ -50,7 +50,7 @@ export const Example = () => (
         axisTitle: { visible: true },
       }}
       labelFormat={(d) => {
-        return new Intl.DateTimeFormat('en-GB', { timeStyle: 'long' }).format(d);
+        return `${new Intl.DateTimeFormat('en-GB', { timeStyle: 'long' }).format(d)}    `;
       }}
     />
     <Axis
@@ -61,7 +61,7 @@ export const Example = () => (
       ticks={4}
       gridLine={minorGridStyle}
       style={{
-        tickLine: { ...gridStyle, strokeWidth: 0.2, size: 8 },
+        tickLine: { ...gridStyle, strokeWidth: 0.2, size: 8, padding: 8 },
         axisLine: { ...gridStyle, visible: false },
         tickLabel: { ...tickLabelStyle },
         axisTitle: { visible: true },
