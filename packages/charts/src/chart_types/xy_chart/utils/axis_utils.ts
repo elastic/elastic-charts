@@ -28,7 +28,7 @@ import { XDomain, YDomain } from '../domains/types';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { getSpecsById } from '../state/utils/spec';
-import { isVerticalAxis } from './axis_type_utils';
+import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { getPanelSize, hasSMDomain } from './panel';
 import { computeXScale, computeYScales } from './scales';
 import { AxisSpec, TickFormatter, TickFormatterOptions } from './specs';
@@ -344,7 +344,10 @@ export function getTickLabelProps(
   const verticalAlign = getVerticalAlign(position, rotation, textAlignment?.vertical);
 
   const userOffsets = getUserTextOffsets(tickDimensions, textOffset);
-  const textOffsetX = getHorizontalTextOffset(maxLabelTextWidth, horizontalAlign) + userOffsets.local.x;
+  // getHorizontalTextOffset needs to be used for vertical axis labels, and vertical labels of horizontal axes
+  const textOffsetX =
+    (isHorizontalAxis(position) && rotation === 0 ? 0 : getHorizontalTextOffset(maxLabelTextWidth, horizontalAlign)) +
+    userOffsets.local.x;
   const textOffsetY = getVerticalTextOffset(maxLabelTextHeight, verticalAlign) + userOffsets.local.y;
 
   if (isVerticalAxis(position)) {
