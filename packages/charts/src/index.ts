@@ -18,7 +18,7 @@ export { DebugState } from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';
 export { ContinuousDomain, OrdinalDomain } from './utils/domain';
-export { SimplePadding, Padding } from './utils/dimensions';
+export { Margins, SimplePadding, Padding, PerSideDistance } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
 export { SeriesIdentifier, SeriesKey } from './common/series_id';
 export { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
@@ -34,6 +34,8 @@ export {
   Config as PartitionConfig,
   FillLabelConfig as PartitionFillLabel,
   PartitionLayout,
+  AnimKeyframe,
+  EasingFunction,
 } from './chart_types/partition_chart/layout/types/config_types';
 export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
 export * from './chart_types/goal_chart/specs/index';
@@ -91,7 +93,7 @@ export { DataGenerator } from './utils/data_generators/data_generator';
 export * from './utils/themes/merge_utils';
 export { MODEL_KEY } from './chart_types/partition_chart/layout/config';
 export { LegendStrategy } from './chart_types/partition_chart/layout/utils/highlighted_geoms';
-export { Ratio } from './common/geometry';
+export { Ratio, TimeMs } from './common/geometry';
 export { AdditiveNumber } from './utils/accessor';
 export { FontStyle, FONT_STYLES } from './common/text_utils';
 export { Color } from './common/color';
