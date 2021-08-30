@@ -2745,17 +2745,17 @@
     utility-types "^3.10.0"
     uuid "^3.3.2"
 
-"@elastic/datemath@^5.0.2", "@elastic/datemath@^5.0.3":
+"@elastic/datemath@^5.0.3":
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/@elastic/datemath/-/datemath-5.0.3.tgz#7baccdab672b9a3ecb7fe8387580670936b58573"
   integrity sha512-8Hbr1Uyjm5OcYBfEB60K7sCP6U3IXuWDaLaQmYv3UxgI4jqBWbakoemwWvsqPVUvnwEjuX6z7ghPZbefs8xiaA==
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^34.6.0":
-  version "34.6.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-34.6.0.tgz#a7188bc97d9c3120cd65e52ed423377872b604bd"
-  integrity sha512-uVMSX0jPJU3LLwD4TRHllyJeTr+Uihh+R5qsFSAzKrCCRZjSfKMmMHKffWhzFyYjG97npdWlMvneXG5q0yobCw==
+"@elastic/eui@^37.5.0":
+  version "37.5.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-37.5.0.tgz#b70f929fe7b4272857543d9ff9f1005e5ba3fa35"
+  integrity sha512-VNwqlBQyV5jDKRUMN6ax+kflx68GwpPFYzkcSox0BzneAmj/dxpd1y4D0ePofdaKWSx3znzqotNb6fh4+cYqrA==
   dependencies:
     "@types/chroma-js" "^2.0.0"
     "@types/lodash" "^4.14.160"
@@ -2792,7 +2792,7 @@
     text-diff "^1.0.1"
     unified "^9.2.0"
     unist-util-visit "^2.0.3"
-    url-parse "^1.5.0"
+    url-parse "^1.5.3"
     uuid "^8.3.0"
     vfile "^4.2.0"
 
@@ -10955,8 +10955,7 @@ eslint-module-utils@^2.6.0:
     pkg-dir "^2.0.0"
 
 "eslint-plugin-elastic-charts@link:./packages/eslint-plugin-elastic-charts":
-  version "0.0.0"
-  uid ""
+  version "1.0.0"
 
 eslint-plugin-eslint-comments@^3.2.0:
   version "3.2.0"
@@ -15367,8 +15366,13 @@ lines-and-columns@^1.1.6:
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
 "link-kibana@link:./packages/link_kibana":
-  version "0.0.0"
-  uid ""
+  version "1.0.0"
+  dependencies:
+    chalk "^4.1.1"
+    change-case "^4.1.2"
+    glob "^7.1.7"
+    inquirer "^8.0.0"
+    ora "^5.4.0"
 
 lint-staged@^10.5.3:
   version "10.5.3"
@@ -22757,7 +22761,7 @@ url-parse-lax@^1.0.0:
   dependencies:
     prepend-http "^1.0.1"
 
-url-parse@^1.4.3, url-parse@^1.5.0, url-parse@^1.5.1:
+url-parse@^1.4.3, url-parse@^1.5.1, url-parse@^1.5.3:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.5.3.tgz#71c1303d38fb6639ade183c2992c8cc0686df862"
   integrity sha512-IIORyIQD9rvj0A4CLWsHkBBJuNqWpFQe224b6j9t/ABmquIS0qDU2pY6kl6AuOrL5OkCXHMCFNe1jBcuAggjvQ==
