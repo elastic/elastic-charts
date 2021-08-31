@@ -61,7 +61,9 @@ export const Example = () => {
         })}
         labelFormat={(d) => {
           const chartWidth = document.querySelector('.echContainer')?.getBoundingClientRect().width ?? 0;
-          return `${new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(d)}    `;
+          return `${new Intl.DateTimeFormat('en-US', { timeStyle: chartWidth < 500 ? 'short' : 'long' }).format(
+            d,
+          )}    `;
         }}
       />
       <Axis
