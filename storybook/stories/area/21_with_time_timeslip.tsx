@@ -39,13 +39,6 @@ const xAxisStyle = {
 const data = KIBANA_METRICS.metrics.kibana_os_load[0].data;
 const t0 = data[0][0];
 
-const midAxisLabelFormatter = (d: any) => {
-  return `${new Intl.DateTimeFormat('en-US', { hour: 'numeric' }).format(d).padStart(2, '0')}  `;
-};
-const bottomAxisLabelFormatter = (d: any) => {
-  return `${new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(d)}  `;
-};
-
 export const Example = () => {
   const whiskers = boolean('X axis whiskers', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
@@ -54,6 +47,18 @@ export const Example = () => {
     return `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { minute: 'numeric' })
       .format(d)
       .padStart(2, '0')}′  `;
+  };
+  const midAxisLabelFormatter = (d: any) => {
+    return `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { hour: 'numeric' })
+      .format(d)
+      .padStart(2, '0')}  `;
+  };
+  const bottomAxisLabelFormatter = (d: any) => {
+    return `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }).format(d)}  `;
   };
   const yAxisTitle = 'CPU utilization';
   return (
