@@ -65,7 +65,7 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
         }
         const elementClickFired = tryFiringOnElementClick(indexedGeometries, onElementClick);
         if (!elementClickFired && onAnnotationClick && tooltipStates) {
-          tryFiringOnAnnotationClick(tooltipStates, onAnnotationClick);
+          tryFiringOnAnnotationClick(tooltipStates, onAnnotationClick, indexedGeometries);
         } else if (!elementClickFired) {
           tryFiringOnProjectionClick(values, onProjectionClick);
         }
@@ -104,7 +104,9 @@ function tryFiringOnProjectionClick(
 function tryFiringOnAnnotationClick(
   annotationState: AnnotationTooltipState[],
   onAnnotationClick: SettingsSpec['onAnnotationClick'],
+  indexedGeometries: IndexedGeometry[],
 ): boolean {
+  if (indexedGeometries.length > 0) return false;
   if (annotationState && onAnnotationClick) {
     const rects: { id: string; datum: RectAnnotationDatum }[] = [];
     const lines: { id: string; datum: LineAnnotationDatum }[] = [];
