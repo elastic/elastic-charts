@@ -13,7 +13,7 @@ import React from 'react';
 
 import {
   Axis,
-  BarSeries,
+  LineSeries,
   Chart,
   RectAnnotation,
   ScaleType,
@@ -28,10 +28,11 @@ import { useBaseTheme } from '../../../use_base_theme';
 
 export const Example = () => {
   const onAnnotationClick = action('onAnnotationClick');
+  const onElementClick = action('onElementClick');
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} onAnnotationClick={onAnnotationClick} />
+      <Settings baseTheme={useBaseTheme()} onAnnotationClick={onAnnotationClick} onElementClick={onElementClick} />
       <RectAnnotation
         id="rect1"
         dataValues={[
@@ -52,7 +53,7 @@ export const Example = () => {
         dataValues={[
           {
             coordinates: {
-              x0: 1,
+              x0: 0.8,
               x1: 2,
               y0: 1,
               y1: 5,
@@ -71,7 +72,7 @@ export const Example = () => {
       />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
       <Axis id="left" title="y-domain axis" position={Position.Left} />
-      <BarSeries
+      <LineSeries
         id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
@@ -80,6 +81,7 @@ export const Example = () => {
         data={[
           { x: 0, y: 2 },
           { x: 1, y: 3 },
+          { x: 1.5, y: 4 },
           { x: 3, y: 6 },
         ]}
       />

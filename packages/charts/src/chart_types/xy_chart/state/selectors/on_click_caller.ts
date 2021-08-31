@@ -107,7 +107,7 @@ function tryFiringOnAnnotationClick(
   indexedGeometries: IndexedGeometry[],
 ): boolean {
   if (indexedGeometries.length > 0) return false;
-  if (annotationState && onAnnotationClick) {
+  if (annotationState.length > 0 && onAnnotationClick) {
     const rects: { id: string; datum: RectAnnotationDatum }[] = [];
     const lines: { id: string; datum: LineAnnotationDatum }[] = [];
     annotationState.forEach((annotation) => {
