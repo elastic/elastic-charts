@@ -40,7 +40,9 @@ const data = KIBANA_METRICS.metrics.kibana_os_load[0].data;
 const t0 = data[0][0];
 
 export const Example = () => {
-  const whiskers = boolean('X axis whiskers', true);
+  const whiskers = boolean('X axis minor whiskers', true);
+  const shortWhiskers = boolean('Shorter X axis minor whiskers', true);
+  const minorGridLines = boolean('Minor grid lines', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
   const topAxisLabelFormat = (d: any) => {
     // const chartWidth = document.querySelector('.echContainer')?.getBoundingClientRect().width ?? 0;
@@ -87,26 +89,26 @@ export const Example = () => {
         })}
       />
       <Axis
-        id="bottom"
+        id="x_minor"
         position={Position.Bottom}
         showOverlappingTicks={false}
         tickFormat={topAxisLabelFormat}
         ticks={100}
-        showGridLines
+        showGridLines={minorGridLines}
         gridLine={mergePartial(gridStyle, { strokeWidth: 0.1 })}
         style={mergePartial(
           xAxisStyle,
           whiskers
             ? {
                 axisLine: { stroke: dataInk, strokeWidth: 1, visible: true },
-                tickLine: { size: 16, padding: -10, ...minorGridStyle },
+                tickLine: { size: shortWhiskers ? 6 : 16, padding: shortWhiskers ? 0 : -10, ...minorGridStyle },
               }
             : { tickLine: { padding: 6 } },
         )}
         labelFormat={topAxisLabelFormat}
       />
       <Axis
-        id="bottom2"
+        id="x_major"
         title="timestamp per 1 minute"
         position={Position.Bottom}
         showOverlappingTicks={false}
@@ -125,7 +127,7 @@ export const Example = () => {
         labelFormat={midAxisLabelFormatter}
       />
       <Axis
-        id="bottom3"
+        id="x_context"
         title="time (1-minute measurements)"
         position={Position.Bottom}
         showOverlappingTicks={false}
