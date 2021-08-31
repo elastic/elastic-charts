@@ -15,10 +15,10 @@ export default {
   },
 };
 
-export { Example as timezoneConfiguration } from './1_different_timezones';
-export { Example as tooltipInLocalTimezone } from './2_local_tooltip';
-export { Example as tooltipInUTC } from './3_utc_tooltip';
-export { Example as specifiedTimezone } from './4_specified_timezone';
-export { Example as removeDuplicateAxis } from './5_remove_duplicates';
-export { Example as xScaleFallback } from './6_x_scale_fallback';
-export { Example as logScaleOptions } from './7_log_scale_options';
+export { Example as timezoneConfiguration } from './1_different_timezones.story';
+export { Example as tooltipInLocalTimezone } from './2_local_tooltip.story';
+export { Example as tooltipInUTC } from './3_utc_tooltip.story';
+export { Example as specifiedTimezone } from './4_specified_timezone.story';
+export { Example as removeDuplicateAxis } from './5_remove_duplicates.story';
+export { Example as xScaleFallback } from './6_x_scale_fallback.story';
+export { Example as logScaleOptions } from './7_log_scale_options.story';

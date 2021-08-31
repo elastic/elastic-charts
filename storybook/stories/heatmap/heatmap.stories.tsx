@@ -15,6 +15,6 @@ export default {
   },
 };
 
-export { Example as basic } from './1_basic';
-export { Example as time } from './3_time';
-export { Example as categorical } from './2_categorical';
+export { Example as basic } from './1_basic.story';
+export { Example as time } from './3_time.story';
+export { Example as categorical } from './2_categorical.story';

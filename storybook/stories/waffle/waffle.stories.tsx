@@ -15,4 +15,4 @@ export default {
   },
 };
 
-export { Example as simple } from './1_simple';
+export { Example as simple } from './1_simple.story';

@@ -15,5 +15,5 @@ export default {
   },
 };
 
-export { Example as basic } from './1_basic';
-export { Example as debugState } from './2_debug_state';
+export { Example as basic } from './1_basic.story';
+export { Example as debugState } from './2_debug_state.story';

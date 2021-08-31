@@ -15,4 +15,4 @@ export default {
   },
 };
 
-export { Example as simpleWordcloud } from './1_wordcloud';
+export { Example as simpleWordcloud } from './1_wordcloud.story';

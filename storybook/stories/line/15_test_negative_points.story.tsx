@@ -26,9 +26,11 @@ export const Example = () => {
   );
   const start = moment(1628547917775);
   const data = new Array(12).fill(0).map((_, i) => {
+    // https://github.com/storybookjs/storybook/issues/12208#issuecomment-697044557
+    const months = 1; // do not simplify
     return {
       y: i === 10 ? (negative ? -1 : 1) : 0,
-      x: start.add(1, 'm').valueOf(),
+      x: start.add(months, 'm').valueOf(),
     };
   });
   return (
