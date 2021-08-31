@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_KNOBS_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Small Multiples (@alpha)',
-  parameters: {
-    options: { selectedPanel: SB_KNOBS_PANEL },
-  },
 };
 
 export { Example as verticalAreas } from './2_vertical_areas.story';

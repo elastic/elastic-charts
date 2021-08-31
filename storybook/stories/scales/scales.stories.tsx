@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_KNOBS_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Scales',
-  parameters: {
-    options: { selectedPanel: SB_KNOBS_PANEL },
-  },
 };
 
 export { Example as timezoneConfiguration } from './1_different_timezones.story';

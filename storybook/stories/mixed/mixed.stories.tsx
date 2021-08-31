@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_SOURCE_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Mixed Charts',
-  parameters: {
-    options: { selectedPanel: SB_SOURCE_PANEL },
-  },
 };
 
 export { Example as barsAndLines } from './1_bars_and_lines.story';

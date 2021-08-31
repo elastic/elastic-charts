@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_SOURCE_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Mosaic (@alpha)',
-  parameters: {
-    options: { selectedPanel: SB_SOURCE_PANEL },
-  },
 };
 
 export { Example as simpleMosaic } from './10_mosaic_simple.story';

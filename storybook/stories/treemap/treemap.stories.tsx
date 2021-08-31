@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_SOURCE_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Treemap',
-  parameters: {
-    options: { selectedPanel: SB_SOURCE_PANEL },
-  },
 };
 
 export { Example as oneLayer } from './1_one_layer.story';

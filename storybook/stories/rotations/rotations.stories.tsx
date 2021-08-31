@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_SOURCE_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Rotations',
-  parameters: {
-    options: { selectedPanel: SB_SOURCE_PANEL },
-  },
 };
 
 export { Example as withOrdinalAxis } from './1_ordinal.story';

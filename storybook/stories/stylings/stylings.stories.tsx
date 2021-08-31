@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_KNOBS_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Stylings',
-  parameters: {
-    options: { selectedPanel: SB_KNOBS_PANEL },
-  },
 };
 
 export { Example as chartSize } from './1_chart_size.story';

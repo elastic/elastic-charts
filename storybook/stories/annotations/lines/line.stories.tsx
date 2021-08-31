@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_KNOBS_PANEL } from '../../utils/storybook';
-
 export default {
   title: 'Annotations/Lines',
-  parameters: {
-    options: { selectedPanel: SB_KNOBS_PANEL },
-  },
 };
 
 export { Example as xContinuousDomain } from './1_x_continuous.story';

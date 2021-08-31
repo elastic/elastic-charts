@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_KNOBS_PANEL } from '../../utils/storybook';
-
 export default {
   title: 'Annotations/Rects',
-  parameters: {
-    options: { selectedPanel: SB_KNOBS_PANEL },
-  },
 };
 
 export { Example as linearBarChart } from './1_linear_bar_chart.story';

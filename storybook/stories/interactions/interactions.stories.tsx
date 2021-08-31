@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_ACTION_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Interactions',
-  parameters: {
-    options: { selectedPanel: SB_ACTION_PANEL },
-  },
 };
 
 export { Example as barClicksAndHovers } from './1_bar_clicks.story';
