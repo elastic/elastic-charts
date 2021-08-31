@@ -1316,7 +1316,7 @@ describe('Clickable annotations', () => {
       },
     ]);
   });
-  test('click line marker annotation', () => {
+  test.skip('click line marker annotation', () => {
     const store = MockStore.default({ width: 500, height: 500, top: 0, left: 0 }, 'chartId');
     const onAnnotationClick = jest.fn<void, any[]>((data: any): void => data);
     const onAnnotationClickCaller = createOnClickCaller();

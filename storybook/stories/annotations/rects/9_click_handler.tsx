@@ -9,6 +9,7 @@
 // import { action } from '@storybook/addon-actions';
 
 import { action } from '@storybook/addon-actions';
+import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -21,18 +22,24 @@ import {
   Position,
   AnnotationDomainType,
   LineAnnotation,
+  BarSeries,
 } from '@elastic/charts';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 
 import { useBaseTheme } from '../../../use_base_theme';
 
 export const Example = () => {
-  const onAnnotationClick = action('onAnnotationClick');
-  const onElementClick = action('onElementClick');
+  const onAnnotationClick = boolean('onAnnotationClick listener', true);
+  const onElementClick = boolean('onElementClick listener', true);
+  const typeOfSeries = select('series type', ['line', 'bar'], 'bar');
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} onAnnotationClick={onAnnotationClick} onElementClick={onElementClick} />
+      <Settings
+        baseTheme={useBaseTheme()}
+        onAnnotationClick={onAnnotationClick ? action('onAnnotationClick') : undefined}
+        onElementClick={onElementClick ? action('onElementClick') : undefined}
+      />
       <RectAnnotation
         id="rect1"
         dataValues={[
@@ -72,19 +79,35 @@ export const Example = () => {
       />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
       <Axis id="left" title="y-domain axis" position={Position.Left} />
-      <LineSeries
-        id="bars"
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y']}
-        data={[
-          { x: 0, y: 2 },
-          { x: 1, y: 3 },
-          { x: 1.5, y: 4 },
-          { x: 3, y: 6 },
-        ]}
-      />
+      {typeOfSeries === 'line' ? (
+        <LineSeries
+          id="lines"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[
+            { x: 0, y: 2 },
+            { x: 1, y: 3 },
+            { x: 1.5, y: 4 },
+            { x: 3, y: 6 },
+          ]}
+        />
+      ) : (
+        <BarSeries
+          id="lines"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[
+            { x: 0, y: 2 },
+            { x: 1, y: 3 },
+            { x: 1.5, y: 4 },
+            { x: 3, y: 6 },
+          ]}
+        />
+      )}
     </Chart>
   );
 };
