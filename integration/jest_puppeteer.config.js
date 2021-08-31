@@ -13,7 +13,7 @@ const { debug, port, isLocalVRTServer, isLegacyVRTServer } = require('./config')
 const baseConfig = debug ? {} : getConfig();
 
 const defaultViewport = {
-  width: 800,
+  width: 785,
   height: 600,
 };
 const sharedConfig = {
@@ -42,6 +42,7 @@ const customConfig = {
         // https://github.com/gidztech/jest-puppeteer-docker/issues/24
         chromiumFlags: [], // for docker chromium options
         connect: {
+          ...baseConfig.connect,
           ...sharedConfig,
         },
       }),
@@ -66,7 +67,6 @@ const customConfig = {
         }),
         debug: true,
       },
-  ...baseConfig,
 };
 
 module.exports = customConfig;
