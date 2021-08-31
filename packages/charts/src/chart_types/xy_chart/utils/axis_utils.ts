@@ -10,8 +10,8 @@ import { Line } from '../../../geoms/types';
 import { Scale } from '../../../scales';
 import { BBox, TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import {
-  getPercentageValue,
   degToRad,
+  getPercentageValue,
   getUniqueValues,
   HorizontalAlignment,
   Position,
@@ -529,18 +529,13 @@ export function enableDuplicatedTicks(
   fallBackTickFormatter: TickFormatter,
   tickFormatOptions?: TickFormatterOptions,
 ): AxisTick[] {
-  const ticks = scale.ticks();
-  const allTicks: AxisTick[] = ticks.map((tick) => ({
+  const allTicks: AxisTick[] = scale.ticks().map((tick) => ({
     value: tick,
     // TODO handle empty string tick formatting
     label: (axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
     position: (scale.scale(tick) ?? 0) + offset,
   }));
-
-  if (axisSpec.showDuplicatedTicks === true) {
-    return allTicks;
-  }
-  return getUniqueValues(allTicks, 'label', true);
+  return axisSpec.showDuplicatedTicks ? allTicks : getUniqueValues(allTicks, 'label', true);
 }
 
 /** @internal */
