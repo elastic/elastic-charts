@@ -27,15 +27,14 @@ import { BARCHART_1Y1G } from '@elastic/charts/src/utils/data_samples/test_datas
 import { useBaseTheme } from '../../use_base_theme';
 
 const onChangeAction = action('onChange');
-const onCloseAction = action('onClose');
 
 export const Example = () => {
   const [colors, setColors] = useState<Record<SeriesKey, Color | null>>({});
+
   const CustomColorPicker: LegendColorPicker = useMemo(
     () => ({ anchor, color, onClose, seriesIdentifiers, onChange }) => {
       const handleClose = () => {
         onClose();
-        onCloseAction();
         setColors((prevColors) => ({
           ...prevColors,
           ...toEntries(seriesIdentifiers, 'key', color),
@@ -52,7 +51,7 @@ export const Example = () => {
 
       return (
         <>
-          <EuiWrappingPopover isOpen button={anchor} closePopover={handleClose} anchorPosition="leftCenter" ownFocus>
+          <EuiWrappingPopover isOpen button={anchor} closePopover={handleClose} anchorPosition="leftCenter">
             <EuiColorPicker display="inline" color={color} onChange={handleChange} />
             <EuiSpacer size="m" />
             <EuiFlexItem grow={false}>
