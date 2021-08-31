@@ -48,26 +48,37 @@ const bottomAxisLabelFormatter = (d: any) => {
 
 export const Example = () => {
   const whiskers = boolean('X axis whiskers', true);
+  const horizontalAxisTitle = boolean('Horizontal axis title', false);
   const topAxisLabelFormat = (d: any) => {
     // const chartWidth = document.querySelector('.echContainer')?.getBoundingClientRect().width ?? 0;
     return `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { minute: 'numeric' })
       .format(d)
       .padStart(2, '0')}′  `;
   };
+  const yAxisTitle = 'CPU utilization';
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
       <Axis
-        id="top"
+        id="title"
         title="CPU % of Bootstrap"
         position={Position.Top}
-        tickFormat={() => ''}
+        tickFormat={() => (horizontalAxisTitle ? yAxisTitle : '')}
         ticks={0}
         showGridLines
         gridLine={gridStyle}
         style={mergePartial(xAxisStyle, {
           axisTitle: { visible: true, fontFamily, fontSize: 24, fill: 'grey' },
-          tickLabel: { padding: 4 },
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          tickLabel: horizontalAxisTitle
+            ? {
+                fill: 'rgb(64,64,64)',
+                fontSize: axisTitleFontSize,
+                padding: 20,
+                alignment: { horizontal: 'center', vertical: Position.Bottom },
+              }
+            : {},
         })}
       />
       <Axis
@@ -119,13 +130,13 @@ export const Example = () => {
         showGridLines
         gridLine={gridStyle}
         style={mergePartial(xAxisStyle, {
-          axisTitle: { visible: true, fontFamily },
+          axisTitle: { visible: !horizontalAxisTitle, fontFamily },
         })}
         labelFormat={bottomAxisLabelFormatter}
       />
       <Axis
         id="left"
-        title="CPU utilization"
+        title={yAxisTitle}
         position={Position.Left}
         showGridLines
         ticks={4}
@@ -134,7 +145,7 @@ export const Example = () => {
           tickLine: { ...gridStyle, strokeWidth: 0.2, size: 8, padding: 8 },
           axisLine: { ...gridStyle, visible: false },
           tickLabel: { ...tickLabelStyle },
-          axisTitle: { visible: true, fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },
+          axisTitle: { visible: !horizontalAxisTitle, fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },
         }}
         tickFormat={(d) => `${Number(d).toFixed(0)}%`}
       />
