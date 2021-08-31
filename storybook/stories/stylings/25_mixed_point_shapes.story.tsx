@@ -21,8 +21,6 @@ import {
   PointShape,
 } from '@elastic/charts';
 
-import { SB_KNOBS_PANEL } from '../utils/storybook';
-
 export const Example = () => {
   const shapeKnobArea = select(
     'area series marker shape',
@@ -111,8 +109,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
 };

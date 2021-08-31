@@ -31,7 +31,6 @@ import {
 import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const getRandomNumber = getRandomNumberGenerator();
 const dg = new SeededDataGenerator();
@@ -216,7 +215,6 @@ export const Example = () => {
   );
 };
 Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
   markdown: `If your data is in UTC timezone, your tooltip and axis labels can be configured
       to visualize the time translated to your local timezone. You should be able to see the
       first value on \`2019-01-01  01:00:00.000 \``,

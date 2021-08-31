@@ -29,7 +29,6 @@ import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getTooltipTypeKnob, getPlacementKnob } from '../utils/knobs';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const chartTypes: Record<string, any> = {
   bar: BarSeries,
@@ -165,5 +164,4 @@ export const Example = () => {
 
 Example.parameters = {
   markdown: 'Sends an event every time the cursor changes. This is provided to sync cursors between multiple charts.',
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

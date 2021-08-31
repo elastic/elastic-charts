@@ -21,7 +21,6 @@ import {
   getStickToKnob,
   getTooltipTypeKnob,
 } from '../utils/knobs';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const CustomTooltip = () => (
   <div
@@ -76,9 +75,4 @@ export const Example = () => {
       </Chart>
     </div>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

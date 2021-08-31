@@ -23,7 +23,6 @@ import {
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const xAccessorFn: AccessorFn = (d) => d.x;
@@ -54,7 +53,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
   markdown: `An \`AccessorFn\` can be used as any accessor including: \`xAccessor\`, \`yAccessors\`, \`y0Accessors\` and \`splitSeriesAccessors\`.
 
 This enables serialization of complex values, without needing to transform raw data.

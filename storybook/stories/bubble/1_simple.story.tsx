@@ -14,7 +14,6 @@ import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType, 
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
 const data = dg.generateRandomSeries(100);
@@ -81,9 +80,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
 };

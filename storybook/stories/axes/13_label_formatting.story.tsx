@@ -14,7 +14,6 @@ import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } fro
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const tickFormatBottom = text('tickFormat bottom', '0.0000');
@@ -56,7 +55,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
   markdown: `You can apply different formatter between tick values in the tooltip and legend by using
       different values for \`tickFormat\` and \`labelFormat\`.
 

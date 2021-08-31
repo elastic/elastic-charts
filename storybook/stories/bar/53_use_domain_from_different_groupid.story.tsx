@@ -12,7 +12,6 @@ import React from 'react';
 import { Axis, BarSeries, Settings, Chart, Position, ScaleType, DEFAULT_GLOBAL_ID } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const data1 = [
@@ -85,9 +84,7 @@ export const Example = () => {
   );
 };
 
-// storybook configuration
 Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
   markdown: `You can specify a \`groupId\` in the \`useDefaultGroupDomain\` prop.
 This will allows you to match and merge the data domain of two different groups and reuse it on multiple series group.
       `,

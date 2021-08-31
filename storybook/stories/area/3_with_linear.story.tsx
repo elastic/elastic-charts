@@ -12,7 +12,6 @@ import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } fro
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const start = KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0];
@@ -39,9 +38,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

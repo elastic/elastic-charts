@@ -29,7 +29,6 @@ import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/a
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
 const numOfDays = 90;
@@ -142,7 +141,6 @@ export const Example = () => {
   );
 };
 Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
   markdown: `It is possible to add either a vertical and horizontal \`<GroupBy/>\` operations to create a grid of
 small multiples.
 The assignment of the series colors can be handled by defining an accessor in the \`color\` prop of the series that

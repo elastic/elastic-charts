@@ -13,7 +13,6 @@ import React from 'react';
 import { Axis, LineSeries, Chart, Position, ScaleType, Settings, Direction } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 /**
  * Data to defined consistent order of series when using shuffle
@@ -70,9 +69,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

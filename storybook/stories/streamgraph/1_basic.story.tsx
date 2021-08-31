@@ -13,7 +13,6 @@ import { AreaSeries, Chart, ScaleType, StackMode, Axis, Position, CurveType, Set
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const stackMode = select<StackMode>(
@@ -51,9 +50,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

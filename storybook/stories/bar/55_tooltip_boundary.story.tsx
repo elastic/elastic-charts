@@ -13,7 +13,6 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings, TooltipProps } f
 import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
 const rng = getRandomNumberGenerator();
@@ -90,8 +89,4 @@ export const Example = () => {
       </div>
     </div>
   );
-};
-
-Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
 };

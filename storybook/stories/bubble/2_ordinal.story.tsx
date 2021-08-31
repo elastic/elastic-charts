@@ -14,7 +14,6 @@ import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType }
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 const rng = getRandomNumberGenerator();
 const data = new Array(100).fill(0).map(() => ({
@@ -71,9 +70,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
 };

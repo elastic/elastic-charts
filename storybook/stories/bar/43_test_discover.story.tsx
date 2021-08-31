@@ -21,7 +21,6 @@ import {
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const TEST_DATASET_DISCOVER = {
   xAxisLabel: 'timestamp per 30 seconds',
@@ -70,9 +69,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

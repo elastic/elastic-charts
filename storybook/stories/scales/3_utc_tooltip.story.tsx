@@ -12,7 +12,6 @@ import React from 'react';
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const UTC_DATE = DateTime.fromISO('2019-01-01T00:00:00.000Z').toMillis();
 const DAY_INCREMENT_1 = 1000 * 60 * 60 * 24;
@@ -40,7 +39,6 @@ export const Example = () => (
 );
 
 Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
   markdown: `The default timezone is UTC. If you want to visualize data in UTC,
       but you are in a different timezone, remember to format the millis from \`tickFormat\`
       to UTC. In this Example be able to see the first value on \`2019-01-01  00:00:00.000 \``,

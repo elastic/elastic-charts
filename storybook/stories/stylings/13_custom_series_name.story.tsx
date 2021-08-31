@@ -12,7 +12,6 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings, SeriesNameFn } f
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const customSeriesNamingFn: SeriesNameFn = ({ yAccessor, splitAccessors }) => {
@@ -41,9 +40,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

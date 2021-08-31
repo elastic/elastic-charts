@@ -26,7 +26,6 @@ import { LogBase, LogScaleOptions } from '@elastic/charts/src/scales/scale_conti
 import { useBaseTheme } from '../../use_base_theme';
 import { logBaseMap, logFormatter } from '../utils/formatters';
 import { getKnobsFromEnum } from '../utils/knobs';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 type LogKnobs = LogScaleOptions &
   Pick<YDomainBase, 'fit' | 'padding'> & {
@@ -149,7 +148,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
   markdown: `With the \`domain.fit\` option enabled, Log scales will try to best fit the y axis data without setting a baseline to a hardcoded value, currently 1.
       If you provide a \`logMinLimit\` on the \`Axis.domain\` prop, the scale will be limited to that value.
       This is _not_ the same as min domain value, such that if all values are greater than \`logMinLimit\`,

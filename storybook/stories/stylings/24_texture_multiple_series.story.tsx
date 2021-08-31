@@ -14,7 +14,6 @@ import { getRandomNumberGenerator, SeededDataGenerator, getRandomEntryFn } from 
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
-import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 const group = {
   random: 'Randomized parameters',
@@ -153,9 +152,4 @@ export const Example = () => {
       ))}
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
 };

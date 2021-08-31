@@ -23,7 +23,6 @@ import {
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const dataTypes = {
@@ -204,9 +203,4 @@ export const Example = () => {
       )}
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
 };

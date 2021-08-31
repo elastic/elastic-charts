@@ -13,7 +13,6 @@ import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const dg = new SeededDataGenerator();
@@ -38,9 +37,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

@@ -12,7 +12,6 @@ import React from 'react';
 import { AreaSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const data = [
@@ -82,9 +81,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
 };

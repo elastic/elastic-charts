@@ -22,7 +22,6 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
-import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 
@@ -46,8 +45,3 @@ export const Example = () => (
     />
   </Chart>
 );
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
-};

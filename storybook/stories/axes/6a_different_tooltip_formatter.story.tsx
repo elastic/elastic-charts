@@ -13,7 +13,6 @@ import React from 'react';
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const showLegend = boolean('Show legend', true, 'Y axis');
@@ -86,8 +85,6 @@ export const Example = () => {
   );
 };
 
-// storybook configuration
 Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
   markdown: 'Using a single axis with different unit types is discouraged. ',
 };

@@ -29,7 +29,6 @@ import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_datas
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 // for testing purposes only
 export const Example = () => {
@@ -175,9 +174,4 @@ export const Example = () => {
       {otherSeries}
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

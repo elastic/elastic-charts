@@ -14,7 +14,6 @@ import { computeContinuousDataDomain } from '@elastic/charts/src/utils/domain';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const logDomains = (data: any[], customDomain: any) => {
   /* eslint-disable no-console */
@@ -100,8 +99,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

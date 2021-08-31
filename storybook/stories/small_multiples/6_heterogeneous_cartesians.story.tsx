@@ -29,7 +29,6 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
 const numOfDays = 7;
@@ -138,8 +137,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

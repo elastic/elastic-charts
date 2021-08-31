@@ -29,7 +29,6 @@ import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { ColorVariant } from '@elastic/charts/src/utils/common';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
 const numOfDays = 7;
@@ -140,7 +139,6 @@ export const Example = () => {
   );
 };
 Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
   markdown: `Similarly to the Vertical Areas example, the above chart shows an example of small multiples technique
 that splits our dataset into multiple sub-series horizontally positioned one aside the other.
 In this case, the \`<GroupBy />\` id is used to specify the horizontal split via the \`splitHorizontally\` prop.

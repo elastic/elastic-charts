@@ -12,7 +12,6 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, StackMode } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const stackedAsPercentage = boolean('stacked as percentage', true);
@@ -50,9 +49,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

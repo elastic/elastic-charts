@@ -12,7 +12,6 @@ import React from 'react';
 import { ScaleType, Position, Chart, Axis, GroupBy, SmallMultiples, Settings, BarSeries } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const data = [
   { x: 30, split: 'Cloudy', y: 9 },
@@ -86,7 +85,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

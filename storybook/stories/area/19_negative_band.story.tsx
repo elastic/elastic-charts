@@ -12,7 +12,6 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, Fit, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const scaleType = select(
@@ -67,8 +66,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

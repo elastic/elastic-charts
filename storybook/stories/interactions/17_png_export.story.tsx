@@ -30,7 +30,6 @@ import { Color } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_KNOBS_PANEL } from '../utils/storybook';
 import { productLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
 export const Example = () => {
@@ -161,9 +160,7 @@ function renderGoalchart() {
   );
 }
 
-// storybook configuration
 Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
   markdown:
     'Generate a PNG of the chart by clicking on the Export PNG button in the knobs section. In this Example, the button handler is setting the PNG background to white with a pixel ratio of 2. If the browser is detected to be IE11, msSaveBlob will be used instead of a PNG capture.',
 };

@@ -12,7 +12,6 @@ import React from 'react';
 import { Axis, BarSeries, Settings, Chart, Position, ScaleType } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const data1 = [
@@ -118,9 +117,7 @@ export const Example = () => {
   );
 };
 
-// storybook configuration
 Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
   markdown: `You can group together series specifying a \`groupId\` prop on the series.
 In the case of barchart, series with the same \`groupId\` will be grouped and eventually stacked together.
 

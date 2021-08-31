@@ -10,8 +10,6 @@ import React from 'react';
 
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType } from '@elastic/charts';
 
-import { SB_SOURCE_PANEL } from '../utils/storybook';
-
 const data = [
   {
     key: 0,
@@ -437,8 +435,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
 };

@@ -28,7 +28,6 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const dg = new SeededDataGenerator();
 const numOfDays = 60;
@@ -93,7 +92,6 @@ export const Example = () => {
   );
 };
 Example.parameters = {
-  options: { selectedPanel: SB_SOURCE_PANEL },
   markdown: `The above chart shows an example of small multiples technique that splits our dataset into multiple
       sub-series vertically positioned one below the other.
       The configuration is obtained by defining a \`<GroupBy />\` operation component that define the property used to

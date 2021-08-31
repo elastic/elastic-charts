@@ -14,7 +14,6 @@ import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings, Fit,
 import { getRandomNumberGenerator, getRNGSeed } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { SB_KNOBS_PANEL } from '../utils/storybook';
 
 export const Example = () => {
   const randomizeBoundingData = getRNGSeed() ? false : boolean('randomize bounding data', false);
@@ -223,9 +222,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-// storybook configuration
-Example.parameters = {
-  options: { selectedPanel: SB_KNOBS_PANEL },
 };
