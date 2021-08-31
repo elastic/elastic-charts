@@ -68,7 +68,7 @@ export const Example = () => {
       <Settings baseTheme={useBaseTheme()} />
       <Axis
         id="title"
-        title="CPU % of Bootstrap"
+        title="System Load: CPU"
         position={Position.Top}
         tickFormat={() => (horizontalAxisTitle ? yAxisTitle : '')}
         ticks={0}
@@ -149,7 +149,7 @@ export const Example = () => {
         ticks={4}
         gridLine={minorGridStyle}
         style={{
-          tickLine: { ...gridStyle, strokeWidth: 0.2, size: 8, padding: 8 },
+          tickLine: { ...gridStyle, strokeWidth: 0.2, size: 8, padding: 4 },
           axisLine: { ...gridStyle, visible: false },
           tickLabel: { ...tickLabelStyle },
           axisTitle: { visible: !horizontalAxisTitle, fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },
