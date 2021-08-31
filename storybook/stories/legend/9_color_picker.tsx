@@ -35,7 +35,6 @@ export const Example = () => {
     () => ({ anchor, color, onClose, seriesIdentifiers, onChange }) => {
       const handleClose = () => {
         onClose();
-        requestAnimationFrame(() => anchor.focus());
         setColors((prevColors) => ({
           ...prevColors,
           ...toEntries(seriesIdentifiers, 'key', color),

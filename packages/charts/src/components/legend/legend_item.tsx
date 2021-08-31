@@ -145,7 +145,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     const handleClose = () => {
       setPersistedColorAction(seriesKeys, this.shouldClearPersistedColor ? null : color);
       clearTemporaryColorsAction();
-      this.colorRef?.current?.focus();
+      requestAnimationFrame(() => this.colorRef?.current?.focus());
       this.toggleIsOpen();
     };
     const handleChange = (c: Color | null) => {
