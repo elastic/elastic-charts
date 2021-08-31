@@ -100,6 +100,10 @@ export const Example = () => {
         showGridLines
         gridLine={gridStyle}
         style={mergePartial(xAxisStyle, {
+          tickLabel: {
+            padding: 0,
+            offset: { x: 0, y: 0 },
+          },
           tickLine: { size: 0.0001, padding: -6, ...gridStyle },
         })}
         labelFormat={midAxisLabelFormatter}
