@@ -37,7 +37,7 @@ export const Example = () => (
     />
     <Axis
       id="bottom"
-      title="timestamp per 1 minute"
+      // title="timestamp per 1 minute"
       position={Position.Bottom}
       showOverlappingTicks={false}
       tickFormat={dateFormatter}
@@ -46,11 +46,68 @@ export const Example = () => (
       style={{
         tickLine: { size: 0.0001, padding: 6, ...gridStyle },
         axisLine: { stroke: 'magenta', strokeWidth: 10, visible: false },
-        tickLabel: { ...tickLabelStyle, alignment: { horizontal: Position.Left, vertical: Position.Bottom } },
-        axisTitle: { visible: true },
+        tickLabel: {
+          ...tickLabelStyle,
+          alignment: { horizontal: Position.Left, vertical: Position.Bottom },
+          padding: 0,
+          offset: { x: 0, y: 0 },
+        },
+        axisTitle: { visible: false },
       }}
       labelFormat={(d) => {
         return `${new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(d)}    `;
+      }}
+    />
+    <Axis
+      id="bottom2"
+      title="timestamp per 1 minute"
+      position={Position.Bottom}
+      showOverlappingTicks={false}
+      tickFormat={dateFormatter}
+      ticks={2}
+      showGridLines
+      gridLine={gridStyle}
+      style={{
+        tickLine: { size: 0.0001, padding: -6, ...gridStyle },
+        axisLine: { stroke: 'magenta', strokeWidth: 10, visible: false },
+        tickLabel: {
+          ...tickLabelStyle,
+          alignment: { horizontal: Position.Left, vertical: Position.Bottom },
+          padding: 0,
+          offset: { x: 0, y: 0 },
+        },
+        axisTitle: { visible: false },
+      }}
+      labelFormat={(d) => {
+        return d % (15 * 60 * 1000) === 0
+          ? `${new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(d)}`
+          : '';
+      }}
+    />
+    <Axis
+      id="bottom3"
+      title="timestamp per 1 minute"
+      position={Position.Bottom}
+      showOverlappingTicks={false}
+      tickFormat={dateFormatter}
+      ticks={2}
+      showGridLines
+      gridLine={gridStyle}
+      style={{
+        tickLine: { size: 0.0001, padding: -6, ...gridStyle },
+        axisLine: { stroke: 'magenta', strokeWidth: 10, visible: false },
+        tickLabel: {
+          ...tickLabelStyle,
+          alignment: { horizontal: Position.Left, vertical: Position.Bottom },
+          padding: 0,
+          offset: { x: 0, y: 0 },
+        },
+        axisTitle: { visible: true },
+      }}
+      labelFormat={(d) => {
+        return d % (30 * 60 * 1000) === 0
+          ? `${new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(d)}`
+          : '';
       }}
     />
     <Axis
