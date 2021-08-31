@@ -6,15 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { number } from '@storybook/addon-knobs';
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Placement, Position, ScaleType, Settings } from '@elastic/charts';
-import { isDefined, mergePartial } from '@elastic/charts/src/utils/common';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { mergePartial } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob, getPlacementKnob, getStickToKnob } from '../utils/knobs';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const minorGridStyle = { stroke: 'black', strokeWidth: 0.15, opacity: 1 };
@@ -23,6 +22,7 @@ const fontFamily = '"Atkinson Hyperlegible"';
 const tickLabelStyle = { fontSize: 11, fontFamily, fill: 'rgba(0,0,0,0.8)' };
 const axisTitleColor = 'rgb(112,112,112)';
 const axisTitleFontSize = 15;
+const dataInk = 'rgba(96, 146, 192, 1)';
 
 const xAxisStyle = {
   tickLine: { size: 0.0001, padding: -6, ...gridStyle },
@@ -39,10 +39,6 @@ const xAxisStyle = {
 const data = KIBANA_METRICS.metrics.kibana_os_load[0].data;
 const t0 = data[0][0];
 
-const topAxisLabelFormat = (d: any) => {
-  // const chartWidth = document.querySelector('.echContainer')?.getBoundingClientRect().width ?? 0;
-  return `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
-};
 const midAxisLabelFormatter = (d: any) => {
   return `${new Intl.DateTimeFormat('en-US', { hour: 'numeric' }).format(d).padStart(2, '0')}  `;
 };
@@ -51,18 +47,16 @@ const bottomAxisLabelFormatter = (d: any) => {
 };
 
 export const Example = () => {
+  const whiskers = boolean('X axis whiskers', true);
+  const topAxisLabelFormat = (d: any) => {
+    // const chartWidth = document.querySelector('.echContainer')?.getBoundingClientRect().width ?? 0;
+    return `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { minute: 'numeric' })
+      .format(d)
+      .padStart(2, '0')}′  `;
+  };
   return (
     <Chart>
-      <Settings
-        tooltip={{
-          stickTo: getStickToKnob('stickTo'),
-          placement: getPlacementKnob('placement', undefined),
-          fallbackPlacements: [getPlacementKnob('fallback placement', Placement.LeftStart)].filter(isDefined),
-          offset: number('placement offset', 5),
-        }}
-        baseTheme={useBaseTheme()}
-        rotation={getChartRotationKnob()}
-      />
+      <Settings baseTheme={useBaseTheme()} />
       <Axis
         id="top"
         title="CPU % of Bootstrap"
@@ -84,9 +78,15 @@ export const Example = () => {
         ticks={100}
         showGridLines
         gridLine={mergePartial(gridStyle, { strokeWidth: 0.1 })}
-        style={mergePartial(xAxisStyle, {
-          tickLine: { padding: 6 },
-        })}
+        style={mergePartial(
+          xAxisStyle,
+          whiskers
+            ? {
+                axisLine: { stroke: dataInk, strokeWidth: 1, visible: true },
+                tickLine: { size: 16, padding: -10, ...minorGridStyle },
+              }
+            : { tickLine: { padding: 6 } },
+        )}
         labelFormat={topAxisLabelFormat}
       />
       <Axis
@@ -146,8 +146,8 @@ export const Example = () => {
         yAccessors={[1]}
         yNice
         areaSeriesStyle={{
-          area: { fill: 'rgba(96, 146, 192, 1)', opacity: 0.3 },
-          line: { stroke: 'rgba(96, 146, 192, 1)', opacity: 1 },
+          area: { fill: dataInk, opacity: 0.3 },
+          line: { stroke: dataInk, opacity: 1 },
         }}
         data={data.map(([t, v]) => [t0 + (t - t0) * 4, v])}
       />
