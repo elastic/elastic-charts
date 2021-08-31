@@ -76,7 +76,7 @@
     "@semantic-release/github": "^7.2.1",
     "@semantic-release/npm": "^7.1.1",
     "@semantic-release/release-notes-generator": "^9.0.2",
-    "@storybook/react": "^6.3.4",
+    "@storybook/react": "^6.3.7",
     "@types/chroma-js": "^2.0.0",
     "@types/classnames": "^2.2.7",
     "@types/color": "^3.0.1",
