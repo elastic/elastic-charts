@@ -35,6 +35,9 @@ const xAxisStyle = {
   axisTitle: { visible: false },
 };
 
+const data = KIBANA_METRICS.metrics.kibana_os_load[0].data;
+const t0 = data[0][0];
+
 export const Example = () => {
   return (
     <Chart>
@@ -54,6 +57,7 @@ export const Example = () => {
         position={Position.Bottom}
         showOverlappingTicks={false}
         tickFormat={dateFormatter}
+        ticks={20}
         showGridLines
         gridLine={mergePartial(gridStyle, { strokeWidth: 0.1 })}
         style={mergePartial(xAxisStyle, {
@@ -61,9 +65,7 @@ export const Example = () => {
         })}
         labelFormat={(d) => {
           const chartWidth = document.querySelector('.echContainer')?.getBoundingClientRect().width ?? 0;
-          return `${new Intl.DateTimeFormat('en-US', { timeStyle: chartWidth < 500 ? 'short' : 'long' }).format(
-            d,
-          )}    `;
+          return `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′ `;
         }}
       />
       <Axis
@@ -71,14 +73,15 @@ export const Example = () => {
         title="timestamp per 1 minute"
         position={Position.Bottom}
         showOverlappingTicks={false}
+        showDuplicatedTicks={false}
         tickFormat={dateFormatter}
-        ticks={2}
+        ticks={1}
         showGridLines
         gridLine={gridStyle}
         style={xAxisStyle}
         labelFormat={(d) => {
           return d % (15 * 60 * 1000) === 0
-            ? `${new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(d)}`
+            ? `${new Intl.DateTimeFormat('en-US', { hour: 'numeric' }).format(d).padStart(2, '0')} `
             : '';
         }}
       />
@@ -96,7 +99,7 @@ export const Example = () => {
         })}
         labelFormat={(d) => {
           return d % (30 * 60 * 1000) === 0
-            ? `${new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(d)}`
+            ? `${new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' }).format(d)}`
             : '';
         }}
       />
@@ -126,7 +129,7 @@ export const Example = () => {
           area: { fill: 'rgba(96, 146, 192, 1)', opacity: 0.3 },
           line: { stroke: 'rgba(96, 146, 192, 1)', opacity: 1 },
         }}
-        data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
+        data={data.map(([t, v]) => [t0 + (t - t0) * 4, v])}
       />
     </Chart>
   );
