@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { RgbObject, RGBtoString } from '../../../../../common/color_library_wrappers';
+import { RgbObject, RGBtoString, RGBAToHex } from '../../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../../common/fill_text_color';
 import { Degrees } from '../../../../../common/geometry';
 import { cssFontShorthand, Font, measureText, TextAlign, TextBaseline } from '../../../../../common/text_utils';
 import { withContext } from '../../../../../renderers/canvas';
-import { degToRad } from '../../../../../utils/common';
+import { Color, degToRad } from '../../../../../utils/common';
 import { Point } from '../../../../../utils/point';
 
 /** @internal */
@@ -34,6 +34,7 @@ export function renderText(
   translateX: number = 0,
   translateY: number = 0,
   scale: number = 1,
+  pageBackgroundColor: Color = '#000000',
   cellColor?: RgbObject,
 ) {
   const { textContrast } = font;
@@ -44,7 +45,7 @@ export function renderText(
     ctx.scale(scale, scale);
     ctx.fillStyle =
       textContrast && cellColor
-        ? fillTextColor(font.textColor, true, textContrast, RGBtoString(cellColor), 'white')
+        ? fillTextColor(font.textColor, true, textContrast, RGBtoString(cellColor), RGBAToHex(pageBackgroundColor))
         : font.textColor;
     ctx.textAlign = font.align;
     ctx.textBaseline = font.baseline;

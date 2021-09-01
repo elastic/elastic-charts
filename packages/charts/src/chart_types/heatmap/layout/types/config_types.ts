@@ -20,9 +20,9 @@ export interface Config {
   margin: { left: SizeRatio; right: SizeRatio; top: SizeRatio; bottom: SizeRatio };
   maxRowHeight: Pixels;
   maxColumnWidth: Pixels;
+  pageBackgroundColor: Color;
   // general text config
   fontFamily: FontFamily;
-
   timeZone: string;
 
   onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;

@@ -82,6 +82,7 @@ export function renderCanvas2d(
                 0,
                 0,
                 1,
+                config.pageBackgroundColor,
                 cell.fill.color,
               );
           });

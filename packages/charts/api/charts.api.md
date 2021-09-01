@@ -1001,6 +1001,8 @@ export interface HeatmapConfig {
     // (undocumented)
     onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
     // (undocumented)
+    pageBackgroundColor: Color;
+    // (undocumented)
     timeZone: string;
     // Warning: (ae-forgotten-export) The symbol "Pixels" needs to be exported by the entry point index.d.ts
     //
