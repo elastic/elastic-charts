@@ -45,6 +45,7 @@ export function computeRectAnnotationTooltipState(
       annotationDimension as AnnotationRectProps[],
       chartRotation,
       chartDimensions,
+      spec.id,
     );
 
     if (rectAnnotationTooltipState) {
@@ -58,6 +59,46 @@ export function computeRectAnnotationTooltipState(
   }
 
   return null;
+}
+
+/** @internal */
+export function computeMultipleRectAnnotationTooltipState(
+  cursorPosition: Point,
+  annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
+  annotationSpecs: AnnotationSpec[],
+  chartRotation: Rotation,
+  chartDimensions: Dimensions,
+): AnnotationTooltipState[] {
+  // allow picking up the last spec added as the top most or use it's zIndex value
+  const sortedAnnotationSpecs = annotationSpecs
+    .filter(isRectAnnotation)
+    .reverse()
+    .sort(({ zIndex: a = Number.MIN_SAFE_INTEGER }, { zIndex: b = Number.MIN_SAFE_INTEGER }) => b - a);
+  return sortedAnnotationSpecs.reduce<AnnotationTooltipState[]>((acc, spec) => {
+    const annotationDimension = annotationDimensions.get(spec.id);
+    if (!spec.hideTooltips && annotationDimension) {
+      const { customTooltip, customTooltipDetails } = spec;
+
+      const tooltipSettings = getTooltipSettings(spec);
+
+      const rectAnnotationTooltipState = getRectAnnotationTooltipState(
+        cursorPosition,
+        annotationDimension as AnnotationRectProps[],
+        chartRotation,
+        chartDimensions,
+        spec.id,
+      );
+      if (rectAnnotationTooltipState) {
+        acc.push({
+          ...rectAnnotationTooltipState,
+          tooltipSettings,
+          customTooltip,
+          customTooltipDetails: customTooltipDetails ?? spec.renderTooltip,
+        });
+      }
+    }
+    return acc;
+  }, [] as AnnotationTooltipState[]);
 }
 
 function getTooltipSettings({
