@@ -8,15 +8,30 @@
 
 import euiDarkVars from '@elastic/eui/dist/eui_theme_dark.json';
 import euiLightVars from '@elastic/eui/dist/eui_theme_light.json';
+import type { Parameters as SBParameters } from '@storybook/addons';
 import { BackgroundParameter } from 'storybook-addon-background-toggle';
 import { ThemeParameter } from 'storybook-addon-theme-toggle';
 
-type Parameters = ThemeParameter & BackgroundParameter & { viewport: any };
+import { SB_KNOBS_PANEL, SB_SOURCE_PANEL } from './stories/utils/storybook';
+
+type Parameters = SBParameters & ThemeParameter & BackgroundParameter;
 
 const euiLogoUrl =
   'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgZmlsbD0ibm9uZSIgdmlld0JveD0iMCAwIDMyIDMyIj4KICA8cGF0aCBmaWxsPSIjRkY5NTdEIiBkPSJNMTggMjVjLS41LTUuNS01LjUtMTAuNS0xMS0xMWw3LTdjLjUgNS41IDUuNSAxMC41IDExIDExbC03IDd6Ii8+CiAgPGNpcmNsZSBjeD0iNyIgY3k9IjciIHI9IjciIGZpbGw9IiNGMDRFOTgiLz4KICA8Y2lyY2xlIGN4PSIyNSIgY3k9IjI1IiByPSI3IiBmaWxsPSIjRkVDNTE0Ii8+CiAgPHBhdGggZmlsbD0iIzAwQkZCMyIgZD0iTTMxIDE0Yy03LjE4IDAtMTMtNS44Mi0xMy0xM2gxM3YxM3oiLz4KICA8cGF0aCBmaWxsPSIjMUJBOUY1IiBkPSJNMSAxOGM3LjE4IDAgMTMgNS44MiAxMyAxM0gxVjE4eiIvPgo8L3N2Zz4K';
 
 export const storybookParameters: Parameters = {
+  options: {
+    selectedPanel: process.env.NODE_ENV === 'development' ? SB_KNOBS_PANEL : SB_SOURCE_PANEL,
+  },
+  previewTabs: {
+    'storybook/docs/panel': {
+      hidden: true,
+    },
+    canvas: {
+      title: 'Story',
+      hidden: false,
+    },
+  },
   theme: {
     default: 'light',
     clearable: false,

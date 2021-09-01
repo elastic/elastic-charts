@@ -7,16 +7,18 @@
  */
 
 module.exports = {
-  stories: ['./stories/**/*.stories.ts', './stories/**/*.stories.tsx'],
+  stories: ['./stories/**/*.(stories|story).ts?(x)'],
   addons: [
     '@storybook/addon-actions',
+    '@storybook/addon-docs',
     '@storybook/addon-knobs',
     '@storybook/addon-postcss',
+    '@storybook/addon-storysource',
     '@storybook/addon-viewport',
-    'storybook-addon-theme-toggle',
     'storybook-addon-background-toggle',
-    // https://github.com/storybookjs/storybook/issues/12199
-    // source no longer works with the bucketed `xxx.stories.tsx` files
-    // '@storybook/addon-storysource',
+    'storybook-addon-theme-toggle',
   ],
+  reactOptions: {
+    fastRefresh: true,
+  },
 };

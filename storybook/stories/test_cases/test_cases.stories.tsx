@@ -6,18 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { SB_SOURCE_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Test Cases',
-  parameters: {
-    options: { selectedPanel: SB_SOURCE_PANEL },
-  },
 };
 
-export { Example as noSeries } from './1_no_series';
-export { Example as chromePathBugFix } from './2_chrome_path_bug_fix';
-export { Example as noAxesAnnotationBugFix } from './3_no_axes_annotation';
-export { Example as filterZerosInLogFitDomain } from './4_filter_zero_values_log';
-export { Example as legendScrollBarSizing } from './5_legend_scroll_bar_sizing';
-export { Example as accessibilityCustomizations } from './6_a11y_custom_description';
+export { Example as noSeries } from './1_no_series.story';
+export { Example as chromePathBugFix } from './2_chrome_path_bug_fix.story';
+export { Example as noAxesAnnotationBugFix } from './3_no_axes_annotation.story';
+export { Example as filterZerosInLogFitDomain } from './4_filter_zero_values_log.story';
+export { Example as legendScrollBarSizing } from './5_legend_scroll_bar_sizing.story';
+export { Example as accessibilityCustomizations } from './6_a11y_custom_description.story';

@@ -6,15 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { SB_SOURCE_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Flame (@alpha)',
-  parameters: {
-    options: { selectedPanel: SB_SOURCE_PANEL },
-  },
 };
 
-export { Example as cpuProfileFlameChart } from './03_cpu_profile_flame';
-export { Example as flameChart } from './02_unix_flame';
-export { Example as icicleChart } from './01_unix_icicle';
+export { Example as cpuProfileFlameChart } from './03_cpu_profile_flame.story';
+export { Example as flameChart } from './02_unix_flame.story';
+export { Example as icicleChart } from './01_unix_icicle.story';

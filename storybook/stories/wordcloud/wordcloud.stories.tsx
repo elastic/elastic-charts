@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_SOURCE_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Wordcloud (@alpha)',
-  parameters: {
-    options: { selectedPanel: SB_SOURCE_PANEL },
-  },
 };
 
-export { Example as simpleWordcloud } from './1_wordcloud';
+export { Example as simpleWordcloud } from './1_wordcloud.story';
