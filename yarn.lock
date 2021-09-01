@@ -21021,10 +21021,10 @@ store2@^2.12.0:
   resolved "https://registry.yarnpkg.com/store2/-/store2-2.12.0.tgz#e1f1b7e1a59b6083b2596a8d067f6ee88fd4d3cf"
   integrity sha512-7t+/wpKLanLzSnQPX8WAcuLCCeuSHoWdQuh9SB3xD0kNOM38DNf+0Oa+wmvxmYueRzkmh6IcdKFtvTa+ecgPDw==
 
-storybook-addon-background-toggle@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/storybook-addon-background-toggle/-/storybook-addon-background-toggle-0.0.1.tgz#93fd398cb87f27a5db031c2cdbbbb681f73003c2"
-  integrity sha512-cTDx0qO90y5nQ2oi1rmttqMZsJuTvTPretB8HRpPgLVIvn2+Ldpy8OYqEWieZEAyd8v9/WbWbncJp1YXAcM5hA==
+storybook-addon-background-toggle@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/storybook-addon-background-toggle/-/storybook-addon-background-toggle-0.0.2.tgz#2babb4d9a298860d96881f97c772a7d27a9b5e3a"
+  integrity sha512-xVNLbLmz1FkYohxHnYTK0vmyUUA8Us0M/brwUgyb1dODhXC0BUddnEyhmAiRJwtYN5MxD5DpzE0o+6YZGEfshQ==
 
 storybook-addon-theme-toggle@^0.0.1:
   version "0.0.1"
