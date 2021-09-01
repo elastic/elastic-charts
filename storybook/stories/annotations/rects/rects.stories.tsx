@@ -18,4 +18,4 @@ export { Example as tooltipOptions } from './5_tooltip_options.story';
 export { Example as zeroDomain } from './6_zero_domain.story';
 export { Example as withGroupId } from './7_with_group_id.story';
 export { Example as outside } from './8_outside.story';
-export { Example as clickHandleRectAnnotation } from './9_click_handler';
+export { Example as clickHandleRectAnnotation } from './9_click_handler.story';
