@@ -9,6 +9,7 @@
 import { RGBtoString } from '../../../../common/color_library_wrappers';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getGridHeightParamsSelector } from './get_grid_full_height';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getSpecOrNull } from './heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
@@ -20,8 +21,8 @@ const EMPTY_TOOLTIP = Object.freeze({
 
 /** @internal */
 export const getTooltipInfoSelector = createCustomCachedSelector(
-  [getSpecOrNull, getHeatmapConfigSelector, getPickedShapes],
-  (spec, config, pickedShapes): TooltipInfo => {
+  [getSpecOrNull, getHeatmapConfigSelector, getPickedShapes, getGridHeightParamsSelector],
+  (spec, config, pickedShapes, gridParams): TooltipInfo => {
     if (!spec) {
       return EMPTY_TOOLTIP;
     }
@@ -33,6 +34,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
 
     if (Array.isArray(pickedShapes)) {
       pickedShapes
+        .filter(({ y }) => y < gridParams.gridCellHeight * gridParams.pageSize)
         .filter(({ visible }) => visible)
         .forEach((shape) => {
           // X-axis value
