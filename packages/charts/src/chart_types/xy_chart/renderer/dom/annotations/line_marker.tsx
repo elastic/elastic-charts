@@ -9,10 +9,13 @@
 import { createPopper, Instance } from '@popperjs/core';
 import React, { RefObject, useRef, useEffect, useCallback } from 'react';
 
+import { DEFAULT_CSS_CURSOR } from '../../../../../common/constants';
+import { AnnotationClickListener } from '../../../../../specs';
 import {
   DOMElementType,
   onDOMElementEnter as onDOMElementEnterAction,
   onDOMElementLeave as onDOMElementLeaveAction,
+  onDOMElementClick as onDOMElementClickAction,
 } from '../../../../../state/actions/dom_element';
 import { Position, renderWithProps } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
@@ -23,6 +26,8 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'ma
   chartDimensions: Dimensions;
   onDOMElementEnter: typeof onDOMElementEnterAction;
   onDOMElementLeave: typeof onDOMElementLeaveAction;
+  onDOMElementClick: typeof onDOMElementClickAction;
+  annotationSpec?: AnnotationClickListener;
 };
 
 const MARKER_TRANSFORMS = {
@@ -50,6 +55,8 @@ export function LineMarker({
   chartDimensions,
   onDOMElementEnter,
   onDOMElementLeave,
+  onDOMElementClick,
+  annotationSpec,
 }: LineMarkerProps) {
   const iconRef = useRef<HTMLDivElement | null>(null);
   const testRef = useRef<HTMLDivElement | null>(null);
@@ -58,6 +65,7 @@ export function LineMarker({
     color,
     top: chartDimensions.top + position.top + panel.top,
     left: chartDimensions.left + position.left + panel.left,
+    cursor: annotationSpec ? 'pointer' : DEFAULT_CSS_CURSOR,
   };
   const transform = { transform: getMarkerCentredTransform(alignment, Boolean(dimension)) };
 
@@ -103,8 +111,34 @@ export function LineMarker({
   }, [setPopper, body]);
 
   void popper?.current?.update?.();
-
-  return (
+  // want it to be tabbable if interactive if there is a click handler
+  return onDOMElementClick ? (
+    <button
+      className="echAnnotation"
+      key={`annotation-${id}`}
+      onMouseEnter={() => {
+        onDOMElementEnter({
+          createdBySpecId: specId,
+          id,
+          type: DOMElementType.LineAnnotationMarker,
+          datum,
+        });
+      }}
+      onMouseLeave={onDOMElementLeave}
+      onClick={onDOMElementClick}
+      style={{ ...style, ...transform }}
+      type="button"
+    >
+      <div ref={iconRef} className="echAnnotation__icon">
+        {renderWithProps(icon, datum)}
+      </div>
+      {body && (
+        <div ref={testRef} className="echAnnotation__body">
+          {renderWithProps(body, datum)}
+        </div>
+      )}
+    </button>
+  ) : (
     <div
       className="echAnnotation"
       key={`annotation-${id}`}
