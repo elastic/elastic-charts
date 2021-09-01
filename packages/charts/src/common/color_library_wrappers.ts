@@ -13,6 +13,7 @@ import { Color } from '../utils/common';
 
 type RGB = number;
 type A = number;
+
 /** @internal */
 export type RgbTuple = [RGB, RGB, RGB, RGB?];
 /** @public */
@@ -30,6 +31,11 @@ export const defaultD3Color: D3RGBColor = d3Rgb(defaultColor.r, defaultColor.g, 
 
 /** @internal */
 export type OpacityFn = (opacity: number, seriesOpacity?: number) => number;
+
+/** @internal */
+export function getHexValue(color: Color) {
+  return RGBAToHex(RGBtoString(getColor(color)));
+}
 
 /** @internal */
 export function stringToRGB(cssColorSpecifier?: string, opacity?: number | OpacityFn): RgbObject {

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RgbObject, RGBtoString, RGBAToHex } from '../../../../../common/color_library_wrappers';
+import { RgbObject, RGBtoString, getHexValue } from '../../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../../common/fill_text_color';
 import { Degrees } from '../../../../../common/geometry';
 import { cssFontShorthand, Font, measureText, TextAlign, TextBaseline } from '../../../../../common/text_utils';
@@ -38,6 +38,7 @@ export function renderText(
   cellColor?: RgbObject,
 ) {
   const { textContrast } = font;
+  const convertPageBackgroundColor = getHexValue(pageBackgroundColor);
   withContext(ctx, () => {
     ctx.translate(origin.x, origin.y);
     ctx.rotate(degToRad(angle));
@@ -45,7 +46,7 @@ export function renderText(
     ctx.scale(scale, scale);
     ctx.fillStyle =
       textContrast && cellColor
-        ? fillTextColor(font.textColor, true, textContrast, RGBtoString(cellColor), RGBAToHex(pageBackgroundColor))
+        ? fillTextColor(font.textColor, true, textContrast, RGBtoString(cellColor), convertPageBackgroundColor)
         : font.textColor;
     ctx.textAlign = font.align;
     ctx.textBaseline = font.baseline;

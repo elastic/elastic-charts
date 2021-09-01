@@ -17,8 +17,12 @@ import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const data = BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960);
-  const textContrast = select('set the textContrast parameter in the config', [true, 5, false], true);
-
+  const textContrast = select('set the textContrast parameter in the config', [true, false], true);
+  const pageBackgroundColor = select(
+    'set the pageBackgroundColor parameter in the config',
+    ['#000000', 'rgba(0,0,0,1)', 'blue', 'black'],
+    '#000000',
+  );
   return (
     <Chart>
       <Settings
@@ -47,6 +51,7 @@ export const Example = () => {
         valueFormatter={(value) => value.toFixed(0.2)}
         xSortPredicate="alphaAsc"
         config={{
+          pageBackgroundColor,
           grid: {
             stroke: {
               width: 0,
@@ -57,7 +62,6 @@ export const Example = () => {
             maxHeight: 20,
             label: {
               visible: true,
-              //   textColor: 'white',
               textContrast,
             },
             border: {
