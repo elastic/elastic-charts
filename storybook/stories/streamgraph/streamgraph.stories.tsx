@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SB_KNOBS_PANEL } from '../utils/storybook';
-
 export default {
   title: 'Streamgraph',
-  parameters: {
-    options: { selectedPanel: SB_KNOBS_PANEL },
-  },
 };
 
-export { Example as basic } from './1_basic';
+export { Example as basic } from './1_basic.story';
