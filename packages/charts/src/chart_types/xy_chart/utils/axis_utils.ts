@@ -545,27 +545,22 @@ export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDi
 
   const { showOverlappingTicks, showOverlappingLabels } = axisSpec;
   const { maxLabelBboxHeight, maxLabelBboxWidth } = axisDim;
-
   const requiredSpace = isVerticalAxis(axisSpec.position) ? maxLabelBboxHeight / 2 : maxLabelBboxWidth / 2;
-
-  let previousOccupiedSpace = -Infinity;
-  const visibleTicks = [];
-  for (let i = 0; i < allTicks.length; i++) {
-    const { position } = allTicks[i];
-
-    if (position >= previousOccupiedSpace + requiredSpace) {
-      visibleTicks.push(allTicks[i]);
-      previousOccupiedSpace = position + requiredSpace;
-    } else if (showOverlappingTicks || showOverlappingLabels) {
-      // still add the tick but without a label
-      const overlappingTick = {
-        ...allTicks[i],
-        label: showOverlappingLabels ? allTicks[i].label : '',
-      };
-      visibleTicks.push(overlappingTick);
-    }
-  }
-  return visibleTicks;
+  return showOverlappingLabels
+    ? allTicks
+    : allTicks.reduce(
+        (prev, tick, i) => {
+          if (i && !(allTicks[i - 1].position <= tick.position)) throw new Error('Hey wrong sort order');
+          if (tick.position >= prev.occupiedSpace + requiredSpace) {
+            prev.visibleTicks.push(tick);
+            prev.occupiedSpace = tick.position + requiredSpace;
+          } else if (showOverlappingTicks) {
+            prev.visibleTicks.push({ ...tick, label: '' });
+          }
+          return prev;
+        },
+        { visibleTicks: [] as AxisTick[], occupiedSpace: -Infinity },
+      ).visibleTicks;
 }
 
 /** @internal */
