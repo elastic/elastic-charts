@@ -48,6 +48,7 @@ module.exports = {
         options: {
           configFile: 'integration/server/webpack.tsconfig.json',
           transpileOnly: true,
+          happyPackMode: true,
         },
       },
       {
