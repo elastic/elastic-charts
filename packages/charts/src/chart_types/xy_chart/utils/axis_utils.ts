@@ -548,26 +548,21 @@ export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDi
 
   const requiredSpace = isVerticalAxis(axisSpec.position) ? maxLabelBboxHeight / 2 : maxLabelBboxWidth / 2;
 
-  let previousOccupiedSpace = 0;
+  let previousOccupiedSpace = -Infinity;
   const visibleTicks = [];
   for (let i = 0; i < allTicks.length; i++) {
     const { position } = allTicks[i];
 
-    if (i === 0) {
+    if (position >= previousOccupiedSpace + requiredSpace) {
       visibleTicks.push(allTicks[i]);
       previousOccupiedSpace = position + requiredSpace;
-    } else if (position - requiredSpace >= previousOccupiedSpace) {
-      visibleTicks.push(allTicks[i]);
-      previousOccupiedSpace = position + requiredSpace;
-    } else {
+    } else if (showOverlappingTicks || showOverlappingLabels) {
       // still add the tick but without a label
-      if (showOverlappingTicks || showOverlappingLabels) {
-        const overlappingTick = {
-          ...allTicks[i],
-          label: showOverlappingLabels ? allTicks[i].label : '',
-        };
-        visibleTicks.push(overlappingTick);
-      }
+      const overlappingTick = {
+        ...allTicks[i],
+        label: showOverlappingLabels ? allTicks[i].label : '',
+      };
+      visibleTicks.push(overlappingTick);
     }
   }
   return visibleTicks;
