@@ -684,7 +684,6 @@ export function getAxesGeometries(
   barsPadding?: number,
 ): Array<AxisGeometry> {
   const axesGeometries: Array<AxisGeometry> = [];
-  const { chartDimensions } = computedChartDims;
   const panel = getPanelSize(smScales);
 
   const anchorPointByAxisGroups = [...axisDimensions.entries()].reduce(
@@ -696,12 +695,11 @@ export function getAxesGeometries(
       }
 
       const { tickLine, tickLabel, axisTitle, axisPanelTitle } = axesStyles.get(axisId) ?? sharedAxesStyle;
-      const showTicks = shouldShowTicks(tickLine, axisSpec.hide);
-      const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
+      const tickDimension = shouldShowTicks(tickLine, axisSpec.hide) ? tickLine.size + tickLine.padding : 0;
       const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
 
       const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getAxisPosition(
-        chartDimensions,
+        computedChartDims.chartDimensions,
         chartMargins,
         axisTitle,
         axisPanelTitle,
