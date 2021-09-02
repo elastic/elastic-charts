@@ -85,8 +85,6 @@ export interface Config {
       minFontSize: Pixels;
       maxFontSize: Pixels;
       maxWidth: Pixels | 'fill';
-      align: TextAlign;
-      baseline: TextBaseline;
       visible: boolean;
     };
     border: {

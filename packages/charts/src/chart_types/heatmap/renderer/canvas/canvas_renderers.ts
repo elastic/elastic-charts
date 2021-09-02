@@ -76,6 +76,8 @@ export function renderCanvas2d(
               renderText(ctx, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, cell.formatted, {
                 ...config.cell.label,
                 fontSize: cell.fontSize,
+                align: 'center',
+                baseline: 'middle',
               });
           });
         }),

@@ -97,8 +97,6 @@ export const config: Config = {
       fontVariant: 'normal',
       fontWeight: 'normal',
       textOpacity: 1,
-      align: 'center' as CanvasTextAlign,
-      baseline: 'verticalAlign' as CanvasTextBaseline,
     },
     border: {
       strokeWidth: 1,
