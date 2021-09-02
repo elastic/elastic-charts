@@ -142,11 +142,12 @@ export function colorIsDark(color: Color): boolean {
   return luminance < 0.2;
 }
 
-const colors = (r: any, g: any, b: any) => ({
-  rg255: `rgb(${255 - r}, ${255 - g}`,
-  rgbA255: `rgbA(${255 - r}, ${255 - g}`,
-  b255: `${255 - b}`,
-});
+const invert = (alpha: boolean, r: number, g: number, b: number, o: number = 1) => {
+  const x = `${255 - r}, ${255 - g},${255 - b},${o}`;
+  return alpha ? `rgbA(${x})` : `rgb(${x})`;
+};
+
+const boundContrast = makeHighContrastColor.bind(null);
 
 /**
  * inverse color for text
@@ -161,24 +162,28 @@ export function getTextColorIfTextInvertible(
 ): Color {
   const inverseForContrast = specifiedTextColorIsDark === backgroundIsDark;
   const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-  const { rg255, rgbA255, b255 } = colors(tr, tg, tb);
-  const rgb255 = `${rg255}, ${b255})`;
-  const contrast = makeHighContrastColor.bind(null, rgb255);
-  const contrastOpacity = makeHighContrastColor.bind(null, `${rgb255}, ${to})`);
-  const rgbA255Opacity = `${rgbA255}, ${b255}, ${to})`;
-  const toUndefined = to === undefined;
-  if (!textContrast) return inverseForContrast ? (toUndefined ? `${rgb255})` : rgbA255Opacity) : textColor;
+  const inversions = {
+    alpha: invert(true, tr, tg, tb, to),
+    notAlpha: invert(false, tr, tg, tb),
+  };
+  const contrast = {
+    alpha: boundContrast.bind(null, inversions.alpha),
+    notAlpha: boundContrast.bind(null, inversions.notAlpha),
+  };
+  if (!textContrast)
+    return inverseForContrast ? (to === undefined ? inversions.notAlpha : inversions.alpha) : textColor;
   if (textContrast && typeof textContrast !== 'number')
     return inverseForContrast
-      ? toUndefined
-        ? contrast(backgroundColor)
-        : contrastOpacity(backgroundColor)
+      ? to === undefined
+        ? contrast.notAlpha(backgroundColor)
+        : contrast.alpha(backgroundColor)
       : makeHighContrastColor(textColor, backgroundColor);
+
   if (typeof textContrast === 'number')
     return inverseForContrast
-      ? toUndefined
-        ? contrast(backgroundColor, textContrast)
-        : contrastOpacity(backgroundColor, textContrast)
+      ? to === undefined
+        ? contrast.notAlpha(backgroundColor, textContrast)
+        : contrast.alpha(backgroundColor, textContrast)
       : makeHighContrastColor(textColor, backgroundColor, textContrast);
   return 'black'; // this should never happen; added it as previously function return type included undefined; todo
 }
