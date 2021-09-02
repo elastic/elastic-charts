@@ -82,7 +82,8 @@ export interface Config {
     maxHeight: Pixels | 'fill';
     align: 'center';
     label: Font & {
-      fontSize: Pixels;
+      minFontSize: Pixels;
+      maxFontSize: Pixels;
       maxWidth: Pixels | 'fill';
       align: TextAlign;
       baseline: TextBaseline;

@@ -197,8 +197,8 @@ export function shapeViewModel(
       textMeasure,
       formattedValue,
       config.cell.label,
-      config.cell.label.fontSize - 4,
-      config.cell.label.fontSize,
+      config.cell.label.minFontSize,
+      config.cell.label.maxFontSize,
       cellWidthNoBorder,
       cellHeightNoBorder,
     );

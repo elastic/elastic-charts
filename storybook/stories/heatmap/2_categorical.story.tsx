@@ -7,6 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Heatmap, Settings } from '@elastic/charts';
@@ -16,6 +17,10 @@ import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const data = BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960);
+  const showLabels = boolean('show labels', false);
+
+  const minFontSize = number('min label fontSize', 6, { step: 1, min: 4, max: 10, range: true });
+  const maxFontSize = number('max label fontSize', 12, { step: 1, min: 10, max: 64, range: true });
 
   return (
     <Chart>
@@ -54,7 +59,9 @@ export const Example = () => {
             maxWidth: 'fill',
             maxHeight: 20,
             label: {
-              visible: true,
+              minFontSize,
+              maxFontSize,
+              visible: showLabels,
             },
             border: {
               stroke: 'transparent',
