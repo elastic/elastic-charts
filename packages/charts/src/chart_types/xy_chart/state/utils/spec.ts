@@ -18,11 +18,11 @@ export function getSpecsById<T extends Spec>(specs: T[], id: string): T | undefi
 
 /** @internal */
 export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId) {
-  const groupSpecs = axesSpecs.filter((spec) => spec.groupId === groupId).reverse();
-  return {
-    xAxis: groupSpecs.find((spec) => isHorizontalAxis(spec.position)),
-    yAxis: groupSpecs.find((spec) => isVerticalAxis(spec.position)),
-  };
+  return axesSpecs.reduce<{ xAxis?: AxisSpec; yAxis?: AxisSpec }>((result, spec) => {
+    if (spec.groupId === groupId && isHorizontalAxis(spec.position)) result.xAxis = spec;
+    if (spec.groupId === groupId && isVerticalAxis(spec.position)) result.yAxis = spec;
+    return result;
+  }, {});
 }
 
 /** @internal */
