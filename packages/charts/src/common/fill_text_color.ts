@@ -57,7 +57,7 @@ export function fillTextColor(
   const adjustedTextColor: string | undefined = textColor;
   const containerBackground = combineColors(
     shapeFillColor,
-    backgroundColor === 'transparent' ? '#000000' : backgroundColor,
+    backgroundColor === 'transparent' ? 'rgba(255, 255, 255, 1)' : backgroundColor,
   );
   const textShouldBeInvertedAndTextContrastIsFalse = textInvertible && !textContrast;
   const textShouldBeInvertedAndTextContrastIsSetToTrue = textInvertible && typeof textContrast !== 'number';

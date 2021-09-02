@@ -16,9 +16,4 @@ describe('Heatmap stories', () => {
       { left: 300, top: 300 },
     );
   });
-  it('should allow text color contrast', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/heatmap-alpha--text-color-contrast&globals=theme:eui-light&knob-set%20the%20pageBackgroundColor%20parameter%20in%20the%20config=#000000&knob-set%20the%20textContrast%20parameter%20in%20the%20config=true',
-    );
-  });
 });

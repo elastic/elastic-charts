@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../../..';
+import { ChartType } from '../../..';
 import { Pixels } from '../../../../common/geometry';
 import { Box } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';

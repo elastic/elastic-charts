@@ -86,7 +86,6 @@ export interface Config {
       align: TextAlign;
       baseline: TextBaseline;
       visible: boolean;
-      textContrast: boolean;
     };
     border: {
       strokeWidth: Pixels;

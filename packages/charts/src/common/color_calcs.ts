@@ -121,9 +121,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
     // catch if the ideal contrast may not be possible, switch to the other extreme color contrast
     if (scaledOldContrast === scaledContrast) {
       const contrastColor =
-        originalhighContrastTextColor === 'rgba(255, 255, 255, 1)' || originalhighContrastTextColor === '#fff'
-          ? '#000'
-          : '#fff';
+        originalhighContrastTextColor === 'rgba(255, 255, 255, 1)' ? 'rgba(0, 0 , 0, 1)' : 'rgba(255, 255, 255, 1)';
       // make sure the new text color hits the ratio, if not, then return the scaledContrast since we tried earlier
       return getContrast(contrastColor, background) > ratio ? contrastColor : scaledContrast.toString();
     }

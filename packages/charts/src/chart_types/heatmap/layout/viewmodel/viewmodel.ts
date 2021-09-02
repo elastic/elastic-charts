@@ -212,9 +212,9 @@ export function shapeViewModel(
       textColor: fillTextColor(
         config.cell.label.textColor,
         true,
-        config.cell.label.textContrast ? 4.5 : false,
+        4.5,
         color,
-        theme.background.color === 'transparent' ? '#000000' : theme.background.color,
+        theme.background.color === 'transparent' ? 'rgba(255, 255, 255, 1)' : theme.background.color,
       ),
     };
     return acc;
