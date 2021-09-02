@@ -534,9 +534,7 @@ export function enableDuplicatedTicks(
     position: (scale.scale(tick) ?? 0) + offset,
   }));
 
-  if (axisSpec.showDuplicatedTicks) return allTicks;
-
-  return getUniqueValues(allTicks, 'label', true);
+  return axisSpec.showDuplicatedTicks ? allTicks : getUniqueValues(allTicks, 'label', true);
 }
 
 /** @internal */
