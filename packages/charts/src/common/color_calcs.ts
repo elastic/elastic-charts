@@ -142,12 +142,9 @@ export function colorIsDark(color: Color): boolean {
   return luminance < 0.2;
 }
 
-const invert = (alpha: boolean, r: number, g: number, b: number, o: number = 1) => {
-  const x = `${255 - r}, ${255 - g},${255 - b},${o}`;
-  return alpha ? `rgbA(${x})` : `rgb(${x})`;
-};
+const reducer = (acc: any, curr: any, idx: any) => (idx !== 0 ? `${acc}, ${curr}` : `${curr}`);
 
-const boundContrast = makeHighContrastColor.bind(null);
+const invert = (r: number, g: number, b: number) => [r, g, b].map((x) => 255 - x).reduce(reducer, '');
 
 /**
  * inverse color for text
@@ -162,29 +159,23 @@ export function getTextColorIfTextInvertible(
 ): Color {
   const inverseForContrast = specifiedTextColorIsDark === backgroundIsDark;
   const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-  const inversions = {
-    alpha: invert(true, tr, tg, tb, to),
-    notAlpha: invert(false, tr, tg, tb),
-  };
-  const contrast = {
-    alpha: boundContrast.bind(null, inversions.alpha),
-    notAlpha: boundContrast.bind(null, inversions.notAlpha),
-  };
+  const inverted = invert(tr, tg, tb);
   if (!textContrast)
-    return inverseForContrast ? (to === undefined ? inversions.notAlpha : inversions.alpha) : textColor;
-  if (textContrast && typeof textContrast !== 'number')
+    return inverseForContrast ? (to === undefined ? `rgb(${inverted})` : `rgba(${inverted}, ${to})`) : textColor;
+  if (textContrast && typeof textContrast !== 'number') {
     return inverseForContrast
       ? to === undefined
-        ? contrast.notAlpha(backgroundColor)
-        : contrast.alpha(backgroundColor)
+        ? makeHighContrastColor(`rgb(${inverted})`, backgroundColor)
+        : makeHighContrastColor(`rgba(${inverted}, ${to})`, backgroundColor)
       : makeHighContrastColor(textColor, backgroundColor);
-
-  if (typeof textContrast === 'number')
+  }
+  if (typeof textContrast === 'number') {
     return inverseForContrast
       ? to === undefined
-        ? contrast.notAlpha(backgroundColor, textContrast)
-        : contrast.alpha(backgroundColor, textContrast)
+        ? makeHighContrastColor(`rgb(${inverted})`, backgroundColor, textContrast)
+        : makeHighContrastColor(`rgba(${inverted}, ${to})`, backgroundColor, textContrast)
       : makeHighContrastColor(textColor, backgroundColor, textContrast);
+  }
   return 'black'; // this should never happen; added it as previously function return type included undefined; todo
 }
 
