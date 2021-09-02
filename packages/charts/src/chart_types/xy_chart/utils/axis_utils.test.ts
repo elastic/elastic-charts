@@ -1640,7 +1640,7 @@ describe('Axis computational utils', () => {
         customFormatter,
       );
 
-      const expected = axis1Dims.tickValues.slice().reverse().map(customFormatter);
+      const expected = axis1Dims.tickValues.map(customFormatter);
       const axisPos = axisTicksPosition.find(({ axis: { id } }) => id === verticalAxisSpec.id);
       expect(axisPos?.ticks.map(({ label }) => label)).toEqual(expected);
     });
