@@ -142,10 +142,10 @@ export function colorIsDark(color: Color): boolean {
   return luminance < 0.2;
 }
 
-const colors = (tr: any) => (tg: any) => (tb: any) => ({
-  trTg: `rgb(${255 - tr}, ${255 - tg}`,
-  trTgA: `rgbA(${255 - tr}, ${255 - tg}`,
-  tb255: `${255 - tb}`,
+const colors = (r: any, g: any, b: any) => ({
+  trTg: `rgb(${255 - r}, ${255 - g}`,
+  trTgA: `rgbA(${255 - r}, ${255 - g}`,
+  tb255: `${255 - b}`,
 });
 
 /**
@@ -161,7 +161,7 @@ export function getTextColorIfTextInvertible(
 ): Color {
   const inverseForContrast = specifiedTextColorIsDark === backgroundIsDark;
   const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-  const { trTg, trTgA, tb255 } = colors(tr)(tg)(tb);
+  const { trTg, trTgA, tb255 } = colors(tr, tg, tb);
   const trTgTb255 = `${trTg}, ${tb255})`;
   const contrast = makeHighContrastColor.bind(null, trTgTb255);
   const contrastOpacity = makeHighContrastColor.bind(null, `${trTgTb255}, ${to})`);
