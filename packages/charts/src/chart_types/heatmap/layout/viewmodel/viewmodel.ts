@@ -11,21 +11,20 @@ import { scaleBand, scaleQuantize } from 'd3-scale';
 
 import { stringToRGB } from '../../../../common/color_library_wrappers';
 import { Pixels } from '../../../../common/geometry';
-import { Box, TextMeasure } from '../../../../common/text_utils';
+import { Box } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
-import { SettingsSpec } from '../../../../specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { ContinuousDomain } from '../../../../utils/domain';
+import { HeatmapStyles, Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScale } from '../../state/selectors/get_color_scale';
 import { GridHeightParams } from '../../state/selectors/get_grid_full_height';
-import { Config } from '../types/config_types';
 import {
   Cell,
   PickDragFunction,
@@ -54,9 +53,13 @@ function getValuesInRange(
 }
 
 /**
- * Resolves the maximum number of ticks based on the chart width and sample label based on formatter config.
+ * Resolves the maximum number of ticks based on the chart width and sample label based on formatter heatmapTheme.
  */
-function getTicks(chartWidth: number, { formatter, padding, fontSize, fontFamily }: Config['xAxisLabel']): number {
+function getTicks(
+  chartWidth: number,
+  formatter: HeatmapSpec['xAxisLabelFormatter'],
+  { padding, fontSize, fontFamily }: HeatmapStyles['xAxisLabel'],
+): number {
   return withTextMeasure((textMeasure) => {
     const labelSample = formatter(Date.now());
     const { width } = textMeasure(labelSample, padding, fontSize, fontFamily);
@@ -70,26 +73,24 @@ function getTicks(chartWidth: number, { formatter, padding, fontSize, fontFamily
 
 /** @internal */
 export function shapeViewModel(
-  textMeasure: TextMeasure,
   spec: HeatmapSpec,
-  config: Config,
-  settingsSpec: SettingsSpec,
+  { heatmap: heatmapTheme }: Theme,
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
   bandsToHide: Array<[number, number]>,
   { height, pageSize }: GridHeightParams,
 ): ShapeViewModel {
-  const gridStrokeWidth = config.grid.stroke.width ?? 1;
+  const gridStrokeWidth = heatmapTheme.grid.stroke.width ?? 1;
 
   const { table, yValues, xDomain } = heatmapTable;
 
   // measure the text width of all rows values to get the grid area width
   const boxedYValues = yValues.map<Box & { value: NonNullable<PrimitiveValue> }>((value) => {
     return {
-      text: config.yAxisLabel.formatter(value),
+      text: spec.yAxisLabelFormatter(value),
       value,
-      ...config.yAxisLabel,
+      ...heatmapTheme.yAxisLabel,
     };
   });
 
@@ -108,8 +109,8 @@ export function shapeViewModel(
             nice: false,
           },
           {
-            desiredTickCount: getTicks(chartDimensions.width, config.xAxisLabel),
-            timeZone: config.timeZone,
+            desiredTickCount: getTicks(chartDimensions.width, spec.xAxisLabelFormatter, heatmapTheme.xAxisLabel),
+            timeZone: spec.timeZone,
           },
         )
       : null;
@@ -132,8 +133,8 @@ export function shapeViewModel(
 
   // compute the cell width (can be smaller then the available size depending on config
   const cellWidth =
-    config.cell.maxWidth !== 'fill' && xScale.bandwidth() > config.cell.maxWidth
-      ? config.cell.maxWidth
+    heatmapTheme.cell.maxWidth !== 'fill' && xScale.bandwidth() > heatmapTheme.cell.maxWidth
+      ? heatmapTheme.cell.maxWidth
       : xScale.bandwidth();
 
   // compute the cell height (we already computed the max size for that)
@@ -146,25 +147,25 @@ export function shapeViewModel(
     scaleCallback: (x: any) => number | undefined | null = xScale,
   ) => (value: any): TextBox => {
     return {
-      text: formatter(value, { timeZone: config.timeZone }),
+      text: formatter(value, { timeZone: spec.timeZone }),
       value,
-      ...config.xAxisLabel,
+      ...heatmapTheme.xAxisLabel,
       x: chartDimensions.left + (scaleCallback(value) || 0),
-      y: cellHeight * pageSize + config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
+      y: cellHeight * pageSize + heatmapTheme.xAxisLabel.fontSize / 2 + heatmapTheme.xAxisLabel.padding,
     };
   };
 
   // compute the position of each column label
   const textXValues: Array<TextBox> = timeScale
-    ? timeScale.ticks().map<TextBox>(getTextValue(config.xAxisLabel.formatter, (x: any) => timeScale.scale(x)))
+    ? timeScale.ticks().map<TextBox>(getTextValue(spec.xAxisLabelFormatter, (x: any) => timeScale.scale(x)))
     : xValues.map<TextBox>((textBox: any) => {
         return {
-          ...getTextValue(config.xAxisLabel.formatter)(textBox),
+          ...getTextValue(spec.xAxisLabelFormatter)(textBox),
           x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
         };
       });
 
-  const { padding } = config.yAxisLabel;
+  const { padding } = heatmapTheme.yAxisLabel;
   const rightPadding = typeof padding === 'number' ? padding : padding.right ?? 0;
 
   // compute the position of each row label
@@ -189,7 +190,8 @@ export function shapeViewModel(
     const cellKey = getCellKey(d.x, d.y);
     acc[cellKey] = {
       x:
-        (config.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - config.cell.maxWidth / 2 : x) + gridStrokeWidth,
+        (heatmapTheme.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : x) +
+        gridStrokeWidth,
       y,
       yIndex,
       width: cellWidth - gridStrokeWidth * 2,
@@ -199,8 +201,8 @@ export function shapeViewModel(
         color: stringToRGB(color),
       },
       stroke: {
-        color: stringToRGB(config.cell.border.stroke),
-        width: config.cell.border.strokeWidth,
+        color: stringToRGB(heatmapTheme.cell.border.stroke),
+        width: heatmapTheme.cell.border.strokeWidth,
       },
       value: d.value,
       visible: !isValueHidden(d.value, bandsToHide),
@@ -356,7 +358,7 @@ export function shapeViewModel(
   }
 
   return {
-    config,
+    theme: heatmapTheme,
     heatmapViewModel: {
       gridOrigin: {
         x: chartDimensions.left,
@@ -366,7 +368,7 @@ export function shapeViewModel(
         x: xLines,
         y: yLines,
         stroke: {
-          color: stringToRGB(config.grid.stroke.color),
+          color: stringToRGB(heatmapTheme.grid.stroke.color),
           width: gridStrokeWidth,
         },
       },

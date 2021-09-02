@@ -7,15 +7,14 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, button } from '@storybook/addon-knobs';
-import React, { useCallback, useMemo, useState } from 'react';
+import { boolean, color, number } from '@storybook/addon-knobs';
+import React from 'react';
 import { debounce } from 'ts-debounce';
 
 import {
   Chart,
   DebugState,
   Heatmap,
-  HeatmapElementEvent,
   HeatmapStyles,
   niceTimeFormatter,
   RecursivePartial,
@@ -27,52 +26,53 @@ import { SWIM_LANE_DATA } from '@elastic/charts/src/utils/data_samples/test_anom
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const [selection, setSelection] = useState<{ x: (string | number)[]; y: (string | number)[] } | undefined>();
-
-  const persistCellsSelection = boolean('Persist cells selection', true);
   const debugState = boolean('Enable debug state', true);
   const dataStateAction = action('DataState');
 
-  const handler = useCallback(() => {
-    setSelection(undefined);
-  }, []);
-
-  button('Clear cells selection', handler);
-
-  const heatmap = useMemo(() => {
-    const styles: RecursivePartial<HeatmapStyles> = {
-      brushTool: {
-        visible: true,
+  const heatmap: RecursivePartial<HeatmapStyles> = {
+    brushArea: {
+      visible: boolean('brushArea visible', true, 'Theme'),
+      fill: color('brushArea fill', 'black', 'Theme'),
+      stroke: color('brushArea stroke', '#69707D', 'Theme'),
+      strokeWidth: number('brushArea strokeWidth', 2, { range: true, min: 1, max: 10 }, 'Theme'),
+    },
+    brushMask: {
+      visible: boolean('brushMask visible', true, 'Theme'),
+      fill: color('brushMask fill', 'rgb(115 115 115 / 50%)', 'Theme'),
+    },
+    brushTool: {
+      visible: boolean('brushTool visible', false, 'Theme'),
+      fill: color('brushTool fill color', 'gray', 'Theme'),
+    },
+    xAxisLabel: {
+      visible: boolean('xAxisLabel visible', true, 'Theme'),
+      fontSize: number('xAxisLabel fontSize', 12, { range: true, min: 5, max: 20 }, 'Theme'),
+      textColor: color('xAxisLabel textColor', 'black', 'Theme'),
+      padding: number('xAxisLabel padding', 6, { range: true, min: 0, max: 15 }, 'Theme'),
+    },
+    yAxisLabel: {
+      visible: boolean('yAxisLabel visible', true, 'Theme'),
+      fontSize: number('yAxisLabel fontSize', 12, { range: true, min: 5, max: 20 }, 'Theme'),
+      textColor: color('yAxisLabel textColor', 'black', 'Theme'),
+      padding: number('yAxisLabel padding', 5, { range: true, min: 0, max: 15 }, 'Theme'),
+    },
+    grid: {
+      stroke: {
+        color: color('grid stroke color', 'gray', 'Theme'),
       },
-      grid: {
-        cellHeight: {
-          min: 20,
-        },
-        stroke: {
-          width: 0.5,
-          color: '#bababa',
-        },
+    },
+    cell: {
+      label: {
+        visible: boolean('cell label visible', false, 'Theme'),
+        fontSize: number('cell label fontSize', 10, { range: true, min: 5, max: 20 }, 'Theme'),
+        textColor: color('cell label textColor', 'black', 'Theme'),
       },
-      cell: {
-        maxWidth: 'fill',
-        maxHeight: 3,
-        label: {
-          visible: false,
-        },
-        border: {
-          stroke: 'transparent',
-          strokeWidth: 0,
-        },
+      border: {
+        strokeWidth: number('border strokeWidth', 1, { range: true, min: 1, max: 5 }, 'Theme'),
+        stroke: color('border stroke color', 'gray', 'Theme'),
       },
-      yAxisLabel: {
-        visible: true,
-        width: 'auto',
-        padding: { left: 10, right: 10 },
-      },
-    };
-
-    return styles;
-  }, []);
+    },
+  };
 
   const logDebugState = debounce(() => {
     if (!debugState) return;
@@ -87,23 +87,15 @@ export const Example = () => {
     }
   }, 100);
 
-  // @ts-ignore
-  const onElementClick: ElementClickListener = useCallback((e: HeatmapElementEvent[]) => {
-    const cell = e[0][0];
-    // @ts-ignore
-    setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
-  }, []);
-
   return (
     <Chart>
       <Settings
-        onElementClick={onElementClick}
         onRenderChange={logDebugState}
         showLegend
         legendPosition="right"
         onBrushEnd={action('onBrushEnd')}
         brushAxis="both"
-        xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
+        xDomain={{ min: 1572868800000, max: 1572912000000, minInterval: 1800000 }}
         debugState={debugState}
         theme={{ heatmap }}
         baseTheme={useBaseTheme()}
@@ -130,11 +122,13 @@ export const Example = () => {
         xAxisLabelFormatter={(value) => {
           return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
         }}
-        onBrushEnd={(e) => {
-          setSelection({ x: e.x, y: e.y });
-        }}
-        highlightedData={persistCellsSelection ? selection : undefined}
       />
     </Chart>
   );
+};
+
+Example.parameters = {
+  markdown: `
+> __Warning:__ ⚠️ default \`Theme\` styles are overrided by knob controls. Toggling between themes may show incorrect styles.
+  `,
 };

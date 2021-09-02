@@ -9,8 +9,8 @@
 import React, { FC } from 'react';
 
 import { Dimensions } from '../../../../utils/dimensions';
-import { config } from '../../layout/config/config';
-import { Config } from '../../layout/types/config_types';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { HeatmapStyles } from '../../../../utils/themes/theme';
 import { DragShape, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 
 /** @internal */
@@ -20,8 +20,8 @@ export interface HighlighterCellsProps {
   canvasDimension: Dimensions;
   geometries: ShapeViewModel;
   dragShape: DragShape | null;
-  brushMask: Config['brushMask'];
-  brushArea: Config['brushArea'];
+  brushMask: HeatmapStyles['brushMask'];
+  brushArea: HeatmapStyles['brushArea'];
 }
 
 /**
@@ -145,6 +145,6 @@ export const DEFAULT_PROPS: HighlighterCellsProps = {
   },
   geometries: nullShapeViewModel(),
   dragShape: { x: 0, y: 0, height: 0, width: 0 },
-  brushArea: config.brushArea,
-  brushMask: config.brushMask,
+  brushArea: LIGHT_THEME.heatmap.brushArea,
+  brushMask: LIGHT_THEME.heatmap.brushMask,
 };

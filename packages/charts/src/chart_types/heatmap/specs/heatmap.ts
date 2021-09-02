@@ -15,9 +15,8 @@ import { SeriesScales, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
-import { Color, Datum, RecursivePartial } from '../../../utils/common';
-import { config } from '../layout/config/config';
-import { Config } from '../layout/types/config_types';
+import { Color, Datum } from '../../../utils/common';
+import { Cell } from '../layout/types/viewmodel_types';
 import { X_SCALE_DEFAULT } from './scale_defaults';
 
 const defaultProps = {
@@ -31,7 +30,11 @@ const defaultProps = {
   valueFormatter: (value: number) => `${value}`,
   xSortPredicate: Predicate.AlphaAsc,
   ySortPredicate: Predicate.AlphaAsc,
-  config,
+  timeZone: 'UTC',
+  xAxisLabelName: 'X Value',
+  xAxisLabelFormatter: String,
+  yAxisLabelName: 'Y Value',
+  yAxisLabelFormatter: String,
 };
 
 /** @public */
@@ -57,6 +60,13 @@ export interface HeatmapBandsColorScale {
   labelFormatter?: (start: number, end: number) => string;
 }
 
+/** @public */
+export type HeatmapBrushEvent = {
+  cells: Cell[];
+  x: (string | number)[];
+  y: (string | number)[];
+};
+
 /** @alpha */
 export interface HeatmapSpec extends Spec {
   specType: typeof SpecType.Series;
@@ -70,15 +80,22 @@ export interface HeatmapSpec extends Spec {
   xSortPredicate: Predicate;
   ySortPredicate: Predicate;
   xScaleType: SeriesScales['xScaleType'];
-  config: RecursivePartial<Config>;
   highlightedData?: { x: Array<string | number>; y: Array<string | number> };
   name?: string;
+
+  timeZone: string;
+  onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
+  xAxisLabelName: string;
+  xAxisLabelFormatter: (value: string | number) => string;
+  yAxisLabelName: string;
+  yAxisLabelFormatter: (value: string | number) => string;
 }
 
+type SpecRequiredProps = Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'>;
+type SpecOptionalProps = Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>;
+
 /** @alpha */
-export const Heatmap: React.FunctionComponent<
-  Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>
-> = getConnect()(
+export const Heatmap: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
   specComponentFactory<
     HeatmapSpec,
     | 'xAccessor'
@@ -88,7 +105,11 @@ export const Heatmap: React.FunctionComponent<
     | 'ySortPredicate'
     | 'xSortPredicate'
     | 'valueFormatter'
-    | 'config'
     | 'xScaleType'
+    | 'timeZone'
+    | 'xAxisLabelName'
+    | 'xAxisLabelFormatter'
+    | 'yAxisLabelName'
+    | 'yAxisLabelFormatter'
   >(defaultProps),
 );

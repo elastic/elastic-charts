@@ -11,10 +11,11 @@ import { Pixels } from '../../../../common/geometry';
 import { Box } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { Point } from '../../../../utils/point';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { HeatmapStyles } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { config } from '../config/config';
+import { HeatmapBrushEvent } from '../../specs/heatmap';
 import { HeatmapCellDatum } from '../viewmodel/viewmodel';
-import { Config, HeatmapBrushEvent } from './config_types';
 
 /** @internal */
 export interface Value {
@@ -93,7 +94,7 @@ export type DragShape = ReturnType<PickDragShapeFunction>;
 
 /** @internal */
 export type ShapeViewModel = {
-  config: Config;
+  theme: HeatmapStyles;
   heatmapViewModel: HeatmapViewModel;
   pickQuads: PickFunction;
   pickDragArea: PickDragFunction;
@@ -119,8 +120,8 @@ export const nullHeatmapViewModel: HeatmapViewModel = {
 };
 
 /** @internal */
-export const nullShapeViewModel = (specifiedConfig?: Config): ShapeViewModel => ({
-  config: specifiedConfig || config,
+export const nullShapeViewModel = (): ShapeViewModel => ({
+  theme: LIGHT_THEME.heatmap,
   heatmapViewModel: nullHeatmapViewModel,
   pickQuads: () => [],
   pickDragArea: () => ({ cells: [], x: [], y: [], chartType: ChartType.Heatmap }),

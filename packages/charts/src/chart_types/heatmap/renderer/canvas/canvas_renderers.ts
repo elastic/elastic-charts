@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
@@ -17,10 +16,8 @@ import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 export function renderCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
-  { config, heatmapViewModel }: ShapeViewModel,
+  { theme, heatmapViewModel }: ShapeViewModel,
 ) {
-  // eslint-disable-next-line no-empty-pattern
-  const {} = config;
   withContext(ctx, () => {
     // set some defaults for the overall rendering
 
@@ -48,16 +45,16 @@ export function renderCanvas2d(
       clearCanvas,
 
       () => {
+        // Grid
         withContext(ctx, () => {
-          // render grid
           renderMultiLine(ctx, heatmapViewModel.gridLines.x, heatmapViewModel.gridLines.stroke);
           renderMultiLine(ctx, heatmapViewModel.gridLines.y, heatmapViewModel.gridLines.stroke);
         });
       },
 
       () =>
+        // Cells
         withContext(ctx, () => {
-          // render cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
@@ -66,9 +63,9 @@ export function renderCanvas2d(
         }),
 
       () =>
-        config.cell.label.visible &&
+        // Text on cells
+        theme.cell.label.visible &&
         withContext(ctx, () => {
-          // render text on cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
@@ -77,32 +74,24 @@ export function renderCanvas2d(
                 ctx,
                 { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 },
                 cell.formatted,
-                config.cell.label,
+                theme.cell.label,
               );
           });
         }),
 
       () =>
-        // render text on Y axis
-        config.yAxisLabel.visible &&
+        // Y Axis
+        theme.yAxisLabel.visible &&
         withContext(ctx, () =>
           filteredYValues.forEach((yValue) => {
-            const font: Font = {
-              fontFamily: config.yAxisLabel.fontFamily,
-              fontStyle: config.yAxisLabel.fontStyle ? config.yAxisLabel.fontStyle : 'normal',
-              fontVariant: 'normal',
-              fontWeight: 'normal',
-              textColor: 'black',
-              textOpacity: 1,
-            };
-            const { padding } = config.yAxisLabel;
+            const { padding, ...font } = theme.yAxisLabel;
             const horizontalPadding =
               typeof padding === 'number' ? padding * 2 : (padding.left ?? 0) + (padding.right ?? 0);
             const [resultText] = wrapLines(
               ctx,
               yValue.text,
               font,
-              config.yAxisLabel.fontSize,
+              theme.yAxisLabel.fontSize,
               heatmapViewModel.gridOrigin.x - horizontalPadding,
               16,
               { shouldAddEllipsis: true, wrapAtWord: false },
@@ -112,17 +101,17 @@ export function renderCanvas2d(
               { x: yValue.x, y: yValue.y },
               resultText,
               // the alignment for y axis labels is fixed to the right
-              { ...config.yAxisLabel, align: 'right' },
+              { ...theme.yAxisLabel, align: 'right' },
             );
           }),
         ),
 
       () =>
-        // render text on X axis
-        config.xAxisLabel.visible &&
+        // Text on X axis
+        theme.xAxisLabel.visible &&
         withContext(ctx, () =>
           heatmapViewModel.xValues.forEach((xValue) =>
-            renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel),
+            renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, theme.xAxisLabel),
           ),
         ),
     ]);

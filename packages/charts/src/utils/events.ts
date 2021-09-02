@@ -20,7 +20,7 @@ export function isValidPointerOverEvent(
 
 /** @internal */
 export interface DragCheckProps {
-  onBrushEnd: BrushEndListener | HeatmapSpec['config']['onBrushEnd'] | undefined;
+  onBrushEnd: BrushEndListener | HeatmapSpec['onBrushEnd'] | undefined;
   lastDrag: DragState | null;
 }
 
