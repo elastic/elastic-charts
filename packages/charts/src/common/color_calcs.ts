@@ -162,20 +162,18 @@ export function getTextColorIfTextInvertible(
   const inverted = invert(tr, tg, tb);
   if (!textContrast)
     return inverseForContrast ? (to === undefined ? `rgb(${inverted})` : `rgba(${inverted}, ${to})`) : textColor;
-  if (textContrast && typeof textContrast !== 'number') {
+  if (textContrast && typeof textContrast !== 'number')
     return inverseForContrast
       ? to === undefined
         ? makeHighContrastColor(`rgb(${inverted})`, backgroundColor)
         : makeHighContrastColor(`rgba(${inverted}, ${to})`, backgroundColor)
       : makeHighContrastColor(textColor, backgroundColor);
-  }
-  if (typeof textContrast === 'number') {
+  if (typeof textContrast === 'number')
     return inverseForContrast
       ? to === undefined
         ? makeHighContrastColor(`rgb(${inverted})`, backgroundColor, textContrast)
         : makeHighContrastColor(`rgba(${inverted}, ${to})`, backgroundColor, textContrast)
       : makeHighContrastColor(textColor, backgroundColor, textContrast);
-  }
   return 'black'; // this should never happen; added it as previously function return type included undefined; todo
 }
 
