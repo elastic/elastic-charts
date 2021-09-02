@@ -20,7 +20,6 @@ export interface Config {
   margin: { left: SizeRatio; right: SizeRatio; top: SizeRatio; bottom: SizeRatio };
   maxRowHeight: Pixels;
   maxColumnWidth: Pixels;
-  pageBackgroundColor: Color;
   // general text config
   fontFamily: FontFamily;
   timeZone: string;
@@ -87,7 +86,7 @@ export interface Config {
       align: TextAlign;
       baseline: TextBaseline;
       visible: boolean;
-      textContrast: boolean | number;
+      textContrast: boolean;
     };
     border: {
       strokeWidth: Pixels;

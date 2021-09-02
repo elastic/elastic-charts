@@ -6,12 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { RgbObject, RGBtoString, getHexValue } from '../../../../../common/color_library_wrappers';
-import { fillTextColor } from '../../../../../common/fill_text_color';
 import { Degrees } from '../../../../../common/geometry';
 import { cssFontShorthand, Font, measureText, TextAlign, TextBaseline } from '../../../../../common/text_utils';
 import { withContext } from '../../../../../renderers/canvas';
-import { Color, degToRad } from '../../../../../utils/common';
+import { degToRad } from '../../../../../utils/common';
 import { Point } from '../../../../../utils/point';
 
 /** @internal */
@@ -21,7 +19,6 @@ export type TextFont = Font & {
   baseline: TextBaseline;
   shadow?: string;
   shadowSize?: number;
-  textContrast?: boolean | number;
 };
 
 /** @internal */
@@ -34,20 +31,13 @@ export function renderText(
   translateX: number = 0,
   translateY: number = 0,
   scale: number = 1,
-  pageBackgroundColor: Color = '#000000',
-  cellColor?: RgbObject,
 ) {
-  const { textContrast } = font;
-  const convertPageBackgroundColor = getHexValue(pageBackgroundColor);
   withContext(ctx, () => {
     ctx.translate(origin.x, origin.y);
     ctx.rotate(degToRad(angle));
     ctx.translate(translateX, translateY);
     ctx.scale(scale, scale);
-    ctx.fillStyle =
-      textContrast && cellColor
-        ? fillTextColor(font.textColor, true, textContrast, RGBtoString(cellColor), convertPageBackgroundColor)
-        : font.textColor;
+    ctx.fillStyle = font.textColor;
     ctx.textAlign = font.align;
     ctx.textBaseline = font.baseline;
     ctx.font = cssFontShorthand(font, font.fontSize);

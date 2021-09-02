@@ -10,6 +10,7 @@ import { bisectLeft } from 'd3-array';
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
 import { stringToRGB } from '../../../../common/color_library_wrappers';
+import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import { Box, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
@@ -20,6 +21,7 @@ import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { ContinuousDomain } from '../../../../utils/domain';
+import { Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
@@ -79,6 +81,7 @@ export function shapeViewModel(
   colorScale: ColorScale,
   bandsToHide: Array<[number, number]>,
   { height, pageSize }: GridHeightParams,
+  theme: Theme,
 ): ShapeViewModel {
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
 
@@ -182,6 +185,7 @@ export function shapeViewModel(
     const x = xScale(String(d.x));
     const y = yScale(String(d.y))! + gridStrokeWidth;
     const yIndex = yValues.indexOf(d.y);
+    // cell background color
     const color = colorScale(d.value);
     if (x === undefined || y === undefined || yIndex === -1) {
       return acc;
@@ -205,6 +209,13 @@ export function shapeViewModel(
       value: d.value,
       visible: !isValueHidden(d.value, bandsToHide),
       formatted: spec.valueFormatter(d.value),
+      textColor: fillTextColor(
+        config.cell.label.textColor,
+        true,
+        config.cell.label.textContrast ? 4.5 : false,
+        color,
+        theme.background.color === 'transparent' ? '#000000' : theme.background.color,
+      ),
     };
     return acc;
   }, {});

@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../..';
+import { ChartType } from '../../../..';
 import { Pixels } from '../../../../common/geometry';
 import { Box } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
+import { Color } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { config } from '../config/config';
@@ -36,6 +37,7 @@ export interface Cell {
   formatted: string;
   visible: boolean;
   datum: HeatmapCellDatum;
+  textColor: Color;
 }
 
 /** @internal */

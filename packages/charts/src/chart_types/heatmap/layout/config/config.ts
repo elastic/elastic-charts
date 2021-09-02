@@ -15,7 +15,6 @@ export const config: Config = {
   margin: { left: 0.01, right: 0.01, top: 0.01, bottom: 0.01 },
   maxRowHeight: 30,
   maxColumnWidth: 30,
-  pageBackgroundColor: '#000000', // transparent hex value because rgba value with a as 0 is invalid
   fontFamily: 'Sans-Serif',
 
   onBrushEnd: undefined,

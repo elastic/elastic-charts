@@ -10,6 +10,7 @@ import { measureText } from '../../../../common/text_utils';
 import { SettingsSpec } from '../../../../specs';
 import { RecursivePartial, mergePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
+import { Theme } from '../../../../utils/themes/theme';
 import { config as defaultConfig } from '../../layout/config/config';
 import { Config } from '../../layout/types/config_types';
 import { ShapeViewModel, nullShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -28,6 +29,7 @@ export function render(
   colorScale: ColorScale,
   bandsToHide: Array<[number, number]>,
   gridHeightParams: GridHeightParams,
+  theme: Theme,
 ): ShapeViewModel {
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
@@ -48,5 +50,6 @@ export function render(
     colorScale,
     bandsToHide,
     gridHeightParams,
+    theme,
   );
 }

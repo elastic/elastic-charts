@@ -73,18 +73,10 @@ export function renderCanvas2d(
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
             if (cell.visible)
-              renderText(
-                ctx,
-                { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 },
-                cell.formatted,
-                config.cell.label,
-                0,
-                0,
-                0,
-                1,
-                config.pageBackgroundColor,
-                cell.fill.color,
-              );
+              renderText(ctx, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, cell.formatted, {
+                ...config.cell.label,
+                textColor: cell.textColor,
+              });
           });
         }),
 
