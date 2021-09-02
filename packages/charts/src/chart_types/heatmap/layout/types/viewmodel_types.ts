@@ -36,6 +36,7 @@ export interface Cell {
   formatted: string;
   visible: boolean;
   datum: HeatmapCellDatum;
+  fontSize: number;
 }
 
 /** @internal */

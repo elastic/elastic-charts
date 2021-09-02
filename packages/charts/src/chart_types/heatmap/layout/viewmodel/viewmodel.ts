@@ -11,7 +11,7 @@ import { scaleBand, scaleQuantize } from 'd3-scale';
 
 import { stringToRGB } from '../../../../common/color_library_wrappers';
 import { Pixels } from '../../../../common/geometry';
-import { Box, TextMeasure } from '../../../../common/text_utils';
+import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
@@ -177,6 +177,9 @@ export function shapeViewModel(
     };
   });
 
+  const cellWidthNoBorder = cellWidth - gridStrokeWidth * 2;
+  const cellHeightNoBorder = cellHeight - gridStrokeWidth * 2;
+
   // compute each available cell position, color and value
   const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
     const x = xScale(String(d.x));
@@ -187,13 +190,26 @@ export function shapeViewModel(
       return acc;
     }
     const cellKey = getCellKey(d.x, d.y);
+
+    const formattedValue = spec.valueFormatter(d.value);
+
+    const fontSize = maximiseFontSize(
+      textMeasure,
+      formattedValue,
+      config.cell.label,
+      config.cell.label.fontSize - 4,
+      config.cell.label.fontSize,
+      cellWidthNoBorder,
+      cellHeightNoBorder,
+    );
+
     acc[cellKey] = {
       x:
         (config.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - config.cell.maxWidth / 2 : x) + gridStrokeWidth,
       y,
       yIndex,
-      width: cellWidth - gridStrokeWidth * 2,
-      height: cellHeight - gridStrokeWidth * 2,
+      width: cellWidthNoBorder,
+      height: cellHeightNoBorder,
       datum: d,
       fill: {
         color: stringToRGB(color),
@@ -204,7 +220,8 @@ export function shapeViewModel(
       },
       value: d.value,
       visible: !isValueHidden(d.value, bandsToHide),
-      formatted: spec.valueFormatter(d.value),
+      formatted: formattedValue,
+      fontSize,
     };
     return acc;
   }, {});
