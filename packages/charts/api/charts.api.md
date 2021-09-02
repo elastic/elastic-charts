@@ -349,8 +349,6 @@ export interface Cell {
     //
     // (undocumented)
     fill: Fill;
-    // Warning: (ae-forgotten-export) The symbol "Pixels" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     fontSize: Pixels;
     // (undocumented)
@@ -1494,6 +1492,9 @@ export const PATH_KEY = "path";
 
 // @public (undocumented)
 export function pathAccessor(n: ArrayEntry): LegendPath;
+
+// @public (undocumented)
+export type Pixels = number;
 
 // @public
 export const Placement: Readonly<{
