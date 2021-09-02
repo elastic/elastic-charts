@@ -143,9 +143,9 @@ export function colorIsDark(color: Color): boolean {
 }
 
 const colors = (r: any, g: any, b: any) => ({
-  trTg: `rgb(${255 - r}, ${255 - g}`,
-  trTgA: `rgbA(${255 - r}, ${255 - g}`,
-  tb255: `${255 - b}`,
+  rg255: `rgb(${255 - r}, ${255 - g}`,
+  rgbA255: `rgbA(${255 - r}, ${255 - g}`,
+  b255: `${255 - b}`,
 });
 
 /**
@@ -161,17 +161,13 @@ export function getTextColorIfTextInvertible(
 ): Color {
   const inverseForContrast = specifiedTextColorIsDark === backgroundIsDark;
   const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-  const { trTg, trTgA, tb255 } = colors(tr, tg, tb);
-  const trTgTb255 = `${trTg}, ${tb255})`;
-  const contrast = makeHighContrastColor.bind(null, trTgTb255);
-  const contrastOpacity = makeHighContrastColor.bind(null, `${trTgTb255}, ${to})`);
+  const { rg255, rgbA255, b255 } = colors(tr, tg, tb);
+  const rgb255 = `${rg255}, ${b255})`;
+  const contrast = makeHighContrastColor.bind(null, rgb255);
+  const contrastOpacity = makeHighContrastColor.bind(null, `${rgb255}, ${to})`);
+  const rgbA255Opacity = `${rgbA255}, ${b255}, ${to})`;
   const toUndefined = to === undefined;
-  if (!textContrast)
-    return inverseForContrast
-      ? toUndefined
-        ? `${trTgTb255})`
-        : `${trTgA}, ${tb255}, ${to})`
-      : textColor;
+  if (!textContrast) return inverseForContrast ? (toUndefined ? `${rgb255})` : rgbA255Opacity) : textColor;
   if (textContrast && typeof textContrast !== 'number')
     return inverseForContrast
       ? toUndefined
