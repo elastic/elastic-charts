@@ -542,15 +542,12 @@ export function enableDuplicatedTicks(
 export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: AxisViewModel): AxisTick[] {
   // We sort the ticks by position so that we can incrementally compute previousOccupiedSpace
   const sortedTicks = allTicks.slice().sort((a: AxisTick, b: AxisTick) => a.position - b.position);
-
-  const { showOverlappingTicks, showOverlappingLabels } = axisSpec;
-  const { maxLabelBboxHeight, maxLabelBboxWidth } = axisDim;
-  const requiredSpace = isVerticalAxis(axisSpec.position) ? maxLabelBboxHeight / 2 : maxLabelBboxWidth / 2;
+  const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
+  const requiredSpace = isVerticalAxis(position) ? axisDim.maxLabelBboxHeight / 2 : axisDim.maxLabelBboxWidth / 2;
   return showOverlappingLabels
     ? sortedTicks
     : sortedTicks.reduce(
         (prev, tick, i) => {
-          if (i && !(sortedTicks[i - 1].position <= tick.position)) throw new Error('Hey wrong sort order');
           if (tick.position >= prev.occupiedSpace + requiredSpace) {
             prev.visibleTicks.push(tick);
             prev.occupiedSpace = tick.position + requiredSpace;
