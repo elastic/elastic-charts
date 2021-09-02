@@ -16,4 +16,8 @@ describe('Heatmap stories', () => {
       { left: 300, top: 300 },
     );
   });
+  it('should maximize the label fontSize', async () => {
+    await page.setViewport({ width: 360, height: 600 });
+    await common.expectChartAtUrlToMatchScreenshot('http://localhost:9001/?path=/story/heatmap-alpha--categorical');
+  });
 });

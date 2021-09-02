@@ -89,7 +89,7 @@ export const config: Config = {
     label: {
       visible: true,
       maxWidth: 'fill',
-      minFontSize: 6,
+      minFontSize: 8,
       maxFontSize: 12,
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',
