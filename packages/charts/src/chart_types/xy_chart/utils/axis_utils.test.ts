@@ -51,6 +51,8 @@ import { computeXScale } from './scales';
 import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
 
 const NO_ROTATION = 0;
+
+// the comparisons where we use these are (unsorted) set comparisons, not (sorted) list comparisons, so we unify possibly different orders for comparisons here
 const tickSorter = (a: AxisTick, b: AxisTick) => a.position - b.position;
 const gridSorter = ([, a]: number[], [, b]: number[]) => a - b;
 
