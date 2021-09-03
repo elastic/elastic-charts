@@ -12,6 +12,8 @@ import { $Values } from 'utility-types';
 export const ON_DOM_ELEMENT_ENTER = 'ON_DOM_ELEMENT_ENTER';
 /** @internal */
 export const ON_DOM_ELEMENT_LEAVE = 'ON_DOM_ELEMENT_LEAVE';
+/** @internal */
+export const ON_DOM_ELEMENT_CLICK = 'ON_DOM_ELEMENT_CLICK';
 
 /** @internal */
 export const DOMElementType = Object.freeze({
@@ -36,6 +38,10 @@ interface DOMElementLeaveAction {
   type: typeof ON_DOM_ELEMENT_LEAVE;
 }
 
+interface DOMElementClickAction {
+  type: typeof ON_DOM_ELEMENT_CLICK;
+}
+
 /** @internal */
 export function onDOMElementLeave(): DOMElementLeaveAction {
   return { type: ON_DOM_ELEMENT_LEAVE };
@@ -44,6 +50,11 @@ export function onDOMElementLeave(): DOMElementLeaveAction {
 /** @internal */
 export function onDOMElementEnter(element: DOMElement): DOMElementEnterAction {
   return { type: ON_DOM_ELEMENT_ENTER, element };
+}
+
+/** @internal */
+export function onDOMElementClick(): DOMElementClickAction {
+  return { type: ON_DOM_ELEMENT_CLICK };
 }
 
 /** @internal */

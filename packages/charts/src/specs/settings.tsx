@@ -12,6 +12,7 @@ import { CustomXDomain, GroupByAccessor, Spec, TooltipStickTo } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
+import { LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
 import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { SeriesIdentifier } from '../common/series_id';
@@ -31,7 +32,7 @@ import {
   VerticalAlignment,
 } from '../utils/common';
 import { GeometryValue } from '../utils/geometry';
-import { GroupId } from '../utils/ids';
+import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
 import { PartialTheme, Theme } from '../utils/themes/theme';
 import {
@@ -157,7 +158,15 @@ export type PointerUpdateListener = (event: PointerEvent) => void;
 export type RenderChangeListener = (isRendered: boolean) => void;
 /** @public */
 export type BasicListener = () => undefined | void;
-
+/** @public */
+export type RectAnnotationEvent = { id: SpecId; datum: RectAnnotationDatum };
+/** @public */
+export type LineAnnotationEvent = { id: SpecId; datum: LineAnnotationDatum };
+/** @public */
+export type AnnotationClickListener = (annotations: {
+  rects: RectAnnotationEvent[];
+  lines: LineAnnotationEvent[];
+}) => void;
 /** @public */
 export interface BasePointerEvent {
   chartId: string;
@@ -511,6 +520,10 @@ export interface SettingsSpec extends Spec, LegendSpec {
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
   xDomain?: CustomXDomain;
+  /**
+   * allows user to set a click handler to the annotations
+   */
+  onAnnotationClick?: AnnotationClickListener;
 
   /**
    * debounce delay used for resizing chart

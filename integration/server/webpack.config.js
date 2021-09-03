@@ -20,14 +20,24 @@ module.exports = {
     chunkFilename: '[name].chunk.js',
     path: path.resolve(__dirname, 'packages/charts/dist'),
   },
+  infrastructureLogging: {
+    level: 'verbose',
+    debug: true,
+  },
   devServer: {
     host: '0.0.0.0',
     port: 9002,
     compress: true,
-    clientLogLevel: 'silent',
-    disableHostCheck: true,
+    client: {
+      logging: 'none',
+      overlay: false,
+      progress: false,
+    },
+    allowedHosts: 'all',
     liveReload: false,
-    stats: 'errors-only',
+    devMiddleware: {
+      stats: 'errors-only',
+    },
   },
   module: {
     rules: [

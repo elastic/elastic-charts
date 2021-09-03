@@ -9,14 +9,22 @@
 import { Selector } from 'reselect';
 
 import { ChartType } from '../../..';
-import { ProjectedValues, SettingsSpec } from '../../../../specs';
+import {
+  AnnotationType,
+  LineAnnotationDatum,
+  ProjectedValues,
+  RectAnnotationDatum,
+  SettingsSpec,
+} from '../../../../specs';
 import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { isClicking } from '../../../../state/utils';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
+import { AnnotationTooltipState } from '../../annotations/types';
 import { XYChartSeriesIdentifier } from '../../utils/series';
+import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annotations';
 import { getProjectedScaledValues } from './get_projected_scaled_values';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 
@@ -38,18 +46,27 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
       return;
     }
     selector = createCustomCachedSelector(
-      [getLastClickSelector, getSettingsSpecSelector, getHighlightedGeomsSelector, getProjectedScaledValues],
+      [
+        getLastClickSelector,
+        getSettingsSpecSelector,
+        getHighlightedGeomsSelector,
+        getProjectedScaledValues,
+        getMultipleRectangleAnnotations,
+      ],
       (
         lastClick: PointerState | null,
-        { onElementClick, onProjectionClick }: SettingsSpec,
+        { onElementClick, onProjectionClick, onAnnotationClick }: SettingsSpec,
         indexedGeometries: IndexedGeometry[],
         values,
+        tooltipStates,
       ): void => {
         if (!isClicking(prevClick, lastClick)) {
           return;
         }
         const elementClickFired = tryFiringOnElementClick(indexedGeometries, onElementClick);
-        if (!elementClickFired) {
+        if (!elementClickFired && onAnnotationClick && tooltipStates) {
+          tryFiringOnAnnotationClick(tooltipStates, onAnnotationClick, indexedGeometries);
+        } else if (!elementClickFired) {
           tryFiringOnProjectionClick(values, onProjectionClick);
         }
         prevClick = lastClick;
@@ -65,7 +82,6 @@ function tryFiringOnElementClick(
   if (indexedGeometries.length === 0 || !onElementClick) {
     return false;
   }
-
   const elements = indexedGeometries.map<[GeometryValue, XYChartSeriesIdentifier]>(({ value, seriesIdentifier }) => [
     value,
     seriesIdentifier,
@@ -83,4 +99,32 @@ function tryFiringOnProjectionClick(
   }
   onProjectionClick(values);
   return true;
+}
+
+function tryFiringOnAnnotationClick(
+  annotationState: AnnotationTooltipState[],
+  onAnnotationClick: SettingsSpec['onAnnotationClick'],
+  indexedGeometries: IndexedGeometry[],
+): boolean {
+  if (indexedGeometries.length > 0) return false;
+  if (annotationState.length > 0 && onAnnotationClick) {
+    const rects: { id: string; datum: RectAnnotationDatum }[] = [];
+    const lines: { id: string; datum: LineAnnotationDatum }[] = [];
+    annotationState.forEach((annotation) => {
+      if (annotation.annotationType === AnnotationType.Rectangle) {
+        rects.push({
+          id: annotation.id,
+          datum: annotation.datum as RectAnnotationDatum,
+        });
+      } else if (annotation.annotationType === AnnotationType.Line) {
+        lines.push({
+          id: annotation.id,
+          datum: annotation.datum as LineAnnotationDatum,
+        });
+      }
+    });
+    onAnnotationClick({ rects, lines });
+    return true;
+  }
+  return false;
 }
