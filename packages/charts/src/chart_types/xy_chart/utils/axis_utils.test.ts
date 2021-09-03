@@ -1646,7 +1646,7 @@ describe('Axis computational utils', () => {
 
       const expected = axis1Dims.tickValues.map(customFormatter);
       const axisPos = axisTicksPosition.find(({ axis: { id } }) => id === verticalAxisSpec.id);
-      expect(axisPos?.ticks.map(({ label }) => label)).toEqual(expected);
+      expect(axisPos?.ticks.map(({ label }) => label)).toIncludeSameMembers(expected);
     });
 
     it('should not use custom formatter with x axis', () => {

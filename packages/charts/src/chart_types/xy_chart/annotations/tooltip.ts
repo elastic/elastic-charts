@@ -24,7 +24,7 @@ export function computeRectAnnotationTooltipState(
   chartRotation: Rotation,
   chartDimensions: Dimensions,
 ): AnnotationTooltipState | null {
-  // allow picking up the last spec added as the top most or use it's zIndex value
+  // allow picking up the last spec added as the top most or use its zIndex value
   const sortedAnnotationSpecs = annotationSpecs
     .filter(isRectAnnotation)
     .sort(({ zIndex: a = Number.MIN_SAFE_INTEGER }, { zIndex: b = Number.MIN_SAFE_INTEGER }) => a - b);
@@ -68,7 +68,7 @@ export function computeMultipleRectAnnotationTooltipState(
   chartRotation: Rotation,
   chartDimensions: Dimensions,
 ): AnnotationTooltipState[] {
-  // allow picking up the last spec added as the top most or use it's zIndex value
+  // allow picking up the last spec added as the top most or use its zIndex value
   const sortedAnnotationSpecs = annotationSpecs
     .filter(isRectAnnotation)
     .sort(({ zIndex: a = Number.MIN_SAFE_INTEGER }, { zIndex: b = Number.MIN_SAFE_INTEGER }) => a - b);
