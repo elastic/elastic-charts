@@ -16,8 +16,8 @@ import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames'
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const filterData = boolean('filter BABYNAME_DATA', false);
-  const data = filterData ? BABYNAME_DATA : BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960);
+  const filterData = boolean('filter dataset', true);
+  const data = filterData ? BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960) : BABYNAME_DATA;
 
   return (
     <Chart>
