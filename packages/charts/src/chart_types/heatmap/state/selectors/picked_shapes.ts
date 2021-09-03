@@ -22,9 +22,9 @@ export const getPickedShapes = createCustomCachedSelector(
   (geoms, pointerPosition, gridParams): Cell[] | TextBox => {
     const picker = geoms.pickQuads;
     const { x, y } = pointerPosition;
-    const arrayPicker = picker(x, y) as Cell[];
-    return Array.isArray(picker(x, y))
-      ? arrayPicker.filter(({ y }) => y < gridParams.gridCellHeight * gridParams.pageSize)
-      : picker(x, y);
+    const pickedData = picker(x, y);
+    return Array.isArray(pickedData)
+      ? pickedData.filter(({ y }) => y < gridParams.gridCellHeight * gridParams.pageSize)
+      : pickedData;
   },
 );
