@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { Theme } from '../../../..';
 import { Dimensions } from '../../../../utils/dimensions';
+import { Theme } from '../../../../utils/themes/theme';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { WordcloudSpec } from '../../specs';
