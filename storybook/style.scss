@@ -1,9 +1,9 @@
 @import '~@elastic/eui/dist/eui_theme_light';
+@import '~@elastic/charts/src/theme_light';
 
 html {
   &.light-theme {
     @import '~@elastic/eui/dist/eui_theme_light';
-    @import '~@elastic/charts/src/theme_light';
 
     body,
     .echChart {
