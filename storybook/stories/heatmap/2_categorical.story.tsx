@@ -39,11 +39,11 @@ export const Example = () => {
         colorScale={{
           type: 'bands',
           bands: [
-            { start: -Infinity, end: 1000, color: '#ffffcc' },
-            { start: 1000, end: 5000, color: '#a1dab4' },
-            { start: 5000, end: 10000, color: '#41b6c4' },
-            { start: 10000, end: 50000, color: '#2c7fb8' },
-            { start: 50000, end: Infinity, color: '#253494' },
+            { start: -Infinity, end: 1000, color: '#AADC32' },
+            { start: 1000, end: 5000, color: '#35B779' },
+            { start: 5000, end: 10000, color: '#24868E' },
+            { start: 10000, end: 50000, color: '#3B528B' },
+            { start: 50000, end: Infinity, color: '#471164' },
           ],
         }}
         data={data}
