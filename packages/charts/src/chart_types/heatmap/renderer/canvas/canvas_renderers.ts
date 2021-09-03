@@ -72,7 +72,7 @@ export function renderCanvas2d(
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
-            if (cell.visible && !Number.isNaN(cell.fontSize))
+            if (cell.visible && Number.isFinite(cell.fontSize))
               renderText(ctx, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, cell.formatted, {
                 ...config.cell.label,
                 fontSize: cell.fontSize,

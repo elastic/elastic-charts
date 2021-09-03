@@ -177,8 +177,8 @@ export function shapeViewModel(
     };
   });
 
-  const cellWidthNoBorder = cellWidth - gridStrokeWidth * 2;
-  const cellHeightNoBorder = cellHeight - gridStrokeWidth * 2;
+  const cellWidthInner = cellWidth - gridStrokeWidth * 2;
+  const cellHeightInner = cellHeight - gridStrokeWidth * 2;
 
   // compute each available cell position, color and value
   const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
@@ -199,8 +199,8 @@ export function shapeViewModel(
       config.cell.label,
       config.cell.label.minFontSize,
       config.cell.label.maxFontSize,
-      cellWidthNoBorder,
-      cellHeightNoBorder,
+      cellWidthInner,
+      cellHeightInner,
     );
 
     acc[cellKey] = {
@@ -208,8 +208,8 @@ export function shapeViewModel(
         (config.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - config.cell.maxWidth / 2 : x) + gridStrokeWidth,
       y,
       yIndex,
-      width: cellWidthNoBorder,
-      height: cellHeightNoBorder,
+      width: cellWidthInner,
+      height: cellHeightInner,
       datum: d,
       fill: {
         color: stringToRGB(color),
