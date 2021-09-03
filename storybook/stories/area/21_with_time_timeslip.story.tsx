@@ -91,7 +91,8 @@ export const Example = () => {
       <Axis
         id="x_minor"
         position={Position.Bottom}
-        showOverlappingTicks={false}
+        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
+        showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
         tickFormat={topAxisLabelFormat}
         ticks={100}
         showGridLines={minorGridLines}
@@ -111,7 +112,8 @@ export const Example = () => {
         id="x_major"
         title="timestamp per 1 minute"
         position={Position.Bottom}
-        showOverlappingTicks={false}
+        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
+        showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
         showDuplicatedTicks={false}
         tickFormat={midAxisLabelFormatter}
         ticks={1}
@@ -130,7 +132,8 @@ export const Example = () => {
         id="x_context"
         title="time (1-minute measurements)"
         position={Position.Bottom}
-        showOverlappingTicks={false}
+        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
+        showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
         showDuplicatedTicks={false}
         tickFormat={bottomAxisLabelFormatter}
         ticks={2}
