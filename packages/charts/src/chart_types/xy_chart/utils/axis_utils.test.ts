@@ -51,6 +51,8 @@ import { computeXScale } from './scales';
 import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
 
 const NO_ROTATION = 0;
+const tickSorter = (a: AxisTick, b: AxisTick) => a.position - b.position;
+const gridSorter = ([, a]: number[], [, b]: number[]) => a - b;
 
 const getCustomStyle = (rotation = 0, padding = 10): AxisStyle =>
   mergePartial(LIGHT_THEME.axes, {
@@ -503,7 +505,7 @@ describe('Axis computational utils', () => {
       { label: '0.1', position: 90, value: 0.1 },
       { label: '0', position: 100, value: 0 },
     ];
-    expect(visibleTicks).toEqual(expectedVisibleTicks);
+    expect(visibleTicks.sort(tickSorter)).toEqual(expectedVisibleTicks.sort(tickSorter));
   });
   test('should compute visible ticks for a horizontal axis', () => {
     const allTicks = [
@@ -534,7 +536,7 @@ describe('Axis computational utils', () => {
       { label: '0', position: 100, value: 0 },
     ];
 
-    expect(visibleTicks).toEqual(expectedVisibleTicks);
+    expect(visibleTicks.sort(tickSorter)).toEqual(expectedVisibleTicks.sort(tickSorter));
   });
   test('should hide some ticks', () => {
     const allTicks = [
@@ -570,7 +572,7 @@ describe('Axis computational utils', () => {
       { label: '0.2', position: 80, value: 0.2 },
       { label: '0', position: 100, value: 0 },
     ];
-    expect(visibleTicks).toEqual(expectedVisibleTicks);
+    expect(visibleTicks.sort(tickSorter)).toEqual(expectedVisibleTicks.sort(tickSorter));
   });
   test('should show all overlapping ticks and labels if configured to', () => {
     const allTicks = [
@@ -614,7 +616,7 @@ describe('Axis computational utils', () => {
       { label: '0.1', position: 90, value: 0.1 },
       { label: '0', position: 100, value: 0 },
     ];
-    expect(visibleOverlappingTicks).toEqual(expectedVisibleOverlappingTicks);
+    expect(visibleOverlappingTicks.sort(tickSorter)).toEqual(expectedVisibleOverlappingTicks.sort(tickSorter));
 
     verticalAxisSpec.showOverlappingTicks = true;
     verticalAxisSpec.showOverlappingLabels = false;
@@ -632,7 +634,9 @@ describe('Axis computational utils', () => {
       { label: '', position: 90, value: 0.1 },
       { label: '0', position: 100, value: 0 },
     ];
-    expect(visibleOverlappingTicksAndLabels).toEqual(expectedVisibleOverlappingTicksAndLabels);
+    expect(visibleOverlappingTicksAndLabels.sort(tickSorter)).toEqual(
+      expectedVisibleOverlappingTicksAndLabels.sort(tickSorter),
+    );
   });
   test('should compute min max range for on 0 deg bottom', () => {
     const minMax = getMinMaxRange(Position.Bottom, 0, {
@@ -1223,7 +1227,9 @@ describe('Axis computational utils', () => {
 
     const [{ lines }] = gridLines[0].lineGroups;
 
-    expect(lines.map(({ x1, y1, x2, y2 }) => [x1, y1, x2, y2])).toEqual(expectedVerticalAxisGridLines);
+    expect(lines.map(({ x1, y1, x2, y2 }) => [x1, y1, x2, y2]).sort(gridSorter)).toEqual(
+      expectedVerticalAxisGridLines.sort(gridSorter),
+    );
 
     const axisTicksPositionWithTopLegend = computeAxesGeometriesSelector(store.getState());
 

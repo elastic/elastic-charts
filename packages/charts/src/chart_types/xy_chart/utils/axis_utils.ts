@@ -542,20 +542,21 @@ export function enableDuplicatedTicks(
 export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: AxisViewModel): AxisTick[] {
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? axisDim.maxLabelBboxHeight / 2 : axisDim.maxLabelBboxWidth / 2;
-  const sortedTicks = allTicks.slice().sort((a: AxisTick, b: AxisTick) => a.position - b.position);
   return showOverlappingLabels
-    ? sortedTicks
-    : sortedTicks.reduce(
-        (prev, tick) => {
-          const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
-          if (tickLabelFits || showOverlappingTicks) {
-            prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, label: '' });
-            if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
-          }
-          return prev;
-        },
-        { visibleTicks: [] as AxisTick[], occupiedSpace: -Infinity },
-      ).visibleTicks;
+    ? allTicks
+    : [...allTicks]
+        .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
+        .reduce(
+          (prev, tick) => {
+            const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
+            if (tickLabelFits || showOverlappingTicks) {
+              prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, label: '' });
+              if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
+            }
+            return prev;
+          },
+          { visibleTicks: [] as AxisTick[], occupiedSpace: -Infinity },
+        ).visibleTicks;
 }
 
 /** @internal */
