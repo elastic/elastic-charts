@@ -588,12 +588,7 @@ export function getAxisPosition(
   const { position } = axisSpec;
   const { maxLabelBboxHeight, maxLabelBboxWidth } = axisDim;
   const { top, left, height, width } = chartDimensions;
-  const dimensions = {
-    top,
-    left,
-    width,
-    height,
-  };
+  const dimensions = { top, left, width, height };
   let topIncrement = 0;
   let bottomIncrement = 0;
   let leftIncrement = 0;
