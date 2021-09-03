@@ -7,6 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Heatmap, Settings } from '@elastic/charts';
@@ -15,7 +16,8 @@ import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames'
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const data = BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960);
+  const filterData = boolean('filter dataset', true);
+  const data = filterData ? BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960) : BABYNAME_DATA;
 
   return (
     <Chart>
