@@ -40,6 +40,7 @@ type TickValue = number | string;
 export interface AxisTick {
   value: TickValue;
   label: string;
+  axisTickLabel: string;
   position: number;
 }
 
@@ -501,19 +502,24 @@ export function getAvailableTicks(
   const offset =
     (enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2) + (scale.isSingleValue() ? 0 : rotationOffset);
   const tickFormatter = axisSpec.tickFormat ?? fallBackTickFormatter;
+  const labelFormatter = axisSpec.labelFormat ?? tickFormatter;
 
   if (isSingleValueScale && hasAdditionalTicks) {
     const [firstTickValue] = ticks;
+    const firstLabel = tickFormatter(firstTickValue, tickFormatOptions);
     const firstTick = {
       value: firstTickValue,
-      label: tickFormatter(firstTickValue, tickFormatOptions),
+      label: firstLabel,
+      axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
       position: (scale.scale(firstTickValue) ?? 0) + offset,
     };
 
     const lastTickValue = firstTickValue + scale.minInterval;
+    const lastLabel = tickFormatter(lastTickValue, tickFormatOptions);
     const lastTick = {
       value: lastTickValue,
-      label: tickFormatter(lastTickValue, tickFormatOptions),
+      label: lastLabel,
+      axisTickLabel: labelFormatter(lastTickValue, tickFormatOptions),
       position: scale.bandwidth + halfPadding * 2,
     };
 
@@ -533,7 +539,9 @@ export function enableDuplicatedTicks(
   const allTicks: AxisTick[] = scale.ticks().map((tick) => ({
     value: tick,
     // TODO handle empty string tick formatting
+    // Nick is this ^^^ now handled here? vvv Or you meant sg else?
     label: (axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
+    axisTickLabel: (axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
     position: (scale.scale(tick) ?? 0) + offset,
   }));
   return axisSpec.showDuplicatedTicks ? allTicks : getUniqueValues(allTicks, 'label', true);
@@ -551,7 +559,7 @@ export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDi
           (prev, tick) => {
             const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
             if (tickLabelFits || showOverlappingTicks) {
-              prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, label: '' });
+              prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, axisTickLabel: '' });
               if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
             }
             return prev;
