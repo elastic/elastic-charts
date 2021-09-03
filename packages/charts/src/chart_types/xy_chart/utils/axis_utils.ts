@@ -26,6 +26,7 @@ import { Point } from '../../../utils/point';
 import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
 import { XDomain, YDomain } from '../domains/types';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
+import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { getSpecsById } from '../state/utils/spec';
 import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
@@ -654,7 +655,7 @@ export function getAxesGeometries(
   { chartPaddings, chartMargins, axes: sharedAxesStyle }: Theme,
   chartRotation: Rotation,
   axisSpecs: AxisSpec[],
-  axisDimensions: Map<AxisId, AxisViewModel>,
+  axisDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
   xDomain: XDomain,
   yDomains: YDomain[],
@@ -808,7 +809,7 @@ export function getAxesGeometries(
 export const hasDuplicateAxis = (
   { position, title }: AxisSpec,
   { tickLabels }: AxisViewModel,
-  tickMap: Map<AxisId, AxisViewModel>,
+  tickMap: AxesTicksDimensions,
   specs: AxisSpec[],
 ): boolean =>
   [...tickMap].some(([axisId, { tickLabels: axisTickLabels }]) => {

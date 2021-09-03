@@ -299,7 +299,7 @@ const getSortedDataSeries = (
   xValues: Set<string | number>,
   xScaleType: ScaleType,
 ): DataSeries[] =>
-  dataSeries.map(({ data, ...rest }) => ({
+  [...dataSeries].map(({ data, ...rest }) => ({
     ...rest,
     data: data.sort(datumXSortPredicate(xScaleType, [...xValues.values()])),
   }));
@@ -490,8 +490,7 @@ function getSeriesNameFromOptions(
   }
 
   return (
-    options.names
-      .slice()
+    [...options.names]
       .sort(({ sortIndex: a = BIG_NUMBER }, { sortIndex: b = BIG_NUMBER }) => a - b)
       .map(({ accessor, value, name }) => {
         const accessorValue = splitAccessors.get(accessor) ?? null;
@@ -570,7 +569,7 @@ export function getSeriesColors(
 ): Map<SeriesKey, Color> {
   const seriesColorMap = new Map<SeriesKey, Color>();
   let counter = 0;
-  const sortedDataSeries = dataSeries.slice().sort((a, b) => a.insertIndex - b.insertIndex);
+  const sortedDataSeries = [...dataSeries].sort((a, b) => a.insertIndex - b.insertIndex);
   groupBy(
     sortedDataSeries,
     (ds) => {

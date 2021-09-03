@@ -27,8 +27,7 @@ export function computeRectAnnotationTooltipState(
   // allow picking up the last spec added as the top most or use it's zIndex value
   const sortedAnnotationSpecs = annotationSpecs
     .filter(isRectAnnotation)
-    .reverse()
-    .sort(({ zIndex: a = Number.MIN_SAFE_INTEGER }, { zIndex: b = Number.MIN_SAFE_INTEGER }) => b - a);
+    .sort(({ zIndex: a = Number.MIN_SAFE_INTEGER }, { zIndex: b = Number.MIN_SAFE_INTEGER }) => a - b);
 
   for (let i = 0; i < sortedAnnotationSpecs.length; i++) {
     const spec = sortedAnnotationSpecs[i];
@@ -72,8 +71,7 @@ export function computeMultipleRectAnnotationTooltipState(
   // allow picking up the last spec added as the top most or use it's zIndex value
   const sortedAnnotationSpecs = annotationSpecs
     .filter(isRectAnnotation)
-    .reverse()
-    .sort(({ zIndex: a = Number.MIN_SAFE_INTEGER }, { zIndex: b = Number.MIN_SAFE_INTEGER }) => b - a);
+    .sort(({ zIndex: a = Number.MIN_SAFE_INTEGER }, { zIndex: b = Number.MIN_SAFE_INTEGER }) => a - b);
   return sortedAnnotationSpecs.reduce<AnnotationTooltipState[]>((acc, spec) => {
     const annotationDimension = annotationDimensions.get(spec.id);
     if (!spec.hideTooltips && annotationDimension) {

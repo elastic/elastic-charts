@@ -20,6 +20,9 @@ import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 /** @internal */
+export type AxesTicksDimensions = Map<AxisId, AxisViewModel>;
+
+/** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
   [
     getBarPaddingsSelector,
@@ -42,34 +45,36 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
     totalBarsInCluster,
     seriesSpecs,
     axesStyles,
-  ): Map<AxisId, AxisViewModel> => {
+  ): AxesTicksDimensions => {
     const { xDomain, yDomains } = seriesDomainsAndData;
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
-    return withTextMeasure((textMeasure) => {
-      const axesTicksDimensions: Map<AxisId, AxisViewModel> = new Map();
-      axesSpecs.forEach((axisSpec) => {
-        const { id } = axisSpec;
-        const axisStyle = axesStyles.get(id) ?? chartTheme.axes;
-        const dimensions = axisViewModel(
-          axisSpec,
-          xDomain,
-          yDomains,
-          totalBarsInCluster,
-          textMeasure,
-          settingsSpec.rotation,
-          axisStyle,
-          fallBackTickFormatter,
-          barsPadding,
-          isHistogramMode,
-        );
-        if (
-          dimensions &&
-          (!settingsSpec.hideDuplicateAxes || !hasDuplicateAxis(axisSpec, dimensions, axesTicksDimensions, axesSpecs))
-        ) {
-          axesTicksDimensions.set(id, dimensions);
-        }
-      });
-      return axesTicksDimensions;
-    });
+    return withTextMeasure(
+      (textMeasure): AxesTicksDimensions => {
+        const axesTicksDimensions: AxesTicksDimensions = new Map();
+        axesSpecs.forEach((axisSpec) => {
+          const { id } = axisSpec;
+          const axisStyle = axesStyles.get(id) ?? chartTheme.axes;
+          const dimensions = axisViewModel(
+            axisSpec,
+            xDomain,
+            yDomains,
+            totalBarsInCluster,
+            textMeasure,
+            settingsSpec.rotation,
+            axisStyle,
+            fallBackTickFormatter,
+            barsPadding,
+            isHistogramMode,
+          );
+          if (
+            dimensions &&
+            (!settingsSpec.hideDuplicateAxes || !hasDuplicateAxis(axisSpec, dimensions, axesTicksDimensions, axesSpecs))
+          ) {
+            axesTicksDimensions.set(id, dimensions);
+          }
+        });
+        return axesTicksDimensions;
+      },
+    );
   },
 );

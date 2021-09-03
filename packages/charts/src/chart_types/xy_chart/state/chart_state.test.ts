@@ -9,10 +9,10 @@
 import { ChartType } from '../..';
 import { SpecType } from '../../../specs/constants';
 import { Position, RecursivePartial } from '../../../utils/common';
-import { AxisId } from '../../../utils/ids';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { AxisViewModel, hasDuplicateAxis } from '../utils/axis_utils';
 import { AxisSpec } from '../utils/specs';
+import { AxesTicksDimensions } from './selectors/compute_axis_ticks_dimensions';
 
 const style: RecursivePartial<AxisStyle> = {
   tickLine: {
@@ -49,11 +49,11 @@ describe('isDuplicateAxis', () => {
     maxLabelTextHeight: 1,
     isHidden: false,
   };
-  let tickMap: Map<AxisId, AxisViewModel>;
+  let tickMap: AxesTicksDimensions;
   let specMap: AxisSpec[];
 
   beforeEach(() => {
-    tickMap = new Map<AxisId, AxisViewModel>();
+    tickMap = new Map();
     specMap = [];
   });
 

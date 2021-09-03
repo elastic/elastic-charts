@@ -9,6 +9,7 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable jest/no-conditional-expect */
 
+import 'jest-extended';
 import React from 'react';
 import { Store } from 'redux';
 
@@ -1289,7 +1290,7 @@ describe('Clickable annotations', () => {
 
     expect(onAnnotationClick).toBeCalled();
     const callArgs = onAnnotationClick.mock.calls[0][0];
-    expect(callArgs.rects).toEqual([
+    expect(callArgs.rects).toIncludeSameMembers([
       {
         id: 'rect2',
         datum: {

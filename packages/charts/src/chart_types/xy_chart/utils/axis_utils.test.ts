@@ -9,6 +9,7 @@
 import { DateTime } from 'luxon';
 import moment from 'moment-timezone';
 
+import 'jest-extended';
 import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store/store';
@@ -20,11 +21,14 @@ import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator
 import { Position, mergePartial } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { OrdinalDomain } from '../../../utils/domain';
-import { AxisId, GroupId } from '../../../utils/ids';
+import { GroupId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { AxisStyle, TextOffset } from '../../../utils/themes/theme';
 import { computeAxesGeometriesSelector } from '../state/selectors/compute_axes_geometries';
-import { computeAxisTicksDimensionsSelector } from '../state/selectors/compute_axis_ticks_dimensions';
+import {
+  AxesTicksDimensions,
+  computeAxisTicksDimensionsSelector,
+} from '../state/selectors/compute_axis_ticks_dimensions';
 import { getScale, SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { getAxesStylesSelector } from '../state/selectors/get_axis_styles';
 import { computeGridLinesSelector } from '../state/selectors/get_grid_lines';
@@ -1163,7 +1167,7 @@ describe('Axis computational utils', () => {
   test('should not compute axis ticks positions if missaligned specs', () => {
     const axisSpecs = [verticalAxisSpec];
     const axisStyles = new Map();
-    const axisDims = new Map<AxisId, AxisViewModel>();
+    const axisDims: AxesTicksDimensions = new Map();
     axisDims.set('not_a_mapped_one', axis1Dims);
 
     const axisTicksPosition = getAxesGeometries(
