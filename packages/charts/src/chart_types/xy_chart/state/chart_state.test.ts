@@ -41,7 +41,6 @@ describe('isDuplicateAxis', () => {
     groupId: 'group_2',
   };
   const axisTicksDimensions: AxisViewModel = {
-    tickValues: [],
     tickLabels: ['10', '20', '30'],
     maxLabelBboxWidth: 1,
     maxLabelBboxHeight: 1,

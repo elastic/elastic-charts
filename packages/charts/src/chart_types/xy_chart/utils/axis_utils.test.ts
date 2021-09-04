@@ -49,7 +49,6 @@ import {
   getVisibleTicks,
   isYDomain,
   enableDuplicatedTicks,
-  defaultTickFormatter,
 } from './axis_utils';
 import { computeXScale } from './scales';
 import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
@@ -100,7 +99,6 @@ describe('Axis computational utils', () => {
     left: 0,
   };
   const axis1Dims = {
-    tickValues: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
     tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
     maxLabelBboxWidth: 10,
     maxLabelBboxHeight: 10,
@@ -351,7 +349,6 @@ describe('Axis computational utils', () => {
     maxLabelTextHeight: 100,
     maxLabelTextWidth: 100,
     tickLabels: [],
-    tickValues: [],
     isHidden: false,
   };
   const offset: TextOffset = {
@@ -557,7 +554,6 @@ describe('Axis computational utils', () => {
     const axis2Dims = {
       axisScaleType: ScaleType.Linear,
       axisScaleDomain: [0, 1],
-      tickValues: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
       tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
       maxLabelBboxWidth: 10,
       maxLabelBboxHeight: 20,
@@ -593,7 +589,6 @@ describe('Axis computational utils', () => {
     const axis2Dims = {
       axisScaleType: ScaleType.Linear,
       axisScaleDomain: [0, 1],
-      tickValues: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
       tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
       maxLabelBboxWidth: 10,
       maxLabelBboxHeight: 20,
@@ -1616,105 +1611,6 @@ describe('Axis computational utils', () => {
       { value: 1547553600000, label: '2019-01-15', axisTickLabel: '2019-01-15', position: 507.9458333333333 },
       { value: 1547596800000, label: '2019-01-16', axisTickLabel: '2019-01-16', position: 568.2958333333333 },
     ]);
-  });
-
-  describe('Custom formatting', () => {
-    it('should get custom labels for y axis', () => {
-      const customFormatter = (v: any) => `${v} custom`;
-      const axisSpecs = [verticalAxisSpec];
-      const axesStyles = new Map();
-      const axisDims = new Map();
-      axisDims.set(verticalAxisSpec.id, axis1Dims);
-
-      const axisTicksPosition = getAxesGeometries(
-        {
-          chartDimensions: chartDim,
-          leftMargin: 0,
-        },
-        LIGHT_THEME,
-        NO_ROTATION,
-        axisSpecs,
-        axisDims,
-        axesStyles,
-        xDomain,
-        [yDomain],
-        emptySmScales,
-        1,
-        false,
-        customFormatter,
-      );
-
-      const expected = axis1Dims.tickValues.map(customFormatter);
-      const axisPos = axisTicksPosition.find(({ axis: { id } }) => id === verticalAxisSpec.id);
-      expect(axisPos?.ticks.map(({ label }) => label)).toIncludeSameMembers(expected);
-    });
-
-    it('should not use custom formatter with x axis', () => {
-      const customFotmatter = (v: any) => `${v} custom`;
-      const axisSpecs = [horizontalAxisSpec];
-      const axesStyles = new Map();
-      const axisDims = new Map();
-      axisDims.set(horizontalAxisSpec.id, axis1Dims);
-
-      const axisTicksPosition = getAxesGeometries(
-        {
-          chartDimensions: chartDim,
-          leftMargin: 0,
-        },
-        LIGHT_THEME,
-        NO_ROTATION,
-        axisSpecs,
-        axisDims,
-        axesStyles,
-        xDomain,
-        [yDomain],
-        emptySmScales,
-        1,
-        false,
-        customFotmatter,
-      );
-
-      const expected = axis1Dims.tickValues.slice().map(defaultTickFormatter);
-      expect(
-        axisTicksPosition.find(({ axis: { id } }) => id === horizontalAxisSpec.id)!.ticks.map(({ label }) => label),
-      ).toEqual(expected);
-    });
-
-    it('should use custom axis tick formatter to get labels for x axis', () => {
-      const customFotmatter = (v: any) => `${v} custom`;
-      const customAxisFotmatter = (v: any) => `${v} custom`;
-      const spec: AxisSpec = {
-        ...horizontalAxisSpec,
-        tickFormat: customAxisFotmatter,
-      };
-      const axisSpecs = [spec];
-      const axesStyles = new Map();
-      const axisDims = new Map();
-      axisDims.set(spec.id, axis1Dims);
-
-      const axisTicksPosition = getAxesGeometries(
-        {
-          chartDimensions: chartDim,
-          leftMargin: 0,
-        },
-        LIGHT_THEME,
-        NO_ROTATION,
-        axisSpecs,
-        axisDims,
-        axesStyles,
-        xDomain,
-        [yDomain],
-        emptySmScales,
-        1,
-        false,
-        customFotmatter,
-      );
-
-      const expected = axis1Dims.tickValues.slice().map(customAxisFotmatter);
-      expect(axisTicksPosition.find(({ axis: { id } }) => id === spec.id)!.ticks.map(({ label }) => label)).toEqual(
-        expected,
-      );
-    });
   });
 
   describe('Small multiples', () => {

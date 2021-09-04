@@ -46,7 +46,6 @@ export interface AxisTick {
 
 /** @internal */
 export interface AxisViewModel {
-  tickValues: TickValue[];
   tickLabels: string[];
   maxLabelBboxWidth: number;
   maxLabelBboxHeight: number;
@@ -118,9 +117,7 @@ export function axisViewModel(
 
   const tickFormat = axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
   const tickFormatOptions = { timeZone: xDomain.timeZone };
-
-  const tickValues = scale.ticks();
-  const tickLabels = tickValues.map((d) => tickFormat(d, tickFormatOptions));
+  const tickLabels = scale.ticks().map((d) => tickFormat(d, tickFormatOptions));
 
   let maxLabelBboxWidth = 0;
   let maxLabelBboxHeight = 0;
@@ -143,7 +140,6 @@ export function axisViewModel(
     maxLabelBboxHeight,
     maxLabelTextWidth,
     maxLabelTextHeight,
-    tickValues,
     tickLabels,
     isHidden: axisSpec.hide && gridLineVisible,
   };

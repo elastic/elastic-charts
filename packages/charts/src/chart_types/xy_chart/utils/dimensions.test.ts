@@ -39,7 +39,6 @@ describe('Computed chart dimensions', () => {
   };
 
   const axis1Dims: AxisViewModel = {
-    tickValues: [0, 1],
     tickLabels: ['first', 'second'],
     maxLabelBboxWidth: 10,
     maxLabelBboxHeight: 10,
