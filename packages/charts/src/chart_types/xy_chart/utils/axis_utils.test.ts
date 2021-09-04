@@ -99,7 +99,7 @@ describe('Axis computational utils', () => {
     left: 0,
   };
   const axis1Dims = {
-    tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
+    tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'].join('|'),
     maxLabelBboxWidth: 10,
     maxLabelBboxHeight: 10,
     maxLabelTextWidth: 10,
@@ -279,8 +279,8 @@ describe('Axis computational utils', () => {
         (v) => `${v}`,
       );
       expect(axisDimensions).not.toBeNull();
-      expect(axisDimensions?.tickLabels[0]).toBe('11:00:00');
-      expect(axisDimensions?.tickLabels[11]).toBe('11:55:00');
+      expect(axisDimensions?.tickLabels.slice(0, 9)).toBe('11:00:00|');
+      expect(axisDimensions?.tickLabels.slice(-9)).toBe('|11:55:00');
 
       axisDimensions = axisViewModel(
         xAxisWithTime,
@@ -293,8 +293,8 @@ describe('Axis computational utils', () => {
         (v) => `${v}`,
       );
       expect(axisDimensions).not.toBeNull();
-      expect(axisDimensions?.tickLabels[0]).toBe('14:00:00');
-      expect(axisDimensions?.tickLabels[11]).toBe('14:55:00');
+      expect(axisDimensions?.tickLabels.slice(0, 9)).toBe('14:00:00|');
+      expect(axisDimensions?.tickLabels.slice(-9)).toBe('|14:55:00');
 
       axisDimensions = axisViewModel(
         xAxisWithTime,
@@ -307,8 +307,8 @@ describe('Axis computational utils', () => {
         (v) => `${v}`,
       );
       expect(axisDimensions).not.toBeNull();
-      expect(axisDimensions?.tickLabels[0]).toBe('08:00:00');
-      expect(axisDimensions?.tickLabels[11]).toBe('08:55:00');
+      expect(axisDimensions?.tickLabels.slice(0, 9)).toBe('08:00:00|');
+      expect(axisDimensions?.tickLabels.slice(-9)).toBe('|08:55:00');
     });
   });
 
@@ -348,7 +348,7 @@ describe('Axis computational utils', () => {
     maxLabelBboxHeight: 100,
     maxLabelTextHeight: 100,
     maxLabelTextWidth: 100,
-    tickLabels: [],
+    tickLabels: '',
     isHidden: false,
   };
   const offset: TextOffset = {
@@ -554,7 +554,7 @@ describe('Axis computational utils', () => {
     const axis2Dims = {
       axisScaleType: ScaleType.Linear,
       axisScaleDomain: [0, 1],
-      tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
+      tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'].join('|'),
       maxLabelBboxWidth: 10,
       maxLabelBboxHeight: 20,
       maxLabelTextWidth: 10,
@@ -589,7 +589,7 @@ describe('Axis computational utils', () => {
     const axis2Dims = {
       axisScaleType: ScaleType.Linear,
       axisScaleDomain: [0, 1],
-      tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'],
+      tickLabels: ['0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1'].join('|'),
       maxLabelBboxWidth: 10,
       maxLabelBboxHeight: 20,
       maxLabelTextWidth: 10,

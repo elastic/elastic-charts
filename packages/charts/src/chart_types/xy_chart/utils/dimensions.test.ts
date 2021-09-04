@@ -39,7 +39,7 @@ describe('Computed chart dimensions', () => {
   };
 
   const axis1Dims: AxisViewModel = {
-    tickLabels: ['first', 'second'],
+    tickLabels: ['first', 'second'].join('|'),
     maxLabelBboxWidth: 10,
     maxLabelBboxHeight: 10,
     maxLabelTextWidth: 10,

@@ -41,7 +41,7 @@ describe('isDuplicateAxis', () => {
     groupId: 'group_2',
   };
   const axisTicksDimensions: AxisViewModel = {
-    tickLabels: ['10', '20', '30'],
+    tickLabels: ['10', '20', '30'].join('|'),
     maxLabelBboxWidth: 1,
     maxLabelBboxHeight: 1,
     maxLabelTextWidth: 1,
@@ -86,7 +86,7 @@ describe('isDuplicateAxis', () => {
   it('should return true with single tick', () => {
     const newAxisTicksDimensions = {
       ...axisTicksDimensions,
-      tickLabels: ['10'],
+      tickLabels: '10',
     };
     tickMap.set(AXIS_2_ID, newAxisTicksDimensions);
     specMap.push(axis2);
@@ -134,7 +134,7 @@ describe('isDuplicateAxis', () => {
   it('should return false if tickFormat is different', () => {
     tickMap.set(AXIS_2_ID, {
       ...axisTicksDimensions,
-      tickLabels: ['10%', '20%', '30%'],
+      tickLabels: ['10%', '20%', '30%'].join('|'),
     });
     specMap.push(axis2);
 
@@ -146,7 +146,7 @@ describe('isDuplicateAxis', () => {
   it('should return false if tick label count is different', () => {
     tickMap.set(AXIS_2_ID, {
       ...axisTicksDimensions,
-      tickLabels: ['10', '20', '25', '30'],
+      tickLabels: ['10', '20', '25', '30'].join('|'),
     });
     specMap.push(axis2);
 
