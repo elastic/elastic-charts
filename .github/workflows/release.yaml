@@ -62,7 +62,8 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
-
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       - name: Lint check
         run: yarn lint
       - name: Prettier check
@@ -90,7 +91,8 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
-
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       - name: Build library
         run: yarn build
 

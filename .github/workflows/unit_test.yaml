@@ -12,7 +12,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-      - uses: bahmutov/npm-install@HEAD
+      - name: Install node_modules
+        uses: bahmutov/npm-install@HEAD
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       - name: TimeZone testing
         run: yarn test:tz --ci
       - name: Testing
