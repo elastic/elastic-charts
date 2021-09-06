@@ -57,50 +57,40 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
     return withTextMeasure(
       (textMeasure): AxesTicksDimensions =>
         axesSpecs.reduce<AxesTicksDimensions>((axesTicksDimensions, axisSpec) => {
-          const { id } = axisSpec;
+          const { id, hide, position, labelFormat: axisLabelFormat, tickFormat: axisTickFormat } = axisSpec;
           const { gridLine, tickLabel } = axesStyles.get(id) ?? chartTheme.axes;
-          const gridLineVisible = isVerticalAxis(axisSpec.position)
-            ? gridLine.vertical.visible
-            : gridLine.horizontal.visible;
-
-          if (axisSpec.hide && !gridLineVisible) {
-            return axesTicksDimensions; // don't compute anything on this axis if grid is hidden and axis is hidden
+          const gridLineVisible = isVerticalAxis(position) ? gridLine.vertical.visible : gridLine.horizontal.visible;
+          if (gridLineVisible || !hide) {
+            const scale = getScaleForAxisSpec(
+              axisSpec,
+              xDomain,
+              yDomains,
+              totalBarsInCluster,
+              settingsSpec.rotation,
+              [0, 1],
+              barsPadding,
+              isHistogramMode,
+            );
+            if (scale) {
+              const tickFormat = axisLabelFormat ?? axisTickFormat ?? fallBackTickFormatter;
+              const tickLabels = scale.ticks().map((d) => tickFormat(d, { timeZone: xDomain.timeZone }));
+              const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
+                (sizes, labelText) => {
+                  const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
+                  const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
+                  sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
+                  sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
+                  sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
+                  sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
+                  return sizes;
+                },
+                { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
+              );
+              axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible });
+            } else {
+              Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
+            }
           }
-
-          const scale = getScaleForAxisSpec(
-            axisSpec,
-            xDomain,
-            yDomains,
-            totalBarsInCluster,
-            settingsSpec.rotation,
-            [0, 1],
-            barsPadding,
-            isHistogramMode,
-          );
-
-          if (!scale) {
-            Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
-            return axesTicksDimensions;
-          }
-
-          const tickFormat = axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
-          const tickFormatOptions = { timeZone: xDomain.timeZone };
-          const tickLabels = scale.ticks().map((d) => tickFormat(d, tickFormatOptions));
-
-          const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
-            (sizes, labelText) => {
-              const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
-              const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
-              sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
-              sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
-              sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
-              sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
-              return sizes;
-            },
-            { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
-          );
-
-          axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible });
           return axesTicksDimensions;
         }, new Map()),
     );
