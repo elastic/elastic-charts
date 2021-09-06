@@ -257,34 +257,27 @@ export function getTickLabelProps(
     userOffsets.local.x;
   const textOffsetY = getVerticalTextOffset(maxLabelTextHeight, verticalAlign) + userOffsets.local.y;
 
-  if (isVerticalAxis(position)) {
-    const x = isLeftAxis ? axisSize.width - tickDimension - labelInnerPadding : tickDimension + labelInnerPadding;
-    const offsetX = (isLeftAxis ? -1 : 1) * (maxLabelBboxWidth / 2);
-
-    return {
-      x,
-      y: tickPosition,
-      offsetX: offsetX + userOffsets.global.x,
-      offsetY: userOffsets.global.y,
-      textOffsetY,
-      textOffsetX,
-      horizontalAlign,
-      verticalAlign,
-    };
-  }
-
-  const offsetY = isAxisTop ? -maxLabelBboxHeight / 2 : maxLabelBboxHeight / 2;
-
-  return {
-    x: tickPosition,
-    y: isAxisTop ? axisSize.height - tickDimension - labelInnerPadding : tickDimension + labelInnerPadding,
-    offsetX: userOffsets.global.x,
-    offsetY: offsetY + userOffsets.global.y,
-    textOffsetX,
-    textOffsetY,
-    horizontalAlign,
-    verticalAlign,
-  };
+  return isVerticalAxis(position)
+    ? {
+        x: isLeftAxis ? axisSize.width - tickDimension - labelInnerPadding : tickDimension + labelInnerPadding,
+        y: tickPosition,
+        offsetX: (isLeftAxis ? -1 : 1) * (maxLabelBboxWidth / 2) + userOffsets.global.x,
+        offsetY: userOffsets.global.y,
+        textOffsetY,
+        textOffsetX,
+        horizontalAlign,
+        verticalAlign,
+      }
+    : {
+        x: tickPosition,
+        y: isAxisTop ? axisSize.height - tickDimension - labelInnerPadding : tickDimension + labelInnerPadding,
+        offsetX: userOffsets.global.x,
+        offsetY: (isAxisTop ? -maxLabelBboxHeight / 2 : maxLabelBboxHeight / 2) + userOffsets.global.y,
+        textOffsetX,
+        textOffsetY,
+        horizontalAlign,
+        verticalAlign,
+      };
 }
 
 /** @internal */
@@ -298,7 +291,6 @@ export function getVerticalAxisTickLineProps(
   const y = tickPosition;
   const x1 = isLeftAxis ? axisWidth : 0;
   const x2 = isLeftAxis ? axisWidth - tickSize : tickSize;
-
   return { x1, y1: y, x2, y2: y };
 }
 
@@ -313,7 +305,6 @@ export function getHorizontalAxisTickLineProps(
   const x = tickPosition;
   const y1 = isTopAxis ? axisHeight - tickSize : 0;
   const y2 = isTopAxis ? axisHeight : tickSize;
-
   return { x1: x, y1, x2: x, y2 };
 }
 
