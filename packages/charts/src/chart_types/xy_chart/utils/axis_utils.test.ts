@@ -40,7 +40,6 @@ import {
   getAvailableTicks,
   getAxisPosition,
   getAxesGeometries,
-  getMinMaxRange,
   getTickLabelProps,
   getVisibleTicks,
   isXDomain,
@@ -540,55 +539,6 @@ describe('Axis computational utils', () => {
       { label: '0', axisTickLabel: '0', position: 100, value: 0 },
     ];
     expect(visibleOverlappingTicksAndLabels).toIncludeSameMembers(expectedVisibleOverlappingTicksAndLabels);
-  });
-  test('should compute min max range for on 0 deg bottom', () => {
-    const minMax = getMinMaxRange(Position.Bottom, 0, {
-      width: 100,
-      height: 50,
-    });
-    expect(minMax).toEqual({ minRange: 0, maxRange: 100 });
-  });
-  test('should compute min max range for on 90 deg bottom', () => {
-    const minMax = getMinMaxRange(Position.Bottom, 90, {
-      width: 100,
-      height: 50,
-    });
-    expect(minMax).toEqual({ minRange: 0, maxRange: 100 });
-  });
-  test('should compute min max range for on 180 deg bottom', () => {
-    const minMax = getMinMaxRange(Position.Bottom, 180, {
-      width: 100,
-      height: 50,
-    });
-    expect(minMax).toEqual({ minRange: 100, maxRange: 0 });
-  });
-  test('should compute min max range for on -90 deg bottom', () => {
-    const minMax = getMinMaxRange(Position.Bottom, -90, {
-      width: 100,
-      height: 50,
-    });
-    expect(minMax).toEqual({ minRange: 100, maxRange: 0 });
-  });
-  test('should compute min max range for on 90 deg Left', () => {
-    const minMax = getMinMaxRange(Position.Left, 90, {
-      width: 100,
-      height: 50,
-    });
-    expect(minMax).toEqual({ minRange: 0, maxRange: 50 });
-  });
-  test('should compute min max range for on 180 deg Left', () => {
-    const minMax = getMinMaxRange(Position.Left, 180, {
-      width: 100,
-      height: 50,
-    });
-    expect(minMax).toEqual({ minRange: 0, maxRange: 50 });
-  });
-  test('should compute min max range for on -90 deg Right', () => {
-    const minMax = getMinMaxRange(Position.Right, -90, {
-      width: 100,
-      height: 50,
-    });
-    expect(minMax).toEqual({ minRange: 50, maxRange: 0 });
   });
 
   test('should compute positions and alignment of tick labels along a vertical axis', () => {

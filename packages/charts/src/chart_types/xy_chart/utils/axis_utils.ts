@@ -272,8 +272,7 @@ export function getTickLabelProps(
       };
 }
 
-/** @internal */
-export function getMinMaxRange(
+function axisExtent(
   axisPosition: Position,
   chartRotation: Rotation,
   { width, height }: Size,
@@ -574,7 +573,7 @@ export function getAxesGeometries(
     }
 
     const isVertical = isVerticalAxis(axisSpec.position);
-    const { minRange, maxRange } = getMinMaxRange(axisSpec.position, chartRotation, panel);
+    const { minRange, maxRange } = axisExtent(axisSpec.position, chartRotation, panel);
     const scale = getScaleFunction(axisSpec, [minRange, maxRange]);
 
     if (!scale) {
