@@ -11,7 +11,14 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { AxisId } from '../../../../utils/ids';
-import { axisViewModel, AxisViewModel, defaultTickFormatter } from '../../utils/axis_utils';
+import { Logger } from '../../../../utils/logger';
+import { isVerticalAxis } from '../../utils/axis_type_utils';
+import {
+  AxisViewModel,
+  computeRotatedLabelDimensions,
+  defaultTickFormatter,
+  getScaleForAxisSpec,
+} from '../../utils/axis_utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
@@ -53,19 +60,53 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
         const axesTicksDimensions: AxesTicksDimensions = new Map();
         axesSpecs.forEach((axisSpec) => {
           const { id } = axisSpec;
-          const axisStyle = axesStyles.get(id) ?? chartTheme.axes;
-          const dimensions = axisViewModel(
-            axisSpec,
-            xDomain,
-            yDomains,
-            totalBarsInCluster,
-            textMeasure,
-            settingsSpec.rotation,
-            axisStyle,
-            fallBackTickFormatter,
-            barsPadding,
-            isHistogramMode,
-          );
+          const { gridLine, tickLabel } = axesStyles.get(id) ?? chartTheme.axes;
+          const chartRotation = settingsSpec.rotation;
+          const dimensions = (() => {
+            const gridLineVisible = isVerticalAxis(axisSpec.position)
+              ? gridLine.vertical.visible
+              : gridLine.horizontal.visible;
+
+            // don't compute anything on this axis if grid is hidden and axis is hidden
+            if (axisSpec.hide && !gridLineVisible) {
+              return null;
+            }
+
+            const scale = getScaleForAxisSpec(
+              axisSpec,
+              xDomain,
+              yDomains,
+              totalBarsInCluster,
+              chartRotation,
+              [0, 1],
+              barsPadding,
+              isHistogramMode,
+            );
+
+            if (!scale) {
+              Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
+              return null;
+            }
+
+            const tickFormat = axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
+            const tickFormatOptions = { timeZone: xDomain.timeZone };
+            const tickLabels = scale.ticks().map((d) => tickFormat(d, tickFormatOptions));
+
+            const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
+              (sizes, labelText) => {
+                const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
+                const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
+                sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
+                sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
+                sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
+                sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
+                return sizes;
+              },
+              { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
+            );
+
+            return { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible };
+          })();
           if (dimensions) axesTicksDimensions.set(id, dimensions);
         });
         return axesTicksDimensions;

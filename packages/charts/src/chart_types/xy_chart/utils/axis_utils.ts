@@ -89,7 +89,7 @@ export function axisViewModel(
   { gridLine, tickLabel }: AxisStyle,
   fallBackTickFormatter: TickFormatter,
   barsPadding?: number,
-  enableHistogramMode?: boolean,
+  isHistogramMode?: boolean,
 ): AxisViewModel | null {
   const gridLineVisible = isVerticalAxis(axisSpec.position) ? gridLine.vertical.visible : gridLine.horizontal.visible;
 
@@ -106,7 +106,7 @@ export function axisViewModel(
     chartRotation,
     [0, 1],
     barsPadding,
-    enableHistogramMode,
+    isHistogramMode,
   );
 
   if (!scale) {
