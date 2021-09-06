@@ -8,7 +8,8 @@
 
 import { Line } from '../../../geoms/types';
 import { Scale } from '../../../scales';
-import { BBox, TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
+import { SettingsSpec } from '../../../specs';
+import { BBox } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import {
   degToRad,
   getPercentageValue,
@@ -21,7 +22,6 @@ import {
 import { Dimensions, innerPad, Margins, outerPad, Size } from '../../../utils/dimensions';
 import { Range } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
-import { Logger } from '../../../utils/logger';
 import { Point } from '../../../utils/point';
 import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
 import { XDomain, YDomain } from '../domains/types';
@@ -29,6 +29,7 @@ import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { getSpecsById } from '../state/utils/spec';
+import { SeriesDomainsAndData } from '../state/utils/types';
 import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { getPanelSize, hasSMDomain } from './panel';
 import { computeXScale, computeYScales } from './scales';
@@ -74,66 +75,6 @@ export interface TickLabelProps {
 /** @internal */
 export const defaultTickFormatter = (tick: unknown) => `${tick}`;
 
-/**
- * Compute the ticks values and identify max width and height of the labels
- * so we can compute the max space occupied by the axis component.
- * @internal
- */
-export function axisViewModel(
-  axisSpec: AxisSpec,
-  xDomain: XDomain,
-  yDomains: YDomain[],
-  totalBarsInCluster: number,
-  textMeasure: TextMeasure,
-  chartRotation: Rotation,
-  { gridLine, tickLabel }: AxisStyle,
-  fallBackTickFormatter: TickFormatter,
-  barsPadding?: number,
-  isHistogramMode?: boolean,
-): AxisViewModel | null {
-  const gridLineVisible = isVerticalAxis(axisSpec.position) ? gridLine.vertical.visible : gridLine.horizontal.visible;
-
-  // don't compute anything on this axis if grid is hidden and axis is hidden
-  if (axisSpec.hide && !gridLineVisible) {
-    return null;
-  }
-
-  const scale = getScaleForAxisSpec(
-    axisSpec,
-    xDomain,
-    yDomains,
-    totalBarsInCluster,
-    chartRotation,
-    [0, 1],
-    barsPadding,
-    isHistogramMode,
-  );
-
-  if (!scale) {
-    Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
-    return null;
-  }
-
-  const tickFormat = axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
-  const tickFormatOptions = { timeZone: xDomain.timeZone };
-  const tickLabels = scale.ticks().map((d) => tickFormat(d, tickFormatOptions));
-
-  const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
-    (sizes, labelText) => {
-      const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
-      const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
-      sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
-      sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
-      sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
-      sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
-      return sizes;
-    },
-    { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
-  );
-
-  return { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible };
-}
-
 /** @internal */
 export function isYDomain(position: Position, chartRotation: Rotation): boolean {
   return isVerticalAxis(position) === (chartRotation % 180 === 0);
@@ -141,18 +82,16 @@ export function isYDomain(position: Position, chartRotation: Rotation): boolean 
 
 /** @internal */
 export function getScaleForAxisSpec(
-  { groupId, integersOnly, position }: AxisSpec,
-  xDomain: XDomain,
-  yDomains: YDomain[],
+  { xDomain, yDomains }: Pick<SeriesDomainsAndData, 'xDomain' | 'yDomains'>,
+  { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
   totalBarsInCluster: number,
-  chartRotation: Rotation,
-  range: Range,
   barsPadding?: number,
   enableHistogramMode?: boolean,
-): Scale | null {
-  return isYDomain(position, chartRotation)
-    ? computeYScales({ yDomains, range, integersOnly }).get(groupId) ?? null
-    : computeXScale({ xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly });
+) {
+  return ({ groupId, integersOnly, position }: Pick<AxisSpec, 'groupId' | 'integersOnly' | 'position'>, range: Range) =>
+    isYDomain(position, chartRotation)
+      ? computeYScales({ yDomains, range, integersOnly }).get(groupId) ?? null
+      : computeXScale({ xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly });
 }
 
 /** @internal */
@@ -161,18 +100,11 @@ export function computeRotatedLabelDimensions(unrotatedDims: BBox, degreesRotati
   const radians = degToRad(degreesRotation);
   const rotatedHeight = Math.abs(width * Math.sin(radians)) + Math.abs(height * Math.cos(radians));
   const rotatedWidth = Math.abs(width * Math.cos(radians)) + Math.abs(height * Math.sin(radians));
-
-  return {
-    width: rotatedWidth,
-    height: rotatedHeight,
-  };
+  return { width: rotatedWidth, height: rotatedHeight };
 }
 
 function getUserTextOffsets(dimensions: AxisViewModel, offset: TextOffset) {
-  const defaults = {
-    x: 0,
-    y: 0,
-  };
+  const defaults = { x: 0, y: 0 };
 
   if (offset.reference === 'global') {
     return {
@@ -722,6 +654,14 @@ export function getAxesGeometries(
     },
   ).pos;
 
+  const getScaleFunction = getScaleForAxisSpec(
+    { xDomain, yDomains },
+    { rotation: chartRotation },
+    totalGroupsCount,
+    barsPadding,
+    enableHistogramMode,
+  );
+
   axisDimensions.forEach((axisDim, id) => {
     const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
     const anchorPoint = anchorPointByAxisGroups.get(id);
@@ -732,18 +672,8 @@ export function getAxesGeometries(
     }
 
     const isVertical = isVerticalAxis(axisSpec.position);
-    const minMaxRanges = getMinMaxRange(axisSpec.position, chartRotation, panel);
-
-    const scale = getScaleForAxisSpec(
-      axisSpec,
-      xDomain,
-      yDomains,
-      totalGroupsCount,
-      chartRotation,
-      [minMaxRanges.minRange, minMaxRanges.maxRange],
-      barsPadding,
-      enableHistogramMode,
-    );
+    const { minRange, maxRange } = getMinMaxRange(axisSpec.position, chartRotation, panel);
+    const scale = getScaleFunction(axisSpec, [minRange, maxRange]);
 
     if (!scale) {
       throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);

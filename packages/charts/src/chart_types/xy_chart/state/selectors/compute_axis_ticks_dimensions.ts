@@ -10,13 +10,15 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { Range } from '../../../../utils/domain';
 import { AxisId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
-import { AxisViewModel, computeRotatedLabelDimensions, defaultTickFormatter, isYDomain } from '../../utils/axis_utils';
-import { computeXScale, computeYScales } from '../../utils/scales';
-import { AxisSpec } from '../../utils/specs';
+import {
+  AxisViewModel,
+  computeRotatedLabelDimensions,
+  defaultTickFormatter,
+  getScaleForAxisSpec,
+} from '../../utils/axis_utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
@@ -24,40 +26,32 @@ import { getBarPaddingsSelector } from './get_bar_paddings';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
-const RANGE: Range = [0, 1];
-
 /** @internal */
 export type AxesTicksDimensions = Map<AxisId, AxisViewModel>;
+
+const getScaleFunction = createCustomCachedSelector(
+  [
+    computeSeriesDomainsSelector,
+    getSettingsSpecSelector,
+    countBarsInClusterSelector,
+    getBarPaddingsSelector,
+    isHistogramModeEnabledSelector,
+  ],
+  getScaleForAxisSpec,
+);
 
 /** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
   [
-    getBarPaddingsSelector,
-    isHistogramModeEnabledSelector,
+    getScaleFunction,
     getAxisSpecsSelector,
     getChartThemeSelector,
-    getSettingsSpecSelector,
-    computeSeriesDomainsSelector,
-    countBarsInClusterSelector,
     getSeriesSpecsSelector,
     getAxesStylesSelector,
+    computeSeriesDomainsSelector,
   ],
-  (
-    barsPadding,
-    enableHistogramMode,
-    axesSpecs,
-    chartTheme,
-    { rotation: chartRotation },
-    { xDomain, yDomains },
-    totalBarsInCluster,
-    seriesSpecs,
-    axesStyles,
-  ): AxesTicksDimensions => {
+  (getScale, axesSpecs, chartTheme, seriesSpecs, axesStyles, { xDomain: { timeZone } }): AxesTicksDimensions => {
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
-    const getScale = ({ groupId, integersOnly, position }: AxisSpec) =>
-      isYDomain(position, chartRotation)
-        ? computeYScales({ yDomains, range: RANGE, integersOnly }).get(groupId) ?? null
-        : computeXScale({ xDomain, totalBarsInCluster, range: RANGE, barsPadding, enableHistogramMode, integersOnly });
     return withTextMeasure(
       (textMeasure): AxesTicksDimensions =>
         axesSpecs.reduce<AxesTicksDimensions>((axesTicksDimensions, axisSpec) => {
@@ -65,10 +59,10 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
           const { gridLine, tickLabel } = axesStyles.get(id) ?? chartTheme.axes;
           const gridLineVisible = isVerticalAxis(position) ? gridLine.vertical.visible : gridLine.horizontal.visible;
           if (gridLineVisible || !hide) {
-            const scale = getScale(axisSpec);
+            const scale = getScale(axisSpec, [0, 1]);
             if (scale) {
               const tickFormat = axisLabelFormat ?? axisTickFormat ?? fallBackTickFormatter;
-              const tickLabels = scale.ticks().map((d) => tickFormat(d, { timeZone: xDomain.timeZone }));
+              const tickLabels = scale.ticks().map((d) => tickFormat(d, { timeZone }));
               const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
                 (sizes, labelText) => {
                   const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);

@@ -18,7 +18,6 @@ import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
-import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position, mergePartial } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { OrdinalDomain } from '../../../utils/domain';
@@ -37,19 +36,18 @@ import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_
 import {
   AxisTick,
   AxisViewModel,
-  axisViewModel,
   computeRotatedLabelDimensions,
   getAvailableTicks,
   getAxisPosition,
   getAxesGeometries,
   getHorizontalAxisTickLineProps,
   getMinMaxRange,
-  getScaleForAxisSpec,
   getTickLabelProps,
   getVerticalAxisTickLineProps,
   getVisibleTicks,
   isYDomain,
   enableDuplicatedTicks,
+  getScaleForAxisSpec,
 } from './axis_utils';
 import { computeXScale } from './scales';
 import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
@@ -149,22 +147,6 @@ describe('Axis computational utils', () => {
     showGridLines: true,
     integersOnly: false,
   });
-  const xAxisWithTime = MockGlobalSpec.axis({
-    chartType: ChartType.XYAxis,
-    specType: SpecType.Axis,
-    id: 'axis_1',
-    groupId: 'group_1',
-    title: 'v axis',
-    hide: false,
-    showOverlappingTicks: false,
-    showOverlappingLabels: false,
-    position: Position.Bottom,
-    style,
-    tickFormat: niceTimeFormatter([1551438000000, 1551441300000]),
-    showGridLines: true,
-    integersOnly: false,
-  });
-
   const lineSeriesSpec = MockSeriesSpec.line({
     id: 'line',
     groupId: 'group_1',
@@ -211,101 +193,6 @@ describe('Axis computational utils', () => {
       },
     });
 
-  const { axes } = LIGHT_THEME;
-
-  test('should compute axis dimensions', () =>
-    withTextMeasure((textMeasure) => {
-      const axisDimensions = axisViewModel(
-        verticalAxisSpec,
-        xDomain,
-        [yDomain],
-        1,
-        textMeasure,
-        NO_ROTATION,
-        axes,
-        (v) => `${v}`,
-      );
-      expect(axisDimensions).toEqual({ ...axis1Dims, maxLabelBboxWidth: 16, maxLabelTextWidth: 16 }); // textMeasure defaults
-
-      const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
-      const result = axisViewModel(
-        ungroupedAxisSpec,
-        xDomain,
-        [yDomain],
-        1,
-        textMeasure,
-        NO_ROTATION,
-        axes,
-        (v) => `${v}`,
-        undefined,
-        false,
-      );
-
-      expect(result).toBeNull();
-    }));
-
-  test('should not compute axis dimensions when spec is configured to hide', () =>
-    withTextMeasure((textMeasure) => {
-      verticalAxisSpec.hide = true;
-      const axisDimensions = axisViewModel(
-        verticalAxisSpec,
-        xDomain,
-        [yDomain],
-        1,
-        textMeasure,
-        NO_ROTATION,
-        axes,
-        (v) => `${v}`,
-      );
-      expect(axisDimensions).toBe(null);
-    }));
-
-  test('should compute axis dimensions with timeZone', () => {
-    withTextMeasure((textMeasure) => {
-      const xDomain = MockXDomain.fromScaleType(ScaleType.Time, {
-        domain: [1551438000000, 1551441300000],
-        isBandScale: false,
-        minInterval: 0,
-        timeZone: 'utc',
-      });
-      let axisDimensions = axisViewModel(
-        xAxisWithTime,
-        xDomain,
-        [yDomain],
-        1,
-        textMeasure,
-        NO_ROTATION,
-        axes,
-        (v) => `${v}`,
-      );
-      expect(axisDimensions).not.toBeNull();
-
-      axisDimensions = axisViewModel(
-        xAxisWithTime,
-        { ...xDomain, timeZone: 'utc+3' },
-        [yDomain],
-        1,
-        textMeasure,
-        NO_ROTATION,
-        axes,
-        (v) => `${v}`,
-      );
-      expect(axisDimensions).not.toBeNull();
-
-      axisDimensions = axisViewModel(
-        xAxisWithTime,
-        { ...xDomain, timeZone: 'utc-3' },
-        [yDomain],
-        1,
-        textMeasure,
-        NO_ROTATION,
-        axes,
-        (v) => `${v}`,
-      );
-      expect(axisDimensions).not.toBeNull();
-    });
-  });
-
   test('should compute dimensions for the bounding box containing a rotated label', () => {
     expect(computeRotatedLabelDimensions({ width: 1, height: 2 }, 0)).toEqual({
       width: 1,
@@ -322,7 +209,11 @@ describe('Axis computational utils', () => {
   });
 
   test('should generate a valid scale', () => {
-    const yScale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, [100, 0]);
+    const yScale = getScaleForAxisSpec(
+      { xDomain, yDomains: [yDomain] },
+      { rotation: 0 },
+      0,
+    )(verticalAxisSpec, [100, 0]);
     expect(yScale).toBeDefined();
     expect(yScale?.bandwidth).toBe(0);
     expect(yScale?.domain).toEqual([0, 1]);
@@ -330,10 +221,18 @@ describe('Axis computational utils', () => {
     expect(yScale?.ticks()).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
 
     const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
-    const nullYScale = getScaleForAxisSpec(ungroupedAxisSpec, xDomain, [yDomain], 0, 0, [100, 0]);
+    const nullYScale = getScaleForAxisSpec(
+      { xDomain, yDomains: [yDomain] },
+      { rotation: 0 },
+      0,
+    )(ungroupedAxisSpec, [100, 0]);
     expect(nullYScale).toBe(null);
 
-    const xScale = getScaleForAxisSpec(horizontalAxisSpec, xDomain, [yDomain], 0, 0, [100, 0]);
+    const xScale = getScaleForAxisSpec(
+      { xDomain, yDomains: [yDomain] },
+      { rotation: 0 },
+      0,
+    )(horizontalAxisSpec, [100, 0]);
     expect(xScale).toBeDefined();
   });
 
@@ -352,7 +251,11 @@ describe('Axis computational utils', () => {
 
   describe('getAvailableTicks', () => {
     test('should compute to end of domain when histogram mode not enabled', () => {
-      const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, [100, 0]);
+      const scale = getScaleForAxisSpec(
+        { xDomain, yDomains: [yDomain] },
+        { rotation: 0 },
+        0,
+      )(verticalAxisSpec, [100, 0]);
       const axisPositions = getAvailableTicks(verticalAxisSpec, scale!, 0, false, (v) => `${v}`, 0);
       const expectedAxisPositions = [
         { label: '0', axisTickLabel: '0', position: 100, value: 0 },
@@ -372,7 +275,11 @@ describe('Axis computational utils', () => {
 
     test('should compute positions with rotational offset', () => {
       const rotationalOffset = 2;
-      const scale = getScaleForAxisSpec(verticalAxisSpec, xDomain, [yDomain], 0, 0, [100, 0]);
+      const scale = getScaleForAxisSpec(
+        { xDomain, yDomains: [yDomain] },
+        { rotation: 0 },
+        0,
+      )(verticalAxisSpec, [100, 0]);
       const axisPositions = getAvailableTicks(verticalAxisSpec, scale!, 0, false, (v) => `${v}`, rotationalOffset);
       const expectedAxisPositions = [
         { label: '0', axisTickLabel: '0', position: 100 + rotationalOffset, value: 0 },
@@ -397,7 +304,11 @@ describe('Axis computational utils', () => {
         isBandScale: true,
         minInterval: 10,
       });
-      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, [100, 0]);
+      const xScale = getScaleForAxisSpec(
+        { xDomain: xBandDomain, yDomains: [yDomain] },
+        { rotation: 0 },
+        1,
+      )(horizontalAxisSpec, [100, 0]);
       const histogramAxisPositions = getAvailableTicks(
         horizontalAxisSpec,
         xScale!,
@@ -417,7 +328,11 @@ describe('Axis computational utils', () => {
         isBandScale: true,
         minInterval: 90000,
       });
-      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, [100, 0]);
+      const xScale = getScaleForAxisSpec(
+        { xDomain: xBandDomain, yDomains: [yDomain] },
+        { rotation: 0 },
+        1,
+      )(horizontalAxisSpec, [100, 0]);
       const histogramAxisPositions = getAvailableTicks(
         horizontalAxisSpec,
         xScale!,
@@ -454,7 +369,11 @@ describe('Axis computational utils', () => {
         isBandScale: true,
         minInterval: 90000,
       });
-      const xScale = getScaleForAxisSpec(horizontalAxisSpec, xBandDomain, [yDomain], 1, 0, [100, 0]);
+      const xScale = getScaleForAxisSpec(
+        { xDomain: xBandDomain, yDomains: [yDomain] },
+        { rotation: 0 },
+        1,
+      )(horizontalAxisSpec, [100, 0]);
       const histogramAxisPositions = getAvailableTicks(
         horizontalAxisSpec,
         xScale!,
@@ -981,7 +900,7 @@ describe('Axis computational utils', () => {
       x: 10,
     });
     expect(verticalAxisSpecWTitleGeoms?.size).toEqual({
-      width: 30,
+      width: 50,
       height: 100,
     });
   });
