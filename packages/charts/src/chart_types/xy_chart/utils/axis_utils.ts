@@ -255,27 +255,21 @@ export function getTickLabelProps(
     (isHorizontalAxis(position) && rotation === 0 ? 0 : getHorizontalTextOffset(maxLabelTextWidth, horizontalAlign)) +
     userOffsets.local.x;
   const textOffsetY = getVerticalTextOffset(maxLabelTextHeight, verticalAlign) + userOffsets.local.y;
-
+  const rest = { textOffsetX, textOffsetY, horizontalAlign, verticalAlign };
   return isVerticalAxis(position)
     ? {
         x: isLeftAxis ? axisSize.width - tickDimension - labelInnerPadding : tickDimension + labelInnerPadding,
         y: tickPosition,
         offsetX: (isLeftAxis ? -1 : 1) * (maxLabelBboxWidth / 2) + userOffsets.global.x,
         offsetY: userOffsets.global.y,
-        textOffsetY,
-        textOffsetX,
-        horizontalAlign,
-        verticalAlign,
+        ...rest,
       }
     : {
         x: tickPosition,
         y: isAxisTop ? axisSize.height - tickDimension - labelInnerPadding : tickDimension + labelInnerPadding,
         offsetX: userOffsets.global.x,
         offsetY: (isAxisTop ? -maxLabelBboxHeight / 2 : maxLabelBboxHeight / 2) + userOffsets.global.y,
-        textOffsetX,
-        textOffsetY,
-        horizontalAlign,
-        verticalAlign,
+        ...rest,
       };
 }
 
