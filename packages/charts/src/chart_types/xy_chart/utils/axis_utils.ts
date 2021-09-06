@@ -103,26 +103,22 @@ export function computeRotatedLabelDimensions(unrotatedDims: BBox, degreesRotati
   return { width: rotatedWidth, height: rotatedHeight };
 }
 
-function getUserTextOffsets(dimensions: AxisViewModel, offset: TextOffset) {
-  const defaults = { x: 0, y: 0 };
-
-  if (offset.reference === 'global') {
-    return {
-      local: defaults,
-      global: {
-        x: getPercentageValue(offset.x, dimensions.maxLabelBboxWidth, 0),
-        y: getPercentageValue(offset.y, dimensions.maxLabelBboxHeight, 0),
-      },
-    };
-  }
-
-  return {
-    global: defaults,
-    local: {
-      x: getPercentageValue(offset.x, dimensions.maxLabelTextWidth, 0),
-      y: getPercentageValue(offset.y, dimensions.maxLabelTextHeight, 0),
-    },
-  };
+function getUserTextOffsets(dimensions: AxisViewModel, { x, y, reference }: TextOffset) {
+  return reference === 'global'
+    ? {
+        local: { x: 0, y: 0 },
+        global: {
+          x: getPercentageValue(x, dimensions.maxLabelBboxWidth, 0),
+          y: getPercentageValue(y, dimensions.maxLabelBboxHeight, 0),
+        },
+      }
+    : {
+        local: {
+          x: getPercentageValue(x, dimensions.maxLabelTextWidth, 0),
+          y: getPercentageValue(y, dimensions.maxLabelTextHeight, 0),
+        },
+        global: { x: 0, y: 0 },
+      };
 }
 
 function getHorizontalTextOffset(
@@ -132,15 +128,11 @@ function getHorizontalTextOffset(
     typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Center | typeof HorizontalAlignment.Right
   >,
 ): number {
-  switch (alignment) {
-    case HorizontalAlignment.Left:
-      return -width / 2;
-    case HorizontalAlignment.Right:
-      return width / 2;
-    case HorizontalAlignment.Center:
-    default:
-      return 0;
-  }
+  return {
+    [HorizontalAlignment.Left]: -width / 2,
+    [HorizontalAlignment.Right]: width / 2,
+    [HorizontalAlignment.Center]: 0,
+  }[alignment];
 }
 
 function getVerticalTextOffset(
@@ -150,15 +142,11 @@ function getVerticalTextOffset(
     typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom
   >,
 ): number {
-  switch (alignment) {
-    case VerticalAlignment.Top:
-      return -height / 2;
-    case VerticalAlignment.Bottom:
-      return height / 2;
-    case VerticalAlignment.Middle:
-    default:
-      return 0;
-  }
+  return {
+    [VerticalAlignment.Top]: -height / 2,
+    [VerticalAlignment.Bottom]: height / 2,
+    [VerticalAlignment.Middle]: 0,
+  }[alignment];
 }
 
 function getHorizontalAlign(
