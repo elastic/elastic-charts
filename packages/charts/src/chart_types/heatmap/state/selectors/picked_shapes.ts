@@ -10,6 +10,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { Cell, TextBox } from '../../layout/types/viewmodel_types';
 import { geometries } from './geometries';
+import { getGridHeightParamsSelector } from './get_grid_full_height';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;
@@ -17,10 +18,13 @@ function getCurrentPointerPosition(state: GlobalChartState) {
 
 /** @internal */
 export const getPickedShapes = createCustomCachedSelector(
-  [geometries, getCurrentPointerPosition],
-  (geoms, pointerPosition): Cell[] | TextBox => {
+  [geometries, getCurrentPointerPosition, getGridHeightParamsSelector],
+  (geoms, pointerPosition, gridParams): Cell[] | TextBox => {
     const picker = geoms.pickQuads;
     const { x, y } = pointerPosition;
-    return picker(x, y);
+    const pickedData = picker(x, y);
+    return Array.isArray(pickedData)
+      ? pickedData.filter(({ y }) => y < gridParams.gridCellHeight * gridParams.pageSize)
+      : pickedData;
   },
 );
