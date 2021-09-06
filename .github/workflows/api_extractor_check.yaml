@@ -14,6 +14,8 @@ jobs:
           node-version: '14.x'
       - name: Install dependencies
         run: yarn --frozen-lockfile
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       - name: Run API-Extractor
         run: yarn api:check
       - name: API-Extractor failure
