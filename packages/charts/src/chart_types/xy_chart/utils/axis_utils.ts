@@ -119,30 +119,20 @@ export function axisViewModel(
   const tickFormatOptions = { timeZone: xDomain.timeZone };
   const tickLabels = scale.ticks().map((d) => tickFormat(d, tickFormatOptions));
 
-  let maxLabelBboxWidth = 0;
-  let maxLabelBboxHeight = 0;
-  let maxLabelTextWidth = 0;
-  let maxLabelTextHeight = 0;
-
-  if (tickLabel.visible) {
-    for (const labelText of tickLabels) {
+  const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
+    (sizes, labelText) => {
       const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
       const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
-      maxLabelBboxWidth = Math.max(maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
-      maxLabelBboxHeight = Math.max(maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
-      maxLabelTextWidth = Math.max(maxLabelTextWidth, Math.ceil(bbox.width));
-      maxLabelTextHeight = Math.max(maxLabelTextHeight, Math.ceil(bbox.height));
-    }
-  }
+      sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
+      sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
+      sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
+      sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
+      return sizes;
+    },
+    { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
+  );
 
-  return {
-    maxLabelBboxWidth,
-    maxLabelBboxHeight,
-    maxLabelTextWidth,
-    maxLabelTextHeight,
-    tickLabels: tickLabels.join('|'),
-    isHidden: axisSpec.hide && gridLineVisible,
-  };
+  return { ...maxLabelSizes, tickLabels: tickLabels.join('|'), isHidden: axisSpec.hide && gridLineVisible };
 }
 
 /** @internal */
