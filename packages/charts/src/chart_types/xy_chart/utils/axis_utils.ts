@@ -313,55 +313,14 @@ export function getMinMaxRange(
   axisPosition: Position,
   chartRotation: Rotation,
   { width, height }: Size,
-): {
-  minRange: number;
-  maxRange: number;
-} {
-  switch (axisPosition) {
-    case Position.Bottom:
-    case Position.Top:
-      return getBottomTopAxisMinMaxRange(chartRotation, width);
-    case Position.Left:
-    case Position.Right:
-    default:
-      return getLeftAxisMinMaxRange(chartRotation, height);
-  }
-}
-
-function getBottomTopAxisMinMaxRange(chartRotation: Rotation, width: number) {
-  switch (chartRotation) {
-    case 90:
-      // dealing with y domain
-      return { minRange: 0, maxRange: width };
-    case -90:
-      // dealing with y domain
-      return { minRange: width, maxRange: 0 };
-    case 180:
-      // dealing with x domain
-      return { minRange: width, maxRange: 0 };
-    case 0:
-    default:
-      // dealing with x domain
-      return { minRange: 0, maxRange: width };
-  }
-}
-
-function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) {
-  switch (chartRotation) {
-    case 90:
-      // dealing with x domain
-      return { minRange: 0, maxRange: height };
-    case -90:
-      // dealing with x domain
-      return { minRange: height, maxRange: 0 };
-    case 180:
-      // dealing with y domain
-      return { minRange: 0, maxRange: height };
-    case 0:
-    default:
-      // dealing with y domain
-      return { minRange: height, maxRange: 0 };
-  }
+): { minRange: number; maxRange: number } {
+  const horizontal = isHorizontalAxis(axisPosition);
+  const flipped = horizontal
+    ? chartRotation === -90 || chartRotation === 180
+    : chartRotation === 90 || chartRotation === 180;
+  return horizontal
+    ? { minRange: flipped ? width : 0, maxRange: flipped ? 0 : width }
+    : { minRange: flipped ? 0 : height, maxRange: flipped ? height : 0 };
 }
 
 /** @internal */
