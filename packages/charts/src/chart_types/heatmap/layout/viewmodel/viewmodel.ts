@@ -199,8 +199,9 @@ export function shapeViewModel(
       config.cell.label,
       config.cell.label.minFontSize,
       config.cell.label.maxFontSize,
-      cellWidthInner,
-      cellHeightInner,
+      // adding 4px padding per side to avoid that text touches the edges
+      cellWidthInner - 8,
+      cellHeightInner - 8,
     );
 
     acc[cellKey] = {
