@@ -10,21 +10,21 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { Range } from '../../../../utils/domain';
 import { AxisId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
-import {
-  AxisViewModel,
-  computeRotatedLabelDimensions,
-  defaultTickFormatter,
-  getScaleForAxisSpec,
-} from '../../utils/axis_utils';
+import { AxisViewModel, computeRotatedLabelDimensions, defaultTickFormatter, isYDomain } from '../../utils/axis_utils';
+import { computeXScale, computeYScales } from '../../utils/scales';
+import { AxisSpec } from '../../utils/specs';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
+
+const RANGE: Range = [0, 1];
 
 /** @internal */
 export type AxesTicksDimensions = Map<AxisId, AxisViewModel>;
@@ -44,16 +44,20 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
   ],
   (
     barsPadding,
-    isHistogramMode,
+    enableHistogramMode,
     axesSpecs,
     chartTheme,
-    settingsSpec,
+    { rotation: chartRotation },
     { xDomain, yDomains },
     totalBarsInCluster,
     seriesSpecs,
     axesStyles,
   ): AxesTicksDimensions => {
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
+    const getScale = ({ groupId, integersOnly, position }: AxisSpec) =>
+      isYDomain(position, chartRotation)
+        ? computeYScales({ yDomains, range: RANGE, integersOnly }).get(groupId) ?? null
+        : computeXScale({ xDomain, totalBarsInCluster, range: RANGE, barsPadding, enableHistogramMode, integersOnly });
     return withTextMeasure(
       (textMeasure): AxesTicksDimensions =>
         axesSpecs.reduce<AxesTicksDimensions>((axesTicksDimensions, axisSpec) => {
@@ -61,16 +65,7 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
           const { gridLine, tickLabel } = axesStyles.get(id) ?? chartTheme.axes;
           const gridLineVisible = isVerticalAxis(position) ? gridLine.vertical.visible : gridLine.horizontal.visible;
           if (gridLineVisible || !hide) {
-            const scale = getScaleForAxisSpec(
-              axisSpec,
-              xDomain,
-              yDomains,
-              totalBarsInCluster,
-              settingsSpec.rotation,
-              [0, 1],
-              barsPadding,
-              isHistogramMode,
-            );
+            const scale = getScale(axisSpec);
             if (scale) {
               const tickFormat = axisLabelFormat ?? axisTickFormat ?? fallBackTickFormatter;
               const tickLabels = scale.ticks().map((d) => tickFormat(d, { timeZone: xDomain.timeZone }));
