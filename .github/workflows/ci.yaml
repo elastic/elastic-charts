@@ -48,6 +48,8 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
 
   eslint:
     name: Eslint
@@ -67,6 +69,8 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       # -----------------------------------
 
       - name: Eslint check
@@ -90,6 +94,8 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       # -----------------------------------
 
       - name: Prettier check
@@ -113,6 +119,8 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       # -----------------------------------
 
       - name: Run API-Extractor
@@ -144,6 +152,8 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       # -----------------------------------
 
       - name: TimeZone tests
@@ -170,6 +180,8 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       # -----------------------------------
 
       - name: Building storybook
