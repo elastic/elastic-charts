@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { Line } from '../../../geoms/types';
 import { Scale } from '../../../scales';
 import { SettingsSpec } from '../../../specs';
 import { BBox } from '../../../utils/bbox/canvas_text_bbox_calculator';
@@ -271,34 +270,6 @@ export function getTickLabelProps(
         offsetY: (isAxisTop ? -maxLabelBboxHeight / 2 : maxLabelBboxHeight / 2) + userOffsets.global.y,
         ...rest,
       };
-}
-
-/** @internal */
-export function getVerticalAxisTickLineProps(
-  position: Position,
-  axisWidth: number,
-  tickSize: number,
-  tickPosition: number,
-): Line {
-  const isLeftAxis = position === Position.Left;
-  const y = tickPosition;
-  const x1 = isLeftAxis ? axisWidth : 0;
-  const x2 = isLeftAxis ? axisWidth - tickSize : tickSize;
-  return { x1, y1: y, x2, y2: y };
-}
-
-/** @internal */
-export function getHorizontalAxisTickLineProps(
-  position: Position,
-  axisHeight: number,
-  tickSize: number,
-  tickPosition: number,
-): Line {
-  const isTopAxis = position === Position.Top;
-  const x = tickPosition;
-  const y1 = isTopAxis ? axisHeight - tickSize : 0;
-  const y2 = isTopAxis ? axisHeight : tickSize;
-  return { x1: x, y1, x2: x, y2 };
 }
 
 /** @internal */

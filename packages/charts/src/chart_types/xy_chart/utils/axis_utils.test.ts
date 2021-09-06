@@ -40,10 +40,8 @@ import {
   getAvailableTicks,
   getAxisPosition,
   getAxesGeometries,
-  getHorizontalAxisTickLineProps,
   getMinMaxRange,
   getTickLabelProps,
-  getVerticalAxisTickLineProps,
   getVisibleTicks,
   isXDomain,
   enableDuplicatedTicks,
@@ -801,39 +799,6 @@ describe('Axis computational utils', () => {
       horizontalAlign: 'center',
       verticalAlign: 'top',
     });
-  });
-
-  test('should compute axis tick line positions', () => {
-    const tickPadding = 5;
-    const tickSize = 10;
-    const tickPosition = 10;
-    const axisHeight = 20;
-
-    const leftAxisTickLinePositions = getVerticalAxisTickLineProps(Position.Left, tickPadding, tickSize, tickPosition);
-
-    expect(leftAxisTickLinePositions).toEqual({ x1: 5, y1: 10, x2: -5, y2: 10 });
-
-    const rightAxisTickLinePositions = getVerticalAxisTickLineProps(
-      Position.Right,
-      tickPadding,
-      tickSize,
-      tickPosition,
-    );
-
-    expect(rightAxisTickLinePositions).toEqual({ x1: 0, y1: 10, x2: 10, y2: 10 });
-
-    const topAxisTickLinePositions = getHorizontalAxisTickLineProps(Position.Top, axisHeight, tickSize, tickPosition);
-
-    expect(topAxisTickLinePositions).toEqual({ x1: 10, y1: 10, x2: 10, y2: 20 });
-
-    const bottomAxisTickLinePositions = getHorizontalAxisTickLineProps(
-      Position.Bottom,
-      axisHeight,
-      tickSize,
-      tickPosition,
-    );
-
-    expect(bottomAxisTickLinePositions).toEqual({ x1: 10, y1: 0, x2: 10, y2: 10 });
   });
 
   test('should compute axis ticks positions with title', () => {
