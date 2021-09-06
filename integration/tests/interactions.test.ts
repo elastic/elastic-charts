@@ -348,6 +348,7 @@ describe('Interactions', () => {
         { left: 300, top: 80 },
         {
           screenshotSelector: '#story-root',
+          delay: 1000,
         },
       );
     });
@@ -358,6 +359,7 @@ describe('Interactions', () => {
         { left: 300, top: 80 },
         {
           screenshotSelector: '#story-root',
+          delay: 1000,
         },
       );
     });
