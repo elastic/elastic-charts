@@ -18,6 +18,7 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example = () => {
   const data = BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960);
   const showLabels = boolean('show', true, 'labels');
+  const useGlobalMinFontSize = boolean('use global min fontSize', true, 'labels');
 
   const minFontSize = number('min fontSize', 6, { step: 1, min: 4, max: 10, range: true }, 'labels');
   const maxFontSize = number('max fontSize', 12, { step: 1, min: 10, max: 64, range: true }, 'labels');
@@ -68,6 +69,7 @@ export const Example = () => {
               minFontSize,
               maxFontSize,
               visible: showLabels,
+              useGlobalMinFontSize,
             },
             border: {
               stroke: 'transparent',

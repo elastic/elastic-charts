@@ -84,6 +84,7 @@ export interface Config {
     label: Font & {
       minFontSize: Pixels;
       maxFontSize: Pixels;
+      useGlobalMinFontSize: boolean;
       maxWidth: Pixels | 'fill';
       visible: boolean;
     };

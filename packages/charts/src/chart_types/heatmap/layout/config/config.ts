@@ -97,6 +97,7 @@ export const config: Config = {
       fontVariant: 'normal',
       fontWeight: 'normal',
       textOpacity: 1,
+      useGlobalMinFontSize: true,
     },
     border: {
       strokeWidth: 1,

@@ -199,9 +199,9 @@ export function shapeViewModel(
       config.cell.label,
       config.cell.label.minFontSize,
       config.cell.label.maxFontSize,
-      // adding 4px padding per side to avoid that text touches the edges
-      cellWidthInner - 8,
-      cellHeightInner - 8,
+      // adding 3px padding per side to avoid that text touches the edges
+      cellWidthInner - 6,
+      cellHeightInner - 6,
     );
 
     acc[cellKey] = {
@@ -373,6 +373,9 @@ export function shapeViewModel(
     yLines.push({ x1: chartDimensions.left, y1: y, x2: chartDimensions.width + chartDimensions.left, y2: y });
   }
 
+  const cells = Object.values(cellMap);
+  const tableMinFontSize = cells.reduce((acc, { fontSize }) => Math.min(acc, fontSize), Infinity);
+
   return {
     config,
     heatmapViewModel: {
@@ -389,7 +392,8 @@ export function shapeViewModel(
         },
       },
       pageSize,
-      cells: Object.values(cellMap),
+      cells,
+      cellFontSize: (cell: Cell) => (config.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
       xValues: textXValues,
       yValues: textYValues,
     },
