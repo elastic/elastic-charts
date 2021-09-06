@@ -2757,10 +2757,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^37.5.0":
-  version "37.5.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-37.5.0.tgz#b70f929fe7b4272857543d9ff9f1005e5ba3fa35"
-  integrity sha512-VNwqlBQyV5jDKRUMN6ax+kflx68GwpPFYzkcSox0BzneAmj/dxpd1y4D0ePofdaKWSx3znzqotNb6fh4+cYqrA==
+"@elastic/eui@^37.6.1":
+  version "37.6.1"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-37.6.1.tgz#e82e29fe452742898ea6e311244e67574f675094"
+  integrity sha512-7jo92SurbotnW7YywWPaoKUOxMdseFWKLoyIvD5IjSAKr/N2oX5WLCVP/9OFFyRDjQMOlb+C1PDZA6VdT4QOOw==
   dependencies:
     "@types/chroma-js" "^2.0.0"
     "@types/lodash" "^4.14.160"
@@ -10602,8 +10602,7 @@ eslint-module-utils@^2.6.0:
     pkg-dir "^2.0.0"
 
 "eslint-plugin-elastic-charts@link:./packages/eslint-plugin-elastic-charts":
-  version "0.0.0"
-  uid ""
+  version "1.0.0"
 
 eslint-plugin-eslint-comments@^3.2.0:
   version "3.2.0"
@@ -15009,8 +15008,13 @@ lines-and-columns@^1.1.6:
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
 "link-kibana@link:./packages/link_kibana":
-  version "0.0.0"
-  uid ""
+  version "1.0.0"
+  dependencies:
+    chalk "^4.1.1"
+    change-case "^4.1.2"
+    glob "^7.1.7"
+    inquirer "^8.0.0"
+    ora "^5.4.0"
 
 lint-staged@^10.5.3:
   version "10.5.3"
