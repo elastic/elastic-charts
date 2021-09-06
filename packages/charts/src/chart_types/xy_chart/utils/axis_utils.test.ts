@@ -45,7 +45,7 @@ import {
   getTickLabelProps,
   getVerticalAxisTickLineProps,
   getVisibleTicks,
-  isYDomain,
+  isXDomain,
   enableDuplicatedTicks,
   getScaleForAxisSpec,
 } from './axis_utils';
@@ -1171,16 +1171,16 @@ describe('Axis computational utils', () => {
   });
 
   test('should determine if axis belongs to yDomain', () => {
-    const verticalY = isYDomain(Position.Left, 0);
+    const verticalY = !isXDomain(Position.Left, 0);
     expect(verticalY).toBe(true);
 
-    const verticalX = isYDomain(Position.Left, 90);
+    const verticalX = !isXDomain(Position.Left, 90);
     expect(verticalX).toBe(false);
 
-    const horizontalX = isYDomain(Position.Top, 0);
+    const horizontalX = !isXDomain(Position.Top, 0);
     expect(horizontalX).toBe(false);
 
-    const horizontalY = isYDomain(Position.Top, 90);
+    const horizontalY = !isXDomain(Position.Top, 90);
     expect(horizontalY).toBe(true);
   });
 

@@ -54,8 +54,7 @@ export interface AxisViewModel {
   isHidden: boolean;
 }
 
-/** @internal */
-export interface TickLabelProps {
+interface TickLabelProps {
   x: number;
   y: number;
   offsetX: number;
@@ -76,8 +75,8 @@ export interface TickLabelProps {
 export const defaultTickFormatter = (tick: unknown) => `${tick}`;
 
 /** @internal */
-export function isYDomain(position: Position, chartRotation: Rotation): boolean {
-  return isVerticalAxis(position) === (chartRotation % 180 === 0);
+export function isXDomain(position: Position, chartRotation: Rotation): boolean {
+  return isHorizontalAxis(position) === (chartRotation % 180 === 0);
 }
 
 /** @internal */
@@ -89,9 +88,9 @@ export function getScaleForAxisSpec(
   enableHistogramMode?: boolean,
 ) {
   return ({ groupId, integersOnly, position }: Pick<AxisSpec, 'groupId' | 'integersOnly' | 'position'>, range: Range) =>
-    isYDomain(position, chartRotation)
-      ? computeYScales({ yDomains, range, integersOnly }).get(groupId) ?? null
-      : computeXScale({ xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly });
+    isXDomain(position, chartRotation)
+      ? computeXScale({ xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly })
+      : computeYScales({ yDomains, range, integersOnly }).get(groupId) ?? null;
 }
 
 /** @internal */
