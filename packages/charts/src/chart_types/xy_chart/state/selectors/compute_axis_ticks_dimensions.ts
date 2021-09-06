@@ -48,12 +48,11 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
     axesSpecs,
     chartTheme,
     settingsSpec,
-    seriesDomainsAndData,
+    { xDomain, yDomains },
     totalBarsInCluster,
     seriesSpecs,
     axesStyles,
   ): AxesTicksDimensions => {
-    const { xDomain, yDomains } = seriesDomainsAndData;
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
     return withTextMeasure(
       (textMeasure): AxesTicksDimensions => {
@@ -62,52 +61,49 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
           const { id } = axisSpec;
           const { gridLine, tickLabel } = axesStyles.get(id) ?? chartTheme.axes;
           const chartRotation = settingsSpec.rotation;
-          const dimensions = (() => {
-            const gridLineVisible = isVerticalAxis(axisSpec.position)
-              ? gridLine.vertical.visible
-              : gridLine.horizontal.visible;
+          const gridLineVisible = isVerticalAxis(axisSpec.position)
+            ? gridLine.vertical.visible
+            : gridLine.horizontal.visible;
 
-            // don't compute anything on this axis if grid is hidden and axis is hidden
-            if (axisSpec.hide && !gridLineVisible) {
-              return null;
-            }
+          // don't compute anything on this axis if grid is hidden and axis is hidden
+          if (axisSpec.hide && !gridLineVisible) {
+            return;
+          }
 
-            const scale = getScaleForAxisSpec(
-              axisSpec,
-              xDomain,
-              yDomains,
-              totalBarsInCluster,
-              chartRotation,
-              [0, 1],
-              barsPadding,
-              isHistogramMode,
-            );
+          const scale = getScaleForAxisSpec(
+            axisSpec,
+            xDomain,
+            yDomains,
+            totalBarsInCluster,
+            chartRotation,
+            [0, 1],
+            barsPadding,
+            isHistogramMode,
+          );
 
-            if (!scale) {
-              Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
-              return null;
-            }
+          if (!scale) {
+            Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
+            return;
+          }
 
-            const tickFormat = axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
-            const tickFormatOptions = { timeZone: xDomain.timeZone };
-            const tickLabels = scale.ticks().map((d) => tickFormat(d, tickFormatOptions));
+          const tickFormat = axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
+          const tickFormatOptions = { timeZone: xDomain.timeZone };
+          const tickLabels = scale.ticks().map((d) => tickFormat(d, tickFormatOptions));
 
-            const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
-              (sizes, labelText) => {
-                const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
-                const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
-                sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
-                sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
-                sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
-                sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
-                return sizes;
-              },
-              { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
-            );
+          const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
+            (sizes, labelText) => {
+              const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
+              const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
+              sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
+              sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
+              sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
+              sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
+              return sizes;
+            },
+            { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
+          );
 
-            return { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible };
-          })();
-          if (dimensions) axesTicksDimensions.set(id, dimensions);
+          axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible });
         });
         return axesTicksDimensions;
       },
