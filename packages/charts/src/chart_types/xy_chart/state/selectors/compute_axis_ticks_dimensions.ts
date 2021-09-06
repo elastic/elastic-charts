@@ -55,19 +55,16 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
   ): AxesTicksDimensions => {
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
     return withTextMeasure(
-      (textMeasure): AxesTicksDimensions => {
-        const axesTicksDimensions: AxesTicksDimensions = new Map();
-        axesSpecs.forEach((axisSpec) => {
+      (textMeasure): AxesTicksDimensions =>
+        axesSpecs.reduce<AxesTicksDimensions>((axesTicksDimensions, axisSpec) => {
           const { id } = axisSpec;
           const { gridLine, tickLabel } = axesStyles.get(id) ?? chartTheme.axes;
-          const chartRotation = settingsSpec.rotation;
           const gridLineVisible = isVerticalAxis(axisSpec.position)
             ? gridLine.vertical.visible
             : gridLine.horizontal.visible;
 
-          // don't compute anything on this axis if grid is hidden and axis is hidden
           if (axisSpec.hide && !gridLineVisible) {
-            return;
+            return axesTicksDimensions; // don't compute anything on this axis if grid is hidden and axis is hidden
           }
 
           const scale = getScaleForAxisSpec(
@@ -75,7 +72,7 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
             xDomain,
             yDomains,
             totalBarsInCluster,
-            chartRotation,
+            settingsSpec.rotation,
             [0, 1],
             barsPadding,
             isHistogramMode,
@@ -83,7 +80,7 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
 
           if (!scale) {
             Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
-            return;
+            return axesTicksDimensions;
           }
 
           const tickFormat = axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
@@ -104,9 +101,8 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
           );
 
           axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible });
-        });
-        return axesTicksDimensions;
-      },
+          return axesTicksDimensions;
+        }, new Map()),
     );
   },
 );
