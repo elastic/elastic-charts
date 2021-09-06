@@ -11,7 +11,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { AxisId } from '../../../../utils/ids';
-import { axisViewModel, AxisViewModel, hasDuplicateAxis, defaultTickFormatter } from '../../utils/axis_utils';
+import { axisViewModel, AxisViewModel, defaultTickFormatter } from '../../utils/axis_utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
@@ -66,12 +66,7 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
             barsPadding,
             isHistogramMode,
           );
-          if (
-            dimensions &&
-            (!settingsSpec.hideDuplicateAxes || !hasDuplicateAxis(axisSpec, dimensions, axesTicksDimensions, axesSpecs))
-          ) {
-            axesTicksDimensions.set(id, dimensions);
-          }
+          if (dimensions) axesTicksDimensions.set(id, dimensions);
         });
         return axesTicksDimensions;
       },

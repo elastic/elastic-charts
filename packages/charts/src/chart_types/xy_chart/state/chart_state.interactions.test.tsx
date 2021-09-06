@@ -80,7 +80,6 @@ const settingSpec = MockGlobalSpec.settings({
   tooltip: {
     type: TooltipType.VerticalCursor,
   },
-  hideDuplicateAxes: false,
   theme: {
     chartPaddings: { top: 0, left: 0, bottom: 0, right: 0 },
     chartMargins: { top: 10, left: 10, bottom: 0, right: 0 },

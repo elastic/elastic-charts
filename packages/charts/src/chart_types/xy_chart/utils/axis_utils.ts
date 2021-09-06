@@ -46,7 +46,6 @@ export interface AxisTick {
 
 /** @internal */
 export interface AxisViewModel {
-  tickLabels: string;
   maxLabelBboxWidth: number;
   maxLabelBboxHeight: number;
   maxLabelTextWidth: number;
@@ -132,7 +131,7 @@ export function axisViewModel(
     { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
   );
 
-  return { ...maxLabelSizes, tickLabels: tickLabels.join('|'), isHidden: axisSpec.hide && gridLineVisible };
+  return { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible };
 }
 
 /** @internal */
@@ -798,15 +797,3 @@ export function getAxesGeometries(
   });
   return axesGeometries;
 }
-
-/** @internal */
-export const hasDuplicateAxis = (
-  { position, title }: AxisSpec,
-  { tickLabels }: AxisViewModel,
-  tickMap: AxesTicksDimensions,
-  specs: AxisSpec[],
-): boolean =>
-  [...tickMap].some(([axisId, { tickLabels: axisTickLabels }]) => {
-    const spec = getSpecsById<AxisSpec>(specs, axisId);
-    return spec?.position === position && title === spec.title && axisTickLabels && tickLabels === axisTickLabels;
-  });

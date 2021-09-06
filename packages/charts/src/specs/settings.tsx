@@ -49,7 +49,7 @@ import {
 /** @public */
 export interface LayerValue {
   /**
-   * The category value as retrieved by the `groupByRollup` callback
+   * The category value as retrieved by the `groupByRollup` callback§
    */
   groupByRollup: PrimitiveValue;
   /**
@@ -84,6 +84,7 @@ export interface GroupBrushExtent {
   groupId: GroupId;
   extent: [number, number];
 }
+
 /** @public */
 export interface XYBrushArea {
   x?: [number, number];
@@ -167,11 +168,13 @@ export type AnnotationClickListener = (annotations: {
   rects: RectAnnotationEvent[];
   lines: LineAnnotationEvent[];
 }) => void;
+
 /** @public */
 export interface BasePointerEvent {
   chartId: string;
   type: PointerEventType;
 }
+
 /**
  * Event used to synchronize pointers/mouse positions between Charts.
  *
@@ -187,6 +190,7 @@ export interface PointerOverEvent extends BasePointerEvent, ProjectedValues {
    */
   unit?: string;
 }
+
 /** @public */
 export interface PointerOutEvent extends BasePointerEvent {
   type: typeof PointerEventType.Out;
@@ -338,6 +342,7 @@ export interface LegendActionProps {
    */
   color: string;
 }
+
 /**
  * Legend action component used to render actions next to legend items
  *
@@ -370,6 +375,7 @@ export interface LegendColorPickerProps {
    */
   seriesIdentifiers: SeriesIdentifier[];
 }
+
 /** @public */
 export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 
@@ -499,13 +505,6 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * @alpha
    */
   debugState?: boolean;
-
-  /**
-   * Removes duplicate axes
-   *
-   * Compares title, position and first & last tick labels
-   */
-  hideDuplicateAxes: boolean;
   /**
    * Attach a listener for click on the projection area.
    * The listener will be called with the current x value snapped to the closest
@@ -684,7 +683,6 @@ export type DefaultSettingsProps =
   | 'debug'
   | 'tooltip'
   | 'theme'
-  | 'hideDuplicateAxes'
   | 'brushAxis'
   | 'minBrushDelta'
   | 'externalPointerEvents'
