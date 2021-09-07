@@ -19,7 +19,7 @@ import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { ContinuousDomain } from '../../../../utils/domain';
-import { HeatmapStyles, Theme } from '../../../../utils/themes/theme';
+import { HeatmapStyle, Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
@@ -58,7 +58,7 @@ function getValuesInRange(
 function getTicks(
   chartWidth: number,
   formatter: HeatmapSpec['xAxisLabelFormatter'],
-  { padding, fontSize, fontFamily }: HeatmapStyles['xAxisLabel'],
+  { padding, fontSize, fontFamily }: HeatmapStyle['xAxisLabel'],
 ): number {
   return withTextMeasure((textMeasure) => {
     const labelSample = formatter(Date.now());

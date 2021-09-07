@@ -15,7 +15,7 @@ import {
   Chart,
   DebugState,
   Heatmap,
-  HeatmapStyles,
+  HeatmapStyle,
   niceTimeFormatter,
   RecursivePartial,
   ScaleType,
@@ -29,7 +29,7 @@ export const Example = () => {
   const debugState = boolean('Enable debug state', true);
   const dataStateAction = action('DataState');
 
-  const heatmap: RecursivePartial<HeatmapStyles> = {
+  const heatmap: RecursivePartial<HeatmapStyle> = {
     brushArea: {
       visible: boolean('brushArea visible', true, 'Theme'),
       fill: color('brushArea fill', 'black', 'Theme'),

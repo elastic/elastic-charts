@@ -12,7 +12,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { isHorizontalLegend } from '../../../../utils/legend';
-import { HeatmapStyles } from '../../../../utils/themes/theme';
+import { HeatmapStyle } from '../../../../utils/themes/theme';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
 /** @internal */
@@ -63,7 +63,7 @@ export const getGridHeightParamsSelector = createCustomCachedSelector(
   },
 );
 
-function getGridCellHeight(yValues: Array<string | number>, grid: HeatmapStyles['grid'], height: number): number {
+function getGridCellHeight(yValues: Array<string | number>, grid: HeatmapStyle['grid'], height: number): number {
   if (yValues.length === 0) {
     return height;
   }

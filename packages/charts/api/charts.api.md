@@ -988,7 +988,7 @@ export interface HeatmapSpec extends Spec {
 }
 
 // @public (undocumented)
-export interface HeatmapStyles {
+export interface HeatmapStyle {
     brushArea: {
         visible: boolean;
         fill?: Color;
@@ -2118,7 +2118,7 @@ export interface Theme {
     // (undocumented)
     goal: GoalStyles;
     // (undocumented)
-    heatmap: HeatmapStyles;
+    heatmap: HeatmapStyle;
     // (undocumented)
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;

@@ -12,7 +12,7 @@ import { Box } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { HeatmapStyles } from '../../../../utils/themes/theme';
+import { HeatmapStyle } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapBrushEvent } from '../../specs/heatmap';
 import { HeatmapCellDatum } from '../viewmodel/viewmodel';
@@ -94,7 +94,7 @@ export type DragShape = ReturnType<PickDragShapeFunction>;
 
 /** @internal */
 export type ShapeViewModel = {
-  theme: HeatmapStyles;
+  theme: HeatmapStyle;
   heatmapViewModel: HeatmapViewModel;
   pickQuads: PickFunction;
   pickDragArea: PickDragFunction;

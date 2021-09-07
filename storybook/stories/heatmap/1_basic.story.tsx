@@ -16,7 +16,7 @@ import {
   DebugState,
   Heatmap,
   HeatmapElementEvent,
-  HeatmapStyles,
+  HeatmapStyle,
   niceTimeFormatter,
   RecursivePartial,
   ScaleType,
@@ -40,7 +40,7 @@ export const Example = () => {
   button('Clear cells selection', handler);
 
   const heatmap = useMemo(() => {
-    const styles: RecursivePartial<HeatmapStyles> = {
+    const styles: RecursivePartial<HeatmapStyle> = {
       brushTool: {
         visible: true,
       },

@@ -10,7 +10,7 @@ import React, { FC } from 'react';
 
 import { Dimensions } from '../../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { HeatmapStyles } from '../../../../utils/themes/theme';
+import { HeatmapStyle } from '../../../../utils/themes/theme';
 import { DragShape, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 
 /** @internal */
@@ -20,8 +20,8 @@ export interface HighlighterCellsProps {
   canvasDimension: Dimensions;
   geometries: ShapeViewModel;
   dragShape: DragShape | null;
-  brushMask: HeatmapStyles['brushMask'];
-  brushArea: HeatmapStyles['brushArea'];
+  brushMask: HeatmapStyle['brushMask'];
+  brushArea: HeatmapStyle['brushArea'];
 }
 
 /**

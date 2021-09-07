@@ -189,7 +189,7 @@ export interface GoalStyles {
 /**
  * @public
  */
-export interface HeatmapStyles {
+export interface HeatmapStyle {
   maxRowHeight: Pixels;
   maxColumnWidth: Pixels;
   /**
@@ -392,7 +392,7 @@ export interface Theme {
    */
   background: BackgroundStyle;
   goal: GoalStyles;
-  heatmap: HeatmapStyles;
+  heatmap: HeatmapStyle;
 }
 
 /** @public */

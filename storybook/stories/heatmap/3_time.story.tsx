@@ -10,7 +10,7 @@ import { number } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import React, { useMemo } from 'react';
 
-import { Chart, Heatmap, RecursivePartial, ScaleType, Settings, HeatmapStyles } from '@elastic/charts';
+import { Chart, Heatmap, RecursivePartial, ScaleType, Settings, HeatmapStyle } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -30,7 +30,7 @@ const data = [...new Array(14)].flatMap((d, i) => {
 
 export const Example = () => {
   const heatmap = useMemo(() => {
-    const styles: RecursivePartial<HeatmapStyles> = {
+    const styles: RecursivePartial<HeatmapStyle> = {
       grid: {
         cellHeight: {
           min: 20,
