@@ -353,6 +353,46 @@ export function getTitleDimension({
   return visible && fontSize > 0 ? innerPad(padding) + fontSize + outerPad(padding) : 0;
 }
 
+function getPosition(
+  computedChartDims: { chartDimensions: Dimensions; leftMargin: number },
+  chartMargins: PerSideDistance,
+  { axisTitle, axisPanelTitle, tickLine, tickLabel }: AxisStyle,
+  { title, position, hide }: AxisSpec,
+  { maxLabelBboxHeight, maxLabelBboxWidth }: TickLabelBounds,
+  smScales: SmallMultipleScales,
+  acc: PerSideDistance,
+) {
+  const { chartDimensions } = computedChartDims;
+  const tickDimension = shouldShowTicks(tickLine, hide) ? tickLine.size + tickLine.padding : 0;
+  const showLabels = tickLabel.visible;
+  const labelPaddingSum = showLabels ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
+  const { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum } = acc;
+  const titleDimension = title ? getTitleDimension(axisTitle) : 0;
+  const vertical = isVerticalAxis(position);
+  const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
+  const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
+  const shownLabelSize = showLabels ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
+  const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
+  return {
+    leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
+    rightIncrement: position === Position.Right ? parallelSize + chartMargins.right : 0,
+    topIncrement: position === Position.Top ? parallelSize + chartMargins.top : 0,
+    bottomIncrement: position === Position.Bottom ? parallelSize + chartMargins.bottom : 0,
+    dimensions: {
+      left:
+        position === Position.Left
+          ? chartMargins.left + cumLeftSum
+          : chartDimensions.left + (position === Position.Right ? chartDimensions.width + cumRightSum : 0),
+      top:
+        position === Position.Top
+          ? chartMargins.top + cumTopSum
+          : chartDimensions.top + (position === Position.Bottom ? chartDimensions.height + cumBottomSum : 0),
+      width: vertical ? parallelSize : chartDimensions.width,
+      height: vertical ? chartDimensions.height : parallelSize,
+    },
+  };
+}
+
 /** @internal */
 export function getAxisPosition(
   chartDimensions: Dimensions,
@@ -416,10 +456,7 @@ export interface AxisGeometry {
 
 /** @internal */
 export function getAxesGeometries(
-  computedChartDims: {
-    chartDimensions: Dimensions;
-    leftMargin: number;
-  },
+  chartDims: { chartDimensions: Dimensions; leftMargin: number },
   { chartPaddings, chartMargins, axes: sharedAxesStyle }: Theme,
   chartRotation: Rotation,
   axisSpecs: AxisSpec[],
@@ -460,20 +497,9 @@ export function getAxesGeometries(
             : 0,
           { timeZone: xDomain.timeZone },
         );
-        const { tickLine, tickLabel, axisTitle, axisPanelTitle } = axesStyles.get(axisId) ?? sharedAxesStyle;
-        const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getAxisPosition(
-          computedChartDims.chartDimensions,
-          chartMargins,
-          axisTitle,
-          axisPanelTitle,
-          axisSpec,
-          axisDim,
-          smScales,
-          acc,
-          shouldShowTicks(tickLine, axisSpec.hide) ? tickLine.size + tickLine.padding : 0,
-          tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0,
-          tickLabel.visible,
-        );
+        const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;
+        const axisPositionData = getPosition(chartDims, chartMargins, axisStyle, axisSpec, axisDim, smScales, acc);
+        const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = axisPositionData;
 
         acc.top += topIncrement;
         acc.bottom += bottomIncrement;
@@ -496,6 +522,6 @@ export function getAxesGeometries(
       }
       return acc;
     },
-    { geoms: [], top: 0, bottom: chartPaddings.bottom, left: computedChartDims.leftMargin, right: chartPaddings.right },
+    { geoms: [], top: 0, bottom: chartPaddings.bottom, left: chartDims.leftMargin, right: chartPaddings.right },
   ).geoms;
 }
