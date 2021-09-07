@@ -381,30 +381,29 @@ export function getAxisPosition(
   let leftIncrement = 0;
   let rightIncrement = 0;
 
-  if (isVerticalAxis(position)) {
-    const panelTitleDimension = hasSMDomain(smScales.vertical) ? getTitleDimension(axisPanelTitle) : 0;
-    const dimWidth =
-      labelPaddingSum + (showLabels ? maxLabelBboxWidth : 0) + tickDimension + titleDimension + panelTitleDimension;
+  const vertical = isVerticalAxis(position);
+  const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
+  const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
+  const shownLabelSize = showLabels ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
+  const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
+  if (vertical) {
     if (position === Position.Left) {
-      leftIncrement = chartMargins.left + dimWidth;
+      leftIncrement = chartMargins.left + parallelSize;
       dimensions.left = cumLeftSum + chartMargins.left;
     } else {
-      rightIncrement = dimWidth + chartMargins.right;
+      rightIncrement = parallelSize + chartMargins.right;
       dimensions.left = chartDimensions.left + chartDimensions.width + cumRightSum;
     }
-    dimensions.width = dimWidth;
+    dimensions.width = parallelSize;
   } else {
-    const panelTitleDimension = hasSMDomain(smScales.horizontal) ? getTitleDimension(axisPanelTitle) : 0;
-    const dimHeight =
-      labelPaddingSum + (showLabels ? maxLabelBboxHeight : 0) + tickDimension + titleDimension + panelTitleDimension;
     if (position === Position.Top) {
-      topIncrement = dimHeight + chartMargins.top;
+      topIncrement = parallelSize + chartMargins.top;
       dimensions.top = cumTopSum + chartMargins.top;
     } else {
-      bottomIncrement = dimHeight + chartMargins.bottom;
+      bottomIncrement = parallelSize + chartMargins.bottom;
       dimensions.top = chartDimensions.top + chartDimensions.height + cumBottomSum;
     }
-    dimensions.height = dimHeight;
+    dimensions.height = parallelSize;
   }
 
   return { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement };
