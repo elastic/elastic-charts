@@ -434,7 +434,7 @@ export function getAxesGeometries(
   barsPadding?: number,
 ): AxisGeometry[] {
   const panel = getPanelSize(smScales);
-  const getScaleFunction = getScaleForAxisSpec(
+  const scaleFunction = getScaleForAxisSpec(
     { xDomain, yDomains },
     { rotation: chartRotation },
     totalGroupsCount,
@@ -442,10 +442,10 @@ export function getAxesGeometries(
     enableHistogramMode,
   );
   return [...axisDimensions].reduce(
-    (acc: PerSideDistance & { axesGeometries: AxisGeometry[] }, [axisId, axisDim]: [string, AxisViewModel]) => {
+    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, axisDim]: [string, AxisViewModel]) => {
       const axisSpec = getSpecsById<AxisSpec>(axisSpecs, axisId);
       if (axisSpec) {
-        const scale = getScaleFunction(axisSpec, axisMinMax(axisSpec.position, chartRotation, panel));
+        const scale = scaleFunction(axisSpec, axisMinMax(axisSpec.position, chartRotation, panel));
         if (!scale) throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
 
         const { tickLine, tickLabel, axisTitle, axisPanelTitle } = axesStyles.get(axisId) ?? sharedAxesStyle;
@@ -475,7 +475,12 @@ export function getAxesGeometries(
           labelPaddingSum,
           tickLabel.visible,
         );
-        acc.axesGeometries.push({
+
+        acc.top += topIncrement;
+        acc.bottom += bottomIncrement;
+        acc.left += leftIncrement;
+        acc.right += rightIncrement;
+        acc.geoms.push({
           axis: { id: axisSpec.id, position: axisSpec.position },
           anchorPoint: { x: dimensions.left, y: dimensions.top },
           dimension: axisDim,
@@ -489,19 +494,9 @@ export function getAxesGeometries(
                 height: isVertical ? panel.height : dimensions.height,
               },
         });
-        acc.top += topIncrement;
-        acc.bottom += bottomIncrement;
-        acc.left += leftIncrement;
-        acc.right += rightIncrement;
       }
       return acc;
     },
-    {
-      axesGeometries: [],
-      top: 0,
-      bottom: chartPaddings.bottom,
-      left: computedChartDims.leftMargin,
-      right: chartPaddings.right,
-    },
-  ).axesGeometries;
+    { geoms: [], top: 0, bottom: chartPaddings.bottom, left: computedChartDims.leftMargin, right: chartPaddings.right },
+  ).geoms;
 }
