@@ -202,27 +202,20 @@ function getVerticalAlign(
   }
 
   if ([0, 180].includes(rotation)) {
-    if (position === Position.Bottom || position === Position.Top) {
-      return VerticalAlignment.Middle;
-    }
-
     if (position === Position.Left) {
       return rotation === 0 ? VerticalAlignment.Bottom : VerticalAlignment.Top;
+    } else if (position === Position.Right) {
+      return rotation === 180 ? VerticalAlignment.Bottom : VerticalAlignment.Top;
     }
-
-    return rotation === 180 ? VerticalAlignment.Bottom : VerticalAlignment.Top;
+  } else {
+    if (position === Position.Top) {
+      return alignment === VerticalAlignment.Near ? VerticalAlignment.Bottom : VerticalAlignment.Top;
+    } else if (position === Position.Bottom) {
+      return alignment === VerticalAlignment.Near ? VerticalAlignment.Top : VerticalAlignment.Bottom;
+    }
   }
 
-  if (position === Position.Top) {
-    return alignment === VerticalAlignment.Near ? VerticalAlignment.Bottom : VerticalAlignment.Top;
-  }
-
-  if (position === Position.Bottom) {
-    return alignment === VerticalAlignment.Near ? VerticalAlignment.Top : VerticalAlignment.Bottom;
-  }
-
-  // fallback for near/far on left/right axis
-  return VerticalAlignment.Middle;
+  return VerticalAlignment.Middle; // fallback for near/far on left/right axis
 }
 
 /**
