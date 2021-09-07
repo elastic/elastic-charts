@@ -18,7 +18,7 @@ import {
   Rotation,
   VerticalAlignment,
 } from '../../../utils/common';
-import { Dimensions, innerPad, Margins, outerPad, Size } from '../../../utils/dimensions';
+import { Dimensions, innerPad, Margins, outerPad, PerSideDistance, Size } from '../../../utils/dimensions';
 import { Range } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
@@ -488,12 +488,7 @@ export function getAxesGeometries(
       );
 
       acc.pos.set(axisId, {
-        anchor: {
-          top: acc.top,
-          left: acc.left,
-          right: acc.right,
-          bottom: acc.bottom,
-        },
+        anchor: { top: acc.top, left: acc.left, right: acc.right, bottom: acc.bottom },
         dimensions,
       });
       return {
@@ -509,13 +504,7 @@ export function getAxesGeometries(
       bottom: chartPaddings.bottom,
       left: computedChartDims.leftMargin,
       right: chartPaddings.right,
-      pos: new Map<
-        AxisId,
-        {
-          anchor: { left: number; right: number; top: number; bottom: number };
-          dimensions: Dimensions;
-        }
-      >(),
+      pos: new Map<AxisId, { anchor: PerSideDistance; dimensions: Dimensions }>(),
     },
   ).pos;
 
@@ -543,14 +532,9 @@ export function getAxesGeometries(
     if (!scale) {
       throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
     }
-    const tickFormatOptions = {
-      timeZone: xDomain.timeZone,
-    };
-
     // TODO: Find the true cause of the this offset error
     const rotationOffset =
-      enableHistogramMode &&
-      ((isVertical && [-90].includes(chartRotation)) || (!isVertical && [180].includes(chartRotation)))
+      enableHistogramMode && ((isVertical && chartRotation === -90) || (!isVertical && chartRotation === 180))
         ? scale.step
         : 0;
 
@@ -561,7 +545,7 @@ export function getAxesGeometries(
       enableHistogramMode,
       isVertical ? fallBackTickFormatter : defaultTickFormatter,
       rotationOffset,
-      tickFormatOptions,
+      { timeZone: xDomain.timeZone },
     );
     const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
 
@@ -572,19 +556,10 @@ export function getAxesGeometries(
           height: isVertical ? panel.height : anchorPoint.dimensions.height,
         };
     axesGeometries.push({
-      axis: {
-        id: axisSpec.id,
-        position: axisSpec.position,
-      },
-      anchorPoint: {
-        x: anchorPoint.dimensions.left,
-        y: anchorPoint.dimensions.top,
-      },
+      axis: { id: axisSpec.id, position: axisSpec.position },
+      anchorPoint: { x: anchorPoint.dimensions.left, y: anchorPoint.dimensions.top },
       size,
-      parentSize: {
-        height: anchorPoint.dimensions.height,
-        width: anchorPoint.dimensions.width,
-      },
+      parentSize: { height: anchorPoint.dimensions.height, width: anchorPoint.dimensions.width },
       dimension: axisDim,
       ticks: allTicks,
       visibleTicks,
