@@ -353,8 +353,9 @@ export function getTitleDimension({
   return visible && fontSize > 0 ? innerPad(padding) + fontSize + outerPad(padding) : 0;
 }
 
-function getPosition(
-  computedChartDims: { chartDimensions: Dimensions; leftMargin: number },
+/** @internal */
+export function getPosition(
+  computedChartDims: { chartDimensions: Dimensions },
   chartMargins: PerSideDistance,
   { axisTitle, axisPanelTitle, tickLine, tickLabel }: AxisStyle,
   { title, position, hide }: AxisSpec,

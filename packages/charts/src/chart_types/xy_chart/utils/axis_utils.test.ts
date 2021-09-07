@@ -38,7 +38,7 @@ import {
   TickLabelBounds,
   computeRotatedLabelDimensions,
   getAvailableTicks,
-  getAxisPosition,
+  getPosition,
   getAxesGeometries,
   getTickLabelProps,
   getVisibleTicks,
@@ -827,29 +827,25 @@ describe('Axis computational utils', () => {
     const cumLeftSum = 10;
     const cumRightSum = 10;
 
-    const leftAxisPosition = getAxisPosition(
-      chartDim,
+    const leftAxisPosition = getPosition(
+      { chartDimensions: chartDim },
       LIGHT_THEME.chartMargins,
-      axisTitleStyles(axisTitleHeight).axisTitle,
-      axisTitleStyles(axisTitleHeight).axisPanelTitle,
+      axisTitleStyles(axisTitleHeight),
       verticalAxisSpec,
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
-      10,
-      0,
-      true,
     );
     const expectedLeftAxisPosition = {
       dimensions: {
         height: 100,
-        width: 40,
+        width: 50,
         left: 20,
         top: 0,
       },
       topIncrement: 0,
       bottomIncrement: 0,
-      leftIncrement: 50,
+      leftIncrement: 60,
       rightIncrement: 0,
     };
 
@@ -864,31 +860,27 @@ describe('Axis computational utils', () => {
     const cumRightSum = 10;
 
     verticalAxisSpec.position = Position.Right;
-    const rightAxisPosition = getAxisPosition(
-      chartDim,
+    const rightAxisPosition = getPosition(
+      { chartDimensions: chartDim },
       LIGHT_THEME.chartMargins,
-      axisTitleStyles(axisTitleHeight).axisTitle,
-      axisTitleStyles(axisTitleHeight).axisPanelTitle,
+      axisTitleStyles(axisTitleHeight),
       verticalAxisSpec,
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
-      10,
-      0,
-      true,
     );
 
     const expectedRightAxisPosition = {
       dimensions: {
         height: 100,
-        width: 40,
+        width: 50,
         left: 110,
         top: 0,
       },
       topIncrement: 0,
       bottomIncrement: 0,
       leftIncrement: 0,
-      rightIncrement: 50,
+      rightIncrement: 60,
     };
 
     expect(rightAxisPosition).toEqual(expectedRightAxisPosition);
@@ -902,29 +894,25 @@ describe('Axis computational utils', () => {
     const cumRightSum = 10;
 
     horizontalAxisSpec.position = Position.Top;
-    const topAxisPosition = getAxisPosition(
-      chartDim,
+    const topAxisPosition = getPosition(
+      { chartDimensions: chartDim },
       LIGHT_THEME.chartMargins,
-      axisTitleStyles(axisTitleHeight).axisTitle,
-      axisTitleStyles(axisTitleHeight).axisPanelTitle,
+      axisTitleStyles(axisTitleHeight),
       horizontalAxisSpec,
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
-      10,
-      0,
-      true,
     );
     const { size: tickSize, padding: tickPadding } = LIGHT_THEME.axes.tickLine;
 
     const expectedTopAxisPosition = {
       dimensions: {
-        height: axis1Dims.maxLabelBboxHeight + axisTitleHeight + tickSize + tickPadding,
+        height: 50 || axis1Dims.maxLabelBboxHeight + axisTitleHeight + tickSize + tickPadding,
         width: 100,
         left: 0,
         top: cumTopSum + LIGHT_THEME.chartMargins.top,
       },
-      topIncrement: 50,
+      topIncrement: 60,
       bottomIncrement: 0,
       leftIncrement: 0,
       rightIncrement: 0,
@@ -941,29 +929,25 @@ describe('Axis computational utils', () => {
     const cumRightSum = 10;
 
     horizontalAxisSpec.position = Position.Bottom;
-    const bottomAxisPosition = getAxisPosition(
-      chartDim,
+    const bottomAxisPosition = getPosition(
+      { chartDimensions: chartDim },
       LIGHT_THEME.chartMargins,
-      axisTitleStyles(axisTitleHeight).axisTitle,
-      axisTitleStyles(axisTitleHeight).axisPanelTitle,
+      axisTitleStyles(axisTitleHeight),
       horizontalAxisSpec,
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
-      10,
-      0,
-      true,
     );
 
     const expectedBottomAxisPosition = {
       dimensions: {
-        height: 40,
+        height: 50,
         width: 100,
         left: 0,
         top: 110,
       },
       topIncrement: 0,
-      bottomIncrement: 50,
+      bottomIncrement: 60,
       leftIncrement: 0,
       rightIncrement: 0,
     };
@@ -1435,31 +1419,27 @@ describe('Axis computational utils', () => {
 
     describe.each(['test', ''])('Axes title positions - title is "%s"', (title) => {
       test('should compute left axis position', () => {
-        const leftAxisPosition = getAxisPosition(
-          chartDim,
+        const leftAxisPosition = getPosition(
+          { chartDimensions: chartDim },
           LIGHT_THEME.chartMargins,
-          axisStyles.axisTitle,
-          axisStyles.axisPanelTitle,
+          axisStyles,
           { ...verticalAxisSpec, title },
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
-          10,
-          0,
-          true,
         );
 
         const expectedLeftAxisPosition = {
           dimensions: {
             height: 100,
-            width: title ? 56 : 36,
+            width: title ? 66 : 46,
             left: 110,
             top: 0,
           },
           topIncrement: 0,
           bottomIncrement: 0,
           leftIncrement: 0,
-          rightIncrement: title ? 66 : 46,
+          rightIncrement: title ? 76 : 56,
         };
 
         expect(leftAxisPosition).toEqual(expectedLeftAxisPosition);
@@ -1467,31 +1447,27 @@ describe('Axis computational utils', () => {
 
       test('should compute right axis position', () => {
         verticalAxisSpec.position = Position.Right;
-        const rightAxisPosition = getAxisPosition(
-          chartDim,
+        const rightAxisPosition = getPosition(
+          { chartDimensions: chartDim },
           LIGHT_THEME.chartMargins,
-          axisStyles.axisTitle,
-          axisStyles.axisPanelTitle,
+          axisStyles,
           { ...verticalAxisSpec, title },
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
-          10,
-          0,
-          true,
         );
 
         const expectedRightAxisPosition = {
           dimensions: {
             height: 100,
-            width: title ? 56 : 36,
+            width: title ? 66 : 46,
             left: 110,
             top: 0,
           },
           topIncrement: 0,
           bottomIncrement: 0,
           leftIncrement: 0,
-          rightIncrement: title ? 66 : 46,
+          rightIncrement: title ? 76 : 56,
         };
 
         expect(rightAxisPosition).toEqual(expectedRightAxisPosition);
@@ -1499,28 +1475,24 @@ describe('Axis computational utils', () => {
 
       test('should compute top axis position', () => {
         horizontalAxisSpec.position = Position.Top;
-        const topAxisPosition = getAxisPosition(
-          chartDim,
+        const topAxisPosition = getPosition(
+          { chartDimensions: chartDim },
           LIGHT_THEME.chartMargins,
-          axisStyles.axisTitle,
-          axisStyles.axisPanelTitle,
+          axisStyles,
           { ...horizontalAxisSpec, title },
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
-          10,
-          0,
-          true,
         );
 
         const expectedTopAxisPosition = {
           dimensions: {
-            height: title ? 56 : 36,
+            height: title ? 66 : 46,
             width: 100,
             left: 0,
             top: 20,
           },
-          topIncrement: title ? 66 : 46,
+          topIncrement: title ? 76 : 56,
           bottomIncrement: 0,
           leftIncrement: 0,
           rightIncrement: 0,
@@ -1531,29 +1503,25 @@ describe('Axis computational utils', () => {
 
       test('should compute bottom axis position', () => {
         horizontalAxisSpec.position = Position.Bottom;
-        const bottomAxisPosition = getAxisPosition(
-          chartDim,
+        const bottomAxisPosition = getPosition(
+          { chartDimensions: chartDim },
           LIGHT_THEME.chartMargins,
-          axisStyles.axisTitle,
-          axisStyles.axisPanelTitle,
+          axisStyles,
           { ...horizontalAxisSpec, title },
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
-          10,
-          0,
-          true,
         );
 
         const expectedBottomAxisPosition = {
           dimensions: {
-            height: title ? 56 : 36,
+            height: title ? 66 : 46,
             width: 100,
             left: 0,
             top: 110,
           },
           topIncrement: 0,
-          bottomIncrement: title ? 66 : 46,
+          bottomIncrement: title ? 76 : 56,
           leftIncrement: 0,
           rightIncrement: 0,
         };
