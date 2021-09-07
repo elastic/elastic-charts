@@ -119,6 +119,18 @@ function getUserTextOffsets(dimensions: AxisViewModel, { x, y, reference }: Text
       };
 }
 
+const horizontalOffsetMultiplier = {
+  [HorizontalAlignment.Left]: -1,
+  [HorizontalAlignment.Right]: 1,
+  [HorizontalAlignment.Center]: 0,
+};
+
+const verticalOffsetMultiplier = {
+  [VerticalAlignment.Top]: -1,
+  [VerticalAlignment.Bottom]: 1,
+  [VerticalAlignment.Middle]: 0,
+};
+
 function getHorizontalTextOffset(
   width: number,
   alignment: Extract<
@@ -126,25 +138,14 @@ function getHorizontalTextOffset(
     typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Center | typeof HorizontalAlignment.Right
   >,
 ): number {
-  return {
-    [HorizontalAlignment.Left]: -width / 2,
-    [HorizontalAlignment.Right]: width / 2,
-    [HorizontalAlignment.Center]: 0,
-  }[alignment];
+  return (width / 2) * horizontalOffsetMultiplier[alignment];
 }
 
 function getVerticalTextOffset(
   height: number,
-  alignment: Extract<
-    VerticalAlignment,
-    typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom
-  >,
+  alignment: typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom,
 ): number {
-  return {
-    [VerticalAlignment.Top]: -height / 2,
-    [VerticalAlignment.Bottom]: height / 2,
-    [VerticalAlignment.Middle]: 0,
-  }[alignment];
+  return (height / 2) * verticalOffsetMultiplier[alignment];
 }
 
 function getHorizontalAlign(
