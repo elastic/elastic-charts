@@ -35,7 +35,7 @@ import { computeGridLinesSelector } from '../state/selectors/get_grid_lines';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 import {
   AxisTick,
-  AxisViewModel,
+  TickLabelBounds,
   computeRotatedLabelDimensions,
   getAvailableTicks,
   getAxisPosition,
@@ -233,7 +233,7 @@ describe('Axis computational utils', () => {
     expect(xScale).toBeDefined();
   });
 
-  const axisDimensions: AxisViewModel = {
+  const axisDimensions: TickLabelBounds = {
     maxLabelBboxWidth: 100,
     maxLabelBboxHeight: 100,
     maxLabelTextHeight: 100,

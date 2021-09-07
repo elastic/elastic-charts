@@ -10,7 +10,7 @@ import { Dimensions, Size } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
 import { AxisStyle } from '../../../../../utils/themes/theme';
 import { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
-import { AxisTick, AxisViewModel, shouldShowTicks } from '../../../utils/axis_utils';
+import { AxisTick, TickLabelBounds, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisSpec } from '../../../utils/specs';
 import { renderAxisLine } from './line';
 import { renderTick } from './tick';
@@ -25,7 +25,7 @@ export interface AxisProps {
   axisSpec: AxisSpec;
   size: Size;
   anchorPoint: Point;
-  dimension: AxisViewModel;
+  dimension: TickLabelBounds;
   ticks: AxisTick[];
   debug: boolean;
   renderingArea: Dimensions;

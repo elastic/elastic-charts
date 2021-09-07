@@ -45,7 +45,7 @@ export interface AxisTick {
 }
 
 /** @internal */
-export interface AxisViewModel {
+export interface TickLabelBounds {
   maxLabelBboxWidth: number;
   maxLabelBboxHeight: number;
   maxLabelTextWidth: number;
@@ -101,7 +101,7 @@ export function computeRotatedLabelDimensions(unrotatedDims: BBox, degreesRotati
   return { width: rotatedWidth, height: rotatedHeight };
 }
 
-function getUserTextOffsets(dimensions: AxisViewModel, { x, y, reference }: TextOffset) {
+function getUserTextOffsets(dimensions: TickLabelBounds, { x, y, reference }: TextOffset) {
   return reference === 'global'
     ? {
         local: { x: 0, y: 0 },
@@ -201,7 +201,7 @@ export function getTickLabelProps(
   position: Position,
   rotation: number,
   axisSize: Size,
-  tickDimensions: AxisViewModel,
+  tickDimensions: TickLabelBounds,
   showTicks: boolean,
   textOffset: TextOffset,
   textAlignment?: TextAlignment,
@@ -324,7 +324,7 @@ export function enableDuplicatedTicks(
 }
 
 /** @internal */
-export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: AxisViewModel): AxisTick[] {
+export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: TickLabelBounds): AxisTick[] {
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? axisDim.maxLabelBboxHeight / 2 : axisDim.maxLabelBboxWidth / 2;
   return showOverlappingLabels
@@ -360,7 +360,7 @@ export function getAxisPosition(
   axisTitle: AxisStyle['axisTitle'],
   axisPanelTitle: AxisStyle['axisPanelTitle'],
   { title, position }: AxisSpec,
-  { maxLabelBboxHeight, maxLabelBboxWidth }: AxisViewModel,
+  { maxLabelBboxHeight, maxLabelBboxWidth }: TickLabelBounds,
   smScales: SmallMultipleScales,
   { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum }: PerSideDistance,
   tickDimension: number,
@@ -409,7 +409,7 @@ export interface AxisGeometry {
     panelTitle?: string; // defined later per panel
     secondary?: boolean; // defined later per panel
   };
-  dimension: AxisViewModel;
+  dimension: TickLabelBounds;
   ticks: AxisTick[];
   visibleTicks: AxisTick[];
 }
@@ -442,7 +442,7 @@ export function getAxesGeometries(
     enableHistogramMode,
   );
   return [...axisDimensions].reduce(
-    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, axisDim]: [string, AxisViewModel]) => {
+    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, axisDim]: [string, TickLabelBounds]) => {
       const axisSpec = getSpecsById<AxisSpec>(axisSpecs, axisId);
       if (axisSpec) {
         const scale = scaleFunction(axisSpec, axisMinMax(axisSpec.position, chartRotation, panel));

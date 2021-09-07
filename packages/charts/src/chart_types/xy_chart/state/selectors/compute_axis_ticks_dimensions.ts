@@ -14,7 +14,7 @@ import { AxisId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
 import {
-  AxisViewModel,
+  TickLabelBounds,
   computeRotatedLabelDimensions,
   defaultTickFormatter,
   getScaleForAxisSpec,
@@ -27,7 +27,7 @@ import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 /** @internal */
-export type AxesTicksDimensions = Map<AxisId, AxisViewModel>;
+export type AxesTicksDimensions = Map<AxisId, TickLabelBounds>;
 
 const getScaleFunction = createCustomCachedSelector(
   [
