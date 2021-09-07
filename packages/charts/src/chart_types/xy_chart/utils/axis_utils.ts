@@ -18,7 +18,7 @@ import {
   Rotation,
   VerticalAlignment,
 } from '../../../utils/common';
-import { Dimensions, innerPad, Margins, outerPad, PerSideDistance, Size } from '../../../utils/dimensions';
+import { Dimensions, innerPad, outerPad, PerSideDistance, Size } from '../../../utils/dimensions';
 import { Range } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
@@ -355,64 +355,21 @@ export function getTitleDimension({
 
 /** @internal */
 export function getPosition(
-  computedChartDims: { chartDimensions: Dimensions },
+  { chartDimensions }: { chartDimensions: Dimensions },
   chartMargins: PerSideDistance,
   { axisTitle, axisPanelTitle, tickLine, tickLabel }: AxisStyle,
   { title, position, hide }: AxisSpec,
   { maxLabelBboxHeight, maxLabelBboxWidth }: TickLabelBounds,
   smScales: SmallMultipleScales,
-  acc: PerSideDistance,
-) {
-  const { chartDimensions } = computedChartDims;
-  const tickDimension = shouldShowTicks(tickLine, hide) ? tickLine.size + tickLine.padding : 0;
-  const showLabels = tickLabel.visible;
-  const labelPaddingSum = showLabels ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
-  const { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum } = acc;
-  const titleDimension = title ? getTitleDimension(axisTitle) : 0;
-  const vertical = isVerticalAxis(position);
-  const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
-  const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
-  const shownLabelSize = showLabels ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
-  const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
-  return {
-    leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
-    rightIncrement: position === Position.Right ? parallelSize + chartMargins.right : 0,
-    topIncrement: position === Position.Top ? parallelSize + chartMargins.top : 0,
-    bottomIncrement: position === Position.Bottom ? parallelSize + chartMargins.bottom : 0,
-    dimensions: {
-      left:
-        position === Position.Left
-          ? chartMargins.left + cumLeftSum
-          : chartDimensions.left + (position === Position.Right ? chartDimensions.width + cumRightSum : 0),
-      top:
-        position === Position.Top
-          ? chartMargins.top + cumTopSum
-          : chartDimensions.top + (position === Position.Bottom ? chartDimensions.height + cumBottomSum : 0),
-      width: vertical ? parallelSize : chartDimensions.width,
-      height: vertical ? chartDimensions.height : parallelSize,
-    },
-  };
-}
-
-/** @internal */
-export function getAxisPosition(
-  chartDimensions: Dimensions,
-  chartMargins: Margins,
-  axisTitle: AxisStyle['axisTitle'],
-  axisPanelTitle: AxisStyle['axisPanelTitle'],
-  { title, position }: AxisSpec,
-  { maxLabelBboxHeight, maxLabelBboxWidth }: TickLabelBounds,
-  smScales: SmallMultipleScales,
   { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum }: PerSideDistance,
-  tickDimension: number,
-  labelPaddingSum: number,
-  showLabels: boolean,
 ) {
+  const tickDimension = shouldShowTicks(tickLine, hide) ? tickLine.size + tickLine.padding : 0;
+  const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
   const titleDimension = title ? getTitleDimension(axisTitle) : 0;
   const vertical = isVerticalAxis(position);
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
-  const shownLabelSize = showLabels ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
+  const shownLabelSize = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
     leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
