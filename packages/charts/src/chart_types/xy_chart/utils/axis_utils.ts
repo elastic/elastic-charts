@@ -499,42 +499,39 @@ export function getAxesGeometries(
   return [...axisDimensions].reduce((axesGeometries: AxisGeometry[], [id, axisDim]) => {
     const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
     const anchorPoint = anchorPointByAxisGroups.get(id);
-    if (!axisSpec || !anchorPoint) {
-      return axesGeometries;
+    if (axisSpec && anchorPoint) {
+      const isVertical = isVerticalAxis(axisSpec.position);
+      const { minRange, maxRange } = axisExtent(axisSpec.position, chartRotation, panel);
+      const scale = getScaleFunction(axisSpec, [minRange, maxRange]);
+      if (!scale) {
+        throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
+      }
+      const allTicks = getAvailableTicks(
+        axisSpec,
+        scale,
+        totalGroupsCount,
+        enableHistogramMode,
+        isVertical ? fallBackTickFormatter : defaultTickFormatter,
+        enableHistogramMode && ((isVertical && chartRotation === -90) || (!isVertical && chartRotation === 180))
+          ? scale.step // TODO: Find the true cause of the this offset error
+          : 0,
+        { timeZone: xDomain.timeZone },
+      );
+      axesGeometries.push({
+        axis: { id: axisSpec.id, position: axisSpec.position },
+        anchorPoint: { x: anchorPoint.dimensions.left, y: anchorPoint.dimensions.top },
+        dimension: axisDim,
+        ticks: allTicks,
+        visibleTicks: getVisibleTicks(allTicks, axisSpec, axisDim),
+        parentSize: { height: anchorPoint.dimensions.height, width: anchorPoint.dimensions.width },
+        size: axisDim.isHidden
+          ? { width: 0, height: 0 }
+          : {
+              width: isVertical ? anchorPoint.dimensions.width : panel.width,
+              height: isVertical ? panel.height : anchorPoint.dimensions.height,
+            },
+      });
     }
-
-    const isVertical = isVerticalAxis(axisSpec.position);
-    const { minRange, maxRange } = axisExtent(axisSpec.position, chartRotation, panel);
-    const scale = getScaleFunction(axisSpec, [minRange, maxRange]);
-
-    if (!scale) {
-      throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
-    }
-    const allTicks = getAvailableTicks(
-      axisSpec,
-      scale,
-      totalGroupsCount,
-      enableHistogramMode,
-      isVertical ? fallBackTickFormatter : defaultTickFormatter,
-      enableHistogramMode && ((isVertical && chartRotation === -90) || (!isVertical && chartRotation === 180))
-        ? scale.step // TODO: Find the true cause of the this offset error
-        : 0,
-      { timeZone: xDomain.timeZone },
-    );
-    axesGeometries.push({
-      axis: { id: axisSpec.id, position: axisSpec.position },
-      anchorPoint: { x: anchorPoint.dimensions.left, y: anchorPoint.dimensions.top },
-      dimension: axisDim,
-      ticks: allTicks,
-      visibleTicks: getVisibleTicks(allTicks, axisSpec, axisDim),
-      parentSize: { height: anchorPoint.dimensions.height, width: anchorPoint.dimensions.width },
-      size: axisDim.isHidden
-        ? { width: 0, height: 0 }
-        : {
-            width: isVertical ? anchorPoint.dimensions.width : panel.width,
-            height: isVertical ? panel.height : anchorPoint.dimensions.height,
-          },
-    });
     return axesGeometries;
   }, []);
 }
