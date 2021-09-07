@@ -434,54 +434,6 @@ export function getAxesGeometries(
   barsPadding?: number,
 ): AxisGeometry[] {
   const panel = getPanelSize(smScales);
-
-  const anchorPointByAxisGroups = [...axisDimensions.entries()].reduce(
-    (acc, [axisId, dimension]) => {
-      const axisSpec = getSpecsById<AxisSpec>(axisSpecs, axisId);
-
-      if (!axisSpec) {
-        return acc;
-      }
-
-      const { tickLine, tickLabel, axisTitle, axisPanelTitle } = axesStyles.get(axisId) ?? sharedAxesStyle;
-      const tickDimension = shouldShowTicks(tickLine, axisSpec.hide) ? tickLine.size + tickLine.padding : 0;
-      const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
-
-      const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getAxisPosition(
-        computedChartDims.chartDimensions,
-        chartMargins,
-        axisTitle,
-        axisPanelTitle,
-        axisSpec,
-        dimension,
-        smScales,
-        acc,
-        tickDimension,
-        labelPaddingSum,
-        tickLabel.visible,
-      );
-
-      acc.pos.set(axisId, {
-        anchor: { top: acc.top, left: acc.left, right: acc.right, bottom: acc.bottom },
-        dimensions,
-      });
-      return {
-        top: acc.top + topIncrement,
-        bottom: acc.bottom + bottomIncrement,
-        left: acc.left + leftIncrement,
-        right: acc.right + rightIncrement,
-        pos: acc.pos,
-      };
-    },
-    {
-      top: 0,
-      bottom: chartPaddings.bottom,
-      left: computedChartDims.leftMargin,
-      right: chartPaddings.right,
-      pos: new Map<AxisId, { anchor: PerSideDistance; dimensions: Dimensions }>(),
-    },
-  ).pos;
-
   const getScaleFunction = getScaleForAxisSpec(
     { xDomain, yDomains },
     { rotation: chartRotation },
@@ -489,42 +441,67 @@ export function getAxesGeometries(
     barsPadding,
     enableHistogramMode,
   );
+  return [...axisDimensions].reduce(
+    (acc: PerSideDistance & { axesGeometries: AxisGeometry[] }, [axisId, axisDim]: [string, AxisViewModel]) => {
+      const axisSpec = getSpecsById<AxisSpec>(axisSpecs, axisId);
+      if (axisSpec) {
+        const scale = getScaleFunction(axisSpec, axisMinMax(axisSpec.position, chartRotation, panel));
+        if (!scale) throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
 
-  return [...axisDimensions].reduce((axesGeometries: AxisGeometry[], [id, axisDim]) => {
-    const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
-    const anchorPoint = anchorPointByAxisGroups.get(id);
-    if (axisSpec && anchorPoint) {
-      const isVertical = isVerticalAxis(axisSpec.position);
-      const scale = getScaleFunction(axisSpec, axisMinMax(axisSpec.position, chartRotation, panel));
-      if (!scale) {
-        throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
+        const { tickLine, tickLabel, axisTitle, axisPanelTitle } = axesStyles.get(axisId) ?? sharedAxesStyle;
+        const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
+        const isVertical = isVerticalAxis(axisSpec.position);
+        const allTicks = getAvailableTicks(
+          axisSpec,
+          scale,
+          totalGroupsCount,
+          enableHistogramMode,
+          isVertical ? fallBackTickFormatter : defaultTickFormatter,
+          enableHistogramMode && ((isVertical && chartRotation === -90) || (!isVertical && chartRotation === 180))
+            ? scale.step // TODO: Find the true cause of the this offset error
+            : 0,
+          { timeZone: xDomain.timeZone },
+        );
+        const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getAxisPosition(
+          computedChartDims.chartDimensions,
+          chartMargins,
+          axisTitle,
+          axisPanelTitle,
+          axisSpec,
+          axisDim,
+          smScales,
+          acc,
+          shouldShowTicks(tickLine, axisSpec.hide) ? tickLine.size + tickLine.padding : 0,
+          labelPaddingSum,
+          tickLabel.visible,
+        );
+        acc.axesGeometries.push({
+          axis: { id: axisSpec.id, position: axisSpec.position },
+          anchorPoint: { x: dimensions.left, y: dimensions.top },
+          dimension: axisDim,
+          ticks: allTicks,
+          visibleTicks: getVisibleTicks(allTicks, axisSpec, axisDim),
+          parentSize: { height: dimensions.height, width: dimensions.width },
+          size: axisDim.isHidden
+            ? { width: 0, height: 0 }
+            : {
+                width: isVertical ? dimensions.width : panel.width,
+                height: isVertical ? panel.height : dimensions.height,
+              },
+        });
+        acc.top += topIncrement;
+        acc.bottom += bottomIncrement;
+        acc.left += leftIncrement;
+        acc.right += rightIncrement;
       }
-      const allTicks = getAvailableTicks(
-        axisSpec,
-        scale,
-        totalGroupsCount,
-        enableHistogramMode,
-        isVertical ? fallBackTickFormatter : defaultTickFormatter,
-        enableHistogramMode && ((isVertical && chartRotation === -90) || (!isVertical && chartRotation === 180))
-          ? scale.step // TODO: Find the true cause of the this offset error
-          : 0,
-        { timeZone: xDomain.timeZone },
-      );
-      axesGeometries.push({
-        axis: { id: axisSpec.id, position: axisSpec.position },
-        anchorPoint: { x: anchorPoint.dimensions.left, y: anchorPoint.dimensions.top },
-        dimension: axisDim,
-        ticks: allTicks,
-        visibleTicks: getVisibleTicks(allTicks, axisSpec, axisDim),
-        parentSize: { height: anchorPoint.dimensions.height, width: anchorPoint.dimensions.width },
-        size: axisDim.isHidden
-          ? { width: 0, height: 0 }
-          : {
-              width: isVertical ? anchorPoint.dimensions.width : panel.width,
-              height: isVertical ? panel.height : anchorPoint.dimensions.height,
-            },
-      });
-    }
-    return axesGeometries;
-  }, []);
+      return acc;
+    },
+    {
+      axesGeometries: [],
+      top: 0,
+      bottom: chartPaddings.bottom,
+      left: computedChartDims.leftMargin,
+      right: chartPaddings.right,
+    },
+  ).axesGeometries;
 }
