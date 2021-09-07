@@ -438,8 +438,7 @@ export function getAxesGeometries(
   enableHistogramMode: boolean,
   fallBackTickFormatter: TickFormatter,
   barsPadding?: number,
-): Array<AxisGeometry> {
-  const axesGeometries: Array<AxisGeometry> = [];
+): AxisGeometry[] {
   const panel = getPanelSize(smScales);
 
   const anchorPointByAxisGroups = [...axisDimensions.entries()].reduce(
@@ -497,13 +496,11 @@ export function getAxesGeometries(
     enableHistogramMode,
   );
 
-  axisDimensions.forEach((axisDim, id) => {
+  return [...axisDimensions].reduce((axesGeometries: AxisGeometry[], [id, axisDim]) => {
     const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
     const anchorPoint = anchorPointByAxisGroups.get(id);
-    // Consider refactoring this so this condition can be tested
-    // Given some of the values that get passed around, maybe re-write as a reduce instead of forEach?
     if (!axisSpec || !anchorPoint) {
-      return;
+      return axesGeometries;
     }
 
     const isVertical = isVerticalAxis(axisSpec.position);
@@ -513,38 +510,31 @@ export function getAxesGeometries(
     if (!scale) {
       throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
     }
-    // TODO: Find the true cause of the this offset error
-    const rotationOffset =
-      enableHistogramMode && ((isVertical && chartRotation === -90) || (!isVertical && chartRotation === 180))
-        ? scale.step
-        : 0;
-
     const allTicks = getAvailableTicks(
       axisSpec,
       scale,
       totalGroupsCount,
       enableHistogramMode,
       isVertical ? fallBackTickFormatter : defaultTickFormatter,
-      rotationOffset,
+      enableHistogramMode && ((isVertical && chartRotation === -90) || (!isVertical && chartRotation === 180))
+        ? scale.step // TODO: Find the true cause of the this offset error
+        : 0,
       { timeZone: xDomain.timeZone },
     );
-    const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
-
-    const size = axisDim.isHidden
-      ? { width: 0, height: 0 }
-      : {
-          width: isVertical ? anchorPoint.dimensions.width : panel.width,
-          height: isVertical ? panel.height : anchorPoint.dimensions.height,
-        };
     axesGeometries.push({
       axis: { id: axisSpec.id, position: axisSpec.position },
       anchorPoint: { x: anchorPoint.dimensions.left, y: anchorPoint.dimensions.top },
-      size,
-      parentSize: { height: anchorPoint.dimensions.height, width: anchorPoint.dimensions.width },
       dimension: axisDim,
       ticks: allTicks,
-      visibleTicks,
+      visibleTicks: getVisibleTicks(allTicks, axisSpec, axisDim),
+      parentSize: { height: anchorPoint.dimensions.height, width: anchorPoint.dimensions.width },
+      size: axisDim.isHidden
+        ? { width: 0, height: 0 }
+        : {
+            width: isVertical ? anchorPoint.dimensions.width : panel.width,
+            height: isVertical ? panel.height : anchorPoint.dimensions.height,
+          },
     });
-  });
-  return axesGeometries;
+    return axesGeometries;
+  }, []);
 }
