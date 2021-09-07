@@ -365,7 +365,7 @@ export function getAxisPosition(
   chartMargins: Margins,
   axisTitle: AxisStyle['axisTitle'],
   axisPanelTitle: AxisStyle['axisPanelTitle'],
-  axisSpec: AxisSpec,
+  { title, position }: AxisSpec,
   { maxLabelBboxHeight, maxLabelBboxWidth }: AxisViewModel,
   smScales: SmallMultipleScales,
   { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum }: PerSideDistance,
@@ -373,40 +373,30 @@ export function getAxisPosition(
   labelPaddingSum: number,
   showLabels: boolean,
 ) {
-  const titleDimension = axisSpec.title ? getTitleDimension(axisTitle) : 0;
-  const { position } = axisSpec;
-  const dimensions = { ...chartDimensions };
-  let topIncrement = 0;
-  let bottomIncrement = 0;
-  let leftIncrement = 0;
-  let rightIncrement = 0;
-
+  const titleDimension = title ? getTitleDimension(axisTitle) : 0;
   const vertical = isVerticalAxis(position);
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
   const shownLabelSize = showLabels ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
-  if (vertical) {
-    if (position === Position.Left) {
-      leftIncrement = chartMargins.left + parallelSize;
-      dimensions.left = cumLeftSum + chartMargins.left;
-    } else {
-      rightIncrement = parallelSize + chartMargins.right;
-      dimensions.left = chartDimensions.left + chartDimensions.width + cumRightSum;
-    }
-    dimensions.width = parallelSize;
-  } else {
-    if (position === Position.Top) {
-      topIncrement = parallelSize + chartMargins.top;
-      dimensions.top = cumTopSum + chartMargins.top;
-    } else {
-      bottomIncrement = parallelSize + chartMargins.bottom;
-      dimensions.top = chartDimensions.top + chartDimensions.height + cumBottomSum;
-    }
-    dimensions.height = parallelSize;
-  }
-
-  return { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement };
+  return {
+    leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
+    rightIncrement: position === Position.Right ? parallelSize + chartMargins.right : 0,
+    topIncrement: position === Position.Top ? parallelSize + chartMargins.top : 0,
+    bottomIncrement: position === Position.Bottom ? parallelSize + chartMargins.bottom : 0,
+    dimensions: {
+      left:
+        position === Position.Left
+          ? chartMargins.left + cumLeftSum
+          : chartDimensions.left + (position === Position.Right ? chartDimensions.width + cumRightSum : 0),
+      top:
+        position === Position.Top
+          ? chartMargins.top + cumTopSum
+          : chartDimensions.top + (position === Position.Bottom ? chartDimensions.height + cumBottomSum : 0),
+      width: vertical ? parallelSize : chartDimensions.width,
+      height: vertical ? chartDimensions.height : parallelSize,
+    },
+  };
 }
 
 /** @internal */
