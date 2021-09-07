@@ -2,7 +2,7 @@
   "name": "elastic-charts-mono",
   "description": "Mono repo for @elastic/charts",
   "author": "Elastic DataVis",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.txt",
   "private": "true",
   "repository": "git@github.com:elastic/elastic-charts.git",
   "workspaces": {
