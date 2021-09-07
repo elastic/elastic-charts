@@ -238,18 +238,12 @@ export function getTickLabelProps(
       };
 }
 
-function axisExtent(
-  axisPosition: Position,
-  chartRotation: Rotation,
-  { width, height }: Size,
-): { minRange: number; maxRange: number } {
+function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
   const horizontal = isHorizontalAxis(axisPosition);
   const flipped = horizontal
     ? chartRotation === -90 || chartRotation === 180
     : chartRotation === 90 || chartRotation === 180;
-  return horizontal
-    ? { minRange: flipped ? width : 0, maxRange: flipped ? 0 : width }
-    : { minRange: flipped ? 0 : height, maxRange: flipped ? height : 0 };
+  return horizontal ? [flipped ? width : 0, flipped ? 0 : width] : [flipped ? 0 : height, flipped ? height : 0];
 }
 
 /** @internal */
@@ -263,7 +257,7 @@ export function getAvailableTicks(
   tickFormatOptions?: TickFormatterOptions,
 ): AxisTick[] {
   const ticks = scale.ticks();
-  const isSingleValueScale = scale.domain[0] - scale.domain[1] === 0;
+  const isSingleValueScale = scale.domain[0] === scale.domain[1];
   const hasAdditionalTicks = enableHistogramMode && scale.bandwidth > 0;
 
   if (hasAdditionalTicks) {
@@ -501,8 +495,7 @@ export function getAxesGeometries(
     const anchorPoint = anchorPointByAxisGroups.get(id);
     if (axisSpec && anchorPoint) {
       const isVertical = isVerticalAxis(axisSpec.position);
-      const { minRange, maxRange } = axisExtent(axisSpec.position, chartRotation, panel);
-      const scale = getScaleFunction(axisSpec, [minRange, maxRange]);
+      const scale = getScaleFunction(axisSpec, axisMinMax(axisSpec.position, chartRotation, panel));
       if (!scale) {
         throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
       }
