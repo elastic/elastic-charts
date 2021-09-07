@@ -366,21 +366,16 @@ export function getAxisPosition(
   axisTitle: AxisStyle['axisTitle'],
   axisPanelTitle: AxisStyle['axisPanelTitle'],
   axisSpec: AxisSpec,
-  axisDim: AxisViewModel,
+  { maxLabelBboxHeight, maxLabelBboxWidth }: AxisViewModel,
   smScales: SmallMultipleScales,
-  cumTopSum: number,
-  cumBottomSum: number,
-  cumLeftSum: number,
-  cumRightSum: number,
+  { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum }: PerSideDistance,
   tickDimension: number,
   labelPaddingSum: number,
   showLabels: boolean,
 ) {
   const titleDimension = axisSpec.title ? getTitleDimension(axisTitle) : 0;
   const { position } = axisSpec;
-  const { maxLabelBboxHeight, maxLabelBboxWidth } = axisDim;
-  const { top, left, height, width } = chartDimensions;
-  const dimensions = { top, left, width, height };
+  const dimensions = { ...chartDimensions };
   let topIncrement = 0;
   let bottomIncrement = 0;
   let leftIncrement = 0;
@@ -395,7 +390,7 @@ export function getAxisPosition(
       dimensions.left = cumLeftSum + chartMargins.left;
     } else {
       rightIncrement = dimWidth + chartMargins.right;
-      dimensions.left = left + width + cumRightSum;
+      dimensions.left = chartDimensions.left + chartDimensions.width + cumRightSum;
     }
     dimensions.width = dimWidth;
   } else {
@@ -407,7 +402,7 @@ export function getAxisPosition(
       dimensions.top = cumTopSum + chartMargins.top;
     } else {
       bottomIncrement = dimHeight + chartMargins.bottom;
-      dimensions.top = top + height + cumBottomSum;
+      dimensions.top = chartDimensions.top + chartDimensions.height + cumBottomSum;
     }
     dimensions.height = dimHeight;
   }
@@ -478,10 +473,7 @@ export function getAxesGeometries(
         axisSpec,
         dimension,
         smScales,
-        acc.top,
-        acc.bottom,
-        acc.left,
-        acc.right,
+        acc,
         tickDimension,
         labelPaddingSum,
         tickLabel.visible,
