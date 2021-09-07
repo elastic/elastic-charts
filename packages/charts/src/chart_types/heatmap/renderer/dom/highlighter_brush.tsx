@@ -17,6 +17,10 @@ import { getHeatmapConfigSelector } from '../../state/selectors/get_heatmap_conf
 import { getHighlightedAreaSelector } from '../../state/selectors/get_highlighted_area';
 import { DEFAULT_PROPS, HighlighterCellsComponent, HighlighterCellsProps } from './highlighter';
 
+function getCurrentPointerStates(state: GlobalChartState) {
+  return state.interactions.pointer;
+}
+
 const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
@@ -33,6 +37,7 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
     dragShape = highlightedArea;
   }
   const { brushMask, brushArea } = getHeatmapConfigSelector(state);
+  const pointer = getCurrentPointerStates(state);
 
   return {
     chartId,
@@ -42,6 +47,7 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
     dragShape,
     brushMask,
     brushArea,
+    pointer,
   };
 };
 

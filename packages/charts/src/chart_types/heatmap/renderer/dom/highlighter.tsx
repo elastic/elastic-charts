@@ -8,6 +8,7 @@
 
 import React, { FC } from 'react';
 
+import { PointerStates } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
 import { config } from '../../layout/config/config';
 import { Config } from '../../layout/types/config_types';
@@ -22,6 +23,7 @@ export interface HighlighterCellsProps {
   dragShape: DragShape | null;
   brushMask: Config['brushMask'];
   brushArea: Config['brushArea'];
+  pointer: PointerStates | null;
 }
 
 /**
@@ -36,11 +38,14 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
   canvasDimension,
   brushArea,
   brushMask,
+  pointer,
 }) => {
   if (!initialized || dragShape === null) return null;
 
   const maskId = `echHighlighterMask__${chartId}`;
-  return (
+  const pointerOnLeftAxis =
+    pointer && pointer.lastDrag ? pointer.lastDrag?.start.position.x < canvasDimension.left : false;
+  return !pointerOnLeftAxis ? (
     <svg className="echHighlighter" width="100%" height="100%">
       <defs>
         <mask id={maskId}>
@@ -130,7 +135,7 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
         )}
       </g>
     </svg>
-  );
+  ) : null;
 };
 
 /** @internal */
@@ -147,4 +152,5 @@ export const DEFAULT_PROPS: HighlighterCellsProps = {
   dragShape: { x: 0, y: 0, height: 0, width: 0 },
   brushArea: config.brushArea,
   brushMask: config.brushMask,
+  pointer: null,
 };
