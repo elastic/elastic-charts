@@ -49,7 +49,7 @@ import {
 /** @public */
 export interface LayerValue {
   /**
-   * The category value as retrieved by the `groupByRollup` callback§
+   * The category value as retrieved by the `groupByRollup` callback
    */
   groupByRollup: PrimitiveValue;
   /**

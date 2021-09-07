@@ -299,9 +299,9 @@ const getSortedDataSeries = (
   xValues: Set<string | number>,
   xScaleType: ScaleType,
 ): DataSeries[] =>
-  [...dataSeries].map(({ data, ...rest }) => ({
+  dataSeries.map(({ data, ...rest }) => ({
     ...rest,
-    data: data.sort(datumXSortPredicate(xScaleType, [...xValues.values()])),
+    data: [...data].sort(datumXSortPredicate(xScaleType, [...xValues.values()])),
   }));
 
 /** @internal */
