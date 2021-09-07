@@ -166,10 +166,8 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1]}
         yNice
-        areaSeriesStyle={{
-          area: { fill: dataInk, opacity: 0.3 },
-          line: { stroke: dataInk, opacity: 1 },
-        }}
+        color={dataInk}
+        areaSeriesStyle={{ area: { opacity: 0.3 }, line: { opacity: 1 } }}
         data={data.map(([t, v]) => [t0 + (t - t0) * 4, v])}
       />
     </Chart>
