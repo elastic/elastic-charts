@@ -160,7 +160,7 @@ function getHorizontalAlign(
     return alignment;
   }
 
-  if ([-90, 90].includes(rotation)) {
+  if (Math.abs(rotation) === 90) {
     if (position === Position.Top) {
       return rotation === 90 ? HorizontalAlignment.Right : HorizontalAlignment.Left;
     } else if (position === Position.Bottom) {
@@ -190,7 +190,7 @@ function getVerticalAlign(
     return alignment;
   }
 
-  if ([0, 180].includes(rotation)) {
+  if (rotation % 180 === 0) {
     if (position === Position.Left) {
       return rotation === 0 ? VerticalAlignment.Bottom : VerticalAlignment.Top;
     } else if (position === Position.Right) {
