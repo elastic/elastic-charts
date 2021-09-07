@@ -448,20 +448,19 @@ export function getAxesGeometries(
         const scale = scaleFunction(axisSpec, axisMinMax(axisSpec.position, chartRotation, panel));
         if (!scale) throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
 
-        const { tickLine, tickLabel, axisTitle, axisPanelTitle } = axesStyles.get(axisId) ?? sharedAxesStyle;
-        const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
-        const isVertical = isVerticalAxis(axisSpec.position);
+        const vertical = isVerticalAxis(axisSpec.position);
         const allTicks = getAvailableTicks(
           axisSpec,
           scale,
           totalGroupsCount,
           enableHistogramMode,
-          isVertical ? fallBackTickFormatter : defaultTickFormatter,
-          enableHistogramMode && ((isVertical && chartRotation === -90) || (!isVertical && chartRotation === 180))
+          vertical ? fallBackTickFormatter : defaultTickFormatter,
+          enableHistogramMode && ((vertical && chartRotation === -90) || (!vertical && chartRotation === 180))
             ? scale.step // TODO: Find the true cause of the this offset error
             : 0,
           { timeZone: xDomain.timeZone },
         );
+        const { tickLine, tickLabel, axisTitle, axisPanelTitle } = axesStyles.get(axisId) ?? sharedAxesStyle;
         const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getAxisPosition(
           computedChartDims.chartDimensions,
           chartMargins,
@@ -472,7 +471,7 @@ export function getAxesGeometries(
           smScales,
           acc,
           shouldShowTicks(tickLine, axisSpec.hide) ? tickLine.size + tickLine.padding : 0,
-          labelPaddingSum,
+          tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0,
           tickLabel.visible,
         );
 
@@ -490,8 +489,8 @@ export function getAxesGeometries(
           size: axisDim.isHidden
             ? { width: 0, height: 0 }
             : {
-                width: isVertical ? dimensions.width : panel.width,
-                height: isVertical ? panel.height : dimensions.height,
+                width: vertical ? dimensions.width : panel.width,
+                height: vertical ? panel.height : dimensions.height,
               },
         });
       }
