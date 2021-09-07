@@ -991,7 +991,7 @@ export interface HeatmapSpec extends Spec {
 export interface HeatmapStyles {
     brushArea: {
         visible: boolean;
-        fill: Color;
+        fill?: Color;
         stroke: Color;
         strokeWidth: number;
     };

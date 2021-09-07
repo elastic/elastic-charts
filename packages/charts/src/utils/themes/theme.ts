@@ -199,7 +199,7 @@ export interface HeatmapStyles {
   /**
    * Config of the mask over the selected cells
    */
-  brushArea: { visible: boolean; fill: Color; stroke: Color; strokeWidth: number };
+  brushArea: { visible: boolean; fill?: Color; stroke: Color; strokeWidth: number };
   /**
    * Config of the brushing tool
    */

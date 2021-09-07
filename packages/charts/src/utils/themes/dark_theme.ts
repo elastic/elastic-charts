@@ -235,13 +235,12 @@ export const DARK_THEME: Theme = {
     maxColumnWidth: 30,
     brushArea: {
       visible: true,
-      fill: 'white', // white === transparent
       stroke: '#D3DAE6', // euiColorLightShade,
       strokeWidth: 2,
     },
     brushMask: {
       visible: true,
-      fill: 'rgb(115 115 115 / 50%)',
+      fill: '#8c8c8c80',
     },
     brushTool: {
       visible: false,

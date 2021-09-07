@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { eachTheme } from '../helpers';
 import { common } from '../page_objects';
 
 describe('Heatmap stories', () => {
@@ -15,5 +16,21 @@ describe('Heatmap stories', () => {
       { left: 100, top: 100 },
       { left: 300, top: 300 },
     );
+  });
+
+  eachTheme.describe((_, themeParams) => {
+    it('should render basic heatmap', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/heatmap-alpha--basic${themeParams}`,
+      );
+    });
+
+    it('should render correct brush area', async () => {
+      await common.expectChartWithDragAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/heatmap-alpha--basic${themeParams}`,
+        { left: 200, top: 100 },
+        { left: 400, top: 250 },
+      );
+    });
   });
 });
