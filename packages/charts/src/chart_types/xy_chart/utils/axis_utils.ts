@@ -320,7 +320,7 @@ export function enableDuplicatedTicks(
     axisTickLabel: (axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
     position: (scale.scale(tick) ?? 0) + offset,
   }));
-  return axisSpec.showDuplicatedTicks ? allTicks : getUniqueValues(allTicks, 'label', true);
+  return axisSpec.showDuplicatedTicks ? allTicks : getUniqueValues(allTicks, 'axisTickLabel', true);
 }
 
 /** @internal */

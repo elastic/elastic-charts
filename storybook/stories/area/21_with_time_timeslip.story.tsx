@@ -23,6 +23,14 @@ const tickLabelStyle = { fontSize: 11, fontFamily, fill: 'rgba(0,0,0,0.8)' };
 const axisTitleColor = 'rgb(112,112,112)';
 const axisTitleFontSize = 15;
 const dataInk = 'rgba(96, 146, 192, 1)';
+const tooltipDateFormatter = (d: any) =>
+  new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  }).format(d);
 
 const xAxisStyle = {
   tickLine: { size: 0.0001, padding: -6, ...gridStyle },
@@ -44,24 +52,17 @@ export const Example = () => {
   const shortWhiskers = boolean('Shorter X axis minor whiskers', true);
   const minorGridLines = boolean('Minor grid lines', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
-  const topAxisLabelFormat = (d: any) => {
-    // const chartWidth = document.querySelector('.echContainer')?.getBoundingClientRect().width ?? 0;
-    return `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { minute: 'numeric' })
-      .format(d)
-      .padStart(2, '0')}′  `;
-  };
-  const midAxisLabelFormatter = (d: any) => {
-    return `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { hour: 'numeric' })
-      .format(d)
-      .padStart(2, '0')}  `;
-  };
-  const bottomAxisLabelFormatter = (d: any) => {
-    return `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', {
+  // const chartWidth = document.querySelector('.echContainer')?.getBoundingClientRect().width ?? 0;
+  const topAxisLabelFormat = (d: any) =>
+    `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
+  const midAxisLabelFormatter = (d: any) =>
+    `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { hour: 'numeric' }).format(d).padStart(2, '0')}  `;
+  const bottomAxisLabelFormatter = (d: any) =>
+    `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     }).format(d)}  `;
-  };
   const yAxisTitle = 'CPU utilization';
   return (
     <Chart>
@@ -91,9 +92,8 @@ export const Example = () => {
       <Axis
         id="x_minor"
         position={Position.Bottom}
-        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
-        showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
-        tickFormat={topAxisLabelFormat}
+        showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
+        showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
         ticks={100}
         showGridLines={minorGridLines}
         gridLine={mergePartial(gridStyle, { strokeWidth: 0.1 })}
@@ -112,10 +112,9 @@ export const Example = () => {
         id="x_major"
         title="timestamp per 1 minute"
         position={Position.Bottom}
-        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
-        showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
+        showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
+        showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
         showDuplicatedTicks={false}
-        tickFormat={midAxisLabelFormatter}
         ticks={1}
         showGridLines
         gridLine={gridStyle}
@@ -132,10 +131,10 @@ export const Example = () => {
         id="x_context"
         title="time (1-minute measurements)"
         position={Position.Bottom}
-        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
-        showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
+        showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
+        showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
         showDuplicatedTicks={false}
-        tickFormat={bottomAxisLabelFormatter}
+        tickFormat={tooltipDateFormatter}
         ticks={2}
         showGridLines
         gridLine={gridStyle}
@@ -160,7 +159,7 @@ export const Example = () => {
         tickFormat={(d) => `${Number(d).toFixed(0)}%`}
       />
       <AreaSeries
-        id="area1"
+        id="Utilization"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
