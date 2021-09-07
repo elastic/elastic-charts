@@ -131,23 +131,6 @@ const verticalOffsetMultiplier = {
   [VerticalAlignment.Middle]: 0,
 };
 
-function getHorizontalTextOffset(
-  width: number,
-  alignment: Extract<
-    HorizontalAlignment,
-    typeof HorizontalAlignment.Left | typeof HorizontalAlignment.Center | typeof HorizontalAlignment.Right
-  >,
-): number {
-  return (width / 2) * horizontalOffsetMultiplier[alignment];
-}
-
-function getVerticalTextOffset(
-  height: number,
-  alignment: typeof VerticalAlignment.Top | typeof VerticalAlignment.Middle | typeof VerticalAlignment.Bottom,
-): number {
-  return (height / 2) * verticalOffsetMultiplier[alignment];
-}
-
 function getHorizontalAlign(
   position: Position,
   rotation: number,
@@ -232,11 +215,11 @@ export function getTickLabelProps(
   const verticalAlign = getVerticalAlign(position, rotation, textAlignment?.vertical);
 
   const userOffsets = getUserTextOffsets(tickDimensions, textOffset);
-  // getHorizontalTextOffset needs to be used for vertical axis labels, and vertical labels of horizontal axes
   const textOffsetX =
-    (isHorizontalAxis(position) && rotation === 0 ? 0 : getHorizontalTextOffset(maxLabelTextWidth, horizontalAlign)) +
-    userOffsets.local.x;
-  const textOffsetY = getVerticalTextOffset(maxLabelTextHeight, verticalAlign) + userOffsets.local.y;
+    (isHorizontalAxis(position) && rotation === 0
+      ? 0
+      : (maxLabelTextWidth / 2) * horizontalOffsetMultiplier[horizontalAlign]) + userOffsets.local.x;
+  const textOffsetY = (maxLabelTextHeight / 2) * verticalOffsetMultiplier[verticalAlign] + userOffsets.local.y;
   const rest = { textOffsetX, textOffsetY, horizontalAlign, verticalAlign };
   return isVerticalAxis(position)
     ? {
@@ -297,7 +280,6 @@ export function getAvailableTicks(
     }
   }
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
-
   const band = scale.bandwidth / (1 - scale.barsPadding);
   const halfPadding = (band - scale.bandwidth) / 2;
   const offset =
@@ -340,7 +322,6 @@ export function enableDuplicatedTicks(
   const allTicks: AxisTick[] = scale.ticks().map((tick) => ({
     value: tick,
     // TODO handle empty string tick formatting
-    // Nick is this ^^^ now handled here? vvv Or you meant sg else?
     label: (axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
     axisTickLabel: (axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
     position: (scale.scale(tick) ?? 0) + offset,
