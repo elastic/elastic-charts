@@ -22,7 +22,7 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { Dimensions } from '../../../../utils/dimensions';
+import { Size } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel, Word, WordcloudViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
 
@@ -78,8 +78,8 @@ function log(minFontSize: number, maxFontSize: number, _exponent: number, weight
 
 const weightFnLookup = { linear, exponential, log, squareRoot };
 
-function layoutMaker({ data, ...viewModel }: WordcloudViewModel, chartContainerDimensions: Dimensions) {
-  const { height, width } = chartContainerDimensions;
+function layoutMaker({ data, ...viewModel }: WordcloudViewModel, chartSize: Size) {
+  const { height, width } = chartSize;
   const words = data.map<Word>((d) => {
     const weightFn = weightFnLookup[viewModel.weightFn];
     return {
@@ -108,12 +108,12 @@ function layoutMaker({ data, ...viewModel }: WordcloudViewModel, chartContainerD
 
 const View = ({
   words,
-  dimensions: { height, width },
+  size: { height, width },
   actions: { onElementClick, onElementOver, onElementOut },
   specId,
 }: {
   words: Word[];
-  dimensions: Dimensions;
+  size: Size;
   actions: {
     onElementClick?: SettingsSpec['onElementClick'];
     onElementOver?: SettingsSpec['onElementOver'];
@@ -169,7 +169,7 @@ const View = ({
 interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
-  chartContainerDimensions: Dimensions;
+  chartSize: Size;
   a11ySettings: A11ySettings;
   onElementClick?: SettingsSpec['onElementClick'];
   onElementOver?: SettingsSpec['onElementOver'];
@@ -200,7 +200,7 @@ class Component extends React.Component<Props> {
   render() {
     const {
       initialized,
-      chartContainerDimensions,
+      chartSize,
       geometries: { wordcloudViewModel, specId },
       a11ySettings,
       onElementClick,
@@ -208,17 +208,16 @@ class Component extends React.Component<Props> {
       onElementOut,
     } = this.props;
 
-    if (!initialized || chartContainerDimensions.width === 0 || chartContainerDimensions.height === 0) {
+    if (!initialized || chartSize.width === 0 || chartSize.height === 0) {
       return null;
     }
 
-    const layout = layoutMaker(wordcloudViewModel, chartContainerDimensions);
+    const layout = layoutMaker(wordcloudViewModel, chartSize);
 
-    let ww: Word[] = [];
-    layout.on('end', (w) => (ww = w)).start();
+    let renderedWordObjects: Word[] = [];
+    layout.on('end', (w) => (renderedWordObjects = w)).start();
 
     const wordCount = wordcloudViewModel.data.length;
-    const renderedWordObjects = ww;
     const renderedWordCount: number = renderedWordObjects.length;
     const notAllWordsFit = wordCount !== renderedWordCount;
     if (notAllWordsFit && wordcloudViewModel.outOfRoomCallback instanceof Function) {
@@ -233,7 +232,7 @@ class Component extends React.Component<Props> {
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <View
           words={renderedWordObjects}
-          dimensions={chartContainerDimensions}
+          size={chartSize}
           actions={{ onElementClick, onElementOut, onElementOver }}
           specId={specId}
         />
@@ -254,11 +253,9 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
   geometries: nullShapeViewModel(),
-  chartContainerDimensions: {
+  chartSize: {
     width: 0,
     height: 0,
-    left: 0,
-    top: 0,
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
 };
@@ -270,7 +267,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   return {
     initialized: true,
     geometries: geometries(state),
-    chartContainerDimensions: state.parentDimensions,
+    chartSize: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
     onElementClick: getSettingsSpecSelector(state).onElementClick,
     onElementOver: getSettingsSpecSelector(state).onElementOver,
