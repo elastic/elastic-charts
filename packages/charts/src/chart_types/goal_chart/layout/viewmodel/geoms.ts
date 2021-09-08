@@ -405,7 +405,7 @@ export function geoms(
   const angleScale = (x: number) => angleStart + (angleRange * (x - domain[0])) / domainExtent;
   const clockwise = angleStart > angleEnd; // todo refine this crude approach
 
-  const [...geomObjects] = abstractGeoms
+  return [...abstractGeoms]
     .sort((a, b) => a.order - b.order)
     .map(({ landmarks, aes }) => {
       const at = get(landmarks, 'at', '');
@@ -464,5 +464,4 @@ export function geoms(
         return new Section(x0, y0, x1, y1, lineWidth, strokeStyle);
       }
     });
-  return geomObjects;
 }
