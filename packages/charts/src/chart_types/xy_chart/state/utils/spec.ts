@@ -8,7 +8,7 @@
 
 import { BasicSeriesSpec, DEFAULT_GLOBAL_ID, Spec } from '../../../../specs';
 import { GroupId } from '../../../../utils/ids';
-import { isVerticalAxis } from '../../utils/axis_type_utils';
+import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisSpec } from '../../utils/specs';
 
 /** @internal */
@@ -18,24 +18,11 @@ export function getSpecsById<T extends Spec>(specs: T[], id: string): T | undefi
 
 /** @internal */
 export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId) {
-  let xAxis: AxisSpec | undefined;
-  let yAxis: AxisSpec | undefined;
-  // eslint-disable-next-line no-restricted-syntax
-  for (const axisSpec of axesSpecs) {
-    if (axisSpec.groupId !== groupId) {
-      continue;
-    }
-    if (isVerticalAxis(axisSpec.position)) {
-      yAxis = axisSpec;
-    } else {
-      xAxis = axisSpec;
-    }
-  }
-
-  return {
-    xAxis,
-    yAxis,
-  };
+  return axesSpecs.reduce<{ xAxis?: AxisSpec; yAxis?: AxisSpec }>((result, spec) => {
+    if (spec.groupId === groupId && isHorizontalAxis(spec.position)) result.xAxis = spec;
+    if (spec.groupId === groupId && isVerticalAxis(spec.position)) result.yAxis = spec;
+    return result;
+  }, {});
 }
 
 /** @internal */

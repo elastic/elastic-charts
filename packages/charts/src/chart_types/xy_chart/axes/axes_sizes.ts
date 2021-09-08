@@ -11,15 +11,16 @@ import { Position } from '../../../utils/common';
 import { innerPad, outerPad, PerSideDistance } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { AxisStyle, Theme } from '../../../utils/themes/theme';
+import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
 import { getSpecsById } from '../state/utils/spec';
 import { isVerticalAxis } from '../utils/axis_type_utils';
-import { AxisViewModel, getTitleDimension, shouldShowTicks } from '../utils/axis_utils';
+import { getTitleDimension, shouldShowTicks } from '../utils/axis_utils';
 import { AxisSpec } from '../utils/specs';
 
 /** @internal */
 export function computeAxesSizes(
   { axes: sharedAxesStyles, chartMargins }: Theme,
-  axisDimensions: Map<AxisId, AxisViewModel>,
+  axisDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
   smSpec?: SmallMultiplesSpec,
