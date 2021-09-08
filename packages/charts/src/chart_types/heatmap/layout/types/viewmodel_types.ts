@@ -36,6 +36,7 @@ export interface Cell {
   formatted: string;
   visible: boolean;
   datum: HeatmapCellDatum;
+  fontSize: Pixels;
 }
 
 /** @internal */
@@ -57,6 +58,7 @@ export interface HeatmapViewModel {
     stroke: Stroke;
   };
   cells: Cell[];
+  cellFontSize: (c: Cell) => Pixels;
   xValues: Array<TextBox>;
   yValues: Array<TextBox>;
   pageSize: number;
@@ -116,6 +118,7 @@ export const nullHeatmapViewModel: HeatmapViewModel = {
   xValues: [],
   yValues: [],
   pageSize: 0,
+  cellFontSize: () => 0,
 };
 
 /** @internal */

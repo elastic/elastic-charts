@@ -58,7 +58,7 @@ interface KeyboardKey {
 type KeyboardKeys = Array<KeyboardKey>;
 
 /**
- * Used to get postion from any value of cursor position
+ * Used to get position from any value of cursor position
  *
  * @param mousePosition
  * @param element
@@ -116,7 +116,7 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
    */
   waitSelector?: string;
   /**
-   * Delay to take screenshot after element is visiable
+   * Delay to take screenshot after element is visible
    */
   delay?: number;
   /**
@@ -362,7 +362,7 @@ class CommonPage {
    * Expect a chart given a url from storybook with mouse move
    *
    * @param url Storybook url from knobs section
-   * @param mousePosition - postion of mouse relative to chart
+   * @param mousePosition - position of mouse relative to chart
    * @param options
    */
   async expectChartWithMouseAtUrlToMatchScreenshot(
@@ -408,8 +408,8 @@ class CommonPage {
    * Expect a chart given a url from storybook with mouse move
    *
    * @param url Storybook url from knobs section
-   * @param start - the start postion of mouse relative to chart
-   * @param end - the end postion of mouse relative to chart
+   * @param start - the start position of mouse relative to chart
+   * @param end - the end position of mouse relative to chart
    * @param options
    */
   async expectChartWithDragAtUrlToMatchScreenshot(
