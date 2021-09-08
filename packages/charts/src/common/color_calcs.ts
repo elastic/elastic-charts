@@ -142,9 +142,7 @@ export function colorIsDark(color: Color): boolean {
   return luminance < 0.2;
 }
 
-const reducer = (acc: any, curr: any, idx: any) => (idx !== 0 ? `${acc}, ${curr}` : `${curr}`);
-
-const invert = (r: number, g: number, b: number) => [r, g, b].map((x) => 255 - x).reduce(reducer, '');
+const invert = (r: number, g: number, b: number) => [r, g, b].map((x) => 255 - x).join(',');
 
 /**
  * inverse color for text
