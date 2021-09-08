@@ -12,7 +12,7 @@ import { scaleBand, scaleQuantize } from 'd3-scale';
 import { stringToRGB } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
-import { Box, TextMeasure } from '../../../../common/text_utils';
+import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
@@ -180,6 +180,9 @@ export function shapeViewModel(
     };
   });
 
+  const cellWidthInner = cellWidth - gridStrokeWidth * 2;
+  const cellHeightInner = cellHeight - gridStrokeWidth * 2;
+
   // compute each available cell position, color and value
   const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
     const x = xScale(String(d.x));
@@ -191,13 +194,27 @@ export function shapeViewModel(
       return acc;
     }
     const cellKey = getCellKey(d.x, d.y);
+
+    const formattedValue = spec.valueFormatter(d.value);
+
+    const fontSize = maximiseFontSize(
+      textMeasure,
+      formattedValue,
+      config.cell.label,
+      config.cell.label.minFontSize,
+      config.cell.label.maxFontSize,
+      // adding 3px padding per side to avoid that text touches the edges
+      cellWidthInner - 6,
+      cellHeightInner - 6,
+    );
+
     acc[cellKey] = {
       x:
         (config.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - config.cell.maxWidth / 2 : x) + gridStrokeWidth,
       y,
       yIndex,
-      width: cellWidth - gridStrokeWidth * 2,
-      height: cellHeight - gridStrokeWidth * 2,
+      width: cellWidthInner,
+      height: cellHeightInner,
       datum: d,
       fill: {
         color: stringToRGB(color),
@@ -208,7 +225,8 @@ export function shapeViewModel(
       },
       value: d.value,
       visible: !isValueHidden(d.value, bandsToHide),
-      formatted: spec.valueFormatter(d.value),
+      formatted: formattedValue,
+      fontSize,
       textColor: fillTextColor(
         config.cell.label.textColor,
         true,
@@ -366,6 +384,9 @@ export function shapeViewModel(
     yLines.push({ x1: chartDimensions.left, y1: y, x2: chartDimensions.width + chartDimensions.left, y2: y });
   }
 
+  const cells = Object.values(cellMap);
+  const tableMinFontSize = cells.reduce((acc, { fontSize }) => Math.min(acc, fontSize), Infinity);
+
   return {
     config,
     heatmapViewModel: {
@@ -382,7 +403,8 @@ export function shapeViewModel(
         },
       },
       pageSize,
-      cells: Object.values(cellMap),
+      cells,
+      cellFontSize: (cell: Cell) => (config.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
       xValues: textXValues,
       yValues: textYValues,
     },

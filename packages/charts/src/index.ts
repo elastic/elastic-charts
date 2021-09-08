@@ -92,6 +92,6 @@ export { DataGenerator } from './utils/data_generators/data_generator';
 export * from './utils/themes/merge_utils';
 export { MODEL_KEY } from './chart_types/partition_chart/layout/config';
 export { LegendStrategy } from './chart_types/partition_chart/layout/utils/highlighted_geoms';
-export { Ratio } from './common/geometry';
+export { Pixels, Ratio } from './common/geometry';
 export { AdditiveNumber } from './utils/accessor';
 export { FontStyle, FONT_STYLES } from './common/text_utils';

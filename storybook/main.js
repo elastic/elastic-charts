@@ -21,4 +21,7 @@ module.exports = {
   reactOptions: {
     fastRefresh: true,
   },
+  typescript: {
+    reactDocgen: false,
+  },
 };

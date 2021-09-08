@@ -88,15 +88,15 @@ export const config: Config = {
     label: {
       visible: true,
       maxWidth: 'fill',
-      fontSize: 10,
+      minFontSize: 8,
+      maxFontSize: 12,
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',
       textColor: 'black',
       fontVariant: 'normal',
       fontWeight: 'normal',
       textOpacity: 1,
-      align: 'center' as CanvasTextAlign,
-      baseline: 'verticalAlign' as CanvasTextBaseline,
+      useGlobalMinFontSize: true,
     },
     border: {
       strokeWidth: 1,

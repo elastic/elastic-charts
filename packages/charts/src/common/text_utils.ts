@@ -134,3 +134,22 @@ export function fitText(
   const { width } = measure(fontSize, [{ ...font, text }])[0];
   return { width, text };
 }
+
+/** @internal */
+export function maximiseFontSize(
+  measure: TextMeasure,
+  text: string,
+  font: Font,
+  minFontSize: Pixels,
+  maxFontSize: Pixels,
+  boxWidth: Pixels,
+  boxHeight: Pixels,
+): Pixels {
+  const response = (fontSize: number) => {
+    const [{ width }] = measure(fontSize, [{ text, ...font }]);
+    const widthDiff = boxWidth - width;
+    const heightDiff = boxHeight - fontSize;
+    return -Math.min(widthDiff, heightDiff);
+  };
+  return monotonicHillClimb(response, maxFontSize, 0, integerSnap, minFontSize);
+}

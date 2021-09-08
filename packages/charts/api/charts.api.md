@@ -356,6 +356,8 @@ export interface Cell {
     // (undocumented)
     fill: Fill;
     // (undocumented)
+    fontSize: Pixels;
+    // (undocumented)
     formatted: string;
     // (undocumented)
     height: number;
@@ -960,10 +962,10 @@ export interface HeatmapConfig {
         maxHeight: Pixels | 'fill';
         align: 'center';
         label: Font & {
-            fontSize: Pixels;
+            minFontSize: Pixels;
+            maxFontSize: Pixels;
+            useGlobalMinFontSize: boolean;
             maxWidth: Pixels | 'fill';
-            align: TextAlign;
-            baseline: TextBaseline;
             visible: boolean;
         };
         border: {
@@ -1009,8 +1011,6 @@ export interface HeatmapConfig {
     onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
     // (undocumented)
     timeZone: string;
-    // Warning: (ae-forgotten-export) The symbol "Pixels" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     width: Pixels;
     // Warning: (ae-forgotten-export) The symbol "Font" needs to be exported by the entry point index.d.ts
@@ -1507,6 +1507,9 @@ export const PATH_KEY = "path";
 
 // @public (undocumented)
 export function pathAccessor(n: ArrayEntry): LegendPath;
+
+// @public (undocumented)
+export type Pixels = number;
 
 // @public
 export const Placement: Readonly<{

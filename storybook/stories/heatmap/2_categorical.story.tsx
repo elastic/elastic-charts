@@ -7,6 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Heatmap, Settings } from '@elastic/charts';
@@ -15,7 +16,17 @@ import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames'
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const data = BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960);
+  const data = boolean('filter dataset', true)
+    ? BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960)
+    : BABYNAME_DATA;
+  const showLabels = boolean('show', true, 'labels');
+  const useGlobalMinFontSize = boolean('use global min fontSize', true, 'labels');
+
+  const minFontSize = number('min fontSize', 6, { step: 1, min: 4, max: 10, range: true }, 'labels');
+  const maxFontSize = number('max fontSize', 12, { step: 1, min: 10, max: 64, range: true }, 'labels');
+
+  const minCellHeight = number('min cell height', 10, { step: 1, min: 3, max: 8, range: true }, 'grid');
+  const maxCellHeight = number('max cell height', 30, { step: 1, min: 8, max: 45, range: true }, 'grid');
 
   return (
     <Chart>
@@ -31,11 +42,11 @@ export const Example = () => {
         colorScale={{
           type: 'bands',
           bands: [
-            { start: -Infinity, end: 1000, color: '#ffffcc' },
-            { start: 1000, end: 5000, color: '#a1dab4' },
-            { start: 5000, end: 10000, color: '#41b6c4' },
-            { start: 10000, end: 50000, color: '#2c7fb8' },
-            { start: 50000, end: Infinity, color: '#253494' },
+            { start: -Infinity, end: 1000, color: '#AADC32' },
+            { start: 1000, end: 5000, color: '#35B779' },
+            { start: 5000, end: 10000, color: '#24868E' },
+            { start: 10000, end: 50000, color: '#3B528B' },
+            { start: 50000, end: Infinity, color: '#471164' },
           ],
         }}
         data={data}
@@ -49,12 +60,18 @@ export const Example = () => {
             stroke: {
               width: 0,
             },
+            cellHeight: {
+              min: minCellHeight,
+              max: maxCellHeight,
+            },
           },
           cell: {
             maxWidth: 'fill',
-            maxHeight: 20,
             label: {
-              visible: true,
+              minFontSize,
+              maxFontSize,
+              visible: showLabels,
+              useGlobalMinFontSize,
             },
             border: {
               stroke: 'transparent',

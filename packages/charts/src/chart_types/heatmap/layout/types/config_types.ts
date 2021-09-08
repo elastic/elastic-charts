@@ -81,10 +81,10 @@ export interface Config {
     maxHeight: Pixels | 'fill';
     align: 'center';
     label: Font & {
-      fontSize: Pixels;
+      minFontSize: Pixels;
+      maxFontSize: Pixels;
+      useGlobalMinFontSize: boolean;
       maxWidth: Pixels | 'fill';
-      align: TextAlign;
-      baseline: TextBaseline;
       visible: boolean;
     };
     border: {
