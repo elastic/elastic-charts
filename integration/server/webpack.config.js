@@ -9,6 +9,7 @@
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 
@@ -63,9 +64,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          {
-            loader: 'style-loader',
-          },
+          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: { importLoaders: 1 },
@@ -75,7 +74,7 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          'style-loader',
+          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: { importLoaders: 1 },
@@ -114,5 +113,6 @@ module.exports = {
       favicon: '../../public/favicon.ico',
     }),
     new webpack.EnvironmentPlugin({ RNG_SEED: null }),
+    new MiniCssExtractPlugin(),
   ],
 };
