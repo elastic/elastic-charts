@@ -9,7 +9,7 @@
 import { $Values } from 'utility-types';
 
 import { Pixels, Ratio } from '../../common/geometry';
-import { FontStyle } from '../../common/text_utils';
+import { Font, FontStyle, TextAlign, TextBaseline } from '../../common/text_utils';
 import { Color, ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, SimplePadding } from '../dimensions';
 import { Point } from '../point';
@@ -186,6 +186,76 @@ export interface GoalStyles {
   maxFontSize: number;
 }
 
+/**
+ * @public
+ */
+export interface HeatmapStyle {
+  maxRowHeight: Pixels;
+  maxColumnWidth: Pixels;
+  /**
+   * Config of the mask over the area outside of the selected cells
+   */
+  brushMask: { visible: boolean; fill: Color };
+  /**
+   * Config of the mask over the selected cells
+   */
+  brushArea: { visible: boolean; fill?: Color; stroke: Color; strokeWidth: number };
+  /**
+   * Config of the brushing tool
+   */
+  brushTool: {
+    visible: boolean;
+    // TODO add support for changing the brush tool color
+    fill: Color;
+  };
+  xAxisLabel: Font & {
+    fontSize: Pixels;
+    width: Pixels | 'auto';
+    align: TextAlign;
+    baseline: TextBaseline;
+    visible: boolean;
+    padding: number;
+  };
+  yAxisLabel: Font & {
+    fontSize: Pixels;
+    width: Pixels | 'auto' | { max: Pixels };
+    baseline: TextBaseline;
+    visible: boolean;
+    padding: number | { left?: number; right?: number; top?: number; bottom?: number };
+  };
+  grid: {
+    cellWidth: {
+      min: Pixels;
+      max: Pixels | 'fill';
+    };
+    cellHeight: {
+      min: Pixels;
+      max: Pixels | 'fill';
+    };
+    stroke: {
+      color: string;
+      width: number;
+    };
+  };
+  cell: {
+    maxWidth: Pixels | 'fill';
+    maxHeight: Pixels | 'fill';
+    align: 'center';
+    label: Font & {
+      fontSize: Pixels;
+      maxWidth: Pixels | 'fill';
+      align: TextAlign;
+      baseline: TextBaseline;
+      visible: boolean;
+    };
+    border: {
+      strokeWidth: Pixels;
+      stroke: Color;
+    };
+  };
+  maxLegendHeight?: number;
+}
+
 /** @public */
 export interface ScalesConfig {
   /**
@@ -322,6 +392,7 @@ export interface Theme {
    */
   background: BackgroundStyle;
   goal: GoalStyles;
+  heatmap: HeatmapStyle;
 }
 
 /** @public */

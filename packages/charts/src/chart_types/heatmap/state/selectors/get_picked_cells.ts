@@ -9,11 +9,11 @@
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { PickDragFunction } from '../../layout/types/viewmodel_types';
-import { geometries } from './geometries';
+import { getHeatmapGeometries } from './geometries';
 
 /** @internal */
 export const getPickedCells = createCustomCachedSelector(
-  [geometries, getLastDragSelector],
+  [getHeatmapGeometries, getLastDragSelector],
   (geoms, dragState): ReturnType<PickDragFunction> | null => {
     if (!dragState) {
       return null;

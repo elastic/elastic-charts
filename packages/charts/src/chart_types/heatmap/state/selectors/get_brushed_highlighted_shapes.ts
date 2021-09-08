@@ -9,7 +9,7 @@
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { DragShape } from '../../layout/types/viewmodel_types';
-import { geometries } from './geometries';
+import { getHeatmapGeometries } from './geometries';
 
 function getCurrentPointerStates(state: GlobalChartState) {
   return state.interactions.pointer;
@@ -17,7 +17,7 @@ function getCurrentPointerStates(state: GlobalChartState) {
 
 /** @internal */
 export const getBrushedHighlightedShapesSelector = createCustomCachedSelector(
-  [geometries, getCurrentPointerStates],
+  [getHeatmapGeometries, getCurrentPointerStates],
   (geoms, pointerStates): DragShape => {
     if (!pointerStates.dragging || !pointerStates.down) {
       return null;

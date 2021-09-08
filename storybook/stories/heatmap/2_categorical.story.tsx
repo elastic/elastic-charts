@@ -25,6 +25,29 @@ export const Example = () => {
         legendPosition="right"
         brushAxis="both"
         baseTheme={useBaseTheme()}
+        theme={{
+          heatmap: {
+            grid: {
+              stroke: {
+                width: 0,
+              },
+            },
+            cell: {
+              maxWidth: 'fill',
+              maxHeight: 20,
+              label: {
+                visible: true,
+              },
+              border: {
+                stroke: 'transparent',
+                strokeWidth: 1,
+              },
+            },
+            yAxisLabel: {
+              visible: true,
+            },
+          },
+        }}
       />
       <Heatmap
         id="heatmap2"
@@ -44,28 +67,7 @@ export const Example = () => {
         valueAccessor={(d) => d[3]}
         valueFormatter={(value) => value.toFixed(0.2)}
         xSortPredicate="alphaAsc"
-        config={{
-          grid: {
-            stroke: {
-              width: 0,
-            },
-          },
-          cell: {
-            maxWidth: 'fill',
-            maxHeight: 20,
-            label: {
-              visible: true,
-            },
-            border: {
-              stroke: 'transparent',
-              strokeWidth: 1,
-            },
-          },
-          yAxisLabel: {
-            visible: true,
-          },
-          onBrushEnd: action('onBrushEnd'),
-        }}
+        onBrushEnd={action('onBrushEnd')}
       />
     </Chart>
   );

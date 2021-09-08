@@ -13,7 +13,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { DragCheckProps, hasDragged } from '../../../../utils/events';
-import { getHeatmapConfigSelector } from './get_heatmap_config';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedCells } from './get_picked_cells';
 import { getSpecOrNull } from './heatmap_spec';
 import { isBrushEndProvided } from './is_brush_available';
@@ -35,7 +35,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
         return;
       }
       selector = createCustomCachedSelector(
-        [getLastDragSelector, getSpecOrNull, getHeatmapConfigSelector, getPickedCells],
+        [getLastDragSelector, getSpecOrNull, getHeatmapSpecSelector, getPickedCells],
         (lastDrag, spec, { onBrushEnd }, pickedCells): void => {
           const nextProps: DragCheckProps = {
             lastDrag,

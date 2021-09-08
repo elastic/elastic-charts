@@ -25,7 +25,26 @@ describe('Categorical heatmap brush', () => {
     onBrushEndMock = jest.fn();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.settingsNoMargins(),
+        MockGlobalSpec.settingsNoMargins({
+          theme: {
+            heatmap: {
+              grid: {
+                cellHeight: {
+                  max: 'fill',
+                },
+                cellWidth: {
+                  max: 'fill',
+                },
+              },
+              xAxisLabel: {
+                visible: false,
+              },
+              yAxisLabel: {
+                visible: false,
+              },
+            },
+          },
+        }),
         MockSeriesSpec.heatmap({
           xScaleType: ScaleType.Ordinal,
           data: [
@@ -39,24 +58,7 @@ describe('Categorical heatmap brush', () => {
             { x: 'b', y: 'yc', value: 8 },
             { x: 'c', y: 'yc', value: 9 },
           ],
-          config: {
-            grid: {
-              cellHeight: {
-                max: 'fill',
-              },
-              cellWidth: {
-                max: 'fill',
-              },
-            },
-            xAxisLabel: {
-              visible: false,
-            },
-            yAxisLabel: {
-              visible: false,
-            },
-            margin: { top: 0, bottom: 0, left: 0, right: 0 },
-            onBrushEnd: onBrushEndMock,
-          },
+          onBrushEnd: onBrushEndMock,
         }),
       ],
       store,
@@ -86,7 +88,26 @@ describe('Temporal heatmap brush', () => {
     onBrushEndMock = jest.fn();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.settingsNoMargins(),
+        MockGlobalSpec.settingsNoMargins({
+          theme: {
+            heatmap: {
+              grid: {
+                cellHeight: {
+                  max: 'fill',
+                },
+                cellWidth: {
+                  max: 'fill',
+                },
+              },
+              xAxisLabel: {
+                visible: false,
+              },
+              yAxisLabel: {
+                visible: false,
+              },
+            },
+          },
+        }),
         MockSeriesSpec.heatmap({
           xScaleType: ScaleType.Time,
           data: [
@@ -100,24 +121,7 @@ describe('Temporal heatmap brush', () => {
             { x: start.plus({ days: 1 }).toMillis(), y: 'yc', value: 8 },
             { x: start.plus({ days: 2 }).toMillis(), y: 'yc', value: 9 },
           ],
-          config: {
-            grid: {
-              cellHeight: {
-                max: 'fill',
-              },
-              cellWidth: {
-                max: 'fill',
-              },
-            },
-            xAxisLabel: {
-              visible: false,
-            },
-            yAxisLabel: {
-              visible: false,
-            },
-            margin: { top: 0, bottom: 0, left: 0, right: 0 },
-            onBrushEnd: onBrushEndMock,
-          },
+          onBrushEnd: onBrushEndMock,
         }),
       ],
       store,
