@@ -19,22 +19,6 @@ import '../../storybook/style.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { VRTPage } from './vrt_page';
-import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon';
-
-appendIconComponentCache({
-  arrowUp: require('@elastic/eui/es/components/icon/assets/arrow_up').icon,
-  arrowLeft: require('@elastic/eui/es/components/icon/assets/arrow_left').icon,
-  arrowDown: require('@elastic/eui/es/components/icon/assets/arrow_down').icon,
-  arrowRight: require('@elastic/eui/es/components/icon/assets/arrow_right').icon,
-  iInCircle: require('@elastic/eui/es/components/icon/assets/iInCircle').icon,
-  tokenKey: require('@elastic/eui/es/components/icon/assets/tokens/tokenKey').icon,
-  filter: require('@elastic/eui/es/components/icon/assets/filter').icon,
-  starFilled: require('@elastic/eui/es/components/icon/assets/star_filled').icon,
-  pencil: require('@elastic/eui/es/components/icon/assets/pencil').icon,
-  visualizeApp: require('@elastic/eui/es/components/icon/assets/app_visualize').icon,
-});
-
-document.querySelector('html')?.classList.add('disable-animations');
 
 ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElement);
 
