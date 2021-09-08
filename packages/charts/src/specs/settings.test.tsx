@@ -175,7 +175,6 @@ describe('Settings spec component', () => {
       },
       legendPosition: Position.Bottom,
       showLegendExtra: false,
-      hideDuplicateAxes: false,
       debug: true,
       xDomain: { min: 0, max: 10 },
     };

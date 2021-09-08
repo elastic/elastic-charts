@@ -22,11 +22,6 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     y: margin.top + innerHeight / 2,
   };
 
-  const pickQuads: PickFunction = (x, y) =>
-    -innerWidth / 2 <= x && x <= innerWidth / 2 && -innerHeight / 2 <= y && y <= innerHeight / 2
-      ? [bulletViewModel]
-      : [];
-
   const {
     subtype,
     base,
@@ -90,6 +85,11 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     angleStart,
     angleEnd,
   };
+
+  const pickQuads: PickFunction = (x, y) =>
+    -innerWidth / 2 <= x && x <= innerWidth / 2 && -innerHeight / 2 <= y && y <= innerHeight / 2
+      ? [bulletViewModel]
+      : [];
 
   return {
     config: theme.goal,
