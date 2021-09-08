@@ -26,6 +26,24 @@ describe('Categorical heatmap brush', () => {
     MockStore.addSpecs(
       [
         MockGlobalSpec.settingsNoMargins({
+          theme: {
+            heatmap: {
+              grid: {
+                cellHeight: {
+                  max: 'fill',
+                },
+                cellWidth: {
+                  max: 'fill',
+                },
+              },
+              xAxisLabel: {
+                visible: false,
+              },
+              yAxisLabel: {
+                visible: false,
+              },
+            },
+          },
           onBrushEnd: onBrushEndMock,
         }),
         MockSeriesSpec.heatmap({
@@ -41,23 +59,6 @@ describe('Categorical heatmap brush', () => {
             { x: 'b', y: 'yc', value: 8 },
             { x: 'c', y: 'yc', value: 9 },
           ],
-          config: {
-            grid: {
-              cellHeight: {
-                max: 'fill',
-              },
-              cellWidth: {
-                max: 'fill',
-              },
-            },
-            xAxisLabel: {
-              visible: false,
-            },
-            yAxisLabel: {
-              visible: false,
-            },
-            margin: { top: 0, bottom: 0, left: 0, right: 0 },
-          },
         }),
       ],
       store,
@@ -70,7 +71,7 @@ describe('Categorical heatmap brush', () => {
     store.dispatch(onMouseDown({ x: 50, y: 50 }, 100));
     store.dispatch(onPointerMove({ x: 150, y: 250 }, 200));
     store.dispatch(onMouseUp({ x: 150, y: 250 }, 300));
-    caller(store.getState());
+    caller(store.getState(), null);
     expect(onBrushEndMock).toBeCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(6);
@@ -88,6 +89,24 @@ describe('Temporal heatmap brush', () => {
     MockStore.addSpecs(
       [
         MockGlobalSpec.settingsNoMargins({
+          theme: {
+            heatmap: {
+              grid: {
+                cellHeight: {
+                  max: 'fill',
+                },
+                cellWidth: {
+                  max: 'fill',
+                },
+              },
+              xAxisLabel: {
+                visible: false,
+              },
+              yAxisLabel: {
+                visible: false,
+              },
+            },
+          },
           onBrushEnd: onBrushEndMock,
         }),
         MockSeriesSpec.heatmap({
@@ -103,23 +122,6 @@ describe('Temporal heatmap brush', () => {
             { x: start.plus({ days: 1 }).toMillis(), y: 'yc', value: 8 },
             { x: start.plus({ days: 2 }).toMillis(), y: 'yc', value: 9 },
           ],
-          config: {
-            grid: {
-              cellHeight: {
-                max: 'fill',
-              },
-              cellWidth: {
-                max: 'fill',
-              },
-            },
-            xAxisLabel: {
-              visible: false,
-            },
-            yAxisLabel: {
-              visible: false,
-            },
-            margin: { top: 0, bottom: 0, left: 0, right: 0 },
-          },
         }),
       ],
       store,
@@ -132,7 +134,7 @@ describe('Temporal heatmap brush', () => {
     store.dispatch(onMouseDown({ x: 50, y: 50 }, 100));
     store.dispatch(onPointerMove({ x: 250, y: 250 }, 200));
     store.dispatch(onMouseUp({ x: 250, y: 250 }, 300));
-    caller(store.getState());
+    caller(store.getState(), null);
     expect(onBrushEndMock).toBeCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(6);
@@ -146,7 +148,7 @@ describe('Temporal heatmap brush', () => {
     store.dispatch(onMouseDown({ x: 50, y: 50 }, 100));
     store.dispatch(onPointerMove({ x: 60, y: 60 }, 200));
     store.dispatch(onMouseUp({ x: 60, y: 60 }, 300));
-    caller(store.getState());
+    caller(store.getState(), null);
     expect(onBrushEndMock).toBeCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(1);

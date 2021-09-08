@@ -18,11 +18,9 @@ import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 export function renderCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
-  { config, heatmapViewModel }: ShapeViewModel,
+  { theme, heatmapViewModel }: ShapeViewModel,
   background: Color,
 ) {
-  // eslint-disable-next-line no-empty-pattern
-  const {} = config;
   withContext(ctx, () => {
     // set some defaults for the overall rendering
 
@@ -49,16 +47,16 @@ export function renderCanvas2d(
     renderLayers(ctx, [
       () => clearCanvas(ctx, background),
       () => {
+        // Grid
         withContext(ctx, () => {
-          // render grid
           renderMultiLine(ctx, heatmapViewModel.gridLines.x, heatmapViewModel.gridLines.stroke);
           renderMultiLine(ctx, heatmapViewModel.gridLines.y, heatmapViewModel.gridLines.stroke);
         });
       },
 
       () =>
+        // Cells
         withContext(ctx, () => {
-          // render cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
@@ -67,16 +65,15 @@ export function renderCanvas2d(
         }),
 
       () =>
-        config.cell.label.visible &&
         withContext(ctx, () => {
-          // render text on cells
+          // Text on cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
             const fontSize = heatmapViewModel.cellFontSize(cell);
             if (cell.visible && Number.isFinite(fontSize))
               renderText(ctx, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, cell.formatted, {
-                ...config.cell.label,
+                ...theme.cell.label,
                 fontSize,
                 align: 'center',
                 baseline: 'middle',
@@ -86,25 +83,25 @@ export function renderCanvas2d(
         }),
 
       () =>
-        // render text on Y axis
-        config.yAxisLabel.visible &&
+        // Y Axis
+        theme.yAxisLabel.visible &&
         withContext(ctx, () =>
           filteredYValues.forEach((yValue) => {
             const font: Font = {
-              fontFamily: config.yAxisLabel.fontFamily,
-              fontStyle: config.yAxisLabel.fontStyle ? config.yAxisLabel.fontStyle : 'normal',
+              fontFamily: theme.yAxisLabel.fontFamily,
+              fontStyle: theme.yAxisLabel.fontStyle ? theme.yAxisLabel.fontStyle : 'normal',
               fontVariant: 'normal',
               fontWeight: 'normal',
               textColor: Colors.Black.keyword,
             };
-            const { padding } = config.yAxisLabel;
+            const { padding } = theme.yAxisLabel;
             const horizontalPadding =
               typeof padding === 'number' ? padding * 2 : (padding.left ?? 0) + (padding.right ?? 0);
             const [resultText] = wrapLines(
               ctx,
               yValue.text,
               font,
-              config.yAxisLabel.fontSize,
+              theme.yAxisLabel.fontSize,
               heatmapViewModel.gridOrigin.x - horizontalPadding,
               16,
               { shouldAddEllipsis: true, wrapAtWord: false },
@@ -114,17 +111,17 @@ export function renderCanvas2d(
               { x: yValue.x, y: yValue.y },
               resultText,
               // the alignment for y axis labels is fixed to the right
-              { ...config.yAxisLabel, align: 'right' },
+              { ...theme.yAxisLabel, align: 'right' },
             );
           }),
         ),
 
       () =>
-        // render text on X axis
-        config.xAxisLabel.visible &&
+        // Text on X axis
+        theme.xAxisLabel.visible &&
         withContext(ctx, () =>
           heatmapViewModel.xValues.forEach((xValue) =>
-            renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel),
+            renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, theme.xAxisLabel),
           ),
         ),
     ]);

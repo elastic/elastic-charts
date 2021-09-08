@@ -59,13 +59,15 @@ export * from './utils/themes/theme_common';
 export { LIGHT_THEME } from './utils/themes/light_theme';
 export { DARK_THEME } from './utils/themes/dark_theme';
 
+// wordcloud
+export { WordcloudViewModel } from './chart_types/wordcloud/layout/types/viewmodel_types';
+
 // partition
 export * from './chart_types/partition_chart/layout/types/viewmodel_types';
 export * from './chart_types/partition_chart/layout/utils/group_by_rollup';
 
 // heatmap
 export { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
-export { Config as HeatmapConfig } from './chart_types/heatmap/layout/types/config_types';
 export { ColorBand, HeatmapBandsColorScale } from './chart_types/heatmap/specs/heatmap';
 
 // utilities

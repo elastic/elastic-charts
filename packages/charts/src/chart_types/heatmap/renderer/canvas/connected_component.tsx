@@ -23,7 +23,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { geometries } from '../../state/selectors/geometries';
+import { getHeatmapGeometries } from '../../state/selectors/geometries';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
 import { renderCanvas2d } from './canvas_renderers';
 
@@ -88,13 +88,12 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      const { width, height }: Dimensions = this.props.chartContainerDimensions;
       renderCanvas2d(
         this.ctx,
         this.devicePixelRatio,
         {
           ...this.props.geometries,
-          config: { ...this.props.geometries.config, width, height },
+          theme: this.props.geometries.theme,
         },
         this.props.background,
       );
@@ -160,7 +159,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
   return {
     initialized: true,
-    geometries: geometries(state),
+    geometries: getHeatmapGeometries(state),
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
     background: getChartThemeSelector(state).background.color,
