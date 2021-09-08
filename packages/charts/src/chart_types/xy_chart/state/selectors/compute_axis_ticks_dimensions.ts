@@ -11,7 +11,14 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { AxisId } from '../../../../utils/ids';
-import { axisViewModel, AxisViewModel, hasDuplicateAxis, defaultTickFormatter } from '../../utils/axis_utils';
+import { Logger } from '../../../../utils/logger';
+import { isVerticalAxis } from '../../utils/axis_type_utils';
+import {
+  TickLabelBounds,
+  computeRotatedLabelDimensions,
+  defaultTickFormatter,
+  getScaleForAxisSpec,
+} from '../../utils/axis_utils';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
@@ -20,56 +27,61 @@ import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 /** @internal */
-export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
+export type AxesTicksDimensions = Map<AxisId, TickLabelBounds>;
+
+const getScaleFunction = createCustomCachedSelector(
   [
+    computeSeriesDomainsSelector,
+    getSettingsSpecSelector,
+    countBarsInClusterSelector,
     getBarPaddingsSelector,
     isHistogramModeEnabledSelector,
+  ],
+  getScaleForAxisSpec,
+);
+
+/** @internal */
+export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
+  [
+    getScaleFunction,
     getAxisSpecsSelector,
     getChartThemeSelector,
-    getSettingsSpecSelector,
-    computeSeriesDomainsSelector,
-    countBarsInClusterSelector,
     getSeriesSpecsSelector,
     getAxesStylesSelector,
+    computeSeriesDomainsSelector,
   ],
-  (
-    barsPadding,
-    isHistogramMode,
-    axesSpecs,
-    chartTheme,
-    settingsSpec,
-    seriesDomainsAndData,
-    totalBarsInCluster,
-    seriesSpecs,
-    axesStyles,
-  ): Map<AxisId, AxisViewModel> => {
-    const { xDomain, yDomains } = seriesDomainsAndData;
+  (getScale, axesSpecs, chartTheme, seriesSpecs, axesStyles, { xDomain: { timeZone } }): AxesTicksDimensions => {
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
-    return withTextMeasure((textMeasure) => {
-      const axesTicksDimensions: Map<AxisId, AxisViewModel> = new Map();
-      axesSpecs.forEach((axisSpec) => {
-        const { id } = axisSpec;
-        const axisStyle = axesStyles.get(id) ?? chartTheme.axes;
-        const dimensions = axisViewModel(
-          axisSpec,
-          xDomain,
-          yDomains,
-          totalBarsInCluster,
-          textMeasure,
-          settingsSpec.rotation,
-          axisStyle,
-          fallBackTickFormatter,
-          barsPadding,
-          isHistogramMode,
-        );
-        if (
-          dimensions &&
-          (!settingsSpec.hideDuplicateAxes || !hasDuplicateAxis(axisSpec, dimensions, axesTicksDimensions, axesSpecs))
-        ) {
-          axesTicksDimensions.set(id, dimensions);
-        }
-      });
-      return axesTicksDimensions;
-    });
+    return withTextMeasure(
+      (textMeasure): AxesTicksDimensions =>
+        axesSpecs.reduce<AxesTicksDimensions>((axesTicksDimensions, axisSpec) => {
+          const { id, hide, position, labelFormat: axisLabelFormat, tickFormat: axisTickFormat } = axisSpec;
+          const { gridLine, tickLabel } = axesStyles.get(id) ?? chartTheme.axes;
+          const gridLineVisible = isVerticalAxis(position) ? gridLine.vertical.visible : gridLine.horizontal.visible;
+          if (gridLineVisible || !hide) {
+            const scale = getScale(axisSpec, [0, 1]);
+            if (scale) {
+              const tickFormat = axisLabelFormat ?? axisTickFormat ?? fallBackTickFormatter;
+              const tickLabels = scale.ticks().map((d) => tickFormat(d, { timeZone }));
+              const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
+                (sizes, labelText) => {
+                  const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
+                  const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
+                  sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
+                  sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
+                  sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
+                  sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
+                  return sizes;
+                },
+                { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
+              );
+              axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible });
+            } else {
+              Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
+            }
+          }
+          return axesTicksDimensions;
+        }, new Map()),
+    );
   },
 );

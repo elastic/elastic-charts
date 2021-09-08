@@ -13,6 +13,7 @@ import { Color } from '../utils/common';
 
 type RGB = number;
 type A = number;
+
 /** @internal */
 export type RgbTuple = [RGB, RGB, RGB, RGB?];
 /** @public */

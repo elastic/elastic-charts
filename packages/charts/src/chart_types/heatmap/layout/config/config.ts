@@ -15,7 +15,6 @@ export const config: Config = {
   margin: { left: 0.01, right: 0.01, top: 0.01, bottom: 0.01 },
   maxRowHeight: 30,
   maxColumnWidth: 30,
-
   fontFamily: 'Sans-Serif',
 
   onBrushEnd: undefined,
@@ -89,15 +88,15 @@ export const config: Config = {
     label: {
       visible: true,
       maxWidth: 'fill',
-      fontSize: 10,
+      minFontSize: 8,
+      maxFontSize: 12,
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',
       textColor: 'black',
       fontVariant: 'normal',
       fontWeight: 'normal',
       textOpacity: 1,
-      align: 'center' as CanvasTextAlign,
-      baseline: 'verticalAlign' as CanvasTextBaseline,
+      useGlobalMinFontSize: true,
     },
     border: {
       strokeWidth: 1,

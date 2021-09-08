@@ -16,7 +16,7 @@ export function renderTickLabel(
   ctx: CanvasRenderingContext2D,
   tick: AxisTick,
   showTicks: boolean,
-  { axisSpec: { position, labelFormat }, dimension, size, debug, axisStyle }: AxisProps,
+  { axisSpec: { position }, dimension, size, debug, axisStyle }: AxisProps,
 ) {
   const labelStyle = axisStyle.tickLabel;
   const tickLabelProps = getTickLabelProps(
@@ -46,7 +46,7 @@ export function renderTickLabel(
   renderText(
     ctx,
     center,
-    labelFormat ? labelFormat(tick.value) : tick.label,
+    tick.axisTickLabel,
     {
       fontFamily: labelStyle.fontFamily,
       fontStyle: labelStyle.fontStyle ?? 'normal',

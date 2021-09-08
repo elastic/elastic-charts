@@ -10,6 +10,7 @@ import { ChartType } from '../../..';
 import { Pixels } from '../../../../common/geometry';
 import { Box } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
+import { Color } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { config } from '../config/config';
@@ -36,6 +37,8 @@ export interface Cell {
   formatted: string;
   visible: boolean;
   datum: HeatmapCellDatum;
+  textColor: Color;
+  fontSize: Pixels;
 }
 
 /** @internal */
@@ -57,6 +60,7 @@ export interface HeatmapViewModel {
     stroke: Stroke;
   };
   cells: Cell[];
+  cellFontSize: (c: Cell) => Pixels;
   xValues: Array<TextBox>;
   yValues: Array<TextBox>;
   pageSize: number;
@@ -116,6 +120,7 @@ export const nullHeatmapViewModel: HeatmapViewModel = {
   xValues: [],
   yValues: [],
   pageSize: 0,
+  cellFontSize: () => 0,
 };
 
 /** @internal */

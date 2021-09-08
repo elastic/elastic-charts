@@ -72,13 +72,15 @@ export function renderCanvas2d(
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
-            if (cell.visible)
-              renderText(
-                ctx,
-                { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 },
-                cell.formatted,
-                config.cell.label,
-              );
+            const fontSize = heatmapViewModel.cellFontSize(cell);
+            if (cell.visible && Number.isFinite(fontSize))
+              renderText(ctx, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, cell.formatted, {
+                ...config.cell.label,
+                fontSize,
+                align: 'center',
+                baseline: 'middle',
+                textColor: cell.textColor,
+              });
           });
         }),
 

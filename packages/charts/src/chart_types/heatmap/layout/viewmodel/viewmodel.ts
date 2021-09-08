@@ -10,8 +10,9 @@ import { bisectLeft } from 'd3-array';
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
 import { stringToRGB } from '../../../../common/color_library_wrappers';
+import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
-import { Box, TextMeasure } from '../../../../common/text_utils';
+import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
@@ -20,6 +21,7 @@ import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { ContinuousDomain } from '../../../../utils/domain';
+import { Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
@@ -79,6 +81,7 @@ export function shapeViewModel(
   colorScale: ColorScale,
   bandsToHide: Array<[number, number]>,
   { height, pageSize }: GridHeightParams,
+  theme: Theme,
 ): ShapeViewModel {
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
 
@@ -177,23 +180,41 @@ export function shapeViewModel(
     };
   });
 
+  const cellWidthInner = cellWidth - gridStrokeWidth * 2;
+  const cellHeightInner = cellHeight - gridStrokeWidth * 2;
+
   // compute each available cell position, color and value
   const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
     const x = xScale(String(d.x));
     const y = yScale(String(d.y))! + gridStrokeWidth;
     const yIndex = yValues.indexOf(d.y);
+    // cell background color
     const color = colorScale(d.value);
     if (x === undefined || y === undefined || yIndex === -1) {
       return acc;
     }
     const cellKey = getCellKey(d.x, d.y);
+
+    const formattedValue = spec.valueFormatter(d.value);
+
+    const fontSize = maximiseFontSize(
+      textMeasure,
+      formattedValue,
+      config.cell.label,
+      config.cell.label.minFontSize,
+      config.cell.label.maxFontSize,
+      // adding 3px padding per side to avoid that text touches the edges
+      cellWidthInner - 6,
+      cellHeightInner - 6,
+    );
+
     acc[cellKey] = {
       x:
         (config.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - config.cell.maxWidth / 2 : x) + gridStrokeWidth,
       y,
       yIndex,
-      width: cellWidth - gridStrokeWidth * 2,
-      height: cellHeight - gridStrokeWidth * 2,
+      width: cellWidthInner,
+      height: cellHeightInner,
       datum: d,
       fill: {
         color: stringToRGB(color),
@@ -204,7 +225,15 @@ export function shapeViewModel(
       },
       value: d.value,
       visible: !isValueHidden(d.value, bandsToHide),
-      formatted: spec.valueFormatter(d.value),
+      formatted: formattedValue,
+      fontSize,
+      textColor: fillTextColor(
+        config.cell.label.textColor,
+        true,
+        4.5,
+        color,
+        theme.background.color === 'transparent' ? 'rgba(255, 255, 255, 1)' : theme.background.color,
+      ),
     };
     return acc;
   }, {});
@@ -355,6 +384,9 @@ export function shapeViewModel(
     yLines.push({ x1: chartDimensions.left, y1: y, x2: chartDimensions.width + chartDimensions.left, y2: y });
   }
 
+  const cells = Object.values(cellMap);
+  const tableMinFontSize = cells.reduce((acc, { fontSize }) => Math.min(acc, fontSize), Infinity);
+
   return {
     config,
     heatmapViewModel: {
@@ -371,7 +403,8 @@ export function shapeViewModel(
         },
       },
       pageSize,
-      cells: Object.values(cellMap),
+      cells,
+      cellFontSize: (cell: Cell) => (config.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
       xValues: textXValues,
       yValues: textYValues,
     },

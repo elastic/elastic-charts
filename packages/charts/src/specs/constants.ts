@@ -176,7 +176,6 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
       visible: false,
     },
   },
-  hideDuplicateAxes: false,
   baseTheme: LIGHT_THEME,
   brushAxis: BrushAxis.X,
   minBrushDelta: 2,

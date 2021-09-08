@@ -40,7 +40,7 @@ export function mergeXDomain(
     seriesXComputedDomains = computeOrdinalDataDomain(values, identity, false, true);
     if (customDomain) {
       if (Array.isArray(customDomain)) {
-        seriesXComputedDomains = customDomain;
+        seriesXComputedDomains = [...customDomain];
       } else {
         if (fallbackScale === ScaleType.Ordinal) {
           Logger.warn(`xDomain ignored for fallback ordinal scale. Options to resolve:
@@ -140,7 +140,7 @@ export function findMinInterval(xValues: number[]): number {
   if (valuesLength === 1) {
     return 1;
   }
-  const sortedValues = xValues.slice().sort(compareByValueAsc);
+  const sortedValues = [...xValues].sort(compareByValueAsc);
   let i;
   let minInterval = Math.abs(sortedValues[1] - sortedValues[0]);
   for (i = 1; i < valuesLength - 1; i++) {
