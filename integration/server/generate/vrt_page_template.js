@@ -34,8 +34,6 @@ appendIconComponentCache({
   visualizeApp: require('@elastic/eui/es/components/icon/assets/app_visualize').icon,
 });
 
-document.querySelector('html')?.classList.add('disable-animations');
-
 ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElement);
 
 `.trim();
