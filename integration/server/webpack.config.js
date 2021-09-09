@@ -10,6 +10,7 @@ const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 
@@ -114,5 +115,6 @@ module.exports = {
     }),
     new webpack.EnvironmentPlugin({ RNG_SEED: null }),
     new MiniCssExtractPlugin(),
+    new SpeedMeasurePlugin(),
   ],
 };
