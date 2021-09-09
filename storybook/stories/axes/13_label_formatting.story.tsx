@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { text } from '@storybook/addon-knobs';
+import { boolean, text } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
@@ -30,6 +30,8 @@ export const Example = () => {
         id="bottom"
         title="Weight"
         position={Position.Bottom}
+        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
+        showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
         tickFormat={(d) => numeral(d).format(tickFormatBottom)}
         labelFormat={(d) => numeral(d).format(labelFormatBottom)}
       />

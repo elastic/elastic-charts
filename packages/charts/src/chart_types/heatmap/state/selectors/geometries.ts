@@ -8,6 +8,7 @@
 
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -29,6 +30,7 @@ export const geometries = createCustomCachedSelector(
     getColorScale,
     getDeselectedSeriesSelector,
     getGridHeightParamsSelector,
+    getChartThemeSelector,
   ],
   (
     heatmapSpec,
@@ -38,6 +40,7 @@ export const geometries = createCustomCachedSelector(
     { bands, scale: colorScale },
     deselectedSeries,
     gridHeightParams,
+    theme,
   ): ShapeViewModel => {
     // instead of using the specId, each legend item is associated with an unique band label
     const disabledBandLabels = new Set(
@@ -53,7 +56,16 @@ export const geometries = createCustomCachedSelector(
       .map(({ start, end }) => [start, end]);
 
     return heatmapSpec
-      ? render(heatmapSpec, settingSpec, chartDimensions, heatmapTable, colorScale, bandsToHide, gridHeightParams)
+      ? render(
+          heatmapSpec,
+          settingSpec,
+          chartDimensions,
+          heatmapTable,
+          colorScale,
+          bandsToHide,
+          gridHeightParams,
+          theme,
+        )
       : nullShapeViewModel();
   },
 );

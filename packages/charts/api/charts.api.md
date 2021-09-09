@@ -366,6 +366,8 @@ export interface Cell {
     // (undocumented)
     stroke: Stroke;
     // (undocumented)
+    textColor: Color;
+    // (undocumented)
     value: number;
     // (undocumented)
     visible: boolean;
@@ -642,7 +644,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -1872,7 +1874,6 @@ export interface SettingsSpec extends Spec, LegendSpec {
     debugState?: boolean;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
-    hideDuplicateAxes: boolean;
     minBrushDelta?: number;
     noResults?: ComponentType | ReactChild;
     onAnnotationClick?: AnnotationClickListener;
@@ -2437,8 +2438,8 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // Warnings were encountered during analysis:
 //
 // src/chart_types/heatmap/layout/types/config_types.ts:20:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:51:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:52:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:50:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:51:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:139:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 
