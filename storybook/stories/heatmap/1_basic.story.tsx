@@ -74,9 +74,6 @@ export const Example = () => {
           return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
         },
       },
-      onBrushEnd: ((e) => {
-        setSelection({ x: e.x, y: e.y });
-      }) as Config['onBrushEnd'],
     }),
     [],
   );
@@ -108,11 +105,14 @@ export const Example = () => {
         onRenderChange={logDebugState}
         showLegend
         legendPosition="right"
-        onBrushEnd={action('onBrushEnd')}
         brushAxis="both"
         xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
         debugState={debugState}
         baseTheme={useBaseTheme()}
+        onBrushEnd={(e) => {
+          action('onBrushEnd');
+          setSelection({ x: e.x, y: e.y });
+        }}
       />
       <Heatmap
         id="heatmap1"

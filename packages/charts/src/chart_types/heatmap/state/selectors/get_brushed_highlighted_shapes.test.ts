@@ -25,7 +25,9 @@ describe('Categorical heatmap brush', () => {
     onBrushEndMock = jest.fn();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.settingsNoMargins(),
+        MockGlobalSpec.settingsNoMargins({
+          onBrushEnd: onBrushEndMock,
+        }),
         MockSeriesSpec.heatmap({
           xScaleType: ScaleType.Ordinal,
           data: [
@@ -55,7 +57,6 @@ describe('Categorical heatmap brush', () => {
               visible: false,
             },
             margin: { top: 0, bottom: 0, left: 0, right: 0 },
-            onBrushEnd: onBrushEndMock,
           },
         }),
       ],
@@ -86,7 +87,9 @@ describe('Temporal heatmap brush', () => {
     onBrushEndMock = jest.fn();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.settingsNoMargins(),
+        MockGlobalSpec.settingsNoMargins({
+          onBrushEnd: onBrushEndMock,
+        }),
         MockSeriesSpec.heatmap({
           xScaleType: ScaleType.Time,
           data: [
@@ -116,7 +119,6 @@ describe('Temporal heatmap brush', () => {
               visible: false,
             },
             margin: { top: 0, bottom: 0, left: 0, right: 0 },
-            onBrushEnd: onBrushEndMock,
           },
         }),
       ],

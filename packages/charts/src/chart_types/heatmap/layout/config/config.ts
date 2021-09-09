@@ -17,8 +17,6 @@ export const config: Config = {
   maxColumnWidth: 30,
   fontFamily: 'Sans-Serif',
 
-  onBrushEnd: undefined,
-
   brushArea: {
     visible: true,
     fill: 'black', // black === transparent

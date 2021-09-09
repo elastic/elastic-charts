@@ -9,6 +9,7 @@
 import React, { ComponentType, ReactChild } from 'react';
 
 import { CustomXDomain, GroupByAccessor, Spec, TooltipStickTo } from '.';
+import { HeatmapBrushEvent } from '..';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
@@ -141,7 +142,15 @@ export type ElementOverListener = (
   elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>,
 ) => void;
 /** @public */
-export type BrushEndListener = (brushArea: XYBrushArea) => void;
+export type BrushEndListener = (brushArea: XYBrushArea | HeatmapBrushEvent) => void;
+
+/** @public */
+export type HeatmapBrushEvent = {
+  cells: Cell[];
+  x: (string | number)[];
+  y: (string | number)[];
+};
+
 /** @public */
 export type LegendItemListener = (series: SeriesIdentifier[]) => void;
 /**
