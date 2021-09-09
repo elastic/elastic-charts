@@ -7,7 +7,7 @@
  */
 
 import { Scale } from '../scales';
-import { BrushEndListener, isPointerOverEvent, PointerEvent, PointerOverEvent, HeatmapSpec } from '../specs';
+import { BrushEndListener, isPointerOverEvent, PointerEvent, PointerOverEvent } from '../specs';
 import { DragState } from '../state/chart_state';
 
 /** @internal */
@@ -20,7 +20,7 @@ export function isValidPointerOverEvent(
 
 /** @internal */
 export interface DragCheckProps {
-  onBrushEnd: BrushEndListener | HeatmapSpec['config']['onBrushEnd'] | undefined;
+  onBrushEnd: BrushEndListener | undefined;
   lastDrag: DragState | null;
 }
 

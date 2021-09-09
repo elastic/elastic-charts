@@ -9,7 +9,6 @@
 import React, { ComponentType, ReactChild } from 'react';
 
 import { CustomXDomain, GroupByAccessor, Spec, TooltipStickTo } from '.';
-import { HeatmapBrushEvent } from '..';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
