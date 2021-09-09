@@ -311,6 +311,9 @@ export const BinAgg: Readonly<{
 export type BinAgg = $Values<typeof BinAgg>;
 
 // @public (undocumented)
+export type BrushArea = XYBrushArea | HeatmapBrushEvent;
+
+// @public (undocumented)
 export const BrushAxis: Readonly<{
     X: "x";
     Y: "y";
@@ -321,7 +324,7 @@ export const BrushAxis: Readonly<{
 export type BrushAxis = $Values<typeof BrushAxis>;
 
 // @public (undocumented)
-export type BrushEndListener = (brushArea: XYBrushArea | HeatmapBrushEvent) => void;
+export type BrushEndListener = (brushArea: BrushArea) => void;
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts

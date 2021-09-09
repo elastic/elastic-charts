@@ -140,8 +140,12 @@ export type ElementClickListener = (
 export type ElementOverListener = (
   elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>,
 ) => void;
+
 /** @public */
-export type BrushEndListener = ((brushArea: XYBrushArea) => void) | ((brushArea: HeatmapBrushEvent) => void);
+export type BrushArea = XYBrushArea | HeatmapBrushEvent;
+
+/** @public */
+export type BrushEndListener = (brushArea: BrushArea) => void;
 
 /** @public */
 export type HeatmapBrushEvent = {
