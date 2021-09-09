@@ -15,7 +15,6 @@ export const config: Config = {
   margin: { left: 0.01, right: 0.01, top: 0.01, bottom: 0.01 },
   maxRowHeight: 30,
   maxColumnWidth: 30,
-
   fontFamily: 'Sans-Serif',
 
   onBrushEnd: undefined,
