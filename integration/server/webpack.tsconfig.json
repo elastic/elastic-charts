@@ -4,7 +4,7 @@
     "downlevelIteration": true,
     "target": "ES2019",
     "module": "es2015",
-    "lib": ["ESNext","dom"]
+    "lib": ["ESNext", "dom"]
   },
   "include": ["../../packages/charts/src/**/*", "./**/*"],
   "exclude": ["../../**/*.test.*"]
