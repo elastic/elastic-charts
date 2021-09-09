@@ -168,24 +168,16 @@ export function getTextColorIfTextInvertible(
 
   if (textContrast && typeof textContrast !== 'number') return contrast();
 
-  if (typeof textContrast === 'number') return contrastRatio(textContrast);
+  if (typeof textContrast === 'number') return contrast(textContrast);
 
   return 'black'; // this should never happen; added it as previously function return type included undefined; todo
 
-  function contrast() {
+  function contrast(ratio?: any) {
     return inverseForContrast
       ? to === undefined
-        ? makeHighContrastColor(`rgb(${inverted})`, backgroundColor)
-        : makeHighContrastColor(`rgba(${inverted}, ${to})`, backgroundColor)
-      : makeHighContrastColor(textColor, backgroundColor);
-  }
-
-  function contrastRatio(ratio: any) {
-    return inverseForContrast
-      ? to === undefined
-        ? makeHighContrastColor(`rgb(${inverted})`, backgroundColor, ratio)
-        : makeHighContrastColor(`rgba(${inverted}, ${to})`, backgroundColor, ratio)
-      : makeHighContrastColor(textColor, backgroundColor, ratio);
+        ? makeHighContrastColor(`rgb(${inverted})`, backgroundColor, ratio || undefined)
+        : makeHighContrastColor(`rgba(${inverted}, ${to})`, backgroundColor, ratio || undefined)
+      : makeHighContrastColor(textColor, backgroundColor, ratio || undefined);
   }
 }
 
