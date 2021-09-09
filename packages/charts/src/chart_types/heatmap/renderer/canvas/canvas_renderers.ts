@@ -79,6 +79,7 @@ export function renderCanvas2d(
                 fontSize,
                 align: 'center',
                 baseline: 'middle',
+                textColor: cell.textColor,
               });
           });
         }),

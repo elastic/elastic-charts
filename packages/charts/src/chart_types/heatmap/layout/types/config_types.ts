@@ -22,7 +22,6 @@ export interface Config {
   maxColumnWidth: Pixels;
   // general text config
   fontFamily: FontFamily;
-
   timeZone: string;
 
   onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
