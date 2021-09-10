@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { colorIsDark, getTextColorIfTextInvertible } from '../../../../../common/color_calcs';
+import { getTextColorIfTextInvertible } from '../../../../../common/color_calcs';
 import { fillTextColor } from '../../../../../common/fill_text_color';
 import { Font, TextAlign, TextBaseline } from '../../../../../common/text_utils';
 import { Rect } from '../../../../../geoms/types';
@@ -224,13 +224,7 @@ function getTextColors(
   const defaultBorderColor = borderSize < 2 ? DEFAULT_VALUE_BORDER_COLOR : DEFAULT_VALUE_BORDER_SOLID_COLOR;
   const shadowColor =
     'textBorder' in fillDefinition
-      ? getTextColorIfTextInvertible(
-          colorIsDark(fillColor),
-          colorIsDark(defaultBorderColor),
-          defaultBorderColor,
-          false,
-          geometryColor,
-        ) || TRANSPARENT_COLOR
+      ? getTextColorIfTextInvertible(defaultBorderColor, geometryColor, false) || TRANSPARENT_COLOR
       : TRANSPARENT_COLOR;
 
   return {

@@ -156,13 +156,11 @@ export function colorIsDark(color: Color): boolean {
  * @internal
  */
 export function getTextColorIfTextInvertible(
-  specifiedTextColorIsDark: boolean,
-  backgroundIsDark: boolean,
   textColor: Color,
-  textContrast: TextContrast,
   backgroundColor: Color,
+  textContrast: TextContrast,
 ): Color {
-  const inverseForContrast = specifiedTextColorIsDark === backgroundIsDark;
+  const inverseForContrast = colorIsDark(textColor) === colorIsDark(backgroundColor);
   const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
   if (!textContrast) {
     return inverseForContrast
