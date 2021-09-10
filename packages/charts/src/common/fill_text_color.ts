@@ -10,29 +10,10 @@ import chroma from 'chroma-js';
 
 import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
-import {
-  colorIsDark,
-  combineColors,
-  getTextColorIfTextInvertible,
-  isColorValid,
-  makeHighContrastColor,
-} from './color_calcs';
+import { colorIsDark, combineColors, getTextColorIfTextInvertible } from './color_calcs';
 import { TextContrast } from './text_utils';
 
-function isBackgroundColorValid(color: string | undefined, logWarning: boolean): color is string {
-  const bgColorAlpha = isColorValid(color) ? chroma(color).alpha() : 1;
-  if (isColorValid(color) && bgColorAlpha >= 1) {
-    return true;
-  }
-  if (logWarning && bgColorAlpha < 1) {
-    Logger.expected('Text contrast requires a background color with an alpha value of 1', 1, bgColorAlpha);
-  }
-  if (logWarning && color !== 'transparent') {
-    Logger.warn(`Invalid background color "${String(color)}"`);
-  }
-  return false;
-}
-
+const COLOR_WHITE: Color = 'rgba(255,255,255,1)';
 /**
  * Determine the color for the text hinging on the parameters of textInvertible and textContrast
  * @internal
@@ -42,44 +23,21 @@ export function fillTextColor(
   textInvertible: boolean,
   textContrast: TextContrast,
   shapeFillColor: Color,
-  backgroundColor?: Color,
+  backgroundColor: Color = COLOR_WHITE,
 ): string {
-  if (!isBackgroundColorValid(backgroundColor, true)) {
-    return getTextColorIfTextInvertible(
-      colorIsDark(shapeFillColor),
-      colorIsDark(textColor),
-      textColor,
-      false,
-      'white', // never used
+  const isBackgroundOpaque = textColor !== 'transparent' && chroma.valid(textColor) && chroma(textColor).alpha() === 1;
+
+  if (!isBackgroundOpaque) {
+    Logger.expected(
+      `Text contrast requires a background color with an alpha value of 1, using ${COLOR_WHITE} as default`,
+      1,
+      backgroundColor,
     );
   }
+  // combine shape and background colors if shape has transparency
+  const background = combineColors(shapeFillColor, isBackgroundOpaque ? backgroundColor : COLOR_WHITE);
 
-  const adjustedTextColor: string | undefined = textColor;
-  const containerBackground = combineColors(
-    shapeFillColor,
-    backgroundColor === 'transparent' ? 'rgba(255, 255, 255, 1)' : backgroundColor,
-  );
-  const textShouldBeInvertedAndTextContrastIsFalse = textInvertible && !textContrast;
-  const textShouldBeInvertedAndTextContrastIsSetToTrue = textInvertible && typeof textContrast !== 'number';
-  const textContrastIsSetToANumberValue = typeof textContrast === 'number';
-  const textShouldNotBeInvertedButTextContrastIsDefined = textContrast && !textInvertible;
-
-  // change the contrast for the inverted slices
-  if (textShouldBeInvertedAndTextContrastIsFalse || textShouldBeInvertedAndTextContrastIsSetToTrue) {
-    const backgroundIsDark = colorIsDark(combineColors(shapeFillColor, backgroundColor));
-    const specifiedTextColorIsDark = colorIsDark(textColor);
-    return getTextColorIfTextInvertible(
-      backgroundIsDark,
-      specifiedTextColorIsDark,
-      textColor,
-      textContrast,
-      containerBackground,
-    );
-    // if textContrast is a number then take that into account or if textInvertible is set to false
-  }
-  if (textContrastIsSetToANumberValue || textShouldNotBeInvertedButTextContrastIsDefined) {
-    return makeHighContrastColor(adjustedTextColor, containerBackground);
-  }
-
-  return adjustedTextColor;
+  return textInvertible
+    ? getTextColorIfTextInvertible(colorIsDark(background), colorIsDark(textColor), textColor, textContrast, background)
+    : textColor;
 }

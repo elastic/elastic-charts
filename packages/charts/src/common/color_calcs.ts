@@ -59,6 +59,11 @@ export function combineColors(foregroundColor: Color, backgroundColor: Color): C
   const [red1, green1, blue1, alpha1] = colorToRgba(foregroundColor);
   const [red2, green2, blue2, alpha2] = colorToRgba(backgroundColor);
 
+  // combine colors only if foreground has transparency
+  if (alpha1 === 1) {
+    return foregroundColor;
+  }
+
   // For reference on alpha calculations:
   // https://en.wikipedia.org/wiki/Alpha_compositing
   const combinedAlpha = alpha1 + alpha2 * (1 - alpha1);
