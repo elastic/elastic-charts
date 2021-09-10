@@ -2,8 +2,9 @@
   "extends": "../../tsconfig",
   "compilerOptions": {
     "downlevelIteration": true,
-    "target": "ES5",
-    "module": "ESNext"
+    "target": "ES2019",
+    "module": "es2015",
+    "lib": ["ESNext", "dom"]
   },
   "include": ["../../packages/charts/src/**/*", "./**/*"],
   "exclude": ["../../**/*.test.*"]
