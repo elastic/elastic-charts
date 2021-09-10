@@ -155,34 +155,20 @@ export function colorIsDark(color: Color): boolean {
  * inverse color for text
  * @internal
  */
-export function getTextColorIfTextInvertible(
-  textColor: Color,
-  backgroundColor: Color,
-  textContrast: TextContrast,
-): Color {
-  const inverseForContrast = colorIsDark(textColor) === colorIsDark(backgroundColor);
-  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
+export function getHighContrastTextColor(text: Color, background: Color, textContrast: TextContrast): Color {
+  const requireInvertedColor = colorIsDark(text) === colorIsDark(background);
+  const correctTextColor = requireInvertedColor ? inverseColor(text) : text;
   if (!textContrast) {
-    return inverseForContrast
-      ? to === undefined
-        ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-        : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-      : textColor;
+    return correctTextColor;
   }
-  if (textContrast === true) {
-    return inverseForContrast
-      ? to === undefined
-        ? makeHighContrastColor(`rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`, backgroundColor)
-        : makeHighContrastColor(`rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`, backgroundColor)
-      : makeHighContrastColor(textColor, backgroundColor);
-  } else if (typeof textContrast === 'number') {
-    return inverseForContrast
-      ? to === undefined
-        ? makeHighContrastColor(`rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`, backgroundColor, textContrast)
-        : makeHighContrastColor(`rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`, backgroundColor, textContrast)
-      : makeHighContrastColor(textColor, backgroundColor, textContrast);
-  }
-  return 'black'; // this should never happen; added it as previously function return type included undefined; todo
+  // if we want to an invertible text we always want a valid contrast ratio
+  const contrastRatio = typeof textContrast === 'number' ? textContrast : 4.5;
+  return makeHighContrastColor(correctTextColor, background, contrastRatio);
+}
+
+function inverseColor(color: Color) {
+  const { r, g, b, opacity } = stringToRGB(color);
+  return `rgba(${255 - r}, ${255 - g}, ${255 - b}, ${opacity})`;
 }
 
 /**
