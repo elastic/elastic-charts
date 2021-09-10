@@ -20,13 +20,19 @@ export const getPickedCells = createCustomCachedSelector(
       return null;
     }
 
-    // the pointer is not on the cells but over the axis and does not cross the axis
+    // the pointer is not on the cells but over the y- axis and does not cross the y-axis
     if (dragState.start.position.x < canvasDimensions.left && dragState.end.position.x < canvasDimensions.left) {
       const fittedDragStateStart = { x: canvasDimensions.left, y: dragState.start.position.y };
       const { y, cells } = geoms.pickDragArea([fittedDragStateStart, dragState.end.position]);
       return { x: [], y, cells };
     }
 
+    // the pointer is not on the cells by over the x-axis and does not cross the x-axis
+    if (dragState.start.position.y > canvasDimensions.height && dragState.end.position.y > canvasDimensions.height) {
+      const fittedDragStateStart = { x: dragState.start.position.x, y: canvasDimensions.height };
+      const { x, cells } = geoms.pickDragArea([fittedDragStateStart, dragState.end.position]);
+      return { x, y: [], cells };
+    }
     return geoms.pickDragArea([dragState.start.position, dragState.end.position]);
   },
 );
