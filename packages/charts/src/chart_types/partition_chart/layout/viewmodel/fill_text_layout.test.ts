@@ -275,10 +275,11 @@ describe('Test getTextColor function', () => {
       expectedAdjustedTextColor,
     );
   });
+  // TODO check how to rewrite this test if required
   test('getTextColor works with textContrast not defined', () => {
     const textColor = 'black';
     const textInvertible = true;
-    const textContrast = false;
+    const textContrast = 4.5;
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
     const expectedAdjustedTextColor = 'black';

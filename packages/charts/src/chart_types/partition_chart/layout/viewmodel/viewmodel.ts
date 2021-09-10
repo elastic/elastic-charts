@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { argsToRGBString, stringToRGB } from '../../../../common/color_library_wrappers';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import {
@@ -147,11 +146,11 @@ export function makeQuadViewModel(
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
     const textNegligible = node.y1px - node.y0px < minRectHeightForText;
-    const { textColor, textInvertible, textContrast } = { ...fillLabel, ...layer.fillLabel };
+    const { textColor, textInvertible } = { ...fillLabel, ...layer.fillLabel };
     const color =
       !isSunburstLayout && textNegligible
         ? 'transparent'
-        : fillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor);
+        : fillTextColor(textColor, textInvertible, 4.5, fillColor, containerBackgroundColor);
     return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor: color, ...node };
   });
 }

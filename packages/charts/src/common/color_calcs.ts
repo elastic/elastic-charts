@@ -11,7 +11,7 @@ import chroma from 'chroma-js';
 import { Color } from '../utils/common';
 import { RgbaTuple, RGBATupleToString, RgbTuple, stringToRGB } from './color_library_wrappers';
 import { Ratio } from './geometry';
-import { TextContrast } from './text_utils';
+import { TextContrastRatio } from './text_utils';
 
 /** @internal */
 export function hueInterpolator(colors: RgbTuple[]) {
@@ -101,7 +101,11 @@ export function isColorValid(color?: string): color is Color {
  * Adjust the text color in cases black and white can't reach ideal 4.5 ratio
  * @internal
  */
-export function makeHighContrastColor(foreground: Color, background: Color, ratio = 4.5): Color {
+export function makeHighContrastColor(
+  foreground: Color,
+  background: Color,
+  contrastRatio: TextContrastRatio = 4.5,
+): Color {
   // determine the lightness factor of the background color to determine whether to lighten or darken the foreground
   const lightness = chroma(background).get('hsl.l');
   let highContrastTextColor = foreground;
@@ -116,7 +120,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
   const precision = 1e8;
   let contrast = getContrast(highContrastTextColor, background);
   // brighten and darken the text color if not meeting the ratio
-  while (contrast < ratio) {
+  while (contrast < contrastRatio) {
     highContrastTextColor = isBackgroundDark
       ? chroma(highContrastTextColor).brighten().toString()
       : chroma(highContrastTextColor).darken().toString();
@@ -128,7 +132,7 @@ export function makeHighContrastColor(foreground: Color, background: Color, rati
       const contrastColor =
         originalhighContrastTextColor === 'rgba(255, 255, 255, 1)' ? 'rgba(0, 0 , 0, 1)' : 'rgba(255, 255, 255, 1)';
       // make sure the new text color hits the ratio, if not, then return the scaledContrast since we tried earlier
-      return getContrast(contrastColor, background) > ratio ? contrastColor : scaledContrast.toString();
+      return getContrast(contrastColor, background) > contrastRatio ? contrastColor : scaledContrast.toString();
     }
   }
   return highContrastTextColor.toString();
@@ -155,15 +159,10 @@ export function colorIsDark(color: Color): boolean {
  * inverse color for text
  * @internal
  */
-export function getHighContrastTextColor(text: Color, background: Color, textContrast: TextContrast): Color {
+export function getHighContrastTextColor(text: Color, background: Color, minContrast: Ratio): Color {
   const requireInvertedColor = colorIsDark(text) === colorIsDark(background);
   const correctTextColor = requireInvertedColor ? inverseColor(text) : text;
-  if (!textContrast) {
-    return correctTextColor;
-  }
-  // if we want to an invertible text we always want a valid contrast ratio
-  const contrastRatio = typeof textContrast === 'number' ? textContrast : 4.5;
-  return makeHighContrastColor(correctTextColor, background, contrastRatio);
+  return makeHighContrastColor(correctTextColor, background, minContrast);
 }
 
 function inverseColor(color: Color) {

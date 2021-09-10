@@ -11,7 +11,7 @@ import chroma from 'chroma-js';
 import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
 import { combineColors, getHighContrastTextColor } from './color_calcs';
-import { TextContrast } from './text_utils';
+import { TextContrastRatio } from './text_utils';
 
 const COLOR_WHITE: Color = 'rgba(255,255,255,1)';
 /**
@@ -20,12 +20,12 @@ const COLOR_WHITE: Color = 'rgba(255,255,255,1)';
  */
 export function fillTextColor(
   textColor: Color,
-  textInvertible: boolean,
-  textContrast: TextContrast,
+  maximizeContrast: boolean,
+  minContrastRatio: TextContrastRatio,
   shapeFillColor: Color,
   backgroundColor: Color = COLOR_WHITE,
 ): string {
-  if (!textInvertible) {
+  if (!maximizeContrast) {
     return textColor;
   }
   const isBackgroundOpaque =
@@ -41,5 +41,5 @@ export function fillTextColor(
   // combine shape and background colors if shape has transparency
   const opaqueBackground = combineColors(shapeFillColor, isBackgroundOpaque ? backgroundColor : COLOR_WHITE);
 
-  return getHighContrastTextColor(textColor, opaqueBackground, textContrast);
+  return getHighContrastTextColor(textColor, opaqueBackground, minContrastRatio);
 }
