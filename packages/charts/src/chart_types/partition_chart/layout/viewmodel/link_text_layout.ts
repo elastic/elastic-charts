@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { getOnPaperColorSet } from '../../../../common/color_calcs';
 import { TAU } from '../../../../common/constants';
+import { fillTextColor } from '../../../../common/fill_text_color';
 import {
   Distance,
   meanAngle,
@@ -51,11 +51,14 @@ export function linkTextLayout(
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;
 
-  const { contrastTextColor, strokeColor } = getOnPaperColorSet(
+  const contrastTextColor = fillTextColor(
     linkLabel.textColor,
-    sectorLineStroke,
+    true,
+    4.5,
+    'rgba(255,255,255,0)',
     containerBackgroundColor,
   );
+  const strokeColor = fillTextColor(sectorLineStroke, true, 4.5, 'rgba(255,255,255,0)', containerBackgroundColor);
   const labelFontSpec: Font = { ...linkLabel, textColor: contrastTextColor };
   const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor: contrastTextColor };
 

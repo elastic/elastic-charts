@@ -15,7 +15,7 @@ import { TextContrastRatio } from './text_utils';
 
 const COLOR_WHITE: Color = 'rgba(255,255,255,1)';
 /**
- * Determine the color for the text hinging on the parameters of textInvertible and textContrast
+ * Determine the color for the text hinging on the parameters of maximizeContrast, shapeFillColor and backgroundColor
  * @internal
  */
 export function fillTextColor(
@@ -23,23 +23,27 @@ export function fillTextColor(
   maximizeContrast: boolean,
   minContrastRatio: TextContrastRatio,
   shapeFillColor: Color,
-  backgroundColor: Color = COLOR_WHITE,
+  backgroundColor?: Color,
 ): string {
   if (!maximizeContrast) {
     return textColor;
   }
-  const isBackgroundOpaque =
-    backgroundColor !== 'transparent' && chroma.valid(backgroundColor) && chroma(backgroundColor).alpha() === 1;
-
-  if (!isBackgroundOpaque) {
-    Logger.expected(
-      `Text contrast requires a background color with an alpha value of 1, using ${COLOR_WHITE} as default`,
-      1,
-      backgroundColor,
-    );
-  }
+  const background =
+    backgroundColor && isColorOpaque(backgroundColor, 'backgroundColor') ? backgroundColor : COLOR_WHITE;
   // combine shape and background colors if shape has transparency
-  const opaqueBackground = combineColors(shapeFillColor, isBackgroundOpaque ? backgroundColor : COLOR_WHITE);
+  const opaqueBackground = combineColors(shapeFillColor, background);
 
   return getHighContrastTextColor(textColor, opaqueBackground, minContrastRatio);
+}
+
+function isColorOpaque(color: Color, transparentWarnPropName?: string) {
+  const isOpaque = color !== 'transparent' && chroma.valid(color) && chroma(color).alpha() === 1;
+  if (!isOpaque && transparentWarnPropName) {
+    Logger.expected(
+      `Text contrast requires a ${transparentWarnPropName} with an alpha value of 1, using ${COLOR_WHITE} as default`,
+      1,
+      color,
+    );
+  }
+  return isOpaque;
 }
