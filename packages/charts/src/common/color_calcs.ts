@@ -39,12 +39,15 @@ export function arrayToLookup(keyFun: (v: any) => any, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
 
-const rgbaCache: Map<string | undefined, RgbaTuple> = new Map();
+const rgbaCache: Map<string, RgbaTuple> = new Map();
 
-function colorToRgba(color: Color): RgbaTuple {
+/** @internal */
+export function colorToRgba(color: Color): RgbaTuple {
   const cachedValue = rgbaCache.get(color);
   if (cachedValue === undefined) {
-    const newValue = chroma(color).rgba();
+    // ref https://github.com/gka/chroma.js/issues/280
+    const chromaAdaptedColor = color === 'transparent' ? 'rgba(0,0,0,0)' : color;
+    const newValue: RgbaTuple = chroma.valid(chromaAdaptedColor) ? chroma(chromaAdaptedColor).rgba() : [255, 0, 0, 1];
     rgbaCache.set(color, newValue);
     return newValue;
   }
@@ -78,23 +81,6 @@ export function combineColors(foregroundColor: Color, backgroundColor: Color): C
   const rgba: RgbTuple = [combinedRed, combinedGreen, combinedBlue, combinedAlpha];
 
   return RGBATupleToString(rgba);
-}
-
-const validCache: Map<string | undefined, boolean> = new Map();
-
-/**
- * Return true if the color is a valid CSS color, false otherwise
- * @param color a color written in string
- * @internal
- */
-export function isColorValid(color?: string): color is Color {
-  const cachedValue = validCache.get(color);
-  if (cachedValue === undefined) {
-    const newValue = Boolean(color) && chroma.valid(color);
-    validCache.set(color, newValue);
-    return newValue;
-  }
-  return cachedValue;
 }
 
 /**
