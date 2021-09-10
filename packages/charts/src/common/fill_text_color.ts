@@ -6,11 +6,9 @@
  * Side Public License, v 1.
  */
 
-import chroma from 'chroma-js';
-
 import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
-import { combineColors, getHighContrastTextColor } from './color_calcs';
+import { colorToRgba, combineColors, getHighContrastTextColor } from './color_calcs';
 import { TextContrastRatio } from './text_utils';
 
 const COLOR_WHITE: Color = 'rgba(255,255,255,1)';
@@ -28,22 +26,14 @@ export function fillTextColor(
   if (!maximizeContrast) {
     return textColor;
   }
-  const background =
-    backgroundColor && isColorOpaque(backgroundColor, 'backgroundColor') ? backgroundColor : COLOR_WHITE;
-  // combine shape and background colors if shape has transparency
-  const opaqueBackground = combineColors(shapeFillColor, background);
-
-  return getHighContrastTextColor(textColor, opaqueBackground, minContrastRatio);
-}
-
-function isColorOpaque(color: Color, transparentWarnPropName?: string) {
-  const isOpaque = color !== 'transparent' && chroma.valid(color) && chroma(color).alpha() === 1;
-  if (!isOpaque && transparentWarnPropName) {
-    Logger.expected(
-      `Text contrast requires a ${transparentWarnPropName} with an alpha value of 1, using ${COLOR_WHITE} as default`,
-      1,
-      color,
-    );
+  const isBackgroundTransparent = backgroundColor !== undefined && colorToRgba(backgroundColor)[3] < 1;
+  if (backgroundColor && isBackgroundTransparent) {
+    Logger.expected(`Text contrast requires a opaque background color`, 'opaque color', backgroundColor);
   }
-  return isOpaque;
+  const background = backgroundColor && !isBackgroundTransparent ? backgroundColor : COLOR_WHITE;
+
+  // combine shape and background colors if shape has transparency
+  const blendedBackground = combineColors(shapeFillColor, background);
+
+  return getHighContrastTextColor(textColor, blendedBackground, minContrastRatio);
 }
