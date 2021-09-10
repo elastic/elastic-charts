@@ -9,7 +9,7 @@
 import chroma from 'chroma-js';
 
 import { Color } from '../utils/common';
-import { RgbaTuple, RGBATupleToString, RgbTuple, stringToRGB } from './color_library_wrappers';
+import { RgbaTuple, RGBATupleToString, RgbTuple } from './color_library_wrappers';
 import { Ratio } from './geometry';
 import { TextContrastRatio } from './text_utils';
 
@@ -139,19 +139,4 @@ export function getContrast(foregroundColor: string | chroma.Color, backgroundCo
 export function colorIsDark(color: Color): boolean {
   const luminance = chroma(color).luminance();
   return luminance < 0.2;
-}
-
-/**
- * inverse color for text
- * @internal
- */
-export function getHighContrastTextColor(text: Color, background: Color, minContrast: Ratio): Color {
-  const requireInvertedColor = colorIsDark(text) === colorIsDark(background);
-  const correctTextColor = requireInvertedColor ? inverseColor(text) : text;
-  return makeHighContrastColor(correctTextColor, background, minContrast);
-}
-
-function inverseColor(color: Color) {
-  const { r, g, b, opacity } = stringToRGB(color);
-  return `rgba(${255 - r}, ${255 - g}, ${255 - b}, ${opacity})`;
 }

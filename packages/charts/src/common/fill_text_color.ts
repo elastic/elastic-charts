@@ -8,7 +8,7 @@
 
 import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
-import { colorToRgba, combineColors, getHighContrastTextColor } from './color_calcs';
+import { colorIsDark, colorToRgba, combineColors, makeHighContrastColor } from './color_calcs';
 import { TextContrastRatio } from './text_utils';
 
 const COLOR_WHITE: Color = 'rgba(255,255,255,1)';
@@ -35,5 +35,9 @@ export function fillTextColor(
   // combine shape and background colors if shape has transparency
   const blendedBackground = combineColors(shapeFillColor, background);
 
-  return getHighContrastTextColor(textColor, blendedBackground, minContrastRatio);
+  const requireInvertedColor = colorIsDark(textColor) === colorIsDark(blendedBackground);
+  const [r, g, b, opacity] = colorToRgba(textColor);
+  const invertedTextColor = `rgba(${255 - r}, ${255 - g}, ${255 - b}, ${opacity})`;
+
+  return makeHighContrastColor(requireInvertedColor ? invertedTextColor : textColor, background, minContrastRatio);
 }
