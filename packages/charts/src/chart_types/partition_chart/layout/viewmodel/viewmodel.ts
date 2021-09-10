@@ -143,8 +143,7 @@ export function makeQuadViewModel(
   return childNodes.map((node) => {
     const opacityMultiplier = 1; // could alter in the future, eg. in response to interactions
     const layer = layers[node.depth - 1];
-    const fillColorSpec = layer && layer.shape && layer.shape.fillColor;
-    const fill = fillColorSpec ?? 'rgba(128,0,0,0.5)';
+    const fill = layer?.shape?.fillColor ?? 'rgba(128,0,0,0.5)';
     const shapeFillColor = typeof fill === 'function' ? fill(node, node.sortIndex, node[MODEL_KEY].children) : fill;
     const { r, g, b, opacity } = stringToRGB(shapeFillColor);
     const fillColor = argsToRGBString(r, g, b, opacity * opacityMultiplier);
