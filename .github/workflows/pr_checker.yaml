@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - pr-checker
   schedule:
     - cron:  '1 * * * *'
     # - cron:  '0 0 * * *' # once a day
