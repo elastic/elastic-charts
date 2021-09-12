@@ -2301,48 +2301,20 @@ export type WeightFn = $Values<typeof WeightFn>;
 export const Wordcloud: React_2.FunctionComponent<SpecRequiredProps_10 & SpecOptionalProps_10>;
 
 // @public (undocumented)
-export interface WordcloudConfigs {
-    // (undocumented)
-    count: number;
-    // (undocumented)
-    endAngle: number;
-    // (undocumented)
-    exponent: number;
-    // (undocumented)
-    fontFamily: string;
-    // (undocumented)
-    fontStyle: FontStyle;
-    // (undocumented)
-    fontWeight: number;
-    // (undocumented)
-    height: number;
-    // (undocumented)
-    maxFontSize: number;
-    // (undocumented)
-    minFontSize: number;
-    // (undocumented)
-    padding: number;
-    // (undocumented)
-    spiral: string;
-    // (undocumented)
-    startAngle: number;
-    // (undocumented)
-    weightFn: WeightFn;
-    // (undocumented)
-    width: number;
-}
-
-// @public (undocumented)
 export type WordCloudElementEvent = [WordModel, SeriesIdentifier];
 
 // @alpha (undocumented)
-export interface WordcloudSpec extends Spec {
-    // (undocumented)
-    angleCount: number;
+export interface WordcloudSpec extends Spec, WordcloudViewModel {
     // (undocumented)
     chartType: typeof ChartType.Wordcloud;
     // (undocumented)
-    config: RecursivePartial<WordcloudConfigs>;
+    specType: typeof SpecType.Series;
+}
+
+// @public (undocumented)
+export interface WordcloudViewModel {
+    // (undocumented)
+    angleCount: number;
     // (undocumented)
     data: WordModel[];
     // (undocumented)
@@ -2363,8 +2335,6 @@ export interface WordcloudSpec extends Spec {
     outOfRoomCallback: OutOfRoomCallback;
     // (undocumented)
     padding: number;
-    // (undocumented)
-    specType: typeof SpecType.Series;
     // (undocumented)
     spiral: string;
     // (undocumented)
