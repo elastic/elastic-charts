@@ -5,8 +5,8 @@ on:
     branches:
       - master
   schedule:
-    # - cron:  '1 * * * *'
-    - cron:  '0 0 * * *' # once a day
+    - cron:  '1 * * * *'
+    # - cron:  '0 0 * * *' # once a day
 
 env:
   ECH_NODE_VERSION: '14.x'
@@ -29,7 +29,7 @@ jobs:
         id: fetch
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/{repo}/pulls?state=open
+          route: GET /repos/{repo}/pulls?state=open&per_page=2
           repo: ${{ github.repository }}
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
@@ -64,21 +64,22 @@ jobs:
         with:
           ref: "refs/pull/${{ matrix.number }}/head"
           persist-credentials: false
-          clean: false
-      - name: Latest commit
-        run: echo $( git rev-parse HEAD )
-      - name: Checkout base
-        uses: actions/checkout@v2
-        with:
-          ref: "${{ matrix.baseRef }}"
-          persist-credentials: false
+          fetch-depth: 10
           clean: false
       - name: Latest commit
         run: echo $( git rev-parse HEAD )
       - name: Testing rev-list
         run: echo "$( git rev-list --left-right --count ${{ matrix.baseRef }}...${{ matrix.headSha }} )"
-      - name: Testing merge-base
-        run: echo "$(git merge-base ${{ matrix.baseRef }} ${{ matrix.headSha }} )"
+      # - name: Checkout base
+      #   uses: actions/checkout@v2
+      #   with:
+      #     ref: "${{ matrix.baseRef }}"
+      #     persist-credentials: false
+      #     clean: false
+      # - name: Latest commit
+      #   run: echo $( git rev-parse HEAD )
+      # - name: Testing merge-base
+      #   run: echo "$(git merge-base ${{ matrix.baseRef }} ${{ matrix.headSha }} )"
 
   # files:
   #   name: "Validating PR #${{ matrix.number }}"
