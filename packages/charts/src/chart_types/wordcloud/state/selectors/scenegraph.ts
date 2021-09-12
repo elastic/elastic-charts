@@ -6,19 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { mergePartial, RecursivePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
-import { config as defaultConfig } from '../../layout/config/config';
-import { Config } from '../../layout/types/config_types';
+import { Theme } from '../../../../utils/themes/theme';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { WordcloudSpec } from '../../specs';
 
 /** @internal */
-export function render(spec: WordcloudSpec, parentDimensions: Dimensions): ShapeViewModel {
-  const { width, height } = parentDimensions;
-  const { config } = spec;
-  const partialConfig: RecursivePartial<Config> = { ...config, width, height };
-  const cfg: Config = mergePartial(defaultConfig, partialConfig, { mergeOptionalPartialValues: true });
-  return shapeViewModel(spec, cfg);
+export function render(spec: WordcloudSpec, theme: Theme, parentDimensions: Dimensions): ShapeViewModel {
+  return shapeViewModel(spec, theme, parentDimensions);
 }

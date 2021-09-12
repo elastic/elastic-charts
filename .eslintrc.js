@@ -67,7 +67,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-return': 0,
     '@typescript-eslint/explicit-module-boundary-types': 0,
     '@typescript-eslint/restrict-plus-operands': 0, // rule is broken
-    '@typescript-eslint/no-unsafe-call': 1,
+    '@typescript-eslint/no-unsafe-call': 0, // seems to have issues with default import types
     '@typescript-eslint/unbound-method': 1,
     '@typescript-eslint/no-redeclare': 'off', // we use to declare enum type and object with the same name
     '@typescript-eslint/no-shadow': 'off', // we use shadow mostly within the canvas renderer function when we need a new context
