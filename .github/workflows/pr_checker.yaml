@@ -1,10 +1,10 @@
 name: 'CI Checks'
 
 on:
-  push:
-    branches:
-      - master
-      - pr-checker
+  # push:
+  #   branches:
+  #     - master
+  #     - alpha
   schedule:
     - cron:  '1 * * * *'
     # - cron:  '0 0 * * *' # once a day
