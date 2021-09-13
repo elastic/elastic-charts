@@ -9,7 +9,8 @@
 import chroma from 'chroma-js';
 
 import { Color } from '../utils/common';
-import { RgbaTuple, RGBATupleToString, RgbTuple } from './color_library_wrappers';
+import { Logger } from '../utils/logger';
+import { isValid, RgbaTuple, RGBATupleToString, RgbTuple } from './color_library_wrappers';
 import { Ratio } from './geometry';
 import { TextContrastRatio } from './text_utils';
 
@@ -45,9 +46,9 @@ const rgbaCache: Map<string, RgbaTuple> = new Map();
 export function colorToRgba(color: Color): RgbaTuple {
   const cachedValue = rgbaCache.get(color);
   if (cachedValue === undefined) {
-    // ref https://github.com/gka/chroma.js/issues/280
-    const chromaAdaptedColor = color === 'transparent' ? 'rgba(0,0,0,0)' : color;
-    const newValue: RgbaTuple = chroma.valid(chromaAdaptedColor) ? chroma(chromaAdaptedColor).rgba() : [255, 0, 0, 1];
+    const chromaColor = isValid(color);
+    if (chromaColor === false) Logger.warn(`The provided color is not a valid CSS color, using RED as fallback`, color);
+    const newValue: RgbaTuple = chromaColor ? chromaColor.rgba() : [255, 0, 0, 1];
     rgbaCache.set(color, newValue);
     return newValue;
   }

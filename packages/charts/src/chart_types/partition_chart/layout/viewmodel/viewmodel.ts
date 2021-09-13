@@ -141,7 +141,7 @@ export function makeQuadViewModel(
 ): Array<QuadViewModel> {
   return childNodes.map((node) => {
     const layer = layers[node.depth - 1];
-    const fill = layer?.shape?.fillColor ?? 'rgba(128,0,0,0.5)';
+    const fill = layer?.shape?.fillColor ?? 'rgba(128, 0, 0, 0.5)';
     const fillColor = typeof fill === 'function' ? fill(node, node.sortIndex, node[MODEL_KEY].children) : fill;
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;

@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import chroma from 'chroma-js';
+
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 import { makeHighContrastColor, combineColors } from './color_calcs';
 
@@ -68,12 +70,12 @@ describe('calcs', () => {
     it('should return correct RGBA with the input color as a word vs rgba or hex value', () => {
       const expected = 'rgba(0, 0, 255, 1)';
       const result = combineColors('blue', 'black');
-      expect(result).toBe(expected);
+      expect(chroma(result).rgba()).toBe(expected);
     });
     it('should return the correct RGBA with hex input', () => {
       const expected = 'rgba(212, 242, 210, 1)';
       const result = combineColors('#D4F2D2', '#BEB7DF');
-      expect(result).toBe(expected);
+      expect(chroma(result).rgba()).toBe(expected);
     });
   });
 });

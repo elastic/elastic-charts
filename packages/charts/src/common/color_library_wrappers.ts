@@ -9,7 +9,7 @@
 import chroma from 'chroma-js';
 import { rgb as d3Rgb, RGBColor as D3RGBColor } from 'd3-color';
 
-import { Color } from '../utils/common';
+import { clamp, Color } from '../utils/common';
 
 type RGB = number;
 type A = number;
@@ -53,6 +53,11 @@ export function stringToRGB(cssColorSpecifier?: string, opacity?: number | Opaci
     ...color,
     opacity: opacityOverride,
   };
+}
+
+function overrideOpacity([r, g, b, o]: RgbaTuple, opacity?: number | OpacityFn) {
+  const opacityOverride = opacity === undefined ? o : typeof opacity === 'number' ? opacity : opacity(o);
+  return [r, g, b, clamp(Number.isFinite(opacityOverride) ? opacityOverride : o, 0, 1)];
 }
 
 /**
@@ -104,10 +109,7 @@ export function RGBtoString(rgb: RgbObject): string {
 
 /** @internal */
 export function RGBATupleToString(rgba: RgbTuple): string {
-  if (rgba.length === 4) {
-    return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3]})`;
-  }
-  return `rgb(${rgba[0]}, ${rgba[1]}, ${rgba[2]})`;
+  return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3] ?? 1})`;
 }
 
 /** convert rgb to hex
@@ -120,4 +122,14 @@ export function RGBAToHex(rgba: Color) {
  * @internal */
 export function HexToRGB(hex: string) {
   return chroma(hex).rgba();
+}
+
+/** @internal */
+export function isValid(color: Color): chroma.Color | false {
+  try {
+    // ref https://github.com/gka/chroma.js/issues/280
+    return chroma(color === 'transparent' ? 'rgba(0,0,0,0)' : color);
+  } catch {
+    return false;
+  }
 }
