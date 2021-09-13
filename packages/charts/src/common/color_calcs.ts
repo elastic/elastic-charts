@@ -70,55 +70,60 @@ export function combineColors(
  * @internal
  */
 export function makeHighContrastColor(
-  foreground: Color,
-  background: Color,
+  foreground: RgbaTuple,
+  background: RgbaTuple,
   contrastRatio: TextContrastRatio = 4.5,
-): Color {
+): RgbaTuple {
   // determine the lightness factor of the background color to determine whether to lighten or darken the foreground
   const lightness = chroma(background).get('hsl.l');
   let highContrastTextColor = foreground;
   const originalhighContrastTextColor = foreground;
   const isBackgroundDark = colorIsDark(background);
   // determine whether white or black text is ideal contrast vs a grey that just passes the ratio
-  if (isBackgroundDark && chroma.deltaE('black', foreground) === 0) {
-    highContrastTextColor = '#fff';
-  } else if (lightness > 0.5 && chroma.deltaE('white', foreground) === 0) {
-    highContrastTextColor = '#000';
+  if (isBackgroundDark && areColorEqual(foreground, [0, 0, 0, 1])) {
+    highContrastTextColor = [255, 255, 255, 1];
+  } else if (lightness > 0.5 && areColorEqual(foreground, [255, 255, 255, 1])) {
+    highContrastTextColor = [0, 0, 0, 1];
   }
   const precision = 1e8;
   let contrast = getContrast(highContrastTextColor, background);
   // brighten and darken the text color if not meeting the ratio
   while (contrast < contrastRatio) {
     highContrastTextColor = isBackgroundDark
-      ? chroma(highContrastTextColor).brighten().toString()
-      : chroma(highContrastTextColor).darken().toString();
+      ? chroma(highContrastTextColor).brighten().rgba()
+      : chroma(highContrastTextColor).darken().rgba();
     const scaledOldContrast = Math.round(contrast * precision) / precision;
     contrast = getContrast(highContrastTextColor, background);
     const scaledContrast = Math.round(contrast * precision) / precision;
     // catch if the ideal contrast may not be possible, switch to the other extreme color contrast
     if (scaledOldContrast === scaledContrast) {
-      const contrastColor =
-        originalhighContrastTextColor === 'rgba(255, 255, 255, 1)' ? 'rgba(0, 0 , 0, 1)' : 'rgba(255, 255, 255, 1)';
+      const contrastColor: RgbaTuple = areColorEqual(originalhighContrastTextColor, [255, 255, 255, 1])
+        ? [0, 0, 0, 1]
+        : [255, 255, 255, 1];
       // make sure the new text color hits the ratio, if not, then return the scaledContrast since we tried earlier
-      return getContrast(contrastColor, background) > contrastRatio ? contrastColor : scaledContrast.toString();
+      return getContrast(contrastColor, background) > contrastRatio ? contrastColor : highContrastTextColor;
     }
   }
-  return highContrastTextColor.toString();
+  return highContrastTextColor;
 }
 
 /**
  * show contrast amount
  * @internal
  */
-export function getContrast(foregroundColor: string | chroma.Color, backgroundColor: string | chroma.Color): number {
-  return chroma.contrast(foregroundColor, backgroundColor);
+export function getContrast(foregroundColor: RgbaTuple, backgroundColor: RgbaTuple): number {
+  return chroma.contrast(chroma(foregroundColor), chroma(backgroundColor));
 }
 
 /**
  * determines if the color is dark based on the luminance
  * @internal
  */
-export function colorIsDark(color: Color): boolean {
+export function colorIsDark(color: RgbaTuple): boolean {
   const luminance = chroma(color).luminance();
   return luminance < 0.2;
+}
+
+function areColorEqual(c1: RgbaTuple, c2: RgbaTuple) {
+  return c1[0] === c2[0] && c1[1] === c2[1] && c1[2] === c2[2] && c1[3] === c2[3];
 }
