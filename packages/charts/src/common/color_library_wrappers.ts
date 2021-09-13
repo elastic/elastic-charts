@@ -45,28 +45,6 @@ export function overrideOpacity([r, g, b, o]: RgbaTuple, opacity?: number | Opac
 }
 
 /** @internal */
-export function validateColor(color: D3RGBColor): D3RGBColor | null {
-  const { r, g, b, opacity } = color;
-
-  if (isNaN(r) || isNaN(g) || isNaN(b) || isNaN(opacity)) {
-    return null;
-  }
-
-  return color;
-}
-
-/** @internal */
-export function argsToRGB(r: number, g: number, b: number, opacity: number): D3RGBColor {
-  return validateColor(d3Rgb(r, g, b, opacity)) ?? defaultD3Color;
-}
-
-/** @internal */
-export function argsToRGBString(r: number, g: number, b: number, opacity: number): string {
-  // d3.rgb returns an Rgb instance, which has a specialized `toString` method
-  return argsToRGB(r, g, b, opacity).toString();
-}
-
-/** @internal */
 export function RGBATupleToString(rgba: RgbTuple): Color {
   return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3] ?? 1})`;
 }

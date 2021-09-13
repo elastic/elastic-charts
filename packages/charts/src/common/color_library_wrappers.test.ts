@@ -8,14 +8,7 @@
 
 import { Logger } from '../utils/logger';
 import { colorToRgba } from './color_calcs';
-import {
-  validateColor,
-  defaultD3Color,
-  argsToRGB,
-  RgbObject,
-  argsToRGBString,
-  overrideOpacity,
-} from './color_library_wrappers';
+import { overrideOpacity } from './color_library_wrappers';
 
 jest.mock('../utils/logger', () => ({
   Logger: {
@@ -137,32 +130,6 @@ describe('d3 Utils', () => {
     ])('should return null if %s is NaN', (color, calledN) => {
       expect(colorToRgba(color)).toBe([255, 0, 0, 1]);
       expect(Logger.warn).toBeCalledTimes(calledN);
-    });
-
-    it.skip('should return valid colors', () => {
-      expect(validateColor(defaultD3Color)).toBe(defaultD3Color);
-    });
-  });
-
-  describe('argsToRGB', () => {
-    it.each<keyof RgbObject>(['r', 'g', 'b', 'opacity'])('should return defaultD3Color if %s is NaN', (value) => {
-      const { r, g, b, opacity }: RgbObject = {
-        ...defaultD3Color,
-        [value]: NaN,
-      };
-      expect(argsToRGB(r, g, b, opacity)).toEqual(defaultD3Color);
-    });
-
-    it('should return valid colors', () => {
-      const { r, g, b, opacity } = defaultD3Color;
-      expect(argsToRGB(r, g, b, opacity)).toEqual(defaultD3Color);
-    });
-  });
-
-  describe('argsToRGBString', () => {
-    it('should return valid colors', () => {
-      const { r, g, b, opacity } = defaultD3Color;
-      expect(argsToRGBString(r, g, b, opacity)).toBe('rgb(255, 0, 0)');
     });
   });
 });
