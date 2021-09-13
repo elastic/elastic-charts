@@ -15,11 +15,7 @@ import { TextContrastRatio } from './text_utils';
 
 /** @internal */
 export function hueInterpolator(colors: RgbTuple[]) {
-  return (d: number) => {
-    const index = Math.round(d * 255);
-    const [r, g, b, a] = colors[index];
-    return colors[index].length === 3 ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a ?? 1})`;
-  };
+  return (d: number) => RGBATupleToString(colors[Math.round(d * 255)]);
 }
 
 /** @internal */
