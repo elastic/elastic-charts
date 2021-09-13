@@ -66,7 +66,7 @@ export function combineColors(foregroundColor: Color, backgroundColor: Color): C
   const combinedRed = Math.round((red1 * alpha1 + red2 * alpha2 * (1 - alpha1)) / combinedAlpha);
   const combinedGreen = Math.round((green1 * alpha1 + green2 * alpha2 * (1 - alpha1)) / combinedAlpha);
   const combinedBlue = Math.round((blue1 * alpha1 + blue2 * alpha2 * (1 - alpha1)) / combinedAlpha);
-  const rgba: RgbTuple = [combinedRed, combinedGreen, combinedBlue, combinedAlpha];
+  const rgba: RgbaTuple = [combinedRed, combinedGreen, combinedBlue, combinedAlpha];
 
   return RGBATupleToString(rgba);
 }

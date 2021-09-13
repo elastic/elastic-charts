@@ -14,12 +14,10 @@ type RGB = number;
 type A = number;
 
 /** @internal */
-export type RgbTuple = [RGB, RGB, RGB, RGB?];
-/** @public */
-export type RgbObject = { r: RGB; g: RGB; b: RGB; opacity: A };
+export type RgbTuple = [RGB, RGB, RGB, A?];
 
 /** @internal */
-export type RgbaTuple = [RGB, RGB, RGB, RGB];
+export type RgbaTuple = [r: RGB, g: RGB, b: RGB, alpha: A];
 
 /** @internal */
 export type OpacityFn = (opacity: number, seriesOpacity?: number) => number;

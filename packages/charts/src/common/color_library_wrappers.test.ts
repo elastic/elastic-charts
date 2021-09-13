@@ -19,7 +19,7 @@ jest.mock('../utils/logger', () => ({
 describe('d3 Utils', () => {
   describe('colorToRgba', () => {
     describe('bad colors or undefined', () => {
-      it('should return default RgbObject', () => {
+      it('should return default RgbaTuple', () => {
         expect(colorToRgba('not a color')).toMatchObject([255, 0, 0, 1]);
       });
 
@@ -29,62 +29,62 @@ describe('d3 Utils', () => {
     });
 
     describe('hex colors', () => {
-      it('should return RgbObject', () => {
+      it('should return RgbaTuple', () => {
         expect(colorToRgba('#ef713d')).toMatchObject([239, 113, 61, 1]);
       });
 
-      it('should return RgbObject from shorthand', () => {
+      it('should return RgbaTuple from shorthand', () => {
         expect(colorToRgba('#ccc')).toMatchObject([204, 204, 204, 1]);
       });
 
-      it('should return RgbObject with correct opacity', () => {
+      it('should return RgbaTuple with correct opacity', () => {
         // https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
         expect(colorToRgba('#ef713d80')[3]).toBeCloseTo(0.5, 1);
       });
 
-      it('should return correct RgbObject for alpha value of 0', () => {
+      it('should return correct RgbaTuple for alpha value of 0', () => {
         expect(colorToRgba('#00000000')).toMatchObject([0, 0, 0, 0]);
       });
     });
 
     describe('rgb colors', () => {
-      it('should return RgbObject', () => {
+      it('should return RgbaTuple', () => {
         expect(colorToRgba('rgb(50,50,50)')).toMatchObject([50, 50, 50, 1]);
       });
 
-      it('should return RgbObject with correct opacity', () => {
+      it('should return RgbaTuple with correct opacity', () => {
         expect(colorToRgba('rgba(50,50,50,0.25)')[3]).toBe(0.25);
       });
 
-      it('should return correct RgbObject for alpha value of 0', () => {
+      it('should return correct RgbaTuple for alpha value of 0', () => {
         expect(colorToRgba('rgba(50,50,50,0)')).toMatchObject([50, 50, 50, 0]);
       });
     });
 
     describe('hsl colors', () => {
-      it('should return RgbObject', () => {
+      it('should return RgbaTuple', () => {
         expect(colorToRgba('hsl(0,0%,50%)')).toMatchObject([128, 128, 128, 1]);
       });
 
-      it('should return RgbObject with correct opacity', () => {
+      it('should return RgbaTuple with correct opacity', () => {
         expect(colorToRgba('hsla(0,0%,50%,0.25)')[3]).toBe(0.25);
       });
 
-      it('should return correct RgbObject for alpha value of 0', () => {
+      it('should return correct RgbaTuple for alpha value of 0', () => {
         expect(colorToRgba('hsla(0,0%,50%,0)')).toEqual([128, 128, 128, 0]);
       });
     });
 
     describe('named colors', () => {
-      it('should return RgbObject', () => {
+      it('should return RgbaTuple', () => {
         expect(colorToRgba('aquamarine')).toMatchObject([127, 255, 212, 1]);
       });
 
-      it('should return default RgbObject with 0 opacity', () => {
+      it('should return default RgbaTuple with 0 opacity', () => {
         expect(colorToRgba('transparent')).toMatchObject([0, 0, 0, 0]);
       });
 
-      it('should return default RgbObject with 0 opacity even with override', () => {
+      it('should return default RgbaTuple with 0 opacity even with override', () => {
         expect(overrideOpacity(colorToRgba('transparent'), 0.5)).toMatchObject([0, 0, 0, 0]);
       });
     });
