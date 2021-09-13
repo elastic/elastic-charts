@@ -71,18 +71,6 @@ export function RGBATupleToString(rgba: RgbTuple): Color {
   return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3] ?? 1})`;
 }
 
-/** convert rgb to hex
- * @internal */
-export function RGBAToHex(rgba: Color) {
-  return chroma(rgba).hex();
-}
-
-/** convert hex to rgb
- * @internal */
-export function HexToRGB(hex: string) {
-  return chroma(hex).rgba();
-}
-
 /** @internal */
 export function isValid(color: Color): chroma.Color | false {
   try {
