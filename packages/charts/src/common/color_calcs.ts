@@ -11,7 +11,6 @@ import chroma from 'chroma-js';
 import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
 import { isValid, RgbaTuple, RGBATupleToString, RgbTuple } from './color_library_wrappers';
-import { Ratio } from './geometry';
 import { TextContrastRatio } from './text_utils';
 
 /** @internal */
@@ -21,18 +20,6 @@ export function hueInterpolator(colors: RgbTuple[]) {
     const [r, g, b, a] = colors[index];
     return colors[index].length === 3 ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a ?? 1})`;
   };
-}
-
-/** @internal */
-export function addOpacity(hexColorString: string, opacity: Ratio) {
-  // this is a super imperfect multiplicative alpha blender that assumes a "#rrggbb" or "#rrggbbaa" hexColorString
-  // todo roll some proper utility that can handle "rgb(...)", "rgba(...)", "red", {r, g, b} etc.
-  return opacity === 1
-    ? hexColorString
-    : hexColorString.slice(0, 7) +
-        (hexColorString.slice(7).length === 0 || parseInt(hexColorString.slice(7, 2), 16) === 255
-          ? `00${Math.round(opacity * 255).toString(16)}`.slice(-2) // color was of full opacity
-          : `00${Math.round((parseInt(hexColorString.slice(7, 2), 16) / 255) * opacity * 255).toString(16)}`.slice(-2));
 }
 
 /** @internal */
