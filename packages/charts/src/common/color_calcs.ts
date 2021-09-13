@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
-import chroma from 'chroma-js';
-
 import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
 import {
   brightenColor,
   darkenColor,
   getChromaColor,
+  getContrast,
+  getLuminance,
   isValid,
   RgbaTuple,
   RGBATupleToString,
@@ -119,20 +119,11 @@ export function makeHighContrastColor(
 }
 
 /**
- * show contrast amount
- * @internal
- */
-export function getContrast(foregroundColor: RgbaTuple, backgroundColor: RgbaTuple): number {
-  return chroma.contrast(getChromaColor(foregroundColor), getChromaColor(backgroundColor));
-}
-
-/**
  * determines if the color is dark based on the luminance
  * @internal
  */
 export function colorIsDark(color: RgbaTuple): boolean {
-  const luminance = getChromaColor(color).luminance();
-  return luminance < 0.2;
+  return getLuminance(color) < 0.2;
 }
 
 function areColorEqual(c1: RgbaTuple, c2: RgbaTuple) {

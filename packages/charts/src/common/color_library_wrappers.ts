@@ -64,3 +64,22 @@ export function getChromaColor(color: RgbaTuple): chroma.Color {
   // chroma mutates the input
   return chroma(...color);
 }
+
+/** @internal */
+export function getLuminance(color: RgbaTuple): number {
+  return getChromaColor(color).luminance();
+}
+
+/**
+ * show contrast amount
+ * @internal
+ */
+export function getContrast(foregroundColor: RgbaTuple, backgroundColor: RgbaTuple): number {
+  return chroma.contrast(getChromaColor(foregroundColor), getChromaColor(backgroundColor));
+}
+
+/** @internal */
+export function getGreensColorScale(gamma: number, domain: [number, number]): (value: number) => Color {
+  const scale = chroma.scale(chroma.brewer.Greens).gamma(gamma).domain(domain);
+  return (value: number) => scale(value).css();
+}
