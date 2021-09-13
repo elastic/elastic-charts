@@ -9,9 +9,10 @@
 import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
 import { colorIsDark, colorToRgba, combineColors, makeHighContrastColor } from './color_calcs';
+import { RgbaTuple } from './color_library_wrappers';
 import { TextContrastRatio } from './text_utils';
 
-const COLOR_WHITE: Color = 'rgba(255,255,255,1)';
+const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
 /**
  * Determine the color for the text hinging on the parameters of maximizeContrast, shapeFillColor and backgroundColor
  * @internal
@@ -22,22 +23,28 @@ export function fillTextColor(
   minContrastRatio: TextContrastRatio,
   shapeFillColor: Color,
   backgroundColor?: Color,
-): string {
+): Color {
   if (!maximizeContrast) {
     return textColor;
   }
-  const isBackgroundTransparent = backgroundColor !== undefined && colorToRgba(backgroundColor)[3] < 1;
-  if (backgroundColor && isBackgroundTransparent) {
+  const colorRGBA = colorToRgba(textColor);
+  const defaultBackgroundRGBA = backgroundColor ? colorToRgba(backgroundColor) : COLOR_WHITE;
+  const shapeFillRGBA = colorToRgba(shapeFillColor);
+
+  if (backgroundColor && defaultBackgroundRGBA[3] < 1) {
     Logger.expected(`Text contrast requires a opaque background color`, 'opaque color', backgroundColor);
   }
-  const background = backgroundColor && !isBackgroundTransparent ? backgroundColor : COLOR_WHITE;
+  // use WHITE if background color is semi transparent
+  const backgroundRGBA = backgroundColor && defaultBackgroundRGBA[3] === 1 ? defaultBackgroundRGBA : COLOR_WHITE;
 
   // combine shape and background colors if shape has transparency
-  const blendedBackground = combineColors(shapeFillColor, background);
+  const blendedBackgroundRGBA = combineColors(shapeFillRGBA, backgroundRGBA);
 
-  const requireInvertedColor = colorIsDark(textColor) === colorIsDark(blendedBackground);
-  const [r, g, b, opacity] = colorToRgba(textColor);
-  const invertedTextColor = `rgba(${255 - r}, ${255 - g}, ${255 - b}, ${opacity})`;
+  const requireInvertedColor = colorIsDark(colorRGBA) === colorIsDark(blendedBackgroundRGBA);
 
-  return makeHighContrastColor(requireInvertedColor ? invertedTextColor : textColor, background, minContrastRatio);
+  return makeHighContrastColor(
+    requireInvertedColor ? [255 - colorRGBA.r, 255 - colorRGBA.g, 255 - colorRGBA.b, colorRGBA.a] : colorRGBA,
+    blendedBackgroundRGBA,
+    minContrastRatio,
+  );
 }
