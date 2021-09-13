@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RGBtoString } from '../../../../../common/color_library_wrappers';
+import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
 import { Line, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
 
@@ -23,7 +23,7 @@ export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | s
     return;
   }
   withContext(ctx, () => {
-    ctx.strokeStyle = RGBtoString(stroke.color);
+    ctx.strokeStyle = RGBATupleToString(stroke.color);
     ctx.lineJoin = 'round';
     ctx.lineWidth = stroke.width;
     if (stroke.dash) {
