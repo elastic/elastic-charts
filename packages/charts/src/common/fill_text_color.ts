@@ -9,7 +9,7 @@
 import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
 import { colorIsDark, colorToRgba, combineColors, makeHighContrastColor } from './color_calcs';
-import { RgbaTuple } from './color_library_wrappers';
+import { RgbaTuple, RGBATupleToString } from './color_library_wrappers';
 import { TextContrastRatio } from './text_utils';
 
 const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
@@ -42,9 +42,10 @@ export function fillTextColor(
 
   const requireInvertedColor = colorIsDark(colorRGBA) === colorIsDark(blendedBackgroundRGBA);
 
-  return makeHighContrastColor(
-    requireInvertedColor ? [255 - colorRGBA.r, 255 - colorRGBA.g, 255 - colorRGBA.b, colorRGBA.a] : colorRGBA,
+  const highContrastColor = makeHighContrastColor(
+    requireInvertedColor ? [255 - colorRGBA[0], 255 - colorRGBA[1], 255 - colorRGBA[2], colorRGBA[3]] : colorRGBA,
     blendedBackgroundRGBA,
     minContrastRatio,
   );
+  return RGBATupleToString(highContrastColor);
 }
