@@ -270,7 +270,7 @@ describe('Test getTextColor function', () => {
     const textContrast = 6;
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
-    const expectedAdjustedTextColor = 'black';
+    const expectedAdjustedTextColor = 'rgba(0, 0, 0, 1)';
     expect(fillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor)).toEqual(
       expectedAdjustedTextColor,
     );
@@ -282,7 +282,7 @@ describe('Test getTextColor function', () => {
     const textContrast = 4.5;
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
-    const expectedAdjustedTextColor = 'black';
+    const expectedAdjustedTextColor = 'rgba(0, 0, 0, 1)';
     expect(fillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor)).toEqual(
       expectedAdjustedTextColor,
     );

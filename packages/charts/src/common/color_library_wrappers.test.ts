@@ -16,7 +16,7 @@ jest.mock('../utils/logger', () => ({
   },
 }));
 
-describe('d3 Utils', () => {
+describe('color library wrappers utils', () => {
   describe('colorToRgba', () => {
     describe('bad colors or undefined', () => {
       it('should return default RgbaTuple', () => {
@@ -122,14 +122,12 @@ describe('d3 Utils', () => {
   });
 
   describe('colorToRGB always return a color', () => {
-    it.each<[string, number]>([
-      ['rgba(NaN, 0, 0, 0)', 1],
-      ['rgba(0, NaN, 0, 0)', 2],
-      ['rgba(0, 0, NaN, 0)', 3],
-      ['rgba(0, 0, 0, NaN)', 4],
-    ])('should return null if %s is NaN', (color, calledN) => {
-      expect(colorToRgba(color)).toBe([255, 0, 0, 1]);
-      expect(Logger.warn).toBeCalledTimes(calledN);
-    });
+    it.each<string>(['rgba(NaN, 0, 0, 0)', 'rgba(0, NaN, 0, 0)', 'rgba(0, 0, NaN, 0)', 'rgba(0, 0, 0, NaN)'])(
+      'should return null if %s is NaN',
+      (color) => {
+        expect(colorToRgba(color)).toEqual([255, 0, 0, 1]);
+        expect(Logger.warn).toBeCalledTimes(1);
+      },
+    );
   });
 });

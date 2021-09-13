@@ -48,3 +48,19 @@ export function isValid(color: Color): chroma.Color | false {
     return false;
   }
 }
+
+/** @internal */
+export function brightenColor(color: RgbaTuple): RgbaTuple {
+  return getChromaColor(color).brighten().rgba();
+}
+
+/** @internal */
+export function darkenColor(color: RgbaTuple): RgbaTuple {
+  return getChromaColor(color).darken().rgba();
+}
+
+/** @internal */
+export function getChromaColor(color: RgbaTuple): chroma.Color {
+  // chroma mutates the input
+  return chroma(...color);
+}
