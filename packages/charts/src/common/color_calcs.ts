@@ -42,13 +42,13 @@ export function colorToRgba(color: Color): RgbaTuple {
  * and make sure to provide optimal contrast
  * @internal
  */
-export function combineColors(foregroundColor: Color, backgroundColor: Color): Color {
-  const [red1, green1, blue1, alpha1] = colorToRgba(foregroundColor);
-  const [red2, green2, blue2, alpha2] = colorToRgba(backgroundColor);
-
+export function combineColors(
+  [red1, green1, blue1, alpha1]: RgbaTuple,
+  [red2, green2, blue2, alpha2]: RgbaTuple,
+): RgbaTuple {
   // combine colors only if foreground has transparency
   if (alpha1 === 1) {
-    return foregroundColor;
+    return [red1, green1, blue1, alpha1];
   }
 
   // For reference on alpha calculations:
@@ -56,15 +56,13 @@ export function combineColors(foregroundColor: Color, backgroundColor: Color): C
   const combinedAlpha = alpha1 + alpha2 * (1 - alpha1);
 
   if (combinedAlpha === 0) {
-    return 'rgba(0,0,0,0)';
+    return [0, 0, 0, 0];
   }
 
   const combinedRed = Math.round((red1 * alpha1 + red2 * alpha2 * (1 - alpha1)) / combinedAlpha);
   const combinedGreen = Math.round((green1 * alpha1 + green2 * alpha2 * (1 - alpha1)) / combinedAlpha);
   const combinedBlue = Math.round((blue1 * alpha1 + blue2 * alpha2 * (1 - alpha1)) / combinedAlpha);
-  const rgba: RgbaTuple = [combinedRed, combinedGreen, combinedBlue, combinedAlpha];
-
-  return RGBATupleToString(rgba);
+  return [combinedRed, combinedGreen, combinedBlue, combinedAlpha];
 }
 
 /**
