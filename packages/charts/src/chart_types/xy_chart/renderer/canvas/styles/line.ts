@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB, OpacityFn } from '../../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../../common/color_calcs';
+import { overrideOpacity } from '../../../../../common/color_library_wrappers';
 import { Stroke } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
 import { GeometryStateStyle, LineStyle } from '../../../../../utils/themes/theme';
@@ -24,8 +25,10 @@ export function buildLineStyles(
   themeLineStyle: LineStyle,
   geometryStateStyle: GeometryStateStyle,
 ): Stroke {
-  const strokeOpacity: OpacityFn = (opacity) => opacity * themeLineStyle.opacity * geometryStateStyle.opacity;
-  const strokeColor = stringToRGB(getColorFromVariant(baseColor, themeLineStyle.stroke), strokeOpacity);
+  const strokeColor = overrideOpacity(
+    colorToRgba(getColorFromVariant(baseColor, themeLineStyle.stroke)),
+    (opacity) => opacity * themeLineStyle.opacity * geometryStateStyle.opacity,
+  );
   return {
     color: strokeColor,
     width: themeLineStyle.strokeWidth,

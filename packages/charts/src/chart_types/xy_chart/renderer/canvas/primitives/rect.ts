@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RGBtoString } from '../../../../../common/color_library_wrappers';
+import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
 import { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { MIN_STROKE_WIDTH } from './line';
 
@@ -20,7 +20,7 @@ export function renderRect(
 ) {
   const borderOffset = !disableBorderOffset && stroke.width >= MIN_STROKE_WIDTH ? stroke.width : 0;
   if (stroke.width >= MIN_STROKE_WIDTH && height >= borderOffset && width >= borderOffset) {
-    ctx.strokeStyle = RGBtoString(stroke.color);
+    ctx.strokeStyle = RGBATupleToString(stroke.color);
     ctx.lineWidth = stroke.width;
     ctx.beginPath();
     ctx.rect(x + borderOffset / 2, y + borderOffset / 2, width - borderOffset, height - borderOffset);
@@ -31,7 +31,7 @@ export function renderRect(
 
   ctx.beginPath();
   ctx.rect(x + borderOffset, y + borderOffset, width - borderOffset * 2, height - borderOffset * 2);
-  ctx.fillStyle = RGBtoString(color);
+  ctx.fillStyle = RGBATupleToString(color);
   ctx.fill();
 
   if (texture) {

@@ -9,7 +9,7 @@
 import { bisectLeft } from 'd3-array';
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
-import { stringToRGB } from '../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../common/color_calcs';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
@@ -217,10 +217,10 @@ export function shapeViewModel(
       height: cellHeightInner,
       datum: d,
       fill: {
-        color: stringToRGB(color),
+        color: colorToRgba(color),
       },
       stroke: {
-        color: stringToRGB(config.cell.border.stroke),
+        color: colorToRgba(config.cell.border.stroke),
         width: config.cell.border.strokeWidth,
       },
       value: d.value,
@@ -398,7 +398,7 @@ export function shapeViewModel(
         x: xLines,
         y: yLines,
         stroke: {
-          color: stringToRGB(config.grid.stroke.color),
+          color: colorToRgba(config.grid.stroke.color),
           width: gridStrokeWidth,
         },
       },

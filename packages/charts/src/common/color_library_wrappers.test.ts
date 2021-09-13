@@ -6,29 +6,27 @@
  * Side Public License, v 1.
  */
 
+import { Logger } from '../utils/logger';
 import { colorToRgba } from './color_calcs';
 import {
-  stringToRGB,
   validateColor,
   defaultD3Color,
   argsToRGB,
   RgbObject,
   argsToRGBString,
   RGBtoString,
+  overrideOpacity,
 } from './color_library_wrappers';
 
-describe('d3 Utils', () => {
-  describe('stringToRGB', () => {
-    describe('bad colors or undefined', () => {
-      it.skip('should return default color for undefined color string', () => {
-        expect(stringToRGB()).toMatchObject({
-          r: 255,
-          g: 0,
-          b: 0,
-          opacity: 1,
-        });
-      });
+jest.mock('../utils/logger', () => ({
+  Logger: {
+    warn: jest.fn(),
+  },
+}));
 
+describe('d3 Utils', () => {
+  describe('colorToRgba', () => {
+    describe('bad colors or undefined', () => {
       it('should return default RgbObject', () => {
         expect(colorToRgba('not a color')).toMatchObject([255, 0, 0, 1]);
       });
@@ -94,23 +92,18 @@ describe('d3 Utils', () => {
         expect(colorToRgba('transparent')).toMatchObject([0, 0, 0, 0]);
       });
 
-      it.skip('should return default RgbObject with 0 opacity even with override', () => {
-        expect(stringToRGB('transparent', 0.5)).toMatchObject({
-          r: 0,
-          g: 0,
-          b: 0,
-          opacity: 0,
-        });
+      it('should return default RgbObject with 0 opacity even with override', () => {
+        expect(overrideOpacity(colorToRgba('transparent'), 0.5)).toMatchObject([0, 0, 0, 0]);
       });
     });
 
-    describe('Optional opactiy override', () => {
+    describe('Optional opacity override', () => {
       it('should override opacity from color', () => {
-        expect(stringToRGB('rgba(50,50,50,0.25)', 0.75).opacity).toBe(0.75);
+        expect(overrideOpacity(colorToRgba('rgba(50,50,50,0.25)'), 0.75)[3]).toBe(0.75);
       });
 
       it('should use OpacityFn to compute opacity override', () => {
-        expect(stringToRGB('rgba(50,50,50,0.25)', (o) => o * 2).opacity).toBe(0.5);
+        expect(overrideOpacity(colorToRgba('rgba(50,50,50,0.25)'), (o) => o * 2)[3]).toBe(0.5);
       });
     });
 
@@ -136,17 +129,18 @@ describe('d3 Utils', () => {
     });
   });
 
-  describe('validateColor', () => {
-    it.each<string>(['r', 'g', 'b', 'opacity'])('should return null if %s is NaN', (value) => {
-      expect(
-        validateColor({
-          ...defaultD3Color,
-          [value]: NaN,
-        }),
-      ).toBeNull();
+  describe('colorToRGB always return a color', () => {
+    it.each<[string, number]>([
+      ['rgba(NaN, 0, 0, 0)', 1],
+      ['rgba(0, NaN, 0, 0)', 2],
+      ['rgba(0, 0, NaN, 0)', 3],
+      ['rgba(0, 0, 0, NaN)', 4],
+    ])('should return null if %s is NaN', (color, calledN) => {
+      expect(colorToRgba(color)).toBe([255, 0, 0, 1]);
+      expect(Logger.warn).toBeCalledTimes(calledN);
     });
 
-    it('should return valid colors', () => {
+    it.skip('should return valid colors', () => {
       expect(validateColor(defaultD3Color)).toBe(defaultD3Color);
     });
   });

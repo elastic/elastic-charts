@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB } from '../../../../common/color_library_wrappers';
 import { Rect } from '../../../../geoms/types';
 import { clearCanvas, isCanvasRenderer, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderAnnotations } from './annotations';
@@ -149,8 +148,8 @@ export function renderXYChartCanvas2d(
             ctx,
             { x: left, y: top, width, height },
             0,
-            { color: stringToRGB('transparent') },
-            { color: stringToRGB('red'), width: 4, dash: [4, 4] },
+            { color: [0, 0, 0, 0] },
+            { color: [255, 0, 0, 1], width: 4, dash: [4, 4] },
           );
 
           const renderer = geometriesIndex.triangulation([0, 0, width, height])?.render;

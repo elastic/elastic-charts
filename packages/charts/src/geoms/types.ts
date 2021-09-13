@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RgbObject } from '../common/color_library_wrappers';
+import { RgbaTuple } from '../common/color_library_wrappers';
 import { Radian } from '../common/geometry';
 import { TexturedStyles } from '../utils/themes/theme';
 
@@ -67,7 +67,7 @@ export interface Fill {
   /**
    * fill color in rgba
    */
-  color: RgbObject;
+  color: RgbaTuple;
   texture?: Texture;
 }
 
@@ -79,7 +79,7 @@ export interface Stroke {
   /**
    * stroke rgba
    */
-  color: RgbObject;
+  color: RgbaTuple;
   /**
    * stroke width
    */

@@ -6,14 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB } from '../../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../../common/color_calcs';
+import * as commonColors from '../../../../../common/color_calcs';
 import { Stroke } from '../../../../../geoms/types';
 import { MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
 import { buildLineStyles } from './line';
 
-jest.mock('../../../../../common/color_library_wrappers');
+// jest.mock('../../../../../common/color_calcs');
 jest.spyOn(common, 'getColorFromVariant');
+jest.spyOn(commonColors, 'colorToRgba');
 
 const COLOR = 'aquamarine';
 
@@ -54,12 +56,12 @@ describe('Line styles', () => {
         (common.getColorFromVariant as jest.Mock).mockReturnValue(strokeColor);
       });
 
-      it('should call stringToRGB with values from getColorFromVariant', () => {
-        expect(stringToRGB).nthCalledWith(1, strokeColor, expect.any(Function));
+      it('should call colorToRgba with values from getColorFromVariant', () => {
+        expect(colorToRgba).nthCalledWith(1, strokeColor);
       });
 
       it('should return stroke with color', () => {
-        expect(result.color).toEqual(stringToRGB(strokeColor));
+        expect(result.color).toEqual(colorToRgba(strokeColor));
       });
     });
 
@@ -78,7 +80,7 @@ describe('Line styles', () => {
 
       it('should return correct stroke opacity', () => {
         const expected = strokeColorOpacity * strokeOpacity * geoOpacity;
-        expect(result.color.opacity).toEqual(expected);
+        expect(result.color[3]).toEqual(expected);
       });
     });
   });

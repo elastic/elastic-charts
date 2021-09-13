@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB } from '../../../../../common/color_library_wrappers';
+import * as commonColors from '../../../../../common/color_calcs';
+import { colorToRgba } from '../../../../../common/color_calcs';
 import { Fill } from '../../../../../geoms/types';
 import { getMockCanvas, getMockCanvasContext2D, MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
@@ -15,9 +16,9 @@ import { buildAreaStyles } from './area';
 
 import 'jest-canvas-mock';
 
-jest.mock('../../../../../common/color_library_wrappers');
 jest.mock('../../../utils/texture');
 jest.spyOn(common, 'getColorFromVariant');
+jest.spyOn(commonColors, 'colorToRgba');
 
 const COLOR = 'aquamarine';
 
@@ -58,12 +59,12 @@ describe('Area styles', () => {
         (common.getColorFromVariant as jest.Mock).mockReturnValue(fillColor);
       });
 
-      it('should call stringToRGB with values from getColorFromVariant', () => {
-        expect(stringToRGB).nthCalledWith(1, fillColor, expect.any(Function));
+      it('should call colorToRgba with values from getColorFromVariant', () => {
+        expect(colorToRgba).nthCalledWith(1, fillColor);
       });
 
       it('should return fill with color', () => {
-        expect(result.color).toEqual(stringToRGB(fillColor));
+        expect(result.color).toEqual(colorToRgba(fillColor));
       });
     });
 
@@ -82,7 +83,7 @@ describe('Area styles', () => {
 
       it('should return correct fill opacity', () => {
         const expected = fillColorOpacity * fillOpacity * geoOpacity;
-        expect(result.color.opacity).toEqual(expected);
+        expect(result.color[3]).toEqual(expected);
       });
     });
 

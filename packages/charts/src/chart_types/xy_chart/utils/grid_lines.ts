@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB } from '../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../common/color_calcs';
+import { overrideOpacity } from '../../../common/color_library_wrappers';
 import { Line, Stroke } from '../../../geoms/types';
 import { mergePartial, RecursivePartial } from '../../../utils/common';
 import { Size } from '../../../utils/dimensions';
@@ -101,9 +102,9 @@ export function getGridLinesForSpec(
   if (!gridLineStyles.stroke || !gridLineStyles.strokeWidth || gridLineStyles.strokeWidth < MIN_STROKE_WIDTH) {
     return null;
   }
-  const strokeColor = stringToRGB(gridLineStyles.stroke);
-  strokeColor.opacity =
-    gridLineStyles.opacity !== undefined ? strokeColor.opacity * gridLineStyles.opacity : strokeColor.opacity;
+  const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
+    gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
+  );
   const stroke: Stroke = {
     color: strokeColor,
     width: gridLineStyles.strokeWidth,

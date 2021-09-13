@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB, OpacityFn } from '../../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../../common/color_calcs';
+import { OpacityFn, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import { Stroke, Fill, Rect } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
 import { GeometryStateStyle, RectStyle, RectBorderStyle } from '../../../../../utils/themes/theme';
@@ -32,7 +33,7 @@ export function buildBarStyle(
   const fillOpacity: OpacityFn = (opacity, seriesOpacity = themeRectStyle.opacity) =>
     opacity * seriesOpacity * geometryStateStyle.opacity;
   const texture = getTextureStyles(ctx, imgCanvas, baseColor, fillOpacity, themeRectStyle.texture);
-  const fillColor = stringToRGB(getColorFromVariant(baseColor, themeRectStyle.fill), fillOpacity);
+  const fillColor = overrideOpacity(colorToRgba(getColorFromVariant(baseColor, themeRectStyle.fill)), fillOpacity);
   const fill: Fill = {
     color: fillColor,
     texture,
@@ -41,7 +42,10 @@ export function buildBarStyle(
     themeRectBorderStyle.strokeOpacity === undefined ? themeRectStyle.opacity : themeRectBorderStyle.strokeOpacity;
   const borderStrokeOpacity = defaultStrokeOpacity * geometryStateStyle.opacity;
   const strokeOpacity: OpacityFn = (opacity) => opacity * borderStrokeOpacity;
-  const strokeColor = stringToRGB(getColorFromVariant(baseColor, themeRectBorderStyle.stroke), strokeOpacity);
+  const strokeColor = overrideOpacity(
+    colorToRgba(getColorFromVariant(baseColor, themeRectBorderStyle.stroke)),
+    strokeOpacity,
+  );
   const stroke: Stroke = {
     color: strokeColor,
     width:

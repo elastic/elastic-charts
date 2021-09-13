@@ -10,7 +10,6 @@ const module = jest.requireActual('../color_library_wrappers.ts');
 
 export const { defaultColor, transparentColor, defaultD3Color } = module;
 
-export const stringToRGB = jest.fn(module.stringToRGB);
 export const validateColor = jest.fn(module.validateColor);
 export const argsToRGB = jest.fn(module.argsToRGB);
 export const argsToRGBString = jest.fn(module.argsToRGBString);

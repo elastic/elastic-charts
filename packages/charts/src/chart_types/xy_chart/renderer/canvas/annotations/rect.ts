@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB } from '../../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../../common/color_calcs';
+import { overrideOpacity } from '../../../../../common/color_library_wrappers';
 import { Fill, Stroke } from '../../../../../geoms/types';
 import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
@@ -23,12 +24,13 @@ export function renderRectAnnotations(
   rotation: Rotation,
   renderingArea: Dimensions,
 ) {
-  const fillColor = stringToRGB(rectStyle.fill);
-  fillColor.opacity *= rectStyle.opacity;
-  const fill: Fill = { color: fillColor };
-  const strokeColor = stringToRGB(rectStyle.stroke);
-  strokeColor.opacity *= rectStyle.opacity;
-  const stroke: Stroke = { color: strokeColor, width: rectStyle.strokeWidth };
+  const fill: Fill = {
+    color: overrideOpacity(colorToRgba(rectStyle.fill), (opacity) => opacity * rectStyle.opacity),
+  };
+  const stroke: Stroke = {
+    color: overrideOpacity(colorToRgba(rectStyle.stroke), (opacity) => opacity * rectStyle.opacity),
+    width: rectStyle.strokeWidth,
+  };
 
   annotations.forEach(({ rect, panel }) =>
     withPanelTransform(ctx, panel, rotation, renderingArea, () => renderRect(ctx, rect, fill, stroke)),

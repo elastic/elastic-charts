@@ -33,50 +33,15 @@ export const defaultD3Color: D3RGBColor = d3Rgb(defaultColor.r, defaultColor.g, 
 export type OpacityFn = (opacity: number, seriesOpacity?: number) => number;
 
 /** @internal */
-export function stringToRGB(cssColorSpecifier?: string, opacity?: number | OpacityFn): RgbObject {
-  if (cssColorSpecifier === 'transparent') {
-    return transparentColor;
-  }
-  const color = getColor(cssColorSpecifier);
-
-  if (opacity === undefined) {
-    return color;
-  }
-
-  const opacityOverride = typeof opacity === 'number' ? opacity : opacity(color.opacity);
-
-  if (isNaN(opacityOverride)) {
-    return color;
-  }
-
-  return {
-    ...color,
-    opacity: opacityOverride,
-  };
-}
-
-function overrideOpacity([r, g, b, o]: RgbaTuple, opacity?: number | OpacityFn) {
+export function overrideOpacity([r, g, b, o]: RgbaTuple, opacity?: number | OpacityFn): RgbaTuple {
   const opacityOverride = opacity === undefined ? o : typeof opacity === 'number' ? opacity : opacity(o);
+
+  // don't apply override on transparent color to avoid unwanted behaviours
+  // todo check if we can apply to every transparent colors
+  if (r === 0 && b === 0 && g === 0 && o === 0) {
+    return [0, 0, 0, 0];
+  }
   return [r, g, b, clamp(Number.isFinite(opacityOverride) ? opacityOverride : o, 0, 1)];
-}
-
-/**
- * Returns color as RgbObject or default fallback.
- *
- * Handles issue in d3-color for hsla and rgba colors with alpha value of `0`
- *
- * @param cssColorSpecifier
- */
-function getColor(cssColorSpecifier: string = ''): RgbObject {
-  if (!chroma.valid(cssColorSpecifier)) return defaultColor;
-
-  const chromaColor = chroma(cssColorSpecifier);
-  const color: D3RGBColor = {
-    ...d3Rgb(chromaColor.alpha(1).css()),
-    opacity: chromaColor.alpha(),
-  };
-
-  return validateColor(color) ?? defaultColor;
 }
 
 /** @internal */
@@ -108,7 +73,7 @@ export function RGBtoString(rgb: RgbObject): string {
 }
 
 /** @internal */
-export function RGBATupleToString(rgba: RgbTuple): string {
+export function RGBATupleToString(rgba: RgbTuple): Color {
   return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3] ?? 1})`;
 }
 
