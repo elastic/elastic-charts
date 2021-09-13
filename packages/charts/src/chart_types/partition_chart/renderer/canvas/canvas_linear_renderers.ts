@@ -19,7 +19,7 @@ export function renderLinearPartitionCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   {
-    config: { sectorLineWidth: padding, width: containerWidth, height: containerHeight, animation },
+    config: { sectorLineWidth: padding, animation },
     quadViewModel,
     diskCenter,
     width: panelWidth,
@@ -55,27 +55,25 @@ export function renderLinearPartitionCanvas2d(
       ? easeInOut(Math.min(5, animation.duration / 100))
       : linear,
   ) {
-    const width = containerWidth * panelWidth;
-    const height = containerHeight * panelHeight;
     const t = timeFunction(logicalTime);
     const focusX0 = t * currentFocusX0 + (1 - t) * prevFocusX0 || 0;
     const focusX1 = t * currentFocusX1 + (1 - t) * prevFocusX1 || 0;
-    const scale = containerWidth / (focusX1 - focusX0);
+    const scale = panelWidth / (focusX1 - focusX0);
 
     ctx.save();
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.scale(dpr, dpr);
     ctx.translate(diskCenter.x, diskCenter.y);
-    ctx.clearRect(0, 0, width, height);
+    ctx.clearRect(0, 0, panelWidth, panelHeight);
 
     quadViewModel.forEach(({ fillColor, x0, x1, y0px: y0, y1px: y1, dataName, textColor, depth }) => {
       if (y1 - y0 <= padding) return;
 
       const fx0 = Math.max((x0 - focusX0) * scale, 0);
-      const fx1 = Math.min((x1 - focusX0) * scale, width);
+      const fx1 = Math.min((x1 - focusX0) * scale, panelWidth);
 
-      if (fx1 < 0 || fx0 > width) return;
+      if (fx1 < 0 || fx0 > panelWidth) return;
 
       const layer = layers[depth - 1]; // depth === 0 corresponds to root layer (above API `layers`)
       const formatter = layer?.nodeLabel ?? String;

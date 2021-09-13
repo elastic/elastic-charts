@@ -262,10 +262,10 @@ export function renderPartitionCanvas2d(
     const innerPad = midlineOffset * panel.fontSize; // todo replace it with theme.axisPanelTitle.padding.inner
     ctx.fillText(
       panel.title,
-      isSunburst(config.partitionLayout) ? diskCenter.x : diskCenter.x + (config.width * width) / 2,
+      isSunburst(config.partitionLayout) ? diskCenter.x : diskCenter.x + width / 2,
       isSunburst(config.partitionLayout)
         ? config.linkLabel.maxCount > 0
-          ? diskCenter.y - (config.height * height) / 2 + panel.fontSize
+          ? diskCenter.y - height / 2 + panel.fontSize
           : diskCenter.y - outerRadius - innerPad
         : diskCenter.y + 12,
     );

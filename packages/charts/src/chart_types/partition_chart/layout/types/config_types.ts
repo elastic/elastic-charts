@@ -87,8 +87,6 @@ export interface RelativeMargins {
 /** @public */
 export interface StaticConfig extends FillFontSizeRange {
   // shape geometry
-  width: number;
-  height: number;
   margin: RelativeMargins;
   emptySizeRatio: SizeRatio;
   outerSizeRatio: SizeRatio;

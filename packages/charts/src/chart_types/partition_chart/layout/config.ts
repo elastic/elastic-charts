@@ -115,8 +115,6 @@ const valueFont = {
 /** @internal */
 export const configMetadata: Record<string, ConfigItem> = {
   // shape geometry
-  width: { dflt: 300, min: 0, max: 1024, type: 'number', reconfigurable: false },
-  height: { dflt: 150, min: 0, max: 1024, type: 'number', reconfigurable: false },
   margin: {
     type: 'group',
     values: {

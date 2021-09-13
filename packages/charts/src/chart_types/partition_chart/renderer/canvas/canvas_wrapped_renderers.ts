@@ -15,15 +15,13 @@ export function renderWrappedPartitionCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   {
-    config: { sectorLineWidth: padding, width: containerWidth, height: containerHeight },
+    config: { sectorLineWidth: padding },
     quadViewModel,
     diskCenter,
     width: panelWidth,
     height: panelHeight,
   }: ShapeViewModel,
 ) {
-  const width = containerWidth * panelWidth;
-  const height = containerHeight * panelHeight;
   const cornerRatio = 0.2;
 
   ctx.save();
@@ -33,7 +31,7 @@ export function renderWrappedPartitionCanvas2d(
   ctx.lineJoin = 'round';
   ctx.scale(dpr, dpr);
   ctx.translate(diskCenter.x, diskCenter.y);
-  ctx.clearRect(0, 0, width, height);
+  ctx.clearRect(0, 0, panelWidth, panelHeight);
 
   quadViewModel.forEach(({ fillColor, x0, x1, y0px: y0, y1px: y1 }) => {
     if (y1 - y0 <= padding) return;
