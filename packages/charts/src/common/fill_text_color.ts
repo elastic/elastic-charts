@@ -8,8 +8,8 @@
 
 import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
-import { colorIsDark, colorToRgba, combineColors, makeHighContrastColor } from './color_calcs';
-import { RgbaTuple, RGBATupleToString } from './color_library_wrappers';
+import { colorIsDark, combineColors, makeHighContrastColor } from './color_calcs';
+import { colorToRgba, RgbaTuple, RGBATupleToString } from './color_library_wrappers';
 import { TextContrastRatio } from './text_utils';
 
 const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];

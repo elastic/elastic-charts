@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba } from '../../../../../common/color_calcs';
-import { overrideOpacity } from '../../../../../common/color_library_wrappers';
+import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import { Stroke } from '../../../../../geoms/types';
 import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';

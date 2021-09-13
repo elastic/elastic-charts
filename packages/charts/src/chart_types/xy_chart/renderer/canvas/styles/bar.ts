@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba } from '../../../../../common/color_calcs';
-import { OpacityFn, overrideOpacity } from '../../../../../common/color_library_wrappers';
+import { colorToRgba, OpacityFn, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import { Stroke, Fill, Rect } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
 import { GeometryStateStyle, RectStyle, RectBorderStyle } from '../../../../../utils/themes/theme';

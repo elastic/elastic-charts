@@ -11,7 +11,7 @@ import React, { memo, useCallback, useMemo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { colorToRgba } from '../../common/color_calcs';
+import { colorToRgba } from '../../common/color_library_wrappers';
 import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import { GlobalChartState, BackwardRef } from '../../state/chart_state';

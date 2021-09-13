@@ -7,8 +7,7 @@
  */
 
 import { Logger } from '../utils/logger';
-import { colorToRgba } from './color_calcs';
-import { overrideOpacity } from './color_library_wrappers';
+import { colorToRgba, overrideOpacity } from './color_library_wrappers';
 
 jest.mock('../utils/logger', () => ({
   Logger: {

@@ -6,15 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../utils/common';
-import { Logger } from '../utils/logger';
 import {
   brightenColor,
   darkenColor,
-  getChromaColor,
   getContrast,
+  getLightness,
   getLuminance,
-  isValid,
   RgbaTuple,
   RGBATupleToString,
   RgbTuple,
@@ -29,23 +26,6 @@ export function hueInterpolator(colors: RgbTuple[]) {
 /** @internal */
 export function arrayToLookup(keyFun: (v: any) => any, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
-}
-
-const rgbaCache: Map<string, RgbaTuple> = new Map();
-
-/** @internal */
-export function colorToRgba(color: Color): RgbaTuple {
-  const cachedValue = rgbaCache.get(color);
-  if (cachedValue === undefined) {
-    const chromaColor = isValid(color);
-    if (chromaColor === false) Logger.warn(`The provided color is not a valid CSS color, using RED as fallback`, color);
-    const [r, g, b, a] = chromaColor ? chromaColor.rgba() : [255, 0, 0, 1];
-    // manually picking colors from chromaColor to do injected properties (_clipped, _unclipped) into rgba returning object
-    const newValue: RgbaTuple = [r, g, b, a];
-    rgbaCache.set(color, newValue);
-    return newValue;
-  }
-  return cachedValue;
 }
 
 /** If the user specifies the background of the container in which the chart will be on, we can use that color
@@ -85,7 +65,7 @@ export function makeHighContrastColor(
   contrastRatio: TextContrastRatio = 4.5,
 ): RgbaTuple {
   // determine the lightness factor of the background color to determine whether to lighten or darken the foreground
-  const lightness = getChromaColor(background).get('hsl.l');
+  const lightness = getLightness(background);
   let highContrastTextColor = foreground;
   const originalHighContrastTextColor = foreground;
   const isBackgroundDark = colorIsDark(background);

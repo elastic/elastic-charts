@@ -9,6 +9,7 @@
 import chroma from 'chroma-js';
 
 import { clamp, Color } from '../utils/common';
+import { Logger } from '../utils/logger';
 
 type RGB = number;
 type A = number;
@@ -70,6 +71,11 @@ export function getLuminance(color: RgbaTuple): number {
   return getChromaColor(color).luminance();
 }
 
+/** @internal */
+export function getLightness(color: RgbaTuple): number {
+  return getChromaColor(color).get('hsl.l');
+}
+
 /**
  * show contrast amount
  * @internal
@@ -82,4 +88,19 @@ export function getContrast(foregroundColor: RgbaTuple, backgroundColor: RgbaTup
 export function getGreensColorScale(gamma: number, domain: [number, number]): (value: number) => Color {
   const scale = chroma.scale(chroma.brewer.Greens).gamma(gamma).domain(domain);
   return (value: number) => scale(value).css();
+}
+
+const rgbaCache: Map<string, RgbaTuple> = new Map();
+
+/** @internal */
+export function colorToRgba(color: Color): RgbaTuple {
+  const cachedValue = rgbaCache.get(color);
+  if (cachedValue === undefined) {
+    const chromaColor = isValid(color);
+    if (chromaColor === false) Logger.warn(`The provided color is not a valid CSS color, using RED as fallback`, color);
+    const newValue: RgbaTuple = chromaColor ? chromaColor.rgba() : [255, 0, 0, 1];
+    rgbaCache.set(color, newValue);
+    return newValue;
+  }
+  return cachedValue;
 }

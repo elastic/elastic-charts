@@ -9,7 +9,7 @@
 import { bisectLeft } from 'd3-array';
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
-import { colorToRgba } from '../../../../common/color_calcs';
+import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';

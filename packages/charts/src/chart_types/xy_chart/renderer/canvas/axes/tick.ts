@@ -7,7 +7,7 @@
  */
 
 import { AxisProps } from '.';
-import { colorToRgba } from '../../../../../common/color_calcs';
+import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import { Position } from '../../../../../utils/common';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { AxisTick } from '../../../utils/axis_utils';

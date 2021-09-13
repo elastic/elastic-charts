@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba } from '../../../../common/color_calcs';
-import { overrideOpacity, RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { colorToRgba, overrideOpacity, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { TAU } from '../../../../common/constants';
 import { Pixels } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';

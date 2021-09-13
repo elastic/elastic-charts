@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba } from '../../../common/color_calcs';
-import { OpacityFn, overrideOpacity } from '../../../common/color_library_wrappers';
+import { colorToRgba, OpacityFn, overrideOpacity } from '../../../common/color_library_wrappers';
 import { getColorFromVariant, mergePartial } from '../../../utils/common';
 import { PointGeometryStyle } from '../../../utils/geometry';
 import { PointShape, PointStyle } from '../../../utils/themes/theme';

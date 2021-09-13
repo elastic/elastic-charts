@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba } from '../../../../../common/color_calcs';
 import * as commonColors from '../../../../../common/color_calcs';
+import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import { Stroke } from '../../../../../geoms/types';
 import { MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
