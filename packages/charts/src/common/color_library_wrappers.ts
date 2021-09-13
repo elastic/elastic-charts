@@ -7,7 +7,6 @@
  */
 
 import chroma from 'chroma-js';
-import { rgb as d3Rgb, RGBColor as D3RGBColor } from 'd3-color';
 
 import { clamp, Color } from '../utils/common';
 
@@ -21,13 +20,6 @@ export type RgbObject = { r: RGB; g: RGB; b: RGB; opacity: A };
 
 /** @internal */
 export type RgbaTuple = [RGB, RGB, RGB, RGB];
-
-/** @internal */
-export const defaultColor: RgbObject = { r: 255, g: 0, b: 0, opacity: 1 };
-/** @internal */
-export const transparentColor: RgbObject = { r: 0, g: 0, b: 0, opacity: 0 };
-/** @internal */
-export const defaultD3Color: D3RGBColor = d3Rgb(defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.opacity);
 
 /** @internal */
 export type OpacityFn = (opacity: number, seriesOpacity?: number) => number;
