@@ -293,8 +293,6 @@ export function shapeViewModel(
   panelModel: PartitionSmallMultiplesModel,
 ): ShapeViewModel {
   const {
-    width,
-    height,
     emptySizeRatio,
     outerSizeRatio,
     fillOutside,
@@ -306,7 +304,7 @@ export function shapeViewModel(
     sectorLineWidth,
   } = config;
 
-  const { marginLeftPx, marginTopPx, panel } = panelModel;
+  const { marginLeftPx, marginTopPx, panel, width, height } = panelModel;
 
   const treemapLayout = isTreemap(partitionLayout);
   const mosaicLayout = isMosaic(partitionLayout);

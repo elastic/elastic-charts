@@ -49,10 +49,10 @@ export function getShapeViewModel(
   const { layers, topGroove, config: specConfig } = partitionSpec;
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
-  const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
+  const partialConfig: RecursivePartial<Config> = { ...specConfig };
   const config: Config = mergePartial(defaultConfig, partialConfig, { mergeOptionalPartialValues: true });
   if (!textMeasurerCtx) {
-    return nullShapeViewModel(config, { x: width / 2, y: height / 2 });
+    return nullShapeViewModel(config, { x: width, y: height });
   }
   const valueGetter = valueGetterFunction(partitionSpec.valueGetter);
 
