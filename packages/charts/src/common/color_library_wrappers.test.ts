@@ -14,7 +14,6 @@ import {
   argsToRGB,
   RgbObject,
   argsToRGBString,
-  RGBtoString,
   overrideOpacity,
 } from './color_library_wrappers';
 
@@ -164,12 +163,6 @@ describe('d3 Utils', () => {
     it('should return valid colors', () => {
       const { r, g, b, opacity } = defaultD3Color;
       expect(argsToRGBString(r, g, b, opacity)).toBe('rgb(255, 0, 0)');
-    });
-  });
-
-  describe('RGBtoString', () => {
-    it('should return valid colors', () => {
-      expect(RGBtoString(defaultD3Color)).toBe('rgb(255, 0, 0)');
     });
   });
 });

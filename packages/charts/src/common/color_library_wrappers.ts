@@ -67,12 +67,6 @@ export function argsToRGBString(r: number, g: number, b: number, opacity: number
 }
 
 /** @internal */
-export function RGBtoString(rgb: RgbObject): string {
-  const { r, g, b, opacity } = rgb;
-  return argsToRGBString(r, g, b, opacity);
-}
-
-/** @internal */
 export function RGBATupleToString(rgba: RgbTuple): Color {
   return `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${rgba[3] ?? 1})`;
 }
