@@ -150,7 +150,7 @@ export function makeQuadViewModel(
     const color =
       !isSunburstLayout && textNegligible
         ? 'transparent'
-        : fillTextColor(textColor, true, 4.5, fillColor, containerBackgroundColor);
+        : fillTextColor(textColor, true, fillColor, containerBackgroundColor);
     return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor: color, ...node };
   });
 }

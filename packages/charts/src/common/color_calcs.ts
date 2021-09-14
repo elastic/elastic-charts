@@ -16,7 +16,6 @@ import {
   RGBATupleToString,
   RgbTuple,
 } from './color_library_wrappers';
-import { TextContrastRatio } from './text_utils';
 
 /** @internal */
 export function hueInterpolator(colors: RgbTuple[]) {
@@ -55,15 +54,13 @@ export function combineColors(
   return [combinedRed, combinedGreen, combinedBlue, combinedAlpha];
 }
 
+const WCAG_AA_CONTRAST_RATIO = 4.5;
+
 /**
  * Adjust the text color in cases black and white can't reach ideal 4.5 ratio
  * @internal
  */
-export function makeHighContrastColor(
-  foreground: RgbaTuple,
-  background: RgbaTuple,
-  contrastRatio: TextContrastRatio = 4.5,
-): RgbaTuple {
+export function makeHighContrastColor(foreground: RgbaTuple, background: RgbaTuple): RgbaTuple {
   // determine the lightness factor of the background color to determine whether to lighten or darken the foreground
   const lightness = getLightness(background);
   let highContrastTextColor = foreground;
@@ -78,7 +75,7 @@ export function makeHighContrastColor(
   const precision = 1e8;
   let contrast = getContrast(highContrastTextColor, background);
   // brighten and darken the text color if not meeting the ratio
-  while (contrast < contrastRatio) {
+  while (contrast < WCAG_AA_CONTRAST_RATIO) {
     highContrastTextColor = isBackgroundDark
       ? brightenColor(highContrastTextColor)
       : darkenColor(highContrastTextColor);
@@ -92,7 +89,7 @@ export function makeHighContrastColor(
         ? [0, 0, 0, 1]
         : [255, 255, 255, 1];
       // make sure the new text color hits the ratio, if not, then return the scaledContrast since we tried earlier
-      return getContrast(contrastColor, background) > contrastRatio ? contrastColor : highContrastTextColor;
+      return getContrast(contrastColor, background) > WCAG_AA_CONTRAST_RATIO ? contrastColor : highContrastTextColor;
     }
   }
   return highContrastTextColor;

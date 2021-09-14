@@ -30,8 +30,6 @@ export const Example = () => {
       color: color('Background color', 'rgba(255, 255, 255, 1)'),
     },
   };
-  const toggleTextContrast = boolean('text contrast', true);
-
   return (
     <Chart>
       <Settings theme={bGColorDisabled ? undefined : partialColorTheme} baseTheme={useBaseTheme()} />
@@ -74,7 +72,6 @@ export const Example = () => {
           fillLabel: {
             valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
             fontStyle: 'italic',
-            textContrast: toggleTextContrast,
             fontWeight: 900,
             valueFont: {
               fontFamily: 'Menlo',

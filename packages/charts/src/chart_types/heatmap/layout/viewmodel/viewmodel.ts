@@ -230,7 +230,6 @@ export function shapeViewModel(
       textColor: fillTextColor(
         config.cell.label.textColor,
         true,
-        4.5,
         color,
         theme.background.color === 'transparent' ? 'rgba(255, 255, 255, 1)' : theme.background.color,
       ),

@@ -208,13 +208,13 @@ function getTextColors(
       shadowColor: fillDefinition.borderColor || TRANSPARENT_COLOR,
     };
   }
-  const fillColor = fillTextColor(DEFAULT_VALUE_COLOR, true, 4.5, geometryColor);
+  const fillColor = fillTextColor(DEFAULT_VALUE_COLOR, true, geometryColor);
 
   // If the border is too wide it can overlap between a letter or another
   // therefore use a solid color for thinker borders
   const defaultBorderColor = borderSize < 2 ? DEFAULT_VALUE_BORDER_COLOR : DEFAULT_VALUE_BORDER_SOLID_COLOR;
   const shadowColor =
-    'textBorder' in fillDefinition ? fillTextColor(defaultBorderColor, true, 4.5, fillColor) : TRANSPARENT_COLOR;
+    'textBorder' in fillDefinition ? fillTextColor(defaultBorderColor, true, fillColor) : TRANSPARENT_COLOR;
 
   return {
     fillColor,

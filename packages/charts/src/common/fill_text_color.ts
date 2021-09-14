@@ -10,7 +10,6 @@ import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
 import { colorIsDark, combineColors, makeHighContrastColor } from './color_calcs';
 import { colorToRgba, RgbaTuple, RGBATupleToString } from './color_library_wrappers';
-import { TextContrastRatio } from './text_utils';
 
 const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
 /**
@@ -20,7 +19,6 @@ const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
 export function fillTextColor(
   textColor: Color,
   maximizeColorContrast: boolean,
-  minContrastRatio: TextContrastRatio,
   shapeFillColor: Color,
   backgroundColor?: Color,
 ): Color {
@@ -45,7 +43,6 @@ export function fillTextColor(
   const highContrastColor = makeHighContrastColor(
     requireInvertedColor ? [255 - colorRGBA[0], 255 - colorRGBA[1], 255 - colorRGBA[2], colorRGBA[3]] : colorRGBA,
     blendedBackgroundRGBA,
-    minContrastRatio,
   );
   return RGBATupleToString(highContrastColor);
 }

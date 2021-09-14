@@ -341,7 +341,6 @@ export type DisplayValueStyle = Omit<TextStyle, 'fill' | 'fontSize'> & {
     | Color
     | { color: Color; borderColor?: Color; borderWidth?: number }
     | {
-        textContrast?: number | boolean;
         textBorder?: number;
       };
   alignment?: {

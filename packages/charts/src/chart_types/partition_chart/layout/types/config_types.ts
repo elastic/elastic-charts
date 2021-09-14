@@ -9,7 +9,7 @@
 import { $Values as Values } from 'utility-types';
 
 import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from '../../../../common/geometry';
-import { Font, FontFamily, PartialFont, TextContrast } from '../../../../common/text_utils';
+import { Font, FontFamily, PartialFont } from '../../../../common/text_utils';
 import { Color, StrokeStyle, ValueFormatter } from '../../../../utils/common';
 import { PerSideDistance } from '../../../../utils/dimensions';
 
@@ -34,7 +34,6 @@ export type Padding = Pixels | Partial<PerSidePadding>;
 
 interface LabelConfig extends Font {
   textColor: Color;
-  textContrast: TextContrast;
   valueFormatter: ValueFormatter;
   valueFont: PartialFont;
   padding: Padding;
