@@ -78,6 +78,7 @@ module.exports = {
     'no-restricted-properties': 0, // need to find and filter desired options
     'class-methods-use-this': 0,
     'unicorn/prefer-number-properties': 0,
+    'unicorn/number-literal-case': 0, // use prettier lower case preference
     'global-require': 1,
     'import/no-dynamic-require': 1,
     'no-shadow': 1,

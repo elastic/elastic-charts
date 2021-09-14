@@ -8,7 +8,7 @@
 
 import { Color } from '../utils/common';
 import { Logger } from '../utils/logger';
-import { colorIsDark, combineColors, makeHighContrastColor } from './color_calcs';
+import { combineColors, makeHighContrastColor } from './color_calcs';
 import { colorToRgba, RgbaTuple, RGBATupleToString } from './color_library_wrappers';
 
 const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
@@ -17,7 +17,6 @@ const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
  * @internal
  */
 export function fillTextColor(textColor: Color, shapeFillColor: Color, backgroundColor?: Color): Color {
-  const colorRGBA = colorToRgba(textColor);
   const defaultBackgroundRGBA = backgroundColor ? colorToRgba(backgroundColor) : COLOR_WHITE;
   const shapeFillRGBA = colorToRgba(shapeFillColor);
 
@@ -30,11 +29,6 @@ export function fillTextColor(textColor: Color, shapeFillColor: Color, backgroun
   // combine shape and background colors if shape has transparency
   const blendedBackgroundRGBA = combineColors(shapeFillRGBA, backgroundRGBA);
 
-  const requireInvertedColor = colorIsDark(colorRGBA) === colorIsDark(blendedBackgroundRGBA);
-
-  const highContrastColor = makeHighContrastColor(
-    requireInvertedColor ? [255 - colorRGBA[0], 255 - colorRGBA[1], 255 - colorRGBA[2], colorRGBA[3]] : colorRGBA,
-    blendedBackgroundRGBA,
-  );
+  const highContrastColor = makeHighContrastColor(blendedBackgroundRGBA);
   return RGBATupleToString(highContrastColor);
 }

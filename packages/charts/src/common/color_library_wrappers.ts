@@ -52,37 +52,9 @@ export function isValid(color: Color): chroma.Color | false {
 }
 
 /** @internal */
-export function brightenColor(color: RgbaTuple): RgbaTuple {
-  return getChromaColor(color).brighten().rgba();
-}
-
-/** @internal */
-export function darkenColor(color: RgbaTuple): RgbaTuple {
-  return getChromaColor(color).darken().rgba();
-}
-
-/** @internal */
 export function getChromaColor(color: RgbaTuple): chroma.Color {
   // chroma mutates the input
   return chroma(...color);
-}
-
-/** @internal */
-export function getLuminance(color: RgbaTuple): number {
-  return getChromaColor(color).luminance();
-}
-
-/** @internal */
-export function getLightness(color: RgbaTuple): number {
-  return getChromaColor(color).get('hsl.l');
-}
-
-/**
- * show contrast amount
- * @internal
- */
-export function getContrast(foregroundColor: RgbaTuple, backgroundColor: RgbaTuple): number {
-  return chroma.contrast(getChromaColor(foregroundColor), getChromaColor(backgroundColor));
 }
 
 /** @internal */
