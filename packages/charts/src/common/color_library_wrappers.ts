@@ -21,7 +21,7 @@ export type RgbTuple = [RGB, RGB, RGB, A?];
 export type RgbaTuple = [r: RGB, g: RGB, b: RGB, alpha: A];
 
 /** @internal */
-export type OpacityFn = (opacity: number, seriesOpacity?: number) => number;
+export type OpacityFn = (opacity: number) => number;
 
 /** @internal */
 export function overrideOpacity([r, g, b, o]: RgbaTuple, opacity?: number | OpacityFn): RgbaTuple {

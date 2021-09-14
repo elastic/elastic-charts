@@ -53,7 +53,7 @@ function createPattern(
   patternCanvas.width = dpi * cssWidth;
   patternCanvas.height = dpi * cssHeight;
 
-  pCtx.globalAlpha = opacity ? fillOpacity(opacity, 1) : fillOpacity(1);
+  pCtx.globalAlpha = fillOpacity(opacity ?? 1);
   pCtx.lineWidth = strokeWidth;
 
   pCtx.strokeStyle = getColorFromVariant(baseColor, stroke ?? ColorVariant.Series);

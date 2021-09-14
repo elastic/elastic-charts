@@ -29,21 +29,17 @@ export function buildBarStyle(
   geometryStateStyle: GeometryStateStyle,
   rect: Rect,
 ): { fill: Fill; stroke: Stroke } {
-  const fillOpacity: OpacityFn = (opacity, seriesOpacity = themeRectStyle.opacity) =>
-    opacity * seriesOpacity * geometryStateStyle.opacity;
+  const fillOpacity: OpacityFn = (opacity) => opacity * geometryStateStyle.opacity * themeRectStyle.opacity;
   const texture = getTextureStyles(ctx, imgCanvas, baseColor, fillOpacity, themeRectStyle.texture);
   const fillColor = overrideOpacity(colorToRgba(getColorFromVariant(baseColor, themeRectStyle.fill)), fillOpacity);
   const fill: Fill = {
     color: fillColor,
     texture,
   };
-  const defaultStrokeOpacity =
-    themeRectBorderStyle.strokeOpacity === undefined ? themeRectStyle.opacity : themeRectBorderStyle.strokeOpacity;
-  const borderStrokeOpacity = defaultStrokeOpacity * geometryStateStyle.opacity;
-  const strokeOpacity: OpacityFn = (opacity) => opacity * borderStrokeOpacity;
+
   const strokeColor = overrideOpacity(
     colorToRgba(getColorFromVariant(baseColor, themeRectBorderStyle.stroke)),
-    strokeOpacity,
+    (opacity) => opacity * geometryStateStyle.opacity * (themeRectStyle.opacity ?? themeRectBorderStyle.strokeOpacity),
   );
   const stroke: Stroke = {
     color: strokeColor,
