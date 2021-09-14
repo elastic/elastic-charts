@@ -14,17 +14,17 @@ import { TextContrastRatio } from './text_utils';
 
 const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
 /**
- * Determine the color for the text hinging on the parameters of maximizeContrast, shapeFillColor and backgroundColor
+ * Determine the color for the text hinging on the parameters of maximizeColorContrast, shapeFillColor and backgroundColor
  * @internal
  */
 export function fillTextColor(
   textColor: Color,
-  maximizeContrast: boolean,
+  maximizeColorContrast: boolean,
   minContrastRatio: TextContrastRatio,
   shapeFillColor: Color,
   backgroundColor?: Color,
 ): Color {
-  if (!maximizeContrast) {
+  if (!maximizeColorContrast) {
     return textColor;
   }
   const colorRGBA = colorToRgba(textColor);
