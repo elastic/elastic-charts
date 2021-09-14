@@ -27,8 +27,11 @@ export function renderPoints(ctx: CanvasRenderingContext2D, points: PointGeometr
     .sort(({ radius: a }, { radius: b }) => b - a)
     .forEach(({ x, y, radius, transform, style }) => {
       const coordinates = { x: x + transform.x, y: y + transform.y, radius };
-      const fill = { color: overrideOpacity(style.fill.color, opacity) };
-      const stroke = { ...style.stroke, color: overrideOpacity(style.stroke.color, opacity) };
+      const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
+      const stroke = {
+        ...style.stroke,
+        color: overrideOpacity(style.stroke.color, (fillOpacity) => fillOpacity * opacity),
+      };
       renderShape(ctx, style.shape, coordinates, fill, stroke);
     });
 }
@@ -52,8 +55,11 @@ export function renderPointGroup(
     .sort(({ radius: a }, { radius: b }) => b - a)
     .forEach(({ x, y, radius, transform, style, seriesIdentifier: { key }, panel }) => {
       const { opacity } = geometryStateStyles[key];
-      const fill: Fill = { color: overrideOpacity(style.fill.color, opacity) };
-      const stroke: Stroke = { ...style.stroke, color: overrideOpacity(style.stroke.color, opacity) };
+      const fill: Fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
+      const stroke: Stroke = {
+        ...style.stroke,
+        color: overrideOpacity(style.stroke.color, (fillOpacity) => fillOpacity * opacity),
+      };
       const coordinates: Circle = { x: x + transform.x, y, radius };
       const renderer = () => renderShape(ctx, style.shape, coordinates, fill, stroke);
       withPanelTransform(ctx, panel, rotation, renderingArea, renderer, { area: clippings, shouldClip });
