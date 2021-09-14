@@ -13,8 +13,6 @@ import * as common from '../../../../../utils/common';
 import { getTextureStyles } from '../../../utils/texture';
 import { buildBarStyle } from './bar';
 
-import 'jest-canvas-mock';
-
 jest.mock('../../../../../common/color_library_wrappers');
 jest.mock('../../../utils/texture');
 jest.spyOn(common, 'getColorFromVariant');
