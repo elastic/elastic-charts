@@ -10,6 +10,7 @@ import chroma from 'chroma-js';
 
 import { clamp, Color } from '../utils/common';
 import { Logger } from '../utils/logger';
+import { LRUCache } from './data_structures';
 
 type RGB = number;
 type A = number;
@@ -90,7 +91,7 @@ export function getGreensColorScale(gamma: number, domain: [number, number]): (v
   return (value: number) => scale(value).css();
 }
 
-const rgbaCache: Map<string, RgbaTuple> = new Map();
+const rgbaCache = new LRUCache<Color, RgbaTuple>(200);
 
 /** @internal */
 export function colorToRgba(color: Color): RgbaTuple {
