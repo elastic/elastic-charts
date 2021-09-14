@@ -35,6 +35,7 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     if (!isDragging || !mouseDownPosition || !dragShape) {
       return null;
     }
+
     const start = {
       x: mouseDownPosition.position.x - chartDimensions.left,
       y: mouseDownPosition.position.y,
