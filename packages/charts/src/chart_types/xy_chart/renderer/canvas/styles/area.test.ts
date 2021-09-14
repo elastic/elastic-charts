@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import * as commonColors from '../../../../../common/color_calcs';
+import * as commonColors from '../../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import { Fill } from '../../../../../geoms/types';
 import { getMockCanvas, getMockCanvasContext2D, MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
@@ -14,7 +15,6 @@ import { getTextureStyles } from '../../../utils/texture';
 import { buildAreaStyles } from './area';
 
 import 'jest-canvas-mock';
-import { colorToRgba } from '../../../../../common/color_library_wrappers';
 
 jest.mock('../../../utils/texture');
 jest.spyOn(common, 'getColorFromVariant');

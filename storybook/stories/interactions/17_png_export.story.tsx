@@ -93,7 +93,6 @@ function renderPartitionChart() {
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
-          fillLabel: { textInvertible: true },
           shape: {
             fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },

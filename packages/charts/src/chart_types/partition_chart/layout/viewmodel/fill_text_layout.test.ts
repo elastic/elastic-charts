@@ -266,24 +266,22 @@ describe('Test that getRectangleRowGeometry works with:', () => {
 describe('Test getTextColor function', () => {
   test('getTextColor works with textContrast greater than default ratio', () => {
     const textColor = 'black';
-    const textInvertible = true;
     const textContrast = 6;
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
     const expectedAdjustedTextColor = 'rgba(0, 0, 0, 1)';
-    expect(fillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor)).toEqual(
+    expect(fillTextColor(textColor, true, textContrast, fillColor, containerBackgroundColor)).toEqual(
       expectedAdjustedTextColor,
     );
   });
   // TODO check how to rewrite this test if required
   test('getTextColor works with textContrast not defined', () => {
     const textColor = 'black';
-    const textInvertible = true;
     const textContrast = 4.5;
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
     const expectedAdjustedTextColor = 'rgba(0, 0, 0, 1)';
-    expect(fillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor)).toEqual(
+    expect(fillTextColor(textColor, true, textContrast, fillColor, containerBackgroundColor)).toEqual(
       expectedAdjustedTextColor,
     );
   });

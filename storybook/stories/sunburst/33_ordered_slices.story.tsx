@@ -68,7 +68,6 @@ export const Example = () => {
             nodeLabel: (d: any) => d,
             fillLabel: {
               valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}`,
-              textInvertible: true,
               fontWeight: 600,
               fontStyle: 'italic',
               valueFont: {
@@ -86,7 +85,6 @@ export const Example = () => {
             nodeLabel: (d: any) => countryLookup[d]?.name ?? d,
             sortPredicate: boolean('Move "Other" to end', true) ? sortPredicate : null,
             fillLabel: {
-              textInvertible: true,
               fontWeight: 600,
               fontStyle: 'italic',
               maxFontSize: 16,

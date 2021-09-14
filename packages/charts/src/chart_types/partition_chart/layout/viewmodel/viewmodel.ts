@@ -146,11 +146,11 @@ export function makeQuadViewModel(
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
     const textNegligible = node.y1px - node.y0px < minRectHeightForText;
-    const { textColor, textInvertible } = { ...fillLabel, ...layer.fillLabel };
+    const { textColor } = { ...fillLabel, ...layer.fillLabel };
     const color =
       !isSunburstLayout && textNegligible
         ? 'transparent'
-        : fillTextColor(textColor, textInvertible, 4.5, fillColor, containerBackgroundColor);
+        : fillTextColor(textColor, true, 4.5, fillColor, containerBackgroundColor);
     return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor: color, ...node };
   });
 }

@@ -208,7 +208,7 @@ function getTextColors(
       shadowColor: fillDefinition.borderColor || TRANSPARENT_COLOR,
     };
   }
-  const fillColor = fillTextColor(DEFAULT_VALUE_COLOR, fillDefinition.textInvertible, 4.5, geometryColor);
+  const fillColor = fillTextColor(DEFAULT_VALUE_COLOR, true, 4.5, geometryColor);
 
   // If the border is too wide it can overlap between a letter or another
   // therefore use a solid color for thinker borders

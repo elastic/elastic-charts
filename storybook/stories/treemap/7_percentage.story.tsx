@@ -46,7 +46,6 @@ export const Example = () => (
             fontFamily: 'Helvetica',
             textColor: 'black',
             fontWeight: 100,
-            textInvertible: false,
           },
           shape: { fillColor: 'rgba(0,0,0,0)' },
         },
@@ -55,7 +54,6 @@ export const Example = () => (
           nodeLabel: (d: any) => countryLookup[d].name,
           fillLabel: {
             textColor: 'black',
-            textInvertible: false,
             fontWeight: 200,
             fontStyle: 'normal',
             fontFamily: 'Helvetica',
