@@ -86,7 +86,7 @@ export interface GroupBrushExtent {
 }
 
 /** @public */
-export interface XYBrushArea {
+export interface XYBrushEvent {
   x?: [number, number];
   y?: Array<GroupBrushExtent>;
 }
@@ -142,10 +142,10 @@ export type ElementOverListener = (
 ) => void;
 
 /** @public */
-export type BrushArea = XYBrushArea | HeatmapBrushEvent;
+export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
 /** @public */
-export type BrushEndListener = (brushArea: BrushArea) => void;
+export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
 
 /** @public */
 export type HeatmapBrushEvent = {

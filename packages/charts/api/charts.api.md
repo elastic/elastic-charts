@@ -311,9 +311,6 @@ export const BinAgg: Readonly<{
 export type BinAgg = $Values<typeof BinAgg>;
 
 // @public (undocumented)
-export type BrushArea = XYBrushArea | HeatmapBrushEvent;
-
-// @public (undocumented)
 export const BrushAxis: Readonly<{
     X: "x";
     Y: "y";
@@ -324,7 +321,10 @@ export const BrushAxis: Readonly<{
 export type BrushAxis = $Values<typeof BrushAxis>;
 
 // @public (undocumented)
-export type BrushEndListener = (brushArea: BrushArea) => void;
+export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
+
+// @public (undocumented)
+export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
@@ -2400,7 +2400,7 @@ export interface WordModel {
 export type XScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
 
 // @public (undocumented)
-export interface XYBrushArea {
+export interface XYBrushEvent {
     // (undocumented)
     x?: [number, number];
     // (undocumented)

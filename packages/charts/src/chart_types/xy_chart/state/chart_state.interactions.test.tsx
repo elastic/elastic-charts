@@ -19,7 +19,7 @@ import { Rect } from '../../../geoms/types';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { BrushArea, SettingsSpec } from '../../../specs';
+import { BrushEvent, SettingsSpec } from '../../../specs';
 import { SpecType, TooltipType, BrushAxis } from '../../../specs/constants';
 import { onExternalPointerEvent } from '../../../state/actions/events';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
@@ -800,7 +800,7 @@ describe('Chart state pointer interactions', () => {
     });
     describe('brush', () => {
       test('can respond to a brush end event', () => {
-        const brushEndListener = jest.fn<void, [BrushArea]>((): void => undefined);
+        const brushEndListener = jest.fn<void, [BrushEvent]>((): void => undefined);
         const onBrushCaller = createOnBrushEndCaller();
         store.subscribe(() => {
           onBrushCaller(store.getState());
@@ -894,7 +894,7 @@ describe('Chart state pointer interactions', () => {
         }
       });
       test('can respond to a brush end event on rotated chart', () => {
-        const brushEndListener = jest.fn<void, [BrushArea]>((): void => undefined);
+        const brushEndListener = jest.fn<void, [BrushEvent]>((): void => undefined);
         const onBrushCaller = createOnBrushEndCaller();
         store.subscribe(() => {
           onBrushCaller(store.getState());
@@ -966,7 +966,7 @@ describe('Chart state pointer interactions', () => {
         }
       });
       test('can respond to a Y brush', () => {
-        const brushEndListener = jest.fn<void, [BrushArea]>((): void => undefined);
+        const brushEndListener = jest.fn<void, [BrushEvent]>((): void => undefined);
         const onBrushCaller = createOnBrushEndCaller();
         store.subscribe(() => {
           onBrushCaller(store.getState());
@@ -1042,7 +1042,7 @@ describe('Chart state pointer interactions', () => {
         }
       });
       test('can respond to rectangular brush', () => {
-        const brushEndListener = jest.fn<void, [BrushArea]>((): void => undefined);
+        const brushEndListener = jest.fn<void, [BrushEvent]>((): void => undefined);
         const onBrushCaller = createOnBrushEndCaller();
         store.subscribe(() => {
           onBrushCaller(store.getState());

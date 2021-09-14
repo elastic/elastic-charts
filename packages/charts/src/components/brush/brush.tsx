@@ -31,7 +31,7 @@ interface StateProps {
   projectionContainer: Dimensions;
   isBrushing: boolean | undefined;
   isBrushAvailable: boolean | undefined;
-  brushArea: Dimensions | null;
+  brushEvent: Dimensions | null;
   zIndex: number;
 }
 
@@ -101,12 +101,12 @@ class BrushToolComponent extends React.Component<Props> {
   }
 
   private drawCanvas = () => {
-    const { brushArea, mainProjectionArea, fillColor } = this.props;
+    const { brushEvent, mainProjectionArea, fillColor } = this.props;
     const { ctx } = this;
-    if (!ctx || !brushArea) {
+    if (!ctx || !brushEvent) {
       return;
     }
-    const { top, left, width, height } = brushArea;
+    const { top, left, width, height } = brushEvent;
     withContext(ctx, () => {
       ctx.scale(this.devicePixelRatio, this.devicePixelRatio);
       withClip(
@@ -155,7 +155,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
       },
       isBrushing: false,
       isBrushAvailable: false,
-      brushArea: null,
+      brushEvent: null,
       zIndex: 0,
     };
   }
@@ -165,7 +165,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     mainProjectionArea: getInternalMainProjectionAreaSelector(state),
     isBrushAvailable: getInternalIsBrushingAvailableSelector(state),
     isBrushing: getInternalIsBrushingSelector(state),
-    brushArea: getInternalBrushAreaSelector(state),
+    brushEvent: getInternalBrushAreaSelector(state),
     zIndex: state.zIndex,
   };
 };

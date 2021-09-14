@@ -10,7 +10,7 @@ import { Selector } from 'reselect';
 
 import { ChartType } from '../../..';
 import { Scale } from '../../../../scales';
-import { GroupBrushExtent, XYBrushArea } from '../../../../specs';
+import { GroupBrushExtent, XYBrushEvent } from '../../../../specs';
 import { BrushAxis } from '../../../../specs/constants';
 import { DragState, GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -74,11 +74,11 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
             onBrushEnd,
           };
           if (lastDrag !== null && hasDragged(prevProps, nextProps) && onBrushEnd) {
-            const brushArea: XYBrushArea = {};
+            const brushAreaEvent: XYBrushEvent = {};
             const { yScales, xScale } = computedScales;
 
             if (brushAxis === BrushAxis.X || brushAxis === BrushAxis.Both) {
-              brushArea.x = getXBrushExtent(
+              brushAreaEvent.x = getXBrushExtent(
                 chartDimensions,
                 lastDrag,
                 rotation,
@@ -91,7 +91,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
               );
             }
             if (brushAxis === BrushAxis.Y || brushAxis === BrushAxis.Both) {
-              brushArea.y = getYBrushExtents(
+              brushAreaEvent.y = getYBrushExtents(
                 chartDimensions,
                 lastDrag,
                 rotation,
@@ -100,8 +100,8 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
                 minBrushDelta,
               );
             }
-            if (brushArea.x !== undefined || brushArea.y !== undefined) {
-              onBrushEnd(brushArea);
+            if (brushAreaEvent.x !== undefined || brushAreaEvent.y !== undefined) {
+              onBrushEnd(brushAreaEvent);
             }
           }
           prevProps = nextProps;
