@@ -16,15 +16,7 @@ const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
  * Determine the color for the text hinging on the parameters of maximizeColorContrast, shapeFillColor and backgroundColor
  * @internal
  */
-export function fillTextColor(
-  textColor: Color,
-  maximizeColorContrast: boolean,
-  shapeFillColor: Color,
-  backgroundColor?: Color,
-): Color {
-  if (!maximizeColorContrast) {
-    return textColor;
-  }
+export function fillTextColor(textColor: Color, shapeFillColor: Color, backgroundColor?: Color): Color {
   const colorRGBA = colorToRgba(textColor);
   const defaultBackgroundRGBA = backgroundColor ? colorToRgba(backgroundColor) : COLOR_WHITE;
   const shapeFillRGBA = colorToRgba(shapeFillColor);

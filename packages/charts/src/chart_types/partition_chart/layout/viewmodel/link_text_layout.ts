@@ -51,8 +51,8 @@ export function linkTextLayout(
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;
 
-  const contrastTextColor = fillTextColor(linkLabel.textColor, true, 'rgba(255,255,255,0)', containerBackgroundColor);
-  const strokeColor = fillTextColor(sectorLineStroke, true, 'rgba(255,255,255,0)', containerBackgroundColor);
+  const contrastTextColor = fillTextColor(linkLabel.textColor, 'rgba(255,255,255,0)', containerBackgroundColor);
+  const strokeColor = fillTextColor(sectorLineStroke, 'rgba(255,255,255,0)', containerBackgroundColor);
   const labelFontSpec: Font = { ...linkLabel, textColor: contrastTextColor };
   const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor: contrastTextColor };
 

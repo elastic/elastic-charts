@@ -269,6 +269,6 @@ describe('Test fillTextColor function', () => {
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
     const expectedAdjustedTextColor = 'rgba(0, 0, 0, 1)';
-    expect(fillTextColor(textColor, true, fillColor, containerBackgroundColor)).toEqual(expectedAdjustedTextColor);
+    expect(fillTextColor(textColor, fillColor, containerBackgroundColor)).toEqual(expectedAdjustedTextColor);
   });
 });
