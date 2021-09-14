@@ -236,7 +236,7 @@ function fill<C>(
         ? VerticalAlignments.bottom
         : VerticalAlignments.top;
       const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
-      const { fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding, textOpacity, clipText } = {
+      const { fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding, clipText } = {
         ...fillLabel,
         valueFormatter: formatter,
         ...layer.fillLabel,
@@ -256,7 +256,6 @@ function fill<C>(
         fontWeight,
         fontFamily,
         textColor: node.textColor,
-        textOpacity,
       };
       const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
       const [cx, cy] = textFillOrigin;

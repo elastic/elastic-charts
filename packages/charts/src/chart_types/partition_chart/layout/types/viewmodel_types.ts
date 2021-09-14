@@ -141,7 +141,6 @@ const defaultFont: Font = {
   fontFamily: '',
   fontWeight: 'normal',
   textColor: 'black',
-  textOpacity: 1,
 };
 
 /** @internal */
@@ -170,7 +169,6 @@ export const nullPartitionSmallMultiplesModel = (partitionLayout: PartitionLayou
       fontWeight: 'normal',
       fontFamily: 'sans-serif',
       fontStyle: 'normal',
-      textOpacity: 1,
       textColor: 'black',
     },
   },

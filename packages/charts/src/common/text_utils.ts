@@ -64,7 +64,6 @@ export interface Font {
   fontWeight: FontWeight;
   fontFamily: FontFamily;
   textColor: string;
-  textOpacity: number;
 }
 
 /** @public */

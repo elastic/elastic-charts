@@ -287,7 +287,6 @@ export const configMetadata: Record<string, ConfigItem> = {
       textColor: { dflt: '#000000', type: 'color' },
       textInvertible: { dflt: true, type: 'boolean' },
       textContrast: { dflt: false, type: 'boolean' || 'number' },
-      textOpacity: { dflt: 1, min: 0, max: 1, type: 'number' },
       minimumStemLength: {
         dflt: 0,
         min: 0,

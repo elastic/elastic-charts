@@ -51,7 +51,6 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
       fontVariant: 'normal',
       fontWeight: 'normal',
       textColor: fillColor,
-      textOpacity: 1,
     };
 
     const { x, y, align, baseline, rect, overflow } = positionText(

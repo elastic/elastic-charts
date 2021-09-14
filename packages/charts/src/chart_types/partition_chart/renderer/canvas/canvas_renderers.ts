@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba, overrideOpacity, RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { TAU } from '../../../../common/constants';
 import { Pixels } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
@@ -189,12 +189,8 @@ function renderLinkLabels(
   { linkLabels: allLinkLabels, labelFontSpec, valueFontSpec, strokeColor }: LinkLabelsViewModelSpec,
   linkLineColor: Color,
 ) {
-  const labelColor = RGBATupleToString(
-    overrideOpacity(colorToRgba(labelFontSpec.textColor), labelFontSpec.textOpacity),
-  );
-  const valueColor = RGBATupleToString(
-    overrideOpacity(colorToRgba(valueFontSpec.textColor), valueFontSpec.textOpacity),
-  );
+  const labelColor = RGBATupleToString(colorToRgba(labelFontSpec.textColor));
+  const valueColor = RGBATupleToString(colorToRgba(valueFontSpec.textColor));
   const labelValueGap = linkLabelFontSize / 2; // one en space
   withContext(ctx, () => {
     ctx.lineWidth = linkLabelLineWidth;
@@ -244,7 +240,7 @@ export function renderPartitionCanvas2d(
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = config;
 
-  const linkLineColor = RGBATupleToString(overrideOpacity(colorToRgba(linkLabel.textColor), linkLabel.textOpacity));
+  const linkLineColor = RGBATupleToString(colorToRgba(linkLabel.textColor));
 
   withContext(ctx, () => {
     // set some defaults for the overall rendering

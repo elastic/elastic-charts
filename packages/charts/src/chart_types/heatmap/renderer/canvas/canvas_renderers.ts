@@ -95,7 +95,6 @@ export function renderCanvas2d(
               fontVariant: 'normal',
               fontWeight: 'normal',
               textColor: 'black',
-              textOpacity: 1,
             };
             const { padding } = config.yAxisLabel;
             const horizontalPadding =
