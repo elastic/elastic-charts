@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba, OpacityFn, overrideOpacity } from '../../../../../common/color_library_wrappers';
+import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import { Stroke, Fill, Rect } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
 import { GeometryStateStyle, RectStyle, RectBorderStyle } from '../../../../../utils/themes/theme';
@@ -29,9 +29,11 @@ export function buildBarStyle(
   geometryStateStyle: GeometryStateStyle,
   rect: Rect,
 ): { fill: Fill; stroke: Stroke } {
-  const fillOpacity: OpacityFn = (opacity) => opacity * themeRectStyle.opacity * geometryStateStyle.opacity;
-  const texture = getTextureStyles(ctx, imgCanvas, baseColor, fillOpacity, themeRectStyle.texture);
-  const fillColor = overrideOpacity(colorToRgba(getColorFromVariant(baseColor, themeRectStyle.fill)), fillOpacity);
+  const texture = getTextureStyles(ctx, imgCanvas, baseColor, geometryStateStyle.opacity, themeRectStyle.texture);
+  const fillColor = overrideOpacity(
+    colorToRgba(getColorFromVariant(baseColor, themeRectStyle.fill)),
+    (opacity) => opacity * themeRectStyle.opacity * geometryStateStyle.opacity,
+  );
   const fill: Fill = {
     color: fillColor,
     texture,

@@ -24,9 +24,11 @@ export function buildAreaStyles(
   themeAreaStyle: AreaStyle,
   geometryStateStyle: GeometryStateStyle,
 ): Fill {
-  const fillOpacity: OpacityFn = (opacity) => opacity * geometryStateStyle.opacity * themeAreaStyle.opacity;
-  const texture = getTextureStyles(ctx, imgCanvas, baseColor, fillOpacity, themeAreaStyle.texture);
-  const color = overrideOpacity(colorToRgba(getColorFromVariant(baseColor, themeAreaStyle.fill)), fillOpacity);
+  const texture = getTextureStyles(ctx, imgCanvas, baseColor, geometryStateStyle.opacity, themeAreaStyle.texture);
+  const color = overrideOpacity(
+    colorToRgba(getColorFromVariant(baseColor, themeAreaStyle.fill)),
+    (opacity) => opacity * geometryStateStyle.opacity * themeAreaStyle.opacity,
+  );
 
   return {
     color,
