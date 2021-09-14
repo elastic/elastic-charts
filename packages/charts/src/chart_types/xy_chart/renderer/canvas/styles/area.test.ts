@@ -14,8 +14,6 @@ import * as common from '../../../../../utils/common';
 import { getTextureStyles } from '../../../utils/texture';
 import { buildAreaStyles } from './area';
 
-import 'jest-canvas-mock';
-
 jest.mock('../../../utils/texture');
 jest.spyOn(common, 'getColorFromVariant');
 jest.spyOn(commonColors, 'colorToRgba');

@@ -14,6 +14,7 @@ const { debug } = require('./config');
 
 module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest_env_setup.ts'],
+  modulePathIgnorePatterns: ['<rootDir>/node_modules/canvas/.+'],
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.json',

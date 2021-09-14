@@ -22,7 +22,7 @@
       "matchPackageNames": ["@elastic/eui", "@elastic/datemath"],
       "matchUpdateTypes": ["major", "minor"],
       "reviewers": ["team:datavis"],
-      "labels": ["dependencies"],
+      "labels": ["dependencies", "skip-newsletter"],
       "automerge": true,
       "enabled": true
     }
