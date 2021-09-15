@@ -10,12 +10,13 @@ import { ChartType } from '../../..';
 import { Pixels } from '../../../../common/geometry';
 import { Box } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
+import { HeatmapBrushEvent } from '../../../../specs/settings';
 import { Color } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { config } from '../config/config';
 import { HeatmapCellDatum } from '../viewmodel/viewmodel';
-import { Config, HeatmapBrushEvent } from './config_types';
+import { Config } from './config_types';
 
 /** @internal */
 export interface Value {

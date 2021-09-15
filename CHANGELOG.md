@@ -1,3 +1,15 @@
+# [36.0.0](https://github.com/elastic/elastic-charts/compare/v35.0.0...v36.0.0) (2021-09-15)
+
+
+### Features
+
+* **heatmap:** move onBrushEnd from config to Settings ([#1369](https://github.com/elastic/elastic-charts/issues/1369)) ([409a0c4](https://github.com/elastic/elastic-charts/commit/409a0c417f1d0636c291423637b31dbe35417fbe))
+
+
+### BREAKING CHANGES
+
+* **heatmap:** remove onBrushEnd from heatmap config and merge onBrushEnd in Settings with cartesian onBrushEnd
+
 # [35.0.0](https://github.com/elastic/elastic-charts/compare/v34.2.1...v35.0.0) (2021-09-13)
 
 
