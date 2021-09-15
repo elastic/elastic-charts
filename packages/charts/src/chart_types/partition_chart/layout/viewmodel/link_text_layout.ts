@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import {
@@ -53,22 +53,6 @@ export function linkTextLayout(
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;
 
-  const containerBgColorRGBA = colorToRgba(containerBgColor);
-  const isBackgroundTransparent = containerBgColorRGBA[3] < 1;
-  if (isBackgroundTransparent) {
-    Logger.expected(
-      `Text contrast requires a opaque background color, using white as fallback`,
-      'an opaque color',
-      containerBgColor,
-    );
-  }
-  const safeBackgroundColor = RGBATupleToString(isBackgroundTransparent ? [255, 255, 255, 1] : containerBgColorRGBA);
-
-  const textColor = fillTextColor('rgba(255,255,255,0)', safeBackgroundColor);
-  const strokeColor = fillTextColor('rgba(255,255,255,0)', safeBackgroundColor);
-  const labelFontSpec: Font = { ...linkLabel, textColor };
-  const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor };
-
   const linkLabels: LinkLabelVM[] = nodesWithoutRoom
     .filter((n: ShapeTreeNode) => n.depth === maxDepth) // only the outermost ring can have links
     .sort((n1: ShapeTreeNode, n2: ShapeTreeNode) => Math.abs(n2.x0 - n2.x1) - Math.abs(n1.x0 - n1.x1))
@@ -93,7 +77,18 @@ export function linkTextLayout(
     )
     .filter(({ text }) => text !== ''); // cull linked labels whose text was truncated to nothing;
 
-  return { linkLabels, valueFontSpec, labelFontSpec, strokeColor };
+  if (colorToRgba(containerBgColor)[3] < 1) {
+    Logger.expected(
+      `Text contrast requires a opaque background color, using white as fallback`,
+      'an opaque color',
+      containerBgColor,
+    );
+  }
+  const textColor = fillTextColor(containerBgColor);
+  const labelFontSpec: Font = { ...linkLabel, textColor };
+  const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor };
+
+  return { linkLabels, valueFontSpec, labelFontSpec, strokeColor: textColor };
 }
 
 function linkLabelCompare(n1: ShapeTreeNode, n2: ShapeTreeNode) {

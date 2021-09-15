@@ -184,13 +184,11 @@ export function shapeViewModel(
   const cellWidthInner = cellWidth - gridStrokeWidth * 2;
   const cellHeightInner = cellHeight - gridStrokeWidth * 2;
 
-  const backgroundColor = colorToRgba(theme.background.color);
-  const isBackgroundColorTransparent = backgroundColor[3] < 1;
-  if (isBackgroundColorTransparent) {
+  if (colorToRgba(theme.background.color)[3] < 1) {
     Logger.expected(
       `Text contrast requires a opaque background color, using white as fallback`,
       'an opaque color',
-      backgroundColor,
+      theme.background.color,
     );
   }
 
@@ -199,11 +197,11 @@ export function shapeViewModel(
     const x = xScale(String(d.x));
     const y = yScale(String(d.y))! + gridStrokeWidth;
     const yIndex = yValues.indexOf(d.y);
-    // cell background color
-    const color = colorScale(d.value);
+
     if (x === undefined || y === undefined || yIndex === -1) {
       return acc;
     }
+    const cellBackgroundColor = colorScale(d.value);
     const cellKey = getCellKey(d.x, d.y);
 
     const formattedValue = spec.valueFormatter(d.value);
@@ -228,7 +226,7 @@ export function shapeViewModel(
       height: cellHeightInner,
       datum: d,
       fill: {
-        color: colorToRgba(color),
+        color: colorToRgba(cellBackgroundColor),
       },
       stroke: {
         color: colorToRgba(config.cell.border.stroke),
@@ -238,7 +236,7 @@ export function shapeViewModel(
       visible: !isValueHidden(d.value, bandsToHide),
       formatted: formattedValue,
       fontSize,
-      textColor: fillTextColor(color, isBackgroundColorTransparent ? 'rgba(255, 255, 255, 1)' : theme.background.color),
+      textColor: fillTextColor(cellBackgroundColor, theme.background.color),
     };
     return acc;
   }, {});

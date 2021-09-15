@@ -7,24 +7,16 @@
  */
 
 import { Color } from '../utils/common';
-import { combineColors, makeHighContrastColor } from './color_calcs';
-import { colorToRgba, RgbaTuple, RGBATupleToString } from './color_library_wrappers';
+import { combineColors, highContrastColor } from './color_calcs';
+import { colorToRgba, RGBATupleToString } from './color_library_wrappers';
 
-const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
 /**
- * Determine the color for the text hinging on the parameters of maximizeColorContrast, shapeFillColor and backgroundColor
+ * Determine the color for the text hinging on the parameters of maximizeColorContrast, foreground and containerBackground
  * @internal
  */
-export function fillTextColor(shapeFillColor: Color, backgroundColor?: Color): Color {
-  const defaultBackgroundRGBA = backgroundColor ? colorToRgba(backgroundColor) : COLOR_WHITE;
-  const shapeFillRGBA = colorToRgba(shapeFillColor);
-
-  // use WHITE if background color is semi transparent
-  const backgroundRGBA = backgroundColor && defaultBackgroundRGBA[3] === 1 ? defaultBackgroundRGBA : COLOR_WHITE;
-
-  // combine shape and background colors if shape has transparency
-  const blendedBackgroundRGBA = combineColors(shapeFillRGBA, backgroundRGBA);
-
-  const highContrastColor = makeHighContrastColor(blendedBackgroundRGBA);
-  return RGBATupleToString(highContrastColor);
+export function fillTextColor(background: Color, containerBg: Color = 'white'): Color {
+  const backgroundRGBA = colorToRgba(background);
+  const containerBgRGBA = combineColors(colorToRgba(containerBg), [255, 255, 255, 1]); // combine it with white if semi-transparent
+  const blendedFbBg = combineColors(backgroundRGBA, containerBgRGBA);
+  return RGBATupleToString(highContrastColor(blendedFbBg));
 }

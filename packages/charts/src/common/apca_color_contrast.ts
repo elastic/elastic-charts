@@ -52,13 +52,13 @@
 
 /// //  Input value must be integer in RGB order (RRGGBB for 0xFFFFFF)  /////
 
-import { RgbaTuple } from './color_library_wrappers';
+import { RgbTuple } from './color_library_wrappers';
 
 /**
  * / //  DO NOT use a Y from any other method  /////
  * @internal
  */
-export function APCAcontrast([Rbg, Gbg, Bbg]: RgbaTuple, [Rtxt, Gtxt, Btxt]: RgbaTuple) {
+export function APCAcontrast([Rbg, Gbg, Bbg]: RgbTuple, [Rtxt, Gtxt, Btxt]: RgbTuple) {
   /// //  sRGB Conversion to Relative Luminance (Y)  /////
 
   const mainTRC = 2.4; // Transfer Curve (aka "Gamma") for sRGB linearization

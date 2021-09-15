@@ -19,31 +19,28 @@ export function arrayToLookup(keyFun: (v: any) => any, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
 
-/** If the user specifies the background of the container in which the chart will be on, we can use that color
- * and make sure to provide optimal contrast
+/**
+ * Blend a foreground (fg) color with a background (bg) color
  * @internal
  */
-export function combineColors(
-  [red1, green1, blue1, alpha1]: RgbaTuple,
-  [red2, green2, blue2, alpha2]: RgbaTuple,
-): RgbaTuple {
+export function combineColors([fgR, fgG, fgB, fgA]: RgbaTuple, [bgR, bgG, bgB, bgA]: RgbaTuple): RgbaTuple {
   // combine colors only if foreground has transparency
-  if (alpha1 === 1) {
-    return [red1, green1, blue1, alpha1];
+  if (fgA === 1) {
+    return [fgR, fgG, fgB, fgA];
   }
 
   // For reference on alpha calculations:
   // https://en.wikipedia.org/wiki/Alpha_compositing
-  const combinedAlpha = alpha1 + alpha2 * (1 - alpha1);
+  const alpha = fgA + bgA * (1 - fgA);
 
-  if (combinedAlpha === 0) {
+  if (alpha === 0) {
     return [0, 0, 0, 0];
   }
 
-  const combinedRed = Math.round((red1 * alpha1 + red2 * alpha2 * (1 - alpha1)) / combinedAlpha);
-  const combinedGreen = Math.round((green1 * alpha1 + green2 * alpha2 * (1 - alpha1)) / combinedAlpha);
-  const combinedBlue = Math.round((blue1 * alpha1 + blue2 * alpha2 * (1 - alpha1)) / combinedAlpha);
-  return [combinedRed, combinedGreen, combinedBlue, combinedAlpha];
+  const r = Math.round((fgR * fgA + bgR * bgA * (1 - fgA)) / alpha);
+  const g = Math.round((fgG * fgA + bgG * bgA * (1 - fgA)) / alpha);
+  const b = Math.round((fgB * fgA + bgB * bgA * (1 - fgA)) / alpha);
+  return [r, g, b, alpha];
 }
 
 const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
@@ -52,7 +49,7 @@ const COLOR_BLACK: RgbaTuple = [0, 0, 0, 1];
  * Use white or black text depending on APCA computed contrast.
  * @internal
  */
-export function makeHighContrastColor(background: RgbaTuple): RgbaTuple {
+export function highContrastColor(background: RgbTuple): RgbaTuple {
   const wWhiteText = APCAcontrast(background, COLOR_WHITE);
   // APCA 60 — Similar to WCAG 4.5∶1
   // APCA will show negative values for light text on a dark background

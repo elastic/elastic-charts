@@ -7,36 +7,30 @@
  */
 
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
-import { makeHighContrastColor, combineColors } from './color_calcs';
+import { highContrastColor, combineColors } from './color_calcs';
 import { RgbaTuple } from './color_library_wrappers';
+import { fillTextColor } from './fill_text_color';
 
 describe('Color calcs', () => {
-  describe('test makeHighContrastColor', () => {
-    it('should change white text to black when background is white', () => {
-      const result = makeHighContrastColor([255, 255, 255, 1], [255, 255, 255, 1]);
-      expect(result).toEqual([0, 0, 0, 1]);
+  describe('test highContrastColor', () => {
+    it('should return black when background is white', () => {
+      expect(fillTextColor('white')).toEqual([0, 0, 0, 1]);
     });
     // test contrast computation
-    it('should provide at least 4.5 contrast', () => {
-      const foreground: RgbaTuple = [255, 255, 255, 1]; // white
-      const background: RgbaTuple = [255, 255, 51, 0.3]; // light yellow
-      const expected = [0, 0, 0, 1]; // black
-      expect(makeHighContrastColor(foreground, background)).toEqual(expected);
+    it('should return black with yellow/semi-transparent background', () => {
+      expect(fillTextColor(`rgba(255,255,51,0.3)`)).toEqual([0, 0, 0, 1]);
     });
-    it('should use black text for hex value', () => {
-      const foreground: RgbaTuple = [255, 255, 255, 1]; // white
-      const background: RgbaTuple = [120, 116, 178, 1]; // '#7874B2'; // Thailand color
-      const result = [0, 0, 0, 1]; // black
-      expect(result).toEqual(makeHighContrastColor(foreground, background));
+    it('should use black text for Thailand color', () => {
+      // Thailand color
+      expect(fillTextColor(`rgba(120, 116, 178, 1)`)).toEqual([0, 0, 0, 1]);
     });
     it('should switch to black text if background color is in rgba() format - Thailand', () => {
       const containerBackground: RgbaTuple = [255, 255, 255, 1]; // white
       const background: RgbaTuple = [120, 116, 178, 0.7];
       const resultForCombined: RgbaTuple = [161, 158, 201, 1]; // 0.3 'rgba(215, 213, 232, 1)'; // 0.5 - 'rgba(188, 186, 217, 1)'; //0.7 - ;
       expect(combineColors(background, containerBackground)).toEqual(resultForCombined);
-      const foreground: RgbaTuple = [255, 255, 255, 1];
       const resultForContrastedText: RgbaTuple = [0, 0, 0, 1]; // switches to black text
-      expect(makeHighContrastColor(foreground, resultForCombined)).toEqual(resultForContrastedText);
+      expect(highContrastColor(resultForCombined)).toEqual(resultForContrastedText);
     });
   });
   describe('test the combineColors function', () => {

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import {
@@ -19,6 +20,7 @@ import {
 import { Part, TextMeasure } from '../../../../common/text_utils';
 import { GroupByAccessor, SmallMultiplesStyle } from '../../../../specs';
 import { StrokeStyle, ValueFormatter, Color, RecursivePartial } from '../../../../utils/common';
+import { Logger } from '../../../../utils/logger';
 import { Layer } from '../../specs';
 import { config as defaultConfig, MODEL_KEY, percentValueGetter } from '../config';
 import { Config, FillLabelConfig, PartitionLayout } from '../types/config_types';
@@ -139,6 +141,13 @@ export function makeQuadViewModel(
   isSunburstLayout: boolean,
   containerBackgroundColor?: Color,
 ): Array<QuadViewModel> {
+  if (colorToRgba(containerBackgroundColor ?? 'white')[3] < 1) {
+    Logger.expected(
+      `Text contrast requires a opaque background color, using white as fallback`,
+      'an opaque color',
+      containerBackgroundColor,
+    );
+  }
   return childNodes.map((node) => {
     const layer = layers[node.depth - 1];
     const fill = layer?.shape?.fillColor ?? 'rgba(128, 0, 0, 0.5)';
@@ -146,9 +155,9 @@ export function makeQuadViewModel(
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
     const textNegligible = node.y1px - node.y0px < minRectHeightForText;
-    const color =
+    const textColor =
       !isSunburstLayout && textNegligible ? 'transparent' : fillTextColor(fillColor, containerBackgroundColor);
-    return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor: color, ...node };
+    return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor, ...node };
   });
 }
 
