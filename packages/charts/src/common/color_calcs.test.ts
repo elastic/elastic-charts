@@ -14,15 +14,14 @@ import { fillTextColor } from './fill_text_color';
 describe('Color calcs', () => {
   describe('test highContrastColor', () => {
     it('should return black when background is white', () => {
-      expect(fillTextColor('white')).toEqual([0, 0, 0, 1]);
+      expect(fillTextColor('white')).toEqual('rgba(0, 0, 0, 1)');
     });
     // test contrast computation
     it('should return black with yellow/semi-transparent background', () => {
-      expect(fillTextColor(`rgba(255,255,51,0.3)`)).toEqual([0, 0, 0, 1]);
+      expect(fillTextColor(`rgba(255,255,51,0.3)`)).toEqual('rgba(0, 0, 0, 1)');
     });
-    it('should use black text for Thailand color', () => {
-      // Thailand color
-      expect(fillTextColor(`rgba(120, 116, 178, 1)`)).toEqual([0, 0, 0, 1]);
+    it('should use white text for Thailand color', () => {
+      expect(fillTextColor(`rgba(120, 116, 178, 1)`)).toEqual('rgba(255, 255, 255, 1)');
     });
     it('should switch to black text if background color is in rgba() format - Thailand', () => {
       const containerBackground: RgbaTuple = [255, 255, 255, 1]; // white
