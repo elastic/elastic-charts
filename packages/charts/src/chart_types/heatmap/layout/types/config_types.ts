@@ -9,7 +9,6 @@
 import { Pixels, SizeRatio } from '../../../../common/geometry';
 import { Font, FontFamily, TextAlign, TextBaseline } from '../../../../common/text_utils';
 import { Color } from '../../../../utils/common';
-import { Cell } from './viewmodel_types';
 
 /**
  * @public
@@ -23,8 +22,6 @@ export interface Config {
   // general text config
   fontFamily: FontFamily;
   timeZone: string;
-
-  onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
 
   /**
    * Config of the mask over the area outside of the selected cells
@@ -94,10 +91,3 @@ export interface Config {
   };
   maxLegendHeight?: number;
 }
-
-/** @public */
-export type HeatmapBrushEvent = {
-  cells: Cell[];
-  x: (string | number)[];
-  y: (string | number)[];
-};

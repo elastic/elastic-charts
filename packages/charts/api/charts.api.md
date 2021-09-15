@@ -321,7 +321,10 @@ export const BrushAxis: Readonly<{
 export type BrushAxis = $Values<typeof BrushAxis>;
 
 // @public (undocumented)
-export type BrushEndListener = (brushArea: XYBrushArea) => void;
+export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
+
+// @public (undocumented)
+export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
@@ -1007,8 +1010,6 @@ export interface HeatmapConfig {
     maxLegendHeight?: number;
     // (undocumented)
     maxRowHeight: Pixels;
-    // (undocumented)
-    onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
     // (undocumented)
     timeZone: string;
     // (undocumented)
@@ -2399,7 +2400,7 @@ export interface WordModel {
 export type XScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
 
 // @public (undocumented)
-export interface XYBrushArea {
+export interface XYBrushEvent {
     // (undocumented)
     x?: [number, number];
     // (undocumented)
@@ -2437,9 +2438,9 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
 // Warnings were encountered during analysis:
 //
-// src/chart_types/heatmap/layout/types/config_types.ts:20:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:50:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:51:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:19:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:47:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:48:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:139:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 

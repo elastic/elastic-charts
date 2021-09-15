@@ -107,7 +107,7 @@ export const Example = () => {
           },
         }}
         baseTheme={useBaseTheme()}
-        onBrushEnd={(d) => {
+        onBrushEnd={(d: { x: any[] }) => {
           if (d.x) {
             action('brushEvent')(tickTimeFormatter(d.x[0] ?? 0), tickTimeFormatter(d.x[1] ?? 0));
           }

@@ -115,7 +115,7 @@ exports[`Chart should render the legend name test 1`] = `
                   </Highlighter>
                 </Connect(Highlighter)>
                 <Connect(BrushTool)>
-                  <BrushTool initialized={true} projectionContainer={{...}} mainProjectionArea={{...}} isBrushAvailable={false} isBrushing={false} brushArea={{...}} zIndex={0} dispatch={[Function: dispatch]} />
+                  <BrushTool initialized={true} projectionContainer={{...}} mainProjectionArea={{...}} isBrushAvailable={false} isBrushing={false} brushEvent={{...}} zIndex={0} dispatch={[Function: dispatch]} />
                 </Connect(BrushTool)>
               </div>
             </ChartContainer>

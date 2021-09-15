@@ -86,7 +86,7 @@ export interface GroupBrushExtent {
 }
 
 /** @public */
-export interface XYBrushArea {
+export interface XYBrushEvent {
   x?: [number, number];
   y?: Array<GroupBrushExtent>;
 }
@@ -140,8 +140,20 @@ export type ElementClickListener = (
 export type ElementOverListener = (
   elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>,
 ) => void;
+
 /** @public */
-export type BrushEndListener = (brushArea: XYBrushArea) => void;
+export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
+
+/** @public */
+export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
+
+/** @public */
+export type HeatmapBrushEvent = {
+  cells: Cell[];
+  x: (string | number)[];
+  y: (string | number)[];
+};
+
 /** @public */
 export type LegendItemListener = (series: SeriesIdentifier[]) => void;
 /**

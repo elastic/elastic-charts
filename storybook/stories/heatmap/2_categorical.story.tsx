@@ -36,6 +36,7 @@ export const Example = () => {
         legendPosition="right"
         brushAxis="both"
         baseTheme={useBaseTheme()}
+        onBrushEnd={action('onBrushEnd')}
       />
       <Heatmap
         id="heatmap2"
@@ -81,7 +82,6 @@ export const Example = () => {
           yAxisLabel: {
             visible: true,
           },
-          onBrushEnd: action('onBrushEnd'),
         }}
       />
     </Chart>
