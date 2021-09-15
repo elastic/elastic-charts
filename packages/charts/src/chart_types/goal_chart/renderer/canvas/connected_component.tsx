@@ -19,7 +19,9 @@ import {
   DEFAULT_A11Y_SETTINGS,
   getA11ySettingsSelector,
 } from '../../../../state/selectors/get_accessibility_config';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { Color } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { BandViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { initialBoundingBox, Mark } from '../../layout/viewmodel/geoms';
@@ -37,6 +39,7 @@ interface ReactiveChartStateProps {
   bandLabels: BandViewModel[];
   firstValue: number;
   captureBoundingBox: Rectangle;
+  background: Color;
 }
 
 interface ReactiveChartDispatchProps {
@@ -148,7 +151,7 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      renderCanvas2d(this.ctx, this.devicePixelRatio, this.props.geoms);
+      renderCanvas2d(this.ctx, this.devicePixelRatio, this.props.geoms, this.props.background);
     }
   }
 }
@@ -175,6 +178,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   bandLabels: [],
   firstValue: 0,
   captureBoundingBox: initialBoundingBox(),
+  background: 'transparent',
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -190,6 +194,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     firstValue: getFirstTickValueSelector(state),
     geoms: getPrimitiveGeoms(state),
     captureBoundingBox: getCaptureBoundingBox(state),
+    background: getChartThemeSelector(state).background.color,
   };
 };
 

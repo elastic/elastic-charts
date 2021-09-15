@@ -8,6 +8,7 @@
 
 import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { Color } from '../../../../utils/common';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
@@ -18,6 +19,7 @@ export function renderCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   { config, heatmapViewModel }: ShapeViewModel,
+  background: Color,
 ) {
   // eslint-disable-next-line no-empty-pattern
   const {} = config;
@@ -45,8 +47,7 @@ export function renderCanvas2d(
     const filteredYValues = heatmapViewModel.yValues.filter((value, yIndex) => yIndex < heatmapViewModel.pageSize);
 
     renderLayers(ctx, [
-      clearCanvas,
-
+      () => clearCanvas(ctx, background),
       () => {
         withContext(ctx, () => {
           // render grid

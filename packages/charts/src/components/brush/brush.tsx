@@ -108,7 +108,7 @@ class BrushToolComponent extends React.Component<StateProps> {
           height: mainProjectionArea.height,
         },
         () => {
-          clearCanvas(ctx);
+          clearCanvas(ctx, 'transparent');
           ctx.translate(mainProjectionArea.left, mainProjectionArea.top);
           renderRect(
             ctx,

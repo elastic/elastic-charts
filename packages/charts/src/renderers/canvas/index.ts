@@ -7,6 +7,7 @@
  */
 
 import { Rect } from '../../geoms/types';
+import { Color } from '../../utils/common';
 import { ClippedRanges } from '../../utils/geometry';
 
 /** @internal */
@@ -33,10 +34,11 @@ export function withContext(ctx: CanvasRenderingContext2D, fun: CanvasRenderer) 
 }
 
 /** @internal */
-export function clearCanvas(ctx: CanvasRenderingContext2D) {
+export function clearCanvas(ctx: CanvasRenderingContext2D, bgColor: Color) {
   withContext(ctx, () => {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   });
 }
 

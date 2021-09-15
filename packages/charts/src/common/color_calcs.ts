@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { APCAcontrast } from './apca_color_contrast';
+import { APCAContrast } from './apca_color_contrast';
 import { RgbaTuple, RGBATupleToString, RgbTuple } from './color_library_wrappers';
 
 /** @internal */
@@ -50,8 +50,9 @@ const COLOR_BLACK: RgbaTuple = [0, 0, 0, 1];
  * @internal
  */
 export function highContrastColor(background: RgbTuple): RgbaTuple {
-  const wWhiteText = APCAcontrast(background, COLOR_WHITE);
+  const wWhiteText = Math.abs(APCAContrast(background, COLOR_WHITE));
+  const wBlackText = Math.abs(APCAContrast(background, COLOR_BLACK));
   // APCA 60 — Similar to WCAG 4.5∶1
   // APCA will show negative values for light text on a dark background
-  return Math.abs(wWhiteText) > 60 ? COLOR_WHITE : COLOR_BLACK;
+  return wWhiteText > wBlackText ? COLOR_WHITE : COLOR_BLACK;
 }

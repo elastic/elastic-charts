@@ -37,7 +37,7 @@ export function renderXYChartCanvas2d(
       rotation,
       geometries,
       geometriesIndex,
-      theme: { axes: sharedAxesStyle, sharedStyle, barSeriesStyle },
+      theme: { axes: sharedAxesStyle, sharedStyle, barSeriesStyle, background },
       highlightedLegendItem,
       annotationDimensions,
       annotationSpecs,
@@ -50,7 +50,7 @@ export function renderXYChartCanvas2d(
     } = props;
     const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
     renderLayers(ctx, [
-      clearCanvas,
+      () => clearCanvas(ctx, background.color),
 
       // render panel grid
       () => debug && renderGridPanels(ctx, transform, panelGeoms),
