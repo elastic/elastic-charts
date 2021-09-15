@@ -265,10 +265,9 @@ describe('Test that getRectangleRowGeometry works with:', () => {
 });
 describe('Test fillTextColor function', () => {
   test('get the right maximized contrast color', () => {
-    const textColor = 'black';
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
     const expectedAdjustedTextColor = 'rgba(0, 0, 0, 1)';
-    expect(fillTextColor(textColor, fillColor, containerBackgroundColor)).toEqual(expectedAdjustedTextColor);
+    expect(fillTextColor(fillColor, containerBackgroundColor)).toEqual(expectedAdjustedTextColor);
   });
 });

@@ -21,6 +21,7 @@ import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { ContinuousDomain } from '../../../../utils/domain';
+import { Logger } from '../../../../utils/logger';
 import { Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
@@ -183,6 +184,16 @@ export function shapeViewModel(
   const cellWidthInner = cellWidth - gridStrokeWidth * 2;
   const cellHeightInner = cellHeight - gridStrokeWidth * 2;
 
+  const backgroundColor = colorToRgba(theme.background.color);
+  const isBackgroundColorTransparent = backgroundColor[3] < 1;
+  if (isBackgroundColorTransparent) {
+    Logger.expected(
+      `Text contrast requires a opaque background color, using white as fallback`,
+      'an opaque color',
+      backgroundColor,
+    );
+  }
+
   // compute each available cell position, color and value
   const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
     const x = xScale(String(d.x));
@@ -227,11 +238,7 @@ export function shapeViewModel(
       visible: !isValueHidden(d.value, bandsToHide),
       formatted: formattedValue,
       fontSize,
-      textColor: fillTextColor(
-        config.cell.label.textColor,
-        color,
-        theme.background.color === 'transparent' ? 'rgba(255, 255, 255, 1)' : theme.background.color,
-      ),
+      textColor: fillTextColor(color, isBackgroundColorTransparent ? 'rgba(255, 255, 255, 1)' : theme.background.color),
     };
     return acc;
   }, {});

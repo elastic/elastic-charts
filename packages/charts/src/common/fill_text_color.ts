@@ -7,7 +7,6 @@
  */
 
 import { Color } from '../utils/common';
-import { Logger } from '../utils/logger';
 import { combineColors, makeHighContrastColor } from './color_calcs';
 import { colorToRgba, RgbaTuple, RGBATupleToString } from './color_library_wrappers';
 
@@ -16,13 +15,10 @@ const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
  * Determine the color for the text hinging on the parameters of maximizeColorContrast, shapeFillColor and backgroundColor
  * @internal
  */
-export function fillTextColor(textColor: Color, shapeFillColor: Color, backgroundColor?: Color): Color {
+export function fillTextColor(shapeFillColor: Color, backgroundColor?: Color): Color {
   const defaultBackgroundRGBA = backgroundColor ? colorToRgba(backgroundColor) : COLOR_WHITE;
   const shapeFillRGBA = colorToRgba(shapeFillColor);
 
-  if (backgroundColor && defaultBackgroundRGBA[3] < 1) {
-    Logger.expected(`Text contrast requires a opaque background color`, 'opaque color', backgroundColor);
-  }
   // use WHITE if background color is semi transparent
   const backgroundRGBA = backgroundColor && defaultBackgroundRGBA[3] === 1 ? defaultBackgroundRGBA : COLOR_WHITE;
 
