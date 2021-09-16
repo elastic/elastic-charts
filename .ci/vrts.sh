@@ -9,7 +9,7 @@ source .ci/global_setup.sh
 ###
 ### removing the unused canvas package conflicting with the CI missing C++ lib
 ###
-yarn remove canvas
+yarn --ignore-workspace-root-check remove canvas
 
 VRTS_FILES=$1
 ###

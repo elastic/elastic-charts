@@ -7,7 +7,6 @@
  */
 
 import { RgbaTuple } from '../common/color_library_wrappers';
-import { Radian } from '../common/geometry';
 import { TexturedStyles } from '../utils/themes/theme';
 
 /** @internal */
