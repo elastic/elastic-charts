@@ -65,7 +65,7 @@ function getProjectedPointerPosition(
 }
 
 function getPosRelativeToPanel(
-  panelScale: ScaleBand<string | number>,
+  panelScale: ScaleBand<number | string>,
   pos: number,
 ): { pos: number; value: PrimitiveValue } {
   const outerPadding = panelScale.outerPadding * panelScale.step;

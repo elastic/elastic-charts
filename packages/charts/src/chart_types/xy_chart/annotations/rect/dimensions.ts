@@ -162,7 +162,7 @@ export function computeRectAnnotationDimensions(
 }
 
 function scaleXonBandScale(
-  xScale: ScaleBand<string | number>,
+  xScale: ScaleBand<number | string>,
   x0: PrimitiveValue,
   x1: PrimitiveValue,
 ): { x: number; width: number } | null {

@@ -16,8 +16,8 @@ import { computeSeriesDomainsSelector } from './compute_series_domains';
 
 /** @internal */
 export interface SmallMultipleScales {
-  horizontal: ScaleBand<string | number>;
-  vertical: ScaleBand<string | number>;
+  horizontal: ScaleBand<number | string>;
+  vertical: ScaleBand<number | string>;
 }
 
 /**
