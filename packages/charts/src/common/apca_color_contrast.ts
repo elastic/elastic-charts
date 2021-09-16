@@ -1,4 +1,4 @@
-/* eslint-disable header/header, @typescript-eslint/explicit-module-boundary-types, prefer-destructuring, no-restricted-syntax, no-self-compare */
+/* eslint-disable header/header */
 
 /**
  * @notice
@@ -164,3 +164,4 @@ export function APCAContrast([Rbg, Gbg, Bbg]: RgbTuple, [Rtxt, Gtxt, Btxt]: RgbT
 /// //\  END OF SAPC/APCA BLOCK  /////////////////////////////////////////////\
 /// ///////////////////////////////////////////////////////////////////////////\
 /// ////////////////////////////////////////////////////////////////////////////\
+/* eslint-enable */
