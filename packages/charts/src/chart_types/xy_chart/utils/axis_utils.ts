@@ -311,7 +311,7 @@ export function getAvailableTicks(
 /** @internal */
 export function enableDuplicatedTicks(
   axisSpec: AxisSpec,
-  scale: Scale<any>,
+  scale: Scale<number>,
   offset: number,
   fallBackTickFormatter: TickFormatter,
   tickFormatOptions?: TickFormatterOptions,
