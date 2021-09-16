@@ -32,8 +32,8 @@ export function isWithinRectBounds({ x, y }: Point, { startX, endX, startY, endY
 /** @internal */
 export function computeRectAnnotationDimensions(
   annotationSpec: RectAnnotationSpec,
-  yScales: Map<GroupId, Scale<unknown>>,
-  xScale: Scale<unknown>,
+  yScales: Map<GroupId, Scale<number>>,
+  xScale: Scale<number>,
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   chartRotation: Rotation,
@@ -223,7 +223,7 @@ function scaleXonContinuousScale(
  * @param isHistogram
  */
 function limitValueToDomainRange(
-  scale: Scale<any>,
+  scale: Scale<number>,
   minValue?: PrimitiveValue,
   maxValue?: PrimitiveValue,
   isHistogram = false,
