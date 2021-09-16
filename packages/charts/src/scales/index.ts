@@ -35,7 +35,7 @@ export interface Scale {
    * Returns the distance between the starts of adjacent bands.
    */
   step: number;
-  ticks: () => any[];
+  ticks: () => number[];
   scale: (value?: PrimitiveValue) => number | null;
   scaleOrThrow(value?: PrimitiveValue): number;
   pureScale: (value?: PrimitiveValue) => number | null;
