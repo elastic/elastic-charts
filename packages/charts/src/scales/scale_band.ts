@@ -20,7 +20,7 @@ import { ScaleType } from './constants';
  * Categorical scale
  * @internal
  */
-export class ScaleBand implements Scale<unknown> {
+export class ScaleBand<T extends number | string> implements Scale<T> {
   readonly bandwidth: number;
 
   readonly bandwidthPadding: number;
@@ -50,7 +50,7 @@ export class ScaleBand implements Scale<unknown> {
   private readonly d3Scale: D3ScaleBand<NonNullable<PrimitiveValue>>;
 
   constructor(
-    domain: any[],
+    domain: T[],
     range: Range,
     overrideBandwidth?: number,
     /**
@@ -81,7 +81,7 @@ export class ScaleBand implements Scale<unknown> {
     this.bandwidth = this.d3Scale.bandwidth() || 0;
     this.originalBandwidth = this.d3Scale.bandwidth() || 0;
     this.step = this.d3Scale.step();
-    this.domain = this.d3Scale.domain();
+    this.domain = [...new Set(domain)];
     this.range = range.slice();
     if (overrideBandwidth) {
       this.bandwidth = overrideBandwidth * (1 - safeBarPadding);
