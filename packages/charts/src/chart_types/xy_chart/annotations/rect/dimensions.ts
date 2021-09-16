@@ -64,7 +64,7 @@ export function computeRectAnnotationDimensions(
     let xAndWidth: { x: number; width: number } | null = null;
 
     if (isBandScale(xScale)) {
-      xAndWidth = scaleXonBandScale(xScale as ScaleBand<number>, x0, x1);
+      xAndWidth = scaleXonBandScale(xScale, x0, x1);
     } else if (isContinuousScale(xScale)) {
       xAndWidth = scaleXonContinuousScale(xScale, x0, x1, isHistogram);
     }

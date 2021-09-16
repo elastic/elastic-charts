@@ -7,7 +7,7 @@
  */
 
 import { Line } from '../../../../geoms/types';
-import { Scale, ScaleBand } from '../../../../scales';
+import { Scale } from '../../../../scales';
 import { isContinuousScale, isBandScale } from '../../../../scales/types';
 import { isNil, Position, Rotation } from '../../../../utils/common';
 import { Dimensions, Size } from '../../../../utils/dimensions';
@@ -164,10 +164,10 @@ function computeXDomainLineAnnotationDimensions(
       }
     } else if (isBandScale(xScale)) {
       if (isHistogramMode) {
-        const padding = (xScale.step - (xScale as ScaleBand<string | number>).originalBandwidth) / 2;
+        const padding = (xScale.step - xScale.originalBandwidth) / 2;
         annotationValueXPosition -= padding;
       } else {
-        annotationValueXPosition += (xScale as ScaleBand<string | number>).originalBandwidth / 2;
+        annotationValueXPosition += xScale.originalBandwidth / 2;
       }
     } else {
       return;
