@@ -119,7 +119,7 @@ export function computeAnnotationDimensions(
   annotations: AnnotationSpec[],
   chartRotation: Rotation,
   yScales: Map<GroupId, Scale<number>>,
-  xScale: Scale<unknown>,
+  xScale: Scale<string | number>,
   axesSpecs: AxisSpec[],
   isHistogramModeEnabled: boolean,
   smallMultipleScales: SmallMultipleScales,

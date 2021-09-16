@@ -35,13 +35,13 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
 
   readonly type: ScaleBandType;
 
-  readonly domain: any[];
+  readonly domain: T[];
 
   readonly range: number[];
 
   readonly isInverted: boolean;
 
-  readonly invertedScale: ScaleQuantize<number>;
+  readonly invertedScale: ScaleQuantize<T>;
 
   readonly minInterval: number;
 
@@ -89,7 +89,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     this.bandwidthPadding = this.bandwidth;
     // TO FIX: we are assuming that it's ordered
     this.isInverted = this.domain[0] > this.domain[1];
-    this.invertedScale = scaleQuantize().domain(range).range(this.domain);
+    this.invertedScale = scaleQuantize<T>().domain(range).range(this.domain);
     this.minInterval = 0;
   }
 
