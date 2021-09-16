@@ -30,7 +30,7 @@ import {
 export function renderLine(
   shift: number,
   dataSeries: DataSeries,
-  xScale: Scale<unknown>,
+  xScale: Scale<number>,
   yScale: Scale<number>,
   panel: Dimensions,
   color: Color,

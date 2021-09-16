@@ -404,8 +404,8 @@ function renderGeometries(
       const renderedBubbles = renderBubble(
         (xScale.bandwidth * bubbleShift) / 2,
         ds,
-        xScale,
-        yScale,
+        xScale as Scale<number>,
+        yScale as Scale<number>,
         color,
         panel,
         isBandedSpec(spec.y0Accessors),
@@ -437,7 +437,7 @@ function renderGeometries(
         // move the point on half of the bandwidth if we have mixed bars/lines
         (xScale.bandwidth * lineShift) / 2,
         ds,
-        xScale,
+        xScale as Scale<number>,
         yScale as Scale<number>,
         panel,
         color,
@@ -470,7 +470,7 @@ function renderGeometries(
         // move the point on half of the bandwidth if we have mixed bars/lines
         (xScale.bandwidth * areaShift) / 2,
         ds,
-        xScale,
+        xScale as Scale<number>,
         yScale as Scale<number>,
         panel,
         color,

@@ -21,8 +21,8 @@ import { MarkSizeOptions } from './utils';
 export function renderBubble(
   shift: number,
   dataSeries: DataSeries,
-  xScale: Scale<unknown>,
-  yScale: Scale<unknown>,
+  xScale: Scale<number>,
+  yScale: Scale<number>,
   color: Color,
   panel: Dimensions,
   hasY0Accessors: boolean,

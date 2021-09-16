@@ -110,7 +110,7 @@ interface YScaleOptions {
  * Compute the y scales, one per groupId for the y axis.
  * @internal
  */
-export function computeYScales(options: YScaleOptions): Map<GroupId, Scale<any>> {
+export function computeYScales(options: YScaleOptions): Map<GroupId, Scale<unknown>> {
   const { yDomains, range, integersOnly } = options;
   return yDomains.reduce(
     (
