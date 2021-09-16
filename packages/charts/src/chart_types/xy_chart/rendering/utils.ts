@@ -157,7 +157,7 @@ export function isPointOnGeometry(
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
 }
 
-const getScaleTypeValueValidator = (yScale: Scale<number | string>): ((n: number) => boolean) => {
+const getScaleTypeValueValidator = (yScale: Scale<number>): ((n: number) => boolean) => {
   if (!isLogarithmicScale(yScale)) return () => true;
 
   const domainPolarity = getDomainPolarity(yScale.domain);
@@ -178,7 +178,7 @@ export type YDefinedFn = (
 ) => boolean;
 
 /** @internal */
-export function isYValueDefinedFn(yScale: Scale<number | string>, xScale: Scale<number | string>): YDefinedFn {
+export function isYValueDefinedFn(yScale: Scale<number>, xScale: Scale<number | string>): YDefinedFn {
   const validator = getScaleTypeValueValidator(yScale);
   return (datum, getValueAccessor) => {
     const yValue = getValueAccessor(datum);

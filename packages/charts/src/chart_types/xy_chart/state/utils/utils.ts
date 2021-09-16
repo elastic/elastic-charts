@@ -379,7 +379,7 @@ function renderGeometries(
         shift,
         ds,
         xScale,
-        yScale,
+        yScale as Scale<number>,
         panel,
         chartRotation,
         spec.minBarHeight ?? 0,

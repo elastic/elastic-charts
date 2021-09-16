@@ -30,7 +30,7 @@ export function renderBars(
   orderIndex: number,
   dataSeries: DataSeries,
   xScale: Scale<number | string>,
-  yScale: Scale<number | string>,
+  yScale: Scale<number>,
   panel: Dimensions,
   chartRotation: number,
   minBarHeight: number,
