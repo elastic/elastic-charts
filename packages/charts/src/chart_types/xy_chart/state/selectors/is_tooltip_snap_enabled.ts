@@ -17,6 +17,6 @@ export const isTooltipSnapEnableSelector = createCustomCachedSelector(
   (seriesGeometries, snap) => isTooltipSnapEnabled(seriesGeometries.scales.xScale, snap),
 );
 
-function isTooltipSnapEnabled(xScale: Scale<any>, snap: boolean) {
+function isTooltipSnapEnabled(xScale: Scale<unknown>, snap: boolean) {
   return (xScale && xScale.bandwidth > 0) || snap;
 }

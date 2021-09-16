@@ -74,7 +74,7 @@ function getCursorBand(
   externalPointerEvent: PointerEvent | null,
   chartDimensions: Dimensions,
   settingsSpec: SettingsSpec,
-  xScale: Scale<any> | undefined,
+  xScale: Scale<unknown> | undefined,
   seriesSpecs: BasicSeriesSpec[],
   totalBarsInCluster: number,
   isTooltipSnapEnabled: boolean,
