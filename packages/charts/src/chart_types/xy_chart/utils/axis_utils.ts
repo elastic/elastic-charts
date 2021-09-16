@@ -89,7 +89,7 @@ export function getScaleForAxisSpec(
   return (
     { groupId, integersOnly, position }: Pick<AxisSpec, 'groupId' | 'integersOnly' | 'position'>,
     range: Range,
-  ): Scale<unknown> | null =>
+  ): Scale<number | string> | null =>
     isXDomain(position, chartRotation)
       ? computeXScale({ xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly })
       : computeYScales({ yDomains, range, integersOnly }).get(groupId) ?? null;

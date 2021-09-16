@@ -46,7 +46,7 @@ export const computeAnnotationDimensionsSelector = createCustomCachedSelector(
       annotationSpecs,
       settingsSpec.rotation,
       yScales as Map<GroupId, Scale<number>>,
-      xScale as Scale<string | number>,
+      xScale,
       axesSpecs,
       isHistogramMode,
       smallMultipleScales,

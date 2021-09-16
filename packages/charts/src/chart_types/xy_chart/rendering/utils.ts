@@ -56,7 +56,7 @@ export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
  */
 export function getClippedRanges(
   dataset: DataSeriesDatum[],
-  xScale: Scale<unknown>,
+  xScale: Scale<number | string>,
   xScaleOffset: number,
 ): ClippedRanges {
   let firstNonNullX: number | null = null;
@@ -157,7 +157,7 @@ export function isPointOnGeometry(
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
 }
 
-const getScaleTypeValueValidator = (yScale: Scale<unknown>): ((n: number) => boolean) => {
+const getScaleTypeValueValidator = (yScale: Scale<number | string>): ((n: number) => boolean) => {
   if (!isLogarithmicScale(yScale)) return () => true;
 
   const domainPolarity = getDomainPolarity(yScale.domain);
@@ -178,7 +178,7 @@ export type YDefinedFn = (
 ) => boolean;
 
 /** @internal */
-export function isYValueDefinedFn(yScale: Scale<unknown>, xScale: Scale<unknown>): YDefinedFn {
+export function isYValueDefinedFn(yScale: Scale<number | string>, xScale: Scale<number | string>): YDefinedFn {
   const validator = getScaleTypeValueValidator(yScale);
   return (datum, getValueAccessor) => {
     const yValue = getValueAccessor(datum);

@@ -12,7 +12,7 @@ import { DragState } from '../state/chart_state';
 
 /** @internal */
 export function isValidPointerOverEvent(
-  mainScale: Scale<unknown>,
+  mainScale: Scale<number | string>,
   event: PointerEvent | null | undefined,
 ): event is PointerOverEvent {
   return isPointerOverEvent(event) && (event.unit === undefined || event.unit === mainScale.unit);

@@ -29,8 +29,8 @@ type BarTuple = {
 export function renderBars(
   orderIndex: number,
   dataSeries: DataSeries,
-  xScale: Scale<unknown>,
-  yScale: Scale<unknown>,
+  xScale: Scale<number | string>,
+  yScale: Scale<number | string>,
   panel: Dimensions,
   chartRotation: number,
   minBarHeight: number,

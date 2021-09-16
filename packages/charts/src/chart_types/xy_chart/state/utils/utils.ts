@@ -251,7 +251,7 @@ export function isHistogramModeEnabled(seriesSpecs: BasicSeriesSpec[]): boolean 
 
 /** @internal */
 export function computeXScaleOffset(
-  xScale: Scale<unknown>,
+  xScale: Scale<number | string>,
   enableHistogramMode: boolean,
   histogramModeAlignment: HistogramModeAlignment = HistogramModeAlignments.Start,
 ): number {
@@ -278,9 +278,9 @@ export function computeXScaleOffset(
 function renderGeometries(
   dataSeries: DataSeries[],
   xDomain: XDomain,
-  yScales: Map<GroupId, Scale<unknown>>,
-  smVScale: Scale<unknown>,
-  smHScale: Scale<unknown>,
+  yScales: Map<GroupId, Scale<number | string>>,
+  smVScale: Scale<number | string>,
+  smHScale: Scale<number | string>,
   barIndexOrderPerPanel: Record<string, string[]>,
   seriesSpecs: BasicSeriesSpec[],
   seriesColorsMap: Map<SeriesKey, Color>,

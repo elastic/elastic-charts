@@ -118,7 +118,7 @@ function computeYDomainLineAnnotationDimensions(
 
 function computeXDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
-  xScale: Scale<string | number>,
+  xScale: Scale<number | string>,
   { vertical, horizontal }: SmallMultipleScales,
   chartRotation: Rotation,
   isHistogramMode: boolean,
@@ -234,7 +234,7 @@ export function computeLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
   chartRotation: Rotation,
   yScales: Map<GroupId, Scale<number>>,
-  xScale: Scale<string | number>,
+  xScale: Scale<number | string>,
   smallMultipleScales: SmallMultipleScales,
   isHistogramMode: boolean,
   axisPosition?: Position,
