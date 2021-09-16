@@ -146,6 +146,6 @@ export function computeYScales(options: YScaleOptions): Map<GroupId, Scale<unkno
       yScales.set(groupId, yScale);
       return yScales;
     },
-    new Map<GroupId, Scale<any>>(),
+    new Map<GroupId, Scale<unknown>>(),
   );
 }

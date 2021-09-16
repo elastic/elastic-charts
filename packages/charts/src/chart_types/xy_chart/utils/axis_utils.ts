@@ -86,7 +86,10 @@ export function getScaleForAxisSpec(
   barsPadding?: number,
   enableHistogramMode?: boolean,
 ) {
-  return ({ groupId, integersOnly, position }: Pick<AxisSpec, 'groupId' | 'integersOnly' | 'position'>, range: Range) =>
+  return (
+    { groupId, integersOnly, position }: Pick<AxisSpec, 'groupId' | 'integersOnly' | 'position'>,
+    range: Range,
+  ): Scale<unknown> | null =>
     isXDomain(position, chartRotation)
       ? computeXScale({ xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly })
       : computeYScales({ yDomains, range, integersOnly }).get(groupId) ?? null;
@@ -249,7 +252,7 @@ function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, he
 /** @internal */
 export function getAvailableTicks(
   axisSpec: AxisSpec,
-  scale: Scale<any>,
+  scale: Scale<number>,
   totalBarsInCluster: number,
   enableHistogramMode: boolean,
   fallBackTickFormatter: TickFormatter,
@@ -446,7 +449,7 @@ export function getAxesGeometries(
         const vertical = isVerticalAxis(axisSpec.position);
         const allTicks = getAvailableTicks(
           axisSpec,
-          scale,
+          scale as Scale<number>,
           totalGroupsCount,
           enableHistogramMode,
           vertical ? fallBackTickFormatter : defaultTickFormatter,
