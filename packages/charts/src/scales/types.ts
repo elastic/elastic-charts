@@ -23,7 +23,7 @@ export function isLogarithmicScale(scale: Scale<unknown>): scale is ScaleContinu
  * Check if a scale is Band
  * @internal
  */
-export function isBandScale(scale: Scale<unknown>): scale is ScaleBand<string | number> {
+export function isBandScale<T extends string | number>(scale: Scale<T>): scale is ScaleBand<T> {
   return scale.type === ScaleType.Ordinal;
 }
 
