@@ -29,20 +29,10 @@ export class MockPointGeometry {
     style: {
       shape: PointShape.Circle,
       fill: {
-        color: {
-          r: 255,
-          g: 255,
-          b: 255,
-          opacity: 1,
-        },
+        color: [255, 255, 255, 1],
       },
       stroke: {
-        color: {
-          r: 255,
-          g: 0,
-          b: 0,
-          opacity: 1,
-        },
+        color: [255, 0, 0, 1],
         width: 1,
       },
     },

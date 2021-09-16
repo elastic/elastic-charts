@@ -33,15 +33,6 @@ export interface Rect {
 }
 
 /** @internal */
-export interface Arc {
-  x: number;
-  y: number;
-  radius: number;
-  startAngle: Radian;
-  endAngle: Radian;
-}
-
-/** @internal */
 export interface Circle {
   x: number;
   y: number;
@@ -54,7 +45,7 @@ export interface Circle {
  */
 export interface Texture extends Pick<TexturedStyles, 'rotation' | 'offset'> {
   /**
-   * patern to apply to canvas fill
+   * pattern to apply to canvas fill
    */
   pattern: CanvasPattern;
 }
