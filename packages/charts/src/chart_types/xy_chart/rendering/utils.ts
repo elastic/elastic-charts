@@ -54,7 +54,11 @@ export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
  * @param xScaleOffset
  * @internal
  */
-export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale<any>, xScaleOffset: number): ClippedRanges {
+export function getClippedRanges(
+  dataset: DataSeriesDatum[],
+  xScale: Scale<unknown>,
+  xScaleOffset: number,
+): ClippedRanges {
   let firstNonNullX: number | null = null;
   let hasNull = false;
 
