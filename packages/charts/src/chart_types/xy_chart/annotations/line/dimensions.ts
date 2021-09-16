@@ -22,7 +22,7 @@ import { AnnotationLineProps } from './types';
 
 function computeYDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
-  yScale: Scale<any>,
+  yScale: Scale<number>,
   { vertical, horizontal }: SmallMultipleScales,
   chartRotation: Rotation,
   axisPosition?: Position,
@@ -118,7 +118,7 @@ function computeYDomainLineAnnotationDimensions(
 
 function computeXDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
-  xScale: Scale<any>,
+  xScale: Scale<unknown>,
   { vertical, horizontal }: SmallMultipleScales,
   chartRotation: Rotation,
   isHistogramMode: boolean,
@@ -233,8 +233,8 @@ function computeXDomainLineAnnotationDimensions(
 export function computeLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
   chartRotation: Rotation,
-  yScales: Map<GroupId, Scale<any>>,
-  xScale: Scale<any>,
+  yScales: Map<GroupId, Scale<number>>,
+  xScale: Scale<unknown>,
   smallMultipleScales: SmallMultipleScales,
   isHistogramMode: boolean,
   axisPosition?: Position,
