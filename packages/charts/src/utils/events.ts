@@ -33,13 +33,6 @@ export function hasDragged(prevProps: DragCheckProps | null, nextProps: DragChec
     return false;
   }
   const prevLastDrag = prevProps !== null ? prevProps.lastDrag : null;
-  const nextLastDrag = nextProps !== null ? nextProps.lastDrag : null;
-
-  if (prevLastDrag === null && nextLastDrag !== null) {
-    return true;
-  }
-  if (prevLastDrag !== null && nextLastDrag !== null && prevLastDrag.end.time !== nextLastDrag.end.time) {
-    return true;
-  }
-  return false;
+  const nextLastDrag = nextProps.lastDrag;
+  return nextLastDrag !== null && (prevLastDrag === null || prevLastDrag.end.time !== nextLastDrag.end.time);
 }
