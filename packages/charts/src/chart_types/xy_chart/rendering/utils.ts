@@ -157,7 +157,7 @@ export function isPointOnGeometry(
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
 }
 
-const getScaleTypeValueValidator = (yScale: Scale<any>): ((n: number) => boolean) => {
+const getScaleTypeValueValidator = (yScale: Scale<unknown>): ((n: number) => boolean) => {
   if (!isLogarithmicScale(yScale)) return () => true;
 
   const domainPolarity = getDomainPolarity(yScale.domain);
@@ -178,7 +178,7 @@ export type YDefinedFn = (
 ) => boolean;
 
 /** @internal */
-export function isYValueDefinedFn(yScale: Scale<any>, xScale: Scale<unknown>): YDefinedFn {
+export function isYValueDefinedFn(yScale: Scale<unknown>, xScale: Scale<unknown>): YDefinedFn {
   const validator = getScaleTypeValueValidator(yScale);
   return (datum, getValueAccessor) => {
     const yValue = getValueAccessor(datum);
@@ -201,7 +201,7 @@ function chromeRenderBugBuffer(y1: number, y0: number): number {
 }
 
 /** @internal */
-export function getY1ScaledValueOrThrowFn(yScale: Scale<unknown>): (datum: DataSeriesDatum) => number {
+export function getY1ScaledValueOrThrowFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
   const datumAccessor = getYDatumValueFn();
   const scaleY0Value = getY0ScaledValueOrThrowFn(yScale);
   return (datum) => {
@@ -212,7 +212,7 @@ export function getY1ScaledValueOrThrowFn(yScale: Scale<unknown>): (datum: DataS
 }
 
 /** @internal */
-export function getY0ScaledValueOrThrowFn(yScale: Scale<any>): (datum: DataSeriesDatum) => number {
+export function getY0ScaledValueOrThrowFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
   const isLogScale = isLogarithmicScale(yScale);
   const domainPolarity = getDomainPolarity(yScale.domain);
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);

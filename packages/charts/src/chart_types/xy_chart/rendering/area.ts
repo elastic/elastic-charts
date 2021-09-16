@@ -32,7 +32,7 @@ export function renderArea(
   shift: number,
   dataSeries: DataSeries,
   xScale: Scale<unknown>,
-  yScale: Scale<unknown>,
+  yScale: Scale<number>,
   panel: Dimensions,
   color: Color,
   curve: CurveType,
