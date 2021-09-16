@@ -12,7 +12,7 @@ import { mergePartial } from '../../utils/common';
 
 /** @internal */
 export class MockScale {
-  private static readonly base: Scale<any> = {
+  private static readonly base: Scale<number | string> = {
     scaleOrThrow: jest.fn().mockImplementation((x) => x),
     scale: jest.fn().mockImplementation((x) => x),
     type: ScaleType.Linear,
@@ -32,7 +32,7 @@ export class MockScale {
     isInverted: false,
   };
 
-  static default(partial: Partial<Scale<any>>): Scale<any> {
-    return mergePartial<Scale<any>>(MockScale.base, partial);
+  static default(partial: Partial<Scale<number | string>>): Scale<number | string> {
+    return mergePartial<Scale<number | string>>(MockScale.base, partial);
   }
 }
