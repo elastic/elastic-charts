@@ -20,7 +20,7 @@ import { ScaleType } from './constants';
  * Categorical scale
  * @internal
  */
-export class ScaleBand implements Scale<any> {
+export class ScaleBand implements Scale<unknown> {
   readonly bandwidth: number;
 
   readonly bandwidthPadding: number;
