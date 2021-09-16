@@ -22,7 +22,7 @@ export const DEFAULT_SNAP_POSITION_BAND = 1;
 /** @internal */
 export function getSnapPosition(
   value: string | number,
-  scale: Scale<any>,
+  scale: Scale<unknown>,
   totalBarsInCluster = 1,
 ): { band: number; position: number } | undefined {
   const position = scale.scale(value);
@@ -86,7 +86,7 @@ export function getCursorBandPosition(
     withinBandwidth: boolean;
   },
   snapEnabled: boolean,
-  xScale: Scale<any>,
+  xScale: Scale<unknown>,
   totalBarsInCluster?: number,
 ): Rect | undefined {
   const { top, left, width, height } = panel;

@@ -44,7 +44,7 @@ interface XScaleOptions {
  * Compute the x scale used to align geometries to the x axis.
  * @internal
  */
-export function computeXScale(options: XScaleOptions): Scale<any> {
+export function computeXScale(options: XScaleOptions): Scale<unknown> {
   const { xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly } = options;
   const { type, nice, minInterval, domain, isBandScale, timeZone, logBase, desiredTickCount } = xDomain;
   const rangeDiff = Math.abs(range[1] - range[0]);
