@@ -118,8 +118,8 @@ export function invertTransformedCursor(
 export function computeAnnotationDimensions(
   annotations: AnnotationSpec[],
   chartRotation: Rotation,
-  yScales: Map<GroupId, Scale>,
-  xScale: Scale,
+  yScales: Map<GroupId, Scale<number>>,
+  xScale: Scale<number | string>,
   axesSpecs: AxisSpec[],
   isHistogramModeEnabled: boolean,
   smallMultipleScales: SmallMultipleScales,
@@ -145,22 +145,22 @@ export function computeAnnotationDimensions(
         annotationDimensions.set(id, dimensions);
       }
       return annotationDimensions;
-    }
+    } else {
+      const dimensions = computeRectAnnotationDimensions(
+        annotationSpec,
+        yScales,
+        xScale as Scale<number>,
+        axesSpecs,
+        smallMultipleScales,
+        chartRotation,
+        getAxisStyle,
+        isHistogramModeEnabled,
+      );
 
-    const dimensions = computeRectAnnotationDimensions(
-      annotationSpec,
-      yScales,
-      xScale,
-      axesSpecs,
-      smallMultipleScales,
-      chartRotation,
-      getAxisStyle,
-      isHistogramModeEnabled,
-    );
-
-    if (dimensions) {
-      annotationDimensions.set(id, dimensions);
+      if (dimensions) {
+        annotationDimensions.set(id, dimensions);
+      }
+      return annotationDimensions;
     }
-    return annotationDimensions;
   }, new Map());
 }

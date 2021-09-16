@@ -20,7 +20,7 @@ import { ScaleType } from './constants';
  * Categorical scale
  * @internal
  */
-export class ScaleBand implements Scale {
+export class ScaleBand<T extends number | string> implements Scale<T> {
   readonly bandwidth: number;
 
   readonly bandwidthPadding: number;
@@ -35,13 +35,13 @@ export class ScaleBand implements Scale {
 
   readonly type: ScaleBandType;
 
-  readonly domain: any[];
+  readonly domain: T[];
 
   readonly range: number[];
 
   readonly isInverted: boolean;
 
-  readonly invertedScale: ScaleQuantize<number>;
+  readonly invertedScale: ScaleQuantize<T>;
 
   readonly minInterval: number;
 
@@ -50,7 +50,7 @@ export class ScaleBand implements Scale {
   private readonly d3Scale: D3ScaleBand<NonNullable<PrimitiveValue>>;
 
   constructor(
-    domain: any[],
+    domain: T[],
     range: Range,
     overrideBandwidth?: number,
     /**
@@ -81,7 +81,7 @@ export class ScaleBand implements Scale {
     this.bandwidth = this.d3Scale.bandwidth() || 0;
     this.originalBandwidth = this.d3Scale.bandwidth() || 0;
     this.step = this.d3Scale.step();
-    this.domain = this.d3Scale.domain();
+    this.domain = [...new Set(domain)];
     this.range = range.slice();
     if (overrideBandwidth) {
       this.bandwidth = overrideBandwidth * (1 - safeBarPadding);
@@ -89,7 +89,7 @@ export class ScaleBand implements Scale {
     this.bandwidthPadding = this.bandwidth;
     // TO FIX: we are assuming that it's ordered
     this.isInverted = this.domain[0] > this.domain[1];
-    this.invertedScale = scaleQuantize().domain(range).range(this.domain);
+    this.invertedScale = scaleQuantize<T>().domain(range).range(this.domain);
     this.minInterval = 0;
   }
 

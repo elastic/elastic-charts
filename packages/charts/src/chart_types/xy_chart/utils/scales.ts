@@ -44,7 +44,7 @@ interface XScaleOptions {
  * Compute the x scale used to align geometries to the x axis.
  * @internal
  */
-export function computeXScale(options: XScaleOptions): Scale {
+export function computeXScale(options: XScaleOptions): Scale<number | string> {
   const { xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly } = options;
   const { type, nice, minInterval, domain, isBandScale, timeZone, logBase, desiredTickCount } = xDomain;
   const rangeDiff = Math.abs(range[1] - range[0]);
@@ -110,7 +110,7 @@ interface YScaleOptions {
  * Compute the y scales, one per groupId for the y axis.
  * @internal
  */
-export function computeYScales(options: YScaleOptions): Map<GroupId, Scale> {
+export function computeYScales(options: YScaleOptions): Map<GroupId, Scale<number | string>> {
   const { yDomains, range, integersOnly } = options;
   return yDomains.reduce(
     (
@@ -146,6 +146,6 @@ export function computeYScales(options: YScaleOptions): Map<GroupId, Scale> {
       yScales.set(groupId, yScale);
       return yScales;
     },
-    new Map<GroupId, Scale>(),
+    new Map<GroupId, Scale<number | string>>(),
   );
 }
