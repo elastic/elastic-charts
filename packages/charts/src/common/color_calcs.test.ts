@@ -26,9 +26,9 @@ describe('Color calcs', () => {
     it('should switch to black text if background color is in rgba() format - Thailand', () => {
       const containerBackground: RgbaTuple = [255, 255, 255, 1]; // white
       const background: RgbaTuple = [120, 116, 178, 0.7];
-      const resultForCombined: RgbaTuple = [161, 158, 201, 1]; // 0.3 'rgba(215, 213, 232, 1)'; // 0.5 - 'rgba(188, 186, 217, 1)'; //0.7 - ;
+      const resultForCombined: RgbaTuple = [161, 158, 201, 1];
       expect(combineColors(background, containerBackground)).toEqual(resultForCombined);
-      const resultForContrastedText: RgbaTuple = [0, 0, 0, 1]; // switches to black text
+      const resultForContrastedText: RgbaTuple = [255, 255, 255, 1]; // WCAG2 is better black, with WCAG3 is white
       expect(highContrastColor(resultForCombined)).toEqual(resultForContrastedText);
     });
   });
