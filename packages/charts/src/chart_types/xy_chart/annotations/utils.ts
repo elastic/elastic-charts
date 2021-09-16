@@ -118,8 +118,8 @@ export function invertTransformedCursor(
 export function computeAnnotationDimensions(
   annotations: AnnotationSpec[],
   chartRotation: Rotation,
-  yScales: Map<GroupId, Scale>,
-  xScale: Scale,
+  yScales: Map<GroupId, Scale<any>>,
+  xScale: Scale<any>,
   axesSpecs: AxisSpec[],
   isHistogramModeEnabled: boolean,
   smallMultipleScales: SmallMultipleScales,

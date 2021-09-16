@@ -282,7 +282,7 @@ const defaultScaleOptions: ScaleOptions = {
  * Continuous scale
  * @internal
  */
-export class ScaleContinuous implements Scale {
+export class ScaleContinuous implements Scale<number> {
   readonly bandwidth: number;
 
   readonly totalBarsInCluster: number;

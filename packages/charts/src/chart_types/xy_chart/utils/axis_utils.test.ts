@@ -1281,7 +1281,7 @@ describe('Axis computational utils', () => {
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
     });
-    const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
+    const scale: Scale<unknown> = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(enableDuplicatedTicks(axisSpec, scale, offset, (v) => `${v}`, tickFormatOption)).toEqual([
@@ -1314,7 +1314,7 @@ describe('Axis computational utils', () => {
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
     });
-    const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
+    const scale: Scale<unknown> = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
     const tickFormatOption = { timeZone: xDomainTime.timeZone };
     const ticks = enableDuplicatedTicks(axisSpec, scale, offset, (v) => `${v}`, tickFormatOption);
@@ -1354,7 +1354,7 @@ describe('Axis computational utils', () => {
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
     });
-    const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
+    const scale: Scale<unknown> = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(enableDuplicatedTicks(axisSpec, scale, offset, (v) => `${v}`, tickFormatOption)).toEqual([
@@ -1392,7 +1392,7 @@ describe('Axis computational utils', () => {
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
     });
-    const scale: Scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
+    const scale: Scale<unknown> = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(enableDuplicatedTicks(axisSpec, scale, offset, (v) => `${v}`, tickFormatOption)).toEqual([

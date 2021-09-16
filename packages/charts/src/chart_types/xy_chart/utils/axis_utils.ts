@@ -249,7 +249,7 @@ function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, he
 /** @internal */
 export function getAvailableTicks(
   axisSpec: AxisSpec,
-  scale: Scale,
+  scale: Scale<any>,
   totalBarsInCluster: number,
   enableHistogramMode: boolean,
   fallBackTickFormatter: TickFormatter,
@@ -308,7 +308,7 @@ export function getAvailableTicks(
 /** @internal */
 export function enableDuplicatedTicks(
   axisSpec: AxisSpec,
-  scale: Scale,
+  scale: Scale<any>,
   offset: number,
   fallBackTickFormatter: TickFormatter,
   tickFormatOptions?: TickFormatterOptions,

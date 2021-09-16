@@ -29,8 +29,8 @@ import {
 export function renderPoints(
   shift: number,
   dataSeries: DataSeries,
-  xScale: Scale,
-  yScale: Scale,
+  xScale: Scale<any>,
+  yScale: Scale<any>,
   panel: Dimensions,
   color: Color,
   pointStyle: PointStyle,

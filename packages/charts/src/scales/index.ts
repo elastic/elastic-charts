@@ -28,8 +28,8 @@ export type ScaleBandType = ScaleOrdinalType;
  * The the value is mapped depending on the `type` (linear, log, sqrt, time, ordinal)
  * @internal
  */
-export interface Scale {
-  domain: any[];
+export interface Scale<D> {
+  domain: D[];
   range: number[];
   /**
    * Returns the distance between the starts of adjacent bands.

@@ -134,7 +134,7 @@ function getXBrushExtent(
   lastDrag: DragState,
   rotation: Rotation,
   histogramMode: boolean,
-  xScale: Scale,
+  xScale: Scale<any>,
   smallMultipleScales: SmallMultipleScales,
   minBrushDelta?: number,
   roundHistogramBrushValues?: boolean,
@@ -190,7 +190,7 @@ function getYBrushExtents(
   chartDimensions: Dimensions,
   lastDrag: DragState,
   rotation: Rotation,
-  yScales: Map<GroupId, Scale>,
+  yScales: Map<GroupId, Scale<any>>,
   smallMultipleScales: SmallMultipleScales,
   minBrushDelta?: number,
 ): GroupBrushExtent[] | undefined {

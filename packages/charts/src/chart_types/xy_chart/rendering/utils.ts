@@ -54,7 +54,7 @@ export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
  * @param xScaleOffset
  * @internal
  */
-export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale, xScaleOffset: number): ClippedRanges {
+export function getClippedRanges(dataset: DataSeriesDatum[], xScale: Scale<any>, xScaleOffset: number): ClippedRanges {
   let firstNonNullX: number | null = null;
   let hasNull = false;
 
@@ -153,7 +153,7 @@ export function isPointOnGeometry(
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
 }
 
-const getScaleTypeValueValidator = (yScale: Scale): ((n: number) => boolean) => {
+const getScaleTypeValueValidator = (yScale: Scale<any>): ((n: number) => boolean) => {
   if (!isLogarithmicScale(yScale)) return () => true;
 
   const domainPolarity = getDomainPolarity(yScale.domain);
@@ -174,7 +174,7 @@ export type YDefinedFn = (
 ) => boolean;
 
 /** @internal */
-export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
+export function isYValueDefinedFn(yScale: Scale<any>, xScale: Scale<unknown>): YDefinedFn {
   const validator = getScaleTypeValueValidator(yScale);
   return (datum, getValueAccessor) => {
     const yValue = getValueAccessor(datum);
@@ -184,6 +184,7 @@ export function isYValueDefinedFn(yScale: Scale, xScale: Scale): YDefinedFn {
 
 /** @internal */
 export const CHROME_PINCH_BUG_EPSILON = 0.5;
+
 /**
  * Temporary fix for Chromium bug
  * Shift a small pixel value when pixel diff is <= 0.5px
@@ -196,7 +197,7 @@ function chromeRenderBugBuffer(y1: number, y0: number): number {
 }
 
 /** @internal */
-export function getY1ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatum) => number {
+export function getY1ScaledValueOrThrowFn(yScale: Scale<unknown>): (datum: DataSeriesDatum) => number {
   const datumAccessor = getYDatumValueFn();
   const scaleY0Value = getY0ScaledValueOrThrowFn(yScale);
   return (datum) => {
@@ -207,7 +208,7 @@ export function getY1ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatu
 }
 
 /** @internal */
-export function getY0ScaledValueOrThrowFn(yScale: Scale): (datum: DataSeriesDatum) => number {
+export function getY0ScaledValueOrThrowFn(yScale: Scale<any>): (datum: DataSeriesDatum) => number {
   const isLogScale = isLogarithmicScale(yScale);
   const domainPolarity = getDomainPolarity(yScale.domain);
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);
