@@ -32,8 +32,8 @@ export function isWithinRectBounds({ x, y }: Point, { startX, endX, startY, endY
 /** @internal */
 export function computeRectAnnotationDimensions(
   annotationSpec: RectAnnotationSpec,
-  yScales: Map<GroupId, Scale<any>>,
-  xScale: Scale<any>,
+  yScales: Map<GroupId, Scale<unknown>>,
+  xScale: Scale<unknown>,
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   chartRotation: Rotation,
