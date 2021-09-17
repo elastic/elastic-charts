@@ -64,13 +64,12 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     this.d3Scale = scaleBand<NonNullable<PrimitiveValue>>();
     this.d3Scale.domain(inputDomain.length > 0 ? inputDomain : [(undefined as unknown) as T]);
     this.d3Scale.range(range);
-    let safeBarPadding = 0;
+    const safeBarPadding = typeof barsPadding === 'object' ? 0 : clamp(barsPadding, 0, 1);
     if (typeof barsPadding === 'object') {
       this.d3Scale.paddingInner(barsPadding.inner);
       this.d3Scale.paddingOuter(barsPadding.outer);
       this.barsPadding = barsPadding.inner;
     } else {
-      safeBarPadding = clamp(barsPadding, 0, 1);
       this.d3Scale.paddingInner(safeBarPadding);
       this.barsPadding = safeBarPadding;
       this.d3Scale.paddingOuter(safeBarPadding / 2);
