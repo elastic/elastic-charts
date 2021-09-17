@@ -37,7 +37,6 @@ export interface Scale<T> {
   step: number;
   ticks: () => T[];
   scale: (value?: PrimitiveValue) => number | null;
-  scaleOrThrow(value?: PrimitiveValue): number;
   pureScale: (value?: PrimitiveValue) => number | null;
   invert: (value: number) => any;
   invertWithStep: (
@@ -61,6 +60,8 @@ export interface Scale<T> {
   unit?: string;
   isInverted: boolean;
   barsPadding: number;
+
+  scaleOrThrow(value?: PrimitiveValue): number;
 }
 
 /** @internal */
