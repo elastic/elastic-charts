@@ -95,7 +95,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
                 chartDimensions,
                 lastDrag,
                 rotation,
-                yScales as Map<GroupId, Scale<number>>,
+                yScales,
                 smallMultipleScales,
                 minBrushDelta,
               );
