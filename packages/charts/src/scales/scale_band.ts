@@ -89,7 +89,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     this.domain = (inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined]) as [T, T, ...T[]];
     this.range = range.slice();
     this.bandwidthPadding = this.bandwidth;
-    this.isInverted = inputDomain.length > 1 ? this.domain[0] > this.domain[1] : false; // fixme: we are assuming that it's ordered
+    this.isInverted = inputDomain.length > 1 && this.domain[0] > this.domain[1]; // fixme: we are assuming that it's ordered
     this.invertedScale = scaleQuantize<T>()
       .domain(range)
       .range(inputDomain.length > 0 ? [...new Set(inputDomain)] : [(undefined as unknown) as T]);
