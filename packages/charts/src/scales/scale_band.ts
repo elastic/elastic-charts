@@ -128,11 +128,11 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     return this.domain;
   }
 
-  invert(value: any) {
+  invert(value: number) {
     return this.invertedScale(value);
   }
 
-  invertWithStep(value: any) {
+  invertWithStep(value: number) {
     return {
       value: this.invertedScale(value),
       withinBandwidth: true,
@@ -143,7 +143,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     return this.domain.length < 2;
   }
 
-  isValueInDomain(value: any) {
+  isValueInDomain(value: T) {
     return this.domain.includes(value);
   }
 }
