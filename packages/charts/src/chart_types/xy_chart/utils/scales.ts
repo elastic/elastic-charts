@@ -84,20 +84,21 @@ export function computeXScale(options: XScaleOptions): Scale<number | string> {
         logBase,
       },
     );
+  } else {
+    return new ScaleContinuous(
+      { type, domain: domain as number[], range, nice },
+      {
+        bandwidth: 0,
+        minInterval,
+        timeZone,
+        totalBarsInCluster,
+        barsPadding,
+        desiredTickCount,
+        integersOnly,
+        logBase,
+      },
+    );
   }
-  return new ScaleContinuous(
-    { type, domain, range, nice },
-    {
-      bandwidth: 0,
-      minInterval,
-      timeZone,
-      totalBarsInCluster,
-      barsPadding,
-      desiredTickCount,
-      integersOnly,
-      logBase,
-    },
-  );
 }
 
 interface YScaleOptions {
