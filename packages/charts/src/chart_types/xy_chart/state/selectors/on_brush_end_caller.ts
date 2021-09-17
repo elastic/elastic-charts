@@ -95,7 +95,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
                 chartDimensions,
                 lastDrag,
                 rotation,
-                yScales,
+                yScales as Map<GroupId, Scale<number>>,
                 smallMultipleScales,
                 minBrushDelta,
               );
@@ -190,7 +190,7 @@ function getYBrushExtents(
   chartDimensions: Dimensions,
   lastDrag: DragState,
   rotation: Rotation,
-  yScales: Map<GroupId, Scale<number | string>>,
+  yScales: Map<GroupId, Scale<number>>,
   smallMultipleScales: SmallMultipleScales,
   minBrushDelta?: number,
 ): GroupBrushExtent[] | undefined {
@@ -212,8 +212,8 @@ function getYBrushExtents(
 
     const minPosScaled = yScale.invert(minPos);
     const maxPosScaled = yScale.invert(maxPos);
-    const minValue = clamp(minPosScaled, (yScale as Scale<number>).domain[0], maxPosScaled);
-    const maxValue = clamp(minPosScaled, maxPosScaled, (yScale as Scale<number>).domain[1]);
+    const minValue = clamp(minPosScaled, yScale.domain[0], maxPosScaled);
+    const maxValue = clamp(minPosScaled, maxPosScaled, yScale.domain[1]);
     yValues.push({ extent: [minValue, maxValue], groupId });
   });
   return yValues.length === 0 ? undefined : yValues;
