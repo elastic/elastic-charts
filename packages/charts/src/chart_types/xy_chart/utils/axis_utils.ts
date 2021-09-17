@@ -252,7 +252,7 @@ function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, he
 /** @internal */
 export function getAvailableTicks(
   axisSpec: AxisSpec,
-  scale: Scale<number>,
+  scale: Scale<number | string>,
   totalBarsInCluster: number,
   enableHistogramMode: boolean,
   fallBackTickFormatter: TickFormatter,
@@ -263,18 +263,15 @@ export function getAvailableTicks(
   const isSingleValueScale = scale.domain[0] === scale.domain[1];
   const hasAdditionalTicks = enableHistogramMode && scale.bandwidth > 0;
 
-  if (hasAdditionalTicks) {
-    const lastComputedTick = ticks[ticks.length - 1];
+  if (hasAdditionalTicks && !isSingleValueScale) {
+    // todo sure hope something ascertains this, otherwise we can't subtract in runtime:
+    const numericalTicks = ticks as number[];
+    const lastComputedTick = numericalTicks[numericalTicks.length - 1];
+    const penultimateComputedTick = numericalTicks[numericalTicks.length - 2];
+    const computedTickDistance = lastComputedTick - penultimateComputedTick;
+    const numTicks = scale.minInterval / computedTickDistance;
 
-    if (!isSingleValueScale) {
-      const penultimateComputedTick = ticks[ticks.length - 2];
-      const computedTickDistance = lastComputedTick - penultimateComputedTick;
-      const numTicks = scale.minInterval / computedTickDistance;
-
-      for (let i = 1; i <= numTicks; i++) {
-        ticks.push(i * computedTickDistance + lastComputedTick);
-      }
-    }
+    for (let i = 1; i <= numTicks; i++) ticks.push(i * computedTickDistance + lastComputedTick);
   }
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
   const band = scale.bandwidth / (1 - scale.barsPadding);
@@ -285,7 +282,8 @@ export function getAvailableTicks(
   const labelFormatter = axisSpec.labelFormat ?? tickFormatter;
 
   if (isSingleValueScale && hasAdditionalTicks) {
-    const [firstTickValue] = ticks;
+    // todo sure hope something ascertains this, otherwise we can't add in runtime:
+    const [firstTickValue] = ticks as number[];
     const firstLabel = tickFormatter(firstTickValue, tickFormatOptions);
     const firstTick = {
       value: firstTickValue,
@@ -293,7 +291,6 @@ export function getAvailableTicks(
       axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
       position: (scale.scale(firstTickValue) ?? 0) + offset,
     };
-
     const lastTickValue = firstTickValue + scale.minInterval;
     const lastLabel = tickFormatter(lastTickValue, tickFormatOptions);
     const lastTick = {
@@ -311,7 +308,7 @@ export function getAvailableTicks(
 /** @internal */
 export function enableDuplicatedTicks(
   axisSpec: AxisSpec,
-  scale: Scale<number>,
+  scale: Scale<number | string>,
   offset: number,
   fallBackTickFormatter: TickFormatter,
   tickFormatOptions?: TickFormatterOptions,
