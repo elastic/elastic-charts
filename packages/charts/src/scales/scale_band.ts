@@ -60,27 +60,8 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
      */
     barsPadding: Ratio | RelativeBandsPadding = 0,
   ) {
-    this.type = ScaleType.Ordinal;
-    this.d3Scale = scaleBand<NonNullable<PrimitiveValue>>();
-    this.d3Scale.domain(inputDomain.length > 0 ? inputDomain : [(undefined as unknown) as T]);
-    this.d3Scale.range(range);
     const isObjectPad = typeof barsPadding === 'object';
     const safeBarPadding = isObjectPad ? 0 : clamp(barsPadding, 0, 1);
-    if (isObjectPad) {
-      this.d3Scale.paddingInner(barsPadding.inner);
-      this.d3Scale.paddingOuter(barsPadding.outer);
-      this.barsPadding = barsPadding.inner;
-    } else {
-      this.d3Scale.paddingInner(safeBarPadding);
-      this.barsPadding = safeBarPadding;
-      this.d3Scale.paddingOuter(safeBarPadding / 2);
-    }
-
-    this.outerPadding = this.d3Scale.paddingOuter();
-    this.innerPadding = this.d3Scale.paddingInner();
-    this.bandwidth = this.d3Scale.bandwidth() || 0;
-    this.originalBandwidth = this.d3Scale.bandwidth() || 0;
-    this.step = this.d3Scale.step();
     // prefilling with undefined to ensure at least two elements, as the uses of `domain` index with 0 and 1 at least
     // [] => [undefined, undefined]
     // [7] => [7, 7]
@@ -92,14 +73,23 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
           ...new Array(Math.max(0, 2 - preDomain.length)).fill(preDomain.length > 0 ? preDomain[0] : undefined),
         ] as [T, T, ...T[]];
     */
+
+    this.type = ScaleType.Ordinal;
+    this.d3Scale = scaleBand<NonNullable<PrimitiveValue>>();
+    this.d3Scale.domain(inputDomain.length > 0 ? inputDomain : [(undefined as unknown) as T]);
+    this.d3Scale.range(range);
+    this.d3Scale.paddingInner(isObjectPad ? barsPadding.inner : safeBarPadding);
+    this.d3Scale.paddingOuter(isObjectPad ? barsPadding.outer : safeBarPadding / 2);
+    this.barsPadding = isObjectPad ? barsPadding.inner : safeBarPadding;
+    this.outerPadding = this.d3Scale.paddingOuter();
+    this.innerPadding = this.d3Scale.paddingInner();
+    this.bandwidth = overrideBandwidth ? overrideBandwidth * (1 - safeBarPadding) : this.d3Scale.bandwidth() || 0;
+    this.originalBandwidth = this.d3Scale.bandwidth() || 0;
+    this.step = this.d3Scale.step();
     this.domain = (inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined]) as [T, T, ...T[]];
     this.range = range.slice();
-    if (overrideBandwidth) {
-      this.bandwidth = overrideBandwidth * (1 - safeBarPadding);
-    }
     this.bandwidthPadding = this.bandwidth;
-    // TO FIX: we are assuming that it's ordered
-    this.isInverted = inputDomain.length > 1 ? this.domain[0] > this.domain[1] : false;
+    this.isInverted = inputDomain.length > 1 ? this.domain[0] > this.domain[1] : false; // fixme: we are assuming that it's ordered
     this.invertedScale = scaleQuantize<T>()
       .domain(range)
       .range(inputDomain.length > 0 ? [...new Set(inputDomain)] : [(undefined as unknown) as T]);
