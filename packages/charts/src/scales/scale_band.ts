@@ -50,7 +50,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
   private readonly d3Scale: D3ScaleBand<NonNullable<PrimitiveValue>>;
 
   constructor(
-    domain: T[],
+    inputDomain: T[],
     range: Range,
     overrideBandwidth?: number,
     /**
@@ -62,7 +62,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
   ) {
     this.type = ScaleType.Ordinal;
     this.d3Scale = scaleBand<NonNullable<PrimitiveValue>>();
-    this.d3Scale.domain(domain);
+    this.d3Scale.domain(inputDomain.length > 0 ? inputDomain : [(undefined as unknown) as T]);
     this.d3Scale.range(range);
     let safeBarPadding = 0;
     if (typeof barsPadding === 'object') {
@@ -81,15 +81,17 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     this.bandwidth = this.d3Scale.bandwidth() || 0;
     this.originalBandwidth = this.d3Scale.bandwidth() || 0;
     this.step = this.d3Scale.step();
-    this.domain = [...new Set(domain)];
+    this.domain = inputDomain.length > 0 ? [...new Set(inputDomain)] : [(undefined as unknown) as T];
     this.range = range.slice();
     if (overrideBandwidth) {
       this.bandwidth = overrideBandwidth * (1 - safeBarPadding);
     }
     this.bandwidthPadding = this.bandwidth;
     // TO FIX: we are assuming that it's ordered
-    this.isInverted = this.domain[0] > this.domain[1];
-    this.invertedScale = scaleQuantize<T>().domain(range).range(this.domain);
+    this.isInverted = inputDomain.length > 1 ? this.domain[0] > this.domain[1] : false;
+    this.invertedScale = scaleQuantize<T>()
+      .domain(range)
+      .range(inputDomain.length > 0 ? [...new Set(inputDomain)] : [(undefined as unknown) as T]);
     this.minInterval = 0;
   }
 
