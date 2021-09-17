@@ -81,15 +81,18 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     this.bandwidth = this.d3Scale.bandwidth() || 0;
     this.originalBandwidth = this.d3Scale.bandwidth() || 0;
     this.step = this.d3Scale.step();
-    const preDomain = [...new Set(inputDomain)];
     // prefilling with undefined to ensure at least two elements, as the uses of `domain` index with 0 and 1 at least
     // [] => [undefined, undefined]
     // [7] => [7, 7]
     // [7, 9, ...] => [7, 9, ...]
-    this.domain = [
-      ...preDomain,
-      ...new Array(Math.max(0, 2 - preDomain.length)).fill(preDomain.length > 0 ? preDomain[0] : undefined),
-    ] as [T, T, ...T[]];
+    /*
+        const preDomain = [...new Set(inputDomain)];
+        this.domain = [
+          ...preDomain,
+          ...new Array(Math.max(0, 2 - preDomain.length)).fill(preDomain.length > 0 ? preDomain[0] : undefined),
+        ] as [T, T, ...T[]];
+    */
+    this.domain = (inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined]) as [T, T, ...T[]];
     this.range = range.slice();
     if (overrideBandwidth) {
       this.bandwidth = overrideBandwidth * (1 - safeBarPadding);
