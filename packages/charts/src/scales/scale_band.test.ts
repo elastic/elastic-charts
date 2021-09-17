@@ -41,8 +41,8 @@ describe('Scale Band', () => {
     expect(scale.bandwidth).toBe(25);
     expect(scale.isValueInDomain('a')).toBe(true);
     expect(scale.isValueInDomain('b')).toBe(true);
-    expect(scale.isValueInDomain('z')).toBe(false);
-    expect(scale.isValueInDomain(null)).toBe(false);
+    expect(scale.isValueInDomain(('z' as unknown) as 'a' | 'b' | 'c' | 'd')).toBe(false);
+    expect(scale.isValueInDomain((null as unknown) as 'a' | 'b' | 'c' | 'd')).toBe(false);
   });
   it('shall scale remove domain duplicates', () => {
     const scale = new ScaleBand(['a', 'a', 'b', 'c', 'c', 'd'], [0, 100]);

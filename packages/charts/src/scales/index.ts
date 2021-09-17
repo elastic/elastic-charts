@@ -43,9 +43,9 @@ export interface Scale<T> {
     value: number,
     data: any[],
   ) => {
-    value: any;
+    value: T;
     withinBandwidth: boolean;
-  } | null;
+  };
   isSingleValue: () => boolean;
   /** Check if the passed value is within the scale domain */
   isValueInDomain: (value: any) => boolean;

@@ -476,9 +476,9 @@ export class ScaleContinuous implements Scale<number> {
   ): {
     value: number;
     withinBandwidth: boolean;
-  } | null {
+  } {
     if (data.length === 0) {
-      return null;
+      return { value: NaN, withinBandwidth: false };
     }
     const invertedValue = this.invert(value);
     const bisectValue = this.bandwidth === 0 ? invertedValue + this.minInterval / 2 : invertedValue;

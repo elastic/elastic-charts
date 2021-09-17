@@ -156,7 +156,7 @@ function getXBrushExtent(
 
   const offset = histogramMode ? 0 : -(xScale.bandwidth + xScale.bandwidthPadding) / 2;
   const invertValue = roundHistogramBrushValues
-    ? (value: number) => xScale.invertWithStep(value, xScale.domain)?.value
+    ? (value: number) => xScale.invertWithStep(value, xScale.domain).value
     : (value: number) => xScale.invert(value);
   const minPosScaled = invertValue(minPos + offset);
   const maxPosScaled = invertValue(maxPos + offset);
