@@ -94,6 +94,7 @@ module.exports = {
     /*
      * Standard rules
      */
+    '@typescript-eslint/object-curly-spacing': 0,
     'no-restricted-syntax': 0, // this is a good rule, for-of is good
     'no-console': process.env.NODE_ENV === 'production' ? 2 : 1,
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 1,

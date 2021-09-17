@@ -7,12 +7,12 @@
  */
 
 import { createPopper, Instance } from '@popperjs/core';
-import { useRef, useEffect, useCallback, ReactNode, useMemo } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-import { mergePartial, isDefined } from '../../utils/common';
+import { isDefined, mergePartial } from '../../utils/common';
 import { Padding } from '../../utils/dimensions';
-import { TooltipPortalSettings, PortalAnchorRef } from './types';
+import { PortalAnchorRef, TooltipPortalSettings } from './types';
 import { DEFAULT_POPPER_SETTINGS, getOrCreateNode, isHTMLElement } from './utils';
 
 /**
@@ -94,16 +94,12 @@ const TooltipPortalComponent = ({
    * Popper instance used to manage position of tooltip.
    */
   const popper = useRef<Instance | null>(null);
-
-  const popperSettings = useMemo(
-    () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
-
-    [settings],
-  );
-
+  const base = DEFAULT_POPPER_SETTINGS;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const ps = useMemo(() => mergePartial(base, settings, { mergeOptionalPartialValues: true }), [settings, base]);
   const anchorPosition = (anchor as PortalAnchorRef)?.position;
   const position = useMemo(() => (isHTMLElement(anchor) ? null : anchorPosition), [anchor, anchorPosition]);
-
   const destroyPopper = useCallback(() => {
     if (popper.current) {
       popper.current.destroy();
@@ -116,7 +112,7 @@ const TooltipPortalComponent = ({
       return;
     }
 
-    const { fallbackPlacements, placement, boundary, offset, boundaryPadding } = popperSettings;
+    const { fallbackPlacements, placement, boundary, offset, boundaryPadding } = ps;
     popper.current = createPopper(anchorNode.current, portalNode.current, {
       strategy: 'absolute',
       placement,
@@ -148,13 +144,7 @@ const TooltipPortalComponent = ({
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    visible,
-    popperSettings.fallbackPlacements,
-    popperSettings.placement,
-    popperSettings.boundary,
-    popperSettings.offset,
-  ]);
+  }, [visible, ps.fallbackPlacements, ps.placement, ps.boundary, ps.offset]);
 
   useEffect(() => {
     setPopper();
@@ -173,7 +163,7 @@ const TooltipPortalComponent = ({
   useEffect(() => {
     destroyPopper();
     setPopper();
-  }, [destroyPopper, setPopper, popperSettings]);
+  }, [destroyPopper, setPopper, ps]);
 
   useEffect(() => {
     if (!visible) {

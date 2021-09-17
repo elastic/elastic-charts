@@ -343,6 +343,8 @@ export class MockGlobalSpec {
   };
 
   static settings(partial?: Partial<SettingsSpec>): SettingsSpec {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBase, partial, { mergeOptionalPartialValues: true });
   }
 

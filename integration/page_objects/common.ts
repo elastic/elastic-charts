@@ -341,7 +341,7 @@ class CommonPage {
 
       expect(element).toMatchImageSnapshot();
     } catch (error) {
-      throw new Error(error);
+      throw new Error(String(error));
     }
   }
 

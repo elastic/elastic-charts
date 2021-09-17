@@ -1111,9 +1111,9 @@ export type HistogramModeAlignment = 'start' | 'center' | 'end';
 
 // @public (undocumented)
 export const HistogramModeAlignments: Readonly<{
-    Start: LineAlignSetting;
-    Center: LineAlignSetting;
-    End: LineAlignSetting;
+    Start: HistogramModeAlignment;
+    Center: HistogramModeAlignment;
+    End: HistogramModeAlignment;
 }>;
 
 // @public (undocumented)
