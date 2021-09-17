@@ -446,7 +446,7 @@ export function getAxesGeometries(
         const vertical = isVerticalAxis(axisSpec.position);
         const allTicks = getAvailableTicks(
           axisSpec,
-          scale as Scale<number>,
+          scale,
           totalGroupsCount,
           enableHistogramMode,
           vertical ? fallBackTickFormatter : defaultTickFormatter,
