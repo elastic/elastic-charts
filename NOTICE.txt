@@ -1,7 +1,6 @@
 This product includes code that is adapted from fast-deep-equal@3.1.1,
 which is available under a "MIT" license.
 
-MIT License
 
 Copyright (c) 2017 Evgeny Poberezkin
 
