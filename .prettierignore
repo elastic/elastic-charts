@@ -3,6 +3,7 @@
 .out/
 .idea/
 .vscode/
+.github/
 .temp/
 **/dist/
 coverage/
