@@ -16,11 +16,10 @@ const getHighlightedLegendPath = (state: GlobalChartState) => state.interactions
 /** @internal */
 export const getHighlightedSeriesSelector = createCustomCachedSelector(
   [getHighlightedLegendPath, computeLegendSelector],
-  (highlightedLegendPaths, legendItems): LegendItem | undefined =>
-    // it got simplified but todo its algorithmic complexity is still O(L * M * N)
-    highlightedLegendPaths.length > 0
-      ? legendItems.find(({ seriesIdentifiers }) =>
-          seriesIdentifiers.some(({ key }) => highlightedLegendPaths.some(({ value }) => value === key)),
-        )
-      : undefined,
+  (highlightedLegendPaths, legendItems): LegendItem | undefined => {
+    if (highlightedLegendPaths.length > 0) {
+      const lookup = new Set(highlightedLegendPaths.map(({ value }) => value));
+      return legendItems.find(({ seriesIdentifiers }) => seriesIdentifiers.some(({ key }) => lookup.has(key)));
+    }
+  },
 );
