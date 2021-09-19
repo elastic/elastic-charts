@@ -112,12 +112,9 @@ function computeYDomain(
 ) {
   const yValues = new Set<any>();
   dataSeries.forEach(({ data }) => {
-    for (let i = 0; i < data.length; i++) {
-      const datum = data[i];
+    for (const datum of data) {
       yValues.add(datum.y1);
-      if (hasZeroBaselineSpecs && datum.y0 !== null) {
-        yValues.add(datum.y0);
-      }
+      if (hasZeroBaselineSpecs && datum.y0 !== null) yValues.add(datum.y0);
     }
   });
   if (yValues.size === 0) {
