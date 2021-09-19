@@ -134,23 +134,11 @@ function getMinInterval(computedMinInterval: number, size: number, customMinInte
  * @internal
  */
 export function findMinInterval(xValues: number[]): number {
-  const valuesLength = xValues.length;
-  if (valuesLength <= 0) {
-    return 0;
-  }
-  if (valuesLength === 1) {
-    return 1;
-  }
-  const sortedValues = [...xValues].sort(compareByValueAsc);
-  let i;
-  let minInterval = Math.abs(sortedValues[1] - sortedValues[0]);
-  for (i = 1; i < valuesLength - 1; i++) {
-    const current = sortedValues[i];
-    const next = sortedValues[i + 1];
-    const interval = Math.abs(next - current);
-    minInterval = Math.min(minInterval, interval);
-  }
-  return minInterval;
+  return xValues.length < 2
+    ? xValues.length
+    : [...xValues].sort(compareByValueAsc).reduce((minInterval, current, i, sortedValues) => {
+        return i < xValues.length - 1 ? Math.min(minInterval, Math.abs(sortedValues[i + 1] - current)) : minInterval;
+      }, Infinity);
 }
 
 /**
@@ -195,18 +183,8 @@ export function convertXScaleTypes(
     const scaleType = scaleTypes.values().next().value;
     const timeZone = timeZones.size > 1 ? 'utc' : timeZones.values().next().value;
     return { type: scaleType, nice, isBandScale, timeZone };
+  } else {
+    const type = scaleTypes.has(ScaleType.Ordinal) ? ScaleType.Ordinal : ScaleType.Linear;
+    return { type, nice, isBandScale };
   }
-
-  if (scaleTypes.size > 1 && scaleTypes.has(ScaleType.Ordinal)) {
-    return {
-      type: ScaleType.Ordinal,
-      nice,
-      isBandScale,
-    };
-  }
-  return {
-    type: ScaleType.Linear,
-    nice,
-    isBandScale,
-  };
 }
