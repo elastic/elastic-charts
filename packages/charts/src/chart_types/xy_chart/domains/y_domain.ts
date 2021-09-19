@@ -189,28 +189,11 @@ export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean)
  * If none of the above, than coerce to the specified scale.
  * @internal
  */
-export function coerceYScaleTypes(
-  scales: Array<{ type: ScaleContinuousType; nice: boolean }>,
-): {
-  type: ScaleContinuousType;
-  nice: boolean;
-} {
-  const scaleCollection = scales.reduce<{
-    types: Set<ScaleContinuousType>;
-    nice: boolean[];
-  }>(
-    (acc, scale) => {
-      acc.types.add(scale.type);
-      acc.nice.push(scale.nice);
-      return acc;
-    },
-    {
-      types: new Set(),
-      nice: [],
-    },
-  );
+export function coerceYScaleTypes(scales: Array<{ type: ScaleContinuousType; nice: boolean }>) {
+  const scaleTypes = new Set(scales.map((s) => s.type));
+  const niceDomains = scales.map((s) => s.nice);
   return {
-    type: scaleCollection.types.size === 1 ? scaleCollection.types.values().next().value : ScaleType.Linear,
-    nice: !scaleCollection.nice.includes(false),
+    type: scaleTypes.size === 1 ? scaleTypes.values().next().value : ScaleType.Linear,
+    nice: !niceDomains.includes(false),
   };
 }
