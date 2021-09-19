@@ -27,37 +27,28 @@ export function mergeYCustomDomainsByGroupId(
     }
 
     if (isXDomain(spec.position, chartRotation)) {
-      const errorMessage = `[Axis ${id}]: custom domain for xDomain should be defined in Settings`;
-      throw new Error(errorMessage);
+      throw new Error(`[Axis ${id}]: custom domain for xDomain should be defined in Settings`);
     }
 
     if (isCompleteBound(domain) && domain.min > domain.max) {
-      const errorMessage = `[Axis ${id}]: custom domain is invalid, min is greater than max`;
-      throw new Error(errorMessage);
+      throw new Error(`[Axis ${id}]: custom domain is invalid, min is greater than max`);
     }
 
     const prevGroupDomain = domainsByGroupId.get(groupId);
 
     if (prevGroupDomain) {
-      const prevDomain = prevGroupDomain;
-      const prevMin = isLowerBound(prevDomain) ? prevDomain.min : undefined;
-      const prevMax = isUpperBound(prevDomain) ? prevDomain.max : undefined;
-
-      let max = prevMax;
-      let min = prevMin;
-
-      if (isCompleteBound(domain)) {
-        min = prevMin === undefined ? domain.min : Math.min(domain.min, prevMin);
-        max = prevMax === undefined ? domain.max : Math.max(domain.max, prevMax);
-      } else if (isLowerBound(domain)) {
-        min = prevMin === undefined ? domain.min : Math.min(domain.min, prevMin);
-      } else if (isUpperBound(domain)) {
-        max = prevMax === undefined ? domain.max : Math.max(domain.max, prevMax);
-      }
+      const min = Math.min(
+        ...(isLowerBound(domain) ? [domain.min] : []),
+        ...(prevGroupDomain && isLowerBound(prevGroupDomain) ? [prevGroupDomain.min] : []),
+      );
+      const max = Math.max(
+        ...(isUpperBound(domain) ? [domain.max] : []),
+        ...(prevGroupDomain && isUpperBound(prevGroupDomain) ? [prevGroupDomain.max] : []),
+      );
 
       const mergedDomain = {
-        min,
-        max,
+        min: Number.isFinite(min) ? min : undefined,
+        max: Number.isFinite(max) ? max : undefined,
       };
 
       if (isBounded(mergedDomain)) {
