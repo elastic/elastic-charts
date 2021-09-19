@@ -116,7 +116,8 @@ export function getExtraValueMap(
     const [key, arrayNode] = branch;
     const { value, path, [CHILDREN_KEY]: children } = arrayNode;
 
-    if (key != null) {
+    // todo null check under what circumstances key can be a null, as the type says it can't
+    if (key !== null) {
       const values: LegendItemExtraValues = new Map();
       const formattedValue = valueFormatter ? valueFormatter(value) : value;
 

@@ -38,10 +38,7 @@ export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: ScaleCon
       ({ seriesType, isFiltered }) => seriesType === SeriesType.Bar || (seriesType === SeriesType.Area && !isFiltered),
     );
     const domain = mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, yScaleAPIConfig);
-    if (!domain) {
-      return acc;
-    }
-    return [...acc, domain];
+    return domain ? [...acc, domain] : acc;
   }, []);
 }
 
@@ -122,7 +119,7 @@ function computeYDomain(
     for (let i = 0; i < data.length; i++) {
       const datum = data[i];
       yValues.add(datum.y1);
-      if (hasZeroBaselineSpecs && datum.y0 != null) {
+      if (hasZeroBaselineSpecs && datum.y0 !== null) {
         yValues.add(datum.y0);
       }
     }

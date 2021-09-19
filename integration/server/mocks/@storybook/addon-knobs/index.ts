@@ -46,16 +46,14 @@ export function text(name: string, dftValue: string, groupId?: string) {
   const params = getParams();
   const key = getKnobKey(name, groupId);
   const value = params.get(key);
-  if (value != null) {
-    // the # used for the color knob needs to be escaped on the URL and unescaped here
-    return unescape(value);
-  }
-  return dftValue;
+  // the # used for the color knob needs to be escaped on the URL and unescaped here
+  return value === null ? dftValue : unescape(value);
 }
 
 export function array(name: string, dftValues: unknown[], options: any, groupId?: string) {
   const params = getParams();
   const values = [];
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   for (const [key, value] of params) {
     if (key.startsWith(`${getKnobKey(name, groupId)}[`)) {

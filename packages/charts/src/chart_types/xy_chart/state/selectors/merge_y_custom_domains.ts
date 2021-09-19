@@ -47,12 +47,12 @@ export function mergeYCustomDomainsByGroupId(
       let min = prevMin;
 
       if (isCompleteBound(domain)) {
-        min = prevMin != null ? Math.min(domain.min, prevMin) : domain.min;
-        max = prevMax != null ? Math.max(domain.max, prevMax) : domain.max;
+        min = prevMin === undefined ? domain.min : Math.min(domain.min, prevMin);
+        max = prevMax === undefined ? domain.max : Math.max(domain.max, prevMax);
       } else if (isLowerBound(domain)) {
-        min = prevMin != null ? Math.min(domain.min, prevMin) : domain.min;
+        min = prevMin === undefined ? domain.min : Math.min(domain.min, prevMin);
       } else if (isUpperBound(domain)) {
-        max = prevMax != null ? Math.max(domain.max, prevMax) : domain.max;
+        max = prevMax === undefined ? domain.max : Math.max(domain.max, prevMax);
       }
 
       const mergedDomain = {

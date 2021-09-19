@@ -11,22 +11,22 @@ import { CompleteBoundedDomain, LowerBoundedDomain, UpperBoundedDomain, DomainRa
 
 /** @internal */
 export function isLowerBound(domain: Partial<CompleteBoundedDomain>): domain is LowerBoundedDomain {
-  return domain.min != null;
+  return domain.min !== undefined;
 }
 
 /** @internal */
 export function isUpperBound(domain: Partial<CompleteBoundedDomain>): domain is UpperBoundedDomain {
-  return domain.max != null;
+  return domain.max !== undefined;
 }
 
 /** @internal */
 export function isCompleteBound(domain: Partial<CompleteBoundedDomain>): domain is CompleteBoundedDomain {
-  return domain.max != null && domain.min != null;
+  return domain.max !== undefined && domain.min !== undefined;
 }
 
 /** @internal */
 export function isBounded(domain: Partial<CompleteBoundedDomain>): domain is DomainRange {
-  return domain.max != null || domain.min != null;
+  return domain.max !== undefined || domain.min !== undefined;
 }
 
 /** @internal */
