@@ -177,14 +177,14 @@ export function convertXScaleTypes(
       isBandScale: false,
     };
   }
+  const type =
+    scaleTypes.size === 1
+      ? scaleTypes.values().next().value // pick the only scaleType present
+      : scaleTypes.has(ScaleType.Ordinal)
+      ? ScaleType.Ordinal // otherwise lean Ordinal
+      : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether present or not
   const nice = areAllNiceDomain(niceDomainConfigs);
   const isBandScale = seriesTypes.has(SeriesType.Bar);
-  if (scaleTypes.size === 1) {
-    const scaleType = scaleTypes.values().next().value;
-    const timeZone = timeZones.size > 1 ? 'utc' : timeZones.values().next().value;
-    return { type: scaleType, nice, isBandScale, timeZone };
-  } else {
-    const type = scaleTypes.has(ScaleType.Ordinal) ? ScaleType.Ordinal : ScaleType.Linear;
-    return { type, nice, isBandScale };
-  }
+  const timeZone = timeZones.size > 1 ? 'utc' : timeZones.values().next().value;
+  return { type, nice, isBandScale, timeZone };
 }
