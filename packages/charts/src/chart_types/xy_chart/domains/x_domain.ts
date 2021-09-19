@@ -155,7 +155,7 @@ export function convertXScaleTypes(
   type: XScaleType;
   nice: boolean;
   isBandScale: boolean;
-  timeZone?: string;
+  timeZone: string;
 } {
   const seriesTypes = new Set<string | undefined>(specs.map((s) => s.seriesType));
   const scaleTypes = new Set(specs.map((s) => getXScaleTypeFromSpec(s.xScaleType)));
@@ -165,8 +165,8 @@ export function convertXScaleTypes(
     scaleTypes.size === 1
       ? scaleTypes.values().next().value // pick the only scaleType present
       : scaleTypes.has(ScaleType.Ordinal)
-      ? ScaleType.Ordinal // otherwise lean Ordinal
-      : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether present or not
+      ? ScaleType.Ordinal
+      : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether it's present or not
   const nice = !niceDomains.includes(false);
   const isBandScale = seriesTypes.has(SeriesType.Bar);
   const timeZone = timeZones.size === 1 ? timeZones.values().next().value : 'utc';
