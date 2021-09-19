@@ -41,10 +41,8 @@ export function computeOrdinalDataDomain<T>(data: T[], sorted: boolean, removeNu
 function getPaddedDomain(start: number, end: number, domainOptions: YDomainRange): [number, number] {
   const { padding, paddingUnit = DomainPaddingUnit.Domain } = domainOptions;
   if (!padding || paddingUnit === DomainPaddingUnit.Pixel) return [start, end];
-  const computedPadding = Math.abs(padding) * (paddingUnit === DomainPaddingUnit.Domain ? 1 : Math.abs(end - start));
-  return computedPadding === 0
-    ? [start, end]
-    : constrainPadding(start, end, start - computedPadding, end + computedPadding, domainOptions.constrainPadding);
+  const computedPadding = Math.abs(padding * (paddingUnit === DomainPaddingUnit.Domain ? 1 : end - start));
+  return constrainPadding(start, end, start - computedPadding, end + computedPadding, domainOptions.constrainPadding);
 }
 
 /** @internal */
@@ -66,7 +64,6 @@ export function computeDomainExtent(
 
 /**
  * Get continuous domain from data. May yield domain to constrain to zero baseline.
- * When `domainOptions` is null the domain will not be altered
  * @internal
  */
 export function computeContinuousDataDomain(
