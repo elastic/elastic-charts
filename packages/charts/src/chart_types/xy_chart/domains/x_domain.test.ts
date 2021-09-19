@@ -662,7 +662,7 @@ describe('X Domain', () => {
       xValues,
     ).domain;
     expect(domain).toEqual([1, 5]);
-    expect(Logger.warn).toBeCalledWith('custom xDomain is invalid, min is greater than max. Custom domain is ignored.');
+    expect(Logger.warn).toBeCalledWith('Custom xDomain is invalid: min is greater than max. Custom domain is ignored.');
   });
 
   test('should account for custom domain when merging a linear domain: lower bounded domain', () => {
@@ -683,7 +683,7 @@ describe('X Domain', () => {
     );
     expect(domain).toEqual([1, 5]);
     expect(Logger.warn).toBeCalledWith(
-      'custom xDomain is invalid, custom min is greater than computed max. Custom domain is ignored.',
+      'Custom xDomain is invalid: custom min is greater than computed max. Custom domain is ignored.',
     );
   });
 
@@ -705,7 +705,7 @@ describe('X Domain', () => {
     );
     expect(domain).toEqual([1, 5]);
     expect(Logger.warn).toBeCalledWith(
-      'custom xDomain is invalid, computed min is greater than custom max. Custom domain is ignored.',
+      'Custom xDomain is invalid: computed min is greater than custom max. Custom domain is ignored.',
     );
   });
 
@@ -760,7 +760,7 @@ describe('X Domain', () => {
       );
       expect(minInterval).toEqual(1);
       const expectedWarning =
-        'custom xDomain is invalid, custom minInterval is greater than computed minInterval. Using computed minInterval.';
+        'Custom xDomain is invalid: custom minInterval is greater than computed minInterval. Using computed minInterval.';
       expect(Logger.warn).toBeCalledWith(expectedWarning);
     });
 
@@ -772,7 +772,7 @@ describe('X Domain', () => {
       );
       expect(minInterval).toEqual(1);
       const expectedWarning =
-        'custom xDomain is invalid, custom minInterval is less than 0. Using computed minInterval.';
+        'Custom xDomain is invalid: custom minInterval is less than 0. Using computed minInterval.';
       expect(Logger.warn).toBeCalledWith(expectedWarning);
     });
   });

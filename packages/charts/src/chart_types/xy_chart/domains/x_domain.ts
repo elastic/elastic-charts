@@ -41,7 +41,6 @@ export function mergeXDomain(
       } else {
         if (fallbackScale === ScaleType.Ordinal) {
           Logger.warn(`xDomain ignored for fallback ordinal scale. Options to resolve:
-
 1) Correct data to match ${type} scale type (see previous warning)
 2) Change xScaleType to ordinal and set xDomain to Domain array`);
         } else {
@@ -52,11 +51,8 @@ export function mergeXDomain(
       }
     }
   } else {
-    seriesXComputedDomains = computeContinuousDataDomain([...xValues] as number[], type, {
-      min: NaN,
-      max: NaN,
-      fit: true,
-    });
+    const domainOptions = { min: NaN, max: NaN, fit: true };
+    seriesXComputedDomains = computeContinuousDataDomain([...xValues] as number[], type, domainOptions);
     let customMinInterval: undefined | number;
 
     if (customDomain) {
@@ -68,14 +64,14 @@ export function mergeXDomain(
 
         if (Number.isFinite(customDomain.min) && Number.isFinite(customDomain.max)) {
           if (customDomain.min > customDomain.max) {
-            Logger.warn('custom xDomain is invalid, min is greater than max. Custom domain is ignored.');
+            Logger.warn('Custom xDomain is invalid: min is greater than max. Custom domain is ignored.');
           } else {
             seriesXComputedDomains = [customDomain.min, customDomain.max];
           }
         } else if (Number.isFinite(customDomain.min)) {
           if (customDomain.min > computedDomainMax) {
             Logger.warn(
-              'custom xDomain is invalid, custom min is greater than computed max. Custom domain is ignored.',
+              'Custom xDomain is invalid: custom min is greater than computed max. Custom domain is ignored.',
             );
           } else {
             seriesXComputedDomains = [customDomain.min, computedDomainMax];
@@ -83,7 +79,7 @@ export function mergeXDomain(
         } else if (Number.isFinite(customDomain.max)) {
           if (computedDomainMin > customDomain.max) {
             Logger.warn(
-              'custom xDomain is invalid, computed min is greater than custom max. Custom domain is ignored.',
+              'Custom xDomain is invalid: computed min is greater than custom max. Custom domain is ignored.',
             );
           } else {
             seriesXComputedDomains = [computedDomainMin, customDomain.max];
@@ -114,12 +110,12 @@ function getMinInterval(computedMinInterval: number, size: number, customMinInte
   // Allow greater custom min if xValues has 1 member.
   if (size > 1 && customMinInterval > computedMinInterval) {
     Logger.warn(
-      'custom xDomain is invalid, custom minInterval is greater than computed minInterval. Using computed minInterval.',
+      'Custom xDomain is invalid: custom minInterval is greater than computed minInterval. Using computed minInterval.',
     );
     return computedMinInterval;
   }
   if (customMinInterval < 0) {
-    Logger.warn('custom xDomain is invalid, custom minInterval is less than 0. Using computed minInterval.');
+    Logger.warn('Custom xDomain is invalid: custom minInterval is less than 0. Using computed minInterval.');
     return computedMinInterval;
   }
 

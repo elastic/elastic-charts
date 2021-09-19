@@ -163,11 +163,6 @@ export function groupSeriesByYGroup(specs: YBasicSeriesSpec[]) {
 
 /**
  * Histogram mode is forced on every specs if at least one specs has that prop flagged
- * @remarks
- * After mobx->redux https://github.com/elastic/elastic-charts/pull/281 we keep the specs untouched on mount
- * in MobX version, the stackAccessors was programmatically added to every histogram specs
- * in ReduX version, we left untouched the specs, so we have to manually check that
- * @param specs
  * @internal
  */
 export function isHistogramEnabled(specs: YBasicSeriesSpec[]) {
@@ -176,8 +171,6 @@ export function isHistogramEnabled(specs: YBasicSeriesSpec[]) {
 
 /**
  * Return true if the passed spec needs to be rendered as stack
- * @param spec
- * @param histogramEnabled
  * @internal
  */
 export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean) {
@@ -194,7 +187,6 @@ export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean)
  * If there are multiple continuous scale types, is coerced to linear.
  * If there are at least one Ordinal scale type, is coerced to ordinal.
  * If none of the above, than coerce to the specified scale.
- * @returns {ScaleContinuousType}
  * @internal
  */
 export function coerceYScaleTypes(
