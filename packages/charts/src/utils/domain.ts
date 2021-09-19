@@ -81,23 +81,17 @@ export function computeDomainExtent(
   domain: [number, number] | [undefined, undefined],
   domainOptions?: YDomainRange,
 ): [number, number] {
-  if (domain[0] == null || domain[1] == null) return [0, 0];
+  if (domain[0] === undefined) return [0, 0]; // if domain[1] is undefined, domain[0] is undefined too
 
   const inverted = domain[0] > domain[1];
   const paddedDomain = (([start, end]: Range): Range => {
     const [paddedStart, paddedEnd] = getPaddedDomain(start, end, domainOptions);
-
-    if (paddedStart >= 0 && paddedEnd >= 0) {
-      return domainOptions?.fit ? [paddedStart, paddedEnd] : [0, paddedEnd];
-    }
-    if (paddedStart < 0 && paddedEnd < 0) {
-      return domainOptions?.fit ? [paddedStart, paddedEnd] : [paddedStart, 0];
-    }
-
+    if (paddedStart >= 0 && paddedEnd >= 0) return domainOptions?.fit ? [paddedStart, paddedEnd] : [0, paddedEnd];
+    if (paddedStart < 0 && paddedEnd < 0) return domainOptions?.fit ? [paddedStart, paddedEnd] : [paddedStart, 0];
     return [paddedStart, paddedEnd];
-  })(inverted ? (domain.slice().reverse() as Range) : domain);
+  })(inverted ? [domain[1], domain[0]] : domain);
 
-  return inverted ? (paddedDomain.slice().reverse() as Range) : paddedDomain;
+  return inverted ? [paddedDomain[1], paddedDomain[0]] : paddedDomain;
 }
 
 /**

@@ -109,7 +109,7 @@ export function mergeXDomain(
 }
 
 function getMinInterval(computedMinInterval: number, size: number, customMinInterval?: number): number {
-  if (customMinInterval == null) {
+  if (customMinInterval === undefined) {
     return computedMinInterval;
   }
   // Allow greater custom min if xValues has 1 member.

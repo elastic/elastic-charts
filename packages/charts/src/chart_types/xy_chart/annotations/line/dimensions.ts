@@ -155,7 +155,7 @@ function computeXDomainLineAnnotationDimensions(
       if (isHistogramMode) {
         const offset = computeXScaleOffset(xScale, true);
         const pureScaledValue = xScale.pureScale(dataValue);
-        if (pureScaledValue == null) {
+        if (pureScaledValue === null) {
           return;
         }
         annotationValueXPosition = pureScaledValue - offset;
@@ -172,13 +172,13 @@ function computeXDomainLineAnnotationDimensions(
     } else {
       return;
     }
-    if (isNaN(annotationValueXPosition) || annotationValueXPosition == null) {
+    if (isNaN(annotationValueXPosition) || annotationValueXPosition === null) {
       return;
     }
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
-        if (annotationValueXPosition == null) {
+        if (annotationValueXPosition === null) {
           return;
         }
 
