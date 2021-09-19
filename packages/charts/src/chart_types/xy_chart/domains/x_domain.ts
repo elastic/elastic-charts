@@ -26,7 +26,6 @@ export function mergeXDomain(
   xValues: Set<string | number>,
   fallbackScale?: XScaleType,
 ): XDomain {
-  const values = [...xValues.values()];
   let seriesXComputedDomains;
   let minInterval = 0;
 
@@ -35,7 +34,7 @@ export function mergeXDomain(
       Logger.warn(`Each X value in a ${type} x scale needs be be a number. Using ordinal x scale as fallback.`);
     }
 
-    seriesXComputedDomains = computeOrdinalDataDomain(values, identity, false, true);
+    seriesXComputedDomains = computeOrdinalDataDomain([...xValues], identity, false, true);
     if (customDomain) {
       if (Array.isArray(customDomain)) {
         seriesXComputedDomains = [...customDomain];
@@ -53,7 +52,7 @@ export function mergeXDomain(
       }
     }
   } else {
-    seriesXComputedDomains = computeContinuousDataDomain(values, identity, type, {
+    seriesXComputedDomains = computeContinuousDataDomain([...xValues], identity, type, {
       min: NaN,
       max: NaN,
       fit: true,
@@ -92,7 +91,7 @@ export function mergeXDomain(
         }
       }
     }
-    const computedMinInterval = findMinInterval(values as number[]);
+    const computedMinInterval = findMinInterval([...xValues.values()] as number[]);
     minInterval = getMinInterval(computedMinInterval, xValues.size, customMinInterval);
   }
 

@@ -127,7 +127,7 @@ function computeYDomain(
   }
   // padding already applied, set to 0 here to avoid duplicating
   const domainOptions = { min: NaN, max: NaN, ...customDomain, padding: 0 };
-  return computeContinuousDataDomain([...yValues.values()], identity, scaleType, domainOptions);
+  return computeContinuousDataDomain([...yValues], identity, scaleType, domainOptions);
 }
 
 /** @internal */
