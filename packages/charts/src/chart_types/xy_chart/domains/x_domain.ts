@@ -167,13 +167,6 @@ export function convertXScaleTypes(
     scaleTypes.add(getXScaleTypeFromSpec(spec.xScaleType));
     if (spec.timeZone) timeZones.add(spec.timeZone.toLowerCase());
   });
-  if (specs.length === 0 || seriesTypes.size === 0 || scaleTypes.size === 0) {
-    return {
-      type: ScaleType.Linear,
-      nice: true,
-      isBandScale: false,
-    };
-  }
   const type =
     scaleTypes.size === 1
       ? scaleTypes.values().next().value // pick the only scaleType present
@@ -182,6 +175,6 @@ export function convertXScaleTypes(
       : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether present or not
   const nice = !niceDomains.includes(false);
   const isBandScale = seriesTypes.has(SeriesType.Bar);
-  const timeZone = timeZones.size > 1 ? 'utc' : timeZones.values().next().value;
+  const timeZone = timeZones.size === 1 ? timeZones.values().next().value : 'utc';
   return { type, nice, isBandScale, timeZone };
 }
