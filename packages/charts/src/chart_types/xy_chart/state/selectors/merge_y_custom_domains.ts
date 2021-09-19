@@ -37,18 +37,15 @@ export function mergeYCustomDomainsByGroupId(
     const prevGroupDomain = domainsByGroupId.get(groupId);
 
     if (prevGroupDomain) {
-      const min = Math.min(
-        ...(isLowerBound(domain) ? [domain.min] : []),
-        ...(prevGroupDomain && isLowerBound(prevGroupDomain) ? [prevGroupDomain.min] : []),
-      );
-      const max = Math.max(
-        ...(isUpperBound(domain) ? [domain.max] : []),
-        ...(prevGroupDomain && isUpperBound(prevGroupDomain) ? [prevGroupDomain.max] : []),
-      );
-
       const mergedDomain = {
-        min: Number.isFinite(min) ? min : undefined,
-        max: Number.isFinite(max) ? max : undefined,
+        min: Math.min(
+          ...(isLowerBound(domain) ? [domain.min] : []),
+          ...(prevGroupDomain && isLowerBound(prevGroupDomain) ? [prevGroupDomain.min] : []),
+        ),
+        max: Math.max(
+          ...(isUpperBound(domain) ? [domain.max] : []),
+          ...(prevGroupDomain && isUpperBound(prevGroupDomain) ? [prevGroupDomain.max] : []),
+        ),
       };
 
       if (isBounded(mergedDomain)) {
