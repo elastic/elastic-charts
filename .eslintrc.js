@@ -89,7 +89,7 @@ module.exports = {
     'jsx-a11y/mouse-events-have-key-events': 1,
     'jsx-a11y/click-events-have-key-events': 1,
     '@typescript-eslint/member-ordering': 1,
-    eqeqeq: 1,
+    eqeqeq: 2,
 
     /*
      * Standard rules
