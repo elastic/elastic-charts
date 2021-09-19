@@ -39,12 +39,12 @@ export function mergeYCustomDomainsByGroupId(
     if (prevGroupDomain) {
       const mergedDomain = {
         min: Math.min(
-          ...(isLowerBound(domain) ? [domain.min] : []),
-          ...(prevGroupDomain && isLowerBound(prevGroupDomain) ? [prevGroupDomain.min] : []),
+          isLowerBound(domain) ? domain.min : Infinity,
+          prevGroupDomain && isLowerBound(prevGroupDomain) ? prevGroupDomain.min : Infinity,
         ),
         max: Math.max(
-          ...(isUpperBound(domain) ? [domain.max] : []),
-          ...(prevGroupDomain && isUpperBound(prevGroupDomain) ? [prevGroupDomain.max] : []),
+          isUpperBound(domain) ? domain.max : -Infinity,
+          prevGroupDomain && isUpperBound(prevGroupDomain) ? prevGroupDomain.max : -Infinity,
         ),
       };
 
