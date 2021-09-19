@@ -29,12 +29,8 @@ function flatSlicesNames(
     // format the key with the layer formatter
     const layer = layers[depth - 1];
     const formatter = layer?.nodeLabel;
-    // todo let should be revised for replacement
-    let formattedValue = '';
     // todo null check under what circumstances key can be a null, as the type says it can't
-    if (key !== null) {
-      formattedValue = formatter ? formatter(key) : `${key}`;
-    }
+    const formattedValue = key === null ? '' : formatter ? formatter(key) : `${key}`;
     // preventing errors from external formatters
     if (formattedValue && formattedValue !== HIERARCHY_ROOT_KEY) {
       // save only the max depth, so we can compute the the max extension of the legend
