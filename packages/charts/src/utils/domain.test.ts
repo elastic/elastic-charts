@@ -96,9 +96,7 @@ describe('utils/domain', () => {
   });
 
   test('should compute continuous data domain: empty data not scaled to extent', () => {
-    const data: any[] = [];
-    const accessor = (datum: any) => datum.x;
-    const continuousDataDomain = computeContinuousDataDomain(data.map(accessor), ScaleType.Linear, undefined);
+    const continuousDataDomain = computeContinuousDataDomain([], ScaleType.Linear, undefined);
     const expectedContinuousDomain = [0, 0];
 
     expect(continuousDataDomain).toEqual(expectedContinuousDomain);

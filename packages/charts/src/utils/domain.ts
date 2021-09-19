@@ -18,25 +18,18 @@ export type ContinuousDomain = [min: number, max: number];
 /** @public */
 export type Range = [min: number, max: number];
 
-/**
- * Returns padded domain given constrain
- * @internal */
-export function constrainPadding(
+function constrainPadding(
   start: number,
   end: number,
   newStart: number,
   newEnd: number,
   constrain: boolean = true,
 ): [number, number] {
-  if (constrain) {
-    if (start < end) {
-      return [start >= 0 && newStart < 0 ? 0 : newStart, end <= 0 && newEnd > 0 ? 0 : newEnd];
-    }
-
-    return [end >= 0 && newEnd < 0 ? 0 : newEnd, start <= 0 && newStart > 0 ? 0 : newStart];
-  }
-
-  return [newStart, newEnd];
+  return constrain
+    ? start < end
+      ? [newStart >= 0 || start < 0 ? newStart : 0, newEnd <= 0 || end > 0 ? newEnd : 0]
+      : [newEnd >= 0 || end < 0 ? newEnd : 0, newStart <= 0 || start > 0 ? newStart : 0]
+    : [newStart, newEnd];
 }
 
 /** @internal */
