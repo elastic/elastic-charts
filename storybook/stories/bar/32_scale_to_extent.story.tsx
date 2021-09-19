@@ -19,7 +19,7 @@ const logDomains = (data: any[], customDomain: any) => {
   const dataY = data.map((d) => d.y);
   /* eslint-disable no-console */
   console.clear();
-  console.log('data domain:', JSON.stringify(computeContinuousDataDomain(dataY, ScaleType.Linear)));
+  console.log('data domain:', JSON.stringify(computeContinuousDataDomain(dataY, ScaleType.Linear, undefined)));
   console.log('computed domain:', JSON.stringify(computeContinuousDataDomain(dataY, ScaleType.Linear, customDomain)));
   /* eslint-enable */
 };

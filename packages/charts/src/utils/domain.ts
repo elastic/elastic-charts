@@ -45,8 +45,8 @@ export function computeOrdinalDataDomain<T>(data: T[], sorted: boolean, removeNu
   return sorted ? uniqueValues.sort((a, b) => `${a}`.localeCompare(`${b}`)) : uniqueValues;
 }
 
-function getPaddedDomain(start: number, end: number, domainOptions?: YDomainRange): [number, number] {
-  if (!domainOptions || !domainOptions.padding || domainOptions.paddingUnit === DomainPaddingUnit.Pixel) {
+function getPaddedDomain(start: number, end: number, domainOptions: YDomainRange): [number, number] {
+  if (!domainOptions.padding || domainOptions.paddingUnit === DomainPaddingUnit.Pixel) {
     return [start, end];
   }
 
@@ -67,14 +67,14 @@ function getPaddedDomain(start: number, end: number, domainOptions?: YDomainRang
 /** @internal */
 export function computeDomainExtent(
   domain: [number, number] | [undefined, undefined],
-  domainOptions?: YDomainRange,
+  domainOptions: YDomainRange,
 ): [number, number] {
   if (domain[0] === undefined) return [0, 0]; // if domain[1] is undefined, domain[0] is undefined too
   const inverted = domain[0] > domain[1];
   const paddedDomain = (([start, end]: Range): Range => {
     const [paddedStart, paddedEnd] = getPaddedDomain(start, end, domainOptions);
-    if (paddedStart >= 0 && paddedEnd >= 0) return domainOptions?.fit ? [paddedStart, paddedEnd] : [0, paddedEnd];
-    if (paddedStart < 0 && paddedEnd < 0) return domainOptions?.fit ? [paddedStart, paddedEnd] : [paddedStart, 0];
+    if (paddedStart >= 0 && paddedEnd >= 0) return domainOptions.fit ? [paddedStart, paddedEnd] : [0, paddedEnd];
+    if (paddedStart < 0 && paddedEnd < 0) return domainOptions.fit ? [paddedStart, paddedEnd] : [paddedStart, 0];
     return [paddedStart, paddedEnd];
   })(inverted ? [domain[1], domain[0]] : domain);
 
@@ -82,18 +82,17 @@ export function computeDomainExtent(
 }
 
 /**
- * Get Continuous domain from data. May alters domain to constrain to zero baseline.
- *
- * when `domainOptions` is null the domain will not be altered
+ * Get continuous domain from data. May yield domain to constrain to zero baseline.
+ * When `domainOptions` is null the domain will not be altered
  * @internal
  */
 export function computeContinuousDataDomain(
   data: number[],
   scaleType: ScaleType,
-  domainOptions?: YDomainRange | null,
+  domainOptions: YDomainRange | undefined,
 ): ContinuousDomain {
   // todo check for DRY violations: this may not be the only place for non-positives removal for the log scale
   const filteredData = domainOptions?.fit && scaleType === ScaleType.Log ? data.filter((d) => d !== 0) : data;
   const range = extent<number, number>(filteredData, (d) => d);
-  return domainOptions === null ? [range[0] ?? 0, range[1] ?? 0] : computeDomainExtent(range, domainOptions);
+  return domainOptions === undefined ? [range[0] ?? 0, range[1] ?? 0] : computeDomainExtent(range, domainOptions);
 }

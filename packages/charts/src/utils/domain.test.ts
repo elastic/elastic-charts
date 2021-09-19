@@ -88,9 +88,8 @@ describe('utils/domain', () => {
   test('should compute continuous data domain: data not scaled to extent', () => {
     const data = [{ x: 12 }, { x: 6 }, { x: 8 }];
     const accessor = (datum: any) => datum.x;
-
-    const continuousDataDomain = computeContinuousDataDomain(data.map(accessor), ScaleType.Linear);
-
+    const domainOptions3 = { min: NaN, max: NaN };
+    const continuousDataDomain = computeContinuousDataDomain(data.map(accessor), ScaleType.Linear, domainOptions3);
     const expectedContinuousDomain = [0, 12];
 
     expect(continuousDataDomain).toEqual(expectedContinuousDomain);
@@ -99,9 +98,7 @@ describe('utils/domain', () => {
   test('should compute continuous data domain: empty data not scaled to extent', () => {
     const data: any[] = [];
     const accessor = (datum: any) => datum.x;
-
-    const continuousDataDomain = computeContinuousDataDomain(data.map(accessor), ScaleType.Linear);
-
+    const continuousDataDomain = computeContinuousDataDomain(data.map(accessor), ScaleType.Linear, undefined);
     const expectedContinuousDomain = [0, 0];
 
     expect(continuousDataDomain).toEqual(expectedContinuousDomain);
@@ -152,15 +149,15 @@ describe('utils/domain', () => {
     });
     describe('domain.fit is false', () => {
       it('should find domain when start & end are positive', () => {
-        expect(computeDomainExtent([5, 10])).toEqual([0, 10]);
+        expect(computeDomainExtent([5, 10], { min: NaN, max: NaN })).toEqual([0, 10]);
       });
 
       it('should find domain when start & end are negative', () => {
-        expect(computeDomainExtent([-15, -10])).toEqual([-15, 0]);
+        expect(computeDomainExtent([-15, -10], { min: NaN, max: NaN })).toEqual([-15, 0]);
       });
 
       it('should find domain when start is negative, end is positive', () => {
-        expect(computeDomainExtent([-15, 10])).toEqual([-15, 10]);
+        expect(computeDomainExtent([-15, 10], { min: NaN, max: NaN })).toEqual([-15, 10]);
       });
     });
 
