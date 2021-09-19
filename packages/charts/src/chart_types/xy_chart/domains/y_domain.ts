@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { computeContinuousDataDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
@@ -16,7 +15,7 @@ import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { getSpecDomainGroupId } from '../state/utils/spec';
 import { groupBy } from '../utils/group_data_series';
 import { DataSeries } from '../utils/series';
-import { BasicSeriesSpec, YDomainRange, SeriesType, StackMode, DomainPaddingUnit } from '../utils/specs';
+import { BasicSeriesSpec, DomainPaddingUnit, SeriesScales, SeriesType, StackMode, YDomainRange } from '../utils/specs';
 import { YDomain } from './types';
 
 /** @internal */
@@ -190,15 +189,9 @@ export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean)
  * If none of the above, than coerce to the specified scale.
  * @internal
  */
-export function coerceYScaleTypes(series: Array<{ yScaleType: ScaleContinuousType; yNice?: boolean }>) {
-  const scales: Array<{ type: ScaleContinuousType; nice: boolean }> = series.map(({ yScaleType, yNice }) => ({
-    nice: getYNiceFromSpec(yNice),
-    type: getYScaleTypeFromSpec(yScaleType),
-  }));
-  const scaleTypes = new Set(scales.map((s) => s.type));
-  const niceDomains = scales.map((s) => s.nice);
-  return {
-    type: scaleTypes.size === 1 ? scaleTypes.values().next().value : ScaleType.Linear,
-    nice: !niceDomains.includes(false),
-  };
+export function coerceYScaleTypes(series: SeriesScales[]) {
+  const scaleTypes = new Set(series.map((s) => getYScaleTypeFromSpec(s.yScaleType)));
+  const niceDomains = series.map((s) => getYNiceFromSpec(s.yNice));
+  const type = scaleTypes.size === 1 ? scaleTypes.values().next().value : ScaleType.Linear;
+  return { type, nice: !niceDomains.includes(false) };
 }
