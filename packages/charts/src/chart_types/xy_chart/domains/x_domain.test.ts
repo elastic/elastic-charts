@@ -186,6 +186,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Linear),
       nice: getXNiceFromSpec(),
       isBandScale: true,
+      timeZone: 'utc+3',
     });
   });
 

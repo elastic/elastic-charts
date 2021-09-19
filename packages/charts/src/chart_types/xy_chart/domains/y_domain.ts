@@ -17,7 +17,6 @@ import { getSpecDomainGroupId } from '../state/utils/spec';
 import { groupBy } from '../utils/group_data_series';
 import { DataSeries } from '../utils/series';
 import { BasicSeriesSpec, YDomainRange, SeriesType, StackMode, DomainPaddingUnit } from '../utils/specs';
-import { areAllNiceDomain } from './nice';
 import { YDomain } from './types';
 
 /** @internal */
@@ -208,7 +207,7 @@ export function coerceYScaleTypes(
 } {
   const scaleCollection = scales.reduce<{
     types: Set<ScaleContinuousType>;
-    nice: Array<boolean>;
+    nice: boolean[];
   }>(
     (acc, scale) => {
       acc.types.add(scale.type);
@@ -220,7 +219,7 @@ export function coerceYScaleTypes(
       nice: [],
     },
   );
-  const nice = areAllNiceDomain(scaleCollection.nice);
+  const nice = !scaleCollection.nice.includes(false);
   return scaleCollection.types.size === 1
     ? { type: scaleCollection.types.values().next().value, nice }
     : {

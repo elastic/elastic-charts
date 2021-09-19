@@ -362,10 +362,7 @@ describe('Y Domain', () => {
   });
 
   test('Should return a default Scale Linear for YScaleType when there are no specs', () => {
-    expect(coerceYScaleTypes([])).toEqual({
-      nice: false,
-      type: ScaleType.Linear,
-    });
+    expect(coerceYScaleTypes([]).type).toEqual(ScaleType.Linear);
   });
 
   test('Should merge Y domain accounting for custom domain limits: complete bounded domain', () => {

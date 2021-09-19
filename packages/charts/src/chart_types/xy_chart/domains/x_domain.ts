@@ -15,7 +15,6 @@ import { Logger } from '../../../utils/logger';
 import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { BasicSeriesSpec, SeriesType, XScaleType } from '../utils/specs';
-import { areAllNiceDomain } from './nice';
 import { XDomain } from './types';
 
 /**
@@ -161,14 +160,12 @@ export function convertXScaleTypes(
   const seriesTypes = new Set<string | undefined>();
   const scaleTypes = new Set<ScaleType>();
   const timeZones = new Set<string>();
-  const niceDomainConfigs: Array<boolean> = [];
+  const niceDomains: Array<boolean> = [];
   specs.forEach((spec) => {
-    niceDomainConfigs.push(getXNiceFromSpec(spec.xNice));
+    niceDomains.push(getXNiceFromSpec(spec.xNice));
     seriesTypes.add(spec.seriesType);
     scaleTypes.add(getXScaleTypeFromSpec(spec.xScaleType));
-    if (spec.timeZone) {
-      timeZones.add(spec.timeZone.toLowerCase());
-    }
+    if (spec.timeZone) timeZones.add(spec.timeZone.toLowerCase());
   });
   if (specs.length === 0 || seriesTypes.size === 0 || scaleTypes.size === 0) {
     return {
@@ -183,7 +180,7 @@ export function convertXScaleTypes(
       : scaleTypes.has(ScaleType.Ordinal)
       ? ScaleType.Ordinal // otherwise lean Ordinal
       : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether present or not
-  const nice = areAllNiceDomain(niceDomainConfigs);
+  const nice = !niceDomains.includes(false);
   const isBandScale = seriesTypes.has(SeriesType.Bar);
   const timeZone = timeZones.size > 1 ? 'utc' : timeZones.values().next().value;
   return { type, nice, isBandScale, timeZone };
