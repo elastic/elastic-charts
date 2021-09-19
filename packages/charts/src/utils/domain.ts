@@ -42,16 +42,13 @@ export function constrainPadding(
 
 /** @internal */
 export function computeOrdinalDataDomain(
-  data: any[],
+  data: unknown[],
   accessor: AccessorFn,
   sorted?: boolean,
   removeNull?: boolean,
 ): string[] | number[] {
   // TODO: Check for empty data before computing domain
-  if (data.length === 0) {
-    return [0];
-  }
-
+  if (data.length === 0) return [0];
   const domain = data.map(accessor).filter((d) => (removeNull ? d !== null : true));
   const uniqueValues = [...new Set(domain)];
   return sorted ? uniqueValues.sort((a, b) => `${a}`.localeCompare(`${b}`)) : uniqueValues;
@@ -82,7 +79,6 @@ export function computeDomainExtent(
   domainOptions?: YDomainRange,
 ): [number, number] {
   if (domain[0] === undefined) return [0, 0]; // if domain[1] is undefined, domain[0] is undefined too
-
   const inverted = domain[0] > domain[1];
   const paddedDomain = (([start, end]: Range): Range => {
     const [paddedStart, paddedEnd] = getPaddedDomain(start, end, domainOptions);
@@ -101,17 +97,12 @@ export function computeDomainExtent(
  * @internal
  */
 export function computeContinuousDataDomain(
-  data: any[],
-  accessor: (n: any) => number,
+  data: number[],
   scaleType: ScaleType,
   domainOptions?: YDomainRange | null,
 ): ContinuousDomain {
-  const filteredData = domainOptions?.fit && scaleType === ScaleType.Log ? data.filter((d) => accessor(d) !== 0) : data;
-  const range = extent<any, number>(filteredData, accessor);
-
-  if (domainOptions === null) {
-    return [range[0] ?? 0, range[1] ?? 0];
-  }
-
-  return computeDomainExtent(range, domainOptions);
+  // todo check for DRY violations: this may not be the only place for non-positives removal for the log scale
+  const filteredData = domainOptions?.fit && scaleType === ScaleType.Log ? data.filter((d) => d !== 0) : data;
+  const range = extent<number, number>(filteredData, (d) => d);
+  return domainOptions === null ? [range[0] ?? 0, range[1] ?? 0] : computeDomainExtent(range, domainOptions);
 }

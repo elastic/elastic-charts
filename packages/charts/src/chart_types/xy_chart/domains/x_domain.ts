@@ -52,7 +52,7 @@ export function mergeXDomain(
       }
     }
   } else {
-    seriesXComputedDomains = computeContinuousDataDomain([...xValues], identity, type, {
+    seriesXComputedDomains = computeContinuousDataDomain([...xValues] as number[], type, {
       min: NaN,
       max: NaN,
       fit: true,

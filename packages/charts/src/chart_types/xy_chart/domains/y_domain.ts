@@ -8,7 +8,6 @@
 
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { identity } from '../../../utils/common';
 import { computeContinuousDataDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
@@ -28,7 +27,6 @@ export type YBasicSeriesSpec = Pick<
 /** @internal */
 export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: ScaleConfigs['y']): YDomain[] {
   const dataSeriesByGroupId = groupBy(dataSeries, ({ spec }) => getSpecDomainGroupId(spec), true);
-
   return dataSeriesByGroupId.reduce<YDomain[]>((acc, groupedDataSeries) => {
     const stacked = groupedDataSeries.filter(({ isStacked, isFiltered }) => isStacked && !isFiltered);
     const nonStacked = groupedDataSeries.filter(({ isStacked, isFiltered }) => !isStacked && !isFiltered);
@@ -59,7 +57,7 @@ function mergeYDomainForGroup(
 
   let domain: ContinuousDomain;
   if (stackMode === StackMode.Percentage) {
-    domain = computeContinuousDataDomain([0, 1], identity, type, customDomain);
+    domain = computeContinuousDataDomain([0, 1], type, customDomain);
   } else {
     // compute stacked domain
     const stackedDomain = computeYDomain(stacked, hasZeroBaselineSpecs, type, newCustomDomain);
@@ -68,7 +66,7 @@ function mergeYDomainForGroup(
     const nonStackedDomain = computeYDomain(nonStacked, hasZeroBaselineSpecs, type, newCustomDomain);
 
     // merge stacked and non stacked domain together
-    domain = computeContinuousDataDomain([...stackedDomain, ...nonStackedDomain], identity, type, newCustomDomain);
+    domain = computeContinuousDataDomain([...stackedDomain, ...nonStackedDomain], type, newCustomDomain);
 
     const [computedDomainMin, computedDomainMax] = domain;
 
@@ -127,7 +125,7 @@ function computeYDomain(
   }
   // padding already applied, set to 0 here to avoid duplicating
   const domainOptions = { min: NaN, max: NaN, ...customDomain, padding: 0 };
-  return computeContinuousDataDomain([...yValues], identity, scaleType, domainOptions);
+  return computeContinuousDataDomain([...yValues], scaleType, domainOptions);
 }
 
 /** @internal */

@@ -9,7 +9,6 @@
 import { ScaleType } from '../scales/constants';
 import { DomainPaddingUnit } from '../specs';
 import { AccessorFn } from './accessor';
-import { identity } from './common';
 import { computeContinuousDataDomain, computeDomainExtent, computeOrdinalDataDomain } from './domain';
 
 describe('utils/domain', () => {
@@ -80,7 +79,7 @@ describe('utils/domain', () => {
     const data = [{ x: 12 }, { x: 6 }, { x: 8 }];
     const accessor = (datum: any) => datum.x;
     const domainOptions = { min: NaN, max: NaN, fit: true };
-    const continuousDataDomain = computeContinuousDataDomain(data, accessor, ScaleType.Linear, domainOptions);
+    const continuousDataDomain = computeContinuousDataDomain(data.map(accessor), ScaleType.Linear, domainOptions);
     const expectedContinuousDomain = [6, 12];
 
     expect(continuousDataDomain).toEqual(expectedContinuousDomain);
@@ -90,7 +89,7 @@ describe('utils/domain', () => {
     const data = [{ x: 12 }, { x: 6 }, { x: 8 }];
     const accessor = (datum: any) => datum.x;
 
-    const continuousDataDomain = computeContinuousDataDomain(data, accessor, ScaleType.Linear);
+    const continuousDataDomain = computeContinuousDataDomain(data.map(accessor), ScaleType.Linear);
 
     const expectedContinuousDomain = [0, 12];
 
@@ -101,7 +100,7 @@ describe('utils/domain', () => {
     const data: any[] = [];
     const accessor = (datum: any) => datum.x;
 
-    const continuousDataDomain = computeContinuousDataDomain(data, accessor, ScaleType.Linear);
+    const continuousDataDomain = computeContinuousDataDomain(data.map(accessor), ScaleType.Linear);
 
     const expectedContinuousDomain = [0, 0];
 
@@ -111,7 +110,7 @@ describe('utils/domain', () => {
   test('should filter zeros on log scale domain when fit is true', () => {
     const data: number[] = [0.0001, 0, 1, 0, 10, 0, 100, 0, 0, 1000];
     const domainOptions1 = { fit: true, min: NaN, max: NaN };
-    const continuousDataDomain = computeContinuousDataDomain(data, identity, ScaleType.Log, domainOptions1);
+    const continuousDataDomain = computeContinuousDataDomain(data, ScaleType.Log, domainOptions1);
 
     expect(continuousDataDomain).toEqual([0.0001, 1000]);
   });
@@ -119,7 +118,7 @@ describe('utils/domain', () => {
   test('should not filter zeros on log scale domain when fit is false', () => {
     const data: number[] = [0.0001, 0, 1, 0, 10, 0, 100, 0, 0, 1000];
     const domainOptions2 = { fit: false, min: NaN, max: NaN };
-    const continuousDataDomain = computeContinuousDataDomain(data, identity, ScaleType.Log, domainOptions2);
+    const continuousDataDomain = computeContinuousDataDomain(data, ScaleType.Log, domainOptions2);
 
     expect(continuousDataDomain).toEqual([0, 1000]);
   });
