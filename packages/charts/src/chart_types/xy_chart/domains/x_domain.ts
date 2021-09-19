@@ -157,16 +157,10 @@ export function convertXScaleTypes(
   isBandScale: boolean;
   timeZone?: string;
 } {
-  const seriesTypes = new Set<string | undefined>();
-  const scaleTypes = new Set<ScaleType>();
-  const timeZones = new Set<string>();
-  const niceDomains: Array<boolean> = [];
-  specs.forEach((spec) => {
-    niceDomains.push(getXNiceFromSpec(spec.xNice));
-    seriesTypes.add(spec.seriesType);
-    scaleTypes.add(getXScaleTypeFromSpec(spec.xScaleType));
-    if (spec.timeZone) timeZones.add(spec.timeZone.toLowerCase());
-  });
+  const seriesTypes = new Set<string | undefined>(specs.map((s) => s.seriesType));
+  const scaleTypes = new Set(specs.map((s) => getXScaleTypeFromSpec(s.xScaleType)));
+  const timeZones = new Set(specs.filter((s) => s.timeZone).map((s) => s.timeZone!.toLowerCase()));
+  const niceDomains = specs.map((s) => getXNiceFromSpec(s.xNice));
   const type =
     scaleTypes.size === 1
       ? scaleTypes.values().next().value // pick the only scaleType present
