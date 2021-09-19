@@ -14,7 +14,6 @@ import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../
 import { Logger } from '../../../utils/logger';
 import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
-import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { BasicSeriesSpec, SeriesType, XScaleType } from '../utils/specs';
 import { areAllNiceDomain } from './nice';
 import { XDomain } from './types';
@@ -69,13 +68,13 @@ export function mergeXDomain(
         customMinInterval = customDomain.minInterval;
         const [computedDomainMin, computedDomainMax] = seriesXComputedDomains;
 
-        if (isCompleteBound(customDomain)) {
+        if (Number.isFinite(customDomain.min) && Number.isFinite(customDomain.max)) {
           if (customDomain.min > customDomain.max) {
             Logger.warn('custom xDomain is invalid, min is greater than max. Custom domain is ignored.');
           } else {
             seriesXComputedDomains = [customDomain.min, customDomain.max];
           }
-        } else if (isLowerBound(customDomain)) {
+        } else if (Number.isFinite(customDomain.min)) {
           if (customDomain.min > computedDomainMax) {
             Logger.warn(
               'custom xDomain is invalid, custom min is greater than computed max. Custom domain is ignored.',
@@ -83,7 +82,7 @@ export function mergeXDomain(
           } else {
             seriesXComputedDomains = [customDomain.min, computedDomainMax];
           }
-        } else if (isUpperBound(customDomain)) {
+        } else if (Number.isFinite(customDomain.max)) {
           if (computedDomainMin > customDomain.max) {
             Logger.warn(
               'custom xDomain is invalid, computed min is greater than custom max. Custom domain is ignored.',

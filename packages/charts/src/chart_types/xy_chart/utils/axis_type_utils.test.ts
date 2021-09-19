@@ -7,7 +7,7 @@
  */
 
 import { Position } from '../../../utils/common';
-import { isBounded, isVerticalAxis, isHorizontalAxis, isVerticalGrid, isHorizontalGrid } from './axis_type_utils';
+import { isVerticalAxis, isHorizontalAxis, isVerticalGrid, isHorizontalGrid } from './axis_type_utils';
 
 describe('Axis type utils', () => {
   test('should determine orientation of axis position', () => {
@@ -32,20 +32,5 @@ describe('Axis type utils', () => {
     expect(isHorizontalGrid(Position.Right)).toBe(true);
     expect(isHorizontalGrid(Position.Top)).toBe(false);
     expect(isHorizontalGrid(Position.Bottom)).toBe(false);
-  });
-
-  test('should determine that a domain has at least one bound', () => {
-    const lowerBounded = {
-      min: 0,
-      max: NaN,
-    };
-
-    const upperBounded = {
-      min: NaN,
-      max: 0,
-    };
-
-    expect(isBounded(lowerBounded)).toBe(true);
-    expect(isBounded(upperBounded)).toBe(true);
   });
 });

@@ -14,7 +14,6 @@ import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { getSpecDomainGroupId } from '../state/utils/spec';
-import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { groupBy } from '../utils/group_data_series';
 import { DataSeries } from '../utils/series';
 import { BasicSeriesSpec, YDomainRange, SeriesType, StackMode, DomainPaddingUnit } from '../utils/specs';
@@ -74,17 +73,17 @@ function mergeYDomainForGroup(
 
     const [computedDomainMin, computedDomainMax] = domain;
 
-    if (newCustomDomain && isCompleteBound(newCustomDomain)) {
+    if (newCustomDomain && Number.isFinite(newCustomDomain.min) && Number.isFinite(newCustomDomain.max)) {
       // Don't need to check min > max because this has been validated on axis domain merge
       domain = [newCustomDomain.min, newCustomDomain.max];
-    } else if (newCustomDomain && isLowerBound(newCustomDomain)) {
+    } else if (newCustomDomain && Number.isFinite(newCustomDomain.min)) {
       if (newCustomDomain.min > computedDomainMax) {
         Logger.warn(`custom yDomain for ${groupId} is invalid, custom min is greater than computed max.`);
         domain = [newCustomDomain.min, newCustomDomain.min];
       } else {
         domain = [newCustomDomain.min, computedDomainMax];
       }
-    } else if (newCustomDomain && isUpperBound(newCustomDomain)) {
+    } else if (newCustomDomain && Number.isFinite(newCustomDomain.max)) {
       if (computedDomainMin > newCustomDomain.max) {
         Logger.warn(`custom yDomain for ${groupId} is invalid, custom max is less than computed max.`);
         domain = [newCustomDomain.max, newCustomDomain.max];

@@ -7,27 +7,6 @@
  */
 
 import { Position } from '../../../utils/common';
-import { DomainRange } from './specs';
-
-/** @internal */
-export function isLowerBound(domain: DomainRange) {
-  return Number.isFinite(domain.min);
-}
-
-/** @internal */
-export function isUpperBound(domain: DomainRange) {
-  return Number.isFinite(domain.max);
-}
-
-/** @internal */
-export function isCompleteBound(domain: DomainRange) {
-  return Number.isFinite(domain.min) && Number.isFinite(domain.max);
-}
-
-/** @internal */
-export function isBounded(domain: DomainRange) {
-  return Number.isFinite(domain.min) || Number.isFinite(domain.max);
-}
 
 /** @internal */
 export function isVerticalAxis(axisPosition: Position): axisPosition is Extract<Position, 'left' | 'right'> {

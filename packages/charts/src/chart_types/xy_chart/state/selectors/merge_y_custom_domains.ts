@@ -8,7 +8,6 @@
 
 import { Rotation } from '../../../../utils/common';
 import { GroupId } from '../../../../utils/ids';
-import { isBounded, isCompleteBound, isLowerBound, isUpperBound } from '../../utils/axis_type_utils';
 import { isXDomain } from '../../utils/axis_utils';
 import { AxisSpec, YDomainRange } from '../../utils/specs';
 
@@ -30,7 +29,7 @@ export function mergeYCustomDomainsByGroupId(
       throw new Error(`[Axis ${id}]: custom domain for xDomain should be defined in Settings`);
     }
 
-    if (isCompleteBound(domain) && domain.min > domain.max) {
+    if (domain.min > domain.max) {
       throw new Error(`[Axis ${id}]: custom domain is invalid, min is greater than max`);
     }
 
@@ -39,16 +38,16 @@ export function mergeYCustomDomainsByGroupId(
     if (prevGroupDomain) {
       const mergedDomain = {
         min: Math.min(
-          isLowerBound(domain) ? domain.min : Infinity,
-          prevGroupDomain && isLowerBound(prevGroupDomain) ? prevGroupDomain.min : Infinity,
+          Number.isFinite(domain.min) ? domain.min : Infinity,
+          prevGroupDomain && Number.isFinite(prevGroupDomain.min) ? prevGroupDomain.min : Infinity,
         ),
         max: Math.max(
-          isUpperBound(domain) ? domain.max : -Infinity,
-          prevGroupDomain && isUpperBound(prevGroupDomain) ? prevGroupDomain.max : -Infinity,
+          Number.isFinite(domain.max) ? domain.max : -Infinity,
+          prevGroupDomain && Number.isFinite(prevGroupDomain.max) ? prevGroupDomain.max : -Infinity,
         ),
       };
 
-      if (isBounded(mergedDomain)) {
+      if (Number.isFinite(mergedDomain.min) || Number.isFinite(mergedDomain.max)) {
         domainsByGroupId.set(groupId, mergedDomain);
       }
     } else {
