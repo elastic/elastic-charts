@@ -39,22 +39,12 @@ export function computeOrdinalDataDomain<T>(data: T[], sorted: boolean, removeNu
 }
 
 function getPaddedDomain(start: number, end: number, domainOptions: YDomainRange): [number, number] {
-  if (!domainOptions.padding || domainOptions.paddingUnit === DomainPaddingUnit.Pixel) {
-    return [start, end];
-  }
-
   const { padding, paddingUnit = DomainPaddingUnit.Domain } = domainOptions;
-  const absPadding = Math.abs(padding);
-  const computedPadding = paddingUnit === DomainPaddingUnit.Domain ? absPadding : absPadding * Math.abs(end - start);
-
-  if (computedPadding === 0) {
-    return [start, end];
-  }
-
-  const newStart = start - computedPadding;
-  const newEnd = end + computedPadding;
-
-  return constrainPadding(start, end, newStart, newEnd, domainOptions.constrainPadding);
+  if (!padding || paddingUnit === DomainPaddingUnit.Pixel) return [start, end];
+  const computedPadding = Math.abs(padding) * (paddingUnit === DomainPaddingUnit.Domain ? 1 : Math.abs(end - start));
+  return computedPadding === 0
+    ? [start, end]
+    : constrainPadding(start, end, start - computedPadding, end + computedPadding, domainOptions.constrainPadding);
 }
 
 /** @internal */
