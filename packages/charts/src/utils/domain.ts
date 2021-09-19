@@ -8,9 +8,9 @@
 
 import { extent } from 'd3-array';
 
+import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { ScaleType } from '../scales/constants';
 import { DomainPaddingUnit, YDomainRange } from '../specs';
-import { AccessorFn } from './accessor';
 
 /** @public */
 export type OrdinalDomain = (number | string)[];
@@ -41,15 +41,14 @@ export function constrainPadding(
 }
 
 /** @internal */
-export function computeOrdinalDataDomain(
-  data: unknown[],
-  accessor: AccessorFn,
+export function computeOrdinalDataDomain<T extends PrimitiveValue>(
+  data: T[],
   sorted?: boolean,
   removeNull?: boolean,
-): string[] | number[] {
+): T[] {
   // TODO: Check for empty data before computing domain
-  if (data.length === 0) return [0];
-  const domain = data.map(accessor).filter((d) => (removeNull ? d !== null : true));
+  if (data.length === 0) return [0 as T]; // yea just making it explicit
+  const domain = data.filter((d) => (removeNull ? d !== null : true));
   const uniqueValues = [...new Set(domain)];
   return sorted ? uniqueValues.sort((a, b) => `${a}`.localeCompare(`${b}`)) : uniqueValues;
 }

@@ -126,11 +126,6 @@ export type Color = string; // todo static/runtime type it this for proper color
 export type StrokeStyle = Color; // now narrower than string | CanvasGradient | CanvasPattern
 
 /** @internal */
-export function identity<T>(value: T): T {
-  return value;
-}
-
-/** @internal */
 export function compareByValueAsc(a: number | string, b: number | string): number {
   return a > b ? 1 : a < b ? -1 : 0;
 }

@@ -9,7 +9,7 @@
 import { Optional } from 'utility-types';
 
 import { ScaleType } from '../../../scales/constants';
-import { compareByValueAsc, identity } from '../../../utils/common';
+import { compareByValueAsc } from '../../../utils/common';
 import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
 import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scales';
@@ -34,7 +34,7 @@ export function mergeXDomain(
       Logger.warn(`Each X value in a ${type} x scale needs be be a number. Using ordinal x scale as fallback.`);
     }
 
-    seriesXComputedDomains = computeOrdinalDataDomain([...xValues], identity, false, true);
+    seriesXComputedDomains = computeOrdinalDataDomain([...xValues], false, true);
     if (customDomain) {
       if (Array.isArray(customDomain)) {
         seriesXComputedDomains = [...customDomain];

@@ -18,7 +18,7 @@ describe('utils/domain', () => {
     const isSorted = true;
     const removeNull = true;
 
-    const ordinalDataDomain = computeOrdinalDataDomain(data, accessor, isSorted, removeNull);
+    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull);
 
     expect(ordinalDataDomain).toEqual([0]);
   });
@@ -29,7 +29,7 @@ describe('utils/domain', () => {
     const isSorted = true;
     const removeNull = true;
 
-    const ordinalDataDomain = computeOrdinalDataDomain(data, accessor, isSorted, removeNull);
+    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull);
 
     const expectedOrdinalDomain = ['a', 'b', 'd'];
 
@@ -42,7 +42,7 @@ describe('utils/domain', () => {
     const isSorted = false;
     const removeNull = true;
 
-    const ordinalDataDomain = computeOrdinalDataDomain(data, accessor, isSorted, removeNull);
+    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull);
 
     const expectedOrdinalDomain = ['d', 'a', 'b'];
 
@@ -55,7 +55,7 @@ describe('utils/domain', () => {
     const isSorted = true;
     const removeNull = false;
 
-    const ordinalDataDomain = computeOrdinalDataDomain(data, accessor, isSorted, removeNull);
+    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull);
 
     const expectedOrdinalDomain = ['a', 'b', 'd', null];
 
@@ -68,7 +68,7 @@ describe('utils/domain', () => {
     const isSorted = false;
     const removeNull = false;
 
-    const ordinalDataDomain = computeOrdinalDataDomain(data, accessor, isSorted, removeNull);
+    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull);
 
     const expectedOrdinalDomain = ['d', 'a', null, 'b'];
 
