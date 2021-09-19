@@ -8,7 +8,6 @@
 
 import { extent } from 'd3-array';
 
-import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { ScaleType } from '../scales/constants';
 import { DomainPaddingUnit, YDomainRange } from '../specs';
 
@@ -41,15 +40,8 @@ export function constrainPadding(
 }
 
 /** @internal */
-export function computeOrdinalDataDomain<T extends PrimitiveValue>(
-  data: T[],
-  sorted?: boolean,
-  removeNull?: boolean,
-): T[] {
-  // TODO: Check for empty data before computing domain
-  if (data.length === 0) return [0 as T]; // yea just making it explicit
-  const domain = data.filter((d) => (removeNull ? d !== null : true));
-  const uniqueValues = [...new Set(domain)];
+export function computeOrdinalDataDomain<T>(data: T[], sorted: boolean, removeNull: boolean): T[] {
+  const uniqueValues = [...new Set(data.filter((d) => (removeNull ? d !== null : true)))];
   return sorted ? uniqueValues.sort((a, b) => `${a}`.localeCompare(`${b}`)) : uniqueValues;
 }
 

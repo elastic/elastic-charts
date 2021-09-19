@@ -12,7 +12,7 @@ import { AccessorFn } from './accessor';
 import { computeContinuousDataDomain, computeDomainExtent, computeOrdinalDataDomain } from './domain';
 
 describe('utils/domain', () => {
-  test('should return [0] domain if no data', () => {
+  test('should return [] domain if no data', () => {
     const data: any[] = [];
     const accessor: AccessorFn = (datum: any) => datum.x;
     const isSorted = true;
@@ -20,7 +20,7 @@ describe('utils/domain', () => {
 
     const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull);
 
-    expect(ordinalDataDomain).toEqual([0]);
+    expect(ordinalDataDomain).toEqual([]);
   });
 
   test('should compute ordinal data domain: sort & remove nulls', () => {
