@@ -56,6 +56,8 @@ export function mergeXDomain(
     }
   } else {
     seriesXComputedDomains = computeContinuousDataDomain(values, identity, type, {
+      min: NaN,
+      max: NaN,
       fit: true,
     });
     let customMinInterval: undefined | number;

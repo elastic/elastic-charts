@@ -410,7 +410,7 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     } | null;
     // (undocumented)
     render(): JSX.Element;
-    }
+}
 
 // @public (undocumented)
 export type ChartSize = number | string | ChartSizeArray | ChartSizeObject;
@@ -472,13 +472,6 @@ export const ColorVariant: Readonly<{
 
 // @public (undocumented)
 export type ColorVariant = $Values<typeof ColorVariant>;
-
-// Warning: (ae-forgotten-export) The symbol "DomainBase" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "LowerBound" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "UpperBound" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export type CompleteBoundedDomain = DomainBase & LowerBound & UpperBound;
 
 // @public
 export type ComponentWithAnnotationDatum = ComponentType<LineAnnotationDatum>;
@@ -564,7 +557,7 @@ export class DataGenerator {
         y: number;
         g: string;
     }[];
-    }
+}
 
 // @public (undocumented)
 export type DataName = CategoryKey;
@@ -708,7 +701,13 @@ export const DomainPaddingUnit: Readonly<{
 export type DomainPaddingUnit = $Values<typeof DomainPaddingUnit>;
 
 // @public (undocumented)
-export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain | UnboundedDomainWithInterval;
+export interface DomainRange {
+    // (undocumented)
+    max: number;
+    min: number;
+    // (undocumented)
+    minInterval?: number;
+}
 
 // @public (undocumented)
 export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>) => void;
@@ -1361,9 +1360,6 @@ export interface LogScaleOptions {
     logMinLimit?: number;
 }
 
-// @public (undocumented)
-export type LowerBoundedDomain = DomainBase & LowerBound;
-
 // @public
 export type MarkBuffer = number | ((radius: number) => number);
 
@@ -1536,7 +1532,6 @@ export type Placement = $Values<typeof Placement>;
 
 // @public (undocumented)
 type PointerEvent_2 = PointerOverEvent | PointerOutEvent;
-
 export { PointerEvent_2 as PointerEvent }
 
 // @public (undocumented)
@@ -2259,12 +2254,6 @@ export interface UnaryAccessorFn<Return = any> {
 }
 
 // @public (undocumented)
-export type UnboundedDomainWithInterval = DomainBase;
-
-// @public (undocumented)
-export type UpperBoundedDomain = DomainBase & UpperBound;
-
-// @public (undocumented)
 export type ValueAccessor = (d: Datum) => AdditiveNumber;
 
 // @public (undocumented)
@@ -2434,7 +2423,6 @@ export interface YDomainBase {
 
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
-
 
 // Warnings were encountered during analysis:
 //

@@ -7,25 +7,25 @@
  */
 
 import { Position } from '../../../utils/common';
-import { CompleteBoundedDomain, LowerBoundedDomain, UpperBoundedDomain, DomainRange } from './specs';
+import { DomainRange } from './specs';
 
 /** @internal */
-export function isLowerBound(domain: Partial<CompleteBoundedDomain>): domain is LowerBoundedDomain {
+export function isLowerBound(domain: DomainRange) {
   return Number.isFinite(domain.min);
 }
 
 /** @internal */
-export function isUpperBound(domain: Partial<CompleteBoundedDomain>): domain is UpperBoundedDomain {
+export function isUpperBound(domain: DomainRange) {
   return Number.isFinite(domain.max);
 }
 
 /** @internal */
-export function isCompleteBound(domain: Partial<CompleteBoundedDomain>): domain is CompleteBoundedDomain {
+export function isCompleteBound(domain: DomainRange) {
   return Number.isFinite(domain.min) && Number.isFinite(domain.max);
 }
 
 /** @internal */
-export function isBounded(domain: Partial<CompleteBoundedDomain>): domain is DomainRange {
+export function isBounded(domain: DomainRange) {
   return Number.isFinite(domain.min) || Number.isFinite(domain.max);
 }
 

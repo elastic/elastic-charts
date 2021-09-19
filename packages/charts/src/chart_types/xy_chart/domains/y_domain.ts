@@ -56,7 +56,7 @@ function mergeYDomainForGroup(
   const [{ stackMode, spec }] = dataSeries;
   const groupId = getSpecDomainGroupId(spec);
   const { customDomain, type, nice, desiredTickCount } = yScaleConfig[groupId];
-  const newCustomDomain: YDomainRange = customDomain ? { ...customDomain } : {};
+  const newCustomDomain: YDomainRange = customDomain ? { ...customDomain } : { min: NaN, max: NaN };
   const { paddingUnit, padding, constrainPadding } = newCustomDomain;
 
   let domain: ContinuousDomain;
@@ -127,11 +127,8 @@ function computeYDomain(
   if (yValues.size === 0) {
     return [];
   }
-  const domainOptions = {
-    ...customDomain,
-    // padding already applied, set to 0 here to avoid duplicating
-    padding: 0,
-  };
+  // padding already applied, set to 0 here to avoid duplicating
+  const domainOptions = { min: NaN, max: NaN, ...customDomain, padding: 0 };
   return computeContinuousDataDomain([...yValues.values()], identity, scaleType, domainOptions);
 }
 

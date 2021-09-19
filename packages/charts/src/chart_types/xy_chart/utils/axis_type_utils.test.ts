@@ -37,9 +37,11 @@ describe('Axis type utils', () => {
   test('should determine that a domain has at least one bound', () => {
     const lowerBounded = {
       min: 0,
+      max: NaN,
     };
 
     const upperBounded = {
+      min: NaN,
       max: 0,
     };
 
