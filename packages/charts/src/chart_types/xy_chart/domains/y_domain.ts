@@ -209,11 +209,8 @@ export function coerceYScaleTypes(
       nice: [],
     },
   );
-  const nice = !scaleCollection.nice.includes(false);
-  return scaleCollection.types.size === 1
-    ? { type: scaleCollection.types.values().next().value, nice }
-    : {
-        type: ScaleType.Linear,
-        nice,
-      };
+  return {
+    type: scaleCollection.types.size === 1 ? scaleCollection.types.values().next().value : ScaleType.Linear,
+    nice: !scaleCollection.nice.includes(false),
+  };
 }
