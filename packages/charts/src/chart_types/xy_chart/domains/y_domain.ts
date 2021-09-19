@@ -108,7 +108,7 @@ function computeYDomain(
   dataSeries: DataSeries[],
   hasZeroBaselineSpecs: boolean,
   scaleType: ScaleType,
-  customDomain?: YDomainRange,
+  customDomain: YDomainRange,
 ) {
   const yValues = new Set<any>();
   dataSeries.forEach(({ data }) => {
@@ -121,7 +121,7 @@ function computeYDomain(
     return [];
   }
   // padding already applied, set to 0 here to avoid duplicating
-  const domainOptions = { min: NaN, max: NaN, ...customDomain, padding: 0 };
+  const domainOptions = { ...customDomain, padding: 0 };
   return computeContinuousDataDomain([...yValues], scaleType, domainOptions);
 }
 
