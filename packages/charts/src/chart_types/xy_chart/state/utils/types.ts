@@ -42,8 +42,8 @@ export interface GeometriesCounts {
 
 /** @internal */
 export interface ComputedScales {
-  xScale: Scale;
-  yScales: Map<GroupId, Scale>;
+  xScale: Scale<number | string>;
+  yScales: Map<GroupId, Scale<number | string>>;
 }
 
 /** @internal */

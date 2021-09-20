@@ -31,8 +31,8 @@ import {
 export function renderArea(
   shift: number,
   dataSeries: DataSeries,
-  xScale: Scale,
-  yScale: Scale,
+  xScale: Scale<number | string>,
+  yScale: Scale<number>,
   panel: Dimensions,
   color: Color,
   curve: CurveType,

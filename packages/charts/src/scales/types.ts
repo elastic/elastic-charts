@@ -15,7 +15,7 @@ import { ScaleContinuous } from './scale_continuous';
  * Check if a scale is logaritmic
  * @internal
  */
-export function isLogarithmicScale(scale: Scale): scale is ScaleContinuous {
+export function isLogarithmicScale(scale: Scale<number | string>): scale is ScaleContinuous {
   return scale.type === ScaleType.Log;
 }
 
@@ -23,7 +23,7 @@ export function isLogarithmicScale(scale: Scale): scale is ScaleContinuous {
  * Check if a scale is Band
  * @internal
  */
-export function isBandScale(scale: Scale): scale is ScaleBand {
+export function isBandScale<T extends string | number>(scale: Scale<T>): scale is ScaleBand<T> {
   return scale.type === ScaleType.Ordinal;
 }
 
@@ -31,6 +31,6 @@ export function isBandScale(scale: Scale): scale is ScaleBand {
  * Check if a scale is continuous
  * @internal
  */
-export function isContinuousScale(scale: Scale): scale is ScaleContinuous {
+export function isContinuousScale(scale: Scale<number | string>): scale is ScaleContinuous {
   return scale.type !== ScaleType.Ordinal;
 }

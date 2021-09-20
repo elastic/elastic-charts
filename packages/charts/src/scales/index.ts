@@ -28,14 +28,14 @@ export type ScaleBandType = ScaleOrdinalType;
  * The the value is mapped depending on the `type` (linear, log, sqrt, time, ordinal)
  * @internal
  */
-export interface Scale {
-  domain: any[];
+export interface Scale<T> {
+  domain: T[];
   range: number[];
   /**
    * Returns the distance between the starts of adjacent bands.
    */
   step: number;
-  ticks: () => any[];
+  ticks: () => T[];
   scale: (value?: PrimitiveValue) => number | null;
   scaleOrThrow(value?: PrimitiveValue): number;
   pureScale: (value?: PrimitiveValue) => number | null;

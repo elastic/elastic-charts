@@ -1,0 +1,56 @@
+# Checks related only to PRs and not code
+name: PR Checks
+
+concurrency:
+  group: '${{ github.workflow }} - ${{ github.head_ref }}'
+  cancel-in-progress: true
+
+env:
+  ECH_NODE_VERSION: '14.x'
+
+# Precautionary with using pull_request_target
+permissions:
+  statuses: write
+  actions: read
+  checks: read
+  pull-requests: read
+  contents: none
+  deployments: none
+  issues: none
+  packages: none
+  repository-projects: none
+  security-events: none
+
+on:
+  # Allows forks to access token so must limit 3rd party contributors
+  # See https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request_target
+  pull_request_target:
+    branches:
+      - master
+      - alpha
+      - next
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.x'
+      - '[0-9]+.x'
+
+jobs:
+  pr-sync:
+    name: Sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch # needed to use local action
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.base_ref }} # prevent changes to ci in prs
+          persist-credentials: false
+      - name: Install local action packages
+        run: npm --prefix ./.github/actions/base_diff_check ci
+      - name: Check PR sync status
+        uses: ./.github/actions/base_diff_check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          base-ref: ${{ github.event.pull_request.base.ref }}
+          base-sha: ${{ github.event.pull_request.base.sha }}
+          head-sha: ${{ github.event.pull_request.head.sha }}
+          pr-number: ${{ github.event.pull_request.number }}

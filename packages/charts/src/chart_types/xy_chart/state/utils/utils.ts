@@ -251,7 +251,7 @@ export function isHistogramModeEnabled(seriesSpecs: BasicSeriesSpec[]): boolean 
 
 /** @internal */
 export function computeXScaleOffset(
-  xScale: Scale,
+  xScale: Scale<number | string>,
   enableHistogramMode: boolean,
   histogramModeAlignment: HistogramModeAlignment = HistogramModeAlignments.Start,
 ): number {
@@ -278,9 +278,9 @@ export function computeXScaleOffset(
 function renderGeometries(
   dataSeries: DataSeries[],
   xDomain: XDomain,
-  yScales: Map<GroupId, Scale>,
-  smVScale: Scale,
-  smHScale: Scale,
+  yScales: Map<GroupId, Scale<number | string>>,
+  smVScale: Scale<number | string>,
+  smHScale: Scale<number | string>,
   barIndexOrderPerPanel: Record<string, string[]>,
   seriesSpecs: BasicSeriesSpec[],
   seriesColorsMap: Map<SeriesKey, Color>,
@@ -379,7 +379,7 @@ function renderGeometries(
         shift,
         ds,
         xScale,
-        yScale,
+        yScale as Scale<number>,
         panel,
         chartRotation,
         spec.minBarHeight ?? 0,
@@ -405,7 +405,7 @@ function renderGeometries(
         (xScale.bandwidth * bubbleShift) / 2,
         ds,
         xScale,
-        yScale,
+        yScale as Scale<number>,
         color,
         panel,
         isBandedSpec(spec.y0Accessors),
@@ -438,7 +438,7 @@ function renderGeometries(
         (xScale.bandwidth * lineShift) / 2,
         ds,
         xScale,
-        yScale,
+        yScale as Scale<number>,
         panel,
         color,
         spec.curve || CurveType.LINEAR,
@@ -471,7 +471,7 @@ function renderGeometries(
         (xScale.bandwidth * areaShift) / 2,
         ds,
         xScale,
-        yScale,
+        yScale as Scale<number>,
         panel,
         color,
         spec.curve || CurveType.LINEAR,

@@ -12,7 +12,7 @@ import { DragState } from '../state/chart_state';
 
 /** @internal */
 export function isValidPointerOverEvent(
-  mainScale: Scale,
+  mainScale: Scale<number | string>,
   event: PointerEvent | null | undefined,
 ): event is PointerOverEvent {
   return isPointerOverEvent(event) && (event.unit === undefined || event.unit === mainScale.unit);
@@ -33,13 +33,6 @@ export function hasDragged(prevProps: DragCheckProps | null, nextProps: DragChec
     return false;
   }
   const prevLastDrag = prevProps !== null ? prevProps.lastDrag : null;
-  const nextLastDrag = nextProps !== null ? nextProps.lastDrag : null;
-
-  if (prevLastDrag === null && nextLastDrag !== null) {
-    return true;
-  }
-  if (prevLastDrag !== null && nextLastDrag !== null && prevLastDrag.end.time !== nextLastDrag.end.time) {
-    return true;
-  }
-  return false;
+  const nextLastDrag = nextProps.lastDrag;
+  return nextLastDrag !== null && (prevLastDrag === null || prevLastDrag.end.time !== nextLastDrag.end.time);
 }
