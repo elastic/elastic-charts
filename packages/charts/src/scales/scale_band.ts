@@ -62,18 +62,6 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
   ) {
     const isObjectPad = typeof barsPadding === 'object';
     const safeBarPadding = isObjectPad ? 0 : clamp(barsPadding, 0, 1);
-    // prefilling with undefined to ensure at least two elements, as the uses of `domain` index with 0 and 1 at least
-    // [] => [undefined, undefined]
-    // [7] => [7, 7]
-    // [7, 9, ...] => [7, 9, ...]
-    /*
-        const preDomain = [...new Set(inputDomain)];
-        this.domain = [
-          ...preDomain,
-          ...new Array(Math.max(0, 2 - preDomain.length)).fill(preDomain.length > 0 ? preDomain[0] : undefined),
-        ] as [T, T, ...T[]];
-    */
-
     this.type = ScaleType.Ordinal;
     this.d3Scale = scaleBand<NonNullable<PrimitiveValue>>();
     this.d3Scale.domain(inputDomain.length > 0 ? inputDomain : [(undefined as unknown) as T]);
