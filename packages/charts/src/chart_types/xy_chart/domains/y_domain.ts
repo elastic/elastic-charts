@@ -45,9 +45,7 @@ function mergeYDomainForGroup(
   yScaleConfig: ScaleConfigs['y'],
 ): YDomain | null {
   const dataSeries = [...stacked, ...nonStacked];
-  if (dataSeries.length === 0) {
-    return null;
-  }
+  if (dataSeries.length === 0) return null;
 
   const [{ stackMode, spec }] = dataSeries;
   const groupId = getSpecDomainGroupId(spec);
@@ -55,37 +53,31 @@ function mergeYDomainForGroup(
   const newCustomDomain: YDomainRange = customDomain ? { ...customDomain } : { min: NaN, max: NaN };
   const { paddingUnit, padding, constrainPadding } = newCustomDomain;
 
-  let domain: ContinuousDomain;
+  let mergedDomain: ContinuousDomain;
   if (stackMode === StackMode.Percentage) {
-    domain = computeContinuousDataDomain([0, 1], type, customDomain);
+    mergedDomain = computeContinuousDataDomain([0, 1], type, customDomain);
   } else {
-    // compute stacked domain
     const stackedDomain = computeYDomain(stacked, hasZeroBaselineSpecs, type, newCustomDomain);
-
-    // compute non stacked domain
     const nonStackedDomain = computeYDomain(nonStacked, hasZeroBaselineSpecs, type, newCustomDomain);
-
-    // merge stacked and non stacked domain together
-    domain = computeContinuousDataDomain([...stackedDomain, ...nonStackedDomain], type, newCustomDomain);
-
-    const [computedDomainMin, computedDomainMax] = domain;
+    mergedDomain = computeContinuousDataDomain([...stackedDomain, ...nonStackedDomain], type, newCustomDomain);
+    const [computedDomainMin, computedDomainMax] = mergedDomain;
 
     if (newCustomDomain && Number.isFinite(newCustomDomain.min) && Number.isFinite(newCustomDomain.max)) {
       // Don't need to check min > max because this has been validated on axis domain merge
-      domain = [newCustomDomain.min, newCustomDomain.max];
+      mergedDomain = [newCustomDomain.min, newCustomDomain.max];
     } else if (newCustomDomain && Number.isFinite(newCustomDomain.min)) {
       if (newCustomDomain.min > computedDomainMax) {
         Logger.warn(`custom yDomain for ${groupId} is invalid, custom min is greater than computed max.`);
-        domain = [newCustomDomain.min, newCustomDomain.min];
+        mergedDomain = [newCustomDomain.min, newCustomDomain.min];
       } else {
-        domain = [newCustomDomain.min, computedDomainMax];
+        mergedDomain = [newCustomDomain.min, computedDomainMax];
       }
     } else if (newCustomDomain && Number.isFinite(newCustomDomain.max)) {
       if (computedDomainMin > newCustomDomain.max) {
         Logger.warn(`custom yDomain for ${groupId} is invalid, custom max is less than computed max.`);
-        domain = [newCustomDomain.max, newCustomDomain.max];
+        mergedDomain = [newCustomDomain.max, newCustomDomain.max];
       } else {
-        domain = [computedDomainMin, newCustomDomain.max];
+        mergedDomain = [computedDomainMin, newCustomDomain.max];
       }
     }
   }
@@ -95,7 +87,7 @@ function mergeYDomainForGroup(
     nice,
     isBandScale: false,
     groupId,
-    domain,
+    domain: mergedDomain,
     logBase: customDomain?.logBase,
     logMinLimit: customDomain?.logMinLimit,
     desiredTickCount,
@@ -158,35 +150,20 @@ export function groupSeriesByYGroup(specs: YBasicSeriesSpec[]) {
   return specsByGroupIds;
 }
 
-/**
- * Histogram mode is forced on every specs if at least one specs has that prop flagged
- * @internal
- */
+/** @internal */
 export function isHistogramEnabled(specs: YBasicSeriesSpec[]) {
   return specs.some(({ seriesType, enableHistogramMode }) => seriesType === SeriesType.Bar && enableHistogramMode);
 }
 
-/**
- * Return true if the passed spec needs to be rendered as stack
- * @internal
- */
+/** @internal */
 export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean) {
   const isBarAndHistogram = spec.seriesType === SeriesType.Bar && histogramEnabled;
   const hasStackAccessors = spec.stackAccessors && spec.stackAccessors.length > 0;
   return isBarAndHistogram || hasStackAccessors;
 }
 
-/**
- * Coerce the scale types of a set of specification to a generic one.
- * If there is at least one bar series type, than the response will specity
- * that the coerced scale is a `scaleBand` (each point needs to have a surrounding empty
- * space to draw the bar width).
- * If there are multiple continuous scale types, is coerced to linear.
- * If there are at least one Ordinal scale type, is coerced to ordinal.
- * If none of the above, than coerce to the specified scale.
- * @internal
- */
-export function coerceYScaleTypes(series: SeriesScales[]) {
+/** @internal */
+export function coerceYScaleTypes(series: Pick<SeriesScales, 'yScaleType' | 'yNice'>[]) {
   const scaleTypes = new Set(series.map((s) => getYScaleTypeFromSpec(s.yScaleType)));
   const niceDomains = series.map((s) => getYNiceFromSpec(s.yNice));
   const type = scaleTypes.size === 1 ? scaleTypes.values().next().value : ScaleType.Linear;
