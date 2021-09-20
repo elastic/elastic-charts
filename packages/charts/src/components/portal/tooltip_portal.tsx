@@ -94,10 +94,12 @@ const TooltipPortalComponent = ({
    * Popper instance used to manage position of tooltip.
    */
   const popper = useRef<Instance | null>(null);
-  const base = DEFAULT_POPPER_SETTINGS;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const ps = useMemo(() => mergePartial(base, settings, { mergeOptionalPartialValues: true }), [settings, base]);
+  const popperSettings = useMemo(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
+    [settings],
+  );
   const anchorPosition = (anchor as PortalAnchorRef)?.position;
   const position = useMemo(() => (isHTMLElement(anchor) ? null : anchorPosition), [anchor, anchorPosition]);
   const destroyPopper = useCallback(() => {
@@ -112,7 +114,7 @@ const TooltipPortalComponent = ({
       return;
     }
 
-    const { fallbackPlacements, placement, boundary, offset, boundaryPadding } = ps;
+    const { fallbackPlacements, placement, boundary, offset, boundaryPadding } = popperSettings;
     popper.current = createPopper(anchorNode.current, portalNode.current, {
       strategy: 'absolute',
       placement,
@@ -144,7 +146,13 @@ const TooltipPortalComponent = ({
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, ps.fallbackPlacements, ps.placement, ps.boundary, ps.offset]);
+  }, [
+    visible,
+    popperSettings.fallbackPlacements,
+    popperSettings.placement,
+    popperSettings.boundary,
+    popperSettings.offset,
+  ]);
 
   useEffect(() => {
     setPopper();
@@ -163,7 +171,7 @@ const TooltipPortalComponent = ({
   useEffect(() => {
     destroyPopper();
     setPopper();
-  }, [destroyPopper, setPopper, ps]);
+  }, [destroyPopper, setPopper, popperSettings]);
 
   useEffect(() => {
     if (!visible) {
