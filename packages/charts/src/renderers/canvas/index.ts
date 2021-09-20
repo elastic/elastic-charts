@@ -37,6 +37,7 @@ export function withContext(ctx: CanvasRenderingContext2D, fun: CanvasRenderer) 
 export function clearCanvas(ctx: CanvasRenderingContext2D, bgColor: Color) {
   withContext(ctx, () => {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   });
