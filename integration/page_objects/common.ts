@@ -8,7 +8,6 @@
 
 import Url from 'url';
 
-import { JSDOM } from 'jsdom';
 import { AXNode } from 'puppeteer';
 
 import { DRAG_DETECTION_TIMEOUT } from '../../packages/charts/src/state/reducers/interactions';
@@ -469,16 +468,6 @@ class CommonPage {
       return value;
     });
     return accessibilitySnapshot;
-  }
-
-  /**
-   * Get HTML for element to test aria labels etc
-   */
-  // eslint-disable-next-line class-methods-use-this
-  async getSelectorHTML(url: string, tagName: string) {
-    await this.loadElementFromURL(url, '.echCanvasRenderer');
-    const xml = await page.evaluate(() => new XMLSerializer().serializeToString(document));
-    return new JSDOM(xml, { contentType: 'text/xml' }).window.document.getElementsByTagName(tagName);
   }
 }
 
