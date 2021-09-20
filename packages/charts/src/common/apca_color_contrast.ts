@@ -72,23 +72,23 @@ export function APCAContrast([Rbg, Gbg, Bbg]: RgbTuple, [Rtxt, Gtxt, Btxt]: RgbT
 
   /// //  For Finding Raw SAPC Contrast from Relative Luminance (Y)  /////
 
-  const normBG = 0.56; // Constants for SAPC Power Curve Exponents
-  const normTXT = 0.57; // One pair for normal text, and one for reverse
-  const revTXT = 0.62; // These are the "beating heart" of SAPC
-  const revBG = 0.65;
+  const normBG = 0.55; // Constants for SAPC Power Curve Exponents
+  const normTXT = 0.58; // One pair for normal text, and one for reverse
+  const revTXT = 0.57; // These are the "beating heart" of SAPC
+  const revBG = 0.62;
 
   /// //  For Clamping and Scaling Values  /////
   // constant updated to https://github.com/Myndex/SAPC-APCA#apca-math-new-098g-4g-constants
   // new 0.98G 4g constants
 
-  const blkThrs = 0.022; // Level that triggers the soft black clamp
-  const blkClmp = 1.414; // Exponent for the soft black clamp curve
+  const blkThrs = 0.03; // Level that triggers the soft black clamp
+  const blkClmp = 1.45; // Exponent for the soft black clamp curve
   const deltaYmin = 0.0005; // Lint trap
-  const scaleBoW = 1.14; // Scaling for dark text on light
-  const scaleWoB = 1.14; // Scaling for light text on dark
-  const loConThresh = 0.035991; // Threshold for new simple offset scale
-  const loConFactor = 27.7847239587675; // = 1/0.078,
-  const loConOffset = 0.027; // The simple offset
+  const scaleBoW = 1.25; // Scaling for dark text on light
+  const scaleWoB = 1.25; // Scaling for light text on dark
+  const loConThresh = 0.078; // Threshold for new simple offset scale
+  const loConFactor = 12.82051282051282; // = 1/0.078,
+  const loConOffset = 0.06; // The simple offset
   const loClip = 0.001; // Output clip (lint trap #2)
 
   // We are only concerned with Y at this point
