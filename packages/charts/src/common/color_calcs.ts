@@ -46,30 +46,28 @@ export function combineColors([fgR, fgG, fgB, fgA]: RgbaTuple, [bgR, bgG, bgB, b
 
 const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
 const COLOR_BLACK: RgbaTuple = [0, 0, 0, 1];
-const HIGH_CONTRAST_FN = {
-  WCAG2: getContrastColorWCAG2,
-  WCAG3: getHighContrastColorAPCA,
-};
 
-/**
- * Use white or black text depending on APCA computed contrast.
- * @internal
- */
-export function highContrastColor(background: RgbTuple, mode: keyof typeof HIGH_CONTRAST_FN = 'WCAG2'): RgbaTuple {
-  return HIGH_CONTRAST_FN[mode](background);
-}
-
-function getContrastColorWCAG2(background: RgbTuple): RgbaTuple {
+function getHighContrastColorWCAG2(background: RgbTuple): RgbaTuple {
   const wWhite = getWCAG2ContrastRatio(COLOR_WHITE, background);
   const wBlack = getWCAG2ContrastRatio(COLOR_BLACK, background);
   return wWhite >= wBlack ? COLOR_WHITE : COLOR_BLACK;
 }
 
-/** @internal */
-export function getHighContrastColorAPCA(background: RgbTuple): RgbaTuple {
+function getHighContrastColorAPCA(background: RgbTuple): RgbaTuple {
   const wWhiteText = Math.abs(APCAContrast(background, COLOR_WHITE));
   const wBlackText = Math.abs(APCAContrast(background, COLOR_BLACK));
-  // APCA 60 — Similar to WCAG 4.5∶1
-  // APCA will show negative values for light text on a dark background
   return wWhiteText > wBlackText ? COLOR_WHITE : COLOR_BLACK;
+}
+
+const HIGH_CONTRAST_FN = {
+  WCAG2: getHighContrastColorWCAG2,
+  WCAG3: getHighContrastColorAPCA,
+};
+
+/**
+ * Use white or black text depending on the high contrast mode used
+ * @internal
+ */
+export function highContrastColor(background: RgbTuple, mode: keyof typeof HIGH_CONTRAST_FN = 'WCAG2'): RgbaTuple {
+  return HIGH_CONTRAST_FN[mode](background);
 }

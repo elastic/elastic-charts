@@ -21,15 +21,16 @@ describe('Color calcs', () => {
       expect(fillTextColor(`rgba(255,255,51,0.3)`)).toEqual('rgba(0, 0, 0, 1)');
     });
     it('should use white text for Thailand color', () => {
-      expect(fillTextColor(`rgba(120, 116, 178, 1)`)).toEqual('rgba(255, 255, 255, 1)');
+      // black for WCAG2, white for WCAG3
+      expect(fillTextColor(`rgba(120, 116, 178, 1)`)).toEqual('rgba(0, 0, 0, 1)');
     });
     it('should switch to black text if background color is in rgba() format - Thailand', () => {
       const containerBackground: RgbaTuple = [255, 255, 255, 1]; // white
       const background: RgbaTuple = [120, 116, 178, 0.7];
-      const resultForCombined: RgbaTuple = [161, 158, 201, 1];
-      expect(combineColors(background, containerBackground)).toEqual(resultForCombined);
-      const resultForContrastedText: RgbaTuple = [255, 255, 255, 1]; // WCAG2 is better black, with WCAG3 is white
-      expect(highContrastColor(resultForCombined)).toEqual(resultForContrastedText);
+      const blendedBackground: RgbaTuple = [161, 158, 201, 1];
+      expect(combineColors(background, containerBackground)).toEqual(blendedBackground);
+      expect(highContrastColor(blendedBackground, 'WCAG2')).toEqual([0, 0, 0, 1]);
+      expect(highContrastColor(blendedBackground, 'WCAG3')).toEqual([255, 255, 255, 1]);
     });
   });
   describe('test the combineColors function', () => {
