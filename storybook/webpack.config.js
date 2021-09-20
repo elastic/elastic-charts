@@ -120,5 +120,6 @@ module.exports = async ({ config }) => {
     '@elastic/charts/': path.resolve(__dirname, '../packages/charts/'),
   };
 
-  return config;
+  // eslint-disable-next-line @typescript-eslint/return-await
+  return await config;
 };
