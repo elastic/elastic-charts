@@ -32,7 +32,7 @@
     "lint:fix": "yarn lint --fix",
     "lint:fix:it": "NODE_ENV=production eslint --quiet --fix --ext .tsx,.ts,.js",
     "prettier:check": "prettier --check \"**/*.{json,html,css,scss}\"",
-    "playground": "cd playground && webpack serve",
+    "playground": "cd playground && RNG_SEED='elastic-charts' webpack serve",
     "pq": "pretty-quick",
     "semantic-release": "semantic-release --debug",
     "start": "yarn storybook",
