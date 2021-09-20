@@ -48,10 +48,14 @@ const mapConfigToTheme = ({
 export function render(spec: GoalSpec, parentDimensions: Dimensions, theme: Theme): ShapeViewModel {
   // override theme and spec with old deprecated config options
   const mergedTheme: Theme = mergePartial(theme, mapConfigToTheme(spec.config), { mergeOptionalPartialValues: true });
-  const mergedSpec: GoalSpec = mergePartial(spec, {
-    angleEnd: spec?.config?.angleEnd,
-    angleStart: spec?.config?.angleStart,
-  });
+  const mergedSpec: GoalSpec = mergePartial(
+    spec,
+    {
+      angleEnd: spec?.config?.angleEnd,
+      angleStart: spec?.config?.angleStart,
+    },
+    { mergeOptionalPartialValues: true },
+  );
 
   return shapeViewModel(mergedSpec, mergedTheme, parentDimensions);
 }
