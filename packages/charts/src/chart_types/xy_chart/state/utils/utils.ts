@@ -368,8 +368,8 @@ function renderGeometries(
         mergeOptionalPartialValues: true,
       });
 
-      const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
-      const valueFormatter = yAxis?.tickFormat ?? fallBackTickFormatter;
+      const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
+      const valueFormatter = yAxis?.tickFormat ? yAxis.tickFormat : xAxis?.tickFormat ?? fallBackTickFormatter; // yAxis?.tickFormat ?? fallBackTickFormatter;
 
       const displayValueSettings = spec.displayValueSettings
         ? { valueFormatter, ...spec.displayValueSettings }

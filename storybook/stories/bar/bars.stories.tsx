@@ -71,3 +71,4 @@ export { Example as tooltipBoundary } from './55_tooltip_boundary.story';
 export { Example as testDualYAxis } from './49_test_dual_axis.story';
 export { Example as testUseDefaultGroupDomain } from './56_test_use_dfl_gdomain.story';
 export { Example as testRectBorder } from './57_test_rect_border_bars.story';
+export { Example as dataValueTest } from './58_data_value_formatting.story';
