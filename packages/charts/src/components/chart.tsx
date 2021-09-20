@@ -47,9 +47,8 @@ interface ChartState {
 const getMiddlware = (id: string): StoreEnhancer => {
   const middlware: Middleware<any, any, any>[] = [];
 
-  // eslint-disable-next-line no-underscore-dangle
   if (typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,no-underscore-dangle
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     return (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
       trace: true,
       name: `@elastic/charts (id: ${id})`,
