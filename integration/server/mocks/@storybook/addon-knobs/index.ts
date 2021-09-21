@@ -37,9 +37,7 @@ export function select(name: string, b: unknown, dftValue: string, groupId?: str
 }
 
 export function text(name: string, dftValue: string, groupId?: string) {
-  const params = getParams();
-  const key = getKnobKey(name, groupId);
-  const value = params.get(key);
+  const value = getParams().get(getKnobKey(name, groupId));
   // the # used for the color knob needs to be escaped on the URL and unescaped here
   return value === null ? dftValue : unescape(value);
 }
