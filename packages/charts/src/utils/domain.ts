@@ -34,7 +34,7 @@ function constrainPadding(
 
 /** @internal */
 export function computeOrdinalDataDomain<T>(data: T[], sorted: boolean, removeNull: boolean): T[] {
-  const uniqueValues = [...new Set(data.filter((d) => (removeNull ? d !== null : true)))];
+  const uniqueValues = [...new Set(removeNull ? data.filter((d) => d !== null) : data)];
   return sorted ? uniqueValues.sort((a, b) => `${a}`.localeCompare(`${b}`)) : uniqueValues;
 }
 
