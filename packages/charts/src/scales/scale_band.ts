@@ -35,7 +35,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
 
   readonly type: ScaleBandType;
 
-  readonly domain: [T, T, ...T[]];
+  readonly domain: [T, ...T[]];
 
   readonly range: number[];
 
@@ -74,10 +74,10 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     this.bandwidth = overrideBandwidth ? overrideBandwidth * (1 - safeBarPadding) : this.d3Scale.bandwidth() || 0;
     this.originalBandwidth = this.d3Scale.bandwidth() || 0;
     this.step = this.d3Scale.step();
-    this.domain = (inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined]) as [T, T, ...T[]];
+    this.domain = (inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined]) as [T, ...T[]];
     this.range = range.slice();
     this.bandwidthPadding = this.bandwidth;
-    this.isInverted = inputDomain.length > 1 && this.domain[0] > this.domain[1]; // fixme: we are assuming that it's ordered
+    this.isInverted = false;
     this.invertedScale = scaleQuantize<T>()
       .domain(range)
       .range(inputDomain.length > 0 ? [...new Set(inputDomain)] : [(undefined as unknown) as T]);
