@@ -8,6 +8,7 @@
 
 import React from 'react';
 
+import { Colors } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { PointObject } from '../../../../common/geometry';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -181,7 +182,13 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
                 <mask key={maskId(index, innerIndex)} id={maskId(index, innerIndex)}>
                   <rect x={marginLeftPx} y={marginTopPx} width={innerWidth} height={innerHeight} fill="white" />
                   <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
-                    {renderGeometries(geometries, partitionLayout, { color: 'black' }, geometriesFoci, width)}
+                    {renderGeometries(
+                      geometries,
+                      partitionLayout,
+                      { color: Colors.Black.keyword },
+                      geometriesFoci,
+                      width,
+                    )}
                   </g>
                 </mask>
               ),

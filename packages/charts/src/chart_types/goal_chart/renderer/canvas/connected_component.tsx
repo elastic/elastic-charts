@@ -10,7 +10,7 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { Color } from '../../../../common/colors';
+import { Color, Colors } from '../../../../common/colors';
 import { Rectangle } from '../../../../common/geometry';
 import { GoalSemanticDescription, ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -178,7 +178,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   bandLabels: [],
   firstValue: 0,
   captureBoundingBox: initialBoundingBox(),
-  background: 'transparent',
+  background: Colors.Transparent.keyword,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {

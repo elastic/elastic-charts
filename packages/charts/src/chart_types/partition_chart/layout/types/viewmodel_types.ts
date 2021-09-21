@@ -7,7 +7,7 @@
  */
 
 import { CategoryKey } from '../../../../common/category';
-import { Color } from '../../../../common/colors';
+import { Color, Colors } from '../../../../common/colors';
 import {
   Coordinate,
   Distance,
@@ -140,7 +140,7 @@ const defaultFont: Font = {
   fontVariant: 'normal',
   fontFamily: '',
   fontWeight: 'normal',
-  textColor: 'black',
+  textColor: Colors.Black.keyword,
 };
 
 /** @internal */
@@ -169,7 +169,7 @@ export const nullPartitionSmallMultiplesModel = (partitionLayout: PartitionLayou
       fontWeight: 'normal',
       fontFamily: 'sans-serif',
       fontStyle: 'normal',
-      textColor: 'black',
+      textColor: Colors.Black.keyword,
     },
   },
 });

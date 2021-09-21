@@ -14,7 +14,7 @@ import { Color, Colors } from './colors';
  * Determine the color for the text hinging on the parameters of maximizeColorContrast, foreground and containerBackground
  * @internal
  */
-export function fillTextColor(background: Color, containerBg: Color = 'white'): Color {
+export function fillTextColor(background: Color, containerBg: Color = Colors.White.keyword): Color {
   const backgroundRGBA = colorToRgba(background);
   const containerBgRGBA = combineColors(colorToRgba(containerBg), Colors.White.rgba); // combine it with white if semi-transparent
   const blendedFbBg = combineColors(backgroundRGBA, containerBgRGBA);

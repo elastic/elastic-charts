@@ -7,6 +7,7 @@
  */
 
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { Colors } from '../../../../common/colors';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
@@ -38,7 +39,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
           // X-axis value
           tooltipInfo.values.push({
             label: config.xAxisLabel.name,
-            color: 'transparent',
+            color: Colors.Transparent.keyword,
             isHighlighted: false,
             isVisible: true,
             seriesIdentifier: {
@@ -53,7 +54,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
           // Y-axis value
           tooltipInfo.values.push({
             label: config.yAxisLabel.name,
-            color: 'transparent',
+            color: Colors.Transparent.keyword,
             isHighlighted: false,
             isVisible: true,
             seriesIdentifier: {
@@ -82,8 +83,8 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
         });
     } else {
       tooltipInfo.values.push({
-        label: ``,
-        color: 'transparent',
+        label: '',
+        color: Colors.Transparent.keyword,
         isHighlighted: false,
         isVisible: true,
         seriesIdentifier: {

@@ -10,7 +10,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { Color } from '../../../../common/colors';
+import { Color, Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -151,7 +151,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     top: 0,
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
-  background: 'transparent',
+  background: Colors.Transparent.keyword,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {

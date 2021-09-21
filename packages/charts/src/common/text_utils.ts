@@ -11,6 +11,7 @@ import { $Values as Values } from 'utility-types';
 import { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 import { Datum } from '../utils/common';
+import { Color } from './colors';
 import { Pixels, Rectangle } from './geometry';
 
 const FONT_WEIGHTS_NUMERIC = [100, 200, 300, 400, 500, 600, 700, 800, 900];
@@ -59,7 +60,7 @@ export interface Font {
   fontVariant: FontVariant;
   fontWeight: FontWeight;
   fontFamily: FontFamily;
-  textColor: string;
+  textColor: Color;
 }
 
 /** @public */

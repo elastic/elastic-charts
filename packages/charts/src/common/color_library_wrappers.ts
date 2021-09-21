@@ -46,7 +46,7 @@ export function RGBATupleToString(rgba: RgbTuple): Color {
 export function isValid(color: Color): chroma.Color | false {
   try {
     // ref https://github.com/gka/chroma.js/issues/280
-    return chroma(color === 'transparent' ? 'rgba(0,0,0,0)' : color);
+    return chroma(color === Colors.Transparent.keyword ? 'rgba(0,0,0,0)' : color);
   } catch {
     return false;
   }

@@ -11,7 +11,7 @@ import { $Values, isPrimitive } from 'utility-types';
 import { v1 as uuidV1 } from 'uuid';
 
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { Color } from '../common/colors';
+import { Color, Colors } from '../common/colors';
 import { Degrees, Radian } from '../common/geometry';
 import { AdditiveNumber } from './accessor';
 import { Point } from './point';
@@ -150,7 +150,7 @@ export function getColorFromVariant(seriesColor: Color, color?: Color | ColorVar
   }
 
   if (color === ColorVariant.None) {
-    return 'transparent';
+    return Colors.Transparent.keyword;
   }
 
   return color || seriesColor;
