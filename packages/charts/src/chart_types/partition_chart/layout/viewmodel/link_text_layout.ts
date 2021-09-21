@@ -7,7 +7,7 @@
  */
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { Color } from '../../../../common/colors';
+import { Color, Colors } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import {
@@ -47,7 +47,7 @@ export function linkTextLayout(
   valueFormatter: ValueFormatter,
   maxTextLength: number,
   diskCenter: Point,
-  containerBgColor: Color = 'rgba(255,255,255,1)',
+  containerBgColor: Color = Colors.White.keyword,
 ): LinkLabelsViewModelSpec {
   const { linkLabel } = config;
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);

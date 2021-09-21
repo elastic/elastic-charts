@@ -8,6 +8,7 @@
 
 import { Logger } from '../utils/logger';
 import { colorToRgba, overrideOpacity } from './color_library_wrappers';
+import { Colors } from './colors';
 
 jest.mock('../utils/logger', () => ({
   Logger: {
@@ -19,11 +20,11 @@ describe('color library wrappers utils', () => {
   describe('colorToRgba', () => {
     describe('bad colors or undefined', () => {
       it('should return default RgbaTuple', () => {
-        expect(colorToRgba('not a color')).toMatchObject([255, 0, 0, 1]);
+        expect(colorToRgba('not a color')).toMatchObject(Colors.Red.rgba);
       });
 
       it('should return default color if bad opacity', () => {
-        expect(colorToRgba('rgba(50,50,50,x)')).toMatchObject([255, 0, 0, 1]);
+        expect(colorToRgba('rgba(50,50,50,x)')).toMatchObject(Colors.Red.rgba);
       });
     });
 
@@ -42,7 +43,7 @@ describe('color library wrappers utils', () => {
       });
 
       it('should return correct RgbaTuple for alpha value of 0', () => {
-        expect(colorToRgba('#00000000')).toMatchObject([0, 0, 0, 0]);
+        expect(colorToRgba('#00000000')).toMatchObject(Colors.Transparent.rgba);
       });
     });
 
@@ -80,11 +81,11 @@ describe('color library wrappers utils', () => {
       });
 
       it('should return default RgbaTuple with 0 opacity', () => {
-        expect(colorToRgba('transparent')).toMatchObject([0, 0, 0, 0]);
+        expect(colorToRgba('transparent')).toMatchObject(Colors.Transparent.rgba);
       });
 
       it('should return default RgbaTuple with 0 opacity even with override', () => {
-        expect(overrideOpacity(colorToRgba('transparent'), 0.5)).toMatchObject([0, 0, 0, 0]);
+        expect(overrideOpacity(colorToRgba('transparent'), 0.5)).toMatchObject(Colors.Transparent.rgba);
       });
     });
 
@@ -101,10 +102,10 @@ describe('color library wrappers utils', () => {
     describe('Edge Cases', () => {
       it.each([
         // [undefined, [255,0,0, 1 ],
-        ['', [255, 0, 0, 1]],
+        ['', Colors.Red.rgba],
         ['bad', [187, 170, 221, 1]],
-        ['#00000000', [0, 0, 0, 0]],
-        ['#000000', [0, 0, 0, 1]],
+        ['#00000000', Colors.Transparent.rgba],
+        ['#000000', Colors.Black.rgba],
         ['#6092c000', [96, 146, 192, 0]],
         ['#6092c06b', [96, 146, 192, 0.42]],
         ['blue', [0, 0, 255, 1]],
@@ -124,7 +125,7 @@ describe('color library wrappers utils', () => {
     it.each<string>(['rgba(NaN, 0, 0, 0)', 'rgba(0, NaN, 0, 0)', 'rgba(0, 0, NaN, 0)', 'rgba(0, 0, 0, NaN)'])(
       'should return null if %s is NaN',
       (color) => {
-        expect(colorToRgba(color)).toEqual([255, 0, 0, 1]);
+        expect(colorToRgba(color)).toEqual(Colors.Red.rgba);
         expect(Logger.warn).toBeCalledTimes(1);
       },
     );
