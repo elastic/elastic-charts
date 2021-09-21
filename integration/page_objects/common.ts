@@ -321,27 +321,23 @@ class CommonPage {
     selector: string = 'body',
     options?: ScreenshotElementAtUrlOptions,
   ) {
-    try {
-      await this.loadElementFromURL(url, options?.waitSelector ?? selector, options?.timeout);
+    await this.loadElementFromURL(url, options?.waitSelector ?? selector, options?.timeout);
 
-      if (options?.action) {
-        await options.action();
-      }
-
-      if (options?.delay) {
-        await page.waitFor(options.delay);
-      }
-
-      const element = await this.screenshotDOMElement(options?.screenshotSelector ?? selector, options);
-
-      if (!element) {
-        throw new Error(`Error: Unable to find element\n\n\t${url}`);
-      }
-
-      expect(element).toMatchImageSnapshot();
-    } catch (error) {
-      throw new Error(String(error));
+    if (options?.action) {
+      await options.action();
     }
+
+    if (options?.delay) {
+      await page.waitFor(options.delay);
+    }
+
+    const element = await this.screenshotDOMElement(options?.screenshotSelector ?? selector, options);
+
+    if (!element) {
+      throw new Error(`Error: Unable to find element\n\n\t${url}`);
+    }
+
+    expect(element).toMatchImageSnapshot();
   }
 
   /**
