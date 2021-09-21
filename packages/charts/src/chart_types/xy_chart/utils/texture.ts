@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { OpacityFn } from '../../../common/color_library_wrappers';
+import { Ratio } from '../../../common/geometry';
 import { Texture } from '../../../geoms/types';
 import { Color, ColorVariant, degToRad, getColorFromVariant } from '../../../utils/common';
 import { Point } from '../../../utils/point';
@@ -39,7 +39,7 @@ function createPattern(
   dpi: number,
   patternCanvas: HTMLCanvasElement,
   baseColor: Color | ColorVariant,
-  fillOpacity: OpacityFn,
+  sharedGeometryOpacity: Ratio,
   textureStyle?: TexturedStyles,
 ): CanvasPattern | null {
   const pCtx = patternCanvas.getContext('2d');
@@ -53,7 +53,7 @@ function createPattern(
   patternCanvas.width = dpi * cssWidth;
   patternCanvas.height = dpi * cssHeight;
 
-  pCtx.globalAlpha = opacity ? fillOpacity(opacity, 1) : fillOpacity(1);
+  pCtx.globalAlpha = sharedGeometryOpacity * (opacity ?? 1);
   pCtx.lineWidth = strokeWidth;
 
   pCtx.strokeStyle = getColorFromVariant(baseColor, stroke ?? ColorVariant.Series);
@@ -93,11 +93,11 @@ export const getTextureStyles = (
   ctx: CanvasRenderingContext2D,
   patternCanvas: HTMLCanvasElement,
   baseColor: Color | ColorVariant,
-  fillOpacity: OpacityFn,
+  sharedGeometryOpacity: Ratio,
   texture?: TexturedStyles,
 ): Texture | undefined => {
   const dpi = window.devicePixelRatio;
-  const pattern = createPattern(ctx, dpi, patternCanvas, baseColor, fillOpacity, texture);
+  const pattern = createPattern(ctx, dpi, patternCanvas, baseColor, sharedGeometryOpacity, texture);
 
   if (!pattern || !texture) return;
 

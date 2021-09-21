@@ -44,7 +44,6 @@ export const config: Config = {
     textColor: 'black',
     fontVariant: 'normal',
     fontWeight: 'normal',
-    textOpacity: 1,
     align: 'center' as CanvasTextAlign,
     baseline: 'verticalAlign' as CanvasTextBaseline,
     padding: 6,
@@ -60,7 +59,6 @@ export const config: Config = {
     textColor: 'black',
     fontVariant: 'normal',
     fontWeight: 'normal',
-    textOpacity: 1,
     baseline: 'verticalAlign' as CanvasTextBaseline,
     padding: 5,
     formatter: String,
@@ -93,7 +91,6 @@ export const config: Config = {
       textColor: 'black',
       fontVariant: 'normal',
       fontWeight: 'normal',
-      textOpacity: 1,
       useGlobalMinFontSize: true,
     },
     border: {

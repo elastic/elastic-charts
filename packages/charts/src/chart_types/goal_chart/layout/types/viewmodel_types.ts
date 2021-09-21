@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import chroma from 'chroma-js';
-
+import { getGreensColorScale } from '../../../../common/color_library_wrappers';
 import { Pixels, PointObject } from '../../../../common/geometry';
 import { SpecType } from '../../../../specs/constants';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
@@ -71,8 +70,7 @@ export const defaultGoalSpec = {
   ...commonDefaults,
   bands: [50, 75, 100],
   bandFillColor: ({ value, highestValue, lowestValue }: BandFillColorAccessorInput) => {
-    const func = chroma.scale(chroma.brewer.Greens).gamma(0.5).domain([highestValue, lowestValue]);
-    return func(value).css();
+    return getGreensColorScale(0.5, [highestValue, lowestValue])(value);
   },
   tickValueFormatter: ({ value }: BandFillColorAccessorInput) => String(value),
   labelMajor: ({ base }: BandFillColorAccessorInput) => String(base),

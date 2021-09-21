@@ -39,7 +39,6 @@ export const Example = () => (
             valueFormatter: () => '',
             fontFamily: 'Helvetica',
             textColor: 'grey',
-            textInvertible: true,
           },
           shape: {
             fillColor: 'rgba(0, 0, 0, 0)',
@@ -51,7 +50,6 @@ export const Example = () => (
           fillLabel: {
             valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
             textColor: 'black',
-            textInvertible: true,
             fontWeight: 100,
             fontStyle: 'normal',
             fontFamily: 'Helvetica',

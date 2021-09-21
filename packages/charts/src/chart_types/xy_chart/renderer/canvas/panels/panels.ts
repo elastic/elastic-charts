@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB } from '../../../../../common/color_library_wrappers';
 import { withContext } from '../../../../../renderers/canvas';
 import { Position } from '../../../../../utils/common';
 import { AxisId } from '../../../../../utils/ids';
@@ -26,8 +25,8 @@ export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: 
       renderRect(
         ctx,
         { x: chartX + panelX, y: chartY + panelY, width, height },
-        { color: stringToRGB('rgba(0,0,0,0)') },
-        { color: stringToRGB('rgb(0,0,0)'), width: 1 },
+        { color: [0, 0, 0, 0] },
+        { color: [0, 0, 0, 1], width: 1 },
       ),
     ),
   );

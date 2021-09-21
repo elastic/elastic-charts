@@ -22,7 +22,6 @@ const titleFontDefaults: Omit<TextFont, 'fontFamily' | 'textColor' | 'fontSize'>
   fontVariant: 'normal',
   fontStyle: 'normal', // may be overridden (happens if prop on axis style is defined)
   fontWeight: 'bold',
-  textOpacity: 1,
   align: 'center',
   baseline: 'middle',
 };

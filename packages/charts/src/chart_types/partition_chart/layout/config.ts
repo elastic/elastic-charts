@@ -196,8 +196,6 @@ export const configMetadata: Record<string, ConfigItem> = {
     type: 'group',
     values: {
       textColor: { type: 'color', dflt: '#000000' },
-      textInvertible: { dflt: false, type: 'boolean' },
-      textContrast: { dflt: false, type: 'boolean' || 'number' },
       ...fontSettings,
       valueGetter: {
         dflt: sumValueGetter,
@@ -285,9 +283,6 @@ export const configMetadata: Record<string, ConfigItem> = {
         documentation: 'Limits the total number of characters in linked labels.',
       },
       textColor: { dflt: '#000000', type: 'color' },
-      textInvertible: { dflt: false, type: 'boolean' },
-      textContrast: { dflt: false, type: 'boolean' || 'number' },
-      textOpacity: { dflt: 1, min: 0, max: 1, type: 'number' },
       minimumStemLength: {
         dflt: 0,
         min: 0,

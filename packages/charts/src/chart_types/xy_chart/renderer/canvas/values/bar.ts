@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { colorIsDark, getTextColorIfTextInvertible } from '../../../../../common/color_calcs';
 import { fillTextColor } from '../../../../../common/fill_text_color';
 import { Font, TextAlign, TextBaseline } from '../../../../../common/text_utils';
 import { Rect } from '../../../../../geoms/types';
@@ -45,14 +44,13 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     }
     const { text, fontSize, fontScale, overflowConstraints, isValueContainedInElement } = bar.displayValue;
     const shadowSize = getTextBorderSize(fill);
-    const { fillColor, shadowColor } = getTextColors(fill, bar.color, shadowSize);
+    const { fillColor, shadowColor } = getTextColors(fill, bar.color);
     const font: Font = {
       fontFamily,
       fontStyle: fontStyle ?? 'normal',
       fontVariant: 'normal',
       fontWeight: 'normal',
       textColor: fillColor,
-      textOpacity: 1,
     };
 
     const { x, y, align, baseline, rect, overflow } = positionText(
@@ -189,17 +187,12 @@ function isOverflow(rect: Rect, chartDimensions: Dimensions, chartRotation: Rota
   return rect.x < 0 || rect.x + rect.width > cWidth || rect.y < 0 || rect.y + rect.height > cHeight;
 }
 
-const DEFAULT_VALUE_COLOR = 'black';
-// a little bit of alpha makes black font more readable
-const DEFAULT_VALUE_BORDER_COLOR = 'rgba(255, 255, 255, 0.8)';
-const DEFAULT_VALUE_BORDER_SOLID_COLOR = 'rgb(255, 255, 255)';
 const TRANSPARENT_COLOR = 'rgba(0,0,0,0)';
 type ValueFillDefinition = Theme['barSeriesStyle']['displayValue']['fill'];
 
 function getTextColors(
   fillDefinition: ValueFillDefinition,
   geometryColor: string,
-  borderSize: number,
 ): { fillColor: string; shadowColor: string } {
   if (typeof fillDefinition === 'string') {
     return { fillColor: fillDefinition, shadowColor: TRANSPARENT_COLOR };
@@ -210,28 +203,9 @@ function getTextColors(
       shadowColor: fillDefinition.borderColor || TRANSPARENT_COLOR,
     };
   }
-  const fillColor =
-    fillTextColor(
-      DEFAULT_VALUE_COLOR,
-      fillDefinition.textInvertible,
-      fillDefinition.textContrast || false,
-      geometryColor,
-      'white',
-    ) || DEFAULT_VALUE_COLOR;
+  const fillColor = fillTextColor(geometryColor);
 
-  // If the border is too wide it can overlap between a letter or another
-  // therefore use a solid color for thinker borders
-  const defaultBorderColor = borderSize < 2 ? DEFAULT_VALUE_BORDER_COLOR : DEFAULT_VALUE_BORDER_SOLID_COLOR;
-  const shadowColor =
-    'textBorder' in fillDefinition
-      ? getTextColorIfTextInvertible(
-          colorIsDark(fillColor),
-          colorIsDark(defaultBorderColor),
-          defaultBorderColor,
-          false,
-          geometryColor,
-        ) || TRANSPARENT_COLOR
-      : TRANSPARENT_COLOR;
+  const shadowColor = fillTextColor(fillColor);
 
   return {
     fillColor,

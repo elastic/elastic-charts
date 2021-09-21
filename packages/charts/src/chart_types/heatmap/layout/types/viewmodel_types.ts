@@ -115,7 +115,7 @@ export const nullHeatmapViewModel: HeatmapViewModel = {
   gridLines: {
     x: [],
     y: [],
-    stroke: { width: 0, color: { r: 0, g: 0, b: 0, opacity: 0 } },
+    stroke: { width: 0, color: [0, 0, 0, 0] },
   },
   cells: [],
   xValues: [],

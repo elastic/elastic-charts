@@ -16,8 +16,6 @@ import { Pixels, Rectangle } from './geometry';
 const FONT_WEIGHTS_NUMERIC = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 const FONT_WEIGHTS_ALPHA = ['normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset'];
 
-/** @public */
-export type TextContrast = boolean | number;
 /**
  * todo consider doing tighter control for permissible font families, eg. as in Kibana Canvas - expression language
  *  - though the same applies for permissible (eg. known available or loaded) font weights, styles, variants...
@@ -62,7 +60,6 @@ export interface Font {
   fontWeight: FontWeight;
   fontFamily: FontFamily;
   textColor: string;
-  textOpacity: number;
 }
 
 /** @public */

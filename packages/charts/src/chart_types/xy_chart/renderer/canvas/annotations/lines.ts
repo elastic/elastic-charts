@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB } from '../../../../../common/color_library_wrappers';
+import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import { Stroke } from '../../../../../geoms/types';
 import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
@@ -23,8 +23,10 @@ export function renderLineAnnotations(
   rotation: Rotation,
   renderingArea: Dimensions,
 ) {
-  const strokeColor = stringToRGB(lineStyle.line.stroke);
-  strokeColor.opacity *= lineStyle.line.opacity;
+  const strokeColor = overrideOpacity(
+    colorToRgba(lineStyle.line.stroke),
+    (opacity) => opacity * lineStyle.line.opacity,
+  );
   const stroke: Stroke = {
     color: strokeColor,
     width: lineStyle.line.strokeWidth,

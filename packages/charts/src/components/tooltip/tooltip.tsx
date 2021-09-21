@@ -6,13 +6,12 @@
  * Side Public License, v 1.
  */
 
-import chroma from 'chroma-js';
 import classNames from 'classnames';
 import React, { memo, useCallback, useMemo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { isColorValid } from '../../common/color_calcs';
+import { colorToRgba } from '../../common/color_library_wrappers';
 import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import { GlobalChartState, BackwardRef } from '../../state/chart_state';
@@ -113,7 +112,8 @@ const TooltipComponent = ({
           const classes = classNames('echTooltip__item', {
             echTooltip__rowHighlighted: isHighlighted,
           });
-          const adjustedBGColor = isColorValid(color) && chroma(color).alpha() === 0 ? 'transparent' : backgroundColor;
+
+          const adjustedBGColor = colorToRgba(color)[3] === 0 ? 'transparent' : backgroundColor;
 
           return (
             <div

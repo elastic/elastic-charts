@@ -63,7 +63,6 @@ export const config: RecursivePartial<Config> = {
   fontFamily: 'Arial',
   fillLabel: {
     valueFormatter: (d: number) => d,
-    textInvertible: true,
     fontWeight: 500,
   },
   margin: { top: 0, bottom: 0, left: 0, right: 0 },

@@ -263,27 +263,11 @@ describe('Test that getRectangleRowGeometry works with:', () => {
     });
   });
 });
-describe('Test getTextColor function', () => {
-  test('getTextColor works with textContrast greater than default ratio', () => {
-    const textColor = 'black';
-    const textInvertible = true;
-    const textContrast = 6;
+describe('Test fillTextColor function', () => {
+  test('get the right maximized contrast color', () => {
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
-    const expectedAdjustedTextColor = 'black';
-    expect(fillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor)).toEqual(
-      expectedAdjustedTextColor,
-    );
-  });
-  test('getTextColor works with textContrast not defined', () => {
-    const textColor = 'black';
-    const textInvertible = true;
-    const textContrast = false;
-    const fillColor = 'rgba(55, 126, 184, 0.7)';
-    const containerBackgroundColor = 'white';
-    const expectedAdjustedTextColor = 'black';
-    expect(fillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor)).toEqual(
-      expectedAdjustedTextColor,
-    );
+    const expectedAdjustedTextColor = 'rgba(0, 0, 0, 1)'; // with  WCAG 2 is black
+    expect(fillTextColor(fillColor, containerBackgroundColor)).toEqual(expectedAdjustedTextColor);
   });
 });

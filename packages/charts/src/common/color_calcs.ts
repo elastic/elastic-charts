@@ -6,32 +6,13 @@
  * Side Public License, v 1.
  */
 
-import chroma from 'chroma-js';
-
-import { Color } from '../utils/common';
-import { RgbaTuple, RGBATupleToString, RgbTuple, stringToRGB } from './color_library_wrappers';
-import { Ratio } from './geometry';
-import { TextContrast } from './text_utils';
+import { APCAContrast } from './apca_color_contrast';
+import { RgbaTuple, RGBATupleToString, RgbTuple } from './color_library_wrappers';
+import { getWCAG2ContrastRatio } from './wcag2_color_contrast';
 
 /** @internal */
 export function hueInterpolator(colors: RgbTuple[]) {
-  return (d: number) => {
-    const index = Math.round(d * 255);
-    const [r, g, b, a] = colors[index];
-    return colors[index].length === 3 ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a ?? 1})`;
-  };
-}
-
-/** @internal */
-export function addOpacity(hexColorString: string, opacity: Ratio) {
-  // this is a super imperfect multiplicative alpha blender that assumes a "#rrggbb" or "#rrggbbaa" hexColorString
-  // todo roll some proper utility that can handle "rgb(...)", "rgba(...)", "red", {r, g, b} etc.
-  return opacity === 1
-    ? hexColorString
-    : hexColorString.slice(0, 7) +
-        (hexColorString.slice(7).length === 0 || parseInt(hexColorString.slice(7, 2), 16) === 255
-          ? `00${Math.round(opacity * 255).toString(16)}`.slice(-2) // color was of full opacity
-          : `00${Math.round((parseInt(hexColorString.slice(7, 2), 16) / 255) * opacity * 255).toString(16)}`.slice(-2));
+  return (d: number) => RGBATupleToString(colors[Math.round(d * 255)]);
 }
 
 /** @internal */
@@ -39,165 +20,54 @@ export function arrayToLookup(keyFun: (v: any) => any, array: Array<any>) {
   return Object.assign({}, ...array.map((d) => ({ [keyFun(d)]: d })));
 }
 
-const rgbaCache: Map<string | undefined, RgbaTuple> = new Map();
-
-function colorToRgba(color: Color): RgbaTuple {
-  const cachedValue = rgbaCache.get(color);
-  if (cachedValue === undefined) {
-    const newValue = chroma(color).rgba();
-    rgbaCache.set(color, newValue);
-    return newValue;
-  }
-  return cachedValue;
-}
-
-/** If the user specifies the background of the container in which the chart will be on, we can use that color
- * and make sure to provide optimal contrast
+/**
+ * Blend a foreground (fg) color with a background (bg) color
  * @internal
  */
-export function combineColors(foregroundColor: Color, backgroundColor: Color): Color {
-  const [red1, green1, blue1, alpha1] = colorToRgba(foregroundColor);
-  const [red2, green2, blue2, alpha2] = colorToRgba(backgroundColor);
+export function combineColors([fgR, fgG, fgB, fgA]: RgbaTuple, [bgR, bgG, bgB, bgA]: RgbaTuple): RgbaTuple {
+  // combine colors only if foreground has transparency
+  if (fgA === 1) {
+    return [fgR, fgG, fgB, fgA];
+  }
 
   // For reference on alpha calculations:
   // https://en.wikipedia.org/wiki/Alpha_compositing
-  const combinedAlpha = alpha1 + alpha2 * (1 - alpha1);
+  const alpha = fgA + bgA * (1 - fgA);
 
-  if (combinedAlpha === 0) {
-    return 'rgba(0,0,0,0)';
+  if (alpha === 0) {
+    return [0, 0, 0, 0];
   }
 
-  const combinedRed = Math.round((red1 * alpha1 + red2 * alpha2 * (1 - alpha1)) / combinedAlpha);
-  const combinedGreen = Math.round((green1 * alpha1 + green2 * alpha2 * (1 - alpha1)) / combinedAlpha);
-  const combinedBlue = Math.round((blue1 * alpha1 + blue2 * alpha2 * (1 - alpha1)) / combinedAlpha);
-  const rgba: RgbTuple = [combinedRed, combinedGreen, combinedBlue, combinedAlpha];
-
-  return RGBATupleToString(rgba);
+  const r = Math.round((fgR * fgA + bgR * bgA * (1 - fgA)) / alpha);
+  const g = Math.round((fgG * fgA + bgG * bgA * (1 - fgA)) / alpha);
+  const b = Math.round((fgB * fgA + bgB * bgA * (1 - fgA)) / alpha);
+  return [r, g, b, alpha];
 }
 
-const validCache: Map<string | undefined, boolean> = new Map();
+const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
+const COLOR_BLACK: RgbaTuple = [0, 0, 0, 1];
 
-/**
- * Return true if the color is a valid CSS color, false otherwise
- * @param color a color written in string
- * @internal
- */
-export function isColorValid(color?: string): color is Color {
-  const cachedValue = validCache.get(color);
-  if (cachedValue === undefined) {
-    const newValue = Boolean(color) && chroma.valid(color);
-    validCache.set(color, newValue);
-    return newValue;
-  }
-  return cachedValue;
+function getHighContrastColorWCAG2(background: RgbTuple): RgbaTuple {
+  const wWhite = getWCAG2ContrastRatio(COLOR_WHITE, background);
+  const wBlack = getWCAG2ContrastRatio(COLOR_BLACK, background);
+  return wWhite >= wBlack ? COLOR_WHITE : COLOR_BLACK;
 }
 
-/**
- * Adjust the text color in cases black and white can't reach ideal 4.5 ratio
- * @internal
- */
-export function makeHighContrastColor(foreground: Color, background: Color, ratio = 4.5): Color {
-  // determine the lightness factor of the background color to determine whether to lighten or darken the foreground
-  const lightness = chroma(background).get('hsl.l');
-  let highContrastTextColor = foreground;
-  const originalhighContrastTextColor = foreground;
-  const isBackgroundDark = colorIsDark(background);
-  // determine whether white or black text is ideal contrast vs a grey that just passes the ratio
-  if (isBackgroundDark && chroma.deltaE('black', foreground) === 0) {
-    highContrastTextColor = '#fff';
-  } else if (lightness > 0.5 && chroma.deltaE('white', foreground) === 0) {
-    highContrastTextColor = '#000';
-  }
-  const precision = 1e8;
-  let contrast = getContrast(highContrastTextColor, background);
-  // brighten and darken the text color if not meeting the ratio
-  while (contrast < ratio) {
-    highContrastTextColor = isBackgroundDark
-      ? chroma(highContrastTextColor).brighten().toString()
-      : chroma(highContrastTextColor).darken().toString();
-    const scaledOldContrast = Math.round(contrast * precision) / precision;
-    contrast = getContrast(highContrastTextColor, background);
-    const scaledContrast = Math.round(contrast * precision) / precision;
-    // catch if the ideal contrast may not be possible, switch to the other extreme color contrast
-    if (scaledOldContrast === scaledContrast) {
-      const contrastColor =
-        originalhighContrastTextColor === 'rgba(255, 255, 255, 1)' ? 'rgba(0, 0 , 0, 1)' : 'rgba(255, 255, 255, 1)';
-      // make sure the new text color hits the ratio, if not, then return the scaledContrast since we tried earlier
-      return getContrast(contrastColor, background) > ratio ? contrastColor : scaledContrast.toString();
-    }
-  }
-  return highContrastTextColor.toString();
+function getHighContrastColorAPCA(background: RgbTuple): RgbaTuple {
+  const wWhiteText = Math.abs(APCAContrast(background, COLOR_WHITE));
+  const wBlackText = Math.abs(APCAContrast(background, COLOR_BLACK));
+  return wWhiteText > wBlackText ? COLOR_WHITE : COLOR_BLACK;
 }
 
-/**
- * show contrast amount
- * @internal
- */
-export function getContrast(foregroundColor: string | chroma.Color, backgroundColor: string | chroma.Color): number {
-  return chroma.contrast(foregroundColor, backgroundColor);
-}
+const HIGH_CONTRAST_FN = {
+  WCAG2: getHighContrastColorWCAG2,
+  WCAG3: getHighContrastColorAPCA,
+};
 
 /**
- * determines if the color is dark based on the luminance
+ * Use white or black text depending on the high contrast mode used
  * @internal
  */
-export function colorIsDark(color: Color): boolean {
-  const luminance = chroma(color).luminance();
-  return luminance < 0.2;
-}
-
-/**
- * inverse color for text
- * @internal
- */
-export function getTextColorIfTextInvertible(
-  specifiedTextColorIsDark: boolean,
-  backgroundIsDark: boolean,
-  textColor: Color,
-  textContrast: TextContrast,
-  backgroundColor: Color,
-): Color {
-  const inverseForContrast = specifiedTextColorIsDark === backgroundIsDark;
-  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-  if (!textContrast) {
-    return inverseForContrast
-      ? to === undefined
-        ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-        : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-      : textColor;
-  }
-  if (textContrast === true) {
-    return inverseForContrast
-      ? to === undefined
-        ? makeHighContrastColor(`rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`, backgroundColor)
-        : makeHighContrastColor(`rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`, backgroundColor)
-      : makeHighContrastColor(textColor, backgroundColor);
-  } else if (typeof textContrast === 'number') {
-    return inverseForContrast
-      ? to === undefined
-        ? makeHighContrastColor(`rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`, backgroundColor, textContrast)
-        : makeHighContrastColor(`rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`, backgroundColor, textContrast)
-      : makeHighContrastColor(textColor, backgroundColor, textContrast);
-  }
-  return 'black'; // this should never happen; added it as previously function return type included undefined; todo
-}
-
-/**
- * This function generates color for non-occluded text rendering directly on the
- * paper, with possible background color, ie. not on some data ink
- *
- * @internal
- */
-export function getOnPaperColorSet(textColor: Color, sectorLineStroke: Color, containerBackgroundColor?: Color) {
-  // determine the ideal contrast color for the link labels
-  const validBackgroundColor = isColorValid(containerBackgroundColor)
-    ? containerBackgroundColor
-    : 'rgba(255, 255, 255, 0)';
-  const contrastTextColor = containerBackgroundColor
-    ? makeHighContrastColor(textColor, validBackgroundColor)
-    : textColor;
-  const strokeColor = containerBackgroundColor
-    ? makeHighContrastColor(sectorLineStroke, validBackgroundColor)
-    : undefined;
-  return { contrastTextColor, strokeColor };
+export function highContrastColor(background: RgbTuple, mode: keyof typeof HIGH_CONTRAST_FN = 'WCAG2'): RgbaTuple {
+  return HIGH_CONTRAST_FN[mode](background);
 }

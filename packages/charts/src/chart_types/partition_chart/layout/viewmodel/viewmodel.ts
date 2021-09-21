@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { argsToRGBString, stringToRGB } from '../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import {
@@ -20,6 +20,7 @@ import {
 import { Part, TextMeasure } from '../../../../common/text_utils';
 import { GroupByAccessor, SmallMultiplesStyle } from '../../../../specs';
 import { StrokeStyle, ValueFormatter, Color, RecursivePartial } from '../../../../utils/common';
+import { Logger } from '../../../../utils/logger';
 import { Layer } from '../../specs';
 import { config as defaultConfig, MODEL_KEY, percentValueGetter } from '../config';
 import { Config, FillLabelConfig, PartitionLayout } from '../types/config_types';
@@ -140,23 +141,23 @@ export function makeQuadViewModel(
   isSunburstLayout: boolean,
   containerBackgroundColor?: Color,
 ): Array<QuadViewModel> {
+  if (colorToRgba(containerBackgroundColor ?? 'white')[3] < 1) {
+    Logger.expected(
+      `Text contrast requires a opaque background color, using white as fallback`,
+      'an opaque color',
+      containerBackgroundColor,
+    );
+  }
   return childNodes.map((node) => {
-    const opacityMultiplier = 1; // could alter in the future, eg. in response to interactions
     const layer = layers[node.depth - 1];
-    const fillColorSpec = layer && layer.shape && layer.shape.fillColor;
-    const fill = fillColorSpec ?? 'rgba(128,0,0,0.5)';
-    const shapeFillColor = typeof fill === 'function' ? fill(node, node.sortIndex, node[MODEL_KEY].children) : fill;
-    const { r, g, b, opacity } = stringToRGB(shapeFillColor);
-    const fillColor = argsToRGBString(r, g, b, opacity * opacityMultiplier);
+    const fill = layer?.shape?.fillColor ?? 'rgba(128, 0, 0, 0.5)';
+    const fillColor = typeof fill === 'function' ? fill(node, node.sortIndex, node[MODEL_KEY].children) : fill;
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
     const textNegligible = node.y1px - node.y0px < minRectHeightForText;
-    const { textColor, textInvertible, textContrast } = { ...fillLabel, ...layer.fillLabel };
-    const color =
-      !isSunburstLayout && textNegligible
-        ? 'transparent'
-        : fillTextColor(textColor, textInvertible, textContrast, fillColor, containerBackgroundColor);
-    return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor: color, ...node };
+    const textColor =
+      !isSunburstLayout && textNegligible ? 'transparent' : fillTextColor(fillColor, containerBackgroundColor);
+    return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor, ...node };
   });
 }
 

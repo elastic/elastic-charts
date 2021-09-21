@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { getOnPaperColorSet } from '../../../../common/color_calcs';
+import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { TAU } from '../../../../common/constants';
+import { fillTextColor } from '../../../../common/fill_text_color';
 import {
   Distance,
   meanAngle,
@@ -18,6 +19,7 @@ import {
 } from '../../../../common/geometry';
 import { cutToLength, fitText, Font, measureOneBoxWidth, TextMeasure } from '../../../../common/text_utils';
 import { Color, ValueFormatter } from '../../../../utils/common';
+import { Logger } from '../../../../utils/logger';
 import { Point } from '../../../../utils/point';
 import { Config, LinkLabelConfig } from '../types/config_types';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
@@ -44,20 +46,12 @@ export function linkTextLayout(
   valueFormatter: ValueFormatter,
   maxTextLength: number,
   diskCenter: Point,
-  containerBackgroundColor?: Color,
+  containerBgColor: Color = 'rgba(255,255,255,1)',
 ): LinkLabelsViewModelSpec {
-  const { linkLabel, sectorLineStroke } = config;
+  const { linkLabel } = config;
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;
-
-  const { contrastTextColor, strokeColor } = getOnPaperColorSet(
-    linkLabel.textColor,
-    sectorLineStroke,
-    containerBackgroundColor,
-  );
-  const labelFontSpec: Font = { ...linkLabel, textColor: contrastTextColor };
-  const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor: contrastTextColor };
 
   const linkLabels: LinkLabelVM[] = nodesWithoutRoom
     .filter((n: ShapeTreeNode) => n.depth === maxDepth) // only the outermost ring can have links
@@ -83,7 +77,18 @@ export function linkTextLayout(
     )
     .filter(({ text }) => text !== ''); // cull linked labels whose text was truncated to nothing;
 
-  return { linkLabels, valueFontSpec, labelFontSpec, strokeColor };
+  if (colorToRgba(containerBgColor)[3] < 1) {
+    Logger.expected(
+      `Text contrast requires a opaque background color, using white as fallback`,
+      'an opaque color',
+      containerBgColor,
+    );
+  }
+  const textColor = fillTextColor(containerBgColor);
+  const labelFontSpec: Font = { ...linkLabel, textColor };
+  const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor };
+
+  return { linkLabels, valueFontSpec, labelFontSpec, strokeColor: textColor };
 }
 
 function linkLabelCompare(n1: ShapeTreeNode, n2: ShapeTreeNode) {

@@ -5,6 +5,7 @@
 ###
 source .ci/global_setup.sh
 
+
 VRTS_FILES=$1
 ###
 ### visual testing
