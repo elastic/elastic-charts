@@ -95,7 +95,6 @@ const TooltipPortalComponent = ({
    */
   const popper = useRef<Instance | null>(null);
   const popperSettings = useMemo(
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
     [settings],
