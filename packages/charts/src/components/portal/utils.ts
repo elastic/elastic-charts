@@ -90,7 +90,7 @@ export function getElementZIndex(element: HTMLElement, cousin: HTMLElement): num
     element = element.offsetParent as HTMLElement;
 
     // stop if there is no parent
-    if (element === null) {
+    if (!element) {
       break;
     }
 
