@@ -29,7 +29,6 @@ function flatSlicesNames(
     // format the key with the layer formatter
     const layer = layers[depth - 1];
     const formatter = layer?.nodeLabel;
-    // todo null check under what circumstances key can be a null, as the type says it can't
     const formattedValue = formatter ? formatter(key) : `${key}`;
     // preventing errors from external formatters
     if (formattedValue && formattedValue !== HIERARCHY_ROOT_KEY) {

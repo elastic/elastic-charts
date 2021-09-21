@@ -115,19 +115,11 @@ export function getExtraValueMap(
     const branch = tree[i];
     const [key, arrayNode] = branch;
     const { value, path, [CHILDREN_KEY]: children } = arrayNode;
-
-    // todo null check under what circumstances key can be a null, as the type says it can't
-    if (key !== null) {
-      const values: LegendItemExtraValues = new Map();
-      const formattedValue = valueFormatter ? valueFormatter(value) : value;
-
-      values.set(key, formattedValue);
-      keys.set(path.map(({ index }) => index).join('__'), values);
-    }
-
-    if (depth < maxDepth) {
-      getExtraValueMap(layers, valueFormatter, children, maxDepth, depth + 1, keys);
-    }
+    const values: LegendItemExtraValues = new Map();
+    const formattedValue = valueFormatter ? valueFormatter(value) : value;
+    values.set(key, formattedValue);
+    keys.set(path.map(({ index }) => index).join('__'), values);
+    if (depth < maxDepth) getExtraValueMap(layers, valueFormatter, children, maxDepth, depth + 1, keys);
   }
   return keys;
 }
