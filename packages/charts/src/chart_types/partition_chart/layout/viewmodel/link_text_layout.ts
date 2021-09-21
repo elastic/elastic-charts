@@ -7,6 +7,7 @@
  */
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import {
@@ -18,7 +19,7 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { cutToLength, fitText, Font, measureOneBoxWidth, TextMeasure } from '../../../../common/text_utils';
-import { Color, ValueFormatter } from '../../../../utils/common';
+import { ValueFormatter } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Point } from '../../../../utils/point';
 import { Config, LinkLabelConfig } from '../types/config_types';

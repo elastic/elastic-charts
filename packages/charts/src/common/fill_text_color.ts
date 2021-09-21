@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../utils/common';
 import { combineColors, highContrastColor } from './color_calcs';
 import { colorToRgba, RGBATupleToString } from './color_library_wrappers';
+import { Color } from './colors';
 
 /**
  * Determine the color for the text hinging on the parameters of maximizeColorContrast, foreground and containerBackground

@@ -10,6 +10,7 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { Color } from '../../../../common/colors';
 import { ScreenReaderSummary, ScreenReaderPartitionTable } from '../../../../components/accessibility';
 import { clearCanvas } from '../../../../renderers/canvas';
 import { SettingsSpec } from '../../../../specs/settings';
@@ -24,7 +25,6 @@ import { getChartContainerDimensionsSelector } from '../../../../state/selectors
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { Color } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { MODEL_KEY } from '../../layout/config';
 import {

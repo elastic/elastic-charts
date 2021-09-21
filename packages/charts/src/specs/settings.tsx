@@ -15,6 +15,7 @@ import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/high
 import { LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
 import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { Color } from '../common/colors';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
 import { CustomTooltip } from '../components/tooltip/types';
@@ -23,7 +24,6 @@ import { LegendPath } from '../state/actions/legend';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
 import {
-  Color,
   HorizontalAlignment,
   LayoutDirection,
   Position,

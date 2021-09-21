@@ -7,6 +7,7 @@
  */
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import {
@@ -19,7 +20,7 @@ import {
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
 import { GroupByAccessor, SmallMultiplesStyle } from '../../../../specs';
-import { StrokeStyle, ValueFormatter, Color, RecursivePartial } from '../../../../utils/common';
+import { StrokeStyle, ValueFormatter, RecursivePartial } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Layer } from '../../specs';
 import { config as defaultConfig, MODEL_KEY, percentValueGetter } from '../config';

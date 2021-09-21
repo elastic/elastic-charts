@@ -8,9 +8,10 @@
 
 import { $Values as Values } from 'utility-types';
 
+import { Color } from '../../../../common/colors';
 import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from '../../../../common/geometry';
 import { Font, FontFamily, PartialFont } from '../../../../common/text_utils';
-import { Color, StrokeStyle, ValueFormatter } from '../../../../utils/common';
+import { StrokeStyle, ValueFormatter } from '../../../../utils/common';
 import { PerSideDistance } from '../../../../utils/dimensions';
 
 /** @public */

@@ -8,8 +8,9 @@
 
 import chroma from 'chroma-js';
 
-import { clamp, Color } from '../utils/common';
+import { clamp } from '../utils/common';
 import { Logger } from '../utils/logger';
+import { Color } from './colors';
 import { LRUCache } from './data_structures';
 
 type RGB = number;
