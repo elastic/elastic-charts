@@ -10,7 +10,7 @@ import chroma from 'chroma-js';
 
 import { clamp } from '../utils/common';
 import { Logger } from '../utils/logger';
-import { Color } from './colors';
+import { Color, Colors } from './colors';
 import { LRUCache } from './data_structures';
 
 type RGB = number;
@@ -32,7 +32,7 @@ export function overrideOpacity([r, g, b, o]: RgbaTuple, opacity?: number | Opac
   // don't apply override on transparent color to avoid unwanted behaviours
   // todo check if we can apply to every transparent colors
   if (r === 0 && b === 0 && g === 0 && o === 0) {
-    return [0, 0, 0, 0];
+    return Colors.Transparent.rgba;
   }
   return [r, g, b, clamp(Number.isFinite(opacityOverride) ? opacityOverride : o, 0, 1)];
 }
@@ -72,7 +72,7 @@ export function colorToRgba(color: Color): RgbaTuple {
   if (cachedValue === undefined) {
     const chromaColor = isValid(color);
     if (chromaColor === false) Logger.warn(`The provided color is not a valid CSS color, using RED as fallback`, color);
-    const newValue: RgbaTuple = chromaColor ? chromaColor.rgba() : [255, 0, 0, 1];
+    const newValue: RgbaTuple = chromaColor ? chromaColor.rgba() : Colors.Red.rgba;
     rgbaCache.set(color, newValue);
     return newValue;
   }

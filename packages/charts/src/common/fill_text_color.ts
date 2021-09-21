@@ -8,7 +8,7 @@
 
 import { combineColors, highContrastColor } from './color_calcs';
 import { colorToRgba, RGBATupleToString } from './color_library_wrappers';
-import { Color } from './colors';
+import { Color, Colors } from './colors';
 
 /**
  * Determine the color for the text hinging on the parameters of maximizeColorContrast, foreground and containerBackground
@@ -16,7 +16,7 @@ import { Color } from './colors';
  */
 export function fillTextColor(background: Color, containerBg: Color = 'white'): Color {
   const backgroundRGBA = colorToRgba(background);
-  const containerBgRGBA = combineColors(colorToRgba(containerBg), [255, 255, 255, 1]); // combine it with white if semi-transparent
+  const containerBgRGBA = combineColors(colorToRgba(containerBg), Colors.White.rgba); // combine it with white if semi-transparent
   const blendedFbBg = combineColors(backgroundRGBA, containerBgRGBA);
   return RGBATupleToString(highContrastColor(blendedFbBg));
 }

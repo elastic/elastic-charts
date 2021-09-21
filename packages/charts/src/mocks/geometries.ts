@@ -9,13 +9,13 @@
 import { omit } from 'lodash';
 
 import { buildPointGeometryStyles } from '../chart_types/xy_chart/rendering/point_style';
+import { Colors } from '../common/colors';
 import { mergePartial, RecursivePartial } from '../utils/common';
 import { AreaGeometry, PointGeometry, BarGeometry, LineGeometry, BubbleGeometry } from '../utils/geometry';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { PointShape } from '../utils/themes/theme';
 import { MockSeriesIdentifier } from './series/series_identifiers';
 
-const DEFAULT_MOCK_POINT_COLOR = 'red';
 const { barSeriesStyle, lineSeriesStyle, areaSeriesStyle, bubbleSeriesStyle } = LIGHT_THEME;
 
 /** @internal */
@@ -24,15 +24,15 @@ export class MockPointGeometry {
     x: 0,
     y: 0,
     radius: lineSeriesStyle.point.radius,
-    color: DEFAULT_MOCK_POINT_COLOR,
+    color: Colors.Red.keyword,
     seriesIdentifier: MockSeriesIdentifier.default(),
     style: {
       shape: PointShape.Circle,
       fill: {
-        color: [255, 255, 255, 1],
+        color: Colors.White.rgba,
       },
       stroke: {
-        color: [255, 0, 0, 1],
+        color: Colors.Red.rgba,
         width: 1,
       },
     },
@@ -57,7 +57,7 @@ export class MockPointGeometry {
   };
 
   static default(partial?: RecursivePartial<PointGeometry>) {
-    const color = partial?.color ?? DEFAULT_MOCK_POINT_COLOR;
+    const color = partial?.color ?? Colors.Red.keyword;
     const style = buildPointGeometryStyles(color, lineSeriesStyle.point);
     return mergePartial<PointGeometry>(MockPointGeometry.base, partial, { mergeOptionalPartialValues: true }, [
       { style },
@@ -81,7 +81,7 @@ export class MockBarGeometry {
     y: 0,
     width: 0,
     height: 0,
-    color: DEFAULT_MOCK_POINT_COLOR,
+    color: Colors.Red.keyword,
     displayValue: undefined,
     seriesIdentifier: MockSeriesIdentifier.default(),
     value: {
@@ -123,7 +123,7 @@ export class MockLineGeometry {
   private static readonly base: LineGeometry = {
     line: '',
     points: [],
-    color: DEFAULT_MOCK_POINT_COLOR,
+    color: Colors.Red.keyword,
     transform: {
       x: 0,
       y: 0,
@@ -145,7 +145,7 @@ export class MockAreaGeometry {
     area: '',
     lines: [],
     points: [],
-    color: DEFAULT_MOCK_POINT_COLOR,
+    color: Colors.Red.keyword,
     transform: {
       x: 0,
       y: 0,
@@ -167,7 +167,7 @@ export class MockAreaGeometry {
 export class MockBubbleGeometry {
   private static readonly base: BubbleGeometry = {
     points: [],
-    color: DEFAULT_MOCK_POINT_COLOR,
+    color: Colors.Red.keyword,
     seriesIdentifier: MockSeriesIdentifier.default(),
     seriesPointStyle: bubbleSeriesStyle.point,
   };

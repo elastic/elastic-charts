@@ -8,6 +8,7 @@
 
 import { APCAContrast } from './apca_color_contrast';
 import { RgbaTuple, RGBATupleToString, RgbTuple } from './color_library_wrappers';
+import { Colors } from './colors';
 import { getWCAG2ContrastRatio } from './wcag2_color_contrast';
 
 /** @internal */
@@ -35,7 +36,7 @@ export function combineColors([fgR, fgG, fgB, fgA]: RgbaTuple, [bgR, bgG, bgB, b
   const alpha = fgA + bgA * (1 - fgA);
 
   if (alpha === 0) {
-    return [0, 0, 0, 0];
+    return Colors.Transparent.rgba;
   }
 
   const r = Math.round((fgR * fgA + bgR * bgA * (1 - fgA)) / alpha);
@@ -44,19 +45,16 @@ export function combineColors([fgR, fgG, fgB, fgA]: RgbaTuple, [bgR, bgG, bgB, b
   return [r, g, b, alpha];
 }
 
-const COLOR_WHITE: RgbaTuple = [255, 255, 255, 1];
-const COLOR_BLACK: RgbaTuple = [0, 0, 0, 1];
-
 function getHighContrastColorWCAG2(background: RgbTuple): RgbaTuple {
-  const wWhite = getWCAG2ContrastRatio(COLOR_WHITE, background);
-  const wBlack = getWCAG2ContrastRatio(COLOR_BLACK, background);
-  return wWhite >= wBlack ? COLOR_WHITE : COLOR_BLACK;
+  const wWhite = getWCAG2ContrastRatio(Colors.White.rgba, background);
+  const wBlack = getWCAG2ContrastRatio(Colors.Black.rgba, background);
+  return wWhite >= wBlack ? Colors.White.rgba : Colors.Black.rgba;
 }
 
 function getHighContrastColorAPCA(background: RgbTuple): RgbaTuple {
-  const wWhiteText = Math.abs(APCAContrast(background, COLOR_WHITE));
-  const wBlackText = Math.abs(APCAContrast(background, COLOR_BLACK));
-  return wWhiteText > wBlackText ? COLOR_WHITE : COLOR_BLACK;
+  const wWhiteText = Math.abs(APCAContrast(background, Colors.White.rgba));
+  const wBlackText = Math.abs(APCAContrast(background, Colors.Black.rgba));
+  return wWhiteText > wBlackText ? Colors.White.rgba : Colors.Black.rgba;
 }
 
 const HIGH_CONTRAST_FN = {

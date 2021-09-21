@@ -7,7 +7,7 @@
  */
 
 import { ChartType } from '../../..';
-import { Color } from '../../../../common/colors';
+import { Color, Colors } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
 import { Box } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
@@ -115,7 +115,7 @@ export const nullHeatmapViewModel: HeatmapViewModel = {
   gridLines: {
     x: [],
     y: [],
-    stroke: { width: 0, color: [0, 0, 0, 0] },
+    stroke: { width: 0, color: Colors.Transparent.rgba },
   },
   cells: [],
   xValues: [],
