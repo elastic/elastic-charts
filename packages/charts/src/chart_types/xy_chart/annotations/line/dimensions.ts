@@ -8,7 +8,7 @@
 
 import { Line } from '../../../../geoms/types';
 import { Scale } from '../../../../scales';
-import { isContinuousScale, isBandScale } from '../../../../scales/types';
+import { isBandScale, isContinuousScale } from '../../../../scales/types';
 import { isNil, Position, Rotation } from '../../../../utils/common';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
@@ -17,7 +17,7 @@ import { SmallMultipleScales } from '../../state/selectors/compute_small_multipl
 import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/common';
 import { computeXScaleOffset } from '../../state/utils/utils';
 import { getPanelSize } from '../../utils/panel';
-import { AnnotationDomainType, LineAnnotationSpec, LineAnnotationDatum } from '../../utils/specs';
+import { AnnotationDomainType, LineAnnotationDatum, LineAnnotationSpec } from '../../utils/specs';
 import { AnnotationLineProps } from './types';
 
 function computeYDomainLineAnnotationDimensions(
@@ -163,24 +163,19 @@ function computeXDomainLineAnnotationDimensions(
         annotationValueXPosition += (xScale.bandwidth * xScale.totalBarsInCluster) / 2;
       }
     } else if (isBandScale(xScale)) {
-      if (isHistogramMode) {
-        const padding = (xScale.step - xScale.originalBandwidth) / 2;
-        annotationValueXPosition -= padding;
-      } else {
-        annotationValueXPosition += xScale.originalBandwidth / 2;
-      }
+      annotationValueXPosition += isHistogramMode
+        ? -(xScale.step - xScale.originalBandwidth) / 2
+        : xScale.originalBandwidth / 2;
     } else {
       return;
     }
-    if (isNaN(annotationValueXPosition) || annotationValueXPosition === null) {
+    if (!isFinite(annotationValueXPosition)) {
       return;
     }
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
-        if (annotationValueXPosition === null) {
-          return;
-        }
+        if (annotationValueXPosition === null) return;
 
         const top = vertical.scaleOrThrow(verticalValue);
         const left = horizontal.scaleOrThrow(horizontalValue);
