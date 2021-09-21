@@ -15,13 +15,7 @@ function getKnobKey(name: string, groupId?: string) {
 }
 
 export function boolean(name: string, dftValue: boolean, groupId?: string) {
-  const params = getParams();
-  const key = getKnobKey(name, groupId);
-  const param = params.get(key);
-  if (param === '' || param === null) {
-    return dftValue;
-  }
-  return params.get(key) === 'true';
+  return Boolean(getParams().get(getKnobKey(name, groupId))) || dftValue;
 }
 
 export function number(name: string, dftValue: number, options?: any, groupId?: string) {
