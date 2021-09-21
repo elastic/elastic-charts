@@ -63,7 +63,7 @@ function IconComponent({ type, color, className, tabIndex, ...rest }: IconCompon
    *   - If tab index is -1, then the consumer wants the icon to not be focusable.
    *   - For all other values, the consumer wants the icon to be focusable.
    */
-  const focusable = tabIndex === null || tabIndex === undefined || tabIndex === -1 ? 'false' : 'true';
+  const focusable = tabIndex === undefined || tabIndex === -1 ? 'false' : 'true';
 
   return <Svg className={classes} {...optionalCustomStyles} tabIndex={tabIndex} focusable={focusable} {...rest} />;
 }
