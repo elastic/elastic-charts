@@ -114,7 +114,7 @@ module.exports = {
     'no-return-assign': 0,
     'no-underscore-dangle': [
       'error',
-      { allow: ['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__', '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] },
+      { allow: ['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] },
     ],
     'no-confusing-arrow': 0,
     'prefer-destructuring': 0,
