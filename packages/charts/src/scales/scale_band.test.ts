@@ -42,7 +42,7 @@ describe('Scale Band', () => {
     expect(scale.isValueInDomain('a')).toBe(true);
     expect(scale.isValueInDomain('b')).toBe(true);
     expect(scale.isValueInDomain('z' as any)).toBe(false);
-    expect(scale.isValueInDomain(null)).toBe(false);
+    expect(scale.isValueInDomain(null as any)).toBe(false);
   });
   it('shall scale remove domain duplicates', () => {
     const scale = new ScaleBand(['a', 'a', 'b', 'c', 'c', 'd'], [0, 100]);
