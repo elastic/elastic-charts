@@ -445,7 +445,7 @@ export const CHILDREN_KEY = "children";
 // @public (undocumented)
 export function childrenAccessor(n: ArrayEntry): HierarchyOfArrays;
 
-// @public (undocumented)
+// @public
 export type Color = string;
 
 // @alpha (undocumented)
@@ -620,22 +620,8 @@ export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle;
 // @public (undocumented)
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle;
 
-// Warning: (ae-forgotten-export) The symbol "Margins" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export const DEFAULT_CHART_MARGINS: Margins;
-
-// @public (undocumented)
-export const DEFAULT_CHART_PADDING: Margins;
-
-// @public (undocumented)
-export const DEFAULT_GEOMETRY_STYLES: SharedGeometryStateStyle;
-
 // @public
 export const DEFAULT_GLOBAL_ID = "__global__";
-
-// @public (undocumented)
-export const DEFAULT_MISSING_COLOR = "red";
 
 // @public (undocumented)
 export const DEFAULT_SETTINGS_SPEC: SettingsSpec;
@@ -1363,6 +1349,9 @@ export interface LogScaleOptions {
 export type LowerBoundedDomain = DomainBase & LowerBound;
 
 // @public
+export type Margins = PerSideDistance;
+
+// @public
 export type MarkBuffer = number | ((radius: number) => number);
 
 // @public (undocumented)
@@ -1426,8 +1415,6 @@ export type OrdinalDomain = (number | string)[];
 // @public (undocumented)
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
 
-// Warning: (ae-forgotten-export) The symbol "PerSideDistance" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type Padding = PerSideDistance;
 
@@ -1506,6 +1493,18 @@ export const PATH_KEY = "path";
 
 // @public (undocumented)
 export function pathAccessor(n: ArrayEntry): LegendPath;
+
+// @public
+export interface PerSideDistance {
+    // (undocumented)
+    bottom: number;
+    // (undocumented)
+    left: number;
+    // (undocumented)
+    right: number;
+    // (undocumented)
+    top: number;
+}
 
 // @public (undocumented)
 export type Pixels = number;
