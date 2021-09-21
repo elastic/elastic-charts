@@ -267,7 +267,7 @@ describe('Test fillTextColor function', () => {
   test('get the right maximized contrast color', () => {
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
-    const expectedAdjustedTextColor = 'rgba(255, 255, 255, 1)'; // WCAG 3 changed the color to white
+    const expectedAdjustedTextColor = 'rgba(0, 0, 0, 1)'; // with  WCAG 2 is black
     expect(fillTextColor(fillColor, containerBackgroundColor)).toEqual(expectedAdjustedTextColor);
   });
 });
