@@ -6,122 +6,44 @@
  * Side Public License, v 1.
  */
 
-import { select } from '@storybook/addon-knobs';
+import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 
+import { GITHUB_DATASET_HIGH_VALUES } from '../../../packages/charts/src/utils/data_samples/test_dataset_github';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  //   const customTheme: PartialTheme = {
-  //     // ...theme,
-  //     barSeriesStyle: {
-  //       displayValue: {
-  //         // ...theme.barSeriesStyle.displayValue,
-  //         offsetX: 4,
-  //         offsetY: 0,
-  //         alignment: {
-  //           vertical: 'middle',
-  //         },
-  //       },
-  //     },
-  //   };
-
-  const data = [
+  const noTickFormat = boolean('turn off special tickFormat', false);
+  const rotation = select(
+    'Rotation degree',
     {
-      authorAssociation: 'Team Member',
-      vizType: 'Data Table',
-      issueType: 'Bug',
-      count: 24000,
+      '0 deg(default)': 0,
+      '90 deg': 90,
+      '-90 deg': -90,
+      '180 deg': 180,
     },
-    {
-      authorAssociation: 'Team Member',
-      vizType: 'Heatmap',
-      issueType: 'Bug',
-      count: 12000,
-    },
-    {
-      authorAssociation: 'Team Member',
-      vizType: 'Markdown',
-      issueType: 'Bug',
-      count: 6000,
-    },
-    {
-      authorAssociation: 'Team Member',
-      vizType: 'MetricVis',
-      issueType: 'Bug',
-      count: 16000,
-    },
-    {
-      authorAssociation: 'Team Member',
-      vizType: 'Pie Chart',
-      issueType: 'Bug',
-      count: 7000,
-    },
-    {
-      authorAssociation: 'Team Member',
-      vizType: 'Tagcloud',
-      issueType: 'Bug',
-      count: 19000,
-    },
-    {
-      authorAssociation: 'Team Member',
-      vizType: 'TSVB',
-      issueType: 'Bug',
-      count: 86000,
-    },
-    {
-      authorAssociation: 'Team Member',
-      vizType: 'Timelion',
-      issueType: 'Bug',
-      count: 58000,
-    },
-    {
-      authorAssociation: 'Team Member',
-      vizType: 'Vega vis',
-      issueType: 'Bug',
-      count: 11000,
-    },
-    {
-      authorAssociation: 'Team Member',
-      vizType: 'Point Series',
-      issueType: 'Bug',
-      count: 1000,
-    },
-    {
-      authorAssociation: 'Team Member',
-      vizType: 'Inspector',
-      issueType: 'Bug',
-      count: 15000,
-    },
-  ];
+    0,
+  );
   return (
     <Chart>
-      <Settings
-        theme={[useBaseTheme()]}
-        rotation={select(
-          'Rotation degree',
-          {
-            '0 deg(default)': 0,
-            '90 deg': 90,
-            '-90 deg': -90,
-            '180 deg': 180,
-          },
-          0,
-        )}
-      />
+      <Settings theme={[useBaseTheme()]} rotation={rotation} />
       <BarSeries
         id="issues"
         name="Issues"
-        data={data}
+        data={GITHUB_DATASET_HIGH_VALUES}
         xAccessor="vizType"
         yAccessors={['count']}
         xScaleType={ScaleType.Ordinal}
         displayValueSettings={{ showValueLabel: true }}
       />
       <Axis id="bottom-axis" position="bottom" />
-      <Axis id="left-axis" position="left" tickFormat={(d: string) => `${Math.round(Number(d) / 1000)}k`} />
+      <Axis
+        id="left-axis"
+        position="left"
+        tickFormat={noTickFormat ? undefined : (d: string) => `${Math.round(Number(d) / 1000)}k`}
+      />
     </Chart>
   );
 };

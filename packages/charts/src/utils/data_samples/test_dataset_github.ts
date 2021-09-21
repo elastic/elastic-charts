@@ -829,3 +829,73 @@ export const BAR_CHART_2Y = [
   { x: 2, y1: 1, y2: 2 },
   { x: 3, y1: 6, y2: 10 },
 ];
+
+/** @internal */
+export const GITHUB_DATASET_HIGH_VALUES = [
+  {
+    authorAssociation: 'Team Member',
+    vizType: 'Data Table',
+    issueType: 'Bug',
+    count: 24000,
+  },
+  {
+    authorAssociation: 'Team Member',
+    vizType: 'Heatmap',
+    issueType: 'Bug',
+    count: 12000,
+  },
+  {
+    authorAssociation: 'Team Member',
+    vizType: 'Markdown',
+    issueType: 'Bug',
+    count: 6000,
+  },
+  {
+    authorAssociation: 'Team Member',
+    vizType: 'MetricVis',
+    issueType: 'Bug',
+    count: 16000,
+  },
+  {
+    authorAssociation: 'Team Member',
+    vizType: 'Pie Chart',
+    issueType: 'Bug',
+    count: 7000,
+  },
+  {
+    authorAssociation: 'Team Member',
+    vizType: 'Tagcloud',
+    issueType: 'Bug',
+    count: 19000,
+  },
+  {
+    authorAssociation: 'Team Member',
+    vizType: 'TSVB',
+    issueType: 'Bug',
+    count: 86000,
+  },
+  {
+    authorAssociation: 'Team Member',
+    vizType: 'Timelion',
+    issueType: 'Bug',
+    count: 58000,
+  },
+  {
+    authorAssociation: 'Team Member',
+    vizType: 'Vega vis',
+    issueType: 'Bug',
+    count: 11000,
+  },
+  {
+    authorAssociation: 'Team Member',
+    vizType: 'Point Series',
+    issueType: 'Bug',
+    count: 1000,
+  },
+  {
+    authorAssociation: 'Team Member',
+    vizType: 'Inspector',
+    issueType: 'Bug',
+    count: 15000,
+  },
+];
