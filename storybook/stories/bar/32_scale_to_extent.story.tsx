@@ -9,7 +9,7 @@
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, DomainPaddingUnit, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, Chart, DomainPaddingUnit, Position, ScaleType, Settings, YDomainRange } from '@elastic/charts';
 import { computeContinuousDataDomain } from '@elastic/charts/src/utils/domain';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -67,10 +67,9 @@ export const Example = () => {
     default:
       data = mixed;
   }
-  const customDomain = { fit, padding, paddingUnit, constrainPadding, nice, min: NaN, max: NaN };
 
   if (shouldLogDomains) {
-    logDomains(data, customDomain);
+    logDomains(data, { fit, padding, paddingUnit, constrainPadding });
   }
 
   return (
@@ -79,7 +78,7 @@ export const Example = () => {
       <Axis id="top" position={Position.Top} title="Top axis" />
       <Axis
         id="left"
-        domain={customDomain}
+        domain={{ fit, padding, paddingUnit, constrainPadding }}
         title="Left axis"
         position={Position.Left}
         tickFormat={(d: any) => Number(d).toFixed(2)}

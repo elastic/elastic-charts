@@ -623,3 +623,8 @@ export function range(start: number, stop: number, step: number): Array<number> 
   }
   return output;
 }
+
+/** @internal */
+export function isObject(o: unknown): o is Record<string, unknown> {
+  return Boolean(o) && typeof o === 'object' && !Array.isArray(o);
+}

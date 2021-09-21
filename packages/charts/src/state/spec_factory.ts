@@ -11,23 +11,46 @@ import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 
 import { Spec } from '../specs';
-import { upsertSpec, removeSpec } from './actions/specs';
+import { isObject } from '../utils/common';
+import { upsertSpec as upsertSpecAction, removeSpec as removeSpecAction } from './actions/specs';
 
 /** @internal */
 export interface DispatchProps {
-  upsertSpec: (spec: Spec) => void;
-  removeSpec: (id: string) => void;
+  upsertSpec: typeof upsertSpecAction;
+  removeSpec: typeof removeSpecAction;
 }
 
-/** @internal */
-export function specComponentFactory<U extends Spec, D extends keyof U>(
-  defaultProps: Pick<U, D | 'chartType' | 'specType'>,
+/**
+ * Get default factory props type
+ * @internal */
+export type DefaultFactorProps<S extends Spec, Props extends keyof S> = Pick<S, Props | 'chartType' | 'specType'>;
+
+/**
+ * Spec instance factory
+ * @param defaultProps
+ * @param deepDefaults objects to do a shallow spread
+ * @returns spec instance Component
+ * @internal
+ */
+export function specComponentFactory<S extends Spec, Props extends keyof S>(
+  defaultProps: DefaultFactorProps<S, Props>,
+  deepDefaults: (keyof DefaultFactorProps<S, Props>)[] = [],
 ) {
   /* eslint-disable no-shadow, react-hooks/exhaustive-deps, unicorn/consistent-function-scoping */
-  const SpecInstance = (props: U & DispatchProps) => {
+  const SpecInstance = (props: S & DispatchProps) => {
     const { removeSpec, upsertSpec, ...SpecInstance } = props;
+
     useEffect(() => {
-      upsertSpec(SpecInstance);
+      upsertSpec({
+        ...SpecInstance,
+        ...deepDefaults.reduce((acc, k) => {
+          const key = k as keyof typeof SpecInstance;
+          if (SpecInstance && isObject(SpecInstance[key])) {
+            acc[key] = { ...defaultProps, ...props[key] } as any;
+          }
+          return acc;
+        }, {} as any),
+      });
     });
     useEffect(
       () => () => {
@@ -45,8 +68,8 @@ export function specComponentFactory<U extends Spec, D extends keyof U>(
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators(
     {
-      upsertSpec,
-      removeSpec,
+      upsertSpec: upsertSpecAction,
+      removeSpec: removeSpecAction,
     },
     dispatch,
   );

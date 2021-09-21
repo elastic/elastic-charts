@@ -10,11 +10,11 @@ import React from 'react';
 
 import { ChartType } from '../..';
 import { SpecType } from '../../../specs/constants';
-import { specComponentFactory, getConnect } from '../../../state/spec_factory';
+import { specComponentFactory, getConnect, DefaultFactorProps } from '../../../state/spec_factory';
 import { Position } from '../../../utils/common';
 import { AxisSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 
-const defaultProps = {
+const defaultProps: DefaultProps = {
   chartType: ChartType.XYAxis,
   specType: SpecType.Axis,
   groupId: DEFAULT_GLOBAL_ID,
@@ -22,14 +22,18 @@ const defaultProps = {
   showOverlappingTicks: false,
   showOverlappingLabels: false,
   position: Position.Left,
+  domain: {
+    min: NaN,
+    max: NaN,
+  },
 };
 
 type SpecRequired = Pick<AxisSpec, 'id'>;
 type SpecOptionals = Partial<Omit<AxisSpec, 'chartType' | 'specType' | 'seriesType' | 'id'>>;
+type DefaultKeys = 'groupId' | 'hide' | 'showOverlappingTicks' | 'showOverlappingLabels' | 'position' | 'domain';
+type DefaultProps = DefaultFactorProps<AxisSpec, DefaultKeys>;
 
 /** @public */
 export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals> = getConnect()(
-  specComponentFactory<AxisSpec, 'groupId' | 'hide' | 'showOverlappingTicks' | 'showOverlappingLabels' | 'position'>(
-    defaultProps,
-  ),
+  specComponentFactory<AxisSpec, DefaultKeys>(defaultProps, ['domain']),
 );
