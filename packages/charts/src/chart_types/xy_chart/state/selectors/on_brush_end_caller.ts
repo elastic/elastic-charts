@@ -85,9 +85,9 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
                 histogramMode,
                 xScale as Scale<number>,
                 smallMultipleScales,
+                allowBrushingLastHistogramBucket,
                 minBrushDelta,
                 roundHistogramBrushValues,
-                allowBrushingLastHistogramBucket,
               );
             }
             if (brushAxis === BrushAxis.Y || brushAxis === BrushAxis.Both) {
@@ -136,9 +136,9 @@ function getXBrushExtent(
   histogramMode: boolean,
   xScale: Scale<number>,
   smallMultipleScales: SmallMultipleScales,
+  allowBrushingLastHistogramBucket: boolean = true,
   minBrushDelta?: number,
   roundHistogramBrushValues?: boolean,
-  allowBrushingLastHistogramBucket?: boolean,
 ): [number, number] | undefined {
   const isXHorizontal = !isVerticalRotation(rotation);
   // scale screen coordinates down to panel scale

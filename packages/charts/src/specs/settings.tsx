@@ -589,7 +589,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * - when true returns [1.23, 3.6]
    * - when false returns [1.23, 3]
    *
-   * @defaultValue false
+   * @defaultValue true
    */
   allowBrushingLastHistogramBucket?: boolean;
   /**
