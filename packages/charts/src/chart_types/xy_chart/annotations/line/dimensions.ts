@@ -155,10 +155,10 @@ function computeXDomainLineAnnotationDimensions(
       if (isHistogramMode) {
         const offset = computeXScaleOffset(xScale, true);
         const pureScaledValue = xScale.pureScale(dataValue);
-        if (pureScaledValue === null) {
-          return;
+        if (typeof pureScaledValue === 'number') {
+          // Number.isFinite is regrettably not a type guard yet https://github.com/microsoft/TypeScript/issues/10038#issuecomment-924115831
+          annotationValueXPosition = pureScaledValue - offset;
         }
-        annotationValueXPosition = pureScaledValue - offset;
       } else {
         annotationValueXPosition += (xScale.bandwidth * xScale.totalBarsInCluster) / 2;
       }
