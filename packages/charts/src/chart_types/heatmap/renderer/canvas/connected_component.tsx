@@ -10,6 +10,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { Color, Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -20,7 +21,6 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
-import { Color } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
@@ -151,7 +151,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     top: 0,
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
-  background: 'transparent',
+  background: Colors.Transparent.keyword,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {

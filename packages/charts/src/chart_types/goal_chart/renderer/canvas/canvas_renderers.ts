@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
-import { Color } from '../../../../utils/common';
 import { Mark } from '../../layout/viewmodel/geoms';
 
 /** @internal */

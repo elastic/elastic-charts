@@ -7,11 +7,11 @@
  */
 
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { Pixels } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
-import { Color } from '../../../../utils/common';
 import { MIN_STROKE_WIDTH } from '../../../xy_chart/renderer/canvas/primitives/line';
 import {
   LinkLabelVM,

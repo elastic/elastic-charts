@@ -7,6 +7,7 @@
  */
 
 import { CategoryKey } from '../../../../common/category';
+import { Color, Colors } from '../../../../common/colors';
 import {
   Coordinate,
   Distance,
@@ -20,7 +21,6 @@ import {
 import { Font, VerticalAlignments } from '../../../../common/text_utils';
 import { GroupByAccessor } from '../../../../specs';
 import { LegendPath } from '../../../../state/actions/legend';
-import { Color } from '../../../../utils/common';
 import { ContinuousDomainFocus } from '../../renderer/canvas/partition';
 import { Layer } from '../../specs';
 import { config, MODEL_KEY, ValueGetterName } from '../config';
@@ -140,7 +140,7 @@ const defaultFont: Font = {
   fontVariant: 'normal',
   fontFamily: '',
   fontWeight: 'normal',
-  textColor: 'black',
+  textColor: Colors.Black.keyword,
 };
 
 /** @internal */
@@ -169,7 +169,7 @@ export const nullPartitionSmallMultiplesModel = (partitionLayout: PartitionLayou
       fontWeight: 'normal',
       fontFamily: 'sans-serif',
       fontStyle: 'normal',
-      textColor: 'black',
+      textColor: Colors.Black.keyword,
     },
   },
 });

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../../common/colors';
 import { ConfigItem, configMap, Numeric } from '../../../common/config_objects';
 import { GOLDEN_RATIO, TAU } from '../../../common/constants';
 import { FONT_STYLES, FONT_VARIANTS } from '../../../common/text_utils';
@@ -302,9 +303,9 @@ export const configMetadata: Record<string, ConfigItem> = {
   },
 
   // other
-  backgroundColor: { dflt: '#ffffff', type: 'color' },
+  backgroundColor: { dflt: Colors.White.keyword, type: 'color' },
   sectorLineWidth: { dflt: 1, min: 0, max: 4, type: 'number' },
-  sectorLineStroke: { dflt: 'white', type: 'string' },
+  sectorLineStroke: { dflt: Colors.White.keyword, type: 'string' },
   animation: { type: 'group', values: { duration: { dflt: 0, min: 0, max: 3000, type: 'number' } } },
 };
 

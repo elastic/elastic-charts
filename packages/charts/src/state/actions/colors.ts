@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../common/colors';
 import { SeriesKey } from '../../common/series_id';
-import { Color } from '../../utils/common';
 
 /** @internal */
 export const CLEAR_TEMPORARY_COLORS = 'CLEAR_TEMPORARY_COLORS';

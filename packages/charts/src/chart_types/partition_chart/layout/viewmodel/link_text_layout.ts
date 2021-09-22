@@ -7,6 +7,7 @@
  */
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { Color, Colors } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import {
@@ -18,7 +19,7 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { cutToLength, fitText, Font, measureOneBoxWidth, TextMeasure } from '../../../../common/text_utils';
-import { Color, ValueFormatter } from '../../../../utils/common';
+import { ValueFormatter } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Point } from '../../../../utils/point';
 import { Config, LinkLabelConfig } from '../types/config_types';
@@ -46,7 +47,7 @@ export function linkTextLayout(
   valueFormatter: ValueFormatter,
   maxTextLength: number,
   diskCenter: Point,
-  containerBgColor: Color = 'rgba(255,255,255,1)',
+  containerBgColor: Color = Colors.White.keyword,
 ): LinkLabelsViewModelSpec {
   const { linkLabel } = config;
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);

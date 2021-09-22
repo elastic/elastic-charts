@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../../../../common/colors';
 import { fillTextColor } from '../../../../../common/fill_text_color';
 import { Font, TextAlign, TextBaseline } from '../../../../../common/text_utils';
 import { Rect } from '../../../../../geoms/types';
@@ -187,7 +188,6 @@ function isOverflow(rect: Rect, chartDimensions: Dimensions, chartRotation: Rota
   return rect.x < 0 || rect.x + rect.width > cWidth || rect.y < 0 || rect.y + rect.height > cHeight;
 }
 
-const TRANSPARENT_COLOR = 'rgba(0,0,0,0)';
 type ValueFillDefinition = Theme['barSeriesStyle']['displayValue']['fill'];
 
 function getTextColors(
@@ -195,12 +195,12 @@ function getTextColors(
   geometryColor: string,
 ): { fillColor: string; shadowColor: string } {
   if (typeof fillDefinition === 'string') {
-    return { fillColor: fillDefinition, shadowColor: TRANSPARENT_COLOR };
+    return { fillColor: fillDefinition, shadowColor: Colors.Transparent.keyword };
   }
   if ('color' in fillDefinition) {
     return {
       fillColor: fillDefinition.color,
-      shadowColor: fillDefinition.borderColor || TRANSPARENT_COLOR,
+      shadowColor: fillDefinition.borderColor || Colors.Transparent.keyword,
     };
   }
   const fillColor = fillTextColor(geometryColor);

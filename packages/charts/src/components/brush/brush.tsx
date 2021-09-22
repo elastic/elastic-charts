@@ -10,7 +10,8 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 
 import { renderRect } from '../../chart_types/xy_chart/renderer/canvas/primitives/rect';
-import { colorToRgba, RgbaTuple } from '../../common/color_library_wrappers';
+import { RgbaTuple } from '../../common/color_library_wrappers';
+import { Colors } from '../../common/colors';
 import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
 import { GlobalChartState } from '../../state/chart_state';
 import { getInternalBrushAreaSelector } from '../../state/selectors/get_internal_brush_area';
@@ -109,13 +110,13 @@ class BrushToolComponent extends React.Component<StateProps> {
           height: mainProjectionArea.height,
         },
         () => {
-          clearCanvas(ctx, 'transparent');
+          clearCanvas(ctx, Colors.Transparent.keyword);
           ctx.translate(mainProjectionArea.left, mainProjectionArea.top);
           renderRect(
             ctx,
             { x: left, y: top, width, height },
             { color: DEFAULT_FILL_COLOR },
-            { width: 0, color: colorToRgba('transparent') },
+            { width: 0, color: Colors.Transparent.rgba },
           );
         },
       );

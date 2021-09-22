@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../common/colors';
 import { Rect } from '../../geoms/types';
-import { Color } from '../../utils/common';
 import { ClippedRanges } from '../../utils/geometry';
 
 /** @internal */

@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { Color, Colors } from '../../../../common/colors';
 import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
-import { Color } from '../../../../utils/common';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
@@ -95,7 +95,7 @@ export function renderCanvas2d(
               fontStyle: config.yAxisLabel.fontStyle ? config.yAxisLabel.fontStyle : 'normal',
               fontVariant: 'normal',
               fontWeight: 'normal',
-              textColor: 'black',
+              textColor: Colors.Black.keyword,
             };
             const { padding } = config.yAxisLabel;
             const horizontalPadding =
