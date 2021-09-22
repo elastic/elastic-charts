@@ -311,10 +311,7 @@ export class ScaleContinuous implements Scale<number> {
 
   private readonly d3Scale: D3Scale;
 
-  constructor(
-    { type = ScaleType.Linear, domain = [0, 1], range = [0, 1], nice = false }: ScaleData,
-    options?: Partial<ScaleOptions>,
-  ) {
+  constructor({ type = ScaleType.Linear, domain, range, nice = false }: ScaleData, options?: Partial<ScaleOptions>) {
     const {
       bandwidth,
       minInterval,
