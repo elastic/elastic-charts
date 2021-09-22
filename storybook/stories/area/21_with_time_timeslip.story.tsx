@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, AxisSpec } from '@elastic/charts';
@@ -64,6 +64,12 @@ export const Example = () => {
       day: 'numeric',
     }).format(d)}  `;
   const yAxisTitle = 'CPU utilization';
+  const timeStretch = number('Time stretch', 1, {
+    range: true,
+    min: 0.5,
+    max: 2,
+    step: 0.1,
+  });
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
@@ -165,7 +171,7 @@ export const Example = () => {
         yNice
         color={dataInk}
         areaSeriesStyle={{ area: { opacity: 0.3 }, line: { opacity: 1 } }}
-        data={data.map(([t, v]) => [t0 + (t - t0) * 4, v])}
+        data={data.map(([t, v]) => [t0 + (t - t0) * 4 * timeStretch, v])}
       />
     </Chart>
   );

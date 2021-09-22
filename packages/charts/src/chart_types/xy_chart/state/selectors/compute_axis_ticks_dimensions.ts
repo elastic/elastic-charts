@@ -64,7 +64,8 @@ const getThemedAxesStyles = createCustomCachedSelector(
     [...axesStyles.keys()].reduce((styles, id) => styles.set(id, axesStyles.get(id) ?? chartTheme.axes), new Map()),
 );
 
-type JoinedAxisData = {
+/** @internal */
+export type JoinedAxisData = {
   axisSpec: AxisSpec;
   scale: Scale<number | string>;
   axesStyle: AxisStyle;
@@ -72,7 +73,8 @@ type JoinedAxisData = {
   tickFormatter: (d: number | string) => string;
 };
 
-const getJoinedVisibleAxesData = createCustomCachedSelector(
+/** @internal */
+export const getJoinedVisibleAxesData = createCustomCachedSelector(
   [getUnitScales, getAxisSpecsSelector, getThemedAxesStyles, getFallBackTickFormatter, computeSeriesDomainsSelector],
   (unitScales, axesSpecs, themedAxesStyles, fallBackTickFormatter, { xDomain: { timeZone } }) =>
     axesSpecs.reduce<Map<string, JoinedAxisData>>((axisData, axisSpec) => {
@@ -94,15 +96,16 @@ const getJoinedVisibleAxesData = createCustomCachedSelector(
 /** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
   [getJoinedVisibleAxesData],
-  (joinedAxesData): AxesTicksDimensions => {
-    return withTextMeasure(
+  (joinedAxesData): AxesTicksDimensions =>
+    withTextMeasure(
       (textMeasure): AxesTicksDimensions =>
         [...joinedAxesData].reduce<AxesTicksDimensions>(
-          (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, tickFormatter }]) => {
-            const maxLabelSizes = (axesStyle.tickLabel.visible ? scale.ticks().map(tickFormatter) : []).reduce(
+          (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, tickFormatter }]) =>
+            axesTicksDimensions.set(id, {
+              ...(axesStyle.tickLabel.visible ? scale.ticks().map(tickFormatter) : []).reduce(
               (sizes, labelText) => {
-                const bbox = textMeasure(labelText, 0, axesStyle.tickLabel.fontSize, axesStyle.tickLabel.fontFamily);
-                const rotatedBbox = computeRotatedLabelDimensions(bbox, axesStyle.tickLabel.rotation);
+                  const bbox = textMeasure(labelText, 0, axesStyle.tickLabel.fontSize, axesStyle.tickLabel.fontFamily);
+                  const rotatedBbox = computeRotatedLabelDimensions(bbox, axesStyle.tickLabel.rotation);
                 sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
                 sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
                 sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
@@ -110,11 +113,10 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
                 return sizes;
               },
               { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
-            );
-            return axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLine.visible });
-          },
+              ),
+              isHidden: axisSpec.hide && gridLine.visible,
+            }),
           new Map(),
         ),
-    );
-  },
+    ),
 );

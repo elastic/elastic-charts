@@ -1347,7 +1347,7 @@ export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationSt
 export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationStyle>): RectAnnotationStyle;
 
 // @public
-export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, axillaryThemes?: PartialTheme[]): Theme;
+export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, auxiliaryThemes?: PartialTheme[]): Theme;
 
 // @public (undocumented)
 export const MODEL_KEY = "parent";
