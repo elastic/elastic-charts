@@ -8,7 +8,6 @@
 
 import { Scale } from '../../../scales';
 import { SettingsSpec } from '../../../specs';
-import { BBox } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import {
   degToRad,
   getPercentageValue,
@@ -96,7 +95,7 @@ export function getScaleForAxisSpec(
 }
 
 /** @internal */
-export function computeRotatedLabelDimensions(unrotatedDims: BBox, degreesRotation: number): BBox {
+export function computeRotatedLabelDimensions(unrotatedDims: Size, degreesRotation: number): Size {
   const { width, height } = unrotatedDims;
   const radians = degToRad(degreesRotation);
   const rotatedHeight = Math.abs(width * Math.sin(radians)) + Math.abs(height * Math.cos(radians));

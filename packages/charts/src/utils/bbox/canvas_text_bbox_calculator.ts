@@ -6,11 +6,7 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export interface BBox {
-  width: number;
-  height: number;
-}
+import { Size } from '../dimensions';
 
 /** @internal */
 export type TextMeasure = (
@@ -20,7 +16,7 @@ export type TextMeasure = (
   fontFamily: string,
   lineHeight?: number,
   fontWeight?: number,
-) => BBox;
+) => Size;
 
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
