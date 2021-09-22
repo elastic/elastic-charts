@@ -21,7 +21,6 @@ import { getSpecs } from '../../../../state/selectors/get_settings_specs';
 import { getSmallMultiplesSpecs } from '../../../../state/selectors/get_small_multiples_spec';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { Datum } from '../../../../utils/common';
-import { configMetadata } from '../../layout/config';
 import { HierarchyOfArrays, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import { partitionTree } from '../../layout/viewmodel/hierarchy_of_arrays';
 import { PartitionSpec } from '../../specs';
@@ -44,7 +43,7 @@ function getTreesForSpec(
   smSpecs: SmallMultiplesSpec[],
   groupBySpecs: GroupBySpec[],
 ): StyledTree[] {
-  const { data, valueAccessor, layers, config, smallMultiples: smId } = spec;
+  const { layout, data, valueAccessor, layers, smallMultiples: smId } = spec;
   const smSpec = smSpecs.find((s) => s.id === smId);
   const smStyle: SmallMultiplesStyle = {
     horizontalPanelPadding: smSpec
@@ -73,9 +72,7 @@ function getTreesForSpec(
       name: format(groupKey),
       smAccessorValue: groupKey,
       style: smStyle,
-      tree: partitionTree(subData, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout, [
-        { index: innerIndex, value: String(groupKey) },
-      ]),
+      tree: partitionTree(subData, valueAccessor, layers, layout, [{ index: innerIndex, value: String(groupKey) }]),
     }));
   } else {
     return [
@@ -83,7 +80,7 @@ function getTreesForSpec(
         name: '',
         smAccessorValue: '',
         style: smStyle,
-        tree: partitionTree(data, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout, [
+        tree: partitionTree(data, valueAccessor, layers, layout, [
           {
             index: 0,
             value: NULL_SMALL_MULTIPLES_KEY,

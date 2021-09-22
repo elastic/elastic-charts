@@ -103,7 +103,7 @@ export const Example = () => {
           minFontSize: 1,
           idealFontSizeJump: 1.1,
           outerSizeRatio: 1,
-          emptySizeRatio: 0,
+          emptySizeRatio: 0.2,
           circlePadding: 4,
           backgroundColor: 'rgba(229,229,229,1)',
         }}

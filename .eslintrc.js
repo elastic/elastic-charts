@@ -152,14 +152,7 @@ module.exports = {
         ignoreRegExpLiterals: true,
       },
     ],
-    'no-unused-vars': [
-      'error',
-      {
-        vars: 'all',
-        args: 'after-used',
-        ignoreRestSiblings: true,
-      },
-    ],
+    'no-unused-vars': 0,
     'sort-keys': 0,
     'no-irregular-whitespace': 'error',
     'no-unused-expressions': 'error',

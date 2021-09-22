@@ -56,7 +56,7 @@ interface ReactiveChartStateProps {
   geometries: ShapeViewModel;
   geometriesFoci: ContinuousDomainFocus[];
   multiGeometries: ShapeViewModel[];
-  chartContainerDimensions: Dimensions;
+  chartDimensions: Dimensions;
   a11ySettings: A11ySettings;
   debug: SettingsSpec['debug'];
   background: Color;
@@ -117,7 +117,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
   handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
     const {
       initialized,
-      chartContainerDimensions: { width, height },
+      chartDimensions: { width, height },
       forwardStageRef,
     } = this.props;
     if (!forwardStageRef.current || !this.ctx || !initialized || width === 0 || height === 0) {
@@ -147,7 +147,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
     const {
       forwardStageRef,
       initialized,
-      chartContainerDimensions: { width, height },
+      chartDimensions: { width, height },
       a11ySettings,
       debug,
     } = this.props;
@@ -179,9 +179,9 @@ class PartitionComponent extends React.Component<PartitionProps> {
       const { ctx, devicePixelRatio, props } = this;
       clearCanvas(ctx, props.background);
       props.multiGeometries.forEach((geometries, geometryIndex) => {
-        const renderer = isSimpleLinear(geometries.config, geometries.layers)
+        const renderer = isSimpleLinear(geometries.layout, geometries.style.fillLabel, geometries.layers)
           ? renderLinearPartitionCanvas2d
-          : isWaffle(geometries.config.partitionLayout)
+          : isWaffle(geometries.layout)
           ? renderWrappedPartitionCanvas2d
           : renderPartitionCanvas2d;
         renderer(ctx, devicePixelRatio, geometries, props.geometriesFoci[geometryIndex], this.animationState);
@@ -203,7 +203,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   geometries: nullShapeViewModel(),
   geometriesFoci: [],
   multiGeometries: [],
-  chartContainerDimensions: {
+  chartDimensions: {
     width: 0,
     height: 0,
     left: 0,
@@ -223,7 +223,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     initialized: true,
     geometries: multiGeometries.length > 0 ? multiGeometries[0] : nullShapeViewModel(),
     multiGeometries,
-    chartContainerDimensions: getChartContainerDimensionsSelector(state),
+    chartDimensions: getChartContainerDimensionsSelector(state),
     geometriesFoci: partitionDrilldownFocus(state),
     a11ySettings: getA11ySettingsSelector(state),
     debug: getSettingsSpecSelector(state).debug,

@@ -21,12 +21,15 @@ import {
 import { Font, VerticalAlignments } from '../../../../common/text_utils';
 import { GroupByAccessor } from '../../../../specs';
 import { LegendPath } from '../../../../state/actions/legend';
+import { Size } from '../../../../utils/dimensions';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { Theme } from '../../../../utils/themes/theme';
 import { ContinuousDomainFocus } from '../../renderer/canvas/partition';
 import { Layer } from '../../specs';
-import { config, MODEL_KEY, ValueGetterName } from '../config';
+import { MODEL_KEY, ValueGetterName } from '../config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
-import { Config, PartitionLayout } from './config_types';
+import { AnimationConfig, PartitionLayout } from './config_types';
 
 /** @internal */
 export type LinkLabelVM = {
@@ -102,7 +105,7 @@ export type PickFunction = (x: Pixels, y: Pixels, focus: ContinuousDomainFocus) 
 /** @internal */
 export interface PartitionSmallMultiplesModel extends SmallMultiplesDescriptors {
   smAccessorValue: number | string;
-  partitionLayout: PartitionLayout;
+  layout: PartitionLayout;
   top: SizeRatio;
   left: SizeRatio;
   width: SizeRatio;
@@ -123,8 +126,9 @@ export interface PartitionSmallMultiplesModel extends SmallMultiplesDescriptors 
 }
 
 /** @internal */
-export interface ShapeViewModel extends PartitionSmallMultiplesModel {
-  config: Config;
+export interface ShapeViewModel extends PartitionSmallMultiplesModel, AnimationConfig {
+  style: Theme['partition'];
+  chartDimensions: Size;
   layers: Layer[];
   quadViewModel: QuadViewModel[];
   rowSets: RowSet[];
@@ -144,7 +148,9 @@ const defaultFont: Font = {
 };
 
 /** @internal */
-export const nullPartitionSmallMultiplesModel = (partitionLayout: PartitionLayout): PartitionSmallMultiplesModel => ({
+export const nullPartitionSmallMultiplesModel = (
+  layout: PartitionLayout = PartitionLayout.sunburst,
+): PartitionSmallMultiplesModel => ({
   index: 0,
   innerIndex: 0,
   smAccessorValue: '',
@@ -158,7 +164,7 @@ export const nullPartitionSmallMultiplesModel = (partitionLayout: PartitionLayou
   innerColumnIndex: 0,
   marginLeftPx: 0,
   marginTopPx: 0,
-  partitionLayout,
+  layout,
   panel: {
     title: '',
     innerWidth: 0,
@@ -175,9 +181,13 @@ export const nullPartitionSmallMultiplesModel = (partitionLayout: PartitionLayou
 });
 
 /** @internal */
-export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointObject): ShapeViewModel => ({
-  ...nullPartitionSmallMultiplesModel((specifiedConfig || config).partitionLayout),
-  config: specifiedConfig || config,
+export const nullShapeViewModel = (
+  layout: PartitionLayout = PartitionLayout.sunburst,
+  style: Theme['partition'] = LIGHT_THEME.partition,
+  diskCenter?: PointObject,
+): ShapeViewModel => ({
+  ...nullPartitionSmallMultiplesModel(layout),
+  style,
   layers: [],
   quadViewModel: [],
   rowSets: [],
@@ -191,6 +201,10 @@ export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointO
   diskCenter: diskCenter || { x: 0, y: 0 },
   pickQuads: () => [],
   outerRadius: 0,
+  chartDimensions: {
+    width: 0,
+    height: 0,
+  },
 });
 
 /** @public */

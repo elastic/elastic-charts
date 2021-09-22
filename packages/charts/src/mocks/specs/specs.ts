@@ -8,7 +8,7 @@
 
 import { ChartType } from '../../chart_types';
 import { X_SCALE_DEFAULT } from '../../chart_types/heatmap/specs/scale_defaults';
-import { config, percentFormatter } from '../../chart_types/partition_chart/layout/config';
+import { percentFormatter } from '../../chart_types/partition_chart/layout/config';
 import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';
 import { ShapeTreeNode } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
 import { AGGREGATE_KEY, PrimitiveValue } from '../../chart_types/partition_chart/layout/utils/group_by_rollup';

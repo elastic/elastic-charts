@@ -22,8 +22,9 @@ import { logarithm } from '../../../../common/math';
 import { Box, Font, PartialFont, TextMeasure, VerticalAlignments } from '../../../../common/text_utils';
 import { integerSnap, monotonicHillClimb } from '../../../../solvers/monotonic_hill_climb';
 import { ValueFormatter } from '../../../../utils/common';
+import { FillLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
 import { Layer } from '../../specs';
-import { Config, Padding } from '../types/config_types';
+import { Padding } from '../types/config_types';
 import {
   QuadViewModel,
   RawTextGetter,
@@ -215,16 +216,16 @@ function fill<C>(
   getRotation: GetRotation,
 ) {
   return function fillClosure(
-    config: Config,
+    fillLabel: FillLabelConfig,
     layers: Layer[],
     measure: TextMeasure,
     rawTextGetter: RawTextGetter,
     valueGetter: ValueGetterFunction,
     formatter: ValueFormatter,
+    maxRowCount: number,
     leftAlign: boolean,
     middleAlign: boolean,
   ) {
-    const { maxRowCount, fillLabel } = config;
     return (allFontSizes: Pixels[][], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
       const container = shapeConstructor(node);
       const rotation = getRotation(node);
@@ -466,9 +467,10 @@ export function fillTextLayout<C>(
     valueGetter: ValueGetterFunction,
     valueFormatter: ValueFormatter,
     childNodes: QuadViewModel[],
-    config: Config,
+    style: PartitionStyle,
     layers: Layer[],
     textFillOrigins: PointTuple[],
+    maxRowCount: number,
     leftAlign: boolean,
     middleAlign: boolean,
   ): RowSet[] {
@@ -476,7 +478,7 @@ export function fillTextLayout<C>(
     for (let l = 0; l <= layers.length; l++) {
       // get font size spec from config, which layer.fillLabel properties can override
       const { minFontSize, maxFontSize, idealFontSizeJump } = {
-        ...config,
+        ...style,
         ...(l < layers.length && layers[l].fillLabel),
       };
       const fontSizeMagnification = maxFontSize / minFontSize;
@@ -493,12 +495,13 @@ export function fillTextLayout<C>(
     }
 
     const filler = specificFiller(
-      config,
+      style.fillLabel,
       layers,
       measure,
       rawTextGetter,
       valueGetter,
       valueFormatter,
+      maxRowCount,
       leftAlign,
       middleAlign,
     );

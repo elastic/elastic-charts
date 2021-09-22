@@ -14,6 +14,7 @@ import { FontStyle } from '../../common/text_utils';
 import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, SimplePadding } from '../dimensions';
 import { Point } from '../point';
+import { PartitionStyle } from './partition';
 
 /** @public */
 export interface Visible {
@@ -322,7 +323,14 @@ export interface Theme {
    * This can then be used to calculate the contrast of the text for partition charts.
    */
   background: BackgroundStyle;
+  /**
+   * Theme styles for goal and gauge chart types
+   */
   goal: GoalStyles;
+  /**
+   * Theme styles for partition chart types
+   */
+  partition: PartitionStyle;
 }
 
 /** @public */

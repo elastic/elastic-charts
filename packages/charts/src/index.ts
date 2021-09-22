@@ -31,7 +31,6 @@ export { GeometryValue, BandedAccessorType } from './utils/geometry';
 export { LegendPath, LegendPathElement } from './state/actions/legend';
 export { CategoryKey } from './common/category';
 export {
-  Config as PartitionConfig,
   FillLabelConfig as PartitionFillLabel,
   PartitionLayout,
 } from './chart_types/partition_chart/layout/types/config_types';

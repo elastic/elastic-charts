@@ -7,14 +7,12 @@
  */
 
 import { Colors } from '../../../common/colors';
-import { ConfigItem, configMap, Numeric } from '../../../common/config_objects';
+import { ConfigItem, Numeric } from '../../../common/config_objects';
 import { GOLDEN_RATIO, TAU } from '../../../common/constants';
 import { FONT_STYLES, FONT_VARIANTS } from '../../../common/text_utils';
-import { Config, PartitionLayout } from './types/config_types';
+import { PartitionLayout } from './types/config_types';
 import { ShapeTreeNode } from './types/viewmodel_types';
 import { AGGREGATE_KEY, STATISTICS_KEY } from './utils/group_by_rollup';
-
-const LOG_10 = Math.log(10);
 
 function significantDigitCount(d: number): number {
   let n = Math.abs(parseFloat(String(d).replace('.', '')));
@@ -24,7 +22,7 @@ function significantDigitCount(d: number): number {
   while (n !== 0 && n % 10 === 0) {
     n /= 10;
   }
-  return Math.floor(Math.log(n) / LOG_10) + 1;
+  return Math.floor(Math.log(n) / Math.LN10) + 1;
 }
 
 /** @internal */
@@ -113,7 +111,10 @@ const valueFont = {
   },
 };
 
-/** @internal */
+/**
+ * Keeping for future config validation checks
+ * @internal
+ */
 export const configMetadata: Record<string, ConfigItem> = {
   // shape geometry
   width: { dflt: 300, min: 0, max: 1024, type: 'number', reconfigurable: false },
@@ -302,15 +303,11 @@ export const configMetadata: Record<string, ConfigItem> = {
     },
   },
 
-  // other
   backgroundColor: { dflt: Colors.White.keyword, type: 'color' },
   sectorLineWidth: { dflt: 1, min: 0, max: 4, type: 'number' },
   sectorLineStroke: { dflt: Colors.White.keyword, type: 'string' },
   animation: { type: 'group', values: { duration: { dflt: 0, min: 0, max: 3000, type: 'number' } } },
 };
-
-/** @internal */
-export const config: Config = configMap<Config>((item: ConfigItem) => item.dflt, configMetadata);
 
 /**
  * Part-to-whole visualizations such as treemap, sunburst, pie hinge on an aggregation

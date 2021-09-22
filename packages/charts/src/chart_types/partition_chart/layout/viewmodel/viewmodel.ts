@@ -19,12 +19,14 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
-import { GroupByAccessor, SmallMultiplesStyle } from '../../../../specs';
-import { StrokeStyle, ValueFormatter, RecursivePartial } from '../../../../utils/common';
+import { GroupByAccessor } from '../../../../specs';
+import { StrokeStyle } from '../../../../utils/common';
+import { Size } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
-import { Layer } from '../../specs';
-import { config as defaultConfig, MODEL_KEY, percentValueGetter } from '../config';
-import { Config, FillLabelConfig, PartitionLayout } from '../types/config_types';
+import { PartitionStyle } from '../../../../utils/themes/partition';
+import { Layer, PartitionSpec } from '../../specs';
+import { MODEL_KEY, percentValueGetter } from '../config';
+import { FillLabelConfig, PartitionLayout } from '../types/config_types';
 import {
   nullShapeViewModel,
   OutsideLinksViewModel,
@@ -84,8 +86,8 @@ export const isWaffle = (p: PartitionLayout | undefined) => p === PartitionLayou
 export const isLinear = (p: PartitionLayout | undefined) => isFlame(p) || isIcicle(p);
 
 /** @internal */
-export const isSimpleLinear = (config: RecursivePartial<Config>, layers: Layer[]) =>
-  isLinear(config.partitionLayout) && layers.every((l) => l.fillLabel?.clipText ?? config.fillLabel?.clipText);
+export const isSimpleLinear = (layout: PartitionLayout, fillLabel: FillLabelConfig, layers: Layer[]) =>
+  isLinear(layout) && layers.every((l) => l.fillLabel?.clipText ?? fillLabel?.clipText);
 
 function grooveAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
@@ -284,43 +286,47 @@ const rawChildNodes = (
 /** @internal */
 export function shapeViewModel(
   textMeasure: TextMeasure,
-  config: Config,
-  layers: Layer[],
+  spec: PartitionSpec,
+  style: PartitionStyle,
+  chartDimensions: Size,
   rawTextGetter: RawTextGetter,
-  specifiedValueFormatter: ValueFormatter,
-  specifiedPercentFormatter: ValueFormatter,
   valueGetter: ValueGetterFunction,
   tree: HierarchyOfArrays,
-  topGroove: Pixels,
   containerBackgroundColor: Color,
-  smallMultiplesStyle: SmallMultiplesStyle,
   panelModel: PartitionSmallMultiplesModel,
 ): ShapeViewModel {
   const {
-    width,
-    height,
+    layout,
+    layers,
+    topGroove,
+    valueFormatter: specifiedValueFormatter,
+    percentFormatter: specifiedPercentFormatter,
+    fillOutside,
+    clockwiseSectors,
+    maxRowCount,
+    specialFirstInnermostSector,
+  } = spec;
+  const {
     emptySizeRatio,
     outerSizeRatio,
-    fillOutside,
     linkLabel,
-    clockwiseSectors,
-    specialFirstInnermostSector,
     minFontSize,
-    partitionLayout,
     sectorLineWidth,
-  } = config;
-
+    sectorLineStroke,
+    fillLabel,
+  } = style;
+  const { width, height } = chartDimensions;
   const { marginLeftPx, marginTopPx, panel } = panelModel;
 
-  const treemapLayout = isTreemap(partitionLayout);
-  const mosaicLayout = isMosaic(partitionLayout);
-  const sunburstLayout = isSunburst(partitionLayout);
-  const icicleLayout = isIcicle(partitionLayout);
-  const flameLayout = isFlame(partitionLayout);
-  const simpleLinear = isSimpleLinear(config, layers);
-  const waffleLayout = isWaffle(partitionLayout);
+  const treemapLayout = isTreemap(layout);
+  const mosaicLayout = isMosaic(layout);
+  const sunburstLayout = isSunburst(layout);
+  const icicleLayout = isIcicle(layout);
+  const flameLayout = isFlame(layout);
+  const simpleLinear = isSimpleLinear(layout, fillLabel, layers);
+  const waffleLayout = isWaffle(layout);
 
-  const diskCenter = isSunburst(partitionLayout)
+  const diskCenter = isSunburst(layout)
     ? {
         x: marginLeftPx + panel.innerWidth / 2,
         y: marginTopPx + panel.innerHeight / 2,
@@ -332,14 +338,14 @@ export function shapeViewModel(
 
   // don't render anything if the total, the width or height is not positive
   if (!(width > 0) || !(height > 0) || tree.length === 0) {
-    return nullShapeViewModel(config, diskCenter);
+    return nullShapeViewModel(layout, style, diskCenter);
   }
 
   const longestPath = ([, { children, path }]: ArrayEntry): number =>
     children.length > 0 ? children.reduce((p, n) => Math.max(p, longestPath(n)), 0) : path.length;
   const maxDepth = longestPath(tree[0]) - 2; // don't include the root node
   const childNodes = rawChildNodes(
-    partitionLayout,
+    layout,
     tree,
     topGroove,
     panel.innerWidth,
@@ -368,12 +374,12 @@ export function shapeViewModel(
   const quadViewModel = makeQuadViewModel(
     shownChildNodes.slice(1).map(partToShapeFn),
     layers,
-    config.sectorLineWidth,
-    config.sectorLineStroke,
+    sectorLineWidth,
+    sectorLineStroke,
     panelModel.smAccessorValue,
     panelModel.index,
     panelModel.innerIndex,
-    config.fillLabel,
+    fillLabel,
     sunburstLayout,
     containerBackgroundColor,
   );
@@ -395,9 +401,9 @@ export function shapeViewModel(
 
   const getRowSets = sunburstLayout
     ? fillTextLayout(
-        ringSectorConstruction(config, innerRadius, ringThickness),
+        ringSectorConstruction(spec, style, innerRadius, ringThickness),
         getSectorRowGeometry,
-        inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+        inSectorRotation(style.horizontalTextEnforcer, style.horizontalTextAngleThreshold),
       )
     : simpleLinear || waffleLayout
     ? () => [] // no multirow layout needed for simpleLinear partitions; no text at all for waffles
@@ -413,9 +419,10 @@ export function shapeViewModel(
     valueGetter,
     valueFormatter,
     nodesWithRoom,
-    config,
+    style,
     layers,
     textFillOrigins,
+    maxRowCount,
     !sunburstLayout,
     !(treemapLayout || mosaicLayout),
   );
@@ -435,12 +442,12 @@ export function shapeViewModel(
           // successful text render if found, and has some row(s)
           return !(foundInFillText && foundInFillText.rows.length > 0);
         });
-  const maxLinkedLabelTextLength = config.linkLabel.maxTextLength;
+  const maxLinkedLabelTextLength = style.linkLabel.maxTextLength;
   const linkLabelViewModels = linkTextLayout(
     panel.innerWidth,
     panel.innerHeight,
     textMeasure,
-    config,
+    style,
     nodesWithoutRoom,
     currentY,
     outerRadius,
@@ -474,9 +481,8 @@ export function shapeViewModel(
 
   // combined viewModel
   return {
-    partitionLayout: config?.partitionLayout ?? defaultConfig.partitionLayout,
+    layout,
     smAccessorValue: panelModel.smAccessorValue,
-
     index: panelModel.index,
     innerIndex: panelModel.innerIndex,
     width: panelModel.width,
@@ -492,8 +498,7 @@ export function shapeViewModel(
     panel: {
       ...panelModel.panel,
     },
-
-    config,
+    style,
     layers,
     diskCenter,
     quadViewModel,
@@ -502,6 +507,7 @@ export function shapeViewModel(
     outsideLinksViewModel,
     pickQuads,
     outerRadius,
+    chartDimensions,
   };
 }
 

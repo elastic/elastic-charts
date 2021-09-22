@@ -22,7 +22,8 @@ import { cutToLength, fitText, Font, measureOneBoxWidth, TextMeasure } from '../
 import { ValueFormatter } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Point } from '../../../../utils/point';
-import { Config, LinkLabelConfig } from '../types/config_types';
+import { PartitionStyle } from '../../../../utils/themes/partition';
+import { LinkLabelConfig } from '../types/config_types';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 
 /** @internal */
@@ -38,7 +39,7 @@ export function linkTextLayout(
   rectWidth: Distance,
   rectHeight: Distance,
   measure: TextMeasure,
-  config: Config,
+  style: PartitionStyle,
   nodesWithoutRoom: ShapeTreeNode[],
   currentY: Distance[],
   anchorRadius: Distance,
@@ -49,7 +50,7 @@ export function linkTextLayout(
   diskCenter: Point,
   containerBgColor: Color = Colors.White.keyword,
 ): LinkLabelsViewModelSpec {
-  const { linkLabel } = config;
+  const { linkLabel } = style;
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;

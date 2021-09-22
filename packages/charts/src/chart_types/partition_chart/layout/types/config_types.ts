@@ -11,7 +11,7 @@ import { $Values as Values } from 'utility-types';
 import { Color } from '../../../../common/colors';
 import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from '../../../../common/geometry';
 import { Font, FontFamily, PartialFont } from '../../../../common/text_utils';
-import { StrokeStyle, ValueFormatter } from '../../../../utils/common';
+import { StrokeStyle } from '../../../../utils/common';
 import { PerSideDistance } from '../../../../utils/dimensions';
 
 /** @public */
@@ -35,7 +35,7 @@ export type Padding = Pixels | Partial<PerSidePadding>;
 
 interface LabelConfig extends Font {
   textColor: Color;
-  valueFormatter: ValueFormatter;
+  // valueFormatter: ValueFormatter;
   valueFont: PartialFont;
   padding: Padding;
 }
@@ -73,21 +73,12 @@ export interface FillFontSizeRange {
   maximizeFontSize: boolean;
 }
 
-/** @public */
-export interface RelativeMargins {
-  left: SizeRatio;
-  right: SizeRatio;
-  top: SizeRatio;
-  bottom: SizeRatio;
-}
-
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
 /** @public */
 export interface StaticConfig extends FillFontSizeRange {
   // shape geometry
   width: number;
   height: number;
-  margin: RelativeMargins;
   emptySizeRatio: SizeRatio;
   outerSizeRatio: SizeRatio;
   clockwiseSectors: boolean;
@@ -131,9 +122,9 @@ export interface AnimKeyframe {
 }
 
 /** @public */
-export interface Config extends StaticConfig {
+export interface AnimationConfig {
   /** @alpha */
-  animation: {
+  animation?: {
     duration: TimeMs;
     keyframes: Array<AnimKeyframe>;
   };

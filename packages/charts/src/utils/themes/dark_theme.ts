@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { GOLDEN_RATIO, TAU } from '../../common/constants';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import {
@@ -229,5 +230,66 @@ export const DARK_THEME: Theme = {
     progressLine: {
       stroke: 'white',
     },
+  },
+  partition: {
+    outerSizeRatio: 1 / GOLDEN_RATIO,
+    emptySizeRatio: 0,
+    fontFamily: 'Sans-Serif',
+    minFontSize: 8,
+    maxFontSize: 64,
+    idealFontSizeJump: 1.05,
+    maximizeFontSize: false,
+    circlePadding: 2,
+    radialPadding: TAU / 360,
+    horizontalTextAngleThreshold: TAU / 12,
+    horizontalTextEnforcer: 1,
+    fillLabel: {
+      textColor: '#000000',
+      textInvertible: false,
+      textContrast: false,
+      fontFamily: 'Sans-Serif',
+      textOpacity: 1,
+      // fontSize: 12,
+      fontStyle: 'normal',
+      fontVariant: 'normal',
+      fontWeight: 400,
+      valueFont: {
+        fontWeight: 400,
+        fontStyle: 'normal',
+        fontVariant: 'normal',
+      },
+      padding: 2,
+      clipText: false,
+    },
+    linkLabel: {
+      maximumSection: 10,
+      fontFamily: 'Sans-Serif',
+      fontSize: 12,
+      fontStyle: 'normal',
+      fontVariant: 'normal',
+      fontWeight: 400,
+      gap: 10,
+      spacing: 2,
+      horizontalStemLength: 10,
+      radiusPadding: 10,
+      lineWidth: 1,
+      maxCount: 36,
+      maxTextLength: 100,
+      textColor: '#000000',
+      textInvertible: false,
+      textContrast: false,
+      textOpacity: 1,
+      minimumStemLength: 0,
+      stemAngle: TAU / 8,
+      padding: 0,
+      // padding: null; // test usage
+      valueFont: {
+        fontWeight: 400,
+        fontStyle: 'normal',
+        fontVariant: 'normal',
+      },
+    },
+    sectorLineWidth: 1,
+    sectorLineStroke: 'white',
   },
 };
