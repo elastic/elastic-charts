@@ -23,9 +23,9 @@ export function getSpecsById<T extends Spec>(specs: T[], id: string): T | undefi
 export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId, chartRotation: Rotation = 0) {
   return axesSpecs.reduce<{ xAxis?: AxisSpec; yAxis?: AxisSpec }>((result, spec) => {
     if (spec.groupId === groupId && (isHorizontalRotation(chartRotation) || isHorizontalAxis(spec.position)))
-      result.yAxis = spec;
-    if (spec.groupId === groupId && (isVerticalRotation(chartRotation) || isVerticalAxis(spec.position)))
       result.xAxis = spec;
+    if (spec.groupId === groupId && (isVerticalRotation(chartRotation) || isVerticalAxis(spec.position)))
+      result.yAxis = spec;
     return result;
   }, {});
 }

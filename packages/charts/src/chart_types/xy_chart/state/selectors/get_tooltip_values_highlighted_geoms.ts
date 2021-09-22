@@ -138,7 +138,7 @@ function getTooltipAndHighlightFromValue(
     if (!spec) {
       return acc;
     }
-    const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
+    const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
 
     // yScales is ensured by the enclosing if
     const yScale = scales.yScales.get(getSpecDomainGroupId(spec));
