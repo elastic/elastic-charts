@@ -38,11 +38,23 @@ export const Example = () => {
         xScaleType={ScaleType.Ordinal}
         displayValueSettings={{ showValueLabel: true }}
       />
-      <Axis id="bottom-axis" position="bottom" />
+      <Axis
+        id="bottom-axis"
+        position="bottom"
+        tickFormat={
+          (!noTickFormat && rotation === 90) || (!noTickFormat && rotation === -90)
+            ? (d: string) => `${Math.round(Number(d) / 1000)}k`
+            : undefined
+        }
+      />
       <Axis
         id="left-axis"
         position="left"
-        tickFormat={noTickFormat ? undefined : (d: string) => `${Math.round(Number(d) / 1000)}k`}
+        tickFormat={
+          (!noTickFormat && rotation === 0) || (!noTickFormat && rotation === 180)
+            ? (d: string) => `${Math.round(Number(d) / 1000)}k`
+            : undefined
+        }
       />
     </Chart>
   );
