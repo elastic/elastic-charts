@@ -9,8 +9,8 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { Chart, Datum, Partition, PartitionLayout, Settings, PartialTheme } from '@elastic/charts';
+import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -30,20 +30,31 @@ const countries = mocks.sunburst
 
 const countryCount = countries.length;
 
+const theme: PartialTheme = {
+  chartMargins: { top: 0, bottom: 0, left: 0, right: 0 },
+  partition: {
+    minFontSize: 4,
+    maxFontSize: 36,
+    idealFontSizeJump: 1.01,
+    outerSizeRatio: 1,
+  },
+};
+
 export const Example = () => (
   <Chart>
-    <Settings showLegend baseTheme={useBaseTheme()} />
+    <Settings showLegend theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.sunburst}
+      layout={PartitionLayout.treemap}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: any) => productLookup[d].name.toUpperCase(),
           fillLabel: {
-            valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
+            valueFormatter: (d: number) => `${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
             fontFamily: 'Helvetica',
             textColor: 'black',
             fontWeight: 900,
@@ -58,7 +69,7 @@ export const Example = () => (
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName,
           fillLabel: {
-            valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
+            valueFormatter: (d: number) => `${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
             textColor: 'black',
             fontWeight: 200,
             fontStyle: 'normal',
@@ -84,14 +95,6 @@ export const Example = () => (
           fillLabel: { maximizeFontSize: boolean('Maximize font size layer 3', true) },
         },
       ]}
-      config={{
-        partitionLayout: PartitionLayout.treemap,
-        margin: { top: 0, bottom: 0, left: 0, right: 0 },
-        minFontSize: 4,
-        maxFontSize: 36,
-        idealFontSizeJump: 1.01,
-        outerSizeRatio: 1,
-      }}
     />
   </Chart>
 );

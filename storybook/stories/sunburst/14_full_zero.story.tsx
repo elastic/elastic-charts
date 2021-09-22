@@ -9,7 +9,7 @@
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
@@ -23,8 +23,9 @@ export const Example = () => (
         { sitc1: '7', exportVal: 1000000 },
         { sitc1: '3', exportVal: 0 },
       ]}
+      layout={PartitionLayout.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d))}`}
+      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d))}`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -34,7 +35,6 @@ export const Example = () => (
           },
         },
       ]}
-      config={{ partitionLayout: PartitionLayout.sunburst }}
     />
   </Chart>
 );

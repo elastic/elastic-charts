@@ -9,11 +9,10 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, PrimitiveValue, Settings } from '@elastic/charts';
+import { Chart, Datum, Partition, PartitionLayout, PrimitiveValue, Settings, PartialTheme } from '@elastic/charts';
 import data from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock.json';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { config } from '../utils/hierarchical_input_utils';
 import { discreteColor, viridis18 as palette } from '../utils/utils';
 
 const color = palette.slice().reverse();
@@ -30,28 +29,30 @@ const getLayerSpec = (maxDepth: number = 30) =>
 
 export const Example = () => {
   const clipText = boolean("Allow, and clip, texts that wouldn't otherwise fit", true);
+  const theme: PartialTheme = {
+    partition: {
+      fillLabel: {
+        clipText,
+        padding: 0,
+      },
+      minFontSize: clipText ? 9 : 6,
+      maxFontSize: clipText ? 9 : 20,
+    },
+  };
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings theme={theme} baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"
         data={data.facts}
+        layout={PartitionLayout.icicle}
         valueAccessor={(d: Datum) => d.value as number}
         valueFormatter={() => ''}
         layers={getLayerSpec()}
-        config={{
-          ...config,
-          partitionLayout: PartitionLayout.icicle,
-          drilldown: true,
-          fillLabel: {
-            ...config.fillLabel,
-            clipText,
-            padding: { left: 0, right: 0, top: 0, bottom: 0 },
-          },
-          minFontSize: clipText ? 9 : 6,
-          maxFontSize: clipText ? 9 : 20,
-          maxRowCount: 1,
-          animation: { duration: 500 },
+        drilldown
+        maxRowCount={1}
+        animation={{
+          duration: 500,
         }}
       />
     </Chart>

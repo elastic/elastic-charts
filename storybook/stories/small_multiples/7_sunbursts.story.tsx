@@ -15,13 +15,14 @@ import {
   Datum,
   GroupBy,
   LegendStrategy,
+  PartialTheme,
   Partition,
   PartitionLayout,
   Settings,
   ShapeTreeNode,
   SmallMultiples,
 } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
@@ -55,6 +56,30 @@ const onElementListeners = {
   onElementOut: action('onElementOut'),
 };
 
+const theme: PartialTheme = {
+  chartMargins: { top: 0.01, bottom: 0.01, left: 0.01, right: 0.01 },
+  partition: {
+    linkLabel: {
+      maxCount: 0,
+    },
+    fontFamily: 'Arial',
+    fillLabel: {
+      fontStyle: 'italic',
+      fontWeight: 900,
+      valueFont: {
+        fontFamily: 'Menlo',
+        fontStyle: 'normal',
+        fontWeight: 100,
+      },
+    },
+    minFontSize: 1,
+    idealFontSizeJump: 1.1,
+    outerSizeRatio: 1,
+    emptySizeRatio: 0,
+    circlePadding: 4,
+  },
+};
+
 export const Example = () => {
   const layout = select(
     'Inner breakdown layout',
@@ -69,12 +94,13 @@ export const Example = () => {
   return (
     <Chart>
       <Settings
+        {...onElementListeners}
         showLegend={boolean('Show legend', true)}
         showLegendExtra={boolean('Show legend extra', false)}
         legendStrategy={LegendStrategy.Key}
         flatLegend={boolean('Flat legend', true)}
+        theme={theme}
         baseTheme={useBaseTheme()}
-        {...onElementListeners}
         debug={boolean('Debug', false)}
       />
       <GroupBy
@@ -122,8 +148,10 @@ export const Example = () => {
       <Partition
         id="spec_2"
         data={data}
+        layout={PartitionLayout.sunburst}
         valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        fillLabelValueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         smallMultiples="sm"
         layers={[
           {
@@ -143,30 +171,6 @@ export const Example = () => {
             },
           },
         ]}
-        config={{
-          partitionLayout: PartitionLayout.sunburst,
-          linkLabel: {
-            maxCount: 0,
-          },
-          fontFamily: 'Arial',
-          fillLabel: {
-            valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
-            fontStyle: 'italic',
-            fontWeight: 900,
-            valueFont: {
-              fontFamily: 'Menlo',
-              fontStyle: 'normal',
-              fontWeight: 100,
-            },
-          },
-          margin: { top: 0.01, bottom: 0.01, left: 0.01, right: 0.01 },
-          minFontSize: 1,
-          idealFontSizeJump: 1.1,
-          outerSizeRatio: 1,
-          emptySizeRatio: 0,
-          circlePadding: 4,
-          backgroundColor: 'rgba(229,229,229,1)',
-        }}
       />
     </Chart>
   );

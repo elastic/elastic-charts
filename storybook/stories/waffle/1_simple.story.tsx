@@ -10,7 +10,7 @@ import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings, ShapeTreeNode } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -20,12 +20,22 @@ export const Example = () => {
   const showDebug = boolean('show table for debugging', false);
   return (
     <Chart className="story-chart">
-      <Settings baseTheme={useBaseTheme()} debug={showDebug} showLegend flatLegend showLegendExtra />
+      <Settings
+        theme={{
+          chartMargins: { left: 0.2, right: 0.2, top: 0.2, bottom: 0.2 },
+        }}
+        baseTheme={useBaseTheme()}
+        debug={showDebug}
+        showLegend
+        flatLegend
+        showLegendExtra
+      />
       <Partition
         id="spec_1"
         data={mocks.pie.slice(0, 4)}
+        layout={PartitionLayout.waffle}
         valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,
@@ -42,10 +52,6 @@ export const Example = () => {
             },
           },
         ]}
-        config={{
-          partitionLayout: PartitionLayout.waffle,
-          margin: { left: 0.2, right: 0.2, top: 0.2, bottom: 0.2 },
-        }}
       />
     </Chart>
   );

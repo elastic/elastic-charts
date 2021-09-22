@@ -9,9 +9,8 @@
 import { $Values as Values } from 'utility-types';
 
 import { Color } from '../../../../common/colors';
-import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from '../../../../common/geometry';
-import { Font, FontFamily, PartialFont } from '../../../../common/text_utils';
-import { StrokeStyle } from '../../../../utils/common';
+import { Distance, Pixels, Radian, Ratio, TimeMs } from '../../../../common/geometry';
+import { Font, PartialFont } from '../../../../common/text_utils';
 import { PerSideDistance } from '../../../../utils/dimensions';
 
 /** @public */
@@ -35,7 +34,6 @@ export type Padding = Pixels | Partial<PerSidePadding>;
 
 interface LabelConfig extends Font {
   textColor: Color;
-  // valueFormatter: ValueFormatter;
   valueFont: PartialFont;
   padding: Padding;
 }
@@ -73,44 +71,6 @@ export interface FillFontSizeRange {
   maximizeFontSize: boolean;
 }
 
-// todo switch to `io-ts` style, generic way of combining static and runtime type info
-/** @public */
-export interface StaticConfig extends FillFontSizeRange {
-  // shape geometry
-  width: number;
-  height: number;
-  emptySizeRatio: SizeRatio;
-  outerSizeRatio: SizeRatio;
-  clockwiseSectors: boolean;
-  specialFirstInnermostSector: boolean;
-  partitionLayout: PartitionLayout;
-  /** @alpha */
-  drilldown: boolean;
-
-  // general text config
-  fontFamily: FontFamily;
-
-  // fill text layout config
-  circlePadding: Distance;
-  radialPadding: Distance;
-  horizontalTextAngleThreshold: Radian;
-  horizontalTextEnforcer: Ratio;
-  maxRowCount: number;
-  fillOutside: boolean;
-  radiusOutside: Radius;
-  fillRectangleWidth: Distance;
-  fillRectangleHeight: Distance;
-  fillLabel: FillLabelConfig;
-
-  // linked labels (primarily: single-line)
-  linkLabel: LinkLabelConfig;
-
-  // global
-  backgroundColor: Color;
-  sectorLineWidth: Pixels;
-  sectorLineStroke: StrokeStyle;
-}
-
 /** @alpha */
 export type EasingFunction = (x: Ratio) => Ratio;
 
@@ -118,7 +78,7 @@ export type EasingFunction = (x: Ratio) => Ratio;
 export interface AnimKeyframe {
   time: number;
   easingFunction: EasingFunction;
-  keyframeConfig: Partial<StaticConfig>;
+  // keyframeConfig: Partial<StaticConfig>;
 }
 
 /** @public */
@@ -126,6 +86,6 @@ export interface AnimationConfig {
   /** @alpha */
   animation?: {
     duration: TimeMs;
-    keyframes: Array<AnimKeyframe>;
+    keyframes?: Array<AnimKeyframe>;
   };
 }

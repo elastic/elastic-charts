@@ -11,7 +11,7 @@ import React from 'react';
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { config, getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
+import { getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
 import { viridis18 as palette } from '../utils/utils';
 
 const color = palette.slice().reverse();
@@ -22,11 +22,11 @@ export const Example = () => {
       <Settings showLegend flatLegend legendMaxDepth={maxDepth} baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"
+        layout={PartitionLayout.icicle}
         data={getFlatData()}
         valueAccessor={(d: Datum) => d.value as number}
         valueFormatter={() => ''}
         layers={getLayerSpec(color)}
-        config={{ ...config, partitionLayout: PartitionLayout.icicle }}
       />
     </Chart>
   );

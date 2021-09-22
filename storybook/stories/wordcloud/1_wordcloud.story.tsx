@@ -308,5 +308,5 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  backgrounds: { disable: true },
+  background: { disable: true },
 };

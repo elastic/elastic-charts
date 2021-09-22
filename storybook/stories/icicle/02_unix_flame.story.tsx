@@ -11,7 +11,7 @@ import React from 'react';
 import { Chart, Datum, LegendStrategy, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { config, getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
+import { getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
 import { plasma18 as palette } from '../utils/utils';
 
 const color = [...palette].reverse();
@@ -30,10 +30,10 @@ export const Example = () => {
       <Partition
         id="spec_1"
         data={getFlatData()}
-        valueAccessor={(d: Datum) => d.value as number}
+        layout={PartitionLayout.flame}
+        valueAccessor={(d: Datum) => d.value}
         valueFormatter={() => ''}
         layers={getLayerSpec(color)}
-        config={{ ...config, partitionLayout: PartitionLayout.flame }}
       />
     </Chart>
   );

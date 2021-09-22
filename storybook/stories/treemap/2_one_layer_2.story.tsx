@@ -9,7 +9,7 @@
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { arrayToLookup } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -26,14 +26,15 @@ export const Example = () => (
     <Partition
       id="spec_1"
       data={mocks.pie}
+      layout={PartitionLayout.treemap}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: {
-            valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
+            valueFormatter: (d: number) => `${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
             valueFont: {
               fontWeight: 100,
             },
@@ -43,9 +44,6 @@ export const Example = () => (
           },
         },
       ]}
-      config={{
-        partitionLayout: PartitionLayout.treemap,
-      }}
     />
   </Chart>
 );

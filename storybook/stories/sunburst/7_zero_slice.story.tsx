@@ -9,7 +9,7 @@
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -17,15 +17,16 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example = () => (
   <Chart size={{ height: 180 }}>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings theme={{ chartMargins: { left: 0.2 } }} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.pie
         .slice(0, 2)
         .concat(mocks.pie.slice(2, 4).map((s) => ({ ...s, exportVal: 0 })))
         .concat(mocks.pie.slice(4))}
+      layout={PartitionLayout.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -35,7 +36,6 @@ export const Example = () => (
           },
         },
       ]}
-      config={{ partitionLayout: PartitionLayout.sunburst, margin: { left: 0.2 } }}
     />
   </Chart>
 );

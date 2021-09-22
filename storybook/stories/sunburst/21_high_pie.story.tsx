@@ -9,7 +9,7 @@
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -17,12 +17,20 @@ import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s } from '..
 
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings
+      theme={{
+        partition: {
+          linkLabel: { maxCount: 15 },
+        },
+      }}
+      baseTheme={useBaseTheme()}
+    />
     <Partition
       id="spec_1"
       data={mocks.manyPie}
+      layout={PartitionLayout.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.origin,
@@ -32,10 +40,6 @@ export const Example = () => (
           },
         },
       ]}
-      config={{
-        partitionLayout: PartitionLayout.sunburst,
-        linkLabel: { maxCount: 15 },
-      }}
     />
   </Chart>
 );

@@ -250,7 +250,6 @@ export const LIGHT_THEME: Theme = {
       textContrast: false,
       fontFamily: 'Sans-Serif',
       textOpacity: 1,
-      // fontSize: 12,
       fontStyle: 'normal',
       fontVariant: 'normal',
       fontWeight: 400,
@@ -283,7 +282,6 @@ export const LIGHT_THEME: Theme = {
       minimumStemLength: 0,
       stemAngle: TAU / 8,
       padding: 0,
-      // padding: null; // test usage
       valueFont: {
         fontWeight: 400,
         fontStyle: 'normal',

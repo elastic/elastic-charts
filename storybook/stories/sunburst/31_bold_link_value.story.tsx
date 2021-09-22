@@ -8,21 +8,23 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { Chart, Datum, Partition, Settings, PartialTheme } from '@elastic/charts';
+import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
+const theme: PartialTheme = { partition: { linkLabel: { valueFont: { fontWeight: 900, fontStyle: 'italic' } } } };
+
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -33,7 +35,6 @@ export const Example = () => (
           },
         },
       ]}
-      config={{ linkLabel: { valueFont: { fontWeight: 900, fontStyle: 'italic' } } }}
     />
   </Chart>
 );

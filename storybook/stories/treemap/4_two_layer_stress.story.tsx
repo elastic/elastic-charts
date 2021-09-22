@@ -8,8 +8,8 @@
 
 import React from 'react';
 
-import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { Chart, Datum, MODEL_KEY, PartialTheme, Partition, PartitionLayout, Settings } from '@elastic/charts';
+import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -23,14 +23,25 @@ const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
 const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.7]));
 
+const theme: PartialTheme = {
+  chartMargins: { top: 0, bottom: 0, left: 0, right: 0 },
+  partition: {
+    minFontSize: 4,
+    maxFontSize: 84,
+    idealFontSizeJump: 1.05,
+    outerSizeRatio: 1,
+  },
+};
+
 export const Example = () => (
   <Chart>
-    <Settings showLegend baseTheme={useBaseTheme()} />
+    <Settings showLegend theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.sunburst}
+      layout={PartitionLayout.treemap}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -48,7 +59,7 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           fillLabel: {
-            valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
+            valueFormatter: (d: number) => `${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
             textColor: 'black',
             fontWeight: 100,
             fontStyle: 'normal',
@@ -68,14 +79,6 @@ export const Example = () => (
           },
         },
       ]}
-      config={{
-        partitionLayout: PartitionLayout.treemap,
-        margin: { top: 0, bottom: 0, left: 0, right: 0 },
-        minFontSize: 4,
-        maxFontSize: 84,
-        idealFontSizeJump: 1.05,
-        outerSizeRatio: 1,
-      }}
     />
   </Chart>
 );

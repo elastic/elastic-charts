@@ -9,7 +9,7 @@
 import React from 'react';
 
 import { Chart, Datum, Partition, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
@@ -18,12 +18,12 @@ import { discreteColor, colorBrewerCategoricalPastel12, productLookup } from '..
 
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings theme={{ partition: { outerSizeRatio: 0.9 } }} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.pie}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -42,7 +42,6 @@ export const Example = () => (
           },
         },
       ]}
-      config={{ outerSizeRatio: 0.9 }}
     />
   </Chart>
 );
