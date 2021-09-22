@@ -51,22 +51,13 @@ export const computePerPanelAxesGeomsSelector = createCustomCachedSelector(
 
     return getPerPanelMap(scales, (_, h, v) => ({
       axesGeoms: axesGeoms.map((geom) => {
-        const {
-          axis: { position },
-        } = geom;
+        const { position } = geom.axis;
         const isVertical = isVerticalAxis(position);
         const usePanelTitle = isVertical ? hasSMDomain(vertical) : hasSMDomain(horizontal);
         const panelTitle = usePanelTitle ? getPanelTitle(isVertical, v, h, groupBySpec) : undefined;
         const secondary = !isPrimaryColumn(position, h) && !isPrimaryRow(position, v);
 
-        return {
-          ...geom,
-          axis: {
-            ...geom.axis,
-            panelTitle,
-            secondary,
-          },
-        };
+        return { ...geom, axis: { ...geom.axis, panelTitle, secondary } };
       }),
     }));
   },

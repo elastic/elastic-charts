@@ -15,10 +15,8 @@ import { computeLegendSelector } from './compute_legend';
 export const getLegendItemsLabelsSelector = createCustomCachedSelector(
   [computeLegendSelector, getSettingsSpecSelector],
   (legendItems, { showLegendExtra }): LegendItemLabel[] =>
-    legendItems.map(({ label, defaultExtra }) => {
-      if (defaultExtra?.formatted != null) {
-        return { label: `${label}${showLegendExtra ? defaultExtra.formatted : ''}`, depth: 0 };
-      }
-      return { label, depth: 0 };
-    }),
+    legendItems.map(({ label, defaultExtra }) => ({
+      label: `${label}${showLegendExtra ? defaultExtra?.formatted ?? '' : ''}`,
+      depth: 0,
+    })),
 );

@@ -8,7 +8,7 @@
 
 import { measureText } from '../../../../common/text_utils';
 import { SmallMultiplesStyle } from '../../../../specs';
-import { Color, identity, mergePartial, RecursivePartial } from '../../../../utils/common';
+import { Color, mergePartial, RecursivePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Layer, PartitionSpec } from '../../specs';
 import { config as defaultConfig, VALUE_GETTERS } from '../config';
@@ -26,7 +26,7 @@ import { shapeViewModel } from './viewmodel';
 
 function rawTextGetter(layers: Layer[]): RawTextGetter {
   return (node: ShapeTreeNode) => {
-    const accessorFn = layers[node[DEPTH_KEY] - 1].nodeLabel || identity;
+    const accessorFn = layers[node[DEPTH_KEY] - 1].nodeLabel || ((d) => d);
     return `${accessorFn(node.dataName)}`;
   };
 }

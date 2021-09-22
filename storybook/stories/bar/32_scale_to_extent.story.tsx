@@ -16,13 +16,11 @@ import { useBaseTheme } from '../../use_base_theme';
 import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
 
 const logDomains = (data: any[], customDomain: any) => {
+  const dataY = data.map((d) => d.y);
   /* eslint-disable no-console */
   console.clear();
-  console.log('data domain:', JSON.stringify(computeContinuousDataDomain(data, (d) => d.y, ScaleType.Linear)));
-  console.log(
-    'computed domain:',
-    JSON.stringify(computeContinuousDataDomain(data, (d) => d.y, ScaleType.Linear, customDomain)),
-  );
+  console.log('data domain:', JSON.stringify(computeContinuousDataDomain(dataY, ScaleType.Linear, undefined)));
+  console.log('computed domain:', JSON.stringify(computeContinuousDataDomain(dataY, ScaleType.Linear, customDomain)));
   /* eslint-enable */
 };
 
@@ -69,7 +67,7 @@ export const Example = () => {
     default:
       data = mixed;
   }
-  const customDomain = { fit, padding, paddingUnit, constrainPadding, nice };
+  const customDomain = { fit, padding, paddingUnit, constrainPadding, nice, min: NaN, max: NaN };
 
   if (shouldLogDomains) {
     logDomains(data, customDomain);

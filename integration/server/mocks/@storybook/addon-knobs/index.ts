@@ -15,13 +15,8 @@ function getKnobKey(name: string, groupId?: string) {
 }
 
 export function boolean(name: string, dftValue: boolean, groupId?: string) {
-  const params = getParams();
-  const key = getKnobKey(name, groupId);
-  const param = params.get(key);
-  if (param === '' || param == null) {
-    return dftValue;
-  }
-  return params.get(key) === 'true';
+  const param = getParams().get(getKnobKey(name, groupId));
+  return param ? param === 'true' : dftValue;
 }
 
 export function number(name: string, dftValue: number, options?: any, groupId?: string) {
@@ -43,19 +38,15 @@ export function select(name: string, b: unknown, dftValue: string, groupId?: str
 }
 
 export function text(name: string, dftValue: string, groupId?: string) {
-  const params = getParams();
-  const key = getKnobKey(name, groupId);
-  const value = params.get(key);
-  if (value != null) {
-    // the # used for the color knob needs to be escaped on the URL and unescaped here
-    return unescape(value);
-  }
-  return dftValue;
+  const value = getParams().get(getKnobKey(name, groupId));
+  // the # used for the color knob needs to be escaped on the URL and unescaped here
+  return value === null ? dftValue : unescape(value);
 }
 
 export function array(name: string, dftValues: unknown[], options: any, groupId?: string) {
   const params = getParams();
   const values = [];
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   for (const [key, value] of params) {
     if (key.startsWith(`${getKnobKey(name, groupId)}[`)) {

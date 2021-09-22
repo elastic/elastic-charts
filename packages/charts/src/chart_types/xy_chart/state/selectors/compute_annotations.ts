@@ -6,11 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Scale } from '../../../../scales';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { AnnotationId, AxisId, GroupId } from '../../../../utils/ids';
+import { AnnotationId, AxisId } from '../../../../utils/ids';
 import { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensions } from '../../annotations/utils';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
@@ -45,7 +44,7 @@ export const computeAnnotationDimensionsSelector = createCustomCachedSelector(
     return computeAnnotationDimensions(
       annotationSpecs,
       settingsSpec.rotation,
-      yScales as Map<GroupId, Scale<number>>,
+      yScales,
       xScale,
       axesSpecs,
       isHistogramMode,

@@ -8,7 +8,6 @@
 
 import { Rotation } from '../../../../utils/common';
 import { GroupId } from '../../../../utils/ids';
-import { isBounded, isCompleteBound, isLowerBound, isUpperBound } from '../../utils/axis_type_utils';
 import { isXDomain } from '../../utils/axis_utils';
 import { AxisSpec, YDomainRange } from '../../utils/specs';
 
@@ -27,40 +26,28 @@ export function mergeYCustomDomainsByGroupId(
     }
 
     if (isXDomain(spec.position, chartRotation)) {
-      const errorMessage = `[Axis ${id}]: custom domain for xDomain should be defined in Settings`;
-      throw new Error(errorMessage);
+      throw new Error(`[Axis ${id}]: custom domain for xDomain should be defined in Settings`);
     }
 
-    if (isCompleteBound(domain) && domain.min > domain.max) {
-      const errorMessage = `[Axis ${id}]: custom domain is invalid, min is greater than max`;
-      throw new Error(errorMessage);
+    if (domain.min > domain.max) {
+      throw new Error(`[Axis ${id}]: custom domain is invalid, min is greater than max`);
     }
 
     const prevGroupDomain = domainsByGroupId.get(groupId);
 
     if (prevGroupDomain) {
-      const prevDomain = prevGroupDomain;
-      const prevMin = isLowerBound(prevDomain) ? prevDomain.min : undefined;
-      const prevMax = isUpperBound(prevDomain) ? prevDomain.max : undefined;
-
-      let max = prevMax;
-      let min = prevMin;
-
-      if (isCompleteBound(domain)) {
-        min = prevMin != null ? Math.min(domain.min, prevMin) : domain.min;
-        max = prevMax != null ? Math.max(domain.max, prevMax) : domain.max;
-      } else if (isLowerBound(domain)) {
-        min = prevMin != null ? Math.min(domain.min, prevMin) : domain.min;
-      } else if (isUpperBound(domain)) {
-        max = prevMax != null ? Math.max(domain.max, prevMax) : domain.max;
-      }
-
       const mergedDomain = {
-        min,
-        max,
+        min: Math.min(
+          Number.isFinite(domain.min) ? domain.min : Infinity,
+          prevGroupDomain && Number.isFinite(prevGroupDomain.min) ? prevGroupDomain.min : Infinity,
+        ),
+        max: Math.max(
+          Number.isFinite(domain.max) ? domain.max : -Infinity,
+          prevGroupDomain && Number.isFinite(prevGroupDomain.max) ? prevGroupDomain.max : -Infinity,
+        ),
       };
 
-      if (isBounded(mergedDomain)) {
+      if (Number.isFinite(mergedDomain.min) || Number.isFinite(mergedDomain.max)) {
         domainsByGroupId.set(groupId, mergedDomain);
       }
     } else {

@@ -43,10 +43,5 @@ export function getScale(
   padding: RelativeBandsPadding = DEFAULT_SM_PANEL_PADDING,
 ) {
   const singlePanelSmallMultiple = domain.length <= 1;
-  return new ScaleBand(
-    domain.length > 0 ? domain : [(undefined as unknown) as number],
-    [0, maxRange],
-    undefined,
-    singlePanelSmallMultiple ? 0 : padding,
-  );
+  return new ScaleBand(domain, [0, maxRange], undefined, singlePanelSmallMultiple ? 0 : padding);
 }
