@@ -72,7 +72,7 @@ function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: Li
 
       acc[isHorizontalAxis(position) ? 'x' : 'y'].push({
         id,
-        title,
+        title: title ?? '',
         position,
         ...(isHorizontalAxis(position)
           ? { labels, values, gridlines }

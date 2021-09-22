@@ -30,6 +30,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
         x: [
           {
             id: 'x',
+            title: '',
             position: Position.Left,
             labels: geoms.heatmapViewModel.xValues.map(({ text }) => text),
             values: geoms.heatmapViewModel.xValues.map(({ value }) => value),
@@ -40,6 +41,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
         y: [
           {
             id: 'y',
+            title: '',
             position: Position.Bottom,
             labels: geoms.heatmapViewModel.yValues.map(({ text }) => text),
             values: geoms.heatmapViewModel.yValues.map(({ value }) => value),

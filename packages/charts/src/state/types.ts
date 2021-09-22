@@ -15,7 +15,7 @@ import type { GeometryValue } from '../utils/geometry';
 export interface DebugStateAxis {
   id: string;
   position: Position;
-  title?: string;
+  title: string;
   labels: string[];
   values: any[];
   gridlines: {
