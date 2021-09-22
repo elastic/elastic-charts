@@ -16,7 +16,7 @@ inputs:
   status-context:
     description: 'Commit status context'
     required: false
-    default: 'PR Checks / Sync status'
+    default: 'Test merge status'
   limit:
     description: 'Limit for max commits behind'
     required: false
