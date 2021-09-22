@@ -62,7 +62,7 @@ describe('Y Domain', () => {
         MockGlobalSpec.axis({
           id: 'y',
           position: Position.Left,
-          domain: { fit: true },
+          domain: { fit: true, min: NaN, max: NaN },
         }),
         MockSeriesSpec.line({
           ...DEMO_AREA_SPEC_1,
@@ -88,7 +88,7 @@ describe('Y Domain', () => {
         MockGlobalSpec.axis({
           id: 'y',
           position: Position.Left,
-          domain: { fit: true },
+          domain: { fit: true, min: NaN, max: NaN },
         }),
         MockSeriesSpec.area({
           ...DEMO_AREA_SPEC_1,
@@ -115,13 +115,13 @@ describe('Y Domain', () => {
           id: 'y a',
           groupId: 'a',
           position: Position.Left,
-          domain: { fit: true },
+          domain: { fit: true, min: NaN, max: NaN },
         }),
         MockGlobalSpec.axis({
           id: 'y b',
           groupId: 'b',
           position: Position.Left,
-          domain: { fit: true },
+          domain: { fit: true, min: NaN, max: NaN },
         }),
         MockSeriesSpec.line(DEMO_AREA_SPEC_1),
         MockSeriesSpec.line({
@@ -154,7 +154,7 @@ describe('Y Domain', () => {
           id: 'y a',
           groupId: 'a',
           position: Position.Left,
-          domain: { fit: true },
+          domain: { fit: true, min: NaN, max: NaN },
         }),
         MockSeriesSpec.area(DEMO_AREA_SPEC_1),
         MockSeriesSpec.area({
@@ -183,7 +183,7 @@ describe('Y Domain', () => {
           id: 'y a',
           groupId: 'a',
           position: Position.Left,
-          domain: { fit: true },
+          domain: { fit: true, min: NaN, max: NaN },
         }),
         MockSeriesSpec.area(DEMO_AREA_SPEC_1),
         MockSeriesSpec.area({
@@ -362,10 +362,7 @@ describe('Y Domain', () => {
   });
 
   test('Should return a default Scale Linear for YScaleType when there are no specs', () => {
-    expect(coerceYScaleTypes([])).toEqual({
-      nice: false,
-      type: ScaleType.Linear,
-    });
+    expect(coerceYScaleTypes([]).type).toEqual(ScaleType.Linear);
   });
 
   test('Should merge Y domain accounting for custom domain limits: complete bounded domain', () => {
@@ -400,7 +397,7 @@ describe('Y Domain', () => {
           id: 'y a',
           groupId: 'a',
           position: Position.Left,
-          domain: { min: 0, fit: true },
+          domain: { min: 0, fit: true, max: NaN },
         }),
         MockSeriesSpec.area(DEMO_AREA_SPEC_1),
       ],
@@ -424,7 +421,7 @@ describe('Y Domain', () => {
           id: 'y a',
           groupId: 'a',
           position: Position.Left,
-          domain: { min: 20, fit: true },
+          domain: { min: 20, fit: true, max: NaN },
         }),
         MockSeriesSpec.area(DEMO_AREA_SPEC_1),
       ],
@@ -447,7 +444,7 @@ describe('Y Domain', () => {
           id: 'y a',
           groupId: 'a',
           position: Position.Left,
-          domain: { max: 20, fit: true },
+          domain: { min: NaN, max: 20, fit: true },
         }),
         MockSeriesSpec.line(DEMO_AREA_SPEC_1),
       ],
@@ -471,7 +468,7 @@ describe('Y Domain', () => {
           id: 'y a',
           groupId: 'a',
           position: Position.Left,
-          domain: { max: -1, fit: true },
+          domain: { min: NaN, max: -1, fit: true },
         }),
         MockSeriesSpec.area(DEMO_AREA_SPEC_1),
       ],

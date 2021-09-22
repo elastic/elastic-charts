@@ -35,7 +35,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
 
   readonly type: ScaleBandType;
 
-  readonly domain: T[];
+  readonly domain: [T, ...T[]];
 
   readonly range: number[];
 
@@ -50,7 +50,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
   private readonly d3Scale: D3ScaleBand<NonNullable<PrimitiveValue>>;
 
   constructor(
-    domain: T[],
+    inputDomain: T[],
     range: Range,
     overrideBandwidth?: number,
     /**
@@ -60,36 +60,27 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
      */
     barsPadding: Ratio | RelativeBandsPadding = 0,
   ) {
+    const isObjectPad = typeof barsPadding === 'object';
+    const safeBarPadding = isObjectPad ? 0 : clamp(barsPadding, 0, 1);
     this.type = ScaleType.Ordinal;
     this.d3Scale = scaleBand<NonNullable<PrimitiveValue>>();
-    this.d3Scale.domain(domain);
+    this.d3Scale.domain(inputDomain.length > 0 ? inputDomain : [(undefined as unknown) as T]);
     this.d3Scale.range(range);
-    let safeBarPadding = 0;
-    if (typeof barsPadding === 'object') {
-      this.d3Scale.paddingInner(barsPadding.inner);
-      this.d3Scale.paddingOuter(barsPadding.outer);
-      this.barsPadding = barsPadding.inner;
-    } else {
-      safeBarPadding = clamp(barsPadding, 0, 1);
-      this.d3Scale.paddingInner(safeBarPadding);
-      this.barsPadding = safeBarPadding;
-      this.d3Scale.paddingOuter(safeBarPadding / 2);
-    }
-
+    this.d3Scale.paddingInner(isObjectPad ? barsPadding.inner : safeBarPadding);
+    this.d3Scale.paddingOuter(isObjectPad ? barsPadding.outer : safeBarPadding / 2);
+    this.barsPadding = isObjectPad ? barsPadding.inner : safeBarPadding;
     this.outerPadding = this.d3Scale.paddingOuter();
     this.innerPadding = this.d3Scale.paddingInner();
-    this.bandwidth = this.d3Scale.bandwidth() || 0;
+    this.bandwidth = overrideBandwidth ? overrideBandwidth * (1 - safeBarPadding) : this.d3Scale.bandwidth() || 0;
     this.originalBandwidth = this.d3Scale.bandwidth() || 0;
     this.step = this.d3Scale.step();
-    this.domain = [...new Set(domain)];
+    this.domain = (inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined]) as [T, ...T[]];
     this.range = range.slice();
-    if (overrideBandwidth) {
-      this.bandwidth = overrideBandwidth * (1 - safeBarPadding);
-    }
     this.bandwidthPadding = this.bandwidth;
-    // TO FIX: we are assuming that it's ordered
-    this.isInverted = this.domain[0] > this.domain[1];
-    this.invertedScale = scaleQuantize<T>().domain(range).range(this.domain);
+    this.isInverted = false;
+    this.invertedScale = scaleQuantize<T>()
+      .domain(range)
+      .range(inputDomain.length > 0 ? [...new Set(inputDomain)] : [(undefined as unknown) as T]);
     this.minInterval = 0;
   }
 
@@ -125,11 +116,11 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     return this.domain;
   }
 
-  invert(value: any) {
+  invert(value: number) {
     return this.invertedScale(value);
   }
 
-  invertWithStep(value: any) {
+  invertWithStep(value: number) {
     return {
       value: this.invertedScale(value),
       withinBandwidth: true,
@@ -140,7 +131,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     return this.domain.length < 2;
   }
 
-  isValueInDomain(value: any) {
+  isValueInDomain(value: T) {
     return this.domain.includes(value);
   }
 }

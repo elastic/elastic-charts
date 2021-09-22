@@ -9,17 +9,19 @@
 import { Point } from '../../../utils/point';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 
+type Value = string | number;
+
 /** @internal */
 export interface PerPanelMap {
   panelAnchor: Point;
-  horizontalValue: any;
-  verticalValue: any;
+  horizontalValue: Value;
+  verticalValue: Value;
 }
 
 /** @internal */
 export function getPerPanelMap<T>(
   scales: SmallMultipleScales,
-  fn: (panelAnchor: Point, horizontalValue: any, verticalValue: any, scales: SmallMultipleScales) => T | null,
+  fn: (anchor: Point, horizontalValue: Value, verticalValue: Value, smScales: SmallMultipleScales) => T | null,
 ): Array<T & PerPanelMap> {
   const { horizontal, vertical } = scales;
   return vertical.domain.reduce<Array<T & PerPanelMap>>((acc, verticalValue) => {
@@ -31,18 +33,7 @@ export function getPerPanelMap<T>(
           y: vertical.scale(verticalValue) ?? 0,
         };
         const fnObj = fn(panelAnchor, horizontalValue, verticalValue, scales);
-        if (!fnObj) {
-          return hAcc;
-        }
-        return [
-          ...hAcc,
-          {
-            panelAnchor,
-            horizontalValue,
-            verticalValue,
-            ...fnObj,
-          },
-        ];
+        return fnObj ? [...hAcc, { panelAnchor, horizontalValue, verticalValue, ...fnObj }] : hAcc;
       }, []),
     ];
   }, []);

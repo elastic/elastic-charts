@@ -343,6 +343,7 @@ export class MockGlobalSpec {
   };
 
   static settings(partial?: Partial<SettingsSpec>): SettingsSpec {
+    // @ts-ignore
     return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBase, partial, { mergeOptionalPartialValues: true });
   }
 

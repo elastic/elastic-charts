@@ -297,7 +297,7 @@ describe('Series', () => {
         MockGlobalSpec.axis({
           id: 'y',
           position: Position.Left,
-          domain: { fit: true },
+          domain: { fit: true, min: NaN, max: NaN },
         }),
         MockSeriesSpec.bar({
           id: 'spec1',
@@ -327,7 +327,7 @@ describe('Series', () => {
         MockGlobalSpec.axis({
           id: 'y',
           position: Position.Left,
-          domain: { fit: true },
+          domain: { fit: true, min: NaN, max: NaN },
         }),
         MockSeriesSpec.bar({
           id: 'spec1',
@@ -368,7 +368,7 @@ describe('Series', () => {
         MockGlobalSpec.axis({
           id: 'y',
           position: Position.Left,
-          domain: { fit: true },
+          domain: { fit: true, min: NaN, max: NaN },
         }),
         MockSeriesSpec.bar({
           id: 'spec1',
@@ -401,7 +401,7 @@ describe('Series', () => {
         MockGlobalSpec.axis({
           id: 'y',
           position: Position.Left,
-          domain: { fit: true },
+          domain: { fit: true, min: NaN, max: NaN },
         }),
         MockSeriesSpec.bar({
           id: 'spec1',
@@ -859,7 +859,7 @@ describe('Series', () => {
       expect([...splitSeries.dataSeries.values()].length).toBe(2);
       expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
     });
-    test('Should ignore series if splitSeriesAccessors are defined but not contained in any datum', () => {
+    test('Should ignore series if splitSerie§sAccessors are defined but not contained in any datum', () => {
       const spec = MockSeriesSpec.bar({
         data: [
           [0, 1],
