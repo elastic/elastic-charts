@@ -1,4 +1,4 @@
-name: Publish a Release
+name: Release
 
 on:
   workflow_dispatch:
@@ -10,12 +10,12 @@ env:
 
 jobs:
   status:
-    name: Check status
+    name: Status check
     runs-on: ubuntu-latest
     outputs:
       allSuccess: ${{ steps.validate.outputs.allSuccess == 'true' }}
     steps:
-      - name: Get current check runs
+      - name: Get current checks status
         id: check
         uses: octokit/request-action@v2.x
         with:
@@ -24,7 +24,7 @@ jobs:
           ref: ${{ github.sha }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Validate check runs
+      - name: Validate checks status
         id: validate
         if: ${{ success() }}
         shell: python
@@ -42,7 +42,7 @@ jobs:
           print(f"::set-output name=allSuccess::{str(count >= 7 and allSuccess).lower()}")
 
   checks:
-    name: Release Checks
+    name: Pre-release test
     runs-on: ubuntu-latest
     needs: status
     # Runs checks when others running on master may be in process

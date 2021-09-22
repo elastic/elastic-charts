@@ -1,7 +1,7 @@
-name: 'PR Sync Check'
+name: 'PRs merge status'
 
 concurrency:
-  group: pr_sync_checker
+  group: test_prs_merge
   cancel-in-progress: true
 
 on:
@@ -16,6 +16,7 @@ on:
 
 jobs:
   fetch:
+    name: 'Fetch'
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.matrix.outputs.json }}
@@ -38,7 +39,7 @@ jobs:
           include.*.base_ref: ${{ toJSON(fromJSON(steps.fetch.outputs.data).*.base.ref) }}
           include.*.base_sha: ${{ toJSON(fromJSON(steps.fetch.outputs.data).*.base.sha) }}
 
-  base-status-check:
+  base-diff-check:
     name: 'PR #${{ matrix.number }} - ${{ matrix.title }}'
     runs-on: ubuntu-latest
     needs: fetch
@@ -52,7 +53,7 @@ jobs:
           persist-credentials: false
       - name: Install local action packages
         run: npm --prefix ./.github/actions/base_diff_check ci
-      - name: Check PR sync status
+      - name: Check PR-merge diffs
         uses: ./.github/actions/base_diff_check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

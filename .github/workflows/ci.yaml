@@ -1,4 +1,4 @@
-name: CI Checks
+name: CI
 
 concurrency:
   group: '${{ github.workflow }} - ${{ github.head_ref || github.ref }}'
@@ -54,7 +54,7 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
 
   eslint:
-    name: Eslint
+    name: ESLint
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -75,7 +75,7 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       # -----------------------------------
 
-      - name: Eslint check
+      - name: ESLint check
         run: yarn lint
 
   prettier:
