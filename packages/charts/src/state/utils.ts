@@ -8,7 +8,7 @@
 
 import { ChartType } from '../chart_types';
 import { Spec } from '../specs';
-import { PointerState, SpecList } from './chart_state';
+import { PointerState, PointerStates, SpecList } from './chart_state';
 
 /** @internal */
 export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: ChartType, specType: string): U[] {
@@ -17,22 +17,13 @@ export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: Ch
 
 /** @internal */
 export function isClicking(prevClick: PointerState | null, lastClick: PointerState | null) {
-  if (prevClick === null && lastClick !== null) {
-    return true;
-  }
-  return prevClick !== null && lastClick !== null && prevClick.time !== lastClick.time;
+  return lastClick && (!prevClick || prevClick.time !== lastClick.time);
 }
 
 /** @internal */
-export const getInitialPointerState = () => ({
+export const getInitialPointerState = (): PointerStates => ({
   dragging: false,
-  current: {
-    position: {
-      x: -1,
-      y: -1,
-    },
-    time: 0,
-  },
+  current: { position: { x: -1, y: -1 }, time: 0 },
   down: null,
   up: null,
   lastDrag: null,
