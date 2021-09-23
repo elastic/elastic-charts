@@ -436,17 +436,6 @@ export function getAxesGeometries(
         if (!scale) throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
 
         const vertical = isVerticalAxis(axisSpec.position);
-        const allTicks = getAvailableTicks(
-          axisSpec,
-          scale,
-          totalGroupsCount,
-          enableHistogramMode,
-          vertical ? fallBackTickFormatter : defaultTickFormatter,
-          enableHistogramMode && ((vertical && chartRotation === -90) || (!vertical && chartRotation === 180))
-            ? scale.step // TODO: Find the true cause of the this offset error
-            : 0,
-          { timeZone: xDomain.timeZone },
-        );
         const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;
         const axisPositionData = getPosition(chartDims, chartMargins, axisStyle, axisSpec, axisDim, smScales, acc);
         const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = axisPositionData;
@@ -459,7 +448,21 @@ export function getAxesGeometries(
           axis: { id: axisSpec.id, position: axisSpec.position },
           anchorPoint: { x: dimensions.left, y: dimensions.top },
           dimension: axisDim,
-          visibleTicks: getVisibleTicks(allTicks, axisSpec, axisDim),
+          visibleTicks: getVisibleTicks(
+            getAvailableTicks(
+              axisSpec,
+              scale,
+              totalGroupsCount,
+              enableHistogramMode,
+              vertical ? fallBackTickFormatter : defaultTickFormatter,
+              enableHistogramMode && ((vertical && chartRotation === -90) || (!vertical && chartRotation === 180))
+                ? scale.step // TODO: Find the true cause of the this offset error
+                : 0,
+              { timeZone: xDomain.timeZone },
+            ),
+            axisSpec,
+            axisDim,
+          ),
           parentSize: { height: dimensions.height, width: dimensions.width },
           size: axisDim.isHidden
             ? { width: 0, height: 0 }
