@@ -134,7 +134,7 @@ function getXBrushExtent(
   histogramMode: boolean,
   xScale: Scale<number>,
   smallMultipleScales: SmallMultipleScales,
-  allowBrushingLastHistogramBin: boolean = true,
+  allowBrushingLastHistogramBin: boolean,
   seriesSpecs: SeriesSpecs,
   minBrushDelta?: number,
   roundHistogramBrushValues?: boolean,

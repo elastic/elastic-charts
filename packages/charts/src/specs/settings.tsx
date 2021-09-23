@@ -591,7 +591,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
    *
    * @defaultValue true
    */
-  allowBrushingLastHistogramBin?: boolean;
+  allowBrushingLastHistogramBin: boolean;
   /**
    * Orders ordinal x values
    */
@@ -704,7 +704,8 @@ export type DefaultSettingsProps =
   | 'legendMaxDepth'
   | 'ariaUseDefaultSummary'
   | 'ariaLabelHeadingLevel'
-  | 'ariaTableCaption';
+  | 'ariaTableCaption'
+  | 'allowBrushingLastHistogramBin';
 
 /** @public */
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
