@@ -269,7 +269,6 @@ export function getAvailableTicks(
     const penultimateComputedTick = numericalTicks[numericalTicks.length - 2];
     const computedTickDistance = lastComputedTick - penultimateComputedTick;
     const numTicks = scale.minInterval / computedTickDistance;
-
     for (let i = 1; i <= numTicks; i++) ticks.push(i * computedTickDistance + lastComputedTick);
   }
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
@@ -279,10 +278,8 @@ export function getAvailableTicks(
     (enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2) + (scale.isSingleValue() ? 0 : rotationOffset);
   const tickFormatter = axisSpec.tickFormat ?? fallBackTickFormatter;
   const labelFormatter = axisSpec.labelFormat ?? tickFormatter;
-
-  if (isSingleValueScale && hasAdditionalTicks) {
-    // todo sure hope something ascertains this, otherwise we can't add in runtime:
-    const [firstTickValue] = ticks as number[];
+  const firstTickValue = ticks[0];
+  if (isSingleValueScale && hasAdditionalTicks && typeof firstTickValue === 'number') {
     const firstLabel = tickFormatter(firstTickValue, tickFormatOptions);
     const firstTick = {
       value: firstTickValue,
@@ -298,10 +295,10 @@ export function getAvailableTicks(
       axisTickLabel: labelFormatter(lastTickValue, tickFormatOptions),
       position: scale.bandwidth + halfPadding * 2,
     };
-
     return [firstTick, lastTick];
+  } else {
+    return enableDuplicatedTicks(axisSpec, scale, offset, fallBackTickFormatter, tickFormatOptions);
   }
-  return enableDuplicatedTicks(axisSpec, scale, offset, fallBackTickFormatter, tickFormatOptions);
 }
 
 /** @internal */
