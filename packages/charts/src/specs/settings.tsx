@@ -582,7 +582,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
   roundHistogramBrushValues?: boolean;
   /**
    * Boolean to allow brushing on last bucket even when outside domain or limit to end of domain.
-   *
+   * Should apply only for histogram charts
    * e.g.
    * A brush selection range of [1.23, 3.6] with a domain of [1, 2, 3]
    *
@@ -591,7 +591,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
    *
    * @defaultValue true
    */
-  allowBrushingLastHistogramBucket?: boolean;
+  allowBrushingLastHistogramBin?: boolean;
   /**
    * Orders ordinal x values
    */

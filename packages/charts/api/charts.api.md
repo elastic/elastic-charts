@@ -1850,7 +1850,7 @@ export const Settings: React_2.FunctionComponent<SettingsSpecProps>;
 
 // @public
 export interface SettingsSpec extends Spec, LegendSpec {
-    allowBrushingLastHistogramBucket?: boolean;
+    allowBrushingLastHistogramBin?: boolean;
     // (undocumented)
     animateData: boolean;
     ariaDescribedBy?: string;

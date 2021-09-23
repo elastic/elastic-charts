@@ -10,7 +10,7 @@ import { Selector } from 'reselect';
 
 import { ChartType } from '../../..';
 import { Scale } from '../../../../scales';
-import { GroupBrushExtent, XYBrushEvent } from '../../../../specs';
+import { GroupBrushExtent, SeriesSpecs, XYBrushEvent } from '../../../../specs';
 import { BrushAxis } from '../../../../specs/constants';
 import { DragState, GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -19,11 +19,13 @@ import { clamp, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { hasDragged, DragCheckProps } from '../../../../utils/events';
 import { GroupId } from '../../../../utils/ids';
+import { isHistogramEnabled } from '../../domains/y_domain';
 import { isVerticalRotation } from '../utils/common';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 import { getPlotAreaRestrictedPoint, getPointsConstraintToSinglePanel, PanelPoints } from './get_brush_area';
 import { getComputedScalesSelector } from './get_computed_scales';
+import { getSeriesSpecsSelector } from './get_specs';
 import { isBrushAvailableSelector } from './is_brush_available';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
@@ -53,21 +55,16 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
           computeChartDimensionsSelector,
           isHistogramModeEnabledSelector,
           computeSmallMultipleScalesSelector,
+          getSeriesSpecsSelector,
         ],
         (
           lastDrag,
-          {
-            onBrushEnd,
-            rotation,
-            brushAxis,
-            minBrushDelta,
-            roundHistogramBrushValues,
-            allowBrushingLastHistogramBucket,
-          },
+          { onBrushEnd, rotation, brushAxis, minBrushDelta, roundHistogramBrushValues, allowBrushingLastHistogramBin },
           computedScales,
           { chartDimensions },
           histogramMode,
           smallMultipleScales,
+          seriesSpec,
         ): void => {
           const nextProps = {
             lastDrag,
@@ -85,7 +82,8 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
                 histogramMode,
                 xScale as Scale<number>,
                 smallMultipleScales,
-                allowBrushingLastHistogramBucket,
+                allowBrushingLastHistogramBin,
+                seriesSpec,
                 minBrushDelta,
                 roundHistogramBrushValues,
               );
@@ -136,7 +134,8 @@ function getXBrushExtent(
   histogramMode: boolean,
   xScale: Scale<number>,
   smallMultipleScales: SmallMultipleScales,
-  allowBrushingLastHistogramBucket: boolean = true,
+  allowBrushingLastHistogramBin: boolean = true,
+  seriesSpecs: SeriesSpecs,
   minBrushDelta?: number,
   roundHistogramBrushValues?: boolean,
 ): [number, number] | undefined {
@@ -160,8 +159,9 @@ function getXBrushExtent(
     : (value: number) => xScale.invert(value);
   const minPosScaled = invertValue(minPos + offset);
   const maxPosScaled = invertValue(maxPos + offset);
-
-  const maxDomainValue = xScale.domain[1] + (allowBrushingLastHistogramBucket ? xScale.minInterval : 0);
+  const histogramEnabled = isHistogramEnabled(seriesSpecs);
+  const maxDomainValue =
+    xScale.domain[1] + (histogramEnabled && allowBrushingLastHistogramBin ? xScale.minInterval : 0);
 
   const minValue = clamp(minPosScaled, xScale.domain[0], maxPosScaled);
   const maxValue = clamp(minPosScaled, maxPosScaled, maxDomainValue);

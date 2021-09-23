@@ -857,7 +857,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toBeCalled();
         } else {
           expect(brushEndListener).toBeCalled();
-          expect(brushEndListener.mock.calls[1][0]).toEqual({ x: [2.5, 3.5] });
+          expect(brushEndListener.mock.calls[1][0]).toEqual({ x: [2.5, 3] });
         }
 
         const start3 = { x: 75, y: 0 };
@@ -869,7 +869,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toBeCalled();
         } else {
           expect(brushEndListener).toBeCalled();
-          expect(brushEndListener.mock.calls[2][0]).toEqual({ x: [2.5, 3.5] });
+          expect(brushEndListener.mock.calls[2][0]).toEqual({ x: [2.5, 3] });
         }
 
         const start4 = { x: 25, y: 0 };
@@ -938,7 +938,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toBeCalled();
         } else {
           expect(brushEndListener).toBeCalled();
-          expect(brushEndListener.mock.calls[1][0]).toEqual({ x: [1, 1.5] });
+          expect(brushEndListener.mock.calls[1][0]).toEqual({ x: [1, 1] });
         }
 
         const start3 = { x: 0, y: 75 };
@@ -950,7 +950,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toBeCalled();
         } else {
           expect(brushEndListener).toBeCalled();
-          expect(brushEndListener.mock.calls[2][0]).toEqual({ x: [1, 1.5] }); // max of chart
+          expect(brushEndListener.mock.calls[2][0]).toEqual({ x: [1, 1] }); // max of chart
         }
 
         const start4 = { x: 0, y: 25 };
@@ -1109,7 +1109,7 @@ describe('Chart state pointer interactions', () => {
         } else {
           expect(brushEndListener).toBeCalled();
           expect(brushEndListener.mock.calls[1][0]).toEqual({
-            x: [2.5, 3.5],
+            x: [2.5, 3],
             y: [
               {
                 groupId: spec.groupId,
