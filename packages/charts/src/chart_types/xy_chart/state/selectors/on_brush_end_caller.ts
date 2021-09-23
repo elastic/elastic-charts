@@ -152,14 +152,14 @@ function getXBrushExtent(
     // if 0 size brush, avoid computing the value
     return;
   }
-
   const offset = histogramMode ? 0 : -(xScale.bandwidth + xScale.bandwidthPadding) / 2;
-  const invertValue = roundHistogramBrushValues
-    ? (value: number) => xScale.invertWithStep(value, xScale.domain).value
-    : (value: number) => xScale.invert(value);
+  const histogramEnabled = isHistogramEnabled(seriesSpecs);
+  const invertValue =
+    histogramEnabled && roundHistogramBrushValues
+      ? (value: number) => xScale.invertWithStep(value, xScale.domain).value
+      : (value: number) => xScale.invert(value);
   const minPosScaled = invertValue(minPos + offset);
   const maxPosScaled = invertValue(maxPos + offset);
-  const histogramEnabled = isHistogramEnabled(seriesSpecs);
   const maxDomainValue =
     xScale.domain[1] + (histogramEnabled && allowBrushingLastHistogramBin ? xScale.minInterval : 0);
 
