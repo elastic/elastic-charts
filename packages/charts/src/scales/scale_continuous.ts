@@ -8,19 +8,19 @@
 
 import { bisectLeft } from 'd3-array';
 import {
+  ScaleContinuousNumeric,
+  ScaleLinear,
   scaleLinear,
   scaleLog,
-  scaleSqrt,
-  scaleUtc,
-  ScaleLinear,
   ScaleLogarithmic,
   ScalePower,
+  scaleSqrt,
   ScaleTime,
-  ScaleContinuousNumeric,
+  scaleUtc,
 } from 'd3-scale';
 import { $Values, Required } from 'utility-types';
 
-import { ScaleContinuousType, Scale } from '.';
+import { Scale, ScaleContinuousType } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
 import { clamp, mergePartial } from '../utils/common';
@@ -47,65 +47,32 @@ const SCALES = {
 
 const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
 
-/**
- * As log(0) = -Infinite, a log scale domain must be strictly-positive
- * or strictly-negative; the domain must not include or cross zero value.
- * We need to limit the domain scale to the right value on all possible cases.
- *
- * @param domain the domain to limit
- * @internal
- */
-export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit?: number) {
-  const absLimit = logMinLimit !== undefined ? Math.abs(logMinLimit) : undefined;
-  if (absLimit !== undefined && absLimit > 0) {
+/** @internal */
+export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit: number) {
+  // todo further simplify this
+  const absLimit = Math.abs(logMinLimit);
+  if (absLimit > 0) {
     if (min > 0 && min < absLimit) {
-      if (max > absLimit) {
-        return [absLimit, max];
-      }
-      return [absLimit, absLimit];
+      return max > absLimit ? [absLimit, max] : [absLimit, absLimit];
     }
-
     if (max < 0 && max > -absLimit) {
-      if (min < -absLimit) {
-        return [min, -absLimit];
-      }
-      return [-absLimit, -absLimit];
+      return min < -absLimit ? [min, -absLimit] : [-absLimit, -absLimit];
     }
   }
 
   const fallbackLimit = absLimit || LOG_MIN_ABS_DOMAIN;
 
   if (min === 0) {
-    if (max > 0) {
-      return [fallbackLimit, max];
-    }
-    if (max < 0) {
-      return [-fallbackLimit, max];
-    }
-    return [fallbackLimit, fallbackLimit];
+    return max > 0 ? [fallbackLimit, max] : max < 0 ? [-fallbackLimit, max] : [fallbackLimit, fallbackLimit];
   }
   if (max === 0) {
-    if (min > 0) {
-      return [min, fallbackLimit];
-    }
-    if (min < 0) {
-      return [min, -fallbackLimit];
-    }
-    return [fallbackLimit, fallbackLimit];
+    return min > 0 ? [min, fallbackLimit] : min < 0 ? [min, -fallbackLimit] : [fallbackLimit, fallbackLimit];
   }
   if (min < 0 && max > 0) {
-    const isD0Min = Math.abs(max) - Math.abs(min) >= 0;
-    if (isD0Min) {
-      return [fallbackLimit, max];
-    }
-    return [min, -fallbackLimit];
+    return Math.abs(max) >= Math.abs(min) ? [fallbackLimit, max] : [min, -fallbackLimit];
   }
   if (min > 0 && max < 0) {
-    const isD0Max = Math.abs(min) - Math.abs(max) >= 0;
-    if (isD0Max) {
-      return [min, fallbackLimit];
-    }
-    return [-fallbackLimit, max];
+    return Math.abs(min) >= Math.abs(max) ? [min, fallbackLimit] : [-fallbackLimit, max];
   }
   return [min, max];
 }
@@ -262,6 +229,12 @@ type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
    * Show only integer values
    */
   integersOnly: boolean;
+  /**
+   * As log(0) = -Infinite, a log scale domain must be strictly-positive
+   * or strictly-negative; the domain must not include or cross zero value.
+   * We need to limit the domain scale to the right value on all possible cases.
+   */
+  logMinLimit: number;
 };
 
 const defaultScaleOptions: ScaleOptions = {
@@ -276,6 +249,7 @@ const defaultScaleOptions: ScaleOptions = {
   isSingleValueHistogram: false,
   integersOnly: false,
   logBase: LogBase.Common,
+  logMinLimit: NaN, // NaN preserves the replaced `undefined` semantics
 };
 
 /**
@@ -328,9 +302,12 @@ export class ScaleContinuous implements Scale<number> {
     } = mergePartial(defaultScaleOptions, options, { mergeOptionalPartialValues: true });
     this.d3Scale = SCALES[type]();
 
-    if (type === ScaleType.Log) {
+    if (type === ScaleType.Log && domain.length >= 2) {
       (this.d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(logBaseMap[logBase]);
-      this.domain = limitLogScaleDomain(domain as [number, number], logMinLimit);
+      const d0 = domain.reduce((p, n) => Math.min(p, n));
+      const d1 = domain.reduce((p, n) => Math.max(p, n));
+      // todo check if there's upstream guard against degenerate domains (to avoid d0 === d1)
+      this.domain = limitLogScaleDomain([d0, d1], logMinLimit);
     } else {
       this.domain = domain;
     }
