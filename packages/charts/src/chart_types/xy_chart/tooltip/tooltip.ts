@@ -10,8 +10,9 @@ import { LegendItemExtraValues } from '../../../common/legend';
 import { SeriesKey } from '../../../common/series_id';
 import { TooltipValue } from '../../../specs';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
-import { isDefined } from '../../../utils/common';
+import { isDefined, Rotation } from '../../../utils/common';
 import { IndexedGeometry, BandedAccessorType } from '../../../utils/geometry';
+import { isHorizontalRotation, isVerticalRotation } from '../state/utils/common';
 import { defaultTickFormatter } from '../utils/axis_utils';
 import { getSeriesName } from '../utils/series';
 import {
@@ -61,6 +62,7 @@ export function formatTooltip(
   isHeader: boolean,
   isHighlighted: boolean,
   hasSingleSeries: boolean,
+  chartRotation: Rotation,
   axisSpec?: AxisSpec,
 ): TooltipValue {
   let label = getSeriesName(seriesIdentifier, hasSingleSeries, true, spec);
@@ -76,8 +78,13 @@ export function formatTooltip(
   const value = isHeader ? x : y;
   const markValue = isHeader || mark === null ? null : mark;
   const tickFormatOptions: TickFormatterOptions | undefined = spec.timeZone ? { timeZone: spec.timeZone } : undefined;
-  const tickFormatter =
-    (isHeader ? axisSpec?.tickFormat : spec.tickFormat ?? axisSpec?.tickFormat) ?? defaultTickFormatter;
+  const tickFormatter = isHeader
+    ? isVerticalRotation(chartRotation)
+      ? axisSpec?.tickFormat ?? defaultTickFormatter
+      : defaultTickFormatter
+    : isHorizontalRotation(chartRotation)
+    ? axisSpec?.tickFormat ?? defaultTickFormatter
+    : spec.tickFormat ?? defaultTickFormatter;
 
   return {
     seriesIdentifier,
