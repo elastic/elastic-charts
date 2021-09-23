@@ -7,6 +7,7 @@ on:
 
 env:
   ECH_NODE_VERSION: '14.x'
+  PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
 
 jobs:
   status:
@@ -62,6 +63,7 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
+
       - name: Lint check
         run: yarn lint
       - name: Prettier check
