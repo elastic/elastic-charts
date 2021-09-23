@@ -34,7 +34,6 @@ export function getHighligthedValues(
   defaultValue?: string,
 ): Map<SeriesKey, LegendItemExtraValues> {
   const seriesTooltipValues = new Map<SeriesKey, LegendItemExtraValues>();
-
   tooltipValues.forEach(({ formattedValue, seriesIdentifier, valueAccessor }) => {
     const seriesValue = defaultValue || formattedValue;
     const current: LegendItemExtraValues = seriesTooltipValues.get(seriesIdentifier.key) ?? new Map();
@@ -85,7 +84,7 @@ export function formatTooltip(
     valueAccessor: accessor,
     label,
     value,
-    formattedValue: tickFormatter(value, tickFormatOptions),
+    formattedValue: typeof value === 'string' ? value : tickFormatter(value, tickFormatOptions),
     markValue,
     ...(isDefined(markValue) && {
       formattedMarkValue: spec.markFormat
