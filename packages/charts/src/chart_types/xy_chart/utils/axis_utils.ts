@@ -312,8 +312,25 @@ export function enableDuplicatedTicks(
   return axisSpec.showDuplicatedTicks ? allTicks : getUniqueValues(allTicks, 'axisTickLabel', true);
 }
 
-/** @internal */
-export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: TickLabelBounds): AxisTick[] {
+function getVisibleTicks(
+  axisSpec: AxisSpec,
+  axisDim: TickLabelBounds,
+  totalGroupsCount: number,
+  fallBackTickFormatter: TickFormatter,
+  rotationOffset: number,
+  scale: Scale<number | string>,
+  enableHistogramMode: boolean,
+  tickFormatOptions?: TickFormatterOptions,
+): AxisTick[] {
+  const allTicks: AxisTick[] = getAvailableTicks(
+    axisSpec,
+    scale,
+    totalGroupsCount,
+    enableHistogramMode,
+    fallBackTickFormatter,
+    rotationOffset,
+    tickFormatOptions,
+  );
   const { ticksForCulledLabels, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? axisDim.maxLabelBboxHeight / 2 : axisDim.maxLabelBboxWidth / 2;
   return showOverlappingLabels
@@ -445,19 +462,16 @@ export function getAxesGeometries(
           anchorPoint: { x: dimensions.left, y: dimensions.top },
           dimension: axisDim,
           visibleTicks: getVisibleTicks(
-            getAvailableTicks(
-              axisSpec,
-              scale,
-              totalGroupsCount,
-              enableHistogramMode,
-              vertical ? fallBackTickFormatter : defaultTickFormatter,
-              enableHistogramMode && ((vertical && chartRotation === -90) || (!vertical && chartRotation === 180))
-                ? scale.step // TODO: Find the true cause of the this offset error
-                : 0,
-              { timeZone: xDomain.timeZone },
-            ),
             axisSpec,
             axisDim,
+            totalGroupsCount,
+            vertical ? fallBackTickFormatter : defaultTickFormatter,
+            enableHistogramMode && ((vertical && chartRotation === -90) || (!vertical && chartRotation === 180))
+              ? scale.step // TODO: Find the true cause of the this offset error
+              : 0,
+            scale,
+            enableHistogramMode,
+            { timeZone: xDomain.timeZone },
           ),
           parentSize: { height: dimensions.height, width: dimensions.width },
           size: axisDim.isHidden
