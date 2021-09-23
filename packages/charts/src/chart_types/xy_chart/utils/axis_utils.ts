@@ -249,52 +249,6 @@ function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, he
 }
 
 /** @internal */
-export function getAvailableTicks(
-  axisSpec: AxisSpec,
-  scale: Scale<number | string>,
-  totalBarsInCluster: number,
-  enableHistogramMode: boolean,
-  fallBackTickFormatter: TickFormatter,
-  rotationOffset: number,
-  tickFormatOptions?: TickFormatterOptions,
-): AxisTick[] {
-  const ticks = scale.ticks();
-  const isSingleValueScale = scale.domain[0] === scale.domain[1];
-  const makeRaster = enableHistogramMode && scale.bandwidth > 0;
-  const ultimateTick = ticks[ticks.length - 1];
-  const penultimateTick = ticks[ticks.length - 2];
-  if (makeRaster && !isSingleValueScale && typeof penultimateTick === 'number' && typeof ultimateTick === 'number') {
-    const computedTickDistance = ultimateTick - penultimateTick;
-    const numTicks = scale.minInterval / (computedTickDistance || scale.minInterval); // avoid infinite loop
-    for (let i = 1; i <= numTicks; i++) ticks.push(i * computedTickDistance + ultimateTick);
-  }
-  const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
-  const band = scale.bandwidth / (1 - scale.barsPadding);
-  const halfPadding = (band - scale.bandwidth) / 2;
-  const offset =
-    (enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2) + (scale.isSingleValue() ? 0 : rotationOffset);
-  const tickFormatter = axisSpec.tickFormat ?? fallBackTickFormatter;
-  const labelFormatter = axisSpec.labelFormat ?? tickFormatter;
-  const firstTickValue = ticks[0];
-  return makeRaster && isSingleValueScale && typeof firstTickValue === 'number'
-    ? [
-        {
-          value: firstTickValue,
-          label: tickFormatter(firstTickValue, tickFormatOptions),
-          axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
-          position: (scale.scale(firstTickValue) ?? 0) + offset,
-        },
-        {
-          value: firstTickValue + scale.minInterval,
-          label: tickFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
-          axisTickLabel: labelFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
-          position: scale.bandwidth + halfPadding * 2,
-        },
-      ]
-    : enableDuplicatedTicks(axisSpec, scale, offset, fallBackTickFormatter, tickFormatOptions);
-}
-
-/** @internal */
 export function enableDuplicatedTicks(
   axisSpec: AxisSpec,
   scale: Scale<number | string>,
@@ -315,22 +269,49 @@ export function enableDuplicatedTicks(
 function getVisibleTicks(
   axisSpec: AxisSpec,
   axisDim: TickLabelBounds,
-  totalGroupsCount: number,
+  totalBarsInCluster: number,
   fallBackTickFormatter: TickFormatter,
   rotationOffset: number,
   scale: Scale<number | string>,
   enableHistogramMode: boolean,
   tickFormatOptions?: TickFormatterOptions,
 ): AxisTick[] {
-  const allTicks: AxisTick[] = getAvailableTicks(
-    axisSpec,
-    scale,
-    totalGroupsCount,
-    enableHistogramMode,
-    fallBackTickFormatter,
-    rotationOffset,
-    tickFormatOptions,
-  );
+  const ticks = scale.ticks();
+  const isSingleValueScale = scale.domain[0] === scale.domain[1];
+  const makeRaster = enableHistogramMode && scale.bandwidth > 0;
+  const ultimateTick = ticks[ticks.length - 1];
+  const penultimateTick = ticks[ticks.length - 2];
+  if (makeRaster && !isSingleValueScale && typeof penultimateTick === 'number' && typeof ultimateTick === 'number') {
+    const computedTickDistance = ultimateTick - penultimateTick;
+    const numTicks = scale.minInterval / (computedTickDistance || scale.minInterval); // avoid infinite loop
+    for (let i = 1; i <= numTicks; i++) ticks.push(i * computedTickDistance + ultimateTick);
+  }
+  const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
+  const band = scale.bandwidth / (1 - scale.barsPadding);
+  const halfPadding = (band - scale.bandwidth) / 2;
+  const offset =
+    (enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2) + (scale.isSingleValue() ? 0 : rotationOffset);
+  const tickFormatter = axisSpec.tickFormat ?? fallBackTickFormatter;
+  const labelFormatter = axisSpec.labelFormat ?? tickFormatter;
+  const firstTickValue = ticks[0];
+  const allTicks: AxisTick[] =
+    makeRaster && isSingleValueScale && typeof firstTickValue === 'number'
+      ? [
+          {
+            value: firstTickValue,
+            label: tickFormatter(firstTickValue, tickFormatOptions),
+            axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
+            position: (scale.scale(firstTickValue) ?? 0) + offset,
+          },
+          {
+            value: firstTickValue + scale.minInterval,
+            label: tickFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
+            axisTickLabel: labelFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
+            position: scale.bandwidth + halfPadding * 2,
+          },
+        ]
+      : enableDuplicatedTicks(axisSpec, scale, offset, fallBackTickFormatter, tickFormatOptions);
+
   const { ticksForCulledLabels, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? axisDim.maxLabelBboxHeight / 2 : axisDim.maxLabelBboxWidth / 2;
   return showOverlappingLabels

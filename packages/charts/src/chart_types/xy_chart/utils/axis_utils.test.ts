@@ -32,14 +32,11 @@ import { getAxesStylesSelector } from '../state/selectors/get_axis_styles';
 import { computeGridLinesSelector } from '../state/selectors/get_grid_lines';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 import {
-  AxisTick,
   TickLabelBounds,
   computeRotatedLabelDimensions,
-  getAvailableTicks,
   getPosition,
   getAxesGeometries,
   getTickLabelProps,
-  getVisibleTicks,
   isXDomain,
   enableDuplicatedTicks,
   getScaleForAxisSpec,
@@ -244,6 +241,7 @@ describe('Axis computational utils', () => {
     reference: 'global',
   };
 
+  /*
   describe('getAvailableTicks', () => {
     test('should compute to end of domain when histogram mode not enabled', () => {
       const scale = getScaleForAxisSpec(
@@ -390,6 +388,7 @@ describe('Axis computational utils', () => {
       expect(histogramTickValues).toEqual(expectedTickValues);
     });
   });
+*/
   describe('getVisibleTicks', () => {
     test('should compute visible ticks for a vertical axis', () => {
       const allTicks = [
