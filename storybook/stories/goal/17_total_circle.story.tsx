@@ -42,7 +42,8 @@ export const Example = () => (
       labelMinor=""
       centralMajor="280 MB/s"
       centralMinor=""
-      config={{ angleStart: Math.PI + Math.PI / 2, angleEnd: -Math.PI / 2 }}
+      angleStart={Math.PI + Math.PI / 2}
+      angleEnd={-Math.PI / 2}
     />
   </Chart>
 );

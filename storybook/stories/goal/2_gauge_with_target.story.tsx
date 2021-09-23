@@ -57,7 +57,8 @@ export const Example = () => {
         labelMinor="(thousand USD)  "
         centralMajor={`${actual}`}
         centralMinor=""
-        config={{ angleStart: Math.PI, angleEnd: 0 }}
+        angleStart={Math.PI}
+        angleEnd={0}
       />
     </Chart>
   );
