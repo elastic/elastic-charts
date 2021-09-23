@@ -50,7 +50,11 @@ export const Example = () => {
       />
       <Axis
         id="left"
-        domain={{ fit }}
+        domain={{
+          min: NaN,
+          max: NaN,
+          fit,
+        }}
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}

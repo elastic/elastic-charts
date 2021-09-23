@@ -11,14 +11,13 @@ import Url from 'url';
 import { AXNode } from 'puppeteer';
 
 import { DRAG_DETECTION_TIMEOUT } from '../../packages/charts/src/state/reducers/interactions';
-// @ts-ignore
+// @ts-ignore - no type declarations
 import { port, hostname, debug, isLegacyVRTServer } from '../config';
 import { toMatchImageSnapshot } from '../jest_env_setup';
 
 const legacyBaseUrl = `http://${hostname}:${port}/iframe.html`;
 
-// Use to log console statements from within the page.evaluate blocks
-// @ts-ignore
+// @ts-ignore - used to log console statements from within the page.evaluate blocks
 // page.on('console', (msg) => (msg._type === 'log' ? console.log('PAGE LOG:', msg._text) : null)); // eslint-disable-line no-console
 
 expect.extend({ toMatchImageSnapshot });

@@ -20,6 +20,8 @@ import {
   RecursivePartial,
   ScaleType,
   Settings,
+  HeatmapBrushEvent,
+  ElementClickListener,
 } from '@elastic/charts';
 import { Config } from '@elastic/charts/src/chart_types/heatmap/layout/types/config_types';
 import { SWIM_LANE_DATA } from '@elastic/charts/src/utils/data_samples/test_anomaly_swim_lane';
@@ -91,12 +93,13 @@ export const Example = () => {
     }
   }, 100);
 
-  // @ts-ignore
-  const onElementClick: ElementClickListener = useCallback((e: HeatmapElementEvent[]) => {
+  const onElementClick: ElementClickListener = useCallback((event) => {
+    const e = event as HeatmapElementEvent[];
     const cell = e[0][0];
-    // @ts-ignore
     setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
   }, []);
+
+  const onBrushEnd = action('onBrushEnd');
 
   return (
     <Chart>
@@ -110,8 +113,9 @@ export const Example = () => {
         debugState={debugState}
         baseTheme={useBaseTheme()}
         onBrushEnd={(e) => {
-          action('onBrushEnd');
-          setSelection({ x: e.x, y: e.y });
+          onBrushEnd(e);
+          const { x, y } = e as HeatmapBrushEvent;
+          setSelection({ x, y });
         }}
       />
       <Heatmap

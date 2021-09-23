@@ -93,7 +93,7 @@ export const getKnobsFromEnum = <T extends SelectTypeKnobValue, O extends Record
       .filter(([, v]) => !include || include.includes(v))
       .filter(([, v]) => !exclude || !exclude.includes(v))
       .reduce<O>((acc, [key, value]) => {
-        // @ts-ignore
+        // @ts-ignore - override key casing
         acc[startCase(kebabCase(key))] = value;
         return acc;
       }, (allowUndefined ? { Undefined: undefined } : ({} as unknown)) as O),
@@ -214,15 +214,11 @@ export const getFallbackPlacementsKnob = (): Placement[] | undefined => {
     },
   );
 
-  if (typeof knob === 'string') {
-    // @ts-ignore
-    return knob.split(', ');
-  }
-
-  // @ts-ignore
   if (knob.length === 0) {
     return;
   }
+
+  if (typeof knob === 'string') return knob.split(', ') as Placement[];
 
   return knob;
 };

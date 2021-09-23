@@ -84,8 +84,6 @@ yarn config set yarn-offline-mirror "$cacheDir/yarn-offline-cache"
 yarnGlobalDir="$(yarn global bin)"
 export PATH="$PATH:$yarnGlobalDir"
 
-# avoid download puppeteer locally (we use the dockerized version)
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ###
 ### install dependencies
 ###

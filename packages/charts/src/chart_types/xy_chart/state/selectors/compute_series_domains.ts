@@ -32,7 +32,7 @@ export const computeSeriesDomainsSelector = createCustomCachedSelector(
       deselectedDataSeries,
       settingsSpec.orderOrdinalBinsBy,
       smallMultiples,
-      // @ts-ignore
+      // @ts-ignore - hidden method for vislib usage only
       settingsSpec.sortSeriesBy,
     );
   },

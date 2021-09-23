@@ -10,7 +10,11 @@ module.exports = {
   testMatch: ['**/?(*.)+(test).[jt]s?(x)'],
   roots: ['<rootDir>/packages/charts/src'],
   preset: 'ts-jest',
-  setupFilesAfterEnv: ['<rootDir>/scripts/setup_enzyme.ts', '<rootDir>/scripts/custom_matchers.ts'],
+  setupFilesAfterEnv: [
+    '<rootDir>/scripts/setup_enzyme.ts',
+    '<rootDir>/scripts/custom_matchers.mock.ts',
+    'jest-extended',
+  ],
   coveragePathIgnorePatterns: [
     '<rootDir>/packages/charts/src/mocks',
     '<rootDir>/packages/charts/src/utils/d3-delaunay',

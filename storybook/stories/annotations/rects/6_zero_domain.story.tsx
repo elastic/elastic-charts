@@ -40,7 +40,16 @@ export const Example = () => {
       <RectAnnotation id="rect" dataValues={[{ coordinates: xAxisKnobs }]} style={{ fill: 'red' }} />
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
-      <Axis domain={{ fit }} id="left" title="y-domain axis" position={Position.Left} />
+      <Axis
+        domain={{
+          min: NaN,
+          max: NaN,
+          fit,
+        }}
+        id="left"
+        title="y-domain axis"
+        position={Position.Left}
+      />
       <BarSeries
         id="bars"
         xScaleType={ScaleType.Linear}

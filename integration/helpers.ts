@@ -15,7 +15,7 @@ import { getStorybook, configure } from '@storybook/react';
 
 import { Rotation } from '../packages/charts/src';
 import { ThemeId } from '../storybook/use_base_theme';
-// @ts-ignore
+// @ts-ignore - no type declarations
 import { isLegacyVRTServer } from './config';
 
 export type StoryInfo = [string, string, number];
