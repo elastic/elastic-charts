@@ -125,6 +125,8 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       # -----------------------------------
 
+      - name: Run global typecheck
+        run: yarn typecheck:all
       - name: Run API-Extractor
         run: yarn api:check
       - name: Handle API-Extractor failure
