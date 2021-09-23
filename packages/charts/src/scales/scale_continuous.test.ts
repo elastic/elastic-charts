@@ -498,7 +498,7 @@ describe('Scale Continuous', () => {
     });
 
     it('should throw for NaN values', () => {
-      // @ts-ignore
+      // @ts-ignore - d3Scale method
       jest.spyOn(scale, 'd3Scale').mockImplementationOnce(() => NaN);
       expect(() => scale.scaleOrThrow(1)).toThrow();
     });
