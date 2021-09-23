@@ -13,10 +13,10 @@ import { Point } from '../../../../../utils/point';
 import { renderRect } from '../primitives/rect';
 
 const DEFAULT_DEBUG_FILL: Fill = {
-  color: { r: 238, g: 130, b: 238, opacity: 0.2 },
+  color: [238, 130, 238, 0.2], // violet
 };
 const DEFAULT_DEBUG_STROKE: Stroke = {
-  color: { r: 0, g: 0, b: 0, opacity: 0.2 },
+  color: [0, 0, 0, 0.2],
   width: 1,
 };
 
@@ -40,7 +40,7 @@ export function renderDebugRectCenterRotated(
   ctx: CanvasRenderingContext2D,
   center: Point,
   rect: Rect,
-  fill = DEFAULT_DEBUG_FILL, // violet
+  fill = DEFAULT_DEBUG_FILL,
   stroke = DEFAULT_DEBUG_STROKE,
   rotation: number = 0,
 ) {

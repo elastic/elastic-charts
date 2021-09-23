@@ -6,20 +6,21 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../common/colors';
 import { Margins } from '../dimensions';
 import { SharedGeometryStateStyle } from './theme';
 
-/** @public */
-export const DEFAULT_MISSING_COLOR = 'red';
+/** @internal */
+export const DEFAULT_MISSING_COLOR = Colors.Red.keyword;
 
-/** @public */
+/** @internal */
 export const DEFAULT_CHART_PADDING: Margins = {
   left: 0,
   right: 0,
   top: 0,
   bottom: 0,
 };
-/** @public */
+/** @internal */
 export const DEFAULT_CHART_MARGINS: Margins = {
   left: 10,
   right: 10,
@@ -27,7 +28,7 @@ export const DEFAULT_CHART_MARGINS: Margins = {
   bottom: 10,
 };
 
-/** @public */
+/** @internal */
 export const DEFAULT_GEOMETRY_STYLES: SharedGeometryStateStyle = {
   default: {
     opacity: 1,

@@ -29,7 +29,7 @@ export const Y0_ACCESSOR_POSTFIX = ' - lower';
 export const Y1_ACCESSOR_POSTFIX = ' - upper';
 
 /** @internal */
-export function getHighligthedValues(
+export function getHighlightedValues(
   tooltipValues: TooltipValue[],
   defaultValue?: string,
 ): Map<SeriesKey, LegendItemExtraValues> {
@@ -46,7 +46,7 @@ export function getHighligthedValues(
       }
     }
 
-    if (valueAccessor != null && (valueAccessor === BandedAccessorType.Y0 || valueAccessor === BandedAccessorType.Y1)) {
+    if (valueAccessor === BandedAccessorType.Y0 || valueAccessor === BandedAccessorType.Y1) {
       current.set(valueAccessor, seriesValue);
     }
     seriesTooltipValues.set(seriesIdentifier.key, current);

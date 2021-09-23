@@ -9,7 +9,6 @@
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { identity } from '../../../utils/common';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
 
 const SPEC_ID = 'spec_1';
@@ -60,7 +59,7 @@ describe('Rendering bars', () => {
             displayValueSettings: {
               showValueLabel: true,
               isAlternatingValueLabel: true,
-              valueFormatter: identity,
+              valueFormatter: (d) => d,
             },
           }),
           MockGlobalSpec.settingsNoMargins({ xDomain: [0, 1], theme: { colors: { vizColors: ['red'] } } }),
@@ -90,7 +89,7 @@ describe('Rendering bars', () => {
             displayValueSettings: {
               showValueLabel: false,
               isAlternatingValueLabel: true,
-              valueFormatter: identity,
+              valueFormatter: (d) => d,
             },
           }),
           MockGlobalSpec.settingsNoMargins({ xDomain: [0, 1], theme: { colors: { vizColors: ['red'] } } }),
@@ -120,7 +119,7 @@ describe('Rendering bars', () => {
             displayValueSettings: {
               showValueLabel: true,
               isAlternatingValueLabel: true,
-              valueFormatter: identity,
+              valueFormatter: (d) => d,
             },
           }),
           MockGlobalSpec.settingsNoMargins({ xDomain: [0, 1], theme: { colors: { vizColors: ['red'] } } }),
@@ -152,7 +151,7 @@ describe('Rendering bars', () => {
             displayValueSettings: {
               showValueLabel: true,
               isValueContainedInElement: true,
-              valueFormatter: identity,
+              valueFormatter: (d) => d,
             },
           }),
           MockGlobalSpec.settingsNoMargins({ xDomain: [0, 1], theme: { colors: { vizColors: ['red'] } } }),

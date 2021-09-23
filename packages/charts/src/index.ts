@@ -18,7 +18,7 @@ export { DebugState } from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';
 export { ContinuousDomain, OrdinalDomain } from './utils/domain';
-export { SimplePadding, Padding } from './utils/dimensions';
+export { SimplePadding, Padding, PerSideDistance, Margins } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
 export { SeriesIdentifier, SeriesKey } from './common/series_id';
 export { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
@@ -81,7 +81,6 @@ export {
   IsAny,
   IsUnknown,
   ColorVariant,
-  Color,
   LabelAccessor,
   ShowAccessor,
   ValueAccessor,
@@ -95,3 +94,4 @@ export { LegendStrategy } from './chart_types/partition_chart/layout/utils/highl
 export { Pixels, Ratio } from './common/geometry';
 export { AdditiveNumber } from './utils/accessor';
 export { FontStyle, FONT_STYLES } from './common/text_utils';
+export { Color } from './common/colors';

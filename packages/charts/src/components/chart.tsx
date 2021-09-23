@@ -12,6 +12,7 @@ import { Provider } from 'react-redux';
 import { createStore, Store, Unsubscribe, StoreEnhancer, applyMiddleware, Middleware } from 'redux';
 import uuid from 'uuid';
 
+import { Colors } from '../common/colors';
 import { LegendPositionConfig, PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
 import { onExternalPointerEvent } from '../state/actions/events';
@@ -118,7 +119,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   getPNGSnapshot(
     // eslint-disable-next-line unicorn/no-object-as-default-parameter
     options = {
-      backgroundColor: 'transparent',
+      backgroundColor: Colors.Transparent.keyword,
       pixelRatio: 2,
     },
   ): {

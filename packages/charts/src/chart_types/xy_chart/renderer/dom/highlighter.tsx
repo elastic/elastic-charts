@@ -9,7 +9,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { RGBtoString } from '../../../../common/color_library_wrappers';
+import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { InitStatus, getInternalIsInitializedSelector } from '../../../../state/selectors/get_internal_is_intialized';
@@ -83,7 +83,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
               >
                 <path
                   d={d}
-                  stroke={RGBtoString(color)}
+                  stroke={RGBATupleToString(color)}
                   strokeWidth={4}
                   transform={`translate(${x}, ${y}) rotate(${rotate || 0})`}
                   fill="transparent"

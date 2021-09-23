@@ -10,6 +10,7 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { Color, Colors } from '../../../../common/colors';
 import { ScreenReaderSummary, ScreenReaderPartitionTable } from '../../../../components/accessibility';
 import { clearCanvas } from '../../../../renderers/canvas';
 import { SettingsSpec } from '../../../../specs/settings';
@@ -21,6 +22,7 @@ import {
   getA11ySettingsSelector,
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -57,6 +59,7 @@ interface ReactiveChartStateProps {
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
   debug: SettingsSpec['debug'];
+  background: Color;
 }
 
 interface ReactiveChartDispatchProps {
@@ -174,7 +177,7 @@ class PartitionComponent extends React.Component<PartitionProps> {
   private drawCanvas() {
     if (this.ctx) {
       const { ctx, devicePixelRatio, props } = this;
-      clearCanvas(ctx);
+      clearCanvas(ctx, props.background);
       props.multiGeometries.forEach((geometries, geometryIndex) => {
         const renderer = isSimpleLinear(geometries.config, geometries.layers)
           ? renderLinearPartitionCanvas2d
@@ -208,6 +211,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   debug: false,
+  background: Colors.Transparent.keyword,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -223,6 +227,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometriesFoci: partitionDrilldownFocus(state),
     a11ySettings: getA11ySettingsSelector(state),
     debug: getSettingsSpecSelector(state).debug,
+    background: getChartThemeSelector(state).background.color,
   };
 };
 

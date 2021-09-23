@@ -65,7 +65,6 @@ export const Example = () => (
         fontFamily: 'Arial',
         fillLabel: {
           fontStyle: 'italic',
-          textInvertible: true,
           fontWeight: 900,
           valueFont: {
             fontFamily: 'Menlo',

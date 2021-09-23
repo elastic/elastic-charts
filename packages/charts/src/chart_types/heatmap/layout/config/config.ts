@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../../../common/colors';
 import { Config } from '../types/config_types';
 
 /** @internal */
@@ -19,7 +20,7 @@ export const config: Config = {
 
   brushArea: {
     visible: true,
-    fill: 'black', // black === transparent
+    fill: Colors.Black.keyword, // black === transparent
     stroke: '#69707D', // euiColorDarkShade,
     strokeWidth: 2,
   },
@@ -41,10 +42,9 @@ export const config: Config = {
     fontSize: 12,
     fontFamily: 'Sans-Serif',
     fontStyle: 'normal',
-    textColor: 'black',
+    textColor: Colors.Black.keyword,
     fontVariant: 'normal',
     fontWeight: 'normal',
-    textOpacity: 1,
     align: 'center' as CanvasTextAlign,
     baseline: 'verticalAlign' as CanvasTextBaseline,
     padding: 6,
@@ -57,10 +57,9 @@ export const config: Config = {
     fontSize: 12,
     fontFamily: 'Sans-Serif',
     fontStyle: 'normal',
-    textColor: 'black',
+    textColor: Colors.Black.keyword,
     fontVariant: 'normal',
     fontWeight: 'normal',
-    textOpacity: 1,
     baseline: 'verticalAlign' as CanvasTextBaseline,
     padding: 5,
     formatter: String,
@@ -90,10 +89,9 @@ export const config: Config = {
       maxFontSize: 12,
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',
-      textColor: 'black',
+      textColor: Colors.Black.keyword,
       fontVariant: 'normal',
       fontWeight: 'normal',
-      textOpacity: 1,
       useGlobalMinFontSize: true,
     },
     border: {

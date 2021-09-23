@@ -9,7 +9,6 @@
 import {
   clamp,
   compareByValueAsc,
-  identity,
   hasPartialObjectToMerge,
   mergePartial,
   RecursivePartial,
@@ -33,16 +32,6 @@ describe('common utilities', () => {
 
     expect(clamp(0.1, 0, 1)).toBe(0.1);
     expect(clamp(0.8, 0, 1)).toBe(0.8);
-  });
-  test('identity', () => {
-    expect(identity('text')).toBe('text');
-    expect(identity(2)).toBe(2);
-    const a = {};
-    expect(identity(a)).toBe(a);
-    expect(identity(null)).toBe(null);
-    expect(identity(undefined)).toBeUndefined();
-    const fn = () => ({});
-    expect(identity(fn)).toBe(fn);
   });
 
   test('compareByValueAsc', () => {

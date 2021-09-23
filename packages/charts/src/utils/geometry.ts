@@ -10,8 +10,8 @@ import { $Values } from 'utility-types';
 
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { LabelOverflowConstraint } from '../chart_types/xy_chart/utils/specs';
+import { Color } from '../common/colors';
 import { Fill, Stroke } from '../geoms/types';
-import { Color } from './common';
 import { Dimensions } from './dimensions';
 import { BarSeriesStyle, PointStyle, AreaStyle, LineStyle, PointShape } from './themes/theme';
 

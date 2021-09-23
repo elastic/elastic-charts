@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../common/colors';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
 import { SortSeriesByConfig } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
-import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
+import { mergePartial, Rotation, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import {
@@ -278,7 +279,7 @@ export function computeXScaleOffset(
 function renderGeometries(
   dataSeries: DataSeries[],
   xDomain: XDomain,
-  yScales: Map<GroupId, Scale<number | string>>,
+  yScales: Map<GroupId, Scale<number>>,
   smVScale: Scale<number | string>,
   smHScale: Scale<number | string>,
   barIndexOrderPerPanel: Record<string, string[]>,
@@ -381,7 +382,7 @@ function renderGeometries(
         shift,
         ds,
         xScale,
-        yScale as Scale<number>,
+        yScale,
         panel,
         chartRotation,
         spec.minBarHeight ?? 0,
@@ -407,7 +408,7 @@ function renderGeometries(
         (xScale.bandwidth * bubbleShift) / 2,
         ds,
         xScale,
-        yScale as Scale<number>,
+        yScale,
         color,
         panel,
         isBandedSpec(spec.y0Accessors),
@@ -440,7 +441,7 @@ function renderGeometries(
         (xScale.bandwidth * lineShift) / 2,
         ds,
         xScale,
-        yScale as Scale<number>,
+        yScale,
         panel,
         color,
         spec.curve || CurveType.LINEAR,
@@ -473,7 +474,7 @@ function renderGeometries(
         (xScale.bandwidth * areaShift) / 2,
         ds,
         xScale,
-        yScale as Scale<number>,
+        yScale,
         panel,
         color,
         spec.curve || CurveType.LINEAR,

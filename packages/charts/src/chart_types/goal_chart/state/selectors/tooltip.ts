@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../../../common/colors';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { BandViewModel } from '../../layout/types/viewmodel_types';
@@ -20,7 +21,7 @@ const EMPTY_TOOLTIP = Object.freeze({
 const getBandColor = (value: number, bands: BandViewModel[]) =>
   bands.find(({ value: v }) => {
     return v >= value;
-  })?.fillColor ?? 'white';
+  })?.fillColor ?? Colors.White.keyword;
 
 /** @internal */
 export const getTooltipInfoSelector = createCustomCachedSelector(

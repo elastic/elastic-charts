@@ -28,7 +28,6 @@ import {
         {
             groupByRollup: (d) => d.sitc1,
             nodeLabel: (d) => productLookup[d].name,
-            fillLabel: { textInvertible: true },
             shape: {
             fillColor: indexInterpolatedFillColor(interpolatorCET2s),
             },
@@ -52,7 +51,6 @@ The code sample can be found within the details below.
         {
             groupByRollup: (d) => d.sitc1,
             nodeLabel: (d) => productLookup[d].name,
-            fillLabel: { textInvertible: true },
             shape: {
             fillColor: indexInterpolatedFillColor(interpolatorCET2s),
             },
@@ -76,6 +74,6 @@ These props are for the `<Partition/>` component as seen in the code snippet abo
 | layers | Array |  |  |
 | groupByRollup| function | | |
 | nodeLabel | function | | |
-| fillLabel | object { textInvertible : boolean} | | |
+| fillLabel | object | | |
 | shape | object { fillColor: indexInterpolatedFillColor(interpolatorCET2s) }
 

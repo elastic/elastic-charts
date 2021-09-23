@@ -10,7 +10,8 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 
 import { renderRect } from '../../chart_types/xy_chart/renderer/canvas/primitives/rect';
-import { RgbObject, stringToRGB } from '../../common/color_library_wrappers';
+import { RgbaTuple } from '../../common/color_library_wrappers';
+import { Colors } from '../../common/colors';
 import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
 import { GlobalChartState } from '../../state/chart_state';
 import { getInternalBrushAreaSelector } from '../../state/selectors/get_internal_brush_area';
@@ -20,10 +21,6 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../state/select
 import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get_internal_main_projection_area';
 import { getInternalProjectionContainerAreaSelector } from '../../state/selectors/get_internal_projection_container_area';
 import { Dimensions } from '../../utils/dimensions';
-
-interface OwnProps {
-  fillColor?: RgbObject;
-}
 
 interface StateProps {
   initialized: boolean;
@@ -35,16 +32,10 @@ interface StateProps {
   zIndex: number;
 }
 
-const DEFAULT_FILL_COLOR: RgbObject = {
-  r: 128,
-  g: 128,
-  b: 128,
-  opacity: 0.6,
-};
+// todo move this to theme
+const DEFAULT_FILL_COLOR: RgbaTuple = [128, 128, 128, 0.6];
 
-type Props = OwnProps & StateProps;
-
-class BrushToolComponent extends React.Component<Props> {
+class BrushToolComponent extends React.Component<StateProps> {
   static displayName = 'BrushTool';
 
   private readonly devicePixelRatio: number;
@@ -53,7 +44,7 @@ class BrushToolComponent extends React.Component<Props> {
 
   private canvasRef: RefObject<HTMLCanvasElement>;
 
-  constructor(props: Readonly<Props>) {
+  constructor(props: Readonly<StateProps>) {
     super(props);
     this.ctx = null;
     this.devicePixelRatio = window.devicePixelRatio;
@@ -101,7 +92,8 @@ class BrushToolComponent extends React.Component<Props> {
   }
 
   private drawCanvas = () => {
-    const { brushEvent, mainProjectionArea, fillColor } = this.props;
+    const { brushEvent, mainProjectionArea } = this.props;
+
     const { ctx } = this;
     if (!ctx || !brushEvent) {
       return;
@@ -118,13 +110,13 @@ class BrushToolComponent extends React.Component<Props> {
           height: mainProjectionArea.height,
         },
         () => {
-          clearCanvas(ctx);
+          clearCanvas(ctx, Colors.Transparent.keyword);
           ctx.translate(mainProjectionArea.left, mainProjectionArea.top);
           renderRect(
             ctx,
             { x: left, y: top, width, height },
-            { color: fillColor ?? DEFAULT_FILL_COLOR },
-            { width: 0, color: stringToRGB('transparent') },
+            { color: DEFAULT_FILL_COLOR },
+            { width: 0, color: Colors.Transparent.rgba },
           );
         },
       );

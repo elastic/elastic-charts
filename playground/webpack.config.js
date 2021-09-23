@@ -6,12 +6,16 @@
  * Side Public License, v 1.
  */
 
+const path = require('path');
+
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+
 module.exports = {
   entry: './index.tsx',
   mode: 'development',
   output: {
     filename: 'bundle.js',
-    path: __dirname,
   },
   module: {
     rules: [
@@ -55,7 +59,20 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      hash: true,
+      template: './index.html',
+      filename: 'index.html',
+      favicon: '../public/favicon.ico',
+    }),
+    new webpack.EnvironmentPlugin({ RNG_SEED: null }),
+  ],
   resolve: {
+    alias: {
+      '@elastic/charts$': path.resolve(__dirname, '../packages/charts/src'),
+      '@elastic/charts/': path.resolve(__dirname, '../packages/charts/'),
+    },
     extensions: ['.tsx', '.ts', '.js'],
   },
 };

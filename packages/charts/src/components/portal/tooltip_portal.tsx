@@ -7,12 +7,12 @@
  */
 
 import { createPopper, Instance } from '@popperjs/core';
-import { useRef, useEffect, useCallback, ReactNode, useMemo } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-import { mergePartial, isDefined } from '../../utils/common';
+import { isDefined, mergePartial } from '../../utils/common';
 import { Padding } from '../../utils/dimensions';
-import { TooltipPortalSettings, PortalAnchorRef } from './types';
+import { PortalAnchorRef, TooltipPortalSettings } from './types';
 import { DEFAULT_POPPER_SETTINGS, getOrCreateNode, isHTMLElement } from './utils';
 
 /**
@@ -94,16 +94,13 @@ const TooltipPortalComponent = ({
    * Popper instance used to manage position of tooltip.
    */
   const popper = useRef<Instance | null>(null);
-
   const popperSettings = useMemo(
+    // @ts-ignore
     () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
-
     [settings],
   );
-
   const anchorPosition = (anchor as PortalAnchorRef)?.position;
   const position = useMemo(() => (isHTMLElement(anchor) ? null : anchorPosition), [anchor, anchorPosition]);
-
   const destroyPopper = useCallback(() => {
     if (popper.current) {
       popper.current.destroy();

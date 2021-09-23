@@ -53,7 +53,6 @@ export function renderTickLabel(
       fontVariant: 'normal',
       fontWeight: 'normal',
       textColor: labelStyle.fill,
-      textOpacity: 1,
       fontSize: labelStyle.fontSize,
       align: tickLabelProps.horizontalAlign,
       baseline: tickLabelProps.verticalAlign,

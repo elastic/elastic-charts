@@ -7,11 +7,11 @@
  */
 
 import { ChartType } from '../../..';
+import { Color, Colors } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
 import { Box } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { HeatmapBrushEvent } from '../../../../specs/settings';
-import { Color } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { config } from '../config/config';
@@ -115,7 +115,7 @@ export const nullHeatmapViewModel: HeatmapViewModel = {
   gridLines: {
     x: [],
     y: [],
-    stroke: { width: 0, color: { r: 0, g: 0, b: 0, opacity: 0 } },
+    stroke: { width: 0, color: Colors.Transparent.rgba },
   },
   cells: [],
   xValues: [],

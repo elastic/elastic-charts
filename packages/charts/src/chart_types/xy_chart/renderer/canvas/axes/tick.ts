@@ -7,7 +7,7 @@
  */
 
 import { AxisProps } from '.';
-import { stringToRGB } from '../../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import { Position } from '../../../../../utils/common';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { AxisTick } from '../../../utils/axis_utils';
@@ -30,5 +30,5 @@ export function renderTick(
         y2: tickPosition,
         ...(axisPosition === Position.Left ? { x1: width, x2: width - tickLine.size } : { x1: 0, x2: tickLine.size }),
       };
-  renderMultiLine(ctx, [xy], { color: stringToRGB(tickLine.stroke), width: tickLine.strokeWidth });
+  renderMultiLine(ctx, [xy], { color: colorToRgba(tickLine.stroke), width: tickLine.strokeWidth });
 }

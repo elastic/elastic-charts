@@ -42,6 +42,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Linear),
       nice: getXNiceFromSpec(),
       isBandScale: true,
+      timeZone: 'utc',
     });
   });
 
@@ -57,6 +58,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Ordinal),
       nice: getXNiceFromSpec(),
       isBandScale: true,
+      timeZone: 'utc',
     });
   });
 
@@ -72,6 +74,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Linear),
       nice: getXNiceFromSpec(),
       isBandScale: false,
+      timeZone: 'utc',
     });
   });
   test('Should return correct scale type with single line (time)', () => {
@@ -149,6 +152,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Ordinal),
       nice: getXNiceFromSpec(),
       isBandScale: false,
+      timeZone: 'utc',
     });
   });
   test('Should return correct scale type with multi bar, area with different scale types (linear, ordinal)', () => {
@@ -167,6 +171,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Ordinal),
       nice: getXNiceFromSpec(),
       isBandScale: true,
+      timeZone: 'utc',
     });
   });
   test('Should return correct scale type with multi bar, area with same scale types (linear, linear)', () => {
@@ -186,6 +191,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Linear),
       nice: getXNiceFromSpec(),
       isBandScale: true,
+      timeZone: 'utc+3',
     });
   });
 
@@ -423,6 +429,7 @@ describe('X Domain', () => {
     const specDataSeries = [ds1, ds2];
     const customDomain = {
       min: 0,
+      max: NaN,
     };
 
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
@@ -655,12 +662,12 @@ describe('X Domain', () => {
       xValues,
     ).domain;
     expect(domain).toEqual([1, 5]);
-    expect(Logger.warn).toBeCalledWith('custom xDomain is invalid, min is greater than max. Custom domain is ignored.');
+    expect(Logger.warn).toBeCalledWith('Custom xDomain is invalid: min is greater than max. Custom domain is ignored.');
   });
 
   test('should account for custom domain when merging a linear domain: lower bounded domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
-    const xDomain = { min: 0 };
+    const xDomain = { min: 0, max: NaN };
     const specs = [MockSeriesSpec.line({ xScaleType: ScaleType.Linear })];
 
     const mergedDomain = mergeXDomain(
@@ -669,20 +676,20 @@ describe('X Domain', () => {
     );
     expect(mergedDomain.domain).toEqual([0, 5]);
 
-    const invalidXDomain = { min: 10 };
+    const invalidXDomain = { min: 10, max: NaN };
     const { domain } = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
       xValues,
     );
     expect(domain).toEqual([1, 5]);
     expect(Logger.warn).toBeCalledWith(
-      'custom xDomain is invalid, custom min is greater than computed max. Custom domain is ignored.',
+      'Custom xDomain is invalid: custom min is greater than computed max. Custom domain is ignored.',
     );
   });
 
   test('should account for custom domain when merging a linear domain: upper bounded domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
-    const xDomain = { max: 3 };
+    const xDomain = { min: NaN, max: 3 };
     const specs = [MockSeriesSpec.line({ xScaleType: ScaleType.Linear })];
 
     const mergedDomain = mergeXDomain(
@@ -691,14 +698,14 @@ describe('X Domain', () => {
     );
     expect(mergedDomain.domain).toEqual([1, 3]);
 
-    const invalidXDomain = { max: -1 };
+    const invalidXDomain = { min: NaN, max: -1 };
     const { domain } = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
       xValues,
     );
     expect(domain).toEqual([1, 5]);
     expect(Logger.warn).toBeCalledWith(
-      'custom xDomain is invalid, computed min is greater than custom max. Custom domain is ignored.',
+      'Custom xDomain is invalid: computed min is greater than custom max. Custom domain is ignored.',
     );
   });
 
@@ -728,7 +735,7 @@ describe('X Domain', () => {
     const specs = [MockSeriesSpec.bar({ xScaleType: ScaleType.Linear })];
 
     test('with valid minInterval', () => {
-      const xDomain = { minInterval: 0.5 };
+      const xDomain = { minInterval: 0.5, min: NaN, max: NaN };
       const mergedDomain = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain })).x,
         xValues,
@@ -737,7 +744,7 @@ describe('X Domain', () => {
     });
 
     test('with valid minInterval greater than computed minInterval for single datum set', () => {
-      const xDomain = { minInterval: 10 };
+      const xDomain = { minInterval: 10, min: NaN, max: NaN };
       const mergedDomain = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain })).x,
         new Set([5]),
@@ -746,26 +753,26 @@ describe('X Domain', () => {
     });
 
     test('with invalid minInterval greater than computed minInterval for multi data set', () => {
-      const invalidXDomain = { minInterval: 10 };
+      const invalidXDomain = { minInterval: 10, min: NaN, max: NaN };
       const { minInterval } = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
         xValues,
       );
       expect(minInterval).toEqual(1);
       const expectedWarning =
-        'custom xDomain is invalid, custom minInterval is greater than computed minInterval. Using computed minInterval.';
+        'Custom xDomain is invalid: custom minInterval is greater than computed minInterval. Using computed minInterval.';
       expect(Logger.warn).toBeCalledWith(expectedWarning);
     });
 
     test('with invalid minInterval less than 0', () => {
-      const invalidXDomain = { minInterval: -1 };
+      const invalidXDomain = { minInterval: -1, min: NaN, max: NaN };
       const { minInterval } = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
         xValues,
       );
       expect(minInterval).toEqual(1);
       const expectedWarning =
-        'custom xDomain is invalid, custom minInterval is less than 0. Using computed minInterval.';
+        'Custom xDomain is invalid: custom minInterval is less than 0. Using computed minInterval.';
       expect(Logger.warn).toBeCalledWith(expectedWarning);
     });
   });
