@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import 'jest-extended'; // https://github.com/jest-community/jest-extended
-
+// Super flaky not sure why
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
@@ -56,3 +55,5 @@ declare global {
     }
   }
 }
+
+export {}; // ensure this is parsed as a module.

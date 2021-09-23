@@ -7,10 +7,8 @@
  */
 
 import { DateTime } from 'luxon';
-// @ts-ignore
 import moment from 'moment-timezone';
 
-import 'jest-extended';
 import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store/store';

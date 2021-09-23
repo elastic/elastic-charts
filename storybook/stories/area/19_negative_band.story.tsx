@@ -38,7 +38,11 @@ export const Example = () => {
         showLegend
         theme={{ areaSeriesStyle: { point: { visible: true } }, lineSeriesStyle: { point: { visible: false } } }}
         baseTheme={useBaseTheme()}
-        xDomain={{ minInterval: 1 }}
+        xDomain={{
+          min: NaN,
+          max: NaN,
+          minInterval: 1,
+        }}
       />
       <Axis id="bottom" title="timestamp" position={Position.Bottom} showOverlappingTicks />
       <Axis id="left" title="metric" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />

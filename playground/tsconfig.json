@@ -5,6 +5,6 @@
     "target": "es5",
     "resolveJsonModule": true
   },
-  "include": ["../packages/charts/src/**/*", "./**/*", "../**/*.d.ts", "../scripts/custom_matchers.ts"],
+  "include": ["../packages/charts/src/**/*", "./**/*", "../scripts/custom_matchers.mock.ts"],
   "exclude": ["../**/*.test.*"]
 }

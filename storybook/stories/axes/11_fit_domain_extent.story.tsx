@@ -52,7 +52,14 @@ export const Example = () => {
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis
-        domain={{ fit, padding, paddingUnit, constrainPadding }}
+        domain={{
+          min: NaN,
+          max: NaN,
+          fit,
+          padding,
+          paddingUnit,
+          constrainPadding,
+        }}
         id="left"
         title="Value"
         position={Position.Left}

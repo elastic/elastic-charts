@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-// @ts-ignore
+// @ts-ignore - remove in workcloud refactor
 import d3TagCloud from 'd3-cloud';
 import React from 'react';
 import { connect } from 'react-redux';

@@ -77,14 +77,14 @@ describe('common utilities', () => {
     });
 
     it('should return second partial if partial is undefined', () => {
-      // @ts-ignore
+      // @ts-ignore - nesting limitation
       const result = getPartialValue(base, undefined, [undefined, partial]);
 
       expect(result).toBe(partial);
     });
 
     it('should return base if no partials are defined', () => {
-      // @ts-ignore
+      // @ts-ignore - nesting limitation
       const result = getPartialValue(base, undefined, [undefined, undefined]);
 
       expect(result).toBe(base);

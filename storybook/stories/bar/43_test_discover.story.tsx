@@ -42,6 +42,8 @@ export const Example = () => {
   const formatter = timeFormatter(niceTimeFormatByDay(1));
 
   const xDomain = {
+    min: NaN,
+    max: NaN,
     minInterval: 30000,
   };
 

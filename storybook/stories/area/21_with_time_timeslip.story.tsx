@@ -9,7 +9,7 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, AxisSpec } from '@elastic/charts';
 import { mergePartial } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -32,7 +32,7 @@ const tooltipDateFormatter = (d: any) =>
     minute: 'numeric',
   }).format(d);
 
-const xAxisStyle = {
+const xAxisStyle: AxisSpec['style'] = {
   tickLine: { size: 0.0001, padding: -6, ...gridStyle },
   axisLine: { stroke: 'magenta', strokeWidth: 10, visible: false },
   tickLabel: {
@@ -77,8 +77,6 @@ export const Example = () => {
         gridLine={gridStyle}
         style={mergePartial(xAxisStyle, {
           axisTitle: { visible: true, fontFamily, fontSize: 24, fill: 'grey' },
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           tickLabel: horizontalAxisTitle
             ? {
                 fill: 'rgb(64,64,64)',

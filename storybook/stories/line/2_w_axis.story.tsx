@@ -26,7 +26,13 @@ const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 
 export const Example = () => (
   <Chart>
-    <Settings xDomain={{ max: 2 }} baseTheme={useBaseTheme()} />
+    <Settings
+      xDomain={{
+        min: NaN,
+        max: 2,
+      }}
+      baseTheme={useBaseTheme()}
+    />
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis
       id="left"
