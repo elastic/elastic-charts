@@ -51,17 +51,12 @@ export const Example = () => {
     }
     // will save as chart.png
     const fileName = 'chart.png';
-    switch (snapshot.browser) {
-      case 'IE11':
-        return navigator.msSaveBlob(snapshot.blobOrDataUrl, fileName);
-      default:
-        const link = document.createElement('a');
-        link.download = fileName;
-        link.href = snapshot.blobOrDataUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
+    const link = document.createElement('a');
+    link.download = fileName;
+    link.href = snapshot.blobOrDataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
   button('Export PNG', handler);
   const selectedChart = select('chart type', [ChartType.XYAxis, ChartType.Partition, ChartType.Goal], ChartType.XYAxis);
@@ -111,7 +106,15 @@ function renderXYAxisChart() {
         position={Position.Bottom}
         tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
       />
-      <Axis id="count" domain={{ fit: true }} position={Position.Left} />
+      <Axis
+        id="count"
+        domain={{
+          min: NaN,
+          max: NaN,
+          fit: true,
+        }}
+        position={Position.Left}
+      />
 
       <BarSeries
         id="series bars chart"

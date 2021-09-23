@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-// @ts-ignore
+// @ts-ignore - no type declarations
 import { appendIconComponentCache } from '@elastic/eui/es/components/icon/icon';
 
 /**

@@ -45,14 +45,14 @@ export function text(name: string, dftValue: string, groupId?: string) {
 
 export function array(name: string, dftValues: unknown[], options: any, groupId?: string) {
   const params = getParams();
-  const values = [];
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  for (const [key, value] of params) {
+  const values: string[] = [];
+
+  params.forEach((value, key) => {
     if (key.startsWith(`${getKnobKey(name, groupId)}[`)) {
       values.push(value);
     }
-  }
+  });
+
   if (values.length === 0) {
     return dftValues;
   }

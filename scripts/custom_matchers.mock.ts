@@ -7,33 +7,6 @@
  */
 
 import { matcherErrorMessage } from 'jest-matcher-utils';
-import 'jest-extended'; // require to load jest-extended matchers
-
-// ensure this is parsed as a module.
-export {};
-
-/**
- * Final Matcher type with `this` and `received` args removed from jest matcher function
- */
-type MatcherParameters<T extends (this: any, received: any, ...args: any[]) => any> = T extends (
-  this: any,
-  received: any,
-  ...args: infer P
-) => any
-  ? P
-  : never;
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R> {
-      /**
-       * Expect array to be filled with value, and optionally length
-       */
-      toEqualArrayOf(...args: MatcherParameters<typeof toEqualArrayOf>): R;
-    }
-  }
-}
 
 /**
  * Expect array to be filled with value, and optionally length

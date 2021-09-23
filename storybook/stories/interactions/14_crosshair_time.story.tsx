@@ -65,7 +65,11 @@ export const Example = () => {
       <Axis
         id="left2"
         title="Left axis"
-        domain={{ fit: hideBars }}
+        domain={{
+          min: NaN,
+          max: NaN,
+          fit: hideBars,
+        }}
         position={Position.Left}
         tickFormat={[0, 180].includes(chartRotation) ? numberFormatter : formatter}
       />

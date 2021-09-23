@@ -95,7 +95,7 @@ const TooltipPortalComponent = ({
    */
   const popper = useRef<Instance | null>(null);
   const popperSettings = useMemo(
-    // @ts-ignore
+    // @ts-ignore - nesting limitation
     () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
     [settings],
   );

@@ -49,6 +49,8 @@ export const Example = () => {
   };
 
   const xDomain = {
+    min: NaN,
+    max: NaN,
     minInterval: 1,
   };
 

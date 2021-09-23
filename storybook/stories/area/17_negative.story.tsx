@@ -37,7 +37,11 @@ export const Example = () => {
         title="negative metric"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
-        domain={{ logMinLimit: number('Y log limit', 1, { min: 0 }) }}
+        domain={{
+          min: NaN,
+          max: NaN,
+          logMinLimit: number('Y log limit', 1, { min: 0 }),
+        }}
       />
 
       <AreaSeries
