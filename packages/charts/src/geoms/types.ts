@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RgbObject } from '../common/color_library_wrappers';
-import { Radian } from '../common/geometry';
+import { RgbaTuple } from '../common/color_library_wrappers';
 import { TexturedStyles } from '../utils/themes/theme';
 
 /** @internal */
@@ -33,15 +32,6 @@ export interface Rect {
 }
 
 /** @internal */
-export interface Arc {
-  x: number;
-  y: number;
-  radius: number;
-  startAngle: Radian;
-  endAngle: Radian;
-}
-
-/** @internal */
 export interface Circle {
   x: number;
   y: number;
@@ -54,7 +44,7 @@ export interface Circle {
  */
 export interface Texture extends Pick<TexturedStyles, 'rotation' | 'offset'> {
   /**
-   * patern to apply to canvas fill
+   * pattern to apply to canvas fill
    */
   pattern: CanvasPattern;
 }
@@ -67,7 +57,7 @@ export interface Fill {
   /**
    * fill color in rgba
    */
-  color: RgbObject;
+  color: RgbaTuple;
   texture?: Texture;
 }
 
@@ -79,7 +69,7 @@ export interface Stroke {
   /**
    * stroke rgba
    */
-  color: RgbObject;
+  color: RgbaTuple;
   /**
    * stroke width
    */

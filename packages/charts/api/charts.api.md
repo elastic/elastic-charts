@@ -410,7 +410,7 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     } | null;
     // (undocumented)
     render(): JSX.Element;
-    }
+}
 
 // @public (undocumented)
 export type ChartSize = number | string | ChartSizeArray | ChartSizeObject;
@@ -445,7 +445,7 @@ export const CHILDREN_KEY = "children";
 // @public (undocumented)
 export function childrenAccessor(n: ArrayEntry): HierarchyOfArrays;
 
-// @public (undocumented)
+// @public
 export type Color = string;
 
 // @alpha (undocumented)
@@ -472,13 +472,6 @@ export const ColorVariant: Readonly<{
 
 // @public (undocumented)
 export type ColorVariant = $Values<typeof ColorVariant>;
-
-// Warning: (ae-forgotten-export) The symbol "DomainBase" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "LowerBound" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "UpperBound" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export type CompleteBoundedDomain = DomainBase & LowerBound & UpperBound;
 
 // @public
 export type ComponentWithAnnotationDatum = ComponentType<LineAnnotationDatum>;
@@ -564,7 +557,7 @@ export class DataGenerator {
         y: number;
         g: string;
     }[];
-    }
+}
 
 // @public (undocumented)
 export type DataName = CategoryKey;
@@ -620,22 +613,8 @@ export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle;
 // @public (undocumented)
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle;
 
-// Warning: (ae-forgotten-export) The symbol "Margins" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export const DEFAULT_CHART_MARGINS: Margins;
-
-// @public (undocumented)
-export const DEFAULT_CHART_PADDING: Margins;
-
-// @public (undocumented)
-export const DEFAULT_GEOMETRY_STYLES: SharedGeometryStateStyle;
-
 // @public
 export const DEFAULT_GLOBAL_ID = "__global__";
-
-// @public (undocumented)
-export const DEFAULT_MISSING_COLOR = "red";
 
 // @public (undocumented)
 export const DEFAULT_SETTINGS_SPEC: SettingsSpec;
@@ -687,8 +666,6 @@ export type DisplayValueStyle = Omit<TextStyle, 'fill' | 'fontSize'> & {
         borderColor?: Color;
         borderWidth?: number;
     } | {
-        textInvertible: boolean;
-        textContrast?: number | boolean;
         textBorder?: number;
     };
     alignment?: {
@@ -708,7 +685,13 @@ export const DomainPaddingUnit: Readonly<{
 export type DomainPaddingUnit = $Values<typeof DomainPaddingUnit>;
 
 // @public (undocumented)
-export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain | UnboundedDomainWithInterval;
+export interface DomainRange {
+    // (undocumented)
+    max: number;
+    min: number;
+    // (undocumented)
+    minInterval?: number;
+}
 
 // @public (undocumented)
 export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>) => void;
@@ -1111,9 +1094,9 @@ export type HistogramModeAlignment = 'start' | 'center' | 'end';
 
 // @public (undocumented)
 export const HistogramModeAlignments: Readonly<{
-    Start: LineAlignSetting;
-    Center: LineAlignSetting;
-    End: LineAlignSetting;
+    Start: HistogramModeAlignment;
+    Center: HistogramModeAlignment;
+    End: HistogramModeAlignment;
 }>;
 
 // @public (undocumented)
@@ -1361,8 +1344,8 @@ export interface LogScaleOptions {
     logMinLimit?: number;
 }
 
-// @public (undocumented)
-export type LowerBoundedDomain = DomainBase & LowerBound;
+// @public
+export type Margins = PerSideDistance;
 
 // @public
 export type MarkBuffer = number | ((radius: number) => number);
@@ -1428,8 +1411,6 @@ export type OrdinalDomain = (number | string)[];
 // @public (undocumented)
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
 
-// Warning: (ae-forgotten-export) The symbol "PerSideDistance" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type Padding = PerSideDistance;
 
@@ -1509,6 +1490,18 @@ export const PATH_KEY = "path";
 // @public (undocumented)
 export function pathAccessor(n: ArrayEntry): LegendPath;
 
+// @public
+export interface PerSideDistance {
+    // (undocumented)
+    bottom: number;
+    // (undocumented)
+    left: number;
+    // (undocumented)
+    right: number;
+    // (undocumented)
+    top: number;
+}
+
 // @public (undocumented)
 export type Pixels = number;
 
@@ -1536,7 +1529,6 @@ export type Placement = $Values<typeof Placement>;
 
 // @public (undocumented)
 type PointerEvent_2 = PointerOverEvent | PointerOutEvent;
-
 export { PointerEvent_2 as PointerEvent }
 
 // @public (undocumented)
@@ -2259,12 +2251,6 @@ export interface UnaryAccessorFn<Return = any> {
 }
 
 // @public (undocumented)
-export type UnboundedDomainWithInterval = DomainBase;
-
-// @public (undocumented)
-export type UpperBoundedDomain = DomainBase & UpperBound;
-
-// @public (undocumented)
 export type ValueAccessor = (d: Datum) => AdditiveNumber;
 
 // @public (undocumented)
@@ -2435,14 +2421,13 @@ export interface YDomainBase {
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
-
 // Warnings were encountered during analysis:
 //
 // src/chart_types/heatmap/layout/types/config_types.ts:19:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:47:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:48:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:139:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

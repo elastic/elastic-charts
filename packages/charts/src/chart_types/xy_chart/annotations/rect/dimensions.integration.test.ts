@@ -267,7 +267,7 @@ describe('Render rect annotation within', () => {
     const heightFromStore = 200;
     const store = MockStore.default({ top: 0, left: 0, width: 20, height: heightFromStore });
     const settings = MockGlobalSpec.settingsNoMargins();
-    const yDomainFitted = MockGlobalSpec.axis({ domain: { fit: true } });
+    const yDomainFitted = MockGlobalSpec.axis({ domain: { min: NaN, max: NaN, fit: true } });
     const annotation = MockAnnotationSpec.rect({
       dataValues: [{ coordinates: { x0: 2, x1: 4 } }],
     });

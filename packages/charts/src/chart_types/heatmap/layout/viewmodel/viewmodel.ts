@@ -9,7 +9,7 @@
 import { bisectLeft } from 'd3-array';
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
-import { stringToRGB } from '../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
@@ -21,6 +21,7 @@ import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { ContinuousDomain } from '../../../../utils/domain';
+import { Logger } from '../../../../utils/logger';
 import { Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
@@ -106,7 +107,7 @@ export function shapeViewModel(
       ? new ScaleContinuous(
           {
             type: ScaleType.Time,
-            domain: xDomain.domain,
+            domain: xDomain.domain as number[],
             range: [0, chartDimensions.width],
             nice: false,
           },
@@ -183,16 +184,24 @@ export function shapeViewModel(
   const cellWidthInner = cellWidth - gridStrokeWidth * 2;
   const cellHeightInner = cellHeight - gridStrokeWidth * 2;
 
+  if (colorToRgba(theme.background.color)[3] < 1) {
+    Logger.expected(
+      `Text contrast requires a opaque background color, using white as fallback`,
+      'an opaque color',
+      theme.background.color,
+    );
+  }
+
   // compute each available cell position, color and value
   const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
     const x = xScale(String(d.x));
     const y = yScale(String(d.y))! + gridStrokeWidth;
     const yIndex = yValues.indexOf(d.y);
-    // cell background color
-    const color = colorScale(d.value);
+
     if (x === undefined || y === undefined || yIndex === -1) {
       return acc;
     }
+    const cellBackgroundColor = colorScale(d.value);
     const cellKey = getCellKey(d.x, d.y);
 
     const formattedValue = spec.valueFormatter(d.value);
@@ -217,23 +226,17 @@ export function shapeViewModel(
       height: cellHeightInner,
       datum: d,
       fill: {
-        color: stringToRGB(color),
+        color: colorToRgba(cellBackgroundColor),
       },
       stroke: {
-        color: stringToRGB(config.cell.border.stroke),
+        color: colorToRgba(config.cell.border.stroke),
         width: config.cell.border.strokeWidth,
       },
       value: d.value,
       visible: !isValueHidden(d.value, bandsToHide),
       formatted: formattedValue,
       fontSize,
-      textColor: fillTextColor(
-        config.cell.label.textColor,
-        true,
-        4.5,
-        color,
-        theme.background.color === 'transparent' ? 'rgba(255, 255, 255, 1)' : theme.background.color,
-      ),
+      textColor: fillTextColor(cellBackgroundColor, theme.background.color),
     };
     return acc;
   }, {});
@@ -398,7 +401,7 @@ export function shapeViewModel(
         x: xLines,
         y: yLines,
         stroke: {
-          color: stringToRGB(config.grid.stroke.color),
+          color: colorToRgba(config.grid.stroke.color),
           width: gridStrokeWidth,
         },
       },

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB, OpacityFn } from '../../../../../common/color_library_wrappers';
+import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import { Stroke, Fill, Rect } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
 import { GeometryStateStyle, RectStyle, RectBorderStyle } from '../../../../../utils/themes/theme';
@@ -29,19 +29,20 @@ export function buildBarStyle(
   geometryStateStyle: GeometryStateStyle,
   rect: Rect,
 ): { fill: Fill; stroke: Stroke } {
-  const fillOpacity: OpacityFn = (opacity, seriesOpacity = themeRectStyle.opacity) =>
-    opacity * seriesOpacity * geometryStateStyle.opacity;
-  const texture = getTextureStyles(ctx, imgCanvas, baseColor, fillOpacity, themeRectStyle.texture);
-  const fillColor = stringToRGB(getColorFromVariant(baseColor, themeRectStyle.fill), fillOpacity);
+  const texture = getTextureStyles(ctx, imgCanvas, baseColor, geometryStateStyle.opacity, themeRectStyle.texture);
+  const fillColor = overrideOpacity(
+    colorToRgba(getColorFromVariant(baseColor, themeRectStyle.fill)),
+    (opacity) => opacity * themeRectStyle.opacity * geometryStateStyle.opacity,
+  );
   const fill: Fill = {
     color: fillColor,
     texture,
   };
-  const defaultStrokeOpacity =
-    themeRectBorderStyle.strokeOpacity === undefined ? themeRectStyle.opacity : themeRectBorderStyle.strokeOpacity;
-  const borderStrokeOpacity = defaultStrokeOpacity * geometryStateStyle.opacity;
-  const strokeOpacity: OpacityFn = (opacity) => opacity * borderStrokeOpacity;
-  const strokeColor = stringToRGB(getColorFromVariant(baseColor, themeRectBorderStyle.stroke), strokeOpacity);
+
+  const strokeColor = overrideOpacity(
+    colorToRgba(getColorFromVariant(baseColor, themeRectBorderStyle.stroke)),
+    (opacity) => opacity * geometryStateStyle.opacity * (themeRectBorderStyle.strokeOpacity ?? themeRectStyle.opacity),
+  );
   const stroke: Stroke = {
     color: strokeColor,
     width:

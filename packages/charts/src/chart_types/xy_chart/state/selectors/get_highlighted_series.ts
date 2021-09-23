@@ -17,12 +17,9 @@ const getHighlightedLegendPath = (state: GlobalChartState) => state.interactions
 export const getHighlightedSeriesSelector = createCustomCachedSelector(
   [getHighlightedLegendPath, computeLegendSelector],
   (highlightedLegendPaths, legendItems): LegendItem | undefined => {
-    if (highlightedLegendPaths.length === 0) {
-      return;
+    if (highlightedLegendPaths.length > 0) {
+      const lookup = new Set(highlightedLegendPaths.map(({ value }) => value));
+      return legendItems.find(({ seriesIdentifiers }) => seriesIdentifiers.some(({ key }) => lookup.has(key)));
     }
-    const highlightedSeriesKeys = highlightedLegendPaths.map(({ value }) => value);
-    return legendItems.find(({ seriesIdentifiers }) =>
-      seriesIdentifiers.some(({ key }) => highlightedSeriesKeys.some((hKey) => hKey === key)),
-    );
   },
 );

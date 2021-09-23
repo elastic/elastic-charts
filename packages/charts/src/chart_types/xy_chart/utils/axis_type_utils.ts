@@ -7,27 +7,6 @@
  */
 
 import { Position } from '../../../utils/common';
-import { CompleteBoundedDomain, LowerBoundedDomain, UpperBoundedDomain, DomainRange } from './specs';
-
-/** @internal */
-export function isLowerBound(domain: Partial<CompleteBoundedDomain>): domain is LowerBoundedDomain {
-  return domain.min != null;
-}
-
-/** @internal */
-export function isUpperBound(domain: Partial<CompleteBoundedDomain>): domain is UpperBoundedDomain {
-  return domain.max != null;
-}
-
-/** @internal */
-export function isCompleteBound(domain: Partial<CompleteBoundedDomain>): domain is CompleteBoundedDomain {
-  return domain.max != null && domain.min != null;
-}
-
-/** @internal */
-export function isBounded(domain: Partial<CompleteBoundedDomain>): domain is DomainRange {
-  return domain.max != null || domain.min != null;
-}
 
 /** @internal */
 export function isVerticalAxis(axisPosition: Position): axisPosition is Extract<Position, 'left' | 'right'> {

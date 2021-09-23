@@ -1129,6 +1129,7 @@ describe('Axis computational utils', () => {
   test('should merge axis domains by group id: partial upper bounded prevDomain with complete domain', () => {
     const groupId = 'group_1';
     const domainRange1 = {
+      min: NaN,
       max: 9,
     };
 
@@ -1155,6 +1156,7 @@ describe('Axis computational utils', () => {
     const groupId = 'group_1';
     const domainRange1 = {
       min: -1,
+      max: NaN,
     };
 
     const domainRange2 = {
@@ -1179,15 +1181,18 @@ describe('Axis computational utils', () => {
   test('should merge axis domains by group id: partial upper bounded prevDomain with lower bounded domain', () => {
     const groupId = 'group_1';
     const domainRange1 = {
+      min: NaN,
       max: 9,
     };
 
     const domainRange2 = {
       min: 0,
+      max: NaN,
     };
 
     const domainRange3 = {
       min: -1,
+      max: NaN,
     };
 
     verticalAxisSpec.domain = domainRange1;
@@ -1216,13 +1221,16 @@ describe('Axis computational utils', () => {
     const groupId = 'group_1';
     const domainRange1 = {
       min: 2,
+      max: NaN,
     };
 
     const domainRange2 = {
+      min: NaN,
       max: 7,
     };
 
     const domainRange3 = {
+      min: NaN,
       max: 9,
     };
 

@@ -84,20 +84,21 @@ export function computeXScale(options: XScaleOptions): Scale<number | string> {
         logBase,
       },
     );
+  } else {
+    return new ScaleContinuous(
+      { type, domain: domain as number[], range, nice },
+      {
+        bandwidth: 0,
+        minInterval,
+        timeZone,
+        totalBarsInCluster,
+        barsPadding,
+        desiredTickCount,
+        integersOnly,
+        logBase,
+      },
+    );
   }
-  return new ScaleContinuous(
-    { type, domain, range, nice },
-    {
-      bandwidth: 0,
-      minInterval,
-      timeZone,
-      totalBarsInCluster,
-      barsPadding,
-      desiredTickCount,
-      integersOnly,
-      logBase,
-    },
-  );
 }
 
 interface YScaleOptions {
@@ -110,7 +111,7 @@ interface YScaleOptions {
  * Compute the y scales, one per groupId for the y axis.
  * @internal
  */
-export function computeYScales(options: YScaleOptions): Map<GroupId, Scale<number | string>> {
+export function computeYScales(options: YScaleOptions): Map<GroupId, Scale<number>> {
   const { yDomains, range, integersOnly } = options;
   return yDomains.reduce(
     (
@@ -128,12 +129,7 @@ export function computeYScales(options: YScaleOptions): Map<GroupId, Scale<numbe
       },
     ) => {
       const yScale = new ScaleContinuous(
-        {
-          type,
-          domain,
-          range,
-          nice,
-        },
+        { type, domain, range, nice },
         {
           desiredTickCount,
           integersOnly,
@@ -146,6 +142,6 @@ export function computeYScales(options: YScaleOptions): Map<GroupId, Scale<numbe
       yScales.set(groupId, yScale);
       return yScales;
     },
-    new Map<GroupId, Scale<number | string>>(),
+    new Map<GroupId, Scale<number>>(),
   );
 }

@@ -32,7 +32,7 @@ export interface PerSideDistance {
 }
 
 /**
- * fixme consider deactivating @typescript-eslint/no-empty-interface
+ * fixme consider deactivating \@typescript-eslint/no-empty-interface
  * see https://github.com/elastic/elastic-charts/pull/660#discussion_r419474171
  * @public
  */

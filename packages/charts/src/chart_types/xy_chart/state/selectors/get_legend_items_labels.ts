@@ -15,10 +15,11 @@ import { computeLegendSelector } from './compute_legend';
 export const getLegendItemsLabelsSelector = createCustomCachedSelector(
   [computeLegendSelector, getSettingsSpecSelector],
   (legendItems, { showLegendExtra }): LegendItemLabel[] =>
-    legendItems.map(({ label, defaultExtra }) => {
-      if (defaultExtra?.legendSizingLabel != null) {
-        return { label: `${label}${showLegendExtra ? defaultExtra.legendSizingLabel : ''}`, depth: 0 };
-      }
-      return { label, depth: 0 };
-    }),
+    legendItems.map(({ label, defaultExtra }) => ({
+      label:
+        defaultExtra && (defaultExtra.legendSizingLabel ?? null) !== null
+          ? `${label}${showLegendExtra ? defaultExtra.legendSizingLabel : ''}`
+          : label,
+      depth: 0,
+    })),
 );

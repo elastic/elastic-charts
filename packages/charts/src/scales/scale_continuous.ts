@@ -182,7 +182,7 @@ interface ScaleData {
   /** The Type of continuous scale */
   type: ScaleContinuousType;
   /** The data input domain */
-  domain: any[];
+  domain: number[];
   /** The data output range */
   range: Range;
   nice?: boolean;
@@ -210,7 +210,7 @@ export interface LogScaleOptions {
 
 type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
   /**
-   * The desidered bandwidth for a linear band scale.
+   * The desired bandwidth for a linear band scale.
    * @defaultValue 0
    */
   bandwidth: number;
@@ -295,7 +295,7 @@ export class ScaleContinuous implements Scale<number> {
 
   readonly type: ScaleContinuousType;
 
-  readonly domain: any[];
+  readonly domain: number[];
 
   readonly range: Range;
 
@@ -342,7 +342,7 @@ export class ScaleContinuous implements Scale<number> {
 
     if (nice && type !== ScaleType.Time) {
       (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(this.domain).nice(desiredTickCount);
-      this.domain = this.d3Scale.domain();
+      this.domain = this.d3Scale.domain() as number[];
     }
 
     const safeBarPadding = clamp(barsPadding, 0, 1);
@@ -372,7 +372,7 @@ export class ScaleContinuous implements Scale<number> {
 
       if (nice) {
         (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(newDomain).nice(desiredTickCount);
-        this.domain = this.d3Scale.domain();
+        this.domain = this.d3Scale.domain() as number[];
       } else {
         this.domain = newDomain;
         this.d3Scale.domain(newDomain);
@@ -476,9 +476,9 @@ export class ScaleContinuous implements Scale<number> {
   ): {
     value: number;
     withinBandwidth: boolean;
-  } | null {
+  } {
     if (data.length === 0) {
-      return null;
+      return { value: NaN, withinBandwidth: false };
     }
     const invertedValue = this.invert(value);
     const bisectValue = this.bandwidth === 0 ? invertedValue + this.minInterval / 2 : invertedValue;

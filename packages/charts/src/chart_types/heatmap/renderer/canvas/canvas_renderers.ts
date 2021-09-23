@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Color, Colors } from '../../../../common/colors';
 import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
@@ -18,6 +19,7 @@ export function renderCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   { config, heatmapViewModel }: ShapeViewModel,
+  background: Color,
 ) {
   // eslint-disable-next-line no-empty-pattern
   const {} = config;
@@ -45,8 +47,7 @@ export function renderCanvas2d(
     const filteredYValues = heatmapViewModel.yValues.filter((value, yIndex) => yIndex < heatmapViewModel.pageSize);
 
     renderLayers(ctx, [
-      clearCanvas,
-
+      () => clearCanvas(ctx, background),
       () => {
         withContext(ctx, () => {
           // render grid
@@ -94,8 +95,7 @@ export function renderCanvas2d(
               fontStyle: config.yAxisLabel.fontStyle ? config.yAxisLabel.fontStyle : 'normal',
               fontVariant: 'normal',
               fontWeight: 'normal',
-              textColor: 'black',
-              textOpacity: 1,
+              textColor: Colors.Black.keyword,
             };
             const { padding } = config.yAxisLabel;
             const horizontalPadding =
