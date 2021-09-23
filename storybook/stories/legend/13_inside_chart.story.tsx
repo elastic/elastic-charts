@@ -94,7 +94,7 @@ export const Example = () => {
         }}
         baseTheme={useBaseTheme()}
       />
-      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />
+      <Axis id="bottom" position={Position.Bottom} ticksForCulledLabels />
       <Axis
         id="left"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}

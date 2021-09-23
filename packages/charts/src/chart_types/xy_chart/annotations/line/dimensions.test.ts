@@ -48,7 +48,7 @@ describe('Annotation utils', () => {
     id: 'vertical_axis',
     groupId,
     hide: false,
-    showOverlappingTicks: false,
+    ticksForCulledLabels: false,
     showOverlappingLabels: false,
     position: Position.Left,
     showGridLines: true,

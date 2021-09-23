@@ -40,7 +40,7 @@ function renderAxisWithOptions(position: Position, seriesGroup: string, show: bo
     id: axisTitle,
     position,
     title: axisTitle,
-    showOverlappingTicks: true,
+    ticksForCulledLabels: true,
   };
 
   return <Axis {...axisProps} />;

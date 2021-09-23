@@ -36,9 +36,9 @@ export const Example = () => {
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
       />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticksForCulledLabels />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
-      <Axis id="top" position={Position.Top} title="Top axis" showOverlappingTicks />
+      <Axis id="top" position={Position.Top} title="Top axis" ticksForCulledLabels />
       <Axis id="right" title="Right axis" position={Position.Right} tickFormat={(d) => Number(d).toFixed(2)} />
       <BarSeries
         id="bars"

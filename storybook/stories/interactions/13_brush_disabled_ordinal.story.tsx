@@ -17,7 +17,7 @@ import { getChartRotationKnob } from '../utils/knobs';
 export const Example = () => (
   <Chart>
     <Settings onBrushEnd={action('onBrushEnd')} rotation={getChartRotationKnob()} baseTheme={useBaseTheme()} />
-    <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks />
+    <Axis id="bottom" position={Position.Bottom} title="bottom" ticksForCulledLabels />
     <Axis id="left" title="left" position={Position.Left} />
     <LineSeries
       id="lines"

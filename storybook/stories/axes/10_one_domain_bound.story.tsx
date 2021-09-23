@@ -27,7 +27,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings showLegend={false} xDomain={xDomain} baseTheme={useBaseTheme()} />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticksForCulledLabels />
       <Axis
         id="left"
         title="Bar axis"

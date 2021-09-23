@@ -47,7 +47,7 @@ export const Example = () => {
         id="bottom"
         position={Position.Bottom}
         title="Bottom axis"
-        showOverlappingTicks
+        ticksForCulledLabels
         tickFormat={dateFormatter}
       />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />

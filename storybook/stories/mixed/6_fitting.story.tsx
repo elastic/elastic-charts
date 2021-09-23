@@ -168,7 +168,7 @@ export const Example = () => {
         }}
         baseTheme={useBaseTheme()}
       />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticksForCulledLabels />
       <Axis id="left" title="Left axis" position={Position.Left} />
       {seriesType === SeriesType.Area ? (
         <AreaSeries

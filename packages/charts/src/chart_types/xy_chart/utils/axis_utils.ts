@@ -324,7 +324,7 @@ export function enableDuplicatedTicks(
 
 /** @internal */
 export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDim: TickLabelBounds): AxisTick[] {
-  const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
+  const { ticksForCulledLabels, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? axisDim.maxLabelBboxHeight / 2 : axisDim.maxLabelBboxWidth / 2;
   return showOverlappingLabels
     ? allTicks
@@ -333,7 +333,7 @@ export function getVisibleTicks(allTicks: AxisTick[], axisSpec: AxisSpec, axisDi
         .reduce(
           (prev, tick) => {
             const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
-            if (tickLabelFits || showOverlappingTicks) {
+            if (tickLabelFits || ticksForCulledLabels) {
               prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, axisTickLabel: '' });
               if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
             }

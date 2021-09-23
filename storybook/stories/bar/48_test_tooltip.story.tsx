@@ -54,7 +54,7 @@ export const Example = () => {
     <div className="buffer" style={{ width: '100%', height: '100%', paddingLeft: 80, paddingRight: 80 }}>
       <Chart>
         <Settings rotation={rotation} tooltip={tooltipOptions} showLegend={showLegend} baseTheme={useBaseTheme()} />
-        <Axis id="bottom" hide={!showAxes} position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
+        <Axis id="bottom" hide={!showAxes} position={Position.Bottom} title="Bottom axis" ticksForCulledLabels />
         <Axis
           id="left2"
           hide={!showAxes}

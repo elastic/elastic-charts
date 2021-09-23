@@ -101,7 +101,7 @@ export const Example = () => {
         id="bottom"
         position={Position.Bottom}
         title="Bottom axis"
-        showOverlappingTicks
+        ticksForCulledLabels
         showGridLines={boolean('show bottom axis grid lines', false, 'bottom axis')}
         gridLine={toggleBottomAxisGridLineStyle ? bottomAxisGridLineStyle : undefined}
         integersOnly={boolean('bottom axis show only integer values', false, 'bottom axis')}
@@ -119,7 +119,7 @@ export const Example = () => {
         id="top"
         position={Position.Top}
         title="Top axis"
-        showOverlappingTicks
+        ticksForCulledLabels
         showGridLines={boolean('show top axis grid lines', false, 'top axis')}
         gridLine={topAxisGridLineStyle}
         integersOnly={boolean('top axis show only integer values', false, 'top axis')}

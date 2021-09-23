@@ -67,7 +67,7 @@ export const Example = () => {
         <div ref={blue} style={{ backgroundColor: 'blue', padding: 30, height: '100%' }}>
           <Chart>
             <Settings tooltip={{ boundary, boundaryPadding, offset }} baseTheme={useBaseTheme()} />
-            <Axis id="bottom" hide={!showAxes} position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
+            <Axis id="bottom" hide={!showAxes} position={Position.Bottom} title="Bottom axis" ticksForCulledLabels />
             <Axis
               id="left"
               hide={!showAxes}

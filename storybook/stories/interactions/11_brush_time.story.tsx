@@ -49,7 +49,7 @@ export const Example = () => {
         onElementClick={action('onElementClick')}
         rotation={getChartRotationKnob()}
       />
-      <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks tickFormat={formatter} />
+      <Axis id="bottom" position={Position.Bottom} title="bottom" ticksForCulledLabels tickFormat={formatter} />
       <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries

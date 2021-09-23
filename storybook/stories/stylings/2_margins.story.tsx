@@ -63,7 +63,7 @@ export const Example = () => {
         id="bottom"
         position={Position.Bottom}
         title={withBottomTitle ? 'Bottom axis' : undefined}
-        showOverlappingTicks
+        ticksForCulledLabels
         showGridLines={boolean('show bottom axis grid lines', false)}
       />
       <Axis
@@ -77,7 +77,7 @@ export const Example = () => {
         id="top"
         position={Position.Top}
         title={withTopTitle ? 'Top axis' : undefined}
-        showOverlappingTicks
+        ticksForCulledLabels
         showGridLines={boolean('show top axis grid lines', false)}
       />
       <Axis

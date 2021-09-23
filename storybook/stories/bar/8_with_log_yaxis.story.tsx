@@ -15,7 +15,7 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example = () => (
   <Chart>
     <Settings legendPosition={Position.Right} baseTheme={useBaseTheme()} />
-    <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
+    <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticksForCulledLabels />
     <Axis
       id="left2"
       domain={{

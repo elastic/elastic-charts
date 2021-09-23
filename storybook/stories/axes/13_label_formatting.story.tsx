@@ -30,7 +30,7 @@ export const Example = () => {
         id="bottom"
         title="Weight"
         position={Position.Bottom}
-        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
+        ticksForCulledLabels={boolean('ticksForCulledLabels bottom axis', false)}
         showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
         tickFormat={(d) => numeral(d).format(tickFormatBottom)}
         labelFormat={(d) => numeral(d).format(labelFormatBottom)}

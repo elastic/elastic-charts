@@ -54,7 +54,7 @@ export const Example = () => {
         id="bottom"
         position={Position.Bottom}
         title="bottom"
-        showOverlappingTicks
+        ticksForCulledLabels
         tickFormat={!isVertical ? dateFormatter : numberFormatter}
       />
       <Axis id="left" title="left" position={Position.Left} tickFormat={isVertical ? dateFormatter : numberFormatter} />

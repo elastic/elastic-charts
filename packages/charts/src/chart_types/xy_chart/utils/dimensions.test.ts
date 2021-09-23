@@ -51,7 +51,7 @@ describe('Computed chart dimensions', () => {
     id: 'axis_1',
     groupId: 'group_1',
     hide: false,
-    showOverlappingTicks: false,
+    ticksForCulledLabels: false,
     showOverlappingLabels: false,
     position: Position.Left,
     tickFormat: (value: any) => `${value}`,

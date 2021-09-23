@@ -70,7 +70,7 @@ const axisSpec: AxisSpec = {
   id: 'axis1',
   groupId: 'group1',
   hide: false,
-  showOverlappingTicks: false,
+  ticksForCulledLabels: false,
   showOverlappingLabels: false,
   position: Position.Left,
   style,

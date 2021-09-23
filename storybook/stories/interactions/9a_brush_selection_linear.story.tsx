@@ -33,9 +33,9 @@ export const Example = () => {
         onBrushEnd={action('brush')}
         baseTheme={useBaseTheme()}
       />
-      <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks />
+      <Axis id="bottom" position={Position.Bottom} title="bottom" ticksForCulledLabels />
       <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
-      <Axis id="top" position={Position.Top} title="top" showOverlappingTicks />
+      <Axis id="top" position={Position.Top} title="top" ticksForCulledLabels />
       <Axis id="right" title="right" position={Position.Right} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <AreaSeries

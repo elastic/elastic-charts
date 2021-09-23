@@ -8,7 +8,7 @@ The bar chart with axis example in the `Types of charts` section includes only s
 | specType  | `typeof SpecType.Axis` | SpecType.Axis  |  |
 | groupId | GroupId | `__global__`  | The ID of the axis group |
 | hide  | boolean  | false  | Hide this axis |
-| showOverlappingTicks | boolean | false  | Shows all ticks, also the one from the overlapping labels   |
+| ticksForCulledLabels | boolean | false  | Shows all ticks, also the one from the overlapping labels   |
 | showOverlappingLabels | boolean  | false  | Shows all labels, also the overlapping ones |
 | position |  | Position.Left | Where the axis appear on the chart |
 | tickSize | number | 10 | The length of the tick line |

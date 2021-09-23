@@ -19,7 +19,7 @@ const defaultProps = {
   specType: SpecType.Axis,
   groupId: DEFAULT_GLOBAL_ID,
   hide: false,
-  showOverlappingTicks: false,
+  ticksForCulledLabels: false,
   showOverlappingLabels: false,
   position: Position.Left,
 };
@@ -29,7 +29,7 @@ type SpecOptionals = Partial<Omit<AxisSpec, 'chartType' | 'specType' | 'seriesTy
 
 /** @public */
 export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals> = getConnect()(
-  specComponentFactory<AxisSpec, 'groupId' | 'hide' | 'showOverlappingTicks' | 'showOverlappingLabels' | 'position'>(
+  specComponentFactory<AxisSpec, 'groupId' | 'hide' | 'ticksForCulledLabels' | 'showOverlappingLabels' | 'position'>(
     defaultProps,
   ),
 );

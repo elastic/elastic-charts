@@ -22,7 +22,7 @@ export const Example = () => (
       id="bottom"
       title="timestamp per 1 minute"
       position={Position.Bottom}
-      showOverlappingTicks
+      ticksForCulledLabels
       tickFormat={dateFormatter}
     />
     <Axis
@@ -31,7 +31,7 @@ export const Example = () => (
       position={Position.Left}
       tickFormat={(d) => `${Number(d).toFixed(0)}%`}
     />
-    <Axis id="top" position={Position.Top} showOverlappingTicks tickFormat={timeFormatter('HH:mm:ss')} />
+    <Axis id="top" position={Position.Top} ticksForCulledLabels tickFormat={timeFormatter('HH:mm:ss')} />
     <Axis
       id="right"
       title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}

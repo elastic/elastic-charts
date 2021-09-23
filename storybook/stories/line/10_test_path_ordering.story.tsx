@@ -53,7 +53,7 @@ export const Example = () => {
             : undefined
         }
       />
-      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />
+      <Axis id="bottom" position={Position.Bottom} ticksForCulledLabels />
       <Axis id="left2" position={Position.Left} tickFormat={(d: any) => `$${Number(d).toFixed(2)}`} />
 
       <LineSeries

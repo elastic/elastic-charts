@@ -45,14 +45,14 @@ export const Example = () => (
       id="bottom"
       position={Position.Bottom}
       title="Bottom axis"
-      showOverlappingTicks
+      ticksForCulledLabels
       showOverlappingLabels={boolean('bottom show overlapping labels', false)}
     />
     <Axis
       id="left2"
       title="Left axis"
       position={Position.Left}
-      showOverlappingTicks
+      ticksForCulledLabels
       showOverlappingLabels={boolean('left show overlapping labels', false)}
     />
 

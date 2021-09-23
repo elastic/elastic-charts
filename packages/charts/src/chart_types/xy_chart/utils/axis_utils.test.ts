@@ -106,7 +106,7 @@ describe('Axis computational utils', () => {
     title: 'Axis 1',
     groupId: 'group_1',
     hide: false,
-    showOverlappingTicks: false,
+    ticksForCulledLabels: false,
     showOverlappingLabels: false,
     position: Position.Left,
     style,
@@ -121,7 +121,7 @@ describe('Axis computational utils', () => {
     title: 'Axis 2',
     groupId: 'group_1',
     hide: false,
-    showOverlappingTicks: false,
+    ticksForCulledLabels: false,
     showOverlappingLabels: false,
     position: Position.Top,
     style,
@@ -135,7 +135,7 @@ describe('Axis computational utils', () => {
     groupId: 'group_1',
     title: 'v axis',
     hide: false,
-    showOverlappingTicks: false,
+    ticksForCulledLabels: false,
     showOverlappingLabels: false,
     position: Position.Left,
     style,
@@ -509,7 +509,7 @@ describe('Axis computational utils', () => {
       isHidden: false,
     };
 
-    verticalAxisSpec.showOverlappingTicks = true;
+    verticalAxisSpec.ticksForCulledLabels = true;
     verticalAxisSpec.showOverlappingLabels = true;
     const visibleOverlappingTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims);
     const expectedVisibleOverlappingTicks = [
@@ -527,7 +527,7 @@ describe('Axis computational utils', () => {
     ];
     expect(visibleOverlappingTicks).toIncludeSameMembers(expectedVisibleOverlappingTicks);
 
-    verticalAxisSpec.showOverlappingTicks = true;
+    verticalAxisSpec.ticksForCulledLabels = true;
     verticalAxisSpec.showOverlappingLabels = false;
     const visibleOverlappingTicksAndLabels = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims);
     const expectedVisibleOverlappingTicksAndLabels = [
@@ -1285,7 +1285,7 @@ describe('Axis computational utils', () => {
       groupId: DEFAULT_GLOBAL_ID,
       hide: false,
       showOverlappingLabels: false,
-      showOverlappingTicks: false,
+      ticksForCulledLabels: false,
       style,
       tickFormat: formatter,
     };
@@ -1320,7 +1320,7 @@ describe('Axis computational utils', () => {
       groupId: DEFAULT_GLOBAL_ID,
       hide: false,
       showOverlappingLabels: false,
-      showOverlappingTicks: false,
+      ticksForCulledLabels: false,
       style,
       tickFormat: (d, options) =>
         DateTime.fromMillis(d, { setZone: true, zone: options?.timeZone ?? 'utc+1' }).toFormat('HH:mm'),
@@ -1366,7 +1366,7 @@ describe('Axis computational utils', () => {
       groupId: DEFAULT_GLOBAL_ID,
       hide: false,
       showOverlappingLabels: false,
-      showOverlappingTicks: false,
+      ticksForCulledLabels: false,
       style,
       tickFormat: formatter,
     };
@@ -1408,7 +1408,7 @@ describe('Axis computational utils', () => {
       groupId: DEFAULT_GLOBAL_ID,
       hide: false,
       showOverlappingLabels: false,
-      showOverlappingTicks: false,
+      ticksForCulledLabels: false,
       style,
       tickFormat: formatter,
     };

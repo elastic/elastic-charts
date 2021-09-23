@@ -44,7 +44,7 @@ export const Example = () => {
         id="bottom"
         title="Country"
         position={Position.Bottom}
-        showOverlappingTicks
+        ticksForCulledLabels
         tickFormat={disableXAxisFormat ? undefined : (value) => `${value}${xAxisUnit ? ` ${xAxisUnit}` : ''}`}
       />
       <Axis
