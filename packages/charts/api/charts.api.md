@@ -812,10 +812,6 @@ export interface GoalSpec extends Spec {
     centralMinor: string | GoalLabelAccessor;
     // (undocumented)
     chartType: typeof ChartType.Goal;
-    // Warning: (ae-forgotten-export) The symbol "Config" needs to be exported by the entry point index.d.ts
-    //
-    // @deprecated (undocumented)
-    config?: RecursivePartial<Config>;
     // (undocumented)
     labelMajor: string | GoalLabelAccessor;
     // (undocumented)
