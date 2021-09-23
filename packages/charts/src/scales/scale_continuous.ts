@@ -350,7 +350,7 @@ export class ScaleContinuous implements Scale<number> {
     this.step = this.bandwidth + this.barsPadding + this.bandwidthPadding;
     this.type = type;
     this.range = range;
-    this.minInterval = minInterval;
+    this.minInterval = Math.abs(minInterval);
     this.isInverted = this.domain[0] > this.domain[1];
     this.timeZone = timeZone;
     this.totalBarsInCluster = totalBarsInCluster;
