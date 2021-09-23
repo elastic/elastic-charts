@@ -265,7 +265,7 @@ export function getAvailableTicks(
   const penultimateTick = ticks[ticks.length - 2];
   if (makeRaster && !isSingleValueScale && typeof penultimateTick === 'number' && typeof ultimateTick === 'number') {
     const computedTickDistance = ultimateTick - penultimateTick;
-    const numTicks = scale.minInterval / computedTickDistance;
+    const numTicks = scale.minInterval / (computedTickDistance || scale.minInterval); // avoid infinite loop
     for (let i = 1; i <= numTicks; i++) ticks.push(i * computedTickDistance + ultimateTick);
   }
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
