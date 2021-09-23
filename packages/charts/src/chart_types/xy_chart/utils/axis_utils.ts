@@ -401,7 +401,6 @@ export interface AxisGeometry {
     secondary?: boolean; // defined later per panel
   };
   dimension: TickLabelBounds;
-  ticks: AxisTick[];
   visibleTicks: AxisTick[];
 }
 
@@ -460,7 +459,6 @@ export function getAxesGeometries(
           axis: { id: axisSpec.id, position: axisSpec.position },
           anchorPoint: { x: dimensions.left, y: dimensions.top },
           dimension: axisDim,
-          ticks: allTicks,
           visibleTicks: getVisibleTicks(allTicks, axisSpec, axisDim),
           parentSize: { height: dimensions.height, width: dimensions.width },
           size: axisDim.isHidden
