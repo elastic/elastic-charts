@@ -260,16 +260,13 @@ export function getAvailableTicks(
 ): AxisTick[] {
   const ticks = scale.ticks();
   const isSingleValueScale = scale.domain[0] === scale.domain[1];
-  const hasAdditionalTicks = enableHistogramMode && scale.bandwidth > 0;
-
-  if (hasAdditionalTicks && !isSingleValueScale) {
-    // todo sure hope something ascertains this, otherwise we can't subtract in runtime:
-    const numericalTicks = ticks as number[];
-    const lastComputedTick = numericalTicks[numericalTicks.length - 1];
-    const penultimateComputedTick = numericalTicks[numericalTicks.length - 2];
-    const computedTickDistance = lastComputedTick - penultimateComputedTick;
+  const makeRaster = enableHistogramMode && scale.bandwidth > 0;
+  const ultimateTick = ticks[ticks.length - 1];
+  const penultimateTick = ticks[ticks.length - 2];
+  if (makeRaster && !isSingleValueScale && typeof penultimateTick === 'number' && typeof ultimateTick === 'number') {
+    const computedTickDistance = ultimateTick - penultimateTick;
     const numTicks = scale.minInterval / computedTickDistance;
-    for (let i = 1; i <= numTicks; i++) ticks.push(i * computedTickDistance + lastComputedTick);
+    for (let i = 1; i <= numTicks; i++) ticks.push(i * computedTickDistance + ultimateTick);
   }
   const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
   const band = scale.bandwidth / (1 - scale.barsPadding);
@@ -279,7 +276,7 @@ export function getAvailableTicks(
   const tickFormatter = axisSpec.tickFormat ?? fallBackTickFormatter;
   const labelFormatter = axisSpec.labelFormat ?? tickFormatter;
   const firstTickValue = ticks[0];
-  if (isSingleValueScale && hasAdditionalTicks && typeof firstTickValue === 'number') {
+  if (makeRaster && isSingleValueScale && typeof firstTickValue === 'number') {
     const firstLabel = tickFormatter(firstTickValue, tickFormatOptions);
     const firstTick = {
       value: firstTickValue,
