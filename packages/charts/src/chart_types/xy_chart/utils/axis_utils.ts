@@ -276,26 +276,22 @@ export function getAvailableTicks(
   const tickFormatter = axisSpec.tickFormat ?? fallBackTickFormatter;
   const labelFormatter = axisSpec.labelFormat ?? tickFormatter;
   const firstTickValue = ticks[0];
-  if (makeRaster && isSingleValueScale && typeof firstTickValue === 'number') {
-    const firstLabel = tickFormatter(firstTickValue, tickFormatOptions);
-    const firstTick = {
-      value: firstTickValue,
-      label: firstLabel,
-      axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
-      position: (scale.scale(firstTickValue) ?? 0) + offset,
-    };
-    const lastTickValue = firstTickValue + scale.minInterval;
-    const lastLabel = tickFormatter(lastTickValue, tickFormatOptions);
-    const lastTick = {
-      value: lastTickValue,
-      label: lastLabel,
-      axisTickLabel: labelFormatter(lastTickValue, tickFormatOptions),
-      position: scale.bandwidth + halfPadding * 2,
-    };
-    return [firstTick, lastTick];
-  } else {
-    return enableDuplicatedTicks(axisSpec, scale, offset, fallBackTickFormatter, tickFormatOptions);
-  }
+  return makeRaster && isSingleValueScale && typeof firstTickValue === 'number'
+    ? [
+        {
+          value: firstTickValue,
+          label: tickFormatter(firstTickValue, tickFormatOptions),
+          axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
+          position: (scale.scale(firstTickValue) ?? 0) + offset,
+        },
+        {
+          value: firstTickValue + scale.minInterval,
+          label: tickFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
+          axisTickLabel: labelFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
+          position: scale.bandwidth + halfPadding * 2,
+        },
+      ]
+    : enableDuplicatedTicks(axisSpec, scale, offset, fallBackTickFormatter, tickFormatOptions);
 }
 
 /** @internal */
