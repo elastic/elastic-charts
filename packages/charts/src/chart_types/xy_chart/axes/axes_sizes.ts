@@ -18,7 +18,7 @@ import { getTitleDimension, shouldShowTicks } from '../utils/axis_utils';
 import { AxisSpec } from '../utils/specs';
 
 /** @internal */
-export function computeAxesSizes(
+export function getAxesDimensions(
   { axes: sharedAxesStyles, chartMargins }: Theme,
   axisDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
