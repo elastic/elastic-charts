@@ -34,7 +34,6 @@ export const Example = () => {
           {
             groupByRollup: (d: Datum) => d.origin,
             nodeLabel: (d: Datum) => countryLookup[d].name,
-            fillLabel: { textInvertible: true },
             shape: {
               fillColor: indexInterpolatedFillColor(interpolatorCET2s),
             },

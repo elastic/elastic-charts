@@ -36,7 +36,7 @@ export const Example = () => {
     max: 100,
     step: 10,
   });
-  const shape = select('shape', PointShape, PointShape.Circle);
+  const shape = select<PointShape>('shape', PointShape, PointShape.Circle);
   const opacity = number('shape fill opacity', 1, {
     range: true,
     min: 0,

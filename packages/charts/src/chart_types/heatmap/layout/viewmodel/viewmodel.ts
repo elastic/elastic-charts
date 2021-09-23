@@ -9,9 +9,10 @@
 import { bisectLeft } from 'd3-array';
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
-import { stringToRGB } from '../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
-import { Box } from '../../../../common/text_utils';
+import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -19,6 +20,7 @@ import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { ContinuousDomain } from '../../../../utils/domain';
+import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
@@ -73,8 +75,9 @@ function getTicks(
 
 /** @internal */
 export function shapeViewModel(
+  textMeasure: TextMeasure,
   spec: HeatmapSpec,
-  { heatmap: heatmapTheme }: Theme,
+  { heatmap: heatmapTheme, background }: Theme,
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
@@ -104,7 +107,7 @@ export function shapeViewModel(
       ? new ScaleContinuous(
           {
             type: ScaleType.Time,
-            domain: xDomain.domain,
+            domain: xDomain.domain as number[],
             range: [0, chartDimensions.width],
             nice: false,
           },
@@ -178,35 +181,63 @@ export function shapeViewModel(
     };
   });
 
+  const cellWidthInner = cellWidth - gridStrokeWidth * 2;
+  const cellHeightInner = cellHeight - gridStrokeWidth * 2;
+
+  if (colorToRgba(background.color)[3] < 1) {
+    Logger.expected(
+      `Text contrast requires a opaque background color, using white as fallback`,
+      'an opaque color',
+      background.color,
+    );
+  }
+
   // compute each available cell position, color and value
   const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
     const x = xScale(String(d.x));
     const y = yScale(String(d.y))! + gridStrokeWidth;
     const yIndex = yValues.indexOf(d.y);
-    const color = colorScale(d.value);
+
     if (x === undefined || y === undefined || yIndex === -1) {
       return acc;
     }
+    const cellBackgroundColor = colorScale(d.value);
     const cellKey = getCellKey(d.x, d.y);
+
+    const formattedValue = spec.valueFormatter(d.value);
+
+    const fontSize = maximiseFontSize(
+      textMeasure,
+      formattedValue,
+      heatmapTheme.cell.label,
+      heatmapTheme.cell.label.minFontSize,
+      heatmapTheme.cell.label.maxFontSize,
+      // adding 3px padding per side to avoid that text touches the edges
+      cellWidthInner - 6,
+      cellHeightInner - 6,
+    );
+
     acc[cellKey] = {
       x:
         (heatmapTheme.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : x) +
         gridStrokeWidth,
       y,
       yIndex,
-      width: cellWidth - gridStrokeWidth * 2,
-      height: cellHeight - gridStrokeWidth * 2,
+      width: cellWidthInner,
+      height: cellHeightInner,
       datum: d,
       fill: {
-        color: stringToRGB(color),
+        color: colorToRgba(cellBackgroundColor),
       },
       stroke: {
-        color: stringToRGB(heatmapTheme.cell.border.stroke),
+        color: colorToRgba(heatmapTheme.cell.border.stroke),
         width: heatmapTheme.cell.border.strokeWidth,
       },
       value: d.value,
       visible: !isValueHidden(d.value, bandsToHide),
-      formatted: spec.valueFormatter(d.value),
+      formatted: formattedValue,
+      fontSize,
+      textColor: fillTextColor(cellBackgroundColor, background.color),
     };
     return acc;
   }, {});
@@ -357,6 +388,9 @@ export function shapeViewModel(
     yLines.push({ x1: chartDimensions.left, y1: y, x2: chartDimensions.width + chartDimensions.left, y2: y });
   }
 
+  const cells = Object.values(cellMap);
+  const tableMinFontSize = cells.reduce((acc, { fontSize }) => Math.min(acc, fontSize), Infinity);
+
   return {
     theme: heatmapTheme,
     heatmapViewModel: {
@@ -368,12 +402,13 @@ export function shapeViewModel(
         x: xLines,
         y: yLines,
         stroke: {
-          color: stringToRGB(heatmapTheme.grid.stroke.color),
+          color: colorToRgba(heatmapTheme.grid.stroke.color),
           width: gridStrokeWidth,
         },
       },
       pageSize,
-      cells: Object.values(cellMap),
+      cells,
+      cellFontSize: (cell: Cell) => (heatmapTheme.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
       xValues: textXValues,
       yValues: textYValues,
     },

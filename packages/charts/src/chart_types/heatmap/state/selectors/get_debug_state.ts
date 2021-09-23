@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RGBtoString } from '../../../../common/color_library_wrappers';
+import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { DebugState, DebugStateLegend } from '../../../../state/types';
@@ -52,7 +52,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
         cells: geoms.heatmapViewModel.cells.map(({ x, y, fill, formatted, value }) => ({
           x,
           y,
-          fill: RGBtoString(fill.color),
+          fill: RGBATupleToString(fill.color),
           formatted,
           value,
         })),

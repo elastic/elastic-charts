@@ -9,9 +9,9 @@
 import { Word as D3Word } from 'd3-cloud';
 import { $Values as Values } from 'utility-types';
 
+import { Color } from '../../../../common/colors';
 import { Pixels, PointObject } from '../../../../common/geometry';
 import { FontStyle } from '../../../../common/text_utils';
-import { Color } from '../../../../utils/common';
 
 /** @public */
 export interface WordModel {

@@ -10,6 +10,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { Color, Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -18,6 +19,7 @@ import {
   DEFAULT_A11Y_SETTINGS,
   getA11ySettingsSelector,
 } from '../../../../state/selectors/get_accessibility_config';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -30,6 +32,7 @@ interface ReactiveChartStateProps {
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
+  background: Color;
 }
 
 interface ReactiveChartDispatchProps {
@@ -85,10 +88,15 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      renderCanvas2d(this.ctx, this.devicePixelRatio, {
-        ...this.props.geometries,
-        theme: this.props.geometries.theme,
-      });
+      renderCanvas2d(
+        this.ctx,
+        this.devicePixelRatio,
+        {
+          ...this.props.geometries,
+          theme: this.props.geometries.theme,
+        },
+        this.props.background,
+      );
     }
   }
 
@@ -142,6 +150,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     top: 0,
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
+  background: Colors.Transparent.keyword,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -153,6 +162,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     geometries: getHeatmapGeometries(state),
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
+    background: getChartThemeSelector(state).background.color,
   };
 };
 

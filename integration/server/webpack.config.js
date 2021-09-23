@@ -9,6 +9,8 @@
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 
@@ -42,6 +44,16 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.(ttf|eot|woff|woff2|svg)$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'fonts/',
+          },
+        },
+      },
+      {
         test: /\.tsx?$/,
         loader: 'ts-loader',
         exclude: /node_modules/,
@@ -53,9 +65,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          {
-            loader: 'style-loader',
-          },
+          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: { importLoaders: 1 },
@@ -65,7 +75,7 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          'style-loader',
+          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: { importLoaders: 1 },
@@ -104,5 +114,7 @@ module.exports = {
       favicon: '../../public/favicon.ico',
     }),
     new webpack.EnvironmentPlugin({ RNG_SEED: null }),
+    new MiniCssExtractPlugin(),
+    new SpeedMeasurePlugin(),
   ],
 };

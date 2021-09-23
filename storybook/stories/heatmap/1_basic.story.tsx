@@ -22,6 +22,7 @@ import {
   ScaleType,
   Settings,
 } from '@elastic/charts';
+import { HeatmapBrushEvent } from '@elastic/charts/src/chart_types/heatmap/specs';
 import { SWIM_LANE_DATA } from '@elastic/charts/src/utils/data_samples/test_anomaly_swim_lane';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -94,6 +95,8 @@ export const Example = () => {
     setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
   }, []);
 
+  const onBrushEnd = action('onBrushEnd');
+
   return (
     <Chart>
       <Settings
@@ -101,12 +104,16 @@ export const Example = () => {
         onRenderChange={logDebugState}
         showLegend
         legendPosition="right"
-        onBrushEnd={action('onBrushEnd')}
         brushAxis="both"
         xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
         debugState={debugState}
         theme={{ heatmap }}
         baseTheme={useBaseTheme()}
+        onBrushEnd={(e) => {
+          onBrushEnd(e);
+          const { x, y } = e as HeatmapBrushEvent;
+          setSelection({ x, y });
+        }}
       />
       <Heatmap
         id="heatmap1"

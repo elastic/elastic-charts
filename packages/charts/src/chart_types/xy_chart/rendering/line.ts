@@ -8,8 +8,8 @@
 
 import { line } from 'd3-shape';
 
+import { Color } from '../../../common/colors';
 import { Scale } from '../../../scales';
-import { Color } from '../../../utils/common';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { Dimensions } from '../../../utils/dimensions';
 import { LineGeometry } from '../../../utils/geometry';
@@ -30,8 +30,8 @@ import {
 export function renderLine(
   shift: number,
   dataSeries: DataSeries,
-  xScale: Scale,
-  yScale: Scale,
+  xScale: Scale<number | string>,
+  yScale: Scale<number>,
   panel: Dimensions,
   color: Color,
   curve: CurveType,

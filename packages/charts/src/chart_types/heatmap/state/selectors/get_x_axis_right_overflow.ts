@@ -39,7 +39,7 @@ export const getXAxisRightOverflow = createCustomCachedSelector(
     const timeScale = new ScaleContinuous(
       {
         type: ScaleType.Time,
-        domain: xDomain.domain,
+        domain: xDomain.domain as number[],
         range: [0, 1],
       },
       {

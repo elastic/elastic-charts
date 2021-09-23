@@ -74,7 +74,7 @@ function getCursorBand(
   externalPointerEvent: PointerEvent | null,
   chartDimensions: Dimensions,
   settingsSpec: SettingsSpec,
-  xScale: Scale | undefined,
+  xScale: Scale<number | string> | undefined,
   seriesSpecs: BasicSeriesSpec[],
   totalBarsInCluster: number,
   isTooltipSnapEnabled: boolean,
@@ -95,7 +95,7 @@ function getCursorBand(
   if (isValidPointerOverEvent(xScale, externalPointerEvent)) {
     fromExternalEvent = true;
     const x = xScale.pureScale(externalPointerEvent.x);
-    if (x == null || x > chartDimensions.width || x < 0) {
+    if (x === null || x > chartDimensions.width || x < 0) {
       return;
     }
     pointerPosition = {

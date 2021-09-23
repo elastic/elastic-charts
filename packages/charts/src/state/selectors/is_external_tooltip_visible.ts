@@ -31,9 +31,9 @@ export const isExternalTooltipVisibleSelector = createCustomCachedSelector(
     }
     const x = xScale.pureScale(pointer.x);
 
-    if (x == null || x > chartDimensions.width + chartDimensions.left || x < 0) {
+    if (x === null || x > chartDimensions.width + chartDimensions.left || x < 0) {
       return false;
     }
-    return hasExternalEvent && externalPointerEvents.tooltip?.visible === true;
+    return Boolean(hasExternalEvent && externalPointerEvents.tooltip?.visible);
   },
 );

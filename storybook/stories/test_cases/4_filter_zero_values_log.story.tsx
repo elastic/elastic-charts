@@ -26,7 +26,7 @@ export const Example = () => {
       <Axis
         id="count"
         position={Position.Left}
-        domain={{ fit, logMinLimit }}
+        domain={{ fit, logMinLimit, min: NaN, max: NaN }}
         tickFormat={logFormatter(LogBase.Common)}
       />
       <Axis id="x" position={Position.Bottom} integersOnly />

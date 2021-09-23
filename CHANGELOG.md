@@ -1,3 +1,43 @@
+# [36.0.0](https://github.com/elastic/elastic-charts/compare/v35.0.0...v36.0.0) (2021-09-15)
+
+
+### Features
+
+* **heatmap:** move onBrushEnd from config to Settings ([#1369](https://github.com/elastic/elastic-charts/issues/1369)) ([409a0c4](https://github.com/elastic/elastic-charts/commit/409a0c417f1d0636c291423637b31dbe35417fbe))
+
+
+### BREAKING CHANGES
+
+* **heatmap:** remove onBrushEnd from heatmap config and merge onBrushEnd in Settings with cartesian onBrushEnd
+
+# [35.0.0](https://github.com/elastic/elastic-charts/compare/v34.2.1...v35.0.0) (2021-09-13)
+
+
+### Bug Fixes
+
+* **a11y:** restore focus after popover close with color picker ([#1272](https://github.com/elastic/elastic-charts/issues/1272)) ([0c6f945](https://github.com/elastic/elastic-charts/commit/0c6f9457e6c3ca028353111396c5da4908b20b54)), closes [#1266](https://github.com/elastic/elastic-charts/issues/1266) [#935](https://github.com/elastic/elastic-charts/issues/935)
+* **build:** fix license in package.json ([#1362](https://github.com/elastic/elastic-charts/issues/1362)) ([d524fdf](https://github.com/elastic/elastic-charts/commit/d524fdf74735b039b2b85f4b10f384bf2fa2ff12))
+* **deps:** update dependency @elastic/eui to ^37.5.0 ([#1341](https://github.com/elastic/elastic-charts/issues/1341)) ([fb05c98](https://github.com/elastic/elastic-charts/commit/fb05c988edbb8a98569d53e8d914fa96c475e82b))
+* **deps:** update dependency @elastic/eui to ^37.6.1 ([#1359](https://github.com/elastic/elastic-charts/issues/1359)) ([2ae90ce](https://github.com/elastic/elastic-charts/commit/2ae90ceb4231ec8759c95871aa54d4993f155dff))
+* **deps:** update dependency @elastic/eui to ^37.7.0 ([#1373](https://github.com/elastic/elastic-charts/issues/1373)) ([553b6b0](https://github.com/elastic/elastic-charts/commit/553b6b0a884e016ca435ea0fa5707c55323a6ec1))
+* **heatmap:** filter out tooltip picked shapes in x-axis area ([#1351](https://github.com/elastic/elastic-charts/issues/1351)) ([174047d](https://github.com/elastic/elastic-charts/commit/174047d3cb26dba615397013735bff3d33185789)), closes [#1215](https://github.com/elastic/elastic-charts/issues/1215)
+* **heatmap:** remove values when brushing only over axes ([#1364](https://github.com/elastic/elastic-charts/issues/1364)) ([77ff8d3](https://github.com/elastic/elastic-charts/commit/77ff8d356c6ab2e71f3aea05ea3eca0e61accef2))
+
+
+### Features
+
+* **annotations:** add onClickHandler for annotations ([#1293](https://github.com/elastic/elastic-charts/issues/1293)) ([48198be](https://github.com/elastic/elastic-charts/commit/48198be800f7a2d5d8ac3503e27a5e6065bf87bc)), closes [#1211](https://github.com/elastic/elastic-charts/issues/1211)
+* **heatmap:** add text color contrast to heatmap cells ([#1342](https://github.com/elastic/elastic-charts/issues/1342)) ([f9a26ef](https://github.com/elastic/elastic-charts/commit/f9a26efc5e4a341d9fca8f0c174e93337153bff4)), closes [#1296](https://github.com/elastic/elastic-charts/issues/1296)
+* **heatmap:** reduce font size to fit label within cells ([#1352](https://github.com/elastic/elastic-charts/issues/1352)) ([16b5546](https://github.com/elastic/elastic-charts/commit/16b5546e4954169f24bcac67b7c7bc9cf30c5ed0))
+* **xy:** mutilayer time axis step 1 ([#1326](https://github.com/elastic/elastic-charts/issues/1326)) ([867b1f5](https://github.com/elastic/elastic-charts/commit/867b1f56116c2a13f5c669ad770301e69925a4ad))
+
+
+### BREAKING CHANGES
+
+* **xy:** - feat: removes the axis deduplication feature
+- fix: `showDuplicatedTicks` causes a duplication check on the actual axis tick label (possibly yielded by `Axis.tickLabel` rather than the more general `tickFormat`)
+* **heatmap:** the `config.label.fontSize` prop is replaced by `config.label.minFontSize` and `config.label.maxFontSize`. You can specify the same value for both properties to have a fixed font size. The `config.label.align` and `config.label.baseline` props are removed from the `HeatmapConfig` object.
+
 ## [34.2.1](https://github.com/elastic/elastic-charts/compare/v34.2.0...v34.2.1) (2021-08-25)
 
 

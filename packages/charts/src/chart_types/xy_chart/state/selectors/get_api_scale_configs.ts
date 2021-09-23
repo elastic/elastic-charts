@@ -14,7 +14,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { GroupId } from '../../../../utils/ids';
 import { convertXScaleTypes } from '../../domains/x_domain';
 import { coerceYScaleTypes } from '../../domains/y_domain';
-import { getYNiceFromSpec, getYScaleTypeFromSpec } from '../../scales/get_api_scales';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../scales/scale_defaults';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { groupBy } from '../../utils/group_data_series';
@@ -74,12 +73,8 @@ export function getScaleConfigsFromSpecs(
   const scaleConfigsByGroupId = groupBy(seriesSpecs, getSpecDomainGroupId, true).reduce<
     Record<GroupId, { nice: boolean; type: ScaleContinuousType }>
   >((acc, series) => {
-    const yScaleTypes = series.map(({ yScaleType, yNice }) => ({
-      nice: getYNiceFromSpec(yNice),
-      type: getYScaleTypeFromSpec(yScaleType),
-    }));
     const groupId = getSpecDomainGroupId(series[0]);
-    acc[groupId] = coerceYScaleTypes(yScaleTypes);
+    acc[groupId] = coerceYScaleTypes(series);
     return acc;
   }, {});
 

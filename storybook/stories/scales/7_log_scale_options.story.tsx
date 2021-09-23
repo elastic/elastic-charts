@@ -28,7 +28,7 @@ import { logBaseMap, logFormatter } from '../utils/formatters';
 import { getKnobsFromEnum } from '../utils/knobs';
 
 type LogKnobs = LogScaleOptions &
-  Pick<YDomainBase, 'fit' | 'padding'> & {
+  YDomainBase & {
     dataType: string;
     negative: boolean;
     scaleType: Extract<ScaleType, 'log' | 'linear'>;
@@ -53,12 +53,13 @@ const getScaleType = (type: ScaleType, group: string) =>
     'log' | 'linear'
   >;
 
-const getLogKnobs = (isXAxis = false): LogKnobs => {
+const getLogKnobs = (isXAxis = false) => {
   const group = isXAxis ? 'X - Axis' : 'Y - Axis';
   const useDefaultLimit = boolean('Use default limit', isXAxis, group);
   const limit = number('Log min limit', 1, { min: 0 }, group);
 
   return {
+    ...{ min: NaN, max: NaN },
     ...(!isXAxis && { fit: boolean('Fit domain', true, group) }),
     dataType: getDataType(group, isXAxis ? undefined : 'upDown'),
     negative: boolean('Use negative values', false, group),

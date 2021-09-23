@@ -32,7 +32,7 @@ const scssLoaders = [
 const MAX_CYCLES = 0;
 let numCyclesDetected = 0;
 
-module.exports = async ({ config }) => {
+module.exports = ({ config }) => {
   const FAST = Boolean(JSON.parse(process.env.FAST ?? false));
 
   config.plugins.push(
@@ -120,5 +120,5 @@ module.exports = async ({ config }) => {
     '@elastic/charts/': path.resolve(__dirname, '../packages/charts/'),
   };
 
-  return await config;
+  return config;
 };

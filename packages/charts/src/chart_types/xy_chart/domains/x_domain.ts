@@ -9,14 +9,12 @@
 import { Optional } from 'utility-types';
 
 import { ScaleType } from '../../../scales/constants';
-import { compareByValueAsc, identity } from '../../../utils/common';
+import { compareByValueAsc } from '../../../utils/common';
 import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
 import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
-import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_type_utils';
 import { BasicSeriesSpec, SeriesType, XScaleType } from '../utils/specs';
-import { areAllNiceDomain } from './nice';
 import { XDomain } from './types';
 
 /**
@@ -28,7 +26,6 @@ export function mergeXDomain(
   xValues: Set<string | number>,
   fallbackScale?: XScaleType,
 ): XDomain {
-  const values = [...xValues.values()];
   let seriesXComputedDomains;
   let minInterval = 0;
 
@@ -37,14 +34,13 @@ export function mergeXDomain(
       Logger.warn(`Each X value in a ${type} x scale needs be be a number. Using ordinal x scale as fallback.`);
     }
 
-    seriesXComputedDomains = computeOrdinalDataDomain(values, identity, false, true);
+    seriesXComputedDomains = computeOrdinalDataDomain([...xValues], false, true);
     if (customDomain) {
       if (Array.isArray(customDomain)) {
-        seriesXComputedDomains = customDomain;
+        seriesXComputedDomains = [...customDomain];
       } else {
         if (fallbackScale === ScaleType.Ordinal) {
           Logger.warn(`xDomain ignored for fallback ordinal scale. Options to resolve:
-
 1) Correct data to match ${type} scale type (see previous warning)
 2) Change xScaleType to ordinal and set xDomain to Domain array`);
         } else {
@@ -55,9 +51,8 @@ export function mergeXDomain(
       }
     }
   } else {
-    seriesXComputedDomains = computeContinuousDataDomain(values, identity, type, {
-      fit: true,
-    });
+    const domainOptions = { min: NaN, max: NaN, fit: true };
+    seriesXComputedDomains = computeContinuousDataDomain([...xValues] as number[], type, domainOptions);
     let customMinInterval: undefined | number;
 
     if (customDomain) {
@@ -67,24 +62,24 @@ export function mergeXDomain(
         customMinInterval = customDomain.minInterval;
         const [computedDomainMin, computedDomainMax] = seriesXComputedDomains;
 
-        if (isCompleteBound(customDomain)) {
+        if (Number.isFinite(customDomain.min) && Number.isFinite(customDomain.max)) {
           if (customDomain.min > customDomain.max) {
-            Logger.warn('custom xDomain is invalid, min is greater than max. Custom domain is ignored.');
+            Logger.warn('Custom xDomain is invalid: min is greater than max. Custom domain is ignored.');
           } else {
             seriesXComputedDomains = [customDomain.min, customDomain.max];
           }
-        } else if (isLowerBound(customDomain)) {
+        } else if (Number.isFinite(customDomain.min)) {
           if (customDomain.min > computedDomainMax) {
             Logger.warn(
-              'custom xDomain is invalid, custom min is greater than computed max. Custom domain is ignored.',
+              'Custom xDomain is invalid: custom min is greater than computed max. Custom domain is ignored.',
             );
           } else {
             seriesXComputedDomains = [customDomain.min, computedDomainMax];
           }
-        } else if (isUpperBound(customDomain)) {
+        } else if (Number.isFinite(customDomain.max)) {
           if (computedDomainMin > customDomain.max) {
             Logger.warn(
-              'custom xDomain is invalid, computed min is greater than custom max. Custom domain is ignored.',
+              'Custom xDomain is invalid: computed min is greater than custom max. Custom domain is ignored.',
             );
           } else {
             seriesXComputedDomains = [computedDomainMin, customDomain.max];
@@ -92,7 +87,7 @@ export function mergeXDomain(
         }
       }
     }
-    const computedMinInterval = findMinInterval(values as number[]);
+    const computedMinInterval = findMinInterval([...xValues.values()] as number[]);
     minInterval = getMinInterval(computedMinInterval, xValues.size, customMinInterval);
   }
 
@@ -109,18 +104,18 @@ export function mergeXDomain(
 }
 
 function getMinInterval(computedMinInterval: number, size: number, customMinInterval?: number): number {
-  if (customMinInterval == null) {
+  if (customMinInterval === undefined) {
     return computedMinInterval;
   }
   // Allow greater custom min if xValues has 1 member.
   if (size > 1 && customMinInterval > computedMinInterval) {
     Logger.warn(
-      'custom xDomain is invalid, custom minInterval is greater than computed minInterval. Using computed minInterval.',
+      'Custom xDomain is invalid: custom minInterval is greater than computed minInterval. Using computed minInterval.',
     );
     return computedMinInterval;
   }
   if (customMinInterval < 0) {
-    Logger.warn('custom xDomain is invalid, custom minInterval is less than 0. Using computed minInterval.');
+    Logger.warn('Custom xDomain is invalid: custom minInterval is less than 0. Using computed minInterval.');
     return computedMinInterval;
   }
 
@@ -133,23 +128,11 @@ function getMinInterval(computedMinInterval: number, size: number, customMinInte
  * @internal
  */
 export function findMinInterval(xValues: number[]): number {
-  const valuesLength = xValues.length;
-  if (valuesLength <= 0) {
-    return 0;
-  }
-  if (valuesLength === 1) {
-    return 1;
-  }
-  const sortedValues = xValues.slice().sort(compareByValueAsc);
-  let i;
-  let minInterval = Math.abs(sortedValues[1] - sortedValues[0]);
-  for (i = 1; i < valuesLength - 1; i++) {
-    const current = sortedValues[i];
-    const next = sortedValues[i + 1];
-    const interval = Math.abs(next - current);
-    minInterval = Math.min(minInterval, interval);
-  }
-  return minInterval;
+  return xValues.length < 2
+    ? xValues.length
+    : [...xValues].sort(compareByValueAsc).reduce((minInterval, current, i, sortedValues) => {
+        return i < xValues.length - 1 ? Math.min(minInterval, Math.abs(sortedValues[i + 1] - current)) : minInterval;
+      }, Infinity);
 }
 
 /**
@@ -167,45 +150,20 @@ export function convertXScaleTypes(
   type: XScaleType;
   nice: boolean;
   isBandScale: boolean;
-  timeZone?: string;
+  timeZone: string;
 } {
-  const seriesTypes = new Set<string | undefined>();
-  const scaleTypes = new Set<ScaleType>();
-  const timeZones = new Set<string>();
-  const niceDomainConfigs: Array<boolean> = [];
-  specs.forEach((spec) => {
-    niceDomainConfigs.push(getXNiceFromSpec(spec.xNice));
-    seriesTypes.add(spec.seriesType);
-    scaleTypes.add(getXScaleTypeFromSpec(spec.xScaleType));
-    if (spec.timeZone) {
-      timeZones.add(spec.timeZone.toLowerCase());
-    }
-  });
-  if (specs.length === 0 || seriesTypes.size === 0 || scaleTypes.size === 0) {
-    return {
-      type: ScaleType.Linear,
-      nice: true,
-      isBandScale: false,
-    };
-  }
-  const nice = areAllNiceDomain(niceDomainConfigs);
+  const seriesTypes = new Set<string | undefined>(specs.map((s) => s.seriesType));
+  const scaleTypes = new Set(specs.map((s) => getXScaleTypeFromSpec(s.xScaleType)));
+  const timeZones = new Set(specs.filter((s) => s.timeZone).map((s) => s.timeZone!.toLowerCase()));
+  const niceDomains = specs.map((s) => getXNiceFromSpec(s.xNice));
+  const type =
+    scaleTypes.size === 1
+      ? scaleTypes.values().next().value // pick the only scaleType present
+      : scaleTypes.has(ScaleType.Ordinal)
+      ? ScaleType.Ordinal
+      : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether it's present or not
+  const nice = !niceDomains.includes(false);
   const isBandScale = seriesTypes.has(SeriesType.Bar);
-  if (scaleTypes.size === 1) {
-    const scaleType = scaleTypes.values().next().value;
-    const timeZone = timeZones.size > 1 ? 'utc' : timeZones.values().next().value;
-    return { type: scaleType, nice, isBandScale, timeZone };
-  }
-
-  if (scaleTypes.size > 1 && scaleTypes.has(ScaleType.Ordinal)) {
-    return {
-      type: ScaleType.Ordinal,
-      nice,
-      isBandScale,
-    };
-  }
-  return {
-    type: ScaleType.Linear,
-    nice,
-    isBandScale,
-  };
+  const timeZone = timeZones.size === 1 ? timeZones.values().next().value : 'utc';
+  return { type, nice, isBandScale, timeZone };
 }

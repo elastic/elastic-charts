@@ -69,21 +69,14 @@ function getTreesForSpec(
       group.push(next);
       return map;
     }, new Map<string, HierarchyOfArrays>());
-    return Array.from(groups)
-      .sort(getPredicateFn(sort))
-      .map(([groupKey, subData], innerIndex) => ({
-        name: format(groupKey),
-        smAccessorValue: groupKey,
-        style: smStyle,
-        tree: partitionTree(
-          subData,
-          valueAccessor,
-          layers,
-          configMetadata.partitionLayout.dflt,
-          config.partitionLayout,
-          [{ index: innerIndex, value: String(groupKey) }],
-        ),
-      }));
+    return [...groups].sort(getPredicateFn(sort)).map(([groupKey, subData], innerIndex) => ({
+      name: format(groupKey),
+      smAccessorValue: groupKey,
+      style: smStyle,
+      tree: partitionTree(subData, valueAccessor, layers, configMetadata.partitionLayout.dflt, config.partitionLayout, [
+        { index: innerIndex, value: String(groupKey) },
+      ]),
+    }));
   } else {
     return [
       {

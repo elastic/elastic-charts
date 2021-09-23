@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../common/colors';
 import { Scale } from '../../../scales';
-import { Color } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BubbleGeometry } from '../../../utils/geometry';
 import { BubbleSeriesStyle } from '../../../utils/themes/theme';
@@ -21,8 +21,8 @@ import { MarkSizeOptions } from './utils';
 export function renderBubble(
   shift: number,
   dataSeries: DataSeries,
-  xScale: Scale,
-  yScale: Scale,
+  xScale: Scale<number | string>,
+  yScale: Scale<number>,
   color: Color,
   panel: Dimensions,
   hasY0Accessors: boolean,

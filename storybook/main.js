@@ -18,7 +18,7 @@ module.exports = {
     'storybook-addon-background-toggle',
     'storybook-addon-theme-toggle',
   ],
-  reactOptions: {
-    fastRefresh: true,
+  typescript: {
+    reactDocgen: false,
   },
 };

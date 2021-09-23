@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../common/colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import {
@@ -28,7 +29,7 @@ export const LIGHT_THEME: Theme = {
     point: {
       visible: true,
       strokeWidth: 1,
-      fill: 'white',
+      fill: Colors.White.keyword,
       radius: 2,
       opacity: 1,
     },
@@ -37,7 +38,7 @@ export const LIGHT_THEME: Theme = {
     point: {
       visible: true,
       strokeWidth: 1,
-      fill: 'white',
+      fill: Colors.White.keyword,
       radius: 2,
       opacity: 1,
     },
@@ -55,7 +56,7 @@ export const LIGHT_THEME: Theme = {
     point: {
       visible: false,
       strokeWidth: 1,
-      fill: 'white',
+      fill: Colors.White.keyword,
       radius: 2,
       opacity: 1,
     },
@@ -81,7 +82,7 @@ export const LIGHT_THEME: Theme = {
   arcSeriesStyle: {
     arc: {
       visible: true,
-      stroke: 'black',
+      stroke: Colors.Black.keyword,
       strokeWidth: 1,
       opacity: 1,
     },
@@ -190,7 +191,7 @@ export const LIGHT_THEME: Theme = {
     },
   },
   background: {
-    color: 'transparent',
+    color: Colors.Transparent.keyword,
   },
   goal: {
     minFontSize: 8,
@@ -198,36 +199,36 @@ export const LIGHT_THEME: Theme = {
     tickLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: 'black',
+      fill: Colors.Black.keyword,
     },
     majorLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: 'black',
+      fill: Colors.Black.keyword,
     },
     minorLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: 'black',
+      fill: Colors.Black.keyword,
     },
     majorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: 'black',
+      fill: Colors.Black.keyword,
     },
     minorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
-      fill: 'black',
+      fill: Colors.Black.keyword,
     },
     targetLine: {
-      stroke: 'black',
+      stroke: Colors.Black.keyword,
     },
     tickLine: {
       stroke: 'darkgrey',
     },
     progressLine: {
-      stroke: 'black',
+      stroke: Colors.Black.keyword,
     },
   },
   heatmap: {
@@ -252,10 +253,9 @@ export const LIGHT_THEME: Theme = {
       fontSize: 12,
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',
-      textColor: 'black',
+      textColor: Colors.Black.keyword,
       fontVariant: 'normal',
       fontWeight: 'normal',
-      textOpacity: 1,
       align: 'center',
       baseline: 'middle',
       padding: 6,
@@ -266,10 +266,9 @@ export const LIGHT_THEME: Theme = {
       fontSize: 12,
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',
-      textColor: 'black',
+      textColor: Colors.Black.keyword,
       fontVariant: 'normal',
       fontWeight: 'normal',
-      textOpacity: 1,
       baseline: 'middle',
       padding: 5,
     },
@@ -294,15 +293,14 @@ export const LIGHT_THEME: Theme = {
       label: {
         visible: true,
         maxWidth: 'fill',
-        fontSize: 10,
+        minFontSize: 8,
+        maxFontSize: 12,
         fontFamily: 'Sans-Serif',
         fontStyle: 'normal',
-        textColor: 'black',
+        textColor: Colors.Black.keyword,
         fontVariant: 'normal',
         fontWeight: 'normal',
-        textOpacity: 1,
-        align: 'center',
-        baseline: 'middle',
+        useGlobalMinFontSize: true,
       },
       border: {
         strokeWidth: 1,

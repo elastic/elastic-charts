@@ -6,12 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../../common/colors';
 import { getPredicateFn } from '../../../common/predicate';
-import { Color, safeFormat, ValueFormatter } from '../../../utils/common';
+import { safeFormat, ValueFormatter } from '../../../utils/common';
 import { ColorBand, HeatmapBandsColorScale } from '../specs/heatmap';
 import { ColorScale } from '../state/selectors/get_color_scale';
-
-const TRANSPARENT_COLOR: Color = 'rgba(0, 0, 0, 0)';
 
 function defaultColorBandFormatter(valueFormatter?: ValueFormatter) {
   return (startValue: number, endValue: number) => {
@@ -50,6 +49,6 @@ function getBandScale(bands: ColorBand[]): ColorScale {
         return color;
       }
     }
-    return TRANSPARENT_COLOR;
+    return Colors.Transparent.keyword;
   };
 }

@@ -16,8 +16,8 @@ import { computeSeriesDomainsSelector } from './compute_series_domains';
 
 /** @internal */
 export interface SmallMultipleScales {
-  horizontal: ScaleBand;
-  vertical: ScaleBand;
+  horizontal: ScaleBand<number | string>;
+  vertical: ScaleBand<number | string>;
 }
 
 /**
@@ -43,6 +43,5 @@ export function getScale(
   padding: RelativeBandsPadding = DEFAULT_SM_PANEL_PADDING,
 ) {
   const singlePanelSmallMultiple = domain.length <= 1;
-  const defaultDomain = domain.length === 0 ? [undefined] : domain;
-  return new ScaleBand(defaultDomain, [0, maxRange], undefined, singlePanelSmallMultiple ? 0 : padding);
+  return new ScaleBand(domain, [0, maxRange], undefined, singlePanelSmallMultiple ? 0 : padding);
 }

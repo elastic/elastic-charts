@@ -15,6 +15,7 @@ import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/high
 import { LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
 import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { Color } from '../common/colors';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
 import { CustomTooltip } from '../components/tooltip/types';
@@ -23,7 +24,6 @@ import { LegendPath } from '../state/actions/legend';
 import { getConnect, specComponentFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
 import {
-  Color,
   HorizontalAlignment,
   LayoutDirection,
   Position,
@@ -84,8 +84,9 @@ export interface GroupBrushExtent {
   groupId: GroupId;
   extent: [number, number];
 }
+
 /** @public */
-export interface XYBrushArea {
+export interface XYBrushEvent {
   x?: [number, number];
   y?: Array<GroupBrushExtent>;
 }
@@ -139,8 +140,20 @@ export type ElementClickListener = (
 export type ElementOverListener = (
   elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>,
 ) => void;
+
 /** @public */
-export type BrushEndListener = (brushArea: XYBrushArea) => void;
+export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
+
+/** @public */
+export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
+
+/** @public */
+export type HeatmapBrushEvent = {
+  cells: Cell[];
+  x: (string | number)[];
+  y: (string | number)[];
+};
+
 /** @public */
 export type LegendItemListener = (series: SeriesIdentifier[]) => void;
 /**
@@ -167,11 +180,13 @@ export type AnnotationClickListener = (annotations: {
   rects: RectAnnotationEvent[];
   lines: LineAnnotationEvent[];
 }) => void;
+
 /** @public */
 export interface BasePointerEvent {
   chartId: string;
   type: PointerEventType;
 }
+
 /**
  * Event used to synchronize pointers/mouse positions between Charts.
  *
@@ -187,6 +202,7 @@ export interface PointerOverEvent extends BasePointerEvent, ProjectedValues {
    */
   unit?: string;
 }
+
 /** @public */
 export interface PointerOutEvent extends BasePointerEvent {
   type: typeof PointerEventType.Out;
@@ -338,6 +354,7 @@ export interface LegendActionProps {
    */
   color: string;
 }
+
 /**
  * Legend action component used to render actions next to legend items
  *
@@ -370,6 +387,7 @@ export interface LegendColorPickerProps {
    */
   seriesIdentifiers: SeriesIdentifier[];
 }
+
 /** @public */
 export type LegendColorPicker = ComponentType<LegendColorPickerProps>;
 
@@ -499,13 +517,6 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * @alpha
    */
   debugState?: boolean;
-
-  /**
-   * Removes duplicate axes
-   *
-   * Compares title, position and first & last tick labels
-   */
-  hideDuplicateAxes: boolean;
   /**
    * Attach a listener for click on the projection area.
    * The listener will be called with the current x value snapped to the closest
@@ -684,7 +695,6 @@ export type DefaultSettingsProps =
   | 'debug'
   | 'tooltip'
   | 'theme'
-  | 'hideDuplicateAxes'
   | 'brushAxis'
   | 'minBrushDelta'
   | 'externalPointerEvents'

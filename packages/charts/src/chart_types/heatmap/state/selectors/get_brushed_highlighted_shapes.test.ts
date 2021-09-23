@@ -44,6 +44,7 @@ describe('Categorical heatmap brush', () => {
               },
             },
           },
+          onBrushEnd: onBrushEndMock,
         }),
         MockSeriesSpec.heatmap({
           xScaleType: ScaleType.Ordinal,
@@ -58,7 +59,6 @@ describe('Categorical heatmap brush', () => {
             { x: 'b', y: 'yc', value: 8 },
             { x: 'c', y: 'yc', value: 9 },
           ],
-          onBrushEnd: onBrushEndMock,
         }),
       ],
       store,
@@ -71,7 +71,7 @@ describe('Categorical heatmap brush', () => {
     store.dispatch(onMouseDown({ x: 50, y: 50 }, 100));
     store.dispatch(onPointerMove({ x: 150, y: 250 }, 200));
     store.dispatch(onMouseUp({ x: 150, y: 250 }, 300));
-    caller(store.getState());
+    caller(store.getState(), null);
     expect(onBrushEndMock).toBeCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(6);
@@ -107,6 +107,7 @@ describe('Temporal heatmap brush', () => {
               },
             },
           },
+          onBrushEnd: onBrushEndMock,
         }),
         MockSeriesSpec.heatmap({
           xScaleType: ScaleType.Time,
@@ -121,7 +122,6 @@ describe('Temporal heatmap brush', () => {
             { x: start.plus({ days: 1 }).toMillis(), y: 'yc', value: 8 },
             { x: start.plus({ days: 2 }).toMillis(), y: 'yc', value: 9 },
           ],
-          onBrushEnd: onBrushEndMock,
         }),
       ],
       store,
@@ -134,7 +134,7 @@ describe('Temporal heatmap brush', () => {
     store.dispatch(onMouseDown({ x: 50, y: 50 }, 100));
     store.dispatch(onPointerMove({ x: 250, y: 250 }, 200));
     store.dispatch(onMouseUp({ x: 250, y: 250 }, 300));
-    caller(store.getState());
+    caller(store.getState(), null);
     expect(onBrushEndMock).toBeCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(6);
@@ -148,7 +148,7 @@ describe('Temporal heatmap brush', () => {
     store.dispatch(onMouseDown({ x: 50, y: 50 }, 100));
     store.dispatch(onPointerMove({ x: 60, y: 60 }, 200));
     store.dispatch(onMouseUp({ x: 60, y: 60 }, 300));
-    caller(store.getState());
+    caller(store.getState(), null);
     expect(onBrushEndMock).toBeCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(1);

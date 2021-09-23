@@ -8,7 +8,6 @@
 
 import Url from 'url';
 
-import { JSDOM } from 'jsdom';
 import { AXNode } from 'puppeteer';
 
 import { DRAG_DETECTION_TIMEOUT } from '../../packages/charts/src/state/reducers/interactions';
@@ -58,7 +57,7 @@ interface KeyboardKey {
 type KeyboardKeys = Array<KeyboardKey>;
 
 /**
- * Used to get postion from any value of cursor position
+ * Used to get position from any value of cursor position
  *
  * @param mousePosition
  * @param element
@@ -116,7 +115,7 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
    */
   waitSelector?: string;
   /**
-   * Delay to take screenshot after element is visiable
+   * Delay to take screenshot after element is visible
    */
   delay?: number;
   /**
@@ -322,27 +321,23 @@ class CommonPage {
     selector: string = 'body',
     options?: ScreenshotElementAtUrlOptions,
   ) {
-    try {
-      await this.loadElementFromURL(url, options?.waitSelector ?? selector, options?.timeout);
+    await this.loadElementFromURL(url, options?.waitSelector ?? selector, options?.timeout);
 
-      if (options?.action) {
-        await options.action();
-      }
-
-      if (options?.delay) {
-        await page.waitFor(options.delay);
-      }
-
-      const element = await this.screenshotDOMElement(options?.screenshotSelector ?? selector, options);
-
-      if (!element) {
-        throw new Error(`Error: Unable to find element\n\n\t${url}`);
-      }
-
-      expect(element).toMatchImageSnapshot();
-    } catch (error) {
-      throw new Error(error);
+    if (options?.action) {
+      await options.action();
     }
+
+    if (options?.delay) {
+      await page.waitFor(options.delay);
+    }
+
+    const element = await this.screenshotDOMElement(options?.screenshotSelector ?? selector, options);
+
+    if (!element) {
+      throw new Error(`Error: Unable to find element\n\n\t${url}`);
+    }
+
+    expect(element).toMatchImageSnapshot();
   }
 
   /**
@@ -362,7 +357,7 @@ class CommonPage {
    * Expect a chart given a url from storybook with mouse move
    *
    * @param url Storybook url from knobs section
-   * @param mousePosition - postion of mouse relative to chart
+   * @param mousePosition - position of mouse relative to chart
    * @param options
    */
   async expectChartWithMouseAtUrlToMatchScreenshot(
@@ -408,8 +403,8 @@ class CommonPage {
    * Expect a chart given a url from storybook with mouse move
    *
    * @param url Storybook url from knobs section
-   * @param start - the start postion of mouse relative to chart
-   * @param end - the end postion of mouse relative to chart
+   * @param start - the start position of mouse relative to chart
+   * @param end - the end position of mouse relative to chart
    * @param options
    */
   async expectChartWithDragAtUrlToMatchScreenshot(
@@ -469,16 +464,6 @@ class CommonPage {
       return value;
     });
     return accessibilitySnapshot;
-  }
-
-  /**
-   * Get HTML for element to test aria labels etc
-   */
-  // eslint-disable-next-line class-methods-use-this
-  async getSelectorHTML(url: string, tagName: string) {
-    await this.loadElementFromURL(url, '.echCanvasRenderer');
-    const xml = await page.evaluate(() => new XMLSerializer().serializeToString(document));
-    return new JSDOM(xml, { contentType: 'text/xml' }).window.document.getElementsByTagName(tagName);
   }
 }
 

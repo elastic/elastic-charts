@@ -8,9 +8,10 @@
 
 import { $Values } from 'utility-types';
 
+import { Color } from '../../common/colors';
 import { Pixels, Ratio } from '../../common/geometry';
 import { Font, FontStyle, TextAlign, TextBaseline } from '../../common/text_utils';
-import { Color, ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
+import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, SimplePadding } from '../dimensions';
 import { Point } from '../point';
 
@@ -242,10 +243,10 @@ export interface HeatmapStyle {
     maxHeight: Pixels | 'fill';
     align: 'center';
     label: Font & {
-      fontSize: Pixels;
+      minFontSize: Pixels;
+      maxFontSize: Pixels;
+      useGlobalMinFontSize: boolean;
       maxWidth: Pixels | 'fill';
-      align: TextAlign;
-      baseline: TextBaseline;
       visible: boolean;
     };
     border: {
@@ -412,8 +413,6 @@ export type DisplayValueStyle = Omit<TextStyle, 'fill' | 'fontSize'> & {
     | Color
     | { color: Color; borderColor?: Color; borderWidth?: number }
     | {
-        textInvertible: boolean;
-        textContrast?: number | boolean;
         textBorder?: number;
       };
   alignment?: {

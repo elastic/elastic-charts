@@ -11,13 +11,12 @@ import { $Values as Values } from 'utility-types';
 import { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 import { Datum } from '../utils/common';
+import { Color } from './colors';
 import { Pixels, Rectangle } from './geometry';
 
 const FONT_WEIGHTS_NUMERIC = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 const FONT_WEIGHTS_ALPHA = ['normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset'];
 
-/** @public */
-export type TextContrast = boolean | number;
 /**
  * todo consider doing tighter control for permissible font families, eg. as in Kibana Canvas - expression language
  *  - though the same applies for permissible (eg. known available or loaded) font weights, styles, variants...
@@ -61,8 +60,7 @@ export interface Font {
   fontVariant: FontVariant;
   fontWeight: FontWeight;
   fontFamily: FontFamily;
-  textColor: string;
-  textOpacity: number;
+  textColor: Color;
 }
 
 /** @public */
@@ -133,4 +131,23 @@ export function fitText(
   const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(desiredText, visibleLength);
   const { width } = measure(fontSize, [{ ...font, text }])[0];
   return { width, text };
+}
+
+/** @internal */
+export function maximiseFontSize(
+  measure: TextMeasure,
+  text: string,
+  font: Font,
+  minFontSize: Pixels,
+  maxFontSize: Pixels,
+  boxWidth: Pixels,
+  boxHeight: Pixels,
+): Pixels {
+  const response = (fontSize: number) => {
+    const [{ width }] = measure(fontSize, [{ text, ...font }]);
+    const widthDiff = boxWidth - width;
+    const heightDiff = boxHeight - fontSize;
+    return -Math.min(widthDiff, heightDiff);
+  };
+  return monotonicHillClimb(response, maxFontSize, 0, integerSnap, minFontSize);
 }

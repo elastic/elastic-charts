@@ -60,7 +60,7 @@ export const Example = () => {
   };
 
   const debug = boolean('debug', false);
-  const useInverted = boolean('textInverted', false);
+  const useBorder = boolean('useBorder', false);
   const valueColor = color('value color', '#fff');
   const borderColor = color('value border color', 'rgba(0,0,0,1)');
   const borderSize = number('value border width', 1.5);
@@ -78,9 +78,7 @@ export const Example = () => {
         fontFamily: "'Open Sans', Helvetica, Arial, sans-serif",
         fontStyle: 'normal',
         padding: 0,
-        fill: useInverted
-          ? { textInvertible: useInverted, textContrast: true, textBorder: borderSize }
-          : { color: valueColor, borderColor, borderWidth: borderSize },
+        fill: useBorder ? { textBorder: borderSize } : { color: valueColor, borderColor, borderWidth: borderSize },
         offsetX: number('offsetX', 0),
         offsetY: number('offsetY', 0),
         alignment: {

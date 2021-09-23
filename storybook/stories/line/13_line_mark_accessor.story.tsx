@@ -52,7 +52,7 @@ export const Example = () => {
         title="Left axis"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
-        domain={{ max: 5 }}
+        domain={{ min: NaN, max: 5 }}
       />
 
       <LineSeries

@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../common/colors';
 import { SeriesIdentifier, SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { BinAgg, Direction, XScaleType } from '../../../specs';
 import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
-import { Color, Datum, isNil } from '../../../utils/common';
+import { Datum, isNil } from '../../../utils/common';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
@@ -301,7 +302,7 @@ const getSortedDataSeries = (
 ): DataSeries[] =>
   dataSeries.map(({ data, ...rest }) => ({
     ...rest,
-    data: data.sort(datumXSortPredicate(xScaleType, [...xValues.values()])),
+    data: [...data].sort(datumXSortPredicate(xScaleType, [...xValues.values()])),
   }));
 
 /** @internal */
@@ -490,8 +491,7 @@ function getSeriesNameFromOptions(
   }
 
   return (
-    options.names
-      .slice()
+    [...options.names]
       .sort(({ sortIndex: a = BIG_NUMBER }, { sortIndex: b = BIG_NUMBER }) => a - b)
       .map(({ accessor, value, name }) => {
         const accessorValue = splitAccessors.get(accessor) ?? null;
@@ -570,7 +570,7 @@ export function getSeriesColors(
 ): Map<SeriesKey, Color> {
   const seriesColorMap = new Map<SeriesKey, Color>();
   let counter = 0;
-  const sortedDataSeries = dataSeries.slice().sort((a, b) => a.insertIndex - b.insertIndex);
+  const sortedDataSeries = [...dataSeries].sort((a, b) => a.insertIndex - b.insertIndex);
   groupBy(
     sortedDataSeries,
     (ds) => {

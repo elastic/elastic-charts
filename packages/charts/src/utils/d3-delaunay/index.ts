@@ -929,7 +929,7 @@ export class Voronoi<P> implements VoronoiI<P> {
    * The specified context must implement the context.moveTo and context.lineTo methods from the CanvasPathMethods API.
    */
   render(context: MoveContext & LineContext): void {
-    const buffer = context == null ? (context = new Path()) : undefined;
+    const buffer = context === null ? (context = new Path()) : undefined;
     const {
       delaunay: { halfedges, inedges, hull },
       circumcenters,
@@ -966,7 +966,7 @@ export class Voronoi<P> implements VoronoiI<P> {
    * Equivalent to context.rect(voronoi.xmin, voronoi.ymin, voronoi.xmax - voronoi.xmin, voronoi.ymax - voronoi.ymin).
    */
   renderBounds(context: RectContext): void {
-    const buffer = context == null ? (context = new Path()) : undefined;
+    const buffer = context === null ? (context = new Path()) : undefined;
     context.rect(this.xmin, this.ymin, this.xmax - this.xmin, this.ymax - this.ymin);
     return buffer && buffer.value();
   }

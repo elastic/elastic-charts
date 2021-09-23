@@ -7,14 +7,15 @@
  */
 
 import { ChartType } from '../../..';
+import { Color, Colors } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
 import { Box } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
+import { HeatmapBrushEvent } from '../../../../specs/settings';
 import { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { HeatmapStyle } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { HeatmapBrushEvent } from '../../specs/heatmap';
 import { HeatmapCellDatum } from '../viewmodel/viewmodel';
 
 /** @internal */
@@ -37,6 +38,8 @@ export interface Cell {
   formatted: string;
   visible: boolean;
   datum: HeatmapCellDatum;
+  textColor: Color;
+  fontSize: Pixels;
 }
 
 /** @internal */
@@ -58,6 +61,7 @@ export interface HeatmapViewModel {
     stroke: Stroke;
   };
   cells: Cell[];
+  cellFontSize: (c: Cell) => Pixels;
   xValues: Array<TextBox>;
   yValues: Array<TextBox>;
   pageSize: number;
@@ -111,12 +115,13 @@ export const nullHeatmapViewModel: HeatmapViewModel = {
   gridLines: {
     x: [],
     y: [],
-    stroke: { width: 0, color: { r: 0, g: 0, b: 0, opacity: 0 } },
+    stroke: { width: 0, color: Colors.Transparent.rgba },
   },
   cells: [],
   xValues: [],
   yValues: [],
   pageSize: 0,
+  cellFontSize: () => 0,
 };
 
 /** @internal */

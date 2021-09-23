@@ -321,7 +321,10 @@ export const BrushAxis: Readonly<{
 export type BrushAxis = $Values<typeof BrushAxis>;
 
 // @public (undocumented)
-export type BrushEndListener = (brushArea: XYBrushArea) => void;
+export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
+
+// @public (undocumented)
+export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
@@ -356,6 +359,8 @@ export interface Cell {
     // (undocumented)
     fill: Fill;
     // (undocumented)
+    fontSize: Pixels;
+    // (undocumented)
     formatted: string;
     // (undocumented)
     height: number;
@@ -363,6 +368,8 @@ export interface Cell {
     //
     // (undocumented)
     stroke: Stroke;
+    // (undocumented)
+    textColor: Color;
     // (undocumented)
     value: number;
     // (undocumented)
@@ -403,7 +410,7 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     } | null;
     // (undocumented)
     render(): JSX.Element;
-    }
+}
 
 // @public (undocumented)
 export type ChartSize = number | string | ChartSizeArray | ChartSizeObject;
@@ -438,7 +445,7 @@ export const CHILDREN_KEY = "children";
 // @public (undocumented)
 export function childrenAccessor(n: ArrayEntry): HierarchyOfArrays;
 
-// @public (undocumented)
+// @public
 export type Color = string;
 
 // @alpha (undocumented)
@@ -465,13 +472,6 @@ export const ColorVariant: Readonly<{
 
 // @public (undocumented)
 export type ColorVariant = $Values<typeof ColorVariant>;
-
-// Warning: (ae-forgotten-export) The symbol "DomainBase" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "LowerBound" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "UpperBound" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export type CompleteBoundedDomain = DomainBase & LowerBound & UpperBound;
 
 // @public
 export type ComponentWithAnnotationDatum = ComponentType<LineAnnotationDatum>;
@@ -557,7 +557,7 @@ export class DataGenerator {
         y: number;
         g: string;
     }[];
-    }
+}
 
 // @public (undocumented)
 export type DataName = CategoryKey;
@@ -613,22 +613,8 @@ export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle;
 // @public (undocumented)
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle;
 
-// Warning: (ae-forgotten-export) The symbol "Margins" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export const DEFAULT_CHART_MARGINS: Margins;
-
-// @public (undocumented)
-export const DEFAULT_CHART_PADDING: Margins;
-
-// @public (undocumented)
-export const DEFAULT_GEOMETRY_STYLES: SharedGeometryStateStyle;
-
 // @public
 export const DEFAULT_GLOBAL_ID = "__global__";
-
-// @public (undocumented)
-export const DEFAULT_MISSING_COLOR = "red";
 
 // @public (undocumented)
 export const DEFAULT_SETTINGS_SPEC: SettingsSpec;
@@ -640,7 +626,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'hideDuplicateAxes' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -680,8 +666,6 @@ export type DisplayValueStyle = Omit<TextStyle, 'fill' | 'fontSize'> & {
         borderColor?: Color;
         borderWidth?: number;
     } | {
-        textInvertible: boolean;
-        textContrast?: number | boolean;
         textBorder?: number;
     };
     alignment?: {
@@ -701,7 +685,13 @@ export const DomainPaddingUnit: Readonly<{
 export type DomainPaddingUnit = $Values<typeof DomainPaddingUnit>;
 
 // @public (undocumented)
-export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain | UnboundedDomainWithInterval;
+export interface DomainRange {
+    // (undocumented)
+    max: number;
+    min: number;
+    // (undocumented)
+    minInterval?: number;
+}
 
 // @public (undocumented)
 export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>) => void;
@@ -795,7 +785,7 @@ export function getNodeName(node: ArrayNode): string;
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha (undocumented)
-export const Goal: React_2.FunctionComponent<SpecRequiredProps_9 & SpecOptionalProps_9>;
+export const Goal: React_2.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
 
 // @alpha (undocumented)
 export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
@@ -917,11 +907,8 @@ export interface GroupBySpec extends Spec {
 // @public (undocumented)
 export type GroupId = string;
 
-// Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
-//
 // @alpha (undocumented)
-export const Heatmap: React_2.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
+export const Heatmap: React_2.FunctionComponent<Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>>;
 
 // @alpha (undocumented)
 export interface HeatmapBandsColorScale {
@@ -940,58 +927,10 @@ export type HeatmapBrushEvent = {
 };
 
 // @public (undocumented)
-export type HeatmapElementEvent = [Cell, SeriesIdentifier];
-
-// @alpha (undocumented)
-export interface HeatmapSpec extends Spec {
-    // (undocumented)
-    chartType: typeof ChartType.Heatmap;
-    // (undocumented)
-    colorScale: HeatmapBandsColorScale;
-    // (undocumented)
-    data: Datum[];
-    // (undocumented)
-    highlightedData?: {
-        x: Array<string | number>;
-        y: Array<string | number>;
-    };
-    // (undocumented)
-    name?: string;
-    // (undocumented)
-    onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
-    // (undocumented)
-    specType: typeof SpecType.Series;
-    // (undocumented)
-    timeZone: string;
-    // (undocumented)
-    valueAccessor: Accessor | AccessorFn;
-    // (undocumented)
-    valueFormatter: (value: number) => string;
-    // (undocumented)
-    xAccessor: Accessor | AccessorFn;
-    // (undocumented)
-    xAxisLabelFormatter: (value: string | number) => string;
-    // (undocumented)
-    xAxisLabelName: string;
-    // (undocumented)
-    xScaleType: SeriesScales['xScaleType'];
-    // (undocumented)
-    xSortPredicate: Predicate;
-    // (undocumented)
-    yAccessor: Accessor | AccessorFn;
-    // (undocumented)
-    yAxisLabelFormatter: (value: string | number) => string;
-    // (undocumented)
-    yAxisLabelName: string;
-    // (undocumented)
-    ySortPredicate: Predicate;
-}
-
-// @public (undocumented)
-export interface HeatmapStyle {
+export interface HeatmapConfig {
     brushArea: {
         visible: boolean;
-        fill?: Color;
+        fill: Color;
         stroke: Color;
         strokeWidth: number;
     };
@@ -1009,10 +948,10 @@ export interface HeatmapStyle {
         maxHeight: Pixels | 'fill';
         align: 'center';
         label: Font & {
-            fontSize: Pixels;
+            minFontSize: Pixels;
+            maxFontSize: Pixels;
+            useGlobalMinFontSize: boolean;
             maxWidth: Pixels | 'fill';
-            align: TextAlign;
-            baseline: TextBaseline;
             visible: boolean;
         };
         border: {
@@ -1020,6 +959,10 @@ export interface HeatmapStyle {
             stroke: Color;
         };
     };
+    // Warning: (ae-forgotten-export) The symbol "FontFamily" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    fontFamily: FontFamily;
     // (undocumented)
     grid: {
         cellWidth: {
@@ -1036,26 +979,40 @@ export interface HeatmapStyle {
         };
     };
     // (undocumented)
+    height: Pixels;
+    // (undocumented)
+    margin: {
+        left: SizeRatio;
+        right: SizeRatio;
+        top: SizeRatio;
+        bottom: SizeRatio;
+    };
+    // (undocumented)
     maxColumnWidth: Pixels;
     // (undocumented)
     maxLegendHeight?: number;
-    // Warning: (ae-forgotten-export) The symbol "Pixels" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     maxRowHeight: Pixels;
+    // (undocumented)
+    timeZone: string;
+    // (undocumented)
+    width: Pixels;
     // Warning: (ae-forgotten-export) The symbol "Font" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
     xAxisLabel: Font & {
+        name: string;
         fontSize: Pixels;
         width: Pixels | 'auto';
         align: TextAlign;
         baseline: TextBaseline;
         visible: boolean;
         padding: number;
+        formatter: (value: string | number) => string;
     };
     // (undocumented)
     yAxisLabel: Font & {
+        name: string;
         fontSize: Pixels;
         width: Pixels | 'auto' | {
             max: Pixels;
@@ -1068,7 +1025,46 @@ export interface HeatmapStyle {
             top?: number;
             bottom?: number;
         };
+        formatter: (value: string | number) => string;
     };
+}
+
+// @public (undocumented)
+export type HeatmapElementEvent = [Cell, SeriesIdentifier];
+
+// @alpha (undocumented)
+export interface HeatmapSpec extends Spec {
+    // (undocumented)
+    chartType: typeof ChartType.Heatmap;
+    // (undocumented)
+    colorScale: HeatmapBandsColorScale;
+    // (undocumented)
+    config: RecursivePartial<HeatmapConfig>;
+    // (undocumented)
+    data: Datum[];
+    // (undocumented)
+    highlightedData?: {
+        x: Array<string | number>;
+        y: Array<string | number>;
+    };
+    // (undocumented)
+    name?: string;
+    // (undocumented)
+    specType: typeof SpecType.Series;
+    // (undocumented)
+    valueAccessor: Accessor | AccessorFn;
+    // (undocumented)
+    valueFormatter: (value: number) => string;
+    // (undocumented)
+    xAccessor: Accessor | AccessorFn;
+    // (undocumented)
+    xScaleType: SeriesScales['xScaleType'];
+    // (undocumented)
+    xSortPredicate: Predicate;
+    // (undocumented)
+    yAccessor: Accessor | AccessorFn;
+    // (undocumented)
+    ySortPredicate: Predicate;
 }
 
 // @public
@@ -1098,9 +1094,9 @@ export type HistogramModeAlignment = 'start' | 'center' | 'end';
 
 // @public (undocumented)
 export const HistogramModeAlignments: Readonly<{
-    Start: LineAlignSetting;
-    Center: LineAlignSetting;
-    End: LineAlignSetting;
+    Start: HistogramModeAlignment;
+    Center: HistogramModeAlignment;
+    End: HistogramModeAlignment;
 }>;
 
 // @public (undocumented)
@@ -1348,8 +1344,8 @@ export interface LogScaleOptions {
     logMinLimit?: number;
 }
 
-// @public (undocumented)
-export type LowerBoundedDomain = DomainBase & LowerBound;
+// @public
+export type Margins = PerSideDistance;
 
 // @public
 export type MarkBuffer = number | ((radius: number) => number);
@@ -1415,8 +1411,6 @@ export type OrdinalDomain = (number | string)[];
 // @public (undocumented)
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
 
-// Warning: (ae-forgotten-export) The symbol "PerSideDistance" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type Padding = PerSideDistance;
 
@@ -1497,6 +1491,21 @@ export const PATH_KEY = "path";
 export function pathAccessor(n: ArrayEntry): LegendPath;
 
 // @public
+export interface PerSideDistance {
+    // (undocumented)
+    bottom: number;
+    // (undocumented)
+    left: number;
+    // (undocumented)
+    right: number;
+    // (undocumented)
+    top: number;
+}
+
+// @public (undocumented)
+export type Pixels = number;
+
+// @public
 export const Placement: Readonly<{
     Top: "top";
     Bottom: "bottom";
@@ -1520,7 +1529,6 @@ export type Placement = $Values<typeof Placement>;
 
 // @public (undocumented)
 type PointerEvent_2 = PointerOverEvent | PointerOutEvent;
-
 export { PointerEvent_2 as PointerEvent }
 
 // @public (undocumented)
@@ -1859,7 +1867,6 @@ export interface SettingsSpec extends Spec, LegendSpec {
     debugState?: boolean;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
-    hideDuplicateAxes: boolean;
     minBrushDelta?: number;
     noResults?: ComponentType | ReactChild;
     onAnnotationClick?: AnnotationClickListener;
@@ -2118,8 +2125,6 @@ export interface Theme {
     // (undocumented)
     goal: GoalStyles;
     // (undocumented)
-    heatmap: HeatmapStyle;
-    // (undocumented)
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;
     markSizeRatio?: number;
@@ -2246,12 +2251,6 @@ export interface UnaryAccessorFn<Return = any> {
 }
 
 // @public (undocumented)
-export type UnboundedDomainWithInterval = DomainBase;
-
-// @public (undocumented)
-export type UpperBoundedDomain = DomainBase & UpperBound;
-
-// @public (undocumented)
 export type ValueAccessor = (d: Datum) => AdditiveNumber;
 
 // @public (undocumented)
@@ -2298,23 +2297,51 @@ export type WeightFn = $Values<typeof WeightFn>;
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha (undocumented)
-export const Wordcloud: React_2.FunctionComponent<SpecRequiredProps_10 & SpecOptionalProps_10>;
+export const Wordcloud: React_2.FunctionComponent<SpecRequiredProps_9 & SpecOptionalProps_9>;
+
+// @public (undocumented)
+export interface WordcloudConfigs {
+    // (undocumented)
+    count: number;
+    // (undocumented)
+    endAngle: number;
+    // (undocumented)
+    exponent: number;
+    // (undocumented)
+    fontFamily: string;
+    // (undocumented)
+    fontStyle: FontStyle;
+    // (undocumented)
+    fontWeight: number;
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    maxFontSize: number;
+    // (undocumented)
+    minFontSize: number;
+    // (undocumented)
+    padding: number;
+    // (undocumented)
+    spiral: string;
+    // (undocumented)
+    startAngle: number;
+    // (undocumented)
+    weightFn: WeightFn;
+    // (undocumented)
+    width: number;
+}
 
 // @public (undocumented)
 export type WordCloudElementEvent = [WordModel, SeriesIdentifier];
 
 // @alpha (undocumented)
-export interface WordcloudSpec extends Spec, WordcloudViewModel {
+export interface WordcloudSpec extends Spec {
+    // (undocumented)
+    angleCount: number;
     // (undocumented)
     chartType: typeof ChartType.Wordcloud;
     // (undocumented)
-    specType: typeof SpecType.Series;
-}
-
-// @public (undocumented)
-export interface WordcloudViewModel {
-    // (undocumented)
-    angleCount: number;
+    config: RecursivePartial<WordcloudConfigs>;
     // (undocumented)
     data: WordModel[];
     // (undocumented)
@@ -2335,6 +2362,8 @@ export interface WordcloudViewModel {
     outOfRoomCallback: OutOfRoomCallback;
     // (undocumented)
     padding: number;
+    // (undocumented)
+    specType: typeof SpecType.Series;
     // (undocumented)
     spiral: string;
     // (undocumented)
@@ -2357,7 +2386,7 @@ export interface WordModel {
 export type XScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
 
 // @public (undocumented)
-export interface XYBrushArea {
+export interface XYBrushEvent {
     // (undocumented)
     x?: [number, number];
     // (undocumented)
@@ -2392,13 +2421,13 @@ export interface YDomainBase {
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
-
 // Warnings were encountered during analysis:
 //
-// src/chart_types/partition_chart/layout/types/config_types.ts:139:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
-// src/utils/themes/theme.ts:214:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/utils/themes/theme.ts:215:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:19:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:47:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:48:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

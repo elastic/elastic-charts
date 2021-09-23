@@ -22,7 +22,7 @@ export const Example = () => {
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis
         id="left2"
-        domain={{ fit }}
+        domain={{ min: NaN, max: NaN, fit }}
         title="Left axis"
         position={Position.Left}
         tickFormat={(d: any) => Number(d).toFixed(2)}

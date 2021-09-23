@@ -16,9 +16,11 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example = () => {
   const leftDomain = {
     min: number('left min', 0),
+    max: NaN,
   };
 
   const xDomain = {
+    min: NaN,
     max: number('xDomain max', 3),
   };
 

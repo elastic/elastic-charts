@@ -6,11 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../common/colors';
 import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { SortSeriesByConfig, TickFormatterOptions } from '../../../specs';
-import { Color, MergeOptions, mergePartial } from '../../../utils/common';
+import { MergeOptions, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';

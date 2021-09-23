@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../common/colors';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
 import { SortSeriesByConfig } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
-import { mergePartial, Rotation, Color, isUniqueArray } from '../../../../utils/common';
+import { mergePartial, Rotation, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import {
@@ -251,7 +252,7 @@ export function isHistogramModeEnabled(seriesSpecs: BasicSeriesSpec[]): boolean 
 
 /** @internal */
 export function computeXScaleOffset(
-  xScale: Scale,
+  xScale: Scale<number | string>,
   enableHistogramMode: boolean,
   histogramModeAlignment: HistogramModeAlignment = HistogramModeAlignments.Start,
 ): number {
@@ -278,9 +279,9 @@ export function computeXScaleOffset(
 function renderGeometries(
   dataSeries: DataSeries[],
   xDomain: XDomain,
-  yScales: Map<GroupId, Scale>,
-  smVScale: Scale,
-  smHScale: Scale,
+  yScales: Map<GroupId, Scale<number>>,
+  smVScale: Scale<number | string>,
+  smHScale: Scale<number | string>,
   barIndexOrderPerPanel: Record<string, string[]>,
   seriesSpecs: BasicSeriesSpec[],
   seriesColorsMap: Map<SeriesKey, Color>,

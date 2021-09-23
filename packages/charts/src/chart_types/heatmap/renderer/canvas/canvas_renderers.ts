@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { Color, Colors } from '../../../../common/colors';
+import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
@@ -17,6 +19,7 @@ export function renderCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   { theme, heatmapViewModel }: ShapeViewModel,
+  background: Color,
 ) {
   withContext(ctx, () => {
     // set some defaults for the overall rendering
@@ -42,8 +45,7 @@ export function renderCanvas2d(
     const filteredYValues = heatmapViewModel.yValues.filter((value, yIndex) => yIndex < heatmapViewModel.pageSize);
 
     renderLayers(ctx, [
-      clearCanvas,
-
+      () => clearCanvas(ctx, background),
       () => {
         // Grid
         withContext(ctx, () => {
@@ -63,19 +65,20 @@ export function renderCanvas2d(
         }),
 
       () =>
-        // Text on cells
-        theme.cell.label.visible &&
         withContext(ctx, () => {
+          // Text on cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
-            if (cell.visible)
-              renderText(
-                ctx,
-                { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 },
-                cell.formatted,
-                theme.cell.label,
-              );
+            const fontSize = heatmapViewModel.cellFontSize(cell);
+            if (cell.visible && Number.isFinite(fontSize))
+              renderText(ctx, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, cell.formatted, {
+                ...theme.cell.label,
+                fontSize,
+                align: 'center',
+                baseline: 'middle',
+                textColor: cell.textColor,
+              });
           });
         }),
 
@@ -84,7 +87,14 @@ export function renderCanvas2d(
         theme.yAxisLabel.visible &&
         withContext(ctx, () =>
           filteredYValues.forEach((yValue) => {
-            const { padding, ...font } = theme.yAxisLabel;
+            const font: Font = {
+              fontFamily: theme.yAxisLabel.fontFamily,
+              fontStyle: theme.yAxisLabel.fontStyle ? theme.yAxisLabel.fontStyle : 'normal',
+              fontVariant: 'normal',
+              fontWeight: 'normal',
+              textColor: Colors.Black.keyword,
+            };
+            const { padding } = theme.yAxisLabel;
             const horizontalPadding =
               typeof padding === 'number' ? padding * 2 : (padding.left ?? 0) + (padding.right ?? 0);
             const [resultText] = wrapLines(

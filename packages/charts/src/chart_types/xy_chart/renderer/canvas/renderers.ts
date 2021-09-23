@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB } from '../../../../common/color_library_wrappers';
+import { Colors } from '../../../../common/colors';
 import { Rect } from '../../../../geoms/types';
 import { clearCanvas, isCanvasRenderer, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderAnnotations } from './annotations';
@@ -38,7 +38,7 @@ export function renderXYChartCanvas2d(
       rotation,
       geometries,
       geometriesIndex,
-      theme: { axes: sharedAxesStyle, sharedStyle, barSeriesStyle },
+      theme: { axes: sharedAxesStyle, sharedStyle, barSeriesStyle, background },
       highlightedLegendItem,
       annotationDimensions,
       annotationSpecs,
@@ -51,7 +51,7 @@ export function renderXYChartCanvas2d(
     } = props;
     const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
     renderLayers(ctx, [
-      clearCanvas,
+      () => clearCanvas(ctx, background.color),
 
       // render panel grid
       () => debug && renderGridPanels(ctx, transform, panelGeoms),
@@ -149,8 +149,8 @@ export function renderXYChartCanvas2d(
             ctx,
             { x: left, y: top, width, height },
             0,
-            { color: stringToRGB('transparent') },
-            { color: stringToRGB('red'), width: 4, dash: [4, 4] },
+            { color: Colors.Transparent.rgba },
+            { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
           );
 
           const renderer = geometriesIndex.triangulation([0, 0, width, height])?.render;

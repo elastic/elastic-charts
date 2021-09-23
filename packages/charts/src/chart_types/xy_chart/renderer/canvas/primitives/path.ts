@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RGBtoString } from '../../../../../common/color_library_wrappers';
+import { overrideOpacity, RGBATupleToString } from '../../../../../common/color_library_wrappers';
 import { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { withClipRanges } from '../../../../../renderers/canvas';
 import { ClippedRanges } from '../../../../../utils/geometry';
@@ -48,7 +48,7 @@ export function renderAreaPath(
   withClipRanges(ctx, clippedRanges, clippings, false, () => renderPathFill(ctx, area, fill, transform));
   if (clippedRanges.length > 0 && !hideClippedRanges) {
     withClipRanges(ctx, clippedRanges, clippings, true, () =>
-      renderPathFill(ctx, area, { ...fill, color: { ...fill.color, opacity: fill.color.opacity / 2 } }, transform),
+      renderPathFill(ctx, area, { ...fill, color: overrideOpacity(fill.color, fill.color[3] / 2) }, transform),
     );
   }
 }
@@ -56,7 +56,7 @@ export function renderAreaPath(
 function renderPathFill(ctx: CanvasRenderingContext2D, path: string, fill: Fill, { x, y }: Point) {
   ctx.translate(x, y);
   const path2d = new Path2D(path);
-  ctx.fillStyle = RGBtoString(fill.color);
+  ctx.fillStyle = RGBATupleToString(fill.color);
   ctx.fill(path2d);
 
   if (fill.texture) {

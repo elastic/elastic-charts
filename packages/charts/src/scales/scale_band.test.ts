@@ -41,17 +41,8 @@ describe('Scale Band', () => {
     expect(scale.bandwidth).toBe(25);
     expect(scale.isValueInDomain('a')).toBe(true);
     expect(scale.isValueInDomain('b')).toBe(true);
-    expect(scale.isValueInDomain('z')).toBe(false);
-    expect(scale.isValueInDomain(null)).toBe(false);
-  });
-  it('shall scale a any domain', () => {
-    const scale = new ScaleBand(['a', 1, null, 'd', undefined], [0, 100]);
-    expect(scale.bandwidth).toBe(20);
-    expect(scale.scale('a')).toBe(0);
-    expect(scale.scale(1)).toBe(20);
-    expect(scale.scale(null)).toBe(40);
-    expect(scale.scale('d')).toBe(60);
-    expect(scale.scale()).toBe(80);
+    expect(scale.isValueInDomain('z' as any)).toBe(false);
+    expect(scale.isValueInDomain(null as any)).toBe(false);
   });
   it('shall scale remove domain duplicates', () => {
     const scale = new ScaleBand(['a', 'a', 'b', 'c', 'c', 'd'], [0, 100]);

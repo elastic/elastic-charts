@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { measureText } from '../../../../common/text_utils';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { ShapeViewModel, nullShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -31,5 +32,14 @@ export function render(
     return nullShapeViewModel();
   }
 
-  return shapeViewModel(spec, theme, chartDimensions, heatmapTable, colorScale, bandsToHide, gridHeightParams);
+  return shapeViewModel(
+    measureText(textMeasurerCtx),
+    spec,
+    theme,
+    chartDimensions,
+    heatmapTable,
+    colorScale,
+    bandsToHide,
+    gridHeightParams,
+  );
 }

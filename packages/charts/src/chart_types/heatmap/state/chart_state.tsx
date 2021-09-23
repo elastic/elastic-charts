@@ -46,7 +46,7 @@ export class HeatmapState implements InternalChartState {
 
   onElementOutCaller: (state: GlobalChartState) => void = createOnElementOutCaller();
 
-  onBrushEndCaller: (state: GlobalChartState) => void = createOnBrushEndCaller();
+  onBrushEndCaller: (state: GlobalChartState, props: unknown) => void = createOnBrushEndCaller();
 
   isInitialized(globalState: GlobalChartState) {
     return getSpecOrNull(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
@@ -127,6 +127,6 @@ export class HeatmapState implements InternalChartState {
     this.onElementOverCaller(globalState);
     this.onElementOutCaller(globalState);
     this.onElementClickCaller(globalState);
-    this.onBrushEndCaller(globalState);
+    this.onBrushEndCaller(globalState, null);
   }
 }

@@ -18,7 +18,7 @@ export const Example = () => (
     <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
     <Axis
       id="left2"
-      domain={{ fit: true }}
+      domain={{ min: NaN, max: NaN, fit: true }}
       title="Left axis"
       position={Position.Left}
       tickFormat={(d: any) => Number(d).toFixed(2)}

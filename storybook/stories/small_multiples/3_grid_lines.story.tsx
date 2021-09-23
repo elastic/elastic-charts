@@ -25,6 +25,7 @@ import {
   timeFormatter,
   AxisSpec,
 } from '@elastic/charts';
+import { HeatmapBrushEvent } from '@elastic/charts/src/chart_types/heatmap/specs';
 import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/axis_type_utils';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -72,6 +73,7 @@ const getAxisOptions = (
     tickFormat: isVertical ? (d) => d.toFixed(2) : tickTimeFormatter,
     domain: isVertical
       ? {
+          min: NaN,
           max: 10,
         }
       : undefined,
@@ -107,9 +109,10 @@ export const Example = () => {
           },
         }}
         baseTheme={useBaseTheme()}
-        onBrushEnd={(d) => {
-          if (d.x) {
-            action('brushEvent')(tickTimeFormatter(d.x[0] ?? 0), tickTimeFormatter(d.x[1] ?? 0));
+        onBrushEnd={(e) => {
+          const { x } = e as HeatmapBrushEvent;
+          if (x) {
+            action('brushEvent')(tickTimeFormatter(x[0] ?? 0), tickTimeFormatter(x[1] ?? 0));
           }
         }}
       />

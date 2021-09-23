@@ -91,3 +91,7 @@ export const Example = () => {
     </Chart>
   );
 };
+
+Example.parameters = {
+  background: { default: 'white' },
+};

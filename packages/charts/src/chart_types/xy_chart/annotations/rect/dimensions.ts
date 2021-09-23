@@ -32,8 +32,8 @@ export function isWithinRectBounds({ x, y }: Point, { startX, endX, startY, endY
 /** @internal */
 export function computeRectAnnotationDimensions(
   annotationSpec: RectAnnotationSpec,
-  yScales: Map<GroupId, Scale>,
-  xScale: Scale,
+  yScales: Map<GroupId, Scale<number>>,
+  xScale: Scale<number>,
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   chartRotation: Rotation,
@@ -50,14 +50,14 @@ export function computeRectAnnotationDimensions(
     const { x0: initialX0, x1: initialX1, y0: initialY0, y1: initialY1 } = datum.coordinates;
 
     // if everything is null, return; otherwise we coerce the other coordinates
-    if (initialX0 == null && initialX1 == null && initialY0 == null && initialY1 == null) {
+    if (initialX0 === null && initialX1 === null && initialY0 === null && initialY1 === null) {
       return;
     }
     let height: number | undefined;
 
     const [x0, x1] = limitValueToDomainRange(xScale, initialX0, initialX1, isHistogram);
     // something is wrong with the data types, don't draw this annotation
-    if (x0 == null || x1 == null) {
+    if (x0 === null || x1 === null) {
       return;
     }
 
@@ -104,13 +104,13 @@ export function computeRectAnnotationDimensions(
 
     const [y0, y1] = limitValueToDomainRange(yScale, initialY0, initialY1);
     // something is wrong with the data types, don't draw this annotation
-    if (y0 == null || y1 == null) {
+    if (y0 === null || y1 === null) {
       return;
     }
 
     let scaledY1 = yScale.pureScale(y1);
     const scaledY0 = yScale.pureScale(y0);
-    if (scaledY1 == null || scaledY0 == null) {
+    if (scaledY1 === null || scaledY0 === null) {
       return;
     }
     height = Math.abs(scaledY0 - scaledY1);
@@ -162,7 +162,7 @@ export function computeRectAnnotationDimensions(
 }
 
 function scaleXonBandScale(
-  xScale: ScaleBand,
+  xScale: ScaleBand<number | string>,
   x0: PrimitiveValue,
   x1: PrimitiveValue,
 ): { x: number; width: number } | null {
@@ -171,7 +171,7 @@ function scaleXonBandScale(
   const padding = (xScale.step - xScale.originalBandwidth) / 2;
   let scaledX1 = xScale.scale(x1);
   let scaledX0 = xScale.scale(x0);
-  if (scaledX1 == null || scaledX0 == null) {
+  if (scaledX1 === null || scaledX0 === null) {
     return null;
   }
   // extend the x1 scaled value to fully cover the last bar
@@ -204,7 +204,7 @@ function scaleXonContinuousScale(
   const scaledX0 = xScale.scale(x0);
   const scaledX1: number | null =
     xScale.totalBarsInCluster > 0 && !isHistogramModeEnabled ? xScale.scale(x1 + xScale.minInterval) : xScale.scale(x1);
-  if (scaledX1 == null || scaledX0 == null) {
+  if (scaledX1 === null || scaledX0 === null) {
     return null;
   }
   // the width needs to be computed before adjusting the x anchor
@@ -223,7 +223,7 @@ function scaleXonContinuousScale(
  * @param isHistogram
  */
 function limitValueToDomainRange(
-  scale: Scale,
+  scale: Scale<number>,
   minValue?: PrimitiveValue,
   maxValue?: PrimitiveValue,
   isHistogram = false,
@@ -231,38 +231,18 @@ function limitValueToDomainRange(
   const [domainStartValue] = scale.domain;
   // this fix the case where rendering on categorical scale and we have only one element
   const domainEndValue = scale.domain.length > 0 ? scale.domain[scale.domain.length - 1] : scale.domain[0];
-
-  const min = getMin(domainStartValue, minValue);
-
-  const max = getMax(isHistogram ? domainEndValue + scale.minInterval : domainEndValue, maxValue);
+  const min = maxOf(domainStartValue, minValue);
+  const max = minOf(isHistogram ? domainEndValue + scale.minInterval : domainEndValue, maxValue);
   // extend to edge values if values are null/undefined
-  if (!isContinuousScale(scale)) {
-    return [min, max];
-  }
-  if (min !== null && max !== null && min > max) {
-    return [null, null];
-  }
-  return [min, max];
+  return isContinuousScale(scale) && min !== null && max !== null && min > max ? [null, null] : [min, max];
 }
 
-function getMax(max: number, value?: number | string | null) {
-  if (value == null) {
-    return max;
-  }
-  if (typeof value === 'number') {
-    return Math.min(value, max);
-  }
-  return value;
+function minOf(base: number, value?: number | string | null | undefined): number | string {
+  return typeof value === 'number' ? Math.min(value, base) : typeof value === 'string' ? value : base;
 }
 
-function getMin(min: number, value?: number | string | null) {
-  if (value == null) {
-    return min;
-  }
-  if (typeof value === 'number') {
-    return Math.max(value, min);
-  }
-  return value;
+function maxOf(base: number, value: number | string | null | undefined): number | string {
+  return typeof value === 'number' ? Math.max(value, base) : typeof value === 'string' ? value : base;
 }
 
 function getOutsideDimension(style: AxisStyle): number {

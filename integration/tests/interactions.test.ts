@@ -348,16 +348,17 @@ describe('Interactions', () => {
         { left: 300, top: 80 },
         {
           screenshotSelector: '#story-root',
+          delay: 1000,
         },
       );
     });
-    // Skip flacky test for now
-    it.skip('show N/A tooltip for bars', async () => {
+    it('show N/A tooltip for bars', async () => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(
         'http://localhost:9001/?path=/story/interactions--interaction-with-null-values&knob-Series type=bar&knob-show null values=true',
         { left: 300, top: 80 },
         {
           screenshotSelector: '#story-root',
+          delay: 1000,
         },
       );
     });

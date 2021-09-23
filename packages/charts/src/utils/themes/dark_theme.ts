@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../common/colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import {
@@ -252,10 +253,9 @@ export const DARK_THEME: Theme = {
       fontSize: 12,
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',
-      textColor: 'white',
+      textColor: Colors.White.keyword,
       fontVariant: 'normal',
       fontWeight: 'normal',
-      textOpacity: 1,
       align: 'center',
       baseline: 'middle',
       padding: 6,
@@ -266,10 +266,9 @@ export const DARK_THEME: Theme = {
       fontSize: 12,
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',
-      textColor: 'white',
+      textColor: Colors.White.keyword,
       fontVariant: 'normal',
       fontWeight: 'normal',
-      textOpacity: 1,
       baseline: 'middle',
       padding: 5,
     },
@@ -294,15 +293,14 @@ export const DARK_THEME: Theme = {
       label: {
         visible: true,
         maxWidth: 'fill',
-        fontSize: 10,
+        minFontSize: 8,
+        maxFontSize: 12,
         fontFamily: 'Sans-Serif',
         fontStyle: 'normal',
-        textColor: 'white',
+        textColor: Colors.White.keyword,
         fontVariant: 'normal',
         fontWeight: 'normal',
-        textOpacity: 1,
-        align: 'center',
-        baseline: 'middle',
+        useGlobalMinFontSize: true,
       },
       border: {
         strokeWidth: 1,

@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { RGBtoString } from '../../../../common/color_library_wrappers';
+import { RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { Colors } from '../../../../common/colors';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSpecOrNull } from './heatmap_spec';
@@ -37,7 +38,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
           // X-axis value
           tooltipInfo.values.push({
             label: spec.xAxisLabelName,
-            color: 'transparent',
+            color: Colors.Transparent.keyword,
             isHighlighted: false,
             isVisible: true,
             seriesIdentifier: {
@@ -52,7 +53,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
           // Y-axis value
           tooltipInfo.values.push({
             label: spec.yAxisLabelName,
-            color: 'transparent',
+            color: Colors.Transparent.keyword,
             isHighlighted: false,
             isVisible: true,
             seriesIdentifier: {
@@ -67,7 +68,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
           // Cell value
           tooltipInfo.values.push({
             label: spec.name ?? spec.id,
-            color: RGBtoString(shape.fill.color),
+            color: RGBATupleToString(shape.fill.color),
             isHighlighted: false,
             isVisible: true,
             seriesIdentifier: {
@@ -81,8 +82,8 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
         });
     } else {
       tooltipInfo.values.push({
-        label: ``,
-        color: 'transparent',
+        label: '',
+        color: Colors.Transparent.keyword,
         isHighlighted: false,
         isVisible: true,
         seriesIdentifier: {
