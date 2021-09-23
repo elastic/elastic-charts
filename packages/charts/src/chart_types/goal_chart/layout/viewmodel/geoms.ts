@@ -230,7 +230,7 @@ function get<T>(o: { [k: string]: any }, name: string, dflt: T) {
 /** @internal */
 export function geoms(
   bulletViewModel: BulletViewModel,
-  config: Theme['goal'],
+  theme: Theme['goal'],
   partentDimensions: Dimensions,
   chartCenter: PointObject,
 ): Mark[] {
@@ -305,21 +305,21 @@ export function geoms(
     {
       order: 1,
       landmarks: { from: 'base', to: 'actual' },
-      aes: { shape, fillColor: config.progressLine.stroke, lineWidth: tickLength },
+      aes: { shape, fillColor: theme.progressLine.stroke, lineWidth: tickLength },
     },
     ...(target
       ? [
           {
             order: 2,
             landmarks: { at: 'target' },
-            aes: { shape, fillColor: config.targetLine.stroke, lineWidth: barThickness / GOLDEN_RATIO },
+            aes: { shape, fillColor: theme.targetLine.stroke, lineWidth: barThickness / GOLDEN_RATIO },
           },
         ]
       : []),
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 3,
       landmarks: { at: `tick_${i}` },
-      aes: { shape, fillColor: config.tickLine.stroke, lineWidth: tickLength, axisNormalOffset: tickOffset },
+      aes: { shape, fillColor: theme.tickLine.stroke, lineWidth: tickLength, axisNormalOffset: tickOffset },
     })),
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 4,
@@ -328,8 +328,8 @@ export function geoms(
         shape: 'text',
         textAlign: vertical ? 'right' : 'center',
         textBaseline: vertical ? 'middle' : 'top',
-        fillColor: config.tickLabel.fill,
-        fontShape: { ...config.tickLabel, fontVariant: 'normal', fontWeight: '500' },
+        fillColor: theme.tickLabel.fill,
+        fontShape: { ...theme.tickLabel, fontVariant: 'normal', fontWeight: '500' },
         axisNormalOffset: -barThickness,
       },
     })),
@@ -342,8 +342,8 @@ export function geoms(
         axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
         textAlign: vertical ? 'center' : 'right',
         textBaseline: 'bottom',
-        fillColor: config.majorLabel.fill,
-        fontShape: { ...config.majorLabel, fontVariant: 'normal', fontWeight: '900' },
+        fillColor: theme.majorLabel.fill,
+        fontShape: { ...theme.majorLabel, fontVariant: 'normal', fontWeight: '900' },
       },
     },
     {
@@ -355,8 +355,8 @@ export function geoms(
         axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
         textAlign: vertical ? 'center' : 'right',
         textBaseline: 'top',
-        fillColor: config.minorLabel.fill,
-        fontShape: { ...config.minorLabel, fontVariant: 'normal', fontWeight: '300' },
+        fillColor: theme.minorLabel.fill,
+        fontShape: { ...theme.minorLabel, fontVariant: 'normal', fontWeight: '300' },
       },
     },
     ...(circular
@@ -368,8 +368,8 @@ export function geoms(
               shape: 'text',
               textAlign: 'center',
               textBaseline: 'bottom',
-              fillColor: config.majorCenterLabel.fill,
-              fontShape: { ...config.majorCenterLabel, fontVariant: 'normal', fontWeight: '900' },
+              fillColor: theme.majorCenterLabel.fill,
+              fontShape: { ...theme.majorCenterLabel, fontVariant: 'normal', fontWeight: '900' },
             },
           },
           {
@@ -379,8 +379,8 @@ export function geoms(
               shape: 'text',
               textAlign: 'center',
               textBaseline: 'top',
-              fillColor: config.minorCenterLabel.fill,
-              fontShape: { ...config.minorCenterLabel, fontVariant: 'normal', fontWeight: '300' },
+              fillColor: theme.minorCenterLabel.fill,
+              fontShape: { ...theme.minorCenterLabel, fontVariant: 'normal', fontWeight: '300' },
             },
           },
         ]
