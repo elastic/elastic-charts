@@ -1,9 +1,5 @@
 {
   "extends": "../tsconfig",
-  "include": [
-    "../packages/charts/src/**/*",
-    "./**/*",
-    "../storybook-docs/config.docs.ts",
-  ],
+  "include": ["../packages/charts/src/**/*", "./**/*", "../storybook-docs/config.docs.ts"],
   "exclude": ["../**/*.test.*"]
 }
