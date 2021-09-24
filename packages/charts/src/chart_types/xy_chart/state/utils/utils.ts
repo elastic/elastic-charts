@@ -10,7 +10,7 @@ import { Color } from '../../../../common/colors';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
-import { SortSeriesByConfig } from '../../../../specs';
+import { SettingsSpec, SortSeriesByConfig } from '../../../../specs';
 import { OrderBy } from '../../../../specs/settings';
 import { mergePartial, Rotation, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
@@ -112,11 +112,11 @@ export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   scaleConfigs: ScaleConfigs,
   deselectedDataSeries: SeriesIdentifier[] = [],
-  settingsSpec?: { orderOrdinalBinsBy: OrderBy; sortSeriesBy: SeriesCompareFn | SortSeriesByConfig },
+  settingsSpec?: Pick<SettingsSpec, 'orderOrdinalBinsBy'>,
   smallMultiples?: SmallMultiplesGroupBy,
 ): SeriesDomainsAndData {
   const orderOrdinalBinsBy = settingsSpec?.orderOrdinalBinsBy;
-  const sortSeriesBy = settingsSpec?.sortSeriesBy;
+  const sortSeriesBy = (settingsSpec as any)?.sortSeriesBy as SeriesCompareFn | SortSeriesByConfig | undefined;
   const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
     seriesSpecs,
     deselectedDataSeries,

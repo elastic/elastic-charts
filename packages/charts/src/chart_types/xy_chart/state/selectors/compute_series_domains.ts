@@ -6,12 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { OrderBy, SortSeriesByConfig } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { SeriesCompareFn } from '../../../../utils/series_sort';
-import { SeriesDomainsAndData } from '../utils/types';
 import { computeSeriesDomains } from '../utils/utils';
 import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getSeriesSpecsSelector, getSmallMultiplesIndexOrderSelector } from './get_specs';
@@ -27,19 +24,5 @@ export const computeSeriesDomainsSelector = createCustomCachedSelector(
     getSettingsSpecSelector,
     getSmallMultiplesIndexOrderSelector,
   ],
-  (seriesSpecs, scaleConfigs, deselectedDataSeries, settingsSpec, smallMultiples): SeriesDomainsAndData => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (settingsSpec.sortSeriesBy) throw new Error('Fuck!');
-    return computeSeriesDomains(
-      seriesSpecs,
-      scaleConfigs,
-      deselectedDataSeries,
-      (settingsSpec as unknown) as {
-        orderOrdinalBinsBy: OrderBy;
-        sortSeriesBy: SeriesCompareFn | SortSeriesByConfig;
-      },
-      smallMultiples,
-    );
-  },
+  computeSeriesDomains,
 );
