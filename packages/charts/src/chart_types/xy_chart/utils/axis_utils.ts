@@ -213,21 +213,19 @@ export function tickLabelPosition(
   const userOffsets = getUserTextOffsets(tickDimensions, textOffset);
   const paddedTickDimension = tickDimension + labelInnerPadding;
   const axisNetSize = (isVerticalAxis(pos) ? axisSize.width : axisSize.height) - paddedTickDimension;
+  const labelBoxHalfGirth = isHorizontalAxis(pos) ? maxLabelBboxHeight / 2 : maxLabelBboxWidth / 2;
+  const labelHalfWidth = maxLabelTextWidth / 2;
   return {
-    x: pos === Position.Left ? axisNetSize : pos === Position.Right ? paddedTickDimension : tickPosition,
-    y: pos === Position.Top ? axisNetSize : pos === Position.Bottom ? paddedTickDimension : tickPosition,
-    offsetX:
-      userOffsets.global.x + (isHorizontalAxis(pos) ? 0 : (pos === Position.Left ? -1 : 1) * (maxLabelBboxWidth / 2)),
-    offsetY:
-      userOffsets.global.y + (isVerticalAxis(pos) ? 0 : ((pos === Position.Top ? -1 : 1) * maxLabelBboxHeight) / 2),
-    textOffsetX:
-      userOffsets.local.x +
-      (isHorizontalAxis(pos) && rotation === 0
-        ? 0
-        : (maxLabelTextWidth / 2) * horizontalOffsetMultiplier[horizontalAlign]),
-    textOffsetY: userOffsets.local.y + (maxLabelTextHeight / 2) * verticalOffsetMultiplier[verticalAlign],
     horizontalAlign,
     verticalAlign,
+    x: pos === Position.Left ? axisNetSize : pos === Position.Right ? paddedTickDimension : tickPosition,
+    y: pos === Position.Top ? axisNetSize : pos === Position.Bottom ? paddedTickDimension : tickPosition,
+    offsetX: userOffsets.global.x + (isHorizontalAxis(pos) ? 0 : horizontalOffsetMultiplier[pos] * labelBoxHalfGirth),
+    offsetY: userOffsets.global.y + (isVerticalAxis(pos) ? 0 : verticalOffsetMultiplier[pos] * labelBoxHalfGirth),
+    textOffsetX:
+      userOffsets.local.x +
+      (isHorizontalAxis(pos) && rotation === 0 ? 0 : labelHalfWidth * horizontalOffsetMultiplier[horizontalAlign]),
+    textOffsetY: userOffsets.local.y + (maxLabelTextHeight / 2) * verticalOffsetMultiplier[verticalAlign],
   };
 }
 
