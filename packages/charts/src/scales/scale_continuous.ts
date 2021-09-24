@@ -75,28 +75,26 @@ function getPixelPaddedDomain(
     [2 * desiredPixelPadding, 2 * desiredPixelPadding],
     chartHeight,
   );
-  let paddedDomainLo = orderedDomain[0] - desiredPixelPadding / scaleMultiplier;
-  let paddedDomainHigh = orderedDomain[1] + desiredPixelPadding / scaleMultiplier;
-
-  if (constrainDomainPadding) {
-    if (paddedDomainLo < intercept && orderedDomain[0] >= intercept) {
-      const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
-        [intercept, orderedDomain[1]],
-        [0, 2 * desiredPixelPadding],
-        chartHeight,
-      );
-      paddedDomainLo = intercept;
-      paddedDomainHigh = orderedDomain[1] + desiredPixelPadding / scaleMultiplier;
-    } else if (paddedDomainHigh > 0 && orderedDomain[1] <= 0) {
-      const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
-        [orderedDomain[0], intercept],
-        [2 * desiredPixelPadding, 0],
-        chartHeight,
-      );
-      paddedDomainLo = orderedDomain[0] - desiredPixelPadding / scaleMultiplier;
-      paddedDomainHigh = intercept;
-    }
-  }
+  const baselinePaddedDomainLo = orderedDomain[0] - desiredPixelPadding / scaleMultiplier;
+  const baselinePaddedDomainHigh = orderedDomain[1] + desiredPixelPadding / scaleMultiplier;
+  const crossBelow = constrainDomainPadding && baselinePaddedDomainLo < intercept && orderedDomain[0] >= intercept;
+  const crossAbove = constrainDomainPadding && baselinePaddedDomainHigh > 0 && orderedDomain[1] <= 0;
+  const paddedDomainLo = crossBelow
+    ? intercept
+    : crossAbove
+    ? orderedDomain[0] -
+      desiredPixelPadding /
+        screenspaceMarkerScaleCompressor([orderedDomain[0], intercept], [2 * desiredPixelPadding, 0], chartHeight)
+          .scaleMultiplier
+    : baselinePaddedDomainLo;
+  const paddedDomainHigh = crossBelow
+    ? orderedDomain[1] +
+      desiredPixelPadding /
+        screenspaceMarkerScaleCompressor([intercept, orderedDomain[1]], [0, 2 * desiredPixelPadding], chartHeight)
+          .scaleMultiplier
+    : crossAbove
+    ? intercept
+    : baselinePaddedDomainHigh;
 
   return inverted ? [paddedDomainHigh, paddedDomainLo] : [paddedDomainLo, paddedDomainHigh];
 }
