@@ -92,7 +92,6 @@ export const Example = () => {
         data={mocks.miniSunburst}
         valueAccessor={(d: Datum) => d.exportVal as number}
         valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-        fillLabelValueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,

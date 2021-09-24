@@ -151,7 +151,6 @@ export const Example = () => {
         layout={PartitionLayout.sunburst}
         valueAccessor={(d: Datum) => d.exportVal as number}
         valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-        fillLabelValueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         smallMultiples="sm"
         layers={[
           {

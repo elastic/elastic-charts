@@ -6,25 +6,20 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../common/colors';
 import { Pixels, Distance, Radian, SizeRatio, Ratio } from '../../common/geometry';
-import { Font, TextContrast, PartialFont, FontFamily } from '../../common/text_utils';
-import { StrokeStyle, Color } from '../common';
+import { Font, PartialFont, FontFamily } from '../../common/text_utils';
+import { StrokeStyle } from '../common';
 import { PerSideDistance } from '../dimensions';
-
-/** @public */
-export type PerSidePadding = PerSideDistance;
-
-/** @public */
-export type Padding = Pixels | Partial<PerSidePadding>;
 
 interface LabelConfig extends Font {
   textColor: Color;
-  textInvertible: boolean;
-  textContrast: TextContrast;
-  textOpacity: Ratio;
   valueFont: PartialFont;
-  padding: Padding;
+  padding: Pixels | Partial<Padding>;
 }
+
+/** @internal */
+export type Padding = Pixels | Partial<PerSideDistance>;
 
 /** @public */
 export interface FillLabelConfig extends LabelConfig {

@@ -22,9 +22,8 @@ import { logarithm } from '../../../../common/math';
 import { Box, Font, PartialFont, TextMeasure, VerticalAlignments } from '../../../../common/text_utils';
 import { integerSnap, monotonicHillClimb } from '../../../../solvers/monotonic_hill_climb';
 import { ValueFormatter } from '../../../../utils/common';
-import { FillLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
+import { FillLabelConfig, Padding, PartitionStyle } from '../../../../utils/themes/partition';
 import { Layer } from '../../specs';
-import { Padding } from '../types/config_types';
 import {
   QuadViewModel,
   RawTextGetter,

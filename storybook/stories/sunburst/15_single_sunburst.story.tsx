@@ -55,7 +55,6 @@ export const Example = () => (
       data={mocks.miniSunburst.slice(0, 1)}
       layout={PartitionLayout.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      fillLabelValueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {

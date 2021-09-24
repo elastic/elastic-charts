@@ -30,10 +30,8 @@ export {
 export { GeometryValue, BandedAccessorType } from './utils/geometry';
 export { LegendPath, LegendPathElement } from './state/actions/legend';
 export { CategoryKey } from './common/category';
-export {
-  FillLabelConfig as PartitionFillLabel,
-  PartitionLayout,
-} from './chart_types/partition_chart/layout/types/config_types';
+export { FillLabelConfig as PartitionFillLabel } from './utils/themes/partition';
+export { PartitionLayout } from './chart_types/partition_chart/layout/types/config_types';
 export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
 export * from './chart_types/goal_chart/specs/index';
 export * from './chart_types/wordcloud/specs/index';

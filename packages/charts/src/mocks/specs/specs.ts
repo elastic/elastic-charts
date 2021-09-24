@@ -128,7 +128,6 @@ export class MockSeriesSpec {
     valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
     valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
     valueFormatter: (d: number): string => String(d),
-    linkLabelValueFormatter: (d: number): string => String(d),
     percentFormatter,
     topGroove: 0,
     smallMultiples: null,
@@ -159,7 +158,6 @@ export class MockSeriesSpec {
     valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
     valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
     valueFormatter: (d: number): string => String(d),
-    linkLabelValueFormatter: (d: number): string => String(d),
     percentFormatter,
     topGroove: 20,
     smallMultiples: null,
@@ -404,6 +402,7 @@ export class MockAnnotationSpec {
   };
 
   static line(partial?: Partial<LineAnnotationSpec>): LineAnnotationSpec {
+    // @ts-ignore - nesting limitation
     return mergePartial<LineAnnotationSpec>(MockAnnotationSpec.lineBase, partial, { mergeOptionalPartialValues: true });
   }
 

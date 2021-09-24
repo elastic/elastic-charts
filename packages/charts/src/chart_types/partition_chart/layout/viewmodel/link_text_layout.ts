@@ -22,8 +22,7 @@ import { cutToLength, fitText, Font, measureOneBoxWidth, TextMeasure } from '../
 import { ValueFormatter } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Point } from '../../../../utils/point';
-import { PartitionStyle } from '../../../../utils/themes/partition';
-import { LinkLabelConfig } from '../types/config_types';
+import { LinkLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 
 /** @internal */

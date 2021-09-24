@@ -15,8 +15,9 @@ import { SpecType } from '../../../specs/constants'; // kept as unshortened impo
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
 import { Datum, LabelAccessor, ShowAccessor, ValueAccessor, ValueFormatter } from '../../../utils/common';
-import { defaultValueFormatter, percentFormatter } from '../layout/config';
-import { AnimationConfig, FillFontSizeRange, FillLabelConfig, PartitionLayout } from '../layout/types/config_types';
+import { FillFontSizeRange, FillLabelConfig } from '../../../utils/themes/partition';
+import { percentFormatter } from '../layout/config';
+import { AnimationConfig, PartitionLayout } from '../layout/types/config_types';
 import { NodeColorAccessor, ShapeTreeNode, ValueGetter } from '../layout/types/viewmodel_types';
 import { AGGREGATE_KEY, NodeSorter, PrimitiveValue } from '../layout/utils/group_by_rollup';
 
@@ -47,8 +48,6 @@ const defaultProps = {
   valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
   valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
   valueFormatter: (d: number): string => String(d),
-  linkLabelValueFormatter: (d: number): string => String(d),
-  fillLabelValueFormatter: defaultValueFormatter,
   percentFormatter,
   topGroove: 20,
   smallMultiples: null,
@@ -86,8 +85,6 @@ export interface PartitionSpec extends Spec, AnimationConfig {
   topGroove: Pixels;
   smallMultiples: string | null;
   layers: Layer[];
-  linkLabelValueFormatter: ValueFormatter;
-  fillLabelValueFormatter: ValueFormatter;
   /**
    * Largest to smallest sectors are positioned in a clockwise order
    */
@@ -118,8 +115,6 @@ export const Partition: React.FunctionComponent<SpecRequiredProps & SpecOptional
     | 'valueAccessor'
     | 'valueGetter'
     | 'valueFormatter'
-    | 'linkLabelValueFormatter'
-    | 'fillLabelValueFormatter'
     | 'percentFormatter'
     | 'topGroove'
     | 'smallMultiples'

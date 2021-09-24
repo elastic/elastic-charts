@@ -23,10 +23,10 @@ import { GroupByAccessor } from '../../../../specs';
 import { StrokeStyle } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
-import { PartitionStyle } from '../../../../utils/themes/partition';
+import { FillLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
 import { Layer, PartitionSpec } from '../../specs';
 import { MODEL_KEY, percentValueGetter } from '../config';
-import { FillLabelConfig, PartitionLayout } from '../types/config_types';
+import { PartitionLayout } from '../types/config_types';
 import {
   nullShapeViewModel,
   OutsideLinksViewModel,
