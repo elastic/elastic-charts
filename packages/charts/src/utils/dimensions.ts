@@ -39,7 +39,7 @@ export interface PerSideDistance {
 export type Margins = PerSideDistance;
 
 /**
- * @todo seperate type with parition padding type that allows number
+ * todo seperate type with parition padding type that allows number
  * @public
  */
 export type Padding = PerSideDistance;
