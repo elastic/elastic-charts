@@ -10,8 +10,11 @@ import { combineColors, highContrastColor } from './color_calcs';
 import { colorToRgba, RGBATupleToString } from './color_library_wrappers';
 import { Color, Colors } from './colors';
 
-/** limit used to return fallback color */
-const TRANSPARENT_LIMIT = 0.1;
+/**
+ * limit used to return fallback color
+ * @internal
+ */
+export const TRANSPARENT_LIMIT = 0.1;
 
 /**
  * Determine the text color hinging on the parameters of maximizeColorContrast, foreground and container foreground
@@ -43,8 +46,6 @@ export function fillTextColor(
     const blendedFgBg = combineColors(foregroundRGBA, bgBlend);
     return RGBATupleToString(highContrastColor(blendedFgBg));
   }
-
-  if (backgroundRGBA[3] < TRANSPARENT_LIMIT && fallbackColor) return fallbackColor;
 
   // combine it with white if semi-transparent
   const bgBlend = combineColors(backgroundRGBA, Colors.White.rgba);

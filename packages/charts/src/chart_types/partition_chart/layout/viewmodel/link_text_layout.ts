@@ -7,7 +7,7 @@
  */
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { Color, Colors } from '../../../../common/colors';
+import { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import {
