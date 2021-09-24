@@ -53,7 +53,7 @@ export function getCursorLinePosition(
 ): Line | undefined {
   const { x, y } = projectedPointerPosition;
   if (x < 0 || y < 0) {
-    return void 0;
+    return undefined;
   }
   const { left, top, width, height } = chartDimensions;
   const isHorizontalRotated = isHorizontalRotation(chartRotation);

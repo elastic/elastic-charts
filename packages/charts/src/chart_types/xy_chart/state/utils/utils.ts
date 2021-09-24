@@ -8,19 +8,19 @@
 
 import { Color } from '../../../../common/colors';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
-import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
+import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
 import { SettingsSpec } from '../../../../specs';
-import { mergePartial, Rotation, isUniqueArray } from '../../../../utils/common';
+import { isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import {
-  PointGeometry,
-  BarGeometry,
   AreaGeometry,
-  LineGeometry,
+  BarGeometry,
   BubbleGeometry,
+  LineGeometry,
   PerPanel,
+  PointGeometry,
 } from '../../../../utils/geometry';
 import { GroupId, SpecId } from '../../../../utils/ids';
 import { getRenderingCompareFn } from '../../../../utils/series_sort';
@@ -38,26 +38,26 @@ import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../../utils/scales';
-import { DataSeries, getFormattedDataSeries, getDataSeriesFromSpecs, getSeriesKey } from '../../utils/series';
+import { DataSeries, getDataSeriesFromSpecs, getFormattedDataSeries, getSeriesKey } from '../../utils/series';
 import {
   AxisSpec,
   BasicSeriesSpec,
+  Fit,
+  FitConfig,
   HistogramModeAlignment,
   HistogramModeAlignments,
   isAreaSeriesSpec,
-  isBarSeriesSpec,
-  isLineSeriesSpec,
   isBandedSpec,
-  Fit,
-  FitConfig,
+  isBarSeriesSpec,
   isBubbleSeriesSpec,
+  isLineSeriesSpec,
 } from '../../utils/specs';
 import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales';
 import { ScaleConfigs } from '../selectors/get_api_scale_configs';
 import { SmallMultiplesGroupBy } from '../selectors/get_specs';
 import { isHorizontalRotation } from './common';
-import { getSpecsById, getAxesSpecForSpecId, getSpecDomainGroupId } from './spec';
-import { SeriesDomainsAndData, ComputedGeometries, GeometriesCounts, Transform } from './types';
+import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from './spec';
+import { ComputedGeometries, GeometriesCounts, SeriesDomainsAndData, Transform } from './types';
 
 /**
  * Return map association between `seriesKey` and only the custom colors string
@@ -115,7 +115,6 @@ export function computeSeriesDomains(
   smallMultiples?: SmallMultiplesGroupBy,
 ): SeriesDomainsAndData {
   const orderOrdinalBinsBy = settingsSpec?.orderOrdinalBinsBy;
-  const sortSeriesBy = (settingsSpec as any)?.sortSeriesBy;
   const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
     seriesSpecs,
     deselectedDataSeries,
@@ -128,7 +127,7 @@ export function computeSeriesDomains(
   // fill series with missing x values
   const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.type);
 
-  const seriesSortFn = getRenderingCompareFn(sortSeriesBy, (a: SeriesIdentifier, b: SeriesIdentifier) => {
+  const seriesSortFn = getRenderingCompareFn(void 0, (a: SeriesIdentifier, b: SeriesIdentifier) => {
     return defaultXYSeriesSort(a as DataSeries, b as DataSeries);
   });
 

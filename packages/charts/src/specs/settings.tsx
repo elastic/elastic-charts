@@ -596,16 +596,6 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * Orders ordinal x values
    */
   orderOrdinalBinsBy?: OrderBy;
-
-  /**
-   * A compare function or an object of compare functions to sort
-   * series in different part of the chart like tooltip, legend and
-   * the rendering order on the screen. To assign the same compare function.
-   *  @defaultValue the series are sorted in order of appearance in the chart configuration
-   *  @alpha
-   */
-  // sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig;
-
   /**
    * Render component for no results UI
    */

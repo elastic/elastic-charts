@@ -10,10 +10,10 @@ import { Color } from '../../../common/colors';
 import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { SortSeriesByConfig, TickFormatterOptions } from '../../../specs';
+import { TickFormatterOptions } from '../../../specs';
 import { MergeOptions, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
-import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
+import { getLegendCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
@@ -112,7 +112,6 @@ export function computeLegend(
   serialIdentifierDataSeriesMap: Record<string, DataSeries>,
   deselectedDataSeries: SeriesIdentifier[] = [],
   theme: Theme,
-  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
@@ -184,7 +183,7 @@ export function computeLegend(
     }
   });
 
-  const legendSortFn = getLegendCompareFn(sortSeriesBy, (a, b) => {
+  const legendSortFn = getLegendCompareFn(void 0, (a, b) => {
     const aDs = serialIdentifierDataSeriesMap[a.key];
     const bDs = serialIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);
