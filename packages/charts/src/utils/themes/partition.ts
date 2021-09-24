@@ -18,7 +18,7 @@ interface LabelConfig extends Font {
   padding: Pixels | Partial<Padding>;
 }
 
-/** @internal */
+/** @public */
 export type Padding = Pixels | Partial<PerSideDistance>;
 
 /** @public */

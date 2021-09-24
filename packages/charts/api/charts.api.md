@@ -1411,7 +1411,7 @@ export type OrdinalDomain = (number | string)[];
 // @public (undocumented)
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
 
-// @public (undocumented)
+// @public
 export type Padding = PerSideDistance;
 
 // @public (undocumented)
@@ -1428,17 +1428,6 @@ export type PartialTheme = RecursivePartial<Theme>;
 //
 // @public (undocumented)
 export const Partition: React_2.FunctionComponent<SpecRequiredProps_7 & SpecOptionalProps_7>;
-
-// Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export interface PartitionConfig extends StaticConfig {
-    // @alpha (undocumented)
-    animation: {
-        duration: TimeMs;
-        keyframes: Array<AnimKeyframe>;
-    };
-}
 
 // @public (undocumented)
 export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
@@ -2122,12 +2111,13 @@ export interface Theme {
     colors: ColorConfig;
     // (undocumented)
     crosshair: CrosshairStyle;
-    // (undocumented)
     goal: GoalStyles;
     // (undocumented)
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;
     markSizeRatio?: number;
+    // Warning: (ae-forgotten-export) The symbol "PartitionStyle" needs to be exported by the entry point index.d.ts
+    partition: PartitionStyle;
     // (undocumented)
     scales: ScalesConfig;
     // (undocumented)
@@ -2426,8 +2416,6 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // src/chart_types/heatmap/layout/types/config_types.ts:19:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:47:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:48:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
