@@ -39,9 +39,12 @@ export const partitionMultiGeometries = createCustomCachedSelector(
     partitionSpecs,
     parentDimensions,
     trees,
-    { background, axes: { axisPanelTitle }, chartMargins, partition: partitionStyle },
+    { background, axes: { axisPanelTitle }, chartMargins, chartPaddings, partition: partitionStyle },
   ): ShapeViewModel[] => {
     const smallMultiplesSpecs = getSpecsFromStore<SmallMultiplesSpec>(specs, ChartType.Global, SpecType.SmallMultiples);
+    const { width, height } = parentDimensions;
+    const chartWidth = width - chartMargins.left - chartMargins.right;
+    const chartHeight = height - chartMargins.top - chartMargins.bottom;
 
     // todo make it part of configuration
     const outerSpecDirection = ['horizontal', 'vertical', 'zigzag'][0];
@@ -51,8 +54,6 @@ export const partitionMultiGeometries = createCustomCachedSelector(
       : verticalSplit(smallMultiplesSpecs[0])
       ? 'vertical'
       : 'zigzag';
-
-    const { width, height } = parentDimensions;
 
     const outerPanelCount = partitionSpecs.length;
     const zigzagColumnCount = Math.ceil(Math.sqrt(outerPanelCount));
@@ -72,8 +73,8 @@ export const partitionMultiGeometries = createCustomCachedSelector(
         : 1;
 
     const result = partitionSpecs.flatMap((spec, index) => {
-      const innerWidth = width - chartMargins.left - chartMargins.right;
-      const innerHeight = height - chartMargins.top - chartMargins.bottom;
+      const innerWidth = chartWidth - chartPaddings.left - chartPaddings.right;
+      const innerHeight = chartHeight - chartPaddings.top - chartPaddings.bottom;
 
       return trees.map(({ name, smAccessorValue, style, tree: t }: StyledTree, innerIndex, a) => {
         const innerPanelCount = a.length;
@@ -157,10 +158,12 @@ export const partitionMultiGeometries = createCustomCachedSelector(
 
         const marginLeftPx =
           chartMargins.left +
+          chartPaddings.left +
           panelInnerWidth * style.horizontalPanelPadding.outer +
           innerColumnIndex * (panelInnerWidth * (1 + style.horizontalPanelPadding.inner));
         const marginTopPx =
           chartMargins.top +
+          chartPaddings.top +
           panelInnerHeight * style.verticalPanelPadding.outer +
           innerRowIndex * (panelInnerHeight * (1 + style.verticalPanelPadding.inner));
 

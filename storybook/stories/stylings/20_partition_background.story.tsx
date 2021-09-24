@@ -28,7 +28,6 @@ export const Example = () => {
   const bgColor = color('Background color', 'rgba(255, 255, 255, 1)');
 
   const theme: PartialTheme = {
-    chartMargins: { top: 0, bottom: 0, left: 0, right: 0 },
     background: {
       color: bGColorDisabled ? bgColor : undefined,
     },

@@ -17,7 +17,7 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example = () => (
   <Chart size={{ height: 180 }}>
-    <Settings theme={{ chartMargins: { left: 0.2 } }} baseTheme={useBaseTheme()} />
+    <Settings baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.pie

@@ -57,7 +57,6 @@ const onElementListeners = {
 };
 
 const theme: PartialTheme = {
-  chartMargins: { top: 0.01, bottom: 0.01, left: 0.01, right: 0.01 },
   partition: {
     linkLabel: {
       maxCount: 0,

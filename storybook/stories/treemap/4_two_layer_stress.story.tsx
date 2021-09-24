@@ -24,8 +24,7 @@ const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.7]));
 
 const theme: PartialTheme = {
-  chartMargins: { top: 0, bottom: 0, left: 0, right: 0 },
-  partition: {
+    partition: {
     minFontSize: 4,
     maxFontSize: 84,
     idealFontSizeJump: 1.05,

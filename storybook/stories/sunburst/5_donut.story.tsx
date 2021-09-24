@@ -16,7 +16,6 @@ import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
 const theme: PartialTheme = {
-  chartMargins: { top: 0, bottom: 0, left: 0.2, right: 0 },
   partition: {
     linkLabel: {
       maxCount: 32,
