@@ -211,30 +211,21 @@ export function tickLabelPosition(
   const horizontalAlign = getHorizontalAlign(pos, rotation, textAlignment?.horizontal);
   const verticalAlign = getVerticalAlign(pos, rotation, textAlignment?.vertical);
   const userOffsets = getUserTextOffsets(tickDimensions, textOffset);
+  const paddedTickDimension = tickDimension + labelInnerPadding;
+  const axisNetSize = (isVerticalAxis(pos) ? axisSize.width : axisSize.height) - paddedTickDimension;
   return {
-    x:
-      pos === Position.Left
-        ? axisSize.width - tickDimension - labelInnerPadding
-        : pos === Position.Right
-        ? tickDimension + labelInnerPadding
-        : tickPosition,
-    y:
-      pos === Position.Top
-        ? axisSize.height - tickDimension - labelInnerPadding
-        : pos === Position.Bottom
-        ? tickDimension + labelInnerPadding
-        : tickPosition,
-    offsetX: isVerticalAxis(pos)
-      ? (pos === Position.Left ? -1 : 1) * (maxLabelBboxWidth / 2) + userOffsets.global.x
-      : userOffsets.global.x,
-    offsetY: isHorizontalAxis(pos)
-      ? (pos === Position.Top ? -maxLabelBboxHeight / 2 : maxLabelBboxHeight / 2) + userOffsets.global.y
-      : userOffsets.global.y,
+    x: pos === Position.Left ? axisNetSize : pos === Position.Right ? paddedTickDimension : tickPosition,
+    y: pos === Position.Top ? axisNetSize : pos === Position.Bottom ? paddedTickDimension : tickPosition,
+    offsetX:
+      userOffsets.global.x + (isHorizontalAxis(pos) ? 0 : (pos === Position.Left ? -1 : 1) * (maxLabelBboxWidth / 2)),
+    offsetY:
+      userOffsets.global.y + (isVerticalAxis(pos) ? 0 : ((pos === Position.Top ? -1 : 1) * maxLabelBboxHeight) / 2),
     textOffsetX:
+      userOffsets.local.x +
       (isHorizontalAxis(pos) && rotation === 0
         ? 0
-        : (maxLabelTextWidth / 2) * horizontalOffsetMultiplier[horizontalAlign]) + userOffsets.local.x,
-    textOffsetY: (maxLabelTextHeight / 2) * verticalOffsetMultiplier[verticalAlign] + userOffsets.local.y,
+        : (maxLabelTextWidth / 2) * horizontalOffsetMultiplier[horizontalAlign]),
+    textOffsetY: userOffsets.local.y + (maxLabelTextHeight / 2) * verticalOffsetMultiplier[verticalAlign],
     horizontalAlign,
     verticalAlign,
   };
