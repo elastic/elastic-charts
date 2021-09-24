@@ -51,29 +51,13 @@ const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
 export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit: number) {
   // todo further simplify this
   const absLimit = Math.abs(logMinLimit);
-  if (absLimit > 0) {
-    if (min > 0 && min < absLimit) {
-      return max > absLimit ? [absLimit, max] : [absLimit, absLimit];
-    }
-    if (max < 0 && max > -absLimit) {
-      return min < -absLimit ? [min, -absLimit] : [-absLimit, -absLimit];
-    }
-  }
-
-  const fallbackLimit = absLimit || LOG_MIN_ABS_DOMAIN;
-
-  if (min === 0) {
-    return max > 0 ? [fallbackLimit, max] : max < 0 ? [-fallbackLimit, max] : [fallbackLimit, fallbackLimit];
-  }
-  if (max === 0) {
-    return min > 0 ? [min, fallbackLimit] : min < 0 ? [min, -fallbackLimit] : [fallbackLimit, fallbackLimit];
-  }
-  if (min < 0 && max > 0) {
-    return Math.abs(max) >= Math.abs(min) ? [fallbackLimit, max] : [min, -fallbackLimit];
-  }
-  if (min > 0 && max < 0) {
-    return Math.abs(min) >= Math.abs(max) ? [min, fallbackLimit] : [-fallbackLimit, max];
-  }
+  const fallback = absLimit || LOG_MIN_ABS_DOMAIN;
+  if (absLimit > 0 && min > 0 && min < absLimit) return max > absLimit ? [absLimit, max] : [absLimit, absLimit];
+  if (absLimit > 0 && max < 0 && max > -absLimit) return min < -absLimit ? [min, -absLimit] : [-absLimit, -absLimit];
+  if (min === 0) return max > 0 ? [fallback, max] : max < 0 ? [-fallback, max] : [fallback, fallback];
+  if (max === 0) return min > 0 ? [min, fallback] : min < 0 ? [min, -fallback] : [fallback, fallback];
+  if (min < 0 && max > 0) return Math.abs(max) >= Math.abs(min) ? [fallback, max] : [min, -fallback];
+  if (min > 0 && max < 0) return Math.abs(min) >= Math.abs(max) ? [min, fallback] : [-fallback, max];
   return [min, max];
 }
 
