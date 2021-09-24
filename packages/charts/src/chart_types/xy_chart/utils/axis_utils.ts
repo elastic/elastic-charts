@@ -389,7 +389,7 @@ export interface AxisGeometry {
 export function getAxesGeometries(
   chartDims: { chartDimensions: Dimensions; leftMargin: number },
   { chartPaddings, chartMargins, axes: sharedAxesStyle }: Theme,
-  chartRotation: Rotation,
+  { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
   axisSpecs: AxisSpec[],
   axisDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
