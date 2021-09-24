@@ -51,8 +51,6 @@ export const computeAxesGeometriesSelector = createCustomCachedSelector(
     smScales,
   ): AxisGeometry[] => {
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
-    const { xDomain, yDomains } = seriesDomainsAndData;
-
     return getAxesGeometries(
       chartDimensions,
       chartTheme,
@@ -60,8 +58,7 @@ export const computeAxesGeometriesSelector = createCustomCachedSelector(
       axesSpecs,
       axesTicksDimensions,
       axesStyles,
-      xDomain,
-      yDomains,
+      seriesDomainsAndData,
       smScales,
       totalBarsInCluster,
       isHistogramMode,

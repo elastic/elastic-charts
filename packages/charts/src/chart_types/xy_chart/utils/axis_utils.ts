@@ -22,7 +22,6 @@ import { Range } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
-import { XDomain, YDomain } from '../domains/types';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
@@ -394,8 +393,7 @@ export function getAxesGeometries(
   axisSpecs: AxisSpec[],
   axisDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
-  xDomain: XDomain,
-  yDomains: YDomain[],
+  { xDomain, yDomains }: Pick<SeriesDomainsAndData, 'xDomain' | 'yDomains'>,
   smScales: SmallMultipleScales,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
