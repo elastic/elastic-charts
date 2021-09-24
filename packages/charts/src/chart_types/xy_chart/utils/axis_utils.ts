@@ -7,7 +7,7 @@
  */
 
 import { Scale } from '../../../scales';
-import { SettingsSpec } from '../../../specs';
+import { BasicSeriesSpec, SettingsSpec } from '../../../specs';
 import {
   degToRad,
   getPercentageValue,
@@ -397,9 +397,10 @@ export function getAxesGeometries(
   smScales: SmallMultipleScales,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
-  fallBackTickFormatter: TickFormatter,
+  seriesSpecs: Pick<BasicSeriesSpec, 'tickFormat'>[],
   barsPadding?: number,
 ): AxisGeometry[] {
+  const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
   const panel = getPanelSize(smScales);
   const scaleFunction = getScaleForAxisSpec(
     { xDomain, yDomains },

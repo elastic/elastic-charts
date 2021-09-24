@@ -9,7 +9,7 @@
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getAxesGeometries, AxisGeometry, defaultTickFormatter } from '../../utils/axis_utils';
+import { getAxesGeometries, AxisGeometry } from '../../utils/axis_utils';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -50,7 +50,6 @@ export const computeAxesGeometriesSelector = createCustomCachedSelector(
     seriesSpecs,
     barsPadding,
   ): AxisGeometry[] => {
-    const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
     return getAxesGeometries(
       chartDimensions,
       chartTheme,
@@ -62,7 +61,7 @@ export const computeAxesGeometriesSelector = createCustomCachedSelector(
       smScales,
       totalBarsInCluster,
       isHistogramMode,
-      fallBackTickFormatter,
+      seriesSpecs,
       barsPadding,
     );
   },
