@@ -31,7 +31,7 @@ const countries = mocks.sunburst
 const countryCount = countries.length;
 
 const theme: PartialTheme = {
-    partition: {
+  partition: {
     minFontSize: 4,
     maxFontSize: 36,
     idealFontSizeJump: 1.01,

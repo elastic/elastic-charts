@@ -29,7 +29,7 @@ const defaultFillColor = (colorMaker: any) => ({ [MODEL_KEY]: model }: any) => {
 };
 
 const theme: PartialTheme = {
-    partition: {
+  partition: {
     minFontSize: 4,
     maxFontSize: 84,
     idealFontSizeJump: 1.05,

@@ -28,7 +28,7 @@ const fillColor = ({ [MODEL_KEY]: model }: any) => {
 };
 
 const theme: PartialTheme = {
-    partition: {
+  partition: {
     minFontSize: 8,
     maxFontSize: 14,
     idealFontSizeJump: 1.05,
