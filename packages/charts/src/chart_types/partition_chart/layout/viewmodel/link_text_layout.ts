@@ -47,7 +47,7 @@ export function linkTextLayout(
   valueFormatter: ValueFormatter,
   maxTextLength: number,
   diskCenter: Point,
-  containerBgColor: Color = Colors.White.keyword,
+  containerBgColor: Color,
 ): LinkLabelsViewModelSpec {
   const { linkLabel } = style;
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);
@@ -85,7 +85,7 @@ export function linkTextLayout(
       containerBgColor,
     );
   }
-  const textColor = fillTextColor(containerBgColor);
+  const textColor = fillTextColor(null, containerBgColor, linkLabel.textColor);
   const labelFontSpec: Font = { ...linkLabel, textColor };
   const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor };
 

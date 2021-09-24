@@ -142,9 +142,9 @@ export function makeQuadViewModel(
   innerIndex: number,
   fillLabel: FillLabelConfig,
   isSunburstLayout: boolean,
-  containerBackgroundColor?: Color,
+  containerBackgroundColor: Color,
 ): Array<QuadViewModel> {
-  if (colorToRgba(containerBackgroundColor ?? Colors.White.keyword)[3] < 1) {
+  if (colorToRgba(containerBackgroundColor)[3] < 1) {
     Logger.expected(
       `Text contrast requires a opaque background color, using white as fallback`,
       'an opaque color',
@@ -161,7 +161,8 @@ export function makeQuadViewModel(
     const textColor =
       !isSunburstLayout && textNegligible
         ? Colors.Transparent.keyword
-        : fillTextColor(fillColor, containerBackgroundColor);
+        : fillTextColor(fillColor, containerBackgroundColor, fillLabel.textColor);
+
     return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor, ...node };
   });
 }
