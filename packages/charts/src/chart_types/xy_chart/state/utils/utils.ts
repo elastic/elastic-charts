@@ -112,10 +112,11 @@ export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   scaleConfigs: ScaleConfigs,
   deselectedDataSeries: SeriesIdentifier[] = [],
-  orderOrdinalBinsBy?: OrderBy,
+  settingsSpec?: { orderOrdinalBinsBy: OrderBy; sortSeriesBy: SeriesCompareFn | SortSeriesByConfig },
   smallMultiples?: SmallMultiplesGroupBy,
-  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
 ): SeriesDomainsAndData {
+  const orderOrdinalBinsBy = settingsSpec?.orderOrdinalBinsBy;
+  const sortSeriesBy = settingsSpec?.sortSeriesBy;
   const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
     seriesSpecs,
     deselectedDataSeries,
