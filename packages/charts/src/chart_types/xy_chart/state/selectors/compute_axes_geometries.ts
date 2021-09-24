@@ -30,11 +30,11 @@ export const computeAxesGeometriesSelector = createCustomCachedSelector(
     computeAxisTicksDimensionsSelector,
     getAxesStylesSelector,
     computeSeriesDomainsSelector,
+    computeSmallMultipleScalesSelector,
     countBarsInClusterSelector,
     isHistogramModeEnabledSelector,
-    getBarPaddingsSelector,
     getSeriesSpecsSelector,
-    computeSmallMultipleScalesSelector,
+    getBarPaddingsSelector,
   ],
   (
     chartDimensions,
@@ -44,11 +44,11 @@ export const computeAxesGeometriesSelector = createCustomCachedSelector(
     axesTicksDimensions,
     axesStyles,
     seriesDomainsAndData,
+    smScales,
     totalBarsInCluster,
     isHistogramMode,
-    barsPadding,
     seriesSpecs,
-    smScales,
+    barsPadding,
   ): AxisGeometry[] => {
     const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
     return getAxesGeometries(
