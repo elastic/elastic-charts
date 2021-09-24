@@ -36,7 +36,7 @@ import {
   computeRotatedLabelDimensions,
   getPosition,
   getAxesGeometries,
-  getTickLabelProps,
+  tickLabelPosition,
   isXDomain,
   enableDuplicatedTicks,
   getScaleForAxisSpec,
@@ -563,7 +563,7 @@ describe('Axis computational utils', () => {
       width: 100,
       height: 10,
     };
-    const unrotatedLabelProps = getTickLabelProps(
+    const unrotatedLabelProps = tickLabelPosition(
       getCustomStyle(0, 5),
       tickPosition,
       Position.Left,
@@ -585,7 +585,7 @@ describe('Axis computational utils', () => {
       verticalAlign: 'middle',
     });
 
-    const rotatedLabelProps = getTickLabelProps(
+    const rotatedLabelProps = tickLabelPosition(
       getCustomStyle(90),
       tickPosition,
       Position.Left,
@@ -611,7 +611,7 @@ describe('Axis computational utils', () => {
       verticalAlign: 'middle',
     });
 
-    const rightRotatedLabelProps = getTickLabelProps(
+    const rightRotatedLabelProps = tickLabelPosition(
       getCustomStyle(90),
       tickPosition,
       Position.Right,
@@ -637,7 +637,7 @@ describe('Axis computational utils', () => {
       verticalAlign: 'middle',
     });
 
-    const rightUnrotatedLabelProps = getTickLabelProps(
+    const rightUnrotatedLabelProps = tickLabelPosition(
       getCustomStyle(),
       tickPosition,
       Position.Right,
@@ -668,7 +668,7 @@ describe('Axis computational utils', () => {
       width: 100,
       height: 10,
     };
-    const unrotatedLabelProps = getTickLabelProps(
+    const unrotatedLabelProps = tickLabelPosition(
       getCustomStyle(0, 5),
       tickPosition,
       Position.Top,
@@ -694,7 +694,7 @@ describe('Axis computational utils', () => {
       verticalAlign: 'bottom',
     });
 
-    const rotatedLabelProps = getTickLabelProps(
+    const rotatedLabelProps = tickLabelPosition(
       getCustomStyle(90),
       tickPosition,
       Position.Top,
@@ -716,7 +716,7 @@ describe('Axis computational utils', () => {
       verticalAlign: 'middle',
     });
 
-    const bottomRotatedLabelProps = getTickLabelProps(
+    const bottomRotatedLabelProps = tickLabelPosition(
       getCustomStyle(90),
       tickPosition,
       Position.Bottom,
@@ -738,7 +738,7 @@ describe('Axis computational utils', () => {
       verticalAlign: 'middle',
     });
 
-    const bottomUnrotatedLabelProps = getTickLabelProps(
+    const bottomUnrotatedLabelProps = tickLabelPosition(
       getCustomStyle(90),
       tickPosition,
       Position.Bottom,

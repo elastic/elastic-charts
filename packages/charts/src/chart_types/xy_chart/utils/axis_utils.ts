@@ -193,14 +193,11 @@ function getVerticalAlign(
   return VerticalAlignment.Middle; // fallback for near/far on left/right axis
 }
 
-/**
- * Gets the computed x/y coordinates & alignment properties for an axis tick label.
- * @internal
- */
-export function getTickLabelProps(
+/** @internal */
+export function tickLabelPosition(
   { tickLine, tickLabel }: AxisStyle,
   tickPosition: number,
-  position: Position,
+  pos: Position,
   rotation: number,
   axisSize: Size,
   tickDimensions: TickLabelBounds,
@@ -211,33 +208,36 @@ export function getTickLabelProps(
   const { maxLabelBboxWidth, maxLabelTextWidth, maxLabelBboxHeight, maxLabelTextHeight } = tickDimensions;
   const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
   const labelInnerPadding = innerPad(tickLabel.padding);
-  const isLeftAxis = position === Position.Left;
-  const isAxisTop = position === Position.Top;
-  const horizontalAlign = getHorizontalAlign(position, rotation, textAlignment?.horizontal);
-  const verticalAlign = getVerticalAlign(position, rotation, textAlignment?.vertical);
-
+  const horizontalAlign = getHorizontalAlign(pos, rotation, textAlignment?.horizontal);
+  const verticalAlign = getVerticalAlign(pos, rotation, textAlignment?.vertical);
   const userOffsets = getUserTextOffsets(tickDimensions, textOffset);
-  const textOffsetX =
-    (isHorizontalAxis(position) && rotation === 0
-      ? 0
-      : (maxLabelTextWidth / 2) * horizontalOffsetMultiplier[horizontalAlign]) + userOffsets.local.x;
-  const textOffsetY = (maxLabelTextHeight / 2) * verticalOffsetMultiplier[verticalAlign] + userOffsets.local.y;
-  const rest = { textOffsetX, textOffsetY, horizontalAlign, verticalAlign };
-  return isVerticalAxis(position)
-    ? {
-        x: isLeftAxis ? axisSize.width - tickDimension - labelInnerPadding : tickDimension + labelInnerPadding,
-        y: tickPosition,
-        offsetX: (isLeftAxis ? -1 : 1) * (maxLabelBboxWidth / 2) + userOffsets.global.x,
-        offsetY: userOffsets.global.y,
-        ...rest,
-      }
-    : {
-        x: tickPosition,
-        y: isAxisTop ? axisSize.height - tickDimension - labelInnerPadding : tickDimension + labelInnerPadding,
-        offsetX: userOffsets.global.x,
-        offsetY: (isAxisTop ? -maxLabelBboxHeight / 2 : maxLabelBboxHeight / 2) + userOffsets.global.y,
-        ...rest,
-      };
+  return {
+    x:
+      pos === Position.Left
+        ? axisSize.width - tickDimension - labelInnerPadding
+        : pos === Position.Right
+        ? tickDimension + labelInnerPadding
+        : tickPosition,
+    y:
+      pos === Position.Top
+        ? axisSize.height - tickDimension - labelInnerPadding
+        : pos === Position.Bottom
+        ? tickDimension + labelInnerPadding
+        : tickPosition,
+    offsetX: isVerticalAxis(pos)
+      ? (pos === Position.Left ? -1 : 1) * (maxLabelBboxWidth / 2) + userOffsets.global.x
+      : userOffsets.global.x,
+    offsetY: isHorizontalAxis(pos)
+      ? (pos === Position.Top ? -maxLabelBboxHeight / 2 : maxLabelBboxHeight / 2) + userOffsets.global.y
+      : userOffsets.global.y,
+    textOffsetX:
+      (isHorizontalAxis(pos) && rotation === 0
+        ? 0
+        : (maxLabelTextWidth / 2) * horizontalOffsetMultiplier[horizontalAlign]) + userOffsets.local.x,
+    textOffsetY: (maxLabelTextHeight / 2) * verticalOffsetMultiplier[verticalAlign] + userOffsets.local.y,
+    horizontalAlign,
+    verticalAlign,
+  };
 }
 
 function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
