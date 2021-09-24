@@ -9,7 +9,7 @@
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getAxesGeometries, AxisGeometry } from '../../utils/axis_utils';
+import { getAxesGeometries } from '../../utils/axis_utils';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -36,33 +36,5 @@ export const computeAxesGeometriesSelector = createCustomCachedSelector(
     getSeriesSpecsSelector,
     getBarPaddingsSelector,
   ],
-  (
-    chartDimensions,
-    chartTheme,
-    settingsSpec,
-    axesSpecs,
-    axesTicksDimensions,
-    axesStyles,
-    seriesDomainsAndData,
-    smScales,
-    totalBarsInCluster,
-    isHistogramMode,
-    seriesSpecs,
-    barsPadding,
-  ): AxisGeometry[] => {
-    return getAxesGeometries(
-      chartDimensions,
-      chartTheme,
-      settingsSpec,
-      axesSpecs,
-      axesTicksDimensions,
-      axesStyles,
-      seriesDomainsAndData,
-      smScales,
-      totalBarsInCluster,
-      isHistogramMode,
-      seriesSpecs,
-      barsPadding,
-    );
-  },
+  getAxesGeometries,
 );

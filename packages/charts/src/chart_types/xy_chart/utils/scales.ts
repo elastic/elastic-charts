@@ -65,8 +65,6 @@ export function computeXScale(options: XScaleOptions): Scale<number | string> {
     const intervalCountOffset = isSingleValueHistogram ? 0 : 1;
     const bandwidth = rangeDiff / (intervalCount + intervalCountOffset);
     const { start, end } = getBandScaleRange(isInverse, isSingleValueHistogram, range[0], range[1], bandwidth);
-    debugger;
-    console.log({ adjustedDomain });
 
     return new ScaleContinuous(
       {
