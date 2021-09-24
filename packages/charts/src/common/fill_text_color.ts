@@ -19,7 +19,11 @@ const TRANSPARENT_LIMIT = 0.1;
  *
  * @internal
  */
-export function fillTextColor(foreground: Color | null, background: Color, fallbackColor?: Color): Color {
+export function fillTextColor(
+  foreground: Color | null,
+  background: Color = Colors.Transparent.keyword,
+  fallbackColor?: Color,
+): Color {
   const backgroundRGBA = colorToRgba(background);
   if (backgroundRGBA[3] < TRANSPARENT_LIMIT && !foreground && fallbackColor) return fallbackColor;
 
