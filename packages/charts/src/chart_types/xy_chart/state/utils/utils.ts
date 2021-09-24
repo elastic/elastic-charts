@@ -10,8 +10,7 @@ import { Color } from '../../../../common/colors';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesKey, SeriesIdentifier } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
-import { SettingsSpec, SortSeriesByConfig } from '../../../../specs';
-import { OrderBy } from '../../../../specs/settings';
+import { SettingsSpec } from '../../../../specs';
 import { mergePartial, Rotation, isUniqueArray } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
@@ -24,7 +23,7 @@ import {
   PerPanel,
 } from '../../../../utils/geometry';
 import { GroupId, SpecId } from '../../../../utils/ids';
-import { getRenderingCompareFn, SeriesCompareFn } from '../../../../utils/series_sort';
+import { getRenderingCompareFn } from '../../../../utils/series_sort';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import { XDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
@@ -116,7 +115,7 @@ export function computeSeriesDomains(
   smallMultiples?: SmallMultiplesGroupBy,
 ): SeriesDomainsAndData {
   const orderOrdinalBinsBy = settingsSpec?.orderOrdinalBinsBy;
-  const sortSeriesBy = (settingsSpec as any)?.sortSeriesBy as SeriesCompareFn | SortSeriesByConfig | undefined;
+  const sortSeriesBy = (settingsSpec as any)?.sortSeriesBy;
   const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
     seriesSpecs,
     deselectedDataSeries,
