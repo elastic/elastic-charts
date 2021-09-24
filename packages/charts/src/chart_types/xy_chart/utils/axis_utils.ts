@@ -136,7 +136,7 @@ const verticalOffsetMultiplier = {
 function getHorizontalAlign(
   position: Position,
   rotation: number,
-  alignment: HorizontalAlignment = HorizontalAlignment.Near,
+  alignment: HorizontalAlignment,
 ): Exclude<HorizontalAlignment, typeof HorizontalAlignment.Far | typeof HorizontalAlignment.Near> {
   if (
     alignment === HorizontalAlignment.Center ||
@@ -208,7 +208,7 @@ export function tickLabelPosition(
   const { maxLabelBboxWidth, maxLabelTextWidth, maxLabelBboxHeight, maxLabelTextHeight } = tickDimensions;
   const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
   const labelInnerPadding = innerPad(tickLabel.padding);
-  const horizontalAlign = getHorizontalAlign(pos, rotation, textAlignment?.horizontal);
+  const horizontalAlign = getHorizontalAlign(pos, rotation, textAlignment?.horizontal ?? HorizontalAlignment.Near);
   const verticalAlign = getVerticalAlign(pos, rotation, textAlignment?.vertical);
   const userOffsets = getUserTextOffsets(tickDimensions, textOffset);
   const paddedTickDimension = tickDimension + labelInnerPadding;
@@ -247,7 +247,6 @@ export function enableDuplicatedTicks(
 ): AxisTick[] {
   const allTicks: AxisTick[] = scale.ticks().map((tick) => ({
     value: tick,
-    // TODO handle empty string tick formatting
     label: (axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
     axisTickLabel: (axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
     position: (scale.scale(tick) ?? 0) + offset,
