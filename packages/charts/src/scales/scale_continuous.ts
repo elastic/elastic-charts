@@ -69,7 +69,7 @@ function getPixelPaddedDomain(
   intercept = 0,
 ) {
   const inverted = domain[1] < domain[0];
-  const orderedDomain: [number, number] = inverted ? (domain.slice().reverse() as [number, number]) : domain;
+  const orderedDomain: [number, number] = inverted ? [domain[1], domain[0]] : domain;
   const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
     orderedDomain,
     [2 * desiredPixelPadding, 2 * desiredPixelPadding],
