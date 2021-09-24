@@ -215,31 +215,15 @@ export function computeSeriesGeometries(
     enableHistogramMode,
   });
 
-  return {
-    scales: {
-      xScale,
-      yScales,
-    },
-    ...computedGeoms,
-  };
+  return { scales: { xScale, yScales }, ...computedGeoms };
 }
 
 /** @internal */
 export function setBarSeriesAccessors(isHistogramMode: boolean, seriesSpecs: Map<SpecId, BasicSeriesSpec>): void {
-  if (!isHistogramMode) {
-    return;
-  }
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [, spec] of seriesSpecs) {
-    if (isBarSeriesSpec(spec)) {
-      let stackAccessors = spec.stackAccessors ? [...spec.stackAccessors] : spec.yAccessors;
-
-      if (spec.splitSeriesAccessors) {
-        stackAccessors = [...stackAccessors, ...spec.splitSeriesAccessors];
-      }
-
-      spec.stackAccessors = stackAccessors;
+  if (isHistogramMode) {
+    for (const [, spec] of seriesSpecs) {
+      if (isBarSeriesSpec(spec))
+        spec.stackAccessors = [...(spec.stackAccessors || spec.yAccessors), ...(spec.splitSeriesAccessors || [])];
     }
   }
 }
