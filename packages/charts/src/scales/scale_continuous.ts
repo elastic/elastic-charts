@@ -28,16 +28,6 @@ import { getMomentWithTz } from '../utils/data/date_time';
 import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
 
-/**
- * d3 scales excluding time scale
- */
-type D3ScaleNonTime<R = PrimitiveValue, O = number> = ScaleLinear<R, O> | ScaleLogarithmic<R, O> | ScalePower<R, O>;
-
-/**
- * All possible d3 scales
- */
-type D3Scale<R = PrimitiveValue, O = number> = D3ScaleNonTime<R, O> | ScaleTime<R, O>;
-
 const SCALES = {
   [ScaleType.Linear]: scaleLinear,
   [ScaleType.Log]: scaleLog,
@@ -99,16 +89,6 @@ function getPixelPaddedDomain(
   return inverted ? [paddedDomainHigh, paddedDomainLo] : [paddedDomainLo, paddedDomainHigh];
 }
 
-interface ScaleData {
-  /** The Type of continuous scale */
-  type: ScaleContinuousType;
-  /** The data input domain */
-  domain: number[];
-  /** The data output range */
-  range: Range;
-  nice?: boolean;
-}
-
 /**
  * Options specific to log scales
  * @public
@@ -128,68 +108,6 @@ export interface LogScaleOptions {
    */
   logBase?: number;
 }
-
-type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
-  /**
-   * The desired bandwidth for a linear band scale.
-   * @defaultValue 0
-   */
-  bandwidth: number;
-  /**
-   * The min interval computed on the XDomain. Not available for yDomains.
-   * @defaultValue 0
-   */
-  minInterval: number;
-  /**
-   * A time zone identifier. Can be any IANA zone supported by he host environment,
-   * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
-   * @defaultValue `utc`
-   */
-  timeZone: string;
-  /**
-   * The number of bars in the cluster. Used to correctly compute scales when
-   * using padding between bars.
-   * @defaultValue 1
-   */
-  totalBarsInCluster: number;
-  /**
-   * The proportion of the range that is reserved for blank space between bands
-   * A number between 0 and 1.
-   * @defaultValue 0
-   */
-  barsPadding: number;
-  /**
-   * Pixel value to extend the domain. Applied __before__ nicing.
-   *
-   * Does not apply to time scales
-   * @defaultValue 0
-   */
-  domainPixelPadding: number;
-  /**
-   * Constrains domain pixel padding to the zero baseline
-   * Does not apply to time scales
-   */
-  constrainDomainPadding?: boolean;
-  /**
-   * The approximated number of ticks.
-   * @defaultValue 10
-   */
-  desiredTickCount: number;
-  /**
-   * true if the scale was adjusted to fit one single value histogram
-   */
-  isSingleValueHistogram: boolean;
-  /**
-   * Show only integer values
-   */
-  integersOnly: boolean;
-  /**
-   * As log(0) = -Infinite, a log scale domain must be strictly-positive
-   * or strictly-negative; the domain must not include or cross zero value.
-   * We need to limit the domain scale to the right value on all possible cases.
-   */
-  logMinLimit: number;
-};
 
 const defaultScaleOptions: ScaleOptions = {
   bandwidth: 0,
@@ -427,3 +345,85 @@ export class ScaleContinuous implements Scale<number> {
 
   handleDomainPadding() {}
 }
+
+/**
+ * d3 scales excluding time scale
+ */
+type D3ScaleNonTime<R = PrimitiveValue, O = number> = ScaleLinear<R, O> | ScaleLogarithmic<R, O> | ScalePower<R, O>;
+
+/**
+ * All possible d3 scales
+ */
+type D3Scale<R = PrimitiveValue, O = number> = D3ScaleNonTime<R, O> | ScaleTime<R, O>;
+
+interface ScaleData {
+  /** The Type of continuous scale */
+  type: ScaleContinuousType;
+  /** The data input domain */
+  domain: number[];
+  /** The data output range */
+  range: Range;
+  nice?: boolean;
+}
+
+type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
+  /**
+   * The desired bandwidth for a linear band scale.
+   * @defaultValue 0
+   */
+  bandwidth: number;
+  /**
+   * The min interval computed on the XDomain. Not available for yDomains.
+   * @defaultValue 0
+   */
+  minInterval: number;
+  /**
+   * A time zone identifier. Can be any IANA zone supported by he host environment,
+   * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
+   * @defaultValue `utc`
+   */
+  timeZone: string;
+  /**
+   * The number of bars in the cluster. Used to correctly compute scales when
+   * using padding between bars.
+   * @defaultValue 1
+   */
+  totalBarsInCluster: number;
+  /**
+   * The proportion of the range that is reserved for blank space between bands
+   * A number between 0 and 1.
+   * @defaultValue 0
+   */
+  barsPadding: number;
+  /**
+   * Pixel value to extend the domain. Applied __before__ nicing.
+   *
+   * Does not apply to time scales
+   * @defaultValue 0
+   */
+  domainPixelPadding: number;
+  /**
+   * Constrains domain pixel padding to the zero baseline
+   * Does not apply to time scales
+   */
+  constrainDomainPadding?: boolean;
+  /**
+   * The approximated number of ticks.
+   * @defaultValue 10
+   */
+  desiredTickCount: number;
+  /**
+   * true if the scale was adjusted to fit one single value histogram
+   */
+  isSingleValueHistogram: boolean;
+  /**
+   * Show only integer values
+   */
+  integersOnly: boolean;
+  /**
+   * As log(0) = -Infinite, a log scale domain must be strictly-positive
+   * or strictly-negative; the domain must not include or cross zero value.
+   * We need to limit the domain scale to the right value on all possible cases.
+   */
+  logMinLimit: number;
+};
