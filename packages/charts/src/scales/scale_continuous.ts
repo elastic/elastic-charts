@@ -165,12 +165,12 @@ export class ScaleContinuous implements Scale<number> {
     } else {
       // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
       // We want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
-      if (scaleOptions.minInterval > 0 && scaleOptions.bandwidth > 0) {
-        const intervalCount = Math.floor((this.domain[1] - this.domain[0]) / this.minInterval);
-        this.tickValues = new Array(intervalCount + 1).fill(0).map((_, i) => this.domain[0] + i * this.minInterval);
-      } else {
-        this.tickValues = this.getTicks(scaleOptions.desiredTickCount, scaleOptions.integersOnly);
-      }
+      this.tickValues =
+        scaleOptions.minInterval <= 0 || scaleOptions.bandwidth <= 0
+          ? this.getTicks(scaleOptions.desiredTickCount, scaleOptions.integersOnly)
+          : new Array(Math.floor((this.domain[1] - this.domain[0]) / this.minInterval) + 1)
+              .fill(0)
+              .map((_, i) => this.domain[0] + i * this.minInterval);
     }
   }
 
