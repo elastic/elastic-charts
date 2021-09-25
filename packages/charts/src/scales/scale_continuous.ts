@@ -15,7 +15,6 @@ import {
   ScaleLogarithmic,
   ScalePower,
   scaleSqrt,
-  ScaleTime,
   scaleUtc,
 } from 'd3-scale';
 import { Required } from 'utility-types';
@@ -59,32 +58,20 @@ const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
  */
 export class ScaleContinuous implements Scale<number> {
   readonly bandwidth: number;
-
   readonly totalBarsInCluster: number;
-
   readonly bandwidthPadding: number;
-
   readonly minInterval: number;
-
   readonly step: number;
-
   readonly type: ScaleContinuousType;
-
   readonly domain: number[];
-
   readonly range: Range;
-
   readonly isInverted: boolean;
-
   readonly tickValues: number[];
-
   readonly timeZone: string;
-
   readonly barsPadding: number;
-
   readonly isSingleValueHistogram: boolean;
-
-  private readonly d3Scale: D3Scale;
+  private readonly project: (d: number) => number;
+  private readonly inverseProject: (d: number) => number | Date;
 
   constructor(
     { type = ScaleType.Linear, domain: inputDomain, range, nice = false }: ScaleData,
@@ -158,7 +145,8 @@ export class ScaleContinuous implements Scale<number> {
             .fill(0)
             .map((_, i) => nicePaddedDomain[0] + i * minInterval);
     this.domain = nicePaddedDomain;
-    this.d3Scale = d3Scale;
+    this.project = (d: number) => d3Scale(d);
+    this.inverseProject = (d: number) => d3Scale.invert(d);
   }
 
   scale(value?: PrimitiveValue) {
@@ -179,7 +167,7 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   invert(value: number): number {
-    const invertedValue = this.d3Scale.invert(value);
+    const invertedValue = this.inverseProject(value);
     return this.type === ScaleType.Time
       ? getMomentWithTz(invertedValue, this.timeZone).valueOf()
       : Number(invertedValue);
@@ -239,8 +227,8 @@ export class ScaleContinuous implements Scale<number> {
 
   private getScaledValue(value?: PrimitiveValue): number | null {
     if (typeof value !== 'number' || Number.isNaN(value)) return null;
-    const result = this.d3Scale(value);
-    return typeof result !== 'number' || Number.isNaN(result) ? null : result;
+    const result = this.project(value);
+    return Number.isNaN(result) ? null : result;
   }
 }
 
@@ -325,7 +313,6 @@ type D3ScaleNonTime<R = PrimitiveValue, O = number> = ScaleLinear<R, O> | ScaleL
 /**
  * All possible d3 scales
  */
-type D3Scale<R = PrimitiveValue, O = number> = D3ScaleNonTime<R, O> | ScaleTime<R, O>;
 
 interface ScaleData {
   /** The Type of continuous scale */
