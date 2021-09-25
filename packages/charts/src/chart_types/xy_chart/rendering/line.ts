@@ -18,13 +18,7 @@ import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum } from '../utils/series';
 import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
-import {
-  getClippedRanges,
-  getY1ScaledValueOrThrowFn,
-  getYDatumValueFn,
-  isYValueDefinedFn,
-  MarkSizeOptions,
-} from './utils';
+import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn, MarkSizeOptions } from './utils';
 
 /** @internal */
 export function renderLine(
@@ -45,7 +39,7 @@ export function renderLine(
   lineGeometry: LineGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
-  const y1Fn = getY1ScaledValueOrThrowFn(yScale);
+  const y1Fn = getY1ScaledValueFn(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
   const y1Accessor = getYDatumValueFn();
 

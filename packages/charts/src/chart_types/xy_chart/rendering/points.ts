@@ -17,8 +17,8 @@ import { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } fr
 import { PointStyleAccessor, StackMode } from '../utils/specs';
 import { buildPointGeometryStyles } from './point_style';
 import {
-  getY0ScaledValueOrThrowFn,
-  getY1ScaledValueOrThrowFn,
+  getY0ScaledValueFn,
+  getY1ScaledValueFn,
   getYDatumValueFn,
   isDatumFilled,
   isYValueDefinedFn,
@@ -49,8 +49,8 @@ export function renderPoints(
     : () => 0;
   const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
 
-  const y1Fn = getY1ScaledValueOrThrowFn(yScale);
-  const y0Fn = getY0ScaledValueOrThrowFn(yScale);
+  const y1Fn = getY1ScaledValueFn(yScale);
+  const y0Fn = getY0ScaledValueFn(yScale);
   const yDefined = isYValueDefinedFn(yScale, xScale);
 
   const pointGeometries = dataSeries.data.reduce((acc, datum, dataIndex) => {

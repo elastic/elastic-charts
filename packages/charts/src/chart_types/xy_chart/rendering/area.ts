@@ -20,8 +20,8 @@ import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
 import {
   getClippedRanges,
-  getY0ScaledValueOrThrowFn,
-  getY1ScaledValueOrThrowFn,
+  getY0ScaledValueFn,
+  getY1ScaledValueFn,
   getYDatumValueFn,
   isYValueDefinedFn,
   MarkSizeOptions,
@@ -47,8 +47,8 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
-  const y1Fn = getY1ScaledValueOrThrowFn(yScale);
-  const y0Fn = getY0ScaledValueOrThrowFn(yScale);
+  const y1Fn = getY1ScaledValueFn(yScale);
+  const y0Fn = getY0ScaledValueFn(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
   const y1DatumAccessor = getYDatumValueFn();
   const y0DatumAccessor = getYDatumValueFn('y0');

@@ -199,9 +199,9 @@ function chromeRenderBugBuffer(y1: number, y0: number): number {
 }
 
 /** @internal */
-export function getY1ScaledValueOrThrowFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
+export function getY1ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
   const datumAccessor = getYDatumValueFn();
-  const scaleY0Value = getY0ScaledValueOrThrowFn(yScale);
+  const scaleY0Value = getY0ScaledValueFn(yScale);
   return (datum) => {
     const y1Value = yScale.scale(datumAccessor(datum)) ?? NaN;
     const y0Value = scaleY0Value(datum);
@@ -210,7 +210,7 @@ export function getY1ScaledValueOrThrowFn(yScale: Scale<number>): (datum: DataSe
 }
 
 /** @internal */
-export function getY0ScaledValueOrThrowFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
+export function getY0ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
   const isLogScale = isLogarithmicScale(yScale);
   const domainPolarity = getDomainPolarity(yScale.domain);
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);
