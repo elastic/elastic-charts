@@ -216,16 +216,13 @@ export function getY0ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDat
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);
 
   return ({ y0 }) => {
-    if (y0 === null) {
-      // if all positive domain use 1 as baseline, -1 otherwise
-      return isLogScale ? yScale.scale(logBaseline) ?? NaN : yScale.scale(DEFAULT_ZERO_BASELINE) ?? NaN;
-    } else {
-      return isLogScale // checking wrong y0 polarity
-        ? (domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0)
-          ? yScale.scale(logBaseline) ?? NaN // if all positive domain use 1 as baseline, -1 otherwise
-          : yScale.scale(y0) ?? NaN // if negative value, use -1 as max reference, 1 otherwise
-        : yScale.scale(y0) ?? NaN;
-    }
+    return isLogScale // checking wrong y0 polarity
+      ? y0 === null
+        ? yScale.scale(logBaseline) ?? NaN
+        : (domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0)
+        ? yScale.scale(logBaseline) ?? NaN // if all positive domain use 1 as baseline, -1 otherwise
+        : yScale.scale(y0) ?? NaN // if negative value, use -1 as max reference, 1 otherwise
+      : yScale.scale(y0 === null ? DEFAULT_ZERO_BASELINE : y0) ?? NaN;
   };
 }
 
