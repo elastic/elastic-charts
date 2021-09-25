@@ -115,15 +115,17 @@ export class ScaleContinuous implements Scale<number> {
     // possibly niced domain
     const domain = isNice ? (d3Scale.domain() as number[]) : rawDomain;
 
+    const newDomain = isPixelPadded
+      ? getPixelPaddedDomain(
+          totalRange,
+          domain as [number, number],
+          scaleOptions.domainPixelPadding,
+          scaleOptions.constrainDomainPadding,
+        )
+      : domain;
+
     // tweak the domain and scale even further
     if (isPixelPadded) {
-      const newDomain = getPixelPaddedDomain(
-        totalRange,
-        domain as [number, number],
-        scaleOptions.domainPixelPadding,
-        scaleOptions.constrainDomainPadding,
-      );
-
       if (nice) {
         (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>)
           .domain(newDomain)
@@ -131,12 +133,9 @@ export class ScaleContinuous implements Scale<number> {
       } else {
         d3Scale.domain(newDomain);
       }
-
-      this.domain = nice ? (d3Scale.domain() as number[]) : newDomain;
-    } else {
-      this.domain = domain;
     }
 
+    this.domain = isPixelPadded && nice ? (d3Scale.domain() as number[]) : newDomain;
     this.d3Scale = d3Scale;
 
     // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
