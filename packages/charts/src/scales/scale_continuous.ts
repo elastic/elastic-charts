@@ -417,26 +417,22 @@ export class ScaleContinuous implements Scale<number> {
     value: number,
     data: number[],
   ): {
-    value: number;
     withinBandwidth: boolean;
+    value: number;
   } {
     if (data.length === 0) {
-      return { value: NaN, withinBandwidth: false };
+      return { withinBandwidth: false, value: NaN };
     }
     const invertedValue = this.invert(value);
     const bisectValue = this.bandwidth === 0 ? invertedValue + this.minInterval / 2 : invertedValue;
     const leftIndex = bisectLeft(data, bisectValue);
 
     if (leftIndex === 0) {
-      if (invertedValue < data[0]) {
-        return {
-          value: data[0] - this.minInterval * Math.ceil((data[0] - invertedValue) / this.minInterval),
-          withinBandwidth: false,
-        };
-      }
+      const withinBandwidth = invertedValue >= data[0];
       return {
-        value: data[0],
-        withinBandwidth: true,
+        withinBandwidth,
+        value:
+          data[0] + (withinBandwidth ? 0 : -this.minInterval * Math.ceil((data[0] - invertedValue) / this.minInterval)),
       };
     }
     const currentValue = data[leftIndex - 1];
@@ -446,16 +442,16 @@ export class ScaleContinuous implements Scale<number> {
       const nextDiff = Math.abs(nextValue - invertedValue);
       const prevDiff = Math.abs(invertedValue - currentValue);
       return {
-        value: nextDiff <= prevDiff ? nextValue : currentValue,
         withinBandwidth: true,
+        value: nextDiff <= prevDiff ? nextValue : currentValue,
       };
     }
     const withinBandwidth = invertedValue - currentValue <= this.minInterval;
     return {
+      withinBandwidth,
       value:
         currentValue +
         (withinBandwidth ? 0 : this.minInterval * Math.floor((invertedValue - currentValue) / this.minInterval)),
-      withinBandwidth,
     };
   }
 
