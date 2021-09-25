@@ -405,12 +405,10 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   invert(value: number): number {
-    let invertedValue = this.d3Scale.invert(value);
-    if (this.type === ScaleType.Time) {
-      invertedValue = getMomentWithTz(invertedValue, this.timeZone).valueOf();
-    }
-
-    return invertedValue as number;
+    const invertedValue = this.d3Scale.invert(value);
+    return this.type === ScaleType.Time
+      ? getMomentWithTz(invertedValue, this.timeZone).valueOf()
+      : Number(invertedValue);
   }
 
   invertWithStep(
