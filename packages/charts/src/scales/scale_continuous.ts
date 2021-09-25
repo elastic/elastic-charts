@@ -463,16 +463,7 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   isSingleValue() {
-    if (this.isSingleValueHistogram) {
-      return true;
-    }
-    if (this.domain.length < 2) {
-      return true;
-    }
-
-    const min = this.domain[0];
-    const max = this.domain[this.domain.length - 1];
-    return max === min;
+    return this.isSingleValueHistogram || this.domain.every((v) => v === this.domain[0]);
   }
 
   isValueInDomain(value: number) {
