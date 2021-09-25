@@ -159,12 +159,6 @@ export class ScaleContinuous implements Scale<number> {
     this.domain = finalDomain;
   }
 
-  private getScaledValue(value?: PrimitiveValue): number | null {
-    if (typeof value !== 'number' || Number.isNaN(value)) return null;
-    const result = this.d3Scale(value);
-    return typeof result !== 'number' || Number.isNaN(result) ? null : result;
-  }
-
   scale(value?: PrimitiveValue) {
     const scaledValue = this.getScaledValue(value);
     return scaledValue === null ? null : scaledValue + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
@@ -240,6 +234,12 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   handleDomainPadding() {}
+
+  private getScaledValue(value?: PrimitiveValue): number | null {
+    if (typeof value !== 'number' || Number.isNaN(value)) return null;
+    const result = this.d3Scale(value);
+    return typeof result !== 'number' || Number.isNaN(result) ? null : result;
+  }
 }
 
 function getTimeTicks(desiredTickCount: number, timeZone: string, domain: number[]) {
