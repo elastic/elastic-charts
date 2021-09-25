@@ -149,11 +149,10 @@ export function computeRectAnnotationDimensions(
     const duplicated: AnnotationRectProps[] = [];
     smallMultiplesScales.vertical.domain.forEach((vDomainValue) => {
       smallMultiplesScales.horizontal.domain.forEach((hDomainValue) => {
-        const panel = {
-          ...panelSize,
-          top: smallMultiplesScales.vertical.scaleOrThrow(vDomainValue),
-          left: smallMultiplesScales.horizontal.scaleOrThrow(hDomainValue),
-        };
+        const top = smallMultiplesScales.vertical.scale(vDomainValue);
+        const left = smallMultiplesScales.horizontal.scale(hDomainValue);
+        if (top === null || left === null) return;
+        const panel = { ...panelSize, top, left };
         duplicated.push({ ...props, panel });
       });
     });

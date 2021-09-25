@@ -50,11 +50,9 @@ export function renderLine(
   const y1Accessor = getYDatumValueFn();
 
   const pathGenerator = line<DataSeriesDatum>()
-    .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
+    .x(({ x }) => (xScale.scale(x) ?? NaN) - xScaleOffset)
     .y(y1Fn)
-    .defined((datum) => {
-      return definedFn(datum, y1Accessor);
-    })
+    .defined((datum) => definedFn(datum, y1Accessor))
     .curve(getCurveFactory(curve));
 
   const { pointGeometries, indexedGeometryMap } = renderPoints(

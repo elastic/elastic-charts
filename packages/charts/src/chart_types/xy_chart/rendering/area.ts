@@ -53,7 +53,7 @@ export function renderArea(
   const y1DatumAccessor = getYDatumValueFn();
   const y0DatumAccessor = getYDatumValueFn('y0');
   const pathGenerator = area<DataSeriesDatum>()
-    .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
+    .x(({ x }) => (xScale.scale(x) ?? NaN) - xScaleOffset)
     .y1(y1Fn)
     .y0(y0Fn)
     .defined((datum) => {

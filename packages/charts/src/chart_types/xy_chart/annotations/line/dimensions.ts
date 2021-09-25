@@ -69,8 +69,10 @@ function computeYDomainLineAnnotationDimensions(
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
-        const top = vertical.scaleOrThrow(verticalValue);
-        const left = horizontal.scaleOrThrow(horizontalValue);
+        const top = vertical.scale(verticalValue);
+        const left = horizontal.scale(horizontalValue);
+
+        if (top === null || left === null) return;
 
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;
@@ -178,8 +180,10 @@ function computeXDomainLineAnnotationDimensions(
       horizontal.domain.forEach((horizontalValue) => {
         if (annotationValueXPosition === null) return;
 
-        const top = vertical.scaleOrThrow(verticalValue);
-        const left = horizontal.scaleOrThrow(horizontalValue);
+        const top = vertical.scale(verticalValue);
+        const left = horizontal.scale(horizontalValue);
+        if (top === null || left === null) return;
+
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;
 
