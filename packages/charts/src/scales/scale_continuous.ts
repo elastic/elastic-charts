@@ -100,6 +100,8 @@ export class ScaleContinuous implements Scale<number> {
     const isNice = nice && type !== ScaleType.Time;
     const [r1, r2] = range;
     const totalRange = Math.abs(r1 - r2);
+    const pixelPadFits = 0 < scaleOptions.domainPixelPadding && scaleOptions.domainPixelPadding * 2 < totalRange;
+    const isPixelPadded = pixelPadFits && type !== ScaleType.Time && !isUnitRange(range);
 
     // tweak the opaque scale object
     this.d3Scale = SCALES[type]();
@@ -124,12 +126,7 @@ export class ScaleContinuous implements Scale<number> {
     this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
     this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
 
-    if (
-      type !== ScaleType.Time &&
-      scaleOptions.domainPixelPadding &&
-      !isUnitRange(range) &&
-      scaleOptions.domainPixelPadding * 2 < totalRange
-    ) {
+    if (isPixelPadded) {
       const newDomain = getPixelPaddedDomain(
         totalRange,
         this.domain as [number, number],
@@ -143,8 +140,8 @@ export class ScaleContinuous implements Scale<number> {
           .nice(scaleOptions.desiredTickCount);
         this.domain = this.d3Scale.domain() as number[];
       } else {
-        this.domain = newDomain;
         this.d3Scale.domain(newDomain);
+        this.domain = newDomain;
       }
     }
 
