@@ -104,19 +104,19 @@ export class ScaleContinuous implements Scale<number> {
     const isPixelPadded = pixelPadFits && type !== ScaleType.Time && !isUnitRange(range);
 
     // tweak the opaque scale object
-    this.d3Scale = SCALES[type]();
-    if (properLogScale) (this.d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(scaleOptions.logBase);
-    this.d3Scale.domain(rawDomain);
-    if (isNice) (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
+    const d3Scale = SCALES[type]();
+    d3Scale.range(range);
+    if (properLogScale) (d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(scaleOptions.logBase);
+    d3Scale.domain(rawDomain);
+    if (isNice) (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
 
-    const domain = isNice ? (this.d3Scale.domain() as number[]) : rawDomain;
+    const domain = isNice ? (d3Scale.domain() as number[]) : rawDomain;
 
     // set the this props
     this.domain = domain;
     this.barsPadding = safeBarPadding;
     this.bandwidth = scaleOptions.bandwidth * (1 - safeBarPadding);
     this.bandwidthPadding = scaleOptions.bandwidth * safeBarPadding;
-    this.d3Scale.range(range);
     this.step = this.bandwidth + this.barsPadding + this.bandwidthPadding;
     this.type = type;
     this.range = range;
@@ -135,15 +135,17 @@ export class ScaleContinuous implements Scale<number> {
       );
 
       if (nice) {
-        (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>)
+        (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>)
           .domain(newDomain)
           .nice(scaleOptions.desiredTickCount);
-        this.domain = this.d3Scale.domain() as number[];
       } else {
-        this.d3Scale.domain(newDomain);
-        this.domain = newDomain;
+        d3Scale.domain(newDomain);
       }
+
+      this.domain = nice ? (d3Scale.domain() as number[]) : newDomain;
     }
+
+    this.d3Scale = d3Scale;
 
     // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
     // we want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
