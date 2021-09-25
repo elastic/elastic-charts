@@ -365,13 +365,9 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   private getScaledValue(value?: PrimitiveValue): number | null {
-    if (typeof value !== 'number' || isNaN(value)) {
-      return null;
-    }
-
-    const scaledValue = this.d3Scale(value);
-
-    return isNaN(scaledValue) ? null : scaledValue;
+    if (typeof value !== 'number' || Number.isNaN(value)) return null;
+    const result = this.d3Scale(value);
+    return typeof result !== 'number' || Number.isNaN(result) ? null : result;
   }
 
   getTicks(ticks: number, integersOnly: boolean) {
