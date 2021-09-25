@@ -105,45 +105,41 @@ export class ScaleContinuous implements Scale<number> {
     const bandwidth = scaleOptions.bandwidth * (1 - barsPadding);
     const bandwidthPadding = scaleOptions.bandwidth * barsPadding;
 
-    // make and embellish the opaque scale object
     const d3Scale = SCALES[type]();
     d3Scale.domain(rawDomain);
     d3Scale.range(range);
     if (properLogScale) (d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(scaleOptions.logBase);
     if (isNice) (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
 
-    // possibly niced domain
-    const domain = isNice ? (d3Scale.domain() as number[]) : rawDomain;
+    const niceDomain = isNice ? (d3Scale.domain() as number[]) : rawDomain;
 
-    const newDomain = isPixelPadded
+    const paddedDomain = isPixelPadded
       ? getPixelPaddedDomain(
           totalRange,
-          domain as [number, number],
+          niceDomain as [number, number],
           scaleOptions.domainPixelPadding,
           scaleOptions.constrainDomainPadding,
         )
-      : domain;
+      : niceDomain;
 
-    // tweak the domain and scale even further
-    d3Scale.domain(newDomain); // only need to do this if isPixelPadded is true, but hey
+    d3Scale.domain(paddedDomain); // only need to do this if isPixelPadded is true, but hey
     if (isPixelPadded && isNice)
       (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
 
-    const finalDomain = isPixelPadded && isNice ? (d3Scale.domain() as number[]) : newDomain;
+    const nicePaddedDomain = isPixelPadded && isNice ? (d3Scale.domain() as number[]) : paddedDomain;
 
-    // set the this props
     this.tickValues =
       // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
       // we want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
       type === ScaleType.Time
-        ? getTimeTicks(scaleOptions.desiredTickCount, scaleOptions.timeZone, finalDomain)
+        ? getTimeTicks(scaleOptions.desiredTickCount, scaleOptions.timeZone, nicePaddedDomain)
         : scaleOptions.minInterval <= 0 || scaleOptions.bandwidth <= 0
         ? (d3Scale as D3ScaleNonTime)
             .ticks(scaleOptions.desiredTickCount)
             .filter(scaleOptions.integersOnly ? Number.isInteger : () => true)
-        : new Array(Math.floor((finalDomain[1] - finalDomain[0]) / minInterval) + 1)
+        : new Array(Math.floor((nicePaddedDomain[1] - nicePaddedDomain[0]) / minInterval) + 1)
             .fill(0)
-            .map((_, i) => finalDomain[0] + i * minInterval);
+            .map((_, i) => nicePaddedDomain[0] + i * minInterval);
     this.barsPadding = barsPadding;
     this.bandwidth = bandwidth;
     this.bandwidthPadding = bandwidthPadding;
@@ -152,10 +148,10 @@ export class ScaleContinuous implements Scale<number> {
     this.minInterval = minInterval;
     this.step = bandwidth + barsPadding + bandwidthPadding;
     this.timeZone = scaleOptions.timeZone;
-    this.isInverted = domain[0] > domain[1];
+    this.isInverted = niceDomain[0] > niceDomain[1];
     this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
     this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
-    this.domain = finalDomain;
+    this.domain = nicePaddedDomain;
     this.d3Scale = d3Scale;
   }
 
