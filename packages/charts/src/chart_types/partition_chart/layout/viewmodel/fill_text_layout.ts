@@ -437,7 +437,7 @@ function getRowSet<C>(
   }
 
   const { rowSet, completed } = tryFunction(identityRowSet(), fontSizes[fontSizeIndex]); // todo in the future, make the hill climber also yield the result to avoid this +1 call
-  return { ...rowSet, rows: rowSet.rows.filter((r) => completed && !isNaN(r.length)) };
+  return { ...rowSet, rows: rowSet.rows.filter((r) => completed && Number.isFinite(r.length)) };
 }
 
 /** @internal */
