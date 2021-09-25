@@ -36,6 +36,21 @@ const SCALES = {
   [ScaleType.Time]: scaleUtc,
 };
 
+const defaultScaleOptions: ScaleOptions = {
+  bandwidth: 0,
+  minInterval: 0,
+  timeZone: 'utc',
+  totalBarsInCluster: 1,
+  barsPadding: 0,
+  constrainDomainPadding: true,
+  domainPixelPadding: 0,
+  desiredTickCount: 10,
+  isSingleValueHistogram: false,
+  integersOnly: false,
+  logBase: 10,
+  logMinLimit: NaN, // NaN preserves the replaced `undefined` semantics
+};
+
 const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
 
 /**
@@ -72,28 +87,15 @@ export class ScaleContinuous implements Scale<number> {
   private readonly d3Scale: D3Scale;
 
   constructor({ type = ScaleType.Linear, domain, range, nice = false }: ScaleData, options?: Partial<ScaleOptions>) {
-    const {
-      bandwidth,
-      minInterval,
-      timeZone,
-      totalBarsInCluster,
-      barsPadding,
-      desiredTickCount,
-      isSingleValueHistogram,
-      integersOnly,
-      logBase,
-      logMinLimit,
-      domainPixelPadding,
-      constrainDomainPadding,
-    } = mergePartial(defaultScaleOptions, options, { mergeOptionalPartialValues: true });
+    const scaleOptions: ScaleOptions = mergePartial(defaultScaleOptions, options, { mergeOptionalPartialValues: true });
     this.d3Scale = SCALES[type]();
 
     if (type === ScaleType.Log && domain.length >= 2) {
-      (this.d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(logBase);
+      (this.d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(scaleOptions.logBase);
       const d0 = domain.reduce((p, n) => Math.min(p, n));
       const d1 = domain.reduce((p, n) => Math.max(p, n));
       // todo check if there's upstream guard against degenerate domains (to avoid d0 === d1)
-      this.domain = limitLogScaleDomain([d0, d1], logMinLimit);
+      this.domain = limitLogScaleDomain([d0, d1], scaleOptions.logMinLimit);
     } else {
       this.domain = domain;
     }
@@ -101,37 +103,44 @@ export class ScaleContinuous implements Scale<number> {
     this.d3Scale.domain(this.domain);
 
     if (nice && type !== ScaleType.Time) {
-      (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(desiredTickCount);
+      (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
       this.domain = this.d3Scale.domain() as number[];
     }
 
-    const safeBarPadding = clamp(barsPadding, 0, 1);
+    const safeBarPadding = clamp(scaleOptions.barsPadding, 0, 1);
     this.barsPadding = safeBarPadding;
-    this.bandwidth = bandwidth * (1 - safeBarPadding);
-    this.bandwidthPadding = bandwidth * safeBarPadding;
+    this.bandwidth = scaleOptions.bandwidth * (1 - safeBarPadding);
+    this.bandwidthPadding = scaleOptions.bandwidth * safeBarPadding;
     this.d3Scale.range(range);
     this.step = this.bandwidth + this.barsPadding + this.bandwidthPadding;
     this.type = type;
     this.range = range;
-    this.minInterval = Math.abs(minInterval);
+    this.minInterval = Math.abs(scaleOptions.minInterval);
     this.isInverted = this.domain[0] > this.domain[1];
-    this.timeZone = timeZone;
-    this.totalBarsInCluster = totalBarsInCluster;
-    this.isSingleValueHistogram = isSingleValueHistogram;
+    this.timeZone = scaleOptions.timeZone;
+    this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
+    this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
 
     const [r1, r2] = this.range;
     const totalRange = Math.abs(r1 - r2);
 
-    if (type !== ScaleType.Time && domainPixelPadding && !isUnitRange(range) && domainPixelPadding * 2 < totalRange) {
+    if (
+      type !== ScaleType.Time &&
+      scaleOptions.domainPixelPadding &&
+      !isUnitRange(range) &&
+      scaleOptions.domainPixelPadding * 2 < totalRange
+    ) {
       const newDomain = getPixelPaddedDomain(
         totalRange,
         this.domain as [number, number],
-        domainPixelPadding,
-        constrainDomainPadding,
+        scaleOptions.domainPixelPadding,
+        scaleOptions.constrainDomainPadding,
       );
 
       if (nice) {
-        (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(newDomain).nice(desiredTickCount);
+        (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>)
+          .domain(newDomain)
+          .nice(scaleOptions.desiredTickCount);
         this.domain = this.d3Scale.domain() as number[];
       } else {
         this.domain = newDomain;
@@ -147,7 +156,7 @@ export class ScaleContinuous implements Scale<number> {
       const shiftedDomainMax = endDomain.add(offset, 'minutes').valueOf();
       const tzShiftedScale = scaleUtc().domain([shiftedDomainMin, shiftedDomainMax]);
 
-      const rawTicks = tzShiftedScale.ticks(desiredTickCount);
+      const rawTicks = tzShiftedScale.ticks(scaleOptions.desiredTickCount);
       const timePerTick = (shiftedDomainMax - shiftedDomainMin) / rawTicks.length;
       const hasHourTicks = timePerTick < 1000 * 60 * 60 * 12;
 
@@ -159,11 +168,11 @@ export class ScaleContinuous implements Scale<number> {
     } else {
       // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
       // We want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
-      if (minInterval > 0 && bandwidth > 0) {
+      if (scaleOptions.minInterval > 0 && scaleOptions.bandwidth > 0) {
         const intervalCount = Math.floor((this.domain[1] - this.domain[0]) / this.minInterval);
         this.tickValues = new Array(intervalCount + 1).fill(0).map((_, i) => this.domain[0] + i * this.minInterval);
       } else {
-        this.tickValues = this.getTicks(desiredTickCount, integersOnly);
+        this.tickValues = this.getTicks(scaleOptions.desiredTickCount, scaleOptions.integersOnly);
       }
     }
   }
@@ -311,21 +320,6 @@ function getPixelPaddedDomain(
 
   return inverted ? [paddedDomainHigh, paddedDomainLo] : [paddedDomainLo, paddedDomainHigh];
 }
-
-const defaultScaleOptions: ScaleOptions = {
-  bandwidth: 0,
-  minInterval: 0,
-  timeZone: 'utc',
-  totalBarsInCluster: 1,
-  barsPadding: 0,
-  constrainDomainPadding: true,
-  domainPixelPadding: 0,
-  desiredTickCount: 10,
-  isSingleValueHistogram: false,
-  integersOnly: false,
-  logBase: 10,
-  logMinLimit: NaN, // NaN preserves the replaced `undefined` semantics
-};
 
 /**
  * d3 scales excluding time scale
