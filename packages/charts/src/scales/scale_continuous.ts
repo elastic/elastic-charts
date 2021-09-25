@@ -105,10 +105,27 @@ export class ScaleContinuous implements Scale<number> {
     const bandwidth = scaleOptions.bandwidth * (1 - barsPadding);
     const bandwidthPadding = scaleOptions.bandwidth * barsPadding;
 
+    this.barsPadding = barsPadding;
+    this.bandwidth = bandwidth;
+    this.bandwidthPadding = bandwidthPadding;
+    this.type = type;
+    this.range = range;
+    this.minInterval = minInterval;
+    this.step = bandwidth + barsPadding + bandwidthPadding;
+    this.timeZone = scaleOptions.timeZone;
+    this.isInverted = rawDomain[0] > rawDomain[1];
+    this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
+    this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
+
+    /** End of Domain  */
+
     const d3Scale = SCALES[type]();
     d3Scale.domain(rawDomain);
     d3Scale.range(range);
     if (properLogScale) (d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(scaleOptions.logBase);
+
+    /** Start of Projection (desiredTickCount and screenspace dependent part) */
+
     if (isNice) (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
 
     const niceDomain = isNice ? (d3Scale.domain() as number[]) : rawDomain;
@@ -140,17 +157,6 @@ export class ScaleContinuous implements Scale<number> {
         : new Array(Math.floor((nicePaddedDomain[1] - nicePaddedDomain[0]) / minInterval) + 1)
             .fill(0)
             .map((_, i) => nicePaddedDomain[0] + i * minInterval);
-    this.barsPadding = barsPadding;
-    this.bandwidth = bandwidth;
-    this.bandwidthPadding = bandwidthPadding;
-    this.type = type;
-    this.range = range;
-    this.minInterval = minInterval;
-    this.step = bandwidth + barsPadding + bandwidthPadding;
-    this.timeZone = scaleOptions.timeZone;
-    this.isInverted = niceDomain[0] > niceDomain[1];
-    this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
-    this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
     this.domain = nicePaddedDomain;
     this.d3Scale = d3Scale;
   }
