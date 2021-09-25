@@ -60,8 +60,6 @@ export interface Scale<T> {
   unit?: string;
   isInverted: boolean;
   barsPadding: number;
-
-  scaleOrThrow(value?: PrimitiveValue): number;
 }
 
 /** @internal */

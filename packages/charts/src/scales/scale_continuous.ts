@@ -382,16 +382,6 @@ export class ScaleContinuous implements Scale<number> {
       : (this.d3Scale as D3ScaleNonTime).ticks(ticks);
   }
 
-  scaleOrThrow(value?: PrimitiveValue): number {
-    const scaleValue = this.scale(value);
-
-    if (scaleValue === null) {
-      throw new Error(`Unable to scale value: ${scaleValue})`);
-    }
-
-    return scaleValue;
-  }
-
   scale(value?: PrimitiveValue) {
     const scaledValue = this.getScaledValue(value);
 

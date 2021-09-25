@@ -196,8 +196,7 @@ export const CHROME_PINCH_BUG_EPSILON = 0.5;
  * https://bugs.chromium.org/p/chromium/issues/detail?id=1163912
  */
 function chromeRenderBugBuffer(y1: number, y0: number): number {
-  const diff = Math.abs(y1 - y0);
-  return diff <= CHROME_PINCH_BUG_EPSILON ? 0.5 : 0;
+  return Math.abs(y1 - y0) <= CHROME_PINCH_BUG_EPSILON ? 0.5 : 0;
 }
 
 /** @internal */

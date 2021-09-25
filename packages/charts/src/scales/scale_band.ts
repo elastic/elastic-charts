@@ -94,16 +94,6 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     return scaleValue;
   }
 
-  scaleOrThrow(value?: PrimitiveValue): number {
-    const scaleValue = this.scale(value);
-
-    if (scaleValue === null) {
-      throw new Error(`Unable to scale value: ${scaleValue})`);
-    }
-
-    return scaleValue;
-  }
-
   scale(value?: PrimitiveValue) {
     return this.getScaledValue(value);
   }
