@@ -297,7 +297,7 @@ export class ScaleContinuous implements Scale<number> {
     this.d3Scale.domain(this.domain);
 
     if (nice && type !== ScaleType.Time) {
-      (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).domain(this.domain).nice(desiredTickCount);
+      (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(desiredTickCount);
       this.domain = this.d3Scale.domain() as number[];
     }
 
