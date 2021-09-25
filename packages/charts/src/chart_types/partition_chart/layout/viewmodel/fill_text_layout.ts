@@ -151,7 +151,7 @@ function rowSetComplete(rowSet: RowSet, measuredBoxes: RowBox[]) {
   return (
     measuredBoxes.length === 0 &&
     !rowSet.rows.some(
-      (r) => isNaN(r.length) || r.rowWords.length === 0 || r.rowWords.every((rw) => rw.text.length === 0),
+      (r) => !Number.isFinite(r.length) || r.rowWords.length === 0 || r.rowWords.every((rw) => rw.text.length === 0),
     )
   );
 }
@@ -516,7 +516,9 @@ export function fillTextLayout<C>(
           return {
             rowSets: [...rowSets, nextRowSet],
             fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
-              !isNaN(nextRowSet.fontSize) && index === layerIndex && !layers[layerIndex]?.fillLabel?.maximizeFontSize
+              Number.isFinite(nextRowSet.fontSize) &&
+              index === layerIndex &&
+              !layers[layerIndex]?.fillLabel?.maximizeFontSize
                 ? layerFontSizes.filter((size: Pixels) => size <= nextRowSet.fontSize)
                 : layerFontSizes,
             ),
