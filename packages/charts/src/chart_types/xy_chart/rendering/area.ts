@@ -63,32 +63,11 @@ export function renderArea(
 
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
-  let y1Line: string | null;
-
-  try {
-    y1Line = pathGenerator.lineY1()(dataSeries.data);
-  } catch {
-    // When values are not scalable
-    y1Line = null;
-  }
-
   const lines: string[] = [];
-  if (y1Line) {
-    lines.push(y1Line);
-  }
-  if (hasY0Accessors) {
-    let y0Line: string | null;
-
-    try {
-      y0Line = pathGenerator.lineY0()(dataSeries.data);
-    } catch {
-      // When values are not scalable
-      y0Line = null;
-    }
-    if (y0Line) {
-      lines.push(y0Line);
-    }
-  }
+  const y0Line = hasY0Accessors && pathGenerator.lineY0()(dataSeries.data);
+  const y1Line = pathGenerator.lineY1()(dataSeries.data);
+  if (y1Line) lines.push(y1Line);
+  if (y0Line) lines.push(y0Line);
 
   const { pointGeometries, indexedGeometryMap } = renderPoints(
     shift - xScaleOffset,
