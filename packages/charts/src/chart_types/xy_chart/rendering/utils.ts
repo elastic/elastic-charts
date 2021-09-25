@@ -8,7 +8,6 @@
 
 import { LegendItem } from '../../../common/legend';
 import { Scale } from '../../../scales';
-import { getDomainPolarity } from '../../../scales/scale_continuous';
 import { isLogarithmicScale } from '../../../scales/types';
 import { MarkBuffer } from '../../../specs';
 import { getDistance } from '../../../utils/common';
@@ -235,4 +234,9 @@ export function getY0ScaledValueOrThrowFn(yScale: Scale<number>): (datum: DataSe
     }
     return yScale.scale(y0) ?? NaN;
   };
+}
+
+function getDomainPolarity(domain: number[]): number {
+  // 1 if both numbers are positive, -1 if both are negative, 0 if zeros or mixed
+  return Math.sign(Math.sign(domain[0]) + Math.sign(domain[1]));
 }
