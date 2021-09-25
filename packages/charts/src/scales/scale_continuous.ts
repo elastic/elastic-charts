@@ -125,31 +125,24 @@ export class ScaleContinuous implements Scale<number> {
       : domain;
 
     // tweak the domain and scale even further
-    if (isPixelPadded) {
-      if (nice) {
-        (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>)
-          .domain(newDomain)
-          .nice(scaleOptions.desiredTickCount);
-      } else {
-        d3Scale.domain(newDomain);
-      }
-    }
+    d3Scale.domain(newDomain); // only need to do this if isPixelPadded is true, but hey
+    if (isPixelPadded && isNice)
+      (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
 
-    this.domain = isPixelPadded && nice ? (d3Scale.domain() as number[]) : newDomain;
-    this.d3Scale = d3Scale;
-
-    // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
-    // we want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
-    this.tickValues =
-      type === ScaleType.Time
-        ? getTimeTicks(scaleOptions.desiredTickCount, scaleOptions.timeZone, this.domain)
-        : scaleOptions.minInterval <= 0 || scaleOptions.bandwidth <= 0
-        ? this.getTicks(scaleOptions.desiredTickCount, scaleOptions.integersOnly)
-        : new Array(Math.floor((this.domain[1] - this.domain[0]) / minInterval) + 1)
-            .fill(0)
-            .map((_, i) => this.domain[0] + i * this.minInterval);
+    const finalDomain = isPixelPadded && isNice ? (d3Scale.domain() as number[]) : newDomain;
 
     // set the this props
+    this.d3Scale = d3Scale; // this must be set before calling `getTicks`
+    this.tickValues =
+      // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
+      // we want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
+      type === ScaleType.Time
+        ? getTimeTicks(scaleOptions.desiredTickCount, scaleOptions.timeZone, finalDomain)
+        : scaleOptions.minInterval <= 0 || scaleOptions.bandwidth <= 0
+        ? this.getTicks(scaleOptions.desiredTickCount, scaleOptions.integersOnly)
+        : new Array(Math.floor((finalDomain[1] - finalDomain[0]) / minInterval) + 1)
+            .fill(0)
+            .map((_, i) => finalDomain[0] + i * this.minInterval);
     this.barsPadding = barsPadding;
     this.bandwidth = bandwidth;
     this.bandwidthPadding = bandwidthPadding;
@@ -161,6 +154,7 @@ export class ScaleContinuous implements Scale<number> {
     this.isInverted = domain[0] > domain[1];
     this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
     this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
+    this.domain = finalDomain;
   }
 
   private getScaledValue(value?: PrimitiveValue): number | null {
