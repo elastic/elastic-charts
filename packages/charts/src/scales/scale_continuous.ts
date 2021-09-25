@@ -27,6 +27,7 @@ import { clamp, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
 import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
+import { LogScaleOptions } from './types';
 
 const SCALES = {
   [ScaleType.Linear]: scaleLinear,
@@ -87,26 +88,6 @@ function getPixelPaddedDomain(
     : baselinePaddedDomainHigh;
 
   return inverted ? [paddedDomainHigh, paddedDomainLo] : [paddedDomainLo, paddedDomainHigh];
-}
-
-/**
- * Options specific to log scales
- * @public
- */
-export interface LogScaleOptions {
-  /**
-   * Min value to render on log scale
-   *
-   * Defaults to min value of domain, or LOG_MIN_ABS_DOMAIN if mixed polarity
-   */
-  logMinLimit?: number;
-  /**
-   * Base for log scale
-   *
-   * @defaultValue 10
-   * (i.e. log base 10)
-   */
-  logBase?: number;
 }
 
 const defaultScaleOptions: ScaleOptions = {

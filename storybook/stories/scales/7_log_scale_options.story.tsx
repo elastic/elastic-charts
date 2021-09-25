@@ -20,8 +20,8 @@ import {
   AreaSeries,
   CurveType,
   YDomainBase,
+  LogScaleOptions,
 } from '@elastic/charts';
-import { LogScaleOptions } from '@elastic/charts/src/scales/scale_continuous';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { logFormatter } from '../utils/formatters';
