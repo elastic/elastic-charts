@@ -205,7 +205,7 @@ export function getY1ScaledValueOrThrowFn(yScale: Scale<number>): (datum: DataSe
   const datumAccessor = getYDatumValueFn();
   const scaleY0Value = getY0ScaledValueOrThrowFn(yScale);
   return (datum) => {
-    const y1Value = yScale.scaleOrThrow(datumAccessor(datum));
+    const y1Value = yScale.scale(datumAccessor(datum)) ?? NaN;
     const y0Value = scaleY0Value(datum);
     return y1Value - chromeRenderBugBuffer(y1Value, y0Value);
   };
@@ -221,19 +221,19 @@ export function getY0ScaledValueOrThrowFn(yScale: Scale<number>): (datum: DataSe
     if (y0 === null) {
       if (isLogScale) {
         // if all positive domain use 1 as baseline, -1 otherwise
-        return yScale.scaleOrThrow(logBaseline);
+        return yScale.scale(logBaseline) ?? NaN;
       }
-      return yScale.scaleOrThrow(DEFAULT_ZERO_BASELINE);
+      return yScale.scale(DEFAULT_ZERO_BASELINE) ?? NaN;
     }
     if (isLogScale) {
       // wrong y0 polarity
       if ((domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0)) {
         // if all positive domain use 1 as baseline, -1 otherwise
-        return yScale.scaleOrThrow(logBaseline);
+        return yScale.scale(logBaseline) ?? NaN;
       }
       // if negative value, use -1 as max reference, 1 otherwise
-      return yScale.scaleOrThrow(y0);
+      return yScale.scale(y0) ?? NaN;
     }
-    return yScale.scaleOrThrow(y0);
+    return yScale.scale(y0) ?? NaN;
   };
 }
