@@ -73,14 +73,7 @@ export function renderPoints(
 
     yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
       const valueAccessor = getYDatumValueFn(yDatumKeyName);
-
-      let y: number | null;
-      try {
-        y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
-      } catch {
-        y = null;
-      }
-
+      const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
       const originalY = getDatumYValue(datum, keyIndex === 0, hasY0Accessors, dataSeries.stackMode);
       const seriesIdentifier: XYChartSeriesIdentifier = {
         key: dataSeries.key,
