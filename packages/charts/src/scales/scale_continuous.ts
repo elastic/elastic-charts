@@ -96,13 +96,14 @@ export class ScaleContinuous implements Scale<number> {
     const max = inputDomain.reduce((p, n) => Math.max(p, n), -Infinity);
     const properLogScale = type === ScaleType.Log && min < max;
     const rawDomain = properLogScale ? limitLogScaleDomain([min, max], scaleOptions.logMinLimit) : inputDomain;
-    const safeBarPadding = clamp(scaleOptions.barsPadding, 0, 1);
+    const barsPadding = clamp(scaleOptions.barsPadding, 0, 1);
     const isNice = nice && type !== ScaleType.Time;
-    const [r1, r2] = range;
-    const totalRange = Math.abs(r1 - r2);
+    const totalRange = Math.abs(range[1] - range[0]);
     const pixelPadFits = 0 < scaleOptions.domainPixelPadding && scaleOptions.domainPixelPadding * 2 < totalRange;
     const isPixelPadded = pixelPadFits && type !== ScaleType.Time && !isUnitRange(range);
     const minInterval = Math.abs(scaleOptions.minInterval);
+    const bandwidth = scaleOptions.bandwidth * (1 - barsPadding);
+    const bandwidthPadding = scaleOptions.bandwidth * barsPadding;
 
     // make and embellish the opaque scale object
     const d3Scale = SCALES[type]();
@@ -150,15 +151,15 @@ export class ScaleContinuous implements Scale<number> {
             .map((_, i) => this.domain[0] + i * this.minInterval);
 
     // set the this props
-    this.barsPadding = safeBarPadding;
-    this.bandwidth = scaleOptions.bandwidth * (1 - safeBarPadding);
-    this.bandwidthPadding = scaleOptions.bandwidth * safeBarPadding;
-    this.step = this.bandwidth + this.barsPadding + this.bandwidthPadding;
+    this.barsPadding = barsPadding;
+    this.bandwidth = bandwidth;
+    this.bandwidthPadding = bandwidthPadding;
     this.type = type;
     this.range = range;
     this.minInterval = minInterval;
-    this.isInverted = domain[0] > domain[1];
+    this.step = bandwidth + barsPadding + bandwidthPadding;
     this.timeZone = scaleOptions.timeZone;
+    this.isInverted = domain[0] > domain[1];
     this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
     this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
   }
