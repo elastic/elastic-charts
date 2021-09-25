@@ -56,10 +56,10 @@ function getValuesInRange(
   return values.slice(startIndex, endIndex);
 }
 
-/**
- * Resolves the maximum number of ticks based on the chart width and sample label based on formatter config.
- */
-function getTicks(chartWidth: number, { formatter, padding, fontSize, fontFamily }: Config['xAxisLabel']): number {
+function estimatedNonOverlappingTickCount(
+  chartWidth: number,
+  { formatter, padding, fontSize, fontFamily }: Config['xAxisLabel'],
+): number {
   return withTextMeasure((textMeasure) => {
     const labelSample = formatter(Date.now());
     const { width } = textMeasure(labelSample, padding, fontSize, fontFamily);
@@ -112,7 +112,7 @@ export function shapeViewModel(
             nice: false,
           },
           {
-            desiredTickCount: getTicks(chartDimensions.width, config.xAxisLabel),
+            desiredTickCount: estimatedNonOverlappingTickCount(chartDimensions.width, config.xAxisLabel),
             timeZone: config.timeZone,
           },
         )
