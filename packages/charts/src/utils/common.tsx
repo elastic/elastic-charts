@@ -568,8 +568,7 @@ export function getPercentageValue<T>(ratio: string | number, relativeValue: num
     return relativeValue * (percentage / 100);
   }
   const num = Number.parseFloat(ratioStr);
-
-  return num && !isNaN(num) ? Math.abs(num) : defaultValue;
+  return Number.isFinite(num) ? Math.abs(num) : defaultValue;
 }
 
 /**
