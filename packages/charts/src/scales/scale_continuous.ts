@@ -102,34 +102,23 @@ export class ScaleContinuous implements Scale<number> {
     const totalRange = Math.abs(r1 - r2);
     const pixelPadFits = 0 < scaleOptions.domainPixelPadding && scaleOptions.domainPixelPadding * 2 < totalRange;
     const isPixelPadded = pixelPadFits && type !== ScaleType.Time && !isUnitRange(range);
+    const minInterval = Math.abs(scaleOptions.minInterval);
 
-    // tweak the opaque scale object
+    // make and embellish the opaque scale object
     const d3Scale = SCALES[type]();
     d3Scale.range(range);
     if (properLogScale) (d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(scaleOptions.logBase);
     d3Scale.domain(rawDomain);
     if (isNice) (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
 
+    // possibly niced domain
     const domain = isNice ? (d3Scale.domain() as number[]) : rawDomain;
 
-    // set the this props
-    this.domain = domain;
-    this.barsPadding = safeBarPadding;
-    this.bandwidth = scaleOptions.bandwidth * (1 - safeBarPadding);
-    this.bandwidthPadding = scaleOptions.bandwidth * safeBarPadding;
-    this.step = this.bandwidth + this.barsPadding + this.bandwidthPadding;
-    this.type = type;
-    this.range = range;
-    this.minInterval = Math.abs(scaleOptions.minInterval);
-    this.isInverted = domain[0] > domain[1];
-    this.timeZone = scaleOptions.timeZone;
-    this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
-    this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
-
+    // tweak the domain and scale even further
     if (isPixelPadded) {
       const newDomain = getPixelPaddedDomain(
         totalRange,
-        this.domain as [number, number],
+        domain as [number, number],
         scaleOptions.domainPixelPadding,
         scaleOptions.constrainDomainPadding,
       );
@@ -143,6 +132,8 @@ export class ScaleContinuous implements Scale<number> {
       }
 
       this.domain = nice ? (d3Scale.domain() as number[]) : newDomain;
+    } else {
+      this.domain = domain;
     }
 
     this.d3Scale = d3Scale;
@@ -154,9 +145,22 @@ export class ScaleContinuous implements Scale<number> {
         ? getTimeTicks(scaleOptions.desiredTickCount, scaleOptions.timeZone, this.domain)
         : scaleOptions.minInterval <= 0 || scaleOptions.bandwidth <= 0
         ? this.getTicks(scaleOptions.desiredTickCount, scaleOptions.integersOnly)
-        : new Array(Math.floor((this.domain[1] - this.domain[0]) / this.minInterval) + 1)
+        : new Array(Math.floor((this.domain[1] - this.domain[0]) / minInterval) + 1)
             .fill(0)
             .map((_, i) => this.domain[0] + i * this.minInterval);
+
+    // set the this props
+    this.barsPadding = safeBarPadding;
+    this.bandwidth = scaleOptions.bandwidth * (1 - safeBarPadding);
+    this.bandwidthPadding = scaleOptions.bandwidth * safeBarPadding;
+    this.step = this.bandwidth + this.barsPadding + this.bandwidthPadding;
+    this.type = type;
+    this.range = range;
+    this.minInterval = minInterval;
+    this.isInverted = domain[0] > domain[1];
+    this.timeZone = scaleOptions.timeZone;
+    this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
+    this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
   }
 
   private getScaledValue(value?: PrimitiveValue): number | null {
