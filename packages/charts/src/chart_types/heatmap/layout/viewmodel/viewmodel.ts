@@ -63,11 +63,11 @@ function estimatedNonOverlappingTickCount(
   return withTextMeasure((textMeasure) => {
     const labelSample = formatter(Date.now());
     const { width } = textMeasure(labelSample, padding, fontSize, fontFamily);
-    const maxTicks = Math.floor(chartWidth / width);
+    const maxTicks = chartWidth / width;
     // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
     // to many ticks creating nice rounded tick values
     // TODO add support for limiting the number of tick in {@link ScaleContinuous}
-    return maxTicks / 2;
+    return Math.floor(maxTicks / 2);
   });
 }
 
@@ -89,13 +89,11 @@ export function shapeViewModel(
   const { table, yValues, xDomain } = heatmapTable;
 
   // measure the text width of all rows values to get the grid area width
-  const boxedYValues = yValues.map<Box & { value: NonNullable<PrimitiveValue> }>((value) => {
-    return {
-      text: config.yAxisLabel.formatter(value),
-      value,
-      ...config.yAxisLabel,
-    };
-  });
+  const boxedYValues = yValues.map<Box & { value: NonNullable<PrimitiveValue> }>((value) => ({
+    text: config.yAxisLabel.formatter(value),
+    value,
+    ...config.yAxisLabel,
+  }));
 
   // compute the scale for the rows positions
   const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, height]);
