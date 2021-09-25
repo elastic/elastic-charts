@@ -378,10 +378,7 @@ export class ScaleContinuous implements Scale<number> {
     // TODO: cleanup types for ticks btw time and non-time scales
     // This is forcing a return type of number[] but is really (number|Date)[]
     return integersOnly
-      ? (this.d3Scale as D3ScaleNonTime)
-          .ticks(ticks)
-          .filter(Number.isInteger)
-          .map((item: number) => parseInt(item.toFixed(0), 10))
+      ? (this.d3Scale as D3ScaleNonTime).ticks(ticks).filter(Number.isInteger)
       : (this.d3Scale as D3ScaleNonTime).ticks(ticks);
   }
 
