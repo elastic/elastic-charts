@@ -86,28 +86,31 @@ export class ScaleContinuous implements Scale<number> {
 
   private readonly d3Scale: D3Scale;
 
-  constructor({ type = ScaleType.Linear, domain, range, nice = false }: ScaleData, options?: Partial<ScaleOptions>) {
+  constructor(
+    { type = ScaleType.Linear, domain: inputDomain, range, nice = false }: ScaleData,
+    options?: Partial<ScaleOptions>,
+  ) {
     const scaleOptions: ScaleOptions = mergePartial(defaultScaleOptions, options, { mergeOptionalPartialValues: true });
-    this.d3Scale = SCALES[type]();
 
-    if (type === ScaleType.Log && domain.length >= 2) {
-      (this.d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(scaleOptions.logBase);
-      const d0 = domain.reduce((p, n) => Math.min(p, n));
-      const d1 = domain.reduce((p, n) => Math.max(p, n));
-      // todo check if there's upstream guard against degenerate domains (to avoid d0 === d1)
-      this.domain = limitLogScaleDomain([d0, d1], scaleOptions.logMinLimit);
-    } else {
-      this.domain = domain;
-    }
-
-    this.d3Scale.domain(this.domain);
-
-    if (nice && type !== ScaleType.Time) {
-      (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
-      this.domain = this.d3Scale.domain() as number[];
-    }
-
+    const min = inputDomain.reduce((p, n) => Math.min(p, n), Infinity);
+    const max = inputDomain.reduce((p, n) => Math.max(p, n), -Infinity);
+    const properLogScale = type === ScaleType.Log && min < max;
+    const rawDomain = properLogScale ? limitLogScaleDomain([min, max], scaleOptions.logMinLimit) : inputDomain;
     const safeBarPadding = clamp(scaleOptions.barsPadding, 0, 1);
+    const isNice = nice && type !== ScaleType.Time;
+    const [r1, r2] = range;
+    const totalRange = Math.abs(r1 - r2);
+
+    // tweak the opaque scale object
+    this.d3Scale = SCALES[type]();
+    if (properLogScale) (this.d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(scaleOptions.logBase);
+    this.d3Scale.domain(rawDomain);
+    if (isNice) (this.d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
+
+    const domain = isNice ? (this.d3Scale.domain() as number[]) : rawDomain;
+
+    // set the this props
+    this.domain = domain;
     this.barsPadding = safeBarPadding;
     this.bandwidth = scaleOptions.bandwidth * (1 - safeBarPadding);
     this.bandwidthPadding = scaleOptions.bandwidth * safeBarPadding;
@@ -116,13 +119,10 @@ export class ScaleContinuous implements Scale<number> {
     this.type = type;
     this.range = range;
     this.minInterval = Math.abs(scaleOptions.minInterval);
-    this.isInverted = this.domain[0] > this.domain[1];
+    this.isInverted = domain[0] > domain[1];
     this.timeZone = scaleOptions.timeZone;
     this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
     this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
-
-    const [r1, r2] = this.range;
-    const totalRange = Math.abs(r1 - r2);
 
     if (
       type !== ScaleType.Time &&
@@ -259,7 +259,7 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   isSingleValue() {
-    return this.isSingleValueHistogram || this.domain.every((v) => v === this.domain[0]);
+    return this.isSingleValueHistogram || isDegenerateDomain(this.domain);
   }
 
   isValueInDomain(value: number) {
@@ -267,6 +267,10 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   handleDomainPadding() {}
+}
+
+function isDegenerateDomain(domain: unknown[]): boolean {
+  return domain.every((v) => v === domain[0]);
 }
 
 /** @internal */
