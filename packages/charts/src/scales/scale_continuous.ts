@@ -132,7 +132,6 @@ export class ScaleContinuous implements Scale<number> {
     const finalDomain = isPixelPadded && isNice ? (d3Scale.domain() as number[]) : newDomain;
 
     // set the this props
-    this.d3Scale = d3Scale; // this must be set before calling `getTicks`
     this.tickValues =
       // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
       // we want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
@@ -157,6 +156,7 @@ export class ScaleContinuous implements Scale<number> {
     this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
     this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
     this.domain = finalDomain;
+    this.d3Scale = d3Scale;
   }
 
   scale(value?: PrimitiveValue) {
