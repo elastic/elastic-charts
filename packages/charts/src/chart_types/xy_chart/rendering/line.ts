@@ -69,17 +69,9 @@ export function renderLine(
   );
 
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
-  let linePath: string;
-
-  try {
-    linePath = pathGenerator(dataSeries.data) || '';
-  } catch {
-    // When values are not scalable
-    linePath = '';
-  }
 
   const lineGeometry = {
-    line: linePath,
+    line: pathGenerator(dataSeries.data) || '',
     points: pointGeometries,
     color,
     transform: {
