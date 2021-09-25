@@ -107,9 +107,9 @@ export class ScaleContinuous implements Scale<number> {
 
     // make and embellish the opaque scale object
     const d3Scale = SCALES[type]();
+    d3Scale.domain(rawDomain);
     d3Scale.range(range);
     if (properLogScale) (d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(scaleOptions.logBase);
-    d3Scale.domain(rawDomain);
     if (isNice) (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
 
     // possibly niced domain
@@ -142,7 +142,7 @@ export class ScaleContinuous implements Scale<number> {
         ? this.getTicks(scaleOptions.desiredTickCount, scaleOptions.integersOnly)
         : new Array(Math.floor((finalDomain[1] - finalDomain[0]) / minInterval) + 1)
             .fill(0)
-            .map((_, i) => finalDomain[0] + i * this.minInterval);
+            .map((_, i) => finalDomain[0] + i * minInterval);
     this.barsPadding = barsPadding;
     this.bandwidth = bandwidth;
     this.bandwidthPadding = bandwidthPadding;
@@ -173,7 +173,6 @@ export class ScaleContinuous implements Scale<number> {
 
   scale(value?: PrimitiveValue) {
     const scaledValue = this.getScaledValue(value);
-
     return scaledValue === null ? null : scaledValue + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
   }
 
