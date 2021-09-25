@@ -450,15 +450,12 @@ export class ScaleContinuous implements Scale<number> {
         withinBandwidth: true,
       };
     }
-    if (invertedValue - currentValue <= this.minInterval) {
-      return {
-        value: currentValue,
-        withinBandwidth: true,
-      };
-    }
+    const withinBandwidth = invertedValue - currentValue <= this.minInterval;
     return {
-      value: currentValue + this.minInterval * Math.floor((invertedValue - currentValue) / this.minInterval),
-      withinBandwidth: false,
+      value:
+        currentValue +
+        (withinBandwidth ? 0 : this.minInterval * Math.floor((invertedValue - currentValue) / this.minInterval)),
+      withinBandwidth,
     };
   }
 
@@ -467,7 +464,7 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   isValueInDomain(value: number) {
-    return value >= this.domain[0] && value <= this.domain[1];
+    return this.domain[0] <= value && value <= this.domain[1];
   }
 
   handleDomainPadding() {}
