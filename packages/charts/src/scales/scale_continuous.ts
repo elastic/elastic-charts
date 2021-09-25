@@ -484,15 +484,6 @@ export class ScaleContinuous implements Scale<number> {
 
 /** @internal */
 export function getDomainPolarity(domain: number[]): number {
-  const [min, max] = domain;
-  // all positive or zero
-  if (min >= 0 && max >= 0) {
-    return 1;
-  }
-  // all negative or zero
-  if (min <= 0 && max <= 0) {
-    return -1;
-  }
-  // mixed
-  return 0;
+  // 1 if both numbers are positive, -1 if both are negative, 0 if zero or mixed
+  return Math.sign(Math.sign(domain[0]) + Math.sign(domain[1]));
 }
