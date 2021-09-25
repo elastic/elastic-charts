@@ -145,33 +145,16 @@ export class ScaleContinuous implements Scale<number> {
       }
     }
 
-    if (type === ScaleType.Time) {
-      const startDomain = getMomentWithTz(this.domain[0], this.timeZone);
-      const endDomain = getMomentWithTz(this.domain[1], this.timeZone);
-      const offset = startDomain.utcOffset();
-      const shiftedDomainMin = startDomain.add(offset, 'minutes').valueOf();
-      const shiftedDomainMax = endDomain.add(offset, 'minutes').valueOf();
-      const tzShiftedScale = scaleUtc().domain([shiftedDomainMin, shiftedDomainMax]);
-
-      const rawTicks = tzShiftedScale.ticks(scaleOptions.desiredTickCount);
-      const timePerTick = (shiftedDomainMax - shiftedDomainMin) / rawTicks.length;
-      const hasHourTicks = timePerTick < 1000 * 60 * 60 * 12;
-
-      this.tickValues = rawTicks.map((d: Date) => {
-        const currentDateTime = getMomentWithTz(d, this.timeZone);
-        const currentOffset = hasHourTicks ? offset : currentDateTime.utcOffset();
-        return currentDateTime.subtract(currentOffset, 'minutes').valueOf();
-      });
-    } else {
-      // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
-      // We want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
-      this.tickValues =
-        scaleOptions.minInterval <= 0 || scaleOptions.bandwidth <= 0
-          ? this.getTicks(scaleOptions.desiredTickCount, scaleOptions.integersOnly)
-          : new Array(Math.floor((this.domain[1] - this.domain[0]) / this.minInterval) + 1)
-              .fill(0)
-              .map((_, i) => this.domain[0] + i * this.minInterval);
-    }
+    // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
+    // we want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
+    this.tickValues =
+      type === ScaleType.Time
+        ? getTimeTicks(scaleOptions.desiredTickCount, scaleOptions.timeZone, this.domain)
+        : scaleOptions.minInterval <= 0 || scaleOptions.bandwidth <= 0
+        ? this.getTicks(scaleOptions.desiredTickCount, scaleOptions.integersOnly)
+        : new Array(Math.floor((this.domain[1] - this.domain[0]) / this.minInterval) + 1)
+            .fill(0)
+            .map((_, i) => this.domain[0] + i * this.minInterval);
   }
 
   private getScaledValue(value?: PrimitiveValue): number | null {
@@ -264,6 +247,23 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   handleDomainPadding() {}
+}
+
+function getTimeTicks(desiredTickCount: number, timeZone: string, domain: number[]) {
+  const startDomain = getMomentWithTz(domain[0], timeZone);
+  const endDomain = getMomentWithTz(domain[1], timeZone);
+  const offset = startDomain.utcOffset();
+  const shiftedDomainMin = startDomain.add(offset, 'minutes').valueOf();
+  const shiftedDomainMax = endDomain.add(offset, 'minutes').valueOf();
+  const tzShiftedScale = scaleUtc().domain([shiftedDomainMin, shiftedDomainMax]);
+  const rawTicks = tzShiftedScale.ticks(desiredTickCount);
+  const timePerTick = (shiftedDomainMax - shiftedDomainMin) / rawTicks.length;
+  const hasHourTicks = timePerTick < 1000 * 60 * 60 * 12;
+  return rawTicks.map((d: Date) => {
+    const currentDateTime = getMomentWithTz(d, timeZone);
+    const currentOffset = hasHourTicks ? offset : currentDateTime.utcOffset();
+    return currentDateTime.subtract(currentOffset, 'minutes').valueOf();
+  });
 }
 
 function isDegenerateDomain(domain: unknown[]): boolean {
