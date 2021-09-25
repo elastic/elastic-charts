@@ -18,7 +18,7 @@ import {
   ScaleTime,
   scaleUtc,
 } from 'd3-scale';
-import { $Values, Required } from 'utility-types';
+import { Required } from 'utility-types';
 
 import { Scale, ScaleContinuousType } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
@@ -99,34 +99,6 @@ function getPixelPaddedDomain(
   return inverted ? [paddedDomainHigh, paddedDomainLo] : [paddedDomainLo, paddedDomainHigh];
 }
 
-/** @public */
-export const LogBase = Object.freeze({
-  /**
-   * log base `10`
-   */
-  Common: 'common' as const,
-  /**
-   * log base `2`
-   */
-  Binary: 'binary' as const,
-  /**
-   * log base `e` (aka ln)
-   */
-  Natural: 'natural' as const,
-});
-/**
- * Log bases
- * @public
- */
-export type LogBase = $Values<typeof LogBase>;
-
-/** @internal */
-export const logBaseMap: Record<LogBase, number> = {
-  [LogBase.Common]: 10,
-  [LogBase.Binary]: 2,
-  [LogBase.Natural]: Math.E,
-};
-
 interface ScaleData {
   /** The Type of continuous scale */
   type: ScaleContinuousType;
@@ -151,10 +123,10 @@ export interface LogScaleOptions {
   /**
    * Base for log scale
    *
-   * @defaultValue `common` {@link (LogBase:type) | LogBase.Common}
+   * @defaultValue 10
    * (i.e. log base 10)
    */
-  logBase?: LogBase;
+  logBase?: number;
 }
 
 type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
@@ -230,7 +202,7 @@ const defaultScaleOptions: ScaleOptions = {
   desiredTickCount: 10,
   isSingleValueHistogram: false,
   integersOnly: false,
-  logBase: LogBase.Common,
+  logBase: 10,
   logMinLimit: NaN, // NaN preserves the replaced `undefined` semantics
 };
 
@@ -285,7 +257,7 @@ export class ScaleContinuous implements Scale<number> {
     this.d3Scale = SCALES[type]();
 
     if (type === ScaleType.Log && domain.length >= 2) {
-      (this.d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(logBaseMap[logBase]);
+      (this.d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(logBase);
       const d0 = domain.reduce((p, n) => Math.min(p, n));
       const d1 = domain.reduce((p, n) => Math.max(p, n));
       // todo check if there's upstream guard against degenerate domains (to avoid d0 === d1)

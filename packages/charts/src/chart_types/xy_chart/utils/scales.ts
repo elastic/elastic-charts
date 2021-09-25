@@ -8,7 +8,6 @@
 
 import { Scale, ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { LogBase } from '../../../scales/scale_continuous';
 import { ContinuousDomain, Range } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { XDomain, YDomain } from '../domains/types';
@@ -36,7 +35,7 @@ interface XScaleOptions {
   barsPadding?: number;
   enableHistogramMode?: boolean;
   integersOnly?: boolean;
-  logBase?: LogBase;
+  logBase?: number;
   logMinLimit?: number;
 }
 

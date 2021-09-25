@@ -98,7 +98,7 @@ export function mergeXDomain(
     domain: seriesXComputedDomains,
     minInterval,
     timeZone,
-    logBase: customDomain && 'logBase' in customDomain ? customDomain.logBase : undefined,
+    logBase: customDomain && 'logBase' in customDomain ? customDomain.logBase : 10, // fixme preexisting TS workaround
     desiredTickCount,
   };
 }
