@@ -139,7 +139,9 @@ export class ScaleContinuous implements Scale<number> {
       type === ScaleType.Time
         ? getTimeTicks(scaleOptions.desiredTickCount, scaleOptions.timeZone, finalDomain)
         : scaleOptions.minInterval <= 0 || scaleOptions.bandwidth <= 0
-        ? this.getTicks(scaleOptions.desiredTickCount, scaleOptions.integersOnly)
+        ? (d3Scale as D3ScaleNonTime)
+            .ticks(scaleOptions.desiredTickCount)
+            .filter(scaleOptions.integersOnly ? Number.isInteger : () => true)
         : new Array(Math.floor((finalDomain[1] - finalDomain[0]) / minInterval) + 1)
             .fill(0)
             .map((_, i) => finalDomain[0] + i * minInterval);
@@ -161,14 +163,6 @@ export class ScaleContinuous implements Scale<number> {
     if (typeof value !== 'number' || Number.isNaN(value)) return null;
     const result = this.d3Scale(value);
     return typeof result !== 'number' || Number.isNaN(result) ? null : result;
-  }
-
-  getTicks(ticks: number, integersOnly: boolean) {
-    // TODO: cleanup types for ticks btw time and non-time scales
-    // This is forcing a return type of number[] but is really (number|Date)[]
-    return integersOnly
-      ? (this.d3Scale as D3ScaleNonTime).ticks(ticks).filter(Number.isInteger)
-      : (this.d3Scale as D3ScaleNonTime).ticks(ticks);
   }
 
   scale(value?: PrimitiveValue) {

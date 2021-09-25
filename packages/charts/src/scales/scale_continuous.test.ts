@@ -473,23 +473,6 @@ describe('Scale Continuous', () => {
     });
   });
 
-  describe('ticks as integers or floats', () => {
-    const domain: ContinuousDomain = [0, 7];
-    const minRange = 0;
-    const maxRange = 100;
-    let scale: ScaleContinuous;
-
-    beforeEach(() => {
-      scale = new ScaleContinuous({ type: ScaleType.Linear, domain, range: [minRange, maxRange] });
-    });
-    test('should return only integer ticks', () => {
-      expect(scale.getTicks(10, true)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
-    });
-    test('should return normal ticks', () => {
-      expect(scale.getTicks(10, false)).toEqual([0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7]);
-    });
-  });
-
   describe('#limitLogScaleDomain', () => {
     const LIMIT = 2;
     const ZERO_LIMIT = 0;
