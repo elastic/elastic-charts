@@ -380,7 +380,7 @@ export class ScaleContinuous implements Scale<number> {
     return integersOnly
       ? (this.d3Scale as D3ScaleNonTime)
           .ticks(ticks)
-          .filter((item: number) => typeof item === 'number' && item % 1 === 0)
+          .filter(Number.isInteger)
           .map((item: number) => parseInt(item.toFixed(0), 10))
       : (this.d3Scale as D3ScaleNonTime).ticks(ticks);
   }
