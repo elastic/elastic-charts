@@ -158,11 +158,8 @@ export function isPointOnGeometry(
 
 const getScaleTypeValueValidator = (yScale: Scale<number>): ((n: number) => boolean) => {
   if (!isLogarithmicScale(yScale)) return () => true;
-
   const domainPolarity = getDomainPolarity(yScale.domain);
-  return (yValue: number) => {
-    return !((domainPolarity >= 0 && yValue <= 0) || (domainPolarity < 0 && yValue >= 0));
-  };
+  return (yValue: number) => domainPolarity === Math.sign(yValue);
 };
 
 /**
@@ -171,10 +168,7 @@ const getScaleTypeValueValidator = (yScale: Scale<number>): ((n: number) => bool
 const DEFAULT_ZERO_BASELINE = 0;
 
 /** @internal */
-export type YDefinedFn = (
-  datum: DataSeriesDatum,
-  getValueAccessor: (datum: DataSeriesDatum) => number | null,
-) => boolean;
+export type YDefinedFn = (datum: DataSeriesDatum, getValueAccessor: (d: DataSeriesDatum) => number | null) => boolean;
 
 /** @internal */
 export function isYValueDefinedFn(yScale: Scale<number>, xScale: Scale<number | string>): YDefinedFn {
@@ -215,7 +209,7 @@ export function getY0ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDat
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);
   return ({ y0 }) =>
     isLogarithmicScale(yScale) // checking wrong y0 polarity
-      ? y0 === null || (domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0) // if all positive domain use 1 as baseline, -1 otherwise
+      ? y0 === null || domainPolarity !== Math.sign(y0) // if all positive domain use 1 as baseline, -1 otherwise
         ? yScale.scale(logBaseline) ?? NaN
         : yScale.scale(y0) ?? NaN // if negative value, use -1 as max reference, 1 otherwise
       : yScale.scale(y0 === null ? DEFAULT_ZERO_BASELINE : y0) ?? NaN;
