@@ -83,17 +83,8 @@ export function renderArea(
     false,
   );
 
-  let areaPath: string;
-
-  try {
-    areaPath = pathGenerator(dataSeries.data) || '';
-  } catch {
-    // When values are not scalable
-    areaPath = '';
-  }
-
   const areaGeometry: AreaGeometry = {
-    area: areaPath,
+    area: pathGenerator(dataSeries.data) || '',
     lines,
     points: pointGeometries,
     color,
