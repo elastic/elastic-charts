@@ -57,15 +57,11 @@ export function computeXScale(options: XScaleOptions): Scale<number | string> {
   if (isBandScale) {
     const [domainMin, domainMax] = domain as ContinuousDomain;
     const isSingleValueHistogram = !!enableHistogramMode && domainMax - domainMin === 0;
-
-    const adjustedDomainMax = isSingleValueHistogram ? domainMin + minInterval : domainMax;
-    const adjustedDomain = [domainMin, adjustedDomainMax];
-
+    const adjustedDomain = [domainMin, isSingleValueHistogram ? domainMin + minInterval : domainMax];
     const intervalCount = (adjustedDomain[1] - adjustedDomain[0]) / minInterval;
     const intervalCountOffset = isSingleValueHistogram ? 0 : 1;
     const bandwidth = rangeDiff / (intervalCount + intervalCountOffset);
     const { start, end } = getBandScaleRange(isInverse, isSingleValueHistogram, range[0], range[1], bandwidth);
-
     return new ScaleContinuous(
       {
         type,
