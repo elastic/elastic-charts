@@ -211,11 +211,10 @@ export function getY1ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDat
 
 /** @internal */
 export function getY0ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
-  const isLogScale = isLogarithmicScale(yScale);
   const domainPolarity = getDomainPolarity(yScale.domain);
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);
   return ({ y0 }) =>
-    isLogScale // checking wrong y0 polarity
+    isLogarithmicScale(yScale) // checking wrong y0 polarity
       ? y0 === null || (domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0) // if all positive domain use 1 as baseline, -1 otherwise
         ? yScale.scale(logBaseline) ?? NaN
         : yScale.scale(y0) ?? NaN // if negative value, use -1 as max reference, 1 otherwise
