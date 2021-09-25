@@ -38,73 +38,6 @@ const SCALES = {
 
 const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
 
-/** @internal */
-export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit: number) {
-  // todo further simplify this
-  const absLimit = Math.abs(logMinLimit);
-  const fallback = absLimit || LOG_MIN_ABS_DOMAIN;
-  if (absLimit > 0 && min > 0 && min < absLimit) return max > absLimit ? [absLimit, max] : [absLimit, absLimit];
-  if (absLimit > 0 && max < 0 && max > -absLimit) return min < -absLimit ? [min, -absLimit] : [-absLimit, -absLimit];
-  if (min === 0) return max > 0 ? [fallback, max] : max < 0 ? [-fallback, max] : [fallback, fallback];
-  if (max === 0) return min > 0 ? [min, fallback] : min < 0 ? [min, -fallback] : [fallback, fallback];
-  if (min < 0 && max > 0) return Math.abs(max) >= Math.abs(min) ? [fallback, max] : [min, -fallback];
-  if (min > 0 && max < 0) return Math.abs(min) >= Math.abs(max) ? [min, fallback] : [-fallback, max];
-  return [min, max];
-}
-
-function getPixelPaddedDomain(
-  chartHeight: number,
-  domain: [number, number],
-  desiredPixelPadding: number,
-  constrainDomainPadding?: boolean,
-  intercept = 0,
-) {
-  const inverted = domain[1] < domain[0];
-  const orderedDomain: [number, number] = inverted ? [domain[1], domain[0]] : domain;
-  const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
-    orderedDomain,
-    [2 * desiredPixelPadding, 2 * desiredPixelPadding],
-    chartHeight,
-  );
-  const baselinePaddedDomainLo = orderedDomain[0] - desiredPixelPadding / scaleMultiplier;
-  const baselinePaddedDomainHigh = orderedDomain[1] + desiredPixelPadding / scaleMultiplier;
-  const crossBelow = constrainDomainPadding && baselinePaddedDomainLo < intercept && orderedDomain[0] >= intercept;
-  const crossAbove = constrainDomainPadding && baselinePaddedDomainHigh > 0 && orderedDomain[1] <= 0;
-  const paddedDomainLo = crossBelow
-    ? intercept
-    : crossAbove
-    ? orderedDomain[0] -
-      desiredPixelPadding /
-        screenspaceMarkerScaleCompressor([orderedDomain[0], intercept], [2 * desiredPixelPadding, 0], chartHeight)
-          .scaleMultiplier
-    : baselinePaddedDomainLo;
-  const paddedDomainHigh = crossBelow
-    ? orderedDomain[1] +
-      desiredPixelPadding /
-        screenspaceMarkerScaleCompressor([intercept, orderedDomain[1]], [0, 2 * desiredPixelPadding], chartHeight)
-          .scaleMultiplier
-    : crossAbove
-    ? intercept
-    : baselinePaddedDomainHigh;
-
-  return inverted ? [paddedDomainHigh, paddedDomainLo] : [paddedDomainLo, paddedDomainHigh];
-}
-
-const defaultScaleOptions: ScaleOptions = {
-  bandwidth: 0,
-  minInterval: 0,
-  timeZone: 'utc',
-  totalBarsInCluster: 1,
-  barsPadding: 0,
-  constrainDomainPadding: true,
-  domainPixelPadding: 0,
-  desiredTickCount: 10,
-  isSingleValueHistogram: false,
-  integersOnly: false,
-  logBase: 10,
-  logMinLimit: NaN, // NaN preserves the replaced `undefined` semantics
-};
-
 /**
  * Continuous scale
  * @internal
@@ -326,6 +259,73 @@ export class ScaleContinuous implements Scale<number> {
 
   handleDomainPadding() {}
 }
+
+/** @internal */
+export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit: number) {
+  // todo further simplify this
+  const absLimit = Math.abs(logMinLimit);
+  const fallback = absLimit || LOG_MIN_ABS_DOMAIN;
+  if (absLimit > 0 && min > 0 && min < absLimit) return max > absLimit ? [absLimit, max] : [absLimit, absLimit];
+  if (absLimit > 0 && max < 0 && max > -absLimit) return min < -absLimit ? [min, -absLimit] : [-absLimit, -absLimit];
+  if (min === 0) return max > 0 ? [fallback, max] : max < 0 ? [-fallback, max] : [fallback, fallback];
+  if (max === 0) return min > 0 ? [min, fallback] : min < 0 ? [min, -fallback] : [fallback, fallback];
+  if (min < 0 && max > 0) return Math.abs(max) >= Math.abs(min) ? [fallback, max] : [min, -fallback];
+  if (min > 0 && max < 0) return Math.abs(min) >= Math.abs(max) ? [min, fallback] : [-fallback, max];
+  return [min, max];
+}
+
+function getPixelPaddedDomain(
+  chartHeight: number,
+  domain: [number, number],
+  desiredPixelPadding: number,
+  constrainDomainPadding?: boolean,
+  intercept = 0,
+) {
+  const inverted = domain[1] < domain[0];
+  const orderedDomain: [number, number] = inverted ? [domain[1], domain[0]] : domain;
+  const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
+    orderedDomain,
+    [2 * desiredPixelPadding, 2 * desiredPixelPadding],
+    chartHeight,
+  );
+  const baselinePaddedDomainLo = orderedDomain[0] - desiredPixelPadding / scaleMultiplier;
+  const baselinePaddedDomainHigh = orderedDomain[1] + desiredPixelPadding / scaleMultiplier;
+  const crossBelow = constrainDomainPadding && baselinePaddedDomainLo < intercept && orderedDomain[0] >= intercept;
+  const crossAbove = constrainDomainPadding && baselinePaddedDomainHigh > 0 && orderedDomain[1] <= 0;
+  const paddedDomainLo = crossBelow
+    ? intercept
+    : crossAbove
+    ? orderedDomain[0] -
+      desiredPixelPadding /
+        screenspaceMarkerScaleCompressor([orderedDomain[0], intercept], [2 * desiredPixelPadding, 0], chartHeight)
+          .scaleMultiplier
+    : baselinePaddedDomainLo;
+  const paddedDomainHigh = crossBelow
+    ? orderedDomain[1] +
+      desiredPixelPadding /
+        screenspaceMarkerScaleCompressor([intercept, orderedDomain[1]], [0, 2 * desiredPixelPadding], chartHeight)
+          .scaleMultiplier
+    : crossAbove
+    ? intercept
+    : baselinePaddedDomainHigh;
+
+  return inverted ? [paddedDomainHigh, paddedDomainLo] : [paddedDomainLo, paddedDomainHigh];
+}
+
+const defaultScaleOptions: ScaleOptions = {
+  bandwidth: 0,
+  minInterval: 0,
+  timeZone: 'utc',
+  totalBarsInCluster: 1,
+  barsPadding: 0,
+  constrainDomainPadding: true,
+  domainPixelPadding: 0,
+  desiredTickCount: 10,
+  isSingleValueHistogram: false,
+  integersOnly: false,
+  logBase: 10,
+  logMinLimit: NaN, // NaN preserves the replaced `undefined` semantics
+};
 
 /**
  * d3 scales excluding time scale
