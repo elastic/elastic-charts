@@ -52,10 +52,7 @@ const defaultScaleOptions: ScaleOptions = {
 
 const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
 
-/**
- * Continuous scale
- * @internal
- */
+/** @internal */
 export class ScaleContinuous implements Scale<number> {
   readonly bandwidth: number;
   readonly totalBarsInCluster: number;
@@ -82,7 +79,7 @@ export class ScaleContinuous implements Scale<number> {
     const min = inputDomain.reduce((p, n) => Math.min(p, n), Infinity);
     const max = inputDomain.reduce((p, n) => Math.max(p, n), -Infinity);
     const properLogScale = type === ScaleType.Log && min < max;
-    const rawDomain = properLogScale ? limitLogScaleDomain([min, max], scaleOptions.logMinLimit) : inputDomain;
+    const dataDomain = properLogScale ? limitLogScaleDomain([min, max], scaleOptions.logMinLimit) : inputDomain;
     const barsPadding = clamp(scaleOptions.barsPadding, 0, 1);
     const isNice = nice && type !== ScaleType.Time;
     const totalRange = Math.abs(range[1] - range[0]);
@@ -100,14 +97,14 @@ export class ScaleContinuous implements Scale<number> {
     this.minInterval = minInterval;
     this.step = bandwidth + barsPadding + bandwidthPadding;
     this.timeZone = scaleOptions.timeZone;
-    this.isInverted = rawDomain[0] > rawDomain[1];
+    this.isInverted = dataDomain[0] > dataDomain[1];
     this.totalBarsInCluster = scaleOptions.totalBarsInCluster;
     this.isSingleValueHistogram = scaleOptions.isSingleValueHistogram;
 
     /** End of Domain  */
 
     const d3Scale = SCALES[type]();
-    d3Scale.domain(rawDomain);
+    d3Scale.domain(dataDomain);
     d3Scale.range(range);
     if (properLogScale) (d3Scale as ScaleLogarithmic<PrimitiveValue, number>).base(scaleOptions.logBase);
 
@@ -115,7 +112,7 @@ export class ScaleContinuous implements Scale<number> {
 
     if (isNice) (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
 
-    const niceDomain = isNice ? (d3Scale.domain() as number[]) : rawDomain;
+    const niceDomain = isNice ? (d3Scale.domain() as number[]) : dataDomain;
 
     const paddedDomain = isPixelPadded
       ? getPixelPaddedDomain(
