@@ -59,9 +59,9 @@ const getUnitScales = createCustomCachedSelector([getScaleFunction, getAxisSpecs
 );
 
 const getThemedAxesStyles = createCustomCachedSelector(
-  [getAxisSpecsSelector, getChartThemeSelector, getAxesStylesSelector],
-  (axesSpecs, chartTheme, axesStyles): Map<string, AxisStyle> =>
-    axesSpecs.reduce((styles, { id }) => styles.set(id, axesStyles.get(id) ?? chartTheme.axes), new Map()),
+  [getChartThemeSelector, getAxesStylesSelector],
+  (chartTheme, axesStyles): Map<string, AxisStyle> =>
+    [...axesStyles.keys()].reduce((styles, id) => styles.set(id, axesStyles.get(id) ?? chartTheme.axes), new Map()),
 );
 
 /** @internal */
