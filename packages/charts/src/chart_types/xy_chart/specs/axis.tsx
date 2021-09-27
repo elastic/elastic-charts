@@ -14,9 +14,6 @@ import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { Position } from '../../../utils/common';
 import { AxisSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 
-type SpecRequired = Pick<AxisSpec, 'id'>;
-type SpecOptionals = Partial<Omit<AxisSpec, 'chartType' | 'specType' | 'seriesType' | 'id'>>;
-
 /** @public */
 export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals> = getConnect()(
   specComponentFactory<AxisSpec, 'groupId' | 'hide' | 'ticksForCulledLabels' | 'showOverlappingLabels' | 'position'>({
@@ -29,3 +26,6 @@ export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals> = getCo
     position: Position.Left,
   }),
 );
+
+type SpecRequired = Pick<AxisSpec, 'id'>;
+type SpecOptionals = Partial<Omit<AxisSpec, 'chartType' | 'specType' | 'seriesType' | 'id'>>;

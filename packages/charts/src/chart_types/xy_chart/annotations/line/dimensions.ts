@@ -52,26 +52,19 @@ function computeYDomainLineAnnotationDimensions(
     const { dataValue } = datum;
 
     // avoid rendering invalid annotation value
-    if (dataValue === null || dataValue === undefined || Number.isNaN(dataValue) || dataValue === '') {
-      return;
-    }
+    if (!dataValue && dataValue !== 0) return;
 
     const annotationValueYPosition = yScale.scale(dataValue);
     // avoid rendering non scalable annotation values
-    if (Number.isNaN(annotationValueYPosition)) {
-      return;
-    }
+    if (Number.isNaN(annotationValueYPosition)) return;
 
     // avoid rendering annotation with values outside the scale domain
-    if (dataValue < domainStart || dataValue > domainEnd) {
-      return;
-    }
+    if (dataValue < domainStart || dataValue > domainEnd) return;
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
         const top = vertical.scale(verticalValue);
         const left = horizontal.scale(horizontalValue);
-
         if (Number.isNaN(top + left)) return;
 
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;

@@ -104,15 +104,12 @@ export function computeRectAnnotationDimensions(
 
     const [y0, y1] = limitValueToDomainRange(yScale, initialY0, initialY1);
     // something is wrong with the data types, don't draw this annotation
-    if (y0 === null || y1 === null) {
-      return;
-    }
+    if (!Number.isFinite(y0) || !Number.isFinite(y1)) return;
 
     let scaledY1 = yScale.pureScale(y1);
     const scaledY0 = yScale.pureScale(y0);
-    if (Number.isNaN(scaledY1) || Number.isNaN(scaledY0)) {
-      return;
-    }
+    if (Number.isNaN(scaledY1) || Number.isNaN(scaledY0)) return;
+
     height = Math.abs(scaledY0 - scaledY1);
     // if the annotation height is 0 override it with the height from chart dimension and if the values in the domain are the same
     if (height === 0 && yScale.domain.length === 2 && yScale.domain[0] === yScale.domain[1]) {
@@ -207,10 +204,7 @@ function scaleXonContinuousScale(
   const width = Math.abs(scaledX1 - scaledX0);
   return Number.isNaN(width)
     ? null
-    : {
-        x: scaledX0 - (xScale.bandwidthPadding / 2) * xScale.totalBarsInCluster,
-        width,
-      };
+    : { width, x: scaledX0 - (xScale.bandwidthPadding / 2) * xScale.totalBarsInCluster };
 }
 
 /**
