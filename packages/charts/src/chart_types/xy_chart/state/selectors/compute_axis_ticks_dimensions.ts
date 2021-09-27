@@ -19,6 +19,7 @@ import {
   defaultTickFormatter,
   getScaleForAxisSpec,
 } from '../../utils/axis_utils';
+import { TickFormatter } from '../../utils/specs';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
@@ -41,17 +42,29 @@ const getScaleFunction = createCustomCachedSelector(
 );
 
 /** @internal */
+export const getFallBackTickFormatter = createCustomCachedSelector(
+  [getSeriesSpecsSelector],
+  (seriesSpecs): TickFormatter => seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter,
+);
+
+/** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
   [
     getScaleFunction,
     getAxisSpecsSelector,
     getChartThemeSelector,
-    getSeriesSpecsSelector,
     getAxesStylesSelector,
+    getFallBackTickFormatter,
     computeSeriesDomainsSelector,
   ],
-  (getScale, axesSpecs, chartTheme, seriesSpecs, axesStyles, { xDomain: { timeZone } }): AxesTicksDimensions => {
-    const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
+  (
+    getScale,
+    axesSpecs,
+    chartTheme,
+    axesStyles,
+    fallBackTickFormatter,
+    { xDomain: { timeZone } },
+  ): AxesTicksDimensions => {
     return withTextMeasure(
       (textMeasure): AxesTicksDimensions =>
         axesSpecs.reduce<AxesTicksDimensions>((axesTicksDimensions, axisSpec) => {

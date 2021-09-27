@@ -788,7 +788,7 @@ describe('Axis computational utils', () => {
       emptySmScales,
       1,
       false,
-      [{ tickFormat: (v) => `${v}` }],
+      (v) => `${v}`,
     );
 
     const verticalAxisGeoms = axisTicksPosition.find(({ axis: { id } }) => id === verticalAxisSpecWTitle.id);
@@ -819,7 +819,7 @@ describe('Axis computational utils', () => {
       emptySmScales,
       1,
       false,
-      [{ tickFormat: (v) => `${v}` }],
+      (v) => `${v}`,
     );
     const verticalAxisSpecWTitleGeoms = axisTicksPosition.find(({ axis: { id } }) => id === verticalAxisSpecWTitle.id);
     expect(verticalAxisSpecWTitleGeoms?.anchorPoint).toEqual({
@@ -987,7 +987,7 @@ describe('Axis computational utils', () => {
       emptySmScales,
       1,
       false,
-      [{ tickFormat: (v) => `${v}` }],
+      (v) => `${v}`,
     );
     expect(axisTicksPosition).toHaveLength(0);
     // expect(axisTicksPosition.axisTicks.size).toBe(0);
@@ -1059,7 +1059,7 @@ describe('Axis computational utils', () => {
         emptySmScales,
         1,
         false,
-        [{ tickFormat: (v) => `${v}` }],
+        (v) => `${v}`,
       );
     };
 

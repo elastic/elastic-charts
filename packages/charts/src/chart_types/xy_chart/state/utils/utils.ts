@@ -10,7 +10,7 @@ import { Color } from '../../../../common/colors';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
-import { SettingsSpec } from '../../../../specs';
+import { SettingsSpec, TickFormatter } from '../../../../specs';
 import { isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
@@ -32,7 +32,6 @@ import { renderArea } from '../../rendering/area';
 import { renderBars } from '../../rendering/bars';
 import { renderBubble } from '../../rendering/bubble';
 import { renderLine } from '../../rendering/line';
-import { defaultTickFormatter } from '../../utils/axis_utils';
 import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
 import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
@@ -160,10 +159,11 @@ export function computeSeriesGeometries(
   { xDomain, yDomains, formattedDataSeries: nonFilteredDataSeries }: SeriesDomainsAndData,
   seriesColorMap: Map<SeriesKey, Color>,
   chartTheme: Theme,
-  chartRotation: Rotation,
+  { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   enableHistogramMode: boolean,
+  fallbackTickFormatter: TickFormatter,
 ): ComputedGeometries {
   const chartColors: ColorConfig = chartTheme.colors;
   const formattedDataSeries = nonFilteredDataSeries.filter(({ isFiltered }) => !isFiltered);
@@ -203,6 +203,7 @@ export function computeSeriesGeometries(
     chartTheme,
     enableHistogramMode,
     chartRotation,
+    fallbackTickFormatter,
   );
 
   const totalBarsInCluster = Object.values(barIndexByPanel).reduce((acc, curr) => Math.max(acc, curr.length), 0);
@@ -273,6 +274,7 @@ function renderGeometries(
   chartTheme: Theme,
   enableHistogramMode: boolean,
   chartRotation: Rotation,
+  fallBackTickFormatter: TickFormatter,
 ): Omit<ComputedGeometries, 'scales'> {
   const len = dataSeries.length;
   let i;
@@ -283,7 +285,6 @@ function renderGeometries(
   const bubbles: Array<PerPanel<BubbleGeometry>> = [];
   const geometriesIndex = new IndexedGeometryMap();
   const isMixedChart = isUniqueArray(seriesSpecs, ({ seriesType }) => seriesType) && seriesSpecs.length > 1;
-  const fallBackTickFormatter = seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter;
   const geometriesCounts: GeometriesCounts = {
     points: 0,
     bars: 0,
