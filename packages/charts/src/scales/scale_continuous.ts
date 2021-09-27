@@ -153,11 +153,9 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   pureScale(value?: PrimitiveValue) {
-    return this.bandwidth === 0
-      ? this.getScaledValue(value)
-      : typeof value === 'number' && Number.isFinite(value)
-      ? this.getScaledValue(value + this.minInterval / 2)
-      : null;
+    if (typeof value !== 'number' || Number.isNaN(value)) return null;
+    const result = this.project(this.bandwidth === 0 ? value : value + this.minInterval / 2);
+    return Number.isNaN(result) ? null : result;
   }
 
   ticks() {
@@ -222,12 +220,6 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   handleDomainPadding() {}
-
-  private getScaledValue(value?: PrimitiveValue): number | null {
-    if (typeof value !== 'number' || Number.isNaN(value)) return null;
-    const result = this.project(value);
-    return Number.isNaN(result) ? null : result;
-  }
 }
 
 function getTimeTicks(desiredTickCount: number, timeZone: string, domain: number[]) {
