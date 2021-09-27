@@ -255,7 +255,7 @@ export function enableDuplicatedTicks(
 
 function getVisibleTicks(
   axisSpec: AxisSpec,
-  axisDim: TickLabelBounds,
+  labelBox: TickLabelBounds,
   totalBarsInCluster: number,
   fallBackTickFormatter: TickFormatter,
   rotationOffset: number,
@@ -300,7 +300,7 @@ function getVisibleTicks(
       : enableDuplicatedTicks(axisSpec, scale, offset, fallBackTickFormatter, tickFormatOptions);
 
   const { ticksForCulledLabels, showOverlappingLabels, position } = axisSpec;
-  const requiredSpace = isVerticalAxis(position) ? axisDim.maxLabelBboxHeight / 2 : axisDim.maxLabelBboxWidth / 2;
+  const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
   return showOverlappingLabels
     ? allTicks
     : [...allTicks]
@@ -391,7 +391,7 @@ export function getAxesGeometries(
   { chartPaddings, chartMargins, axes: sharedAxesStyle }: Theme,
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
   axisSpecs: AxisSpec[],
-  axisDimensions: AxesTicksDimensions,
+  tickLabelDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
   { xDomain, yDomains }: Pick<SeriesDomainsAndData, 'xDomain' | 'yDomains'>,
   smScales: SmallMultipleScales,
@@ -409,8 +409,8 @@ export function getAxesGeometries(
     barsPadding,
     enableHistogramMode,
   );
-  return [...axisDimensions].reduce(
-    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, axisDim]: [string, TickLabelBounds]) => {
+  return [...tickLabelDimensions].reduce(
+    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, labelBox]: [string, TickLabelBounds]) => {
       const axisSpec = getSpecsById<AxisSpec>(axisSpecs, axisId);
       if (axisSpec) {
         const scale = scaleFunction(axisSpec, axisMinMax(axisSpec.position, chartRotation, panel));
@@ -418,7 +418,7 @@ export function getAxesGeometries(
 
         const vertical = isVerticalAxis(axisSpec.position);
         const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;
-        const axisPositionData = getPosition(chartDims, chartMargins, axisStyle, axisSpec, axisDim, smScales, acc);
+        const axisPositionData = getPosition(chartDims, chartMargins, axisStyle, axisSpec, labelBox, smScales, acc);
         const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = axisPositionData;
 
         acc.top += topIncrement;
@@ -428,10 +428,10 @@ export function getAxesGeometries(
         acc.geoms.push({
           axis: { id: axisSpec.id, position: axisSpec.position },
           anchorPoint: { x: dimensions.left, y: dimensions.top },
-          dimension: axisDim,
+          dimension: labelBox,
           visibleTicks: getVisibleTicks(
             axisSpec,
-            axisDim,
+            labelBox,
             totalGroupsCount,
             vertical ? fallBackTickFormatter : defaultTickFormatter,
             enableHistogramMode && ((vertical && chartRotation === -90) || (!vertical && chartRotation === 180))
@@ -442,7 +442,7 @@ export function getAxesGeometries(
             { timeZone: xDomain.timeZone },
           ),
           parentSize: { height: dimensions.height, width: dimensions.width },
-          size: axisDim.isHidden
+          size: labelBox.isHidden
             ? { width: 0, height: 0 }
             : {
                 width: vertical ? dimensions.width : panel.width,
