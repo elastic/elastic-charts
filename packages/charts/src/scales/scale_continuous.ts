@@ -21,6 +21,7 @@ import { Required } from 'utility-types';
 
 import { Scale, ScaleContinuousType } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { getLinearTicks, getNiceLinearTicks } from '../chart_types/xy_chart/utils/get_linear_ticks';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
 import { clamp, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
@@ -48,6 +49,7 @@ const defaultScaleOptions: ScaleOptions = {
   integersOnly: false,
   logBase: 10,
   logMinLimit: NaN, // NaN preserves the replaced `undefined` semantics
+  linearBase: 10,
 };
 
 const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
@@ -63,6 +65,7 @@ export class ScaleContinuous implements Scale<number> {
   readonly domain: number[];
   readonly range: Range;
   readonly isInverted: boolean;
+  readonly linearBase: number;
   readonly tickValues: number[];
   readonly timeZone: string;
   readonly barsPadding: number;
@@ -71,9 +74,11 @@ export class ScaleContinuous implements Scale<number> {
   private readonly inverseProject: (d: number) => number | Date;
 
   constructor(
-    { type = ScaleType.Linear, domain: inputDomain, range, nice = false }: ScaleData,
+    { type: scaleType = ScaleType.Linear, domain: inputDomain, range, nice = false }: ScaleData,
     options?: Partial<ScaleOptions>,
   ) {
+    const isBinary = scaleType === ScaleType.LinearBinary;
+    const type = isBinary ? ScaleType.Linear : scaleType;
     const scaleOptions: ScaleOptions = mergePartial(defaultScaleOptions, options);
 
     const min = inputDomain.reduce((p, n) => Math.min(p, n), Infinity);
@@ -94,6 +99,7 @@ export class ScaleContinuous implements Scale<number> {
     this.bandwidthPadding = bandwidthPadding;
     this.type = type;
     this.range = range;
+    this.linearBase = isBinary ? 2 : scaleOptions.linearBase;
     this.minInterval = minInterval;
     this.step = bandwidth + barsPadding + bandwidthPadding;
     this.timeZone = scaleOptions.timeZone;
@@ -110,7 +116,19 @@ export class ScaleContinuous implements Scale<number> {
 
     /** Start of Projection (desiredTickCount and screenspace dependent part) */
 
-    if (isNice) (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
+    if (isNice) {
+      if (type === ScaleType.Linear) {
+        getNiceLinearTicks(
+          d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>,
+          scaleOptions.desiredTickCount,
+          this.linearBase,
+        );
+      } else {
+        (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>)
+          .domain(dataDomain)
+          .nice(scaleOptions.desiredTickCount);
+      }
+    }
 
     const niceDomain = isNice ? (d3Scale.domain() as number[]) : dataDomain;
 
@@ -135,9 +153,14 @@ export class ScaleContinuous implements Scale<number> {
       type === ScaleType.Time
         ? getTimeTicks(scaleOptions.desiredTickCount, scaleOptions.timeZone, nicePaddedDomain)
         : scaleOptions.minInterval <= 0 || scaleOptions.bandwidth <= 0
-        ? (d3Scale as D3ScaleNonTime)
-            .ticks(scaleOptions.desiredTickCount)
-            .filter(scaleOptions.integersOnly ? Number.isInteger : () => true)
+        ? this.type === ScaleType.Linear
+          ? getLinearTicks(
+              nicePaddedDomain[0],
+              nicePaddedDomain[nicePaddedDomain.length - 1],
+              scaleOptions.desiredTickCount,
+              this.linearBase,
+            )
+          : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount)
         : new Array(Math.floor((nicePaddedDomain[1] - nicePaddedDomain[0]) / minInterval) + 1)
             .fill(0)
             .map((_, i) => nicePaddedDomain[0] + i * minInterval);
@@ -372,4 +395,9 @@ type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
    * We need to limit the domain scale to the right value on all possible cases.
    */
   logMinLimit: number;
+  /**
+   * scale base used to determine ticks in linear scales
+   * @defaultValue 10
+   */
+  linearBase: number;
 };

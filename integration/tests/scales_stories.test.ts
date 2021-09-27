@@ -38,4 +38,9 @@ describe('Scales stories', () => {
       );
     });
   });
+  it('should render linear binary with nicing', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      `http://localhost:9001/?path=/story/scales--linear-binary&globals=theme:light&knob-Data type=Base 2&knob-yScaleType=linear_binary&knob-Nice y ticks=true`,
+    );
+  });
 });

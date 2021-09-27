@@ -64,6 +64,9 @@ export function fillSeries(
 
 function isXFillNotRequired(spec: BasicSeriesSpec, groupScaleType: ScaleType, isStacked: boolean) {
   const onlyNoFitAreaLine = (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && !spec.fit;
-  const onlyContinuous = groupScaleType === ScaleType.Linear || groupScaleType === ScaleType.Time;
+  const onlyContinuous =
+    groupScaleType === ScaleType.Linear ||
+    groupScaleType === ScaleType.LinearBinary ||
+    groupScaleType === ScaleType.Time;
   return onlyNoFitAreaLine && onlyContinuous && !isStacked;
 }
