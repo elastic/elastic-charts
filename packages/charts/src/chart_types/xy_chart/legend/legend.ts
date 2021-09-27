@@ -133,10 +133,8 @@ export function computeLegend(
     const color = seriesColors.get(dataSeriesKey) || defaultColor;
     const hasSingleSeries = dataSeries.length === 1;
     const name = getSeriesName(series, hasSingleSeries, false, spec);
-    const isSeriesHidden = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, series) >= 0 : false;
-    if (name === '' || !spec) {
-      return;
-    }
+    const isSeriesHidden = deselectedDataSeries && getSeriesIndex(deselectedDataSeries, series) >= 0;
+    if (name === '' || !spec) return;
 
     const postFixes = getPostfix(spec);
     const labelY1 = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name;
