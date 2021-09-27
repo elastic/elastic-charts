@@ -147,8 +147,9 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   scale(value?: PrimitiveValue) {
-    const scaledValue = this.getScaledValue(value);
-    return scaledValue === null ? null : scaledValue + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
+    if (typeof value !== 'number' || Number.isNaN(value)) return null;
+    const result = this.project(value);
+    return Number.isNaN(result) ? null : result + (this.bandwidthPadding / 2) * this.totalBarsInCluster;
   }
 
   pureScale(value?: PrimitiveValue) {
