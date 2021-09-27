@@ -81,25 +81,23 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
           const { id, hide, position, labelFormat: axisLabelFormat, tickFormat: axisTickFormat } = axisSpec;
           const { gridLine, tickLabel } = axesStyles.get(id) ?? chartTheme.axes;
           const gridLineVisible = isVerticalAxis(position) ? gridLine.vertical.visible : gridLine.horizontal.visible;
-          if (gridLineVisible || !hide) {
-            const scale = unitScales.get(axisSpec.id);
-            if (scale) {
-              const tickFormat = axisLabelFormat ?? axisTickFormat ?? fallBackTickFormatter;
-              const tickLabels = scale.ticks().map((d) => tickFormat(d, { timeZone }));
-              const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
-                (sizes, labelText) => {
-                  const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
-                  const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
-                  sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
-                  sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
-                  sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
-                  sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
-                  return sizes;
-                },
-                { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
-              );
-              axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible });
-            }
+          const scale = unitScales.get(axisSpec.id);
+          if (scale && (gridLineVisible || !hide)) {
+            const tickFormat = axisLabelFormat ?? axisTickFormat ?? fallBackTickFormatter;
+            const tickLabels = scale.ticks().map((d) => tickFormat(d, { timeZone }));
+            const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
+              (sizes, labelText) => {
+                const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
+                const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
+                sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
+                sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
+                sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
+                sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
+                return sizes;
+              },
+              { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
+            );
+            axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible });
           }
           return axesTicksDimensions;
         }, new Map()),
