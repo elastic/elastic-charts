@@ -248,7 +248,7 @@ export function enableDuplicatedTicks(
     value: tick,
     label: (axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
     axisTickLabel: (axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
-    position: (scale.scale(tick) ?? 0) + offset,
+    position: (scale.scale(tick) || 0) + offset,
   }));
   return axisSpec.showDuplicatedTicks ? allTicks : getUniqueValues(allTicks, 'axisTickLabel', true);
 }
@@ -288,7 +288,7 @@ function getVisibleTicks(
             value: firstTickValue,
             label: tickFormatter(firstTickValue, tickFormatOptions),
             axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
-            position: (scale.scale(firstTickValue) ?? 0) + offset,
+            position: (scale.scale(firstTickValue) || 0) + offset,
           },
           {
             value: firstTickValue + scale.minInterval,

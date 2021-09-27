@@ -10,7 +10,7 @@ import { Colors } from '../../../../common/colors';
 import { Line } from '../../../../geoms/types';
 import { Scale } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
-import { isNil, Position, Rotation } from '../../../../utils/common';
+import { Position, Rotation } from '../../../../utils/common';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { mergeWithDefaultAnnotationLine } from '../../../../utils/themes/merge_utils';
@@ -52,13 +52,13 @@ function computeYDomainLineAnnotationDimensions(
     const { dataValue } = datum;
 
     // avoid rendering invalid annotation value
-    if (dataValue === null || dataValue === undefined || dataValue === '') {
+    if (dataValue === null || dataValue === undefined || Number.isNaN(dataValue) || dataValue === '') {
       return;
     }
 
     const annotationValueYPosition = yScale.scale(dataValue);
     // avoid rendering non scalable annotation values
-    if (annotationValueYPosition === null) {
+    if (Number.isNaN(annotationValueYPosition)) {
       return;
     }
 
@@ -72,7 +72,7 @@ function computeYDomainLineAnnotationDimensions(
         const top = vertical.scale(verticalValue);
         const left = horizontal.scale(horizontalValue);
 
-        if (top === null || left === null) return;
+        if (Number.isNaN(top + left)) return;
 
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;
@@ -146,7 +146,7 @@ function computeXDomainLineAnnotationDimensions(
   dataValues.forEach((datum: LineAnnotationDatum, i) => {
     const { dataValue } = datum;
     let annotationValueXPosition = xScale.scale(dataValue);
-    if (isNil(annotationValueXPosition)) {
+    if (Number.isNaN(annotationValueXPosition)) {
       return;
     }
     if (isContinuousScale(xScale) && typeof dataValue === 'number') {
@@ -178,11 +178,11 @@ function computeXDomainLineAnnotationDimensions(
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
-        if (annotationValueXPosition === null) return;
+        if (Number.isNaN(annotationValueXPosition)) return;
 
         const top = vertical.scale(verticalValue);
         const left = horizontal.scale(horizontalValue);
-        if (top === null || left === null) return;
+        if (Number.isNaN(top + left)) return;
 
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;

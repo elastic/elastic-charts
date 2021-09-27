@@ -86,7 +86,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
 
   scale(value?: PrimitiveValue) {
     const scaleValue = this.d3Scale(stringifyNullsUndefined(value));
-    return typeof scaleValue === 'number' && Number.isFinite(scaleValue) ? scaleValue : null; // fixme when TS improves
+    return typeof scaleValue === 'number' && Number.isFinite(scaleValue) ? scaleValue : NaN; // fixme when TS improves
   }
 
   pureScale(value?: PrimitiveValue) {

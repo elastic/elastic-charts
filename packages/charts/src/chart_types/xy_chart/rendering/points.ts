@@ -58,15 +58,12 @@ export function renderPoints(
     const prev = dataSeries.data[dataIndex - 1];
     const next = dataSeries.data[dataIndex + 1];
     // don't create the point if not within the xScale domain
-    if (!xScale.isValueInDomain(xValue)) {
-      return acc;
-    }
+    if (!xScale.isValueInDomain(xValue)) return acc;
+
     // don't create the point if it that point was filled
     const x = xScale.scale(xValue);
 
-    if (x === null) {
-      return acc;
-    }
+    if (Number.isNaN(x)) return acc;
 
     const points: PointGeometry[] = [];
     const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = hasY0Accessors ? ['y0', 'y1'] : ['y1'];

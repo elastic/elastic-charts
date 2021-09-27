@@ -67,9 +67,7 @@ export function getClippedRanges(
 
   return dataset.reduce<ClippedRanges>((acc, data) => {
     const xScaled = xScale.scale(data.x);
-    if (xScaled === null) {
-      return acc;
-    }
+    if (Number.isNaN(xScaled)) return acc;
 
     const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
 
@@ -197,7 +195,7 @@ export function getY1ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDat
   const datumAccessor = getYDatumValueFn();
   const scaleY0Value = getY0ScaledValueFn(yScale);
   return (datum) => {
-    const y1Value = yScale.scale(datumAccessor(datum)) ?? NaN;
+    const y1Value = yScale.scale(datumAccessor(datum));
     const y0Value = scaleY0Value(datum);
     return y1Value - chromeRenderBugBuffer(y1Value, y0Value);
   };
@@ -210,9 +208,9 @@ export function getY0ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDat
   return ({ y0 }) =>
     isLogarithmicScale(yScale) // checking wrong y0 polarity
       ? y0 === null || domainPolarity !== Math.sign(y0) // if all positive domain use 1 as baseline, -1 otherwise
-        ? yScale.scale(logBaseline) ?? NaN
-        : yScale.scale(y0) ?? NaN // if negative value, use -1 as max reference, 1 otherwise
-      : yScale.scale(y0 === null ? DEFAULT_ZERO_BASELINE : y0) ?? NaN;
+        ? yScale.scale(logBaseline)
+        : yScale.scale(y0) // if negative value, use -1 as max reference, 1 otherwise
+      : yScale.scale(y0 === null ? DEFAULT_ZERO_BASELINE : y0);
 }
 
 function getDomainPolarity(domain: number[]): number {

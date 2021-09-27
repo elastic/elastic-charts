@@ -48,7 +48,7 @@ export function renderBars(
   return withTextMeasure((textMeasure) =>
     dataSeries.data.reduce((barTuple: BarTuple, datum) => {
       const xScaled = xScale.scale(datum.x);
-      if (!xScale.isValueInDomain(datum.x) || xScaled === null) {
+      if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
         return barTuple; // don't create a bar if not within the xScale domain
       }
       const { barGeometries, indexedGeometryMap } = barTuple;
@@ -61,12 +61,12 @@ export function renderBars(
           : yScale.scale(y0)
         : yScale.scale(y0 === null ? 0 : y0);
 
-      const finiteHeight = isNil(y0Scaled) || isNil(rawY) ? 0 : y0Scaled - rawY; // safeguard against null y values
+      const finiteHeight = y0Scaled - rawY || 0;
       const absHeight = Math.abs(finiteHeight);
       const height = absHeight === 0 ? absHeight : Math.max(minBarHeight, absHeight); // extend nonzero bars
       const heightExtension = height - absHeight;
       const isUpsideDown = finiteHeight < 0;
-      const finiteY = isNil(y0Scaled) || isNil(rawY) ? 0 : rawY;
+      const finiteY = Number.isNaN(y0Scaled + rawY) ? 0 : rawY;
       const y = isUpsideDown ? finiteY - height + heightExtension : finiteY - heightExtension;
 
       const seriesIdentifier: XYChartSeriesIdentifier = {

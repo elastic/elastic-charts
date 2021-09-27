@@ -36,7 +36,7 @@ export interface Scale<T> {
    */
   step: number;
   ticks: () => T[];
-  scale: (value?: PrimitiveValue) => number | null;
+  scale: (value?: PrimitiveValue) => number;
   pureScale: (value?: PrimitiveValue) => number;
   invert: (value: number) => T;
   invertWithStep: (

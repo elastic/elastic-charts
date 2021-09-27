@@ -75,7 +75,7 @@ export function formatTooltip(
   const isVisible = label === '' ? false : isFiltered;
 
   const value = isHeader ? x : y;
-  const markValue = isHeader || mark === null ? null : mark;
+  const markValue = isHeader || mark === null || Number.isNaN(mark) ? null : mark;
   const tickFormatOptions: TickFormatterOptions | undefined = spec.timeZone ? { timeZone: spec.timeZone } : undefined;
   const tickFormatter =
     (isHeader ? axisSpec?.tickFormat : spec.tickFormat ?? axisSpec?.tickFormat) ?? defaultTickFormatter;
