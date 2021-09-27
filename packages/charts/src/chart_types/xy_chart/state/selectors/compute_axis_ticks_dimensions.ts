@@ -13,7 +13,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { AxisId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
-import { AxisStyle } from '../../../../utils/themes/theme';
+import { AxisStyle, GridLineStyle } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
 import {
   TickLabelBounds,
@@ -21,7 +21,7 @@ import {
   defaultTickFormatter,
   getScaleForAxisSpec,
 } from '../../utils/axis_utils';
-import { TickFormatter } from '../../utils/specs';
+import { AxisSpec, TickFormatter } from '../../utils/specs';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
@@ -64,21 +64,42 @@ const getThemedAxesStyles = createCustomCachedSelector(
     [...axesStyles.keys()].reduce((styles, id) => styles.set(id, axesStyles.get(id) ?? chartTheme.axes), new Map()),
 );
 
+type JoinedAxisData = {
+  axisSpec: AxisSpec;
+  scale: Scale<number | string>;
+  axesStyle: AxisStyle;
+  gridLine: GridLineStyle;
+  tickFormatter: (d: number | string) => string;
+};
+
+const getJoinedAxesData = createCustomCachedSelector(
+  [getUnitScales, getAxisSpecsSelector, getThemedAxesStyles, getFallBackTickFormatter, computeSeriesDomainsSelector],
+  (unitScales, axesSpecs, themedAxesStyles, fallBackTickFormatter, { xDomain: { timeZone } }) =>
+    axesSpecs.reduce<Map<string, JoinedAxisData>>((theSet, axisSpec) => {
+      const { id, labelFormat, tickFormat, position } = axisSpec;
+      const axesStyle = themedAxesStyles.get(id);
+      const scale = unitScales.get(axisSpec.id);
+      const format = labelFormat ?? tickFormat ?? fallBackTickFormatter;
+      const formatOption = { timeZone };
+      const tickFormatter = (d: number | string) => format(d, formatOption);
+      if (scale && axesStyle) {
+        const gridLine = isVerticalAxis(position) ? axesStyle.gridLine.vertical : axesStyle.gridLine.horizontal;
+        theSet.set(axisSpec.id, { axisSpec, scale, axesStyle, gridLine, tickFormatter });
+      }
+      return theSet;
+    }, new Map()),
+);
+
 /** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
-  [getUnitScales, getAxisSpecsSelector, getThemedAxesStyles, getFallBackTickFormatter, computeSeriesDomainsSelector],
-  (unitScales, axesSpecs, themedAxesStyles, fallBackTickFormatter, { xDomain: { timeZone } }): AxesTicksDimensions => {
+  [getJoinedAxesData],
+  (joinedAxesData): AxesTicksDimensions => {
     return withTextMeasure(
       (textMeasure): AxesTicksDimensions =>
-        axesSpecs.reduce<AxesTicksDimensions>((axesTicksDimensions, axisSpec) => {
-          const { id, hide, position, labelFormat: axisLabelFormat, tickFormat: axisTickFormat } = axisSpec;
-          const axesStyle = themedAxesStyles.get(id);
-          const scale = unitScales.get(axisSpec.id);
-          if (scale && axesStyle) {
-            const gridLine = isVerticalAxis(position) ? axesStyle.gridLine.vertical : axesStyle.gridLine.horizontal;
-            if (gridLine.visible || !hide) {
-              const tickFormat = axisLabelFormat ?? axisTickFormat ?? fallBackTickFormatter;
-              const tickLabels = scale.ticks().map((d) => tickFormat(d, { timeZone }));
+        [...joinedAxesData].reduce<AxesTicksDimensions>(
+          (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, tickFormatter }]) => {
+            if (gridLine.visible || !axisSpec.hide) {
+              const tickLabels = scale.ticks().map(tickFormatter);
               const maxLabelSizes = (axesStyle.tickLabel.visible ? tickLabels : []).reduce(
                 (sizes, labelText) => {
                   const bbox = textMeasure(labelText, 0, axesStyle.tickLabel.fontSize, axesStyle.tickLabel.fontFamily);
@@ -93,9 +114,10 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
               );
               axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLine.visible });
             }
-          }
-          return axesTicksDimensions;
-        }, new Map()),
+            return axesTicksDimensions;
+          },
+          new Map(),
+        ),
     );
   },
 );
