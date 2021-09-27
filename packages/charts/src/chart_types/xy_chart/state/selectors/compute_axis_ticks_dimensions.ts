@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Scale } from '../../../../scales';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
@@ -47,10 +48,19 @@ export const getFallBackTickFormatter = createCustomCachedSelector(
   (seriesSpecs): TickFormatter => seriesSpecs.find(({ tickFormat }) => tickFormat)?.tickFormat ?? defaultTickFormatter,
 );
 
+const getUnitScales = createCustomCachedSelector([getScaleFunction, getAxisSpecsSelector], (getScale, axesSpecs) =>
+  axesSpecs.reduce((unitScales: Map<string, Scale<string | number>>, axisSpec) => {
+    const scale = getScale(axisSpec, [0, 1]);
+    if (scale) unitScales.set(axisSpec.id, scale);
+    else Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
+    return unitScales;
+  }, new Map()),
+);
+
 /** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
   [
-    getScaleFunction,
+    getUnitScales,
     getAxisSpecsSelector,
     getChartThemeSelector,
     getAxesStylesSelector,
@@ -58,7 +68,7 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
     computeSeriesDomainsSelector,
   ],
   (
-    getScale,
+    unitScales,
     axesSpecs,
     chartTheme,
     axesStyles,
@@ -72,7 +82,7 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
           const { gridLine, tickLabel } = axesStyles.get(id) ?? chartTheme.axes;
           const gridLineVisible = isVerticalAxis(position) ? gridLine.vertical.visible : gridLine.horizontal.visible;
           if (gridLineVisible || !hide) {
-            const scale = getScale(axisSpec, [0, 1]);
+            const scale = unitScales.get(axisSpec.id);
             if (scale) {
               const tickFormat = axisLabelFormat ?? axisTickFormat ?? fallBackTickFormatter;
               const tickLabels = scale.ticks().map((d) => tickFormat(d, { timeZone }));
@@ -89,8 +99,6 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
                 { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
               );
               axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible });
-            } else {
-              Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
             }
           }
           return axesTicksDimensions;
