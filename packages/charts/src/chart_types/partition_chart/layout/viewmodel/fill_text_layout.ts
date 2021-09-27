@@ -512,14 +512,13 @@ export function fillTextLayout<C>(
           { node, origin }: { node: QuadViewModel; origin: [Pixels, Pixels] },
         ) => {
           const nextRowSet = filler(fontSizes, origin, node);
+          const { fontSize } = nextRowSet;
           const layerIndex = node.depth - 1;
           return {
             rowSets: [...rowSets, nextRowSet],
             fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
-              Number.isFinite(nextRowSet.fontSize) &&
-              index === layerIndex &&
-              !layers[layerIndex]?.fillLabel?.maximizeFontSize
-                ? layerFontSizes.filter((size: Pixels) => size <= nextRowSet.fontSize)
+              Number.isFinite(fontSize) && index === layerIndex && !layers[layerIndex]?.fillLabel?.maximizeFontSize
+                ? layerFontSizes.filter((size: Pixels) => size <= fontSize)
                 : layerFontSizes,
             ),
           };
