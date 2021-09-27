@@ -102,7 +102,7 @@ function getTooltipAndHighlightFromValue(
     tooltipType = getTooltipType(settings, true);
     const scaledX = scales.xScale.pureScale(externalPointerEvent.x);
 
-    if (scaledX === null) {
+    if (Number.isNaN(scaledX)) {
       return EMPTY_VALUES;
     }
 

@@ -158,7 +158,7 @@ function computeXDomainLineAnnotationDimensions(
       if (isHistogramMode) {
         const offset = computeXScaleOffset(xScale, true);
         const pureScaledValue = xScale.pureScale(dataValue);
-        if (typeof pureScaledValue === 'number') {
+        if (!Number.isNaN(pureScaledValue)) {
           // Number.isFinite is regrettably not a type guard yet https://github.com/microsoft/TypeScript/issues/10038#issuecomment-924115831
           annotationValueXPosition = pureScaledValue - offset;
         }

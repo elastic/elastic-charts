@@ -110,7 +110,7 @@ export function computeRectAnnotationDimensions(
 
     let scaledY1 = yScale.pureScale(y1);
     const scaledY0 = yScale.pureScale(y0);
-    if (scaledY1 === null || scaledY0 === null) {
+    if (Number.isNaN(scaledY1) || Number.isNaN(scaledY0)) {
       return;
     }
     height = Math.abs(scaledY0 - scaledY1);

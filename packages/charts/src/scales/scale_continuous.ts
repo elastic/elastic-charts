@@ -153,9 +153,8 @@ export class ScaleContinuous implements Scale<number> {
   }
 
   pureScale(value?: PrimitiveValue) {
-    if (typeof value !== 'number' || Number.isNaN(value)) return null;
-    const result = this.project(this.bandwidth === 0 ? value : value + this.minInterval / 2);
-    return Number.isNaN(result) ? null : result;
+    if (typeof value !== 'number' || Number.isNaN(value)) return NaN;
+    return this.project(this.bandwidth === 0 ? value : value + this.minInterval / 2);
   }
 
   ticks() {
