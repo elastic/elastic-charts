@@ -13,6 +13,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { AxisId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
+import { AxisStyle } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
 import {
   TickLabelBounds,
@@ -49,7 +50,7 @@ export const getFallBackTickFormatter = createCustomCachedSelector(
 );
 
 const getUnitScales = createCustomCachedSelector([getScaleFunction, getAxisSpecsSelector], (getScale, axesSpecs) =>
-  axesSpecs.reduce((unitScales: Map<string, Scale<string | number>>, axisSpec) => {
+  axesSpecs.reduce<Map<string, Scale<string | number>>>((unitScales, axisSpec) => {
     const scale = getScale(axisSpec, [0, 1]);
     if (scale) unitScales.set(axisSpec.id, scale);
     else Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
@@ -57,47 +58,44 @@ const getUnitScales = createCustomCachedSelector([getScaleFunction, getAxisSpecs
   }, new Map()),
 );
 
+const getThemedAxesStyles = createCustomCachedSelector(
+  [getAxisSpecsSelector, getChartThemeSelector, getAxesStylesSelector],
+  (axesSpecs, chartTheme, axesStyles) =>
+    axesSpecs.reduce<Map<string, AxisStyle>>((styles, { id }) => {
+      styles.set(id, axesStyles.get(id) ?? chartTheme.axes);
+      return styles;
+    }, new Map()),
+);
+
 /** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
-  [
-    getUnitScales,
-    getAxisSpecsSelector,
-    getChartThemeSelector,
-    getAxesStylesSelector,
-    getFallBackTickFormatter,
-    computeSeriesDomainsSelector,
-  ],
-  (
-    unitScales,
-    axesSpecs,
-    chartTheme,
-    axesStyles,
-    fallBackTickFormatter,
-    { xDomain: { timeZone } },
-  ): AxesTicksDimensions => {
+  [getUnitScales, getAxisSpecsSelector, getThemedAxesStyles, getFallBackTickFormatter, computeSeriesDomainsSelector],
+  (unitScales, axesSpecs, themedAxesStyles, fallBackTickFormatter, { xDomain: { timeZone } }): AxesTicksDimensions => {
     return withTextMeasure(
       (textMeasure): AxesTicksDimensions =>
         axesSpecs.reduce<AxesTicksDimensions>((axesTicksDimensions, axisSpec) => {
           const { id, hide, position, labelFormat: axisLabelFormat, tickFormat: axisTickFormat } = axisSpec;
-          const { gridLine, tickLabel } = axesStyles.get(id) ?? chartTheme.axes;
-          const gridLineVisible = isVerticalAxis(position) ? gridLine.vertical.visible : gridLine.horizontal.visible;
+          const axesStyle = themedAxesStyles.get(id);
           const scale = unitScales.get(axisSpec.id);
-          if (scale && (gridLineVisible || !hide)) {
-            const tickFormat = axisLabelFormat ?? axisTickFormat ?? fallBackTickFormatter;
-            const tickLabels = scale.ticks().map((d) => tickFormat(d, { timeZone }));
-            const maxLabelSizes = (tickLabel.visible ? tickLabels : []).reduce(
-              (sizes, labelText) => {
-                const bbox = textMeasure(labelText, 0, tickLabel.fontSize, tickLabel.fontFamily);
-                const rotatedBbox = computeRotatedLabelDimensions(bbox, tickLabel.rotation);
-                sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
-                sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
-                sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
-                sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
-                return sizes;
-              },
-              { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
-            );
-            axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLineVisible });
+          if (scale && axesStyle) {
+            const gridLine = isVerticalAxis(position) ? axesStyle.gridLine.vertical : axesStyle.gridLine.horizontal;
+            if (gridLine.visible || !hide) {
+              const tickFormat = axisLabelFormat ?? axisTickFormat ?? fallBackTickFormatter;
+              const tickLabels = scale.ticks().map((d) => tickFormat(d, { timeZone }));
+              const maxLabelSizes = (axesStyle.tickLabel.visible ? tickLabels : []).reduce(
+                (sizes, labelText) => {
+                  const bbox = textMeasure(labelText, 0, axesStyle.tickLabel.fontSize, axesStyle.tickLabel.fontFamily);
+                  const rotatedBbox = computeRotatedLabelDimensions(bbox, axesStyle.tickLabel.rotation);
+                  sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
+                  sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
+                  sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
+                  sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
+                  return sizes;
+                },
+                { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
+              );
+              axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLine.visible });
+            }
           }
           return axesTicksDimensions;
         }, new Map()),
