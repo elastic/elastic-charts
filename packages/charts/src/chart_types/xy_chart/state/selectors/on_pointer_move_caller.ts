@@ -40,24 +40,15 @@ function getPointerEvent(
 ): PointerEvent {
   // update the cursorBandPosition based on chart configuration
   if (!xScale) {
-    return {
-      chartId,
-      type: PointerEventType.Out,
-    };
+    return { chartId, type: PointerEventType.Out };
   }
   const { x, y, verticalPanelValue, horizontalPanelValue } = orientedProjectedPointerPosition;
   if (x === -1 || y === -1) {
-    return {
-      chartId,
-      type: PointerEventType.Out,
-    };
+    return { chartId, type: PointerEventType.Out };
   }
   const xValue = xScale.invertWithStep(x, geometriesIndexKeys);
   if (!xValue) {
-    return {
-      chartId,
-      type: PointerEventType.Out,
-    };
+    return { chartId, type: PointerEventType.Out };
   }
   return {
     chartId,
