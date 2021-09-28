@@ -73,19 +73,15 @@ function isSameEventValue(a: PointerOverEvent, b: PointerOverEvent, changeTrigge
   );
 }
 
-function hasPointerEventChanged(
+const hasPointerEventChanged = (
   prevPointerEvent: PointerEvent,
   nextPointerEvent: PointerEvent | null,
   changeTrigger: PointerUpdateTrigger,
-) {
-  return (
-    nextPointerEvent &&
-    (prevPointerEvent.type !== nextPointerEvent.type ||
-      (prevPointerEvent.type === PointerEventType.Over &&
-        nextPointerEvent.type === PointerEventType.Over &&
-        !isSameEventValue(prevPointerEvent, nextPointerEvent, changeTrigger)))
-  );
-}
+) =>
+  (nextPointerEvent && nextPointerEvent.type !== prevPointerEvent.type) ||
+  (prevPointerEvent.type === PointerEventType.Over &&
+    nextPointerEvent?.type === PointerEventType.Over &&
+    !isSameEventValue(prevPointerEvent, nextPointerEvent, changeTrigger));
 
 /** @internal */
 export function createOnPointerMoveCaller(): (state: GlobalChartState) => void {
