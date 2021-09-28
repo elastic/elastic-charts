@@ -91,7 +91,7 @@ export function formatTooltip(
         : defaultTickFormatter(markValue),
     }),
     color,
-    isHighlighted: isHeader ? false : isHighlighted,
+    isHighlighted: isHighlighted && !isHeader,
     isVisible,
     datum,
   };
