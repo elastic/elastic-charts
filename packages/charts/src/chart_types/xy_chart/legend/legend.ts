@@ -11,7 +11,7 @@ import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { TickFormatterOptions } from '../../../specs';
-import { MergeOptions, mergePartial } from '../../../utils/common';
+import { mergeOptionals } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
@@ -49,10 +49,7 @@ export interface FormattedLastValues {
 function getPostfix(spec: BasicSeriesSpec): Postfixes {
   if (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec)) {
     const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;
-    return {
-      y0AccessorFormat,
-      y1AccessorFormat,
-    };
+    return { y0AccessorFormat, y1AccessorFormat };
   }
 
   return {};
@@ -82,22 +79,17 @@ export function getLegendExtra(
       legendSizingLabel: formattedValue,
     };
   }
-  return {
-    raw: null,
-    formatted: null,
-    legendSizingLabel: null,
-  };
+  return { raw: null, formatted: null, legendSizingLabel: null };
 }
 
 /** @internal */
 function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefined {
-  const mergeOptions: MergeOptions = { mergeOptionalPartialValues: true };
   if (isBubbleSeriesSpec(spec)) {
-    return mergePartial(theme.bubbleSeriesStyle.point, spec.bubbleSeriesStyle?.point, mergeOptions);
+    return mergeOptionals(theme.bubbleSeriesStyle.point, spec.bubbleSeriesStyle?.point);
   } else if (isLineSeriesSpec(spec)) {
-    return mergePartial(theme.lineSeriesStyle.point, spec.lineSeriesStyle?.point, mergeOptions);
+    return mergeOptionals(theme.lineSeriesStyle.point, spec.lineSeriesStyle?.point);
   } else if (isAreaSeriesSpec(spec)) {
-    return mergePartial(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point, mergeOptions);
+    return mergeOptionals(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point);
   }
 }
 

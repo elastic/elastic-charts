@@ -10,7 +10,7 @@ import { Color } from '../../../common/colors';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { TextMeasure, withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, isNil, mergePartial } from '../../../utils/common';
+import { clamp, isNil, mergeOptionals } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
@@ -231,16 +231,8 @@ export function getBarStyleOverrides(
   }
 
   if (typeof styleOverride === 'string') {
-    return {
-      ...seriesStyle,
-      rect: {
-        ...seriesStyle.rect,
-        fill: styleOverride,
-      },
-    };
+    return { ...seriesStyle, rect: { ...seriesStyle.rect, fill: styleOverride } };
   }
 
-  return mergePartial(seriesStyle, styleOverride, {
-    mergeOptionalPartialValues: true,
-  });
+  return mergeOptionals(seriesStyle, styleOverride);
 }
