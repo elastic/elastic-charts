@@ -737,19 +737,12 @@ export function isFollowTooltipType(type: TooltipType) {
 /** @internal */
 export function getTooltipType(settings: SettingsSpec, externalTooltip = false): TooltipType {
   const defaultType = TooltipType.VerticalCursor;
-  if (externalTooltip) {
-    return getExternalTooltipType(settings);
-  }
+  if (externalTooltip) return getExternalTooltipType(settings);
+
   const { tooltip } = settings;
-  if (tooltip === undefined || tooltip === null) {
-    return defaultType;
-  }
-  if (isTooltipType(tooltip)) {
-    return tooltip;
-  }
-  if (isTooltipProps(tooltip)) {
-    return tooltip.type || defaultType;
-  }
+  if (tooltip === undefined || tooltip === null) return defaultType;
+  if (isTooltipType(tooltip)) return tooltip;
+  if (isTooltipProps(tooltip)) return tooltip.type || defaultType;
   return defaultType;
 }
 
@@ -759,15 +752,9 @@ export function getTooltipType(settings: SettingsSpec, externalTooltip = false):
  */
 export function getShowNullValues(settings: SettingsSpec): TooltipProps['showNullValues'] {
   const { tooltip } = settings;
-  if (tooltip === undefined || tooltip === null) {
-    return DEFAULT_TOOLTIP_CONFIG.showNullValues;
-  }
-  if (isTooltipType(tooltip)) {
-    return DEFAULT_TOOLTIP_CONFIG.showNullValues;
-  }
-  if (isTooltipProps(tooltip)) {
-    return tooltip.showNullValues ?? DEFAULT_TOOLTIP_CONFIG.showNullValues;
-  }
+  if (tooltip === undefined || tooltip === null) return DEFAULT_TOOLTIP_CONFIG.showNullValues;
+  if (isTooltipType(tooltip)) return DEFAULT_TOOLTIP_CONFIG.showNullValues;
+  if (isTooltipProps(tooltip)) return tooltip.showNullValues ?? DEFAULT_TOOLTIP_CONFIG.showNullValues;
 }
 
 /**

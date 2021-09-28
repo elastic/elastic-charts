@@ -31,9 +31,7 @@ export const getProjectedScaledValues = createCustomCachedSelector(
 
     return {
       x: xValue.value,
-      y: [...yScales.entries()].map(([groupId, yScale]) => {
-        return { value: yScale.invert(y), groupId };
-      }),
+      y: [...yScales.entries()].map(([groupId, yScale]) => ({ value: yScale.invert(y), groupId })),
       smVerticalValue: verticalPanelValue,
       smHorizontalValue: horizontalPanelValue,
     };
