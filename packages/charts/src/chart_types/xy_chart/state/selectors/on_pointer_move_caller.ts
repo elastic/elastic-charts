@@ -67,7 +67,6 @@ function getPointerEvent(
 function isSameEventValue(a: PointerOverEvent, b: PointerOverEvent, changeTrigger: PointerUpdateTrigger) {
   const checkX = changeTrigger === PointerUpdateTrigger.X || changeTrigger === PointerUpdateTrigger.Both;
   const checkY = changeTrigger === PointerUpdateTrigger.Y || changeTrigger === PointerUpdateTrigger.Both;
-
   return (
     (!checkX || (a.x === b.x && a.scale === b.scale && a.unit === b.unit)) &&
     (!checkY || a.y.every((y, i) => y.value === b.y[i]?.value))
@@ -82,9 +81,7 @@ function hasPointerEventChanged(
   return (
     nextPointerEvent &&
     (prevPointerEvent.type !== nextPointerEvent.type ||
-      (nextPointerEvent &&
-        prevPointerEvent.type === nextPointerEvent.type &&
-        prevPointerEvent.type === PointerEventType.Over &&
+      (prevPointerEvent.type === PointerEventType.Over &&
         nextPointerEvent.type === PointerEventType.Over &&
         !isSameEventValue(prevPointerEvent, nextPointerEvent, changeTrigger)))
   );
@@ -100,14 +97,9 @@ export function createOnPointerMoveCaller(): (state: GlobalChartState) => void {
         [getSettingsSpecSelector, getPointerEventSelector, getChartIdSelector],
         ({ onPointerUpdate, pointerUpdateTrigger }, nextPointerEvent, chartId): void => {
           if (prevPointerEvent === null) {
-            prevPointerEvent = {
-              chartId,
-              type: PointerEventType.Out,
-            };
+            prevPointerEvent = { chartId, type: PointerEventType.Out };
           }
-          const tempPrev = {
-            ...prevPointerEvent,
-          };
+          const tempPrev = { ...prevPointerEvent };
           // we have to update the prevPointerEvents before possibly calling the onPointerUpdate
           // to avoid a recursive loop of calls caused by the impossibility to update the prevPointerEvent
           prevPointerEvent = nextPointerEvent;
