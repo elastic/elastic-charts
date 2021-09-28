@@ -9,7 +9,7 @@
 import { Color } from '../../../../common/colors';
 import { measureText } from '../../../../common/text_utils';
 import { SmallMultiplesStyle } from '../../../../specs';
-import { mergePartial, RecursivePartial } from '../../../../utils/common';
+import { mergeOptionals, RecursivePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Layer, PartitionSpec } from '../../specs';
 import { config as defaultConfig, VALUE_GETTERS } from '../config';
@@ -51,7 +51,7 @@ export function getShapeViewModel(
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
   const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
-  const config: Config = mergePartial(defaultConfig, partialConfig, { mergeOptionalPartialValues: true });
+  const config: Config = mergeOptionals(defaultConfig, partialConfig);
   if (!textMeasurerCtx) {
     return nullShapeViewModel(config, { x: width / 2, y: height / 2 });
   }

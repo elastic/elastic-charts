@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { mergePartial, RecursivePartial } from '../../../../utils/common';
+import { mergeOptionals, mergePartial, RecursivePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PartialTheme, Theme } from '../../../../utils/themes/theme';
 import { Config } from '../../layout/types/config_types';
@@ -26,32 +26,23 @@ const mapConfigToTheme = ({
   fontFamily,
 }: RecursivePartial<Config> = {}): PartialTheme => ({
   chartMargins: margin,
-  background: {
-    color: backgroundColor,
-  },
+  background: { color: backgroundColor },
   goal: {
     minFontSize,
     maxFontSize,
-    tickLabel: {
-      fontFamily,
-    },
-    majorLabel: {
-      fontFamily,
-    },
-    minorLabel: {
-      fontFamily,
-    },
+    tickLabel: { fontFamily },
+    majorLabel: { fontFamily },
+    minorLabel: { fontFamily },
   },
 });
 
 /** @internal */
 export function render(spec: GoalSpec, parentDimensions: Dimensions, theme: Theme): ShapeViewModel {
   // override theme and spec with old deprecated config options
-  const mergedTheme: Theme = mergePartial(theme, mapConfigToTheme(spec.config), { mergeOptionalPartialValues: true });
+  const mergedTheme: Theme = mergeOptionals(theme, mapConfigToTheme(spec.config));
   const mergedSpec: GoalSpec = mergePartial(spec, {
     angleEnd: spec?.config?.angleEnd,
     angleStart: spec?.config?.angleStart,
   });
-
   return shapeViewModel(mergedSpec, mergedTheme, parentDimensions);
 }

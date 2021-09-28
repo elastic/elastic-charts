@@ -336,9 +336,10 @@ export function renderWithProps<P extends Record<string, any>>(El: ReactNode | C
   return isReactComponent<P>(El) ? <El {...props} /> : El;
 }
 
+const optionalFlag = { mergeOptionalPartialValues: true };
+
 /** @internal */
-export const mergeOptionals = <T,>(base: T, partial: RecursivePartial<T>) =>
-  mergePartial(base, partial, { mergeOptionalPartialValues: true });
+export const mergeOptionals = <T,>(base: T, partial?: RecursivePartial<T>) => mergePartial(base, partial, optionalFlag);
 
 /**
  * Merges values of a partial structure with a base structure.

@@ -11,7 +11,7 @@ import { createContext, useContext } from 'react';
 import { $Values } from 'utility-types';
 
 import { Theme, LIGHT_THEME, DARK_THEME, DEFAULT_CHART_MARGINS } from '@elastic/charts';
-import { mergePartial } from '@elastic/charts/src/utils/common';
+import { mergeOptionals, mergePartial } from '@elastic/charts/src/utils/common';
 
 import { storybookParameters } from './parameters';
 
@@ -37,8 +37,8 @@ export const BackgroundIdProvider = BackgroundContext.Provider;
 const themeMap = {
   [ThemeId.Light]: LIGHT_THEME,
   [ThemeId.Dark]: DARK_THEME,
-  [ThemeId.EUILight]: mergePartial(LIGHT_THEME, EUI_CHARTS_THEME_LIGHT.theme, { mergeOptionalPartialValues: true }),
-  [ThemeId.EUIDark]: mergePartial(DARK_THEME, EUI_CHARTS_THEME_DARK.theme, { mergeOptionalPartialValues: true }),
+  [ThemeId.EUILight]: mergeOptionals(LIGHT_THEME, EUI_CHARTS_THEME_LIGHT.theme),
+  [ThemeId.EUIDark]: mergeOptionals(DARK_THEME, EUI_CHARTS_THEME_DARK.theme),
 };
 
 const getBackground = (backgroundId?: string) => {

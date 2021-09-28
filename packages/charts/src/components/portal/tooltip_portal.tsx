@@ -10,7 +10,7 @@ import { createPopper, Instance } from '@popperjs/core';
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-import { isDefined, mergePartial } from '../../utils/common';
+import { isDefined, mergeOptionals } from '../../utils/common';
 import { Padding } from '../../utils/dimensions';
 import { PortalAnchorRef, TooltipPortalSettings } from './types';
 import { DEFAULT_POPPER_SETTINGS, getOrCreateNode, isHTMLElement } from './utils';
@@ -96,7 +96,7 @@ const TooltipPortalComponent = ({
   const popper = useRef<Instance | null>(null);
   const popperSettings = useMemo(
     // @ts-ignore - nesting limitation
-    () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
+    () => mergeOptionals(DEFAULT_POPPER_SETTINGS, settings),
     [settings],
   );
   const anchorPosition = (anchor as PortalAnchorRef)?.position;
