@@ -11,7 +11,7 @@ import { shuffle } from 'lodash';
 import { FullDataSeriesDatum, WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
 import { SeriesType } from '../../specs';
-import { mergePartial } from '../../utils/common';
+import { mergeOptionals } from '../../utils/common';
 import { MockSeriesSpec } from '../specs';
 import { getRandomNumberGenerator } from '../utils';
 import { fitFunctionData } from './data';
@@ -44,7 +44,7 @@ export class MockDataSeries {
   };
 
   static default(partial?: Partial<DataSeries>) {
-    return mergePartial<DataSeries>(MockDataSeries.base, partial, { mergeOptionalPartialValues: true });
+    return mergeOptionals<DataSeries>(MockDataSeries.base, partial);
   }
 
   static fitFunction(
@@ -56,10 +56,7 @@ export class MockDataSeries {
       : fitFunctionData;
     const data = options.shuffle && !options.ordinal ? shuffle(ordinalData) : ordinalData;
 
-    return {
-      ...MockDataSeries.base,
-      data,
-    };
+    return { ...MockDataSeries.base, data };
   }
 
   static fromData(data: DataSeries['data'], seriesIdentifier?: Partial<XYChartSeriesIdentifier>): DataSeries {
@@ -99,9 +96,7 @@ export class MockDataSeriesDatum {
   };
 
   static default(partial?: Partial<DataSeriesDatum>): DataSeriesDatum {
-    const merged = mergePartial<DataSeriesDatum>(MockDataSeriesDatum.base, partial, {
-      mergeOptionalPartialValues: true,
-    });
+    const merged = mergeOptionals<DataSeriesDatum>(MockDataSeriesDatum.base, partial);
     if (merged.initialY1 === null) {
       merged.initialY1 = merged.y1;
     }
@@ -129,11 +124,7 @@ export class MockDataSeriesDatum {
       mark,
       initialY1: y1,
       initialY0: y0,
-      datum: {
-        x,
-        y1,
-        y0,
-      },
+      datum: { x, y1, y0 },
       ...(filled && filled),
     };
   }
@@ -148,28 +139,14 @@ export class MockDataSeriesDatum {
     ...datum
   }: Partial<WithIndex<FullDataSeriesDatum>> &
     Pick<WithIndex<FullDataSeriesDatum>, 'x' | 'y1'>): WithIndex<FullDataSeriesDatum> {
-    return {
-      ...(MockDataSeriesDatum.simple(datum) as WithIndex<FullDataSeriesDatum>),
-      fittingIndex,
-    };
+    return { ...(MockDataSeriesDatum.simple(datum) as WithIndex<FullDataSeriesDatum>), fittingIndex };
   }
 
   static ordinal(partial?: Partial<DataSeriesDatum>): DataSeriesDatum {
-    return mergePartial<DataSeriesDatum>(
-      {
-        ...MockDataSeriesDatum.base,
-        x: 'a',
-      },
-      partial,
-      { mergeOptionalPartialValues: true },
-    );
+    return mergeOptionals<DataSeriesDatum>({ ...MockDataSeriesDatum.base, x: 'a' }, partial);
   }
 
-  /**
-   * Psuedo-random values between a specified domain
-   *
-   * @param options
-   */
+  /** Psuedo-random values in a specified domain */
   static random(
     options: { x?: DomainRange; y?: DomainRange; mark?: DomainRange },
     includeMark = false,

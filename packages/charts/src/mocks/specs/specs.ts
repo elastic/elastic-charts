@@ -41,7 +41,7 @@ import {
   Spec,
   HeatmapSpec,
 } from '../../specs';
-import { Datum, mergePartial, Position, RecursivePartial } from '../../utils/common';
+import { Datum, mergeOptionals, Position, RecursivePartial } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 
 /** @internal */
@@ -194,55 +194,38 @@ export class MockSeriesSpec {
   };
 
   static bar(partial?: Partial<BarSeriesSpec>): BarSeriesSpec {
-    return mergePartial<BarSeriesSpec>(MockSeriesSpec.barBase, partial as RecursivePartial<BarSeriesSpec>, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergeOptionals<BarSeriesSpec>(MockSeriesSpec.barBase, partial as RecursivePartial<BarSeriesSpec>);
   }
 
   static histogramBar(partial?: Partial<HistogramBarSeriesSpec>): HistogramBarSeriesSpec {
-    return mergePartial<HistogramBarSeriesSpec>(
+    return mergeOptionals<HistogramBarSeriesSpec>(
       MockSeriesSpec.histogramBarBase,
       partial as RecursivePartial<HistogramBarSeriesSpec>,
-      {
-        mergeOptionalPartialValues: true,
-      },
     );
   }
 
   static area(partial?: Partial<AreaSeriesSpec>): AreaSeriesSpec {
-    return mergePartial<AreaSeriesSpec>(MockSeriesSpec.areaBase, partial as RecursivePartial<AreaSeriesSpec>, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergeOptionals<AreaSeriesSpec>(MockSeriesSpec.areaBase, partial as RecursivePartial<AreaSeriesSpec>);
   }
 
   static line(partial?: Partial<LineSeriesSpec>): LineSeriesSpec {
-    return mergePartial<LineSeriesSpec>(MockSeriesSpec.lineBase, partial as RecursivePartial<LineSeriesSpec>, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergeOptionals<LineSeriesSpec>(MockSeriesSpec.lineBase, partial as RecursivePartial<LineSeriesSpec>);
   }
 
   static bubble(partial?: Partial<BubbleSeriesSpec>): BubbleSeriesSpec {
-    return mergePartial<BubbleSeriesSpec>(MockSeriesSpec.bubbleBase, partial as RecursivePartial<BubbleSeriesSpec>, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergeOptionals<BubbleSeriesSpec>(MockSeriesSpec.bubbleBase, partial as RecursivePartial<BubbleSeriesSpec>);
   }
 
   static sunburst(partial?: Partial<PartitionSpec>): PartitionSpec {
-    return mergePartial<PartitionSpec>(MockSeriesSpec.sunburstBase, partial as RecursivePartial<PartitionSpec>, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergeOptionals<PartitionSpec>(MockSeriesSpec.sunburstBase, partial as RecursivePartial<PartitionSpec>);
   }
 
   static treemap(partial?: Partial<PartitionSpec>): PartitionSpec {
-    return mergePartial<PartitionSpec>(MockSeriesSpec.treemapBase, partial as RecursivePartial<PartitionSpec>, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergeOptionals<PartitionSpec>(MockSeriesSpec.treemapBase, partial as RecursivePartial<PartitionSpec>);
   }
 
   static heatmap(partial?: Partial<HeatmapSpec>): HeatmapSpec {
-    return mergePartial<HeatmapSpec>(MockSeriesSpec.heatmapBase, partial as RecursivePartial<HeatmapSpec>, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergeOptionals<HeatmapSpec>(MockSeriesSpec.heatmapBase, partial as RecursivePartial<HeatmapSpec>);
   }
 
   static byType(type?: SeriesType | 'histogram'): BasicSeriesSpec {
@@ -285,9 +268,7 @@ export class MockSeriesSpecs {
   static fromPartialSpecs(specs: Partial<BasicSeriesSpec>[]): SeriesSpecs {
     return specs.map(({ seriesType, ...spec }) => {
       const base = MockSeriesSpec.byType(seriesType);
-      return mergePartial<BasicSeriesSpec>(base, spec as RecursivePartial<BasicSeriesSpec>, {
-        mergeOptionalPartialValues: true,
-      });
+      return mergeOptionals<BasicSeriesSpec>(base, spec as RecursivePartial<BasicSeriesSpec>);
     });
   }
 
@@ -317,10 +298,7 @@ export class MockGlobalSpec {
       ...LIGHT_THEME,
       chartMargins: { top: 0, left: 0, right: 0, bottom: 0 },
       chartPaddings: { top: 0, left: 0, right: 0, bottom: 0 },
-      scales: {
-        barsPadding: 0,
-        histogramPadding: 0,
-      },
+      scales: { barsPadding: 0, histogramPadding: 0 },
     },
   };
 
@@ -344,29 +322,23 @@ export class MockGlobalSpec {
 
   static settings(partial?: Partial<SettingsSpec>): SettingsSpec {
     // @ts-ignore - nesting limitation
-    return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBase, partial, { mergeOptionalPartialValues: true });
+    return mergeOptionals<SettingsSpec>(MockGlobalSpec.settingsBase, partial);
   }
 
   static settingsNoMargins(partial?: Partial<SettingsSpec>): SettingsSpec {
-    return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBaseNoMargings, partial, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergeOptionals<SettingsSpec>(MockGlobalSpec.settingsBaseNoMargings, partial);
   }
 
   static axis(partial?: Partial<AxisSpec>): AxisSpec {
-    return mergePartial<AxisSpec>(MockGlobalSpec.axisBase, partial, { mergeOptionalPartialValues: true });
+    return mergeOptionals<AxisSpec>(MockGlobalSpec.axisBase, partial);
   }
 
   static smallMultiple(partial?: Partial<SmallMultiplesSpec>): SmallMultiplesSpec {
-    return mergePartial<SmallMultiplesSpec>(MockGlobalSpec.smallMultipleBase, partial, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergeOptionals<SmallMultiplesSpec>(MockGlobalSpec.smallMultipleBase, partial);
   }
 
   static groupBy(partial?: Partial<GroupBySpec>): GroupBySpec {
-    return mergePartial<GroupBySpec>(MockGlobalSpec.groupByBase, partial, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergeOptionals<GroupBySpec>(MockGlobalSpec.groupByBase, partial);
   }
 }
 
@@ -392,10 +364,10 @@ export class MockAnnotationSpec {
   };
 
   static line(partial?: Partial<LineAnnotationSpec>): LineAnnotationSpec {
-    return mergePartial<LineAnnotationSpec>(MockAnnotationSpec.lineBase, partial, { mergeOptionalPartialValues: true });
+    return mergeOptionals<LineAnnotationSpec>(MockAnnotationSpec.lineBase, partial);
   }
 
   static rect(partial?: Partial<RectAnnotationSpec>): RectAnnotationSpec {
-    return mergePartial<RectAnnotationSpec>(MockAnnotationSpec.rectBase, partial, { mergeOptionalPartialValues: true });
+    return mergeOptionals<RectAnnotationSpec>(MockAnnotationSpec.rectBase, partial);
   }
 }
