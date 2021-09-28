@@ -75,7 +75,7 @@ type JoinedAxisData = {
 const getJoinedVisibleAxesData = createCustomCachedSelector(
   [getUnitScales, getAxisSpecsSelector, getThemedAxesStyles, getFallBackTickFormatter, computeSeriesDomainsSelector],
   (unitScales, axesSpecs, themedAxesStyles, fallBackTickFormatter, { xDomain: { timeZone } }) =>
-    axesSpecs.reduce<Map<string, JoinedAxisData>>((theSet, axisSpec) => {
+    axesSpecs.reduce<Map<string, JoinedAxisData>>((axisData, axisSpec) => {
       const { id, labelFormat, tickFormat, position } = axisSpec;
       const axesStyle = themedAxesStyles.get(id);
       const scale = unitScales.get(axisSpec.id);
@@ -85,9 +85,9 @@ const getJoinedVisibleAxesData = createCustomCachedSelector(
       if (scale && axesStyle) {
         const gridLine = isVerticalAxis(position) ? axesStyle.gridLine.vertical : axesStyle.gridLine.horizontal;
         const axisShown = gridLine.visible || !axisSpec.hide;
-        if (axisShown) theSet.set(axisSpec.id, { axisSpec, scale, axesStyle, gridLine, tickFormatter });
+        if (axisShown) axisData.set(axisSpec.id, { axisSpec, scale, axesStyle, gridLine, tickFormatter });
       }
-      return theSet;
+      return axisData;
     }, new Map()),
 );
 
