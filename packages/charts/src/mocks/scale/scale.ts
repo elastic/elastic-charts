@@ -8,7 +8,7 @@
 
 import { Scale } from '../../scales';
 import { ScaleType } from '../../scales/constants';
-import { mergePartial } from '../../utils/common';
+import { mergeOptionals } from '../../utils/common';
 
 /** @internal */
 export class MockScale {
@@ -32,6 +32,6 @@ export class MockScale {
   };
 
   static default(partial: Partial<Scale<number | string>>): Scale<number | string> {
-    return mergePartial<Scale<number | string>>(MockScale.base, partial);
+    return mergeOptionals<Scale<number | string>>(MockScale.base, partial);
   }
 }

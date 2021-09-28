@@ -17,7 +17,7 @@ import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../chart_types/xy_chart/sca
 import { DEFAULT_GLOBAL_ID, XScaleType } from '../../chart_types/xy_chart/utils/specs';
 import { ScaleContinuousType } from '../../scales';
 import { ScaleType } from '../../scales/constants';
-import { mergeOptionals, mergePartial, RecursivePartial } from '../../utils/common';
+import { mergeOptionals, RecursivePartial } from '../../utils/common';
 
 /** @internal */
 export class MockXDomain {
@@ -50,7 +50,7 @@ export class MockYDomain {
   };
 
   static default(partial?: RecursivePartial<YDomain>) {
-    return mergePartial<YDomain>(MockYDomain.base, partial);
+    return mergeOptionals<YDomain>(MockYDomain.base, partial);
   }
 
   static fromScaleType(scaleType: ScaleContinuousType, partial?: RecursivePartial<YDomain>) {

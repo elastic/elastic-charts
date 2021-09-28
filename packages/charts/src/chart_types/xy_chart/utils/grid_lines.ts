@@ -8,7 +8,7 @@
 
 import { colorToRgba, overrideOpacity } from '../../../common/color_library_wrappers';
 import { Line, Stroke } from '../../../geoms/types';
-import { mergeOptionals, mergePartial, RecursivePartial } from '../../../utils/common';
+import { mergeOptionals, RecursivePartial } from '../../../utils/common';
 import { Size } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
@@ -81,7 +81,7 @@ export function getGridLinesForSpec(
   const gridLineThemeStyle = isVertical ? axisStyle.gridLine.vertical : axisStyle.gridLine.horizontal;
 
   // axis can have a configured grid line style
-  const gridLineStyles = axisSpec.gridLine ? mergePartial(gridLineThemeStyle, axisSpec.gridLine) : gridLineThemeStyle;
+  const gridLineStyles = axisSpec.gridLine ? mergeOptionals(gridLineThemeStyle, axisSpec.gridLine) : gridLineThemeStyle;
 
   const showGridLines = axisSpec.showGridLines ?? gridLineStyles.visible;
   if (!showGridLines) {
