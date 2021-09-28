@@ -16,7 +16,7 @@ import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
-import { Position, mergePartial } from '../../../utils/common';
+import { Position, mergeOptionals } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { OrdinalDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
@@ -47,7 +47,7 @@ import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
 const NO_ROTATION = 0;
 
 const getCustomStyle = (rotation = 0, padding = 10): AxisStyle =>
-  mergePartial(LIGHT_THEME.axes, {
+  mergeOptionals(LIGHT_THEME.axes, {
     tickLine: {
       size: 10,
       padding,
@@ -172,7 +172,7 @@ describe('Axis computational utils', () => {
   const emptySmScales = getSmScales();
 
   const axisTitleStyles = (titleHeight: number, panelTitleHeight?: number) =>
-    mergePartial(LIGHT_THEME.axes, {
+    mergeOptionals(LIGHT_THEME.axes, {
       axisTitle: {
         fontSize: titleHeight,
         padding: {

@@ -9,7 +9,7 @@
 import { LegendItem } from '../../../common/legend';
 import { MockBarGeometry, MockDataSeries, MockPointGeometry } from '../../../mocks';
 import { MockScale } from '../../../mocks/scale';
-import { mergePartial, RecursivePartial } from '../../../utils/common';
+import { mergeOptionals, RecursivePartial } from '../../../utils/common';
 import { BarSeriesStyle, SharedGeometryStateStyle, PointStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 import { getBarStyleOverrides } from './bars';
@@ -302,9 +302,7 @@ describe('Rendering utils', () => {
       };
       mockAccessor.mockReturnValue(partialStyle);
       const styleOverrides = getBarStyleOverrides(datum, seriesIdentifier, sampleSeriesStyle, mockAccessor);
-      const expectedStyles = mergePartial(sampleSeriesStyle, partialStyle, {
-        mergeOptionalPartialValues: true,
-      });
+      const expectedStyles = mergeOptionals(sampleSeriesStyle, partialStyle);
 
       expect(styleOverrides).toEqual(expectedStyles);
     });
