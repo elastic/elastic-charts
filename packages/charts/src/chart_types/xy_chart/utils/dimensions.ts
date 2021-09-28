@@ -26,21 +26,21 @@ export interface ChartDimensions {
    * Margin to account for ending text overflow
    */
   leftMargin: number;
-}
+} /**/
 
 /**
  * Compute the chart dimensions. It's computed removing from the parent dimensions
  * the axis spaces, the legend and any other specified style margin and padding.
  * @internal
- */
-export function computeChartDimensions(
+ */ export function computeChartDimensions(
   parentDimensions: Dimensions,
   theme: Theme,
   axisTickDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
-  smSpec?: SmallMultiplesSpec,
+  smSpecs: SmallMultiplesSpec[] = [],
 ): ChartDimensions {
+  const smSpec = smSpecs && smSpecs[0];
   const axesDimensions = getAxesDimensions(theme, axisTickDimensions, axesStyles, axisSpecs, smSpec);
   const chartWidth = parentDimensions.width - axesDimensions.left - axesDimensions.right;
   const chartHeight = parentDimensions.height - axesDimensions.top - axesDimensions.bottom;
