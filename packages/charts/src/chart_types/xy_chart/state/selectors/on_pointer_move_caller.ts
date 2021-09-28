@@ -79,26 +79,15 @@ function hasPointerEventChanged(
   nextPointerEvent: PointerEvent | null,
   changeTrigger: PointerUpdateTrigger,
 ) {
-  if (nextPointerEvent && prevPointerEvent.type !== nextPointerEvent.type) {
-    return true;
-  }
-  if (
+  return (
     nextPointerEvent &&
-    prevPointerEvent.type === nextPointerEvent.type &&
-    prevPointerEvent.type === PointerEventType.Out
-  ) {
-    return false;
-  }
-  // if something changed in the pointerEvent than recompute
-  if (
-    nextPointerEvent &&
-    prevPointerEvent.type === PointerEventType.Over &&
-    nextPointerEvent.type === PointerEventType.Over &&
-    !isSameEventValue(prevPointerEvent, nextPointerEvent, changeTrigger)
-  ) {
-    return true;
-  }
-  return false;
+    (prevPointerEvent.type !== nextPointerEvent.type ||
+      (nextPointerEvent &&
+        prevPointerEvent.type === nextPointerEvent.type &&
+        prevPointerEvent.type === PointerEventType.Over &&
+        nextPointerEvent.type === PointerEventType.Over &&
+        !isSameEventValue(prevPointerEvent, nextPointerEvent, changeTrigger)))
+  );
 }
 
 /** @internal */
