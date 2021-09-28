@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { mergeOptionals } from '../common';
+import { mergePartial } from '../common';
 import { LIGHT_THEME } from './light_theme';
 import { LineAnnotationStyle, PartialTheme, RectAnnotationStyle, Theme } from './theme';
 
@@ -88,5 +88,5 @@ export function mergeWithDefaultTheme(
   defaultTheme: Theme = LIGHT_THEME,
   axillaryThemes: PartialTheme[] = [],
 ): Theme {
-  return mergeOptionals(defaultTheme, theme, axillaryThemes);
+  return mergePartial(defaultTheme, theme, axillaryThemes);
 }

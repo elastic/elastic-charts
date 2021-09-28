@@ -8,7 +8,7 @@
 
 import { measureText } from '../../../../common/text_utils';
 import { SettingsSpec } from '../../../../specs';
-import { RecursivePartial, mergeOptionals } from '../../../../utils/common';
+import { RecursivePartial, mergePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { config as defaultConfig } from '../../layout/config/config';
@@ -39,7 +39,7 @@ export function render(
   const { width, height } = chartDimensions;
   const { config: specConfig } = spec;
   const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
-  const config = mergeOptionals<Config>(defaultConfig, partialConfig);
+  const config = mergePartial<Config>(defaultConfig, partialConfig);
   return shapeViewModel(
     measureText(textMeasurerCtx),
     spec,

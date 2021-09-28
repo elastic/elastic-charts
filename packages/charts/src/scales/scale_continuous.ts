@@ -22,7 +22,7 @@ import { Required } from 'utility-types';
 import { Scale, ScaleContinuousType } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
-import { clamp, mergeOptionals } from '../utils/common';
+import { clamp, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
 import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
@@ -74,7 +74,7 @@ export class ScaleContinuous implements Scale<number> {
     { type = ScaleType.Linear, domain: inputDomain, range, nice = false }: ScaleData,
     options?: Partial<ScaleOptions>,
   ) {
-    const scaleOptions: ScaleOptions = mergeOptionals(defaultScaleOptions, options);
+    const scaleOptions: ScaleOptions = mergePartial(defaultScaleOptions, options);
 
     const min = inputDomain.reduce((p, n) => Math.min(p, n), Infinity);
     const max = inputDomain.reduce((p, n) => Math.max(p, n), -Infinity);

@@ -11,7 +11,7 @@ import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
 import { SettingsSpec, TickFormatter } from '../../../../specs';
-import { isUniqueArray, mergeOptionals, Rotation } from '../../../../utils/common';
+import { isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import {
@@ -346,7 +346,7 @@ function renderGeometries(
 
       if (shift === -1) continue; // skip bar dataSeries if index is not available
 
-      const barSeriesStyle = mergeOptionals(chartTheme.barSeriesStyle, spec.barSeriesStyle);
+      const barSeriesStyle = mergePartial(chartTheme.barSeriesStyle, spec.barSeriesStyle);
       const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
       const valueFormatter = yAxis?.tickFormat ?? fallBackTickFormatter;
       const displayValueSettings = spec.displayValueSettings
@@ -373,7 +373,7 @@ function renderGeometries(
     } else if (isBubbleSeriesSpec(spec)) {
       const bubbleShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       const bubbleSeriesStyle = spec.bubbleSeriesStyle
-        ? mergeOptionals(chartTheme.bubbleSeriesStyle, spec.bubbleSeriesStyle)
+        ? mergePartial(chartTheme.bubbleSeriesStyle, spec.bubbleSeriesStyle)
         : chartTheme.bubbleSeriesStyle;
       const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode);
       const renderedBubbles = renderBubble(
@@ -403,7 +403,7 @@ function renderGeometries(
     } else if (isLineSeriesSpec(spec)) {
       const lineShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       const lineSeriesStyle = spec.lineSeriesStyle
-        ? mergeOptionals(chartTheme.lineSeriesStyle, spec.lineSeriesStyle)
+        ? mergePartial(chartTheme.lineSeriesStyle, spec.lineSeriesStyle)
         : chartTheme.lineSeriesStyle;
 
       const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
@@ -438,7 +438,7 @@ function renderGeometries(
     } else if (isAreaSeriesSpec(spec)) {
       const areaShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       const areaSeriesStyle = spec.areaSeriesStyle
-        ? mergeOptionals(chartTheme.areaSeriesStyle, spec.areaSeriesStyle)
+        ? mergePartial(chartTheme.areaSeriesStyle, spec.areaSeriesStyle)
         : chartTheme.areaSeriesStyle;
       const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
       const renderedAreas = renderArea(

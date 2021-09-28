@@ -11,7 +11,7 @@ import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { TickFormatterOptions } from '../../../specs';
-import { mergeOptionals } from '../../../utils/common';
+import { mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
@@ -85,11 +85,11 @@ export function getLegendExtra(
 /** @internal */
 function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefined {
   if (isBubbleSeriesSpec(spec)) {
-    return mergeOptionals(theme.bubbleSeriesStyle.point, spec.bubbleSeriesStyle?.point);
+    return mergePartial(theme.bubbleSeriesStyle.point, spec.bubbleSeriesStyle?.point);
   } else if (isLineSeriesSpec(spec)) {
-    return mergeOptionals(theme.lineSeriesStyle.point, spec.lineSeriesStyle?.point);
+    return mergePartial(theme.lineSeriesStyle.point, spec.lineSeriesStyle?.point);
   } else if (isAreaSeriesSpec(spec)) {
-    return mergeOptionals(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point);
+    return mergePartial(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point);
   }
 }
 

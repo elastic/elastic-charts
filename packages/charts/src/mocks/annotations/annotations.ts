@@ -9,7 +9,7 @@
 import { getAnnotationLinePropsId } from '../../chart_types/xy_chart/annotations/line/dimensions';
 import { AnnotationLineProps } from '../../chart_types/xy_chart/annotations/line/types';
 import { AnnotationRectProps } from '../../chart_types/xy_chart/annotations/rect/types';
-import { mergeOptionals, RecursivePartial } from '../../utils/common';
+import { mergePartial, RecursivePartial } from '../../utils/common';
 
 /** @internal */
 export class MockAnnotationLineProps {
@@ -33,7 +33,7 @@ export class MockAnnotationLineProps {
       smVerticalValue,
       smHorizontalValue,
     );
-    return mergeOptionals<AnnotationLineProps>(MockAnnotationLineProps.base, { id, ...partial });
+    return mergePartial<AnnotationLineProps>(MockAnnotationLineProps.base, { id, ...partial });
   }
 
   static fromPoints(x1 = 0, y1 = 0, x2 = 0, y2 = 0): AnnotationLineProps {
@@ -43,7 +43,7 @@ export class MockAnnotationLineProps {
   }
 
   static fromPartialAndId(partial?: RecursivePartial<AnnotationLineProps>) {
-    return mergeOptionals<AnnotationLineProps>(MockAnnotationLineProps.base, partial);
+    return mergePartial<AnnotationLineProps>(MockAnnotationLineProps.base, partial);
   }
 }
 
@@ -56,7 +56,7 @@ export class MockAnnotationRectProps {
   };
 
   static default(partial?: RecursivePartial<AnnotationRectProps>) {
-    return mergeOptionals<AnnotationRectProps>(MockAnnotationRectProps.base, partial);
+    return mergePartial<AnnotationRectProps>(MockAnnotationRectProps.base, partial);
   }
 
   static fromValues(x = 0, y = 0, width = 0, height = 0): AnnotationRectProps {

@@ -339,7 +339,7 @@ export function renderWithProps<P extends Record<string, any>>(El: ReactNode | C
 const optionalFlag = { mergeOptionalPartialValues: true };
 
 /** @internal */
-export const mergeOptionals = <T,>(base: T, partial?: RecursivePartial<T>, additional: RecursivePartial<T>[] = []) =>
+export const mergePartial = <T,>(base: T, partial?: RecursivePartial<T>, additional: RecursivePartial<T>[] = []) =>
   mergePartialWithOptions(base, partial, optionalFlag, additional);
 
 function mergePartialWithOptions<T>(

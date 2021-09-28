@@ -8,7 +8,7 @@
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { mergeOptionals } from '../../../../utils/common';
+import { mergePartial } from '../../../../utils/common';
 import { AxisId } from '../../../../utils/ids';
 import { AxisStyle } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
@@ -20,6 +20,6 @@ export const getAxesStylesSelector = createCustomCachedSelector(
   (axesSpecs, { axes: sharedAxesStyle }): Map<AxisId, AxisStyle | null> =>
     axesSpecs.reduce((axesStyles, { id, style, gridLine, position }) => {
       const gridStyle = gridLine && { gridLine: { [isVerticalAxis(position) ? 'vertical' : 'horizontal']: gridLine } };
-      return axesStyles.set(id, style ? mergeOptionals(sharedAxesStyle, { ...style, ...gridStyle }) : null);
+      return axesStyles.set(id, style ? mergePartial(sharedAxesStyle, { ...style, ...gridStyle }) : null);
     }, new Map()),
 );

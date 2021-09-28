@@ -8,7 +8,7 @@
 
 import { getDataSeriesFromSpecs, XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
 import { BasicSeriesSpec } from '../../specs';
-import { mergeOptionals } from '../../utils/common';
+import { mergePartial } from '../../utils/common';
 
 /** @internal */
 export class MockSeriesIdentifier {
@@ -23,7 +23,7 @@ export class MockSeriesIdentifier {
   };
 
   static default(partial?: Partial<XYChartSeriesIdentifier>) {
-    return mergeOptionals<XYChartSeriesIdentifier>(MockSeriesIdentifier.base, partial);
+    return mergePartial<XYChartSeriesIdentifier>(MockSeriesIdentifier.base, partial);
   }
 
   static fromSpecs(specs: BasicSeriesSpec[]): XYChartSeriesIdentifier[] {

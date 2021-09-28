@@ -11,7 +11,7 @@ import { shuffle } from 'lodash';
 import { FullDataSeriesDatum, WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
 import { SeriesType } from '../../specs';
-import { mergeOptionals } from '../../utils/common';
+import { mergePartial } from '../../utils/common';
 import { MockSeriesSpec } from '../specs';
 import { getRandomNumberGenerator } from '../utils';
 import { fitFunctionData } from './data';
@@ -44,7 +44,7 @@ export class MockDataSeries {
   };
 
   static default(partial?: Partial<DataSeries>) {
-    return mergeOptionals<DataSeries>(MockDataSeries.base, partial);
+    return mergePartial<DataSeries>(MockDataSeries.base, partial);
   }
 
   static fitFunction(
@@ -96,7 +96,7 @@ export class MockDataSeriesDatum {
   };
 
   static default(partial?: Partial<DataSeriesDatum>): DataSeriesDatum {
-    const merged = mergeOptionals<DataSeriesDatum>(MockDataSeriesDatum.base, partial);
+    const merged = mergePartial<DataSeriesDatum>(MockDataSeriesDatum.base, partial);
     if (merged.initialY1 === null) {
       merged.initialY1 = merged.y1;
     }
@@ -143,7 +143,7 @@ export class MockDataSeriesDatum {
   }
 
   static ordinal(partial?: Partial<DataSeriesDatum>): DataSeriesDatum {
-    return mergeOptionals<DataSeriesDatum>({ ...MockDataSeriesDatum.base, x: 'a' }, partial);
+    return mergePartial<DataSeriesDatum>({ ...MockDataSeriesDatum.base, x: 'a' }, partial);
   }
 
   /** Psuedo-random values in a specified domain */

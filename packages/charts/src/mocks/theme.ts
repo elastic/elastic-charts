@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RecursivePartial, mergeOptionals } from '../utils/common';
+import { RecursivePartial, mergePartial } from '../utils/common';
 import {
   GeometryStateStyle,
   RectBorderStyle,
@@ -27,29 +27,29 @@ import {
 /** @internal */
 export class MockStyles {
   static rect(partial: RecursivePartial<RectStyle> = {}): RectStyle {
-    return mergeOptionals({ fill: 'blue', opacity: 1 }, partial);
+    return mergePartial({ fill: 'blue', opacity: 1 }, partial);
   }
 
   static rectBorder(partial: RecursivePartial<RectBorderStyle> = {}): RectBorderStyle {
-    return mergeOptionals({ visible: false, stroke: 'blue', strokeWidth: 1, strokeOpacity: 1 }, partial);
+    return mergePartial({ visible: false, stroke: 'blue', strokeWidth: 1, strokeOpacity: 1 }, partial);
   }
 
   static area(partial: RecursivePartial<AreaStyle> = {}): AreaStyle {
-    return mergeOptionals({ visible: true, fill: 'blue', opacity: 1 }, partial);
+    return mergePartial({ visible: true, fill: 'blue', opacity: 1 }, partial);
   }
 
   static line(partial: RecursivePartial<LineStyle> = {}): LineStyle {
-    return mergeOptionals({ visible: true, stroke: 'blue', strokeWidth: 1, opacity: 1, dash: [1, 2, 1] }, partial);
+    return mergePartial({ visible: true, stroke: 'blue', strokeWidth: 1, opacity: 1, dash: [1, 2, 1] }, partial);
   }
 
   static point(partial: RecursivePartial<PointStyle> = {}): PointStyle {
-    return mergeOptionals(
+    return mergePartial(
       { visible: true, stroke: 'blue', strokeWidth: 1, fill: 'blue', opacity: 1, radius: 10 },
       partial,
     );
   }
 
   static geometryState(partial: RecursivePartial<GeometryStateStyle> = {}): GeometryStateStyle {
-    return mergeOptionals({ opacity: 1 }, partial);
+    return mergePartial({ opacity: 1 }, partial);
   }
 }

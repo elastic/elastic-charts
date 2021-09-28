@@ -10,7 +10,7 @@ import {
   clamp,
   compareByValueAsc,
   hasPartialObjectToMerge,
-  mergeOptionals,
+  mergePartial,
   RecursivePartial,
   getPartialValue,
   getAllKeys,
@@ -249,89 +249,89 @@ describe('common utilities', () => {
       }
 
       test('should override simple union type with object', () => {
-        const result = mergeOptionals<TestUnionType>({ union: 'val2' }, { union: { string1: 'other' } });
+        const result = mergePartial<TestUnionType>({ union: 'val2' }, { union: { string1: 'other' } });
         expect(result).toEqual({
           union: { string1: 'other' },
         });
       });
 
       test('should override simple union type with array', () => {
-        const result = mergeOptionals<TestUnionType>({ union: 'val2' }, { union: ['string'] });
+        const result = mergePartial<TestUnionType>({ union: 'val2' }, { union: ['string'] });
         expect(result).toEqual({
           union: ['string'],
         });
       });
 
       test('should override simple union type with object from additionalPartials', () => {
-        const result = mergeOptionals<TestUnionType>({ union: 'val2' }, {}, [{}, { union: { string1: 'other' } }]);
+        const result = mergePartial<TestUnionType>({ union: 'val2' }, {}, [{}, { union: { string1: 'other' } }]);
         expect(result).toEqual({
           union: { string1: 'other' },
         });
       });
 
       test('should override simple union type with array from additionalPartials', () => {
-        const result = mergeOptionals<TestUnionType>({ union: 'val2' }, {}, [{}, { union: ['string'] }]);
+        const result = mergePartial<TestUnionType>({ union: 'val2' }, {}, [{}, { union: ['string'] }]);
         expect(result).toEqual({
           union: ['string'],
         });
       });
 
       test('should override object union type with simple', () => {
-        const result = mergeOptionals<TestUnionType>({ union: { string1: 'other' } }, { union: 'val2' });
+        const result = mergePartial<TestUnionType>({ union: { string1: 'other' } }, { union: 'val2' });
         expect(result).toEqual({ union: 'val2' });
       });
 
       test('should override object union type with array', () => {
-        const result = mergeOptionals<TestUnionType>({ union: { string1: 'other' } }, { union: ['string'] });
+        const result = mergePartial<TestUnionType>({ union: { string1: 'other' } }, { union: ['string'] });
         expect(result).toEqual({ union: ['string'] });
       });
 
       test('should override object union type with simple from additionalPartials', () => {
-        const result = mergeOptionals<TestUnionType>({ union: { string1: 'other' } }, {}, [{}, { union: 'val2' }]);
+        const result = mergePartial<TestUnionType>({ union: { string1: 'other' } }, {}, [{}, { union: 'val2' }]);
         expect(result).toEqual({ union: 'val2' });
       });
 
       test('should override object union type with array from additionalPartials', () => {
-        const result = mergeOptionals<TestUnionType>({ union: { string1: 'other' } }, {}, [{}, { union: ['string'] }]);
+        const result = mergePartial<TestUnionType>({ union: { string1: 'other' } }, {}, [{}, { union: ['string'] }]);
         expect(result).toEqual({ union: ['string'] });
       });
 
       test('should override array union type with simple', () => {
-        const result = mergeOptionals<TestUnionType>({ union: ['string'] }, { union: 'val2' });
+        const result = mergePartial<TestUnionType>({ union: ['string'] }, { union: 'val2' });
         expect(result).toEqual({ union: 'val2' });
       });
 
       test('should override array union type with object', () => {
-        const result = mergeOptionals<TestUnionType>({ union: ['string'] }, { union: { string1: 'other' } });
+        const result = mergePartial<TestUnionType>({ union: ['string'] }, { union: { string1: 'other' } });
         expect(result).toEqual({ union: { string1: 'other' } });
       });
 
       test('should override array union type with simple from additionalPartials', () => {
-        const result = mergeOptionals<TestUnionType>({ union: ['string'] }, {}, [{}, { union: 'val2' }]);
+        const result = mergePartial<TestUnionType>({ union: ['string'] }, {}, [{}, { union: 'val2' }]);
         expect(result).toEqual({ union: 'val2' });
       });
 
       test('should override array union type with object from additionalPartials', () => {
-        const result = mergeOptionals<TestUnionType>({ union: ['string'] }, {}, [{}, { union: { string1: 'other' } }]);
+        const result = mergePartial<TestUnionType>({ union: ['string'] }, {}, [{}, { union: { string1: 'other' } }]);
         expect(result).toEqual({ union: { string1: 'other' } });
       });
     });
 
     test('should allow partial to be undefined', () => {
-      expect(mergeOptionals('test')).toBe('test');
+      expect(mergePartial('test')).toBe('test');
     });
 
     test('should override base value with partial', () => {
-      expect(mergeOptionals(1 as number, 2)).toBe(2);
+      expect(mergePartial(1 as number, 2)).toBe(2);
     });
 
     test('should NOT return original base structure', () => {
-      expect(mergeOptionals(base)).not.toBe(base);
+      expect(mergePartial(base)).not.toBe(base);
     });
 
     test('should override string value in base', () => {
       const partial: PartialTestType = { string: 'test' };
-      const newBase = mergeOptionals(base, partial);
+      const newBase = mergePartial(base, partial);
       expect(newBase).toEqual({
         ...newBase,
         string: partial.string,
@@ -340,7 +340,7 @@ describe('common utilities', () => {
 
     test('should override boolean value in base', () => {
       const partial: PartialTestType = { boolean: true };
-      const newBase = mergeOptionals(base, partial);
+      const newBase = mergePartial(base, partial);
       expect(newBase).toEqual({
         ...newBase,
         boolean: partial.boolean,
@@ -349,7 +349,7 @@ describe('common utilities', () => {
 
     test('should override number value in base', () => {
       const partial: PartialTestType = { number: 3 };
-      const newBase = mergeOptionals(base, partial);
+      const newBase = mergePartial(base, partial);
       expect(newBase).toEqual({
         ...newBase,
         number: partial.number,
@@ -358,7 +358,7 @@ describe('common utilities', () => {
 
     test('should override complex array value in base', () => {
       const partial: PartialTestType = { array1: [{ string: 'test' }] };
-      const newBase = mergeOptionals(base, partial);
+      const newBase = mergePartial(base, partial);
       expect(newBase).toEqual({
         ...newBase,
         array1: partial.array1,
@@ -367,7 +367,7 @@ describe('common utilities', () => {
 
     test('should override simple array value in base', () => {
       const partial: PartialTestType = { array2: [4, 5, 6] };
-      const newBase = mergeOptionals(base, partial);
+      const newBase = mergePartial(base, partial);
       expect(newBase).toEqual({
         ...newBase,
         array2: partial.array2,
@@ -376,7 +376,7 @@ describe('common utilities', () => {
 
     test('should override nested values in base', () => {
       const partial: PartialTestType = { nested: { number: 5 } };
-      const newBase = mergeOptionals(base, partial);
+      const newBase = mergePartial(base, partial);
       expect(newBase).toEqual({
         ...newBase,
         nested: {
@@ -388,13 +388,13 @@ describe('common utilities', () => {
 
     test('should not mutate base structure', () => {
       const partial: PartialTestType = { number: 3 };
-      mergeOptionals(base, partial);
+      mergePartial(base, partial);
       expect(base).toEqual(baseClone);
     });
 
     describe('Sets', () => {
       it('should merge Sets like arrays', () => {
-        const result = mergeOptionals(
+        const result = mergePartial(
           {
             animals: new Set(['cat', 'dog']),
           },
@@ -413,7 +413,7 @@ describe('common utilities', () => {
           numbers?: Set<number>;
         }
 
-        const result = mergeOptionals<Test>(
+        const result = mergePartial<Test>(
           {
             animals: new Set(['cat', 'dog']),
           },
@@ -428,7 +428,7 @@ describe('common utilities', () => {
       });
 
       it('should merge Sets like arrays from additionalPartials', () => {
-        const result = mergeOptionals(
+        const result = mergePartial(
           {
             animals: new Set(['cat', 'dog']),
           },
@@ -449,7 +449,7 @@ describe('common utilities', () => {
       test('should override string value in base with first partial value', () => {
         const partial: PartialTestType = { string: 'test1' };
         const partials: PartialTestType[] = [{ string: 'test2' }, { string: 'test3' }];
-        const newBase = mergeOptionals(base, partial, partials);
+        const newBase = mergePartial(base, partial, partials);
         expect(newBase).toEqual({
           ...newBase,
           string: partial.string,
@@ -459,7 +459,7 @@ describe('common utilities', () => {
       test('should override string values in base with first and second partial value', () => {
         const partial: PartialTestType = { number: 4 };
         const partials: PartialTestType[] = [{ string: 'test2' }];
-        const newBase = mergeOptionals(base, partial, partials);
+        const newBase = mergePartial(base, partial, partials);
         expect(newBase).toEqual({
           ...newBase,
           number: partial.number,
@@ -473,7 +473,7 @@ describe('common utilities', () => {
           { number: 10, string: 'test2' },
           { number: 20, string: 'nope', boolean: true },
         ];
-        const newBase = mergeOptionals(base, partial, partials);
+        const newBase = mergePartial(base, partial, partials);
         expect(newBase).toEqual({
           ...newBase,
           number: partial.number,
@@ -485,7 +485,7 @@ describe('common utilities', () => {
       test('should override complex array value in base', () => {
         const partial: PartialTestType = { array1: [{ string: 'test1' }] };
         const partials: PartialTestType[] = [{ array1: [{ string: 'test2' }] }];
-        const newBase = mergeOptionals(base, partial, partials);
+        const newBase = mergePartial(base, partial, partials);
         expect(newBase).toEqual({
           ...newBase,
           array1: partial.array1,
@@ -495,7 +495,7 @@ describe('common utilities', () => {
       test('should override complex array value in base second partial', () => {
         const partial: PartialTestType = {};
         const partials: PartialTestType[] = [{}, { array1: [{ string: 'test2' }] }];
-        const newBase = mergeOptionals(base, partial, partials);
+        const newBase = mergePartial(base, partial, partials);
         expect(newBase).toEqual({
           ...newBase,
           array1: partials[1].array1,
@@ -505,7 +505,7 @@ describe('common utilities', () => {
       test('should override simple array value in base', () => {
         const partial: PartialTestType = { array2: [4, 5, 6] };
         const partials: PartialTestType[] = [{ array2: [7, 8, 9] }];
-        const newBase = mergeOptionals(base, partial, partials);
+        const newBase = mergePartial(base, partial, partials);
         expect(newBase).toEqual({
           ...newBase,
           array2: partial.array2,
@@ -515,7 +515,7 @@ describe('common utilities', () => {
       test('should override simple array value in base with partial', () => {
         const partial: PartialTestType = {};
         const partials: PartialTestType[] = [{ array2: [7, 8, 9] }];
-        const newBase = mergeOptionals(base, partial, partials);
+        const newBase = mergePartial(base, partial, partials);
         expect(newBase).toEqual({
           ...newBase,
           array2: partials[0].array2,
@@ -525,7 +525,7 @@ describe('common utilities', () => {
       test('should override simple array value in base with second partial', () => {
         const partial: PartialTestType = {};
         const partials: PartialTestType[] = [{}, { array2: [7, 8, 9] }];
-        const newBase = mergeOptionals(base, partial, partials);
+        const newBase = mergePartial(base, partial, partials);
         expect(newBase).toEqual({
           ...newBase,
           array2: partials[1].array2,
@@ -535,7 +535,7 @@ describe('common utilities', () => {
       test('should override nested values in base', () => {
         const partial: PartialTestType = { nested: { number: 5 } };
         const partials: PartialTestType[] = [{ nested: { number: 10 } }];
-        const newBase = mergeOptionals(base, partial, partials);
+        const newBase = mergePartial(base, partial, partials);
         expect(newBase).toEqual({
           ...newBase,
           nested: {
@@ -548,7 +548,7 @@ describe('common utilities', () => {
       test('should override nested values from partial', () => {
         const partial: PartialTestType = {};
         const partials: PartialTestType[] = [{ nested: { number: 10 } }];
-        const newBase = mergeOptionals(base, partial, partials);
+        const newBase = mergePartial(base, partial, partials);
         expect(newBase).toEqual({
           ...newBase,
           nested: {
@@ -581,7 +581,7 @@ describe('common utilities', () => {
 
         describe('mergeOptionalPartialValues is true', () => {
           test('should merge optional parameters', () => {
-            const merged = mergeOptionals(defaultBase, partial1);
+            const merged = mergePartial(defaultBase, partial1);
             expect(merged).toEqual({
               value1: 'baz',
               value2: 10,
@@ -594,7 +594,7 @@ describe('common utilities', () => {
           });
 
           test('should merge nested optional parameters', () => {
-            const merged = mergeOptionals(defaultBase, partial2);
+            const merged = mergePartial(defaultBase, partial2);
             expect(merged).toEqual({
               value1: 'baz',
               value3: 'bar',
@@ -610,7 +610,7 @@ describe('common utilities', () => {
             type PartialTestTypeOverride = PartialTestType & any;
             const partial: PartialTestTypeOverride = { nick: 'test', number: 6 };
             const partials: PartialTestTypeOverride[] = [{ string: 'test', foo: 'bar' }, { array3: [3, 3, 3] }];
-            const newBase = mergeOptionals(base, partial, partials);
+            const newBase = mergePartial(base, partial, partials);
             expect(newBase).toEqual({
               ...newBase,
               ...partial,

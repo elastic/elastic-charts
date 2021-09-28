@@ -14,7 +14,7 @@ import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
 import { chartStoreReducer, GlobalChartState } from '../../state/chart_state';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
-import { mergeOptionals } from '../../utils/common';
+import { mergePartial } from '../../utils/common';
 
 /** @internal */
 export class MockStore {
@@ -57,7 +57,7 @@ export class MockStore {
   static updateSettings(store: Store<GlobalChartState>, newSettings: Partial<SettingsSpec>) {
     const specs = Object.values(store.getState().specs).map((s) => {
       if (s.specType === SpecType.Settings) {
-        return mergeOptionals(s, newSettings);
+        return mergePartial(s, newSettings);
       }
 
       return s;

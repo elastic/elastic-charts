@@ -8,7 +8,7 @@
 
 import { buildPointGeometryStyles } from '../chart_types/xy_chart/rendering/point_style';
 import { Colors } from '../common/colors';
-import { mergeOptionals, RecursivePartial } from '../utils/common';
+import { mergePartial, RecursivePartial } from '../utils/common';
 import { AreaGeometry, BarGeometry, BubbleGeometry, LineGeometry, PointGeometry } from '../utils/geometry';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { PointShape } from '../utils/themes/theme';
@@ -38,7 +38,7 @@ export class MockPointGeometry {
   static default(partial?: RecursivePartial<PointGeometry>) {
     const color = partial?.color ?? Colors.Red.keyword;
     const style = buildPointGeometryStyles(color, lineSeriesStyle.point);
-    return mergeOptionals<PointGeometry>(MockPointGeometry.base, partial, [{ style }]);
+    return mergePartial<PointGeometry>(MockPointGeometry.base, partial, [{ style }]);
   }
 }
 
@@ -59,7 +59,7 @@ export class MockBarGeometry {
   };
 
   static default(partial?: RecursivePartial<BarGeometry>) {
-    return mergeOptionals<BarGeometry>(MockBarGeometry.base, partial);
+    return mergePartial<BarGeometry>(MockBarGeometry.base, partial);
   }
 }
 
@@ -77,7 +77,7 @@ export class MockLineGeometry {
   };
 
   static default(partial?: RecursivePartial<LineGeometry>) {
-    return mergeOptionals<LineGeometry>(MockLineGeometry.base, partial);
+    return mergePartial<LineGeometry>(MockLineGeometry.base, partial);
   }
 }
 
@@ -98,7 +98,7 @@ export class MockAreaGeometry {
   };
 
   static default(partial?: RecursivePartial<AreaGeometry>) {
-    return mergeOptionals<AreaGeometry>(MockAreaGeometry.base, partial);
+    return mergePartial<AreaGeometry>(MockAreaGeometry.base, partial);
   }
 }
 
@@ -112,6 +112,6 @@ export class MockBubbleGeometry {
   };
 
   static default(partial?: RecursivePartial<BubbleGeometry>) {
-    return mergeOptionals<BubbleGeometry>(MockBubbleGeometry.base, partial);
+    return mergePartial<BubbleGeometry>(MockBubbleGeometry.base, partial);
   }
 }

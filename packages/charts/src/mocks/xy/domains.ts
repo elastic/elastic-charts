@@ -17,7 +17,7 @@ import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../chart_types/xy_chart/sca
 import { DEFAULT_GLOBAL_ID, XScaleType } from '../../chart_types/xy_chart/utils/specs';
 import { ScaleContinuousType } from '../../scales';
 import { ScaleType } from '../../scales/constants';
-import { mergeOptionals, RecursivePartial } from '../../utils/common';
+import { mergePartial, RecursivePartial } from '../../utils/common';
 
 /** @internal */
 export class MockXDomain {
@@ -30,11 +30,11 @@ export class MockXDomain {
   };
 
   static default(partial?: RecursivePartial<XDomain>) {
-    return mergeOptionals<XDomain>(MockXDomain.base, partial);
+    return mergePartial<XDomain>(MockXDomain.base, partial);
   }
 
   static fromScaleType(scaleType: XScaleType, partial?: RecursivePartial<XDomain>) {
-    return mergeOptionals<XDomain>(MockXDomain.base, partial, [
+    return mergePartial<XDomain>(MockXDomain.base, partial, [
       { type: getXScaleTypeFromSpec(scaleType), nice: getXNiceFromSpec() },
     ]);
   }
@@ -50,11 +50,11 @@ export class MockYDomain {
   };
 
   static default(partial?: RecursivePartial<YDomain>) {
-    return mergeOptionals<YDomain>(MockYDomain.base, partial);
+    return mergePartial<YDomain>(MockYDomain.base, partial);
   }
 
   static fromScaleType(scaleType: ScaleContinuousType, partial?: RecursivePartial<YDomain>) {
-    return mergeOptionals<YDomain>(MockYDomain.base, partial, [
+    return mergePartial<YDomain>(MockYDomain.base, partial, [
       { type: getYScaleTypeFromSpec(scaleType), nice: getYNiceFromSpec() },
     ]);
   }

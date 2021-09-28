@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { mergeOptionals } from '../../../../utils/common';
+import { mergePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { config as defaultConfig } from '../../layout/config/config';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -16,5 +16,5 @@ import { WordcloudSpec } from '../../specs';
 /** @internal */
 export function render(spec: WordcloudSpec, parentDimensions: Dimensions): ShapeViewModel {
   const { width, height } = parentDimensions;
-  return shapeViewModel(spec, mergeOptionals(defaultConfig, { ...spec.config, width, height }));
+  return shapeViewModel(spec, mergePartial(defaultConfig, { ...spec.config, width, height }));
 }

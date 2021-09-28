@@ -10,7 +10,7 @@ import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, AxisSpec } from '@elastic/charts';
-import { mergeOptionals } from '@elastic/charts/src/utils/common';
+import { mergePartial } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -75,7 +75,7 @@ export const Example = () => {
         ticks={0}
         showGridLines
         gridLine={gridStyle}
-        style={mergeOptionals(xAxisStyle, {
+        style={mergePartial(xAxisStyle, {
           axisTitle: { visible: true, fontFamily, fontSize: 24, fill: 'grey' },
           tickLabel: horizontalAxisTitle
             ? {
@@ -94,8 +94,8 @@ export const Example = () => {
         showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
         ticks={100}
         showGridLines={minorGridLines}
-        gridLine={mergeOptionals(gridStyle, { strokeWidth: 0.1 })}
-        style={mergeOptionals(
+        gridLine={mergePartial(gridStyle, { strokeWidth: 0.1 })}
+        style={mergePartial(
           xAxisStyle,
           whiskers
             ? {
@@ -116,7 +116,7 @@ export const Example = () => {
         ticks={1}
         showGridLines
         gridLine={gridStyle}
-        style={mergeOptionals(xAxisStyle, {
+        style={mergePartial(xAxisStyle, {
           tickLabel: {
             padding: 0,
             offset: { x: 0, y: 0 },
@@ -136,7 +136,7 @@ export const Example = () => {
         ticks={2}
         showGridLines
         gridLine={gridStyle}
-        style={mergeOptionals(xAxisStyle, {
+        style={mergePartial(xAxisStyle, {
           axisTitle: { visible: !horizontalAxisTitle, fontFamily },
         })}
         labelFormat={bottomAxisLabelFormatter}
