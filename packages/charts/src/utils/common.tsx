@@ -342,18 +342,7 @@ const optionalFlag = { mergeOptionalPartialValues: true };
 export const mergeOptionals = <T,>(base: T, partial?: RecursivePartial<T>, additional: RecursivePartial<T>[] = []) =>
   mergePartial(base, partial, optionalFlag, additional);
 
-/**
- * Merges values of a partial structure with a base structure.
- *
- * @note No nested array merging
- *
- * @param base structure to be duplicated, must have all props of `partial`
- * @param partial structure to override values from base
- *
- * @returns new base structure with updated partial values
- * @internal
- */
-export function mergePartial<T>(
+function mergePartial<T>(
   base: T,
   partial?: RecursivePartial<T>,
   options: MergeOptions = {},
