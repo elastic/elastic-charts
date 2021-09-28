@@ -7,16 +7,16 @@
  */
 
 import { Rect } from '../../../../geoms/types';
-import { Scale } from '../../../../scales';
 import { SettingsSpec, PointerEvent } from '../../../../specs/settings';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { Dimensions } from '../../../../utils/dimensions';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';
+import { ChartDimensions } from '../../utils/dimensions';
 import { BasicSeriesSpec } from '../../utils/specs';
 import { isLineAreaOnlyChart } from '../utils/common';
+import { ComputedGeometries } from '../utils/types';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
@@ -43,38 +43,15 @@ export const getCursorBandPositionSelector = createCustomCachedSelector(
     getGeometriesIndexKeysSelector,
     computeSmallMultipleScalesSelector,
   ],
-  (
-    orientedProjectedPointerPosition,
-    externalPointerEvent,
-    chartDimensions,
-    settingsSpec,
-    seriesGeometries,
-    seriesSpec,
-    totalBarsInCluster,
-    isTooltipSnapEnabled,
-    geometriesIndexKeys,
-    smallMultipleScales,
-  ) =>
-    getCursorBand(
-      orientedProjectedPointerPosition,
-      externalPointerEvent,
-      chartDimensions.chartDimensions,
-      settingsSpec,
-      seriesGeometries.scales.xScale,
-      seriesSpec,
-      totalBarsInCluster,
-      isTooltipSnapEnabled,
-      geometriesIndexKeys,
-      smallMultipleScales,
-    ),
+  getCursorBand,
 );
 
 function getCursorBand(
   orientedProjectedPointerPosition: PointerPosition,
   externalPointerEvent: PointerEvent | null,
-  chartDimensions: Dimensions,
+  { chartDimensions }: ChartDimensions,
   settingsSpec: SettingsSpec,
-  xScale: Scale<number | string> | undefined,
+  { scales: { xScale } }: Pick<ComputedGeometries, 'scales'>,
   seriesSpecs: BasicSeriesSpec[],
   totalBarsInCluster: number,
   isTooltipSnapEnabled: boolean,
@@ -136,10 +113,5 @@ function getCursorBand(
     xScale,
     isLineAreaOnly ? 0 : totalBarsInCluster,
   );
-  return (
-    cursorBand && {
-      ...cursorBand,
-      fromExternalEvent,
-    }
-  );
+  return cursorBand && { ...cursorBand, fromExternalEvent };
 }
