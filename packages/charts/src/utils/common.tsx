@@ -340,9 +340,9 @@ const optionalFlag = { mergeOptionalPartialValues: true };
 
 /** @internal */
 export const mergeOptionals = <T,>(base: T, partial?: RecursivePartial<T>, additional: RecursivePartial<T>[] = []) =>
-  mergePartial(base, partial, optionalFlag, additional);
+  mergePartialWithOptions(base, partial, optionalFlag, additional);
 
-function mergePartial<T>(
+function mergePartialWithOptions<T>(
   base: T,
   partial?: RecursivePartial<T>,
   options: MergeOptions = {},
@@ -381,7 +381,7 @@ function mergePartial<T>(
           );
           const baseValue = (base as any).get(key);
 
-          newBase.set(key, mergePartial(baseValue, partialValue, options, partialValues));
+          newBase.set(key, mergePartialWithOptions(baseValue, partialValue, options, partialValues));
 
           return newBase;
         }, baseClone as any);
@@ -404,7 +404,7 @@ function mergePartial<T>(
       const partialValues = additionalPartials.map((v) => (typeof v === 'object' ? (v as any)[key] : undefined));
       const baseValue = (base as any)[key];
 
-      newBase[key] = mergePartial(baseValue, partialValue, options, partialValues);
+      newBase[key] = mergePartialWithOptions(baseValue, partialValue, options, partialValues);
 
       return newBase;
     }, baseClone);
