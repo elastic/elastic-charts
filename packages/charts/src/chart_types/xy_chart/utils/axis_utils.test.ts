@@ -29,7 +29,7 @@ import {
 } from '../state/selectors/compute_axis_ticks_dimensions';
 import { getScale, SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { getAxesStylesSelector } from '../state/selectors/get_axis_styles';
-import { computeGridLinesSelector } from '../state/selectors/get_grid_lines';
+import { getGridLinesSelector } from '../state/selectors/get_grid_lines';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 import {
   TickLabelBounds,
@@ -1011,7 +1011,7 @@ describe('Axis computational utils', () => {
       ],
       store,
     );
-    const gridLines = computeGridLinesSelector(store.getState());
+    const gridLines = getGridLinesSelector(store.getState());
 
     const expectedVerticalAxisGridLines = [
       [0, 0, 100, 0],

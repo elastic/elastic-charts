@@ -14,7 +14,5 @@ import { getSeriesSpecsSelector } from './get_specs';
 export const getChartTypeDescriptionSelector = createCustomCachedSelector([getSeriesSpecsSelector], (specs): string => {
   const seriesTypes = new Set<SeriesType>();
   specs.forEach((value) => seriesTypes.add(value.seriesType));
-  const chartSeriesTypes =
-    seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
-  return chartSeriesTypes;
+  return seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
 });

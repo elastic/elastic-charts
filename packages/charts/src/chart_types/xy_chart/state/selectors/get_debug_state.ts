@@ -26,7 +26,7 @@ import { LinesGrid } from '../../utils/grid_lines';
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 import { computeLegendSelector } from './compute_legend';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
-import { computeGridLinesSelector } from './get_grid_lines';
+import { getGridLinesSelector } from './get_grid_lines';
 import { getAxisSpecsSelector } from './get_specs';
 
 /**
@@ -38,7 +38,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
     computeSeriesGeometriesSelector,
     computeLegendSelector,
     computeAxesGeometriesSelector,
-    computeGridLinesSelector,
+    getGridLinesSelector,
     getAxisSpecsSelector,
   ],
   ({ geometries }, legend, axes, gridLines, axesSpecs): DebugState => {

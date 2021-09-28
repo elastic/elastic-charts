@@ -12,7 +12,7 @@ import { mergePartial, RecursivePartial } from '../../../utils/common';
 import { Size } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
-import { AxisStyle } from '../../../utils/themes/theme';
+import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { isVerticalAxis } from './axis_type_utils';
@@ -38,7 +38,7 @@ export type LinesGrid = {
 export function getGridLines(
   axesSpecs: Array<AxisSpec>,
   axesGeoms: Array<AxisGeometry>,
-  themeAxisStyle: AxisStyle,
+  { axes: themeAxisStyle }: Pick<Theme, 'axes'>,
   scales: SmallMultipleScales,
 ): Array<LinesGrid> {
   const panelSize = getPanelSize(scales);
