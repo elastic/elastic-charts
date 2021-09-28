@@ -336,6 +336,10 @@ export function renderWithProps<P extends Record<string, any>>(El: ReactNode | C
   return isReactComponent<P>(El) ? <El {...props} /> : El;
 }
 
+/** @internal */
+export const mergeOptionals = <T,>(base: T, partial: RecursivePartial<T>) =>
+  mergePartial(base, partial, { mergeOptionalPartialValues: true });
+
 /**
  * Merges values of a partial structure with a base structure.
  *
