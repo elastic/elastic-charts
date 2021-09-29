@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { OutputParametricSelector } from 'reselect';
+import { OutputSelector } from 'reselect';
 
 import { ChartType } from '../../..';
 import { HeatmapBrushEvent, SettingsSpec } from '../../../../specs/settings';
@@ -26,16 +26,15 @@ import { isBrushEndProvided } from './is_brush_available';
  * - we dragged the mouse pointer
  * @internal
  */
-export function createOnBrushEndCaller(): (state: GlobalChartState, props: unknown) => void {
+export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
   let prevProps: DragCheckProps | null = null;
-  let selector: OutputParametricSelector<
+  let selector: OutputSelector<
     GlobalChartState,
-    unknown,
     void,
     (res1: DragState | null, res2: HeatmapSpec | null, res3: SettingsSpec, res4: HeatmapBrushEvent | null) => void
-  > | null;
+  > | null = null;
 
-  return (state, props) => {
+  return (state) => {
     if (selector === null && state.chartType === ChartType.Heatmap) {
       if (!isBrushEndProvided(state)) {
         selector = null;
@@ -60,7 +59,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState, props: unkno
       );
     }
     if (selector) {
-      selector(state, props);
+      selector(state);
     }
   };
 }

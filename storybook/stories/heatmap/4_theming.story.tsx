@@ -64,8 +64,10 @@ export const Example = () => {
     cell: {
       label: {
         visible: boolean('cell label visible', false, 'Theme'),
-        fontSize: number('cell label fontSize', 10, { range: true, min: 5, max: 20 }, 'Theme'),
         textColor: color('cell label textColor', 'black', 'Theme'),
+        useGlobalMinFontSize: boolean('cell label use global min fontSize', true, 'Theme'),
+        minFontSize: number('cell label min fontSize', 6, { step: 1, min: 4, max: 10, range: true }, 'Theme'),
+        maxFontSize: number('cell label max fontSize', 12, { step: 1, min: 10, max: 64, range: true }, 'Theme'),
       },
       border: {
         strokeWidth: number('border strokeWidth', 1, { range: true, min: 1, max: 5 }, 'Theme'),

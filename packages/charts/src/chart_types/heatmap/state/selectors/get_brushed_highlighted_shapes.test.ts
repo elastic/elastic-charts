@@ -18,11 +18,10 @@ import { createOnBrushEndCaller } from './on_brush_end_caller';
 
 describe('Categorical heatmap brush', () => {
   let store: Store<GlobalChartState>;
-  let onBrushEndMock = jest.fn();
+  const onBrushEndMock = jest.fn();
 
   beforeEach(() => {
     store = MockStore.default({ width: 300, height: 300, top: 0, left: 0 }, 'chartId');
-    onBrushEndMock = jest.fn();
     MockStore.addSpecs(
       [
         MockGlobalSpec.settingsNoMargins({
@@ -71,7 +70,7 @@ describe('Categorical heatmap brush', () => {
     store.dispatch(onMouseDown({ x: 50, y: 50 }, 100));
     store.dispatch(onPointerMove({ x: 150, y: 250 }, 200));
     store.dispatch(onMouseUp({ x: 150, y: 250 }, 300));
-    caller(store.getState(), null);
+    caller(store.getState());
     expect(onBrushEndMock).toBeCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(6);
@@ -134,7 +133,7 @@ describe('Temporal heatmap brush', () => {
     store.dispatch(onMouseDown({ x: 50, y: 50 }, 100));
     store.dispatch(onPointerMove({ x: 250, y: 250 }, 200));
     store.dispatch(onMouseUp({ x: 250, y: 250 }, 300));
-    caller(store.getState(), null);
+    caller(store.getState());
     expect(onBrushEndMock).toBeCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(6);
@@ -148,7 +147,7 @@ describe('Temporal heatmap brush', () => {
     store.dispatch(onMouseDown({ x: 50, y: 50 }, 100));
     store.dispatch(onPointerMove({ x: 60, y: 60 }, 200));
     store.dispatch(onMouseUp({ x: 60, y: 60 }, 300));
-    caller(store.getState(), null);
+    caller(store.getState());
     expect(onBrushEndMock).toBeCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(1);

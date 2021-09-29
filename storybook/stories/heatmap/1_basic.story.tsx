@@ -14,7 +14,6 @@ import { debounce } from 'ts-debounce';
 import {
   Chart,
   DebugState,
-  ElementClickListener,
   Heatmap,
   HeatmapElementEvent,
   HeatmapStyle,
@@ -25,7 +24,6 @@ import {
   HeatmapBrushEvent,
   ElementClickListener,
 } from '@elastic/charts';
-import { HeatmapBrushEvent } from '@elastic/charts/src/chart_types/heatmap/specs';
 import { SWIM_LANE_DATA } from '@elastic/charts/src/utils/data_samples/test_anomaly_swim_lane';
 
 import { useBaseTheme } from '../../use_base_theme';

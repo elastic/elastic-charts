@@ -24,7 +24,28 @@ describe('Heatmap picked cells', () => {
     onBrushEndMock = jest.fn();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.settingsNoMargins({ onBrushEnd: onBrushEndMock }),
+        MockGlobalSpec.settingsNoMargins({
+          onBrushEnd: onBrushEndMock,
+          theme: {
+            heatmap: {
+              brushTool: { visible: true },
+              grid: {
+                cellHeight: {
+                  max: 'fill',
+                },
+                cellWidth: {
+                  max: 'fill',
+                },
+              },
+              xAxisLabel: {
+                visible: true,
+              },
+              yAxisLabel: {
+                visible: true,
+              },
+            },
+          },
+        }),
         MockSeriesSpec.heatmap({
           xScaleType: ScaleType.Ordinal,
           data: [
@@ -38,24 +59,6 @@ describe('Heatmap picked cells', () => {
             { x: 'b', y: 'yc', value: 8 },
             { x: 'c', y: 'yc', value: 9 },
           ],
-          config: {
-            brushTool: { visible: true },
-            grid: {
-              cellHeight: {
-                max: 'fill',
-              },
-              cellWidth: {
-                max: 'fill',
-              },
-            },
-            xAxisLabel: {
-              visible: true,
-            },
-            yAxisLabel: {
-              visible: true,
-            },
-            margin: { top: 0, bottom: 0, left: 0, right: 0 },
-          },
         }),
       ],
       store,
