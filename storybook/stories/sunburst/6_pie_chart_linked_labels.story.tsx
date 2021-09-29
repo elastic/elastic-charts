@@ -16,7 +16,13 @@ import { indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
 export const Example = () => (
   <Chart>
-    <Settings theme={{ partition: { linkLabel: { maximumSection: 10000 } } }} baseTheme={useBaseTheme()} />
+    <Settings
+      theme={{
+        chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+        partition: { linkLabel: { maximumSection: 10000 } },
+      }}
+      baseTheme={useBaseTheme()}
+    />
     <Partition
       id="spec_1"
       data={[

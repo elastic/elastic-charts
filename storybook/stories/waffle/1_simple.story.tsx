@@ -22,7 +22,8 @@ export const Example = () => {
     <Chart className="story-chart">
       <Settings
         theme={{
-          chartPaddings: { left: 50, right: 50, top: 50, bottom: 50 },
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+          chartPaddings: { left: 170, right: 170, top: 75, bottom: 75 },
         }}
         baseTheme={useBaseTheme()}
         debug={showDebug}

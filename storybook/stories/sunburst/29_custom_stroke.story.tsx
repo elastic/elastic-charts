@@ -18,6 +18,7 @@ import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s } from '..
 
 export const Example = () => {
   const theme: PartialTheme = {
+    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     background: {
       color: color('Change background container color', '#1c1c24'),
     },

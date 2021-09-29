@@ -29,6 +29,7 @@ const defaultFillColor = (colorMaker: any) => ({ [MODEL_KEY]: model }: any) => {
 };
 
 const theme: PartialTheme = {
+  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
   partition: {
     minFontSize: 4,
     maxFontSize: 84,

@@ -15,7 +15,12 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-const theme: PartialTheme = { partition: { linkLabel: { valueFont: { fontWeight: 900, fontStyle: 'italic' } } } };
+const theme: PartialTheme = {
+  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+  partition: {
+    linkLabel: { valueFont: { fontWeight: 900, fontStyle: 'italic' } },
+  },
+};
 
 export const Example = () => (
   <Chart>

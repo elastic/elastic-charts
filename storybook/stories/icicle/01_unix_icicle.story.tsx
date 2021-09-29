@@ -19,7 +19,15 @@ const color = palette.slice().reverse();
 export const Example = () => {
   return (
     <Chart>
-      <Settings showLegend flatLegend legendMaxDepth={maxDepth} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        flatLegend
+        legendMaxDepth={maxDepth}
+        baseTheme={useBaseTheme()}
+        theme={{
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+        }}
+      />
       <Partition
         id="spec_1"
         layout={PartitionLayout.icicle}

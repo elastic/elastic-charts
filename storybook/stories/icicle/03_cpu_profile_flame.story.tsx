@@ -30,6 +30,7 @@ const getLayerSpec = (maxDepth: number = 30) =>
 export const Example = () => {
   const clipText = boolean("Allow, and clip, texts that wouldn't otherwise fit", true);
   const theme: PartialTheme = {
+    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     partition: {
       fillLabel: {
         clipText,

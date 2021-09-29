@@ -68,7 +68,7 @@ export const Example = () => {
     minFontSize: 1,
     idealFontSizeJump: 1.1,
     outerSizeRatio: 1,
-    emptySizeRatio: 0.2,
+    emptySizeRatio: 0,
     circlePadding: 4,
   };
 
@@ -83,6 +83,7 @@ export const Example = () => {
         baseTheme={useBaseTheme()}
         theme={{
           partition: partitionTheme,
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
           legend: { labelOptions: { maxLines } },
         }}
       />
