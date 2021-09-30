@@ -38,7 +38,7 @@ export class MockPointGeometry {
   static default(partial?: RecursivePartial<PointGeometry>) {
     const color = partial?.color ?? Colors.Red.keyword;
     const style = buildPointGeometryStyles(color, lineSeriesStyle.point);
-    return mergePartial<PointGeometry>(MockPointGeometry.base, partial, [{ style }]);
+    return mergePartial<PointGeometry>(MockPointGeometry.base, partial, {}, [{ style }]);
   }
 }
 

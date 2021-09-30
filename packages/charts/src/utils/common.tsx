@@ -336,13 +336,18 @@ export function renderWithProps<P extends Record<string, any>>(El: ReactNode | C
   return isReactComponent<P>(El) ? <El {...props} /> : El;
 }
 
-const optionalFlag = { mergeOptionalPartialValues: true };
-
-/** @internal */
-export const mergePartial = <T,>(base: T, partial?: RecursivePartial<T>, additional: RecursivePartial<T>[] = []) =>
-  mergePartialWithOptions(base, partial, optionalFlag, additional);
-
-function mergePartialWithOptions<T>(
+/**
+ * Merges values of a partial structure with a base structure.
+ *
+ * @note No nested array merging
+ *
+ * @param base structure to be duplicated, must have all props of `partial`
+ * @param partial structure to override values from base
+ *
+ * @returns new base structure with updated partial values
+ * @internal
+ */
+export function mergePartial<T>(
   base: T,
   partial?: RecursivePartial<T>,
   options: MergeOptions = {},
@@ -352,7 +357,7 @@ function mergePartialWithOptions<T>(
 
   if (hasPartialObjectToMerge(base, partial, additionalPartials)) {
     const mapCondition = !(baseClone instanceof Map) || options.mergeMaps;
-    if (partial !== undefined && options.mergeOptionalPartialValues && mapCondition) {
+    if (partial !== undefined && (options.mergeOptionalPartialValues ?? true) && mapCondition) {
       getAllKeys(partial, additionalPartials).forEach((key) => {
         if (baseClone instanceof Map) {
           if (!baseClone.has(key)) {
@@ -381,7 +386,7 @@ function mergePartialWithOptions<T>(
           );
           const baseValue = (base as any).get(key);
 
-          newBase.set(key, mergePartialWithOptions(baseValue, partialValue, options, partialValues));
+          newBase.set(key, mergePartial(baseValue, partialValue, options, partialValues));
 
           return newBase;
         }, baseClone as any);
@@ -404,7 +409,7 @@ function mergePartialWithOptions<T>(
       const partialValues = additionalPartials.map((v) => (typeof v === 'object' ? (v as any)[key] : undefined));
       const baseValue = (base as any)[key];
 
-      newBase[key] = mergePartialWithOptions(baseValue, partialValue, options, partialValues);
+      newBase[key] = mergePartial(baseValue, partialValue, options, partialValues);
 
       return newBase;
     }, baseClone);

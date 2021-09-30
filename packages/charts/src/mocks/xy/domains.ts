@@ -34,7 +34,7 @@ export class MockXDomain {
   }
 
   static fromScaleType(scaleType: XScaleType, partial?: RecursivePartial<XDomain>) {
-    return mergePartial<XDomain>(MockXDomain.base, partial, [
+    return mergePartial<XDomain>(MockXDomain.base, partial, {}, [
       { type: getXScaleTypeFromSpec(scaleType), nice: getXNiceFromSpec() },
     ]);
   }
@@ -54,7 +54,7 @@ export class MockYDomain {
   }
 
   static fromScaleType(scaleType: ScaleContinuousType, partial?: RecursivePartial<YDomain>) {
-    return mergePartial<YDomain>(MockYDomain.base, partial, [
+    return mergePartial<YDomain>(MockYDomain.base, partial, {}, [
       { type: getYScaleTypeFromSpec(scaleType), nice: getYNiceFromSpec() },
     ]);
   }
