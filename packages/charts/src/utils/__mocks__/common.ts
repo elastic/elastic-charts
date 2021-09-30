@@ -30,7 +30,7 @@ export const hasPartialObjectToMerge = jest.fn(module.hasPartialObjectToMerge);
 /** @internal */
 export const shallowClone = jest.fn(module.shallowClone);
 /** @internal */
-export const mergeOptionals = jest.fn(module.mergeOptionals);
+export const mergePartial = jest.fn(module.mergePartial);
 /** @internal */
 export const isNumberArray = jest.fn(module.isNumberArray);
 /** @internal */
