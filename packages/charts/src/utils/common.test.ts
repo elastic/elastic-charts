@@ -402,293 +402,106 @@ describe('common utilities', () => {
       it('should merge top-level Maps', () => {
         const result = mergePartial(
           new Map([
-            [
-              'a',
-              {
-                name: 'Nick',
-              },
-            ],
-            [
-              'b',
-              {
-                name: 'Marco',
-              },
-            ],
+            ['a', { name: 'Nick' }],
+            ['b', { name: 'Marco' }],
           ]),
-          new Map([
-            [
-              'b',
-              {
-                name: 'rachel',
-              },
-            ],
-          ]),
+          new Map([['b', { name: 'rachel' }]]),
           {
             mergeMaps: true,
           },
         );
         expect(result).toEqual(
           new Map([
-            [
-              'a',
-              {
-                name: 'Nick',
-              },
-            ],
-            [
-              'b',
-              {
-                name: 'rachel',
-              },
-            ],
+            ['a', { name: 'Nick' }],
+            ['b', { name: 'rachel' }],
           ]),
         );
       });
 
       it('should merge nested Maps with partail', () => {
         const result = mergePartial(
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'cat',
-                },
-              ],
-            ]),
-          },
-          {
-            test: new Map([
-              [
-                'dog',
-                {
-                  name: 'dog',
-                },
-              ],
-            ]),
-          },
+          { test: new Map([['cat', { name: 'cat' }]]) },
+          { test: new Map([['dog', { name: 'dog' }]]) },
           {
             mergeMaps: true,
           },
         );
         expect(result).toEqual({
           test: new Map([
-            [
-              'cat',
-              {
-                name: 'cat',
-              },
-            ],
-            [
-              'dog',
-              {
-                name: 'dog',
-              },
-            ],
+            ['cat', { name: 'cat' }],
+            ['dog', { name: 'dog' }],
           ]),
         });
       });
 
       it('should merge nested Maps', () => {
         const result = mergePartial(
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'toby',
-                },
-              ],
-            ]),
-          },
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'snickers',
-                },
-              ],
-            ]),
-          },
+          { test: new Map([['cat', { name: 'toby' }]]) },
+          { test: new Map([['cat', { name: 'snickers' }]]) },
           {
             mergeMaps: true,
           },
         );
         expect(result).toEqual({
-          test: new Map([
-            [
-              'cat',
-              {
-                name: 'snickers',
-              },
-            ],
-          ]),
+          test: new Map([['cat', { name: 'snickers' }]]),
         });
       });
 
       it('should merge nested Maps with mergeOptionalPartialValues', () => {
         const result = mergePartial(
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'toby',
-                },
-              ],
-            ]),
-          },
-          {
-            test: new Map([
-              [
-                'dog',
-                {
-                  name: 'lucky',
-                },
-              ],
-            ]),
-          },
+          { test: new Map([['cat', { name: 'toby' }]]) },
+          { test: new Map([['dog', { name: 'lucky' }]]) },
           {
             mergeMaps: true,
           },
         );
         expect(result).toEqual({
           test: new Map([
-            [
-              'cat',
-              {
-                name: 'toby',
-              },
-            ],
-            [
-              'dog',
-              {
-                name: 'lucky',
-              },
-            ],
+            ['cat', { name: 'toby' }],
+            ['dog', { name: 'lucky' }],
           ]),
         });
       });
 
       it('should merge nested Maps from additionalPartials', () => {
         const result = mergePartial(
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'toby',
-                },
-              ],
-            ]),
-          },
+          { test: new Map([['cat', { name: 'toby' }]]) },
           undefined,
           {
             mergeMaps: true,
           },
           [
             {
-              test: new Map([
-                [
-                  'cat',
-                  {
-                    name: 'snickers',
-                  },
-                ],
-              ]),
+              test: new Map([['cat', { name: 'snickers' }]]),
             },
           ],
         );
         expect(result).toEqual({
           test: new Map([
-            [
-              'cat',
-              {
-                name: 'toby',
-              },
-            ],
-            [
-              'cat',
-              {
-                name: 'snickers',
-              },
-            ],
+            ['cat', { name: 'toby' }],
+            ['cat', { name: 'snickers' }],
           ]),
         });
       });
 
       it('should replace Maps when mergeMaps is false', () => {
         const result = mergePartial(
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'toby',
-                },
-              ],
-            ]),
-          },
-          {
-            test: new Map([
-              [
-                'dog',
-                {
-                  name: 'snickers',
-                },
-              ],
-            ]),
-          },
+          { test: new Map([['cat', { name: 'toby' }]]) },
+          { test: new Map([['dog', { name: 'snickers' }]]) },
         );
         expect(result).toEqual({
-          test: new Map([
-            [
-              'dog',
-              {
-                name: 'snickers',
-              },
-            ],
-          ]),
+          test: new Map([['dog', { name: 'snickers' }]]),
         });
       });
 
       it('should replace Maps when mergeMaps is false from additionalPartials', () => {
-        const result = mergePartial(
+        const result = mergePartial({ test: new Map([['cat', { name: 'toby' }]]) }, undefined, undefined, [
           {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'toby',
-                },
-              ],
-            ]),
+            test: new Map([['dog', { name: 'snickers' }]]),
           },
-          undefined,
-          undefined,
-          [
-            {
-              test: new Map([
-                [
-                  'dog',
-                  {
-                    name: 'snickers',
-                  },
-                ],
-              ]),
-            },
-          ],
-        );
+        ]);
         expect(result).toEqual({
-          test: new Map([
-            [
-              'dog',
-              {
-                name: 'snickers',
-              },
-            ],
-          ]),
+          test: new Map([['dog', { name: 'snickers' }]]),
         });
       });
     });
