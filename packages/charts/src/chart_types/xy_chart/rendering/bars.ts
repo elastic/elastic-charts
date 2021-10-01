@@ -17,6 +17,7 @@ import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 import { BarStyleAccessor, DisplayValueSpec, LabelOverflowConstraint, StackMode } from '../utils/specs';
+import { getDatumYValue } from './points';
 
 const PADDING = 1; // default padding for now
 const FONT_SIZE_FACTOR = 0.7; // Take 70% of space for the label text
@@ -87,8 +88,7 @@ export function renderBars(
       const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
       const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
-      const y1Value =
-        stackMode === StackMode.Percentage ? (isNil(y1) || isNil(initialY1) ? null : y1 - (y0 ?? 0)) : initialY1;
+      const y1Value = getDatumYValue(datum, false, false, stackMode);
       const formattedDisplayValue = displayValueSettings?.valueFormatter?.(y1Value);
 
       // only show displayValue for even bars if showOverlappingValue

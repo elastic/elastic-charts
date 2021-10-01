@@ -160,30 +160,25 @@ export function getPointStyleOverrides(
  * @param lookingForY0 if we are interested in the y0 value, false for y1
  * @param isBandChart if the chart is a band chart
  * @param stackMode an optional stack mode
+ * @internal
  */
-function getDatumYValue(
+export function getDatumYValue(
   { y1, y0, initialY1, initialY0 }: DataSeriesDatum,
   lookingForY0: boolean,
   isBandChart: boolean,
   stackMode?: StackMode,
 ) {
   if (isBandChart) {
-    return stackMode === StackMode.Percentage
-      ? // on band stacked charts in percentage mode, the values I'm looking for are the percentage value
-        // that are already computed and available on y0 and y1
-        lookingForY0
-        ? y0
-        : y1
-      : // in all other cases for band charts, I want to get back the original/initial value of y0 and y1
-      // not the computed value
-      lookingForY0
-      ? initialY0
-      : initialY1;
+    // on band stacked charts in percentage mode, the values I'm looking for are the percentage value
+    // that are already computed and available on y0 and y1
+    // in all other cases for band charts, I want to get back the original/initial value of y0 and y1
+    // not the computed value
+    return stackMode === StackMode.Percentage ? (lookingForY0 ? y0 : y1) : lookingForY0 ? initialY0 : initialY1;
   }
   // if not a band chart get use the original/initial value in every case except for stack as percentage
   // in this case, we should take the difference between the bottom position of the bar and the top position
   // of the bar
-  return stackMode === StackMode.Percentage ? (y1 ?? 0) - (y0 ?? 0) : initialY1;
+  return stackMode === StackMode.Percentage ? (isNil(y1) || isNil(initialY1) ? null : y1 - (y0 ?? 0)) : initialY1;
 }
 
 /**
