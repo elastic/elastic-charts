@@ -12,10 +12,9 @@ import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { onPointerMove } from '../../../state/actions/mouse';
-import { GlobalChartState } from '../../../state/chart_state';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
 import { getTooltipInfoAndGeometriesSelector } from '../state/selectors/get_tooltip_values_highlighted_geoms';
-import { StackMode } from '../utils/specs';
+import { SeriesType, StackMode } from '../utils/specs';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
@@ -219,84 +218,55 @@ describe('Rendering bars', () => {
   });
 
   describe('BarGeometryValue', () => {
-    it('stacked tooltip should be consistent with the original nature of the datum', () => {
-      const barSpec = MockSeriesSpec.bar({
-        data: [
-          { x: 0, y: 0, g: 'a' },
-          { x: 1, y: null, g: 'a' },
-          { x: 0, y: 4, g: 'b' },
-          { x: 1, y: 5, g: 'b' },
-          { x: 2, y: 2, g: 'b' },
-        ],
-        xAccessor: 'x',
-        yAccessors: ['y'],
-        splitSeriesAccessors: ['g'],
-        stackAccessors: ['x'],
-        xScaleType: ScaleType.Ordinal,
-        yScaleType: ScaleType.Linear,
-      });
-      const store = MockStore.default({ width: 90, height: 100, top: 0, left: 0 });
-      MockStore.addSpecs(
-        [barSpec, MockGlobalSpec.settingsNoMargins({ theme: { colors: { vizColors: ['red', 'blue'] } } })],
-        store,
-      );
-      const tooltipValues = (store: Store) =>
-        getTooltipInfoAndGeometriesSelector(store.getState()).tooltip.values.map((d) => [d.label, d.value]);
-
-      // move over the 1st bar
-      store.dispatch(onPointerMove({ x: 15, y: 50 }, 0));
-      expect(tooltipValues(store)).toIncludeSameMembers([
-        ['a', 0],
-        ['b', 4],
-      ]);
-
-      // move over the 2nd bar (hide the null)
-      store.dispatch(onPointerMove({ x: 45, y: 50 }, 1));
-      expect(tooltipValues(store)).toIncludeSameMembers([['b', 5]]);
-
-      // move over the 3rd bar (hide missing series)
-      store.dispatch(onPointerMove({ x: 75, y: 50 }, 1));
-      expect(tooltipValues(store)).toIncludeSameMembers([['b', 2]]);
+    const partialSpec = {
+      data: [
+        { x: 0, y: 0, g: 'a' },
+        { x: 1, y: null, g: 'a' },
+        { x: 0, y: 4, g: 'b' },
+        { x: 1, y: 5, g: 'b' },
+        { x: 2, y: 2, g: 'b' },
+      ],
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      xScaleType: ScaleType.Ordinal,
+      yScaleType: ScaleType.Linear,
+    };
+    let store: Store;
+    beforeEach(() => {
+      store = MockStore.default({ width: 90, height: 100, top: 0, left: 0 });
     });
-    it('stacked as % tooltip should be consistent with the original nature of the datum', () => {
-      const barSpec = MockSeriesSpec.bar({
-        data: [
-          { x: 0, y: 0, g: 'a' },
-          { x: 1, y: null, g: 'a' },
-          { x: 0, y: 4, g: 'b' },
-          { x: 1, y: 5, g: 'b' },
-          { x: 2, y: 2, g: 'b' },
-        ],
-        xAccessor: 'x',
-        yAccessors: ['y'],
-        splitSeriesAccessors: ['g'],
-        stackAccessors: ['x'],
-        stackMode: StackMode.Percentage,
-        xScaleType: ScaleType.Ordinal,
-        yScaleType: ScaleType.Linear,
-      });
-      const store = MockStore.default({ width: 90, height: 100, top: 0, left: 0 });
-      MockStore.addSpecs(
-        [barSpec, MockGlobalSpec.settingsNoMargins({ theme: { colors: { vizColors: ['red', 'blue'] } } })],
-        store,
-      );
-      const tooltipValues = (store: Store) =>
-        getTooltipInfoAndGeometriesSelector(store.getState()).tooltip.values.map((d) => [d.label, d.value]);
 
-      // move over the 1st bar
-      store.dispatch(onPointerMove({ x: 15, y: 50 }, 0));
-      expect(tooltipValues(store)).toIncludeSameMembers([
-        ['a', 0],
-        ['b', 1],
-      ]);
+    const tooltipValues = (s: Store) =>
+      getTooltipInfoAndGeometriesSelector(s.getState()).tooltip.values.map((d) => [d.label, d.value]);
 
-      // move over the 2nd bar (hide the null)
-      store.dispatch(onPointerMove({ x: 45, y: 50 }, 1));
-      expect(tooltipValues(store)).toIncludeSameMembers([['b', 1]]);
-
-      // move over the 3rd bar (hide missing series)
-      store.dispatch(onPointerMove({ x: 75, y: 50 }, 1));
-      expect(tooltipValues(store)).toIncludeSameMembers([['b', 1]]);
-    });
+    it.each`
+      type               | stackMode               | first                   | second        | third
+      ${SeriesType.Bar}  | ${StackMode.Percentage} | ${[['a', 0], ['b', 1]]} | ${[['b', 1]]} | ${[['b', 1]]}
+      ${SeriesType.Bar}  | ${undefined}            | ${[['a', 0], ['b', 4]]} | ${[['b', 5]]} | ${[['b', 2]]}
+      ${SeriesType.Area} | ${StackMode.Percentage} | ${[['a', 0], ['b', 1]]} | ${[['b', 1]]} | ${[['b', 1]]}
+      ${SeriesType.Area} | ${undefined}            | ${[['a', 0], ['b', 4]]} | ${[['b', 5]]} | ${[['b', 2]]}
+    `(
+      'stacked $type $stackMode tooltip should be consistent with the original nature of the datum',
+      ({ type, stackMode, first, second, third }) => {
+        MockStore.addSpecs(
+          [
+            MockSeriesSpec.byTypePartial(type)({ ...partialSpec, stackMode }),
+            MockGlobalSpec.settingsNoMargins({ theme: { colors: { vizColors: ['red', 'blue'] } } }),
+          ],
+          store,
+        );
+        // move over the 1st bar
+        store.dispatch(onPointerMove({ x: 15, y: 50 }, 0));
+        expect(tooltipValues(store)).toIncludeSameMembers(first);
+        // move over the 2nd bar (hide the null)
+        store.dispatch(onPointerMove({ x: 45, y: 50 }, 1));
+        expect(tooltipValues(store)).toIncludeSameMembers(second);
+        // move over the 3rd bar (hide missing series)
+        store.dispatch(onPointerMove({ x: 75, y: 50 }, 1));
+        expect(tooltipValues(store)).toIncludeSameMembers(third);
+      },
+    );
   });
 });
