@@ -87,8 +87,9 @@ export function renderBars(
       const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
       const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
-      const originalY1Value = stackMode === StackMode.Percentage ? (isNil(y1) ? null : y1 - (y0 ?? 0)) : initialY1;
-      const formattedDisplayValue = displayValueSettings?.valueFormatter?.(originalY1Value);
+      const y1Value =
+        stackMode === StackMode.Percentage ? (isNil(y1) || isNil(initialY1) ? null : y1 - (y0 ?? 0)) : initialY1;
+      const formattedDisplayValue = displayValueSettings?.valueFormatter?.(y1Value);
 
       // only show displayValue for even bars if showOverlappingValue
       const displayValueText =
@@ -140,7 +141,7 @@ export function renderBars(
         width,
         height,
         color,
-        value: { x: datum.x, y: originalY1Value, mark: null, accessor: BandedAccessorType.Y1, datum: datum.datum },
+        value: { x: datum.x, y: y1Value, mark: null, accessor: BandedAccessorType.Y1, datum: datum.datum },
         seriesIdentifier,
         seriesStyle,
         panel,
