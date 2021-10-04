@@ -1,11 +1,5 @@
 {
   "extends": "../tsconfig",
-  "include": [
-    "../packages/charts/src/**/*",
-    "./**/*",
-    "../storybook-docs/config.docs.ts",
-    "../**/*.d.ts",
-    "../scripts/custom_matchers.ts"
-  ],
+  "include": ["../packages/charts/src/**/*", "./**/*", "../storybook-docs/config.docs.ts"],
   "exclude": ["../**/*.test.*"]
 }

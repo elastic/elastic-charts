@@ -13,7 +13,7 @@ const tsPreset = require('ts-jest/jest-preset');
 const { debug } = require('./config');
 
 module.exports = {
-  setupFilesAfterEnv: ['<rootDir>/jest_env_setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest_env_setup.ts', 'jest-extended'],
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.json',

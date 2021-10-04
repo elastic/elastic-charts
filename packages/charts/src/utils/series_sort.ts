@@ -7,7 +7,7 @@
  */
 
 import { SeriesIdentifier } from '../common/series_id';
-import { SettingsSpec, SortSeriesByConfig } from '../specs/settings';
+import { SortSeriesByConfig } from '../specs/settings';
 
 /**
  * A compare function used to determine the order of the elements. It is expected to return
@@ -24,8 +24,7 @@ export const DEFAULT_SORTING_FN = () => {
 
 /** @internal */
 export function getRenderingCompareFn(
-  // @ts-ignore
-  sortSeriesBy: SettingsSpec['sortSeriesBy'],
+  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
   defaultSortFn?: SeriesCompareFn,
 ): SeriesCompareFn {
   return getCompareFn('rendering', sortSeriesBy, defaultSortFn);
@@ -33,8 +32,7 @@ export function getRenderingCompareFn(
 
 /** @internal */
 export function getLegendCompareFn(
-  // @ts-ignore
-  sortSeriesBy: SettingsSpec['sortSeriesBy'],
+  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
   defaultSortFn?: SeriesCompareFn,
 ): SeriesCompareFn {
   return getCompareFn('legend', sortSeriesBy, defaultSortFn);
@@ -42,8 +40,7 @@ export function getLegendCompareFn(
 
 /** @internal */
 export function getTooltipCompareFn(
-  // @ts-ignore
-  sortSeriesBy: SettingsSpec['sortSeriesBy'],
+  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
   defaultSortFn?: SeriesCompareFn,
 ): SeriesCompareFn {
   return getCompareFn('tooltip', sortSeriesBy, defaultSortFn);
@@ -51,8 +48,7 @@ export function getTooltipCompareFn(
 
 function getCompareFn(
   aspect: keyof SortSeriesByConfig,
-  // @ts-ignore
-  sortSeriesBy: SettingsSpec['sortSeriesBy'],
+  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
   defaultSortFn: SeriesCompareFn = DEFAULT_SORTING_FN,
 ): SeriesCompareFn {
   if (typeof sortSeriesBy === 'object') {

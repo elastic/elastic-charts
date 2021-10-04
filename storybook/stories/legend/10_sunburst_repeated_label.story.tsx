@@ -28,7 +28,7 @@ export const Example = () => {
       <Settings
         showLegend
         flatLegend={flatLegend}
-        legendStrategy={select('legendStrategy', LegendStrategy, LegendStrategy.Key)}
+        legendStrategy={select<LegendStrategy>('legendStrategy', LegendStrategy, LegendStrategy.Key)}
         legendMaxDepth={legendMaxDepth}
         baseTheme={useBaseTheme()}
       />

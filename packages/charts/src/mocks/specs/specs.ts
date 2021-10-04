@@ -343,7 +343,7 @@ export class MockGlobalSpec {
   };
 
   static settings(partial?: Partial<SettingsSpec>): SettingsSpec {
-    // @ts-ignore
+    // @ts-ignore - nesting limitation
     return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBase, partial, { mergeOptionalPartialValues: true });
   }
 
