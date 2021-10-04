@@ -83,9 +83,9 @@ function getAxes(
         : rotation === 0 || rotation === -90
         ? Predicate.NumDesc
         : Predicate.NumAsc;
-      const visibleTicks = [...geom.visibleTicks]
-        .sort(getPredicateFn(sortingOrder, 'position'))
-        .filter(({ label }) => label !== '');
+      const visibleTicks = geom.visibleTicks
+        .filter(({ label }) => label !== '')
+        .sort(getPredicateFn(sortingOrder, 'position'));
 
       const labels = visibleTicks.map(({ label }) => label);
       const values = visibleTicks.map(({ value }) => value);
