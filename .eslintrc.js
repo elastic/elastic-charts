@@ -78,6 +78,7 @@ module.exports = {
     'no-restricted-properties': 0, // need to find and filter desired options
     'class-methods-use-this': 0,
     'unicorn/prefer-number-properties': 0,
+    'unicorn/number-literal-case': 0, // use prettier lower case preference
     'global-require': 1,
     'import/no-dynamic-require': 1,
     'no-shadow': 1,
@@ -89,11 +90,12 @@ module.exports = {
     'jsx-a11y/mouse-events-have-key-events': 1,
     'jsx-a11y/click-events-have-key-events': 1,
     '@typescript-eslint/member-ordering': 1,
-    eqeqeq: 1,
+    eqeqeq: 2,
 
     /*
      * Standard rules
      */
+    '@typescript-eslint/object-curly-spacing': 0,
     'no-restricted-syntax': 0, // this is a good rule, for-of is good
     'no-console': process.env.NODE_ENV === 'production' ? 2 : 1,
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 1,
@@ -102,7 +104,7 @@ module.exports = {
     'consistent-return': 0,
     'no-plusplus': 0,
     'no-bitwise': 0,
-    'no-void': 0,
+    'no-void': 1,
     yoda: 0,
     'no-restricted-globals': 0,
     'no-case-declarations': 0,
@@ -111,7 +113,7 @@ module.exports = {
     'no-continue': 0,
     'no-lonely-if': 0,
     'no-return-assign': 0,
-    'no-underscore-dangle': 0,
+    'no-underscore-dangle': ['error', { allow: ['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] }],
     'no-confusing-arrow': 0,
     'prefer-destructuring': 0,
     'function-paren-newline': 0,
@@ -176,7 +178,16 @@ module.exports = {
     '@typescript-eslint/ban-ts-ignore': 0,
     '@typescript-eslint/indent': 0,
     '@typescript-eslint/no-inferrable-types': 0,
-    '@typescript-eslint/ban-ts-comment': 1,
+    '@typescript-eslint/ban-ts-comment': [
+      2,
+      {
+        'ts-expect-error': 'allow-with-description',
+        'ts-ignore': 'allow-with-description',
+        'ts-nocheck': 'allow-with-description',
+        'ts-check': 'allow-with-description',
+        minimumDescriptionLength: 3,
+      },
+    ],
     '@typescript-eslint/no-unused-vars': [
       'error',
       {

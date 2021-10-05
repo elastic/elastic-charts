@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../common/colors';
 import { SeriesIdentifier, SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { BinAgg, Direction, XScaleType } from '../../../specs';
 import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
-import { Color, Datum, isNil } from '../../../utils/common';
+import { Datum, isNil } from '../../../utils/common';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
@@ -273,24 +274,18 @@ export function extractYAndMarkFromDatum(
   markSizeAccessor?: Accessor | AccessorFn,
 ): Pick<DataSeriesDatum, 'y0' | 'y1' | 'mark' | 'datum' | 'initialY0' | 'initialY1'> {
   const mark =
-    markSizeAccessor === undefined ? null : castToNumber(getAccessorValue(datum, markSizeAccessor), nonNumericValues);
+    markSizeAccessor === undefined ? null : finiteOrNull(getAccessorValue(datum, markSizeAccessor), nonNumericValues);
   const y1Value = getAccessorValue(datum, yAccessor);
-  const y1 = castToNumber(y1Value, nonNumericValues);
-  const y0 = y0Accessor ? castToNumber(getAccessorValue(datum, y0Accessor), nonNumericValues) : null;
+  const y1 = finiteOrNull(y1Value, nonNumericValues);
+  const y0 = y0Accessor ? finiteOrNull(getAccessorValue(datum, y0Accessor), nonNumericValues) : null;
   return { y1, datum, y0, mark, initialY0: y0, initialY1: y1 };
 }
 
-function castToNumber(value: any, nonNumericValues: any[]): number | null {
-  if (value === null || value === undefined) {
-    return null;
-  }
-  const num = Number(value);
-
-  if (isNaN(num)) {
-    nonNumericValues.push(value);
-    return null;
-  }
-  return num;
+function finiteOrNull(value: unknown, nonNumericValues: unknown[]): number | null {
+  const candidateNumber = Number(value ?? undefined);
+  const finite = Number.isFinite(candidateNumber);
+  if (!finite) nonNumericValues.push(value);
+  return finite ? candidateNumber : null;
 }
 
 /** Sorts data based on order of xValues */

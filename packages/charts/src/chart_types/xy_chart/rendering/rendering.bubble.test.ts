@@ -386,10 +386,10 @@ describe('Rendering points - bubble', () => {
       yScaleType: ScaleType.Linear,
     });
     const settings = MockGlobalSpec.settingsNoMargins({
-      xDomain: { max: 2 },
+      xDomain: { min: NaN, max: 2 },
       theme: { colors: { vizColors: ['red', 'blue'] } },
     });
-    const axis = MockGlobalSpec.axis({ position: Position.Left, hide: true, domain: { max: 1 } });
+    const axis = MockGlobalSpec.axis({ position: Position.Left, hide: true, domain: { min: NaN, max: 1 } });
     const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
     MockStore.addSpecs([pointSeriesSpec, axis, settings], store);
     const {

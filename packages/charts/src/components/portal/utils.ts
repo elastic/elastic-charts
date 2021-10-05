@@ -90,7 +90,7 @@ export function getElementZIndex(element: HTMLElement, cousin: HTMLElement): num
     element = element.offsetParent as HTMLElement;
 
     // stop if there is no parent
-    if (element == null) {
+    if (!element) {
       break;
     }
 
@@ -109,7 +109,7 @@ export function getElementZIndex(element: HTMLElement, cousin: HTMLElement): num
 
     // if the z-index is not a number (e.g. "auto") return null, else the value
     const parsedZIndex = parseInt(zIndex, 10);
-    if (!isNaN(parsedZIndex)) {
+    if (Number.isFinite(parsedZIndex)) {
       return parsedZIndex;
     }
   }

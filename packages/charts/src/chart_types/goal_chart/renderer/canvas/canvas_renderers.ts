@@ -6,11 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { Mark } from '../../layout/viewmodel/geoms';
 
 /** @internal */
-export function renderCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, geomObjects: Mark[]) {
+export function renderCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, geomObjects: Mark[], background: Color) {
   withContext(ctx, () => {
     // set some defaults for the overall rendering
 
@@ -30,7 +31,7 @@ export function renderCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, geomO
 
     renderLayers(ctx, [
       // clear the canvas
-      clearCanvas,
+      () => clearCanvas(ctx, background),
       () => geomObjects.forEach((mark) => withContext(ctx, () => mark.render(ctx))),
     ]);
   });

@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB } from '../../../common/color_library_wrappers';
+import { colorToRgba, overrideOpacity } from '../../../common/color_library_wrappers';
 import { Line, Stroke } from '../../../geoms/types';
 import { mergePartial, RecursivePartial } from '../../../utils/common';
 import { Size } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
-import { AxisStyle } from '../../../utils/themes/theme';
+import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { isVerticalAxis } from './axis_type_utils';
@@ -38,7 +38,7 @@ export type LinesGrid = {
 export function getGridLines(
   axesSpecs: Array<AxisSpec>,
   axesGeoms: Array<AxisGeometry>,
-  themeAxisStyle: AxisStyle,
+  { axes: themeAxisStyle }: Pick<Theme, 'axes'>,
   scales: SmallMultipleScales,
 ): Array<LinesGrid> {
   const panelSize = getPanelSize(scales);
@@ -77,9 +77,7 @@ export function getGridLinesForSpec(
   const isVertical = isVerticalAxis(axisSpec.position);
 
   // merge the axis configured style with the theme style
-  const axisStyle = mergePartial(themeAxisStyle, axisSpec.style as RecursivePartial<AxisStyle>, {
-    mergeOptionalPartialValues: true,
-  });
+  const axisStyle = mergePartial(themeAxisStyle, axisSpec.style as RecursivePartial<AxisStyle>);
   const gridLineThemeStyle = isVertical ? axisStyle.gridLine.vertical : axisStyle.gridLine.horizontal;
 
   // axis can have a configured grid line style
@@ -103,9 +101,9 @@ export function getGridLinesForSpec(
   if (!gridLineStyles.stroke || !gridLineStyles.strokeWidth || gridLineStyles.strokeWidth < MIN_STROKE_WIDTH) {
     return null;
   }
-  const strokeColor = stringToRGB(gridLineStyles.stroke);
-  strokeColor.opacity =
-    gridLineStyles.opacity !== undefined ? strokeColor.opacity * gridLineStyles.opacity : strokeColor.opacity;
+  const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
+    gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
+  );
   const stroke: Stroke = {
     color: strokeColor,
     width: gridLineStyles.strokeWidth,

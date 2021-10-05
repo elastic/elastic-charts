@@ -13,8 +13,7 @@ const tsPreset = require('ts-jest/jest-preset');
 const { debug } = require('./config');
 
 module.exports = {
-  setupFilesAfterEnv: ['<rootDir>/jest_env_setup.ts'],
-  modulePathIgnorePatterns: ['<rootDir>/node_modules/canvas/.+'],
+  setupFilesAfterEnv: ['<rootDir>/jest_env_setup.ts', 'jest-extended'],
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.json',

@@ -151,7 +151,7 @@ function rowSetComplete(rowSet: RowSet, measuredBoxes: RowBox[]) {
   return (
     measuredBoxes.length === 0 &&
     !rowSet.rows.some(
-      (r) => isNaN(r.length) || r.rowWords.length === 0 || r.rowWords.every((rw) => rw.text.length === 0),
+      (r) => !Number.isFinite(r.length) || r.rowWords.length === 0 || r.rowWords.every((rw) => rw.text.length === 0),
     )
   );
 }
@@ -236,7 +236,7 @@ function fill<C>(
         ? VerticalAlignments.bottom
         : VerticalAlignments.top;
       const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
-      const { fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding, textOpacity, clipText } = {
+      const { fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding, clipText } = {
         ...fillLabel,
         valueFormatter: formatter,
         ...layer.fillLabel,
@@ -256,7 +256,6 @@ function fill<C>(
         fontWeight,
         fontFamily,
         textColor: node.textColor,
-        textOpacity,
       };
       const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
       const [cx, cy] = textFillOrigin;
@@ -438,7 +437,7 @@ function getRowSet<C>(
   }
 
   const { rowSet, completed } = tryFunction(identityRowSet(), fontSizes[fontSizeIndex]); // todo in the future, make the hill climber also yield the result to avoid this +1 call
-  return { ...rowSet, rows: rowSet.rows.filter((r) => completed && !isNaN(r.length)) };
+  return { ...rowSet, rows: rowSet.rows.filter((r) => completed && Number.isFinite(r.length)) };
 }
 
 /** @internal */
@@ -513,12 +512,13 @@ export function fillTextLayout<C>(
           { node, origin }: { node: QuadViewModel; origin: [Pixels, Pixels] },
         ) => {
           const nextRowSet = filler(fontSizes, origin, node);
+          const { fontSize } = nextRowSet;
           const layerIndex = node.depth - 1;
           return {
             rowSets: [...rowSets, nextRowSet],
             fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
-              !isNaN(nextRowSet.fontSize) && index === layerIndex && !layers[layerIndex]?.fillLabel?.maximizeFontSize
-                ? layerFontSizes.filter((size: Pixels) => size <= nextRowSet.fontSize)
+              Number.isFinite(fontSize) && index === layerIndex && !layers[layerIndex]?.fillLabel?.maximizeFontSize
+                ? layerFontSizes.filter((size: Pixels) => size <= fontSize)
                 : layerFontSizes,
             ),
           };

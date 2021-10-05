@@ -6,10 +6,8 @@
  * Side Public License, v 1.
  */
 
-// eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable jest/no-conditional-expect */
 
-import 'jest-extended';
 import React from 'react';
 import { Store } from 'redux';
 
@@ -1356,3 +1354,5 @@ describe('Clickable annotations', () => {
     expect(onAnnotationClick).toBeCalled();
   });
 });
+
+/* eslint-enable jest/no-conditional-expect */

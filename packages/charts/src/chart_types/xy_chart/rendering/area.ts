@@ -8,8 +8,8 @@
 
 import { area } from 'd3-shape';
 
+import { Color } from '../../../common/colors';
 import { Scale } from '../../../scales';
-import { Color } from '../../../utils/common';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { Dimensions } from '../../../utils/dimensions';
 import { AreaGeometry } from '../../../utils/geometry';
@@ -20,8 +20,8 @@ import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
 import {
   getClippedRanges,
-  getY0ScaledValueOrThrowFn,
-  getY1ScaledValueOrThrowFn,
+  getY0ScaledValueFn,
+  getY1ScaledValueFn,
   getYDatumValueFn,
   isYValueDefinedFn,
   MarkSizeOptions,
@@ -47,13 +47,13 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
-  const y1Fn = getY1ScaledValueOrThrowFn(yScale);
-  const y0Fn = getY0ScaledValueOrThrowFn(yScale);
+  const y1Fn = getY1ScaledValueFn(yScale);
+  const y0Fn = getY0ScaledValueFn(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
   const y1DatumAccessor = getYDatumValueFn();
   const y0DatumAccessor = getYDatumValueFn('y0');
   const pathGenerator = area<DataSeriesDatum>()
-    .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
+    .x(({ x }) => (xScale.scale(x) ?? NaN) - xScaleOffset)
     .y1(y1Fn)
     .y0(y0Fn)
     .defined((datum) => {
@@ -63,32 +63,11 @@ export function renderArea(
 
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
-  let y1Line: string | null;
-
-  try {
-    y1Line = pathGenerator.lineY1()(dataSeries.data);
-  } catch {
-    // When values are not scalable
-    y1Line = null;
-  }
-
   const lines: string[] = [];
-  if (y1Line) {
-    lines.push(y1Line);
-  }
-  if (hasY0Accessors) {
-    let y0Line: string | null;
-
-    try {
-      y0Line = pathGenerator.lineY0()(dataSeries.data);
-    } catch {
-      // When values are not scalable
-      y0Line = null;
-    }
-    if (y0Line) {
-      lines.push(y0Line);
-    }
-  }
+  const y0Line = hasY0Accessors && pathGenerator.lineY0()(dataSeries.data);
+  const y1Line = pathGenerator.lineY1()(dataSeries.data);
+  if (y1Line) lines.push(y1Line);
+  if (y0Line) lines.push(y0Line);
 
   const { pointGeometries, indexedGeometryMap } = renderPoints(
     shift - xScaleOffset,
@@ -104,17 +83,8 @@ export function renderArea(
     false,
   );
 
-  let areaPath: string;
-
-  try {
-    areaPath = pathGenerator(dataSeries.data) || '';
-  } catch {
-    // When values are not scalable
-    areaPath = '';
-  }
-
   const areaGeometry: AreaGeometry = {
-    area: areaPath,
+    area: pathGenerator(dataSeries.data) || '',
     lines,
     points: pointGeometries,
     color,

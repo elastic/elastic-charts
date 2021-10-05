@@ -31,7 +31,7 @@ export const isExternalTooltipVisibleSelector = createCustomCachedSelector(
     }
     const x = xScale.pureScale(pointer.x);
 
-    if (x == null || x > chartDimensions.width + chartDimensions.left || x < 0) {
+    if (Number.isNaN(x) || x > chartDimensions.width + chartDimensions.left || x < 0) {
       return false;
     }
     return Boolean(hasExternalEvent && externalPointerEvents.tooltip?.visible);

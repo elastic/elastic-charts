@@ -6,16 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { omit } from 'lodash';
-
 import { buildPointGeometryStyles } from '../chart_types/xy_chart/rendering/point_style';
+import { Colors } from '../common/colors';
 import { mergePartial, RecursivePartial } from '../utils/common';
-import { AreaGeometry, PointGeometry, BarGeometry, LineGeometry, BubbleGeometry } from '../utils/geometry';
+import { AreaGeometry, BarGeometry, BubbleGeometry, LineGeometry, PointGeometry } from '../utils/geometry';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { PointShape } from '../utils/themes/theme';
 import { MockSeriesIdentifier } from './series/series_identifiers';
 
-const DEFAULT_MOCK_POINT_COLOR = 'red';
 const { barSeriesStyle, lineSeriesStyle, areaSeriesStyle, bubbleSeriesStyle } = LIGHT_THEME;
 
 /** @internal */
@@ -24,63 +22,23 @@ export class MockPointGeometry {
     x: 0,
     y: 0,
     radius: lineSeriesStyle.point.radius,
-    color: DEFAULT_MOCK_POINT_COLOR,
+    color: Colors.Red.keyword,
     seriesIdentifier: MockSeriesIdentifier.default(),
     style: {
       shape: PointShape.Circle,
-      fill: {
-        color: {
-          r: 255,
-          g: 255,
-          b: 255,
-          opacity: 1,
-        },
-      },
-      stroke: {
-        color: {
-          r: 255,
-          g: 0,
-          b: 0,
-          opacity: 1,
-        },
-        width: 1,
-      },
+      fill: { color: Colors.White.rgba },
+      stroke: { color: Colors.Red.rgba, width: 1 },
     },
-    value: {
-      accessor: 'y0',
-      x: 0,
-      y: 0,
-      mark: null,
-      datum: { x: 0, y: 0 },
-    },
-    transform: {
-      x: 0,
-      y: 0,
-    },
-    panel: {
-      width: 100,
-      height: 100,
-      left: 0,
-      top: 0,
-    },
+    value: { accessor: 'y0', x: 0, y: 0, mark: null, datum: { x: 0, y: 0 } },
+    transform: { x: 0, y: 0 },
+    panel: { width: 100, height: 100, left: 0, top: 0 },
     orphan: false,
   };
 
   static default(partial?: RecursivePartial<PointGeometry>) {
-    const color = partial?.color ?? DEFAULT_MOCK_POINT_COLOR;
+    const color = partial?.color ?? Colors.Red.keyword;
     const style = buildPointGeometryStyles(color, lineSeriesStyle.point);
-    return mergePartial<PointGeometry>(MockPointGeometry.base, partial, { mergeOptionalPartialValues: true }, [
-      { style },
-    ]);
-  }
-
-  static fromBaseline(baseline: RecursivePartial<PointGeometry>, omitKeys: string[] | string = []) {
-    return (partial?: RecursivePartial<PointGeometry>) => {
-      return omit(
-        mergePartial<PointGeometry>(MockPointGeometry.base, partial, { mergeOptionalPartialValues: true }, [baseline]),
-        omitKeys,
-      );
-    };
+    return mergePartial<PointGeometry>(MockPointGeometry.base, partial, {}, [{ style }]);
   }
 }
 
@@ -91,40 +49,17 @@ export class MockBarGeometry {
     y: 0,
     width: 0,
     height: 0,
-    color: DEFAULT_MOCK_POINT_COLOR,
+    color: Colors.Red.keyword,
     displayValue: undefined,
     seriesIdentifier: MockSeriesIdentifier.default(),
-    value: {
-      accessor: 'y0',
-      x: 0,
-      y: 0,
-      mark: null,
-      datum: { x: 0, y: 0 },
-    },
+    value: { accessor: 'y0', x: 0, y: 0, mark: null, datum: { x: 0, y: 0 } },
     seriesStyle: barSeriesStyle,
-    transform: {
-      x: 0,
-      y: 0,
-    },
-    panel: {
-      width: 100,
-      height: 100,
-      left: 0,
-      top: 0,
-    },
+    transform: { x: 0, y: 0 },
+    panel: { width: 100, height: 100, left: 0, top: 0 },
   };
 
   static default(partial?: RecursivePartial<BarGeometry>) {
-    return mergePartial<BarGeometry>(MockBarGeometry.base, partial, { mergeOptionalPartialValues: true });
-  }
-
-  static fromBaseline(baseline: RecursivePartial<BarGeometry>, omitKeys: string[] | string = []) {
-    return (partial?: RecursivePartial<BarGeometry>) => {
-      const geo = mergePartial<BarGeometry>(MockBarGeometry.base, partial, { mergeOptionalPartialValues: true }, [
-        baseline,
-      ]);
-      return omit(geo, omitKeys);
-    };
+    return mergePartial<BarGeometry>(MockBarGeometry.base, partial);
   }
 }
 
@@ -133,11 +68,8 @@ export class MockLineGeometry {
   private static readonly base: LineGeometry = {
     line: '',
     points: [],
-    color: DEFAULT_MOCK_POINT_COLOR,
-    transform: {
-      x: 0,
-      y: 0,
-    },
+    color: Colors.Red.keyword,
+    transform: { x: 0, y: 0 },
     seriesIdentifier: MockSeriesIdentifier.default(),
     seriesLineStyle: lineSeriesStyle.line,
     seriesPointStyle: lineSeriesStyle.point,
@@ -145,7 +77,7 @@ export class MockLineGeometry {
   };
 
   static default(partial?: RecursivePartial<LineGeometry>) {
-    return mergePartial<LineGeometry>(MockLineGeometry.base, partial, { mergeOptionalPartialValues: true });
+    return mergePartial<LineGeometry>(MockLineGeometry.base, partial);
   }
 }
 
@@ -155,11 +87,8 @@ export class MockAreaGeometry {
     area: '',
     lines: [],
     points: [],
-    color: DEFAULT_MOCK_POINT_COLOR,
-    transform: {
-      x: 0,
-      y: 0,
-    },
+    color: Colors.Red.keyword,
+    transform: { x: 0, y: 0 },
     seriesIdentifier: MockSeriesIdentifier.default(),
     seriesAreaStyle: areaSeriesStyle.area,
     seriesAreaLineStyle: areaSeriesStyle.line,
@@ -169,7 +98,7 @@ export class MockAreaGeometry {
   };
 
   static default(partial?: RecursivePartial<AreaGeometry>) {
-    return mergePartial<AreaGeometry>(MockAreaGeometry.base, partial, { mergeOptionalPartialValues: true });
+    return mergePartial<AreaGeometry>(MockAreaGeometry.base, partial);
   }
 }
 
@@ -177,14 +106,12 @@ export class MockAreaGeometry {
 export class MockBubbleGeometry {
   private static readonly base: BubbleGeometry = {
     points: [],
-    color: DEFAULT_MOCK_POINT_COLOR,
+    color: Colors.Red.keyword,
     seriesIdentifier: MockSeriesIdentifier.default(),
     seriesPointStyle: bubbleSeriesStyle.point,
   };
 
   static default(partial?: RecursivePartial<BubbleGeometry>) {
-    return mergePartial<BubbleGeometry>(MockBubbleGeometry.base, partial, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergePartial<BubbleGeometry>(MockBubbleGeometry.base, partial);
   }
 }

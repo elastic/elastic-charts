@@ -9,16 +9,15 @@
 import { CSSProperties } from 'react';
 
 import { LegendSpec, LegendPositionConfig } from '../../specs/settings';
-import { BBox } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { LayoutDirection, Position } from '../../utils/common';
-import { Dimensions } from '../../utils/dimensions';
+import { Dimensions, Size } from '../../utils/dimensions';
 
 const INSIDE_PADDING = 10;
 
 /** @internal */
 export function legendPositionStyle(
   { legendPosition }: LegendSpec,
-  legendSize: BBox,
+  legendSize: Size,
   chart: Dimensions,
   container: Dimensions,
 ): CSSProperties {

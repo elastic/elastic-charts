@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../common/colors';
 import { Scale } from '../../../scales';
-import { Color, isNil } from '../../../utils/common';
+import { isNil } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, PointGeometry } from '../../../utils/geometry';
 import { PointStyle } from '../../../utils/themes/theme';
@@ -16,8 +17,8 @@ import { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } fr
 import { PointStyleAccessor, StackMode } from '../utils/specs';
 import { buildPointGeometryStyles } from './point_style';
 import {
-  getY0ScaledValueOrThrowFn,
-  getY1ScaledValueOrThrowFn,
+  getY0ScaledValueFn,
+  getY1ScaledValueFn,
   getYDatumValueFn,
   isDatumFilled,
   isYValueDefinedFn,
@@ -48,8 +49,8 @@ export function renderPoints(
     : () => 0;
   const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
 
-  const y1Fn = getY1ScaledValueOrThrowFn(yScale);
-  const y0Fn = getY0ScaledValueOrThrowFn(yScale);
+  const y1Fn = getY1ScaledValueFn(yScale);
+  const y0Fn = getY0ScaledValueFn(yScale);
   const yDefined = isYValueDefinedFn(yScale, xScale);
 
   const pointGeometries = dataSeries.data.reduce((acc, datum, dataIndex) => {
@@ -57,29 +58,19 @@ export function renderPoints(
     const prev = dataSeries.data[dataIndex - 1];
     const next = dataSeries.data[dataIndex + 1];
     // don't create the point if not within the xScale domain
-    if (!xScale.isValueInDomain(xValue)) {
-      return acc;
-    }
+    if (!xScale.isValueInDomain(xValue)) return acc;
+
     // don't create the point if it that point was filled
     const x = xScale.scale(xValue);
 
-    if (x === null) {
-      return acc;
-    }
+    if (Number.isNaN(x)) return acc;
 
     const points: PointGeometry[] = [];
     const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = hasY0Accessors ? ['y0', 'y1'] : ['y1'];
 
     yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
       const valueAccessor = getYDatumValueFn(yDatumKeyName);
-
-      let y: number | null;
-      try {
-        y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
-      } catch {
-        y = null;
-      }
-
+      const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
       const originalY = getDatumYValue(datum, keyIndex === 0, hasY0Accessors, dataSeries.stackMode);
       const seriesIdentifier: XYChartSeriesIdentifier = {
         key: dataSeries.key,

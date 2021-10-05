@@ -11,14 +11,13 @@ import Url from 'url';
 import { AXNode } from 'puppeteer';
 
 import { DRAG_DETECTION_TIMEOUT } from '../../packages/charts/src/state/reducers/interactions';
-// @ts-ignore
+// @ts-ignore - no type declarations
 import { port, hostname, debug, isLegacyVRTServer } from '../config';
 import { toMatchImageSnapshot } from '../jest_env_setup';
 
 const legacyBaseUrl = `http://${hostname}:${port}/iframe.html`;
 
-// Use to log console statements from within the page.evaluate blocks
-// @ts-ignore
+// @ts-ignore - used to log console statements from within the page.evaluate blocks
 // page.on('console', (msg) => (msg._type === 'log' ? console.log('PAGE LOG:', msg._text) : null)); // eslint-disable-line no-console
 
 expect.extend({ toMatchImageSnapshot });
@@ -321,27 +320,23 @@ class CommonPage {
     selector: string = 'body',
     options?: ScreenshotElementAtUrlOptions,
   ) {
-    try {
-      await this.loadElementFromURL(url, options?.waitSelector ?? selector, options?.timeout);
+    await this.loadElementFromURL(url, options?.waitSelector ?? selector, options?.timeout);
 
-      if (options?.action) {
-        await options.action();
-      }
-
-      if (options?.delay) {
-        await page.waitFor(options.delay);
-      }
-
-      const element = await this.screenshotDOMElement(options?.screenshotSelector ?? selector, options);
-
-      if (!element) {
-        throw new Error(`Error: Unable to find element\n\n\t${url}`);
-      }
-
-      expect(element).toMatchImageSnapshot();
-    } catch (error) {
-      throw new Error(error);
+    if (options?.action) {
+      await options.action();
     }
+
+    if (options?.delay) {
+      await page.waitFor(options.delay);
+    }
+
+    const element = await this.screenshotDOMElement(options?.screenshotSelector ?? selector, options);
+
+    if (!element) {
+      throw new Error(`Error: Unable to find element\n\n\t${url}`);
+    }
+
+    expect(element).toMatchImageSnapshot();
   }
 
   /**

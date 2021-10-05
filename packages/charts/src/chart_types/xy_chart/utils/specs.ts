@@ -10,14 +10,14 @@ import { ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
+import { Color } from '../../../common/colors';
 import { TooltipPortalSettings } from '../../../components/portal/types';
-import { ScaleContinuousType } from '../../../scales';
+import { LogScaleOptions, ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { LogScaleOptions } from '../../../scales/scale_continuous';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
-import { RecursivePartial, Color, Position, Datum } from '../../../utils/common';
+import { RecursivePartial, Position, Datum } from '../../../utils/common';
 import { CurveType } from '../../../utils/curves';
 import { OrdinalDomain } from '../../../utils/domain';
 import { AxisId, GroupId } from '../../../utils/ids';
@@ -117,6 +117,7 @@ export type SeriesName = string | number | null;
  * @public
  */
 export type SeriesNameFn = (series: XYChartSeriesIdentifier, isTooltip: boolean) => SeriesName;
+
 /**
  * Accessor mapping to replace names
  * @public
@@ -144,6 +145,7 @@ export interface SeriesNameConfig {
    */
   sortIndex?: number;
 }
+
 /** @public */
 export interface SeriesNameConfigOptions {
   /**
@@ -165,6 +167,7 @@ export interface SeriesNameConfigOptions {
    */
   delimiter?: string;
 }
+
 /** @public */
 export type SeriesNameAccessor = string | SeriesNameFn | SeriesNameConfigOptions;
 
@@ -256,9 +259,11 @@ export const Fit = Object.freeze({
 /** @public */
 export type Fit = $Values<typeof Fit>;
 
-interface DomainBase {
+/** @public */
+export interface DomainRange {
   /**
-   * Custom minInterval for the domain which will affect data bucket size.
+   * Custom minInterval for the domain which will affect data bin size.
+   * `min: NaN` or `max: NaN` can be used for either or both extrema, when unbounded.
    * The minInterval cannot be greater than the computed minimum interval between any two adjacent data points.
    * Further, if you specify a custom numeric minInterval for a time-series, please note that due to the restriction
    * above, the specified numeric minInterval will be interpreted as a fixed interval.
@@ -266,6 +271,8 @@ interface DomainBase {
    * compute the interval between 2016 and 2017, you'll have 366 days due to 2016 being a leap year.  This will not
    * be a valid interval because it is greater than the computed minInterval of 365 days between the other years.
    */
+  min: number;
+  max: number;
   minInterval?: number;
 }
 
@@ -342,31 +349,6 @@ export interface YDomainBase {
   constrainPadding?: boolean;
 }
 
-interface LowerBound {
-  /**
-   * Lower bound of domain range
-   */
-  min: number;
-}
-
-interface UpperBound {
-  /**
-   * Upper bound of domain range
-   */
-  max: number;
-}
-
-/** @public */
-export type LowerBoundedDomain = DomainBase & LowerBound;
-/** @public */
-export type UpperBoundedDomain = DomainBase & UpperBound;
-/** @public */
-export type CompleteBoundedDomain = DomainBase & LowerBound & UpperBound;
-/** @public */
-export type UnboundedDomainWithInterval = DomainBase;
-
-/** @public */
-export type DomainRange = LowerBoundedDomain | UpperBoundedDomain | CompleteBoundedDomain | UnboundedDomainWithInterval;
 /** @public */
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
@@ -728,7 +710,7 @@ export interface AxisSpec extends Spec {
   groupId: GroupId;
   /** Hide this axis */
   hide: boolean;
-  /** shows all ticks, also the one from the overlapping labels */
+  /** shows all ticks and gridlines, including those belonging to labels that got culled due to overlapping with other labels*/
   showOverlappingTicks: boolean;
   /** Shows all labels, also the overlapping ones */
   showOverlappingLabels: boolean;

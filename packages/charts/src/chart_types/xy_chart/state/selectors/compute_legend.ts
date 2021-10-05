@@ -52,8 +52,6 @@ export const computeLegendSelector = createCustomCachedSelector(
       siDataSeriesMap,
       deselectedDataSeries,
       chartTheme,
-      // @ts-ignore
-      settings.sortSeriesBy,
     );
   },
 );

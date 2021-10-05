@@ -26,21 +26,13 @@ const mapConfigToTheme = ({
   fontFamily,
 }: RecursivePartial<Config> = {}): PartialTheme => ({
   chartMargins: margin,
-  background: {
-    color: backgroundColor,
-  },
+  background: { color: backgroundColor },
   goal: {
     minFontSize,
     maxFontSize,
-    tickLabel: {
-      fontFamily,
-    },
-    majorLabel: {
-      fontFamily,
-    },
-    minorLabel: {
-      fontFamily,
-    },
+    tickLabel: { fontFamily },
+    majorLabel: { fontFamily },
+    minorLabel: { fontFamily },
   },
 });
 

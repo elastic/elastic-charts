@@ -6,16 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { stringToRGB } from '../../../../../common/color_library_wrappers';
+import * as commonColors from '../../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { getMockCanvas, getMockCanvasContext2D, MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
 import { getTextureStyles } from '../../../utils/texture';
 import { buildBarStyle } from './bar';
 
-jest.mock('../../../../../common/color_library_wrappers');
 jest.mock('../../../utils/texture');
 jest.spyOn(common, 'getColorFromVariant');
+jest.spyOn(commonColors, 'colorToRgba');
 
 const COLOR = 'aquamarine';
 
@@ -72,17 +73,17 @@ describe('Bar styles', () => {
         });
       });
 
-      it('should call stringToRGB with values from getColorFromVariant', () => {
-        expect(stringToRGB).nthCalledWith(1, fillColor, expect.any(Function));
-        expect(stringToRGB).nthCalledWith(2, strokeColor, expect.any(Function));
+      it('should call colorToRgba with values from getColorFromVariant', () => {
+        expect(colorToRgba).nthCalledWith(1, fillColor);
+        expect(colorToRgba).nthCalledWith(2, strokeColor);
       });
 
       it('should return fill with color', () => {
-        expect(result.fill.color).toEqual(stringToRGB(fillColor));
+        expect(result.fill.color).toEqual(colorToRgba(fillColor));
       });
 
       it('should return stroke with color', () => {
-        expect(result.stroke.color).toEqual(stringToRGB(strokeColor));
+        expect(result.stroke.color).toEqual(colorToRgba(strokeColor));
       });
     });
 
@@ -108,12 +109,12 @@ describe('Bar styles', () => {
 
       it('should return correct fill opacity', () => {
         const expected = fillColorOpacity * fillOpacity * geoOpacity;
-        expect(result.fill.color.opacity).toEqual(expected);
+        expect(result.fill.color[3]).toEqual(expected);
       });
 
       it('should return correct stroke opacity', () => {
         const expected = strokeColorOpacity * strokeOpacity * geoOpacity;
-        expect(result.stroke.color.opacity).toEqual(expected);
+        expect(result.stroke.color[3]).toEqual(expected);
       });
 
       describe('themeRectBorderStyle opacity is undefined', () => {
@@ -126,7 +127,7 @@ describe('Bar styles', () => {
 
         it('should use themeRectStyle opacity', () => {
           const expected = strokeColorOpacity * fillOpacity * geoOpacity;
-          expect(result.stroke.color.opacity).toEqual(expected);
+          expect(result.stroke.color[3]).toEqual(expected);
         });
       });
     });

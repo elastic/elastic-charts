@@ -74,6 +74,8 @@ describe('Chart State utils', () => {
         domain: [0, 3],
         isBandScale: false,
         minInterval: 1,
+        logBase: 10,
+        timeZone: 'utc',
       }),
     );
     expect(domains.yDomains).toEqual([
@@ -123,6 +125,8 @@ describe('Chart State utils', () => {
         domain: [0, 3],
         isBandScale: false,
         minInterval: 1,
+        logBase: 10,
+        timeZone: 'utc',
       }),
     );
     expect(domains.yDomains).toEqual([

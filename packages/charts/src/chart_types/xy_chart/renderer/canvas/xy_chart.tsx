@@ -34,7 +34,6 @@ import { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
-import { computePerPanelGridLinesSelector } from '../../state/selectors/compute_grid_lines';
 import { computePanelsSelectors, PanelGeoms } from '../../state/selectors/compute_panels';
 import {
   computePerPanelAxesGeomsSelector,
@@ -42,6 +41,7 @@ import {
 } from '../../state/selectors/compute_per_panel_axes_geoms';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
+import { getGridLinesSelector } from '../../state/selectors/get_grid_lines';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
@@ -253,7 +253,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     chartTransform: computeChartTransformSelector(state),
     axesSpecs: getAxisSpecsSelector(state),
     perPanelAxisGeoms: computePerPanelAxesGeomsSelector(state),
-    perPanelGridLines: computePerPanelGridLinesSelector(state),
+    perPanelGridLines: getGridLinesSelector(state),
     axesStyles: getAxesStylesSelector(state),
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),

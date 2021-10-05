@@ -156,7 +156,7 @@ function getXBrushExtent(
 
   const offset = histogramMode ? 0 : -(xScale.bandwidth + xScale.bandwidthPadding) / 2;
   const invertValue = roundHistogramBrushValues
-    ? (value: number) => xScale.invertWithStep(value, xScale.domain)?.value
+    ? (value: number) => xScale.invertWithStep(value, xScale.domain).value
     : (value: number) => xScale.invert(value);
   const minPosScaled = invertValue(minPos + offset);
   const maxPosScaled = invertValue(maxPos + offset);
@@ -190,7 +190,7 @@ function getYBrushExtents(
   chartDimensions: Dimensions,
   lastDrag: DragState,
   rotation: Rotation,
-  yScales: Map<GroupId, Scale<number | string>>,
+  yScales: Map<GroupId, Scale<number>>,
   smallMultipleScales: SmallMultipleScales,
   minBrushDelta?: number,
 ): GroupBrushExtent[] | undefined {
@@ -212,8 +212,8 @@ function getYBrushExtents(
 
     const minPosScaled = yScale.invert(minPos);
     const maxPosScaled = yScale.invert(maxPos);
-    const minValue = clamp(minPosScaled, (yScale as Scale<number>).domain[0], maxPosScaled);
-    const maxValue = clamp(minPosScaled, maxPosScaled, (yScale as Scale<number>).domain[1]);
+    const minValue = clamp(minPosScaled, yScale.domain[0], maxPosScaled);
+    const maxValue = clamp(minPosScaled, maxPosScaled, yScale.domain[1]);
     yValues.push({ extent: [minValue, maxValue], groupId });
   });
   return yValues.length === 0 ? undefined : yValues;

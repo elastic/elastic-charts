@@ -15,12 +15,13 @@ import { PartitionState } from '../chart_types/partition_chart/state/chart_state
 import { WordcloudState } from '../chart_types/wordcloud/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { CategoryKey } from '../common/category';
+import { Color } from '../common/colors';
 import { LegendItem, LegendItemExtraValues } from '../common/legend';
 import { SeriesIdentifier, SeriesKey } from '../common/series_id';
 import { AnchorPosition } from '../components/portal/types';
 import { TooltipInfo } from '../components/tooltip/types';
 import { DEFAULT_SETTINGS_SPEC, PointerEvent, Spec } from '../specs';
-import { Color, keepDistinct } from '../utils/common';
+import { keepDistinct } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
 import { Logger } from '../utils/logger';
 import { Point } from '../utils/point';

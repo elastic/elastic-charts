@@ -19,6 +19,7 @@ export const Example = () => {
   const xDomain = hasCustomDomain
     ? {
         min: 0,
+        max: NaN,
       }
     : undefined;
 

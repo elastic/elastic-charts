@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../common/colors';
 import { Rect } from '../../geoms/types';
 import { ClippedRanges } from '../../utils/geometry';
 
@@ -33,10 +34,14 @@ export function withContext(ctx: CanvasRenderingContext2D, fun: CanvasRenderer) 
 }
 
 /** @internal */
-export function clearCanvas(ctx: CanvasRenderingContext2D) {
+export function clearCanvas(ctx: CanvasRenderingContext2D, bgColor: Color) {
   withContext(ctx, () => {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
+    // with transparent background, clearRect is required
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.fillStyle = bgColor;
+    // filling with the background color is required to have a precise text color contrast calculation
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   });
 }
 

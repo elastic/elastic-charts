@@ -36,17 +36,16 @@ export interface Scale<T> {
    */
   step: number;
   ticks: () => T[];
-  scale: (value?: PrimitiveValue) => number | null;
-  scaleOrThrow(value?: PrimitiveValue): number;
-  pureScale: (value?: PrimitiveValue) => number | null;
-  invert: (value: number) => any;
+  scale: (value?: PrimitiveValue) => number;
+  pureScale: (value?: PrimitiveValue) => number;
+  invert: (value: number) => T;
   invertWithStep: (
     value: number,
     data: any[],
   ) => {
-    value: any;
+    value: T;
     withinBandwidth: boolean;
-  } | null;
+  };
   isSingleValue: () => boolean;
   /** Check if the passed value is within the scale domain */
   isValueInDomain: (value: any) => boolean;
@@ -68,4 +67,4 @@ export { ScaleBand } from './scale_band';
 /** @internal */
 export { ScaleContinuous } from './scale_continuous';
 
-export { LogBase, LogScaleOptions } from './scale_continuous';
+export { LogScaleOptions } from './types';

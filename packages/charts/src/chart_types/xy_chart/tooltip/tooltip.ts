@@ -11,14 +11,14 @@ import { SeriesKey } from '../../../common/series_id';
 import { TooltipValue } from '../../../specs';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
 import { isDefined } from '../../../utils/common';
-import { IndexedGeometry, BandedAccessorType } from '../../../utils/geometry';
+import { BandedAccessorType, IndexedGeometry } from '../../../utils/geometry';
 import { defaultTickFormatter } from '../utils/axis_utils';
 import { getSeriesName } from '../utils/series';
 import {
   AxisSpec,
   BasicSeriesSpec,
-  isBandedSpec,
   isAreaSeriesSpec,
+  isBandedSpec,
   isBarSeriesSpec,
   TickFormatterOptions,
 } from '../utils/specs';
@@ -29,7 +29,7 @@ export const Y0_ACCESSOR_POSTFIX = ' - lower';
 export const Y1_ACCESSOR_POSTFIX = ' - upper';
 
 /** @internal */
-export function getHighligthedValues(
+export function getHighlightedValues(
   tooltipValues: TooltipValue[],
   defaultValue?: string,
 ): Map<SeriesKey, LegendItemExtraValues> {
@@ -47,7 +47,7 @@ export function getHighligthedValues(
       }
     }
 
-    if (valueAccessor != null && (valueAccessor === BandedAccessorType.Y0 || valueAccessor === BandedAccessorType.Y1)) {
+    if (valueAccessor === BandedAccessorType.Y0 || valueAccessor === BandedAccessorType.Y1) {
       current.set(valueAccessor, seriesValue);
     }
     seriesTooltipValues.set(seriesIdentifier.key, current);
@@ -71,11 +71,9 @@ export function formatTooltip(
     const formatter = accessor === BandedAccessorType.Y0 ? y0AccessorFormat : y1AccessorFormat;
     label = getAccessorFormatLabel(formatter, label);
   }
-  const isFiltered = spec.filterSeriesInTooltip !== undefined ? spec.filterSeriesInTooltip(seriesIdentifier) : true;
-  const isVisible = label === '' ? false : isFiltered;
-
+  const isVisible = label.length > 0 && (!spec.filterSeriesInTooltip || spec.filterSeriesInTooltip(seriesIdentifier));
   const value = isHeader ? x : y;
-  const markValue = isHeader || mark === null ? null : mark;
+  const markValue = isHeader || mark === null || Number.isNaN(mark) ? null : mark;
   const tickFormatOptions: TickFormatterOptions | undefined = spec.timeZone ? { timeZone: spec.timeZone } : undefined;
   const tickFormatter =
     (isHeader ? axisSpec?.tickFormat : spec.tickFormat ?? axisSpec?.tickFormat) ?? defaultTickFormatter;
@@ -93,7 +91,7 @@ export function formatTooltip(
         : defaultTickFormatter(markValue),
     }),
     color,
-    isHighlighted: isHeader ? false : isHighlighted,
+    isHighlighted: isHighlighted && !isHeader,
     isVisible,
     datum,
   };

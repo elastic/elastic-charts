@@ -94,11 +94,9 @@ function tryFiringOnProjectionClick(
   values: ProjectedValues | undefined,
   onProjectionClick: SettingsSpec['onProjectionClick'],
 ): boolean {
-  if (values === undefined || !onProjectionClick) {
-    return false;
-  }
-  onProjectionClick(values);
-  return true;
+  const properClick = values !== undefined && onProjectionClick;
+  if (properClick) onProjectionClick(values);
+  return Boolean(properClick);
 }
 
 function tryFiringOnAnnotationClick(

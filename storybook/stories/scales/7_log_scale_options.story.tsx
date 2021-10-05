@@ -20,11 +20,11 @@ import {
   AreaSeries,
   CurveType,
   YDomainBase,
+  LogScaleOptions,
 } from '@elastic/charts';
-import { LogBase, LogScaleOptions } from '@elastic/charts/src/scales/scale_continuous';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { logBaseMap, logFormatter } from '../utils/formatters';
+import { logFormatter } from '../utils/formatters';
 import { getKnobsFromEnum } from '../utils/knobs';
 
 type LogKnobs = LogScaleOptions &
@@ -53,20 +53,22 @@ const getScaleType = (type: ScaleType, group: string) =>
     'log' | 'linear'
   >;
 
-const getLogKnobs = (isXAxis = false): LogKnobs => {
+const getLogKnobs = (isXAxis = false) => {
   const group = isXAxis ? 'X - Axis' : 'Y - Axis';
   const useDefaultLimit = boolean('Use default limit', isXAxis, group);
   const limit = number('Log min limit', 1, { min: 0 }, group);
-
+  const logNames = { Common: 'common', Binary: 'binary', Natural: 'natural' };
+  const logBaseName = getKnobsFromEnum('Log base', logNames, 'common' as any, {
+    group,
+    allowUndefined: true,
+  }) as 'common' | 'binary' | 'natural';
   return {
+    ...{ min: NaN, max: NaN },
     ...(!isXAxis && { fit: boolean('Fit domain', true, group) }),
     dataType: getDataType(group, isXAxis ? undefined : 'upDown'),
     negative: boolean('Use negative values', false, group),
     ...(!isXAxis && { logMinLimit: useDefaultLimit ? undefined : limit }),
-    logBase: getKnobsFromEnum('Log base', LogBase, LogBase.Common as LogBase, {
-      group,
-      allowUndefined: true,
-    }),
+    logBase: { common: 10, binary: 2, natural: Math.E }[logBaseName] ?? 10,
     scaleType: getScaleType(ScaleType.Log, group),
     ...(!isXAxis && { padding: number('Padding', 0, { min: 0 }, group) }),
   };
@@ -111,8 +113,8 @@ const getData = (rows: number, yLogKnobs: LogKnobs, xLogKnobs: LogKnobs) =>
     const y0 = getDataValue(yLogKnobs.dataType, v, i, length);
     const x0 = getDataValue(xLogKnobs.dataType, v, i, length);
     return {
-      y: Math.pow(logBaseMap[yLogKnobs.logBase ?? LogBase.Common], y0) * (yLogKnobs.negative ? -1 : 1),
-      x: Math.pow(logBaseMap[xLogKnobs.logBase ?? LogBase.Common], x0) * (xLogKnobs.negative ? -1 : 1),
+      y: Math.pow(yLogKnobs.logBase ?? 10, y0) * (yLogKnobs.negative ? -1 : 1),
+      x: Math.pow(xLogKnobs.logBase ?? 10, x0) * (xLogKnobs.negative ? -1 : 1),
     };
   });
 
@@ -153,7 +155,7 @@ Example.parameters = {
       This is _not_ the same as min domain value, such that if all values are greater than \`logMinLimit\`,
       the domain min will be determined solely by the dataset.\n\nThe \`domain.logBase\` and \`xDomain.logBase\` options
       provide a way to set the base of the log to one of following:
-      [\`Common\`](https://en.wikipedia.org/wiki/Common_logarithm) (base 10),
-      [\`Binary\`](https://en.wikipedia.org/wiki/Binary_logarithm) (base 2),
-      [\`Natural\`](https://en.wikipedia.org/wiki/Natural_logarithm) (base e), the default is \`Common\``,
+      [\`10\`](https://en.wikipedia.org/wiki/Common_logarithm) (base 10),
+      [\`2\`](https://en.wikipedia.org/wiki/Binary_logarithm) (base 2),
+      [\`Math.E\`](https://en.wikipedia.org/wiki/Natural_logarithm) (base e), the default is \`Common\``,
 };

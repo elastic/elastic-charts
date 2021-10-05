@@ -23,9 +23,7 @@ export class MockSeriesIdentifier {
   };
 
   static default(partial?: Partial<XYChartSeriesIdentifier>) {
-    return mergePartial<XYChartSeriesIdentifier>(MockSeriesIdentifier.base, partial, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergePartial<XYChartSeriesIdentifier>(MockSeriesIdentifier.base, partial);
   }
 
   static fromSpecs(specs: BasicSeriesSpec[]): XYChartSeriesIdentifier[] {

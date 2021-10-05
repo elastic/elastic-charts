@@ -302,9 +302,7 @@ describe('Rendering utils', () => {
       };
       mockAccessor.mockReturnValue(partialStyle);
       const styleOverrides = getBarStyleOverrides(datum, seriesIdentifier, sampleSeriesStyle, mockAccessor);
-      const expectedStyles = mergePartial(sampleSeriesStyle, partialStyle, {
-        mergeOptionalPartialValues: true,
-      });
+      const expectedStyles = mergePartial(sampleSeriesStyle, partialStyle);
 
       expect(styleOverrides).toEqual(expectedStyles);
     });

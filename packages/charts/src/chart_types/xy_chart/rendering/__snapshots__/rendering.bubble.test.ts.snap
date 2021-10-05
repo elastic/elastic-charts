@@ -25,21 +25,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -83,21 +83,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -146,21 +146,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 255,
-          "g": 0,
-          "opacity": 1,
-          "r": 0,
-        },
+        "color": Array [
+          0,
+          0,
+          255,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -204,21 +204,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 255,
-          "g": 0,
-          "opacity": 1,
-          "r": 0,
-        },
+        "color": Array [
+          0,
+          0,
+          255,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -267,21 +267,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -325,21 +325,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -388,21 +388,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 255,
-          "g": 0,
-          "opacity": 1,
-          "r": 0,
-        },
+        "color": Array [
+          0,
+          0,
+          255,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -446,21 +446,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 255,
-          "g": 0,
-          "opacity": 1,
-          "r": 0,
-        },
+        "color": Array [
+          0,
+          0,
+          255,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -509,21 +509,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -567,21 +567,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -630,21 +630,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 255,
-          "g": 0,
-          "opacity": 1,
-          "r": 0,
-        },
+        "color": Array [
+          0,
+          0,
+          255,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -688,21 +688,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 255,
-          "g": 0,
-          "opacity": 1,
-          "r": 0,
-        },
+        "color": Array [
+          0,
+          0,
+          255,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -751,21 +751,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -809,21 +809,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -867,21 +867,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -930,21 +930,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -988,21 +988,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -1051,21 +1051,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -1109,21 +1109,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -1172,21 +1172,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },
@@ -1230,21 +1230,21 @@ Array [
     },
     "style": Object {
       "fill": Object {
-        "color": Object {
-          "b": 255,
-          "g": 255,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          255,
+          255,
+          1,
+        ],
       },
       "shape": "circle",
       "stroke": Object {
-        "color": Object {
-          "b": 0,
-          "g": 0,
-          "opacity": 1,
-          "r": 255,
-        },
+        "color": Array [
+          255,
+          0,
+          0,
+          1,
+        ],
         "width": 1,
       },
     },

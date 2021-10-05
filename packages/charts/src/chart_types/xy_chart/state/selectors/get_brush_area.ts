@@ -72,10 +72,10 @@ export function getPointsConstraintToSinglePanel(
   const hPanel = horizontal.invert(startPlotPoint.x);
   const vPanel = vertical.invert(startPlotPoint.y);
 
-  const hPanelStart = horizontal.scale(hPanel) ?? 0;
+  const hPanelStart = horizontal.scale(hPanel) || 0;
   const hPanelEnd = hPanelStart + horizontal.bandwidth;
 
-  const vPanelStart = vertical.scale(vPanel) ?? 0;
+  const vPanelStart = vertical.scale(vPanel) || 0;
   const vPanelEnd = vPanelStart + vertical.bandwidth;
 
   const start = {

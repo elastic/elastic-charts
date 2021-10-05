@@ -30,7 +30,6 @@ export const Example = () => {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
-            fillLabel: { textInvertible: true },
             shape: {
               fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9.slice(1))(d.sortIndex),
             },
@@ -38,7 +37,6 @@ export const Example = () => {
           {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => productLookup[d].name,
-            fillLabel: { textInvertible: true },
             shape: {
               fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9.slice(1))(d.sortIndex),
             },

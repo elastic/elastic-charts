@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../../common/colors';
 import { ConfigItem, configMap, Numeric } from '../../../common/config_objects';
 import { GOLDEN_RATIO, TAU } from '../../../common/constants';
 import { FONT_STYLES, FONT_VARIANTS } from '../../../common/text_utils';
@@ -65,7 +66,7 @@ export type ValueGetterName = keyof typeof VALUE_GETTERS;
 function defaultFormatter(d: number): string {
   return Math.abs(d) >= 10000000 || Math.abs(d) < 0.001
     ? d.toExponential(Math.min(2, Math.max(0, significantDigitCount(d) - 1)))
-    : d.toLocaleString(void 0, {
+    : d.toLocaleString(undefined, {
         maximumSignificantDigits: 4,
         maximumFractionDigits: 3,
         useGrouping: true,
@@ -196,8 +197,6 @@ export const configMetadata: Record<string, ConfigItem> = {
     type: 'group',
     values: {
       textColor: { type: 'color', dflt: '#000000' },
-      textInvertible: { dflt: false, type: 'boolean' },
-      textContrast: { dflt: false, type: 'boolean' || 'number' },
       ...fontSettings,
       valueGetter: {
         dflt: sumValueGetter,
@@ -285,9 +284,6 @@ export const configMetadata: Record<string, ConfigItem> = {
         documentation: 'Limits the total number of characters in linked labels.',
       },
       textColor: { dflt: '#000000', type: 'color' },
-      textInvertible: { dflt: false, type: 'boolean' },
-      textContrast: { dflt: false, type: 'boolean' || 'number' },
-      textOpacity: { dflt: 1, min: 0, max: 1, type: 'number' },
       minimumStemLength: {
         dflt: 0,
         min: 0,
@@ -307,9 +303,9 @@ export const configMetadata: Record<string, ConfigItem> = {
   },
 
   // other
-  backgroundColor: { dflt: '#ffffff', type: 'color' },
+  backgroundColor: { dflt: Colors.White.keyword, type: 'color' },
   sectorLineWidth: { dflt: 1, min: 0, max: 4, type: 'number' },
-  sectorLineStroke: { dflt: 'white', type: 'string' },
+  sectorLineStroke: { dflt: Colors.White.keyword, type: 'string' },
   animation: { type: 'group', values: { duration: { dflt: 0, min: 0, max: 3000, type: 'number' } } },
 };
 

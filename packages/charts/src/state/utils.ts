@@ -8,38 +8,22 @@
 
 import { ChartType } from '../chart_types';
 import { Spec } from '../specs';
-import { SpecList, PointerState } from './chart_state';
+import { PointerState, PointerStates, SpecList } from './chart_state';
 
 /** @internal */
-export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: ChartType, specType?: string): U[] {
-  return Object.keys(specs)
-    .filter((specId) => {
-      const currentSpec = specs[specId];
-      const sameChartType = currentSpec.chartType === chartType;
-      const sameSpecType = specType ? currentSpec.specType === specType : true;
-      return sameChartType && sameSpecType;
-    })
-    .map((specId) => specs[specId] as U);
+export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: ChartType, specType: string): U[] {
+  return Object.values(specs).filter((spec) => spec.chartType === chartType && spec.specType === specType) as U[];
 }
 
 /** @internal */
 export function isClicking(prevClick: PointerState | null, lastClick: PointerState | null) {
-  if (prevClick === null && lastClick !== null) {
-    return true;
-  }
-  return prevClick !== null && lastClick !== null && prevClick.time !== lastClick.time;
+  return lastClick && (!prevClick || prevClick.time !== lastClick.time);
 }
 
 /** @internal */
-export const getInitialPointerState = () => ({
+export const getInitialPointerState = (): PointerStates => ({
   dragging: false,
-  current: {
-    position: {
-      x: -1,
-      y: -1,
-    },
-    time: 0,
-  },
+  current: { position: { x: -1, y: -1 }, time: 0 },
   down: null,
   up: null,
   lastDrag: null,

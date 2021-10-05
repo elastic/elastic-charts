@@ -26,9 +26,9 @@ import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { Color } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { Color } from '../../../packages/charts/src/common/colors';
 import { useBaseTheme } from '../../use_base_theme';
 import { productLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
@@ -51,17 +51,12 @@ export const Example = () => {
     }
     // will save as chart.png
     const fileName = 'chart.png';
-    switch (snapshot.browser) {
-      case 'IE11':
-        return navigator.msSaveBlob(snapshot.blobOrDataUrl, fileName);
-      default:
-        const link = document.createElement('a');
-        link.download = fileName;
-        link.href = snapshot.blobOrDataUrl;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
+    const link = document.createElement('a');
+    link.download = fileName;
+    link.href = snapshot.blobOrDataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
   button('Export PNG', handler);
   const selectedChart = select('chart type', [ChartType.XYAxis, ChartType.Partition, ChartType.Goal], ChartType.XYAxis);
@@ -93,7 +88,6 @@ function renderPartitionChart() {
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
-          fillLabel: { textInvertible: true },
           shape: {
             fillColor: indexInterpolatedFillColor(interpolatorCET2s),
           },
@@ -112,7 +106,15 @@ function renderXYAxisChart() {
         position={Position.Bottom}
         tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
       />
-      <Axis id="count" domain={{ fit: true }} position={Position.Left} />
+      <Axis
+        id="count"
+        domain={{
+          min: NaN,
+          max: NaN,
+          fit: true,
+        }}
+        position={Position.Left}
+      />
 
       <BarSeries
         id="series bars chart"

@@ -9,7 +9,7 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Axis, Position, AreaSeries, ScaleType, LogBase, Settings } from '@elastic/charts';
+import { Chart, Axis, Position, AreaSeries, ScaleType, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { logFormatter } from '../utils/formatters';
@@ -26,8 +26,8 @@ export const Example = () => {
       <Axis
         id="count"
         position={Position.Left}
-        domain={{ fit, logMinLimit }}
-        tickFormat={logFormatter(LogBase.Common)}
+        domain={{ min: NaN, max: NaN, fit, logMinLimit }}
+        tickFormat={logFormatter(10)}
       />
       <Axis id="x" position={Position.Bottom} integersOnly />
       <AreaSeries

@@ -504,13 +504,13 @@ describe('Fit Function', () => {
     describe('sorting', () => {
       const spies: jest.SpyInstance[] = [];
       const mockArray: any[] = [];
-      // @ts-ignore
+      // @ts-ignore - mocking array prototype method
       jest.spyOn(mockArray, 'sort');
 
       beforeAll(() => {
-        // @ts-ignore
+        // @ts-ignore - mocking array prototype method
         spies.push(jest.spyOn(dataSeries.data, 'sort'));
-        // @ts-ignore
+        // @ts-ignore - mocking array prototype method
         spies.push(jest.spyOn(dataSeries.data, 'slice').mockReturnValue(mockArray));
       });
 

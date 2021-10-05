@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../../../common/colors';
 import { Line } from '../../../../geoms/types';
 import { Scale } from '../../../../scales';
-import { isContinuousScale, isBandScale } from '../../../../scales/types';
-import { isNil, Position, Rotation } from '../../../../utils/common';
+import { isBandScale, isContinuousScale } from '../../../../scales/types';
+import { Position, Rotation } from '../../../../utils/common';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { mergeWithDefaultAnnotationLine } from '../../../../utils/themes/merge_utils';
@@ -17,7 +18,7 @@ import { SmallMultipleScales } from '../../state/selectors/compute_small_multipl
 import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/common';
 import { computeXScaleOffset } from '../../state/utils/utils';
 import { getPanelSize } from '../../utils/panel';
-import { AnnotationDomainType, LineAnnotationSpec, LineAnnotationDatum } from '../../utils/specs';
+import { AnnotationDomainType, LineAnnotationDatum, LineAnnotationSpec } from '../../utils/specs';
 import { AnnotationLineProps } from './types';
 
 function computeYDomainLineAnnotationDimensions(
@@ -37,7 +38,7 @@ function computeYDomainLineAnnotationDimensions(
     style,
   } = annotationSpec;
   const lineStyle = mergeWithDefaultAnnotationLine(style);
-  const color = lineStyle?.line?.stroke ?? 'red';
+  const color = lineStyle?.line?.stroke ?? Colors.Red.keyword;
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
   // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
   // but we are displaying a line annotation
@@ -51,25 +52,20 @@ function computeYDomainLineAnnotationDimensions(
     const { dataValue } = datum;
 
     // avoid rendering invalid annotation value
-    if (dataValue === null || dataValue === undefined || dataValue === '') {
-      return;
-    }
+    if (!dataValue && dataValue !== 0) return;
 
     const annotationValueYPosition = yScale.scale(dataValue);
     // avoid rendering non scalable annotation values
-    if (annotationValueYPosition === null) {
-      return;
-    }
+    if (Number.isNaN(annotationValueYPosition)) return;
 
     // avoid rendering annotation with values outside the scale domain
-    if (dataValue < domainStart || dataValue > domainEnd) {
-      return;
-    }
+    if (dataValue < domainStart || dataValue > domainEnd) return;
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
-        const top = vertical.scaleOrThrow(verticalValue);
-        const left = horizontal.scaleOrThrow(horizontalValue);
+        const top = vertical.scale(verticalValue);
+        const left = horizontal.scale(horizontalValue);
+        if (Number.isNaN(top + left)) return;
 
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;
@@ -134,7 +130,7 @@ function computeXDomainLineAnnotationDimensions(
     style,
   } = annotationSpec;
   const lineStyle = mergeWithDefaultAnnotationLine(style);
-  const color = lineStyle?.line?.stroke ?? 'red';
+  const color = lineStyle?.line?.stroke ?? Colors.Red.keyword;
 
   const lineProps: AnnotationLineProps[] = [];
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
@@ -143,7 +139,7 @@ function computeXDomainLineAnnotationDimensions(
   dataValues.forEach((datum: LineAnnotationDatum, i) => {
     const { dataValue } = datum;
     let annotationValueXPosition = xScale.scale(dataValue);
-    if (isNil(annotationValueXPosition)) {
+    if (Number.isNaN(annotationValueXPosition)) {
       return;
     }
     if (isContinuousScale(xScale) && typeof dataValue === 'number') {
@@ -155,35 +151,32 @@ function computeXDomainLineAnnotationDimensions(
       if (isHistogramMode) {
         const offset = computeXScaleOffset(xScale, true);
         const pureScaledValue = xScale.pureScale(dataValue);
-        if (pureScaledValue == null) {
-          return;
+        if (!Number.isNaN(pureScaledValue)) {
+          // Number.isFinite is regrettably not a type guard yet https://github.com/microsoft/TypeScript/issues/10038#issuecomment-924115831
+          annotationValueXPosition = pureScaledValue - offset;
         }
-        annotationValueXPosition = pureScaledValue - offset;
       } else {
         annotationValueXPosition += (xScale.bandwidth * xScale.totalBarsInCluster) / 2;
       }
     } else if (isBandScale(xScale)) {
-      if (isHistogramMode) {
-        const padding = (xScale.step - xScale.originalBandwidth) / 2;
-        annotationValueXPosition -= padding;
-      } else {
-        annotationValueXPosition += xScale.originalBandwidth / 2;
-      }
+      annotationValueXPosition += isHistogramMode
+        ? -(xScale.step - xScale.originalBandwidth) / 2
+        : xScale.originalBandwidth / 2;
     } else {
       return;
     }
-    if (isNaN(annotationValueXPosition) || annotationValueXPosition == null) {
+    if (!isFinite(annotationValueXPosition)) {
       return;
     }
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
-        if (annotationValueXPosition == null) {
-          return;
-        }
+        if (Number.isNaN(annotationValueXPosition)) return;
 
-        const top = vertical.scaleOrThrow(verticalValue);
-        const left = horizontal.scaleOrThrow(horizontalValue);
+        const top = vertical.scale(verticalValue);
+        const left = horizontal.scale(horizontalValue);
+        if (Number.isNaN(top + left)) return;
+
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;
 

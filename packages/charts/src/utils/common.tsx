@@ -11,6 +11,7 @@ import { $Values, isPrimitive } from 'utility-types';
 import { v1 as uuidV1 } from 'uuid';
 
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { Color, Colors } from '../common/colors';
 import { Degrees, Radian } from '../common/geometry';
 import { AdditiveNumber } from './accessor';
 import { Point } from './point';
@@ -121,14 +122,7 @@ export type Rotation = 0 | 90 | -90 | 180;
 /** @public */
 export type Rendering = 'canvas' | 'svg';
 /** @public */
-export type Color = string; // todo static/runtime type it this for proper color string content; several places in the code, and ultimate use, dictate it not be an empty string
-/** @public */
 export type StrokeStyle = Color; // now narrower than string | CanvasGradient | CanvasPattern
-
-/** @internal */
-export function identity<T>(value: T): T {
-  return value;
-}
 
 /** @internal */
 export function compareByValueAsc(a: number | string, b: number | string): number {
@@ -151,7 +145,7 @@ export function getColorFromVariant(seriesColor: Color, color?: Color | ColorVar
   }
 
   if (color === ColorVariant.None) {
-    return 'transparent';
+    return Colors.Transparent.keyword;
   }
 
   return color || seriesColor;
@@ -363,7 +357,7 @@ export function mergePartial<T>(
 
   if (hasPartialObjectToMerge(base, partial, additionalPartials)) {
     const mapCondition = !(baseClone instanceof Map) || options.mergeMaps;
-    if (partial !== undefined && options.mergeOptionalPartialValues && mapCondition) {
+    if (partial !== undefined && (options.mergeOptionalPartialValues ?? true) && mapCondition) {
       getAllKeys(partial, additionalPartials).forEach((key) => {
         if (baseClone instanceof Map) {
           if (!baseClone.has(key)) {
@@ -574,8 +568,7 @@ export function getPercentageValue<T>(ratio: string | number, relativeValue: num
     return relativeValue * (percentage / 100);
   }
   const num = Number.parseFloat(ratioStr);
-
-  return num && !isNaN(num) ? Math.abs(num) : defaultValue;
+  return Number.isFinite(num) ? Math.abs(num) : defaultValue;
 }
 
 /**
