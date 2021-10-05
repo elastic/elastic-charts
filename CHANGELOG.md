@@ -1,3 +1,27 @@
+# [37.0.0](https://github.com/elastic/elastic-charts/compare/v36.0.0...v37.0.0) (2021-10-05)
+
+
+### Bug Fixes
+
+* **debug:** add predictable axis labels sorting order ([#1418](https://github.com/elastic/elastic-charts/issues/1418)) ([60fbe7a](https://github.com/elastic/elastic-charts/commit/60fbe7aca9be73d34ce617aa990b717989cdeef4))
+* **deps:** update dependency @elastic/eui to ^38.1.0 ([#1409](https://github.com/elastic/elastic-charts/issues/1409)) ([4ffd018](https://github.com/elastic/elastic-charts/commit/4ffd018e9a0afc0d2813d722be6c37d98dd7d378))
+* **deps:** update dependency @elastic/eui to ^38.2.0 ([#1416](https://github.com/elastic/elastic-charts/issues/1416)) ([34707c3](https://github.com/elastic/elastic-charts/commit/34707c365b08ac383ab2d954cf94a5476db78bf4))
+
+
+### Code Refactoring
+
+* cleanup colors ([#1397](https://github.com/elastic/elastic-charts/issues/1397)) ([348c061](https://github.com/elastic/elastic-charts/commit/348c061e5aeacdd7990bae58a67af4532062729a))
+* scale improvements and TS 4.4 ([#1383](https://github.com/elastic/elastic-charts/issues/1383)) ([0003bc1](https://github.com/elastic/elastic-charts/commit/0003bc193499481d9c7d9a7696c2ac8e89f6a91d))
+
+
+### BREAKING CHANGES
+
+* `DEFAULT_CHART_MARGINS`, `DEFAULT_GEOMETRY_STYLES`, `DEFAULT_CHART_PADDING` and `DEFAULT_MISSING_COLOR` are no longer exposed as part of the API
+* The public type varieties for domains are discontinued, in favor of retaining the single `DomainRange` export, which now has a mandatory `{min: number, max: number}`. The developer can supply `NaN` where a finite min, max or both aren't defined (ie. in place of former effective `undefined`). In addition, some console.warn punctuations changed
+
+Co-authored-by: Marco Vettorello <vettorello.marco@gmail.com>
+Co-authored-by: Nick Partridge <nick.ryan.partridge@gmail.com>
+
 # [36.0.0](https://github.com/elastic/elastic-charts/compare/v35.0.0...v36.0.0) (2021-09-15)
 
 
