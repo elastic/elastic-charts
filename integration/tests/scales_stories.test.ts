@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { LogBase } from '../../packages/charts/src/scales/scale_continuous';
 import { common } from '../page_objects';
 
 describe('Scales stories', () => {
@@ -15,7 +14,7 @@ describe('Scales stories', () => {
     ${'Negative'} | ${true}
     ${'Positive'} | ${false}
   `('$polarity values', ({ value: negative }) => {
-    it.each(Object.values(LogBase))('should render proper ticks with %s base', async (base) => {
+    it.each(['common', 'binary', 'natural'])('should render proper ticks with %s base', async (base) => {
       await common.expectChartAtUrlToMatchScreenshot(
         `http://localhost:9001/?path=/story/scales--log-scale-options&knob-Use negative values_Y - Axis=${negative}&knob-Log base_Y - Axis=${base}&knob-Fit domain_Y - Axis=true&knob-Use default limit_Y - Axis=true`,
       );

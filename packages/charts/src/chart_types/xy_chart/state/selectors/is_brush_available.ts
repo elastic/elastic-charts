@@ -18,10 +18,5 @@ import { getComputedScalesSelector } from './get_computed_scales';
  */
 export const isBrushAvailableSelector = createCustomCachedSelector(
   [getSettingsSpecSelector, getComputedScalesSelector],
-  (settingsSpec, scales): boolean => {
-    if (!scales.xScale) {
-      return false;
-    }
-    return scales.xScale.type !== ScaleType.Ordinal && Boolean(settingsSpec.onBrushEnd);
-  },
+  (settingsSpec, scales): boolean => scales.xScale.type !== ScaleType.Ordinal && Boolean(settingsSpec.onBrushEnd),
 );

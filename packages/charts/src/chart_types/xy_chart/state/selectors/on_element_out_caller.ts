@@ -24,18 +24,13 @@ interface Props {
   highlightedGeometries: IndexedGeometry[];
 }
 
-function isOutElement(prevProps: Props | null, nextProps: Props | null) {
-  if (!nextProps || !prevProps) {
-    return false;
-  }
-  if (!nextProps.settings || !nextProps.settings.onElementOut) {
-    return false;
-  }
-  if (prevProps.highlightedGeometries.length > 0 && nextProps.highlightedGeometries.length === 0) {
-    return true;
-  }
-  return false;
-}
+const isOutElement = (prevProps: Props | null, nextProps: Props | null): boolean =>
+  Boolean(
+    prevProps &&
+      nextProps?.settings?.onElementOut &&
+      prevProps.highlightedGeometries.length > 0 &&
+      nextProps.highlightedGeometries.length === 0,
+  );
 
 /**
  * Will call the onElementOut listener every time the following preconditions are met:

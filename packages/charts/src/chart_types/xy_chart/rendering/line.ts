@@ -18,13 +18,7 @@ import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum } from '../utils/series';
 import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
-import {
-  getClippedRanges,
-  getY1ScaledValueOrThrowFn,
-  getYDatumValueFn,
-  isYValueDefinedFn,
-  MarkSizeOptions,
-} from './utils';
+import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn, MarkSizeOptions } from './utils';
 
 /** @internal */
 export function renderLine(
@@ -45,16 +39,14 @@ export function renderLine(
   lineGeometry: LineGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
-  const y1Fn = getY1ScaledValueOrThrowFn(yScale);
+  const y1Fn = getY1ScaledValueFn(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
   const y1Accessor = getYDatumValueFn();
 
   const pathGenerator = line<DataSeriesDatum>()
-    .x(({ x }) => xScale.scaleOrThrow(x) - xScaleOffset)
+    .x(({ x }) => xScale.scale(x) - xScaleOffset)
     .y(y1Fn)
-    .defined((datum) => {
-      return definedFn(datum, y1Accessor);
-    })
+    .defined((datum) => definedFn(datum, y1Accessor))
     .curve(getCurveFactory(curve));
 
   const { pointGeometries, indexedGeometryMap } = renderPoints(
@@ -71,17 +63,9 @@ export function renderLine(
   );
 
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
-  let linePath: string;
-
-  try {
-    linePath = pathGenerator(dataSeries.data) || '';
-  } catch {
-    // When values are not scalable
-    linePath = '';
-  }
 
   const lineGeometry = {
-    line: linePath,
+    line: pathGenerator(dataSeries.data) || '',
     points: pointGeometries,
     color,
     transform: {

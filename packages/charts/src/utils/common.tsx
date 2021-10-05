@@ -357,7 +357,7 @@ export function mergePartial<T>(
 
   if (hasPartialObjectToMerge(base, partial, additionalPartials)) {
     const mapCondition = !(baseClone instanceof Map) || options.mergeMaps;
-    if (partial !== undefined && options.mergeOptionalPartialValues && mapCondition) {
+    if (partial !== undefined && (options.mergeOptionalPartialValues ?? true) && mapCondition) {
       getAllKeys(partial, additionalPartials).forEach((key) => {
         if (baseClone instanceof Map) {
           if (!baseClone.has(key)) {
@@ -568,8 +568,7 @@ export function getPercentageValue<T>(ratio: string | number, relativeValue: num
     return relativeValue * (percentage / 100);
   }
   const num = Number.parseFloat(ratioStr);
-
-  return num && !isNaN(num) ? Math.abs(num) : defaultValue;
+  return Number.isFinite(num) ? Math.abs(num) : defaultValue;
 }
 
 /**

@@ -12,9 +12,8 @@ import { $Values } from 'utility-types';
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { TooltipPortalSettings } from '../../../components/portal/types';
-import { ScaleContinuousType } from '../../../scales';
+import { LogScaleOptions, ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { LogScaleOptions } from '../../../scales/scale_continuous';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
@@ -711,7 +710,7 @@ export interface AxisSpec extends Spec {
   groupId: GroupId;
   /** Hide this axis */
   hide: boolean;
-  /** shows all ticks, also the one from the overlapping labels */
+  /** shows all ticks and gridlines, including those belonging to labels that got culled due to overlapping with other labels*/
   showOverlappingTicks: boolean;
   /** Shows all labels, also the overlapping ones */
   showOverlappingLabels: boolean;

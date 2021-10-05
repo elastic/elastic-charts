@@ -102,7 +102,7 @@ function getTooltipAndHighlightFromValue(
     tooltipType = getTooltipType(settings, true);
     const scaledX = scales.xScale.pureScale(externalPointerEvent.x);
 
-    if (scaledX === null) {
+    if (Number.isNaN(scaledX)) {
       return EMPTY_VALUES;
     }
 
@@ -191,7 +191,7 @@ function getTooltipAndHighlightFromValue(
     header = null;
   }
 
-  const tooltipSortFn = getTooltipCompareFn((settings as any).sortSeriesBy, (a, b) => {
+  const tooltipSortFn = getTooltipCompareFn((a, b) => {
     const aDs = serialIdentifierDataSeriesMap[a.key];
     const bDs = serialIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);

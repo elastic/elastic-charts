@@ -17,14 +17,10 @@ export function buildPointGeometryStyles(
   themePointStyle: PointStyle,
   overrides?: Partial<PointStyle>,
 ): PointGeometryStyle {
-  const pointStyle = mergePartial(themePointStyle, overrides, { mergeOptionalPartialValues: true });
-
+  const pointStyle = mergePartial(themePointStyle, overrides);
   const opacityFn: OpacityFn = (opacity) => opacity * pointStyle.opacity;
-
   return {
-    fill: {
-      color: overrideOpacity(colorToRgba(getColorFromVariant(color, pointStyle.fill)), opacityFn),
-    },
+    fill: { color: overrideOpacity(colorToRgba(getColorFromVariant(color, pointStyle.fill)), opacityFn) },
     stroke: {
       color: overrideOpacity(colorToRgba(getColorFromVariant(color, pointStyle.stroke)), opacityFn),
       width: pointStyle.strokeWidth,
