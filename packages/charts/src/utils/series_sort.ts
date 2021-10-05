@@ -7,7 +7,6 @@
  */
 
 import { SeriesIdentifier } from '../common/series_id';
-import { SortSeriesByConfig } from '../specs/settings';
 
 /**
  * A compare function used to determine the order of the elements. It is expected to return
@@ -17,42 +16,13 @@ import { SortSeriesByConfig } from '../specs/settings';
  */
 export type SeriesCompareFn = (siA: SeriesIdentifier, siB: SeriesIdentifier) => number;
 
-/** @internal */
-export const DEFAULT_SORTING_FN = () => {
-  return 0;
-};
+const DEFAULT_SORTING_FN = () => 0; // this should cause no reorder, as [].sort is now a stable sort in browsers
 
 /** @internal */
-export function getRenderingCompareFn(
-  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
-  defaultSortFn?: SeriesCompareFn,
-): SeriesCompareFn {
-  return getCompareFn('rendering', sortSeriesBy, defaultSortFn);
-}
+export const getRenderingCompareFn = (defaultSortFn: SeriesCompareFn = DEFAULT_SORTING_FN) => defaultSortFn;
 
 /** @internal */
-export function getLegendCompareFn(
-  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
-  defaultSortFn?: SeriesCompareFn,
-): SeriesCompareFn {
-  return getCompareFn('legend', sortSeriesBy, defaultSortFn);
-}
+export const getLegendCompareFn = (defaultSortFn: SeriesCompareFn = DEFAULT_SORTING_FN) => defaultSortFn;
 
 /** @internal */
-export function getTooltipCompareFn(
-  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
-  defaultSortFn?: SeriesCompareFn,
-): SeriesCompareFn {
-  return getCompareFn('tooltip', sortSeriesBy, defaultSortFn);
-}
-
-function getCompareFn(
-  aspect: keyof SortSeriesByConfig,
-  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
-  defaultSortFn: SeriesCompareFn = DEFAULT_SORTING_FN,
-): SeriesCompareFn {
-  if (typeof sortSeriesBy === 'object') {
-    return sortSeriesBy[aspect] ?? sortSeriesBy.default ?? defaultSortFn;
-  }
-  return sortSeriesBy ?? defaultSortFn;
-}
+export const getTooltipCompareFn = (defaultSortFn: SeriesCompareFn = DEFAULT_SORTING_FN) => defaultSortFn;

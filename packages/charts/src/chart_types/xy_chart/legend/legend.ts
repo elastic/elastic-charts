@@ -173,7 +173,7 @@ export function computeLegend(
     }
   });
 
-  const legendSortFn = getLegendCompareFn(void 0, (a, b) => {
+  const legendSortFn = getLegendCompareFn((a, b) => {
     const aDs = serialIdentifierDataSeriesMap[a.key];
     const bDs = serialIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);

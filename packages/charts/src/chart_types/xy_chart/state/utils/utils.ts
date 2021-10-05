@@ -126,7 +126,7 @@ export function computeSeriesDomains(
   // fill series with missing x values
   const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.type);
 
-  const seriesSortFn = getRenderingCompareFn(void 0, (a: SeriesIdentifier, b: SeriesIdentifier) => {
+  const seriesSortFn = getRenderingCompareFn((a: SeriesIdentifier, b: SeriesIdentifier) => {
     return defaultXYSeriesSort(a as DataSeries, b as DataSeries);
   });
 

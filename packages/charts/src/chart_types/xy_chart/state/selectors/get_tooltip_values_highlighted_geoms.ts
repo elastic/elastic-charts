@@ -191,7 +191,7 @@ function getTooltipAndHighlightFromValue(
     header = null;
   }
 
-  const tooltipSortFn = getTooltipCompareFn(void 0, (a, b) => {
+  const tooltipSortFn = getTooltipCompareFn((a, b) => {
     const aDs = serialIdentifierDataSeriesMap[a.key];
     const bDs = serialIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);
