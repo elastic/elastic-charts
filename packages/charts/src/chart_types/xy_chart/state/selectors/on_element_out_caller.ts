@@ -25,10 +25,12 @@ interface Props {
 }
 
 const isOutElement = (prevProps: Props | null, nextProps: Props | null): boolean =>
-  Boolean(prevProps &&
-  nextProps?.settings?.onElementOut &&
-  prevProps.highlightedGeometries.length > 0 &&
-  nextProps.highlightedGeometries.length === 0);
+  Boolean(
+    prevProps &&
+      nextProps?.settings?.onElementOut &&
+      prevProps.highlightedGeometries.length > 0 &&
+      nextProps.highlightedGeometries.length === 0,
+  );
 
 /**
  * Will call the onElementOut listener every time the following preconditions are met:
