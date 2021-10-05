@@ -7,8 +7,10 @@
  */
 
 import { LegendItem } from '../../../../common/legend';
+import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { AxisSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import {
   DebugState,
   DebugStateArea,
@@ -18,11 +20,13 @@ import {
   DebugStateLine,
   DebugStateValue,
 } from '../../../../state/types';
+import { Rotation } from '../../../../utils/common';
 import { AreaGeometry, BandedAccessorType, BarGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
 import { FillStyle, Opacity, StrokeStyle, Visible } from '../../../../utils/themes/theme';
-import { isHorizontalAxis } from '../../utils/axis_type_utils';
+import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
 import { LinesGrid } from '../../utils/grid_lines';
+import { isHorizontalRotation, isVerticalRotation } from '../utils/common';
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 import { computeLegendSelector } from './compute_legend';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
@@ -40,13 +44,13 @@ export const getDebugStateSelector = createCustomCachedSelector(
     computeAxesGeometriesSelector,
     computeGridLinesSelector,
     getAxisSpecsSelector,
+    getSettingsSpecSelector,
   ],
-  ({ geometries }, legend, axes, gridLines, axesSpecs): DebugState => {
+  ({ geometries }, legend, axes, gridLines, axesSpecs, { rotation }): DebugState => {
     const seriesNameMap = getSeriesNameMap(legend);
-
     return {
       legend: getLegendState(legend),
-      axes: getAxes(axes, axesSpecs, gridLines),
+      axes: getAxes(axes, axesSpecs, gridLines, rotation),
       areas: geometries.areas.map(getAreaState(seriesNameMap)),
       lines: geometries.lines.map(getLineState(seriesNameMap)),
       bars: getBarsState(seriesNameMap, geometries.bars),
@@ -54,7 +58,12 @@ export const getDebugStateSelector = createCustomCachedSelector(
   },
 );
 
-function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: LinesGrid[]): DebugStateAxes {
+function getAxes(
+  axesGeoms: AxisGeometry[],
+  axesSpecs: AxisSpec[],
+  gridLines: LinesGrid[],
+  rotation: Rotation,
+): DebugStateAxes {
   return axesSpecs.reduce<DebugStateAxes>(
     (acc, { position, title, id }) => {
       const geom = axesGeoms.find(({ axis }) => axis.id === id);
@@ -62,7 +71,22 @@ function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: Li
         return acc;
       }
 
-      const visibleTicks = geom.visibleTicks.filter(({ label }) => label !== '');
+      const isXAxis =
+        (isHorizontalAxis(position) && isHorizontalRotation(rotation)) ||
+        (isVerticalAxis(position) && isVerticalRotation(rotation));
+
+      // sorted starting from the axis origin
+      const sortingOrder = isHorizontalAxis(position)
+        ? rotation === 0 || rotation === 90
+          ? Predicate.NumAsc
+          : Predicate.NumDesc
+        : rotation === 0 || rotation === -90
+        ? Predicate.NumDesc
+        : Predicate.NumAsc;
+      const visibleTicks = geom.visibleTicks
+        .filter(({ label }) => label !== '')
+        .sort(getPredicateFn(sortingOrder, 'position'));
+
       const labels = visibleTicks.map(({ label }) => label);
       const values = visibleTicks.map(({ value }) => value);
 
@@ -70,13 +94,13 @@ function getAxes(axesGeoms: AxisGeometry[], axesSpecs: AxisSpec[], gridLines: Li
         .flatMap(({ lineGroups }) => lineGroups.find(({ axisId }) => axisId === geom.axis.id)?.lines ?? [])
         .map(({ x1: x, y1: y }) => ({ x, y }));
 
-      acc[isHorizontalAxis(position) ? 'x' : 'y'].push({
+      acc[isXAxis ? 'x' : 'y'].push({
         id,
         title,
         position,
-        ...(isHorizontalAxis(position)
-          ? { labels, values, gridlines }
-          : { labels: labels.reverse(), values: values.reverse(), gridlines: gridlines.reverse() }),
+        labels,
+        values,
+        gridlines,
       });
 
       return acc;
