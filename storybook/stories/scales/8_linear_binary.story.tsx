@@ -16,16 +16,8 @@ import { useBaseTheme } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator();
 
-function randomByte() {
-  return rng(0, 1);
-}
-
-function generateRandomBinary(binaryLength: number) {
-  let binary = '0b';
-  for (let i = 0; i < binaryLength; ++i) {
-    binary += randomByte();
-  }
-  return binary;
+function generateRandomBinary(bitCount: number) {
+  return rng(0, 2 ** bitCount - 1);
 }
 
 const data = new Array(20).fill(1).map((_, x) => ({
