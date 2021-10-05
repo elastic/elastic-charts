@@ -48,7 +48,7 @@ export const Example = () => {
         onElementClick={action('onElementClick')}
         rotation={getChartRotationKnob()}
         roundHistogramBrushValues={boolean('roundHistogramBrushValues', false)}
-        allowBrushingLastHistogramBin={boolean('allowBrushingLastHistogramBin', false)}
+        allowBrushingLastHistogramBin={boolean('allowBrushingLastHistogramBin', true)}
       />
       <Axis
         id="bottom"

@@ -22,7 +22,7 @@ export const Example = () => (
       onBrushEnd={action('onBrushEnd')}
       rotation={getChartRotationKnob()}
       roundHistogramBrushValues={boolean('roundHistogramBrushValues', false)}
-      allowBrushingLastHistogramBin={boolean('allowBrushingLastHistogramBin', false)}
+      allowBrushingLastHistogramBin={boolean('allowBrushingLastHistogramBin', true)}
     />
     <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks />
     <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
