@@ -193,7 +193,7 @@ function getVerticalAlign(
 }
 
 /** @internal */
-export function tickLabelPosition(
+export function getTickLabelPosition(
   { tickLine, tickLabel }: AxisStyle,
   tickPosition: number,
   pos: Position,
