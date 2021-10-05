@@ -141,7 +141,7 @@ export const Example = () => {
         hide={boolean('hide axis', false, Position.Bottom)}
         position={Position.Bottom}
         title="Bottom axis"
-        ticksForCulledLabels
+        showOverlappingTicks
         gridLine={
           onlyGlobal
             ? {

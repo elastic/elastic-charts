@@ -82,7 +82,7 @@ export const Example = () => {
         theme={chartTheme}
         baseTheme={useBaseTheme()}
       />
-      <Axis id="bottom" position={Position.Bottom} ticksForCulledLabels />
+      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <LineSeries
         id="lines1"

@@ -77,7 +77,7 @@ This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `
 
 <Chart>
     <Settings theme={LIGHT_THEME} />
-    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} ticksForCulledLabels={true} />
+    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
     id={'left2'}
     title={'Left axis'}
@@ -107,7 +107,7 @@ This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `
 ```js
 <Chart>
     <Settings theme={LIGHT_THEME} />
-    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} ticksForCulledLabels={true} />
+    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
     id={'left2'}
     title={'Left axis'}
@@ -136,7 +136,7 @@ This chart now includes x and y axes. These axes can be `linear`, `ordinal` or `
 And below is an example of an `ordinal` x axis bar chart
 
 <Chart>
-    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} ticksForCulledLabels={true} />
+    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
     id={'left2'}
     title={'Left axis'}
@@ -163,7 +163,7 @@ And below is an example of an `ordinal` x axis bar chart
 ```js
 
 <Chart>
-    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} ticksForCulledLabels={true} />
+    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
     id={'left2'}
     title={'Left axis'}
@@ -196,7 +196,7 @@ Here is an example of a `time` x axis
         id={'bottom'}
         position={Position.Bottom}
         title={'Bottom axis'}
-        ticksForCulledLabels={boolean('ticksForCulledLabels bottom axis', false)}
+        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
         showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
         tickFormat={timeFormatter(niceTimeFormatByDay(1))}
     />
@@ -225,7 +225,7 @@ Here is an example of a `time` x axis
         id={'bottom'}
         position={Position.Bottom}
         title={'Bottom axis'}
-        ticksForCulledLabels={boolean('ticksForCulledLabels bottom axis', false)}
+        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
         showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
         tickFormat={timeFormatter(niceTimeFormatByDay(1))}
     />

@@ -45,7 +45,7 @@ export const Example = () => {
         title="Bottom axis"
         style={customStyle}
         showOverlappingLabels={boolean('Bottom overlap labels', false, 'Bottom Axis')}
-        ticksForCulledLabels={boolean('Bottom overlap ticks', true, 'Bottom Axis')}
+        showOverlappingTicks={boolean('Bottom overlap ticks', true, 'Bottom Axis')}
         ticks={number(
           'Number of ticks on bottom',
           10,
@@ -66,7 +66,7 @@ export const Example = () => {
         tickFormat={(d) => Number(d).toFixed(2)}
         style={customStyle}
         showOverlappingLabels={boolean('Left overlap labels', false, 'Left Axis')}
-        ticksForCulledLabels={boolean('Left overlap ticks', true, 'Left Axis')}
+        showOverlappingTicks={boolean('Left overlap ticks', true, 'Left Axis')}
         ticks={number(
           'Number of ticks on left',
           10,

@@ -30,7 +30,7 @@ export const Example = () => (
       }}
       baseTheme={useBaseTheme()}
     />
-    <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticksForCulledLabels />
+    <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
     <BarSeries

@@ -19,7 +19,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticksForCulledLabels />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis
         id="left2"
         title="Left axis"

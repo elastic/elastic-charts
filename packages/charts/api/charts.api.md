@@ -170,12 +170,12 @@ export interface AxisSpec extends Spec {
     // @deprecated
     showGridLines?: boolean;
     showOverlappingLabels: boolean;
+    showOverlappingTicks: boolean;
     // (undocumented)
     specType: typeof SpecType.Axis;
     style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
     tickFormat?: TickFormatter;
     ticks?: number;
-    ticksForCulledLabels: boolean;
     title?: string;
 }
 

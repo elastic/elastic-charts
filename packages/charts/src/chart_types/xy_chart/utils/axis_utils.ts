@@ -299,7 +299,7 @@ function getVisibleTicks(
         ]
       : enableDuplicatedTicks(axisSpec, scale, offset, fallBackTickFormatter, tickFormatOptions);
 
-  const { ticksForCulledLabels, showOverlappingLabels, position } = axisSpec;
+  const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
   return showOverlappingLabels
     ? allTicks
@@ -308,7 +308,7 @@ function getVisibleTicks(
         .reduce(
           (prev, tick) => {
             const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
-            if (tickLabelFits || ticksForCulledLabels) {
+            if (tickLabelFits || showOverlappingTicks) {
               prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, axisTickLabel: '' });
               if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
             }

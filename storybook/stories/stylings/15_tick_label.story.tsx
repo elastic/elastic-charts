@@ -59,7 +59,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings theme={theme} debug={boolean('debug', true)} baseTheme={useBaseTheme()} />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticksForCulledLabels style={customStyle} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks style={customStyle} />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <AreaSeries
         id="lines"

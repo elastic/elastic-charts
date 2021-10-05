@@ -16,12 +16,12 @@ import { AxisSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 
 /** @public */
 export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals> = getConnect()(
-  specComponentFactory<AxisSpec, 'groupId' | 'hide' | 'ticksForCulledLabels' | 'showOverlappingLabels' | 'position'>({
+  specComponentFactory<AxisSpec, 'groupId' | 'hide' | 'showOverlappingTicks' | 'showOverlappingLabels' | 'position'>({
     chartType: ChartType.XYAxis,
     specType: SpecType.Axis,
     groupId: DEFAULT_GLOBAL_ID,
     hide: false,
-    ticksForCulledLabels: false,
+    showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
   }),

@@ -42,7 +42,7 @@ export const Example = () => {
         baseTheme={useBaseTheme()}
         legendColorPicker={showColorPicker ? renderEuiColorPicker('leftCenter') : undefined}
       />
-      <Axis id="bottom" position={Position.Bottom} ticksForCulledLabels tickFormat={dateFormatter} />
+      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
       <Axis
         id="left"
         title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}

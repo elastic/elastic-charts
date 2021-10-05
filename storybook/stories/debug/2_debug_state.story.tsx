@@ -66,7 +66,7 @@ export const Example = () => {
         showLegendExtra
         baseTheme={useBaseTheme()}
       />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticksForCulledLabels />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       {line && (

@@ -27,7 +27,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings debug baseTheme={useBaseTheme()} />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticksForCulledLabels style={customStyle} />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks style={customStyle} />
       <AreaSeries
         id="lines"
         xScaleType={ScaleType.Linear}

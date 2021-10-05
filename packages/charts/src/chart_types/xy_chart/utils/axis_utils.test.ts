@@ -103,7 +103,7 @@ describe('Axis computational utils', () => {
     title: 'Axis 1',
     groupId: 'group_1',
     hide: false,
-    ticksForCulledLabels: false,
+    showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
     style,
@@ -118,7 +118,7 @@ describe('Axis computational utils', () => {
     title: 'Axis 2',
     groupId: 'group_1',
     hide: false,
-    ticksForCulledLabels: false,
+    showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Top,
     style,
@@ -132,7 +132,7 @@ describe('Axis computational utils', () => {
     groupId: 'group_1',
     title: 'v axis',
     hide: false,
-    ticksForCulledLabels: false,
+    showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
     style,
@@ -514,7 +514,7 @@ describe('Axis computational utils', () => {
         isHidden: false,
       };
 
-      verticalAxisSpec.ticksForCulledLabels = true;
+      verticalAxisSpec.showOverlappingTicks = true;
       verticalAxisSpec.showOverlappingLabels = true;
 
       const visibleOverlappingTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims);
@@ -534,7 +534,7 @@ describe('Axis computational utils', () => {
       expect(visibleOverlappingTicks).toIncludeSameMembers(expectedVisibleOverlappingTicks);
 */
 
-      verticalAxisSpec.ticksForCulledLabels = true;
+      verticalAxisSpec.showOverlappingTicks = true;
       verticalAxisSpec.showOverlappingLabels = false;
       /*
       const visibleOverlappingTicksAndLabels = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims);
@@ -1290,7 +1290,7 @@ describe('Axis computational utils', () => {
       groupId: DEFAULT_GLOBAL_ID,
       hide: false,
       showOverlappingLabels: false,
-      ticksForCulledLabels: false,
+      showOverlappingTicks: false,
       style,
       tickFormat: formatter,
     };
@@ -1325,7 +1325,7 @@ describe('Axis computational utils', () => {
       groupId: DEFAULT_GLOBAL_ID,
       hide: false,
       showOverlappingLabels: false,
-      ticksForCulledLabels: false,
+      showOverlappingTicks: false,
       style,
       tickFormat: (d, options) =>
         DateTime.fromMillis(d, { setZone: true, zone: options?.timeZone ?? 'utc+1' }).toFormat('HH:mm'),
@@ -1371,7 +1371,7 @@ describe('Axis computational utils', () => {
       groupId: DEFAULT_GLOBAL_ID,
       hide: false,
       showOverlappingLabels: false,
-      ticksForCulledLabels: false,
+      showOverlappingTicks: false,
       style,
       tickFormat: formatter,
     };
@@ -1413,7 +1413,7 @@ describe('Axis computational utils', () => {
       groupId: DEFAULT_GLOBAL_ID,
       hide: false,
       showOverlappingLabels: false,
-      ticksForCulledLabels: false,
+      showOverlappingTicks: false,
       style,
       tickFormat: formatter,
     };

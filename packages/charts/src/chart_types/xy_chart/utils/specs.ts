@@ -711,7 +711,7 @@ export interface AxisSpec extends Spec {
   /** Hide this axis */
   hide: boolean;
   /** shows all ticks and gridlines, including those belonging to labels that got culled due to overlapping with other labels*/
-  ticksForCulledLabels: boolean;
+  showOverlappingTicks: boolean;
   /** Shows all labels, also the overlapping ones */
   showOverlappingLabels: boolean;
   /**

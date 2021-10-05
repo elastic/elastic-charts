@@ -36,7 +36,7 @@ export const Example = () => {
         id="bottom"
         position={Position.Bottom}
         title="timestamp per 1 minute"
-        ticksForCulledLabels
+        showOverlappingTicks
         tickFormat={dateFormatter}
       />
       <Axis

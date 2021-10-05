@@ -39,7 +39,7 @@ export const Example = () => {
         id="bottom"
         title="timestamp per 1 minute"
         position={Position.Bottom}
-        ticksForCulledLabels
+        showOverlappingTicks
         tickFormat={formatter}
       />
       <Axis id="left" title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title} position={Position.Left} />

@@ -48,7 +48,7 @@ describe('Tooltip formatting', () => {
     hide: false,
     position: Position.Left,
     showOverlappingLabels: false,
-    ticksForCulledLabels: false,
+    showOverlappingTicks: false,
     style,
     tickFormat: jest.fn((d) => `${d}`),
   });

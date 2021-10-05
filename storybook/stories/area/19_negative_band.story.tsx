@@ -44,7 +44,7 @@ export const Example = () => {
           minInterval: 1,
         }}
       />
-      <Axis id="bottom" title="timestamp" position={Position.Bottom} ticksForCulledLabels />
+      <Axis id="bottom" title="timestamp" position={Position.Bottom} showOverlappingTicks />
       <Axis id="left" title="metric" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <AreaSeries

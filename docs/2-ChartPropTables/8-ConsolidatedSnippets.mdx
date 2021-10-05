@@ -40,7 +40,7 @@ Bar with axes
 ```js
 <Chart>
     <Settings theme={LIGHT_THEME} />
-    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} ticksForCulledLabels={true} />
+    <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
     <Axis
     id={'left2'}
     title={'Left axis'}
@@ -67,7 +67,7 @@ Stacked bar chart
 ```js
 <Chart>
   <Settings showLegend={true} legendPosition={Position.Right} />
-  <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} ticksForCulledLabels={true} />
+  <Axis id={'bottom'} position={Position.Bottom} title={'Bottom axis'} showOverlappingTicks={true} />
   <Axis
     id={'left2'}
     title={'Left axis'}
@@ -117,7 +117,7 @@ Area chart with axes components
     id={'bottom'}
     title={'timestamp per 1 minute'}
     position={Position.Bottom}
-    ticksForCulledLabels={true}
+    showOverlappingTicks={true}
     tickFormat={timeFormatter('HH:mm')}
   />
   <Axis
@@ -144,7 +144,7 @@ Stacked area chart
   <Axis
     id={'bottom'}
     position={Position.Bottom}
-    ticksForCulledLabels={true}
+    showOverlappingTicks={true}
     tickFormat={timeFormatter(niceTimeFormatByDay(1))}
     title={'timestamp per 1 minute'}
   />
@@ -207,7 +207,7 @@ Linear x axis line chart
     <Axis
     id={'bottom'}
     position={Position.Bottom}
-    ticksForCulledLabels={true}
+    showOverlappingTicks={true}
     tickFormat={timeFormatter(niceTimeFormatByDay(1))}
     title={'timestamp per 1 minute'}
     />
@@ -235,7 +235,7 @@ Stacked line chart
   <Axis
     id={'bottom'}
     position={Position.Bottom}
-    ticksForCulledLabels={true}
+    showOverlappingTicks={true}
     tickFormat={timeFormatter(niceTimeFormatByDay(1))}
   />
   <Axis

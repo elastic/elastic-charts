@@ -32,7 +32,7 @@ export const Example = () => {
         id="bottom"
         position={Position.Bottom}
         title="Bottom axis"
-        ticksForCulledLabels={boolean('ticksForCulledLabels bottom axis', false)}
+        showOverlappingTicks={boolean('showOverlappingTicks bottom axis', false)}
         showOverlappingLabels={boolean('showOverlappingLabels bottom axis', false)}
         tickFormat={formatter}
       />

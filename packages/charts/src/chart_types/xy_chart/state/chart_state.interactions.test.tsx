@@ -753,7 +753,7 @@ describe('Chart state pointer interactions', () => {
           position: Position.Left,
           tickFormat: (value) => `left ${Number(value)}`,
           showOverlappingLabels: false,
-          ticksForCulledLabels: false,
+          showOverlappingTicks: false,
           style,
         };
         bottomAxis = {
@@ -765,7 +765,7 @@ describe('Chart state pointer interactions', () => {
           position: Position.Bottom,
           tickFormat: (value) => `bottom ${Number(value)}`,
           showOverlappingLabels: false,
-          ticksForCulledLabels: false,
+          showOverlappingTicks: false,
           style,
         };
         currentSettingSpec = getSettingsSpecSelector(store.getState());

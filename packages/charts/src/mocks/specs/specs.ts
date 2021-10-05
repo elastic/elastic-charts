@@ -287,7 +287,7 @@ export class MockGlobalSpec {
     specType: SpecType.Axis,
     groupId: DEFAULT_GLOBAL_ID,
     hide: false,
-    ticksForCulledLabels: false,
+    showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
   };
