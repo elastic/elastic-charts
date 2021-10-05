@@ -35,136 +35,6 @@ const SCALES = {
   [ScaleType.Time]: scaleUtc,
 };
 
-const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
-
-/** @internal */
-export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit: number) {
-  // todo further simplify this
-  const absLimit = Math.abs(logMinLimit);
-  const fallback = absLimit || LOG_MIN_ABS_DOMAIN;
-  if (absLimit > 0 && min > 0 && min < absLimit) return max > absLimit ? [absLimit, max] : [absLimit, absLimit];
-  if (absLimit > 0 && max < 0 && max > -absLimit) return min < -absLimit ? [min, -absLimit] : [-absLimit, -absLimit];
-  if (min === 0) return max > 0 ? [fallback, max] : max < 0 ? [-fallback, max] : [fallback, fallback];
-  if (max === 0) return min > 0 ? [min, fallback] : min < 0 ? [min, -fallback] : [fallback, fallback];
-  if (min < 0 && max > 0) return Math.abs(max) >= Math.abs(min) ? [fallback, max] : [min, -fallback];
-  if (min > 0 && max < 0) return Math.abs(min) >= Math.abs(max) ? [min, fallback] : [-fallback, max];
-  return [min, max];
-}
-
-function getPixelPaddedDomain(
-  chartHeight: number,
-  domain: [number, number],
-  desiredPixelPadding: number,
-  constrainDomainPadding?: boolean,
-  intercept = 0,
-) {
-  const inverted = domain[1] < domain[0];
-  const orderedDomain: [min: number, max: number] = inverted ? [domain[1], domain[0]] : domain;
-  const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
-    orderedDomain,
-    [2 * desiredPixelPadding, 2 * desiredPixelPadding],
-    chartHeight,
-  );
-  const baselinePaddedDomainLo = orderedDomain[0] - desiredPixelPadding / scaleMultiplier;
-  const baselinePaddedDomainHigh = orderedDomain[1] + desiredPixelPadding / scaleMultiplier;
-  const crossBelow = constrainDomainPadding && baselinePaddedDomainLo < intercept && orderedDomain[0] >= intercept;
-  const crossAbove = constrainDomainPadding && baselinePaddedDomainHigh > 0 && orderedDomain[1] <= 0;
-  const paddedDomainLo = crossBelow
-    ? intercept
-    : crossAbove
-    ? orderedDomain[0] -
-      desiredPixelPadding /
-        screenspaceMarkerScaleCompressor([orderedDomain[0], intercept], [2 * desiredPixelPadding, 0], chartHeight)
-          .scaleMultiplier
-    : baselinePaddedDomainLo;
-  const paddedDomainHigh = crossBelow
-    ? orderedDomain[1] +
-      desiredPixelPadding /
-        screenspaceMarkerScaleCompressor([intercept, orderedDomain[1]], [0, 2 * desiredPixelPadding], chartHeight)
-          .scaleMultiplier
-    : crossAbove
-    ? intercept
-    : baselinePaddedDomainHigh;
-
-  return inverted ? [paddedDomainHigh, paddedDomainLo] : [paddedDomainLo, paddedDomainHigh];
-}
-
-/**
- * All possible d3 scales
- */
-
-interface ScaleData {
-  /** The Type of continuous scale */
-  type: ScaleContinuousType;
-  /** The data input domain */
-  domain: number[];
-  /** The data output range */
-  range: Range;
-  nice?: boolean;
-}
-
-type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
-  /**
-   * The desired bandwidth for a linear band scale.
-   * @defaultValue 0
-   */
-  bandwidth: number;
-  /**
-   * The min interval computed on the XDomain. Not available for yDomains.
-   * @defaultValue 0
-   */
-  minInterval: number;
-  /**
-   * A time zone identifier. Can be any IANA zone supported by he host environment,
-   * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
-   * @defaultValue `utc`
-   */
-  timeZone: string;
-  /**
-   * The number of bars in the cluster. Used to correctly compute scales when
-   * using padding between bars.
-   * @defaultValue 1
-   */
-  totalBarsInCluster: number;
-  /**
-   * The proportion of the range that is reserved for blank space between bands
-   * A number between 0 and 1.
-   * @defaultValue 0
-   */
-  barsPadding: number;
-  /**
-   * Pixel value to extend the domain. Applied __before__ nicing.
-   *
-   * Does not apply to time scales
-   * @defaultValue 0
-   */
-  domainPixelPadding: number;
-  /**
-   * Constrains domain pixel padding to the zero baseline
-   * Does not apply to time scales
-   */
-  constrainDomainPadding?: boolean;
-  /**
-   * The approximated number of ticks.
-   * @defaultValue 10
-   */
-  desiredTickCount: number;
-  /**
-   * true if the scale was adjusted to fit one single value histogram
-   */
-  isSingleValueHistogram: boolean;
-  /**
-   * Show only integer values
-   */
-  integersOnly: boolean;
-  /**
-   * As log(0) = -Infinite, a log scale domain must be strictly-positive
-   * or strictly-negative; the domain must not include or cross zero value.
-   * We need to limit the domain scale to the right value on all possible cases.
-   */
-  logMinLimit: number;
-};
-
 const defaultScaleOptions: ScaleOptions = {
   bandwidth: 0,
   minInterval: 0,
@@ -180,10 +50,7 @@ const defaultScaleOptions: ScaleOptions = {
   logMinLimit: NaN, // NaN preserves the replaced `undefined` semantics
 };
 
-/**
- * d3 scales excluding time scale
- */
-type D3ScaleNonTime<R = PrimitiveValue, O = number> = ScaleLinear<R, O> | ScaleLogarithmic<R, O> | ScalePower<R, O>;
+const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
 
 /** @internal */
 export class ScaleContinuous implements Scale<number> {
@@ -353,10 +220,6 @@ export class ScaleContinuous implements Scale<number> {
   handleDomainPadding() {}
 }
 
-function isDegenerateDomain(domain: unknown[]): boolean {
-  return domain.every((v) => v === domain[0]);
-}
-
 function getTimeTicks(desiredTickCount: number, timeZone: string, domain: number[]) {
   const startDomain = getMomentWithTz(domain[0], timeZone);
   const endDomain = getMomentWithTz(domain[1], timeZone);
@@ -373,3 +236,140 @@ function getTimeTicks(desiredTickCount: number, timeZone: string, domain: number
     return currentDateTime.subtract(currentOffset, 'minutes').valueOf();
   });
 }
+
+function isDegenerateDomain(domain: unknown[]): boolean {
+  return domain.every((v) => v === domain[0]);
+}
+
+/** @internal */
+export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit: number) {
+  // todo further simplify this
+  const absLimit = Math.abs(logMinLimit);
+  const fallback = absLimit || LOG_MIN_ABS_DOMAIN;
+  if (absLimit > 0 && min > 0 && min < absLimit) return max > absLimit ? [absLimit, max] : [absLimit, absLimit];
+  if (absLimit > 0 && max < 0 && max > -absLimit) return min < -absLimit ? [min, -absLimit] : [-absLimit, -absLimit];
+  if (min === 0) return max > 0 ? [fallback, max] : max < 0 ? [-fallback, max] : [fallback, fallback];
+  if (max === 0) return min > 0 ? [min, fallback] : min < 0 ? [min, -fallback] : [fallback, fallback];
+  if (min < 0 && max > 0) return Math.abs(max) >= Math.abs(min) ? [fallback, max] : [min, -fallback];
+  if (min > 0 && max < 0) return Math.abs(min) >= Math.abs(max) ? [min, fallback] : [-fallback, max];
+  return [min, max];
+}
+
+function getPixelPaddedDomain(
+  chartHeight: number,
+  domain: [number, number],
+  desiredPixelPadding: number,
+  constrainDomainPadding?: boolean,
+  intercept = 0,
+) {
+  const inverted = domain[1] < domain[0];
+  const orderedDomain: [number, number] = inverted ? [domain[1], domain[0]] : domain;
+  const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
+    orderedDomain,
+    [2 * desiredPixelPadding, 2 * desiredPixelPadding],
+    chartHeight,
+  );
+  const baselinePaddedDomainLo = orderedDomain[0] - desiredPixelPadding / scaleMultiplier;
+  const baselinePaddedDomainHigh = orderedDomain[1] + desiredPixelPadding / scaleMultiplier;
+  const crossBelow = constrainDomainPadding && baselinePaddedDomainLo < intercept && orderedDomain[0] >= intercept;
+  const crossAbove = constrainDomainPadding && baselinePaddedDomainHigh > 0 && orderedDomain[1] <= 0;
+  const paddedDomainLo = crossBelow
+    ? intercept
+    : crossAbove
+    ? orderedDomain[0] -
+      desiredPixelPadding /
+        screenspaceMarkerScaleCompressor([orderedDomain[0], intercept], [2 * desiredPixelPadding, 0], chartHeight)
+          .scaleMultiplier
+    : baselinePaddedDomainLo;
+  const paddedDomainHigh = crossBelow
+    ? orderedDomain[1] +
+      desiredPixelPadding /
+        screenspaceMarkerScaleCompressor([intercept, orderedDomain[1]], [0, 2 * desiredPixelPadding], chartHeight)
+          .scaleMultiplier
+    : crossAbove
+    ? intercept
+    : baselinePaddedDomainHigh;
+
+  return inverted ? [paddedDomainHigh, paddedDomainLo] : [paddedDomainLo, paddedDomainHigh];
+}
+
+/**
+ * d3 scales excluding time scale
+ */
+type D3ScaleNonTime<R = PrimitiveValue, O = number> = ScaleLinear<R, O> | ScaleLogarithmic<R, O> | ScalePower<R, O>;
+
+/**
+ * All possible d3 scales
+ */
+
+interface ScaleData {
+  /** The Type of continuous scale */
+  type: ScaleContinuousType;
+  /** The data input domain */
+  domain: number[];
+  /** The data output range */
+  range: Range;
+  nice?: boolean;
+}
+
+type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
+  /**
+   * The desired bandwidth for a linear band scale.
+   * @defaultValue 0
+   */
+  bandwidth: number;
+  /**
+   * The min interval computed on the XDomain. Not available for yDomains.
+   * @defaultValue 0
+   */
+  minInterval: number;
+  /**
+   * A time zone identifier. Can be any IANA zone supported by he host environment,
+   * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
+   * @defaultValue `utc`
+   */
+  timeZone: string;
+  /**
+   * The number of bars in the cluster. Used to correctly compute scales when
+   * using padding between bars.
+   * @defaultValue 1
+   */
+  totalBarsInCluster: number;
+  /**
+   * The proportion of the range that is reserved for blank space between bands
+   * A number between 0 and 1.
+   * @defaultValue 0
+   */
+  barsPadding: number;
+  /**
+   * Pixel value to extend the domain. Applied __before__ nicing.
+   *
+   * Does not apply to time scales
+   * @defaultValue 0
+   */
+  domainPixelPadding: number;
+  /**
+   * Constrains domain pixel padding to the zero baseline
+   * Does not apply to time scales
+   */
+  constrainDomainPadding?: boolean;
+  /**
+   * The approximated number of ticks.
+   * @defaultValue 10
+   */
+  desiredTickCount: number;
+  /**
+   * true if the scale was adjusted to fit one single value histogram
+   */
+  isSingleValueHistogram: boolean;
+  /**
+   * Show only integer values
+   */
+  integersOnly: boolean;
+  /**
+   * As log(0) = -Infinite, a log scale domain must be strictly-positive
+   * or strictly-negative; the domain must not include or cross zero value.
+   * We need to limit the domain scale to the right value on all possible cases.
+   */
+  logMinLimit: number;
+};
