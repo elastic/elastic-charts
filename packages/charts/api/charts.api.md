@@ -1701,7 +1701,7 @@ export type Rotation = 0 | 90 | -90 | 180;
 export type ScaleBandType = ScaleOrdinalType;
 
 // @public (undocumented)
-export type ScaleContinuousType = typeof ScaleType.Linear | typeof ScaleType.Time | typeof ScaleType.Log | typeof ScaleType.Sqrt;
+export type ScaleContinuousType = typeof ScaleType.LinearBinary | typeof ScaleType.Linear | typeof ScaleType.Time | typeof ScaleType.Log | typeof ScaleType.Sqrt;
 
 // @public (undocumented)
 export type ScaleOrdinalType = typeof ScaleType.Ordinal;
@@ -1714,6 +1714,7 @@ export interface ScalesConfig {
 
 // @public
 export const ScaleType: Readonly<{
+    LinearBinary: "linear_binary";
     Linear: "linear";
     Ordinal: "ordinal";
     Log: "log";

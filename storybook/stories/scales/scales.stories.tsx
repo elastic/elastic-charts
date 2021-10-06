@@ -16,3 +16,4 @@ export { Example as tooltipInUTC } from './3_utc_tooltip.story';
 export { Example as specifiedTimezone } from './4_specified_timezone.story';
 export { Example as xScaleFallback } from './6_x_scale_fallback.story';
 export { Example as logScaleOptions } from './7_log_scale_options.story';
+export { Example as linearBinary } from './8_linear_binary.story';
