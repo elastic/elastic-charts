@@ -10,7 +10,7 @@ import { Color } from '../../../common/colors';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { TextMeasure, withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, isNil, mergePartial } from '../../../utils/common';
+import { clamp, mergePartial } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
