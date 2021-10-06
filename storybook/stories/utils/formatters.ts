@@ -8,8 +8,6 @@
 
 import numeral from 'numeral';
 
-import { LogBase } from '@elastic/charts/src/scales/scale_continuous';
-
 const superStringMap: Record<string, string> = {
   0: '⁰',
   1: '¹',
@@ -30,20 +28,14 @@ export const getSuperScriptNumber = (n: number) =>
     .map((c) => superStringMap[c])
     .join('')}`;
 
-export const logBaseMap = {
-  [LogBase.Common]: 10,
-  [LogBase.Binary]: 2,
-  [LogBase.Natural]: Math.E,
-};
-
-export const logFormatter = (base: LogBase = LogBase.Common) => (n: number): string => {
+export const logFormatter = (base: number = 10) => (n: number): string => {
   if (n === 0) return '0';
   const sign = n < 0 ? '-' : '';
   const nAbs = Math.abs(n);
-  const exp = Math.log(nAbs) / Math.log(logBaseMap[base]) + Number.EPSILON;
+  const exp = Math.log(nAbs) / Math.log(base) + Number.EPSILON;
   const roundedExp = Math.floor(exp);
-  const constant = numeral(nAbs / Math.pow(logBaseMap[base], roundedExp)).format('0[.]00');
-  const baseLabel = base === LogBase.Natural ? 'e' : logBaseMap[base];
+  const constant = numeral(nAbs / Math.pow(base, roundedExp)).format('0[.]00');
+  const baseLabel = base === Math.E ? 'e' : base;
   const expString = getSuperScriptNumber(roundedExp);
   return `${sign}${constant} x ${baseLabel}${expString}`;
 };

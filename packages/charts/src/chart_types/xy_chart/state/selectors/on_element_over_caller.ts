@@ -26,25 +26,19 @@ interface Props {
 }
 
 function isOverElement(prevProps: Props | null, nextProps: Props | null) {
-  if (!nextProps) {
-    return false;
-  }
-  if (!nextProps.settings || !nextProps.settings.onElementOver) {
+  if (!nextProps || !nextProps.settings || !nextProps.settings.onElementOver) {
     return false;
   }
   const { highlightedGeometries: nextGeomValues } = nextProps;
-  const prevGeomValues = prevProps ? prevProps.highlightedGeometries : [];
-  if (nextGeomValues.length > 0) {
-    if (nextGeomValues.length !== prevGeomValues.length) {
-      return true;
-    }
-    return !nextGeomValues.every(({ value: next }, index) => {
-      const prev = prevGeomValues[index].value;
-      return prev && prev.x === next.x && prev.y === next.y && prev.accessor === next.accessor;
-    });
-  }
-
-  return false;
+  const prevGeomValues = prevProps?.highlightedGeometries ?? [];
+  return (
+    nextGeomValues.length > 0 &&
+    (nextGeomValues.length !== prevGeomValues.length ||
+      !nextGeomValues.every(({ value: next }, index) => {
+        const prev = prevGeomValues[index].value;
+        return prev && prev.x === next.x && prev.y === next.y && prev.accessor === next.accessor;
+      }))
+  );
 }
 
 /**

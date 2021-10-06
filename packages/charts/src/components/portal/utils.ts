@@ -109,7 +109,7 @@ export function getElementZIndex(element: HTMLElement, cousin: HTMLElement): num
 
     // if the z-index is not a number (e.g. "auto") return null, else the value
     const parsedZIndex = parseInt(zIndex, 10);
-    if (!isNaN(parsedZIndex)) {
+    if (Number.isFinite(parsedZIndex)) {
       return parsedZIndex;
     }
   }

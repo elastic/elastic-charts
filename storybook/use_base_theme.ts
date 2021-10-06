@@ -37,8 +37,8 @@ export const BackgroundIdProvider = BackgroundContext.Provider;
 const themeMap = {
   [ThemeId.Light]: LIGHT_THEME,
   [ThemeId.Dark]: DARK_THEME,
-  [ThemeId.EUILight]: mergePartial(LIGHT_THEME, EUI_CHARTS_THEME_LIGHT.theme, { mergeOptionalPartialValues: true }),
-  [ThemeId.EUIDark]: mergePartial(DARK_THEME, EUI_CHARTS_THEME_DARK.theme, { mergeOptionalPartialValues: true }),
+  [ThemeId.EUILight]: mergePartial(LIGHT_THEME, EUI_CHARTS_THEME_LIGHT.theme),
+  [ThemeId.EUIDark]: mergePartial(DARK_THEME, EUI_CHARTS_THEME_DARK.theme),
 };
 
 const getBackground = (backgroundId?: string) => {
@@ -55,15 +55,9 @@ export const useBaseTheme = (): Theme => {
   const theme = themeMap[themeId] ?? LIGHT_THEME;
   const backgroundColor = getBackground(backgroundId);
 
-  return mergePartial(
-    theme,
-    {
-      // eui chart theme has no margin for some reason. This is just for consistency.
-      chartMargins: DEFAULT_CHART_MARGINS,
-      background: {
-        color: backgroundColor,
-      },
-    },
-    { mergeOptionalPartialValues: true },
-  );
+  return mergePartial(theme, {
+    // eui chart theme has no margin for some reason. This is just for consistency.
+    chartMargins: DEFAULT_CHART_MARGINS,
+    background: { color: backgroundColor },
+  });
 };

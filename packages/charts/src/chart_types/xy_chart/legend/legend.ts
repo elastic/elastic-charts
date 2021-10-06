@@ -10,10 +10,10 @@ import { Color } from '../../../common/colors';
 import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { SortSeriesByConfig, TickFormatterOptions } from '../../../specs';
-import { MergeOptions, mergePartial } from '../../../utils/common';
+import { TickFormatterOptions } from '../../../specs';
+import { mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
-import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
+import { getLegendCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
@@ -49,10 +49,7 @@ export interface FormattedLastValues {
 function getPostfix(spec: BasicSeriesSpec): Postfixes {
   if (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec)) {
     const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;
-    return {
-      y0AccessorFormat,
-      y1AccessorFormat,
-    };
+    return { y0AccessorFormat, y1AccessorFormat };
   }
 
   return {};
@@ -82,22 +79,17 @@ export function getLegendExtra(
       legendSizingLabel: formattedValue,
     };
   }
-  return {
-    raw: null,
-    formatted: null,
-    legendSizingLabel: null,
-  };
+  return { raw: null, formatted: null, legendSizingLabel: null };
 }
 
 /** @internal */
 function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefined {
-  const mergeOptions: MergeOptions = { mergeOptionalPartialValues: true };
   if (isBubbleSeriesSpec(spec)) {
-    return mergePartial(theme.bubbleSeriesStyle.point, spec.bubbleSeriesStyle?.point, mergeOptions);
+    return mergePartial(theme.bubbleSeriesStyle.point, spec.bubbleSeriesStyle?.point);
   } else if (isLineSeriesSpec(spec)) {
-    return mergePartial(theme.lineSeriesStyle.point, spec.lineSeriesStyle?.point, mergeOptions);
+    return mergePartial(theme.lineSeriesStyle.point, spec.lineSeriesStyle?.point);
   } else if (isAreaSeriesSpec(spec)) {
-    return mergePartial(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point, mergeOptions);
+    return mergePartial(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point);
   }
 }
 
@@ -112,7 +104,6 @@ export function computeLegend(
   serialIdentifierDataSeriesMap: Record<string, DataSeries>,
   deselectedDataSeries: SeriesIdentifier[] = [],
   theme: Theme,
-  sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
@@ -134,10 +125,8 @@ export function computeLegend(
     const color = seriesColors.get(dataSeriesKey) || defaultColor;
     const hasSingleSeries = dataSeries.length === 1;
     const name = getSeriesName(series, hasSingleSeries, false, spec);
-    const isSeriesHidden = deselectedDataSeries ? getSeriesIndex(deselectedDataSeries, series) >= 0 : false;
-    if (name === '' || !spec) {
-      return;
-    }
+    const isSeriesHidden = deselectedDataSeries && getSeriesIndex(deselectedDataSeries, series) >= 0;
+    if (name === '' || !spec) return;
 
     const postFixes = getPostfix(spec);
     const labelY1 = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name;
@@ -184,7 +173,7 @@ export function computeLegend(
     }
   });
 
-  const legendSortFn = getLegendCompareFn(sortSeriesBy, (a, b) => {
+  const legendSortFn = getLegendCompareFn((a, b) => {
     const aDs = serialIdentifierDataSeriesMap[a.key];
     const bDs = serialIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);

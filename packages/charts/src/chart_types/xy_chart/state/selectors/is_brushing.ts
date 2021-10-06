@@ -15,11 +15,5 @@ const getPointerSelector = (state: GlobalChartState) => state.interactions.point
 /** @internal */
 export const isBrushingSelector = createCustomCachedSelector(
   [isBrushAvailableSelector, getPointerSelector],
-  (isBrushAvailable, pointer): boolean => {
-    if (!isBrushAvailable) {
-      return false;
-    }
-
-    return pointer.dragging;
-  },
+  (isBrushAvailable, pointer): boolean => isBrushAvailable && pointer.dragging,
 );
