@@ -88,5 +88,5 @@ export function mergeWithDefaultTheme(
   defaultTheme: Theme = LIGHT_THEME,
   axillaryThemes: PartialTheme[] = [],
 ): Theme {
-  return mergePartial(defaultTheme, theme, { mergeOptionalPartialValues: true }, axillaryThemes);
+  return mergePartial(defaultTheme, theme, {}, axillaryThemes);
 }

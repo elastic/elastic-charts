@@ -9,7 +9,6 @@
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { SeriesDomainsAndData } from '../utils/types';
 import { computeSeriesDomains } from '../utils/utils';
 import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getSeriesSpecsSelector, getSmallMultiplesIndexOrderSelector } from './get_specs';
@@ -20,20 +19,10 @@ const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interacti
 export const computeSeriesDomainsSelector = createCustomCachedSelector(
   [
     getSeriesSpecsSelector,
+    getScaleConfigsFromSpecsSelector,
     getDeselectedSeriesSelector,
     getSettingsSpecSelector,
     getSmallMultiplesIndexOrderSelector,
-    getScaleConfigsFromSpecsSelector,
   ],
-  (seriesSpecs, deselectedDataSeries, settingsSpec, smallMultiples, scaleConfigs): SeriesDomainsAndData => {
-    return computeSeriesDomains(
-      seriesSpecs,
-      scaleConfigs,
-      deselectedDataSeries,
-      settingsSpec.orderOrdinalBinsBy,
-      smallMultiples,
-      // @ts-ignore - hidden method for vislib usage only
-      settingsSpec.sortSeriesBy,
-    );
-  },
+  computeSeriesDomains,
 );

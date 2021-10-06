@@ -8,15 +8,13 @@
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getGridLines, LinesGrid } from '../../utils/grid_lines';
+import { getGridLines } from '../../utils/grid_lines';
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { getAxisSpecsSelector } from './get_specs';
 
 /** @internal */
-export const computeGridLinesSelector = createCustomCachedSelector(
-  [getChartThemeSelector, getAxisSpecsSelector, computeAxesGeometriesSelector, computeSmallMultipleScalesSelector],
-  (chartTheme, axesSpecs, axesGeoms, scales): LinesGrid[] => {
-    return getGridLines(axesSpecs, axesGeoms, chartTheme.axes, scales);
-  },
+export const getGridLinesSelector = createCustomCachedSelector(
+  [getAxisSpecsSelector, computeAxesGeometriesSelector, getChartThemeSelector, computeSmallMultipleScalesSelector],
+  getGridLines,
 );

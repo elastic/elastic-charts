@@ -1328,19 +1328,9 @@ export interface LineStyle {
     visible: boolean;
 }
 
-// @public (undocumented)
-export const LogBase: Readonly<{
-    Common: "common";
-    Binary: "binary";
-    Natural: "natural";
-}>;
-
-// @public
-export type LogBase = $Values<typeof LogBase>;
-
 // @public
 export interface LogScaleOptions {
-    logBase?: LogBase;
+    logBase?: number;
     logMinLimit?: number;
 }
 
