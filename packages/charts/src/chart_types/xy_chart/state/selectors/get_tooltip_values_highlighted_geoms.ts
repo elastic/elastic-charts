@@ -33,7 +33,8 @@ import { formatTooltip } from '../../tooltip/tooltip';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
 import { DataSeries } from '../../utils/series';
 import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
-import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from '../utils/spec';
+import { isVerticalRotation } from '../utils/common';
+import { getRotatedAxisSpecForSpecId, getSpecDomainGroupId, getSpecsById } from '../utils/spec';
 import { ComputedScales } from '../utils/types';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
@@ -138,7 +139,7 @@ function getTooltipAndHighlightFromValue(
     if (!spec) {
       return acc;
     }
-    const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
+    const axisSpec = getRotatedAxisSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
 
     // yScales is ensured by the enclosing if
     const yScale = scales.yScales.get(getSpecDomainGroupId(spec));
@@ -163,21 +164,16 @@ function getTooltipAndHighlightFromValue(
     }
 
     // format the tooltip values
-    const yAxisFormatSpec = [0, 180].includes(chartRotation) ? yAxis : xAxis;
-    const formattedTooltip = formatTooltip(
-      indexedGeometry,
-      spec,
-      false,
-      isHighlighted,
-      hasSingleSeries,
-      yAxisFormatSpec,
-    );
+    const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, hasSingleSeries, axisSpec);
 
     // format only one time the x value
     if (!header) {
+      // the header will follow the opposite formatting axis than the data values formatter
+      const rotateForHeader = isVerticalRotation(chartRotation) ? 180 : 90;
       // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
-      const xAxisFormatSpec = [0, 180].includes(chartRotation) ? xAxis : yAxis;
-      const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
+      const formatterAxis = tooltipHeaderFormatter
+        ? undefined
+        : getRotatedAxisSpecForSpecId(axesSpecs, spec.groupId, rotateForHeader);
       header = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
     }
 

@@ -16,7 +16,7 @@ import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { getXScaleTypeFromSpec } from '../scales/get_api_scales';
-import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
+import { getRotatedAxisSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { LastValues } from '../state/utils/types';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
@@ -132,8 +132,8 @@ export function computeLegend(
     const labelY1 = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name;
 
     // Use this to get axis spec w/ tick formatter
-    const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
-    const formatter = spec.tickFormat ?? yAxis?.tickFormat ?? defaultTickFormatter;
+    const axisSpec = getRotatedAxisSpecForSpecId(axesSpecs, spec.groupId);
+    const formatter = spec.tickFormat ?? axisSpec?.tickFormat ?? defaultTickFormatter;
     const { hideInLegend } = spec;
 
     const lastValue = lastValues.get(key);

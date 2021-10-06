@@ -55,7 +55,7 @@ import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales'
 import { ScaleConfigs } from '../selectors/get_api_scale_configs';
 import { SmallMultiplesGroupBy } from '../selectors/get_specs';
 import { isHorizontalRotation } from './common';
-import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from './spec';
+import { getRotatedAxisSpecForSpecId, getSpecDomainGroupId, getSpecsById } from './spec';
 import { ComputedGeometries, GeometriesCounts, SeriesDomainsAndData, Transform } from './types';
 
 /**
@@ -347,10 +347,8 @@ function renderGeometries(
       if (shift === -1) continue; // skip bar dataSeries if index is not available
 
       const barSeriesStyle = mergePartial(chartTheme.barSeriesStyle, spec.barSeriesStyle);
-      const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
-      const valueFormatter = [0, 180].includes(chartRotation)
-        ? yAxis?.tickFormat ?? fallBackTickFormatter
-        : xAxis?.tickFormat ?? fallBackTickFormatter;
+      const axisSpec = getRotatedAxisSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
+      const valueFormatter = axisSpec?.tickFormat ?? fallBackTickFormatter;
 
       const displayValueSettings = spec.displayValueSettings
         ? { valueFormatter, ...spec.displayValueSettings }
