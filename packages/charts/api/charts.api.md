@@ -626,7 +626,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption' | 'allowBrushingLastHistogramBin';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -1701,7 +1701,7 @@ export type Rotation = 0 | 90 | -90 | 180;
 export type ScaleBandType = ScaleOrdinalType;
 
 // @public (undocumented)
-export type ScaleContinuousType = typeof ScaleType.Linear | typeof ScaleType.Time | typeof ScaleType.Log | typeof ScaleType.Sqrt;
+export type ScaleContinuousType = typeof ScaleType.LinearBinary | typeof ScaleType.Linear | typeof ScaleType.Time | typeof ScaleType.Log | typeof ScaleType.Sqrt;
 
 // @public (undocumented)
 export type ScaleOrdinalType = typeof ScaleType.Ordinal;
@@ -1714,6 +1714,7 @@ export interface ScalesConfig {
 
 // @public
 export const ScaleType: Readonly<{
+    LinearBinary: "linear_binary";
     Linear: "linear";
     Ordinal: "ordinal";
     Log: "log";
@@ -1840,7 +1841,7 @@ export const Settings: React_2.FunctionComponent<SettingsSpecProps>;
 
 // @public
 export interface SettingsSpec extends Spec, LegendSpec {
-    allowBrushingLastHistogramBucket?: boolean;
+    allowBrushingLastHistogramBin: boolean;
     // (undocumented)
     animateData: boolean;
     ariaDescribedBy?: string;

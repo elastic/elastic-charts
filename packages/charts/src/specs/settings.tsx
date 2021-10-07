@@ -582,16 +582,16 @@ export interface SettingsSpec extends Spec, LegendSpec {
   roundHistogramBrushValues?: boolean;
   /**
    * Boolean to allow brushing on last bucket even when outside domain or limit to end of domain.
-   *
+   * Should apply only for histogram charts
    * e.g.
    * A brush selection range of [1.23, 3.6] with a domain of [1, 2, 3]
    *
    * - when true returns [1.23, 3.6]
    * - when false returns [1.23, 3]
    *
-   * @defaultValue false
+   * @defaultValue true
    */
-  allowBrushingLastHistogramBucket?: boolean;
+  allowBrushingLastHistogramBin: boolean;
   /**
    * Orders ordinal x values
    */
@@ -694,7 +694,8 @@ export type DefaultSettingsProps =
   | 'legendMaxDepth'
   | 'ariaUseDefaultSummary'
   | 'ariaLabelHeadingLevel'
-  | 'ariaTableCaption';
+  | 'ariaTableCaption'
+  | 'allowBrushingLastHistogramBin';
 
 /** @public */
 export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;

@@ -11,6 +11,7 @@ import { ScaleType } from './constants';
 
 /** @public */
 export type ScaleContinuousType =
+  | typeof ScaleType.LinearBinary
   | typeof ScaleType.Linear
   | typeof ScaleType.Time
   | typeof ScaleType.Log
