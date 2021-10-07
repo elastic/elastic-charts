@@ -341,6 +341,18 @@ describe('Interactions', () => {
       );
     });
   });
+
+  it('Hide null bars in tooltip in percentage mode', async () => {
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/bar-chart--test-stacked-bar-chart-with-null-bars&knob-stack%20as%20percentage=true',
+      { left: 350, top: 150 },
+      {
+        screenshotSelector: '#story-root',
+        delay: 1000,
+      },
+    );
+  });
+
   describe('should show null values in tooltip if configured', () => {
     it('show N/A tooltip for areas', async () => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(

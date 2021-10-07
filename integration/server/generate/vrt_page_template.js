@@ -34,6 +34,8 @@ appendIconComponentCache({
   visualizeApp: require('@elastic/eui/es/components/icon/assets/app_visualize').icon,
 });
 
+const path = new URL(window.location.toString()).searchParams.get('path');
+document.getElementsByTagName('body')[0].style.overflow = path ? 'hidden' : 'scroll';
 ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElement);
 
 `.trim();

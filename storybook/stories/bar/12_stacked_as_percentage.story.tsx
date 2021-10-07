@@ -14,17 +14,17 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings, StackMode } from
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const stackedAsPercentage = boolean('stacked as percentage', true);
-  const clusterBars = boolean('cluster', true);
+  const stackMode = boolean('stacked as percentage', true) ? StackMode.Percentage : undefined;
   return (
     <Chart>
       <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
+
       <Axis
         id="left2"
         title="Left axis"
         position={Position.Left}
-        tickFormat={(d: any) => (stackedAsPercentage && !clusterBars ? `${Number(d * 100).toFixed(0)} %` : d)}
+        tickFormat={(d: any) => (stackMode === StackMode.Percentage ? `${Number(d * 100).toFixed(0)} %` : d)}
       />
 
       <BarSeries
@@ -33,18 +33,18 @@ export const Example = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        stackAccessors={clusterBars ? [] : ['x']}
-        stackMode={clusterBars ? undefined : StackMode.Percentage}
+        stackMode={stackMode}
+        stackAccessors={['x']}
         splitSeriesAccessors={['g']}
         data={[
-          { x: 0, y: 2, g: 'a' },
-          { x: 1, y: 7, g: 'a' },
-          { x: 2, y: 3, g: 'a' },
-          { x: 3, y: 6, g: 'a' },
           { x: 0, y: 4, g: 'b' },
           { x: 1, y: 5, g: 'b' },
           { x: 2, y: 8, g: 'b' },
           { x: 3, y: 2, g: 'b' },
+          { x: 0, y: 2, g: 'a' },
+          { x: 1, y: 2, g: 'a' },
+          { x: 2, y: 0, g: 'a' },
+          { x: 3, y: null, g: 'a' },
         ]}
       />
     </Chart>
