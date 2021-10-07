@@ -202,7 +202,11 @@ function getVisibleTickSets(
         for (let triedTickCount = maxTickCount; triedTickCount >= 2; triedTickCount--) {
           const candidate = tryWithTickCount(triedTickCount);
           const ticks = candidate?.ticks ?? [];
-          const compliant = ticks.length >= 2 && ticks.every((t) => t.axisTickLabel.length);
+          const uniqueLabels = new Set(ticks.map((tick) => tick.axisTickLabel));
+          const noDuplicates = ticks.length === uniqueLabels.size;
+          const atLeastTwoTicks = uniqueLabels.size >= 2;
+          const allTicksFit = !uniqueLabels.has('');
+          const compliant = noDuplicates && atLeastTwoTicks && allTicksFit;
           if (candidate && compliant)
             return acc.set(axisId, { ...candidate, ticks: ticks.filter((t) => t.axisTickLabel.length) });
         }

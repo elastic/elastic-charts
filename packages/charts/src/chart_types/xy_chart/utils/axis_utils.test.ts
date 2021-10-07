@@ -46,7 +46,7 @@ import {
 import { computeXScale } from './scales';
 import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
 
-const NO_ROTATION = 0;
+// const NO_ROTATION = 0;
 
 const getCustomStyle = (rotation = 0, padding = 10): AxisStyle =>
   mergePartial(LIGHT_THEME.axes, {
