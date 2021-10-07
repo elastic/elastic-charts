@@ -31,9 +31,17 @@ export function getRotatedAxisSpecForSpecId(
 /** @internal */
 export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId, chartRotation: Rotation = 0) {
   return axesSpecs.reduce<{ xAxis?: AxisSpec; yAxis?: AxisSpec }>((result, spec) => {
-    if (spec.groupId === groupId && isHorizontalAxis(spec.position) && isVerticalRotation(chartRotation))
+    if (
+      spec.groupId === groupId &&
+      isHorizontalAxis(spec.position) &&
+      (isVerticalRotation(chartRotation) || isHorizontalRotation(chartRotation))
+    )
       result.xAxis = spec;
-    if (spec.groupId === groupId && isVerticalAxis(spec.position) && isHorizontalRotation(chartRotation))
+    else if (
+      spec.groupId === groupId &&
+      isVerticalAxis(spec.position) &&
+      (isHorizontalRotation(chartRotation) || isVerticalRotation(chartRotation))
+    )
       result.yAxis = spec;
     return result;
   }, {});
