@@ -201,12 +201,10 @@ function getVisibleTickSets(
       if (adaptiveTickCount) {
         for (let triedTickCount = maxTickCount; triedTickCount >= 2; triedTickCount--) {
           const candidate = tryWithTickCount(triedTickCount);
-          const compliant = candidate?.ticks.every((t) => t.axisTickLabel.length);
+          const ticks = candidate?.ticks ?? [];
+          const compliant = ticks.length >= 2 && ticks.every((t) => t.axisTickLabel.length);
           if (candidate && compliant)
-            return acc.set(axisId, {
-              ...candidate,
-              ticks: candidate.ticks.filter((t) => t.axisTickLabel.length),
-            });
+            return acc.set(axisId, { ...candidate, ticks: ticks.filter((t) => t.axisTickLabel.length) });
         }
       }
 
