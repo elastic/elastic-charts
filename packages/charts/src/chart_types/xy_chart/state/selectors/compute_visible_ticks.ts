@@ -16,7 +16,6 @@ import { Size } from '../../../../utils/dimensions';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import {
   AxisTick,
-  computeRotatedLabelDimensions,
   defaultTickFormatter,
   enableDuplicatedTicks,
   isXDomain,
@@ -25,7 +24,12 @@ import {
 import { getPanelSize } from '../../utils/panel';
 import { computeXScale } from '../../utils/scales';
 import { SeriesDomainsAndData } from '../utils/types';
-import { getFallBackTickFormatter, getJoinedVisibleAxesData, JoinedAxisData } from './compute_axis_ticks_dimensions';
+import {
+  getFallBackTickFormatter,
+  getJoinedVisibleAxesData,
+  getLabelBox,
+  JoinedAxisData,
+} from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
@@ -177,25 +181,8 @@ function getVisibleTickSets(
               integersOnly,
             })
           : yDomain && new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, integersOnly });
-        if (!scale) {
-          return; // this doesn't happen
-        }
-        const labelBox: TickLabelBounds = {
-          ...(axesStyle.tickLabel.visible ? scale.ticks().map(tickFormatter) : []).reduce(
-            (sizes, labelText) => {
-              const bbox = textMeasure(labelText, 0, axesStyle.tickLabel.fontSize, axesStyle.tickLabel.fontFamily);
-              const rotatedBbox = computeRotatedLabelDimensions(bbox, axesStyle.tickLabel.rotation);
-              sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
-              sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
-              sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
-              sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
-              return sizes;
-            },
-            { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
-          ),
-          isHidden: axisSpec.hide && gridLine.visible,
-        };
-
+        if (!scale) return; // this doesn't happen, just humoring TS
+        const labelBox = getLabelBox(axesStyle, scale, tickFormatter, textMeasure, axisSpec, gridLine);
         return {
           ticks: getVisibleTickSet(
             scale,
