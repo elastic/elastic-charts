@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { ComponentType, ReactChild } from 'react';
+import { ComponentProps, ComponentType, ReactChild } from 'react';
 
 import { CustomXDomain, GroupByAccessor, Spec, TooltipStickTo } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
@@ -21,7 +21,7 @@ import { TooltipPortalSettings } from '../components';
 import { CustomTooltip } from '../components/tooltip/types';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { LegendPath } from '../state/actions/legend';
-import { getConnect, specComponentFactory } from '../state/spec_factory';
+import { SFProps, useSpecFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
 import {
   HorizontalAlignment,
@@ -38,12 +38,12 @@ import { PartialTheme, Theme } from '../utils/themes/theme';
 import {
   BinAgg,
   BrushAxis,
-  DEFAULT_SETTINGS_SPEC,
   DEFAULT_TOOLTIP_CONFIG,
   Direction,
   PointerEventType,
   PointerUpdateTrigger,
   TooltipType,
+  settingsBuildProps,
 } from './constants';
 
 /** @public */
@@ -174,7 +174,7 @@ export type BasicListener = () => undefined | void;
 /** @public */
 export type RectAnnotationEvent = { id: SpecId; datum: RectAnnotationDatum };
 /** @public */
-export type LineAnnotationEvent = { id: SpecId; datum: LineAnnotationDatum };
+export type LineAnnotationEvent = { id: SpecId; datum: LineAnnotationDatum<any> };
 /** @public */
 export type AnnotationClickListener = (annotations: {
   rects: RectAnnotationEvent[];
@@ -681,38 +681,26 @@ export interface OrderBy {
   direction?: Direction;
 }
 
-/** @public */
-export type DefaultSettingsProps =
-  | 'id'
-  | 'chartType'
-  | 'specType'
-  | 'rendering'
-  | 'rotation'
-  | 'resizeDebounce'
-  | 'pointerUpdateDebounce'
-  | 'pointerUpdateTrigger'
-  | 'animateData'
-  | 'debug'
-  | 'tooltip'
-  | 'theme'
-  | 'brushAxis'
-  | 'minBrushDelta'
-  | 'externalPointerEvents'
-  | 'showLegend'
-  | 'showLegendExtra'
-  | 'legendPosition'
-  | 'legendMaxDepth'
-  | 'ariaUseDefaultSummary'
-  | 'ariaLabelHeadingLevel'
-  | 'ariaTableCaption';
+/**
+ * Adds settings spec to chart specs
+ * @public
+ */
+export const Settings = function (
+  props: SFProps<
+    SettingsSpec,
+    keyof typeof settingsBuildProps['overrides'],
+    keyof typeof settingsBuildProps['defaults'],
+    keyof typeof settingsBuildProps['optionals'],
+    keyof typeof settingsBuildProps['requires']
+  >,
+) {
+  const { defaults, overrides } = settingsBuildProps;
+  useSpecFactory<SettingsSpec>({ ...defaults, ...props, ...overrides });
+  return null;
+};
 
 /** @public */
-export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
-
-/** @public */
-export const Settings: React.FunctionComponent<SettingsSpecProps> = getConnect()(
-  specComponentFactory<SettingsSpec, DefaultSettingsProps>(DEFAULT_SETTINGS_SPEC),
-);
+export type SettingsProp = ComponentProps<typeof Settings>;
 
 /** @internal */
 export function isPointerOutEvent(event: PointerEvent | null | undefined): event is PointerOutEvent {

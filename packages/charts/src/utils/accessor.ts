@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { BaseDatum } from '../chart_types/specs';
 import { Datum } from './common';
 
 /**
@@ -13,12 +14,12 @@ import { Datum } from './common';
  * @param datum - the datum
  * @public
  */
-export interface UnaryAccessorFn<Return = any> {
+export interface UnaryAccessorFn<D extends BaseDatum = any, Return = any> {
   /**
    * Name used as accessor field name in place of function reference
    */
   fieldName?: string;
-  (datum: Datum): Return;
+  (datum: D): Return;
 }
 
 /**
@@ -27,19 +28,21 @@ export interface UnaryAccessorFn<Return = any> {
  * @param index - the index in the array
  * @public
  */
-export type BinaryAccessorFn<Return = any> = (datum: Datum, index: number) => Return;
+export type BinaryAccessorFn<D extends BaseDatum = any, Return = any> = (datum: D, index: number) => Return;
 
 /**
  * An accessor function
  * @public
  */
-export type AccessorFn = UnaryAccessorFn;
+export type AccessorFn<D extends BaseDatum = any, R = any> = UnaryAccessorFn<D, R>;
 
 /**
  * An indexed accessor function
  * @public
  */
-export type IndexedAccessorFn = UnaryAccessorFn | BinaryAccessorFn;
+export type IndexedAccessorFn<D extends BaseDatum = any, Return = any> =
+  | UnaryAccessorFn<D, Return>
+  | BinaryAccessorFn<D, Return>;
 
 /**
  * A key accessor string

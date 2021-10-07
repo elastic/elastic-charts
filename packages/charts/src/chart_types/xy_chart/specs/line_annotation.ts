@@ -1,0 +1,52 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+import { ComponentProps } from 'react';
+
+import { ChartType } from '../..';
+import { SpecType } from '../../../specs/constants';
+import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
+import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/merge_utils';
+import { LineAnnotationSpec, DEFAULT_GLOBAL_ID, AnnotationType, BaseDatum } from '../utils/specs';
+
+const buildProps = buildSFProps<LineAnnotationSpec<unknown>>()(
+  {
+    chartType: ChartType.XYAxis,
+    specType: SpecType.Annotation,
+  },
+  {
+    groupId: DEFAULT_GLOBAL_ID,
+    annotationType: AnnotationType.Line,
+    style: DEFAULT_ANNOTATION_LINE_STYLE,
+    hideLines: false,
+    hideTooltips: false,
+    hideLinesTooltips: true,
+    zIndex: 1,
+  },
+);
+
+/**
+ * Adds bar series to chart specs
+ * @public
+ */
+export const LineAnnotation = function <Datum extends BaseDatum>(
+  props: SFProps<
+    LineAnnotationSpec<Datum>,
+    keyof typeof buildProps['overrides'],
+    keyof typeof buildProps['defaults'],
+    keyof typeof buildProps['optionals'],
+    keyof typeof buildProps['requires']
+  >,
+) {
+  const { defaults, overrides } = buildProps;
+  useSpecFactory<LineAnnotationSpec<Datum>>({ ...defaults, ...props, ...overrides });
+  return null;
+};
+
+/** @public */
+export type LineAnnotationProp = ComponentProps<typeof LineAnnotation>;

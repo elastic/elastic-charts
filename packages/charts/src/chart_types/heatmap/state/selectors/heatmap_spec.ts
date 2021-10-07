@@ -13,7 +13,7 @@ import { getSpecsFromStore } from '../../../../state/utils';
 import { HeatmapSpec } from '../../specs/heatmap';
 
 /** @internal */
-export function getSpecOrNull(state: GlobalChartState): HeatmapSpec | null {
-  const specs = getSpecsFromStore<HeatmapSpec>(state.specs, ChartType.Heatmap, SpecType.Series);
+export function getSpecOrNull(state: GlobalChartState): HeatmapSpec<unknown> | null {
+  const specs = getSpecsFromStore<HeatmapSpec<unknown>>(state.specs, ChartType.Heatmap, SpecType.Series);
   return specs.length > 0 ? specs[0] : null;
 }

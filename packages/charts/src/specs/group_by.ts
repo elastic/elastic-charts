@@ -6,16 +6,16 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import { ComponentProps } from 'react';
 
-import { Spec } from '.';
+import { BaseDatum, Spec } from '.';
 import { ChartType } from '../chart_types';
 import { Predicate } from '../common/predicate';
-import { getConnect, specComponentFactory } from '../state/spec_factory';
+import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
 import { SpecType } from './constants';
 
 /** @public */
-export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
+export type GroupByAccessor<D extends BaseDatum = any> = (spec: Spec, datum: D) => string | number;
 /** @alpha */
 export type GroupBySort = Predicate;
 
@@ -23,14 +23,14 @@ export type GroupBySort = Predicate;
  * Title formatter that handles any value returned from the GroupByAccessor
  * @public
  */
-export type GroupByFormatter = (value: ReturnType<GroupByAccessor>) => string;
+export type GroupByFormatter<D extends BaseDatum = any> = (value: ReturnType<GroupByAccessor<D>>) => string;
 
 /** @alpha */
-export interface GroupBySpec extends Spec {
+export interface GroupBySpec<D extends BaseDatum = any> extends Spec {
   /**
    * Function to return a unique value __by__ which to group the data
    */
-  by: GroupByAccessor;
+  by: GroupByAccessor<D>;
   /**
    * Sort predicate used to sort grouped data
    */
@@ -40,19 +40,34 @@ export interface GroupBySpec extends Spec {
    *
    * Only for displayed values, not used in sorting or other internal computations.
    */
-  format?: GroupByFormatter;
+  format?: GroupByFormatter<D>;
 }
-const DEFAULT_GROUP_BY_PROPS = {
-  chartType: ChartType.Global,
-  specType: SpecType.IndexOrder,
+
+const buildProps = buildSFProps<GroupBySpec<unknown>>()(
+  {
+    chartType: ChartType.Global,
+    specType: SpecType.IndexOrder,
+  },
+  {},
+);
+
+/**
+ * Add GroupBy spec to chart
+ * @public
+ */
+export const GroupBy = function <Datum extends BaseDatum>(
+  props: SFProps<
+    GroupBySpec<Datum>,
+    keyof typeof buildProps['overrides'],
+    keyof typeof buildProps['defaults'],
+    keyof typeof buildProps['optionals'],
+    keyof typeof buildProps['requires']
+  >,
+) {
+  const { defaults, overrides } = buildProps;
+  useSpecFactory<GroupBySpec<Datum>>({ ...defaults, ...props, ...overrides });
+  return null;
 };
 
-type DefaultGroupByProps = 'chartType' | 'specType';
-
-/** @alpha */
-export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort' | 'format'>;
-
-/** @alpha */
-export const GroupBy: React.FunctionComponent<GroupByProps> = getConnect()(
-  specComponentFactory<GroupBySpec, DefaultGroupByProps>(DEFAULT_GROUP_BY_PROPS),
-);
+/** @public */
+export type GroupByProps = ComponentProps<typeof GroupBy>;

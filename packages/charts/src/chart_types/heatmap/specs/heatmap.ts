@@ -6,34 +6,20 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import { ComponentProps, useRef } from 'react';
 
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { Predicate } from '../../../common/predicate';
 import { ScaleType } from '../../../scales/constants';
-import { SeriesScales, Spec } from '../../../specs';
+import { BaseDatum, SeriesScales, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
-import { getConnect, specComponentFactory } from '../../../state/spec_factory';
+import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
-import { Datum, RecursivePartial } from '../../../utils/common';
+import { RecursivePartial } from '../../../utils/common';
 import { config } from '../layout/config/config';
 import { Config } from '../layout/types/config_types';
 import { X_SCALE_DEFAULT } from './scale_defaults';
-
-const defaultProps = {
-  chartType: ChartType.Heatmap,
-  specType: SpecType.Series,
-  data: [],
-  xAccessor: ({ x }: { x: string | number }) => x,
-  yAccessor: ({ y }: { y: string | number }) => y,
-  xScaleType: X_SCALE_DEFAULT.type,
-  valueAccessor: ({ value }: { value: string | number }) => value,
-  valueFormatter: (value: number) => `${value}`,
-  xSortPredicate: Predicate.AlphaAsc,
-  ySortPredicate: Predicate.AlphaAsc,
-  config,
-};
 
 /** @public */
 export type HeatmapScaleType =
@@ -59,13 +45,13 @@ export interface HeatmapBandsColorScale {
 }
 
 /** @alpha */
-export interface HeatmapSpec extends Spec {
+export interface HeatmapSpec<D extends BaseDatum> extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Heatmap;
-  data: Datum[];
+  data: D[];
   colorScale: HeatmapBandsColorScale;
-  xAccessor: Accessor | AccessorFn;
-  yAccessor: Accessor | AccessorFn;
+  xAccessor: keyof D | AccessorFn<D>;
+  yAccessor: keyof D | AccessorFn<D>;
   valueAccessor: Accessor | AccessorFn;
   valueFormatter: (value: number) => string;
   xSortPredicate: Predicate;
@@ -76,20 +62,42 @@ export interface HeatmapSpec extends Spec {
   name?: string;
 }
 
-/** @alpha */
-export const Heatmap: React.FunctionComponent<
-  Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>
-> = getConnect()(
-  specComponentFactory<
-    HeatmapSpec,
-    | 'xAccessor'
-    | 'yAccessor'
-    | 'valueAccessor'
-    | 'data'
-    | 'ySortPredicate'
-    | 'xSortPredicate'
-    | 'valueFormatter'
-    | 'config'
-    | 'xScaleType'
-  >(defaultProps),
-);
+/**
+ * Adds heatmap spec to chart specs
+ * @alpha
+ */
+export const Heatmap = function <Datum extends BaseDatum>(
+  props: SFProps<
+    HeatmapSpec<Datum>,
+    keyof typeof buildProps.current['overrides'],
+    keyof typeof buildProps.current['defaults'],
+    keyof typeof buildProps.current['optionals'],
+    keyof typeof buildProps.current['requires']
+  >,
+) {
+  const buildProps = useRef(
+    buildSFProps<HeatmapSpec<Datum>>()(
+      {
+        chartType: ChartType.Heatmap,
+        specType: SpecType.Series,
+      },
+      {
+        data: [],
+        // xAccessor: ({ x }: { x: string | number }) => x,
+        // yAccessor: ({ y }: { y: string | number }) => y,
+        valueAccessor: ({ value }) => value,
+        xScaleType: X_SCALE_DEFAULT.type,
+        valueFormatter: (value) => `${value}`,
+        xSortPredicate: Predicate.AlphaAsc,
+        ySortPredicate: Predicate.AlphaAsc,
+        config,
+      },
+    ),
+  );
+  const { defaults, overrides } = buildProps.current;
+  useSpecFactory<HeatmapSpec<Datum>>({ ...defaults, ...props, ...overrides });
+  return null;
+};
+
+/** @public */
+export type HeatmapProps = ComponentProps<typeof Heatmap>;

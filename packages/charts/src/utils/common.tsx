@@ -13,6 +13,7 @@ import { v1 as uuidV1 } from 'uuid';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Color, Colors } from '../common/colors';
 import { Degrees, Radian } from '../common/geometry';
+import { BaseDatum } from '../specs';
 import { AdditiveNumber } from './accessor';
 import { Point } from './point';
 
@@ -448,7 +449,7 @@ export function getUniqueValues<T>(fullArray: T[], uniqueProperty: keyof T, filt
 /** @public */
 export type ValueFormatter = (value: number) => string;
 /** @public */
-export type ValueAccessor = (d: Datum) => AdditiveNumber;
+export type ValueAccessor<D extends BaseDatum> = (d: D) => AdditiveNumber;
 /** @public */
 export type LabelAccessor<T = PrimitiveValue> = (value: T) => string;
 /** @public */

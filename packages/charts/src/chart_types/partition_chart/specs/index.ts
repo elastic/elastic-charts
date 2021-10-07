@@ -6,26 +6,19 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
 import { Pixels } from '../../../common/geometry';
-import { Spec } from '../../../specs';
+import { BaseDatum, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
-import { getConnect, specComponentFactory } from '../../../state/spec_factory';
+import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
-import {
-  Datum,
-  LabelAccessor,
-  RecursivePartial,
-  ShowAccessor,
-  ValueAccessor,
-  ValueFormatter,
-} from '../../../utils/common';
+import { LabelAccessor, RecursivePartial, ShowAccessor, ValueAccessor, ValueFormatter } from '../../../utils/common';
 import { config, percentFormatter } from '../layout/config';
 import { Config, FillFontSizeRange, FillLabelConfig } from '../layout/types/config_types';
-import { NodeColorAccessor, ShapeTreeNode, ValueGetter } from '../layout/types/viewmodel_types';
-import { AGGREGATE_KEY, NodeSorter, PrimitiveValue } from '../layout/utils/group_by_rollup';
+import { NodeColorAccessor, ValueGetter } from '../layout/types/viewmodel_types';
+import { AGGREGATE_KEY, NodeSorter } from '../layout/utils/group_by_rollup';
 
 interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {}
 
@@ -33,8 +26,8 @@ interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {}
  * Specification for a given layer in the partition chart
  * @public
  */
-export interface Layer {
-  groupByRollup: IndexedAccessorFn;
+export interface Layer<D extends BaseDatum> {
+  groupByRollup: IndexedAccessorFn<D>;
   sortPredicate?: NodeSorter | null;
   nodeLabel?: LabelAccessor;
   fillLabel?: Partial<ExtendedFillLabelConfig>;
@@ -42,58 +35,65 @@ export interface Layer {
   shape?: { fillColor: string | NodeColorAccessor };
 }
 
-const defaultProps = {
-  chartType: ChartType.Partition,
-  specType: SpecType.Series,
-  config,
-  valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
-  valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
-  valueFormatter: (d: number): string => String(d),
-  percentFormatter,
-  topGroove: 20,
-  smallMultiples: null,
-  layers: [
-    {
-      groupByRollup: (d: Datum, i: number) => i,
-      nodeLabel: (d: PrimitiveValue) => String(d),
-      showAccessor: () => true,
-      fillLabel: {},
-    },
-  ],
-};
-
 /**
  * Specifies the partition chart
  * @public
  */
-export interface PartitionSpec extends Spec {
+export interface PartitionSpec<D extends BaseDatum> extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Partition;
   config: RecursivePartial<Config>;
-  data: Datum[];
-  valueAccessor: ValueAccessor;
+  data: D[];
+  valueAccessor: ValueAccessor<D>;
   valueFormatter: ValueFormatter;
   valueGetter: ValueGetter;
   percentFormatter: ValueFormatter;
   topGroove: Pixels;
   smallMultiples: string | null;
-  layers: Layer[];
+  layers: Layer<D>[];
 }
 
-type SpecRequiredProps = Pick<PartitionSpec, 'id' | 'data'>;
-type SpecOptionalProps = Partial<Omit<PartitionSpec, 'chartType' | 'specType' | 'id' | 'data'>>;
+const buildProps = buildSFProps<PartitionSpec<unknown>>()(
+  {
+    chartType: ChartType.Partition,
+    specType: SpecType.Series,
+  },
+  {
+    config,
+    valueAccessor: (d) => (typeof d === 'number' ? d : 0),
+    valueGetter: (n) => n[AGGREGATE_KEY],
+    valueFormatter: (d) => String(d),
+    percentFormatter,
+    topGroove: 20,
+    smallMultiples: null,
+    layers: [
+      {
+        groupByRollup: (d, i) => i,
+        nodeLabel: (d) => String(d),
+        showAccessor: () => true,
+        fillLabel: {},
+      },
+    ],
+  },
+);
+
+/**
+ * Adds partition spec to chart specs
+ * @public
+ */
+export const Partition = function <Datum extends BaseDatum>(
+  props: SFProps<
+    PartitionSpec<Datum>,
+    keyof typeof buildProps['overrides'],
+    keyof typeof buildProps['defaults'],
+    keyof typeof buildProps['optionals'],
+    keyof typeof buildProps['requires']
+  >,
+) {
+  const { defaults, overrides } = buildProps;
+  useSpecFactory<PartitionSpec<Datum>>({ ...defaults, ...props, ...overrides });
+  return null;
+};
 
 /** @public */
-export const Partition: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
-  specComponentFactory<
-    PartitionSpec,
-    | 'valueAccessor'
-    | 'valueGetter'
-    | 'valueFormatter'
-    | 'layers'
-    | 'config'
-    | 'percentFormatter'
-    | 'topGroove'
-    | 'smallMultiples'
-  >(defaultProps),
-);
+export type PartitionProp = ComponentProps<typeof Partition>;
