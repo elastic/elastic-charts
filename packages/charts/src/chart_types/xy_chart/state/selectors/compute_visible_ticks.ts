@@ -195,20 +195,24 @@ function getVisibleTickSets(
             fallBackTickFormatter,
           ),
           labelBox,
+          type: scale.type,
         };
       };
-
       if (adaptiveTickCount) {
+        let previousActualTickCount = NaN;
         for (let triedTickCount = maxTickCount; triedTickCount >= 2; triedTickCount--) {
           const candidate = tryWithTickCount(triedTickCount);
           const ticks = candidate?.ticks ?? [];
+          if (ticks.length === previousActualTickCount) continue;
           const uniqueLabels = new Set(ticks.map((tick) => tick.axisTickLabel));
           const noDuplicates = ticks.length === uniqueLabels.size;
           const atLeastTwoTicks = uniqueLabels.size >= 2;
           const allTicksFit = !uniqueLabels.has('');
-          const compliant = noDuplicates && atLeastTwoTicks && allTicksFit;
-          if (candidate && compliant)
+          const compliant = axisSpec && (candidate?.type === 'time' || noDuplicates) && atLeastTwoTicks && allTicksFit;
+          if (candidate && compliant) {
             return acc.set(axisId, { ...candidate, ticks: ticks.filter((t) => t.axisTickLabel.length) });
+          }
+          previousActualTickCount = ticks.length;
         }
       }
 
