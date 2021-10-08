@@ -201,6 +201,9 @@ function getVisibleTickSets(
           labelBox,
         };
       };
+
+      let fallbackAskedTickCount = 2;
+      let fallbackReceivedTickCount = Infinity;
       if (adaptiveTickCount) {
         let previousActualTickCount = NaN;
         for (let triedTickCount = maxTickCount; triedTickCount >= 2; triedTickCount--) {
@@ -223,12 +226,17 @@ function getVisibleTickSets(
                 : noDuplicates));
           previousActualTickCount = scale.ticks().length;
           if (candidate && compliant) {
+            // we're done!
             return acc.set(axisId, { ...candidate, ticks: scale.type === ScaleType.Log ? ticks : nonZeroLengthTicks });
+          } else if (atLeastTwoTicks && uniqueLabels.size <= fallbackReceivedTickCount) {
+            // let's remember the smallest triedTickCount that yielded two distinct ticks
+            fallbackReceivedTickCount = uniqueLabels.size;
+            fallbackAskedTickCount = triedTickCount;
           }
         }
       }
 
-      const scale = getScale(adaptiveTickCount ? 2 : maxTickCount);
+      const scale = getScale(adaptiveTickCount ? fallbackAskedTickCount : maxTickCount);
       const lastResortCandidate = scale && getMeasuredTicks(scale);
       return lastResortCandidate ? acc.set(axisId, lastResortCandidate) : acc;
     }, new Map());
