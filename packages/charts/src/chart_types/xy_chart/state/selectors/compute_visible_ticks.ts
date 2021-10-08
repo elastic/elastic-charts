@@ -212,10 +212,10 @@ function getVisibleTickSets(
           const atLeastTwoTicks = uniqueLabels.size >= 2;
           const allTicksFit = !uniqueLabels.has('');
           const compliant = axisSpec && (scale.type === 'time' || noDuplicates) && atLeastTwoTicks && allTicksFit;
+          previousActualTickCount = scale.ticks().length;
           if (candidate && compliant) {
             return acc.set(axisId, { ...candidate, ticks: ticks.filter((t) => t.axisTickLabel.length) });
           }
-          previousActualTickCount = scale.ticks().length;
         }
       }
 
