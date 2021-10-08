@@ -83,7 +83,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
       // measure the text width of all rows values to get the grid area width
       const boxedYValues = heatmapTable.yValues.map<Box & { value: string | number }>((value) => {
         return {
-          text: String(value),
+          text: config.yAxisLabel?.formatter?.(value) || String(value),
           value,
           ...config.yAxisLabel,
         };
