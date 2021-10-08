@@ -1,3 +1,15 @@
+# [31.4.0](https://github.com/Metrika-Inc/metrika-charts/compare/v31.3.2...v31.4.0) (2021-10-08)
+
+
+### Bug Fixes
+
+* **heatmap:** add tooltip fix when x-axis is on top ([d3c9440](https://github.com/Metrika-Inc/metrika-charts/commit/d3c9440ddb38027f34fa90de014349279fe5bc44))
+
+
+### Features
+
+* **charts:** add es6 build, peer react 17 ([193f13e](https://github.com/Metrika-Inc/metrika-charts/commit/193f13e6a2ce00f79f0f1771d8a87a3a06149eb1))
+
 ## [31.3.2](https://github.com/Metrika-Inc/metrika-charts/compare/v31.3.1...v31.3.2) (2021-08-16)
 
 
