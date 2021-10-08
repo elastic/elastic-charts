@@ -239,9 +239,14 @@ export function shapeViewModel(
    * @param y
    */
   const pickQuads = (x: Pixels, y: Pixels): Array<Cell> | TextBox => {
-    if (x > 0 && x < chartDimensions.left && y > chartDimensions.top && y < chartDimensions.height) {
+    if (
+      x > 0 &&
+      x < chartDimensions.left &&
+      y > chartDimensions.top &&
+      y < chartDimensions.height + chartDimensions.top
+    ) {
       // look up for a Y axis elements
-      const yLabelKey = yInvertedScale(y);
+      const yLabelKey = yInvertedScale(y - chartDimensions.top);
       const yLabelValue = textYValues.find((v) => v.value === yLabelKey);
       if (yLabelValue) {
         return yLabelValue;
