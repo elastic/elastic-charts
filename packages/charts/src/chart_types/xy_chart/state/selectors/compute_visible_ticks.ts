@@ -218,7 +218,7 @@ function getVisibleTickSets(
           const allTicksFit = !uniqueLabels.has('');
           const compliant =
             axisSpec &&
-            atLeastTwoTicks &&
+            (scale.type === ScaleType.Time || atLeastTwoTicks) &&
             (scale.type === ScaleType.Log || allTicksFit) &&
             (scale.type === ScaleType.Time ||
               (scale.type === ScaleType.Log
