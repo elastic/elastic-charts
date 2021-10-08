@@ -7,6 +7,7 @@
  */
 
 import { Scale, ScaleContinuous } from '../../../../scales';
+import { ScaleType } from '../../../../scales/constants';
 import { AxisSpec, SettingsSpec, TickFormatter, TickFormatterOptions } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
@@ -207,14 +208,22 @@ function getVisibleTickSets(
           if (!scale || scale.ticks().length === previousActualTickCount) continue;
           const candidate = getMeasuredTicks(scale);
           const ticks = candidate?.ticks ?? [];
+          const nonZeroLengthTicks = ticks.filter((tick) => tick.axisTickLabel.length > 0);
           const uniqueLabels = new Set(ticks.map((tick) => tick.axisTickLabel));
           const noDuplicates = ticks.length === uniqueLabels.size;
           const atLeastTwoTicks = uniqueLabels.size >= 2;
           const allTicksFit = !uniqueLabels.has('');
-          const compliant = axisSpec && (scale.type === 'time' || noDuplicates) && atLeastTwoTicks && allTicksFit;
+          const compliant =
+            axisSpec &&
+            atLeastTwoTicks &&
+            (scale.type === ScaleType.Log || allTicksFit) &&
+            (scale.type === ScaleType.Time ||
+              (scale.type === ScaleType.Log
+                ? new Set(nonZeroLengthTicks.map((tick) => tick.axisTickLabel)).size === nonZeroLengthTicks.length
+                : noDuplicates));
           previousActualTickCount = scale.ticks().length;
           if (candidate && compliant) {
-            return acc.set(axisId, { ...candidate, ticks: ticks.filter((t) => t.axisTickLabel.length) });
+            return acc.set(axisId, { ...candidate, ticks: scale.type === ScaleType.Log ? ticks : nonZeroLengthTicks });
           }
         }
       }
