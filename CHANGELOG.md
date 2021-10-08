@@ -1,3 +1,10 @@
+## [31.4.1](https://github.com/Metrika-Inc/metrika-charts/compare/v31.4.0...v31.4.1) (2021-10-08)
+
+
+### Bug Fixes
+
+* **heatmap:** chart dimension on real y-label format width ([d062fc4](https://github.com/Metrika-Inc/metrika-charts/commit/d062fc4f121017d35606d7464e3df259a419da7c))
+
 # [31.4.0](https://github.com/Metrika-Inc/metrika-charts/compare/v31.3.2...v31.4.0) (2021-10-08)
 
 
