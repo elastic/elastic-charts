@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig",
+  "compilerOptions": {
+    "noUnusedLocals": true,
+    "removeComments": false,
+    "target": "es6",
+    "module": "es6",
+    "outDir": "dist/_es6"
+  },
+  "files": [],
+  "include": ["src/**/*"],
+  "exclude": ["**/*.test.*", "**/__mocks__", "src/mocks/**/*", "src/utils/data_samples/**/*"]
+}
