@@ -39,7 +39,7 @@ import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 /** @internal */
 export type Tmp = { ticks: AxisTick[]; labelBox: TickLabelBounds };
 
-const adaptiveTickCount = false;
+const adaptiveTickCount = true;
 
 function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
   const horizontal = isHorizontalAxis(axisPosition);
@@ -169,9 +169,9 @@ function getVisibleTickSets(
       const yDomain = yDomains.find((yd) => yd.groupId === groupId);
       const maxTickCount = isX ? xDomain.desiredTickCount : yDomain?.desiredTickCount ?? 0;
 
-      const tryWithTickCount = (desiredTickCount: number) => {
+      const getScale = (desiredTickCount: number) => {
         const range = axisMinMax(axisSpec.position, chartRotation, panel);
-        const scale = isX
+        return isX
           ? computeXScale({
               xDomain: { ...xDomain, desiredTickCount },
               totalBarsInCluster: totalGroupsCount,
@@ -181,6 +181,9 @@ function getVisibleTickSets(
               integersOnly,
             })
           : yDomain && new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, integersOnly });
+      };
+
+      const getMeasuredTicks = (scale: Scale<number | string>) => {
         if (!scale) return; // this doesn't happen, just humoring TS
         const labelBox = getLabelBox(axesStyle, scale, tickFormatter, textMeasure, axisSpec, gridLine);
         return {
@@ -195,28 +198,29 @@ function getVisibleTickSets(
             fallBackTickFormatter,
           ),
           labelBox,
-          type: scale.type,
         };
       };
       if (adaptiveTickCount) {
         let previousActualTickCount = NaN;
         for (let triedTickCount = maxTickCount; triedTickCount >= 2; triedTickCount--) {
-          const candidate = tryWithTickCount(triedTickCount);
+          const scale = getScale(triedTickCount);
+          if (!scale || scale.ticks().length === previousActualTickCount) continue;
+          const candidate = getMeasuredTicks(scale);
           const ticks = candidate?.ticks ?? [];
-          if (ticks.length === previousActualTickCount) continue;
           const uniqueLabels = new Set(ticks.map((tick) => tick.axisTickLabel));
           const noDuplicates = ticks.length === uniqueLabels.size;
           const atLeastTwoTicks = uniqueLabels.size >= 2;
           const allTicksFit = !uniqueLabels.has('');
-          const compliant = axisSpec && (candidate?.type === 'time' || noDuplicates) && atLeastTwoTicks && allTicksFit;
+          const compliant = axisSpec && (scale.type === 'time' || noDuplicates) && atLeastTwoTicks && allTicksFit;
           if (candidate && compliant) {
             return acc.set(axisId, { ...candidate, ticks: ticks.filter((t) => t.axisTickLabel.length) });
           }
-          previousActualTickCount = ticks.length;
+          previousActualTickCount = scale.ticks().length;
         }
       }
 
-      const lastResortCandidate = tryWithTickCount(adaptiveTickCount ? 2 : maxTickCount);
+      const scale = getScale(adaptiveTickCount ? 2 : maxTickCount);
+      const lastResortCandidate = scale && getMeasuredTicks(scale);
       return lastResortCandidate ? acc.set(axisId, lastResortCandidate) : acc;
     }, new Map());
   });
