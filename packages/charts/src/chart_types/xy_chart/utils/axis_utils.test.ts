@@ -32,6 +32,7 @@ import {
 import { getScale, SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 // import { getAxesStylesSelector } from '../state/selectors/get_axis_styles';
 // import { getGridLinesSelector } from '../state/selectors/get_grid_lines';
+import { enableDuplicatedTicks } from '../state/selectors/compute_visible_ticks';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 import {
   TickLabelBounds,
@@ -40,7 +41,6 @@ import {
   // getAxesGeometries,
   getTickLabelPosition,
   isXDomain,
-  enableDuplicatedTicks,
   getScaleForAxisSpec,
 } from './axis_utils';
 import { computeXScale } from './scales';

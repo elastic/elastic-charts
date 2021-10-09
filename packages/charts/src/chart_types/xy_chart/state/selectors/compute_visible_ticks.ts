@@ -12,17 +12,11 @@ import { AxisSpec, SettingsSpec, TickFormatter, TickFormatterOptions } from '../
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { Position, Rotation } from '../../../../utils/common';
+import { getUniqueValues, Position, Rotation } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import {
-  AxisTick,
-  defaultTickFormatter,
-  enableDuplicatedTicks,
-  isXDomain,
-  TickLabelBounds,
-} from '../../utils/axis_utils';
+import { AxisTick, defaultTickFormatter, isXDomain, TickLabelBounds } from '../../utils/axis_utils';
 import { getPanelSize } from '../../utils/panel';
 import { computeXScale } from '../../utils/scales';
 import { SeriesDomainsAndData } from '../utils/types';
@@ -51,6 +45,23 @@ function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, he
     ? chartRotation === -90 || chartRotation === 180
     : chartRotation === 90 || chartRotation === 180;
   return horizontal ? [flipped ? width : 0, flipped ? 0 : width] : [flipped ? 0 : height, flipped ? height : 0];
+}
+
+/** @internal */
+export function enableDuplicatedTicks(
+  axisSpec: AxisSpec,
+  scale: Scale<number | string>,
+  offset: number,
+  fallBackTickFormatter: TickFormatter,
+  tickFormatOptions?: TickFormatterOptions,
+): AxisTick[] {
+  const allTicks: AxisTick[] = scale.ticks().map((tick) => ({
+    value: tick,
+    label: (axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
+    axisTickLabel: (axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
+    position: (scale.scale(tick) || 0) + offset,
+  }));
+  return axisSpec.showDuplicatedTicks ? allTicks : getUniqueValues(allTicks, 'axisTickLabel', true);
 }
 
 function getVisibleTicks(

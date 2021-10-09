@@ -7,11 +7,10 @@
  */
 
 import { Scale } from '../../../scales';
-import { AxisSpec, SettingsSpec, TickFormatter, TickFormatterOptions } from '../../../specs';
+import { AxisSpec, SettingsSpec } from '../../../specs';
 import {
   degToRad,
   getPercentageValue,
-  getUniqueValues,
   HorizontalAlignment,
   Position,
   Rotation,
@@ -225,23 +224,6 @@ export function getTickLabelPosition(
       (isHorizontalAxis(pos) && rotation === 0 ? 0 : labelHalfWidth * horizontalOffsetMultiplier[horizontalAlign]),
     textOffsetY: userOffsets.local.y + (maxLabelTextHeight / 2) * verticalOffsetMultiplier[verticalAlign],
   };
-}
-
-/** @internal */
-export function enableDuplicatedTicks(
-  axisSpec: AxisSpec,
-  scale: Scale<number | string>,
-  offset: number,
-  fallBackTickFormatter: TickFormatter,
-  tickFormatOptions?: TickFormatterOptions,
-): AxisTick[] {
-  const allTicks: AxisTick[] = scale.ticks().map((tick) => ({
-    value: tick,
-    label: (axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
-    axisTickLabel: (axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
-    position: (scale.scale(tick) || 0) + offset,
-  }));
-  return axisSpec.showDuplicatedTicks ? allTicks : getUniqueValues(allTicks, 'axisTickLabel', true);
 }
 
 /** @internal */
