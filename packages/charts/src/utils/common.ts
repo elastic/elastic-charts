@@ -419,11 +419,10 @@ export function mergePartial<T>(
 }
 
 /** @internal */
-export function getUniqueValues<T>(fullArray: T[], uniqueProperty: keyof T, filterConsecutives = false): T[] {
-  return filterConsecutives
+export const getUniqueValues = <T>(fullArray: T[], uniqueProperty: keyof T, filterConsecutives = false): T[] =>
+  filterConsecutives
     ? fullArray.filter((d, i, a) => i === 0 || a[i - 1][uniqueProperty] !== d[uniqueProperty])
-    : [...new Map(fullArray.map((d) => [d[uniqueProperty], d])).values()];
-}
+    : Array.from(new Map(fullArray.map((d): [T[keyof T], T] => [d[uniqueProperty], d]).reverse()).values());
 
 /** @public */
 export type ValueFormatter = (value: number) => string;
