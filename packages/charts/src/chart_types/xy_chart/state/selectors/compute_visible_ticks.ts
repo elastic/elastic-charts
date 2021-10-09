@@ -155,7 +155,7 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
 
 function getVisibleTickSets(
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
-  joinedAxesData: Map<string, JoinedAxisData>,
+  joinedAxesData: Map<AxisId, JoinedAxisData>,
   { xDomain, yDomains }: Pick<SeriesDomainsAndData, 'xDomain' | 'yDomains'>,
   smScales: SmallMultipleScales,
   totalGroupsCount: number,

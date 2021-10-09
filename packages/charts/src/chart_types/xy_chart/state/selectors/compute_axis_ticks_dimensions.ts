@@ -50,7 +50,7 @@ export const getFallBackTickFormatter = createCustomCachedSelector(
 );
 
 const getUnitScales = createCustomCachedSelector([getScaleFunction, getAxisSpecsSelector], (getScale, axesSpecs) =>
-  axesSpecs.reduce<Map<string, Scale<string | number>>>((unitScales, axisSpec) => {
+  axesSpecs.reduce<Map<AxisId, Scale<string | number>>>((unitScales, axisSpec) => {
     const scale = getScale(axisSpec, [0, 1]);
     if (scale) unitScales.set(axisSpec.id, scale);
     else Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
@@ -60,7 +60,7 @@ const getUnitScales = createCustomCachedSelector([getScaleFunction, getAxisSpecs
 
 const getThemedAxesStyles = createCustomCachedSelector(
   [getChartThemeSelector, getAxesStylesSelector],
-  (chartTheme, axesStyles): Map<string, AxisStyle> =>
+  (chartTheme, axesStyles): Map<AxisId, AxisStyle> =>
     [...axesStyles.keys()].reduce((styles, id) => styles.set(id, axesStyles.get(id) ?? chartTheme.axes), new Map()),
 );
 
@@ -77,7 +77,7 @@ export type JoinedAxisData = {
 export const getJoinedVisibleAxesData = createCustomCachedSelector(
   [getUnitScales, getAxisSpecsSelector, getThemedAxesStyles, getFallBackTickFormatter, computeSeriesDomainsSelector],
   (unitScales, axesSpecs, themedAxesStyles, fallBackTickFormatter, { xDomain: { timeZone } }) =>
-    axesSpecs.reduce<Map<string, JoinedAxisData>>((axisData, axisSpec) => {
+    axesSpecs.reduce<Map<AxisId, JoinedAxisData>>((axisData, axisSpec) => {
       const { id, labelFormat, tickFormat, position } = axisSpec;
       const axesStyle = themedAxesStyles.get(id);
       const scale = unitScales.get(axisSpec.id);
