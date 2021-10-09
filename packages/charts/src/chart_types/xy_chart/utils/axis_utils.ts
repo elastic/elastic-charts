@@ -22,6 +22,7 @@ import { Range } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
+import { getAllAxisLayersGirth } from '../axes/axes_sizes';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { Projection } from '../state/selectors/compute_visible_ticks';
@@ -268,7 +269,8 @@ export function getPosition(
   const vertical = isVerticalAxis(position);
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
-  const shownLabelSize = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
+  const maxLabelBboxGirth = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
+  const shownLabelSize = getAllAxisLayersGirth(tickLabel, maxLabelBboxGirth, !vertical);
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
     leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
