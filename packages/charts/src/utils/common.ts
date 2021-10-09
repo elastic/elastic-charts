@@ -333,7 +333,7 @@ function isReactComponent<P extends Record<string, any>>(el: any): el is Compone
  * @internal
  */
 export function renderWithProps<P extends Record<string, any>>(El: ReactNode | ComponentType<P>, props: P): ReactNode {
-  return isReactComponent<P>(El) ? <El {...props} /> : El;
+  return isReactComponent<P>(El) ? React.createElement(El, props) : El;
 }
 
 /**
