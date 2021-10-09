@@ -14,6 +14,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position, Rotation } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
+import { AxisId } from '../../../../utils/ids';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import {
   AxisTick,
@@ -38,7 +39,9 @@ import { getBarPaddingsSelector } from './get_bar_paddings';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 /** @internal */
-export type Tmp = { ticks: AxisTick[]; labelBox: TickLabelBounds };
+export type Projection = { ticks: AxisTick[]; labelBox: TickLabelBounds; scale: Scale<string | number> };
+
+type Projections = Map<AxisId, Projection>;
 
 const adaptiveTickCount = true;
 
@@ -150,8 +153,6 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
   getVisibleTickSets,
 );
 
-type TmpMap = Map<string, Tmp>;
-
 function getVisibleTickSets(
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
   joinedAxesData: Map<string, JoinedAxisData>,
@@ -161,10 +162,10 @@ function getVisibleTickSets(
   enableHistogramMode: boolean,
   fallBackTickFormatter: TickFormatter,
   barsPadding?: number,
-): TmpMap {
+): Projections {
   return withTextMeasure((textMeasure) => {
     const panel = getPanelSize(smScales);
-    return [...joinedAxesData].reduce<TmpMap>((acc, [axisId, { axisSpec, axesStyle, gridLine, tickFormatter }]) => {
+    return [...joinedAxesData].reduce((acc, [axisId, { axisSpec, axesStyle, gridLine, tickFormatter }]) => {
       const { groupId, integersOnly, position } = axisSpec;
       const isX = isXDomain(position, chartRotation);
       const yDomain = yDomains.find((yd) => yd.groupId === groupId);
@@ -199,6 +200,7 @@ function getVisibleTickSets(
             fallBackTickFormatter,
           ),
           labelBox,
+          scale, // tick count driving nicing; nicing drives domain; therefore scale may vary, downstream needs it
         };
       };
 

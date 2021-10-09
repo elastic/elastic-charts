@@ -24,7 +24,7 @@ import { Point } from '../../../utils/point';
 import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
-import { Tmp } from '../state/selectors/compute_visible_ticks';
+import { Projection } from '../state/selectors/compute_visible_ticks';
 import { SeriesDomainsAndData } from '../state/utils/types';
 import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { getPanelSize, hasSMDomain } from './panel';
@@ -319,11 +319,11 @@ export function getAxesGeometries(
   smScales: SmallMultipleScales,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
-  visibleTicksSet: Map<AxisId, Tmp>,
+  visibleTicksSet: Map<AxisId, Projection>,
 ): AxisGeometry[] {
   const panel = getPanelSize(smScales);
   return [...visibleTicksSet].reduce(
-    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, { ticks, labelBox }]: [AxisId, Tmp]) => {
+    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, { ticks, labelBox }]: [AxisId, Projection]) => {
       const axisSpec = axisSpecs.get(axisId);
       if (axisSpec) {
         const vertical = isVerticalAxis(axisSpec.position);
