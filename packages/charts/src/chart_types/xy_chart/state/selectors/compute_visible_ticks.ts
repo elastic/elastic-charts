@@ -12,7 +12,7 @@ import { AxisSpec, SettingsSpec, TickFormatter, TickFormatterOptions } from '../
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { getUniqueValues, Position, Rotation } from '../../../../utils/common';
+import { Position, Rotation } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
@@ -61,7 +61,9 @@ export function enableDuplicatedTicks(
     axisTickLabel: (axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
     position: (scale.scale(tick) || 0) + offset,
   }));
-  return axisSpec.showDuplicatedTicks ? allTicks : getUniqueValues(allTicks, 'axisTickLabel', true);
+  return axisSpec.showDuplicatedTicks
+    ? allTicks
+    : allTicks.filter((d, i) => i < 1 || allTicks[i - 1].axisTickLabel !== d.axisTickLabel);
 }
 
 function getVisibleTicks(

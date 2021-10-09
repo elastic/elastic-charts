@@ -418,12 +418,6 @@ export function mergePartial<T>(
   return getPartialValue<T>(baseClone, partial, additionalPartials);
 }
 
-/** @internal */
-export const getUniqueValues = <T>(fullArray: T[], uniqueProperty: keyof T, filterConsecutives = false): T[] =>
-  filterConsecutives
-    ? fullArray.filter((d, i, a) => i === 0 || a[i - 1][uniqueProperty] !== d[uniqueProperty])
-    : Array.from(new Map(fullArray.map((d): [T[keyof T], T] => [d[uniqueProperty], d]).reverse()).values());
-
 /** @public */
 export type ValueFormatter = (value: number) => string;
 /** @public */
