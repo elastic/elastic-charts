@@ -24,7 +24,7 @@ import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/them
 import { getAllAxisLayersGirth } from '../axes/axes_sizes';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
-import { Projection } from '../state/selectors/compute_visible_ticks';
+import { Projection } from '../state/selectors/visible_ticks';
 import { SeriesDomainsAndData } from '../state/utils/types';
 import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { getPanelSize, hasSMDomain } from './panel';

@@ -586,5 +586,5 @@ export function safeFormat<V = any>(value: V, formatter?: (value: V) => string):
 }
 
 /** @internal */
-export const range = (from: number, to: number, step: number): Array<number> =>
+export const range = (from: number, to: number, step: number): number[] =>
   Array.from({ length: Math.abs(Math.round((to - from) / (step || 1))) }, (_, i) => from + i * step);
