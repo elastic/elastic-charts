@@ -53,7 +53,7 @@ export function enableDuplicatedTicks(
   scale: Scale<number | string>,
   offset: number,
   fallBackTickFormatter: TickFormatter,
-  tickFormatOptions?: TickFormatterOptions,
+  tickFormatOptions: TickFormatterOptions,
 ): AxisTick[] {
   const allTicks: AxisTick[] = scale.ticks().map((tick) => ({
     value: tick,
@@ -74,7 +74,7 @@ function getVisibleTicks(
   rotationOffset: number,
   scale: Scale<number | string>,
   enableHistogramMode: boolean,
-  tickFormatOptions?: TickFormatterOptions,
+  tickFormatOptions: TickFormatterOptions,
 ): AxisTick[] {
   const ticks = scale.ticks();
   const isSingleValueScale = scale.domain[0] === scale.domain[1];
