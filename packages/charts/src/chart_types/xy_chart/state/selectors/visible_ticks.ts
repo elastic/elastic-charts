@@ -142,7 +142,7 @@ function getVisibleTickSet(
   groupCount: number,
   histogramMode: boolean,
   fallBackTickFormatter: TickFormatter,
-) {
+): AxisTick[] {
   const vertical = isVerticalAxis(axisSpec.position);
   const tickFormatter = vertical ? fallBackTickFormatter : defaultTickFormatter;
   const somehowRotated = (vertical && chartRotation === -90) || (!vertical && chartRotation === 180);
@@ -198,7 +198,7 @@ function getVisibleTickSets(
           : yDomain && new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, integersOnly });
       };
 
-      const getMeasuredTicks = (scale: Scale<number | string>) => {
+      const getMeasuredTicks = (scale: Scale<number | string>): Projection => {
         const labelBox = getLabelBox(axesStyle, scale, tickFormatter, textMeasure, axisSpec, gridLine);
         return {
           ticks: getVisibleTickSet(
@@ -223,10 +223,10 @@ function getVisibleTickSets(
         for (let triedTickCount = maxTickCount; triedTickCount >= 2; triedTickCount--) {
           const scale = getScale(triedTickCount);
           if (!scale || scale.ticks().length === previousActualTickCount) continue;
-          const candidate = getMeasuredTicks(scale);
-          const nonZeroLengthTicks = candidate.ticks.filter((tick) => tick.axisTickLabel.length > 0);
-          const uniqueLabels = new Set(candidate.ticks.map((tick) => tick.axisTickLabel));
-          const noDuplicates = candidate.ticks.length === uniqueLabels.size;
+          const raster = getMeasuredTicks(scale);
+          const nonZeroLengthTicks = raster.ticks.filter((tick) => tick.axisTickLabel.length > 0);
+          const uniqueLabels = new Set(raster.ticks.map((tick) => tick.axisTickLabel));
+          const noDuplicates = raster.ticks.length === uniqueLabels.size;
           const atLeastTwoTicks = uniqueLabels.size >= 2;
           const allTicksFit = !uniqueLabels.has('');
           const compliant =
@@ -238,11 +238,10 @@ function getVisibleTickSets(
                 ? new Set(nonZeroLengthTicks.map((tick) => tick.axisTickLabel)).size === nonZeroLengthTicks.length
                 : noDuplicates));
           previousActualTickCount = scale.ticks().length;
-          if (candidate && compliant) {
-            // we're done!
+          if (raster && compliant) {
             return acc.set(axisId, {
-              ...candidate,
-              ticks: scale.type === ScaleType.Log ? candidate.ticks : nonZeroLengthTicks,
+              ...raster,
+              ticks: scale.type === ScaleType.Log ? raster.ticks : nonZeroLengthTicks,
             });
           } else if (atLeastTwoTicks && uniqueLabels.size <= fallbackReceivedTickCount) {
             // let's remember the smallest triedTickCount that yielded two distinct ticks
