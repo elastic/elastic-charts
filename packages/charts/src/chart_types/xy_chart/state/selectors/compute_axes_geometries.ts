@@ -11,11 +11,11 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getAxesGeometries } from '../../utils/axis_utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
-import { getVisibleTickSetsSelector } from './visible_ticks';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { axisSpecsLookupSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
+import { getVisibleTickSetsSelector } from './visible_ticks';
 
 /** @internal */
 export const computeAxesGeometriesSelector = createCustomCachedSelector(

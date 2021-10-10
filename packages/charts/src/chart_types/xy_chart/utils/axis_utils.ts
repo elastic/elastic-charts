@@ -163,7 +163,7 @@ function getHorizontalAlign(
 function getVerticalAlign(
   position: Position,
   rotation: number,
-  alignment: VerticalAlignment = VerticalAlignment.Middle,
+  alignment: VerticalAlignment,
 ): Exclude<VerticalAlignment, typeof VerticalAlignment.Far | typeof VerticalAlignment.Near> {
   if (
     alignment === VerticalAlignment.Middle ||
@@ -200,13 +200,13 @@ export function getTickLabelPosition(
   tickDimensions: TickLabelBounds,
   showTicks: boolean,
   textOffset: TextOffset,
-  textAlignment?: TextAlignment,
+  textAlignment: TextAlignment,
 ): TickLabelProps {
   const { maxLabelBboxWidth, maxLabelTextWidth, maxLabelBboxHeight, maxLabelTextHeight } = tickDimensions;
   const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
   const labelInnerPadding = innerPad(tickLabel.padding);
-  const horizontalAlign = getHorizontalAlign(pos, rotation, textAlignment?.horizontal ?? HorizontalAlignment.Near);
-  const verticalAlign = getVerticalAlign(pos, rotation, textAlignment?.vertical);
+  const horizontalAlign = getHorizontalAlign(pos, rotation, textAlignment.horizontal);
+  const verticalAlign = getVerticalAlign(pos, rotation, textAlignment.vertical);
   const userOffsets = getUserTextOffsets(tickDimensions, textOffset);
   const paddedTickDimension = tickDimension + labelInnerPadding;
   const axisNetSize = (isVerticalAxis(pos) ? axisSize.width : axisSize.height) - paddedTickDimension;

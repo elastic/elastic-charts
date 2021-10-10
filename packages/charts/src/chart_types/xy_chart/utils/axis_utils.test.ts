@@ -16,7 +16,7 @@ import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
-import { Position, mergePartial } from '../../../utils/common';
+import { Position, mergePartial, HorizontalAlignment, VerticalAlignment } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { OrdinalDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
@@ -32,8 +32,8 @@ import {
 import { getScale, SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 // import { getAxesStylesSelector } from '../state/selectors/get_axis_styles';
 // import { getGridLinesSelector } from '../state/selectors/get_grid_lines';
-import { enableDuplicatedTicks } from '../state/selectors/visible_ticks';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
+import { enableDuplicatedTicks } from '../state/selectors/visible_ticks';
 import {
   TickLabelBounds,
   computeRotatedLabelDimensions,
@@ -45,6 +45,8 @@ import {
 } from './axis_utils';
 import { computeXScale } from './scales';
 import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
+
+const alignmentsDefault = { horizontal: HorizontalAlignment.Near, vertical: VerticalAlignment.Middle };
 
 // const NO_ROTATION = 0;
 
@@ -576,6 +578,7 @@ describe('Axis computational utils', () => {
       axisDimensions,
       true,
       offset,
+      alignmentsDefault,
     );
 
     expect(unrotatedLabelProps).toEqual({
@@ -650,6 +653,7 @@ describe('Axis computational utils', () => {
       axisDimensions,
       true,
       offset,
+      alignmentsDefault,
     );
 
     expect(rightUnrotatedLabelProps).toEqual({
@@ -707,6 +711,7 @@ describe('Axis computational utils', () => {
       axisDimensions,
       true,
       offset,
+      alignmentsDefault,
     );
 
     expect(rotatedLabelProps).toEqual({
@@ -729,6 +734,7 @@ describe('Axis computational utils', () => {
       axisDimensions,
       true,
       offset,
+      alignmentsDefault,
     );
 
     expect(bottomRotatedLabelProps).toEqual({
