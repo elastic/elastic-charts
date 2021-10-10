@@ -199,7 +199,6 @@ function getVisibleTickSets(
       };
 
       const getMeasuredTicks = (scale: Scale<number | string>) => {
-        if (!scale) return; // this doesn't happen, just humoring TS
         const labelBox = getLabelBox(axesStyle, scale, tickFormatter, textMeasure, axisSpec, gridLine);
         return {
           ticks: getVisibleTickSet(
@@ -225,10 +224,9 @@ function getVisibleTickSets(
           const scale = getScale(triedTickCount);
           if (!scale || scale.ticks().length === previousActualTickCount) continue;
           const candidate = getMeasuredTicks(scale);
-          const ticks = candidate?.ticks ?? [];
-          const nonZeroLengthTicks = ticks.filter((tick) => tick.axisTickLabel.length > 0);
-          const uniqueLabels = new Set(ticks.map((tick) => tick.axisTickLabel));
-          const noDuplicates = ticks.length === uniqueLabels.size;
+          const nonZeroLengthTicks = candidate.ticks.filter((tick) => tick.axisTickLabel.length > 0);
+          const uniqueLabels = new Set(candidate.ticks.map((tick) => tick.axisTickLabel));
+          const noDuplicates = candidate.ticks.length === uniqueLabels.size;
           const atLeastTwoTicks = uniqueLabels.size >= 2;
           const allTicksFit = !uniqueLabels.has('');
           const compliant =
@@ -242,7 +240,10 @@ function getVisibleTickSets(
           previousActualTickCount = scale.ticks().length;
           if (candidate && compliant) {
             // we're done!
-            return acc.set(axisId, { ...candidate, ticks: scale.type === ScaleType.Log ? ticks : nonZeroLengthTicks });
+            return acc.set(axisId, {
+              ...candidate,
+              ticks: scale.type === ScaleType.Log ? candidate.ticks : nonZeroLengthTicks,
+            });
           } else if (atLeastTwoTicks && uniqueLabels.size <= fallbackReceivedTickCount) {
             // let's remember the smallest triedTickCount that yielded two distinct ticks
             fallbackReceivedTickCount = uniqueLabels.size;
