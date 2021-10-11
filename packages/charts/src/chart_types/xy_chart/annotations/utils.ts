@@ -14,8 +14,7 @@ import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
-import { isVerticalRotation } from '../state/utils/common';
-import { getRotatedAxisSpecForSpecId } from '../state/utils/spec';
+import { getAxesSpecForSpecId } from '../state/utils/spec';
 import { ComputedGeometries } from '../state/utils/types';
 import { AnnotationDomainType, AnnotationSpec, AxisSpec, isLineAnnotation } from '../utils/specs';
 import { computeLineAnnotationDimensions } from './line/dimensions';
@@ -26,13 +25,12 @@ import { AnnotationDimensions } from './types';
 export function getAnnotationAxis(
   axesSpecs: AxisSpec[],
   groupId: GroupId,
-  /** if the domainType is for the y Axis this is accounted for by chart rotations */
   domainType: AnnotationDomainType,
   chartRotation: Rotation,
 ): Position | undefined {
-  // the position of the annotation follows the opposite of the data values
-  const rotateForAnnotationsAxis = isVerticalRotation(chartRotation) || !isXDomain(domainType) ? 180 : 90;
-  return getRotatedAxisSpecForSpecId(axesSpecs, groupId, rotateForAnnotationsAxis)?.position;
+  const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId, chartRotation);
+  const isXDomainAnnotation = isXDomain(domainType);
+  return isXDomainAnnotation ? xAxis?.position : yAxis?.position;
 }
 
 /** @internal */

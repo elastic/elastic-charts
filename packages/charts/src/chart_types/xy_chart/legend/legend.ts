@@ -11,12 +11,12 @@ import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { TickFormatterOptions } from '../../../specs';
-import { mergePartial } from '../../../utils/common';
+import { mergePartial, Rotation } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { getXScaleTypeFromSpec } from '../scales/get_api_scales';
-import { getRotatedAxisSpecForSpecId, getSpecsById } from '../state/utils/spec';
+import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { LastValues } from '../state/utils/types';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
@@ -104,6 +104,7 @@ export function computeLegend(
   serialIdentifierDataSeriesMap: Record<string, DataSeries>,
   deselectedDataSeries: SeriesIdentifier[] = [],
   theme: Theme,
+  chartRotation: Rotation,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
@@ -132,8 +133,8 @@ export function computeLegend(
     const labelY1 = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name;
 
     // Use this to get axis spec w/ tick formatter
-    const axisSpec = getRotatedAxisSpecForSpecId(axesSpecs, spec.groupId);
-    const formatter = spec.tickFormat ?? axisSpec?.tickFormat ?? defaultTickFormatter;
+    const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
+    const formatter = spec.tickFormat ?? yAxis?.tickFormat ?? defaultTickFormatter;
     const { hideInLegend } = spec;
 
     const lastValue = lastValues.get(key);

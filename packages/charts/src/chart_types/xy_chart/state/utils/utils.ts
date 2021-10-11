@@ -32,6 +32,7 @@ import { renderArea } from '../../rendering/area';
 import { renderBars } from '../../rendering/bars';
 import { renderBubble } from '../../rendering/bubble';
 import { renderLine } from '../../rendering/line';
+import { isXDomain } from '../../utils/axis_utils';
 import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
 import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
@@ -55,7 +56,7 @@ import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales'
 import { ScaleConfigs } from '../selectors/get_api_scale_configs';
 import { SmallMultiplesGroupBy } from '../selectors/get_specs';
 import { isHorizontalRotation } from './common';
-import { getRotatedAxisSpecForSpecId, getSpecDomainGroupId, getSpecsById } from './spec';
+import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from './spec';
 import { ComputedGeometries, GeometriesCounts, SeriesDomainsAndData, Transform } from './types';
 
 /**
@@ -347,8 +348,11 @@ function renderGeometries(
       if (shift === -1) continue; // skip bar dataSeries if index is not available
 
       const barSeriesStyle = mergePartial(chartTheme.barSeriesStyle, spec.barSeriesStyle);
-      const axisSpec = getRotatedAxisSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
-      const valueFormatter = axisSpec?.tickFormat ?? fallBackTickFormatter;
+      const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
+      const position = yAxis?.position ? yAxis?.position : xAxis?.position;
+      const valueFormatter = isXDomain(position!, chartRotation)
+        ? xAxis?.tickFormat ?? fallBackTickFormatter
+        : yAxis?.tickFormat ?? fallBackTickFormatter;
 
       const displayValueSettings = spec.displayValueSettings
         ? { valueFormatter, ...spec.displayValueSettings }
