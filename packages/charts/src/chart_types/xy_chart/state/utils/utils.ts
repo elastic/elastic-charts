@@ -11,7 +11,7 @@ import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
 import { SettingsSpec, TickFormatter } from '../../../../specs';
-import { isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
+import { isUniqueArray, mergePartial, Position, Rotation } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import {
@@ -349,8 +349,7 @@ function renderGeometries(
 
       const barSeriesStyle = mergePartial(chartTheme.barSeriesStyle, spec.barSeriesStyle);
       const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
-      const position = yAxis?.position ? yAxis?.position : xAxis?.position;
-      const valueFormatter = isXDomain(position!, chartRotation)
+      const valueFormatter = isXDomain(yAxis?.position ?? Position.Bottom, chartRotation)
         ? xAxis?.tickFormat ?? fallBackTickFormatter
         : yAxis?.tickFormat ?? fallBackTickFormatter;
 

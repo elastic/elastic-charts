@@ -23,7 +23,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../../../state/selectors/get_tooltip_header_formatter';
-import { Rotation } from '../../../../utils/common';
+import { Position, Rotation } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { Point } from '../../../../utils/point';
@@ -164,8 +164,7 @@ function getTooltipAndHighlightFromValue(
     }
 
     // format the tooltip values
-    const position = yAxis?.position ? yAxis?.position : xAxis?.position;
-    const yAxisFormatSpec = isXDomain(position!, chartRotation) ? xAxis : yAxis;
+    const yAxisFormatSpec = isXDomain(yAxis?.position ?? Position.Bottom, chartRotation) ? xAxis : yAxis;
     const formattedTooltip = formatTooltip(
       indexedGeometry,
       spec,
@@ -178,7 +177,7 @@ function getTooltipAndHighlightFromValue(
     // format only one time the x value
     if (!header) {
       // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
-      const xAxisFormatSpec = isXDomain(xAxis?.position ?? axesSpecs[0].position, chartRotation) ? xAxis : yAxis;
+      const xAxisFormatSpec = isXDomain(xAxis?.position ?? Position.Bottom, chartRotation) ? xAxis : yAxis;
       const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
       header = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
     }
