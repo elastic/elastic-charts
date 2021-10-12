@@ -10,6 +10,7 @@ import { BasicSeriesSpec, DEFAULT_GLOBAL_ID, Spec } from '../../../../specs';
 import { Rotation } from '../../../../utils/common';
 import { GroupId } from '../../../../utils/ids';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
+import { isXDomain } from '../../utils/axis_utils';
 import { AxisSpec } from '../../utils/specs';
 import { isHorizontalRotation, isVerticalRotation } from './common';
 
@@ -22,13 +23,14 @@ export function getSpecsById<T extends Spec>(specs: T[], id: string): T | undefi
 export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId, chartRotation: Rotation = 0) {
   return axesSpecs.reduce<{ xAxis?: AxisSpec; yAxis?: AxisSpec }>((result, spec) => {
     if (
-      (spec.groupId === groupId && isHorizontalAxis(spec.position) && isHorizontalRotation(chartRotation)) ||
-      (spec.groupId === groupId && isVerticalAxis(spec.position) && isVerticalRotation(chartRotation))
+      spec.groupId === groupId &&
+      (isXDomain(spec.position, chartRotation) || (isVerticalAxis(spec.position) && isVerticalRotation(chartRotation)))
     )
       result.xAxis = spec;
     else if (
-      (spec.groupId === groupId && isVerticalAxis(spec.position) && isHorizontalRotation(chartRotation)) ||
-      (spec.groupId === groupId && isHorizontalAxis(spec.position) && isVerticalRotation(chartRotation))
+      spec.groupId === groupId &&
+      ((isVerticalAxis(spec.position) && isHorizontalRotation(chartRotation)) ||
+        (isHorizontalAxis(spec.position) && isVerticalRotation(chartRotation)))
     )
       result.yAxis = spec;
     return result;
