@@ -11,7 +11,7 @@ import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
 import { SettingsSpec, TickFormatter } from '../../../../specs';
-import { isUniqueArray, mergePartial, Position, Rotation } from '../../../../utils/common';
+import { isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import {
@@ -32,7 +32,6 @@ import { renderArea } from '../../rendering/area';
 import { renderBars } from '../../rendering/bars';
 import { renderBubble } from '../../rendering/bubble';
 import { renderLine } from '../../rendering/line';
-import { isXDomain } from '../../utils/axis_utils';
 import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
 import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
@@ -348,10 +347,8 @@ function renderGeometries(
       if (shift === -1) continue; // skip bar dataSeries if index is not available
 
       const barSeriesStyle = mergePartial(chartTheme.barSeriesStyle, spec.barSeriesStyle);
-      const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
-      const valueFormatter = isXDomain(yAxis?.position ?? Position.Bottom, chartRotation)
-        ? xAxis?.tickFormat ?? fallBackTickFormatter
-        : yAxis?.tickFormat ?? fallBackTickFormatter;
+      const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
+      const valueFormatter = yAxis?.tickFormat ?? fallBackTickFormatter;
 
       const displayValueSettings = spec.displayValueSettings
         ? { valueFormatter, ...spec.displayValueSettings }

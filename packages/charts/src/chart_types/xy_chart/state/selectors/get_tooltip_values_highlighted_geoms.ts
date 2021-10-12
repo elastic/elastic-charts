@@ -23,14 +23,13 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../../../state/selectors/get_tooltip_header_formatter';
-import { Position, Rotation } from '../../../../utils/common';
+import { Rotation } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { Point } from '../../../../utils/point';
 import { getTooltipCompareFn } from '../../../../utils/series_sort';
 import { isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltip } from '../../tooltip/tooltip';
-import { isXDomain } from '../../utils/axis_utils';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
 import { DataSeries } from '../../utils/series';
 import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
@@ -164,21 +163,12 @@ function getTooltipAndHighlightFromValue(
     }
 
     // format the tooltip values
-    const yAxisFormatSpec = isXDomain(yAxis?.position ?? Position.Bottom, chartRotation) ? xAxis : yAxis;
-    const formattedTooltip = formatTooltip(
-      indexedGeometry,
-      spec,
-      false,
-      isHighlighted,
-      hasSingleSeries,
-      yAxisFormatSpec,
-    );
+    const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, hasSingleSeries, yAxis);
 
     // format only one time the x value
     if (!header) {
       // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
-      const xAxisFormatSpec = isXDomain(xAxis?.position ?? Position.Bottom, chartRotation) ? xAxis : yAxis;
-      const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
+      const formatterAxis = tooltipHeaderFormatter ? undefined : xAxis;
       header = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
     }
 
