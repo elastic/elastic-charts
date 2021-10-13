@@ -43,8 +43,8 @@ export const Example = () => {
         position="bottom"
         tickFormat={
           (!noTickFormat && rotation === 90) || (!noTickFormat && rotation === -90)
-            ? (d: string) => `${Math.round(Number(d) / 1000)}k`
-            : undefined
+            ? (d: string) => `${Math.round(Number(d) / 1000)}k   H`
+            : (d) => `${d} H`
         }
       />
       <Axis
@@ -52,8 +52,8 @@ export const Example = () => {
         position="left"
         tickFormat={
           (!noTickFormat && rotation === 0) || (!noTickFormat && rotation === 180)
-            ? (d: string) => `${Math.round(Number(d) / 1000)}k`
-            : undefined
+            ? (d: string) => `${Math.round(Number(d) / 1000)}k   V`
+            : (d) => `${d} V`
         }
       />
     </Chart>
