@@ -80,7 +80,7 @@ const getMarkerBody = (valueCb: (v: any) => string, isVertical: boolean): LineAn
   );
 
 /** formats values correctly for any rotation/side combination */
-const looseFormatter = (d: any) => (d < 100 ? d : moment(d).format('L'));
+const looseFormatter = (d: any) => (d < 100 ? String(d) : moment(d).format('L'));
 
 export const Example = () => {
   const maxMetric = 30;

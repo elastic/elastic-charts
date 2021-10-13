@@ -26,7 +26,7 @@ export const Example = () => (
     <AreaSeries
       id="areas1"
       name="area"
-      xScaleType={ScaleType.Linear}
+      xScaleType={ScaleType.Time}
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
@@ -37,7 +37,7 @@ export const Example = () => (
     <AreaSeries
       id="areas2"
       name="area"
-      xScaleType={ScaleType.Linear}
+      xScaleType={ScaleType.Time}
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
@@ -48,7 +48,7 @@ export const Example = () => (
     <AreaSeries
       id="areas3"
       name="area"
-      xScaleType={ScaleType.Linear}
+      xScaleType={ScaleType.Time}
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}

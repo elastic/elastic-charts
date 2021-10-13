@@ -11,6 +11,11 @@ import { eachRotation } from '../helpers';
 import { common } from '../page_objects';
 
 describe('Axis stories', () => {
+  it('should switch to a 30 minute raster', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Data%20type=Base%202&knob-Data%20type_X%20-%20Axis=increasing&knob-Data%20type_Y%20-%20Axis=upDown&knob-Debug=true&knob-Fit%20domain_Y%20-%20Axis=true&knob-Legend=true&knob-Legend%20position=right&knob-Log%20base_X%20-%20Axis=common&knob-Log%20base_Y%20-%20Axis=binary&knob-Log%20min%20limit_X%20-%20Axis=1&knob-Log%20min%20limit_Y%20-%20Axis=1&knob-Minor%20grid%20lines=true&knob-Nice%20y%20ticks=true&knob-Padding_Y%20-%20Axis=0&knob-Rotation%20degree=90&knob-Rows%20in%20dataset=11&knob-Scale%20Type_X%20-%20Axis=log&knob-Scale%20Type_Y%20-%20Axis=log&knob-Series%20Type=line&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Time%20stretch=2&knob-Use%20default%20limit_X%20-%20Axis=true&knob-X%20axis%20minor%20whiskers=true&knob-bottom%20show%20overlapping%20labels=true&knob-fit=true&knob-left%20show%20overlapping%20labels=true&knob-logMinLimit=10&knob-yScaleType=linear_binary',
+    );
+  });
   it('should render proper tick count', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/axes--basic&knob-Tick Label Padding=0&knob-debug=&knob-Bottom overlap labels=&knob-Bottom overlap ticks=true&knob-Number of ticks on bottom=20&knob-Left overlap labels=&knob-Left overlap ticks=true&knob-Number of ticks on left=10',

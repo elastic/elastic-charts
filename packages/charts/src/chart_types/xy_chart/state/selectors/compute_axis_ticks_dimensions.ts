@@ -10,7 +10,7 @@ import { Scale } from '../../../../scales';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { AxisId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
 import { AxisStyle, GridLineStyle } from '../../../../utils/themes/theme';
@@ -50,7 +50,7 @@ export const getFallBackTickFormatter = createCustomCachedSelector(
 );
 
 const getUnitScales = createCustomCachedSelector([getScaleFunction, getAxisSpecsSelector], (getScale, axesSpecs) =>
-  axesSpecs.reduce<Map<string, Scale<string | number>>>((unitScales, axisSpec) => {
+  axesSpecs.reduce<Map<AxisId, Scale<string | number>>>((unitScales, axisSpec) => {
     const scale = getScale(axisSpec, [0, 1]);
     if (scale) unitScales.set(axisSpec.id, scale);
     else Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
@@ -60,11 +60,12 @@ const getUnitScales = createCustomCachedSelector([getScaleFunction, getAxisSpecs
 
 const getThemedAxesStyles = createCustomCachedSelector(
   [getChartThemeSelector, getAxesStylesSelector],
-  (chartTheme, axesStyles): Map<string, AxisStyle> =>
+  (chartTheme, axesStyles): Map<AxisId, AxisStyle> =>
     [...axesStyles.keys()].reduce((styles, id) => styles.set(id, axesStyles.get(id) ?? chartTheme.axes), new Map()),
 );
 
-type JoinedAxisData = {
+/** @internal */
+export type JoinedAxisData = {
   axisSpec: AxisSpec;
   scale: Scale<number | string>;
   axesStyle: AxisStyle;
@@ -72,10 +73,11 @@ type JoinedAxisData = {
   tickFormatter: (d: number | string) => string;
 };
 
-const getJoinedVisibleAxesData = createCustomCachedSelector(
+/** @internal */
+export const getJoinedVisibleAxesData = createCustomCachedSelector(
   [getUnitScales, getAxisSpecsSelector, getThemedAxesStyles, getFallBackTickFormatter, computeSeriesDomainsSelector],
   (unitScales, axesSpecs, themedAxesStyles, fallBackTickFormatter, { xDomain: { timeZone } }) =>
-    axesSpecs.reduce<Map<string, JoinedAxisData>>((axisData, axisSpec) => {
+    axesSpecs.reduce<Map<AxisId, JoinedAxisData>>((axisData, axisSpec) => {
       const { id, labelFormat, tickFormat, position } = axisSpec;
       const axesStyle = themedAxesStyles.get(id);
       const scale = unitScales.get(axisSpec.id);
@@ -92,29 +94,39 @@ const getJoinedVisibleAxesData = createCustomCachedSelector(
 );
 
 /** @internal */
+export const getLabelBox = (
+  axesStyle: AxisStyle,
+  scale: Scale<string | number>,
+  tickFormatter: JoinedAxisData['tickFormatter'],
+  textMeasure: TextMeasure,
+  axisSpec: AxisSpec,
+  gridLine: GridLineStyle,
+): TickLabelBounds => ({
+  ...(axesStyle.tickLabel.visible ? scale.ticks().map(tickFormatter) : []).reduce(
+    (sizes, labelText) => {
+      const bbox = textMeasure(labelText, 0, axesStyle.tickLabel.fontSize, axesStyle.tickLabel.fontFamily);
+      const rotatedBbox = computeRotatedLabelDimensions(bbox, axesStyle.tickLabel.rotation);
+      sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
+      sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
+      sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
+      sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
+      return sizes;
+    },
+    { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
+  ),
+  isHidden: axisSpec.hide && gridLine.visible,
+});
+
+/** @internal */
 export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
   [getJoinedVisibleAxesData],
-  (joinedAxesData): AxesTicksDimensions => {
-    return withTextMeasure(
+  (joinedAxesData): AxesTicksDimensions =>
+    withTextMeasure(
       (textMeasure): AxesTicksDimensions =>
         [...joinedAxesData].reduce<AxesTicksDimensions>(
-          (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, tickFormatter }]) => {
-            const maxLabelSizes = (axesStyle.tickLabel.visible ? scale.ticks().map(tickFormatter) : []).reduce(
-              (sizes, labelText) => {
-                const bbox = textMeasure(labelText, 0, axesStyle.tickLabel.fontSize, axesStyle.tickLabel.fontFamily);
-                const rotatedBbox = computeRotatedLabelDimensions(bbox, axesStyle.tickLabel.rotation);
-                sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
-                sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));
-                sizes.maxLabelTextWidth = Math.max(sizes.maxLabelTextWidth, Math.ceil(bbox.width));
-                sizes.maxLabelTextHeight = Math.max(sizes.maxLabelTextHeight, Math.ceil(bbox.height));
-                return sizes;
-              },
-              { maxLabelBboxWidth: 0, maxLabelBboxHeight: 0, maxLabelTextWidth: 0, maxLabelTextHeight: 0 },
-            );
-            return axesTicksDimensions.set(id, { ...maxLabelSizes, isHidden: axisSpec.hide && gridLine.visible });
-          },
+          (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, tickFormatter }]) =>
+            axesTicksDimensions.set(id, getLabelBox(axesStyle, scale, tickFormatter, textMeasure, axisSpec, gridLine)),
           new Map(),
         ),
-    );
-  },
+    ),
 );

@@ -79,14 +79,14 @@ export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationSt
  *
  * @param theme - primary partial theme
  * @param defaultTheme - base theme
- * @param axillaryThemes - additional themes to be merged
+ * @param auxiliaryThemes - additional themes to be merged
  *
  * @public
  */
 export function mergeWithDefaultTheme(
   theme: PartialTheme,
   defaultTheme: Theme = LIGHT_THEME,
-  axillaryThemes: PartialTheme[] = [],
+  auxiliaryThemes: PartialTheme[] = [],
 ): Theme {
-  return mergePartial(defaultTheme, theme, {}, axillaryThemes);
+  return mergePartial(defaultTheme, theme, {}, auxiliaryThemes);
 }

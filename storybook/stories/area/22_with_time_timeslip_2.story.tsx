@@ -23,6 +23,7 @@ const tickLabelStyle = { fontSize: 11, fontFamily, fill: 'rgba(0,0,0,0.8)' };
 const axisTitleColor = 'rgb(112,112,112)';
 const axisTitleFontSize = 15;
 const dataInk = 'rgba(96, 146, 192, 1)';
+/*
 const tooltipDateFormatter = (d: any) =>
   new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
@@ -31,6 +32,7 @@ const tooltipDateFormatter = (d: any) =>
     hour: 'numeric',
     minute: 'numeric',
   }).format(d);
+*/
 
 const xAxisStyle: AxisSpec['style'] = {
   tickLine: { size: 0.0001, padding: -6, ...gridStyle },
@@ -55,14 +57,16 @@ export const Example = () => {
   // const chartWidth = document.querySelector('.echContainer')?.getBoundingClientRect().width ?? 0;
   const topAxisLabelFormat = (d: any) =>
     `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
-  const midAxisLabelFormatter = (d: any) =>
-    `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { hour: 'numeric' }).format(d).padStart(2, '0')}  `;
-  const bottomAxisLabelFormatter = (d: any) =>
-    `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(d)}  `;
+  /*
+    const midAxisLabelFormatter = (d: any) =>
+      `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { hour: 'numeric' }).format(d).padStart(2, '0')}  `;
+    const bottomAxisLabelFormatter = (d: any) =>
+      `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }).format(d)}  `;
+  */
   const yAxisTitle = 'CPU utilization';
   const timeStretch = number('Time stretch', 1, {
     range: true,
@@ -74,26 +78,6 @@ export const Example = () => {
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
       <Axis
-        id="title"
-        title="System Load: CPU"
-        position={Position.Top}
-        tickFormat={() => (horizontalAxisTitle ? yAxisTitle : '')}
-        ticks={0}
-        showGridLines
-        gridLine={gridStyle}
-        style={mergePartial(xAxisStyle, {
-          axisTitle: { visible: true, fontFamily, fontSize: 24, fill: 'grey' },
-          tickLabel: horizontalAxisTitle
-            ? {
-                fill: 'rgb(64,64,64)',
-                fontSize: axisTitleFontSize,
-                padding: 20,
-                alignment: { horizontal: 'center', vertical: Position.Bottom },
-              }
-            : {},
-        })}
-      />
-      <Axis
         id="x_minor"
         position={Position.Bottom}
         showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
@@ -101,58 +85,18 @@ export const Example = () => {
         ticks={100}
         showGridLines={minorGridLines}
         gridLine={mergePartial(gridStyle, { strokeWidth: 0.1 })}
-        title="minor"
         style={mergePartial(
           xAxisStyle,
           whiskers
             ? {
-                axisTitle: { visible: true },
-
                 axisLine: { stroke: dataInk, strokeWidth: 1, visible: true },
                 tickLine: { size: shortWhiskers ? 6 : 16, padding: shortWhiskers ? 0 : -10, ...minorGridStyle },
+                axisTitle: { visible: true, fontFamily },
               }
-            : {
-                axisTitle: { visible: true },
-                tickLine: { padding: 6 },
-              },
+            : { tickLine: { padding: 6 }, axisTitle: { visible: true, fontFamily } },
         )}
         labelFormat={topAxisLabelFormat}
-      />
-      <Axis
-        id="x_major"
-        title="major"
-        position={Position.Bottom}
-        showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
-        showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
-        showDuplicatedTicks={false}
-        ticks={1}
-        showGridLines
-        gridLine={gridStyle}
-        style={mergePartial(xAxisStyle, {
-          axisTitle: { visible: true },
-          tickLabel: {
-            padding: 0,
-            offset: { x: 0, y: 0 },
-          },
-          tickLine: { size: 0.0001, padding: -6, ...gridStyle },
-        })}
-        labelFormat={midAxisLabelFormatter}
-      />
-      <Axis
-        id="x_context"
         title="time (1-minute measurements)"
-        position={Position.Bottom}
-        showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
-        showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
-        showDuplicatedTicks={false}
-        tickFormat={tooltipDateFormatter}
-        ticks={2}
-        showGridLines
-        gridLine={gridStyle}
-        style={mergePartial(xAxisStyle, {
-          axisTitle: { visible: !horizontalAxisTitle, fontFamily },
-        })}
-        labelFormat={bottomAxisLabelFormatter}
       />
       <Axis
         id="left"
