@@ -21,7 +21,7 @@ import {
   EuiButtonIcon,
 } from '@elastic/eui';
 import { boolean, number } from '@storybook/addon-knobs';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import {
   Axis,
@@ -42,6 +42,7 @@ import { getPositionKnob, getEuiPopoverPositionKnob } from '../utils/knobs';
 
 const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ series, label }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const containerRef = useRef(null);
 
   const getPanels = (series: XYChartSeriesIdentifier[]): EuiContextMenuPanelDescriptor[] => [
     {
@@ -95,6 +96,7 @@ const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ se
   const Button = (
     <button
       type="button"
+      ref={containerRef}
       style={{
         display: 'flex',
         justifyContent: 'center',
@@ -113,11 +115,13 @@ const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ se
       id="contextMenuNormal"
       button={Button}
       isOpen={popoverOpen}
-      closePopover={() => setPopoverOpen(false)}
+      closePopover={() => {
+        setPopoverOpen(false);
+        requestAnimationFrame(() => containerRef.current.focus());
+      }}
       panelPaddingSize="none"
       offset={4}
       anchorPosition={anchorPosition}
-      ownFocus
     >
       <EuiContextMenu initialPanelId={0} panels={getPanels(series as XYChartSeriesIdentifier[])} />
     </EuiPopover>
@@ -152,7 +156,14 @@ export const renderEuiColorPicker = (anchorPosition: PopoverAnchorPosition): Leg
           title="Clear color selection"
           onClick={() => {
             onChange(null);
+            anchor.focus();
             onClose();
+            // if (containerRef.current) {
+            //   console.log(containerRef);
+            // }
+            // useEffect(() => {
+            //   containerRef.current.focus();
+            // });
           }}
         />
       </EuiFlexItem>
