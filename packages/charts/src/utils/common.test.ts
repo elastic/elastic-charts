@@ -20,6 +20,7 @@ import {
   isUniqueArray,
   isDefined,
   isDefinedFrom,
+  getArrayOf,
 } from './common';
 
 describe('common utilities', () => {
@@ -1130,5 +1131,15 @@ describe('#isDefinedFrom', () => {
       isDefinedFrom(({ aa }) => aa?.a !== undefined && aa?.a !== null),
     );
     expect(result).toEqual(values.slice(0, 3));
+  });
+
+  describe('#getArrayOf', () => {
+    const obj = { a: 'test' };
+    it('should return array from single value', () => {
+      expect(getArrayOf(obj)).toEqual([obj]);
+    });
+    it('should return array from array of values', () => {
+      expect(getArrayOf([obj])).toEqual([obj]);
+    });
   });
 });

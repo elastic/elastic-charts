@@ -24,6 +24,7 @@ import { LegendPath } from '../state/actions/legend';
 import { SFProps, useSpecFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
 import {
+  getArrayOf,
   HorizontalAlignment,
   LayoutDirection,
   Position,
@@ -45,6 +46,7 @@ import {
   TooltipType,
   settingsBuildProps,
 } from './constants';
+import { useChartsContext } from './context';
 
 /** @public */
 export interface LayerValue {
@@ -685,22 +687,26 @@ export interface OrderBy {
  * Adds settings spec to chart specs
  * @public
  */
-export const Settings = function (
-  props: SFProps<
-    SettingsSpec,
-    keyof typeof settingsBuildProps['overrides'],
-    keyof typeof settingsBuildProps['defaults'],
-    keyof typeof settingsBuildProps['optionals'],
-    keyof typeof settingsBuildProps['requires']
-  >,
-) {
+export const Settings = function ({
+  theme: userTheme = [],
+  ...props
+}: SFProps<
+  SettingsSpec,
+  keyof typeof settingsBuildProps['overrides'],
+  keyof typeof settingsBuildProps['defaults'],
+  keyof typeof settingsBuildProps['optionals'],
+  keyof typeof settingsBuildProps['requires']
+>) {
   const { defaults, overrides } = settingsBuildProps;
-  useSpecFactory<SettingsSpec>({ ...defaults, ...props, ...overrides });
+  const { theme: contextTheme = [], ...contextSettings } = useChartsContext()?.settings ?? {};
+  const theme = [...getArrayOf(userTheme), ...getArrayOf(contextTheme)];
+
+  useSpecFactory<SettingsSpec>({ ...defaults, ...contextSettings, ...props, theme, ...overrides });
   return null;
 };
 
 /** @public */
-export type SettingsProp = ComponentProps<typeof Settings>;
+export type SettingsProps = ComponentProps<typeof Settings>;
 
 /** @internal */
 export function isPointerOutEvent(event: PointerEvent | null | undefined): event is PointerOutEvent {

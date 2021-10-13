@@ -274,6 +274,15 @@ export function isArrayOrSet<T>(value: any): value is Array<T> | Set<T> {
   return Array.isArray(value) || value instanceof Set;
 }
 
+/**
+ * Returns an array of values given single value or array of values
+ * @internal
+ */
+export function getArrayOf<T>(value?: T | T[]): T[] {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
 /** @internal */
 export function isNil(value: any): value is null | undefined {
   return value === null || value === undefined;

@@ -41,8 +41,7 @@ ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElemen
 
 function pageTemplate(imports, routes, urls) {
   return `
-import React, { Suspense } from 'react';
-import { ThemeIdProvider, BackgroundIdProvider } from '../../storybook/use_base_theme';
+import React, { Suspense, useMemo } from 'react';
 import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
 
 export function VRTPage() {
@@ -52,6 +51,7 @@ export function VRTPage() {
     setParams,
   } = useGlobalsParameters();
   const urlParams = new URL(window.location.toString()).searchParams;
+  const contextValue = useMemo(() => getContext(themeId, backgroundId), [themeId, backgroundId]);
   ${imports.join('\n  ')}
 
   const path = urlParams.get('path');
@@ -68,13 +68,11 @@ export function VRTPage() {
     </>);
   }
   return (
-    <ThemeIdProvider value={themeId as any}>
-      <BackgroundIdProvider value={backgroundId}>
-        <Suspense fallback={<div>Loading...</div>}>
-          ${routes.join('\n          ')}
-        </Suspense>
-      </BackgroundIdProvider>
-    </ThemeIdProvider>
+    <ElasticChartsProvider value={contextValue}>
+      <Suspense fallback={<div>Loading...</div>}>
+        ${routes.join('\n          ')}
+      </Suspense>
+    </ElasticChartsProvider>
   );
 }
 
