@@ -12,7 +12,6 @@ import React from 'react';
 import { AreaSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const automatedSeries = boolean('Use the default generated series types of charts for screen readers', true);

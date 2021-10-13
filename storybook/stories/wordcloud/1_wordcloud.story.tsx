@@ -15,7 +15,6 @@ import { WeightFn, WordModel } from '@elastic/charts/src/chart_types/wordcloud/l
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { palettes as euiPalettes } from '@elastic/charts/src/utils/themes/colors';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const text =
   'Webtwo ipsum sifteo twones chegg lijit meevee spotify, joukuu wakoopa greplin. Sclipo octopart wufoo, balihoo. Kiko groupon fleck revver blyve joyent dogster, zoodles zooomr scribd dogster mog. Zinch orkut jabber trulia, sclipo. Chumby imvu rovio ning zoho akismet napster, kippt zillow mzinga zoho. ' +

@@ -27,7 +27,6 @@ import {
 } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
 // for testing purposes only

@@ -12,7 +12,6 @@ import React from 'react';
 import { Axis, Chart, DomainPaddingUnit, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { getKnobsFromEnum } from '../utils/knobs';
 
 export const Example = () => {
@@ -49,7 +48,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis
         domain={{

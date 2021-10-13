@@ -12,8 +12,6 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
-
 const today = Date.now();
 const UTC_DATE = DateTime.fromISO('2019-01-01T00:00:00.000Z').toMillis();
 const UTC_PLUS8_DATE = DateTime.fromISO('2019-01-01T00:00:00.000+08:00', {
@@ -74,7 +72,7 @@ export const Example = () => {
   }
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="time" position={Position.Bottom} tickFormat={tooltipFn} />
       <Axis id="y" position={Position.Left} />
       <LineSeries

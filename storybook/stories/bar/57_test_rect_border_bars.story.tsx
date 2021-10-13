@@ -10,7 +10,6 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   return (

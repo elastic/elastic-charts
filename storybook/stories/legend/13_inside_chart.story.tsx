@@ -24,7 +24,6 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const data = dg.generateGroupedSeries(10, 20);

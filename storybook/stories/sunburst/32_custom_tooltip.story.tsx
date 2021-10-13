@@ -13,7 +13,6 @@ import { Chart, Datum, Partition, PartitionLayout, Settings, CustomTooltip as CT
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { getPlacementKnob, getFallbackPlacementsKnob, getBoundaryKnob } from '../utils/knobs';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
 
@@ -41,7 +40,7 @@ export const Example = () => {
   };
   return (
     <Chart>
-      <Settings showLegend legendMaxDepth={1} tooltip={tooltipOptions} baseTheme={useBaseTheme()} />
+      <Settings showLegend legendMaxDepth={1} tooltip={tooltipOptions} />
       <Partition
         id="spec_1"
         data={mocks.sunburst}

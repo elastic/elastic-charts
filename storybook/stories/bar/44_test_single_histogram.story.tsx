@@ -20,8 +20,6 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
-
 // for testing purposes only
 export const Example = () => {
   const formatter = timeFormatter(niceTimeFormatByDay(1));
@@ -34,7 +32,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings xDomain={xDomain} baseTheme={useBaseTheme()} />
+      <Settings xDomain={xDomain} />
       <Axis
         id="bottom"
         title="timestamp per 1 minute"

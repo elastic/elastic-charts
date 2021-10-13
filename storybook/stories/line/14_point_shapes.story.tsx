@@ -23,7 +23,6 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { renderEuiColorPicker } from '../legend/11_legend_actions.story';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));

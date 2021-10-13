@@ -15,7 +15,6 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 
@@ -26,7 +25,7 @@ const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => c
 
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings />
     <Partition
       id="spec_1"
       data={mocks.pie.map((d: any, i: number) => (i ? d : { ...d, exportVal: 0 }))}

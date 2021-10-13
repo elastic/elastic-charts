@@ -13,7 +13,6 @@ import React from 'react';
 import { Chart, Heatmap, Settings } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const data = boolean('filter dataset', true)

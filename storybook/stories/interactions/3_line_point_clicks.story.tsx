@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),

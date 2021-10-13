@@ -13,7 +13,6 @@ import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings, time
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -29,7 +28,7 @@ export const Example = () => {
   const useFunctions = boolean('use fn accessors', false);
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis
         id="bottom"
         title="timestamp per 1 minute"

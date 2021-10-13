@@ -25,7 +25,6 @@ import {
   PointStyleAccessor,
 } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const hasThreshold = boolean('threshold', true);

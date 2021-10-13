@@ -11,8 +11,6 @@ import React from 'react';
 
 import { AreaSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
-
 export const Example = () => {
   const data = [
     { g: 'css', x: 1614092400000, y: 13 },
@@ -69,7 +67,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <AreaSeries
         id="test3"
         stackMode="percentage"

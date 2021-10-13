@@ -12,7 +12,6 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const showLegend = boolean('Show legend', true, 'Y axis');

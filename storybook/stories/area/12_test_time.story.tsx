@@ -12,8 +12,6 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
-
 const dateFormatter = timeFormatter('HH:mm');
 
 // for testing purposes only
@@ -32,7 +30,7 @@ export const Example = () => {
   ];
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="bottom" title="index" position={Position.Bottom} tickFormat={dateFormatter} />
       <Axis
         id="left"

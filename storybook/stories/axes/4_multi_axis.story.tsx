@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 function createThemeAction(title: string, min: number, max: number, value: number) {
   return number(
@@ -65,7 +64,7 @@ export const Example = () => {
   const seriesGroup2 = 'group2';
   return (
     <Chart size={[500, 300]}>
-      <Settings showLegend={false} theme={customTheme} debug={boolean('debug', true)} baseTheme={useBaseTheme()} />
+      <Settings showLegend={false} theme={customTheme} debug={boolean('debug', true)} />
       {renderAxisWithOptions(Position.Top, seriesGroup1, false)}
       {renderAxisWithOptions(Position.Top, seriesGroup2, true)}
       {renderAxisWithOptions(Position.Left, seriesGroup1, false)}

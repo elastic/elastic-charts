@@ -11,8 +11,6 @@ import React from 'react';
 
 import { BarSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
-
 export const Example = () => {
   const toggleSpec = boolean('toggle bar spec', true);
   const data1 = [
@@ -26,7 +24,7 @@ export const Example = () => {
   const specId = toggleSpec ? 'bars1' : 'bars2';
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <BarSeries
         id={specId}
         name="Simple bar series"

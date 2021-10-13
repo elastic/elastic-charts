@@ -23,7 +23,6 @@ import {
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm');
 
@@ -40,7 +39,7 @@ export const Example = () => {
   const y1AccessorFormat = text('y1AccessorFormat', '');
   return (
     <Chart>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
       <Axis
         id="bottom"
         title="timestamp per 1 minute"

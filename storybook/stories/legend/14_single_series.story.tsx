@@ -12,7 +12,6 @@ import React from 'react';
 import { BarSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { getPositionKnob } from '../utils/knobs';
 
 export const Example = () => {

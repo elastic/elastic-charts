@@ -16,7 +16,6 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { countryDimension, productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
@@ -25,7 +24,7 @@ const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, 
 
 export const Example = () => (
   <Chart>
-    <Settings showLegend baseTheme={useBaseTheme()} />
+    <Settings showLegend />
     <Partition
       id="spec_1"
       data={mocks.sunburst}

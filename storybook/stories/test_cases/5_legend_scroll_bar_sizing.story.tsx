@@ -10,8 +10,6 @@ import React from 'react';
 
 import { Chart, Axis, Position, BarSeries, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
-
 const data = [
   { g: 'AE', x: '2021-04-06 00:00', y: 1 },
   { g: 'AE', x: '2021-04-06 03:00', y: 0 },
@@ -64,7 +62,7 @@ const data = [
 export const Example = () => {
   return (
     <Chart>
-      <Settings showLegend baseTheme={useBaseTheme()} />
+      <Settings showLegend />
       <Axis id="count" position={Position.Left} />
       <Axis id="time" position={Position.Bottom} integersOnly />
       <BarSeries

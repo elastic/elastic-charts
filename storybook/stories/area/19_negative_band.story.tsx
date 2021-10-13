@@ -11,7 +11,6 @@ import React from 'react';
 
 import { AreaSeries, Axis, Chart, Fit, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const scaleType = select(

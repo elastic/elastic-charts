@@ -24,7 +24,6 @@ import {
 } from '@elastic/charts';
 import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/axis_type_utils';
 
-import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob, getPositionKnob } from '../../utils/knobs';
 
 const annotationStyle = {
@@ -96,7 +95,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings debug={debug} showLegend={showLegend} rotation={rotation} baseTheme={useBaseTheme()} />
+      <Settings debug={debug} showLegend={showLegend} rotation={rotation} />
       <Axis
         id="count"
         integersOnly

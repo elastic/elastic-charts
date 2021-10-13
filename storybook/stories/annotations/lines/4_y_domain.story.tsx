@@ -22,7 +22,6 @@ import {
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
-import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob, arrayKnobs } from '../../utils/knobs';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
@@ -46,7 +45,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
+      <Settings debug={debug} rotation={rotation} />
       <LineAnnotation
         id="annotation_1"
         domainType={AnnotationDomainType.YDomain}

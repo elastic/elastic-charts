@@ -24,7 +24,6 @@ import { CustomAnnotationTooltip } from '@elastic/charts/src/chart_types/xy_char
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
-import { useBaseTheme } from '../../../use_base_theme';
 import {
   arrayKnobs,
   getBoundaryKnob,
@@ -67,7 +66,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings rotation={rotation} baseTheme={useBaseTheme()} />
+      <Settings rotation={rotation} />
       <LineAnnotation
         id="annotation_1"
         domainType={AnnotationDomainType.XDomain}

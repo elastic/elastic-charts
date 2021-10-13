@@ -12,7 +12,6 @@ import React from 'react';
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
 import { Position } from '@elastic/charts/src/utils/common';
 
-import { useBaseTheme } from '../../../use_base_theme';
 
 const getKnobs = () => {
   const minY = number('min y', 0);
@@ -38,7 +37,7 @@ export const Example = () => {
   return (
     <Chart>
       <RectAnnotation id="rect" dataValues={[{ coordinates: xAxisKnobs }]} style={{ fill: 'red' }} />
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
       <Axis
         domain={{

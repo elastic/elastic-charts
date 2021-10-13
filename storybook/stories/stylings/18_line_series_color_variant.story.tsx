@@ -12,7 +12,6 @@ import { Axis, LineSeries, Chart, Position, ScaleType, Settings, PartialTheme } 
 import { ColorVariant } from '@elastic/charts/src/utils/common';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const customTheme: PartialTheme = {

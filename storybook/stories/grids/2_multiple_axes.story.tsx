@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, GridLineStyle, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 function generateGridLineStyle(group: string, gridColor = 'purple'): GridLineStyle {
   const groupId = `${group} axis`;
@@ -74,7 +73,7 @@ export const Example = () => {
 
   return (
     <Chart size={[500, 300]}>
-      <Settings debug={boolean('debug', false)} baseTheme={useBaseTheme()} />
+      <Settings debug={boolean('debug', false)} />
       <Axis
         id="left1"
         title="Left axis 1"

@@ -11,7 +11,6 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const data1 = [
@@ -71,7 +70,7 @@ export const Example = () => {
   ];
   return (
     <Chart renderer="canvas">
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis
         id="left"

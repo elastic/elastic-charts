@@ -13,7 +13,6 @@ import React from 'react';
 import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 

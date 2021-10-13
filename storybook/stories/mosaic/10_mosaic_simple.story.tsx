@@ -23,7 +23,6 @@ import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/c
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, colorBrewerCategoricalPastel12B, regionLookup } from '../utils/utils';
 
 const productLookup: Record<string, { label: string; position: number }> = {

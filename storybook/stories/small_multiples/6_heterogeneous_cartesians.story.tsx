@@ -28,8 +28,6 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
-
 const dg = new SeededDataGenerator();
 const numOfDays = 7;
 function generateData() {
@@ -68,7 +66,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings onElementClick={onElementClick} showLegend={showLegend} baseTheme={useBaseTheme()} />
+      <Settings onElementClick={onElementClick} showLegend={showLegend} />
       <Axis id="time" position={Position.Bottom} gridLine={{ visible: false }} />
       <Axis id="y" title="Day of week" position={Position.Left} gridLine={{ visible: false }} />
 

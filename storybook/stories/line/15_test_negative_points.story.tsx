@@ -12,7 +12,6 @@ import React from 'react';
 
 import { LineSeries, Chart, ScaleType, Settings, Position, Axis } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const negative = boolean('use negative values', true);
@@ -35,7 +34,7 @@ export const Example = () => {
   });
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="y" position={Position.Left} />
       <Axis id="x" position={Position.Bottom} />
       <LineSeries fit="linear" id="line" xScaleType={ScaleType.Time} yScaleType={yScaleType} data={data} />

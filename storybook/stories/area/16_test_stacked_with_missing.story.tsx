@@ -10,11 +10,9 @@ import React from 'react';
 
 import { Chart, CurveType, AreaSeries, Position, Axis, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
-
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings />
     <Axis id="bottom" position={Position.Bottom} />
     <Axis id="left" position={Position.Left} />
     <AreaSeries

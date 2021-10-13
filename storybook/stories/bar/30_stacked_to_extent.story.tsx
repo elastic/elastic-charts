@@ -11,14 +11,13 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const fit = boolean('fit Y domain to data', true);
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis
         id="left2"

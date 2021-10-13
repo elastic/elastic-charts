@@ -12,7 +12,6 @@ import React from 'react';
 
 import { Axis, LineSeries, Chart, Position, ScaleType, Settings, Direction } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 /**
  * Data to defined consistent order of series when using shuffle

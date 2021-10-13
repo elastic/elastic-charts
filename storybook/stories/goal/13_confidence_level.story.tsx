@@ -13,7 +13,6 @@ import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
 import { Color } from '../../../packages/charts/src/common/colors';
-import { useBaseTheme } from '../../use_base_theme';
 
 const subtype = GoalSubtype.Goal;
 
@@ -31,7 +30,7 @@ const bandFillColor = (x: number): Color => colorMap[x];
 
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings />
     <Goal
       id="spec_1"
       subtype={subtype}

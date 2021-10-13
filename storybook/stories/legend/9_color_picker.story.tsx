@@ -24,8 +24,6 @@ import {
 } from '@elastic/charts';
 import { BARCHART_1Y1G } from '@elastic/charts/src/utils/data_samples/test_dataset';
 
-import { useBaseTheme } from '../../use_base_theme';
-
 const onChangeAction = action('onChange');
 
 export const Example = () => {
@@ -71,7 +69,7 @@ export const Example = () => {
   CustomColorPicker.displayName = 'CustomColorPicker';
   return (
     <Chart>
-      <Settings showLegend legendColorPicker={CustomColorPicker} baseTheme={useBaseTheme()} />
+      <Settings showLegend legendColorPicker={CustomColorPicker} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

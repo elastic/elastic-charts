@@ -37,7 +37,6 @@ import {
 } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { getPositionKnob, getEuiPopoverPositionKnob } from '../utils/knobs';
 
 const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ series, label }) => {

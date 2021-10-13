@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const minBarHeight = number('minBarHeight', 5);
@@ -28,7 +27,7 @@ export const Example = () => {
   ];
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="bottom" title="Bottom" position={Position.Bottom} />
       <Axis id="left" title="Left" position={Position.Left} />
       <BarSeries

@@ -26,7 +26,6 @@ import {
 import { Config } from '@elastic/charts/src/chart_types/heatmap/layout/types/config_types';
 import { SWIM_LANE_DATA } from '@elastic/charts/src/utils/data_samples/test_anomaly_swim_lane';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const [selection, setSelection] = useState<{ x: (string | number)[]; y: (string | number)[] } | undefined>();

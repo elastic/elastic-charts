@@ -17,7 +17,6 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, productLookup, regionLookup } from '../utils/utils';
 
 const interpolator = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.5]));
@@ -32,7 +31,7 @@ const countryCount = countries.length;
 
 export const Example = () => (
   <Chart>
-    <Settings showLegend baseTheme={useBaseTheme()} />
+    <Settings showLegend />
     <Partition
       id="spec_1"
       data={mocks.sunburst}

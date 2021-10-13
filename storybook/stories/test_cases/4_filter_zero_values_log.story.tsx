@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Chart, Axis, Position, AreaSeries, ScaleType, LogBase, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { logFormatter } from '../utils/formatters';
 
 /**
@@ -22,7 +21,7 @@ export const Example = () => {
   const logMinLimit = number('logMinLimit', 0.001);
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis
         id="count"
         position={Position.Left}

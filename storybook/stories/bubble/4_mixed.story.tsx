@@ -13,7 +13,6 @@ import React from 'react';
 import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, LineSeries } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const rng = getRandomNumberGenerator();

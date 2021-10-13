@@ -21,7 +21,6 @@ import {
   AxisStyle,
 } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(
@@ -58,7 +57,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings theme={theme} debug={boolean('debug', true)} baseTheme={useBaseTheme()} />
+      <Settings theme={theme} debug={boolean('debug', true)} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks style={customStyle} />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <AreaSeries

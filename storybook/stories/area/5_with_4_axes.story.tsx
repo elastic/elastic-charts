@@ -11,13 +11,11 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
-
 const dateFormatter = timeFormatter('HH:mm');
 
 export const Example = () => (
   <Chart>
-    <Settings debug={false} baseTheme={useBaseTheme()} />
+    <Settings debug={false} />
     <Axis
       id="bottom"
       title="timestamp per 1 minute"

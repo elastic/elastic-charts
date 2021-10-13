@@ -13,7 +13,6 @@ import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, AxisSpec } from
 import { mergePartial } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const minorGridStyle = { stroke: 'black', strokeWidth: 0.15, opacity: 1 };
@@ -66,7 +65,7 @@ export const Example = () => {
   const yAxisTitle = 'CPU utilization';
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis
         id="title"
         title="System Load: CPU"

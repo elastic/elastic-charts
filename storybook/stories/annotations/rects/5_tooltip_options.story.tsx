@@ -21,7 +21,6 @@ import {
 import { CustomAnnotationTooltip } from '@elastic/charts/src/chart_types/xy_chart/annotations/types';
 import { Position } from '@elastic/charts/src/utils/common';
 
-import { useBaseTheme } from '../../../use_base_theme';
 import { getBoundaryKnob, getChartRotationKnob, getFallbackPlacementsKnob, getPlacementKnob } from '../../utils/knobs';
 
 export const Example = () => {
@@ -71,7 +70,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings rotation={rotation} baseTheme={useBaseTheme()} />
+      <Settings rotation={rotation} />
       <RectAnnotation
         dataValues={dataValues}
         id="rect"

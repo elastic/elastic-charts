@@ -12,7 +12,6 @@ import React from 'react';
 import { Axis, Chart, DomainPaddingUnit, Position, ScaleType, Settings } from '@elastic/charts';
 import { computeContinuousDataDomain } from '@elastic/charts/src/utils/domain';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
 
 const logDomains = (data: any[], customDomain: any) => {
@@ -75,7 +74,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="top" position={Position.Top} title="Top axis" />
       <Axis
         id="left"

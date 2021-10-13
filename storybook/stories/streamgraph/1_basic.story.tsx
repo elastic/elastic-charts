@@ -12,7 +12,6 @@ import React from 'react';
 import { AreaSeries, Chart, ScaleType, StackMode, Axis, Position, CurveType, Settings } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const stackMode = select<StackMode>(
@@ -25,7 +24,7 @@ export const Example = () => {
   );
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="x" position={Position.Bottom} />
       <Axis id="y" position={Position.Left} />
       <AreaSeries

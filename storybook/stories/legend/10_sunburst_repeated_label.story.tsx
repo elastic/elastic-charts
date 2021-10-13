@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Chart, LegendStrategy, Partition, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const flatLegend = boolean('flatLegend', false);

@@ -21,7 +21,6 @@ import {
 } from '@elastic/charts';
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';
 
 const categoricalColors = colorBrewerCategoricalPastel12B.slice(3);
@@ -56,7 +55,7 @@ const sortPredicate = ([name1, node1]: ArrayEntry, [name2, node2]: ArrayEntry) =
 export const Example = () => {
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Partition
         id="spec_1"
         data={data}

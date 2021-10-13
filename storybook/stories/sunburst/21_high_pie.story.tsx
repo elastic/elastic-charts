@@ -12,12 +12,11 @@ import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/cha
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings />
     <Partition
       id="spec_1"
       data={mocks.manyPie}

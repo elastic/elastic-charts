@@ -13,7 +13,6 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { BARCHART_2Y2G } from '@elastic/charts/src/utils/data_samples/test_dataset';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const onLegendItemListeners = {
   onLegendItemOver: action('onLegendItemOver'),

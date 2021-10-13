@@ -12,7 +12,6 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, RecursivePartial, AxisStyle } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const dg = new SeededDataGenerator();
@@ -26,7 +25,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings debug baseTheme={useBaseTheme()} />
+      <Settings debug />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks style={customStyle} />
       <AreaSeries
         id="lines"

@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Axis, BarSeries, Settings, Chart, Position, ScaleType } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const data1 = [
@@ -49,7 +48,7 @@ export const Example = () => {
 
   return (
     <Chart renderer="canvas">
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="bottom" position={Position.Bottom} />
       <Axis
         id="left y"

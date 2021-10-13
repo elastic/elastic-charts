@@ -21,7 +21,6 @@ import {
   TooltipValueFormatter,
 } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),

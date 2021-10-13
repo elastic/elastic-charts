@@ -26,7 +26,6 @@ import {
 } from '@elastic/charts';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 
-import { useBaseTheme } from '../../../use_base_theme';
 
 export const Example = () => {
   const onAnnotationClick = boolean('onAnnotationClick listener', true);

@@ -26,7 +26,6 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const debug = boolean('debug', false);

@@ -11,12 +11,11 @@ import React from 'react';
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings />
     <Partition
       id="spec_1"
       data={[]}

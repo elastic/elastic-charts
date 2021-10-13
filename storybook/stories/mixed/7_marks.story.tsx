@@ -14,7 +14,6 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const getRandomNumber = getRandomNumberGenerator();
 const data1 = new Array(100).fill(0).map((_, x) => ({

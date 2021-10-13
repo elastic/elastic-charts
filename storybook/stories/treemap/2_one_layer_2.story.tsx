@@ -15,14 +15,13 @@ import { arrayToLookup } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, colorBrewerCategoricalPastel12 } from '../utils/utils';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings />
     <Partition
       id="spec_1"
       data={mocks.pie}

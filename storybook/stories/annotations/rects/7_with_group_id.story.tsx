@@ -12,7 +12,6 @@ import React from 'react';
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
 import { Position } from '@elastic/charts/src/utils/common';
 
-import { useBaseTheme } from '../../../use_base_theme';
 
 const getKnobs = () => {
   const enabled = boolean('enable annotation', true);
@@ -49,7 +48,7 @@ export const Example = () => {
           style={{ fill: 'red' }}
         />
       )}
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="bottom" groupId="group2" position={Position.Bottom} title="Bottom (groupId=group2)" />
       <Axis id="left" groupId="group1" position={Position.Left} title="Left (groupId=group1)" />
       <Axis id="top" groupId="group1" position={Position.Top} title="Top (groupId=group1)" />

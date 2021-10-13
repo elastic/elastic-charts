@@ -21,7 +21,6 @@ import {
   Settings,
 } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 function generateGridLineStyle(group: string, gridColor = 'purple'): GridLineStyle {
   const groupId = `${group} axis`;
@@ -96,7 +95,7 @@ export const Example = () => {
   const integersOnlyRight = boolean('right axis show only intger values', false, 'right axis');
   return (
     <Chart>
-      <Settings debug={boolean('debug', false)} theme={theme} baseTheme={useBaseTheme()} />
+      <Settings debug={boolean('debug', false)} theme={theme} />
       <Axis
         id="bottom"
         position={Position.Bottom}

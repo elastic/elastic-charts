@@ -21,13 +21,12 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const formatter = timeFormatter(niceTimeFormatByDay(1));
   return (
     <Chart>
-      <Settings debug={boolean('debug', false)} baseTheme={useBaseTheme()} />
+      <Settings debug={boolean('debug', false)} />
       <Axis
         id="bottom"
         position={Position.Bottom}

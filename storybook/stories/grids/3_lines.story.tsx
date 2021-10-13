@@ -24,7 +24,6 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { getTooltipTypeKnob } from '../utils/knobs';
 
 const dg = new SeededDataGenerator();

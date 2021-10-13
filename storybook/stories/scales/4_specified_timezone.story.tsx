@@ -11,11 +11,9 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
-
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings />
     <Axis id="time" position={Position.Bottom} tickFormat={(d) => DateTime.fromMillis(d, { zone: 'utc-6' }).toISO()} />
     <Axis id="y" position={Position.Left} />
     <LineSeries

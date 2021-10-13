@@ -20,7 +20,6 @@ import {
   timeFormatter,
 } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const TEST_DATASET_DISCOVER = {
   xAxisLabel: 'timestamp per 30 seconds',
@@ -50,7 +49,7 @@ export const Example = () => {
   const useCustomMinInterval = boolean('use custom minInterval of 30s', true);
   return (
     <Chart>
-      <Settings xDomain={useCustomMinInterval ? xDomain : undefined} baseTheme={useBaseTheme()} />
+      <Settings xDomain={useCustomMinInterval ? xDomain : undefined} />
       <Axis id="discover-histogram-left-axis" position={Position.Left} title={TEST_DATASET_DISCOVER.yAxisLabel} />
       <Axis
         id="discover-histogram-bottom-axis"

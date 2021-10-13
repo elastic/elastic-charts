@@ -29,7 +29,6 @@ import {
 import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/axis_type_utils';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const numOfDays = 90;

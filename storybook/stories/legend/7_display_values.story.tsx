@@ -12,7 +12,6 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } from '@elastic/charts';
 import { TSVB_DATASET } from '@elastic/charts/src/utils/data_samples/test_dataset_tsvb';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { arrayKnobs } from '../utils/knobs';
 
 export const Example = () => {

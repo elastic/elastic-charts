@@ -22,7 +22,6 @@ import {
 } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const xAccessorFn: AccessorFn = (d) => d.x;
@@ -35,7 +34,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings onElementClick={onElementClick} showLegend legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings onElementClick={onElementClick} showLegend legendPosition={Position.Right} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

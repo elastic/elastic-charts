@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 const vGroups = {

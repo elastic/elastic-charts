@@ -23,7 +23,6 @@ import {
 } from '@elastic/charts';
 import { LogBase, LogScaleOptions } from '@elastic/charts/src/scales/scale_continuous';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { logBaseMap, logFormatter } from '../utils/formatters';
 import { getKnobsFromEnum } from '../utils/knobs';
 
@@ -128,7 +127,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings xDomain={xLogKnobs} baseTheme={useBaseTheme()} />
+      <Settings xDomain={xLogKnobs} />
       <Axis id="y" position={Position.Left} domain={yLogKnobs} tickFormat={logFormatter(yLogKnobs.logBase)} />
       <Axis
         id="x"

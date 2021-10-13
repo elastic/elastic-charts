@@ -12,7 +12,6 @@ import React, { useRef } from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, TooltipProps } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const rng = getRandomNumberGenerator();
@@ -66,7 +65,7 @@ export const Example = () => {
       <div ref={white} style={{ backgroundColor: 'white', padding: 30, height: '100%' }}>
         <div ref={blue} style={{ backgroundColor: 'blue', padding: 30, height: '100%' }}>
           <Chart>
-            <Settings tooltip={{ boundary, boundaryPadding, offset }} baseTheme={useBaseTheme()} />
+            <Settings tooltip={{ boundary, boundaryPadding, offset }} />
             <Axis id="bottom" hide={!showAxes} position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
             <Axis
               id="left"

@@ -13,7 +13,6 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings, Fit, StackMode } from '@elastic/charts';
 import { getRandomNumberGenerator, getRNGSeed } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const randomizeBoundingData = getRNGSeed() ? false : boolean('randomize bounding data', false);

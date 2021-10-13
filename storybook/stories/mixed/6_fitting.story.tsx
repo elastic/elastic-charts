@@ -22,7 +22,6 @@ import {
   SeriesType,
 } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const dataTypes = {

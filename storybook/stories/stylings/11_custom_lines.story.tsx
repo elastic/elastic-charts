@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings, LineSeriesStyle } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
   return number(

@@ -12,7 +12,6 @@ import { BarSeries, Chart, ScaleType, Settings, PartialTheme } from '@elastic/ch
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const data2 = dg.generateSimpleSeries(40);
@@ -29,7 +28,7 @@ export const Example = () => {
   return (
     <div>
       <Chart size={{ width: 100, height: 50 }}>
-        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
+        <Settings tooltip={TooltipType.None} theme={theme} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -40,7 +39,7 @@ export const Example = () => {
         />
       </Chart>
       <Chart size={{ height: 50 }}>
-        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
+        <Settings tooltip={TooltipType.None} theme={theme} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -51,7 +50,7 @@ export const Example = () => {
         />
       </Chart>
       <Chart size={['50%', 50]}>
-        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
+        <Settings tooltip={TooltipType.None} theme={theme} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -62,7 +61,7 @@ export const Example = () => {
         />
       </Chart>
       <Chart size={[undefined, 50]}>
-        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
+        <Settings tooltip={TooltipType.None} theme={theme} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -73,7 +72,7 @@ export const Example = () => {
         />
       </Chart>
       <Chart size={50}>
-        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
+        <Settings tooltip={TooltipType.None} theme={theme} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}

@@ -11,7 +11,6 @@ import React from 'react';
 
 import { ScaleType, Position, Chart, Axis, GroupBy, SmallMultiples, Settings, BarSeries } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const data = [
   { x: 30, split: 'Cloudy', y: 9 },
@@ -58,7 +57,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings theme={{ scales: { barsPadding, histogramPadding } }} showLegend baseTheme={useBaseTheme()} />
+      <Settings theme={{ scales: { barsPadding, histogramPadding } }} showLegend />
       <Axis id="x" position={Position.Bottom} />
       <Axis
         id="y"

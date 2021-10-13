@@ -10,7 +10,6 @@ import React from 'react';
 
 import { Chart, Datum, LegendStrategy, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { config, getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
 import { plasma18 as palette } from '../utils/utils';
 

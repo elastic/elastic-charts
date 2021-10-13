@@ -12,7 +12,6 @@ import React from 'react';
 
 import { Chart, Position, Settings, Partition, PartitionLayout } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 import {
   indexInterpolatedFillColor,
   interpolatorCET2s,

@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, BinAgg, Direction } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const data = [
   { x1: 'b', x2: 2, g1: 'false', g2: 'Canada', y1: 19, y2: 22 },

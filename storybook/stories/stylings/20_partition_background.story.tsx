@@ -14,7 +14,6 @@ import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/c
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { useBaseTheme } from '../../use_base_theme';
 import {
   discreteColor,
   colorBrewerCategoricalStark9,
@@ -32,7 +31,7 @@ export const Example = () => {
   };
   return (
     <Chart>
-      <Settings theme={bGColorDisabled ? undefined : partialColorTheme} baseTheme={useBaseTheme()} />
+      <Settings theme={bGColorDisabled ? undefined : partialColorTheme} />
       <Partition
         id="spec_1"
         data={mocks.miniSunburst}

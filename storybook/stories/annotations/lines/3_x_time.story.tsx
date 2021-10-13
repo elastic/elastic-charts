@@ -24,7 +24,6 @@ import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
@@ -56,7 +55,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
+      <Settings debug={debug} rotation={rotation} />
       <LineAnnotation
         id="annotation_1"
         domainType={AnnotationDomainType.XDomain}

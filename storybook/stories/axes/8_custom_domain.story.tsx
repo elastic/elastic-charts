@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, LIGHT_THEME, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const customXDomain = boolean('customize X domain', true, 'X axis');

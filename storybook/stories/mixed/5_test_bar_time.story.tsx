@@ -12,7 +12,6 @@ import React from 'react';
 import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { timeFormatter } from '@elastic/charts/src/utils/data/formatters';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
@@ -42,7 +41,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} />
       <Axis
         id="bottom"
         position={Position.Bottom}

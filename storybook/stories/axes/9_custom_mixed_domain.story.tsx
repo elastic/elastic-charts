@@ -11,7 +11,6 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { arrayKnobs } from '../utils/knobs';
 
 export const Example = () => {
@@ -29,7 +28,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings showLegend={false} xDomain={xDomain} baseTheme={useBaseTheme()} />
+      <Settings showLegend={false} xDomain={xDomain} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis
         id="left"

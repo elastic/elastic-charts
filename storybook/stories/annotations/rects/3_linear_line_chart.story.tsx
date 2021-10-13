@@ -13,7 +13,6 @@ import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings, RectAnnot
 import { Position } from '@elastic/charts/src/utils/common';
 import { BandedAccessorType } from '@elastic/charts/src/utils/geometry';
 
-import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 export const Example = () => {
@@ -75,7 +74,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
+      <Settings debug={debug} rotation={rotation} />
       <RectAnnotation dataValues={dataValuesGreen} id="rect3" style={{ fill: 'lightgreen' }} />
       <RectAnnotation dataValues={dataValuesBlue} id="rect2" style={{ fill: 'blue' }} />
       <RectAnnotation dataValues={dataValuesRed} id="rect1" style={{ fill: 'red' }} />

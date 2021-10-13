@@ -12,7 +12,6 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
-import { useBaseTheme } from '../../use_base_theme';
 import {
   getBoundaryKnob,
   getChartRotationKnob,
@@ -53,7 +52,7 @@ export const Example = () => {
   return (
     <div className="buffer" style={{ width: '100%', height: '100%', paddingLeft: 80, paddingRight: 80 }}>
       <Chart>
-        <Settings rotation={rotation} tooltip={tooltipOptions} showLegend={showLegend} baseTheme={useBaseTheme()} />
+        <Settings rotation={rotation} tooltip={tooltipOptions} showLegend={showLegend} />
         <Axis id="bottom" hide={!showAxes} position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
         <Axis
           id="left2"

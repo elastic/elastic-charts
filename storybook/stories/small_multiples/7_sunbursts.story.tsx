@@ -25,7 +25,6 @@ import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/c
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalPastel12, countryLookup, productLookup, regionLookup } from '../utils/utils';
 
 const data = mocks.sunburst; // .filter((d) => countryLookup[d.dest].continentCountry.slice(0, 2) === 'eu');

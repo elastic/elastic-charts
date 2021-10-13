@@ -13,14 +13,13 @@ import { Chart, Datum, Partition, PartitionLayout, Settings, ShapeTreeNode } fro
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, colorBrewerCategoricalStark9, productLookup } from '../utils/utils';
 
 export const Example = () => {
   const showDebug = boolean('show table for debugging', false);
   return (
     <Chart className="story-chart">
-      <Settings baseTheme={useBaseTheme()} debug={showDebug} showLegend flatLegend showLegendExtra />
+      <Settings debug={showDebug} showLegend flatLegend showLegendExtra />
       <Partition
         id="spec_1"
         data={mocks.pie.slice(0, 4)}

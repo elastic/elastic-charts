@@ -12,7 +12,6 @@ import React from 'react';
 import { Chart, Datum, Partition, PartitionLayout, PrimitiveValue, Settings } from '@elastic/charts';
 import data from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock.json';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { config } from '../utils/hierarchical_input_utils';
 import { discreteColor, viridis18 as palette } from '../utils/utils';
 
@@ -32,7 +31,7 @@ export const Example = () => {
   const clipText = boolean("Allow, and clip, texts that wouldn't otherwise fit", true);
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Partition
         id="spec_1"
         data={data.facts}

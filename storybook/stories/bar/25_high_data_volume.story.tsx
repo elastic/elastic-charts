@@ -12,7 +12,6 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const dg = new SeededDataGenerator();
@@ -22,7 +21,7 @@ export const Example = () => {
   };
   return (
     <Chart>
-      <Settings tooltip={tooltipProps} baseTheme={useBaseTheme()} />
+      <Settings tooltip={tooltipProps} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

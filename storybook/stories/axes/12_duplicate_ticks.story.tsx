@@ -23,7 +23,6 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
@@ -42,7 +41,7 @@ export const Example = () => {
   const duplicateTicksInAxis = boolean('Show duplicate ticks in x axis', false);
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings />
       <Axis id="bottom" position={Position.Bottom} tickFormat={formatter} showDuplicatedTicks={duplicateTicksInAxis} />
       <Axis
         id="left"

@@ -29,7 +29,6 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { Color } from '../../../packages/charts/src/common/colors';
-import { useBaseTheme } from '../../use_base_theme';
 import { productLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
 export const Example = () => {

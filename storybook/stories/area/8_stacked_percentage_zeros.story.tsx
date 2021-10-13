@@ -10,11 +10,10 @@ import React from 'react';
 
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, niceTimeFormatter, StackMode } from '@elastic/charts';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => (
   <Chart>
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+    <Settings showLegend showLegendExtra legendPosition={Position.Right} />
     <Axis
       id="bottom"
       position={Position.Bottom}

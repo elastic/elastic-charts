@@ -30,7 +30,6 @@ import {
 } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 
 const getRandomNumber = getRandomNumberGenerator();
 const dg = new SeededDataGenerator();

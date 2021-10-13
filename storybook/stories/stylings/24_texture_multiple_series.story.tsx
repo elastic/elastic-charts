@@ -12,7 +12,6 @@ import React, { useState } from 'react';
 import { Axis, Chart, CurveType, Position, TexturedStyles, Settings, TextureShape } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator, getRandomEntryFn } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
 
 const group = {
