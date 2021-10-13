@@ -129,6 +129,27 @@ describe('Bar series stories', () => {
     });
   });
 
+  describe('value label positioning and formatting', () => {
+    eachRotation.describe((rotation) => {
+      describe.each<NonNullable<DisplayValueStyle['alignment']>['vertical']>([
+        VerticalAlignment.Middle,
+        VerticalAlignment.Top,
+        VerticalAlignment.Bottom,
+      ])('Vertical Alignment - %s', (verticalAlignment) => {
+        describe.each<NonNullable<DisplayValueStyle['alignment']>['horizontal']>([
+          HorizontalAlignment.Left,
+          HorizontalAlignment.Center,
+          HorizontalAlignment.Right,
+        ])('Horizontal Alignment - %s', (horizontalAlignment) => {
+          const url = `http://localhost:9001/?path=/story/bar-chart--data-value&globals=theme:light&knob-Fixed%20font%20size=10&knob-Horizontal%20alignment=${horizontalAlignment}&knob-Max%20font%20size=25&knob-Min%20font%20size=10&knob-Rotation%20degree=${rotation}&knob-Vertical%20alignment=${verticalAlignment}&knob-chartRotation=${rotation}&knob-data%20volume%20size=s&knob-offsetX=0&knob-offsetY=0&knob-show%20value%20label=true&knob-value%20border%20color=rgba(0,0,0,1)&knob-value%20border%20width=1.5`;
+          it('place the value labels on the correct area', async () => {
+            await common.expectChartAtUrlToMatchScreenshot(url);
+          });
+        });
+      });
+    });
+  });
+
   describe('functional accessors', () => {
     it('functional accessors with fieldName', async () => {
       await common.expectChartAtUrlToMatchScreenshot(

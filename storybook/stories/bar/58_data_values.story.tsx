@@ -6,18 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { boolean, select } from '@storybook/addon-knobs';
+import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, ScaleType, Settings, PartialTheme } from '@elastic/charts';
 
-import { GITHUB_DATASET_HIGH_VALUES } from '../../../packages/charts/src/utils/data_samples/test_dataset_github';
+import { BARCHART_1Y0G_LINEAR } from '../../../packages/charts/src/utils/data_samples/test_dataset';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const noTickFormat = boolean('turn off special tickFormat', false);
   const rotation = select(
-    'Rotation degree',
+    'Chart rotation',
     {
       '0 deg(default)': 0,
       '90 deg': 90,
@@ -26,36 +25,50 @@ export const Example = () => {
     },
     0,
   );
+
+  const theme: PartialTheme = {
+    barSeriesStyle: {
+      displayValue: {
+        fontSize: 10,
+        fill: 'black',
+        alignment: {
+          horizontal: select(
+            'Horizontal alignment',
+            {
+              Default: undefined,
+              Left: 'left',
+              Center: 'center',
+              Right: 'right',
+            },
+            undefined,
+          ),
+          vertical: select(
+            'Vertical alignment',
+            {
+              Default: undefined,
+              Top: 'top',
+              Middle: 'middle',
+              Bottom: 'bottom',
+            },
+            undefined,
+          ),
+        },
+      },
+    },
+  };
+
   return (
     <Chart>
-      <Settings theme={[useBaseTheme()]} rotation={rotation} />
+      <Settings theme={theme} baseTheme={useBaseTheme()} rotation={rotation} />
       <BarSeries
-        id="issues"
-        name="Issues"
-        data={GITHUB_DATASET_HIGH_VALUES}
-        xAccessor="vizType"
-        yAccessors={['count']}
-        xScaleType={ScaleType.Ordinal}
+        id="bars"
+        data={BARCHART_1Y0G_LINEAR}
+        yAccessors={['y']}
+        xScaleType={ScaleType.Linear}
         displayValueSettings={{ showValueLabel: true }}
       />
-      <Axis
-        id="bottom-axis"
-        position="bottom"
-        tickFormat={
-          (!noTickFormat && rotation === 90) || (!noTickFormat && rotation === -90)
-            ? (d: string) => `${Math.round(Number(d) / 1000)}k   H`
-            : (d) => `${d} H`
-        }
-      />
-      <Axis
-        id="left-axis"
-        position="left"
-        tickFormat={
-          (!noTickFormat && rotation === 0) || (!noTickFormat && rotation === 180)
-            ? (d: string) => `${Math.round(Number(d) / 1000)}k   V`
-            : (d) => `${d} V`
-        }
-      />
+      <Axis id="bottom-axis" position="bottom" tickFormat={(d) => `${d} H`} />
+      <Axis id="left-axis" position="left" tickFormat={(d) => `${d} V`} />
     </Chart>
   );
 };
