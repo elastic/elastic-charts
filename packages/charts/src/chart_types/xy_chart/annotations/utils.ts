@@ -7,6 +7,7 @@
  */
 
 import { Scale } from '../../../scales';
+import { SettingsSpec } from '../../../specs';
 import { Rotation, Position } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';
@@ -15,6 +16,7 @@ import { AxisStyle } from '../../../utils/themes/theme';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { isHorizontalRotation } from '../state/utils/common';
 import { getAxesSpecForSpecId } from '../state/utils/spec';
+import { ComputedGeometries } from '../state/utils/types';
 import { AnnotationDomainType, AnnotationSpec, AxisSpec, isLineAnnotation } from '../utils/specs';
 import { computeLineAnnotationDimensions } from './line/dimensions';
 import { computeRectAnnotationDimensions } from './rect/dimensions';
@@ -117,9 +119,8 @@ export function invertTransformedCursor(
 /** @internal */
 export function computeAnnotationDimensions(
   annotations: AnnotationSpec[],
-  chartRotation: Rotation,
-  yScales: Map<GroupId, Scale<number>>,
-  xScale: Scale<number | string>,
+  { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
+  { scales: { xScale, yScales } }: Pick<ComputedGeometries, 'scales'>,
   axesSpecs: AxisSpec[],
   isHistogramModeEnabled: boolean,
   smallMultipleScales: SmallMultipleScales,

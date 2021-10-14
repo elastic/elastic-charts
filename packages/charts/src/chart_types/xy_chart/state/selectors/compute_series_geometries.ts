@@ -9,8 +9,8 @@
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { ComputedGeometries } from '../utils/types';
 import { computeSeriesGeometries } from '../utils/utils';
+import { getFallBackTickFormatter } from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { getSeriesColorsSelector } from './get_series_color_map';
@@ -20,34 +20,15 @@ import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 /** @internal */
 export const computeSeriesGeometriesSelector = createCustomCachedSelector(
   [
-    getSettingsSpecSelector,
     getSeriesSpecsSelector,
     computeSeriesDomainsSelector,
     getSeriesColorsSelector,
     getChartThemeSelector,
+    getSettingsSpecSelector,
     getAxisSpecsSelector,
     computeSmallMultipleScalesSelector,
     isHistogramModeEnabledSelector,
+    getFallBackTickFormatter,
   ],
-  (
-    settingsSpec,
-    seriesSpecs,
-    seriesDomainsAndData,
-    seriesColors,
-    chartTheme,
-    axesSpecs,
-    smallMultiplesScales,
-    isHistogramMode,
-  ): ComputedGeometries => {
-    return computeSeriesGeometries(
-      seriesSpecs,
-      seriesDomainsAndData,
-      seriesColors,
-      chartTheme,
-      settingsSpec.rotation,
-      axesSpecs,
-      smallMultiplesScales,
-      isHistogramMode,
-    );
-  },
+  computeSeriesGeometries,
 );

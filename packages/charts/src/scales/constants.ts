@@ -13,6 +13,10 @@ import { $Values } from 'utility-types';
  * @public
  */
 export const ScaleType = Object.freeze({
+  /**
+   * Treated as linear scale with ticks in base 2
+   */
+  LinearBinary: 'linear_binary' as const,
   Linear: 'linear' as const,
   Ordinal: 'ordinal' as const,
   Log: 'log' as const,

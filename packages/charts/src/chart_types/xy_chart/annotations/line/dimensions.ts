@@ -10,7 +10,7 @@ import { Colors } from '../../../../common/colors';
 import { Line } from '../../../../geoms/types';
 import { Scale } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
-import { isNil, Position, Rotation } from '../../../../utils/common';
+import { Position, Rotation } from '../../../../utils/common';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { mergeWithDefaultAnnotationLine } from '../../../../utils/themes/merge_utils';
@@ -52,25 +52,20 @@ function computeYDomainLineAnnotationDimensions(
     const { dataValue } = datum;
 
     // avoid rendering invalid annotation value
-    if (dataValue === null || dataValue === undefined || dataValue === '') {
-      return;
-    }
+    if (!dataValue && dataValue !== 0) return;
 
     const annotationValueYPosition = yScale.scale(dataValue);
     // avoid rendering non scalable annotation values
-    if (annotationValueYPosition === null) {
-      return;
-    }
+    if (Number.isNaN(annotationValueYPosition)) return;
 
     // avoid rendering annotation with values outside the scale domain
-    if (dataValue < domainStart || dataValue > domainEnd) {
-      return;
-    }
+    if (dataValue < domainStart || dataValue > domainEnd) return;
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
-        const top = vertical.scaleOrThrow(verticalValue);
-        const left = horizontal.scaleOrThrow(horizontalValue);
+        const top = vertical.scale(verticalValue);
+        const left = horizontal.scale(horizontalValue);
+        if (Number.isNaN(top + left)) return;
 
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;
@@ -144,7 +139,7 @@ function computeXDomainLineAnnotationDimensions(
   dataValues.forEach((datum: LineAnnotationDatum, i) => {
     const { dataValue } = datum;
     let annotationValueXPosition = xScale.scale(dataValue);
-    if (isNil(annotationValueXPosition)) {
+    if (Number.isNaN(annotationValueXPosition)) {
       return;
     }
     if (isContinuousScale(xScale) && typeof dataValue === 'number') {
@@ -156,7 +151,7 @@ function computeXDomainLineAnnotationDimensions(
       if (isHistogramMode) {
         const offset = computeXScaleOffset(xScale, true);
         const pureScaledValue = xScale.pureScale(dataValue);
-        if (typeof pureScaledValue === 'number') {
+        if (!Number.isNaN(pureScaledValue)) {
           // Number.isFinite is regrettably not a type guard yet https://github.com/microsoft/TypeScript/issues/10038#issuecomment-924115831
           annotationValueXPosition = pureScaledValue - offset;
         }
@@ -176,10 +171,12 @@ function computeXDomainLineAnnotationDimensions(
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
-        if (annotationValueXPosition === null) return;
+        if (Number.isNaN(annotationValueXPosition)) return;
 
-        const top = vertical.scaleOrThrow(verticalValue);
-        const left = horizontal.scaleOrThrow(horizontalValue);
+        const top = vertical.scale(verticalValue);
+        const left = horizontal.scale(horizontalValue);
+        if (Number.isNaN(top + left)) return;
+
         const width = isHorizontalChartRotation ? horizontal.bandwidth : vertical.bandwidth;
         const height = isHorizontalChartRotation ? vertical.bandwidth : horizontal.bandwidth;
 

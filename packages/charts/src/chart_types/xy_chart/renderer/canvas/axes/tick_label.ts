@@ -7,7 +7,7 @@
  */
 
 import { AxisProps } from '.';
-import { AxisTick, getTickLabelProps } from '../../../utils/axis_utils';
+import { AxisTick, getTickLabelPosition } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';
 
@@ -19,7 +19,7 @@ export function renderTickLabel(
   { axisSpec: { position }, dimension, size, debug, axisStyle }: AxisProps,
 ) {
   const labelStyle = axisStyle.tickLabel;
-  const tickLabelProps = getTickLabelProps(
+  const tickLabelProps = getTickLabelPosition(
     axisStyle,
     tick.position,
     position,

@@ -7,9 +7,8 @@
  */
 
 import { LegendPositionConfig } from '../../specs/settings';
-import { BBox } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, LayoutDirection } from '../../utils/common';
-import { Margins } from '../../utils/dimensions';
+import { Margins, Size } from '../../utils/dimensions';
 import { LegendStyle as ThemeLegendStyle } from '../../utils/themes/theme';
 
 /** @internal */
@@ -35,6 +34,7 @@ export interface LegendListStyle {
   paddingRight?: number | string;
   gridTemplateColumns?: string;
 }
+
 /**
  * Get the legend list style
  * @internal
@@ -63,11 +63,12 @@ export function getLegendListStyle(
     }),
   };
 }
+
 /**
  * Get the legend global style
  * @internal
  */
-export function getLegendStyle({ direction, floating }: LegendPositionConfig, size: BBox, margin: number): LegendStyle {
+export function getLegendStyle({ direction, floating }: LegendPositionConfig, size: Size, margin: number): LegendStyle {
   if (direction === LayoutDirection.Vertical) {
     const width = `${size.width}px`;
     return {

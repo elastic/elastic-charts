@@ -11,6 +11,7 @@ import { ScaleType } from './constants';
 
 /** @public */
 export type ScaleContinuousType =
+  | typeof ScaleType.LinearBinary
   | typeof ScaleType.Linear
   | typeof ScaleType.Time
   | typeof ScaleType.Log
@@ -36,8 +37,8 @@ export interface Scale<T> {
    */
   step: number;
   ticks: () => T[];
-  scale: (value?: PrimitiveValue) => number | null;
-  pureScale: (value?: PrimitiveValue) => number | null;
+  scale: (value?: PrimitiveValue) => number;
+  pureScale: (value?: PrimitiveValue) => number;
   invert: (value: number) => T;
   invertWithStep: (
     value: number,
@@ -60,8 +61,6 @@ export interface Scale<T> {
   unit?: string;
   isInverted: boolean;
   barsPadding: number;
-
-  scaleOrThrow(value?: PrimitiveValue): number;
 }
 
 /** @internal */
@@ -69,4 +68,4 @@ export { ScaleBand } from './scale_band';
 /** @internal */
 export { ScaleContinuous } from './scale_continuous';
 
-export { LogBase, LogScaleOptions } from './scale_continuous';
+export { LogScaleOptions } from './types';

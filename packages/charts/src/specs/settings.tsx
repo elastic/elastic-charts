@@ -582,30 +582,20 @@ export interface SettingsSpec extends Spec, LegendSpec {
   roundHistogramBrushValues?: boolean;
   /**
    * Boolean to allow brushing on last bucket even when outside domain or limit to end of domain.
-   *
+   * Should apply only for histogram charts
    * e.g.
    * A brush selection range of [1.23, 3.6] with a domain of [1, 2, 3]
    *
    * - when true returns [1.23, 3.6]
    * - when false returns [1.23, 3]
    *
-   * @defaultValue false
+   * @defaultValue true
    */
-  allowBrushingLastHistogramBucket?: boolean;
+  allowBrushingLastHistogramBin: boolean;
   /**
    * Orders ordinal x values
    */
   orderOrdinalBinsBy?: OrderBy;
-
-  /**
-   * A compare function or an object of compare functions to sort
-   * series in different part of the chart like tooltip, legend and
-   * the rendering order on the screen. To assign the same compare function.
-   *  @defaultValue the series are sorted in order of appearance in the chart configuration
-   *  @alpha
-   */
-  // sortSeriesBy?: SeriesCompareFn | SortSeriesByConfig;
-
   /**
    * Render component for no results UI
    */
@@ -735,19 +725,12 @@ export function isFollowTooltipType(type: TooltipType) {
 /** @internal */
 export function getTooltipType(settings: SettingsSpec, externalTooltip = false): TooltipType {
   const defaultType = TooltipType.VerticalCursor;
-  if (externalTooltip) {
-    return getExternalTooltipType(settings);
-  }
+  if (externalTooltip) return getExternalTooltipType(settings);
+
   const { tooltip } = settings;
-  if (tooltip === undefined || tooltip === null) {
-    return defaultType;
-  }
-  if (isTooltipType(tooltip)) {
-    return tooltip;
-  }
-  if (isTooltipProps(tooltip)) {
-    return tooltip.type || defaultType;
-  }
+  if (tooltip === undefined || tooltip === null) return defaultType;
+  if (isTooltipType(tooltip)) return tooltip;
+  if (isTooltipProps(tooltip)) return tooltip.type || defaultType;
   return defaultType;
 }
 
@@ -757,15 +740,9 @@ export function getTooltipType(settings: SettingsSpec, externalTooltip = false):
  */
 export function getShowNullValues(settings: SettingsSpec): TooltipProps['showNullValues'] {
   const { tooltip } = settings;
-  if (tooltip === undefined || tooltip === null) {
-    return DEFAULT_TOOLTIP_CONFIG.showNullValues;
-  }
-  if (isTooltipType(tooltip)) {
-    return DEFAULT_TOOLTIP_CONFIG.showNullValues;
-  }
-  if (isTooltipProps(tooltip)) {
-    return tooltip.showNullValues ?? DEFAULT_TOOLTIP_CONFIG.showNullValues;
-  }
+  if (tooltip === undefined || tooltip === null) return DEFAULT_TOOLTIP_CONFIG.showNullValues;
+  if (isTooltipType(tooltip)) return DEFAULT_TOOLTIP_CONFIG.showNullValues;
+  if (isTooltipProps(tooltip)) return tooltip.showNullValues ?? DEFAULT_TOOLTIP_CONFIG.showNullValues;
 }
 
 /**

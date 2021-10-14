@@ -40,6 +40,21 @@ export const Example = () => {
 
   const bandFillColor = (x: number): Color => colorMap[x];
 
+  const angleStart =
+    number('angleStart (n * π/8)', 8, {
+      step: 1,
+      min: -2 * 8,
+      max: 2 * 8,
+    }) *
+    (Math.PI / 8);
+  const angleEnd =
+    number('angleEnd (n * π/8)', 0, {
+      step: 1,
+      min: -2 * 8,
+      max: 2 * 8,
+    }) *
+    (Math.PI / 8);
+
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
@@ -57,7 +72,7 @@ export const Example = () => {
         labelMinor="(thousand USD)  "
         centralMajor={`${actual}`}
         centralMinor=""
-        config={{ angleStart: Math.PI, angleEnd: 0 }}
+        config={{ angleStart, angleEnd }}
       />
     </Chart>
   );

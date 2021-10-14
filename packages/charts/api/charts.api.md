@@ -626,7 +626,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption' | 'allowBrushingLastHistogramBin';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -1328,19 +1328,9 @@ export interface LineStyle {
     visible: boolean;
 }
 
-// @public (undocumented)
-export const LogBase: Readonly<{
-    Common: "common";
-    Binary: "binary";
-    Natural: "natural";
-}>;
-
-// @public
-export type LogBase = $Values<typeof LogBase>;
-
 // @public
 export interface LogScaleOptions {
-    logBase?: LogBase;
+    logBase?: number;
     logMinLimit?: number;
 }
 
@@ -1357,7 +1347,7 @@ export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationSt
 export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationStyle>): RectAnnotationStyle;
 
 // @public
-export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, axillaryThemes?: PartialTheme[]): Theme;
+export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, auxiliaryThemes?: PartialTheme[]): Theme;
 
 // @public (undocumented)
 export const MODEL_KEY = "parent";
@@ -1711,7 +1701,7 @@ export type Rotation = 0 | 90 | -90 | 180;
 export type ScaleBandType = ScaleOrdinalType;
 
 // @public (undocumented)
-export type ScaleContinuousType = typeof ScaleType.Linear | typeof ScaleType.Time | typeof ScaleType.Log | typeof ScaleType.Sqrt;
+export type ScaleContinuousType = typeof ScaleType.LinearBinary | typeof ScaleType.Linear | typeof ScaleType.Time | typeof ScaleType.Log | typeof ScaleType.Sqrt;
 
 // @public (undocumented)
 export type ScaleOrdinalType = typeof ScaleType.Ordinal;
@@ -1724,6 +1714,7 @@ export interface ScalesConfig {
 
 // @public
 export const ScaleType: Readonly<{
+    LinearBinary: "linear_binary";
     Linear: "linear";
     Ordinal: "ordinal";
     Log: "log";
@@ -1850,7 +1841,7 @@ export const Settings: React_2.FunctionComponent<SettingsSpecProps>;
 
 // @public
 export interface SettingsSpec extends Spec, LegendSpec {
-    allowBrushingLastHistogramBucket?: boolean;
+    allowBrushingLastHistogramBin: boolean;
     // (undocumented)
     animateData: boolean;
     ariaDescribedBy?: string;

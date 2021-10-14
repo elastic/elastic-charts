@@ -372,12 +372,12 @@ describe('common utilities', () => {
     });
 
     test('should NOT return original base structure', () => {
-      expect(mergePartial(base)).not.toBe(base);
+      expect(mergePartial(base, undefined, { mergeOptionalPartialValues: false })).not.toBe(base);
     });
 
     test('should override string value in base', () => {
       const partial: PartialTestType = { string: 'test' };
-      const newBase = mergePartial(base, partial);
+      const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false });
       expect(newBase).toEqual({
         ...newBase,
         string: partial.string,
@@ -386,7 +386,7 @@ describe('common utilities', () => {
 
     test('should override boolean value in base', () => {
       const partial: PartialTestType = { boolean: true };
-      const newBase = mergePartial(base, partial);
+      const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false });
       expect(newBase).toEqual({
         ...newBase,
         boolean: partial.boolean,
@@ -395,7 +395,7 @@ describe('common utilities', () => {
 
     test('should override number value in base', () => {
       const partial: PartialTestType = { number: 3 };
-      const newBase = mergePartial(base, partial);
+      const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false });
       expect(newBase).toEqual({
         ...newBase,
         number: partial.number,
@@ -404,7 +404,7 @@ describe('common utilities', () => {
 
     test('should override complex array value in base', () => {
       const partial: PartialTestType = { array1: [{ string: 'test' }] };
-      const newBase = mergePartial(base, partial);
+      const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false });
       expect(newBase).toEqual({
         ...newBase,
         array1: partial.array1,
@@ -413,7 +413,7 @@ describe('common utilities', () => {
 
     test('should override simple array value in base', () => {
       const partial: PartialTestType = { array2: [4, 5, 6] };
-      const newBase = mergePartial(base, partial);
+      const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false });
       expect(newBase).toEqual({
         ...newBase,
         array2: partial.array2,
@@ -422,7 +422,7 @@ describe('common utilities', () => {
 
     test('should override nested values in base', () => {
       const partial: PartialTestType = { nested: { number: 5 } };
-      const newBase = mergePartial(base, partial);
+      const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false });
       expect(newBase).toEqual({
         ...newBase,
         nested: {
@@ -434,7 +434,7 @@ describe('common utilities', () => {
 
     test('should not mutate base structure', () => {
       const partial: PartialTestType = { number: 3 };
-      mergePartial(base, partial);
+      mergePartial(base, partial, { mergeOptionalPartialValues: false });
       expect(base).toEqual(baseClone);
     });
 
@@ -442,71 +442,27 @@ describe('common utilities', () => {
       it('should merge top-level Maps', () => {
         const result = mergePartial(
           new Map([
-            [
-              'a',
-              {
-                name: 'Nick',
-              },
-            ],
-            [
-              'b',
-              {
-                name: 'Marco',
-              },
-            ],
+            ['a', { name: 'Nick' }],
+            ['b', { name: 'Marco' }],
           ]),
-          new Map([
-            [
-              'b',
-              {
-                name: 'rachel',
-              },
-            ],
-          ]),
+          new Map([['b', { name: 'rachel' }]]),
           {
             mergeMaps: true,
+            mergeOptionalPartialValues: false,
           },
         );
         expect(result).toEqual(
           new Map([
-            [
-              'a',
-              {
-                name: 'Nick',
-              },
-            ],
-            [
-              'b',
-              {
-                name: 'rachel',
-              },
-            ],
+            ['a', { name: 'Nick' }],
+            ['b', { name: 'rachel' }],
           ]),
         );
       });
 
       it('should merge nested Maps with partail', () => {
         const result = mergePartial(
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'cat',
-                },
-              ],
-            ]),
-          },
-          {
-            test: new Map([
-              [
-                'dog',
-                {
-                  name: 'dog',
-                },
-              ],
-            ]),
-          },
+          { test: new Map([['cat', { name: 'cat' }]]) },
+          { test: new Map([['dog', { name: 'dog' }]]) },
           {
             mergeMaps: true,
             mergeOptionalPartialValues: true,
@@ -514,82 +470,30 @@ describe('common utilities', () => {
         );
         expect(result).toEqual({
           test: new Map([
-            [
-              'cat',
-              {
-                name: 'cat',
-              },
-            ],
-            [
-              'dog',
-              {
-                name: 'dog',
-              },
-            ],
+            ['cat', { name: 'cat' }],
+            ['dog', { name: 'dog' }],
           ]),
         });
       });
 
       it('should merge nested Maps', () => {
         const result = mergePartial(
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'toby',
-                },
-              ],
-            ]),
-          },
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'snickers',
-                },
-              ],
-            ]),
-          },
+          { test: new Map([['cat', { name: 'toby' }]]) },
+          { test: new Map([['cat', { name: 'snickers' }]]) },
           {
             mergeMaps: true,
+            mergeOptionalPartialValues: false,
           },
         );
         expect(result).toEqual({
-          test: new Map([
-            [
-              'cat',
-              {
-                name: 'snickers',
-              },
-            ],
-          ]),
+          test: new Map([['cat', { name: 'snickers' }]]),
         });
       });
 
       it('should merge nested Maps with mergeOptionalPartialValues', () => {
         const result = mergePartial(
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'toby',
-                },
-              ],
-            ]),
-          },
-          {
-            test: new Map([
-              [
-                'dog',
-                {
-                  name: 'lucky',
-                },
-              ],
-            ]),
-          },
+          { test: new Map([['cat', { name: 'toby' }]]) },
+          { test: new Map([['dog', { name: 'lucky' }]]) },
           {
             mergeMaps: true,
             mergeOptionalPartialValues: true,
@@ -597,140 +501,59 @@ describe('common utilities', () => {
         );
         expect(result).toEqual({
           test: new Map([
-            [
-              'cat',
-              {
-                name: 'toby',
-              },
-            ],
-            [
-              'dog',
-              {
-                name: 'lucky',
-              },
-            ],
+            ['cat', { name: 'toby' }],
+            ['dog', { name: 'lucky' }],
           ]),
         });
       });
 
       it('should merge nested Maps from additionalPartials', () => {
         const result = mergePartial(
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'toby',
-                },
-              ],
-            ]),
-          },
+          { test: new Map([['cat', { name: 'toby' }]]) },
           undefined,
           {
             mergeMaps: true,
           },
           [
             {
-              test: new Map([
-                [
-                  'cat',
-                  {
-                    name: 'snickers',
-                  },
-                ],
-              ]),
+              test: new Map([['cat', { name: 'snickers' }]]),
             },
           ],
         );
         expect(result).toEqual({
           test: new Map([
-            [
-              'cat',
-              {
-                name: 'toby',
-              },
-            ],
-            [
-              'cat',
-              {
-                name: 'snickers',
-              },
-            ],
+            ['cat', { name: 'toby' }],
+            ['cat', { name: 'snickers' }],
           ]),
         });
       });
 
       it('should replace Maps when mergeMaps is false', () => {
         const result = mergePartial(
+          { test: new Map([['cat', { name: 'toby' }]]) },
+          { test: new Map([['dog', { name: 'snickers' }]]) },
           {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'toby',
-                },
-              ],
-            ]),
-          },
-          {
-            test: new Map([
-              [
-                'dog',
-                {
-                  name: 'snickers',
-                },
-              ],
-            ]),
+            mergeOptionalPartialValues: false,
           },
         );
         expect(result).toEqual({
-          test: new Map([
-            [
-              'dog',
-              {
-                name: 'snickers',
-              },
-            ],
-          ]),
+          test: new Map([['dog', { name: 'snickers' }]]),
         });
       });
 
       it('should replace Maps when mergeMaps is false from additionalPartials', () => {
         const result = mergePartial(
-          {
-            test: new Map([
-              [
-                'cat',
-                {
-                  name: 'toby',
-                },
-              ],
-            ]),
-          },
+          { test: new Map([['cat', { name: 'toby' }]]) },
           undefined,
-          undefined,
+          { mergeOptionalPartialValues: false },
           [
             {
-              test: new Map([
-                [
-                  'dog',
-                  {
-                    name: 'snickers',
-                  },
-                ],
-              ]),
+              test: new Map([['dog', { name: 'snickers' }]]),
             },
           ],
         );
         expect(result).toEqual({
-          test: new Map([
-            [
-              'dog',
-              {
-                name: 'snickers',
-              },
-            ],
-          ]),
+          test: new Map([['dog', { name: 'snickers' }]]),
         });
       });
     });
@@ -744,6 +567,7 @@ describe('common utilities', () => {
           {
             animals: new Set(['cat', 'dog', 'bird']),
           },
+          { mergeOptionalPartialValues: false },
         );
         expect(result).toEqual({
           animals: new Set(['cat', 'dog', 'bird']),
@@ -777,7 +601,7 @@ describe('common utilities', () => {
             animals: new Set(['cat', 'dog']),
           },
           {},
-          {},
+          { mergeOptionalPartialValues: false },
           [
             {
               animals: new Set(['cat', 'dog', 'bird']),
@@ -794,7 +618,7 @@ describe('common utilities', () => {
       test('should override string value in base with first partial value', () => {
         const partial: PartialTestType = { string: 'test1' };
         const partials: PartialTestType[] = [{ string: 'test2' }, { string: 'test3' }];
-        const newBase = mergePartial(base, partial, {}, partials);
+        const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
           string: partial.string,
@@ -804,7 +628,7 @@ describe('common utilities', () => {
       test('should override string values in base with first and second partial value', () => {
         const partial: PartialTestType = { number: 4 };
         const partials: PartialTestType[] = [{ string: 'test2' }];
-        const newBase = mergePartial(base, partial, {}, partials);
+        const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
           number: partial.number,
@@ -818,7 +642,7 @@ describe('common utilities', () => {
           { number: 10, string: 'test2' },
           { number: 20, string: 'nope', boolean: true },
         ];
-        const newBase = mergePartial(base, partial, {}, partials);
+        const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
           number: partial.number,
@@ -830,7 +654,7 @@ describe('common utilities', () => {
       test('should override complex array value in base', () => {
         const partial: PartialTestType = { array1: [{ string: 'test1' }] };
         const partials: PartialTestType[] = [{ array1: [{ string: 'test2' }] }];
-        const newBase = mergePartial(base, partial, {}, partials);
+        const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
           array1: partial.array1,
@@ -840,7 +664,7 @@ describe('common utilities', () => {
       test('should override complex array value in base second partial', () => {
         const partial: PartialTestType = {};
         const partials: PartialTestType[] = [{}, { array1: [{ string: 'test2' }] }];
-        const newBase = mergePartial(base, partial, {}, partials);
+        const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
           array1: partials[1].array1,
@@ -850,7 +674,7 @@ describe('common utilities', () => {
       test('should override simple array value in base', () => {
         const partial: PartialTestType = { array2: [4, 5, 6] };
         const partials: PartialTestType[] = [{ array2: [7, 8, 9] }];
-        const newBase = mergePartial(base, partial, {}, partials);
+        const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
           array2: partial.array2,
@@ -860,7 +684,7 @@ describe('common utilities', () => {
       test('should override simple array value in base with partial', () => {
         const partial: PartialTestType = {};
         const partials: PartialTestType[] = [{ array2: [7, 8, 9] }];
-        const newBase = mergePartial(base, partial, {}, partials);
+        const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
           array2: partials[0].array2,
@@ -870,7 +694,7 @@ describe('common utilities', () => {
       test('should override simple array value in base with second partial', () => {
         const partial: PartialTestType = {};
         const partials: PartialTestType[] = [{}, { array2: [7, 8, 9] }];
-        const newBase = mergePartial(base, partial, {}, partials);
+        const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
           array2: partials[1].array2,
@@ -880,7 +704,7 @@ describe('common utilities', () => {
       test('should override nested values in base', () => {
         const partial: PartialTestType = { nested: { number: 5 } };
         const partials: PartialTestType[] = [{ nested: { number: 10 } }];
-        const newBase = mergePartial(base, partial, {}, partials);
+        const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
           nested: {
@@ -893,7 +717,7 @@ describe('common utilities', () => {
       test('should override nested values from partial', () => {
         const partial: PartialTestType = {};
         const partials: PartialTestType[] = [{ nested: { number: 10 } }];
-        const newBase = mergePartial(base, partial, {}, partials);
+        const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
           nested: {

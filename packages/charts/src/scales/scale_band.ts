@@ -84,32 +84,13 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     this.minInterval = 0;
   }
 
-  private getScaledValue(value?: PrimitiveValue): number | null {
-    const scaleValue = this.d3Scale(stringifyNullsUndefined(value));
-
-    if (scaleValue === undefined || isNaN(scaleValue)) {
-      return null;
-    }
-
-    return scaleValue;
-  }
-
-  scaleOrThrow(value?: PrimitiveValue): number {
-    const scaleValue = this.scale(value);
-
-    if (scaleValue === null) {
-      throw new Error(`Unable to scale value: ${scaleValue})`);
-    }
-
-    return scaleValue;
-  }
-
   scale(value?: PrimitiveValue) {
-    return this.getScaledValue(value);
+    const scaleValue = this.d3Scale(stringifyNullsUndefined(value));
+    return typeof scaleValue === 'number' && Number.isFinite(scaleValue) ? scaleValue : NaN; // fixme when TS improves
   }
 
   pureScale(value?: PrimitiveValue) {
-    return this.getScaledValue(value);
+    return this.scale(value);
   }
 
   ticks() {

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, AxisSpec } from '@elastic/charts';
@@ -64,6 +64,12 @@ export const Example = () => {
       day: 'numeric',
     }).format(d)}  `;
   const yAxisTitle = 'CPU utilization';
+  const timeStretch = number('Time stretch', 1, {
+    range: true,
+    min: 0.5,
+    max: 2,
+    step: 0.1,
+  });
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
@@ -95,20 +101,26 @@ export const Example = () => {
         ticks={100}
         showGridLines={minorGridLines}
         gridLine={mergePartial(gridStyle, { strokeWidth: 0.1 })}
+        title="minor"
         style={mergePartial(
           xAxisStyle,
           whiskers
             ? {
+                axisTitle: { visible: true },
+
                 axisLine: { stroke: dataInk, strokeWidth: 1, visible: true },
                 tickLine: { size: shortWhiskers ? 6 : 16, padding: shortWhiskers ? 0 : -10, ...minorGridStyle },
               }
-            : { tickLine: { padding: 6 } },
+            : {
+                axisTitle: { visible: true },
+                tickLine: { padding: 6 },
+              },
         )}
         labelFormat={topAxisLabelFormat}
       />
       <Axis
         id="x_major"
-        title="timestamp per 1 minute"
+        title="major"
         position={Position.Bottom}
         showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
         showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
@@ -117,6 +129,7 @@ export const Example = () => {
         showGridLines
         gridLine={gridStyle}
         style={mergePartial(xAxisStyle, {
+          axisTitle: { visible: true },
           tickLabel: {
             padding: 0,
             offset: { x: 0, y: 0 },
@@ -165,7 +178,7 @@ export const Example = () => {
         yNice
         color={dataInk}
         areaSeriesStyle={{ area: { opacity: 0.3 }, line: { opacity: 1 } }}
-        data={data.map(([t, v]) => [t0 + (t - t0) * 4, v])}
+        data={data.map(([t, v]) => [t0 + (t - t0) * 4 * timeStretch, v])}
       />
     </Chart>
   );
