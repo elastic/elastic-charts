@@ -42,7 +42,7 @@ import { getPositionKnob, getEuiPopoverPositionKnob } from '../utils/knobs';
 
 const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ series, label }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLButtonElement | null>(null);
 
   const getPanels = (series: XYChartSeriesIdentifier[]): EuiContextMenuPanelDescriptor[] => [
     {
@@ -117,7 +117,9 @@ const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ se
       isOpen={popoverOpen}
       closePopover={() => {
         setPopoverOpen(false);
-        requestAnimationFrame(() => containerRef.current.focus());
+        if (containerRef.current) {
+          requestAnimationFrame(() => containerRef?.current?.focus?.());
+        }
       }}
       panelPaddingSize="none"
       offset={4}
@@ -158,12 +160,6 @@ export const renderEuiColorPicker = (anchorPosition: PopoverAnchorPosition): Leg
             onChange(null);
             anchor.focus();
             onClose();
-            // if (containerRef.current) {
-            //   console.log(containerRef);
-            // }
-            // useEffect(() => {
-            //   containerRef.current.focus();
-            // });
           }}
         />
       </EuiFlexItem>
