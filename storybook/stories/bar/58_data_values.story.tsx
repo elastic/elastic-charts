@@ -19,8 +19,8 @@ export const Example = () => {
   const theme: PartialTheme = {
     barSeriesStyle: {
       displayValue: {
-        fontSize: 10,
-        fill: 'black',
+        fontSize: 15,
+        fill: { textBorder: 2.5, color: 'white', borderColor: 'black' },
         alignment: {
           horizontal: select(
             'Horizontal alignment',
