@@ -9,9 +9,8 @@
 import { Position } from '../../../../../utils/common';
 import { innerPad, outerPad } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
-import { getAllAxisLayersGirth } from '../../../axes/axes_sizes';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
-import { getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
+import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisProps } from '../axes';
 import { renderText, TextFont } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';

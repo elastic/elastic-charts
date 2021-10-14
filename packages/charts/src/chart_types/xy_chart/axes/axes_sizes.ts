@@ -14,21 +14,8 @@ import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
 import { getSpecsById } from '../state/utils/spec';
 import { isHorizontalAxis, isVerticalAxis } from '../utils/axis_type_utils';
-import { getTitleDimension, shouldShowTicks, TickLabelBounds } from '../utils/axis_utils';
+import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks, TickLabelBounds } from '../utils/axis_utils';
 import { AxisSpec } from '../utils/specs';
-
-const TIME_AXIS_LAYER_COUNT = 3;
-
-/** @internal */
-export const getAllAxisLayersGirth = (
-  tickLabel: AxisStyle['tickLabel'],
-  maxLabelBoxGirth: number,
-  axisHorizontal: boolean,
-) => {
-  const isTimeAxis = tickLabel.alignment.horizontal === Position.Left; // fixme this HORRIBLE temp inference
-  const axisLayerCount = isTimeAxis && axisHorizontal ? TIME_AXIS_LAYER_COUNT : 1;
-  return axisLayerCount * maxLabelBoxGirth;
-};
 
 const getAxisSizeForLabel = (
   axisSpec: AxisSpec,

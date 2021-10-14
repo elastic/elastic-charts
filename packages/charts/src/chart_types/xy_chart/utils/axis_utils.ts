@@ -21,7 +21,6 @@ import { Range } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
-import { getAllAxisLayersGirth } from '../axes/axes_sizes';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { Projection } from '../state/selectors/visible_ticks';
@@ -29,6 +28,8 @@ import { SeriesDomainsAndData } from '../state/utils/types';
 import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { getPanelSize, hasSMDomain } from './panel';
 import { computeXScale, computeYScales } from './scales';
+
+const TIME_AXIS_LAYER_COUNT = 3;
 
 type TickValue = number | string;
 
@@ -234,6 +235,17 @@ export function getTitleDimension({
 }: AxisStyle['axisTitle'] | AxisStyle['axisPanelTitle']): number {
   return visible && fontSize > 0 ? innerPad(padding) + fontSize + outerPad(padding) : 0;
 }
+
+/** @internal */
+export const getAllAxisLayersGirth = (
+  tickLabel: AxisStyle['tickLabel'],
+  maxLabelBoxGirth: number,
+  axisHorizontal: boolean,
+) => {
+  const isTimeAxis = tickLabel.alignment.horizontal === Position.Left; // fixme this HORRIBLE temp inference
+  const axisLayerCount = isTimeAxis && axisHorizontal ? TIME_AXIS_LAYER_COUNT : 1;
+  return axisLayerCount * maxLabelBoxGirth;
+};
 
 /** @internal */
 export function getPosition(
