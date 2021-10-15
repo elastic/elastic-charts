@@ -12,7 +12,7 @@ import { CustomXDomain, GroupByAccessor, Spec, TooltipStickTo } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
-import { LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
+import { BaseDatum, LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
 import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { Color } from '../common/colors';
@@ -24,6 +24,7 @@ import { LegendPath } from '../state/actions/legend';
 import { SFProps, useSpecFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
 import {
+  Datum,
   HorizontalAlignment,
   LayoutDirection,
   Position,
@@ -215,7 +216,7 @@ export type PointerEvent = PointerOverEvent | PointerOutEvent;
  * This interface describe the properties of single value shown in the tooltip
  * @public
  */
-export interface TooltipValue {
+export interface TooltipValue<D extends BaseDatum = Datum> {
   /**
    * The label of the tooltip value
    */
@@ -255,13 +256,13 @@ export interface TooltipValue {
   /**
    * The accessor linked to the current tooltip value
    */
-  valueAccessor?: Accessor;
+  valueAccessor?: Accessor<D>;
 
   /**
    * The datum associated with the current tooltip value
    * Maybe not available
    */
-  datum?: unknown;
+  datum?: D;
 }
 
 /**
@@ -690,7 +691,7 @@ export const Settings = function (
 };
 
 /** @public */
-export type SettingsProp = ComponentProps<typeof Settings>;
+export type SettingsProps = ComponentProps<typeof Settings>;
 
 /** @internal */
 export function isPointerOutEvent(event: PointerEvent | null | undefined): event is PointerOutEvent {

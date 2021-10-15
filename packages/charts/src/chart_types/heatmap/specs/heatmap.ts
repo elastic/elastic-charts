@@ -16,7 +16,7 @@ import { BaseDatum, SeriesScales, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
-import { RecursivePartial } from '../../../utils/common';
+import { Datum, RecursivePartial } from '../../../utils/common';
 import { config } from '../layout/config/config';
 import { Config } from '../layout/types/config_types';
 import { X_SCALE_DEFAULT } from './scale_defaults';
@@ -45,13 +45,13 @@ export interface HeatmapBandsColorScale {
 }
 
 /** @alpha */
-export interface HeatmapSpec<D extends BaseDatum> extends Spec {
+export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Heatmap;
   data: D[];
   colorScale: HeatmapBandsColorScale;
-  xAccessor: keyof D | AccessorFn<D>;
-  yAccessor: keyof D | AccessorFn<D>;
+  xAccessor: Accessor<D> | AccessorFn<D>;
+  yAccessor: Accessor<D> | AccessorFn<D>;
   valueAccessor: Accessor | AccessorFn;
   valueFormatter: (value: number) => string;
   xSortPredicate: Predicate;
@@ -66,9 +66,9 @@ export interface HeatmapSpec<D extends BaseDatum> extends Spec {
  * Adds heatmap spec to chart specs
  * @alpha
  */
-export const Heatmap = function <Datum extends BaseDatum>(
+export const Heatmap = function <D extends BaseDatum = Datum>(
   props: SFProps<
-    HeatmapSpec<Datum>,
+    HeatmapSpec<D>,
     keyof typeof buildProps.current['overrides'],
     keyof typeof buildProps.current['defaults'],
     keyof typeof buildProps.current['optionals'],
@@ -76,15 +76,14 @@ export const Heatmap = function <Datum extends BaseDatum>(
   >,
 ) {
   const buildProps = useRef(
-    buildSFProps<HeatmapSpec<Datum>>()(
+    // @ts-ignore - excessively deep types
+    buildSFProps<HeatmapSpec<D>>()(
       {
         chartType: ChartType.Heatmap,
         specType: SpecType.Series,
       },
       {
         data: [],
-        // xAccessor: ({ x }: { x: string | number }) => x,
-        // yAccessor: ({ y }: { y: string | number }) => y,
         valueAccessor: ({ value }) => value,
         xScaleType: X_SCALE_DEFAULT.type,
         valueFormatter: (value) => `${value}`,
@@ -95,7 +94,7 @@ export const Heatmap = function <Datum extends BaseDatum>(
     ),
   );
   const { defaults, overrides } = buildProps.current;
-  useSpecFactory<HeatmapSpec<Datum>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<HeatmapSpec<D>>({ ...defaults, ...props, ...overrides });
   return null;
 };
 

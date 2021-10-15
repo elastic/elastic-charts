@@ -8,13 +8,13 @@
 
 import React, { Component, ReactNode } from 'react';
 
-import { SettingsSpecProps } from '../../specs';
+import { SettingsSpec } from '../../specs/settings';
 import { NoResults } from '../no_results';
 import { isGracefulError } from './errors';
 
 type ErrorBoundaryProps = {
   children: ReactNode;
-  renderFn?: SettingsSpecProps['noResults'];
+  renderFn?: SettingsSpec['noResults'];
 };
 
 interface ErrorBoundaryState {

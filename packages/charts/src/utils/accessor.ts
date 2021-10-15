@@ -34,7 +34,7 @@ export type BinaryAccessorFn<D extends BaseDatum = any, Return = any> = (datum: 
  * An accessor function
  * @public
  */
-export type AccessorFn<D extends BaseDatum = any, R = any> = UnaryAccessorFn<D, R>;
+export type AccessorFn<D extends BaseDatum = any, Return = any> = UnaryAccessorFn<D, Return>;
 
 /**
  * An indexed accessor function
@@ -57,10 +57,23 @@ export type AccessorObjectKey = string;
 export type AccessorArrayIndex = number;
 
 /**
+ * Need to check for array to exclude array prototype keys.
+ *
+ * @todo tighten keyof types by removing string fallback. This will make it harder to satisfy the
+ * types for complex data values.
+ *
+ * Note: ignores symbols as keys
+ * @public
+ */
+export type DatumKey<D extends BaseDatum> = D extends any[] ? number : Exclude<keyof D, symbol>;
+
+/**
  * A datum accessor in form of object key accessor string/number
  * @public
  */
-export type Accessor = AccessorObjectKey | AccessorArrayIndex;
+export type Accessor<D extends BaseDatum = never> = D extends never
+  ? AccessorObjectKey | AccessorArrayIndex
+  : DatumKey<D>;
 
 /**
  * Accessor format for _banded_ series as postfix string or accessor function
@@ -94,12 +107,17 @@ export function getAccessorFormatLabel(accessor: AccessorFormat, label: string):
  * Helper function to get accessor value from string, number or function
  * @internal
  */
-export function getAccessorValue(datum: Datum, accessor: Accessor | AccessorFn) {
+export function getAccessorValue<D extends BaseDatum>(datum: D, accessor: Accessor<D> | AccessorFn<D>) {
   if (typeof accessor === 'function') {
     return accessor(datum);
   }
 
-  return datum[accessor];
+  try {
+    // @ts-ignore - could throw error if not proper key accessed
+    return datum[accessor];
+  } catch {
+    return undefined;
+  }
 }
 
 /**

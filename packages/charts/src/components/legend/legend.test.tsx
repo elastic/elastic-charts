@@ -284,7 +284,14 @@ describe('Legend', () => {
       const wrapper = mount(
         <Chart>
           <Settings showLegend showLegendExtra onLegendItemClick={onLegendItemClick} />
-          <BarSeries id="areas" xScaleType={ScaleType.Linear} yScaleType={ScaleType.Linear} data={data} />
+          <BarSeries
+            id="areas"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            data={data}
+            xAccessor="x"
+            yAccessors={['y']}
+          />
         </Chart>,
       );
       const legendItems = wrapper.find(LegendListItem);

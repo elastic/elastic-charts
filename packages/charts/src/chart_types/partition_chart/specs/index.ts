@@ -14,7 +14,14 @@ import { BaseDatum, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
-import { LabelAccessor, RecursivePartial, ShowAccessor, ValueAccessor, ValueFormatter } from '../../../utils/common';
+import {
+  Datum,
+  LabelAccessor,
+  RecursivePartial,
+  ShowAccessor,
+  ValueAccessor,
+  ValueFormatter,
+} from '../../../utils/common';
 import { config, percentFormatter } from '../layout/config';
 import { Config, FillFontSizeRange, FillLabelConfig } from '../layout/types/config_types';
 import { NodeColorAccessor, ValueGetter } from '../layout/types/viewmodel_types';
@@ -26,7 +33,7 @@ interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {}
  * Specification for a given layer in the partition chart
  * @public
  */
-export interface Layer<D extends BaseDatum> {
+export interface Layer<D extends BaseDatum = Datum> {
   groupByRollup: IndexedAccessorFn<D>;
   sortPredicate?: NodeSorter | null;
   nodeLabel?: LabelAccessor;
@@ -39,7 +46,7 @@ export interface Layer<D extends BaseDatum> {
  * Specifies the partition chart
  * @public
  */
-export interface PartitionSpec<D extends BaseDatum> extends Spec {
+export interface PartitionSpec<D extends BaseDatum = Datum> extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Partition;
   config: RecursivePartial<Config>;
@@ -53,7 +60,7 @@ export interface PartitionSpec<D extends BaseDatum> extends Spec {
   layers: Layer<D>[];
 }
 
-const buildProps = buildSFProps<PartitionSpec<unknown>>()(
+const buildProps = buildSFProps<PartitionSpec>()(
   {
     chartType: ChartType.Partition,
     specType: SpecType.Series,
@@ -81,9 +88,9 @@ const buildProps = buildSFProps<PartitionSpec<unknown>>()(
  * Adds partition spec to chart specs
  * @public
  */
-export const Partition = function <Datum extends BaseDatum>(
+export const Partition = function <D extends BaseDatum = Datum>(
   props: SFProps<
-    PartitionSpec<Datum>,
+    PartitionSpec<D>,
     keyof typeof buildProps['overrides'],
     keyof typeof buildProps['defaults'],
     keyof typeof buildProps['optionals'],
@@ -91,7 +98,7 @@ export const Partition = function <Datum extends BaseDatum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<PartitionSpec<Datum>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<PartitionSpec<D>>({ ...defaults, ...props, ...overrides });
   return null;
 };
 

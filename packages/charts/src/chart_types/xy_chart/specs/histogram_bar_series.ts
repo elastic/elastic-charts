@@ -12,9 +12,10 @@ import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
+import { Datum } from '../../../utils/common';
 import { HistogramBarSeriesSpec, DEFAULT_GLOBAL_ID, SeriesType, BaseDatum } from '../utils/specs';
 
-const buildProps = buildSFProps<HistogramBarSeriesSpec<unknown>>()(
+const buildProps = buildSFProps<HistogramBarSeriesSpec>()(
   {
     chartType: ChartType.XYAxis,
     specType: SpecType.Series,
@@ -24,8 +25,6 @@ const buildProps = buildSFProps<HistogramBarSeriesSpec<unknown>>()(
     groupId: DEFAULT_GLOBAL_ID,
     xScaleType: ScaleType.Linear,
     yScaleType: ScaleType.Linear,
-    // xAccessor: 'x',
-    // yAccessors: ['y'],
     hideInLegend: false,
     enableHistogramMode: true as const,
   },
@@ -35,9 +34,9 @@ const buildProps = buildSFProps<HistogramBarSeriesSpec<unknown>>()(
  * Adds bar series to chart specs
  * @public
  */
-export const HistogramBarSeries = function <Datum extends BaseDatum>(
+export const HistogramBarSeries = function <D extends BaseDatum = Datum>(
   props: SFProps<
-    HistogramBarSeriesSpec<Datum>,
+    HistogramBarSeriesSpec<D>,
     keyof typeof buildProps['overrides'],
     keyof typeof buildProps['defaults'],
     keyof typeof buildProps['optionals'],
@@ -45,7 +44,7 @@ export const HistogramBarSeries = function <Datum extends BaseDatum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<HistogramBarSeriesSpec<Datum>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<HistogramBarSeriesSpec<D>>({ ...defaults, ...props, ...overrides });
   return null;
 };
 

@@ -15,10 +15,10 @@ import { Pixels } from '../../../../common/geometry';
 import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
-import { SettingsSpec } from '../../../../specs';
+import { BaseDatum, SettingsSpec } from '../../../../specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
-import { clamp, range } from '../../../../utils/common';
+import { clamp, Datum, range } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { ContinuousDomain } from '../../../../utils/domain';
 import { Logger } from '../../../../utils/logger';
@@ -72,9 +72,9 @@ function estimatedNonOverlappingTickCount(
 }
 
 /** @internal */
-export function shapeViewModel(
+export function shapeViewModel<D extends BaseDatum = Datum>(
   textMeasure: TextMeasure,
-  spec: HeatmapSpec,
+  spec: HeatmapSpec<D>,
   config: Config,
   settingsSpec: SettingsSpec,
   chartDimensions: Dimensions,

@@ -12,9 +12,10 @@ import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
+import { Datum } from '../../../utils/common';
 import { AreaSeriesSpec, HistogramModeAlignments, DEFAULT_GLOBAL_ID, SeriesType, BaseDatum } from '../utils/specs';
 
-const buildProps = buildSFProps<AreaSeriesSpec<unknown>>()(
+const buildProps = buildSFProps<AreaSeriesSpec>()(
   {
     chartType: ChartType.XYAxis,
     specType: SpecType.Series,
@@ -24,8 +25,6 @@ const buildProps = buildSFProps<AreaSeriesSpec<unknown>>()(
     groupId: DEFAULT_GLOBAL_ID,
     xScaleType: ScaleType.Linear,
     yScaleType: ScaleType.Linear,
-    // xAccessor: 'x',
-    // yAccessors: ['y'],
     hideInLegend: false,
     histogramModeAlignment: HistogramModeAlignments.Center,
   },
@@ -35,9 +34,9 @@ const buildProps = buildSFProps<AreaSeriesSpec<unknown>>()(
  * Adds bar series to chart specs
  * @public
  */
-export const AreaSeries = function <Datum extends BaseDatum>(
+export const AreaSeries = function <D extends BaseDatum = Datum>(
   props: SFProps<
-    AreaSeriesSpec<Datum>,
+    AreaSeriesSpec<D>,
     keyof typeof buildProps['overrides'],
     keyof typeof buildProps['defaults'],
     keyof typeof buildProps['optionals'],
@@ -45,7 +44,7 @@ export const AreaSeries = function <Datum extends BaseDatum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<AreaSeriesSpec<Datum>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<AreaSeriesSpec<D>>({ ...defaults, ...props, ...overrides });
   return null;
 };
 

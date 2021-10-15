@@ -25,12 +25,12 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
   [getHeatmapSpecSelector, getSettingsSpecSelector],
   (spec, settingsSpec): HeatmapTable => {
     const { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate } = spec;
-    const { xDomain } = settingsSpec;
 
-    const resultData = data.reduce(
+    const { table, xValues, yValues, extent } = data.reduce<
+      Omit<HeatmapTable, 'xDomain'> & { xValues: Array<string | number> }
+    >(
       (acc, curr, index) => {
         const x = getAccessorValue(curr, xAccessor);
-
         const y = getAccessorValue(curr, yAccessor);
         const value = getAccessorValue(curr, valueAccessor);
 
@@ -62,16 +62,23 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
       },
     );
 
-    resultData.xDomain = mergeXDomain(
+    const xDomain = mergeXDomain(
       {
         type: getXScaleTypeFromSpec(spec.xScaleType),
         nice: getXNiceFromSpec(),
         isBandScale: false,
         desiredTickCount: X_SCALE_DEFAULT.desiredTickCount,
-        customDomain: xDomain,
+        customDomain: settingsSpec.xDomain,
       },
-      resultData.xValues,
+      new Set(xValues),
     );
+
+    const resultData: HeatmapTable = {
+      table,
+      xDomain,
+      yValues,
+      extent,
+    };
 
     // sort values by their predicates
     if (spec.xScaleType === ScaleType.Ordinal) {

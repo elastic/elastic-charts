@@ -26,7 +26,7 @@ describe('Accessibility', () => {
       const wrapper = mount(
         <Chart size={[100, 100]} id="chart1">
           <Settings debug rendering="svg" showLegend />
-          <BarSeries id="test" data={[{ x: 0, y: 2 }]} />
+          <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
         </Chart>,
       );
       expect(wrapper.find('dd').first().text()).toBe('bar chart');
@@ -35,8 +35,8 @@ describe('Accessibility', () => {
       const wrapper = mount(
         <Chart size={[100, 100]} id="chart1">
           <Settings debug rendering="svg" showLegend />
-          <BarSeries id="test" data={[{ x: 0, y: 2 }]} />
-          <LineSeries id="test2" data={[{ x: 3, y: 5 }]} />
+          <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
+          <LineSeries id="test2" data={[{ x: 3, y: 5 }]} xAccessor="x" yAccessors={['y']} />
         </Chart>,
       );
       expect(wrapper.find('dd').first().text()).toBe('Mixed chart: bar and line chart');

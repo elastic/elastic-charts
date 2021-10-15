@@ -12,9 +12,10 @@ import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
+import { Datum } from '../../../utils/common';
 import { BaseDatum, BubbleSeriesSpec, DEFAULT_GLOBAL_ID, SeriesType } from '../utils/specs';
 
-const buildProps = buildSFProps<BubbleSeriesSpec<unknown>>()(
+const buildProps = buildSFProps<BubbleSeriesSpec>()(
   {
     chartType: ChartType.XYAxis,
     specType: SpecType.Series,
@@ -24,8 +25,6 @@ const buildProps = buildSFProps<BubbleSeriesSpec<unknown>>()(
     groupId: DEFAULT_GLOBAL_ID,
     xScaleType: ScaleType.Ordinal,
     yScaleType: ScaleType.Linear,
-    // xAccessor: 'x',
-    // yAccessors: ['y'],
     hideInLegend: false,
   },
 );
@@ -34,9 +33,9 @@ const buildProps = buildSFProps<BubbleSeriesSpec<unknown>>()(
  * Adds bar series to chart specs
  * @public
  */
-export const BubbleSeries = function <Datum extends BaseDatum>(
+export const BubbleSeries = function <D extends BaseDatum = Datum>(
   props: SFProps<
-    BubbleSeriesSpec<Datum>,
+    BubbleSeriesSpec<D>,
     keyof typeof buildProps['overrides'],
     keyof typeof buildProps['defaults'],
     keyof typeof buildProps['optionals'],
@@ -44,7 +43,7 @@ export const BubbleSeries = function <Datum extends BaseDatum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<BubbleSeriesSpec<Datum>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<BubbleSeriesSpec<D>>({ ...defaults, ...props, ...overrides });
   return null;
 };
 

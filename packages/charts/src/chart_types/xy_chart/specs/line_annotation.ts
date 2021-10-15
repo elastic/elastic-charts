@@ -12,9 +12,9 @@ import { ChartType } from '../..';
 import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/merge_utils';
-import { LineAnnotationSpec, DEFAULT_GLOBAL_ID, AnnotationType, BaseDatum } from '../utils/specs';
+import { LineAnnotationSpec, DEFAULT_GLOBAL_ID, AnnotationType } from '../utils/specs';
 
-const buildProps = buildSFProps<LineAnnotationSpec<unknown>>()(
+const buildProps = buildSFProps<LineAnnotationSpec>()(
   {
     chartType: ChartType.XYAxis,
     specType: SpecType.Annotation,
@@ -34,9 +34,9 @@ const buildProps = buildSFProps<LineAnnotationSpec<unknown>>()(
  * Adds bar series to chart specs
  * @public
  */
-export const LineAnnotation = function <Datum extends BaseDatum>(
+export const LineAnnotation = function <D = any>(
   props: SFProps<
-    LineAnnotationSpec<Datum>,
+    LineAnnotationSpec<D>,
     keyof typeof buildProps['overrides'],
     keyof typeof buildProps['defaults'],
     keyof typeof buildProps['optionals'],
@@ -44,7 +44,7 @@ export const LineAnnotation = function <Datum extends BaseDatum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<LineAnnotationSpec<Datum>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<LineAnnotationSpec<D>>({ ...defaults, ...props, ...overrides });
   return null;
 };
 

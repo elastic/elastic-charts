@@ -12,6 +12,7 @@ import { BaseDatum, Spec } from '.';
 import { ChartType } from '../chart_types';
 import { Predicate } from '../common/predicate';
 import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
+import { Datum } from '../utils/common';
 import { SpecType } from './constants';
 
 /** @public */
@@ -43,7 +44,7 @@ export interface GroupBySpec<D extends BaseDatum = any> extends Spec {
   format?: GroupByFormatter<D>;
 }
 
-const buildProps = buildSFProps<GroupBySpec<unknown>>()(
+const buildProps = buildSFProps<GroupBySpec>()(
   {
     chartType: ChartType.Global,
     specType: SpecType.IndexOrder,
@@ -55,9 +56,9 @@ const buildProps = buildSFProps<GroupBySpec<unknown>>()(
  * Add GroupBy spec to chart
  * @public
  */
-export const GroupBy = function <Datum extends BaseDatum>(
+export const GroupBy = function <D extends BaseDatum = Datum>(
   props: SFProps<
-    GroupBySpec<Datum>,
+    GroupBySpec<D>,
     keyof typeof buildProps['overrides'],
     keyof typeof buildProps['defaults'],
     keyof typeof buildProps['optionals'],
@@ -65,7 +66,7 @@ export const GroupBy = function <Datum extends BaseDatum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<GroupBySpec<Datum>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<GroupBySpec<D>>({ ...defaults, ...props, ...overrides });
   return null;
 };
 
