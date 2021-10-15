@@ -138,7 +138,7 @@ function getTooltipAndHighlightFromValue(
     if (!spec) {
       return acc;
     }
-    const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
+    const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
 
     // yScales is ensured by the enclosing if
     const yScale = scales.yScales.get(getSpecDomainGroupId(spec));
@@ -163,21 +163,12 @@ function getTooltipAndHighlightFromValue(
     }
 
     // format the tooltip values
-    const yAxisFormatSpec = [0, 180].includes(chartRotation) ? yAxis : xAxis;
-    const formattedTooltip = formatTooltip(
-      indexedGeometry,
-      spec,
-      false,
-      isHighlighted,
-      hasSingleSeries,
-      yAxisFormatSpec,
-    );
+    const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, hasSingleSeries, yAxis);
 
     // format only one time the x value
     if (!header) {
       // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
-      const xAxisFormatSpec = [0, 180].includes(chartRotation) ? xAxis : yAxis;
-      const formatterAxis = tooltipHeaderFormatter ? undefined : xAxisFormatSpec;
+      const formatterAxis = tooltipHeaderFormatter ? undefined : xAxis;
       header = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
     }
 

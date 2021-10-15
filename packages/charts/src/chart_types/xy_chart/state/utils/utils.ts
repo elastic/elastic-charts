@@ -347,8 +347,9 @@ function renderGeometries(
       if (shift === -1) continue; // skip bar dataSeries if index is not available
 
       const barSeriesStyle = mergePartial(chartTheme.barSeriesStyle, spec.barSeriesStyle);
-      const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
+      const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
       const valueFormatter = yAxis?.tickFormat ?? fallBackTickFormatter;
+
       const displayValueSettings = spec.displayValueSettings
         ? { valueFormatter, ...spec.displayValueSettings }
         : undefined;
