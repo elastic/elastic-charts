@@ -160,7 +160,7 @@ export const DEFAULT_TOOLTIP_CONFIG = {
   showNullValues: false,
 };
 
-/** @internal */
+/** @public */
 export const settingsBuildProps = buildSFProps<SettingsSpec>()(
   {
     id: '__global__settings___' as const,

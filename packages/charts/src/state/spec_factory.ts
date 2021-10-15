@@ -113,7 +113,7 @@ export const buildSFProps = <S extends Spec>() => <
 
 /**
  * Resulting props for spec given overrides, defaults, optionals and required props
- * @internal
+ * @public
  */
 export type SFProps<
   S extends Spec,
@@ -123,7 +123,7 @@ export type SFProps<
   Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>
 > = Pick<S, Optionals | Requires> & Partial<Pick<S, Defaults>>;
 
-/** @internal */
+/** @public */
 export interface BuildProps<
   S extends Spec,
   Overrides extends SFOverrideKeys<S>,

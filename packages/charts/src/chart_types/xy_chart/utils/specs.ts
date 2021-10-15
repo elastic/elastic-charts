@@ -495,7 +495,7 @@ export interface SeriesAccessors<D extends BaseDatum = any> {
    * An array of fields thats indicates the stack membership.
    * Does not depend on datum at the moment.
    *
-   * @todo pass datum to accessors when applicable
+   * TODO pass datum to accessors when applicable
    */
   stackAccessors?: (Accessor<any> | AccessorFn<any>)[];
   /**
@@ -562,7 +562,10 @@ export type BasicSeriesSpec<D extends BaseDatum = Datum, Type extends string = '
 /** @public */
 export type SeriesSpecs<D extends BaseDatum = Datum, S extends BasicSeriesSpec<D> = BasicSeriesSpec<D>> = Array<S>;
 
-/** @internal */
+/**
+ * Expected shape of unknown data row/datum
+ * @public
+ */
 export type BaseDatum = Record<string, any> | any[];
 
 /**

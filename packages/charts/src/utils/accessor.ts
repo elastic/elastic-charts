@@ -59,7 +59,7 @@ export type AccessorArrayIndex = number;
 /**
  * Need to check for array to exclude array prototype keys.
  *
- * @todo tighten keyof types by removing string fallback. This will make it harder to satisfy the
+ * TODO: tighten keyof types by removing string fallback. This will make it harder to satisfy the
  * types for complex data values.
  *
  * Note: ignores symbols as keys
