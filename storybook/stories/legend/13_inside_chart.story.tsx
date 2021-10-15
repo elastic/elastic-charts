@@ -27,9 +27,9 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
-const data = dg.generateGroupedSeries(10, 20);
+const data = dg.generateGroupedSeries(10, 40);
 export const Example = () => {
-  const numberOfSeries = number('Number of series', 5, { min: 1, max: 20, step: 1, range: true });
+  const numberOfSeries = number('Number of series', 5, { min: 1, max: 40, step: 1, range: true });
   const seriesWithLongName = number('Series with long name', 3, {
     min: 0,
     max: numberOfSeries - 1,
