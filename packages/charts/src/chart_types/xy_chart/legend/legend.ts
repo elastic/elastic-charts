@@ -11,7 +11,7 @@ import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { TickFormatterOptions } from '../../../specs';
-import { mergePartial } from '../../../utils/common';
+import { mergePartial, Rotation } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
@@ -104,6 +104,7 @@ export function computeLegend(
   serialIdentifierDataSeriesMap: Record<string, DataSeries>,
   deselectedDataSeries: SeriesIdentifier[] = [],
   theme: Theme,
+  chartRotation: Rotation,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
@@ -132,7 +133,7 @@ export function computeLegend(
     const labelY1 = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name;
 
     // Use this to get axis spec w/ tick formatter
-    const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
+    const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
     const formatter = spec.tickFormat ?? yAxis?.tickFormat ?? defaultTickFormatter;
     const { hideInLegend } = spec;
 

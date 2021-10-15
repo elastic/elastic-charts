@@ -14,7 +14,6 @@ import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
-import { isHorizontalRotation } from '../state/utils/common';
 import { getAxesSpecForSpecId } from '../state/utils/spec';
 import { ComputedGeometries } from '../state/utils/types';
 import { AnnotationDomainType, AnnotationSpec, AxisSpec, isLineAnnotation } from '../utils/specs';
@@ -29,12 +28,9 @@ export function getAnnotationAxis(
   domainType: AnnotationDomainType,
   chartRotation: Rotation,
 ): Position | undefined {
-  const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
-  const isHorizontalRotated = isHorizontalRotation(chartRotation);
+  const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId, chartRotation);
   const isXDomainAnnotation = isXDomain(domainType);
-  const annotationAxis = isXDomainAnnotation ? xAxis : yAxis;
-  const rotatedAnnotation = isHorizontalRotated ? annotationAxis : isXDomainAnnotation ? yAxis : xAxis;
-  return rotatedAnnotation ? rotatedAnnotation.position : undefined;
+  return isXDomainAnnotation ? xAxis?.position : yAxis?.position;
 }
 
 /** @internal */
