@@ -1,3 +1,10 @@
+## [38.0.1](https://github.com/elastic/elastic-charts/compare/v38.0.0...v38.0.1) (2021-10-15)
+
+
+### Bug Fixes
+
+* **legend:** floating legend scroll issue ([#1427](https://github.com/elastic/elastic-charts/issues/1427)) ([56ecbe2](https://github.com/elastic/elastic-charts/commit/56ecbe2f34304dfff9cb4427e91cb62eef063df5))
+
 # [38.0.0](https://github.com/elastic/elastic-charts/compare/v37.0.0...v38.0.0) (2021-10-15)
 
 
