@@ -14,9 +14,6 @@ import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_datas
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const yAccessors = ['y1', 'y2'];
-  const splitSeriesAccessors = ['g1', 'g2'];
-
   return (
     <Chart>
       <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
@@ -28,8 +25,8 @@ export const Example = () => {
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
-        yAccessors={yAccessors}
-        splitSeriesAccessors={splitSeriesAccessors}
+        yAccessors={['y1', 'y2']}
+        splitSeriesAccessors={['g1', 'g2']}
         data={TestDatasets.BARCHART_2Y2G}
         hideInLegend={false}
       />

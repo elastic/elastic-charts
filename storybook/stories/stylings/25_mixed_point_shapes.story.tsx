@@ -60,6 +60,8 @@ export const Example = () => {
             fill: fillKnobArea,
           },
         }}
+        xAccessor="x"
+        yAccessors={['y']}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         data={[
@@ -79,6 +81,8 @@ export const Example = () => {
             fill: fillKnobLine,
           },
         }}
+        xAccessor="x"
+        yAccessors={['y']}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         data={[
@@ -98,6 +102,8 @@ export const Example = () => {
             fill: fillKnobBubble,
           },
         }}
+        xAccessor="x"
+        yAccessors={['y']}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         data={[

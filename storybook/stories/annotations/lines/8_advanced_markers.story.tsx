@@ -134,6 +134,8 @@ export const Example = () => {
       <HistogramBarSeries
         id="bars"
         xScaleType={ScaleType.Time}
+        xAccessor="x"
+        yAccessors={['y']}
         data={Array.from({ length: maxMetric })
           .fill(0)
           .map((_, i) => ({ x: start.clone().add(i, 'd').valueOf(), y: maxMetric }))}

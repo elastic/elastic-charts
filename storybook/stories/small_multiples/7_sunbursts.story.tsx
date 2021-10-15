@@ -84,7 +84,6 @@ export const Example = () => {
         sort={select('Panel order', { alphaAsc: 'alphaAsc', alphaDesc: 'alphaDesc' }, 'alphaAsc')}
       />
       <SmallMultiples
-        id="sm"
         splitHorizontally={layout === 'h' ? 'split' : undefined}
         splitVertically={layout === 'v' ? 'split' : undefined}
         splitZigzag={layout === 'z' ? 'split' : undefined}

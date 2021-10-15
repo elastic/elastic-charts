@@ -112,6 +112,8 @@ export const Example = () => {
         color={seriesColor}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
         data={seriesType === 'bar' ? barData : areaData}
         curve={CurveType.CURVE_MONOTONE_X}
       />

@@ -65,7 +65,7 @@ export type AccessorArrayIndex = number;
  * Note: ignores symbols as keys
  * @public
  */
-export type DatumKey<D extends BaseDatum> = D extends any[] ? number : Exclude<keyof D, symbol>;
+export type DatumKey<D extends BaseDatum> = D extends any[] ? number : Exclude<keyof D, symbol> | string;
 
 /**
  * A datum accessor in form of object key accessor string/number

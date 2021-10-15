@@ -38,7 +38,15 @@ export const Example = () => {
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="y" position={Position.Left} />
       <Axis id="x" position={Position.Bottom} />
-      <LineSeries fit="linear" id="line" xScaleType={ScaleType.Time} yScaleType={yScaleType} data={data} />
+      <LineSeries
+        fit="linear"
+        id="line"
+        xAccessor="x"
+        yAccessors={['y']}
+        xScaleType={ScaleType.Time}
+        yScaleType={yScaleType}
+        data={data}
+      />
     </Chart>
   );
 };
