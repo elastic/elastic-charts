@@ -7,11 +7,10 @@
  */
 
 import { Scale } from '../../../scales';
-import { SettingsSpec } from '../../../specs';
+import { AxisSpec, SettingsSpec } from '../../../specs';
 import {
   degToRad,
   getPercentageValue,
-  getUniqueValues,
   HorizontalAlignment,
   Position,
   Rotation,
@@ -23,14 +22,14 @@ import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
-import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
-import { getSpecsById } from '../state/utils/spec';
+import { Projection } from '../state/selectors/visible_ticks';
 import { SeriesDomainsAndData } from '../state/utils/types';
 import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { getPanelSize, hasSMDomain } from './panel';
 import { computeXScale, computeYScales } from './scales';
-import { AxisSpec, TickFormatter, TickFormatterOptions } from './specs';
+
+const TIME_AXIS_LAYER_COUNT = 3;
 
 type TickValue = number | string;
 
@@ -165,7 +164,7 @@ function getHorizontalAlign(
 function getVerticalAlign(
   position: Position,
   rotation: number,
-  alignment: VerticalAlignment = VerticalAlignment.Middle,
+  alignment: VerticalAlignment,
 ): Exclude<VerticalAlignment, typeof VerticalAlignment.Far | typeof VerticalAlignment.Near> {
   if (
     alignment === VerticalAlignment.Middle ||
@@ -202,13 +201,13 @@ export function getTickLabelPosition(
   tickDimensions: TickLabelBounds,
   showTicks: boolean,
   textOffset: TextOffset,
-  textAlignment?: TextAlignment,
+  textAlignment: TextAlignment,
 ): TickLabelProps {
   const { maxLabelBboxWidth, maxLabelTextWidth, maxLabelBboxHeight, maxLabelTextHeight } = tickDimensions;
   const tickDimension = showTicks ? tickLine.size + tickLine.padding : 0;
   const labelInnerPadding = innerPad(tickLabel.padding);
-  const horizontalAlign = getHorizontalAlign(pos, rotation, textAlignment?.horizontal ?? HorizontalAlignment.Near);
-  const verticalAlign = getVerticalAlign(pos, rotation, textAlignment?.vertical);
+  const horizontalAlign = getHorizontalAlign(pos, rotation, textAlignment.horizontal);
+  const verticalAlign = getVerticalAlign(pos, rotation, textAlignment.vertical);
   const userOffsets = getUserTextOffsets(tickDimensions, textOffset);
   const paddedTickDimension = tickDimension + labelInnerPadding;
   const axisNetSize = (isVerticalAxis(pos) ? axisSize.width : axisSize.height) - paddedTickDimension;
@@ -228,96 +227,6 @@ export function getTickLabelPosition(
   };
 }
 
-function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
-  const horizontal = isHorizontalAxis(axisPosition);
-  const flipped = horizontal
-    ? chartRotation === -90 || chartRotation === 180
-    : chartRotation === 90 || chartRotation === 180;
-  return horizontal ? [flipped ? width : 0, flipped ? 0 : width] : [flipped ? 0 : height, flipped ? height : 0];
-}
-
-/** @internal */
-export function enableDuplicatedTicks(
-  axisSpec: AxisSpec,
-  scale: Scale<number | string>,
-  offset: number,
-  fallBackTickFormatter: TickFormatter,
-  tickFormatOptions?: TickFormatterOptions,
-): AxisTick[] {
-  const allTicks: AxisTick[] = scale.ticks().map((tick) => ({
-    value: tick,
-    label: (axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
-    axisTickLabel: (axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
-    position: (scale.scale(tick) || 0) + offset,
-  }));
-  return axisSpec.showDuplicatedTicks ? allTicks : getUniqueValues(allTicks, 'axisTickLabel', true);
-}
-
-function getVisibleTicks(
-  axisSpec: AxisSpec,
-  labelBox: TickLabelBounds,
-  totalBarsInCluster: number,
-  fallBackTickFormatter: TickFormatter,
-  rotationOffset: number,
-  scale: Scale<number | string>,
-  enableHistogramMode: boolean,
-  tickFormatOptions?: TickFormatterOptions,
-): AxisTick[] {
-  const ticks = scale.ticks();
-  const isSingleValueScale = scale.domain[0] === scale.domain[1];
-  const makeRaster = enableHistogramMode && scale.bandwidth > 0;
-  const ultimateTick = ticks[ticks.length - 1];
-  const penultimateTick = ticks[ticks.length - 2];
-  if (makeRaster && !isSingleValueScale && typeof penultimateTick === 'number' && typeof ultimateTick === 'number') {
-    const computedTickDistance = ultimateTick - penultimateTick;
-    const numTicks = scale.minInterval / (computedTickDistance || scale.minInterval); // avoid infinite loop
-    for (let i = 1; i <= numTicks; i++) ticks.push(i * computedTickDistance + ultimateTick);
-  }
-  const shift = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
-  const band = scale.bandwidth / (1 - scale.barsPadding);
-  const halfPadding = (band - scale.bandwidth) / 2;
-  const offset =
-    (enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2) + (scale.isSingleValue() ? 0 : rotationOffset);
-  const tickFormatter = axisSpec.tickFormat ?? fallBackTickFormatter;
-  const labelFormatter = axisSpec.labelFormat ?? tickFormatter;
-  const firstTickValue = ticks[0];
-  const allTicks: AxisTick[] =
-    makeRaster && isSingleValueScale && typeof firstTickValue === 'number'
-      ? [
-          {
-            value: firstTickValue,
-            label: tickFormatter(firstTickValue, tickFormatOptions),
-            axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
-            position: (scale.scale(firstTickValue) || 0) + offset,
-          },
-          {
-            value: firstTickValue + scale.minInterval,
-            label: tickFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
-            axisTickLabel: labelFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
-            position: scale.bandwidth + halfPadding * 2,
-          },
-        ]
-      : enableDuplicatedTicks(axisSpec, scale, offset, fallBackTickFormatter, tickFormatOptions);
-
-  const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
-  const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
-  return showOverlappingLabels
-    ? allTicks
-    : [...allTicks]
-        .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
-        .reduce(
-          (prev, tick) => {
-            const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
-            if (tickLabelFits || showOverlappingTicks) {
-              prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, axisTickLabel: '' });
-              if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
-            }
-            return prev;
-          },
-          { visibleTicks: [] as AxisTick[], occupiedSpace: -Infinity },
-        ).visibleTicks;
-}
-
 /** @internal */
 export function getTitleDimension({
   visible,
@@ -326,6 +235,17 @@ export function getTitleDimension({
 }: AxisStyle['axisTitle'] | AxisStyle['axisPanelTitle']): number {
   return visible && fontSize > 0 ? innerPad(padding) + fontSize + outerPad(padding) : 0;
 }
+
+/** @internal */
+export const getAllAxisLayersGirth = (
+  tickLabel: AxisStyle['tickLabel'],
+  maxLabelBoxGirth: number,
+  axisHorizontal: boolean,
+) => {
+  const isTimeAxis = tickLabel.alignment.horizontal === Position.Left; // fixme this HORRIBLE temp inference
+  const axisLayerCount = isTimeAxis && axisHorizontal ? TIME_AXIS_LAYER_COUNT : 1;
+  return axisLayerCount * maxLabelBoxGirth;
+};
 
 /** @internal */
 export function getPosition(
@@ -343,7 +263,8 @@ export function getPosition(
   const vertical = isVerticalAxis(position);
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
-  const shownLabelSize = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
+  const maxLabelBboxGirth = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
+  const shownLabelSize = getAllAxisLayersGirth(tickLabel, maxLabelBboxGirth, !vertical);
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
     leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
@@ -389,37 +310,22 @@ export interface AxisGeometry {
 export function getAxesGeometries(
   chartDims: { chartDimensions: Dimensions; leftMargin: number },
   { chartPaddings, chartMargins, axes: sharedAxesStyle }: Theme,
-  { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
-  axisSpecs: AxisSpec[],
-  tickLabelDimensions: AxesTicksDimensions,
+  axisSpecs: Map<AxisId, AxisSpec>,
   axesStyles: Map<AxisId, AxisStyle | null>,
-  { xDomain, yDomains }: Pick<SeriesDomainsAndData, 'xDomain' | 'yDomains'>,
   smScales: SmallMultipleScales,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
-  fallBackTickFormatter: TickFormatter,
-  barsPadding?: number,
+  visibleTicksSet: Map<AxisId, Projection>,
 ): AxisGeometry[] {
   const panel = getPanelSize(smScales);
-  const scaleFunction = getScaleForAxisSpec(
-    { xDomain, yDomains },
-    { rotation: chartRotation },
-    totalGroupsCount,
-    barsPadding,
-    enableHistogramMode,
-  );
-  return [...tickLabelDimensions].reduce(
-    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, labelBox]: [string, TickLabelBounds]) => {
-      const axisSpec = getSpecsById<AxisSpec>(axisSpecs, axisId);
+  return [...visibleTicksSet].reduce(
+    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, { ticks, labelBox }]: [AxisId, Projection]) => {
+      const axisSpec = axisSpecs.get(axisId);
       if (axisSpec) {
-        const scale = scaleFunction(axisSpec, axisMinMax(axisSpec.position, chartRotation, panel));
-        if (!scale) throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
-
         const vertical = isVerticalAxis(axisSpec.position);
         const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;
         const axisPositionData = getPosition(chartDims, chartMargins, axisStyle, axisSpec, labelBox, smScales, acc);
         const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = axisPositionData;
-
         acc.top += topIncrement;
         acc.bottom += bottomIncrement;
         acc.left += leftIncrement;
@@ -428,26 +334,15 @@ export function getAxesGeometries(
           axis: { id: axisSpec.id, position: axisSpec.position },
           anchorPoint: { x: dimensions.left, y: dimensions.top },
           dimension: labelBox,
-          visibleTicks: getVisibleTicks(
-            axisSpec,
-            labelBox,
-            totalGroupsCount,
-            vertical ? fallBackTickFormatter : defaultTickFormatter,
-            enableHistogramMode && ((vertical && chartRotation === -90) || (!vertical && chartRotation === 180))
-              ? scale.step // TODO: Find the true cause of the this offset error
-              : 0,
-            scale,
-            enableHistogramMode,
-            { timeZone: xDomain.timeZone },
-          ),
+          visibleTicks: ticks,
           parentSize: { height: dimensions.height, width: dimensions.width },
-          size: labelBox.isHidden
-            ? { width: 0, height: 0 }
-            : {
-                width: vertical ? dimensions.width : panel.width,
-                height: vertical ? panel.height : dimensions.height,
-              },
+          size: {
+            width: labelBox.isHidden ? 0 : vertical ? dimensions.width : panel.width,
+            height: labelBox.isHidden ? 0 : vertical ? panel.height : dimensions.height,
+          },
         });
+      } else {
+        throw new Error(`Cannot compute scale for axis spec ${axisId}`); // todo move this feedback as upstream as possible
       }
       return acc;
     },

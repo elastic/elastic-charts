@@ -161,7 +161,7 @@ module.exports = {
       },
     ],
     'sort-keys': 0,
-    'no-irregular-whitespace': 'error',
+    'no-irregular-whitespace': 'warn',
     'no-unused-expressions': 'error',
     // Too restrictive, writing ugly code to defend against a very unlikely scenario: https://eslint.org/docs/rules/no-prototype-builtins
     'no-prototype-builtins': 0,

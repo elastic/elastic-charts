@@ -333,7 +333,7 @@ function isReactComponent<P extends Record<string, any>>(el: any): el is Compone
  * @internal
  */
 export function renderWithProps<P extends Record<string, any>>(El: ReactNode | ComponentType<P>, props: P): ReactNode {
-  return isReactComponent<P>(El) ? <El {...props} /> : El;
+  return isReactComponent<P>(El) ? React.createElement(El, props) : El;
 }
 
 /**
@@ -416,33 +416,6 @@ export function mergePartial<T>(
   }
 
   return getPartialValue<T>(baseClone, partial, additionalPartials);
-}
-
-/** @internal */
-export function getUniqueValues<T>(fullArray: T[], uniqueProperty: keyof T, filterConsecutives = false): T[] {
-  return fullArray.reduce<{
-    filtered: T[];
-    uniqueValues: Set<T[keyof T]>;
-  }>(
-    (acc, currentValue) => {
-      const uniqueValue = currentValue[uniqueProperty];
-      if (acc.uniqueValues.has(uniqueValue)) {
-        return acc;
-      }
-      if (filterConsecutives) {
-        acc.uniqueValues.clear();
-        acc.uniqueValues.add(uniqueValue);
-      } else {
-        acc.uniqueValues.add(uniqueValue);
-      }
-      acc.filtered.push(currentValue);
-      return acc;
-    },
-    {
-      filtered: [],
-      uniqueValues: new Set(),
-    },
-  ).filtered;
 }
 
 /** @public */
@@ -613,11 +586,5 @@ export function safeFormat<V = any>(value: V, formatter?: (value: V) => string):
 }
 
 /** @internal */
-export function range(start: number, stop: number, step: number): Array<number> {
-  const length = Math.trunc(Math.max(0, Math.ceil((stop - start) / step)));
-  const output = new Array(length);
-  for (let i = 0; i < length; i++) {
-    output[i] = start + i * step;
-  }
-  return output;
-}
+export const range = (from: number, to: number, step: number): number[] =>
+  Array.from({ length: Math.abs(Math.round((to - from) / (step || 1))) }, (_, i) => from + i * step);
