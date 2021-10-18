@@ -44,7 +44,6 @@ export const Example = () => {
     const snapshot = chartRef.current.getPNGSnapshot({
       // you can set the background and pixel ratio for the PNG export
       backgroundColor: 'white',
-      pixelRatio: 2,
     });
     if (!snapshot) {
       return;
