@@ -119,4 +119,12 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   &--hidden {
     color: $euiColorDarkShade;
   }
+
+  &--rtl {
+    direction: rtl;
+
+    .echLegendItem__label {
+      text-align: right;
+    }
+  }
 }

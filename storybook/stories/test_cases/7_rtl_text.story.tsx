@@ -7,6 +7,7 @@
  */
 
 import { boolean, select } from '@storybook/addon-knobs';
+import numeral from 'numeral';
 import React from 'react';
 
 import {
@@ -52,7 +53,7 @@ export const Example = () => {
   const renderSeries = () =>
     type === SeriesType.Bar ? (
       <>
-        <Axis id="x" position={Position.Bottom} />
+        <Axis id="x" position={Position.Bottom} tickFormat={(d) => numeral(d).format('0.0 a')} />
         <Axis id="y" position={Position.Left} />
         <BarSeries
           id="bar"
@@ -74,7 +75,7 @@ export const Example = () => {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => (useRtl ? productLookup[d].nameAR : productLookup[d].name),
             fillLabel: {
-              valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
+              valueFormatter: (d: number) => numeral(d).format('0.0 a'),
             },
             shape: {
               fillColor: defaultFillColor(interpolatorCET2s),

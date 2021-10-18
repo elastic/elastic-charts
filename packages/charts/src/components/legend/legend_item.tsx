@@ -29,7 +29,7 @@ import {
   onLegendItemOverAction,
   onToggleDeselectSeriesAction,
 } from '../../state/actions/legend';
-import { LayoutDirection } from '../../utils/common';
+import { isRTL, LayoutDirection } from '../../utils/common';
 import { deepEqual } from '../../utils/fast_deep_equal';
 import { LegendLabelOptions } from '../../utils/themes/theme';
 import { Color as ItemColor } from './color';
@@ -182,6 +182,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     if (isItemHidden) return null;
 
     const itemClassNames = classNames('echLegendItem', {
+      'echLegendItem--rtl': isRTL(label),
       'echLegendItem--hidden': isSeriesHidden,
       'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
     });

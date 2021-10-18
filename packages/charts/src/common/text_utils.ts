@@ -10,7 +10,7 @@ import { $Values as Values } from 'utility-types';
 
 import { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
-import { Datum } from '../utils/common';
+import { Datum, isRTL } from '../utils/common';
 import { Color } from './colors';
 import { Pixels, Rectangle } from './geometry';
 
@@ -114,7 +114,9 @@ export function measureOneBoxWidth(measure: TextMeasure, fontSize: number, box: 
 
 /** @internal */
 export function cutToLength(s: string, maxLength: number) {
-  return s.length <= maxLength ? s : `${s.slice(0, Math.max(0, maxLength - 1))}…`; // ellipsis is one char
+  const prefix = isRTL(s) ? '…' : ''; // ellipsis is one char
+  const postfix = isRTL(s) ? '' : '…'; // ellipsis is one char
+  return s.length <= maxLength ? s : `${prefix}${s.slice(0, Math.max(0, maxLength - 1))}${postfix}`;
 }
 
 /** @internal */
