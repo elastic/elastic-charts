@@ -152,18 +152,14 @@ export class ScaleContinuous implements Scale<number> {
       // we want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
       type === ScaleType.Time
         ? getTimeTicks(scaleOptions.desiredTickCount, scaleOptions.timeZone, nicePaddedDomain)
-        : scaleOptions.minInterval <= 0 || scaleOptions.bandwidth <= 0
-        ? this.type === ScaleType.Linear
-          ? getLinearTicks(
-              nicePaddedDomain[0],
-              nicePaddedDomain[nicePaddedDomain.length - 1],
-              scaleOptions.desiredTickCount,
-              this.linearBase,
-            )
-          : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount)
-        : new Array(Math.floor((nicePaddedDomain[1] - nicePaddedDomain[0]) / minInterval) + 1)
-            .fill(0)
-            .map((_, i) => nicePaddedDomain[0] + i * minInterval);
+        : this.type === ScaleType.Linear
+        ? getLinearTicks(
+            nicePaddedDomain[0],
+            nicePaddedDomain[nicePaddedDomain.length - 1],
+            scaleOptions.desiredTickCount,
+            this.linearBase,
+          )
+        : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount);
     this.domain = nicePaddedDomain;
     this.project = (d: number) => d3Scale(d);
     this.inverseProject = (d: number) => d3Scale.invert(d);
