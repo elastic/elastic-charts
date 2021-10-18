@@ -21,7 +21,7 @@ import {
 import { logarithm } from '../../../../common/math';
 import { Box, Font, PartialFont, TextMeasure, VerticalAlignments } from '../../../../common/text_utils';
 import { integerSnap, monotonicHillClimb } from '../../../../solvers/monotonic_hill_climb';
-import { ValueFormatter } from '../../../../utils/common';
+import { isRTL, ValueFormatter } from '../../../../utils/common';
 import { Layer } from '../../specs';
 import { Config, Padding } from '../types/config_types';
 import {
@@ -168,6 +168,8 @@ function identityRowSet(): RowSet {
   };
 }
 
+const getWords = (s: string) => (isRTL(s) ? s.split(' ').reverse() : s.split(' '));
+
 function getAllBoxes(
   rawTextGetter: RawTextGetter,
   valueGetter: ValueGetterFunction,
@@ -176,13 +178,11 @@ function getAllBoxes(
   valueFont: PartialFont,
   node: ShapeTreeNode,
 ): Box[] {
-  return rawTextGetter(node)
-    .split(' ')
+  return getWords(rawTextGetter(node))
     .filter(Boolean)
     .map((text) => ({ text, ...sizeInvariantFontShorthand }))
     .concat(
-      valueFormatter(valueGetter(node))
-        .split(' ')
+      getWords(valueFormatter(valueGetter(node)))
         .filter(Boolean)
         .map((text) => ({ text, ...sizeInvariantFontShorthand, ...valueFont })),
     );
