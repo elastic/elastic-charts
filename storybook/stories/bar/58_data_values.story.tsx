@@ -11,7 +11,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, ScaleType, Settings, PartialTheme } from '@elastic/charts';
 
-import { BARCHART_1Y0G_LINEAR } from '../../../packages/charts/src/utils/data_samples/test_dataset';
+import { BARCHART_1Y0G } from '../../../packages/charts/src/utils/data_samples/test_dataset';
 import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
@@ -52,13 +52,13 @@ export const Example = () => {
       <Settings theme={theme} baseTheme={useBaseTheme()} rotation={getChartRotationKnob()} />
       <BarSeries
         id="bars"
-        data={BARCHART_1Y0G_LINEAR}
+        data={BARCHART_1Y0G}
         yAccessors={['y']}
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         displayValueSettings={{ showValueLabel: true }}
       />
       <Axis id="bottom-axis" position="bottom" tickFormat={(d) => `${d} H`} ticks={4} />
-      <Axis id="left-axis" position="left" tickFormat={(d) => `${d} V`} />
+      <Axis id="left-axis" position="left" tickFormat={(d) => `${d} V`} ticks={4} />
     </Chart>
   );
 };

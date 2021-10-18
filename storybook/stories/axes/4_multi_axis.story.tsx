@@ -76,7 +76,7 @@ export const Example = () => {
       {renderAxisWithOptions(Position.Right, seriesGroup2, true)}
       <BarSeries
         id="barseries1"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}

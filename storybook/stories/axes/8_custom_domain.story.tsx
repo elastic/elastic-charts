@@ -73,6 +73,7 @@ export const Example = () => {
             visible: true,
           },
         }}
+        ticks={4}
       />
       <Axis
         id="left"
