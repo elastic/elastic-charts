@@ -16,10 +16,11 @@ import { convertXScaleTypes } from '../../domains/x_domain';
 import { coerceYScaleTypes } from '../../domains/y_domain';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../scales/scale_defaults';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
+import { isXDomain } from '../../utils/axis_utils';
 import { groupBy } from '../../utils/group_data_series';
 import { AxisSpec, BasicSeriesSpec, CustomXDomain, XScaleType, YDomainRange } from '../../utils/specs';
 import { isHorizontalRotation } from '../utils/common';
-import { getSpecDomainGroupId } from '../utils/spec';
+import { getAxesSpecForSpecId, getSpecDomainGroupId } from '../utils/spec';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { mergeYCustomDomainsByGroupId } from './merge_y_custom_domains';
 
@@ -60,8 +61,7 @@ export function getScaleConfigsFromSpecs(
   const xAxes = axisSpecs.filter((d) => isHorizontalChart === isHorizontalAxis(d.position));
   const xTicks = xAxes.reduce<number>((acc, { ticks = X_SCALE_DEFAULT.desiredTickCount }) => {
     return Math.max(acc, ticks);
-  }, X_SCALE_DEFAULT.desiredTickCount);
-
+  }, 1); // TODO TEMP value
   const xScaleConfig = convertXScaleTypes(seriesSpecs);
   const x: ScaleConfigs['x'] = {
     customDomain: settingsSpec.xDomain,
