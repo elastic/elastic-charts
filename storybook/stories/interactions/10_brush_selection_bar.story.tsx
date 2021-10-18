@@ -26,7 +26,7 @@ export const Example = () => {
         id="bottom"
         position={Position.Bottom}
         title="bottom"
-        showOverlappingTicks
+        ticks={3}
         tickFormat={isVertical ? (d) => Number(d).toFixed(2) : undefined}
       />
       <Axis
@@ -39,7 +39,7 @@ export const Example = () => {
         id="top"
         position={Position.Top}
         title="top"
-        showOverlappingTicks
+        ticks={3}
         tickFormat={isVertical ? (d) => Number(d).toFixed(2) : undefined}
       />
       <Axis

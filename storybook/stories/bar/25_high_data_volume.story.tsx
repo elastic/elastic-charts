@@ -34,6 +34,7 @@ export const Example = () => {
         yAccessors={['y']}
         splitSeriesAccessors={['g']}
         data={data}
+        enableHistogramMode
       />
     </Chart>
   );

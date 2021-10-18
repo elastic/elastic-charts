@@ -91,7 +91,7 @@ export const Example = () => {
       />
       <BarSeries
         id="stacked bar 1"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
@@ -100,7 +100,7 @@ export const Example = () => {
       />
       <BarSeries
         id="stacked bar 2"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
@@ -111,7 +111,7 @@ export const Example = () => {
       <BarSeries
         id="stacked bar A"
         groupId="gb"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
@@ -121,7 +121,7 @@ export const Example = () => {
       <BarSeries
         id="stacked bar B"
         groupId="gb"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
@@ -130,7 +130,7 @@ export const Example = () => {
       />
       <BarSeries
         id="non stacked bar"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}

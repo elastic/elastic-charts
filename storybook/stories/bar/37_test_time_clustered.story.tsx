@@ -47,6 +47,7 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1, 2]}
         data={data}
+        timeZone="UTC"
       />
     </Chart>
   );

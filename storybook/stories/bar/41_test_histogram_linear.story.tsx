@@ -139,7 +139,7 @@ export const Example = () => {
         id="rect2"
       />
       <Axis id="discover-histogram-left-axis" position={Position.Left} title="left axis" />
-      <Axis id="discover-histogram-bottom-axis" position={Position.Bottom} title="bottom axis" />
+      <Axis id="discover-histogram-bottom-axis" position={Position.Bottom} title="bottom axis" ticks={4} />
       {hasHistogramBarSeries && (
         <HistogramBarSeries
           id="histo"

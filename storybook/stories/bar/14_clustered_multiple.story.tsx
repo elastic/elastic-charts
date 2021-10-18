@@ -20,46 +20,46 @@ export const Example = () => (
 
     <BarSeries
       id="bar series 1"
-      xScaleType={ScaleType.Linear}
+      xScaleType={ScaleType.Ordinal}
       yScaleType={ScaleType.Linear}
       xAccessor="x"
       yAccessors={['y']}
       data={[
-        { x: 0, y: 2 },
-        { x: 1, y: 7 },
-        { x: 2, y: 3 },
-        { x: 3, y: 6 },
+        { x: 'cat 0', y: 2 },
+        { x: 'cat 1', y: 7 },
+        { x: 'cat 2', y: 3 },
+        { x: 'cat 3', y: 6 },
       ]}
     />
     <BarSeries
       id="bar series 2"
-      xScaleType={ScaleType.Linear}
+      xScaleType={ScaleType.Ordinal}
       yScaleType={ScaleType.Linear}
       xAccessor="x"
       yAccessors={['y']}
       data={[
-        { x: 0, y: 1 },
-        { x: 1, y: 2 },
-        { x: 2, y: 3 },
-        { x: 3, y: 4 },
+        { x: 'cat 0', y: 1 },
+        { x: 'cat 1', y: 2 },
+        { x: 'cat 2', y: 3 },
+        { x: 'cat 3', y: 4 },
       ]}
     />
     <BarSeries
       id="bar series 3"
-      xScaleType={ScaleType.Linear}
+      xScaleType={ScaleType.Ordinal}
       yScaleType={ScaleType.Linear}
       xAccessor="x"
       yAccessors={['y']}
       splitSeriesAccessors={['g']}
       data={[
-        { x: 0, y: 1, g: 'a' },
-        { x: 1, y: 2, g: 'a' },
-        { x: 2, y: 3, g: 'a' },
-        { x: 3, y: 4, g: 'a' },
-        { x: 0, y: 5, g: 'b' },
-        { x: 1, y: 8, g: 'b' },
-        { x: 2, y: 9, g: 'b' },
-        { x: 3, y: 2, g: 'b' },
+        { x: 'cat 0', y: 1, g: 'a' },
+        { x: 'cat 1', y: 2, g: 'a' },
+        { x: 'cat 2', y: 3, g: 'a' },
+        { x: 'cat 3', y: 4, g: 'a' },
+        { x: 'cat 0', y: 5, g: 'b' },
+        { x: 'cat 1', y: 8, g: 'b' },
+        { x: 'cat 2', y: 9, g: 'b' },
+        { x: 'cat 3', y: 2, g: 'b' },
       ]}
     />
   </Chart>

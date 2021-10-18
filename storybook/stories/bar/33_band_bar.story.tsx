@@ -53,6 +53,7 @@ export const Example = () => {
         id="bars"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
+        timeZone="UTC"
         xAccessor="x"
         yAccessors={[useFunctions ? (d) => d.max : 'max']}
         y0Accessors={[useFunctions ? (d) => d.min : 'min']}
@@ -62,6 +63,7 @@ export const Example = () => {
       <LineSeries
         id="average"
         xScaleType={ScaleType.Time}
+        timeZone="UTC"
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}

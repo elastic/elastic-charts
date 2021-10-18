@@ -70,7 +70,7 @@ export const Example = () => {
         {...onLegendItemListeners}
         xDomain={xDomain}
       />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
+      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticks={5} />
       <Axis
         id="left2"
         title="Left axis"

@@ -41,7 +41,7 @@ export const Example = () => {
 
       <BarSeries
         id="bars1"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor={xAccessorFn}
         yAccessors={['y', yAccessorFn]}

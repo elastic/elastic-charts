@@ -55,7 +55,7 @@ export const Example = () => {
       <Axis id="right 2 y" groupId={groupId2} title="RED" position={Position.Right} />
       <BarSeries
         id="stacked bar 1"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
@@ -64,7 +64,7 @@ export const Example = () => {
       <BarSeries
         id="stacked bar 2"
         groupId={groupId1}
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
@@ -74,7 +74,7 @@ export const Example = () => {
       <BarSeries
         id="stacked bar A"
         groupId={groupId2}
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}

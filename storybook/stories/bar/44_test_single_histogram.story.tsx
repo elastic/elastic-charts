@@ -50,6 +50,7 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1]}
         data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 1)}
+        timeZone="UTC"
       />
     </Chart>
   );

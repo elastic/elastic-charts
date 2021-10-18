@@ -43,7 +43,7 @@ export const Example = () => {
       <Axis id="left" title="Left" position={Position.Left} />
       <BarSeries
         id="bars"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}

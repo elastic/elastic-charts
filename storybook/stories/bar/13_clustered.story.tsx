@@ -46,20 +46,20 @@ export const Example = () => {
 
       <BarSeries
         id="bars"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
         splitSeriesAccessors={['g']}
         data={[
-          { x: 0, y: 2, g: 'a' },
-          { x: 1, y: 7, g: 'a' },
-          { x: 2, y: 3, g: 'a' },
-          { x: 3, y: 6, g: 'a' },
-          { x: 0, y: 4, g: 'b' },
-          { x: 1, y: 5, g: 'b' },
-          { x: 2, y: 8, g: 'b' },
-          { x: 3, y: 2, g: 'b' },
+          { x: 'cat 0', y: 2, g: 'a' },
+          { x: 'cat 1', y: 7, g: 'a' },
+          { x: 'cat 2', y: 3, g: 'a' },
+          { x: 'cat 3', y: 6, g: 'a' },
+          { x: 'cat 0', y: 4, g: 'b' },
+          { x: 'cat 1', y: 5, g: 'b' },
+          { x: 'cat 2', y: 8, g: 'b' },
+          { x: 'cat 3', y: 2, g: 'b' },
         ]}
       />
     </Chart>

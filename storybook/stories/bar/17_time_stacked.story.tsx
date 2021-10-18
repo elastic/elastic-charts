@@ -45,6 +45,7 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1]}
         stackAccessors={[0]}
+        timeZone="UTC"
         data={KIBANA_METRICS.metrics.kibana_os_load[2].data.slice(0, 20)}
       />
       <BarSeries
@@ -54,6 +55,7 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1]}
         stackAccessors={[0]}
+        timeZone="UTC"
         data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 20)}
       />
       <BarSeries
@@ -63,6 +65,7 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1]}
         stackAccessors={[0]}
+        timeZone="UTC"
         data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20)}
       />
     </Chart>

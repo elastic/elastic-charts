@@ -108,7 +108,7 @@ export const Example = () => {
       <BarSeries
         id="bars"
         displayValueSettings={displayValueSettings}
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
@@ -120,7 +120,7 @@ export const Example = () => {
         <BarSeries
           id="bars2"
           displayValueSettings={displayValueSettings}
-          xScaleType={ScaleType.Linear}
+          xScaleType={ScaleType.Ordinal}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}

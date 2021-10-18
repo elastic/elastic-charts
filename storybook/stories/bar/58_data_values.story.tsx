@@ -57,7 +57,7 @@ export const Example = () => {
         xScaleType={ScaleType.Linear}
         displayValueSettings={{ showValueLabel: true }}
       />
-      <Axis id="bottom-axis" position="bottom" tickFormat={(d) => `${d} H`} />
+      <Axis id="bottom-axis" position="bottom" tickFormat={(d) => `${d} H`} ticks={4} />
       <Axis id="left-axis" position="left" tickFormat={(d) => `${d} V`} />
     </Chart>
   );

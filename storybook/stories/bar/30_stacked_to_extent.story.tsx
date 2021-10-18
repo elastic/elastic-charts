@@ -24,7 +24,7 @@ export const Example = () => {
         id="left2"
         domain={{
           min: NaN,
-          max: NaN,
+          max: 70,
           fit,
         }}
         title="Left axis"

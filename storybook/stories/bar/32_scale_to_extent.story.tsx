@@ -35,10 +35,10 @@ export const Example = () => {
     DomainPaddingUnit.Domain as DomainPaddingUnit,
   );
   const mixed = [
-    { x: 0, y: -4 },
-    { x: 1, y: -3 },
-    { x: 2, y: 2 },
-    { x: 3, y: 1 },
+    { x: 'A', y: -4 },
+    { x: 'B', y: -3 },
+    { x: 'C', y: 2 },
+    { x: 'D', y: 1 },
   ];
 
   const allPositive = mixed.map((datum) => ({ x: datum.x, y: Math.abs(datum.y) }));
@@ -76,11 +76,11 @@ export const Example = () => {
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
-      <Axis id="top" position={Position.Top} title="Top axis" />
+      <Axis id="categories" position={Position.Bottom} title="categories" />
       <Axis
         id="left"
         domain={customDomain}
-        title="Left axis"
+        title="value"
         position={Position.Left}
         tickFormat={(d: any) => Number(d).toFixed(2)}
       />
@@ -88,7 +88,7 @@ export const Example = () => {
       <SeriesType
         id="series"
         yNice={nice}
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
