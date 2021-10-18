@@ -8,11 +8,12 @@
 
 import { LegendItem } from '../../../../common/legend';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
-import { AxisSpec } from '../../../../specs';
+import { AnnotationType, AxisSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import {
   DebugState,
+  DebugStateAnnotations,
   DebugStateArea,
   DebugStateAxes,
   DebugStateBar,
@@ -31,7 +32,7 @@ import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 import { computeLegendSelector } from './compute_legend';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGridLinesSelector } from './get_grid_lines';
-import { getAxisSpecsSelector } from './get_specs';
+import { getAnnotationSpecsSelector, getAxisSpecsSelector } from './get_specs';
 
 /**
  * Returns a stringified version of the `debugState`
@@ -45,8 +46,9 @@ export const getDebugStateSelector = createCustomCachedSelector(
     getGridLinesSelector,
     getAxisSpecsSelector,
     getSettingsSpecSelector,
+    getAnnotationSpecsSelector,
   ],
-  ({ geometries }, legend, axes, gridLines, axesSpecs, { rotation }): DebugState => {
+  ({ geometries }, legend, axes, gridLines, axesSpecs, { rotation }, annotations): DebugState => {
     const seriesNameMap = getSeriesNameMap(legend);
     return {
       legend: getLegendState(legend),
@@ -54,6 +56,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
       areas: geometries.areas.map(getAreaState(seriesNameMap)),
       lines: geometries.lines.map(getLineState(seriesNameMap)),
       bars: getBarsState(seriesNameMap, geometries.bars),
+      annotations: getAnnotationsState(annotations),
     };
   },
 );
@@ -263,6 +266,28 @@ function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
     .flat();
 
   return { items };
+}
+
+function getAnnotationsState(annotationSpecs: any[]): DebugStateAnnotations[] {
+  const acc: DebugStateAnnotations[] = [];
+  annotationSpecs.forEach((annotation) => {
+    return annotation.annotationType === AnnotationType.Rectangle
+      ? acc.push({
+          id: annotation.id,
+          color: annotation.style.fill ? annotation.style.fill : null,
+          data: annotation.dataValues,
+          type: annotation.annotationType,
+        })
+      : acc.push({
+          id: annotation.id,
+          icon: annotation.marker.props.type,
+          color: annotation.style.details.fill,
+          data: annotation.dataValues,
+          domainType: annotation.domainType,
+          type: annotation.annotationType,
+        });
+  });
+  return acc;
 }
 
 /**

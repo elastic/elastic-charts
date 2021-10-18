@@ -19,11 +19,13 @@ import {
 } from '../../../../../state/actions/dom_element';
 import { onPointerMove as onPointerMoveAction } from '../../../../../state/actions/mouse';
 import { GlobalChartState, BackwardRef } from '../../../../../state/chart_state';
+import { getDebugStateSelector } from '../../../../../state/selectors/get_debug_state';
 import {
   getInternalIsInitializedSelector,
   InitStatus,
 } from '../../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../../state/selectors/get_settings_specs';
+import { DebugStateAnnotations } from '../../../../../state/types';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { AnnotationId } from '../../../../../utils/ids';
 import { AnnotationLineProps } from '../../../annotations/line/types';
@@ -53,6 +55,7 @@ interface AnnotationsStateProps {
   chartId: string;
   zIndex: number;
   onAnnotationClick?: AnnotationClickListener;
+  debugState?: DebugStateAnnotations[];
 }
 
 interface AnnotationsOwnProps {
@@ -104,6 +107,7 @@ const AnnotationsComponent = ({
   onDOMElementEnter,
   onDOMElementLeave,
   onAnnotationClick,
+  debugState,
 }: AnnotationsProps) => {
   const renderAnnotationMarkers = useCallback((): JSX.Element[] => {
     const markers: JSX.Element[] = [];
@@ -146,9 +150,10 @@ const AnnotationsComponent = ({
   if (isChartEmpty) {
     return null;
   }
+  const debugStateString: string | undefined = debugState && JSON.stringify(debugState);
 
   return (
-    <>
+    <div data-ech-debug-state={debugStateString}>
       {renderAnnotationMarkers()}
       <AnnotationTooltip
         chartId={chartId}
@@ -157,7 +162,7 @@ const AnnotationsComponent = ({
         chartRef={getChartContainerRef()}
         onScroll={onScroll}
       />
-    </>
+    </div>
   );
 };
 
@@ -186,6 +191,7 @@ const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
       chartId,
       zIndex,
       onAnnotationClick: undefined,
+      debugState: undefined,
     };
   }
   return {
@@ -197,6 +203,7 @@ const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
     chartId,
     zIndex,
     onAnnotationClick: getSettingsSpecSelector(state).onAnnotationClick,
+    debugState: getDebugStateSelector(state).annotations,
   };
 };
 

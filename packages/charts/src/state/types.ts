@@ -102,6 +102,16 @@ export type PartitionDebugState = {
   partitions: Array<SinglePartitionDebugState>;
 };
 
+/** @public */
+export type DebugStateAnnotations = {
+  id?: string;
+  color?: string;
+  icon?: string;
+  type?: string;
+  domainType?: 'xDomain' | 'yDomain';
+  data?: [];
+};
+
 /**
  * Describes _visible_ chart state for use in functional tests
  *
@@ -114,6 +124,7 @@ export interface DebugState {
   areas?: DebugStateArea[];
   lines?: DebugStateLine[];
   bars?: DebugStateBar[];
+  annotations?: DebugStateAnnotations[];
   /** Heatmap chart debug state */
   heatmap?: HeatmapDebugState;
   partition?: PartitionDebugState[];
