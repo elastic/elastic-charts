@@ -579,6 +579,10 @@ export type Datum = any;
 
 // @public
 export interface DebugState {
+    // Warning: (ae-forgotten-export) The symbol "DebugStateAnnotations" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    annotations?: DebugStateAnnotations[];
     // Warning: (ae-forgotten-export) The symbol "DebugStateArea" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
@@ -2418,8 +2422,3 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // src/chart_types/heatmap/layout/types/config_types.ts:47:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/chart_types/heatmap/layout/types/config_types.ts:48:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
-
-// (No @packageDocumentation comment for this package)
-
-```
