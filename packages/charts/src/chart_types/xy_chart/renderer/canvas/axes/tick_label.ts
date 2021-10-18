@@ -17,6 +17,7 @@ export function renderTickLabel(
   tick: AxisTick,
   showTicks: boolean,
   { axisSpec: { position }, dimension, size, debug, axisStyle }: AxisProps,
+  layerGirth: number,
 ) {
   const labelStyle = axisStyle.tickLabel;
   const tickLabelProps = getTickLabelPosition(
@@ -59,6 +60,6 @@ export function renderTickLabel(
     },
     labelStyle.rotation,
     tickLabelProps.textOffsetX,
-    tickLabelProps.textOffsetY,
+    tickLabelProps.textOffsetY + (tick.layer || 0) * layerGirth,
   );
 }

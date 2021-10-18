@@ -96,13 +96,13 @@ export const getJoinedVisibleAxesData = createCustomCachedSelector(
 /** @internal */
 export const getLabelBox = (
   axesStyle: AxisStyle,
-  scale: Scale<string | number>,
+  ticks: Array<string | number>,
   tickFormatter: JoinedAxisData['tickFormatter'],
   textMeasure: TextMeasure,
   axisSpec: AxisSpec,
   gridLine: GridLineStyle,
 ): TickLabelBounds => ({
-  ...(axesStyle.tickLabel.visible ? scale.ticks().map(tickFormatter) : []).reduce(
+  ...(axesStyle.tickLabel.visible ? ticks.map(tickFormatter) : []).reduce(
     (sizes, labelText) => {
       const bbox = textMeasure(labelText, 0, axesStyle.tickLabel.fontSize, axesStyle.tickLabel.fontFamily);
       const rotatedBbox = computeRotatedLabelDimensions(bbox, axesStyle.tickLabel.rotation);
@@ -125,7 +125,10 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
       (textMeasure): AxesTicksDimensions =>
         [...joinedAxesData].reduce<AxesTicksDimensions>(
           (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, tickFormatter }]) =>
-            axesTicksDimensions.set(id, getLabelBox(axesStyle, scale, tickFormatter, textMeasure, axisSpec, gridLine)),
+            axesTicksDimensions.set(
+              id,
+              getLabelBox(axesStyle, scale.ticks(), tickFormatter, textMeasure, axisSpec, gridLine),
+            ),
           new Map(),
         ),
     ),

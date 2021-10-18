@@ -29,7 +29,8 @@ import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { getPanelSize, hasSMDomain } from './panel';
 import { computeXScale, computeYScales } from './scales';
 
-const TIME_AXIS_LAYER_COUNT = 3;
+/** @internal */
+export const TIME_AXIS_LAYER_COUNT = 3;
 
 type TickValue = number | string;
 
@@ -39,6 +40,7 @@ export interface AxisTick {
   label: string;
   axisTickLabel: string;
   position: number;
+  layer?: number;
 }
 
 /** @internal */
@@ -242,8 +244,8 @@ export const getAllAxisLayersGirth = (
   maxLabelBoxGirth: number,
   axisHorizontal: boolean,
 ) => {
-  const isTimeAxis = tickLabel.alignment.horizontal === Position.Left; // fixme this HORRIBLE temp inference
-  const axisLayerCount = isTimeAxis && axisHorizontal ? TIME_AXIS_LAYER_COUNT : 1;
+  const isMultilayerTimeAxis = tickLabel.alignment.horizontal === Position.Left; // fixme this HORRIBLE temp inference
+  const axisLayerCount = isMultilayerTimeAxis && axisHorizontal ? TIME_AXIS_LAYER_COUNT : 1;
   return axisLayerCount * maxLabelBoxGirth;
 };
 
