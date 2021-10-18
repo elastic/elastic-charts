@@ -148,8 +148,6 @@ export class ScaleContinuous implements Scale<number> {
     const nicePaddedDomain = isPixelPadded && isNice ? (d3Scale.domain() as number[]) : paddedDomain;
 
     this.tickValues =
-      // This case is for the xScale (minInterval is > 0) when we want to show bars (bandwidth > 0)
-      // we want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
       type === ScaleType.Time
         ? getTimeTicks(scaleOptions.desiredTickCount, scaleOptions.timeZone, nicePaddedDomain)
         : this.type === ScaleType.Linear
