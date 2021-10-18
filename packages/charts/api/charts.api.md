@@ -403,7 +403,6 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     // (undocumented)
     getPNGSnapshot(options?: {
         backgroundColor: string;
-        pixelRatio: number;
     }): {
         blobOrDataUrl: any;
         browser: 'IE11' | 'other';
