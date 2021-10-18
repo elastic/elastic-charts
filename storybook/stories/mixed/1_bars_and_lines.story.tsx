@@ -15,7 +15,7 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example = () => (
   <Chart>
     <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
-    <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
+    <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticks={4} />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
     <BarSeries

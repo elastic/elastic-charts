@@ -32,7 +32,7 @@ export const Example = () => {
 
       <BarSeries
         id={longLabels ? 'Elit exercitation dolore fugiat aliquip Lorem commodo' : 'bars 1'}
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
@@ -49,7 +49,7 @@ export const Example = () => {
             ? 'Laborum consectetur ut esse aute sunt adipisicing laboris reprehenderit eu officia labore in laborum'
             : 'bars 2'
         }
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}

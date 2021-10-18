@@ -77,7 +77,7 @@ export const Example = () => {
         marker={<Icon type="alert" />}
         markerPosition={Position.Top}
       />
-      <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
+      <Axis id="bottom" position={Position.Bottom} title="x-domain axis" ticks={5} />
       <Axis id="left" title="y-domain axis" position={Position.Left} />
       {typeOfSeries === 'line' ? (
         <LineSeries

@@ -81,7 +81,7 @@ export const Example = () => {
         hideLines={hideLines}
         hideTooltips={hideTooltips}
       />
-      <Axis id="horizontal" position={axisPosition} title="x-domain axis" />
+      <Axis id="horizontal" position={axisPosition} title="x-domain axis" ticks={6} />
       <Axis id="vertical" title="y-domain axis" position={Position.Left} />
       <BarSeries
         id="bars"

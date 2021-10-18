@@ -24,10 +24,10 @@ export const Example = () => (
       roundHistogramBrushValues={boolean('roundHistogramBrushValues', false)}
       allowBrushingLastHistogramBin={boolean('allowBrushingLastHistogramBin', true)}
     />
-    <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks />
-    <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
-    <Axis id="top" position={Position.Top} title="top" showOverlappingTicks />
-    <Axis id="right" title="right" position={Position.Right} tickFormat={(d) => Number(d).toFixed(2)} />
+    <Axis id="bottom" position={Position.Bottom} title="bottom" ticks={5} />
+    <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} ticks={5} />
+    <Axis id="top" position={Position.Top} title="top" ticks={5} />
+    <Axis id="right" title="right" position={Position.Right} tickFormat={(d) => Number(d).toFixed(2)} ticks={5} />
 
     <BarSeries
       id="lines"
@@ -36,6 +36,7 @@ export const Example = () => (
       xAccessor="x"
       enableHistogramMode
       yAccessors={['y']}
+      yNice
       data={[
         { x: 1, y: 2 },
         { x: 2, y: 7 },

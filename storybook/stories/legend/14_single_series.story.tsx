@@ -33,7 +33,7 @@ export const Example = () => {
         <BarSeries
           id={`bars${i}`}
           name={`Another long series name - ${i}`}
-          xScaleType={ScaleType.Linear}
+          xScaleType={ScaleType.Ordinal}
           yScaleType={ScaleType.Linear}
           data={data.map(({ x, y }) => ({ x, y: y + rng(0, 5) }))}
         />,
@@ -56,7 +56,7 @@ export const Example = () => {
       <BarSeries
         id="bars0"
         name="Id elit mollit ut est laborum. Lorem laboris laboris laboris quis dolore incididunt eiusmod fugiat nulla culpa dolore exercitation dolore. Voluptate ipsum cillum cillum in ullamco elit eiusmod labore incididunt excepteur. Duis id laboris consequat aliqua officia non ex nisi commodo. Ut do do voluptate sunt sunt cupidatat ea ad."
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         data={data}
       />

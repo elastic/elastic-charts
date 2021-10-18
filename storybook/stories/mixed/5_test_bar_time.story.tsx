@@ -59,6 +59,7 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1]}
         data={data1}
+        timeZone="UTC"
       />
       <LineSeries
         id="data2"
@@ -67,6 +68,7 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[2]}
         data={data2}
+        timeZone="UTC"
       />
     </Chart>
   );

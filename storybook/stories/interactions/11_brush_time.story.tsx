@@ -22,8 +22,10 @@ import {
   Position,
   ScaleType,
   Settings,
+  TickFormatter,
 } from '@elastic/charts';
 
+import { isHorizontalRotation } from '../../../packages/charts/src/chart_types/xy_chart/state/utils/common';
 import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
@@ -33,13 +35,15 @@ export const Example = () => {
   const oneDays = moment.duration(1, 'd');
   const twoDays = moment.duration(2, 'd');
   const fiveDays = moment.duration(5, 'd');
-  const formatter = niceTimeFormatter([now, fiveDays.add(now).asMilliseconds()]);
+  const xFormatter = niceTimeFormatter([now, fiveDays.add(now).asMilliseconds()]);
   const brushEndListener: BrushEndListener = ({ x }) => {
     if (!x) {
       return;
     }
-    action('onBrushEnd')(formatter(x[0]), formatter(x[1]));
+    action('onBrushEnd')(xFormatter(x[0]), xFormatter(x[1]));
   };
+  const yFormatter: TickFormatter = (d) => Number(d).toFixed(2);
+  const rotation = getChartRotationKnob();
   return (
     <Chart>
       <Settings
@@ -47,10 +51,20 @@ export const Example = () => {
         debug={boolean('debug', false)}
         onBrushEnd={brushEndListener}
         onElementClick={action('onElementClick')}
-        rotation={getChartRotationKnob()}
+        rotation={rotation}
       />
-      <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks tickFormat={formatter} />
-      <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+      <Axis
+        id="bottom"
+        position={Position.Bottom}
+        title="bottom"
+        tickFormat={isHorizontalRotation(rotation) ? xFormatter : yFormatter}
+      />
+      <Axis
+        id="left"
+        title="left"
+        position={Position.Left}
+        tickFormat={isHorizontalRotation(rotation) ? yFormatter : xFormatter}
+      />
 
       <BarSeries
         id="bars"

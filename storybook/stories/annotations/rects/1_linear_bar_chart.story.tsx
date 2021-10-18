@@ -59,7 +59,7 @@ export const Example = () => {
         ]}
         style={{ fill: 'red' }}
       />
-      <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
+      <Axis id="bottom" position={Position.Bottom} title="x-domain axis" ticks={5} />
       <Axis id="left" title="y-domain axis" position={Position.Left} />
       <BarSeries
         id="bars"

@@ -114,15 +114,18 @@ function renderXYAxisChart() {
           fit: true,
         }}
         position={Position.Left}
+        ticks={5}
       />
 
       <BarSeries
         id="series bars chart"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
         data={data}
+        timeZone="UTC"
+        yNice
       />
     </>
   );

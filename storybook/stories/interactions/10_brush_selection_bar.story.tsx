@@ -23,6 +23,13 @@ export const Example = () => {
     <Chart>
       <Settings onBrushEnd={action('onBrushEnd')} rotation={rotation} baseTheme={useBaseTheme()} />
       <Axis
+        id="top"
+        position={Position.Top}
+        title="top"
+        ticks={3}
+        tickFormat={isVertical ? (d) => Number(d).toFixed(2) : undefined}
+      />
+      <Axis
         id="bottom"
         position={Position.Bottom}
         title="bottom"
@@ -32,19 +39,14 @@ export const Example = () => {
       <Axis
         id="left"
         title="left"
+        ticks={5}
         position={Position.Left}
         tickFormat={!isVertical ? (d) => Number(d).toFixed(2) : undefined}
       />
       <Axis
-        id="top"
-        position={Position.Top}
-        title="top"
-        ticks={3}
-        tickFormat={isVertical ? (d) => Number(d).toFixed(2) : undefined}
-      />
-      <Axis
         id="right"
         title="right"
+        ticks={5}
         position={Position.Right}
         tickFormat={!isVertical ? (d) => Number(d).toFixed(2) : undefined}
       />
@@ -55,6 +57,7 @@ export const Example = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
+        yNice
         data={[
           { x: 1, y: 2 },
           { x: 2, y: 7 },

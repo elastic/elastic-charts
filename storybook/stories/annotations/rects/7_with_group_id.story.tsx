@@ -49,7 +49,7 @@ export const Example = () => {
           style={{ fill: 'red' }}
         />
       )}
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings baseTheme={useBaseTheme()} xDomain={{ min: NaN, max: NaN, minInterval: 1 }} />
       <Axis id="bottom" groupId="group2" position={Position.Bottom} title="Bottom (groupId=group2)" />
       <Axis id="left" groupId="group1" position={Position.Left} title="Left (groupId=group1)" />
       <Axis id="top" groupId="group1" position={Position.Top} title="Top (groupId=group1)" />

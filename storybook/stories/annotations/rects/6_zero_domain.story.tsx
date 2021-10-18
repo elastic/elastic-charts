@@ -38,7 +38,7 @@ export const Example = () => {
   return (
     <Chart>
       <RectAnnotation id="rect" dataValues={[{ coordinates: xAxisKnobs }]} style={{ fill: 'red' }} />
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings baseTheme={useBaseTheme()} xDomain={{ minInterval: 1, min: NaN, max: NaN }} />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
       <Axis
         domain={{
@@ -54,11 +54,17 @@ export const Example = () => {
         id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
+        enableHistogramMode
         data={[
           { x: 0, y: xAxisKnobs.minY },
           { x: 5, y: (xAxisKnobs.minY + xAxisKnobs.maxY) / 2 },
           { x: 20, y: xAxisKnobs.maxY },
         ]}
+        barSeriesStyle={{
+          rect: {
+            opacity: 0.5,
+          },
+        }}
       />
     </Chart>
   );

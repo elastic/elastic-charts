@@ -69,7 +69,7 @@ export const Example = () => {
         marker={<Icon type="alert" />}
         markerPosition={markerPosition === 'undefined' ? undefined : markerPosition}
       />
-      <Axis id="horizontal" position={axisPosition} title="x-domain axis" />
+      <Axis id="horizontal" position={axisPosition} title="x-domain axis" ticks={8} />
       <Axis id="vertical" title="y-domain axis" position={Position.Left} />
       <BarSeries
         id="bars"

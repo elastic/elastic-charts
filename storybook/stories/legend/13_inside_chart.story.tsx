@@ -109,6 +109,7 @@ export const Example = () => {
         yAccessors={['y']}
         stackAccessors={['x']}
         splitSeriesAccessors={['g']}
+        timeZone="UTC"
         data={data.slice(0, numberOfSeries * 10).map((d, i) => {
           if (i >= seriesWithLongName * 10 && i < seriesWithLongName * 10 + 10) {
             return {

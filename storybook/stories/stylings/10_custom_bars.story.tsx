@@ -64,12 +64,12 @@ export const Example = () => {
   return (
     <Chart renderer="canvas">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} theme={theme} baseTheme={useBaseTheme()} />
-      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />
+      <Axis id="bottom" position={Position.Bottom} />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <BarSeries
         id="bar 1"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
@@ -79,7 +79,7 @@ export const Example = () => {
       />
       <BarSeries
         id="bar 2"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}

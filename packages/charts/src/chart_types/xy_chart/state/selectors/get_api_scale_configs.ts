@@ -15,12 +15,10 @@ import { GroupId } from '../../../../utils/ids';
 import { convertXScaleTypes } from '../../domains/x_domain';
 import { coerceYScaleTypes } from '../../domains/y_domain';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../scales/scale_defaults';
-import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { isXDomain } from '../../utils/axis_utils';
 import { groupBy } from '../../utils/group_data_series';
 import { AxisSpec, BasicSeriesSpec, CustomXDomain, XScaleType, YDomainRange } from '../../utils/specs';
-import { isHorizontalRotation } from '../utils/common';
-import { getAxesSpecForSpecId, getSpecDomainGroupId } from '../utils/spec';
+import { getSpecDomainGroupId } from '../utils/spec';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { mergeYCustomDomainsByGroupId } from './merge_y_custom_domains';
 
@@ -55,18 +53,16 @@ export function getScaleConfigsFromSpecs(
   seriesSpecs: BasicSeriesSpec[],
   settingsSpec: SettingsSpec,
 ): ScaleConfigs {
-  const isHorizontalChart = isHorizontalRotation(settingsSpec.rotation);
-
   // x axis
-  const xAxes = axisSpecs.filter((d) => isHorizontalChart === isHorizontalAxis(d.position));
+  const xAxes = axisSpecs.filter((spec) => isXDomain(spec.position, settingsSpec.rotation));
   const xTicks = xAxes.reduce<number>((acc, { ticks = X_SCALE_DEFAULT.desiredTickCount }) => {
     return Math.max(acc, ticks);
-  }, 1); // TODO TEMP value
+  }, -Infinity);
   const xScaleConfig = convertXScaleTypes(seriesSpecs);
   const x: ScaleConfigs['x'] = {
     customDomain: settingsSpec.xDomain,
     ...xScaleConfig,
-    desiredTickCount: xTicks,
+    desiredTickCount: Number.isFinite(xTicks) ? xTicks : X_SCALE_DEFAULT.desiredTickCount,
   };
 
   // y axes
@@ -80,10 +76,17 @@ export function getScaleConfigsFromSpecs(
 
   const customDomainByGroupId = mergeYCustomDomainsByGroupId(axisSpecs, settingsSpec.rotation);
 
-  const yAxes = axisSpecs.filter((d) => isHorizontalChart === isVerticalAxis(d.position));
+  const yAxes = axisSpecs.filter((spec) => !isXDomain(spec.position, settingsSpec.rotation));
   const y = Object.keys(scaleConfigsByGroupId).reduce<ScaleConfigs['y']>((acc, groupId) => {
-    const axis = yAxes.find((yAxis) => yAxis.groupId === groupId);
-    const desiredTickCount = axis?.ticks ?? Y_SCALE_DEFAULT.desiredTickCount;
+    const tickCountFromSpecs = yAxes.reduce<number>((acc, yAxis) => {
+      return yAxis.groupId === groupId ? Math.max(acc, yAxis.ticks ?? Y_SCALE_DEFAULT.desiredTickCount) : acc;
+    }, -Infinity);
+    const desiredTickCount = Number.isFinite(tickCountFromSpecs)
+      ? tickCountFromSpecs
+      : Y_SCALE_DEFAULT.desiredTickCount;
+
+    console.log({ desiredTickCount, yAxes });
+
     const scaleConfig = scaleConfigsByGroupId[groupId];
     const customDomain = customDomainByGroupId.get(groupId);
     if (!acc[groupId]) {

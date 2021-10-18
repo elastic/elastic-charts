@@ -15,9 +15,9 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example = () => (
   <Chart>
     <Settings showLegend showLegendExtra legendPosition={Position.Right} rotation={180} baseTheme={useBaseTheme()} />
-    <Axis id="x top" position={Position.Top} title="x top axis" />
+    <Axis id="x top" position={Position.Top} title="x top axis" ticks={4} />
     <Axis id="y right" title="y right axis" position={Position.Right} />
-    <Axis id="x bottom" position={Position.Bottom} title="x bottom axis" />
+    <Axis id="x bottom" position={Position.Bottom} title="x bottom axis" ticks={4} />
     <Axis id="y left" title="y left axis" position={Position.Left} />
     <BarSeries
       id="bars"

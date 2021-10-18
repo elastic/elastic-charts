@@ -12,6 +12,7 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } from '@elastic/charts';
 import { TSVB_DATASET } from '@elastic/charts/src/utils/data_samples/test_dataset_tsvb';
 
+import { niceTimeFormatByDay, timeFormatter } from '../../../packages/charts/src/utils/data/formatters';
 import { useBaseTheme } from '../../use_base_theme';
 import { arrayKnobs } from '../utils/knobs';
 
@@ -48,6 +49,8 @@ export const Example = () => {
         data={series.data}
         curve={series.lines.steps ? CurveType.CURVE_STEP : CurveType.LINEAR}
         sortIndex={sortIndex}
+        timeZone="UTC"
+        yNice
       />
     );
   });
@@ -59,8 +62,14 @@ export const Example = () => {
         showLegendExtra={showLegendDisplayValue}
         baseTheme={useBaseTheme()}
       />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
-      <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+      <Axis
+        id="bottom"
+        position={Position.Bottom}
+        title="Bottom axis"
+        ticks={5}
+        tickFormat={timeFormatter('DD MMM HH:mm')}
+      />
+      <Axis id="left2" title="Left axis" position={Position.Left} ticks={5} tickFormat={(d) => Number(d).toFixed(2)} />
       {seriesComponents}
     </Chart>
   );
