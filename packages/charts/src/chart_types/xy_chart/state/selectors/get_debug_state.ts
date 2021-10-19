@@ -8,7 +8,7 @@
 
 import { LegendItem } from '../../../../common/legend';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
-import { AnnotationType, AxisSpec } from '../../../../specs';
+import { AnnotationSpec, AnnotationType, AxisSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import {
@@ -268,21 +268,21 @@ function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
   return { items };
 }
 
-function getAnnotationsState(annotationSpecs: any[]): DebugStateAnnotations[] {
+function getAnnotationsState(annotationSpecs: AnnotationSpec[]): DebugStateAnnotations[] {
   const acc: DebugStateAnnotations[] = [];
-  annotationSpecs.forEach((annotation) => {
+  annotationSpecs.forEach((annotation, index) => {
     return annotation.annotationType === AnnotationType.Rectangle
       ? acc.push({
           id: annotation.id,
-          color: annotation.style.fill ? annotation.style.fill : null,
-          data: annotation.dataValues,
+          color: annotation?.style?.fill ? annotation.style.fill : undefined,
+          data: annotation.dataValues[index],
           type: annotation.annotationType,
         })
       : acc.push({
           id: annotation.id,
-          icon: annotation.marker.props.type,
-          color: annotation.style.details.fill,
-          data: annotation.dataValues,
+          icon: annotation?.marker ? annotation.marker : undefined,
+          color: annotation?.style?.details?.fill,
+          data: annotation.dataValues[index],
           domainType: annotation.domainType,
           type: annotation.annotationType,
         });

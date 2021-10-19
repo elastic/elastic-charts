@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { ComponentWithAnnotationDatum, LineAnnotationDatum, RectAnnotationDatum } from '..';
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { Pixels } from '../common/geometry';
 import type { Position } from '../utils/common';
@@ -106,10 +107,10 @@ export type PartitionDebugState = {
 export type DebugStateAnnotations = {
   id?: string;
   color?: string;
-  icon?: string;
+  icon?: React.ReactNode | ComponentWithAnnotationDatum;
   type?: string;
   domainType?: 'xDomain' | 'yDomain';
-  data?: [];
+  data?: RectAnnotationDatum | LineAnnotationDatum;
 };
 
 /**
