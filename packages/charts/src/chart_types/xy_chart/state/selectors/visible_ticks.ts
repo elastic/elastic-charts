@@ -213,13 +213,12 @@ const notTooDense = (
   return pixelsPerSecond > minimumPixelsPerSecond;
 };
 
-const getRasterSelector = (): ReturnType<typeof rasters> => {
+const getRasterSelector = (timeZone: string): ReturnType<typeof rasters> => {
   // these are hand tweaked constants that fulfill various design constraints, let's discuss before changing them
   const lineThicknessSteps = [/*0,*/ 0.5, 0.75, 1, 1, 1, 1.25, 1.25, 1.5, 1.5, 1.75, 1.75, 2, 2, 2, 2, 2];
   const lumaSteps = [/*255,*/ 192, 72, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0];
 
   const darkMode = false;
-  const timeZone = 'Europe/London';
   const smallFontSize = 12;
 
   const themeLight = {
@@ -396,7 +395,7 @@ function getVisibleTickSets(
         domain?.type === ScaleType.Time && style?.tickLabel?.alignment?.horizontal === Position.Left;
 
       if (isMultilayerTimeAxis) {
-        const rasterSelector = getRasterSelector();
+        const rasterSelector = getRasterSelector(xDomain.timeZone);
         const domainFromS = Number((domain && domain.domain[0]) || NaN) / 1000;
         const domainToS = Number((domain && domain.domain[domain.domain.length - 1]) || NaN) / 1000;
         const layers = rasterSelector(notTooDense(domainFromS, domainToS, Math.abs(range[1] - range[0])));
