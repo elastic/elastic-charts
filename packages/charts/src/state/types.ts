@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { ComponentWithAnnotationDatum, LineAnnotationDatum, RectAnnotationDatum } from '..';
+import { LineAnnotationDatum, RectAnnotationDatum } from '../../src/chart_types/xy_chart/utils/specs';
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
+import { ComponentWithAnnotationDatum } from '../chart_types/xy_chart/annotations/types';
 import { Pixels } from '../common/geometry';
 import type { Position } from '../utils/common';
 import type { GeometryValue } from '../utils/geometry';
