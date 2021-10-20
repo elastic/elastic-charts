@@ -12,7 +12,7 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } from '@elastic/charts';
 import { TSVB_DATASET } from '@elastic/charts/src/utils/data_samples/test_dataset_tsvb';
 
-import { niceTimeFormatByDay, timeFormatter } from '../../../packages/charts/src/utils/data/formatters';
+import { timeFormatter } from '../../../packages/charts/src/utils/data/formatters';
 import { useBaseTheme } from '../../use_base_theme';
 import { arrayKnobs } from '../utils/knobs';
 
