@@ -619,20 +619,16 @@ export const rasters = (
 
   return (filter: (layer: TimeRaster<TimeBin>) => boolean) => {
     // keep increasingly finer granularities, but only until there's enough pixel width for them to fit
-    let layers: Array<TimeRaster<TimeBin>> = [];
+    let layers: Set<TimeRaster<TimeBin>> = new Set();
     for (const layer of allRasters) {
-      if (filter(layer)) layers.unshift(layer);
+      if (filter(layer)) layers.add(layer);
       else break; // `rasters` is ordered, so we exit the loop here, it's already too dense, remaining ones are ignored
     }
 
-    // this is not super efficient O(n)-wise; replacement rules have very few, short entries, can switch to Maps later
     replacements.forEach(([key, ruleMap]) => {
-      if (layers.includes(key)) {
-        layers = layers.flatMap((l) => ruleMap.get(l) || l);
-      }
+      if (layers.has(key)) layers = new Set([...layers].flatMap((l) => ruleMap.get(l) || l));
     });
 
-    // while it's not currently eliminating rasters, there can be replacements rules in theory that lead to duplication
-    return layers.filter((d, i, a) => a.indexOf(d) === i);
+    return [...layers].reverse();
   };
 };
