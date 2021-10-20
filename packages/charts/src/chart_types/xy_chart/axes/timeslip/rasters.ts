@@ -626,9 +626,9 @@ export const rasters = (
     }
 
     replacements.forEach(([key, ruleMap]) => {
-      if (layers.has(key)) layers = new Set([...layers].flatMap((l) => ruleMap.get(l) || l));
+      if (layers.has(key)) layers = new Set([...layers].flatMap((l) => ruleMap.get(l) ?? l));
     });
 
-    return [...layers].reverse();
+    return [...layers].reverse(); // while we iterated from coarse to dense, the result follows the axis layer order: finer toward coarser
   };
 };
