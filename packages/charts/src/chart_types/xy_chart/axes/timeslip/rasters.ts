@@ -526,17 +526,13 @@ export const rasters = (
       }),
     );
 
-  const replacements: Array<
-    [TimeRaster<TimeBin>, Map<TimeRaster<TimeBin>, TimeRaster<TimeBin> | Array<TimeRaster<TimeBin>>>]
-  > = [
+  const replacements: Array<[TimeRaster<TimeBin>, Map<TimeRaster<TimeBin>, Array<TimeRaster<TimeBin>>>]> = [
     [decadesUnlabelled, new Map([])],
     [decades, new Map([[decadesUnlabelled, []]])],
     [
       years,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       new Map([
-        [decades, decadesUnlabelled],
+        [decades, [decadesUnlabelled]],
         [yearsUnlabelled, []],
       ]),
     ],
@@ -558,11 +554,9 @@ export const rasters = (
     ],
     [
       days,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       new Map([
         [daysUnlabelled, []],
-        [weekStartDays, weeksUnlabelled],
+        [weekStartDays, [weeksUnlabelled]],
       ]),
     ],
     [sixHours, new Map([[sixHoursUnlabelled, []]])],
@@ -576,61 +570,49 @@ export const rasters = (
     [quarterHours, new Map([[quarterHoursUnlabelled, []]])],
     [
       fiveMinutes,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       new Map([
         [fiveMinutesUnlabelled, []],
-        [quarterHours, quarterHoursUnlabelled],
+        [quarterHours, [quarterHoursUnlabelled]],
       ]),
     ],
     [
       minutes,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       new Map([
         [minutesUnlabelled, []],
-        [quarterHours, quarterHoursUnlabelled],
-        [fiveMinutes, fiveMinutesUnlabelled],
+        [quarterHours, [quarterHoursUnlabelled]],
+        [fiveMinutes, [fiveMinutesUnlabelled]],
       ]),
     ],
     [quarterMinutes, new Map([[quarterMinutesUnlabelled, []]])],
     [
       fiveSeconds,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       new Map([
         [fiveSecondsUnlabelled, []],
-        [quarterMinutes, quarterMinutesUnlabelled],
+        [quarterMinutes, [quarterMinutesUnlabelled]],
       ]),
     ],
     [
       seconds,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       new Map([
         [secondsUnlabelled, []],
-        [quarterMinutes, quarterMinutesUnlabelled],
-        [fiveSeconds, fiveSecondsUnlabelled],
+        [quarterMinutes, [quarterMinutesUnlabelled]],
+        [fiveSeconds, [fiveSecondsUnlabelled]],
       ]),
     ],
     [hundredMilliseconds, new Map([[hundredMillisecondsUnlabelled, []]])],
     [
       tenMilliseconds,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       new Map([
         [tenMillisecondsUnlabelled, []],
-        [hundredMilliseconds, hundredMillisecondsUnlabelled],
+        [hundredMilliseconds, [hundredMillisecondsUnlabelled]],
       ]),
     ],
     [
       milliseconds,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       new Map([
         [millisecondsUnlabelled, []],
-        [tenMilliseconds, tenMillisecondsUnlabelled],
-        [hundredMilliseconds, hundredMillisecondsUnlabelled],
+        [tenMilliseconds, [tenMillisecondsUnlabelled]],
+        [hundredMilliseconds, [hundredMillisecondsUnlabelled]],
       ]),
     ],
   ];
