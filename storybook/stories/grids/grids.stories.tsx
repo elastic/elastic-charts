@@ -13,3 +13,4 @@ export default {
 export { Example as basic } from './1_basic.story';
 export { Example as multipleAxesWithTheSamePosition } from './2_multiple_axes.story';
 export { Example as lines } from './3_lines.story';
+export { Example as testAxisOverlapCursor } from './4_axis_overlap.story';

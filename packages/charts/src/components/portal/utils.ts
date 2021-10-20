@@ -63,7 +63,7 @@ export function isHTMLElement(value: any): value is HTMLElement {
 export function getElementZIndex(element: HTMLElement, cousin: HTMLElement): number {
   /**
    * finding the z-index of `element` is not the full story
-   * its the CSS stacking context that is important
+   * it's the CSS stacking context that is important
    * take this DOM for example:
    * body
    *   section[z-index: 1000]
