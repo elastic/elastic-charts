@@ -94,7 +94,7 @@ export const rasters = (
     unit: 'year',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance,
+    minimumTickPixelDistance: minimumTickPixelDistance * 1.5,
     binStarts: function* (domainFrom, domainTo) {
       const fromYear = epochInSecondsToYear(timeZone, domainFrom);
       const toYear = epochInSecondsToYear(timeZone, domainTo);
@@ -113,6 +113,40 @@ export const rasters = (
     detailedLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
     minimumPixelsPerSecond: NaN,
+  };
+  const yearsUnlabelled: TimeRaster<TimeBin & { year: number }> = {
+    ...years,
+    labeled: false,
+    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+  };
+  const decades: TimeRaster<TimeBin & { year: number }> = {
+    unit: 'year',
+    unitMultiplier: 10,
+    labeled: true,
+    minimumTickPixelDistance: minimumTickPixelDistance * 1.5,
+    binStarts: function* (domainFrom, domainTo) {
+      const fromYear = epochInSecondsToYear(timeZone, domainFrom);
+      const toYear = epochInSecondsToYear(timeZone, domainTo);
+      for (let year = Math.floor(fromYear / 10) * 10; year <= Math.ceil(toYear / 10) * 10; year += 10) {
+        const timePoint = cachedZonedDateTimeFrom({ timeZone, year, month: 1, day: 1 });
+        const timePointSec = timePoint[timeProp.epochSeconds];
+        const nextTimePointSec = cachedZonedDateTimeFrom({
+          timeZone,
+          year: year + 10,
+          month: 1,
+          day: 1,
+        })[timeProp.epochSeconds];
+        yield { year, timePointSec, nextTimePointSec };
+      }
+    },
+    detailedLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
+    minorTickLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
+    minimumPixelsPerSecond: NaN,
+  };
+  const decadesUnlabelled: TimeRaster<TimeBin & { year: number }> = {
+    ...decades,
+    labeled: false,
+    minimumTickPixelDistance: 1, // it should change if we ever add centuries and millennia
   };
   const months: TimeRaster<TimeBin & { year: number; month: number }> = {
     unit: 'month',
@@ -146,13 +180,13 @@ export const rasters = (
   const narrowMonths = {
     ...months,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, { month: 'narrow', timeZone }).format,
-    minimumTickPixelDistance: minimumTickPixelDistance,
+    minimumTickPixelDistance,
   };
   const days: TimeRaster<TimeBin & YearToDay> = {
     unit: 'day',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance,
+    minimumTickPixelDistance,
     binStarts: function* (domainFrom, domainTo) {
       for (const { year, month } of months.binStarts(domainFrom, domainTo)) {
         for (let dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
@@ -195,7 +229,7 @@ export const rasters = (
     unit: 'week',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance,
+    minimumTickPixelDistance,
     binStarts: function* (domainFrom, domainTo) {
       for (const { year, month } of months.binStarts(domainFrom, domainTo)) {
         for (let dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
@@ -314,7 +348,7 @@ export const rasters = (
     unit: 'minute',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance,
+    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(60 * 1000),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, {
       year: 'numeric',
@@ -335,7 +369,7 @@ export const rasters = (
     ...minutes,
     unitMultiplier: 15,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance,
+    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(15 * 60 * 1000),
   };
   const quarterHoursUnlabelled = {
@@ -347,7 +381,7 @@ export const rasters = (
     ...minutes,
     unitMultiplier: 5,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance,
+    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(5 * 60 * 1000),
   };
   const fiveMinutesUnlabelled = {
@@ -364,7 +398,7 @@ export const rasters = (
     unit: 'second',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance,
+    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(1000),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, {
       year: 'numeric',
@@ -386,7 +420,7 @@ export const rasters = (
     ...seconds,
     unitMultiplier: 15,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance,
+    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(15 * 1000),
   };
   const quarterMinutesUnlabelled = {
@@ -398,7 +432,7 @@ export const rasters = (
     ...seconds,
     unitMultiplier: 5,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance,
+    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(5 * 1000),
   };
   const fiveSecondsUnlabelled = {
@@ -452,6 +486,8 @@ export const rasters = (
   };
 
   const allRasters = [
+    decades,
+    yearsUnlabelled,
     years,
     monthsUnlabelled,
     narrowMonths,
@@ -493,7 +529,17 @@ export const rasters = (
   const replacements: Array<
     [TimeRaster<TimeBin>, Map<TimeRaster<TimeBin>, TimeRaster<TimeBin> | Array<TimeRaster<TimeBin>>>]
   > = [
-    [years, new Map([])],
+    [decadesUnlabelled, new Map([])],
+    [decades, new Map([[decadesUnlabelled, []]])],
+    [
+      years,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      new Map([
+        [decades, decadesUnlabelled],
+        [yearsUnlabelled, []],
+      ]),
+    ],
     [narrowMonths, new Map([[monthsUnlabelled, []]])],
     [
       shortMonths,

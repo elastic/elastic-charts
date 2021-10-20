@@ -71,7 +71,7 @@ export const Example = () => {
     number('Stretch time', -0.4, {
       range: true,
       min: -20,
-      max: 15,
+      max: 18,
       step: 0.2,
     });
   const timeShift =
