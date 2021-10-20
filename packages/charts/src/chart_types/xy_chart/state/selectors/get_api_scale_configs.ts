@@ -85,8 +85,6 @@ export function getScaleConfigsFromSpecs(
       ? tickCountFromSpecs
       : Y_SCALE_DEFAULT.desiredTickCount;
 
-    console.log({ desiredTickCount, yAxes });
-
     const scaleConfig = scaleConfigsByGroupId[groupId];
     const customDomain = customDomainByGroupId.get(groupId);
     if (!acc[groupId]) {
