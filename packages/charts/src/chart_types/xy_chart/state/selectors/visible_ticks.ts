@@ -419,6 +419,10 @@ function getVisibleTickSets(
               );
               if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
               const minLabelGap = 4;
+
+              const lastTick = entry.ticks[entry.ticks.length - 1];
+              if (lastTick.position + entry.labelBox.maxLabelBboxWidth > range[1]) lastTick.axisTickLabel = '';
+
               return {
                 ...entry,
                 ...combinedEntry,

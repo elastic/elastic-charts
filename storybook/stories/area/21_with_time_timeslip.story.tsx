@@ -68,7 +68,7 @@ export const Example = () => {
     });
   const timeStretch =
     0 ||
-    number('Stretch time', 0, {
+    number('Stretch time', -0.4, {
       range: true,
       min: -20,
       max: 15,
