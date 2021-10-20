@@ -203,14 +203,10 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
   getVisibleTickSets,
 );
 
-const notTooDense = (
-  domainFrom: number,
-  domainTo: number,
-  cartesianWidth: number,
-): ((o: { minimumPixelsPerSecond: number }) => boolean) => ({ minimumPixelsPerSecond }) => {
+const notTooDense = (domainFrom: number, domainTo: number, cartesianWidth: number) => (raster: TimeRaster<TimeBin>) => {
   const domainInSeconds = domainTo - domainFrom;
   const pixelsPerSecond = cartesianWidth / domainInSeconds;
-  return pixelsPerSecond > minimumPixelsPerSecond;
+  return pixelsPerSecond > raster.minimumPixelsPerSecond;
 };
 
 const getRasterSelector = (timeZone: string): ReturnType<typeof rasters> => {
