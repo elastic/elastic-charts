@@ -17,13 +17,7 @@ import { Size } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
 import { rasters, TimeBin, TimeRaster } from '../../axes/timeslip/rasters';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import {
-  AxisTick,
-  defaultTickFormatter,
-  isXDomain,
-  TickLabelBounds,
-  TIME_AXIS_LAYER_COUNT,
-} from '../../utils/axis_utils';
+import { AxisTick, defaultTickFormatter, isXDomain, TickLabelBounds } from '../../utils/axis_utils';
 import { getPanelSize } from '../../utils/panel';
 import { computeXScale } from '../../utils/scales';
 import { SeriesDomainsAndData } from '../utils/types';
@@ -201,7 +195,7 @@ const notTooDense = (domainFrom: number, domainTo: number, cartesianWidth: numbe
   return pixelsPerSecond > raster.minimumPixelsPerSecond;
 };
 
-const getRasterSelector = (timeZone: string): ReturnType<typeof rasters> => {
+const getRasterSelector = (timeZone: string, maxLabelRowCount: number): ReturnType<typeof rasters> => {
   // these are hand tweaked constants that fulfill various design constraints, let's discuss before changing them
   const lineThicknessSteps = [/*0,*/ 0.5, 0.75, 1, 1, 1, 1.25, 1.25, 1.5, 1.5, 1.75, 1.75, 2, 2, 2, 2, 2];
   const lumaSteps = [/*255,*/ 192, 72, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -231,7 +225,7 @@ const getRasterSelector = (timeZone: string): ReturnType<typeof rasters> => {
     darkMode,
     sparse: false,
     implicit: false,
-    maxLabelRowCount: TIME_AXIS_LAYER_COUNT, // can be 1, 2, 3
+    maxLabelRowCount,
     a11y: {
       shortcuts: true,
       contrast: 'medium',
@@ -281,14 +275,13 @@ function getVisibleTickSets(
   return withTextMeasure((textMeasure) => {
     const panel = getPanelSize(smScales);
     return [...joinedAxesData].reduce((acc, [axisId, { axisSpec, axesStyle, gridLine, tickFormatter }]) => {
-      const { groupId, integersOnly, position, style } = axisSpec;
+      const { groupId, integersOnly, position, timeAxisLayerCount } = axisSpec;
       const isX = isXDomain(position, chartRotation);
       const yDomain = yDomains.find((yd) => yd.groupId === groupId);
       const domain = isX ? xDomain : yDomain;
       const range = axisMinMax(axisSpec.position, chartRotation, panel);
       const maxTickCount = domain?.desiredTickCount ?? 0;
-      const isMultilayerTimeAxis =
-        domain?.type === ScaleType.Time && style?.tickLabel?.alignment?.horizontal === Position.Left; // fixme this HORRIBLE inference
+      const isMultilayerTimeAxis = domain?.type === ScaleType.Time && timeAxisLayerCount > 0;
 
       const getMeasuredTicks = (
         scale: Scale<number | string>,
@@ -380,7 +373,7 @@ function getVisibleTickSets(
       };
 
       if (isMultilayerTimeAxis) {
-        const rasterSelector = getRasterSelector(xDomain.timeZone);
+        const rasterSelector = getRasterSelector(xDomain.timeZone, timeAxisLayerCount);
         const domainFromS = Number((domain && domain.domain[0]) || NaN) / 1000;
         const domainToS = Number((domain && domain.domain[domain.domain.length - 1]) || NaN) / 1000;
         const layers = rasterSelector(notTooDense(domainFromS, domainToS, Math.abs(range[1] - range[0])));
@@ -389,7 +382,7 @@ function getVisibleTickSets(
           axisId,
           layers.reduce(
             (combinedEntry: { ticks: AxisTick[] }, l: TimeRaster<TimeBin>) => {
-              if (layerIndex >= TIME_AXIS_LAYER_COUNT) return combinedEntry;
+              if (layerIndex >= timeAxisLayerCount) return combinedEntry;
               // times 1000: convert seconds to milliseconds
               const { entry } = fillLayerTimeslip(
                 layerIndex,
@@ -398,7 +391,7 @@ function getVisibleTickSets(
                   .map((b) => 1000 * Math.max(domainFromS, b.timePointSec)),
                 !l.labeled
                   ? () => ''
-                  : layerIndex === TIME_AXIS_LAYER_COUNT - 1
+                  : layerIndex === timeAxisLayerCount - 1
                   ? l.detailedLabelFormat
                   : l.minorTickLabelFormat,
               );

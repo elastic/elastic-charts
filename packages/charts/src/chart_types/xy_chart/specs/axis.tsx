@@ -16,7 +16,10 @@ import { AxisSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 
 /** @public */
 export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals> = getConnect()(
-  specComponentFactory<AxisSpec, 'groupId' | 'hide' | 'showOverlappingTicks' | 'showOverlappingLabels' | 'position'>({
+  specComponentFactory<
+    AxisSpec,
+    'groupId' | 'hide' | 'showOverlappingTicks' | 'showOverlappingLabels' | 'position' | 'timeAxisLayerCount'
+  >({
     chartType: ChartType.XYAxis,
     specType: SpecType.Axis,
     groupId: DEFAULT_GLOBAL_ID,
@@ -24,6 +27,7 @@ export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals> = getCo
     showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
+    timeAxisLayerCount: 0,
   }),
 );
 

@@ -29,9 +29,6 @@ import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { getPanelSize, hasSMDomain } from './panel';
 import { computeXScale, computeYScales } from './scales';
 
-/** @internal */
-export const TIME_AXIS_LAYER_COUNT = 3;
-
 type TickValue = number | string;
 
 /** @internal */
@@ -240,12 +237,11 @@ export function getTitleDimension({
 
 /** @internal */
 export const getAllAxisLayersGirth = (
-  tickLabel: AxisStyle['tickLabel'],
+  timeAxisLayerCount: number,
   maxLabelBoxGirth: number,
   axisHorizontal: boolean,
 ) => {
-  const isMultilayerTimeAxis = tickLabel.alignment.horizontal === Position.Left; // fixme this HORRIBLE temp inference
-  const axisLayerCount = isMultilayerTimeAxis && axisHorizontal ? TIME_AXIS_LAYER_COUNT : 1;
+  const axisLayerCount = timeAxisLayerCount > 0 && axisHorizontal ? timeAxisLayerCount : 1;
   return axisLayerCount * maxLabelBoxGirth;
 };
 
@@ -254,7 +250,7 @@ export function getPosition(
   { chartDimensions }: { chartDimensions: Dimensions },
   chartMargins: PerSideDistance,
   { axisTitle, axisPanelTitle, tickLine, tickLabel }: AxisStyle,
-  { title, position, hide }: AxisSpec,
+  { title, position, hide, timeAxisLayerCount }: AxisSpec,
   { maxLabelBboxHeight, maxLabelBboxWidth }: TickLabelBounds,
   smScales: SmallMultipleScales,
   { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum }: PerSideDistance,
@@ -266,7 +262,7 @@ export function getPosition(
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
   const maxLabelBboxGirth = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
-  const shownLabelSize = getAllAxisLayersGirth(tickLabel, maxLabelBboxGirth, !vertical);
+  const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, !vertical);
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
     leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
