@@ -16,7 +16,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     height: $legendItemHeight;
   }
 
-  &:not([dir=rtl]) > *:not(.background) {
+  &:not([dir='rtl']) > *:not(.background) {
     margin-left: $euiSizeXS;
 
     &:last-child:not(.echLegendItem__extra) {
@@ -24,7 +24,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     }
   }
 
-  &[dir=rtl] > *:not(.background) {
+  &[dir='rtl'] > *:not(.background) {
     margin-right: $euiSizeXS;
 
     &:last-child:not(.echLegendItem__extra) {
@@ -129,7 +129,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     color: $euiColorDarkShade;
   }
 
-  &[dir=rtl] {
+  &[dir='rtl'] {
     .echLegendItem {
       &__label {
         text-align: right;

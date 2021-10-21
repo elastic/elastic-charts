@@ -67,7 +67,7 @@
     opacity: 0;
   }
 
-  &[dir=rtl] {
+  &[dir='rtl'] {
     .echTooltip {
       &__item {
         &--container {
