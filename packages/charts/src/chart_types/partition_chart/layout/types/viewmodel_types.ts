@@ -18,7 +18,7 @@ import {
   Radian,
   SizeRatio,
 } from '../../../../common/geometry';
-import { Font, VerticalAlignments } from '../../../../common/text_utils';
+import { Font, HorizontalAlignment, VerticalAlignments } from '../../../../common/text_utils';
 import { GroupByAccessor } from '../../../../specs';
 import { LegendPath } from '../../../../state/actions/legend';
 import { ContinuousDomainFocus } from '../../renderer/canvas/partition';
@@ -30,6 +30,7 @@ import { Config, PartitionLayout } from './config_types';
 
 /** @internal */
 export type LinkLabelVM = {
+  isRTL: boolean;
   linkLabels: PointTuples;
   translate: PointTuple;
   textAlign: CanvasTextAlign;
@@ -44,6 +45,7 @@ export interface RowBox extends Font {
   text: string;
   width: Distance;
   wordBeginning: Distance;
+  isValue?: boolean;
 }
 
 interface RowAnchor {
@@ -71,7 +73,8 @@ export interface RowSet {
   fontSize: number;
   rotation: Radian;
   verticalAlignment: VerticalAlignments;
-  leftAlign: boolean; // might be generalized into horizontalAlign - if needed
+  horizontalAlignment: HorizontalAlignment;
+  isRTL: boolean;
   container?: any;
   clipText?: boolean;
 }
@@ -192,6 +195,21 @@ export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointO
   pickQuads: () => [],
   outerRadius: 0,
 });
+
+/** @internal */
+export const hasMostlyRTLLabels = (geoms: ShapeViewModel[]): boolean => {
+  let rtlLabelCount = 0;
+  let labelCount = 0;
+
+  geoms.forEach(({ rowSets }) => {
+    rowSets.forEach(({ isRTL }) => {
+      labelCount++;
+      if (isRTL) rtlLabelCount++;
+    });
+  });
+
+  return rtlLabelCount / labelCount > 0.5;
+};
 
 /** @public */
 export type TreeLevel = number;

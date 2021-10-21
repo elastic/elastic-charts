@@ -22,13 +22,13 @@ import {
   Position,
   ScaleType,
 } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
 import { useBaseTheme } from '../../use_base_theme';
+import { renderEuiColorPicker } from '../legend/11_legend_actions.story';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 
@@ -38,8 +38,16 @@ const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, 
 const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
 export const Example = () => {
-  const useRtl = boolean('use rtl text', true);
-  const showLegend = boolean('show legend', true);
+  const charSet = select(
+    'character set',
+    {
+      'Right to Left': 'rtl',
+      'Left to Right': 'ltr',
+      'Mostly RTL': 'mostly-rtl',
+      'Mostly LTR': 'mostly-ltr',
+    },
+    'rtl',
+  );
   const type = select(
     'Chart type',
     {
@@ -49,19 +57,35 @@ export const Example = () => {
     },
     PartitionLayout.treemap,
   );
+  const showLegend = boolean('show legend', true);
+
+  const mixedIndices = new Set(['0', '2', '3']);
+  const valueGetter = {
+    rtl: (key: string) => productLookup[key].nameAR,
+    ltr: (key: string) => productLookup[key].name,
+    'mostly-rtl': (key: string) => {
+      if (mixedIndices.has(key)) return productLookup[key].name;
+      return productLookup[key].nameAR;
+    },
+    'mostly-ltr': (key: string) => {
+      if (mixedIndices.has(key)) return productLookup[key].nameAR;
+      return productLookup[key].name;
+    },
+  }[charSet];
+  const formatter = (d: any) => numeral(d).format('0.0 a');
 
   const renderSeries = () =>
     type === SeriesType.Bar ? (
       <>
-        <Axis id="x" position={Position.Bottom} tickFormat={(d) => numeral(d).format('0.0 a')} />
+        <Axis id="x" position={Position.Bottom} tickFormat={formatter} />
         <Axis id="y" position={Position.Left} />
         <BarSeries
           id="bar"
           data={mocks.pie}
           xScaleType={ScaleType.Ordinal}
-          xAccessor={({ sitc1 }) => (useRtl ? productLookup[sitc1].nameAR : productLookup[sitc1].name)}
+          xAccessor={({ sitc1 }) => valueGetter(sitc1)}
           yAccessors={[(d: Datum) => d.exportVal]}
-          splitSeriesAccessors={[({ sitc1 }) => (useRtl ? productLookup[sitc1].nameAR : productLookup[sitc1].name)]}
+          splitSeriesAccessors={[({ sitc1 }) => valueGetter(sitc1)]}
         />
       </>
     ) : (
@@ -69,13 +93,13 @@ export const Example = () => {
         id="partition"
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        valueFormatter={formatter}
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,
-            nodeLabel: (d: Datum) => (useRtl ? productLookup[d].nameAR : productLookup[d].name),
+            nodeLabel: (d: Datum) => valueGetter(d),
             fillLabel: {
-              valueFormatter: (d: number) => numeral(d).format('0.0 a'),
+              valueFormatter: formatter,
             },
             shape: {
               fillColor: defaultFillColor(interpolatorCET2s),
@@ -84,6 +108,7 @@ export const Example = () => {
         ]}
         config={{
           partitionLayout: type,
+          clockwiseSectors: type === PartitionLayout.sunburst && boolean('clockwiseSectors', true),
         }}
       />
     );
@@ -94,7 +119,9 @@ export const Example = () => {
         rotation={type === SeriesType.Bar ? 90 : 0}
         debugState
         showLegend={showLegend}
+        showLegendExtra
         baseTheme={useBaseTheme()}
+        legendColorPicker={renderEuiColorPicker('leftCenter')}
       />
       {renderSeries()}
     </Chart>

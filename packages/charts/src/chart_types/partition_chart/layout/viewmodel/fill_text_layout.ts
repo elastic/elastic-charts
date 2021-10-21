@@ -19,9 +19,16 @@ import {
   wrapToTau,
 } from '../../../../common/geometry';
 import { logarithm } from '../../../../common/math';
-import { Box, Font, PartialFont, TextMeasure, VerticalAlignments } from '../../../../common/text_utils';
+import {
+  Box,
+  Font,
+  HorizontalAlignment,
+  PartialFont,
+  TextMeasure,
+  VerticalAlignments,
+} from '../../../../common/text_utils';
 import { integerSnap, monotonicHillClimb } from '../../../../solvers/monotonic_hill_climb';
-import { isRTL, ValueFormatter } from '../../../../utils/common';
+import { getOppositeAlignment, isRTLString, ValueFormatter } from '../../../../utils/common';
 import { Layer } from '../../specs';
 import { Config, Padding } from '../types/config_types';
 import {
@@ -140,6 +147,7 @@ export const getRectangleRowGeometry: GetShapeRowGeometry<RectangleConstruction>
     fontSize,
     overhang,
   );
+
   return {
     rowAnchorX: cx + left / 2 - right / 2,
     rowAnchorY,
@@ -163,12 +171,11 @@ function identityRowSet(): RowSet {
     fontSize: NaN,
     fillTextColor: '',
     rotation: NaN,
+    isRTL: false,
     verticalAlignment: VerticalAlignments.middle,
-    leftAlign: false,
+    horizontalAlignment: HorizontalAlignment.center,
   };
 }
-
-const getWords = (s: string) => (isRTL(s) ? s.split(' ').reverse() : s.split(' '));
 
 function getAllBoxes(
   rawTextGetter: RawTextGetter,
@@ -178,13 +185,14 @@ function getAllBoxes(
   valueFont: PartialFont,
   node: ShapeTreeNode,
 ): Box[] {
-  return getWords(rawTextGetter(node))
+  return rawTextGetter(node)
+    .split(' ')
     .filter(Boolean)
-    .map((text) => ({ text, ...sizeInvariantFontShorthand }))
+    .map<Box>((text) => ({ text, ...sizeInvariantFontShorthand }))
     .concat(
-      getWords(valueFormatter(valueGetter(node)))
+      [valueFormatter(valueGetter(node))]
         .filter(Boolean)
-        .map((text) => ({ text, ...sizeInvariantFontShorthand, ...valueFont })),
+        .map<Box>((text) => ({ text, ...sizeInvariantFontShorthand, ...valueFont, isValue: true })),
     );
 }
 
@@ -224,6 +232,7 @@ function fill<C>(
     leftAlign: boolean,
     middleAlign: boolean,
   ) {
+    const horizontalAlignment = leftAlign ? HorizontalAlignment.left : HorizontalAlignment.center;
     const { maxRowCount, fillLabel } = config;
     return (allFontSizes: Pixels[][], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
       const container = shapeConstructor(node);
@@ -257,6 +266,7 @@ function fill<C>(
         fontFamily,
         textColor: node.textColor,
       };
+      const isRtlString = isRTLString(rawTextGetter(node));
       const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
       const [cx, cy] = textFillOrigin;
 
@@ -268,7 +278,7 @@ function fill<C>(
           measure,
           rotation,
           verticalAlignment,
-          leftAlign,
+          horizontalAlignment,
           container,
           getShapeRowGeometry,
           cx,
@@ -276,6 +286,7 @@ function fill<C>(
           padding,
           node,
           clipText,
+          isRtlString,
         ),
         fillTextColor: node.textColor,
       };
@@ -287,7 +298,7 @@ function tryFontSize<C>(
   measure: TextMeasure,
   rotation: Radian,
   verticalAlignment: VerticalAlignments,
-  leftAlign: boolean,
+  horizontalAlignment: HorizontalAlignment,
   container: C,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
   cx: Coordinate,
@@ -296,8 +307,10 @@ function tryFontSize<C>(
   node: ShapeTreeNode,
   boxes: Box[],
   maxRowCount: number,
-  clipText?: boolean,
+  clipText: boolean,
+  isRTL: boolean,
 ) {
+  const adjustedHorizontalAlignment = isRTL ? getOppositeAlignment(horizontalAlignment) : horizontalAlignment;
   return function tryFontSizeFn(initialRowSet: RowSet, fontSize: Pixels): { rowSet: RowSet; completed: boolean } {
     let rowSet: RowSet = initialRowSet;
 
@@ -327,8 +340,9 @@ function tryFontSize<C>(
         fillTextColor: '',
         rotation,
         verticalAlignment,
-        leftAlign,
+        horizontalAlignment: adjustedHorizontalAlignment,
         clipText,
+        isRTL,
         rows: [...new Array(targetRowCount)].map(() => ({
           rowWords: [],
           rowAnchorX: NaN,
@@ -372,7 +386,6 @@ function tryFontSize<C>(
         while (measuredBoxes.length > 0 && rowHasRoom) {
           // adding box to row
           const [currentBox] = measuredBoxes;
-
           const wordBeginning = currentRowLength;
           currentRowLength += currentBox.width + wordSpacing;
 
@@ -402,7 +415,7 @@ function getRowSet<C>(
   measure: TextMeasure,
   rotation: Radian,
   verticalAlignment: VerticalAlignments,
-  leftAlign: boolean,
+  horizontalAlignment: HorizontalAlignment,
   container: C,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
   cx: Coordinate,
@@ -410,12 +423,13 @@ function getRowSet<C>(
   padding: Padding,
   node: ShapeTreeNode,
   clipText: boolean,
-) {
+  isRtl: boolean,
+): RowSet {
   const tryFunction = tryFontSize(
     measure,
     rotation,
     verticalAlignment,
-    leftAlign,
+    horizontalAlignment,
     container,
     getShapeRowGeometry,
     cx,
@@ -425,6 +439,7 @@ function getRowSet<C>(
     boxes,
     maxRowCount,
     clipText,
+    isRtl,
   );
 
   // find largest fitting font size

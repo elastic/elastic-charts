@@ -16,11 +16,19 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     height: $legendItemHeight;
   }
 
-  > *:not(.background) {
+  &:not([dir=rtl]) > *:not(.background) {
     margin-left: $euiSizeXS;
 
     &:last-child:not(.echLegendItem__extra) {
       margin-right: $euiSizeXS;
+    }
+  }
+
+  &[dir=rtl] > *:not(.background) {
+    margin-right: $euiSizeXS;
+
+    &:last-child:not(.echLegendItem__extra) {
+      margin-left: $euiSizeXS;
     }
   }
 
@@ -100,6 +108,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     margin-left: $euiSizeXS;
     font-feature-settings: 'tnum';
     letter-spacing: unset;
+    direction: ltr;
   }
 
   &--vertical {
@@ -120,11 +129,11 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     color: $euiColorDarkShade;
   }
 
-  &--rtl {
-    direction: rtl;
-
-    .echLegendItem__label {
-      text-align: right;
+  &[dir=rtl] {
+    .echLegendItem {
+      &__label {
+        text-align: right;
+      }
     }
   }
 }

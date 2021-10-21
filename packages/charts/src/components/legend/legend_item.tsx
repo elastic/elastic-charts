@@ -29,7 +29,7 @@ import {
   onLegendItemOverAction,
   onToggleDeselectSeriesAction,
 } from '../../state/actions/legend';
-import { isRTL, LayoutDirection } from '../../utils/common';
+import { LayoutDirection } from '../../utils/common';
 import { deepEqual } from '../../utils/fast_deep_equal';
 import { LegendLabelOptions } from '../../utils/themes/theme';
 import { Color as ItemColor } from './color';
@@ -47,6 +47,7 @@ export interface LegendItemProps {
   positionConfig: LegendPositionConfig;
   extraValues: Map<string, LegendItemExtraValues>;
   showExtra: boolean;
+  isMostlyRTL: boolean;
   labelOptions: LegendLabelOptions;
   colorPicker?: LegendColorPicker;
   action?: LegendAction;
@@ -176,13 +177,13 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       action: Action,
       positionConfig,
       labelOptions,
+      isMostlyRTL,
     } = this.props;
     const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, pointStyle } = item;
 
     if (isItemHidden) return null;
 
     const itemClassNames = classNames('echLegendItem', {
-      'echLegendItem--rtl': isRTL(label),
       'echLegendItem--hidden': isSeriesHidden,
       'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
     });
@@ -200,6 +201,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           onMouseEnter={this.onLegendItemMouseOver}
           onMouseLeave={this.onLegendItemMouseOut}
           style={style}
+          dir={isMostlyRTL ? 'rtl' : 'ltr'}
           data-ech-series-name={label}
         >
           <div className="background" />

@@ -53,6 +53,7 @@ import { renderXYChartCanvas2d } from './renderers';
 
 /** @internal */
 export interface ReactiveChartStateProps {
+  isRTL: boolean;
   initialized: boolean;
   debug: boolean;
   isChartEmpty: boolean;
@@ -151,6 +152,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       chartContainerDimensions: { width, height },
       a11ySettings,
       debug,
+      isRTL,
     } = this.props;
 
     if (!initialized || isChartEmpty) {
@@ -162,6 +164,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       <>
         <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
           <canvas
+            dir={isRTL ? 'rtl' : 'ltr'}
             ref={forwardCanvasRef}
             className="echCanvasRenderer"
             width={width * this.devicePixelRatio}
@@ -190,6 +193,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
   );
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
+  isRTL: true,
   initialized: false,
   debug: false,
   isChartEmpty: true,
@@ -240,6 +244,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   const { debug } = getSettingsSpecSelector(state);
 
   return {
+    isRTL: true,
     initialized: true,
     isChartEmpty: isChartEmptySelector(state),
     debug,

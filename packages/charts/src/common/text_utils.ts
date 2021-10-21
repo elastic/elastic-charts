@@ -10,7 +10,7 @@ import { $Values as Values } from 'utility-types';
 
 import { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
-import { Datum, isRTL } from '../utils/common';
+import { Datum } from '../utils/common';
 import { Color } from './colors';
 import { Pixels, Rectangle } from './geometry';
 
@@ -76,6 +76,7 @@ export const TEXT_BASELINE = Object.freeze([
 /** @internal */
 export interface Box extends Font {
   text: string;
+  isValue?: boolean;
 }
 
 /** @internal */
@@ -108,15 +109,22 @@ export const VerticalAlignments = Object.freeze({
 });
 
 /** @internal */
+export const HorizontalAlignment = Object.freeze({
+  left: 'left' as const,
+  center: 'center' as const,
+  right: 'right' as const,
+});
+/** @internal */
+export type HorizontalAlignment = Values<typeof HorizontalAlignment>;
+
+/** @internal */
 export function measureOneBoxWidth(measure: TextMeasure, fontSize: number, box: Box) {
   return measure(fontSize, [box])[0].width;
 }
 
 /** @internal */
 export function cutToLength(s: string, maxLength: number) {
-  const prefix = isRTL(s) ? '…' : ''; // ellipsis is one char
-  const postfix = isRTL(s) ? '' : '…'; // ellipsis is one char
-  return s.length <= maxLength ? s : `${prefix}${s.slice(0, Math.max(0, maxLength - 1))}${postfix}`;
+  return s.length <= maxLength ? s : `${s.slice(0, Math.max(0, maxLength - 1))}…`; // ellipsis is one char
 }
 
 /** @internal */
