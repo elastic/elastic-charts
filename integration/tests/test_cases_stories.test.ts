@@ -35,12 +35,23 @@ describe('Test cases stories', () => {
     }, 'should render marker with annotations with %s degree rotations');
   });
 
-  it.each([SeriesType.Bar, PartitionLayout.treemap, PartitionLayout.sunburst])(
-    'should render %s chart with rtl text',
-    async (type) => {
-      await common.expectChartAtUrlToMatchScreenshot(
-        `http://localhost:9001/?path=/story/test-cases--rtl-text&globals=background:white;theme:light&knob-Chart type=${type}&knob-show legend=true&knob-use rtl text=true`,
-      );
-    },
-  );
+  describe('RTL support', () => {
+    describe.each([SeriesType.Bar, PartitionLayout.treemap, PartitionLayout.sunburst])('%s chart type', (type) => {
+      describe.each(['rtl', 'ltr', 'mostly-rtl', 'mostly-ltr'])('%s text', (charSet) => {
+        it('should render with correct direction', async () => {
+          await common.expectChartAtUrlToMatchScreenshot(
+            `http://localhost:9001/?path=/story/test-cases--rtl-text&globals=background:white;theme:light&knob-Chart type=${type}&knob-character set=${charSet}&knob-show legend=true&knob-clockwiseSectors=true`,
+          );
+        });
+
+        if (type === PartitionLayout.sunburst) {
+          it('should render with correct direction - clockwiseSectors', async () => {
+            await common.expectChartAtUrlToMatchScreenshot(
+              `http://localhost:9001/?path=/story/test-cases--rtl-text&globals=background:white;theme:light&knob-Chart type=${type}&knob-character set=${charSet}&knob-show legend=true&knob-clockwiseSectors=false`,
+            );
+          });
+        }
+      });
+    });
+  });
 });
