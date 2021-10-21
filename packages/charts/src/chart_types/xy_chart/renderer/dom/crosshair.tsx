@@ -30,7 +30,6 @@ interface CrosshairProps {
   cursorCrossLinePosition?: Line;
   tooltipType: TooltipType;
   fromExternalEvent?: boolean;
-  zIndex: number;
 }
 
 function canRenderBand(type: TooltipType, visible: boolean, fromExternalEvent?: boolean) {
@@ -46,7 +45,6 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
 
   renderCursor() {
     const {
-      zIndex,
       theme: {
         crosshair: { band, line },
       },
@@ -64,12 +62,7 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
     const { fill } = band;
     const strokeDasharray = (dash ?? []).join(' ');
     return (
-      <svg
-        className="echCrosshair__cursor"
-        width="100%"
-        height="100%"
-        style={{ zIndex: cursorPosition && isLine ? zIndex : undefined }}
-      >
+      <svg className="echCrosshair__cursor" width="100%" height="100%">
         {isLine && <line {...{ x1: x, x2: x + width, y1: y, y2: y + height, strokeWidth, stroke, strokeDasharray }} />}
         {!isLine && <rect {...{ x, y, width, height, fill }} />}
       </svg>
@@ -78,7 +71,6 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
 
   renderCrossLine() {
     const {
-      zIndex,
       theme: {
         crosshair: { crossLine },
       },
@@ -98,7 +90,7 @@ class CrosshairComponent extends React.Component<CrosshairProps> {
     };
 
     return (
-      <svg className="echCrosshair__crossLine" width="100%" height="100%" style={{ zIndex }}>
+      <svg className="echCrosshair__crossLine" width="100%" height="100%">
         <line {...cursorCrossLinePosition} {...style} />
       </svg>
     );
@@ -120,7 +112,6 @@ const mapStateToProps = (state: GlobalChartState): CrosshairProps => {
       theme: LIGHT_THEME,
       chartRotation: 0,
       tooltipType: TooltipType.None,
-      zIndex: 0,
     };
   }
   const settings = getSettingsSpecSelector(state);
@@ -135,7 +126,6 @@ const mapStateToProps = (state: GlobalChartState): CrosshairProps => {
     cursorCrossLinePosition: getCursorLinePositionSelector(state),
     tooltipType,
     fromExternalEvent,
-    zIndex: state.zIndex,
   };
 };
 

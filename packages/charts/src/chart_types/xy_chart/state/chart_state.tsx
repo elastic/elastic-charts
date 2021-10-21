@@ -112,10 +112,10 @@ export class XYAxisChartState implements InternalChartState {
   chartRenderer(containerRef: BackwardRef, forwardCanvasRef: RefObject<HTMLCanvasElement>) {
     return (
       <>
-        <Crosshair />
         <XYChart forwardCanvasRef={forwardCanvasRef} />
         <Tooltip getChartContainerRef={containerRef} />
         <Annotations getChartContainerRef={containerRef} chartAreaRef={forwardCanvasRef} />
+        <Crosshair />
         <Highlighter />
         <BrushTool />
       </>
