@@ -1311,6 +1311,7 @@ describe('Axis computational utils', () => {
       showOverlappingTicks: false,
       style,
       tickFormat: formatter,
+      timeAxisLayerCount: 0,
     };
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
       isBandScale: false,
@@ -1357,6 +1358,7 @@ describe('Axis computational utils', () => {
       style,
       tickFormat: (d, options) =>
         DateTime.fromMillis(d, { setZone: true, zone: options?.timeZone ?? 'utc+1' }).toFormat('HH:mm'),
+      timeAxisLayerCount: 3,
     };
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
       isBandScale: false,
@@ -1410,6 +1412,7 @@ describe('Axis computational utils', () => {
       showOverlappingTicks: false,
       style,
       tickFormat: formatter,
+      timeAxisLayerCount: 3,
     };
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
       isBandScale: false,
@@ -1462,6 +1465,7 @@ describe('Axis computational utils', () => {
       showOverlappingTicks: false,
       style,
       tickFormat: formatter,
+      timeAxisLayerCount: 3,
     };
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
       isBandScale: false,

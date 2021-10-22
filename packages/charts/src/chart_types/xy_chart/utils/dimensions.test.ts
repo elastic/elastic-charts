@@ -55,6 +55,7 @@ describe('Computed chart dimensions', () => {
     showOverlappingLabels: false,
     position: Position.Left,
     tickFormat: (value: any) => `${value}`,
+    timeAxisLayerCount: 0,
   };
   const legend: LegendStyle = {
     verticalWidth: 10,
