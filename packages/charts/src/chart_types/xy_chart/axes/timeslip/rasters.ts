@@ -90,6 +90,14 @@ export const rasters = (
   }: RasterConfig,
   timeZone: string,
 ) => {
+  const minorDayFormat = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone }).format;
+  const detailedDayFormat = new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone,
+  }).format;
+
   const years: TimeRaster<TimeBin & { year: number }> = {
     unit: 'year',
     unitMultiplier: 1,
@@ -213,16 +221,12 @@ export const rasters = (
         }
       }
     },
-    detailedLabelFormat: new Intl.DateTimeFormat(locale, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      timeZone,
-    }).format,
-    minorTickLabelFormat: new Intl.DateTimeFormat(locale, {
-      day: 'numeric',
-      timeZone,
-    }).format,
+    detailedLabelFormat: detailedDayFormat,
+    minorTickLabelFormat: (d) => {
+      const numberString = minorDayFormat(d);
+      const number = Number.parseInt(numberString, 10);
+      return `${numberString}${number === 1 ? 'st' : number === 2 ? 'nd' : number === 3 ? 'rd' : 'th'}`;
+    },
     minimumPixelsPerSecond: NaN,
   };
   const weekStartDays: TimeRaster<TimeBin & { dayOfMonth: number }> = {
@@ -244,16 +248,8 @@ export const rasters = (
         }
       }
     },
-    minorTickLabelFormat: new Intl.DateTimeFormat(locale, {
-      day: 'numeric',
-      timeZone,
-    }).format,
-    detailedLabelFormat: new Intl.DateTimeFormat(locale, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      timeZone,
-    }).format,
+    minorTickLabelFormat: (d) => `${minorDayFormat(d)}th`,
+    detailedLabelFormat: detailedDayFormat,
     minimumPixelsPerSecond: NaN,
   };
   const daysUnlabelled: TimeRaster<TimeBin & YearToDay> = {

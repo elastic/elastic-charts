@@ -21,6 +21,11 @@ describe('Axis stories', () => {
       'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Shift%20time=0&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=18&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-showOverlappingLabels%20time%20axis=true',
     );
   });
+  it('should have st nd rd th after day-of-month numbers', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Shift%20time=-4.3&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=4.8&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-showOverlappingLabels%20time%20axis=true&knob-showOverlappingTicks%20time%20axis=true',
+    );
+  });
   it('should render proper tick count', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/axes--basic&knob-Tick Label Padding=0&knob-debug=&knob-Bottom overlap labels=&knob-Bottom overlap ticks=true&knob-Number of ticks on bottom=20&knob-Left overlap labels=&knob-Left overlap ticks=true&knob-Number of ticks on left=10',
