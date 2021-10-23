@@ -49,30 +49,22 @@ export function getGridLines(
       if (!axisSpec) {
         return linesAcc;
       }
-      const linesForSpec = getGridLinesForSpec(axisSpec, visibleTicks, themeAxisStyle, panelSize);
-      if (!linesForSpec) {
+      const linesForSpec = getGridLinesForAxis(axisSpec, visibleTicks, themeAxisStyle, panelSize);
+      if (linesForSpec.length === 0) {
         return linesAcc;
       }
-      return [...linesAcc, linesForSpec];
+      return [...linesAcc, ...linesForSpec];
     }, []);
     return { lineGroups: lines };
   });
 }
 
-/**
- * Get grid lines for a specific axis
- * @internal
- * @param axisSpec
- * @param visibleTicks
- * @param themeAxisStyle
- * @param panelSize
- */
-export function getGridLinesForSpec(
+function getGridLinesForAxis(
   axisSpec: AxisSpec,
   visibleTicks: AxisTick[],
   themeAxisStyle: AxisStyle,
   panelSize: Size,
-): GridLineGroup | null {
+): GridLineGroup[] {
   // vertical ==> horizontal grid lines
   const isVertical = isVerticalAxis(axisSpec.position);
 
@@ -85,7 +77,7 @@ export function getGridLinesForSpec(
 
   const showGridLines = axisSpec.showGridLines ?? gridLineStyles.visible;
   if (!showGridLines) {
-    return null;
+    return [];
   }
 
   // compute all the lines points for the specific grid
@@ -97,7 +89,7 @@ export function getGridLinesForSpec(
 
   // define the stroke for the specific set of grid lines
   if (!gridLineStyles.stroke || !gridLineStyles.strokeWidth || gridLineStyles.strokeWidth < MIN_STROKE_WIDTH) {
-    return null;
+    return [];
   }
   const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
     gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
@@ -108,11 +100,13 @@ export function getGridLinesForSpec(
     dash: gridLineStyles.dash,
   };
 
-  return {
-    lines,
-    stroke,
-    axisId: axisSpec.id,
-  };
+  return [
+    {
+      lines,
+      stroke,
+      axisId: axisSpec.id,
+    },
+  ];
 }
 
 /**
