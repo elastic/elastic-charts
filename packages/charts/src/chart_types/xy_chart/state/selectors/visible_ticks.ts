@@ -56,7 +56,8 @@ export function enableDuplicatedTicks(
   offset: number,
   fallBackTickFormatter: TickFormatter,
   tickFormatOptions: TickFormatterOptions & { labelFormat?: (d: string | number, ...otherArgs: unknown[]) => string },
-  layer: number,
+  layer: number | undefined,
+  detailedLayer = 0,
 ): AxisTick[] {
   const labelFormat =
     tickFormatOptions.labelFormat ?? axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
@@ -66,6 +67,7 @@ export function enableDuplicatedTicks(
     axisTickLabel: labelFormat(value, tickFormatOptions),
     position: (scale.scale(value) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
     layer,
+    detailedLayer,
   }));
 }
 
@@ -78,7 +80,8 @@ function getVisibleTicks(
   scale: Scale<number | string>,
   enableHistogramMode: boolean,
   tickFormatOptions: TickFormatterOptions & { labelFormat?: (d: number | string, ...otherArgs: unknown[]) => string },
-  layer: number,
+  layer: number | undefined,
+  detailedLayer: number,
   ticks: (number | string)[],
   isMultilayerTimeAxis: boolean = false,
 ): AxisTick[] {
@@ -107,17 +110,28 @@ function getVisibleTicks(
             label: tickFormatter(firstTickValue, tickFormatOptions),
             axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
             position: (scale.scale(firstTickValue) || 0) + offset,
-            layer: 0, // no multiple layers with `singleValueScale`s
+            layer: undefined, // no multiple layers with `singleValueScale`s
+            detailedLayer: 0,
           },
           {
             value: firstTickValue + scale.minInterval,
             label: tickFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
             axisTickLabel: labelFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
             position: scale.bandwidth + halfPadding * 2,
-            layer: 0, // no multiple layers with `singleValueScale`s
+            layer: undefined, // no multiple layers with `singleValueScale`s
+            detailedLayer: 0,
           },
         ]
-      : enableDuplicatedTicks(axisSpec, scale, ticks, offset, fallBackTickFormatter, tickFormatOptions, layer);
+      : enableDuplicatedTicks(
+          axisSpec,
+          scale,
+          ticks,
+          offset,
+          fallBackTickFormatter,
+          tickFormatOptions,
+          layer,
+          detailedLayer,
+        );
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
@@ -149,7 +163,8 @@ function getVisibleTickSet(
   groupCount: number,
   histogramMode: boolean,
   fallBackTickFormatter: TickFormatter,
-  layer: number,
+  layer: number | undefined,
+  detailedLayer: number,
   ticks: (number | string)[],
   labelFormat?: (d: number | string) => string,
   isMultilayerTimeAxis = false,
@@ -169,6 +184,7 @@ function getVisibleTickSet(
     histogramMode,
     tickFormatOptions,
     layer,
+    detailedLayer,
     ticks,
     isMultilayerTimeAxis,
   );
@@ -286,7 +302,8 @@ function getVisibleTickSets(
       const getMeasuredTicks = (
         scale: Scale<number | string>,
         ticks: (number | string)[],
-        layer: number,
+        layer: number | undefined,
+        detailedLayer: number,
         labelFormat?: (d: number | string) => string,
       ): Projection => {
         const labelBox = getLabelBox(axesStyle, ticks, labelFormat || tickFormatter, textMeasure, axisSpec, gridLine);
@@ -301,6 +318,7 @@ function getVisibleTickSets(
             enableHistogramMode,
             fallBackTickFormatter,
             layer,
+            detailedLayer,
             ticks,
             labelFormat,
             isMultilayerTimeAxis,
@@ -322,16 +340,27 @@ function getVisibleTickSets(
             })
           : yDomain && new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, integersOnly });
 
-      const fillLayerTimeslip = (layer: number, timeTicks: number[], labelFormat: (n: number) => string) => {
+      const fillLayerTimeslip = (
+        layer: number,
+        detailedLayer: number,
+        timeTicks: number[],
+        labelFormat: (n: number) => string,
+      ) => {
         const scale = getScale(100); // 10 is just a dummy value, the scale is only needed for its non-tick props like step, bandwidth, ...
         if (!scale) throw new Error('Scale generation for the multilayer axis failed');
         return {
-          entry: getMeasuredTicks(scale, timeTicks, layer, labelFormat as (d: number | string) => string),
+          entry: getMeasuredTicks(
+            scale,
+            timeTicks,
+            layer,
+            detailedLayer,
+            labelFormat as (d: number | string) => string,
+          ),
           fallbackAskedTickCount: NaN,
         };
       };
 
-      const fillLayer = (layer: number, maxTickCountForLayer: number) => {
+      const fillLayer = (maxTickCountForLayer: number) => {
         let fallbackAskedTickCount = 2;
         let fallbackReceivedTickCount = Infinity;
         if (adaptiveTickCount) {
@@ -339,7 +368,7 @@ function getVisibleTickSets(
           for (let triedTickCount = maxTickCountForLayer; triedTickCount >= 2; triedTickCount--) {
             const scale = getScale(triedTickCount);
             if (!scale || scale.ticks().length === previousActualTickCount) continue;
-            const raster = getMeasuredTicks(scale, scale.ticks(), layer);
+            const raster = getMeasuredTicks(scale, scale.ticks(), undefined, 0);
             const nonZeroLengthTicks = raster.ticks.filter((tick) => tick.axisTickLabel.length > 0);
             const uniqueLabels = new Set(raster.ticks.map((tick) => tick.axisTickLabel));
             const noDuplicates = raster.ticks.length === uniqueLabels.size;
@@ -381,11 +410,12 @@ function getVisibleTickSets(
         return acc.set(
           axisId,
           layers.reduce(
-            (combinedEntry: { ticks: AxisTick[] }, l: TimeRaster<TimeBin>) => {
+            (combinedEntry: { ticks: AxisTick[] }, l: TimeRaster<TimeBin>, detailedLayerIndex) => {
               if (layerIndex >= timeAxisLayerCount) return combinedEntry;
               // times 1000: convert seconds to milliseconds
               const { entry } = fillLayerTimeslip(
                 layerIndex,
+                detailedLayerIndex,
                 [...l.binStarts(domainFromS, domainToS)]
                   .filter((b) => b.nextTimePointSec > domainFromS && b.timePointSec < domainToS)
                   .map((b) => 1000 * Math.max(domainFromS, b.timePointSec)),
@@ -417,12 +447,12 @@ function getVisibleTickSets(
         );
       }
 
-      const { fallbackAskedTickCount, entry } = fillLayer(0, maxTickCount);
+      const { fallbackAskedTickCount, entry } = fillLayer(maxTickCount);
       if (entry) return acc.set(axisId, entry);
 
       // todo dry it up
       const scale = getScale(adaptiveTickCount ? fallbackAskedTickCount : maxTickCount);
-      const lastResortCandidate = scale && getMeasuredTicks(scale, scale.ticks(), 0);
+      const lastResortCandidate = scale && getMeasuredTicks(scale, scale.ticks(), undefined, 0);
       return lastResortCandidate ? acc.set(axisId, lastResortCandidate) : acc;
     }, new Map());
   });

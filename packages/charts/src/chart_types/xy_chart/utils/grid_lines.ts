@@ -22,6 +22,11 @@ import { getPerPanelMap } from './panel_utils';
 import { AxisSpec } from './specs';
 
 /** @internal */
+export const lineThicknessSteps = [0.5, 0.75, 1, 1, 1, 1.25, 1.25, 1.5, 1.5, 1.75, 1.75, 2, 2, 2, 2, 2];
+/** @internal */
+export const lumaSteps = [192, 72, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+
+/** @internal */
 export interface GridLineGroup {
   lines: Array<Line>;
   stroke: Stroke;
@@ -85,32 +90,37 @@ function getGridLinesForAxis(
     return [];
   }
 
-  const visibleTicksPerLayer = visibleTicks.reduce((acc: Map<number | undefined, AxisTick[]>, tick) => {
-    const ticks = acc.get(tick.layer);
+  const visibleTicksPerLayer = visibleTicks.reduce((acc: Map<number, AxisTick[]>, tick) => {
+    const ticks = acc.get(tick.detailedLayer);
     if (ticks) {
       ticks.push(tick);
     } else {
-      acc.set(tick.layer, [tick]);
+      acc.set(tick.detailedLayer, [tick]);
     }
     return acc;
   }, new Map());
 
-  return [...visibleTicksPerLayer].map(([, visibleTicksOfLayer]) => {
-    const lines = visibleTicksOfLayer.map<Line>((tick: AxisTick) =>
-      isVertical
-        ? getGridLineForVerticalAxisAt(tick.position, panelSize)
-        : getGridLineForHorizontalAxisAt(tick.position, panelSize),
-    );
-    const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
-      gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
-    );
-    const stroke: Stroke = {
-      color: strokeColor,
-      width: gridLineStyles.strokeWidth,
-      dash: gridLineStyles.dash,
-    };
-    return { lines, stroke, axisId: axisSpec.id };
-  });
+  return [...visibleTicksPerLayer]
+    .sort(([k1], [k2]) => (k1 ?? 0) - (k2 ?? 0)) // increasing layer order
+    .map(([detailedLayer, visibleTicksOfLayer]) => {
+      const lines = visibleTicksOfLayer.map<Line>((tick: AxisTick) =>
+        isVertical
+          ? getGridLineForVerticalAxisAt(tick.position, panelSize)
+          : getGridLineForHorizontalAxisAt(tick.position, panelSize),
+      );
+      const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
+        gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
+      );
+      const layered = typeof visibleTicksOfLayer[0].layer === 'number';
+      const stroke: Stroke = {
+        color: layered
+          ? [lumaSteps[detailedLayer], lumaSteps[detailedLayer], lumaSteps[detailedLayer], 1]
+          : strokeColor,
+        width: layered ? lineThicknessSteps[detailedLayer] : gridLineStyles.strokeWidth,
+        dash: gridLineStyles.dash,
+      };
+      return { lines, stroke, axisId: axisSpec.id };
+    });
 }
 
 /**

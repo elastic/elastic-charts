@@ -38,6 +38,7 @@ export interface AxisTick {
   axisTickLabel: string;
   position: number;
   layer?: number;
+  detailedLayer: number;
 }
 
 /** @internal */
