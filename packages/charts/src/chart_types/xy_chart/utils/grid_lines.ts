@@ -80,33 +80,37 @@ function getGridLinesForAxis(
     return [];
   }
 
-  // compute all the lines points for the specific grid
-  const lines = visibleTicks.map<Line>((tick: AxisTick) => {
-    return isVertical
-      ? getGridLineForVerticalAxisAt(tick.position, panelSize)
-      : getGridLineForHorizontalAxisAt(tick.position, panelSize);
-  });
-
   // define the stroke for the specific set of grid lines
   if (!gridLineStyles.stroke || !gridLineStyles.strokeWidth || gridLineStyles.strokeWidth < MIN_STROKE_WIDTH) {
     return [];
   }
-  const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
-    gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
-  );
-  const stroke: Stroke = {
-    color: strokeColor,
-    width: gridLineStyles.strokeWidth,
-    dash: gridLineStyles.dash,
-  };
 
-  return [
-    {
-      lines,
-      stroke,
-      axisId: axisSpec.id,
-    },
-  ];
+  const visibleTicksPerLayer = visibleTicks.reduce((acc: Map<number | undefined, AxisTick[]>, tick) => {
+    const ticks = acc.get(tick.layer);
+    if (ticks) {
+      ticks.push(tick);
+    } else {
+      acc.set(tick.layer, [tick]);
+    }
+    return acc;
+  }, new Map());
+
+  return [...visibleTicksPerLayer].map(([, visibleTicksOfLayer]) => {
+    const lines = visibleTicksOfLayer.map<Line>((tick: AxisTick) =>
+      isVertical
+        ? getGridLineForVerticalAxisAt(tick.position, panelSize)
+        : getGridLineForHorizontalAxisAt(tick.position, panelSize),
+    );
+    const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
+      gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
+    );
+    const stroke: Stroke = {
+      color: strokeColor,
+      width: gridLineStyles.strokeWidth,
+      dash: gridLineStyles.dash,
+    };
+    return { lines, stroke, axisId: axisSpec.id };
+  });
 }
 
 /**
