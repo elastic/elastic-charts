@@ -49,14 +49,12 @@ const data = KIBANA_METRICS.metrics.kibana_os_load[0].data;
 const t0 = data[0][0];
 const t1 = data[data.length - 1][0];
 
+const topAxisLabelFormat = (d: any) =>
+  `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
+
 export const Example = () => {
-  const whiskers = boolean('X axis minor whiskers', true);
-  const shortWhiskers = boolean('Shorter X axis minor whiskers', true);
   const minorGridLines = boolean('Minor grid lines', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
-  // const chartWidth = document.querySelector('.echContainer')?.getBoundingClientRect().width ?? 0;
-  const topAxisLabelFormat = (d: any) =>
-    `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
   const yAxisTitle = 'CPU utilization';
   const timeZoom =
     0 ||
@@ -94,16 +92,15 @@ export const Example = () => {
         ticks={30}
         showGridLines={minorGridLines}
         gridLine={mergePartial(gridStyle, { strokeWidth: 0.1 })}
-        style={mergePartial(
-          xAxisStyle,
-          whiskers
-            ? {
-                axisLine: { stroke: dataInk, strokeWidth: 1, visible: true },
-                tickLine: { size: shortWhiskers ? 6 : 16, padding: shortWhiskers ? 0 : -10, ...minorGridStyle },
-                axisTitle: { visible: true, fontFamily },
-              }
-            : { tickLine: { padding: 6 }, axisTitle: { visible: true, fontFamily } },
-        )}
+        style={mergePartial(xAxisStyle, {
+          axisLine: { stroke: dataInk, strokeWidth: 1, visible: true },
+          tickLine: {
+            size: 0.0001 /* todo fix padding so it works even with an actual zero `size` */,
+            padding: 4,
+            ...minorGridStyle,
+          },
+          axisTitle: { visible: true, fontFamily },
+        })}
         tickFormat={tooltipDateFormatter}
         labelFormat={topAxisLabelFormat}
         title="time (1-minute measurements)"

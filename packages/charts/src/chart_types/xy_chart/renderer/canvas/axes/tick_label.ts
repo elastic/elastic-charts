@@ -11,12 +11,14 @@ import { AxisTick, getTickLabelPosition } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';
 
+const TICK_TO_LABEL_GAP = 2;
+
 /** @internal */
 export function renderTickLabel(
   ctx: CanvasRenderingContext2D,
   tick: AxisTick,
   showTicks: boolean,
-  { axisSpec: { position }, dimension, size, debug, axisStyle }: AxisProps,
+  { axisSpec: { position, timeAxisLayerCount }, dimension, size, debug, axisStyle }: AxisProps,
   layerGirth: number,
 ) {
   const labelStyle = axisStyle.tickLabel;
@@ -44,6 +46,8 @@ export function renderTickLabel(
     }
   }
 
+  const tickOnTheSide = timeAxisLayerCount > 0 && Number.isFinite(tick.layer);
+
   renderText(
     ctx,
     center,
@@ -59,7 +63,7 @@ export function renderTickLabel(
       baseline: tickLabelProps.verticalAlign,
     },
     labelStyle.rotation,
-    tickLabelProps.textOffsetX,
+    tickLabelProps.textOffsetX + (tickOnTheSide ? TICK_TO_LABEL_GAP : 0),
     tickLabelProps.textOffsetY + (tick.layer || 0) * layerGirth,
   );
 }
