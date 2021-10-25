@@ -579,26 +579,16 @@ export type Datum = any;
 
 // @public
 export interface DebugState {
-    // Warning: (ae-forgotten-export) The symbol "DebugStateAnnotations" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     annotations?: DebugStateAnnotations[];
-    // Warning: (ae-forgotten-export) The symbol "DebugStateArea" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     areas?: DebugStateArea[];
-    // Warning: (ae-forgotten-export) The symbol "DebugStateAxes" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     axes?: DebugStateAxes;
-    // Warning: (ae-forgotten-export) The symbol "DebugStateBar" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     bars?: DebugStateBar[];
     // Warning: (ae-forgotten-export) The symbol "HeatmapDebugState" needs to be exported by the entry point index.d.ts
     heatmap?: HeatmapDebugState;
-    // Warning: (ae-forgotten-export) The symbol "DebugStateLegend" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     legend?: DebugStateLegend;
     // Warning: (ae-forgotten-export) The symbol "DebugStateLine" needs to be exported by the entry point index.d.ts
@@ -609,6 +599,51 @@ export interface DebugState {
     //
     // (undocumented)
     partition?: PartitionDebugState[];
+}
+
+// @public (undocumented)
+export type DebugStateAnnotations = {
+    id?: string;
+    color?: Partial<RectAnnotationStyle | LineAnnotationStyle>;
+    type?: 'line' | 'rectangle';
+    domainType?: 'xDomain' | 'yDomain';
+    data?: RectAnnotationDatum_2 | LineAnnotationDatum_2;
+};
+
+// @public (undocumented)
+export type DebugStateArea = Omit<DebugStateLine, 'points' | 'visiblePoints'> & {
+    path: string;
+    lines: {
+        y0?: DebugStateLineConfig;
+        y1: DebugStateLineConfig;
+    };
+};
+
+// @public (undocumented)
+export interface DebugStateAxes {
+    // Warning: (ae-forgotten-export) The symbol "DebugStateAxis" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    x: DebugStateAxis[];
+    // (undocumented)
+    y: DebugStateAxis[];
+}
+
+// Warning: (ae-forgotten-export) The symbol "DebugStateBase" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type DebugStateBar = DebugStateBase & {
+    visible: boolean;
+    bars: DebugStateValue[];
+    labels: any[];
+};
+
+// @public (undocumented)
+export interface DebugStateLegend {
+    // Warning: (ae-forgotten-export) The symbol "DebugStateLegendItem" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    items: DebugStateLegendItem[];
 }
 
 // @public (undocumented)
@@ -2423,6 +2458,10 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // src/chart_types/heatmap/layout/types/config_types.ts:48:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
+// src/state/types.ts:70:5 - (ae-forgotten-export) The symbol "DebugStateLineConfig" needs to be exported by the entry point index.d.ts
+// src/state/types.ts:78:3 - (ae-forgotten-export) The symbol "DebugStateValue" needs to be exported by the entry point index.d.ts
+// src/state/types.ts:114:3 - (ae-forgotten-export) The symbol "RectAnnotationDatum" needs to be exported by the entry point index.d.ts
+// src/state/types.ts:114:3 - (ae-forgotten-export) The symbol "LineAnnotationDatum" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

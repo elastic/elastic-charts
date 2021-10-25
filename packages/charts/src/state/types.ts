@@ -7,9 +7,8 @@
  */
 
 import { LineAnnotationStyle, RectAnnotationStyle } from '..';
-import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../../src/chart_types/xy_chart/utils/specs';
+import { LineAnnotationDatum, RectAnnotationDatum } from '../../src/chart_types/xy_chart/utils/specs';
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
-import { ComponentWithAnnotationDatum } from '../chart_types/xy_chart/annotations/types';
 import { Pixels } from '../common/geometry';
 import type { Position } from '../utils/common';
 import type { GeometryValue } from '../utils/geometry';
@@ -109,8 +108,8 @@ export type PartitionDebugState = {
 export type DebugStateAnnotations = {
   id?: string;
   color?: Partial<RectAnnotationStyle | LineAnnotationStyle>;
-  icon?: React.ReactNode | ComponentWithAnnotationDatum;
-  type?: AnnotationType;
+  // API Extractor fails on AnnotationType
+  type?: 'line' | 'rectangle';
   domainType?: 'xDomain' | 'yDomain';
   data?: RectAnnotationDatum | LineAnnotationDatum;
 };

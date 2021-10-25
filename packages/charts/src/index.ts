@@ -14,7 +14,14 @@ export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
 
 // Everything related to the specs types and react-components
 export * from './specs';
-export { DebugState } from './state/types';
+export {
+  DebugState,
+  DebugStateAnnotations,
+  DebugStateArea,
+  DebugStateAxes,
+  DebugStateBar,
+  DebugStateLegend,
+} from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';
 export { ContinuousDomain, OrdinalDomain } from './utils/domain';
