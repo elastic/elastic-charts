@@ -269,25 +269,24 @@ function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
 }
 
 function getAnnotationsState(annotationSpecs: AnnotationSpec[]): DebugStateAnnotations[] {
-  const acc: DebugStateAnnotations[] = [];
-  annotationSpecs.forEach((annotation, index) => {
+  const annotationDebugState: DebugStateAnnotations[] = [];
+  annotationSpecs.map((annotation, index) => {
     return annotation.annotationType === AnnotationType.Rectangle
-      ? acc.push({
+      ? annotationDebugState.push({
           id: annotation.id,
-          color: annotation?.style?.fill ? annotation.style.fill : undefined,
+          color: annotation?.style,
           data: annotation.dataValues[index],
           type: annotation.annotationType,
         })
-      : acc.push({
+      : annotationDebugState.push({
           id: annotation.id,
-          icon: annotation?.marker ? annotation.marker : undefined,
-          color: annotation?.style?.details?.fill,
+          color: annotation?.style,
           data: annotation.dataValues[index],
           domainType: annotation.domainType,
           type: annotation.annotationType,
         });
   });
-  return acc;
+  return annotationDebugState;
 }
 
 /**
