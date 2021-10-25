@@ -71,9 +71,9 @@ exports[`Chart should render the legend name test 1`] = `
                   <Crosshair theme={{...}} chartRotation={0} cursorPosition={[undefined]} cursorCrossLinePosition={[undefined]} tooltipType=\\"vertical\\" fromExternalEvent={[undefined]} zIndex={0} dispatch={[Function: dispatch]} />
                 </Connect(Crosshair)>
                 <Connect(XYChart) forwardCanvasRef={{...}}>
-                  <XYChart forwardCanvasRef={{...}} isRTL={true} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
+                  <XYChart forwardCanvasRef={{...}} isRTL={false} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
                     <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\">
-                      <canvas dir=\\"rtl\\" className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\" />
+                      <canvas dir=\\"ltr\\" className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\" />
                     </figure>
                     <Connect(ScreenReaderSummaryComponent)>
                       <ScreenReaderSummaryComponent chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function: dispatch]}>
