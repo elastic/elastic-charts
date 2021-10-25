@@ -39,6 +39,7 @@ export type Projection = { ticks: AxisTick[]; labelBox: TickLabelBounds; scale: 
 type Projections = Map<AxisId, Projection>;
 
 const adaptiveTickCount = true;
+const WIDTH_FUDGE = 1.05; // raster bin widths are sometimes approximate, but there's no raster that's just 5% denser/sparser, so it's safe
 
 function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
   const horizontal = isHorizontalAxis(axisPosition);
@@ -205,10 +206,12 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
   getVisibleTickSets,
 );
 
-const notTooDense = (domainFrom: number, domainTo: number, cartesianWidth: number) => (raster: TimeRaster<TimeBin>) => {
+const notTooDense = (domainFrom: number, domainTo: number, binWidth: number, cartesianWidth: number) => (
+  raster: TimeRaster<TimeBin>,
+) => {
   const domainInSeconds = domainTo - domainFrom;
   const pixelsPerSecond = cartesianWidth / domainInSeconds;
-  return pixelsPerSecond > raster.minimumPixelsPerSecond;
+  return pixelsPerSecond > raster.minimumPixelsPerSecond && raster.approxWidthInMs * WIDTH_FUDGE >= binWidth;
 };
 
 const getRasterSelector = (timeZone: string, maxLabelRowCount: number): ReturnType<typeof rasters> => {
@@ -406,9 +409,10 @@ function getVisibleTickSets(
         const domainValues = domain.domain; // todo consider a property or object type rename
         const domainFromS = Number((domain && domainValues[0]) || NaN) / 1000; // todo rely on a type guard or check rather than conversion
         const extendByOneBin = isX && xDomain.isBandScale && enableHistogramMode;
-        const domainExtension = extendByOneBin ? xDomain.minInterval : 0;
+        const binWidth = xDomain.minInterval;
+        const domainExtension = extendByOneBin ? binWidth : 0;
         const domainToS = (((domain && Number(domainValues[domainValues.length - 1])) || NaN) + domainExtension) / 1000;
-        const layers = rasterSelector(notTooDense(domainFromS, domainToS, Math.abs(range[1] - range[0])));
+        const layers = rasterSelector(notTooDense(domainFromS, domainToS, binWidth, Math.abs(range[1] - range[0])));
         let layerIndex = 0;
         return acc.set(
           axisId,

@@ -42,6 +42,7 @@ export interface TimeRaster<T extends TimeBin> {
   detailedLabelFormat: (time: number) => string;
   minorTickLabelFormat: (time: number) => string;
   minimumPixelsPerSecond: number;
+  approxWidthInMs: number;
 }
 
 interface RasterConfig {
@@ -121,6 +122,7 @@ export const rasters = (
     detailedLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
     minimumPixelsPerSecond: NaN,
+    approxWidthInMs: NaN,
   };
   const yearsUnlabelled: TimeRaster<TimeBin & { year: number }> = {
     ...years,
@@ -150,6 +152,7 @@ export const rasters = (
     detailedLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
     minimumPixelsPerSecond: NaN,
+    approxWidthInMs: NaN,
   };
   const decadesUnlabelled: TimeRaster<TimeBin & { year: number }> = {
     ...decades,
@@ -179,6 +182,7 @@ export const rasters = (
     detailedLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long', timeZone }).format,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, { month: 'long', timeZone }).format,
     minimumPixelsPerSecond: NaN,
+    approxWidthInMs: NaN,
   };
   const shortMonths = {
     ...months,
@@ -228,6 +232,7 @@ export const rasters = (
       return `${numberString}${number === 1 ? 'st' : number === 2 ? 'nd' : number === 3 ? 'rd' : 'th'}`;
     },
     minimumPixelsPerSecond: NaN,
+    approxWidthInMs: NaN,
   };
   const weekStartDays: TimeRaster<TimeBin & { dayOfMonth: number }> = {
     unit: 'week',
@@ -251,6 +256,7 @@ export const rasters = (
     minorTickLabelFormat: (d) => `${minorDayFormat(d)}th`,
     detailedLabelFormat: detailedDayFormat,
     minimumPixelsPerSecond: NaN,
+    approxWidthInMs: NaN,
   };
   const daysUnlabelled: TimeRaster<TimeBin & YearToDay> = {
     ...days,
@@ -285,6 +291,7 @@ export const rasters = (
       timeZone,
     }).format,
     minimumPixelsPerSecond: NaN,
+    approxWidthInMs: NaN,
   };
   const hoursUnlabelled = {
     ...hours,
@@ -334,6 +341,7 @@ export const rasters = (
       timeZone,
     }).format,
     minimumPixelsPerSecond: NaN,
+    approxWidthInMs: NaN,
   };
   const sixHoursUnlabelled = {
     ...sixHours,
@@ -360,6 +368,7 @@ export const rasters = (
         timeZone,
       }).format(d)}'`,
     minimumPixelsPerSecond: NaN,
+    approxWidthInMs: NaN,
   };
   const quarterHours = {
     ...minutes,
@@ -411,6 +420,7 @@ export const rasters = (
         timeZone,
       }).format(d)}"`,
     minimumPixelsPerSecond: NaN,
+    approxWidthInMs: NaN,
   };
   const quarterMinutes = {
     ...seconds,
@@ -450,6 +460,7 @@ export const rasters = (
     minorTickLabelFormat: (d) => `${d % 1000}ms`,
     detailedLabelFormat: (d) => `${d % 1000}ms`,
     minimumPixelsPerSecond: NaN,
+    approxWidthInMs: NaN,
   };
   const tenMilliseconds = {
     ...milliseconds,
@@ -518,6 +529,7 @@ export const rasters = (
     // enrich with derived data; Object.assign preserves object identity
     .map((r) =>
       Object.assign(r, {
+        approxWidthInMs: approxWidthsInSeconds[r.unit] * r.unitMultiplier * 1000,
         minimumPixelsPerSecond: r.minimumTickPixelDistance / (approxWidthsInSeconds[r.unit] * r.unitMultiplier),
       }),
     );

@@ -36,6 +36,16 @@ describe('Axis stories', () => {
       'http://localhost:9001/?path=/story/bar-chart--test-discover&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Pan%20time=0&knob-Shift%20time=0&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=3.8&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-layerCount=3&knob-showOverlappingLabels%20time%20axis=true&knob-showOverlappingTicks%20time%20axis=true&knob-use%20custom%20minInterval%20of%2030s=false&knob-use%20multilayer%20time%20axis=true',
     );
   });
+  it('should not show a raster that is finer than the bin width (minInterval)', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&Bin%20width%20in%20ms%20(0:%20none%20specifed)=60000&Minor%20grid%20lines=on&Shift%20time=0&Stretch%20time=-0.4&Time%20zoom=2&globals=theme:light&knob-Bin%20width%20in%20ms%20(0:%20none%20specifed)=60000&knob-Minor%20grid%20lines=true&knob-Shift%20time=0&knob-Stretch%20time=-0.4&knob-Time%20zoom=2&knob-layerCount=3&layerCount=3',
+    );
+  });
+  it('can show a finer raster than the data bin width if minInterval is expressly specified to be low', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&Bin%20width%20in%20ms%20(0:%20none%20specifed)=1&Minor%20grid%20lines=on&Shift%20time=0&Stretch%20time=-0.4&Time%20zoom=2&globals=theme:light&knob-Bin%20width%20in%20ms%20(0:%20none%20specifed)=1&knob-Minor%20grid%20lines=true&knob-Shift%20time=0&knob-Stretch%20time=-0.4&knob-Time%20zoom=2&knob-layerCount=3&layerCount=3',
+    );
+  });
   it('should render proper tick count', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/axes--basic&knob-Tick Label Padding=0&knob-debug=&knob-Bottom overlap labels=&knob-Bottom overlap ticks=true&knob-Number of ticks on bottom=20&knob-Left overlap labels=&knob-Left overlap ticks=true&knob-Number of ticks on left=10',

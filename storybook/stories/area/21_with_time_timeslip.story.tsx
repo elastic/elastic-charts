@@ -56,34 +56,45 @@ export const Example = () => {
   const minorGridLines = boolean('Minor grid lines', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
   const yAxisTitle = 'CPU utilization';
-  const timeZoom =
-    0 ||
-    number('Time zoom', data.length, {
-      range: true,
-      min: 0,
-      max: data.length,
-      step: 1,
-    });
-  const timeStretch =
-    0 ||
-    number('Stretch time', -0.4, {
-      range: true,
-      min: -20,
-      max: 18,
-      step: 0.2,
-    });
-  const timeShift =
-    0 ||
-    number('Shift time', 0, {
-      range: true,
-      min: -10,
-      max: 10,
-      step: 0.05,
-    });
+  const timeZoom = number('Time zoom', data.length, {
+    range: true,
+    min: 0,
+    max: data.length,
+    step: 1,
+  });
+  const timeStretch = number('Stretch time', -0.4, {
+    range: true,
+    min: -20,
+    max: 18,
+    step: 0.2,
+  });
+  const timeShift = number('Shift time', 0, {
+    range: true,
+    min: -10,
+    max: 10,
+    step: 0.05,
+  });
+  const binWidth = number('Bin width in ms (0: none specifed)', 0, {
+    range: false,
+    min: 0,
+    max: 10 * 365 * 24 * 60 * 60 * 1000,
+    step: 1,
+  });
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings
+        baseTheme={useBaseTheme()}
+        xDomain={
+          binWidth > 0
+            ? {
+                min: NaN,
+                max: NaN,
+                minInterval: binWidth,
+              }
+            : undefined
+        }
+      />
       <Axis
         id="x_minor"
         position={Position.Bottom}
