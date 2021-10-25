@@ -591,8 +591,6 @@ export interface DebugState {
     heatmap?: HeatmapDebugState;
     // (undocumented)
     legend?: DebugStateLegend;
-    // Warning: (ae-forgotten-export) The symbol "DebugStateLine" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     lines?: DebugStateLine[];
     // Warning: (ae-forgotten-export) The symbol "PartitionDebugState" needs to be exported by the entry point index.d.ts
@@ -645,6 +643,13 @@ export interface DebugStateLegend {
     // (undocumented)
     items: DebugStateLegendItem[];
 }
+
+// @public (undocumented)
+export interface DebugStateLine extends DebugStateBase, DebugStateLineConfig {
+}
+
+// @public (undocumented)
+export type DebugStateValue = Pick<GeometryValue, 'x' | 'y' | 'mark'>;
 
 // @public (undocumented)
 export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle;
@@ -1972,6 +1977,9 @@ export interface SimplePadding {
     outer: number;
 }
 
+// @public (undocumented)
+export type SizeRatio = Ratio;
+
 // @alpha (undocumented)
 export const SmallMultiples: React_2.FunctionComponent<SmallMultiplesProps>;
 
@@ -2063,6 +2071,11 @@ export interface StrokeStyle<C = Color> {
     strokeWidth: number;
 }
 
+// Warning: (ae-forgotten-export) The symbol "TEXT_ALIGNS" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type TextAlign = typeof TEXT_ALIGNS[number];
+
 // @public
 export interface TextAlignment {
     // (undocumented)
@@ -2070,6 +2083,11 @@ export interface TextAlignment {
     // (undocumented)
     vertical: VerticalAlignment;
 }
+
+// Warning: (ae-forgotten-export) The symbol "TEXT_BASELINE" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type TextBaseline = typeof TEXT_BASELINE[number];
 
 // @public
 export interface TextOffset {
@@ -2453,13 +2471,9 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
 // Warnings were encountered during analysis:
 //
-// src/chart_types/heatmap/layout/types/config_types.ts:19:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:47:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:48:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/state/types.ts:70:5 - (ae-forgotten-export) The symbol "DebugStateLineConfig" needs to be exported by the entry point index.d.ts
-// src/state/types.ts:78:3 - (ae-forgotten-export) The symbol "DebugStateValue" needs to be exported by the entry point index.d.ts
 // src/state/types.ts:114:3 - (ae-forgotten-export) The symbol "RectAnnotationDatum" needs to be exported by the entry point index.d.ts
 // src/state/types.ts:114:3 - (ae-forgotten-export) The symbol "LineAnnotationDatum" needs to be exported by the entry point index.d.ts
 

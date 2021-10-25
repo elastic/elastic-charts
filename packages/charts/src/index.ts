@@ -16,6 +16,8 @@ export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
 export * from './specs';
 export {
   DebugState,
+  DebugStateLine,
+  DebugStateValue,
   DebugStateAnnotations,
   DebugStateArea,
   DebugStateAxes,
@@ -72,6 +74,8 @@ export * from './chart_types/partition_chart/layout/utils/group_by_rollup';
 
 // heatmap
 export { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
+export { SizeRatio } from './common/geometry';
+export { TextAlign, TextBaseline } from './common/text_utils';
 export { Config as HeatmapConfig } from './chart_types/heatmap/layout/types/config_types';
 export { ColorBand, HeatmapBandsColorScale } from './chart_types/heatmap/specs/heatmap';
 
