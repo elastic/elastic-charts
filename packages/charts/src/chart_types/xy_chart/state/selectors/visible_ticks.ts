@@ -403,8 +403,11 @@ function getVisibleTickSets(
 
       if (isMultilayerTimeAxis) {
         const rasterSelector = getRasterSelector(xDomain.timeZone, timeAxisLayerCount);
-        const domainFromS = Number((domain && domain.domain[0]) || NaN) / 1000;
-        const domainToS = Number((domain && domain.domain[domain.domain.length - 1]) || NaN) / 1000;
+        const domainValues = domain.domain; // todo consider a property or object type rename
+        const domainFromS = Number((domain && domainValues[0]) || NaN) / 1000; // todo rely on a type guard or check rather than conversion
+        const extendByOneBin = isX && xDomain.isBandScale && enableHistogramMode;
+        const domainExtension = extendByOneBin ? xDomain.minInterval : 0;
+        const domainToS = (((domain && Number(domainValues[domainValues.length - 1])) || NaN) + domainExtension) / 1000;
         const layers = rasterSelector(notTooDense(domainFromS, domainToS, Math.abs(range[1] - range[0])));
         let layerIndex = 0;
         return acc.set(
