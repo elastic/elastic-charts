@@ -229,7 +229,15 @@ export const rasters = (
     minorTickLabelFormat: (d) => {
       const numberString = minorDayFormat(d);
       const number = Number.parseInt(numberString, 10);
-      return `${numberString}${number === 1 ? 'st' : number === 2 ? 'nd' : number === 3 ? 'rd' : 'th'}`;
+      return `${numberString}${
+        number === 1 || number === 21
+          ? 'st'
+          : number === 2 || number === 22
+          ? 'nd'
+          : number === 3 || number === 23
+          ? 'rd'
+          : 'th'
+      }`;
     },
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
