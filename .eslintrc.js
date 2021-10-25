@@ -56,6 +56,7 @@ module.exports = {
     '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'no-extra-parens': 'off', // it was already off by default; this line addition is just for documentation purposes
     '@typescript-eslint/restrict-template-expressions': 0, // it's OK to use numbers etc. in string templates
+    'unicorn/prefer-string-slice': 'off', // substr is just as fine as it's string specific and well named
 
     /**
      *****************************************
