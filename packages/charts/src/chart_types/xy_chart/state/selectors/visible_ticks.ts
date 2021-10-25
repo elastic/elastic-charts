@@ -374,21 +374,22 @@ function getVisibleTickSets(
             const raster = getMeasuredTicks(scale, scale.ticks(), undefined, 0);
             const nonZeroLengthTicks = raster.ticks.filter((tick) => tick.axisTickLabel.length > 0);
             const uniqueLabels = new Set(raster.ticks.map((tick) => tick.axisTickLabel));
-            const noDuplicates = raster.ticks.length === uniqueLabels.size;
-            const noAdjacentTimes =
+            const areLabelsUnique = raster.ticks.length === uniqueLabels.size;
+            const areAdjacentTimeLabelsUnique =
               ScaleType.Time &&
               !axisSpec.showDuplicatedTicks &&
-              (noDuplicates || raster.ticks.every((d, i, a) => i === 0 || d.axisTickLabel !== a[i - 1].axisTickLabel));
+              (areLabelsUnique ||
+                raster.ticks.every((d, i, a) => i === 0 || d.axisTickLabel !== a[i - 1].axisTickLabel));
             const atLeastTwoTicks = uniqueLabels.size >= 2;
             const allTicksFit = !uniqueLabels.has('');
             const compliant =
               axisSpec &&
               (scale.type === ScaleType.Time || atLeastTwoTicks) &&
               (scale.type === ScaleType.Log || allTicksFit) &&
-              ((scale.type === ScaleType.Time && (axisSpec.showDuplicatedTicks || noAdjacentTimes)) ||
+              ((scale.type === ScaleType.Time && (axisSpec.showDuplicatedTicks || areAdjacentTimeLabelsUnique)) ||
                 (scale.type === ScaleType.Log
                   ? new Set(nonZeroLengthTicks.map((tick) => tick.axisTickLabel)).size === nonZeroLengthTicks.length
-                  : noDuplicates));
+                  : areLabelsUnique));
             previousActualTickCount = scale.ticks().length;
             if (raster && compliant) {
               return {
