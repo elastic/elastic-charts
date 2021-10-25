@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { LineAnnotationStyle, RectAnnotationStyle } from '..';
 import { LineAnnotationDatum, RectAnnotationDatum } from '../../src/chart_types/xy_chart/utils/specs';
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { Pixels } from '../common/geometry';
 import type { Position } from '../utils/common';
 import type { GeometryValue } from '../utils/geometry';
+import { LineAnnotationStyle, RectAnnotationStyle } from '../utils/themes/theme';
 
 /** @public */
 export interface DebugStateAxis {
