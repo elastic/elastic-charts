@@ -51,6 +51,11 @@ describe('Axis stories', () => {
       'http://localhost:9001/?path=/story/area-chart--timeslip&Bin%20width%20in%20ms%20(0:%20none%20specifed)=1&Minor%20grid%20lines=on&Shift%20time=0&Stretch%20time=-0.4&Time%20zoom=2&globals=theme:light&knob-Bin%20width%20in%20ms%20(0:%20none%20specifed)=1&knob-Minor%20grid%20lines=true&knob-Shift%20time=0&knob-Stretch%20time=-0.4&knob-Time%20zoom=2&knob-layerCount=3&layerCount=3',
     );
   });
+  it('can render multilayer time axis on top', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=8.5&knob-Shorter X axis minor whiskers=true&knob-Stretch time=6.8&knob-Time zoom=120&knob-X axis minor whiskers=true&knob-fallback placement=left-start&knob-layerCount=3&knob-placement=left&knob-placement offset=5&knob-showOverlappingLabels time axis=true&knob-showOverlappingTicks time axis=true&knob-stickTo=MousePosition&knob-Horizontal axis title=&knob-Top X axis=true',
+    );
+  });
   it('should render proper tick count', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/axes--basic&knob-Tick Label Padding=0&knob-debug=&knob-Bottom overlap labels=&knob-Bottom overlap ticks=true&knob-Number of ticks on bottom=20&knob-Left overlap labels=&knob-Left overlap ticks=true&knob-Number of ticks on left=10',

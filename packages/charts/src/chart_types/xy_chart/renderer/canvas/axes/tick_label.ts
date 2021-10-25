@@ -7,6 +7,7 @@
  */
 
 import { AxisProps } from '.';
+import { Position } from '../../../../../utils/common';
 import { AxisTick, getTickLabelPosition } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';
@@ -64,6 +65,6 @@ export function renderTickLabel(
     },
     labelStyle.rotation,
     tickLabelProps.textOffsetX + (tickOnTheSide ? TICK_TO_LABEL_GAP : 0),
-    tickLabelProps.textOffsetY + (tick.layer || 0) * layerGirth,
+    tickLabelProps.textOffsetY + (tick.layer || 0) * layerGirth * (position === Position.Top ? -1 : 1),
   );
 }
