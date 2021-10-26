@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.es6",
+  "compilerOptions": {
+    "removeComments": true,
+    "declaration": false,
+    "declarationMap": false
+  },
+  "files": []
+}
