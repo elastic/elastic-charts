@@ -21,14 +21,15 @@ export interface AxisProps {
   panelTitle?: string;
   secondary?: boolean;
   panelAnchor: Point;
-  axisStyle: AxisStyle;
-  axisSpec: AxisSpec;
+  axisStyle: AxisStyle; // todo rename to just style (it's in Axis... already)
+  axisSpec: AxisSpec; // todo rename to just spec (it's in Axis... already)
   size: Size;
   anchorPoint: Point;
   dimension: TickLabelBounds;
   ticks: AxisTick[];
   debug: boolean;
   renderingArea: Dimensions;
+  layerGirth: number;
 }
 
 /** @internal */
@@ -43,10 +44,11 @@ export interface AxesProps {
 
 /** @internal */
 export function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
-  const { ticks, axisStyle, axisSpec, secondary } = props;
+  const { ticks, axisStyle, axisSpec, secondary, layerGirth } = props;
   const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
 
   renderAxisLine(ctx, props); // render the axis line
   if (!secondary && showTicks) ticks.forEach((tick) => renderTick(ctx, tick, props));
-  if (!secondary && axisStyle.tickLabel.visible) ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props));
+  if (!secondary && axisStyle.tickLabel.visible)
+    ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props, layerGirth ?? 0));
 }

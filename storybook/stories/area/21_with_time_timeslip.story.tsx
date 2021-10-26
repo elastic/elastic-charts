@@ -17,12 +17,13 @@ import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const minorGridStyle = { stroke: 'black', strokeWidth: 0.15, opacity: 1 };
-const gridStyle = { stroke: 'black', strokeWidth: 0.5, opacity: 1 };
+const gridStyle = { stroke: 'black' };
 const fontFamily = '"Atkinson Hyperlegible"';
 const tickLabelStyle = { fontSize: 11, fontFamily, fill: 'rgba(0,0,0,0.8)' };
 const axisTitleColor = 'rgb(112,112,112)';
 const axisTitleFontSize = 15;
 const dataInk = 'rgba(96, 146, 192, 1)';
+
 const tooltipDateFormatter = (d: any) =>
   new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
@@ -46,113 +47,74 @@ const xAxisStyle: AxisSpec['style'] = {
 
 const data = KIBANA_METRICS.metrics.kibana_os_load[0].data;
 const t0 = data[0][0];
+const t1 = data[data.length - 1][0];
+
+const topAxisLabelFormat = (d: any) =>
+  `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
 
 export const Example = () => {
-  const whiskers = boolean('X axis minor whiskers', true);
-  const shortWhiskers = boolean('Shorter X axis minor whiskers', true);
   const minorGridLines = boolean('Minor grid lines', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
-  // const chartWidth = document.querySelector('.echContainer')?.getBoundingClientRect().width ?? 0;
-  const topAxisLabelFormat = (d: any) =>
-    `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
-  const midAxisLabelFormatter = (d: any) =>
-    `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', { hour: 'numeric' }).format(d).padStart(2, '0')}  `;
-  const bottomAxisLabelFormatter = (d: any) =>
-    `${whiskers ? ' ' : ''}${new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(d)}  `;
   const yAxisTitle = 'CPU utilization';
-  const timeStretch = number('Time stretch', 1, {
+  const timeZoom = number('Time zoom', data.length, {
     range: true,
-    min: 0.5,
-    max: 2,
-    step: 0.1,
+    min: 0,
+    max: data.length,
+    step: 1,
   });
+  const timeStretch = number('Stretch time', -0.4, {
+    range: true,
+    min: -20,
+    max: 18,
+    step: 0.2,
+  });
+  const timeShift = number('Shift time', 0, {
+    range: true,
+    min: -10,
+    max: 10,
+    step: 0.05,
+  });
+  const binWidth = number('Bin width in ms (0: none specifed)', 0, {
+    range: false,
+    min: 0,
+    max: 10 * 365 * 24 * 60 * 60 * 1000,
+    step: 1,
+  });
+
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
-      <Axis
-        id="title"
-        title="System Load: CPU"
-        position={Position.Top}
-        tickFormat={() => (horizontalAxisTitle ? yAxisTitle : '')}
-        ticks={0}
-        showGridLines
-        gridLine={gridStyle}
-        style={mergePartial(xAxisStyle, {
-          axisTitle: { visible: true, fontFamily, fontSize: 24, fill: 'grey' },
-          tickLabel: horizontalAxisTitle
+      <Settings
+        baseTheme={useBaseTheme()}
+        xDomain={
+          binWidth > 0
             ? {
-                fill: 'rgb(64,64,64)',
-                fontSize: axisTitleFontSize,
-                padding: 20,
-                alignment: { horizontal: 'center', vertical: Position.Bottom },
+                min: NaN,
+                max: NaN,
+                minInterval: binWidth,
               }
-            : {},
-        })}
+            : undefined
+        }
       />
       <Axis
         id="x_minor"
-        position={Position.Bottom}
+        position={boolean('Top X axis', false) ? Position.Top : Position.Bottom}
         showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
         showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
-        ticks={100}
+        ticks={30}
         showGridLines={minorGridLines}
-        gridLine={mergePartial(gridStyle, { strokeWidth: 0.1 })}
-        title="minor"
-        style={mergePartial(
-          xAxisStyle,
-          whiskers
-            ? {
-                axisTitle: { visible: true },
-
-                axisLine: { stroke: dataInk, strokeWidth: 1, visible: true },
-                tickLine: { size: shortWhiskers ? 6 : 16, padding: shortWhiskers ? 0 : -10, ...minorGridStyle },
-              }
-            : {
-                axisTitle: { visible: true },
-                tickLine: { padding: 6 },
-              },
-        )}
-        labelFormat={topAxisLabelFormat}
-      />
-      <Axis
-        id="x_major"
-        title="major"
-        position={Position.Bottom}
-        showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
-        showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
-        showDuplicatedTicks={false}
-        ticks={1}
-        showGridLines
         gridLine={gridStyle}
         style={mergePartial(xAxisStyle, {
-          axisTitle: { visible: true },
-          tickLabel: {
-            padding: 0,
-            offset: { x: 0, y: 0 },
+          axisLine: { stroke: dataInk, strokeWidth: 1, visible: true },
+          tickLine: {
+            size: 0.0001 /* todo fix padding so it works even with an actual zero `size` */,
+            padding: 4,
           },
-          tickLine: { size: 0.0001, padding: -6, ...gridStyle },
+          axisTitle: { visible: true, fontFamily },
         })}
-        labelFormat={midAxisLabelFormatter}
-      />
-      <Axis
-        id="x_context"
-        title="time (1-minute measurements)"
-        position={Position.Bottom}
-        showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
-        showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
-        showDuplicatedTicks={false}
         tickFormat={tooltipDateFormatter}
-        ticks={2}
-        showGridLines
-        gridLine={gridStyle}
-        style={mergePartial(xAxisStyle, {
-          axisTitle: { visible: !horizontalAxisTitle, fontFamily },
-        })}
-        labelFormat={bottomAxisLabelFormatter}
+        labelFormat={topAxisLabelFormat}
+        title="time (1-minute measurements)"
+        timeAxisLayerCount={number('layerCount', 3, { range: true, min: 0, max: 3, step: 1 })}
       />
       <Axis
         id="left"
@@ -178,7 +140,9 @@ export const Example = () => {
         yNice
         color={dataInk}
         areaSeriesStyle={{ area: { opacity: 0.3 }, line: { opacity: 1 } }}
-        data={data.map(([t, v]) => [t0 + (t - t0) * 4 * timeStretch, v])}
+        data={data
+          .slice(0, timeZoom)
+          .map(([t, v]) => [t0 + (t - t0) * 4 * 2 ** timeStretch - (t1 - t0) * 2 ** timeStretch * timeShift, v])}
       />
     </Chart>
   );

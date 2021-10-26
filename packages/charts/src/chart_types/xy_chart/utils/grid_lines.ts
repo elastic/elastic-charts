@@ -22,6 +22,11 @@ import { getPerPanelMap } from './panel_utils';
 import { AxisSpec } from './specs';
 
 /** @internal */
+export const HIERARCHICAL_GRID_WIDTH = 1; // constant 1 scales well and solves some render issues due to fixed 1px wide overpaints
+/** @internal */
+export const lumaSteps = [224, 184, 128, 96, 64, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0]; // using alpha instead would lead to overpainted line strengthening
+
+/** @internal */
 export interface GridLineGroup {
   lines: Array<Line>;
   stroke: Stroke;
@@ -49,30 +54,22 @@ export function getGridLines(
       if (!axisSpec) {
         return linesAcc;
       }
-      const linesForSpec = getGridLinesForSpec(axisSpec, visibleTicks, themeAxisStyle, panelSize);
-      if (!linesForSpec) {
+      const linesForSpec = getGridLinesForAxis(axisSpec, visibleTicks, themeAxisStyle, panelSize);
+      if (linesForSpec.length === 0) {
         return linesAcc;
       }
-      return [...linesAcc, linesForSpec];
+      return [...linesAcc, ...linesForSpec];
     }, []);
     return { lineGroups: lines };
   });
 }
 
-/**
- * Get grid lines for a specific axis
- * @internal
- * @param axisSpec
- * @param visibleTicks
- * @param themeAxisStyle
- * @param panelSize
- */
-export function getGridLinesForSpec(
+function getGridLinesForAxis(
   axisSpec: AxisSpec,
   visibleTicks: AxisTick[],
   themeAxisStyle: AxisStyle,
   panelSize: Size,
-): GridLineGroup | null {
+): GridLineGroup[] {
   // vertical ==> horizontal grid lines
   const isVertical = isVerticalAxis(axisSpec.position);
 
@@ -85,34 +82,45 @@ export function getGridLinesForSpec(
 
   const showGridLines = axisSpec.showGridLines ?? gridLineStyles.visible;
   if (!showGridLines) {
-    return null;
+    return [];
   }
-
-  // compute all the lines points for the specific grid
-  const lines = visibleTicks.map<Line>((tick: AxisTick) => {
-    return isVertical
-      ? getGridLineForVerticalAxisAt(tick.position, panelSize)
-      : getGridLineForHorizontalAxisAt(tick.position, panelSize);
-  });
 
   // define the stroke for the specific set of grid lines
   if (!gridLineStyles.stroke || !gridLineStyles.strokeWidth || gridLineStyles.strokeWidth < MIN_STROKE_WIDTH) {
-    return null;
+    return [];
   }
-  const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
-    gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
-  );
-  const stroke: Stroke = {
-    color: strokeColor,
-    width: gridLineStyles.strokeWidth,
-    dash: gridLineStyles.dash,
-  };
 
-  return {
-    lines,
-    stroke,
-    axisId: axisSpec.id,
-  };
+  const visibleTicksPerLayer = visibleTicks.reduce((acc: Map<number, AxisTick[]>, tick) => {
+    const ticks = acc.get(tick.detailedLayer);
+    if (ticks) {
+      ticks.push(tick);
+    } else {
+      acc.set(tick.detailedLayer, [tick]);
+    }
+    return acc;
+  }, new Map());
+
+  return [...visibleTicksPerLayer]
+    .sort(([k1], [k2]) => (k1 ?? 0) - (k2 ?? 0)) // increasing layer order
+    .map(([detailedLayer, visibleTicksOfLayer]) => {
+      const lines = visibleTicksOfLayer.map<Line>((tick: AxisTick) =>
+        isVertical
+          ? getGridLineForVerticalAxisAt(tick.position, panelSize)
+          : getGridLineForHorizontalAxisAt(tick.position, panelSize),
+      );
+      const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
+        gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
+      );
+      const layered = typeof visibleTicksOfLayer[0].layer === 'number';
+      const stroke: Stroke = {
+        color: layered
+          ? [lumaSteps[detailedLayer], lumaSteps[detailedLayer], lumaSteps[detailedLayer], 1]
+          : strokeColor,
+        width: layered ? HIERARCHICAL_GRID_WIDTH : gridLineStyles.strokeWidth,
+        dash: gridLineStyles.dash,
+      };
+      return { lines, stroke, axisId: axisSpec.id };
+    });
 }
 
 /**
