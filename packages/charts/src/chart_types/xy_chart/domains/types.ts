@@ -19,8 +19,8 @@ export type XDomain = Pick<LogScaleOptions, 'logBase'> & {
   isBandScale: boolean;
   /* the minimum interval of the scale if not-ordinal band-scale */
   minInterval: number;
-  /** if x domain is time, we should also specify the timezone */
-  timeZone?: string;
+  /** the configured timezone in the specs or the fallback to the browser local timezone */
+  timeZone: string;
   domain: OrdinalDomain | ContinuousDomain;
   desiredTickCount: number;
 };
