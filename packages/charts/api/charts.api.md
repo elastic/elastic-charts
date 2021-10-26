@@ -176,6 +176,8 @@ export interface AxisSpec extends Spec {
     style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
     tickFormat?: TickFormatter;
     ticks?: number;
+    // @alpha
+    timeAxisLayerCount: number;
     title?: string;
 }
 
