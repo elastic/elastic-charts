@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import moment from 'moment-timezone';
+import dayjs from 'dayjs';
 
 import { TickFormatter, TickFormatterOptions } from '../../chart_types/xy_chart/utils/specs';
 import { getMomentWithTz } from './date_time';
@@ -30,8 +30,8 @@ export function timeFormatter(format: string): TickFormatter {
 
 /** @public */
 export function niceTimeFormatter(domain: [number, number]): TickFormatter {
-  const minDate = moment(domain[0]);
-  const maxDate = moment(domain[1]);
+  const minDate = dayjs(domain[0]);
+  const maxDate = dayjs(domain[1]);
   const diff = maxDate.diff(minDate, 'days');
   const format = niceTimeFormatByDay(diff);
   return timeFormatter(format);

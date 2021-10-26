@@ -17,15 +17,23 @@
  * under the License.
  */
 
-import moment from 'moment-timezone';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 /** @internal */
 export function getMomentWithTz(date: number | Date, timeZone?: string) {
   if (timeZone === 'local' || !timeZone) {
-    return moment(date);
+    return dayjs(date);
+  }
+  if (timeZone.toLowerCase() === 'utc') {
+    return dayjs.utc(date);
   }
   if (timeZone.toLowerCase().startsWith('utc+') || timeZone.toLowerCase().startsWith('utc-')) {
-    return moment(date).utcOffset(Number(timeZone.slice(3)));
+    return dayjs(date).utcOffset(Number(timeZone.slice(3)));
   }
-  return moment.tz(date, timeZone);
+  return dayjs.tz(date, timeZone);
 }
