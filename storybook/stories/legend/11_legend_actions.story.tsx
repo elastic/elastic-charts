@@ -21,7 +21,7 @@ import {
   EuiButtonIcon,
 } from '@elastic/eui';
 import { boolean, number } from '@storybook/addon-knobs';
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
   Axis,
@@ -34,112 +34,97 @@ import {
   XYChartSeriesIdentifier,
   LegendColorPicker,
   LegendLabelOptions,
-  LegendActionProps,
 } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getPositionKnob, getEuiPopoverPositionKnob } from '../utils/knobs';
 
-const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction =>
-  forwardRef<any, Omit<LegendActionProps, 'ref'>>(({ series, label, onClose }, ref) => {
-    const [popoverOpen, setPopoverOpen] = useState(false);
+const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ series, label, onClose }) => {
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
-    const getPanels = (series: XYChartSeriesIdentifier[]): EuiContextMenuPanelDescriptor[] => [
-      {
-        id: 0,
-        title: label,
-        items: [
-          {
-            name: 'Alert series specId',
-            icon: <EuiIcon type="iInCircle" size="m" />,
-            onClick: () => {
-              setPopoverOpen(false);
-              setTimeout(() => {
-                window.alert(`Selected series: ${series.map(({ specId }) => specId).join(', ')}`);
-              }, 100);
-            },
+  const getPanels = (series: XYChartSeriesIdentifier[]): EuiContextMenuPanelDescriptor[] => [
+    {
+      id: 0,
+      title: label,
+      items: [
+        {
+          name: 'Alert series specId',
+          icon: <EuiIcon type="iInCircle" size="m" />,
+          onClick: () => {
+            setPopoverOpen(false);
+            setTimeout(() => {
+              window.alert(`Selected series: ${series.map(({ specId }) => specId).join(', ')}`);
+            }, 100);
           },
-          {
-            name: 'Alert series keys',
-            icon: <EuiIcon type="tokenKey" size="m" />,
-            onClick: () => {
-              setPopoverOpen(false);
-              setTimeout(() => {
-                window.alert(
-                  `Selected series: [${series.map(({ seriesKeys }) => seriesKeys.join(', ')).join(' -- ')}]`,
-                );
-              }, 100);
-            },
+        },
+        {
+          name: 'Alert series keys',
+          icon: <EuiIcon type="tokenKey" size="m" />,
+          onClick: () => {
+            setPopoverOpen(false);
+            setTimeout(() => {
+              window.alert(`Selected series: [${series.map(({ seriesKeys }) => seriesKeys.join(', ')).join(' -- ')}]`);
+            }, 100);
           },
-          {
-            name: 'Filter series',
-            icon: <EuiIcon type="filter" size="m" />,
-            onClick: () => {
-              setPopoverOpen(false);
-              setTimeout(() => {
-                window.alert('Series Filtered!');
-              }, 100);
-            },
+        },
+        {
+          name: 'Filter series',
+          icon: <EuiIcon type="filter" size="m" />,
+          onClick: () => {
+            setPopoverOpen(false);
+            setTimeout(() => {
+              window.alert('Series Filtered!');
+            }, 100);
           },
-          {
-            name: 'Like series',
-            icon: <EuiIcon type="starFilled" size="m" />,
-            onClick: () => {
-              setPopoverOpen(false);
-              setTimeout(() => {
-                window.alert('Series liked!!!');
-              }, 100);
-            },
+        },
+        {
+          name: 'Like series',
+          icon: <EuiIcon type="starFilled" size="m" />,
+          onClick: () => {
+            setPopoverOpen(false);
+            setTimeout(() => {
+              window.alert('Series liked!!!');
+            }, 100);
           },
-        ],
-      },
-    ];
+        },
+      ],
+    },
+  ];
 
-    const Button = () => {
-      useEffect(() => {
-        console.log('created');
+  const Button = (
+    <button
+      type="button"
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 2,
+        paddingRight: 2,
+      }}
+      onClick={() => setPopoverOpen(!popoverOpen)}
+    >
+      <EuiIcon size="s" type="pencil" />
+    </button>
+  );
 
-        return () => {
-          console.log('removed');
-        };
-      });
-      return (
-        <button
-          type="button"
-          ref={ref}
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingLeft: 2,
-            paddingRight: 2,
-          }}
-          onClick={() => setPopoverOpen(!popoverOpen)}
-        >
-          <EuiIcon size="s" type="pencil" />
-        </button>
-      );
-    };
-
-    return (
-      <EuiPopover
-        id="contextMenuNormal"
-        button={<Button />}
-        isOpen={popoverOpen}
-        closePopover={() => {
-          onClose();
-          setPopoverOpen(false);
-        }}
-        panelPaddingSize="none"
-        offset={4}
-        anchorPosition={anchorPosition}
-        ownFocus
-      >
-        <EuiContextMenu initialPanelId={0} panels={getPanels(series as XYChartSeriesIdentifier[])} />
-      </EuiPopover>
-    );
-  });
+  return (
+    <EuiPopover
+      id="contextMenuNormal"
+      button={Button}
+      isOpen={popoverOpen}
+      closePopover={() => {
+        onClose();
+        setPopoverOpen(false);
+      }}
+      panelPaddingSize="none"
+      offset={4}
+      anchorPosition={anchorPosition}
+    >
+      <EuiContextMenu initialPanelId={0} panels={getPanels(series as XYChartSeriesIdentifier[])} />
+    </EuiPopover>
+  );
+};
 
 export const renderEuiColorPicker = (anchorPosition: PopoverAnchorPosition): LegendColorPicker => ({
   anchor,

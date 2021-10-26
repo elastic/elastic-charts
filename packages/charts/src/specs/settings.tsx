@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { ComponentClass, ComponentType, ForwardRefRenderFunction, ReactChild, RefObject } from 'react';
+import React, { ComponentType, ReactChild } from 'react';
 
 import { CustomXDomain, GroupByAccessor, Spec, TooltipStickTo } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
@@ -354,10 +354,6 @@ export interface LegendActionProps {
    */
   color: string;
   onClose: () => void;
-  /**
-   * ref
-   */
-  ref: RefObject<any>;
 }
 
 /**
@@ -367,9 +363,7 @@ export interface LegendActionProps {
  *
  * @public
  */
-export type LegendAction =
-  | ComponentClass<LegendActionProps>
-  | ForwardRefRenderFunction<LegendActionProps['ref'], Omit<LegendActionProps, 'ref'>>;
+export type LegendAction = ComponentType<LegendActionProps>;
 
 /** @public */
 export interface LegendColorPickerProps {
