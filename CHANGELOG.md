@@ -1,3 +1,15 @@
+# [31.5.0](https://github.com/Metrika-Inc/metrika-charts/compare/v31.4.1...v31.5.0) (2021-10-26)
+
+
+### Bug Fixes
+
+* tsc es6 comments ([651460a](https://github.com/Metrika-Inc/metrika-charts/commit/651460ad388b2bb5b86f4c071e7eb46a471554fd))
+
+
+### Features
+
+* removed moment with dayjs ([3a1785e](https://github.com/Metrika-Inc/metrika-charts/commit/3a1785e0dd36f659ff8e15b1878a832966a6eb85))
+
 ## [31.4.1](https://github.com/Metrika-Inc/metrika-charts/compare/v31.4.0...v31.4.1) (2021-10-08)
 
 
