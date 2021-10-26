@@ -21,7 +21,7 @@ import {
   EuiButtonIcon,
 } from '@elastic/eui';
 import { boolean, number } from '@storybook/addon-knobs';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import {
   Axis,
@@ -40,8 +40,9 @@ import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_datas
 import { useBaseTheme } from '../../use_base_theme';
 import { getPositionKnob, getEuiPopoverPositionKnob } from '../utils/knobs';
 
-const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ series, label, onClose }) => {
+const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ series, label }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const containerRef = useRef<HTMLButtonElement | null>(null);
 
   const getPanels = (series: XYChartSeriesIdentifier[]): EuiContextMenuPanelDescriptor[] => [
     {
@@ -95,6 +96,7 @@ const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ se
   const Button = (
     <button
       type="button"
+      ref={containerRef}
       style={{
         display: 'flex',
         justifyContent: 'center',
@@ -114,8 +116,10 @@ const getAction = (anchorPosition: PopoverAnchorPosition): LegendAction => ({ se
       button={Button}
       isOpen={popoverOpen}
       closePopover={() => {
-        onClose();
         setPopoverOpen(false);
+        if (containerRef.current) {
+          requestAnimationFrame(() => containerRef?.current?.focus?.());
+        }
       }}
       panelPaddingSize="none"
       offset={4}
@@ -154,6 +158,7 @@ export const renderEuiColorPicker = (anchorPosition: PopoverAnchorPosition): Leg
           title="Clear color selection"
           onClick={() => {
             onChange(null);
+            anchor.focus();
             onClose();
           }}
         />

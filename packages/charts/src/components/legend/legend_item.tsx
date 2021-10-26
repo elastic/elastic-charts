@@ -73,7 +73,6 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   shouldClearPersistedColor = false;
 
   colorRef = createRef<HTMLButtonElement>();
-  actionRef = createRef<HTMLDivElement>();
 
   state: LegendItemState = {
     isOpen: false,
@@ -223,19 +222,8 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           />
           {extra && !isSeriesHidden && renderExtra(extra)}
           {Action && (
-            <div ref={this.actionRef} className="echLegendItem__action">
-              <Action
-                onClose={() => {
-                  if (this.actionRef.current) {
-                    requestAnimationFrame(() => {
-                      this.actionRef?.current?.querySelector('.euiPopover__anchor>button')?.focus?.();
-                    });
-                  }
-                }}
-                series={seriesIdentifiers}
-                color={color}
-                label={label}
-              />
+            <div className="echLegendItem__action">
+              <Action series={seriesIdentifiers} color={color} label={label} />
             </div>
           )}
         </li>
