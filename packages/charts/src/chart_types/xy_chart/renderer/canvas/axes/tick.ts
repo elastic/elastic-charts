@@ -11,7 +11,7 @@ import { colorToRgba, RgbaTuple } from '../../../../../common/color_library_wrap
 import { Position } from '../../../../../utils/common';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { AxisTick } from '../../../utils/axis_utils';
-import { lineThicknessSteps, lumaSteps } from '../../../utils/grid_lines';
+import { HIERARCHICAL_GRID_WIDTH, lumaSteps } from '../../../utils/grid_lines';
 import { renderMultiLine } from '../primitives/line';
 
 const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the bottom alignment; todo consider measuring
@@ -42,7 +42,7 @@ export function renderTick(
         ...(axisPosition === Position.Left ? { x1: width, x2: width - tickSize } : { x1: 0, x2: tickSize }),
       };
   const layered = typeof layer === 'number';
-  const strokeWidth = layered ? lineThicknessSteps[detailedLayer] : tickLine.strokeWidth;
+  const strokeWidth = layered ? HIERARCHICAL_GRID_WIDTH : tickLine.strokeWidth;
   const color: RgbaTuple = layered
     ? [lumaSteps[detailedLayer], lumaSteps[detailedLayer], lumaSteps[detailedLayer], 1]
     : colorToRgba(tickLine.stroke);

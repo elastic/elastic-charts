@@ -17,7 +17,7 @@ import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const minorGridStyle = { stroke: 'black', strokeWidth: 0.15, opacity: 1 };
-const gridStyle = { stroke: 'black', strokeWidth: 0.5, opacity: 1 };
+const gridStyle = { stroke: 'black' };
 const fontFamily = '"Atkinson Hyperlegible"';
 const tickLabelStyle = { fontSize: 11, fontFamily, fill: 'rgba(0,0,0,0.8)' };
 const axisTitleColor = 'rgb(112,112,112)';
@@ -102,13 +102,12 @@ export const Example = () => {
         showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
         ticks={30}
         showGridLines={minorGridLines}
-        gridLine={mergePartial(gridStyle, { strokeWidth: 0.1 })}
+        gridLine={gridStyle}
         style={mergePartial(xAxisStyle, {
           axisLine: { stroke: dataInk, strokeWidth: 1, visible: true },
           tickLine: {
             size: 0.0001 /* todo fix padding so it works even with an actual zero `size` */,
             padding: 4,
-            ...minorGridStyle,
           },
           axisTitle: { visible: true, fontFamily },
         })}

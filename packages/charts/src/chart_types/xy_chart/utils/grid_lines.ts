@@ -22,9 +22,9 @@ import { getPerPanelMap } from './panel_utils';
 import { AxisSpec } from './specs';
 
 /** @internal */
-export const lineThicknessSteps = [0.5, 0.75, 1, 1, 1, 1.25, 1.25, 1.5, 1.5, 1.75, 1.75, 2, 2, 2, 2, 2];
+export const HIERARCHICAL_GRID_WIDTH = 1; // constant 1 scales well and solves some render issues due to fixed 1px wide overpaints
 /** @internal */
-export const lumaSteps = [192, 72, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+export const lumaSteps = [224, 184, 128, 96, 64, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0]; // using alpha instead would lead to overpainted line strengthening
 
 /** @internal */
 export interface GridLineGroup {
@@ -116,7 +116,7 @@ function getGridLinesForAxis(
         color: layered
           ? [lumaSteps[detailedLayer], lumaSteps[detailedLayer], lumaSteps[detailedLayer], 1]
           : strokeColor,
-        width: layered ? lineThicknessSteps[detailedLayer] : gridLineStyles.strokeWidth,
+        width: layered ? HIERARCHICAL_GRID_WIDTH : gridLineStyles.strokeWidth,
         dash: gridLineStyles.dash,
       };
       return { lines, stroke, axisId: axisSpec.id };
