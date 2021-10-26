@@ -353,6 +353,7 @@ export interface LegendActionProps {
    * Resolved color of given series
    */
   color: string;
+  onClose: () => void;
 }
 
 /**
