@@ -91,7 +91,7 @@ describe('Calculating Grid Height', () => {
       store,
     );
     const result = getGridHeightParamsSelector(store.getState());
-    expect(result.height).toBe(160);
+    expect(result.height).toBe(156);
   });
   it('should give not rotated text enough space', () => {
     MockStore.addSpecs(
