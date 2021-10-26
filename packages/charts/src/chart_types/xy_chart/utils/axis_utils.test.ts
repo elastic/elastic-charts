@@ -17,8 +17,9 @@
  * under the License.
  */
 
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 import { DateTime } from 'luxon';
-import moment from 'moment-timezone';
 
 import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
@@ -61,6 +62,8 @@ import {
 } from './axis_utils';
 import { computeXScale } from './scales';
 import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
+
+dayjs.extend(duration);
 
 const NO_ROTATION = 0;
 
@@ -1487,7 +1490,7 @@ describe('Axis computational utils', () => {
 
   test('should show unique tick labels if duplicateTicks is set to false', () => {
     const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
-    const oneDay = moment.duration(1, 'day');
+    const oneDay = dayjs.duration(1, 'day');
     const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
     const axisSpec: AxisSpec = {
       id: 'bottom',
@@ -1560,7 +1563,7 @@ describe('Axis computational utils', () => {
   });
   test('should show duplicate tick labels if duplicateTicks is set to true', () => {
     const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
-    const oneDay = moment.duration(1, 'day');
+    const oneDay = dayjs.duration(1, 'day');
     const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
     const axisSpec: AxisSpec = {
       id: 'bottom',
@@ -1598,7 +1601,7 @@ describe('Axis computational utils', () => {
   });
   test('should use custom tick formatter', () => {
     const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
-    const oneDay = moment.duration(1, 'day');
+    const oneDay = dayjs.duration(1, 'day');
     const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
     const axisSpec: AxisSpec = {
       id: 'bottom',
