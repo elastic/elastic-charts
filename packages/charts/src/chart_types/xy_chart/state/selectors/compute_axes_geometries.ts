@@ -8,33 +8,26 @@
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getAxesGeometries } from '../../utils/axis_utils';
-import { computeAxisTicksDimensionsSelector, getFallBackTickFormatter } from './compute_axis_ticks_dimensions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
-import { getBarPaddingsSelector } from './get_bar_paddings';
-import { getAxisSpecsSelector } from './get_specs';
+import { axisSpecsLookupSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
+import { getVisibleTickSetsSelector } from './visible_ticks';
 
 /** @internal */
 export const computeAxesGeometriesSelector = createCustomCachedSelector(
   [
     computeChartDimensionsSelector,
     getChartThemeSelector,
-    getSettingsSpecSelector,
-    getAxisSpecsSelector,
-    computeAxisTicksDimensionsSelector,
+    axisSpecsLookupSelector,
     getAxesStylesSelector,
-    computeSeriesDomainsSelector,
     computeSmallMultipleScalesSelector,
     countBarsInClusterSelector,
     isHistogramModeEnabledSelector,
-    getFallBackTickFormatter,
-    getBarPaddingsSelector,
+    getVisibleTickSetsSelector,
   ],
   getAxesGeometries,
 );

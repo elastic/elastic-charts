@@ -42,7 +42,7 @@ function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps) {
   withContext(ctx, () => {
     ctx.translate(x, y);
     if (debug && !secondary) renderDebugRect(ctx, { x: 0, y: 0, ...size });
-    renderAxis(ctx, props); // For now, just render the axis line TODO: compute axis dimensions per panels
+    renderAxis(ctx, props); // For now, just render the axis line TODO: compute axis dimensions per panel
     if (!secondary) {
       const { panelTitle, dimension } = props;
       renderTitle(ctx, true, { panelTitle, axisSpec, axisStyle, size, dimension, debug, anchorPoint: { x: 0, y: 0 } }); // fixme axisSpec/Style?
@@ -78,6 +78,8 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
         renderTitle(ctx, false, { size: parentSize, debug, panelTitle, anchorPoint, dimension, axisStyle, axisSpec });
       }
 
+      const layerGirth = dimension.maxLabelBboxHeight;
+
       renderPanel(ctx, {
         panelTitle,
         secondary,
@@ -90,6 +92,7 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
         axisStyle,
         debug,
         renderingArea,
+        layerGirth,
       });
     });
   });

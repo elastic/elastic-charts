@@ -90,6 +90,9 @@ export function mergeXDomain(
     const computedMinInterval = findMinInterval([...xValues.values()] as number[]);
     minInterval = getMinInterval(computedMinInterval, xValues.size, customMinInterval);
   }
+  // the 'local' timeZone is a tech debt that we keep in place until Kibana hasn't switch to Intl for timezones
+  const validatedTimeZone =
+    timeZone === 'local' || !timeZone ? Intl.DateTimeFormat().resolvedOptions().timeZone : timeZone;
 
   return {
     type: fallbackScale ?? type,
@@ -97,7 +100,7 @@ export function mergeXDomain(
     isBandScale,
     domain: seriesXComputedDomains,
     minInterval,
-    timeZone,
+    timeZone: validatedTimeZone,
     logBase: customDomain && 'logBase' in customDomain ? customDomain.logBase : 10, // fixme preexisting TS workaround
     desiredTickCount,
   };

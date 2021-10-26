@@ -56,6 +56,7 @@ module.exports = {
     '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'no-extra-parens': 'off', // it was already off by default; this line addition is just for documentation purposes
     '@typescript-eslint/restrict-template-expressions': 0, // it's OK to use numbers etc. in string templates
+    'unicorn/prefer-string-slice': 'off', // substr is just as fine as it's string specific and well named
 
     /**
      *****************************************
@@ -161,7 +162,7 @@ module.exports = {
       },
     ],
     'sort-keys': 0,
-    'no-irregular-whitespace': 'error',
+    'no-irregular-whitespace': 'warn',
     'no-unused-expressions': 'error',
     // Too restrictive, writing ugly code to defend against a very unlikely scenario: https://eslint.org/docs/rules/no-prototype-builtins
     'no-prototype-builtins': 0,

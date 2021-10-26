@@ -11,6 +11,51 @@ import { eachRotation } from '../helpers';
 import { common } from '../page_objects';
 
 describe('Axis stories', () => {
+  it('should switch to a 30 minute raster', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=-6&knob-Time%20stretch=100&knob-Time%20zoom=119&knob-X%20axis%20minor%20whiskers=true',
+    );
+  });
+  it('should use a decades raster', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Shift%20time=0&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=18&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-showOverlappingLabels%20time%20axis=true',
+    );
+  });
+  it('should have st nd rd th after day-of-month numbers', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Shift%20time=-4.3&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=4.8&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-showOverlappingLabels%20time%20axis=true&knob-showOverlappingTicks%20time%20axis=true',
+    );
+  });
+  it('should have st nd rd th after day-of-month numbers even for the 20s', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Shift%20time=8.5&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=4.8&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-showOverlappingLabels%20time%20axis=true&knob-showOverlappingTicks%20time%20axis=true',
+    );
+  });
+  it('should extend the domain on the right with one bin width with custom bin width', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/bar-chart--test-discover&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Pan%20time=0&knob-Shift%20time=0&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=3.8&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-layerCount=3&knob-showOverlappingLabels%20time%20axis=true&knob-showOverlappingTicks%20time%20axis=true&knob-use%20custom%20minInterval%20of%2030s=true&knob-use%20multilayer%20time%20axis=true',
+    );
+  });
+  it('should extend the domain on the right with one bin width without custom bin width', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/bar-chart--test-discover&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Pan%20time=0&knob-Shift%20time=0&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=3.8&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-layerCount=3&knob-showOverlappingLabels%20time%20axis=true&knob-showOverlappingTicks%20time%20axis=true&knob-use%20custom%20minInterval%20of%2030s=false&knob-use%20multilayer%20time%20axis=true',
+    );
+  });
+  it('should not show a raster that is finer than the bin width (minInterval)', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&Bin%20width%20in%20ms%20(0:%20none%20specifed)=60000&Minor%20grid%20lines=on&Shift%20time=0&Stretch%20time=-0.4&Time%20zoom=2&globals=theme:light&knob-Bin%20width%20in%20ms%20(0:%20none%20specifed)=60000&knob-Minor%20grid%20lines=true&knob-Shift%20time=0&knob-Stretch%20time=-0.4&knob-Time%20zoom=2&knob-layerCount=3&layerCount=3',
+    );
+  });
+  it('can show a finer raster than the data bin width if minInterval is expressly specified to be low', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&Bin%20width%20in%20ms%20(0:%20none%20specifed)=1&Minor%20grid%20lines=on&Shift%20time=0&Stretch%20time=-0.4&Time%20zoom=2&globals=theme:light&knob-Bin%20width%20in%20ms%20(0:%20none%20specifed)=1&knob-Minor%20grid%20lines=true&knob-Shift%20time=0&knob-Stretch%20time=-0.4&knob-Time%20zoom=2&knob-layerCount=3&layerCount=3',
+    );
+  });
+  it('can render multilayer time axis on top', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=8.5&knob-Shorter X axis minor whiskers=true&knob-Stretch time=6.8&knob-Time zoom=120&knob-X axis minor whiskers=true&knob-fallback placement=left-start&knob-layerCount=3&knob-placement=left&knob-placement offset=5&knob-showOverlappingLabels time axis=true&knob-showOverlappingTicks time axis=true&knob-stickTo=MousePosition&knob-Horizontal axis title=&knob-Top X axis=true',
+    );
+  });
   it('should render proper tick count', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/axes--basic&knob-Tick Label Padding=0&knob-debug=&knob-Bottom overlap labels=&knob-Bottom overlap ticks=true&knob-Number of ticks on bottom=20&knob-Left overlap labels=&knob-Left overlap ticks=true&knob-Number of ticks on left=10',

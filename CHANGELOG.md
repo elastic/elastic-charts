@@ -1,3 +1,50 @@
+# [38.1.0](https://github.com/elastic/elastic-charts/compare/v38.0.1...v38.1.0) (2021-10-26)
+
+
+### Bug Fixes
+
+* **partition:** add get cursor pointer over slices ([#1428](https://github.com/elastic/elastic-charts/issues/1428)) ([af776ae](https://github.com/elastic/elastic-charts/commit/af776ae40f1e94b72789d3a0cac670f1855d49a0))
+
+
+### Features
+
+* **xy:** multilayer time axis ([#1430](https://github.com/elastic/elastic-charts/issues/1430)) ([3d25854](https://github.com/elastic/elastic-charts/commit/3d258549cebb598db2d839197af32d7a0fa6fe92))
+
+## [38.0.1](https://github.com/elastic/elastic-charts/compare/v38.0.0...v38.0.1) (2021-10-15)
+
+
+### Bug Fixes
+
+* **legend:** floating legend scroll issue ([#1427](https://github.com/elastic/elastic-charts/issues/1427)) ([56ecbe2](https://github.com/elastic/elastic-charts/commit/56ecbe2f34304dfff9cb4427e91cb62eef063df5))
+
+# [38.0.0](https://github.com/elastic/elastic-charts/compare/v37.0.0...v38.0.0) (2021-10-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v39 ([#1422](https://github.com/elastic/elastic-charts/issues/1422)) ([2ee97aa](https://github.com/elastic/elastic-charts/commit/2ee97aa14d2893f2a215a524882d2bf0a86ddc47))
+* **goal:** reduce whitespace for circular charts ([#1413](https://github.com/elastic/elastic-charts/issues/1413)) ([6517523](https://github.com/elastic/elastic-charts/commit/6517523fe05e43f00827ba3928d404c7006ac6d5))
+* **interactions:** change allowBrushingLastHistogramBin to true ([#1396](https://github.com/elastic/elastic-charts/issues/1396)) ([9fa9783](https://github.com/elastic/elastic-charts/commit/9fa9783b4212d43141762936ac647218f3426119))
+* **xy:** remove wrongly represented null/missing values in tooltip ([#1415](https://github.com/elastic/elastic-charts/issues/1415)) ([e5963a3](https://github.com/elastic/elastic-charts/commit/e5963a376ad1726a79d632391eef43c2a7a26adb)), closes [#1414](https://github.com/elastic/elastic-charts/issues/1414)
+
+
+### Code Refactoring
+
+* scales ([#1410](https://github.com/elastic/elastic-charts/issues/1410)) ([a53a2ba](https://github.com/elastic/elastic-charts/commit/a53a2ba4f4f8c881e7c4e4d85ac4eedfde02ccda))
+
+
+### Features
+
+* **scales:** add `LinearBinary` scale type ([#1389](https://github.com/elastic/elastic-charts/issues/1389)) ([9f2e427](https://github.com/elastic/elastic-charts/commit/9f2e42778ecb224293851739f390a03e76025eae))
+* **xy:** adaptive tick raster ([#1420](https://github.com/elastic/elastic-charts/issues/1420)) ([200577b](https://github.com/elastic/elastic-charts/commit/200577b689ebfeb835401f6f5506f6b833e1268e))
+* **xy:** apply the data value formatter to data values over bars ([#1419](https://github.com/elastic/elastic-charts/issues/1419)) ([e673fc7](https://github.com/elastic/elastic-charts/commit/e673fc776f494b45a35f6a4a18488d32e74050f3))
+
+
+### BREAKING CHANGES
+
+* **interactions:** allowBrushingLastHistogramBucket renamed to allowBrushingLastHistogramBin on the Settings component defaults true and is only applied for histogram type charts
+* LogScaleOptions.logBase` is now a `number` instead of the object enum `LogBase`. Some edge case data or configuration _might_, with a deemed low likelihood, lead to a situation where the earlier version would have silently not rendered a bar, line or point, while the new code doesn't `catch`, therefore throw an exception (see the last item). General risk of regressions due to the quantity of code changes (altogether 3.5k)
+
 # [37.0.0](https://github.com/elastic/elastic-charts/compare/v36.0.0...v37.0.0) (2021-10-05)
 
 
