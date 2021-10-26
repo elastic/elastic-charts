@@ -6,6 +6,7 @@
 
 import { $Values } from 'utility-types';
 import { ComponentType } from 'react';
+import { LegacyRef } from 'react';
 import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
 import { ReactNode } from 'react';
@@ -2242,6 +2243,9 @@ export interface UnaryAccessorFn<Return = any> {
     (datum: Datum): Return;
     fieldName?: string;
 }
+
+// @public
+export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, onClose: () => void];
 
 // @public (undocumented)
 export type ValueAccessor = (d: Datum) => AdditiveNumber;
