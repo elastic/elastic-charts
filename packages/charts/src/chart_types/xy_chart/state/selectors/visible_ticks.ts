@@ -368,15 +368,16 @@ function getVisibleTickSets(
         let fallbackReceivedTickCount = Infinity;
         if (adaptiveTickCount) {
           let previousActualTickCount = NaN;
-          for (let triedTickCount = maxTickCountForLayer; triedTickCount >= 2; triedTickCount--) {
+          for (let triedTickCount = maxTickCountForLayer; triedTickCount >= 1; triedTickCount--) {
             const scale = getScale(triedTickCount);
-            if (!scale || scale.ticks().length === previousActualTickCount) continue;
+            const actualTickCount = scale?.ticks().length ?? 0;
+            if (!scale || actualTickCount === previousActualTickCount || actualTickCount < 2) continue;
             const raster = getMeasuredTicks(scale, scale.ticks(), undefined, 0);
             const nonZeroLengthTicks = raster.ticks.filter((tick) => tick.axisTickLabel.length > 0);
             const uniqueLabels = new Set(raster.ticks.map((tick) => tick.axisTickLabel));
             const areLabelsUnique = raster.ticks.length === uniqueLabels.size;
             const areAdjacentTimeLabelsUnique =
-              ScaleType.Time &&
+              scale.type === ScaleType.Time &&
               !axisSpec.showDuplicatedTicks &&
               (areLabelsUnique ||
                 raster.ticks.every((d, i, a) => i === 0 || d.axisTickLabel !== a[i - 1].axisTickLabel));
@@ -390,7 +391,7 @@ function getVisibleTickSets(
                 (scale.type === ScaleType.Log
                   ? new Set(nonZeroLengthTicks.map((tick) => tick.axisTickLabel)).size === nonZeroLengthTicks.length
                   : areLabelsUnique));
-            previousActualTickCount = scale.ticks().length;
+            previousActualTickCount = actualTickCount;
             if (raster && compliant) {
               return {
                 entry: {
