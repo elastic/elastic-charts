@@ -67,6 +67,9 @@ exports[`Chart should render the legend name test 1`] = `
           <Connect(ChartContainer) getChartContainerRef={[Function (anonymous)]} forwardStageRef={{...}}>
             <ChartContainer getChartContainerRef={[Function (anonymous)]} forwardStageRef={{...}} status=\\"Initialized\\" initialized={true} isChartEmpty={false} pointerCursor=\\"default\\" isBrushingAvailable={false} isBrushing={false} internalChartRenderer={[Function (anonymous)]} settings={{...}} onPointerMove={[Function (anonymous)]} onMouseUp={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onKeyPress={[Function (anonymous)]}>
               <div className=\\"echChartPointerContainer\\" style={{...}} onMouseMove={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onMouseUp={[Function (anonymous)]}>
+                <Connect(Crosshair)>
+                  <Crosshair theme={{...}} chartRotation={0} cursorPosition={[undefined]} cursorCrossLinePosition={[undefined]} tooltipType=\\"vertical\\" fromExternalEvent={[undefined]} dispatch={[Function: dispatch]} />
+                </Connect(Crosshair)>
                 <Connect(XYChart) forwardCanvasRef={{...}}>
                   <XYChart forwardCanvasRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
                     <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\">
@@ -100,9 +103,6 @@ exports[`Chart should render the legend name test 1`] = `
                     <AnnotationTooltip chartId=\\"chart1\\" zIndex={0} state={{...}} chartRef={{...}} onScroll={[Function (anonymous)]} />
                   </Annotations>
                 </Connect(Annotations)>
-                <Connect(Crosshair)>
-                  <Crosshair theme={{...}} chartRotation={0} cursorPosition={[undefined]} cursorCrossLinePosition={[undefined]} tooltipType=\\"vertical\\" fromExternalEvent={[undefined]} dispatch={[Function: dispatch]} />
-                </Connect(Crosshair)>
                 <Connect(Highlighter)>
                   <Highlighter initialized={true} chartId=\\"chart1\\" zIndex={0} highlightedGeometries={{...}} chartTransform={{...}} chartDimensions={{...}} chartRotation={0} dispatch={[Function: dispatch]}>
                     <svg className=\\"echHighlighter\\" style={{...}}>
