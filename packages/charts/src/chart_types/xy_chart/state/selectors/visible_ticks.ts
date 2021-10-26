@@ -39,6 +39,7 @@ export type Projection = { ticks: AxisTick[]; labelBox: TickLabelBounds; scale: 
 type Projections = Map<AxisId, Projection>;
 
 const adaptiveTickCount = true;
+const MAX_TIME_TICK_COUNT = 50; // this doesn't do much for narrow charts, but limits tick count to a maximum on wider ones
 const WIDTH_FUDGE = 1.05; // raster bin widths are sometimes approximate, but there's no raster that's just 5% denser/sparser, so it's safe
 
 function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
@@ -211,7 +212,11 @@ const notTooDense = (domainFrom: number, domainTo: number, binWidth: number, car
 ) => {
   const domainInSeconds = domainTo - domainFrom;
   const pixelsPerSecond = cartesianWidth / domainInSeconds;
-  return pixelsPerSecond > raster.minimumPixelsPerSecond && raster.approxWidthInMs * WIDTH_FUDGE >= binWidth;
+  return (
+    pixelsPerSecond > raster.minimumPixelsPerSecond &&
+    raster.approxWidthInMs * WIDTH_FUDGE >= binWidth &&
+    (domainInSeconds * 1000) / MAX_TIME_TICK_COUNT <= raster.approxWidthInMs
+  );
 };
 
 const getRasterSelector = (timeZone: string, maxLabelRowCount: number): ReturnType<typeof rasters> => {
