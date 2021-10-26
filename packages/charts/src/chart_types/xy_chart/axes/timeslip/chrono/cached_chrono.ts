@@ -27,8 +27,8 @@ interface TemporalArgs {
 
 /** @internal */
 export const cachedZonedDateTimeFrom = (temporalArgs: TemporalArgs) => {
-  const { timeZone, year, month, day, hour = 0, minute = 0, second = 0 } = temporalArgs;
-  const key = `_${year}_${month}_${day}_${hour}_${minute}_${second}`;
+  const { timeZone, year, month, day, hour = 0 } = temporalArgs;
+  const key = `_${year}_${month}_${day}_${hour}_${timeZone}`;
   const cachedValue = zonedDateTimeFromCache[key];
   if (cachedValue) {
     return cachedValue;
@@ -42,8 +42,8 @@ const deltaTimeCache: Record<string, number> = {}; // without caching, even luxo
 
 /** @internal */
 export const cachedTimeDelta = (temporalArgs: TemporalArgs, unit: CalendarUnit, count: number) => {
-  const { timeZone, year, month, day, hour = 0, minute = 0, second = 0 } = temporalArgs;
-  const key = `_${year}_${month}_${day}_${hour}_${minute}_${second}_${count}_${unit}`;
+  const { timeZone, year, month, day } = temporalArgs;
+  const key = `_${year}_${month}_${day}_${timeZone}_${count}_${unit}`;
   const cachedValue = deltaTimeCache[key];
   if (cachedValue) {
     return cachedValue;
