@@ -85,7 +85,10 @@ export const Example = () => {
       <Settings
         baseTheme={{
           ...baseTheme,
-          axes: { ...baseTheme.axes, tickLine: { ...baseTheme.axes.tickLine, size: 0.0001, padding: 4 } },
+          axes: {
+            ...baseTheme.axes,
+            tickLine: { ...baseTheme.axes.tickLine, visible: true },
+          },
         }}
         xDomain={
           binWidth > 0
