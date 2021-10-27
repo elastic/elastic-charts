@@ -447,7 +447,9 @@ function getVisibleTickSets(
               const minLabelGap = 4;
 
               const lastTick = entry.ticks[entry.ticks.length - 1];
-              if (lastTick.position + entry.labelBox.maxLabelBboxWidth > range[1]) lastTick.axisTickLabel = '';
+              if (lastTick && lastTick.position + entry.labelBox.maxLabelBboxWidth > range[1]) {
+                lastTick.axisTickLabel = '';
+              }
 
               return {
                 ...entry,
