@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { LineAnnotationDatum, RectAnnotationDatum } from '../../src/chart_types/xy_chart/utils/specs';
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { Pixels } from '../common/geometry';
 import type { Position } from '../utils/common';
@@ -111,7 +110,8 @@ export type DebugStateAnnotations = {
   // API Extractor fails on AnnotationType
   type?: 'line' | 'rectangle';
   domainType?: 'xDomain' | 'yDomain';
-  data?: RectAnnotationDatum | LineAnnotationDatum;
+  // API Extractor failing with LineAnnotationDatum | RectAnnotation, the dataValue in get_debug_state can be any value
+  data?: any;
 };
 
 /**

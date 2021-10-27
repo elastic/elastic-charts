@@ -607,7 +607,7 @@ export type DebugStateAnnotations = {
     color?: Partial<RectAnnotationStyle | LineAnnotationStyle>;
     type?: 'line' | 'rectangle';
     domainType?: 'xDomain' | 'yDomain';
-    data?: RectAnnotationDatum_2 | LineAnnotationDatum_2;
+    data?: any;
 };
 
 // @public (undocumented)
@@ -2475,9 +2475,7 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 //
 // src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
-// src/state/types.ts:70:5 - (ae-forgotten-export) The symbol "DebugStateLineConfig" needs to be exported by the entry point index.d.ts
-// src/state/types.ts:114:3 - (ae-forgotten-export) The symbol "RectAnnotationDatum" needs to be exported by the entry point index.d.ts
-// src/state/types.ts:114:3 - (ae-forgotten-export) The symbol "LineAnnotationDatum" needs to be exported by the entry point index.d.ts
+// src/state/types.ts:69:5 - (ae-forgotten-export) The symbol "DebugStateLineConfig" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
