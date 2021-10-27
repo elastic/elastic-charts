@@ -41,7 +41,7 @@ export type LinesGrid = {
 export function getGridLines(
   axesSpecs: Array<AxisSpec>,
   axesGeoms: Array<AxisGeometry>,
-  { axes: themeAxisStyle }: Pick<Theme, 'axes' | 'background'>,
+  { axes: themeAxisStyle }: Pick<Theme, 'axes'>,
   scales: SmallMultipleScales,
 ): Array<LinesGrid> {
   const panelSize = getPanelSize(scales);
