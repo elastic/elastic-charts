@@ -28,6 +28,7 @@ module.exports = {
     window: {},
     HTMLElement: {},
   },
+  reporters: ['default', 'jest-image-snapshot/src/outdated-snapshot-reporter.js'],
   ...(debug ? jestPuppeteer : jestPuppeteerDocker),
   ...tsPreset,
 };
