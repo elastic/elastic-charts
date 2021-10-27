@@ -9,17 +9,15 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, AxisSpec } from '@elastic/charts';
+import { AreaSeries, Axis, AxisSpec, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { mergePartial } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-const minorGridStyle = { stroke: 'black', strokeWidth: 0.15, opacity: 1 };
-const gridStyle = { stroke: 'black' };
 const fontFamily = '"Atkinson Hyperlegible"';
-const tickLabelStyle = { fontSize: 11, fontFamily, fill: 'rgba(0,0,0,0.8)' };
+const tickLabelStyle = { fontSize: 11, fontFamily };
 const axisTitleColor = 'rgb(112,112,112)';
 const axisTitleFontSize = 15;
 const dataInk = 'rgba(96, 146, 192, 1)';
@@ -34,7 +32,7 @@ const tooltipDateFormatter = (d: any) =>
   }).format(d);
 
 const xAxisStyle: AxisSpec['style'] = {
-  tickLine: { size: 0.0001, padding: -6, ...gridStyle },
+  tickLine: { size: 0.0001, padding: -6 },
   axisLine: { stroke: 'magenta', strokeWidth: 10, visible: false },
   tickLabel: {
     ...tickLabelStyle,
@@ -81,10 +79,14 @@ export const Example = () => {
     step: 1,
   });
 
+  const baseTheme = useBaseTheme();
   return (
     <Chart>
       <Settings
-        baseTheme={useBaseTheme()}
+        baseTheme={{
+          ...baseTheme,
+          axes: { ...baseTheme.axes, tickLine: { ...baseTheme.axes.tickLine, size: 0.0001, padding: 4 } },
+        }}
         xDomain={
           binWidth > 0
             ? {
@@ -102,7 +104,7 @@ export const Example = () => {
         showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
         ticks={30}
         showGridLines={minorGridLines}
-        gridLine={gridStyle}
+        gridLine={{}}
         style={mergePartial(xAxisStyle, {
           axisLine: { stroke: dataInk, strokeWidth: 1, visible: true },
           tickLine: {
@@ -122,10 +124,10 @@ export const Example = () => {
         position={Position.Left}
         showGridLines
         ticks={4}
-        gridLine={minorGridStyle}
+        gridLine={{ stroke: 'black', strokeWidth: 0.15, opacity: 1 }}
         style={{
-          tickLine: { ...gridStyle, strokeWidth: 0.2, size: 8, padding: 4 },
-          axisLine: { ...gridStyle, visible: false },
+          tickLine: { strokeWidth: 0.2, size: 8, padding: 4 },
+          axisLine: { visible: false },
           tickLabel: { ...tickLabelStyle },
           axisTitle: { visible: !horizontalAxisTitle, fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },
         }}

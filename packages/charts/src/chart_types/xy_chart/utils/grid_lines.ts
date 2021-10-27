@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { highContrastColor } from '../../../common/color_calcs';
 import { colorToRgba, overrideOpacity } from '../../../common/color_library_wrappers';
 import { Line, Stroke } from '../../../geoms/types';
 import { mergePartial, RecursivePartial } from '../../../utils/common';
@@ -43,7 +44,7 @@ export type LinesGrid = {
 export function getGridLines(
   axesSpecs: Array<AxisSpec>,
   axesGeoms: Array<AxisGeometry>,
-  { axes: themeAxisStyle }: Pick<Theme, 'axes'>,
+  { axes: themeAxisStyle, background: { color: backgroundColor } }: Pick<Theme, 'axes' | 'background'>,
   scales: SmallMultipleScales,
 ): Array<LinesGrid> {
   const panelSize = getPanelSize(scales);
@@ -54,7 +55,7 @@ export function getGridLines(
       if (!axisSpec) {
         return linesAcc;
       }
-      const linesForSpec = getGridLinesForAxis(axisSpec, visibleTicks, themeAxisStyle, panelSize);
+      const linesForSpec = getGridLinesForAxis(axisSpec, visibleTicks, themeAxisStyle, panelSize, backgroundColor);
       if (linesForSpec.length === 0) {
         return linesAcc;
       }
@@ -69,6 +70,7 @@ function getGridLinesForAxis(
   visibleTicks: AxisTick[],
   themeAxisStyle: AxisStyle,
   panelSize: Size,
+  backgroundColor: string,
 ): GridLineGroup[] {
   // vertical ==> horizontal grid lines
   const isVertical = isVerticalAxis(axisSpec.position);
@@ -112,10 +114,12 @@ function getGridLinesForAxis(
         gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
       );
       const layered = typeof visibleTicksOfLayer[0].layer === 'number';
+      const isLightMode = highContrastColor(colorToRgba(backgroundColor))[0] === 0 || backgroundColor === 'transparent';
+      const multilayerLuma = isLightMode
+        ? lumaSteps[detailedLayer]
+        : Math.min(255, 255 - lumaSteps[detailedLayer] + 32); // todo 32 is temp fudge, as dark background is anthracite
       const stroke: Stroke = {
-        color: layered
-          ? [lumaSteps[detailedLayer], lumaSteps[detailedLayer], lumaSteps[detailedLayer], 1]
-          : strokeColor,
+        color: layered ? [multilayerLuma, multilayerLuma, multilayerLuma, 1] : strokeColor,
         width: layered ? HIERARCHICAL_GRID_WIDTH : gridLineStyles.strokeWidth,
         dash: gridLineStyles.dash,
       };
