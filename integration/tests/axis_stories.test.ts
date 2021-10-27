@@ -14,7 +14,7 @@ describe('Axis stories', () => {
   eachTheme.describe((_, params) => {
     it('should switch to a 30 minute raster', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
-        `http://localhost:9001/?path=/story/area-chart--timeslip&globals=knob-Minor%20grid%20lines=true&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=-6&knob-Time%20stretch=100&knob-Time%20zoom=119&knob-X%20axis%20minor%20whiskers=true${params}`,
+        `http://localhost:9001/?path=/story/area-chart--timeslip${params}&globals=knob-Minor%20grid%20lines=true&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=-6&knob-Time%20stretch=100&knob-Time%20zoom=119&knob-X%20axis%20minor%20whiskers=true`,
       );
     });
   });
