@@ -219,73 +219,6 @@ const notTooDense = (domainFrom: number, domainTo: number, binWidth: number, car
   );
 };
 
-const getRasterSelector = (timeZone: string, maxLabelRowCount: number): ReturnType<typeof rasters> => {
-  // these are hand tweaked constants that fulfill various design constraints, let's discuss before changing them
-  const lineThicknessSteps = [/*0,*/ 0.5, 0.75, 1, 1, 1, 1.25, 1.25, 1.5, 1.5, 1.75, 1.75, 2, 2, 2, 2, 2];
-  const lumaSteps = [/*255,*/ 192, 72, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0];
-
-  const darkMode = false;
-  const smallFontSize = 12;
-
-  const themeLight = {
-    defaultFontColor: 'black',
-    subduedFontColor: '#393939',
-    offHourFontColor: 'black',
-    weekendFontColor: 'darkred',
-    backgroundColor: { r: 255, g: 255, b: 255 },
-    lumaSteps,
-  };
-
-  const themeDark = {
-    defaultFontColor: 'white',
-    subduedFontColor: 'darkgrey',
-    offHourFontColor: 'white',
-    weekendFontColor: 'indianred',
-    backgroundColor: { r: 0, g: 0, b: 0 },
-    lumaSteps: lumaSteps.map((l) => 255 - l),
-  };
-
-  const config = {
-    darkMode,
-    sparse: false,
-    implicit: false,
-    maxLabelRowCount,
-    a11y: {
-      shortcuts: true,
-      contrast: 'medium',
-      animation: true,
-      sonification: false,
-    },
-    locale: 'en-US',
-    numUnit: 'short',
-    ...(darkMode ? themeDark : themeLight),
-    barChroma: { r: 96, g: 146, b: 192 },
-    barFillAlpha: 0.3,
-    lineThicknessSteps,
-    minBinWidth: 'day',
-    maxBinWidth: 'year',
-    pixelRangeFrom: 100,
-    pixelRangeTo: 500,
-    tickLabelMaxProtrusionLeft: 0, // constraining not used yet
-    tickLabelMaxProtrusionRight: 0, // constraining not used yet
-    protrudeAxisLeft: true, // constraining not used yet
-    protrudeAxisRight: true, // constraining not used yet
-    smallFontSize,
-    cssFontShorthand: `normal normal 100 ${smallFontSize}px "Atkinson Hyperlegible", Inter, Helvetica, sans-serif`,
-    monospacedFontShorthand: `normal normal 100 ${smallFontSize}px "Roboto Mono", Consolas, Menlo, Courier, monospace`,
-    rowPixelPitch: 16,
-    horizontalPixelOffset: 4,
-    verticalPixelOffset: 6,
-    minimumTickPixelDistance: 24,
-    workHourMin: 6,
-    workHourMax: 21,
-    clipLeft: true,
-    clipRight: true,
-  };
-
-  return rasters(config, timeZone);
-};
-
 function getVisibleTickSets(
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
   joinedAxesData: Map<AxisId, JoinedAxisData>,
@@ -416,7 +349,7 @@ function getVisibleTickSets(
       };
 
       if (isMultilayerTimeAxis) {
-        const rasterSelector = getRasterSelector(xDomain.timeZone, timeAxisLayerCount);
+        const rasterSelector = rasters({ minimumTickPixelDistance: 24, locale: 'en-US' }, xDomain.timeZone);
         const domainValues = domain.domain; // todo consider a property or object type rename
         const domainFromS = Number((domain && domainValues[0]) || NaN) / 1000; // todo rely on a type guard or check rather than conversion
         const extendByOneBin = isX && xDomain.isBandScale && enableHistogramMode;

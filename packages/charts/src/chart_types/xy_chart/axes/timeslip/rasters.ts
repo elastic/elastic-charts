@@ -48,11 +48,13 @@ export interface TimeRaster<T extends TimeBin> {
 interface RasterConfig {
   minimumTickPixelDistance: number;
   locale: string;
+  /*
   defaultFontColor: string;
   weekendFontColor: string;
   offHourFontColor: string;
   workHourMin: number;
   workHourMax: number;
+  */
 }
 
 const millisecondBinStarts = (rasterMs: number): TimeBinGenerator<TimeBin> =>
@@ -71,7 +73,7 @@ interface YearToDay {
   month: number;
   dayOfMonth: number;
   dayOfWeek: number;
-  fontColor: string | undefined;
+  // fontColor: string | undefined;
 }
 
 interface YearToHour extends YearToDay {
@@ -79,18 +81,7 @@ interface YearToHour extends YearToDay {
 }
 
 /** @internal */
-export const rasters = (
-  {
-    minimumTickPixelDistance,
-    locale,
-    defaultFontColor,
-    weekendFontColor,
-    offHourFontColor,
-    workHourMin,
-    workHourMax,
-  }: RasterConfig,
-  timeZone: string,
-) => {
+export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, timeZone: string) => {
   const minorDayFormat = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone }).format;
   const detailedDayFormat = new Intl.DateTimeFormat(locale, {
     year: 'numeric',
@@ -218,7 +209,7 @@ export const rasters = (
               month,
               dayOfMonth,
               dayOfWeek,
-              fontColor: weekendFontColor && dayOfWeek > 5 ? weekendFontColor : undefined,
+              // fontColor: weekendFontColor && dayOfWeek > 5 ? weekendFontColor : undefined,
               timePointSec,
               nextTimePointSec,
             };
@@ -329,8 +320,7 @@ export const rasters = (
             ? []
             : {
                 dayOfMonth,
-                fontColor:
-                  offHourFontColor && (hour < workHourMin || hour > workHourMax) ? offHourFontColor : defaultFontColor,
+                // fontColor: offHourFontColor && (hour < workHourMin || hour > workHourMax) ? offHourFontColor : defaultFontColor,
                 dayOfWeek,
                 hour,
                 year,
