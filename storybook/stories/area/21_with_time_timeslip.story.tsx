@@ -79,17 +79,11 @@ export const Example = () => {
     step: 1,
   });
 
-  const baseTheme = useBaseTheme();
   return (
     <Chart>
       <Settings
-        baseTheme={{
-          ...baseTheme,
-          axes: {
-            ...baseTheme.axes,
-            tickLine: { ...baseTheme.axes.tickLine, visible: true },
-          },
-        }}
+        baseTheme={useBaseTheme()}
+        theme={{ axes: { tickLine: { visible: true } } }}
         xDomain={
           binWidth > 0
             ? {
