@@ -11,7 +11,7 @@ import { colorToRgba, RgbaTuple } from '../../../../../common/color_library_wrap
 import { Position } from '../../../../../utils/common';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { AxisTick } from '../../../utils/axis_utils';
-import { HIERARCHICAL_GRID_WIDTH } from '../../../utils/grid_lines';
+import { HIERARCHICAL_GRID_WIDTH, OUTSIDE_RANGE_TOLERANCE } from '../../../utils/grid_lines';
 import { renderMultiLine } from '../primitives/line';
 
 const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the bottom alignment; todo consider measuring
@@ -19,7 +19,7 @@ const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the 
 /** @internal */
 export function renderTick(
   ctx: CanvasRenderingContext2D,
-  { position: tickPosition, layer, detailedLayer, axisTickLabel }: AxisTick,
+  { position, domainClampedPosition: tickPosition, layer, detailedLayer, axisTickLabel }: AxisTick,
   {
     axisSpec: { position: axisPosition, timeAxisLayerCount },
     size: { width, height },
@@ -27,6 +27,7 @@ export function renderTick(
     layerGirth,
   }: AxisProps,
 ) {
+  if (Math.abs(tickPosition - position) > OUTSIDE_RANGE_TOLERANCE) return;
   const tickOnTheSide = timeAxisLayerCount > 0 && typeof layer === 'number' && axisTickLabel.length > 0;
   const tickSize =
     tickLine.size + (tickOnTheSide ? (layer + 1) * layerGirth + tickLine.padding - BASELINE_CORRECTION : 0);
