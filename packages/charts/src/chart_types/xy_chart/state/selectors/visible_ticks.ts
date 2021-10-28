@@ -72,7 +72,8 @@ export function generateTicks(
       domainClampedValue,
       label: labelFormat(value, tickFormatOptions),
       axisTickLabel: axisLabelFormat(value, tickFormatOptions),
-      position: (scale.scale(domainClampedValue) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
+      position: (scale.scale(value) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
+      domainClampedPosition: (scale.scale(domainClampedValue) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
       layer,
       detailedLayer,
     };
@@ -119,6 +120,7 @@ function getVisibleTicks(
             label: tickFormatter(firstTickValue, tickFormatOptions),
             axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
             position: (scale.scale(firstTickValue) || 0) + offset,
+            domainClampedPosition: (scale.scale(firstTickValue) || 0) + offset,
             layer: undefined, // no multiple layers with `singleValueScale`s
             detailedLayer: 0,
           },
@@ -128,6 +130,7 @@ function getVisibleTicks(
             label: tickFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
             axisTickLabel: labelFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
             position: scale.bandwidth + halfPadding * 2,
+            domainClampedPosition: scale.bandwidth + halfPadding * 2,
             layer: undefined, // no multiple layers with `singleValueScale`s
             detailedLayer: 0,
           },
@@ -389,7 +392,10 @@ function getVisibleTickSets(
                 ticks: (combinedEntry.ticks || []).concat(
                   entry.ticks.filter(
                     (tick, i, a) =>
-                      i > 0 || !a[1] || a[1].position - tick.position >= entry.labelBox.maxLabelBboxWidth + minLabelGap,
+                      i > 0 ||
+                      !a[1] ||
+                      a[1].domainClampedPosition - tick.domainClampedPosition >=
+                        entry.labelBox.maxLabelBboxWidth + minLabelGap,
                   ),
                 ),
               };

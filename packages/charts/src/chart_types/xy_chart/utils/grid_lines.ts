@@ -23,6 +23,8 @@ import { AxisSpec } from './specs';
 
 /** @internal */
 export const HIERARCHICAL_GRID_WIDTH = 1; // constant 1 scales well and solves some render issues due to fixed 1px wide overpaints
+/** @internal */
+export const OUTSIDE_RANGE_TOLERANCE = 0.01; // can protrude from the scale range by a max of 0.1px, to allow for FP imprecision
 
 /** @internal */
 export interface GridLineGroup {
@@ -86,7 +88,7 @@ function getGridLinesForAxis(
   }
 
   const visibleTicksPerLayer = visibleTicks.reduce((acc: Map<number, AxisTick[]>, tick) => {
-    if (tick.value !== tick.domainClampedValue) return acc; // no gridline for ticks outside the domain
+    if (Math.abs(tick.position - tick.domainClampedPosition) > OUTSIDE_RANGE_TOLERANCE) return acc; // no gridline for ticks outside the domain
     const ticks = acc.get(tick.detailedLayer);
     if (ticks) {
       ticks.push(tick);
