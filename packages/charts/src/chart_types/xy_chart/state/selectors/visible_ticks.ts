@@ -51,7 +51,7 @@ function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, he
 }
 
 /** @internal */
-export function enableDuplicatedTicks(
+export function generateTicks(
   axisSpec: AxisSpec,
   scale: Scale<number | string>,
   ticks: (number | string)[],
@@ -61,16 +61,22 @@ export function enableDuplicatedTicks(
   layer: number | undefined,
   detailedLayer = 0,
 ): AxisTick[] {
-  const labelFormat =
+  const axisLabelFormat =
     tickFormatOptions.labelFormat ?? axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
-  return ticks.map((value) => ({
-    value,
-    label: (axisSpec.tickFormat ?? fallBackTickFormatter)(value, tickFormatOptions),
-    axisTickLabel: labelFormat(value, tickFormatOptions),
-    position: (scale.scale(value) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
-    layer,
-    detailedLayer,
-  }));
+  const labelFormat = axisSpec.tickFormat ?? fallBackTickFormatter;
+  return ticks.map((value) => {
+    const domainClampedValue =
+      typeof value === 'number' && typeof scale.domain[0] === 'number' ? Math.max(scale.domain[0], value) : value;
+    return {
+      value,
+      domainClampedValue,
+      label: labelFormat(value, tickFormatOptions),
+      axisTickLabel: axisLabelFormat(value, tickFormatOptions),
+      position: (scale.scale(domainClampedValue) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
+      layer,
+      detailedLayer,
+    };
+  });
 }
 
 function getVisibleTicks(
@@ -109,6 +115,7 @@ function getVisibleTicks(
       ? [
           {
             value: firstTickValue,
+            domainClampedValue: firstTickValue,
             label: tickFormatter(firstTickValue, tickFormatOptions),
             axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
             position: (scale.scale(firstTickValue) || 0) + offset,
@@ -117,6 +124,7 @@ function getVisibleTicks(
           },
           {
             value: firstTickValue + scale.minInterval,
+            domainClampedValue: firstTickValue + scale.minInterval,
             label: tickFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
             axisTickLabel: labelFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
             position: scale.bandwidth + halfPadding * 2,
@@ -124,16 +132,7 @@ function getVisibleTicks(
             detailedLayer: 0,
           },
         ]
-      : enableDuplicatedTicks(
-          axisSpec,
-          scale,
-          ticks,
-          offset,
-          fallBackTickFormatter,
-          tickFormatOptions,
-          layer,
-          detailedLayer,
-        );
+      : generateTicks(axisSpec, scale, ticks, offset, fallBackTickFormatter, tickFormatOptions, layer, detailedLayer);
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
@@ -369,7 +368,7 @@ function getVisibleTickSets(
                 detailedLayerIndex,
                 [...l.binStarts(domainFromS, domainToS)]
                   .filter((b) => b.nextTimePointSec > domainFromS && b.timePointSec < domainToS)
-                  .map((b) => 1000 * Math.max(domainFromS, b.timePointSec)),
+                  .map((b) => 1000 * b.timePointSec),
                 !l.labeled
                   ? () => ''
                   : layerIndex === timeAxisLayerCount - 1

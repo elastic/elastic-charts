@@ -34,6 +34,7 @@ type TickValue = number | string;
 /** @internal */
 export interface AxisTick {
   value: TickValue;
+  domainClampedValue: TickValue;
   label: string;
   axisTickLabel: string;
   position: number;

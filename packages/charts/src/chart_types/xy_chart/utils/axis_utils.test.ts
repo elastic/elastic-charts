@@ -33,7 +33,7 @@ import { getScale, SmallMultipleScales } from '../state/selectors/compute_small_
 // import { getAxesStylesSelector } from '../state/selectors/get_axis_styles';
 // import { getGridLinesSelector } from '../state/selectors/get_grid_lines';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
-import { enableDuplicatedTicks } from '../state/selectors/visible_ticks';
+import { generateTicks } from '../state/selectors/visible_ticks';
 import {
   TickLabelBounds,
   computeRotatedLabelDimensions,
@@ -1327,15 +1327,7 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      enableDuplicatedTicks(
-        axisSpec,
-        scale as Scale<number>,
-        scale.ticks(),
-        offset,
-        (v) => `${v}`,
-        tickFormatOption,
-        0,
-      ),
+      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
     ).toEqual([
       { value: 1547208000000, label: '2019-01-11', axisTickLabel: '2019-01-11', position: 25.145833333333332, layer },
       { value: 1547251200000, label: '2019-01-12', axisTickLabel: '2019-01-12', position: 85.49583333333334, layer },
@@ -1374,7 +1366,7 @@ describe('Axis computational utils', () => {
     });
     const offset = 0;
     const tickFormatOption = { timeZone: xDomainTime.timeZone };
-    const ticks = enableDuplicatedTicks(
+    const ticks = generateTicks(
       axisSpec,
       scale as Scale<number>,
       scale.ticks(),
@@ -1428,18 +1420,11 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      enableDuplicatedTicks(
-        axisSpec,
-        scale as Scale<number>,
-        scale.ticks(),
-        offset,
-        (v) => `${v}`,
-        tickFormatOption,
-        0,
-      ),
+      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
     ).toEqual([
       {
         value: 1547208000000,
+        domainClampedValue: 1547208000000,
         label: '2019-01-11',
         axisTickLabel: '2019-01-11',
         position: 25.145833333333332,
@@ -1448,6 +1433,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547251200000,
+        domainClampedValue: 1547251200000,
         label: '2019-01-12',
         axisTickLabel: '2019-01-12',
         position: 85.49583333333334,
@@ -1456,6 +1442,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547294400000,
+        domainClampedValue: 1547294400000,
         label: '2019-01-12',
         axisTickLabel: '2019-01-12',
         position: 145.84583333333333,
@@ -1464,6 +1451,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547337600000,
+        domainClampedValue: 1547337600000,
         label: '2019-01-13',
         axisTickLabel: '2019-01-13',
         position: 206.19583333333333,
@@ -1472,6 +1460,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547380800000,
+        domainClampedValue: 1547380800000,
         label: '2019-01-13',
         axisTickLabel: '2019-01-13',
         position: 266.54583333333335,
@@ -1480,6 +1469,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547424000000,
+        domainClampedValue: 1547424000000,
         label: '2019-01-14',
         axisTickLabel: '2019-01-14',
         position: 326.8958333333333,
@@ -1488,6 +1478,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547467200000,
+        domainClampedValue: 1547467200000,
         label: '2019-01-14',
         axisTickLabel: '2019-01-14',
         position: 387.24583333333334,
@@ -1496,6 +1487,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547510400000,
+        domainClampedValue: 1547510400000,
         label: '2019-01-15',
         axisTickLabel: '2019-01-15',
         position: 447.59583333333336,
@@ -1504,6 +1496,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547553600000,
+        domainClampedValue: 1547553600000,
         label: '2019-01-15',
         axisTickLabel: '2019-01-15',
         position: 507.9458333333333,
@@ -1512,6 +1505,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547596800000,
+        domainClampedValue: 1547596800000,
         label: '2019-01-16',
         axisTickLabel: '2019-01-16',
         position: 568.2958333333333,
@@ -1547,18 +1541,11 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      enableDuplicatedTicks(
-        axisSpec,
-        scale as Scale<number>,
-        scale.ticks(),
-        offset,
-        (v) => `${v}`,
-        tickFormatOption,
-        0,
-      ),
+      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
     ).toEqual([
       {
         value: 1547208000000,
+        domainClampedValue: 1547208000000,
         label: '2019-01-11',
         axisTickLabel: '2019-01-11',
         position: 25.145833333333332,
@@ -1567,6 +1554,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547251200000,
+        domainClampedValue: 1547251200000,
         label: '2019-01-12',
         axisTickLabel: '2019-01-12',
         position: 85.49583333333334,
@@ -1575,6 +1563,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547294400000,
+        domainClampedValue: 1547294400000,
         label: '2019-01-12',
         axisTickLabel: '2019-01-12',
         position: 145.84583333333333,
@@ -1583,6 +1572,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547337600000,
+        domainClampedValue: 1547337600000,
         label: '2019-01-13',
         axisTickLabel: '2019-01-13',
         position: 206.19583333333333,
@@ -1591,6 +1581,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547380800000,
+        domainClampedValue: 1547380800000,
         label: '2019-01-13',
         axisTickLabel: '2019-01-13',
         position: 266.54583333333335,
@@ -1599,6 +1590,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547424000000,
+        domainClampedValue: 1547424000000,
         label: '2019-01-14',
         axisTickLabel: '2019-01-14',
         position: 326.8958333333333,
@@ -1607,6 +1599,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547467200000,
+        domainClampedValue: 1547467200000,
         label: '2019-01-14',
         axisTickLabel: '2019-01-14',
         position: 387.24583333333334,
@@ -1615,6 +1608,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547510400000,
+        domainClampedValue: 1547510400000,
         label: '2019-01-15',
         axisTickLabel: '2019-01-15',
         position: 447.59583333333336,
@@ -1623,6 +1617,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547553600000,
+        domainClampedValue: 1547553600000,
         label: '2019-01-15',
         axisTickLabel: '2019-01-15',
         position: 507.9458333333333,
@@ -1631,6 +1626,7 @@ describe('Axis computational utils', () => {
       },
       {
         value: 1547596800000,
+        domainClampedValue: 1547596800000,
         label: '2019-01-16',
         axisTickLabel: '2019-01-16',
         position: 568.2958333333333,

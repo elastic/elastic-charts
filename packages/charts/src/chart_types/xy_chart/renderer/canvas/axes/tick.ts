@@ -19,7 +19,7 @@ const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the 
 /** @internal */
 export function renderTick(
   ctx: CanvasRenderingContext2D,
-  { position: tickPosition, layer, detailedLayer, axisTickLabel }: AxisTick,
+  { position: tickPosition, value, domainClampedValue, layer, detailedLayer, axisTickLabel }: AxisTick,
   {
     axisSpec: { position: axisPosition, timeAxisLayerCount },
     size: { width, height },
@@ -27,6 +27,7 @@ export function renderTick(
     layerGirth,
   }: AxisProps,
 ) {
+  if (value !== domainClampedValue) return;
   const tickOnTheSide = timeAxisLayerCount > 0 && typeof layer === 'number' && axisTickLabel.length > 0;
   const tickSize =
     tickLine.size + (tickOnTheSide ? (layer + 1) * layerGirth + tickLine.padding - BASELINE_CORRECTION : 0);

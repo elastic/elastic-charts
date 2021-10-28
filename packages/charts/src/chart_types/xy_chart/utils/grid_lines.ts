@@ -53,10 +53,7 @@ export function getGridLines(
         return linesAcc;
       }
       const linesForSpec = getGridLinesForAxis(axisSpec, visibleTicks, themeAxisStyle, panelSize);
-      if (linesForSpec.length === 0) {
-        return linesAcc;
-      }
-      return [...linesAcc, ...linesForSpec];
+      return linesForSpec.length === 0 ? linesAcc : [...linesAcc, ...linesForSpec];
     }, []);
     return { lineGroups: lines };
   });
@@ -89,6 +86,7 @@ function getGridLinesForAxis(
   }
 
   const visibleTicksPerLayer = visibleTicks.reduce((acc: Map<number, AxisTick[]>, tick) => {
+    if (tick.value !== tick.domainClampedValue) return acc; // no gridline for ticks outside the domain
     const ticks = acc.get(tick.detailedLayer);
     if (ticks) {
       ticks.push(tick);
