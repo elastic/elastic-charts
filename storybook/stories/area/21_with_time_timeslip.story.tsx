@@ -9,20 +9,18 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, AxisSpec } from '@elastic/charts';
-import { mergePartial } from '@elastic/charts/src/utils/common';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
-const minorGridStyle = { stroke: 'black', strokeWidth: 0.15, opacity: 1 };
-const gridStyle = { stroke: 'black' };
 const fontFamily = '"Atkinson Hyperlegible"';
-const tickLabelStyle = { fontSize: 11, fontFamily, fill: 'rgba(0,0,0,0.8)' };
+const tickLabelStyle = { fontSize: 11, fontFamily };
 const axisTitleColor = 'rgb(112,112,112)';
 const axisTitleFontSize = 15;
 const dataInk = 'rgba(96, 146, 192, 1)';
+const horizontalGridLineStyle = { stroke: 'black', strokeWidth: 0.15, opacity: 1 };
 
 const tooltipDateFormatter = (d: any) =>
   new Intl.DateTimeFormat('en-US', {
@@ -32,18 +30,6 @@ const tooltipDateFormatter = (d: any) =>
     hour: 'numeric',
     minute: 'numeric',
   }).format(d);
-
-const xAxisStyle: AxisSpec['style'] = {
-  tickLine: { size: 0.0001, padding: -6, ...gridStyle },
-  axisLine: { stroke: 'magenta', strokeWidth: 10, visible: false },
-  tickLabel: {
-    ...tickLabelStyle,
-    alignment: { horizontal: Position.Left, vertical: Position.Bottom },
-    padding: 0,
-    offset: { x: 0, y: 0 },
-  },
-  axisTitle: { visible: false, fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },
-};
 
 const data = KIBANA_METRICS.metrics.kibana_os_load[0].data;
 const t0 = data[0][0];
@@ -85,6 +71,7 @@ export const Example = () => {
     <Chart>
       <Settings
         baseTheme={useBaseTheme()}
+        theme={{ axes: { tickLine: { visible: true } } }}
         xDomain={
           binWidth > 0
             ? {
@@ -100,17 +87,18 @@ export const Example = () => {
         position={boolean('Top X axis', false) ? Position.Top : Position.Bottom}
         showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
         showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
-        ticks={30}
         showGridLines={minorGridLines}
-        gridLine={gridStyle}
-        style={mergePartial(xAxisStyle, {
-          axisLine: { stroke: dataInk, strokeWidth: 1, visible: true },
-          tickLine: {
-            size: 0.0001 /* todo fix padding so it works even with an actual zero `size` */,
-            padding: 4,
+        style={{
+          axisLine: { stroke: dataInk },
+          tickLine: { size: 0.0001, padding: 4 },
+          tickLabel: {
+            ...tickLabelStyle,
+            alignment: { horizontal: Position.Left, vertical: Position.Bottom },
+            padding: 0,
+            offset: { x: 0, y: 0 },
           },
-          axisTitle: { visible: true, fontFamily },
-        })}
+          axisTitle: { fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },
+        }}
         tickFormat={tooltipDateFormatter}
         labelFormat={topAxisLabelFormat}
         title="time (1-minute measurements)"
@@ -122,11 +110,11 @@ export const Example = () => {
         position={Position.Left}
         showGridLines
         ticks={4}
-        gridLine={minorGridStyle}
+        gridLine={horizontalGridLineStyle}
         style={{
-          tickLine: { ...gridStyle, strokeWidth: 0.2, size: 8, padding: 4 },
-          axisLine: { ...gridStyle, visible: false },
-          tickLabel: { ...tickLabelStyle },
+          tickLine: { ...horizontalGridLineStyle, size: 8, padding: 4 },
+          axisLine: { visible: false },
+          tickLabel: tickLabelStyle,
           axisTitle: { visible: !horizontalAxisTitle, fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },
         }}
         tickFormat={(d) => `${Number(d).toFixed(0)}%`}

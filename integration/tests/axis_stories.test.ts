@@ -7,14 +7,16 @@
  */
 
 import { Position } from '../../packages/charts/src';
-import { eachRotation } from '../helpers';
+import { eachRotation, eachTheme } from '../helpers';
 import { common } from '../page_objects';
 
 describe('Axis stories', () => {
-  it('should switch to a 30 minute raster', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=-6&knob-Time%20stretch=100&knob-Time%20zoom=119&knob-X%20axis%20minor%20whiskers=true',
-    );
+  eachTheme.describe((_, params) => {
+    it('should switch to a 30 minute raster', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/area-chart--timeslip${params}&globals=knob-Minor%20grid%20lines=true&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=-6&knob-Time%20stretch=100&knob-Time%20zoom=119&knob-X%20axis%20minor%20whiskers=true`,
+      );
+    });
   });
   it('should use a decades raster', async () => {
     await common.expectChartAtUrlToMatchScreenshot(

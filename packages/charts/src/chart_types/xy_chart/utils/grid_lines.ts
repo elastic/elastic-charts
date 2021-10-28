@@ -23,8 +23,6 @@ import { AxisSpec } from './specs';
 
 /** @internal */
 export const HIERARCHICAL_GRID_WIDTH = 1; // constant 1 scales well and solves some render issues due to fixed 1px wide overpaints
-/** @internal */
-export const lumaSteps = [224, 184, 128, 96, 64, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0]; // using alpha instead would lead to overpainted line strengthening
 
 /** @internal */
 export interface GridLineGroup {
@@ -112,10 +110,10 @@ function getGridLinesForAxis(
         gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
       );
       const layered = typeof visibleTicksOfLayer[0].layer === 'number';
+
+      const multilayerLuma = themeAxisStyle.gridLine.lumaSteps[detailedLayer];
       const stroke: Stroke = {
-        color: layered
-          ? [lumaSteps[detailedLayer], lumaSteps[detailedLayer], lumaSteps[detailedLayer], 1]
-          : strokeColor,
+        color: layered ? [multilayerLuma, multilayerLuma, multilayerLuma, 1] : strokeColor,
         width: layered ? HIERARCHICAL_GRID_WIDTH : gridLineStyles.strokeWidth,
         dash: gridLineStyles.dash,
       };
