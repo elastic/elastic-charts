@@ -359,13 +359,13 @@ function getVisibleTickSets(
         const domainExtension = extendByOneBin ? binWidth : 0;
         const domainToS = (((domain && Number(domainValues[domainValues.length - 1])) || NaN) + domainExtension) / 1000;
         const layers = rasterSelector(notTooDense(domainFromS, domainToS, binWidth, Math.abs(range[1] - range[0])));
-        let layerIndex = 0;
+        let layerIndex = -1;
         return acc.set(
           axisId,
           layers.reduce(
             (combinedEntry: { ticks: AxisTick[] }, l: TimeRaster<TimeBin>, detailedLayerIndex) => {
+              if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
               if (layerIndex >= timeAxisLayerCount) return combinedEntry;
-              // times 1000: convert seconds to milliseconds
               const { entry } = fillLayerTimeslip(
                 layerIndex,
                 detailedLayerIndex,
@@ -378,7 +378,6 @@ function getVisibleTickSets(
                   ? l.detailedLabelFormat
                   : l.minorTickLabelFormat,
               );
-              if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
               const minLabelGap = 4;
 
               const lastTick = entry.ticks[entry.ticks.length - 1];
