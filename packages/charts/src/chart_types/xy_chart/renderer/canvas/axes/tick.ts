@@ -31,7 +31,7 @@ export function renderTick(
   const tickOnTheSide = timeAxisLayerCount > 0 && typeof layer === 'number';
   const tickSize =
     tickLine.size +
-    (tickOnTheSide && !(detailedLayer === 0 && !HIDE_MINOR_TIME_GRID)
+    (tickOnTheSide && (detailedLayer > 0 || !HIDE_MINOR_TIME_GRID)
       ? (layer + 1) * layerGirth + tickLine.padding - BASELINE_CORRECTION
       : 0);
   const xy = isHorizontalAxis(axisPosition)

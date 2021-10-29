@@ -91,7 +91,7 @@ function getGridLinesForAxis(
 
   const visibleTicksPerLayer = visibleTicks.reduce((acc: Map<number, AxisTick[]>, tick) => {
     if (Math.abs(tick.position - tick.domainClampedPosition) > OUTSIDE_RANGE_TOLERANCE) return acc; // no gridline for ticks outside the domain
-    if (HIDE_MINOR_TIME_GRID && tick.detailedLayer === 0) return acc; // no gridline for ticks outside the domain
+    if (HIDE_MINOR_TIME_GRID && typeof tick.layer === 'number' && tick.detailedLayer === 0) return acc; // no gridline for ticks outside the domain
     const ticks = acc.get(tick.detailedLayer);
     if (ticks) {
       ticks.push(tick);
