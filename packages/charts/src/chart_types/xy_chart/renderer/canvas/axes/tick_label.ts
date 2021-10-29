@@ -25,7 +25,7 @@ export function renderTickLabel(
   const labelStyle = axisStyle.tickLabel;
   const tickLabelProps = getTickLabelPosition(
     axisStyle,
-    tick.position,
+    tick.domainClampedPosition,
     position,
     labelStyle.rotation,
     size,

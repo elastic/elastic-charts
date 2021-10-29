@@ -51,7 +51,7 @@ function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, he
 }
 
 /** @internal */
-export function enableDuplicatedTicks(
+export function generateTicks(
   axisSpec: AxisSpec,
   scale: Scale<number | string>,
   ticks: (number | string)[],
@@ -61,16 +61,23 @@ export function enableDuplicatedTicks(
   layer: number | undefined,
   detailedLayer = 0,
 ): AxisTick[] {
-  const labelFormat =
+  const axisLabelFormat =
     tickFormatOptions.labelFormat ?? axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
-  return ticks.map((value) => ({
-    value,
-    label: (axisSpec.tickFormat ?? fallBackTickFormatter)(value, tickFormatOptions),
-    axisTickLabel: labelFormat(value, tickFormatOptions),
-    position: (scale.scale(value) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
-    layer,
-    detailedLayer,
-  }));
+  const labelFormat = axisSpec.tickFormat ?? fallBackTickFormatter;
+  return ticks.map((value) => {
+    const domainClampedValue =
+      typeof value === 'number' && typeof scale.domain[0] === 'number' ? Math.max(scale.domain[0], value) : value;
+    return {
+      value,
+      domainClampedValue,
+      label: labelFormat(value, tickFormatOptions),
+      axisTickLabel: axisLabelFormat(value, tickFormatOptions),
+      position: (scale.scale(value) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
+      domainClampedPosition: (scale.scale(domainClampedValue) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
+      layer,
+      detailedLayer,
+    };
+  });
 }
 
 function getVisibleTicks(
@@ -109,31 +116,26 @@ function getVisibleTicks(
       ? [
           {
             value: firstTickValue,
+            domainClampedValue: firstTickValue,
             label: tickFormatter(firstTickValue, tickFormatOptions),
             axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
             position: (scale.scale(firstTickValue) || 0) + offset,
+            domainClampedPosition: (scale.scale(firstTickValue) || 0) + offset,
             layer: undefined, // no multiple layers with `singleValueScale`s
             detailedLayer: 0,
           },
           {
             value: firstTickValue + scale.minInterval,
+            domainClampedValue: firstTickValue + scale.minInterval,
             label: tickFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
             axisTickLabel: labelFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
             position: scale.bandwidth + halfPadding * 2,
+            domainClampedPosition: scale.bandwidth + halfPadding * 2,
             layer: undefined, // no multiple layers with `singleValueScale`s
             detailedLayer: 0,
           },
         ]
-      : enableDuplicatedTicks(
-          axisSpec,
-          scale,
-          ticks,
-          offset,
-          fallBackTickFormatter,
-          tickFormatOptions,
-          layer,
-          detailedLayer,
-        );
+      : generateTicks(axisSpec, scale, ticks, offset, fallBackTickFormatter, tickFormatOptions, layer, detailedLayer);
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
@@ -217,73 +219,6 @@ const notTooDense = (domainFrom: number, domainTo: number, binWidth: number, car
     raster.approxWidthInMs * WIDTH_FUDGE >= binWidth &&
     (domainInSeconds * 1000) / MAX_TIME_TICK_COUNT <= raster.approxWidthInMs
   );
-};
-
-const getRasterSelector = (timeZone: string, maxLabelRowCount: number): ReturnType<typeof rasters> => {
-  // these are hand tweaked constants that fulfill various design constraints, let's discuss before changing them
-  const lineThicknessSteps = [/*0,*/ 0.5, 0.75, 1, 1, 1, 1.25, 1.25, 1.5, 1.5, 1.75, 1.75, 2, 2, 2, 2, 2];
-  const lumaSteps = [/*255,*/ 192, 72, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0];
-
-  const darkMode = false;
-  const smallFontSize = 12;
-
-  const themeLight = {
-    defaultFontColor: 'black',
-    subduedFontColor: '#393939',
-    offHourFontColor: 'black',
-    weekendFontColor: 'darkred',
-    backgroundColor: { r: 255, g: 255, b: 255 },
-    lumaSteps,
-  };
-
-  const themeDark = {
-    defaultFontColor: 'white',
-    subduedFontColor: 'darkgrey',
-    offHourFontColor: 'white',
-    weekendFontColor: 'indianred',
-    backgroundColor: { r: 0, g: 0, b: 0 },
-    lumaSteps: lumaSteps.map((l) => 255 - l),
-  };
-
-  const config = {
-    darkMode,
-    sparse: false,
-    implicit: false,
-    maxLabelRowCount,
-    a11y: {
-      shortcuts: true,
-      contrast: 'medium',
-      animation: true,
-      sonification: false,
-    },
-    locale: 'en-US',
-    numUnit: 'short',
-    ...(darkMode ? themeDark : themeLight),
-    barChroma: { r: 96, g: 146, b: 192 },
-    barFillAlpha: 0.3,
-    lineThicknessSteps,
-    minBinWidth: 'day',
-    maxBinWidth: 'year',
-    pixelRangeFrom: 100,
-    pixelRangeTo: 500,
-    tickLabelMaxProtrusionLeft: 0, // constraining not used yet
-    tickLabelMaxProtrusionRight: 0, // constraining not used yet
-    protrudeAxisLeft: true, // constraining not used yet
-    protrudeAxisRight: true, // constraining not used yet
-    smallFontSize,
-    cssFontShorthand: `normal normal 100 ${smallFontSize}px "Atkinson Hyperlegible", Inter, Helvetica, sans-serif`,
-    monospacedFontShorthand: `normal normal 100 ${smallFontSize}px "Roboto Mono", Consolas, Menlo, Courier, monospace`,
-    rowPixelPitch: 16,
-    horizontalPixelOffset: 4,
-    verticalPixelOffset: 6,
-    minimumTickPixelDistance: 24,
-    workHourMin: 6,
-    workHourMax: 21,
-    clipLeft: true,
-    clipRight: true,
-  };
-
-  return rasters(config, timeZone);
 };
 
 function getVisibleTickSets(
@@ -416,7 +351,7 @@ function getVisibleTickSets(
       };
 
       if (isMultilayerTimeAxis) {
-        const rasterSelector = getRasterSelector(xDomain.timeZone, timeAxisLayerCount);
+        const rasterSelector = rasters({ minimumTickPixelDistance: 24, locale: 'en-US' }, xDomain.timeZone);
         const domainValues = domain.domain; // todo consider a property or object type rename
         const domainFromS = Number((domain && domainValues[0]) || NaN) / 1000; // todo rely on a type guard or check rather than conversion
         const extendByOneBin = isX && xDomain.isBandScale && enableHistogramMode;
@@ -436,7 +371,7 @@ function getVisibleTickSets(
                 detailedLayerIndex,
                 [...l.binStarts(domainFromS, domainToS)]
                   .filter((b) => b.nextTimePointSec > domainFromS && b.timePointSec < domainToS)
-                  .map((b) => 1000 * Math.max(domainFromS, b.timePointSec)),
+                  .map((b) => 1000 * b.timePointSec),
                 !l.labeled
                   ? () => ''
                   : layerIndex === timeAxisLayerCount - 1
@@ -447,7 +382,9 @@ function getVisibleTickSets(
               const minLabelGap = 4;
 
               const lastTick = entry.ticks[entry.ticks.length - 1];
-              if (lastTick.position + entry.labelBox.maxLabelBboxWidth > range[1]) lastTick.axisTickLabel = '';
+              if (lastTick && lastTick.position + entry.labelBox.maxLabelBboxWidth > range[1]) {
+                lastTick.axisTickLabel = '';
+              }
 
               return {
                 ...entry,
@@ -455,7 +392,10 @@ function getVisibleTickSets(
                 ticks: (combinedEntry.ticks || []).concat(
                   entry.ticks.filter(
                     (tick, i, a) =>
-                      i > 0 || !a[1] || a[1].position - tick.position >= entry.labelBox.maxLabelBboxWidth + minLabelGap,
+                      i > 0 ||
+                      !a[1] ||
+                      a[1].domainClampedPosition - tick.domainClampedPosition >=
+                        entry.labelBox.maxLabelBboxWidth + minLabelGap,
                   ),
                 ),
               };

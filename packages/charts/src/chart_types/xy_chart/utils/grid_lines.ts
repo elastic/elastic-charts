@@ -24,7 +24,7 @@ import { AxisSpec } from './specs';
 /** @internal */
 export const HIERARCHICAL_GRID_WIDTH = 1; // constant 1 scales well and solves some render issues due to fixed 1px wide overpaints
 /** @internal */
-export const lumaSteps = [224, 184, 128, 96, 64, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0]; // using alpha instead would lead to overpainted line strengthening
+export const OUTSIDE_RANGE_TOLERANCE = 0.01; // can protrude from the scale range by a max of 0.1px, to allow for FP imprecision
 
 /** @internal */
 export interface GridLineGroup {
@@ -55,10 +55,7 @@ export function getGridLines(
         return linesAcc;
       }
       const linesForSpec = getGridLinesForAxis(axisSpec, visibleTicks, themeAxisStyle, panelSize);
-      if (linesForSpec.length === 0) {
-        return linesAcc;
-      }
-      return [...linesAcc, ...linesForSpec];
+      return linesForSpec.length === 0 ? linesAcc : [...linesAcc, ...linesForSpec];
     }, []);
     return { lineGroups: lines };
   });
@@ -91,6 +88,7 @@ function getGridLinesForAxis(
   }
 
   const visibleTicksPerLayer = visibleTicks.reduce((acc: Map<number, AxisTick[]>, tick) => {
+    if (Math.abs(tick.position - tick.domainClampedPosition) > OUTSIDE_RANGE_TOLERANCE) return acc; // no gridline for ticks outside the domain
     const ticks = acc.get(tick.detailedLayer);
     if (ticks) {
       ticks.push(tick);
@@ -112,10 +110,10 @@ function getGridLinesForAxis(
         gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
       );
       const layered = typeof visibleTicksOfLayer[0].layer === 'number';
+
+      const multilayerLuma = themeAxisStyle.gridLine.lumaSteps[detailedLayer];
       const stroke: Stroke = {
-        color: layered
-          ? [lumaSteps[detailedLayer], lumaSteps[detailedLayer], lumaSteps[detailedLayer], 1]
-          : strokeColor,
+        color: layered ? [multilayerLuma, multilayerLuma, multilayerLuma, 1] : strokeColor,
         width: layered ? HIERARCHICAL_GRID_WIDTH : gridLineStyles.strokeWidth,
         dash: gridLineStyles.dash,
       };
