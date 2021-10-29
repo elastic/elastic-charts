@@ -41,6 +41,7 @@ export interface AxisTick {
   domainClampedPosition: number;
   layer?: number;
   detailedLayer: number;
+  showGrid: boolean;
 }
 
 /** @internal */
