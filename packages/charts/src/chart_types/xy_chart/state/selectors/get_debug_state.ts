@@ -269,24 +269,22 @@ function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
 }
 
 function getAnnotationsState(annotationSpecs: AnnotationSpec[]): DebugStateAnnotations[] {
-  const annotationDebugState: DebugStateAnnotations[] = [];
-  annotationSpecs.map((annotation, index) => {
+  return annotationSpecs.map((annotation, index) => {
     return annotation.annotationType === AnnotationType.Rectangle
-      ? annotationDebugState.push({
+      ? {
           id: annotation.id,
           color: annotation?.style,
           data: annotation.dataValues[index],
           type: annotation.annotationType,
-        })
-      : annotationDebugState.push({
+        }
+      : {
           id: annotation.id,
           color: annotation?.style,
           data: annotation.dataValues[index],
           domainType: annotation.domainType,
           type: annotation.annotationType,
-        });
+        };
   });
-  return annotationDebugState;
 }
 
 /**
