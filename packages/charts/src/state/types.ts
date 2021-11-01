@@ -8,6 +8,7 @@
 
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { Pixels } from '../common/geometry';
+import { LineAnnotationDatum, RectAnnotationDatum } from '../specs';
 import type { Position } from '../utils/common';
 import type { GeometryValue } from '../utils/geometry';
 import { LineAnnotationStyle, RectAnnotationStyle } from '../utils/themes/theme';
@@ -110,8 +111,8 @@ export type DebugStateAnnotations = {
   // API Extractor fails on AnnotationType
   type?: 'line' | 'rectangle';
   domainType?: 'xDomain' | 'yDomain';
-  // API Extractor failing with LineAnnotationDatum | RectAnnotation, the dataValue in get_debug_state can be any value
-  data?: any;
+  // API Extractor failing with LineAnnotationDatum | RectAnnotationDatum, the dataValue in get_debug_state can be any value
+  data?: LineAnnotationDatum | RectAnnotationDatum;
 };
 
 /**
