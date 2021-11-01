@@ -29,10 +29,11 @@ export function renderTick(
 ) {
   if (Math.abs(tickPosition - position) > OUTSIDE_RANGE_TOLERANCE) return;
   const tickOnTheSide = timeAxisLayerCount > 0 && typeof layer === 'number';
+  const extensionLayer = tickOnTheSide ? layer + 1 : 0;
   const tickSize =
     tickLine.size +
     (tickOnTheSide && (detailedLayer > 0 || !HIDE_MINOR_TIME_GRID)
-      ? (layer + 1) * layerGirth + tickLine.padding - BASELINE_CORRECTION
+      ? extensionLayer * layerGirth + (extensionLayer < 1 ? 0 : tickLine.padding - BASELINE_CORRECTION)
       : 0);
   const xy = isHorizontalAxis(axisPosition)
     ? {
