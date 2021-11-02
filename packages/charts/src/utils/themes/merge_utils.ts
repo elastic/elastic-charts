@@ -82,6 +82,7 @@ export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationSt
  * @param auxiliaryThemes - additional themes to be merged
  *
  * @public
+ * @deprecated - Please use `baseTheme` and `theme` on Settings instead
  */
 export function mergeWithDefaultTheme(
   theme: PartialTheme,
