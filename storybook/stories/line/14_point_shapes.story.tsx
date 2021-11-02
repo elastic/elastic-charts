@@ -24,7 +24,7 @@ import {
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { renderEuiColorPicker } from '../legend/11_legend_actions.story';
+import { getColorPicker } from '../utils/components/get_color_picker';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20);
@@ -40,7 +40,7 @@ export const Example = () => {
         showLegendExtra
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
-        legendColorPicker={showColorPicker ? renderEuiColorPicker('leftCenter') : undefined}
+        legendColorPicker={showColorPicker ? getColorPicker('leftCenter') : undefined}
       />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
       <Axis

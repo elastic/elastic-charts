@@ -1,3 +1,26 @@
+## [38.1.3](https://github.com/elastic/elastic-charts/compare/v38.1.2...v38.1.3) (2021-11-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^40.1.0 ([#1449](https://github.com/elastic/elastic-charts/issues/1449)) ([33a24fb](https://github.com/elastic/elastic-charts/commit/33a24fb87144c025d67bf6e3cc06215f1d326d06))
+* **xy:** adding missing last tick and rarify gridlines ([#1448](https://github.com/elastic/elastic-charts/issues/1448)) ([002e4b8](https://github.com/elastic/elastic-charts/commit/002e4b809d0e224d04709ed8886f09f09137160a))
+
+## [38.1.2](https://github.com/elastic/elastic-charts/compare/v38.1.1...v38.1.2) (2021-10-29)
+
+
+### Bug Fixes
+
+* **xy:** multilayer time axis tick/grid only when tick is inside domain ([#1446](https://github.com/elastic/elastic-charts/issues/1446)) ([1d06a1e](https://github.com/elastic/elastic-charts/commit/1d06a1e673255647a88a32c4d79fa71e113a6eba))
+* **xy:** show mouse cursors on charts with opaque background ([#1447](https://github.com/elastic/elastic-charts/issues/1447)) ([e0f1543](https://github.com/elastic/elastic-charts/commit/e0f15438c8bc696ffee1b9054cbc45fd4200b8bd))
+
+## [38.1.1](https://github.com/elastic/elastic-charts/compare/v38.1.0...v38.1.1) (2021-10-28)
+
+
+### Bug Fixes
+
+* **xy:** multilayer time axis tick/grid line placement and styling ([#1445](https://github.com/elastic/elastic-charts/issues/1445)) ([1ce4223](https://github.com/elastic/elastic-charts/commit/1ce4223f02b1723bbfa1b6132609b12590d52f59))
+
 # [38.1.0](https://github.com/elastic/elastic-charts/compare/v38.0.1...v38.1.0) (2021-10-26)
 
 
