@@ -111,8 +111,7 @@ export type DebugStateAnnotations = {
   // API Extractor fails on AnnotationType
   type?: 'line' | 'rectangle';
   domainType?: 'xDomain' | 'yDomain';
-  // API Extractor failing with LineAnnotationDatum | RectAnnotationDatum, the dataValue in get_debug_state can be any value
-  data?: LineAnnotationDatum | RectAnnotationDatum;
+  data?: LineAnnotationDatum[] | RectAnnotationDatum[];
 };
 
 /**

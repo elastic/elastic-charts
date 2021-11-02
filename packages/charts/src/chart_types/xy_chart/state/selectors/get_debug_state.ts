@@ -23,6 +23,7 @@ import {
 } from '../../../../state/types';
 import { Rotation } from '../../../../utils/common';
 import { AreaGeometry, BandedAccessorType, BarGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
+import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from '../../../../utils/themes/merge_utils';
 import { FillStyle, Opacity, StrokeStyle, Visible } from '../../../../utils/themes/theme';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
@@ -269,21 +270,18 @@ function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
 }
 
 function getAnnotationsState(annotationSpecs: AnnotationSpec[]): DebugStateAnnotations[] {
-  return annotationSpecs.map((annotation, index) => {
-    return annotation.annotationType === AnnotationType.Rectangle
-      ? {
-          id: annotation.id,
-          color: annotation?.style,
-          data: annotation.dataValues[index],
-          type: annotation.annotationType,
-        }
-      : {
-          id: annotation.id,
-          color: annotation?.style,
-          data: annotation.dataValues[index],
-          domainType: annotation.domainType,
-          type: annotation.annotationType,
-        };
+  console.log('\n\n\n\n', annotationSpecs[0].dataValues);
+  return annotationSpecs.map((annotation) => {
+    return {
+      id: annotation.id,
+      color:
+        annotation.annotationType === AnnotationType.Line
+          ? mergeWithDefaultAnnotationLine(annotation?.style)
+          : mergeWithDefaultAnnotationRect(annotation?.style),
+      data: annotation.dataValues,
+      domainType: annotation.annotationType === AnnotationType.Line ? annotation.domainType : undefined,
+      type: annotation.annotationType,
+    };
   });
 }
 
