@@ -1,3 +1,12 @@
+## [38.0.2](https://github.com/elastic/elastic-charts/compare/v38.0.1...v38.0.2) (2021-11-02)
+
+
+### Bug Fixes
+
+* **interactions:** line cursor above the chart, band cursor below ([#1453](https://github.com/elastic/elastic-charts/issues/1453)) ([#1457](https://github.com/elastic/elastic-charts/issues/1457)) ([ca004a6](https://github.com/elastic/elastic-charts/commit/ca004a66f3f5a0847d2f39314a1526298ca03b8a))
+* **theme:** merge partial with empty initial partial ([#1452](https://github.com/elastic/elastic-charts/issues/1452)) ([#1454](https://github.com/elastic/elastic-charts/issues/1454)) ([2eadc71](https://github.com/elastic/elastic-charts/commit/2eadc7175f667a355eaa30c85ebde12d83527f03))
+* **xy:** show mouse cursors on charts with opaque background ([#1447](https://github.com/elastic/elastic-charts/issues/1447)) ([#1455](https://github.com/elastic/elastic-charts/issues/1455)) ([b416ed5](https://github.com/elastic/elastic-charts/commit/b416ed56cac2e5b57db5e7b1abe7b2ff6c2d41ec))
+
 ## [38.0.1](https://github.com/elastic/elastic-charts/compare/v38.0.0...v38.0.1) (2021-10-15)
 
 
