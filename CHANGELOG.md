@@ -1,3 +1,11 @@
+## [38.1.3](https://github.com/elastic/elastic-charts/compare/v38.1.2...v38.1.3) (2021-11-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^40.1.0 ([#1449](https://github.com/elastic/elastic-charts/issues/1449)) ([33a24fb](https://github.com/elastic/elastic-charts/commit/33a24fb87144c025d67bf6e3cc06215f1d326d06))
+* **xy:** adding missing last tick and rarify gridlines ([#1448](https://github.com/elastic/elastic-charts/issues/1448)) ([002e4b8](https://github.com/elastic/elastic-charts/commit/002e4b809d0e224d04709ed8886f09f09137160a))
+
 ## [38.1.2](https://github.com/elastic/elastic-charts/compare/v38.1.1...v38.1.2) (2021-10-29)
 
 
