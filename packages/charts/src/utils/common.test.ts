@@ -105,28 +105,46 @@ describe('common utilities', () => {
       key6: 6,
     };
 
+    it('should allow undefined object', () => {
+      const result = getAllKeys(undefined, [object1]);
+
+      expect(result).toEqual(new Set(['key1', 'key2']));
+    });
+
+    it('should return allow undefined objects', () => {
+      const result = getAllKeys(undefined, undefined);
+
+      expect(result).toEqual(new Set([]));
+    });
+
+    it('should remove duplicates', () => {
+      const result = getAllKeys(object1, [object1]);
+
+      expect(result).toEqual(new Set(['key1', 'key2']));
+    });
+
     it('should return all keys from single object', () => {
       const result = getAllKeys(object1);
 
-      expect(result).toEqual(['key1', 'key2']);
+      expect(result).toEqual(new Set(['key1', 'key2']));
     });
 
     it('should return all keys from all objects x 2', () => {
       const result = getAllKeys(object1, [object2]);
 
-      expect(result).toEqual(['key1', 'key2', 'key3', 'key4']);
+      expect(result).toEqual(new Set(['key1', 'key2', 'key3', 'key4']));
     });
 
     it('should return all keys from single objects x 3', () => {
       const result = getAllKeys(object1, [object2, object3]);
 
-      expect(result).toEqual(['key1', 'key2', 'key3', 'key4', 'key5', 'key6']);
+      expect(result).toEqual(new Set(['key1', 'key2', 'key3', 'key4', 'key5', 'key6']));
     });
 
     it('should return all keys from only defined objects', () => {
       const result = getAllKeys(object1, [null, object2, {}, undefined]);
 
-      expect(result).toEqual(['key1', 'key2', 'key3', 'key4']);
+      expect(result).toEqual(new Set(['key1', 'key2', 'key3', 'key4']));
     });
   });
 
@@ -723,6 +741,58 @@ describe('common utilities', () => {
           nested: {
             ...newBase.nested,
             number: partials[0].nested!.number,
+          },
+        });
+      });
+
+      test('should traverse all partial keys', () => {
+        interface Test {
+          crosshair: {
+            line: {
+              dash?: number[];
+              strokeWidth: number;
+            };
+            band?: {
+              visible: boolean;
+            };
+          };
+        }
+        const customBase: Test = {
+          crosshair: {
+            line: {
+              strokeWidth: 1,
+            },
+          },
+        };
+        const partials: RecursivePartial<Test>[] = [
+          {
+            crosshair: {
+              line: {
+                dash: [4, 4],
+              },
+            },
+          },
+          {
+            crosshair: {
+              line: {
+                strokeWidth: 10,
+              },
+              band: {
+                visible: true,
+              },
+            },
+          },
+        ];
+        const newBase = mergePartial(customBase, {}, {}, partials);
+        expect(newBase).toEqual({
+          crosshair: {
+            line: {
+              strokeWidth: 10,
+              dash: [4, 4],
+            },
+            band: {
+              visible: true,
+            },
           },
         });
       });
