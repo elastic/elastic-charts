@@ -49,7 +49,6 @@ class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
   render() {
     const { rendered, renderedCount, debugState } = this.props;
     const debugStateString: string | null = debugState && JSON.stringify(debugState);
-    console.log(debugStateString);
     return (
       <div
         className="echChartStatus"

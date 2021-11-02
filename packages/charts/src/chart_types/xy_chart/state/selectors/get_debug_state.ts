@@ -270,7 +270,6 @@ function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
 }
 
 function getAnnotationsState(annotationSpecs: AnnotationSpec[]): DebugStateAnnotations[] {
-  console.log('\n\n\n\n', annotationSpecs[0].dataValues);
   return annotationSpecs.map((annotation) => {
     return {
       id: annotation.id,
