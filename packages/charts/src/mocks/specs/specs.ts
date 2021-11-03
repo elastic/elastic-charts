@@ -290,6 +290,7 @@ export class MockGlobalSpec {
     showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
+    timeAxisLayerCount: 0,
   };
 
   private static readonly settingsBaseNoMargings: SettingsSpec = {

@@ -33,7 +33,7 @@ export function renderTitle(
   {
     size: { width, height },
     dimension: { maxLabelBboxWidth, maxLabelBboxHeight },
-    axisSpec: { position, hide: hideAxis, title },
+    axisSpec: { position, hide: hideAxis, title, timeAxisLayerCount },
     axisStyle: { axisPanelTitle, axisTitle, tickLabel, tickLine },
     panelTitle,
     debug,
@@ -51,7 +51,7 @@ export function renderTitle(
   const font: TextFont = { ...titleFontDefaults, ...axisTitleToUse, textColor: axisTitleToUse.fill };
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const allLayersGirth = getAllAxisLayersGirth(tickLabel, maxLabelBoxGirth, horizontal);
+  const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, horizontal);
   const labelPaddingSum = innerPad(tickLabel.padding) + outerPad(tickLabel.padding);
   const labelSize = tickLabel.visible ? allLayersGirth + labelPaddingSum : 0;
   const otherTitleDimension = otherTitle ? getTitleDimension(otherAxisTitleToUse) : 0;

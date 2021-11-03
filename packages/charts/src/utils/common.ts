@@ -255,17 +255,17 @@ export function getPartialValue<T>(base: T, partial?: RecursivePartial<T>, parti
  * @param objects
  * @internal
  */
-export function getAllKeys(object: any, objects: any[] = []): string[] {
-  const initialKeys = object instanceof Map ? [...object.keys()] : Object.keys(object);
+export function getAllKeys(object?: any, objects: any[] = []): Set<any> {
+  return new Set(
+    [object, ...objects].filter(Boolean).reduce((keys: any[], obj) => {
+      if (obj && typeof obj === 'object') {
+        const newKeys = obj ? (obj instanceof Map ? obj.keys() : Object.keys(obj)) : [];
+        keys.push(...newKeys);
+      }
 
-  return objects.reduce((keys: any[], obj) => {
-    if (obj && typeof obj === 'object') {
-      const newKeys = obj instanceof Map ? obj.keys() : Object.keys(obj);
-      keys.push(...newKeys);
-    }
-
-    return keys;
-  }, initialKeys);
+      return keys;
+    }, []),
+  );
 }
 
 /** @internal */
@@ -357,8 +357,9 @@ export function mergePartial<T>(
 
   if (hasPartialObjectToMerge(base, partial, additionalPartials)) {
     const mapCondition = !(baseClone instanceof Map) || options.mergeMaps;
-    if (partial !== undefined && (options.mergeOptionalPartialValues ?? true) && mapCondition) {
-      getAllKeys(partial, additionalPartials).forEach((key) => {
+    const partialKeys = getAllKeys(partial, additionalPartials);
+    if (partialKeys.size > 0 && (options.mergeOptionalPartialValues ?? true) && mapCondition) {
+      partialKeys.forEach((key) => {
         if (baseClone instanceof Map) {
           if (!baseClone.has(key)) {
             baseClone.set(
@@ -370,9 +371,9 @@ export function mergePartial<T>(
           }
         } else if (!(key in baseClone)) {
           baseClone[key] =
-            (partial as any)[key] !== undefined
+            (partial as any)?.[key] !== undefined
               ? (partial as any)[key]
-              : (additionalPartials.find((v: any) => v[key] !== undefined) || ({} as any))[key];
+              : (additionalPartials.find((v: any) => v?.[key] !== undefined) ?? ({} as any))[key];
         }
       });
     }
@@ -404,7 +405,7 @@ export function mergePartial<T>(
       return baseClone as any;
     }
 
-    return Object.keys(base).reduce((newBase, key) => {
+    return Object.keys(baseClone).reduce((newBase, key) => {
       const partialValue = partial && (partial as any)[key];
       const partialValues = additionalPartials.map((v) => (typeof v === 'object' ? (v as any)[key] : undefined));
       const baseValue = (base as any)[key];
