@@ -56,6 +56,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
           fill: RGBATupleToString(fill.color),
           formatted,
           value,
+          valueShown: pickedCells?.x.includes(x) && pickedCells.y.includes(y),
         })),
         selection: {
           area: pickedArea,
