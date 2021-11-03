@@ -1,3 +1,11 @@
+## [38.1.4](https://github.com/elastic/elastic-charts/compare/v38.1.3...v38.1.4) (2021-11-03)
+
+
+### Bug Fixes
+
+* **interactions:** line cursor above the chart, band cursor below ([#1453](https://github.com/elastic/elastic-charts/issues/1453)) ([d8d7ee0](https://github.com/elastic/elastic-charts/commit/d8d7ee0d204948e07235e7a949e9d33ea27c72ac))
+* **theme:** merge partial with empty initial partial ([#1452](https://github.com/elastic/elastic-charts/issues/1452)) ([d1e690a](https://github.com/elastic/elastic-charts/commit/d1e690af35161eb660d41da34092b64179c238d8))
+
 ## [38.1.3](https://github.com/elastic/elastic-charts/compare/v38.1.2...v38.1.3) (2021-11-01)
 
 
