@@ -270,18 +270,23 @@ function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
 }
 
 function getAnnotationsState(annotationSpecs: AnnotationSpec[]): DebugStateAnnotations[] {
-  return annotationSpecs.map((annotation) => {
-    return {
-      id: annotation.id,
-      color:
-        annotation.annotationType === AnnotationType.Line
-          ? mergeWithDefaultAnnotationLine(annotation?.style)
-          : mergeWithDefaultAnnotationRect(annotation?.style),
-      data: annotation.dataValues,
-      domainType: annotation.annotationType === AnnotationType.Line ? annotation.domainType : undefined,
-      type: annotation.annotationType,
-    };
+  // dataValue => id, color, type, domainType
+  const dataValuesDebug: DebugStateAnnotations[] = [];
+  annotationSpecs.map((annotation) => {
+    annotation.dataValues.map((dataValue) => {
+      dataValuesDebug.push({
+        data: dataValue,
+        id: annotation.id,
+        color:
+          annotation.annotationType === AnnotationType.Line
+            ? mergeWithDefaultAnnotationLine(annotation?.style)
+            : mergeWithDefaultAnnotationRect(annotation?.style),
+        type: annotation.annotationType,
+        domainType: annotation.annotationType === AnnotationType.Line ? annotation.domainType : undefined,
+      });
+    });
   });
+  return dataValuesDebug;
 }
 
 /**

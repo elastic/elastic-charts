@@ -609,7 +609,7 @@ export type DebugStateAnnotations = {
     color?: Partial<RectAnnotationStyle | LineAnnotationStyle>;
     type?: 'line' | 'rectangle';
     domainType?: 'xDomain' | 'yDomain';
-    data?: LineAnnotationDatum[] | RectAnnotationDatum[];
+    data?: LineAnnotationDatum | RectAnnotationDatum;
 };
 
 // @public (undocumented)
