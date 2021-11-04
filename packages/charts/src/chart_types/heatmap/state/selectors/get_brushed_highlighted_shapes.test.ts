@@ -29,7 +29,7 @@ describe('Categorical heatmap brush', () => {
           onBrushEnd: onBrushEndMock,
         }),
         MockSeriesSpec.heatmap({
-          xScaleType: ScaleType.Ordinal,
+          xScale: { type: ScaleType.Ordinal },
           data: [
             { x: 'a', y: 'ya', value: 1 },
             { x: 'b', y: 'ya', value: 2 },
@@ -91,7 +91,7 @@ describe('Temporal heatmap brush', () => {
           onBrushEnd: onBrushEndMock,
         }),
         MockSeriesSpec.heatmap({
-          xScaleType: ScaleType.Time,
+          xScale: { type: ScaleType.Time, timeZone: 'UTC', interval: { type: 'calendar', unit: 'd', value: 1 } },
           data: [
             { x: start.toMillis(), y: 'ya', value: 1 },
             { x: start.plus({ days: 1 }).toMillis(), y: 'ya', value: 2 },
