@@ -109,7 +109,7 @@ export const Example = () => {
         showLegend
         legendPosition="right"
         brushAxis="both"
-        xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
+        xDomain={{ min: 1572825600000, max: 1572912000000 }}
         debugState={debugState}
         baseTheme={useBaseTheme()}
         onBrushEnd={(e) => {
@@ -136,7 +136,7 @@ export const Example = () => {
         valueAccessor={(d) => d.value}
         valueFormatter={(d) => `${Number(d.toFixed(2))}℃`}
         ySortPredicate="numAsc"
-        xScaleType={ScaleType.Time}
+        xScale={{ type: ScaleType.Time, timeZone: 'UTC', interval: { type: 'fixed', value: 30, unit: 'm' } }}
         config={config}
         highlightedData={persistCellsSelection ? selection : undefined}
       />
