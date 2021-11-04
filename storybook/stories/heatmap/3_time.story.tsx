@@ -84,12 +84,11 @@ export const Example = () => {
       </div>
       <Chart className="story-chart">
         <Settings
+          showLegend
           xDomain={{
             min: start.toMillis() + startTimeOffset,
             max: end.toMillis() + endTimeOffset,
-            minInterval: 1000 * 60 * 60,
           }}
-          showLegend
         />
         <Heatmap
           id="heatmap1"
@@ -110,7 +109,15 @@ export const Example = () => {
           valueAccessor={(d) => d[2]}
           valueFormatter={(d) => d.toFixed(2)}
           ySortPredicate="numAsc"
-          xScaleType={ScaleType.Time}
+          xScale={{
+            type: ScaleType.Time,
+            interval: {
+              type: 'fixed',
+              unit: 'h',
+              value: 1,
+            },
+            timeZone: 'Europe/Rome',
+          }}
           config={config}
         />
       </Chart>
