@@ -14,15 +14,14 @@ import { Position } from '../../../../utils/common';
 import { computeLegendSelector } from './compute_legend';
 import { geometries } from './geometries';
 import { getHighlightedAreaSelector, getHighlightedDataSelector } from './get_highlighted_area';
-import { getPickedCells } from './get_picked_cells';
 
 /**
  * Returns a stringified version of the `debugState`
  * @internal
  */
 export const getDebugStateSelector = createCustomCachedSelector(
-  [geometries, computeLegendSelector, getHighlightedAreaSelector, getPickedCells, getHighlightedDataSelector],
-  (geoms, legend, pickedArea, pickedCells, highlightedData): DebugState => {
+  [geometries, computeLegendSelector, getHighlightedAreaSelector, getHighlightedDataSelector],
+  (geoms, legend, pickedArea, highlightedData): DebugState => {
     return {
       // Common debug state
       legend: getLegendState(legend),
@@ -56,9 +55,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
           fill: RGBATupleToString(fill.color),
           formatted,
           value,
-          valueShown:
-            pickedArea?.x < x < pickedArea?.x + pickedArea?.width &&
-            pickedArea?.y < y < pickedArea?.y + pickedArea?.height,
+          valueShown: geoms.config.cell.label.visible,
         })),
         selection: {
           area: pickedArea,
