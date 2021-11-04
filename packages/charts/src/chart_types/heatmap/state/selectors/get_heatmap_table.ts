@@ -64,7 +64,7 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
 
     resultData.xDomain = mergeXDomain(
       {
-        type: getXScaleTypeFromSpec(spec.xScaleType),
+        type: getXScaleTypeFromSpec(spec.xScale.type),
         nice: getXNiceFromSpec(),
         isBandScale: false,
         desiredTickCount: X_SCALE_DEFAULT.desiredTickCount,
@@ -74,7 +74,7 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
     );
 
     // sort values by their predicates
-    if (spec.xScaleType === ScaleType.Ordinal) {
+    if (spec.xScale.type === ScaleType.Ordinal) {
       resultData.xDomain.domain.sort(getPredicateFn(xSortPredicate));
     }
     resultData.yValues.sort(getPredicateFn(ySortPredicate));

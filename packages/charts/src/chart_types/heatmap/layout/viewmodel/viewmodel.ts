@@ -17,14 +17,14 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
-import { clamp, range } from '../../../../utils/common';
+import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
+import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { ContinuousDomain } from '../../../../utils/domain';
 import { Logger } from '../../../../utils/logger';
 import { Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { HeatmapSpec } from '../../specs';
+import { HeatmapSpec, HeatmapTimeScale } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScale } from '../../state/selectors/get_color_scale';
 import { GridHeightParams } from '../../state/selectors/get_grid_full_height';
@@ -100,33 +100,26 @@ export function shapeViewModel(
 
   const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, height]).range(yValues);
 
-  const timeScale =
-    xDomain.type === ScaleType.Time
-      ? new ScaleContinuous(
-          {
-            type: ScaleType.Time,
-            domain: xDomain.domain as number[],
-            range: [0, chartDimensions.width],
-            nice: false,
-          },
-          {
-            desiredTickCount: estimatedNonOverlappingTickCount(chartDimensions.width, config.xAxisLabel),
-            timeZone: config.timeZone,
-          },
-        )
-      : null;
-
-  const xValues = timeScale
-    ? range(
-        snapDateToESInterval(
-          (xDomain.domain as ContinuousDomain)[0],
-          { type: 'fixed', unit: 'ms', quantity: xDomain.minInterval },
-          'start',
-        ),
-        (xDomain.domain as ContinuousDomain)[1],
-        xDomain.minInterval,
+  const xScaleConfig = spec.xScale;
+  const timeScale = isTimeXScale(xScaleConfig)
+    ? new ScaleContinuous(
+        {
+          type: ScaleType.Time,
+          domain: xDomain.domain as number[],
+          range: [0, chartDimensions.width],
+          nice: false,
+        },
+        {
+          desiredTickCount: estimatedNonOverlappingTickCount(chartDimensions.width, config.xAxisLabel),
+          timeZone: config.timeZone,
+        },
       )
+    : null;
+
+  const xValues = isTimeXScale(xScaleConfig)
+    ? timeRange((xDomain.domain as ContinuousDomain)[0], (xDomain.domain as ContinuousDomain)[1], xScaleConfig.interval)
     : xDomain.domain;
+
   // compute the scale for the columns positions
   const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, chartDimensions.width]);
 
@@ -291,8 +284,9 @@ export function shapeViewModel(
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
     const invertedXValues: Array<NonNullable<PrimitiveValue>> =
-      timeScale && typeof endX === 'number' ? [startX, endX + xDomain.minInterval] : [...allXValuesInRange];
-
+      isTimeXScale(xScaleConfig) && typeof endX === 'number'
+        ? [startX, addIntervalToTime(endX, xScaleConfig.interval, xScaleConfig.timeZone)]
+        : [...allXValuesInRange];
     const cells: Cell[] = [];
 
     allXValuesInRange.forEach((x) => {
@@ -422,4 +416,8 @@ function getCellKey(x: NonNullable<PrimitiveValue>, y: NonNullable<PrimitiveValu
 
 function isValueHidden(value: number, rangesToHide: Array<[number, number]>) {
   return rangesToHide.some(([min, max]) => min <= value && value < max);
+}
+
+function isTimeXScale(scale: HeatmapSpec['xScale']): scale is HeatmapTimeScale {
+  return scale.type === ScaleType.Time;
 }

@@ -7,7 +7,7 @@
  */
 
 import { TimeMs } from '../../common/geometry';
-import { endOf, getUnixTimestamp, startOf } from './chrono';
+import { addTime, endOf, getUnixTimestamp, getUTCOffset, startOf } from './chrono';
 import { CalendarIntervalUnit, FixedIntervalUnit, UnixTimestamp } from './types';
 
 /** @internal */
@@ -42,14 +42,14 @@ export const ES_FIXED_INTERVAL_UNIT_TO_BASE: Record<ESFixedIntervalUnit, TimeMs>
 export type ESCalendarInterval = {
   type: 'calendar';
   unit: ESCalendarIntervalUnit;
-  quantity: number;
+  value: number;
 };
 
 /** @internal */
 export interface ESFixedInterval {
   type: 'fixed';
   unit: ESFixedIntervalUnit;
-  quantity: number;
+  value: number;
 }
 
 const esCalendarIntervalToChronoInterval: Record<ESCalendarIntervalUnit, CalendarIntervalUnit | FixedIntervalUnit> = {
@@ -102,8 +102,42 @@ function esFixedIntervalSnap(
   snapTo: 'start' | 'end',
   timeZone?: string,
 ): UnixTimestamp {
-  const unitMultiplier = interval.quantity * ES_FIXED_INTERVAL_UNIT_TO_BASE[interval.unit];
+  const unitMultiplier = interval.value * ES_FIXED_INTERVAL_UNIT_TO_BASE[interval.unit];
   const unixTimestamp = getUnixTimestamp(date, timeZone);
-  const roundedDate = Math.floor(unixTimestamp / unitMultiplier) * unitMultiplier;
+  const utcOffsetInMs = getUTCOffset(date, timeZone) * 60 * 1000;
+  const roundedDate = Math.floor((unixTimestamp + utcOffsetInMs) / unitMultiplier) * unitMultiplier - utcOffsetInMs;
   return snapTo === 'start' ? roundedDate : roundedDate + unitMultiplier - 1;
+}
+
+/** @internal */
+export function timeRange(
+  from: number,
+  to: number,
+  interval: ESCalendarInterval | ESFixedInterval,
+  timeZone?: string,
+): number[] {
+  const snappedFrom = snapDateToESInterval(from, interval, 'start', timeZone);
+  const snappedTo = snapDateToESInterval(to - 1, interval, 'start', timeZone);
+  const values: number[] = [snappedFrom];
+  let current = snappedFrom;
+
+  while (current < snappedTo) {
+    current = addIntervalToTime(current, interval, timeZone);
+    values.push(current);
+  }
+  return values;
+}
+
+/** @internal */
+export function addIntervalToTime(time: number, interval: ESCalendarInterval | ESFixedInterval, timeZone?: string) {
+  return interval.type === 'fixed'
+    ? utcToLocal(localToUTC(time, timeZone) + interval.value * ES_FIXED_INTERVAL_UNIT_TO_BASE[interval.unit], timeZone)
+    : addTime(time, timeZone, esCalendarIntervalToChronoInterval[interval.unit], interval.value);
+}
+
+function utcToLocal(time: number, timeZone?: string) {
+  return time - getUTCOffset(time, timeZone) * 60 * 1000;
+}
+function localToUTC(time: number, timeZone?: string) {
+  return time + getUTCOffset(time, timeZone) * 60 * 1000;
 }
