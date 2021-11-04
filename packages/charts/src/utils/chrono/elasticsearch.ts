@@ -40,11 +40,11 @@ export const ES_FIXED_INTERVAL_UNIT_TO_BASE: Record<ESFixedIntervalUnit, TimeMs>
 };
 
 /** @public */
-export type ESCalendarInterval = {
+export interface ESCalendarInterval {
   type: 'calendar';
   unit: ESCalendarIntervalUnit;
   value: number;
-};
+}
 
 /** @public */
 export interface ESFixedInterval {
