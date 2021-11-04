@@ -34,7 +34,7 @@
     overflow-x: hidden;
 
     :focus {
-      @include euiFocusRing;
+      @include euiFocusRing(null, 1);
       background-color: $euiFocusBackgroundColor;
       border-radius: $euiBorderRadius / 2;
     }

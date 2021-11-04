@@ -1,4 +1,4 @@
-@import '~@elastic/eui/dist/eui_theme_light';
+@import '~@elastic/eui/dist/eui_theme_amsterdam_light';
 
 /* atkinson-hyperlegible-regular - latin */
 @font-face {
@@ -22,7 +22,7 @@
 
 html {
   &.light-theme {
-    @import '~@elastic/eui/dist/eui_theme_light';
+    @import '~@elastic/eui/dist/eui_theme_amsterdam_light';
     @import '~@elastic/charts/src/theme_light';
 
     body,
@@ -32,7 +32,7 @@ html {
   }
 
   &.dark-theme {
-    @import '~@elastic/eui/dist/eui_theme_dark';
+    @import '~@elastic/eui/dist/eui_theme_amsterdam_dark';
     @import '~@elastic/charts/src/theme_dark';
 
     body,
@@ -43,7 +43,7 @@ html {
 
   &.eui {
     &.dark-theme {
-      @import '~@elastic/eui/src/themes/eui/eui_colors_dark.scss';
+      @import '~@elastic/eui/src/themes/eui-amsterdam/eui_amsterdam_colors_dark';
 
       body,
       .echChart {
@@ -52,7 +52,7 @@ html {
     }
 
     &.light-theme {
-      @import '~@elastic/eui/src/global_styling/variables/_colors.scss';
+      @import '~@elastic/eui/src/global_styling/variables/colors';
 
       body,
       .echChart {
