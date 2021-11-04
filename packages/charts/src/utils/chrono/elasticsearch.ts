@@ -10,7 +10,7 @@ import { TimeMs } from '../../common/geometry';
 import { addTime, endOf, getUnixTimestamp, getUTCOffset, startOf } from './chrono';
 import { CalendarIntervalUnit, FixedIntervalUnit, UnixTimestamp } from './types';
 
-/** @internal */
+/** @public */
 export type ESCalendarIntervalUnit =
   | 'minute'
   | 'm'
@@ -27,7 +27,8 @@ export type ESCalendarIntervalUnit =
   | 'year'
   | 'y';
 
-type ESFixedIntervalUnit = 'ms' | 's' | 'm' | 'h' | 'd';
+/** @public */
+export type ESFixedIntervalUnit = 'ms' | 's' | 'm' | 'h' | 'd';
 
 /** @internal */
 export const ES_FIXED_INTERVAL_UNIT_TO_BASE: Record<ESFixedIntervalUnit, TimeMs> = {
@@ -38,14 +39,14 @@ export const ES_FIXED_INTERVAL_UNIT_TO_BASE: Record<ESFixedIntervalUnit, TimeMs>
   d: 1000 * 60 * 60 * 24,
 };
 
-/** @internal */
+/** @public */
 export type ESCalendarInterval = {
   type: 'calendar';
   unit: ESCalendarIntervalUnit;
   value: number;
 };
 
-/** @internal */
+/** @public */
 export interface ESFixedInterval {
   type: 'fixed';
   unit: ESFixedIntervalUnit;

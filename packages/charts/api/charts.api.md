@@ -709,6 +709,29 @@ export const entryKey: ([key]: ArrayEntry) => string;
 // @public (undocumented)
 export const entryValue: ([, value]: ArrayEntry) => ArrayNode;
 
+// @public (undocumented)
+export type ESCalendarInterval = {
+    type: 'calendar';
+    unit: ESCalendarIntervalUnit;
+    value: number;
+};
+
+// @public (undocumented)
+export type ESCalendarIntervalUnit = 'minute' | 'm' | 'hour' | 'h' | 'day' | 'd' | 'week' | 'w' | 'month' | 'M' | 'quarter' | 'q' | 'year' | 'y';
+
+// @public (undocumented)
+export interface ESFixedInterval {
+    // (undocumented)
+    type: 'fixed';
+    // (undocumented)
+    unit: ESFixedIntervalUnit;
+    // (undocumented)
+    value: number;
+}
+
+// @public (undocumented)
+export type ESFixedIntervalUnit = 'ms' | 's' | 'm' | 'h' | 'd';
+
 // @alpha
 export interface ExternalPointerEventsSettings {
     tooltip: TooltipPortalSettings<'chart'> & {
@@ -1037,6 +1060,12 @@ export interface HeatmapConfig {
 export type HeatmapElementEvent = [Cell, SeriesIdentifier];
 
 // @alpha (undocumented)
+export interface HeatmapNonTimeScale {
+    // (undocumented)
+    type: typeof ScaleType.Ordinal | typeof ScaleType.Linear;
+}
+
+// @alpha (undocumented)
 export interface HeatmapSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartType.Heatmap;
@@ -1062,13 +1091,23 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     xAccessor: Accessor | AccessorFn;
     // (undocumented)
-    xScaleType: SeriesScales['xScaleType'];
+    xScale: HeatmapTimeScale | HeatmapNonTimeScale;
     // (undocumented)
     xSortPredicate: Predicate;
     // (undocumented)
     yAccessor: Accessor | AccessorFn;
     // (undocumented)
     ySortPredicate: Predicate;
+}
+
+// @alpha (undocumented)
+export interface HeatmapTimeScale {
+    // (undocumented)
+    interval: ESCalendarInterval | ESFixedInterval;
+    // (undocumented)
+    timeZone: string;
+    // (undocumented)
+    type: typeof ScaleType.Time;
 }
 
 // @public
