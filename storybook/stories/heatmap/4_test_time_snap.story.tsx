@@ -29,7 +29,7 @@ import {
 const datasets = [DATA_1, DATA_2, DATA_3, DATA_4, DATA_5, DATA_6, DATA_7, DATA_8, DATA_9];
 
 export const Example = () => {
-  const datasetIndex = select('dataset', [1, 2, 3, 4, 5, 6, 7, 8, 9], 3) - 1;
+  const datasetIndex = select('dataset', [1, 2, 3, 4, 5, 6, 7, 8, 9], 1) - 1;
   const dataset = datasets[datasetIndex];
   const [min = 0, max = 0] = extent(dataset.data, (d) => d.value);
   const colors = ['#ca0020', '#f4a582', '#cecece', '#92c5de', '#0571b0'];

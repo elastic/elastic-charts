@@ -70,7 +70,10 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
       const [customMin, customMax] = !Array.isArray(xDomain) ? [xDomain?.min ?? NaN, xDomain?.max ?? NaN] : [NaN, NaN];
       const [min, max] = extent([xDataMin, customMin, customMax, dataMaxExtended]);
       resultData.xNumericExtent = [min ?? NaN, max ?? NaN];
-      resultData.xValues = isFiniteNumber(min) && isFiniteNumber(max) ? timeRange(min, max, spec.xScale.interval) : [];
+      resultData.xValues =
+        isFiniteNumber(min) && isFiniteNumber(max)
+          ? timeRange(min, max, spec.xScale.interval, spec.xScale.timeZone)
+          : [];
     } else if (spec.xScale.type === ScaleType.Ordinal) {
       resultData.xValues.sort(getPredicateFn(xSortPredicate));
     }
