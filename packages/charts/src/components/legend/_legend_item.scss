@@ -1,3 +1,5 @@
+@import '../mixins';
+
 $legendItemVerticalPadding: $echLegendRowGap / 2;
 $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
 
@@ -81,6 +83,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     vertical-align: baseline;
     letter-spacing: unset;
     align-items: center;
+    @include wrapText;
 
     &--singleline {
       @include euiTextTruncate;
@@ -88,8 +91,6 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
 
     // div to prevent changing to button
     &--multiline:is(div) {
-      hyphens: auto;
-      overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2; // number of lines to show, overridden in element styles
