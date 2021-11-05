@@ -144,7 +144,8 @@ function fixedTimeRange(from: number, to: number, interval: ESFixedInterval, tim
     current = current + interval.value * ES_FIXED_INTERVAL_UNIT_TO_BASE[interval.unit];
     values.push(current);
   }
-  return values.map((d) => utcToLocal(d, timeZone));
+  // filtering duplicates that can be generated around DST
+  return [...new Set(values.map((d) => utcToLocal(d, timeZone)))];
 }
 
 /** @internal */

@@ -358,19 +358,20 @@ export function shapeViewModel(
   };
 
   // vertical lines
-  const xLines = [];
-  for (let i = 0; i < xValues.length; i++) {
-    const x = chartDimensions.left + i * cellWidth;
-    const y1 = chartDimensions.top;
-    const y2 = cellHeight * pageSize;
-    xLines.push({ x1: x, y1, x2: x, y2 });
-  }
+  const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => ({
+    x1: chartDimensions.left + i * cellWidth,
+    x2: chartDimensions.left + i * cellWidth,
+    y1: chartDimensions.top,
+    y2: cellHeight * pageSize,
+  }));
+
   // horizontal lines
-  const yLines = [];
-  for (let i = 0; i < pageSize + 1; i++) {
-    const y = i * cellHeight;
-    yLines.push({ x1: chartDimensions.left, y1: y, x2: chartDimensions.width + chartDimensions.left, y2: y });
-  }
+  const yLines = Array.from({ length: pageSize + 1 }, (d, i) => ({
+    x1: chartDimensions.left,
+    x2: chartDimensions.left + chartDimensions.width,
+    y1: i * cellHeight,
+    y2: i * cellHeight,
+  }));
 
   const cells = Object.values(cellMap);
   const tableMinFontSize = cells.reduce((acc, { fontSize }) => Math.min(acc, fontSize), Infinity);
