@@ -29,32 +29,18 @@ import { isSunburst } from '../../layout/viewmodel/viewmodel';
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
 const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to avoid burnout in the middle of the pie when there are hundreds of pies
 
-const getCrx = (row: TextRow, horizontalAlignment: HorizontalAlignment, rotation: number) => {
-  // TODO account for rotation if needed
-  if (horizontalAlignment === HorizontalAlignment.left) {
-    return row.rowAnchorX - row.maximumLength / 2;
-  }
-  if (horizontalAlignment === HorizontalAlignment.right) {
-    return row.rowAnchorX + row.maximumLength / 2 - Math.cos(rotation) * row.length;
-  }
-  return row.rowAnchorX - (Math.cos(rotation) * row.length) / 2;
+const getCurrentRowX = (row: TextRow, horizontalAlignment: HorizontalAlignment, rotation: number) => {
+  // TODO account for text rotation if needed
+  const rowLength = Math.cos(rotation) * row.length;
+  return horizontalAlignment === HorizontalAlignment.left
+    ? row.rowAnchorX - row.maximumLength / 2
+    : horizontalAlignment === HorizontalAlignment.right
+    ? row.rowAnchorX + row.maximumLength / 2 - rowLength
+    : row.rowAnchorX - rowLength / 2;
 };
 
-const getFillTextXOffset = (
-  box: RowBox,
-  rowLength: number,
-  horizontalAlignment: HorizontalAlignment,
-  isRTL: boolean,
-) => {
-  // TODO account for rotation if needed
-  if (horizontalAlignment === HorizontalAlignment.left) {
-    return isRTL ? rowLength - box.width / 2 - box.wordBeginning : box.width / 2 + box.wordBeginning;
-  }
-
-  if (horizontalAlignment === HorizontalAlignment.right) {
-    return isRTL ? rowLength - box.width / 2 - box.wordBeginning : box.width / 2 + box.wordBeginning;
-  }
-
+const getFillTextXOffset = (box: RowBox, rowLength: number, isRTL: boolean) => {
+  // TODO account for text rotation if needed
   return isRTL ? rowLength - box.width / 2 - box.wordBeginning : box.width / 2 + box.wordBeginning;
 };
 
@@ -64,7 +50,7 @@ function renderTextRow(
   linkLabelTextColor: string,
 ) {
   return (currentRow: TextRow) => {
-    const crx = getCrx(currentRow, horizontalAlignment, rotation);
+    const crx = getCurrentRowX(currentRow, horizontalAlignment, rotation);
     const cry = -currentRow.rowAnchorY + (Math.sin(rotation) * currentRow.length) / 2;
     if (!Number.isFinite(crx) || !Number.isFinite(cry)) {
       return;
@@ -86,7 +72,7 @@ function renderTextRow(
       currentRow.rowWords.forEach((box) => {
         if (box.isValue) ctx.direction = 'ltr'; // force value text direction
         ctx.font = cssFontShorthand(box, fontSize);
-        ctx.fillText(box.text, getFillTextXOffset(box, currentRow.length, horizontalAlignment, isRTL), 0);
+        ctx.fillText(box.text, getFillTextXOffset(box, currentRow.length, isRTL), 0);
       });
       ctx.closePath();
     });
@@ -218,16 +204,11 @@ function getLinkTextXOffset(
   { textAlign, width, valueWidth, isRTL }: Pick<LinkLabelVM, 'textAlign' | 'width' | 'valueWidth' | 'isRTL'>,
   labelValueGap: number,
 ): [label: number, value: number] {
-  if (isRTL && textAlign === 'left') {
-    return [valueWidth + labelValueGap, 0];
-  }
-  if (isRTL && textAlign === 'right') {
-    return [0, -width - labelValueGap];
-  }
-  if (textAlign === 'right') {
-    return [-valueWidth - labelValueGap, 0];
-  }
-  return [0, width + labelValueGap];
+  const isRightAligned = textAlign === HorizontalAlignment.right;
+  const multiplier = isRightAligned ? -1 : 1;
+  const isAligned = isRightAligned === isRTL;
+  const to = multiplier * (labelValueGap + (isAligned ? width : valueWidth));
+  return isAligned ? [0, to] : [to, 0];
 }
 
 function renderLinkLabels(

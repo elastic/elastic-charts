@@ -28,7 +28,7 @@ import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimensi
 import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { renderEuiColorPicker } from '../legend/11_legend_actions.story';
+import { getColorPicker } from '../utils/components/get_color_picker';
 
 const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
 
@@ -121,7 +121,7 @@ export const Example = () => {
         showLegend={showLegend}
         showLegendExtra
         baseTheme={useBaseTheme()}
-        legendColorPicker={renderEuiColorPicker('leftCenter')}
+        legendColorPicker={getColorPicker('leftCenter')}
       />
       {renderSeries()}
     </Chart>

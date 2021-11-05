@@ -172,7 +172,11 @@ function nodeToLinkLabel({
 
     // value text is simple: the full, formatted value is always shown, not truncated
     const valueText = valueFormatter(valueGetter(node));
-    const valueWidth = measureOneBoxWidth(measure, linkLabel.fontSize, { ...valueFont, text: valueText });
+    const valueWidth = measureOneBoxWidth(measure, linkLabel.fontSize, {
+      ...valueFont,
+      text: valueText,
+      isValue: false,
+    });
     const widthAdjustment = valueWidth + 2 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
 
     // label text removes space allotted for value and gaps, then tries to fit as much as possible

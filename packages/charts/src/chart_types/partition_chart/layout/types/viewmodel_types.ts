@@ -197,19 +197,12 @@ export const nullShapeViewModel = (specifiedConfig?: Config, diskCenter?: PointO
 });
 
 /** @internal */
-export const hasMostlyRTLLabels = (geoms: ShapeViewModel[]): boolean => {
-  let rtlLabelCount = 0;
-  let labelCount = 0;
-
-  geoms.forEach(({ rowSets }) => {
-    rowSets.forEach(({ isRTL }) => {
-      labelCount++;
-      if (isRTL) rtlLabelCount++;
-    });
-  });
-
-  return rtlLabelCount / labelCount > 0.5;
-};
+export const hasMostlyRTLLabels = (geoms: ShapeViewModel[]): boolean =>
+  geoms.reduce(
+    (surplus: number, { rowSets }) =>
+      surplus + rowSets.reduce((excess: number, { isRTL }) => excess + (isRTL ? 1 : -1), 0),
+    0,
+  ) > 0;
 
 /** @public */
 export type TreeLevel = number;

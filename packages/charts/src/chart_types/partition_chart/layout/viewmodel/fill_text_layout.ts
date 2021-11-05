@@ -188,7 +188,7 @@ function getAllBoxes(
   return rawTextGetter(node)
     .split(' ')
     .filter(Boolean)
-    .map<Box>((text) => ({ text, ...sizeInvariantFontShorthand }))
+    .map<Box>((text) => ({ text, ...sizeInvariantFontShorthand, isValue: false }))
     .concat(
       [valueFormatter(valueGetter(node))]
         .filter(Boolean)
