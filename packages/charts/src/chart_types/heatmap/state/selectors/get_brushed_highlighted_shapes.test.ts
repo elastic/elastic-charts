@@ -137,7 +137,7 @@ describe('Temporal heatmap brush', () => {
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(9);
     // it covers from the beginning of the cell to the end of the next cell
-    expect(brushEvent.x).toEqual([start.toMillis(), start.plus({ days: 2 }).toMillis()]);
+    expect(brushEvent.x).toEqual([start.toMillis(), start.plus({ days: 3 }).toMillis()]);
     expect(brushEvent.y).toEqual(['ya', 'yb', 'yc']);
   });
   it('should brush on the x scale + minInterval on a single cell', () => {
