@@ -11,6 +11,7 @@ import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
 /**
@@ -18,16 +19,19 @@ import { getHeatmapTableSelector } from './get_heatmap_table';
  * Gets color scale based on specification and values range.
  */
 export const getXAxisRightOverflow = createCustomCachedSelector(
-  [getHeatmapConfigSelector, getHeatmapTableSelector],
-  ({ xAxisLabel: { fontSize, fontFamily, padding, formatter, width }, timeZone }, { xDomain: { domain, type } }) => {
-    return type !== ScaleType.Time
+  [getHeatmapSpecSelector, getHeatmapConfigSelector, getHeatmapTableSelector],
+  ({ xScale }, { xAxisLabel: { fontSize, fontFamily, padding, formatter, width } }, { xValues, xNumericExtent }) => {
+    return xScale.type !== ScaleType.Time
       ? 0
       : typeof width === 'number'
       ? width / 2
-      : withTextMeasure((measure) =>
-          new ScaleContinuous({ type: ScaleType.Time, domain: domain as number[], range: [0, 1] }, { timeZone })
+      : withTextMeasure((measure) => {
+          return new ScaleContinuous(
+            { type: ScaleType.Time, domain: xNumericExtent, range: [0, 1] },
+            { timeZone: xScale.type === ScaleType.Time ? xScale.timeZone : undefined },
+          )
             .ticks()
-            .reduce((max, n) => Math.max(max, measure(formatter(n), padding, fontSize, fontFamily).width + padding), 0),
-        ) / 2;
+            .reduce((max, n) => Math.max(max, measure(formatter(n), padding, fontSize, fontFamily).width + padding), 0);
+        }) / 2;
   },
 );

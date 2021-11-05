@@ -117,16 +117,34 @@ export function timeRange(
   interval: ESCalendarInterval | ESFixedInterval,
   timeZone?: string,
 ): number[] {
+  return interval.type === 'fixed'
+    ? fixedTimeRange(from, to, interval, timeZone)
+    : calendarTimeRange(from, to, interval, timeZone);
+}
+
+function calendarTimeRange(from: number, to: number, interval: ESCalendarInterval, timeZone?: string): number[] {
   const snappedFrom = snapDateToESInterval(from, interval, 'start', timeZone);
-  const snappedTo = snapDateToESInterval(to - 1, interval, 'start', timeZone);
+  const snappedTo = snapDateToESInterval(to, interval, 'start', timeZone);
   const values: number[] = [snappedFrom];
   let current = snappedFrom;
-
-  while (current < snappedTo) {
-    current = addIntervalToTime(current, interval, timeZone);
+  while (addTime(current, timeZone, esCalendarIntervalToChronoInterval[interval.unit], interval.value) < snappedTo) {
+    current = addTime(current, timeZone, esCalendarIntervalToChronoInterval[interval.unit], interval.value);
     values.push(current);
   }
   return values;
+}
+
+function fixedTimeRange(from: number, to: number, interval: ESFixedInterval, timeZone?: string): number[] {
+  const snappedFrom = snapDateToESInterval(from, interval, 'start', timeZone);
+  const snappedTo = snapDateToESInterval(to, interval, 'start', timeZone);
+  const utcTo = localToUTC(snappedTo, timeZone);
+  let current = localToUTC(snappedFrom, timeZone);
+  const values: number[] = [current];
+  while (current + interval.value * ES_FIXED_INTERVAL_UNIT_TO_BASE[interval.unit] < utcTo) {
+    current = current + interval.value * ES_FIXED_INTERVAL_UNIT_TO_BASE[interval.unit];
+    values.push(current);
+  }
+  return values.map((d) => utcToLocal(d, timeZone));
 }
 
 /** @internal */

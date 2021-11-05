@@ -17,10 +17,9 @@ import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
+import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
 import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
-import { ContinuousDomain } from '../../../../utils/domain';
 import { Logger } from '../../../../utils/logger';
 import { Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
@@ -86,7 +85,7 @@ export function shapeViewModel(
 ): ShapeViewModel {
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
 
-  const { table, yValues, xDomain } = heatmapTable;
+  const { table, yValues, xValues, xNumericExtent } = heatmapTable;
 
   // measure the text width of all rows values to get the grid area width
   const boxedYValues = yValues.map<Box & { value: NonNullable<PrimitiveValue> }>((value) => ({
@@ -99,26 +98,6 @@ export function shapeViewModel(
   const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, height]);
 
   const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, height]).range(yValues);
-
-  const xScaleConfig = spec.xScale;
-  const timeScale = isTimeXScale(xScaleConfig)
-    ? new ScaleContinuous(
-        {
-          type: ScaleType.Time,
-          domain: xDomain.domain as number[],
-          range: [0, chartDimensions.width],
-          nice: false,
-        },
-        {
-          desiredTickCount: estimatedNonOverlappingTickCount(chartDimensions.width, config.xAxisLabel),
-          timeZone: config.timeZone,
-        },
-      )
-    : null;
-
-  const xValues = isTimeXScale(xScaleConfig)
-    ? timeRange((xDomain.domain as ContinuousDomain)[0], (xDomain.domain as ContinuousDomain)[1], xScaleConfig.interval)
-    : xDomain.domain;
 
   // compute the scale for the columns positions
   const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, chartDimensions.width]);
@@ -141,7 +120,7 @@ export function shapeViewModel(
     scaleCallback: (x: any) => number | undefined | null = xScale,
   ) => (value: any): TextBox => {
     return {
-      text: formatter(value, { timeZone: config.timeZone }),
+      text: formatter(value, { timeZone: isTimeXScale(spec.xScale) ? spec.xScale.timeZone ?? 'UTC' : 'UTC' }),
       value,
       ...config.xAxisLabel,
       x: chartDimensions.left + (scaleCallback(value) || 0),
@@ -149,6 +128,20 @@ export function shapeViewModel(
     };
   };
 
+  const timeScale = isTimeXScale(spec.xScale)
+    ? new ScaleContinuous(
+        {
+          type: ScaleType.Time,
+          domain: xNumericExtent,
+          range: [0, chartDimensions.width],
+          nice: false,
+        },
+        {
+          desiredTickCount: estimatedNonOverlappingTickCount(chartDimensions.width, config.xAxisLabel),
+          timeZone: spec.xScale.timeZone,
+        },
+      )
+    : null;
   // compute the position of each column label
   const textXValues: Array<TextBox> = timeScale
     ? timeScale.ticks().map<TextBox>(getTextValue(config.xAxisLabel.formatter, (x: any) => timeScale.scale(x)))
@@ -284,8 +277,8 @@ export function shapeViewModel(
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
     const invertedXValues: Array<NonNullable<PrimitiveValue>> =
-      isTimeXScale(xScaleConfig) && typeof endX === 'number'
-        ? [startX, addIntervalToTime(endX, xScaleConfig.interval, xScaleConfig.timeZone)]
+      isTimeXScale(spec.xScale) && typeof endX === 'number'
+        ? [startX, addIntervalToTime(endX, spec.xScale.interval, spec.xScale.timeZone)]
         : [...allXValuesInRange];
     const cells: Cell[] = [];
 
@@ -366,7 +359,7 @@ export function shapeViewModel(
 
   // vertical lines
   const xLines = [];
-  for (let i = 0; i < xValues.length + 1; i++) {
+  for (let i = 0; i < xValues.length; i++) {
     const x = chartDimensions.left + i * cellWidth;
     const y1 = chartDimensions.top;
     const y2 = cellHeight * pageSize;

@@ -710,11 +710,14 @@ export const entryKey: ([key]: ArrayEntry) => string;
 export const entryValue: ([, value]: ArrayEntry) => ArrayNode;
 
 // @public (undocumented)
-export type ESCalendarInterval = {
+export interface ESCalendarInterval {
+    // (undocumented)
     type: 'calendar';
+    // (undocumented)
     unit: ESCalendarIntervalUnit;
+    // (undocumented)
     value: number;
-};
+}
 
 // @public (undocumented)
 export type ESCalendarIntervalUnit = 'minute' | 'm' | 'hour' | 'h' | 'day' | 'd' | 'week' | 'w' | 'month' | 'M' | 'quarter' | 'q' | 'year' | 'y';
@@ -1020,8 +1023,6 @@ export interface HeatmapConfig {
     maxLegendHeight?: number;
     // (undocumented)
     maxRowHeight: Pixels;
-    // (undocumented)
-    timeZone: string;
     // (undocumented)
     width: Pixels;
     // Warning: (ae-forgotten-export) The symbol "Font" needs to be exported by the entry point index.d.ts
@@ -2461,8 +2462,8 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // Warnings were encountered during analysis:
 //
 // src/chart_types/heatmap/layout/types/config_types.ts:19:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:47:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:48:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:46:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:47:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 

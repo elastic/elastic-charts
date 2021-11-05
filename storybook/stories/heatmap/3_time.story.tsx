@@ -14,15 +14,15 @@ import { Chart, Heatmap, RecursivePartial, ScaleType, Settings, HeatmapConfig } 
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 const rng = getRandomNumberGenerator();
-const start = DateTime.fromISO('2021-03-27T20:00:00');
-const end = DateTime.fromISO('2021-03-28T11:00:00');
+const start = DateTime.fromISO('2021-03-27T20:00:00', { zone: 'Europe/Rome' });
+const end = DateTime.fromISO('2021-03-28T11:00:00', { zone: 'Europe/Rome' });
 const data = [...new Array(14)].flatMap((d, i) => {
   return [
-    [start.plus({ hour: i }).toMillis(), 'cat A', rng(-5, 5)],
-    [start.plus({ hour: i }).toMillis(), 'cat B', rng(-5, 5)],
-    [start.plus({ hour: i }).toMillis(), 'cat C', rng(-5, 5)],
-    [start.plus({ hour: i }).toMillis(), 'cat D', rng(-5, 5)],
-    [start.plus({ hour: i }).toMillis(), 'cat E', rng(-5, 5)],
+    [start.plus({ millisecond: i * 60 * 60 * 1000 }).toMillis(), 'cat A', rng(-5, 5)],
+    [start.plus({ millisecond: i * 60 * 60 * 1000 }).toMillis(), 'cat B', rng(-5, 5)],
+    [start.plus({ millisecond: i * 60 * 60 * 1000 }).toMillis(), 'cat C', rng(-5, 5)],
+    [start.plus({ millisecond: i * 60 * 60 * 1000 }).toMillis(), 'cat D', rng(-5, 5)],
+    [start.plus({ millisecond: i * 60 * 60 * 1000 }).toMillis(), 'cat E', rng(-5, 5)],
   ];
 });
 

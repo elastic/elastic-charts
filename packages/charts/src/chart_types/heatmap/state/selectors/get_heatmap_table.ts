@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { extent } from 'd3-array';
+
 import { getPredicateFn } from '../../../../common/predicate';
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getAccessorValue } from '../../../../utils/accessor';
-import { mergeXDomain } from '../../../xy_chart/domains/x_domain';
-import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../../../xy_chart/scales/get_api_scales';
-import { X_SCALE_DEFAULT } from '../../specs/scale_defaults';
+import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
 import { HeatmapTable } from './compute_chart_dimensions';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 
@@ -27,7 +27,7 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
     const { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate } = spec;
     const { xDomain } = settingsSpec;
 
-    const resultData = data.reduce(
+    const resultData = data.reduce<HeatmapTable>(
       (acc, curr, index) => {
         const x = getAccessorValue(curr, xAccessor);
 
@@ -59,26 +59,29 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
         xValues: [],
         yValues: [],
         extent: [+Infinity, -Infinity],
+        xNumericExtent: [+Infinity, -Infinity],
       },
     );
+    if (spec.xScale.type === ScaleType.Time) {
+      const [xDataMin = NaN, xDataMax = NaN] = extent(resultData.xValues as number[]);
+      // to correctly compute the time extent from data, we need to add an interval to the max value of the dataset
+      const dataMaxExtended = xDataMax ? addIntervalToTime(xDataMax, spec.xScale.interval, spec.xScale.timeZone) : NaN;
 
-    resultData.xDomain = mergeXDomain(
-      {
-        type: getXScaleTypeFromSpec(spec.xScale.type),
-        nice: getXNiceFromSpec(),
-        isBandScale: false,
-        desiredTickCount: X_SCALE_DEFAULT.desiredTickCount,
-        customDomain: xDomain,
-      },
-      resultData.xValues,
-    );
-
-    // sort values by their predicates
-    if (spec.xScale.type === ScaleType.Ordinal) {
-      resultData.xDomain.domain.sort(getPredicateFn(xSortPredicate));
+      const [customMin, customMax] = !Array.isArray(xDomain) ? [xDomain?.min ?? NaN, xDomain?.max ?? NaN] : [NaN, NaN];
+      const [min, max] = extent([xDataMin, customMin, customMax, dataMaxExtended]);
+      resultData.xNumericExtent = [min ?? NaN, max ?? NaN];
+      resultData.xValues = isFiniteNumber(min) && isFiniteNumber(max) ? timeRange(min, max, spec.xScale.interval) : [];
+    } else if (spec.xScale.type === ScaleType.Ordinal) {
+      resultData.xValues.sort(getPredicateFn(xSortPredicate));
     }
+
+    // sort Y values by their predicates
     resultData.yValues.sort(getPredicateFn(ySortPredicate));
 
     return resultData;
   },
 );
+
+function isFiniteNumber(value: number | undefined): value is number {
+  return Number.isFinite(value);
+}

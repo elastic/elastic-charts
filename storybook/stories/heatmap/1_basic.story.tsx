@@ -26,6 +26,7 @@ import {
 import { Config } from '@elastic/charts/src/chart_types/heatmap/layout/types/config_types';
 import { SWIM_LANE_DATA } from '@elastic/charts/src/utils/data_samples/test_anomaly_swim_lane';
 
+import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
@@ -130,13 +131,13 @@ export const Example = () => {
             { start: 75, end: Infinity, color: '#fe5050' },
           ],
         }}
-        data={SWIM_LANE_DATA.map((v) => ({ ...v, time: v.time * 1000 }))}
-        xAccessor={(d) => d.time}
-        yAccessor={(d) => d.laneLabel}
-        valueAccessor={(d) => d.value}
+        data={DATA_6.data}
+        xAccessor="x"
+        yAccessor="y"
+        valueAccessor="value"
         valueFormatter={(d) => `${Number(d.toFixed(2))}℃`}
         ySortPredicate="numAsc"
-        xScale={{ type: ScaleType.Time, timeZone: 'UTC', interval: { type: 'fixed', value: 30, unit: 'm' } }}
+        xScale={{ type: ScaleType.Time, timeZone: DATA_6.timeZone ?? 'UTC', interval: DATA_6.interval }}
         config={config}
         highlightedData={persistCellsSelection ? selection : undefined}
       />

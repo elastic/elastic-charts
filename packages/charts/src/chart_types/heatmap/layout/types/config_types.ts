@@ -21,7 +21,6 @@ export interface Config {
   maxColumnWidth: Pixels;
   // general text config
   fontFamily: FontFamily;
-  timeZone: string;
 
   /**
    * Config of the mask over the area outside of the selected cells
