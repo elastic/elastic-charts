@@ -38,6 +38,14 @@ const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, 
 const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
 
 export const Example = () => {
+  const lang = select(
+    'rtl language',
+    {
+      Hebrew: 'HE',
+      Arabic: 'AR',
+    },
+    'HE',
+  );
   const charSet = select(
     'character set',
     {
@@ -61,14 +69,14 @@ export const Example = () => {
 
   const mixedIndices = new Set(['0', '2', '3']);
   const valueGetter = {
-    rtl: (key: string) => productLookup[key].nameAR,
+    rtl: (key: string) => productLookup[key][`name${lang}`],
     ltr: (key: string) => productLookup[key].name,
     'mostly-rtl': (key: string) => {
       if (mixedIndices.has(key)) return productLookup[key].name;
-      return productLookup[key].nameAR;
+      return productLookup[key][`name${lang}`];
     },
     'mostly-ltr': (key: string) => {
-      if (mixedIndices.has(key)) return productLookup[key].nameAR;
+      if (mixedIndices.has(key)) return productLookup[key][`name${lang}`];
       return productLookup[key].name;
     },
   }[charSet];
