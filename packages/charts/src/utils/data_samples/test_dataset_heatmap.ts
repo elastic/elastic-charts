@@ -8,7 +8,7 @@
 
 import { DateTime } from 'luxon';
 
-import { HeatmapConfig } from '../..';
+import { Config } from '../../chart_types/heatmap/layout/types/config_types';
 import { ESCalendarInterval, ESFixedInterval } from '../chrono/elasticsearch';
 
 type HeatmapDataSets = {
@@ -16,7 +16,7 @@ type HeatmapDataSets = {
   timeZone?: string;
   data: Array<{ x: number; y: string; value: number }>;
   interval: ESFixedInterval | ESCalendarInterval;
-  xFormatter?: HeatmapConfig['xAxisLabel']['formatter'];
+  xFormatter?: Config['xAxisLabel']['formatter'];
 };
 
 /** @internal */

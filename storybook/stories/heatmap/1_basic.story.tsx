@@ -24,7 +24,6 @@ import {
   ElementClickListener,
 } from '@elastic/charts';
 import { Config } from '@elastic/charts/src/chart_types/heatmap/layout/types/config_types';
-import { SWIM_LANE_DATA } from '@elastic/charts/src/utils/data_samples/test_anomaly_swim_lane';
 
 import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
 import { useBaseTheme } from '../../use_base_theme';
