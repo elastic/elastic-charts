@@ -32,11 +32,13 @@ const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to a
 const getCurrentRowX = (row: TextRow, horizontalAlignment: HorizontalAlignment, rotation: number) => {
   // TODO account for text rotation if needed
   const rowLength = Math.cos(rotation) * row.length;
-  return horizontalAlignment === HorizontalAlignment.left
-    ? row.rowAnchorX - row.maximumLength / 2
-    : horizontalAlignment === HorizontalAlignment.right
-    ? row.rowAnchorX + row.maximumLength / 2 - rowLength
-    : row.rowAnchorX - rowLength / 2;
+  const offset =
+    horizontalAlignment === HorizontalAlignment.left
+      ? -row.maximumLength / 2
+      : horizontalAlignment === HorizontalAlignment.right
+      ? row.maximumLength / 2 - rowLength
+      : -rowLength / 2;
+  return row.rowAnchorX + offset;
 };
 
 const getFillTextXOffset = (box: RowBox, rowLength: number, isRTL: boolean) => {
