@@ -392,11 +392,12 @@ function getVisibleTickSets(
             (combinedEntry: { ticks: AxisTick[] }, l: TimeRaster<TimeBin>, detailedLayerIndex) => {
               if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
               if (layerIndex >= timeAxisLayerCount) return combinedEntry;
+              const binWidthS = binWidth / 1000;
               const { entry } = fillLayerTimeslip(
                 layerIndex,
                 detailedLayerIndex,
-                [...l.binStarts(domainFromS, domainToS)]
-                  .filter((b) => b.nextTimePointSec > domainFromS && b.timePointSec < domainToS)
+                [...l.binStarts(domainFromS - binWidthS, domainToS + binWidthS)]
+                  .filter((b) => b.nextTimePointSec > domainFromS && b.timePointSec <= domainToS)
                   .map((b) => 1000 * b.timePointSec),
                 !l.labeled
                   ? () => ''
