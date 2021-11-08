@@ -25,6 +25,7 @@ import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
+import { getLegendAction } from '../utils/components/get_legend_action';
 
 const dg = new SeededDataGenerator();
 const data = dg.generateGroupedSeries(10, 40);
@@ -38,6 +39,7 @@ export const Example = () => {
   });
 
   const floating: LegendPositionConfig['floating'] = boolean('Inside chart', true, 'Legend');
+  const showAction = boolean('Show legend action', false, 'Legend');
   const floatingColumns: LegendPositionConfig['floatingColumns'] = number(
     'floating columns',
     2,
@@ -89,6 +91,7 @@ export const Example = () => {
           floating,
           floatingColumns,
         }}
+        legendAction={showAction ? getLegendAction() : undefined}
         theme={{
           legend: { labelOptions: { maxLines } },
         }}

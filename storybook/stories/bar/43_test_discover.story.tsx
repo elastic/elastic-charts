@@ -48,15 +48,25 @@ export const Example = () => {
   };
 
   const useCustomMinInterval = boolean('use custom minInterval of 30s', true);
+  const multiLayerAxis = boolean('use multilayer time axis', false);
   return (
     <Chart>
       <Settings xDomain={useCustomMinInterval ? xDomain : undefined} baseTheme={useBaseTheme()} />
       <Axis id="discover-histogram-left-axis" position={Position.Left} title={TEST_DATASET_DISCOVER.yAxisLabel} />
       <Axis
+        timeAxisLayerCount={multiLayerAxis ? 3 : 0}
         id="discover-histogram-bottom-axis"
         position={Position.Bottom}
         title={TEST_DATASET_DISCOVER.xAxisLabel}
         tickFormat={formatter}
+        style={
+          multiLayerAxis
+            ? {
+                tickLine: { size: 0.0001, padding: 4 },
+                tickLabel: { alignment: { horizontal: Position.Left, vertical: Position.Bottom } },
+              }
+            : {}
+        }
       />
 
       <HistogramBarSeries

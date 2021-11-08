@@ -6,6 +6,7 @@
 
 import { $Values } from 'utility-types';
 import { ComponentType } from 'react';
+import { LegacyRef } from 'react';
 import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
 import { ReactNode } from 'react';
@@ -176,6 +177,8 @@ export interface AxisSpec extends Spec {
     style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
     tickFormat?: TickFormatter;
     ticks?: number;
+    // @alpha
+    timeAxisLayerCount: number;
     title?: string;
 }
 
@@ -191,6 +194,7 @@ export interface AxisStyle {
     gridLine: {
         horizontal: GridLineStyle;
         vertical: GridLineStyle;
+        lumaSteps: number[];
     };
     // (undocumented)
     tickLabel: TextStyle & Visible & {
@@ -1345,7 +1349,7 @@ export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationSt
 // @public (undocumented)
 export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationStyle>): RectAnnotationStyle;
 
-// @public
+// @public @deprecated
 export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, auxiliaryThemes?: PartialTheme[]): Theme;
 
 // @public (undocumented)
@@ -2239,6 +2243,9 @@ export interface UnaryAccessorFn<Return = any> {
     (datum: Datum): Return;
     fieldName?: string;
 }
+
+// @public
+export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, onClose: () => void];
 
 // @public (undocumented)
 export type ValueAccessor = (d: Datum) => AdditiveNumber;

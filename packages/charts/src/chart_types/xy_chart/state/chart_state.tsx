@@ -19,7 +19,9 @@ import { InitStatus } from '../../../state/selectors/get_internal_is_intialized'
 import { htmlIdGenerator } from '../../../utils/common';
 import { XYChart } from '../renderer/canvas/xy_chart';
 import { Annotations } from '../renderer/dom/annotations';
-import { Crosshair } from '../renderer/dom/crosshair';
+import { CursorBand } from '../renderer/dom/cursor_band';
+import { CursorCrossLine } from '../renderer/dom/cursor_crossline';
+import { CursorLine } from '../renderer/dom/cursor_line';
 import { Highlighter } from '../renderer/dom/highlighter';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
@@ -112,8 +114,10 @@ export class XYAxisChartState implements InternalChartState {
   chartRenderer(containerRef: BackwardRef, forwardCanvasRef: RefObject<HTMLCanvasElement>) {
     return (
       <>
-        <Crosshair />
+        <CursorBand />
         <XYChart forwardCanvasRef={forwardCanvasRef} />
+        <CursorLine />
+        <CursorCrossLine />
         <Tooltip getChartContainerRef={containerRef} />
         <Annotations getChartContainerRef={containerRef} chartAreaRef={forwardCanvasRef} />
         <Highlighter />
