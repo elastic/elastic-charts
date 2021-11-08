@@ -15,6 +15,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { getAccessorValue } from '../../../../utils/accessor';
 import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
 import { HeatmapTable } from './compute_chart_dimensions';
+import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 
 /**
@@ -22,11 +23,12 @@ import { getHeatmapSpecSelector } from './get_heatmap_spec';
  * @internal
  */
 export const getHeatmapTableSelector = createCustomCachedSelector(
-  [getHeatmapSpecSelector, getSettingsSpecSelector],
-  (spec, settingsSpec): HeatmapTable => {
-    const { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate } = spec;
-    const { xDomain } = settingsSpec;
-
+  [getHeatmapSpecSelector, getSettingsSpecSelector, getHeatmapConfigSelector],
+  (
+    { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate, xScale },
+    { xDomain },
+    { timeZone },
+  ): HeatmapTable => {
     const resultData = data.reduce<HeatmapTable>(
       (acc, curr, index) => {
         const x = getAccessorValue(curr, xAccessor);
@@ -62,19 +64,17 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
         xNumericExtent: [+Infinity, -Infinity],
       },
     );
-    if (spec.xScale.type === ScaleType.Time) {
+    if (xScale.type === ScaleType.Time) {
       const [xDataMin = NaN, xDataMax = NaN] = extent(resultData.xValues as number[]);
       // to correctly compute the time extent from data, we need to add an interval to the max value of the dataset
-      const dataMaxExtended = xDataMax ? addIntervalToTime(xDataMax, spec.xScale.interval, spec.xScale.timeZone) : NaN;
+      const dataMaxExtended = xDataMax ? addIntervalToTime(xDataMax, xScale.interval, timeZone) : NaN;
 
       const [customMin, customMax] = !Array.isArray(xDomain) ? [xDomain?.min ?? NaN, xDomain?.max ?? NaN] : [NaN, NaN];
       const [min, max] = extent([xDataMin, customMin, customMax, dataMaxExtended]);
       resultData.xNumericExtent = [min ?? NaN, max ?? NaN];
       resultData.xValues =
-        isFiniteNumber(min) && isFiniteNumber(max)
-          ? timeRange(min, max, spec.xScale.interval, spec.xScale.timeZone)
-          : [];
-    } else if (spec.xScale.type === ScaleType.Ordinal) {
+        isFiniteNumber(min) && isFiniteNumber(max) ? timeRange(min, max, xScale.interval, timeZone) : [];
+    } else if (xScale.type === ScaleType.Ordinal) {
       resultData.xValues.sort(getPredicateFn(xSortPredicate));
     }
 

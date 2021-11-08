@@ -59,16 +59,24 @@ export interface HeatmapBandsColorScale {
   labelFormatter?: (start: number, end: number) => string;
 }
 
-/** @alpha */
-export interface HeatmapTimeScale {
+/** @public */
+export interface TimeScale {
   type: typeof ScaleType.Time;
-  interval: ESCalendarInterval | ESFixedInterval;
-  timeZone: string;
 }
 
-/** @alpha */
-export interface HeatmapNonTimeScale {
-  type: typeof ScaleType.Ordinal | typeof ScaleType.Linear;
+/** @public */
+export interface RasterTimeScale extends TimeScale {
+  interval: ESCalendarInterval | ESFixedInterval;
+}
+
+/** @public */
+export interface LinearScale {
+  type: typeof ScaleType.Linear;
+}
+
+/** @public */
+export interface OrdinalScale {
+  type: typeof ScaleType.Ordinal;
 }
 
 /** @alpha */
@@ -83,7 +91,7 @@ export interface HeatmapSpec extends Spec {
   valueFormatter: (value: number) => string;
   xSortPredicate: Predicate;
   ySortPredicate: Predicate;
-  xScale: HeatmapTimeScale | HeatmapNonTimeScale;
+  xScale: RasterTimeScale | OrdinalScale | LinearScale;
   config: RecursivePartial<Config>;
   highlightedData?: { x: Array<string | number>; y: Array<string | number> };
   name?: string;

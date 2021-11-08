@@ -76,6 +76,7 @@ export const Example = () => {
           return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
         },
       },
+      timeZone: DATA_6.timeZone,
     }),
     [],
   );
@@ -136,7 +137,7 @@ export const Example = () => {
         valueAccessor="value"
         valueFormatter={(d) => `${Number(d.toFixed(2))}℃`}
         ySortPredicate="numAsc"
-        xScale={{ type: ScaleType.Time, timeZone: DATA_6.timeZone ?? 'UTC', interval: DATA_6.interval }}
+        xScale={{ type: ScaleType.Time, interval: DATA_6.interval }}
         config={config}
         highlightedData={persistCellsSelection ? selection : undefined}
       />

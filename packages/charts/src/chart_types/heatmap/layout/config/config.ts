@@ -33,6 +33,8 @@ export const config: Config = {
     fill: 'gray',
   },
 
+  timeZone: 'UTC',
+
   xAxisLabel: {
     name: 'X Value',
     visible: true,

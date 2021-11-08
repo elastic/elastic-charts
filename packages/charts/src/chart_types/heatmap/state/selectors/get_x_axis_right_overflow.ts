@@ -20,7 +20,7 @@ import { getHeatmapTableSelector } from './get_heatmap_table';
  */
 export const getXAxisRightOverflow = createCustomCachedSelector(
   [getHeatmapSpecSelector, getHeatmapConfigSelector, getHeatmapTableSelector],
-  ({ xScale }, { xAxisLabel: { fontSize, fontFamily, padding, formatter, width } }, { xNumericExtent }) => {
+  ({ xScale }, { timeZone, xAxisLabel: { fontSize, fontFamily, padding, formatter, width } }, { xNumericExtent }) => {
     return xScale.type !== ScaleType.Time
       ? 0
       : typeof width === 'number'
@@ -28,7 +28,7 @@ export const getXAxisRightOverflow = createCustomCachedSelector(
       : withTextMeasure((measure) => {
           return new ScaleContinuous(
             { type: ScaleType.Time, domain: xNumericExtent, range: [0, 1] },
-            { timeZone: xScale.type === ScaleType.Time ? xScale.timeZone : undefined },
+            { timeZone: xScale.type === ScaleType.Time ? timeZone : undefined },
           )
             .ticks()
             .reduce((max, n) => Math.max(max, measure(formatter(n), padding, fontSize, fontFamily).width + padding), 0);

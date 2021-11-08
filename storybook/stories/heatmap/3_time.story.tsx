@@ -61,6 +61,7 @@ export const Example = () => {
             .toFormat('HH:mm:ss');
         },
       },
+      timeZone: 'UTC',
     }),
     [],
   );
@@ -118,7 +119,6 @@ export const Example = () => {
               unit: 'h',
               value: 1,
             },
-            timeZone: 'UTC',
           }}
           config={config}
         />

@@ -21,4 +21,4 @@ export * from './xy_chart/utils/specs';
 
 export { Partition } from './partition_chart/specs';
 
-export { Heatmap, HeatmapSpec, HeatmapTimeScale, HeatmapNonTimeScale } from './heatmap/specs';
+export { Heatmap, HeatmapSpec, RasterTimeScale, TimeScale, LinearScale, OrdinalScale } from './heatmap/specs';

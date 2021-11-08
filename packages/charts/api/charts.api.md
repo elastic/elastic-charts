@@ -1024,6 +1024,8 @@ export interface HeatmapConfig {
     // (undocumented)
     maxRowHeight: Pixels;
     // (undocumented)
+    timeZone: string;
+    // (undocumented)
     width: Pixels;
     // Warning: (ae-forgotten-export) The symbol "Font" needs to be exported by the entry point index.d.ts
     //
@@ -1061,12 +1063,6 @@ export interface HeatmapConfig {
 export type HeatmapElementEvent = [Cell, SeriesIdentifier];
 
 // @alpha (undocumented)
-export interface HeatmapNonTimeScale {
-    // (undocumented)
-    type: typeof ScaleType.Ordinal | typeof ScaleType.Linear;
-}
-
-// @alpha (undocumented)
 export interface HeatmapSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartType.Heatmap;
@@ -1092,23 +1088,13 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     xAccessor: Accessor | AccessorFn;
     // (undocumented)
-    xScale: HeatmapTimeScale | HeatmapNonTimeScale;
+    xScale: RasterTimeScale | OrdinalScale | LinearScale;
     // (undocumented)
     xSortPredicate: Predicate;
     // (undocumented)
     yAccessor: Accessor | AccessorFn;
     // (undocumented)
     ySortPredicate: Predicate;
-}
-
-// @alpha (undocumented)
-export interface HeatmapTimeScale {
-    // (undocumented)
-    interval: ESCalendarInterval | ESFixedInterval;
-    // (undocumented)
-    timeZone: string;
-    // (undocumented)
-    type: typeof ScaleType.Time;
 }
 
 // @public
@@ -1340,6 +1326,12 @@ export interface LineAnnotationStyle {
     line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
 }
 
+// @public (undocumented)
+export interface LinearScale {
+    // (undocumented)
+    type: typeof ScaleType.Linear;
+}
+
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
@@ -1441,6 +1433,12 @@ export interface OrderBy {
 
 // @public (undocumented)
 export type OrdinalDomain = (number | string)[];
+
+// @public (undocumented)
+export interface OrdinalScale {
+    // (undocumented)
+    type: typeof ScaleType.Ordinal;
+}
 
 // @public (undocumented)
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
@@ -1666,6 +1664,12 @@ export type ProjectedValues = {
 
 // @public
 export type ProjectionClickListener = (values: ProjectedValues) => void;
+
+// @public (undocumented)
+export interface RasterTimeScale extends TimeScale {
+    // (undocumented)
+    interval: ESCalendarInterval | ESFixedInterval;
+}
 
 // @public
 export type Ratio = number;
@@ -2185,6 +2189,12 @@ export type TickStyle = StrokeStyle & Visible & {
 
 // @public (undocumented)
 export function timeFormatter(format: string): TickFormatter;
+
+// @public (undocumented)
+export interface TimeScale {
+    // (undocumented)
+    type: typeof ScaleType.Time;
+}
 
 // @public
 export function toEntries<T extends Record<string, string>, S>(array: T[], accessor: keyof T, staticValue: S): Record<string, S>;

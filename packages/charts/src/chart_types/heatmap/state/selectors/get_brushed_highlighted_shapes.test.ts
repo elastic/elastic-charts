@@ -91,7 +91,7 @@ describe('Temporal heatmap brush', () => {
           onBrushEnd: onBrushEndMock,
         }),
         MockSeriesSpec.heatmap({
-          xScale: { type: ScaleType.Time, timeZone: 'Europe/Rome', interval: { type: 'fixed', unit: 'h', value: 24 } },
+          xScale: { type: ScaleType.Time, interval: { type: 'fixed', unit: 'h', value: 24 } },
           data: [
             { x: start.toMillis(), y: 'ya', value: 1 },
             { x: start.plus({ days: 1 }).toMillis(), y: 'ya', value: 2 },
@@ -119,6 +119,7 @@ describe('Temporal heatmap brush', () => {
               visible: false,
             },
             margin: { top: 0, bottom: 0, left: 0, right: 0 },
+            timeZone: 'Europe/Rome',
           },
         }),
       ],

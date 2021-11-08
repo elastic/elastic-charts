@@ -65,7 +65,6 @@ export const Example = () => {
           xScale={{
             type: ScaleType.Time,
             interval: dataset.interval,
-            timeZone: dataset.timeZone ?? 'Europe/Rome',
           }}
           config={{
             grid: {
@@ -96,6 +95,7 @@ export const Example = () => {
             xAxisLabel: {
               formatter: dataset.xFormatter,
             },
+            timeZone: dataset.timeZone ?? 'Europe/Rome',
           }}
         />
       </Chart>

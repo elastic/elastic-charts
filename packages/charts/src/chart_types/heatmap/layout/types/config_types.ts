@@ -89,4 +89,5 @@ export interface Config {
     };
   };
   maxLegendHeight?: number;
+  timeZone: string;
 }
