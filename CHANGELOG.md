@@ -1,3 +1,10 @@
+## [38.0.3](https://github.com/elastic/elastic-charts/compare/v38.0.2...v38.0.3) (2021-11-08)
+
+
+### Bug Fixes
+
+* **legend:** legend breaking on words ([#1458](https://github.com/elastic/elastic-charts/issues/1458)) ([#1470](https://github.com/elastic/elastic-charts/issues/1470)) ([20298fb](https://github.com/elastic/elastic-charts/commit/20298fbbb7e53dce68c8c40d3028e32acd13979e))
+
 ## [38.0.2](https://github.com/elastic/elastic-charts/compare/v38.0.1...v38.0.2) (2021-11-02)
 
 
