@@ -14,8 +14,8 @@ import { Chart, Heatmap, RecursivePartial, ScaleType, Settings, HeatmapConfig } 
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 const rng = getRandomNumberGenerator();
-const start = DateTime.fromISO('2021-03-27T20:00:00', { zone: 'Europe/Rome' });
-const end = DateTime.fromISO('2021-03-28T11:00:00', { zone: 'Europe/Rome' });
+const start = DateTime.fromISO('2021-03-27T20:00:00', { zone: 'UTC' });
+const end = DateTime.fromISO('2021-03-28T11:00:00', { zone: 'UTC' });
 const data = [...new Array(14)].flatMap((d, i) => {
   return [
     [start.plus({ millisecond: i * 60 * 60 * 1000 }).toMillis(), 'cat A', rng(-5, 5)],
@@ -56,7 +56,9 @@ export const Example = () => {
       },
       xAxisLabel: {
         formatter: (value: string | number) => {
-          return DateTime.fromMillis(value as number).toFormat('HH:mm:ss', { timeZone: 'UTC' });
+          return DateTime.fromMillis(value as number)
+            .setZone('UTC')
+            .toFormat('HH:mm:ss');
         },
       },
     }),
@@ -116,7 +118,7 @@ export const Example = () => {
               unit: 'h',
               value: 1,
             },
-            timeZone: 'Europe/Rome',
+            timeZone: 'UTC',
           }}
           config={config}
         />
