@@ -8,7 +8,6 @@
 
 import { LegendItem } from '../../../common/legend';
 import { Scale } from '../../../scales';
-import { getDomainPolarity } from '../../../scales/scale_continuous';
 import { isLogarithmicScale } from '../../../scales/types';
 import { MarkBuffer } from '../../../specs';
 import { getDistance } from '../../../utils/common';
@@ -68,9 +67,7 @@ export function getClippedRanges(
 
   return dataset.reduce<ClippedRanges>((acc, data) => {
     const xScaled = xScale.scale(data.x);
-    if (xScaled === null) {
-      return acc;
-    }
+    if (Number.isNaN(xScaled)) return acc;
 
     const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
 
@@ -159,11 +156,8 @@ export function isPointOnGeometry(
 
 const getScaleTypeValueValidator = (yScale: Scale<number>): ((n: number) => boolean) => {
   if (!isLogarithmicScale(yScale)) return () => true;
-
   const domainPolarity = getDomainPolarity(yScale.domain);
-  return (yValue: number) => {
-    return !((domainPolarity >= 0 && yValue <= 0) || (domainPolarity < 0 && yValue >= 0));
-  };
+  return (yValue: number) => domainPolarity === Math.sign(yValue);
 };
 
 /**
@@ -172,10 +166,7 @@ const getScaleTypeValueValidator = (yScale: Scale<number>): ((n: number) => bool
 const DEFAULT_ZERO_BASELINE = 0;
 
 /** @internal */
-export type YDefinedFn = (
-  datum: DataSeriesDatum,
-  getValueAccessor: (datum: DataSeriesDatum) => number | null,
-) => boolean;
+export type YDefinedFn = (datum: DataSeriesDatum, getValueAccessor: (d: DataSeriesDatum) => number | null) => boolean;
 
 /** @internal */
 export function isYValueDefinedFn(yScale: Scale<number>, xScale: Scale<number | string>): YDefinedFn {
@@ -196,44 +187,33 @@ export const CHROME_PINCH_BUG_EPSILON = 0.5;
  * https://bugs.chromium.org/p/chromium/issues/detail?id=1163912
  */
 function chromeRenderBugBuffer(y1: number, y0: number): number {
-  const diff = Math.abs(y1 - y0);
-  return diff <= CHROME_PINCH_BUG_EPSILON ? 0.5 : 0;
+  return Math.abs(y1 - y0) <= CHROME_PINCH_BUG_EPSILON ? 0.5 : 0;
 }
 
 /** @internal */
-export function getY1ScaledValueOrThrowFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
+export function getY1ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
   const datumAccessor = getYDatumValueFn();
-  const scaleY0Value = getY0ScaledValueOrThrowFn(yScale);
+  const scaleY0Value = getY0ScaledValueFn(yScale);
   return (datum) => {
-    const y1Value = yScale.scaleOrThrow(datumAccessor(datum));
+    const y1Value = yScale.scale(datumAccessor(datum));
     const y0Value = scaleY0Value(datum);
     return y1Value - chromeRenderBugBuffer(y1Value, y0Value);
   };
 }
 
 /** @internal */
-export function getY0ScaledValueOrThrowFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
-  const isLogScale = isLogarithmicScale(yScale);
+export function getY0ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
   const domainPolarity = getDomainPolarity(yScale.domain);
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);
+  return ({ y0 }) =>
+    isLogarithmicScale(yScale) // checking wrong y0 polarity
+      ? y0 === null || domainPolarity !== Math.sign(y0) // if all positive domain use 1 as baseline, -1 otherwise
+        ? yScale.scale(logBaseline)
+        : yScale.scale(y0) // if negative value, use -1 as max reference, 1 otherwise
+      : yScale.scale(y0 === null ? DEFAULT_ZERO_BASELINE : y0);
+}
 
-  return ({ y0 }) => {
-    if (y0 === null) {
-      if (isLogScale) {
-        // if all positive domain use 1 as baseline, -1 otherwise
-        return yScale.scaleOrThrow(logBaseline);
-      }
-      return yScale.scaleOrThrow(DEFAULT_ZERO_BASELINE);
-    }
-    if (isLogScale) {
-      // wrong y0 polarity
-      if ((domainPolarity >= 0 && y0 <= 0) || (domainPolarity < 0 && y0 >= 0)) {
-        // if all positive domain use 1 as baseline, -1 otherwise
-        return yScale.scaleOrThrow(logBaseline);
-      }
-      // if negative value, use -1 as max reference, 1 otherwise
-      return yScale.scaleOrThrow(y0);
-    }
-    return yScale.scaleOrThrow(y0);
-  };
+function getDomainPolarity(domain: number[]): number {
+  // 1 if both numbers are positive, -1 if both are negative, 0 if zeros or mixed
+  return Math.sign(Math.sign(domain[0]) + Math.sign(domain[1]));
 }

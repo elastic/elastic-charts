@@ -6,12 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
   Axis,
   Chart,
   HistogramBarSeries,
+  LineSeries,
   niceTimeFormatByDay,
   Position,
   ScaleType,
@@ -24,13 +26,21 @@ import { useBaseTheme } from '../../use_base_theme';
 
 // for testing purposes only
 export const Example = () => {
+  const useLine = boolean('use lines instead of bars', false);
+  const multiLayerAxis = boolean('use multilayer time axis', false);
+  const oddDomain = boolean('non-round time domain start', false);
+
   const formatter = timeFormatter(niceTimeFormatByDay(1));
 
+  const binWidth = 60000;
+
   const xDomain = {
-    min: NaN,
-    max: NaN,
-    minInterval: 60000,
+    min: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] - (oddDomain ? 217839 : 0),
+    max: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] + (oddDomain ? 200000 : 0 ?? binWidth - 1),
+    minInterval: binWidth,
   };
+
+  const Series = useLine ? LineSeries : HistogramBarSeries;
 
   return (
     <Chart>
@@ -39,13 +49,23 @@ export const Example = () => {
         id="bottom"
         title="timestamp per 1 minute"
         position={Position.Bottom}
-        showOverlappingTicks
+        showOverlappingTicks={!multiLayerAxis}
         tickFormat={formatter}
+        timeAxisLayerCount={multiLayerAxis ? 3 : 0}
+        style={
+          multiLayerAxis
+            ? {
+                tickLine: { size: 0.0001, padding: 4 },
+                tickLabel: { alignment: { horizontal: Position.Left, vertical: Position.Bottom } },
+              }
+            : {}
+        }
       />
       <Axis id="left" title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title} position={Position.Left} />
-      <HistogramBarSeries
-        id="bars"
-        xScaleType={ScaleType.Linear}
+      <Series
+        id="series"
+        timeZone="local"
+        xScaleType={multiLayerAxis ? ScaleType.Time : ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}

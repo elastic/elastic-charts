@@ -16,8 +16,5 @@ export const getTooltipSnapSelector = createCustomCachedSelector([getSettingsSpe
 
 function getTooltipSnap(settings: SettingsSpec): boolean {
   const { tooltip } = settings;
-  if (tooltip && isTooltipProps(tooltip)) {
-    return tooltip.snap ?? DEFAULT_TOOLTIP_SNAP;
-  }
-  return DEFAULT_TOOLTIP_SNAP;
+  return tooltip && isTooltipProps(tooltip) ? tooltip.snap ?? DEFAULT_TOOLTIP_SNAP : DEFAULT_TOOLTIP_SNAP;
 }

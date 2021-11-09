@@ -7,14 +7,15 @@
  */
 
 import { Scale } from '../../../scales';
+import { SettingsSpec } from '../../../specs';
 import { Rotation, Position } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
-import { isHorizontalRotation } from '../state/utils/common';
 import { getAxesSpecForSpecId } from '../state/utils/spec';
+import { ComputedGeometries } from '../state/utils/types';
 import { AnnotationDomainType, AnnotationSpec, AxisSpec, isLineAnnotation } from '../utils/specs';
 import { computeLineAnnotationDimensions } from './line/dimensions';
 import { computeRectAnnotationDimensions } from './rect/dimensions';
@@ -27,12 +28,9 @@ export function getAnnotationAxis(
   domainType: AnnotationDomainType,
   chartRotation: Rotation,
 ): Position | undefined {
-  const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
-  const isHorizontalRotated = isHorizontalRotation(chartRotation);
+  const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId, chartRotation);
   const isXDomainAnnotation = isXDomain(domainType);
-  const annotationAxis = isXDomainAnnotation ? xAxis : yAxis;
-  const rotatedAnnotation = isHorizontalRotated ? annotationAxis : isXDomainAnnotation ? yAxis : xAxis;
-  return rotatedAnnotation ? rotatedAnnotation.position : undefined;
+  return isXDomainAnnotation ? xAxis?.position : yAxis?.position;
 }
 
 /** @internal */
@@ -117,9 +115,8 @@ export function invertTransformedCursor(
 /** @internal */
 export function computeAnnotationDimensions(
   annotations: AnnotationSpec[],
-  chartRotation: Rotation,
-  yScales: Map<GroupId, Scale<number>>,
-  xScale: Scale<number | string>,
+  { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
+  { scales: { xScale, yScales } }: Pick<ComputedGeometries, 'scales'>,
   axesSpecs: AxisSpec[],
   isHistogramModeEnabled: boolean,
   smallMultipleScales: SmallMultipleScales,

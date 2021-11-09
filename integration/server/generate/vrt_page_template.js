@@ -27,13 +27,15 @@ appendIconComponentCache({
   arrowDown: require('@elastic/eui/es/components/icon/assets/arrow_down').icon,
   arrowRight: require('@elastic/eui/es/components/icon/assets/arrow_right').icon,
   iInCircle: require('@elastic/eui/es/components/icon/assets/iInCircle').icon,
-  tokenKey: require('@elastic/eui/es/components/icon/assets/tokens/tokenKey').icon,
+  tokenKey: require('@elastic/eui/es/components/icon/assets/tokenKey').icon,
   filter: require('@elastic/eui/es/components/icon/assets/filter').icon,
   starFilled: require('@elastic/eui/es/components/icon/assets/star_filled').icon,
   pencil: require('@elastic/eui/es/components/icon/assets/pencil').icon,
   visualizeApp: require('@elastic/eui/es/components/icon/assets/app_visualize').icon,
 });
 
+const path = new URL(window.location.toString()).searchParams.get('path');
+document.getElementsByTagName('body')[0].style.overflow = path ? 'hidden' : 'scroll';
 ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElement);
 
 `.trim();

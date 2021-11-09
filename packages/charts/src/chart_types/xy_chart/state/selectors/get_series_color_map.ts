@@ -24,7 +24,6 @@ export const getSeriesColorsSelector = createCustomCachedSelector(
   [computeSeriesDomainsSelector, getChartThemeSelector, getColorOverrides],
   (seriesDomainsAndData, chartTheme, colorOverrides): Map<SeriesKey, Color> => {
     const updatedCustomSeriesColors = getCustomSeriesColors(seriesDomainsAndData.formattedDataSeries);
-
     return getSeriesColors(
       seriesDomainsAndData.formattedDataSeries,
       chartTheme.colors,

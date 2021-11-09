@@ -96,7 +96,7 @@ const TooltipPortalComponent = ({
   const popper = useRef<Instance | null>(null);
   const popperSettings = useMemo(
     // @ts-ignore - nesting limitation
-    () => mergePartial(DEFAULT_POPPER_SETTINGS, settings, { mergeOptionalPartialValues: true }),
+    () => mergePartial(DEFAULT_POPPER_SETTINGS, settings),
     [settings],
   );
   const anchorPosition = (anchor as PortalAnchorRef)?.position;

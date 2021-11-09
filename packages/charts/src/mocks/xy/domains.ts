@@ -25,20 +25,17 @@ export class MockXDomain {
     ...X_SCALE_DEFAULT,
     isBandScale: X_SCALE_DEFAULT.type !== ScaleType.Ordinal,
     minInterval: 0,
-    timeZone: undefined,
+    timeZone: 'UTC',
     domain: [0, 1],
   };
 
   static default(partial?: RecursivePartial<XDomain>) {
-    return mergePartial<XDomain>(MockXDomain.base, partial, { mergeOptionalPartialValues: true });
+    return mergePartial<XDomain>(MockXDomain.base, partial);
   }
 
   static fromScaleType(scaleType: XScaleType, partial?: RecursivePartial<XDomain>) {
-    return mergePartial<XDomain>(MockXDomain.base, partial, { mergeOptionalPartialValues: true }, [
-      {
-        type: getXScaleTypeFromSpec(scaleType),
-        nice: getXNiceFromSpec(),
-      },
+    return mergePartial<XDomain>(MockXDomain.base, partial, {}, [
+      { type: getXScaleTypeFromSpec(scaleType), nice: getXNiceFromSpec() },
     ]);
   }
 }
@@ -53,15 +50,12 @@ export class MockYDomain {
   };
 
   static default(partial?: RecursivePartial<YDomain>) {
-    return mergePartial<YDomain>(MockYDomain.base, partial, { mergeOptionalPartialValues: true });
+    return mergePartial<YDomain>(MockYDomain.base, partial);
   }
 
   static fromScaleType(scaleType: ScaleContinuousType, partial?: RecursivePartial<YDomain>) {
-    return mergePartial<YDomain>(MockYDomain.base, partial, { mergeOptionalPartialValues: true }, [
-      {
-        type: getYScaleTypeFromSpec(scaleType),
-        nice: getYNiceFromSpec(),
-      },
+    return mergePartial<YDomain>(MockYDomain.base, partial, {}, [
+      { type: getYScaleTypeFromSpec(scaleType), nice: getYNiceFromSpec() },
     ]);
   }
 }

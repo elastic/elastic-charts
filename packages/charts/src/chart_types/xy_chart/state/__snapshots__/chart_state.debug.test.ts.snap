@@ -1,0 +1,453 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`XYChart - debug state line chart rotation: -90 1`] = `
+Object {
+  "areas": Array [],
+  "axes": Object {
+    "x": Array [
+      Object {
+        "gridlines": Array [],
+        "id": "left",
+        "labels": Array [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+        ],
+        "position": "left",
+        "title": undefined,
+        "values": Array [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+        ],
+      },
+    ],
+    "y": Array [
+      Object {
+        "gridlines": Array [],
+        "id": "bottom",
+        "labels": Array [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+        ],
+        "position": "bottom",
+        "title": undefined,
+        "values": Array [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+        ],
+      },
+    ],
+  },
+  "bars": Array [],
+  "legend": Object {
+    "items": Array [
+      Object {
+        "color": "#1EA593",
+        "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
+        "name": "spec1",
+      },
+    ],
+  },
+  "lines": Array [
+    Object {
+      "color": "#1EA593",
+      "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
+      "name": "spec1",
+      "path": "M0,140L58,98.35L145,0",
+      "points": Array [
+        Object {
+          "mark": null,
+          "x": 0,
+          "y": 0,
+        },
+        Object {
+          "mark": null,
+          "x": 4,
+          "y": 3,
+        },
+        Object {
+          "mark": null,
+          "x": 10,
+          "y": 10,
+        },
+      ],
+      "visible": true,
+      "visiblePoints": true,
+    },
+  ],
+}
+`;
+
+exports[`XYChart - debug state line chart rotation: 0 1`] = `
+Object {
+  "areas": Array [],
+  "axes": Object {
+    "x": Array [
+      Object {
+        "gridlines": Array [],
+        "id": "bottom",
+        "labels": Array [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+        ],
+        "position": "bottom",
+        "title": undefined,
+        "values": Array [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+        ],
+      },
+    ],
+    "y": Array [
+      Object {
+        "gridlines": Array [],
+        "id": "left",
+        "labels": Array [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+        ],
+        "position": "left",
+        "title": undefined,
+        "values": Array [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+        ],
+      },
+    ],
+  },
+  "bars": Array [],
+  "legend": Object {
+    "items": Array [
+      Object {
+        "color": "#1EA593",
+        "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
+        "name": "spec1",
+      },
+    ],
+  },
+  "lines": Array [
+    Object {
+      "color": "#1EA593",
+      "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
+      "name": "spec1",
+      "path": "M0,144.5L56.2,101.5L140.5,0",
+      "points": Array [
+        Object {
+          "mark": null,
+          "x": 0,
+          "y": 0,
+        },
+        Object {
+          "mark": null,
+          "x": 4,
+          "y": 3,
+        },
+        Object {
+          "mark": null,
+          "x": 10,
+          "y": 10,
+        },
+      ],
+      "visible": true,
+      "visiblePoints": true,
+    },
+  ],
+}
+`;
+
+exports[`XYChart - debug state line chart rotation: 90 1`] = `
+Object {
+  "areas": Array [],
+  "axes": Object {
+    "x": Array [
+      Object {
+        "gridlines": Array [],
+        "id": "left",
+        "labels": Array [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+        ],
+        "position": "left",
+        "title": undefined,
+        "values": Array [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+        ],
+      },
+    ],
+    "y": Array [
+      Object {
+        "gridlines": Array [],
+        "id": "bottom",
+        "labels": Array [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+        ],
+        "position": "bottom",
+        "title": undefined,
+        "values": Array [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+        ],
+      },
+    ],
+  },
+  "bars": Array [],
+  "legend": Object {
+    "items": Array [
+      Object {
+        "color": "#1EA593",
+        "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
+        "name": "spec1",
+      },
+    ],
+  },
+  "lines": Array [
+    Object {
+      "color": "#1EA593",
+      "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
+      "name": "spec1",
+      "path": "M0,140L58,98.35L145,0",
+      "points": Array [
+        Object {
+          "mark": null,
+          "x": 0,
+          "y": 0,
+        },
+        Object {
+          "mark": null,
+          "x": 4,
+          "y": 3,
+        },
+        Object {
+          "mark": null,
+          "x": 10,
+          "y": 10,
+        },
+      ],
+      "visible": true,
+      "visiblePoints": true,
+    },
+  ],
+}
+`;
+
+exports[`XYChart - debug state line chart rotation: 180 1`] = `
+Object {
+  "areas": Array [],
+  "axes": Object {
+    "x": Array [
+      Object {
+        "gridlines": Array [],
+        "id": "bottom",
+        "labels": Array [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+        ],
+        "position": "bottom",
+        "title": undefined,
+        "values": Array [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+        ],
+      },
+    ],
+    "y": Array [
+      Object {
+        "gridlines": Array [],
+        "id": "left",
+        "labels": Array [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+        ],
+        "position": "left",
+        "title": undefined,
+        "values": Array [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+        ],
+      },
+    ],
+  },
+  "bars": Array [],
+  "legend": Object {
+    "items": Array [
+      Object {
+        "color": "#1EA593",
+        "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
+        "name": "spec1",
+      },
+    ],
+  },
+  "lines": Array [
+    Object {
+      "color": "#1EA593",
+      "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
+      "name": "spec1",
+      "path": "M0,144.5L56.2,101.5L140.5,0",
+      "points": Array [
+        Object {
+          "mark": null,
+          "x": 0,
+          "y": 0,
+        },
+        Object {
+          "mark": null,
+          "x": 4,
+          "y": 3,
+        },
+        Object {
+          "mark": null,
+          "x": 10,
+          "y": 10,
+        },
+      ],
+      "visible": true,
+      "visiblePoints": true,
+    },
+  ],
+}
+`;

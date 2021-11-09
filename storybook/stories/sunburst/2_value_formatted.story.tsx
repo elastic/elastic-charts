@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { number } from '@storybook/addon-knobs';
+import { action } from '@storybook/addon-actions';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, Settings } from '@elastic/charts';
@@ -16,43 +17,52 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorTurbo, productLookup } from '../utils/utils';
 
-export const Example = () => (
-  <Chart>
-    <Settings baseTheme={useBaseTheme()} />
-    <Partition
-      id="spec_1"
-      data={mocks.pie}
-      valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-      layers={[
-        {
-          groupByRollup: (d: Datum) => d.sitc1,
-          nodeLabel: (d: Datum) => productLookup[d].name,
-          fillLabel: {
-            fontWeight: 100,
-            fontStyle: 'italic',
-            valueFont: {
-              fontFamily: 'Menlo',
-              fontStyle: 'normal',
-              fontWeight: 900,
+export const Example = () => {
+  const onElementClick = boolean('onElementClick listener', true);
+  const onElementOver = boolean('onElementOver listener', true);
+
+  return (
+    <Chart>
+      <Settings
+        baseTheme={useBaseTheme()}
+        onElementClick={onElementClick ? action('onElementClick') : undefined}
+        onElementOver={onElementOver ? action('onElementOver') : undefined}
+      />
+      <Partition
+        id="spec_1"
+        data={mocks.pie}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+            fillLabel: {
+              fontWeight: 100,
+              fontStyle: 'italic',
+              valueFont: {
+                fontFamily: 'Menlo',
+                fontStyle: 'normal',
+                fontWeight: 900,
+              },
+            },
+            shape: {
+              fillColor: indexInterpolatedFillColor(interpolatorTurbo),
             },
           },
-          shape: {
-            fillColor: indexInterpolatedFillColor(interpolatorTurbo),
+        ]}
+        config={{
+          outerSizeRatio: 0.9,
+          linkLabel: {
+            fontStyle: 'italic',
+            valueFont: { fontWeight: 900 },
+            maxTextLength: number('maxTextLength', 20, { range: true, min: 1, max: 100 }),
           },
-        },
-      ]}
-      config={{
-        outerSizeRatio: 0.9,
-        linkLabel: {
-          fontStyle: 'italic',
-          valueFont: { fontWeight: 900 },
-          maxTextLength: number('maxTextLength', 20, { range: true, min: 1, max: 100 }),
-        },
-      }}
-    />
-  </Chart>
-);
+        }}
+      />
+    </Chart>
+  );
+};
 
 Example.parameters = {
   background: { default: 'white' },

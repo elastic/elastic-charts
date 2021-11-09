@@ -26,6 +26,12 @@ export const getAxisSpecsSelector = createCustomCachedSelector([getSpecs], (spec
 );
 
 /** @internal */
+export const axisSpecsLookupSelector = createCustomCachedSelector(
+  getAxisSpecsSelector,
+  (axisSpecs: AxisSpec[]): Map<string, AxisSpec> => axisSpecs.reduce((acc, spec) => acc.set(spec.id, spec), new Map()),
+);
+
+/** @internal */
 export const getSeriesSpecsSelector = createCustomCachedSelector([getSpecs], (specs) => {
   return getSpecsFromStore<BasicSeriesSpec>(specs, ChartType.XYAxis, SpecType.Series);
 });

@@ -52,8 +52,7 @@ export const computeLegendSelector = createCustomCachedSelector(
       siDataSeriesMap,
       deselectedDataSeries,
       chartTheme,
-      // @ts-ignore - hidden method for vislib usage only
-      settings.sortSeriesBy,
+      settings.rotation,
     );
   },
 );

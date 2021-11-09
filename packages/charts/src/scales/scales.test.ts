@@ -131,43 +131,43 @@ describe('Scale Test', () => {
     expect(scaledValue3).toBe((Math.sqrt(5) / Math.sqrt(10)) * 100);
   });
   test('Check log scale domain limiting', () => {
-    let limitedDomain = limitLogScaleDomain([10, 20]);
+    let limitedDomain = limitLogScaleDomain([10, 20], NaN);
     expect(limitedDomain).toEqual([10, 20]);
 
-    limitedDomain = limitLogScaleDomain([0, 100]);
+    limitedDomain = limitLogScaleDomain([0, 100], NaN);
     expect(limitedDomain).toEqual([1, 100]);
 
-    limitedDomain = limitLogScaleDomain([100, 0]);
+    limitedDomain = limitLogScaleDomain([100, 0], NaN);
     expect(limitedDomain).toEqual([100, 1]);
 
-    limitedDomain = limitLogScaleDomain([0, 0]);
+    limitedDomain = limitLogScaleDomain([0, 0], NaN);
     expect(limitedDomain).toEqual([1, 1]);
 
-    limitedDomain = limitLogScaleDomain([-100, 0]);
+    limitedDomain = limitLogScaleDomain([-100, 0], NaN);
     expect(limitedDomain).toEqual([-100, -1]);
 
-    limitedDomain = limitLogScaleDomain([0, -100]);
+    limitedDomain = limitLogScaleDomain([0, -100], NaN);
     expect(limitedDomain).toEqual([-1, -100]);
 
-    limitedDomain = limitLogScaleDomain([-100, 100]);
+    limitedDomain = limitLogScaleDomain([-100, 100], NaN);
     expect(limitedDomain).toEqual([1, 100]);
 
-    limitedDomain = limitLogScaleDomain([-100, 50]);
+    limitedDomain = limitLogScaleDomain([-100, 50], NaN);
     expect(limitedDomain).toEqual([-100, -1]);
 
-    limitedDomain = limitLogScaleDomain([-100, 150]);
+    limitedDomain = limitLogScaleDomain([-100, 150], NaN);
     expect(limitedDomain).toEqual([1, 150]);
 
-    limitedDomain = limitLogScaleDomain([100, -100]);
+    limitedDomain = limitLogScaleDomain([100, -100], NaN);
     expect(limitedDomain).toEqual([100, 1]);
 
-    limitedDomain = limitLogScaleDomain([100, -50]);
+    limitedDomain = limitLogScaleDomain([100, -50], NaN);
     expect(limitedDomain).toEqual([100, 1]);
 
-    limitedDomain = limitLogScaleDomain([150, -100]);
+    limitedDomain = limitLogScaleDomain([150, -100], NaN);
     expect(limitedDomain).toEqual([150, 1]);
 
-    limitedDomain = limitLogScaleDomain([50, -100]);
+    limitedDomain = limitLogScaleDomain([50, -100], NaN);
     expect(limitedDomain).toEqual([-1, -100]);
   });
 
