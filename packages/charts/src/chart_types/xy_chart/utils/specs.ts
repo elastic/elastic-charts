@@ -767,6 +767,14 @@ export interface AxisSpec extends Spec {
    * @defaultValue `false`
    */
   showDuplicatedTicks?: boolean;
+
+  /**
+   * Render a multi-layer time axis. Use 2 or 3 as valid number of layers.
+   * Use 0 to use the alternative, one row, time axis.
+   * @alpha
+   * @defaultValue 0
+   */
+  timeAxisLayerCount: number;
 }
 
 /** @public */

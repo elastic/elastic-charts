@@ -6,15 +6,16 @@
  * Side Public License, v 1.
  */
 
+import { extent } from 'd3-array';
+
 import { getPredicateFn } from '../../../../common/predicate';
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getAccessorValue } from '../../../../utils/accessor';
-import { mergeXDomain } from '../../../xy_chart/domains/x_domain';
-import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../../../xy_chart/scales/get_api_scales';
-import { X_SCALE_DEFAULT } from '../../specs/scale_defaults';
+import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
 import { HeatmapTable } from './compute_chart_dimensions';
+import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 
 /**
@@ -22,13 +23,13 @@ import { getHeatmapSpecSelector } from './get_heatmap_spec';
  * @internal
  */
 export const getHeatmapTableSelector = createCustomCachedSelector(
-  [getHeatmapSpecSelector, getSettingsSpecSelector],
-  (spec, settingsSpec): HeatmapTable => {
-    const { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate } = spec;
-
-    const { table, xValues, yValues, extent } = data.reduce<
-      Omit<HeatmapTable, 'xDomain'> & { xValues: Array<string | number> }
-    >(
+  [getHeatmapSpecSelector, getSettingsSpecSelector, getHeatmapConfigSelector],
+  (
+    { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate, xScale },
+    { xDomain },
+    { timeZone },
+  ): HeatmapTable => {
+    const resultData = data.reduce<HeatmapTable>(
       (acc, curr, index) => {
         const x = getAccessorValue(curr, xAccessor);
         const y = getAccessorValue(curr, yAccessor);
@@ -59,33 +60,30 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
         xValues: [],
         yValues: [],
         extent: [+Infinity, -Infinity],
+        xNumericExtent: [+Infinity, -Infinity],
       },
     );
+    if (xScale.type === ScaleType.Time) {
+      const [xDataMin = NaN, xDataMax = NaN] = extent(resultData.xValues as number[]);
+      // to correctly compute the time extent from data, we need to add an interval to the max value of the dataset
+      const dataMaxExtended = xDataMax ? addIntervalToTime(xDataMax, xScale.interval, timeZone) : NaN;
 
-    const xDomain = mergeXDomain(
-      {
-        type: getXScaleTypeFromSpec(spec.xScaleType),
-        nice: getXNiceFromSpec(),
-        isBandScale: false,
-        desiredTickCount: X_SCALE_DEFAULT.desiredTickCount,
-        customDomain: settingsSpec.xDomain,
-      },
-      new Set(xValues),
-    );
-
-    const resultData: HeatmapTable = {
-      table,
-      xDomain,
-      yValues,
-      extent,
-    };
-
-    // sort values by their predicates
-    if (spec.xScaleType === ScaleType.Ordinal) {
-      resultData.xDomain.domain.sort(getPredicateFn(xSortPredicate));
+      const [customMin, customMax] = !Array.isArray(xDomain) ? [xDomain?.min ?? NaN, xDomain?.max ?? NaN] : [NaN, NaN];
+      const [min, max] = extent([xDataMin, customMin, customMax, dataMaxExtended]);
+      resultData.xNumericExtent = [min ?? NaN, max ?? NaN];
+      resultData.xValues =
+        isFiniteNumber(min) && isFiniteNumber(max) ? timeRange(min, max, xScale.interval, timeZone) : [];
+    } else if (xScale.type === ScaleType.Ordinal) {
+      resultData.xValues.sort(getPredicateFn(xSortPredicate));
     }
+
+    // sort Y values by their predicates
     resultData.yValues.sort(getPredicateFn(ySortPredicate));
 
     return resultData;
   },
 );
+
+function isFiniteNumber(value: number | undefined): value is number {
+  return Number.isFinite(value);
+}

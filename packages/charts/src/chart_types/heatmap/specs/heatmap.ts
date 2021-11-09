@@ -12,10 +12,11 @@ import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { Predicate } from '../../../common/predicate';
 import { ScaleType } from '../../../scales/constants';
-import { BaseDatum, SeriesScales, Spec } from '../../../specs';
+import { BaseDatum, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
+import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { Datum, RecursivePartial } from '../../../utils/common';
 import { config } from '../layout/config/config';
 import { Config } from '../layout/types/config_types';
@@ -44,6 +45,26 @@ export interface HeatmapBandsColorScale {
   labelFormatter?: (start: number, end: number) => string;
 }
 
+/** @public */
+export interface TimeScale {
+  type: typeof ScaleType.Time;
+}
+
+/** @public */
+export interface RasterTimeScale extends TimeScale {
+  interval: ESCalendarInterval | ESFixedInterval;
+}
+
+/** @public */
+export interface LinearScale {
+  type: typeof ScaleType.Linear;
+}
+
+/** @public */
+export interface OrdinalScale {
+  type: typeof ScaleType.Ordinal;
+}
+
 /** @alpha */
 export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   specType: typeof SpecType.Series;
@@ -56,7 +77,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   valueFormatter: (value: number) => string;
   xSortPredicate: Predicate;
   ySortPredicate: Predicate;
-  xScaleType: SeriesScales['xScaleType'];
+  xScale: RasterTimeScale | OrdinalScale | LinearScale;
   config: RecursivePartial<Config>;
   highlightedData?: { x: Array<string | number>; y: Array<string | number> };
   name?: string;
@@ -85,7 +106,7 @@ export const Heatmap = function <D extends BaseDatum = Datum>(
       {
         data: [],
         valueAccessor: ({ value }) => value,
-        xScaleType: X_SCALE_DEFAULT.type,
+        xScale: { type: X_SCALE_DEFAULT.type },
         valueFormatter: (value) => `${value}`,
         xSortPredicate: Predicate.AlphaAsc,
         ySortPredicate: Predicate.AlphaAsc,

@@ -10,7 +10,6 @@ export default {
   title: 'Area Chart',
 };
 
-export { Example as timeslip2 } from './22_with_time_timeslip_2.story';
 export { Example as timeslip } from './21_with_time_timeslip.story';
 export { Example as basic } from './1_basic.story';
 export { Example as withTimeXAxis } from './2_with_time.story';
