@@ -17,7 +17,7 @@ import { Rect } from '../../../geoms/types';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { BrushEvent, SettingsSpec } from '../../../specs';
+import { BrushEvent, SettingsSpec, StackMode } from '../../../specs';
 import { SpecType, TooltipType, BrushAxis } from '../../../specs/constants';
 import { onExternalPointerEvent } from '../../../state/actions/events';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
@@ -755,6 +755,7 @@ describe('Chart state pointer interactions', () => {
           showOverlappingLabels: false,
           showOverlappingTicks: false,
           style,
+          timeAxisLayerCount: 0,
         };
         bottomAxis = {
           chartType: ChartType.XYAxis,
@@ -767,6 +768,7 @@ describe('Chart state pointer interactions', () => {
           showOverlappingLabels: false,
           showOverlappingTicks: false,
           style,
+          timeAxisLayerCount: 0,
         };
         currentSettingSpec = getSettingsSpecSelector(store.getState());
       });
@@ -1352,6 +1354,59 @@ describe('Clickable annotations', () => {
     store.dispatch(onMouseDown({ x: 10, y: 10 }, 100));
     store.dispatch(onMouseUp({ x: 10, y: 10 }, 200));
     expect(onAnnotationClick).toBeCalled();
+  });
+
+  describe('Tooltip on null/missing values', () => {
+    const partialSpec = {
+      data: [
+        { x: 0, y: 0, g: 'a' },
+        { x: 1, y: null, g: 'a' },
+        { x: 0, y: 4, g: 'b' },
+        { x: 1, y: 5, g: 'b' },
+        { x: 2, y: 2, g: 'b' },
+      ],
+      xAccessor: 'x',
+      yAccessors: ['y'],
+      splitSeriesAccessors: ['g'],
+      stackAccessors: ['x'],
+      xScaleType: ScaleType.Ordinal,
+      yScaleType: ScaleType.Linear,
+    };
+    let store: Store;
+    beforeEach(() => {
+      store = MockStore.default({ width: 90, height: 100, top: 0, left: 0 });
+    });
+
+    const tooltipValues = (s: Store) =>
+      getTooltipInfoAndGeometriesSelector(s.getState()).tooltip.values.map((d) => [d.label, d.value]);
+
+    it.each`
+      type               | stackMode               | first                   | second        | third
+      ${SeriesType.Bar}  | ${StackMode.Percentage} | ${[['a', 0], ['b', 1]]} | ${[['b', 1]]} | ${[['b', 1]]}
+      ${SeriesType.Bar}  | ${undefined}            | ${[['a', 0], ['b', 4]]} | ${[['b', 5]]} | ${[['b', 2]]}
+      ${SeriesType.Area} | ${StackMode.Percentage} | ${[['a', 0], ['b', 1]]} | ${[['b', 1]]} | ${[['b', 1]]}
+      ${SeriesType.Area} | ${undefined}            | ${[['a', 0], ['b', 4]]} | ${[['b', 5]]} | ${[['b', 2]]}
+    `(
+      `tooltip should hide null/missing values on stacked $type in $stackMode mode`,
+      ({ type, stackMode, first, second, third }) => {
+        MockStore.addSpecs(
+          [
+            MockSeriesSpec.byTypePartial(type)({ ...partialSpec, stackMode }),
+            MockGlobalSpec.settingsNoMargins({ theme: { colors: { vizColors: ['red', 'blue'] } } }),
+          ],
+          store,
+        );
+        // move over the 1st bar
+        store.dispatch(onPointerMove({ x: 15, y: 50 }, 0));
+        expect(tooltipValues(store)).toIncludeSameMembers(first);
+        // move over the 2nd bar (hide the null)
+        store.dispatch(onPointerMove({ x: 45, y: 50 }, 1));
+        expect(tooltipValues(store)).toIncludeSameMembers(second);
+        // move over the 3rd bar (hide missing series)
+        store.dispatch(onPointerMove({ x: 75, y: 50 }, 1));
+        expect(tooltipValues(store)).toIncludeSameMembers(third);
+      },
+    );
   });
 });
 

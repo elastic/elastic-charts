@@ -158,6 +158,7 @@ export interface AxisStyle {
   gridLine: {
     horizontal: GridLineStyle;
     vertical: GridLineStyle;
+    lumaSteps: number[];
   };
 }
 

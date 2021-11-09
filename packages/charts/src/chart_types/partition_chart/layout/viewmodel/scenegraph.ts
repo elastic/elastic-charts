@@ -46,7 +46,6 @@ export function getShapeViewModel(
 ): ShapeViewModel {
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
-
   if (!textMeasurerCtx) {
     const { width, height } = parentDimensions;
     return nullShapeViewModel(spec.layout, style, { x: width / 2, y: height / 2 });

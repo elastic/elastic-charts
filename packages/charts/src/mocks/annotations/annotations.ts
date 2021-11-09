@@ -16,12 +16,7 @@ export class MockAnnotationLineProps {
   private static readonly base: AnnotationLineProps = {
     id: getAnnotationLinePropsId('spec1', { dataValue: 0 }, 0),
     specId: 'spec1',
-    linePathPoints: {
-      x1: 0,
-      y1: 0,
-      x2: 0,
-      y2: 0,
-    },
+    linePathPoints: { x1: 0, y1: 0, x2: 0, y2: 0 },
     panel: { top: 0, left: 0, width: 100, height: 100 },
     datum: { dataValue: 0 },
     markers: [],
@@ -38,30 +33,17 @@ export class MockAnnotationLineProps {
       smVerticalValue,
       smHorizontalValue,
     );
-    return mergePartial<AnnotationLineProps>(
-      MockAnnotationLineProps.base,
-      { id, ...partial },
-      {
-        mergeOptionalPartialValues: true,
-      },
-    );
+    return mergePartial<AnnotationLineProps>(MockAnnotationLineProps.base, { id, ...partial });
   }
 
   static fromPoints(x1 = 0, y1 = 0, x2 = 0, y2 = 0): AnnotationLineProps {
     return MockAnnotationLineProps.default({
-      linePathPoints: {
-        x1,
-        y1,
-        x2,
-        y2,
-      },
+      linePathPoints: { x1, y1, x2, y2 },
     });
   }
 
   static fromPartialAndId(partial?: RecursivePartial<AnnotationLineProps>) {
-    return mergePartial<AnnotationLineProps>(MockAnnotationLineProps.base, partial, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergePartial<AnnotationLineProps>(MockAnnotationLineProps.base, partial);
   }
 }
 
@@ -69,34 +51,15 @@ export class MockAnnotationLineProps {
 export class MockAnnotationRectProps {
   private static readonly base: AnnotationRectProps = {
     datum: { coordinates: { x0: 0, x1: 1, y0: 0, y1: 1 } },
-    rect: {
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-    },
-    panel: {
-      width: 100,
-      height: 100,
-      top: 0,
-      left: 0,
-    },
+    rect: { x: 0, y: 0, width: 0, height: 0 },
+    panel: { width: 100, height: 100, top: 0, left: 0 },
   };
 
   static default(partial?: RecursivePartial<AnnotationRectProps>) {
-    return mergePartial<AnnotationRectProps>(MockAnnotationRectProps.base, partial, {
-      mergeOptionalPartialValues: true,
-    });
+    return mergePartial<AnnotationRectProps>(MockAnnotationRectProps.base, partial);
   }
 
   static fromValues(x = 0, y = 0, width = 0, height = 0): AnnotationRectProps {
-    return MockAnnotationRectProps.default({
-      rect: {
-        x,
-        y,
-        width,
-        height,
-      },
-    });
+    return MockAnnotationRectProps.default({ rect: { x, y, width, height } });
   }
 }

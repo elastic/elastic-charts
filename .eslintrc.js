@@ -56,6 +56,7 @@ module.exports = {
     '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'no-extra-parens': 'off', // it was already off by default; this line addition is just for documentation purposes
     '@typescript-eslint/restrict-template-expressions': 0, // it's OK to use numbers etc. in string templates
+    'unicorn/prefer-string-slice': 'off', // substr is just as fine as it's string specific and well named
 
     /**
      *****************************************
@@ -89,7 +90,7 @@ module.exports = {
     'jsx-a11y/no-static-element-interactions': 1,
     'jsx-a11y/mouse-events-have-key-events': 1,
     'jsx-a11y/click-events-have-key-events': 1,
-    '@typescript-eslint/member-ordering': 1,
+    '@typescript-eslint/member-ordering': 0,
     eqeqeq: 2,
 
     /*
@@ -104,7 +105,7 @@ module.exports = {
     'consistent-return': 0,
     'no-plusplus': 0,
     'no-bitwise': 0,
-    'no-void': 0,
+    'no-void': 1,
     yoda: 0,
     'no-restricted-globals': 0,
     'no-case-declarations': 0,
@@ -154,7 +155,7 @@ module.exports = {
     ],
     'no-unused-vars': 0,
     'sort-keys': 0,
-    'no-irregular-whitespace': 'error',
+    'no-irregular-whitespace': 'warn',
     'no-unused-expressions': 'error',
     // Too restrictive, writing ugly code to defend against a very unlikely scenario: https://eslint.org/docs/rules/no-prototype-builtins
     'no-prototype-builtins': 0,

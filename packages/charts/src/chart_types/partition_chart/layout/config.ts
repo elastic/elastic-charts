@@ -65,7 +65,7 @@ export type ValueGetterName = keyof typeof VALUE_GETTERS;
 export function defaultValueFormatter(d: number): string {
   return Math.abs(d) >= 10000000 || Math.abs(d) < 0.001
     ? d.toExponential(Math.min(2, Math.max(0, significantDigitCount(d) - 1)))
-    : d.toLocaleString(void 0, {
+    : d.toLocaleString(undefined, {
         maximumSignificantDigits: 4,
         maximumFractionDigits: 3,
         useGrouping: true,

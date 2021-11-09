@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { number } from '@storybook/addon-knobs';
+import { action } from '@storybook/addon-actions';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, Settings, PartialTheme } from '@elastic/charts';
@@ -17,6 +18,8 @@ import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorTurbo, productLookup } from '../utils/utils';
 
 export const Example = () => {
+  const onElementClick = boolean('onElementClick listener', true);
+  const onElementOver = boolean('onElementOver listener', true);
   const theme: PartialTheme = {
     chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     partition: {
@@ -28,9 +31,15 @@ export const Example = () => {
       },
     },
   };
+
   return (
     <Chart>
-      <Settings theme={theme} baseTheme={useBaseTheme()} />
+      <Settings
+        theme={theme}
+        baseTheme={useBaseTheme()}
+        onElementClick={onElementClick ? action('onElementClick') : undefined}
+        onElementOver={onElementOver ? action('onElementOver') : undefined}
+      />
       <Partition
         id="spec_1"
         data={mocks.pie}

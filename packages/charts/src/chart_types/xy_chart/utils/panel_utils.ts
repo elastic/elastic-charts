@@ -29,8 +29,8 @@ export function getPerPanelMap<T>(
       ...acc,
       ...horizontal.domain.reduce<Array<T & PerPanelMap>>((hAcc, horizontalValue) => {
         const panelAnchor: Point = {
-          x: horizontal.scale(horizontalValue) ?? 0,
-          y: vertical.scale(verticalValue) ?? 0,
+          x: horizontal.scale(horizontalValue) || 0,
+          y: vertical.scale(verticalValue) || 0,
         };
         const fnObj = fn(panelAnchor, horizontalValue, verticalValue, scales);
         return fnObj ? [...hAcc, { panelAnchor, horizontalValue, verticalValue, ...fnObj }] : hAcc;

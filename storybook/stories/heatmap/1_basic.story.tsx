@@ -24,8 +24,8 @@ import {
   Settings,
 } from '@elastic/charts';
 import { Config } from '@elastic/charts/src/chart_types/heatmap/layout/types/config_types';
-import { SWIM_LANE_DATA } from '@elastic/charts/src/utils/data_samples/test_anomaly_swim_lane';
 
+import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
@@ -76,6 +76,7 @@ export const Example = () => {
           return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
         },
       },
+      timeZone: DATA_6.timeZone,
     }),
     [],
   );
@@ -108,7 +109,7 @@ export const Example = () => {
         showLegend
         legendPosition="right"
         brushAxis="both"
-        xDomain={{ min: 1572825600000, max: 1572912000000, minInterval: 1800000 }}
+        xDomain={{ min: 1572825600000, max: 1572912000000 }}
         debugState={debugState}
         baseTheme={useBaseTheme()}
         onBrushEnd={(e) => {
@@ -129,13 +130,13 @@ export const Example = () => {
             { start: 75, end: Infinity, color: '#fe5050' },
           ],
         }}
-        data={SWIM_LANE_DATA.map((v) => ({ ...v, time: v.time * 1000 }))}
-        xAccessor={(d) => d.time}
-        yAccessor={(d) => d.laneLabel}
-        valueAccessor={(d) => d.value}
+        data={DATA_6.data}
+        xAccessor="x"
+        yAccessor="y"
+        valueAccessor="value"
         valueFormatter={(d) => `${Number(d.toFixed(2))}℃`}
         ySortPredicate="numAsc"
-        xScaleType={ScaleType.Time}
+        xScale={{ type: ScaleType.Time, interval: DATA_6.interval }}
         config={config}
         highlightedData={persistCellsSelection ? selection : undefined}
       />

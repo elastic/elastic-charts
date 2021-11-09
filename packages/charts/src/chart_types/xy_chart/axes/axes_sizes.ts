@@ -13,55 +13,81 @@ import { AxisId } from '../../../utils/ids';
 import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
 import { getSpecsById } from '../state/utils/spec';
-import { isVerticalAxis } from '../utils/axis_type_utils';
-import { getTitleDimension, shouldShowTicks } from '../utils/axis_utils';
+import { isHorizontalAxis, isVerticalAxis } from '../utils/axis_type_utils';
+import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks, TickLabelBounds } from '../utils/axis_utils';
 import { AxisSpec } from '../utils/specs';
 
-/** @internal */
-export function computeAxesSizes(
+const getAxisSizeForLabel = (
+  axisSpec: AxisSpec,
   { axes: sharedAxesStyles, chartMargins }: Theme,
+  axesStyles: Map<AxisId, AxisStyle | null>,
+  { maxLabelBboxWidth = 0, maxLabelBboxHeight = 0 }: TickLabelBounds,
+  smSpec?: SmallMultiplesSpec,
+) => {
+  const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(axisSpec.id) ?? sharedAxesStyles;
+  const horizontal = isHorizontalAxis(axisSpec.position);
+  const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
+  const allLayersGirth = getAllAxisLayersGirth(axisSpec.timeAxisLayerCount, maxLabelBoxGirth, horizontal);
+  const hasPanelTitle = isVerticalAxis(axisSpec.position) ? smSpec?.splitVertically : smSpec?.splitHorizontally;
+  const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
+  const titleDimension = axisSpec.title ? getTitleDimension(axisTitle) : 0;
+  const tickDimension = shouldShowTicks(tickLine, axisSpec.hide) ? tickLine.size + tickLine.padding : 0;
+  const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
+  const axisDimension = labelPaddingSum + tickDimension + titleDimension + panelTitleDimension;
+  const maxAxisGirth = axisDimension + (tickLabel.visible ? allLayersGirth : 0);
+  const maxLabelBoxHalfLength = (isVerticalAxis(axisSpec.position) ? maxLabelBboxHeight : maxLabelBboxWidth) / 2;
+  return horizontal
+    ? {
+        top: axisSpec.position === Position.Top ? maxAxisGirth + chartMargins.top : 0,
+        bottom: axisSpec.position === Position.Bottom ? maxAxisGirth + chartMargins.bottom : 0,
+        left: maxLabelBoxHalfLength,
+        right: maxLabelBoxHalfLength,
+      }
+    : {
+        top: maxLabelBoxHalfLength,
+        bottom: maxLabelBoxHalfLength,
+        left: axisSpec.position === Position.Left ? maxAxisGirth + chartMargins.left : 0,
+        right: axisSpec.position === Position.Right ? maxAxisGirth + chartMargins.right : 0,
+      };
+};
+
+/** @internal */
+export function getAxesDimensions(
+  theme: Theme,
   axisDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
   smSpec?: SmallMultiplesSpec,
 ): PerSideDistance & { margin: { left: number } } {
-  const axisMainSize: PerSideDistance = { left: 0, right: 0, top: 0, bottom: 0 };
-  const axisLabelOverflow: PerSideDistance = { left: 0, right: 0, top: 0, bottom: 0 };
+  const sizes = [...axisDimensions].reduce(
+    (acc, [id, tickLabelBounds]) => {
+      const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
+      if (tickLabelBounds.isHidden || !axisSpec) return acc;
+      // TODO use first and last labels
+      const { top, bottom, left, right } = getAxisSizeForLabel(axisSpec, theme, axesStyles, tickLabelBounds, smSpec);
+      if (isVerticalAxis(axisSpec.position)) {
+        acc.axisLabelOverflow.top = Math.max(acc.axisLabelOverflow.top, top);
+        acc.axisLabelOverflow.bottom = Math.max(acc.axisLabelOverflow.bottom, bottom);
+        acc.axisMainSize.left += left;
+        acc.axisMainSize.right += right;
+      } else {
+        // find the max half label size to accommodate the left/right labels
+        acc.axisMainSize.top += top;
+        acc.axisMainSize.bottom += bottom;
+        acc.axisLabelOverflow.left = Math.max(acc.axisLabelOverflow.left, left);
+        acc.axisLabelOverflow.right = Math.max(acc.axisLabelOverflow.right, right);
+      }
+      return acc;
+    },
+    {
+      axisMainSize: { left: 0, right: 0, top: 0, bottom: 0 },
+      axisLabelOverflow: { left: 0, right: 0, top: 0, bottom: 0 },
+    },
+  );
 
-  axisDimensions.forEach(({ maxLabelBboxWidth = 0, maxLabelBboxHeight = 0, isHidden }, id) => {
-    const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
-    if (isHidden || !axisSpec) {
-      return;
-    }
-    const { position, title } = axisSpec;
-    const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(id) ?? sharedAxesStyles;
-    const hasPanelTitle = Boolean(isVerticalAxis(position) ? smSpec?.splitVertically : smSpec?.splitHorizontally);
-    const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
-    const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
-    const titleDimension = title ? getTitleDimension(axisTitle) : 0;
-    const tickDimension = shouldShowTicks(tickLine, axisSpec.hide) ? tickLine.size + tickLine.padding : 0;
-    const axisDimension = labelPaddingSum + tickDimension + titleDimension + panelTitleDimension;
-
-    // TODO use first and last labels
-    if (isVerticalAxis(position)) {
-      axisLabelOverflow.top = Math.max(axisLabelOverflow.top, maxLabelBboxHeight / 2);
-      axisLabelOverflow.bottom = Math.max(axisLabelOverflow.bottom, maxLabelBboxHeight / 2);
-      const maxAxisWidth = axisDimension + (tickLabel.visible ? maxLabelBboxWidth : 0);
-      axisMainSize.left += position === Position.Left ? maxAxisWidth + chartMargins.left : 0;
-      axisMainSize.right += position === Position.Right ? maxAxisWidth + chartMargins.right : 0;
-    } else {
-      // find the max half label size to accommodate the left/right labels
-      axisLabelOverflow.left = Math.max(axisLabelOverflow.left, maxLabelBboxWidth / 2);
-      axisLabelOverflow.right = Math.max(axisLabelOverflow.right, maxLabelBboxWidth / 2);
-      const maxAxisHeight = axisDimension + (tickLabel.visible ? maxLabelBboxHeight : 0);
-      axisMainSize.top += position === Position.Top ? maxAxisHeight + chartMargins.top : 0;
-      axisMainSize.bottom += position === Position.Bottom ? maxAxisHeight + chartMargins.bottom : 0;
-    }
-  });
-
-  const left = Math.max(axisLabelOverflow.left + chartMargins.left, axisMainSize.left);
-  const right = Math.max(axisLabelOverflow.right + chartMargins.right, axisMainSize.right);
-  const top = Math.max(axisLabelOverflow.top + chartMargins.top, axisMainSize.top);
-  const bottom = Math.max(axisLabelOverflow.bottom + chartMargins.bottom, axisMainSize.bottom);
-  return { left, right, top, bottom, margin: { left: left - axisMainSize.left } };
+  const left = Math.max(sizes.axisLabelOverflow.left + theme.chartMargins.left, sizes.axisMainSize.left);
+  const right = Math.max(sizes.axisLabelOverflow.right + theme.chartMargins.right, sizes.axisMainSize.right);
+  const top = Math.max(sizes.axisLabelOverflow.top + theme.chartMargins.top, sizes.axisMainSize.top);
+  const bottom = Math.max(sizes.axisLabelOverflow.bottom + theme.chartMargins.bottom, sizes.axisMainSize.bottom);
+  return { left, right, top, bottom, margin: { left: left - sizes.axisMainSize.left } };
 }

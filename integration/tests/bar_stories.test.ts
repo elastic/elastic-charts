@@ -104,6 +104,14 @@ describe('Bar series stories', () => {
   });
 
   describe('value labels positioning', () => {
+    it('clip both geometry and chart area values', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/bar-chart--with-value-label&knob-show single series=&knob-show value label=true&knob-alternating value label=&knob-contain value label within bar element=&knob-hide label if overflows chart edges=true&knob-hide label if overflows bar geometry=true&knob-debug=&knob-value font size=11&knob-value color=%23000&knob-offsetX=0&knob-offsetY=10&knob-data volume size=s&knob-split series=&knob-stacked series=&knob-chartRotation=0&knob-legend=right',
+      );
+    });
+  });
+
+  describe('value label positioning and formatting', () => {
     eachRotation.describe((rotation) => {
       describe.each<NonNullable<DisplayValueStyle['alignment']>['vertical']>([
         VerticalAlignment.Middle,
@@ -115,17 +123,12 @@ describe('Bar series stories', () => {
           HorizontalAlignment.Center,
           HorizontalAlignment.Right,
         ])('Horizontal Alignment - %s', (horizontalAlignment) => {
-          const url = `http://localhost:9001/?path=/story/bar-chart--with-value-label-advanced&knob-chartRotation=${rotation}&knob-Horizontal alignment=${horizontalAlignment}&knob-Vertical alignment=${verticalAlignment}`;
+          const url = `http://localhost:9001/?path=/story/bar-chart--data-value&args=&globals=theme:light&knob-chartRotation=${rotation}&knob-Horizontal alignment=${horizontalAlignment}&knob-Vertical alignment=${verticalAlignment}`;
           it('place the value labels on the correct area', async () => {
             await common.expectChartAtUrlToMatchScreenshot(url);
           });
         });
       });
-    });
-    it('clip both geometry and chart area values', async () => {
-      await common.expectChartAtUrlToMatchScreenshot(
-        'http://localhost:9001/?path=/story/bar-chart--with-value-label&knob-show single series=&knob-show value label=true&knob-alternating value label=&knob-contain value label within bar element=&knob-hide label if overflows chart edges=true&knob-hide label if overflows bar geometry=true&knob-debug=&knob-value font size=11&knob-value color=%23000&knob-offsetX=0&knob-offsetY=10&knob-data volume size=s&knob-split series=&knob-stacked series=&knob-chartRotation=0&knob-legend=right',
-      );
     });
   });
 

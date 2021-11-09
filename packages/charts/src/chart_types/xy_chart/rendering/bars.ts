@@ -10,13 +10,14 @@ import { Color } from '../../../common/colors';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { TextMeasure, withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, isNil, mergePartial } from '../../../utils/common';
+import { clamp, mergePartial } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
 import { BarStyleAccessor, DisplayValueSpec, LabelOverflowConstraint, StackMode } from '../utils/specs';
+import { getDatumYValue } from './points';
 
 const PADDING = 1; // default padding for now
 const FONT_SIZE_FACTOR = 0.7; // Take 70% of space for the label text
@@ -48,7 +49,7 @@ export function renderBars(
   return withTextMeasure((textMeasure) =>
     dataSeries.data.reduce((barTuple: BarTuple, datum) => {
       const xScaled = xScale.scale(datum.x);
-      if (!xScale.isValueInDomain(datum.x) || xScaled === null) {
+      if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
         return barTuple; // don't create a bar if not within the xScale domain
       }
       const { barGeometries, indexedGeometryMap } = barTuple;
@@ -61,12 +62,12 @@ export function renderBars(
           : yScale.scale(y0)
         : yScale.scale(y0 === null ? 0 : y0);
 
-      const finiteHeight = isNil(y0Scaled) || isNil(rawY) ? 0 : y0Scaled - rawY; // safeguard against null y values
+      const finiteHeight = y0Scaled - rawY || 0;
       const absHeight = Math.abs(finiteHeight);
       const height = absHeight === 0 ? absHeight : Math.max(minBarHeight, absHeight); // extend nonzero bars
       const heightExtension = height - absHeight;
       const isUpsideDown = finiteHeight < 0;
-      const finiteY = isNil(y0Scaled) || isNil(rawY) ? 0 : rawY;
+      const finiteY = Number.isNaN(y0Scaled + rawY) ? 0 : rawY;
       const y = isUpsideDown ? finiteY - height + heightExtension : finiteY - heightExtension;
 
       const seriesIdentifier: XYChartSeriesIdentifier = {
@@ -87,8 +88,8 @@ export function renderBars(
       const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
       const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
-      const originalY1Value = stackMode === StackMode.Percentage ? (isNil(y1) ? null : y1 - (y0 ?? 0)) : initialY1;
-      const formattedDisplayValue = displayValueSettings?.valueFormatter?.(originalY1Value);
+      const y1Value = getDatumYValue(datum, false, false, stackMode);
+      const formattedDisplayValue = displayValueSettings?.valueFormatter?.(y1Value);
 
       // only show displayValue for even bars if showOverlappingValue
       const displayValueText =
@@ -140,7 +141,7 @@ export function renderBars(
         width,
         height,
         color,
-        value: { x: datum.x, y: originalY1Value, mark: null, accessor: BandedAccessorType.Y1, datum: datum.datum },
+        value: { x: datum.x, y: y1Value, mark: null, accessor: BandedAccessorType.Y1, datum: datum.datum },
         seriesIdentifier,
         seriesStyle,
         panel,
@@ -231,16 +232,8 @@ export function getBarStyleOverrides(
   }
 
   if (typeof styleOverride === 'string') {
-    return {
-      ...seriesStyle,
-      rect: {
-        ...seriesStyle.rect,
-        fill: styleOverride,
-      },
-    };
+    return { ...seriesStyle, rect: { ...seriesStyle.rect, fill: styleOverride } };
   }
 
-  return mergePartial(seriesStyle, styleOverride, {
-    mergeOptionalPartialValues: true,
-  });
+  return mergePartial(seriesStyle, styleOverride);
 }

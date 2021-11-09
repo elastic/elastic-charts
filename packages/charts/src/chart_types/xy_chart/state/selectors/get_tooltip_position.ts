@@ -36,8 +36,8 @@ export const getTooltipAnchorPositionSelector = createCustomCachedSelector(
       return null;
     }
 
-    const topPos = vertical.scale(projectedPointerPosition.verticalPanelValue) ?? 0;
-    const leftPos = horizontal.scale(projectedPointerPosition.horizontalPanelValue) ?? 0;
+    const topPos = vertical.scale(projectedPointerPosition.verticalPanelValue) || 0;
+    const leftPos = horizontal.scale(projectedPointerPosition.horizontalPanelValue) || 0;
 
     const panel = {
       width: horizontal.bandwidth,
