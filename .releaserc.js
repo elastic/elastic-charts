@@ -21,7 +21,13 @@ module.exports = {
         execCwd: '.',
       },
     ],
-    '@semantic-release/github',
+    [
+      '@semantic-release/github',
+      {
+        successComment: false,
+        failComment: false,
+      },
+    ],
     [
       '@semantic-release/npm',
       {
