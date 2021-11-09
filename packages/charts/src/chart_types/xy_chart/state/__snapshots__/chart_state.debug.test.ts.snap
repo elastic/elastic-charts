@@ -77,7 +77,7 @@ Object {
   "legend": Object {
     "items": Array [
       Object {
-        "color": "#1EA593",
+        "color": "#54B399",
         "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
         "name": "spec1",
       },
@@ -85,7 +85,7 @@ Object {
   },
   "lines": Array [
     Object {
-      "color": "#1EA593",
+      "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
       "path": "M0,140L58,98.35L145,0",
@@ -190,7 +190,7 @@ Object {
   "legend": Object {
     "items": Array [
       Object {
-        "color": "#1EA593",
+        "color": "#54B399",
         "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
         "name": "spec1",
       },
@@ -198,7 +198,7 @@ Object {
   },
   "lines": Array [
     Object {
-      "color": "#1EA593",
+      "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
       "path": "M0,144.5L56.2,101.5L140.5,0",
@@ -303,7 +303,7 @@ Object {
   "legend": Object {
     "items": Array [
       Object {
-        "color": "#1EA593",
+        "color": "#54B399",
         "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
         "name": "spec1",
       },
@@ -311,7 +311,7 @@ Object {
   },
   "lines": Array [
     Object {
-      "color": "#1EA593",
+      "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
       "path": "M0,140L58,98.35L145,0",
@@ -416,7 +416,7 @@ Object {
   "legend": Object {
     "items": Array [
       Object {
-        "color": "#1EA593",
+        "color": "#54B399",
         "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
         "name": "spec1",
       },
@@ -424,7 +424,7 @@ Object {
   },
   "lines": Array [
     Object {
-      "color": "#1EA593",
+      "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
       "path": "M0,144.5L56.2,101.5L140.5,0",
