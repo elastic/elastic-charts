@@ -74,7 +74,7 @@ export interface Configs {
 /** @public */
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
 
-/** @internal */
+/** @public */
 export interface WordcloudViewModel {
   startAngle: number;
   endAngle: number;

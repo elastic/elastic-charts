@@ -68,7 +68,7 @@ export type HeatmapBrushEvent = {
   x: (string | number)[];
   y: (string | number)[];
 };
-/** @internal */
+/** @public */
 export interface TimeScale {
   type: typeof ScaleType.Time;
 }
