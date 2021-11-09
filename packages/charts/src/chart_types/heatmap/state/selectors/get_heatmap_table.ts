@@ -15,7 +15,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { getAccessorValue } from '../../../../utils/accessor';
 import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
 import { HeatmapTable } from './compute_chart_dimensions';
-import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 
 /**
@@ -23,11 +22,10 @@ import { getHeatmapSpecSelector } from './get_heatmap_spec';
  * @internal
  */
 export const getHeatmapTableSelector = createCustomCachedSelector(
-  [getHeatmapSpecSelector, getSettingsSpecSelector, getHeatmapConfigSelector],
+  [getHeatmapSpecSelector, getSettingsSpecSelector],
   (
-    { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate, xScale },
+    { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate, xScale, timeZone },
     { xDomain },
-    { timeZone },
   ): HeatmapTable => {
     const resultData = data.reduce<HeatmapTable>(
       (acc, curr, index) => {
