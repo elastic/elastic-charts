@@ -16,8 +16,8 @@ import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { useBaseTheme } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator();
-const start = DateTime.fromISO('2021-03-27T20:00:00');
-const end = DateTime.fromISO('2021-03-28T11:00:00');
+const start = DateTime.fromISO('2021-03-27T20:00:00', { zone: 'UTC' });
+const end = DateTime.fromISO('2021-03-28T11:00:00', { zone: 'UTC' });
 const data = [...new Array(14)].flatMap((d, i) => {
   return [
     [start.plus({ hour: i }).toMillis(), 'cat A', rng(-5, 5)],
@@ -82,12 +82,11 @@ export const Example = () => {
       </div>
       <Chart className="story-chart">
         <Settings
+          showLegend
           xDomain={{
             min: start.toMillis() + startTimeOffset,
             max: end.toMillis() + endTimeOffset,
-            minInterval: 1000 * 60 * 60,
           }}
-          showLegend
           theme={{ heatmap }}
           baseTheme={useBaseTheme()}
         />
@@ -110,9 +109,19 @@ export const Example = () => {
           valueAccessor={(d) => d[2]}
           valueFormatter={(d) => d.toFixed(2)}
           ySortPredicate="numAsc"
-          xScaleType={ScaleType.Time}
-          xAxisLabelFormatter={(value: string | number) => {
-            return DateTime.fromMillis(value as number).toFormat('HH:mm:ss', { timeZone: 'UTC' });
+          xAxisLabelFormatter={(value) => {
+            return DateTime.fromMillis(value as number)
+              .setZone('UTC')
+              .toFormat('HH:mm:ss');
+          }}
+          timeZone="UTC"
+          xScale={{
+            type: ScaleType.Time,
+            interval: {
+              type: 'fixed',
+              unit: 'h',
+              value: 1,
+            },
           }}
         />
       </Chart>

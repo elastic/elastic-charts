@@ -104,15 +104,12 @@ export function computeRectAnnotationDimensions(
 
     const [y0, y1] = limitValueToDomainRange(yScale, initialY0, initialY1);
     // something is wrong with the data types, don't draw this annotation
-    if (y0 === null || y1 === null) {
-      return;
-    }
+    if (!Number.isFinite(y0) || !Number.isFinite(y1)) return;
 
     let scaledY1 = yScale.pureScale(y1);
     const scaledY0 = yScale.pureScale(y0);
-    if (scaledY1 === null || scaledY0 === null) {
-      return;
-    }
+    if (Number.isNaN(scaledY1) || Number.isNaN(scaledY0)) return;
+
     height = Math.abs(scaledY0 - scaledY1);
     // if the annotation height is 0 override it with the height from chart dimension and if the values in the domain are the same
     if (height === 0 && yScale.domain.length === 2 && yScale.domain[0] === yScale.domain[1]) {
@@ -149,11 +146,10 @@ export function computeRectAnnotationDimensions(
     const duplicated: AnnotationRectProps[] = [];
     smallMultiplesScales.vertical.domain.forEach((vDomainValue) => {
       smallMultiplesScales.horizontal.domain.forEach((hDomainValue) => {
-        const panel = {
-          ...panelSize,
-          top: smallMultiplesScales.vertical.scaleOrThrow(vDomainValue),
-          left: smallMultiplesScales.horizontal.scaleOrThrow(hDomainValue),
-        };
+        const top = smallMultiplesScales.vertical.scale(vDomainValue);
+        const left = smallMultiplesScales.horizontal.scale(hDomainValue);
+        if (Number.isNaN(top + left)) return;
+        const panel = { ...panelSize, top, left };
         duplicated.push({ ...props, panel });
       });
     });
@@ -171,7 +167,7 @@ function scaleXonBandScale(
   const padding = (xScale.step - xScale.originalBandwidth) / 2;
   let scaledX1 = xScale.scale(x1);
   let scaledX0 = xScale.scale(x0);
-  if (scaledX1 === null || scaledX0 === null) {
+  if (Number.isNaN(scaledX1 + scaledX0)) {
     return null;
   }
   // extend the x1 scaled value to fully cover the last bar
@@ -202,17 +198,13 @@ function scaleXonContinuousScale(
     return null;
   }
   const scaledX0 = xScale.scale(x0);
-  const scaledX1: number | null =
+  const scaledX1 =
     xScale.totalBarsInCluster > 0 && !isHistogramModeEnabled ? xScale.scale(x1 + xScale.minInterval) : xScale.scale(x1);
-  if (scaledX1 === null || scaledX0 === null) {
-    return null;
-  }
   // the width needs to be computed before adjusting the x anchor
   const width = Math.abs(scaledX1 - scaledX0);
-  return {
-    x: scaledX0 - (xScale.bandwidthPadding / 2) * xScale.totalBarsInCluster,
-    width,
-  };
+  return Number.isNaN(width)
+    ? null
+    : { width, x: scaledX0 - (xScale.bandwidthPadding / 2) * xScale.totalBarsInCluster };
 }
 
 /**

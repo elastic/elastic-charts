@@ -19,38 +19,30 @@ import { getHeatmapTableSelector } from './get_heatmap_table';
  * Gets color scale based on specification and values range.
  */
 export const getXAxisRightOverflow = createCustomCachedSelector(
-  [getChartThemeSelector, getHeatmapSpecSelector, getHeatmapTableSelector],
+  [getHeatmapSpecSelector, getChartThemeSelector, getHeatmapTableSelector],
   (
+    { xScale, timeZone, xAxisLabelFormatter },
     {
       heatmap: {
         xAxisLabel: { fontSize, fontFamily, padding, width },
       },
     },
-    { timeZone, xAxisLabelFormatter },
-    { xDomain },
-  ): number => {
-    if (xDomain.type !== ScaleType.Time) {
-      return 0;
-    }
-    if (typeof width === 'number') {
-      return width / 2;
-    }
-
-    const timeScale = new ScaleContinuous(
-      {
-        type: ScaleType.Time,
-        domain: xDomain.domain as number[],
-        range: [0, 1],
-      },
-      {
-        timeZone,
-      },
-    );
-    return withTextMeasure(
-      (textMeasure) =>
-        timeScale.ticks().reduce((acc, d) => {
-          return Math.max(acc, textMeasure(xAxisLabelFormatter(d), padding, fontSize, fontFamily, 1).width + padding);
-        }, 0) / 2,
-    );
+    { xNumericExtent },
+  ) => {
+    return xScale.type !== ScaleType.Time
+      ? 0
+      : typeof width === 'number'
+      ? width / 2
+      : withTextMeasure((measure) => {
+          return new ScaleContinuous(
+            { type: ScaleType.Time, domain: xNumericExtent, range: [0, 1] },
+            { timeZone: xScale.type === ScaleType.Time ? timeZone : undefined },
+          )
+            .ticks()
+            .reduce(
+              (max, n) => Math.max(max, measure(xAxisLabelFormatter(n), padding, fontSize, fontFamily).width + padding),
+              0,
+            );
+        }) / 2;
   },
 );

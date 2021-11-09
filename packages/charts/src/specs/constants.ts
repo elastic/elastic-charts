@@ -181,5 +181,6 @@ export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
   minBrushDelta: 2,
   ariaUseDefaultSummary: true,
   ariaLabelHeadingLevel: 'p',
+  allowBrushingLastHistogramBin: true,
   ...DEFAULT_LEGEND_CONFIG,
 };

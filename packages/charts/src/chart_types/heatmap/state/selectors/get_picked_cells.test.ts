@@ -47,7 +47,7 @@ describe('Heatmap picked cells', () => {
           },
         }),
         MockSeriesSpec.heatmap({
-          xScaleType: ScaleType.Ordinal,
+          xScale: { type: ScaleType.Ordinal },
           data: [
             { x: 'a', y: 'ya', value: 1 },
             { x: 'b', y: 'ya', value: 2 },

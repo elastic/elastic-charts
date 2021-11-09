@@ -341,6 +341,18 @@ describe('Interactions', () => {
       );
     });
   });
+
+  it('Hide null bars in tooltip in percentage mode', async () => {
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/bar-chart--test-stacked-bar-chart-with-null-bars&knob-stack%20as%20percentage=true',
+      { left: 350, top: 150 },
+      {
+        screenshotSelector: '#story-root',
+        delay: 1000,
+      },
+    );
+  });
+
   describe('should show null values in tooltip if configured', () => {
     it('show N/A tooltip for areas', async () => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(
@@ -372,5 +384,27 @@ describe('Interactions', () => {
         },
       );
     });
+  });
+
+  describe('mouse cursor', () => {
+    it.each<string>(['eui-light', 'eui-dark'])(
+      `should show cursor when background is set with %s theme`,
+      async (theme) => {
+        await common.expectChartWithMouseAtUrlToMatchScreenshot(
+          `http://localhost:9001/?path=/story/mixed-charts--lines-and-areas&globals=theme:${theme}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
+          { top: 150, left: 250 },
+        );
+      },
+    );
+
+    it.each<string>(['eui-light', 'eui-dark'])(
+      `should show cursor band when background is set with %s theme`,
+      async (theme) => {
+        await common.expectChartWithMouseAtUrlToMatchScreenshot(
+          `http://localhost:9001/?path=/story/mixed-charts--bars-and-lines&globals=theme:${theme}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
+          { top: 150, left: 150 },
+        );
+      },
+    );
   });
 });

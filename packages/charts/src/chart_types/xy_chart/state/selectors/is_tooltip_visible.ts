@@ -43,7 +43,7 @@ function isTooltipVisible(
   isAnnotationTooltipVisible: boolean,
   externalTooltipVisible: boolean,
 ) {
-  const isLocalTooltop =
+  const isLocalTooltip =
     tooltipType !== TooltipType.None &&
     pointer.down === null &&
     projectedPointerPosition.x > -1 &&
@@ -52,7 +52,7 @@ function isTooltipVisible(
     !isAnnotationTooltipVisible;
   const isExternalTooltip = externalTooltipVisible && tooltip.values.length > 0;
   return {
-    visible: isLocalTooltop || isExternalTooltip,
+    visible: isLocalTooltip || isExternalTooltip,
     isExternal: externalTooltipVisible,
   };
 }

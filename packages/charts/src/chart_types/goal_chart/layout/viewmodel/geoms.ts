@@ -14,6 +14,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSubtype } from '../../specs/constants';
 import { BulletViewModel } from '../types/viewmodel_types';
+import { getSagitta, getMinSagitta } from './utils';
 
 const referenceCircularSizeCap = 360; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space
 const referenceBulletSizeCap = 500; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space
@@ -260,6 +261,7 @@ export function geoms(
     ...Object.fromEntries(bands.map(({ value }, index) => [`qualitative_${index}`, { value }])),
     target: { value: target },
     actual: { value: actual },
+    yOffset: { value: 0 },
     labelMajor: { value: domain[circular || !vertical ? 0 : 1], text: labelMajor },
     labelMinor: { value: domain[circular || !vertical ? 0 : 1], text: labelMinor },
     ...Object.assign({}, ...ticks.map(({ value, text }, i) => ({ [`tick_${i}`]: { value, text } }))),
@@ -299,31 +301,32 @@ export function geoms(
       landmarks: {
         from: i ? `qualitative_${i - 1}` : 'base',
         to: `qualitative_${i}`,
+        yOffset: 'yOffset',
       },
       aes: { shape, fillColor: b.fillColor, lineWidth: barThickness },
     })),
     {
       order: 1,
-      landmarks: { from: 'base', to: 'actual' },
+      landmarks: { from: 'base', to: 'actual', yOffset: 'yOffset' },
       aes: { shape, fillColor: config.progressLine.stroke, lineWidth: tickLength },
     },
     ...(target
       ? [
           {
             order: 2,
-            landmarks: { at: 'target' },
+            landmarks: { at: 'target', yOffset: 'yOffset' },
             aes: { shape, fillColor: config.targetLine.stroke, lineWidth: barThickness / GOLDEN_RATIO },
           },
         ]
       : []),
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 3,
-      landmarks: { at: `tick_${i}` },
+      landmarks: { at: `tick_${i}`, yOffset: 'yOffset' },
       aes: { shape, fillColor: config.tickLine.stroke, lineWidth: tickLength, axisNormalOffset: tickOffset },
     })),
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 4,
-      landmarks: { at: `tick_${i}` },
+      landmarks: { at: `tick_${i}`, yOffset: 'yOffset' },
       aes: {
         shape: 'text',
         textAlign: vertical ? 'right' : 'center',
@@ -363,7 +366,7 @@ export function geoms(
       ? [
           {
             order: 6,
-            landmarks: { at: 'centralMajor' },
+            landmarks: { at: 'centralMajor', yOffset: 'yOffset' },
             aes: {
               shape: 'text',
               textAlign: 'center',
@@ -374,7 +377,7 @@ export function geoms(
           },
           {
             order: 6,
-            landmarks: { at: 'centralMinor' },
+            landmarks: { at: 'centralMinor', yOffset: 'yOffset' },
             aes: {
               shape: 'text',
               textAlign: 'center',
@@ -389,6 +392,12 @@ export function geoms(
 
   const maxWidth = abstractGeoms.reduce((p, g) => Math.max(p, get<number>(g.aes, 'lineWidth', 0)), 0);
   const r = 0.5 * referenceSize - maxWidth / 2;
+
+  if (circular) {
+    const sagitta = getMinSagitta(angleStart, angleEnd, r);
+    const maxSagitta = getSagitta((3 / 2) * Math.PI, r);
+    data.yOffset.value = sagitta >= maxSagitta ? 0 : (maxSagitta - sagitta) / 2;
+  }
 
   const fullSize = referenceSize;
   const labelSize = fullSize / 2;
@@ -411,11 +420,14 @@ export function geoms(
       const at = get(landmarks, 'at', '');
       const from = get(landmarks, 'from', '');
       const to = get(landmarks, 'to', '');
+      const yOffset = get(landmarks, 'yOffset', '');
       const textAlign = circular ? 'center' : get(aes, 'textAlign', '');
       const fontShape = get(aes, 'fontShape', '');
       const axisNormalOffset = get(aes, 'axisNormalOffset', 0);
       const axisTangentOffset = get(aes, 'axisTangentOffset', 0);
       const lineWidth = get(aes, 'lineWidth', 0);
+      const yOffsetValue = data[yOffset]?.value ?? 0;
+
       const strokeStyle = get(aes, 'fillColor', '');
       if (aes.shape === 'text') {
         const { text } = data[at];
@@ -434,7 +446,7 @@ export function geoms(
           : (vertical ? -axisTangentOffset - scaledValue : -axisNormalOffset);
         return new Text(
           x + chartCenter.x,
-          y + chartCenter.y,
+          y + chartCenter.y + yOffsetValue,
           text,
           textAlign,
           textBaseline,
@@ -444,7 +456,7 @@ export function geoms(
         );
       } else if (aes.shape === 'arc') {
         const cx = chartCenter.x + pxRangeMid;
-        const cy = chartCenter.y;
+        const cy = chartCenter.y + yOffsetValue;
         const radius = at ? r + axisNormalOffset : r;
         const startAngle = at ? angleScale(data[at].value) + Math.PI / 360 : angleScale(data[from].value);
         const endAngle = at ? angleScale(data[at].value) - Math.PI / 360 : angleScale(data[to].value);
@@ -453,7 +465,7 @@ export function geoms(
         return new Arc(cx, cy, radius, -startAngle, -endAngle, !anticlockwise, lineWidth, strokeStyle);
       } else {
         const translateX = chartCenter.x + (vertical ? axisNormalOffset : axisTangentOffset);
-        const translateY = chartCenter.y - (vertical ? axisTangentOffset : axisNormalOffset);
+        const translateY = chartCenter.y - (vertical ? axisTangentOffset : axisNormalOffset) + yOffsetValue;
         const atPx = data[at] && linearScale(data[at].value);
         const fromPx = at ? atPx - 1 : linearScale(data[from].value);
         const toPx = at ? atPx + 1 : linearScale(data[to].value);

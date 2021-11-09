@@ -31,7 +31,6 @@ export function render(
   if (!textMeasurerCtx) {
     return nullShapeViewModel();
   }
-
   return shapeViewModel(
     measureText(textMeasurerCtx),
     spec,

@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { mergePartial } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
-import { mergeWithDefaultTheme } from '../../utils/themes/merge_utils';
 import { PartialTheme, Theme } from '../../utils/themes/theme';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSettingsSpecSelector } from './get_settings_specs';
@@ -19,12 +19,12 @@ export const getChartThemeSelector = createCustomCachedSelector(
 );
 
 function getTheme(baseTheme?: Theme, theme?: PartialTheme | PartialTheme[]): Theme {
-  const base = baseTheme || LIGHT_THEME;
+  const base = baseTheme ?? LIGHT_THEME;
 
   if (Array.isArray(theme)) {
     const [firstTheme, ...axillaryThemes] = theme;
-    return mergeWithDefaultTheme(firstTheme, base, axillaryThemes);
+    return mergePartial(base, firstTheme, {}, axillaryThemes);
   }
 
-  return theme ? mergeWithDefaultTheme(theme, base) : base;
+  return theme ? mergePartial(base, theme) : base;
 }

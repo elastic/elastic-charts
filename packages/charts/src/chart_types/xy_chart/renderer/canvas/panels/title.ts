@@ -10,7 +10,7 @@ import { Position } from '../../../../../utils/common';
 import { innerPad, outerPad } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
-import { getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
+import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisProps } from '../axes';
 import { renderText, TextFont } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
@@ -33,7 +33,7 @@ export function renderTitle(
   {
     size: { width, height },
     dimension: { maxLabelBboxWidth, maxLabelBboxHeight },
-    axisSpec: { position, hide: hideAxis, title },
+    axisSpec: { position, hide: hideAxis, title, timeAxisLayerCount },
     axisStyle: { axisPanelTitle, axisTitle, tickLabel, tickLine },
     panelTitle,
     debug,
@@ -50,12 +50,13 @@ export function renderTitle(
   const horizontal = isHorizontalAxis(position);
   const font: TextFont = { ...titleFontDefaults, ...axisTitleToUse, textColor: axisTitleToUse.fill };
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const maxLabelBoxSize = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const labelSize = tickLabel.visible ? maxLabelBoxSize + innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
+  const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
+  const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, horizontal);
+  const labelPaddingSum = innerPad(tickLabel.padding) + outerPad(tickLabel.padding);
+  const labelSize = tickLabel.visible ? allLayersGirth + labelPaddingSum : 0;
   const otherTitleDimension = otherTitle ? getTitleDimension(otherAxisTitleToUse) : 0;
   const titlePadding = panel || (axisTitleToUse.visible && title) ? axisTitleToUse.padding : 0;
   const rotation = horizontal ? 0 : -90;
-
   const offset =
     position === Position.Left || position === Position.Top
       ? outerPad(titlePadding) + (panel ? otherTitleDimension : 0)

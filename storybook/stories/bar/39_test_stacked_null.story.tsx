@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, StackMode } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -25,6 +26,7 @@ export const Example = () => {
     [3, null, 5, 'b'],
     [4, 4, 6, 'b'],
   ];
+  const stackMode = boolean('stack as percentage', false) ? StackMode.Percentage : undefined;
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
@@ -43,6 +45,7 @@ export const Example = () => {
         yAccessors={[1]}
         splitSeriesAccessors={[3]}
         stackAccessors={[0]}
+        stackMode={stackMode}
         data={data}
       />
     </Chart>

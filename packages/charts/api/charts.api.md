@@ -6,6 +6,7 @@
 
 import { $Values } from 'utility-types';
 import { ComponentType } from 'react';
+import { LegacyRef } from 'react';
 import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
 import { ReactNode } from 'react';
@@ -176,6 +177,8 @@ export interface AxisSpec extends Spec {
     style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
     tickFormat?: TickFormatter;
     ticks?: number;
+    // @alpha
+    timeAxisLayerCount: number;
     title?: string;
 }
 
@@ -191,6 +194,7 @@ export interface AxisStyle {
     gridLine: {
         horizontal: GridLineStyle;
         vertical: GridLineStyle;
+        lumaSteps: number[];
     };
     // (undocumented)
     tickLabel: TextStyle & Visible & {
@@ -626,7 +630,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption' | 'allowBrushingLastHistogramBin';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -704,6 +708,32 @@ export const entryKey: ([key]: ArrayEntry) => string;
 
 // @public (undocumented)
 export const entryValue: ([, value]: ArrayEntry) => ArrayNode;
+
+// @public (undocumented)
+export interface ESCalendarInterval {
+    // (undocumented)
+    type: 'calendar';
+    // (undocumented)
+    unit: ESCalendarIntervalUnit;
+    // (undocumented)
+    value: number;
+}
+
+// @public (undocumented)
+export type ESCalendarIntervalUnit = 'minute' | 'm' | 'hour' | 'h' | 'day' | 'd' | 'week' | 'w' | 'month' | 'M' | 'quarter' | 'q' | 'year' | 'y';
+
+// @public (undocumented)
+export interface ESFixedInterval {
+    // (undocumented)
+    type: 'fixed';
+    // (undocumented)
+    unit: ESFixedIntervalUnit;
+    // (undocumented)
+    value: number;
+}
+
+// @public (undocumented)
+export type ESFixedIntervalUnit = 'ms' | 's' | 'm' | 'h' | 'd';
 
 // @alpha
 export interface ExternalPointerEventsSettings {
@@ -785,7 +815,7 @@ export function getNodeName(node: ArrayNode): string;
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha (undocumented)
-export const Goal: React_2.FunctionComponent<SpecRequiredProps_9 & SpecOptionalProps_9>;
+export const Goal: React_2.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
 
 // @alpha (undocumented)
 export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
@@ -907,11 +937,8 @@ export interface GroupBySpec extends Spec {
 // @public (undocumented)
 export type GroupId = string;
 
-// Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
-//
 // @alpha (undocumented)
-export const Heatmap: React_2.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
+export const Heatmap: React_2.FunctionComponent<Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>>;
 
 // @alpha (undocumented)
 export interface HeatmapBandsColorScale {
@@ -930,58 +957,10 @@ export type HeatmapBrushEvent = {
 };
 
 // @public (undocumented)
-export type HeatmapElementEvent = [Cell, SeriesIdentifier];
-
-// @alpha (undocumented)
-export interface HeatmapSpec extends Spec {
-    // (undocumented)
-    chartType: typeof ChartType.Heatmap;
-    // (undocumented)
-    colorScale: HeatmapBandsColorScale;
-    // (undocumented)
-    data: Datum[];
-    // (undocumented)
-    highlightedData?: {
-        x: Array<string | number>;
-        y: Array<string | number>;
-    };
-    // (undocumented)
-    name?: string;
-    // (undocumented)
-    onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
-    // (undocumented)
-    specType: typeof SpecType.Series;
-    // (undocumented)
-    timeZone: string;
-    // (undocumented)
-    valueAccessor: Accessor | AccessorFn;
-    // (undocumented)
-    valueFormatter: (value: number) => string;
-    // (undocumented)
-    xAccessor: Accessor | AccessorFn;
-    // (undocumented)
-    xAxisLabelFormatter: (value: string | number) => string;
-    // (undocumented)
-    xAxisLabelName: string;
-    // (undocumented)
-    xScaleType: SeriesScales['xScaleType'];
-    // (undocumented)
-    xSortPredicate: Predicate;
-    // (undocumented)
-    yAccessor: Accessor | AccessorFn;
-    // (undocumented)
-    yAxisLabelFormatter: (value: string | number) => string;
-    // (undocumented)
-    yAxisLabelName: string;
-    // (undocumented)
-    ySortPredicate: Predicate;
-}
-
-// @public (undocumented)
-export interface HeatmapStyle {
+export interface HeatmapConfig {
     brushArea: {
         visible: boolean;
-        fill?: Color;
+        fill: Color;
         stroke: Color;
         strokeWidth: number;
     };
@@ -1010,6 +989,10 @@ export interface HeatmapStyle {
             stroke: Color;
         };
     };
+    // Warning: (ae-forgotten-export) The symbol "FontFamily" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    fontFamily: FontFamily;
     // (undocumented)
     grid: {
         cellWidth: {
@@ -1026,26 +1009,40 @@ export interface HeatmapStyle {
         };
     };
     // (undocumented)
+    height: Pixels;
+    // (undocumented)
+    margin: {
+        left: SizeRatio;
+        right: SizeRatio;
+        top: SizeRatio;
+        bottom: SizeRatio;
+    };
+    // (undocumented)
     maxColumnWidth: Pixels;
     // (undocumented)
     maxLegendHeight?: number;
-    // Warning: (ae-forgotten-export) The symbol "Pixels" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     maxRowHeight: Pixels;
+    // (undocumented)
+    timeZone: string;
+    // (undocumented)
+    width: Pixels;
     // Warning: (ae-forgotten-export) The symbol "Font" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
     xAxisLabel: Font & {
+        name: string;
         fontSize: Pixels;
         width: Pixels | 'auto';
         align: TextAlign;
         baseline: TextBaseline;
         visible: boolean;
         padding: number;
+        formatter: (value: string | number) => string;
     };
     // (undocumented)
     yAxisLabel: Font & {
+        name: string;
         fontSize: Pixels;
         width: Pixels | 'auto' | {
             max: Pixels;
@@ -1058,7 +1055,46 @@ export interface HeatmapStyle {
             top?: number;
             bottom?: number;
         };
+        formatter: (value: string | number) => string;
     };
+}
+
+// @public (undocumented)
+export type HeatmapElementEvent = [Cell, SeriesIdentifier];
+
+// @alpha (undocumented)
+export interface HeatmapSpec extends Spec {
+    // (undocumented)
+    chartType: typeof ChartType.Heatmap;
+    // (undocumented)
+    colorScale: HeatmapBandsColorScale;
+    // (undocumented)
+    config: RecursivePartial<HeatmapConfig>;
+    // (undocumented)
+    data: Datum[];
+    // (undocumented)
+    highlightedData?: {
+        x: Array<string | number>;
+        y: Array<string | number>;
+    };
+    // (undocumented)
+    name?: string;
+    // (undocumented)
+    specType: typeof SpecType.Series;
+    // (undocumented)
+    valueAccessor: Accessor | AccessorFn;
+    // (undocumented)
+    valueFormatter: (value: number) => string;
+    // (undocumented)
+    xAccessor: Accessor | AccessorFn;
+    // (undocumented)
+    xScale: RasterTimeScale | OrdinalScale | LinearScale;
+    // (undocumented)
+    xSortPredicate: Predicate;
+    // (undocumented)
+    yAccessor: Accessor | AccessorFn;
+    // (undocumented)
+    ySortPredicate: Predicate;
 }
 
 // @public
@@ -1290,6 +1326,12 @@ export interface LineAnnotationStyle {
     line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
 }
 
+// @public (undocumented)
+export interface LinearScale {
+    // (undocumented)
+    type: typeof ScaleType.Linear;
+}
+
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
@@ -1322,19 +1364,9 @@ export interface LineStyle {
     visible: boolean;
 }
 
-// @public (undocumented)
-export const LogBase: Readonly<{
-    Common: "common";
-    Binary: "binary";
-    Natural: "natural";
-}>;
-
-// @public
-export type LogBase = $Values<typeof LogBase>;
-
 // @public
 export interface LogScaleOptions {
-    logBase?: LogBase;
+    logBase?: number;
     logMinLimit?: number;
 }
 
@@ -1350,8 +1382,8 @@ export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationSt
 // @public (undocumented)
 export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationStyle>): RectAnnotationStyle;
 
-// @public
-export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, axillaryThemes?: PartialTheme[]): Theme;
+// @public @deprecated
+export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, auxiliaryThemes?: PartialTheme[]): Theme;
 
 // @public (undocumented)
 export const MODEL_KEY = "parent";
@@ -1401,6 +1433,12 @@ export interface OrderBy {
 
 // @public (undocumented)
 export type OrdinalDomain = (number | string)[];
+
+// @public (undocumented)
+export interface OrdinalScale {
+    // (undocumented)
+    type: typeof ScaleType.Ordinal;
+}
 
 // @public (undocumented)
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
@@ -1627,6 +1665,12 @@ export type ProjectedValues = {
 // @public
 export type ProjectionClickListener = (values: ProjectedValues) => void;
 
+// @public (undocumented)
+export interface RasterTimeScale extends TimeScale {
+    // (undocumented)
+    interval: ESCalendarInterval | ESFixedInterval;
+}
+
 // @public
 export type Ratio = number;
 
@@ -1705,7 +1749,7 @@ export type Rotation = 0 | 90 | -90 | 180;
 export type ScaleBandType = ScaleOrdinalType;
 
 // @public (undocumented)
-export type ScaleContinuousType = typeof ScaleType.Linear | typeof ScaleType.Time | typeof ScaleType.Log | typeof ScaleType.Sqrt;
+export type ScaleContinuousType = typeof ScaleType.LinearBinary | typeof ScaleType.Linear | typeof ScaleType.Time | typeof ScaleType.Log | typeof ScaleType.Sqrt;
 
 // @public (undocumented)
 export type ScaleOrdinalType = typeof ScaleType.Ordinal;
@@ -1718,6 +1762,7 @@ export interface ScalesConfig {
 
 // @public
 export const ScaleType: Readonly<{
+    LinearBinary: "linear_binary";
     Linear: "linear";
     Ordinal: "ordinal";
     Log: "log";
@@ -1844,7 +1889,7 @@ export const Settings: React_2.FunctionComponent<SettingsSpecProps>;
 
 // @public
 export interface SettingsSpec extends Spec, LegendSpec {
-    allowBrushingLastHistogramBucket?: boolean;
+    allowBrushingLastHistogramBin: boolean;
     // (undocumented)
     animateData: boolean;
     ariaDescribedBy?: string;
@@ -2119,8 +2164,6 @@ export interface Theme {
     // (undocumented)
     goal: GoalStyles;
     // (undocumented)
-    heatmap: HeatmapStyle;
-    // (undocumented)
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;
     markSizeRatio?: number;
@@ -2146,6 +2189,12 @@ export type TickStyle = StrokeStyle & Visible & {
 
 // @public (undocumented)
 export function timeFormatter(format: string): TickFormatter;
+
+// @public (undocumented)
+export interface TimeScale {
+    // (undocumented)
+    type: typeof ScaleType.Time;
+}
 
 // @public
 export function toEntries<T extends Record<string, string>, S>(array: T[], accessor: keyof T, staticValue: S): Record<string, S>;
@@ -2246,6 +2295,9 @@ export interface UnaryAccessorFn<Return = any> {
     fieldName?: string;
 }
 
+// @public
+export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, onClose: () => void];
+
 // @public (undocumented)
 export type ValueAccessor = (d: Datum) => AdditiveNumber;
 
@@ -2293,7 +2345,7 @@ export type WeightFn = $Values<typeof WeightFn>;
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha (undocumented)
-export const Wordcloud: React_2.FunctionComponent<SpecRequiredProps_10 & SpecOptionalProps_10>;
+export const Wordcloud: React_2.FunctionComponent<SpecRequiredProps_9 & SpecOptionalProps_9>;
 
 // @public (undocumented)
 export interface WordcloudConfigs {
@@ -2419,10 +2471,11 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
 // Warnings were encountered during analysis:
 //
-// src/chart_types/partition_chart/layout/types/config_types.ts:139:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:140:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
-// src/utils/themes/theme.ts:214:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/utils/themes/theme.ts:215:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:19:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:47:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/chart_types/heatmap/layout/types/config_types.ts:48:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

@@ -46,7 +46,7 @@ describe('Categorical heatmap brush', () => {
           onBrushEnd: onBrushEndMock,
         }),
         MockSeriesSpec.heatmap({
-          xScaleType: ScaleType.Ordinal,
+          xScale: { type: ScaleType.Ordinal },
           data: [
             { x: 'a', y: 'ya', value: 1 },
             { x: 'b', y: 'ya', value: 2 },
@@ -81,7 +81,7 @@ describe('Categorical heatmap brush', () => {
 describe('Temporal heatmap brush', () => {
   let store: Store<GlobalChartState>;
   let onBrushEndMock = jest.fn();
-  const start = DateTime.fromISO('2021-07-01T00:00:00.000Z');
+  const start = DateTime.fromISO('2021-07-01T00:00:00', { zone: 'Europe/Rome' });
   beforeEach(() => {
     store = MockStore.default({ width: 300, height: 300, top: 0, left: 0 }, 'chartId');
     onBrushEndMock = jest.fn();
@@ -109,7 +109,7 @@ describe('Temporal heatmap brush', () => {
           onBrushEnd: onBrushEndMock,
         }),
         MockSeriesSpec.heatmap({
-          xScaleType: ScaleType.Time,
+          xScale: { type: ScaleType.Time, interval: { type: 'fixed', unit: 'h', value: 24 } },
           data: [
             { x: start.toMillis(), y: 'ya', value: 1 },
             { x: start.plus({ days: 1 }).toMillis(), y: 'ya', value: 2 },
@@ -121,13 +121,14 @@ describe('Temporal heatmap brush', () => {
             { x: start.plus({ days: 1 }).toMillis(), y: 'yc', value: 8 },
             { x: start.plus({ days: 2 }).toMillis(), y: 'yc', value: 9 },
           ],
+          timeZone: 'Europe/Rome',
         }),
       ],
       store,
     );
   });
 
-  it('should brush on the x scale + minInterval', () => {
+  it('should brush above every cell', () => {
     const caller = createOnBrushEndCaller();
     store.dispatch(onPointerMove({ x: 50, y: 50 }, 0));
     store.dispatch(onMouseDown({ x: 50, y: 50 }, 100));
@@ -136,9 +137,9 @@ describe('Temporal heatmap brush', () => {
     caller(store.getState());
     expect(onBrushEndMock).toBeCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
-    expect(brushEvent.cells).toHaveLength(6);
+    expect(brushEvent.cells).toHaveLength(9);
     // it covers from the beginning of the cell to the end of the next cell
-    expect(brushEvent.x).toEqual([start.toMillis(), start.plus({ days: 2 }).toMillis()]);
+    expect(brushEvent.x).toEqual([start.toMillis(), start.plus({ days: 3 }).toMillis()]);
     expect(brushEvent.y).toEqual(['ya', 'yb', 'yc']);
   });
   it('should brush on the x scale + minInterval on a single cell', () => {

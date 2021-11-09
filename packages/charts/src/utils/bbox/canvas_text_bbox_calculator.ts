@@ -6,21 +6,17 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export interface BBox {
-  width: number;
-  height: number;
-}
+import { Size } from '../dimensions';
 
 /** @internal */
 export type TextMeasure = (
   text: string,
   padding: number,
-  fontSize?: number,
-  fontFamily?: string,
+  fontSize: number,
+  fontFamily: string,
   lineHeight?: number,
   fontWeight?: number,
-) => BBox;
+) => Size;
 
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
@@ -30,7 +26,7 @@ export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
   const root = document.documentElement;
   root.appendChild(canvas);
   const textMeasure: TextMeasure = ctx
-    ? (text: string, padding: number, fontSize = 16, fontFamily = 'Arial', lineHeight = 1, fontWeight = 400) => {
+    ? (text: string, padding: number, fontSize, fontFamily, lineHeight = 1, fontWeight = 400) => {
         ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
         const measure = ctx.measureText(text);
         return { width: measure.width + Math.max(padding, 1), height: fontSize * lineHeight }; // padding should be at least one to avoid browser measureText inconsistencies
