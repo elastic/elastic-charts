@@ -270,23 +270,18 @@ function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
 }
 
 function getAnnotationsState(annotationSpecs: AnnotationSpec[]): DebugStateAnnotations[] {
-  // dataValue => id, color, type, domainType
-  const dataValuesDebug: DebugStateAnnotations[] = [];
-  annotationSpecs.map((annotation) => {
-    annotation.dataValues.map((dataValue) => {
-      dataValuesDebug.push({
-        data: dataValue,
-        id: annotation.id,
-        color:
-          annotation.annotationType === AnnotationType.Line
-            ? mergeWithDefaultAnnotationLine(annotation?.style)
-            : mergeWithDefaultAnnotationRect(annotation?.style),
-        type: annotation.annotationType,
-        domainType: annotation.annotationType === AnnotationType.Line ? annotation.domainType : undefined,
-      });
-    });
+  return annotationSpecs.flatMap<DebugStateAnnotations>((annotation) => {
+    return annotation.dataValues.map((dataValue) => ({
+      data: dataValue,
+      id: annotation.id,
+      color:
+        annotation.annotationType === AnnotationType.Line
+          ? mergeWithDefaultAnnotationLine(annotation?.style)
+          : mergeWithDefaultAnnotationRect(annotation?.style),
+      type: annotation.annotationType,
+      domainType: annotation.annotationType === AnnotationType.Line ? annotation.domainType : undefined,
+    }));
   });
-  return dataValuesDebug;
 }
 
 /**

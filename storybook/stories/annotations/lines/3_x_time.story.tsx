@@ -25,6 +25,7 @@ import { Position } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../../use_base_theme';
+import { debugstateLogger } from '../../utils/debug_state_logger';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
@@ -39,6 +40,7 @@ function generateTimeAnnotationData(values: any[]): LineAnnotationDatum[] {
 
 export const Example = () => {
   const debug = boolean('debug', false);
+  const debugState = boolean('Enable debug state', false);
   const markerPosition = select(
     'marker position',
     [Position.Top, Position.Left, Position.Bottom, Position.Right, 'undefined'],
@@ -56,7 +58,13 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
+      <Settings
+        debug={debug}
+        onRenderChange={debugstateLogger}
+        debugState={debugState}
+        rotation={rotation}
+        baseTheme={useBaseTheme()}
+      />
       <LineAnnotation
         id="annotation_1"
         domainType={AnnotationDomainType.XDomain}
