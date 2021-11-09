@@ -12,6 +12,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { LegendItem } from '../../../../common/legend';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
+import { ScreenReaderCartesianTable } from '../../../../components/accessibility/cartesian_data_table';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -173,9 +174,10 @@ class XYChartComponent extends React.Component<XYChartProps> {
             // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
             role="presentation"
           />
-          {!debug && <ScreenReaderSummary />}
+          <ScreenReaderSummary />
+          {!debug && <ScreenReaderCartesianTable />}
         </figure>
-        {debug && <ScreenReaderSummary />}
+        {debug && <ScreenReaderCartesianTable />}
       </>
     );
   }

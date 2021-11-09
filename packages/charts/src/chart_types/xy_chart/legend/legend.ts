@@ -46,7 +46,8 @@ export interface FormattedLastValues {
   y1: number | string | null;
 }
 
-function getPostfix(spec: BasicSeriesSpec): Postfixes {
+/**@internal */
+export function getPostfix(spec: BasicSeriesSpec): Postfixes {
   if (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec)) {
     const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;
     return { y0AccessorFormat, y1AccessorFormat };
@@ -55,7 +56,8 @@ function getPostfix(spec: BasicSeriesSpec): Postfixes {
   return {};
 }
 
-function getBandedLegendItemLabel(name: string, yAccessor: BandedAccessorType, postfixes: Postfixes) {
+/**@internal */
+export function getBandedLegendItemLabel(name: string, yAccessor: BandedAccessorType, postfixes: Postfixes) {
   return yAccessor === BandedAccessorType.Y1
     ? `${name}${postfixes.y1AccessorFormat}`
     : `${name}${postfixes.y0AccessorFormat}`;
@@ -108,7 +110,6 @@ export function computeLegend(
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
-
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
     const banded = isDataSeriesBanded(series);
