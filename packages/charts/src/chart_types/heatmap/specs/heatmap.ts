@@ -12,10 +12,11 @@ import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { Predicate } from '../../../common/predicate';
 import { ScaleType } from '../../../scales/constants';
-import { SeriesScales, Spec } from '../../../specs';
+import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
+import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { Datum, RecursivePartial } from '../../../utils/common';
 import { config } from '../layout/config/config';
 import { Config } from '../layout/types/config_types';
@@ -27,7 +28,7 @@ const defaultProps = {
   data: [],
   xAccessor: ({ x }: { x: string | number }) => x,
   yAccessor: ({ y }: { y: string | number }) => y,
-  xScaleType: X_SCALE_DEFAULT.type,
+  xScale: { type: X_SCALE_DEFAULT.type },
   valueAccessor: ({ value }: { value: string | number }) => value,
   valueFormatter: (value: number) => `${value}`,
   xSortPredicate: Predicate.AlphaAsc,
@@ -58,6 +59,26 @@ export interface HeatmapBandsColorScale {
   labelFormatter?: (start: number, end: number) => string;
 }
 
+/** @public */
+export interface TimeScale {
+  type: typeof ScaleType.Time;
+}
+
+/** @public */
+export interface RasterTimeScale extends TimeScale {
+  interval: ESCalendarInterval | ESFixedInterval;
+}
+
+/** @public */
+export interface LinearScale {
+  type: typeof ScaleType.Linear;
+}
+
+/** @public */
+export interface OrdinalScale {
+  type: typeof ScaleType.Ordinal;
+}
+
 /** @alpha */
 export interface HeatmapSpec extends Spec {
   specType: typeof SpecType.Series;
@@ -70,7 +91,7 @@ export interface HeatmapSpec extends Spec {
   valueFormatter: (value: number) => string;
   xSortPredicate: Predicate;
   ySortPredicate: Predicate;
-  xScaleType: SeriesScales['xScaleType'];
+  xScale: RasterTimeScale | OrdinalScale | LinearScale;
   config: RecursivePartial<Config>;
   highlightedData?: { x: Array<string | number>; y: Array<string | number> };
   name?: string;
@@ -90,6 +111,6 @@ export const Heatmap: React.FunctionComponent<
     | 'xSortPredicate'
     | 'valueFormatter'
     | 'config'
-    | 'xScaleType'
+    | 'xScale'
   >(defaultProps),
 );
