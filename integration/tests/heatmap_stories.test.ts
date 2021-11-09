@@ -26,4 +26,11 @@ describe('Heatmap stories', () => {
       'http://localhost:9001/?path=/story/heatmap-alpha--categorical&knob-use global min fontSize_labels=false',
     );
   });
+
+  it.each([[2], [3], [4], [5], [6], [7], [8], [9]])('time snap with dataset %i', async (dataset) => {
+    await page.setViewport({ width: 785, height: 600 });
+    await common.expectChartAtUrlToMatchScreenshot(
+      `http://localhost:9001/?path=/story/heatmap-alpha--time-snap&globals=theme:light&knob-dataset=${dataset}`,
+    );
+  });
 });

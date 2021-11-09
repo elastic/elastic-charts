@@ -15,7 +15,6 @@ import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_si
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Position } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
-import { XDomain } from '../../../xy_chart/domains/types';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
 import { getGridHeightParamsSelector } from './get_grid_full_height';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
@@ -25,10 +24,9 @@ import { getXAxisRightOverflow } from './get_x_axis_right_overflow';
 /** @internal */
 export interface HeatmapTable {
   table: Array<HeatmapCellDatum>;
-  // unique set of column values
-  xDomain: XDomain;
-  // unique set of row values
   yValues: Array<string | number>;
+  xValues: Array<string | number>;
+  xNumericExtent: [number, number];
   extent: [number, number];
 }
 
