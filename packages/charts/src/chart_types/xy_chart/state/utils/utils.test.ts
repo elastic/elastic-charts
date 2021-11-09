@@ -74,7 +74,7 @@ describe('Chart State utils', () => {
         domain: [0, 3],
         isBandScale: false,
         minInterval: 1,
-        logBase: undefined,
+        logBase: 10,
         timeZone: 'utc',
       }),
     );
@@ -125,7 +125,7 @@ describe('Chart State utils', () => {
         domain: [0, 3],
         isBandScale: false,
         minInterval: 1,
-        logBase: undefined,
+        logBase: 10,
         timeZone: 'utc',
       }),
     );

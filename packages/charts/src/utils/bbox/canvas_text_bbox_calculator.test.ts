@@ -11,7 +11,7 @@ import { withTextMeasure } from './canvas_text_bbox_calculator';
 describe('CanvasTextBBoxCalculator', () => {
   test('can create a canvas for computing text measurement values', () =>
     withTextMeasure((textMeasure) => {
-      const bbox = textMeasure('foo', 0);
+      const bbox = textMeasure('foo', 0, 16, 'Arial');
       expect(Math.abs(bbox.width - 23.2)).toBeLessThanOrEqual(2);
       expect(bbox.height).toBe(16);
     }));

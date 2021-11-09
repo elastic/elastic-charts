@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ScaleContinuousType } from '../../../scales';
-import { LogScaleOptions } from '../../../scales/scale_continuous';
+import { LogScaleOptions, ScaleContinuousType } from '../../../scales';
 import { OrdinalDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { XScaleType } from '../utils/specs';
@@ -18,10 +17,10 @@ export type XDomain = Pick<LogScaleOptions, 'logBase'> & {
   nice: boolean;
   /* if the scale needs to be a band scale: used when displaying bars */
   isBandScale: boolean;
-  /* the minimum interval of the scale if not-ordinal band-scale */
+  /* the minimum interval of the scale (for time, in milliseconds) if not-ordinal band-scale */
   minInterval: number;
-  /** if x domain is time, we should also specify the timezone */
-  timeZone?: string;
+  /** the configured timezone in the specs or the fallback to the browser local timezone */
+  timeZone: string;
   domain: OrdinalDomain | ContinuousDomain;
   desiredTickCount: number;
 };

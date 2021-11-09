@@ -9,14 +9,18 @@
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { AnnotationId, AxisId } from '../../../../utils/ids';
-import { AnnotationDimensions } from '../../annotations/types';
+import { AxisId } from '../../../../utils/ids';
 import { computeAnnotationDimensions } from '../../annotations/utils';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
+
+const getAxisStyleGetter = createCustomCachedSelector(
+  [getAxesStylesSelector, getChartThemeSelector],
+  (axisStyles, { axes }) => (id: AxisId = '') => axisStyles.get(id) ?? axes,
+);
 
 /** @internal */
 export const computeAnnotationDimensionsSelector = createCustomCachedSelector(
@@ -27,29 +31,7 @@ export const computeAnnotationDimensionsSelector = createCustomCachedSelector(
     getAxisSpecsSelector,
     isHistogramModeEnabledSelector,
     computeSmallMultipleScalesSelector,
-    getAxesStylesSelector,
-    getChartThemeSelector,
+    getAxisStyleGetter,
   ],
-  (
-    annotationSpecs,
-    settingsSpec,
-    { scales: { yScales, xScale } },
-    axesSpecs,
-    isHistogramMode,
-    smallMultipleScales,
-    axisStyles,
-    { axes },
-  ): Map<AnnotationId, AnnotationDimensions> => {
-    const getAxisStyle = (id: AxisId = '') => axisStyles.get(id) ?? axes;
-    return computeAnnotationDimensions(
-      annotationSpecs,
-      settingsSpec.rotation,
-      yScales,
-      xScale,
-      axesSpecs,
-      isHistogramMode,
-      smallMultipleScales,
-      getAxisStyle,
-    );
-  },
+  computeAnnotationDimensions,
 );

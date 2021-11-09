@@ -9,7 +9,6 @@
 import { RefObject } from 'react';
 
 import { ChartType } from '../..';
-import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { BackwardRef, GlobalChartState, InternalChartState } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { DebugState } from '../../../state/types';
@@ -17,6 +16,7 @@ import { Dimensions } from '../../../utils/dimensions';
 import { render } from '../renderer/dom/layered_partition_chart';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
+import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getLegendItemsExtra } from './selectors/get_legend_items_extra';
 import { getLegendItemsLabels } from './selectors/get_legend_items_labels';
@@ -76,8 +76,8 @@ export class PartitionState implements InternalChartState {
     return render(containerRef, forwardStageRef);
   }
 
-  getPointerCursor() {
-    return DEFAULT_CSS_CURSOR;
+  getPointerCursor(globalState: GlobalChartState) {
+    return getPointerCursorSelector(globalState);
   }
 
   isTooltipVisible(globalState: GlobalChartState) {

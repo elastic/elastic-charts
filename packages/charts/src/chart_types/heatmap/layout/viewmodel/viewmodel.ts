@@ -7,7 +7,7 @@
  */
 
 import { bisectLeft } from 'd3-array';
-import { scaleBand, scaleQuantize } from 'd3-scale';
+import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
@@ -15,12 +15,11 @@ import { Pixels } from '../../../../common/geometry';
 import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
-import { SettingsSpec } from '../../../../specs';
+import { LinearScale, OrdinalScale, RasterTimeScale, SettingsSpec } from '../../../../specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { snapDateToESInterval } from '../../../../utils/chrono/elasticsearch';
-import { clamp, range } from '../../../../utils/common';
+import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
+import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
-import { ContinuousDomain } from '../../../../utils/domain';
 import { Logger } from '../../../../utils/logger';
 import { Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
@@ -56,18 +55,18 @@ function getValuesInRange(
   return values.slice(startIndex, endIndex);
 }
 
-/**
- * Resolves the maximum number of ticks based on the chart width and sample label based on formatter config.
- */
-function getTicks(chartWidth: number, { formatter, padding, fontSize, fontFamily }: Config['xAxisLabel']): number {
+function estimatedNonOverlappingTickCount(
+  chartWidth: number,
+  { formatter, padding, fontSize, fontFamily }: Config['xAxisLabel'],
+): number {
   return withTextMeasure((textMeasure) => {
     const labelSample = formatter(Date.now());
     const { width } = textMeasure(labelSample, padding, fontSize, fontFamily);
-    const maxTicks = Math.floor(chartWidth / width);
+    const maxTicks = chartWidth / width;
     // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
     // to many ticks creating nice rounded tick values
     // TODO add support for limiting the number of tick in {@link ScaleContinuous}
-    return maxTicks / 2;
+    return Math.floor(maxTicks / 2);
   });
 }
 
@@ -86,49 +85,20 @@ export function shapeViewModel(
 ): ShapeViewModel {
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
 
-  const { table, yValues, xDomain } = heatmapTable;
+  const { table, yValues, xValues } = heatmapTable;
 
   // measure the text width of all rows values to get the grid area width
-  const boxedYValues = yValues.map<Box & { value: NonNullable<PrimitiveValue> }>((value) => {
-    return {
-      text: config.yAxisLabel.formatter(value),
-      value,
-      ...config.yAxisLabel,
-    };
-  });
+  const boxedYValues = yValues.map<Box & { value: NonNullable<PrimitiveValue> }>((value) => ({
+    text: config.yAxisLabel.formatter(value),
+    value,
+    ...config.yAxisLabel,
+  }));
 
   // compute the scale for the rows positions
   const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, height]);
 
   const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, height]).range(yValues);
 
-  const timeScale =
-    xDomain.type === ScaleType.Time
-      ? new ScaleContinuous(
-          {
-            type: ScaleType.Time,
-            domain: xDomain.domain as number[],
-            range: [0, chartDimensions.width],
-            nice: false,
-          },
-          {
-            desiredTickCount: getTicks(chartDimensions.width, config.xAxisLabel),
-            timeZone: config.timeZone,
-          },
-        )
-      : null;
-
-  const xValues = timeScale
-    ? range(
-        snapDateToESInterval(
-          (xDomain.domain as ContinuousDomain)[0],
-          { type: 'fixed', unit: 'ms', quantity: xDomain.minInterval },
-          'start',
-        ),
-        (xDomain.domain as ContinuousDomain)[1],
-        xDomain.minInterval,
-      )
-    : xDomain.domain;
   // compute the scale for the columns positions
   const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, chartDimensions.width]);
 
@@ -145,28 +115,8 @@ export function shapeViewModel(
 
   const currentGridHeight = cellHeight * pageSize;
 
-  const getTextValue = (
-    formatter: (v: any, options: any) => string,
-    scaleCallback: (x: any) => number | undefined | null = xScale,
-  ) => (value: any): TextBox => {
-    return {
-      text: formatter(value, { timeZone: config.timeZone }),
-      value,
-      ...config.xAxisLabel,
-      x: chartDimensions.left + (scaleCallback(value) || 0),
-      y: cellHeight * pageSize + config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
-    };
-  };
-
   // compute the position of each column label
-  const textXValues: Array<TextBox> = timeScale
-    ? timeScale.ticks().map<TextBox>(getTextValue(config.xAxisLabel.formatter, (x: any) => timeScale.scale(x)))
-    : xValues.map<TextBox>((textBox: any) => {
-        return {
-          ...getTextValue(config.xAxisLabel.formatter)(textBox),
-          x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
-        };
-      });
+  const textXValues = getXTicks(spec, config, chartDimensions, xScale, heatmapTable, currentGridHeight);
 
   const { padding } = config.yAxisLabel;
   const rightPadding = typeof padding === 'number' ? padding : padding.right ?? 0;
@@ -293,8 +243,9 @@ export function shapeViewModel(
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
     const invertedXValues: Array<NonNullable<PrimitiveValue>> =
-      timeScale && typeof endX === 'number' ? [startX, endX + xDomain.minInterval] : [...allXValuesInRange];
-
+      isRasterTimeScale(spec.xScale) && typeof endX === 'number'
+        ? [startX, addIntervalToTime(endX, spec.xScale.interval, config.timeZone)]
+        : [...allXValuesInRange];
     const cells: Cell[] = [];
 
     allXValuesInRange.forEach((x) => {
@@ -373,19 +324,20 @@ export function shapeViewModel(
   };
 
   // vertical lines
-  const xLines = [];
-  for (let i = 0; i < xValues.length + 1; i++) {
-    const x = chartDimensions.left + i * cellWidth;
-    const y1 = chartDimensions.top;
-    const y2 = cellHeight * pageSize;
-    xLines.push({ x1: x, y1, x2: x, y2 });
-  }
+  const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => ({
+    x1: chartDimensions.left + i * cellWidth,
+    x2: chartDimensions.left + i * cellWidth,
+    y1: chartDimensions.top,
+    y2: currentGridHeight,
+  }));
+
   // horizontal lines
-  const yLines = [];
-  for (let i = 0; i < pageSize + 1; i++) {
-    const y = i * cellHeight;
-    yLines.push({ x1: chartDimensions.left, y1: y, x2: chartDimensions.width + chartDimensions.left, y2: y });
-  }
+  const yLines = Array.from({ length: pageSize + 1 }, (d, i) => ({
+    x1: chartDimensions.left,
+    x2: chartDimensions.left + chartDimensions.width,
+    y1: i * cellHeight,
+    y2: i * cellHeight,
+  }));
 
   const cells = Object.values(cellMap);
   const tableMinFontSize = cells.reduce((acc, { fontSize }) => Math.min(acc, fontSize), Infinity);
@@ -424,4 +376,53 @@ function getCellKey(x: NonNullable<PrimitiveValue>, y: NonNullable<PrimitiveValu
 
 function isValueHidden(value: number, rangesToHide: Array<[number, number]>) {
   return rangesToHide.some(([min, max]) => min <= value && value < max);
+}
+
+/** @internal */
+export function isRasterTimeScale(scale: RasterTimeScale | OrdinalScale | LinearScale): scale is RasterTimeScale {
+  return scale.type === ScaleType.Time;
+}
+
+function getXTicks(
+  spec: HeatmapSpec,
+  config: Config,
+  chartDimensions: Dimensions,
+  xScale: ScaleBand<string | number>,
+  { xValues, xNumericExtent }: HeatmapTable,
+  gridHeight: number,
+): Array<TextBox> {
+  const getTextValue = (
+    formatter: Config['xAxisLabel']['formatter'],
+    scaleCallback: (x: string | number) => number | undefined | null,
+  ) => (value: string | number): TextBox => {
+    return {
+      text: formatter(value),
+      value,
+      ...config.xAxisLabel,
+      x: chartDimensions.left + (scaleCallback(value) ?? 0),
+      y: gridHeight + config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
+    };
+  };
+  if (isRasterTimeScale(spec.xScale)) {
+    const timeScale = new ScaleContinuous(
+      {
+        type: ScaleType.Time,
+        domain: xNumericExtent,
+        range: [0, chartDimensions.width],
+        nice: false,
+      },
+      {
+        desiredTickCount: estimatedNonOverlappingTickCount(chartDimensions.width, config.xAxisLabel),
+        timeZone: config.timeZone,
+      },
+    );
+    return timeScale.ticks().map<TextBox>(getTextValue(config.xAxisLabel.formatter, (x) => timeScale.scale(x)));
+  }
+
+  return xValues.map<TextBox>((textBox: string | number) => {
+    return {
+      ...getTextValue(config.xAxisLabel.formatter, xScale)(textBox),
+      x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
+    };
+  });
 }

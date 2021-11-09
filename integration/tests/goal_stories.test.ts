@@ -23,6 +23,27 @@ describe('Goal stories', () => {
     );
   });
 
+  describe('Sagitta offset', () => {
+    it('should render goal with asymetric angle', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target&knob-angleStart (n * π/8)=10&knob-angleEnd (n * π/8)=1',
+      );
+    });
+
+    it('should limit min offset to π/2', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target&knob-angleStart (n * π/8)=6&knob-angleEnd (n * π/8)=2',
+      );
+    });
+
+    it('should limit max offset to 3/2π', async () => {
+      // TODO revist once full circle chart is handled
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target&knob-angleStart (n * π/8)=11&knob-angleEnd (n * π/8)=-3',
+      );
+    });
+  });
+
   eachTheme.describe((_, params) => {
     it('should render gauge with target story', async () => {
       await common.expectChartAtUrlToMatchScreenshot(

@@ -1,3 +1,126 @@
+# [39.0.0](https://github.com/elastic/elastic-charts/compare/v38.1.5...v39.0.0) (2021-11-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v41 ([#1468](https://github.com/elastic/elastic-charts/issues/1468)) ([0c38291](https://github.com/elastic/elastic-charts/commit/0c38291f140218cbc993228ef821e8657c9bcf0c))
+* **heatmap:** snap time bucket to calendar/fixed intervals ([#1462](https://github.com/elastic/elastic-charts/issues/1462)) ([b76c12c](https://github.com/elastic/elastic-charts/commit/b76c12c0a499acbb52c6333134d3ed2966b1b111))
+* **xy:** handle zero-length time domains and switch to 24hr time ([#1464](https://github.com/elastic/elastic-charts/issues/1464)) ([379c2d6](https://github.com/elastic/elastic-charts/commit/379c2d6996f40df011201235f2ca3b28dae6f7a8))
+
+
+### BREAKING CHANGES
+
+* **heatmap:** The `xScaleType` is replaced by the prop `xScale`, which better describes a rasterized time scale with an Elasticsearch compliant interval.
+
+## [38.1.5](https://github.com/elastic/elastic-charts/compare/v38.1.4...v38.1.5) (2021-11-05)
+
+
+### Bug Fixes
+
+* **legend:** legend breaking on words ([#1458](https://github.com/elastic/elastic-charts/issues/1458)) ([c42be98](https://github.com/elastic/elastic-charts/commit/c42be981b1b6a243dcfa5df9d978fb053e1aa5ed))
+
+## [38.1.4](https://github.com/elastic/elastic-charts/compare/v38.1.3...v38.1.4) (2021-11-03)
+
+
+### Bug Fixes
+
+* **interactions:** line cursor above the chart, band cursor below ([#1453](https://github.com/elastic/elastic-charts/issues/1453)) ([d8d7ee0](https://github.com/elastic/elastic-charts/commit/d8d7ee0d204948e07235e7a949e9d33ea27c72ac))
+* **theme:** merge partial with empty initial partial ([#1452](https://github.com/elastic/elastic-charts/issues/1452)) ([d1e690a](https://github.com/elastic/elastic-charts/commit/d1e690af35161eb660d41da34092b64179c238d8))
+
+## [38.1.3](https://github.com/elastic/elastic-charts/compare/v38.1.2...v38.1.3) (2021-11-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^40.1.0 ([#1449](https://github.com/elastic/elastic-charts/issues/1449)) ([33a24fb](https://github.com/elastic/elastic-charts/commit/33a24fb87144c025d67bf6e3cc06215f1d326d06))
+* **xy:** adding missing last tick and rarify gridlines ([#1448](https://github.com/elastic/elastic-charts/issues/1448)) ([002e4b8](https://github.com/elastic/elastic-charts/commit/002e4b809d0e224d04709ed8886f09f09137160a))
+
+## [38.1.2](https://github.com/elastic/elastic-charts/compare/v38.1.1...v38.1.2) (2021-10-29)
+
+
+### Bug Fixes
+
+* **xy:** multilayer time axis tick/grid only when tick is inside domain ([#1446](https://github.com/elastic/elastic-charts/issues/1446)) ([1d06a1e](https://github.com/elastic/elastic-charts/commit/1d06a1e673255647a88a32c4d79fa71e113a6eba))
+* **xy:** show mouse cursors on charts with opaque background ([#1447](https://github.com/elastic/elastic-charts/issues/1447)) ([e0f1543](https://github.com/elastic/elastic-charts/commit/e0f15438c8bc696ffee1b9054cbc45fd4200b8bd))
+
+## [38.1.1](https://github.com/elastic/elastic-charts/compare/v38.1.0...v38.1.1) (2021-10-28)
+
+
+### Bug Fixes
+
+* **xy:** multilayer time axis tick/grid line placement and styling ([#1445](https://github.com/elastic/elastic-charts/issues/1445)) ([1ce4223](https://github.com/elastic/elastic-charts/commit/1ce4223f02b1723bbfa1b6132609b12590d52f59))
+
+# [38.1.0](https://github.com/elastic/elastic-charts/compare/v38.0.1...v38.1.0) (2021-10-26)
+
+
+### Bug Fixes
+
+* **partition:** add get cursor pointer over slices ([#1428](https://github.com/elastic/elastic-charts/issues/1428)) ([af776ae](https://github.com/elastic/elastic-charts/commit/af776ae40f1e94b72789d3a0cac670f1855d49a0))
+
+
+### Features
+
+* **xy:** multilayer time axis ([#1430](https://github.com/elastic/elastic-charts/issues/1430)) ([3d25854](https://github.com/elastic/elastic-charts/commit/3d258549cebb598db2d839197af32d7a0fa6fe92))
+
+## [38.0.1](https://github.com/elastic/elastic-charts/compare/v38.0.0...v38.0.1) (2021-10-15)
+
+
+### Bug Fixes
+
+* **legend:** floating legend scroll issue ([#1427](https://github.com/elastic/elastic-charts/issues/1427)) ([56ecbe2](https://github.com/elastic/elastic-charts/commit/56ecbe2f34304dfff9cb4427e91cb62eef063df5))
+
+# [38.0.0](https://github.com/elastic/elastic-charts/compare/v37.0.0...v38.0.0) (2021-10-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v39 ([#1422](https://github.com/elastic/elastic-charts/issues/1422)) ([2ee97aa](https://github.com/elastic/elastic-charts/commit/2ee97aa14d2893f2a215a524882d2bf0a86ddc47))
+* **goal:** reduce whitespace for circular charts ([#1413](https://github.com/elastic/elastic-charts/issues/1413)) ([6517523](https://github.com/elastic/elastic-charts/commit/6517523fe05e43f00827ba3928d404c7006ac6d5))
+* **interactions:** change allowBrushingLastHistogramBin to true ([#1396](https://github.com/elastic/elastic-charts/issues/1396)) ([9fa9783](https://github.com/elastic/elastic-charts/commit/9fa9783b4212d43141762936ac647218f3426119))
+* **xy:** remove wrongly represented null/missing values in tooltip ([#1415](https://github.com/elastic/elastic-charts/issues/1415)) ([e5963a3](https://github.com/elastic/elastic-charts/commit/e5963a376ad1726a79d632391eef43c2a7a26adb)), closes [#1414](https://github.com/elastic/elastic-charts/issues/1414)
+
+
+### Code Refactoring
+
+* scales ([#1410](https://github.com/elastic/elastic-charts/issues/1410)) ([a53a2ba](https://github.com/elastic/elastic-charts/commit/a53a2ba4f4f8c881e7c4e4d85ac4eedfde02ccda))
+
+
+### Features
+
+* **scales:** add `LinearBinary` scale type ([#1389](https://github.com/elastic/elastic-charts/issues/1389)) ([9f2e427](https://github.com/elastic/elastic-charts/commit/9f2e42778ecb224293851739f390a03e76025eae))
+* **xy:** adaptive tick raster ([#1420](https://github.com/elastic/elastic-charts/issues/1420)) ([200577b](https://github.com/elastic/elastic-charts/commit/200577b689ebfeb835401f6f5506f6b833e1268e))
+* **xy:** apply the data value formatter to data values over bars ([#1419](https://github.com/elastic/elastic-charts/issues/1419)) ([e673fc7](https://github.com/elastic/elastic-charts/commit/e673fc776f494b45a35f6a4a18488d32e74050f3))
+
+
+### BREAKING CHANGES
+
+* **interactions:** allowBrushingLastHistogramBucket renamed to allowBrushingLastHistogramBin on the Settings component defaults true and is only applied for histogram type charts
+* LogScaleOptions.logBase` is now a `number` instead of the object enum `LogBase`. Some edge case data or configuration _might_, with a deemed low likelihood, lead to a situation where the earlier version would have silently not rendered a bar, line or point, while the new code doesn't `catch`, therefore throw an exception (see the last item). General risk of regressions due to the quantity of code changes (altogether 3.5k)
+
+# [37.0.0](https://github.com/elastic/elastic-charts/compare/v36.0.0...v37.0.0) (2021-10-05)
+
+
+### Bug Fixes
+
+* **debug:** add predictable axis labels sorting order ([#1418](https://github.com/elastic/elastic-charts/issues/1418)) ([60fbe7a](https://github.com/elastic/elastic-charts/commit/60fbe7aca9be73d34ce617aa990b717989cdeef4))
+* **deps:** update dependency @elastic/eui to ^38.1.0 ([#1409](https://github.com/elastic/elastic-charts/issues/1409)) ([4ffd018](https://github.com/elastic/elastic-charts/commit/4ffd018e9a0afc0d2813d722be6c37d98dd7d378))
+* **deps:** update dependency @elastic/eui to ^38.2.0 ([#1416](https://github.com/elastic/elastic-charts/issues/1416)) ([34707c3](https://github.com/elastic/elastic-charts/commit/34707c365b08ac383ab2d954cf94a5476db78bf4))
+
+
+### Code Refactoring
+
+* cleanup colors ([#1397](https://github.com/elastic/elastic-charts/issues/1397)) ([348c061](https://github.com/elastic/elastic-charts/commit/348c061e5aeacdd7990bae58a67af4532062729a))
+* scale improvements and TS 4.4 ([#1383](https://github.com/elastic/elastic-charts/issues/1383)) ([0003bc1](https://github.com/elastic/elastic-charts/commit/0003bc193499481d9c7d9a7696c2ac8e89f6a91d))
+
+
+### BREAKING CHANGES
+
+* `DEFAULT_CHART_MARGINS`, `DEFAULT_GEOMETRY_STYLES`, `DEFAULT_CHART_PADDING` and `DEFAULT_MISSING_COLOR` are no longer exposed as part of the API
+* The public type varieties for domains are discontinued, in favor of retaining the single `DomainRange` export, which now has a mandatory `{min: number, max: number}`. The developer can supply `NaN` where a finite min, max or both aren't defined (ie. in place of former effective `undefined`). In addition, some console.warn punctuations changed
+
+Co-authored-by: Marco Vettorello <vettorello.marco@gmail.com>
+Co-authored-by: Nick Partridge <nick.ryan.partridge@gmail.com>
+
 # [36.0.0](https://github.com/elastic/elastic-charts/compare/v35.0.0...v36.0.0) (2021-09-15)
 
 

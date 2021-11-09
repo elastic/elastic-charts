@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { Scale } from '../../../../scales';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getTooltipSnapSelector } from './get_tooltip_snap';
@@ -14,9 +13,5 @@ import { getTooltipSnapSelector } from './get_tooltip_snap';
 /** @internal */
 export const isTooltipSnapEnableSelector = createCustomCachedSelector(
   [computeSeriesGeometriesSelector, getTooltipSnapSelector],
-  (seriesGeometries, snap) => isTooltipSnapEnabled(seriesGeometries.scales.xScale, snap),
+  (seriesGeometries, snap) => (seriesGeometries.scales.xScale && seriesGeometries.scales.xScale.bandwidth > 0) || snap,
 );
-
-function isTooltipSnapEnabled(xScale: Scale<number | string>, snap: boolean) {
-  return (xScale && xScale.bandwidth > 0) || snap;
-}

@@ -9,8 +9,9 @@
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
 import { LegendPositionConfig } from '../../specs/settings';
-import { BBox, withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
+import { withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { Position, isDefined, LayoutDirection } from '../../utils/common';
+import { Size } from '../../utils/dimensions';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 import { getChartThemeSelector } from './get_chart_theme';
@@ -28,7 +29,7 @@ const MAGIC_FONT_FAMILY =
   '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
 /** @internal */
-export type LegendSizing = BBox & {
+export type LegendSizing = Size & {
   margin: number;
   position: LegendPositionConfig;
 };

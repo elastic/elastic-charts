@@ -18,13 +18,13 @@ import {
   formatTimeObj,
   diffTimeObjs,
 } from './moment';
-import { CalendarIntervalUnit, CalendarObj, DateTime, FixedIntervalUnit, Minutes, UnixTimestamp } from './types';
+import { CalendarIntervalUnit, DateTime, FixedIntervalUnit, Minutes, UnixTimestamp } from './types';
 
 /** @internal */
 export function addTime(
   dateTime: DateTime,
   timeZone: string | undefined,
-  unit: keyof CalendarObj,
+  unit: CalendarIntervalUnit | FixedIntervalUnit,
   count: number,
 ): UnixTimestamp {
   return timeObjToUnixTimestamp(addTimeToObj(getTimeObj(dateTime, timeZone), unit, count));
@@ -34,7 +34,7 @@ export function addTime(
 export function subtractTime(
   dateTime: DateTime,
   timeZone: string | undefined,
-  unit: keyof CalendarObj,
+  unit: CalendarIntervalUnit | FixedIntervalUnit,
   count: number,
 ): UnixTimestamp {
   return timeObjToUnixTimestamp(subtractTimeToObj(getTimeObj(dateTime, timeZone), unit, count));

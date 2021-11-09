@@ -54,6 +54,19 @@ describe('Legend stories', () => {
     );
   });
 
+  it('should break multiline legends with long url characters', async () => {
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/legend--inside-chart&globals=theme:light&knob-Number of series=5&knob-Series with long name=3&knob-Inside chart_Legend=false&knob-Show legend action_Legend=true&knob-floating columns_Legend=1&knob-vAlign_Legend=bottom&knob-hAlign_Legend=right&knob-direction_Legend=vertical&knob-max label lines_Legend=0&knob-long label_Legend=/people/type:astronauts/name:gregory-chamitoff/profile',
+      { left: 182, top: 178 },
+    );
+  });
+
+  it('should render long floating legends inside chart', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/legend--inside-chart&globals=theme:light&knob-Number of series=40&knob-Series with long name=0&knob-Inside chart_Legend=true&knob-floating columns_Legend=1&knob-vAlign_Legend=bottom&knob-hAlign_Legend=right&knob-direction_Legend=vertical&knob-max label lines_Legend=1&knob-long label_Legend=long name',
+    );
+  });
+
   it('should render color picker on mouse click', async () => {
     const action = async () => {
       await common.clickMouseRelativeToDOMElement({ left: 0, top: 0 }, '.echLegendItem__color');

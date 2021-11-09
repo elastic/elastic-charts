@@ -17,8 +17,8 @@ import { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } fr
 import { PointStyleAccessor, StackMode } from '../utils/specs';
 import { buildPointGeometryStyles } from './point_style';
 import {
-  getY0ScaledValueOrThrowFn,
-  getY1ScaledValueOrThrowFn,
+  getY0ScaledValueFn,
+  getY1ScaledValueFn,
   getYDatumValueFn,
   isDatumFilled,
   isYValueDefinedFn,
@@ -49,8 +49,8 @@ export function renderPoints(
     : () => 0;
   const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
 
-  const y1Fn = getY1ScaledValueOrThrowFn(yScale);
-  const y0Fn = getY0ScaledValueOrThrowFn(yScale);
+  const y1Fn = getY1ScaledValueFn(yScale);
+  const y0Fn = getY0ScaledValueFn(yScale);
   const yDefined = isYValueDefinedFn(yScale, xScale);
 
   const pointGeometries = dataSeries.data.reduce((acc, datum, dataIndex) => {
@@ -58,29 +58,19 @@ export function renderPoints(
     const prev = dataSeries.data[dataIndex - 1];
     const next = dataSeries.data[dataIndex + 1];
     // don't create the point if not within the xScale domain
-    if (!xScale.isValueInDomain(xValue)) {
-      return acc;
-    }
+    if (!xScale.isValueInDomain(xValue)) return acc;
+
     // don't create the point if it that point was filled
     const x = xScale.scale(xValue);
 
-    if (x === null) {
-      return acc;
-    }
+    if (Number.isNaN(x)) return acc;
 
     const points: PointGeometry[] = [];
     const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = hasY0Accessors ? ['y0', 'y1'] : ['y1'];
 
     yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
       const valueAccessor = getYDatumValueFn(yDatumKeyName);
-
-      let y: number | null;
-      try {
-        y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
-      } catch {
-        y = null;
-      }
-
+      const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
       const originalY = getDatumYValue(datum, keyIndex === 0, hasY0Accessors, dataSeries.stackMode);
       const seriesIdentifier: XYChartSeriesIdentifier = {
         key: dataSeries.key,
@@ -160,30 +150,25 @@ export function getPointStyleOverrides(
  * @param lookingForY0 if we are interested in the y0 value, false for y1
  * @param isBandChart if the chart is a band chart
  * @param stackMode an optional stack mode
+ * @internal
  */
-function getDatumYValue(
+export function getDatumYValue(
   { y1, y0, initialY1, initialY0 }: DataSeriesDatum,
   lookingForY0: boolean,
   isBandChart: boolean,
   stackMode?: StackMode,
 ) {
   if (isBandChart) {
-    return stackMode === StackMode.Percentage
-      ? // on band stacked charts in percentage mode, the values I'm looking for are the percentage value
-        // that are already computed and available on y0 and y1
-        lookingForY0
-        ? y0
-        : y1
-      : // in all other cases for band charts, I want to get back the original/initial value of y0 and y1
-      // not the computed value
-      lookingForY0
-      ? initialY0
-      : initialY1;
+    // on band stacked charts in percentage mode, the values I'm looking for are the percentage value
+    // that are already computed and available on y0 and y1
+    // in all other cases for band charts, I want to get back the original/initial value of y0 and y1
+    // not the computed value
+    return stackMode === StackMode.Percentage ? (lookingForY0 ? y0 : y1) : lookingForY0 ? initialY0 : initialY1;
   }
   // if not a band chart get use the original/initial value in every case except for stack as percentage
   // in this case, we should take the difference between the bottom position of the bar and the top position
   // of the bar
-  return stackMode === StackMode.Percentage ? (y1 ?? 0) - (y0 ?? 0) : initialY1;
+  return stackMode === StackMode.Percentage ? (isNil(y1) || isNil(initialY1) ? null : y1 - (y0 ?? 0)) : initialY1;
 }
 
 /**
