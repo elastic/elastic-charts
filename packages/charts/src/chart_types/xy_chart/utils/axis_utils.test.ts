@@ -1327,7 +1327,17 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
+      generateTicks(
+        axisSpec,
+        scale as Scale<number>,
+        scale.ticks(),
+        offset,
+        (v) => `${v}`,
+        tickFormatOption,
+        0,
+        0,
+        true,
+      ),
     ).toEqual([
       { value: 1547208000000, label: '2019-01-11', axisTickLabel: '2019-01-11', position: 25.145833333333332, layer },
       { value: 1547251200000, label: '2019-01-12', axisTickLabel: '2019-01-12', position: 85.49583333333334, layer },
@@ -1374,6 +1384,8 @@ describe('Axis computational utils', () => {
       (v) => `${v}`,
       tickFormatOption,
       0,
+      0,
+      true,
     );
     const tickLabels = ticks.map(({ label }) => ({ label }));
     expect(tickLabels).toEqual([
@@ -1420,7 +1432,17 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
+      generateTicks(
+        axisSpec,
+        scale as Scale<number>,
+        scale.ticks(),
+        offset,
+        (v) => `${v}`,
+        tickFormatOption,
+        0,
+        0,
+        true,
+      ),
     ).toEqual([
       {
         value: 1547208000000,
@@ -1561,7 +1583,17 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
+      generateTicks(
+        axisSpec,
+        scale as Scale<number>,
+        scale.ticks(),
+        offset,
+        (v) => `${v}`,
+        tickFormatOption,
+        0,
+        0,
+        true,
+      ),
     ).toEqual([
       {
         value: 1547208000000,

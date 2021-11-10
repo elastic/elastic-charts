@@ -60,8 +60,8 @@ export function generateTicks(
   fallBackTickFormatter: TickFormatter,
   tickFormatOptions: TickFormatterOptions & { labelFormat?: (d: string | number, ...otherArgs: unknown[]) => string },
   layer: number | undefined,
-  detailedLayer = 0,
-  showGrid = true,
+  detailedLayer: number,
+  showGrid: boolean,
 ): AxisTick[] {
   const axisLabelFormat =
     tickFormatOptions.labelFormat ?? axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
