@@ -63,17 +63,16 @@ export function generateTicks(
   detailedLayer: number,
   showGrid: boolean,
 ): AxisTick[] {
-  const axisLabelFormat =
-    tickFormatOptions.labelFormat ?? axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
-  const labelFormat = axisSpec.tickFormat ?? fallBackTickFormatter;
+  const tickFormatter = axisSpec.tickFormat ?? fallBackTickFormatter;
+  const labelFormatter = tickFormatOptions.labelFormat ?? axisSpec.labelFormat ?? tickFormatter;
   return ticks.map((value) => {
     const domainClampedValue =
       typeof value === 'number' && typeof scale.domain[0] === 'number' ? Math.max(scale.domain[0], value) : value;
     return {
       value,
       domainClampedValue,
-      label: labelFormat(value, tickFormatOptions),
-      axisTickLabel: axisLabelFormat(value, tickFormatOptions),
+      label: tickFormatter(value, tickFormatOptions),
+      axisTickLabel: labelFormatter(value, tickFormatOptions),
       position: (scale.scale(value) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
       domainClampedPosition: (scale.scale(domainClampedValue) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
       layer,
