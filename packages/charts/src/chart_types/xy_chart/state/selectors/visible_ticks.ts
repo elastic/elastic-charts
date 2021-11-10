@@ -58,7 +58,7 @@ export function generateTicks(
   ticks: (number | string)[],
   offset: number,
   fallBackTickFormatter: TickFormatter,
-  tickFormatOptions: TickFormatterOptions & { labelFormat?: (d: string | number, ...otherArgs: unknown[]) => string },
+  tickFormatOptions: AxisTickFormatOptions,
   layer: number | undefined,
   detailedLayer: number,
   showGrid: boolean,
@@ -82,6 +82,10 @@ export function generateTicks(
   });
 }
 
+type AxisTickFormatOptions = TickFormatterOptions & {
+  labelFormat?: (d: number | string, ...otherArgs: unknown[]) => string;
+};
+
 function getVisibleTicks(
   axisSpec: AxisSpec,
   labelBox: TickLabelBounds,
@@ -90,7 +94,7 @@ function getVisibleTicks(
   rotationOffset: number,
   scale: Scale<number | string>,
   enableHistogramMode: boolean,
-  tickFormatOptions: TickFormatterOptions & { labelFormat?: (d: number | string, ...otherArgs: unknown[]) => string },
+  tickFormatOptions: AxisTickFormatOptions,
   layer: number | undefined,
   detailedLayer: number,
   ticks: (number | string)[],
