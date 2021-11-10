@@ -194,53 +194,5 @@ describe('Mixed series stories', () => {
         });
       });
     });
-
-    describe('Occlusion of Points outside of chart domain', () => {
-      it('should render line chart with points outside of domain correctly', async () => {
-        await common.expectChartAtUrlToMatchScreenshot(
-          'http://localhost:9001/?path=/story/mixed-charts--test-points-outside-of-domain&knob-series%20type=line',
-        );
-      });
-      it('should render area chart with points outside of domain correclty', async () => {
-        await common.expectChartAtUrlToMatchScreenshot(
-          'http://localhost:9001/?path=/story/mixed-charts--test-points-outside-of-domain&knob-series%20type=area&knob-show%20y0Accessor=false',
-        );
-      });
-      it('should render area chart with points outside of the domain with y0 accessor correctly', async () => {
-        await common.expectChartAtUrlToMatchScreenshot(
-          'http://localhost:9001/?path=/story/mixed-charts--test-points-outside-of-domain&knob-series%20type=areaknob-show%20y0Accessor=true',
-        );
-      });
-      it('should not display tooltip over point outside of domain', async () => {
-        await common.expectChartWithMouseAtUrlToMatchScreenshot(
-          'http://localhost:9001/?path=/story/mixed-charts--test-points-outside-of-domain&knob-series%20type=line',
-          { left: 150, top: 180 },
-          {
-            screenshotSelector: '#story-root',
-            delay: 1000,
-          },
-        );
-      });
-      it('should not display tooltip over point outside of domain slightly more left', async () => {
-        await common.expectChartWithMouseAtUrlToMatchScreenshot(
-          'http://localhost:9001/?path=/story/mixed-charts--test-points-outside-of-domain&knob-series%20type=line',
-          { left: 200, top: 180 },
-          {
-            screenshotSelector: '#story-root',
-            delay: 1000,
-          },
-        );
-      });
-      it('should not display tooltip over point outside of domain even more left', async () => {
-        await common.expectChartWithMouseAtUrlToMatchScreenshot(
-          'http://localhost:9001/?path=/story/mixed-charts--test-points-outside-of-domain&knob-series%20type=line',
-          { left: 250, top: 180 },
-          {
-            screenshotSelector: '#story-root',
-            delay: 1000,
-          },
-        );
-      });
-    });
   });
 });
