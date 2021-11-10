@@ -110,8 +110,8 @@ export function renderPoints(
         orphan,
       };
       const isInYDomain = yScale.isValueInDomain(valueAccessor(datum));
-      // exclude rendering points outside of the yDomain
-      if (isInYDomain) {
+      // exclude rendering points outside of the yDomain but add null values
+      if (isInYDomain || valueAccessor(datum) === null) {
         indexedGeometryMap.set(pointGeometry, geometryType);
       }
       // use the geometry only if the yDatum in contained in the current yScale domain
