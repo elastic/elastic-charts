@@ -14,7 +14,6 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 
 import { useBaseTheme } from '../../use_base_theme';
 
-// for testing purposes only
 export const Example = () => {
   const typeOfSeries = select('series type', ['line', 'area'], 'area');
   const showY0Accessor = typeOfSeries === 'area' ? boolean('show y0Accessor', false) : null;
