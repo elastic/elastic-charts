@@ -15,6 +15,7 @@ import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calcula
 import { Position, Rotation } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
+import { notTooDense } from '../../axes/timeslip/multilayer_ticks';
 import { rasters, TimeBin, TimeRaster } from '../../axes/timeslip/rasters';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisTick, defaultTickFormatter, isXDomain, TickLabelBounds } from '../../utils/axis_utils';
@@ -39,9 +40,7 @@ export type Projection = { ticks: AxisTick[]; labelBox: TickLabelBounds; scale: 
 type Projections = Map<AxisId, Projection>;
 
 const adaptiveTickCount = true;
-const MAX_TIME_TICK_COUNT = 50; // this doesn't do much for narrow charts, but limits tick count to a maximum on wider ones
 const MAX_TIME_GRID_COUNT = 12;
-const WIDTH_FUDGE = 1.05; // raster bin widths are sometimes approximate, but there's no raster that's just 5% denser/sparser, so it's safe
 
 function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
   const horizontal = isHorizontalAxis(axisPosition);
@@ -226,22 +225,6 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
   ],
   getVisibleTickSets,
 );
-
-const notTooDense = (
-  domainFrom: number,
-  domainTo: number,
-  binWidth: number,
-  cartesianWidth: number,
-  maxTickCount = MAX_TIME_TICK_COUNT,
-) => (raster: TimeRaster<TimeBin>) => {
-  const domainInSeconds = domainTo - domainFrom;
-  const pixelsPerSecond = cartesianWidth / domainInSeconds;
-  return (
-    pixelsPerSecond > raster.minimumPixelsPerSecond &&
-    raster.approxWidthInMs * WIDTH_FUDGE >= binWidth &&
-    (domainInSeconds * 1000) / maxTickCount <= raster.approxWidthInMs
-  );
-};
 
 function getVisibleTickSets(
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
