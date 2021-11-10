@@ -39,6 +39,10 @@ import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 export type Projection = { ticks: AxisTick[]; labelBox: TickLabelBounds; scale: Scale<string | number> };
 
 type Projections = Map<AxisId, Projection>;
+type LabelFormatter = (d: number | string, ...otherArgs: unknown[]) => string;
+type AxisTickFormatOptions = TickFormatterOptions & {
+  labelFormat?: LabelFormatter;
+};
 
 const adaptiveTickCount = true;
 const MAX_TIME_GRID_COUNT = 12;
@@ -57,14 +61,13 @@ export function generateTicks(
   scale: Scale<number | string>,
   ticks: (number | string)[],
   offset: number,
-  fallBackTickFormatter: TickFormatter,
   tickFormatOptions: AxisTickFormatOptions,
+  tickFormatter: TickFormatter,
+  labelFormatter: LabelFormatter | TickFormatter,
   layer: number | undefined,
   detailedLayer: number,
   showGrid: boolean,
 ): AxisTick[] {
-  const tickFormatter = axisSpec.tickFormat ?? fallBackTickFormatter;
-  const labelFormatter = tickFormatOptions.labelFormat ?? axisSpec.labelFormat ?? tickFormatter;
   return ticks.map((value) => {
     const domainClampedValue =
       typeof value === 'number' && typeof scale.domain[0] === 'number' ? Math.max(scale.domain[0], value) : value;
@@ -81,10 +84,6 @@ export function generateTicks(
     };
   });
 }
-
-type AxisTickFormatOptions = TickFormatterOptions & {
-  labelFormat?: (d: number | string, ...otherArgs: unknown[]) => string;
-};
 
 function getVisibleTicks(
   axisSpec: AxisSpec,
@@ -149,8 +148,9 @@ function getVisibleTicks(
           scale,
           ticks,
           offset,
-          fallBackTickFormatter,
           tickFormatOptions,
+          tickFormatter,
+          labelFormatter,
           layer,
           detailedLayer,
           showGrid,
