@@ -350,28 +350,6 @@ function getVisibleTickSets(
             })
           : yDomain && new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, integersOnly });
 
-      const fillLayerTimeslip = (
-        layer: number,
-        detailedLayer: number,
-        timeTicks: number[],
-        labelFormat: (n: number) => string,
-        showGrid: boolean,
-      ) => {
-        const scale = getScale(100); // 10 is just a dummy value, the scale is only needed for its non-tick props like step, bandwidth, ...
-        if (!scale) throw new Error('Scale generation for the multilayer axis failed');
-        return {
-          entry: getMeasuredTicks(
-            scale,
-            timeTicks,
-            layer,
-            detailedLayer,
-            labelFormat as (d: number | string) => string,
-            showGrid,
-          ),
-          fallbackAskedTickCount: NaN,
-        };
-      };
-
       const fillLayer = (maxTickCountForLayer: number) => {
         let fallbackAskedTickCount = 2;
         let fallbackReceivedTickCount = Infinity;
@@ -420,6 +398,8 @@ function getVisibleTickSets(
       };
 
       if (isMultilayerTimeAxis) {
+        const scale = getScale(100); // 10 is just a dummy value, the scale is only needed for its non-tick props like step, bandwidth, ...
+        if (!scale) throw new Error('Scale generation for the multilayer axis failed');
         return acc.set(
           axisId,
           multilayerAxisEntry(
@@ -427,7 +407,25 @@ function getVisibleTickSets(
             isX && xDomain.isBandScale && enableHistogramMode,
             range,
             timeAxisLayerCount,
-            fillLayerTimeslip,
+            (
+              layer: number,
+              detailedLayer: number,
+              timeTicks: number[],
+              labelFormat: (n: number) => string,
+              showGrid: boolean,
+            ) => {
+              return {
+                entry: getMeasuredTicks(
+                  scale,
+                  timeTicks,
+                  layer,
+                  detailedLayer,
+                  labelFormat as (d: number | string) => string, // todo dissolve assertion
+                  showGrid,
+                ),
+                fallbackAskedTickCount: NaN,
+              };
+            },
           ),
         );
       }
