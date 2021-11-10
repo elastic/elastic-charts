@@ -15,7 +15,7 @@ describe('snap to interval', () => {
     const initialDate = DateTime.fromISO('2020-01-03T07:00:01Z');
     const snappedDate = snapDateToESInterval(
       initialDate.toMillis(),
-      { type: 'calendar', unit: 'd', quantity: 1 },
+      { type: 'calendar', unit: 'd', value: 1 },
       'start',
       'UTC',
     );
@@ -26,7 +26,7 @@ describe('snap to interval', () => {
     const initialDate = DateTime.fromISO('2020-01-03T07:00:01Z');
     const snappedDate = snapDateToESInterval(
       initialDate.toMillis(),
-      { type: 'calendar', unit: 'd', quantity: 1 },
+      { type: 'calendar', unit: 'd', value: 1 },
       'end',
       'UTC',
     );
@@ -37,7 +37,7 @@ describe('snap to interval', () => {
     const initialDate = DateTime.fromISO('2020-01-03T07:00:01Z');
     const snappedDate = snapDateToESInterval(
       initialDate.toMillis(),
-      { type: 'fixed', unit: 'm', quantity: 30 },
+      { type: 'fixed', unit: 'm', value: 30 },
       'start',
       'UTC',
     );
@@ -48,7 +48,7 @@ describe('snap to interval', () => {
     const initialDate = DateTime.fromISO('2020-01-03T07:00:01Z');
     const snappedDate = snapDateToESInterval(
       initialDate.toMillis(),
-      { type: 'fixed', unit: 'm', quantity: 30 },
+      { type: 'fixed', unit: 'm', value: 30 },
       'end',
       'UTC',
     );

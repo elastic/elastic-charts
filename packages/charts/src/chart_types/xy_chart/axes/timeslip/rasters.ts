@@ -80,6 +80,12 @@ interface YearToHour extends YearToDay {
   hour: number;
 }
 
+// todo DRY up the config for the other time units too, where sensible
+const hourFormat: Partial<ConstructorParameters<typeof Intl.DateTimeFormat>[1]> = {
+  hour: '2-digit',
+  hour12: false,
+};
+
 /** @internal */
 export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, timeZone: string) => {
   const minorDayFormat = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone }).format;
@@ -89,6 +95,14 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     day: 'numeric',
     timeZone,
   }).format;
+  const detailedHourFormatBase = new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    ...hourFormat,
+    timeZone,
+  }).format;
+  const detailedHourFormat = (d: number) => `${detailedHourFormatBase(d)}h`;
 
   const years: TimeRaster<TimeBin & { year: number }> = {
     unit: 'year',
@@ -280,15 +294,9 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     labeled: true,
     minimumTickPixelDistance: 2 * minimumTickPixelDistance,
     binStarts: millisecondBinStarts(60 * 60 * 1000),
-    detailedLabelFormat: new Intl.DateTimeFormat(locale, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      timeZone,
-    }).format,
+    detailedLabelFormat: detailedHourFormat,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, {
-      hour: 'numeric',
+      ...hourFormat,
       timeZone,
     }).format,
     minimumPixelsPerSecond: NaN,
@@ -333,13 +341,10 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         Object.assign(b, { nextTimePointSec: i === a.length - 1 ? b.nextTimePointSec : a[i + 1].timePointSec }),
       ),
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, {
-      hour: 'numeric',
+      ...hourFormat,
       timeZone,
     }).format,
-    detailedLabelFormat: new Intl.DateTimeFormat(locale, {
-      hour: 'numeric',
-      timeZone,
-    }).format,
+    detailedLabelFormat: detailedHourFormat,
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
@@ -358,7 +363,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-      hour: 'numeric',
+      ...hourFormat,
       minute: 'numeric',
       timeZone,
     }).format,
@@ -409,7 +414,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-      hour: 'numeric',
+      ...hourFormat,
       minute: 'numeric',
       second: 'numeric',
       timeZone,
