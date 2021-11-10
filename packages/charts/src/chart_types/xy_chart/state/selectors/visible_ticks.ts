@@ -155,7 +155,8 @@ function getVisibleTicks(
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
-  return showOverlappingLabels || isMultilayerTimeAxis
+  const bypassOverlapCheck = showOverlappingLabels || isMultilayerTimeAxis;
+  return bypassOverlapCheck
     ? allTicks
     : [...allTicks]
         .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
