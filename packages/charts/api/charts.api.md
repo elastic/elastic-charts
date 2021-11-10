@@ -753,6 +753,32 @@ export const entryKey: ([key]: ArrayEntry) => string;
 // @public (undocumented)
 export const entryValue: ([, value]: ArrayEntry) => ArrayNode;
 
+// @public (undocumented)
+export interface ESCalendarInterval {
+    // (undocumented)
+    type: 'calendar';
+    // (undocumented)
+    unit: ESCalendarIntervalUnit;
+    // (undocumented)
+    value: number;
+}
+
+// @public (undocumented)
+export type ESCalendarIntervalUnit = 'minute' | 'm' | 'hour' | 'h' | 'day' | 'd' | 'week' | 'w' | 'month' | 'M' | 'quarter' | 'q' | 'year' | 'y';
+
+// @public (undocumented)
+export interface ESFixedInterval {
+    // (undocumented)
+    type: 'fixed';
+    // (undocumented)
+    unit: ESFixedIntervalUnit;
+    // (undocumented)
+    value: number;
+}
+
+// @public (undocumented)
+export type ESFixedIntervalUnit = 'ms' | 's' | 'm' | 'h' | 'd';
+
 // @alpha
 export interface ExternalPointerEventsSettings {
     tooltip: TooltipPortalSettings<'chart'> & {
@@ -1106,7 +1132,7 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     xAccessor: Accessor | AccessorFn;
     // (undocumented)
-    xScaleType: SeriesScales['xScaleType'];
+    xScale: RasterTimeScale | OrdinalScale | LinearScale;
     // (undocumented)
     xSortPredicate: Predicate;
     // (undocumented)
@@ -1344,6 +1370,12 @@ export interface LineAnnotationStyle {
     line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
 }
 
+// @public (undocumented)
+export interface LinearScale {
+    // (undocumented)
+    type: typeof ScaleType.Linear;
+}
+
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
@@ -1394,7 +1426,7 @@ export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationSt
 // @public (undocumented)
 export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationStyle>): RectAnnotationStyle;
 
-// @public
+// @public @deprecated
 export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, auxiliaryThemes?: PartialTheme[]): Theme;
 
 // @public (undocumented)
@@ -1445,6 +1477,12 @@ export interface OrderBy {
 
 // @public (undocumented)
 export type OrdinalDomain = (number | string)[];
+
+// @public (undocumented)
+export interface OrdinalScale {
+    // (undocumented)
+    type: typeof ScaleType.Ordinal;
+}
 
 // @public (undocumented)
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
@@ -1670,6 +1708,12 @@ export type ProjectedValues = {
 
 // @public
 export type ProjectionClickListener = (values: ProjectedValues) => void;
+
+// @public (undocumented)
+export interface RasterTimeScale extends TimeScale {
+    // (undocumented)
+    interval: ESCalendarInterval | ESFixedInterval;
+}
 
 // @public
 export type Ratio = number;
@@ -2202,6 +2246,12 @@ export type TickStyle = StrokeStyle & Visible & {
 
 // @public (undocumented)
 export function timeFormatter(format: string): TickFormatter;
+
+// @public (undocumented)
+export interface TimeScale {
+    // (undocumented)
+    type: typeof ScaleType.Time;
+}
 
 // @public
 export function toEntries<T extends Record<string, string>, S>(array: T[], accessor: keyof T, staticValue: S): Record<string, S>;

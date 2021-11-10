@@ -107,3 +107,10 @@ export { Pixels, Ratio } from './common/geometry';
 export { AdditiveNumber } from './utils/accessor';
 export { FontStyle, FONT_STYLES } from './common/text_utils';
 export { Color } from './common/colors';
+
+export {
+  ESCalendarInterval,
+  ESCalendarIntervalUnit,
+  ESFixedInterval,
+  ESFixedIntervalUnit,
+} from './utils/chrono/elasticsearch';

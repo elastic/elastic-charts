@@ -58,6 +58,16 @@ describe('Axis stories', () => {
       'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=8.5&knob-Shorter X axis minor whiskers=true&knob-Stretch time=6.8&knob-Time zoom=120&knob-X axis minor whiskers=true&knob-fallback placement=left-start&knob-layerCount=3&knob-placement=left&knob-placement offset=5&knob-showOverlappingLabels time axis=true&knob-showOverlappingTicks time axis=true&knob-stickTo=MousePosition&knob-Horizontal axis title=&knob-Top X axis=true',
     );
   });
+  it('renders multilayer time axis with a single point and an arbitrary non-degenerate domain', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/bar-chart--test-single-histogram-bar-chart&globals=theme:light&knob-non-round time domain start=true&knob-use multilayer time axis=true&knob-use lines instead of bars=true',
+    );
+  });
+  it('renders multilayer time axis with a single point and a degenerate, zero width domain', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/bar-chart--test-single-histogram-bar-chart&globals=theme:light&knob-non-round time domain start=&knob-use multilayer time axis=true&knob-use lines instead of bars=true',
+    );
+  });
   it('should render proper tick count', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/axes--basic&knob-Tick Label Padding=0&knob-debug=&knob-Bottom overlap labels=&knob-Bottom overlap ticks=true&knob-Number of ticks on bottom=20&knob-Left overlap labels=&knob-Left overlap ticks=true&knob-Number of ticks on left=10',

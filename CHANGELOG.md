@@ -1,3 +1,32 @@
+# [39.0.0](https://github.com/elastic/elastic-charts/compare/v38.1.5...v39.0.0) (2021-11-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v41 ([#1468](https://github.com/elastic/elastic-charts/issues/1468)) ([0c38291](https://github.com/elastic/elastic-charts/commit/0c38291f140218cbc993228ef821e8657c9bcf0c))
+* **heatmap:** snap time bucket to calendar/fixed intervals ([#1462](https://github.com/elastic/elastic-charts/issues/1462)) ([b76c12c](https://github.com/elastic/elastic-charts/commit/b76c12c0a499acbb52c6333134d3ed2966b1b111))
+* **xy:** handle zero-length time domains and switch to 24hr time ([#1464](https://github.com/elastic/elastic-charts/issues/1464)) ([379c2d6](https://github.com/elastic/elastic-charts/commit/379c2d6996f40df011201235f2ca3b28dae6f7a8))
+
+
+### BREAKING CHANGES
+
+* **heatmap:** The `xScaleType` is replaced by the prop `xScale`, which better describes a rasterized time scale with an Elasticsearch compliant interval.
+
+## [38.1.5](https://github.com/elastic/elastic-charts/compare/v38.1.4...v38.1.5) (2021-11-05)
+
+
+### Bug Fixes
+
+* **legend:** legend breaking on words ([#1458](https://github.com/elastic/elastic-charts/issues/1458)) ([c42be98](https://github.com/elastic/elastic-charts/commit/c42be981b1b6a243dcfa5df9d978fb053e1aa5ed))
+
+## [38.1.4](https://github.com/elastic/elastic-charts/compare/v38.1.3...v38.1.4) (2021-11-03)
+
+
+### Bug Fixes
+
+* **interactions:** line cursor above the chart, band cursor below ([#1453](https://github.com/elastic/elastic-charts/issues/1453)) ([d8d7ee0](https://github.com/elastic/elastic-charts/commit/d8d7ee0d204948e07235e7a949e9d33ea27c72ac))
+* **theme:** merge partial with empty initial partial ([#1452](https://github.com/elastic/elastic-charts/issues/1452)) ([d1e690a](https://github.com/elastic/elastic-charts/commit/d1e690af35161eb660d41da34092b64179c238d8))
+
 ## [38.1.3](https://github.com/elastic/elastic-charts/compare/v38.1.2...v38.1.3) (2021-11-01)
 
 

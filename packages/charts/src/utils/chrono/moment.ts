@@ -60,10 +60,12 @@ export const addTimeToObj = (obj: moment.Moment, unit: CalendarIntervalUnit | Fi
 export const subtractTimeToObj = (obj: moment.Moment, unit: CalendarIntervalUnit | FixedIntervalUnit, count: number) =>
   obj.subtract(count, unit);
 /** @internal */
-export const startTimeOfObj = (obj: moment.Moment, unit: CalendarIntervalUnit | FixedIntervalUnit) => obj.startOf(unit);
+export const startTimeOfObj = (obj: moment.Moment, unit: CalendarIntervalUnit | FixedIntervalUnit) =>
+  obj.startOf(unit === 'week' ? 'isoWeek' : unit); // we should use the ISO week to align to ES
 
 /** @internal */
-export const endTimeOfObj = (obj: moment.Moment, unit: CalendarIntervalUnit | FixedIntervalUnit) => obj.endOf(unit);
+export const endTimeOfObj = (obj: moment.Moment, unit: CalendarIntervalUnit | FixedIntervalUnit) =>
+  obj.endOf(unit === 'week' ? 'isoWeek' : unit); // we should use the ISO week to align to ES
 
 /** @internal */
 export const timeObjToUTCOffset = (obj: moment.Moment): Minutes => obj.utcOffset();
