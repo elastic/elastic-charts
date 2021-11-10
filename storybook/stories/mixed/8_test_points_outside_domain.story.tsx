@@ -17,7 +17,7 @@ import { useBaseTheme } from '../../use_base_theme';
 // for testing purposes only
 export const Example = () => {
   const typeOfSeries = select('series type', ['line', 'area'], 'area');
-  const showY0Accessor = boolean('show y0Accessor', false);
+  const showY0Accessor = typeOfSeries === 'area' ? boolean('show y0Accessor', false) : null;
 
   const data = [
     [1, 1],
