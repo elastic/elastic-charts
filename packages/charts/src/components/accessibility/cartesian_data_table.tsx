@@ -73,7 +73,7 @@ const ScreenReaderCartesianTableComponent = ({
             return (
               <tr key={Math.random()} ref={rowLimit === index ? tableRowRef : undefined} tabIndex={-1}>
                 <th scope="row">{label}</th>
-                <td>{values[count].formatted}</td>
+                <td>{values[count].formatted ?? values[count].raw}</td>
               </tr>
             );
           })}
