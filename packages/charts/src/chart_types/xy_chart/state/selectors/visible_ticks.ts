@@ -15,9 +15,7 @@ import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calcula
 import { Position, Rotation } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
-import { notTooDense } from '../../axes/timeslip/multilayer_ticks';
-import { rasters, TimeBin, TimeRaster } from '../../axes/timeslip/rasters';
-import { XDomain } from '../../domains/types';
+import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisTick, defaultTickFormatter, isXDomain, TickLabelBounds } from '../../utils/axis_utils';
 import { getPanelSize } from '../../utils/panel';
@@ -45,7 +43,6 @@ type AxisTickFormatOptions = TickFormatterOptions & {
 };
 
 const adaptiveTickCount = true;
-const MAX_TIME_GRID_COUNT = 12;
 
 function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
   const horizontal = isHorizontalAxis(axisPosition);
@@ -230,86 +227,6 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
   ],
   getVisibleTickSets,
 );
-
-function multilayerAxisEntry(
-  xDomain: XDomain,
-  extendByOneBin: boolean,
-  range: [number, number],
-  timeAxisLayerCount: any,
-  scale: Scale<string | number> | ScaleContinuous, // fixme it's only the latter for now
-  getMeasuredTicks: (
-    skale: Scale<number | string>,
-    ticks: (number | string)[],
-    layer: number | undefined,
-    detailedLayer: number,
-    labelFormat?: (d: number | string) => string,
-    showGrid?: boolean,
-  ) => Projection,
-) {
-  const rasterSelector = rasters({ minimumTickPixelDistance: 24, locale: 'en-US' }, xDomain.timeZone);
-  const domainValues = xDomain.domain; // todo consider a property or object type rename
-  const domainFromS = Number(domainValues[0]) / 1000; // todo rely on a type guard or check rather than conversion
-  const binWidth = xDomain.minInterval;
-  const domainExtension = extendByOneBin ? binWidth : 0;
-  const domainToS = ((Number(domainValues[domainValues.length - 1]) || NaN) + domainExtension) / 1000;
-  const layers = rasterSelector(notTooDense(domainFromS, domainToS, binWidth, Math.abs(range[1] - range[0])));
-  let layerIndex = -1;
-  const fillLayerTimeslip = (
-    layer: number,
-    detailedLayer: number,
-    timeTicks: number[],
-    labelFormat: (n: number) => string,
-    showGrid: boolean,
-  ) => {
-    return {
-      entry: getMeasuredTicks(
-        scale,
-        timeTicks,
-        layer,
-        detailedLayer,
-        labelFormat as (d: number | string) => string, // todo dissolve assertion
-        showGrid,
-      ),
-      fallbackAskedTickCount: NaN,
-    };
-  };
-  return layers.reduce(
-    (combinedEntry: { ticks: AxisTick[] }, l: TimeRaster<TimeBin>, detailedLayerIndex) => {
-      if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
-      if (layerIndex >= timeAxisLayerCount) return combinedEntry;
-      const binWidthS = binWidth / 1000;
-      const { entry } = fillLayerTimeslip(
-        layerIndex,
-        detailedLayerIndex,
-        [...l.binStarts(domainFromS - binWidthS, domainToS + binWidthS)]
-          .filter((b) => b.nextTimePointSec > domainFromS && b.timePointSec <= domainToS)
-          .map((b) => 1000 * b.timePointSec),
-        !l.labeled ? () => '' : layerIndex === timeAxisLayerCount - 1 ? l.detailedLabelFormat : l.minorTickLabelFormat,
-        notTooDense(domainFromS, domainToS, binWidth, Math.abs(range[1] - range[0]), MAX_TIME_GRID_COUNT)(l),
-      );
-      const minLabelGap = 4;
-
-      const lastTick = entry.ticks[entry.ticks.length - 1];
-      if (lastTick && lastTick.position + entry.labelBox.maxLabelBboxWidth > range[1]) {
-        lastTick.axisTickLabel = '';
-      }
-
-      return {
-        ...entry,
-        ...combinedEntry,
-        ticks: (combinedEntry.ticks || []).concat(
-          entry.ticks.filter(
-            (tick, i, a) =>
-              i > 0 ||
-              !a[1] ||
-              a[1].domainClampedPosition - tick.domainClampedPosition >= entry.labelBox.maxLabelBboxWidth + minLabelGap,
-          ),
-        ),
-      };
-    },
-    { ticks: [] }, // this should turn into a full Projection
-  );
-}
 
 function getVisibleTickSets(
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
