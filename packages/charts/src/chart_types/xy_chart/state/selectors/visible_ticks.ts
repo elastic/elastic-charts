@@ -340,7 +340,7 @@ function getVisibleTickSets(
       };
 
       if (isMultilayerTimeAxis) {
-        const scale = getScale(100); // 10 is just a dummy value, the scale is only needed for its non-tick props like step, bandwidth, ...
+        const scale = getScale(0); // the scale is only needed for its non-tick props like step, bandwidth, ...
         if (!scale) throw new Error('Scale generation for the multilayer axis failed');
         return acc.set(
           axisId,
