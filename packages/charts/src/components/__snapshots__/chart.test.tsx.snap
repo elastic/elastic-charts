@@ -113,7 +113,9 @@ exports[`Chart should render the legend name test 1`] = `
                                   <th scope=\\"row\\">
                                     test
                                   </th>
-                                  <td />
+                                  <td>
+                                    2
+                                  </td>
                                 </tr>
                               </tbody>
                               <tfoot>
