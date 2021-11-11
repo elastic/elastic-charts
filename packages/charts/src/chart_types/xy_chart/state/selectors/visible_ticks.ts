@@ -236,13 +236,15 @@ function multilayerAxisEntry(
   extendByOneBin: boolean,
   range: [number, number],
   timeAxisLayerCount: any,
-  fillLayerTimeslip: (
-    layer: number,
+  scale: Scale<string | number> | ScaleContinuous, // fixme it's only the latter for now
+  getMeasuredTicks: (
+    skale: Scale<number | string>,
+    ticks: (number | string)[],
+    layer: number | undefined,
     detailedLayer: number,
-    timeTicks: number[],
-    labelFormat: (n: number) => string,
-    showGrid: boolean,
-  ) => { entry: Projection; fallbackAskedTickCount: number },
+    labelFormat?: (d: number | string) => string,
+    showGrid?: boolean,
+  ) => Projection,
 ) {
   const rasterSelector = rasters({ minimumTickPixelDistance: 24, locale: 'en-US' }, xDomain.timeZone);
   const domainValues = xDomain.domain; // todo consider a property or object type rename
@@ -252,6 +254,25 @@ function multilayerAxisEntry(
   const domainToS = ((Number(domainValues[domainValues.length - 1]) || NaN) + domainExtension) / 1000;
   const layers = rasterSelector(notTooDense(domainFromS, domainToS, binWidth, Math.abs(range[1] - range[0])));
   let layerIndex = -1;
+  const fillLayerTimeslip = (
+    layer: number,
+    detailedLayer: number,
+    timeTicks: number[],
+    labelFormat: (n: number) => string,
+    showGrid: boolean,
+  ) => {
+    return {
+      entry: getMeasuredTicks(
+        scale,
+        timeTicks,
+        layer,
+        detailedLayer,
+        labelFormat as (d: number | string) => string, // todo dissolve assertion
+        showGrid,
+      ),
+      fallbackAskedTickCount: NaN,
+    };
+  };
   return layers.reduce(
     (combinedEntry: { ticks: AxisTick[] }, l: TimeRaster<TimeBin>, detailedLayerIndex) => {
       if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
@@ -411,25 +432,8 @@ function getVisibleTickSets(
             isX && xDomain.isBandScale && enableHistogramMode,
             range,
             timeAxisLayerCount,
-            (
-              layer: number,
-              detailedLayer: number,
-              timeTicks: number[],
-              labelFormat: (n: number) => string,
-              showGrid: boolean,
-            ) => {
-              return {
-                entry: getMeasuredTicks(
-                  scale,
-                  timeTicks,
-                  layer,
-                  detailedLayer,
-                  labelFormat as (d: number | string) => string, // todo dissolve assertion
-                  showGrid,
-                ),
-                fallbackAskedTickCount: NaN,
-              };
-            },
+            scale,
+            getMeasuredTicks,
           ),
         );
       }
