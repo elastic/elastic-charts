@@ -22,7 +22,6 @@ import {
 } from '../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
-import { isNil } from '../../utils/common';
 
 interface ScreenReaderCartesianTableProps {
   a11ySettings: A11ySettings;
@@ -35,37 +34,32 @@ const ScreenReaderCartesianTableComponent = ({
   cartesianData,
   debug,
 }: ScreenReaderCartesianTableProps) => {
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState(0);
   const tableRowRef = createRef<HTMLTableRowElement>();
   const { tableCaption } = a11ySettings;
 
   const rowLimit = cartesianData.numberOfItemsInGroup * count;
+  const tableLength = cartesianData.data[0].values.length;
   const handleMoreData = () => {
-    setCount(count + 1);
+    // avoid going out of bounds
+    if (count < tableLength - 1) {
+      setCount(count + 1);
+    }
     // generate the next group of data
     if (tableRowRef.current) {
       tableRowRef.current.focus();
     }
   };
 
-  const { isSmallMultiple, data } = cartesianData;
-  const tableLength = data[0].values.length;
-  const showMoreRows = rowLimit < tableLength;
+  const { isSmallMultiple } = cartesianData;
+
   let countOfCol: number = 3;
   const totalColumns: number = isSmallMultiple ? (countOfCol += 3) : countOfCol;
 
   return (
     <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
       <table>
-        <caption>
-          {isNil(tableCaption)
-            ? `The table ${
-                showMoreRows
-                  ? `represents only ${rowLimit} of the ${tableLength} data points`
-                  : `fully represents the dataset of ${tableLength} data point${tableLength > 1 ? 's' : ''}`
-              }`
-            : tableCaption}
-        </caption>
+        <caption>{tableCaption}</caption>
         <thead>
           <tr>
             {isSmallMultiple && <th scope="col">Small multiple title</th>}
@@ -77,9 +71,9 @@ const ScreenReaderCartesianTableComponent = ({
         <tbody>
           {cartesianData.data.map(({ label, values }, index) => {
             return (
-              <tr key={Math.random()}>
+              <tr key={Math.random()} ref={rowLimit === index ? tableRowRef : undefined} tabIndex={-1}>
                 <th scope="row">{label}</th>
-                <td>{values[index].formatted}</td>
+                <td>{values[count].formatted}</td>
               </tr>
             );
           })}

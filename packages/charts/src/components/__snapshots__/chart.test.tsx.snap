@@ -73,26 +73,63 @@ exports[`Chart should render the legend name test 1`] = `
                 <Connect(XYChart) forwardCanvasRef={{...}}>
                   <XYChart forwardCanvasRef={{...}} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
                     <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\">
-                      <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\" />
+                      <canvas className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\">
+                        <Connect(ScreenReaderSummaryComponent)>
+                          <ScreenReaderSummaryComponent chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function: dispatch]}>
+                            <div className=\\"echScreenReaderOnly\\">
+                              <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} goalChartLabels={{...}} />
+                              <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} />
+                              <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} chartTypeDescription=\\"bar chart\\" goalChartData={{...}}>
+                                <dl>
+                                  <dt>
+                                    Chart type:
+                                  </dt>
+                                  <dd id=\\"chart1--defaultSummary\\">
+                                    bar chart
+                                  </dd>
+                                </dl>
+                              </ScreenReaderTypes>
+                            </div>
+                          </ScreenReaderSummaryComponent>
+                        </Connect(ScreenReaderSummaryComponent)>
+                      </canvas>
+                      <Connect(ScreenReaderCartesianTableComponent)>
+                        <ScreenReaderCartesianTableComponent a11ySettings={{...}} cartesianData={{...}} debug={true} dispatch={[Function: dispatch]}>
+                          <div className=\\"echScreenReaderOnly echScreenReaderOnlyDebug echScreenReaderTable\\">
+                            <table>
+                              <caption />
+                              <thead>
+                                <tr>
+                                  <th scope=\\"col\\">
+                                    Label
+                                  </th>
+                                  <th scope=\\"col\\">
+                                    Value
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr tabIndex={-1}>
+                                  <th scope=\\"row\\">
+                                    test
+                                  </th>
+                                  <td />
+                                </tr>
+                              </tbody>
+                              <tfoot>
+                                <tr>
+                                  <td colSpan={3}>
+                                    <button type=\\"submit\\" onClick={[Function: onClick]} tabIndex={-1}>
+                                      Click to show more data
+                                    </button>
+                                  </td>
+                                </tr>
+                              </tfoot>
+                            </table>
+                          </div>
+                        </ScreenReaderCartesianTableComponent>
+                      </Connect(ScreenReaderCartesianTableComponent)>
                     </figure>
-                    <Connect(ScreenReaderSummaryComponent)>
-                      <ScreenReaderSummaryComponent chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function: dispatch]}>
-                        <div className=\\"echScreenReaderOnly\\">
-                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} goalChartLabels={{...}} />
-                          <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} />
-                          <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel=\\"p\\" description={[undefined]} descriptionId=\\"chart1--defaultSummary\\" defaultSummaryId=\\"chart1--defaultSummary\\" tableCaption={[undefined]} chartTypeDescription=\\"bar chart\\" goalChartData={{...}}>
-                            <dl>
-                              <dt>
-                                Chart type:
-                              </dt>
-                              <dd id=\\"chart1--defaultSummary\\">
-                                bar chart
-                              </dd>
-                            </dl>
-                          </ScreenReaderTypes>
-                        </div>
-                      </ScreenReaderSummaryComponent>
-                    </Connect(ScreenReaderSummaryComponent)>
                   </XYChart>
                 </Connect(XYChart)>
                 <Connect(CursorLine)>
