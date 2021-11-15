@@ -60,5 +60,7 @@ export function renderTickLabel(
     labelStyle.rotation,
     tickLabelProps.textOffsetX,
     tickLabelProps.textOffsetY,
+    1,
+    tick.direction,
   );
 }

@@ -12,11 +12,11 @@ import { AxisSpec, SettingsSpec, TickFormatter, TickFormatterOptions } from '../
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { Position, Rotation } from '../../../../utils/common';
+import { isRTLString, Position, Rotation } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import { AxisTick, defaultTickFormatter, isXDomain, TickLabelBounds } from '../../utils/axis_utils';
+import { AxisTick, defaultTickFormatter, isXDomain, TextDirection, TickLabelBounds } from '../../utils/axis_utils';
 import { getPanelSize } from '../../utils/panel';
 import { computeXScale } from '../../utils/scales';
 import { SeriesDomainsAndData } from '../utils/types';
@@ -47,6 +47,12 @@ function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, he
   return horizontal ? [flipped ? width : 0, flipped ? 0 : width] : [flipped ? 0 : height, flipped ? height : 0];
 }
 
+function getDirectionFn({ type }: Scale<number | string>): (label: string) => TextDirection {
+  return type === ScaleType.Ordinal
+    ? (label) => (isRTLString(label) ? 'rtl' : 'ltr') // depends on label
+    : () => 'ltr'; // always use ltr
+}
+
 /** @internal */
 export function enableDuplicatedTicks(
   axisSpec: AxisSpec,
@@ -55,12 +61,18 @@ export function enableDuplicatedTicks(
   fallBackTickFormatter: TickFormatter,
   tickFormatOptions: TickFormatterOptions,
 ): AxisTick[] {
-  const allTicks: AxisTick[] = scale.ticks().map((tick) => ({
-    value: tick,
-    label: (axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
-    axisTickLabel: (axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
-    position: (scale.scale(tick) || 0) + offset,
-  }));
+  const getDirection = getDirectionFn(scale);
+  const allTicks = scale.ticks().map<AxisTick>((tick) => {
+    const label = (axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions);
+
+    return {
+      value: tick,
+      label,
+      axisTickLabel: (axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter)(tick, tickFormatOptions),
+      position: (scale.scale(tick) || 0) + offset,
+      direction: getDirection(label),
+    };
+  });
   return axisSpec.showDuplicatedTicks
     ? allTicks
     : allTicks.filter((d, i) => i < 1 || allTicks[i - 1].axisTickLabel !== d.axisTickLabel);
@@ -102,12 +114,14 @@ function getVisibleTicks(
             label: tickFormatter(firstTickValue, tickFormatOptions),
             axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
             position: (scale.scale(firstTickValue) || 0) + offset,
+            direction: 'rtl',
           },
           {
             value: firstTickValue + scale.minInterval,
             label: tickFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
             axisTickLabel: labelFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
             position: scale.bandwidth + halfPadding * 2,
+            direction: 'rtl',
           },
         ]
       : enableDuplicatedTicks(axisSpec, scale, offset, fallBackTickFormatter, tickFormatOptions);
