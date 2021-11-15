@@ -1,3 +1,10 @@
+## [38.0.4](https://github.com/elastic/elastic-charts/compare/v38.0.3...v38.0.4) (2021-11-15)
+
+
+### Bug Fixes
+
+* **partition:** rtl text label support ([#1433](https://github.com/elastic/elastic-charts/issues/1433)) ([#1478](https://github.com/elastic/elastic-charts/issues/1478)) ([5d5c186](https://github.com/elastic/elastic-charts/commit/5d5c1864cdcfe3c7dfe250da8c75b9cea173fd55))
+
 ## [38.0.3](https://github.com/elastic/elastic-charts/compare/v38.0.2...v38.0.3) (2021-11-08)
 
 
