@@ -1323,12 +1323,48 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(enableDuplicatedTicks(axisSpec, scale as Scale<number>, offset, (v) => `${v}`, tickFormatOption)).toEqual([
-      { value: 1547208000000, label: '2019-01-11', axisTickLabel: '2019-01-11', position: 25.145833333333332 },
-      { value: 1547251200000, label: '2019-01-12', axisTickLabel: '2019-01-12', position: 85.49583333333334 },
-      { value: 1547337600000, label: '2019-01-13', axisTickLabel: '2019-01-13', position: 206.19583333333333 },
-      { value: 1547424000000, label: '2019-01-14', axisTickLabel: '2019-01-14', position: 326.8958333333333 },
-      { value: 1547510400000, label: '2019-01-15', axisTickLabel: '2019-01-15', position: 447.59583333333336 },
-      { value: 1547596800000, label: '2019-01-16', axisTickLabel: '2019-01-16', position: 568.2958333333333 },
+      {
+        value: 1547208000000,
+        label: '2019-01-11',
+        axisTickLabel: '2019-01-11',
+        position: 25.145833333333332,
+        direction: 'ltr',
+      },
+      {
+        value: 1547251200000,
+        label: '2019-01-12',
+        axisTickLabel: '2019-01-12',
+        position: 85.49583333333334,
+        direction: 'ltr',
+      },
+      {
+        value: 1547337600000,
+        label: '2019-01-13',
+        axisTickLabel: '2019-01-13',
+        position: 206.19583333333333,
+        direction: 'ltr',
+      },
+      {
+        value: 1547424000000,
+        label: '2019-01-14',
+        axisTickLabel: '2019-01-14',
+        position: 326.8958333333333,
+        direction: 'ltr',
+      },
+      {
+        value: 1547510400000,
+        label: '2019-01-15',
+        axisTickLabel: '2019-01-15',
+        position: 447.59583333333336,
+        direction: 'ltr',
+      },
+      {
+        value: 1547596800000,
+        label: '2019-01-16',
+        axisTickLabel: '2019-01-16',
+        position: 568.2958333333333,
+        direction: 'ltr',
+      },
     ]);
   });
   test('should show unique consecutive ticks if duplicateTicks is set to false', () => {
