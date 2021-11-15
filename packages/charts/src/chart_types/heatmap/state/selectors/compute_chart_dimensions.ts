@@ -74,6 +74,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
         return {
           text: String(value),
           value,
+          isValue: false,
           ...config.yAxisLabel,
         };
       });

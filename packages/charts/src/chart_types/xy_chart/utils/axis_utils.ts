@@ -34,11 +34,15 @@ const TIME_AXIS_LAYER_COUNT = 3;
 type TickValue = number | string;
 
 /** @internal */
+export type TextDirection = 'rtl' | 'ltr';
+
+/** @internal */
 export interface AxisTick {
   value: TickValue;
   label: string;
   axisTickLabel: string;
   position: number;
+  direction: TextDirection;
 }
 
 /** @internal */
