@@ -260,17 +260,17 @@ describe('Axis computational utils', () => {
       )(verticalAxisSpec, [100, 0]);
       const axisPositions = getAvailableTicks(verticalAxisSpec, scale as Scale<number>, 0, false, (v) => `${v}`, 0);
       const expectedAxisPositions = [
-
-
-
-
-
-
-
-
-
-
-
+        { label: '0', axisTickLabel: '0', position: 100, value: 0, layer },
+        { label: '0.1', axisTickLabel: '0.1', position: 90, value: 0.1, layer },
+        { label: '0.2', axisTickLabel: '0.2', position: 80, value: 0.2, layer },
+        { label: '0.3', axisTickLabel: '0.3', position: 70, value: 0.3, layer },
+        { label: '0.4', axisTickLabel: '0.4', position: 60, value: 0.4, layer },
+        { label: '0.5', axisTickLabel: '0.5', position: 50, value: 0.5, layer },
+        { label: '0.6', axisTickLabel: '0.6', position: 40, value: 0.6, layer },
+        { label: '0.7', axisTickLabel: '0.7', position: 30, value: 0.7, layer },
+        { label: '0.8', axisTickLabel: '0.8', position: 20, value: 0.8, layer },
+        { label: '0.9', axisTickLabel: '0.9', position: 10, value: 0.9, layer },
+        { label: '1', axisTickLabel: '1', position: 0, value: 1, layer },
       ];
       expect(axisPositions).toEqual(expectedAxisPositions);
     });
@@ -291,17 +291,17 @@ describe('Axis computational utils', () => {
         rotationalOffset,
       );
       const expectedAxisPositions = [
-
-
-
-
-
-
-
-
-
-
-
+        { label: '0', axisTickLabel: '0', position: 100 + rotationalOffset, value: 0, layer },
+        { label: '0.1', axisTickLabel: '0.1', position: 90 + rotationalOffset, value: 0.1, layer },
+        { label: '0.2', axisTickLabel: '0.2', position: 80 + rotationalOffset, value: 0.2, layer },
+        { label: '0.3', axisTickLabel: '0.3', position: 70 + rotationalOffset, value: 0.3, layer },
+        { label: '0.4', axisTickLabel: '0.4', position: 60 + rotationalOffset, value: 0.4, layer },
+        { label: '0.5', axisTickLabel: '0.5', position: 50 + rotationalOffset, value: 0.5, layer },
+        { label: '0.6', axisTickLabel: '0.6', position: 40 + rotationalOffset, value: 0.6, layer },
+        { label: '0.7', axisTickLabel: '0.7', position: 30 + rotationalOffset, value: 0.7, layer },
+        { label: '0.8', axisTickLabel: '0.8', position: 20 + rotationalOffset, value: 0.8, layer },
+        { label: '0.9', axisTickLabel: '0.9', position: 10 + rotationalOffset, value: 0.9, layer },
+        { label: '1', axisTickLabel: '1', position: rotationalOffset, value: 1, layer },
       ];
       expect(axisPositions).toEqual(expectedAxisPositions);
     });
@@ -402,80 +402,80 @@ describe('Axis computational utils', () => {
     test('should compute visible ticks for a vertical axis', () => {
       /*
       const allTicks = [
-
-
-
-
-
-
-
-
-
-
-
+        { label: '0', axisTickLabel: '0', position: 100, value: 0, layer },
+        { label: '0.1', axisTickLabel: '0.1', position: 90, value: 0.1, layer },
+        { label: '0.2', axisTickLabel: '0.2', position: 80, value: 0.2, layer },
+        { label: '0.3', axisTickLabel: '0.3', position: 70, value: 0.3, layer },
+        { label: '0.4', axisTickLabel: '0.4', position: 60, value: 0.4, layer },
+        { label: '0.5', axisTickLabel: '0.5', position: 50, value: 0.5, layer },
+        { label: '0.6', axisTickLabel: '0.6', position: 40, value: 0.6, layer },
+        { label: '0.7', axisTickLabel: '0.7', position: 30, value: 0.7, layer },
+        { label: '0.8', axisTickLabel: '0.8', position: 20, value: 0.8, layer },
+        { label: '0.9', axisTickLabel: '0.9', position: 10, value: 0.9, layer },
+        { label: '1', axisTickLabel: '1', position: 0, value: 1, layer },
       ];
             const visibleTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis1Dims);
             const expectedVisibleTicks = [
-
-
-
-
-
-
-
-
-
-
-
+              { label: '1', axisTickLabel: '1', position: 0, value: 1, layer },
+              { label: '0.9', axisTickLabel: '0.9', position: 10, value: 0.9, layer },
+              { label: '0.8', axisTickLabel: '0.8', position: 20, value: 0.8, layer },
+              { label: '0.7', axisTickLabel: '0.7', position: 30, value: 0.7, layer },
+              { label: '0.6', axisTickLabel: '0.6', position: 40, value: 0.6, layer },
+              { label: '0.5', axisTickLabel: '0.5', position: 50, value: 0.5, layer },
+              { label: '0.4', axisTickLabel: '0.4', position: 60, value: 0.4, layer },
+              { label: '0.3', axisTickLabel: '0.3', position: 70, value: 0.3, layer },
+              { label: '0.2', axisTickLabel: '0.2', position: 80, value: 0.2, layer },
+              { label: '0.1', axisTickLabel: '0.1', position: 90, value: 0.1, layer },
+              { label: '0', axisTickLabel: '0', position: 100, value: 0, layer },
             ];
             expect(visibleTicks).toIncludeSameMembers(expectedVisibleTicks);
       */
     });
     test('should compute visible ticks for a horizontal axis', () => {
       /* const allTicks = [
-
-
-
-
-
-
-
-
-
-
-
+       { label: '0', axisTickLabel: '0', position: 100, value: 0, layer },
+       { label: '0.1', axisTickLabel: '0.1', position: 90, value: 0.1, layer },
+       { label: '0.2', axisTickLabel: '0.2', position: 80, value: 0.2, layer },
+       { label: '0.3', axisTickLabel: '0.3', position: 70, value: 0.3, layer },
+       { label: '0.4', axisTickLabel: '0.4', position: 60, value: 0.4, layer },
+       { label: '0.5', axisTickLabel: '0.5', position: 50, value: 0.5, layer },
+       { label: '0.6', axisTickLabel: '0.6', position: 40, value: 0.6, layer },
+       { label: '0.7', axisTickLabel: '0.7', position: 30, value: 0.7, layer },
+       { label: '0.8', axisTickLabel: '0.8', position: 20, value: 0.8, layer },
+       { label: '0.9', axisTickLabel: '0.9', position: 10, value: 0.9, layer },
+       { label: '1', axisTickLabel: '1', position: 0, value: 1, layer },
      ];
 
            const visibleTicks = getVisibleTicks(allTicks, horizontalAxisSpec, axis1Dims);
            const expectedVisibleTicks = [
-
-
-
-
-
-
-
-
-
-
-
+             { label: '1', axisTickLabel: '1', position: 0, value: 1, layer },
+             { label: '0.9', axisTickLabel: '0.9', position: 10, value: 0.9, layer },
+             { label: '0.8', axisTickLabel: '0.8', position: 20, value: 0.8, layer },
+             { label: '0.7', axisTickLabel: '0.7', position: 30, value: 0.7, layer },
+             { label: '0.6', axisTickLabel: '0.6', position: 40, value: 0.6, layer },
+             { label: '0.5', axisTickLabel: '0.5', position: 50, value: 0.5, layer },
+             { label: '0.4', axisTickLabel: '0.4', position: 60, value: 0.4, layer },
+             { label: '0.3', axisTickLabel: '0.3', position: 70, value: 0.3, layer },
+             { label: '0.2', axisTickLabel: '0.2', position: 80, value: 0.2, layer },
+             { label: '0.1', axisTickLabel: '0.1', position: 90, value: 0.1, layer },
+             { label: '0', axisTickLabel: '0', position: 100, value: 0, layer },
            ];
            expect(visibleTicks).toIncludeSameMembers(expectedVisibleTicks);
      */
     });
     test('should hide some ticks', () => {
       /*  const allTicks = [
-
-
-
-
-
-
-
-
-
-
-
+    { label: '0', axisTickLabel: '0', position: 100, value: 0, layer },
+    { label: '0.1', axisTickLabel: '0.1', position: 90, value: 0.1, layer },
+    { label: '0.2', axisTickLabel: '0.2', position: 80, value: 0.2, layer },
+    { label: '0.3', axisTickLabel: '0.3', position: 70, value: 0.3, layer },
+    { label: '0.4', axisTickLabel: '0.4', position: 60, value: 0.4, layer },
+    { label: '0.5', axisTickLabel: '0.5', position: 50, value: 0.5, layer },
+    { label: '0.6', axisTickLabel: '0.6', position: 40, value: 0.6, layer },
+    { label: '0.7', axisTickLabel: '0.7', position: 30, value: 0.7, layer },
+    { label: '0.8', axisTickLabel: '0.8', position: 20, value: 0.8, layer },
+    { label: '0.9', axisTickLabel: '0.9', position: 10, value: 0.9, layer },
+    { label: '1', axisTickLabel: '1', position: 0, value: 1, layer },
   ];
   const axis2Dims = {
     axisScaleType: ScaleType.Linear,
@@ -489,29 +489,29 @@ describe('Axis computational utils', () => {
 
         const visibleTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims);
         const expectedVisibleTicks = [
-
-
-
-
-
-
+          { label: '1', axisTickLabel: '1', position: 0, value: 1, layer },
+          { label: '0.8', axisTickLabel: '0.8', position: 20, value: 0.8, layer },
+          { label: '0.6', axisTickLabel: '0.6', position: 40, value: 0.6, layer },
+          { label: '0.4', axisTickLabel: '0.4', position: 60, value: 0.4, layer },
+          { label: '0.2', axisTickLabel: '0.2', position: 80, value: 0.2, layer },
+          { label: '0', axisTickLabel: '0', position: 100, value: 0, layer },
         ];
         expect(visibleTicks).toIncludeSameMembers(expectedVisibleTicks);
   */
     });
     test('should show all overlapping ticks and labels if configured to', () => {
       /*  const allTicks = [
-
-
-
-
-
-
-
-
-
-
-
+        { label: '0', axisTickLabel: '0', position: 100, value: 0, layer },
+        { label: '0.1', axisTickLabel: '0.1', position: 90, value: 0.1, layer },
+        { label: '0.2', axisTickLabel: '0.2', position: 80, value: 0.2, layer },
+        { label: '0.3', axisTickLabel: '0.3', position: 70, value: 0.3, layer },
+        { label: '0.4', axisTickLabel: '0.4', position: 60, value: 0.4, layer },
+        { label: '0.5', axisTickLabel: '0.5', position: 50, value: 0.5, layer },
+        { label: '0.6', axisTickLabel: '0.6', position: 40, value: 0.6, layer },
+        { label: '0.7', axisTickLabel: '0.7', position: 30, value: 0.7, layer },
+        { label: '0.8', axisTickLabel: '0.8', position: 20, value: 0.8, layer },
+        { label: '0.9', axisTickLabel: '0.9', position: 10, value: 0.9, layer },
+        { label: '1', axisTickLabel: '1', position: 0, value: 1, layer },
       ];
       const axis2Dims = {
         axisScaleType: ScaleType.Linear,
@@ -528,17 +528,17 @@ describe('Axis computational utils', () => {
 
       const visibleOverlappingTicks = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims);
       const expectedVisibleOverlappingTicks = [
-
-
-
-
-
-
-
-
-
-
-
+        { label: '1', axisTickLabel: '1', position: 0, value: 1, layer },
+        { label: '0.9', axisTickLabel: '0.9', position: 10, value: 0.9, layer },
+        { label: '0.8', axisTickLabel: '0.8', position: 20, value: 0.8, layer },
+        { label: '0.7', axisTickLabel: '0.7', position: 30, value: 0.7, layer },
+        { label: '0.6', axisTickLabel: '0.6', position: 40, value: 0.6, layer },
+        { label: '0.5', axisTickLabel: '0.5', position: 50, value: 0.5, layer },
+        { label: '0.4', axisTickLabel: '0.4', position: 60, value: 0.4, layer },
+        { label: '0.3', axisTickLabel: '0.3', position: 70, value: 0.3, layer },
+        { label: '0.2', axisTickLabel: '0.2', position: 80, value: 0.2, layer },
+        { label: '0.1', axisTickLabel: '0.1', position: 90, value: 0.1, layer },
+        { label: '0', axisTickLabel: '0', position: 100, value: 0, layer },
       ];
       expect(visibleOverlappingTicks).toIncludeSameMembers(expectedVisibleOverlappingTicks);
 */
@@ -548,17 +548,17 @@ describe('Axis computational utils', () => {
       /*
       const visibleOverlappingTicksAndLabels = getVisibleTicks(allTicks, verticalAxisSpec, axis2Dims);
       const expectedVisibleOverlappingTicksAndLabels = [
-
-
-
-
-
-
-
-
-
-
-
+        { label: '1', axisTickLabel: '1', position: 0, value: 1, layer },
+        { label: '0.9', axisTickLabel: '', position: 10, value: 0.9, layer },
+        { label: '0.8', axisTickLabel: '0.8', position: 20, value: 0.8, layer },
+        { label: '0.7', axisTickLabel: '', position: 30, value: 0.7, layer },
+        { label: '0.6', axisTickLabel: '0.6', position: 40, value: 0.6, layer },
+        { label: '0.5', axisTickLabel: '', position: 50, value: 0.5, layer },
+        { label: '0.4', axisTickLabel: '0.4', position: 60, value: 0.4, layer },
+        { label: '0.3', axisTickLabel: '', position: 70, value: 0.3, layer },
+        { label: '0.2', axisTickLabel: '0.2', position: 80, value: 0.2, layer },
+        { label: '0.1', axisTickLabel: '', position: 90, value: 0.1, layer },
+        { label: '0', axisTickLabel: '0', position: 100, value: 0, layer },
       ];
       expect(visibleOverlappingTicksAndLabels).toIncludeSameMembers(expectedVisibleOverlappingTicksAndLabels);
 */
@@ -1376,18 +1376,18 @@ describe('Axis computational utils', () => {
       0,
       true,
     );
-    const tickLabels = ticks.map(({ label }) => label);
+    const tickLabels = ticks.map(({ label }) => ({ label }));
     expect(tickLabels).toEqual([
-      '12:00',
-      '00:00',
-      '12:00',
-      '00:00',
-      '12:00',
-      '00:00',
-      '12:00',
-      '00:00',
-      '12:00',
-      '00:00',
+      { label: '12:00' },
+      { label: '00:00' },
+      { label: '12:00' },
+      { label: '00:00' },
+      { label: '12:00' },
+      { label: '00:00' },
+      { label: '12:00' },
+      { label: '00:00' },
+      { label: '12:00' },
+      { label: '00:00' },
     ]);
   });
   test('should show duplicate tick labels if duplicateTicks is set to true', () => {
