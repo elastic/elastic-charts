@@ -80,7 +80,6 @@ export function generateTicks(
       value,
       domainClampedValue,
       label,
-      axisTickLabel: label,
       position: (scale.scale(value) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
       domainClampedPosition: (scale.scale(domainClampedValue) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
       layer,
@@ -128,7 +127,6 @@ function getVisibleTicks(
             value: firstTickValue,
             domainClampedValue: firstTickValue,
             label: labelFormatter(firstTickValue),
-            axisTickLabel: labelFormatter(firstTickValue),
             position: (scale.scale(firstTickValue) || 0) + offset,
             domainClampedPosition: (scale.scale(firstTickValue) || 0) + offset,
             layer: undefined, // no multiple layers with `singleValueScale`s
@@ -140,7 +138,6 @@ function getVisibleTicks(
             value: firstTickValue + scale.minInterval,
             domainClampedValue: firstTickValue + scale.minInterval,
             label: labelFormatter(firstTickValue + scale.minInterval),
-            axisTickLabel: labelFormatter(firstTickValue + scale.minInterval),
             position: scale.bandwidth + halfPadding * 2,
             domainClampedPosition: scale.bandwidth + halfPadding * 2,
             layer: undefined, // no multiple layers with `singleValueScale`s
@@ -162,10 +159,10 @@ function getVisibleTicks(
           (prev, tick) => {
             const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
             if (tickLabelFits || showOverlappingTicks) {
-              prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, axisTickLabel: '' });
+              prev.visibleTicks.push(tickLabelFits ? tick : { ...tick, label: '' });
               if (tickLabelFits) prev.occupiedSpace = tick.position + requiredSpace;
             } else if (adaptiveTickCount && !tickLabelFits && !showOverlappingTicks) {
-              prev.visibleTicks.push({ ...tick, axisTickLabel: '' });
+              prev.visibleTicks.push({ ...tick, label: '' });
             }
             return prev;
           },
@@ -292,14 +289,13 @@ function getVisibleTickSets(
               const actualTickCount = scale?.ticks().length ?? 0;
               if (!scale || actualTickCount === previousActualTickCount || actualTickCount < 2) continue;
               const raster = getMeasuredTicks(scale, scale.ticks(), undefined, 0, userProvidedLabelFormatter);
-              const nonZeroLengthTicks = raster.ticks.filter((tick) => tick.axisTickLabel.length > 0);
-              const uniqueLabels = new Set(raster.ticks.map((tick) => tick.axisTickLabel));
+              const nonZeroLengthTicks = raster.ticks.filter((tick) => tick.label.length > 0);
+              const uniqueLabels = new Set(raster.ticks.map((tick) => tick.label));
               const areLabelsUnique = raster.ticks.length === uniqueLabels.size;
               const areAdjacentTimeLabelsUnique =
                 scale.type === ScaleType.Time &&
                 !axisSpec.showDuplicatedTicks &&
-                (areLabelsUnique ||
-                  raster.ticks.every((d, i, a) => i === 0 || d.axisTickLabel !== a[i - 1].axisTickLabel));
+                (areLabelsUnique || raster.ticks.every((d, i, a) => i === 0 || d.label !== a[i - 1].label));
               const atLeastTwoTicks = uniqueLabels.size >= 2;
               const allTicksFit = !uniqueLabels.has('');
               const compliant =
@@ -308,7 +304,7 @@ function getVisibleTickSets(
                 (scale.type === ScaleType.Log || allTicksFit) &&
                 ((scale.type === ScaleType.Time && (axisSpec.showDuplicatedTicks || areAdjacentTimeLabelsUnique)) ||
                   (scale.type === ScaleType.Log
-                    ? new Set(nonZeroLengthTicks.map((tick) => tick.axisTickLabel)).size === nonZeroLengthTicks.length
+                    ? new Set(nonZeroLengthTicks.map((tick) => tick.label)).size === nonZeroLengthTicks.length
                     : areLabelsUnique));
               previousActualTickCount = actualTickCount;
               if (raster && compliant) {

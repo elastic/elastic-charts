@@ -81,7 +81,7 @@ export function multilayerAxisEntry(
 
       const lastTick = entry.ticks[entry.ticks.length - 1];
       if (lastTick && lastTick.position + entry.labelBox.maxLabelBboxWidth > range[1]) {
-        lastTick.axisTickLabel = '';
+        lastTick.label = '';
       }
 
       return {
