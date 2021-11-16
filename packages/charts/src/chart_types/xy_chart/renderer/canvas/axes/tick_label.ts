@@ -52,7 +52,7 @@ export function renderTickLabel(
   renderText(
     ctx,
     center,
-    tick.axisTickLabel,
+    tick.label,
     {
       fontFamily: labelStyle.fontFamily,
       fontStyle: labelStyle.fontStyle ?? 'normal',

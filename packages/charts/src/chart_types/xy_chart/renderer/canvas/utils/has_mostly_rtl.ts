@@ -14,7 +14,9 @@ export function hasMostlyRTL(geoms: PerPanelAxisGeoms[]): boolean {
   // returns all string value labels
   const labels = geoms.flatMap(({ axesGeoms }) => {
     return axesGeoms.flatMap(({ visibleTicks }) => {
-      return visibleTicks.filter(({ value }) => typeof value === 'string').map(({ label }) => label);
+      return visibleTicks
+        .filter(({ value, label }) => typeof value === 'string' && label !== '')
+        .map(({ label }) => label);
     });
   });
 
