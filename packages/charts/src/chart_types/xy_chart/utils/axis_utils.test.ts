@@ -1332,9 +1332,7 @@ describe('Axis computational utils', () => {
         scale as Scale<number>,
         scale.ticks(),
         offset,
-        tickFormatOption,
-        (v) => `${v}`,
-        (v: any) => `${v}`,
+        (v: any) => formatter(v, tickFormatOption),
         0,
         0,
         true,
@@ -1377,15 +1375,12 @@ describe('Axis computational utils', () => {
       range: [0, 603.5],
     });
     const offset = 0;
-    const tickFormatOption = { timeZone: xDomainTime.timeZone };
     const ticks = generateTicks(
       axisSpec,
       scale as Scale<number>,
       scale.ticks(),
       offset,
-      tickFormatOption,
-      tickFormat,
-      tickFormat,
+      (d) => tickFormat(d, { timeZone: xDomainTime.timeZone }),
       0,
       0,
       true,
@@ -1407,7 +1402,7 @@ describe('Axis computational utils', () => {
   test('should show duplicate tick labels if duplicateTicks is set to true', () => {
     const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
     const oneDay = moment.duration(1, 'day');
-    const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
+    const tickFormat = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
@@ -1419,7 +1414,7 @@ describe('Axis computational utils', () => {
       showOverlappingLabels: false,
       showOverlappingTicks: false,
       style,
-      tickFormat: formatter,
+      tickFormat,
       timeAxisLayerCount: 3,
     };
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
@@ -1440,9 +1435,7 @@ describe('Axis computational utils', () => {
         scale as Scale<number>,
         scale.ticks(),
         offset,
-        tickFormatOption,
-        formatter,
-        formatter,
+        (v) => tickFormat(v, tickFormatOption),
         0,
         0,
         true,
@@ -1573,7 +1566,7 @@ describe('Axis computational utils', () => {
   test('should use custom tick formatter', () => {
     const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
     const oneDay = moment.duration(1, 'day');
-    const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
+    const tickFormat = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
@@ -1585,7 +1578,7 @@ describe('Axis computational utils', () => {
       showOverlappingLabels: false,
       showOverlappingTicks: false,
       style,
-      tickFormat: formatter,
+      tickFormat,
       timeAxisLayerCount: 3,
     };
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
@@ -1602,9 +1595,7 @@ describe('Axis computational utils', () => {
         scale as Scale<number>,
         scale.ticks(),
         offset,
-        tickFormatOption,
-        formatter,
-        formatter,
+        (v) => tickFormat(v, tickFormatOption),
         0,
         0,
         true,

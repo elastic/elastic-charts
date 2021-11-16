@@ -8,7 +8,7 @@
 
 import { Scale, ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
-import { AxisSpec, SettingsSpec, TickFormatter, TickFormatterOptions } from '../../../../specs';
+import { AxisSpec, SettingsSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -17,16 +17,12 @@ import { Size } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
 import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import { AxisTick, defaultTickFormatter, isXDomain, TextDirection, TickLabelBounds } from '../../utils/axis_utils';
+import { AxisTick, TextDirection, TickLabelBounds } from '../../utils/axis_utils';
 import { getPanelSize } from '../../utils/panel';
 import { computeXScale } from '../../utils/scales';
 import { SeriesDomainsAndData } from '../utils/types';
-import {
-  getFallBackTickFormatter,
-  getJoinedVisibleAxesData,
-  getLabelBox,
-  JoinedAxisData,
-} from './compute_axis_ticks_dimensions';
+import { AxisLabelFormatter } from './axis_tick_formatter';
+import { getJoinedVisibleAxesData, getLabelBox, JoinedAxisData } from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
@@ -36,11 +32,17 @@ import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 /** @internal */
 export type Projection = { ticks: AxisTick[]; labelBox: TickLabelBounds; scale: Scale<string | number> };
 
+/** @internal */
+export type GetMeasuredTicks = (
+  scale: Scale<number | string>,
+  ticks: (number | string)[],
+  layer: number | undefined,
+  detailedLayer: number,
+  labelFormat: AxisLabelFormatter,
+  showGrid?: boolean,
+) => Projection;
+
 type Projections = Map<AxisId, Projection>;
-type LabelFormatter = (d: number | string, ...otherArgs: unknown[]) => string;
-type AxisTickFormatOptions = TickFormatterOptions & {
-  labelFormat?: LabelFormatter;
-};
 
 const adaptiveTickCount = true;
 
@@ -64,9 +66,7 @@ export function generateTicks(
   scale: Scale<number | string>,
   ticks: (number | string)[],
   offset: number,
-  tickFormatOptions: AxisTickFormatOptions,
-  tickFormatter: TickFormatter,
-  labelFormatter: LabelFormatter | TickFormatter,
+  labelFormatter: AxisLabelFormatter,
   layer: number | undefined,
   detailedLayer: number,
   showGrid: boolean,
@@ -75,7 +75,7 @@ export function generateTicks(
   return ticks.map<AxisTick>((value) => {
     const domainClampedValue =
       typeof value === 'number' && typeof scale.domain[0] === 'number' ? Math.max(scale.domain[0], value) : value;
-    const label = labelFormatter(value, tickFormatOptions);
+    const label = labelFormatter(value);
     return {
       value,
       domainClampedValue,
@@ -95,11 +95,10 @@ function getVisibleTicks(
   axisSpec: AxisSpec,
   labelBox: TickLabelBounds,
   totalBarsInCluster: number,
-  fallBackTickFormatter: TickFormatter,
+  labelFormatter: AxisLabelFormatter,
   rotationOffset: number,
   scale: Scale<number | string>,
   enableHistogramMode: boolean,
-  tickFormatOptions: AxisTickFormatOptions,
   layer: number | undefined,
   detailedLayer: number,
   ticks: (number | string)[],
@@ -120,8 +119,7 @@ function getVisibleTicks(
   const halfPadding = (band - scale.bandwidth) / 2;
   const offset =
     (enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2) + (scale.isSingleValue() ? 0 : rotationOffset);
-  const tickFormatter = axisSpec.tickFormat ?? fallBackTickFormatter;
-  const labelFormatter = tickFormatOptions.labelFormat ?? axisSpec.labelFormat ?? tickFormatter;
+
   const firstTickValue = ticks[0];
   const allTicks: AxisTick[] =
     makeRaster && isSingleValueScale && typeof firstTickValue === 'number'
@@ -129,8 +127,8 @@ function getVisibleTicks(
           {
             value: firstTickValue,
             domainClampedValue: firstTickValue,
-            label: tickFormatter(firstTickValue, tickFormatOptions),
-            axisTickLabel: labelFormatter(firstTickValue, tickFormatOptions),
+            label: labelFormatter(firstTickValue),
+            axisTickLabel: labelFormatter(firstTickValue),
             position: (scale.scale(firstTickValue) || 0) + offset,
             domainClampedPosition: (scale.scale(firstTickValue) || 0) + offset,
             layer: undefined, // no multiple layers with `singleValueScale`s
@@ -141,8 +139,8 @@ function getVisibleTicks(
           {
             value: firstTickValue + scale.minInterval,
             domainClampedValue: firstTickValue + scale.minInterval,
-            label: tickFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
-            axisTickLabel: labelFormatter(firstTickValue + scale.minInterval, tickFormatOptions),
+            label: labelFormatter(firstTickValue + scale.minInterval),
+            axisTickLabel: labelFormatter(firstTickValue + scale.minInterval),
             position: scale.bandwidth + halfPadding * 2,
             domainClampedPosition: scale.bandwidth + halfPadding * 2,
             layer: undefined, // no multiple layers with `singleValueScale`s
@@ -151,18 +149,7 @@ function getVisibleTicks(
             showGrid,
           },
         ]
-      : generateTicks(
-          axisSpec,
-          scale,
-          ticks,
-          offset,
-          tickFormatOptions,
-          tickFormatter,
-          labelFormatter,
-          layer,
-          detailedLayer,
-          showGrid,
-        );
+      : generateTicks(axisSpec, scale, ticks, offset, labelFormatter, layer, detailedLayer, showGrid);
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
@@ -191,31 +178,27 @@ function getVisibleTickSet(
   labelBox: TickLabelBounds,
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
   axisSpec: AxisSpec,
-  { xDomain: { timeZone } }: Pick<SeriesDomainsAndData, 'xDomain'>,
   groupCount: number,
   histogramMode: boolean,
-  fallBackTickFormatter: TickFormatter,
   layer: number | undefined,
   detailedLayer: number,
   ticks: (number | string)[],
-  labelFormat?: (d: number | string) => string,
+  labelFormatter: AxisLabelFormatter,
   isMultilayerTimeAxis = false,
   showGrid = true,
 ): AxisTick[] {
   const vertical = isVerticalAxis(axisSpec.position);
-  const tickFormatter = vertical ? fallBackTickFormatter : defaultTickFormatter;
   const somehowRotated = (vertical && chartRotation === -90) || (!vertical && chartRotation === 180);
   const rotationOffset = histogramMode && somehowRotated ? scale.step : 0; // todo find the true cause of the this offset issue
-  const tickFormatOptions = labelFormat ? { labelFormat, timeZone } : { timeZone };
+
   return getVisibleTicks(
     axisSpec,
     labelBox,
     groupCount,
-    tickFormatter,
+    labelFormatter,
     rotationOffset,
     scale,
     histogramMode,
-    tickFormatOptions,
     layer,
     detailedLayer,
     ticks,
@@ -233,7 +216,6 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
     computeSmallMultipleScalesSelector,
     countBarsInClusterSelector,
     isHistogramModeEnabledSelector,
-    getFallBackTickFormatter,
     getBarPaddingsSelector,
   ],
   getVisibleTickSets,
@@ -246,133 +228,133 @@ function getVisibleTickSets(
   smScales: SmallMultipleScales,
   totalGroupsCount: number,
   enableHistogramMode: boolean,
-  fallBackTickFormatter: TickFormatter,
   barsPadding?: number,
 ): Projections {
   return withTextMeasure((textMeasure) => {
     const panel = getPanelSize(smScales);
-    return [...joinedAxesData].reduce((acc, [axisId, { axisSpec, axesStyle, gridLine, tickFormatter }]) => {
-      const { groupId, integersOnly, position, timeAxisLayerCount } = axisSpec;
-      const isX = isXDomain(position, chartRotation);
-      const yDomain = yDomains.find((yd) => yd.groupId === groupId);
-      const domain = isX ? xDomain : yDomain;
-      const range = axisMinMax(axisSpec.position, chartRotation, panel);
-      const maxTickCount = domain?.desiredTickCount ?? 0;
-      const isMultilayerTimeAxis = domain?.type === ScaleType.Time && timeAxisLayerCount > 0;
+    return [...joinedAxesData].reduce(
+      (acc, [axisId, { axisSpec, axesStyle, gridLine, isXAxis, labelFormatter: userProvidedLabelFormatter }]) => {
+        const { groupId, integersOnly, timeAxisLayerCount } = axisSpec;
+        const yDomain = yDomains.find((yd) => yd.groupId === groupId);
+        const domain = isXAxis ? xDomain : yDomain;
+        const range = axisMinMax(axisSpec.position, chartRotation, panel);
+        const maxTickCount = domain?.desiredTickCount ?? 0;
+        const isMultilayerTimeAxis = domain?.type === ScaleType.Time && timeAxisLayerCount > 0;
 
-      const getMeasuredTicks = (
-        scale: Scale<number | string>,
-        ticks: (number | string)[],
-        layer: number | undefined,
-        detailedLayer: number,
-        labelFormat?: (d: number | string) => string,
-        showGrid = true,
-      ): Projection => {
-        const labelBox = getLabelBox(axesStyle, ticks, labelFormat || tickFormatter, textMeasure, axisSpec, gridLine);
-        return {
-          ticks: getVisibleTickSet(
-            scale,
-            labelBox,
-            { rotation: chartRotation },
-            axisSpec,
-            { xDomain },
-            totalGroupsCount,
-            enableHistogramMode,
-            fallBackTickFormatter,
-            layer,
-            detailedLayer,
-            ticks,
-            labelFormat,
-            isMultilayerTimeAxis,
-            showGrid,
-          ),
-          labelBox,
-          scale, // tick count driving nicing; nicing drives domain; therefore scale may vary, downstream needs it
-        };
-      };
-
-      const getScale = (desiredTickCount: number) =>
-        isX
-          ? computeXScale({
-              xDomain: { ...xDomain, desiredTickCount },
-              totalBarsInCluster: totalGroupsCount,
-              range,
-              barsPadding,
+        const getMeasuredTicks = (
+          scale: Scale<number | string>,
+          ticks: (number | string)[],
+          layer: number | undefined,
+          detailedLayer: number,
+          labelFormatter: AxisLabelFormatter,
+          showGrid = true,
+        ): Projection => {
+          const labelBox = getLabelBox(axesStyle, ticks, labelFormatter, textMeasure, axisSpec, gridLine);
+          return {
+            ticks: getVisibleTickSet(
+              scale,
+              labelBox,
+              { rotation: chartRotation },
+              axisSpec,
+              totalGroupsCount,
               enableHistogramMode,
-              integersOnly,
-            })
-          : yDomain && new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, integersOnly });
+              layer,
+              detailedLayer,
+              ticks,
+              labelFormatter,
+              isMultilayerTimeAxis,
+              showGrid,
+            ),
+            labelBox,
+            scale, // tick count driving nicing; nicing drives domain; therefore scale may vary, downstream needs it
+          };
+        };
 
-      const fillLayer = (maxTickCountForLayer: number) => {
-        let fallbackAskedTickCount = 2;
-        let fallbackReceivedTickCount = Infinity;
-        if (adaptiveTickCount) {
-          let previousActualTickCount = NaN;
-          for (let triedTickCount = maxTickCountForLayer; triedTickCount >= 1; triedTickCount--) {
-            const scale = getScale(triedTickCount);
-            const actualTickCount = scale?.ticks().length ?? 0;
-            if (!scale || actualTickCount === previousActualTickCount || actualTickCount < 2) continue;
-            const raster = getMeasuredTicks(scale, scale.ticks(), undefined, 0);
-            const nonZeroLengthTicks = raster.ticks.filter((tick) => tick.axisTickLabel.length > 0);
-            const uniqueLabels = new Set(raster.ticks.map((tick) => tick.axisTickLabel));
-            const areLabelsUnique = raster.ticks.length === uniqueLabels.size;
-            const areAdjacentTimeLabelsUnique =
-              scale.type === ScaleType.Time &&
-              !axisSpec.showDuplicatedTicks &&
-              (areLabelsUnique ||
-                raster.ticks.every((d, i, a) => i === 0 || d.axisTickLabel !== a[i - 1].axisTickLabel));
-            const atLeastTwoTicks = uniqueLabels.size >= 2;
-            const allTicksFit = !uniqueLabels.has('');
-            const compliant =
-              axisSpec &&
-              (scale.type === ScaleType.Time || atLeastTwoTicks) &&
-              (scale.type === ScaleType.Log || allTicksFit) &&
-              ((scale.type === ScaleType.Time && (axisSpec.showDuplicatedTicks || areAdjacentTimeLabelsUnique)) ||
-                (scale.type === ScaleType.Log
-                  ? new Set(nonZeroLengthTicks.map((tick) => tick.axisTickLabel)).size === nonZeroLengthTicks.length
-                  : areLabelsUnique));
-            previousActualTickCount = actualTickCount;
-            if (raster && compliant) {
-              return {
-                entry: {
-                  ...raster,
-                  ticks: scale.type === ScaleType.Log ? raster.ticks : nonZeroLengthTicks,
-                },
-                fallbackAskedTickCount,
-              };
-            } else if (atLeastTwoTicks && uniqueLabels.size <= fallbackReceivedTickCount) {
-              // let's remember the smallest triedTickCount that yielded two distinct ticks
-              fallbackReceivedTickCount = uniqueLabels.size;
-              fallbackAskedTickCount = triedTickCount;
+        const getScale = (desiredTickCount: number) =>
+          isXAxis
+            ? computeXScale({
+                xDomain: { ...xDomain, desiredTickCount },
+                totalBarsInCluster: totalGroupsCount,
+                range,
+                barsPadding,
+                enableHistogramMode,
+                integersOnly,
+              })
+            : yDomain && new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, integersOnly });
+
+        const fillLayer = (maxTickCountForLayer: number) => {
+          let fallbackAskedTickCount = 2;
+          let fallbackReceivedTickCount = Infinity;
+          if (adaptiveTickCount) {
+            let previousActualTickCount = NaN;
+            for (let triedTickCount = maxTickCountForLayer; triedTickCount >= 1; triedTickCount--) {
+              const scale = getScale(triedTickCount);
+              const actualTickCount = scale?.ticks().length ?? 0;
+              if (!scale || actualTickCount === previousActualTickCount || actualTickCount < 2) continue;
+              const raster = getMeasuredTicks(scale, scale.ticks(), undefined, 0, userProvidedLabelFormatter);
+              const nonZeroLengthTicks = raster.ticks.filter((tick) => tick.axisTickLabel.length > 0);
+              const uniqueLabels = new Set(raster.ticks.map((tick) => tick.axisTickLabel));
+              const areLabelsUnique = raster.ticks.length === uniqueLabels.size;
+              const areAdjacentTimeLabelsUnique =
+                scale.type === ScaleType.Time &&
+                !axisSpec.showDuplicatedTicks &&
+                (areLabelsUnique ||
+                  raster.ticks.every((d, i, a) => i === 0 || d.axisTickLabel !== a[i - 1].axisTickLabel));
+              const atLeastTwoTicks = uniqueLabels.size >= 2;
+              const allTicksFit = !uniqueLabels.has('');
+              const compliant =
+                axisSpec &&
+                (scale.type === ScaleType.Time || atLeastTwoTicks) &&
+                (scale.type === ScaleType.Log || allTicksFit) &&
+                ((scale.type === ScaleType.Time && (axisSpec.showDuplicatedTicks || areAdjacentTimeLabelsUnique)) ||
+                  (scale.type === ScaleType.Log
+                    ? new Set(nonZeroLengthTicks.map((tick) => tick.axisTickLabel)).size === nonZeroLengthTicks.length
+                    : areLabelsUnique));
+              previousActualTickCount = actualTickCount;
+              if (raster && compliant) {
+                return {
+                  entry: {
+                    ...raster,
+                    ticks: scale.type === ScaleType.Log ? raster.ticks : nonZeroLengthTicks,
+                  },
+                  fallbackAskedTickCount,
+                };
+              } else if (atLeastTwoTicks && uniqueLabels.size <= fallbackReceivedTickCount) {
+                // let's remember the smallest triedTickCount that yielded two distinct ticks
+                fallbackReceivedTickCount = uniqueLabels.size;
+                fallbackAskedTickCount = triedTickCount;
+              }
             }
           }
+          return { fallbackAskedTickCount };
+        };
+
+        if (isMultilayerTimeAxis) {
+          const scale = getScale(0); // the scale is only needed for its non-tick props like step, bandwidth, ...
+          if (!scale) throw new Error('Scale generation for the multilayer axis failed');
+          return acc.set(
+            axisId,
+            multilayerAxisEntry(
+              xDomain,
+              isXAxis && xDomain.isBandScale && enableHistogramMode,
+              range,
+              timeAxisLayerCount,
+              scale,
+              getMeasuredTicks,
+            ),
+          );
         }
-        return { fallbackAskedTickCount };
-      };
 
-      if (isMultilayerTimeAxis) {
-        const scale = getScale(0); // the scale is only needed for its non-tick props like step, bandwidth, ...
-        if (!scale) throw new Error('Scale generation for the multilayer axis failed');
-        return acc.set(
-          axisId,
-          multilayerAxisEntry(
-            xDomain,
-            isX && xDomain.isBandScale && enableHistogramMode,
-            range,
-            timeAxisLayerCount,
-            scale,
-            getMeasuredTicks,
-          ),
-        );
-      }
+        const { fallbackAskedTickCount, entry } = fillLayer(maxTickCount);
+        if (entry) return acc.set(axisId, entry);
 
-      const { fallbackAskedTickCount, entry } = fillLayer(maxTickCount);
-      if (entry) return acc.set(axisId, entry);
-
-      // todo dry it up
-      const scale = getScale(adaptiveTickCount ? fallbackAskedTickCount : maxTickCount);
-      const lastResortCandidate = scale && getMeasuredTicks(scale, scale.ticks(), undefined, 0);
-      return lastResortCandidate ? acc.set(axisId, lastResortCandidate) : acc;
-    }, new Map());
+        // todo dry it up
+        const scale = getScale(adaptiveTickCount ? fallbackAskedTickCount : maxTickCount);
+        const lastResortCandidate =
+          scale && getMeasuredTicks(scale, scale.ticks(), undefined, 0, userProvidedLabelFormatter);
+        return lastResortCandidate ? acc.set(axisId, lastResortCandidate) : acc;
+      },
+      new Map(),
+    );
   });
 }

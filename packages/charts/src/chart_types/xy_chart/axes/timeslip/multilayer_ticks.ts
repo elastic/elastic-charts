@@ -8,7 +8,8 @@
 
 import { Scale, ScaleContinuous } from '../../../../scales';
 import { XDomain } from '../../domains/types';
-import { Projection } from '../../state/selectors/visible_ticks';
+import { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
+import { GetMeasuredTicks } from '../../state/selectors/visible_ticks';
 import { AxisTick } from '../../utils/axis_utils';
 import { rasters, TimeBin, TimeRaster } from './rasters';
 
@@ -40,14 +41,7 @@ export function multilayerAxisEntry(
   range: [number, number],
   timeAxisLayerCount: any,
   scale: Scale<string | number> | ScaleContinuous, // fixme it's only the latter for now
-  getMeasuredTicks: (
-    skale: Scale<number | string>,
-    ticks: (number | string)[],
-    layer: number | undefined,
-    detailedLayer: number,
-    labelFormat?: (d: number | string) => string,
-    showGrid?: boolean,
-  ) => Projection,
+  getMeasuredTicks: GetMeasuredTicks,
 ) {
   const rasterSelector = rasters({ minimumTickPixelDistance: 24, locale: 'en-US' }, xDomain.timeZone);
   const domainValues = xDomain.domain; // todo consider a property or object type rename
@@ -61,18 +55,11 @@ export function multilayerAxisEntry(
     layer: number,
     detailedLayer: number,
     timeTicks: number[],
-    labelFormat: (n: number) => string,
+    labelFormat: AxisLabelFormatter<number>,
     showGrid: boolean,
   ) => {
     return {
-      entry: getMeasuredTicks(
-        scale,
-        timeTicks,
-        layer,
-        detailedLayer,
-        labelFormat as (d: number | string) => string, // todo dissolve assertion
-        showGrid,
-      ),
+      entry: getMeasuredTicks(scale, timeTicks, layer, detailedLayer, labelFormat as AxisLabelFormatter, showGrid),
       fallbackAskedTickCount: NaN,
     };
   };
