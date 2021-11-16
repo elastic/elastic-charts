@@ -1441,6 +1441,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 25.145833333333332,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1452,6 +1453,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 85.49583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1463,6 +1465,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 145.84583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1474,6 +1477,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 206.19583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1485,6 +1489,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 266.54583333333335,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1496,6 +1501,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 326.8958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1507,6 +1513,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 387.24583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1518,6 +1525,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 447.59583333333336,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1529,6 +1537,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 507.9458333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1540,6 +1549,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 568.2958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
     ]);
@@ -1591,6 +1601,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 25.145833333333332,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1602,6 +1613,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 85.49583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1613,6 +1625,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 145.84583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1624,6 +1637,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 206.19583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1635,6 +1649,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 266.54583333333335,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1646,6 +1661,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 326.8958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1657,6 +1673,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 387.24583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1668,6 +1685,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 447.59583333333336,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1679,6 +1697,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 507.9458333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1690,6 +1709,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 568.2958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
     ]);

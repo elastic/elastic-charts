@@ -91,6 +91,7 @@ export function shapeViewModel(
   const boxedYValues = yValues.map<Box & { value: NonNullable<PrimitiveValue> }>((value) => ({
     text: config.yAxisLabel.formatter(value),
     value,
+    isValue: false,
     ...config.yAxisLabel,
   }));
 
@@ -398,6 +399,7 @@ function getXTicks(
     return {
       text: formatter(value),
       value,
+      isValue: false,
       ...config.xAxisLabel,
       x: chartDimensions.left + (scaleCallback(value) ?? 0),
       y: gridHeight + config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
