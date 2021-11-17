@@ -726,7 +726,7 @@ Array [
 ]
 `;
 
-exports[`Rendering points - line Removing out-of-domain points should render 2 points 1`] = `
+exports[`Rendering points - line Removing out-of-domain points should render 3 points 1`] = `
 Array [
   Object {
     "color": "red",

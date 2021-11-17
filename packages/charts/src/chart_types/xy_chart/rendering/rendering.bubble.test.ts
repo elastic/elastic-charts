@@ -359,16 +359,16 @@ describe('Rendering points - bubble', () => {
       ] = bubbles;
       // all the points minus the undefined ones on a log scale
       expect(points.length).toBe(7);
-      // renderedBubble.points has length 7 plus the null value
-      expect(geometriesIndex.size).toEqual(8);
+      // all the points including null geometries
+      expect(geometriesIndex.size).toEqual(9);
 
-      const zeroValueIndexedGeometry = geometriesIndex.find(null, {
+      const zeroValueIndexdGeometry = geometriesIndex.find(null, {
         x: 56.25,
         y: 100,
       });
-      expect(zeroValueIndexedGeometry).toBeDefined();
-      expect(zeroValueIndexedGeometry.length).toBe(5);
-      // expect(zeroValueIndexedGeometry.find(({ value: { x } }) => x === 5)).toBeDefined();
+      expect(zeroValueIndexdGeometry).toBeDefined();
+      expect(zeroValueIndexdGeometry.length).toBe(3);
+      expect(zeroValueIndexdGeometry.find(({ value: { x } }) => x === 5)).toBeDefined();
     });
   });
   describe('Remove points datum is not in domain', () => {
@@ -402,10 +402,10 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      // will not render the 4th point that is out of x domain or the 3rd and 4th point that is out of the yDomain
+      // will not render the 4th point that is out of x domain
       expect(points).toHaveLength(2);
-      // points that are outside of either the x or y domains should not be included in the tooltip
-      expect(geometriesIndex.size).toEqual(2);
+      // will keep the 3rd point as an indexedGeometry
+      expect(geometriesIndex.size).toEqual(3);
       expect(points).toMatchSnapshot();
     });
   });
