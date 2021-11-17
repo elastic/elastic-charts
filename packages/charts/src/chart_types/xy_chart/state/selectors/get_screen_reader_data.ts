@@ -24,7 +24,7 @@ import {
   isDataSeriesBanded,
   XYChartSeriesIdentifier,
 } from '../../utils/series';
-import { AxisSpec, BasicSeriesSpec, StackMode, TickFormatterOptions } from '../../utils/specs';
+import { AxisSpec, BasicSeriesSpec, StackMode, TickFormatter, TickFormatterOptions } from '../../utils/specs';
 import { getLastValues } from '../utils/get_last_value';
 import { getSpecsById, getAxesSpecForSpecId } from '../utils/spec';
 import { LastValues } from '../utils/types';
@@ -119,17 +119,17 @@ function getValueData(
   formatter: (value: any, options?: TickFormatterOptions | undefined) => string,
   key: keyof LastValues,
   lastValue: LastValues,
+  tickFormatter?: TickFormatter<any>,
   xValue?: string | number,
   smPanelTitle?: string | number,
 ): FormattedDefaultExtraValue {
   const rawValue = (lastValue && lastValue[key]) ?? null;
   const formattedValue = rawValue !== null ? formatter(rawValue) : null;
-
   return {
     raw: rawValue !== null ? rawValue : null,
     formatted: xScaleType === ScaleType.Ordinal ? null : formattedValue,
     legendSizingLabel: formattedValue,
-    xValue: xValue,
+    xValue: tickFormatter ? tickFormatter(xValue) : formatter(xValue),
     smPanelTitle: smPanelTitle ?? undefined,
   };
 }
@@ -161,7 +161,7 @@ function computeScreenReaderValues(
     const labelY1 = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name;
 
     // Use this to get axis spec w/ tick formatter
-    const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
+    const { yAxis, xAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
     const formatter = spec.tickFormat ?? yAxis?.tickFormat ?? defaultTickFormatter;
 
     const xScaleType = getXScaleTypeFromSpec(spec.xScaleType);
@@ -173,6 +173,7 @@ function computeScreenReaderValues(
             formatter,
             'y0',
             lastValue,
+            xAxis?.tickFormat,
             data[index] ? data[index].x : undefined,
             smVerticalAccessorValue ?? smHorizontalAccessorValue,
           )
@@ -181,6 +182,7 @@ function computeScreenReaderValues(
             formatter,
             'y1',
             lastValue,
+            xAxis?.tickFormat,
             data[index] ? data[index].x : undefined,
             smVerticalAccessorValue ?? smHorizontalAccessorValue,
           );
