@@ -16,3 +16,4 @@ export { Example as noAxesAnnotationBugFix } from './3_no_axes_annotation.story'
 export { Example as filterZerosInLogFitDomain } from './4_filter_zero_values_log.story';
 export { Example as legendScrollBarSizing } from './5_legend_scroll_bar_sizing.story';
 export { Example as accessibilityCustomizations } from './6_a11y_custom_description.story';
+export { Example as rtlText } from './7_rtl_text.story';

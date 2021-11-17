@@ -44,7 +44,7 @@ import {
   getScaleForAxisSpec,
 } from './axis_utils';
 import { computeXScale } from './scales';
-import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
+import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID, TickFormatter } from './specs';
 
 const alignmentsDefault = { horizontal: HorizontalAlignment.Near, vertical: VerticalAlignment.Middle };
 
@@ -1327,7 +1327,18 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
+      generateTicks(
+        axisSpec,
+        scale as Scale<number>,
+        scale.ticks(),
+        offset,
+        tickFormatOption,
+        (v) => `${v}`,
+        (v: any) => `${v}`,
+        0,
+        0,
+        true,
+      ),
     ).toEqual([
       { value: 1547208000000, label: '2019-01-11', axisTickLabel: '2019-01-11', position: 25.145833333333332, layer },
       { value: 1547251200000, label: '2019-01-12', axisTickLabel: '2019-01-12', position: 85.49583333333334, layer },
@@ -1338,6 +1349,8 @@ describe('Axis computational utils', () => {
     ]);
   });
   test('should show unique consecutive ticks if duplicateTicks is set to false', () => {
+    const tickFormat: TickFormatter = (d, options) =>
+      DateTime.fromMillis(d, { setZone: true, zone: options?.timeZone ?? 'utc+1' }).toFormat('HH:mm');
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
@@ -1349,8 +1362,7 @@ describe('Axis computational utils', () => {
       showOverlappingLabels: false,
       showOverlappingTicks: false,
       style,
-      tickFormat: (d, options) =>
-        DateTime.fromMillis(d, { setZone: true, zone: options?.timeZone ?? 'utc+1' }).toFormat('HH:mm'),
+      tickFormat,
       timeAxisLayerCount: 3,
     };
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
@@ -1371,9 +1383,12 @@ describe('Axis computational utils', () => {
       scale as Scale<number>,
       scale.ticks(),
       offset,
-      (v) => `${v}`,
       tickFormatOption,
+      tickFormat,
+      tickFormat,
       0,
+      0,
+      true,
     );
     const tickLabels = ticks.map(({ label }) => ({ label }));
     expect(tickLabels).toEqual([
@@ -1420,7 +1435,18 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
+      generateTicks(
+        axisSpec,
+        scale as Scale<number>,
+        scale.ticks(),
+        offset,
+        tickFormatOption,
+        formatter,
+        formatter,
+        0,
+        0,
+        true,
+      ),
     ).toEqual([
       {
         value: 1547208000000,
@@ -1431,6 +1457,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 25.145833333333332,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1442,6 +1469,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 85.49583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1453,6 +1481,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 145.84583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1464,6 +1493,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 206.19583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1475,6 +1505,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 266.54583333333335,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1486,6 +1517,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 326.8958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1497,6 +1529,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 387.24583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1508,6 +1541,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 447.59583333333336,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1519,6 +1553,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 507.9458333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1530,6 +1565,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 568.2958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
     ]);
@@ -1561,7 +1597,18 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
+      generateTicks(
+        axisSpec,
+        scale as Scale<number>,
+        scale.ticks(),
+        offset,
+        tickFormatOption,
+        formatter,
+        formatter,
+        0,
+        0,
+        true,
+      ),
     ).toEqual([
       {
         value: 1547208000000,
@@ -1572,6 +1619,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 25.145833333333332,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1583,6 +1631,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 85.49583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1594,6 +1643,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 145.84583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1605,6 +1655,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 206.19583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1616,6 +1667,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 266.54583333333335,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1627,6 +1679,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 326.8958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1638,6 +1691,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 387.24583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1649,6 +1703,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 447.59583333333336,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1660,6 +1715,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 507.9458333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
@@ -1671,6 +1727,7 @@ describe('Axis computational utils', () => {
         domainClampedPosition: 568.2958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
     ]);
