@@ -12,6 +12,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { LegendItem } from '../../../../common/legend';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
+import { ScreenReaderCartesianTable } from '../../../../components/accessibility/cartesian_data_table';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -162,25 +163,25 @@ class XYChartComponent extends React.Component<XYChartProps> {
     }
 
     return (
-      <>
-        <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
-          <canvas
-            dir={isRTL ? 'rtl' : 'ltr'}
-            ref={forwardCanvasRef}
-            className="echCanvasRenderer"
-            width={width * this.devicePixelRatio}
-            height={height * this.devicePixelRatio}
-            style={{
-              width,
-              height,
-            }}
-            // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-            role="presentation"
-          />
-          {!debug && <ScreenReaderSummary />}
-        </figure>
-        {debug && <ScreenReaderSummary />}
-      </>
+      <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
+        <canvas
+          dir={isRTL ? 'rtl' : 'ltr'}
+          ref={forwardCanvasRef}
+          className="echCanvasRenderer"
+          width={width * this.devicePixelRatio}
+          height={height * this.devicePixelRatio}
+          style={{
+            width,
+            height,
+          }}
+          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+          role="presentation"
+        >
+          <ScreenReaderSummary />
+          {!debug && <ScreenReaderCartesianTable />}
+        </canvas>
+        {debug && <ScreenReaderCartesianTable />}
+      </figure>
     );
   }
 }

@@ -31,6 +31,7 @@ import { LastValues } from '../utils/types';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 
 interface FormattedDefaultExtraValue {
+  xValue: number | string | null;
   raw: number | null;
   formatted: string | number | null;
   legendSizingLabel: string | number | null;
@@ -100,7 +101,6 @@ function getValues(dataSeries: DataSeries[]): Map<SeriesKey, { y0: number | null
   return allValues;
 }
 
-//[{label: 'bar', [formattedDefaultExtraValue, formattedDefaultExtraValue]}, {label: 'area', [formattedDefaultExtraValue]}]
 function computeScreenReaderValues(
   dataSeries: DataSeries[],
   values: Map<SeriesKey, LastValues[]>,
@@ -118,7 +118,7 @@ function computeScreenReaderValues(
   };
   values.forEach((lastValues, key) => {
     const [relevantDataSeries] = dataSeries.filter((series) => series.key === key);
-    const { specId } = relevantDataSeries;
+    const { specId, data } = relevantDataSeries;
     const banded = isDataSeriesBanded(relevantDataSeries);
     const spec = getSpecsById<BasicSeriesSpec>(specs, specId);
     const hasSingleSeries = dataSeries.length === 1;
@@ -133,12 +133,22 @@ function computeScreenReaderValues(
 
     const xScaleType = getXScaleTypeFromSpec(spec.xScaleType);
     const label = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes) : labelY1;
-    const defaultExtraValuesBySeries = lastValues.map((lastValue) => {
+    const defaultExtraValuesBySeries = lastValues.map((lastValue, index) => {
       const defaultExtra = banded
         ? getLegendExtra(true, xScaleType, formatter, 'y0', lastValue)
         : getLegendExtra(true, xScaleType, formatter, 'y1', lastValue);
-      return defaultExtra ?? { raw: null, formatted: null, legendSizingLabel: null };
+      //@ts-ignore will not accept that xValue does not exist off the result of getLegendExtra return from function
+      if (defaultExtra) defaultExtra.xValue = data[index].x;
+      return (
+        defaultExtra ?? {
+          xValue: data[index].x,
+          raw: null,
+          formatted: null,
+          legendSizingLabel: null,
+        }
+      );
     });
+    //@ts-ignore values is not accepting the mutation to getLegendExtra when adding the xValue
     seriesData = { label, values: defaultExtraValuesBySeries };
     items.push(seriesData);
   });

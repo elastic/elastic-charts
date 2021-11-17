@@ -65,6 +65,7 @@ const ScreenReaderCartesianTableComponent = ({
             {isSmallMultiple && <th scope="col">Small multiple title</th>}
             <th scope="col">Label</th>
             <th scope="col">Value</th>
+            <th scope="col">X Value</th>
           </tr>
         </thead>
 
@@ -74,6 +75,7 @@ const ScreenReaderCartesianTableComponent = ({
               <tr key={Math.random()} ref={rowLimit === index ? tableRowRef : undefined} tabIndex={-1}>
                 <th scope="row">{label}</th>
                 <td>{values[count].formatted ?? values[count].raw}</td>
+                <td>{values[count].xValue}</td>
               </tr>
             );
           })}
