@@ -53,7 +53,8 @@ interface DebugStateBase {
 /** @public */
 export type DebugStateValue = Pick<GeometryValue, 'x' | 'y' | 'mark'>;
 
-interface DebugStateLineConfig {
+/**@public */
+export interface DebugStateLineConfig {
   visible: boolean;
   path: string;
   points: DebugStateValue[];

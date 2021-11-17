@@ -23,6 +23,7 @@ export {
   DebugStateAxes,
   DebugStateBar,
   DebugStateLegend,
+  DebugStateLineConfig,
 } from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';
@@ -71,10 +72,11 @@ export { DARK_THEME } from './utils/themes/dark_theme';
 // partition
 export * from './chart_types/partition_chart/layout/types/viewmodel_types';
 export * from './chart_types/partition_chart/layout/utils/group_by_rollup';
+export { AnimKeyframe } from './chart_types/partition_chart/layout/types/config_types';
 
 // heatmap
 export { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
-export { SizeRatio } from './common/geometry';
+export { SizeRatio, TimeMs } from './common/geometry';
 export { TextAlign, TextBaseline } from './common/text_utils';
 export { Config as HeatmapConfig } from './chart_types/heatmap/layout/types/config_types';
 export { ColorBand, HeatmapBandsColorScale } from './chart_types/heatmap/specs/heatmap';

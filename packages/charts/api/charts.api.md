@@ -42,6 +42,20 @@ export interface AngleFromTo {
     x1: Radian;
 }
 
+// @alpha (undocumented)
+export interface AnimKeyframe {
+    // Warning: (ae-forgotten-export) The symbol "EasingFunction" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    easingFunction: EasingFunction;
+    // Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    keyframeConfig: Partial<StaticConfig>;
+    // (undocumented)
+    time: number;
+}
+
 // @public (undocumented)
 export type AnnotationClickListener = (annotations: {
     rects: RectAnnotationEvent[];
@@ -650,6 +664,18 @@ export interface DebugStateLegend {
 
 // @public (undocumented)
 export interface DebugStateLine extends DebugStateBase, DebugStateLineConfig {
+}
+
+// @public (undocumented)
+export interface DebugStateLineConfig {
+    // (undocumented)
+    path: string;
+    // (undocumented)
+    points: DebugStateValue[];
+    // (undocumented)
+    visible: boolean;
+    // (undocumented)
+    visiblePoints: boolean;
 }
 
 // @public (undocumented)
@@ -1505,8 +1531,6 @@ export type PartialTheme = RecursivePartial<Theme>;
 // @public (undocumented)
 export const Partition: React_2.FunctionComponent<SpecRequiredProps_7 & SpecOptionalProps_7>;
 
-// Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export interface PartitionConfig extends StaticConfig {
     // @alpha (undocumented)
@@ -2248,6 +2272,9 @@ export type TickStyle = StrokeStyle & Visible & {
 export function timeFormatter(format: string): TickFormatter;
 
 // @public (undocumented)
+export type TimeMs = number;
+
+// @public (undocumented)
 export interface TimeScale {
     // (undocumented)
     type: typeof ScaleType.Time;
@@ -2525,12 +2552,6 @@ export interface YDomainBase {
 
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
-
-// Warnings were encountered during analysis:
-//
-// src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
-// src/state/types.ts:70:5 - (ae-forgotten-export) The symbol "DebugStateLineConfig" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
