@@ -73,9 +73,10 @@ const ScreenReaderCartesianTableComponent = ({
           {cartesianData.data.map(({ label, values }, index) => {
             return (
               <tr key={Math.random()} ref={rowLimit === index ? tableRowRef : undefined} tabIndex={-1}>
+                {isSmallMultiple && <th scope="row">{values[count].smPanelTitle}</th>}
                 <th scope="row">{label}</th>
                 <td>{values[count].formatted ?? values[count].raw}</td>
-                <td>{values[count].xValue}</td>
+                {values[count].xValue && <td>{values[count].xValue}</td>}
               </tr>
             );
           })}

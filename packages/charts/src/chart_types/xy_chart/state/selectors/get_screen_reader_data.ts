@@ -14,7 +14,7 @@ import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_mul
 import { Rotation } from '../../../../utils/common';
 import { BandedAccessorType } from '../../../../utils/geometry';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from '../../../xy_chart/state/selectors/get_specs';
-import { getBandedLegendItemLabel, getLegendExtra, getPostfix } from '../../legend/legend';
+import { getBandedLegendItemLabel, getPostfix } from '../../legend/legend';
 import { getXScaleTypeFromSpec } from '../../scales/get_api_scales';
 import { defaultTickFormatter } from '../../utils/axis_utils';
 import {
@@ -24,14 +24,15 @@ import {
   isDataSeriesBanded,
   XYChartSeriesIdentifier,
 } from '../../utils/series';
-import { AxisSpec, BasicSeriesSpec, StackMode } from '../../utils/specs';
+import { AxisSpec, BasicSeriesSpec, StackMode, TickFormatterOptions } from '../../utils/specs';
 import { getLastValues } from '../utils/get_last_value';
 import { getSpecsById, getAxesSpecForSpecId } from '../utils/spec';
 import { LastValues } from '../utils/types';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 
 interface FormattedDefaultExtraValue {
-  xValue: number | string | null;
+  xValue?: number | string | null;
+  smPanelTitle?: string | number;
   raw: number | null;
   formatted: string | number | null;
   legendSizingLabel: string | number | null;
@@ -79,6 +80,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
   },
 );
 
+/**@internal */
 function getValues(dataSeries: DataSeries[]): Map<SeriesKey, { y0: number | null; y1: number | null }[]> {
   const allValues: Map<SeriesKey, { y0: any; y1: number | null }[]> = new Map();
   dataSeries.forEach((series) => {
@@ -101,6 +103,37 @@ function getValues(dataSeries: DataSeries[]): Map<SeriesKey, { y0: number | null
   return allValues;
 }
 
+/**
+ * This is similar to the getLegendExtra function and should return the same values
+ * @param xScaleType
+ * @param formatter
+ * @param key
+ * @param lastValue
+ * @param xValue
+ * @param smPanelTitle
+ * @returns formattedDefaultExtraValue interface with the value, xValue, small multiple title to pull off into a data table
+ */
+/** @internal */
+function getValueData(
+  xScaleType: ScaleType,
+  formatter: (value: any, options?: TickFormatterOptions | undefined) => string,
+  key: keyof LastValues,
+  lastValue: LastValues,
+  xValue?: string | number,
+  smPanelTitle?: string | number,
+): FormattedDefaultExtraValue {
+  const rawValue = (lastValue && lastValue[key]) ?? null;
+  const formattedValue = rawValue !== null ? formatter(rawValue) : null;
+
+  return {
+    raw: rawValue !== null ? rawValue : null,
+    formatted: xScaleType === ScaleType.Ordinal ? null : formattedValue,
+    legendSizingLabel: formattedValue,
+    xValue: xValue,
+    smPanelTitle: smPanelTitle ?? undefined,
+  };
+}
+
 function computeScreenReaderValues(
   dataSeries: DataSeries[],
   values: Map<SeriesKey, LastValues[]>,
@@ -118,7 +151,7 @@ function computeScreenReaderValues(
   };
   values.forEach((lastValues, key) => {
     const [relevantDataSeries] = dataSeries.filter((series) => series.key === key);
-    const { specId, data } = relevantDataSeries;
+    const { specId, data, smVerticalAccessorValue, smHorizontalAccessorValue } = relevantDataSeries;
     const banded = isDataSeriesBanded(relevantDataSeries);
     const spec = getSpecsById<BasicSeriesSpec>(specs, specId);
     const hasSingleSeries = dataSeries.length === 1;
@@ -135,20 +168,32 @@ function computeScreenReaderValues(
     const label = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes) : labelY1;
     const defaultExtraValuesBySeries = lastValues.map((lastValue, index) => {
       const defaultExtra = banded
-        ? getLegendExtra(true, xScaleType, formatter, 'y0', lastValue)
-        : getLegendExtra(true, xScaleType, formatter, 'y1', lastValue);
-      //@ts-ignore will not accept that xValue does not exist off the result of getLegendExtra return from function
-      if (defaultExtra) defaultExtra.xValue = data[index].x;
+        ? getValueData(
+            xScaleType,
+            formatter,
+            'y0',
+            lastValue,
+            data[index] ? data[index].x : undefined,
+            smVerticalAccessorValue ?? smHorizontalAccessorValue,
+          )
+        : getValueData(
+            xScaleType,
+            formatter,
+            'y1',
+            lastValue,
+            data[index] ? data[index].x : undefined,
+            smVerticalAccessorValue ?? smHorizontalAccessorValue,
+          );
+
       return (
         defaultExtra ?? {
-          xValue: data[index].x,
+          xValue: data[index] ? data[index].x : undefined,
           raw: null,
           formatted: null,
           legendSizingLabel: null,
         }
       );
     });
-    //@ts-ignore values is not accepting the mutation to getLegendExtra when adding the xValue
     seriesData = { label, values: defaultExtraValuesBySeries };
     items.push(seriesData);
   });
