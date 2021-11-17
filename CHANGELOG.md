@@ -1,3 +1,11 @@
+## [39.0.2](https://github.com/elastic/elastic-charts/compare/v39.0.1...v39.0.2) (2021-11-17)
+
+
+### Bug Fixes
+
+* align axis tick formatter logic ([#1482](https://github.com/elastic/elastic-charts/issues/1482)) ([1bd30b9](https://github.com/elastic/elastic-charts/commit/1bd30b963d0136eb845381412737cb0e9dea4954)), closes [#1476](https://github.com/elastic/elastic-charts/issues/1476)
+* **deps:** update dependency @elastic/eui to ^41.1.0 ([#1477](https://github.com/elastic/elastic-charts/issues/1477)) ([20306a1](https://github.com/elastic/elastic-charts/commit/20306a13bd1d7a3f021e8509a79099edccdb82fd))
+
 ## [39.0.1](https://github.com/elastic/elastic-charts/compare/v39.0.0...v39.0.1) (2021-11-15)
 
 
