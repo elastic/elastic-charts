@@ -8,7 +8,7 @@
 
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { Pixels } from '../common/geometry';
-import { LineAnnotationDatum, RectAnnotationDatum } from '../specs';
+import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../specs';
 import type { Position } from '../utils/common';
 import type { GeometryValue } from '../utils/geometry';
 import { LineAnnotationStyle, RectAnnotationStyle } from '../utils/themes/theme';
@@ -44,7 +44,8 @@ export interface DebugStateLegend {
   items: DebugStateLegendItem[];
 }
 
-interface DebugStateBase {
+/** @public */
+export interface DebugStateBase {
   key: string;
   name: string;
   color: string;
@@ -107,12 +108,11 @@ export type PartitionDebugState = {
 
 /** @public */
 export type DebugStateAnnotations = {
-  id?: string;
-  color?: Partial<RectAnnotationStyle | LineAnnotationStyle>;
-  // API Extractor fails on AnnotationType
-  type?: 'line' | 'rectangle';
+  id: string;
+  style: RectAnnotationStyle | LineAnnotationStyle;
+  type: typeof AnnotationType.Line | typeof AnnotationType.Rectangle;
   domainType?: 'xDomain' | 'yDomain';
-  data?: LineAnnotationDatum | RectAnnotationDatum;
+  data: LineAnnotationDatum | RectAnnotationDatum;
 };
 
 /**

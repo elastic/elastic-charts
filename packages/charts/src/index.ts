@@ -24,6 +24,9 @@ export {
   DebugStateBar,
   DebugStateLegend,
   DebugStateLineConfig,
+  DebugStateAxis,
+  DebugStateBase,
+  DebugStateLegendItem,
 } from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';

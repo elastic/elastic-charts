@@ -619,11 +619,11 @@ export interface DebugState {
 
 // @public (undocumented)
 export type DebugStateAnnotations = {
-    id?: string;
-    color?: Partial<RectAnnotationStyle | LineAnnotationStyle>;
-    type?: 'line' | 'rectangle';
+    id: string;
+    style: RectAnnotationStyle | LineAnnotationStyle;
+    type: typeof AnnotationType.Line | typeof AnnotationType.Rectangle;
     domainType?: 'xDomain' | 'yDomain';
-    data?: LineAnnotationDatum | RectAnnotationDatum;
+    data: LineAnnotationDatum | RectAnnotationDatum;
 };
 
 // @public (undocumented)
@@ -637,16 +637,31 @@ export type DebugStateArea = Omit<DebugStateLine, 'points' | 'visiblePoints'> & 
 
 // @public (undocumented)
 export interface DebugStateAxes {
-    // Warning: (ae-forgotten-export) The symbol "DebugStateAxis" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     x: DebugStateAxis[];
     // (undocumented)
     y: DebugStateAxis[];
 }
 
-// Warning: (ae-forgotten-export) The symbol "DebugStateBase" needs to be exported by the entry point index.d.ts
-//
+// @public (undocumented)
+export interface DebugStateAxis {
+    // (undocumented)
+    gridlines: {
+        y: number;
+        x: number;
+    }[];
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    labels: string[];
+    // (undocumented)
+    position: Position;
+    // (undocumented)
+    title?: string;
+    // (undocumented)
+    values: any[];
+}
+
 // @public (undocumented)
 export type DebugStateBar = DebugStateBase & {
     visible: boolean;
@@ -655,11 +670,29 @@ export type DebugStateBar = DebugStateBase & {
 };
 
 // @public (undocumented)
+export interface DebugStateBase {
+    // (undocumented)
+    color: string;
+    // (undocumented)
+    key: string;
+    // (undocumented)
+    name: string;
+}
+
+// @public (undocumented)
 export interface DebugStateLegend {
-    // Warning: (ae-forgotten-export) The symbol "DebugStateLegendItem" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     items: DebugStateLegendItem[];
+}
+
+// @public (undocumented)
+export interface DebugStateLegendItem {
+    // (undocumented)
+    color: string;
+    // (undocumented)
+    key: string;
+    // (undocumented)
+    name: string;
 }
 
 // @public (undocumented)

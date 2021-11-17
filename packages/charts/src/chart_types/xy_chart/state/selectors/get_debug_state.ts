@@ -274,7 +274,7 @@ function getAnnotationsState(annotationSpecs: AnnotationSpec[]): DebugStateAnnot
     return annotation.dataValues.map((dataValue) => ({
       data: dataValue,
       id: annotation.id,
-      color:
+      style:
         annotation.annotationType === AnnotationType.Line
           ? mergeWithDefaultAnnotationLine(annotation?.style)
           : mergeWithDefaultAnnotationRect(annotation?.style),
