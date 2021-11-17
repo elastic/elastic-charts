@@ -185,7 +185,7 @@ export class MockSeriesSpec {
     },
     xAccessor: ({ x }: { x: string | number }) => x,
     yAccessor: ({ y }: { y: string | number }) => y,
-    xScaleType: X_SCALE_DEFAULT.type,
+    xScale: { type: X_SCALE_DEFAULT.type },
     valueAccessor: ({ value }: { value: string | number }) => value,
     valueFormatter: (value: number) => `${value}`,
     xSortPredicate: Predicate.AlphaAsc,

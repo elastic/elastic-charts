@@ -9,6 +9,7 @@
 import classNames from 'classnames';
 import React, { KeyboardEventHandler, MouseEventHandler, useCallback } from 'react';
 
+import { isRTLString } from '../../utils/common';
 import { LegendLabelOptions } from '../../utils/themes/theme';
 
 interface LabelProps {
@@ -38,6 +39,7 @@ export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }
     [onToggle],
   );
 
+  const dir = isRTLString(label) ? 'rtl' : 'ltr'; // forced for individual labels in case mixed charset
   const title = options.maxLines > 0 ? label : ''; // full text already visible
   const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
 
@@ -47,6 +49,7 @@ export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }
     <div
       role="button"
       tabIndex={0}
+      dir={dir}
       className={labelClassNames}
       title={title}
       onClick={onClick}
@@ -60,7 +63,7 @@ export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }
       {label}
     </div>
   ) : (
-    <div className={labelClassNames} title={label} style={clampStyles}>
+    <div dir={dir} className={labelClassNames} title={label} style={clampStyles}>
       {label}
     </div>
   );

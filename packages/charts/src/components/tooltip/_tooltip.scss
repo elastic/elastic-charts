@@ -1,3 +1,5 @@
+@import '../mixins';
+
 .echTooltip {
   @include euiToolTipStyle;
   @include euiFontSizeXS;
@@ -46,7 +48,7 @@
   }
 
   &__label {
-    hyphens: auto;
+    @include wrapText;
     min-width: 1px;
     flex: 1 1 auto;
   }
@@ -56,6 +58,7 @@
     text-align: right;
     font-feature-settings: 'tnum';
     margin-left: $euiSizeS;
+    direction: ltr;
   }
 
   &__rowHighlighted {
@@ -64,5 +67,26 @@
 
   &--hidden {
     opacity: 0;
+  }
+
+  &[dir='rtl'] {
+    .echTooltip {
+      &__item {
+        &--container {
+          padding: 3px;
+          padding-right: 0;
+        }
+
+        &--backgroundColor {
+          margin-right: 0;
+          margin-left: 3px;
+        }
+      }
+
+      &__value {
+        margin-left: 0;
+        margin-right: $euiSizeS;
+      }
+    }
   }
 }

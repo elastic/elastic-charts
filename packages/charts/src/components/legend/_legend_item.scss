@@ -1,3 +1,5 @@
+@import '../mixins';
+
 $legendItemVerticalPadding: $echLegendRowGap / 2;
 $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
 
@@ -16,11 +18,19 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     height: $legendItemHeight;
   }
 
-  > *:not(.background) {
+  &:not([dir='rtl']) > *:not(.background) {
     margin-left: $euiSizeXS;
 
     &:last-child:not(.echLegendItem__extra) {
       margin-right: $euiSizeXS;
+    }
+  }
+
+  &[dir='rtl'] > *:not(.background) {
+    margin-right: $euiSizeXS;
+
+    &:last-child:not(.echLegendItem__extra) {
+      margin-left: $euiSizeXS;
     }
   }
 
@@ -73,6 +83,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     vertical-align: baseline;
     letter-spacing: unset;
     align-items: center;
+    @include wrapText;
 
     &--singleline {
       @include euiTextTruncate;
@@ -80,8 +91,6 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
 
     // div to prevent changing to button
     &--multiline:is(div) {
-      hyphens: auto;
-      overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2; // number of lines to show, overridden in element styles
@@ -100,6 +109,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     margin-left: $euiSizeXS;
     font-feature-settings: 'tnum';
     letter-spacing: unset;
+    direction: ltr;
   }
 
   &--vertical {
@@ -118,5 +128,13 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
 
   &--hidden {
     color: $euiColorDarkShade;
+  }
+
+  &[dir='rtl'] {
+    .echLegendItem {
+      &__label {
+        text-align: right;
+      }
+    }
   }
 }
