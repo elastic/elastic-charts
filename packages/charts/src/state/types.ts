@@ -8,8 +8,10 @@
 
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { Pixels } from '../common/geometry';
+import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../specs';
 import type { Position } from '../utils/common';
 import type { GeometryValue } from '../utils/geometry';
+import { LineAnnotationStyle, RectAnnotationStyle } from '../utils/themes/theme';
 
 /** @public */
 export interface DebugStateAxis {
@@ -42,7 +44,8 @@ export interface DebugStateLegend {
   items: DebugStateLegendItem[];
 }
 
-interface DebugStateBase {
+/** @public */
+export interface DebugStateBase {
   key: string;
   name: string;
   color: string;
@@ -51,7 +54,8 @@ interface DebugStateBase {
 /** @public */
 export type DebugStateValue = Pick<GeometryValue, 'x' | 'y' | 'mark'>;
 
-interface DebugStateLineConfig {
+/**@public */
+export interface DebugStateLineConfig {
   visible: boolean;
   path: string;
   points: DebugStateValue[];
@@ -102,6 +106,15 @@ export type PartitionDebugState = {
   partitions: Array<SinglePartitionDebugState>;
 };
 
+/** @public */
+export type DebugStateAnnotations = {
+  id: string;
+  style: RectAnnotationStyle | LineAnnotationStyle;
+  type: typeof AnnotationType.Line | typeof AnnotationType.Rectangle;
+  domainType?: 'xDomain' | 'yDomain';
+  data: LineAnnotationDatum | RectAnnotationDatum;
+};
+
 /**
  * Describes _visible_ chart state for use in functional tests
  *
@@ -114,6 +127,7 @@ export interface DebugState {
   areas?: DebugStateArea[];
   lines?: DebugStateLine[];
   bars?: DebugStateBar[];
+  annotations?: DebugStateAnnotations[];
   /** Heatmap chart debug state */
   heatmap?: HeatmapDebugState;
   partition?: PartitionDebugState[];

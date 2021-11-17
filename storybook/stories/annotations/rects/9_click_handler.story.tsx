@@ -27,15 +27,19 @@ import {
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 
 import { useBaseTheme } from '../../../use_base_theme';
+import { debugstateLogger } from '../../utils/debug_state_logger';
 
 export const Example = () => {
   const onAnnotationClick = boolean('onAnnotationClick listener', true);
   const onElementClick = boolean('onElementClick listener', true);
   const typeOfSeries = select('series type', ['line', 'bar'], 'bar');
+  const debugState = boolean('Enable debug state', false);
 
   return (
     <Chart>
       <Settings
+        onRenderChange={debugstateLogger}
+        debugState={debugState}
         baseTheme={useBaseTheme()}
         onAnnotationClick={onAnnotationClick ? action('onAnnotationClick') : undefined}
         onElementClick={onElementClick ? action('onElementClick') : undefined}
