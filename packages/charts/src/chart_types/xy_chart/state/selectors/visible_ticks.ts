@@ -15,7 +15,7 @@ import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calcula
 import { isRTLString, Position, Rotation } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
-import { rasters, TimeBin, TimeRaster } from '../../axes/timeslip/rasters';
+import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisTick, defaultTickFormatter, isXDomain, TextDirection, TickLabelBounds } from '../../utils/axis_utils';
 import { getPanelSize } from '../../utils/panel';
@@ -37,11 +37,12 @@ import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 export type Projection = { ticks: AxisTick[]; labelBox: TickLabelBounds; scale: Scale<string | number> };
 
 type Projections = Map<AxisId, Projection>;
+type LabelFormatter = (d: number | string, ...otherArgs: unknown[]) => string;
+type AxisTickFormatOptions = TickFormatterOptions & {
+  labelFormat?: LabelFormatter;
+};
 
 const adaptiveTickCount = true;
-const MAX_TIME_TICK_COUNT = 50; // this doesn't do much for narrow charts, but limits tick count to a maximum on wider ones
-const MAX_TIME_GRID_COUNT = 12;
-const WIDTH_FUDGE = 1.05; // raster bin widths are sometimes approximate, but there's no raster that's just 5% denser/sparser, so it's safe
 
 function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
   const horizontal = isHorizontalAxis(axisPosition);
@@ -63,25 +64,23 @@ export function generateTicks(
   scale: Scale<number | string>,
   ticks: (number | string)[],
   offset: number,
-  fallBackTickFormatter: TickFormatter,
-  tickFormatOptions: TickFormatterOptions & { labelFormat?: (d: string | number, ...otherArgs: unknown[]) => string },
+  tickFormatOptions: AxisTickFormatOptions,
+  tickFormatter: TickFormatter,
+  labelFormatter: LabelFormatter | TickFormatter,
   layer: number | undefined,
-  detailedLayer = 0,
-  showGrid = true,
+  detailedLayer: number,
+  showGrid: boolean,
 ): AxisTick[] {
-  const axisLabelFormat =
-    tickFormatOptions.labelFormat ?? axisSpec.labelFormat ?? axisSpec.tickFormat ?? fallBackTickFormatter;
-  const labelFormat = axisSpec.tickFormat ?? fallBackTickFormatter;
   const getDirection = getDirectionFn(scale);
   return ticks.map<AxisTick>((value) => {
     const domainClampedValue =
       typeof value === 'number' && typeof scale.domain[0] === 'number' ? Math.max(scale.domain[0], value) : value;
-    const label = labelFormat(value, tickFormatOptions);
+    const label = labelFormatter(value, tickFormatOptions);
     return {
       value,
-      label,
       domainClampedValue,
-      axisTickLabel: axisLabelFormat(value, tickFormatOptions),
+      label,
+      axisTickLabel: label,
       position: (scale.scale(value) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
       domainClampedPosition: (scale.scale(domainClampedValue) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
       layer,
@@ -100,7 +99,7 @@ function getVisibleTicks(
   rotationOffset: number,
   scale: Scale<number | string>,
   enableHistogramMode: boolean,
-  tickFormatOptions: TickFormatterOptions & { labelFormat?: (d: number | string, ...otherArgs: unknown[]) => string },
+  tickFormatOptions: AxisTickFormatOptions,
   layer: number | undefined,
   detailedLayer: number,
   ticks: (number | string)[],
@@ -157,8 +156,9 @@ function getVisibleTicks(
           scale,
           ticks,
           offset,
-          fallBackTickFormatter,
           tickFormatOptions,
+          tickFormatter,
+          labelFormatter,
           layer,
           detailedLayer,
           showGrid,
@@ -166,7 +166,8 @@ function getVisibleTicks(
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
-  return showOverlappingLabels || isMultilayerTimeAxis
+  const bypassOverlapCheck = showOverlappingLabels || isMultilayerTimeAxis;
+  return bypassOverlapCheck
     ? allTicks
     : [...allTicks]
         .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
@@ -238,22 +239,6 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
   getVisibleTickSets,
 );
 
-const notTooDense = (
-  domainFrom: number,
-  domainTo: number,
-  binWidth: number,
-  cartesianWidth: number,
-  maxTickCount = MAX_TIME_TICK_COUNT,
-) => (raster: TimeRaster<TimeBin>) => {
-  const domainInSeconds = domainTo - domainFrom;
-  const pixelsPerSecond = cartesianWidth / domainInSeconds;
-  return (
-    pixelsPerSecond > raster.minimumPixelsPerSecond &&
-    raster.approxWidthInMs * WIDTH_FUDGE >= binWidth &&
-    (domainInSeconds * 1000) / maxTickCount <= raster.approxWidthInMs
-  );
-};
-
 function getVisibleTickSets(
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
   joinedAxesData: Map<AxisId, JoinedAxisData>,
@@ -318,28 +303,6 @@ function getVisibleTickSets(
             })
           : yDomain && new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, integersOnly });
 
-      const fillLayerTimeslip = (
-        layer: number,
-        detailedLayer: number,
-        timeTicks: number[],
-        labelFormat: (n: number) => string,
-        showGrid: boolean,
-      ) => {
-        const scale = getScale(100); // 10 is just a dummy value, the scale is only needed for its non-tick props like step, bandwidth, ...
-        if (!scale) throw new Error('Scale generation for the multilayer axis failed');
-        return {
-          entry: getMeasuredTicks(
-            scale,
-            timeTicks,
-            layer,
-            detailedLayer,
-            labelFormat as (d: number | string) => string,
-            showGrid,
-          ),
-          fallbackAskedTickCount: NaN,
-        };
-      };
-
       const fillLayer = (maxTickCountForLayer: number) => {
         let fallbackAskedTickCount = 2;
         let fallbackReceivedTickCount = Infinity;
@@ -388,57 +351,17 @@ function getVisibleTickSets(
       };
 
       if (isMultilayerTimeAxis) {
-        const rasterSelector = rasters({ minimumTickPixelDistance: 24, locale: 'en-US' }, xDomain.timeZone);
-        const domainValues = domain.domain; // todo consider a property or object type rename
-        const domainFromS = Number((domain && domainValues[0]) || NaN) / 1000; // todo rely on a type guard or check rather than conversion
-        const extendByOneBin = isX && xDomain.isBandScale && enableHistogramMode;
-        const binWidth = xDomain.minInterval;
-        const domainExtension = extendByOneBin ? binWidth : 0;
-        const domainToS = (((domain && Number(domainValues[domainValues.length - 1])) || NaN) + domainExtension) / 1000;
-        const layers = rasterSelector(notTooDense(domainFromS, domainToS, binWidth, Math.abs(range[1] - range[0])));
-        let layerIndex = -1;
+        const scale = getScale(0); // the scale is only needed for its non-tick props like step, bandwidth, ...
+        if (!scale) throw new Error('Scale generation for the multilayer axis failed');
         return acc.set(
           axisId,
-          layers.reduce(
-            (combinedEntry: { ticks: AxisTick[] }, l: TimeRaster<TimeBin>, detailedLayerIndex) => {
-              if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
-              if (layerIndex >= timeAxisLayerCount) return combinedEntry;
-              const binWidthS = binWidth / 1000;
-              const { entry } = fillLayerTimeslip(
-                layerIndex,
-                detailedLayerIndex,
-                [...l.binStarts(domainFromS - binWidthS, domainToS + binWidthS)]
-                  .filter((b) => b.nextTimePointSec > domainFromS && b.timePointSec <= domainToS)
-                  .map((b) => 1000 * b.timePointSec),
-                !l.labeled
-                  ? () => ''
-                  : layerIndex === timeAxisLayerCount - 1
-                  ? l.detailedLabelFormat
-                  : l.minorTickLabelFormat,
-                notTooDense(domainFromS, domainToS, binWidth, Math.abs(range[1] - range[0]), MAX_TIME_GRID_COUNT)(l),
-              );
-              const minLabelGap = 4;
-
-              const lastTick = entry.ticks[entry.ticks.length - 1];
-              if (lastTick && lastTick.position + entry.labelBox.maxLabelBboxWidth > range[1]) {
-                lastTick.axisTickLabel = '';
-              }
-
-              return {
-                ...entry,
-                ...combinedEntry,
-                ticks: (combinedEntry.ticks || []).concat(
-                  entry.ticks.filter(
-                    (tick, i, a) =>
-                      i > 0 ||
-                      !a[1] ||
-                      a[1].domainClampedPosition - tick.domainClampedPosition >=
-                        entry.labelBox.maxLabelBboxWidth + minLabelGap,
-                  ),
-                ),
-              };
-            },
-            { ticks: [] }, // this should turn into a full Projection
+          multilayerAxisEntry(
+            xDomain,
+            isX && xDomain.isBandScale && enableHistogramMode,
+            range,
+            timeAxisLayerCount,
+            scale,
+            getMeasuredTicks,
           ),
         );
       }
