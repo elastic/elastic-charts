@@ -481,6 +481,22 @@ export function isUniqueArray<B, T>(arr: B[], extractor?: (value: B) => T) {
 }
 
 /**
+ * Returns true if _most_ chars in a string are rtl, exluding spaces and numbers
+ * @internal
+ */
+export function isRTLString(s: string, ratio: number = 0.5) {
+  const stripped = s.replace(/[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]|\s|\d/gi, '');
+  return stripped.length / s.replace(/\s|\d/gi, '').length < ratio;
+}
+
+/** @internal */
+export function hasMostlyRTLItems<T extends string>(items: T[], ratio: number = 0.5): boolean {
+  const filteredItems = items.filter(Boolean);
+  const rtlItemCount = filteredItems.filter((s) => isRTLString(s)).length;
+  return rtlItemCount / filteredItems.length > ratio;
+}
+
+/**
  * Returns defined value type if not null nor undefined
  *
  * @internal
@@ -589,3 +605,15 @@ export function safeFormat<V = any>(value: V, formatter?: (value: V) => string):
 /** @internal */
 export const range = (from: number, to: number, step: number): number[] =>
   Array.from({ length: Math.abs(Math.round((to - from) / (step || 1))) }, (_, i) => from + i * step);
+
+const oppositeAlignmentMap: Record<string, HorizontalAlignment | VerticalAlignment> = {
+  [HorizontalAlignment.Left]: HorizontalAlignment.Right,
+  [HorizontalAlignment.Right]: HorizontalAlignment.Left,
+  [VerticalAlignment.Top]: VerticalAlignment.Bottom,
+  [VerticalAlignment.Bottom]: VerticalAlignment.Top,
+};
+
+/** @internal */
+export function getOppositeAlignment<A extends HorizontalAlignment | VerticalAlignment>(alignment: A): A {
+  return (oppositeAlignmentMap[alignment] as A) ?? alignment;
+}

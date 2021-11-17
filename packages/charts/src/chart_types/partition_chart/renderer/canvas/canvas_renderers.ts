@@ -10,13 +10,14 @@ import { colorToRgba, RGBATupleToString } from '../../../../common/color_library
 import { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { Pixels } from '../../../../common/geometry';
-import { cssFontShorthand } from '../../../../common/text_utils';
+import { cssFontShorthand, HorizontalAlignment } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { MIN_STROKE_WIDTH } from '../../../xy_chart/renderer/canvas/primitives/line';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
   QuadViewModel,
+  RowBox,
   RowSet,
   ShapeViewModel,
   TextRow,
@@ -28,19 +29,35 @@ import { isSunburst } from '../../layout/viewmodel/viewmodel';
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
 const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to avoid burnout in the middle of the pie when there are hundreds of pies
 
+const getCurrentRowX = (row: TextRow, horizontalAlignment: HorizontalAlignment, rotation: number) => {
+  // TODO account for text rotation if needed
+  const rowLength = Math.cos(rotation) * row.length;
+  const offset =
+    horizontalAlignment === HorizontalAlignment.left
+      ? -row.maximumLength / 2
+      : horizontalAlignment === HorizontalAlignment.right
+      ? row.maximumLength / 2 - rowLength
+      : -rowLength / 2;
+  return row.rowAnchorX + offset;
+};
+
+const getFillTextXOffset = (box: RowBox, rowLength: number, isRTL: boolean) => {
+  // TODO account for text rotation if needed
+  return isRTL ? rowLength - box.width / 2 - box.wordBeginning : box.width / 2 + box.wordBeginning;
+};
+
 function renderTextRow(
   ctx: CanvasRenderingContext2D,
-  { fontSize, fillTextColor, rotation, verticalAlignment, leftAlign, container, clipText }: RowSet,
+  { fontSize, fillTextColor, rotation, verticalAlignment, horizontalAlignment, container, clipText, isRTL }: RowSet,
   linkLabelTextColor: string,
 ) {
   return (currentRow: TextRow) => {
-    const crx = leftAlign
-      ? currentRow.rowAnchorX - currentRow.maximumLength / 2
-      : currentRow.rowAnchorX - (Math.cos(rotation) * currentRow.length) / 2;
+    const crx = getCurrentRowX(currentRow, horizontalAlignment, rotation);
     const cry = -currentRow.rowAnchorY + (Math.sin(rotation) * currentRow.length) / 2;
     if (!Number.isFinite(crx) || !Number.isFinite(cry)) {
       return;
     }
+
     withContext(ctx, () => {
       ctx.scale(1, -1);
       if (clipText) {
@@ -52,9 +69,12 @@ function renderTextRow(
       ctx.rotate(-rotation);
       ctx.fillStyle = fillTextColor ?? linkLabelTextColor;
       ctx.textBaseline = verticalAlignment;
+      ctx.direction = isRTL ? 'rtl' : 'ltr'; // used for mixed charsets
+
       currentRow.rowWords.forEach((box) => {
+        if (box.isValue) ctx.direction = 'ltr'; // force value text direction
         ctx.font = cssFontShorthand(box, fontSize);
-        ctx.fillText(box.text, box.width / 2 + box.wordBeginning, 0);
+        ctx.fillText(box.text, getFillTextXOffset(box, currentRow.length, isRTL), 0);
       });
       ctx.closePath();
     });
@@ -182,6 +202,17 @@ function renderFillOutsideLinks(
   });
 }
 
+function getLinkTextXOffset(
+  { textAlign, width, valueWidth, isRTL }: Pick<LinkLabelVM, 'textAlign' | 'width' | 'valueWidth' | 'isRTL'>,
+  labelValueGap: number,
+): [label: number, value: number] {
+  const isRightAligned = textAlign === HorizontalAlignment.right;
+  const multiplier = isRightAligned ? -1 : 1;
+  const isAligned = isRightAligned === isRTL;
+  const to = multiplier * (labelValueGap + (isAligned ? width : valueWidth));
+  return isAligned ? [0, to] : [to, 0];
+}
+
 function renderLinkLabels(
   ctx: CanvasRenderingContext2D,
   linkLabelFontSize: Pixels,
@@ -194,28 +225,34 @@ function renderLinkLabels(
   const labelValueGap = linkLabelFontSize / 2; // one en space
   withContext(ctx, () => {
     ctx.lineWidth = linkLabelLineWidth;
-    allLinkLabels.forEach(({ linkLabels, translate, textAlign, text, valueText, width, valueWidth }: LinkLabelVM) => {
-      // label lines
-      ctx.beginPath();
-      ctx.moveTo(...linkLabels[0]);
-      linkLabels.slice(1).forEach((point) => ctx.lineTo(...point));
-      ctx.strokeStyle = strokeColor ?? linkLineColor;
+    allLinkLabels.forEach(
+      ({ linkLabels, translate, textAlign, text, valueText, width, valueWidth, isRTL }: LinkLabelVM) => {
+        // label lines
+        ctx.beginPath();
+        ctx.moveTo(...linkLabels[0]);
+        linkLabels.slice(1).forEach((point) => ctx.lineTo(...point));
+        ctx.strokeStyle = strokeColor ?? linkLineColor;
+        ctx.stroke();
 
-      ctx.stroke();
-      withContext(ctx, () => {
-        ctx.translate(...translate);
-        ctx.scale(1, -1); // flip for text rendering not to be upside down
-        ctx.textAlign = textAlign;
-        // label text
-        ctx.fillStyle = labelColor;
-        ctx.font = cssFontShorthand(labelFontSpec, linkLabelFontSize);
-        ctx.fillText(text, textAlign === 'right' ? -valueWidth - labelValueGap : 0, 0);
-        // value text
-        ctx.fillStyle = valueColor;
-        ctx.font = cssFontShorthand(valueFontSpec, linkLabelFontSize);
-        ctx.fillText(valueText, textAlign === 'left' ? width + labelValueGap : 0, 0);
-      });
-    });
+        const [labelX, valueX] = getLinkTextXOffset({ textAlign, width, valueWidth, isRTL }, labelValueGap);
+
+        withContext(ctx, () => {
+          ctx.translate(...translate);
+          ctx.scale(1, -1); // flip for text rendering not to be upside down
+          ctx.textAlign = textAlign;
+          // label text
+          ctx.fillStyle = labelColor;
+          ctx.font = cssFontShorthand(labelFontSpec, linkLabelFontSize);
+          ctx.direction = isRTL ? 'rtl' : 'ltr'; // used for mixed charsets
+          ctx.fillText(text, labelX, 0);
+          // value text
+          ctx.fillStyle = valueColor;
+          ctx.font = cssFontShorthand(valueFontSpec, linkLabelFontSize);
+          ctx.direction = 'ltr'; // force value text direction
+          ctx.fillText(valueText, valueX, 0);
+        });
+      },
+    );
   });
 }
 

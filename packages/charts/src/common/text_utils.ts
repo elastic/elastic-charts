@@ -49,7 +49,7 @@ export type VerticalAlignments = Values<typeof VerticalAlignments>;
 /** @internal */
 export type Relation = Array<Datum>;
 /** @internal */
-export type TextMeasure = (fontSize: number, boxes: Box[]) => TextMetrics[];
+export type TextMeasure = (fontSize: number, boxes: Omit<Box, 'isValue'>[]) => TextMetrics[];
 
 /**
  * this doesn't include the font size, so it's more like a font face (?) - unfortunately all vague terms
@@ -76,6 +76,7 @@ export const TEXT_BASELINE = Object.freeze([
 /** @internal */
 export interface Box extends Font {
   text: string;
+  isValue: boolean;
 }
 
 /** @internal */
@@ -90,8 +91,8 @@ export function cssFontShorthand({ fontStyle, fontVariant, fontWeight, fontFamil
 
 /** @internal */
 export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
-  return (fontSize: number, boxes: Box[]): TextMetrics[] =>
-    boxes.map((box: Box) => {
+  return (fontSize, boxes) =>
+    boxes.map((box) => {
       ctx.font = cssFontShorthand(box, fontSize);
       return ctx.measureText(box.text);
     });
@@ -106,6 +107,15 @@ export const VerticalAlignments = Object.freeze({
   hanging: 'hanging' as const,
   ideographic: 'ideographic' as const,
 });
+
+/** @internal */
+export const HorizontalAlignment = Object.freeze({
+  left: 'left' as const,
+  center: 'center' as const,
+  right: 'right' as const,
+});
+/** @internal */
+export type HorizontalAlignment = Values<typeof HorizontalAlignment>;
 
 /** @internal */
 export function measureOneBoxWidth(measure: TextMeasure, fontSize: number, box: Box) {

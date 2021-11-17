@@ -12,12 +12,12 @@ import { AxisSpec, SettingsSpec, TickFormatter, TickFormatterOptions } from '../
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { Position, Rotation } from '../../../../utils/common';
+import { isRTLString, Position, Rotation } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
 import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import { AxisTick, defaultTickFormatter, isXDomain, TickLabelBounds } from '../../utils/axis_utils';
+import { AxisTick, defaultTickFormatter, isXDomain, TextDirection, TickLabelBounds } from '../../utils/axis_utils';
 import { getPanelSize } from '../../utils/panel';
 import { computeXScale } from '../../utils/scales';
 import { SeriesDomainsAndData } from '../utils/types';
@@ -52,6 +52,12 @@ function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, he
   return horizontal ? [flipped ? width : 0, flipped ? 0 : width] : [flipped ? 0 : height, flipped ? height : 0];
 }
 
+function getDirectionFn({ type }: Scale<number | string>): (label: string) => TextDirection {
+  return type === ScaleType.Ordinal
+    ? (label) => (isRTLString(label) ? 'rtl' : 'ltr') // depends on label
+    : () => 'ltr'; // always use ltr
+}
+
 /** @internal */
 export function generateTicks(
   axisSpec: AxisSpec,
@@ -65,19 +71,22 @@ export function generateTicks(
   detailedLayer: number,
   showGrid: boolean,
 ): AxisTick[] {
-  return ticks.map((value) => {
+  const getDirection = getDirectionFn(scale);
+  return ticks.map<AxisTick>((value) => {
     const domainClampedValue =
       typeof value === 'number' && typeof scale.domain[0] === 'number' ? Math.max(scale.domain[0], value) : value;
+    const label = labelFormatter(value, tickFormatOptions);
     return {
       value,
       domainClampedValue,
-      label: tickFormatter(value, tickFormatOptions),
-      axisTickLabel: labelFormatter(value, tickFormatOptions),
+      label,
+      axisTickLabel: label,
       position: (scale.scale(value) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
       domainClampedPosition: (scale.scale(domainClampedValue) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
       layer,
       detailedLayer,
       showGrid,
+      direction: getDirection(label),
     };
   });
 }
@@ -126,6 +135,7 @@ function getVisibleTicks(
             domainClampedPosition: (scale.scale(firstTickValue) || 0) + offset,
             layer: undefined, // no multiple layers with `singleValueScale`s
             detailedLayer: 0,
+            direction: 'rtl',
             showGrid,
           },
           {
@@ -137,6 +147,7 @@ function getVisibleTicks(
             domainClampedPosition: scale.bandwidth + halfPadding * 2,
             layer: undefined, // no multiple layers with `singleValueScale`s
             detailedLayer: 0,
+            direction: 'rtl',
             showGrid,
           },
         ]
