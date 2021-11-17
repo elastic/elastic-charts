@@ -44,7 +44,7 @@ import {
   getScaleForAxisSpec,
 } from './axis_utils';
 import { computeXScale } from './scales';
-import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
+import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID, TickFormatter } from './specs';
 
 const alignmentsDefault = { horizontal: HorizontalAlignment.Near, vertical: VerticalAlignment.Middle };
 
@@ -1349,6 +1349,8 @@ describe('Axis computational utils', () => {
     ]);
   });
   test('should show unique consecutive ticks if duplicateTicks is set to false', () => {
+    const tickFormat: TickFormatter = (d, options) =>
+      DateTime.fromMillis(d, { setZone: true, zone: options?.timeZone ?? 'utc+1' }).toFormat('HH:mm');
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
@@ -1360,8 +1362,7 @@ describe('Axis computational utils', () => {
       showOverlappingLabels: false,
       showOverlappingTicks: false,
       style,
-      tickFormat: (d, options) =>
-        DateTime.fromMillis(d, { setZone: true, zone: options?.timeZone ?? 'utc+1' }).toFormat('HH:mm'),
+      tickFormat,
       timeAxisLayerCount: 3,
     };
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
@@ -1383,8 +1384,8 @@ describe('Axis computational utils', () => {
       scale.ticks(),
       offset,
       tickFormatOption,
-      (v) => `${v}`,
-      (v: any) => `${v}`,
+      tickFormat,
+      tickFormat,
       0,
       0,
       true,
@@ -1440,8 +1441,8 @@ describe('Axis computational utils', () => {
         scale.ticks(),
         offset,
         tickFormatOption,
-        (v) => `${v}`,
-        (v: any) => `${v}`,
+        formatter,
+        formatter,
         0,
         0,
         true,
@@ -1592,8 +1593,8 @@ describe('Axis computational utils', () => {
         scale.ticks(),
         offset,
         tickFormatOption,
-        (v) => `${v}`,
-        (v: any) => `${v}`,
+        formatter,
+        formatter,
         0,
         0,
         true,
