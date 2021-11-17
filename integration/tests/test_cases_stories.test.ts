@@ -51,34 +51,4 @@ describe('Occlusion of Points outside of chart domain', () => {
       'http://localhost:9001/?path=/story/test-cases--test-points-outside-of-domain&knob-series%20type=areaknob-show%20y0Accessor=true',
     );
   });
-  it('should not display tooltip over point outside of domain', async () => {
-    await common.expectChartWithMouseAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/test-cases--test-points-outside-of-domain&knob-series%20type=line',
-      { left: 150, top: 180 },
-      {
-        screenshotSelector: '#story-root',
-        delay: 1000,
-      },
-    );
-  });
-  it('should not display tooltip over point outside of domain slightly more left', async () => {
-    await common.expectChartWithMouseAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/test-cases--test-points-outside-of-domain&knob-series%20type=line',
-      { left: 200, top: 180 },
-      {
-        screenshotSelector: '#story-root',
-        delay: 1000,
-      },
-    );
-  });
-  it('should not display tooltip over point outside of domain even more left', async () => {
-    await common.expectChartWithMouseAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/test-cases--test-points-outside-of-domain&knob-series%20type=line',
-      { left: 250, top: 180 },
-      {
-        screenshotSelector: '#story-root',
-        delay: 1000,
-      },
-    );
-  });
 });
