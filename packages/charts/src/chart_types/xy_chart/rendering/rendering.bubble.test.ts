@@ -402,7 +402,7 @@ describe('Rendering points - bubble', () => {
           value: { points },
         },
       ] = bubbles;
-      // will not render the 4th point that is out of x domain
+      // will not render the 4th point that is out of x domain, the 3rd point is not rendered due to the y Domain max of 1
       expect(points).toHaveLength(2);
       // will keep the 3rd point as an indexedGeometry
       expect(geometriesIndex.size).toEqual(3);

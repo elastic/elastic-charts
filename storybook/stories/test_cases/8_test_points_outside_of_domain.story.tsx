@@ -53,15 +53,6 @@ export const Example = () => {
           yAccessors={[1]}
           data={data}
         />
-      ) : typeOfSeries === 'area' && !showY0Accessor ? (
-        <AreaSeries
-          id="areas"
-          xScaleType={ScaleType.Linear}
-          yScaleType={ScaleType.Linear}
-          xAccessor={0}
-          yAccessors={[1]}
-          data={data}
-        />
       ) : (
         <AreaSeries
           id="areas"
@@ -69,7 +60,7 @@ export const Example = () => {
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
-          y0Accessors={[([, y]) => y - 1]}
+          y0Accessors={showY0Accessor ? [([, y]) => y - 1] : undefined}
           data={data}
         />
       )}
