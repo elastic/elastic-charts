@@ -1,3 +1,22 @@
+# [40.0.0](https://github.com/elastic/elastic-charts/compare/v39.0.2...v40.0.0) (2021-11-18)
+
+
+### Bug Fixes
+
+* **interactions:** remove the option for pixelRatio with png snapshot ([#1431](https://github.com/elastic/elastic-charts/issues/1431)) ([eebb069](https://github.com/elastic/elastic-charts/commit/eebb0697a0b9ec5a860feb687f5b52721850714b))
+* **xy:** occlude points outside of y domain ([#1475](https://github.com/elastic/elastic-charts/issues/1475)) ([3176f02](https://github.com/elastic/elastic-charts/commit/3176f02c2587522f5b057493b592dc3446315998))
+
+
+### Features
+
+* **annotations:** add annotations to DebugState ([#1434](https://github.com/elastic/elastic-charts/issues/1434)) ([c5ea600](https://github.com/elastic/elastic-charts/commit/c5ea60027299882cc1c05f9227e7e3204bb0ff71))
+* **heatmap:** add valueShown in heatmap debug state ([#1460](https://github.com/elastic/elastic-charts/issues/1460)) ([962e089](https://github.com/elastic/elastic-charts/commit/962e089fe61540dcd5ed3612d41d915c29b98d13))
+
+
+### BREAKING CHANGES
+
+* **interactions:** The getPNGSnapshot function no longer has an option for pixelRatio
+
 ## [39.0.2](https://github.com/elastic/elastic-charts/compare/v39.0.1...v39.0.2) (2021-11-17)
 
 
