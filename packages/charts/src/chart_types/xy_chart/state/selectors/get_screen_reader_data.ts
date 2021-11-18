@@ -41,7 +41,7 @@ interface FormattedDefaultExtraValue {
 /**@internal */
 export interface CartesianData {
   isSmallMultiple: boolean;
-  smallMultipleTitle?: string | number;
+  smallMultipleTitle: (string | number | undefined)[];
   xScaleType?: ScaleType;
   yScaleType?: ScaleType;
   hasAxes: boolean;
@@ -63,7 +63,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     if (specs.length === 0) {
       return {
         isSmallMultiple: false,
-        smallMultipleTitle: undefined,
+        smallMultipleTitle: [],
         xScaleType: undefined,
         yScaleType: undefined,
         hasAxes: false,
@@ -73,7 +73,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     }
     return {
       isSmallMultiple: isSmallMultiple ? true : false,
-      smallMultipleTitle: axis[0] ? axis[0].title : undefined,
+      smallMultipleTitle: getSmallMultipleTitle(axis),
       data: computeScreenReaderValues(formattedDataSeries, allValues, specs, axis, rotation),
       numberOfItemsInGroup: getLastValues(formattedDataSeries, xDomain).size,
       xScaleType: specs[0].xScaleType,
@@ -203,4 +203,10 @@ function computeScreenReaderValues(
     items.push(seriesData);
   });
   return items;
+}
+
+/**@internal */
+function getSmallMultipleTitle(axis: AxisSpec[]) {
+  if (axis.length === 0) return [];
+  return axis.length > 2 ? [axis[0].title, axis[1].title] : [axis[0].title ?? undefined] ?? [];
 }

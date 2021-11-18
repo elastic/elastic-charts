@@ -55,14 +55,18 @@ const ScreenReaderCartesianTableComponent = ({
 
   let countOfCol: number = 3;
   const totalColumns: number = isSmallMultiple ? (countOfCol += 3) : countOfCol;
-
   return (
     <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
       <table>
-        <caption>{tableCaption}</caption>
+        {tableCaption && <caption>{tableCaption}</caption>}
         <thead>
           <tr>
-            {isSmallMultiple && <th scope="col">Small multiple title - {cartesianData.smallMultipleTitle}</th>}
+            {isSmallMultiple && cartesianData.smallMultipleTitle.length === 2 && (
+              <th scope="col">{`Small multiple titles - ${cartesianData.smallMultipleTitle[0]} and ${cartesianData.smallMultipleTitle[1]}`}</th>
+            )}
+            {isSmallMultiple && cartesianData.smallMultipleTitle && (
+              <th scope="col">{`Small multiple title - ${cartesianData.smallMultipleTitle[0]}`}</th>
+            )}
             <th scope="col">Label</th>
             <th scope="col">Value</th>
             <th scope="col">X Value</th>
@@ -72,8 +76,21 @@ const ScreenReaderCartesianTableComponent = ({
         <tbody>
           {cartesianData.data.map(({ label, values }, index) => {
             return (
-              <tr key={Math.random()} ref={rowLimit === index ? tableRowRef : undefined} tabIndex={-1}>
-                {isSmallMultiple && <th scope="row">{values[count].smPanelTitle}</th>}
+              <tr
+                key={String(`screen-reader-row--${index}`)}
+                ref={rowLimit === index ? tableRowRef : undefined}
+                tabIndex={-1}
+              >
+                {isSmallMultiple && cartesianData.smallMultipleTitle.length === 2 && (
+                  <>
+                    <th scope="row" colSpan={2}>
+                      {values[count].smPanelTitle}
+                    </th>
+                  </>
+                )}
+                {isSmallMultiple && cartesianData.smallMultipleTitle.length === 1 && (
+                  <th scope="row">{values[count].smPanelTitle}</th>
+                )}
                 <th scope="row">{label}</th>
                 <td>{values[count].formatted ?? values[count].raw}</td>
                 {values[count].xValue && <td>{values[count].xValue}</td>}
@@ -99,6 +116,7 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   cartesianData: {
     isSmallMultiple: false,
+    smallMultipleTitle: [],
     hasAxes: false,
     data: [],
     numberOfItemsInGroup: 0,
