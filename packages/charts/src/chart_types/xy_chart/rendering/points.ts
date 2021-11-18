@@ -109,9 +109,10 @@ export function renderPoints(
         panel,
         orphan,
       };
+      const isInYDomain = yScale.isValueInDomain(valueAccessor(datum));
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
-      if (y !== null && yDefined(datum, valueAccessor) && !isDatumFilled(datum)) {
+      if (y !== null && yDefined(datum, valueAccessor) && isInYDomain && !isDatumFilled(datum)) {
         points.push(pointGeometry);
       }
     });

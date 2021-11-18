@@ -421,8 +421,8 @@ describe('Rendering points - line', () => {
           value: { points },
         },
       ] = lines;
-      // will not render the 4th point is out of the x domain
-      expect(points.length).toBe(3);
+      // will not render the 4th point is out of the x domain, will not keep the 3rd point which is out of the y Domain
+      expect(points.length).toBe(2);
       // will keep the 3rd point as an indexedGeometry
       expect(geometriesIndex.size).toEqual(3);
       expect(points).toMatchSnapshot();
