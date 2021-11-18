@@ -41,7 +41,6 @@ export const Example = () => {
         domain={{
           min: -2,
           max: NaN,
-          minInterval: 1,
         }}
       />
       {typeOfSeries === 'line' ? (
