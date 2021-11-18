@@ -726,7 +726,7 @@ Array [
 ]
 `;
 
-exports[`Rendering points - bubble Remove points datum is not in domain Should render 3 points 1`] = `
+exports[`Rendering points - bubble Remove points datum is not in domain Should render 2 points 1`] = `
 Array [
   Object {
     "color": "red",
@@ -843,64 +843,6 @@ Array [
     },
     "x": 50,
     "y": 0,
-  },
-  Object {
-    "color": "red",
-    "orphan": false,
-    "panel": Object {
-      "height": 100,
-      "left": 0,
-      "top": 0,
-      "width": 100,
-    },
-    "radius": 2,
-    "seriesIdentifier": Object {
-      "key": "groupId{__global__}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
-        1,
-      ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
-      "specId": "spec_1",
-      "splitAccessors": Map {},
-      "yAccessor": 1,
-    },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
-          255,
-          255,
-          255,
-          1,
-        ],
-      },
-      "shape": "circle",
-      "stroke": Object {
-        "color": Array [
-          255,
-          0,
-          0,
-          1,
-        ],
-        "width": 1,
-      },
-    },
-    "transform": Object {
-      "x": 0,
-      "y": 0,
-    },
-    "value": Object {
-      "accessor": "y1",
-      "datum": Array [
-        2,
-        10,
-      ],
-      "mark": null,
-      "x": 2,
-      "y": 10,
-    },
-    "x": 100,
-    "y": -900,
   },
 ]
 `;

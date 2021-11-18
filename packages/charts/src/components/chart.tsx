@@ -120,7 +120,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     // eslint-disable-next-line unicorn/no-object-as-default-parameter
     options = {
       backgroundColor: Colors.Transparent.keyword,
-      pixelRatio: 2,
     },
   ): {
     blobOrDataUrl: any;
