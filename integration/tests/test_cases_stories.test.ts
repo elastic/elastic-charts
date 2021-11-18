@@ -56,12 +56,12 @@ describe('Test cases stories', () => {
       });
     });
   });
-});
 
-describe('Data points outside of the configured Y domain', () => {
-  it('should not render points outside domain with line chart', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/test-cases--test-points-outside-of-domain&knob-series%20type=line',
-    );
+  describe('Data points outside of the configured Y domain', () => {
+    it('should not render points outside domain with line chart', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/test-cases--test-points-outside-of-domain&knob-series%20type=line',
+      );
+    });
   });
 });
