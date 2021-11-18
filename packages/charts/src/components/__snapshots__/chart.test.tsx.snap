@@ -97,7 +97,6 @@ exports[`Chart should render the legend name test 1`] = `
                         <ScreenReaderCartesianTableComponent a11ySettings={{...}} cartesianData={{...}} debug={true} dispatch={[Function: dispatch]}>
                           <div className=\\"echScreenReaderOnly echScreenReaderOnlyDebug echScreenReaderTable\\">
                             <table>
-                              <caption />
                               <thead>
                                 <tr>
                                   <th scope=\\"col\\">
