@@ -62,7 +62,7 @@ const ScreenReaderCartesianTableComponent = ({
         <caption>{tableCaption}</caption>
         <thead>
           <tr>
-            {isSmallMultiple && <th scope="col">Small multiple title</th>}
+            {isSmallMultiple && <th scope="col">Small multiple title - {cartesianData.smallMultipleTitle}</th>}
             <th scope="col">Label</th>
             <th scope="col">Value</th>
             <th scope="col">X Value</th>

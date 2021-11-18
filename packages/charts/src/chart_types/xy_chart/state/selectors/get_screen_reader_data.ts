@@ -41,6 +41,7 @@ interface FormattedDefaultExtraValue {
 /**@internal */
 export interface CartesianData {
   isSmallMultiple: boolean;
+  smallMultipleTitle?: string | number;
   xScaleType?: ScaleType;
   yScaleType?: ScaleType;
   hasAxes: boolean;
@@ -62,6 +63,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     if (specs.length === 0) {
       return {
         isSmallMultiple: false,
+        smallMultipleTitle: undefined,
         xScaleType: undefined,
         yScaleType: undefined,
         hasAxes: false,
@@ -71,6 +73,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     }
     return {
       isSmallMultiple: isSmallMultiple ? true : false,
+      smallMultipleTitle: axis[0] ? axis[0].title : undefined,
       data: computeScreenReaderValues(formattedDataSeries, allValues, specs, axis, rotation),
       numberOfItemsInGroup: getLastValues(formattedDataSeries, xDomain).size,
       xScaleType: specs[0].xScaleType,
