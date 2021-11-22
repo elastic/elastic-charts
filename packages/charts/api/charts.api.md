@@ -485,6 +485,7 @@ export interface ColorConfig {
 export const ColorVariant: Readonly<{
     Series: "__use__series__color__";
     None: "__use__empty__color__";
+    Adaptive: "__use__adaptive__color__";
 }>;
 
 // @public (undocumented)
