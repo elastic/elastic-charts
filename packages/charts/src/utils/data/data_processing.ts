@@ -25,10 +25,10 @@ import { isFiniteNumber } from '../common';
  * If the sum of the group values is 0, each ratio is considered 0.
  *
  * @public
- * @param data an array of Record<string, unknown>
- * @param groupAccessors an array of accessor keys or a fn to describe an unique id for each group
- * @param valueAccessor a fn that returns the value to use
- * @param ratioKeyName the object key used to store the computed ratio
+ * @param data - an array of objects
+ * @param groupAccessors - an array of accessor keys or a fn to describe an unique id for each group
+ * @param valueAccessor - a fn that returns the value to use
+ * @param ratioKeyName - the object key used to store the computed ratio
  */
 export function computeRatioByGroups<T extends Record<string, unknown>>(
   data: T[],
