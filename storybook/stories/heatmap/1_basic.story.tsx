@@ -33,6 +33,8 @@ export const Example = () => {
 
   const persistCellsSelection = boolean('Persist cells selection', true);
   const debugState = boolean('Enable debug state', true);
+  const showXAxisTitle = boolean('show x axis title', false);
+  const showYAxisTitle = boolean('show y axis title', false);
   const dataStateAction = action('DataState');
 
   const handler = useCallback(() => {
@@ -70,15 +72,17 @@ export const Example = () => {
         visible: true,
         width: 'auto',
         padding: { left: 10, right: 10 },
+        title: showYAxisTitle ? 'left' : undefined,
       },
       xAxisLabel: {
         formatter: (value: string | number) => {
           return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
         },
+        title: showXAxisTitle ? 'bottom' : undefined,
       },
       timeZone: DATA_6.timeZone,
     }),
-    [],
+    [showXAxisTitle, showYAxisTitle],
   );
 
   const logDebugState = debounce(() => {

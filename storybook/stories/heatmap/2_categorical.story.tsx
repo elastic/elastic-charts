@@ -21,6 +21,7 @@ export const Example = () => {
     : BABYNAME_DATA;
   const showLabels = boolean('show', true, 'labels');
   const useGlobalMinFontSize = boolean('use global min fontSize', true, 'labels');
+  const showXAxisTitle = boolean('show x axis title', false);
 
   const minFontSize = number('min fontSize', 6, { step: 1, min: 4, max: 10, range: true }, 'labels');
   const maxFontSize = number('max fontSize', 12, { step: 1, min: 10, max: 64, range: true }, 'labels');
@@ -81,6 +82,13 @@ export const Example = () => {
           },
           yAxisLabel: {
             visible: true,
+            fontSize: 16,
+            title: 'left',
+          },
+          xAxisLabel: {
+            visible: true,
+            fontSize: 16,
+            title: showXAxisTitle ? 'bottom' : undefined,
           },
         }}
       />

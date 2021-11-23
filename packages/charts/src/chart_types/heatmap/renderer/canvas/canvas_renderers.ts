@@ -127,6 +127,29 @@ export function renderCanvas2d(
             renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel),
           ),
         ),
+
+      () =>
+        //   // render the xAxisPanelTitle
+        config.xAxisLabel.title &&
+        withContext(ctx, () => {
+          const { width, height } = config; // whatever variable is to the axis equivalent;
+          renderText(ctx, { x: width / 2, y: height - config.xAxisLabel.fontSize }, config.xAxisLabel.title!, {
+            ...config.xAxisLabel,
+            align: 'center',
+          });
+        }),
+
+      // () =>
+      //   // render the yAxisPanelTitle
+      //   config.yAxisLabel.title &&
+      //   withContext(ctx, () => {
+      //     const { height } = config;
+      //     console.log(height);
+      //     renderText(ctx, { x: config.yAxisLabel.fontSize / 2, y: -height + 2 }, config.yAxisLabel.title!, {
+      //       ...config.yAxisLabel,
+      //       align: 'left',
+      //     });
+      //   }),
     ]);
   });
 }
