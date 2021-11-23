@@ -14,6 +14,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getAccessorValue } from '../../../../utils/accessor';
 import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
+import { isFiniteNumber } from '../../../../utils/common';
 import { HeatmapTable } from './compute_chart_dimensions';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
@@ -84,7 +85,3 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
     return resultData;
   },
 );
-
-function isFiniteNumber(value: number | undefined): value is number {
-  return Number.isFinite(value);
-}

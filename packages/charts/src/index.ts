@@ -103,3 +103,7 @@ export {
   ESFixedInterval,
   ESFixedIntervalUnit,
 } from './utils/chrono/elasticsearch';
+
+// data utils
+export { GroupKeysOrKeyFn, GroupByKeyFn } from './chart_types/xy_chart/utils/group_data_series';
+export { computeRatioByGroups } from './utils/data/data_processing';
