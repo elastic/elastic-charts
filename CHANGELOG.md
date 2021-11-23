@@ -1,3 +1,10 @@
+# [39.1.0](https://github.com/elastic/elastic-charts/compare/v39.0.2...v39.1.0) (2021-11-23)
+
+
+### Features
+
+* expose computeRatioByGroups fn ([#1495](https://github.com/elastic/elastic-charts/issues/1495)) ([#1501](https://github.com/elastic/elastic-charts/issues/1501)) ([4ec9557](https://github.com/elastic/elastic-charts/commit/4ec955773c8e86551b2b7f1c47758528cdbfbaa1))
+
 ## [39.0.2](https://github.com/elastic/elastic-charts/compare/v39.0.1...v39.0.2) (2021-11-17)
 
 
