@@ -197,7 +197,7 @@ export const configMetadata: Record<string, ConfigItem> = {
   fillLabel: {
     type: 'group',
     values: {
-      textColor: { type: 'color', dflt: '#000000' },
+      textColor: { type: 'color', dflt: ColorVariant.Adaptive },
       ...fontSettings,
       valueGetter: {
         dflt: sumValueGetter,
