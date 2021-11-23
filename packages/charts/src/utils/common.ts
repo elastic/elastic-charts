@@ -617,3 +617,8 @@ const oppositeAlignmentMap: Record<string, HorizontalAlignment | VerticalAlignme
 export function getOppositeAlignment<A extends HorizontalAlignment | VerticalAlignment>(alignment: A): A {
   return (oppositeAlignmentMap[alignment] as A) ?? alignment;
 }
+
+/** @internal */
+export function isFiniteNumber(value: unknown): value is number {
+  return Number.isFinite(value);
+}

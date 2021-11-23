@@ -18,7 +18,7 @@ import {
 
 import { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { clamp } from '../../../utils/common';
+import { clamp, isFiniteNumber } from '../../../utils/common';
 import { DataSeries, DataSeriesDatum } from './series';
 import { StackMode } from './specs';
 
@@ -59,6 +59,7 @@ export function formatStackedDataSeriesValues(
     acc[curr.key] = curr;
     return acc;
   }, {});
+  const stackAsPercentage = stackMode === StackMode.Percentage;
 
   const xValuesArray = [...xValues];
   const reorderedArray: Array<D3StackArrayElement> = [];
@@ -77,10 +78,13 @@ export function formatStackedDataSeriesValues(
         reorderedArray[xIndex] = { x };
       }
       // y0 can be considered as always present
-      reorderedArray[xIndex][`${key}-y0`] = y0;
+      reorderedArray[xIndex][`${key}-y0`] = isFiniteNumber(y0) ? (stackAsPercentage ? Math.abs(y0) : y0) : y0;
       // if y0 is available, we have to count y1 as the different of y1 and y0
       // to correctly stack them when stacking banded charts
-      reorderedArray[xIndex][`${key}-y1`] = (y1 ?? 0) - (y0 ?? 0);
+      const nonNullY1 = y1 ?? 0;
+      const nonNullY0 = y0 ?? 0;
+      reorderedArray[xIndex][`${key}-y1`] =
+        (stackAsPercentage ? Math.abs(nonNullY1) : nonNullY1) - (stackAsPercentage ? Math.abs(nonNullY0) : nonNullY0);
       dsMap.set(x, d);
     });
     xValueMap.set(key, dsMap);

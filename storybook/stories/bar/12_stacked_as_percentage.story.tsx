@@ -6,47 +6,82 @@
  * Side Public License, v 1.
  */
 
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, StackMode } from '@elastic/charts';
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  Position,
+  ScaleType,
+  Settings,
+  StackMode,
+  computeRatioByGroups,
+} from '@elastic/charts';
 
+import { AnnotationDomainType, LineAnnotation } from '../../../packages/charts/src/chart_types/specs';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const stackMode = boolean('stacked as percentage', true) ? StackMode.Percentage : undefined;
+  const modes = select(
+    'mode',
+    { stack: 'stack', stackAsPercentage: 'stackAsPercentage', unstacked: 'unstacked' },
+    'stackAsPercentage',
+  );
+  const stack = modes !== 'unstacked' ? ['x'] : undefined;
+  const stackMode = modes === 'stackAsPercentage' ? StackMode.Percentage : undefined;
+
+  const originalData = [
+    { x: 'pos/neg', y: -10, g: 'a' },
+    { x: 'pos/neg', y: 10, g: 'b' },
+
+    { x: 'zero/zero', y: 0, g: 'a' },
+    { x: 'zero/zero', y: 0, g: 'b' },
+
+    { x: 'zero/pos', y: 0, g: 'a' },
+    { x: 'zero/pos', y: 10, g: 'b' },
+
+    { x: 'null/pos', y: null, g: 'a' },
+    { x: 'null/pos', y: 10, g: 'b' },
+
+    { x: 'pos/pos', y: 2, g: 'a' },
+    { x: 'pos/pos', y: 8, g: 'b' },
+
+    { x: 'neg/neg', y: -2, g: 'a' },
+    { x: 'neg/neg', y: -8, g: 'b' },
+  ];
+
+  const data = boolean('use computeRatioByGroups fn', false)
+    ? computeRatioByGroups(originalData, ['x'], (d) => d.y, 'y')
+    : originalData;
+
   return (
     <Chart>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
+      <Settings baseTheme={useBaseTheme()} />
+      <Axis id="bottom" position={Position.Bottom} />
 
       <Axis
         id="left2"
-        title="Left axis"
         position={Position.Left}
-        tickFormat={(d: any) => (stackMode === StackMode.Percentage ? `${Number(d * 100).toFixed(0)} %` : d)}
+        showGridLines
+        ticks={5}
+        style={{ axisLine: { visible: false }, tickLine: { visible: false }, tickLabel: { padding: 5 } }}
+        gridLine={{ stroke: 'rgba(128,128,128,0.5)', strokeWidth: 0.5 }}
+        tickFormat={(d: any) => (modes === 'stackAsPercentage' ? `${Number(d * 100).toFixed(0)} %` : `${d}`)}
       />
-
       <BarSeries
         id="bars"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
-        stackMode={stackMode}
-        stackAccessors={['x']}
+        stackAccessors={stack}
+        stackMode={stack && stackMode}
         splitSeriesAccessors={['g']}
-        data={[
-          { x: 0, y: 4, g: 'b' },
-          { x: 1, y: 5, g: 'b' },
-          { x: 2, y: 8, g: 'b' },
-          { x: 3, y: 2, g: 'b' },
-          { x: 0, y: 2, g: 'a' },
-          { x: 1, y: 2, g: 'a' },
-          { x: 2, y: 0, g: 'a' },
-          { x: 3, y: null, g: 'a' },
-        ]}
+        data={data}
       />
+      <LineAnnotation dataValues={[{ dataValue: 0 }]} id="baseline" domainType={AnnotationDomainType.YDomain} />
     </Chart>
   );
 };
