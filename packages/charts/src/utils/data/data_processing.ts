@@ -16,11 +16,11 @@ import { isFiniteNumber } from '../common';
  * @remarks
  * The ratio is computed using absolute values.
  * Product A made a profit of $200, and product B has a loss of $300. In total, the company lost $100 ($200 – $300).
- * Product A contributed: abs(200) / ( abs(200) + abs(-300) ) * 100% = 40%
- * Product B contributed: abs(-300) / ( abs(200) + abs(-300) ) * 100% = 60%
- * Product A and product B contributed 40% and 60% respectively on a total loss of $100.
+ * Product A has a weight of: abs(200) / ( abs(200) + abs(-300) ) * 100% = 40%
+ * Product B has a weight of: abs(-300) / ( abs(200) + abs(-300) ) * 100% = 60%
+ * Product A and product B have respectively a weight of 40% and 60% in the formation of the overall total loss of $100.
  *
- * We don't compute the ratio for non-finite values. In this case, the original non-finite value is returned.
+ * We don't compute the ratio for non-finite values. In this case, we return the original non-finite value.
  *
  * If the sum of the group values is 0, each ratio is considered 0.
  *
