@@ -127,7 +127,14 @@ exports[`Chart should render the legend name test 1`] = `
                                 <tr>
                                   <td colSpan={3}>
                                     <button type=\\"submit\\" onClick={[Function: onClick]} tabIndex={-1}>
-                                      Click to show more data
+                                      Click to show next x value data
+                                    </button>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td colSpan={3}>
+                                    <button type=\\"submit\\" onClick={[Function: onClick]} tabIndex={-1}>
+                                      Click to show previous x value data
                                     </button>
                                   </td>
                                 </tr>

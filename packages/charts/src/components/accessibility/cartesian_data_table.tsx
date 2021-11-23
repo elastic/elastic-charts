@@ -51,6 +51,16 @@ const ScreenReaderCartesianTableComponent = ({
     }
   };
 
+  const handlePreviousData = () => {
+    // avoid going out of bounds
+    if (count > 0) {
+      setCount(count - 1);
+    }
+    if (tableRowRef.current) {
+      tableRowRef.current.focus();
+    }
+  };
+
   const { isSmallMultiple } = cartesianData;
 
   let countOfCol: number = 3;
@@ -102,7 +112,14 @@ const ScreenReaderCartesianTableComponent = ({
           <tr>
             <td colSpan={totalColumns}>
               <button type="submit" onClick={() => handleMoreData()} tabIndex={-1}>
-                Click to show more data
+                Click to show next x value data
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={totalColumns}>
+              <button type="submit" onClick={() => handlePreviousData()} tabIndex={-1}>
+                Click to show previous x value data
               </button>
             </td>
           </tr>
