@@ -1,3 +1,10 @@
+## [38.0.5](https://github.com/elastic/elastic-charts/compare/v38.0.4...v38.0.5) (2021-11-24)
+
+
+### Bug Fixes
+
+* **xy:** non-stacked as percentage ([#1504](https://github.com/elastic/elastic-charts/issues/1504)) ([8de10f2](https://github.com/elastic/elastic-charts/commit/8de10f2976f081b8469d698d455a39f1299396a7)), closes [#1495](https://github.com/elastic/elastic-charts/issues/1495)
+
 ## [38.0.4](https://github.com/elastic/elastic-charts/compare/v38.0.3...v38.0.4) (2021-11-15)
 
 
