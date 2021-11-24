@@ -23,8 +23,10 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { HeatmapSpec } from '../../specs/heatmap';
 import { geometries } from '../../state/selectors/geometries';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
+import { getHeatmapSpecSelector } from '../../state/selectors/get_heatmap_spec';
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
@@ -33,6 +35,7 @@ interface ReactiveChartStateProps {
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
   background: Color;
+  heatmapSpec?: HeatmapSpec;
 }
 
 interface ReactiveChartDispatchProps {
@@ -97,6 +100,7 @@ class Component extends React.Component<Props> {
           config: { ...this.props.geometries.config, width, height },
         },
         this.props.background,
+        this.props.heatmapSpec,
       );
     }
   }
@@ -150,10 +154,10 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     left: 0,
     top: 0,
   },
+  heatmapSpec: undefined,
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   background: Colors.Transparent.keyword,
 };
-
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
@@ -162,6 +166,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     initialized: true,
     geometries: geometries(state),
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
+    heatmapSpec: getHeatmapSpecSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
     background: getChartThemeSelector(state).background.color,
   };

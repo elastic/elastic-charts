@@ -18,6 +18,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
 import { getGridHeightParamsSelector } from './get_grid_full_height';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { getXAxisRightOverflow } from './get_x_axis_right_overflow';
 
@@ -45,6 +46,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     getXAxisRightOverflow,
     getGridHeightParamsSelector,
     getSettingsSpecSelector,
+    getHeatmapSpecSelector,
   ],
   (
     chartContainerDimensions,
@@ -54,6 +56,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     rightOverflow,
     { height },
     { showLegend, legendPosition },
+    { yAxisTitle },
   ): Dimensions => {
     let { width, left } = chartContainerDimensions;
     const { top } = chartContainerDimensions;
@@ -76,7 +79,10 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
           ...config.yAxisLabel,
         };
       });
-      const measuredYValues = textMeasure(config.yAxisLabel.fontSize, boxedYValues);
+      // account for the space needed to show the yAxisTitle in the canvas element
+      const measuredYValues = yAxisTitle
+        ? textMeasure(config.yAxisLabel.fontSize * 2, boxedYValues)
+        : textMeasure(config.yAxisLabel.fontSize, boxedYValues);
 
       let yColumnWidth: number = d3Max(measuredYValues, ({ width }) => width) ?? 0;
       if (typeof config.yAxisLabel.width === 'number') {

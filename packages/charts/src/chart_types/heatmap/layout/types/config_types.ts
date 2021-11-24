@@ -49,7 +49,6 @@ export interface Config {
     visible: boolean;
     padding: number;
     formatter: (value: string | number) => string;
-    title?: string;
   };
   yAxisLabel: Font & {
     name: string;
@@ -59,7 +58,6 @@ export interface Config {
     visible: boolean;
     padding: number | { left?: number; right?: number; top?: number; bottom?: number };
     formatter: (value: string | number) => string;
-    title?: string;
   };
   grid: {
     cellWidth: {

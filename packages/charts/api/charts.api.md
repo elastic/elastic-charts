@@ -1152,7 +1152,6 @@ export interface HeatmapConfig {
         visible: boolean;
         padding: number;
         formatter: (value: string | number) => string;
-        title?: string;
     };
     // (undocumented)
     yAxisLabel: Font & {
@@ -1170,7 +1169,6 @@ export interface HeatmapConfig {
             bottom?: number;
         };
         formatter: (value: string | number) => string;
-        title?: string;
     };
 }
 
@@ -1203,11 +1201,15 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     xAccessor: Accessor | AccessorFn;
     // (undocumented)
+    xAxisTitle?: string;
+    // (undocumented)
     xScale: RasterTimeScale | OrdinalScale | LinearScale;
     // (undocumented)
     xSortPredicate: Predicate;
     // (undocumented)
     yAccessor: Accessor | AccessorFn;
+    // (undocumented)
+    yAxisTitle?: string;
     // (undocumented)
     ySortPredicate: Predicate;
 }

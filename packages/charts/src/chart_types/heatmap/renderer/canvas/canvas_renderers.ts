@@ -13,6 +13,7 @@ import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/li
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { HeatmapSpec } from '../../specs/heatmap';
 
 /** @internal */
 export function renderCanvas2d(
@@ -20,6 +21,7 @@ export function renderCanvas2d(
   dpr: number,
   { config, heatmapViewModel }: ShapeViewModel,
   background: Color,
+  heatmapSpec?: HeatmapSpec,
 ) {
   // eslint-disable-next-line no-empty-pattern
   const {} = config;
@@ -129,27 +131,26 @@ export function renderCanvas2d(
         ),
 
       () =>
-        //   // render the xAxisPanelTitle
-        config.xAxisLabel.title &&
+        // render the xAxisTitle
+        heatmapSpec?.xAxisTitle &&
         withContext(ctx, () => {
-          const { width, height } = config; // whatever variable is to the axis equivalent;
-          renderText(ctx, { x: width / 2, y: height - config.xAxisLabel.fontSize }, config.xAxisLabel.title!, {
+          const { width, height } = config;
+          renderText(ctx, { x: width / 2, y: height - config.xAxisLabel.fontSize }, heatmapSpec.xAxisTitle!, {
             ...config.xAxisLabel,
             align: 'center',
           });
         }),
 
-      // () =>
-      //   // render the yAxisPanelTitle
-      //   config.yAxisLabel.title &&
-      //   withContext(ctx, () => {
-      //     const { height } = config;
-      //     console.log(height);
-      //     renderText(ctx, { x: config.yAxisLabel.fontSize / 2, y: -height + 2 }, config.yAxisLabel.title!, {
-      //       ...config.yAxisLabel,
-      //       align: 'left',
-      //     });
-      //   }),
+      () =>
+        // render the yAxisTitle
+        heatmapSpec?.yAxisTitle &&
+        withContext(ctx, () => {
+          const { height } = config;
+          renderText(ctx, { x: 1000, y: -height + 2 }, heatmapSpec.yAxisTitle!, {
+            ...config.yAxisLabel,
+            align: 'left',
+          });
+        }),
     ]);
   });
 }

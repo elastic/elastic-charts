@@ -95,6 +95,8 @@ export interface HeatmapSpec extends Spec {
   config: RecursivePartial<Config>;
   highlightedData?: { x: Array<string | number>; y: Array<string | number> };
   name?: string;
+  xAxisTitle?: string;
+  yAxisTitle?: string;
 }
 
 /** @alpha */
