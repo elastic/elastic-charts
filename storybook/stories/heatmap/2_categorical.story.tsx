@@ -28,6 +28,9 @@ export const Example = () => {
   const minCellHeight = number('min cell height', 10, { step: 1, min: 3, max: 8, range: true }, 'grid');
   const maxCellHeight = number('max cell height', 30, { step: 1, min: 8, max: 45, range: true }, 'grid');
 
+  const showXAxisTitle = boolean('Show x axis title', false);
+  const showYAxisTitle = boolean('Show y axis title', false);
+
   return (
     <Chart>
       <Settings
@@ -56,8 +59,8 @@ export const Example = () => {
         valueAccessor={(d) => d[3]}
         valueFormatter={(value) => value.toFixed(0.2)}
         xSortPredicate="alphaAsc"
-        xAxisTitle="bottom"
-        yAxisTitle="left"
+        xAxisTitle={showXAxisTitle ? 'bottom' : undefined}
+        yAxisTitle={showYAxisTitle ? 'left' : undefined}
         config={{
           grid: {
             stroke: {

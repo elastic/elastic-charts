@@ -146,10 +146,16 @@ export function renderCanvas2d(
         heatmapSpec?.yAxisTitle &&
         withContext(ctx, () => {
           const { height } = config;
-          renderText(ctx, { x: 1000, y: -height + 2 }, heatmapSpec.yAxisTitle!, {
-            ...config.yAxisLabel,
-            align: 'left',
-          });
+          renderText(
+            ctx,
+            { x: config.yAxisLabel.fontSize, y: height / 2 },
+            heatmapSpec.yAxisTitle!,
+            {
+              ...config.yAxisLabel,
+              align: 'center',
+            },
+            -90,
+          );
         }),
     ]);
   });

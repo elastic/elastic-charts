@@ -33,6 +33,8 @@ export const Example = () => {
 
   const persistCellsSelection = boolean('Persist cells selection', true);
   const debugState = boolean('Enable debug state', true);
+  const showXAxisTitle = boolean('Show x axis title', false);
+  const showYAxisTitle = boolean('Show y axis title', false);
 
   const dataStateAction = action('DataState');
 
@@ -141,8 +143,8 @@ export const Example = () => {
         xScale={{ type: ScaleType.Time, interval: DATA_6.interval }}
         config={config}
         highlightedData={persistCellsSelection ? selection : undefined}
-        xAxisTitle="bottom"
-        yAxisTitle="left"
+        xAxisTitle={showXAxisTitle ? 'bottom' : undefined}
+        yAxisTitle={showYAxisTitle ? 'left' : undefined}
       />
     </Chart>
   );
