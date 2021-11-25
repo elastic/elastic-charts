@@ -81,9 +81,7 @@ export function renderLine(
       smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
       smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
     },
-    seriesLineStyle: seriesStyle.line,
-    seriesPointStyle: seriesStyle.point,
-    fitStyle: seriesStyle.fit,
+    style: seriesStyle,
     clippedRanges,
     hideClippedRanges: !hasFit,
   };

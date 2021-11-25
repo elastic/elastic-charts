@@ -36,9 +36,9 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
     const { lines, sharedStyle, highlightedLegendItem, clippings, renderingArea, rotation } = props;
 
     lines.forEach(({ panel, value: line }) => {
-      const { seriesLineStyle, seriesPointStyle, points } = line;
+      const { style, points } = line;
 
-      if (seriesLineStyle.visible) {
+      if (style.line.visible) {
         withPanelTransform(
           ctx,
           panel,
@@ -49,7 +49,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
         );
       }
 
-      const visiblePoints = seriesPointStyle.visible ? points : points.filter(({ orphan }) => orphan);
+      const visiblePoints = style.point.visible ? points : points.filter(({ orphan }) => orphan);
       if (visiblePoints.length === 0) {
         return;
       }
@@ -74,15 +74,15 @@ function renderLine(
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const { color, transform, seriesIdentifier, seriesLineStyle, clippedRanges, hideClippedRanges, fitStyle } = line;
+  const { color, transform, seriesIdentifier, style, clippedRanges, hideClippedRanges } = line;
   const geometryStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
 
-  const lineStroke = buildLineStyles(color, seriesLineStyle, geometryStyle);
-  const fitLineStrokeColor = fitStyle.line.color === ColorVariant.Series ? colorToRgba(color) : fitStyle.line.color;
+  const lineStroke = buildLineStyles(color, style.line, geometryStyle);
+  const fitLineStrokeColor = style.fit.line.color === ColorVariant.Series ? colorToRgba(color) : style.fit.line.color;
   const fitLineStroke: Stroke = {
-    dash: fitStyle.line.dash,
-    width: seriesLineStyle.strokeWidth,
-    color: overrideOpacity(fitLineStrokeColor, (opacity) => opacity * geometryStyle.opacity * fitStyle.line.opacity),
+    dash: style.fit.line.dash,
+    width: style.line.strokeWidth,
+    color: overrideOpacity(fitLineStrokeColor, (opacity) => opacity * geometryStyle.opacity * style.fit.line.opacity),
   };
 
   renderLinePaths(
@@ -93,6 +93,6 @@ function renderLine(
     fitLineStroke,
     clippedRanges,
     clippings,
-    hideClippedRanges || !fitStyle.line.visible,
+    hideClippedRanges || !style.fit.line.visible,
   );
 }

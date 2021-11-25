@@ -71,9 +71,7 @@ export class MockLineGeometry {
     color: Colors.Red.keyword,
     transform: { x: 0, y: 0 },
     seriesIdentifier: MockSeriesIdentifier.default(),
-    seriesLineStyle: lineSeriesStyle.line,
-    seriesPointStyle: lineSeriesStyle.point,
-    fitStyle: lineSeriesStyle.fit,
+    style: lineSeriesStyle,
     clippedRanges: [],
   };
 
