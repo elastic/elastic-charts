@@ -79,8 +79,8 @@ export function renderArea(
     style.point,
     hasY0Accessors,
     markSizeOptions,
-    pointStyleAccessor,
     false,
+    pointStyleAccessor,
   );
 
   const areaGeometry: AreaGeometry = {

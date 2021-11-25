@@ -37,8 +37,8 @@ export function renderPoints(
   pointStyle: PointStyle,
   hasY0Accessors: boolean,
   markSizeOptions: MarkSizeOptions,
+  useSpatialIndex: boolean,
   styleAccessor?: PointStyleAccessor,
-  spatial = false,
 ): {
   pointGeometries: PointGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
@@ -47,7 +47,7 @@ export function renderPoints(
   const getRadius = markSizeOptions.enabled
     ? getRadiusFn(dataSeries.data, pointStyle.strokeWidth, markSizeOptions.ratio)
     : () => 0;
-  const geometryType = spatial ? GeometryType.spatial : GeometryType.linear;
+  const geometryType = useSpatialIndex ? GeometryType.spatial : GeometryType.linear;
 
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);

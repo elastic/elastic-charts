@@ -59,6 +59,7 @@ export function renderLine(
     seriesStyle.point,
     hasY0Accessors,
     markSizeOptions,
+    false,
     pointStyleAccessor,
   );
 
