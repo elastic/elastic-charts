@@ -7,6 +7,7 @@
  */
 
 import { Colors } from '../../common/colors';
+import { ColorVariant } from '../common';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import {
@@ -32,6 +33,14 @@ export const LIGHT_THEME: Theme = {
       fill: Colors.White.keyword,
       radius: 2,
       opacity: 1,
+    },
+    fit: {
+      line: {
+        opacity: 1,
+        visible: true,
+        dash: [5, 5],
+        color: ColorVariant.Series,
+      },
     },
   },
   bubbleSeriesStyle: {
@@ -59,6 +68,19 @@ export const LIGHT_THEME: Theme = {
       fill: Colors.White.keyword,
       radius: 2,
       opacity: 1,
+    },
+    fit: {
+      line: {
+        visible: true,
+        dash: [5, 5],
+        color: ColorVariant.Series,
+        opacity: 1,
+      },
+      area: {
+        visible: true,
+        opacity: 0.15,
+        color: ColorVariant.Series,
+      },
     },
   },
   barSeriesStyle: {

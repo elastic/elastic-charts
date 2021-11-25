@@ -8,6 +8,7 @@
 
 import { $Values } from 'utility-types';
 
+import { RgbaTuple } from '../../common/color_library_wrappers';
 import { Color } from '../../common/colors';
 import { Pixels, Ratio } from '../../common/geometry';
 import { FontStyle } from '../../common/text_utils';
@@ -532,6 +533,9 @@ export interface BubbleSeriesStyle {
 export interface LineSeriesStyle {
   line: LineStyle;
   point: PointStyle;
+  fit: {
+    line: LineFitStyle;
+  };
 }
 
 /** @public */
@@ -539,7 +543,25 @@ export interface AreaSeriesStyle {
   area: AreaStyle;
   line: LineStyle;
   point: PointStyle;
+  fit: {
+    line: LineFitStyle;
+    area: AreaFitStyle;
+  };
 }
+
+/** @public */
+export type AreaFitStyle = Visible &
+  Opacity & {
+    color: RgbaTuple | typeof ColorVariant.Series;
+    texture?: TexturedStyles;
+  };
+
+/** @public */
+export type LineFitStyle = Visible &
+  Opacity &
+  StrokeDashArray & {
+    color: RgbaTuple | typeof ColorVariant.Series;
+  };
 
 /** @public */
 export interface ArcSeriesStyle {
