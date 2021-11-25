@@ -73,6 +73,7 @@ export class MockLineGeometry {
     seriesIdentifier: MockSeriesIdentifier.default(),
     seriesLineStyle: lineSeriesStyle.line,
     seriesPointStyle: lineSeriesStyle.point,
+    fitStyle: lineSeriesStyle.fit,
     clippedRanges: [],
   };
 
@@ -93,6 +94,7 @@ export class MockAreaGeometry {
     seriesAreaStyle: areaSeriesStyle.area,
     seriesAreaLineStyle: areaSeriesStyle.line,
     seriesPointStyle: areaSeriesStyle.point,
+    fitStyle: areaSeriesStyle.fit,
     isStacked: false,
     clippedRanges: [],
   };
