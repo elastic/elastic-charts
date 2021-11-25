@@ -104,6 +104,7 @@ export function renderArea(
     seriesAreaStyle: seriesStyle.area,
     seriesAreaLineStyle: seriesStyle.line,
     seriesPointStyle: seriesStyle.point,
+    fitStyle: seriesStyle.fit,
     isStacked,
     clippedRanges,
     hideClippedRanges: !hasFit,

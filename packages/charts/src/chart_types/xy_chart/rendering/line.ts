@@ -83,6 +83,7 @@ export function renderLine(
     },
     seriesLineStyle: seriesStyle.line,
     seriesPointStyle: seriesStyle.point,
+    fitStyle: seriesStyle.fit,
     clippedRanges,
     hideClippedRanges: !hasFit,
   };
