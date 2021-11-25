@@ -74,7 +74,7 @@ function renderLine(
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const { color, transform, seriesIdentifier, style, clippedRanges, hideClippedRanges } = line;
+  const { color, transform, seriesIdentifier, style, clippedRanges, shouldClip } = line;
   const geometryStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
 
   const lineStroke = buildLineStyles(color, style.line, geometryStyle);
@@ -93,6 +93,6 @@ function renderLine(
     fitLineStroke,
     clippedRanges,
     clippings,
-    hideClippedRanges || !style.fit.line.visible,
+    shouldClip && style.fit.line.visible,
   );
 }

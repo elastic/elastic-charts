@@ -121,7 +121,7 @@ export interface LineGeometry {
    * Ranges of `[x0, x1]` pairs to clip from series
    */
   clippedRanges: ClippedRanges;
-  hideClippedRanges?: boolean;
+  shouldClip: boolean;
 }
 
 /** @internal */
@@ -141,7 +141,7 @@ export interface AreaGeometry {
    * Ranges of `[x0, x1]` pairs to clip from series
    */
   clippedRanges: ClippedRanges;
-  hideClippedRanges?: boolean;
+  shouldClip: boolean;
 }
 
 /** @internal */

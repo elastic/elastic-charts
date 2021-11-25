@@ -22,13 +22,13 @@ export function renderLinePaths(
   fitStroke: Stroke,
   clippedRanges: ClippedRanges,
   clippings: Rect,
-  hideClippedRanges = false,
+  shouldClip: boolean,
 ) {
   withClipRanges(ctx, clippedRanges, clippings, false, () => {
     ctx.translate(transform.x, transform.y);
     renderMultiLine(ctx, linePaths, stroke);
   });
-  if (clippedRanges.length > 0 && !hideClippedRanges) {
+  if (clippedRanges.length > 0 && shouldClip) {
     withClipRanges(ctx, clippedRanges, clippings, true, () => {
       ctx.translate(transform.x, transform.y);
       renderMultiLine(ctx, linePaths, fitStroke);
@@ -45,10 +45,10 @@ export function renderAreaPath(
   fitFill: Fill,
   clippedRanges: ClippedRanges,
   clippings: Rect,
-  hideClippedRanges = false,
+  shouldClip: boolean,
 ) {
   withClipRanges(ctx, clippedRanges, clippings, false, () => renderPathFill(ctx, area, fill, transform));
-  if (clippedRanges.length > 0 && !hideClippedRanges) {
+  if (clippedRanges.length > 0 && shouldClip) {
     withClipRanges(ctx, clippedRanges, clippings, true, () => renderPathFill(ctx, area, fitFill, transform));
   }
 }

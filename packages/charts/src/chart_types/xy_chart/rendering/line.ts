@@ -33,8 +33,8 @@ export function renderLine(
   xScaleOffset: number,
   seriesStyle: LineSeriesStyle,
   markSizeOptions: MarkSizeOptions,
+  hasFit: boolean,
   pointStyleAccessor?: PointStyleAccessor,
-  hasFit?: boolean,
 ): {
   lineGeometry: LineGeometry;
   indexedGeometryMap: IndexedGeometryMap;
@@ -83,7 +83,7 @@ export function renderLine(
     },
     style: seriesStyle,
     clippedRanges,
-    hideClippedRanges: !hasFit,
+    shouldClip: hasFit,
   };
   return {
     lineGeometry,

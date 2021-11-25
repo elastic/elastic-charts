@@ -73,6 +73,7 @@ export class MockLineGeometry {
     seriesIdentifier: MockSeriesIdentifier.default(),
     style: lineSeriesStyle,
     clippedRanges: [],
+    shouldClip: false,
   };
 
   static default(partial?: RecursivePartial<LineGeometry>) {
@@ -92,6 +93,7 @@ export class MockAreaGeometry {
     style: areaSeriesStyle,
     isStacked: false,
     clippedRanges: [],
+    shouldClip: false,
   };
 
   static default(partial?: RecursivePartial<AreaGeometry>) {

@@ -87,7 +87,7 @@ function renderArea(
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const { area, color, transform, seriesIdentifier, style, clippedRanges, hideClippedRanges } = geometry;
+  const { area, color, transform, seriesIdentifier, style, clippedRanges, shouldClip } = geometry;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
   const areaFill = buildAreaStyles(ctx, imgCanvas, color, style.area, geometryStateStyle);
 
@@ -114,7 +114,7 @@ function renderArea(
     fitAreaFill,
     clippedRanges,
     clippings,
-    hideClippedRanges || !style.fit.area.visible,
+    shouldClip && style.fit.area.visible,
   );
 }
 
@@ -125,7 +125,7 @@ function renderAreaLines(
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const { lines, color, seriesIdentifier, transform, style, clippedRanges, hideClippedRanges } = geometry;
+  const { lines, color, seriesIdentifier, transform, style, clippedRanges, shouldClip } = geometry;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
   const lineStyle = buildLineStyles(color, style.line, geometryStateStyle);
 
@@ -148,6 +148,6 @@ function renderAreaLines(
     fitLineStroke,
     clippedRanges,
     clippings,
-    hideClippedRanges || !style.fit.line.visible,
+    shouldClip && style.fit.line.visible,
   );
 }

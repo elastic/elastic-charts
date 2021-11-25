@@ -41,8 +41,8 @@ export function renderArea(
   style: AreaSeriesStyle,
   markSizeOptions: MarkSizeOptions,
   isStacked = false,
+  hasFit: boolean,
   pointStyleAccessor?: PointStyleAccessor,
-  hasFit?: boolean,
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
@@ -104,7 +104,7 @@ export function renderArea(
     style,
     isStacked,
     clippedRanges,
-    hideClippedRanges: !hasFit,
+    shouldClip: hasFit,
   };
   return {
     areaGeometry,
