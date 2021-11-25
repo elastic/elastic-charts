@@ -61,6 +61,7 @@ export function renderArea(
     })
     .curve(getCurveFactory(curve));
 
+  // TODO we can probably avoid this function call if no fit function is applied.
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
   const lines: string[] = [];
