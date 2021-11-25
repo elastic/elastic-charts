@@ -13,15 +13,7 @@ import { LabelOverflowConstraint } from '../chart_types/xy_chart/utils/specs';
 import { Color } from '../common/colors';
 import { Fill, Stroke } from '../geoms/types';
 import { Dimensions } from './dimensions';
-import {
-  BarSeriesStyle,
-  PointStyle,
-  AreaStyle,
-  LineStyle,
-  PointShape,
-  LineSeriesStyle,
-  AreaSeriesStyle,
-} from './themes/theme';
+import { BarSeriesStyle, PointStyle, LineStyle, PointShape, LineSeriesStyle, AreaSeriesStyle } from './themes/theme';
 
 /**
  * The accessor type
@@ -145,10 +137,7 @@ export interface AreaGeometry {
     y: number;
   };
   seriesIdentifier: XYChartSeriesIdentifier;
-  seriesAreaStyle: AreaStyle;
-  seriesAreaLineStyle: LineStyle;
-  seriesPointStyle: PointStyle;
-  fitStyle: AreaSeriesStyle['fit'];
+  style: AreaSeriesStyle;
   isStacked: boolean;
   /**
    * Ranges of `[x0, x1]` pairs to clip from series

@@ -609,17 +609,17 @@ describe('Chart State utils', () => {
       const geometries = getGeometriesFromSpecs([area1, area2, area3]);
 
       expect(geometries.geometries.areas[0].value.color).toBe('violet');
-      expect(geometries.geometries.areas[0].value.seriesAreaStyle).toEqual({
+      expect(geometries.geometries.areas[0].value.style.area).toEqual({
         visible: true,
         fill: 'area-fill-custom-color',
         opacity: 0.2,
       });
-      expect(geometries.geometries.areas[0].value.seriesAreaLineStyle).toEqual({
+      expect(geometries.geometries.areas[0].value.style.line).toEqual({
         visible: true,
         strokeWidth: 100,
         opacity: 1,
       });
-      expect(geometries.geometries.areas[0].value.seriesPointStyle).toEqual({
+      expect(geometries.geometries.areas[0].value.style.point).toEqual({
         visible: false,
         fill: 'point-fill-custom-color', // the override strokeWidth
         opacity: 1,

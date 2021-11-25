@@ -91,10 +91,7 @@ export class MockAreaGeometry {
     color: Colors.Red.keyword,
     transform: { x: 0, y: 0 },
     seriesIdentifier: MockSeriesIdentifier.default(),
-    seriesAreaStyle: areaSeriesStyle.area,
-    seriesAreaLineStyle: areaSeriesStyle.line,
-    seriesPointStyle: areaSeriesStyle.point,
-    fitStyle: areaSeriesStyle.fit,
+    style: areaSeriesStyle,
     isStacked: false,
     clippedRanges: [],
   };

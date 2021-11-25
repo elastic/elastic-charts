@@ -37,8 +37,8 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
 
   withContext(ctx, () => {
     areas.forEach(({ panel, value: area }) => {
-      const { seriesAreaLineStyle, seriesAreaStyle } = area;
-      if (seriesAreaStyle.visible) {
+      const { style } = area;
+      if (style.area.visible) {
         withPanelTransform(
           ctx,
           panel,
@@ -48,7 +48,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
           { area: clippings, shouldClip: true },
         );
       }
-      if (seriesAreaLineStyle.visible) {
+      if (style.line.visible) {
         withPanelTransform(
           ctx,
           panel,
@@ -61,8 +61,8 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
     });
 
     areas.forEach(({ panel, value: area }) => {
-      const { seriesPointStyle, seriesIdentifier, points } = area;
-      const visiblePoints = seriesPointStyle.visible ? points : points.filter(({ orphan }) => orphan);
+      const { style, seriesIdentifier, points } = area;
+      const visiblePoints = style.point.visible ? points : points.filter(({ orphan }) => orphan);
       if (visiblePoints.length === 0) {
         return;
       }
@@ -87,29 +87,23 @@ function renderArea(
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const {
-    area,
-    color,
-    transform,
-    seriesIdentifier,
-    seriesAreaStyle,
-    fitStyle,
-    clippedRanges,
-    hideClippedRanges,
-  } = geometry;
+  const { area, color, transform, seriesIdentifier, style, clippedRanges, hideClippedRanges } = geometry;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const areaFill = buildAreaStyles(ctx, imgCanvas, color, seriesAreaStyle, geometryStateStyle);
+  const areaFill = buildAreaStyles(ctx, imgCanvas, color, style.area, geometryStateStyle);
 
-  const fitAreaFillColor = fitStyle.area.color === ColorVariant.Series ? colorToRgba(color) : fitStyle.area.color;
+  const fitAreaFillColor = style.fit.area.color === ColorVariant.Series ? colorToRgba(color) : style.fit.area.color;
   const fitAreaFill: Fill = {
     texture: getTextureStyles(
       ctx,
       imgCanvas,
       RGBATupleToString(fitAreaFillColor),
       geometryStateStyle.opacity,
-      fitStyle.area.texture,
+      style.fit.area.texture,
     ),
-    color: overrideOpacity(fitAreaFillColor, (opacity) => opacity * geometryStateStyle.opacity * fitStyle.area.opacity),
+    color: overrideOpacity(
+      fitAreaFillColor,
+      (opacity) => opacity * geometryStateStyle.opacity * style.fit.area.opacity,
+    ),
   };
 
   renderAreaPath(
@@ -120,7 +114,7 @@ function renderArea(
     fitAreaFill,
     clippedRanges,
     clippings,
-    hideClippedRanges || !fitStyle.area.visible,
+    hideClippedRanges || !style.fit.area.visible,
   );
 }
 
@@ -131,27 +125,18 @@ function renderAreaLines(
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const {
-    lines,
-    color,
-    seriesIdentifier,
-    transform,
-    seriesAreaLineStyle,
-    clippedRanges,
-    hideClippedRanges,
-    fitStyle,
-  } = geometry;
+  const { lines, color, seriesIdentifier, transform, style, clippedRanges, hideClippedRanges } = geometry;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const lineStyle = buildLineStyles(color, seriesAreaLineStyle, geometryStateStyle);
+  const lineStyle = buildLineStyles(color, style.line, geometryStateStyle);
 
-  const fitLineStrokeColor = fitStyle.line.color === ColorVariant.Series ? colorToRgba(color) : fitStyle.line.color;
+  const fitLineStrokeColor = style.fit.line.color === ColorVariant.Series ? colorToRgba(color) : style.fit.line.color;
 
   const fitLineStroke: Stroke = {
-    dash: fitStyle.line.dash,
-    width: seriesAreaLineStyle.strokeWidth,
+    dash: style.fit.line.dash,
+    width: style.line.strokeWidth,
     color: overrideOpacity(
       fitLineStrokeColor,
-      (opacity) => opacity * geometryStateStyle.opacity * fitStyle.line.opacity,
+      (opacity) => opacity * geometryStateStyle.opacity * style.fit.line.opacity,
     ),
   };
 
@@ -163,6 +148,6 @@ function renderAreaLines(
     fitLineStroke,
     clippedRanges,
     clippings,
-    hideClippedRanges || !fitStyle.line.visible,
+    hideClippedRanges || !style.fit.line.visible,
   );
 }
