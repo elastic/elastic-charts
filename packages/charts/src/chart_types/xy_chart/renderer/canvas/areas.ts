@@ -6,14 +6,16 @@
  * Side Public License, v 1.
  */
 
+import { colorToRgba, overrideOpacity, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
-import { Rect } from '../../../../geoms/types';
+import { Fill, Rect, Stroke } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
-import { Rotation } from '../../../../utils/common';
+import { ColorVariant, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AreaGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
+import { getTextureStyles } from '../../utils/texture';
 import { renderPoints } from './points';
 import { renderLinePaths, renderAreaPath } from './primitives/path';
 import { buildAreaStyles } from './styles/area';
@@ -80,28 +82,87 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
 function renderArea(
   ctx: CanvasRenderingContext2D,
   imgCanvas: HTMLCanvasElement,
-  glyph: AreaGeometry,
+  geometry: AreaGeometry,
   sharedStyle: SharedGeometryStateStyle,
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const { area, color, transform, seriesIdentifier, seriesAreaStyle, clippedRanges, hideClippedRanges } = glyph;
+  const {
+    area,
+    color,
+    transform,
+    seriesIdentifier,
+    seriesAreaStyle,
+    fitStyle,
+    clippedRanges,
+    hideClippedRanges,
+  } = geometry;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const styles = buildAreaStyles(ctx, imgCanvas, color, seriesAreaStyle, geometryStateStyle);
+  const areaFill = buildAreaStyles(ctx, imgCanvas, color, seriesAreaStyle, geometryStateStyle);
 
-  renderAreaPath(ctx, transform, area, styles, clippedRanges, clippings, hideClippedRanges);
+  const fitAreaFillColor = fitStyle.area.color === ColorVariant.Series ? colorToRgba(color) : fitStyle.area.color;
+  const fitAreaFill: Fill = {
+    texture: getTextureStyles(
+      ctx,
+      imgCanvas,
+      RGBATupleToString(fitAreaFillColor),
+      geometryStateStyle.opacity,
+      fitStyle.area.texture,
+    ),
+    color: overrideOpacity(fitAreaFillColor, (opacity) => opacity * geometryStateStyle.opacity * fitStyle.area.opacity),
+  };
+
+  renderAreaPath(
+    ctx,
+    transform,
+    area,
+    areaFill,
+    fitAreaFill,
+    clippedRanges,
+    clippings,
+    hideClippedRanges || !fitStyle.area.visible,
+  );
 }
 
 function renderAreaLines(
   ctx: CanvasRenderingContext2D,
-  glyph: AreaGeometry,
+  geometry: AreaGeometry,
   sharedStyle: SharedGeometryStateStyle,
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const { lines, color, seriesIdentifier, transform, seriesAreaLineStyle, clippedRanges, hideClippedRanges } = glyph;
+  const {
+    lines,
+    color,
+    seriesIdentifier,
+    transform,
+    seriesAreaLineStyle,
+    clippedRanges,
+    hideClippedRanges,
+    fitStyle,
+  } = geometry;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const styles = buildLineStyles(color, seriesAreaLineStyle, geometryStateStyle);
+  const lineStyle = buildLineStyles(color, seriesAreaLineStyle, geometryStateStyle);
 
-  renderLinePaths(ctx, transform, lines, styles, clippedRanges, clippings, hideClippedRanges);
+  const fitLineStrokeColor = fitStyle.line.color === ColorVariant.Series ? colorToRgba(color) : fitStyle.line.color;
+
+  const fitLineStroke: Stroke = {
+    dash: fitStyle.line.dash,
+    width: seriesAreaLineStyle.strokeWidth,
+    color: overrideOpacity(
+      fitLineStrokeColor,
+      (opacity) => opacity * geometryStateStyle.opacity * fitStyle.line.opacity,
+    ),
+  };
+
+  renderLinePaths(
+    ctx,
+    transform,
+    lines,
+    lineStyle,
+    fitLineStroke,
+    clippedRanges,
+    clippings,
+    hideClippedRanges || !fitStyle.line.visible,
+  );
 }

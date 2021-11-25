@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
-import { Rect } from '../../../../geoms/types';
+import { Rect, Stroke } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
-import { Rotation } from '../../../../utils/common';
+import { ColorVariant, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { LineGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
@@ -73,8 +74,25 @@ function renderLine(
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const { color, transform, seriesIdentifier, seriesLineStyle, clippedRanges, hideClippedRanges } = line;
+  const { color, transform, seriesIdentifier, seriesLineStyle, clippedRanges, hideClippedRanges, fitStyle } = line;
   const geometryStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const stroke = buildLineStyles(color, seriesLineStyle, geometryStyle);
-  renderLinePaths(ctx, transform, [line.line], stroke, clippedRanges, clippings, hideClippedRanges);
+
+  const lineStroke = buildLineStyles(color, seriesLineStyle, geometryStyle);
+  const fitLineStrokeColor = fitStyle.line.color === ColorVariant.Series ? colorToRgba(color) : fitStyle.line.color;
+  const fitLineStroke: Stroke = {
+    dash: fitStyle.line.dash,
+    width: seriesLineStyle.strokeWidth,
+    color: overrideOpacity(fitLineStrokeColor, (opacity) => opacity * geometryStyle.opacity * fitStyle.line.opacity),
+  };
+
+  renderLinePaths(
+    ctx,
+    transform,
+    [line.line],
+    lineStroke,
+    fitLineStroke,
+    clippedRanges,
+    clippings,
+    hideClippedRanges || !fitStyle.line.visible,
+  );
 }
