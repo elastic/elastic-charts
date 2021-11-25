@@ -40,7 +40,7 @@ export function renderArea(
   xScaleOffset: number,
   style: AreaSeriesStyle,
   markSizeOptions: MarkSizeOptions,
-  isStacked = false,
+  isStacked: boolean,
   hasFit: boolean,
   pointStyleAccessor?: PointStyleAccessor,
 ): {
