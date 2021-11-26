@@ -163,7 +163,7 @@ describe('Theme', () => {
             opacity: 314571,
             visible: false,
             dash: [1, 2, 3, 4],
-            color: [1, 2, 3, 4],
+            color: 'rgba(1, 2, 3, 4)',
           },
         },
       };
@@ -215,13 +215,13 @@ describe('Theme', () => {
           area: {
             opacity: 314571,
             visible: false,
-            color: [1, 2, 3, 4],
+            color: 'rgba(1, 2, 3, 4)',
           },
           line: {
             opacity: 314571,
             visible: false,
             dash: [1, 2, 3, 4],
-            color: [1, 2, 3, 4],
+            color: 'rgba(1, 2, 3, 4)',
           },
         },
       };
