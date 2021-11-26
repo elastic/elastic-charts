@@ -13,6 +13,7 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings, Fit, StackMode } from '@elastic/charts';
 import { getRandomNumberGenerator, getRNGSeed } from '@elastic/charts/src/mocks/utils';
 
+import { TextureShape } from '../../../packages/charts/src/utils/themes/theme';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
@@ -201,6 +202,26 @@ export const Example = () => {
           endValue: endValue === 'none' ? undefined : parsedEndValue,
         }}
         data={dataset}
+        areaSeriesStyle={
+          boolean('apply custom fit style', false)
+            ? {
+                fit: {
+                  line: {
+                    color: 'gray',
+                    opacity: 0.5,
+                  },
+                  area: {
+                    color: 'gray',
+                    texture: {
+                      shape: TextureShape.Line,
+                      rotation: -45,
+                      opacity: 0.2,
+                    },
+                  },
+                },
+              }
+            : undefined
+        }
       />
       <AreaSeries
         id="test2"
