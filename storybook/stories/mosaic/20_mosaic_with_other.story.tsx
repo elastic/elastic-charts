@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -40,6 +41,8 @@ const data = [
 ];
 
 export const Example = () => {
+  const alphabetical = boolean('Alphabetical outer group sorting', false);
+  const otherOnBottom = boolean('"Other" on bottom even if not the smallest', true);
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
@@ -52,6 +55,15 @@ export const Example = () => {
           {
             groupByRollup: (d: Datum) => d.region,
             nodeLabel: (d) => String(d).toUpperCase(),
+            sortPredicate: alphabetical
+              ? ([name1, node1]: ArrayEntry, [name2, node2]: ArrayEntry) => {
+                  if (name1 < name2) return -1;
+                  if (name2 < name1) return 1;
+
+                  // otherwise, use the increasing value order
+                  return node1.value - node2.value;
+                }
+              : undefined,
             fillLabel: {
               valueFormatter: () => ``,
               fontWeight: 600,
@@ -63,13 +75,15 @@ export const Example = () => {
           {
             groupByRollup: (d: Datum) => d.dest,
             nodeLabel: (d: any) => countryLookup[d]?.name ?? d,
-            sortPredicate: ([name1, node1]: ArrayEntry, [name2, node2]: ArrayEntry) => {
-              if (name1 === 'Other' && name2 !== 'Other') return -1;
-              if (name2 === 'Other' && name1 !== 'Other') return 1;
+            sortPredicate: otherOnBottom
+              ? ([name1, node1]: ArrayEntry, [name2, node2]: ArrayEntry) => {
+                  if (name1 === 'Other' && name2 !== 'Other') return 1;
+                  if (name2 === 'Other' && name1 !== 'Other') return -1;
 
-              // otherwise, use the increasing value order
-              return node1.value - node2.value;
-            },
+                  // otherwise, use the increasing value order
+                  return node1.value - node2.value;
+                }
+              : undefined,
             fillLabel: {
               fontWeight: 100,
               maxFontSize: 16,

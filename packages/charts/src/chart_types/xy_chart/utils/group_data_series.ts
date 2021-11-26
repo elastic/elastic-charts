@@ -7,8 +7,12 @@
  */
 
 type Group<T> = Record<string, T[]>;
-type GroupByKeyFn<T> = (data: T) => string;
-type GroupKeysOrKeyFn<T> = Array<keyof T> | GroupByKeyFn<T>;
+
+/** @public */
+export type GroupByKeyFn<T> = (data: T) => string;
+
+/** @public */
+export type GroupKeysOrKeyFn<T> = Array<keyof T> | GroupByKeyFn<T>;
 
 /** @internal */
 export function groupBy<T>(data: T[], keysOrKeyFn: GroupKeysOrKeyFn<T>, asArray: false): Group<T>;

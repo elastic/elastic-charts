@@ -47,6 +47,7 @@ export interface LegendItemProps {
   positionConfig: LegendPositionConfig;
   extraValues: Map<string, LegendItemExtraValues>;
   showExtra: boolean;
+  isMostlyRTL: boolean;
   labelOptions: LegendLabelOptions;
   colorPicker?: LegendColorPicker;
   action?: LegendAction;
@@ -176,6 +177,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       action: Action,
       positionConfig,
       labelOptions,
+      isMostlyRTL,
     } = this.props;
     const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, pointStyle } = item;
 
@@ -189,7 +191,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     const extra = showExtra && getExtra(extraValues, item, totalItems);
     const style = item.depth
       ? {
-          marginLeft: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
+          [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
         }
       : undefined;
     return (
@@ -199,6 +201,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
           onMouseEnter={this.onLegendItemMouseOver}
           onMouseLeave={this.onLegendItemMouseOut}
           style={style}
+          dir={isMostlyRTL ? 'rtl' : 'ltr'}
           data-ech-series-name={label}
         >
           <div className="background" />

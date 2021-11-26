@@ -1,3 +1,58 @@
+# [40.0.0](https://github.com/elastic/elastic-charts/compare/v39.0.2...v40.0.0) (2021-11-18)
+
+
+### Bug Fixes
+
+* **interactions:** remove the option for pixelRatio with png snapshot ([#1431](https://github.com/elastic/elastic-charts/issues/1431)) ([eebb069](https://github.com/elastic/elastic-charts/commit/eebb0697a0b9ec5a860feb687f5b52721850714b))
+* **xy:** occlude points outside of y domain ([#1475](https://github.com/elastic/elastic-charts/issues/1475)) ([3176f02](https://github.com/elastic/elastic-charts/commit/3176f02c2587522f5b057493b592dc3446315998))
+
+
+### Features
+
+* **annotations:** add annotations to DebugState ([#1434](https://github.com/elastic/elastic-charts/issues/1434)) ([c5ea600](https://github.com/elastic/elastic-charts/commit/c5ea60027299882cc1c05f9227e7e3204bb0ff71))
+* **heatmap:** add valueShown in heatmap debug state ([#1460](https://github.com/elastic/elastic-charts/issues/1460)) ([962e089](https://github.com/elastic/elastic-charts/commit/962e089fe61540dcd5ed3612d41d915c29b98d13))
+
+
+### BREAKING CHANGES
+
+* **interactions:** The getPNGSnapshot function no longer has an option for pixelRatio
+
+## [39.0.2](https://github.com/elastic/elastic-charts/compare/v39.0.1...v39.0.2) (2021-11-17)
+
+
+### Bug Fixes
+
+* align axis tick formatter logic ([#1482](https://github.com/elastic/elastic-charts/issues/1482)) ([1bd30b9](https://github.com/elastic/elastic-charts/commit/1bd30b963d0136eb845381412737cb0e9dea4954)), closes [#1476](https://github.com/elastic/elastic-charts/issues/1476)
+* **deps:** update dependency @elastic/eui to ^41.1.0 ([#1477](https://github.com/elastic/elastic-charts/issues/1477)) ([20306a1](https://github.com/elastic/elastic-charts/commit/20306a13bd1d7a3f021e8509a79099edccdb82fd))
+
+## [39.0.1](https://github.com/elastic/elastic-charts/compare/v39.0.0...v39.0.1) (2021-11-15)
+
+
+### Bug Fixes
+
+* **partition:** rtl text label support ([#1433](https://github.com/elastic/elastic-charts/issues/1433)) ([01bbe3a](https://github.com/elastic/elastic-charts/commit/01bbe3a9109c8dddf71c259bfeafa67325920e84))
+
+# [39.0.0](https://github.com/elastic/elastic-charts/compare/v38.1.5...v39.0.0) (2021-11-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v41 ([#1468](https://github.com/elastic/elastic-charts/issues/1468)) ([0c38291](https://github.com/elastic/elastic-charts/commit/0c38291f140218cbc993228ef821e8657c9bcf0c))
+* **heatmap:** snap time bucket to calendar/fixed intervals ([#1462](https://github.com/elastic/elastic-charts/issues/1462)) ([b76c12c](https://github.com/elastic/elastic-charts/commit/b76c12c0a499acbb52c6333134d3ed2966b1b111))
+* **xy:** handle zero-length time domains and switch to 24hr time ([#1464](https://github.com/elastic/elastic-charts/issues/1464)) ([379c2d6](https://github.com/elastic/elastic-charts/commit/379c2d6996f40df011201235f2ca3b28dae6f7a8))
+
+
+### BREAKING CHANGES
+
+* **heatmap:** The `xScaleType` is replaced by the prop `xScale`, which better describes a rasterized time scale with an Elasticsearch compliant interval.
+
+## [38.1.5](https://github.com/elastic/elastic-charts/compare/v38.1.4...v38.1.5) (2021-11-05)
+
+
+### Bug Fixes
+
+* **legend:** legend breaking on words ([#1458](https://github.com/elastic/elastic-charts/issues/1458)) ([c42be98](https://github.com/elastic/elastic-charts/commit/c42be981b1b6a243dcfa5df9d978fb053e1aa5ed))
+
 ## [38.1.4](https://github.com/elastic/elastic-charts/compare/v38.1.3...v38.1.4) (2021-11-03)
 
 
