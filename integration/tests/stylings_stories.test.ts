@@ -38,4 +38,27 @@ describe('Stylings stories', () => {
       });
     });
   });
+  describe('Fit function styling', () => {
+    it('can style the line', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/mixed-charts--fitting-functions-non-stacked-series&globals=theme:light&knob-Curve=0&knob-End value=none&knob-Explicit value (using Fit.Explicit)=5&knob-dataset=all&knob-fit area color_fit style=rgba(0,0,0,1)&knob-fit area opacity_fit style=0.15&knob-fit line color_fit style=rgba(5, 5, 5, 1)&knob-fit line dash array_fit style=5,10,1,10&knob-fit line opacity_fit style=0.4&knob-fitting function=average&knob-seriesType=line&knob-use series color for area_fit style=true&knob-use series color for line_fit style=&knob-use texture on area_fit style=',
+      );
+    });
+    it('can style the area', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/mixed-charts--fitting-functions-non-stacked-series&globals=theme:light&knob-Curve=0&knob-End value=none&knob-Explicit value (using Fit.Explicit)=5&knob-dataset=all&knob-fit area color_fit style=rgba(0,0,0,1)&knob-fit area opacity_fit style=0.08&knob-fit line color_fit style=rgba(5, 5, 5, 1)&knob-fit line dash array_fit style=5,10,1,10&knob-fit line opacity_fit style=0&knob-fitting function=average&knob-seriesType=area&knob-use series color for area_fit style=&knob-use series color for line_fit style=&knob-use texture on area_fit style=true',
+      );
+    });
+
+    it('should render interpolated line as non-interpolated lines', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/mixed-charts--fitting-functions-non-stacked-series&globals=theme:light&knob-Curve=0&knob-End value=nearest&knob-Explicit value (using Fit.Explicit)=5&knob-dataset=all&knob-fit area color_fit style=rgba(0,0,0,1)&knob-fit area opacity_fit style=0.3&knob-fit line color_fit style=rgba(5, 5, 5, 1)&knob-fit line dash array_fit style=&knob-fit line opacity_fit style=1&knob-fitting function=linear&knob-seriesType=line&knob-use series color for area_fit style=true&knob-use series color for line_fit style=true&knob-use texture on area_fit style=',
+      );
+    });
+    it('should render interpolated area as non-interpolated areas', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/mixed-charts--fitting-functions-non-stacked-series&globals=theme:light&knob-Curve=0&knob-End value=nearest&knob-Explicit value (using Fit.Explicit)=5&knob-dataset=all&knob-fit area color_fit style=rgba(0,0,0,1)&knob-fit area opacity_fit style=0.3&knob-fit line color_fit style=rgba(5, 5, 5, 1)&knob-fit line dash array_fit style=&knob-fit line opacity_fit style=1&knob-fitting function=linear&knob-seriesType=area&knob-use series color for area_fit style=true&knob-use series color for line_fit style=true&knob-use texture on area_fit style=',
+      );
+    });
+  });
 });
