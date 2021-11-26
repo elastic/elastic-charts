@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { select, number } from '@storybook/addon-knobs';
+import { select, boolean, color, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -20,8 +20,11 @@ import {
   Settings,
   Fit,
   SeriesType,
+  RecursivePartial,
 } from '@elastic/charts';
 
+import { ColorVariant } from '../../../packages/charts/src/utils/common';
+import { AreaFitStyle, LineFitStyle, TextureShape } from '../../../packages/charts/src/utils/themes/theme';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
@@ -153,6 +156,57 @@ export const Example = () => {
   const parsedEndValue: number | 'nearest' = Number.isNaN(Number(endValue)) ? 'nearest' : Number(endValue);
   const value = number('Explicit value (using Fit.Explicit)', 5);
   const xScaleType = dataKey === 'ordinal' ? ScaleType.Ordinal : ScaleType.Linear;
+  const baseTheme = useBaseTheme();
+
+  const useSeriesColorLine = boolean('use series color for line', true, 'fit style');
+  const customLineColor = color('fit line color', 'rgba(0,0,0,1)', 'fit style');
+
+  const fitLineStyle: RecursivePartial<LineFitStyle> = {
+    opacity: number(
+      'fit line opacity',
+      seriesType === SeriesType.Area
+        ? baseTheme.areaSeriesStyle.fit.line.opacity
+        : baseTheme.lineSeriesStyle.fit.line.opacity,
+      {
+        range: true,
+        min: 0,
+        max: 1,
+        step: 0.05,
+      },
+      'fit style',
+    ),
+    color: useSeriesColorLine ? ColorVariant.Series : customLineColor,
+    dash: text(
+      'fit line dash array',
+      (seriesType === SeriesType.Area
+        ? baseTheme.areaSeriesStyle.fit.line.dash
+        : baseTheme.lineSeriesStyle.fit.line.dash
+      ).join(','),
+      'fit style',
+    )
+      .split(',')
+      .map(Number),
+  };
+  const useSeriesColor = boolean('use series color for area', true, 'fit style');
+  const fitAreaCustomColor = color('fit area color', 'rgba(0,0,0,1)', 'fit style');
+  const fitAreaOpacity = number(
+    'fit area opacity',
+    baseTheme.areaSeriesStyle.fit.area.opacity,
+    {
+      range: true,
+      min: 0,
+      max: baseTheme.areaSeriesStyle.area.opacity,
+      step: 0.01,
+    },
+    'fit style',
+  );
+  const fitAreaStyle: RecursivePartial<AreaFitStyle> = {
+    opacity: fitAreaOpacity,
+    color: useSeriesColor ? ColorVariant.Series : fitAreaCustomColor,
+    texture: boolean('use texture on area', false, 'fit style')
+      ? { shape: TextureShape.Line, rotation: -45, opacity: fitAreaOpacity }
+      : undefined,
+  };
 
   return (
     <Chart>
@@ -166,7 +220,7 @@ export const Example = () => {
             },
           },
         }}
-        baseTheme={useBaseTheme()}
+        baseTheme={baseTheme}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left" title="Left axis" position={Position.Left} />
@@ -183,6 +237,12 @@ export const Example = () => {
             value: fit === Fit.Explicit ? value : undefined,
             endValue: endValue === 'none' ? undefined : parsedEndValue,
           }}
+          areaSeriesStyle={{
+            fit: {
+              line: fitLineStyle,
+              area: fitAreaStyle,
+            },
+          }}
           data={dataset}
         />
       ) : (
@@ -197,6 +257,11 @@ export const Example = () => {
             type: fit,
             value: fit === Fit.Explicit ? value : undefined,
             endValue: endValue === 'none' ? undefined : parsedEndValue,
+          }}
+          lineSeriesStyle={{
+            fit: {
+              line: fitLineStyle,
+            },
           }}
           data={dataset}
         />

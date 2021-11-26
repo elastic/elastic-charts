@@ -78,11 +78,14 @@ function renderLine(
   const geometryStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
 
   const lineStroke = buildLineStyles(color, style.line, geometryStyle);
-  const fitLineStrokeColor = style.fit.line.color === ColorVariant.Series ? colorToRgba(color) : style.fit.line.color;
+  const fitLineStrokeColor = style.fit.line.color === ColorVariant.Series ? color : style.fit.line.color;
   const fitLineStroke: Stroke = {
     dash: style.fit.line.dash,
     width: style.line.strokeWidth,
-    color: overrideOpacity(fitLineStrokeColor, (opacity) => opacity * geometryStyle.opacity * style.fit.line.opacity),
+    color: overrideOpacity(
+      colorToRgba(fitLineStrokeColor),
+      (opacity) => opacity * geometryStyle.opacity * style.fit.line.opacity,
+    ),
   };
 
   renderLinePaths(
