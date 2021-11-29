@@ -87,9 +87,6 @@ export const Example = () => {
           yAxisLabel: {
             visible: true,
           },
-          xAxisLabel: {
-            visible: true,
-          },
         }}
       />
     </Chart>
