@@ -143,8 +143,8 @@ export const Example = () => {
         xScale={{ type: ScaleType.Time, interval: DATA_6.interval }}
         config={config}
         highlightedData={persistCellsSelection ? selection : undefined}
-        xAxisTitle={showXAxisTitle ? 'bottom' : undefined}
-        yAxisTitle={showYAxisTitle ? 'left' : undefined}
+        xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
+        yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
       />
     </Chart>
   );

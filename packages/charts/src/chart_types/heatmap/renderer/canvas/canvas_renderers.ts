@@ -9,6 +9,7 @@
 import { Color, Colors } from '../../../../common/colors';
 import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { Theme } from '../../../../utils/themes/theme';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
@@ -21,6 +22,7 @@ export function renderCanvas2d(
   dpr: number,
   { config, heatmapViewModel }: ShapeViewModel,
   background: Color,
+  heatmapTheme: Theme,
   heatmapSpec?: HeatmapSpec,
 ) {
   // eslint-disable-next-line no-empty-pattern
@@ -136,7 +138,12 @@ export function renderCanvas2d(
         withContext(ctx, () => {
           const { width, height } = config;
           renderText(ctx, { x: width / 2, y: height - config.xAxisLabel.fontSize }, heatmapSpec.xAxisTitle!, {
-            ...config.xAxisLabel,
+            fontVariant: 'normal',
+            fontWeight: 'bold',
+            textColor: '#333',
+            fontStyle: 'normal',
+            baseline: 'middle',
+            ...heatmapTheme.axes.axisTitle,
             align: 'center',
           });
         }),
@@ -151,7 +158,13 @@ export function renderCanvas2d(
             { x: config.yAxisLabel.fontSize, y: height / 2 },
             heatmapSpec.yAxisTitle!,
             {
-              ...config.yAxisLabel,
+              fontVariant: 'normal',
+              fontWeight: 'bold',
+              textColor: '#333',
+              fontStyle: 'normal',
+              baseline: 'middle',
+              ...heatmapTheme.axes.axisTitle,
+              ...heatmapTheme.axes.axisTitle,
               align: 'center',
             },
             -90,

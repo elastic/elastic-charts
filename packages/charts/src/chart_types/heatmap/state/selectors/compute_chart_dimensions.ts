@@ -81,7 +81,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
       });
       // account for the space needed to show the yAxisTitle in the canvas element
       const measuredYValues = yAxisTitle
-        ? textMeasure(config.yAxisLabel.fontSize * 2, boxedYValues)
+        ? textMeasure(config.yAxisLabel.fontSize * 1.5, boxedYValues)
         : textMeasure(config.yAxisLabel.fontSize, boxedYValues);
 
       let yColumnWidth: number = d3Max(measuredYValues, ({ width }) => width) ?? 0;

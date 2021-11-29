@@ -59,8 +59,8 @@ export const Example = () => {
         valueAccessor={(d) => d[3]}
         valueFormatter={(value) => value.toFixed(0.2)}
         xSortPredicate="alphaAsc"
-        xAxisTitle={showXAxisTitle ? 'bottom' : undefined}
-        yAxisTitle={showYAxisTitle ? 'left' : undefined}
+        xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
+        yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
         config={{
           grid: {
             stroke: {
@@ -86,11 +86,9 @@ export const Example = () => {
           },
           yAxisLabel: {
             visible: true,
-            fontSize: 16,
           },
           xAxisLabel: {
             visible: true,
-            fontSize: 16,
           },
         }}
       />
