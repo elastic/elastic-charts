@@ -3,7 +3,7 @@
   "description": "Elastic-Charts data visualization library",
   "version": "40.0.0",
   "author": "Elastic DataVis",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.txt",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
