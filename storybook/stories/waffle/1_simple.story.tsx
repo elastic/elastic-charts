@@ -13,8 +13,9 @@ import { Chart, Datum, Partition, PartitionLayout, Settings, ShapeTreeNode } fro
 import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ArrayEntry } from '../../../packages/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
 import { useBaseTheme } from '../../use_base_theme';
-import { discreteColor, colorBrewerCategoricalStark9, productLookup } from '../utils/utils';
+import { colorBrewerCategoricalStark9, discreteColor, productLookup } from '../utils/utils';
 
 export const Example = () => {
   const showDebug = boolean('show table for debugging', false);
@@ -32,6 +33,9 @@ export const Example = () => {
             nodeLabel: (d: Datum) => productLookup[d].name,
             shape: {
               fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9.slice(1))(d.sortIndex),
+            },
+            sortPredicate: ([, node1]: ArrayEntry, [, node2]: ArrayEntry) => {
+              return node2.value - node1.value;
             },
           },
         ]}
