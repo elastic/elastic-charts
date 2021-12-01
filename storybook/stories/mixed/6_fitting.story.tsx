@@ -175,7 +175,7 @@ export const Example = () => {
       },
       'fit style',
     ),
-    color: useSeriesColorLine ? ColorVariant.Series : customLineColor,
+    stroke: useSeriesColorLine ? ColorVariant.Series : customLineColor,
     dash: text(
       'fit line dash array',
       (seriesType === SeriesType.Area
@@ -202,7 +202,7 @@ export const Example = () => {
   );
   const fitAreaStyle: RecursivePartial<AreaFitStyle> = {
     opacity: fitAreaOpacity,
-    color: useSeriesColor ? ColorVariant.Series : fitAreaCustomColor,
+    fill: useSeriesColor ? ColorVariant.Series : fitAreaCustomColor,
     texture: boolean('use texture on area', false, 'fit style')
       ? { shape: TextureShape.Line, rotation: -45, opacity: fitAreaOpacity }
       : undefined,

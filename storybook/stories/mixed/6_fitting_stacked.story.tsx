@@ -207,11 +207,11 @@ export const Example = () => {
             ? {
                 fit: {
                   line: {
-                    color: 'gray',
+                    stroke: 'gray',
                     opacity: 0.5,
                   },
                   area: {
-                    color: 'gray',
+                    fill: 'gray',
                     texture: {
                       shape: TextureShape.Line,
                       rotation: -45,
