@@ -115,6 +115,7 @@ export function renderCanvas2d(
               resultText,
               // the alignment for y axis labels is fixed to the right
               { ...config.yAxisLabel, align: 'right' },
+              config.yAxisLabel.rotation,
             );
           }),
         ),

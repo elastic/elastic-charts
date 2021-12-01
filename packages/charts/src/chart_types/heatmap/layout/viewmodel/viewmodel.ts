@@ -420,6 +420,7 @@ function getXTicks(
     );
     return timeScale.ticks().map<TextBox>(getTextValue(config.xAxisLabel.formatter, (x) => timeScale.scale(x)));
   }
+
   return xValues.map<TextBox>((textBox: string | number) => {
     return {
       ...getTextValue(config.xAxisLabel.formatter, xScale)(textBox),

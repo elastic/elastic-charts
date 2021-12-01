@@ -64,6 +64,7 @@ export const config: Config = {
     baseline: 'verticalAlign' as CanvasTextBaseline,
     padding: 5,
     formatter: String,
+    rotation: 0,
   },
   grid: {
     cellWidth: {

@@ -1170,6 +1170,7 @@ export interface HeatmapConfig {
             bottom?: number;
         };
         formatter: (value: string | number) => string;
+        rotation: number;
     };
 }
 
