@@ -22,7 +22,8 @@ import { config } from '../layout/config/config';
 import { Config } from '../layout/types/config_types';
 import { X_SCALE_DEFAULT } from './scale_defaults';
 
-const defaultProps = {
+/** @internal */
+export const defaultProps = {
   chartType: ChartType.Heatmap,
   specType: SpecType.Series,
   data: [],
@@ -34,6 +35,8 @@ const defaultProps = {
   xSortPredicate: Predicate.AlphaAsc,
   ySortPredicate: Predicate.AlphaAsc,
   config,
+  xAxisTitle: '',
+  yAxisTitle: '',
 };
 
 /** @public */
@@ -93,10 +96,10 @@ export interface HeatmapSpec extends Spec {
   ySortPredicate: Predicate;
   xScale: RasterTimeScale | OrdinalScale | LinearScale;
   config: RecursivePartial<Config>;
+  xAxisTitle: string;
+  yAxisTitle: string;
   highlightedData?: { x: Array<string | number>; y: Array<string | number> };
   name?: string;
-  xAxisTitle?: string;
-  yAxisTitle?: string;
 }
 
 /** @alpha */
@@ -114,5 +117,7 @@ export const Heatmap: React.FunctionComponent<
     | 'valueFormatter'
     | 'config'
     | 'xScale'
+    | 'xAxisTitle'
+    | 'yAxisTitle'
   >(defaultProps),
 );

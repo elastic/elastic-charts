@@ -8,11 +8,13 @@
 
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { Config } from '../../layout/types/config_types';
 import { getHeatmapConfigSelector } from './get_heatmap_config';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
 /** @internal */
@@ -31,6 +33,8 @@ export const getGridHeightParamsSelector = createCustomCachedSelector(
     getParentDimension,
     getHeatmapConfigSelector,
     getHeatmapTableSelector,
+    getHeatmapSpecSelector,
+    getChartThemeSelector,
   ],
   (
     legendSize,
@@ -38,14 +42,17 @@ export const getGridHeightParamsSelector = createCustomCachedSelector(
     { height: containerHeight },
     { xAxisLabel: { padding, visible, fontSize }, grid, maxLegendHeight },
     { yValues },
+    { xAxisTitle },
+    { axes: axesStyle },
   ): GridHeightParams => {
     const xAxisHeight = visible ? fontSize : 0;
     const totalVerticalPadding = padding * 2;
+    const titleHeight = xAxisTitle ? axesStyle.axisTitle.fontSize : 0;
     let legendHeight = 0;
     if (showLegend && isHorizontalLegend(legendSize.position)) {
       legendHeight = maxLegendHeight ?? legendSize.height;
     }
-    const verticalRemainingSpace = containerHeight - xAxisHeight - totalVerticalPadding - legendHeight;
+    const verticalRemainingSpace = containerHeight - xAxisHeight - totalVerticalPadding - legendHeight - titleHeight;
 
     // compute the grid cell height
     const gridCellHeight = getGridCellHeight(yValues, grid, verticalRemainingSpace);

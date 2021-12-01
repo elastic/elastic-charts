@@ -158,7 +158,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     left: 0,
     top: 0,
   },
-  heatmapSpec: undefined,
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   background: Colors.Transparent.keyword,
   heatmapTheme: LIGHT_THEME,

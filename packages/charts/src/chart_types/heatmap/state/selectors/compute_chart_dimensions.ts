@@ -11,6 +11,7 @@ import { max as d3Max } from 'd3-array';
 import { Box, measureText } from '../../../../common/text_utils';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Position } from '../../../../utils/common';
@@ -47,6 +48,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     getGridHeightParamsSelector,
     getSettingsSpecSelector,
     getHeatmapSpecSelector,
+    getChartThemeSelector,
   ],
   (
     chartContainerDimensions,
@@ -57,6 +59,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     { height },
     { showLegend, legendPosition },
     { yAxisTitle },
+    { axes: axesStyles },
   ): Dimensions => {
     let { width, left } = chartContainerDimensions;
     const { top } = chartContainerDimensions;
@@ -80,9 +83,9 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
         };
       });
       // account for the space needed to show the yAxisTitle in the canvas element
-      const measuredYValues = yAxisTitle
-        ? textMeasure(config.yAxisLabel.fontSize * 1.5, boxedYValues)
-        : textMeasure(config.yAxisLabel.fontSize, boxedYValues);
+      const measuredYValues = textMeasure(config.yAxisLabel.fontSize, boxedYValues);
+      const titleWidth = yAxisTitle ? axesStyles.axisTitle.fontSize : 0;
+      console.log(titleWidth);
 
       let yColumnWidth: number = d3Max(measuredYValues, ({ width }) => width) ?? 0;
       if (typeof config.yAxisLabel.width === 'number') {
@@ -91,8 +94,8 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
         yColumnWidth = config.yAxisLabel.width.max;
       }
 
-      width -= yColumnWidth + rightOverflow + totalHorizontalPadding;
-      left += yColumnWidth + totalHorizontalPadding;
+      width -= yColumnWidth + rightOverflow + totalHorizontalPadding + titleWidth;
+      left += yColumnWidth + totalHorizontalPadding + titleWidth;
     }
     let legendWidth = 0;
     if (showLegend && (legendPosition === Position.Right || legendPosition === Position.Left)) {

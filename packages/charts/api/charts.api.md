@@ -1216,7 +1216,7 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     xAccessor: Accessor | AccessorFn;
     // (undocumented)
-    xAxisTitle?: string;
+    xAxisTitle: string;
     // (undocumented)
     xScale: RasterTimeScale | OrdinalScale | LinearScale;
     // (undocumented)
@@ -1224,7 +1224,7 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     yAccessor: Accessor | AccessorFn;
     // (undocumented)
-    yAxisTitle?: string;
+    yAxisTitle: string;
     // (undocumented)
     ySortPredicate: Predicate;
 }

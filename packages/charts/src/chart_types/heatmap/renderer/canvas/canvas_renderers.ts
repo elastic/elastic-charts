@@ -22,7 +22,7 @@ export function renderCanvas2d(
   dpr: number,
   { config, heatmapViewModel }: ShapeViewModel,
   background: Color,
-  heatmapTheme: Theme,
+  theme: Theme,
   heatmapSpec?: HeatmapSpec,
 ) {
   // eslint-disable-next-line no-empty-pattern
@@ -137,13 +137,13 @@ export function renderCanvas2d(
         heatmapSpec?.xAxisTitle &&
         withContext(ctx, () => {
           const { width, height } = config;
-          renderText(ctx, { x: width / 2, y: height - config.xAxisLabel.fontSize }, heatmapSpec.xAxisTitle!, {
+          renderText(ctx, { x: width / 2, y: height - config.xAxisLabel.fontSize }, heatmapSpec.xAxisTitle, {
             fontVariant: 'normal',
             fontWeight: 'bold',
             textColor: '#333',
             fontStyle: 'normal',
             baseline: 'middle',
-            ...heatmapTheme.axes.axisTitle,
+            ...theme.axes.axisTitle,
             align: 'center',
           });
         }),
@@ -156,15 +156,15 @@ export function renderCanvas2d(
           renderText(
             ctx,
             { x: config.yAxisLabel.fontSize, y: height / 2 },
-            heatmapSpec.yAxisTitle!,
+            heatmapSpec.yAxisTitle,
             {
               fontVariant: 'normal',
               fontWeight: 'bold',
               textColor: '#333',
               fontStyle: 'normal',
               baseline: 'middle',
-              ...heatmapTheme.axes.axisTitle,
-              ...heatmapTheme.axes.axisTitle,
+              ...theme.axes.axisTitle,
+              ...theme.axes.axisTitle,
               align: 'center',
             },
             -90,
