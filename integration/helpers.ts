@@ -154,11 +154,11 @@ const themeIds = Object.values(ThemeId);
 export const eachTheme = {
   it(fn: (theme: ThemeId, urlParam: string) => any, title = 'theme - %s') {
     // eslint-disable-next-line jest/valid-title
-    return it.each<ThemeId>(themeIds)(title, (theme) => fn(theme, `&globals=theme:${theme}`));
+    return it.each<ThemeId>(themeIds)(title, (theme) => fn(theme, `globals=theme:${theme}`));
   },
   describe(fn: (theme: ThemeId, urlParam: string) => any, title = 'theme - %s') {
     // eslint-disable-next-line jest/valid-title, jest/valid-describe
-    return describe.each<ThemeId>(themeIds)(title, (theme) => fn(theme, `&globals=theme:${theme}`));
+    return describe.each<ThemeId>(themeIds)(title, (theme) => fn(theme, `globals=theme:${theme}`));
   },
 };
 

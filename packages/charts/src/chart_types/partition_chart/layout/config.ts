@@ -10,6 +10,7 @@ import { Colors } from '../../../common/colors';
 import { ConfigItem, configMap, Numeric } from '../../../common/config_objects';
 import { GOLDEN_RATIO, TAU } from '../../../common/constants';
 import { FONT_STYLES, FONT_VARIANTS } from '../../../common/text_utils';
+import { ColorVariant } from '../../../utils/common';
 import { Config, PartitionLayout } from './types/config_types';
 import { ShapeTreeNode } from './types/viewmodel_types';
 import { AGGREGATE_KEY, STATISTICS_KEY } from './utils/group_by_rollup';
@@ -196,7 +197,7 @@ export const configMetadata: Record<string, ConfigItem> = {
   fillLabel: {
     type: 'group',
     values: {
-      textColor: { type: 'color', dflt: '#000000' },
+      textColor: { type: 'color', dflt: ColorVariant.Adaptive },
       ...fontSettings,
       valueGetter: {
         dflt: sumValueGetter,
@@ -283,7 +284,7 @@ export const configMetadata: Record<string, ConfigItem> = {
         max: 200,
         documentation: 'Limits the total number of characters in linked labels.',
       },
-      textColor: { dflt: '#000000', type: 'color' },
+      textColor: { dflt: ColorVariant.Adaptive, type: 'color' },
       minimumStemLength: {
         dflt: 0,
         min: 0,

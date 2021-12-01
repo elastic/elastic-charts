@@ -19,7 +19,7 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { cutToLength, fitText, Font, measureOneBoxWidth, TextMeasure } from '../../../../common/text_utils';
-import { ValueFormatter } from '../../../../utils/common';
+import { ColorVariant, ValueFormatter } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Point } from '../../../../utils/point';
 import { Config, LinkLabelConfig } from '../types/config_types';
@@ -85,7 +85,8 @@ export function linkTextLayout(
       containerBgColor,
     );
   }
-  const textColor = fillTextColor(containerBgColor);
+  const textColor =
+    linkLabel.textColor === ColorVariant.Adaptive ? fillTextColor(containerBgColor) : linkLabel.textColor;
   const labelFontSpec: Font = { ...linkLabel, textColor };
   const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor };
 
