@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean, color, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
@@ -44,7 +45,19 @@ export const Example = () => (
         },
       ]}
       config={{
-        partitionLayout: PartitionLayout.treemap,
+        partitionLayout: select(
+          'partitionLayout',
+          {
+            Treemap: PartitionLayout.treemap,
+            Sunburst: PartitionLayout.sunburst,
+          },
+          PartitionLayout.treemap,
+        ),
+        fillLabel: {
+          textColor: boolean('custom fillLabel.textColor', false)
+            ? color('fillLabel.textColor', 'rgba(0, 0, 0, 1)')
+            : undefined,
+        },
       }}
     />
   </Chart>
