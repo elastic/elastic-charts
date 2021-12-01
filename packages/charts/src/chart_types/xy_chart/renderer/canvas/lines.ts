@@ -78,7 +78,7 @@ function renderLine(
   const geometryStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
 
   const lineStroke = buildLineStyles(color, style.line, geometryStyle);
-  const fitLineStrokeColor = style.fit.line.color === ColorVariant.Series ? color : style.fit.line.color;
+  const fitLineStrokeColor = style.fit.line.stroke === ColorVariant.Series ? color : style.fit.line.stroke;
   const fitLineStroke: Stroke = {
     dash: style.fit.line.dash,
     width: style.line.strokeWidth,

@@ -116,7 +116,7 @@ export interface ArcStyle {
 
 // @public (undocumented)
 export type AreaFitStyle = Visible & Opacity & {
-    color: Color | typeof ColorVariant.Series;
+    fill: Color | typeof ColorVariant.Series;
     texture?: TexturedStyles;
 };
 
@@ -1461,7 +1461,7 @@ export interface LinearScale {
 
 // @public (undocumented)
 export type LineFitStyle = Visible & Opacity & StrokeDashArray & {
-    color: Color | typeof ColorVariant.Series;
+    stroke: Color | typeof ColorVariant.Series;
 };
 
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts

@@ -91,7 +91,7 @@ function renderArea(
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
   const areaFill = buildAreaStyles(ctx, imgCanvas, color, style.area, geometryStateStyle);
 
-  const fitAreaFillColor = style.fit.area.color === ColorVariant.Series ? color : style.fit.area.color;
+  const fitAreaFillColor = style.fit.area.fill === ColorVariant.Series ? color : style.fit.area.fill;
   const fitAreaFill: Fill = {
     texture: getTextureStyles(ctx, imgCanvas, fitAreaFillColor, geometryStateStyle.opacity, style.fit.area.texture),
     color: overrideOpacity(
@@ -127,7 +127,7 @@ function renderAreaLines(
     dash: style.fit.line.dash,
     width: style.line.strokeWidth,
     color: overrideOpacity(
-      colorToRgba(style.fit.line.color === ColorVariant.Series ? color : style.fit.line.color),
+      colorToRgba(style.fit.line.stroke === ColorVariant.Series ? color : style.fit.line.stroke),
       (opacity) => opacity * geometryStateStyle.opacity * style.fit.line.opacity,
     ),
   };

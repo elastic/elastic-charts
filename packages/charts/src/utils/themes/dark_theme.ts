@@ -37,7 +37,7 @@ export const DARK_THEME: Theme = {
       line: {
         visible: true,
         dash: [5, 5],
-        color: ColorVariant.Series,
+        stroke: ColorVariant.Series,
         opacity: 1,
       },
     },
@@ -72,13 +72,13 @@ export const DARK_THEME: Theme = {
       line: {
         visible: true,
         dash: [5, 5],
-        color: ColorVariant.Series,
+        stroke: ColorVariant.Series,
         opacity: 1,
       },
       area: {
         visible: true,
         opacity: 0.15,
-        color: ColorVariant.Series,
+        fill: ColorVariant.Series,
       },
     },
   },

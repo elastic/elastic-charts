@@ -551,7 +551,7 @@ export interface AreaSeriesStyle {
 /** @public */
 export type AreaFitStyle = Visible &
   Opacity & {
-    color: Color | typeof ColorVariant.Series;
+    fill: Color | typeof ColorVariant.Series;
     texture?: TexturedStyles;
   };
 
@@ -559,7 +559,7 @@ export type AreaFitStyle = Visible &
 export type LineFitStyle = Visible &
   Opacity &
   StrokeDashArray & {
-    color: Color | typeof ColorVariant.Series;
+    stroke: Color | typeof ColorVariant.Series;
   };
 
 /** @public */
