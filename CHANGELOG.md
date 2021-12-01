@@ -1,3 +1,10 @@
+## [40.0.1](https://github.com/elastic/elastic-charts/compare/v40.0.0...v40.0.1) (2021-12-01)
+
+
+### Bug Fixes
+
+* **partition:** linkLabel textColor override ([#1498](https://github.com/elastic/elastic-charts/issues/1498)) ([#1515](https://github.com/elastic/elastic-charts/issues/1515)) ([67c4eee](https://github.com/elastic/elastic-charts/commit/67c4eeeff92c379585ae0c3cf3bd35c1259cfb44))
+
 # [40.0.0](https://github.com/elastic/elastic-charts/compare/v39.0.2...v40.0.0) (2021-11-18)
 
 
