@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { PartitionLayout } from '@elastic/charts';
-
+import { PartitionLayout } from '../../packages/charts/src';
 import { eachTheme } from '../helpers';
 import { common } from '../page_objects';
 
