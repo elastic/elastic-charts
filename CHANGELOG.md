@@ -1,3 +1,17 @@
+# [40.1.0](https://github.com/elastic/elastic-charts/compare/v40.0.0...v40.1.0) (2021-12-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^41.3.0 ([#1506](https://github.com/elastic/elastic-charts/issues/1506)) ([d364cc0](https://github.com/elastic/elastic-charts/commit/d364cc0fd0ecef83772ca1ca52ff04ed649badb6))
+* remove pointer for onElementOver ([#1493](https://github.com/elastic/elastic-charts/issues/1493)) ([bf95dbc](https://github.com/elastic/elastic-charts/commit/bf95dbc6aae31d2c9994732b1c6ce6c29e58bd9a))
+* **deps:** update dependency @elastic/eui to ^41.2.1 ([#1494](https://github.com/elastic/elastic-charts/issues/1494)) ([1c32f82](https://github.com/elastic/elastic-charts/commit/1c32f8264d9f03c304534a9b9688ee355d7fda39))
+
+
+### Features
+
+* expose computeRatioByGroups fn ([#1495](https://github.com/elastic/elastic-charts/issues/1495)) ([65f4886](https://github.com/elastic/elastic-charts/commit/65f4886ee3a1ef71eb34cfe8bd504ec4d76f82cb))
+
 # [40.0.0](https://github.com/elastic/elastic-charts/compare/v39.0.2...v40.0.0) (2021-11-18)
 
 

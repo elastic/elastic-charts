@@ -494,6 +494,11 @@ export type ColorVariant = $Values<typeof ColorVariant>;
 // @public
 export type ComponentWithAnnotationDatum = ComponentType<LineAnnotationDatum>;
 
+// @public
+export function computeRatioByGroups<T extends Record<string, unknown>>(data: T[], groupAccessors: GroupKeysOrKeyFn<T>, valueAccessor: (k: T) => number | null | undefined, ratioKeyName: string): (T & {
+    [x: string]: number | null | undefined;
+})[];
+
 // @public (undocumented)
 export type ContinuousDomain = [min: number, max: number];
 
@@ -1022,6 +1027,9 @@ export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
 // @public
 export type GroupByFormatter = (value: ReturnType<GroupByAccessor>) => string;
 
+// @public (undocumented)
+export type GroupByKeyFn<T> = (data: T) => string;
+
 // @alpha (undocumented)
 export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort' | 'format'>;
 
@@ -1039,6 +1047,9 @@ export interface GroupBySpec extends Spec {
 
 // @public (undocumented)
 export type GroupId = string;
+
+// @public (undocumented)
+export type GroupKeysOrKeyFn<T> = Array<keyof T> | GroupByKeyFn<T>;
 
 // @alpha (undocumented)
 export const Heatmap: React_2.FunctionComponent<Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>>;
