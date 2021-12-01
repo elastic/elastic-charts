@@ -122,11 +122,19 @@ export function renderCanvas2d(
       () =>
         // render text on X axis
         config.xAxisLabel.visible &&
-        withContext(ctx, () =>
+        withContext(ctx, () => {
           heatmapViewModel.xValues.forEach((xValue) =>
-            renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel),
-          ),
-        ),
+            config.xAxisLabel.rotation !== 0
+              ? renderText(
+                  ctx,
+                  { x: xValue.x, y: xValue.y },
+                  xValue.text,
+                  { ...config.xAxisLabel, align: 'left' },
+                  config.xAxisLabel.rotation,
+                )
+              : renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel),
+          );
+        }),
     ]);
   });
 }

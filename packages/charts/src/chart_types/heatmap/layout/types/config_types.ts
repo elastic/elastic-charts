@@ -49,6 +49,7 @@ export interface Config {
     visible: boolean;
     padding: number;
     formatter: (value: string | number) => string;
+    rotation: number;
   };
   yAxisLabel: Font & {
     name: string;

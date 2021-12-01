@@ -36,7 +36,8 @@ export function renderTickLabel(
   );
 
   const center = { x: tickLabelProps.x + tickLabelProps.offsetX, y: tickLabelProps.y + tickLabelProps.offsetY };
-
+  console.log('tick label props x', tickLabelProps.x);
+  console.log('offset x', tickLabelProps.offsetX);
   if (debug) {
     const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth: width, maxLabelTextHeight: height } = dimension;
     // full text container

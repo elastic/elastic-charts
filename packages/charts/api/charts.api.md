@@ -1152,6 +1152,7 @@ export interface HeatmapConfig {
         visible: boolean;
         padding: number;
         formatter: (value: string | number) => string;
+        rotation: number;
     };
     // (undocumented)
     yAxisLabel: Font & {

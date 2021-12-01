@@ -49,6 +49,7 @@ export const config: Config = {
     baseline: 'verticalAlign' as CanvasTextBaseline,
     padding: 6,
     formatter: String,
+    rotation: 0,
   },
   yAxisLabel: {
     name: 'Y Value',
