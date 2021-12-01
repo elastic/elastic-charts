@@ -263,6 +263,7 @@ module.exports = {
      */
     'jest/no-standalone-expect': 0, // using custom expect functions
     'jest/no-disabled-tests': 0,
+    'jest/no-identical-title': 0, // does not account for <describe|it>.each
 
     /*
      * unicorn plugin

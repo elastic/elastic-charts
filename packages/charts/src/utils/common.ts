@@ -49,6 +49,10 @@ export const ColorVariant = Object.freeze({
    * Uses empty color, similar to transparent.
    */
   None: '__use__empty__color__' as const,
+  /**
+   * Computes best color based on background contrast
+   */
+  Adaptive: '__use__adaptive__color__' as const,
 });
 /** @public */
 export type ColorVariant = $Values<typeof ColorVariant>;
