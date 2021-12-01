@@ -334,6 +334,7 @@ class CommonPage {
       const element = await this.screenshotDOMElement(options?.screenshotSelector ?? selector, options);
 
       if (!element) {
+        // eslint-disable-next-line no-console
         console.error(`Failed to find element at \`${selector}\`\n\n\t${url}`);
       }
 
@@ -440,6 +441,7 @@ class CommonPage {
         await this.waitForElement(waitSelector, timeout);
         return true;
       } catch {
+        // eslint-disable-next-line no-console
         console.error(`Failed to load url. Check story at: \n\n\tstorybook url: ${url}\n\tlocal vrt url: ${cleanUrl}`);
         return false;
       }
