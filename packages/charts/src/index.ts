@@ -112,6 +112,7 @@ export { Pixels, Ratio } from './common/geometry';
 export { AdditiveNumber } from './utils/accessor';
 export { FontStyle, FONT_STYLES } from './common/text_utils';
 export { Color } from './common/colors';
+export { RGB, A, RgbaTuple } from './common/color_library_wrappers';
 
 export {
   ESCalendarInterval,

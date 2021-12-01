@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
-import { Rect } from '../../../../geoms/types';
+import { Rect, Stroke } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
-import { Rotation } from '../../../../utils/common';
+import { ColorVariant, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { LineGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
@@ -35,9 +36,9 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
     const { lines, sharedStyle, highlightedLegendItem, clippings, renderingArea, rotation } = props;
 
     lines.forEach(({ panel, value: line }) => {
-      const { seriesLineStyle, seriesPointStyle, points } = line;
+      const { style, points } = line;
 
-      if (seriesLineStyle.visible) {
+      if (style.line.visible) {
         withPanelTransform(
           ctx,
           panel,
@@ -48,7 +49,7 @@ export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometries
         );
       }
 
-      const visiblePoints = seriesPointStyle.visible ? points : points.filter(({ orphan }) => orphan);
+      const visiblePoints = style.point.visible ? points : points.filter(({ orphan }) => orphan);
       if (visiblePoints.length === 0) {
         return;
       }
@@ -73,8 +74,28 @@ function renderLine(
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const { color, transform, seriesIdentifier, seriesLineStyle, clippedRanges, hideClippedRanges } = line;
+  const { color, transform, seriesIdentifier, style, clippedRanges, shouldClip } = line;
   const geometryStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const stroke = buildLineStyles(color, seriesLineStyle, geometryStyle);
-  renderLinePaths(ctx, transform, [line.line], stroke, clippedRanges, clippings, hideClippedRanges);
+
+  const lineStroke = buildLineStyles(color, style.line, geometryStyle);
+  const fitLineStrokeColor = style.fit.line.stroke === ColorVariant.Series ? color : style.fit.line.stroke;
+  const fitLineStroke: Stroke = {
+    dash: style.fit.line.dash,
+    width: style.line.strokeWidth,
+    color: overrideOpacity(
+      colorToRgba(fitLineStrokeColor),
+      (opacity) => opacity * geometryStyle.opacity * style.fit.line.opacity,
+    ),
+  };
+
+  renderLinePaths(
+    ctx,
+    transform,
+    [line.line],
+    lineStroke,
+    fitLineStroke,
+    clippedRanges,
+    clippings,
+    shouldClip && style.fit.line.visible,
+  );
 }

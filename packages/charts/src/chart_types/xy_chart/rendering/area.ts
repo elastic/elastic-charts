@@ -38,11 +38,11 @@ export function renderArea(
   curve: CurveType,
   hasY0Accessors: boolean,
   xScaleOffset: number,
-  seriesStyle: AreaSeriesStyle,
+  style: AreaSeriesStyle,
   markSizeOptions: MarkSizeOptions,
-  isStacked = false,
+  isStacked: boolean,
+  hasFit: boolean,
   pointStyleAccessor?: PointStyleAccessor,
-  hasFit?: boolean,
 ): {
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
@@ -61,6 +61,7 @@ export function renderArea(
     })
     .curve(getCurveFactory(curve));
 
+  // TODO we can probably avoid this function call if no fit function is applied.
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
   const lines: string[] = [];
@@ -76,11 +77,11 @@ export function renderArea(
     yScale,
     panel,
     color,
-    seriesStyle.point,
+    style.point,
     hasY0Accessors,
     markSizeOptions,
-    pointStyleAccessor,
     false,
+    pointStyleAccessor,
   );
 
   const areaGeometry: AreaGeometry = {
@@ -101,12 +102,10 @@ export function renderArea(
       smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
       smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
     },
-    seriesAreaStyle: seriesStyle.area,
-    seriesAreaLineStyle: seriesStyle.line,
-    seriesPointStyle: seriesStyle.point,
+    style,
     isStacked,
     clippedRanges,
-    hideClippedRanges: !hasFit,
+    shouldClip: hasFit,
   };
   return {
     areaGeometry,

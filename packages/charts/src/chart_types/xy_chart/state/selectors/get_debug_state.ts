@@ -118,8 +118,8 @@ function getBarsState(
   barGeometries: Array<PerPanel<BarGeometry[]>>,
 ): DebugStateBar[] {
   const buckets = new Map<string, DebugStateBar>();
-  const bars = barGeometries.reduce<BarGeometry[]>((acc, bars) => {
-    return [...acc, ...bars.value];
+  const bars = barGeometries.reduce<BarGeometry[]>((acc, { value }) => {
+    return [...acc, ...value];
   }, []);
   bars.forEach(
     ({
@@ -162,8 +162,7 @@ function getLineState(seriesNameMap: Map<string, string>) {
       points,
       color,
       seriesIdentifier: { key },
-      seriesLineStyle,
-      seriesPointStyle,
+      style,
     },
   }: PerPanel<LineGeometry>): DebugStateLine => {
     const name = seriesNameMap.get(key) ?? '';
@@ -173,8 +172,8 @@ function getLineState(seriesNameMap: Map<string, string>) {
       color,
       key,
       name,
-      visible: hasVisibleStyle(seriesLineStyle),
-      visiblePoints: hasVisibleStyle(seriesPointStyle),
+      visible: hasVisibleStyle(style.line),
+      visiblePoints: hasVisibleStyle(style.point),
       points: points.map(({ value: { x, y, mark } }) => ({ x, y, mark })),
     };
   };
@@ -188,9 +187,7 @@ function getAreaState(seriesNameMap: Map<string, string>) {
       points,
       color,
       seriesIdentifier: { key },
-      seriesAreaStyle,
-      seriesPointStyle,
-      seriesAreaLineStyle,
+      style,
     },
   }: PerPanel<AreaGeometry>): DebugStateArea => {
     const [y1Path, y0Path] = lines;
@@ -212,8 +209,8 @@ function getAreaState(seriesNameMap: Map<string, string>) {
         y1: [],
       },
     );
-    const lineVisible = hasVisibleStyle(seriesAreaLineStyle);
-    const visiblePoints = hasVisibleStyle(seriesPointStyle);
+    const lineVisible = hasVisibleStyle(style.line);
+    const visiblePoints = hasVisibleStyle(style.point);
     const name = seriesNameMap.get(key) ?? '';
 
     return {
@@ -221,7 +218,7 @@ function getAreaState(seriesNameMap: Map<string, string>) {
       color,
       key,
       name,
-      visible: hasVisibleStyle(seriesAreaStyle),
+      visible: hasVisibleStyle(style.area),
       lines: {
         y0: y0Path
           ? {
