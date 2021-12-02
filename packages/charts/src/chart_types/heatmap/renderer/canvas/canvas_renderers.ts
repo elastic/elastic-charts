@@ -136,26 +136,43 @@ export function renderCanvas2d(
         // render the xAxisTitle
         heatmapSpec?.xAxisTitle &&
         withContext(ctx, () => {
-          const { width, height } = config;
-          renderText(ctx, { x: width / 2, y: height - config.xAxisLabel.fontSize }, heatmapSpec.xAxisTitle, {
-            fontVariant: 'normal',
-            fontWeight: 'bold',
-            textColor: '#333',
-            fontStyle: 'normal',
-            baseline: 'middle',
-            ...config.axisTitle,
-            align: 'center',
-          });
+          const { xValues } = heatmapViewModel;
+          const { width } = config;
+          // half the xAxixLabel width and padding
+          const halfLabel = (xValues[0].x + config.xAxisLabel.padding) / 2;
+          renderText(
+            ctx,
+            {
+              x: (width + halfLabel) / 2,
+              y: xValues[0].y + config.xAxisLabel.fontSize,
+            },
+            heatmapSpec.xAxisTitle,
+            {
+              fontVariant: 'normal',
+              fontWeight: 'bold',
+              textColor: '#333',
+              fontStyle: 'normal',
+              baseline: 'middle',
+              ...config.axisTitle,
+              align: 'center',
+            },
+          );
         }),
 
       () =>
         // render the yAxisTitle
         heatmapSpec?.yAxisTitle &&
         withContext(ctx, () => {
-          const { height } = config;
+          const { yValues } = heatmapViewModel;
+          const heightOfLabels = yValues[yValues.length - 1].y - yValues[0].y;
+          const yAxisTitlePadding =
+            typeof config.yAxisLabel.padding === 'number'
+              ? config.yAxisLabel.padding
+              : config.yAxisLabel.padding.left ?? config.yAxisLabel.padding.bottom;
           renderText(
             ctx,
-            { x: config.yAxisLabel.fontSize, y: height / 2 },
+            // subtract two times the  padding from the chart for the axis label height
+            { x: config.yAxisLabel.fontSize, y: (heightOfLabels + 2 * (yAxisTitlePadding ?? 0)) / 2 },
             heatmapSpec.yAxisTitle,
             {
               fontVariant: 'normal',
