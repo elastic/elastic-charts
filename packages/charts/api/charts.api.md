@@ -1086,6 +1086,8 @@ export type HeatmapBrushEvent = {
 
 // @public (undocumented)
 export interface HeatmapConfig {
+    // (undocumented)
+    axisTitle: TextStyle & Visible;
     brushArea: {
         visible: boolean;
         fill: Color;

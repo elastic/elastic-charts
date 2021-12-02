@@ -143,7 +143,7 @@ export function renderCanvas2d(
             textColor: '#333',
             fontStyle: 'normal',
             baseline: 'middle',
-            ...theme.axes.axisTitle,
+            ...config.axisTitle,
             align: 'center',
           });
         }),
@@ -163,8 +163,7 @@ export function renderCanvas2d(
               textColor: '#333',
               fontStyle: 'normal',
               baseline: 'middle',
-              ...theme.axes.axisTitle,
-              ...theme.axes.axisTitle,
+              ...config.axisTitle,
               align: 'center',
             },
             -90,

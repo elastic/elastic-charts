@@ -46,13 +46,12 @@ export const getGridHeightParamsSelector = createCustomCachedSelector(
     { axes: axesStyle },
   ): GridHeightParams => {
     const xAxisHeight = visible ? fontSize : 0;
-    const totalVerticalPadding = padding * 2;
     const titleHeight = xAxisTitle ? axesStyle.axisTitle.fontSize : 0;
     let legendHeight = 0;
     if (showLegend && isHorizontalLegend(legendSize.position)) {
       legendHeight = maxLegendHeight ?? legendSize.height;
     }
-    const verticalRemainingSpace = containerHeight - xAxisHeight - totalVerticalPadding - legendHeight - titleHeight;
+    const verticalRemainingSpace = containerHeight - xAxisHeight - padding - legendHeight - titleHeight;
 
     // compute the grid cell height
     const gridCellHeight = getGridCellHeight(yValues, grid, verticalRemainingSpace);

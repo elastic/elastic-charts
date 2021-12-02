@@ -9,6 +9,7 @@
 import { Color } from '../../../../common/colors';
 import { Pixels, SizeRatio } from '../../../../common/geometry';
 import { Font, FontFamily, TextAlign, TextBaseline } from '../../../../common/text_utils';
+import { TextStyle, Visible } from '../../../../utils/themes/theme';
 
 /**
  * @public
@@ -22,6 +23,7 @@ export interface Config {
   // general text config
   fontFamily: FontFamily;
   timeZone: string;
+  axisTitle: TextStyle & Visible;
 
   /**
    * Config of the mask over the area outside of the selected cells

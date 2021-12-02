@@ -7,6 +7,7 @@
  */
 
 import { Colors } from '../../../../common/colors';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Config } from '../types/config_types';
 
 /** @internal */
@@ -17,6 +18,7 @@ export const config: Config = {
   maxRowHeight: 30,
   maxColumnWidth: 30,
   fontFamily: 'Sans-Serif',
+  axisTitle: LIGHT_THEME.axes.axisTitle,
 
   brushArea: {
     visible: true,

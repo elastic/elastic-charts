@@ -191,6 +191,8 @@ export class MockSeriesSpec {
     xSortPredicate: Predicate.AlphaAsc,
     ySortPredicate: Predicate.AlphaAsc,
     config: {},
+    xAxisTitle: '',
+    yAxisTitle: '',
   };
 
   static bar(partial?: Partial<BarSeriesSpec>): BarSeriesSpec {

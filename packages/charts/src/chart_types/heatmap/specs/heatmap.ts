@@ -22,8 +22,7 @@ import { config } from '../layout/config/config';
 import { Config } from '../layout/types/config_types';
 import { X_SCALE_DEFAULT } from './scale_defaults';
 
-/** @internal */
-export const defaultProps = {
+const defaultProps = {
   chartType: ChartType.Heatmap,
   specType: SpecType.Series,
   data: [],
