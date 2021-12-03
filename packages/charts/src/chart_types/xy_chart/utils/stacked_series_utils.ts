@@ -8,12 +8,15 @@
 
 import {
   stack as D3Stack,
+  stackOffsetDiverging as D3StackOffsetDiverging,
   stackOffsetExpand as D3StackOffsetExpand,
   stackOffsetNone as D3StackOffsetNone,
   stackOffsetSilhouette as D3StackOffsetSilhouette,
   stackOffsetWiggle as D3StackOffsetWiggle,
+  stackOrderInsideOut,
   stackOrderNone,
   SeriesPoint,
+  Series,
 } from 'd3-shape';
 
 import { SeriesKey } from '../../../common/series_id';
@@ -40,15 +43,6 @@ export const datumXSortPredicate = (xScaleType: ScaleType, sortedXValues?: (stri
   return a.x - b.x;
 };
 
-type D3StackArrayElement = Record<SeriesKey, string | number | null>;
-type D3UnionStack = Record<
-  SeriesKey,
-  {
-    y0: SeriesPoint<D3StackArrayElement>[];
-    y1: SeriesPoint<D3StackArrayElement>[];
-  }
->;
-
 /** @internal */
 export function formatStackedDataSeriesValues(
   dataSeries: DataSeries[],
@@ -60,71 +54,74 @@ export function formatStackedDataSeriesValues(
     return acc;
   }, {});
 
-  const xValuesArray = [...xValues];
-  const reorderedArray: Array<D3StackArrayElement> = [];
-  const xValueMap: Map<SeriesKey, Map<string | number, DataSeriesDatum>> = new Map();
-  // transforming the current set of series into the d3 stack required data structure
-  dataSeries.forEach(({ data, key, isFiltered }) => {
-    if (isFiltered) {
-      return;
-    }
-    const dsMap: Map<string | number, DataSeriesDatum> = new Map();
-    data.forEach((d) => {
-      const { x, y0, y1 } = d;
-      const xIndex = xValuesArray.indexOf(x);
+  // group data series by x values
+  const xMap: Map<string | number, Map<SeriesKey, DataSeriesDatum>> = new Map();
+  [...xValues].forEach((xValue) => {
+    const seriesMap = new Map<SeriesKey, DataSeriesDatum>();
+    dataSeries.forEach(({ key, data }) => {
+      const datum = data.find(({ x }) => x === xValue);
 
-      if (reorderedArray[xIndex] === undefined) {
-        reorderedArray[xIndex] = { x };
-      }
-      // y0 can be considered as always present
-      reorderedArray[xIndex][`${key}-y0`] = y0;
-      // if y0 is available, we have to count y1 as the different of y1 and y0
-      // to correctly stack them when stacking banded charts
-      reorderedArray[xIndex][`${key}-y1`] = (y1 ?? 0) - (y0 ?? 0);
-      dsMap.set(x, d);
+      if (!datum) return;
+
+      // console.log(datum);
+
+      seriesMap.set(`${key}-y0`, datum);
+      seriesMap.set(key, datum);
     });
-    xValueMap.set(key, dsMap);
+    xMap.set(xValue, seriesMap);
   });
 
+  const keys = Object.keys(dataSeriesKeys).reduce<string[]>((acc, key) => [...acc, `${key}-y0`, key], []);
   const stackOffset = getOffsetBasedOnStackMode(stackMode);
 
-  const keys = Object.keys(dataSeriesKeys).reduce<string[]>((acc, key) => [...acc, `${key}-y0`, `${key}-y1`], []);
+  function diverging(series, order) {
+    if (!((n = series.length) > 0)) return;
+    for (var i, j = 0, y, d, dy, yp, yn = 0, n, s0, s1 = series[order[0]], m = s1.length; j < m; ++j) {
+      (s0 = s1), (s1 = series[order[j]]);
+      // sum negative values per x before to maintain original sort for negative values
+      for (yn = 0, y = 0, i = 0; i < n; ++i) {
+        // const d = s1[j];
+        const d = series[order[i]][j];
+        y += Math.abs(d[1]) || 0;
+        yn += (dy = d[1] - d[0]) < 0 ? dy : 0;
+      }
 
-  const stack = D3Stack<D3StackArrayElement>().keys(keys).order(stackOrderNone).offset(stackOffset)(reorderedArray);
+      // s0[j][1] += s0[j][0] = -y / 2;
 
-  const unionedYStacks = stack.reduce<D3UnionStack>((acc, d) => {
-    const key = d.key.slice(0, -3);
-    const accessor = d.key.slice(-2);
-    if (accessor !== 'y1' && accessor !== 'y0') {
-      return acc;
-    }
-    if (!acc[key]) {
-      acc[key] = {
-        y0: [],
-        y1: [],
-      };
-    }
-    acc[key][accessor] = d.map((da) => da);
-    return acc;
-  }, {});
+      // console.log(y);
 
-  return Object.keys(unionedYStacks).map((stackedDataSeriesKey) => {
-    const dataSeriesProps = dataSeriesKeys[stackedDataSeriesKey];
-    const dsMap = xValueMap.get(stackedDataSeriesKey);
-    const { y0: y0StackArray, y1: y1StackArray } = unionedYStacks[stackedDataSeriesKey];
-    const data = y1StackArray
-      .map<DataSeriesDatum | null>((y1Stack, index) => {
-        const { x } = y1Stack.data;
-        if (x === undefined || x === null) {
-          return null;
+      for (yp = 0, i = 0; i < n; ++i) {
+        if ((dy = (d = series[order[i]][j])[1] - d[0]) > 0) {
+          (d[0] = yp), (d[1] = yp += dy);
+        } else if (dy < 0) {
+          (d[1] = yn), (d[0] = yn -= dy);
+        } else {
+          (d[0] = 0), (d[1] = dy);
         }
-        const originalData = dsMap?.get(x);
-        if (!originalData) {
-          return null;
-        }
-        const [, y0] = y0StackArray[index];
-        const [, y1] = y1Stack;
-        const { initialY0, initialY1, mark, datum, filled } = originalData;
+      }
+    }
+  }
+
+  const stack = D3Stack<[string | number, Map<SeriesKey, DataSeriesDatum>]>()
+    .keys(keys)
+    .value(([, indexMap], key) => {
+      const datum = indexMap.get(key);
+      return (datum ? (key.endsWith('-y0') ? datum.y0 : datum.y1) : null) ?? NaN;
+    })
+    .order(stackOrderNone)
+    .offset(diverging)(xMap)
+    // .offset(D3StackOffsetDiverging)(xMap)
+    .filter(({ key }) => !key.endsWith('-y0'));
+
+  const test = stack.map((stackedSeries) => {
+    const dataSeriesProps = dataSeriesKeys[stackedSeries.key];
+    const data = stackedSeries
+      .map<DataSeriesDatum | null>((row) => {
+        const d = row.data[1].get(stackedSeries.key);
+        if (!d || d.x === undefined || d.x === null) return null;
+        const { initialY0, initialY1, mark, datum, filled, x } = d;
+        const [y0, y1] = row;
+
         return {
           x,
           /**
@@ -148,6 +145,8 @@ export function formatStackedDataSeriesValues(
       data,
     };
   });
+
+  return test;
 }
 
 function clampIfStackedAsPercentage(value: number, stackMode?: StackMode) {
