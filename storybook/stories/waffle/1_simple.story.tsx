@@ -19,12 +19,15 @@ import { colorBrewerCategoricalStark9, discreteColor, productLookup } from '../u
 
 export const Example = () => {
   const showDebug = boolean('show table for debugging', false);
+  const ascendingSort = boolean('ascending sort', false);
+  // this is used to test the sorting capabilities
+  const data = mocks.pie.slice(0, 4).sort(() => (Math.random() > 0.5 ? 1 : -1));
   return (
     <Chart className="story-chart">
       <Settings baseTheme={useBaseTheme()} debug={showDebug} showLegend flatLegend showLegendExtra />
       <Partition
         id="spec_1"
-        data={mocks.pie.slice(0, 4)}
+        data={data}
         valueAccessor={(d: Datum) => d.exportVal as number}
         valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
@@ -34,9 +37,11 @@ export const Example = () => {
             shape: {
               fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9.slice(1))(d.sortIndex),
             },
-            sortPredicate: ([, node1]: ArrayEntry, [, node2]: ArrayEntry) => {
-              return node2.value - node1.value;
-            },
+            sortPredicate: ascendingSort
+              ? ([, node1]: ArrayEntry, [, node2]: ArrayEntry) => {
+                  return node1.value - node2.value;
+                }
+              : undefined, // the descending sort is applied by default
           },
         ]}
         config={{
