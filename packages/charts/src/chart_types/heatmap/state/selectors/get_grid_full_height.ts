@@ -84,3 +84,34 @@ function getGridCellHeight(yValues: Array<string | number>, grid: Config['grid']
 
   return stretchedHeight;
 }
+
+/**@internal */
+export const xAxisTitlePosition = createCustomCachedSelector(
+  [
+    getLegendSizeSelector,
+    getSettingsSpecSelector,
+    getParentDimension,
+    getHeatmapConfigSelector,
+    getHeatmapSpecSelector,
+  ],
+  (
+    { height, position },
+    { showLegend },
+    { height: containerHeight },
+    { xAxisLabel: { padding, fontSize, visible }, axisTitleStyle, maxLegendHeight },
+    { xAxisTitle },
+  ): number => {
+    const xAxisHeight = visible ? fontSize : 0;
+    const titleHeight = xAxisTitle ? axisTitleStyle.fontSize / 2 : 0;
+    let legendHeight = 0;
+    if (showLegend && isHorizontalLegend(position)) {
+      legendHeight = maxLegendHeight ?? height;
+    }
+    const titlePadding =
+      typeof axisTitleStyle.padding === 'number' ? axisTitleStyle.padding : axisTitleStyle.padding.outer;
+    // for top and bottom of the xAxisLabel
+    const totalVerticalPadding = padding * 2;
+
+    return containerHeight - xAxisHeight - totalVerticalPadding - legendHeight - titleHeight - titlePadding;
+  },
+);

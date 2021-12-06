@@ -18,7 +18,7 @@ export const config: Config = {
   maxRowHeight: 30,
   maxColumnWidth: 30,
   fontFamily: 'Sans-Serif',
-  axisTitle: LIGHT_THEME.axes.axisTitle,
+  axisTitleStyle: LIGHT_THEME.axes.axisTitle,
 
   brushArea: {
     visible: true,

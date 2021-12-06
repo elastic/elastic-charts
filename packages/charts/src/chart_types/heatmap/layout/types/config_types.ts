@@ -23,7 +23,7 @@ export interface Config {
   // general text config
   fontFamily: FontFamily;
   timeZone: string;
-  axisTitle: TextStyle & Visible;
+  axisTitleStyle: TextStyle & Visible;
 
   /**
    * Config of the mask over the area outside of the selected cells

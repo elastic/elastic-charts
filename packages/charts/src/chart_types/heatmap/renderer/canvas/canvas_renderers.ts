@@ -9,7 +9,6 @@
 import { Color, Colors } from '../../../../common/colors';
 import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
-import { Theme } from '../../../../utils/themes/theme';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
@@ -22,7 +21,7 @@ export function renderCanvas2d(
   dpr: number,
   { config, heatmapViewModel }: ShapeViewModel,
   background: Color,
-  theme: Theme,
+  xAxisTitlePosition: number,
   heatmapSpec?: HeatmapSpec,
 ) {
   // eslint-disable-next-line no-empty-pattern
@@ -136,15 +135,14 @@ export function renderCanvas2d(
         // render the xAxisTitle
         heatmapSpec?.xAxisTitle &&
         withContext(ctx, () => {
-          const { xValues } = heatmapViewModel;
+          const { gridOrigin } = heatmapViewModel;
           const { width } = config;
-          // half the xAxixLabel width and padding
-          const halfLabel = (xValues[0].x + config.xAxisLabel.padding) / 2;
+          const halfHeatmapWidth = width / 2;
           renderText(
             ctx,
             {
-              x: (width + halfLabel) / 2,
-              y: xValues[0].y + config.xAxisLabel.fontSize,
+              x: gridOrigin.x + halfHeatmapWidth,
+              y: xAxisTitlePosition,
             },
             heatmapSpec.xAxisTitle,
             {
@@ -153,7 +151,7 @@ export function renderCanvas2d(
               textColor: '#333',
               fontStyle: 'normal',
               baseline: 'middle',
-              ...config.axisTitle,
+              ...config.axisTitleStyle,
               align: 'center',
             },
           );
@@ -163,16 +161,16 @@ export function renderCanvas2d(
         // render the yAxisTitle
         heatmapSpec?.yAxisTitle &&
         withContext(ctx, () => {
-          const { yValues } = heatmapViewModel;
-          const heightOfLabels = yValues[yValues.length - 1].y - yValues[0].y;
-          const yAxisTitlePadding =
+          const { gridOrigin } = heatmapViewModel;
+          const { height } = config;
+          const outerPadding =
             typeof config.yAxisLabel.padding === 'number'
               ? config.yAxisLabel.padding
-              : config.yAxisLabel.padding.left ?? config.yAxisLabel.padding.bottom;
+              : config.yAxisLabel.padding.right ?? 0;
+          const halfTitleSize = config.axisTitleStyle.fontSize / 2;
           renderText(
             ctx,
-            // subtract two times the  padding from the chart for the axis label height
-            { x: config.yAxisLabel.fontSize, y: (heightOfLabels + 2 * (yAxisTitlePadding ?? 0)) / 2 },
+            { x: halfTitleSize + outerPadding, y: gridOrigin.y + height / 2 },
             heatmapSpec.yAxisTitle,
             {
               fontVariant: 'normal',
@@ -180,7 +178,7 @@ export function renderCanvas2d(
               textColor: '#333',
               fontStyle: 'normal',
               baseline: 'middle',
-              ...config.axisTitle,
+              ...config.axisTitleStyle,
               align: 'center',
             },
             -90,
