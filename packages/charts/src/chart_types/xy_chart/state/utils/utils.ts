@@ -425,8 +425,8 @@ function renderGeometries(
           enabled: spec.markSizeAccessor !== undefined && lineSeriesStyle.point.visible,
           ratio: chartTheme.markSizeRatio,
         },
-        spec.pointStyleAccessor,
         hasFitFnConfigured(spec.fit),
+        spec.pointStyleAccessor,
       );
 
       geometriesIndex.merge(renderedLines.indexedGeometryMap);
@@ -459,8 +459,8 @@ function renderGeometries(
           ratio: chartTheme.markSizeRatio,
         },
         spec.stackAccessors ? spec.stackAccessors.length > 0 : false,
-        spec.pointStyleAccessor,
         hasFitFnConfigured(spec.fit),
+        spec.pointStyleAccessor,
       );
       geometriesIndex.merge(renderedAreas.indexedGeometryMap);
       areas.push({

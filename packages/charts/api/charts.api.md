@@ -11,6 +11,9 @@ import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
 import { ReactNode } from 'react';
 
+// @public (undocumented)
+export type A = number;
+
 // @public
 export type Accessor = AccessorObjectKey | AccessorArrayIndex;
 
@@ -111,6 +114,12 @@ export interface ArcStyle {
     visible: boolean;
 }
 
+// @public (undocumented)
+export type AreaFitStyle = Visible & Opacity & {
+    fill: Color | typeof ColorVariant.Series;
+    texture?: TexturedStyles;
+};
+
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
@@ -131,6 +140,11 @@ export type AreaSeriesSpec = BasicSeriesSpec & HistogramConfig & Postfixes & {
 export interface AreaSeriesStyle {
     // (undocumented)
     area: AreaStyle;
+    // (undocumented)
+    fit: {
+        line: LineFitStyle;
+        area: AreaFitStyle;
+    };
     // (undocumented)
     line: LineStyle;
     // (undocumented)
@@ -485,6 +499,7 @@ export interface ColorConfig {
 export const ColorVariant: Readonly<{
     Series: "__use__series__color__";
     None: "__use__empty__color__";
+    Adaptive: "__use__adaptive__color__";
 }>;
 
 // @public (undocumented)
@@ -1447,6 +1462,11 @@ export interface LinearScale {
     type: typeof ScaleType.Linear;
 }
 
+// @public (undocumented)
+export type LineFitStyle = Visible & Opacity & StrokeDashArray & {
+    stroke: Color | typeof ColorVariant.Series;
+};
+
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
@@ -1464,6 +1484,10 @@ export type LineSeriesSpec = BasicSeriesSpec & HistogramConfig & {
 
 // @public (undocumented)
 export interface LineSeriesStyle {
+    // (undocumented)
+    fit: {
+        line: LineFitStyle;
+    };
     // (undocumented)
     line: LineStyle;
     // (undocumented)
@@ -1854,6 +1878,12 @@ export type RenderChangeListener = (isRendered: boolean) => void;
 
 // @public (undocumented)
 export type Rendering = 'canvas' | 'svg';
+
+// @public (undocumented)
+export type RGB = number;
+
+// @public (undocumented)
+export type RgbaTuple = [r: RGB, g: RGB, b: RGB, alpha: A];
 
 // @public (undocumented)
 export type Rotation = 0 | 90 | -90 | 180;
