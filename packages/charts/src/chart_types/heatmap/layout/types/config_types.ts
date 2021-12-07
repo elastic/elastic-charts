@@ -50,6 +50,7 @@ export interface Config {
     padding: number;
     formatter: (value: string | number) => string;
     rotation: number;
+    overflow: 'ellipsis' | false;
   };
   yAxisLabel: Font & {
     name: string;
@@ -60,6 +61,7 @@ export interface Config {
     padding: number | { left?: number; right?: number; top?: number; bottom?: number };
     formatter: (value: string | number) => string;
     rotation: number;
+    overflow: 'ellipsis' | false;
   };
   grid: {
     cellWidth: {

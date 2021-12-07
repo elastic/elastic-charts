@@ -1168,6 +1168,7 @@ export interface HeatmapConfig {
         padding: number;
         formatter: (value: string | number) => string;
         rotation: number;
+        overflow: 'ellipsis' | false;
     };
     // (undocumented)
     yAxisLabel: Font & {
@@ -1186,6 +1187,7 @@ export interface HeatmapConfig {
         };
         formatter: (value: string | number) => string;
         rotation: number;
+        overflow: 'ellipsis' | false;
     };
 }
 

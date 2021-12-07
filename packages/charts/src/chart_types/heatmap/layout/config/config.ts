@@ -50,6 +50,7 @@ export const config: Config = {
     padding: 6,
     formatter: String,
     rotation: 0,
+    overflow: false,
   },
   yAxisLabel: {
     name: 'Y Value',
@@ -65,6 +66,7 @@ export const config: Config = {
     padding: 5,
     formatter: String,
     rotation: 0,
+    overflow: false,
   },
   grid: {
     cellWidth: {
