@@ -124,17 +124,37 @@ export function renderCanvas2d(
         // render text on X axis
         config.xAxisLabel.visible &&
         withContext(ctx, () => {
-          heatmapViewModel.xValues.forEach((xValue) =>
-            config.xAxisLabel.rotation !== 0
-              ? renderText(
-                  ctx,
-                  { x: xValue.x, y: xValue.y },
-                  xValue.text,
-                  { ...config.xAxisLabel, align: 'left' },
-                  config.xAxisLabel.rotation,
-                )
-              : renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel),
-          );
+          // alternate rendering xAxisLabels
+          return config.xAxisLabel.alternate
+            ? heatmapViewModel.xValues.forEach((xValue, index) => {
+                if (index % 2 === 0) {
+                  // xAxis label rotations
+                  return config.xAxisLabel.rotation !== 0
+                    ? renderText(
+                        ctx,
+                        { x: xValue.x, y: xValue.y },
+                        xValue.text,
+                        { ...config.xAxisLabel, align: 'left' },
+                        config.xAxisLabel.rotation,
+                      )
+                    : // no rotations specified
+                      renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel);
+                }
+              })
+            : // render all xAxisLabels
+              heatmapViewModel.xValues.forEach((xValue) =>
+                // xAxisLabel rotations
+                config.xAxisLabel.rotation !== 0
+                  ? renderText(
+                      ctx,
+                      { x: xValue.x, y: xValue.y },
+                      xValue.text,
+                      { ...config.xAxisLabel, align: 'left' },
+                      config.xAxisLabel.rotation,
+                    )
+                  : // no rotations specified
+                    renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel),
+              );
         }),
     ]);
   });

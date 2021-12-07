@@ -1175,6 +1175,7 @@ export interface HeatmapConfig {
             max: number;
             documentation: string;
         };
+        alternate: boolean;
     };
     // (undocumented)
     yAxisLabel: Font & {

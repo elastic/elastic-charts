@@ -57,6 +57,7 @@ export const config: Config = {
       max: 200,
       documentation: 'Limits the total number of characters in the x axis label',
     },
+    alternate: false,
   },
   yAxisLabel: {
     name: 'Y Value',

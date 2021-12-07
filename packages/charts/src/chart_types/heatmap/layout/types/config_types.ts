@@ -57,6 +57,7 @@ export interface Config {
       max: number;
       documentation: string;
     };
+    alternate: boolean;
   };
   yAxisLabel: Font & {
     name: string;
