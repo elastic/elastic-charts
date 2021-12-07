@@ -1169,6 +1169,12 @@ export interface HeatmapConfig {
         formatter: (value: string | number) => string;
         rotation: number;
         overflow: 'ellipsis' | false;
+        maxTextLength: {
+            dflt: number;
+            min: number;
+            max: number;
+            documentation: string;
+        };
     };
     // (undocumented)
     yAxisLabel: Font & {
@@ -1188,6 +1194,12 @@ export interface HeatmapConfig {
         formatter: (value: string | number) => string;
         rotation: number;
         overflow: 'ellipsis' | false;
+        maxTextLength: {
+            dflt: number;
+            min: number;
+            max: number;
+            documentation: string;
+        };
     };
 }
 

@@ -12,7 +12,7 @@ import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
-import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
+import { Box, cutToLength, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale, SettingsSpec } from '../../../../specs';
@@ -392,12 +392,14 @@ function getXTicks(
   { xValues, xNumericExtent }: HeatmapTable,
   gridHeight: number,
 ): Array<TextBox> {
+  const maxTextLength = config.xAxisLabel.maxTextLength.max;
   const getTextValue = (
     formatter: Config['xAxisLabel']['formatter'],
     scaleCallback: (x: string | number) => number | undefined | null,
+    overflow: Config['xAxisLabel']['overflow'],
   ) => (value: string | number): TextBox => {
     return {
-      text: formatter(value),
+      text: overflow ? cutToLength(formatter(value), maxTextLength) : formatter(value),
       value,
       isValue: false,
       ...config.xAxisLabel,
@@ -418,13 +420,20 @@ function getXTicks(
         timeZone: config.timeZone,
       },
     );
-    return timeScale.ticks().map<TextBox>(getTextValue(config.xAxisLabel.formatter, (x) => timeScale.scale(x)));
+    return timeScale
+      .ticks()
+      .map<TextBox>(getTextValue(config.xAxisLabel.formatter, (x) => timeScale.scale(x), config.xAxisLabel.overflow));
   }
 
   return xValues.map<TextBox>((textBox: string | number) => {
-    return {
-      ...getTextValue(config.xAxisLabel.formatter, xScale)(textBox),
-      x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
-    };
+    return config.xAxisLabel.overflow
+      ? {
+          ...getTextValue(config.xAxisLabel.formatter, xScale, config.xAxisLabel.overflow)(textBox),
+          x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
+        }
+      : {
+          ...getTextValue(config.xAxisLabel.formatter, xScale, config.xAxisLabel.overflow)(textBox),
+          x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
+        };
   });
 }

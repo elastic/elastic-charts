@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Heatmap, Settings } from '@elastic/charts';
@@ -25,7 +25,8 @@ export const Example = () => {
   const maxCellHeight = number('max cell height', 30, { step: 1, min: 8, max: 45, range: true }, 'grid');
 
   const setRotation = number('set rotation of x axis label', 45, { step: 1, min: 0, max: 359, range: true }, 'labels');
-
+  const allowOverflow = boolean('set overflow property for x axis labels', true, 'labels');
+  const maxTextLength = text('set the max text length for the x axis labels', '20', 'labels');
   return (
     <Chart>
       <Settings
@@ -96,6 +97,10 @@ export const Example = () => {
           xAxisLabel: {
             visible: true,
             rotation: setRotation,
+            overflow: allowOverflow ? 'ellipsis' : false,
+            maxTextLength: {
+              max: parseFloat(maxTextLength),
+            },
           },
         }}
       />

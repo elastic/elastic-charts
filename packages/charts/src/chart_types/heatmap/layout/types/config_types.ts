@@ -51,6 +51,12 @@ export interface Config {
     formatter: (value: string | number) => string;
     rotation: number;
     overflow: 'ellipsis' | false;
+    maxTextLength: {
+      dflt: number;
+      min: number;
+      max: number;
+      documentation: string;
+    };
   };
   yAxisLabel: Font & {
     name: string;
@@ -62,6 +68,12 @@ export interface Config {
     formatter: (value: string | number) => string;
     rotation: number;
     overflow: 'ellipsis' | false;
+    maxTextLength: {
+      dflt: number;
+      min: number;
+      max: number;
+      documentation: string;
+    };
   };
   grid: {
     cellWidth: {

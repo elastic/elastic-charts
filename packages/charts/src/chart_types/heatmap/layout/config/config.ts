@@ -50,7 +50,13 @@ export const config: Config = {
     padding: 6,
     formatter: String,
     rotation: 0,
-    overflow: false,
+    overflow: 'ellipsis',
+    maxTextLength: {
+      dflt: 100,
+      min: 2,
+      max: 200,
+      documentation: 'Limits the total number of characters in the x axis label',
+    },
   },
   yAxisLabel: {
     name: 'Y Value',
@@ -66,7 +72,13 @@ export const config: Config = {
     padding: 5,
     formatter: String,
     rotation: 0,
-    overflow: false,
+    overflow: 'ellipsis',
+    maxTextLength: {
+      dflt: 100,
+      min: 2,
+      max: 200,
+      documentation: 'Limits the total number of characters in linked labels.',
+    },
   },
   grid: {
     cellWidth: {
