@@ -29,7 +29,7 @@ export const Example = () => {
         Wiggle: StackMode.Wiggle,
         Percentage: StackMode.Percentage,
       },
-      StackMode.Percentage,
+      undefined,
     ) ?? undefined;
   const [Series] = getXYSeriesKnob('SeriesType', SeriesType.Bar, undefined, {
     ignore: [SeriesType.Bubble, SeriesType.Line],

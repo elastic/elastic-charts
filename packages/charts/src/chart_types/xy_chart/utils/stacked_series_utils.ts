@@ -11,7 +11,6 @@ import { stack as D3Stack, stackOffsetWiggle, stackOrderNone } from 'd3-shape';
 import { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { clamp, isFiniteNumber } from '../../../utils/common';
-import { Logger } from '../../../utils/logger';
 import {
   diverging,
   divergingPercentage,
@@ -47,11 +46,11 @@ export function formatStackedDataSeriesValues(
   xValues: Set<string | number>,
   stackMode?: StackMode,
 ): DataSeries[] {
+  const stackAsPercentage = stackMode === StackMode.Percentage;
   const dataSeriesKeys = dataSeries.reduce<Record<SeriesKey, DataSeries>>((acc, curr) => {
     acc[curr.key] = curr;
     return acc;
   }, {});
-  let hasY0 = false;
   let hasNegative = false;
   let hasPositive = false;
 
@@ -63,24 +62,38 @@ export function formatStackedDataSeriesValues(
       if (isFiltered) return;
       const datum = data.find(({ x }) => x === xValue);
       if (!datum) return;
-      if (hasY0 || isFiniteNumber(datum.y0)) hasY0 = true;
       const y1 = datum.y1 ?? 0;
       if (hasPositive || y1 > 0) hasPositive = true;
       if (hasNegative || y1 < 0) hasNegative = true;
+      seriesMap.set(`${key}-y0`, datum);
       seriesMap.set(key, datum);
     });
     xMap.set(xValue, seriesMap);
   });
+  const keys = Object.keys(dataSeriesKeys).reduce<string[]>((acc, key) => [...acc, `${key}-y0`, key], []);
   const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
   const stack = D3Stack<XValueSeriesDatum>()
-    .keys(Object.keys(dataSeriesKeys))
-    .value(([, indexMap], key) => indexMap.get(key)?.y1 ?? NaN)
-    .order(stackOrderNone)
-    .offset(stackOffset)(xMap);
+    .keys(keys)
+    .value(([, indexMap], key) => {
+      const datum = indexMap.get(key);
+      if (!datum) return NaN;
 
-  if (hasY0) {
-    Logger.warn(`y0Accessors are not allowed when using stackAccessors`);
-  }
+      const { y0, y1 } = datum;
+      if (key.endsWith('-y0')) {
+        return isFiniteNumber(y0) ? (stackAsPercentage ? Math.abs(y0) : y0) : 0;
+      }
+
+      // if y0 is available, we have to count y1 as the different of y1 and y0
+      // to correctly stack them when stacking banded charts
+      const nonNullY1 = y1 ?? 0;
+      const nonNullY0 = y0 ?? 0;
+      return (
+        (stackAsPercentage ? Math.abs(nonNullY1) : nonNullY1) - (stackAsPercentage ? Math.abs(nonNullY0) : nonNullY0)
+      );
+    })
+    .order(stackOrderNone)
+    .offset(stackOffset)(xMap)
+    .filter(({ key }) => !key.endsWith('-y0'));
 
   return stack.map((stackedSeries) => {
     const dataSeriesProps = dataSeriesKeys[stackedSeries.key];
