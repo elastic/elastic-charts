@@ -21,7 +21,7 @@
  * THIS SOFTWARE.
  */
 
-import { Series, stackOffsetDiverging, stackOffsetNone } from 'd3-shape';
+import { Series, stackOffsetDiverging } from 'd3-shape';
 
 import { SeriesKey } from '../../../common/series_id';
 import { DataSeriesDatum } from './series';
@@ -145,17 +145,40 @@ export const divergingSilhouette = divergingOffset(true);
 
 /**
  * Stacked Percentage offset function with diverging polarity offset
- *
- * TODO: Need to fix this for mixed polarity values
+ * Treats percentage as participation for mixed polarity data
  * @internal
  */
 export function divergingPercentage<K = 'string'>(series: Series<XValueSeriesDatum, K>, order: number[]): void {
-  if (!((n = series.length) > 0)) return;
-  for (var i, n, j = 0, m = series[0].length, y; j < m; ++j) {
-    for (y = i = 0; i < n; ++i) y += series[i][j][1] || 0;
-    if (y) for (i = 0; i < n; ++i) series[i][j][1] /= y;
+  const n = series.length;
+  if (!(n > 0)) return;
+  for (var i, j = 0, m = series[0].length, sumYn, sumYp; j < m; ++j) {
+    for (sumYn = sumYp = i = 0; i < n; ++i) {
+      const d = series[order[i]][j];
+      if ((dy = d[1] - d[0]) < 0) {
+        sumYn += Math.abs(d[1]) || 0;
+      } else {
+        sumYp += d[1] || 0;
+      }
+    }
+
+    const sumY = sumYn + sumYp;
+    if (sumY === 0) return;
+
+    const yp = sumYn / sumY;
+    const yn = 0;
+
+    for (i = 0; i < n; ++i) {
+      const d = series[order[i]][j];
+      const dy = d[1] - d[0];
+      const participation = Math.abs(dy / sumY);
+
+      if (dy >= 0) {
+        (d[0] = yp), (d[1] = yp += participation);
+      } else if (dy < 0) {
+        (d[0] = yn), (d[1] = yn += participation);
+      }
+    }
   }
-  stackOffsetNone(series, order);
 }
 
 /* eslint-enable header/header, no-param-reassign */
