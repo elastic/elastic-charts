@@ -130,6 +130,13 @@ export function splitSeriesDataByAccessors(
   const dataSeries = new Map<SeriesKey, DataSeries>();
   const xValues: Array<string | number> = [];
   const nonNumericValues: any[] = [];
+  const hasStackedBands = isStacked && Boolean(y0Accessors?.length);
+
+  if (hasStackedBands) {
+    Logger.warn(
+      `y0Accessors are not allowed with stackAccessors. y0Accessors will be ignored but available under initialY0.`,
+    );
+  }
 
   for (let i = 0; i < data.length; i++) {
     const datum = data[i];
@@ -161,6 +168,7 @@ export function splitSeriesDataByAccessors(
         datum,
         accessor,
         nonNumericValues,
+        hasStackedBands,
         y0Accessors && y0Accessors[index],
         markSizeAccessor,
       );
@@ -270,6 +278,7 @@ export function extractYAndMarkFromDatum(
   datum: Datum,
   yAccessor: Accessor | AccessorFn,
   nonNumericValues: any[],
+  hasStackedBands: boolean,
   y0Accessor?: Accessor | AccessorFn,
   markSizeAccessor?: Accessor | AccessorFn,
 ): Pick<DataSeriesDatum, 'y0' | 'y1' | 'mark' | 'datum' | 'initialY0' | 'initialY1'> {
@@ -278,7 +287,7 @@ export function extractYAndMarkFromDatum(
   const y1Value = getAccessorValue(datum, yAccessor);
   const y1 = finiteOrNull(y1Value, nonNumericValues);
   const y0 = y0Accessor ? finiteOrNull(getAccessorValue(datum, y0Accessor), nonNumericValues) : null;
-  return { y1, datum, y0, mark, initialY0: y0, initialY1: y1 };
+  return { y1, datum, y0: hasStackedBands ? null : y0, mark, initialY0: y0, initialY1: y1 };
 }
 
 function finiteOrNull(value: unknown, nonNumericValues: unknown[]): number | null {
