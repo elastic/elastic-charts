@@ -65,7 +65,8 @@ export function formatStackedDataSeriesValues(
   const xMap: XValueMap = new Map();
   [...xValues].forEach((xValue) => {
     const seriesMap = new Map<SeriesKey, DataSeriesDatum>();
-    dataSeries.forEach(({ key, data }) => {
+    dataSeries.forEach(({ key, data, isFiltered }) => {
+      if (isFiltered) return;
       const datum = data.find(({ x }) => x === xValue);
       if (!datum) return;
       if (hasY0 || isFiniteNumber(datum.y0)) hasY0 = true;
