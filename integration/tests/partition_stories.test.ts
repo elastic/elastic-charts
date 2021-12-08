@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { PartitionLayout } from '../../packages/charts/src';
+import { eachTheme } from '../helpers';
 import { common } from '../page_objects';
 
 describe('Axis stories', () => {
@@ -18,5 +20,66 @@ describe('Axis stories', () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/mosaic-alpha--other-slices&globals=background:white;theme:light&knob-"Other" on bottom even if not the smallest=false&knob-Alphabetical outer group sorting=true',
     );
+  });
+
+  eachTheme.describe((_, params) => {
+    it('should show default textColor', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/sunburst--linked-labels-only&${params}&knob-custom linkLabel.textColor=false`,
+      );
+    });
+    it('should show custom red textColor', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/sunburst--linked-labels-only&${params}&knob-custom linkLabel.textColor=true&knob-linkLabel.textColor=rgba(171, 146, 146, .85)`,
+      );
+    });
+    it('should show custom white textColor', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/sunburst--linked-labels-only&${params}&knob-custom linkLabel.textColor=true&knob-linkLabel.textColor=rgba(255, 255, 255, 1)`,
+      );
+    });
+    it('should show custom black textColor', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/sunburst--linked-labels-only&${params}&knob-custom linkLabel.textColor=true&knob-linkLabel.textColor=rgba(0, 0, 0, 1)`,
+      );
+    });
+    it('should show custom white/translucent textColor', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/sunburst--linked-labels-only&${params}&knob-custom linkLabel.textColor=true&knob-linkLabel.textColor=rgba(255, 255, 255, 0.3)`,
+      );
+    });
+    it('should show custom black/translucent textColor', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/sunburst--linked-labels-only&${params}&knob-custom linkLabel.textColor=true&knob-linkLabel.textColor=rgba(0, 0, 0, 0.3)`,
+      );
+    });
+  }, 'linkLabel textcolor - %s theme');
+
+  describe.each([PartitionLayout.treemap, PartitionLayout.sunburst])('fillLabel textcolor - %s', (partitionLayout) => {
+    it('should show custom red textColor', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/treemap--one-layer2&knob-partitionLayout=${partitionLayout}&knob-custom fillLabel.textColor=true&knob-fillLabel.textColor=rgba(255, 0, 0, 0.85)`,
+      );
+    });
+    it('should show custom white textColor', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/treemap--one-layer2&knob-partitionLayout=${partitionLayout}&knob-custom fillLabel.textColor=true&knob-fillLabel.textColor=rgba(255, 255, 255, 1)`,
+      );
+    });
+    it('should show custom black textColor', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/treemap--one-layer2&knob-partitionLayout=${partitionLayout}&knob-custom fillLabel.textColor=true&knob-fillLabel.textColor=rgba(0, 0, 0, 1)`,
+      );
+    });
+    it('should show custom white/translucent textColor', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/treemap--one-layer2&knob-partitionLayout=${partitionLayout}&knob-custom fillLabel.textColor=true&knob-fillLabel.textColor=rgba(255, 255, 255, 0.3)`,
+      );
+    });
+    it('should show custom black/translucent textColor', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/treemap--one-layer2&knob-partitionLayout=${partitionLayout}&knob-custom fillLabel.textColor=true&knob-fillLabel.textColor=rgba(0, 0, 0, 0.3)`,
+      );
+    });
   });
 });

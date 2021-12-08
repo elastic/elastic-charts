@@ -11,6 +11,9 @@ import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
 import { ReactNode } from 'react';
 
+// @public (undocumented)
+export type A = number;
+
 // @public
 export type Accessor = AccessorObjectKey | AccessorArrayIndex;
 
@@ -111,6 +114,12 @@ export interface ArcStyle {
     visible: boolean;
 }
 
+// @public (undocumented)
+export type AreaFitStyle = Visible & Opacity & {
+    fill: Color | typeof ColorVariant.Series;
+    texture?: TexturedStyles;
+};
+
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
@@ -131,6 +140,11 @@ export type AreaSeriesSpec = BasicSeriesSpec & HistogramConfig & Postfixes & {
 export interface AreaSeriesStyle {
     // (undocumented)
     area: AreaStyle;
+    // (undocumented)
+    fit: {
+        line: LineFitStyle;
+        area: AreaFitStyle;
+    };
     // (undocumented)
     line: LineStyle;
     // (undocumented)
@@ -485,6 +499,7 @@ export interface ColorConfig {
 export const ColorVariant: Readonly<{
     Series: "__use__series__color__";
     None: "__use__empty__color__";
+    Adaptive: "__use__adaptive__color__";
 }>;
 
 // @public (undocumented)
@@ -492,6 +507,11 @@ export type ColorVariant = $Values<typeof ColorVariant>;
 
 // @public
 export type ComponentWithAnnotationDatum = ComponentType<LineAnnotationDatum>;
+
+// @public
+export function computeRatioByGroups<T extends Record<string, unknown>>(data: T[], groupAccessors: GroupKeysOrKeyFn<T>, valueAccessor: (k: T) => number | null | undefined, ratioKeyName: string): (T & {
+    [x: string]: number | null | undefined;
+})[];
 
 // @public (undocumented)
 export type ContinuousDomain = [min: number, max: number];
@@ -1021,6 +1041,9 @@ export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
 // @public
 export type GroupByFormatter = (value: ReturnType<GroupByAccessor>) => string;
 
+// @public (undocumented)
+export type GroupByKeyFn<T> = (data: T) => string;
+
 // @alpha (undocumented)
 export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort' | 'format'>;
 
@@ -1038,6 +1061,9 @@ export interface GroupBySpec extends Spec {
 
 // @public (undocumented)
 export type GroupId = string;
+
+// @public (undocumented)
+export type GroupKeysOrKeyFn<T> = Array<keyof T> | GroupByKeyFn<T>;
 
 // @alpha (undocumented)
 export const Heatmap: React_2.FunctionComponent<Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>>;
@@ -1434,6 +1460,11 @@ export interface LinearScale {
     type: typeof ScaleType.Linear;
 }
 
+// @public (undocumented)
+export type LineFitStyle = Visible & Opacity & StrokeDashArray & {
+    stroke: Color | typeof ColorVariant.Series;
+};
+
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
@@ -1451,6 +1482,10 @@ export type LineSeriesSpec = BasicSeriesSpec & HistogramConfig & {
 
 // @public (undocumented)
 export interface LineSeriesStyle {
+    // (undocumented)
+    fit: {
+        line: LineFitStyle;
+    };
     // (undocumented)
     line: LineStyle;
     // (undocumented)
@@ -1841,6 +1876,12 @@ export type RenderChangeListener = (isRendered: boolean) => void;
 
 // @public (undocumented)
 export type Rendering = 'canvas' | 'svg';
+
+// @public (undocumented)
+export type RGB = number;
+
+// @public (undocumented)
+export type RgbaTuple = [r: RGB, g: RGB, b: RGB, alpha: A];
 
 // @public (undocumented)
 export type Rotation = 0 | 90 | -90 | 180;

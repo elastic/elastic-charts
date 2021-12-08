@@ -50,7 +50,6 @@ export function formatStackedDataSeriesValues(
     acc[curr.key] = curr;
     return acc;
   }, {});
-
   // group data series by x values
   const xMap: XValueMap = new Map();
   [...xValues].forEach((xValue) => {

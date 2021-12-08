@@ -49,6 +49,10 @@ export const ColorVariant = Object.freeze({
    * Uses empty color, similar to transparent.
    */
   None: '__use__empty__color__' as const,
+  /**
+   * Computes best color based on background contrast
+   */
+  Adaptive: '__use__adaptive__color__' as const,
 });
 /** @public */
 export type ColorVariant = $Values<typeof ColorVariant>;
@@ -616,4 +620,9 @@ const oppositeAlignmentMap: Record<string, HorizontalAlignment | VerticalAlignme
 /** @internal */
 export function getOppositeAlignment<A extends HorizontalAlignment | VerticalAlignment>(alignment: A): A {
   return (oppositeAlignmentMap[alignment] as A) ?? alignment;
+}
+
+/** @internal */
+export function isFiniteNumber(value: unknown): value is number {
+  return Number.isFinite(value);
 }

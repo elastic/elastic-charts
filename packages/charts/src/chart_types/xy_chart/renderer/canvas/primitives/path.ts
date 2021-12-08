@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { overrideOpacity, RGBATupleToString } from '../../../../../common/color_library_wrappers';
+import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
 import { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { withClipRanges } from '../../../../../renderers/canvas';
 import { ClippedRanges } from '../../../../../utils/geometry';
@@ -19,18 +19,19 @@ export function renderLinePaths(
   transform: Point,
   linePaths: Array<string>,
   stroke: Stroke,
+  fitStroke: Stroke,
   clippedRanges: ClippedRanges,
   clippings: Rect,
-  hideClippedRanges = false,
+  shouldClip: boolean,
 ) {
   withClipRanges(ctx, clippedRanges, clippings, false, () => {
     ctx.translate(transform.x, transform.y);
     renderMultiLine(ctx, linePaths, stroke);
   });
-  if (clippedRanges.length > 0 && !hideClippedRanges) {
+  if (clippedRanges.length > 0 && shouldClip) {
     withClipRanges(ctx, clippedRanges, clippings, true, () => {
       ctx.translate(transform.x, transform.y);
-      renderMultiLine(ctx, linePaths, { ...stroke, dash: [5, 5] });
+      renderMultiLine(ctx, linePaths, fitStroke);
     });
   }
 }
@@ -41,15 +42,14 @@ export function renderAreaPath(
   transform: Point,
   area: string,
   fill: Fill,
+  fitFill: Fill,
   clippedRanges: ClippedRanges,
   clippings: Rect,
-  hideClippedRanges = false,
+  shouldClip: boolean,
 ) {
   withClipRanges(ctx, clippedRanges, clippings, false, () => renderPathFill(ctx, area, fill, transform));
-  if (clippedRanges.length > 0 && !hideClippedRanges) {
-    withClipRanges(ctx, clippedRanges, clippings, true, () =>
-      renderPathFill(ctx, area, { ...fill, color: overrideOpacity(fill.color, fill.color[3] / 2) }, transform),
-    );
+  if (clippedRanges.length > 0 && shouldClip) {
+    withClipRanges(ctx, clippedRanges, clippings, true, () => renderPathFill(ctx, area, fitFill, transform));
   }
 }
 
