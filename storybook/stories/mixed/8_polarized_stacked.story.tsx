@@ -50,6 +50,7 @@ export const Example = () => {
         xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="product"
+        y0Accessors={[() => 1]} // for testing warning
         yAccessors={[
           ({ profit }) => (polarity === 'Mixed' ? profit : (polarity === 'Negative' ? -1 : 1) * Math.abs(profit)),
         ]}

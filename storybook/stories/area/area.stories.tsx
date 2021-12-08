@@ -23,7 +23,6 @@ export { Example as stackedPercentageWithZeros } from './8_stacked_percentage_ze
 export { Example as stackedSeparateSpecs } from './9_stacked_separate_specs.story';
 export { Example as stackedSameNaming } from './10_stacked_same_naming.story';
 export { Example as bandArea } from './13_band_area.story';
-export { Example as stackedBand } from './14_stacked_band.story';
 export { Example as stackedGrouped } from './15_stacked_grouped.story';
 export { Example as withNegativeValues } from './17_negative.story';
 export { Example as withNegativeAndPositive } from './18_negative_positive.story';

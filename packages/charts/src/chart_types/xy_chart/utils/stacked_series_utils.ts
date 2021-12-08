@@ -10,7 +10,8 @@ import { stack as D3Stack, stackOrderNone } from 'd3-shape';
 
 import { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { clamp } from '../../../utils/common';
+import { clamp, isFiniteNumber } from '../../../utils/common';
+import { Logger } from '../../../utils/logger';
 import {
   diverging,
   divergingPercentage,
@@ -50,6 +51,8 @@ export function formatStackedDataSeriesValues(
     acc[curr.key] = curr;
     return acc;
   }, {});
+  let hasY0 = false;
+
   // group data series by x values
   const xMap: XValueMap = new Map();
   [...xValues].forEach((xValue) => {
@@ -57,6 +60,7 @@ export function formatStackedDataSeriesValues(
     dataSeries.forEach(({ key, data }) => {
       const datum = data.find(({ x }) => x === xValue);
       if (!datum) return;
+      if (hasY0 || isFiniteNumber(datum.y0)) hasY0 = true;
       seriesMap.set(key, datum);
     });
     xMap.set(xValue, seriesMap);
@@ -68,6 +72,10 @@ export function formatStackedDataSeriesValues(
     .order(stackOrderNone)
     .offset(stackOffset)(xMap)
     .filter(({ key }) => !key.endsWith('-y0'));
+
+  if (hasY0) {
+    Logger.warn(`y0Accessors are not allowed when using stackAccessors`);
+  }
 
   return stack.map((stackedSeries) => {
     const dataSeriesProps = dataSeriesKeys[stackedSeries.key];
