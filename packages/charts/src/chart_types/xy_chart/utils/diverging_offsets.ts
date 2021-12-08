@@ -94,15 +94,12 @@ const divergingOffset = (isSilhouette = false) => {
         // @ts-ignore - d3-shape type here is inaccurate
         const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
         const dy = d[1] - d[0];
-        if (dy > 0) {
+        if (dy >= 0) {
           d[0] = yp;
           d[1] = yp += dy;
-        } else if (dy < 0) {
+        } else {
           d[1] = yn;
           d[0] = yn -= dy;
-        } else {
-          d[0] = 0;
-          d[1] = dy;
         }
       }
     }
@@ -149,15 +146,12 @@ export function divergingWiggle<K = 'string'>(series: Series<XValueSeriesDatum, 
       // @ts-ignore - d3-shape type here is inaccurate
       const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
       const dy = d[1] - d[0];
-      if (dy > 0) {
+      if (dy >= 0) {
         d[0] = yp;
         d[1] = yp += dy;
-      } else if (dy < 0) {
+      } else {
         d[1] = yn;
         d[0] = yn -= dy;
-      } else {
-        d[0] = 0;
-        d[1] = dy;
       }
     }
   }
