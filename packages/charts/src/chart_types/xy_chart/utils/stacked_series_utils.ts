@@ -10,7 +10,7 @@ import { stack as D3Stack, stackOffsetWiggle, stackOrderNone } from 'd3-shape';
 
 import { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { clamp, isDefined, isFiniteNumber } from '../../../utils/common';
+import { clamp, isDefined } from '../../../utils/common';
 import {
   diverging,
   divergingPercentage,
@@ -46,7 +46,6 @@ export function formatStackedDataSeriesValues(
   xValues: Set<string | number>,
   stackMode?: StackMode,
 ): DataSeries[] {
-  const stackAsPercentage = stackMode === StackMode.Percentage;
   const dataSeriesMap = dataSeries.reduce<Map<SeriesKey, DataSeries>>((acc, curr) => {
     return acc.set(curr.key, curr);
   }, new Map());
@@ -76,18 +75,7 @@ export function formatStackedDataSeriesValues(
     .value(([, indexMap], key) => {
       const datum = indexMap.get(key);
       if (!datum) return 0; // hides filtered series while maintaining their existence
-      const { y0, y1 } = datum;
-      if (key.endsWith('-y0')) {
-        return isFiniteNumber(y0) ? (stackAsPercentage ? Math.abs(y0) : y0) : 0;
-      }
-
-      // if y0 is available, we have to count y1 as the different of y1 and y0
-      // to correctly stack them when stacking banded charts
-      const nonNullY1 = y1 ?? 0;
-      const nonNullY0 = y0 ?? 0;
-      return (
-        (stackAsPercentage ? Math.abs(nonNullY1) : nonNullY1) - (stackAsPercentage ? Math.abs(nonNullY0) : nonNullY0)
-      );
+      return key.endsWith('-y0') ? datum.y0 ?? 0 : datum.y1 ?? 0;
     })
     .order(stackOrderNone)
     .offset(stackOffset)(xMap)
