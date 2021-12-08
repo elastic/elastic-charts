@@ -10,7 +10,7 @@ import { stack as D3Stack, stackOffsetWiggle, stackOrderNone } from 'd3-shape';
 
 import { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { clamp, isFiniteNumber } from '../../../utils/common';
+import { clamp, isDefined, isFiniteNumber } from '../../../utils/common';
 import {
   diverging,
   divergingPercentage,
@@ -47,10 +47,9 @@ export function formatStackedDataSeriesValues(
   stackMode?: StackMode,
 ): DataSeries[] {
   const stackAsPercentage = stackMode === StackMode.Percentage;
-  const dataSeriesKeys = dataSeries.reduce<Record<SeriesKey, DataSeries>>((acc, curr) => {
-    acc[curr.key] = curr;
-    return acc;
-  }, {});
+  const dataSeriesMap = dataSeries.reduce<Map<SeriesKey, DataSeries>>((acc, curr) => {
+    return acc.set(curr.key, curr);
+  }, new Map());
   let hasNegative = false;
   let hasPositive = false;
 
@@ -70,14 +69,13 @@ export function formatStackedDataSeriesValues(
     });
     xMap.set(xValue, seriesMap);
   });
-  const keys = Object.keys(dataSeriesKeys).reduce<string[]>((acc, key) => [...acc, `${key}-y0`, key], []);
+  const keys = [...dataSeriesMap.keys()].reduce<string[]>((acc, key) => [...acc, `${key}-y0`, key], []);
   const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
   const stack = D3Stack<XValueSeriesDatum>()
     .keys(keys)
     .value(([, indexMap], key) => {
       const datum = indexMap.get(key);
-      if (!datum) return NaN;
-
+      if (!datum) return 0; // hides filtered series while maintaining their existence
       const { y0, y1 } = datum;
       if (key.endsWith('-y0')) {
         return isFiniteNumber(y0) ? (stackAsPercentage ? Math.abs(y0) : y0) : 0;
@@ -95,38 +93,41 @@ export function formatStackedDataSeriesValues(
     .offset(stackOffset)(xMap)
     .filter(({ key }) => !key.endsWith('-y0'));
 
-  return stack.map((stackedSeries) => {
-    const dataSeriesProps = dataSeriesKeys[stackedSeries.key];
-    const data = stackedSeries
-      .map<DataSeriesDatum | null>((row) => {
-        const d = row.data[1].get(stackedSeries.key);
-        if (!d || d.x === undefined || d.x === null) return null;
-        const { initialY0, initialY1, mark, datum, filled, x } = d;
-        const [y0, y1] = row;
+  return stack
+    .map<DataSeries | null>((stackedSeries) => {
+      const dataSeriesProps = dataSeriesMap.get(stackedSeries.key);
+      if (!dataSeriesProps) return null;
+      const data = stackedSeries
+        .map<DataSeriesDatum | null>((row) => {
+          const d = row.data[1].get(stackedSeries.key);
+          if (!d || d.x === undefined || d.x === null) return null;
+          const { initialY0, initialY1, mark, datum, filled, x } = d;
+          const [y0, y1] = row;
 
-        return {
-          x,
-          /**
-           * Due to floating point errors, values computed on a stack
-           * could falls out of the current defined domain boundaries.
-           * This in particular cause issues with percent stack, where the domain
-           * is hardcoded to [0,1] and some value can fall outside that domain.
-           */
-          y1: clampIfStackedAsPercentage(y1, stackMode),
-          y0: clampIfStackedAsPercentage(y0, stackMode),
-          initialY0,
-          initialY1,
-          mark,
-          datum,
-          filled,
-        };
-      })
-      .filter((d) => d !== null) as DataSeriesDatum[];
-    return {
-      ...dataSeriesProps,
-      data,
-    };
-  });
+          return {
+            x,
+            /**
+             * Due to floating point errors, values computed on a stack
+             * could falls out of the current defined domain boundaries.
+             * This in particular cause issues with percent stack, where the domain
+             * is hardcoded to [0,1] and some value can fall outside that domain.
+             */
+            y1: clampIfStackedAsPercentage(y1, stackMode),
+            y0: clampIfStackedAsPercentage(y0, stackMode),
+            initialY0,
+            initialY1,
+            mark,
+            datum,
+            filled,
+          };
+        })
+        .filter(isDefined);
+      return {
+        ...dataSeriesProps,
+        data,
+      };
+    })
+    .filter(isDefined);
 }
 
 function clampIfStackedAsPercentage(value: number, stackMode?: StackMode) {
