@@ -6,13 +6,7 @@
  * Side Public License, v 1.
  */
 
-import {
-  stack as D3Stack,
-  stackOffsetExpand,
-  stackOffsetSilhouette,
-  stackOffsetWiggle,
-  stackOrderNone,
-} from 'd3-shape';
+import { stack as D3Stack, stackOffsetWiggle, stackOrderNone } from 'd3-shape';
 
 import { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
@@ -77,7 +71,7 @@ export function formatStackedDataSeriesValues(
     });
     xMap.set(xValue, seriesMap);
   });
-  const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && hasPositive);
+  const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
   const stack = D3Stack<XValueSeriesDatum>()
     .keys(Object.keys(dataSeriesKeys))
     .value(([, indexMap], key) => indexMap.get(key)?.y1 ?? NaN)
@@ -127,29 +121,18 @@ function clampIfStackedAsPercentage(value: number, stackMode?: StackMode) {
   return stackMode === StackMode.Percentage ? clamp(value, 0, 1) : value;
 }
 
-// TODO: fix diverging offsets for negative polarity data
-function getOffsetBasedOnStackMode(stackMode?: StackMode, mixedPolarity = false) {
-  if (mixedPolarity) {
-    switch (stackMode) {
-      case StackMode.Percentage:
-        return divergingPercentage;
-      case StackMode.Silhouette:
-        return divergingSilhouette;
-      case StackMode.Wiggle:
-        return divergingWiggle;
-      default:
-        return diverging;
-    }
-  }
+function getOffsetBasedOnStackMode(stackMode?: StackMode, onlyNegative = false) {
+  // TODO: fix diverging wiggle offset for negative polarity data
+  if (onlyNegative && stackMode === StackMode.Wiggle) return stackOffsetWiggle;
 
   switch (stackMode) {
     case StackMode.Percentage:
-      return stackOffsetExpand;
+      return divergingPercentage;
     case StackMode.Silhouette:
-      return stackOffsetSilhouette;
+      return divergingSilhouette;
     case StackMode.Wiggle:
-      return stackOffsetWiggle;
+      return divergingWiggle;
     default:
-      return stackOrderNone;
+      return diverging;
   }
 }
