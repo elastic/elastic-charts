@@ -177,7 +177,7 @@ export function divergingPercentage<K = 'string'>(series: Series<XValueSeriesDat
     }
 
     const sumY = sumYn + sumYp;
-    if (sumY === 0) return;
+    if (sumY === 0) continue; // must not return, else loop will stop
 
     let yp = sumYn / sumY;
     let yn = 0;
