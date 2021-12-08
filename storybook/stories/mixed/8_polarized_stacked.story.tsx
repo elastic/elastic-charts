@@ -10,14 +10,15 @@ import { boolean, select } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { Axis, Chart, BarSeries, Position, ScaleType, Settings, StackMode } from '@elastic/charts';
+import { Axis, Chart, Position, ScaleType, Settings, StackMode } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { data } from '../utils/datasets/product_profits';
+import { getXYSeriesKnob } from '../utils/knobs';
 
 export const Example = () => {
   const stacked = boolean('stacked', true);
-  const positive = boolean('positive only', false);
+  const polarity = select('data polarity', ['Mixed', 'Positive', 'Negative'], 'Positive');
   const customDomain = boolean('custom domain', false);
   const stackMode =
     select<StackMode | undefined>(
@@ -28,8 +29,9 @@ export const Example = () => {
         Wiggle: StackMode.Wiggle,
         Percentage: StackMode.Percentage,
       },
-      undefined,
+      StackMode.Wiggle,
     ) ?? undefined;
+  const [SeriesType] = getXYSeriesKnob();
   return (
     <Chart>
       <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
@@ -42,13 +44,15 @@ export const Example = () => {
         tickFormat={(d) => numeral(d).format(stackMode === 'percentage' ? '0%' : '$0,0')}
       />
 
-      <BarSeries
-        id="bars"
+      <SeriesType
+        id="series"
         color={['#7BC0F7', '#3C8AD8', '#F18026', '#FEDB69']}
         xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="product"
-        yAccessors={[({ profit }) => (positive ? Math.abs(profit) : profit)]}
+        yAccessors={[
+          ({ profit }) => (polarity === 'Mixed' ? profit : (polarity === 'Negative' ? -1 : 1) * Math.abs(profit)),
+        ]}
         splitSeriesAccessors={['state']}
         stackMode={stackMode}
         stackAccessors={stacked ? ['yes'] : undefined}
