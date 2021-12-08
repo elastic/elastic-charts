@@ -6,7 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { stack as D3Stack, stackOrderNone } from 'd3-shape';
+import {
+  stack as D3Stack,
+  stackOffsetExpand,
+  stackOffsetSilhouette,
+  stackOffsetWiggle,
+  stackOrderNone,
+} from 'd3-shape';
 
 import { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
@@ -52,6 +58,8 @@ export function formatStackedDataSeriesValues(
     return acc;
   }, {});
   let hasY0 = false;
+  let hasNegative = false;
+  let hasPositive = false;
 
   // group data series by x values
   const xMap: XValueMap = new Map();
@@ -61,11 +69,14 @@ export function formatStackedDataSeriesValues(
       const datum = data.find(({ x }) => x === xValue);
       if (!datum) return;
       if (hasY0 || isFiniteNumber(datum.y0)) hasY0 = true;
+      const y1 = datum.y1 ?? 0;
+      if (hasPositive || y1 > 0) hasPositive = true;
+      if (hasNegative || y1 < 0) hasNegative = true;
       seriesMap.set(key, datum);
     });
     xMap.set(xValue, seriesMap);
   });
-  const stackOffset = getOffsetBasedOnStackMode(stackMode);
+  const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && hasPositive);
   const stack = D3Stack<XValueSeriesDatum>()
     .keys(Object.keys(dataSeriesKeys))
     .value(([, indexMap], key) => indexMap.get(key)?.y1 ?? NaN)
@@ -115,15 +126,29 @@ function clampIfStackedAsPercentage(value: number, stackMode?: StackMode) {
   return stackMode === StackMode.Percentage ? clamp(value, 0, 1) : value;
 }
 
-function getOffsetBasedOnStackMode(stackMode?: StackMode) {
+// TODO: fix diverging offsets for negative polarity data
+function getOffsetBasedOnStackMode(stackMode?: StackMode, mixedPolarity = false) {
+  if (mixedPolarity) {
+    switch (stackMode) {
+      case StackMode.Percentage:
+        return divergingPercentage;
+      case StackMode.Silhouette:
+        return divergingSilhouette;
+      case StackMode.Wiggle:
+        return divergingWiggle;
+      default:
+        return diverging;
+    }
+  }
+
   switch (stackMode) {
     case StackMode.Percentage:
-      return divergingPercentage;
+      return stackOffsetExpand;
     case StackMode.Silhouette:
-      return divergingSilhouette;
+      return stackOffsetSilhouette;
     case StackMode.Wiggle:
-      return divergingWiggle;
+      return stackOffsetWiggle;
     default:
-      return diverging;
+      return stackOrderNone;
   }
 }
