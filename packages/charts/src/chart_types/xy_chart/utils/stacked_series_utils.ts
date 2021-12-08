@@ -76,8 +76,7 @@ export function formatStackedDataSeriesValues(
     .keys(Object.keys(dataSeriesKeys))
     .value(([, indexMap], key) => indexMap.get(key)?.y1 ?? NaN)
     .order(stackOrderNone)
-    .offset(stackOffset)(xMap)
-    .filter(({ key }) => !key.endsWith('-y0'));
+    .offset(stackOffset)(xMap);
 
   if (hasY0) {
     Logger.warn(`y0Accessors are not allowed when using stackAccessors`);

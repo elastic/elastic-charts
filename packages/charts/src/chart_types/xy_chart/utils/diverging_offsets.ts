@@ -21,7 +21,7 @@
  * THIS SOFTWARE.
  */
 
-import { Series, stackOffsetDiverging } from 'd3-shape';
+import { Series, SeriesPoint } from 'd3-shape';
 
 import { SeriesKey } from '../../../common/series_id';
 import { DataSeriesDatum } from './series';
@@ -43,13 +43,15 @@ function getWiggleOffsets<K = string>(series: Series<XValueSeriesDatum, K>, orde
   for (y = 0, j = 1; j < series[order[0]].length; ++j) {
     let i, s1, s2;
     for (i = 0, s1 = 0, s2 = 0; i < series.length; ++i) {
-      const si = series[order[i]];
+      // @ts-ignore - d3-shape type here is inaccurate
+      const si = series[order[i]] as SeriesPoint<XValueSeriesDatum>[];
       const sij0 = si[j][1] || 0;
       const sij1 = si[j - 1][1] || 0;
       let s3 = (sij0 - sij1) / 2;
 
       for (let k = 0; k < i; ++k) {
-        const sk = series[order[k]];
+        // @ts-ignore - d3-shape type here is inaccurate
+        const sk = series[order[k]] as SeriesPoint<XValueSeriesDatum>[];
         const skj0 = sk[j][1] || 0;
         const skj1 = sk[j - 1][1] || 0;
         s3 += skj0 - skj1;
@@ -65,49 +67,18 @@ function getWiggleOffsets<K = string>(series: Series<XValueSeriesDatum, K>, orde
   return offsets;
 }
 
-/**
- * Stacked Wiggle offset function to account for diverging offset
- * @internal
- */
-export function divergingWiggle<K = 'string'>(series: Series<XValueSeriesDatum, K>, order: number[]): void {
-  if (!((n = series.length) > 0) || !((m = (s0 = series[order[0]]).length) > 0))
-    return stackOffsetDiverging(series, order);
-
-  const offsets = getWiggleOffsets(series, order);
-
-  for (var i, j = 0, sumYn, d, dy, yp, yn = 0, n, s0 = series[order[0]], m = s0.length; j < m; ++j) {
-    // sum negative values per x before to maintain original sort for negative values
-    for (i = 0, yn = 0, sumYn = 0; i < n; ++i) {
-      const d = series[order[i]][j];
-      if (d[1] - d[0] < 0) {
-        sumYn += Math.abs(d[1]) || 0;
-      }
-    }
-
-    const offset = offsets[j];
-    yn += offset;
-
-    for (yp = offset + sumYn, yn = offset, i = 0; i < n; ++i) {
-      if ((dy = (d = series[order[i]][j])[1] - d[0]) > 0) {
-        (d[0] = yp), (d[1] = yp += dy);
-      } else if (dy < 0) {
-        (d[1] = yn), (d[0] = yn -= dy);
-      } else {
-        (d[0] = 0), (d[1] = dy);
-      }
-    }
-  }
-}
-
 /** @internal */
 const divergingOffset = (isSilhouette = false) => {
   return function <K = 'string'>(series: Series<XValueSeriesDatum, K>, order: number[]): void {
-    if (!((n = series.length) > 0)) return;
-    for (var i, j = 0, sumYn, sumYp, d, dy, yp, yn = 0, n, s0 = series[order[0]], m = s0.length; j < m; ++j) {
+    const n = series.length;
+    if (!(n > 0)) return;
+    for (let i, j = 0, sumYn, sumYp, yp, yn = 0, s0 = series[order[0]], m = s0.length; j < m; ++j) {
       // sum negative values per x before to maintain original sort for negative values
       for (yn = 0, sumYn = 0, sumYp = 0, i = 0; i < n; ++i) {
-        const d = series[order[i]][j];
-        if ((dy = d[1] - d[0]) < 0) {
+        // @ts-ignore - d3-shape type here is inaccurate
+        const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
+        const dy = d[1] - d[0];
+        if (dy < 0) {
           sumYn += Math.abs(d[1]) || 0;
           yn += dy;
         } else {
@@ -120,12 +91,18 @@ const divergingOffset = (isSilhouette = false) => {
       yn += offset;
 
       for (yp = offset, i = 0; i < n; ++i) {
-        if ((dy = (d = series[order[i]][j])[1] - d[0]) > 0) {
-          (d[0] = yp), (d[1] = yp += dy);
+        // @ts-ignore - d3-shape type here is inaccurate
+        const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
+        const dy = d[1] - d[0];
+        if (dy > 0) {
+          d[0] = yp;
+          d[1] = yp += dy;
         } else if (dy < 0) {
-          (d[1] = yn), (d[0] = yn -= dy);
+          d[1] = yn;
+          d[0] = yn -= dy;
         } else {
-          (d[0] = 0), (d[1] = dy);
+          d[0] = 0;
+          d[1] = dy;
         }
       }
     }
@@ -144,6 +121,49 @@ export const diverging = divergingOffset();
 export const divergingSilhouette = divergingOffset(true);
 
 /**
+ * Stacked Wiggle offset function to account for diverging offset
+ * @internal
+ */
+export function divergingWiggle<K = 'string'>(series: Series<XValueSeriesDatum, K>, order: number[]): void {
+  const n = series.length;
+  const s0 = series[order[0]];
+  const m = s0.length;
+  if (!(n > 0) || !(m > 0)) return diverging(series, order);
+
+  const offsets = getWiggleOffsets(series, order);
+
+  for (let i, j = 0, sumYn, yp, yn = 0; j < m; ++j) {
+    // sum negative values per x before to maintain original sort for negative values
+    for (i = 0, yn = 0, sumYn = 0; i < n; ++i) {
+      // @ts-ignore - d3-shape type here is inaccurate
+      const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
+      if (d[1] - d[0] < 0) {
+        sumYn += Math.abs(d[1]) || 0;
+      }
+    }
+
+    const offset = offsets[j];
+    yn += offset;
+
+    for (yp = offset + sumYn, yn = offset, i = 0; i < n; ++i) {
+      // @ts-ignore - d3-shape type here is inaccurate
+      const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
+      const dy = d[1] - d[0];
+      if (dy > 0) {
+        d[0] = yp;
+        d[1] = yp += dy;
+      } else if (dy < 0) {
+        d[1] = yn;
+        d[0] = yn -= dy;
+      } else {
+        d[0] = 0;
+        d[1] = dy;
+      }
+    }
+  }
+}
+
+/**
  * Stacked Percentage offset function with diverging polarity offset
  * Treats percentage as participation for mixed polarity data
  * @internal
@@ -151,10 +171,11 @@ export const divergingSilhouette = divergingOffset(true);
 export function divergingPercentage<K = 'string'>(series: Series<XValueSeriesDatum, K>, order: number[]): void {
   const n = series.length;
   if (!(n > 0)) return;
-  for (var i, j = 0, m = series[0].length, sumYn, sumYp; j < m; ++j) {
+  for (let i, j = 0, sumYn, sumYp; j < series[0].length; ++j) {
     for (sumYn = sumYp = i = 0; i < n; ++i) {
-      const d = series[order[i]][j];
-      if ((dy = d[1] - d[0]) < 0) {
+      // @ts-ignore - d3-shape type here is inaccurate
+      const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
+      if (d[1] - d[0] < 0) {
         sumYn += Math.abs(d[1]) || 0;
       } else {
         sumYp += d[1] || 0;
@@ -164,18 +185,21 @@ export function divergingPercentage<K = 'string'>(series: Series<XValueSeriesDat
     const sumY = sumYn + sumYp;
     if (sumY === 0) return;
 
-    const yp = sumYn / sumY;
-    const yn = 0;
+    let yp = sumYn / sumY;
+    let yn = 0;
 
     for (i = 0; i < n; ++i) {
-      const d = series[order[i]][j];
+      // @ts-ignore - d3-shape type here is inaccurate
+      const d = series[order[i]][j] as SeriesPoint<XValueSeriesDatum>;
       const dy = d[1] - d[0];
       const participation = Math.abs(dy / sumY);
 
       if (dy >= 0) {
-        (d[0] = yp), (d[1] = yp += participation);
-      } else if (dy < 0) {
-        (d[0] = yn), (d[1] = yn += participation);
+        d[0] = yp;
+        d[1] = yp += participation;
+      } else {
+        d[0] = yn;
+        d[1] = yn += participation;
       }
     }
   }
