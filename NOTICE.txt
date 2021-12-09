@@ -43,7 +43,7 @@ THIS SOFTWARE.
 
 ---
 
-This product includes code that is adapted from d3-array@3.0.4 and d3-scale@4.0.2,
+This product includes code that is adapted from d3-shape@3.0.1, d3-array@3.0.4 and d3-scale@4.0.2,
 which are both available under a "ISC" license.
 
 ISC License

@@ -23,22 +23,6 @@ describe('Area series stories', () => {
     });
   });
 
-  describe('scale to extents', () => {
-    describe('domain.fit is true', () => {
-      const trueUrl = 'http://localhost:9001/?path=/story/area-chart--stacked-band&knob-fit Y domain=true';
-      it('should show correct extents - Banded', async () => {
-        await common.expectChartAtUrlToMatchScreenshot(trueUrl);
-      });
-    });
-
-    describe('domain.fit is false', () => {
-      const falseUrl = 'http://localhost:9001/?path=/story/area-chart--stacked-band&knob-fit Y domain=false';
-
-      it('should show correct extents - Banded', async () => {
-        await common.expectChartAtUrlToMatchScreenshot(falseUrl);
-      });
-    });
-  });
   describe('Non-Stacked Linear Area with discontinuous data points', () => {
     it('with fit', async () => {
       await common.expectChartAtUrlToMatchScreenshot(

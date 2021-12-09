@@ -47,14 +47,14 @@ function mergeYDomainForGroup(
   const dataSeries = [...stacked, ...nonStacked];
   if (dataSeries.length === 0) return null;
 
-  const [{ stackMode, spec }] = dataSeries;
+  const [{ isStacked, stackMode, spec }] = dataSeries;
   const groupId = getSpecDomainGroupId(spec);
   const { customDomain, type, nice, desiredTickCount } = yScaleConfig[groupId];
   const newCustomDomain: YDomainRange = customDomain ? { ...customDomain } : { min: NaN, max: NaN };
   const { paddingUnit, padding, constrainPadding } = newCustomDomain;
 
   let mergedDomain: ContinuousDomain;
-  if (stackMode === StackMode.Percentage) {
+  if (isStacked && stackMode === StackMode.Percentage) {
     mergedDomain = computeContinuousDataDomain([0, 1], type, customDomain);
   } else {
     const stackedDomain = computeYDomain(stacked, hasZeroBaselineSpecs, type, newCustomDomain);
