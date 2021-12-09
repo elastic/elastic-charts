@@ -236,7 +236,7 @@ describe('Series', () => {
       }),
     ];
     const xValues = new Set([1, 2, 3, 4]);
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, xValues);
+    const stackedValues = formatStackedDataSeriesValues(dataSeries, xValues, 'bar');
     expect(stackedValues.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
   test('Can stack unsorted dataseries', () => {
@@ -287,7 +287,7 @@ describe('Series', () => {
       }),
     ];
     const xValues = new Set(new Array(maxArrayItems).fill(0).map((d, i) => i));
-    const stackedValues = formatStackedDataSeriesValues(dataSeries, xValues);
+    const stackedValues = formatStackedDataSeriesValues(dataSeries, xValues, 'bar');
     expect(stackedValues.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
   test('Can stack simple dataseries with scale to extent', () => {

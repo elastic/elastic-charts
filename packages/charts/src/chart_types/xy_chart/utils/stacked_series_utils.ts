@@ -11,6 +11,7 @@ import { stack as D3Stack, stackOffsetWiggle, stackOrderNone } from 'd3-shape';
 import { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { clamp, isDefined } from '../../../utils/common';
+import { Logger } from '../../../utils/logger';
 import {
   diverging,
   divergingPercentage,
@@ -20,7 +21,7 @@ import {
   XValueSeriesDatum,
 } from './diverging_offsets';
 import { DataSeries, DataSeriesDatum } from './series';
-import { StackMode } from './specs';
+import { SeriesType, StackMode } from './specs';
 
 /** @internal */
 export interface StackedValues {
@@ -44,6 +45,7 @@ export const datumXSortPredicate = (xScaleType: ScaleType, sortedXValues?: (stri
 export function formatStackedDataSeriesValues(
   dataSeries: DataSeries[],
   xValues: Set<string | number>,
+  seriesType: SeriesType,
   stackMode?: StackMode,
 ): DataSeries[] {
   const dataSeriesMap = dataSeries.reduce<Map<SeriesKey, DataSeries>>((acc, curr) => {
@@ -68,6 +70,13 @@ export function formatStackedDataSeriesValues(
     });
     xMap.set(xValue, seriesMap);
   });
+
+  if (hasNegative && hasPositive && seriesType === SeriesType.Area) {
+    Logger.warn(
+      `Area series should be avoided with dataset containing positive and negative values. Use a bar series instead.`,
+    );
+  }
+
   const keys = [...dataSeriesMap.keys()].reduce<string[]>((acc, key) => [...acc, `${key}-y0`, key], []);
   const stackOffset = getOffsetBasedOnStackMode(stackMode, hasNegative && !hasPositive);
   const stack = D3Stack<XValueSeriesDatum>()

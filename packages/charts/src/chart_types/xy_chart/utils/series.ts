@@ -332,8 +332,8 @@ export function getFormattedDataSeries(
   );
 
   const fittedAndStackedDataSeries = stackedGroups.reduce<DataSeries[]>((acc, dataSeries) => {
-    const [{ stackMode }] = dataSeries;
-    const formatted = formatStackedDataSeriesValues(dataSeries, xValues, stackMode);
+    const [{ stackMode, seriesType }] = dataSeries;
+    const formatted = formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMode);
     return [...acc, ...formatted];
   }, []);
   // get already fitted non stacked dataSeries
