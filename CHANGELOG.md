@@ -1,3 +1,11 @@
+## [40.1.1](https://github.com/elastic/elastic-charts/compare/v40.1.0...v40.1.1) (2021-12-09)
+
+
+### Bug Fixes
+
+* **partition:** linkLabel textColor override ([#1498](https://github.com/elastic/elastic-charts/issues/1498)) ([#1523](https://github.com/elastic/elastic-charts/issues/1523)) ([5324c76](https://github.com/elastic/elastic-charts/commit/5324c76174c1049d29601cca516a3921b2edadba))
+* **xy:** stacked polarity ([#1502](https://github.com/elastic/elastic-charts/issues/1502)) ([#1522](https://github.com/elastic/elastic-charts/issues/1522)) ([bfb853f](https://github.com/elastic/elastic-charts/commit/bfb853f7610b11e3f8e2674f3ce0232183353d95)), closes [#1280](https://github.com/elastic/elastic-charts/issues/1280)
+
 # [40.1.0](https://github.com/elastic/elastic-charts/compare/v40.0.0...v40.1.0) (2021-12-01)
 
 
