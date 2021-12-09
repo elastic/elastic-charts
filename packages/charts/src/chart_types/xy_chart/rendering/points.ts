@@ -35,7 +35,7 @@ export function renderPoints(
   panel: Dimensions,
   color: Color,
   pointStyle: PointStyle,
-  hasY0Accessors: boolean,
+  isBandChart: boolean,
   markSizeOptions: MarkSizeOptions,
   useSpatialIndex: boolean,
   styleAccessor?: PointStyleAccessor,
@@ -66,12 +66,12 @@ export function renderPoints(
     if (Number.isNaN(x)) return acc;
 
     const points: PointGeometry[] = [];
-    const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = hasY0Accessors ? ['y0', 'y1'] : ['y1'];
+    const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandChart ? ['y0', 'y1'] : ['y1'];
 
     yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
       const valueAccessor = getYDatumValueFn(yDatumKeyName);
       const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
-      const originalY = getDatumYValue(datum, keyIndex === 0, hasY0Accessors, dataSeries.stackMode);
+      const originalY = getDatumYValue(datum, keyIndex === 0, isBandChart, dataSeries.stackMode);
       const seriesIdentifier: XYChartSeriesIdentifier = {
         key: dataSeries.key,
         specId: dataSeries.specId,
@@ -98,7 +98,7 @@ export function renderPoints(
           x: xValue,
           y: originalY,
           mark,
-          accessor: hasY0Accessors && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
+          accessor: isBandChart && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
           datum: datum.datum,
         },
         transform: {
