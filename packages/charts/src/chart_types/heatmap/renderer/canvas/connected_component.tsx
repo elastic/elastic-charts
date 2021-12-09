@@ -22,8 +22,6 @@ import {
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
-import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { Theme } from '../../../../utils/themes/theme';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { HeatmapSpec } from '../../specs/heatmap';
 import { geometries } from '../../state/selectors/geometries';
@@ -38,7 +36,6 @@ interface ReactiveChartStateProps {
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
   background: Color;
-  heatmapTheme: Theme;
   xAxisTitlePosition: number;
   heatmapSpec?: HeatmapSpec;
 }
@@ -162,7 +159,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   background: Colors.Transparent.keyword,
-  heatmapTheme: LIGHT_THEME,
   xAxisTitlePosition: 0,
 };
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -177,7 +173,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     a11ySettings: getA11ySettingsSelector(state),
     background: getChartThemeSelector(state).background.color,
     xAxisTitlePosition: xAxisTitlePosition(state),
-    heatmapTheme: getChartThemeSelector(state),
   };
 };
 
