@@ -36,7 +36,7 @@ export function renderArea(
   panel: Dimensions,
   color: Color,
   curve: CurveType,
-  hasY0Accessors: boolean,
+  isBandedSpec: boolean,
   xScaleOffset: number,
   style: AreaSeriesStyle,
   markSizeOptions: MarkSizeOptions,
@@ -47,7 +47,6 @@ export function renderArea(
   areaGeometry: AreaGeometry;
   indexedGeometryMap: IndexedGeometryMap;
 } {
-  const isBandChart = hasY0Accessors && !isStacked;
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
@@ -58,7 +57,7 @@ export function renderArea(
     .y1(y1Fn)
     .y0(y0Fn)
     .defined((datum) => {
-      return definedFn(datum, y1DatumAccessor) && (isBandChart ? definedFn(datum, y0DatumAccessor) : true);
+      return definedFn(datum, y1DatumAccessor) && (isBandedSpec ? definedFn(datum, y0DatumAccessor) : true);
     })
     .curve(getCurveFactory(curve));
 
@@ -66,7 +65,7 @@ export function renderArea(
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
   const lines: string[] = [];
-  const y0Line = isBandChart && pathGenerator.lineY0()(dataSeries.data);
+  const y0Line = isBandedSpec && pathGenerator.lineY0()(dataSeries.data);
   const y1Line = pathGenerator.lineY1()(dataSeries.data);
   if (y1Line) lines.push(y1Line);
   if (y0Line) lines.push(y0Line);
@@ -79,7 +78,7 @@ export function renderArea(
     panel,
     color,
     style.point,
-    isBandChart,
+    isBandedSpec,
     markSizeOptions,
     false,
     pointStyleAccessor,

@@ -12,17 +12,9 @@ import { TooltipValue } from '../../../specs';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
 import { isDefined } from '../../../utils/common';
 import { BandedAccessorType, IndexedGeometry } from '../../../utils/geometry';
-import { isStackedSpec } from '../domains/y_domain';
 import { defaultTickFormatter } from '../utils/axis_utils';
-import { getSeriesName } from '../utils/series';
-import {
-  AxisSpec,
-  BasicSeriesSpec,
-  isAreaSeriesSpec,
-  isBandedSpec,
-  isBarSeriesSpec,
-  TickFormatterOptions,
-} from '../utils/specs';
+import { getSeriesName, isBandedSpec } from '../utils/series';
+import { AxisSpec, BasicSeriesSpec, isAreaSeriesSpec, isBarSeriesSpec, TickFormatterOptions } from '../utils/specs';
 
 /** @internal */
 export const Y0_ACCESSOR_POSTFIX = ' - lower';
@@ -67,11 +59,7 @@ export function formatTooltip(
 ): TooltipValue {
   let label = getSeriesName(seriesIdentifier, hasSingleSeries, true, spec);
 
-  if (
-    isBandedSpec(spec.y0Accessors) &&
-    !isStackedSpec(spec, false) &&
-    (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec))
-  ) {
+  if (isBandedSpec(spec) && (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec))) {
     const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;
     const formatter = accessor === BandedAccessorType.Y0 ? y0AccessorFormat : y1AccessorFormat;
     label = getAccessorFormatLabel(formatter, label);

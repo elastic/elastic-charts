@@ -15,7 +15,6 @@ import { mergePartial, Rotation } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
-import { isStackedSpec } from '../domains/y_domain';
 import { getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { LastValues } from '../state/utils/types';
@@ -28,7 +27,7 @@ import {
   getSeriesName,
   DataSeries,
   getSeriesKey,
-  isDataSeriesBanded,
+  isBandedSpec,
   getSeriesIdentifierFromDataSeries,
 } from '../utils/series';
 import {
@@ -112,7 +111,7 @@ export function computeLegend(
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
-    const banded = isDataSeriesBanded(series) && !isStackedSpec(series.spec, false);
+    const banded = isBandedSpec(series.spec);
     const key = getSeriesKey(series, series.groupId);
     const spec = getSpecsById<BasicSeriesSpec>(specs, specId);
     const dataSeriesKey = getSeriesKey(
