@@ -69,7 +69,7 @@ export function formatTooltip(
 
   if (
     isBandedSpec(spec.y0Accessors) &&
-    !isStackedSpec(spec, true) &&
+    !isStackedSpec(spec, false) &&
     (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec))
   ) {
     const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;

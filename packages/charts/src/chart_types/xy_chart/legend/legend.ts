@@ -112,7 +112,7 @@ export function computeLegend(
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
-    const banded = isDataSeriesBanded(series) && !isStackedSpec(series.spec, true);
+    const banded = isDataSeriesBanded(series) && !isStackedSpec(series.spec, false);
     const key = getSeriesKey(series, series.groupId);
     const spec = getSpecsById<BasicSeriesSpec>(specs, specId);
     const dataSeriesKey = getSeriesKey(
