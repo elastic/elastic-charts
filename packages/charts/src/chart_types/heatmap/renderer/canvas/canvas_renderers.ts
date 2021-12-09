@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { left } from '@popperjs/core';
+
 import { Color, Colors } from '../../../../common/colors';
 import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
@@ -124,37 +126,31 @@ export function renderCanvas2d(
         // render text on X axis
         config.xAxisLabel.visible &&
         withContext(ctx, () => {
-          // alternate rendering xAxisLabels
-          return config.xAxisLabel.alternate
-            ? heatmapViewModel.xValues.forEach((xValue, index) => {
-                if (index % 2 === 0) {
-                  // xAxis label rotations
-                  return config.xAxisLabel.rotation !== 0
-                    ? renderText(
-                        ctx,
-                        { x: xValue.x, y: xValue.y },
-                        xValue.text,
-                        { ...config.xAxisLabel, align: 'left' },
-                        config.xAxisLabel.rotation,
-                      )
-                    : // no rotations specified
-                      renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel);
-                }
-              })
-            : // render all xAxisLabels
-              heatmapViewModel.xValues.forEach((xValue) =>
-                // xAxisLabel rotations
-                config.xAxisLabel.rotation !== 0
-                  ? renderText(
-                      ctx,
-                      { x: xValue.x, y: xValue.y },
-                      xValue.text,
-                      { ...config.xAxisLabel, align: 'left' },
-                      config.xAxisLabel.rotation,
-                    )
-                  : // no rotations specified
-                    renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel),
-              );
+          heatmapViewModel.xValues.forEach((xValue, index) => {
+            // do not want the labels centered if there is a rotation !== 0
+            const rotationAlignment =
+              config.xAxisLabel.rotation !== 0
+                ? { ...config.xAxisLabel, align: 'left' as typeof left }
+                : config.xAxisLabel;
+            return config.xAxisLabel.alternate
+              ? index % 2 === 0
+                ? renderText(
+                    ctx,
+                    { x: xValue.x, y: xValue.y },
+                    xValue.text,
+                    rotationAlignment,
+                    config.xAxisLabel.rotation,
+                  )
+                : // do not render every label if it's alternating
+                  null
+              : renderText(
+                  ctx,
+                  { x: xValue.x, y: xValue.y },
+                  xValue.text,
+                  rotationAlignment,
+                  config.xAxisLabel.rotation,
+                );
+          });
         }),
     ]);
   });

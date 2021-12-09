@@ -392,7 +392,7 @@ function getXTicks(
   { xValues, xNumericExtent }: HeatmapTable,
   gridHeight: number,
 ): Array<TextBox> {
-  const maxTextLength = config.xAxisLabel.maxTextLength.max;
+  const { maxTextLength } = config.xAxisLabel;
   const getTextValue = (
     formatter: Config['xAxisLabel']['formatter'],
     scaleCallback: (x: string | number) => number | undefined | null,
@@ -426,14 +426,9 @@ function getXTicks(
   }
 
   return xValues.map<TextBox>((textBox: string | number) => {
-    return config.xAxisLabel.overflow
-      ? {
-          ...getTextValue(config.xAxisLabel.formatter, xScale, config.xAxisLabel.overflow)(textBox),
-          x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
-        }
-      : {
-          ...getTextValue(config.xAxisLabel.formatter, xScale, config.xAxisLabel.overflow)(textBox),
-          x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
-        };
+    return {
+      ...getTextValue(config.xAxisLabel.formatter, xScale, config.xAxisLabel.overflow)(textBox),
+      x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
+    };
   });
 }

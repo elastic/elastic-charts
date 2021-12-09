@@ -99,9 +99,7 @@ export const Example = () => {
             visible: true,
             rotation: setRotation,
             overflow: allowOverflow ? 'ellipsis' : false,
-            maxTextLength: {
-              max: parseFloat(maxTextLength),
-            },
+            maxTextLength: parseFloat(maxTextLength),
             alternate: shouldAlternate,
           },
         }}
