@@ -10,13 +10,24 @@ import { boolean, select } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { Axis, Chart, Position, ScaleType, Settings, StackMode, SeriesType } from '@elastic/charts';
+import {
+  Axis,
+  Chart,
+  Position,
+  ScaleType,
+  Settings,
+  StackMode,
+  SeriesType,
+  LineAnnotation,
+  AnnotationDomainType,
+} from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { data } from '../utils/datasets/product_profits';
 import { getXYSeriesKnob } from '../utils/knobs';
 
 export const Example = () => {
+  const baseTheme = useBaseTheme();
   const stacked = boolean('stacked', true);
   const polarity = select('data polarity', ['Mixed', 'Positive', 'Negative'], 'Mixed');
   const customDomain = boolean('custom domain', false);
@@ -36,7 +47,7 @@ export const Example = () => {
   });
   return (
     <Chart>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={baseTheme} />
       <Axis id="bottom" position={Position.Bottom} title="Products" />
       <Axis
         id="left"
@@ -44,6 +55,14 @@ export const Example = () => {
         position={Position.Left}
         domain={customDomain ? { min: -25000, max: 50000 } : undefined}
         tickFormat={(d) => numeral(d).format(stackMode === 'percentage' ? '0%' : '$0,0')}
+      />
+
+      <LineAnnotation
+        id="zeroBaseline"
+        domainType={AnnotationDomainType.YDomain}
+        dataValues={[{ dataValue: 0 }]}
+        style={{ line: { ...baseTheme.axes.axisLine, opacity: 1 } }}
+        zIndex={-1}
       />
 
       <Series
