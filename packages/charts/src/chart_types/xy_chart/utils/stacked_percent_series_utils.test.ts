@@ -116,7 +116,6 @@ describe('Stacked Series Utils', () => {
         [
           MockSeriesSpec.area({
             yAccessors: ['y1'],
-            y0Accessors: ['y0'],
             splitSeriesAccessors: ['g'],
             stackAccessors: ['x'],
             stackMode: StackMode.Percentage,
@@ -128,21 +127,21 @@ describe('Stacked Series Utils', () => {
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
       const [data0] = formattedDataSeries[0].data;
-      expect(data0.initialY0).toBe(2);
+      expect(data0.initialY0).toBeNull();
       expect(data0.initialY1).toBe(10);
-      expect(data0.y0).toBe(0.02);
+      expect(data0.y0).toBe(0);
       expect(data0.y1).toBe(0.1);
 
       const [data1] = formattedDataSeries[1].data;
-      expect(data1.initialY0).toBe(4);
+      expect(data1.initialY0).toBeNull();
       expect(data1.initialY1).toBe(20);
-      expect(data1.y0).toBe(0.14);
+      expect(data1.y0).toBe(0.1);
       expect(data1.y1).toBeCloseTo(0.3, 5);
 
       const [data2] = formattedDataSeries[2].data;
-      expect(data2.initialY0).toBe(6);
+      expect(data2.initialY0).toBeNull();
       expect(data2.initialY1).toBe(70);
-      expect(data2.y0).toBeCloseTo(0.36);
+      expect(data2.y0).toBeCloseTo(0.3);
       expect(data2.y1).toBe(1);
     });
     test('format data with nulls - missing points', () => {
@@ -151,7 +150,6 @@ describe('Stacked Series Utils', () => {
         [
           MockSeriesSpec.area({
             yAccessors: ['y1'],
-            y0Accessors: ['y0'],
             splitSeriesAccessors: ['g'],
             stackAccessors: ['x'],
             stackMode: StackMode.Percentage,
@@ -163,9 +161,9 @@ describe('Stacked Series Utils', () => {
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
       const [data0] = formattedDataSeries[0].data;
-      expect(data0.initialY0).toBe(2);
+      expect(data0.initialY0).toBeNull();
       expect(data0.initialY1).toBe(10);
-      expect(data0.y0).toBe(0.02);
+      expect(data0.y0).toBe(0);
       expect(data0.y1).toBe(0.1);
 
       const [data1] = formattedDataSeries[1].data;
@@ -175,9 +173,9 @@ describe('Stacked Series Utils', () => {
       expect(data1.y1).toBe(0.1);
 
       const [data2] = formattedDataSeries[2].data;
-      expect(data2.initialY0).toBe(6);
+      expect(data2.initialY0).toBeNull();
       expect(data2.initialY1).toBe(90);
-      expect(data2.y0).toBe(0.16);
+      expect(data2.y0).toBe(0.1);
       expect(data2.y1).toBe(1);
     });
     test('format data without nulls on second series', () => {
