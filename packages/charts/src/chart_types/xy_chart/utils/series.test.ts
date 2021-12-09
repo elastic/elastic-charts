@@ -602,21 +602,21 @@ describe('Series', () => {
     let datum = extractYAndMarkFromDatum([0, 1, 2], 1, [], false, 2);
     expect(datum).toBeDefined();
     expect(datum?.y1).toBe(1);
-    expect(datum?.y0).toBe(2);
+    expect(datum?.y0).toBe(null);
     datum = extractYAndMarkFromDatum([0, '1', 2], 1, [], false, 2);
     expect(datum).toBeDefined();
     expect(datum?.y1).toBe(1);
-    expect(datum?.y0).toBe(2);
+    expect(datum?.y0).toBe(null);
 
     datum = extractYAndMarkFromDatum([0, '1', '2'], 1, [], false, 2);
     expect(datum).toBeDefined();
     expect(datum?.y1).toBe(1);
-    expect(datum?.y0).toBe(2);
+    expect(datum?.y0).toBe(null);
 
     datum = extractYAndMarkFromDatum([0, 1, '2'], 1, [], false, 2);
     expect(datum).toBeDefined();
     expect(datum?.y1).toBe(1);
-    expect(datum?.y0).toBe(2);
+    expect(datum?.y0).toBe(null);
 
     datum = extractYAndMarkFromDatum([0, 'invalid', 'invalid'], 1, [], false, 2);
     expect(datum).toBeDefined();
