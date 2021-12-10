@@ -36,7 +36,7 @@ export const Example = () => {
   /**
    * The handler section of this story demonstrates the PNG export functionality
    */
-  const chartRef = React.useRef<Chart>();
+  const chartRef = React.useRef<Chart>(null);
   const handler = () => {
     if (!chartRef.current) {
       return;
