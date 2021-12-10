@@ -11,14 +11,14 @@ import { SettingsSpec } from '../../../../specs';
 import { RecursivePartial, mergePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
-import { config as defaultConfig } from '../../layout/config/config';
-import { Config } from '../../layout/types/config_types';
-import { ShapeViewModel, nullShapeViewModel } from '../../layout/types/viewmodel_types';
-import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs';
-import { HeatmapTable } from './compute_chart_dimensions';
-import { ColorScale } from './get_color_scale';
-import { GridHeightParams } from './get_grid_full_height';
+import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
+import { ColorScale } from '../../state/selectors/get_color_scale';
+import { GridHeightParams } from '../../state/selectors/get_grid_full_height';
+import { config as defaultConfig } from '../config/config';
+import { Config } from '../types/config_types';
+import { ShapeViewModel, nullShapeViewModel } from '../types/viewmodel_types';
+import { shapeViewModel } from './viewmodel';
 
 /** @internal */
 export function render(

@@ -11,12 +11,12 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { render } from '../../layout/viewmodel/scenegraph';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getColorScale } from './get_color_scale';
 import { getGridHeightParamsSelector } from './get_grid_full_height';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
-import { render } from './scenegraph';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
