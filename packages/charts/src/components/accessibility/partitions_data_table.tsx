@@ -39,7 +39,7 @@ const ScreenReaderPartitionTableComponent = ({
   debug,
 }: ScreenReaderPartitionTableProps) => {
   const [count, setCount] = useState(1);
-  const tableRowRef = useRef<HTMLTableRowElement>();
+  const tableRowRef = useRef<HTMLTableRowElement>(null);
   const { tableCaption } = a11ySettings;
 
   const rowLimit = TABLE_PAGINATION * count;
