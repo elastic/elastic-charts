@@ -9,7 +9,7 @@
 import { ChartType } from '../../..';
 import { Color, Colors } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
-import { Box } from '../../../../common/text_utils';
+import { Box, Font } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { HeatmapBrushEvent } from '../../../../specs/settings';
 import { Point } from '../../../../utils/point';
@@ -65,6 +65,14 @@ export interface HeatmapViewModel {
   xValues: Array<TextBox>;
   yValues: Array<TextBox>;
   pageSize: number;
+  titles: Array<
+    Font & {
+      fontSize: number;
+      text: string;
+      origin: Point;
+      rotation: 0 | -90;
+    }
+  >;
 }
 
 /** @internal */
@@ -122,6 +130,7 @@ export const nullHeatmapViewModel: HeatmapViewModel = {
   yValues: [],
   pageSize: 0,
   cellFontSize: () => 0,
+  titles: [],
 };
 
 /** @internal */

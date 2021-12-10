@@ -23,11 +23,8 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { HeatmapSpec } from '../../specs/heatmap';
 import { geometries } from '../../state/selectors/geometries';
-import { xAxisTitlePosition } from '../../state/selectors/get_grid_full_height';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
-import { getHeatmapSpecSelector } from '../../state/selectors/get_heatmap_spec';
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
@@ -36,8 +33,6 @@ interface ReactiveChartStateProps {
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
   background: Color;
-  xAxisTitlePosition: number;
-  heatmapSpec?: HeatmapSpec;
 }
 
 interface ReactiveChartDispatchProps {
@@ -93,18 +88,8 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      const { width, height }: Dimensions = this.props.chartContainerDimensions;
-      renderCanvas2d(
-        this.ctx,
-        this.devicePixelRatio,
-        {
-          ...this.props.geometries,
-          config: { ...this.props.geometries.config, width, height },
-        },
-        this.props.background,
-        this.props.xAxisTitlePosition,
-        this.props.heatmapSpec,
-      );
+      // const { width, height }: Dimensions = this.props.chartContainerDimensions;
+      renderCanvas2d(this.ctx, this.devicePixelRatio, this.props.geometries, this.props.background);
     }
   }
 
@@ -159,7 +144,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   background: Colors.Transparent.keyword,
-  xAxisTitlePosition: 0,
 };
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
@@ -169,10 +153,8 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     initialized: true,
     geometries: geometries(state),
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
-    heatmapSpec: getHeatmapSpecSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
     background: getChartThemeSelector(state).background.color,
-    xAxisTitlePosition: xAxisTitlePosition(state),
   };
 };
 

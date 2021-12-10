@@ -13,7 +13,6 @@ import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/li
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { HeatmapSpec } from '../../specs/heatmap';
 
 /** @internal */
 export function renderCanvas2d(
@@ -21,11 +20,7 @@ export function renderCanvas2d(
   dpr: number,
   { config, heatmapViewModel }: ShapeViewModel,
   background: Color,
-  xAxisTitlePosition: number,
-  heatmapSpec?: HeatmapSpec,
 ) {
-  // eslint-disable-next-line no-empty-pattern
-  const {} = config;
   withContext(ctx, () => {
     // set some defaults for the overall rendering
 
@@ -132,57 +127,20 @@ export function renderCanvas2d(
         ),
 
       () =>
-        // render the xAxisTitle
-        heatmapSpec?.xAxisTitle &&
         withContext(ctx, () => {
-          const { gridOrigin } = heatmapViewModel;
-          const { width } = config;
-          const halfHeatmapWidth = width / 2;
-          renderText(
-            ctx,
-            {
-              x: gridOrigin.x + halfHeatmapWidth,
-              y: xAxisTitlePosition,
-            },
-            heatmapSpec.xAxisTitle,
-            {
-              fontVariant: 'normal',
-              fontWeight: 'bold',
-              textColor: '#333',
-              fontStyle: 'normal',
-              baseline: 'middle',
-              ...config.axisTitleStyle,
-              align: 'center',
-            },
-          );
-        }),
-
-      () =>
-        // render the yAxisTitle
-        heatmapSpec?.yAxisTitle &&
-        withContext(ctx, () => {
-          const { gridOrigin } = heatmapViewModel;
-          const { height } = config;
-          const outerPadding =
-            typeof config.yAxisLabel.padding === 'number'
-              ? config.yAxisLabel.padding
-              : config.yAxisLabel.padding.right ?? 0;
-          const halfTitleSize = config.axisTitleStyle.fontSize / 2;
-          renderText(
-            ctx,
-            { x: halfTitleSize + outerPadding, y: gridOrigin.y + height / 2 },
-            heatmapSpec.yAxisTitle,
-            {
-              fontVariant: 'normal',
-              fontWeight: 'bold',
-              textColor: '#333',
-              fontStyle: 'normal',
-              baseline: 'middle',
-              ...config.axisTitleStyle,
-              align: 'center',
-            },
-            -90,
-          );
+          heatmapViewModel.titles.forEach((title) => {
+            renderText(
+              ctx,
+              title.origin,
+              title.text,
+              {
+                ...title,
+                baseline: 'middle',
+                align: 'center',
+              },
+              title.rotation,
+            );
+          });
         }),
     ]);
   });
