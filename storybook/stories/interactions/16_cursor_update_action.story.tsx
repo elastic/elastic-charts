@@ -52,8 +52,8 @@ const getSeriesKnob = (group?: string) => {
 };
 
 export const Example = () => {
-  const ref1 = React.createRef<Chart>();
-  const ref2 = React.createRef<Chart>();
+  const ref1 = React.useRef<Chart>();
+  const ref2 = React.useRef<Chart>();
   const pointerUpdate = (event: PointerEvent) => {
     action('onPointerUpdate')(event);
     if (ref1.current) {
