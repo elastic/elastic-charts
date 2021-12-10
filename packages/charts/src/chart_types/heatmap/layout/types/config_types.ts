@@ -15,8 +15,17 @@ import { TextStyle, Visible } from '../../../../utils/themes/theme';
  * @public
  */
 export interface Config {
+  /**
+   * @deprecated not used directly but always overwritten by internal logic
+   */
   width: Pixels;
+  /**
+   * @deprecated not used directly but always overwritten by internal logic
+   */
   height: Pixels;
+  /**
+   * @deprecated not used
+   */
   margin: { left: SizeRatio; right: SizeRatio; top: SizeRatio; bottom: SizeRatio };
   maxRowHeight: Pixels;
   maxColumnWidth: Pixels;

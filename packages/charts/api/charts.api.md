@@ -1138,9 +1138,9 @@ export interface HeatmapConfig {
             width: number;
         };
     };
-    // (undocumented)
+    // @deprecated (undocumented)
     height: Pixels;
-    // (undocumented)
+    // @deprecated (undocumented)
     margin: {
         left: SizeRatio;
         right: SizeRatio;
@@ -1155,7 +1155,7 @@ export interface HeatmapConfig {
     maxRowHeight: Pixels;
     // (undocumented)
     timeZone: string;
-    // (undocumented)
+    // @deprecated (undocumented)
     width: Pixels;
     // Warning: (ae-forgotten-export) The symbol "Font" needs to be exported by the entry point index.d.ts
     //
