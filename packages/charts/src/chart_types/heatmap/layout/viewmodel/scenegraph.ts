@@ -8,14 +8,14 @@
 
 import { measureText } from '../../../../common/text_utils';
 import { SettingsSpec } from '../../../../specs';
-import { RecursivePartial, mergePartial } from '../../../../utils/common';
+import { mergePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { HeatmapSpec } from '../../specs';
 import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScale } from '../../state/selectors/get_color_scale';
 import { GridHeightParams } from '../../state/selectors/get_grid_full_height';
-import { config as defaultConfig } from '../config/config';
+import { DEFAULT_CONFIG } from '../config/config';
 import { Config } from '../types/config_types';
 import { ShapeViewModel, nullShapeViewModel } from '../types/viewmodel_types';
 import { shapeViewModel } from './viewmodel';
@@ -36,14 +36,10 @@ export function render(
   if (!textMeasurerCtx) {
     return nullShapeViewModel();
   }
-  const { width, height } = chartDimensions;
-  const { config: specConfig } = spec;
-  const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
-  const config = mergePartial<Config>(defaultConfig, partialConfig);
   return shapeViewModel(
     measureText(textMeasurerCtx),
     spec,
-    config,
+    mergePartial<Config>(DEFAULT_CONFIG, spec.config),
     settingsSpec,
     chartDimensions,
     heatmapTable,

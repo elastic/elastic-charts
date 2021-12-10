@@ -9,7 +9,7 @@
 import React, { FC } from 'react';
 
 import { Dimensions } from '../../../../utils/dimensions';
-import { config } from '../../layout/config/config';
+import { DEFAULT_CONFIG } from '../../layout/config/config';
 import { Config } from '../../layout/types/config_types';
 import { DragShape, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 
@@ -144,6 +144,6 @@ export const DEFAULT_PROPS: HighlighterCellsProps = {
   },
   geometries: nullShapeViewModel(),
   dragShape: { x: 0, y: 0, height: 0, width: 0 },
-  brushArea: config.brushArea,
-  brushMask: config.brushMask,
+  brushArea: DEFAULT_CONFIG.brushArea,
+  brushMask: DEFAULT_CONFIG.brushMask,
 };

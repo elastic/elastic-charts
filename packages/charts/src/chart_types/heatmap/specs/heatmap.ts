@@ -18,7 +18,7 @@ import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { Datum, RecursivePartial } from '../../../utils/common';
-import { config } from '../layout/config/config';
+import { DEFAULT_CONFIG } from '../layout/config/config';
 import { Config } from '../layout/types/config_types';
 import { X_SCALE_DEFAULT } from './scale_defaults';
 
@@ -33,7 +33,7 @@ const defaultProps = {
   valueFormatter: (value: number) => `${value}`,
   xSortPredicate: Predicate.AlphaAsc,
   ySortPredicate: Predicate.AlphaAsc,
-  config,
+  config: DEFAULT_CONFIG,
   xAxisTitle: '',
   yAxisTitle: '',
 };

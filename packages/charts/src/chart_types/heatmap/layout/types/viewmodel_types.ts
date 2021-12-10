@@ -14,16 +14,9 @@ import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { HeatmapBrushEvent } from '../../../../specs/settings';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { config } from '../config/config';
+import { DEFAULT_CONFIG } from '../config/config';
 import { HeatmapCellDatum } from '../viewmodel/viewmodel';
 import { Config } from './config_types';
-
-/** @internal */
-export interface Value {
-  order: number;
-  value: string | number;
-  formatted: string;
-}
 
 /** @public */
 export interface Cell {
@@ -134,8 +127,8 @@ export const nullHeatmapViewModel: HeatmapViewModel = {
 };
 
 /** @internal */
-export const nullShapeViewModel = (specifiedConfig?: Config): ShapeViewModel => ({
-  config: specifiedConfig || config,
+export const nullShapeViewModel = (): ShapeViewModel => ({
+  config: DEFAULT_CONFIG,
   heatmapViewModel: nullHeatmapViewModel,
   pickQuads: () => [],
   pickDragArea: () => ({ cells: [], x: [], y: [], chartType: ChartType.Heatmap }),

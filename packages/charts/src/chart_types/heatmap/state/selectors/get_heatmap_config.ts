@@ -8,12 +8,12 @@
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { mergePartial } from '../../../../utils/common';
-import { config as defaultConfig } from '../../layout/config/config';
+import { DEFAULT_CONFIG } from '../../layout/config/config';
 import { Config } from '../../layout/types/config_types';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 
 /** @internal */
 export const getHeatmapConfigSelector = createCustomCachedSelector(
   [getHeatmapSpecSelector],
-  (spec): Config => mergePartial<Config>(defaultConfig, spec.config),
+  (spec): Config => mergePartial<Config>(DEFAULT_CONFIG, spec.config),
 );

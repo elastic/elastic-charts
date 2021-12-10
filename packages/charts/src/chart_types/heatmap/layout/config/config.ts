@@ -11,7 +11,7 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Config } from '../types/config_types';
 
 /** @internal */
-export const config: Config = {
+export const DEFAULT_CONFIG: Config = Object.freeze({
   width: 500,
   height: 500,
   margin: { left: 0.01, right: 0.01, top: 0.01, bottom: 0.01 },
@@ -101,4 +101,4 @@ export const config: Config = {
       stroke: 'gray',
     },
   },
-};
+});
