@@ -25,7 +25,7 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
   const { chartId } = state;
 
   const geoms = geometries(state);
-  const canvasDimension = computeChartDimensionsSelector(state);
+  const canvasDimension = computeChartDimensionsSelector(state).grid;
 
   let dragShape = getBrushedHighlightedShapesSelector(state);
   const highlightedArea = getHighlightedAreaSelector(state);

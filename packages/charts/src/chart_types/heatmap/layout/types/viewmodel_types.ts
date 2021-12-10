@@ -13,6 +13,7 @@ import { Box, Font } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { HeatmapBrushEvent } from '../../../../specs/settings';
 import { Point } from '../../../../utils/point';
+import { Visible } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { DEFAULT_CONFIG } from '../config/config';
 import { HeatmapCellDatum } from '../viewmodel/viewmodel';
@@ -59,12 +60,13 @@ export interface HeatmapViewModel {
   yValues: Array<TextBox>;
   pageSize: number;
   titles: Array<
-    Font & {
-      fontSize: number;
-      text: string;
-      origin: Point;
-      rotation: 0 | -90;
-    }
+    Font &
+      Visible & {
+        fontSize: number;
+        text: string;
+        origin: Point;
+        rotation: 0 | -90;
+      }
   >;
 }
 

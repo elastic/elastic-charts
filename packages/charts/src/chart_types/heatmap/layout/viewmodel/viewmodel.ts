@@ -19,14 +19,13 @@ import { LinearScale, OrdinalScale, RasterTimeScale, SettingsSpec } from '../../
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
 import { clamp } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
+import { Dimensions, innerPad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
-import { HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
+import { ChartDims, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScale } from '../../state/selectors/get_color_scale';
-import { GridHeightParams } from '../../state/selectors/get_grid_full_height';
 import { Config } from '../types/config_types';
 import {
   Cell,
@@ -76,11 +75,10 @@ export function shapeViewModel(
   spec: HeatmapSpec,
   config: Config,
   settingsSpec: SettingsSpec,
-  chartDimensions: Dimensions,
+  dims: ChartDims,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
   bandsToHide: Array<[number, number]>,
-  { height, pageSize }: GridHeightParams,
   theme: Theme,
 ): ShapeViewModel {
   const gridStrokeWidth = config.grid.stroke.width ?? 1;
@@ -96,14 +94,16 @@ export function shapeViewModel(
   }));
 
   // compute the scale for the rows positions
-  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, height]);
+  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, dims.fullHeatmapHeight]);
 
-  const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, height]).range(yValues);
+  const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
+    .domain([0, dims.fullHeatmapHeight])
+    .range(yValues);
 
   // compute the scale for the columns positions
-  const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, chartDimensions.width]);
+  const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, dims.grid.width]);
 
-  const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, chartDimensions.width]).range(xValues);
+  const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, dims.grid.width]).range(xValues);
 
   // compute the cell width (can be smaller then the available size depending on config
   const cellWidth =
@@ -114,20 +114,19 @@ export function shapeViewModel(
   // compute the cell height (we already computed the max size for that)
   const cellHeight = yScale.bandwidth();
 
-  const currentGridHeight = cellHeight * pageSize;
+  const currentGridHeight = dims.grid.height;
 
   // compute the position of each column label
-  const textXValues = getXTicks(spec, config, chartDimensions, xScale, heatmapTable, currentGridHeight);
+  const textXValues = getXTicks(spec, config, dims.grid, xScale, heatmapTable);
 
   const { padding } = config.yAxisLabel;
-  const rightPadding = typeof padding === 'number' ? padding : padding.right ?? 0;
 
   // compute the position of each row label
   const textYValues = boxedYValues.map<TextBox>((d) => {
     return {
       ...d,
       // position of the Y labels
-      x: chartDimensions.left - rightPadding,
+      x: -(typeof padding === 'number' ? padding : padding.right ?? 0),
       y: cellHeight / 2 + (yScale(d.value) || 0),
     };
   });
@@ -198,7 +197,7 @@ export function shapeViewModel(
    * @param y
    */
   const pickQuads = (x: Pixels, y: Pixels): Array<Cell> | TextBox => {
-    if (x > 0 && x < chartDimensions.left && y > chartDimensions.top && y < chartDimensions.height) {
+    if (x > 0 && x < dims.grid.left && y > dims.grid.top && y < dims.grid.top + dims.grid.height) {
       // look up for a Y axis elements
       const yLabelKey = yInvertedScale(y);
       const yLabelValue = textYValues.find((v) => v.value === yLabelKey);
@@ -207,13 +206,13 @@ export function shapeViewModel(
       }
     }
 
-    if (x < chartDimensions.left || y < chartDimensions.top) {
+    if (x < dims.grid.left || y < dims.grid.top) {
       return [];
     }
-    if (x > chartDimensions.width + chartDimensions.left || y > chartDimensions.height) {
+    if (x > dims.grid.width + dims.grid.left || y > dims.grid.top + dims.grid.height) {
       return [];
     }
-    const xValue = xInvertedScale(x - chartDimensions.left);
+    const xValue = xInvertedScale(x - dims.grid.left);
     const yValue = yInvertedScale(y);
     if (xValue === undefined || yValue === undefined) {
       return [];
@@ -232,7 +231,7 @@ export function shapeViewModel(
   const pickDragArea: PickDragFunction = (bound) => {
     const [start, end] = bound;
 
-    const { left, top, width } = chartDimensions;
+    const { left, top, width } = dims.grid;
     const topLeft = [Math.min(start.x, end.x) - left, Math.min(start.y, end.y) - top];
     const bottomRight = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
 
@@ -290,7 +289,7 @@ export function shapeViewModel(
       return null;
     }
 
-    const xStart = chartDimensions.left + startFromScale;
+    const xStart = dims.grid.left + startFromScale;
 
     // extend the range in case the right boundary has been selected
     const width = endFromScale - startFromScale + (isRightOutOfRange || isLeftOutOfRange ? cellWidth : 0);
@@ -326,16 +325,16 @@ export function shapeViewModel(
 
   // vertical lines
   const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => ({
-    x1: chartDimensions.left + i * cellWidth,
-    x2: chartDimensions.left + i * cellWidth,
-    y1: chartDimensions.top,
+    x1: dims.grid.left + i * cellWidth,
+    x2: dims.grid.left + i * cellWidth,
+    y1: dims.grid.top,
     y2: currentGridHeight,
   }));
 
   // horizontal lines
-  const yLines = Array.from({ length: pageSize + 1 }, (d, i) => ({
-    x1: chartDimensions.left,
-    x2: chartDimensions.left + chartDimensions.width,
+  const yLines = Array.from({ length: dims.visibleNumberOfRows + 1 }, (d, i) => ({
+    x1: dims.grid.left,
+    x2: dims.grid.left + dims.grid.width,
     y1: i * cellHeight,
     y2: i * cellHeight,
   }));
@@ -347,8 +346,8 @@ export function shapeViewModel(
     config,
     heatmapViewModel: {
       gridOrigin: {
-        x: chartDimensions.left,
-        y: chartDimensions.top,
+        x: dims.grid.left,
+        y: dims.grid.top,
       },
       gridLines: {
         x: xLines,
@@ -358,7 +357,7 @@ export function shapeViewModel(
           width: gridStrokeWidth,
         },
       },
-      pageSize,
+      pageSize: dims.visibleNumberOfRows,
       cells,
       cellFontSize: (cell: Cell) => (config.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
       xValues: textXValues,
@@ -366,27 +365,25 @@ export function shapeViewModel(
       titles: [
         {
           origin: {
-            x: chartDimensions.left + chartDimensions.width / 2,
-            y: chartDimensions.top + chartDimensions.height,
+            x: dims.grid.left + dims.grid.width / 2,
+            y:
+              dims.grid.top +
+              dims.grid.height +
+              dims.xAxis.height +
+              innerPad(config.axisTitleStyle.padding) +
+              config.axisTitleStyle.fontSize / 2,
           },
-          fontWeight: 'normal',
-          fontVariant: 'normal',
-          fontStyle: config.axisTitleStyle.fontStyle ?? 'normal',
-          fontFamily: config.axisTitleStyle.fontFamily,
-          fontSize: config.axisTitleStyle.fontSize,
+          ...config.axisTitleStyle,
           text: spec.xAxisTitle,
-          textColor: config.axisTitleStyle.fill,
           rotation: 0,
         },
         {
-          origin: { x: chartDimensions.left, y: chartDimensions.top + chartDimensions.height / 2 },
-          fontWeight: 'normal',
-          fontVariant: 'normal',
-          fontStyle: config.axisTitleStyle.fontStyle ?? 'normal',
-          fontFamily: config.axisTitleStyle.fontFamily,
-          fontSize: config.axisTitleStyle.fontSize,
+          origin: {
+            x: dims.yAxis.left - innerPad(config.axisTitleStyle.padding) - config.axisTitleStyle.fontSize / 2,
+            y: dims.grid.top + dims.grid.height / 2,
+          },
+          ...config.axisTitleStyle,
           text: spec.yAxisTitle,
-          textColor: config.axisTitleStyle.fill,
           rotation: -90,
         },
       ],
@@ -414,10 +411,9 @@ export function isRasterTimeScale(scale: RasterTimeScale | OrdinalScale | Linear
 function getXTicks(
   spec: HeatmapSpec,
   config: Config,
-  chartDimensions: Dimensions,
+  grid: Dimensions,
   xScale: ScaleBand<string | number>,
   { xValues, xNumericExtent }: HeatmapTable,
-  gridHeight: number,
 ): Array<TextBox> {
   const getTextValue = (
     formatter: Config['xAxisLabel']['formatter'],
@@ -428,8 +424,8 @@ function getXTicks(
       value,
       isValue: false,
       ...config.xAxisLabel,
-      x: chartDimensions.left + (scaleCallback(value) ?? 0),
-      y: gridHeight + config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
+      x: scaleCallback(value) ?? 0,
+      y: config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
     };
   };
   if (isRasterTimeScale(spec.xScale)) {
@@ -437,11 +433,11 @@ function getXTicks(
       {
         type: ScaleType.Time,
         domain: xNumericExtent,
-        range: [0, chartDimensions.width],
+        range: [0, grid.width],
         nice: false,
       },
       {
-        desiredTickCount: estimatedNonOverlappingTickCount(chartDimensions.width, config.xAxisLabel),
+        desiredTickCount: estimatedNonOverlappingTickCount(grid.width, config.xAxisLabel),
         timeZone: config.timeZone,
       },
     );
@@ -451,7 +447,7 @@ function getXTicks(
   return xValues.map<TextBox>((textBox: string | number) => {
     return {
       ...getTextValue(config.xAxisLabel.formatter, xScale)(textBox),
-      x: chartDimensions.left + (xScale(textBox) || 0) + xScale.bandwidth() / 2,
+      x: (xScale(textBox) || 0) + xScale.bandwidth() / 2,
     };
   });
 }

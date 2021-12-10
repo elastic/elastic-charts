@@ -99,6 +99,7 @@ class BrushToolComponent extends React.Component<StateProps> {
       return;
     }
     const { top, left, width, height } = brushEvent;
+    console.log({ top, left, width, height });
     withContext(ctx, () => {
       ctx.scale(this.devicePixelRatio, this.devicePixelRatio);
       withClip(

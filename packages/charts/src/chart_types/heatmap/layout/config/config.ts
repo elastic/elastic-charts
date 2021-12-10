@@ -7,7 +7,6 @@
  */
 
 import { Colors } from '../../../../common/colors';
-import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Config } from '../types/config_types';
 
 /** @internal */
@@ -18,7 +17,16 @@ export const DEFAULT_CONFIG: Config = Object.freeze({
   maxRowHeight: 30,
   maxColumnWidth: 30,
   fontFamily: 'Sans-Serif',
-  axisTitleStyle: LIGHT_THEME.axes.axisTitle,
+  axisTitleStyle: {
+    visible: true,
+    fontSize: 12,
+    fontFamily: 'Sans-Serif',
+    fontStyle: 'normal',
+    textColor: Colors.Black.keyword,
+    fontVariant: 'normal',
+    fontWeight: 'bold',
+    padding: { inner: 8, outer: 0 },
+  },
 
   brushArea: {
     visible: true,

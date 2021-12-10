@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { Pixels } from '../common/geometry';
+
 /** @internal */
 export interface Dimensions {
   top: number;
@@ -46,8 +48,8 @@ export type Padding = PerSideDistance;
  * @public
  */
 export interface SimplePadding {
-  outer: number;
-  inner: number;
+  outer: Pixels;
+  inner: Pixels;
 }
 
 /** @internal */

@@ -23,6 +23,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { ChartDims, computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { geometries } from '../../state/selectors/geometries';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
 import { renderCanvas2d } from './canvas_renderers';
@@ -33,6 +34,7 @@ interface ReactiveChartStateProps {
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
   background: Color;
+  chartDims: ChartDims;
 }
 
 interface ReactiveChartDispatchProps {
@@ -89,7 +91,13 @@ class Component extends React.Component<Props> {
   private drawCanvas() {
     if (this.ctx) {
       // const { width, height }: Dimensions = this.props.chartContainerDimensions;
-      renderCanvas2d(this.ctx, this.devicePixelRatio, this.props.geometries, this.props.background);
+      renderCanvas2d(
+        this.ctx,
+        this.devicePixelRatio,
+        this.props.geometries,
+        this.props.background,
+        this.props.chartDims,
+      );
     }
   }
 
@@ -144,6 +152,11 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   background: Colors.Transparent.keyword,
+  chartDims: {
+    grid: { width: 0, height: 0, left: 0, top: 0 },
+    xAxis: { width: 0, height: 0, left: 0, top: 0 },
+    yAxis: { width: 0, height: 0, left: 0, top: 0 },
+  },
 };
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
@@ -155,6 +168,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
     background: getChartThemeSelector(state).background.color,
+    chartDims: computeChartDimensionsSelector(state),
   };
 };
 

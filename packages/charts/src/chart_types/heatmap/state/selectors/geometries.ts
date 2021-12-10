@@ -14,7 +14,6 @@ import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel
 import { render } from '../../layout/viewmodel/scenegraph';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getColorScale } from './get_color_scale';
-import { getGridHeightParamsSelector } from './get_grid_full_height';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
@@ -29,17 +28,15 @@ export const geometries = createCustomCachedSelector(
     getHeatmapTableSelector,
     getColorScale,
     getDeselectedSeriesSelector,
-    getGridHeightParamsSelector,
     getChartThemeSelector,
   ],
   (
     heatmapSpec,
-    chartDimensions,
+    dims,
     settingSpec,
     heatmapTable,
     { bands, scale: colorScale },
     deselectedSeries,
-    gridHeightParams,
     theme,
   ): ShapeViewModel => {
     // instead of using the specId, each legend item is associated with an unique band label
@@ -56,16 +53,7 @@ export const geometries = createCustomCachedSelector(
       .map(({ start, end }) => [start, end]);
 
     return heatmapSpec
-      ? render(
-          heatmapSpec,
-          settingSpec,
-          chartDimensions,
-          heatmapTable,
-          colorScale,
-          bandsToHide,
-          gridHeightParams,
-          theme,
-        )
+      ? render(heatmapSpec, settingSpec, dims, heatmapTable, colorScale, bandsToHide, theme)
       : nullShapeViewModel();
   },
 );

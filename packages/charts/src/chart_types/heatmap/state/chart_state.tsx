@@ -108,7 +108,7 @@ export class HeatmapState implements InternalChartState {
   }
 
   getMainProjectionArea(globalState: GlobalChartState): Dimensions {
-    return computeChartDimensionsSelector(globalState);
+    return computeChartDimensionsSelector(globalState).grid;
   }
 
   getBrushArea(globalState: GlobalChartState): Dimensions | null {

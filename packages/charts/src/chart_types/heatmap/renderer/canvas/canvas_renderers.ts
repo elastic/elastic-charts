@@ -13,6 +13,7 @@ import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/li
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { ChartDims } from '../../state/selectors/compute_chart_dimensions';
 
 /** @internal */
 export function renderCanvas2d(
@@ -20,6 +21,7 @@ export function renderCanvas2d(
   dpr: number,
   { config, heatmapViewModel }: ShapeViewModel,
   background: Color,
+  chartDims: ChartDims,
 ) {
   withContext(ctx, () => {
     // set some defaults for the overall rendering
@@ -46,6 +48,19 @@ export function renderCanvas2d(
 
     renderLayers(ctx, [
       () => clearCanvas(ctx, background),
+      // () => {
+      //   withContext(ctx, () => {
+      //     console.log({ chartDims });
+      //     ctx.strokeStyle = 'black';
+      //     ctx.strokeRect(chartDims.grid.left, chartDims.grid.top, chartDims.grid.width, chartDims.grid.height);
+      //
+      //     ctx.strokeStyle = 'red';
+      //     ctx.strokeRect(chartDims.xAxis.left, chartDims.xAxis.top, chartDims.xAxis.width, chartDims.xAxis.height);
+      //
+      //     ctx.strokeStyle = 'violet';
+      //     ctx.strokeRect(chartDims.yAxis.left, chartDims.yAxis.top, chartDims.yAxis.width, chartDims.yAxis.height);
+      //   });
+      // },
       () => {
         withContext(ctx, () => {
           // render grid
@@ -86,7 +101,8 @@ export function renderCanvas2d(
       () =>
         // render text on Y axis
         config.yAxisLabel.visible &&
-        withContext(ctx, () =>
+        withContext(ctx, () => {
+          ctx.translate(chartDims.yAxis.left + chartDims.yAxis.width, chartDims.yAxis.top);
           filteredYValues.forEach((yValue) => {
             const font: Font = {
               fontFamily: config.yAxisLabel.fontFamily,
@@ -114,33 +130,36 @@ export function renderCanvas2d(
               // the alignment for y axis labels is fixed to the right
               { ...config.yAxisLabel, align: 'right' },
             );
-          }),
-        ),
+          });
+        }),
 
       () =>
         // render text on X axis
         config.xAxisLabel.visible &&
-        withContext(ctx, () =>
+        withContext(ctx, () => {
+          ctx.translate(chartDims.xAxis.left, chartDims.xAxis.top);
           heatmapViewModel.xValues.forEach((xValue) =>
             renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel),
-          ),
-        ),
+          );
+        }),
 
       () =>
         withContext(ctx, () => {
-          heatmapViewModel.titles.forEach((title) => {
-            renderText(
-              ctx,
-              title.origin,
-              title.text,
-              {
-                ...title,
-                baseline: 'middle',
-                align: 'center',
-              },
-              title.rotation,
-            );
-          });
+          heatmapViewModel.titles
+            .filter((t) => t.visible && t.text !== '')
+            .forEach((title) => {
+              renderText(
+                ctx,
+                title.origin,
+                title.text,
+                {
+                  ...title,
+                  baseline: 'middle',
+                  align: 'center',
+                },
+                title.rotation,
+              );
+            });
         }),
     ]);
   });
