@@ -33,8 +33,8 @@ export function renderLine(
   xScaleOffset: number,
   seriesStyle: LineSeriesStyle,
   markSizeOptions: MarkSizeOptions,
+  hasFit: boolean,
   pointStyleAccessor?: PointStyleAccessor,
-  hasFit?: boolean,
 ): {
   lineGeometry: LineGeometry;
   indexedGeometryMap: IndexedGeometryMap;
@@ -59,9 +59,11 @@ export function renderLine(
     seriesStyle.point,
     hasY0Accessors,
     markSizeOptions,
+    false,
     pointStyleAccessor,
   );
 
+  // TODO we can probably avoid computing the clipped ranges if no fit function is applied.
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
   const lineGeometry = {
@@ -81,10 +83,9 @@ export function renderLine(
       smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
       smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
     },
-    seriesLineStyle: seriesStyle.line,
-    seriesPointStyle: seriesStyle.point,
+    style: seriesStyle,
     clippedRanges,
-    hideClippedRanges: !hasFit,
+    shouldClip: hasFit,
   };
   return {
     lineGeometry,

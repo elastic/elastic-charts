@@ -11,7 +11,7 @@ import { $Values as Values } from 'utility-types';
 import { Color } from '../../../../common/colors';
 import { Distance, Pixels, Radian, Radius, Ratio, SizeRatio, TimeMs } from '../../../../common/geometry';
 import { Font, FontFamily, PartialFont } from '../../../../common/text_utils';
-import { StrokeStyle, ValueFormatter } from '../../../../utils/common';
+import { ColorVariant, StrokeStyle, ValueFormatter } from '../../../../utils/common';
 import { PerSideDistance } from '../../../../utils/dimensions';
 
 /** @public */
@@ -34,7 +34,7 @@ export type PerSidePadding = PerSideDistance;
 export type Padding = Pixels | Partial<PerSidePadding>;
 
 interface LabelConfig extends Font {
-  textColor: Color;
+  textColor: Color | typeof ColorVariant.Adaptive;
   valueFormatter: ValueFormatter;
   valueFont: PartialFont;
   padding: Padding;

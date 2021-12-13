@@ -20,7 +20,7 @@ import {
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
 import { GroupByAccessor, SmallMultiplesStyle } from '../../../../specs';
-import { StrokeStyle, ValueFormatter, RecursivePartial } from '../../../../utils/common';
+import { StrokeStyle, ValueFormatter, RecursivePartial, ColorVariant } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Layer } from '../../specs';
 import { config as defaultConfig, MODEL_KEY, percentValueGetter } from '../config';
@@ -156,10 +156,13 @@ export function makeQuadViewModel(
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
     const textNegligible = node.y1px - node.y0px < minRectHeightForText;
-    const textColor =
-      !isSunburstLayout && textNegligible
-        ? Colors.Transparent.keyword
-        : fillTextColor(fillColor, containerBackgroundColor);
+
+    const textColor = textNegligible
+      ? Colors.Transparent.keyword
+      : fillLabel.textColor === ColorVariant.Adaptive
+      ? fillTextColor(fillColor, containerBackgroundColor)
+      : fillLabel.textColor;
+
     return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor, ...node };
   });
 }
