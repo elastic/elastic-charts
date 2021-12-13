@@ -17,13 +17,7 @@ import { getAxisSpecsSelector, getSeriesSpecsSelector } from '../../../xy_chart/
 import { getBandedLegendItemLabel, getPostfix } from '../../legend/legend';
 import { getXScaleTypeFromSpec } from '../../scales/get_api_scales';
 import { defaultTickFormatter } from '../../utils/axis_utils';
-import {
-  DataSeries,
-  getSeriesKey,
-  getSeriesName,
-  isDataSeriesBanded,
-  XYChartSeriesIdentifier,
-} from '../../utils/series';
+import { DataSeries, getSeriesKey, getSeriesName, isBandedSpec, XYChartSeriesIdentifier } from '../../utils/series';
 import { AxisSpec, BasicSeriesSpec, StackMode, TickFormatter, TickFormatterOptions } from '../../utils/specs';
 import { getLastValues } from '../utils/get_last_value';
 import { getSpecsById, getAxesSpecForSpecId } from '../utils/spec';
@@ -155,7 +149,7 @@ function computeScreenReaderValues(
   values.forEach((lastValues, key) => {
     const [relevantDataSeries] = dataSeries.filter((series) => series.key === key);
     const { specId, data, smVerticalAccessorValue, smHorizontalAccessorValue } = relevantDataSeries;
-    const banded = isDataSeriesBanded(relevantDataSeries);
+    const banded = isBandedSpec((relevantDataSeries as unknown) as BasicSeriesSpec);
     const spec = getSpecsById<BasicSeriesSpec>(specs, specId);
     const hasSingleSeries = dataSeries.length === 1;
     const name = getSeriesName(relevantDataSeries, hasSingleSeries, false, spec);
