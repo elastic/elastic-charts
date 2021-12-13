@@ -112,6 +112,7 @@ export { Pixels, Ratio } from './common/geometry';
 export { AdditiveNumber } from './utils/accessor';
 export { FontStyle, FONT_STYLES } from './common/text_utils';
 export { Color } from './common/colors';
+export { RGB, A, RgbaTuple } from './common/color_library_wrappers';
 
 export {
   ESCalendarInterval,
@@ -119,3 +120,7 @@ export {
   ESFixedInterval,
   ESFixedIntervalUnit,
 } from './utils/chrono/elasticsearch';
+
+// data utils
+export { GroupKeysOrKeyFn, GroupByKeyFn } from './chart_types/xy_chart/utils/group_data_series';
+export { computeRatioByGroups } from './utils/data/data_processing';

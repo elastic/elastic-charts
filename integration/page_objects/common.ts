@@ -8,8 +8,6 @@
 
 import Url from 'url';
 
-import { AXNode } from 'puppeteer';
-
 import { DRAG_DETECTION_TIMEOUT } from '../../packages/charts/src/state/reducers/interactions';
 // @ts-ignore - no type declarations
 import { port, hostname, debug, isLegacyVRTServer } from '../config';
@@ -320,23 +318,31 @@ class CommonPage {
     selector: string = 'body',
     options?: ScreenshotElementAtUrlOptions,
   ) {
-    await this.loadElementFromURL(url, options?.waitSelector ?? selector, options?.timeout);
+    try {
+      const success = await this.loadElementFromURL(url, options?.waitSelector ?? selector, options?.timeout);
 
-    if (options?.action) {
-      await options.action();
+      expect(success).toBe(true);
+
+      if (options?.action) {
+        await options.action();
+      }
+
+      if (options?.delay) {
+        await page.waitFor(options.delay);
+      }
+
+      const element = await this.screenshotDOMElement(options?.screenshotSelector ?? selector, options);
+
+      if (!element) {
+        // eslint-disable-next-line no-console
+        console.error(`Failed to find element at \`${selector}\`\n\n\t${url}`);
+      }
+
+      expect(element).toBeDefined();
+      expect(element).toMatchImageSnapshot();
+    } catch {
+      // prevent throwing error on failed assertion
     }
-
-    if (options?.delay) {
-      await page.waitFor(options.delay);
-    }
-
-    const element = await this.screenshotDOMElement(options?.screenshotSelector ?? selector, options);
-
-    if (!element) {
-      throw new Error(`Error: Unable to find element\n\n\t${url}`);
-    }
-
-    expect(element).toMatchImageSnapshot();
   }
 
   /**
@@ -362,9 +368,12 @@ class CommonPage {
   async expectChartWithMouseAtUrlToMatchScreenshot(
     url: string,
     mousePosition: MousePosition,
-    options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
+    options?: ScreenshotElementAtUrlOptions,
   ) {
-    const action = async () => await this.moveMouseRelativeToDOMElement(mousePosition, this.chartSelector);
+    const action = async () => {
+      await options?.action?.();
+      await this.moveMouseRelativeToDOMElement(mousePosition, this.chartSelector);
+    };
     await this.expectChartAtUrlToMatchScreenshot(url, {
       ...options,
       action,
@@ -426,12 +435,19 @@ class CommonPage {
    * @param waitSelector selector of element to wait to appear in DOM
    * @param timeout timeout for waiting on element to appear in DOM
    */
-  async loadElementFromURL(url: string, waitSelector?: string, timeout?: number) {
+  async loadElementFromURL(url: string, waitSelector?: string, timeout?: number): Promise<boolean> {
     const cleanUrl = CommonPage.parseUrl(url);
     await page.goto(cleanUrl);
 
     if (waitSelector) {
-      await this.waitForElement(waitSelector, timeout);
+      try {
+        await this.waitForElement(waitSelector, timeout);
+        return true;
+      } catch {
+        // eslint-disable-next-line no-console
+        console.error(`Failed to load url. Check story at: \n\n\tstorybook url: ${url}\n\tlocal vrt url: ${cleanUrl}`);
+        return false;
+      }
     }
 
     if (isLegacyVRTServer) {
@@ -439,7 +455,10 @@ class CommonPage {
       await page.evaluate(() => {
         document.querySelector('html')!.classList.add('echVisualTesting');
       });
+      return true;
     }
+
+    return false;
   }
 
   /**
@@ -450,19 +469,6 @@ class CommonPage {
    */
   async waitForElement(waitSelector: string, timeout = 10000) {
     await page.waitForSelector(waitSelector, { timeout });
-  }
-
-  /**
-   * puppeteer accessibility functionality
-   * @param {string} [url]
-   * @param {string} [waitSelector]
-   */
-  async testAccessibilityTree(url: string, waitSelector: string): Promise<AXNode> {
-    await this.loadElementFromURL(url, waitSelector);
-    const accessibilitySnapshot = await page.accessibility.snapshot().then((value) => {
-      return value;
-    });
-    return accessibilitySnapshot;
   }
 }
 
