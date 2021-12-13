@@ -44,7 +44,7 @@ import {
   getScaleForAxisSpec,
 } from './axis_utils';
 import { computeXScale } from './scales';
-import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID } from './specs';
+import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID, TickFormatter } from './specs';
 
 const alignmentsDefault = { horizontal: HorizontalAlignment.Near, vertical: VerticalAlignment.Middle };
 
@@ -1327,17 +1327,28 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
+      generateTicks(
+        axisSpec,
+        scale as Scale<number>,
+        scale.ticks(),
+        offset,
+        (v: any) => formatter(v, tickFormatOption),
+        0,
+        0,
+        true,
+      ),
     ).toEqual([
-      { value: 1547208000000, label: '2019-01-11', axisTickLabel: '2019-01-11', position: 25.145833333333332, layer },
-      { value: 1547251200000, label: '2019-01-12', axisTickLabel: '2019-01-12', position: 85.49583333333334, layer },
-      { value: 1547337600000, label: '2019-01-13', axisTickLabel: '2019-01-13', position: 206.19583333333333, layer },
-      { value: 1547424000000, label: '2019-01-14', axisTickLabel: '2019-01-14', position: 326.8958333333333, layer },
-      { value: 1547510400000, label: '2019-01-15', axisTickLabel: '2019-01-15', position: 447.59583333333336, layer },
-      { value: 1547596800000, label: '2019-01-16', axisTickLabel: '2019-01-16', position: 568.2958333333333, layer },
+      { value: 1547208000000, label: '2019-01-11', position: 25.145833333333332, layer },
+      { value: 1547251200000, label: '2019-01-12', position: 85.49583333333334, layer },
+      { value: 1547337600000, label: '2019-01-13', position: 206.19583333333333, layer },
+      { value: 1547424000000, label: '2019-01-14', position: 326.8958333333333, layer },
+      { value: 1547510400000, label: '2019-01-15', position: 447.59583333333336, layer },
+      { value: 1547596800000, label: '2019-01-16', position: 568.2958333333333, layer },
     ]);
   });
   test('should show unique consecutive ticks if duplicateTicks is set to false', () => {
+    const tickFormat: TickFormatter = (d, options) =>
+      DateTime.fromMillis(d, { setZone: true, zone: options?.timeZone ?? 'utc+1' }).toFormat('HH:mm');
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
@@ -1349,8 +1360,7 @@ describe('Axis computational utils', () => {
       showOverlappingLabels: false,
       showOverlappingTicks: false,
       style,
-      tickFormat: (d, options) =>
-        DateTime.fromMillis(d, { setZone: true, zone: options?.timeZone ?? 'utc+1' }).toFormat('HH:mm'),
+      tickFormat,
       timeAxisLayerCount: 3,
     };
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
@@ -1365,15 +1375,15 @@ describe('Axis computational utils', () => {
       range: [0, 603.5],
     });
     const offset = 0;
-    const tickFormatOption = { timeZone: xDomainTime.timeZone };
     const ticks = generateTicks(
       axisSpec,
       scale as Scale<number>,
       scale.ticks(),
       offset,
-      (v) => `${v}`,
-      tickFormatOption,
+      (d) => tickFormat(d, { timeZone: xDomainTime.timeZone }),
       0,
+      0,
+      true,
     );
     const tickLabels = ticks.map(({ label }) => ({ label }));
     expect(tickLabels).toEqual([
@@ -1392,7 +1402,7 @@ describe('Axis computational utils', () => {
   test('should show duplicate tick labels if duplicateTicks is set to true', () => {
     const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
     const oneDay = moment.duration(1, 'day');
-    const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
+    const tickFormat = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
@@ -1404,7 +1414,7 @@ describe('Axis computational utils', () => {
       showOverlappingLabels: false,
       showOverlappingTicks: false,
       style,
-      tickFormat: formatter,
+      tickFormat,
       timeAxisLayerCount: 3,
     };
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
@@ -1420,116 +1430,125 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
+      generateTicks(
+        axisSpec,
+        scale as Scale<number>,
+        scale.ticks(),
+        offset,
+        (v) => tickFormat(v, tickFormatOption),
+        0,
+        0,
+        true,
+      ),
     ).toEqual([
       {
         value: 1547208000000,
         domainClampedValue: 1547208000000,
         label: '2019-01-11',
-        axisTickLabel: '2019-01-11',
         position: 25.145833333333332,
         domainClampedPosition: 25.145833333333332,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547251200000,
         domainClampedValue: 1547251200000,
         label: '2019-01-12',
-        axisTickLabel: '2019-01-12',
         position: 85.49583333333334,
         domainClampedPosition: 85.49583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547294400000,
         domainClampedValue: 1547294400000,
         label: '2019-01-12',
-        axisTickLabel: '2019-01-12',
         position: 145.84583333333333,
         domainClampedPosition: 145.84583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547337600000,
         domainClampedValue: 1547337600000,
         label: '2019-01-13',
-        axisTickLabel: '2019-01-13',
         position: 206.19583333333333,
         domainClampedPosition: 206.19583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547380800000,
         domainClampedValue: 1547380800000,
         label: '2019-01-13',
-        axisTickLabel: '2019-01-13',
         position: 266.54583333333335,
         domainClampedPosition: 266.54583333333335,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547424000000,
         domainClampedValue: 1547424000000,
         label: '2019-01-14',
-        axisTickLabel: '2019-01-14',
         position: 326.8958333333333,
         domainClampedPosition: 326.8958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547467200000,
         domainClampedValue: 1547467200000,
         label: '2019-01-14',
-        axisTickLabel: '2019-01-14',
         position: 387.24583333333334,
         domainClampedPosition: 387.24583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547510400000,
         domainClampedValue: 1547510400000,
         label: '2019-01-15',
-        axisTickLabel: '2019-01-15',
         position: 447.59583333333336,
         domainClampedPosition: 447.59583333333336,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547553600000,
         domainClampedValue: 1547553600000,
         label: '2019-01-15',
-        axisTickLabel: '2019-01-15',
         position: 507.9458333333333,
         domainClampedPosition: 507.9458333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547596800000,
         domainClampedValue: 1547596800000,
         label: '2019-01-16',
-        axisTickLabel: '2019-01-16',
         position: 568.2958333333333,
         domainClampedPosition: 568.2958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
     ]);
@@ -1537,7 +1556,7 @@ describe('Axis computational utils', () => {
   test('should use custom tick formatter', () => {
     const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
     const oneDay = moment.duration(1, 'day');
-    const formatter = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
+    const tickFormat = niceTimeFormatter([now, oneDay.add(now).asMilliseconds() * 31]);
     const axisSpec: AxisSpec = {
       id: 'bottom',
       position: 'bottom',
@@ -1549,7 +1568,7 @@ describe('Axis computational utils', () => {
       showOverlappingLabels: false,
       showOverlappingTicks: false,
       style,
-      tickFormat: formatter,
+      tickFormat,
       timeAxisLayerCount: 3,
     };
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
@@ -1561,116 +1580,125 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale as Scale<number>, scale.ticks(), offset, (v) => `${v}`, tickFormatOption, 0),
+      generateTicks(
+        axisSpec,
+        scale as Scale<number>,
+        scale.ticks(),
+        offset,
+        (v) => tickFormat(v, tickFormatOption),
+        0,
+        0,
+        true,
+      ),
     ).toEqual([
       {
         value: 1547208000000,
         domainClampedValue: 1547208000000,
         label: '2019-01-11',
-        axisTickLabel: '2019-01-11',
         position: 25.145833333333332,
         domainClampedPosition: 25.145833333333332,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547251200000,
         domainClampedValue: 1547251200000,
         label: '2019-01-12',
-        axisTickLabel: '2019-01-12',
         position: 85.49583333333334,
         domainClampedPosition: 85.49583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547294400000,
         domainClampedValue: 1547294400000,
         label: '2019-01-12',
-        axisTickLabel: '2019-01-12',
         position: 145.84583333333333,
         domainClampedPosition: 145.84583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547337600000,
         domainClampedValue: 1547337600000,
         label: '2019-01-13',
-        axisTickLabel: '2019-01-13',
         position: 206.19583333333333,
         domainClampedPosition: 206.19583333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547380800000,
         domainClampedValue: 1547380800000,
         label: '2019-01-13',
-        axisTickLabel: '2019-01-13',
         position: 266.54583333333335,
         domainClampedPosition: 266.54583333333335,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547424000000,
         domainClampedValue: 1547424000000,
         label: '2019-01-14',
-        axisTickLabel: '2019-01-14',
         position: 326.8958333333333,
         domainClampedPosition: 326.8958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547467200000,
         domainClampedValue: 1547467200000,
         label: '2019-01-14',
-        axisTickLabel: '2019-01-14',
         position: 387.24583333333334,
         domainClampedPosition: 387.24583333333334,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547510400000,
         domainClampedValue: 1547510400000,
         label: '2019-01-15',
-        axisTickLabel: '2019-01-15',
         position: 447.59583333333336,
         domainClampedPosition: 447.59583333333336,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547553600000,
         domainClampedValue: 1547553600000,
         label: '2019-01-15',
-        axisTickLabel: '2019-01-15',
         position: 507.9458333333333,
         domainClampedPosition: 507.9458333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
       {
         value: 1547596800000,
         domainClampedValue: 1547596800000,
         label: '2019-01-16',
-        axisTickLabel: '2019-01-16',
         position: 568.2958333333333,
         domainClampedPosition: 568.2958333333333,
         layer,
         detailedLayer,
+        direction: 'ltr',
         showGrid: true,
       },
     ]);

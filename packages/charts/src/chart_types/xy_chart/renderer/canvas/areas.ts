@@ -6,14 +6,16 @@
  * Side Public License, v 1.
  */
 
+import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
-import { Rect } from '../../../../geoms/types';
+import { Fill, Rect, Stroke } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
-import { Rotation } from '../../../../utils/common';
+import { ColorVariant, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AreaGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
+import { getTextureStyles } from '../../utils/texture';
 import { renderPoints } from './points';
 import { renderLinePaths, renderAreaPath } from './primitives/path';
 import { buildAreaStyles } from './styles/area';
@@ -35,8 +37,8 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
 
   withContext(ctx, () => {
     areas.forEach(({ panel, value: area }) => {
-      const { seriesAreaLineStyle, seriesAreaStyle } = area;
-      if (seriesAreaStyle.visible) {
+      const { style } = area;
+      if (style.area.visible) {
         withPanelTransform(
           ctx,
           panel,
@@ -46,7 +48,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
           { area: clippings, shouldClip: true },
         );
       }
-      if (seriesAreaLineStyle.visible) {
+      if (style.line.visible) {
         withPanelTransform(
           ctx,
           panel,
@@ -59,8 +61,8 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
     });
 
     areas.forEach(({ panel, value: area }) => {
-      const { seriesPointStyle, seriesIdentifier, points } = area;
-      const visiblePoints = seriesPointStyle.visible ? points : points.filter(({ orphan }) => orphan);
+      const { style, seriesIdentifier, points } = area;
+      const visiblePoints = style.point.visible ? points : points.filter(({ orphan }) => orphan);
       if (visiblePoints.length === 0) {
         return;
       }
@@ -80,28 +82,64 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
 function renderArea(
   ctx: CanvasRenderingContext2D,
   imgCanvas: HTMLCanvasElement,
-  glyph: AreaGeometry,
+  geometry: AreaGeometry,
   sharedStyle: SharedGeometryStateStyle,
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const { area, color, transform, seriesIdentifier, seriesAreaStyle, clippedRanges, hideClippedRanges } = glyph;
+  const { area, color, transform, seriesIdentifier, style, clippedRanges, shouldClip } = geometry;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const styles = buildAreaStyles(ctx, imgCanvas, color, seriesAreaStyle, geometryStateStyle);
+  const areaFill = buildAreaStyles(ctx, imgCanvas, color, style.area, geometryStateStyle);
 
-  renderAreaPath(ctx, transform, area, styles, clippedRanges, clippings, hideClippedRanges);
+  const fitAreaFillColor = style.fit.area.fill === ColorVariant.Series ? color : style.fit.area.fill;
+  const fitAreaFill: Fill = {
+    texture: getTextureStyles(ctx, imgCanvas, fitAreaFillColor, geometryStateStyle.opacity, style.fit.area.texture),
+    color: overrideOpacity(
+      colorToRgba(fitAreaFillColor),
+      (opacity) => opacity * geometryStateStyle.opacity * style.fit.area.opacity,
+    ),
+  };
+
+  renderAreaPath(
+    ctx,
+    transform,
+    area,
+    areaFill,
+    fitAreaFill,
+    clippedRanges,
+    clippings,
+    shouldClip && style.fit.area.visible,
+  );
 }
 
 function renderAreaLines(
   ctx: CanvasRenderingContext2D,
-  glyph: AreaGeometry,
+  geometry: AreaGeometry,
   sharedStyle: SharedGeometryStateStyle,
   clippings: Rect,
   highlightedLegendItem?: LegendItem,
 ) {
-  const { lines, color, seriesIdentifier, transform, seriesAreaLineStyle, clippedRanges, hideClippedRanges } = glyph;
+  const { lines, color, seriesIdentifier, transform, style, clippedRanges, shouldClip } = geometry;
   const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const styles = buildLineStyles(color, seriesAreaLineStyle, geometryStateStyle);
+  const lineStyle = buildLineStyles(color, style.line, geometryStateStyle);
 
-  renderLinePaths(ctx, transform, lines, styles, clippedRanges, clippings, hideClippedRanges);
+  const fitLineStroke: Stroke = {
+    dash: style.fit.line.dash,
+    width: style.line.strokeWidth,
+    color: overrideOpacity(
+      colorToRgba(style.fit.line.stroke === ColorVariant.Series ? color : style.fit.line.stroke),
+      (opacity) => opacity * geometryStateStyle.opacity * style.fit.line.opacity,
+    ),
+  };
+
+  renderLinePaths(
+    ctx,
+    transform,
+    lines,
+    lineStyle,
+    fitLineStroke,
+    clippedRanges,
+    clippings,
+    shouldClip && style.fit.line.visible,
+  );
 }

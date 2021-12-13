@@ -8,16 +8,66 @@
 
 /** @internal */
 export const productDimension = [
-  { sitc1: '0', name: 'Food and live animals' },
-  { sitc1: '1', name: 'Beverages and tobacco' },
-  { sitc1: '2', name: 'Crude materials, inedible, except fuels' },
-  { sitc1: '3', name: 'Mineral fuels, lubricants and related materials' },
-  { sitc1: '4', name: 'Animal and vegetable oils, fats and waxes' },
-  { sitc1: '5', name: 'Chemicals and related products' },
-  { sitc1: '6', name: 'Manufactured goods classified chiefly by material' },
-  { sitc1: '7', name: 'Machinery and transport equipment' },
-  { sitc1: '8', name: 'Miscellaneous manufactured articles' },
-  { sitc1: '9', name: 'Commodities and transactions not classified elsewhere' },
+  {
+    sitc1: '0',
+    name: 'Food and live animals',
+    nameAR: 'الغذاء والحيوانات الحية',
+    nameHE: 'מזון וחיות חיות',
+  },
+  {
+    sitc1: '1',
+    name: 'Beverages and tobacco',
+    nameAR: 'المشروبات والتبغ',
+    nameHE: 'משקאות וטבק',
+  },
+  {
+    sitc1: '2',
+    name: 'Crude materials, inedible, except fuels',
+    nameAR: 'المواد الخام غير الصالحة للأكل عدا المحروقات',
+    nameHE: 'חומרים גולמיים, בלתי אכילים, למעט דלקים',
+  },
+  {
+    sitc1: '3',
+    name: 'Mineral fuels, lubricants and related materials',
+    nameAR: 'الوقود المعدني وزيوت التشحيم والمواد ذات الصلة',
+    nameHE: 'דלקים מינרליים, חומרי סיכה וחומרים נלווים',
+  },
+  {
+    sitc1: '4',
+    name: 'Animal and vegetable oils, fats and waxes',
+    nameAR: 'زيوت ودهون وشموع حيوانية ونباتية',
+    nameHE: 'שמנים, שומנים ושעווה מהחי וצומח',
+  },
+  {
+    sitc1: '5',
+    name: 'Chemicals and related products',
+    nameAR: 'الكيماويات والمنتجات ذات الصلة',
+    nameHE: 'כימיקלים ומוצרים נלווים',
+  },
+  {
+    sitc1: '6',
+    name: 'Manufactured goods classified chiefly by material',
+    nameAR: 'البضائع المصنعة مصنفة بشكل رئيسي حسب المادة',
+    nameHE: 'מוצרים מיוצרים המסווגים בעיקר לפי חומר',
+  },
+  {
+    sitc1: '7',
+    name: 'Machinery and transport equipment',
+    nameAR: 'الالات ومعدات النقل',
+    nameHE: 'מכונות וציוד הובלה',
+  },
+  {
+    sitc1: '8',
+    name: 'Miscellaneous manufactured articles',
+    nameAR: 'المواد المصنعة المتنوعة',
+    nameHE: 'מוצרים מיוצרים שונים',
+  },
+  {
+    sitc1: '9',
+    name: 'Commodities and transactions not classified elsewhere',
+    nameAR: 'السلع والمعاملات غير المصنفة في مكان آخر',
+    nameHE: 'סחורות ועסקאות שאינן מסווגות במקום אחר',
+  },
 ];
 
 /** @internal */

@@ -52,7 +52,7 @@ export function renderTickLabel(
   renderText(
     ctx,
     center,
-    tick.axisTickLabel,
+    tick.label,
     {
       fontFamily: labelStyle.fontFamily,
       fontStyle: labelStyle.fontStyle ?? 'normal',
@@ -66,5 +66,7 @@ export function renderTickLabel(
     labelStyle.rotation,
     tickLabelProps.textOffsetX + (tickOnTheSide ? TICK_TO_LABEL_GAP : 0),
     tickLabelProps.textOffsetY + (tick.layer || 0) * layerGirth * (position === Position.Top ? -1 : 1),
+    1,
+    tick.direction,
   );
 }

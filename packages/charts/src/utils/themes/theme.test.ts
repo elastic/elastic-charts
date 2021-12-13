@@ -158,6 +158,14 @@ describe('Theme', () => {
           visible: true,
           opacity: 314571,
         },
+        fit: {
+          line: {
+            opacity: 314571,
+            visible: false,
+            dash: [1, 2, 3, 4],
+            stroke: 'rgba(1, 2, 3, 4)',
+          },
+        },
       };
       const customTheme = mergeWithDefaultTheme({
         lineSeriesStyle,
@@ -202,6 +210,19 @@ describe('Theme', () => {
           stroke: 'elastic_charts',
           strokeWidth: 314571,
           opacity: 314571,
+        },
+        fit: {
+          area: {
+            opacity: 314571,
+            visible: false,
+            fill: 'rgba(1, 2, 3, 4)',
+          },
+          line: {
+            opacity: 314571,
+            visible: false,
+            dash: [1, 2, 3, 4],
+            stroke: 'rgba(1, 2, 3, 4)',
+          },
         },
       };
       const customTheme = mergeWithDefaultTheme({

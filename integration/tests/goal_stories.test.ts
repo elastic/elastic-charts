@@ -47,19 +47,19 @@ describe('Goal stories', () => {
   eachTheme.describe((_, params) => {
     it('should render gauge with target story', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
-        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--gauge-with-target${params}`,
+        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--gauge-with-target&${params}`,
       );
     });
 
     it('should render minimal goal story', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
-        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--minimal-goal${params}`,
+        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--minimal-goal&${params}`,
       );
     });
 
     it('should render vertical negative story', async () => {
       await common.expectChartAtUrlToMatchScreenshot(
-        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--vertical-negative${params}`,
+        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--vertical-negative&${params}`,
       );
     });
   });

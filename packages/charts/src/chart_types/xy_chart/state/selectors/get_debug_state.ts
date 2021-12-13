@@ -8,11 +8,12 @@
 
 import { LegendItem } from '../../../../common/legend';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
-import { AxisSpec } from '../../../../specs';
+import { AnnotationSpec, AnnotationType, AxisSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import {
   DebugState,
+  DebugStateAnnotations,
   DebugStateArea,
   DebugStateAxes,
   DebugStateBar,
@@ -22,6 +23,7 @@ import {
 } from '../../../../state/types';
 import { Rotation } from '../../../../utils/common';
 import { AreaGeometry, BandedAccessorType, BarGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
+import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from '../../../../utils/themes/merge_utils';
 import { FillStyle, Opacity, StrokeStyle, Visible } from '../../../../utils/themes/theme';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
@@ -31,7 +33,7 @@ import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 import { computeLegendSelector } from './compute_legend';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGridLinesSelector } from './get_grid_lines';
-import { getAxisSpecsSelector } from './get_specs';
+import { getAnnotationSpecsSelector, getAxisSpecsSelector } from './get_specs';
 
 /**
  * Returns a stringified version of the `debugState`
@@ -45,8 +47,9 @@ export const getDebugStateSelector = createCustomCachedSelector(
     getGridLinesSelector,
     getAxisSpecsSelector,
     getSettingsSpecSelector,
+    getAnnotationSpecsSelector,
   ],
-  ({ geometries }, legend, axes, gridLines, axesSpecs, { rotation }): DebugState => {
+  ({ geometries }, legend, axes, gridLines, axesSpecs, { rotation }, annotations): DebugState => {
     const seriesNameMap = getSeriesNameMap(legend);
     return {
       legend: getLegendState(legend),
@@ -54,6 +57,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
       areas: geometries.areas.map(getAreaState(seriesNameMap)),
       lines: geometries.lines.map(getLineState(seriesNameMap)),
       bars: getBarsState(seriesNameMap, geometries.bars),
+      annotations: getAnnotationsState(annotations),
     };
   },
 );
@@ -114,8 +118,8 @@ function getBarsState(
   barGeometries: Array<PerPanel<BarGeometry[]>>,
 ): DebugStateBar[] {
   const buckets = new Map<string, DebugStateBar>();
-  const bars = barGeometries.reduce<BarGeometry[]>((acc, bars) => {
-    return [...acc, ...bars.value];
+  const bars = barGeometries.reduce<BarGeometry[]>((acc, { value }) => {
+    return [...acc, ...value];
   }, []);
   bars.forEach(
     ({
@@ -158,8 +162,7 @@ function getLineState(seriesNameMap: Map<string, string>) {
       points,
       color,
       seriesIdentifier: { key },
-      seriesLineStyle,
-      seriesPointStyle,
+      style,
     },
   }: PerPanel<LineGeometry>): DebugStateLine => {
     const name = seriesNameMap.get(key) ?? '';
@@ -169,8 +172,8 @@ function getLineState(seriesNameMap: Map<string, string>) {
       color,
       key,
       name,
-      visible: hasVisibleStyle(seriesLineStyle),
-      visiblePoints: hasVisibleStyle(seriesPointStyle),
+      visible: hasVisibleStyle(style.line),
+      visiblePoints: hasVisibleStyle(style.point),
       points: points.map(({ value: { x, y, mark } }) => ({ x, y, mark })),
     };
   };
@@ -184,9 +187,7 @@ function getAreaState(seriesNameMap: Map<string, string>) {
       points,
       color,
       seriesIdentifier: { key },
-      seriesAreaStyle,
-      seriesPointStyle,
-      seriesAreaLineStyle,
+      style,
     },
   }: PerPanel<AreaGeometry>): DebugStateArea => {
     const [y1Path, y0Path] = lines;
@@ -208,8 +209,8 @@ function getAreaState(seriesNameMap: Map<string, string>) {
         y1: [],
       },
     );
-    const lineVisible = hasVisibleStyle(seriesAreaLineStyle);
-    const visiblePoints = hasVisibleStyle(seriesPointStyle);
+    const lineVisible = hasVisibleStyle(style.line);
+    const visiblePoints = hasVisibleStyle(style.point);
     const name = seriesNameMap.get(key) ?? '';
 
     return {
@@ -217,7 +218,7 @@ function getAreaState(seriesNameMap: Map<string, string>) {
       color,
       key,
       name,
-      visible: hasVisibleStyle(seriesAreaStyle),
+      visible: hasVisibleStyle(style.area),
       lines: {
         y0: y0Path
           ? {
@@ -263,6 +264,21 @@ function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
     .flat();
 
   return { items };
+}
+
+function getAnnotationsState(annotationSpecs: AnnotationSpec[]): DebugStateAnnotations[] {
+  return annotationSpecs.flatMap<DebugStateAnnotations>((annotation) => {
+    return annotation.dataValues.map((dataValue) => ({
+      data: dataValue,
+      id: annotation.id,
+      style:
+        annotation.annotationType === AnnotationType.Line
+          ? mergeWithDefaultAnnotationLine(annotation?.style)
+          : mergeWithDefaultAnnotationRect(annotation?.style),
+      type: annotation.annotationType,
+      domainType: annotation.annotationType === AnnotationType.Line ? annotation.domainType : undefined,
+    }));
+  });
 }
 
 /**

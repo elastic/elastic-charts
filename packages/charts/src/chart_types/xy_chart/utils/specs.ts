@@ -1019,8 +1019,3 @@ export function isLineSeriesSpec<D extends BaseDatum>(spec: BasicSeriesSpec<D>):
 export function isAreaSeriesSpec<D extends BaseDatum>(spec: BasicSeriesSpec<D>): spec is AreaSeriesSpec<D> {
   return spec.seriesType === SeriesType.Area;
 }
-
-/** @internal */
-export function isBandedSpec(y0Accessors: SeriesAccessors['y0Accessors']): boolean {
-  return Boolean(y0Accessors && y0Accessors.length > 0);
-}
