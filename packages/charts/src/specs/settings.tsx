@@ -454,6 +454,13 @@ export interface LegendSpec {
    */
   legendMaxDepth: number;
   /**
+   * Sets the exact legend width (vertical) or height (horizontal)
+   *
+   * Limited to max of 70% of the chart container dimension
+   * Vertical legends limited to min of 30% of computed width
+   */
+  legendSize: number;
+  /**
    * Display the legend as a flat list. If true, legendStrategy is always `LegendStrategy.Key`.
    */
   flatLegend?: boolean;
@@ -692,6 +699,7 @@ export type DefaultSettingsProps =
   | 'showLegendExtra'
   | 'legendPosition'
   | 'legendMaxDepth'
+  | 'legendSize'
   | 'ariaUseDefaultSummary'
   | 'ariaLabelHeadingLevel'
   | 'ariaTableCaption'
