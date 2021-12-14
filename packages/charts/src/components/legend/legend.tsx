@@ -29,7 +29,7 @@ import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
 import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
-import { HorizontalAlignment, LayoutDirection, VerticalAlignment } from '../../utils/common';
+import { hasMostlyRTLItems, HorizontalAlignment, LayoutDirection, VerticalAlignment } from '../../utils/common';
 import { Dimensions, Size } from '../../utils/dimensions';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { Theme } from '../../utils/themes/theme';
@@ -75,6 +75,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   const positionConfig = getLegendPositionConfig(config.legendPosition);
   const containerStyle = getLegendStyle(positionConfig, size, legend.margin);
   const listStyle = getLegendListStyle(positionConfig, chartMargins, legend, items.length);
+  const isMostlyRTL = hasMostlyRTLItems(items.map(({ label }) => label));
 
   const legendClasses = classNames('echLegend', {
     'echLegend--debug': debug,
@@ -88,6 +89,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
 
   const itemProps: Omit<LegendItemProps, 'item'> = {
     positionConfig,
+    isMostlyRTL,
     totalItems: items.length,
     extraValues: props.extraValues,
     showExtra: config.showLegendExtra,
@@ -106,7 +108,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   };
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
   return (
-    <div className={legendClasses} style={positionStyle}>
+    <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
       <div style={containerStyle} className="echLegendListContainer">
         <ul style={listStyle} className="echLegendList">
           {items.map((item, index) => renderLegendItem(item, itemProps, index))}

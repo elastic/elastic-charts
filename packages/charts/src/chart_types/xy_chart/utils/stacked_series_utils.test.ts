@@ -141,6 +141,7 @@ describe('Stacked Series Utils', () => {
       MockStore.addSpecs(
         MockSeriesSpec.area({
           ...WITH_NULL_DATASET,
+          stackAccessors: ['yes'],
           stackMode: StackMode.Percentage,
         }),
         store,
@@ -210,7 +211,7 @@ describe('Stacked Series Utils', () => {
         initialY0: 2,
         initialY1: 10,
         x: 0,
-        y0: 2,
+        y0: 0,
         y1: 10,
         mark: null,
       });
@@ -218,7 +219,7 @@ describe('Stacked Series Utils', () => {
         initialY0: 4,
         initialY1: 20,
         x: 0,
-        y0: 14,
+        y0: 10,
         y1: 30,
         mark: null,
       });
@@ -226,7 +227,7 @@ describe('Stacked Series Utils', () => {
         initialY0: 6,
         initialY1: 30,
         x: 0,
-        y0: 36,
+        y0: 30,
         y1: 60,
         mark: null,
       });
@@ -240,7 +241,7 @@ describe('Stacked Series Utils', () => {
         initialY0: 2,
         initialY1: 10,
         x: 0,
-        y0: 2,
+        y0: 0,
         y1: 10,
         mark: null,
       });
@@ -248,15 +249,15 @@ describe('Stacked Series Utils', () => {
         initialY0: null,
         initialY1: null,
         x: 0,
-        y1: 10,
         y0: 10,
+        y1: 10,
         mark: null,
       });
       expect(formattedDataSeries[2].data[0]).toMatchObject({
         initialY0: 6,
         initialY1: 30,
         x: 0,
-        y0: 16,
+        y0: 10,
         y1: 40,
         mark: null,
       });

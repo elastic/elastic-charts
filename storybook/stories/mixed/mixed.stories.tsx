@@ -18,3 +18,4 @@ export { Example as testBarLinesTime } from './5_test_bar_time.story';
 export { Example as fittingFunctionsNonStackedSeries } from './6_fitting.story';
 export { Example as fittingFunctionsStackedSeries } from './6_fitting_stacked.story';
 export { Example as markSizeAccessor } from './7_marks.story';
+export { Example as PolarizedStacked } from './8_polarized_stacked.story';

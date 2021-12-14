@@ -11,6 +11,9 @@ import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
 import { ReactNode } from 'react';
 
+// @public (undocumented)
+export type A = number;
+
 // @public
 export type Accessor = AccessorObjectKey | AccessorArrayIndex;
 
@@ -40,6 +43,20 @@ export interface AngleFromTo {
     x0: Radian;
     // (undocumented)
     x1: Radian;
+}
+
+// @alpha (undocumented)
+export interface AnimKeyframe {
+    // Warning: (ae-forgotten-export) The symbol "EasingFunction" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    easingFunction: EasingFunction;
+    // Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    keyframeConfig: Partial<StaticConfig>;
+    // (undocumented)
+    time: number;
 }
 
 // @public (undocumented)
@@ -97,6 +114,12 @@ export interface ArcStyle {
     visible: boolean;
 }
 
+// @public (undocumented)
+export type AreaFitStyle = Visible & Opacity & {
+    fill: Color | typeof ColorVariant.Series;
+    texture?: TexturedStyles;
+};
+
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
@@ -117,6 +140,11 @@ export type AreaSeriesSpec = BasicSeriesSpec & HistogramConfig & Postfixes & {
 export interface AreaSeriesStyle {
     // (undocumented)
     area: AreaStyle;
+    // (undocumented)
+    fit: {
+        line: LineFitStyle;
+        area: AreaFitStyle;
+    };
     // (undocumented)
     line: LineStyle;
     // (undocumented)
@@ -407,7 +435,6 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     // (undocumented)
     getPNGSnapshot(options?: {
         backgroundColor: string;
-        pixelRatio: number;
     }): {
         blobOrDataUrl: any;
         browser: 'IE11' | 'other';
@@ -472,6 +499,7 @@ export interface ColorConfig {
 export const ColorVariant: Readonly<{
     Series: "__use__series__color__";
     None: "__use__empty__color__";
+    Adaptive: "__use__adaptive__color__";
 }>;
 
 // @public (undocumented)
@@ -479,6 +507,11 @@ export type ColorVariant = $Values<typeof ColorVariant>;
 
 // @public
 export type ComponentWithAnnotationDatum = ComponentType<LineAnnotationDatum>;
+
+// @public
+export function computeRatioByGroups<T extends Record<string, unknown>>(data: T[], groupAccessors: GroupKeysOrKeyFn<T>, valueAccessor: (k: T) => number | null | undefined, ratioKeyName: string): (T & {
+    [x: string]: number | null | undefined;
+})[];
 
 // @public (undocumented)
 export type ContinuousDomain = [min: number, max: number];
@@ -583,26 +616,18 @@ export type Datum = any;
 
 // @public
 export interface DebugState {
-    // Warning: (ae-forgotten-export) The symbol "DebugStateArea" needs to be exported by the entry point index.d.ts
-    //
+    // (undocumented)
+    annotations?: DebugStateAnnotations[];
     // (undocumented)
     areas?: DebugStateArea[];
-    // Warning: (ae-forgotten-export) The symbol "DebugStateAxes" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     axes?: DebugStateAxes;
-    // Warning: (ae-forgotten-export) The symbol "DebugStateBar" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     bars?: DebugStateBar[];
     // Warning: (ae-forgotten-export) The symbol "HeatmapDebugState" needs to be exported by the entry point index.d.ts
     heatmap?: HeatmapDebugState;
-    // Warning: (ae-forgotten-export) The symbol "DebugStateLegend" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     legend?: DebugStateLegend;
-    // Warning: (ae-forgotten-export) The symbol "DebugStateLine" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     lines?: DebugStateLine[];
     // Warning: (ae-forgotten-export) The symbol "PartitionDebugState" needs to be exported by the entry point index.d.ts
@@ -610,6 +635,103 @@ export interface DebugState {
     // (undocumented)
     partition?: PartitionDebugState[];
 }
+
+// @public (undocumented)
+export type DebugStateAnnotations = {
+    id: string;
+    style: RectAnnotationStyle | LineAnnotationStyle;
+    type: typeof AnnotationType.Line | typeof AnnotationType.Rectangle;
+    domainType?: 'xDomain' | 'yDomain';
+    data: LineAnnotationDatum | RectAnnotationDatum;
+};
+
+// @public (undocumented)
+export type DebugStateArea = Omit<DebugStateLine, 'points' | 'visiblePoints'> & {
+    path: string;
+    lines: {
+        y0?: DebugStateLineConfig;
+        y1: DebugStateLineConfig;
+    };
+};
+
+// @public (undocumented)
+export interface DebugStateAxes {
+    // (undocumented)
+    x: DebugStateAxis[];
+    // (undocumented)
+    y: DebugStateAxis[];
+}
+
+// @public (undocumented)
+export interface DebugStateAxis {
+    // (undocumented)
+    gridlines: {
+        y: number;
+        x: number;
+    }[];
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    labels: string[];
+    // (undocumented)
+    position: Position;
+    // (undocumented)
+    title?: string;
+    // (undocumented)
+    values: any[];
+}
+
+// @public (undocumented)
+export type DebugStateBar = DebugStateBase & {
+    visible: boolean;
+    bars: DebugStateValue[];
+    labels: any[];
+};
+
+// @public (undocumented)
+export interface DebugStateBase {
+    // (undocumented)
+    color: string;
+    // (undocumented)
+    key: string;
+    // (undocumented)
+    name: string;
+}
+
+// @public (undocumented)
+export interface DebugStateLegend {
+    // (undocumented)
+    items: DebugStateLegendItem[];
+}
+
+// @public (undocumented)
+export interface DebugStateLegendItem {
+    // (undocumented)
+    color: string;
+    // (undocumented)
+    key: string;
+    // (undocumented)
+    name: string;
+}
+
+// @public (undocumented)
+export interface DebugStateLine extends DebugStateBase, DebugStateLineConfig {
+}
+
+// @public (undocumented)
+export interface DebugStateLineConfig {
+    // (undocumented)
+    path: string;
+    // (undocumented)
+    points: DebugStateValue[];
+    // (undocumented)
+    visible: boolean;
+    // (undocumented)
+    visiblePoints: boolean;
+}
+
+// @public (undocumented)
+export type DebugStateValue = Pick<GeometryValue, 'x' | 'y' | 'mark'>;
 
 // @public (undocumented)
 export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle;
@@ -630,7 +752,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
-export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption' | 'allowBrushingLastHistogramBin';
+export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'legendSize' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption' | 'allowBrushingLastHistogramBin';
 
 // @public (undocumented)
 export const DEPTH_KEY = "depth";
@@ -915,6 +1037,9 @@ export type GroupByAccessor = (spec: Spec, datum: any) => string | number;
 // @public
 export type GroupByFormatter = (value: ReturnType<GroupByAccessor>) => string;
 
+// @public (undocumented)
+export type GroupByKeyFn<T> = (data: T) => string;
+
 // @alpha (undocumented)
 export type GroupByProps = Pick<GroupBySpec, 'id' | 'by' | 'sort' | 'format'>;
 
@@ -932,6 +1057,9 @@ export interface GroupBySpec extends Spec {
 
 // @public (undocumented)
 export type GroupId = string;
+
+// @public (undocumented)
+export type GroupKeysOrKeyFn<T> = Array<keyof T> | GroupByKeyFn<T>;
 
 // @alpha (undocumented)
 export const Heatmap: React_2.FunctionComponent<Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'> & Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>>;
@@ -1241,6 +1369,7 @@ export interface LegendSpec {
     legendColorPicker?: LegendColorPicker;
     legendMaxDepth: number;
     legendPosition: Position | LegendPositionConfig;
+    legendSize: number;
     legendStrategy?: LegendStrategy;
     // (undocumented)
     onLegendItemClick?: LegendItemListener;
@@ -1328,6 +1457,11 @@ export interface LinearScale {
     type: typeof ScaleType.Linear;
 }
 
+// @public (undocumented)
+export type LineFitStyle = Visible & Opacity & StrokeDashArray & {
+    stroke: Color | typeof ColorVariant.Series;
+};
+
 // Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
 //
@@ -1345,6 +1479,10 @@ export type LineSeriesSpec = BasicSeriesSpec & HistogramConfig & {
 
 // @public (undocumented)
 export interface LineSeriesStyle {
+    // (undocumented)
+    fit: {
+        line: LineFitStyle;
+    };
     // (undocumented)
     line: LineStyle;
     // (undocumented)
@@ -1457,8 +1595,6 @@ export type PartialTheme = RecursivePartial<Theme>;
 // @public (undocumented)
 export const Partition: React_2.FunctionComponent<SpecRequiredProps_7 & SpecOptionalProps_7>;
 
-// Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export interface PartitionConfig extends StaticConfig {
     // @alpha (undocumented)
@@ -1739,6 +1875,12 @@ export type RenderChangeListener = (isRendered: boolean) => void;
 export type Rendering = 'canvas' | 'svg';
 
 // @public (undocumented)
+export type RGB = number;
+
+// @public (undocumented)
+export type RgbaTuple = [r: RGB, g: RGB, b: RGB, alpha: A];
+
+// @public (undocumented)
 export type Rotation = 0 | 90 | -90 | 180;
 
 // @public (undocumented)
@@ -1977,6 +2119,9 @@ export interface SimplePadding {
     outer: number;
 }
 
+// @public (undocumented)
+export type SizeRatio = Ratio;
+
 // @alpha (undocumented)
 export const SmallMultiples: React_2.FunctionComponent<SmallMultiplesProps>;
 
@@ -2068,6 +2213,11 @@ export interface StrokeStyle<C = Color> {
     strokeWidth: number;
 }
 
+// Warning: (ae-forgotten-export) The symbol "TEXT_ALIGNS" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type TextAlign = typeof TEXT_ALIGNS[number];
+
 // @public
 export interface TextAlignment {
     // (undocumented)
@@ -2075,6 +2225,11 @@ export interface TextAlignment {
     // (undocumented)
     vertical: VerticalAlignment;
 }
+
+// Warning: (ae-forgotten-export) The symbol "TEXT_BASELINE" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type TextBaseline = typeof TEXT_BASELINE[number];
 
 // @public
 export interface TextOffset {
@@ -2185,6 +2340,9 @@ export type TickStyle = StrokeStyle & Visible & {
 
 // @public (undocumented)
 export function timeFormatter(format: string): TickFormatter;
+
+// @public (undocumented)
+export type TimeMs = number;
 
 // @public (undocumented)
 export interface TimeScale {
@@ -2464,14 +2622,6 @@ export interface YDomainBase {
 
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
-
-// Warnings were encountered during analysis:
-//
-// src/chart_types/heatmap/layout/types/config_types.ts:19:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:47:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:48:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

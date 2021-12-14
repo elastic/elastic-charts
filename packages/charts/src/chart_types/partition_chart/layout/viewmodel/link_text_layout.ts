@@ -19,7 +19,7 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { cutToLength, fitText, Font, measureOneBoxWidth, TextMeasure } from '../../../../common/text_utils';
-import { ValueFormatter } from '../../../../utils/common';
+import { ColorVariant, isRTLString, ValueFormatter } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Point } from '../../../../utils/point';
 import { Config, LinkLabelConfig } from '../types/config_types';
@@ -85,7 +85,8 @@ export function linkTextLayout(
       containerBgColor,
     );
   }
-  const textColor = fillTextColor(containerBgColor);
+  const textColor =
+    linkLabel.textColor === ColorVariant.Adaptive ? fillTextColor(containerBgColor) : linkLabel.textColor;
   const labelFontSpec: Font = { ...linkLabel, textColor };
   const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor };
 
@@ -167,13 +168,20 @@ function nodeToLinkLabel({
       [stemToX + west * linkLabel.horizontalStemLength, stemToY],
     ];
 
+    const rawLabelText = rawTextGetter(node);
+    const isRTL = isRTLString(rawLabelText);
+
     // value text is simple: the full, formatted value is always shown, not truncated
     const valueText = valueFormatter(valueGetter(node));
-    const valueWidth = measureOneBoxWidth(measure, linkLabel.fontSize, { ...valueFont, text: valueText });
+    const valueWidth = measureOneBoxWidth(measure, linkLabel.fontSize, {
+      ...valueFont,
+      text: valueText,
+      isValue: false,
+    });
     const widthAdjustment = valueWidth + 2 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
 
     // label text removes space allotted for value and gaps, then tries to fit as much as possible
-    const labelText = cutToLength(rawTextGetter(node), maxTextLength);
+    const labelText = cutToLength(rawLabelText, maxTextLength);
     const allottedLabelWidth = Math.max(
       0,
       rightSide ? rectWidth - diskCenter.x - translateX - widthAdjustment : diskCenter.x + translateX - widthAdjustment,
@@ -184,6 +192,7 @@ function nodeToLinkLabel({
         : { text: '', width: 0 };
 
     return {
+      isRTL,
       linkLabels,
       translate,
       text,

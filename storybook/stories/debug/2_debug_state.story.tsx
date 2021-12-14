@@ -6,10 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { action } from '@storybook/addon-actions';
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
-import { debounce } from 'ts-debounce';
 
 import {
   Chart,
@@ -22,11 +20,11 @@ import {
   Axis,
   Position,
   SeriesNameFn,
-  DebugState,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
+import { debugstateLogger } from '../utils/debug_state_logger';
 
 export const Example = () => {
   const debug = boolean('debug', false);
@@ -44,22 +42,10 @@ export const Example = () => {
   const areaData = dg.generateGroupedSeries(40, groupCount);
   const barData = dg.generateGroupedSeries(40, groupCount);
 
-  const dataStateAction = action('DataState');
-  const logDebugstate = debounce(() => {
-    const statusEl = document.querySelector<HTMLDivElement>('.echChartStatus');
-
-    if (statusEl) {
-      const dataState = statusEl.dataset.echDebugState
-        ? (JSON.parse(statusEl.dataset.echDebugState) as DebugState)
-        : null;
-      dataStateAction(dataState);
-    }
-  }, 100);
-
   return (
     <Chart>
       <Settings
-        onRenderChange={logDebugstate}
+        onRenderChange={debugstateLogger}
         debug={debug}
         debugState={debugState}
         showLegend
