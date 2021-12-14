@@ -1000,8 +1000,3 @@ export function isLineSeriesSpec(spec: BasicSeriesSpec): spec is LineSeriesSpec 
 export function isAreaSeriesSpec(spec: BasicSeriesSpec): spec is AreaSeriesSpec {
   return spec.seriesType === SeriesType.Area;
 }
-
-/** @internal */
-export function isBandedSpec(y0Accessors: SeriesAccessors['y0Accessors']): boolean {
-  return Boolean(y0Accessors && y0Accessors.length > 0);
-}

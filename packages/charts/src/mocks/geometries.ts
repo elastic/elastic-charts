@@ -71,9 +71,9 @@ export class MockLineGeometry {
     color: Colors.Red.keyword,
     transform: { x: 0, y: 0 },
     seriesIdentifier: MockSeriesIdentifier.default(),
-    seriesLineStyle: lineSeriesStyle.line,
-    seriesPointStyle: lineSeriesStyle.point,
+    style: lineSeriesStyle,
     clippedRanges: [],
+    shouldClip: false,
   };
 
   static default(partial?: RecursivePartial<LineGeometry>) {
@@ -90,11 +90,10 @@ export class MockAreaGeometry {
     color: Colors.Red.keyword,
     transform: { x: 0, y: 0 },
     seriesIdentifier: MockSeriesIdentifier.default(),
-    seriesAreaStyle: areaSeriesStyle.area,
-    seriesAreaLineStyle: areaSeriesStyle.line,
-    seriesPointStyle: areaSeriesStyle.point,
+    style: areaSeriesStyle,
     isStacked: false,
     clippedRanges: [],
+    shouldClip: false,
   };
 
   static default(partial?: RecursivePartial<AreaGeometry>) {

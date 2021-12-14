@@ -32,16 +32,19 @@ import { computeXScale, computeYScales } from './scales';
 type TickValue = number | string;
 
 /** @internal */
+export type TextDirection = 'rtl' | 'ltr';
+
+/** @internal */
 export interface AxisTick {
   value: TickValue;
   domainClampedValue: TickValue;
   label: string;
-  axisTickLabel: string;
   position: number;
   domainClampedPosition: number;
   layer?: number;
   detailedLayer: number;
   showGrid: boolean;
+  direction: TextDirection;
 }
 
 /** @internal */

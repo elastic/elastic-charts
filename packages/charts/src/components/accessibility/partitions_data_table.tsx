@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { createRef, memo, useState } from 'react';
+import React, { useRef, memo, useState } from 'react';
 import { connect } from 'react-redux';
 
 import {
@@ -39,7 +39,7 @@ const ScreenReaderPartitionTableComponent = ({
   debug,
 }: ScreenReaderPartitionTableProps) => {
   const [count, setCount] = useState(1);
-  const tableRowRef = createRef<HTMLTableRowElement>();
+  const tableRowRef = useRef<HTMLTableRowElement>(null);
   const { tableCaption } = a11ySettings;
 
   const rowLimit = TABLE_PAGINATION * count;
