@@ -36,7 +36,7 @@ export const Example = () => {
   /**
    * The handler section of this story demonstrates the PNG export functionality
    */
-  const chartRef: React.RefObject<Chart> = React.createRef();
+  const chartRef = React.useRef<Chart>(null);
   const handler = () => {
     if (!chartRef.current) {
       return;
@@ -44,7 +44,6 @@ export const Example = () => {
     const snapshot = chartRef.current.getPNGSnapshot({
       // you can set the background and pixel ratio for the PNG export
       backgroundColor: 'white',
-      pixelRatio: 2,
     });
     if (!snapshot) {
       return;

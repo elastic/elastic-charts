@@ -2,6 +2,7 @@
 
 exports[`XYChart - debug state line chart rotation: -90 1`] = `
 Object {
+  "annotations": Array [],
   "areas": Array [],
   "axes": Object {
     "x": Array [
@@ -115,6 +116,7 @@ Object {
 
 exports[`XYChart - debug state line chart rotation: 0 1`] = `
 Object {
+  "annotations": Array [],
   "areas": Array [],
   "axes": Object {
     "x": Array [
@@ -228,6 +230,7 @@ Object {
 
 exports[`XYChart - debug state line chart rotation: 90 1`] = `
 Object {
+  "annotations": Array [],
   "areas": Array [],
   "axes": Object {
     "x": Array [
@@ -341,6 +344,7 @@ Object {
 
 exports[`XYChart - debug state line chart rotation: 180 1`] = `
 Object {
+  "annotations": Array [],
   "areas": Array [],
   "axes": Object {
     "x": Array [

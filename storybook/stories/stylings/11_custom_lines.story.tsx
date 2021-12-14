@@ -9,7 +9,16 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, LineSeries, Position, ScaleType, Settings, LineSeriesStyle } from '@elastic/charts';
+import {
+  Axis,
+  Chart,
+  LineSeries,
+  Position,
+  ScaleType,
+  Settings,
+  LineSeriesStyle,
+  RecursivePartial,
+} from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 
@@ -36,7 +45,7 @@ function generateLineAndPointSeriesStyleKnobs(
   pointRadius?: number,
   lineStrokeWidth?: number,
   lineStroke?: string,
-): LineSeriesStyle {
+): RecursivePartial<LineSeriesStyle> {
   return {
     line: {
       stroke: lineStroke ? color(`line.stroke (${tag})`, lineStroke, groupName) : undefined,

@@ -396,14 +396,14 @@ describe('Rendering points - bubble', () => {
       geometries: { bubbles },
       geometriesIndex,
     } = computeSeriesGeometriesSelector(store.getState());
-    test('Should render 3 points', () => {
+    test('Should render 2 points', () => {
       const [
         {
           value: { points },
         },
       ] = bubbles;
-      // will not render the 4th point that is out of x domain
-      expect(points).toHaveLength(3);
+      // will not render the 4th point that is out of x domain, the 3rd point is not rendered due to the y Domain max of 1
+      expect(points).toHaveLength(2);
       // will keep the 3rd point as an indexedGeometry
       expect(geometriesIndex.size).toEqual(3);
       expect(points).toMatchSnapshot();

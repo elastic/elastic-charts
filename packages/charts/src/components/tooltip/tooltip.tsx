@@ -24,7 +24,7 @@ import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
-import { Rotation, isDefined } from '../../utils/common';
+import { Rotation, isDefined, hasMostlyRTLItems } from '../../utils/common';
 import { TooltipPortal, TooltipPortalSettings, AnchorPosition, Placement } from '../portal';
 import { getTooltipSettings } from './get_tooltip_settings';
 import { TooltipInfo } from './types';
@@ -151,8 +151,10 @@ const TooltipComponent = ({
       return <CustomTooltip {...info} />;
     }
 
+    const isMostlyRTL = hasMostlyRTLItems([...info.values.map(({ label }) => label), info.header?.label ?? '']);
+
     return (
-      <div className="echTooltip">
+      <div className="echTooltip" dir={isMostlyRTL ? 'rtl' : 'ltr'}>
         {renderHeader(info.header)}
         {renderValues(info.values)}
       </div>

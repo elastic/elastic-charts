@@ -144,6 +144,7 @@ export const DEFAULT_TOOLTIP_SNAP = true;
  */
 export const DEFAULT_LEGEND_CONFIG = {
   showLegend: false,
+  legendSize: NaN,
   showLegendExtra: false,
   legendMaxDepth: Infinity,
   legendPosition: Position.Right,
