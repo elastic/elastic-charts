@@ -12,7 +12,7 @@ import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
 import { SFProps, buildSFProps, useSpecFactory } from '../../../state/spec_factory';
-import { Datum } from '../../../utils/common';
+import { Datum, stripUndefined } from '../../../utils/common';
 import { LineSeriesSpec, DEFAULT_GLOBAL_ID, HistogramModeAlignments, SeriesType, BaseDatum } from '../utils/specs';
 
 const buildProps = buildSFProps<LineSeriesSpec>()(
@@ -44,7 +44,7 @@ export const LineSeries = function <D extends BaseDatum = Datum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<LineSeriesSpec<D>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<LineSeriesSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
 

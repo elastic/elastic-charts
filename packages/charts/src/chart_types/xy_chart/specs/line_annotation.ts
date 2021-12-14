@@ -11,6 +11,7 @@ import { ComponentProps } from 'react';
 import { ChartType } from '../..';
 import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
+import { stripUndefined } from '../../../utils/common';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/merge_utils';
 import { LineAnnotationSpec, DEFAULT_GLOBAL_ID, AnnotationType } from '../utils/specs';
 
@@ -44,7 +45,7 @@ export const LineAnnotation = function <D = any>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<LineAnnotationSpec<D>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<LineAnnotationSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
 

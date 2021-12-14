@@ -17,7 +17,7 @@ import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
-import { Datum, RecursivePartial } from '../../../utils/common';
+import { Datum, RecursivePartial, stripUndefined } from '../../../utils/common';
 import { config } from '../layout/config/config';
 import { Config } from '../layout/types/config_types';
 import { X_SCALE_DEFAULT } from './scale_defaults';
@@ -115,7 +115,7 @@ export const Heatmap = function <D extends BaseDatum = Datum>(
     ),
   );
   const { defaults, overrides } = buildProps.current;
-  useSpecFactory<HeatmapSpec<D>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<HeatmapSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
 

@@ -12,7 +12,7 @@ import { BaseDatum, Spec } from '.';
 import { ChartType } from '../chart_types';
 import { Predicate } from '../common/predicate';
 import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
-import { Datum } from '../utils/common';
+import { Datum, stripUndefined } from '../utils/common';
 import { SpecType } from './constants';
 
 /** @public */
@@ -66,7 +66,7 @@ export const GroupBy = function <D extends BaseDatum = Datum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<GroupBySpec<D>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<GroupBySpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
 

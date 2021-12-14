@@ -12,7 +12,7 @@ import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
 import { useSpecFactory, SFProps, buildSFProps } from '../../../state/spec_factory';
-import { Datum } from '../../../utils/common';
+import { Datum, stripUndefined } from '../../../utils/common';
 import { BarSeriesSpec, BaseDatum, DEFAULT_GLOBAL_ID, SeriesType } from '../utils/specs';
 
 const buildProps = buildSFProps<BarSeriesSpec>()(
@@ -44,7 +44,7 @@ export const BarSeries = function <D extends BaseDatum = Datum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<BarSeriesSpec<D>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<BarSeriesSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
 

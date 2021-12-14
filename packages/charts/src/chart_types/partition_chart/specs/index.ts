@@ -21,6 +21,7 @@ import {
   ShowAccessor,
   ValueAccessor,
   ValueFormatter,
+  stripUndefined,
 } from '../../../utils/common';
 import { config, percentFormatter } from '../layout/config';
 import { Config, FillFontSizeRange, FillLabelConfig } from '../layout/types/config_types';
@@ -72,7 +73,7 @@ const buildProps = buildSFProps<PartitionSpec>()(
     valueFormatter: (d) => String(d),
     percentFormatter,
     topGroove: 20,
-    smallMultiples: null,
+    smallMultiples: '__global__small_multiples___',
     layers: [
       {
         groupByRollup: (d, i) => i,
@@ -98,7 +99,7 @@ export const Partition = function <D extends BaseDatum = Datum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<PartitionSpec<D>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<PartitionSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
 

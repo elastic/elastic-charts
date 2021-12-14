@@ -12,7 +12,7 @@ import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
-import { Datum } from '../../../utils/common';
+import { Datum, stripUndefined } from '../../../utils/common';
 import { BaseDatum, BubbleSeriesSpec, DEFAULT_GLOBAL_ID, SeriesType } from '../utils/specs';
 
 const buildProps = buildSFProps<BubbleSeriesSpec>()(
@@ -43,7 +43,7 @@ export const BubbleSeries = function <D extends BaseDatum = Datum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<BubbleSeriesSpec<D>>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<BubbleSeriesSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
 

@@ -627,3 +627,18 @@ export function getOppositeAlignment<A extends HorizontalAlignment | VerticalAli
 export function isFiniteNumber(value: unknown): value is number {
   return Number.isFinite(value);
 }
+
+/**
+ * Strips all undefined properties from object
+ * @internal
+ */
+export function stripUndefined<R extends Record<string, unknown>>(source: R): R {
+  return Object.keys(source).reduce((acc, key) => {
+    const val = source[key];
+    if (val !== undefined) {
+      // @ts-ignore - building new R from {}
+      acc[key] = val;
+    }
+    return acc;
+  }, {} as R);
+}

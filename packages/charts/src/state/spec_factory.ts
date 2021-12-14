@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux';
 import { OptionalKeys, RequiredKeys } from 'utility-types';
 
 import { Spec as Spec } from '../specs';
+import { stripUndefined } from '../utils/common';
 import { upsertSpec as upsertSpecAction, removeSpec as removeSpecAction } from './actions/specs';
 
 /** @internal */
@@ -70,7 +71,7 @@ export const specComponentFactory = <S extends Spec>() => <
 ): FC<SFProps<S, Overrides, Defaults, Optionals, Requires>> => {
   return (props) => {
     // @ts-ignore - All Spec keys are guaranteed to be included
-    useSpecFactory<S>({ ...defaults, ...props, ...overrides });
+    useSpecFactory<S>({ ...defaults, ...stripUndefined(props), ...overrides });
     return null;
   };
 };

@@ -123,7 +123,6 @@ export const Example = () => {
         data={data}
         valueAccessor={(d: Datum) => d.exportVal as number}
         valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-        smallMultiples="sm"
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,

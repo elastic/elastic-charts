@@ -31,6 +31,7 @@ import {
   Rendering,
   Rotation,
   VerticalAlignment,
+  stripUndefined,
 } from '../utils/common';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId, SpecId } from '../utils/ids';
@@ -693,7 +694,7 @@ export const Settings = function (
   >,
 ) {
   const { defaults, overrides } = settingsBuildProps;
-  useSpecFactory<SettingsSpec>({ ...defaults, ...props, ...overrides });
+  useSpecFactory<SettingsSpec>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
 
