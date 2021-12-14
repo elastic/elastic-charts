@@ -8,13 +8,21 @@
 
 export {
   AreaSeries,
+  AreaSeriesProps,
   Axis,
+  AxisProps,
   BarSeries,
+  BarSeriesProps,
   BubbleSeries,
+  BubbleSeriesProps,
   HistogramBarSeries,
+  HistogramBarSeriesProps,
   LineAnnotation,
+  LineAnnotationProps,
   LineSeries,
+  LineSeriesProps,
   RectAnnotation,
+  RectAnnotationProps,
 } from './xy_chart/specs';
 
 export * from './xy_chart/utils/specs';

@@ -49,4 +49,4 @@ export const HistogramBarSeries = function <D extends BaseDatum = Datum>(
 };
 
 /** @public */
-export type HistogramBarSeriesProp = ComponentProps<typeof HistogramBarSeries>;
+export type HistogramBarSeriesProps = ComponentProps<typeof HistogramBarSeries>;

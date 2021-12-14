@@ -21,7 +21,7 @@ export type A = number;
 // Warning: (ae-forgotten-export) The symbol "DatumKey" needs to be exported by the entry point index.d.ts
 //
 // @public
-export type Accessor<D extends BaseDatum = never> = D extends never ? AccessorObjectKey | AccessorArrayIndex : DatumKey<D>;
+export type Accessor<D extends BaseDatum = never> = DatumKey<D> | AccessorObjectKey | AccessorArrayIndex;
 
 // @public
 export type AccessorArrayIndex = number;
@@ -131,6 +131,9 @@ export type AreaFitStyle = Visible & Opacity & {
 // @public
 export const AreaSeries: <D extends BaseDatum = any>(props: SFProps<AreaSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "xScaleType" | "yScaleType" | "hideInLegend" | "histogramModeAlignment", "sortIndex" | "name" | "fit" | "timeZone" | "color" | "curve" | "areaSeriesStyle" | "xNice" | "yNice" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "stackAccessors" | "markSizeAccessor" | "markFormat" | "stackMode" | "pointStyleAccessor", "id" | "data" | "xAccessor" | "yAccessors">) => null;
 
+// @public (undocumented)
+export type AreaSeriesProps = ComponentProps<typeof AreaSeries>;
+
 // @public
 export type AreaSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'area'> & HistogramConfig & Postfixes & {
     seriesType: typeof SeriesType.Area;
@@ -184,6 +187,9 @@ export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "
 
 // @public (undocumented)
 export type AxisId = string;
+
+// @public (undocumented)
+export type AxisProps = ComponentProps<typeof Axis>;
 
 // @public
 export interface AxisSpec extends Spec {
@@ -276,6 +282,9 @@ export interface BandFillColorAccessorInput {
 // @public
 export const BarSeries: <D extends BaseDatum = any>(props: SFProps<BarSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "xScaleType" | "yScaleType" | "hideInLegend" | "enableHistogramMode", "sortIndex" | "name" | "timeZone" | "color" | "barSeriesStyle" | "xNice" | "yNice" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "stackAccessors" | "markSizeAccessor" | "stackMode" | "styleAccessor" | "minBarHeight", "id" | "data" | "xAccessor" | "yAccessors">) => null;
 
+// @public (undocumented)
+export type BarSeriesProps = ComponentProps<typeof BarSeries>;
+
 // @public
 export type BarSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'bar'> & Postfixes & {
     seriesType: typeof SeriesType.Bar;
@@ -364,6 +373,9 @@ export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 //
 // @public
 export const BubbleSeries: <D extends BaseDatum = any>(props: SFProps<BubbleSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "xScaleType" | "yScaleType" | "hideInLegend", "sortIndex" | "name" | "timeZone" | "color" | "bubbleSeriesStyle" | "xNice" | "yNice" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "stackAccessors" | "markSizeAccessor" | "markFormat" | "pointStyleAccessor", "id" | "data" | "xAccessor" | "yAccessors">) => null;
+
+// @public (undocumented)
+export type BubbleSeriesProps = ComponentProps<typeof BubbleSeries>;
 
 // @alpha
 export type BubbleSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'bubble'> & {
@@ -1192,6 +1204,11 @@ export interface HeatmapConfig {
 // @public (undocumented)
 export type HeatmapElementEvent = [Cell, SeriesIdentifier];
 
+// Warning: (ae-incompatible-release-tags) The symbol "HeatmapProps" is marked as @public, but its signature references "Heatmap" which is marked as @alpha
+//
+// @public (undocumented)
+export type HeatmapProps = ComponentProps<typeof Heatmap>;
+
 // @alpha (undocumented)
 export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     // (undocumented)
@@ -1212,7 +1229,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     // (undocumented)
     specType: typeof SpecType.Series;
     // (undocumented)
-    valueAccessor: Accessor | AccessorFn;
+    valueAccessor: Accessor<never> | AccessorFn;
     // (undocumented)
     valueFormatter: (value: number) => string;
     // (undocumented)
@@ -1235,6 +1252,9 @@ export type HierarchyOfArrays = Array<ArrayEntry>;
 
 // @public
 export const HistogramBarSeries: <D extends BaseDatum = any>(props: SFProps<HistogramBarSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "xScaleType" | "yScaleType" | "hideInLegend" | "enableHistogramMode", "sortIndex" | "name" | "timeZone" | "color" | "barSeriesStyle" | "xNice" | "yNice" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "markSizeAccessor" | "stackMode" | "styleAccessor" | "minBarHeight", "id" | "data" | "xAccessor" | "yAccessors">) => null;
+
+// @public (undocumented)
+export type HistogramBarSeriesProps = ComponentProps<typeof HistogramBarSeries>;
 
 // @public
 export type HistogramBarSeriesSpec<D extends BaseDatum = Datum> = Omit<BarSeriesSpec<D>, 'stackAccessors'> & {
@@ -1430,6 +1450,9 @@ export type LineAnnotationEvent = {
 };
 
 // @public (undocumented)
+export type LineAnnotationProps = ComponentProps<typeof LineAnnotation>;
+
+// @public (undocumented)
 export type LineAnnotationSpec<D = any> = BaseAnnotationSpec<typeof AnnotationType.Line, LineAnnotationDatum<D>, LineAnnotationStyle, D> & {
     domainType: AnnotationDomainType;
     marker?: ReactNode | ComponentWithAnnotationDatum<D>;
@@ -1464,6 +1487,9 @@ export type LineFitStyle = Visible & Opacity & StrokeDashArray & {
 
 // @public
 export const LineSeries: <D extends BaseDatum = any>(props: SFProps<LineSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "xScaleType" | "yScaleType" | "hideInLegend" | "histogramModeAlignment", "sortIndex" | "name" | "fit" | "timeZone" | "color" | "curve" | "lineSeriesStyle" | "xNice" | "yNice" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "stackAccessors" | "markSizeAccessor" | "markFormat" | "pointStyleAccessor", "id" | "data" | "xAccessor" | "yAccessors">) => null;
+
+// @public (undocumented)
+export type LineSeriesProps = ComponentProps<typeof LineSeries>;
 
 // @public
 export type LineSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'line'> & HistogramConfig & {
@@ -1645,6 +1671,9 @@ export const PartitionLayout: Readonly<{
 export type PartitionLayout = $Values<typeof PartitionLayout>;
 
 // @public (undocumented)
+export type PartitionProps = ComponentProps<typeof Partition>;
+
+// @public (undocumented)
 export const PATH_KEY = "path";
 
 // @public (undocumented)
@@ -1824,6 +1853,9 @@ export type RectAnnotationEvent = {
     id: SpecId;
     datum: RectAnnotationDatum;
 };
+
+// @public (undocumented)
+export type RectAnnotationProps = ComponentProps<typeof RectAnnotation>;
 
 // @public (undocumented)
 export type RectAnnotationSpec = BaseAnnotationSpec<typeof AnnotationType.Rectangle, RectAnnotationDatum, RectAnnotationStyle> & {
@@ -2124,7 +2156,7 @@ export interface SimplePadding {
 export type SizeRatio = Ratio;
 
 // @alpha
-export const SmallMultiples: FC<SFProps<SmallMultiplesSpec, "id" | "chartType" | "specType", never, "style" | "splitHorizontally" | "splitVertically" | "splitZigzag", never>>;
+export const SmallMultiples: FC<SFProps<SmallMultiplesSpec, "chartType" | "specType", "id", "style" | "splitHorizontally" | "splitVertically" | "splitZigzag", never>>;
 
 // Warning: (ae-incompatible-release-tags) The symbol "SmallMultiplesProps" is marked as @public, but its signature references "SmallMultiples" which is marked as @alpha
 //

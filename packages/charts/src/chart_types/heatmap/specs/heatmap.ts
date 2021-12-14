@@ -73,7 +73,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   colorScale: HeatmapBandsColorScale;
   xAccessor: Accessor<D> | AccessorFn<D>;
   yAccessor: Accessor<D> | AccessorFn<D>;
-  valueAccessor: Accessor | AccessorFn;
+  valueAccessor: Accessor<never> | AccessorFn;
   valueFormatter: (value: number) => string;
   xSortPredicate: Predicate;
   ySortPredicate: Predicate;

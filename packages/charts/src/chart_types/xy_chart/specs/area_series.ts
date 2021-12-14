@@ -49,4 +49,4 @@ export const AreaSeries = function <D extends BaseDatum = Datum>(
 };
 
 /** @public */
-export type AreaSeriesProp = ComponentProps<typeof AreaSeries>;
+export type AreaSeriesProps = ComponentProps<typeof AreaSeries>;

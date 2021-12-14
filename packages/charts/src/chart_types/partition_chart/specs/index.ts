@@ -103,4 +103,4 @@ export const Partition = function <D extends BaseDatum = Datum>(
 };
 
 /** @public */
-export type PartitionProp = ComponentProps<typeof Partition>;
+export type PartitionProps = ComponentProps<typeof Partition>;

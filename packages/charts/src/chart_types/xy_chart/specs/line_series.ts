@@ -49,4 +49,4 @@ export const LineSeries = function <D extends BaseDatum = Datum>(
 };
 
 /** @public */
-export type LineSeriesProp = ComponentProps<typeof LineSeries>;
+export type LineSeriesProps = ComponentProps<typeof LineSeries>;

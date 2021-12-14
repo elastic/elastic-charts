@@ -7,7 +7,6 @@
  */
 
 import { BaseDatum } from '../chart_types/specs';
-import { Datum } from './common';
 
 /**
  * Accessor function
@@ -71,9 +70,7 @@ export type DatumKey<D extends BaseDatum> = D extends any[] ? number : Exclude<k
  * A datum accessor in form of object key accessor string/number
  * @public
  */
-export type Accessor<D extends BaseDatum = never> = D extends never
-  ? AccessorObjectKey | AccessorArrayIndex
-  : DatumKey<D>;
+export type Accessor<D extends BaseDatum = never> = DatumKey<D> | AccessorObjectKey | AccessorArrayIndex;
 
 /**
  * Accessor format for _banded_ series as postfix string or accessor function
@@ -86,8 +83,8 @@ export type AccessorFormat = string | ((value: string) => string);
  * @param accessor the spec accessor
  * @internal
  */
-export function getAccessorFn(accessor: Accessor): AccessorFn {
-  return (datum: Datum) =>
+export function getAccessorFn<D extends BaseDatum>(accessor: Accessor<D>): AccessorFn<D> {
+  return (datum: D) =>
     typeof datum === 'object' && datum !== null ? datum[accessor as keyof typeof datum] : undefined;
 }
 

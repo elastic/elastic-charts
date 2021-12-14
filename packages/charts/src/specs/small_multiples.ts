@@ -76,11 +76,12 @@ export interface SmallMultiplesSpec extends Spec {
  */
 export const SmallMultiples = specComponentFactory<SmallMultiplesSpec>()(
   {
-    id: '__global__small_multiples___',
     chartType: ChartType.Global,
     specType: SpecType.SmallMultiples,
   },
-  {},
+  {
+    id: '__global__small_multiples___',
+  },
 );
 
 /** @public */

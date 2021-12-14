@@ -49,4 +49,4 @@ export const LineAnnotation = function <D = any>(
 };
 
 /** @public */
-export type LineAnnotationProp = ComponentProps<typeof LineAnnotation>;
+export type LineAnnotationProps = ComponentProps<typeof LineAnnotation>;

@@ -48,4 +48,4 @@ export const BubbleSeries = function <D extends BaseDatum = Datum>(
 };
 
 /** @public */
-export type BubbleSeriesProp = ComponentProps<typeof BubbleSeries>;
+export type BubbleSeriesProps = ComponentProps<typeof BubbleSeries>;
