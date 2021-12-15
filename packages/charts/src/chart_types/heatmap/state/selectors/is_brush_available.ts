@@ -16,12 +16,10 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
  */
 export const isBrushAvailableSelector = createCustomCachedSelector(
   [getChartThemeSelector, getSettingsSpecSelector],
-  ({ heatmap: { brushTool } }, { onBrushEnd }): boolean => {
-    return Boolean(onBrushEnd) && brushTool.visible;
-  },
+  ({ heatmap: { brushTool } }, { onBrushEnd }): boolean => Boolean(onBrushEnd) && brushTool.visible,
 );
 
 /** @internal */
-export const isBrushEndProvided = createCustomCachedSelector([getSettingsSpecSelector], ({ onBrushEnd }): boolean => {
-  return Boolean(onBrushEnd);
-});
+export const isBrushEndProvided = createCustomCachedSelector([getSettingsSpecSelector], ({ onBrushEnd }): boolean =>
+  Boolean(onBrushEnd),
+);

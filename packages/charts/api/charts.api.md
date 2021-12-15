@@ -1058,12 +1058,12 @@ export interface GroupBySpec extends Spec {
 // @public (undocumented)
 export type GroupId = string;
 
-// Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type GroupKeysOrKeyFn<T> = Array<keyof T> | GroupByKeyFn<T>;
 
+// Warning: (ae-forgotten-export) The symbol "SpecRequiredProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "SpecOptionalProps" needs to be exported by the entry point index.d.ts
+//
 // @alpha (undocumented)
 export const Heatmap: React_2.FunctionComponent<SpecRequiredProps_8 & SpecOptionalProps_8>;
 
@@ -2113,9 +2113,6 @@ export interface SimplePadding {
     outer: number;
 }
 
-// @public (undocumented)
-export type SizeRatio = Ratio;
-
 // @alpha (undocumented)
 export const SmallMultiples: React_2.FunctionComponent<SmallMultiplesProps>;
 
@@ -2207,11 +2204,6 @@ export interface StrokeStyle<C = Color> {
     strokeWidth: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "TEXT_ALIGNS" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export type TextAlign = typeof TEXT_ALIGNS[number];
-
 // @public
 export interface TextAlignment {
     // (undocumented)
@@ -2219,11 +2211,6 @@ export interface TextAlignment {
     // (undocumented)
     vertical: VerticalAlignment;
 }
-
-// Warning: (ae-forgotten-export) The symbol "TEXT_BASELINE" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export type TextBaseline = typeof TEXT_BASELINE[number];
 
 // @public
 export interface TextOffset {
@@ -2336,9 +2323,6 @@ export type TickStyle = StrokeStyle & Visible & {
 
 // @public (undocumented)
 export function timeFormatter(format: string): TickFormatter;
-
-// @public (undocumented)
-export type TimeMs = number;
 
 // @public (undocumented)
 export interface TimeScale {
@@ -2654,7 +2638,6 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // Warnings were encountered during analysis:
 //
 // src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/chart_types/partition_chart/layout/types/config_types.ts:138:5 - (ae-forgotten-export) The symbol "AnimKeyframe" needs to be exported by the entry point index.d.ts
 // src/utils/themes/theme.ts:216:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/utils/themes/theme.ts:217:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 
