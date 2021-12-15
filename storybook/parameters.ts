@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import euiDarkVars from '@elastic/eui/dist/eui_theme_amsterdam_dark.json';
-import euiLightVars from '@elastic/eui/dist/eui_theme_amsterdam_light.json';
+import euiDarkVars from '@elastic/eui/dist/eui_theme_dark.json';
+import euiLightVars from '@elastic/eui/dist/eui_theme_light.json';
 import type { Parameters as SBParameters } from '@storybook/addons';
 import { BackgroundParameter } from 'storybook-addon-background-toggle';
 import { ThemeParameter } from 'storybook-addon-theme-toggle';

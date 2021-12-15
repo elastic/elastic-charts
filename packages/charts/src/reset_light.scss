@@ -1,6 +1,3 @@
-@import '~@elastic/eui/src/themes/eui-amsterdam/eui_amsterdam_colors_light';
+@import '~@elastic/eui/src/themes/amsterdam/colors_light';
 @import 'style/themes/colors_light';
-@import '~@elastic/eui/src/themes/eui-amsterdam/global_styling/functions/index';
-@import '~@elastic/eui/src/themes/eui-amsterdam/global_styling/variables/index';
-@import '~@elastic/eui/src/themes/eui-amsterdam/global_styling/mixins/index';
-@import '~@elastic/eui/src/themes/eui-amsterdam/global_styling/reset/index';
+@import '~@elastic/eui/src/themes/amsterdam/globals';
