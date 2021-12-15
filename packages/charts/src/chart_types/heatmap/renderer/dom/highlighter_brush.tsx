@@ -9,11 +9,11 @@
 import { connect } from 'react-redux';
 
 import { GlobalChartState } from '../../../../state/chart_state';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
-import { geometries } from '../../state/selectors/geometries';
+import { getHeatmapGeometries } from '../../state/selectors/geometries';
 import { getBrushedHighlightedShapesSelector } from '../../state/selectors/get_brushed_highlighted_shapes';
-import { getHeatmapConfigSelector } from '../../state/selectors/get_heatmap_config';
 import { getHighlightedAreaSelector } from '../../state/selectors/get_highlighted_area';
 import { DEFAULT_PROPS, HighlighterCellsComponent, HighlighterCellsProps } from './highlighter';
 
@@ -24,7 +24,7 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
 
   const { chartId } = state;
 
-  const geoms = geometries(state);
+  const geoms = getHeatmapGeometries(state);
   const canvasDimension = computeChartDimensionsSelector(state);
 
   let dragShape = getBrushedHighlightedShapesSelector(state);
@@ -32,7 +32,7 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
   if (highlightedArea) {
     dragShape = highlightedArea;
   }
-  const { brushMask, brushArea } = getHeatmapConfigSelector(state);
+  const { brushMask, brushArea } = getChartThemeSelector(state).heatmap;
 
   return {
     chartId,

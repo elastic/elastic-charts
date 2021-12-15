@@ -11,13 +11,13 @@ import { max as d3Max } from 'd3-array';
 import { Box, measureText } from '../../../../common/text_utils';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Position } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
 import { getGridHeightParamsSelector } from './get_grid_full_height';
-import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { getXAxisRightOverflow } from './get_x_axis_right_overflow';
 
@@ -41,7 +41,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     getParentDimension,
     getLegendSizeSelector,
     getHeatmapTableSelector,
-    getHeatmapConfigSelector,
+    getChartThemeSelector,
     getXAxisRightOverflow,
     getGridHeightParamsSelector,
     getSettingsSpecSelector,
@@ -50,14 +50,14 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     chartContainerDimensions,
     legendSize,
     heatmapTable,
-    config,
+    { heatmap },
     rightOverflow,
     { height },
     { showLegend, legendPosition },
   ): Dimensions => {
     let { width, left } = chartContainerDimensions;
     const { top } = chartContainerDimensions;
-    const { padding } = config.yAxisLabel;
+    const { padding } = heatmap.yAxisLabel;
 
     const textMeasurer = document.createElement('canvas');
     const textMeasurerCtx = textMeasurer.getContext('2d');
@@ -66,23 +66,23 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     const totalHorizontalPadding =
       typeof padding === 'number' ? padding * 2 : (padding.left ?? 0) + (padding.right ?? 0);
 
-    if (config.yAxisLabel.visible) {
+    if (heatmap.yAxisLabel.visible) {
       // measure the text width of all rows values to get the grid area width
       const boxedYValues = heatmapTable.yValues.map<Box & { value: string | number }>((value) => {
         return {
           text: String(value),
           value,
           isValue: false,
-          ...config.yAxisLabel,
+          ...heatmap.yAxisLabel,
         };
       });
-      const measuredYValues = textMeasure(config.yAxisLabel.fontSize, boxedYValues);
+      const measuredYValues = textMeasure(heatmap.yAxisLabel.fontSize, boxedYValues);
 
       let yColumnWidth: number = d3Max(measuredYValues, ({ width }) => width) ?? 0;
-      if (typeof config.yAxisLabel.width === 'number') {
-        yColumnWidth = config.yAxisLabel.width;
-      } else if (typeof config.yAxisLabel.width === 'object' && yColumnWidth > config.yAxisLabel.width.max) {
-        yColumnWidth = config.yAxisLabel.width.max;
+      if (typeof heatmap.yAxisLabel.width === 'number') {
+        yColumnWidth = heatmap.yAxisLabel.width;
+      } else if (typeof heatmap.yAxisLabel.width === 'object' && yColumnWidth > heatmap.yAxisLabel.width.max) {
+        yColumnWidth = heatmap.yAxisLabel.width.max;
       }
 
       width -= yColumnWidth + rightOverflow + totalHorizontalPadding;

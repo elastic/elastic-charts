@@ -7,12 +7,8 @@
  */
 
 import { measureText } from '../../../../common/text_utils';
-import { SettingsSpec } from '../../../../specs';
-import { RecursivePartial, mergePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
-import { config as defaultConfig } from '../../layout/config/config';
-import { Config } from '../../layout/types/config_types';
 import { ShapeViewModel, nullShapeViewModel } from '../../layout/types/viewmodel_types';
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs';
@@ -23,7 +19,6 @@ import { GridHeightParams } from './get_grid_full_height';
 /** @internal */
 export function render(
   spec: HeatmapSpec,
-  settingsSpec: SettingsSpec,
   chartDimensions: Dimensions,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
@@ -36,20 +31,14 @@ export function render(
   if (!textMeasurerCtx) {
     return nullShapeViewModel();
   }
-  const { width, height } = chartDimensions;
-  const { config: specConfig } = spec;
-  const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
-  const config = mergePartial<Config>(defaultConfig, partialConfig);
   return shapeViewModel(
     measureText(textMeasurerCtx),
     spec,
-    config,
-    settingsSpec,
+    theme,
     chartDimensions,
     heatmapTable,
     colorScale,
     bandsToHide,
     gridHeightParams,
-    theme,
   );
 }
