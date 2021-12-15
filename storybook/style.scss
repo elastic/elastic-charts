@@ -22,6 +22,7 @@
 }
 
 html {
+  font-size: 14px !important;
   &.light-theme {
     @import '~@elastic/charts/src/theme_light';
 
