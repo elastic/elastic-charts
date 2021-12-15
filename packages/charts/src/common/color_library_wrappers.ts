@@ -13,8 +13,11 @@ import { Logger } from '../utils/logger';
 import { Color, Colors } from './colors';
 import { LRUCache } from './data_structures';
 
-type RGB = number;
-type A = number;
+/** @public */
+export type RGB = number;
+
+/** @public */
+export type A = number;
 
 /** @internal */
 export type RgbTuple = [RGB, RGB, RGB, A?];

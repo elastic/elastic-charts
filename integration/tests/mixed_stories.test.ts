@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Fit } from '../../packages/charts/src';
+import { Fit, StackMode, SeriesType } from '../../packages/charts/src';
 import { common } from '../page_objects';
 
 describe('Mixed series stories', () => {
@@ -190,6 +190,29 @@ describe('Mixed series stories', () => {
         it(`should display correct fit for type - ${fitType}`, async () => {
           await common.expectChartAtUrlToMatchScreenshot(
             `http://localhost:9001/?path=/story/mixed-charts--fitting-functions-stacked-series&knob-seriesType=area&knob-dataset=ordinal&knob-fitting function=${fitType}&knob-Curve=0&knob-End value=none&knob-Explicit value (using Fit.Explicit)=8&knob-stackMode=percentage`,
+          );
+        });
+      });
+    });
+  });
+
+  describe.each(Object.values(StackMode))('Stack mode - %s', (mode) => {
+    describe.each(['Mixed', 'Positive', 'Negative'])('Polarity - %s', (polarity) => {
+      describe.each([SeriesType.Bar, SeriesType.Area])('%s series', (type) => {
+        it('should display correct stacking', async () => {
+          await common.expectChartAtUrlToMatchScreenshot(
+            `http://localhost:9001/?path=/story/mixed-charts---polarized-stacked&globals=theme:light&knob-stacked=true&knob-data polarity=${polarity}&knob-custom domain=false&knob-stackMode=${mode}&knob-SeriesType=${type}`,
+          );
+        });
+
+        it('should show area chart with toggled series and mouse over', async () => {
+          const action = async () => {
+            await page.click('.echLegendItem:nth-child(2) .echLegendItem__label');
+          };
+          await common.expectChartWithMouseAtUrlToMatchScreenshot(
+            `http://localhost:9001/?path=/story/mixed-charts---polarized-stacked&globals=theme:light&knob-stacked=true&knob-data polarity=${polarity}&knob-custom domain=false&knob-stackMode=${mode}&knob-SeriesType=${type}`,
+            { top: 170, left: 490 },
+            { action },
           );
         });
       });

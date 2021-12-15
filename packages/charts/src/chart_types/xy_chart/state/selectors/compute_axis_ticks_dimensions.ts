@@ -19,9 +19,11 @@ import {
   computeRotatedLabelDimensions,
   defaultTickFormatter,
   getScaleForAxisSpec,
+  isXDomain,
   TickLabelBounds,
 } from '../../utils/axis_utils';
 import { AxisSpec, TickFormatter } from '../../utils/specs';
+import { AxisLabelFormatter, getAxisTickLabelFormatter } from './axis_tick_formatter';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
@@ -70,24 +72,34 @@ export type JoinedAxisData = {
   scale: Scale<number | string>;
   axesStyle: AxisStyle;
   gridLine: GridLineStyle;
-  tickFormatter: (d: number | string) => string;
+  isXAxis: boolean;
+  labelFormatter: AxisLabelFormatter;
 };
 
 /** @internal */
 export const getJoinedVisibleAxesData = createCustomCachedSelector(
-  [getUnitScales, getAxisSpecsSelector, getThemedAxesStyles, getFallBackTickFormatter, computeSeriesDomainsSelector],
-  (unitScales, axesSpecs, themedAxesStyles, fallBackTickFormatter, { xDomain: { timeZone } }) =>
+  [getUnitScales, getAxisSpecsSelector, getThemedAxesStyles, getSettingsSpecSelector, getAxisTickLabelFormatter],
+  (unitScales, axesSpecs, themedAxesStyles, { rotation }, axisTickLabelFormatters) =>
     axesSpecs.reduce<Map<AxisId, JoinedAxisData>>((axisData, axisSpec) => {
-      const { id, labelFormat, tickFormat, position } = axisSpec;
+      const { id, position, hide } = axisSpec;
       const axesStyle = themedAxesStyles.get(id);
-      const scale = unitScales.get(axisSpec.id);
-      const format = labelFormat ?? tickFormat ?? fallBackTickFormatter; // this coalescing be extracted out too
-      const formatOption = { timeZone };
-      const tickFormatter = (d: number | string) => format(d, formatOption);
+      const scale = unitScales.get(id);
+
       if (scale && axesStyle) {
         const gridLine = isVerticalAxis(position) ? axesStyle.gridLine.vertical : axesStyle.gridLine.horizontal;
-        const axisShown = gridLine.visible || !axisSpec.hide;
-        if (axisShown) axisData.set(axisSpec.id, { axisSpec, scale, axesStyle, gridLine, tickFormatter });
+        const axisShown = gridLine.visible || !hide;
+        const isXAxis = isXDomain(position, rotation);
+        const labelFormatter = axisTickLabelFormatters[isXAxis ? 'x' : 'y'].get(id) ?? defaultTickFormatter;
+
+        if (axisShown)
+          axisData.set(id, {
+            axisSpec,
+            scale,
+            axesStyle,
+            gridLine,
+            labelFormatter,
+            isXAxis,
+          });
       }
       return axisData;
     }, new Map()),
@@ -97,12 +109,12 @@ export const getJoinedVisibleAxesData = createCustomCachedSelector(
 export const getLabelBox = (
   axesStyle: AxisStyle,
   ticks: Array<string | number>,
-  tickFormatter: JoinedAxisData['tickFormatter'],
+  labelFormatter: AxisLabelFormatter,
   textMeasure: TextMeasure,
   axisSpec: AxisSpec,
   gridLine: GridLineStyle,
 ): TickLabelBounds => ({
-  ...(axesStyle.tickLabel.visible ? ticks.map(tickFormatter) : []).reduce(
+  ...(axesStyle.tickLabel.visible ? ticks.map(labelFormatter) : []).reduce(
     (sizes, labelText) => {
       const bbox = textMeasure(labelText, 0, axesStyle.tickLabel.fontSize, axesStyle.tickLabel.fontFamily);
       const rotatedBbox = computeRotatedLabelDimensions(bbox, axesStyle.tickLabel.rotation);
@@ -124,10 +136,10 @@ export const computeAxisTicksDimensionsSelector = createCustomCachedSelector(
     withTextMeasure(
       (textMeasure): AxesTicksDimensions =>
         [...joinedAxesData].reduce<AxesTicksDimensions>(
-          (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, tickFormatter }]) =>
+          (axesTicksDimensions, [id, { axisSpec, scale, axesStyle, gridLine, labelFormatter }]) =>
             axesTicksDimensions.set(
               id,
-              getLabelBox(axesStyle, scale.ticks(), tickFormatter, textMeasure, axisSpec, gridLine),
+              getLabelBox(axesStyle, scale.ticks(), labelFormatter, textMeasure, axisSpec, gridLine),
             ),
           new Map(),
         ),

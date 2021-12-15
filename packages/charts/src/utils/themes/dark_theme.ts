@@ -7,6 +7,7 @@
  */
 
 import { Colors } from '../../common/colors';
+import { ColorVariant } from '../common';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import {
@@ -32,6 +33,14 @@ export const DARK_THEME: Theme = {
       fill: 'black',
       radius: 2,
       opacity: 1,
+    },
+    fit: {
+      line: {
+        visible: true,
+        dash: [5, 5],
+        stroke: ColorVariant.Series,
+        opacity: 1,
+      },
     },
   },
   bubbleSeriesStyle: {
@@ -59,6 +68,19 @@ export const DARK_THEME: Theme = {
       strokeWidth: 0.5,
       radius: 1,
       opacity: 1,
+    },
+    fit: {
+      line: {
+        visible: true,
+        dash: [5, 5],
+        stroke: ColorVariant.Series,
+        opacity: 1,
+      },
+      area: {
+        visible: true,
+        opacity: 0.15,
+        fill: ColorVariant.Series,
+      },
     },
   },
   barSeriesStyle: {

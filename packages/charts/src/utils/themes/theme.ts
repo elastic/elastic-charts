@@ -603,6 +603,9 @@ export interface BubbleSeriesStyle {
 export interface LineSeriesStyle {
   line: LineStyle;
   point: PointStyle;
+  fit: {
+    line: LineFitStyle;
+  };
 }
 
 /** @public */
@@ -610,7 +613,25 @@ export interface AreaSeriesStyle {
   area: AreaStyle;
   line: LineStyle;
   point: PointStyle;
+  fit: {
+    line: LineFitStyle;
+    area: AreaFitStyle;
+  };
 }
+
+/** @public */
+export type AreaFitStyle = Visible &
+  Opacity & {
+    fill: Color | typeof ColorVariant.Series;
+    texture?: TexturedStyles;
+  };
+
+/** @public */
+export type LineFitStyle = Visible &
+  Opacity &
+  StrokeDashArray & {
+    stroke: Color | typeof ColorVariant.Series;
+  };
 
 /** @public */
 export interface ArcSeriesStyle {

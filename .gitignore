@@ -19,5 +19,6 @@ coverage/
 npm-debug.log
 yarn-error.log
 playground/playground.tsx
+.jest-image-snapshot-touched-files
 
 **/__diff_output__/
