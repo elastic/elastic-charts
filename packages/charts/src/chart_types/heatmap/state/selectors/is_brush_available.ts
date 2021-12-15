@@ -7,21 +7,19 @@
  */
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getHeatmapConfigSelector } from './get_heatmap_config';
 
 /**
  * The brush is available only if a onBrushEnd listener is configured
  * @internal
  */
 export const isBrushAvailableSelector = createCustomCachedSelector(
-  [getHeatmapConfigSelector, getSettingsSpecSelector],
-  (config, { onBrushEnd }): boolean => {
-    return Boolean(onBrushEnd) && config.brushTool.visible;
-  },
+  [getChartThemeSelector, getSettingsSpecSelector],
+  ({ heatmap: { brushTool } }, { onBrushEnd }): boolean => Boolean(onBrushEnd) && brushTool.visible,
 );
 
 /** @internal */
-export const isBrushEndProvided = createCustomCachedSelector([getSettingsSpecSelector], ({ onBrushEnd }): boolean => {
-  return Boolean(onBrushEnd);
-});
+export const isBrushEndProvided = createCustomCachedSelector([getSettingsSpecSelector], ({ onBrushEnd }): boolean =>
+  Boolean(onBrushEnd),
+);

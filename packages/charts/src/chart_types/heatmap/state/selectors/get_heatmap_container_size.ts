@@ -8,11 +8,11 @@
 
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendConfigSelector } from '../../../../state/selectors/get_legend_config_selector';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { LayoutDirection } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
-import { getHeatmapConfigSelector } from './get_heatmap_config';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
@@ -21,8 +21,8 @@ const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
  * @internal
  */
 export const getHeatmapContainerSizeSelector = createCustomCachedSelector(
-  [getParentDimension, getLegendSizeSelector, getHeatmapConfigSelector, getLegendConfigSelector],
-  (parentDimensions, legendSize, { maxLegendHeight }, { showLegend, legendPosition }): Dimensions => {
+  [getParentDimension, getLegendSizeSelector, getChartThemeSelector, getLegendConfigSelector],
+  (parentDimensions, legendSize, { heatmap: { maxLegendHeight } }, { showLegend, legendPosition }): Dimensions => {
     if (!showLegend || legendPosition.floating) {
       return parentDimensions;
     }
