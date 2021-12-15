@@ -2484,8 +2484,6 @@ export const Wordcloud: React_2.FunctionComponent<SpecRequiredProps_10 & SpecOpt
 // @public (undocumented)
 export type WordCloudElementEvent = [WordModel, SeriesIdentifier];
 
-// Warning: (ae-forgotten-export) The symbol "WordcloudViewModel" needs to be exported by the entry point index.d.ts
-//
 // @alpha (undocumented)
 export interface WordcloudSpec extends Spec, WordcloudViewModel {
     // (undocumented)
