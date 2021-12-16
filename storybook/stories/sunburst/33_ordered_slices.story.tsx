@@ -18,7 +18,8 @@ import {
   Partition,
   Settings,
   ShapeTreeNode,
-  defaultPartitionValueFormatter,} from '@elastic/charts';
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';

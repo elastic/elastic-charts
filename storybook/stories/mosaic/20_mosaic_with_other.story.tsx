@@ -19,7 +19,8 @@ import {
   PartitionLayout,
   Settings,
   ShapeTreeNode,
-  defaultPartitionValueFormatter,} from '@elastic/charts';
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup } from '../utils/utils';

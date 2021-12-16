@@ -18,7 +18,8 @@ import {
   Partition,
   PartitionLayout,
   Settings,
-  defaultPartitionValueFormatter,} from '@elastic/charts';
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 

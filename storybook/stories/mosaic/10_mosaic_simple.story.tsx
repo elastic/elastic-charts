@@ -18,7 +18,8 @@ import {
   PartitionLayout,
   Settings,
   ShapeTreeNode,
-  defaultPartitionValueFormatter,} from '@elastic/charts';
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
