@@ -1665,6 +1665,8 @@ export interface PartitionStyle extends FillFontSizeRange {
     sectorLineStroke: StrokeStyle_2;
     // (undocumented)
     sectorLineWidth: Pixels;
+    // (undocumented)
+    textColor: Color;
 }
 
 // @public (undocumented)
