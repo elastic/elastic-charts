@@ -1632,6 +1632,41 @@ export const PartitionLayout: Readonly<{
 // @public (undocumented)
 export type PartitionLayout = $Values<typeof PartitionLayout>;
 
+// Warning: (ae-forgotten-export) The symbol "FillFontSizeRange" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export interface PartitionStyle extends FillFontSizeRange {
+    // Warning: (ae-forgotten-export) The symbol "Distance" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    circlePadding: Distance;
+    // Warning: (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
+    emptySizeRatio: SizeRatio;
+    // (undocumented)
+    fillLabel: PartitionFillLabel;
+    // Warning: (ae-forgotten-export) The symbol "FontFamily" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    fontFamily: FontFamily;
+    // (undocumented)
+    horizontalTextAngleThreshold: Radian;
+    // (undocumented)
+    horizontalTextEnforcer: Ratio;
+    // Warning: (ae-forgotten-export) The symbol "LinkLabelConfig" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    linkLabel: LinkLabelConfig;
+    outerSizeRatio: SizeRatio;
+    // (undocumented)
+    radialPadding: Distance;
+    // Warning: (ae-forgotten-export) The symbol "StrokeStyle" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    sectorLineStroke: StrokeStyle_2;
+    // (undocumented)
+    sectorLineWidth: Pixels;
+}
+
 // @public (undocumented)
 export const PATH_KEY = "path";
 
@@ -1900,8 +1935,6 @@ export type ScaleType = $Values<typeof ScaleType>;
 
 // @public (undocumented)
 export interface SectorGeomSpecY {
-    // Warning: (ae-forgotten-export) The symbol "Distance" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     y0px: Distance;
     // (undocumented)
@@ -2289,7 +2322,6 @@ export interface Theme {
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;
     markSizeRatio?: number;
-    // Warning: (ae-forgotten-export) The symbol "PartitionStyle" needs to be exported by the entry point index.d.ts
     partition: PartitionStyle;
     // (undocumented)
     scales: ScalesConfig;
