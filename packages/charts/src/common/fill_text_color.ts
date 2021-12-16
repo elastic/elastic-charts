@@ -36,7 +36,7 @@ export function fillTextColor(
     if (backgroundRGBA[3] < TRANSPARENT_LIMIT) {
       if (foregroundRGBA[3] < TRANSPARENT_LIMIT && fallbackColor) return fallbackColor;
       // combine it with white if semi-transparent
-      const fgBlend = foregroundRGBA[3] < 1 ? combineColors(foregroundRGBA, Colors.White.rgba) : foregroundRGBA;
+      const fgBlend = combineColors(foregroundRGBA, Colors.White.rgba);
       // only use foreground
       return RGBATupleToString(highContrastColor(fgBlend));
     }
