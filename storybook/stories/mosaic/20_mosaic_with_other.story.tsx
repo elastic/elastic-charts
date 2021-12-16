@@ -19,8 +19,7 @@ import {
   PartitionLayout,
   Settings,
   ShapeTreeNode,
-} from '@elastic/charts';
-import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+  defaultPartitionValueFormatter,} from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup } from '../utils/utils';
@@ -56,7 +55,7 @@ export const Example = () => {
         data={data}
         layout={PartitionLayout.mosaic}
         valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
-        valueFormatter={(d: number) => `${defaultValueFormatter(Math.round(d / 1000000000))}`}
+        valueFormatter={(d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.region,

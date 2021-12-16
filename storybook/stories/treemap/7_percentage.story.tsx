@@ -10,7 +10,7 @@ import React from 'react';
 
 import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings, PartialTheme } from '@elastic/charts';
 import {
-  defaultValueFormatter,
+  defaultPartitionValueFormatter,
   percentValueGetter,
 } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
@@ -45,7 +45,7 @@ export const Example = () => (
       valueAccessor={(d: Datum) => d.exportVal as number}
       layout={PartitionLayout.treemap}
       valueGetter={percentValueGetter}
-      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),

@@ -18,8 +18,7 @@ import {
   PartitionLayout,
   Settings,
   ShapeTreeNode,
-} from '@elastic/charts';
-import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+  defaultPartitionValueFormatter,} from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
@@ -82,7 +81,7 @@ export const Example = () => {
         data={data}
         layout={partitionLayout}
         valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
-        valueFormatter={(d: number) => `${defaultValueFormatter(Math.round(d / 1000000000))}`}
+        valueFormatter={(d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}`}
         layers={[
           {
             groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),

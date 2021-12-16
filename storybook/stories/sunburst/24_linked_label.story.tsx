@@ -9,8 +9,7 @@
 import { boolean, color } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -37,7 +36,7 @@ export const Example = () => (
       data={mocks.pie}
       layout={PartitionLayout.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,

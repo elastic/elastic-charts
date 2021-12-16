@@ -8,8 +8,7 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
@@ -37,13 +36,13 @@ export const Example = () => (
       data={mocks.pie}
       layout={PartitionLayout.treemap}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: {
-            valueFormatter: (d: number) => `${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
+            valueFormatter: (d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
           },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),

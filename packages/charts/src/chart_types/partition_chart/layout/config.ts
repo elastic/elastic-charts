@@ -62,8 +62,8 @@ export const VALUE_GETTERS = Object.freeze({ percent: percentValueGetter, ratio:
 /** @public */
 export type ValueGetterName = keyof typeof VALUE_GETTERS;
 
-/** @internal */
-export function defaultValueFormatter(d: number): string {
+/** @public */
+export function defaultPartitionValueFormatter(d: number): string {
   return Math.abs(d) >= 10000000 || Math.abs(d) < 0.001
     ? d.toExponential(Math.min(2, Math.max(0, significantDigitCount(d) - 1)))
     : d.toLocaleString(undefined, {
@@ -206,7 +206,7 @@ export const configMetadata: Record<string, ConfigItem> = {
         type: 'function',
       },
       valueFormatter: {
-        dflt: defaultValueFormatter,
+        dflt: defaultPartitionValueFormatter,
         type: 'function',
       },
       valueFont,

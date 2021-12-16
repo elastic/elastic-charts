@@ -18,8 +18,7 @@ import {
   Partition,
   Settings,
   ShapeTreeNode,
-} from '@elastic/charts';
-import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+  defaultPartitionValueFormatter,} from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';
@@ -67,13 +66,13 @@ export const Example = () => {
         id="spec_1"
         data={data}
         valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
-        valueFormatter={(d: number) => `${defaultValueFormatter(Math.round(d / 1000000000))}`}
+        valueFormatter={(d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.region,
             nodeLabel: (d: any) => d,
             fillLabel: {
-              valueFormatter: (d: number) => `${defaultValueFormatter(Math.round(d / 1000000000))}`,
+              valueFormatter: (d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}`,
               fontWeight: 600,
               fontStyle: 'italic',
               valueFont: {

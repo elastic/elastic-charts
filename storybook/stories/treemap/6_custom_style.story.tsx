@@ -8,8 +8,16 @@
 
 import React from 'react';
 
-import { Chart, Datum, MODEL_KEY, PartialTheme, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import {
+  Chart,
+  Datum,
+  MODEL_KEY,
+  PartialTheme,
+  Partition,
+  PartitionLayout,
+  Settings,
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 import { arrayToLookup } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { countryDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
@@ -45,7 +53,7 @@ export const Example = () => (
       data={mocks.sunburst}
       layout={PartitionLayout.treemap}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
@@ -62,7 +70,7 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           fillLabel: {
-            valueFormatter: (d: number) => `${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
+            valueFormatter: (d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
             textColor: 'rgba(60,60,60,1)',
             fontWeight: 600,
             fontStyle: 'normal',

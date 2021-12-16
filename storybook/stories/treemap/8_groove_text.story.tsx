@@ -9,8 +9,16 @@
 import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings, PartialTheme } from '@elastic/charts';
-import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import {
+  Chart,
+  Datum,
+  MODEL_KEY,
+  Partition,
+  PartitionLayout,
+  Settings,
+  PartialTheme,
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -42,7 +50,7 @@ export const Example = () => (
       data={mocks.sunburst}
       layout={PartitionLayout.treemap}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
@@ -68,7 +76,7 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           fillLabel: {
-            valueFormatter: (d: number) => `${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
+            valueFormatter: (d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
             textColor: 'black',
             fontWeight: 200,
             fontStyle: 'normal',

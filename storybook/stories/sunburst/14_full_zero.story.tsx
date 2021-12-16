@@ -8,8 +8,7 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
@@ -30,7 +29,7 @@ export const Example = () => (
       ]}
       layout={PartitionLayout.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d))}`}
+      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d))}`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,

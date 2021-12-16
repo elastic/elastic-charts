@@ -9,8 +9,16 @@
 import { color, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, PartialTheme, Settings, MODEL_KEY } from '@elastic/charts';
-import { defaultValueFormatter } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import {
+  Chart,
+  Datum,
+  Partition,
+  PartitionLayout,
+  PartialTheme,
+  Settings,
+  MODEL_KEY,
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
@@ -62,7 +70,7 @@ export const Example = () => {
         data={mocks.miniSunburst}
         layout={PartitionLayout.sunburst}
         valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${defaultValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,
