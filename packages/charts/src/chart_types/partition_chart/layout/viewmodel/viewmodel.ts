@@ -20,7 +20,7 @@ import {
 } from '../../../../common/geometry';
 import { Part, TextMeasure } from '../../../../common/text_utils';
 import { GroupByAccessor } from '../../../../specs';
-import { StrokeStyle } from '../../../../utils/common';
+import { StrokeStyle, ColorVariant } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { FillLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
@@ -158,10 +158,11 @@ export function makeQuadViewModel(
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
     const textNegligible = node.y1px - node.y0px < minRectHeightForText;
-    const textColor =
-      !isSunburstLayout && textNegligible
-        ? Colors.Transparent.keyword
-        : fillTextColor(fillColor, containerBackgroundColor, fillLabel.textColor);
+    const textColor = textNegligible
+      ? Colors.Transparent.keyword
+      : fillLabel.textColor === ColorVariant.Adaptive
+      ? fillTextColor(fillColor, containerBackgroundColor, fillLabel.textColor)
+      : fillLabel.textColor;
 
     return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor, ...node };
   });

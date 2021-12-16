@@ -234,4 +234,27 @@ describe('Legend stories', () => {
       );
     });
   });
+
+  describe('Custom width', () => {
+    // eslint-disable-next-line unicorn/consistent-function-scoping
+    const getUrl = (position: string, size: number) =>
+      `http://localhost:9001/?path=/story/legend--${position}&knob-enable legend size=true&knob-legend size=${size}`;
+
+    describe.each(['top', 'right', 'bottom', 'left'])('position %s', (position) => {
+      const isVertical = position === 'left' || position === 'right';
+      if (isVertical) {
+        it('should limit width to min of 30% of computed width', async () => {
+          await common.expectChartAtUrlToMatchScreenshot(getUrl(position, 1));
+        });
+      }
+
+      it('should limit size to max 70% of chart dimension', async () => {
+        await common.expectChartAtUrlToMatchScreenshot(getUrl(position, 100000));
+      });
+
+      it('should set exact size of legend within constraints', async () => {
+        await common.expectChartAtUrlToMatchScreenshot(getUrl(position, isVertical ? 400 : 300));
+      });
+    });
+  });
 });

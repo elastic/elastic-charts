@@ -8,6 +8,7 @@
 
 import { Colors } from '../../common/colors';
 import { GOLDEN_RATIO, TAU } from '../../common/constants';
+import { ColorVariant } from '../common';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import {
@@ -33,6 +34,14 @@ export const LIGHT_THEME: Theme = {
       fill: Colors.White.keyword,
       radius: 2,
       opacity: 1,
+    },
+    fit: {
+      line: {
+        opacity: 1,
+        visible: true,
+        dash: [5, 5],
+        stroke: ColorVariant.Series,
+      },
     },
   },
   bubbleSeriesStyle: {
@@ -60,6 +69,19 @@ export const LIGHT_THEME: Theme = {
       fill: Colors.White.keyword,
       radius: 2,
       opacity: 1,
+    },
+    fit: {
+      line: {
+        visible: true,
+        dash: [5, 5],
+        stroke: ColorVariant.Series,
+        opacity: 1,
+      },
+      area: {
+        visible: true,
+        opacity: 0.15,
+        fill: ColorVariant.Series,
+      },
     },
   },
   barSeriesStyle: {
@@ -285,5 +307,82 @@ export const LIGHT_THEME: Theme = {
     },
     sectorLineWidth: 1,
     sectorLineStroke: 'white',
+  },
+  heatmap: {
+    maxRowHeight: 30,
+    maxColumnWidth: 30,
+    brushArea: {
+      visible: true,
+      stroke: '#69707D', // euiColorDarkShade,
+      strokeWidth: 2,
+    },
+    brushMask: {
+      visible: true,
+      fill: '#73737380',
+    },
+    brushTool: {
+      visible: false,
+      fill: 'gray',
+    },
+    xAxisLabel: {
+      visible: true,
+      width: 'auto',
+      fontSize: 12,
+      fontFamily: 'Sans-Serif',
+      fontStyle: 'normal',
+      textColor: Colors.Black.keyword,
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      align: 'center',
+      baseline: 'middle',
+      padding: 6,
+    },
+    yAxisLabel: {
+      visible: true,
+      width: 'auto',
+      fontSize: 12,
+      fontFamily: 'Sans-Serif',
+      fontStyle: 'normal',
+      textColor: Colors.Black.keyword,
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      baseline: 'middle',
+      padding: 5,
+    },
+    grid: {
+      cellWidth: {
+        min: 0,
+        max: 30,
+      },
+      cellHeight: {
+        min: 12,
+        max: 30,
+      },
+      stroke: {
+        width: 1,
+        color: 'gray',
+      },
+    },
+    cell: {
+      maxWidth: 'fill',
+      maxHeight: 'fill',
+      align: 'center',
+      label: {
+        visible: true,
+        maxWidth: 'fill',
+        minFontSize: 8,
+        maxFontSize: 12,
+        fontFamily: 'Sans-Serif',
+        fontStyle: 'normal',
+        textColor: Colors.Black.keyword,
+        fontVariant: 'normal',
+        fontWeight: 'normal',
+        useGlobalMinFontSize: true,
+      },
+      border: {
+        strokeWidth: 1,
+        stroke: 'gray',
+      },
+    },
   },
 };

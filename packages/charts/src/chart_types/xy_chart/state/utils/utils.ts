@@ -37,7 +37,13 @@ import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../../utils/scales';
-import { DataSeries, getDataSeriesFromSpecs, getFormattedDataSeries, getSeriesKey } from '../../utils/series';
+import {
+  DataSeries,
+  getDataSeriesFromSpecs,
+  getFormattedDataSeries,
+  getSeriesKey,
+  isBandedSpec,
+} from '../../utils/series';
 import {
   AxisSpec,
   BasicSeriesSpec,
@@ -46,7 +52,6 @@ import {
   HistogramModeAlignment,
   HistogramModeAlignments,
   isAreaSeriesSpec,
-  isBandedSpec,
   isBarSeriesSpec,
   isBubbleSeriesSpec,
   isLineSeriesSpec,
@@ -384,7 +389,7 @@ function renderGeometries(
         yScale,
         color,
         panel,
-        isBandedSpec(spec.y0Accessors),
+        isBandedSpec(spec),
         xScaleOffset,
         bubbleSeriesStyle,
         {
@@ -418,15 +423,15 @@ function renderGeometries(
         panel,
         color,
         spec.curve || CurveType.LINEAR,
-        isBandedSpec(spec.y0Accessors),
+        isBandedSpec(spec),
         xScaleOffset,
         lineSeriesStyle,
         {
           enabled: spec.markSizeAccessor !== undefined && lineSeriesStyle.point.visible,
           ratio: chartTheme.markSizeRatio,
         },
-        spec.pointStyleAccessor,
         hasFitFnConfigured(spec.fit),
+        spec.pointStyleAccessor,
       );
 
       geometriesIndex.merge(renderedLines.indexedGeometryMap);
@@ -451,7 +456,7 @@ function renderGeometries(
         panel,
         color,
         spec.curve || CurveType.LINEAR,
-        isBandedSpec(spec.y0Accessors),
+        isBandedSpec(spec),
         xScaleOffset,
         areaSeriesStyle,
         {
@@ -459,8 +464,8 @@ function renderGeometries(
           ratio: chartTheme.markSizeRatio,
         },
         spec.stackAccessors ? spec.stackAccessors.length > 0 : false,
-        spec.pointStyleAccessor,
         hasFitFnConfigured(spec.fit),
+        spec.pointStyleAccessor,
       );
       geometriesIndex.merge(renderedAreas.indexedGeometryMap);
       areas.push({

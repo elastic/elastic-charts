@@ -28,6 +28,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { Dimensions } from '../../../../utils/dimensions';
 import { MODEL_KEY } from '../../layout/config';
 import {
+  hasMostlyRTLLabels,
   nullShapeViewModel,
   QuadViewModel,
   ShapeViewModel,
@@ -52,6 +53,7 @@ export interface ContinuousDomainFocus {
 export interface IndexedContinuousDomainFocus extends ContinuousDomainFocus, SmallMultiplesDescriptors {}
 
 interface ReactiveChartStateProps {
+  isRTL: boolean;
   initialized: boolean;
   geometries: ShapeViewModel;
   geometriesFoci: ContinuousDomainFocus[];
@@ -150,10 +152,12 @@ class PartitionComponent extends React.Component<PartitionProps> {
       chartDimensions: { width, height },
       a11ySettings,
       debug,
+      isRTL,
     } = this.props;
     return width === 0 || height === 0 || !initialized ? null : (
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <canvas
+          dir={isRTL ? 'rtl' : 'ltr'}
           ref={forwardStageRef}
           className="echCanvasRenderer"
           width={width * this.devicePixelRatio}
@@ -199,6 +203,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
   bindActionCreators({ onChartRendered }, dispatch);
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
+  isRTL: false,
   initialized: false,
   geometries: nullShapeViewModel(),
   geometriesFoci: [],
@@ -219,7 +224,9 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     return DEFAULT_PROPS;
   }
   const multiGeometries = partitionMultiGeometries(state);
+
   return {
+    isRTL: hasMostlyRTLLabels(multiGeometries),
     initialized: true,
     geometries: multiGeometries.length > 0 ? multiGeometries[0] : nullShapeViewModel(),
     multiGeometries,

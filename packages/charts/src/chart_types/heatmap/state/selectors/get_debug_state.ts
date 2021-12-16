@@ -6,23 +6,37 @@
  * Side Public License, v 1.
  */
 
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { DebugState, DebugStateLegend } from '../../../../state/types';
 import { Position } from '../../../../utils/common';
+import { getChartThemeSelector } from './../../../../state/selectors/get_chart_theme';
 import { computeLegendSelector } from './compute_legend';
-import { geometries } from './geometries';
+import { getHeatmapGeometries } from './geometries';
 import { getHighlightedAreaSelector, getHighlightedDataSelector } from './get_highlighted_area';
-import { getPickedCells } from './get_picked_cells';
 
 /**
  * Returns a stringified version of the `debugState`
  * @internal
  */
 export const getDebugStateSelector = createCustomCachedSelector(
-  [geometries, computeLegendSelector, getHighlightedAreaSelector, getPickedCells, getHighlightedDataSelector],
-  (geoms, legend, pickedArea, pickedCells, highlightedData): DebugState => {
+  [
+    getHeatmapGeometries,
+    computeLegendSelector,
+    getHighlightedAreaSelector,
+    getHighlightedDataSelector,
+    getChartThemeSelector,
+  ],
+  (geoms, legend, pickedArea, highlightedData, { heatmap }): DebugState => {
     return {
       // Common debug state
       legend: getLegendState(legend),
@@ -50,12 +64,13 @@ export const getDebugStateSelector = createCustomCachedSelector(
       },
       // Heatmap debug state
       heatmap: {
-        cells: geoms.heatmapViewModel.cells.map(({ x, y, fill, formatted, value }) => ({
-          x,
-          y,
-          fill: RGBATupleToString(fill.color),
-          formatted,
-          value,
+        cells: geoms.heatmapViewModel.cells.map((cell) => ({
+          x: cell.x,
+          y: cell.y,
+          fill: RGBATupleToString(cell.fill.color),
+          formatted: cell.formatted,
+          value: cell.value,
+          valueShown: heatmap.cell.label.visible && Number.isFinite(geoms.heatmapViewModel.cellFontSize(cell)),
         })),
         selection: {
           area: pickedArea,

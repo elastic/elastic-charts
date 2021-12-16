@@ -10,12 +10,12 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { PickDragFunction } from '../../layout/types/viewmodel_types';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { geometries } from './geometries';
+import { getHeatmapGeometries } from './geometries';
 import { getGridHeightParamsSelector } from './get_grid_full_height';
 
 /** @internal */
 export const getPickedCells = createCustomCachedSelector(
-  [geometries, getLastDragSelector, computeChartDimensionsSelector, getGridHeightParamsSelector],
+  [getHeatmapGeometries, getLastDragSelector, computeChartDimensionsSelector, getGridHeightParamsSelector],
   (geoms, dragState, canvasDimensions, gridParams): ReturnType<PickDragFunction> | null => {
     if (!dragState) {
       return null;

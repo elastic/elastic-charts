@@ -11,7 +11,7 @@ import { extent } from 'd3-array';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { Chart, Heatmap, ScaleType, Settings } from '@elastic/charts';
+import { Chart, Heatmap, PartialTheme, ScaleType, Settings } from '@elastic/charts';
 
 import { ColorBand } from '../../../packages/charts/src/chart_types/heatmap/specs/heatmap';
 import {
@@ -25,8 +25,39 @@ import {
   DATA_8,
   DATA_9,
 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
+import { useBaseTheme } from '../../use_base_theme';
 
 const datasets = [DATA_1, DATA_2, DATA_3, DATA_4, DATA_5, DATA_6, DATA_7, DATA_8, DATA_9];
+
+const theme: PartialTheme = {
+  heatmap: {
+    grid: {
+      cellHeight: {
+        min: 20,
+      },
+      stroke: {
+        width: 1,
+        color: 'black',
+      },
+    },
+    cell: {
+      maxWidth: 'fill',
+      maxHeight: 3,
+      label: {
+        visible: true,
+      },
+      border: {
+        stroke: 'transparent',
+        strokeWidth: 0,
+      },
+    },
+    yAxisLabel: {
+      visible: true,
+      width: 'auto',
+      padding: { left: 10, right: 10 },
+    },
+  },
+};
 
 export const Example = () => {
   const datasetIndex = select('dataset', [1, 2, 3, 4, 5, 6, 7, 8, 9], 1) - 1;
@@ -49,7 +80,7 @@ export const Example = () => {
         {`${dataset.interval.type}: ${dataset.interval.value}${dataset.interval.unit} points:${dataset.data.length}`}
       </div>
       <Chart className="story-chart">
-        <Settings xDomain={dataset.domain} />
+        <Settings theme={theme} baseTheme={useBaseTheme()} xDomain={dataset.domain} />
         <Heatmap
           id="heatmap1"
           colorScale={{
@@ -66,37 +97,8 @@ export const Example = () => {
             type: ScaleType.Time,
             interval: dataset.interval,
           }}
-          config={{
-            grid: {
-              cellHeight: {
-                min: 20,
-              },
-              stroke: {
-                width: 1,
-                color: 'black',
-              },
-            },
-            cell: {
-              maxWidth: 'fill',
-              maxHeight: 3,
-              label: {
-                visible: true,
-              },
-              border: {
-                stroke: 'transparent',
-                strokeWidth: 0,
-              },
-            },
-            yAxisLabel: {
-              visible: true,
-              width: 'auto',
-              padding: { left: 10, right: 10 },
-            },
-            xAxisLabel: {
-              formatter: dataset.xFormatter,
-            },
-            timeZone: dataset.timeZone ?? 'Europe/Rome',
-          }}
+          timeZone={dataset.timeZone ?? 'Europe/Rome'}
+          xAxisLabelFormatter={dataset.xFormatter}
         />
       </Chart>
     </>

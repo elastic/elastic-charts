@@ -66,19 +66,28 @@ export const getLegendSizeSelector = createCustomCachedSelector(
       const legendItemHeight = bbox.height + VERTICAL_PADDING * 2;
       const legendHeight = legendItemHeight * labels.length + TOP_MARGIN;
       const scrollBarDimension = legendHeight > parentDimensions.height ? SCROLL_BAR_WIDTH : 0;
+      const staticWidth = spacingBuffer + actionDimension + scrollBarDimension;
+
+      const width = Number.isFinite(legendConfig.legendSize)
+        ? Math.min(Math.max(legendConfig.legendSize, legendItemWidth * 0.3 + staticWidth), parentDimensions.width * 0.7)
+        : Math.floor(Math.min(legendItemWidth + staticWidth, verticalWidth));
 
       return {
-        width: Math.floor(
-          Math.min(legendItemWidth + spacingBuffer + actionDimension + scrollBarDimension, verticalWidth),
-        ),
+        width,
         height: legendHeight,
         margin,
         position: legendPosition,
       };
     }
     const isSingleLine = (parentDimensions.width - 20) / 200 > labels.length;
+    const height = Number.isFinite(legendConfig.legendSize)
+      ? Math.min(legendConfig.legendSize, parentDimensions.height * 0.7)
+      : isSingleLine
+      ? bbox.height + 16
+      : bbox.height * 2 + 24;
+
     return {
-      height: isSingleLine ? bbox.height + 16 : bbox.height * 2 + 24,
+      height,
       width: Math.floor(Math.min(legendItemWidth + spacingBuffer + actionDimension, verticalWidth)),
       margin,
       position: legendPosition,

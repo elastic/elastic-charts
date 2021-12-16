@@ -11,6 +11,7 @@ import { cssFontShorthand, Font, measureText, TextAlign, TextBaseline } from '..
 import { withContext } from '../../../../../renderers/canvas';
 import { degToRad } from '../../../../../utils/common';
 import { Point } from '../../../../../utils/point';
+import { TextDirection } from '../../../utils/axis_utils';
 
 /** @internal */
 export type TextFont = Font & {
@@ -31,6 +32,8 @@ export function renderText(
   translateX: number = 0,
   translateY: number = 0,
   scale: number = 1,
+  // optional until all chart types support direction
+  direction?: TextDirection,
 ) {
   withContext(ctx, () => {
     ctx.translate(origin.x, origin.y);
@@ -42,6 +45,7 @@ export function renderText(
     ctx.textBaseline = font.baseline;
     ctx.font = cssFontShorthand(font, font.fontSize);
     const shadowSize = font.shadowSize ?? 0;
+    if (direction) ctx.direction = direction;
     if (font.shadow && shadowSize > 0) {
       ctx.lineJoin = 'round';
       ctx.lineWidth = shadowSize;

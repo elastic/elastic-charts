@@ -137,7 +137,8 @@ describe('Accessibility', () => {
           labelMinor="(thousand USD)  "
           centralMajor="170"
           centralMinor=""
-          config={{ angleStart: Math.PI, angleEnd: 0 }}
+          angleStart={Math.PI}
+          angleEnd={0}
         />
       </Chart>,
     );
@@ -159,7 +160,8 @@ describe('Accessibility', () => {
           labelMinor="(thousand USD)  "
           centralMajor="170"
           centralMinor=""
-          config={{ angleStart: Math.PI, angleEnd: 0 }}
+          angleStart={Math.PI}
+          angleEnd={0}
           bandLabels={bandLabelsAscending}
         />
       </Chart>,

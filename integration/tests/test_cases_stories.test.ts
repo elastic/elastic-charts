@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { PartitionLayout, SeriesType } from '../../packages/charts/src';
 import { eachRotation } from '../helpers';
 import { common } from '../page_objects';
 
@@ -25,12 +26,42 @@ describe('Test cases stories', () => {
       { waitSelector: '.echReactiveChart_noResults' },
     );
   });
-});
 
-describe('annotation marker rotation', () => {
-  eachRotation.it(async (rotation) => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      `http://localhost:9001/iframe.html?id=test-cases--no-axes-annotation-bug-fix&knob-horizontal marker position=undefined&knob-vertical marker position=undefined&knob-chartRotation=${rotation}`,
-    );
-  }, 'should render marker with annotations with %s degree rotations');
+  describe('annotation marker rotation', () => {
+    eachRotation.it(async (rotation) => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/iframe.html?id=test-cases--no-axes-annotation-bug-fix&knob-horizontal marker position=undefined&knob-vertical marker position=undefined&knob-chartRotation=${rotation}`,
+      );
+    }, 'should render marker with annotations with %s degree rotations');
+  });
+
+  describe('RTL support', () => {
+    describe.each([SeriesType.Bar, PartitionLayout.treemap, PartitionLayout.sunburst])('%s chart type', (type) => {
+      describe.each(['HE', 'AR'])('lang %s', (lang) => {
+        describe.each(['rtl', 'ltr', 'mostly-rtl', 'mostly-ltr'])('%s text', (charSet) => {
+          it('should render with correct direction', async () => {
+            await common.expectChartAtUrlToMatchScreenshot(
+              `http://localhost:9001/?path=/story/test-cases--rtl-text&globals=background:white;theme:light&knob-Chart type=${type}&knob-character set=${charSet}&knob-show legend=true&knob-clockwiseSectors=true&knob-rtl language=${lang}`,
+            );
+          });
+
+          if (type === PartitionLayout.sunburst) {
+            it('should render with correct direction - clockwiseSectors', async () => {
+              await common.expectChartAtUrlToMatchScreenshot(
+                `http://localhost:9001/?path=/story/test-cases--rtl-text&globals=background:white;theme:light&knob-Chart type=${type}&knob-character set=${charSet}&knob-show legend=true&knob-clockwiseSectors=false&knob-rtl language=${lang}`,
+              );
+            });
+          }
+        });
+      });
+    });
+  });
+
+  describe('Data points outside of the configured Y domain', () => {
+    it('should not render points outside domain with line chart', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/test-cases--test-points-outside-of-domain&knob-series%20type=line',
+      );
+    });
+  });
 });

@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-// @ts-ignore - remove in workcloud refactor
 import d3TagCloud from 'd3-cloud';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -23,13 +22,9 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { Dimensions } from '../../../../utils/dimensions';
-import { Configs, Datum, nullShapeViewModel, ShapeViewModel, Word } from '../../layout/types/viewmodel_types';
+import { Size } from '../../../../utils/dimensions';
+import { nullShapeViewModel, ShapeViewModel, Word, WordcloudViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
-
-function seed() {
-  return 0.5;
-}
 
 function getFont(d: Word) {
   return d.fontFamily;
@@ -41,14 +36,6 @@ function getFontStyle(d: Word) {
 
 function getFontWeight(d: Word) {
   return d.fontWeight;
-}
-
-function getWidth(conf: Configs) {
-  return conf.width ?? 500;
-}
-
-function getHeight(conf: Configs) {
-  return conf.height ?? 500;
 }
 
 function getFontSize(d: Word) {
@@ -91,40 +78,42 @@ function log(minFontSize: number, maxFontSize: number, _exponent: number, weight
 
 const weightFnLookup = { linear, exponential, log, squareRoot };
 
-function layoutMaker(config: Configs, data: Datum[]) {
-  const words = data.map((d) => {
-    const weightFn = weightFnLookup[config.weightFn];
+function layoutMaker({ data, ...viewModel }: WordcloudViewModel, chartSize: Size) {
+  const { height, width } = chartSize;
+  const words = data.map<Word>((d) => {
+    const weightFn = weightFnLookup[viewModel.weightFn];
     return {
       datum: d,
       text: d.text,
       color: d.color,
-      fontFamily: config.fontFamily,
-      style: config.fontStyle,
-      fontWeight: config.fontWeight,
-      size: weightFn(config.minFontSize, config.maxFontSize, config.exponent, d.weight),
+      fontFamily: viewModel.fontFamily,
+      style: viewModel.fontStyle,
+      fontWeight: viewModel.fontWeight,
+      size: weightFn(viewModel.minFontSize, viewModel.maxFontSize, viewModel.exponent, d.weight),
     };
   });
-  return d3TagCloud()
-    .random(seed)
-    .size([getWidth(config), getHeight(config)])
+
+  return d3TagCloud<Word>()
+    .random(() => 0.5)
+    .size([width, height])
     .words(words)
-    .spiral(config.spiral ?? 'archimedean')
-    .padding(config.padding ?? 5)
-    .rotate((d: Word) => getRotation(config.startAngle, config.endAngle, config.count, d.text))
+    .spiral(viewModel.spiral ?? 'archimedean')
+    .padding(viewModel.padding ?? 5)
+    .rotate((d) => getRotation(viewModel.startAngle, viewModel.endAngle, viewModel.angleCount, d.text))
     .font(getFont)
     .fontStyle(getFontStyle)
     .fontWeight(getFontWeight)
-    .fontSize((d: Word) => getFontSize(d));
+    .fontSize(getFontSize);
 }
 
 const View = ({
   words,
-  conf,
+  size: { height, width },
   actions: { onElementClick, onElementOver, onElementOut },
   specId,
 }: {
   words: Word[];
-  conf: Configs;
+  size: Size;
   actions: {
     onElementClick?: SettingsSpec['onElementClick'];
     onElementOver?: SettingsSpec['onElementOver'];
@@ -133,8 +122,8 @@ const View = ({
   specId: string;
 }) => {
   return (
-    <svg width={getWidth(conf)} height={getHeight(conf)} role="presentation">
-      <g transform={`translate(${getWidth(conf) / 2}, ${getHeight(conf) / 2})`}>
+    <svg width={width} height={height} role="presentation">
+      <g transform={`translate(${width / 2}, ${height / 2})`}>
         {words.map((d, i) => {
           const elements: WordCloudElementEvent[] = [[d.datum, { specId, key: specId }]];
           const actions = {
@@ -180,7 +169,7 @@ const View = ({
 interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
-  chartContainerDimensions: Dimensions;
+  chartSize: Size;
   a11ySettings: A11ySettings;
   onElementClick?: SettingsSpec['onElementClick'];
   onElementOver?: SettingsSpec['onElementOver'];
@@ -211,40 +200,24 @@ class Component extends React.Component<Props> {
   render() {
     const {
       initialized,
-      chartContainerDimensions: { width, height },
+      chartSize,
       geometries: { wordcloudViewModel, specId },
       a11ySettings,
       onElementClick,
       onElementOver,
       onElementOut,
     } = this.props;
-    if (!initialized || width === 0 || height === 0) {
+
+    if (!initialized || chartSize.width === 0 || chartSize.height === 0) {
       return null;
     }
-    const conf1: Configs = {
-      width,
-      height,
-      startAngle: wordcloudViewModel.startAngle,
-      endAngle: wordcloudViewModel.endAngle,
-      count: wordcloudViewModel.angleCount,
-      padding: wordcloudViewModel.padding,
-      fontWeight: wordcloudViewModel.fontWeight,
-      fontFamily: wordcloudViewModel.fontFamily,
-      fontStyle: wordcloudViewModel.fontStyle,
-      minFontSize: wordcloudViewModel.minFontSize,
-      maxFontSize: wordcloudViewModel.maxFontSize,
-      spiral: wordcloudViewModel.spiral,
-      exponent: wordcloudViewModel.exponent,
-      weightFn: wordcloudViewModel.weightFn,
-    };
 
-    const layout = layoutMaker(conf1, wordcloudViewModel.data);
+    const layout = layoutMaker(wordcloudViewModel, chartSize);
 
-    let ww;
-    layout.on('end', (w: Word[]) => (ww = w)).start();
+    let renderedWordObjects: Word[] = [];
+    layout.on('end', (w) => (renderedWordObjects = w)).start();
 
     const wordCount = wordcloudViewModel.data.length;
-    const renderedWordObjects = (ww as unknown) as Word[];
     const renderedWordCount: number = renderedWordObjects.length;
     const notAllWordsFit = wordCount !== renderedWordCount;
     if (notAllWordsFit && wordcloudViewModel.outOfRoomCallback instanceof Function) {
@@ -259,7 +232,7 @@ class Component extends React.Component<Props> {
       <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
         <View
           words={renderedWordObjects}
-          conf={conf1}
+          size={chartSize}
           actions={{ onElementClick, onElementOut, onElementOver }}
           specId={specId}
         />
@@ -280,11 +253,9 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
   geometries: nullShapeViewModel(),
-  chartContainerDimensions: {
+  chartSize: {
     width: 0,
     height: 0,
-    left: 0,
-    top: 0,
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
 };
@@ -296,7 +267,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   return {
     initialized: true,
     geometries: geometries(state),
-    chartContainerDimensions: state.parentDimensions,
+    chartSize: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
     onElementClick: getSettingsSpecSelector(state).onElementClick,
     onElementOver: getSettingsSpecSelector(state).onElementOver,

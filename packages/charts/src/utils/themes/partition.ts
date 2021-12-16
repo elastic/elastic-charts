@@ -9,11 +9,11 @@
 import { Color } from '../../common/colors';
 import { Pixels, Distance, Radian, SizeRatio, Ratio } from '../../common/geometry';
 import { Font, PartialFont, FontFamily } from '../../common/text_utils';
-import { StrokeStyle } from '../common';
+import { ColorVariant, StrokeStyle } from '../common';
 import { PerSideDistance } from '../dimensions';
 
 interface LabelConfig extends Font {
-  textColor: Color;
+  textColor: Color | typeof ColorVariant.Adaptive;
   valueFont: PartialFont;
   padding: Pixels | Partial<Padding>;
 }

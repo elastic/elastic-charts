@@ -200,7 +200,11 @@ export class MockSeriesSpec {
     valueFormatter: (value: number) => `${value}`,
     xSortPredicate: Predicate.AlphaAsc,
     ySortPredicate: Predicate.AlphaAsc,
-    config: {},
+    timeZone: 'UTC',
+    xAxisLabelName: 'X Value',
+    xAxisLabelFormatter: String,
+    yAxisLabelName: 'Y Value',
+    yAxisLabelFormatter: String,
   };
 
   static bar(partial?: Partial<BarSeriesSpec>): BarSeriesSpec {

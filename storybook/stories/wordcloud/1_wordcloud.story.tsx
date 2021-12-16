@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Settings, Wordcloud, FontStyle } from '@elastic/charts';
+import { Chart, Settings, Wordcloud, FontStyle, WordcloudSpec, Color } from '@elastic/charts';
 import { WeightFn, WordModel } from '@elastic/charts/src/chart_types/wordcloud/layout/types/viewmodel_types';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { palettes as euiPalettes } from '@elastic/charts/src/utils/themes/colors';
@@ -54,119 +54,159 @@ const palettes = {
   },
 };
 
-const configs = {
-  edit: {
-    startAngle: -90,
-    endAngle: 90,
-    angleCount: 16,
-    padding: 0.5,
-    exponent: 15,
-    fontWeight: 900,
-    minFontSize: 15,
-    maxFontSize: 80,
-    fontFamily: 'Arial',
-    fontStyle: 'italic',
-    shape: 'archimedean',
-    palette: 'turquoise',
-    backgroundColor: '#1c1c24',
-    weightFn: WeightFn.exponential,
-  },
-  single: {
-    startAngle: 0,
-    endAngle: 0,
-    angleCount: 1,
-    padding: 1,
-    exponent: 4,
-    fontWeight: 900,
-    minFontSize: 14,
-    maxFontSize: 92,
-    fontFamily: 'Arial',
-    fontStyle: 'normal',
-    shape: 'rectangular',
-    palette: 'greyScale',
-    backgroundColor: '#9fa714',
-    weightFn: WeightFn.exponential,
-  },
-  rightAngled: {
-    startAngle: 0,
-    endAngle: 90,
-    angleCount: 2,
-    padding: 1,
-    exponent: 4,
-    fontWeight: 600,
-    minFontSize: 14,
-    maxFontSize: 92,
-    fontFamily: 'Arial Narrow',
-    fontStyle: 'normal',
-    shape: 'rectangular',
-    palette: 'euiLight',
-    backgroundColor: '#ffffff',
-    weightFn: WeightFn.exponential,
-  },
-  multiple: {
-    startAngle: -90,
-    endAngle: 90,
-    angleCount: 16,
-    padding: 1,
-    exponent: 15,
-    fontWeight: 100,
-    minFontSize: 16,
-    maxFontSize: 50,
-    fontFamily: 'Luminari',
-    fontStyle: 'italic',
-    shape: 'archimedean',
-    palette: 'redBlue',
-    backgroundColor: '#1c1c24',
-    weightFn: WeightFn.exponential,
-  },
-  squareWords: {
-    startAngle: -45,
-    endAngle: 45,
-    angleCount: 2,
-    padding: 0,
-    exponent: 3,
-    fontWeight: 100,
-    minFontSize: 10,
-    maxFontSize: 90,
-    fontFamily: 'Arial Narrow',
-    fontStyle: 'normal',
-    shape: 'archimedean',
-    palette: 'weight',
-    backgroundColor: '#4a6960',
-    weightFn: WeightFn.exponential,
-  },
-  smallWaves: {
-    startAngle: -15,
-    endAngle: 15,
-    angleCount: 7,
-    padding: 0.5,
-    exponent: 5,
-    fontWeight: 600,
-    minFontSize: 17,
-    maxFontSize: 79,
-    fontFamily: 'Impact',
-    fontStyle: 'normal',
-    shape: 'rectangular',
-    palette: 'euiColorBlind',
-    backgroundColor: '#ffffff',
-    weightFn: WeightFn.exponential,
-  },
-  sparse: {
-    startAngle: 0,
-    endAngle: 0,
-    angleCount: 1,
-    padding: getRandomNumber(2, 22),
-    exponent: 15,
-    fontWeight: 600,
-    minFontSize: 12,
-    maxFontSize: 60,
-    fontFamily: 'Courier',
-    fontStyle: 'normal',
-    shape: 'rectangular',
-    palette: 'vivid',
-    backgroundColor: '#1c1c24',
-    weightFn: WeightFn.exponential,
-  },
+type WordcloudKnobs = Omit<WordcloudSpec, 'specType' | 'chartType' | 'data' | 'outOfRoomCallback' | 'id'> & {
+  palette: keyof typeof palettes;
+  backgroundColor: Color;
+};
+
+// Used in integration testing
+export const TEMPLATES = ['edit', 'single', 'rightAngled', 'multiple', 'squareWords', 'smallWaves', 'sparse'];
+const getTemplate = (name: string): WordcloudKnobs => {
+  switch (name) {
+    case 'single':
+      return {
+        spiral: 'rectangular',
+        startAngle: 0,
+        endAngle: 0,
+        angleCount: 1,
+        padding: 1,
+        exponent: 4,
+        fontWeight: 900,
+        minFontSize: 14,
+        maxFontSize: 92,
+        fontFamily: 'Arial',
+        fontStyle: 'normal',
+        palette: 'greyScale',
+        weightFn: WeightFn.exponential,
+        backgroundColor: '#9fa714',
+      };
+    case 'rightAngled':
+      return {
+        spiral: 'rectangular',
+        startAngle: 0,
+        endAngle: 90,
+        angleCount: 2,
+        padding: 1,
+        exponent: 4,
+        fontWeight: 600,
+        minFontSize: 14,
+        maxFontSize: 92,
+        fontFamily: 'Arial Narrow',
+        fontStyle: 'normal',
+        palette: 'euiLight',
+        weightFn: WeightFn.exponential,
+        backgroundColor: '#ffffff',
+      };
+    case 'multiple':
+      return {
+        spiral: 'archimedean',
+        startAngle: -90,
+        endAngle: 90,
+        angleCount: 16,
+        padding: 1,
+        exponent: 15,
+        fontWeight: 100,
+        minFontSize: 16,
+        maxFontSize: 50,
+        fontFamily: 'Luminari',
+        fontStyle: 'italic',
+        palette: 'redBlue',
+        weightFn: WeightFn.exponential,
+        backgroundColor: '#1c1c24',
+      };
+    case 'squareWords':
+      return {
+        spiral: 'archimedean',
+        startAngle: -45,
+        endAngle: 45,
+        angleCount: 2,
+        padding: 0,
+        exponent: 3,
+        fontWeight: 100,
+        minFontSize: 10,
+        maxFontSize: 90,
+        fontFamily: 'Arial Narrow',
+        fontStyle: 'normal',
+        palette: 'weight',
+        weightFn: WeightFn.exponential,
+        backgroundColor: '#4a6960',
+      };
+    case 'smallWaves':
+      return {
+        spiral: 'rectangular',
+        startAngle: -15,
+        endAngle: 15,
+        angleCount: 7,
+        padding: 0.5,
+        exponent: 5,
+        fontWeight: 600,
+        minFontSize: 17,
+        maxFontSize: 79,
+        fontFamily: 'Impact',
+        fontStyle: 'normal',
+        palette: 'euiColorBlind',
+        weightFn: WeightFn.exponential,
+        backgroundColor: '#ffffff',
+      };
+    case 'sparse':
+      return {
+        spiral: 'rectangular',
+        startAngle: 0,
+        endAngle: 0,
+        angleCount: 1,
+        padding: getRandomNumber(2, 22),
+        exponent: 15,
+        fontWeight: 600,
+        minFontSize: 12,
+        maxFontSize: 60,
+        fontFamily: 'Courier',
+        fontStyle: 'normal',
+        palette: 'vivid',
+        weightFn: WeightFn.exponential,
+        backgroundColor: '#1c1c24',
+      };
+    case 'edit':
+    default:
+      return {
+        spiral: select('shape', { oval: 'archimedean', rectangular: 'rectangular' }, 'archimedean'),
+        startAngle: number('startAngle', -90, { range: true, min: -360, max: 360, step: 1 }),
+        endAngle: number('endAngle', 90, { range: true, min: -360, max: 360, step: 1 }),
+        angleCount: number('angleCount', 16, { range: true, min: 2, max: 360, step: 1 }),
+        padding: number('padding', 0.5, { range: true, min: 0, max: 10, step: 0.5 }),
+        exponent: number('exponent', 15, { range: true, min: 0, max: 15, step: 1 }),
+        fontWeight: number('fontWeight', 900, { range: true, min: 100, max: 900, step: 100 }),
+        minFontSize: number('minFontSize', 15, { range: true, min: 6, max: 85, step: 1 }),
+        maxFontSize: number('maxFontSize', 80, { range: true, min: 15, max: 150, step: 1 }),
+        fontFamily: select(
+          'fontFamily',
+          {
+            Arial: 'Arial',
+            'Arial Narrow': 'Arial Narrow',
+            Courier: 'Courier',
+            Impact: 'Impact',
+            Luminari: 'Luminari',
+          },
+          'Arial',
+        ),
+        fontStyle: select<FontStyle>('fontStyle', { normal: 'normal', italic: 'italic' }, 'italic'),
+        palette: select(
+          'palette',
+          Object.keys(palettes).reduce((p, k) => ({ ...p, [k]: k }), {}),
+          'turquoise',
+        ),
+        weightFn: select(
+          'weightFn',
+          {
+            linear: WeightFn.linear,
+            exponential: WeightFn.exponential,
+            squareRoot: WeightFn.squareRoot,
+            log: WeightFn.log,
+          },
+          WeightFn.exponential,
+        ),
+        backgroundColor: color('background', '#1c1c24'),
+      };
+  }
 };
 
 const rawData = text
@@ -186,7 +226,7 @@ interface RawDatum {
   weight: number;
 }
 
-function sampleData(txt: string, paletteName: keyof typeof palettes): WordModel[] {
+function sampleData(paletteName: keyof typeof palettes): WordModel[] {
   return rawData.map(function rawMapper(d, i) {
     return {
       ...d,
@@ -197,76 +237,11 @@ function sampleData(txt: string, paletteName: keyof typeof palettes): WordModel[
 
 export const Example = () => {
   const configName = select(
-    'config',
-    Object.keys(configs).reduce((p, k) => ({ ...p, [k]: k }), {}),
+    'template',
+    TEMPLATES.reduce((p, k) => ({ ...p, [k]: k }), {}),
     'edit',
   );
-  const startConfig = configs[configName];
-  const template = configName !== 'edit';
-  const spiral = template
-    ? startConfig.shape
-    : select('shape', { oval: 'archimedean', rectangular: 'rectangular' }, startConfig.shape);
-  const backgroundColor = template ? startConfig.backgroundColor : color('background', startConfig.backgroundColor);
-  const startAngle = template
-    ? startConfig.startAngle
-    : number('startAngle', startConfig.startAngle, { range: true, min: -360, max: 360, step: 1 });
-  const endAngle = template
-    ? startConfig.endAngle
-    : number('endAngle', startConfig.endAngle, { range: true, min: -360, max: 360, step: 1 });
-  const angleCount = template
-    ? startConfig.angleCount
-    : number('angleCount', startConfig.angleCount, { range: true, min: 2, max: 360, step: 1 });
-  const padding = template
-    ? startConfig.padding
-    : number('padding', startConfig.padding, { range: true, min: 0, max: 10, step: 0.5 });
-  const exponent = template
-    ? startConfig.exponent
-    : number('exponent', startConfig.exponent, { range: true, min: 0, max: 15, step: 1 });
-  const fontWeight = template
-    ? startConfig.fontWeight
-    : number('fontWeight', startConfig.fontWeight, { range: true, min: 100, max: 900, step: 100 });
-  const minFontSize = template
-    ? startConfig.minFontSize
-    : number('minFontSize', startConfig.minFontSize, { range: true, min: 6, max: 85, step: 1 });
-  const maxFontSize = template
-    ? startConfig.maxFontSize
-    : number('maxFontSize', startConfig.maxFontSize, { range: true, min: 15, max: 150, step: 1 });
-  const fontFamily = template
-    ? startConfig.fontFamily
-    : select(
-        'fontFamily',
-        {
-          Arial: 'Arial',
-          'Arial Narrow': 'Arial Narrow',
-          Courier: 'Courier',
-          Impact: 'Impact',
-          Luminari: 'Luminari',
-        },
-        startConfig.fontFamily,
-      );
-  const fontStyle = template
-    ? (startConfig.fontStyle as FontStyle)
-    : select<FontStyle>('fontStyle', { normal: 'normal', italic: 'italic' }, startConfig.fontStyle as FontStyle);
-
-  const palette = template
-    ? startConfig.palette
-    : select(
-        'palette',
-        Object.keys(palettes).reduce((p, k) => ({ ...p, [k]: k }), {}),
-        startConfig.palette,
-      );
-  const weightFn = template
-    ? startConfig.weightFn
-    : select(
-        'weightFn',
-        {
-          linear: WeightFn.linear,
-          exponential: WeightFn.exponential,
-          squareRoot: WeightFn.squareRoot,
-          log: WeightFn.log,
-        },
-        startConfig.weightFn,
-      );
+  const { backgroundColor, palette, ...knobs } = getTemplate(configName);
 
   return (
     <Chart>
@@ -284,19 +259,8 @@ export const Example = () => {
       />
       <Wordcloud
         id="spec_1"
-        startAngle={startAngle}
-        endAngle={endAngle}
-        angleCount={angleCount}
-        padding={padding}
-        fontWeight={fontWeight}
-        fontFamily={fontFamily}
-        fontStyle={fontStyle}
-        minFontSize={minFontSize}
-        maxFontSize={maxFontSize}
-        spiral={spiral}
-        exponent={exponent}
-        data={sampleData(text, palette as keyof typeof palettes)}
-        weightFn={weightFn}
+        {...knobs}
+        data={sampleData(palette)}
         outOfRoomCallback={(wordCount: number, renderedWordCount: number, renderedWords: string[]) => {
           action('outOfRoomCallback')(
             `Managed to render ${renderedWordCount} words out of ${wordCount} words: ${renderedWords.join(', ')}`,
@@ -309,4 +273,5 @@ export const Example = () => {
 
 Example.parameters = {
   background: { disable: true },
+  theme: { disable: true },
 };

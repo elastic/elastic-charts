@@ -9,48 +9,29 @@
 import React from 'react';
 
 import { ChartType } from '../..';
-import { FontStyle } from '../../../common/text_utils';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
-import { RecursivePartial } from '../../../utils/common';
-import { config } from '../layout/config/config';
 import {
   WordModel,
   defaultWordcloudSpec,
   WeightFn,
   OutOfRoomCallback,
-  Configs as WordcloudConfigs,
+  WordcloudViewModel,
 } from '../layout/types/viewmodel_types';
 
 const defaultProps = {
   chartType: ChartType.Wordcloud,
   specType: SpecType.Series,
   ...defaultWordcloudSpec,
-  config,
 };
 
-export { WordModel, WeightFn, OutOfRoomCallback, WordcloudConfigs };
+export { WordModel, WeightFn, OutOfRoomCallback };
 
 /** @alpha */
-export interface WordcloudSpec extends Spec {
+export interface WordcloudSpec extends Spec, WordcloudViewModel {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Wordcloud;
-  config: RecursivePartial<WordcloudConfigs>;
-  startAngle: number;
-  endAngle: number;
-  angleCount: number;
-  padding: number;
-  fontWeight: number;
-  fontFamily: string;
-  fontStyle: FontStyle;
-  minFontSize: number;
-  maxFontSize: number;
-  spiral: string;
-  exponent: number;
-  data: WordModel[];
-  weightFn: WeightFn;
-  outOfRoomCallback: OutOfRoomCallback;
 }
 
 type SpecRequiredProps = Pick<WordcloudSpec, 'id'>;
@@ -62,7 +43,6 @@ export const Wordcloud: React.FunctionComponent<SpecRequiredProps & SpecOptional
     WordcloudSpec,
     | 'chartType'
     | 'startAngle'
-    | 'config'
     | 'endAngle'
     | 'angleCount'
     | 'padding'

@@ -10,7 +10,6 @@ import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getSpecOrNull } from './heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 
@@ -21,8 +20,8 @@ const EMPTY_TOOLTIP = Object.freeze({
 
 /** @internal */
 export const getTooltipInfoSelector = createCustomCachedSelector(
-  [getSpecOrNull, getHeatmapConfigSelector, getPickedShapes],
-  (spec, config, pickedShapes): TooltipInfo => {
+  [getSpecOrNull, getPickedShapes],
+  (spec, pickedShapes): TooltipInfo => {
     if (!spec) {
       return EMPTY_TOOLTIP;
     }
@@ -38,7 +37,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
         .forEach((shape) => {
           // X-axis value
           tooltipInfo.values.push({
-            label: config.xAxisLabel.name,
+            label: spec.xAxisLabelName,
             color: Colors.Transparent.keyword,
             isHighlighted: false,
             isVisible: true,
@@ -47,13 +46,13 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
               key: spec.id,
             },
             value: `${shape.datum.x}`,
-            formattedValue: config.xAxisLabel.formatter(shape.datum.x),
+            formattedValue: spec.xAxisLabelFormatter(shape.datum.x),
             datum: shape.datum,
           });
 
           // Y-axis value
           tooltipInfo.values.push({
-            label: config.yAxisLabel.name,
+            label: spec.yAxisLabelName,
             color: Colors.Transparent.keyword,
             isHighlighted: false,
             isVisible: true,
@@ -62,7 +61,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
               key: spec.id,
             },
             value: `${shape.datum.y}`,
-            formattedValue: config.yAxisLabel.formatter(shape.datum.y),
+            formattedValue: spec.yAxisLabelFormatter(shape.datum.y),
             datum: shape.datum,
           });
 

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean, color } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
@@ -21,7 +22,12 @@ export const Example = () => (
       theme={{
         chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
         partition: {
-          linkLabel: { maximumSection: Infinity },
+          linkLabel: {
+            maximumSection: Infinity,
+            textColor: boolean('custom linkLabel.textColor', true)
+              ? color('linkLabel.textColor', 'rgba(0, 0, 0, 1)')
+              : undefined,
+          },
         },
       }}
       baseTheme={useBaseTheme()}

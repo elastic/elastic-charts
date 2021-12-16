@@ -14,7 +14,20 @@ export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
 
 // Everything related to the specs types and react-components
 export * from './specs';
-export { DebugState } from './state/types';
+export {
+  DebugState,
+  DebugStateLine,
+  DebugStateValue,
+  DebugStateAnnotations,
+  DebugStateArea,
+  DebugStateAxes,
+  DebugStateBar,
+  DebugStateLegend,
+  DebugStateLineConfig,
+  DebugStateAxis,
+  DebugStateBase,
+  DebugStateLegendItem,
+} from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';
 export { ContinuousDomain, OrdinalDomain } from './utils/domain';
@@ -56,13 +69,16 @@ export * from './utils/themes/theme_common';
 export { LIGHT_THEME } from './utils/themes/light_theme';
 export { DARK_THEME } from './utils/themes/dark_theme';
 
+// wordcloud
+export { WordcloudViewModel } from './chart_types/wordcloud/layout/types/viewmodel_types';
+
 // partition
 export * from './chart_types/partition_chart/layout/types/viewmodel_types';
 export * from './chart_types/partition_chart/layout/utils/group_by_rollup';
+export { AnimKeyframe } from './chart_types/partition_chart/layout/types/config_types';
 
 // heatmap
 export { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
-export { Config as HeatmapConfig } from './chart_types/heatmap/layout/types/config_types';
 export { ColorBand, HeatmapBandsColorScale } from './chart_types/heatmap/specs/heatmap';
 
 // utilities
@@ -93,6 +109,7 @@ export { Pixels, Ratio } from './common/geometry';
 export { AdditiveNumber } from './utils/accessor';
 export { FontStyle, FONT_STYLES } from './common/text_utils';
 export { Color } from './common/colors';
+export { RGB, A, RgbaTuple } from './common/color_library_wrappers';
 
 export {
   ESCalendarInterval,
@@ -100,3 +117,7 @@ export {
   ESFixedInterval,
   ESFixedIntervalUnit,
 } from './utils/chrono/elasticsearch';
+
+// data utils
+export { GroupKeysOrKeyFn, GroupByKeyFn } from './chart_types/xy_chart/utils/group_data_series';
+export { computeRatioByGroups } from './utils/data/data_processing';
