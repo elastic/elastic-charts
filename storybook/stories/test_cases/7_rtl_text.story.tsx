@@ -123,9 +123,13 @@ export const Example = () => {
     <Chart>
       <Settings
         rotation={type === SeriesType.Bar ? 90 : 0}
-        theme={{
-          chartMargins: { top: 0, right: 0, bottom: 0, left: 0 },
-        }}
+        theme={
+          type === SeriesType.Bar
+            ? {}
+            : {
+                chartMargins: { top: 0, right: 0, bottom: 0, left: 0 },
+              }
+        }
         debugState
         showLegend={showLegend}
         showLegendExtra
