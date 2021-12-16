@@ -141,7 +141,7 @@ export function makeQuadViewModel(
   index: number,
   innerIndex: number,
   fillLabel: FillLabelConfig,
-  isSunburstLayout: boolean,
+  fallbackTextColor: Color,
   containerBackgroundColor: Color,
 ): Array<QuadViewModel> {
   if (colorToRgba(containerBackgroundColor)[3] < 1) {
@@ -161,7 +161,7 @@ export function makeQuadViewModel(
     const textColor = textNegligible
       ? Colors.Transparent.keyword
       : fillLabel.textColor === ColorVariant.Adaptive
-      ? fillTextColor(fillColor, containerBackgroundColor, fillLabel.textColor)
+      ? fillTextColor(fillColor, containerBackgroundColor, fallbackTextColor)
       : fillLabel.textColor;
 
     return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor, ...node };
@@ -382,7 +382,7 @@ export function shapeViewModel(
     panelModel.index,
     panelModel.innerIndex,
     fillLabel,
-    sunburstLayout,
+    style.textColor,
     containerBackgroundColor,
   );
 

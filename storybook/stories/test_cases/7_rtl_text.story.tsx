@@ -100,8 +100,10 @@ export const Example = () => {
       <Partition
         id="partition"
         data={mocks.pie}
+        layout={type}
         valueAccessor={(d: Datum) => d.exportVal as number}
         valueFormatter={formatter}
+        clockwiseSectors={type === PartitionLayout.sunburst && boolean('clockwiseSectors', true)}
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,
@@ -114,10 +116,6 @@ export const Example = () => {
             },
           },
         ]}
-        config={{
-          partitionLayout: type,
-          clockwiseSectors: type === PartitionLayout.sunburst && boolean('clockwiseSectors', true),
-        }}
       />
     );
 
@@ -125,6 +123,9 @@ export const Example = () => {
     <Chart>
       <Settings
         rotation={type === SeriesType.Bar ? 90 : 0}
+        theme={{
+          chartMargins: { top: 0, right: 0, bottom: 0, left: 0 },
+        }}
         debugState
         showLegend={showLegend}
         showLegendExtra

@@ -87,7 +87,7 @@ export function linkTextLayout(
   }
   const textColor =
     linkLabel.textColor === ColorVariant.Adaptive
-      ? fillTextColor(null, containerBgColor, linkLabel.textColor)
+      ? fillTextColor(null, containerBgColor, style.textColor)
       : linkLabel.textColor;
   const labelFontSpec: Font = { ...linkLabel, textColor };
   const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor };

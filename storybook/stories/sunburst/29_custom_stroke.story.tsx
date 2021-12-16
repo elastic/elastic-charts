@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { color } from '@storybook/addon-knobs';
+import { boolean, color } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -27,13 +27,20 @@ export const Example = () => {
   const theme: PartialTheme = {
     chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     background: {
-      color: color('Change background container color', '#1c1c24'),
+      color: color('Background color', '#1c1c24'),
     },
     partition: {
-      linkLabel: { maxCount: 15, textColor: 'white' },
+      linkLabel: {
+        maxCount: 15,
+        textColor: boolean('custom linkLabel.textColor', false) ? color('linkLabel.textColor', 'white') : undefined,
+      },
+      fillLabel: {
+        textColor: boolean('custom fillLabel.textColor', false) ? color('fillLabel.textColor', 'white') : undefined,
+      },
       sectorLineWidth: 1.2,
     },
   };
+  const fillColor = boolean('custom shape.fillColor', false) ? color('shape.fillColor', 'blue') : null;
   return (
     <Chart>
       <Settings theme={theme} baseTheme={useBaseTheme()} />
@@ -48,7 +55,7 @@ export const Example = () => {
             groupByRollup: (d: Datum) => d.origin,
             nodeLabel: (d: Datum) => countryLookup[d].name,
             shape: {
-              fillColor: indexInterpolatedFillColor(interpolatorCET2s),
+              fillColor: fillColor ?? indexInterpolatedFillColor(interpolatorCET2s),
             },
           },
         ]}
