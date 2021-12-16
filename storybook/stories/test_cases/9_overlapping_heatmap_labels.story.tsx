@@ -7,27 +7,64 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, number, text } from '@storybook/addon-knobs';
+import { boolean, color, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Heatmap, Settings } from '@elastic/charts';
+import { Chart, Heatmap, HeatmapStyle, RecursivePartial, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const showLabels = boolean('show', true, 'labels');
-  const useGlobalMinFontSize = boolean('use global min fontSize', true, 'labels');
-
-  const minFontSize = number('min fontSize', 6, { step: 1, min: 4, max: 10, range: true }, 'labels');
-  const maxFontSize = number('max fontSize', 12, { step: 1, min: 10, max: 64, range: true }, 'labels');
-
-  const minCellHeight = number('min cell height', 10, { step: 1, min: 3, max: 8, range: true }, 'grid');
-  const maxCellHeight = number('max cell height', 30, { step: 1, min: 8, max: 45, range: true }, 'grid');
-
-  const setRotation = number('set rotation of x axis label', 45, { step: 1, min: 0, max: 359, range: true }, 'labels');
-  const allowOverflow = boolean('set overflow property for x axis labels', true, 'labels');
-  const maxTextLength = text('set the max text length for the x axis labels', '20', 'labels');
-  const shouldAlternate = boolean('set x axis labels to alternate', false, 'labels');
+  const heatmap: RecursivePartial<HeatmapStyle> = {
+    brushArea: {
+      visible: boolean('brushArea visible', true, 'Theme'),
+      fill: color('brushArea fill', 'black', 'Theme'),
+      stroke: color('brushArea stroke', '#69707D', 'Theme'),
+      strokeWidth: number('brushArea strokeWidth', 2, { range: true, min: 1, max: 10 }, 'Theme'),
+    },
+    brushMask: {
+      visible: boolean('brushMask visible', true, 'Theme'),
+      fill: color('brushMask fill', 'rgb(115 115 115 / 50%)', 'Theme'),
+    },
+    brushTool: {
+      visible: boolean('brushTool visible', false, 'Theme'),
+      fill: color('brushTool fill color', 'gray', 'Theme'),
+    },
+    xAxisLabel: {
+      visible: boolean('xAxisLabel visible', true, 'Theme'),
+      fontSize: number('xAxisLabel fontSize', 12, { range: true, min: 5, max: 20 }, 'Theme'),
+      textColor: color('xAxisLabel textColor', 'black', 'Theme'),
+      padding: number('xAxisLabel padding', 6, { range: true, min: 0, max: 15 }, 'Theme'),
+      rotation: number('set rotation of x axis label', 45, { step: 1, min: 0, max: 359, range: true }, 'labels'),
+      alternate: boolean('set x axis labels to alternate', false, 'labels'),
+      overflow: boolean('set overflow property for x axis labels', true, 'labels') ? 'ellipsis' : false,
+      maxTextLength: parseFloat(text('set the max text length for the x axis labels', '20', 'labels')),
+    },
+    yAxisLabel: {
+      visible: boolean('yAxisLabel visible', true, 'Theme'),
+      fontSize: number('yAxisLabel fontSize', 12, { range: true, min: 5, max: 20 }, 'Theme'),
+      textColor: color('yAxisLabel textColor', 'black', 'Theme'),
+      padding: number('yAxisLabel padding', 5, { range: true, min: 0, max: 15 }, 'Theme'),
+    },
+    grid: {
+      stroke: {
+        color: color('grid stroke color', 'gray', 'Theme'),
+      },
+    },
+    cell: {
+      label: {
+        visible: boolean('cell label visible', false, 'Theme'),
+        textColor: color('cell label textColor', 'black', 'Theme'),
+        useGlobalMinFontSize: boolean('cell label use global min fontSize', true, 'Theme'),
+        minFontSize: number('cell label min fontSize', 6, { step: 1, min: 4, max: 10, range: true }, 'Theme'),
+        maxFontSize: number('cell label max fontSize', 12, { step: 1, min: 10, max: 64, range: true }, 'Theme'),
+      },
+      border: {
+        strokeWidth: number('border strokeWidth', 1, { range: true, min: 1, max: 5 }, 'Theme'),
+        stroke: color('border stroke color', 'gray', 'Theme'),
+      },
+    },
+  };
   return (
     <Chart>
       <Settings
@@ -35,6 +72,7 @@ export const Example = () => {
         showLegend
         legendPosition="right"
         brushAxis="both"
+        theme={{ heatmap }}
         baseTheme={useBaseTheme()}
         onBrushEnd={action('onBrushEnd')}
       />
@@ -69,40 +107,6 @@ export const Example = () => {
         valueAccessor={(d) => d[3]}
         valueFormatter={(value) => value.toFixed(0.2)}
         xSortPredicate="alphaAsc"
-        config={{
-          grid: {
-            stroke: {
-              width: 0,
-            },
-            cellHeight: {
-              min: minCellHeight,
-              max: maxCellHeight,
-            },
-          },
-          cell: {
-            maxWidth: 'fill',
-            label: {
-              minFontSize,
-              maxFontSize,
-              visible: showLabels,
-              useGlobalMinFontSize,
-            },
-            border: {
-              stroke: 'transparent',
-              strokeWidth: 1,
-            },
-          },
-          yAxisLabel: {
-            visible: true,
-          },
-          xAxisLabel: {
-            visible: true,
-            rotation: setRotation,
-            overflow: allowOverflow ? 'ellipsis' : false,
-            maxTextLength: parseFloat(maxTextLength),
-            alternate: shouldAlternate,
-          },
-        }}
       />
     </Chart>
   );

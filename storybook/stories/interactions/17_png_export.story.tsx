@@ -36,7 +36,7 @@ export const Example = () => {
   /**
    * The handler section of this story demonstrates the PNG export functionality
    */
-  const chartRef: React.RefObject<Chart> = React.createRef();
+  const chartRef = React.useRef<Chart>(null);
   const handler = () => {
     if (!chartRef.current) {
       return;
@@ -153,10 +153,8 @@ function renderGoalchart() {
       labelMinor=""
       centralMajor="280 MB/s"
       centralMinor=""
-      config={{
-        angleStart: Math.PI + (Math.PI - (2 * Math.PI) / 3) / 2,
-        angleEnd: -(Math.PI - (2 * Math.PI) / 3) / 2,
-      }}
+      angleStart={Math.PI + (Math.PI - (2 * Math.PI) / 3) / 2}
+      angleEnd={-(Math.PI - (2 * Math.PI) / 3) / 2}
     />
   );
 }

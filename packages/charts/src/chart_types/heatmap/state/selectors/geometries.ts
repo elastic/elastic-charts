@@ -9,7 +9,6 @@
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getColorScale } from './get_color_scale';
@@ -21,11 +20,10 @@ import { render } from './scenegraph';
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
 /** @internal */
-export const geometries = createCustomCachedSelector(
+export const getHeatmapGeometries = createCustomCachedSelector(
   [
     getHeatmapSpecSelector,
     computeChartDimensionsSelector,
-    getSettingsSpecSelector,
     getHeatmapTableSelector,
     getColorScale,
     getDeselectedSeriesSelector,
@@ -35,7 +33,6 @@ export const geometries = createCustomCachedSelector(
   (
     heatmapSpec,
     chartDimensions,
-    settingSpec,
     heatmapTable,
     { bands, scale: colorScale },
     deselectedSeries,
@@ -56,16 +53,7 @@ export const geometries = createCustomCachedSelector(
       .map(({ start, end }) => [start, end]);
 
     return heatmapSpec
-      ? render(
-          heatmapSpec,
-          settingSpec,
-          chartDimensions,
-          heatmapTable,
-          colorScale,
-          bandsToHide,
-          gridHeightParams,
-          theme,
-        )
+      ? render(heatmapSpec, chartDimensions, heatmapTable, colorScale, bandsToHide, gridHeightParams, theme)
       : nullShapeViewModel();
   },
 );

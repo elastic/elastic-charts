@@ -13,8 +13,7 @@ import { Color } from '../../../common/colors';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
-import { LabelAccessor, RecursivePartial } from '../../../utils/common';
-import { Config } from '../layout/types/config_types';
+import { LabelAccessor } from '../../../utils/common';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
 import { GoalSubtype } from './constants';
 
@@ -57,11 +56,6 @@ export interface GoalSpec extends Spec {
   labelMinor: string | GoalLabelAccessor;
   centralMajor: string | GoalLabelAccessor;
   centralMinor: string | GoalLabelAccessor;
-  /**
-   * @deprecated properties have been migrated to the theme or spec.
-   * To be removed with partition, heatmap and wordmap configs.
-   */
-  config?: RecursivePartial<Config>;
   angleStart: number;
   angleEnd: number;
   bandLabels: string[];

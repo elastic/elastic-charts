@@ -1,3 +1,17 @@
+# [40.2.0](https://github.com/elastic/elastic-charts/compare/v40.1.0...v40.2.0) (2021-12-09)
+
+
+### Bug Fixes
+
+* **partition:** linkLabel textColor override ([#1498](https://github.com/elastic/elastic-charts/issues/1498)) ([3013310](https://github.com/elastic/elastic-charts/commit/3013310357f3612aca47aa1c229d9ca4a276ea71))
+* **waffle:** use descend sortPredicate by default ([#1510](https://github.com/elastic/elastic-charts/issues/1510)) ([763e2e3](https://github.com/elastic/elastic-charts/commit/763e2e3b71b7b2976b49f321d92aad60adfc4080))
+* **xy:** stacked polarity ([#1502](https://github.com/elastic/elastic-charts/issues/1502)) ([920666a](https://github.com/elastic/elastic-charts/commit/920666acd012ce6f3e6c3299ebf338011e8a0e08)), closes [#1280](https://github.com/elastic/elastic-charts/issues/1280)
+
+
+### Features
+
+* **xy:** expose style for interpolation fit functions ([#1505](https://github.com/elastic/elastic-charts/issues/1505)) ([3071457](https://github.com/elastic/elastic-charts/commit/30714572e5eaf7b88bda0a26fd69f58357d5cc9f))
+
 # [40.1.0](https://github.com/elastic/elastic-charts/compare/v40.0.0...v40.1.0) (2021-12-01)
 
 

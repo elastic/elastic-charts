@@ -8,11 +8,11 @@
 
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { isHorizontalLegend } from '../../../../utils/legend';
-import { Config } from '../../layout/types/config_types';
-import { getHeatmapConfigSelector } from './get_heatmap_config';
+import { HeatmapStyle } from '../../../../utils/themes/theme';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
 /** @internal */
@@ -25,18 +25,18 @@ const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
 /** @internal */
 export const getGridHeightParamsSelector = createCustomCachedSelector(
-  [
-    getLegendSizeSelector,
-    getSettingsSpecSelector,
-    getParentDimension,
-    getHeatmapConfigSelector,
-    getHeatmapTableSelector,
-  ],
+  [getLegendSizeSelector, getSettingsSpecSelector, getParentDimension, getChartThemeSelector, getHeatmapTableSelector],
   (
     legendSize,
     { showLegend },
     { height: containerHeight },
-    { xAxisLabel: { padding, visible, fontSize }, grid, maxLegendHeight },
+    {
+      heatmap: {
+        xAxisLabel: { padding, visible, fontSize },
+        grid,
+        maxLegendHeight,
+      },
+    },
     { yValues },
   ): GridHeightParams => {
     const xAxisHeight = visible ? fontSize : 0;
@@ -63,7 +63,7 @@ export const getGridHeightParamsSelector = createCustomCachedSelector(
   },
 );
 
-function getGridCellHeight(yValues: Array<string | number>, grid: Config['grid'], height: number): number {
+function getGridCellHeight(yValues: Array<string | number>, grid: HeatmapStyle['grid'], height: number): number {
   if (yValues.length === 0) {
     return height;
   }

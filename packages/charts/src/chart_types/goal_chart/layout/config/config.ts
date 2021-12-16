@@ -16,8 +16,6 @@ import { TAU } from '../../../../common/constants';
 export const configMetadata: Record<string, ConfigItem> = {
   angleStart: { dflt: Math.PI + Math.PI / 4, min: -TAU, max: TAU, type: 'number' },
   angleEnd: { dflt: -Math.PI / 4, min: -TAU, max: TAU, type: 'number' },
-
-  // shape geometry
   margin: {
     type: 'group',
     values: {
@@ -27,17 +25,12 @@ export const configMetadata: Record<string, ConfigItem> = {
       bottom: { dflt: 0, min: -0.25, max: 0.25, type: 'number' },
     },
   },
-
-  // general text config
   fontFamily: {
     dflt: 'Sans-Serif',
     type: 'string',
   },
-
-  // fill text config
   minFontSize: { dflt: 8, min: 0.1, max: 8, type: 'number', reconfigurable: true },
   maxFontSize: { dflt: 64, min: 0.1, max: 64, type: 'number' },
-
   backgroundColor: { dflt: '#ffffff', type: 'color' },
   sectorLineWidth: { dflt: 1, min: 0, max: 4, type: 'number' },
 };

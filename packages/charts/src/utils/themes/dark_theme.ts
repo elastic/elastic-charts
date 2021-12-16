@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../common/colors';
 import { ColorVariant } from '../common';
 import { palettes } from './colors';
 import { Theme } from './theme';
@@ -251,6 +252,90 @@ export const DARK_THEME: Theme = {
     },
     progressLine: {
       stroke: 'white',
+    },
+  },
+  heatmap: {
+    maxRowHeight: 30,
+    maxColumnWidth: 30,
+    brushArea: {
+      visible: true,
+      stroke: '#D3DAE6', // euiColorLightShade,
+      strokeWidth: 2,
+    },
+    brushMask: {
+      visible: true,
+      fill: '#8c8c8c80',
+    },
+    brushTool: {
+      visible: false,
+      fill: 'snow',
+    },
+    xAxisLabel: {
+      visible: true,
+      width: 'auto',
+      fontSize: 12,
+      fontFamily: 'Sans-Serif',
+      fontStyle: 'normal',
+      textColor: Colors.White.keyword,
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      align: 'center',
+      baseline: 'middle',
+      padding: 6,
+      rotation: 0,
+      alternate: false,
+      overflow: 'ellipsis',
+      maxTextLength: 200,
+    },
+    yAxisLabel: {
+      visible: true,
+      width: 'auto',
+      fontSize: 12,
+      fontFamily: 'Sans-Serif',
+      fontStyle: 'normal',
+      textColor: Colors.White.keyword,
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      baseline: 'middle',
+      padding: 5,
+      rotation: 0,
+      overflow: 'ellipsis',
+      maxTextLength: 200,
+    },
+    grid: {
+      cellWidth: {
+        min: 0,
+        max: 30,
+      },
+      cellHeight: {
+        min: 12,
+        max: 30,
+      },
+      stroke: {
+        width: 1,
+        color: 'snow',
+      },
+    },
+    cell: {
+      maxWidth: 'fill',
+      maxHeight: 'fill',
+      align: 'center',
+      label: {
+        visible: true,
+        maxWidth: 'fill',
+        minFontSize: 8,
+        maxFontSize: 12,
+        fontFamily: 'Sans-Serif',
+        fontStyle: 'normal',
+        textColor: Colors.White.keyword,
+        fontVariant: 'normal',
+        fontWeight: 'normal',
+        useGlobalMinFontSize: true,
+      },
+      border: {
+        strokeWidth: 1,
+        stroke: 'snow',
+      },
     },
   },
 };

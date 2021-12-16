@@ -92,7 +92,7 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
       : [];
 
   return {
-    config: theme.goal,
+    theme: theme.goal,
     chartCenter,
     bulletViewModel,
     pickQuads,

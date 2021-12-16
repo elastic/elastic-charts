@@ -6,16 +6,17 @@
  * Side Public License, v 1.
  */
 
+import { Dimensions } from '../../../../utils/dimensions';
+import { Theme } from '../../../../utils/themes/theme';
 import { WordcloudSpec } from '../../specs';
-import { Config } from '../types/config_types';
 import { WordcloudViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
 
 /** @internal */
-export function shapeViewModel(spec: WordcloudSpec, config: Config): ShapeViewModel {
-  const { width, height, margin } = config;
-
-  const innerWidth = width * (1 - Math.min(1, margin.left + margin.right));
-  const innerHeight = height * (1 - Math.min(1, margin.top + margin.bottom));
+export function shapeViewModel(spec: WordcloudSpec, theme: Theme, chartDimensions: Dimensions): ShapeViewModel {
+  const { width, height } = chartDimensions;
+  const { chartMargins: margin } = theme;
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
 
   const chartCenter = {
     x: width * margin.left + innerWidth / 2,
@@ -64,7 +65,6 @@ export function shapeViewModel(spec: WordcloudSpec, config: Config): ShapeViewMo
 
   // combined viewModel
   return {
-    config,
     chartCenter,
     wordcloudViewModel,
     pickQuads,
