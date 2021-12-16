@@ -51,10 +51,6 @@ export interface AnimKeyframe {
     //
     // (undocumented)
     easingFunction: EasingFunction;
-    // Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    keyframeConfig: Partial<StaticConfig>;
     // (undocumented)
     time: number;
 }
@@ -2285,7 +2281,6 @@ export interface Theme {
     // (undocumented)
     crosshair: CrosshairStyle;
     goal: GoalStyles;
-    // (undocumented)
     heatmap: HeatmapStyle;
     // (undocumented)
     legend: LegendStyle;
@@ -2567,9 +2562,8 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
 // Warnings were encountered during analysis:
 //
-// src/chart_types/heatmap/layout/types/config_types.ts:19:13 - (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:47:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/chart_types/heatmap/layout/types/config_types.ts:48:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/utils/themes/theme.ts:217:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/utils/themes/theme.ts:218:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
