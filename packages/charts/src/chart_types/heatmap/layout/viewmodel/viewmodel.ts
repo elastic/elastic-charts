@@ -134,7 +134,7 @@ export function shapeViewModel(
 
   if (colorToRgba(background.color)[3] < 1) {
     Logger.expected(
-      `Text contrast requires a opaque background color, using white as fallback`,
+      'Text contrast requires a opaque background color, using fallbackColor',
       'an opaque color',
       background.color,
     );
@@ -185,7 +185,7 @@ export function shapeViewModel(
       visible: !isValueHidden(d.value, bandsToHide),
       formatted: formattedValue,
       fontSize,
-      textColor: fillTextColor(cellBackgroundColor, background.color),
+      textColor: fillTextColor(background.fallbackColor, cellBackgroundColor, background.color),
     };
     return acc;
   }, {});

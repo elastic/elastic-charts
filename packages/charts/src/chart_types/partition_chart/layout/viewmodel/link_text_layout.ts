@@ -82,7 +82,7 @@ export function linkTextLayout(
   if (colorToRgba(backgroundColor)[3] < 1) {
     // Override handled in fill_text_color.ts
     Logger.expected(
-      'Text contrast requires a opaque background color, using fallbackColor',
+      'Text contrast requires an opaque background color, using fallbackColor',
       'an opaque color',
       backgroundColor,
     );
