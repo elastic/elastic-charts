@@ -14,6 +14,7 @@ import { Font, FontStyle, TextAlign, TextBaseline } from '../../common/text_util
 import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, SimplePadding } from '../dimensions';
 import { Point } from '../point';
+import { PartitionStyle } from './partition';
 
 /** @public */
 export interface Visible {
@@ -288,6 +289,11 @@ export interface BackgroundStyle {
    * The background color
    */
   color: string;
+  /**
+   * The fallback background color used for constrast logic.
+   * Must be opaque, alpha value will be ignored otherwise.
+   */
+  fallbackColor: Color;
 }
 
 /** @public */
@@ -393,7 +399,17 @@ export interface Theme {
    * This can then be used to calculate the contrast of the text for partition charts.
    */
   background: BackgroundStyle;
+  /**
+   * Theme styles for goal and gauge chart types
+   */
   goal: GoalStyles;
+  /**
+   * Theme styles for partition chart types
+   */
+  partition: PartitionStyle;
+  /**
+   * Theme styles for heatmap chart types
+   */
   heatmap: HeatmapStyle;
 }
 

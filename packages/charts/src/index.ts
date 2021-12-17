@@ -43,11 +43,8 @@ export {
 export { GeometryValue, BandedAccessorType } from './utils/geometry';
 export { LegendPath, LegendPathElement } from './state/actions/legend';
 export { CategoryKey } from './common/category';
-export {
-  Config as PartitionConfig,
-  FillLabelConfig as PartitionFillLabel,
-  PartitionLayout,
-} from './chart_types/partition_chart/layout/types/config_types';
+export { FillLabelConfig as PartitionFillLabel, PartitionStyle } from './utils/themes/partition';
+export { PartitionLayout } from './chart_types/partition_chart/layout/types/config_types';
 export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
 export * from './chart_types/goal_chart/specs/index';
 export * from './chart_types/wordcloud/specs/index';
@@ -106,7 +103,7 @@ export {
 export { DataGenerator } from './utils/data_generators/data_generator';
 export * from './utils/themes/merge_utils';
 export * from './utils/use_legend_action';
-export { MODEL_KEY } from './chart_types/partition_chart/layout/config';
+export { MODEL_KEY, defaultPartitionValueFormatter } from './chart_types/partition_chart/layout/config';
 export { LegendStrategy } from './chart_types/partition_chart/layout/utils/highlighted_geoms';
 export { Pixels, Ratio } from './common/geometry';
 export { AdditiveNumber } from './utils/accessor';

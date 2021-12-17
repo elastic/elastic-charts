@@ -14,15 +14,15 @@ import { debounce } from 'ts-debounce';
 import {
   Chart,
   DebugState,
+  ElementClickListener,
   Heatmap,
+  HeatmapBrushEvent,
   HeatmapElementEvent,
   HeatmapStyle,
   niceTimeFormatter,
   RecursivePartial,
   ScaleType,
   Settings,
-  HeatmapBrushEvent,
-  ElementClickListener,
 } from '@elastic/charts';
 
 import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
@@ -89,9 +89,8 @@ export const Example = () => {
     }
   }, 100);
 
-  const onElementClick: ElementClickListener = useCallback((event) => {
-    const e = event as HeatmapElementEvent[];
-    const cell = e[0][0];
+  const onElementClick: ElementClickListener = useCallback((e) => {
+    const cell = (e as HeatmapElementEvent[])[0][0];
     setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
   }, []);
 

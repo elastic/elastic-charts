@@ -263,9 +263,10 @@ export function renderPartitionCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   {
+    layout,
     width,
     height,
-    config,
+    style,
     quadViewModel,
     rowSets,
     outsideLinksViewModel,
@@ -273,11 +274,12 @@ export function renderPartitionCanvas2d(
     diskCenter,
     outerRadius,
     panel,
+    chartDimensions,
   }: ShapeViewModel,
 ) {
-  const { sectorLineWidth, sectorLineStroke, linkLabel } = config;
+  const { sectorLineWidth, sectorLineStroke, linkLabel } = style;
 
-  const linkLineColor = RGBATupleToString(colorToRgba(linkLabel.textColor));
+  const linkLineColor = linkLabelViewModels.strokeColor;
 
   withContext(ctx, () => {
     // set some defaults for the overall rendering
@@ -299,10 +301,10 @@ export function renderPartitionCanvas2d(
     const innerPad = midlineOffset * panel.fontSize; // todo replace it with theme.axisPanelTitle.padding.inner
     ctx.fillText(
       panel.title,
-      isSunburst(config.partitionLayout) ? diskCenter.x : diskCenter.x + (config.width * width) / 2,
-      isSunburst(config.partitionLayout)
-        ? config.linkLabel.maxCount > 0
-          ? diskCenter.y - (config.height * height) / 2 + panel.fontSize
+      isSunburst(layout) ? diskCenter.x : diskCenter.x + (chartDimensions.width * width) / 2,
+      isSunburst(layout)
+        ? style.linkLabel.maxCount > 0
+          ? diskCenter.y - (chartDimensions.height * height) / 2 + panel.fontSize
           : diskCenter.y - outerRadius - innerPad
         : diskCenter.y + 12,
     );
@@ -325,8 +327,7 @@ export function renderPartitionCanvas2d(
     // The layers are callbacks, because of the need to not bake in the `ctx`, it feels more composable and uncoupled this way.
     renderLayers(ctx, [
       // bottom layer: sectors (pie slices, ring sectors etc.)
-      () =>
-        isSunburst(config.partitionLayout) ? renderSectors(ctx, quadViewModel) : renderRectangles(ctx, quadViewModel),
+      () => (isSunburst(layout) ? renderSectors(ctx, quadViewModel) : renderRectangles(ctx, quadViewModel)),
 
       // all the fill-based, potentially multirow text, whether inside or outside the sector
       () => renderRowSets(ctx, rowSets, linkLineColor),

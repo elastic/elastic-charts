@@ -8,8 +8,16 @@
 
 import React from 'react';
 
-import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import {
+  Chart,
+  Datum,
+  MODEL_KEY,
+  PartialTheme,
+  Partition,
+  PartitionLayout,
+  Settings,
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { countryDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
@@ -20,7 +28,6 @@ import { regionLookup } from '../utils/utils';
 
 const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
-// style calcs
 const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.7]));
 
 const defaultFillColor = (colorMaker: any) => ({ [MODEL_KEY]: model }: any) => {
@@ -29,20 +36,25 @@ const defaultFillColor = (colorMaker: any) => ({ [MODEL_KEY]: model }: any) => {
   return colorMaker(model.sortIndex / (siblingCountLayer1 + 1));
 };
 
+const theme: PartialTheme = {
+  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+  partition: {
+    minFontSize: 4,
+    maxFontSize: 84,
+    idealFontSizeJump: 1.05,
+    outerSizeRatio: 1,
+  },
+};
+
 export const Example = () => (
-  <Chart
-    size={
-      {
-        /* height: 800 */
-      }
-    }
-  >
-    <Settings baseTheme={useBaseTheme()} />
+  <Chart>
+    <Settings theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.sunburst}
+      layout={PartitionLayout.treemap}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       topGroove={0}
       layers={[
         {
@@ -60,7 +72,7 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           fillLabel: {
-            valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
+            valueFormatter: (d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
             textColor: 'rgba(60,60,60,1)',
             fontWeight: 100,
             fontStyle: 'normal',
@@ -72,14 +84,6 @@ export const Example = () => (
           },
         },
       ]}
-      config={{
-        partitionLayout: PartitionLayout.treemap,
-        margin: { top: 0, bottom: 0, left: 0, right: 0 },
-        minFontSize: 4,
-        maxFontSize: 84,
-        idealFontSizeJump: 1.05,
-        outerSizeRatio: 1,
-      }}
     />
   </Chart>
 );

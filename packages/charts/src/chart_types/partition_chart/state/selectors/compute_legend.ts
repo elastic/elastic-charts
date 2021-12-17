@@ -26,7 +26,7 @@ export const computeLegendSelector = createCustomCachedSelector(
         legendMaxDepth,
         legendPosition,
         quadViewModel,
-        partitionSpec.config.partitionLayout,
+        partitionSpec.layout,
       );
     }),
 );

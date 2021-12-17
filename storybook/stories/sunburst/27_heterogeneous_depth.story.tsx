@@ -8,8 +8,16 @@
 
 import React from 'react';
 
-import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import {
+  Chart,
+  Datum,
+  MODEL_KEY,
+  Partition,
+  PartitionLayout,
+  Settings,
+  PartialTheme,
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { PrimitiveValue } from '@elastic/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -23,14 +31,40 @@ import {
   regionLookup,
 } from '../utils/utils';
 
+const theme: PartialTheme = {
+  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+  partition: {
+    linkLabel: {
+      maxCount: 0,
+      fontSize: 14,
+    },
+    fontFamily: 'Arial',
+    fillLabel: {
+      fontStyle: 'italic',
+      fontWeight: 900,
+      valueFont: {
+        fontFamily: 'Menlo',
+        fontStyle: 'normal',
+        fontWeight: 100,
+      },
+    },
+    minFontSize: 1,
+    idealFontSizeJump: 1.1,
+    outerSizeRatio: 1,
+    emptySizeRatio: 0,
+    circlePadding: 4,
+  },
+};
+
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.miniSunburst}
+      layout={PartitionLayout.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -56,31 +90,6 @@ export const Example = () => (
           },
         },
       ]}
-      config={{
-        partitionLayout: PartitionLayout.sunburst,
-        linkLabel: {
-          maxCount: 0,
-          fontSize: 14,
-        },
-        fontFamily: 'Arial',
-        fillLabel: {
-          valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
-          fontStyle: 'italic',
-          fontWeight: 900,
-          valueFont: {
-            fontFamily: 'Menlo',
-            fontStyle: 'normal',
-            fontWeight: 100,
-          },
-        },
-        margin: { top: 0, bottom: 0, left: 0, right: 0 },
-        minFontSize: 1,
-        idealFontSizeJump: 1.1,
-        outerSizeRatio: 1,
-        emptySizeRatio: 0,
-        circlePadding: 4,
-        backgroundColor: 'rgba(229,229,229,1)',
-      }}
     />
   </Chart>
 );
