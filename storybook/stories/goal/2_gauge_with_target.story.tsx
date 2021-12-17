@@ -74,6 +74,7 @@ export const Example = () => {
         centralMinor=""
         angleStart={angleStart}
         angleEnd={angleEnd}
+        valueFormatter={(d: any) => `${d}`}
       />
     </Chart>
   );

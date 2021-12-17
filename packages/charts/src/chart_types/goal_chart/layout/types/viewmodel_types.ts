@@ -9,6 +9,7 @@
 import { getGreensColorScale } from '../../../../common/color_library_wrappers';
 import { Pixels, PointObject } from '../../../../common/geometry';
 import { SpecType } from '../../../../specs/constants';
+import { ValueFormatter } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme } from '../../../../utils/themes/theme';
 import { BandFillColorAccessorInput } from '../../specs';
@@ -44,6 +45,7 @@ export interface BulletViewModel {
   belowBaseCount: number;
   angleStart: number;
   angleEnd: number;
+  valueFormatter?: ValueFormatter;
 }
 
 /** @internal */
@@ -80,6 +82,7 @@ export const defaultGoalSpec = {
   bandLabels: [],
   angleStart: Math.PI + Math.PI / 4,
   angleEnd: -Math.PI / 4,
+  valueFormatter: (value: any) => value,
 };
 
 /** @internal */
@@ -97,6 +100,7 @@ export const nullGoalViewModel = {
   belowBaseCount: 0,
   angleStart: 0,
   angleEnd: 0,
+  valueFormatter: undefined,
 };
 
 /** @internal */
