@@ -14,7 +14,7 @@ import { Color, Colors } from './colors';
  * limit used to return fallback color
  * @internal
  */
-export const TRANSPARENT_LIMIT = 0.1;
+export const TRANSPARENT_LIMIT = 0.6;
 
 /**
  * Determine the text color hinging on the parameters of maximizeColorContrast, foreground and container foreground
@@ -23,31 +23,21 @@ export const TRANSPARENT_LIMIT = 0.1;
  * @internal
  */
 export function fillTextColor(
+  fallbackBGColor: Color,
   foreground: Color | null,
   background: Color = Colors.Transparent.keyword,
-  fallbackColor?: Color,
 ): Color {
-  const backgroundRGBA = colorToRgba(background);
-  if (backgroundRGBA[3] < TRANSPARENT_LIMIT && !foreground && fallbackColor) return fallbackColor;
+  let backgroundRGBA = colorToRgba(background);
+
+  if (backgroundRGBA[3] < TRANSPARENT_LIMIT) {
+    backgroundRGBA = colorToRgba(fallbackBGColor);
+  }
 
   if (foreground) {
     const foregroundRGBA = colorToRgba(foreground);
-
-    if (backgroundRGBA[3] < TRANSPARENT_LIMIT) {
-      if (foregroundRGBA[3] < TRANSPARENT_LIMIT && fallbackColor) return fallbackColor;
-      // combine it with white if semi-transparent
-      const fgBlend = combineColors(foregroundRGBA, Colors.White.rgba);
-      // only use foreground
-      return RGBATupleToString(highContrastColor(fgBlend));
-    }
-
-    // combine it with white if semi-transparent
-    const bgBlend = combineColors(backgroundRGBA, Colors.White.rgba);
-    const blendedFgBg = combineColors(foregroundRGBA, bgBlend);
+    const blendedFgBg = combineColors(foregroundRGBA, backgroundRGBA);
     return RGBATupleToString(highContrastColor(blendedFgBg));
   }
 
-  // combine it with white if semi-transparent
-  const bgBlend = combineColors(backgroundRGBA, Colors.White.rgba);
-  return RGBATupleToString(highContrastColor(bgBlend));
+  return RGBATupleToString(highContrastColor(backgroundRGBA));
 }

@@ -216,6 +216,7 @@ export const LIGHT_THEME: Theme = {
   },
   background: {
     color: Colors.Transparent.keyword,
+    fallbackColor: Colors.White.keyword,
   },
   goal: {
     minFontSize: 8,
@@ -259,7 +260,6 @@ export const LIGHT_THEME: Theme = {
     outerSizeRatio: 1 / GOLDEN_RATIO,
     emptySizeRatio: 0,
     fontFamily: 'Sans-Serif',
-    textColor: '#000',
     minFontSize: 8,
     maxFontSize: 64,
     idealFontSizeJump: 1.05,

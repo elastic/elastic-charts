@@ -7,7 +7,7 @@
  */
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { Color, Colors } from '../../../../common/colors';
+import { Colors } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import {
@@ -24,6 +24,7 @@ import { StrokeStyle, ColorVariant } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { FillLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
+import { BackgroundStyle } from '../../../../utils/themes/theme';
 import { Layer, PartitionSpec } from '../../specs';
 import { MODEL_KEY, percentValueGetter } from '../config';
 import { PartitionLayout } from '../types/config_types';
@@ -141,14 +142,14 @@ export function makeQuadViewModel(
   index: number,
   innerIndex: number,
   fillLabel: FillLabelConfig,
-  fallbackTextColor: Color,
-  containerBackgroundColor: Color,
+  { color: backgroundColor, fallbackColor: fallbackBGColor }: BackgroundStyle,
 ): Array<QuadViewModel> {
-  if (colorToRgba(containerBackgroundColor)[3] < 1) {
+  if (colorToRgba(backgroundColor)[3] < 1) {
+    // Override handled in fill_text_color.ts
     Logger.expected(
-      `Text contrast requires a opaque background color, using white as fallback`,
+      'Text contrast requires a opaque background color, using fallbackColor',
       'an opaque color',
-      containerBackgroundColor,
+      backgroundColor,
     );
   }
   return childNodes.map((node) => {
@@ -161,7 +162,7 @@ export function makeQuadViewModel(
     const textColor = textNegligible
       ? Colors.Transparent.keyword
       : fillLabel.textColor === ColorVariant.Adaptive
-      ? fillTextColor(fillColor, containerBackgroundColor, fallbackTextColor)
+      ? fillTextColor(fallbackBGColor, fillColor, backgroundColor)
       : fillLabel.textColor;
 
     return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor, ...node };
@@ -294,7 +295,7 @@ export function shapeViewModel(
   rawTextGetter: RawTextGetter,
   valueGetter: ValueGetterFunction,
   tree: HierarchyOfArrays,
-  containerBackgroundColor: Color,
+  backgroundStyle: BackgroundStyle,
   panelModel: PartitionSmallMultiplesModel,
 ): ShapeViewModel {
   const {
@@ -382,8 +383,7 @@ export function shapeViewModel(
     panelModel.index,
     panelModel.innerIndex,
     fillLabel,
-    style.textColor,
-    containerBackgroundColor,
+    backgroundStyle,
   );
 
   // fill text
@@ -461,7 +461,7 @@ export function shapeViewModel(
       x: width * panelModel.left + panel.innerWidth / 2,
       y: height * panelModel.top + panel.innerHeight / 2,
     },
-    containerBackgroundColor,
+    backgroundStyle,
   );
 
   const pickQuads: PickFunction = sunburstLayout

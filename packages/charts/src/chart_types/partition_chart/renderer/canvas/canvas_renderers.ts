@@ -279,7 +279,7 @@ export function renderPartitionCanvas2d(
 ) {
   const { sectorLineWidth, sectorLineStroke, linkLabel } = style;
 
-  const linkLineColor = RGBATupleToString(colorToRgba(linkLabel.textColor));
+  const linkLineColor = linkLabelViewModels.strokeColor;
 
   withContext(ctx, () => {
     // set some defaults for the overall rendering

@@ -13,7 +13,7 @@ import { Rect } from '../../../../../geoms/types';
 import { HorizontalAlignment, Rotation, VerticalAlignment } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { BarGeometry } from '../../../../../utils/geometry';
-import { TextAlignment, Theme } from '../../../../../utils/themes/theme';
+import { BackgroundStyle, TextAlignment, Theme } from '../../../../../utils/themes/theme';
 import { LabelOverflowConstraint } from '../../../utils/specs';
 import { renderText, wrapLines } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
@@ -26,6 +26,7 @@ interface BarValuesProps {
   debug: boolean;
   bars: BarGeometry[];
   panel: Dimensions;
+  background: BackgroundStyle;
 }
 
 const CHART_DIRECTION: Record<string, Rotation> = {
@@ -37,7 +38,7 @@ const CHART_DIRECTION: Record<string, Rotation> = {
 
 /** @internal */
 export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesProps) {
-  const { bars, debug, rotation, renderingArea, barSeriesStyle, panel } = props;
+  const { bars, debug, rotation, renderingArea, barSeriesStyle, panel, background } = props;
   const { fontFamily, fontStyle, fill, alignment } = barSeriesStyle.displayValue;
   bars.forEach((bar) => {
     if (!bar.displayValue) {
@@ -45,7 +46,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     }
     const { text, fontSize, fontScale, overflowConstraints, isValueContainedInElement } = bar.displayValue;
     const shadowSize = getTextBorderSize(fill);
-    const { fillColor, shadowColor } = getTextColors(fill, bar.color);
+    const { fillColor, shadowColor } = getTextColors(fill, bar.color, background);
     const font: Font = {
       fontFamily,
       fontStyle: fontStyle ?? 'normal',
@@ -193,6 +194,7 @@ type ValueFillDefinition = Theme['barSeriesStyle']['displayValue']['fill'];
 function getTextColors(
   fillDefinition: ValueFillDefinition,
   geometryColor: string,
+  { color: backgroundColor, fallbackColor: fallbackBGColor }: BackgroundStyle,
 ): { fillColor: string; shadowColor: string } {
   if (typeof fillDefinition === 'string') {
     return { fillColor: fillDefinition, shadowColor: Colors.Transparent.keyword };
@@ -203,9 +205,8 @@ function getTextColors(
       shadowColor: fillDefinition.borderColor || Colors.Transparent.keyword,
     };
   }
-  const fillColor = fillTextColor(geometryColor);
-
-  const shadowColor = fillTextColor(fillColor);
+  const fillColor = fillTextColor(fallbackBGColor, geometryColor, backgroundColor);
+  const shadowColor = fillTextColor(fallbackBGColor, fillColor, backgroundColor);
 
   return {
     fillColor,

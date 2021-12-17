@@ -174,7 +174,7 @@ export const partitionMultiGeometries = createCustomCachedSelector(
           fontVariant: 'normal',
           textColor: axisPanelTitle.fill,
         };
-        return getShapeViewModel(spec, parentDimensions, t, background.color, partitionStyle, {
+        return getShapeViewModel(spec, parentDimensions, t, background, partitionStyle, {
           index,
           innerIndex,
           layout: spec.layout,

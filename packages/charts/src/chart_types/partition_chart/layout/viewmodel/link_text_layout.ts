@@ -23,6 +23,7 @@ import { ColorVariant, isRTLString, ValueFormatter } from '../../../../utils/com
 import { Logger } from '../../../../utils/logger';
 import { Point } from '../../../../utils/point';
 import { LinkLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
+import { BackgroundStyle } from '../../../../utils/themes/theme';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 
 /** @internal */
@@ -30,7 +31,7 @@ export interface LinkLabelsViewModelSpec {
   linkLabels: LinkLabelVM[];
   labelFontSpec: Font;
   valueFontSpec: Font;
-  strokeColor?: Color;
+  strokeColor: Color;
 }
 
 /** @internal */
@@ -47,7 +48,7 @@ export function linkTextLayout(
   valueFormatter: ValueFormatter,
   maxTextLength: number,
   diskCenter: Point,
-  containerBgColor: Color,
+  { color: backgroundColor, fallbackColor: fallbackBGColor }: BackgroundStyle,
 ): LinkLabelsViewModelSpec {
   const { linkLabel } = style;
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);
@@ -78,16 +79,17 @@ export function linkTextLayout(
     )
     .filter(({ text }) => text !== ''); // cull linked labels whose text was truncated to nothing;
 
-  if (colorToRgba(containerBgColor)[3] < 1) {
+  if (colorToRgba(backgroundColor)[3] < 1) {
+    // Override handled in fill_text_color.ts
     Logger.expected(
-      `Text contrast requires a opaque background color, using white as fallback`,
+      'Text contrast requires a opaque background color, using fallbackColor',
       'an opaque color',
-      containerBgColor,
+      backgroundColor,
     );
   }
   const textColor =
     linkLabel.textColor === ColorVariant.Adaptive
-      ? fillTextColor(null, containerBgColor, style.textColor)
+      ? fillTextColor(fallbackBGColor, null, backgroundColor)
       : linkLabel.textColor;
   const labelFontSpec: Font = { ...linkLabel, textColor };
   const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor };

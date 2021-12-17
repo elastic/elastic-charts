@@ -289,6 +289,11 @@ export interface BackgroundStyle {
    * The background color
    */
   color: string;
+  /**
+   * The fallback background color used for constrast logic.
+   * Must be opaque, alpha value will be ignored otherwise.
+   */
+  fallbackColor: Color;
 }
 
 /** @public */

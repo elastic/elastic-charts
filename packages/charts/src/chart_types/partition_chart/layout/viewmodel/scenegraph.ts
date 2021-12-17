@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../../../../common/colors';
 import { measureText } from '../../../../common/text_utils';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PartitionStyle } from '../../../../utils/themes/partition';
@@ -21,6 +20,7 @@ import {
   ValueGetter,
 } from '../types/viewmodel_types';
 import { DEPTH_KEY, HierarchyOfArrays } from '../utils/group_by_rollup';
+import { BackgroundStyle } from './../../../../utils/themes/theme';
 import { shapeViewModel } from './viewmodel';
 
 function rawTextGetter(layers: Layer[]): RawTextGetter {
@@ -40,7 +40,7 @@ export function getShapeViewModel(
   spec: PartitionSpec,
   parentDimensions: Dimensions,
   tree: HierarchyOfArrays,
-  containerBackgroundColor: Color,
+  backgroundStyle: BackgroundStyle,
   style: PartitionStyle,
   panelModel: PartitionSmallMultiplesModel,
 ): ShapeViewModel {
@@ -60,7 +60,7 @@ export function getShapeViewModel(
     rawTextGetter(spec.layers),
     valueGetter,
     tree,
-    containerBackgroundColor,
+    backgroundStyle,
     panelModel,
   );
 }

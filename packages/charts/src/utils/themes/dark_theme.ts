@@ -216,6 +216,7 @@ export const DARK_THEME: Theme = {
   },
   background: {
     color: 'transparent',
+    fallbackColor: Colors.Black.keyword,
   },
   goal: {
     minFontSize: 8,
@@ -259,7 +260,6 @@ export const DARK_THEME: Theme = {
     outerSizeRatio: 1 / GOLDEN_RATIO,
     emptySizeRatio: 0,
     fontFamily: 'Sans-Serif',
-    textColor: '#fff',
     minFontSize: 8,
     maxFontSize: 64,
     idealFontSizeJump: 1.05,

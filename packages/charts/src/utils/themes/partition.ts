@@ -74,7 +74,6 @@ export interface PartitionStyle extends FillFontSizeRange {
    */
   outerSizeRatio: SizeRatio;
   fontFamily: FontFamily;
-  textColor: Color;
   circlePadding: Distance;
   radialPadding: Distance;
   horizontalTextAngleThreshold: Radian;

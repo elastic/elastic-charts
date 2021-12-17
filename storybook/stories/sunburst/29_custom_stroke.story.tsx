@@ -17,30 +17,36 @@ import {
   PartitionLayout,
   Settings,
   defaultPartitionValueFormatter,
+  Color,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
+const getColorKnob = (prop: string, defaultColor: Color) =>
+  boolean(`custom ${prop}`, false) ? color(prop, defaultColor) : undefined;
+
 export const Example = () => {
   const theme: PartialTheme = {
     chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     background: {
-      color: color('Background color', '#1c1c24'),
+      color: color('background.color', '#1c1c24'),
+      fallbackColor: getColorKnob('background.fallbackColor', 'black'),
     },
     partition: {
       linkLabel: {
         maxCount: 15,
-        textColor: boolean('custom linkLabel.textColor', false) ? color('linkLabel.textColor', 'white') : undefined,
+        textColor: getColorKnob('linkLabel.textColor', 'white'),
       },
       fillLabel: {
-        textColor: boolean('custom fillLabel.textColor', false) ? color('fillLabel.textColor', 'white') : undefined,
+        textColor: getColorKnob('fillLabel.textColor', 'white'),
       },
       sectorLineWidth: 1.2,
     },
   };
-  const fillColor = boolean('custom shape.fillColor', false) ? color('shape.fillColor', 'blue') : null;
+
+  const fillColor = getColorKnob('shape.fillColor', 'blue');
   return (
     <Chart>
       <Settings theme={theme} baseTheme={useBaseTheme()} />

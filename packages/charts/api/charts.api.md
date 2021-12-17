@@ -233,6 +233,7 @@ export interface AxisStyle {
 // @public
 export interface BackgroundStyle {
     color: string;
+    fallbackColor: Color;
 }
 
 // @public
@@ -1665,8 +1666,6 @@ export interface PartitionStyle extends FillFontSizeRange {
     sectorLineStroke: StrokeStyle_2;
     // (undocumented)
     sectorLineWidth: Pixels;
-    // (undocumented)
-    textColor: Color;
 }
 
 // @public (undocumented)
