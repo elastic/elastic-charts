@@ -61,7 +61,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     { yValues },
     { heatmap },
     rightOverflow,
-    { yAxisLabelName, xAxisLabelName },
+    { xAxisTitle, yAxisTitle },
   ): ChartDims => {
     const textMeasurer = document.createElement('canvas');
     const textMeasurerCtx = textMeasurer.getContext('2d');
@@ -81,10 +81,10 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     const legendWidth = !isLegendHorizontal ? legendSize.width + legendSize.margin * 2 : 0;
     const legendHeight = isLegendHorizontal ? heatmap.maxLegendHeight ?? legendSize.height + legendSize.margin * 2 : 0;
 
-    const yAxisTitleHorizontalSize = getTextSizeDimension(yAxisLabelName, heatmap.axisTitle, textMeasure, 'height');
+    const yAxisTitleHorizontalSize = getTextSizeDimension(yAxisTitle, heatmap.axisTitle, textMeasure, 'height');
     const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, textMeasure);
 
-    const xAxisTitleVerticalSize = getTextSizeDimension(xAxisLabelName, heatmap.axisTitle, textMeasure, 'height');
+    const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, heatmap.axisTitle, textMeasure, 'height');
     const xAxisHeight = heatmap.xAxisLabel.visible
       ? heatmap.xAxisLabel.fontSize + verticalPad(heatmap.xAxisLabel.padding)
       : 0;
@@ -119,8 +119,6 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
       top: grid.top + grid.height,
       left: grid.left,
     };
-
-    console.log({ grid, container, xAxis, rowHeight });
 
     return { grid, yAxis, xAxis, visibleNumberOfRows, fullHeatmapHeight, rowHeight };
   },

@@ -372,7 +372,7 @@ export function shapeViewModel(
               heatmapTheme.axisTitle.fontSize / 2,
           },
           ...heatmapTheme.axisTitle,
-          text: spec.xAxisLabelName,
+          text: spec.xAxisTitle,
           rotation: 0,
         },
         {
@@ -381,7 +381,7 @@ export function shapeViewModel(
             y: dims.grid.top + dims.grid.height / 2,
           },
           ...heatmapTheme.axisTitle,
-          text: spec.xAxisLabelName,
+          text: spec.yAxisTitle,
           rotation: -90,
         },
       ],
@@ -417,15 +417,13 @@ function getXTicks(
     formatter: HeatmapSpec['xAxisLabelFormatter'],
     scaleCallback: (x: string | number) => number | undefined | null,
   ) => (value: string | number): TextBox => {
-    const ip = 6; //innerPad(style.xAxisLabel.padding);
-    console.log(ip);
     return {
       text: formatter(value),
       value,
       isValue: false,
       ...style.xAxisLabel,
       x: scaleCallback(value) ?? 0,
-      y: style.xAxisLabel.fontSize / 2 + ip,
+      y: style.xAxisLabel.fontSize / 2 + pad(style.xAxisLabel.padding, 'top'),
     };
   };
   if (isRasterTimeScale(spec.xScale)) {

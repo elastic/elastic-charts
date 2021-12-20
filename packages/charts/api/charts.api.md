@@ -1120,6 +1120,8 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     xAxisLabelName: string;
     // (undocumented)
+    xAxisTitle: string;
+    // (undocumented)
     xScale: RasterTimeScale | OrdinalScale | LinearScale;
     // (undocumented)
     xSortPredicate: Predicate;
@@ -1129,6 +1131,8 @@ export interface HeatmapSpec extends Spec {
     yAxisLabelFormatter: (value: string | number) => string;
     // (undocumented)
     yAxisLabelName: string;
+    // (undocumented)
+    yAxisTitle: string;
     // (undocumented)
     ySortPredicate: Predicate;
 }

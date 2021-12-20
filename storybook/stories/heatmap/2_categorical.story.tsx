@@ -88,8 +88,8 @@ export const Example = () => {
         valueAccessor={(d) => d[3]}
         valueFormatter={(value) => value.toFixed(0.2)}
         xSortPredicate="alphaAsc"
-        xAxisLabelName={showXAxisTitle ? 'Bottom axis' : undefined}
-        yAxisLabelName={showYAxisTitle ? 'Left axis' : undefined}
+        xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
+        yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
       />
     </Chart>
   );

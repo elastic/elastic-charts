@@ -33,9 +33,11 @@ const defaultProps = {
   xSortPredicate: Predicate.AlphaAsc,
   ySortPredicate: Predicate.AlphaAsc,
   timeZone: 'UTC',
-  xAxisLabelName: '',
+  xAxisTitle: '',
+  yAxisTitle: '',
+  xAxisLabelName: 'X Value',
   xAxisLabelFormatter: String,
-  yAxisLabelName: '',
+  yAxisLabelName: 'Y Value',
   yAxisLabelFormatter: String,
 };
 
@@ -105,8 +107,10 @@ export interface HeatmapSpec extends Spec {
   name?: string;
   timeZone: string;
   onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
+  xAxisTitle: string;
   xAxisLabelName: string;
   xAxisLabelFormatter: (value: string | number) => string;
+  yAxisTitle: string;
   yAxisLabelName: string;
   yAxisLabelFormatter: (value: string | number) => string;
 }
@@ -127,8 +131,10 @@ export const Heatmap: React.FunctionComponent<SpecRequiredProps & SpecOptionalPr
     | 'valueFormatter'
     | 'xScale'
     | 'timeZone'
+    | 'xAxisTitle'
     | 'xAxisLabelName'
     | 'xAxisLabelFormatter'
+    | 'yAxisTitle'
     | 'yAxisLabelName'
     | 'yAxisLabelFormatter'
   >(defaultProps),
