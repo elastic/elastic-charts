@@ -9,8 +9,7 @@
 import { color } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { Chart, Datum, Partition, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -18,6 +17,7 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example = () => {
   const partialCustomTheme = {
+    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     background: {
       color: color('Change background container color', '#1c1c24'),
     },
@@ -29,7 +29,7 @@ export const Example = () => {
         id="spec_1"
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,
@@ -45,5 +45,5 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  backgrounds: { disable: true },
+  background: { disable: true },
 };

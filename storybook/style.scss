@@ -29,6 +29,11 @@ html {
     .echChart {
       background: white !important;
     }
+
+    .euiText {
+      // required to prevent inheriting from html
+      color: $euiTitleColor;
+    }
   }
 
   &.dark-theme {
@@ -38,6 +43,11 @@ html {
     body,
     .echChart {
       background: black !important;
+    }
+
+    .euiText {
+      // required to prevent inheriting from html
+      color: $euiTitleColor;
     }
   }
 

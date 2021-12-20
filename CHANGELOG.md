@@ -1,3 +1,46 @@
+# [41.0.0](https://github.com/elastic/elastic-charts/compare/v40.2.0...v41.0.0) (2021-12-17)
+
+
+### Bug Fixes
+
+* replace createRef with useRef in Functional Components. ([#1524](https://github.com/elastic/elastic-charts/issues/1524)) ([9538417](https://github.com/elastic/elastic-charts/commit/953841738afd80482ff4ee5cca01dc018861dcda))
+
+
+### Code Refactoring
+
+* **goal:** remove deprecated config ([#1408](https://github.com/elastic/elastic-charts/issues/1408)) ([312e31d](https://github.com/elastic/elastic-charts/commit/312e31df701e765328924bdeecb4191c3c7537d9))
+
+
+### Features
+
+* **heatmap:** dark mode with theme controls ([#1406](https://github.com/elastic/elastic-charts/issues/1406)) ([f29c8dd](https://github.com/elastic/elastic-charts/commit/f29c8dd2ac235ec3b9eaf225537e57c87e044056))
+* **legend:** custom legend width ([#1467](https://github.com/elastic/elastic-charts/issues/1467)) ([51f50df](https://github.com/elastic/elastic-charts/commit/51f50df0d00c352808bd95d0f69010239d74ba4a))
+
+
+### BREAKING CHANGES
+
+* **goal:** The `GoalSpec.config` prop is removed. All properties have been moved/renamed under new `Theme.goal` options with the following exceptions:
+
+- `Config.margin` is now controlled by `Theme.chartMargins` and is no longer a margin ratio as before.
+- `Config.backgroundColor` is now controlled by `Theme.background.color`, even though it's not yet used.
+- `fontFamily` moved into each respective label styles
+- `angleStart` and `angleEnd` are moved onto the `GoalSpec` as optional values.
+- `sectorLineWidth`, `width` and `height` all removed as they were never used.
+
+# [40.2.0](https://github.com/elastic/elastic-charts/compare/v40.1.0...v40.2.0) (2021-12-09)
+
+
+### Bug Fixes
+
+* **partition:** linkLabel textColor override ([#1498](https://github.com/elastic/elastic-charts/issues/1498)) ([3013310](https://github.com/elastic/elastic-charts/commit/3013310357f3612aca47aa1c229d9ca4a276ea71))
+* **waffle:** use descend sortPredicate by default ([#1510](https://github.com/elastic/elastic-charts/issues/1510)) ([763e2e3](https://github.com/elastic/elastic-charts/commit/763e2e3b71b7b2976b49f321d92aad60adfc4080))
+* **xy:** stacked polarity ([#1502](https://github.com/elastic/elastic-charts/issues/1502)) ([920666a](https://github.com/elastic/elastic-charts/commit/920666acd012ce6f3e6c3299ebf338011e8a0e08)), closes [#1280](https://github.com/elastic/elastic-charts/issues/1280)
+
+
+### Features
+
+* **xy:** expose style for interpolation fit functions ([#1505](https://github.com/elastic/elastic-charts/issues/1505)) ([3071457](https://github.com/elastic/elastic-charts/commit/30714572e5eaf7b88bda0a26fd69f58357d5cc9f))
+
 # [40.1.0](https://github.com/elastic/elastic-charts/compare/v40.0.0...v40.1.0) (2021-12-01)
 
 

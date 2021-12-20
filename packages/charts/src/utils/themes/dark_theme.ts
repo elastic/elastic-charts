@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { Colors } from '../../common/colors';
+import { GOLDEN_RATIO, TAU } from '../../common/constants';
 import { ColorVariant } from '../common';
 import { palettes } from './colors';
 import { Theme } from './theme';
@@ -214,6 +216,7 @@ export const DARK_THEME: Theme = {
   },
   background: {
     color: 'transparent',
+    fallbackColor: Colors.Black.keyword,
   },
   goal: {
     minFontSize: 8,
@@ -251,6 +254,147 @@ export const DARK_THEME: Theme = {
     },
     progressLine: {
       stroke: 'white',
+    },
+  },
+  partition: {
+    outerSizeRatio: 1 / GOLDEN_RATIO,
+    emptySizeRatio: 0,
+    fontFamily: 'Sans-Serif',
+    minFontSize: 8,
+    maxFontSize: 64,
+    idealFontSizeJump: 1.05,
+    maximizeFontSize: false,
+    circlePadding: 2,
+    radialPadding: TAU / 360,
+    horizontalTextAngleThreshold: TAU / 12,
+    horizontalTextEnforcer: 1,
+    fillLabel: {
+      textColor: ColorVariant.Adaptive,
+      fontFamily: 'Sans-Serif',
+      fontStyle: 'normal',
+      fontVariant: 'normal',
+      fontWeight: 400,
+      valueFont: {
+        fontWeight: 400,
+        fontStyle: 'normal',
+        fontVariant: 'normal',
+      },
+      padding: 2,
+      clipText: false,
+    },
+    linkLabel: {
+      maximumSection: 10,
+      fontFamily: 'Sans-Serif',
+      fontSize: 12,
+      fontStyle: 'normal',
+      fontVariant: 'normal',
+      fontWeight: 400,
+      gap: 10,
+      spacing: 2,
+      horizontalStemLength: 10,
+      radiusPadding: 10,
+      lineWidth: 1,
+      maxCount: 36,
+      maxTextLength: 100,
+      textColor: ColorVariant.Adaptive,
+      minimumStemLength: 0,
+      stemAngle: TAU / 8,
+      padding: 0,
+      valueFont: {
+        fontWeight: 400,
+        fontStyle: 'normal',
+        fontVariant: 'normal',
+      },
+    },
+    sectorLineWidth: 1,
+    sectorLineStroke: 'black',
+  },
+  heatmap: {
+    maxRowHeight: 30,
+    maxColumnWidth: 30,
+    brushArea: {
+      visible: true,
+      stroke: '#D3DAE6', // euiColorLightShade,
+      strokeWidth: 2,
+    },
+    brushMask: {
+      visible: true,
+      fill: '#8c8c8c80',
+    },
+    brushTool: {
+      visible: false,
+      fill: 'snow',
+    },
+
+    xAxisLabel: {
+      visible: true,
+      width: 'auto',
+      fontSize: 12,
+      fontFamily: 'Sans-Serif',
+      fontStyle: 'normal',
+      textColor: Colors.White.keyword,
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      align: 'center',
+      baseline: 'middle',
+      padding: 6,
+    },
+    yAxisLabel: {
+      visible: true,
+      width: 'auto',
+      fontSize: 12,
+      fontFamily: 'Sans-Serif',
+      fontStyle: 'normal',
+      textColor: Colors.White.keyword,
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      baseline: 'middle',
+      padding: 5,
+    },
+    axisTitle: {
+      visible: true,
+      fontSize: 12,
+      fontFamily: 'Sans-Serif',
+      fontStyle: 'normal',
+      textColor: Colors.Black.keyword,
+      fontVariant: 'normal',
+      fontWeight: 'bold',
+      padding: { inner: 8, outer: 0 },
+    },
+    grid: {
+      cellWidth: {
+        min: 0,
+        max: 30,
+      },
+      cellHeight: {
+        min: 12,
+        max: 30,
+      },
+      stroke: {
+        width: 1,
+        color: 'snow',
+      },
+    },
+    cell: {
+      maxWidth: 'fill',
+      maxHeight: 'fill',
+      align: 'center',
+      label: {
+        visible: true,
+        maxWidth: 'fill',
+        minFontSize: 8,
+        maxFontSize: 12,
+        fontFamily: 'Sans-Serif',
+        fontStyle: 'normal',
+        textColor: Colors.White.keyword,
+        fontVariant: 'normal',
+        fontWeight: 'normal',
+        useGlobalMinFontSize: true,
+      },
+      border: {
+        strokeWidth: 1,
+        stroke: 'snow',
+      },
     },
   },
 };

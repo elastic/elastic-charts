@@ -11,12 +11,33 @@ import { colorToRgba, RGBATupleToString } from './color_library_wrappers';
 import { Color, Colors } from './colors';
 
 /**
- * Determine the color for the text hinging on the parameters of maximizeColorContrast, foreground and containerBackground
+ * limit used to return fallback color
  * @internal
  */
-export function fillTextColor(background: Color, containerBg: Color = Colors.White.keyword): Color {
-  const backgroundRGBA = colorToRgba(background);
-  const containerBgRGBA = combineColors(colorToRgba(containerBg), Colors.White.rgba); // combine it with white if semi-transparent
-  const blendedFbBg = combineColors(backgroundRGBA, containerBgRGBA);
-  return RGBATupleToString(highContrastColor(blendedFbBg));
+export const TRANSPARENT_LIMIT = 0.6;
+
+/**
+ * Determine the text color hinging on the parameters of maximizeColorContrast, foreground and container foreground
+ * returns high contrast color blend from fg anf bg when suitable, otherwise returns fallback color
+ *
+ * @internal
+ */
+export function fillTextColor(
+  fallbackBGColor: Color,
+  foreground: Color | null,
+  background: Color = Colors.Transparent.keyword,
+): Color {
+  let backgroundRGBA = colorToRgba(background);
+
+  if (backgroundRGBA[3] < TRANSPARENT_LIMIT) {
+    backgroundRGBA = colorToRgba(fallbackBGColor);
+  }
+
+  if (foreground) {
+    const foregroundRGBA = colorToRgba(foreground);
+    const blendedFgBg = combineColors(foregroundRGBA, backgroundRGBA);
+    return RGBATupleToString(highContrastColor(blendedFgBg));
+  }
+
+  return RGBATupleToString(highContrastColor(backgroundRGBA));
 }

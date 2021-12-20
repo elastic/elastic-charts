@@ -18,8 +18,8 @@ import {
   Partition,
   Settings,
   ShapeTreeNode,
+  defaultPartitionValueFormatter,
 } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';
@@ -56,18 +56,24 @@ const sortPredicate = ([name1, node1]: ArrayEntry, [name2, node2]: ArrayEntry) =
 export const Example = () => {
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings
+        theme={{
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+          partition: { outerSizeRatio: 0.96 },
+        }}
+        baseTheme={useBaseTheme()}
+      />
       <Partition
         id="spec_1"
         data={data}
         valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
-        valueFormatter={(d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}`}
+        valueFormatter={(d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.region,
             nodeLabel: (d: any) => d,
             fillLabel: {
-              valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}`,
+              valueFormatter: (d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}`,
               fontWeight: 600,
               fontStyle: 'italic',
               valueFont: {
@@ -99,7 +105,8 @@ export const Example = () => {
             },
           },
         ]}
-        config={{ outerSizeRatio: 0.96, specialFirstInnermostSector: false, clockwiseSectors: true }}
+        clockwiseSectors
+        specialFirstInnermostSector={false}
       />
     </Chart>
   );

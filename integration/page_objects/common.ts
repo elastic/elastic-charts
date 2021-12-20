@@ -368,9 +368,12 @@ class CommonPage {
   async expectChartWithMouseAtUrlToMatchScreenshot(
     url: string,
     mousePosition: MousePosition,
-    options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
+    options?: ScreenshotElementAtUrlOptions,
   ) {
-    const action = async () => await this.moveMouseRelativeToDOMElement(mousePosition, this.chartSelector);
+    const action = async () => {
+      await options?.action?.();
+      await this.moveMouseRelativeToDOMElement(mousePosition, this.chartSelector);
+    };
     await this.expectChartAtUrlToMatchScreenshot(url, {
       ...options,
       action,

@@ -6,45 +6,65 @@
  * Side Public License, v 1.
  */
 
-import { color } from '@storybook/addon-knobs';
+import { boolean, color } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, PartialTheme, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import {
+  Chart,
+  Datum,
+  PartialTheme,
+  Partition,
+  PartitionLayout,
+  Settings,
+  defaultPartitionValueFormatter,
+  Color,
+} from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
+const getColorKnob = (prop: string, defaultColor: Color) =>
+  boolean(`custom ${prop}`, false) ? color(prop, defaultColor) : undefined;
+
 export const Example = () => {
-  const partialCustomTheme: PartialTheme = {
+  const theme: PartialTheme = {
+    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     background: {
-      color: color('Change background container color', '#1c1c24'),
+      color: color('background.color', '#1c1c24'),
+      fallbackColor: getColorKnob('background.fallbackColor', 'black'),
+    },
+    partition: {
+      linkLabel: {
+        maxCount: 15,
+        textColor: getColorKnob('linkLabel.textColor', 'white'),
+      },
+      fillLabel: {
+        textColor: getColorKnob('fillLabel.textColor', 'white'),
+      },
+      sectorLineWidth: 1.2,
     },
   };
+
+  const fillColor = getColorKnob('shape.fillColor', 'blue');
   return (
     <Chart>
-      <Settings theme={partialCustomTheme} baseTheme={useBaseTheme()} />
+      <Settings theme={theme} baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"
         data={mocks.manyPie}
+        layout={PartitionLayout.sunburst}
         valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.origin,
             nodeLabel: (d: Datum) => countryLookup[d].name,
             shape: {
-              fillColor: indexInterpolatedFillColor(interpolatorCET2s),
+              fillColor: fillColor ?? indexInterpolatedFillColor(interpolatorCET2s),
             },
           },
         ]}
-        config={{
-          partitionLayout: PartitionLayout.sunburst,
-          linkLabel: { maxCount: 15, textColor: 'white' },
-          sectorLineStroke: 'rgb(26, 27, 32)', // same as the dark theme
-          sectorLineWidth: 1.2,
-        }}
       />
     </Chart>
   );
@@ -52,5 +72,5 @@ export const Example = () => {
 
 Example.parameters = {
   theme: { default: 'dark' },
-  backgrounds: { disable: true },
+  background: { disable: true },
 };

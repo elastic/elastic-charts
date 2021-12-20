@@ -7,21 +7,16 @@
  */
 
 import { measureText } from '../../../../common/text_utils';
-import { SettingsSpec } from '../../../../specs';
-import { mergePartial } from '../../../../utils/common';
 import { Theme } from '../../../../utils/themes/theme';
+import { ShapeViewModel, nullShapeViewModel } from '../../layout/types/viewmodel_types';
+import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs';
 import { ChartDims, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScale } from '../../state/selectors/get_color_scale';
-import { DEFAULT_CONFIG } from '../config/config';
-import { Config } from '../types/config_types';
-import { ShapeViewModel, nullShapeViewModel } from '../types/viewmodel_types';
-import { shapeViewModel } from './viewmodel';
 
 /** @internal */
 export function render(
   spec: HeatmapSpec,
-  settingsSpec: SettingsSpec,
   chartDimensions: ChartDims,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
@@ -36,12 +31,10 @@ export function render(
   return shapeViewModel(
     measureText(textMeasurerCtx),
     spec,
-    mergePartial<Config>(DEFAULT_CONFIG, spec.config),
-    settingsSpec,
+    theme,
     chartDimensions,
     heatmapTable,
     colorScale,
     bandsToHide,
-    theme,
   );
 }

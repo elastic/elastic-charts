@@ -21,10 +21,11 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { ChartDims, computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
-import { geometries } from '../../state/selectors/geometries';
+import { getHeatmapGeometries } from '../../state/selectors/geometries';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
 import { renderCanvas2d } from './canvas_renderers';
 
@@ -35,6 +36,7 @@ interface ReactiveChartStateProps {
   a11ySettings: A11ySettings;
   background: Color;
   chartDims: ChartDims;
+  debug: boolean;
 }
 
 interface ReactiveChartDispatchProps {
@@ -90,13 +92,16 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      // const { width, height }: Dimensions = this.props.chartContainerDimensions;
       renderCanvas2d(
         this.ctx,
         this.devicePixelRatio,
-        this.props.geometries,
+        {
+          ...this.props.geometries,
+          theme: this.props.geometries.theme,
+        },
         this.props.background,
         this.props.chartDims,
+        this.props.debug,
       );
     }
   }
@@ -156,7 +161,11 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     grid: { width: 0, height: 0, left: 0, top: 0 },
     xAxis: { width: 0, height: 0, left: 0, top: 0 },
     yAxis: { width: 0, height: 0, left: 0, top: 0 },
+    fullHeatmapHeight: 0,
+    rowHeight: 0,
+    visibleNumberOfRows: 0,
   },
+  debug: false,
 };
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
@@ -164,11 +173,12 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
   return {
     initialized: true,
-    geometries: geometries(state),
+    geometries: getHeatmapGeometries(state),
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
     background: getChartThemeSelector(state).background.color,
     chartDims: computeChartDimensionsSelector(state),
+    debug: getSettingsSpecSelector(state).debug,
   };
 };
 

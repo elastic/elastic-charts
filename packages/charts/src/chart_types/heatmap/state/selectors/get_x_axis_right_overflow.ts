@@ -9,8 +9,8 @@
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
@@ -19,8 +19,16 @@ import { getHeatmapTableSelector } from './get_heatmap_table';
  * Gets color scale based on specification and values range.
  */
 export const getXAxisRightOverflow = createCustomCachedSelector(
-  [getHeatmapSpecSelector, getHeatmapConfigSelector, getHeatmapTableSelector],
-  ({ xScale }, { timeZone, xAxisLabel: { fontSize, fontFamily, padding, formatter, width } }, { xNumericExtent }) => {
+  [getHeatmapSpecSelector, getChartThemeSelector, getHeatmapTableSelector],
+  (
+    { xScale, timeZone, xAxisLabelFormatter },
+    {
+      heatmap: {
+        xAxisLabel: { fontSize, fontFamily, padding, width },
+      },
+    },
+    { xNumericExtent },
+  ) => {
     return xScale.type !== ScaleType.Time
       ? 0
       : typeof width === 'number'
@@ -31,7 +39,10 @@ export const getXAxisRightOverflow = createCustomCachedSelector(
             { timeZone: xScale.type === ScaleType.Time ? timeZone : undefined },
           )
             .ticks()
-            .reduce((max, n) => Math.max(max, measure(formatter(n), padding, fontSize, fontFamily).width + padding), 0);
+            .reduce(
+              (max, n) => Math.max(max, measure(xAxisLabelFormatter(n), padding, fontSize, fontFamily).width + padding),
+              0,
+            );
         }) / 2;
   },
 );

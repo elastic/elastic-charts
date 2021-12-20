@@ -9,23 +9,45 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings, ShapeTreeNode } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import {
+  Chart,
+  Datum,
+  Partition,
+  PartitionLayout,
+  Settings,
+  ShapeTreeNode,
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ArrayEntry } from '../../../packages/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
 import { useBaseTheme } from '../../use_base_theme';
-import { discreteColor, colorBrewerCategoricalStark9, productLookup } from '../utils/utils';
+import { colorBrewerCategoricalStark9, discreteColor, productLookup } from '../utils/utils';
 
 export const Example = () => {
   const showDebug = boolean('show table for debugging', false);
+  const ascendingSort = boolean('ascending sort', false);
+  // this is used to test the sorting capabilities
+  const data = mocks.pie.slice(0, 4).sort(() => (Math.random() > 0.5 ? 1 : -1));
   return (
     <Chart className="story-chart">
-      <Settings baseTheme={useBaseTheme()} debug={showDebug} showLegend flatLegend showLegendExtra />
+      <Settings
+        theme={{
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+          chartPaddings: { left: 170, right: 170, top: 70, bottom: 70 },
+        }}
+        baseTheme={useBaseTheme()}
+        debug={showDebug}
+        showLegend
+        flatLegend
+        showLegendExtra
+      />
       <Partition
         id="spec_1"
-        data={mocks.pie.slice(0, 4)}
+        data={data}
+        layout={PartitionLayout.waffle}
         valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,
@@ -33,19 +55,13 @@ export const Example = () => {
             shape: {
               fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9.slice(1))(d.sortIndex),
             },
-          },
-          {
-            groupByRollup: (d: Datum) => d.sitc1,
-            nodeLabel: (d: Datum) => productLookup[d].name,
-            shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9.slice(1))(d.sortIndex),
-            },
+            sortPredicate: ascendingSort
+              ? ([, node1]: ArrayEntry, [, node2]: ArrayEntry) => {
+                  return node1.value - node2.value;
+                }
+              : undefined, // the descending sort is applied by default
           },
         ]}
-        config={{
-          partitionLayout: PartitionLayout.waffle,
-          margin: { left: 0.2, right: 0.2, top: 0.2, bottom: 0.2 },
-        }}
       />
     </Chart>
   );

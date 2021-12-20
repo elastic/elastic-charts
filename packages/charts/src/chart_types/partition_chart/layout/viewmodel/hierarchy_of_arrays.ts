@@ -25,7 +25,7 @@ import {
   NodeSorter,
   Sorter,
 } from '../utils/group_by_rollup';
-import { isMosaic, isSunburst, isTreemap } from './viewmodel';
+import { isMosaic, isSunburst, isTreemap, isWaffle } from './viewmodel';
 
 function aggregateComparator(accessor: (v: any) => any, sorter: Sorter): NodeSorter {
   return (a, b) => sorter(accessor(a), accessor(b));
@@ -72,7 +72,7 @@ export function getHierarchyOfArrays(
 
 const sorter = (layout: PartitionLayout) => ({ sortPredicate }: Layer, i: number) =>
   sortPredicate ||
-  (isTreemap(layout) || isSunburst(layout)
+  (isTreemap(layout) || isSunburst(layout) || isWaffle(layout)
     ? descendingValueNodes
     : isMosaic(layout)
     ? i === 2
@@ -85,16 +85,14 @@ export function partitionTree(
   data: Datum[],
   valueAccessor: ValueAccessor,
   layers: Layer[],
-  defaultLayout: PartitionLayout,
-  partitionLayout: PartitionLayout = defaultLayout,
+  layout: PartitionLayout,
   innerGroups: LegendPath,
 ) {
   return getHierarchyOfArrays(
     data,
     valueAccessor,
-    // eslint-disable-next-line no-shadow
     [() => HIERARCHY_ROOT_KEY, ...layers.map(({ groupByRollup }) => groupByRollup)],
-    [null, ...layers.map(sorter(partitionLayout))],
+    [null, ...layers.map(sorter(layout))],
     innerGroups,
   );
 }

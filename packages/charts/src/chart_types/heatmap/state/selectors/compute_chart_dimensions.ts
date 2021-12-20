@@ -11,12 +11,12 @@ import { max as d3Max } from 'd3-array';
 import { Box, measureText, TextMeasure } from '../../../../common/text_utils';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { Dimensions, innerPad, outerPad } from '../../../../utils/dimensions';
 import { isHorizontalLegend } from '../../../../utils/legend';
-import { Config } from '../../layout/types/config_types';
+import { HeatmapStyle } from '../../../../utils/themes/theme';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
-import { getHeatmapConfigSelector } from './get_heatmap_config';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { getXAxisRightOverflow } from './get_x_axis_right_overflow';
@@ -50,17 +50,18 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     getParentDimension,
     getLegendSizeSelector,
     getHeatmapTableSelector,
-    getHeatmapConfigSelector,
+    getChartThemeSelector,
     getXAxisRightOverflow,
     getHeatmapSpecSelector,
   ],
   (
     container,
     legendSize,
+
     { yValues },
-    { grid: gridStyle, yAxisLabel, xAxisLabel, axisTitleStyle, maxLegendHeight },
+    { heatmap },
     rightOverflow,
-    { yAxisTitle, xAxisTitle },
+    { yAxisLabelName, xAxisLabelName },
   ): ChartDims => {
     const textMeasurer = document.createElement('canvas');
     const textMeasurerCtx = textMeasurer.getContext('2d');
@@ -78,17 +79,17 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
 
     const isLegendHorizontal = isHorizontalLegend(legendSize.position);
     const legendWidth = !isLegendHorizontal ? legendSize.width + legendSize.margin * 2 : 0;
-    const legendHeight = isLegendHorizontal ? maxLegendHeight ?? legendSize.height + legendSize.margin * 2 : 0;
+    const legendHeight = isLegendHorizontal ? heatmap.maxLegendHeight ?? legendSize.height + legendSize.margin * 2 : 0;
 
-    const yAxisTitleHorizontalSize = getTextSizeDimension(yAxisTitle, axisTitleStyle, textMeasure, 'height');
-    const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, yAxisLabel, textMeasure);
+    const yAxisTitleHorizontalSize = getTextSizeDimension(yAxisLabelName, heatmap.axisTitle, textMeasure, 'height');
+    const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, textMeasure);
 
-    const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
-    const xAxisHeight = xAxisLabel.visible ? xAxisLabel.fontSize + xAxisLabel.padding * 2 : 0;
+    const xAxisTitleVerticalSize = getTextSizeDimension(xAxisLabelName, heatmap.axisTitle, textMeasure, 'height');
+    const xAxisHeight = heatmap.xAxisLabel.visible ? heatmap.xAxisLabel.fontSize + heatmap.xAxisLabel.padding * 2 : 0;
 
     const availableHeightForGrid = container.height - xAxisTitleVerticalSize - xAxisHeight - legendHeight;
 
-    const rowHeight = getGridCellHeight(yValues.length, gridStyle, availableHeightForGrid);
+    const rowHeight = getGridCellHeight(yValues.length, heatmap.grid, availableHeightForGrid);
     const fullHeatmapHeight = rowHeight * yValues.length;
 
     const visibleNumberOfRows =
@@ -123,7 +124,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
 
 function getYAxisHorizontalUsedSpace(
   yValues: HeatmapTable['yValues'],
-  yAxisLabel: Config['yAxisLabel'],
+  yAxisLabel: HeatmapStyle['yAxisLabel'],
   textMeasure: TextMeasure,
 ) {
   if (!yAxisLabel.visible) {
@@ -158,7 +159,7 @@ function getYAxisHorizontalUsedSpace(
 
 function getTextSizeDimension(
   text: string,
-  style: Config['axisTitleStyle'],
+  style: HeatmapStyle['axisTitle'],
   textMeasure: TextMeasure,
   param: 'height' | 'width',
 ): number {
@@ -174,7 +175,7 @@ function getTextSizeDimension(
   return textBox.length === 1 ? textBox[0].width + textPadding : 0;
 }
 
-function getGridCellHeight(rows: number, grid: Config['grid'], height: number): number {
+function getGridCellHeight(rows: number, grid: HeatmapStyle['grid'], height: number): number {
   if (rows === 0) {
     return height; // TODO check if this can be just 0
   }

@@ -9,7 +9,6 @@
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { render } from '../../layout/viewmodel/scenegraph';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -20,25 +19,16 @@ import { getHeatmapTableSelector } from './get_heatmap_table';
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
 /** @internal */
-export const geometries = createCustomCachedSelector(
+export const getHeatmapGeometries = createCustomCachedSelector(
   [
     getHeatmapSpecSelector,
     computeChartDimensionsSelector,
-    getSettingsSpecSelector,
     getHeatmapTableSelector,
     getColorScale,
     getDeselectedSeriesSelector,
     getChartThemeSelector,
   ],
-  (
-    heatmapSpec,
-    dims,
-    settingSpec,
-    heatmapTable,
-    { bands, scale: colorScale },
-    deselectedSeries,
-    theme,
-  ): ShapeViewModel => {
+  (heatmapSpec, dims, heatmapTable, { bands, scale: colorScale }, deselectedSeries, theme): ShapeViewModel => {
     // instead of using the specId, each legend item is associated with an unique band label
     const disabledBandLabels = new Set(
       deselectedSeries.map(({ specId }) => {
@@ -52,8 +42,6 @@ export const geometries = createCustomCachedSelector(
       })
       .map(({ start, end }) => [start, end]);
 
-    return heatmapSpec
-      ? render(heatmapSpec, settingSpec, dims, heatmapTable, colorScale, bandsToHide, theme)
-      : nullShapeViewModel();
+    return heatmapSpec ? render(heatmapSpec, dims, heatmapTable, colorScale, bandsToHide, theme) : nullShapeViewModel();
   },
 );

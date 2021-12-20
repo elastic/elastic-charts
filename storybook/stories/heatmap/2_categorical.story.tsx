@@ -39,6 +39,35 @@ export const Example = () => {
         legendPosition="right"
         brushAxis="both"
         baseTheme={useBaseTheme()}
+        theme={{
+          heatmap: {
+            grid: {
+              stroke: {
+                width: 0,
+              },
+              cellHeight: {
+                min: minCellHeight,
+                max: maxCellHeight,
+              },
+            },
+            cell: {
+              maxWidth: 'fill',
+              label: {
+                minFontSize,
+                maxFontSize,
+                visible: showLabels,
+                useGlobalMinFontSize,
+              },
+              border: {
+                stroke: 'transparent',
+                strokeWidth: 1,
+              },
+            },
+            yAxisLabel: {
+              visible: true,
+            },
+          },
+        }}
         onBrushEnd={action('onBrushEnd')}
       />
       <Heatmap
@@ -59,35 +88,8 @@ export const Example = () => {
         valueAccessor={(d) => d[3]}
         valueFormatter={(value) => value.toFixed(0.2)}
         xSortPredicate="alphaAsc"
-        xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
-        yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
-        config={{
-          grid: {
-            stroke: {
-              width: 0,
-            },
-            cellHeight: {
-              min: minCellHeight,
-              max: maxCellHeight,
-            },
-          },
-          cell: {
-            maxWidth: 'fill',
-            label: {
-              minFontSize,
-              maxFontSize,
-              visible: showLabels,
-              useGlobalMinFontSize,
-            },
-            border: {
-              stroke: 'transparent',
-              strokeWidth: 1,
-            },
-          },
-          yAxisLabel: {
-            visible: true,
-          },
-        }}
+        xAxisLabelName={showXAxisTitle ? 'Bottom axis' : undefined}
+        yAxisLabelName={showYAxisTitle ? 'Left axis' : undefined}
       />
     </Chart>
   );

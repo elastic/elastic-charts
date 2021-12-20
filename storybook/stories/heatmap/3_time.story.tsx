@@ -10,8 +10,10 @@ import { number } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import React, { useMemo } from 'react';
 
-import { Chart, Heatmap, RecursivePartial, ScaleType, Settings, HeatmapConfig } from '@elastic/charts';
+import { Chart, Heatmap, RecursivePartial, ScaleType, Settings, HeatmapStyle } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
+
+import { useBaseTheme } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator();
 const start = DateTime.fromISO('2021-03-27T20:00:00', { zone: 'UTC' });
@@ -27,8 +29,8 @@ const data = [...new Array(14)].flatMap((d, i) => {
 });
 
 export const Example = () => {
-  const config: RecursivePartial<HeatmapConfig> = useMemo(
-    () => ({
+  const heatmap = useMemo(() => {
+    const styles: RecursivePartial<HeatmapStyle> = {
       grid: {
         cellHeight: {
           min: 20,
@@ -54,17 +56,10 @@ export const Example = () => {
         width: 'auto',
         padding: { left: 10, right: 10 },
       },
-      xAxisLabel: {
-        formatter: (value: string | number) => {
-          return DateTime.fromMillis(value as number)
-            .setZone('UTC')
-            .toFormat('HH:mm:ss');
-        },
-      },
-      timeZone: 'UTC',
-    }),
-    [],
-  );
+    };
+
+    return styles;
+  }, []);
 
   const startTimeOffset = number('start time offset', 0, {
     min: -1000 * 60 * 60 * 24,
@@ -92,6 +87,8 @@ export const Example = () => {
             min: start.toMillis() + startTimeOffset,
             max: end.toMillis() + endTimeOffset,
           }}
+          theme={{ heatmap }}
+          baseTheme={useBaseTheme()}
         />
         <Heatmap
           id="heatmap1"
@@ -112,6 +109,12 @@ export const Example = () => {
           valueAccessor={(d) => d[2]}
           valueFormatter={(d) => d.toFixed(2)}
           ySortPredicate="numAsc"
+          xAxisLabelFormatter={(value) => {
+            return DateTime.fromMillis(value as number)
+              .setZone('UTC')
+              .toFormat('HH:mm:ss');
+          }}
+          timeZone="UTC"
           xScale={{
             type: ScaleType.Time,
             interval: {
@@ -120,7 +123,6 @@ export const Example = () => {
               value: 1,
             },
           }}
-          config={config}
         />
       </Chart>
     </>

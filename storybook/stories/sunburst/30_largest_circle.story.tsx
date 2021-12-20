@@ -6,39 +6,53 @@
  * Side Public License, v 1.
  */
 
+import { color } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import {
+  Chart,
+  Datum,
+  Partition,
+  PartitionLayout,
+  Settings,
+  PartialTheme,
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export const Example = () => (
-  <Chart>
-    <Settings baseTheme={useBaseTheme()} />
-    <Partition
-      id="spec_1"
-      data={mocks.pie}
-      valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-      layers={[
-        {
-          groupByRollup: (d: Datum) => d.sitc1,
-          nodeLabel: (d: Datum) => productLookup[d].name,
-          shape: {
-            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
+export const Example = () => {
+  const theme: PartialTheme = {
+    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+    partition: {
+      linkLabel: { maximumSection: Infinity, maxCount: 0 },
+      sectorLineWidth: 10,
+      sectorLineStroke: color('sectorLineStroke', 'lightgrey'),
+      outerSizeRatio: 1,
+    },
+  };
+
+  return (
+    <Chart>
+      <Settings theme={theme} baseTheme={useBaseTheme()} />
+      <Partition
+        id="spec_1"
+        data={mocks.pie}
+        layout={PartitionLayout.sunburst}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: indexInterpolatedFillColor(interpolatorCET2s),
+            },
           },
-        },
-      ]}
-      config={{
-        partitionLayout: PartitionLayout.sunburst,
-        linkLabel: { maximumSection: Infinity, maxCount: 0 },
-        sectorLineWidth: 10,
-        sectorLineStroke: 'lightgrey',
-        outerSizeRatio: 1,
-      }}
-    />
-  </Chart>
-);
+        ]}
+      />
+    </Chart>
+  );
+};

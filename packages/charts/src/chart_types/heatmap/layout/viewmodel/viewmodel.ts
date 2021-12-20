@@ -15,18 +15,17 @@ import { Pixels } from '../../../../common/geometry';
 import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
-import { LinearScale, OrdinalScale, RasterTimeScale, SettingsSpec } from '../../../../specs';
+import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
 import { clamp } from '../../../../utils/common';
 import { Dimensions, innerPad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
-import { Theme } from '../../../../utils/themes/theme';
+import { HeatmapStyle, Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
 import { ChartDims, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScale } from '../../state/selectors/get_color_scale';
-import { Config } from '../types/config_types';
 import {
   Cell,
   PickDragFunction,
@@ -56,7 +55,8 @@ function getValuesInRange(
 
 function estimatedNonOverlappingTickCount(
   chartWidth: number,
-  { formatter, padding, fontSize, fontFamily }: Config['xAxisLabel'],
+  formatter: HeatmapSpec['xAxisLabelFormatter'],
+  { padding, fontSize, fontFamily }: HeatmapStyle['xAxisLabel'],
 ): number {
   return withTextMeasure((textMeasure) => {
     const labelSample = formatter(Date.now());
@@ -68,29 +68,26 @@ function estimatedNonOverlappingTickCount(
     return Math.floor(maxTicks / 2);
   });
 }
-
 /** @internal */
 export function shapeViewModel(
   textMeasure: TextMeasure,
   spec: HeatmapSpec,
-  config: Config,
-  settingsSpec: SettingsSpec,
+  { heatmap: heatmapTheme, background }: Theme,
   dims: ChartDims,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
   bandsToHide: Array<[number, number]>,
-  theme: Theme,
 ): ShapeViewModel {
-  const gridStrokeWidth = config.grid.stroke.width ?? 1;
+  const gridStrokeWidth = heatmapTheme.grid.stroke.width ?? 1;
 
   const { table, yValues, xValues } = heatmapTable;
 
   // measure the text width of all rows values to get the grid area width
   const boxedYValues = yValues.map<Box & { value: NonNullable<PrimitiveValue> }>((value) => ({
-    text: config.yAxisLabel.formatter(value),
+    text: spec.yAxisLabelFormatter(value),
     value,
     isValue: false,
-    ...config.yAxisLabel,
+    ...heatmapTheme.yAxisLabel,
   }));
 
   // compute the scale for the rows positions
@@ -107,8 +104,8 @@ export function shapeViewModel(
 
   // compute the cell width (can be smaller then the available size depending on config
   const cellWidth =
-    config.cell.maxWidth !== 'fill' && xScale.bandwidth() > config.cell.maxWidth
-      ? config.cell.maxWidth
+    heatmapTheme.cell.maxWidth !== 'fill' && xScale.bandwidth() > heatmapTheme.cell.maxWidth
+      ? heatmapTheme.cell.maxWidth
       : xScale.bandwidth();
 
   // compute the cell height (we already computed the max size for that)
@@ -117,9 +114,9 @@ export function shapeViewModel(
   const currentGridHeight = dims.grid.height;
 
   // compute the position of each column label
-  const textXValues = getXTicks(spec, config, dims.grid, xScale, heatmapTable);
+  const textXValues = getXTicks(spec, heatmapTheme, dims.grid, xScale, heatmapTable);
 
-  const { padding } = config.yAxisLabel;
+  const { padding } = heatmapTheme.yAxisLabel;
 
   // compute the position of each row label
   const textYValues = boxedYValues.map<TextBox>((d) => {
@@ -134,11 +131,11 @@ export function shapeViewModel(
   const cellWidthInner = cellWidth - gridStrokeWidth * 2;
   const cellHeightInner = cellHeight - gridStrokeWidth * 2;
 
-  if (colorToRgba(theme.background.color)[3] < 1) {
+  if (colorToRgba(background.color)[3] < 1) {
     Logger.expected(
-      `Text contrast requires a opaque background color, using white as fallback`,
+      'Text contrast requires a opaque background color, using fallbackColor',
       'an opaque color',
-      theme.background.color,
+      background.color,
     );
   }
 
@@ -159,9 +156,9 @@ export function shapeViewModel(
     const fontSize = maximiseFontSize(
       textMeasure,
       formattedValue,
-      config.cell.label,
-      config.cell.label.minFontSize,
-      config.cell.label.maxFontSize,
+      heatmapTheme.cell.label,
+      heatmapTheme.cell.label.minFontSize,
+      heatmapTheme.cell.label.maxFontSize,
       // adding 3px padding per side to avoid that text touches the edges
       cellWidthInner - 6,
       cellHeightInner - 6,
@@ -169,7 +166,8 @@ export function shapeViewModel(
 
     acc[cellKey] = {
       x:
-        (config.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - config.cell.maxWidth / 2 : x) + gridStrokeWidth,
+        (heatmapTheme.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : x) +
+        gridStrokeWidth,
       y,
       yIndex,
       width: cellWidthInner,
@@ -179,14 +177,14 @@ export function shapeViewModel(
         color: colorToRgba(cellBackgroundColor),
       },
       stroke: {
-        color: colorToRgba(config.cell.border.stroke),
-        width: config.cell.border.strokeWidth,
+        color: colorToRgba(heatmapTheme.cell.border.stroke),
+        width: heatmapTheme.cell.border.strokeWidth,
       },
       value: d.value,
       visible: !isValueHidden(d.value, bandsToHide),
       formatted: formattedValue,
       fontSize,
-      textColor: fillTextColor(cellBackgroundColor, theme.background.color),
+      textColor: fillTextColor(background.fallbackColor, cellBackgroundColor, background.color),
     };
     return acc;
   }, {});
@@ -244,7 +242,7 @@ export function shapeViewModel(
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
     const invertedXValues: Array<NonNullable<PrimitiveValue>> =
       isRasterTimeScale(spec.xScale) && typeof endX === 'number'
-        ? [startX, addIntervalToTime(endX, spec.xScale.interval, config.timeZone)]
+        ? [startX, addIntervalToTime(endX, spec.xScale.interval, spec.timeZone)]
         : [...allXValuesInRange];
     const cells: Cell[] = [];
 
@@ -343,7 +341,7 @@ export function shapeViewModel(
   const tableMinFontSize = cells.reduce((acc, { fontSize }) => Math.min(acc, fontSize), Infinity);
 
   return {
-    config,
+    theme: heatmapTheme,
     heatmapViewModel: {
       gridOrigin: {
         x: dims.grid.left,
@@ -353,13 +351,13 @@ export function shapeViewModel(
         x: xLines,
         y: yLines,
         stroke: {
-          color: colorToRgba(config.grid.stroke.color),
+          color: colorToRgba(heatmapTheme.grid.stroke.color),
           width: gridStrokeWidth,
         },
       },
       pageSize: dims.visibleNumberOfRows,
       cells,
-      cellFontSize: (cell: Cell) => (config.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
+      cellFontSize: (cell: Cell) => (heatmapTheme.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
       xValues: textXValues,
       yValues: textYValues,
       titles: [
@@ -370,20 +368,20 @@ export function shapeViewModel(
               dims.grid.top +
               dims.grid.height +
               dims.xAxis.height +
-              innerPad(config.axisTitleStyle.padding) +
-              config.axisTitleStyle.fontSize / 2,
+              innerPad(heatmapTheme.axisTitle.padding) +
+              heatmapTheme.axisTitle.fontSize / 2,
           },
-          ...config.axisTitleStyle,
-          text: spec.xAxisTitle,
+          ...heatmapTheme.axisTitle,
+          text: spec.xAxisLabelName,
           rotation: 0,
         },
         {
           origin: {
-            x: dims.yAxis.left - innerPad(config.axisTitleStyle.padding) - config.axisTitleStyle.fontSize / 2,
+            x: dims.yAxis.left - innerPad(heatmapTheme.axisTitle.padding) - heatmapTheme.axisTitle.fontSize / 2,
             y: dims.grid.top + dims.grid.height / 2,
           },
-          ...config.axisTitleStyle,
-          text: spec.yAxisTitle,
+          ...heatmapTheme.axisTitle,
+          text: spec.xAxisLabelName,
           rotation: -90,
         },
       ],
@@ -410,22 +408,22 @@ export function isRasterTimeScale(scale: RasterTimeScale | OrdinalScale | Linear
 
 function getXTicks(
   spec: HeatmapSpec,
-  config: Config,
+  style: HeatmapStyle,
   grid: Dimensions,
   xScale: ScaleBand<string | number>,
   { xValues, xNumericExtent }: HeatmapTable,
 ): Array<TextBox> {
   const getTextValue = (
-    formatter: Config['xAxisLabel']['formatter'],
+    formatter: HeatmapSpec['xAxisLabelFormatter'],
     scaleCallback: (x: string | number) => number | undefined | null,
   ) => (value: string | number): TextBox => {
     return {
       text: formatter(value),
       value,
       isValue: false,
-      ...config.xAxisLabel,
+      ...style.xAxisLabel,
       x: scaleCallback(value) ?? 0,
-      y: config.xAxisLabel.fontSize / 2 + config.xAxisLabel.padding,
+      y: style.xAxisLabel.fontSize / 2 + style.xAxisLabel.padding,
     };
   };
   if (isRasterTimeScale(spec.xScale)) {
@@ -437,16 +435,16 @@ function getXTicks(
         nice: false,
       },
       {
-        desiredTickCount: estimatedNonOverlappingTickCount(grid.width, config.xAxisLabel),
-        timeZone: config.timeZone,
+        desiredTickCount: estimatedNonOverlappingTickCount(grid.width, spec.xAxisLabelFormatter, style.xAxisLabel),
+        timeZone: spec.timeZone,
       },
     );
-    return timeScale.ticks().map<TextBox>(getTextValue(config.xAxisLabel.formatter, (x) => timeScale.scale(x)));
+    return timeScale.ticks().map<TextBox>(getTextValue(spec.xAxisLabelFormatter, (x) => timeScale.scale(x)));
   }
 
   return xValues.map<TextBox>((textBox: string | number) => {
     return {
-      ...getTextValue(config.xAxisLabel.formatter, xScale)(textBox),
+      ...getTextValue(spec.xAxisLabelFormatter, xScale)(textBox),
       x: (xScale(textBox) || 0) + xScale.bandwidth() / 2,
     };
   });
