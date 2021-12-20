@@ -1,3 +1,10 @@
+## [41.0.1](https://github.com/elastic/elastic-charts/compare/v41.0.0...v41.0.1) (2021-12-20)
+
+
+### Bug Fixes
+
+* export deprecated partition config types ([#1530](https://github.com/elastic/elastic-charts/issues/1530)) ([00f0f8e](https://github.com/elastic/elastic-charts/commit/00f0f8e1590f6fa0e70b0255a03ba428eeb0f0cd))
+
 # [41.0.0](https://github.com/elastic/elastic-charts/compare/v40.2.0...v41.0.0) (2021-12-17)
 
 
