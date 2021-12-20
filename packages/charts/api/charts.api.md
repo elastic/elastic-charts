@@ -2623,7 +2623,7 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
 // Warnings were encountered during analysis:
 //
-// src/chart_types/partition_chart/layout/types/config.ts:61:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config.ts:60:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/utils/themes/theme.ts:217:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/utils/themes/theme.ts:218:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 
