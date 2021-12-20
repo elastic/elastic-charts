@@ -12,7 +12,7 @@ import { Color } from '../../common/colors';
 import { Pixels, Ratio } from '../../common/geometry';
 import { Font, FontStyle, TextAlign, TextBaseline } from '../../common/text_utils';
 import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
-import { Margins, SimplePadding } from '../dimensions';
+import { Margins, Padding, SimplePadding } from '../dimensions';
 import { Point } from '../point';
 import { PartitionStyle } from './partition';
 
@@ -217,14 +217,14 @@ export interface HeatmapStyle {
     align: TextAlign;
     baseline: TextBaseline;
     visible: boolean;
-    padding: number;
+    padding: Pixels | Padding;
   };
   yAxisLabel: Font & {
     fontSize: Pixels;
     width: Pixels | 'auto' | { max: Pixels };
     baseline: TextBaseline;
     visible: boolean;
-    padding: number | { left?: number; right?: number; top?: number; bottom?: number };
+    padding: Pixels | Padding;
   };
   axisTitle: Visible & Font & { fontSize: Pixels; padding: Pixels | SimplePadding };
   grid: {

@@ -19,7 +19,7 @@ import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
 import { clamp } from '../../../../utils/common';
-import { Dimensions, innerPad } from '../../../../utils/dimensions';
+import { Dimensions, innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
@@ -56,11 +56,11 @@ function getValuesInRange(
 function estimatedNonOverlappingTickCount(
   chartWidth: number,
   formatter: HeatmapSpec['xAxisLabelFormatter'],
-  { padding, fontSize, fontFamily }: HeatmapStyle['xAxisLabel'],
+  { fontSize, fontFamily }: HeatmapStyle['xAxisLabel'],
 ): number {
   return withTextMeasure((textMeasure) => {
     const labelSample = formatter(Date.now());
-    const { width } = textMeasure(labelSample, padding, fontSize, fontFamily);
+    const { width } = textMeasure(labelSample, 0, fontSize, fontFamily);
     const maxTicks = chartWidth / width;
     // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
     // to many ticks creating nice rounded tick values
@@ -123,7 +123,7 @@ export function shapeViewModel(
     return {
       ...d,
       // position of the Y labels
-      x: -(typeof padding === 'number' ? padding : padding.right ?? 0),
+      x: -pad(padding, 'right'),
       y: cellHeight / 2 + (yScale(d.value) || 0),
     };
   });
@@ -417,13 +417,15 @@ function getXTicks(
     formatter: HeatmapSpec['xAxisLabelFormatter'],
     scaleCallback: (x: string | number) => number | undefined | null,
   ) => (value: string | number): TextBox => {
+    const ip = 6; //innerPad(style.xAxisLabel.padding);
+    console.log(ip);
     return {
       text: formatter(value),
       value,
       isValue: false,
       ...style.xAxisLabel,
       x: scaleCallback(value) ?? 0,
-      y: style.xAxisLabel.fontSize / 2 + style.xAxisLabel.padding,
+      y: style.xAxisLabel.fontSize / 2 + ip,
     };
   };
   if (isRasterTimeScale(spec.xScale)) {

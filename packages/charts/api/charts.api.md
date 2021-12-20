@@ -1135,6 +1135,11 @@ export interface HeatmapSpec extends Spec {
 
 // @public (undocumented)
 export interface HeatmapStyle {
+    // (undocumented)
+    axisTitle: Visible & Font & {
+        fontSize: Pixels;
+        padding: Pixels | SimplePadding;
+    };
     brushArea: {
         visible: boolean;
         fill?: Color;
@@ -1196,7 +1201,7 @@ export interface HeatmapStyle {
         align: TextAlign;
         baseline: TextBaseline;
         visible: boolean;
-        padding: number;
+        padding: Pixels | Padding;
     };
     // (undocumented)
     yAxisLabel: Font & {
@@ -1206,12 +1211,7 @@ export interface HeatmapStyle {
         };
         baseline: TextBaseline;
         visible: boolean;
-        padding: number | {
-            left?: number;
-            right?: number;
-            top?: number;
-            bottom?: number;
-        };
+        padding: Pixels | Padding;
     };
 }
 
@@ -2132,9 +2132,9 @@ export type ShowAccessor = (value: PrimitiveValue) => boolean;
 // @public
 export interface SimplePadding {
     // (undocumented)
-    inner: number;
+    inner: Pixels;
     // (undocumented)
-    outer: number;
+    outer: Pixels;
 }
 
 // @alpha (undocumented)

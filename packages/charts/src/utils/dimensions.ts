@@ -41,7 +41,7 @@ export interface PerSideDistance {
 export type Margins = PerSideDistance;
 
 /**
- * todo seperate type with parition padding type that allows number
+ * todo separate type with partition padding type that allows number
  * @public
  */
 export type Padding = PerSideDistance;
@@ -62,3 +62,15 @@ export const innerPad = (padding: number | Partial<SimplePadding>, minPadding = 
 /** @internal */
 export const outerPad = (padding: number | Partial<SimplePadding>, minPadding = 0) =>
   Math.max(minPadding, typeof padding === 'number' ? padding : padding?.outer ?? 0);
+
+/** @internal */
+export const verticalPad = (padding: number | Padding, minPadding = 0) =>
+  Math.max(minPadding, typeof padding === 'number' ? padding * 2 : padding.top + padding.bottom);
+
+/** @internal */
+export const horizontalPad = (padding: number | Padding, minPadding = 0) =>
+  Math.max(minPadding, typeof padding === 'number' ? padding * 2 : padding.left + padding.right);
+
+/** @internal */
+export const pad = (padding: number | Padding, direction: keyof Padding, minPadding = 0) =>
+  Math.max(minPadding, typeof padding === 'number' ? padding : padding[direction]);

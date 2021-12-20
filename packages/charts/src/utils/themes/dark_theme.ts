@@ -337,7 +337,7 @@ export const DARK_THEME: Theme = {
       fontWeight: 'normal',
       align: 'center',
       baseline: 'middle',
-      padding: 6,
+      padding: { top: 6, bottom: 6, left: 6, right: 6 },
     },
     yAxisLabel: {
       visible: true,
@@ -349,7 +349,7 @@ export const DARK_THEME: Theme = {
       fontVariant: 'normal',
       fontWeight: 'normal',
       baseline: 'middle',
-      padding: 5,
+      padding: { top: 5, bottom: 5, left: 5, right: 5 },
     },
     axisTitle: {
       visible: true,

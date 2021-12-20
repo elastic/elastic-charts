@@ -13,7 +13,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
-import { Dimensions, innerPad, outerPad } from '../../../../utils/dimensions';
+import { Dimensions, innerPad, outerPad, verticalPad } from '../../../../utils/dimensions';
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { HeatmapStyle } from '../../../../utils/themes/theme';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
@@ -85,7 +85,9 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, textMeasure);
 
     const xAxisTitleVerticalSize = getTextSizeDimension(xAxisLabelName, heatmap.axisTitle, textMeasure, 'height');
-    const xAxisHeight = heatmap.xAxisLabel.visible ? heatmap.xAxisLabel.fontSize + heatmap.xAxisLabel.padding * 2 : 0;
+    const xAxisHeight = heatmap.xAxisLabel.visible
+      ? heatmap.xAxisLabel.fontSize + verticalPad(heatmap.xAxisLabel.padding)
+      : 0;
 
     const availableHeightForGrid = container.height - xAxisTitleVerticalSize - xAxisHeight - legendHeight;
 
@@ -117,6 +119,8 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
       top: grid.top + grid.height,
       left: grid.left,
     };
+
+    console.log({ grid, container, xAxis, rowHeight });
 
     return { grid, yAxis, xAxis, visibleNumberOfRows, fullHeatmapHeight, rowHeight };
   },
