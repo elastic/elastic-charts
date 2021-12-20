@@ -19,7 +19,7 @@ import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
 import { clamp } from '../../../../utils/common';
-import { Dimensions, innerPad, pad } from '../../../../utils/dimensions';
+import { Dimensions, horizontalPad, innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
@@ -56,11 +56,11 @@ function getValuesInRange(
 function estimatedNonOverlappingTickCount(
   chartWidth: number,
   formatter: HeatmapSpec['xAxisLabelFormatter'],
-  { fontSize, fontFamily }: HeatmapStyle['xAxisLabel'],
+  { padding, fontSize, fontFamily }: HeatmapStyle['xAxisLabel'],
 ): number {
   return withTextMeasure((textMeasure) => {
     const labelSample = formatter(Date.now());
-    const { width } = textMeasure(labelSample, 0, fontSize, fontFamily);
+    const { width } = textMeasure(labelSample, horizontalPad(padding), fontSize, fontFamily);
     const maxTicks = chartWidth / width;
     // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
     // to many ticks creating nice rounded tick values
