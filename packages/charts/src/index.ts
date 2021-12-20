@@ -49,6 +49,9 @@ export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/ind
 export * from './chart_types/goal_chart/specs/index';
 export * from './chart_types/wordcloud/specs/index';
 
+// TODO: Remove deprecated config types. Need for eui alignment
+export * from './chart_types/partition_chart/layout/types/config';
+
 export {
   Accessor,
   AccessorFn,

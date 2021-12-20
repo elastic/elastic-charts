@@ -1589,6 +1589,19 @@ export type PartialTheme = RecursivePartial<Theme>;
 // @public (undocumented)
 export const Partition: React_2.FunctionComponent<SpecRequiredProps_7 & SpecOptionalProps_7>;
 
+// Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
+//
+// @public @deprecated
+export interface PartitionConfig extends StaticConfig {
+    // @alpha (undocumented)
+    animation: {
+        duration: TimeMs;
+        keyframes: Array<AnimKeyframe & {
+            keyframeConfig: Partial<StaticConfig>;
+        }>;
+    };
+}
+
 // @public (undocumented)
 export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
 
@@ -1887,6 +1900,18 @@ export type RelativeBandsPadding = {
     outer: Ratio;
     inner: Ratio;
 };
+
+// @public (undocumented)
+export interface RelativeMargins {
+    // (undocumented)
+    bottom: SizeRatio;
+    // (undocumented)
+    left: SizeRatio;
+    // (undocumented)
+    right: SizeRatio;
+    // (undocumented)
+    top: SizeRatio;
+}
 
 // @public
 export type RenderChangeListener = (isRendered: boolean) => void;
@@ -2598,6 +2623,7 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
 // Warnings were encountered during analysis:
 //
+// src/chart_types/partition_chart/layout/types/config.ts:60:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 // src/utils/themes/theme.ts:217:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
 // src/utils/themes/theme.ts:218:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 
