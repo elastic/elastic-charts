@@ -226,7 +226,6 @@ export interface HeatmapStyle {
     visible: boolean;
     padding: Pixels | Padding;
   };
-  axisTitle: Visible & Font & { fontSize: Pixels; padding: Pixels | SimplePadding };
   grid: {
     cellWidth: {
       min: Pixels;

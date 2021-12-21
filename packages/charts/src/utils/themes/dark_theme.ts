@@ -337,7 +337,7 @@ export const DARK_THEME: Theme = {
       fontWeight: 'normal',
       align: 'center',
       baseline: 'middle',
-      padding: { top: 6, bottom: 6, left: 6, right: 6 },
+      padding: { top: 5, bottom: 5, left: 5, right: 5 },
     },
     yAxisLabel: {
       visible: true,
@@ -350,16 +350,6 @@ export const DARK_THEME: Theme = {
       fontWeight: 'normal',
       baseline: 'middle',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
-    },
-    axisTitle: {
-      visible: true,
-      fontSize: 12,
-      fontFamily: 'Sans-Serif',
-      fontStyle: 'normal',
-      textColor: Colors.Black.keyword,
-      fontVariant: 'normal',
-      fontWeight: 'bold',
-      padding: { inner: 8, outer: 0 },
     },
     grid: {
       cellWidth: {

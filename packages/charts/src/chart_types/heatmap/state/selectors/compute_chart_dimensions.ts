@@ -15,7 +15,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { Dimensions, innerPad, outerPad, verticalPad } from '../../../../utils/dimensions';
 import { isHorizontalLegend } from '../../../../utils/legend';
-import { HeatmapStyle } from '../../../../utils/themes/theme';
+import { AxisStyle, HeatmapStyle } from '../../../../utils/themes/theme';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
@@ -59,7 +59,7 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
     legendSize,
 
     { yValues },
-    { heatmap },
+    { heatmap, axes: { axisTitle: axisTitleStyle } },
     rightOverflow,
     { xAxisTitle, yAxisTitle },
   ): ChartElementSizes => {
@@ -81,10 +81,10 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
     const legendWidth = !isLegendHorizontal ? legendSize.width + legendSize.margin * 2 : 0;
     const legendHeight = isLegendHorizontal ? heatmap.maxLegendHeight ?? legendSize.height + legendSize.margin * 2 : 0;
 
-    const yAxisTitleHorizontalSize = getTextSizeDimension(yAxisTitle, heatmap.axisTitle, textMeasure, 'height');
+    const yAxisTitleHorizontalSize = getTextSizeDimension(yAxisTitle, axisTitleStyle, textMeasure, 'height');
     const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, textMeasure);
 
-    const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, heatmap.axisTitle, textMeasure, 'height');
+    const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
     const xAxisHeight = heatmap.xAxisLabel.visible
       ? heatmap.xAxisLabel.fontSize + verticalPad(heatmap.xAxisLabel.padding)
       : 0;
@@ -161,7 +161,7 @@ function getYAxisHorizontalUsedSpace(
 
 function getTextSizeDimension(
   text: string,
-  style: HeatmapStyle['axisTitle'],
+  style: AxisStyle['axisTitle'],
   textMeasure: TextMeasure,
   param: 'height' | 'width',
 ): number {
@@ -173,7 +173,16 @@ function getTextSizeDimension(
     return style.fontSize + textPadding;
   }
 
-  const textBox = textMeasure(style.fontSize, [{ ...style, text }]);
+  const textBox = textMeasure(style.fontSize, [
+    {
+      fontVariant: 'normal',
+      fontWeight: 'bold',
+      fontStyle: style.fontStyle ?? 'normal',
+      fontFamily: style.fontFamily,
+      textColor: style.fill,
+      text,
+    },
+  ]);
   return textBox.length === 1 ? textBox[0].width + textPadding : 0;
 }
 

@@ -12,7 +12,7 @@ import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
-import { Box, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
+import { Box, Font, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
@@ -21,7 +21,7 @@ import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
 import { clamp } from '../../../../utils/common';
 import { Dimensions, horizontalPad, innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
-import { HeatmapStyle, Theme } from '../../../../utils/themes/theme';
+import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
 import { ChartElementSizes, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
@@ -72,7 +72,7 @@ function estimatedNonOverlappingTickCount(
 export function shapeViewModel(
   textMeasure: TextMeasure,
   spec: HeatmapSpec,
-  { heatmap: heatmapTheme, background }: Theme,
+  { heatmap: heatmapTheme, axes: { axisTitle }, background }: Theme,
   elementSizes: ChartElementSizes,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
@@ -346,6 +346,16 @@ export function shapeViewModel(
 
   const cells = Object.values(cellMap);
   const tableMinFontSize = cells.reduce((acc, { fontSize }) => Math.min(acc, fontSize), Infinity);
+  // TODO introduce missing styles into axes.axisTitle
+  const axisTitleFont: Visible & Font & { fontSize: Pixels } = {
+    visible: axisTitle.visible,
+    fontFamily: axisTitle.fontFamily,
+    fontStyle: axisTitle.fontStyle ?? 'normal',
+    fontVariant: 'normal',
+    fontWeight: 'bold',
+    textColor: axisTitle.fill,
+    fontSize: axisTitle.fontSize,
+  };
 
   return {
     theme: heatmapTheme,
@@ -375,19 +385,19 @@ export function shapeViewModel(
               elementSizes.grid.top +
               elementSizes.grid.height +
               elementSizes.xAxis.height +
-              innerPad(heatmapTheme.axisTitle.padding) +
-              heatmapTheme.axisTitle.fontSize / 2,
+              innerPad(axisTitle.padding) +
+              axisTitle.fontSize / 2,
           },
-          ...heatmapTheme.axisTitle,
+          ...axisTitleFont,
           text: spec.xAxisTitle,
           rotation: 0,
         },
         {
           origin: {
-            x: elementSizes.yAxis.left - innerPad(heatmapTheme.axisTitle.padding) - heatmapTheme.axisTitle.fontSize / 2,
+            x: elementSizes.yAxis.left - innerPad(axisTitle.padding) - axisTitle.fontSize / 2,
             y: elementSizes.grid.top + elementSizes.grid.height / 2,
           },
-          ...heatmapTheme.axisTitle,
+          ...axisTitleFont,
           text: spec.yAxisTitle,
           rotation: -90,
         },
