@@ -13,7 +13,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
-import { Dimensions, innerPad, outerPad, verticalPad } from '../../../../utils/dimensions';
+import { Dimensions, horizontalPad, innerPad, outerPad, verticalPad } from '../../../../utils/dimensions';
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { AxisStyle, HeatmapStyle } from '../../../../utils/themes/theme';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
@@ -151,12 +151,8 @@ function getYAxisHorizontalUsedSpace(
       : typeof yAxisLabel.width === 'number'
       ? yAxisLabel.width
       : Math.max(longestLabelWidth, yAxisLabel.width.max);
-  const labelPadding =
-    typeof yAxisLabel.padding === 'number'
-      ? yAxisLabel.padding * 2
-      : (yAxisLabel.padding.left ?? 0) + (yAxisLabel.padding.right ?? 0);
 
-  return labelsWidth + labelPadding;
+  return labelsWidth + horizontalPad(yAxisLabel.padding);
 }
 
 function getTextSizeDimension(
