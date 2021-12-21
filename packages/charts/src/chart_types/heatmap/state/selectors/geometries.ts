@@ -10,12 +10,11 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { render } from '../../layout/viewmodel/scenegraph';
+import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getColorScale } from './get_color_scale';
-import { getGridHeightParamsSelector } from './get_grid_full_height';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
-import { render } from './scenegraph';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
@@ -23,22 +22,13 @@ const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interacti
 export const getHeatmapGeometries = createCustomCachedSelector(
   [
     getHeatmapSpecSelector,
-    computeChartDimensionsSelector,
+    computeChartElementSizesSelector,
     getHeatmapTableSelector,
     getColorScale,
     getDeselectedSeriesSelector,
-    getGridHeightParamsSelector,
     getChartThemeSelector,
   ],
-  (
-    heatmapSpec,
-    chartDimensions,
-    heatmapTable,
-    { bands, scale: colorScale },
-    deselectedSeries,
-    gridHeightParams,
-    theme,
-  ): ShapeViewModel => {
+  (heatmapSpec, dims, heatmapTable, { bands, scale: colorScale }, deselectedSeries, theme): ShapeViewModel => {
     // instead of using the specId, each legend item is associated with an unique band label
     const disabledBandLabels = new Set(
       deselectedSeries.map(({ specId }) => {
@@ -52,8 +42,6 @@ export const getHeatmapGeometries = createCustomCachedSelector(
       })
       .map(({ start, end }) => [start, end]);
 
-    return heatmapSpec
-      ? render(heatmapSpec, chartDimensions, heatmapTable, colorScale, bandsToHide, gridHeightParams, theme)
-      : nullShapeViewModel();
+    return heatmapSpec ? render(heatmapSpec, dims, heatmapTable, colorScale, bandsToHide, theme) : nullShapeViewModel();
   },
 );

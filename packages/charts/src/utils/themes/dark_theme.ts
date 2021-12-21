@@ -325,6 +325,7 @@ export const DARK_THEME: Theme = {
       visible: false,
       fill: 'snow',
     },
+
     xAxisLabel: {
       visible: true,
       width: 'auto',
@@ -336,7 +337,7 @@ export const DARK_THEME: Theme = {
       fontWeight: 'normal',
       align: 'center',
       baseline: 'middle',
-      padding: 6,
+      padding: { top: 5, bottom: 5, left: 5, right: 5 },
     },
     yAxisLabel: {
       visible: true,
@@ -348,7 +349,7 @@ export const DARK_THEME: Theme = {
       fontVariant: 'normal',
       fontWeight: 'normal',
       baseline: 'middle',
-      padding: 5,
+      padding: { top: 5, bottom: 5, left: 5, right: 5 },
     },
     grid: {
       cellWidth: {

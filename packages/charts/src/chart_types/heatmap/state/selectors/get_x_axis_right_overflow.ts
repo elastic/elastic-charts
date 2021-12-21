@@ -11,6 +11,7 @@ import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { horizontalPad } from '../../../../utils/dimensions';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 
@@ -40,7 +41,8 @@ export const getXAxisRightOverflow = createCustomCachedSelector(
           )
             .ticks()
             .reduce(
-              (max, n) => Math.max(max, measure(xAxisLabelFormatter(n), padding, fontSize, fontFamily).width + padding),
+              (max, n) =>
+                Math.max(max, measure(xAxisLabelFormatter(n), horizontalPad(padding), fontSize, fontFamily).width),
               0,
             );
         }) / 2;

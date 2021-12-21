@@ -1120,6 +1120,8 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     xAxisLabelName: string;
     // (undocumented)
+    xAxisTitle: string;
+    // (undocumented)
     xScale: RasterTimeScale | OrdinalScale | LinearScale;
     // (undocumented)
     xSortPredicate: Predicate;
@@ -1129,6 +1131,8 @@ export interface HeatmapSpec extends Spec {
     yAxisLabelFormatter: (value: string | number) => string;
     // (undocumented)
     yAxisLabelName: string;
+    // (undocumented)
+    yAxisTitle: string;
     // (undocumented)
     ySortPredicate: Predicate;
 }
@@ -1196,7 +1200,7 @@ export interface HeatmapStyle {
         align: TextAlign;
         baseline: TextBaseline;
         visible: boolean;
-        padding: number;
+        padding: Pixels | Padding;
     };
     // (undocumented)
     yAxisLabel: Font & {
@@ -1206,12 +1210,7 @@ export interface HeatmapStyle {
         };
         baseline: TextBaseline;
         visible: boolean;
-        padding: number | {
-            left?: number;
-            right?: number;
-            top?: number;
-            bottom?: number;
-        };
+        padding: Pixels | Padding;
     };
 }
 
@@ -2157,9 +2156,9 @@ export type ShowAccessor = (value: PrimitiveValue) => boolean;
 // @public
 export interface SimplePadding {
     // (undocumented)
-    inner: number;
+    inner: Pixels;
     // (undocumented)
-    outer: number;
+    outer: Pixels;
 }
 
 // @alpha (undocumented)

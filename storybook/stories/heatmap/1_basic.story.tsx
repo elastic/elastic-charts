@@ -33,6 +33,9 @@ export const Example = () => {
 
   const persistCellsSelection = boolean('Persist cells selection', true);
   const debugState = boolean('Enable debug state', true);
+  const showXAxisTitle = boolean('Show x axis title', false);
+  const showYAxisTitle = boolean('Show y axis title', false);
+
   const dataStateAction = action('DataState');
 
   const handler = useCallback(() => {
@@ -141,6 +144,8 @@ export const Example = () => {
           setSelection({ x: e.x, y: e.y });
         }}
         highlightedData={persistCellsSelection ? selection : undefined}
+        xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
+        yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
       />
     </Chart>
   );
