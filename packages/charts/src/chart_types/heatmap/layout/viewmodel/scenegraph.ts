@@ -11,13 +11,13 @@ import { Theme } from '../../../../utils/themes/theme';
 import { ShapeViewModel, nullShapeViewModel } from '../../layout/types/viewmodel_types';
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs';
-import { ChartDims, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
+import { ChartElementSizes, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScale } from '../../state/selectors/get_color_scale';
 
 /** @internal */
 export function render(
   spec: HeatmapSpec,
-  chartDimensions: ChartDims,
+  elementSizes: ChartElementSizes,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
   bandsToHide: Array<[number, number]>,
@@ -28,13 +28,5 @@ export function render(
   if (!textMeasurerCtx) {
     return nullShapeViewModel();
   }
-  return shapeViewModel(
-    measureText(textMeasurerCtx),
-    spec,
-    theme,
-    chartDimensions,
-    heatmapTable,
-    colorScale,
-    bandsToHide,
-  );
+  return shapeViewModel(measureText(textMeasurerCtx), spec, theme, elementSizes, heatmapTable, colorScale, bandsToHide);
 }

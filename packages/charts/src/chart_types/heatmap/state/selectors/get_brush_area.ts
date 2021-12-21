@@ -12,7 +12,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getBrushedHighlightedShapesSelector } from './get_brushed_highlighted_shapes';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
@@ -26,7 +26,7 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     getMouseDownPosition,
     getCurrentPointerPosition,
     getSettingsSpecSelector,
-    computeChartDimensionsSelector,
+    computeChartElementSizesSelector,
     getBrushedHighlightedShapesSelector,
   ],
   (isDragging, mouseDownPosition, end, { brushAxis }, dims, dragShape): Dimensions | null => {

@@ -13,7 +13,7 @@ import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/li
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { ChartDims } from '../../state/selectors/compute_chart_dimensions';
+import { ChartElementSizes } from '../../state/selectors/compute_chart_dimensions';
 
 /** @internal */
 export function renderCanvas2d(
@@ -21,7 +21,7 @@ export function renderCanvas2d(
   dpr: number,
   { theme, heatmapViewModel }: ShapeViewModel,
   background: Color,
-  chartDims: ChartDims,
+  elementSizes: ChartElementSizes,
   debug: boolean,
 ) {
   withContext(ctx, () => {
@@ -53,13 +53,28 @@ export function renderCanvas2d(
         debug &&
         withContext(ctx, () => {
           ctx.strokeStyle = 'black';
-          ctx.strokeRect(chartDims.grid.left, chartDims.grid.top, chartDims.grid.width, chartDims.grid.height);
+          ctx.strokeRect(
+            elementSizes.grid.left,
+            elementSizes.grid.top,
+            elementSizes.grid.width,
+            elementSizes.grid.height,
+          );
 
           ctx.strokeStyle = 'red';
-          ctx.strokeRect(chartDims.xAxis.left, chartDims.xAxis.top, chartDims.xAxis.width, chartDims.xAxis.height);
+          ctx.strokeRect(
+            elementSizes.xAxis.left,
+            elementSizes.xAxis.top,
+            elementSizes.xAxis.width,
+            elementSizes.xAxis.height,
+          );
 
           ctx.strokeStyle = 'violet';
-          ctx.strokeRect(chartDims.yAxis.left, chartDims.yAxis.top, chartDims.yAxis.width, chartDims.yAxis.height);
+          ctx.strokeRect(
+            elementSizes.yAxis.left,
+            elementSizes.yAxis.top,
+            elementSizes.yAxis.width,
+            elementSizes.yAxis.height,
+          );
         }),
       () => {
         // Grid
@@ -101,7 +116,7 @@ export function renderCanvas2d(
         // render text on Y axis
         theme.yAxisLabel.visible &&
         withContext(ctx, () => {
-          ctx.translate(chartDims.yAxis.left + chartDims.yAxis.width, chartDims.yAxis.top);
+          ctx.translate(elementSizes.yAxis.left + elementSizes.yAxis.width, elementSizes.yAxis.top);
           filteredYValues.forEach((yValue) => {
             const font: Font = {
               fontFamily: theme.yAxisLabel.fontFamily,
@@ -136,7 +151,7 @@ export function renderCanvas2d(
         // render text on X axis
         theme.xAxisLabel.visible &&
         withContext(ctx, () => {
-          ctx.translate(chartDims.xAxis.left, chartDims.xAxis.top);
+          ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
           heatmapViewModel.xValues.forEach((xValue) =>
             renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, theme.xAxisLabel),
           );

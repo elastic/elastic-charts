@@ -24,7 +24,7 @@ import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapSpec } from '../../specs';
-import { ChartDims, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
+import { ChartElementSizes, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScale } from '../../state/selectors/get_color_scale';
 import {
   Cell,
@@ -73,7 +73,7 @@ export function shapeViewModel(
   textMeasure: TextMeasure,
   spec: HeatmapSpec,
   { heatmap: heatmapTheme, background }: Theme,
-  dims: ChartDims,
+  elementSizes: ChartElementSizes,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
   bandsToHide: Array<[number, number]>,
@@ -91,16 +91,18 @@ export function shapeViewModel(
   }));
 
   // compute the scale for the rows positions
-  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, dims.fullHeatmapHeight]);
+  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, elementSizes.fullHeatmapHeight]);
 
   const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
-    .domain([0, dims.fullHeatmapHeight])
+    .domain([0, elementSizes.fullHeatmapHeight])
     .range(yValues);
 
   // compute the scale for the columns positions
-  const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, dims.grid.width]);
+  const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, elementSizes.grid.width]);
 
-  const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, dims.grid.width]).range(xValues);
+  const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
+    .domain([0, elementSizes.grid.width])
+    .range(xValues);
 
   // compute the cell width (can be smaller then the available size depending on config
   const cellWidth =
@@ -111,10 +113,10 @@ export function shapeViewModel(
   // compute the cell height (we already computed the max size for that)
   const cellHeight = yScale.bandwidth();
 
-  const currentGridHeight = dims.grid.height;
+  const currentGridHeight = elementSizes.grid.height;
 
   // compute the position of each column label
-  const textXValues = getXTicks(spec, heatmapTheme, dims.grid, xScale, heatmapTable);
+  const textXValues = getXTicks(spec, heatmapTheme, elementSizes.grid, xScale, heatmapTable);
 
   const { padding } = heatmapTheme.yAxisLabel;
 
@@ -195,7 +197,12 @@ export function shapeViewModel(
    * @param y
    */
   const pickQuads = (x: Pixels, y: Pixels): Array<Cell> | TextBox => {
-    if (x > 0 && x < dims.grid.left && y > dims.grid.top && y < dims.grid.top + dims.grid.height) {
+    if (
+      x > 0 &&
+      x < elementSizes.grid.left &&
+      y > elementSizes.grid.top &&
+      y < elementSizes.grid.top + elementSizes.grid.height
+    ) {
       // look up for a Y axis elements
       const yLabelKey = yInvertedScale(y);
       const yLabelValue = textYValues.find((v) => v.value === yLabelKey);
@@ -204,13 +211,13 @@ export function shapeViewModel(
       }
     }
 
-    if (x < dims.grid.left || y < dims.grid.top) {
+    if (x < elementSizes.grid.left || y < elementSizes.grid.top) {
       return [];
     }
-    if (x > dims.grid.width + dims.grid.left || y > dims.grid.top + dims.grid.height) {
+    if (x > elementSizes.grid.width + elementSizes.grid.left || y > elementSizes.grid.top + elementSizes.grid.height) {
       return [];
     }
-    const xValue = xInvertedScale(x - dims.grid.left);
+    const xValue = xInvertedScale(x - elementSizes.grid.left);
     const yValue = yInvertedScale(y);
     if (xValue === undefined || yValue === undefined) {
       return [];
@@ -229,7 +236,7 @@ export function shapeViewModel(
   const pickDragArea: PickDragFunction = (bound) => {
     const [start, end] = bound;
 
-    const { left, top, width } = dims.grid;
+    const { left, top, width } = elementSizes.grid;
     const topLeft = [Math.min(start.x, end.x) - left, Math.min(start.y, end.y) - top];
     const bottomRight = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
 
@@ -287,7 +294,7 @@ export function shapeViewModel(
       return null;
     }
 
-    const xStart = dims.grid.left + startFromScale;
+    const xStart = elementSizes.grid.left + startFromScale;
 
     // extend the range in case the right boundary has been selected
     const width = endFromScale - startFromScale + (isRightOutOfRange || isLeftOutOfRange ? cellWidth : 0);
@@ -323,16 +330,16 @@ export function shapeViewModel(
 
   // vertical lines
   const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => ({
-    x1: dims.grid.left + i * cellWidth,
-    x2: dims.grid.left + i * cellWidth,
-    y1: dims.grid.top,
+    x1: elementSizes.grid.left + i * cellWidth,
+    x2: elementSizes.grid.left + i * cellWidth,
+    y1: elementSizes.grid.top,
     y2: currentGridHeight,
   }));
 
   // horizontal lines
-  const yLines = Array.from({ length: dims.visibleNumberOfRows + 1 }, (d, i) => ({
-    x1: dims.grid.left,
-    x2: dims.grid.left + dims.grid.width,
+  const yLines = Array.from({ length: elementSizes.visibleNumberOfRows + 1 }, (d, i) => ({
+    x1: elementSizes.grid.left,
+    x2: elementSizes.grid.left + elementSizes.grid.width,
     y1: i * cellHeight,
     y2: i * cellHeight,
   }));
@@ -344,8 +351,8 @@ export function shapeViewModel(
     theme: heatmapTheme,
     heatmapViewModel: {
       gridOrigin: {
-        x: dims.grid.left,
-        y: dims.grid.top,
+        x: elementSizes.grid.left,
+        y: elementSizes.grid.top,
       },
       gridLines: {
         x: xLines,
@@ -355,7 +362,7 @@ export function shapeViewModel(
           width: gridStrokeWidth,
         },
       },
-      pageSize: dims.visibleNumberOfRows,
+      pageSize: elementSizes.visibleNumberOfRows,
       cells,
       cellFontSize: (cell: Cell) => (heatmapTheme.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
       xValues: textXValues,
@@ -363,11 +370,11 @@ export function shapeViewModel(
       titles: [
         {
           origin: {
-            x: dims.grid.left + dims.grid.width / 2,
+            x: elementSizes.grid.left + elementSizes.grid.width / 2,
             y:
-              dims.grid.top +
-              dims.grid.height +
-              dims.xAxis.height +
+              elementSizes.grid.top +
+              elementSizes.grid.height +
+              elementSizes.xAxis.height +
               innerPad(heatmapTheme.axisTitle.padding) +
               heatmapTheme.axisTitle.fontSize / 2,
           },
@@ -377,8 +384,8 @@ export function shapeViewModel(
         },
         {
           origin: {
-            x: dims.yAxis.left - innerPad(heatmapTheme.axisTitle.padding) - heatmapTheme.axisTitle.fontSize / 2,
-            y: dims.grid.top + dims.grid.height / 2,
+            x: elementSizes.yAxis.left - innerPad(heatmapTheme.axisTitle.padding) - heatmapTheme.axisTitle.fontSize / 2,
+            y: elementSizes.grid.top + elementSizes.grid.height / 2,
           },
           ...heatmapTheme.axisTitle,
           text: spec.yAxisTitle,

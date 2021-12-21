@@ -24,7 +24,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { ChartDims, computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
+import { ChartElementSizes, computeChartElementSizesSelector } from '../../state/selectors/compute_chart_dimensions';
 import { getHeatmapGeometries } from '../../state/selectors/geometries';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
 import { renderCanvas2d } from './canvas_renderers';
@@ -35,7 +35,7 @@ interface ReactiveChartStateProps {
   chartContainerDimensions: Dimensions;
   a11ySettings: A11ySettings;
   background: Color;
-  chartDims: ChartDims;
+  elementSizes: ChartElementSizes;
   debug: boolean;
 }
 
@@ -100,7 +100,7 @@ class Component extends React.Component<Props> {
           theme: this.props.geometries.theme,
         },
         this.props.background,
-        this.props.chartDims,
+        this.props.elementSizes,
         this.props.debug,
       );
     }
@@ -157,7 +157,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   },
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   background: Colors.Transparent.keyword,
-  chartDims: {
+  elementSizes: {
     grid: { width: 0, height: 0, left: 0, top: 0 },
     xAxis: { width: 0, height: 0, left: 0, top: 0 },
     yAxis: { width: 0, height: 0, left: 0, top: 0 },
@@ -177,7 +177,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
     background: getChartThemeSelector(state).background.color,
-    chartDims: computeChartDimensionsSelector(state),
+    elementSizes: computeChartElementSizesSelector(state),
     debug: getSettingsSpecSelector(state).debug,
   };
 };

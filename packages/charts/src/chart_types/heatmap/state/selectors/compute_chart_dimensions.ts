@@ -33,7 +33,7 @@ export interface HeatmapTable {
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
 /** @internal */
-export type ChartDims = {
+export type ChartElementSizes = {
   yAxis: Dimensions;
   xAxis: Dimensions;
   grid: Dimensions;
@@ -42,10 +42,10 @@ export type ChartDims = {
   visibleNumberOfRows: number;
 };
 /**
- * Gets charts grid area excluding legend and X,Y axis labels and paddings.
+ * Returns grid and axes sizes and positions.
  * @internal
  */
-export const computeChartDimensionsSelector = createCustomCachedSelector(
+export const computeChartElementSizesSelector = createCustomCachedSelector(
   [
     getParentDimension,
     getLegendSizeSelector,
@@ -62,7 +62,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     { heatmap },
     rightOverflow,
     { xAxisTitle, yAxisTitle },
-  ): ChartDims => {
+  ): ChartElementSizes => {
     const textMeasurer = document.createElement('canvas');
     const textMeasurerCtx = textMeasurer.getContext('2d');
     if (!textMeasurerCtx) {

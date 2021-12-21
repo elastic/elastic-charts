@@ -9,7 +9,7 @@
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { Cell, TextBox } from '../../layout/types/viewmodel_types';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getHeatmapGeometries } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
@@ -18,7 +18,7 @@ function getCurrentPointerPosition(state: GlobalChartState) {
 
 /** @internal */
 export const getPickedShapes = createCustomCachedSelector(
-  [getHeatmapGeometries, getCurrentPointerPosition, computeChartDimensionsSelector],
+  [getHeatmapGeometries, getCurrentPointerPosition, computeChartElementSizesSelector],
   (geoms, pointerPosition, dims): Cell[] | TextBox => {
     const picker = geoms.pickQuads;
     const { x, y } = pointerPosition;
