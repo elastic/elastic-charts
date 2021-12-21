@@ -6,14 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../../../../common/colors';
 import { measureText } from '../../../../common/text_utils';
-import { SmallMultiplesStyle } from '../../../../specs';
-import { mergePartial, RecursivePartial } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
+import { PartitionStyle } from '../../../../utils/themes/partition';
 import { Layer, PartitionSpec } from '../../specs';
-import { config as defaultConfig, VALUE_GETTERS } from '../config';
-import { Config } from '../types/config_types';
+import { VALUE_GETTERS } from '../config';
 import {
   nullShapeViewModel,
   PartitionSmallMultiplesModel,
@@ -23,6 +20,7 @@ import {
   ValueGetter,
 } from '../types/viewmodel_types';
 import { DEPTH_KEY, HierarchyOfArrays } from '../utils/group_by_rollup';
+import { BackgroundStyle } from './../../../../utils/themes/theme';
 import { shapeViewModel } from './viewmodel';
 
 function rawTextGetter(layers: Layer[]): RawTextGetter {
@@ -39,36 +37,30 @@ export function valueGetterFunction(valueGetter: ValueGetter) {
 
 /** @internal */
 export function getShapeViewModel(
-  partitionSpec: PartitionSpec,
+  spec: PartitionSpec,
   parentDimensions: Dimensions,
   tree: HierarchyOfArrays,
-  containerBackgroundColor: Color,
-  smallMultiplesStyle: SmallMultiplesStyle,
+  backgroundStyle: BackgroundStyle,
+  style: PartitionStyle,
   panelModel: PartitionSmallMultiplesModel,
 ): ShapeViewModel {
-  const { width, height } = parentDimensions;
-  const { layers, topGroove, config: specConfig } = partitionSpec;
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
-  const partialConfig: RecursivePartial<Config> = { ...specConfig, width, height };
-  const config: Config = mergePartial(defaultConfig, partialConfig);
   if (!textMeasurerCtx) {
-    return nullShapeViewModel(config, { x: width / 2, y: height / 2 });
+    const { width, height } = parentDimensions;
+    return nullShapeViewModel(spec.layout, style, { x: width / 2, y: height / 2 });
   }
-  const valueGetter = valueGetterFunction(partitionSpec.valueGetter);
+  const valueGetter = valueGetterFunction(spec.valueGetter);
 
   return shapeViewModel(
     measureText(textMeasurerCtx),
-    config,
-    layers,
-    rawTextGetter(layers),
-    partitionSpec.valueFormatter,
-    partitionSpec.percentFormatter,
+    spec,
+    style,
+    parentDimensions,
+    rawTextGetter(spec.layers),
     valueGetter,
     tree,
-    topGroove,
-    containerBackgroundColor,
-    smallMultiplesStyle,
+    backgroundStyle,
     panelModel,
   );
 }

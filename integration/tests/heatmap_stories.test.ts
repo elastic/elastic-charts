@@ -64,4 +64,10 @@ describe('Heatmap stories', () => {
       'http://localhost:9001/?path=/story/test-cases--overlapping-heatmap-labels&&knob-set%20rotation%20of%20x%20axis%20label_labels=45&knob-show_labels=true&knob-set the max text length for the x axis labels_labels=5&knob-set overflow property for x axis labels_labels=true&knob-set x axis labels to alternate_labels=true',
     );
   });
+
+  it('should show x and y axis titles', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/heatmap-alpha--basic&knob-Show%20x%20axis%20title=true&knob-Show%20y%20axis%20title=true',
+    );
+  });
 });

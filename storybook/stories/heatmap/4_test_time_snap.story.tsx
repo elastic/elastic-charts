@@ -56,6 +56,9 @@ const theme: PartialTheme = {
       width: 'auto',
       padding: { left: 10, right: 10 },
     },
+    xAxisLabel: {
+      padding: { top: 4, bottom: 4 },
+    },
   },
 };
 

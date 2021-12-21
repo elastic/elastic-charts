@@ -7,10 +7,14 @@
  */
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { isSimpleLinear } from '../../layout/viewmodel/viewmodel';
 import { getPartitionSpecs } from './partition_spec';
 
 /** @internal */
-export const drilldownActive = createCustomCachedSelector([getPartitionSpecs], (specs) => {
-  return specs.length === 1 && isSimpleLinear(specs[0].config, specs[0].layers); // singleton!
-});
+export const drilldownActive = createCustomCachedSelector(
+  [getPartitionSpecs, getChartThemeSelector],
+  (specs, { partition }) => {
+    return specs.length === 1 && isSimpleLinear(specs[0].layout, partition.fillLabel, specs[0].layers); // singleton!
+  },
+);

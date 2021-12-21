@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { left } from '@popperjs/core';
-
 import { Color, Colors } from '../../../../common/colors';
 import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
@@ -15,6 +13,7 @@ import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/li
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { ChartElementSizes } from '../../state/selectors/compute_chart_dimensions';
 
 /** @internal */
 export function renderCanvas2d(
@@ -22,6 +21,8 @@ export function renderCanvas2d(
   dpr: number,
   { theme, heatmapViewModel }: ShapeViewModel,
   background: Color,
+  elementSizes: ChartElementSizes,
+  debug: boolean,
 ) {
   withContext(ctx, () => {
     // set some defaults for the overall rendering
@@ -48,6 +49,33 @@ export function renderCanvas2d(
 
     renderLayers(ctx, [
       () => clearCanvas(ctx, background),
+      () =>
+        debug &&
+        withContext(ctx, () => {
+          ctx.strokeStyle = 'black';
+          ctx.strokeRect(
+            elementSizes.grid.left,
+            elementSizes.grid.top,
+            elementSizes.grid.width,
+            elementSizes.grid.height,
+          );
+
+          ctx.strokeStyle = 'red';
+          ctx.strokeRect(
+            elementSizes.xAxis.left,
+            elementSizes.xAxis.top,
+            elementSizes.xAxis.width,
+            elementSizes.xAxis.height,
+          );
+
+          ctx.strokeStyle = 'violet';
+          ctx.strokeRect(
+            elementSizes.yAxis.left,
+            elementSizes.yAxis.top,
+            elementSizes.yAxis.width,
+            elementSizes.yAxis.height,
+          );
+        }),
       () => {
         // Grid
         withContext(ctx, () => {
@@ -85,9 +113,10 @@ export function renderCanvas2d(
         }),
 
       () =>
-        // Y Axis
+        // render text on Y axis
         theme.yAxisLabel.visible &&
-        withContext(ctx, () =>
+        withContext(ctx, () => {
+          ctx.translate(elementSizes.yAxis.left + elementSizes.yAxis.width, elementSizes.yAxis.top);
           filteredYValues.forEach((yValue) => {
             const font: Font = {
               fontFamily: theme.yAxisLabel.fontFamily,
@@ -116,38 +145,42 @@ export function renderCanvas2d(
               { ...theme.yAxisLabel, align: 'right' },
               theme.yAxisLabel.rotation,
             );
-          }),
-        ),
+          });
+        }),
 
       () =>
         // render text on X axis
         theme.xAxisLabel.visible &&
         withContext(ctx, () => {
+          ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
           heatmapViewModel.xValues.forEach((xValue, index) => {
-            // do not want the labels centered if there is a rotation !== 0
-            const rotationAlignment =
-              theme.xAxisLabel.rotation !== 0
-                ? { ...theme.xAxisLabel, align: 'left' as typeof left }
-                : theme.xAxisLabel;
-            return theme.xAxisLabel.alternate
-              ? index % 2 === 0
-                ? renderText(
-                    ctx,
-                    { x: xValue.x, y: xValue.y },
-                    xValue.text,
-                    rotationAlignment,
-                    theme.xAxisLabel.rotation,
-                  )
-                : // do not render every label if it's alternating
-                  null
-              : renderText(
-                  ctx,
-                  { x: xValue.x, y: xValue.y },
-                  xValue.text,
-                  rotationAlignment,
-                  theme.xAxisLabel.rotation,
-                );
+            if (!theme.xAxisLabel.alternate || index % 2 === 0) {
+              const font = {
+                ...theme.xAxisLabel,
+                align: theme.xAxisLabel.rotation !== 0 ? 'left' : theme.xAxisLabel.align,
+              };
+              renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, font, theme.xAxisLabel.rotation);
+            }
           });
+        }),
+
+      () =>
+        withContext(ctx, () => {
+          heatmapViewModel.titles
+            .filter((t) => t.visible && t.text !== '')
+            .forEach((title) => {
+              renderText(
+                ctx,
+                title.origin,
+                title.text,
+                {
+                  ...title,
+                  baseline: 'middle',
+                  align: 'center',
+                },
+                title.rotation,
+              );
+            });
         }),
     ]);
   });

@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
-import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
+import { computeChartElementSizesSelector } from '../../state/selectors/compute_chart_dimensions';
 import { getHeatmapGeometries } from '../../state/selectors/geometries';
 import { getBrushedHighlightedShapesSelector } from '../../state/selectors/get_brushed_highlighted_shapes';
 import { getHighlightedAreaSelector } from '../../state/selectors/get_highlighted_area';
@@ -25,7 +25,7 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
   const { chartId } = state;
 
   const geoms = getHeatmapGeometries(state);
-  const canvasDimension = computeChartDimensionsSelector(state);
+  const canvasDimension = computeChartElementSizesSelector(state).grid;
 
   let dragShape = getBrushedHighlightedShapesSelector(state);
   const highlightedArea = getHighlightedAreaSelector(state);

@@ -13,6 +13,6 @@ import { getPartitionSpec } from './partition_spec';
 export const getChartTypeDescriptionSelector = createCustomCachedSelector(
   [getPartitionSpec],
   (partitionSpec): string => {
-    return `${partitionSpec?.config.partitionLayout} chart` ?? 'Partition chart';
+    return `${partitionSpec?.layout} chart` ?? 'Partition chart';
   },
 );

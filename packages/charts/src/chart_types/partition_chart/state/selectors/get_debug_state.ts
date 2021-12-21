@@ -19,7 +19,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
   [partitionMultiGeometries],
   (geoms): DebugState => {
     return {
-      partition: geoms.reduce<PartitionDebugState[]>((acc, { panel, config, quadViewModel, diskCenter }) => {
+      partition: geoms.reduce<PartitionDebugState[]>((acc, { layout, panel, quadViewModel, diskCenter }) => {
         const partitions: PartitionDebugState['partitions'] = quadViewModel.map((model) => {
           const { dataName, depth, fillColor, value } = model;
           return {
@@ -27,7 +27,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
             depth,
             color: fillColor,
             value,
-            coords: isSunburst(config.partitionLayout)
+            coords: isSunburst(layout)
               ? getCoordsForSector(model, diskCenter)
               : getCoordsForRectangle(model, diskCenter),
           };

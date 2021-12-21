@@ -12,7 +12,6 @@ import { Colors } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { PointObject } from '../../../../common/geometry';
 import { Dimensions } from '../../../../utils/dimensions';
-import { configMetadata } from '../../layout/config';
 import { PartitionLayout } from '../../layout/types/config_types';
 import {
   nullPartitionSmallMultiplesModel,
@@ -28,7 +27,7 @@ interface HighlightSet extends PartitionSmallMultiplesModel {
   geometriesFoci: ContinuousDomainFocus[];
   diskCenter: PointObject;
   outerRadius: number;
-  partitionLayout: PartitionLayout;
+  layout: PartitionLayout;
 }
 
 /** @internal */
@@ -174,7 +173,7 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
                 diskCenter,
                 index,
                 innerIndex,
-                partitionLayout,
+                layout,
                 marginLeftPx,
                 marginTopPx,
                 panel: { innerWidth, innerHeight },
@@ -182,13 +181,7 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
                 <mask key={maskId(index, innerIndex)} id={maskId(index, innerIndex)}>
                   <rect x={marginLeftPx} y={marginTopPx} width={innerWidth} height={innerHeight} fill="white" />
                   <g transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
-                    {renderGeometries(
-                      geometries,
-                      partitionLayout,
-                      { color: Colors.Black.keyword },
-                      geometriesFoci,
-                      width,
-                    )}
+                    {renderGeometries(geometries, layout, { color: Colors.Black.keyword }, geometriesFoci, width)}
                   </g>
                 </mask>
               ),
@@ -200,12 +193,12 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
             outerRadius,
             index,
             innerIndex,
-            partitionLayout,
+            layout,
             marginLeftPx,
             marginTopPx,
             panel: { innerWidth, innerHeight },
           }) =>
-            isSunburst(partitionLayout) ? (
+            isSunburst(layout) ? (
               <circle
                 key={`${index}__${innerIndex}`}
                 cx={diskCenter.x}
@@ -236,11 +229,11 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
     } = this.props;
     return this.props.highlightSets
       .filter(({ geometries }) => geometries.length > 0)
-      .map(({ index, innerIndex, partitionLayout, geometries, diskCenter, geometriesFoci }) => (
+      .map(({ index, innerIndex, layout, geometries, diskCenter, geometriesFoci }) => (
         <g key={`${index}|${innerIndex}`} transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
           {renderGeometries(
             geometries,
-            partitionLayout,
+            layout,
             {
               fillClassName: 'echHighlighterOverlay__fill',
               strokeClassName: 'echHighlighterOverlay__stroke',
@@ -274,7 +267,7 @@ export const DEFAULT_PROPS: HighlighterProps = {
   },
   highlightSets: [
     {
-      ...nullPartitionSmallMultiplesModel(configMetadata.partitionLayout.dflt),
+      ...nullPartitionSmallMultiplesModel(),
       geometries: [],
       geometriesFoci: [],
       diskCenter: {

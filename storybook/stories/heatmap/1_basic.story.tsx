@@ -14,15 +14,15 @@ import { debounce } from 'ts-debounce';
 import {
   Chart,
   DebugState,
+  ElementClickListener,
   Heatmap,
+  HeatmapBrushEvent,
   HeatmapElementEvent,
   HeatmapStyle,
   niceTimeFormatter,
   RecursivePartial,
   ScaleType,
   Settings,
-  HeatmapBrushEvent,
-  ElementClickListener,
 } from '@elastic/charts';
 
 import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
@@ -33,6 +33,9 @@ export const Example = () => {
 
   const persistCellsSelection = boolean('Persist cells selection', true);
   const debugState = boolean('Enable debug state', true);
+  const showXAxisTitle = boolean('Show x axis title', false);
+  const showYAxisTitle = boolean('Show y axis title', false);
+
   const dataStateAction = action('DataState');
 
   const handler = useCallback(() => {
@@ -89,9 +92,8 @@ export const Example = () => {
     }
   }, 100);
 
-  const onElementClick: ElementClickListener = useCallback((event) => {
-    const e = event as HeatmapElementEvent[];
-    const cell = e[0][0];
+  const onElementClick: ElementClickListener = useCallback((e) => {
+    const cell = (e as HeatmapElementEvent[])[0][0];
     setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
   }, []);
 
@@ -142,6 +144,8 @@ export const Example = () => {
           setSelection({ x: e.x, y: e.y });
         }}
         highlightedData={persistCellsSelection ? selection : undefined}
+        xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
+        yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
       />
     </Chart>
   );

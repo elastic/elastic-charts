@@ -20,12 +20,14 @@ export function renderLinearPartitionCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   {
-    config: { sectorLineWidth: padding, width: containerWidth, height: containerHeight, animation },
+    style: { sectorLineWidth: padding },
     quadViewModel,
     diskCenter,
     width: panelWidth,
     height: panelHeight,
     layers,
+    chartDimensions: { width: containerWidth, height: containerHeight },
+    animation,
   }: ShapeViewModel,
   { currentFocusX0, currentFocusX1, prevFocusX0, prevFocusX1 }: ContinuousDomainFocus,
   animationState: AnimationState,
@@ -52,7 +54,7 @@ export function renderLinearPartitionCanvas2d(
 
   function render(
     logicalTime: number,
-    timeFunction: (time: number) => number = animation.duration
+    timeFunction: (time: number) => number = animation?.duration
       ? easeInOut(Math.min(5, animation.duration / 100))
       : linear,
   ) {
