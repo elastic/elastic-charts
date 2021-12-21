@@ -1139,11 +1139,6 @@ export interface HeatmapSpec extends Spec {
 
 // @public (undocumented)
 export interface HeatmapStyle {
-    // (undocumented)
-    axisTitle: Font & {
-        fontSize: Pixels;
-        padding: Pixels | SimplePadding;
-    };
     brushArea: {
         visible: boolean;
         fill?: Color;
