@@ -85,7 +85,10 @@ export interface Part extends Rectangle {
 }
 
 /** @internal */
-export function cssFontShorthand({ fontStyle, fontVariant, fontWeight, fontFamily }: Font, fontSize: Pixels) {
+export function cssFontShorthand(
+  { fontStyle, fontVariant, fontWeight, fontFamily }: Omit<Font, 'textColor'>,
+  fontSize: Pixels,
+) {
   return `${fontStyle} ${fontVariant} ${fontWeight} ${fontSize}px ${fontFamily}`;
 }
 
