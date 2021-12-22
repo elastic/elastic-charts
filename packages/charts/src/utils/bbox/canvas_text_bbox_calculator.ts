@@ -21,18 +21,14 @@ export type TextMeasure = (
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
   const canvas = document.createElement('canvas');
-  canvas.style.display = 'none';
   const ctx = canvas.getContext('2d');
-  const root = document.documentElement;
-  root.appendChild(canvas);
-  const textMeasure: TextMeasure = ctx
-    ? (text: string, padding: number, fontSize, fontFamily, lineHeight = 1, fontWeight = 400) => {
-        ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-        const measure = ctx.measureText(text);
-        return { width: measure.width + Math.max(padding, 1), height: fontSize * lineHeight }; // padding should be at least one to avoid browser measureText inconsistencies
-      }
-    : () => ({ width: 0, height: 0 });
-  const result: T = fun(textMeasure);
-  root.removeChild(canvas);
-  return result;
+  return fun(
+    ctx
+      ? (text: string, padding: number, fontSize, fontFamily, lineHeight = 1, fontWeight = 400) => {
+          ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+          const measure = ctx.measureText(text);
+          return { width: measure.width + Math.max(padding, 1), height: fontSize * lineHeight };
+        }
+      : () => ({ width: 0, height: 0 }),
+  );
 };
