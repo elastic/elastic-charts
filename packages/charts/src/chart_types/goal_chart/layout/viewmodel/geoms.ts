@@ -10,6 +10,7 @@ import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
 import { PointObject, Radian, Rectangle } from '../../../../common/geometry';
 import { cssFontShorthand, Font } from '../../../../common/text_utils';
 import { CanvasRenderer } from '../../../../renderers/canvas';
+import { measureText } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSubtype } from '../../specs/constants';
@@ -203,15 +204,13 @@ export class Text implements Mark {
 
   boundingBoxes(ctx: CanvasRenderingContext2D) {
     if (this.text.length === 0) return [];
-
-    this.setCanvasTextState(ctx);
-    const box = ctx.measureText(this.text);
+    const box = measureText(ctx)(this.text, this.fontShape, this.fontSize);
     return [
       {
-        x0: -box.actualBoundingBoxLeft + this.x - capturePad,
-        y0: -box.actualBoundingBoxAscent + this.y - capturePad,
-        x1: box.actualBoundingBoxRight + this.x + capturePad,
-        y1: box.actualBoundingBoxDescent + this.y + capturePad,
+        x0: -box.width / 2 + this.x - capturePad,
+        y0: -box.height / 2 + this.y - capturePad,
+        x1: box.width / 2 + this.x + capturePad,
+        y1: box.height / 2 + this.y + capturePad,
       },
     ];
   }
