@@ -56,12 +56,12 @@ function getValuesInRange(
 function estimatedNonOverlappingTickCount(
   chartWidth: number,
   formatter: HeatmapSpec['xAxisLabelFormatter'],
-  { padding, fontSize, fontFamily }: HeatmapStyle['xAxisLabel'],
+  style: HeatmapStyle['xAxisLabel'],
 ): number {
   return withTextMeasure((textMeasure) => {
     const labelSample = formatter(Date.now());
-    const { width } = textMeasure(labelSample, horizontalPad(padding), fontSize, fontFamily);
-    const maxTicks = chartWidth / width;
+    const { width } = textMeasure(labelSample, { ...style }, style.fontSize);
+    const maxTicks = chartWidth / (width + horizontalPad(style.padding));
     // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
     // to many ticks creating nice rounded tick values
     // TODO add support for limiting the number of tick in {@link ScaleContinuous}

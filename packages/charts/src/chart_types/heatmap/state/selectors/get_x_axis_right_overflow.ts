@@ -21,19 +21,11 @@ import { getHeatmapTableSelector } from './get_heatmap_table';
  */
 export const getXAxisRightOverflow = createCustomCachedSelector(
   [getHeatmapSpecSelector, getChartThemeSelector, getHeatmapTableSelector],
-  (
-    { xScale, timeZone, xAxisLabelFormatter },
-    {
-      heatmap: {
-        xAxisLabel: { fontSize, fontFamily, padding, width },
-      },
-    },
-    { xNumericExtent },
-  ) => {
+  ({ xScale, timeZone, xAxisLabelFormatter }, { heatmap: { xAxisLabel: style } }, { xNumericExtent }) => {
     return xScale.type !== ScaleType.Time
       ? 0
-      : typeof width === 'number'
-      ? width / 2
+      : typeof style.width === 'number'
+      ? style.width / 2
       : withTextMeasure((measure) => {
           return new ScaleContinuous(
             { type: ScaleType.Time, domain: xNumericExtent, range: [0, 1] },
@@ -42,7 +34,10 @@ export const getXAxisRightOverflow = createCustomCachedSelector(
             .ticks()
             .reduce(
               (max, n) =>
-                Math.max(max, measure(xAxisLabelFormatter(n), horizontalPad(padding), fontSize, fontFamily).width),
+                Math.max(
+                  max,
+                  measure(xAxisLabelFormatter(n), { ...style }, style.fontSize).width + horizontalPad(style.padding),
+                ),
               0,
             );
         }) / 2;

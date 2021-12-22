@@ -180,11 +180,15 @@ function computeBoxWidth(
 ): { fixedFontScale: number; displayValueWidth: number } {
   const fixedFontScale = Math.max(typeof fontSize === 'number' ? fontSize : fontSize.min, 1);
 
-  const computedDisplayValueWidth = textMeasure(text || '', padding, fixedFontScale, fontFamily).width;
+  const computedDisplayValueWidth = textMeasure(
+    text || '',
+    { fontFamily, fontWeight: 'normal', fontStyle: 'normal', fontVariant: 'normal' },
+    fixedFontScale,
+  ).width;
   if (typeof fontSize !== 'number') {
     return {
       fixedFontScale,
-      displayValueWidth: computedDisplayValueWidth,
+      displayValueWidth: computedDisplayValueWidth + padding,
     };
   }
   return {

@@ -6,17 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { cssFontShorthand, Font } from '../../common/text_utils';
 import { Size } from '../dimensions';
 
 /** @internal */
-export type TextMeasure = (
-  text: string,
-  padding: number,
-  fontSize: number,
-  fontFamily: string,
-  lineHeight?: number,
-  fontWeight?: number,
-) => Size;
+export type TextMeasure = (text: string, font: Omit<Font, 'textColor'>, fontSize: number, lineHeight?: number) => Size;
 
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
@@ -24,10 +18,10 @@ export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
   const ctx = canvas.getContext('2d');
   return fun(
     ctx
-      ? (text: string, padding: number, fontSize, fontFamily, lineHeight = 1, fontWeight = 400) => {
-          ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-          const measure = ctx.measureText(text);
-          return { width: measure.width + Math.max(padding, 1), height: fontSize * lineHeight };
+      ? (text, font, fontSize, lineHeight = 1) => {
+          ctx.font = cssFontShorthand(font, fontSize);
+          const { actualBoundingBoxLeft, actualBoundingBoxRight } = ctx.measureText(text);
+          return { width: actualBoundingBoxLeft + actualBoundingBoxRight, height: fontSize * lineHeight };
         }
       : () => ({ width: 0, height: 0 }),
   );
