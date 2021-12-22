@@ -1,81 +1,81 @@
-# [31.5.0](https://github.com/Metrika-Inc/metrika-charts/compare/v31.4.1...v31.5.0) (2021-10-26)
+# [31.5.0](https://github.com/Metrika-Inc/elastic-charts/compare/v31.4.1...v31.5.0) (2021-10-26)
 
 
 ### Bug Fixes
 
-* tsc es6 comments ([651460a](https://github.com/Metrika-Inc/metrika-charts/commit/651460ad388b2bb5b86f4c071e7eb46a471554fd))
+* tsc es6 comments ([651460a](https://github.com/Metrika-Inc/elastic-charts/commit/651460ad388b2bb5b86f4c071e7eb46a471554fd))
 
 
 ### Features
 
-* removed moment with dayjs ([3a1785e](https://github.com/Metrika-Inc/metrika-charts/commit/3a1785e0dd36f659ff8e15b1878a832966a6eb85))
+* removed moment with dayjs ([3a1785e](https://github.com/Metrika-Inc/elastic-charts/commit/3a1785e0dd36f659ff8e15b1878a832966a6eb85))
 
-## [31.4.1](https://github.com/Metrika-Inc/metrika-charts/compare/v31.4.0...v31.4.1) (2021-10-08)
-
-
-### Bug Fixes
-
-* **heatmap:** chart dimension on real y-label format width ([d062fc4](https://github.com/Metrika-Inc/metrika-charts/commit/d062fc4f121017d35606d7464e3df259a419da7c))
-
-# [31.4.0](https://github.com/Metrika-Inc/metrika-charts/compare/v31.3.2...v31.4.0) (2021-10-08)
+## [31.4.1](https://github.com/Metrika-Inc/elastic-charts/compare/v31.4.0...v31.4.1) (2021-10-08)
 
 
 ### Bug Fixes
 
-* **heatmap:** add tooltip fix when x-axis is on top ([d3c9440](https://github.com/Metrika-Inc/metrika-charts/commit/d3c9440ddb38027f34fa90de014349279fe5bc44))
+* **heatmap:** chart dimension on real y-label format width ([d062fc4](https://github.com/Metrika-Inc/elastic-charts/commit/d062fc4f121017d35606d7464e3df259a419da7c))
+
+# [31.4.0](https://github.com/Metrika-Inc/elastic-charts/compare/v31.3.2...v31.4.0) (2021-10-08)
+
+
+### Bug Fixes
+
+* **heatmap:** add tooltip fix when x-axis is on top ([d3c9440](https://github.com/Metrika-Inc/elastic-charts/commit/d3c9440ddb38027f34fa90de014349279fe5bc44))
 
 
 ### Features
 
-* **charts:** add es6 build, peer react 17 ([193f13e](https://github.com/Metrika-Inc/metrika-charts/commit/193f13e6a2ce00f79f0f1771d8a87a3a06149eb1))
+* **charts:** add es6 build, peer react 17 ([193f13e](https://github.com/Metrika-Inc/elastic-charts/commit/193f13e6a2ce00f79f0f1771d8a87a3a06149eb1))
 
-## [31.3.2](https://github.com/Metrika-Inc/metrika-charts/compare/v31.3.1...v31.3.2) (2021-08-16)
-
-
-### Bug Fixes
-
-* **heatmap:** prevented time series data from rendering multiple labels on the x axis per column ([04779d5](https://github.com/Metrika-Inc/metrika-charts/commit/04779d514abf36433b3fc87faadd87578c590ec1))
-* **heatmap:** proper layout when the legend is on the side ([967c705](https://github.com/Metrika-Inc/metrika-charts/commit/967c7053004aa3484c1d8da65bb6c84a89bf4214))
-
-## [31.3.1](https://github.com/Metrika-Inc/metrika-charts/compare/v31.3.0...v31.3.1) (2021-08-10)
+## [31.3.2](https://github.com/Metrika-Inc/elastic-charts/compare/v31.3.1...v31.3.2) (2021-08-16)
 
 
 ### Bug Fixes
 
-* **heatmap:** the legend grid tries to fit the content better if possible ([93cb503](https://github.com/Metrika-Inc/metrika-charts/commit/93cb5034d735c1886d60fc0779d8cc5e11a9c822))
-* **legend:** minor styling change to improve layout ([2f6e75b](https://github.com/Metrika-Inc/metrika-charts/commit/2f6e75b5d483497ac0867a79722d31f12263a43c))
+* **heatmap:** prevented time series data from rendering multiple labels on the x axis per column ([04779d5](https://github.com/Metrika-Inc/elastic-charts/commit/04779d514abf36433b3fc87faadd87578c590ec1))
+* **heatmap:** proper layout when the legend is on the side ([967c705](https://github.com/Metrika-Inc/elastic-charts/commit/967c7053004aa3484c1d8da65bb6c84a89bf4214))
 
-# [31.3.0](https://github.com/Metrika-Inc/metrika-charts/compare/v31.2.0...v31.3.0) (2021-07-27)
+## [31.3.1](https://github.com/Metrika-Inc/elastic-charts/compare/v31.3.0...v31.3.1) (2021-08-10)
 
 
 ### Bug Fixes
 
-* **heatmap:** fixed tooltip not being shown for bottom values when x axis is on top ([bb27900](https://github.com/Metrika-Inc/metrika-charts/commit/bb27900885ede50da109e5a0c614233d700f1282))
-* fix api listing ([8664f49](https://github.com/Metrika-Inc/metrika-charts/commit/8664f4953670e90d2c9c674fbc6c74ef7cba726b))
-* updated the api markdown file ([081f0cf](https://github.com/Metrika-Inc/metrika-charts/commit/081f0cf8c669f4fc336bb59c938d0f00947fd6c1))
+* **heatmap:** the legend grid tries to fit the content better if possible ([93cb503](https://github.com/Metrika-Inc/elastic-charts/commit/93cb5034d735c1886d60fc0779d8cc5e11a9c822))
+* **legend:** minor styling change to improve layout ([2f6e75b](https://github.com/Metrika-Inc/elastic-charts/commit/2f6e75b5d483497ac0867a79722d31f12263a43c))
+
+# [31.3.0](https://github.com/Metrika-Inc/elastic-charts/compare/v31.2.0...v31.3.0) (2021-07-27)
+
+
+### Bug Fixes
+
+* **heatmap:** fixed tooltip not being shown for bottom values when x axis is on top ([bb27900](https://github.com/Metrika-Inc/elastic-charts/commit/bb27900885ede50da109e5a0c614233d700f1282))
+* fix api listing ([8664f49](https://github.com/Metrika-Inc/elastic-charts/commit/8664f4953670e90d2c9c674fbc6c74ef7cba726b))
+* updated the api markdown file ([081f0cf](https://github.com/Metrika-Inc/elastic-charts/commit/081f0cf8c669f4fc336bb59c938d0f00947fd6c1))
 
 
 ### Features
 
-* **heatmap:** option to remove duplicate x axis labels ([1b2b29e](https://github.com/Metrika-Inc/metrika-charts/commit/1b2b29e90ee604e71112495513a74d17860fb324))
+* **heatmap:** option to remove duplicate x axis labels ([1b2b29e](https://github.com/Metrika-Inc/elastic-charts/commit/1b2b29e90ee604e71112495513a74d17860fb324))
 
-# [31.2.0](https://github.com/Metrika-Inc/metrika-charts/compare/v31.1.0...v31.2.0) (2021-07-21)
+# [31.2.0](https://github.com/Metrika-Inc/elastic-charts/compare/v31.1.0...v31.2.0) (2021-07-21)
 
 
 ### Bug Fixes
 
-* **heatmap:** correctly place x axis text in all cases ([1cf37d4](https://github.com/Metrika-Inc/metrika-charts/commit/1cf37d449bc4f46ddd4753bba9b4fa68a2a227d0))
-* **xychart:** when axis title is on top, it correctly lines up with axis labels vertically ([12839b5](https://github.com/Metrika-Inc/metrika-charts/commit/12839b5f00444f18d7c2824bfd19accbf0b0d520))
+* **heatmap:** correctly place x axis text in all cases ([1cf37d4](https://github.com/Metrika-Inc/elastic-charts/commit/1cf37d449bc4f46ddd4753bba9b4fa68a2a227d0))
+* **xychart:** when axis title is on top, it correctly lines up with axis labels vertically ([12839b5](https://github.com/Metrika-Inc/elastic-charts/commit/12839b5f00444f18d7c2824bfd19accbf0b0d520))
 
 
 ### Features
 
-* **a11y:** allow user to add optional semantic meaning to goal/gauge charts ([#1218](https://github.com/Metrika-Inc/metrika-charts/issues/1218)) ([87629e2](https://github.com/Metrika-Inc/metrika-charts/commit/87629e23e7cc8aef125a8b6d2b87092085abe2bd)), closes [#1161](https://github.com/Metrika-Inc/metrika-charts/issues/1161)
-* **heatmap:** added the ability to customize the position and rotation of the x axis labels ([8280b64](https://github.com/Metrika-Inc/metrika-charts/commit/8280b64f048dd7a495502c8758de2d87177f2921))
-* **heatmap:** hard code x-axis labels sideways ([26ebe5e](https://github.com/Metrika-Inc/metrika-charts/commit/26ebe5ee71c948365af321251e27393eba079a70))
-* **xychart:** basic customization support for putting the axis title on top of the chart ([79865ba](https://github.com/Metrika-Inc/metrika-charts/commit/79865baf54dc3b881835c266079569b956c68073))
-* **xychart:** hard code left axis label to top of graph ([f10ff72](https://github.com/Metrika-Inc/metrika-charts/commit/f10ff729a39d18ab3f32c682f139a297e1852a6c))
-* **xychart:** the title for the right axis can now also go on top ([b2087a1](https://github.com/Metrika-Inc/metrika-charts/commit/b2087a14da0045e501b442acd07b263cf363c9ee))
+* **a11y:** allow user to add optional semantic meaning to goal/gauge charts ([#1218](https://github.com/Metrika-Inc/elastic-charts/issues/1218)) ([87629e2](https://github.com/Metrika-Inc/elastic-charts/commit/87629e23e7cc8aef125a8b6d2b87092085abe2bd)), closes [#1161](https://github.com/Metrika-Inc/elastic-charts/issues/1161)
+* **heatmap:** added the ability to customize the position and rotation of the x axis labels ([8280b64](https://github.com/Metrika-Inc/elastic-charts/commit/8280b64f048dd7a495502c8758de2d87177f2921))
+* **heatmap:** hard code x-axis labels sideways ([26ebe5e](https://github.com/Metrika-Inc/elastic-charts/commit/26ebe5ee71c948365af321251e27393eba079a70))
+* **xychart:** basic customization support for putting the axis title on top of the chart ([79865ba](https://github.com/Metrika-Inc/elastic-charts/commit/79865baf54dc3b881835c266079569b956c68073))
+* **xychart:** hard code left axis label to top of graph ([f10ff72](https://github.com/Metrika-Inc/elastic-charts/commit/f10ff729a39d18ab3f32c682f139a297e1852a6c))
+* **xychart:** the title for the right axis can now also go on top ([b2087a1](https://github.com/Metrika-Inc/elastic-charts/commit/b2087a14da0045e501b442acd07b263cf363c9ee))
 
 # [31.1.0](https://github.com/elastic/elastic-charts/compare/v31.0.0...v31.1.0) (2021-07-06)
 
