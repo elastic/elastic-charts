@@ -232,7 +232,7 @@ function get<T>(o: { [k: string]: any }, name: string, dflt: T) {
 export function geoms(
   bulletViewModel: BulletViewModel,
   theme: Theme['goal'],
-  partentDimensions: Dimensions,
+  parentDimensions: Dimensions,
   chartCenter: PointObject,
 ): Mark[] {
   const {
@@ -273,12 +273,12 @@ export function geoms(
       : {}),
   };
 
-  const minSize = Math.min(partentDimensions.width, partentDimensions.height);
+  const minSize = Math.min(parentDimensions.width, parentDimensions.height);
 
   const referenceSize =
     Math.min(
       circular ? referenceCircularSizeCap : referenceBulletSizeCap,
-      circular ? minSize : vertical ? partentDimensions.height : partentDimensions.width,
+      circular ? minSize : vertical ? parentDimensions.height : parentDimensions.width,
     ) *
     (1 - 2 * marginRatio);
 
