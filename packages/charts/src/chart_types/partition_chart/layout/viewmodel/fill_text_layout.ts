@@ -19,15 +19,9 @@ import {
   wrapToTau,
 } from '../../../../common/geometry';
 import { logarithm } from '../../../../common/math';
-import {
-  Box,
-  Font,
-  HorizontalAlignment,
-  PartialFont,
-  TextMeasure,
-  VerticalAlignments,
-} from '../../../../common/text_utils';
+import { Box, Font, HorizontalAlignment, PartialFont, VerticalAlignments } from '../../../../common/text_utils';
 import { integerSnap, monotonicHillClimb } from '../../../../solvers/monotonic_hill_climb';
+import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { ValueFormatter, getOppositeAlignment, isRTLString } from '../../../../utils/common';
 import { FillLabelConfig, Padding, PartitionStyle } from '../../../../utils/themes/partition';
 import { Layer } from '../../specs';
@@ -317,13 +311,15 @@ function tryFontSize<C>(
     const wordSpacing = getWordSpacing(fontSize);
 
     // model text pieces, obtaining their width at the current font size
-    const measurements = measure(fontSize, boxes);
-    const allMeasuredBoxes: RowBox[] = measurements.map(({ width }: TextMetrics, i: number) => ({
-      width,
-      wordBeginning: NaN,
-      ...boxes[i],
-      fontSize, // iterated fontSize overrides a possible more global fontSize
-    }));
+    const allMeasuredBoxes = boxes.map<RowBox>((box) => {
+      const { width } = measure(box.text, box, fontSize);
+      return {
+        width,
+        wordBeginning: NaN,
+        ...box,
+        fontSize, // iterated fontSize overrides a possible more global fontSize
+      };
+    });
     const linePitch = fontSize;
 
     // rowSet building starts

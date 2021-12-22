@@ -10,19 +10,20 @@ import { cssFontShorthand, Font } from '../../common/text_utils';
 import { Size } from '../dimensions';
 
 /** @internal */
-export type TextMeasure = (text: string, font: Omit<Font, 'textColor'>, fontSize: number, lineHeight?: number) => Size;
-
-/** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
-  return fun(
-    ctx
-      ? (text, font, fontSize, lineHeight = 1) => {
-          ctx.font = cssFontShorthand(font, fontSize);
-          const { actualBoundingBoxLeft, actualBoundingBoxRight } = ctx.measureText(text);
-          return { width: actualBoundingBoxLeft + actualBoundingBoxRight, height: fontSize * lineHeight };
-        }
-      : () => ({ width: 0, height: 0 }),
-  );
+  return fun(ctx ? measureText(ctx) : () => ({ width: 0, height: 0 }));
 };
+
+/** @internal */
+export type TextMeasure = (text: string, font: Omit<Font, 'textColor'>, fontSize: number, lineHeight?: number) => Size;
+
+/** @internal */
+export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
+  return (text, font, fontSize, lineHeight = 1) => {
+    ctx.font = cssFontShorthand(font, fontSize);
+    const { actualBoundingBoxLeft, actualBoundingBoxRight } = ctx.measureText(text);
+    return { width: actualBoundingBoxLeft + actualBoundingBoxRight, height: fontSize * lineHeight };
+  };
+}

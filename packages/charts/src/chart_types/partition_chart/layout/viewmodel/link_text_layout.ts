@@ -18,7 +18,8 @@ import {
   PointTuples,
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
-import { cutToLength, fitText, Font, measureOneBoxWidth, TextMeasure } from '../../../../common/text_utils';
+import { cutToLength, fitText, Font, measureOneBoxWidth } from '../../../../common/text_utils';
+import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { ColorVariant, isRTLString, ValueFormatter } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Point } from '../../../../utils/point';

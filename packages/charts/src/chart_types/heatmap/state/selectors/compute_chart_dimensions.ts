@@ -6,13 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { max as d3Max } from 'd3-array';
-
-import { Box, measureText, TextMeasure } from '../../../../common/text_utils';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
+import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Dimensions, horizontalPad, innerPad, outerPad, verticalPad } from '../../../../utils/dimensions';
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { AxisStyle, HeatmapStyle } from '../../../../utils/themes/theme';
@@ -63,96 +61,79 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
     rightOverflow,
     { xAxisTitle, yAxisTitle },
   ): ChartElementSizes => {
-    const textMeasurer = document.createElement('canvas');
-    const textMeasurerCtx = textMeasurer.getContext('2d');
-    if (!textMeasurerCtx) {
-      return {
-        grid: { width: 0, height: 0, left: 0, top: 0 },
-        xAxis: { width: 0, height: 0, left: 0, top: 0 },
-        yAxis: { width: 0, height: 0, left: 0, top: 0 },
-        fullHeatmapHeight: 0,
-        rowHeight: 0,
-        visibleNumberOfRows: 0,
+    return withTextMeasure((textMeasure) => {
+      const isLegendHorizontal = isHorizontalLegend(legendSize.position);
+      const legendWidth = !isLegendHorizontal ? legendSize.width + legendSize.margin * 2 : 0;
+      const legendHeight = isLegendHorizontal
+        ? heatmap.maxLegendHeight ?? legendSize.height + legendSize.margin * 2
+        : 0;
+
+      const yAxisTitleHorizontalSize = getTextSizeDimension(yAxisTitle, axisTitleStyle, textMeasure, 'height');
+      const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, textMeasure);
+
+      const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
+      const xAxisHeight = heatmap.xAxisLabel.visible
+        ? heatmap.xAxisLabel.fontSize + verticalPad(heatmap.xAxisLabel.padding)
+        : 0;
+
+      const availableHeightForGrid = container.height - xAxisTitleVerticalSize - xAxisHeight - legendHeight;
+
+      const rowHeight = getGridCellHeight(yValues.length, heatmap.grid, availableHeightForGrid);
+      const fullHeatmapHeight = rowHeight * yValues.length;
+
+      const visibleNumberOfRows =
+        rowHeight > 0 && fullHeatmapHeight > availableHeightForGrid
+          ? Math.floor(availableHeightForGrid / rowHeight)
+          : yValues.length;
+
+      const grid: Dimensions = {
+        width: container.width - yAxisWidth - yAxisTitleHorizontalSize - rightOverflow - legendWidth,
+        height: visibleNumberOfRows * rowHeight,
+        left: container.left + yAxisTitleHorizontalSize + yAxisWidth,
+        top: container.top,
       };
-    }
-    const textMeasure = measureText(textMeasurerCtx);
 
-    const isLegendHorizontal = isHorizontalLegend(legendSize.position);
-    const legendWidth = !isLegendHorizontal ? legendSize.width + legendSize.margin * 2 : 0;
-    const legendHeight = isLegendHorizontal ? heatmap.maxLegendHeight ?? legendSize.height + legendSize.margin * 2 : 0;
+      const yAxis: Dimensions = {
+        width: yAxisWidth,
+        height: grid.height,
+        top: grid.top,
+        left: grid.left - yAxisWidth,
+      };
 
-    const yAxisTitleHorizontalSize = getTextSizeDimension(yAxisTitle, axisTitleStyle, textMeasure, 'height');
-    const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, textMeasure);
+      const xAxis: Dimensions = {
+        width: grid.width,
+        height: xAxisHeight,
+        top: grid.top + grid.height,
+        left: grid.left,
+      };
 
-    const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
-    const xAxisHeight = heatmap.xAxisLabel.visible
-      ? heatmap.xAxisLabel.fontSize + verticalPad(heatmap.xAxisLabel.padding)
-      : 0;
-
-    const availableHeightForGrid = container.height - xAxisTitleVerticalSize - xAxisHeight - legendHeight;
-
-    const rowHeight = getGridCellHeight(yValues.length, heatmap.grid, availableHeightForGrid);
-    const fullHeatmapHeight = rowHeight * yValues.length;
-
-    const visibleNumberOfRows =
-      rowHeight > 0 && fullHeatmapHeight > availableHeightForGrid
-        ? Math.floor(availableHeightForGrid / rowHeight)
-        : yValues.length;
-
-    const grid: Dimensions = {
-      width: container.width - yAxisWidth - yAxisTitleHorizontalSize - rightOverflow - legendWidth,
-      height: visibleNumberOfRows * rowHeight,
-      left: container.left + yAxisTitleHorizontalSize + yAxisWidth,
-      top: container.top,
-    };
-
-    const yAxis: Dimensions = {
-      width: yAxisWidth,
-      height: grid.height,
-      top: grid.top,
-      left: grid.left - yAxisWidth,
-    };
-
-    const xAxis: Dimensions = {
-      width: grid.width,
-      height: xAxisHeight,
-      top: grid.top + grid.height,
-      left: grid.left,
-    };
-
-    return { grid, yAxis, xAxis, visibleNumberOfRows, fullHeatmapHeight, rowHeight };
+      return { grid, yAxis, xAxis, visibleNumberOfRows, fullHeatmapHeight, rowHeight };
+    });
   },
 );
 
 function getYAxisHorizontalUsedSpace(
   yValues: HeatmapTable['yValues'],
-  yAxisLabel: HeatmapStyle['yAxisLabel'],
+  style: HeatmapStyle['yAxisLabel'],
   textMeasure: TextMeasure,
 ) {
-  if (!yAxisLabel.visible) {
+  if (!style.visible) {
     return 0;
   }
-
-  const labels = yValues.map<Box & { value: string | number }>((value) => {
-    return {
-      text: `${value}`,
-      value,
-      isValue: false,
-      ...yAxisLabel,
-    };
-  });
   // account for the space required to show the longest Y axis label
-  const measuredLabels = textMeasure(yAxisLabel.fontSize, labels);
+  const longestLabelWidth = yValues.reduce<number>((acc, value) => {
+    const { width } = textMeasure(`${value}`, style, style.fontSize);
+    return Math.max(width, acc);
+  }, 0);
 
-  const longestLabelWidth = d3Max(measuredLabels, (label) => label.width) ?? 0;
   const labelsWidth =
-    yAxisLabel.width === 'auto'
+    style.width === 'auto'
       ? longestLabelWidth
-      : typeof yAxisLabel.width === 'number'
-      ? yAxisLabel.width
-      : Math.max(longestLabelWidth, yAxisLabel.width.max);
+      : typeof style.width === 'number'
+      ? style.width
+      : Math.max(longestLabelWidth, style.width.max);
 
-  return labelsWidth + horizontalPad(yAxisLabel.padding);
+  return labelsWidth + horizontalPad(style.padding);
 }
 
 function getTextSizeDimension(
@@ -169,17 +150,17 @@ function getTextSizeDimension(
     return style.fontSize + textPadding;
   }
 
-  const textBox = textMeasure(style.fontSize, [
+  const textBox = textMeasure(
+    text,
     {
+      ...style,
       fontVariant: 'normal',
       fontWeight: 'bold',
       fontStyle: style.fontStyle ?? 'normal',
-      fontFamily: style.fontFamily,
-      textColor: style.fill,
-      text,
     },
-  ]);
-  return textBox.length === 1 ? textBox[0].width + textPadding : 0;
+    style.fontSize,
+  );
+  return textBox.width + textPadding;
 }
 
 function getGridCellHeight(rows: number, grid: HeatmapStyle['grid'], height: number): number {
