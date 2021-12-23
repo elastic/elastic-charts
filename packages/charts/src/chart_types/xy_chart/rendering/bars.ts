@@ -9,7 +9,7 @@
 import { Color } from '../../../common/colors';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { TextMeasure, withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
+import { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, mergePartial } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
@@ -29,6 +29,7 @@ type BarTuple = {
 
 /** @internal */
 export function renderBars(
+  measureText: TextMeasure,
   orderIndex: number,
   dataSeries: DataSeries,
   xScale: Scale<number | string>,
@@ -46,115 +47,113 @@ export function renderBars(
   const initialBarTuple: BarTuple = { barGeometries: [], indexedGeometryMap: new IndexedGeometryMap() } as BarTuple;
   const isLogY = yScale.type === ScaleType.Log;
   const isInvertedY = yScale.isInverted;
-  return withTextMeasure((textMeasure) =>
-    dataSeries.data.reduce((barTuple: BarTuple, datum) => {
-      const xScaled = xScale.scale(datum.x);
-      if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
-        return barTuple; // don't create a bar if not within the xScale domain
-      }
-      const { barGeometries, indexedGeometryMap } = barTuple;
-      const { y0, y1, initialY1, filled } = datum;
-      const rawY = isLogY && (y1 === 0 || y1 === null) ? yScale.range[0] : yScale.scale(y1);
+  return dataSeries.data.reduce((barTuple: BarTuple, datum) => {
+    const xScaled = xScale.scale(datum.x);
+    if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
+      return barTuple; // don't create a bar if not within the xScale domain
+    }
+    const { barGeometries, indexedGeometryMap } = barTuple;
+    const { y0, y1, initialY1, filled } = datum;
+    const rawY = isLogY && (y1 === 0 || y1 === null) ? yScale.range[0] : yScale.scale(y1);
 
-      const y0Scaled = isLogY
-        ? y0 === 0 || y0 === null
-          ? yScale.range[isInvertedY ? 1 : 0]
-          : yScale.scale(y0)
-        : yScale.scale(y0 === null ? 0 : y0);
+    const y0Scaled = isLogY
+      ? y0 === 0 || y0 === null
+        ? yScale.range[isInvertedY ? 1 : 0]
+        : yScale.scale(y0)
+      : yScale.scale(y0 === null ? 0 : y0);
 
-      const finiteHeight = y0Scaled - rawY || 0;
-      const absHeight = Math.abs(finiteHeight);
-      const height = absHeight === 0 ? absHeight : Math.max(minBarHeight, absHeight); // extend nonzero bars
-      const heightExtension = height - absHeight;
-      const isUpsideDown = finiteHeight < 0;
-      const finiteY = Number.isNaN(y0Scaled + rawY) ? 0 : rawY;
-      const y = isUpsideDown ? finiteY - height + heightExtension : finiteY - heightExtension;
+    const finiteHeight = y0Scaled - rawY || 0;
+    const absHeight = Math.abs(finiteHeight);
+    const height = absHeight === 0 ? absHeight : Math.max(minBarHeight, absHeight); // extend nonzero bars
+    const heightExtension = height - absHeight;
+    const isUpsideDown = finiteHeight < 0;
+    const finiteY = Number.isNaN(y0Scaled + rawY) ? 0 : rawY;
+    const y = isUpsideDown ? finiteY - height + heightExtension : finiteY - heightExtension;
 
-      const seriesIdentifier: XYChartSeriesIdentifier = {
-        key: dataSeries.key,
-        specId: dataSeries.specId,
-        yAccessor: dataSeries.yAccessor,
-        splitAccessors: dataSeries.splitAccessors,
-        seriesKeys: dataSeries.seriesKeys,
-        smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
-        smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
-      };
+    const seriesIdentifier: XYChartSeriesIdentifier = {
+      key: dataSeries.key,
+      specId: dataSeries.specId,
+      yAccessor: dataSeries.yAccessor,
+      splitAccessors: dataSeries.splitAccessors,
+      seriesKeys: dataSeries.seriesKeys,
+      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
+      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
+    };
 
-      const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
+    const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
 
-      const maxPixelWidth = clamp(seriesStyle.rect.widthRatio ?? 1, 0, 1) * xScale.bandwidth;
-      const minPixelWidth = clamp(seriesStyle.rect.widthPixel ?? 0, 0, maxPixelWidth);
+    const maxPixelWidth = clamp(seriesStyle.rect.widthRatio ?? 1, 0, 1) * xScale.bandwidth;
+    const minPixelWidth = clamp(seriesStyle.rect.widthPixel ?? 0, 0, maxPixelWidth);
 
-      const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
-      const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
+    const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
+    const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
-      const y1Value = getDatumYValue(datum, false, false, stackMode);
-      const formattedDisplayValue = displayValueSettings?.valueFormatter?.(y1Value);
+    const y1Value = getDatumYValue(datum, false, false, stackMode);
+    const formattedDisplayValue = displayValueSettings?.valueFormatter?.(y1Value);
 
-      // only show displayValue for even bars if showOverlappingValue
-      const displayValueText =
-        displayValueSettings?.isAlternatingValueLabel && barGeometries.length % 2 ? undefined : formattedDisplayValue;
+    // only show displayValue for even bars if showOverlappingValue
+    const displayValueText =
+      displayValueSettings?.isAlternatingValueLabel && barGeometries.length % 2 ? undefined : formattedDisplayValue;
 
-      const { displayValueWidth, fixedFontScale } = computeBoxWidth(
-        displayValueText ?? '',
-        { padding: PADDING, fontSize, fontFamily, textMeasure, width },
-        displayValueSettings,
-      );
+    const { displayValueWidth, fixedFontScale } = computeBoxWidth(
+      displayValueText ?? '',
+      { padding: PADDING, fontSize, fontFamily, measureText, width },
+      displayValueSettings,
+    );
 
-      const isHorizontalRotation = chartRotation % 180 === 0;
-      // Pick the right side of the label's box to use as factor reference
-      const referenceWidth = Math.max(isHorizontalRotation ? displayValueWidth : fixedFontScale, 1);
+    const isHorizontalRotation = chartRotation % 180 === 0;
+    // Pick the right side of the label's box to use as factor reference
+    const referenceWidth = Math.max(isHorizontalRotation ? displayValueWidth : fixedFontScale, 1);
 
-      const textScalingFactor = getFinalFontScalingFactor(
-        (width * FONT_SIZE_FACTOR) / referenceWidth,
-        fixedFontScale,
-        fontSize,
-      );
-      const overflowConstraints: Set<LabelOverflowConstraint> = new Set(
-        displayValueSettings?.overflowConstraints ?? [
-          LabelOverflowConstraint.ChartEdges,
-          LabelOverflowConstraint.BarGeometry,
-        ],
-      );
+    const textScalingFactor = getFinalFontScalingFactor(
+      (width * FONT_SIZE_FACTOR) / referenceWidth,
+      fixedFontScale,
+      fontSize,
+    );
+    const overflowConstraints: Set<LabelOverflowConstraint> = new Set(
+      displayValueSettings?.overflowConstraints ?? [
+        LabelOverflowConstraint.ChartEdges,
+        LabelOverflowConstraint.BarGeometry,
+      ],
+    );
 
-      // Based on rotation scale the width of the text box
-      const bboxWidthFactor = isHorizontalRotation ? textScalingFactor : 1;
+    // Based on rotation scale the width of the text box
+    const bboxWidthFactor = isHorizontalRotation ? textScalingFactor : 1;
 
-      const displayValue: BarGeometry['displayValue'] | undefined =
-        displayValueText && displayValueSettings?.showValueLabel
-          ? {
-              fontScale: textScalingFactor,
-              fontSize: fixedFontScale,
-              text: displayValueText,
-              width: bboxWidthFactor * displayValueWidth,
-              height: textScalingFactor * fixedFontScale,
-              overflowConstraints,
-              isValueContainedInElement: displayValueSettings?.isValueContainedInElement ?? false,
-            }
-          : undefined;
+    const displayValue: BarGeometry['displayValue'] | undefined =
+      displayValueText && displayValueSettings?.showValueLabel
+        ? {
+            fontScale: textScalingFactor,
+            fontSize: fixedFontScale,
+            text: displayValueText,
+            width: bboxWidthFactor * displayValueWidth,
+            height: textScalingFactor * fixedFontScale,
+            overflowConstraints,
+            isValueContainedInElement: displayValueSettings?.isValueContainedInElement ?? false,
+          }
+        : undefined;
 
-      const barGeometry: BarGeometry = {
-        displayValue,
-        x,
-        y,
-        transform: { x: 0, y: 0 },
-        width,
-        height,
-        color,
-        value: { x: datum.x, y: y1Value, mark: null, accessor: BandedAccessorType.Y1, datum: datum.datum },
-        seriesIdentifier,
-        seriesStyle,
-        panel,
-      };
-      indexedGeometryMap.set(barGeometry);
+    const barGeometry: BarGeometry = {
+      displayValue,
+      x,
+      y,
+      transform: { x: 0, y: 0 },
+      width,
+      height,
+      color,
+      value: { x: datum.x, y: y1Value, mark: null, accessor: BandedAccessorType.Y1, datum: datum.datum },
+      seriesIdentifier,
+      seriesStyle,
+      panel,
+    };
+    indexedGeometryMap.set(barGeometry);
 
-      if (y1 !== null && initialY1 !== null && filled?.y1 === undefined) {
-        barGeometries.push(barGeometry);
-      }
+    if (y1 !== null && initialY1 !== null && filled?.y1 === undefined) {
+      barGeometries.push(barGeometry);
+    }
 
-      return barTuple;
-    }, initialBarTuple),
-  );
+    return barTuple;
+  }, initialBarTuple);
 }
 
 /**
@@ -167,20 +166,20 @@ function computeBoxWidth(
     padding,
     fontSize,
     fontFamily,
-    textMeasure,
+    measureText,
     width,
   }: {
     padding: number;
     fontSize: number | { min: number; max: number };
     fontFamily: string;
-    textMeasure: TextMeasure;
+    measureText: TextMeasure;
     width: number;
   },
   displayValueSettings: DisplayValueSpec | undefined,
 ): { fixedFontScale: number; displayValueWidth: number } {
   const fixedFontScale = Math.max(typeof fontSize === 'number' ? fontSize : fontSize.min, 1);
 
-  const computedDisplayValueWidth = textMeasure(
+  const computedDisplayValueWidth = measureText(
     text || '',
     { fontFamily, fontWeight: 'normal', fontStyle: 'normal', fontVariant: 'normal' },
     fixedFontScale,
