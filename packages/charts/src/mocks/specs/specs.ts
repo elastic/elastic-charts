@@ -201,6 +201,8 @@ export class MockSeriesSpec {
     xSortPredicate: Predicate.AlphaAsc,
     ySortPredicate: Predicate.AlphaAsc,
     timeZone: 'UTC',
+    xAxisTitle: '',
+    yAxisTitle: '',
     xAxisLabelName: 'X Value',
     xAxisLabelFormatter: String,
     yAxisLabelName: 'Y Value',

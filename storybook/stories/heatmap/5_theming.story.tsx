@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, color, number } from '@storybook/addon-knobs';
+import { boolean, color, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 import { debounce } from 'ts-debounce';
 
@@ -23,12 +23,23 @@ import {
 } from '@elastic/charts';
 import { DATA_6 } from '@elastic/charts/src/utils/data_samples/test_dataset_heatmap';
 
+import { AxisStyle } from '../../../packages/charts/src/utils/themes/theme';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const debugState = boolean('Enable debug state', true);
   const dataStateAction = action('DataState');
-
+  const axes: RecursivePartial<AxisStyle> = {
+    axisTitle: {
+      fontSize: number('axisTitle fontSize', 12, { range: true, min: 5, max: 20 }, 'Axis Title'),
+      fontFamily: 'sans-serif',
+      fill: color('axisTitle textColor', 'black', 'Axis Title'),
+      padding: {
+        inner: number('axisTitle inner pad', 8, { range: true, min: 0, max: 20 }, 'Axis Title'),
+        outer: number('axisTitle outer pad', 8, { range: true, min: 0, max: 20 }, 'Axis Title'),
+      },
+    },
+  };
   const heatmap: RecursivePartial<HeatmapStyle> = {
     brushArea: {
       visible: boolean('brushArea visible', true, 'Theme'),
@@ -99,7 +110,7 @@ export const Example = () => {
         brushAxis="both"
         xDomain={{ min: 1572868800000, max: 1572912000000, minInterval: 1800000 }}
         debugState={debugState}
-        theme={{ heatmap }}
+        theme={{ axes, heatmap }}
         baseTheme={useBaseTheme()}
       />
       <Heatmap
@@ -124,6 +135,8 @@ export const Example = () => {
         xAxisLabelFormatter={(value) => {
           return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
         }}
+        xAxisTitle={text('xAxisTitle', 'xAxis', 'Axis Title')}
+        yAxisTitle={text('yAxisTitle', 'yAxis', 'Axis Title')}
         timeZone={DATA_6.timeZone}
       />
     </Chart>

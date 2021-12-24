@@ -9,7 +9,7 @@
 import { AnchorPosition } from '../../../../components/portal/types';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getPickedShapes } from './picked_shapes';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
@@ -18,14 +18,14 @@ function getCurrentPointerPosition(state: GlobalChartState) {
 
 /** @internal */
 export const getTooltipAnchorSelector = createCustomCachedSelector(
-  [getPickedShapes, computeChartDimensionsSelector, getCurrentPointerPosition],
-  (shapes, chartDimensions, position): AnchorPosition => {
+  [getPickedShapes, computeChartElementSizesSelector, getCurrentPointerPosition],
+  (shapes, { grid }, position): AnchorPosition => {
     if (Array.isArray(shapes) && shapes.length > 0) {
       const firstShape = shapes[0];
       return {
-        x: firstShape.x + chartDimensions.left,
+        x: firstShape.x + grid.left,
         width: firstShape.width,
-        y: firstShape.y - chartDimensions.top,
+        y: firstShape.y - grid.top,
         height: firstShape.height,
       };
     }

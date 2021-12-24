@@ -17,7 +17,7 @@ import { InitStatus } from '../../../state/selectors/get_internal_is_intialized'
 import { Dimensions } from '../../../utils/dimensions';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
-import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
+import { computeChartElementSizesSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
@@ -109,7 +109,7 @@ export class HeatmapState implements InternalChartState {
   }
 
   getMainProjectionArea(globalState: GlobalChartState): Dimensions {
-    return computeChartDimensionsSelector(globalState);
+    return computeChartElementSizesSelector(globalState).grid;
   }
 
   getBrushArea(globalState: GlobalChartState): Dimensions | null {
