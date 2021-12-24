@@ -11,13 +11,14 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_deselected_data_series';
 import { getColorScale } from './get_color_scale';
 import { getSpecOrNull } from './heatmap_spec';
+import { isEmptySelector } from './is_empty';
 
 const EMPTY_LEGEND: LegendItem[] = [];
 /** @internal */
 export const computeLegendSelector = createCustomCachedSelector(
-  [getSpecOrNull, getColorScale, getDeselectedSeriesSelector],
-  (spec, { bands }, deselectedDataSeries): LegendItem[] => {
-    if (spec === null) {
+  [getSpecOrNull, getColorScale, getDeselectedSeriesSelector, isEmptySelector],
+  (spec, { bands }, deselectedDataSeries, empty): LegendItem[] => {
+    if (spec === null || empty) {
       return EMPTY_LEGEND;
     }
 
