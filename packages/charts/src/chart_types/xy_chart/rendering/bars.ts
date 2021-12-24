@@ -180,7 +180,7 @@ function computeBoxWidth(
   const fixedFontScale = Math.max(typeof fontSize === 'number' ? fontSize : fontSize.min, 1);
 
   const computedDisplayValueWidth = measureText(
-    text || '',
+    text,
     { fontFamily, fontWeight: 'normal', fontStyle: 'normal', fontVariant: 'normal' },
     fixedFontScale,
   ).width;
