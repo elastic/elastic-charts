@@ -153,7 +153,7 @@ function getTextSizeDimension(
   const textBox = textMeasure(
     text,
     {
-      ...style,
+      fontFamily: style.fontFamily,
       fontVariant: 'normal',
       fontWeight: 'bold',
       fontStyle: style.fontStyle ?? 'normal',
