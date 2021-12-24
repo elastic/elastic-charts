@@ -12,11 +12,11 @@ import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
-import { Box, Font, maximiseFontSize, TextMeasure } from '../../../../common/text_utils';
+import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
-import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
 import { clamp } from '../../../../utils/common';
 import { Dimensions, horizontalPad, innerPad, pad } from '../../../../utils/dimensions';
@@ -56,12 +56,21 @@ function getValuesInRange(
 function estimatedNonOverlappingTickCount(
   chartWidth: number,
   formatter: HeatmapSpec['xAxisLabelFormatter'],
-  { padding, fontSize, fontFamily }: HeatmapStyle['xAxisLabel'],
+  style: HeatmapStyle['xAxisLabel'],
 ): number {
   return withTextMeasure((textMeasure) => {
     const labelSample = formatter(Date.now());
-    const { width } = textMeasure(labelSample, horizontalPad(padding), fontSize, fontFamily);
-    const maxTicks = chartWidth / width;
+    const { width } = textMeasure(
+      labelSample,
+      {
+        fontFamily: style.fontFamily,
+        fontWeight: style.fontWeight,
+        fontVariant: style.fontVariant,
+        fontStyle: style.fontStyle,
+      },
+      style.fontSize,
+    );
+    const maxTicks = chartWidth / (width + horizontalPad(style.padding));
     // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
     // to many ticks creating nice rounded tick values
     // TODO add support for limiting the number of tick in {@link ScaleContinuous}

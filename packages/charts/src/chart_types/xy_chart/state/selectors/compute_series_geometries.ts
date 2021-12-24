@@ -9,6 +9,7 @@
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { computeSeriesGeometries } from '../utils/utils';
 import { getFallBackTickFormatter } from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
@@ -30,5 +31,20 @@ export const computeSeriesGeometriesSelector = createCustomCachedSelector(
     isHistogramModeEnabledSelector,
     getFallBackTickFormatter,
   ],
-  computeSeriesGeometries,
+  (specs, domain, colors, theme, settings, axis, smScales, isHistogram, fallbackFormatter) => {
+    return withTextMeasure((measureText) =>
+      computeSeriesGeometries(
+        specs,
+        domain,
+        colors,
+        theme,
+        settings,
+        axis,
+        smScales,
+        isHistogram,
+        fallbackFormatter,
+        measureText,
+      ),
+    );
+  },
 );

@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { measureText } from '../../../../common/text_utils';
+import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Theme } from '../../../../utils/themes/theme';
-import { ShapeViewModel, nullShapeViewModel } from '../../layout/types/viewmodel_types';
+import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs';
 import { ChartElementSizes, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
@@ -23,10 +23,7 @@ export function render(
   bandsToHide: Array<[number, number]>,
   theme: Theme,
 ): ShapeViewModel {
-  const textMeasurer = document.createElement('canvas');
-  const textMeasurerCtx = textMeasurer.getContext('2d');
-  if (!textMeasurerCtx) {
-    return nullShapeViewModel();
-  }
-  return shapeViewModel(measureText(textMeasurerCtx), spec, theme, elementSizes, heatmapTable, colorScale, bandsToHide);
+  return withTextMeasure((measureText) => {
+    return shapeViewModel(measureText, spec, theme, elementSizes, heatmapTable, colorScale, bandsToHide);
+  });
 }

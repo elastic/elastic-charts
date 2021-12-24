@@ -18,8 +18,9 @@ import {
   Radius,
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
-import { Part, TextMeasure } from '../../../../common/text_utils';
+import { Part } from '../../../../common/text_utils';
 import { GroupByAccessor } from '../../../../specs';
+import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { StrokeStyle, ColorVariant } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
