@@ -60,7 +60,16 @@ function estimatedNonOverlappingTickCount(
 ): number {
   return withTextMeasure((textMeasure) => {
     const labelSample = formatter(Date.now());
-    const { width } = textMeasure(labelSample, style, style.fontSize);
+    const { width } = textMeasure(
+      labelSample,
+      {
+        fontFamily: style.fontFamily,
+        fontWeight: style.fontWeight,
+        fontVariant: style.fontVariant,
+        fontStyle: style.fontStyle,
+      },
+      style.fontSize,
+    );
     const maxTicks = chartWidth / (width + horizontalPad(style.padding));
     // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
     // to many ticks creating nice rounded tick values
