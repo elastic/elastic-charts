@@ -9,6 +9,7 @@
 import { Color, Colors } from '../../../../common/colors';
 import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { clamp } from '../../../../utils/common';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
@@ -155,9 +156,10 @@ export function renderCanvas2d(
           ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
           heatmapViewModel.xValues.forEach((xValue, index) => {
             if (!theme.xAxisLabel.alternate || index % 2 === 0) {
+              const labelRotation = clamp(theme.xAxisLabel.rotation, -90, 90);
               const font = {
                 ...theme.xAxisLabel,
-                align: theme.xAxisLabel.rotation !== 0 ? 'left' : theme.xAxisLabel.align,
+                align: labelRotation > 0 ? 'left' : labelRotation < 0 ? 'right' : theme.xAxisLabel.align,
               };
               renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, font, theme.xAxisLabel.rotation);
             }

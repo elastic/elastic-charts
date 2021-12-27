@@ -35,7 +35,7 @@ export const Example = () => {
       fontSize: number('xAxisLabel fontSize', 12, { range: true, min: 5, max: 20 }, 'Theme'),
       textColor: color('xAxisLabel textColor', 'black', 'Theme'),
       padding: number('xAxisLabel padding', 6, { range: true, min: 0, max: 15 }, 'Theme'),
-      rotation: number('set rotation of x axis label', 45, { step: 1, min: 0, max: 359, range: true }, 'labels'),
+      rotation: number('set rotation of x axis label', 45, { step: 1, min: -90, max: 90, range: true }, 'labels'),
       alternate: boolean('set x axis labels to alternate', false, 'labels'),
       overflow: boolean('set overflow property for x axis labels', true, 'labels') ? 'ellipsis' : false,
       maxTextLength: parseFloat(text('set the max text length for the x axis labels', '20', 'labels')),
