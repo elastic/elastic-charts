@@ -51,10 +51,6 @@ export interface AnimKeyframe {
     //
     // (undocumented)
     easingFunction: EasingFunction;
-    // Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    keyframeConfig: Partial<StaticConfig>;
     // (undocumented)
     time: number;
 }
@@ -237,6 +233,7 @@ export interface AxisStyle {
 // @public
 export interface BackgroundStyle {
     color: string;
+    fallbackColor: Color;
 }
 
 // @public
@@ -752,6 +749,9 @@ export const DEFAULT_TOOLTIP_SNAP = true;
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
+export function defaultPartitionValueFormatter(d: number): string;
+
+// @public (undocumented)
 export type DefaultSettingsProps = 'id' | 'chartType' | 'specType' | 'rendering' | 'rotation' | 'resizeDebounce' | 'pointerUpdateDebounce' | 'pointerUpdateTrigger' | 'animateData' | 'debug' | 'tooltip' | 'theme' | 'brushAxis' | 'minBrushDelta' | 'externalPointerEvents' | 'showLegend' | 'showLegendExtra' | 'legendPosition' | 'legendMaxDepth' | 'legendSize' | 'ariaUseDefaultSummary' | 'ariaLabelHeadingLevel' | 'ariaTableCaption' | 'allowBrushingLastHistogramBin';
 
 // @public (undocumented)
@@ -1122,6 +1122,8 @@ export interface HeatmapSpec extends Spec {
     // (undocumented)
     xAxisLabelName: string;
     // (undocumented)
+    xAxisTitle: string;
+    // (undocumented)
     xScale: RasterTimeScale | OrdinalScale | LinearScale;
     // (undocumented)
     xSortPredicate: Predicate;
@@ -1131,6 +1133,8 @@ export interface HeatmapSpec extends Spec {
     yAxisLabelFormatter: (value: string | number) => string;
     // (undocumented)
     yAxisLabelName: string;
+    // (undocumented)
+    yAxisTitle: string;
     // (undocumented)
     ySortPredicate: Predicate;
 }
@@ -1198,7 +1202,7 @@ export interface HeatmapStyle {
         align: TextAlign;
         baseline: TextBaseline;
         visible: boolean;
-        padding: number;
+        padding: Pixels | Padding;
     };
     // (undocumented)
     yAxisLabel: Font & {
@@ -1208,12 +1212,7 @@ export interface HeatmapStyle {
         };
         baseline: TextBaseline;
         visible: boolean;
-        padding: number | {
-            left?: number;
-            right?: number;
-            top?: number;
-            bottom?: number;
-        };
+        padding: Pixels | Padding;
     };
 }
 
@@ -1573,7 +1572,7 @@ export interface OrdinalScale {
 // @public (undocumented)
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
 
-// @public (undocumented)
+// @public
 export type Padding = PerSideDistance;
 
 // @public (undocumented)
@@ -1591,12 +1590,16 @@ export type PartialTheme = RecursivePartial<Theme>;
 // @public (undocumented)
 export const Partition: React_2.FunctionComponent<SpecRequiredProps_7 & SpecOptionalProps_7>;
 
-// @public (undocumented)
+// Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
+//
+// @public @deprecated
 export interface PartitionConfig extends StaticConfig {
     // @alpha (undocumented)
     animation: {
         duration: TimeMs;
-        keyframes: Array<AnimKeyframe>;
+        keyframes: Array<AnimKeyframe & {
+            keyframeConfig: Partial<StaticConfig>;
+        }>;
     };
 }
 
@@ -1643,6 +1646,41 @@ export const PartitionLayout: Readonly<{
 
 // @public (undocumented)
 export type PartitionLayout = $Values<typeof PartitionLayout>;
+
+// Warning: (ae-forgotten-export) The symbol "FillFontSizeRange" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export interface PartitionStyle extends FillFontSizeRange {
+    // Warning: (ae-forgotten-export) The symbol "Distance" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    circlePadding: Distance;
+    // Warning: (ae-forgotten-export) The symbol "SizeRatio" needs to be exported by the entry point index.d.ts
+    emptySizeRatio: SizeRatio;
+    // (undocumented)
+    fillLabel: PartitionFillLabel;
+    // Warning: (ae-forgotten-export) The symbol "FontFamily" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    fontFamily: FontFamily;
+    // (undocumented)
+    horizontalTextAngleThreshold: Radian;
+    // (undocumented)
+    horizontalTextEnforcer: Ratio;
+    // Warning: (ae-forgotten-export) The symbol "LinkLabelConfig" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    linkLabel: LinkLabelConfig;
+    outerSizeRatio: SizeRatio;
+    // (undocumented)
+    radialPadding: Distance;
+    // Warning: (ae-forgotten-export) The symbol "StrokeStyle" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    sectorLineStroke: StrokeStyle_2;
+    // (undocumented)
+    sectorLineWidth: Pixels;
+}
 
 // @public (undocumented)
 export const PATH_KEY = "path";
@@ -1864,6 +1902,18 @@ export type RelativeBandsPadding = {
     inner: Ratio;
 };
 
+// @public (undocumented)
+export interface RelativeMargins {
+    // (undocumented)
+    bottom: SizeRatio;
+    // (undocumented)
+    left: SizeRatio;
+    // (undocumented)
+    right: SizeRatio;
+    // (undocumented)
+    top: SizeRatio;
+}
+
 // @public
 export type RenderChangeListener = (isRendered: boolean) => void;
 
@@ -1912,8 +1962,6 @@ export type ScaleType = $Values<typeof ScaleType>;
 
 // @public (undocumented)
 export interface SectorGeomSpecY {
-    // Warning: (ae-forgotten-export) The symbol "Distance" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     y0px: Distance;
     // (undocumented)
@@ -2110,9 +2158,9 @@ export type ShowAccessor = (value: PrimitiveValue) => boolean;
 // @public
 export interface SimplePadding {
     // (undocumented)
-    inner: number;
+    inner: Pixels;
     // (undocumented)
-    outer: number;
+    outer: Pixels;
 }
 
 // @alpha (undocumented)
@@ -2295,14 +2343,13 @@ export interface Theme {
     colors: ColorConfig;
     // (undocumented)
     crosshair: CrosshairStyle;
-    // (undocumented)
     goal: GoalStyles;
-    // (undocumented)
     heatmap: HeatmapStyle;
     // (undocumented)
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;
     markSizeRatio?: number;
+    partition: PartitionStyle;
     // (undocumented)
     scales: ScalesConfig;
     // (undocumented)
@@ -2577,9 +2624,9 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 
 // Warnings were encountered during analysis:
 //
-// src/chart_types/partition_chart/layout/types/config_types.ts:137:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/utils/themes/theme.ts:216:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-// src/utils/themes/theme.ts:217:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
+// src/chart_types/partition_chart/layout/types/config.ts:60:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
+// src/utils/themes/theme.ts:217:5 - (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+// src/utils/themes/theme.ts:218:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

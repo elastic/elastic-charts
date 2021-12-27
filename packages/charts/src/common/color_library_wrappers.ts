@@ -20,7 +20,7 @@ export type RGB = number;
 export type A = number;
 
 /** @internal */
-export type RgbTuple = [RGB, RGB, RGB, A?];
+export type RgbTuple = [r: RGB, g: RGB, b: RGB, alpha?: A];
 
 /** @public */
 export type RgbaTuple = [r: RGB, g: RGB, b: RGB, alpha: A];

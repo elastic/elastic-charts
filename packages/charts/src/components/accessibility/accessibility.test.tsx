@@ -11,7 +11,7 @@ import React from 'react';
 
 import { Goal } from '../../chart_types/goal_chart/specs';
 import { GoalSubtype } from '../../chart_types/goal_chart/specs/constants';
-import { config } from '../../chart_types/partition_chart/layout/config';
+import { defaultPartitionValueFormatter } from '../../chart_types/partition_chart/layout/config';
 import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';
 import { arrayToLookup } from '../../common/color_calcs';
 import { mocks } from '../../mocks/hierarchical';
@@ -53,7 +53,7 @@ describe('Accessibility', () => {
           id="spec_1"
           data={mocks.pie}
           valueAccessor={(d: Datum) => d.exportVal as number}
-          valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+          valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
           layers={[
             {
               groupByRollup: (d: Datum) => d.sitc1,
@@ -69,17 +69,15 @@ describe('Accessibility', () => {
         <Partition
           id="spec_1"
           data={mocks.pie}
+          layout={PartitionLayout.treemap}
           valueAccessor={(d: Datum) => d.exportVal as number}
-          valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+          valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
           layers={[
             {
               groupByRollup: (d: Datum) => d.sitc1,
               nodeLabel: (d: Datum) => productLookup[d].name,
             },
           ]}
-          config={{
-            partitionLayout: PartitionLayout.treemap,
-          }}
         />
       </Chart>,
     );

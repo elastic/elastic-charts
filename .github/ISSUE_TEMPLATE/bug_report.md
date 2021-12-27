@@ -7,21 +7,27 @@ assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Describe the issue**
+<!-- Add a clear and concise description about the issue-->
+
 
 **To Reproduce**
 Steps to reproduce the behavior:
-1. Go to '...'
+1. Go to '...' 
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
+
+<!-- 
+You can use this [codesandbox](https://codesandbox.io/s/elastic-charts-playground-87y7g?file=/src/App.tsx) to create a meaningful reproducible example if it is not possible to reproduce it through storybook or via an online public accessible app
+-->
+
 
 **Expected behaviour**
 A clear and concise description of what you expected to happen.
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+<!-- Add screenshots to help explain your problem or delete the section if not applicable-->
 
 **Version (please complete the following information):**
  - OS: [e.g. iOS]
@@ -32,16 +38,16 @@ If applicable, add screenshots to help explain your problem.
 Add any other context about the problem here.
 
 **Errors in browser console**
-If applicable, add any console error.
+<!-- Add any console error related to the issues or delete the section if not applicable-->
 
 
 **Kibana Cross Issues**
-Add any [Kibana](https://github.com/elastic/kibana) related issues here.
+<!-- Add any [Kibana](https://github.com/elastic/kibana) related issues here or delete the section if not applicable-->
+
 
 
 **Checklist**
-
-Delete any items that are not applicable to this issue.
-
-- [ ] every related Kibana issue is listed under `Kibana Cross Issues` list
-- [ ] `kibana cross issue` tag is associated to the issue if any kibana cross issue is present
+<!-- Delete any items that are not applicable to this issue. -->
+- [ ] The proper **chart type** label has been added (e.g. `:xy`, `:partition`)
+- [ ] The proper **feature** labels have been added (e.g. `:interactions`, `:axis`)
+- [ ] Every related Kibana issue is listed under `Kibana Cross Issues` list and the `kibana cross issue` tag is applied

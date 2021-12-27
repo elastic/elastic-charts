@@ -82,4 +82,10 @@ describe('Axis stories', () => {
       );
     });
   });
+
+  eachTheme.it(async (_, urlParam) => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      `http://localhost:9001/?path=/story/sunburst--value-formatted-with-categorical-color-palette&${urlParam}`,
+    );
+  }, 'should render link labels with fallback text color for %s theme');
 });

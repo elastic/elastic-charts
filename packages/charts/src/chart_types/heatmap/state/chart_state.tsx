@@ -17,7 +17,7 @@ import { InitStatus } from '../../../state/selectors/get_internal_is_intialized'
 import { Dimensions } from '../../../utils/dimensions';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
-import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
+import { computeChartElementSizesSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
@@ -27,6 +27,7 @@ import { getTooltipAnchorSelector } from './selectors/get_tooltip_anchor';
 import { getSpecOrNull } from './selectors/heatmap_spec';
 import { isBrushAvailableSelector } from './selectors/is_brush_available';
 import { isBrushingSelector } from './selectors/is_brushing';
+import { isEmptySelector } from './selectors/is_empty';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
@@ -60,8 +61,8 @@ export class HeatmapState implements InternalChartState {
     return isBrushingSelector(globalState);
   }
 
-  isChartEmpty() {
-    return false;
+  isChartEmpty(globalState: GlobalChartState) {
+    return isEmptySelector(globalState);
   }
 
   getLegendItems(globalState: GlobalChartState) {
@@ -108,7 +109,7 @@ export class HeatmapState implements InternalChartState {
   }
 
   getMainProjectionArea(globalState: GlobalChartState): Dimensions {
-    return computeChartDimensionsSelector(globalState);
+    return computeChartElementSizesSelector(globalState).grid;
   }
 
   getBrushArea(globalState: GlobalChartState): Dimensions | null {

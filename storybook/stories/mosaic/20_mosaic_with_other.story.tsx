@@ -19,8 +19,8 @@ import {
   PartitionLayout,
   Settings,
   ShapeTreeNode,
+  defaultPartitionValueFormatter,
 } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup } from '../utils/utils';
@@ -45,12 +45,18 @@ export const Example = () => {
   const otherOnBottom = boolean('"Other" on bottom even if not the smallest', true);
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings
+        baseTheme={useBaseTheme()}
+        theme={{
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+        }}
+      />
       <Partition
         id="spec_1"
         data={data}
+        layout={PartitionLayout.mosaic}
         valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
-        valueFormatter={(d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}`}
+        valueFormatter={(d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.region,
@@ -98,9 +104,6 @@ export const Example = () => {
             },
           },
         ]}
-        config={{
-          partitionLayout: PartitionLayout.mosaic,
-        }}
       />
     </Chart>
   );

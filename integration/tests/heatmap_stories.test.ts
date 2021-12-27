@@ -52,4 +52,10 @@ describe('Heatmap stories', () => {
       `http://localhost:9001/?path=/story/heatmap-alpha--time-snap&globals=theme:light&knob-dataset=${dataset}`,
     );
   });
+
+  it('should show x and y axis titles', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/heatmap-alpha--basic&knob-Show%20x%20axis%20title=true&knob-Show%20y%20axis%20title=true',
+    );
+  });
 });
