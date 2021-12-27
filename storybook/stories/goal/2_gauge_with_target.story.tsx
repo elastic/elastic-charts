@@ -55,6 +55,8 @@ export const Example = () => {
     }) *
     (Math.PI / 8);
 
+  const useValueFormatter = boolean('test tooltip value formatter', false);
+
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
@@ -74,7 +76,7 @@ export const Example = () => {
         centralMinor=""
         angleStart={angleStart}
         angleEnd={angleEnd}
-        valueFormatter={(d: any) => `${d}`}
+        valueFormatter={useValueFormatter ? (d: any) => `Testing ${d}` : undefined}
       />
     </Chart>
   );
