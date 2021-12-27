@@ -59,7 +59,7 @@ export interface GoalSpec extends Spec {
   angleStart: number;
   angleEnd: number;
   bandLabels: string[];
-  valueFormatter: ValueFormatter;
+  tooltipValueFormatter: ValueFormatter;
 }
 
 type SpecRequiredProps = Pick<GoalSpec, 'id' | 'actual'>;
@@ -85,6 +85,6 @@ export const Goal: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps
     | 'centralMinor'
     | 'angleStart'
     | 'angleEnd'
-    | 'valueFormatter'
+    | 'tooltipValueFormatter'
   >(defaultProps),
 );

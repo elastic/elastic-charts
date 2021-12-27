@@ -981,7 +981,7 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     tickValueFormatter: GoalLabelAccessor;
     // (undocumented)
-    valueFormatter: ValueFormatter;
+    tooltipValueFormatter: ValueFormatter;
 }
 
 // @public (undocumented)

@@ -74,7 +74,7 @@ export const Example = () => {
         centralMinor=""
         angleStart={angleStart}
         angleEnd={angleEnd}
-        valueFormatter={(d) => `${d}k USD`}
+        tooltipValueFormatter={(d) => `${d}k USD`}
       />
     </Chart>
   );
