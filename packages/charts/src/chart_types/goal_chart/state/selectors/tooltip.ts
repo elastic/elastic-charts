@@ -48,7 +48,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
           key: id,
         },
         value,
-        formattedValue: valueFormatter ? valueFormatter(value) : `${value}`,
+        formattedValue: valueFormatter(value),
         datum: value,
       });
     });

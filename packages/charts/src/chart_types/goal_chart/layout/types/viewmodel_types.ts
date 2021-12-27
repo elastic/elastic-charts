@@ -82,7 +82,7 @@ export const defaultGoalSpec = {
   bandLabels: [],
   angleStart: Math.PI + Math.PI / 4,
   angleEnd: -Math.PI / 4,
-  valueFormatter: (value: any) => value,
+  valueFormatter: (value: number) => String(value),
 };
 
 /** @internal */

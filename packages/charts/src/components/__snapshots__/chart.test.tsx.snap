@@ -73,7 +73,7 @@ exports[`Chart should render the legend name test 1`] = `
                 <Connect(XYChart) forwardCanvasRef={{...}}>
                   <XYChart forwardCanvasRef={{...}} isRTL={false} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
                     <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\">
-                      <canvas dir=\\"ltr\\" className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\" />
+                      <canvas dir=\\"ltr\\" className=\\"echCanvasRenderer\\" width={152} height={200} style={{...}} role=\\"presentation\\" />
                     </figure>
                     <Connect(ScreenReaderSummaryComponent)>
                       <ScreenReaderSummaryComponent chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function: dispatch]}>
@@ -114,7 +114,7 @@ exports[`Chart should render the legend name test 1`] = `
                     <svg className=\\"echHighlighter\\" style={{...}}>
                       <defs>
                         <clipPath id=\\"echHighlighterClipPath__chart1\\">
-                          <rect x=\\"0\\" y=\\"0\\" width={130} height={180} />
+                          <rect x=\\"0\\" y=\\"0\\" width={132} height={180} />
                         </clipPath>
                       </defs>
                     </svg>
