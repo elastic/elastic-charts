@@ -15,6 +15,7 @@ import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getColorScale } from './get_color_scale';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
+import { isEmptySelector } from './is_empty';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
@@ -27,8 +28,9 @@ export const getHeatmapGeometries = createCustomCachedSelector(
     getColorScale,
     getDeselectedSeriesSelector,
     getChartThemeSelector,
+    isEmptySelector,
   ],
-  (heatmapSpec, dims, heatmapTable, { bands, scale: colorScale }, deselectedSeries, theme): ShapeViewModel => {
+  (heatmapSpec, dims, heatmapTable, { bands, scale: colorScale }, deselectedSeries, theme, empty): ShapeViewModel => {
     // instead of using the specId, each legend item is associated with an unique band label
     const disabledBandLabels = new Set(
       deselectedSeries.map(({ specId }) => {
@@ -42,6 +44,8 @@ export const getHeatmapGeometries = createCustomCachedSelector(
       })
       .map(({ start, end }) => [start, end]);
 
-    return heatmapSpec ? render(heatmapSpec, dims, heatmapTable, colorScale, bandsToHide, theme) : nullShapeViewModel();
+    return heatmapSpec && !empty
+      ? render(heatmapSpec, dims, heatmapTable, colorScale, bandsToHide, theme)
+      : nullShapeViewModel();
   },
 );

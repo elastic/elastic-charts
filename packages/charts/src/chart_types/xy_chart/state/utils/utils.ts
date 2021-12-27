@@ -11,6 +11,7 @@ import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
 import { SettingsSpec, TickFormatter } from '../../../../specs';
+import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
@@ -169,6 +170,7 @@ export function computeSeriesGeometries(
   smallMultiplesScales: SmallMultipleScales,
   enableHistogramMode: boolean,
   fallbackTickFormatter: TickFormatter,
+  measureText: TextMeasure,
 ): ComputedGeometries {
   const chartColors: ColorConfig = chartTheme.colors;
   const formattedDataSeries = nonFilteredDataSeries.filter(({ isFiltered }) => !isFiltered);
@@ -209,6 +211,7 @@ export function computeSeriesGeometries(
     enableHistogramMode,
     chartRotation,
     fallbackTickFormatter,
+    measureText,
   );
 
   const totalBarsInCluster = Object.values(barIndexByPanel).reduce((acc, curr) => Math.max(acc, curr.length), 0);
@@ -280,6 +283,7 @@ function renderGeometries(
   enableHistogramMode: boolean,
   chartRotation: Rotation,
   fallBackTickFormatter: TickFormatter,
+  measureText: TextMeasure,
 ): Omit<ComputedGeometries, 'scales'> {
   const len = dataSeries.length;
   let i;
@@ -360,6 +364,7 @@ function renderGeometries(
         : undefined;
 
       const renderedBars = renderBars(
+        measureText,
         shift,
         ds,
         xScale,

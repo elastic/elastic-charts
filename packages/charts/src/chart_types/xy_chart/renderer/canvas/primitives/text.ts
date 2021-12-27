@@ -7,8 +7,9 @@
  */
 
 import { Degrees } from '../../../../../common/geometry';
-import { cssFontShorthand, Font, measureText, TextAlign, TextBaseline } from '../../../../../common/text_utils';
+import { cssFontShorthand, Font, TextAlign, TextBaseline } from '../../../../../common/text_utils';
 import { withContext } from '../../../../../renderers/canvas';
+import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { degToRad } from '../../../../../utils/common';
 import { Point } from '../../../../../utils/point';
 import { TextDirection } from '../../../utils/axis_utils';
@@ -88,17 +89,7 @@ export function wrapLines(
   const textArr: string[] = [];
   const textMeasureProcessor = measureText(ctx);
   const getTextWidth = (textString: string) => {
-    const measuredText = textMeasureProcessor(fontSize, [
-      {
-        text: textString,
-        ...font,
-      },
-    ]);
-    const [measure] = measuredText;
-    if (measure) {
-      return measure.width;
-    }
-    return 0;
+    return textMeasureProcessor(textString, font, fontSize).width;
   };
 
   const additionalWidth = shouldAddEllipsis ? getTextWidth(ELLIPSIS) : 0;

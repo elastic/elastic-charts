@@ -116,7 +116,16 @@ export const getLabelBox = (
 ): TickLabelBounds => ({
   ...(axesStyle.tickLabel.visible ? ticks.map(labelFormatter) : []).reduce(
     (sizes, labelText) => {
-      const bbox = textMeasure(labelText, 0, axesStyle.tickLabel.fontSize, axesStyle.tickLabel.fontFamily);
+      const bbox = textMeasure(
+        labelText,
+        {
+          fontStyle: axesStyle.tickLabel.fontStyle ?? 'normal',
+          fontFamily: axesStyle.tickLabel.fontFamily,
+          fontWeight: 'normal',
+          fontVariant: 'normal',
+        },
+        axesStyle.tickLabel.fontSize,
+      );
       const rotatedBbox = computeRotatedLabelDimensions(bbox, axesStyle.tickLabel.rotation);
       sizes.maxLabelBboxWidth = Math.max(sizes.maxLabelBboxWidth, Math.ceil(rotatedBbox.width));
       sizes.maxLabelBboxHeight = Math.max(sizes.maxLabelBboxHeight, Math.ceil(rotatedBbox.height));

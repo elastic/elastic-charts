@@ -6,33 +6,28 @@
  * Side Public License, v 1.
  */
 
+import { cssFontShorthand, Font } from '../../common/text_utils';
 import { Size } from '../dimensions';
-
-/** @internal */
-export type TextMeasure = (
-  text: string,
-  padding: number,
-  fontSize: number,
-  fontFamily: string,
-  lineHeight?: number,
-  fontWeight?: number,
-) => Size;
 
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
   const canvas = document.createElement('canvas');
-  canvas.style.display = 'none';
   const ctx = canvas.getContext('2d');
-  const root = document.documentElement;
-  root.appendChild(canvas);
-  const textMeasure: TextMeasure = ctx
-    ? (text: string, padding: number, fontSize, fontFamily, lineHeight = 1, fontWeight = 400) => {
-        ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-        const measure = ctx.measureText(text);
-        return { width: measure.width + Math.max(padding, 1), height: fontSize * lineHeight }; // padding should be at least one to avoid browser measureText inconsistencies
-      }
-    : () => ({ width: 0, height: 0 });
-  const result: T = fun(textMeasure);
-  root.removeChild(canvas);
-  return result;
+  return fun(ctx ? measureText(ctx) : () => ({ width: 0, height: 0 }));
 };
+
+/** @internal */
+export type TextMeasure = (text: string, font: Omit<Font, 'textColor'>, fontSize: number, lineHeight?: number) => Size;
+
+/** @internal */
+export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
+  return (text, font, fontSize, lineHeight = 1) => {
+    if (text.length === 0) {
+      // TODO this is a temporary fix to make the multilayer time axis work
+      return { width: 0, height: fontSize * lineHeight };
+    }
+    ctx.font = cssFontShorthand(font, fontSize);
+    const { actualBoundingBoxLeft, actualBoundingBoxRight } = ctx.measureText(text);
+    return { width: actualBoundingBoxLeft + actualBoundingBoxRight, height: fontSize * lineHeight };
+  };
+}

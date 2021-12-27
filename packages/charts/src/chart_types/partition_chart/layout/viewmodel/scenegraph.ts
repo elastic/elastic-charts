@@ -6,13 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { measureText } from '../../../../common/text_utils';
+import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PartitionStyle } from '../../../../utils/themes/partition';
 import { Layer, PartitionSpec } from '../../specs';
 import { VALUE_GETTERS } from '../config';
 import {
-  nullShapeViewModel,
   PartitionSmallMultiplesModel,
   RawTextGetter,
   ShapeTreeNode,
@@ -44,23 +43,17 @@ export function getShapeViewModel(
   style: PartitionStyle,
   panelModel: PartitionSmallMultiplesModel,
 ): ShapeViewModel {
-  const textMeasurer = document.createElement('canvas');
-  const textMeasurerCtx = textMeasurer.getContext('2d');
-  if (!textMeasurerCtx) {
-    const { width, height } = parentDimensions;
-    return nullShapeViewModel(spec.layout, style, { x: width / 2, y: height / 2 });
-  }
-  const valueGetter = valueGetterFunction(spec.valueGetter);
-
-  return shapeViewModel(
-    measureText(textMeasurerCtx),
-    spec,
-    style,
-    parentDimensions,
-    rawTextGetter(spec.layers),
-    valueGetter,
-    tree,
-    backgroundStyle,
-    panelModel,
-  );
+  return withTextMeasure((measureText) => {
+    return shapeViewModel(
+      measureText,
+      spec,
+      style,
+      parentDimensions,
+      rawTextGetter(spec.layers),
+      valueGetterFunction(spec.valueGetter),
+      tree,
+      backgroundStyle,
+      panelModel,
+    );
+  });
 }
