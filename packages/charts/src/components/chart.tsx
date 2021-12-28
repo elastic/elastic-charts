@@ -19,9 +19,12 @@ import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
+import { getInternalMainProjectionAreaSelector } from '../state/selectors/get_internal_main_projection_area';
 import { getLegendConfigSelector } from '../state/selectors/get_legend_config_selector';
 import { ChartSize, getChartSize } from '../utils/chart_size';
 import { LayoutDirection } from '../utils/common';
+import { Dimensions } from '../utils/dimensions';
+import { deepEqual } from '../utils/fast_deep_equal';
 import { ChartBackground } from './chart_background';
 import { ChartContainer } from './chart_container';
 import { ChartResizer } from './chart_resizer';
@@ -39,6 +42,7 @@ interface ChartProps {
   size?: ChartSize;
   className?: string;
   id?: string;
+  onInternalMainProjectionAreaDimensionsChange?: (d: Dimensions) => void;
 }
 
 interface ChartState {
@@ -73,10 +77,13 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   private chartStageRef: React.RefObject<HTMLCanvasElement>;
 
+  private currentInternalMainProjectionAreaDimensions: Dimensions;
+
   constructor(props: ChartProps) {
     super(props);
     this.chartContainerRef = createRef();
     this.chartStageRef = createRef();
+    this.currentInternalMainProjectionAreaDimensions = { height: 0, left: 0, top: 0, width: 0 };
 
     const id = props.id ?? uuid.v4();
     const storeReducer = chartStoreReducer(id);
@@ -101,6 +108,16 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       }
       if (state.internalChartState) {
         state.internalChartState.eventCallbacks(state);
+
+        const previousInternalMainProjectionAreaDimensions = this.currentInternalMainProjectionAreaDimensions;
+        this.currentInternalMainProjectionAreaDimensions = getInternalMainProjectionAreaSelector(state);
+
+        if (
+          !deepEqual(previousInternalMainProjectionAreaDimensions, this.currentInternalMainProjectionAreaDimensions) &&
+          this.props.onInternalMainProjectionAreaDimensionsChange
+        ) {
+          this.props.onInternalMainProjectionAreaDimensionsChange(this.currentInternalMainProjectionAreaDimensions);
+        }
       }
     });
   }
