@@ -68,6 +68,7 @@ const defaultProps = {
   radiusOutside: 128,
   fillRectangleWidth: Infinity,
   fillRectangleHeight: Infinity,
+  animation: { duration: 0 },
 };
 
 /**
@@ -128,5 +129,6 @@ export const Partition: React.FunctionComponent<SpecRequiredProps & SpecOptional
     | 'radiusOutside'
     | 'fillRectangleWidth'
     | 'fillRectangleHeight'
+    | 'animation'
   >(defaultProps),
 );

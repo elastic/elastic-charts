@@ -36,7 +36,7 @@ export interface AnimKeyframe {
 /** @public */
 export interface AnimationConfig {
   /** @alpha */
-  animation?: {
+  animation: {
     duration: TimeMs;
     keyframes?: Array<AnimKeyframe>;
   };
