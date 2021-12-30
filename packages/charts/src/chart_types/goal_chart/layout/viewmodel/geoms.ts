@@ -10,6 +10,7 @@ import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
 import { PointObject, Radian, Rectangle } from '../../../../common/geometry';
 import { cssFontShorthand, Font } from '../../../../common/text_utils';
 import { CanvasRenderer } from '../../../../renderers/canvas';
+import { measureText } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSubtype } from '../../specs/constants';
@@ -203,15 +204,13 @@ export class Text implements Mark {
 
   boundingBoxes(ctx: CanvasRenderingContext2D) {
     if (this.text.length === 0) return [];
-
-    this.setCanvasTextState(ctx);
-    const box = ctx.measureText(this.text);
+    const box = measureText(ctx)(this.text, this.fontShape, this.fontSize);
     return [
       {
-        x0: -box.actualBoundingBoxLeft + this.x - capturePad,
-        y0: -box.actualBoundingBoxAscent + this.y - capturePad,
-        x1: box.actualBoundingBoxRight + this.x + capturePad,
-        y1: box.actualBoundingBoxDescent + this.y + capturePad,
+        x0: -box.width / 2 + this.x - capturePad,
+        y0: -box.height / 2 + this.y - capturePad,
+        x1: box.width / 2 + this.x + capturePad,
+        y1: box.height / 2 + this.y + capturePad,
       },
     ];
   }
@@ -231,8 +230,8 @@ function get<T>(o: { [k: string]: any }, name: string, dflt: T) {
 /** @internal */
 export function geoms(
   bulletViewModel: BulletViewModel,
-  config: Theme['goal'],
-  partentDimensions: Dimensions,
+  theme: Theme['goal'],
+  parentDimensions: Dimensions,
   chartCenter: PointObject,
 ): Mark[] {
   const {
@@ -273,12 +272,12 @@ export function geoms(
       : {}),
   };
 
-  const minSize = Math.min(partentDimensions.width, partentDimensions.height);
+  const minSize = Math.min(parentDimensions.width, parentDimensions.height);
 
   const referenceSize =
     Math.min(
       circular ? referenceCircularSizeCap : referenceBulletSizeCap,
-      circular ? minSize : vertical ? partentDimensions.height : partentDimensions.width,
+      circular ? minSize : vertical ? parentDimensions.height : parentDimensions.width,
     ) *
     (1 - 2 * marginRatio);
 
@@ -308,21 +307,21 @@ export function geoms(
     {
       order: 1,
       landmarks: { from: 'base', to: 'actual', yOffset: 'yOffset' },
-      aes: { shape, fillColor: config.progressLine.stroke, lineWidth: tickLength },
+      aes: { shape, fillColor: theme.progressLine.stroke, lineWidth: tickLength },
     },
     ...(target
       ? [
           {
             order: 2,
             landmarks: { at: 'target', yOffset: 'yOffset' },
-            aes: { shape, fillColor: config.targetLine.stroke, lineWidth: barThickness / GOLDEN_RATIO },
+            aes: { shape, fillColor: theme.targetLine.stroke, lineWidth: barThickness / GOLDEN_RATIO },
           },
         ]
       : []),
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 3,
       landmarks: { at: `tick_${i}`, yOffset: 'yOffset' },
-      aes: { shape, fillColor: config.tickLine.stroke, lineWidth: tickLength, axisNormalOffset: tickOffset },
+      aes: { shape, fillColor: theme.tickLine.stroke, lineWidth: tickLength, axisNormalOffset: tickOffset },
     })),
     ...bulletViewModel.ticks.map((b, i) => ({
       order: 4,
@@ -331,8 +330,8 @@ export function geoms(
         shape: 'text',
         textAlign: vertical ? 'right' : 'center',
         textBaseline: vertical ? 'middle' : 'top',
-        fillColor: config.tickLabel.fill,
-        fontShape: { ...config.tickLabel, fontVariant: 'normal', fontWeight: '500' },
+        fillColor: theme.tickLabel.fill,
+        fontShape: { ...theme.tickLabel, fontVariant: 'normal', fontWeight: '500' },
         axisNormalOffset: -barThickness,
       },
     })),
@@ -345,8 +344,8 @@ export function geoms(
         axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
         textAlign: vertical ? 'center' : 'right',
         textBaseline: 'bottom',
-        fillColor: config.majorLabel.fill,
-        fontShape: { ...config.majorLabel, fontVariant: 'normal', fontWeight: '900' },
+        fillColor: theme.majorLabel.fill,
+        fontShape: { ...theme.majorLabel, fontVariant: 'normal', fontWeight: '900' },
       },
     },
     {
@@ -358,8 +357,8 @@ export function geoms(
         axisTangentOffset: circular || !vertical ? 0 : 2 * labelFontSize,
         textAlign: vertical ? 'center' : 'right',
         textBaseline: 'top',
-        fillColor: config.minorLabel.fill,
-        fontShape: { ...config.minorLabel, fontVariant: 'normal', fontWeight: '300' },
+        fillColor: theme.minorLabel.fill,
+        fontShape: { ...theme.minorLabel, fontVariant: 'normal', fontWeight: '300' },
       },
     },
     ...(circular
@@ -371,8 +370,8 @@ export function geoms(
               shape: 'text',
               textAlign: 'center',
               textBaseline: 'bottom',
-              fillColor: config.majorCenterLabel.fill,
-              fontShape: { ...config.majorCenterLabel, fontVariant: 'normal', fontWeight: '900' },
+              fillColor: theme.majorCenterLabel.fill,
+              fontShape: { ...theme.majorCenterLabel, fontVariant: 'normal', fontWeight: '900' },
             },
           },
           {
@@ -382,8 +381,8 @@ export function geoms(
               shape: 'text',
               textAlign: 'center',
               textBaseline: 'top',
-              fillColor: config.minorCenterLabel.fill,
-              fontShape: { ...config.minorCenterLabel, fontVariant: 'normal', fontWeight: '300' },
+              fillColor: theme.minorCenterLabel.fill,
+              fontShape: { ...theme.minorCenterLabel, fontVariant: 'normal', fontWeight: '300' },
             },
           },
         ]

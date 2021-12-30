@@ -33,7 +33,7 @@ export const geometries = createCustomCachedSelector(
 export const getPrimitiveGeoms = createCustomCachedSelector(
   [geometries, getParentDimensions],
   (shapeViewModel, parentDimensions): Mark[] => {
-    const { chartCenter, bulletViewModel, config } = shapeViewModel;
-    return geoms(bulletViewModel, config, parentDimensions, chartCenter);
+    const { chartCenter, bulletViewModel, theme } = shapeViewModel;
+    return geoms(bulletViewModel, theme, parentDimensions, chartCenter);
   },
 );

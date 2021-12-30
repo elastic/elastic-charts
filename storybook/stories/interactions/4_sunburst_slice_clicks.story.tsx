@@ -48,11 +48,7 @@ const pieData: Array<PieDatum> = [
 ];
 
 export const Example = () => {
-  const partitionLayout = select(
-    'layout',
-    { sunburst: PartitionLayout.sunburst, treemap: PartitionLayout.treemap },
-    'sunburst',
-  );
+  const layout = select('layout', { sunburst: PartitionLayout.sunburst, treemap: PartitionLayout.treemap }, 'sunburst');
   return (
     <Chart>
       <Settings
@@ -60,14 +56,15 @@ export const Example = () => {
         showLegendExtra
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
+        theme={{
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+        }}
         {...onElementListeners}
       />
       <Partition
         id="pie"
         data={pieData}
-        config={{
-          partitionLayout,
-        }}
+        layout={layout}
         valueAccessor={(d) => d[3]}
         layers={[
           {
@@ -75,7 +72,7 @@ export const Example = () => {
             nodeLabel: (d) => `dest: ${d}`,
             shape: {
               fillColor: (d) => {
-                if (partitionLayout === 'sunburst') {
+                if (layout === 'sunburst') {
                   // pick color from color palette based on mean angle - rather distinct colors in the inner ring
                   return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
                 }
@@ -88,7 +85,7 @@ export const Example = () => {
             nodeLabel: (d) => `source: ${d}`,
             shape: {
               fillColor: (d) => {
-                if (partitionLayout === 'sunburst') {
+                if (layout === 'sunburst') {
                   // pick color from color palette based on mean angle - rather distinct colors in the inner ring
                   return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
                 }

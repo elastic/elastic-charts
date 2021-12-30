@@ -7,7 +7,7 @@
  */
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { geometries } from './geometries';
+import { getHeatmapGeometries } from './geometries';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { isBrushingSelector } from './is_brushing';
 
@@ -29,7 +29,7 @@ export const getHighlightedDataSelector = createCustomCachedSelector(
  * @internal
  */
 export const getHighlightedAreaSelector = createCustomCachedSelector(
-  [geometries, getHeatmapSpecSelector, isBrushingSelector],
+  [getHeatmapGeometries, getHeatmapSpecSelector, isBrushingSelector],
   (geoms, spec, isBrushing) => {
     if (!spec.highlightedData || isBrushing) {
       return null;

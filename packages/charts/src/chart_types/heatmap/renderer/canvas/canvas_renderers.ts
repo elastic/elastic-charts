@@ -13,16 +13,17 @@ import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/li
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { ChartElementSizes } from '../../state/selectors/compute_chart_dimensions';
 
 /** @internal */
 export function renderCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
-  { config, heatmapViewModel }: ShapeViewModel,
+  { theme, heatmapViewModel }: ShapeViewModel,
   background: Color,
+  elementSizes: ChartElementSizes,
+  debug: boolean,
 ) {
-  // eslint-disable-next-line no-empty-pattern
-  const {} = config;
   withContext(ctx, () => {
     // set some defaults for the overall rendering
 
@@ -48,17 +49,44 @@ export function renderCanvas2d(
 
     renderLayers(ctx, [
       () => clearCanvas(ctx, background),
-      () => {
+      () =>
+        debug &&
         withContext(ctx, () => {
-          // render grid
+          ctx.strokeStyle = 'black';
+          ctx.strokeRect(
+            elementSizes.grid.left,
+            elementSizes.grid.top,
+            elementSizes.grid.width,
+            elementSizes.grid.height,
+          );
+
+          ctx.strokeStyle = 'red';
+          ctx.strokeRect(
+            elementSizes.xAxis.left,
+            elementSizes.xAxis.top,
+            elementSizes.xAxis.width,
+            elementSizes.xAxis.height,
+          );
+
+          ctx.strokeStyle = 'violet';
+          ctx.strokeRect(
+            elementSizes.yAxis.left,
+            elementSizes.yAxis.top,
+            elementSizes.yAxis.width,
+            elementSizes.yAxis.height,
+          );
+        }),
+      () => {
+        // Grid
+        withContext(ctx, () => {
           renderMultiLine(ctx, heatmapViewModel.gridLines.x, heatmapViewModel.gridLines.stroke);
           renderMultiLine(ctx, heatmapViewModel.gridLines.y, heatmapViewModel.gridLines.stroke);
         });
       },
 
       () =>
+        // Cells
         withContext(ctx, () => {
-          // render cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
@@ -67,16 +95,15 @@ export function renderCanvas2d(
         }),
 
       () =>
-        config.cell.label.visible &&
         withContext(ctx, () => {
-          // render text on cells
+          // Text on cells
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
             const fontSize = heatmapViewModel.cellFontSize(cell);
             if (cell.visible && Number.isFinite(fontSize))
               renderText(ctx, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, cell.formatted, {
-                ...config.cell.label,
+                ...theme.cell.label,
                 fontSize,
                 align: 'center',
                 baseline: 'middle',
@@ -87,24 +114,25 @@ export function renderCanvas2d(
 
       () =>
         // render text on Y axis
-        config.yAxisLabel.visible &&
-        withContext(ctx, () =>
+        theme.yAxisLabel.visible &&
+        withContext(ctx, () => {
+          ctx.translate(elementSizes.yAxis.left + elementSizes.yAxis.width, elementSizes.yAxis.top);
           filteredYValues.forEach((yValue) => {
             const font: Font = {
-              fontFamily: config.yAxisLabel.fontFamily,
-              fontStyle: config.yAxisLabel.fontStyle ? config.yAxisLabel.fontStyle : 'normal',
+              fontFamily: theme.yAxisLabel.fontFamily,
+              fontStyle: theme.yAxisLabel.fontStyle ? theme.yAxisLabel.fontStyle : 'normal',
               fontVariant: 'normal',
               fontWeight: 'normal',
               textColor: Colors.Black.keyword,
             };
-            const { padding } = config.yAxisLabel;
+            const { padding } = theme.yAxisLabel;
             const horizontalPadding =
               typeof padding === 'number' ? padding * 2 : (padding.left ?? 0) + (padding.right ?? 0);
             const [resultText] = wrapLines(
               ctx,
               yValue.text,
               font,
-              config.yAxisLabel.fontSize,
+              theme.yAxisLabel.fontSize,
               heatmapViewModel.gridOrigin.x - horizontalPadding,
               16,
               { shouldAddEllipsis: true, wrapAtWord: false },
@@ -114,19 +142,39 @@ export function renderCanvas2d(
               { x: yValue.x, y: yValue.y },
               resultText,
               // the alignment for y axis labels is fixed to the right
-              { ...config.yAxisLabel, align: 'right' },
+              { ...theme.yAxisLabel, align: 'right' },
             );
-          }),
-        ),
+          });
+        }),
 
       () =>
         // render text on X axis
-        config.xAxisLabel.visible &&
-        withContext(ctx, () =>
+        theme.xAxisLabel.visible &&
+        withContext(ctx, () => {
+          ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
           heatmapViewModel.xValues.forEach((xValue) =>
-            renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, config.xAxisLabel),
-          ),
-        ),
+            renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, theme.xAxisLabel),
+          );
+        }),
+
+      () =>
+        withContext(ctx, () => {
+          heatmapViewModel.titles
+            .filter((t) => t.visible && t.text !== '')
+            .forEach((title) => {
+              renderText(
+                ctx,
+                title.origin,
+                title.text,
+                {
+                  ...title,
+                  baseline: 'middle',
+                  align: 'center',
+                },
+                title.rotation,
+              );
+            });
+        }),
     ]);
   });
 }

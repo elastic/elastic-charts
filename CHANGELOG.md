@@ -1,3 +1,39 @@
+## [41.0.1](https://github.com/elastic/elastic-charts/compare/v41.0.0...v41.0.1) (2021-12-20)
+
+
+### Bug Fixes
+
+* export deprecated partition config types ([#1530](https://github.com/elastic/elastic-charts/issues/1530)) ([00f0f8e](https://github.com/elastic/elastic-charts/commit/00f0f8e1590f6fa0e70b0255a03ba428eeb0f0cd))
+
+# [41.0.0](https://github.com/elastic/elastic-charts/compare/v40.2.0...v41.0.0) (2021-12-17)
+
+
+### Bug Fixes
+
+* replace createRef with useRef in Functional Components. ([#1524](https://github.com/elastic/elastic-charts/issues/1524)) ([9538417](https://github.com/elastic/elastic-charts/commit/953841738afd80482ff4ee5cca01dc018861dcda))
+
+
+### Code Refactoring
+
+* **goal:** remove deprecated config ([#1408](https://github.com/elastic/elastic-charts/issues/1408)) ([312e31d](https://github.com/elastic/elastic-charts/commit/312e31df701e765328924bdeecb4191c3c7537d9))
+
+
+### Features
+
+* **heatmap:** dark mode with theme controls ([#1406](https://github.com/elastic/elastic-charts/issues/1406)) ([f29c8dd](https://github.com/elastic/elastic-charts/commit/f29c8dd2ac235ec3b9eaf225537e57c87e044056))
+* **legend:** custom legend width ([#1467](https://github.com/elastic/elastic-charts/issues/1467)) ([51f50df](https://github.com/elastic/elastic-charts/commit/51f50df0d00c352808bd95d0f69010239d74ba4a))
+
+
+### BREAKING CHANGES
+
+* **goal:** The `GoalSpec.config` prop is removed. All properties have been moved/renamed under new `Theme.goal` options with the following exceptions:
+
+- `Config.margin` is now controlled by `Theme.chartMargins` and is no longer a margin ratio as before.
+- `Config.backgroundColor` is now controlled by `Theme.background.color`, even though it's not yet used.
+- `fontFamily` moved into each respective label styles
+- `angleStart` and `angleEnd` are moved onto the `GoalSpec` as optional values.
+- `sectorLineWidth`, `width` and `height` all removed as they were never used.
+
 # [40.2.0](https://github.com/elastic/elastic-charts/compare/v40.1.0...v40.2.0) (2021-12-09)
 
 

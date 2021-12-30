@@ -8,7 +8,7 @@
 
 import { ChartType } from '../../chart_types';
 import { X_SCALE_DEFAULT } from '../../chart_types/heatmap/specs/scale_defaults';
-import { config, percentFormatter } from '../../chart_types/partition_chart/layout/config';
+import { percentFormatter } from '../../chart_types/partition_chart/layout/config';
 import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';
 import { ShapeTreeNode } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
 import { AGGREGATE_KEY, PrimitiveValue } from '../../chart_types/partition_chart/layout/utils/group_by_rollup';
@@ -124,16 +124,21 @@ export class MockSeriesSpec {
     chartType: ChartType.Partition,
     specType: SpecType.Series,
     id: 'spec1',
-    config: {
-      ...config,
-      partitionLayout: PartitionLayout.sunburst,
-    },
+    layout: PartitionLayout.sunburst,
     valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
     valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
     valueFormatter: (d: number): string => String(d),
     percentFormatter,
     topGroove: 0,
     smallMultiples: null,
+    clockwiseSectors: true,
+    specialFirstInnermostSector: true,
+    drilldown: false,
+    maxRowCount: 12,
+    fillOutside: false,
+    radiusOutside: 128,
+    fillRectangleWidth: Infinity,
+    fillRectangleHeight: Infinity,
     layers: [
       {
         groupByRollup: (d: Datum, i: number) => i,
@@ -142,6 +147,7 @@ export class MockSeriesSpec {
         fillLabel: {},
       },
     ],
+    animation: { duration: 0 },
     data: [],
   };
 
@@ -149,16 +155,21 @@ export class MockSeriesSpec {
     chartType: ChartType.Partition,
     specType: SpecType.Series,
     id: 'spec1',
-    config: {
-      ...config,
-      partitionLayout: PartitionLayout.treemap,
-    },
+    layout: PartitionLayout.treemap,
     valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
     valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
     valueFormatter: (d: number): string => String(d),
     percentFormatter,
     topGroove: 20,
     smallMultiples: null,
+    clockwiseSectors: true,
+    specialFirstInnermostSector: true,
+    drilldown: false,
+    maxRowCount: 12,
+    fillOutside: false,
+    radiusOutside: 128,
+    fillRectangleWidth: Infinity,
+    fillRectangleHeight: Infinity,
     layers: [
       {
         groupByRollup: (d: Datum, i: number) => i,
@@ -167,6 +178,7 @@ export class MockSeriesSpec {
         fillLabel: {},
       },
     ],
+    animation: { duration: 0 },
     data: [],
   };
 
@@ -190,7 +202,13 @@ export class MockSeriesSpec {
     valueFormatter: (value: number) => `${value}`,
     xSortPredicate: Predicate.AlphaAsc,
     ySortPredicate: Predicate.AlphaAsc,
-    config: {},
+    timeZone: 'UTC',
+    xAxisTitle: '',
+    yAxisTitle: '',
+    xAxisLabelName: 'X Value',
+    xAxisLabelFormatter: String,
+    yAxisLabelName: 'Y Value',
+    yAxisLabelFormatter: String,
   };
 
   static bar(partial?: Partial<BarSeriesSpec>): BarSeriesSpec {
@@ -365,6 +383,7 @@ export class MockAnnotationSpec {
   };
 
   static line(partial?: Partial<LineAnnotationSpec>): LineAnnotationSpec {
+    // @ts-ignore - nesting limitation
     return mergePartial<LineAnnotationSpec>(MockAnnotationSpec.lineBase, partial);
   }
 

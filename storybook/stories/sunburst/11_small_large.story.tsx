@@ -8,23 +8,29 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} />
+    <Settings
+      theme={{
+        chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+        partition: { outerSizeRatio: 1 },
+      }}
+      baseTheme={useBaseTheme()}
+    />
     <Partition
       id="spec_1"
       data={[
         { sitc1: 'Machinery and transport equipment', exportVal: 280 },
         { sitc1: 'Mineral fuels, lubricants and related materials', exportVal: 80 },
       ]}
+      layout={PartitionLayout.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d))}`}
+      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d))}`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
@@ -34,12 +40,8 @@ export const Example = () => (
           },
         },
       ]}
-      config={{
-        partitionLayout: PartitionLayout.sunburst,
-        clockwiseSectors: true,
-        specialFirstInnermostSector: false,
-        outerSizeRatio: 1,
-      }}
+      clockwiseSectors
+      specialFirstInnermostSector={false}
     />
   </Chart>
 );

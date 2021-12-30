@@ -15,11 +15,12 @@ export function renderWrappedPartitionCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   {
-    config: { sectorLineWidth: padding, width: containerWidth, height: containerHeight },
+    style: { sectorLineWidth: padding },
     quadViewModel,
     diskCenter,
     width: panelWidth,
     height: panelHeight,
+    chartDimensions: { width: containerWidth, height: containerHeight },
   }: ShapeViewModel,
 ) {
   const width = containerWidth * panelWidth;
