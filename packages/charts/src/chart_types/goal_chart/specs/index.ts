@@ -33,7 +33,7 @@ export interface BandFillColorAccessorInput {
 export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color;
 
 /** @alpha */
-export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
+export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput> | (() => string);
 
 const defaultProps = {
   chartType: ChartType.Goal,
@@ -54,7 +54,7 @@ export interface GoalSpec extends Spec {
   tickValueFormatter: GoalLabelAccessor;
   labelMajor: string | GoalLabelAccessor;
   labelMinor: string | GoalLabelAccessor;
-  centralMajor: string | GoalLabelAccessor;
+  centralMajor: string | GoalLabelAccessor | (() => string);
   centralMinor: string | GoalLabelAccessor;
   angleStart: number;
   angleEnd: number;

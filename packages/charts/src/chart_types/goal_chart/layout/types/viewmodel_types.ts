@@ -45,7 +45,7 @@ export interface BulletViewModel {
   belowBaseCount: number;
   angleStart: number;
   angleEnd: number;
-  tooltipValueFormatter?: ValueFormatter;
+  tooltipValueFormatter: ValueFormatter;
 }
 
 /** @internal */
@@ -100,7 +100,7 @@ export const nullGoalViewModel = {
   belowBaseCount: 0,
   angleStart: 0,
   angleEnd: 0,
-  tooltipValueFormatter: undefined,
+  tooltipValueFormatter: () => '',
 };
 
 /** @internal */

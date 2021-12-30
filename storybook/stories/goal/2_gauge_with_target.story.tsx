@@ -70,7 +70,7 @@ export const Example = () => {
         bandFillColor={useColors ? ({ value }: BandFillColorAccessorInput) => bandFillColor(value) : undefined}
         labelMajor="Revenue 2020 YTD  "
         labelMinor="(thousand USD)  "
-        centralMajor={`${actual}`}
+        centralMajor={() => `$${actual}k USD`}
         centralMinor=""
         angleStart={angleStart}
         angleEnd={angleEnd}
