@@ -147,6 +147,7 @@ export class MockSeriesSpec {
         fillLabel: {},
       },
     ],
+    animation: { duration: 0 },
     data: [],
   };
 
@@ -177,6 +178,7 @@ export class MockSeriesSpec {
         fillLabel: {},
       },
     ],
+    animation: { duration: 0 },
     data: [],
   };
 
