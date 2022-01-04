@@ -97,48 +97,30 @@ exports[`Chart should render the legend name test 1`] = `
                         <ScreenReaderCartesianTableComponent a11ySettings={{...}} cartesianData={{...}} debug={true} dispatch={[Function: dispatch]}>
                           <div className=\\"echScreenReaderOnly echScreenReaderOnlyDebug echScreenReaderTable\\">
                             <table>
+                              <caption>
+                                This table shows the full data set for the chart with one series named 
+                                test
+                              </caption>
                               <thead>
                                 <tr>
                                   <th scope=\\"col\\">
-                                    Label
+                                    X Value
                                   </th>
                                   <th scope=\\"col\\">
                                     Value
-                                  </th>
-                                  <th scope=\\"col\\">
-                                    X Value
                                   </th>
                                 </tr>
                               </thead>
                               <tbody>
                                 <tr tabIndex={-1}>
-                                  <th scope=\\"row\\">
-                                    test
-                                  </th>
-                                  <td>
-                                    2
-                                  </td>
                                   <td>
                                     0
                                   </td>
+                                  <td>
+                                    2
+                                  </td>
                                 </tr>
                               </tbody>
-                              <tfoot>
-                                <tr>
-                                  <td colSpan={3}>
-                                    <button type=\\"submit\\" onClick={[Function: onClick]} tabIndex={-1}>
-                                      Click to show next x value data
-                                    </button>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td colSpan={3}>
-                                    <button type=\\"submit\\" onClick={[Function: onClick]} tabIndex={-1}>
-                                      Click to show previous x value data
-                                    </button>
-                                  </td>
-                                </tr>
-                              </tfoot>
                             </table>
                           </div>
                         </ScreenReaderCartesianTableComponent>

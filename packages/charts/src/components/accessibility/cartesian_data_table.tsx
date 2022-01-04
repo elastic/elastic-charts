@@ -29,6 +29,21 @@ interface ScreenReaderCartesianTableProps {
   debug: SettingsSpec['debug'];
 }
 
+/**
+ * Helper function to format the cartesian data for serializing the data to show better comparision across multiple series
+ */
+const formatMultipleSeriesSmallData = (data: any[]) => {
+  const formatted: any = {};
+  data.map(({ values, label }) => {
+    values.map((val: { xValue: number; formatted: string; raw: number | string }) => {
+      return formatted.hasOwnProperty(val.xValue)
+        ? formatted[val.xValue].push({ label, data: val.formatted ?? val.raw, xValue: val.xValue })
+        : (formatted[val.xValue] = [{ label, data: val.formatted ?? val.raw, xValue: val.xValue }]);
+    });
+  });
+  return formatted;
+};
+
 const ScreenReaderCartesianTableComponent = ({
   a11ySettings,
   cartesianData,
@@ -40,6 +55,8 @@ const ScreenReaderCartesianTableComponent = ({
 
   const rowLimit = cartesianData.numberOfItemsInGroup * count;
   const tableLength = cartesianData.data[0].values.length;
+  const numberOfSeries = cartesianData.data.length;
+
   const handleMoreData = () => {
     // avoid going out of bounds
     if (count < tableLength - 1) {
@@ -66,6 +83,9 @@ const ScreenReaderCartesianTableComponent = ({
   let countOfCol: number = 3;
   const totalColumns: number = isSmallMultiple ? (countOfCol += 3) : countOfCol;
 
+  /**
+   * Data table for small data sets (less than 20 data points) with only one series
+   */
   const smallDataTableSingleSeries = (
     <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
       <table>
@@ -100,6 +120,9 @@ const ScreenReaderCartesianTableComponent = ({
     </div>
   );
 
+  /**
+   * Data table for small data sets (less than 20 data points) with multiple series
+   */
   const smallDataTableMultipleSeries = (
     <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
       <table>
@@ -116,35 +139,34 @@ const ScreenReaderCartesianTableComponent = ({
           </tr>
         </thead>
         <tbody>
-          {/* {cartesianData.data.map(({ label, values }, index) => {
-            {
-              return values.map((val: { xValue: any; formatted: any; raw: any }, i: number) => {
+          {Object.values(formatMultipleSeriesSmallData(cartesianData.data)).map((values: any, index) => {
+            return values.map(
+              (
+                val: {
+                  xValue: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined;
+                  label: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined;
+                  data: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined;
+                },
+                i: any,
+              ) => {
                 return (
                   <tr key={String(`screen-reader-row--${index} ${i}`)} tabIndex={-1}>
-                    <td>{val.xValue && val.xValue}</td>
-                    <td>{label}</td>
-                    <td>{val.formatted ?? val.raw}</td>
+                    <td>{val.xValue}</td>
+                    <td>{val.label}</td>
+                    <td>{val.data}</td>
                   </tr>
                 );
-              });
-            }
-          })} */}
-          {cartesianData.data.map(({ label, values }, index) => {
-            return values.map((val: { xValue: any; formatted: any; raw: any }, i: number) => {
-              return (
-                <tr key={String(`screen-reader-row--${index} ${i}`)} tabIndex={-1}>
-                  <td>{val.xValue && val.xValue}</td>
-                  <td>{label}</td>
-                  <td>{val.formatted ?? val.raw}</td>
-                </tr>
-              );
-            });
+              },
+            );
           })}
         </tbody>
       </table>
     </div>
   );
 
+  /**
+   * Data table for large data sets (more than 20 data points)
+   */
   const largeDataTable = (
     <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
       <table>
@@ -152,8 +174,8 @@ const ScreenReaderCartesianTableComponent = ({
           <caption>{tableCaption}</caption>
         ) : (
           <caption>
-            `This table shows a partial selection of the full data set. To see the previous or next set of data,
-            navigate to the previous and next button below the data.`
+            This table shows a partial selection of the full data set. To see the previous or next set of data, navigate
+            to the previous and next button below the data.
           </caption>
         )}
         <thead>
@@ -214,7 +236,7 @@ const ScreenReaderCartesianTableComponent = ({
       </table>
     </div>
   );
-  const numberOfSeries = cartesianData.data.length;
+
   return tableLength > 20
     ? largeDataTable
     : numberOfSeries === 1
@@ -244,5 +266,6 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderCartesianTablePro
     debug: getSettingsSpecSelector(state).debug,
   };
 };
+
 /** @internal */
 export const ScreenReaderCartesianTable = memo(connect(mapStateToProps)(ScreenReaderCartesianTableComponent));
