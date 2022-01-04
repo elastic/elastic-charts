@@ -43,6 +43,8 @@ describe('Chart', () => {
   });
 
   it('should render the legend name test', () => {
+    // This is snapshot has a slight diff between local and ci runs, need to investigate
+    // See https://github.com/elastic/elastic-charts/runs/4706561347?check_suite_focus=true
     const wrapper = mount(
       <Chart size={[100, 100]} id="chart1">
         <Settings debug rendering="svg" showLegend />
