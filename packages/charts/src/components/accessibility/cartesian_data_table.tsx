@@ -65,10 +65,97 @@ const ScreenReaderCartesianTableComponent = ({
 
   let countOfCol: number = 3;
   const totalColumns: number = isSmallMultiple ? (countOfCol += 3) : countOfCol;
-  return (
+
+  const smallDataTableSingleSeries = (
     <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
       <table>
-        {tableCaption && <caption>{tableCaption}</caption>}
+        {tableCaption ? (
+          <caption>{tableCaption}</caption>
+        ) : (
+          <caption>
+            This table shows the full data set for the chart with one series named {cartesianData.data[0].label}
+          </caption>
+        )}
+        <thead>
+          <tr>
+            <th scope="col">X Value</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cartesianData.data.map(({ values }, index) => {
+            {
+              return values.map((val: { xValue: any; formatted: any; raw: any }, i: number) => {
+                return (
+                  <tr key={String(`screen-reader-row--${index} ${i}`)} tabIndex={-1}>
+                    <td>{val.xValue && val.xValue}</td>
+                    <td>{val.formatted ?? val.raw}</td>
+                  </tr>
+                );
+              });
+            }
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const smallDataTableMultipleSeries = (
+    <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
+      <table>
+        {tableCaption ? (
+          <caption>{tableCaption}</caption>
+        ) : (
+          <caption>This table shows the full data set for the chart with multiple series</caption>
+        )}
+        <thead>
+          <tr>
+            <th scope="col">X Value</th>
+            <th scope="col">Label</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* {cartesianData.data.map(({ label, values }, index) => {
+            {
+              return values.map((val: { xValue: any; formatted: any; raw: any }, i: number) => {
+                return (
+                  <tr key={String(`screen-reader-row--${index} ${i}`)} tabIndex={-1}>
+                    <td>{val.xValue && val.xValue}</td>
+                    <td>{label}</td>
+                    <td>{val.formatted ?? val.raw}</td>
+                  </tr>
+                );
+              });
+            }
+          })} */}
+          {cartesianData.data.map(({ label, values }, index) => {
+            return values.map((val: { xValue: any; formatted: any; raw: any }, i: number) => {
+              return (
+                <tr key={String(`screen-reader-row--${index} ${i}`)} tabIndex={-1}>
+                  <td>{val.xValue && val.xValue}</td>
+                  <td>{label}</td>
+                  <td>{val.formatted ?? val.raw}</td>
+                </tr>
+              );
+            });
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const largeDataTable = (
+    <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
+      <table>
+        {tableCaption ? (
+          <caption>{tableCaption}</caption>
+        ) : (
+          <caption>
+            `This table shows a partial selection of the full data set. To see the previous or next set of data,
+            navigate to the previous and next button below the data.`
+          </caption>
+        )}
         <thead>
           <tr>
             {isSmallMultiple && cartesianData.smallMultipleTitle.length === 2 && (
@@ -127,6 +214,12 @@ const ScreenReaderCartesianTableComponent = ({
       </table>
     </div>
   );
+  const numberOfSeries = cartesianData.data.length;
+  return tableLength > 20
+    ? largeDataTable
+    : numberOfSeries === 1
+    ? smallDataTableSingleSeries
+    : smallDataTableMultipleSeries;
 };
 
 const DEFAULT_SCREEN_READER_SUMMARY = {
