@@ -11,8 +11,13 @@ import { withTextMeasure } from './canvas_text_bbox_calculator';
 describe('CanvasTextBBoxCalculator', () => {
   test('can create a canvas for computing text measurement values', () =>
     withTextMeasure((textMeasure) => {
-      const bbox = textMeasure('foo', 0, 16, 'Arial');
-      expect(Math.abs(bbox.width - 23.2)).toBeLessThanOrEqual(2);
+      const bbox = textMeasure(
+        'foo',
+        { fontStyle: 'normal', fontWeight: 'normal', fontFamily: 'Arial', fontVariant: 'normal' },
+        16,
+      );
+      // the string width is: 22.242 (chrome 96, safari 15.1), 22.233 (firefox 95), 21.15625 on node-canvas
+      expect(Math.abs(bbox.width - 22)).toBeLessThanOrEqual(2);
       expect(bbox.height).toBe(16);
     }));
 });

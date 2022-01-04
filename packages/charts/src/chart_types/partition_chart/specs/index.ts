@@ -9,7 +9,7 @@
 import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
-import { Pixels } from '../../../common/geometry';
+import { Distance, Pixels, Radius } from '../../../common/geometry';
 import { BaseDatum, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
@@ -17,18 +17,20 @@ import { IndexedAccessorFn } from '../../../utils/accessor';
 import {
   Datum,
   LabelAccessor,
-  RecursivePartial,
   ShowAccessor,
   ValueAccessor,
   ValueFormatter,
   stripUndefined,
 } from '../../../utils/common';
-import { config, percentFormatter } from '../layout/config';
-import { Config, FillFontSizeRange, FillLabelConfig } from '../layout/types/config_types';
+import { FillFontSizeRange, FillLabelConfig } from '../../../utils/themes/partition';
+import { percentFormatter } from '../layout/config';
+import { AnimationConfig, PartitionLayout } from '../layout/types/config_types';
 import { NodeColorAccessor, ValueGetter } from '../layout/types/viewmodel_types';
-import { AGGREGATE_KEY, NodeSorter } from '../layout/utils/group_by_rollup';
+import { NodeSorter, AGGREGATE_KEY } from '../layout/utils/group_by_rollup';
 
-interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {}
+interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {
+  valueFormatter: ValueFormatter;
+}
 
 /**
  * Specification for a given layer in the partition chart
@@ -47,10 +49,9 @@ export interface Layer<D extends BaseDatum = Datum> {
  * Specifies the partition chart
  * @public
  */
-export interface PartitionSpec<D extends BaseDatum = Datum> extends Spec {
+export interface PartitionSpec<D extends BaseDatum = Datum> extends Spec, AnimationConfig {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Partition;
-  config: RecursivePartial<Config>;
   data: D[];
   valueAccessor: ValueAccessor<D>;
   valueFormatter: ValueFormatter;
@@ -59,6 +60,24 @@ export interface PartitionSpec<D extends BaseDatum = Datum> extends Spec {
   topGroove: Pixels;
   smallMultiples: string | null;
   layers: Layer<D>[];
+  /**
+   * Largest to smallest sectors are positioned in a clockwise order
+   */
+  clockwiseSectors: boolean;
+  /**
+   * Starts placement with the second largest slice, for the innermost pie/ring
+   */
+  specialFirstInnermostSector: boolean;
+  layout: PartitionLayout;
+  maxRowCount: number;
+  /** @alpha */
+  drilldown: boolean;
+
+  // These need examples or documentation
+  fillOutside: boolean;
+  radiusOutside: Radius;
+  fillRectangleWidth: Distance;
+  fillRectangleHeight: Distance;
 }
 
 const buildProps = buildSFProps<PartitionSpec>()(
@@ -67,7 +86,6 @@ const buildProps = buildSFProps<PartitionSpec>()(
     specType: SpecType.Series,
   },
   {
-    config,
     valueAccessor: (d) => (typeof d === 'number' ? d : 0),
     valueGetter: (n) => n[AGGREGATE_KEY],
     valueFormatter: (d) => String(d),
@@ -76,12 +94,22 @@ const buildProps = buildSFProps<PartitionSpec>()(
     smallMultiples: '__global__small_multiples___',
     layers: [
       {
-        groupByRollup: (d, i) => i,
+        groupByRollup: (_, i) => i,
         nodeLabel: (d) => String(d),
         showAccessor: () => true,
         fillLabel: {},
       },
     ],
+    clockwiseSectors: true,
+    specialFirstInnermostSector: true,
+    layout: PartitionLayout.sunburst,
+    drilldown: false,
+    maxRowCount: 12,
+    fillOutside: false,
+    radiusOutside: 128,
+    fillRectangleWidth: Infinity,
+    fillRectangleHeight: Infinity,
+    animation: { duration: 0 },
   },
 );
 

@@ -6,13 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { Word as D3Word } from 'd3-cloud';
 import { $Values as Values } from 'utility-types';
 
 import { Color } from '../../../../common/colors';
-import { Pixels, PointObject, Rectangle } from '../../../../common/geometry';
+import { Pixels, PointObject } from '../../../../common/geometry';
 import { FontStyle } from '../../../../common/text_utils';
-import { config } from '../config/config';
-import { Config } from './config_types';
 
 /** @public */
 export interface WordModel {
@@ -32,49 +31,26 @@ export const WeightFn = Object.freeze({
 /** @public */
 export type WeightFn = Values<typeof WeightFn>;
 
-/** @internal */
-export interface Word extends Rectangle {
-  color: string;
-  font: string;
-  fontFamily: string;
-  fontWeight: number;
-  hasText: boolean;
-  height: number;
-  padding: number;
-  rotate: number;
-  size: number;
-  style: string;
-  text: string;
-  weight: number;
-  x: number;
-  xoff: number;
-  y: number;
-  yoff: number;
+/**
+ * Word properties extends `D3Word` except for explicitly defined values.
+ *
+ * `D3Word` values are added datum via d3TagCloud, but may be undefined
+ * @internal
+ */
+export interface Word extends D3Word {
   datum: WordModel;
-}
-
-/** @public */
-export interface Configs {
-  count: number;
-  endAngle: number;
-  exponent: number;
+  text: string;
+  color: string;
   fontFamily: string;
-  fontStyle: FontStyle;
+  style: string;
   fontWeight: number;
-  height: number;
-  maxFontSize: number;
-  minFontSize: number;
-  padding: number;
-  spiral: string;
-  startAngle: number;
-  weightFn: WeightFn;
-  width: number;
+  size: number;
 }
 
 /** @public */
 export type OutOfRoomCallback = (wordCount: number, renderedWordCount: number, renderedWords: string[]) => void;
 
-/** @internal */
+/** @public */
 export interface WordcloudViewModel {
   startAngle: number;
   endAngle: number;
@@ -90,7 +66,6 @@ export interface WordcloudViewModel {
   data: WordModel[];
   weightFn: WeightFn;
   outOfRoomCallback: OutOfRoomCallback;
-  // specType: string;
 }
 
 /** @internal */
@@ -105,7 +80,6 @@ export type PickFunction = (x: Pixels, y: Pixels) => Array<WordcloudViewModel>;
 
 /** @internal */
 export type ShapeViewModel = {
-  config: Config;
   wordcloudViewModel: WordcloudViewModel;
   chartCenter: PointObject;
   pickQuads: PickFunction;
@@ -141,10 +115,9 @@ export const nullWordcloudViewModel: WordcloudViewModel = {
 };
 
 /** @internal */
-export const nullShapeViewModel = (specifiedConfig?: Config, chartCenter?: PointObject): ShapeViewModel => ({
-  config: specifiedConfig || config,
+export const nullShapeViewModel = (): ShapeViewModel => ({
   wordcloudViewModel: nullWordcloudViewModel,
-  chartCenter: chartCenter || { x: 0, y: 0 },
+  chartCenter: { x: 0, y: 0 },
   pickQuads: () => [],
   specId: 'empty',
 });

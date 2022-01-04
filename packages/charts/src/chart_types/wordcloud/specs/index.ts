@@ -9,41 +9,23 @@
 import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
-import { FontStyle } from '../../../common/text_utils';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { specComponentFactory } from '../../../state/spec_factory';
-import { RecursivePartial } from '../../../utils/common';
-import { config } from '../layout/config/config';
 import {
   WordModel,
   defaultWordcloudSpec,
   WeightFn,
   OutOfRoomCallback,
-  Configs as WordcloudConfigs,
+  WordcloudViewModel,
 } from '../layout/types/viewmodel_types';
 
-export { WordModel, WeightFn, OutOfRoomCallback, WordcloudConfigs };
+export { WordModel, WeightFn, OutOfRoomCallback };
 
 /** @alpha */
-export interface WordcloudSpec extends Spec {
-  specType: typeof SpecType.Series;
+export interface WordcloudSpec extends Spec, WordcloudViewModel {
   chartType: typeof ChartType.Wordcloud;
-  config: RecursivePartial<WordcloudConfigs>;
-  startAngle: number;
-  endAngle: number;
-  angleCount: number;
-  padding: number;
-  fontWeight: number;
-  fontFamily: string;
-  fontStyle: FontStyle;
-  minFontSize: number;
-  maxFontSize: number;
-  spiral: string;
-  exponent: number;
-  data: WordModel[];
-  weightFn: WeightFn;
-  outOfRoomCallback: OutOfRoomCallback;
+  specType: typeof SpecType.Series;
 }
 
 /**
@@ -52,12 +34,11 @@ export interface WordcloudSpec extends Spec {
  */
 export const Wordcloud = specComponentFactory<WordcloudSpec>()(
   {
-    specType: SpecType.Series,
     chartType: ChartType.Wordcloud,
+    specType: SpecType.Series,
   },
   {
     ...defaultWordcloudSpec,
-    config,
   },
 );
 

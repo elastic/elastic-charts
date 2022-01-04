@@ -6,14 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 'reselect';
+import { OutputSelector } from 'reselect';
 
 import { ChartType } from '../../..';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { HeatmapBrushEvent, SettingsSpec } from '../../../../specs/settings';
+import { DragState, GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { DragCheckProps, hasDragged } from '../../../../utils/events';
+import { HeatmapSpec } from '../../specs';
 import { getPickedCells } from './get_picked_cells';
 import { getSpecOrNull } from './heatmap_spec';
 import { isBrushEndProvided } from './is_brush_available';
@@ -26,8 +28,13 @@ import { isBrushEndProvided } from './is_brush_available';
  */
 export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
   let prevProps: DragCheckProps | null = null;
-  let selector: Selector<GlobalChartState, void> | null = null;
-  return (state: GlobalChartState) => {
+  let selector: OutputSelector<
+    GlobalChartState,
+    void,
+    (res1: DragState | null, res2: HeatmapSpec | null, res3: SettingsSpec, res4: HeatmapBrushEvent | null) => void
+  > | null = null;
+
+  return (state) => {
     if (selector === null && state.chartType === ChartType.Heatmap) {
       if (!isBrushEndProvided(state)) {
         selector = null;

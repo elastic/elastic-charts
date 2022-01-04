@@ -17,9 +17,8 @@ import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
-import { Datum, RecursivePartial, stripUndefined } from '../../../utils/common';
-import { config } from '../layout/config/config';
-import { Config } from '../layout/types/config_types';
+import { Datum, LabelAccessor, stripUndefined, ValueFormatter } from '../../../utils/common';
+import { Cell } from '../layout/types/viewmodel_types';
 import { X_SCALE_DEFAULT } from './scale_defaults';
 
 /** @public */
@@ -45,6 +44,12 @@ export interface HeatmapBandsColorScale {
   labelFormatter?: (start: number, end: number) => string;
 }
 
+/** @public */
+export type HeatmapBrushEvent = {
+  cells: Cell[];
+  x: (string | number)[];
+  y: (string | number)[];
+};
 /** @public */
 export interface TimeScale {
   type: typeof ScaleType.Time;
@@ -74,13 +79,20 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   xAccessor: Accessor<D> | AccessorFn<D>;
   yAccessor: Accessor<D> | AccessorFn<D>;
   valueAccessor: Accessor<never> | AccessorFn;
-  valueFormatter: (value: number) => string;
+  valueFormatter: ValueFormatter;
   xSortPredicate: Predicate;
   ySortPredicate: Predicate;
   xScale: RasterTimeScale | OrdinalScale | LinearScale;
-  config: RecursivePartial<Config>;
   highlightedData?: { x: Array<string | number>; y: Array<string | number> };
   name?: string;
+  timeZone: string;
+  onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
+  xAxisTitle: string;
+  xAxisLabelName: string;
+  xAxisLabelFormatter: LabelAccessor<string | number>;
+  yAxisTitle: string;
+  yAxisLabelName: string;
+  yAxisLabelFormatter: LabelAccessor<string | number>;
 }
 
 /**
@@ -110,7 +122,16 @@ export const Heatmap = function <D extends BaseDatum = Datum>(
         valueFormatter: (value) => `${value}`,
         xSortPredicate: Predicate.AlphaAsc,
         ySortPredicate: Predicate.AlphaAsc,
-        config,
+        // TODO: make accessors required
+        xAccessor: (d) => (d as any)?.x,
+        yAccessor: (d) => (d as any)?.y,
+        timeZone: 'UTC',
+        xAxisTitle: '',
+        yAxisTitle: '',
+        xAxisLabelName: 'X Value',
+        xAxisLabelFormatter: String,
+        yAxisLabelName: 'Y Value',
+        yAxisLabelFormatter: String,
       },
     ),
   );

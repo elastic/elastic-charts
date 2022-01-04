@@ -51,7 +51,7 @@ export type PickFunction = (x: Pixels, y: Pixels) => Array<BulletViewModel>;
 
 /** @internal */
 export type ShapeViewModel = {
-  config: Theme['goal'];
+  theme: Theme['goal'];
   bulletViewModel: BulletViewModel;
   chartCenter: PointObject;
   pickQuads: PickFunction;
@@ -101,7 +101,7 @@ export const nullGoalViewModel = {
 
 /** @internal */
 export const nullShapeViewModel = ({ goal }: Theme = LIGHT_THEME): ShapeViewModel => ({
-  config: goal,
+  theme: goal,
   bulletViewModel: nullGoalViewModel,
   chartCenter: { x: 0, y: 0 },
   pickQuads: () => [],

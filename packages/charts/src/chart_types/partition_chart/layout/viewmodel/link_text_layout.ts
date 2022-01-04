@@ -7,7 +7,7 @@
  */
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { Color, Colors } from '../../../../common/colors';
+import { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import {
@@ -18,11 +18,13 @@ import {
   PointTuples,
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
-import { cutToLength, fitText, Font, measureOneBoxWidth, TextMeasure } from '../../../../common/text_utils';
+import { cutToLength, fitText, Font, measureOneBoxWidth } from '../../../../common/text_utils';
+import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { ColorVariant, isRTLString, ValueFormatter } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
 import { Point } from '../../../../utils/point';
-import { Config, LinkLabelConfig } from '../types/config_types';
+import { LinkLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
+import { BackgroundStyle } from '../../../../utils/themes/theme';
 import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 
 /** @internal */
@@ -30,7 +32,7 @@ export interface LinkLabelsViewModelSpec {
   linkLabels: LinkLabelVM[];
   labelFontSpec: Font;
   valueFontSpec: Font;
-  strokeColor?: Color;
+  strokeColor: Color;
 }
 
 /** @internal */
@@ -38,7 +40,7 @@ export function linkTextLayout(
   rectWidth: Distance,
   rectHeight: Distance,
   measure: TextMeasure,
-  config: Config,
+  style: PartitionStyle,
   nodesWithoutRoom: ShapeTreeNode[],
   currentY: Distance[],
   anchorRadius: Distance,
@@ -47,9 +49,9 @@ export function linkTextLayout(
   valueFormatter: ValueFormatter,
   maxTextLength: number,
   diskCenter: Point,
-  containerBgColor: Color = Colors.White.keyword,
+  { color: backgroundColor, fallbackColor: fallbackBGColor }: BackgroundStyle,
 ): LinkLabelsViewModelSpec {
-  const { linkLabel } = config;
+  const { linkLabel } = style;
   const maxDepth = nodesWithoutRoom.reduce((p: number, n: ShapeTreeNode) => Math.max(p, n.depth), 0);
   const yRelativeIncrement = Math.sin(linkLabel.stemAngle) * linkLabel.minimumStemLength;
   const rowPitch = linkLabel.fontSize + linkLabel.spacing;
@@ -78,15 +80,18 @@ export function linkTextLayout(
     )
     .filter(({ text }) => text !== ''); // cull linked labels whose text was truncated to nothing;
 
-  if (colorToRgba(containerBgColor)[3] < 1) {
+  if (colorToRgba(backgroundColor)[3] < 1) {
+    // Override handled in fill_text_color.ts
     Logger.expected(
-      `Text contrast requires a opaque background color, using white as fallback`,
+      'Text contrast requires an opaque background color, using fallbackColor',
       'an opaque color',
-      containerBgColor,
+      backgroundColor,
     );
   }
   const textColor =
-    linkLabel.textColor === ColorVariant.Adaptive ? fillTextColor(containerBgColor) : linkLabel.textColor;
+    linkLabel.textColor === ColorVariant.Adaptive
+      ? fillTextColor(fallbackBGColor, null, backgroundColor)
+      : linkLabel.textColor;
   const labelFontSpec: Font = { ...linkLabel, textColor };
   const valueFontSpec: Font = { ...linkLabel, ...linkLabel.valueFont, textColor };
 

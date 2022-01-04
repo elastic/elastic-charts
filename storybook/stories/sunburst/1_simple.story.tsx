@@ -9,8 +9,7 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { Chart, Datum, Partition, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -20,12 +19,18 @@ export const Example = () => {
   const showDebug = boolean('show table for debugging', false);
   return (
     <Chart>
-      <Settings debug={showDebug} baseTheme={useBaseTheme()} />
+      <Settings
+        debug={showDebug}
+        baseTheme={useBaseTheme()}
+        theme={{
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+        }}
+      />
       <Partition
         id="spec_1"
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,

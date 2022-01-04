@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Datum, RecursivePartial } from '@elastic/charts';
-import { Config } from '@elastic/charts/src/chart_types/partition_chart/layout/types/config_types';
+import { Datum } from '@elastic/charts';
 import { PrimitiveValue } from '@elastic/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
@@ -57,17 +56,3 @@ export const getLayerSpec = (color: [string, string, string][]) =>
       fillColor: () => discreteColor(color, 0.8)(depth),
     },
   }));
-
-/** @internal */
-export const config: RecursivePartial<Config> = {
-  fontFamily: 'Arial',
-  fillLabel: {
-    valueFormatter: (d: number) => d,
-    fontWeight: 500,
-  },
-  margin: { top: 0, bottom: 0, left: 0, right: 0 },
-  minFontSize: 5,
-  maxFontSize: 9,
-  idealFontSizeJump: 1.01,
-  backgroundColor: 'rgba(229,229,229,1)',
-};

@@ -11,7 +11,7 @@ import React from 'react';
 import { Chart, Datum, LegendStrategy, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { config, getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
+import { getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
 import { plasma18 as palette } from '../utils/utils';
 
 const color = [...palette].reverse();
@@ -26,14 +26,21 @@ export const Example = () => {
         legendStrategy={LegendStrategy.PathWithDescendants}
         legendMaxDepth={maxDepth}
         baseTheme={useBaseTheme()}
+        theme={{
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+          partition: {
+            minFontSize: 6,
+            maxFontSize: 10,
+          },
+        }}
       />
       <Partition
         id="spec_1"
         data={getFlatData()}
-        valueAccessor={(d: Datum) => d.value as number}
+        layout={PartitionLayout.flame}
+        valueAccessor={(d: Datum) => d.value}
         valueFormatter={() => ''}
         layers={getLayerSpec(color)}
-        config={{ ...config, partitionLayout: PartitionLayout.flame }}
       />
     </Chart>
   );

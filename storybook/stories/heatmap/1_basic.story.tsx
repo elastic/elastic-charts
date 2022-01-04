@@ -14,16 +14,16 @@ import { debounce } from 'ts-debounce';
 import {
   Chart,
   DebugState,
+  ElementClickListener,
   Heatmap,
+  HeatmapBrushEvent,
   HeatmapElementEvent,
+  HeatmapStyle,
   niceTimeFormatter,
   RecursivePartial,
   ScaleType,
   Settings,
-  HeatmapBrushEvent,
-  ElementClickListener,
 } from '@elastic/charts';
-import { Config } from '@elastic/charts/src/chart_types/heatmap/layout/types/config_types';
 
 import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
 import { useBaseTheme } from '../../use_base_theme';
@@ -33,6 +33,9 @@ export const Example = () => {
 
   const persistCellsSelection = boolean('Persist cells selection', true);
   const debugState = boolean('Enable debug state', true);
+  const showXAxisTitle = boolean('Show x axis title', false);
+  const showYAxisTitle = boolean('Show y axis title', false);
+
   const dataStateAction = action('DataState');
 
   const handler = useCallback(() => {
@@ -41,8 +44,8 @@ export const Example = () => {
 
   button('Clear cells selection', handler);
 
-  const config: RecursivePartial<Config> = useMemo(
-    () => ({
+  const heatmap = useMemo(() => {
+    const styles: RecursivePartial<HeatmapStyle> = {
       brushTool: {
         visible: true,
       },
@@ -71,15 +74,10 @@ export const Example = () => {
         width: 'auto',
         padding: { left: 10, right: 10 },
       },
-      xAxisLabel: {
-        formatter: (value: string | number) => {
-          return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
-        },
-      },
-      timeZone: DATA_6.timeZone,
-    }),
-    [],
-  );
+    };
+
+    return styles;
+  }, []);
 
   const logDebugState = debounce(() => {
     if (!debugState) return;
@@ -94,9 +92,8 @@ export const Example = () => {
     }
   }, 100);
 
-  const onElementClick: ElementClickListener = useCallback((event) => {
-    const e = event as HeatmapElementEvent[];
-    const cell = e[0][0];
+  const onElementClick: ElementClickListener = useCallback((e) => {
+    const cell = (e as HeatmapElementEvent[])[0][0];
     setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
   }, []);
 
@@ -112,6 +109,7 @@ export const Example = () => {
         brushAxis="both"
         xDomain={{ min: 1572825600000, max: 1572912000000 }}
         debugState={debugState}
+        theme={{ heatmap }}
         baseTheme={useBaseTheme()}
         onBrushEnd={(e) => {
           onBrushEnd(e);
@@ -138,8 +136,16 @@ export const Example = () => {
         valueFormatter={(d) => `${Number(d.toFixed(2))}℃`}
         ySortPredicate="numAsc"
         xScale={{ type: ScaleType.Time, interval: DATA_6.interval }}
-        config={config}
+        xAxisLabelFormatter={(value) => {
+          return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
+        }}
+        timeZone={DATA_6.timeZone}
+        onBrushEnd={(e) => {
+          setSelection({ x: e.x, y: e.y });
+        }}
         highlightedData={persistCellsSelection ? selection : undefined}
+        xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
+        yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
       />
     </Chart>
   );

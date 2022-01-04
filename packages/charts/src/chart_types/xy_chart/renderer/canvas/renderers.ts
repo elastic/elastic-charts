@@ -38,7 +38,7 @@ export function renderXYChartCanvas2d(
       rotation,
       geometries,
       geometriesIndex,
-      theme: { axes: sharedAxesStyle, sharedStyle, barSeriesStyle },
+      theme: { axes: sharedAxesStyle, sharedStyle, barSeriesStyle, background },
       highlightedLegendItem,
       annotationDimensions,
       annotationSpecs,
@@ -133,6 +133,7 @@ export function renderXYChartCanvas2d(
             rotation,
             debug,
             barSeriesStyle,
+            background,
           }),
         ),
 
