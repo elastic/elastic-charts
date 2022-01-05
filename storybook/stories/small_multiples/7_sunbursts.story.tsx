@@ -111,7 +111,6 @@ export const Example = () => {
         sort={select('Panel order', { alphaAsc: 'alphaAsc', alphaDesc: 'alphaDesc' }, 'alphaAsc')}
       />
       <SmallMultiples
-        id="sm"
         splitHorizontally={layout === 'h' ? 'split' : undefined}
         splitVertically={layout === 'v' ? 'split' : undefined}
         splitZigzag={layout === 'z' ? 'split' : undefined}
@@ -151,8 +150,7 @@ export const Example = () => {
         data={data}
         layout={PartitionLayout.sunburst}
         valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-        smallMultiples="sm"
+        valueFormatter={(d) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,

@@ -32,7 +32,7 @@ export const Example = () => {
 
   const namesArray = arrayKnobs('series names (in sort order)', ['jpg', 'php', 'png', 'css', 'gif']);
 
-  const seriesComponents = tsvbSeries.map((series: any) => {
+  const seriesComponents = tsvbSeries.map((series) => {
     const nameIndex = namesArray.findIndex((name) => name === series.label);
     const sortIndex = nameIndex > -1 ? nameIndex : undefined;
 

@@ -52,6 +52,8 @@ export const Example = () => {
       />
       <BarSeries
         id="bars"
+        xAccessor="x"
+        yAccessors={['y']}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         data={[

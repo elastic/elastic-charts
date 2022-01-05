@@ -16,7 +16,7 @@ import { LogScaleOptions, ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
-import { Accessor, AccessorFormat, AccessorFn } from '../../../utils/accessor';
+import { AccessorFormat, AccessorFn, Accessor } from '../../../utils/accessor';
 import { RecursivePartial, Position, Datum } from '../../../utils/common';
 import { CurveType } from '../../../utils/curves';
 import { OrdinalDomain } from '../../../utils/domain';
@@ -399,7 +399,7 @@ export interface DisplayValueSpec {
 }
 
 /** @public */
-export interface SeriesSpec extends Spec {
+export interface SeriesSpec<D extends BaseDatum = Datum> extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.XYAxis;
   /**
@@ -418,7 +418,7 @@ export interface SeriesSpec extends Spec {
    */
   useDefaultGroupDomain?: boolean | string;
   /** An array of data */
-  data: Datum[];
+  data: D[];
   /** The type of series you are looking to render */
   seriesType: SeriesType;
   /** Set colors for specific series */
@@ -482,23 +482,28 @@ export type SeriesColorAccessorFn = (seriesIdentifier: XYChartSeriesIdentifier) 
 export type SeriesColorAccessor = string | SeriesColorsArray | SeriesColorAccessorFn;
 
 /** @public */
-export interface SeriesAccessors {
+export interface SeriesAccessors<D extends BaseDatum = any> {
   /** The field name of the x value on Datum object */
-  xAccessor: Accessor | AccessorFn;
+  xAccessor: Accessor<D> | AccessorFn<D>;
   /** An array of field names one per y metric value */
-  yAccessors: (Accessor | AccessorFn)[];
+  yAccessors: (Accessor<D> | AccessorFn<D>)[];
   /** An optional accessor of the y0 value: base point for area/bar charts  */
-  y0Accessors?: (Accessor | AccessorFn)[];
+  y0Accessors?: (Accessor<D> | AccessorFn<D>)[];
   /** An array of fields thats indicates the datum series membership */
-  splitSeriesAccessors?: (Accessor | AccessorFn)[];
-  /** An array of fields thats indicates the stack membership */
-  stackAccessors?: (Accessor | AccessorFn)[];
+  splitSeriesAccessors?: (Accessor<D> | AccessorFn<D>)[];
+  /**
+   * An array of fields thats indicates the stack membership.
+   * Does not depend on datum at the moment.
+   *
+   * TODO pass datum to accessors when applicable
+   */
+  stackAccessors?: (Accessor<any> | AccessorFn<any>)[];
   /**
    * Field name of mark size metric on `Datum`
    *
    * Only used with line/area series
    */
-  markSizeAccessor?: Accessor | AccessorFn;
+  markSizeAccessor?: Accessor<D> | AccessorFn<D>;
 }
 
 /** @public */
@@ -535,27 +540,39 @@ export interface SeriesScales {
   yNice?: boolean;
 }
 
+type MarkFormatter<Type extends string = ''> = Type extends 'bar'
+  ? // eslint-disable-next-line @typescript-eslint/ban-types
+    {} // these options are to be empty thus {}
+  : {
+      /**
+       * A function called to format every single mark value
+       *
+       * Only used with line/area series
+       */
+      markFormat?: TickFormatter<number>;
+    };
+
 /** @public */
 
-export type BasicSeriesSpec = SeriesSpec &
-  SeriesAccessors &
-  SeriesScales & {
-    /**
-     * A function called to format every single mark value
-     *
-     * Only used with line/area series
-     */
-    markFormat?: TickFormatter<number>;
-  };
+export type BasicSeriesSpec<D extends BaseDatum = Datum, Type extends string = ''> = SeriesSpec<D> &
+  SeriesAccessors<D> &
+  SeriesScales &
+  MarkFormatter<Type>;
 
 /** @public */
-export type SeriesSpecs<S extends BasicSeriesSpec = BasicSeriesSpec> = Array<S>;
+export type SeriesSpecs<D extends BaseDatum = Datum, S extends BasicSeriesSpec<D> = BasicSeriesSpec<D>> = Array<S>;
+
+/**
+ * Expected shape of unknown data row/datum
+ * @public
+ */
+export type BaseDatum = Record<string, any> | any[];
 
 /**
  * This spec describe the dataset configuration used to display a bar series.
  * @public
  */
-export type BarSeriesSpec = BasicSeriesSpec &
+export type BarSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'bar'> &
   Postfixes & {
     /** @defaultValue `bar` {@link (SeriesType:type) | SeriesType.Bar} */
     seriesType: typeof SeriesType.Bar;
@@ -587,7 +604,7 @@ export type BarSeriesSpec = BasicSeriesSpec &
  * A histogram bar series is identical to a bar series except that stackAccessors are not allowed.
  * @public
  */
-export type HistogramBarSeriesSpec = Omit<BarSeriesSpec, 'stackAccessors'> & {
+export type HistogramBarSeriesSpec<D extends BaseDatum = Datum> = Omit<BarSeriesSpec<D>, 'stackAccessors'> & {
   enableHistogramMode: true;
 };
 
@@ -615,7 +632,7 @@ export type FitConfig = {
  * This spec describe the dataset configuration used to display a line series.
  * @public
  */
-export type LineSeriesSpec = BasicSeriesSpec &
+export type LineSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'line'> &
   HistogramConfig & {
     /** @defaultValue `line` {@link (SeriesType:type) | SeriesType.Line} */
     seriesType: typeof SeriesType.Line;
@@ -636,7 +653,7 @@ export type LineSeriesSpec = BasicSeriesSpec &
  *
  * @alpha
  */
-export type BubbleSeriesSpec = BasicSeriesSpec & {
+export type BubbleSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'bubble'> & {
   /** @defaultValue `bubble` {@link (SeriesType:type) | SeriesType.Bubble} */
   seriesType: typeof SeriesType.Bubble;
   bubbleSeriesStyle?: RecursivePartial<BubbleSeriesStyle>;
@@ -650,7 +667,7 @@ export type BubbleSeriesSpec = BasicSeriesSpec & {
  * This spec describe the dataset configuration used to display an area series.
  * @public
  */
-export type AreaSeriesSpec = BasicSeriesSpec &
+export type AreaSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'area'> &
   HistogramConfig &
   Postfixes & {
     /** @defaultValue `area` {@link (SeriesType:type) | SeriesType.Area} */
@@ -796,11 +813,11 @@ export type AnnotationDomainType = $Values<typeof AnnotationDomainType>;
  * The descriptive object of a line annotation
  * @public
  */
-export interface LineAnnotationDatum {
+export interface LineAnnotationDatum<D = any> {
   /**
-   * The value on the x or y axis accordingly to the domainType configured
+   * The value on the x or y axis according to the domainType configured
    */
-  dataValue: any;
+  dataValue: D;
   /**
    * A textual description of the annotation
    */
@@ -812,16 +829,17 @@ export interface LineAnnotationDatum {
 }
 
 /** @public */
-export type LineAnnotationSpec = BaseAnnotationSpec<
+export type LineAnnotationSpec<D = any> = BaseAnnotationSpec<
   typeof AnnotationType.Line,
-  LineAnnotationDatum,
-  LineAnnotationStyle
+  LineAnnotationDatum<D>,
+  LineAnnotationStyle,
+  D
 > & {
   domainType: AnnotationDomainType;
   /** Optional Custom marker icon centered on data value */
-  marker?: ReactNode | ComponentWithAnnotationDatum;
+  marker?: ReactNode | ComponentWithAnnotationDatum<D>;
   /** Optional marker body, always contained within chart area */
-  markerBody?: ReactNode | ComponentWithAnnotationDatum;
+  markerBody?: ReactNode | ComponentWithAnnotationDatum<D>;
   /**
    * Custom marker dimensions; will be computed internally
    * Any user-supplied values will be overwritten
@@ -934,8 +952,9 @@ export type AnnotationPortalSettings = TooltipPortalSettings<'chart'> & {
 /** @public */
 export interface BaseAnnotationSpec<
   T extends typeof AnnotationType.Rectangle | typeof AnnotationType.Line,
-  D extends RectAnnotationDatum | LineAnnotationDatum,
-  S extends RectAnnotationStyle | LineAnnotationStyle
+  AD extends RectAnnotationDatum | LineAnnotationDatum<D>,
+  S extends RectAnnotationStyle | LineAnnotationStyle,
+  D = never
 > extends Spec,
     AnnotationPortalSettings {
   chartType: typeof ChartType.XYAxis;
@@ -952,7 +971,7 @@ export interface BaseAnnotationSpec<
   /**
    * Data values defined with coordinates and details
    */
-  dataValues: D[];
+  dataValues: AD[];
   /**
    * Custom annotation style
    */
@@ -969,10 +988,10 @@ export interface BaseAnnotationSpec<
 }
 
 /** @public */
-export type AnnotationSpec = LineAnnotationSpec | RectAnnotationSpec;
+export type AnnotationSpec<D extends BaseDatum = any> = LineAnnotationSpec<D> | RectAnnotationSpec;
 
 /** @internal */
-export function isLineAnnotation(spec: AnnotationSpec): spec is LineAnnotationSpec {
+export function isLineAnnotation<D>(spec: AnnotationSpec<D>): spec is LineAnnotationSpec<D> {
   return spec.annotationType === AnnotationType.Line;
 }
 
@@ -982,21 +1001,21 @@ export function isRectAnnotation(spec: AnnotationSpec): spec is RectAnnotationSp
 }
 
 /** @internal */
-export function isBarSeriesSpec(spec: BasicSeriesSpec): spec is BarSeriesSpec {
+export function isBarSeriesSpec<D extends BaseDatum>(spec: BasicSeriesSpec<D>): spec is BarSeriesSpec<D> {
   return spec.seriesType === SeriesType.Bar;
 }
 
 /** @internal */
-export function isBubbleSeriesSpec(spec: BasicSeriesSpec): spec is BubbleSeriesSpec {
+export function isBubbleSeriesSpec<D extends BaseDatum>(spec: BasicSeriesSpec<D>): spec is BubbleSeriesSpec<D> {
   return spec.seriesType === SeriesType.Bubble;
 }
 
 /** @internal */
-export function isLineSeriesSpec(spec: BasicSeriesSpec): spec is LineSeriesSpec {
+export function isLineSeriesSpec<D extends BaseDatum>(spec: BasicSeriesSpec<D>): spec is LineSeriesSpec<D> {
   return spec.seriesType === SeriesType.Line;
 }
 
 /** @internal */
-export function isAreaSeriesSpec(spec: BasicSeriesSpec): spec is AreaSeriesSpec {
+export function isAreaSeriesSpec<D extends BaseDatum>(spec: BasicSeriesSpec<D>): spec is AreaSeriesSpec<D> {
   return spec.seriesType === SeriesType.Area;
 }

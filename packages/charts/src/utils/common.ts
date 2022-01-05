@@ -13,6 +13,7 @@ import { v1 as uuidV1 } from 'uuid';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Color, Colors } from '../common/colors';
 import { Degrees, Radian } from '../common/geometry';
+import { BaseDatum } from '../specs';
 import { AdditiveNumber } from './accessor';
 import { Point } from './point';
 
@@ -426,7 +427,7 @@ export function mergePartial<T>(
 /** @public */
 export type ValueFormatter = (value: number) => string;
 /** @public */
-export type ValueAccessor = (d: Datum) => AdditiveNumber;
+export type ValueAccessor<D extends BaseDatum = Datum> = (d: D) => AdditiveNumber;
 /** @public */
 export type LabelAccessor<T = PrimitiveValue> = (value: T) => string;
 /** @public */
@@ -625,4 +626,19 @@ export function getOppositeAlignment<A extends HorizontalAlignment | VerticalAli
 /** @internal */
 export function isFiniteNumber(value: unknown): value is number {
   return Number.isFinite(value);
+}
+
+/**
+ * Strips all undefined properties from object
+ * @internal
+ */
+export function stripUndefined<R extends Record<string, unknown>>(source: R): R {
+  return Object.keys(source).reduce((acc, key) => {
+    const val = source[key];
+    if (val !== undefined) {
+      // @ts-ignore - building new R from {}
+      acc[key] = val;
+    }
+    return acc;
+  }, {} as R);
 }

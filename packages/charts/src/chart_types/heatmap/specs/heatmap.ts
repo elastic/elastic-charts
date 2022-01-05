@@ -6,40 +6,20 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import { ComponentProps, useRef } from 'react';
 
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { Predicate } from '../../../common/predicate';
 import { ScaleType } from '../../../scales/constants';
-import { Spec } from '../../../specs';
+import { BaseDatum, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
-import { getConnect, specComponentFactory } from '../../../state/spec_factory';
+import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
-import { Datum } from '../../../utils/common';
+import { Datum, LabelAccessor, stripUndefined, ValueFormatter } from '../../../utils/common';
 import { Cell } from '../layout/types/viewmodel_types';
 import { X_SCALE_DEFAULT } from './scale_defaults';
-
-const defaultProps = {
-  chartType: ChartType.Heatmap,
-  specType: SpecType.Series,
-  data: [],
-  xAccessor: ({ x }: { x: string | number }) => x,
-  yAccessor: ({ y }: { y: string | number }) => y,
-  xScale: { type: X_SCALE_DEFAULT.type },
-  valueAccessor: ({ value }: { value: string | number }) => value,
-  valueFormatter: (value: number) => `${value}`,
-  xSortPredicate: Predicate.AlphaAsc,
-  ySortPredicate: Predicate.AlphaAsc,
-  timeZone: 'UTC',
-  xAxisTitle: '',
-  yAxisTitle: '',
-  xAxisLabelName: 'X Value',
-  xAxisLabelFormatter: String,
-  yAxisLabelName: 'Y Value',
-  yAxisLabelFormatter: String,
-};
 
 /** @public */
 export type HeatmapScaleType =
@@ -91,15 +71,15 @@ export interface OrdinalScale {
 }
 
 /** @alpha */
-export interface HeatmapSpec extends Spec {
+export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Heatmap;
-  data: Datum[];
+  data: D[];
   colorScale: HeatmapBandsColorScale;
-  xAccessor: Accessor | AccessorFn;
-  yAccessor: Accessor | AccessorFn;
-  valueAccessor: Accessor | AccessorFn;
-  valueFormatter: (value: number) => string;
+  xAccessor: Accessor<D> | AccessorFn<D>;
+  yAccessor: Accessor<D> | AccessorFn<D>;
+  valueAccessor: Accessor<never> | AccessorFn;
+  valueFormatter: ValueFormatter;
   xSortPredicate: Predicate;
   ySortPredicate: Predicate;
   xScale: RasterTimeScale | OrdinalScale | LinearScale;
@@ -109,33 +89,56 @@ export interface HeatmapSpec extends Spec {
   onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
   xAxisTitle: string;
   xAxisLabelName: string;
-  xAxisLabelFormatter: (value: string | number) => string;
+  xAxisLabelFormatter: LabelAccessor<string | number>;
   yAxisTitle: string;
   yAxisLabelName: string;
-  yAxisLabelFormatter: (value: string | number) => string;
+  yAxisLabelFormatter: LabelAccessor<string | number>;
 }
 
-type SpecRequiredProps = Pick<HeatmapSpec, 'id' | 'data' | 'colorScale'>;
-type SpecOptionalProps = Partial<Omit<HeatmapSpec, 'chartType' | 'specType' | 'id' | 'data'>>;
+/**
+ * Adds heatmap spec to chart specs
+ * @alpha
+ */
+export const Heatmap = function <D extends BaseDatum = Datum>(
+  props: SFProps<
+    HeatmapSpec<D>,
+    keyof typeof buildProps.current['overrides'],
+    keyof typeof buildProps.current['defaults'],
+    keyof typeof buildProps.current['optionals'],
+    keyof typeof buildProps.current['requires']
+  >,
+) {
+  const buildProps = useRef(
+    // @ts-ignore - excessively deep types
+    buildSFProps<HeatmapSpec<D>>()(
+      {
+        chartType: ChartType.Heatmap,
+        specType: SpecType.Series,
+      },
+      {
+        data: [],
+        valueAccessor: ({ value }) => value,
+        xScale: { type: X_SCALE_DEFAULT.type },
+        valueFormatter: (value) => `${value}`,
+        xSortPredicate: Predicate.AlphaAsc,
+        ySortPredicate: Predicate.AlphaAsc,
+        // TODO: make accessors required
+        xAccessor: (d) => (d as any)?.x,
+        yAccessor: (d) => (d as any)?.y,
+        timeZone: 'UTC',
+        xAxisTitle: '',
+        yAxisTitle: '',
+        xAxisLabelName: 'X Value',
+        xAxisLabelFormatter: String,
+        yAxisLabelName: 'Y Value',
+        yAxisLabelFormatter: String,
+      },
+    ),
+  );
+  const { defaults, overrides } = buildProps.current;
+  useSpecFactory<HeatmapSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
+  return null;
+};
 
-/** @alpha */
-export const Heatmap: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
-  specComponentFactory<
-    HeatmapSpec,
-    | 'xAccessor'
-    | 'yAccessor'
-    | 'valueAccessor'
-    | 'data'
-    | 'ySortPredicate'
-    | 'xSortPredicate'
-    | 'valueFormatter'
-    | 'xScale'
-    | 'timeZone'
-    | 'xAxisTitle'
-    | 'xAxisLabelName'
-    | 'xAxisLabelFormatter'
-    | 'yAxisTitle'
-    | 'yAxisLabelName'
-    | 'yAxisLabelFormatter'
-  >(defaultProps),
-);
+/** @public */
+export type HeatmapProps = ComponentProps<typeof Heatmap>;

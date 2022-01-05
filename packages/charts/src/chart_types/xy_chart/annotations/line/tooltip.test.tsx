@@ -43,6 +43,8 @@ describe('Annotation tooltips', () => {
               { x: 2, y: 3 },
               { x: 4, y: 5 },
             ]}
+            xAccessor="x"
+            yAccessors={['y']}
             xScaleType={ScaleType.Linear}
           />
           <LineAnnotation
@@ -81,6 +83,8 @@ describe('Annotation tooltips', () => {
               { x: 2, y: 3 },
               { x: 4, y: 5 },
             ]}
+            xAccessor="x"
+            yAccessors={['y']}
             xScaleType={ScaleType.Linear}
           />
           <LineAnnotation

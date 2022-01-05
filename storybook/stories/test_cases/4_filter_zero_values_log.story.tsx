@@ -33,6 +33,8 @@ export const Example = () => {
       <AreaSeries
         id="bars"
         name="amount"
+        xAccessor="x"
+        yAccessors={['y']}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Log}
         areaSeriesStyle={{ point: { visible: true } }}

@@ -15,9 +15,6 @@ import { useBaseTheme } from '../../use_base_theme';
 import { getLegendSizeKnob } from './legend_size_knob';
 
 export const Example = () => {
-  const yAccessors = ['y1', 'y2'];
-  const splitSeriesAccessors = ['g1', 'g2'];
-
   return (
     <Chart>
       <Settings
@@ -35,8 +32,8 @@ export const Example = () => {
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
-        yAccessors={yAccessors}
-        splitSeriesAccessors={splitSeriesAccessors}
+        yAccessors={['y1', 'y2']}
+        splitSeriesAccessors={['g1', 'g2']}
         data={TestDatasets.BARCHART_2Y2G}
         hideInLegend={false}
       />

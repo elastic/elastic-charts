@@ -6,59 +6,162 @@
  * Side Public License, v 1.
  */
 
-import { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { Dispatch, bindActionCreators } from 'redux';
+import { FC, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { OptionalKeys, RequiredKeys } from 'utility-types';
 
-import { Spec } from '../specs';
-import { upsertSpec, removeSpec } from './actions/specs';
+import { Spec as Spec } from '../specs';
+import { stripUndefined } from '../utils/common';
+import { upsertSpec as upsertSpecAction, removeSpec as removeSpecAction } from './actions/specs';
 
 /** @internal */
 export interface DispatchProps {
-  upsertSpec: (spec: Spec) => void;
-  removeSpec: (id: string) => void;
+  upsertSpec: typeof upsertSpecAction;
+  removeSpec: typeof removeSpecAction;
 }
 
-/** @internal */
-export function specComponentFactory<U extends Spec, D extends keyof U>(
-  defaultProps: Pick<U, D | 'chartType' | 'specType'>,
-) {
-  /* eslint-disable no-shadow, react-hooks/exhaustive-deps, unicorn/consistent-function-scoping */
-  const SpecInstance = (props: U & DispatchProps) => {
-    const { removeSpec, upsertSpec, ...SpecInstance } = props;
-    useEffect(() => {
-      upsertSpec(SpecInstance);
-    });
-    useEffect(
-      () => () => {
-        removeSpec(props.id);
-      },
-      [],
-    );
-    return null;
-  };
-  /* eslint-enable */
-  SpecInstance.defaultProps = defaultProps;
-  return SpecInstance;
-}
-
-const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
-  bindActionCreators(
-    {
-      upsertSpec,
-      removeSpec,
-    },
-    dispatch,
+/**
+ * Used inside custom spec component to link component to state as new spec
+ * @internal
+ */
+export function useSpecFactory<Props extends Spec>(props: Props) {
+  const dispatch = useDispatch();
+  const { upsertSpec, removeSpec } = useMemo(
+    () => ({
+      upsertSpec: bindActionCreators(upsertSpecAction, dispatch),
+      removeSpec: bindActionCreators(removeSpecAction, dispatch),
+    }),
+    [dispatch],
   );
 
-/** @internal */
-export function getConnect() {
-  /**
-   * Redux assumes shallowEqual for all connected components
-   *
-   * This causes an issue where the specs are cleared and memoized spec components will never be
-   * re-rendered and thus never re-upserted to the state. Setting pure to false solves this issue
-   * and doesn't cause traditional performance degradations.
-   */
-  return connect(null, mapDispatchToProps, null, { pure: false });
+  useEffect(() => {
+    upsertSpec(props);
+  });
+  useEffect(
+    () => () => {
+      removeSpec(props.id);
+    },
+    [], // eslint-disable-line react-hooks/exhaustive-deps
+  );
 }
+
+/**
+ * Creates spec component factory given overrides and default props.
+ *
+ * To use this you must pass the Spec type via empty function call...
+ *
+ * ```ts
+ * const MyThing = specComponentFactory<MyThingSpec>()(overrides, defaults)
+ * ```
+ *
+ * > IMPORTANT: Both `overrides` and `defaults` should __NOT__ have explicit types.
+ * > The types are determined automatically from thier implicitly defined types, while still
+ * > enforing that the types are derived from the defined `Spec`.
+ * @internal
+ */
+export const specComponentFactory = <S extends Spec>() => <
+  Overrides extends SFOverrideKeys<S>,
+  Defaults extends SFDefaultKeys<S, Overrides>,
+  Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
+  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>
+>(
+  overrides: SFOverrides<S, Overrides>,
+  defaults: SFDefaults<S, Overrides, Defaults>,
+): FC<SFProps<S, Overrides, Defaults, Optionals, Requires>> => {
+  return (props) => {
+    // @ts-ignore - All Spec keys are guaranteed to be included
+    useSpecFactory<S>({ ...defaults, ...stripUndefined(props), ...overrides });
+    return null;
+  };
+};
+
+/**
+ * Takes in prop overrides and defaults with enforced types.
+ * Determines implicit types of optional and required props.
+ *
+ * To use this you must pass the Spec type via empty function call...
+ *
+ * ```ts
+ * const MyThingBuildProps = buildSFProps<MyThingSpec>()(overrides, defaults)
+ * ```
+ *
+ * > IMPORTANT: Both `overrides` and `defaults` should __NOT__ have explicit types.
+ * > The types are determined automatically from thier implicitly defined types, while still
+ * > enforing that the types are derived from the defined `Spec`.
+ * @internal
+ */
+export const buildSFProps = <S extends Spec>() => <
+  Overrides extends SFOverrideKeys<S>,
+  Defaults extends SFDefaultKeys<S, Overrides>,
+  Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
+  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>
+>(
+  overrides: SFOverrides<S, Overrides>,
+  defaults: SFDefaults<S, Overrides, Defaults>,
+): BuildProps<S, Overrides, Defaults, Optionals, Requires> => ({
+  overrides,
+  defaults,
+  optionals: {} as Pick<S, Optionals>, // used to transfer type only
+  requires: {} as Pick<S, Requires>, // used to transfer type only
+});
+
+/*
+------------------------------------------------------------
+  Reused types to maintain single source of truth
+------------------------------------------------------------
+*/
+
+/**
+ * Resulting props for spec given overrides, defaults, optionals and required props
+ * @public
+ */
+export type SFProps<
+  S extends Spec,
+  Overrides extends SFOverrideKeys<S>,
+  Defaults extends SFDefaultKeys<S, Overrides>,
+  Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
+  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>
+> = Pick<S, Optionals | Requires> & Partial<Pick<S, Defaults>>;
+
+/** @public */
+export interface BuildProps<
+  S extends Spec,
+  Overrides extends SFOverrideKeys<S>,
+  Defaults extends SFDefaultKeys<S, Overrides>,
+  Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
+  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>
+> {
+  overrides: SFOverrides<S, Overrides>;
+  defaults: SFDefaults<S, Overrides, Defaults>;
+  /** @deprecated typing only do not use as value */
+  optionals: Pick<S, Optionals>;
+  /** @deprecated typing only do not use as value */
+  requires: Pick<S, Requires>;
+}
+
+/** All specs __must__ provide these as overrides */
+type RequiredSpecProps = keyof Pick<Spec, 'chartType' | 'specType'>;
+
+/* Types defining keys */
+type SFOverrideKeys<S extends Spec> = keyof S;
+type SFDefaultKeys<S extends Spec, Overrides extends keyof S> = keyof Omit<S, Overrides>;
+type SFOptionalKeys<
+  S extends Spec,
+  Overrides extends keyof S,
+  Defaults extends keyof Omit<S, Overrides>
+> = OptionalKeys<Omit<S, Overrides | Defaults>>;
+type SFRequiredKeys<
+  S extends Spec,
+  Overrides extends keyof S,
+  Defaults extends keyof Omit<S, Overrides>,
+  Optionals extends SFOptionalKeys<S, Overrides, Defaults>
+> = RequiredKeys<Omit<S, Overrides | Defaults | Optionals>>;
+
+/* Object types defined from key types above */
+type SFOverrides<S extends Spec, Overrides extends keyof S> = Required<Pick<S, Overrides | RequiredSpecProps>>;
+type SFDefaults<
+  S extends Spec,
+  Overrides extends SFOverrideKeys<S>,
+  Defaults extends SFDefaultKeys<S, Overrides>
+> = Required<Pick<S, Defaults>>;

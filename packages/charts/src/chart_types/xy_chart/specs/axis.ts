@@ -6,30 +6,32 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
 import { SpecType } from '../../../specs/constants';
-import { getConnect, specComponentFactory } from '../../../state/spec_factory';
+import { specComponentFactory } from '../../../state/spec_factory';
 import { Position } from '../../../utils/common';
 import { AxisSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 
-/** @public */
-export const Axis: React.FunctionComponent<SpecRequired & SpecOptionals> = getConnect()(
-  specComponentFactory<
-    AxisSpec,
-    'groupId' | 'hide' | 'showOverlappingTicks' | 'showOverlappingLabels' | 'position' | 'timeAxisLayerCount'
-  >({
+/**
+ * Add axis spec to chart
+ * @public
+ */
+export const Axis = specComponentFactory<AxisSpec>()(
+  {
     chartType: ChartType.XYAxis,
     specType: SpecType.Axis,
+  },
+  {
     groupId: DEFAULT_GLOBAL_ID,
     hide: false,
     showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
     timeAxisLayerCount: 0,
-  }),
+  },
 );
 
-type SpecRequired = Pick<AxisSpec, 'id'>;
-type SpecOptionals = Partial<Omit<AxisSpec, 'chartType' | 'specType' | 'seriesType' | 'id'>>;
+/** @public */
+export type AxisProps = ComponentProps<typeof Axis>;

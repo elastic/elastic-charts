@@ -10,6 +10,7 @@ import { $Values } from 'utility-types';
 
 import { ChartType } from '../chart_types';
 import { BOTTOM, CENTER, LEFT, MIDDLE, RIGHT, TOP } from '../common/constants';
+import { buildSFProps } from '../state/spec_factory';
 import { Position } from '../utils/common';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { SettingsSpec } from './settings';
@@ -161,27 +162,37 @@ export const DEFAULT_TOOLTIP_CONFIG = {
 };
 
 /** @public */
-export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
-  id: '__global__settings___',
-  chartType: ChartType.Global,
-  specType: SpecType.Settings,
-  rendering: 'canvas' as const,
-  rotation: 0 as const,
-  animateData: true,
-  resizeDebounce: 10,
-  debug: false,
-  tooltip: DEFAULT_TOOLTIP_CONFIG,
-  pointerUpdateTrigger: PointerUpdateTrigger.X,
-  externalPointerEvents: {
-    tooltip: {
-      visible: false,
-    },
+export const settingsBuildProps = buildSFProps<SettingsSpec>()(
+  {
+    id: '__global__settings___' as const,
+    chartType: ChartType.Global,
+    specType: SpecType.Settings,
   },
-  baseTheme: LIGHT_THEME,
-  brushAxis: BrushAxis.X,
-  minBrushDelta: 2,
-  ariaUseDefaultSummary: true,
-  ariaLabelHeadingLevel: 'p',
-  allowBrushingLastHistogramBin: true,
-  ...DEFAULT_LEGEND_CONFIG,
+  {
+    rendering: 'canvas' as const,
+    rotation: 0 as const,
+    animateData: true,
+    resizeDebounce: 10,
+    debug: false,
+    tooltip: DEFAULT_TOOLTIP_CONFIG,
+    pointerUpdateTrigger: PointerUpdateTrigger.X,
+    externalPointerEvents: {
+      tooltip: {
+        visible: false,
+      },
+    },
+    baseTheme: LIGHT_THEME,
+    brushAxis: BrushAxis.X,
+    minBrushDelta: 2,
+    ariaUseDefaultSummary: true,
+    ariaLabelHeadingLevel: 'p',
+    allowBrushingLastHistogramBin: true,
+    ...DEFAULT_LEGEND_CONFIG,
+  },
+);
+
+/** @public */
+export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
+  ...settingsBuildProps.defaults,
+  ...settingsBuildProps.overrides,
 };

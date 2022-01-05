@@ -43,9 +43,9 @@ export {
 export { GeometryValue, BandedAccessorType } from './utils/geometry';
 export { LegendPath, LegendPathElement } from './state/actions/legend';
 export { CategoryKey } from './common/category';
+export { Layer as PartitionLayer, PartitionProps } from './chart_types/partition_chart/specs/index';
 export { FillLabelConfig as PartitionFillLabel, PartitionStyle } from './utils/themes/partition';
 export { PartitionLayout } from './chart_types/partition_chart/layout/types/config_types';
-export { Layer as PartitionLayer } from './chart_types/partition_chart/specs/index';
 export * from './chart_types/goal_chart/specs/index';
 export * from './chart_types/wordcloud/specs/index';
 
@@ -82,7 +82,7 @@ export { AnimKeyframe } from './chart_types/partition_chart/layout/types/config_
 
 // heatmap
 export { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
-export { ColorBand, HeatmapBandsColorScale } from './chart_types/heatmap/specs/heatmap';
+export { ColorBand, HeatmapBandsColorScale, HeatmapProps } from './chart_types/heatmap/specs/heatmap';
 
 // utilities
 export {

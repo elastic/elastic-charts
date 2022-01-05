@@ -59,6 +59,8 @@ export const Example = () => {
         <LineSeries
           id="lines"
           name={naming}
+          xAccessor="x"
+          yAccessors={['y']}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           splitSeriesAccessors={splitSeriesAccessors}
@@ -69,6 +71,8 @@ export const Example = () => {
         <AreaSeries
           id="areas"
           name={naming}
+          xAccessor="x"
+          yAccessors={['y']}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           data={areaData}
@@ -81,6 +85,8 @@ export const Example = () => {
         <BarSeries
           id="bars"
           name={naming}
+          xAccessor="x"
+          yAccessors={['y']}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           splitSeriesAccessors={splitSeriesAccessors}
