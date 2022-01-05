@@ -39,7 +39,6 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     angleStart,
     angleEnd,
   } = spec;
-
   const [lowestValue, highestValue] = [base, ...(target ? [target] : []), actual, ...bands, ...ticks].reduce(
     ([min, max], value) => [Math.min(min, value), Math.max(max, value)],
     [Infinity, -Infinity],
@@ -84,6 +83,7 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     belowBaseCount,
     angleStart,
     angleEnd,
+    tooltipValueFormatter: () => '',
   };
 
   const pickQuads: PickFunction = (x, y) =>
