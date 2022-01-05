@@ -1,3 +1,27 @@
+# [42.0.0](https://github.com/elastic/elastic-charts/compare/v41.0.1...v42.0.0) (2022-01-05)
+
+
+### Bug Fixes
+
+* **flamegraph:** solve animation regression occurring with 6db2677 ([#1541](https://github.com/elastic/elastic-charts/issues/1541)) ([5ec6037](https://github.com/elastic/elastic-charts/commit/5ec603767da22fe6cf2820536687aa77013436cc)), closes [#1540](https://github.com/elastic/elastic-charts/issues/1540)
+* **heatmap:** render empty state ([#1532](https://github.com/elastic/elastic-charts/issues/1532)) ([59002df](https://github.com/elastic/elastic-charts/commit/59002df28e2a82f285c0375dd866655afb53abab))
+* **waffle:** fix strange 0 text in legend item extra when label is 0 ([#1538](https://github.com/elastic/elastic-charts/issues/1538)) ([72224b9](https://github.com/elastic/elastic-charts/commit/72224b9bcbdc2ff9eb6c048fdba7dd13fac39db5))
+
+
+### Features
+
+* **goal:** add valueFormatter for tooltip ([#1529](https://github.com/elastic/elastic-charts/issues/1529)) ([8139973](https://github.com/elastic/elastic-charts/commit/8139973fb58c0ddb089da356904f50bea3f80817))
+* **heatmap:** add axis titles ([#1503](https://github.com/elastic/elastic-charts/issues/1503)) ([a87325d](https://github.com/elastic/elastic-charts/commit/a87325d56ea4a3ce1eb7e3da688499f39427253a))
+* **types:** improve generic types in specs, and spec prop types ([#1421](https://github.com/elastic/elastic-charts/issues/1421)) ([562929e](https://github.com/elastic/elastic-charts/commit/562929ef012aa80cc058b5c4a6dbe8f7226fb977))
+
+
+### BREAKING CHANGES
+
+* **types:** The `xAccessor` and `yAccessor` are now required on all xy chart specs. Stronger typing on `data` prop that may cause type errors when using untyped array (i.e. `const arr: never[] = []`). Other minor type changes related to spec types.
+* **heatmap:** The heatmap yAxisLabel.padding style type is changed from Pixel | Partial<Padding> to Pixels | Padding. The heatmap axis labels are now correctly subjected to padding calculations and it will result in a slightly different position of labels.
+
+Co-authored-by: Marco Vettorello <vettorello.marco@gmail.com>
+
 ## [41.0.1](https://github.com/elastic/elastic-charts/compare/v41.0.0...v41.0.1) (2021-12-20)
 
 
