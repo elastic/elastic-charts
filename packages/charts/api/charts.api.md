@@ -940,7 +940,7 @@ export function getNodeName(node: ArrayNode): string;
 export const Goal: React_2.FunctionComponent<SpecRequiredProps_9 & SpecOptionalProps_9>;
 
 // @alpha (undocumented)
-export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput> | (() => string);
+export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
 
 // @alpha (undocumented)
 export interface GoalSpec extends Spec {
@@ -959,7 +959,7 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     base: number;
     // (undocumented)
-    centralMajor: string | GoalLabelAccessor | (() => string);
+    centralMajor: string | GoalLabelAccessor;
     // (undocumented)
     centralMinor: string | GoalLabelAccessor;
     // (undocumented)
