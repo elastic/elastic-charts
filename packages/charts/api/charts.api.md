@@ -944,7 +944,7 @@ export interface GeometryValue {
 export function getNodeName(node: ArrayNode): string;
 
 // @alpha
-export const Goal: FC<SFProps<GoalSpec, "chartType" | "specType", "base" | "actual" | "bands" | "ticks" | "bandFillColor" | "tickValueFormatter" | "labelMajor" | "labelMinor" | "centralMajor" | "centralMinor" | "angleStart" | "angleEnd" | "bandLabels", "target", "id" | "subtype">>;
+export const Goal: FC<SFProps<GoalSpec, "chartType" | "specType", "base" | "actual" | "bands" | "ticks" | "bandFillColor" | "tickValueFormatter" | "labelMajor" | "labelMinor" | "centralMajor" | "centralMinor" | "angleStart" | "angleEnd" | "bandLabels" | "tooltipValueFormatter", "target", "id" | "subtype">>;
 
 // @alpha (undocumented)
 export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
