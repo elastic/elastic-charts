@@ -42,6 +42,13 @@ describe('Goal stories', () => {
         'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target&knob-angleStart (n * π/8)=11&knob-angleEnd (n * π/8)=-3',
       );
     });
+
+    it('should show custom value formatter in tooltip', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target&knob-test tooltip value formatter=true',
+        { right: 245, bottom: 120 },
+      );
+    });
   });
 
   eachTheme.describe((_, params) => {

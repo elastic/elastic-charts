@@ -9,9 +9,10 @@
 import { getGreensColorScale } from '../../../../common/color_library_wrappers';
 import { Pixels, PointObject } from '../../../../common/geometry';
 import { SpecType } from '../../../../specs/constants';
+import { ValueFormatter } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme } from '../../../../utils/themes/theme';
-import { BandFillColorAccessorInput } from '../../specs';
+import { BandFillColorAccessorInput, GoalLabelAccessor } from '../../specs';
 import { GoalSubtype } from '../../specs/constants';
 
 /** @internal */
@@ -36,7 +37,7 @@ export interface BulletViewModel {
   ticks: Array<TickViewModel>;
   labelMajor: string;
   labelMinor: string;
-  centralMajor: string;
+  centralMajor: string | GoalLabelAccessor;
   centralMinor: string;
   highestValue: number;
   lowestValue: number;
@@ -44,6 +45,7 @@ export interface BulletViewModel {
   belowBaseCount: number;
   angleStart: number;
   angleEnd: number;
+  tooltipValueFormatter: ValueFormatter;
 }
 
 /** @internal */
@@ -78,6 +80,7 @@ export const defaultGoalSpec = {
   bandLabels: [],
   angleStart: Math.PI + Math.PI / 4,
   angleEnd: -Math.PI / 4,
+  tooltipValueFormatter: (value: number) => String(value),
 };
 
 /** @internal */
@@ -97,6 +100,7 @@ export const nullGoalViewModel = {
   belowBaseCount: 0,
   angleStart: 0,
   angleEnd: 0,
+  tooltipValueFormatter: () => '',
 };
 
 /** @internal */

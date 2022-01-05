@@ -13,7 +13,7 @@ import { Color } from '../../../common/colors';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { specComponentFactory } from '../../../state/spec_factory';
-import { LabelAccessor } from '../../../utils/common';
+import { LabelAccessor, ValueFormatter } from '../../../utils/common';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
 import { GoalSubtype } from './constants';
 
@@ -54,6 +54,7 @@ export interface GoalSpec extends Spec {
   angleStart: number;
   angleEnd: number;
   bandLabels: string[];
+  tooltipValueFormatter: ValueFormatter;
 }
 
 /**
