@@ -208,6 +208,7 @@ export const nullShapeViewModel = (
     width: 0,
     height: 0,
   },
+  animation: { duration: 0 },
 });
 
 /** @internal */

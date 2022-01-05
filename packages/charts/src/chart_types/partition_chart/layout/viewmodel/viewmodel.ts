@@ -309,6 +309,7 @@ export function shapeViewModel(
     clockwiseSectors,
     maxRowCount,
     specialFirstInnermostSector,
+    animation,
   } = spec;
   const {
     emptySizeRatio,
@@ -511,6 +512,7 @@ export function shapeViewModel(
     pickQuads,
     outerRadius,
     chartDimensions,
+    animation,
   };
 }
 
