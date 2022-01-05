@@ -35,11 +35,20 @@ interface ScreenReaderCartesianTableProps {
 const formatMultipleSeriesSmallData = (data: any[]) => {
   const formatted: any = {};
   data.map(({ values, label }) => {
-    values.map((val: { xValue: number | string; formatted: string; raw: number | string }) => {
-      return formatted.hasOwnProperty(val.xValue)
-        ? formatted[val.xValue].push({ label, data: val.formatted ?? val.raw, xValue: val.xValue })
-        : (formatted[val.xValue] = [{ label, data: val.formatted ?? val.raw, xValue: val.xValue }]);
-    });
+    values.map(
+      (val: { xValue: number | string; formatted: string; raw: number | string; smPanelTitle: string | undefined }) => {
+        return formatted.hasOwnProperty(val.xValue)
+          ? formatted[val.xValue].push({
+              label,
+              data: val.formatted ?? val.raw,
+              xValue: val.xValue,
+              smPanelTitle: val.smPanelTitle,
+            })
+          : (formatted[val.xValue] = [
+              { label, data: val.formatted ?? val.raw, xValue: val.xValue, smPanelTitle: val.smPanelTitle },
+            ]);
+      },
+    );
   });
   return formatted;
 };
@@ -52,6 +61,7 @@ const ScreenReaderCartesianTableComponent = ({
   const [count, setCount] = useState(0);
   const tableRowRef = createRef<HTMLTableRowElement>();
   const { tableCaption } = a11ySettings;
+  console.log(cartesianData.data);
 
   const rowLimit = cartesianData.numberOfItemsInGroup * count;
   const tableLength = cartesianData.data[0].values.length;
@@ -97,6 +107,12 @@ const ScreenReaderCartesianTableComponent = ({
         )}
         <thead>
           <tr>
+            {isSmallMultiple && cartesianData.smallMultipleTitle.length === 2 && (
+              <th scope="col">{`Small multiple titles - ${cartesianData.smallMultipleTitle[0]} and ${cartesianData.smallMultipleTitle[1]}`}</th>
+            )}
+            {isSmallMultiple && cartesianData.smallMultipleTitle && (
+              <th scope="col">{`Small multiple title - ${cartesianData.smallMultipleTitle[0]}`}</th>
+            )}
             <th scope="col">X Value</th>
             <th scope="col">Value</th>
           </tr>
@@ -104,14 +120,20 @@ const ScreenReaderCartesianTableComponent = ({
         <tbody>
           {cartesianData.data.map(({ values }, index) => {
             {
-              return values.map((val: { xValue: any; formatted: any; raw: any }, i: number) => {
-                return (
-                  <tr key={String(`screen-reader-row--${index} ${i}`)} tabIndex={-1}>
-                    <td>{val.xValue && val.xValue}</td>
-                    <td>{val.formatted ?? val.raw}</td>
-                  </tr>
-                );
-              });
+              return values.map(
+                (val: { xValue: any; formatted: any; raw: any; smPanelTitle: string | undefined }, i: number) => {
+                  return (
+                    <tr key={String(`screen-reader-row--${index} ${i}`)} tabIndex={-1}>
+                      {isSmallMultiple && cartesianData.smallMultipleTitle.length === 2 && (
+                        <td colSpan={2}>{val.smPanelTitle}</td>
+                      )}
+                      {isSmallMultiple && cartesianData.smallMultipleTitle.length !== 2 && <td>{val.smPanelTitle}</td>}
+                      <td>{val.xValue && val.xValue}</td>
+                      <td>{val.formatted ?? val.raw}</td>
+                    </tr>
+                  );
+                },
+              );
             }
           })}
         </tbody>
@@ -132,6 +154,12 @@ const ScreenReaderCartesianTableComponent = ({
         )}
         <thead>
           <tr>
+            {isSmallMultiple && cartesianData.smallMultipleTitle.length === 2 && (
+              <th scope="col">{`Small multiple titles - ${cartesianData.smallMultipleTitle[0]} and ${cartesianData.smallMultipleTitle[1]}`}</th>
+            )}
+            {isSmallMultiple && cartesianData.smallMultipleTitle && (
+              <th scope="col">{`Small multiple title - ${cartesianData.smallMultipleTitle[0]}`}</th>
+            )}
             <th scope="col">X Value</th>
             <th scope="col">Label</th>
             <th scope="col">Value</th>
@@ -145,11 +173,16 @@ const ScreenReaderCartesianTableComponent = ({
                   xValue: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined;
                   label: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined;
                   data: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined;
+                  smPanelTitle: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined;
                 },
                 i: any,
               ) => {
                 return (
                   <tr key={String(`screen-reader-row--${index} ${i}`)} tabIndex={-1}>
+                    {isSmallMultiple && cartesianData.smallMultipleTitle.length === 2 && (
+                      <td colSpan={2}>{val.smPanelTitle}</td>
+                    )}
+                    {isSmallMultiple && cartesianData.smallMultipleTitle.length !== 2 && <td>{val.smPanelTitle}</td>}
                     <td>{val.xValue}</td>
                     <td>{val.label}</td>
                     <td>{val.data}</td>
