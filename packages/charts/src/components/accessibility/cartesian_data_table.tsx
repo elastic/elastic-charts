@@ -61,7 +61,6 @@ const ScreenReaderCartesianTableComponent = ({
   const [count, setCount] = useState(0);
   const tableRowRef = createRef<HTMLTableRowElement>();
   const { tableCaption } = a11ySettings;
-  console.log(cartesianData.data);
 
   const rowLimit = cartesianData.numberOfItemsInGroup * count;
   const tableLength = cartesianData.data[0].values.length;
