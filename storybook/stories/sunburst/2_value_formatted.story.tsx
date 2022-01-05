@@ -10,8 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, Settings } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
+import { Chart, Datum, Partition, Settings, PartialTheme, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -20,10 +19,22 @@ import { indexInterpolatedFillColor, interpolatorTurbo, productLookup } from '..
 export const Example = () => {
   const onElementClick = boolean('onElementClick listener', true);
   const onElementOver = boolean('onElementOver listener', true);
+  const theme: PartialTheme = {
+    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+    partition: {
+      outerSizeRatio: 0.9,
+      linkLabel: {
+        fontStyle: 'italic',
+        valueFont: { fontWeight: 900 },
+        maxTextLength: number('maxTextLength', 20, { range: true, min: 1, max: 100 }),
+      },
+    },
+  };
 
   return (
     <Chart>
       <Settings
+        theme={theme}
         baseTheme={useBaseTheme()}
         onElementClick={onElementClick ? action('onElementClick') : undefined}
         onElementOver={onElementOver ? action('onElementOver') : undefined}
@@ -32,7 +43,7 @@ export const Example = () => {
         id="spec_1"
         data={mocks.pie}
         valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,
@@ -51,14 +62,6 @@ export const Example = () => {
             },
           },
         ]}
-        config={{
-          outerSizeRatio: 0.9,
-          linkLabel: {
-            fontStyle: 'italic',
-            valueFont: { fontWeight: 900 },
-            maxTextLength: number('maxTextLength', 20, { range: true, min: 1, max: 100 }),
-          },
-        }}
       />
     </Chart>
   );

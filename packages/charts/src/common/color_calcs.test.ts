@@ -8,23 +8,11 @@
 
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 import { highContrastColor, combineColors } from './color_calcs';
-import { RgbaTuple, RGBATupleToString } from './color_library_wrappers';
+import { RgbaTuple } from './color_library_wrappers';
 import { Colors } from './colors';
-import { fillTextColor } from './fill_text_color';
 
 describe('Color calcs', () => {
   describe('test highContrastColor', () => {
-    it('should return black when background is white', () => {
-      expect(fillTextColor(Colors.White.keyword)).toEqual(RGBATupleToString(Colors.Black.rgba));
-    });
-    // test contrast computation
-    it('should return black with yellow/semi-transparent background', () => {
-      expect(fillTextColor(`rgba(255,255,51,0.3)`)).toEqual(RGBATupleToString(Colors.Black.rgba));
-    });
-    it('should use white text for Thailand color', () => {
-      // black for WCAG2, white for WCAG3
-      expect(fillTextColor(`rgba(120, 116, 178, 1)`)).toEqual(RGBATupleToString(Colors.Black.rgba));
-    });
     it('should switch to black text if background color is in rgba() format - Thailand', () => {
       const background: RgbaTuple = [120, 116, 178, 0.7];
       const blendedBackground: RgbaTuple = [161, 158, 201, 1];

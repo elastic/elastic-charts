@@ -9,21 +9,14 @@
 import { ChartType } from '../../..';
 import { Color, Colors } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
-import { Box } from '../../../../common/text_utils';
+import { Box, Font } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { HeatmapBrushEvent } from '../../../../specs/settings';
 import { Point } from '../../../../utils/point';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { Visible, HeatmapStyle } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { config } from '../config/config';
 import { HeatmapCellDatum } from '../viewmodel/viewmodel';
-import { Config } from './config_types';
-
-/** @internal */
-export interface Value {
-  order: number;
-  value: string | number;
-  formatted: string;
-}
 
 /** @public */
 export interface Cell {
@@ -65,6 +58,15 @@ export interface HeatmapViewModel {
   xValues: Array<TextBox>;
   yValues: Array<TextBox>;
   pageSize: number;
+  titles: Array<
+    Font &
+      Visible & {
+        fontSize: number;
+        text: string;
+        origin: Point;
+        rotation: 0 | -90;
+      }
+  >;
 }
 
 /** @internal */
@@ -98,7 +100,7 @@ export type DragShape = ReturnType<PickDragShapeFunction>;
 
 /** @internal */
 export type ShapeViewModel = {
-  config: Config;
+  theme: HeatmapStyle;
   heatmapViewModel: HeatmapViewModel;
   pickQuads: PickFunction;
   pickDragArea: PickDragFunction;
@@ -122,11 +124,12 @@ export const nullHeatmapViewModel: HeatmapViewModel = {
   yValues: [],
   pageSize: 0,
   cellFontSize: () => 0,
+  titles: [],
 };
 
 /** @internal */
-export const nullShapeViewModel = (specifiedConfig?: Config): ShapeViewModel => ({
-  config: specifiedConfig || config,
+export const nullShapeViewModel = (): ShapeViewModel => ({
+  theme: LIGHT_THEME.heatmap,
   heatmapViewModel: nullHeatmapViewModel,
   pickQuads: () => [],
   pickDragArea: () => ({ cells: [], x: [], y: [], chartType: ChartType.Heatmap }),

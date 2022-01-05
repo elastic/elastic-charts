@@ -9,39 +9,28 @@
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { render } from '../../layout/viewmodel/scenegraph';
+import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getColorScale } from './get_color_scale';
-import { getGridHeightParamsSelector } from './get_grid_full_height';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
-import { render } from './scenegraph';
+import { isEmptySelector } from './is_empty';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
 /** @internal */
-export const geometries = createCustomCachedSelector(
+export const getHeatmapGeometries = createCustomCachedSelector(
   [
     getHeatmapSpecSelector,
-    computeChartDimensionsSelector,
-    getSettingsSpecSelector,
+    computeChartElementSizesSelector,
     getHeatmapTableSelector,
     getColorScale,
     getDeselectedSeriesSelector,
-    getGridHeightParamsSelector,
     getChartThemeSelector,
+    isEmptySelector,
   ],
-  (
-    heatmapSpec,
-    chartDimensions,
-    settingSpec,
-    heatmapTable,
-    { bands, scale: colorScale },
-    deselectedSeries,
-    gridHeightParams,
-    theme,
-  ): ShapeViewModel => {
+  (heatmapSpec, dims, heatmapTable, { bands, scale: colorScale }, deselectedSeries, theme, empty): ShapeViewModel => {
     // instead of using the specId, each legend item is associated with an unique band label
     const disabledBandLabels = new Set(
       deselectedSeries.map(({ specId }) => {
@@ -55,17 +44,8 @@ export const geometries = createCustomCachedSelector(
       })
       .map(({ start, end }) => [start, end]);
 
-    return heatmapSpec
-      ? render(
-          heatmapSpec,
-          settingSpec,
-          chartDimensions,
-          heatmapTable,
-          colorScale,
-          bandsToHide,
-          gridHeightParams,
-          theme,
-        )
+    return heatmapSpec && !empty
+      ? render(heatmapSpec, dims, heatmapTable, colorScale, bandsToHide, theme)
       : nullShapeViewModel();
   },
 );

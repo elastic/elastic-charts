@@ -85,16 +85,14 @@ export function partitionTree(
   data: Datum[],
   valueAccessor: ValueAccessor,
   layers: Layer[],
-  defaultLayout: PartitionLayout,
-  partitionLayout: PartitionLayout = defaultLayout,
+  layout: PartitionLayout,
   innerGroups: LegendPath,
 ) {
   return getHierarchyOfArrays(
     data,
     valueAccessor,
-    // eslint-disable-next-line no-shadow
     [() => HIERARCHY_ROOT_KEY, ...layers.map(({ groupByRollup }) => groupByRollup)],
-    [null, ...layers.map(sorter(partitionLayout))],
+    [null, ...layers.map(sorter(layout))],
     innerGroups,
   );
 }

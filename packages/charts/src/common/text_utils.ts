@@ -10,6 +10,7 @@ import { $Values as Values } from 'utility-types';
 
 import { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
+import { TextMeasure } from '../utils/bbox/canvas_text_bbox_calculator';
 import { Datum } from '../utils/common';
 import { Color } from './colors';
 import { Pixels, Rectangle } from './geometry';
@@ -48,8 +49,6 @@ export type TextBaseline = typeof TEXT_BASELINE[number];
 export type VerticalAlignments = Values<typeof VerticalAlignments>;
 /** @internal */
 export type Relation = Array<Datum>;
-/** @internal */
-export type TextMeasure = (fontSize: number, boxes: Omit<Box, 'isValue'>[]) => TextMetrics[];
 
 /**
  * this doesn't include the font size, so it's more like a font face (?) - unfortunately all vague terms
@@ -85,17 +84,11 @@ export interface Part extends Rectangle {
 }
 
 /** @internal */
-export function cssFontShorthand({ fontStyle, fontVariant, fontWeight, fontFamily }: Font, fontSize: Pixels) {
+export function cssFontShorthand(
+  { fontStyle, fontVariant, fontWeight, fontFamily }: Omit<Font, 'textColor'>,
+  fontSize: Pixels,
+) {
   return `${fontStyle} ${fontVariant} ${fontWeight} ${fontSize}px ${fontFamily}`;
-}
-
-/** @internal */
-export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
-  return (fontSize, boxes) =>
-    boxes.map((box) => {
-      ctx.font = cssFontShorthand(box, fontSize);
-      return ctx.measureText(box.text);
-    });
 }
 
 /** @internal */
@@ -119,7 +112,7 @@ export type HorizontalAlignment = Values<typeof HorizontalAlignment>;
 
 /** @internal */
 export function measureOneBoxWidth(measure: TextMeasure, fontSize: number, box: Box) {
-  return measure(fontSize, [box])[0].width;
+  return measure(box.text, box, fontSize).width;
 }
 
 /** @internal */
@@ -136,10 +129,10 @@ export function fitText(
   font: Font,
 ) {
   const desiredLength = desiredText.length;
-  const response = (v: number) => measure(fontSize, [{ ...font, text: desiredText.slice(0, Math.max(0, v)) }])[0].width;
+  const response = (v: number) => measure(desiredText.slice(0, Math.max(0, v)), font, fontSize).width;
   const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
   const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(desiredText, visibleLength);
-  const { width } = measure(fontSize, [{ ...font, text }])[0];
+  const { width } = measure(text, font, fontSize);
   return { width, text };
 }
 
@@ -154,7 +147,7 @@ export function maximiseFontSize(
   boxHeight: Pixels,
 ): Pixels {
   const response = (fontSize: number) => {
-    const [{ width }] = measure(fontSize, [{ text, ...font }]);
+    const { width } = measure(text, font, fontSize);
     const widthDiff = boxWidth - width;
     const heightDiff = boxHeight - fontSize;
     return -Math.min(widthDiff, heightDiff);

@@ -9,25 +9,21 @@
 import React from 'react';
 
 import { ChartType } from '../..';
-import { Pixels } from '../../../common/geometry';
+import { Distance, Pixels, Radius } from '../../../common/geometry';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
 import { getConnect, specComponentFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
-import {
-  Datum,
-  LabelAccessor,
-  RecursivePartial,
-  ShowAccessor,
-  ValueAccessor,
-  ValueFormatter,
-} from '../../../utils/common';
-import { config, percentFormatter } from '../layout/config';
-import { Config, FillFontSizeRange, FillLabelConfig } from '../layout/types/config_types';
+import { Datum, LabelAccessor, ShowAccessor, ValueAccessor, ValueFormatter } from '../../../utils/common';
+import { FillFontSizeRange, FillLabelConfig } from '../../../utils/themes/partition';
+import { percentFormatter } from '../layout/config';
+import { AnimationConfig, PartitionLayout } from '../layout/types/config_types';
 import { NodeColorAccessor, ShapeTreeNode, ValueGetter } from '../layout/types/viewmodel_types';
 import { AGGREGATE_KEY, NodeSorter, PrimitiveValue } from '../layout/utils/group_by_rollup';
 
-interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {}
+interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {
+  valueFormatter: ValueFormatter;
+}
 
 /**
  * Specification for a given layer in the partition chart
@@ -42,10 +38,13 @@ export interface Layer {
   shape?: { fillColor: string | NodeColorAccessor };
 }
 
+/**
+ * @todo: we really need these typed, but since `specComponentFactory` has the typing
+ * for optional and required props built-in, this is not currently possible.
+ */
 const defaultProps = {
   chartType: ChartType.Partition,
   specType: SpecType.Series,
-  config,
   valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
   valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
   valueFormatter: (d: number): string => String(d),
@@ -60,16 +59,25 @@ const defaultProps = {
       fillLabel: {},
     },
   ],
+  clockwiseSectors: true,
+  specialFirstInnermostSector: true,
+  layout: PartitionLayout.sunburst,
+  drilldown: false,
+  maxRowCount: 12,
+  fillOutside: false,
+  radiusOutside: 128,
+  fillRectangleWidth: Infinity,
+  fillRectangleHeight: Infinity,
+  animation: { duration: 0 },
 };
 
 /**
  * Specifies the partition chart
  * @public
  */
-export interface PartitionSpec extends Spec {
+export interface PartitionSpec extends Spec, AnimationConfig {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Partition;
-  config: RecursivePartial<Config>;
   data: Datum[];
   valueAccessor: ValueAccessor;
   valueFormatter: ValueFormatter;
@@ -78,6 +86,24 @@ export interface PartitionSpec extends Spec {
   topGroove: Pixels;
   smallMultiples: string | null;
   layers: Layer[];
+  /**
+   * Largest to smallest sectors are positioned in a clockwise order
+   */
+  clockwiseSectors: boolean;
+  /**
+   * Starts placement with the second largest slice, for the innermost pie/ring
+   */
+  specialFirstInnermostSector: boolean;
+  layout: PartitionLayout;
+  maxRowCount: number;
+  /** @alpha */
+  drilldown: boolean;
+
+  // These need examples or documentation
+  fillOutside: boolean;
+  radiusOutside: Radius;
+  fillRectangleWidth: Distance;
+  fillRectangleHeight: Distance;
 }
 
 type SpecRequiredProps = Pick<PartitionSpec, 'id' | 'data'>;
@@ -90,10 +116,19 @@ export const Partition: React.FunctionComponent<SpecRequiredProps & SpecOptional
     | 'valueAccessor'
     | 'valueGetter'
     | 'valueFormatter'
-    | 'layers'
-    | 'config'
     | 'percentFormatter'
     | 'topGroove'
     | 'smallMultiples'
+    | 'layers'
+    | 'clockwiseSectors'
+    | 'specialFirstInnermostSector'
+    | 'layout'
+    | 'drilldown'
+    | 'maxRowCount'
+    | 'fillOutside'
+    | 'radiusOutside'
+    | 'fillRectangleWidth'
+    | 'fillRectangleHeight'
+    | 'animation'
   >(defaultProps),
 );

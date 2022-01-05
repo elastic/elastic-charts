@@ -7,13 +7,9 @@
  */
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { mergePartial } from '../../../../utils/common';
-import { config as defaultConfig } from '../../layout/config/config';
-import { Config } from '../../layout/types/config_types';
-import { getHeatmapSpecSelector } from './get_heatmap_spec';
+import { getHeatmapTableSelector } from './get_heatmap_table';
 
 /** @internal */
-export const getHeatmapConfigSelector = createCustomCachedSelector(
-  [getHeatmapSpecSelector],
-  (spec): Config => mergePartial<Config>(defaultConfig, spec.config),
-);
+export const isEmptySelector = createCustomCachedSelector([getHeatmapTableSelector], (heatmap): boolean => {
+  return heatmap.table.length === 0;
+});

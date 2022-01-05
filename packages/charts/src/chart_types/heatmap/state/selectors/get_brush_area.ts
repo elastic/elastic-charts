@@ -12,9 +12,8 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getBrushedHighlightedShapesSelector } from './get_brushed_highlighted_shapes';
-import { getGridHeightParamsSelector } from './get_grid_full_height';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
 const getIsDragging = (state: GlobalChartState) => state.interactions.pointer.dragging;
@@ -27,35 +26,33 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     getMouseDownPosition,
     getCurrentPointerPosition,
     getSettingsSpecSelector,
-    computeChartDimensionsSelector,
+    computeChartElementSizesSelector,
     getBrushedHighlightedShapesSelector,
-    getGridHeightParamsSelector,
   ],
-  (isDragging, mouseDownPosition, end, { brushAxis }, chartDimensions, dragShape, gridParams): Dimensions | null => {
+  (isDragging, mouseDownPosition, end, { brushAxis }, dims, dragShape): Dimensions | null => {
     if (!isDragging || !mouseDownPosition || !dragShape) {
       return null;
     }
 
     const start = {
-      x: mouseDownPosition.position.x - chartDimensions.left,
+      x: mouseDownPosition.position.x - dims.grid.left,
       y: mouseDownPosition.position.y,
     };
 
-    const clampedEndY = clamp(end.y, 0, gridParams.gridCellHeight * gridParams.pageSize);
-
+    const clampedEndY = clamp(end.y, 0, dims.grid.height);
     switch (brushAxis) {
       case BrushAxis.Both:
         return {
           top: start.y,
           left: start.x,
-          width: end.x - start.x - chartDimensions.left,
+          width: end.x - start.x - dims.grid.left,
           height: clampedEndY - start.y,
         };
       default:
         return {
           top: start.y,
           left: start.x,
-          width: end.x - start.x - chartDimensions.left,
+          width: end.x - start.x - dims.grid.left,
           height: clampedEndY - start.y,
         };
     }

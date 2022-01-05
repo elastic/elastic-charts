@@ -18,8 +18,8 @@ import {
   PartitionLayout,
   Settings,
   ShapeTreeNode,
+  defaultPartitionValueFormatter,
 } from '@elastic/charts';
-import { config } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
@@ -68,13 +68,21 @@ export const Example = () => {
         showLegend={boolean('Show legend', true)}
         showLegendExtra={boolean('Show legend values', true)}
         flatLegend={boolean('Flat legend', false)}
+        theme={{
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+          partition: {
+            linkLabel: { maxCount: 0 }, // relevant for sunburst only
+            outerSizeRatio: 0.9, // relevant for sunburst only
+          },
+        }}
         baseTheme={useBaseTheme()}
       />
       <Partition
         id="spec_1"
         data={data}
+        layout={partitionLayout}
         valueAccessor={(d: Datum) => d.exportVal as AdditiveNumber}
-        valueFormatter={(d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}`}
+        valueFormatter={(d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}`}
         layers={[
           {
             groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
@@ -107,11 +115,6 @@ export const Example = () => {
             },
           },
         ]}
-        config={{
-          partitionLayout,
-          linkLabel: { maxCount: 0 }, // relevant for sunburst only
-          outerSizeRatio: 0.9, // relevant for sunburst only
-        }}
       />
     </Chart>
   );
