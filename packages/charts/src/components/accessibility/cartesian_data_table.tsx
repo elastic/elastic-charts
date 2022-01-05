@@ -35,7 +35,7 @@ interface ScreenReaderCartesianTableProps {
 const formatMultipleSeriesSmallData = (data: any[]) => {
   const formatted: any = {};
   data.map(({ values, label }) => {
-    values.map((val: { xValue: number; formatted: string; raw: number | string }) => {
+    values.map((val: { xValue: number | string; formatted: string; raw: number | string }) => {
       return formatted.hasOwnProperty(val.xValue)
         ? formatted[val.xValue].push({ label, data: val.formatted ?? val.raw, xValue: val.xValue })
         : (formatted[val.xValue] = [{ label, data: val.formatted ?? val.raw, xValue: val.xValue }]);
@@ -82,7 +82,6 @@ const ScreenReaderCartesianTableComponent = ({
 
   let countOfCol: number = 3;
   const totalColumns: number = isSmallMultiple ? (countOfCol += 3) : countOfCol;
-
   /**
    * Data table for small data sets (less than 20 data points) with only one series
    */

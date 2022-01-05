@@ -122,11 +122,12 @@ function getValueData(
 ): FormattedDefaultExtraValue {
   const rawValue = (lastValue && lastValue[key]) ?? null;
   const formattedValue = rawValue !== null ? formatter(rawValue) : null;
+  const validXValue = typeof xValue === 'string' ? xValue : tickFormatter ? tickFormatter(xValue) : formatter(xValue);
   return {
     raw: rawValue !== null ? rawValue : null,
     formatted: xScaleType === ScaleType.Ordinal ? null : formattedValue,
     legendSizingLabel: formattedValue,
-    xValue: tickFormatter ? tickFormatter(xValue) : formatter(xValue),
+    xValue: validXValue,
     smPanelTitle: smPanelTitle ?? undefined,
   };
 }
