@@ -95,7 +95,10 @@ const ScreenReaderCartesianTableComponent = ({
    * Data table for small data sets (less than 20 data points) with only one series
    */
   const smallDataTableSingleSeries = (
-    <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
+    <div
+      className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
+      aria-live="polite"
+    >
       <table>
         {tableCaption ? (
           <caption>{tableCaption}</caption>
@@ -144,7 +147,10 @@ const ScreenReaderCartesianTableComponent = ({
    * Data table for small data sets (less than 20 data points) with multiple series
    */
   const smallDataTableMultipleSeries = (
-    <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
+    <div
+      className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
+      aria-live="polite"
+    >
       <table>
         {tableCaption ? (
           <caption>{tableCaption}</caption>
@@ -199,7 +205,10 @@ const ScreenReaderCartesianTableComponent = ({
    * Data table for large data sets (more than 20 data points)
    */
   const largeDataTable = (
-    <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
+    <div
+      className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
+      aria-live="polite"
+    >
       <table>
         {tableCaption ? (
           <caption>{tableCaption}</caption>

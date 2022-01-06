@@ -95,7 +95,7 @@ exports[`Chart should render the legend name test 1`] = `
                       </canvas>
                       <Connect(ScreenReaderCartesianTableComponent)>
                         <ScreenReaderCartesianTableComponent a11ySettings={{...}} cartesianData={{...}} debug={true} dispatch={[Function: dispatch]}>
-                          <div className=\\"echScreenReaderOnly echScreenReaderOnlyDebug echScreenReaderTable\\">
+                          <div className=\\"echScreenReaderOnly echScreenReaderOnlyDebug echScreenReaderTable\\" aria-live=\\"polite\\">
                             <table>
                               <caption>
                                 This table shows the full data set for the chart with one series named 
