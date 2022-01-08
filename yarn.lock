@@ -2757,10 +2757,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^41.3.0":
-  version "41.3.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-41.3.0.tgz#6016229b4112d0f3f0f53a94573020dea42a6cc9"
-  integrity sha512-8BE/4ZG0V+V+f3czC9wcCPTIHjovDkCuw9QiEUWrnXuA3uCXCKAx9AzuA5s+OtxfaHf+ELItNqCoGuKKa59jvg==
+"@elastic/eui@^44.0.0":
+  version "44.0.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-44.0.0.tgz#5d2dde9715fce5448b7d98367fd274dce974fe0a"
+  integrity sha512-Co3hSmvHn91upvylKvk5IJDR02KL+hdLQcJWU5DfRxTUv3iua3ZLmCMwG3WeoV/XE7kTsxDlNslRO5I3hk5uWg==
   dependencies:
     "@types/chroma-js" "^2.0.0"
     "@types/lodash" "^4.14.160"
@@ -10603,8 +10603,7 @@ eslint-module-utils@^2.6.0:
     pkg-dir "^2.0.0"
 
 "eslint-plugin-elastic-charts@link:./packages/eslint-plugin-elastic-charts":
-  version "0.0.0"
-  uid ""
+  version "1.0.0"
 
 eslint-plugin-eslint-comments@^3.2.0:
   version "3.2.0"
@@ -15008,8 +15007,13 @@ lines-and-columns@^1.1.6:
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
 "link-kibana@link:./packages/link_kibana":
-  version "0.0.0"
-  uid ""
+  version "1.0.0"
+  dependencies:
+    chalk "^4.1.1"
+    change-case "^4.1.2"
+    glob "^7.1.7"
+    inquirer "^8.0.0"
+    ora "^5.4.0"
 
 lint-staged@^10.5.3:
   version "10.5.3"
@@ -22041,7 +22045,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^4.4.3, typescript@~4.4.2:
+typescript@^4.4.3:
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.3.tgz#bdc5407caa2b109efd4f82fe130656f977a29324"
   integrity sha512-4xfscpisVgqqDfPaJo5vkd+Qd/ItkoagnHpufr+i2QCHBsNYp+G7UAoyFl8aPtx879u38wPV65rZ8qbGZijalA==
