@@ -1,3 +1,10 @@
+# [42.1.0](https://github.com/elastic/elastic-charts/compare/v42.0.0...v42.1.0) (2022-01-10)
+
+
+### Features
+
+* allow multiple value accessors when computing the stack ratio ([#1537](https://github.com/elastic/elastic-charts/issues/1537)) ([c2eb4b8](https://github.com/elastic/elastic-charts/commit/c2eb4b8d91436975eee2ff499cac0dfa7bb33e56))
+
 # [42.0.0](https://github.com/elastic/elastic-charts/compare/v41.0.1...v42.0.0) (2022-01-05)
 
 
