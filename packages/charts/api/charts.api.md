@@ -519,9 +519,7 @@ export type ColorVariant = $Values<typeof ColorVariant>;
 export type ComponentWithAnnotationDatum<D = any> = ComponentType<LineAnnotationDatum<D>>;
 
 // @public
-export function computeRatioByGroups<T extends Record<string, unknown>>(data: T[], groupAccessors: GroupKeysOrKeyFn<T>, valueAccessor: (k: T) => number | null | undefined, ratioKeyName: string): (T & {
-    [x: string]: number | null | undefined;
-})[];
+export function computeRatioByGroups<T extends Record<string, unknown>>(data: T[], groupAccessors: GroupKeysOrKeyFn<T>, valueGetterSetters: Array<[(datum: T) => unknown, (datum: T, value: number) => T]>): T[];
 
 // @public (undocumented)
 export type ContinuousDomain = [min: number, max: number];
