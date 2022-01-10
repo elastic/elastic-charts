@@ -11,14 +11,17 @@ import { debounce } from 'ts-debounce';
 
 import { DebugState } from '@elastic/charts';
 
-export const debugstateLogger = debounce(() => {
-  const statusEl = document.querySelector<HTMLDivElement>('.echChartStatus');
+export const getDebugStateLogger = (debugState: boolean) => {
+  const dataStateAction = action('DataState');
+  return debounce(() => {
+    if (!debugState) return;
+    const statusEl = document.querySelector<HTMLDivElement>('.echChartStatus');
 
-  if (statusEl) {
-    const dataState = statusEl.dataset.echDebugState
-      ? (JSON.parse(statusEl.dataset.echDebugState) as DebugState)
-      : null;
-
-    if (dataState) action('DebugState')(dataState);
-  }
-}, 100);
+    if (statusEl) {
+      const dataState = statusEl.dataset.echDebugState
+        ? (JSON.parse(statusEl.dataset.echDebugState) as DebugState)
+        : null;
+      dataStateAction(dataState);
+    }
+  }, 100);
+};
