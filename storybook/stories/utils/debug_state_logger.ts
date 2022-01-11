@@ -21,7 +21,7 @@ export const getDebugStateLogger = (debugState: boolean) => {
       const dataState = statusEl.dataset.echDebugState
         ? (JSON.parse(statusEl.dataset.echDebugState) as DebugState)
         : null;
-      dataStateAction(dataState);
+      if (dataState) dataStateAction(dataState);
     }
   }, 100);
 };
