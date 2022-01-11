@@ -83,7 +83,14 @@ export const Example = () => {
       />
       <Axis {...getAxisKnobs(Position.Left)} />
       <Axis {...getAxisKnobs(Position.Bottom)} />
-      <LineSeries id="line" xScaleType={ScaleType.Linear} yScaleType={ScaleType.Linear} xAccessor="x" data={data} />
+      <LineSeries
+        id="line"
+        xScaleType={ScaleType.Linear}
+        yScaleType={ScaleType.Linear}
+        xAccessor="x"
+        yAccessors={['y']}
+        data={data}
+      />
     </Chart>
   );
 };

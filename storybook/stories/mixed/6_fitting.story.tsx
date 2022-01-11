@@ -27,8 +27,13 @@ import { ColorVariant } from '../../../packages/charts/src/utils/common';
 import { AreaFitStyle, LineFitStyle, TextureShape } from '../../../packages/charts/src/utils/themes/theme';
 import { useBaseTheme } from '../../use_base_theme';
 
+interface MixedDatum {
+  x: number | string;
+  y: number | string | null;
+}
+
 export const Example = () => {
-  const dataTypes = {
+  const dataTypes: Record<string, MixedDatum[]> = {
     isolated: [
       { x: 0, y: 3 },
       { x: 1, y: 5 },

@@ -27,7 +27,7 @@ export const Example = () => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y1', 'y2']}
-        splitSeriesAccessors={['g1', 'g2', 'g3']}
+        splitSeriesAccessors={['g1', 'g2']}
         data={TestDatasets.BARCHART_2Y2G}
         filterSeriesInTooltip={isVisibleFunction}
       />

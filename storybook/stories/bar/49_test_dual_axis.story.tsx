@@ -56,6 +56,7 @@ export const Example = () => {
         groupId="2"
         xScaleType={ScaleType.Ordinal}
         xAccessor="x"
+        yAccessors={['y']}
         stackAccessors={stack13 ? ['y'] : undefined}
         data={[
           { x: 'trousers', y: 39 },
@@ -69,6 +70,7 @@ export const Example = () => {
         id="bars4"
         xScaleType={ScaleType.Ordinal}
         xAccessor="x"
+        yAccessors={['y']}
         stackAccessors={stack24 ? ['y'] : undefined}
         data={[
           { x: 'trousers', y: 39 },

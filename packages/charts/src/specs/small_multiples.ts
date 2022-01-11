@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import { ComponentProps } from 'react';
 
 import { Spec } from '.';
 import { ChartType } from '../chart_types';
 import { Ratio } from '../common/geometry';
-import { getConnect, specComponentFactory } from '../state/spec_factory';
+import { specComponentFactory } from '../state/spec_factory';
 import { SpecType } from './constants';
 
 /**
@@ -70,16 +70,19 @@ export interface SmallMultiplesSpec extends Spec {
   style?: Partial<SmallMultiplesStyle>;
 }
 
-const DEFAULT_SMALL_MULTIPLES_PROPS = {
-  id: '__global__small_multiples___',
-  chartType: ChartType.Global,
-  specType: SpecType.SmallMultiples,
-};
-
-/** @alpha */
-export type SmallMultiplesProps = Partial<Omit<SmallMultiplesSpec, 'chatType' | 'specType'>>;
-
-/** @alpha */
-export const SmallMultiples: React.FunctionComponent<SmallMultiplesProps> = getConnect()(
-  specComponentFactory<SmallMultiplesSpec, 'id'>(DEFAULT_SMALL_MULTIPLES_PROPS),
+/**
+ * Add small multiples spec to chart
+ * @alpha
+ */
+export const SmallMultiples = specComponentFactory<SmallMultiplesSpec>()(
+  {
+    chartType: ChartType.Global,
+    specType: SpecType.SmallMultiples,
+  },
+  {
+    id: '__global__small_multiples___',
+  },
 );
+
+/** @public */
+export type SmallMultiplesProps = ComponentProps<typeof SmallMultiples>;

@@ -22,7 +22,7 @@ import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
 import { SmallMultiplesGroupBy } from '../state/selectors/get_specs';
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
-import { BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesType, StackMode } from './specs';
+import { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesType, StackMode } from './specs';
 import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
 
 /** @internal */
@@ -59,8 +59,8 @@ export interface DataSeriesDatum<T = any> {
 }
 
 /** @public */
-export interface XYChartSeriesIdentifier extends SeriesIdentifier {
-  yAccessor: Accessor;
+export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends SeriesIdentifier {
+  yAccessor: Accessor<D>;
   splitAccessors: Map<string | number, string | number>; // does the map have a size vs making it optional
   smVerticalAccessorValue?: string | number;
   smHorizontalAccessorValue?: string | number;
@@ -68,7 +68,7 @@ export interface XYChartSeriesIdentifier extends SeriesIdentifier {
 }
 
 /** @internal */
-export type DataSeries = XYChartSeriesIdentifier & {
+export type DataSeries<D extends BaseDatum = Datum> = XYChartSeriesIdentifier<D> & {
   groupId: GroupId;
   seriesType: SeriesType;
   data: DataSeriesDatum[];
@@ -95,7 +95,10 @@ export function getSeriesIndex(series: SeriesIdentifier[], target: SeriesIdentif
  * Returns string form of accessor. Uses index when accessor is a function.
  * @internal
  */
-export function getAccessorFieldName(accessor: Accessor | AccessorFn, index: number) {
+export function getAccessorFieldName<D extends BaseDatum>(
+  accessor: Accessor<D> | AccessorFn<D>,
+  index: number,
+): Accessor<D> | string {
   return typeof accessor === 'function' ? accessor.fieldName ?? `(index:${index})` : accessor;
 }
 
@@ -252,13 +255,13 @@ export function getSeriesKey(
  * Get the array of values that forms a series key
  * @internal
  */
-function getSplitAccessors(
-  datum: Datum,
-  accessors: (Accessor | AccessorFn)[] = [],
+function getSplitAccessors<D extends BaseDatum>(
+  datum: D,
+  accessors: (Accessor<D> | AccessorFn<D>)[] = [],
 ): Map<string | number, string | number> {
   const splitAccessors = new Map<string | number, string | number>();
   if (typeof datum === 'object' && datum !== null) {
-    accessors.forEach((accessor: Accessor | AccessorFn, index) => {
+    accessors.forEach((accessor, index) => {
       const value = getAccessorValue(datum, accessor);
       if (typeof value === 'string' || typeof value === 'number') {
         const accessorStr = getAccessorFieldName(accessor, index);
@@ -273,13 +276,13 @@ function getSplitAccessors(
  * Extract y1 and y0 and mark properties from Datum. Casting them to numbers or null
  * @internal
  */
-export function extractYAndMarkFromDatum(
-  datum: Datum,
-  yAccessor: Accessor | AccessorFn,
+export function extractYAndMarkFromDatum<D extends BaseDatum>(
+  datum: D,
+  yAccessor: Accessor<D> | AccessorFn<D>,
   nonNumericValues: any[],
   bandedSpec: boolean,
-  y0Accessor?: Accessor | AccessorFn,
-  markSizeAccessor?: Accessor | AccessorFn,
+  y0Accessor?: Accessor<D> | AccessorFn<D>,
+  markSizeAccessor?: Accessor<D> | AccessorFn<D>,
 ): Pick<DataSeriesDatum, 'y0' | 'y1' | 'mark' | 'datum' | 'initialY0' | 'initialY1'> {
   const mark =
     markSizeAccessor === undefined ? null : finiteOrNull(getAccessorValue(datum, markSizeAccessor), nonNumericValues);

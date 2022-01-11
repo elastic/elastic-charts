@@ -25,7 +25,7 @@ import { Position } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { debugstateLogger } from '../../utils/debug_state_logger';
+import { getDebugStateLogger } from '../../utils/debug_state_logger';
 import { getChartRotationKnob } from '../../utils/knobs';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
@@ -60,7 +60,7 @@ export const Example = () => {
     <Chart>
       <Settings
         debug={debug}
-        onRenderChange={debugstateLogger}
+        onRenderChange={getDebugStateLogger(debugState)}
         debugState={debugState}
         rotation={rotation}
         baseTheme={useBaseTheme()}

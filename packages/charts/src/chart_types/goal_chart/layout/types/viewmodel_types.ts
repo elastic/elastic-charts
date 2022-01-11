@@ -60,8 +60,6 @@ export type ShapeViewModel = {
 };
 
 const commonDefaults = {
-  specType: SpecType.Series,
-  subtype: GoalSubtype.Goal,
   base: 0,
   actual: 50,
   ticks: [0, 25, 50, 75, 100],
@@ -88,6 +86,8 @@ export const defaultGoalSpec = {
 /** @internal */
 export const nullGoalViewModel = {
   ...commonDefaults,
+  specType: SpecType.Series,
+  subtype: GoalSubtype.Goal,
   bands: [],
   ticks: [],
   labelMajor: '',

@@ -49,6 +49,7 @@ export const Example = () => {
         yScaleType={yScaleType}
         data={data}
         yNice={yNice}
+        xAccessor="x"
         yAccessors={[yAccessor]}
       />
     </Chart>

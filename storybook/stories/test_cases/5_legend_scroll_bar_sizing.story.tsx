@@ -69,6 +69,8 @@ export const Example = () => {
       <Axis id="time" position={Position.Bottom} integersOnly />
       <BarSeries
         id="bars"
+        xAccessor="x"
+        yAccessors={['y']}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         splitSeriesAccessors={['g']}

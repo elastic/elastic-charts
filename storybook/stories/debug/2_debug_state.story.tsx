@@ -24,7 +24,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { debugstateLogger } from '../utils/debug_state_logger';
+import { getDebugStateLogger } from '../utils/debug_state_logger';
 
 export const Example = () => {
   const debug = boolean('debug', false);
@@ -45,7 +45,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings
-        onRenderChange={debugstateLogger}
+        onRenderChange={getDebugStateLogger(debugState)}
         debug={debug}
         debugState={debugState}
         showLegend
@@ -59,6 +59,8 @@ export const Example = () => {
         <LineSeries
           id="lines"
           name={naming}
+          xAccessor="x"
+          yAccessors={['y']}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           splitSeriesAccessors={splitSeriesAccessors}
@@ -69,6 +71,8 @@ export const Example = () => {
         <AreaSeries
           id="areas"
           name={naming}
+          xAccessor="x"
+          yAccessors={['y']}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           data={areaData}
@@ -81,6 +85,8 @@ export const Example = () => {
         <BarSeries
           id="bars"
           name={naming}
+          xAccessor="x"
+          yAccessors={['y']}
           xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           splitSeriesAccessors={splitSeriesAccessors}

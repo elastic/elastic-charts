@@ -239,5 +239,16 @@ describe('Bar series stories', () => {
         'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:light&knob-mode=unstacked&knob-use computeRatioByGroups fn=true',
       );
     });
+
+    it('percentage stacked with external fn multi Y', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:light&knob-mode=stackAsPercentage&knob-use computeRatioByGroups fn=true&knob-use multiple Y accessors=true',
+      );
+    });
+    it('non stacked with external fn multi Y', async () => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:light&knob-mode=unstacked&knob-use computeRatioByGroups fn=true&knob-use multiple Y accessors=true',
+      );
+    });
   });
 });
