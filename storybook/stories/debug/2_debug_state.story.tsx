@@ -24,7 +24,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { debugstateLogger } from '../utils/debug_state_logger';
+import { getDebugStateLogger } from '../utils/debug_state_logger';
 
 export const Example = () => {
   const debug = boolean('debug', false);
@@ -45,7 +45,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings
-        onRenderChange={debugstateLogger}
+        onRenderChange={getDebugStateLogger(debugState)}
         debug={debug}
         debugState={debugState}
         showLegend
