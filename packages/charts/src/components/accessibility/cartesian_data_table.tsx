@@ -39,14 +39,14 @@ const formatMultipleSeriesSmallData = (data: any[]) => {
       (val: { xValue: number | string; formatted: string; raw: number | string; smPanelTitle: string | undefined }) => {
         return formatted.hasOwnProperty(val.xValue)
           ? formatted[val.xValue].push({
-              label,
-              data: val.formatted ?? val.raw,
-              xValue: val.xValue,
-              smPanelTitle: val.smPanelTitle,
-            })
+            label,
+            data: val.formatted ?? val.raw,
+            xValue: val.xValue,
+            smPanelTitle: val.smPanelTitle,
+          })
           : (formatted[val.xValue] = [
-              { label, data: val.formatted ?? val.raw, xValue: val.xValue, smPanelTitle: val.smPanelTitle },
-            ]);
+            { label, data: val.formatted ?? val.raw, xValue: val.xValue, smPanelTitle: val.smPanelTitle },
+          ]);
       },
     );
   });
@@ -95,9 +95,10 @@ const ScreenReaderCartesianTableComponent = ({
    * Data table for small data sets (less than 20 data points) with only one series
    */
   const smallDataTableSingleSeries = (
-    <div
+    <p
       className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
       aria-live="polite"
+      tabIndex={-1}
     >
       <table>
         {tableCaption ? (
@@ -140,16 +141,17 @@ const ScreenReaderCartesianTableComponent = ({
           })}
         </tbody>
       </table>
-    </div>
+    </p>
   );
 
   /**
    * Data table for small data sets (less than 20 data points) with multiple series
    */
   const smallDataTableMultipleSeries = (
-    <div
+    <p
       className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
       aria-live="polite"
+      tabIndex={-1}
     >
       <table>
         {tableCaption ? (
@@ -198,16 +200,17 @@ const ScreenReaderCartesianTableComponent = ({
           })}
         </tbody>
       </table>
-    </div>
+    </p>
   );
 
   /**
    * Data table for large data sets (more than 20 data points)
    */
   const largeDataTable = (
-    <div
+    <p
       className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
       aria-live="polite"
+      tabIndex={-1}
     >
       <table>
         {tableCaption ? (
@@ -274,14 +277,14 @@ const ScreenReaderCartesianTableComponent = ({
           </tr>
         </tfoot>
       </table>
-    </div>
+    </p>
   );
 
   return tableLength > 20
     ? largeDataTable
     : numberOfSeries === 1
-    ? smallDataTableSingleSeries
-    : smallDataTableMultipleSeries;
+      ? smallDataTableSingleSeries
+      : smallDataTableMultipleSeries;
 };
 
 const DEFAULT_SCREEN_READER_SUMMARY = {
