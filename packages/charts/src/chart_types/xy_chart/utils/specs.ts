@@ -526,6 +526,7 @@ export interface SeriesScales {
    * compute a nice set of xScale ticks. Can be any IANA zone supported by
    * the host environment, or a fixed-offset name of the form 'utc+3',
    * or the strings 'local' or 'utc'.
+   * @defaultValue `local`
    */
   timeZone?: string;
   /**
@@ -727,7 +728,7 @@ export interface AxisSpec extends Spec {
   groupId: GroupId;
   /** Hide this axis */
   hide: boolean;
-  /** shows all ticks and gridlines, including those belonging to labels that got culled due to overlapping with other labels*/
+  /** shows all ticks and gridlines, including those belonging to labels that got culled due to overlapping with other labels */
   showOverlappingTicks: boolean;
   /** Shows all labels, also the overlapping ones */
   showOverlappingLabels: boolean;
