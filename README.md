@@ -17,6 +17,8 @@ Check out our [living style guide][docs], which contains many examples on how ch
 
 ## Installation
 
+TESTING
+
 To install the Elastic Charts into an existing project, use the `yarn` CLI (`npm` is not supported).
 
 ```
