@@ -42,7 +42,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Linear),
       nice: getXNiceFromSpec(),
       isBandScale: true,
-      timeZone: 'utc',
+      timeZone: 'local',
     });
   });
 
@@ -58,7 +58,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Ordinal),
       nice: getXNiceFromSpec(),
       isBandScale: true,
-      timeZone: 'utc',
+      timeZone: 'local',
     });
   });
 
@@ -74,7 +74,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Linear),
       nice: getXNiceFromSpec(),
       isBandScale: false,
-      timeZone: 'utc',
+      timeZone: 'local',
     });
   });
   test('Should return correct scale type with single line (time)', () => {
@@ -132,7 +132,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Time),
       nice: getXNiceFromSpec(),
       isBandScale: false,
-      timeZone: 'utc',
+      timeZone: 'local',
     });
   });
 
@@ -152,7 +152,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Ordinal),
       nice: getXNiceFromSpec(),
       isBandScale: false,
-      timeZone: 'utc',
+      timeZone: 'local',
     });
   });
   test('Should return correct scale type with multi bar, area with different scale types (linear, ordinal)', () => {
@@ -171,7 +171,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Ordinal),
       nice: getXNiceFromSpec(),
       isBandScale: true,
-      timeZone: 'utc',
+      timeZone: 'local',
     });
   });
   test('Should return correct scale type with multi bar, area with same scale types (linear, linear)', () => {
