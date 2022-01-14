@@ -1,3 +1,16 @@
+# [43.0.0](https://github.com/elastic/elastic-charts/compare/v42.1.0...v43.0.0) (2022-01-14)
+
+
+### Bug Fixes
+
+* **heatmap:** labels visibility regression ([#1549](https://github.com/elastic/elastic-charts/issues/1549)) ([067189d](https://github.com/elastic/elastic-charts/commit/067189d95b0dfd342f31bc819e3d6bc9df076533))
+* **xy:** switch default timezone to `local` ([#1544](https://github.com/elastic/elastic-charts/issues/1544)) ([1233e69](https://github.com/elastic/elastic-charts/commit/1233e698e9d187b1fab55662754fca5f5459376e))
+
+
+### BREAKING CHANGES
+
+* **xy:** The time axis labels of a time-series chart configured without the timeZone prop are now rendering the labels with the local browser timezone instead of UTC.
+
 # [42.1.0](https://github.com/elastic/elastic-charts/compare/v42.0.0...v42.1.0) (2022-01-10)
 
 
