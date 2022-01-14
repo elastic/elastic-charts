@@ -56,13 +56,12 @@ function getValuesInRange(
 
 function estimatedNonOverlappingTickCount(
   chartWidth: number,
-  formatter: HeatmapSpec['xAxisLabelFormatter'],
   style: HeatmapStyle['xAxisLabel'],
+  sampleLabel: string,
 ): number {
   return withTextMeasure((textMeasure) => {
-    const labelSample = formatter(Date.now());
     const { width } = textMeasure(
-      labelSample,
+      sampleLabel,
       {
         fontFamily: style.fontFamily,
         fontWeight: style.fontWeight,
@@ -454,6 +453,7 @@ function getXTicks(
     };
   };
   if (isRasterTimeScale(spec.xScale)) {
+    const sampleLabel = spec.xAxisLabelFormatter(xNumericExtent[0]);
     const timeScale = new ScaleContinuous(
       {
         type: ScaleType.Time,
@@ -462,7 +462,7 @@ function getXTicks(
         nice: false,
       },
       {
-        desiredTickCount: estimatedNonOverlappingTickCount(grid.width, spec.xAxisLabelFormatter, style.xAxisLabel),
+        desiredTickCount: estimatedNonOverlappingTickCount(grid.width, style.xAxisLabel, sampleLabel),
         timeZone: spec.timeZone,
       },
     );
