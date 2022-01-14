@@ -142,7 +142,7 @@ export function findMinInterval(xValues: number[]): number {
  * Convert the scale types of a set of specification to a generic one.
  * If there are at least one `ordinal` scale type, the resulting scale is coerced to ordinal.
  * If there are only `continuous` scale types, the resulting scale is coerced to linear.
- * If there are only `time` scales, we coerce the timeZone to `utc` only if we have multiple
+ * If there are only `time` scales, we coerce the timeZone to `local` only if we have multiple
  * different timezones.
  * @returns the coerced scale type, the timezone and a parameter that describe if its a bandScale or not
  * @internal
@@ -167,6 +167,6 @@ export function convertXScaleTypes(
       : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether it's present or not
   const nice = !niceDomains.includes(false);
   const isBandScale = seriesTypes.has(SeriesType.Bar);
-  const timeZone = timeZones.size === 1 ? timeZones.values().next().value : 'utc';
+  const timeZone = timeZones.size === 1 ? timeZones.values().next().value : 'local';
   return { type, nice, isBandScale, timeZone };
 }

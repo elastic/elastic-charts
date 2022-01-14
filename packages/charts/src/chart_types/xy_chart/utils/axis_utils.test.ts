@@ -1421,6 +1421,7 @@ describe('Axis computational utils', () => {
       isBandScale: false,
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
+      timeZone: 'utc',
     });
     const scale: Scale<number | string> = computeXScale({
       xDomain: xDomainTime,
@@ -1575,6 +1576,7 @@ describe('Axis computational utils', () => {
       isBandScale: false,
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
+      timeZone: 'utc',
     });
     const scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 603.5] });
     const offset = 0;
