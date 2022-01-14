@@ -8,9 +8,10 @@
 
 import React from 'react';
 
-import { Chart, Settings, Position, Axis, BarSeries, ScaleType, LineSeries } from '@elastic/charts';
-// import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
-
+import { Chart } from '../packages/charts/src/components/chart';
+import { ScaleType } from '../packages/charts/src/scales/constants';
+import { Axis, BarSeries, LineSeries, Settings } from '../packages/charts/src/specs';
+import { Position } from '../packages/charts/src/utils/common';
 import { useBaseTheme } from '../storybook/use_base_theme';
 
 export function Playground() {
@@ -48,9 +49,3 @@ export function Playground() {
     </Chart>
   );
 }
-
-// const getLegendSizeKnob = (group?: string) => {
-//   const enabled = boolean('enable legend size', false, group);
-//   const size = enabled ? number('legend size', 200, { min: 0, step: 1 }, group) : NaN;
-//   return size;
-// };
