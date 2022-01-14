@@ -16,6 +16,7 @@ import { BandedAccessorType } from '../../../../utils/geometry';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from '../../../xy_chart/state/selectors/get_specs';
 import { getBandedLegendItemLabel, getPostfix } from '../../legend/legend';
 import { getXScaleTypeFromSpec } from '../../scales/get_api_scales';
+import { isHorizontalAxis } from '../../utils/axis_type_utils';
 import { defaultTickFormatter } from '../../utils/axis_utils';
 import { DataSeries, getSeriesKey, getSeriesName, isBandedSpec, XYChartSeriesIdentifier } from '../../utils/series';
 import { AxisSpec, BasicSeriesSpec, StackMode, TickFormatter, TickFormatterOptions } from '../../utils/specs';
@@ -41,6 +42,7 @@ export interface CartesianData {
   hasAxes: boolean;
   numberOfItemsInGroup: number;
   data: any[];
+  axesTitles?: string;
 }
 
 /** @internal */
@@ -51,8 +53,9 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     getAxisSpecsSelector,
     computeSeriesDomainsSelector,
     getSettingsSpecSelector,
+    getAxisSpecsSelector,
   ],
-  (specs, isSmallMultiple, axis, { formattedDataSeries, xDomain }, { rotation }): CartesianData => {
+  (specs, isSmallMultiple, axis, { formattedDataSeries, xDomain }, { rotation }, axesTitles): CartesianData => {
     const allValues = getValues(formattedDataSeries);
     if (specs.length === 0) {
       return {
@@ -73,6 +76,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
       xScaleType: specs[0].xScaleType,
       yScaleType: specs[0].yScaleType,
       hasAxes: axis.length > 0 ? true : false,
+      axesTitles: getAxesDescription(axesTitles),
     };
   },
 );
@@ -204,4 +208,23 @@ function computeScreenReaderValues(
 function getSmallMultipleTitle(axis: AxisSpec[]) {
   if (axis.length === 0) return [];
   return axis.length > 2 ? [axis[0].title, axis[1].title] : [axis[0].title ?? undefined] ?? [];
+}
+
+/**@internal */
+function getAxesTitles(axisSpecs: AxisSpec[]) {
+  if (!axisSpecs) return [];
+  return axisSpecs.map(({ title, position }) => {
+    const horizontal = isHorizontalAxis(position);
+    return { position, isHorizontalAxis: horizontal, title };
+  });
+}
+
+/**@internal */
+function getAxesDescription(axes: AxisSpec[]) {
+  const axesTitles = getAxesTitles(axes);
+  const hasTitles = axesTitles.filter(({ title }) => title !== undefined);
+  const getTitles = hasTitles.map(({ position, title }) => {
+    return ` the ${position} axis is titled ${title}`;
+  });
+  return `The chart has ${axesTitles.length} axes. ${hasTitles.length} axes have titles: ${getTitles}`;
 }

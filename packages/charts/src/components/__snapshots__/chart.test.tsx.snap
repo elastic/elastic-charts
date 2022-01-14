@@ -68,8 +68,8 @@ exports[`Chart should render the legend name test 1`] = `
                 </Connect(CursorBand)>
                 <Connect(XYChart) forwardCanvasRef={{...}}>
                   <XYChart forwardCanvasRef={{...}} isRTL={false} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
-                    <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\">
-                      <canvas dir=\\"ltr\\" className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\">
+                    <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\" aria-live=\\"polite\\">
+                      <canvas dir=\\"ltr\\" className=\\"echCanvasRenderer\\" width={152} height={200} style={{...}} role=\\"presentation\\">
                         <Connect(ScreenReaderSummaryComponent)>
                           <ScreenReaderSummaryComponent chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function: dispatch]}>
                             <div className=\\"echScreenReaderOnly\\">
@@ -91,11 +91,14 @@ exports[`Chart should render the legend name test 1`] = `
                       </canvas>
                       <Connect(ScreenReaderCartesianTableComponent)>
                         <ScreenReaderCartesianTableComponent a11ySettings={{...}} cartesianData={{...}} debug={true} dispatch={[Function: dispatch]}>
-                          <div className=\\"echScreenReaderOnly echScreenReaderOnlyDebug echScreenReaderTable\\" aria-live=\\"polite\\">
+                          <div className=\\"echScreenReaderOnly echScreenReaderOnlyDebug echScreenReaderTable\\" aria-live=\\"polite\\" tabIndex={-1}>
                             <table>
                               <caption>
                                 This table shows the full data set for the chart with one series named 
                                 test
+                                .
+                                 
+                                The chart has 0 axes. 0 axes have titles: 
                               </caption>
                               <thead>
                                 <tr>
@@ -103,7 +106,7 @@ exports[`Chart should render the legend name test 1`] = `
                                     X Value
                                   </th>
                                   <th scope=\\"col\\">
-                                    Value
+                                    Y Value
                                   </th>
                                 </tr>
                               </thead>
@@ -143,7 +146,7 @@ exports[`Chart should render the legend name test 1`] = `
                     <svg className=\\"echHighlighter\\" style={{...}}>
                       <defs>
                         <clipPath id=\\"echHighlighterClipPath__chart1\\">
-                          <rect x=\\"0\\" y=\\"0\\" width={130} height={180} />
+                          <rect x=\\"0\\" y=\\"0\\" width={132} height={180} />
                         </clipPath>
                       </defs>
                     </svg>

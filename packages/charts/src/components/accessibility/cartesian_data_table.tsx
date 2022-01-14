@@ -39,14 +39,14 @@ const formatMultipleSeriesSmallData = (data: any[]) => {
       (val: { xValue: number | string; formatted: string; raw: number | string; smPanelTitle: string | undefined }) => {
         return formatted.hasOwnProperty(val.xValue)
           ? formatted[val.xValue].push({
-            label,
-            data: val.formatted ?? val.raw,
-            xValue: val.xValue,
-            smPanelTitle: val.smPanelTitle,
-          })
+              label,
+              data: val.formatted ?? val.raw,
+              xValue: val.xValue,
+              smPanelTitle: val.smPanelTitle,
+            })
           : (formatted[val.xValue] = [
-            { label, data: val.formatted ?? val.raw, xValue: val.xValue, smPanelTitle: val.smPanelTitle },
-          ]);
+              { label, data: val.formatted ?? val.raw, xValue: val.xValue, smPanelTitle: val.smPanelTitle },
+            ]);
       },
     );
   });
@@ -91,11 +91,12 @@ const ScreenReaderCartesianTableComponent = ({
 
   let countOfCol: number = 3;
   const totalColumns: number = isSmallMultiple ? (countOfCol += 3) : countOfCol;
+
   /**
    * Data table for small data sets (less than 20 data points) with only one series
    */
   const smallDataTableSingleSeries = (
-    <p
+    <div
       className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
       aria-live="polite"
       tabIndex={-1}
@@ -105,7 +106,8 @@ const ScreenReaderCartesianTableComponent = ({
           <caption>{tableCaption}</caption>
         ) : (
           <caption>
-            This table shows the full data set for the chart with one series named {cartesianData.data[0].label}
+            This table shows the full data set for the chart with one series named {cartesianData.data[0].label}.{' '}
+            {cartesianData.axesTitles ?? null}
           </caption>
         )}
         <thead>
@@ -117,7 +119,7 @@ const ScreenReaderCartesianTableComponent = ({
               <th scope="col">{`Small multiple title - ${cartesianData.smallMultipleTitle[0]}`}</th>
             )}
             <th scope="col">X Value</th>
-            <th scope="col">Value</th>
+            <th scope="col">Y Value</th>
           </tr>
         </thead>
         <tbody>
@@ -141,14 +143,14 @@ const ScreenReaderCartesianTableComponent = ({
           })}
         </tbody>
       </table>
-    </p>
+    </div>
   );
 
   /**
    * Data table for small data sets (less than 20 data points) with multiple series
    */
   const smallDataTableMultipleSeries = (
-    <p
+    <div
       className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
       aria-live="polite"
       tabIndex={-1}
@@ -157,7 +159,9 @@ const ScreenReaderCartesianTableComponent = ({
         {tableCaption ? (
           <caption>{tableCaption}</caption>
         ) : (
-          <caption>This table shows the full data set for the chart with multiple series</caption>
+          <caption>
+            This table shows the full data set for the chart with multiple series. {cartesianData.axesTitles ?? null}{' '}
+          </caption>
         )}
         <thead>
           <tr>
@@ -167,9 +171,9 @@ const ScreenReaderCartesianTableComponent = ({
             {isSmallMultiple && cartesianData.smallMultipleTitle && (
               <th scope="col">{`Small multiple title - ${cartesianData.smallMultipleTitle[0]}`}</th>
             )}
-            <th scope="col">X Value</th>
             <th scope="col">Label</th>
-            <th scope="col">Value</th>
+            <th scope="col">X Value</th>
+            <th scope="col">Y Value</th>
           </tr>
         </thead>
         <tbody>
@@ -190,8 +194,8 @@ const ScreenReaderCartesianTableComponent = ({
                       <td colSpan={2}>{val.smPanelTitle}</td>
                     )}
                     {isSmallMultiple && cartesianData.smallMultipleTitle.length !== 2 && <td>{val.smPanelTitle}</td>}
-                    <td>{val.xValue}</td>
                     <td>{val.label}</td>
+                    <td>{val.xValue}</td>
                     <td>{val.data}</td>
                   </tr>
                 );
@@ -200,14 +204,14 @@ const ScreenReaderCartesianTableComponent = ({
           })}
         </tbody>
       </table>
-    </p>
+    </div>
   );
 
   /**
    * Data table for large data sets (more than 20 data points)
    */
   const largeDataTable = (
-    <p
+    <div
       className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
       aria-live="polite"
       tabIndex={-1}
@@ -218,7 +222,7 @@ const ScreenReaderCartesianTableComponent = ({
         ) : (
           <caption>
             This table shows a partial selection of the full data set. To see the previous or next set of data, navigate
-            to the previous and next button below the data.
+            to the previous and next button below the data. {cartesianData.axesTitles ?? null}
           </caption>
         )}
         <thead>
@@ -230,7 +234,7 @@ const ScreenReaderCartesianTableComponent = ({
               <th scope="col">{`Small multiple title - ${cartesianData.smallMultipleTitle[0]}`}</th>
             )}
             <th scope="col">Label</th>
-            <th scope="col">Value</th>
+            <th scope="col">Y Value</th>
             <th scope="col">X Value</th>
           </tr>
         </thead>
@@ -277,14 +281,14 @@ const ScreenReaderCartesianTableComponent = ({
           </tr>
         </tfoot>
       </table>
-    </p>
+    </div>
   );
 
   return tableLength > 20
     ? largeDataTable
     : numberOfSeries === 1
-      ? smallDataTableSingleSeries
-      : smallDataTableMultipleSeries;
+    ? smallDataTableSingleSeries
+    : smallDataTableMultipleSeries;
 };
 
 const DEFAULT_SCREEN_READER_SUMMARY = {
