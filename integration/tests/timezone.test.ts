@@ -19,9 +19,8 @@ describe('Time zone', () => {
       'http://localhost:9001/?path=/story/scales--timezone-configuration&globals=theme:light&knob-dataset=utc-8&knob-tooltip=utc',
     );
   });
-  // skip until puppeteer is updated to > 4.x
-  it.skip('use default local timezone America/New_York', async () => {
-    // await page.emulateTimezone('America/New_York');
+  it('use default local timezone America/New_York', async () => {
+    await page.emulateTimezone('America/New_York');
     // time should start at 06:00 (UTC time is 11:00)
     await common.expectChartWithMouseAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/bar-chart--with-time-x-axis',
@@ -29,9 +28,8 @@ describe('Time zone', () => {
       { screenshotSelector: 'body' },
     );
   });
-  // skipped until puppeteer is updated to > 4.x
-  it.skip('use default local timezone Europe/Rome', async () => {
-    // await page.emulateTimezone('Europe/Rome');
+  it('use default local timezone Europe/Rome', async () => {
+    await page.emulateTimezone('Europe/Rome');
     // time should start at 12:00 (UTC time is 11:00)
     await common.expectChartWithMouseAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/bar-chart--with-time-x-axis',
