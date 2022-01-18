@@ -75,7 +75,8 @@ describe('Chart State utils', () => {
         isBandScale: false,
         minInterval: 1,
         logBase: 10,
-        timeZone: 'utc',
+        // the default timezone (local) is resolved in computeSeriesDomains fn with Intl functions
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       }),
     );
     expect(domains.yDomains).toEqual([
@@ -126,7 +127,8 @@ describe('Chart State utils', () => {
         isBandScale: false,
         minInterval: 1,
         logBase: 10,
-        timeZone: 'utc',
+        // the default timezone (local) is resolved in computeSeriesDomains fn with Intl functions
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       }),
     );
     expect(domains.yDomains).toEqual([
