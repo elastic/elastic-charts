@@ -62,7 +62,6 @@ const ScreenReaderCartesianTableComponent = ({
   const tableRowRef = createRef<HTMLTableRowElement>();
   const { tableCaption } = a11ySettings;
 
-  const rowLimit = cartesianData.numberOfItemsInGroup * count;
   const tableLength = cartesianData.data[0].values.length;
   const numberOfSeries = cartesianData.data.length;
 
@@ -99,7 +98,6 @@ const ScreenReaderCartesianTableComponent = ({
     <div
       className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
       aria-live="polite"
-      tabIndex={-1}
     >
       <table>
         {tableCaption ? (
@@ -153,7 +151,6 @@ const ScreenReaderCartesianTableComponent = ({
     <div
       className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
       aria-live="polite"
-      tabIndex={-1}
     >
       <table>
         {tableCaption ? (
@@ -214,7 +211,6 @@ const ScreenReaderCartesianTableComponent = ({
     <div
       className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
       aria-live="polite"
-      tabIndex={-1}
     >
       <table>
         {tableCaption ? (
@@ -242,11 +238,7 @@ const ScreenReaderCartesianTableComponent = ({
         <tbody>
           {cartesianData.data.map(({ label, values }, index) => {
             return (
-              <tr
-                key={String(`screen-reader-row--${index}`)}
-                ref={rowLimit === index ? tableRowRef : undefined}
-                tabIndex={-1}
-              >
+              <tr key={String(`screen-reader-row--${index}`)} ref={tableRowRef} tabIndex={0} className="tableRow">
                 {isSmallMultiple && cartesianData.smallMultipleTitle.length === 2 && (
                   <>
                     <th scope="row" colSpan={2}>
@@ -267,14 +259,14 @@ const ScreenReaderCartesianTableComponent = ({
         <tfoot>
           <tr>
             <td colSpan={totalColumns}>
-              <button type="submit" onClick={() => handleMoreData()} tabIndex={-1}>
+              <button type="submit" onClick={() => handleMoreData()} tabIndex={0}>
                 Click to show next x value data
               </button>
             </td>
           </tr>
           <tr>
             <td colSpan={totalColumns}>
-              <button type="submit" onClick={() => handlePreviousData()} tabIndex={-1}>
+              <button type="submit" onClick={() => handlePreviousData()} tabIndex={0}>
                 Click to show previous x value data
               </button>
             </td>
