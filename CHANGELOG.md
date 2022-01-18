@@ -1,3 +1,10 @@
+# [40.3.0](https://github.com/elastic/elastic-charts/compare/v40.2.0...v40.3.0) (2022-01-18)
+
+
+### Features
+
+* **xy:** switch default timezone to `local` ([#1544](https://github.com/elastic/elastic-charts/issues/1544)) ([#1555](https://github.com/elastic/elastic-charts/issues/1555)) ([34b848d](https://github.com/elastic/elastic-charts/commit/34b848d7aed25df74531dc20302f7765e617ebf2))
+
 # [40.2.0](https://github.com/elastic/elastic-charts/compare/v40.1.0...v40.2.0) (2021-12-09)
 
 
