@@ -57,6 +57,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
   ],
   (specs, isSmallMultiple, axis, { formattedDataSeries, xDomain }, { rotation }, axesTitles): CartesianData => {
     const allValues = getValues(formattedDataSeries);
+    const isSm = isSmallMultiple ? true : false;
     if (specs.length === 0) {
       return {
         isSmallMultiple: false,
@@ -69,14 +70,14 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
       };
     }
     return {
-      isSmallMultiple: isSmallMultiple ? true : false,
+      isSmallMultiple: isSm,
       smallMultipleTitle: getSmallMultipleTitle(axis),
       data: computeScreenReaderValues(formattedDataSeries, allValues, specs, axis, rotation),
       numberOfItemsInGroup: getLastValues(formattedDataSeries, xDomain).size,
       xScaleType: specs[0].xScaleType,
       yScaleType: specs[0].yScaleType,
       hasAxes: axis.length > 0 ? true : false,
-      axesTitles: getAxesDescription(axesTitles),
+      axesTitles: getAxesDescription(axesTitles, isSm),
     };
   },
 );
@@ -220,11 +221,18 @@ function getAxesTitles(axisSpecs: AxisSpec[]) {
 }
 
 /**@internal */
-function getAxesDescription(axes: AxisSpec[]) {
+function getAxesDescription(axes: AxisSpec[], isSm: boolean) {
   const axesTitles = getAxesTitles(axes);
   const hasTitles = axesTitles.filter(({ title }) => title !== undefined);
   const getTitles = hasTitles.map(({ position, title }) => {
     return ` the ${position} axis is titled ${title}`;
   });
-  return `The chart has ${axesTitles.length} axes. ${hasTitles.length} axes have titles: ${getTitles}`;
+  // axesTitles length is currently misleading for small multiple series
+  return `${
+    isSm
+      ? `This chart is a small multiple series.`
+      : `The chart has ${axesTitles.length} axes ${hasTitles.length} axes have titles${
+          hasTitles.length === 0 ? '.' : ':'
+        }`
+  }${getTitles}`;
 }
