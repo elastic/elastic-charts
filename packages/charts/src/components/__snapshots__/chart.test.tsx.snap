@@ -98,7 +98,7 @@ exports[`Chart should render the legend name test 1`] = `
                                 test
                                 .
                                  
-                                The chart has 0 axes. 0 axes have titles: 
+                                The chart has 0 axes 0 axes have titles.
                               </caption>
                               <thead>
                                 <tr>
