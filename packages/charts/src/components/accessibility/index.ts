@@ -7,6 +7,10 @@
  */
 
 /* @internal */
-export { ScreenReaderSummary } from './screen_reader_summary';
-export { ScreenReaderPartitionTable } from './partitions_data_table';
-export { GoalSemanticDescription } from './goal_semantic_description';
+export * from './screen_reader_summary';
+export * from './goal_semantic_description';
+export * from './cartesian_data_table';
+export * from './partition_data_table';
+export * from './types';
+export * from './label';
+export * from './description';

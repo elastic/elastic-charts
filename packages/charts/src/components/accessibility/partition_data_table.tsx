@@ -90,7 +90,7 @@ const ScreenReaderPartitionTableComponent = ({
             .slice(0, rowLimit)
             .map(({ panelTitle, depth, label, parentName, valueText, percentage }, index) => {
               return (
-                <tr key={`row--${index}`} ref={rowLimit === index ? tableRowRef : undefined} tabIndex={-1}>
+                <tr key={String(`row--${index}`)} ref={rowLimit === index ? tableRowRef : undefined} tabIndex={-1}>
                   {isSmallMultiple && <td>{panelTitle}</td>}
                   {hasMultipleLayers && <td>{depth}</td>}
                   <th scope="row">{label}</th>
