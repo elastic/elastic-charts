@@ -58,7 +58,6 @@ const ScreenReaderCartesianTableComponent = ({
   cartesianData,
   debug,
 }: ScreenReaderCartesianTableProps) => {
-  console.log(cartesianData);
   const [count, setCount] = useState(0);
   const tableRowRef = createRef<HTMLTableRowElement>();
   const { tableCaption } = a11ySettings;
