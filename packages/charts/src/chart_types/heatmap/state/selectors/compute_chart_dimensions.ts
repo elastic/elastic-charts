@@ -15,6 +15,7 @@ import { Dimensions, horizontalPad, innerPad, outerPad, verticalPad } from '../.
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { AxisStyle, HeatmapStyle } from '../../../../utils/themes/theme';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
+import { HeatmapSpec } from './../../specs/heatmap';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { getXAxisRightOverflow } from './get_x_axis_right_overflow';
@@ -39,6 +40,7 @@ export type ChartElementSizes = {
   rowHeight: number;
   visibleNumberOfRows: number;
 };
+
 /**
  * Returns grid and axes sizes and positions.
  * @internal
@@ -55,11 +57,10 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
   (
     container,
     legendSize,
-
     { yValues },
     { heatmap, axes: { axisTitle: axisTitleStyle } },
     rightOverflow,
-    { xAxisTitle, yAxisTitle },
+    { xAxisTitle, yAxisTitle, yAxisLabelFormatter },
   ): ChartElementSizes => {
     return withTextMeasure((textMeasure) => {
       const isLegendHorizontal = isHorizontalLegend(legendSize.position);
@@ -69,7 +70,7 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
         : 0;
 
       const yAxisTitleHorizontalSize = getTextSizeDimension(yAxisTitle, axisTitleStyle, textMeasure, 'height');
-      const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, textMeasure);
+      const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, yAxisLabelFormatter, textMeasure);
 
       const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
       const xAxisHeight = heatmap.xAxisLabel.visible
@@ -115,6 +116,7 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
 function getYAxisHorizontalUsedSpace(
   yValues: HeatmapTable['yValues'],
   style: HeatmapStyle['yAxisLabel'],
+  formatter: HeatmapSpec['yAxisLabelFormatter'],
   textMeasure: TextMeasure,
 ) {
   if (!style.visible) {
@@ -122,7 +124,7 @@ function getYAxisHorizontalUsedSpace(
   }
   // account for the space required to show the longest Y axis label
   const longestLabelWidth = yValues.reduce<number>((acc, value) => {
-    const { width } = textMeasure(`${value}`, style, style.fontSize);
+    const { width } = textMeasure(formatter(value), style, style.fontSize);
     return Math.max(width, acc);
   }, 0);
 
