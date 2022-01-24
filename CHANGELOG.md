@@ -1,3 +1,13 @@
+## [43.0.1](https://github.com/elastic/elastic-charts/compare/v43.0.0...v43.0.1) (2022-01-20)
+
+
+### Bug Fixes
+
+* **deps:** remove the ResizeObserver polyfill ([#1554](https://github.com/elastic/elastic-charts/issues/1554)) ([542f2bf](https://github.com/elastic/elastic-charts/commit/542f2bf3a20d5463c14d614cb55491430763e133))
+* **deps:** update dependency puppeteer to v5.4.2 ([#1547](https://github.com/elastic/elastic-charts/issues/1547)) ([307e3e2](https://github.com/elastic/elastic-charts/commit/307e3e2481b0bcda9ff5aca2a5c1a4e90eefa176))
+* **heatmap:** fix unpredictable tick count ([#1551](https://github.com/elastic/elastic-charts/issues/1551)) ([6242fad](https://github.com/elastic/elastic-charts/commit/6242fad5319a8d99935919804487e2686f071228))
+* **heatmap:** text measure bugs ([#1560](https://github.com/elastic/elastic-charts/issues/1560)) ([5d83ab8](https://github.com/elastic/elastic-charts/commit/5d83ab82dadca5af13576225105e8ad2898fc389))
+
 # [43.0.0](https://github.com/elastic/elastic-charts/compare/v42.1.0...v43.0.0) (2022-01-14)
 
 

@@ -68,6 +68,7 @@ exports[`Chart should render the legend name test 1`] = `
                 </Connect(CursorBand)>
                 <Connect(XYChart) forwardCanvasRef={{...}}>
                   <XYChart forwardCanvasRef={{...}} isRTL={false} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
+<<<<<<< HEAD
                     <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\" aria-live=\\"polite\\">
                       <canvas dir=\\"ltr\\" className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\">
                         <Connect(ScreenReaderSummaryComponent)>
@@ -159,6 +160,10 @@ exports[`Chart should render the legend name test 1`] = `
                           </div>
                         </ScreenReaderCartesianTableComponent>
                       </Connect(ScreenReaderCartesianTableComponent)>
+=======
+                    <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\">
+                      <canvas dir=\\"ltr\\" className=\\"echCanvasRenderer\\" width={151} height={200} style={{...}} role=\\"presentation\\" />
+>>>>>>> upstream/master
                     </figure>
                   </XYChart>
                 </Connect(XYChart)>
@@ -181,7 +186,7 @@ exports[`Chart should render the legend name test 1`] = `
                     <svg className=\\"echHighlighter\\" style={{...}}>
                       <defs>
                         <clipPath id=\\"echHighlighterClipPath__chart1\\">
-                          <rect x=\\"0\\" y=\\"0\\" width={130} height={180} />
+                          <rect x=\\"0\\" y=\\"0\\" width={131} height={180} />
                         </clipPath>
                       </defs>
                     </svg>
