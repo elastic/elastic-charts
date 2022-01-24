@@ -33,6 +33,7 @@ import {
   VerticalAlignment,
   stripUndefined,
 } from '../utils/common';
+import { Dimensions } from '../utils/dimensions';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
@@ -148,6 +149,9 @@ export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
 /** @public */
 export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
+
+/** @public */
+export type ProjectionAreaChangeListener = (areas: { projection: Dimensions; parent: Dimensions }) => void;
 
 /** @public */
 export type HeatmapBrushEvent = {
@@ -539,6 +543,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
   onBrushEnd?: BrushEndListener;
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
+  onProjectionAreaChange?: ProjectionAreaChangeListener;
   xDomain?: CustomXDomain;
   /**
    * allows user to set a click handler to the annotations
