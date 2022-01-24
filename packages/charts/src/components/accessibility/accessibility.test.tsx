@@ -263,6 +263,6 @@ describe('Accessibility', () => {
 
   it('should show date time formatting correctly if tickFormatter is present', () => {
     // expect the third td showing the x values to be formatted as a date
-    expect(timeslipLargeExample.find('td').slice(2, 3).text()).toBe('March 1, 2019, 4:00 AM');
+    expect(timeslipLargeExample.find('td').slice(2, 3).text().startsWith('March 1, 2019')).toBeTruthy();
   });
 });
