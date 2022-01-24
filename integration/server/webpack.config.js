@@ -16,7 +16,7 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: '../tmp/index.tsx',
-  mode: 'production',
+  mode: 'development',
   output: {
     filename: '[name].bundle.js',
     chunkFilename: '[name].chunk.js',

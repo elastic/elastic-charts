@@ -43,6 +43,7 @@ import { createOnClickCaller } from './selectors/on_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
+import { createOnProjectionAreaCaller } from './selectors/on_projection_area_caller';
 
 /** @internal */
 export class XYAxisChartState implements InternalChartState {
@@ -60,13 +61,15 @@ export class XYAxisChartState implements InternalChartState {
 
   onPointerMoveCaller: (state: GlobalChartState) => void;
 
+  onProjectionAreaCaller: (state: GlobalChartState) => void;
+
   constructor() {
     this.onClickCaller = createOnClickCaller();
     this.onElementOverCaller = createOnElementOverCaller();
     this.onElementOutCaller = createOnElementOutCaller();
     this.onBrushEndCaller = createOnBrushEndCaller();
     this.onPointerMoveCaller = createOnPointerMoveCaller();
-
+    this.onProjectionAreaCaller = createOnProjectionAreaCaller();
     this.chartType = ChartType.XYAxis;
     this.legendId = htmlIdGenerator()('legend');
   }
@@ -148,6 +151,7 @@ export class XYAxisChartState implements InternalChartState {
     this.onClickCaller(globalState);
     this.onBrushEndCaller(globalState);
     this.onPointerMoveCaller(globalState);
+    this.onProjectionAreaCaller(globalState);
   }
 
   getDebugState(globalState: GlobalChartState) {
