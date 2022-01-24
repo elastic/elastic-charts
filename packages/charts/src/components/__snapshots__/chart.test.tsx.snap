@@ -88,6 +88,41 @@ exports[`Chart should render the legend name test 1`] = `
                             </div>
                           </ScreenReaderSummaryComponent>
                         </Connect(ScreenReaderSummaryComponent)>
+                        <Connect(ScreenReaderCartesianTableComponent)>
+                          <ScreenReaderCartesianTableComponent a11ySettings={{...}} cartesianData={{...}} debug={true} dispatch={[Function: dispatch]}>
+                            <div className=\\"echScreenReaderOnly echScreenReaderOnlyDebug echScreenReaderTable\\" aria-live=\\"polite\\">
+                              <table>
+                                <caption>
+                                  This table shows the full data set for the chart with one series named 
+                                  test
+                                  .
+                                   
+                                  The chart has 0 axes 0 axes have titles.
+                                </caption>
+                                <thead>
+                                  <tr>
+                                    <th scope=\\"col\\">
+                                      X Value
+                                    </th>
+                                    <th scope=\\"col\\">
+                                      Y Value
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr tabIndex={-1}>
+                                    <td>
+                                      0
+                                    </td>
+                                    <td>
+                                      2
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </ScreenReaderCartesianTableComponent>
+                        </Connect(ScreenReaderCartesianTableComponent)>
                       </canvas>
                       <Connect(ScreenReaderCartesianTableComponent)>
                         <ScreenReaderCartesianTableComponent a11ySettings={{...}} cartesianData={{...}} debug={true} dispatch={[Function: dispatch]}>

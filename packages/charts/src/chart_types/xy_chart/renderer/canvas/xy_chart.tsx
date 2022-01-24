@@ -178,7 +178,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
           role="presentation"
         >
           <ScreenReaderSummary />
-          {!debug && <ScreenReaderCartesianTable />}
+          <ScreenReaderCartesianTable />
         </canvas>
         {debug && <ScreenReaderCartesianTable />}
       </figure>
