@@ -49,8 +49,9 @@ jobs:
         id: test-files
         shell: python
         run: |
-          import glob, json
-          files = glob.glob('e2e/**/*.test.ts', recursive=True)
+          import os, glob, json
+          os.chdir('e2e/tests')
+          files = glob.glob('**/*.test.ts', recursive=True)
           print(f"::set-output name=json::{json.dumps(files)}")
       - name: Get Playwright version
         id: playwright
@@ -80,7 +81,7 @@ jobs:
         test-file: ${{ fromJSON(needs.e2e-setup.outputs.test-files) }}
         browser: ['chrome', 'safari', 'firefox']
     container:
-      image: mcr.microsoft.com/playwright:v${{ fromJSON(needs.e2e-setup.outputs.playwright-version) }}-focal
+      image: mcr.microsoft.com/playwright:v${{ needs.e2e-setup.outputs.playwright-version }}-focal
       volumes:
         - ~/e2e:/e2e
     steps:
