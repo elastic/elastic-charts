@@ -30,10 +30,13 @@ jobs:
       test-files: ${{ steps.test-files.outputs.json }}
       playwright-version: ${{ steps.playwright.outputs.version }}
     steps:
+      - name: Print Node version
+        run: node --version
       - name: Checkout node setup
         uses: nickofthyme/checkout-node-setup@v1.0.1
         with:
-          skip-npm-install: true
+          skip-checkout: true
+          # skip-npm-install: true
       - name: Print Node version
         run: node --version
       - name: Test ls
