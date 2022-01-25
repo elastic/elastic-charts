@@ -8,8 +8,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "storybook",
-      "e2e"
+      "storybook"
     ]
   },
   "scripts": {
@@ -28,6 +27,7 @@
     "build:check": "lerna run --loglevel=silent --scope @elastic/charts build:check --stream --no-prefix",
     "build:watch": "lerna run --loglevel=silent --scope @elastic/charts build:watch --stream --no-prefix",
     "concat:sass": "lerna run --loglevel=silent --scope @elastic/charts concat:sass --stream --no-prefix",
+    "postinstall": "cd e2e && yarn install",
     "cz": "git-cz",
     "lint": "NODE_ENV=production eslint --quiet --ext .tsx,.ts,.js .",
     "lint:fix": "yarn lint --fix",

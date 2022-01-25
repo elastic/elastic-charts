@@ -34,16 +34,16 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
           persist-credentials: false
       - name: Setup node
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
-      # - name: Install node_modules
-      #   uses: bahmutov/npm-install@v1
-      #   with:
-      #     useRollingCache: true
+      - name: Install e2e node_modules
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+          working-directory: e2e
       # -----------------------------------
       - name: Get test file paths
         id: test-files
@@ -57,7 +57,7 @@ jobs:
         id: playwright
         run: |
           regex="@playwright/test@(.+)"
-          result="$(yarn list --pattern "@playwright/test" --depth=0 | grep playwright/test)"
+          result="$(cd e2e && yarn list --pattern "@playwright/test" --depth=0 | grep playwright/test)"
           if [[ $result =~ $regex ]]
           then
             echo "::set-output name=version::${BASH_REMATCH[1]}"
@@ -90,13 +90,17 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
           persist-credentials: false
+      - name: Install e2e node_modules
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+          working-directory: e2e
       - name: Test ls
         run: ls
       - name: Test ls e2e
         run: ls e2e
       - name: Test run
-        run: cd e2e && yarn test --project=${{ matrix.browser }} ${{ matrix.test-file }}
+        run: cd e2e && yarn test --project=${{ matrix.browser }} ./tests/${{ matrix.test-file }}
       - name: Test ls e2e
         run: ls e2e
