@@ -13,6 +13,14 @@ on:
       - master
 
 jobs:
+  testing:
+    name: e2e Setup
+    if: github.ref_name == 'playwright'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Testing
+        run: echo "${{ github.ref_name }}"
+
   e2e-setup:
     name: e2e Setup
     if: github.ref_name == 'playwright'
@@ -71,7 +79,5 @@ jobs:
       volumes:
         - ~/e2e:/e2e
     steps:
-      - name: Test ls
-        run: ls
       - name: Test ls
         run: ls
