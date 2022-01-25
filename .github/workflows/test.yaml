@@ -24,7 +24,7 @@ jobs:
 
   e2e-setup:
     name: e2e Setup
-    if: github.ref_name == '1568/merge'
+    if: github.head_ref == 'playwright'
     runs-on: ubuntu-latest
     outputs:
       test-files: ${{ steps.test-files.outputs.json }}
@@ -64,9 +64,13 @@ jobs:
             echo "Unable to find '@playwright/test' version"
             exit 1
           fi
+      - name: Print files
+        run: echo "${{ steps.test-files.outputs.json }}"
+      - name: Print version
+        run: echo "${{ steps.playwright.outputs.version }}"
   e2e:
     name: 'e2e Test / ${{ matrix.test-file }} / ${{ matrix.browser }}'
-    if: github.ref_name == '1568/merge'
+    if: github.head_ref == 'playwright'
     runs-on: ubuntu-latest
     needs: e2e-setup
     strategy:
