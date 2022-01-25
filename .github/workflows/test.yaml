@@ -82,10 +82,23 @@ jobs:
         browser: ['chrome', 'safari', 'firefox']
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.e2e-setup.outputs.playwright-version }}-focal
-      volumes:
-        - ${{ github.workspace }}/e2e:/e2e
+      # volumes:
+      #   - ${{ github.workspace }}/e2e:/e2e
     steps:
       - name: Test ls
         run: ls
+      - name: Test ls e2e
+        run: ls e2e
+      - name: Check out repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Test ls
+        run: ls
+      - name: Test ls e2e
+        run: ls e2e
+      - name: Test run
+        run: cd e2e && yarn test --project=${{ matrix.browser }} ${{ matrix.test-file }}
       - name: Test ls e2e
         run: ls e2e
