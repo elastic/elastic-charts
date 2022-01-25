@@ -38,6 +38,12 @@ jobs:
         run: node --version
       - name: Test ls
         run: ls
+      - name: Check out repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Test ls
+        run: ls
       - name: Get test file paths
         id: test-files
         shell: python
@@ -65,7 +71,7 @@ jobs:
 
   e2e:
     name: 'e2e Test / ${{ matrix.test-file }} / ${{ matrix.browser }}'
-    if: github.head_ref == 'playwright'
+    if: ${{ needs.e2e-setup.result == 'success' && github.head_ref == 'playwright' }}
     runs-on: ubuntu-latest
     needs: e2e-setup
     strategy:
