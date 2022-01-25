@@ -181,20 +181,20 @@ describe('Accessibility', () => {
   });
 
   describe('screen reader table for cartesian charts', () => {
-    const XYChartSingleSeriesSmall = mount(
+    const XYChartSingleSeriesSmallExample = mount(
       <Chart size={[100, 100]} id="chart1">
         <Settings debug rendering="svg" showLegend />
         <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
       </Chart>,
     );
     it('should have the data table in the markdown by default', () => {
-      expect(XYChartSingleSeriesSmall.find('.echScreenReaderTable').first().text()).toBeDefined();
+      expect(XYChartSingleSeriesSmallExample.find('.echScreenReaderTable').first().text()).toBeDefined();
     });
     it('should not have buttons for more data with small dataset less than 20', () => {
-      expect(XYChartSingleSeriesSmall.find('button')).toEqual({});
+      expect(XYChartSingleSeriesSmallExample.find('button')).toEqual({});
     });
 
-    const XYChartSingleSeriesLarge = mount(
+    const XYChartSingleSeriesLargeExample = mount(
       <Chart size={[100, 100]} id="chart1">
         <Settings debug rendering="svg" showLegend />
         <AreaSeries
@@ -208,7 +208,7 @@ describe('Accessibility', () => {
       </Chart>,
     );
     it('should have buttons for more data with small dataset less than 20', () => {
-      expect(XYChartSingleSeriesLarge.find('button')).toBeDefined();
+      expect(XYChartSingleSeriesLargeExample.find('button')).toBeDefined();
     });
   });
 
@@ -264,5 +264,52 @@ describe('Accessibility', () => {
   it('should show date time formatting correctly if tickFormatter is present', () => {
     // expect the third td showing the x values to be formatted as a date
     expect(timeslipLargeExample.find('td').slice(2, 3).text().startsWith('March 1, 2019')).toBeTruthy();
+  });
+
+  it('should compare when two series vs whole dataset', () => {
+    const mixedChartExample = mount(
+      <Chart>
+        <Settings showLegend showLegendExtra legendPosition={Position.Right} />
+        <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
+        <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+
+        <BarSeries
+          id="bars"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[
+            { x: 0, y: 2 },
+            { x: 1, y: 7 },
+            { x: 2, y: 3 },
+            { x: 3, y: 6 },
+          ]}
+        />
+        <LineSeries
+          id="line"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={[
+            { x: 0, y: 3 },
+            { x: 1, y: 2 },
+            { x: 2, y: 4 },
+            { x: 3, y: 10 },
+          ]}
+        />
+      </Chart>,
+    );
+
+    // get the first tr with the bars data
+    const firstRowXValue = mixedChartExample.find('tr').slice(1, 2).text();
+    // get the second tr with the line data
+    const secondRowXValue = mixedChartExample.find('tr').slice(2, 3).text();
+
+    // the x values should be the same
+    expect(firstRowXValue.substring(4, firstRowXValue.length - 4)).toBe(
+      secondRowXValue.substring(4, firstRowXValue.length - 4),
+    );
   });
 });
