@@ -14,8 +14,7 @@ on:
 
 jobs:
   testing:
-    name: e2e Setup
-    if: github.ref_name == 'playwright'
+    name: Testing
     runs-on: ubuntu-latest
     steps:
       - name: Testing
