@@ -1,0 +1,14 @@
+name: 'Common Setup'
+description: 'Common setup for workflow jobs'
+inputs:
+  name:
+    description: 'Your name'
+    default: 'Nick'
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - run: echo Hello ${{ inputs.name }}.
+      shell: bash
+    - run: echo "Nice to meet you!"
+      shell: pwsh

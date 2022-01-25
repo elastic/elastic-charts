@@ -21,6 +21,10 @@ jobs:
         shell: python
         run: |
           print("""${{ toJSON(github) }}""")
+      - name: Setup
+        uses: ./.github/actions/npm_cache_check
+        with:
+          name: 'Testing'
 
   e2e-setup:
     name: e2e Setup
