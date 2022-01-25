@@ -36,6 +36,8 @@ jobs:
           skip-npm-install: true
       - name: Print Node version
         run: node --version
+      - name: Test ls
+        run: ls
       - name: Get test file paths
         id: test-files
         shell: python
@@ -94,8 +96,6 @@ jobs:
       - name: Test run
         working-directory: e2e
         run: yarn test --project=${{ matrix.browser }} ./tests/${{ matrix.test-file }}
-      - name: Test ls e2e
-        run: ls e2e
 
   # I don't know of better way to check the status of all the parallel e2e checks.
   # The issue is that we need a constant status check if we are to add it as a
