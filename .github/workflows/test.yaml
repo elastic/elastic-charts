@@ -82,27 +82,19 @@ jobs:
       # volumes:
       #   - ${{ github.workspace }}/e2e:/e2e
     steps:
-      - name: Test ls
-        run: ls
       - name: Check out repository
         uses: actions/checkout@v2
         with:
           persist-credentials: false
-      - name: Version yarn
-        run: yarn --version
       - name: Setup node
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
-      - name: Test ls
-        run: ls
-      - name: Test ls e2e
-        run: ls e2e
-      - name: yarn.lock
-        run: cat e2e/yarn.lock
       - name: Install e2e node_modules
-        working-directory: e2e
-        run: yarn install --frozen-lockfile
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+          working-directory: e2e
       - name: Test run
         working-directory: e2e
         run: yarn test --project=${{ matrix.browser }} ./tests/${{ matrix.test-file }}
@@ -113,7 +105,7 @@ jobs:
   # The issue is that we need a constant status check if we are to add it as a
   # required branch protection rule.
   e2e-status:
-    name: e2e Setup
+    name: e2e Status
     if: ${{ always() && github.head_ref == 'playwright' }}
     runs-on: ubuntu-latest
     needs: e2e
