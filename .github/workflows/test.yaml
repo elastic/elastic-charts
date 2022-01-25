@@ -1,0 +1,72 @@
+name: Test Playwright
+
+concurrency:
+  group: '${{ github.workflow }} - ${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+env:
+  ECH_NODE_VERSION: '16.13.2' # should match version in .nvmrc
+
+on:
+  pull_request:
+    branches:
+      - playwright
+
+jobs:
+  e2e-setup:
+    name: e2e Setup
+    runs-on: ubuntu-latest
+    outputs:
+      test-files: ${{ steps.test-files.outputs.json }}
+      playwright-version: ${{ steps.playwright.outputs.version }}
+    steps:
+      # ----- Common setup from cache -----
+      - name: Check out repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.ECH_NODE_VERSION }}
+      # - name: Install node_modules
+      #   uses: bahmutov/npm-install@v1
+      #   with:
+      #     useRollingCache: true
+      # -----------------------------------
+      - name: Get test file paths
+        id: test-files
+        shell: python
+        run: |
+          import glob, json
+          files = glob.glob('**/*.test.ts', recursive=True)
+          print(f"::set-output name=json::{json.dumps(files)}")
+      - name: Get Playwright version
+        id: playwright
+        run: |
+          regex="@playwright/test@(.+)"
+          result="$(yarn list --pattern "@playwright/test" --depth=0 | grep playwright/test)"
+          if [[ $result =~ $regex ]]
+          then
+            echo "::set-output name=version::${BASH_REMATCH[1]}"
+          else
+            echo "Unable to find '@playwright/test' version"
+            exit 1
+          fi
+  e2e:
+    name: e2e Tests
+    runs-on: ubuntu-latest
+    needs: e2e-setup
+    strategy:
+      fail-fast: false
+      max-parallel: 10 # tbd
+      matrix:
+        test-files: ${{ fromJSON(needs.e2e-setup.outputs.test-files) }}
+        browsers: ['chrome', 'safari', 'firefox']
+    container:
+      image: mcr.microsoft.com/playwright:v${{ fromJSON(needs.e2e-setup.outputs.playwright-version) }}-focal
+      volumes:
+        - ~/e2e:/e2e
+    steps:
+      - name: Install packages
