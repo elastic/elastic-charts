@@ -87,8 +87,6 @@ jobs:
     steps:
       - name: Test ls
         run: ls
-      - name: Test ls e2e
-        run: ls e2e
       - name: Check out repository
         uses: actions/checkout@v2
         with:
