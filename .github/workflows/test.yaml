@@ -5,7 +5,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  ECH_NODE_VERSION: '16.13.2' # should match version in .nvmrc
+  NODE_VERSION: '16.13.2' # should match version in .nvmrc
 
 on:
   pull_request:
@@ -21,10 +21,6 @@ jobs:
         shell: python
         run: |
           print("""${{ toJSON(github) }}""")
-      - name: Setup
-        uses: ./.github/actions/npm_cache_check
-        with:
-          name: 'Testing'
 
   e2e-setup:
     name: e2e Setup
@@ -34,16 +30,12 @@ jobs:
       test-files: ${{ steps.test-files.outputs.json }}
       playwright-version: ${{ steps.playwright.outputs.version }}
     steps:
-      # ----- Common setup from cache -----
-      - name: Check out repository
-        uses: actions/checkout@v2
+      - name: Checkout node setup
+        uses: nickofthyme/checkout-node-setup@v1
         with:
-          persist-credentials: false
-      - name: Setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ env.ECH_NODE_VERSION }}
-      # -----------------------------------
+          skip-npm-install: true
+      - name: Print Node version
+        run: node --version
       - name: Get test file paths
         id: test-files
         shell: python
@@ -83,8 +75,6 @@ jobs:
         # browser: ['chrome', 'Safari', 'Firefox']
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.e2e-setup.outputs.playwright-version }}-focal
-      # volumes:
-      #   - ${{ github.workspace }}/e2e:/e2e
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -93,7 +83,9 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ env.ECH_NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Print Node version
+        run: node --version
       - name: Install e2e node_modules
         uses: bahmutov/npm-install@v1
         with:
