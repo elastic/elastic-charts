@@ -242,7 +242,7 @@ const ScreenReaderCartesianTableComponent = ({
         <tbody>
           {cartesianData.data.map(({ label, values }, index) => {
             return (
-              <tr key={String(`screen-reader-row--${index}`)} ref={tableRowRef} tabIndex={0} className="tableRow">
+              <tr key={`screen-reader-row--${index}`} ref={tableRowRef} tabIndex={0} className="tableRow">
                 {isSmallMultiple && cartesianData.smallMultipleTitle.length === 2 && (
                   <>
                     <th scope="row" colSpan={2}>

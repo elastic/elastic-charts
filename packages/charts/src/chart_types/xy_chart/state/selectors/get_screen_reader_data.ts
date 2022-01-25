@@ -228,11 +228,11 @@ function getAxesDescription(axes: AxisSpec[], isSm: boolean) {
     return ` the ${position} axis is titled ${title}`;
   });
   // axesTitles length is currently misleading for small multiple series
-  return `${
-    isSm
-      ? `This chart is a small multiple series.`
-      : `The chart has ${axesTitles.length} axes ${hasTitles.length} axes have titles${
-          hasTitles.length === 0 ? '.' : ':'
-        }`
-  }${getTitles}`;
+  const smallMultipleTitle = isSm
+    ? `This chart is a small multiple series.`
+    : `The chart has ${axesTitles.length} axes ${hasTitles.length} axes have titles${
+        hasTitles.length === 0 ? '.' : ':'
+      }`;
+
+  return `${smallMultipleTitle}${getTitles}`;
 }
