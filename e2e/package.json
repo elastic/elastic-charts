@@ -7,10 +7,10 @@
     "server": "webpack serve -c server/webpack.config.js",
     "build": "docker build . -f Dockerfile -t e2e-integration",
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
-    "test": "playwright test --workers=1",
+    "test": "playwright test --workers=1 ",
     "nick": "playwright test --help"
   },
   "dependencies": {
-    "@playwright/test": "1.18.0"
+    "@playwright/test": "^1.18.0"
   }
 }
