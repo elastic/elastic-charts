@@ -31,7 +31,7 @@ jobs:
       playwright-version: ${{ steps.playwright.outputs.version }}
     steps:
       - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1
+        uses: nickofthyme/checkout-node-setup@v1.0.1
         with:
           skip-npm-install: true
       - name: Print Node version
