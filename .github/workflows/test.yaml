@@ -83,7 +83,9 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.e2e-setup.outputs.playwright-version }}-focal
       volumes:
-        - ~/e2e:/e2e
+        - ${{ github.workspace }}/e2e:/e2e
     steps:
       - name: Test ls
         run: ls
+      - name: Test ls e2e
+        run: ls e2e
