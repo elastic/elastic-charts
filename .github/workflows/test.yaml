@@ -87,12 +87,14 @@ jobs:
         with:
           persist-credentials: false
       - name: Install e2e node_modules
-        run: cd e2e && yarn install --frozen-lockfile
+        working-directory: e2e
+        run: yarn install --frozen-lockfile
       - name: Test ls
         run: ls
       - name: Test ls e2e
         run: ls e2e
       - name: Test run
-        run: cd e2e && yarn test --project=${{ matrix.browser }} ./tests/${{ matrix.test-file }}
+        working-directory: e2e
+        run: yarn test --project=${{ matrix.browser }} ./tests/${{ matrix.test-file }}
       - name: Test ls e2e
         run: ls e2e
