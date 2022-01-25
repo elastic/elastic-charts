@@ -1,3 +1,15 @@
+# [43.1.0](https://github.com/elastic/elastic-charts/compare/v43.0.1...v43.1.0) (2022-01-25)
+
+
+### Bug Fixes
+
+* use window scope to call the ResizeObserver ([#1569](https://github.com/elastic/elastic-charts/issues/1569)) ([747e626](https://github.com/elastic/elastic-charts/commit/747e626f592e4e413567cd6710a95575e892aa71))
+
+
+### Features
+
+* **xy:** expose projection area ([#1567](https://github.com/elastic/elastic-charts/issues/1567)) ([b36a75a](https://github.com/elastic/elastic-charts/commit/b36a75a842af0d8e9c704e61b152e4423b4a69ca))
+
 ## [43.0.1](https://github.com/elastic/elastic-charts/compare/v43.0.0...v43.0.1) (2022-01-20)
 
 
