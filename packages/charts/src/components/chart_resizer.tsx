@@ -43,7 +43,7 @@ class Resizer extends React.Component<ResizerProps> {
   constructor(props: ResizerProps) {
     super(props);
     this.containerRef = React.createRef();
-    this.ro = new ResizeObserver(this.handleResize);
+    this.ro = new window.ResizeObserver(this.handleResize);
     this.animationFrameID = null;
     this.onResizeDebounced = () => {};
   }
