@@ -39,10 +39,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
-      - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1
-        with:
-          useRollingCache: true
       # -----------------------------------
       - name: Get test file paths
         id: test-files
