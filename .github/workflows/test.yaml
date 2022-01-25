@@ -50,7 +50,7 @@ jobs:
         shell: python
         run: |
           import glob, json
-          files = glob.glob('**/*.test.ts', recursive=True)
+          files = glob.glob('e2e/**/*.test.ts', recursive=True)
           print(f"::set-output name=json::{json.dumps(files)}")
       - name: Get Playwright version
         id: playwright
