@@ -32,11 +32,16 @@ jobs:
     steps:
       - name: Print Node version
         run: node --version
+      - name: Test ls
+        run: ls
+      - name: Testing
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
       - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1.0.1
+        uses: nickofthyme/checkout-node-setup@v1.0.1-test1
         with:
-          skip-checkout: true
-          # skip-npm-install: true
+          skip-npm-install: true
       - name: Print Node version
         run: node --version
       - name: Test ls
