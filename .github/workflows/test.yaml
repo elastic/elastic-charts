@@ -30,28 +30,10 @@ jobs:
       test-files: ${{ steps.test-files.outputs.json }}
       playwright-version: ${{ steps.playwright.outputs.version }}
     steps:
-      - name: Print Node version
-        run: node --version
-      - name: Test ls
-        run: ls
-      - name: Testing
-        shell: python
-        run: |
-          print("""${{ toJSON(github) }}""")
       - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1.0.1-test1
+        uses: nickofthyme/checkout-node-setup@v1
         with:
           skip-npm-install: true
-      - name: Print Node version
-        run: node --version
-      - name: Test ls
-        run: ls
-      - name: Check out repository
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-      - name: Test ls
-        run: ls
       - name: Get test file paths
         id: test-files
         shell: python
@@ -92,20 +74,9 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.e2e-setup.outputs.playwright-version }}-focal
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
+      - name: Checkout node setup
+        uses: nickofthyme/checkout-node-setup@v1
         with:
-          persist-credentials: false
-      - name: Setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Print Node version
-        run: node --version
-      - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1
-        with:
-          useRollingCache: true
           working-directory: e2e
       - name: Test run
         working-directory: e2e
