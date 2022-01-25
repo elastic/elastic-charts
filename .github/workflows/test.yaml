@@ -87,10 +87,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1
-        with:
-          useRollingCache: true
-          working-directory: e2e
+        run: cd e2e && yarn install --frozen-lockfile
       - name: Test ls
         run: ls
       - name: Test ls e2e
