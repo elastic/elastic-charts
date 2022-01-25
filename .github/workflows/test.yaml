@@ -109,6 +109,9 @@ jobs:
       - name: Test ls e2e
         run: ls e2e
 
+  # I don't know of better way to check the status of all the parallel e2e checks.
+  # The issue is that we need a constant status check if we are to add it as a
+  # required branch protection rule.
   e2e-status:
     name: e2e Setup
     if: ${{ always() && github.head_ref == 'playwright' }}
@@ -119,3 +122,8 @@ jobs:
         shell: python
         run: |
           print("""${{ toJSON(needs.e2e) }}""")
+      - name: Check e2e failure
+        if: ${{ needs.e2e.result != 'success' }}
+        uses: actions/github-script@v3
+        with:
+          script: core.setFailed('One or more e2e test failed. See e2e Test runs.')
