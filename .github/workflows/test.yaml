@@ -64,6 +64,7 @@ jobs:
         run: echo "${{ steps.test-files.outputs.json }}"
       - name: Print version
         run: echo "${{ steps.playwright.outputs.version }}"
+
   e2e:
     name: 'e2e Test / ${{ matrix.test-file }} / ${{ matrix.browser }}'
     if: github.head_ref == 'playwright'
@@ -74,7 +75,8 @@ jobs:
       max-parallel: 10 # tbd
       matrix:
         test-file: ${{ fromJSON(needs.e2e-setup.outputs.test-files) }}
-        browser: ['chrome', 'safari', 'firefox']
+        browser: ['Chrome']
+        # browser: ['chrome', 'Safari', 'Firefox']
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.e2e-setup.outputs.playwright-version }}-focal
       # volumes:
@@ -106,3 +108,14 @@ jobs:
         run: yarn test --project=${{ matrix.browser }} ./tests/${{ matrix.test-file }}
       - name: Test ls e2e
         run: ls e2e
+
+  e2e-status:
+    name: e2e Setup
+    if: ${{ always() && github.head_ref == 'playwright' }}
+    runs-on: ubuntu-latest
+    needs: e2e
+    steps:
+      - name: Print needs context
+        shell: python
+        run: |
+          print("""${{ toJSON(needs.e2e) }}""")
