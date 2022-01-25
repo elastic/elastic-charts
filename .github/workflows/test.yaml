@@ -42,8 +42,7 @@ jobs:
       - name: Install e2e node_modules
         uses: bahmutov/npm-install@v1
         with:
-          useRollingCache: false
-          working-directory: e2e
+          useRollingCache: true
       # -----------------------------------
       - name: Get test file paths
         id: test-files
