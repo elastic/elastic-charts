@@ -38,6 +38,7 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+      - run: ls
       - name: Print context
         shell: python
         run: |
@@ -50,6 +51,7 @@ jobs:
         shell: python
         run: |
           print("""${{ toJSON(github.event) }}""")
+      - run: echo "refs/pull/${{ github.event.pull_request.number }}/head"
       - uses: octokit/request-action@v2.x
         id: deployment
         with:
@@ -57,7 +59,8 @@ jobs:
           route: POST /repos/{repo}/deployments
           repo: ${{ github.repository }}
           # ref: ${{ github.event.pull_request.head.sha }}
-          ref: ${{ github.head_ref }}
+          # ref: ${{ github.head_ref }}
+          ref: "refs/pull/${{ github.event.pull_request.number }}/head"
           auto_merge: false # use branch as is without merging with base
           required_contexts: '[]'
           environment: dev
