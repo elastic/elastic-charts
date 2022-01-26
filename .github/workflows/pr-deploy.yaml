@@ -19,7 +19,7 @@ jobs:
     steps:
       # - name: Checkout repo
       #   uses: actions/checkout@v2
-      - name: Print context
+      - name: Print contexttt
         shell: python
         run: |
           print("""${{ toJSON(github) }}""")
