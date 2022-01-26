@@ -9,6 +9,7 @@
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
+import ResizeObserver from 'resize-observer-polyfill';
 import { debounce } from 'ts-debounce';
 
 import { updateParentDimensions } from '../state/actions/chart_settings';
@@ -43,7 +44,7 @@ class Resizer extends React.Component<ResizerProps> {
   constructor(props: ResizerProps) {
     super(props);
     this.containerRef = React.createRef();
-    this.ro = new window.ResizeObserver(this.handleResize);
+    this.ro = new ResizeObserver(this.handleResize);
     this.animationFrameID = null;
     this.onResizeDebounced = () => {};
   }
