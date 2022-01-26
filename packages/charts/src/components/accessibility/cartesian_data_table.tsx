@@ -29,22 +29,31 @@ interface ScreenReaderCartesianTableProps {
   debugA11y: SettingsSpec['debugA11y'];
 }
 
+interface MultipleSeries {
+  label: string | number;
+  data: string | number;
+  xValue: string | number;
+  smPanelTitle: string | undefined;
+}
+
 /**
  * Helper function to format the cartesian data for serializing the data to show better comparision across multiple series
  */
 const formatMultipleSeriesSmallData = (data: any[]) => {
-  const formatted: any = {};
+  const formatted: Record<string, MultipleSeries[]> = {};
   data.map(({ values, label }) => {
     values.map(
       (val: { xValue: number | string; formatted: string; raw: number | string; smPanelTitle: string | undefined }) => {
         return formatted.hasOwnProperty(val.xValue)
-          ? formatted[val.xValue].push({
+          ? // add to the array value this new value with the same xValue
+            formatted[val.xValue].push({
               label,
               data: val.formatted ?? val.raw,
               xValue: val.xValue,
               smPanelTitle: val.smPanelTitle,
             })
-          : (formatted[val.xValue] = [
+          : // create an array as the value so additional values can be added
+            (formatted[val.xValue] = [
               { label, data: val.formatted ?? val.raw, xValue: val.xValue, smPanelTitle: val.smPanelTitle },
             ]);
       },
