@@ -65,7 +65,7 @@ jobs:
           required_contexts: '[]'
           environment: dev
           description: "Deployment for PR #${{ github.event.pull_request.number }}"
-          payload: ${{ toJSON(github) }}
+          # payload: ${{ toJSON(github) }}
           # payload: |
           #   {
           #     "key": "value",
