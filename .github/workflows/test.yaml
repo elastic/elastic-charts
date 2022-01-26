@@ -20,16 +20,23 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-      - run: cd e2e-server
-      - run: pwd
-      - run: ls
+      - run: echo "github.event.pull_request.head.repo.full_name - ${{ github.event.pull_request.head.repo.full_name }}"
+      - run: echo "github.repository - ${{ github.repository }}"
+      - run: echo "test - ${{ github.event.pull_request.head.repo.full_name == github.repository }}"
       - name: Deploy build to firebase
+        id: deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
+          expires: 14d # this updates for every deploy
+          entryPoint: 'e2e-server'
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
           projectId: ech-e2e-ci
+      - name: Outputs
+        shell: python
+        run: |
+          print("""${{ toJSON(steps.deploy.outputs) }}""")
 
   # testing:
   #   name: Testing
