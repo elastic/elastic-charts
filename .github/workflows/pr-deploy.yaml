@@ -1,0 +1,26 @@
+# Checks related only to PRs and not code
+name: PR Deploy
+
+concurrency:
+  group: '${{ github.workflow }} - ${{ github.head_ref }}'
+  cancel-in-progress: true
+
+env:
+  ECH_NODE_VERSION: '14.x'
+
+on:
+  deployment
+
+jobs:
+  testing:
+    name: Testing deployment event
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+      - name: Print event
+        shell: python
+        run: |
+          print("""${{ toJSON(event) }}""")

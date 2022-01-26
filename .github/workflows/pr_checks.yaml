@@ -22,7 +22,8 @@ permissions:
   security-events: none
 
 on:
-  # Allows forks to access token so must limit 3rd party contributors
+  # Needed to allow forks to access secrets in ci
+  # must limit 3rd party contributors
   # See https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request_target
   # pull_request_target:
   #   branches:
