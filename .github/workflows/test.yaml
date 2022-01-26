@@ -7,6 +7,9 @@ concurrency:
 env:
   NODE_VERSION: '16.13.2' # should match version in .nvmrc
 
+permissions:
+  deployments: write
+
 on:
   pull_request:
     branches:
