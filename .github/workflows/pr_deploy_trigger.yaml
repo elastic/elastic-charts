@@ -34,7 +34,6 @@ jobs:
   testing:
     name: Testing deployment event
     runs-on: ubuntu-latest
-    environment: dev
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -57,21 +56,22 @@ jobs:
         with:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment
           route: POST /repos/{repo}/deployments
-          repo: ${{ github.event.pull_request.head.repo.full_name }}
-          # repo: ${{ github.repository }}
-          # ref: ${{ github.event.pull_request.head.sha }}
-          # ref: ${{ github.head_ref }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          # ref: "refs/pull/${{ github.event.pull_request.number }}/head"
+          repo: ${{ github.repository }}
+          ref: ${{ github.sha }}
           auto_merge: false # use branch as is without merging with base
           required_contexts: '[]'
           environment: dev
           description: "Deployment for PR #${{ github.event.pull_request.number }}"
-          # payload: ${{ toJSON(github) }}
-          # payload: |
-          #   {
-          #     "key": "value",
-          #   }
+          payload: |
+            {
+              "repo": "${{ github.repository }}",
+              "head_repo": "${{ github.event.pull_request.head.repo.full_name }}",
+              "head_ref": "${{ github.event.pull_request.head.ref }}",
+              "head_sha": "${{ github.event.pull_request.head.sha }}",
+              "pr_head_ref": "refs/pull/${{ github.event.pull_request.number }}/head",
+              "pr_merge_ref": "refs/pull/${{ github.event.pull_request.number }}/merge",
+              "pr_number": "${{ github.event.pull_request.number }}"
+            }
         env:
           GITHUB_TOKEN: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
       - name: Print outputs

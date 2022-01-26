@@ -16,6 +16,7 @@ jobs:
   testing:
     name: Testing deployment event
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - name: Print context - Testing 2
         shell: python
@@ -32,14 +33,8 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
-          repository: elastic/elastic-charts
-          ssh-strict: true
-          persist-credentials: false
-          clean: true
-          fetch-depth: 1
-          lfs: false
-          submodules: false
-          ref: ${{ github.event.deployment.ref }}
+          repository: ${{ github.event.deployment.payload.repo }}
+          ref: ${{ github.event.deployment.payload.pr_head_ref }}
       - run: ls
 
       - name: Deploy build to firebase
