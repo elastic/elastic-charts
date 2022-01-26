@@ -14,8 +14,11 @@ on:
 
 jobs:
   nginx:
-    name: Testing nginx
+    name: Testing nginx - ${{ matrix.test }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test: [1,2]
     services:
       myservice1:
         image: nginx:alpine
@@ -24,6 +27,18 @@ jobs:
         volumes:
           - ${{ github.workspace }}/e2e-server:/usr/share/nginx/html
     steps:
+      - name: Print services
+        shell: python
+        run: |
+          print("""${{ toJSON(job.services) }}""")
+      - name: Print strategy
+        shell: python
+        run: |
+          print("""${{ toJSON(strategy) }}""")
+      - name: Print matrix
+        shell: python
+        run: |
+          print("""${{ toJSON(matrix) }}""")
       - run: ls
       - run: ls ../
       - run: ls ../../
