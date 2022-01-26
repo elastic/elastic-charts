@@ -768,6 +768,18 @@ export const DEPTH_KEY = "depth";
 // @public (undocumented)
 export function depthAccessor(n: ArrayEntry): number;
 
+// @public (undocumented)
+export interface Dimensions {
+    // (undocumented)
+    height: number;
+    // (undocumented)
+    left: number;
+    // (undocumented)
+    top: number;
+    // (undocumented)
+    width: number;
+}
+
 // @public
 export const Direction: Readonly<{
     Ascending: "ascending";
@@ -1844,6 +1856,12 @@ export type ProjectedValues = {
     smHorizontalValue: PrimitiveValue;
 };
 
+// @public (undocumented)
+export type ProjectionAreaChangeListener = (areas: {
+    projection: Dimensions;
+    parent: Dimensions;
+}) => void;
+
 // @public
 export type ProjectionClickListener = (values: ProjectedValues) => void;
 
@@ -2091,7 +2109,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof typeof settingsBuildP
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "debug" | "tooltip" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaLabel" | "xDomain" | "theme" | "ariaDescription" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "flatLegend" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "debugA11y" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "pointBuffer" | "onBrushEnd" | "onPointerUpdate" | "onRenderChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "debug" | "tooltip" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaLabel" | "xDomain" | "theme" | "ariaDescription" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "flatLegend" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "debugA11y" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "pointBuffer" | "onBrushEnd" | "onPointerUpdate" | "onRenderChange" | "onProjectionAreaChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -2129,6 +2147,8 @@ export interface SettingsSpec extends Spec, LegendSpec {
     onElementOver?: ElementOverListener;
     // (undocumented)
     onPointerUpdate?: PointerUpdateListener;
+    // (undocumented)
+    onProjectionAreaChange?: ProjectionAreaChangeListener;
     onProjectionClick?: ProjectionClickListener;
     // (undocumented)
     onRenderChange?: RenderChangeListener;
