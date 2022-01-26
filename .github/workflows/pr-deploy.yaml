@@ -17,9 +17,19 @@ jobs:
     name: Testing deployment event
     runs-on: ubuntu-latest
     steps:
-      # - name: Checkout repo
-      #   uses: actions/checkout@v2
-      - name: Print context
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          repository: elastic/elastic-charts
+          ssh-strict: true
+          persist-credentials: false
+          clean: true
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+          ref: refs/remotes/pull/1568/merge
+      - run: ls
+      - name: Print context - Testing
         shell: python
         run: |
           print("""${{ toJSON(github) }}""")
@@ -27,17 +37,18 @@ jobs:
         shell: python
         run: |
           print("""${{ toJSON(github.event) }}""")
-      # - name: Deploy build to firebase
-      #   id: deploy
-      #   uses: FirebaseExtended/action-hosting-deploy@v0
-      #   with:
-      #     expires: 14d # this updates for every deploy
-      #     entryPoint: 'e2e-server'
-      #     repoToken: '${{ secrets.GITHUB_TOKEN }}'
-      #     # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
-      #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
-      #     projectId: ech-e2e-ci
-      # - name: Outputs
-      #   shell: python
-      #   run: |
-      #     print("""${{ toJSON(steps.deploy.outputs) }}""")
+      - name: Deploy build to firebase
+        id: deploy
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          expires: 14d # this updates for every deploy
+          entryPoint: 'e2e-server'
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
+          projectId: ech-e2e-ci
+          channelId: 'pr1568'
+      - name: Outputs
+        shell: python
+        run: |
+          print("""${{ toJSON(steps.deploy.outputs) }}""")
