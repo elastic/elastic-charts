@@ -1,3 +1,10 @@
+## [43.1.1](https://github.com/elastic/elastic-charts/compare/v43.1.0...v43.1.1) (2022-01-26)
+
+
+### Bug Fixes
+
+* revert removal of resize observer polyfill ([#1570](https://github.com/elastic/elastic-charts/issues/1570)) ([8a951f4](https://github.com/elastic/elastic-charts/commit/8a951f4bf2161eb59cc2d865b49fb47efe79e403))
+
 # [43.1.0](https://github.com/elastic/elastic-charts/compare/v43.0.1...v43.1.0) (2022-01-25)
 
 
