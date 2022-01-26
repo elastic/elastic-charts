@@ -13,51 +13,22 @@ on:
       - master
 
 jobs:
-  nginx:
-    name: Testing nginx - ${{ matrix.test }}
+  deploy-test:
+    # Don't think this is needed but was provided by firebase
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        test: [1,2]
-    services:
-      myservice1:
-        image: nginx:alpine
-        ports:
-          - 8080:80
-        volumes:
-          - ${{ github.workspace }}/e2e-server:/usr/share/nginx/html
     steps:
-      - name: Print services
-        shell: python
-        run: |
-          print("""${{ toJSON(job.services) }}""")
-      - name: Print strategy
-        shell: python
-        run: |
-          print("""${{ toJSON(strategy) }}""")
-      - name: Print matrix
-        shell: python
-        run: |
-          print("""${{ toJSON(matrix) }}""")
+      - uses: actions/checkout@v2
+      - run: cd e2e-server
+      - run: pwd
       - run: ls
-      - run: ls ../
-      - run: ls ../../
-      - run: curl http://localhost:8080
-      - name: Replace index content
-        shell: sh
-        run: |
-          cat <<EOF >> e2e-server/index.html
-          <!DOCTYPE html>
-          <html>
-          <body>
-          <h1>New stuff!!</h1>
-          </body>
-          </html>
-          EOF
-      - run: curl http://localhost:8080
-      - run: ls
-      - run: cat e2e-server/index.html
+      - name: Deploy build to firebase
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
+          projectId: ech-e2e-ci
 
   # testing:
   #   name: Testing
