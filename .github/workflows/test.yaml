@@ -24,9 +24,21 @@ jobs:
         volumes:
           - e2e-server:/usr/share/nginx/html
     steps:
+      - run: mkdir e2e-server
+      - run: curl http://localhost:8080
+      - name: Replace index content
+        shell: sh
+        run: |
+          cat <<EOF >> e2e-server/index.html
+          <!DOCTYPE html>
+          <html>
+          <body>
+          <h1>New stuff!!</h1>
+          </body>
+          </html>
+          EOF
+      - run: curl http://localhost:8080
       - run: ls
-      - name: Testing nginx servies
-        run: curl -I http://localhost:8080
 
   # testing:
   #   name: Testing
@@ -116,5 +128,3 @@ jobs:
   #       with:
   #         script: core.setFailed('One or more e2e test failed. See e2e Test runs.')
 
-# Docker access token
-# 13bd0c63-40d6-4055-a96c-6df624c2be98
