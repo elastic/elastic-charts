@@ -14,12 +14,12 @@ export type Vec2 = [number, number];
 /**
  * Rotate a Vec2 vector by radians
  * @param radian
- * @param vec2
+ * @param vector
  */
-function rotate2(radian: Radian, vec2: Vec2): Vec2 {
+function rotate2(radian: Radian, vector: Vec2): Vec2 {
   return [
-    Math.cos(radian) * vec2[0] - Math.sin(radian) * vec2[1],
-    Math.sin(radian) * vec2[0] + Math.cos(radian) * vec2[1],
+    Math.cos(radian) * vector[0] - Math.sin(radian) * vector[1],
+    Math.sin(radian) * vector[0] + Math.cos(radian) * vector[1],
   ];
 }
 
@@ -45,8 +45,15 @@ function sub2(a: Vec2, b: Vec2): Vec2 {
  * Rotate a Vec2 around an origin
  * @internal
  */
-export function transform2(point: Vec2, radians: Radian, origin: Vec2): Vec2 {
-  const t1 = sub2(point, origin);
-  const r1 = rotate2(radians, t1);
-  return add2(r1, origin);
+export function transform2(vector: Vec2, radians: Radian, origin: Vec2): Vec2 {
+  const translatedVector = sub2(vector, origin);
+  const rotatedVector = rotate2(radians, translatedVector);
+  return add2(rotatedVector, origin);
+}
+
+/**
+ * Rotate an array of Vec2 around an origin
+ * @internal */
+export function transformA2(vectors: Vec2[], radians: Radian, origin: Vec2): Vec2[] {
+  return vectors.map((vector) => transform2(vector, radians, origin));
 }
