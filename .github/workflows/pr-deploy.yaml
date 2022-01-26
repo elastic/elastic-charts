@@ -17,6 +17,18 @@ jobs:
     name: Testing deployment event
     runs-on: ubuntu-latest
     steps:
+      - name: Print context - Testing 2
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+      - name: Print event
+        shell: python
+        run: |
+          print("""${{ toJSON(github.event) }}""")
+      - name: Print payload
+        shell: python
+        run: |
+          print("""${{ toJSON(github.event) }}""")
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
@@ -27,16 +39,9 @@ jobs:
           fetch-depth: 1
           lfs: false
           submodules: false
-          ref: refs/remotes/pull/1568/merge
+          ref: ${{ github.event.deployment.ref }}
       - run: ls
-      - name: Print context - Testing
-        shell: python
-        run: |
-          print("""${{ toJSON(github) }}""")
-      - name: Print event
-        shell: python
-        run: |
-          print("""${{ toJSON(github.event) }}""")
+
       - name: Deploy build to firebase
         id: deploy
         uses: FirebaseExtended/action-hosting-deploy@v0

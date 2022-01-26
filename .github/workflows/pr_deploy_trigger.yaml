@@ -61,10 +61,11 @@ jobs:
           required_contexts: '[]'
           environment: dev
           description: "Deployment for PR #${{ github.event.pull_request.number }}"
-          payload: |
-            {
-              "key": "value",
-            }
+          payload: ${{ toJSON(github) }}
+          # payload: |
+          #   {
+          #     "key": "value",
+          #   }
         env:
           GITHUB_TOKEN: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
       - name: Print outputs
