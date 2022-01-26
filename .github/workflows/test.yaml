@@ -17,6 +17,7 @@ jobs:
     name: Testing nginx - ${{ matrix.test }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         test: [1,2]
     services:
