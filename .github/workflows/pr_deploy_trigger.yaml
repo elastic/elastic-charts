@@ -34,6 +34,7 @@ jobs:
   testing:
     name: Testing deployment event
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -65,7 +66,7 @@ jobs:
               "key": "value",
             }
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
       - name: Print outputs
         if: ${{ always() }}
         shell: python
