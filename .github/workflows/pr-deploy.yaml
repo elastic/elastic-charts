@@ -23,4 +23,4 @@ jobs:
       - name: Print event
         shell: python
         run: |
-          print("""${{ toJSON(event) }}""")
+          print("""${{ toJSON(github.event) }}""")
