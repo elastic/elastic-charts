@@ -27,9 +27,9 @@ jobs:
           fetch-depth: 1
           lfs: false
           submodules: false
-          ref: refs/remotes/pull/1568/merge
+          ref: refs/pull/1568/merge
       - run: ls
-      - name: Print context - Testing
+      - name: Print context - Testing 2
         shell: python
         run: |
           print("""${{ toJSON(github) }}""")
