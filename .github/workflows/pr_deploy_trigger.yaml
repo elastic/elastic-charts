@@ -56,7 +56,7 @@ jobs:
           route: POST /repos/{repo}/deployments
           repo: ${{ github.repository }}
           ref: ${{ github.sha }}
-          auto_merge: true # merge with default branch
+          auto_merge: false # use branch as is without merging with base
           required_contexts: '[]'
           environment: dev
           description: "Deployment for PR #${{ github.event.pull_request.number }}"
