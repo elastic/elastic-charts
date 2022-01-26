@@ -67,7 +67,7 @@ exports[`Chart should render the legend name test 1`] = `
                   <CursorBand theme={{...}} chartRotation={0} cursorPosition={[undefined]} tooltipType=\\"vertical\\" fromExternalEvent={[undefined]} dispatch={[Function: dispatch]} />
                 </Connect(CursorBand)>
                 <Connect(XYChart) forwardCanvasRef={{...}}>
-                  <XYChart forwardCanvasRef={{...}} isRTL={false} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
+                  <XYChart forwardCanvasRef={{...}} isRTL={false} initialized={true} isChartEmpty={false} debugA11y={false} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
                     <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\" aria-live=\\"polite\\">
                       <canvas dir=\\"ltr\\" className=\\"echCanvasRenderer\\" width={151} height={200} style={{...}} role=\\"presentation\\">
                         <Connect(ScreenReaderSummaryComponent)>
@@ -89,8 +89,8 @@ exports[`Chart should render the legend name test 1`] = `
                           </ScreenReaderSummaryComponent>
                         </Connect(ScreenReaderSummaryComponent)>
                         <Connect(ScreenReaderCartesianTableComponent)>
-                          <ScreenReaderCartesianTableComponent a11ySettings={{...}} cartesianData={{...}} debug={true} dispatch={[Function: dispatch]}>
-                            <div className=\\"echScreenReaderOnly echScreenReaderOnlyDebug echScreenReaderTable\\" aria-live=\\"polite\\">
+                          <ScreenReaderCartesianTableComponent a11ySettings={{...}} cartesianData={{...}} debugA11y={[undefined]} dispatch={[Function: dispatch]}>
+                            <div className=\\"echScreenReaderOnly  echScreenReaderTable\\" aria-live=\\"polite\\">
                               <table>
                                 <caption>
                                   This table shows the full data set for the chart with one series named 
@@ -124,41 +124,6 @@ exports[`Chart should render the legend name test 1`] = `
                           </ScreenReaderCartesianTableComponent>
                         </Connect(ScreenReaderCartesianTableComponent)>
                       </canvas>
-                      <Connect(ScreenReaderCartesianTableComponent)>
-                        <ScreenReaderCartesianTableComponent a11ySettings={{...}} cartesianData={{...}} debug={true} dispatch={[Function: dispatch]}>
-                          <div className=\\"echScreenReaderOnly echScreenReaderOnlyDebug echScreenReaderTable\\" aria-live=\\"polite\\">
-                            <table>
-                              <caption>
-                                This table shows the full data set for the chart with one series named 
-                                test
-                                .
-                                 
-                                The chart has 0 axes 0 axes have titles.
-                              </caption>
-                              <thead>
-                                <tr>
-                                  <th scope=\\"col\\">
-                                    X Value
-                                  </th>
-                                  <th scope=\\"col\\">
-                                    Y Value
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr tabIndex={-1}>
-                                  <td>
-                                    0
-                                  </td>
-                                  <td>
-                                    2
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </ScreenReaderCartesianTableComponent>
-                      </Connect(ScreenReaderCartesianTableComponent)>
                     </figure>
                   </XYChart>
                 </Connect(XYChart)>

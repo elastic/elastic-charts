@@ -27,7 +27,7 @@ import { isNil } from '../../utils/common';
 interface ScreenReaderPartitionTableProps {
   a11ySettings: A11ySettings;
   partitionData: PartitionData;
-  debug: SettingsSpec['debug'];
+  debugA11y: SettingsSpec['debugA11y'];
 }
 
 // this currently limit the number of pages shown to the user
@@ -36,7 +36,7 @@ const TABLE_PAGINATION = 20;
 const ScreenReaderPartitionTableComponent = ({
   a11ySettings,
   partitionData,
-  debug,
+  debugA11y,
 }: ScreenReaderPartitionTableProps) => {
   const [count, setCount] = useState(1);
   const tableRowRef = useRef<HTMLTableRowElement>(null);
@@ -63,7 +63,7 @@ const ScreenReaderPartitionTableComponent = ({
       : countOfCol;
 
   return (
-    <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
+    <div className={`echScreenReaderOnly ${debugA11y ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>
       <table>
         <caption>
           {isNil(tableCaption)
@@ -124,7 +124,7 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
     hasMultipleLayers: false,
     data: [],
   },
-  debug: false,
+  debugA11y: false,
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderPartitionTableProps => {
@@ -134,7 +134,7 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderPartitionTablePro
   return {
     a11ySettings: getA11ySettingsSelector(state),
     partitionData: getScreenReaderDataSelector(state),
-    debug: getSettingsSpecSelector(state).debug,
+    debugA11y: getSettingsSpecSelector(state).debugA11y,
   };
 };
 /** @internal */

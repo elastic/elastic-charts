@@ -57,7 +57,7 @@ import { hasMostlyRTL } from './utils/has_mostly_rtl';
 export interface ReactiveChartStateProps {
   isRTL: boolean;
   initialized: boolean;
-  debug: boolean;
+  debugA11y: boolean;
   isChartEmpty: boolean;
   geometries: Geometries;
   geometriesIndex: IndexedGeometryMap;
@@ -153,7 +153,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       isChartEmpty,
       chartContainerDimensions: { width, height },
       a11ySettings,
-      debug,
+      debugA11y,
       isRTL,
     } = this.props;
 
@@ -180,7 +180,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
           <ScreenReaderSummary />
           <ScreenReaderCartesianTable />
         </canvas>
-        {debug && <ScreenReaderCartesianTable />}
+        {debugA11y && <ScreenReaderCartesianTable />}
       </figure>
     );
   }
@@ -197,7 +197,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   isRTL: false,
   initialized: false,
-  debug: false,
+  debugA11y: false,
   isChartEmpty: true,
   geometries: {
     areas: [],
@@ -243,14 +243,13 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
 
   const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
-  const { debug } = getSettingsSpecSelector(state);
   const perPanelAxisGeoms = computePerPanelAxesGeomsSelector(state);
 
   return {
     isRTL: hasMostlyRTL(perPanelAxisGeoms),
     initialized: true,
     isChartEmpty: isChartEmptySelector(state),
-    debug,
+    debugA11y: getSettingsSpecSelector(state).debugA11y ?? false,
     geometries,
     geometriesIndex,
     theme: getChartThemeSelector(state),

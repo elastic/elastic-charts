@@ -93,10 +93,17 @@ export const Example = () => {
   const metric = number('Annotation metric', maxMetric, { step: 1, min: 0, max: maxMetric, range: true });
   const isVerticalSide = isVerticalAxis(side);
   const isYDomain = rotation === -90 || rotation === 90 ? !isVerticalSide : isVerticalSide;
+  const debugA11y = boolean('Debug for Accessibility', false);
 
   return (
     <Chart>
-      <Settings debug={debug} showLegend={showLegend} rotation={rotation} baseTheme={useBaseTheme()} />
+      <Settings
+        debug={debug}
+        showLegend={showLegend}
+        rotation={rotation}
+        baseTheme={useBaseTheme()}
+        debugA11y={debugA11y}
+      />
       <Axis
         id="count"
         integersOnly

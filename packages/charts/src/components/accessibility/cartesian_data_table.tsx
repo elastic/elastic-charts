@@ -26,7 +26,7 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 interface ScreenReaderCartesianTableProps {
   a11ySettings: A11ySettings;
   cartesianData: CartesianData;
-  debug: SettingsSpec['debug'];
+  debugA11y: SettingsSpec['debugA11y'];
 }
 
 /**
@@ -56,7 +56,7 @@ const formatMultipleSeriesSmallData = (data: any[]) => {
 const ScreenReaderCartesianTableComponent = ({
   a11ySettings,
   cartesianData,
-  debug,
+  debugA11y,
 }: ScreenReaderCartesianTableProps) => {
   const [count, setCount] = useState(0);
   const tableRowRef = createRef<HTMLTableRowElement>();
@@ -96,7 +96,7 @@ const ScreenReaderCartesianTableComponent = ({
    */
   const smallDataTableSingleSeries = (
     <div
-      className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
+      className={`echScreenReaderOnly ${debugA11y ? 'echScreenReaderOnly' : ''} echScreenReaderTable`}
       aria-live="polite"
     >
       <table>
@@ -151,7 +151,7 @@ const ScreenReaderCartesianTableComponent = ({
    */
   const smallDataTableMultipleSeries = (
     <div
-      className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
+      className={`echScreenReaderOnly ${debugA11y ? 'echScreenReaderOnly' : ''} echScreenReaderTable`}
       aria-live="polite"
     >
       <table>
@@ -213,7 +213,7 @@ const ScreenReaderCartesianTableComponent = ({
    */
   const largeDataTable = (
     <div
-      className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
+      className={`echScreenReaderOnly ${debugA11y ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}
       aria-live="polite"
     >
       <table>
@@ -296,7 +296,7 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
     data: [],
     numberOfItemsInGroup: 0,
   },
-  debug: false,
+  debugA11y: false,
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderCartesianTableProps => {
@@ -306,7 +306,7 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderCartesianTablePro
   return {
     a11ySettings: getA11ySettingsSelector(state),
     cartesianData: getScreenReaderDataSelector(state),
-    debug: getSettingsSpecSelector(state).debug,
+    debugA11y: getSettingsSpecSelector(state).debugA11y,
   };
 };
 
