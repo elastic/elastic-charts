@@ -34,10 +34,6 @@ declare global {
        */
       VRT: string;
       /**
-       * Flag used to enable the legacy, Storybook, server for visual regression tests.
-       */
-      LEGACY_VRT_SERVER: string;
-      /**
        * Flag used to connect an existing local server for visual regression tests.
        */
       LOCAL_VRT_SERVER: string;

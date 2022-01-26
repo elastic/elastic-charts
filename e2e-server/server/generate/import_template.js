@@ -6,9 +6,12 @@
  * Side Public License, v 1.
  */
 
-module.exports = {
-  debug: process.env.DEBUG === 'true',
-  port: process.env.PORT || '9009',
-  hostname: process.env.DEBUG === 'true' ? 'localhost' : 'host.docker.internal',
-  isLocalVRTServer: process.env.LOCAL_VRT_SERVER === 'true',
+module.exports = function lazyImportTemplate(index, path) {
+  return `
+  const Component${index} = React.lazy(() => {
+    return import('../../${path}').then((module) => {
+      setParams(urlParams, (module.Example as any).parameters);
+      return { default: module.Example };
+    });
+  });`;
 };

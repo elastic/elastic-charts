@@ -8,7 +8,7 @@
 
 const getConfig = require('jest-puppeteer-docker/lib/config');
 
-const { debug, port, isLocalVRTServer, isLegacyVRTServer } = require('./config');
+const { debug, port, isLocalVRTServer } = require('./config');
 
 const baseConfig = debug ? {} : getConfig();
 
@@ -49,22 +49,10 @@ const customConfig = {
   server: isLocalVRTServer
     ? null
     : {
-        command: isLegacyVRTServer
-          ? `yarn start --port=${port} --quiet`
-          : `yarn test:integration:server --port=${port}`,
+        command: `yarn test:integration:server --port=${port}`,
         port,
         usedPortAction: 'error',
         launchTimeout: 200000,
-        ...(!isLegacyVRTServer && {
-          waitOnScheme: {
-            // using localhost as the server is running on the local machine
-            resources: [`http://localhost:${port}`],
-            // delay for the initial check request
-            delay: 1000,
-            // interval for subsequent requests
-            interval: 250,
-          },
-        }),
         debug: true,
       },
 };

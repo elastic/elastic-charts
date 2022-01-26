@@ -1,4 +1,9 @@
 {
-  "extends": "../tsconfig",
-  "include": ["./**/*", "../scripts/custom_matchers.mock.ts"]
+  "compilerOptions": {
+      "target": "ESNext",
+      "module": "commonjs",
+      "moduleResolution": "Node",
+      "sourceMap": true,
+      "outDir": "../tests-out",
+  }
 }

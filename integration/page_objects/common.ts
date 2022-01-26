@@ -10,13 +10,8 @@ import Url from 'url';
 
 import { DRAG_DETECTION_TIMEOUT } from '../../packages/charts/src/state/reducers/interactions';
 // @ts-ignore - no type declarations
-import { port, hostname, debug, isLegacyVRTServer } from '../config';
+import { port, hostname, debug } from '../config';
 import { toMatchImageSnapshot } from '../jest_env_setup';
-
-const legacyBaseUrl = `http://${hostname}:${port}/iframe.html`;
-
-// @ts-ignore - used to log console statements from within the page.evaluate blocks
-// page.on('console', (msg) => (msg._type === 'log' ? console.log('PAGE LOG:', msg._text) : null)); // eslint-disable-line no-console
 
 expect.extend({ toMatchImageSnapshot });
 
@@ -132,10 +127,6 @@ class CommonPage {
    * @param url
    */
   static parseUrl(url: string): string {
-    if (isLegacyVRTServer) {
-      const { query } = Url.parse(url);
-      return `${legacyBaseUrl}?${query}${query ? '&' : ''}knob-debug=false`;
-    }
     const { query } = Url.parse(url, true);
     const { id, ...rest } = query;
     return Url.format({
@@ -448,14 +439,6 @@ class CommonPage {
         console.error(`Failed to load url. Check story at: \n\n\tstorybook url: ${url}\n\tlocal vrt url: ${cleanUrl}`);
         return false;
       }
-    }
-
-    if (isLegacyVRTServer) {
-      // activate peripheral visibility
-      await page.evaluate(() => {
-        document.querySelector('html')!.classList.add('echVisualTesting');
-      });
-      return true;
     }
 
     return false;

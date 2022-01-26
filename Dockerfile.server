@@ -1,0 +1,17 @@
+ARG node_version=14.15.4
+
+FROM node:${node_version}
+
+WORKDIR /
+
+ENV RNG_SEED='elastic-charts'
+
+COPY integration/package.json integration/yarn.lock ./integration/
+
+RUN yarn install --frozen-lockfile
+
+COPY packages  ./
+
+VOLUME /server
+
+CMD ["yarn", "server"]

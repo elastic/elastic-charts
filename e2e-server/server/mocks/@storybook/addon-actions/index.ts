@@ -6,9 +6,6 @@
  * Side Public License, v 1.
  */
 
-module.exports = {
-  debug: process.env.DEBUG === 'true',
-  port: process.env.PORT || '9009',
-  hostname: process.env.DEBUG === 'true' ? 'localhost' : 'host.docker.internal',
-  isLocalVRTServer: process.env.LOCAL_VRT_SERVER === 'true',
-};
+export function action() {
+  return () => {};
+}

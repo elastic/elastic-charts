@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  integration-server:
+    build:
+      context: ../
+      dockerfile: Dockerfile.server
+      args:
+        node_version: 14.15.4
+    image: server-integration
+    container_name: integration-server
+    volumes:
+      - ./server:/server
+    ports:
+      - 9002:9002
+  # playwright:
+  #   build: .
+  #   image: e2e-integration
+  #   container_name: playwright
+  #   volumes:
+  #     - ./e2e:/app/e2e

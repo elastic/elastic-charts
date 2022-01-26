@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+dist
+tests
+tests-results
+*-snapshots
+page_objects

@@ -15,8 +15,6 @@ import { getStorybook, configure } from '@storybook/react';
 
 import { Rotation } from '../packages/charts/src';
 import { ThemeId } from '../storybook/use_base_theme';
-// @ts-ignore - no type declarations
-import { isLegacyVRTServer } from './config';
 
 export type StoryInfo = [string, string, number];
 
@@ -84,27 +82,6 @@ const storiesToDelay: Record<string, Record<string, number>> = {
 };
 
 export function getStorybookInfo(): StoryGroupInfo[] {
-  if (isLegacyVRTServer) {
-    configure(requireAllStories(__dirname, '../stories'), module);
-
-    return getStorybook()
-      .filter(({ kind }) => kind)
-      .map(({ kind: group, stories: storiesRaw }) => {
-        const stories: StoryInfo[] = storiesRaw
-          .filter(({ name }) => name && !storiesToSkip[group]?.storybook.includes(name))
-          .map(({ name: title }) => {
-            // cleans story name to match url params
-            const encodedTitle = encodeString(title);
-            const delay = (storiesToDelay[group] ?? {})[title];
-            return [title, encodedTitle, delay];
-          });
-
-        const encodedGroup = encodeString(group);
-
-        return [group, encodedGroup, stories] as StoryGroupInfo;
-      })
-      .filter(([, , stories]) => stories.length > 0);
-  }
   try {
     const examples = require('./tmp/examples.json');
     return examples.map((d: any) => {
