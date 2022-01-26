@@ -57,6 +57,7 @@ import { hasMostlyRTL } from './utils/has_mostly_rtl';
 export interface ReactiveChartStateProps {
   isRTL: boolean;
   initialized: boolean;
+  debug: boolean;
   debugA11y: boolean;
   isChartEmpty: boolean;
   geometries: Geometries;
@@ -235,6 +236,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationSpecs: [],
   panelGeoms: [],
   a11ySettings: DEFAULT_A11Y_SETTINGS,
+  debug: false,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -249,6 +251,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     isRTL: hasMostlyRTL(perPanelAxisGeoms),
     initialized: true,
     isChartEmpty: isChartEmptySelector(state),
+    debug: getSettingsSpecSelector(state).debug,
     debugA11y: getSettingsSpecSelector(state).debugA11y ?? false,
     geometries,
     geometriesIndex,
