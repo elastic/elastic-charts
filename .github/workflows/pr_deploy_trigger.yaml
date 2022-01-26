@@ -57,10 +57,12 @@ jobs:
         with:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment
           route: POST /repos/{repo}/deployments
-          repo: ${{ github.repository }}
+          repo: ${{ github.event.pull_request.head.repo.full_name }}
+          # repo: ${{ github.repository }}
           # ref: ${{ github.event.pull_request.head.sha }}
           # ref: ${{ github.head_ref }}
-          ref: "refs/pull/${{ github.event.pull_request.number }}/head"
+          ref: ${{ github.event.pull_request.head.ref }}
+          # ref: "refs/pull/${{ github.event.pull_request.number }}/head"
           auto_merge: false # use branch as is without merging with base
           required_contexts: '[]'
           environment: dev
