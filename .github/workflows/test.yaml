@@ -25,7 +25,6 @@ jobs:
           - ${{ github.workspace }}/e2e-server:/usr/share/nginx/html
     steps:
       - run: ls
-      - run: mkdir e2e-server
       - run: curl http://localhost:8080
       - name: Replace index content
         shell: sh
