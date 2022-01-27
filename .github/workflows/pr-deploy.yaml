@@ -14,9 +14,9 @@ on:
 
 jobs:
   testing:
-    name: Deploying ${{ github.event.deployment.environment }}
+    name: "Deploying ${{ github.event.deployment.environment }}"
     runs-on: ubuntu-latest
-    environment: ${{ github.event.deployment.environment }}
+    environment: "${{ github.event.deployment.environment }}"
     steps:
       - name: Print context - Testing 2
         shell: python
