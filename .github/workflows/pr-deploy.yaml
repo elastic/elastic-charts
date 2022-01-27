@@ -16,8 +16,8 @@ jobs:
   testing:
     name: "Deploying ${{ github.event.deployment.environment }}"
     runs-on: ubuntu-latest
-    environment:
-      name: "${{ github.event.deployment.environment }}"
+    # environment:
+    #   name: "${{ github.event.deployment.environment }}"
     steps:
       - name: Print context - Testing 2
         shell: python
@@ -40,21 +40,73 @@ jobs:
 
       #################################################################
 
-      - name: Deploy build to firebase
-        id: deploy
-        uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Delete deployment for base ref
+        uses: octokit/request-action@v2.x
         with:
-          expires: 14d # this updates for every deploy
-          entryPoint: 'e2e-server'
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
-          projectId: ech-e2e-ci
-          channelId: 'pr1568'
-      - name: Outputs
-        shell: python
-        run: |
-          print("""${{ toJSON(steps.deploy.outputs) }}""")
+          # https://docs.github.com/rest/reference/deployments#delete-a-deployment
+          route: DELETE /repos/{repo}/deployments/{deployment_id}
+          repo: ${{ github.repository }}
+          deployment_id: ${{ github.event.deployment.id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
+      # - name: Update Deployment status
+      #   if: ${{ success() }}
+      #   uses: octokit/request-action@v2.x
+      #   with:
+      #     # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
+      #     route: POST /repos/{repo}/deployments/{deployment_id}/statuses
+      #     repo: ${{ github.repository }}
+      #     deployment_id: ${{ github.event.deployment.id }}
+      #     state: "success"
+      #     # "log_url": "", # should link to github action run automatically
+      #     # should link to firebase channel url
+      #     environment_url: ${{ steps.deploy.outputs.details_url }}
+      #     # environment_url: "https://ech-e2e-ci--pr1568-czfjtdq5.web.app"
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
+      #################################################################
+
+
+      # - name: Deploy build to firebase
+      #   id: deploy
+      #   uses: FirebaseExtended/action-hosting-deploy@v0
+      #   with:
+      #     expires: 14d # this updates for every deploy
+      #     entryPoint: 'e2e-server'
+      #     repoToken: '${{ secrets.GITHUB_TOKEN }}'
+      #     # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
+      #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
+      #     projectId: ech-e2e-ci
+      #     channelId: 'pr1568'
+      # - name: Outputs
+      #   shell: python
+      #   run: |
+      #     print("""${{ toJSON(steps.deploy.outputs) }}""")
+
+      - name: Get run info
+        id: run_info
+        uses: actions/github-script@v5
+        with:
+          result-encoding: string
+          script: | # This is javascript :)
+            const { data } = await github.rest.actions.listJobsForWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+            });
+
+            const run = data.jobs.find(({ name, head_sha }) => {
+              return name.startsWith('Deploying') && head_sha === context.sha;
+            });
+
+            return run ? run.html_url :
+              `https://github.com/${context.owner}/${context.repo}/actions/runs/${context.runId}`;
+          github-token: ${{ secrets.ADMIN_TOKEN_GH }}
+
+      - run: echo "run_info - ${{ steps.run_info.outputs.result }}"
+
       - name: Update Deployment status
         if: ${{ success() }}
         uses: octokit/request-action@v2.x
@@ -62,11 +114,12 @@ jobs:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
           route: POST /repos/{repo}/deployments/{deployment_id}/statuses
           repo: ${{ github.repository }}
-          deployment_id: ${{ github.event.deployment.id }}
+          deployment_id: ${{ github.event.deployment.payload.deployment_id }}
           state: "success"
-          # "log_url": "", # should link to github action run automatically
+          # should link to github action run
+          log_url: "${{ steps.run_info.outputs.result }}"
           # should link to firebase channel url
-          environment_url: ${{ steps.deploy.outputs.details_url }}
-          # environment_url: "https://ech-e2e-ci--pr1568-czfjtdq5.web.app"
+          environment_url: "https://ech-e2e-ci--pr1568-czfjtdq5.web.app"
+          # environment_url: ${{ steps.deploy.outputs.details_url }}
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
