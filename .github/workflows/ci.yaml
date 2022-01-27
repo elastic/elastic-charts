@@ -7,10 +7,6 @@ concurrency:
   group: '${{ github.workflow }} - ${{ github.head_ref || github.ref }}'
   cancel-in-progress: true
 
-env:
-  NODE_VERSION: '16.13.2' # should match version in .nvmrc
-  PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
-
 on:
   push:
     branches:
@@ -30,138 +26,14 @@ on:
       - '[0-9]+.x'
 
 jobs:
-  setup:
-    name: Setup
+  call-checks-workflow:
+    name: "Check workflow"
+    uses: elastic/elastic-charts/.github/workflows/shared/checks.yml@next
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
-      # Runs first to cache node_modules for later runs
-      - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1
-        with:
-          ref: ${{ github.base_ref || '' }} # prevent changes to ci in prs
-          skip-npm-install: true # Checks cache below
-      - name: Install local action packages
-        run: npm --prefix ./.github/actions/npm_cache_check ci
-      - name: Check cache
-        id: cacheCheck
-        uses: ./.github/actions/npm_cache_check
-      - name: Install and cache node_modules
-        if: steps.cacheCheck.outputs.cacheHit == false
-        uses: bahmutov/npm-install@v1
-        with:
-          useRollingCache: true
-
-#########################################################################################################
-
-  eslint:
-    name: Eslint
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1
-      - name: Eslint check
-        run: yarn lint
-
-#########################################################################################################
-
-  prettier:
-    name: Prettier
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1
-      - name: Prettier check
-        run: yarn prettier:check
-
-#########################################################################################################
-
-  type-check:
-    name: Type Check
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1
-      - name: Run global typecheck
-        run: yarn typecheck:all
-
-#########################################################################################################
-
-  api-check:
-    name: API Check
-    needs: type-check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1
-      - name: Run API-Extractor
-        run: yarn api:check
-      - name: Handle API-Extractor failure
-        if: ${{ failure() }}
-        uses: LouisBrunner/diff-action@v0.1.0
-        with:
-          old: packages/charts/api/charts.api.md
-          new: packages/charts/tmp/charts.api.md
-          mode: deletion
-          tolerance: better
-
-#########################################################################################################
-
-  jest:
-    name: Jest
-    needs: setup
-    runs-on: ubuntu-latest
-    # TODO: Parallelize this job into test groups
-    steps:
-      - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1
-      - name: TimeZone tests
-        run: yarn test:tz --ci
-      - name: Testing
-        run: yarn test --coverage --ci
-
-#########################################################################################################
-
-  build-sb:
-    name: Build Storybook
-    needs: setup
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1
-      - name: Building storybook
-        run: yarn storybook:build
-      - name: Save build output
-        uses: actions/upload-artifact@v2
-        with:
-          name: sb-output
-          path: .out
-          if-no-files-found: error
-          retention-days: 1
-
-#########################################################################################################
-
-  deploy:
-    name: Deploy Storybook
-    needs: build-sb
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build
-        uses: actions/download-artifact@v2
-        with:
-          name: sb-output
-          path: .out
-
-      - name: Deploy master
-        if: github.ref == 'refs/heads/master'
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: .out
-          CLEAN: true
-
-#########################################################################################################
+      - name: Print context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
