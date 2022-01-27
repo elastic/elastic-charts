@@ -4,7 +4,7 @@
 name: CI Branch
 
 concurrency:
-  group: '${{ github.workflow }} - ${{ github.head_ref || github.ref }}'
+  group: '${{ github.workflow }} - ${{ github.ref_name }}'
   cancel-in-progress: true
 
 on:
@@ -38,40 +38,51 @@ jobs:
 
 #########################################################################################################
 
-  # trigger-deploy:
-  #   name: Trigger deployment of branch
-  #   needs: checks-workflow # wait for all workflow checks to pass
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     ENVIRONMENT_NAME: ${{ github.event.pull_request.number }}
-  #   steps:
-  #   - name: Create new PR deployment for base ref
-  #     uses: actions/github-script@v5
-  #     with:
-  #       # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
-  #       script: | # This is javascript :)
-  #         return await github.rest.repos.createDeployment({
-  #           owner: context.repo.owner,
-  #           repo: context.repo.repo,
-  #           ref: context.sha,
-  #           auto_merge: false, // use branch as is without merging with base
-  #           required_contexts: [],
-  #           environment: "${{ env.ENVIRONMENT_NAME }}",
-  #           payload: {
-  #             type: "pull_request",
-  #             repo: "${{ github.repository }}",
-  #             head_repo: "${{ github.event.pull_request.head.repo.full_name }}",
-  #             head_ref: "${{ github.event.pull_request.head.ref }}",
-  #             head_sha: "${{ github.event.pull_request.head.sha }}",
-  #             pr_head_ref: "refs/pull/${{ github.event.pull_request.number }}/head",
-  #             pr_merge_ref: "refs/pull/${{ github.event.pull_request.number }}/merge",
-  #             pr_number: "${{ github.event.pull_request.number }}",
-  #             deployment_id: "${{ fromJSON(steps.deployment.outputs.result).data.id }}",
-  #           },
-  #         });
-  #       # Cannot use GITHUB_TOKEN here or won't trigger deploy action
-  #       # See https://github.com/octokit/request-action/issues/12
-  #       github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
+  trigger-deploy:
+    name: Trigger deployment of branch
+    # needs: checks-workflow # wait for all workflow checks to pass
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT_NAME: ${{ github.ref_name }}
+    steps:
+
+#########################################################################################################
+
+    - name: Create restricted environment for key branches
+      if: github.ref_name != 'master'
+      uses: actions/github-script@v5
+      with:
+        # TODO: check that this env is cleaned up after master merge and deploy
+        script: | # This is javascript :)
+          // https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
+          await octokit.rest.repos.createOrUpdateEnvironment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            environment_name: "${{ env.ENVIRONMENT_NAME }}",
+            reviewers: [{
+              type: 'Team',
+              id: 3693417, // datavis team id
+            }]
+          });
+        github-token: ${{ secrets.ADMIN_TOKEN_GH }}
+
+#########################################################################################################
+
+    - name: Create new PR deployment for base ref
+      uses: actions/github-script@v5
+      with:
+        # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
+        script: | # This is javascript :)
+          await github.rest.repos.createDeployment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: context.sha,
+            required_contexts: [], // TODO: check should be passed but could check
+            environment: "${{ env.ENVIRONMENT_NAME }}",
+          });
+        # Cannot use GITHUB_TOKEN here or won't trigger deploy action
+        # See https://github.com/octokit/request-action/issues/12
+        github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
 
 # #########################################################################################################
 

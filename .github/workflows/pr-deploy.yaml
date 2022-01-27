@@ -14,9 +14,9 @@ on:
   deployment
 
 jobs:
-  firebase:
-    if: ${{ github.event.deployment.payload.target == 'firebase' }}
+  firebase-pr:
     name: "Deploying ${{ github.event.deployment.environment }}"
+    if: ${{ github.event.deployment.payload.type == 'pull_request' }}
     runs-on: ubuntu-latest
     env:
       PR_DEPLOYMENT_ID: ${{ github.event.deployment.payload.deployment_id }}
@@ -175,10 +175,11 @@ jobs:
 
 #########################################################################################################
 
-  test:
-    name: Testing
+  firebase-branch:
+    name: "Deploying ${{ github.event.deployment.environment }}"
     runs-on: ubuntu-latest
-    environment: test
+    # branch limitations defined in repo environment settings
+    environment: ${{ github.event.deployment.environment }}
     steps:
       - name: Print context
         shell: python
@@ -186,8 +187,19 @@ jobs:
           print("""${{ toJSON(github) }}""")
 
   testing:
-    name: Testing
+    name: Testing None
     runs-on: ubuntu-latest
+    steps:
+      - name: Print context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+
+  testing-test:
+    name: Testing Test
+    runs-on: ubuntu-latest
+    # branch limitations defined in repo environment settings
+    environment: test
     steps:
       - name: Print context
         shell: python
@@ -196,6 +208,7 @@ jobs:
 
   github-pages:
     name: Deploying to GitHub pages
+    # branch limitations defined in repo environment settings
     environment: github-pages
     runs-on: ubuntu-latest
     steps:
