@@ -6,7 +6,7 @@
   "scripts": {
     "server": "webpack serve -c server/webpack.config.js",
     "build": "docker build . -f Dockerfile -t e2e-integration",
-    "typecheck": "tsc -p ./tsconfig.json --noEmit",
+    "typecheck": "tsc -p ./tsconfig.json --noEmit"
   },
   "dependencies": {
     "@elastic/charts": "^30.2.0",
