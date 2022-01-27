@@ -50,40 +50,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
 
-      # - name: Update Deployment status
-      #   if: ${{ success() }}
-      #   uses: octokit/request-action@v2.x
-      #   with:
-      #     # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
-      #     route: POST /repos/{repo}/deployments/{deployment_id}/statuses
-      #     repo: ${{ github.repository }}
-      #     deployment_id: ${{ github.event.deployment.id }}
-      #     state: "success"
-      #     # "log_url": "", # should link to github action run automatically
-      #     # should link to firebase channel url
-      #     environment_url: ${{ steps.deploy.outputs.details_url }}
-      #     # environment_url: "https://ech-e2e-ci--pr1568-czfjtdq5.web.app"
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
-
       #################################################################
 
 
-      # - name: Deploy build to firebase
-      #   id: deploy
-      #   uses: FirebaseExtended/action-hosting-deploy@v0
-      #   with:
-      #     expires: 14d # this updates for every deploy
-      #     entryPoint: 'e2e-server'
-      #     repoToken: '${{ secrets.GITHUB_TOKEN }}'
-      #     # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
-      #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
-      #     projectId: ech-e2e-ci
-      #     channelId: 'pr1568'
-      # - name: Outputs
-      #   shell: python
-      #   run: |
-      #     print("""${{ toJSON(steps.deploy.outputs) }}""")
+      - name: Deploy build to firebase
+        id: deploy
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          expires: 14d # this updates for every deploy
+          entryPoint: 'e2e-server'
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
+          projectId: ech-e2e-ci
+          channelId: 'pr1568'
+      - name: Outputs
+        shell: python
+        run: |
+          print("""${{ toJSON(steps.deploy.outputs) }}""")
 
       - name: Get run info
         id: run_info
