@@ -21,14 +21,14 @@ jobs:
 
 #########################################################################################################
 
-  checks-workflow:
-    name: Checks
-    uses: elastic/elastic-charts/.github/workflows/checks.yml@next # TODO: set this to master
+  # checks-workflow:
+  #   name: Checks
+  #   uses: elastic/elastic-charts/.github/workflows/checks.yml@next # TODO: set this to master
 
   test:
     name: Print context on failure
     # if: ${{ failure() }}
-    needs: checks-workflow
+    # needs: checks-workflow
     runs-on: ubuntu-latest
     steps:
       - name: Print github context
@@ -38,40 +38,40 @@ jobs:
 
 #########################################################################################################
 
-  trigger-deploy:
-    name: Trigger deployment of branch
-    needs: checks-workflow # wait for all workflow checks to pass
-    runs-on: ubuntu-latest
-    env:
-      ENVIRONMENT_NAME: ${{ github.event.pull_request.number }}
-    steps:
-    - name: Create new PR deployment for base ref
-      uses: actions/github-script@v5
-      with:
-        # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
-        script: | # This is javascript :)
-          return await github.rest.repos.createDeployment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: context.sha,
-            auto_merge: false, // use branch as is without merging with base
-            required_contexts: [],
-            environment: "${{ env.ENVIRONMENT_NAME }}",
-            payload: {
-              type: "pull_request",
-              repo: "${{ github.repository }}",
-              head_repo: "${{ github.event.pull_request.head.repo.full_name }}",
-              head_ref: "${{ github.event.pull_request.head.ref }}",
-              head_sha: "${{ github.event.pull_request.head.sha }}",
-              pr_head_ref: "refs/pull/${{ github.event.pull_request.number }}/head",
-              pr_merge_ref: "refs/pull/${{ github.event.pull_request.number }}/merge",
-              pr_number: "${{ github.event.pull_request.number }}",
-              deployment_id: "${{ fromJSON(steps.deployment.outputs.result).data.id }}",
-            },
-          });
-        # Cannot use GITHUB_TOKEN here or won't trigger deploy action
-        # See https://github.com/octokit/request-action/issues/12
-        github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
+  # trigger-deploy:
+  #   name: Trigger deployment of branch
+  #   needs: checks-workflow # wait for all workflow checks to pass
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     ENVIRONMENT_NAME: ${{ github.event.pull_request.number }}
+  #   steps:
+  #   - name: Create new PR deployment for base ref
+  #     uses: actions/github-script@v5
+  #     with:
+  #       # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
+  #       script: | # This is javascript :)
+  #         return await github.rest.repos.createDeployment({
+  #           owner: context.repo.owner,
+  #           repo: context.repo.repo,
+  #           ref: context.sha,
+  #           auto_merge: false, // use branch as is without merging with base
+  #           required_contexts: [],
+  #           environment: "${{ env.ENVIRONMENT_NAME }}",
+  #           payload: {
+  #             type: "pull_request",
+  #             repo: "${{ github.repository }}",
+  #             head_repo: "${{ github.event.pull_request.head.repo.full_name }}",
+  #             head_ref: "${{ github.event.pull_request.head.ref }}",
+  #             head_sha: "${{ github.event.pull_request.head.sha }}",
+  #             pr_head_ref: "refs/pull/${{ github.event.pull_request.number }}/head",
+  #             pr_merge_ref: "refs/pull/${{ github.event.pull_request.number }}/merge",
+  #             pr_number: "${{ github.event.pull_request.number }}",
+  #             deployment_id: "${{ fromJSON(steps.deployment.outputs.result).data.id }}",
+  #           },
+  #         });
+  #       # Cannot use GITHUB_TOKEN here or won't trigger deploy action
+  #       # See https://github.com/octokit/request-action/issues/12
+  #       github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
 
 # #########################################################################################################
 
