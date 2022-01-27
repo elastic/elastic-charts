@@ -1,4 +1,6 @@
-# Checks related only to PRs and not code
+#########################################################################################################
+# Handled deployment of pull requests (firebase), master (gh-pages) and key branches
+#########################################################################################################
 name: PR Deploy
 
 concurrency:
@@ -58,11 +60,9 @@ jobs:
 
 #########################################################################################################
 
-      # - name: Checkout repo
-      #   uses: actions/checkout@v2
-      #   with:
-      #     repository: ${{ github.event.deployment.payload.repo }}
-      #     ref: ${{ github.event.deployment.payload.pr_head_ref }}
+# TODO: Check if we need to set previous deployments to inactive
+
+#########################################################################################################
 
       - name: Checkout node setup
         uses: nickofthyme/checkout-node-setup@v1
@@ -71,11 +71,10 @@ jobs:
           ref: ${{ github.event.deployment.payload.pr_head_ref }}
           # See https://github.com/bahmutov/npm-install/issues/80
           skip-npm-install: true # This fails on deployment events
-      - run: yarn install --frozen-lockfile
-      - run: ls
+      - run: yarn install --frozen-lockfile # TODO: fix caching
 
 #########################################################################################################
-#     Build Storybook and e2e server, outputs to /e2e-server/public
+#     Build Storybook and e2e server. Outputs build to /e2e-server/public
 #########################################################################################################
 
       - name: Building storybook
@@ -156,3 +155,13 @@ jobs:
           log_url: "${{ steps.run_info.outputs.result }}"
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
+#########################################################################################################
+
+      - name: Print context on failure
+        if: ${{ failure() }}
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+
+#########################################################################################################

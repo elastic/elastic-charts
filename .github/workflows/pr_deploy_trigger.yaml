@@ -1,4 +1,6 @@
-# Triggers a deployment task for each new pr
+#########################################################################################################
+# Triggers a deployment event for pull requests and key branches
+#########################################################################################################
 name: PR Deploy Trigger
 
 env:
@@ -18,9 +20,11 @@ permissions:
   security-events: none
 
 on:
-  # Needed to allow forks to access secrets in ci with limited scope
-  # This is why we limit 3rd party contributors running actions
-  # See https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request_target
+#########################################################################################################
+# Needed to allow forks to access secrets in ci with limited scope
+# This is why we limit 3rd party contributors running actions
+# See https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request_target
+#########################################################################################################
   pull_request_target:
     branches:
       # - master
@@ -54,10 +58,13 @@ jobs:
           print("""${{ toJSON(github.event) }}""")
       - run: echo "refs/pull/${{ github.event.pull_request.number }}/head"
 
-      # The ref or sha we want to deploy is on a fork
-      # Github is very paticular about anything from a fork triggering an action in ci
-      # Thus this event with NOT trigger the deploy but WILL correctly link a deployment to the fork ref
-      # See https://github.community/t/triggering-from-a-deployment-for-a-forked-pull-request-merge-commit/197622
+#########################################################################################################
+#       The ref or sha we want to deploy is on a fork
+#       Github is very paticular about anything from a fork triggering an action in ci
+#       Thus this event with NOT trigger the deploy but WILL correctly link a deployment to the fork ref
+#       See https://github.community/t/triggering-from-a-deployment-for-a-forked-pull-request-merge-commit/197622
+#########################################################################################################
+
       - name: Create new PR deployment for fork ref
         id: deployment
         # Using because octokit/request-action@v2.x cannot handle 'PR #123' in a path param
@@ -69,7 +76,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: context.payload.pull_request.head.sha,
-              // ref: context.sha,
               auto_merge: false, // use branch as is without merging with base
               required_contexts: [],
               environment: "${{ env.ENVIRONMENT_NAME }}",
@@ -80,9 +86,14 @@ jobs:
           # See https://github.com/octokit/request-action/issues/12
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+#########################################################################################################
+
       - name: Check if actor is an elastic member or add reviewers
         uses: actions/github-script@v5
+        id: state
         with:
+          result-encoding: string
+          # TODO: check this for master merge and deploy
           script: | # This is javascript :)
             // https://docs.github.com/en/rest/reference/orgs#check-organization-membership-for-a-user
             const { status } = await github.rest.orgs.checkMembershipForUser({
@@ -100,6 +111,9 @@ jobs:
                   id: 3693417, // datavis team id
                 }]
               });
+              return 'pending' // pending review before deployment starts
+            } else {
+              return 'queued' // ready to deploy!!
             }
           github-token: ${{ secrets.ADMIN_TOKEN_GH }}
 
@@ -116,14 +130,17 @@ jobs:
           route: POST /repos/{repo}/deployments/{deployment_id}/statuses
           repo: ${{ github.repository }}
           deployment_id: "${{ fromJSON(steps.deployment.outputs.result).data.id }}"
-          state: "queued"
+          state: ${{ steps.state.outputs.result }}
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
 
-      # This is a pseudo deployment that WILL trigger the deployment.
-      # Then we just pass the ref to the pull request to be used in the deploy job.
-      # This will be protected evviroment to prevent 3rd parties from running this without approval.
-      # This deployment with be deleted inside the deploy job once triggered.
+#########################################################################################################
+#       This is a pseudo-deployment that WILL trigger the deployment.
+#       Then we just pass the ref to the pull request to be used in the deploy job.
+#       This will be protected evviroment to prevent 3rd parties from running this without approval.
+#       This deployment with be deleted inside the deploy job once triggered.
+#########################################################################################################
+
       - name: Create new PR deployment for base ref
         # Using because octokit/request-action@v2.x cannot handle 'PR #123' in a path param
         uses: actions/github-script@v5
@@ -152,3 +169,4 @@ jobs:
           # See https://github.com/octokit/request-action/issues/12
           github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
 
+#########################################################################################################
