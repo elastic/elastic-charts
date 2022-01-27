@@ -17,7 +17,7 @@ on:
 
 jobs:
   testing:
-    name: Testinggg - moreeeeeee
+    name: Testinggg - moreeeeeeee
     runs-on: ubuntu-latest
     steps:
       - name: Testing
