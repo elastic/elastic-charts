@@ -98,12 +98,7 @@ jobs:
           # Cannot use GITHUB_TOKEN here or won't trigger deploy action
           # See https://github.com/octokit/request-action/issues/12
           github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
-      - name: Print outputs
-        if: ${{ always() }}
-        shell: python
-        run: |
-          print("""${{ steps.deployment.outputs.result }}""")
-      - name: Print outputs
+      - name: Print outputs result
         if: ${{ always() }}
         shell: python
         run: |
@@ -115,7 +110,7 @@ jobs:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
           route: POST /repos/{repo}/deployments/{deployment_id}/statuses
           repo: ${{ github.repository }}
-          deployment_id: ${{ fromJSON(steps.deployment.steps.deployment.outputs.result).data.id }}
+          deployment_id: "${{ fromJSON(steps.deployment.outputs.result).data.id }}"
           state: "queued"
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
