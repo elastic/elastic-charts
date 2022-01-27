@@ -67,33 +67,61 @@ jobs:
               environment_name: "${{ env.ENVIRONMENT_NAME }}",
             })
           github-token: ${{ secrets.ADMIN_TOKEN_GH }}
-      - name: Create new PR deployment
-        uses: octokit/request-action@v2.x
-        id: deployment
+      - name: Create new PR environment
+        # Using because octokit/request-action@v2.x cannot handle 'PR #123' in a path param
+        uses: actions/github-script@v5
         with:
-          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment
-          route: POST /repos/{repo}/deployments
-          repo: ${{ github.repository }}
-          ref: ${{ github.sha }}
-          auto_merge: false # use branch as is without merging with base
-          required_contexts: '[]'
-          environment: "${{ env.ENVIRONMENT_NAME }}"
-          transient_environment: true # destroys env after pr is closed
-          production_environment: false
-          payload: |
-            {
-              "repo": "${{ github.repository }}",
-              "head_repo": "${{ github.event.pull_request.head.repo.full_name }}",
-              "head_ref": "${{ github.event.pull_request.head.ref }}",
-              "head_sha": "${{ github.event.pull_request.head.sha }}",
-              "pr_head_ref": "refs/pull/${{ github.event.pull_request.number }}/head",
-              "pr_merge_ref": "refs/pull/${{ github.event.pull_request.number }}/merge",
-              "pr_number": "${{ github.event.pull_request.number }}"
-            }
-        env:
+          # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
+          script: |
+            github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              auto_merge: false, # use branch as is without merging with base
+              required_contexts: [],
+              environment: "${{ env.ENVIRONMENT_NAME }}",
+              transient_environment: true, # destroys env after pr is closed
+              production_environment: false,
+              payload: {
+                repo: "${{ github.repository }}",
+                head_repo: "${{ github.event.pull_request.head.repo.full_name }}",
+                head_ref: "${{ github.event.pull_request.head.ref }}",
+                head_sha: "${{ github.event.pull_request.head.sha }}",
+                pr_head_ref: "refs/pull/${{ github.event.pull_request.number }}/head",
+                pr_merge_ref: "refs/pull/${{ github.event.pull_request.number }}/merge",
+                pr_number: "${{ github.event.pull_request.number }}"
+              }
+            });
           # Cannot use GITHUB_TOKEN here or won't trigger deploy action
           # See https://github.com/octokit/request-action/issues/12
-          GITHUB_TOKEN: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
+          github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
+      # - name: Create new PR deployment
+      #   uses: octokit/request-action@v2.x
+      #   id: deployment
+      #   with:
+      #     # https://docs.github.com/en/rest/reference/deployments#create-a-deployment
+      #     route: POST /repos/{repo}/deployments
+      #     repo: ${{ github.repository }}
+      #     ref: ${{ github.sha }}
+      #     auto_merge: false # use branch as is without merging with base
+      #     required_contexts: '[]'
+      #     environment: "${{ env.ENVIRONMENT_NAME }}"
+      #     transient_environment: true # destroys env after pr is closed
+      #     production_environment: false
+      #     payload: |
+      #       {
+      #         "repo": "${{ github.repository }}",
+      #         "head_repo": "${{ github.event.pull_request.head.repo.full_name }}",
+      #         "head_ref": "${{ github.event.pull_request.head.ref }}",
+      #         "head_sha": "${{ github.event.pull_request.head.sha }}",
+      #         "pr_head_ref": "refs/pull/${{ github.event.pull_request.number }}/head",
+      #         "pr_merge_ref": "refs/pull/${{ github.event.pull_request.number }}/merge",
+      #         "pr_number": "${{ github.event.pull_request.number }}"
+      #       }
+      #   env:
+      #     # Cannot use GITHUB_TOKEN here or won't trigger deploy action
+      #     # See https://github.com/octokit/request-action/issues/12
+      #     GITHUB_TOKEN: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
       - name: Print outputs
         if: ${{ always() }}
         shell: python
