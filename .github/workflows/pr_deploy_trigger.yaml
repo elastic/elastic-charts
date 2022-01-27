@@ -35,7 +35,7 @@ jobs:
     name: Testing deployment event
     runs-on: ubuntu-latest
     env:
-      ENVIRONMENT_NAME: "PR%20%23${{ github.event.pull_request.number }}" # i.e. PR #<number>
+      ENVIRONMENT_NAME: "PR #${{ github.event.pull_request.number }}"
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -61,7 +61,15 @@ jobs:
           # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
           route: PUT /repos/{repo}/environments/{environment_name}
           repo: ${{ github.repository }}
-          environment_name: ${{ env.ENVIRONMENT_NAME }}
+          environment_name: "PR%20%23${{ github.event.pull_request.number }}" # i.e. PR #<number>
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+      - name: Create new PR environment - test inline
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
+          route: "PUT /repos/{repo}/environments/PR%20%23${{ github.event.pull_request.number }}"
+          repo: ${{ github.repository }}
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
       - name: Create new PR deployment
