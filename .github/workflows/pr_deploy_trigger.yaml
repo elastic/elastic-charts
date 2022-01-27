@@ -6,16 +6,16 @@ env:
 
 # Precautionary with using pull_request_target
 permissions:
-  statuses: none
-  actions: read # needed for /environments
-  checks: none
-  pull-requests: none
-  contents: none
+  # statuses: none
+  # actions: read # needed for /environments
+  # checks: none
+  # pull-requests: none
+  # contents: none
   deployments: write
-  issues: none
-  packages: none
-  repository-projects: none
-  security-events: none
+  # issues: none
+  # packages: none
+  # repository-projects: none
+  # security-events: none
 
 on:
   # Needed to allow forks to access secrets in ci with limited scope
