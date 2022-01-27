@@ -28,7 +28,7 @@ on:
 jobs:
   call-checks-workflow:
     name: "Check workflow"
-    uses: elastic/elastic-charts/.github/workflows/shared/checks.yml@next
+    uses: elastic/elastic-charts/.github/workflows/checks.yml@next
   test:
     name: Test
     runs-on: ubuntu-latest
