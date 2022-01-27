@@ -70,7 +70,7 @@ jobs:
           repository: ${{ github.event.deployment.payload.repo }}
           ref: ${{ github.event.deployment.payload.pr_head_ref }}
           # See https://github.com/bahmutov/npm-install/issues/80
-          skip-npm-install: false # This fails on deployment events
+          skip-npm-install: true # This fails on deployment events
       - run: yarn install --frozen-lockfile
       - run: ls
 
