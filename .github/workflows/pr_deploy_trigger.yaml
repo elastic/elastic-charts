@@ -79,7 +79,7 @@ jobs:
             return await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: context.event.pull_request.head.sha,
+              ref: context.payload.pull_request.head.sha,
               // ref: context.sha,
               auto_merge: false, // use branch as is without merging with base
               required_contexts: [],
