@@ -59,73 +59,132 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
 
 #########################################################################################################
+#      Set previous deployments to inactive
+#########################################################################################################
 
-# TODO: Check if we need to set previous deployments to inactive
+      - name: Get latest deployments
+        # rest api does not include deployment state in reponse :(
+        uses: octokit/graphql-action@v2.x
+        id: latest_deployments
+        with:
+          query: |
+            query deployments($owner: String!, $repo: String!) {
+              repository(owner: $owner, name: $repo) {
+                deployments(last:20, environments: ["PR #1568"], orderBy: {
+                  field: CREATED_AT,
+                  direction: DESC
+                }) {
+                  nodes {
+                    databaseId
+                    commit {
+                      abbreviatedOid
+                    }
+                    state
+                  }
+                }
+              }
+            }
+          owner: ${{ github.event.repository.owner.name }}
+          repo: ${{ github.event.repository.name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+      - name: Print deployments
+        if: ${{ failure() }}
+        shell: python
+        run: |
+          print("""${{ toJSON(steps.latest_deployments.outputs.data) }}""")
+
+      - name: Filter for active deployments and set to inactive
+        uses: actions/github-script@v5
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
+          script: | # This is javascript :)
+            const response = ${{ steps.latest_deployments.outputs.data }}
+            response.repository.deployments.nodes.filter(({ databaseId: id, state }) => {
+              console.log('typeof id');
+              console.log(typeof id);
+              console.log('typeof PR_DEPLOYMENT_ID');
+              console.log(typeof ${{ env.PR_DEPLOYMENT_ID }});
+              return id !== ${{ env.PR_DEPLOYMENT_ID }} && state.toLowerCase() === 'active';
+            })
+            return await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.payload.pull_request.head.sha,
+              auto_merge: false, // use branch as is without merging with base
+              required_contexts: [],
+              environment: "${{ env.ENVIRONMENT_NAME }}",
+              transient_environment: true, // destroys env after pr is closed
+              production_environment: false,
+            });
+          # GITHUB_TOKEN is used here to prevent trigger deploy action
+          # See https://github.com/octokit/request-action/issues/12
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
 #########################################################################################################
 
-      - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1
-        with:
-          repository: ${{ github.event.deployment.payload.repo }}
-          ref: ${{ github.event.deployment.payload.pr_head_ref }}
-          # See https://github.com/bahmutov/npm-install/issues/80
-          skip-npm-install: true # This fails on deployment events
-      - run: yarn install --frozen-lockfile # TODO: fix caching
+      # - name: Checkout node setup
+      #   uses: nickofthyme/checkout-node-setup@v1
+      #   with:
+      #     repository: ${{ github.event.deployment.payload.repo }}
+      #     ref: ${{ github.event.deployment.payload.pr_head_ref }}
+      #     # See https://github.com/bahmutov/npm-install/issues/80
+      #     skip-npm-install: true # This fails on deployment events
+      # - run: yarn install --frozen-lockfile # TODO: fix caching
 
 #########################################################################################################
 #     Build Storybook and e2e server. Outputs build to /e2e-server/public
 #########################################################################################################
 
-      - name: Building storybook
-        working-directory: storybook
-        run: yarn build:ci
-      - name: Generate e2e server files
-        run: yarn test:e2e:generate
-      - name: Build e2e server inside storybook output
-        run: yarn test:e2e:server:build -o '../public/e2e'
+      # - name: Building storybook
+      #   working-directory: storybook
+      #   run: yarn build:ci
+      # - name: Generate e2e server files
+      #   run: yarn test:e2e:generate
+      # - name: Build e2e server inside storybook output
+      #   run: yarn test:e2e:server:build -o '../public/e2e'
 
 #########################################################################################################
 
-      - name: Deploy build to firebase
-        id: deploy
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          expires: 14d # this updates for every deploy
-          entryPoint: 'e2e-server'
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          # New project on elastic's GCP org
-          # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
-          projectId: 'ech-e2e-ci'
-          channelId: "pr${{ github.event.deployment.payload.pr_number }}" # e.g. pr123
-      - name: Outputs
-        shell: python
-        run: |
-          print("""${{ toJSON(steps.deploy.outputs) }}""")
+      # - name: Deploy build to firebase
+      #   id: deploy
+      #   uses: FirebaseExtended/action-hosting-deploy@v0
+      #   with:
+      #     expires: 14d # this updates for every deploy
+      #     entryPoint: 'e2e-server'
+      #     repoToken: '${{ secrets.GITHUB_TOKEN }}'
+      #     # New project on elastic's GCP org
+      #     # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
+      #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
+      #     projectId: 'ech-e2e-ci'
+      #     channelId: "pr${{ github.event.deployment.payload.pr_number }}" # e.g. pr123
+      # - name: Outputs
+      #   shell: python
+      #   run: |
+      #     print("""${{ toJSON(steps.deploy.outputs) }}""")
 
 #########################################################################################################
 
-      - name: Get workflow run link
-        id: run_info
-        uses: actions/github-script@v5
-        with:
-          result-encoding: string
-          script: | # This is javascript :)
-            const { data } = await github.rest.actions.listJobsForWorkflowRun({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: context.runId,
-            });
+      # - name: Get workflow run link
+      #   id: run_info
+      #   uses: actions/github-script@v5
+      #   with:
+      #     result-encoding: string
+      #     script: | # This is javascript :)
+      #       const { data } = await github.rest.actions.listJobsForWorkflowRun({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         run_id: context.runId,
+      #       });
 
-            const run = data.jobs.find(({ name, head_sha }) => {
-              return name.startsWith('Deploying') && head_sha === context.sha;
-            });
+      #       const run = data.jobs.find(({ name, head_sha }) => {
+      #         return name.startsWith('Deploying') && head_sha === context.sha;
+      #       });
 
-            return run ? run.html_url :
-              `https://github.com/${context.owner}/${context.repo}/actions/runs/${context.runId}`;
-          github-token: ${{ secrets.ADMIN_TOKEN_GH }}
-      - run: echo "run_info - ${{ steps.run_info.outputs.result }}"
+      #       return run ? run.html_url :
+      #         `https://github.com/${context.owner}/${context.repo}/actions/runs/${context.runId}`;
+      #     github-token: ${{ secrets.ADMIN_TOKEN_GH }}
+      # - run: echo "run_info - ${{ steps.run_info.outputs.result }}"
 
 #########################################################################################################
 
@@ -139,7 +198,8 @@ jobs:
           deployment_id: ${{ env.PR_DEPLOYMENT_ID }}
           state: "success"
           log_url: "${{ steps.run_info.outputs.result }}" # link to github action run
-          environment_url: ${{ steps.deploy.outputs.details_url }} # link to deployed firebase channel url
+          environment_url: "https://ech-e2e-ci--pr1568-czfjtdq5.web.app"
+          # environment_url: ${{ steps.deploy.outputs.details_url }} # link to deployed firebase channel url
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
 
@@ -152,6 +212,19 @@ jobs:
           repo: ${{ github.repository }}
           deployment_id: ${{ env.PR_DEPLOYMENT_ID }}
           state: "failure"
+          log_url: "${{ steps.run_info.outputs.result }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
+      - name: Update Deployment status - Cancelled
+        if: ${{ cancelled() }}
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
+          route: POST /repos/{repo}/deployments/{deployment_id}/statuses
+          repo: ${{ github.repository }}
+          deployment_id: ${{ env.PR_DEPLOYMENT_ID }}
+          state: "inactive"
           log_url: "${{ steps.run_info.outputs.result }}"
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
