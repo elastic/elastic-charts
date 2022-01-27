@@ -178,6 +178,16 @@ jobs:
   test:
     name: Testing
     runs-on: ubuntu-latest
+    environment: test
+    steps:
+      - name: Print context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+
+  testing:
+    name: Testing
+    runs-on: ubuntu-latest
     steps:
       - name: Print context
         shell: python
