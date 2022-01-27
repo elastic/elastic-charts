@@ -16,7 +16,6 @@ on:
 jobs:
   firebase:
     if: ${{ github.event.deployment.payload.target == 'firebase' }}
-    # if: ${{ github.event.deployment.creator.type != 'Bot' }} # gh=pages deployment
     name: "Deploying ${{ github.event.deployment.environment }}"
     runs-on: ubuntu-latest
     env:
@@ -175,3 +174,23 @@ jobs:
           print("""${{ toJSON(github) }}""")
 
 #########################################################################################################
+
+  test:
+    name: Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+
+  github-pages:
+    name: Deploying to GitHub pages
+    environment: github-pages
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Prevent this from running"
+      - name: Print context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
