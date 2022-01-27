@@ -102,7 +102,7 @@ jobs:
         if: ${{ always() }}
         shell: python
         run: |
-          print("""${{ toJSON(steps.deployment.outputs.result) }}""")
+          print("""${{ steps.deployment.outputs.result }}""")
       - name: Update Deployment status to queued
         if: ${{ success() }}
         uses: octokit/request-action@v2.x
@@ -110,7 +110,7 @@ jobs:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
           route: POST /repos/{repo}/deployments/{deployment_id}/statuses
           repo: ${{ github.repository }}
-          deployment_id: ${{ steps.deployment.steps.deployment.outputs.result.id }}
+          deployment_id: ${{ fromJSON(steps.deployment.steps.deployment.outputs.result).id }}
           state: "queued"
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
