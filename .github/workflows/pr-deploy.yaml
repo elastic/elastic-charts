@@ -1,10 +1,9 @@
 # Checks related only to PRs and not code
 name: PR Deploy
 
-# concurrency:
-#   # TODO: make this stop if running miltiple for one pr
-#   group: '${{ github.workflow }} - ${{ github.head_ref }}'
-#   cancel-in-progress: true
+concurrency:
+  group: '${{ github.workflow }} - ${{ github.event.deployment.payload.pr_number || github.ref }}'
+  cancel-in-progress: true
 
 env:
   NODE_VERSION: '16.13.2' # should match version in .nvmrc
@@ -14,10 +13,12 @@ on:
 
 jobs:
   testing:
+    if: ${{ github.event.deployment.creator.type != "Bot" }} # pr deployment
+    # if: ${{ github.event.deployment.creator.type != "Bot" }} # gh=pages deployment
     name: "Deploying ${{ github.event.deployment.environment }}"
     runs-on: ubuntu-latest
-    # environment:
-    #   name: "${{ github.event.deployment.environment }}"
+    env:
+      PR_DEPLOYMENT_ID: ${{ github.event.deployment.payload.deployment_id }}
     steps:
       - name: Print context - Testing 2
         shell: python
@@ -31,14 +32,8 @@ jobs:
         shell: python
         run: |
           print("""${{ toJSON(github.event) }}""")
-      - name: Checkout repo
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ github.event.deployment.payload.repo }}
-          ref: ${{ github.event.deployment.payload.pr_head_ref }}
-      - run: ls
 
-      #################################################################
+#########################################################################################################
 
       - name: Delete deployment for base ref
         uses: octokit/request-action@v2.x
@@ -50,8 +45,45 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
 
-      #################################################################
+      - name: Update Deployment status - In Progress
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
+          route: POST /repos/{repo}/deployments/{deployment_id}/statuses
+          repo: ${{ github.repository }}
+          deployment_id: ${{ env.PR_DEPLOYMENT_ID }}
+          state: "in_progress"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
 
+#########################################################################################################
+
+      # - name: Checkout repo
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: ${{ github.event.deployment.payload.repo }}
+      #     ref: ${{ github.event.deployment.payload.pr_head_ref }}
+
+      - name: Checkout node setup
+        uses: nickofthyme/checkout-node-setup@v1
+        with:
+          repository: ${{ github.event.deployment.payload.repo }}
+          ref: ${{ github.event.deployment.payload.pr_head_ref }}
+      - run: ls
+
+#########################################################################################################
+#     Build Storybook and e2e server, outputs to /e2e-server/public
+#########################################################################################################
+
+      - name: Building storybook
+        working-directory: storybook
+        run: yarn build:ci
+      - name: Generate e2e server files
+        run: yarn test:e2e:generate
+      - name: Build e2e server inside storybook output
+        run: yarn test:e2e:server:build -o '../public/e2e'
+
+#########################################################################################################
 
       - name: Deploy build to firebase
         id: deploy
@@ -60,16 +92,19 @@ jobs:
           expires: 14d # this updates for every deploy
           entryPoint: 'e2e-server'
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          # New project on elastic's GCP org
           # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
-          projectId: ech-e2e-ci
-          channelId: 'pr1568'
+          projectId: 'ech-e2e-ci'
+          channelId: "pr${{ github.event.deployment.payload.pr_number }}" # e.g. pr123
       - name: Outputs
         shell: python
         run: |
           print("""${{ toJSON(steps.deploy.outputs) }}""")
 
-      - name: Get run info
+#########################################################################################################
+
+      - name: Get workflow run link
         id: run_info
         uses: actions/github-script@v5
         with:
@@ -88,21 +123,33 @@ jobs:
             return run ? run.html_url :
               `https://github.com/${context.owner}/${context.repo}/actions/runs/${context.runId}`;
           github-token: ${{ secrets.ADMIN_TOKEN_GH }}
-
       - run: echo "run_info - ${{ steps.run_info.outputs.result }}"
 
-      - name: Update Deployment status
+#########################################################################################################
+
+      - name: Update Deployment status - Success
         if: ${{ success() }}
         uses: octokit/request-action@v2.x
         with:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
           route: POST /repos/{repo}/deployments/{deployment_id}/statuses
           repo: ${{ github.repository }}
-          deployment_id: ${{ github.event.deployment.payload.deployment_id }}
+          deployment_id: ${{ env.PR_DEPLOYMENT_ID }}
           state: "success"
-          # link to github action run
+          log_url: "${{ steps.run_info.outputs.result }}" # link to github action run
+          environment_url: ${{ steps.deploy.outputs.details_url }} # link to deployed firebase channel url
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
+      - name: Update Deployment status - Failure
+        if: ${{ failure() }}
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
+          route: POST /repos/{repo}/deployments/{deployment_id}/statuses
+          repo: ${{ github.repository }}
+          deployment_id: ${{ env.PR_DEPLOYMENT_ID }}
+          state: "failure"
           log_url: "${{ steps.run_info.outputs.result }}"
-          # link to deployed firebase channel url
-          environment_url: ${{ steps.deploy.outputs.details_url }}
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
