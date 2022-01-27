@@ -80,7 +80,7 @@ jobs:
             octokit.rest.repos.createOrUpdateEnvironment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              environment_name: ${{ env.ENVIRONMENT_NAME }},
+              environment_name: "${{ env.ENVIRONMENT_NAME }}",
             })
           github-token: ${{ secrets.ADMIN_TOKEN_GH }}
       - name: Create new PR deployment
