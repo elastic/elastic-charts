@@ -77,10 +77,10 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: context.sha,
-              auto_merge: false, # use branch as is without merging with base
+              auto_merge: false, // use branch as is without merging with base
               required_contexts: [],
               environment: "${{ env.ENVIRONMENT_NAME }}",
-              transient_environment: true, # destroys env after pr is closed
+              transient_environment: true, // destroys env after pr is closed
               production_environment: false,
               payload: {
                 repo: "${{ github.repository }}",
