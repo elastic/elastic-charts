@@ -13,7 +13,7 @@ on:
 
 jobs:
   testing:
-    if: ${{ github.event.deployment.creator.type != "Bot" }} # pr deployment
+    if: ${{ github.event.deployment.creator.type != 'Bot' }} # pr deployment
     # if: ${{ github.event.deployment.creator.type != "Bot" }} # gh=pages deployment
     name: "Deploying ${{ github.event.deployment.environment }}"
     runs-on: ubuntu-latest
