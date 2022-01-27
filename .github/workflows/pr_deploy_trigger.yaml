@@ -80,6 +80,29 @@ jobs:
           # See https://github.com/octokit/request-action/issues/12
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check if actor is an elastic member or add reviewers
+        uses: actions/github-script@v5
+        with:
+          script: | # This is javascript :)
+            // https://docs.github.com/en/rest/reference/orgs#check-organization-membership-for-a-user
+            const { status } = await github.rest.orgs.checkMembershipForUser({
+              org: 'elastic',
+              username: context.actor, // TODO: check if this changes for diff user
+            });
+            if (status !== 204) { // user is not an elastic member
+              // https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
+              await octokit.rest.repos.createOrUpdateEnvironment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                environment_name: "${{ env.ENVIRONMENT_NAME }}",
+                reviewers: [{
+                  type: 'Team',
+                  id: 3693417, // datavis team id
+                }]
+              });
+            }
+          github-token: ${{ secrets.ADMIN_TOKEN_GH }}
+
       - name: Print outputs result
         if: ${{ always() }}
         shell: python

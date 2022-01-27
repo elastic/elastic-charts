@@ -116,10 +116,9 @@ jobs:
           repo: ${{ github.repository }}
           deployment_id: ${{ github.event.deployment.payload.deployment_id }}
           state: "success"
-          # should link to github action run
+          # link to github action run
           log_url: "${{ steps.run_info.outputs.result }}"
-          # should link to firebase channel url
-          environment_url: "https://ech-e2e-ci--pr1568-czfjtdq5.web.app"
-          # environment_url: ${{ steps.deploy.outputs.details_url }}
+          # link to deployed firebase channel url
+          environment_url: ${{ steps.deploy.outputs.details_url }}
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
