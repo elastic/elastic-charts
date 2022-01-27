@@ -14,7 +14,7 @@ on:
 jobs:
   testing:
     if: ${{ github.event.deployment.creator.type != 'Bot' }} # pr deployment
-    # if: ${{ github.event.deployment.creator.type != "Bot" }} # gh=pages deployment
+    # if: ${{ github.event.deployment.creator.type != 'Bot' }} # gh=pages deployment
     name: "Deploying ${{ github.event.deployment.environment }}"
     runs-on: ubuntu-latest
     env:
@@ -67,6 +67,7 @@ jobs:
       - name: Checkout node setup
         uses: nickofthyme/checkout-node-setup@v1
         with:
+          useRollingCache: false
           repository: ${{ github.event.deployment.payload.repo }}
           ref: ${{ github.event.deployment.payload.pr_head_ref }}
       - run: ls
