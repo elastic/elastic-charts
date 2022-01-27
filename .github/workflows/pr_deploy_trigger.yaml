@@ -87,8 +87,11 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
 #########################################################################################################
+#       We need to limit who can deploy prs from a fork, since we are kinda circumventing this
+#       restriction built into GitHub actions. Check if actor is an elastic member, add reviewers if needed.
+#########################################################################################################
 
-      - name: Check if actor is an elastic member or add reviewers
+      - name: Check if actor membership and return deploy state accordingly.
         uses: actions/github-script@v5
         id: state
         with:
@@ -155,6 +158,7 @@ jobs:
               required_contexts: [],
               environment: "${{ env.ENVIRONMENT_NAME }}",
               payload: {
+                target: "firebase",
                 repo: "${{ github.repository }}",
                 head_repo: "${{ github.event.pull_request.head.repo.full_name }}",
                 head_ref: "${{ github.event.pull_request.head.ref }}",
