@@ -79,7 +79,7 @@ jobs:
               auto_merge: false, // use branch as is without merging with base
               required_contexts: [],
               environment: "${{ env.ENVIRONMENT_NAME }}",
-              transient_environment: true, // destroys env after pr is closed
+              transient_environment: false, // sets previous statuses to inactive
               production_environment: false,
             });
           # GITHUB_TOKEN is used here to prevent trigger deploy action

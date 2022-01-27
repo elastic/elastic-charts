@@ -59,69 +59,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
 
 #########################################################################################################
-#      Set previous deployments to inactive
-#########################################################################################################
-
-      - name: Get latest deployments
-        # rest api does not include deployment state in reponse :(
-        uses: octokit/graphql-action@v2.x
-        id: latest_deployments
-        with:
-          query: |
-            query deployments($owner: String!, $repo: String!) {
-              repository(owner: $owner, name: $repo) {
-                deployments(last:20, environments: ["PR #1568"], orderBy: {
-                  field: CREATED_AT,
-                  direction: DESC
-                }) {
-                  nodes {
-                    databaseId
-                    commit {
-                      abbreviatedOid
-                    }
-                    state
-                  }
-                }
-              }
-            }
-          owner: ${{ github.event.repository.owner.name }}
-          repo: ${{ github.event.repository.name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
-      - name: Print deployments
-        if: ${{ failure() }}
-        shell: python
-        run: |
-          print("""${{ toJSON(steps.latest_deployments.outputs.data) }}""")
-
-      - name: Filter for active deployments and set to inactive
-        uses: actions/github-script@v5
-        with:
-          # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
-          script: | # This is javascript :)
-            const response = ${{ steps.latest_deployments.outputs.data }}
-            response.repository.deployments.nodes.filter(({ databaseId: id, state }) => {
-              console.log('typeof id');
-              console.log(typeof id);
-              console.log('typeof PR_DEPLOYMENT_ID');
-              console.log(typeof ${{ env.PR_DEPLOYMENT_ID }});
-              return id !== ${{ env.PR_DEPLOYMENT_ID }} && state.toLowerCase() === 'active';
-            })
-            return await github.rest.repos.createDeployment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: context.payload.pull_request.head.sha,
-              auto_merge: false, // use branch as is without merging with base
-              required_contexts: [],
-              environment: "${{ env.ENVIRONMENT_NAME }}",
-              transient_environment: true, // destroys env after pr is closed
-              production_environment: false,
-            });
-          # GITHUB_TOKEN is used here to prevent trigger deploy action
-          # See https://github.com/octokit/request-action/issues/12
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-#########################################################################################################
 
       # - name: Checkout node setup
       #   uses: nickofthyme/checkout-node-setup@v1
