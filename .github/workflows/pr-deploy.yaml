@@ -14,9 +14,9 @@ on:
 
 jobs:
   testing:
-    name: Testing deployment event
+    name: Deploying ${{ github.event.deployment.environment }}
     runs-on: ubuntu-latest
-    environment: dev
+    environment: ${{ github.event.deployment.environment }}
     steps:
       - name: Print context - Testing 2
         shell: python
@@ -37,6 +37,8 @@ jobs:
           ref: ${{ github.event.deployment.payload.pr_head_ref }}
       - run: ls
 
+      #################################################################
+
       - name: Deploy build to firebase
         id: deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
@@ -52,3 +54,18 @@ jobs:
         shell: python
         run: |
           print("""${{ toJSON(steps.deploy.outputs) }}""")
+      - name: Update Deployment status
+        if: ${{ success() }}
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
+          route: POST /repos/{repo}/deployments/{deployment_id}/statuses
+          repo: ${{ github.repository }}
+          deployment_id: ${{ github.event.deployment.id }}
+          state: "success"
+          # "log_url": "", # should link to github action run automatically
+          # should link to firebase channel url
+          environment_url: ${{ steps.deploy.outputs.details_url }}
+          # environment_url: "https://ech-e2e-ci--pr1568-czfjtdq5.web.app"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -34,6 +34,8 @@ jobs:
   testing:
     name: Testing deployment event
     runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT_NAME: "PR #${{ github.event.pull_request.number }}"
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -51,7 +53,19 @@ jobs:
         run: |
           print("""${{ toJSON(github.event) }}""")
       - run: echo "refs/pull/${{ github.event.pull_request.number }}/head"
-      - uses: octokit/request-action@v2.x
+
+
+      - name: Create new PR environment
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
+          route: PUT /repos/{repo}/environments/{environment_name}
+          repo: ${{ github.repository }}
+          environment_name: ${{ env.ENVIRONMENT_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create new PR deployment
+        uses: octokit/request-action@v2.x
         id: deployment
         with:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment
@@ -60,8 +74,9 @@ jobs:
           ref: ${{ github.sha }}
           auto_merge: false # use branch as is without merging with base
           required_contexts: '[]'
-          environment: dev
-          description: "Deployment for PR #${{ github.event.pull_request.number }}"
+          environment: ${{ env.ENVIRONMENT_NAME }}
+          transient_environment: true # destroys env after pr is closed
+          production_environment: false
           payload: |
             {
               "repo": "${{ github.repository }}",
@@ -73,9 +88,22 @@ jobs:
               "pr_number": "${{ github.event.pull_request.number }}"
             }
         env:
+          # Cannot use GITHUB_TOKEN here or won't trigger deploy action
+          # See https://github.com/octokit/request-action/issues/12
           GITHUB_TOKEN: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
       - name: Print outputs
         if: ${{ always() }}
         shell: python
         run: |
           print("""${{ toJSON(steps.deployment.outputs) }}""")
+      - name: Update Deployment status to queued
+        if: ${{ success() }}
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
+          route: POST /repos/{repo}/deployments/{deployment_id}/statuses
+          repo: ${{ github.repository }}
+          deployment_id: ${{ steps.deployment.outputs.data.id }}
+          state: "queued"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
