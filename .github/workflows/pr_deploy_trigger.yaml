@@ -7,7 +7,7 @@ env:
 # Precautionary with using pull_request_target
 permissions:
   statuses: none
-  actions: none
+  actions: read # needed for /environments
   checks: none
   pull-requests: none
   contents: none
