@@ -55,25 +55,28 @@ jobs:
       - run: echo "refs/pull/${{ github.event.pull_request.number }}/head"
 
 
-      - name: Create new PR environment
+      - name: Create/Update PR environment
         # Using because octokit/request-action@v2.x cannot handle 'PR #123' in a path param
         uses: actions/github-script@v5
         with:
           # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
           script: |
+            // This is javascript :)
             github.rest.repos.createOrUpdateEnvironment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               environment_name: "${{ env.ENVIRONMENT_NAME }}",
             })
           github-token: ${{ secrets.ADMIN_TOKEN_GH }}
-      - name: Create new PR environment
+      - name: Create new PR deployment
+        id: deployment
         # Using because octokit/request-action@v2.x cannot handle 'PR #123' in a path param
         uses: actions/github-script@v5
         with:
           # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
           script: |
-            github.rest.repos.createDeployment({
+            // This is javascript :)
+            return await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: context.sha,
@@ -89,44 +92,17 @@ jobs:
                 head_sha: "${{ github.event.pull_request.head.sha }}",
                 pr_head_ref: "refs/pull/${{ github.event.pull_request.number }}/head",
                 pr_merge_ref: "refs/pull/${{ github.event.pull_request.number }}/merge",
-                pr_number: "${{ github.event.pull_request.number }}"
-              }
+                pr_number: "${{ github.event.pull_request.number }}",
+              },
             });
           # Cannot use GITHUB_TOKEN here or won't trigger deploy action
           # See https://github.com/octokit/request-action/issues/12
           github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
-      # - name: Create new PR deployment
-      #   uses: octokit/request-action@v2.x
-      #   id: deployment
-      #   with:
-      #     # https://docs.github.com/en/rest/reference/deployments#create-a-deployment
-      #     route: POST /repos/{repo}/deployments
-      #     repo: ${{ github.repository }}
-      #     ref: ${{ github.sha }}
-      #     auto_merge: false # use branch as is without merging with base
-      #     required_contexts: '[]'
-      #     environment: "${{ env.ENVIRONMENT_NAME }}"
-      #     transient_environment: true # destroys env after pr is closed
-      #     production_environment: false
-      #     payload: |
-      #       {
-      #         "repo": "${{ github.repository }}",
-      #         "head_repo": "${{ github.event.pull_request.head.repo.full_name }}",
-      #         "head_ref": "${{ github.event.pull_request.head.ref }}",
-      #         "head_sha": "${{ github.event.pull_request.head.sha }}",
-      #         "pr_head_ref": "refs/pull/${{ github.event.pull_request.number }}/head",
-      #         "pr_merge_ref": "refs/pull/${{ github.event.pull_request.number }}/merge",
-      #         "pr_number": "${{ github.event.pull_request.number }}"
-      #       }
-      #   env:
-      #     # Cannot use GITHUB_TOKEN here or won't trigger deploy action
-      #     # See https://github.com/octokit/request-action/issues/12
-      #     GITHUB_TOKEN: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
       - name: Print outputs
         if: ${{ always() }}
         shell: python
         run: |
-          print("""${{ toJSON(steps.deployment.outputs) }}""")
+          print("""${{ toJSON(steps.deployment.outputs.result) }}""")
       - name: Update Deployment status to queued
         if: ${{ success() }}
         uses: octokit/request-action@v2.x
@@ -134,7 +110,7 @@ jobs:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
           route: POST /repos/{repo}/deployments/{deployment_id}/statuses
           repo: ${{ github.repository }}
-          deployment_id: ${{ steps.deployment.outputs.data.id }}
+          deployment_id: ${{ steps.deployment.steps.deployment.outputs.result.id }}
           state: "queued"
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
