@@ -55,7 +55,7 @@ jobs:
         # TODO: check that this env is cleaned up after master merge and deploy
         script: | # This is javascript :)
           // https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
-          await octokit.rest.repos.createOrUpdateEnvironment({
+          await github.rest.repos.createOrUpdateEnvironment({
             owner: context.repo.owner,
             repo: context.repo.repo,
             environment_name: "${{ env.ENVIRONMENT_NAME }}",
