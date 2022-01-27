@@ -17,6 +17,15 @@ on:
         default: '16.13.2'
 
 jobs:
+  test-strategy:
+    name: "test strategy - ${{ matrix.thing }}"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        thing: ['1', '2']
+    steps:
+      - run: echo "matrix.thing - ${{ matrix.thing }}"
+
   setup:
     name: Setup
     runs-on: ubuntu-latest
