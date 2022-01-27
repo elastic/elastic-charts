@@ -68,4 +68,4 @@ jobs:
           environment_url: ${{ steps.deploy.outputs.details_url }}
           # environment_url: "https://ech-e2e-ci--pr1568-czfjtdq5.web.app"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}

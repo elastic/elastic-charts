@@ -63,7 +63,7 @@ jobs:
           repo: ${{ github.repository }}
           environment_name: ${{ env.ENVIRONMENT_NAME }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
       - name: Create new PR deployment
         uses: octokit/request-action@v2.x
         id: deployment
@@ -106,4 +106,4 @@ jobs:
           deployment_id: ${{ steps.deployment.outputs.data.id }}
           state: "queued"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
