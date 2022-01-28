@@ -37,6 +37,8 @@ jobs:
         state: 'pending'
         description: 'Deployment successful, starting tests'
         target_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Handle error or failure in deployment
       if: ${{ github.event.deployment_status.state == 'error' || github.event.deployment_status.state == 'failure' }}
       uses: octokit/request-action@v2.x
@@ -49,6 +51,8 @@ jobs:
         state: ${{ github.event.deployment_status.state }}
         description: "Deployment ${{ github.event.deployment_status.state }}, testing aborted."
         target_url: "${{ github.event.check_run.details_url }}" # should always exist with non-pr deployments
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Fail check run if deployment failed
       if: ${{ github.event.deployment_status.state == 'error' || github.event.deployment_status.state == 'failure' }}
       uses: actions/github-script@v3
