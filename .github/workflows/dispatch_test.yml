@@ -1,4 +1,4 @@
-name: Fire dispatch
+name: Fire dispatch # test
 
 on:
   push:
