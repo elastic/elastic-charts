@@ -78,10 +78,10 @@ jobs:
 
       # - name: Building storybook
       #   working-directory: storybook
-      #   run: yarn build:ci
+      #   run: yarn build:firebase
       # - name: Generate e2e server files
       #   run: yarn test:e2e:generate
-      # - name: Build e2e server inside storybook output
+      # - name: Build e2e server inside storybook output directory
       #   run: yarn test:e2e:server:build -o '../public/e2e'
 
 #########################################################################################################
@@ -178,8 +178,53 @@ jobs:
     environment:
       name: "${{ github.event.deployment.environment }}"
     outputs:
-      env-url: https://example.com/
+      env-url: https://ech-e2e-ci--pr1568-czfjtdq5.web.app/ # TODO comes from steps
     steps:
+
+      #########################################################################################################
+
+      # - name: Checkout node setup
+      #   uses: nickofthyme/checkout-node-setup@v1
+      #   with:
+      #     repository: ${{ github.event.deployment.payload.repo }}
+      #     ref: ${{ github.event.deployment.payload.pr_head_ref }}
+      #     # See https://github.com/bahmutov/npm-install/issues/80
+      #     skip-npm-install: true # This fails on deployment events
+      # - run: yarn install --frozen-lockfile # TODO: fix caching
+
+#########################################################################################################
+#     Build Storybook and e2e server. Outputs build to /e2e-server/public
+#########################################################################################################
+
+      # - name: Building storybook
+      #   working-directory: storybook
+      #   run: yarn build:firebase
+      # - name: Generate e2e server files
+      #   run: yarn test:e2e:generate
+      # - name: Build e2e server inside storybook output directory
+      #   run: yarn test:e2e:server:build -o '../public/e2e'
+
+#########################################################################################################
+
+      # - name: Deploy build to firebase
+      #   id: deploy
+      #   uses: FirebaseExtended/action-hosting-deploy@v0
+      #   with:
+      #     expires: 14d # this updates for every deploy
+      #     entryPoint: 'e2e-server'
+      #     repoToken: '${{ secrets.GITHUB_TOKEN }}'
+      #     # New project on elastic's GCP org
+      #     # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
+      #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
+      #     projectId: 'ech-e2e-ci'
+      #     channelId: ${{ github.event.deployment.payload.ref_name }} # e.g. next, v40.0.0, etc.
+      # - name: Outputs
+      #   shell: python
+      #   run: |
+      #     print("""${{ toJSON(steps.deploy.outputs) }}""")
+
+#########################################################################################################
+
       - name: Print context
         shell: python
         run: |
@@ -214,7 +259,33 @@ jobs:
       url: https://elastic.github.io/elastic-charts
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Prevent this from running"
+      # - name: Checkout node setup
+      #   uses: nickofthyme/checkout-node-setup@v1
+      #   with:
+      #     # See https://github.com/bahmutov/npm-install/issues/80
+      #     skip-npm-install: true # This fails on deployment events
+      # - run: yarn install --frozen-lockfile # TODO: fix caching
+
+#########################################################################################################
+#     Build Storybook and e2e server. Outputs build to /.out
+#########################################################################################################
+
+      # - name: Building storybook
+      #   working-directory: storybook
+      #   run: yarn build
+      # - name: Generate e2e server files
+      #   run: yarn test:e2e:generate
+      # - name: Build e2e server inside storybook output directory
+      #   run: yarn test:e2e:server:build -o '../../.out/e2e'
+
+      # - name: Deploy to github pages
+      #   uses: JamesIves/github-pages-deploy-action@3.7.1
+      #   with:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     BRANCH: gh-pages
+      #     FOLDER: .out
+      #     CLEAN: true
+
       - name: Print context
         shell: python
         run: |
