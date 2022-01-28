@@ -60,7 +60,8 @@ jobs:
           deployment_id: ${{ env.PR_DEPLOYMENT_ID }}
           state: "in_progress"
         env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+          # Must be GITHUB_TOKEN or will trigger a deployment_status event
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #########################################################################################################
 
@@ -142,7 +143,8 @@ jobs:
           environment_url: "https://ech-e2e-ci--pr1568-czfjtdq5.web.app"
           # environment_url: ${{ steps.deploy.outputs.details_url }} # link to deployed firebase channel url
         env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+          # Must be GITHUB_TOKEN or will trigger a deployment_status event
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Deployment status - Failure
         if: ${{ failure() }}

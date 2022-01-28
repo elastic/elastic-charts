@@ -72,7 +72,7 @@ jobs:
     #     env: ${{steps.environment.outputs.result}}
     #     ref: ${{ github.sha }}
 
-    - name: Create new PR deployment for base ref
+    - name: Create new PR deployment for branch
       uses: actions/github-script@v5
       id: trigger-deployment
       with:
@@ -150,7 +150,7 @@ jobs:
         run: |
           print("""${{ toJSON(github) }}""")
 
-      # Github duplicated deployment event when you use a deployment workflow with an environment.
+      # Github creates a duplicate deployment event when you use a deployment workflow with an environment.
       # Basically they create a deployment to automate status updates, so this deployment is not needed.
       - name: Delete triggered deployment
         if: ${{ needs.trigger-deploy.outputs.id }}
