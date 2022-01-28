@@ -226,24 +226,16 @@ jobs:
     name: Print context on failure
     # if: ${{ failure() }}
     if: ${{ always() }}
-    needs: [pull_request, key-branch-update, github-pages]
+    needs: [pull_request, key-branch, key-branch-update, github-pages]
     runs-on: ubuntu-latest
     steps:
       - name: Print github context
         shell: python
         run: |
           print("""${{ toJSON(github) }}""")
-      - name: Print github context
+      - name: Print needs context
         shell: python
         run: |
           print("""${{ toJSON(needs) }}""")
-
-  cancel-check:
-    name: Test if cancelled
-    if: ${{ cancelled() }}
-    needs: [pull_request, key-branch-update, github-pages]
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "I still run if rejected"
 
 #########################################################################################################
