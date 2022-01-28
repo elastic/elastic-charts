@@ -8,6 +8,7 @@ name: Reusable playwright workflow
 
 env:
   NODE_VERSION: '16.13.2' # should match version in .nvmrc
+  E2E_CHECK_CONTEXT: 'Playwright e2e' # should match e2e-tests.yml workflow
 
 on:
   workflow_call:
@@ -48,11 +49,20 @@ jobs:
           # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
           route: POST /repos/{repo}/statuses/{sha}
           repo: ${{ github.repository }}
-          state: error
-          target_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
           sha: ${{ inputs.sha }}
+          context: ${{ env.E2E_CHECK_CONTEXT }}
+          state: error
+          description: 'Deployment unresponsive'
+          target_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fail check run if deployment unresponsive
+        if: ${{ failure() }}
+        uses: actions/github-script@v3
+        with:
+          script: core.setFailed("Deployment unresponsive, check environment url.")
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   e2e-setup:
     name: e2e Setup

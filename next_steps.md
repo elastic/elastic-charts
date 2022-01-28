@@ -21,10 +21,11 @@
 - [x] This will deploy to firebase under the branch name channel
 
 ## playwright action
-- [] trigger workflow on successful deployment_status
-- [] Create new action to handle running playwrite after deployment
+- [x] trigger workflow on successful deployment_status
+- [x] Create new action to handle running playwrite after deployment
 - [] Check to make sure the deployment was triggered by a pr first
 - [] Send status update with completed runs and errors
+- [] Pass env_url as env variable to the playwright tests
 
 ## Other tasks
 - [] Test failure cases

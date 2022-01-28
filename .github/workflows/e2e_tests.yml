@@ -10,7 +10,7 @@ concurrency:
 
 env:
   NODE_VERSION: '16.13.2' # should match version in .nvmrc
-  E2E_CHECK_CONTEXT: 'Playwright e2e' # should match other usage
+  E2E_CHECK_CONTEXT: 'Playwright e2e' # should match playwright.yml workflow
 
 on:
   deployment_status
@@ -61,25 +61,23 @@ jobs:
 
 #########################################################################################################
 
-  pull_request:
+  pull-request-e2e:
     name: Pull Request
     needs: checks
-    runs-on: ubuntu-latest
-    if: ${{ success() && github.event.deployment.payload.type == 'pull_request' }}
-    # uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
-    steps:
-      - run: echo "testing this run"
+    if: ${{ success() && github.event.deployment.payload.head_ref == 'playwright'  }}
+    # if: ${{ success() && github.event.deployment.payload.type == 'pull_request' }}
+    uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
+    with:
+      url: ${{ github.event.deployment_status.environment_url }}
+      sha: ${{ github.event.deployment.sha }}
 
 #########################################################################################################
 
-  key_branch:
-    name: Branch
-    needs: checks
-    runs-on: ubuntu-latest
-    if: ${{ success() && github.event.deployment.payload.type != 'pull_request' }}
-    # uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
-    steps:
-      - run: echo "testing this run"
+  # key-branch-e2e:
+  #   name: Branch
+  #   needs: checks
+  #   if: ${{ success() && github.event.deployment.payload.type != 'pull_request' }}
+  #   uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
 
 #########################################################################################################
 
