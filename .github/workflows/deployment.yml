@@ -1,7 +1,8 @@
 #########################################################################################################
 # Handled deployment of pull requests (firebase), master (gh-pages) and key branches
 #########################################################################################################
-name: PR Deploy
+
+name: Deployment
 
 concurrency:
   group: '${{ github.workflow }} - ${{ github.event.deployment.payload.pr_number || github.ref }}'
