@@ -1,0 +1,13 @@
+on:
+  repository_dispatch:
+    types: [test_result]
+
+jobs:
+  run_if_failure:
+    if: ${{ !github.event.client_payload.passed }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print github context
+        shell: python
+        run: |
+          print("""${{ toJSON(github.event) }}""")

@@ -1,0 +1,26 @@
+name: Fire dispatch
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  fire-dispatch-event:
+    name: Fire dispatch event
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fire event
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/repos#create-a-repository-dispatch-event
+          route: POST /repos/{repo}/dispatches
+          repo: ${{ github.repository }}
+          event_type: 'test_result'
+          client_payload: |
+            {
+              "passed": false,
+              "message": "Error: timeout"
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
