@@ -255,7 +255,7 @@ jobs:
                 environment_url: "${{ needs.key-branch.outputs.env-url }}",
               });
             }
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+          github-token: ${{ secrets.ADMIN_TOKEN_GH }}
 
 #########################################################################################################
 

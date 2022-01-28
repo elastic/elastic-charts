@@ -2,12 +2,11 @@
 # Handles running playwright tests when deployment is complete
 #########################################################################################################
 
-name: E2E Tests
+name: E2E Test Trigger
 
-# concurrency:
-#   # e.g. 'e2e_tests - <branch name>'
-#   group: '${{ github.workflow }} - ${{ github.event.deployment.payload.head_ref || github.event.deployment.ref }}'
-#   cancel-in-progress: true
+concurrency:
+  group: '${{ github.workflow }} - ${{ github.event.deployment.id }}'
+  cancel-in-progress: true
 
 env:
   NODE_VERSION: '16.13.2' # should match version in .nvmrc
