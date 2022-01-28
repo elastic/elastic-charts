@@ -171,6 +171,23 @@ jobs:
 
 #########################################################################################################
 
+  active-deployment:
+    name: Cleanup trigger deployment
+    if: ${{ github.event.deployment.task == 'trigger' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete triggered deployment
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#delete-a-deployment
+          route: DELETE /repos/{repo}/deployments/{deployment_id}
+          repo: ${{ github.repository }}
+          deployment_id: ${{ github.event.deployment.id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
+#########################################################################################################
+
   key-branch: # key branches excluding master
     name: "Deploy | ${{ github.event.deployment.environment }}"
     if: ${{ github.event.deployment.payload.ref_name == github.event.deployment.environment }}
@@ -239,13 +256,22 @@ jobs:
       - name: Update Deployment status url
         uses: octokit/request-action@v2.x
         with:
-          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
-          route: POST /repos/{repo}/deployments/{deployment_id}/statuses
-          repo: ${{ github.repository }}
-          deployment_id: ${{ github.event.deployment.id }}
-          state: "success"
-          environment_url: "${{ needs.key-branch.outputs.env-url }}"
-        env:
+          script: | # This is javascript :)
+            const [deployment] = await github.rest.repos.listDeployments({
+              ...context.repo,
+              task: "deploy",
+              sha: "${{ github.sha }}",
+              ref: "${{ github.ref_name }}",
+              environment: "${{ github.event.deployment.environment }}",
+            });
+            if (deployment) {
+              await github.rest.repos.createDeploymentStatus({
+                ...context.repo,
+                state: 'success',
+                deployment_id: deployment.id,
+                environment_url: "${{ needs.key-branch.outputs.env-url }}",
+              });
+            }
           GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
 
 #########################################################################################################
