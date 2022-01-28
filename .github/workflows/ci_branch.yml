@@ -88,7 +88,7 @@ jobs:
           });
         # Cannot use GITHUB_TOKEN here or won't trigger deploy action
         # See https://github.com/octokit/request-action/issues/12
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
 
 # #########################################################################################################
 
