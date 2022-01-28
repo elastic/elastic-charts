@@ -1,0 +1,97 @@
+#########################################################################################################
+# Handles running playwright tests when deployment is complete
+#########################################################################################################
+
+name: E2E Tests
+
+concurrency:
+  group: '${{ github.workflow }} - ${{ github.event.deployment.id }}'
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '16.13.2' # should match version in .nvmrc
+  E2E_CHECK_CONTEXT: 'Playwright e2e' # should match other usage
+
+on:
+  deployment_status
+
+jobs:
+
+#########################################################################################################
+
+  checks:
+    name: Initial checks
+    runs-on: ubuntu-latest
+    # Disregard any event without an environment_url, assume any with it require e2e testing
+    if: ${{ github.event.deployment_status.environment_url != '' }}
+    steps:
+    - name: Handle successful deployment
+      if: ${{ github.event.deployment_status.state == 'success' }}
+      uses: octokit/request-action@v2.x
+      with:
+        # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
+        route: POST /repos/{repo}/statuses/{sha}
+        repo: ${{ github.repository }}
+        sha: ${{ github.event.deployment.sha }}
+        context: ${{ env.E2E_CHECK_CONTEXT }}
+        state: 'pending'
+        description: 'Deployment successful, starting tests'
+        target_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
+    - name: Handle error or failure in deployment
+      if: ${{ github.event.deployment_status.state == 'error' || github.event.deployment_status.state == 'failure' }}
+      uses: octokit/request-action@v2.x
+      with:
+        # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
+        route: POST /repos/{repo}/statuses/{sha}
+        repo: ${{ github.repository }}
+        sha: ${{ github.event.deployment.sha }}
+        context: ${{ env.E2E_CHECK_CONTEXT }}
+        state: ${{ github.event.deployment_status.state }}
+        description: "Deployment ${{ github.event.deployment_status.state }}, testing aborted."
+        target_url: "${{ github.event.check_run.details_url }}" # should always exist with non-pr deployments
+    - name: Fail check run if deployment failed
+      if: ${{ github.event.deployment_status.state == 'error' || github.event.deployment_status.state == 'failure' }}
+      uses: actions/github-script@v3
+      with:
+        script: core.setFailed("Deployment ${{ github.event.deployment_status.state }}, testing aborted.")
+
+#########################################################################################################
+
+  pull_request:
+    name: Pull Request
+    needs: checks
+    runs-on: ubuntu-latest
+    if: ${{ success() && github.event.deployment.payload.type == 'pull_request' }}
+    # uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
+    steps:
+      - run: echo "testing this run"
+
+#########################################################################################################
+
+  key_branch:
+    name: Branch
+    needs: checks
+    runs-on: ubuntu-latest
+    if: ${{ success() && github.event.deployment.payload.type != 'pull_request' }}
+    # uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
+    steps:
+      - run: echo "testing this run"
+
+#########################################################################################################
+
+  failure-check:
+    name: Print context on failure
+    # if: ${{ failure() }} # TODO this
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print github context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+      - name: Print needs context
+        shell: python
+        run: |
+          print("""${{ toJSON(needs) }}""")
+
+#########################################################################################################
