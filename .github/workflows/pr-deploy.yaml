@@ -18,7 +18,7 @@ jobs:
 #########################################################################################################
 
   pull_request:
-    name: "Deploy ${{ github.event.deployment.environment }}"
+    name: "Deploy | ${{ github.event.deployment.environment }}"
     if: ${{ github.event.deployment.payload.type == 'pull_request' }}
     runs-on: ubuntu-latest
     env:
@@ -117,7 +117,7 @@ jobs:
       #       });
 
       #       const run = data.jobs.find(({ name, head_sha }) => {
-      #         return name.startsWith('Deploy #') && head_sha === context.sha;
+      #         return name.startsWith('Deploy | #') && head_sha === context.sha;
       #       });
 
       #       return run ? run.html_url :
@@ -171,12 +171,11 @@ jobs:
 #########################################################################################################
 
   key-branch: # key branches excluding master
-    name: "Deploy ${{ github.event.deployment.environment }}"
+    name: "Deploy | ${{ github.event.deployment.environment }}"
     if: ${{ github.event.deployment.payload.ref_name == github.event.deployment.environment }}
     runs-on: ubuntu-latest
     environment:
       name: "${{ github.event.deployment.environment }}"
-      # don't yet know the url
     outputs:
       env-url: https://example.com/
     steps:
@@ -186,7 +185,7 @@ jobs:
           print("""${{ toJSON(github) }}""")
 
   key-branch-update:
-    name: "Update `${{ github.event.deployment.environment }}` url"
+    name: "Update url | ${{ github.event.deployment.environment }}"
     if: ${{ github.event.deployment.payload.ref_name == github.event.deployment.environment }}
     runs-on: ubuntu-latest
     needs: key-branch
@@ -206,7 +205,7 @@ jobs:
 #########################################################################################################
 
   github-pages:
-    name: Deploy to GitHub pages
+    name: Deploy | GitHub pages
     # branch policies defined in repo environment settings are also enforced
     if: ${{ github.event.deployment.payload.ref_name == 'master' }}
     environment:
@@ -224,7 +223,7 @@ jobs:
 
   failure-check:
     name: Print context on failure
-    # if: ${{ failure() }}
+    # if: ${{ failure() }} # TODO this
     if: ${{ always() }}
     needs: [pull_request, key-branch, key-branch-update, github-pages]
     runs-on: ubuntu-latest
