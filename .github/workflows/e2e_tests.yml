@@ -10,7 +10,7 @@ concurrency:
 
 env:
   NODE_VERSION: '16.13.2' # should match version in .nvmrc
-  E2E_CHECK_CONTEXT: 'Playwright e2e' # should match other usage
+  E2E_CHECK_CONTEXT: 'Playwright e2e' # should match playwright.yml workflow
 
 on:
   deployment_status
@@ -37,6 +37,8 @@ jobs:
         state: 'pending'
         description: 'Deployment successful, starting tests'
         target_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Handle error or failure in deployment
       if: ${{ github.event.deployment_status.state == 'error' || github.event.deployment_status.state == 'failure' }}
       uses: octokit/request-action@v2.x
@@ -49,6 +51,8 @@ jobs:
         state: ${{ github.event.deployment_status.state }}
         description: "Deployment ${{ github.event.deployment_status.state }}, testing aborted."
         target_url: "${{ github.event.check_run.details_url }}" # should always exist with non-pr deployments
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Fail check run if deployment failed
       if: ${{ github.event.deployment_status.state == 'error' || github.event.deployment_status.state == 'failure' }}
       uses: actions/github-script@v3
@@ -57,25 +61,23 @@ jobs:
 
 #########################################################################################################
 
-  pull_request:
+  pull-request-e2e:
     name: Pull Request
     needs: checks
-    runs-on: ubuntu-latest
-    if: ${{ success() && github.event.deployment.payload.type == 'pull_request' }}
-    # uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
-    steps:
-      - run: echo "testing this run"
+    if: ${{ success() && github.event.deployment.payload.head_ref == 'playwright'  }}
+    # if: ${{ success() && github.event.deployment.payload.type == 'pull_request' }}
+    uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
+    with:
+      url: ${{ github.event.deployment_status.environment_url }}
+      sha: ${{ github.event.deployment.sha }}
 
 #########################################################################################################
 
-  key_branch:
-    name: Branch
-    needs: checks
-    runs-on: ubuntu-latest
-    if: ${{ success() && github.event.deployment.payload.type != 'pull_request' }}
-    # uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
-    steps:
-      - run: echo "testing this run"
+  # key-branch-e2e:
+  #   name: Branch
+  #   needs: checks
+  #   if: ${{ success() && github.event.deployment.payload.type != 'pull_request' }}
+  #   uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
 
 #########################################################################################################
 
