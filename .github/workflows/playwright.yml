@@ -16,11 +16,11 @@ on:
       sha:
         required: true
         type: string
-        deprecationMessage: Ref sha to checkout used to run playwright tests
+        description: Ref sha to checkout used to run playwright tests
       url:
         required: true
         type: string
-        deprecationMessage: Base url of deployed e2e server to run tests against
+        description: Base url of deployed e2e server to run tests against
       node-version:
         required: false
         type: string
