@@ -32,6 +32,8 @@ jobs:
     name: Trigger deployment of branch
     # needs: checks-workflow # wait for all workflow checks to pass
     runs-on: ubuntu-latest
+    outputs:
+      id: ${{ fromJSON(steps.trigger-deployment.outputs.result).id }}
     steps:
 
 #########################################################################################################
@@ -92,17 +94,7 @@ jobs:
         # See https://github.com/octokit/request-action/issues/12
         github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
 
-    # Github duplicated deployment event when you use a deployment workflow with an environment.
-    # Basically they create a deployment to automate status updates, so this deployment is not needed.
-    - name: Delete triggered deployment
-      uses: octokit/request-action@v2.x
-      with:
-        # https://docs.github.com/en/rest/reference/deployments#delete-a-deployment
-        route: DELETE /repos/{repo}/deployments/{deployment_id}
-        repo: ${{ github.repository }}
-        deployment_id: ${{ fromJSON(steps.trigger-deployment.outputs.result).id }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
 
 # #########################################################################################################
 
@@ -148,9 +140,8 @@ jobs:
 
 # #########################################################################################################
 
-  failure-check:
-    name: Print context on failure
-    # if: ${{ failure() }}
+  final-cleanup:
+    name: Cleanup
     needs: [trigger-deploy]
     runs-on: ubuntu-latest
     steps:
@@ -159,4 +150,32 @@ jobs:
         run: |
           print("""${{ toJSON(github) }}""")
 
+      # Github duplicated deployment event when you use a deployment workflow with an environment.
+      # Basically they create a deployment to automate status updates, so this deployment is not needed.
+      - name: Delete triggered deployment
+        if: ${{ needs.trigger-deploy.outputs.id }}
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#delete-a-deployment
+          route: DELETE /repos/{repo}/deployments/{deployment_id}
+          repo: ${{ github.repository }}
+          deployment_id: ${{ needs.trigger-deploy.outputs.id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
 #########################################################################################################
+
+  # active-deployment:
+  #   name: Cleanup trigger deployment
+  #   if: ${{ github.event.deployment.task == 'trigger' }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Delete triggered deployment
+  #       uses: octokit/request-action@v2.x
+  #       with:
+  #         # https://docs.github.com/en/rest/reference/deployments#delete-a-deployment
+  #         route: DELETE /repos/{repo}/deployments/{deployment_id}
+  #         repo: ${{ github.repository }}
+  #         deployment_id: ${{ github.event.deployment.id }}
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
