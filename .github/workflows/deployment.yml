@@ -254,21 +254,19 @@ jobs:
     needs: key-branch
     steps:
       - name: Update Deployment status url
-        uses: octokit/request-action@v2.x
+        uses: actions/github-script@v5
         with:
           script: | # This is javascript :)
             const [deployment] = await github.rest.repos.listDeployments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
+              ...context.repo,
               task: "deploy",
               sha: "${{ github.sha }}",
-              ref: "${{ github.ref_name }}",
+              ref: "${{ github.event.deployment.payload.ref_name }}",
               environment: "${{ github.event.deployment.environment }}",
             });
             if (deployment) {
               await github.rest.repos.createDeploymentStatus({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
+                ...context.repo,
                 state: 'success',
                 deployment_id: deployment.id,
                 environment_url: "${{ needs.key-branch.outputs.env-url }}",
