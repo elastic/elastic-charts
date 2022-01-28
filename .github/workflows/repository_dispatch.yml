@@ -6,7 +6,7 @@ jobs:
   run_if_failure:
     if: ${{ !github.event.client_payload.passed }}
     runs-on: ubuntu-latest
-    env:
+    environment:
       name: nick
       url: https://example.com/
     steps:
