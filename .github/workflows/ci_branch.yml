@@ -67,8 +67,8 @@ jobs:
       with:
         step: start
         token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
-        env: "${{steps.environment.outputs.result}}"
-        ref: "${{ github.sha }}"
+        env: ${{steps.environment.outputs.result}}
+        ref: ${{ github.sha }}
 
     # - name: Create new PR deployment for base ref
     #   uses: actions/github-script@v5
