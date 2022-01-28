@@ -25,16 +25,6 @@ jobs:
   #   name: Checks
   #   uses: elastic/elastic-charts/.github/workflows/checks.yml@next # TODO: set this to master
 
-  test:
-    name: Print context on failure
-    # if: ${{ failure() }}
-    # needs: checks-workflow
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print github context
-        shell: python
-        run: |
-          print("""${{ toJSON(github) }}""")
 
 #########################################################################################################
 
@@ -42,8 +32,6 @@ jobs:
     name: Trigger deployment of branch
     # needs: checks-workflow # wait for all workflow checks to pass
     runs-on: ubuntu-latest
-    env:
-      ENVIRONMENT_NAME: ${{ github.ref_name }}
     steps:
 
 #########################################################################################################
@@ -58,7 +46,7 @@ jobs:
           await github.rest.repos.createOrUpdateEnvironment({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            environment_name: "${{ env.ENVIRONMENT_NAME }}",
+            environment_name: "${{ github.ref_name }}",
             reviewers: [{
               type: 'Team',
               id: 3693417, // datavis team id
@@ -79,7 +67,7 @@ jobs:
             ref: context.sha,
             auto_merge: false, // use branch as is without merging with base
             required_contexts: [], // TODO: check should be passed but could check
-            environment: "${{ env.ENVIRONMENT_NAME }}",
+            environment: "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}",
             payload: {
               ref_name: "${{ github.ref_name }}",
             },
@@ -131,3 +119,16 @@ jobs:
 #           CLEAN: true
 
 # #########################################################################################################
+
+  failure-check:
+    name: Print context on failure
+    # if: ${{ failure() }}
+    needs: [trigger-deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print github context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+
+#########################################################################################################

@@ -14,8 +14,11 @@ on:
   deployment
 
 jobs:
-  firebase-pr:
-    name: "Deploying ${{ github.event.deployment.environment }}"
+
+#########################################################################################################
+
+  pull_request:
+    name: "Deploy ${{ github.event.deployment.environment }}"
     if: ${{ github.event.deployment.payload.type == 'pull_request' }}
     runs-on: ubuntu-latest
     env:
@@ -114,7 +117,7 @@ jobs:
       #       });
 
       #       const run = data.jobs.find(({ name, head_sha }) => {
-      #         return name.startsWith('Deploying') && head_sha === context.sha;
+      #         return name.startsWith('Deploy #') && head_sha === context.sha;
       #       });
 
       #       return run ? run.html_url :
@@ -167,50 +170,47 @@ jobs:
 
 #########################################################################################################
 
-      - name: Print context on failure
-        if: ${{ failure() }}
+  key-branch: # key branches excluding master
+    name: "Deploy ${{ github.event.deployment.environment }}"
+    if: ${{ github.event.deployment.payload.ref_name == github.event.deployment.environment }}
+    runs-on: ubuntu-latest
+    environment:
+      name: "${{ github.event.deployment.environment }}"
+      # don't yet know the url
+    outputs:
+      env-url: https://example.com/
+    steps:
+      - name: Print context
         shell: python
         run: |
           print("""${{ toJSON(github) }}""")
 
 #########################################################################################################
 
-  firebase-branch:
-    name: "Deploying ${{ github.event.deployment.environment || 'pull request' }}"
+  key-branch-update:
+    name: "Update ${{ github.event.deployment.environment }} url"
     if: ${{ github.event.deployment.payload.ref_name == github.event.deployment.environment }}
     runs-on: ubuntu-latest
-    environment: ${{ github.event.deployment.environment }}
+    needs: key-branch
+    environment:
+      name: "${{ github.event.deployment.environment }}"
+      url: "${{ needs.key-branch.outputs.env-url }}"
     steps:
+      - run: echo "env-url - ${{ needs.key-branch.outputs.env-url }}"
       - name: Print context
         shell: python
         run: |
           print("""${{ toJSON(github) }}""")
 
-  testing:
-    name: Testing None
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print context
-        shell: python
-        run: |
-          print("""${{ toJSON(github) }}""")
-
-  testing-test:
-    name: Testing Test
-    runs-on: ubuntu-latest
-    if: ${{ github.event.deployment.payload.ref_name == 'test' }}
-    environment: test
-    steps:
-      - name: Print context
-        shell: python
-        run: |
-          print("""${{ toJSON(github) }}""")
+#########################################################################################################
 
   github-pages:
-    name: Deploying to GitHub pages
+    name: Deploy to GitHub pages
     # branch policies defined in repo environment settings are also enforced
     if: ${{ github.event.deployment.payload.ref_name == 'master' }}
-    environment: github-pages
+    environment:
+      name: github-pages
+      url: https://elastic.github.io/elastic-charts
     runs-on: ubuntu-latest
     steps:
       - run: echo "Prevent this from running"
@@ -218,3 +218,19 @@ jobs:
         shell: python
         run: |
           print("""${{ toJSON(github) }}""")
+
+#########################################################################################################
+
+  failure-check:
+    name: Print context on failure
+    # if: ${{ failure() }}
+    if: ${{ always() }}
+    needs: [pull_request, key-branch-update, github-pages]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print github context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+
+#########################################################################################################
