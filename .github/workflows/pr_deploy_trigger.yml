@@ -135,7 +135,8 @@ jobs:
           deployment_id: "${{ fromJSON(steps.deployment.outputs.result).data.id }}"
           state: ${{ steps.state.outputs.result }}
         env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+          # Must be GITHUB_TOKEN or will trigger a deployment_status event
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #########################################################################################################
 #       This is a pseudo-deployment that WILL trigger the deployment.
