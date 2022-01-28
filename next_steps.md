@@ -18,9 +18,9 @@
 - [x] add control flow for non-pr, non-master changes
 - [x] Need to add reviewer to enable deployment when not a pr and not master.
 - [x] Must not be an orphan ref
-- [] This will deploy to firebase under the branch name channel
+- [x] This will deploy to firebase under the branch name channel
 
-## pr-playwright action
+## playwright action
 - [] trigger workflow on successful deployment_status
 - [] Create new action to handle running playwrite after deployment
 - [] Check to make sure the deployment was triggered by a pr first
