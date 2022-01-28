@@ -1,0 +1,325 @@
+#########################################################################################################
+# Handled deployment of pull requests (firebase)
+#########################################################################################################
+
+name: PR Deployment
+
+concurrency:
+  # Only cancel for same environment, to prevent canceling current waiting deployments
+  group: '${{ github.workflow }} - ${{ github.event.deployment.environment }}'
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '16.13.2' # should match version in .nvmrc
+
+on:
+  repository_dispatch:
+    types: [test_result]
+
+jobs:
+
+#########################################################################################################
+
+  pull_request:
+    name: "Deploy | ${{ github.event.deployment.environment }}"
+    if: ${{ github.event.deployment.payload.type == 'pull_request' }}
+    runs-on: ubuntu-latest
+    env:
+      PR_DEPLOYMENT_ID: ${{ github.event.deployment.payload.deployment_id }}
+    steps:
+      - name: Print context - Testing 2
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+      - name: Print event
+        shell: python
+        run: |
+          print("""${{ toJSON(github.event) }}""")
+      - name: Print payload
+        shell: python
+        run: |
+          print("""${{ toJSON(github.event) }}""")
+
+#########################################################################################################
+
+      - name: Delete deployment for base ref
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/rest/reference/deployments#delete-a-deployment
+          route: DELETE /repos/{repo}/deployments/{deployment_id}
+          repo: ${{ github.repository }}
+          deployment_id: ${{ github.event.deployment.id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
+      - name: Update Deployment status - In Progress
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
+          route: POST /repos/{repo}/deployments/{deployment_id}/statuses
+          repo: ${{ github.repository }}
+          deployment_id: ${{ env.PR_DEPLOYMENT_ID }}
+          state: "in_progress"
+        env:
+          # Must be GITHUB_TOKEN or will trigger a deployment_status event
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#########################################################################################################
+
+      # - name: Checkout & Setup node
+      #   uses: nickofthyme/checkout-node-setup@v1
+      #   with:
+      #     repository: ${{ github.event.deployment.payload.repo }}
+      #     ref: ${{ github.event.deployment.payload.pr_head_ref }}
+      #     # See https://github.com/bahmutov/npm-install/issues/80
+      #     skip-npm-install: true # This fails on deployment events
+      # - run: yarn install --frozen-lockfile # TODO: fix caching
+
+#########################################################################################################
+#     Build Storybook and e2e server. Outputs build to /e2e-server/public
+#########################################################################################################
+
+      # - name: Building storybook
+      #   working-directory: storybook
+      #   run: yarn build:firebase
+      # - name: Generate e2e server files
+      #   run: yarn test:e2e:generate
+      # - name: Build e2e server inside storybook output directory
+      #   run: yarn test:e2e:server:build -o '../public/e2e'
+
+#########################################################################################################
+
+      # - name: Deploy build to firebase
+      #   id: deploy
+      #   uses: FirebaseExtended/action-hosting-deploy@v0
+      #   with:
+      #     expires: 14d # this updates for every deploy
+      #     entryPoint: 'e2e-server'
+      #     repoToken: '${{ secrets.GITHUB_TOKEN }}'
+      #     # New project on elastic's GCP org
+      #     # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
+      #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
+      #     projectId: 'ech-e2e-ci'
+      #     channelId: "pr${{ github.event.deployment.payload.pr_number }}" # e.g. pr123
+      # - name: Outputs
+      #   shell: python
+      #   run: |
+      #     print("""${{ toJSON(steps.deploy.outputs) }}""")
+
+#########################################################################################################
+
+      # - name: Get workflow run link
+      #   id: run_info
+      #   uses: actions/github-script@v5
+      #   with:
+      #     result-encoding: string
+      #     script: | # This is javascript :)
+      #       const { data } = await github.rest.actions.listJobsForWorkflowRun({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         run_id: context.runId,
+      #       });
+
+      #       const run = data.jobs.find(({ name, head_sha }) => {
+      #         return name.startsWith('Deploy | #') && head_sha === context.sha;
+      #       });
+
+      #       return run ? run.html_url :
+      #         `https://github.com/${context.owner}/${context.repo}/actions/runs/${context.runId}`;
+      #     github-token: ${{ secrets.ADMIN_TOKEN_GH }}
+      # - run: echo "run_info - ${{ steps.run_info.outputs.result }}"
+
+#########################################################################################################
+
+      - name: Update Deployment status - Success
+        if: ${{ success() }}
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
+          route: POST /repos/{repo}/deployments/{deployment_id}/statuses
+          repo: ${{ github.repository }}
+          deployment_id: ${{ env.PR_DEPLOYMENT_ID }}
+          state: "success"
+          log_url: "${{ steps.run_info.outputs.result }}" # link to github action run
+          environment_url: "https://ech-e2e-ci--pr1568-czfjtdq5.web.app"
+          # environment_url: ${{ steps.deploy.outputs.details_url }} # link to deployed firebase channel url
+        env:
+          # Must be GITHUB_TOKEN or will trigger a deployment_status event
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Deployment status - Failure
+        if: ${{ failure() }}
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
+          route: POST /repos/{repo}/deployments/{deployment_id}/statuses
+          repo: ${{ github.repository }}
+          deployment_id: ${{ env.PR_DEPLOYMENT_ID }}
+          state: "failure"
+          log_url: "${{ steps.run_info.outputs.result }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
+      - name: Update Deployment status - Cancelled
+        if: ${{ cancelled() }}
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
+          route: POST /repos/{repo}/deployments/{deployment_id}/statuses
+          repo: ${{ github.repository }}
+          deployment_id: ${{ env.PR_DEPLOYMENT_ID }}
+          state: "inactive"
+          log_url: "${{ steps.run_info.outputs.result }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
+#########################################################################################################
+
+  key-branch: # key branches excluding master
+    name: "Deploy | ${{ github.event.deployment.environment }}"
+    if: ${{ github.event.deployment.payload.ref_name == github.event.deployment.environment }}
+    runs-on: ubuntu-latest
+    environment:
+      name: "${{ github.event.deployment.environment }}"
+    outputs:
+      env-url: https://ech-e2e-ci--pr1568-czfjtdq5.web.app/ # TODO comes from steps
+    steps:
+
+      #########################################################################################################
+
+      # - name: Checkout & Setup node
+      #   uses: nickofthyme/checkout-node-setup@v1
+      #   with:
+      #     repository: ${{ github.event.deployment.payload.repo }}
+      #     ref: ${{ github.event.deployment.payload.pr_head_ref }}
+      #     # See https://github.com/bahmutov/npm-install/issues/80
+      #     skip-npm-install: true # This fails on deployment events
+      # - run: yarn install --frozen-lockfile # TODO: fix caching
+
+#########################################################################################################
+#     Build Storybook and e2e server. Outputs build to /e2e-server/public
+#########################################################################################################
+
+      # - name: Building storybook
+      #   working-directory: storybook
+      #   run: yarn build:firebase
+      # - name: Generate e2e server files
+      #   run: yarn test:e2e:generate
+      # - name: Build e2e server inside storybook output directory
+      #   run: yarn test:e2e:server:build -o '../public/e2e'
+
+#########################################################################################################
+
+      # - name: Deploy build to firebase
+      #   id: deploy
+      #   uses: FirebaseExtended/action-hosting-deploy@v0
+      #   with:
+      #     expires: 14d # this updates for every deploy
+      #     entryPoint: 'e2e-server'
+      #     repoToken: '${{ secrets.GITHUB_TOKEN }}'
+      #     # New project on elastic's GCP org
+      #     # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
+      #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
+      #     projectId: 'ech-e2e-ci'
+      #     channelId: ${{ github.event.deployment.payload.ref_name }} # e.g. next, v40.0.0, etc.
+      # - name: Outputs
+      #   shell: python
+      #   run: |
+      #     print("""${{ toJSON(steps.deploy.outputs) }}""")
+
+#########################################################################################################
+
+      - name: Print context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+
+  key-branch-update:
+    name: "Update url | ${{ github.event.deployment.environment }}"
+    if: ${{ github.event.deployment.payload.ref_name == github.event.deployment.environment }}
+    runs-on: ubuntu-latest
+    needs: key-branch
+    steps:
+      - name: Update Deployment status url
+        uses: actions/github-script@v5
+        with:
+          script: | # This is javascript :)
+            const { data: [deployment]} = await github.rest.repos.listDeployments({
+              ...context.repo,
+              task: "deploy",
+              sha: "${{ github.sha }}",
+              ref: "${{ github.event.deployment.payload.ref_name }}",
+              environment: "${{ github.event.deployment.environment }}",
+            });
+            if (deployment) {
+              await github.rest.repos.createDeploymentStatus({
+                ...context.repo,
+                state: 'success',
+                deployment_id: deployment.id,
+                environment_url: "${{ needs.key-branch.outputs.env-url }}",
+              });
+            }
+          github-token: ${{ secrets.ADMIN_TOKEN_GH }}
+
+#########################################################################################################
+
+  github-pages:
+    name: Deploy | GitHub pages
+    # branch policies defined in repo environment settings are also enforced
+    if: ${{ github.event.deployment.payload.ref_name == 'master' }}
+    environment:
+      name: github-pages
+      url: https://elastic.github.io/elastic-charts
+    runs-on: ubuntu-latest
+    steps:
+      # - name: Checkout & Setup node
+      #   uses: nickofthyme/checkout-node-setup@v1
+      #   with:
+      #     # See https://github.com/bahmutov/npm-install/issues/80
+      #     skip-npm-install: true # This fails on deployment events
+      # - run: yarn install --frozen-lockfile # TODO: fix caching
+
+#########################################################################################################
+#     Build Storybook and e2e server. Outputs build to /.out
+#########################################################################################################
+
+      # - name: Building storybook
+      #   working-directory: storybook
+      #   run: yarn build
+      # - name: Generate e2e server files
+      #   run: yarn test:e2e:generate
+      # - name: Build e2e server inside storybook output directory
+      #   run: yarn test:e2e:server:build -o '../../.out/e2e'
+
+      # - name: Deploy to github pages
+      #   uses: JamesIves/github-pages-deploy-action@3.7.1
+      #   with:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     BRANCH: gh-pages
+      #     FOLDER: .out
+      #     CLEAN: true
+
+      - name: Print context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+
+#########################################################################################################
+
+  failure-check:
+    name: Print context on failure
+    # if: ${{ failure() }} # TODO this
+    if: ${{ always() }}
+    needs: [pull_request, key-branch, key-branch-update, github-pages]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print github context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+      - name: Print needs context
+        shell: python
+        run: |
+          print("""${{ toJSON(needs) }}""")
+
+#########################################################################################################
