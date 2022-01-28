@@ -78,7 +78,7 @@ jobs:
           await github.rest.repos.createDeployment({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: "${{ github.ref_name }}",
+            ref: "${{ github.sha }}",
             task: 'trigger',
             auto_merge: false, // use branch as is without merging with base
             required_contexts: [], // TODO: check should be passed but could check
