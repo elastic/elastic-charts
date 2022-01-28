@@ -4,10 +4,10 @@
 
 name: E2E Tests
 
-concurrency:
-  # e.g. 'e2e_tests - <branch name>'
-  group: '${{ github.workflow }} - ${{ github.event.deployment.payload.head_ref || github.event.deployment.ref }}'
-  cancel-in-progress: true
+# concurrency:
+#   # e.g. 'e2e_tests - <branch name>'
+#   group: '${{ github.workflow }} - ${{ github.event.deployment.payload.head_ref || github.event.deployment.ref }}'
+#   cancel-in-progress: true
 
 env:
   NODE_VERSION: '16.13.2' # should match version in .nvmrc
@@ -67,7 +67,7 @@ jobs:
     needs: checks
     runs-on: ubuntu-latest
     if: ${{ success() && github.event.deployment.payload.type == 'pull_request' }}
-    # uses: elastic/elastic-charts/.github/workflows/checks.yml@next # TODO: set this to master
+    # uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
     steps:
       - run: echo "testing this run"
 
