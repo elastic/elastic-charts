@@ -5,7 +5,8 @@
 name: Deployments
 
 concurrency:
-  group: '${{ github.workflow }} - ${{ github.event.deployment.payload.pr_number || github.ref }}'
+  # Only cancel for same environment, to prevent canceling current waiting deployments
+  group: '${{ github.workflow }} - ${{ github.event.deployment.environment }}'
   cancel-in-progress: true
 
 env:
