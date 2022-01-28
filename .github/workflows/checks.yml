@@ -1,8 +1,10 @@
 #########################################################################################################
+# This is a reusable workflow to share common check between workflows.
+# See https://docs.github.com/en/actions/using-workflows/reusing-workflows
 # Runs all check associated with the repo, excluding playwright tests
 #########################################################################################################
 
-name: Reuable checks workflow
+name: Reusable checks workflow
 
 env:
   NODE_VERSION: '16.13.2' # should match version in .nvmrc
@@ -17,6 +19,11 @@ on:
         default: '16.13.2'
 
 jobs:
+
+#########################################################################################################
+# Setup is used to check and preload the npm cache is necessary
+#########################################################################################################
+
   setup:
     name: Setup
     runs-on: ubuntu-latest
@@ -25,7 +32,6 @@ jobs:
       - name: Checkout node setup
         uses: nickofthyme/checkout-node-setup@v1
         with:
-          ref: ${{ github.base_ref || '' }} # prevent changes to ci in prs
           skip-npm-install: true # Checks cache below
           # node-version: ${{ inputs.node-version }}
       - name: Install local action packages
@@ -109,47 +115,5 @@ jobs:
         run: yarn test:tz --ci
       - name: Testing
         run: yarn test --coverage --ci
-
-#########################################################################################################
-
-  build-sb:
-    name: Build Storybook
-    needs: setup
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout node setup
-        uses: nickofthyme/checkout-node-setup@v1
-      - name: Building storybook
-        run: yarn storybook:build
-      - name: Save build output
-        uses: actions/upload-artifact@v2
-        with:
-          name: sb-output
-          path: .out
-          if-no-files-found: error
-          retention-days: 1
-
-#########################################################################################################
-
-  deploy:
-    name: Deploy Storybook
-    needs: build-sb
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build
-        uses: actions/download-artifact@v2
-        with:
-          name: sb-output
-          path: .out
-
-      - name: Deploy master
-        if: github.ref == 'refs/heads/master'
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: .out
-          CLEAN: true
 
 #########################################################################################################

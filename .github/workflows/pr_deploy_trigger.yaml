@@ -105,7 +105,7 @@ jobs:
             });
             if (status !== 204) { // user is not an elastic member
               // https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
-              await octokit.rest.repos.createOrUpdateEnvironment({
+              await github.rest.repos.createOrUpdateEnvironment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 environment_name: "${{ env.ENVIRONMENT_NAME }}",
@@ -142,6 +142,7 @@ jobs:
 #       Then we just pass the ref to the pull request to be used in the deploy job.
 #       This will be protected evviroment to prevent 3rd parties from running this without approval.
 #       This deployment with be deleted inside the deploy job once triggered.
+#       Additionally we don't know firebase channel url ahead of time (SITE_ID--CHANNEL_ID-RANDOM_HASH.web.app)
 #########################################################################################################
 
       - name: Create new PR deployment for base ref
@@ -158,7 +159,7 @@ jobs:
               required_contexts: [],
               environment: "${{ env.ENVIRONMENT_NAME }}",
               payload: {
-                target: "firebase",
+                type: "pull_request",
                 repo: "${{ github.repository }}",
                 head_repo: "${{ github.event.pull_request.head.repo.full_name }}",
                 head_ref: "${{ github.event.pull_request.head.ref }}",

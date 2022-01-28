@@ -1,0 +1,28 @@
+#########################################################################################################
+# Handles CI checks for pull requests. PR Deployment handled in pr_deploy_trigger.yml.
+#########################################################################################################
+name: CI PR
+
+concurrency:
+  group: '${{ github.workflow }} - ${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    branches:
+      - master
+      - alpha
+      - next
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.x'
+      - '[0-9]+.x'
+
+jobs:
+
+#########################################################################################################
+
+  checks-workflow:
+    name: Checks
+    uses: elastic/elastic-charts/.github/workflows/checks.yml@next
+
+#########################################################################################################
