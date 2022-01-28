@@ -1,0 +1,154 @@
+#########################################################################################################
+# This is a reusable workflow to share common jobs between workflows.
+# See https://docs.github.com/en/actions/using-workflows/reusing-workflows
+# Runs playwright tests against e2e deployment for a given ref
+#########################################################################################################
+
+name: Reusable playwright workflow
+
+env:
+  NODE_VERSION: '16.13.2' # should match version in .nvmrc
+
+on:
+  workflow_call:
+    inputs:
+      sha:
+        required: true
+        type: string
+        deprecationMessage: Ref sha to checkout used to run playwright tests
+      url:
+        required: true
+        type: string
+        deprecationMessage: Base url of deployed e2e server to run tests against
+      node-version:
+        required: false
+        type: string
+        default: '16.13.2' # TODO: make this smarter
+
+jobs:
+
+#########################################################################################################
+
+  e2e-ping:
+    name: Ping e2e Server
+    if: ${{ github.head_ref == 'playwright' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the deployed e2e server URL
+        id: ping
+        uses: jtalk/url-health-check-action@v2
+        with:
+          url: ${{ inputs.url }}
+          max-attempts: 3
+          retry-delay: 2s
+      - name: Set commit status
+        if: ${{ failure() }}
+        uses: octokit/request-action@v2.x
+        with:
+          # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
+          route: POST /repos/{repo}/statuses/{sha}
+          repo: ${{ github.repository }}
+          state: error
+          target_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
+          sha: ${{ inputs.sha }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+
+  e2e-setup:
+    name: e2e Setup
+    runs-on: ubuntu-latest
+    needs: e2e-ping
+    outputs:
+      test-files: ${{ steps.test-files.outputs.json }}
+      playwright-version: ${{ steps.playwright.outputs.version }}
+    steps:
+      - name: Checkout & Setup node
+        uses: nickofthyme/checkout-node-setup@v1
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ inputs.sha }}
+          skip-npm-install: true
+      - name: Get test file paths
+        id: test-files
+        shell: python
+        run: |
+          import os, glob, json
+          os.chdir('e2e/tests')
+          files = glob.glob('**/*.test.ts', recursive=True)
+          print(f"::set-output name=json::{json.dumps(files)}")
+      - name: Get Playwright version
+        id: playwright
+        run: |
+          regex="@playwright/test@(.+)"
+          result="$(cd e2e && yarn list --pattern "@playwright/test" --depth=0 | grep playwright/test)"
+          if [[ $result =~ $regex ]]
+          then
+            echo "::set-output name=version::${BASH_REMATCH[1]}"
+          else
+            echo "Unable to find '@playwright/test' version"
+            exit 1
+          fi
+      - name: Print files
+        run: echo "${{ steps.test-files.outputs.json }}"
+      - name: Print version
+        run: echo "${{ steps.playwright.outputs.version }}"
+
+  e2e:
+    name: 'e2e Test / ${{ matrix.test-file }} / ${{ matrix.browser }}'
+    runs-on: ubuntu-latest
+    needs: e2e-setup
+    strategy:
+      fail-fast: false
+      max-parallel: 10 # tbd
+      matrix:
+        test-file: ${{ fromJSON(needs.e2e-setup.outputs.test-files) }}
+        browser: ['Chrome']
+        # browser: ['chrome', 'Safari', 'Firefox']
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.e2e-setup.outputs.playwright-version }}-focal
+    steps:
+      - name: Checkout & Setup node
+        uses: nickofthyme/checkout-node-setup@v1
+        with:
+          working-directory: e2e
+      - name: Test run
+        working-directory: e2e
+        run: yarn test --project=${{ matrix.browser }} ./tests/${{ matrix.test-file }}
+
+  # I don't know of better way to check the status of all the parallel e2e checks.
+  # The issue is that we need a constant status check if we are to add it as a
+  # required branch protection rule.
+  e2e-status:
+    name: e2e Status
+    if: ${{ always() && github.head_ref == 'playwright' }}
+    runs-on: ubuntu-latest
+    needs: e2e
+    steps:
+      - name: Print needs context
+        shell: python
+        run: |
+          print("""${{ toJSON(needs.e2e) }}""")
+      - name: Check e2e failure
+        if: ${{ needs.e2e.result != 'success' }}
+        uses: actions/github-script@v3
+        with:
+          script: core.setFailed('One or more e2e test failed. See e2e Test runs.')
+
+#########################################################################################################
+
+  failure-check:
+    name: Print context on failure
+    # if: ${{ failure() }} # TODO this
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print github context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+      - name: Print needs context
+        shell: python
+        run: |
+          print("""${{ toJSON(needs) }}""")
+
+#########################################################################################################

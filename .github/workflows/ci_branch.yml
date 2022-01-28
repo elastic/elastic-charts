@@ -104,7 +104,7 @@ jobs:
 #     if: github.ref == 'refs/heads/master'
 #     runs-on: ubuntu-latest
 #     steps:
-#       - name: Checkout node setup
+#       - name: Checkout & Setup node
 #         uses: nickofthyme/checkout-node-setup@v1
 #       - name: Building storybook
 #         run: yarn storybook:build

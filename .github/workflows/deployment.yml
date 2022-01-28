@@ -63,7 +63,7 @@ jobs:
 
 #########################################################################################################
 
-      # - name: Checkout node setup
+      # - name: Checkout & Setup node
       #   uses: nickofthyme/checkout-node-setup@v1
       #   with:
       #     repository: ${{ github.event.deployment.payload.repo }}
@@ -183,7 +183,7 @@ jobs:
 
       #########################################################################################################
 
-      # - name: Checkout node setup
+      # - name: Checkout & Setup node
       #   uses: nickofthyme/checkout-node-setup@v1
       #   with:
       #     repository: ${{ github.event.deployment.payload.repo }}
@@ -268,7 +268,7 @@ jobs:
       url: https://elastic.github.io/elastic-charts
     runs-on: ubuntu-latest
     steps:
-      # - name: Checkout node setup
+      # - name: Checkout & Setup node
       #   uses: nickofthyme/checkout-node-setup@v1
       #   with:
       #     # See https://github.com/bahmutov/npm-install/issues/80
