@@ -72,10 +72,11 @@ jobs:
 
     - name: Create new PR deployment for base ref
       uses: actions/github-script@v5
+      id: trigger-deployment
       with:
         # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
         script: | # This is javascript :)
-          await github.rest.repos.createDeployment({
+          return (await github.rest.repos.createDeployment({
             owner: context.repo.owner,
             repo: context.repo.repo,
             ref: "${{ github.sha }}",
@@ -86,10 +87,22 @@ jobs:
             payload: {
               ref_name: "${{ github.ref_name }}",
             },
-          });
+          })).data;
         # Cannot use GITHUB_TOKEN here or won't trigger deploy action
         # See https://github.com/octokit/request-action/issues/12
         github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
+
+    # Github duplicated deployment event when you use a deployment workflow with an environment.
+    # Basically they create a deployment to automate status updates, so this deployment is not needed.
+    - name: Delete triggered deployment
+      uses: octokit/request-action@v2.x
+      with:
+        # https://docs.github.com/en/rest/reference/deployments#delete-a-deployment
+        route: DELETE /repos/{repo}/deployments/{deployment_id}
+        repo: ${{ github.repository }}
+        deployment_id: ${{ fromJSON(steps.trigger-deployment.outputs.result).id }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
 
 # #########################################################################################################
 

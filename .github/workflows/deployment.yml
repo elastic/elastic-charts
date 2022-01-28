@@ -171,23 +171,6 @@ jobs:
 
 #########################################################################################################
 
-  active-deployment:
-    name: Cleanup trigger deployment
-    if: ${{ github.event.deployment.task == 'trigger' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Delete triggered deployment
-        uses: octokit/request-action@v2.x
-        with:
-          # https://docs.github.com/en/rest/reference/deployments#delete-a-deployment
-          route: DELETE /repos/{repo}/deployments/{deployment_id}
-          repo: ${{ github.repository }}
-          deployment_id: ${{ github.event.deployment.id }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
-
-#########################################################################################################
-
   key-branch: # key branches excluding master
     name: "Deploy | ${{ github.event.deployment.environment }}"
     if: ${{ github.event.deployment.payload.ref_name == github.event.deployment.environment }}
@@ -257,18 +240,18 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: | # This is javascript :)
-            const deploymentId = await github.rest.repos.listDeployments({
+            const { data: [deployment]} = await github.rest.repos.listDeployments({
               ...context.repo,
               task: "deploy",
               sha: "${{ github.sha }}",
               ref: "${{ github.event.deployment.payload.ref_name }}",
               environment: "${{ github.event.deployment.environment }}",
-            })[0]?.id;
-            if (deploymentId) {
+            });
+            if (deployment) {
               await github.rest.repos.createDeploymentStatus({
                 ...context.repo,
                 state: 'success',
-                deployment_id: deploymentId,
+                deployment_id: deployment.id,
                 environment_url: "${{ needs.key-branch.outputs.env-url }}",
               });
             }
