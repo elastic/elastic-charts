@@ -79,6 +79,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             ref: "${{ github.ref_name }}",
+            task: 'trigger',
             auto_merge: false, // use branch as is without merging with base
             required_contexts: [], // TODO: check should be passed but could check
             environment: "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}",
