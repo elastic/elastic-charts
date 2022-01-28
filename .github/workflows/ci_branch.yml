@@ -56,39 +56,39 @@ jobs:
 
 #########################################################################################################
 
-    - uses: actions/github-script@v5
-      id: environment
-      with:
-        script: |
-          return "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}";
-    - name: start deployment
-      uses: bobheadxi/deployments@v0.6.2
-      id: deployment
-      with:
-        step: start
-        token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
-        env: ${{steps.environment.outputs.result}}
-        ref: ${{ github.sha }}
-
-    # - name: Create new PR deployment for base ref
-    #   uses: actions/github-script@v5
+    # - uses: actions/github-script@v5
+    #   id: environment
     #   with:
-    #     # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
-    #     script: | # This is javascript :)
-    #       await github.rest.repos.createDeployment({
-    #         owner: context.repo.owner,
-    #         repo: context.repo.repo,
-    #         ref: "${{ github.ref_name }}",
-    #         auto_merge: false, // use branch as is without merging with base
-    #         required_contexts: [], // TODO: check should be passed but could check
-    #         environment: "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}",
-    #         payload: {
-    #           ref_name: "${{ github.ref_name }}",
-    #         },
-    #       });
-    #     # Cannot use GITHUB_TOKEN here or won't trigger deploy action
-    #     # See https://github.com/octokit/request-action/issues/12
-    #     github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
+    #     script: |
+    #       return "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}";
+    # - name: start deployment
+    #   uses: bobheadxi/deployments@v0.6.2
+    #   id: deployment
+    #   with:
+    #     step: start
+    #     token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
+    #     env: ${{steps.environment.outputs.result}}
+    #     ref: ${{ github.sha }}
+
+    - name: Create new PR deployment for base ref
+      uses: actions/github-script@v5
+      with:
+        # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
+        script: | # This is javascript :)
+          await github.rest.repos.createDeployment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: "${{ github.ref_name }}",
+            auto_merge: false, // use branch as is without merging with base
+            required_contexts: [], // TODO: check should be passed but could check
+            environment: "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}",
+            payload: {
+              ref_name: "${{ github.ref_name }}",
+            },
+          });
+        # Cannot use GITHUB_TOKEN here or won't trigger deploy action
+        # See https://github.com/octokit/request-action/issues/12
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
 # #########################################################################################################
 
