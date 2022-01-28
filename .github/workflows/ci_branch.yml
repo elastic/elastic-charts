@@ -60,7 +60,7 @@ jobs:
       id: environment
       with:
         script: |
-          return "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}",
+          return "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}";
     - name: start deployment
       uses: bobheadxi/deployments@v0.6.2
       id: deployment
