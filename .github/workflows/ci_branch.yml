@@ -62,7 +62,7 @@ jobs:
             reviewers: [{
               type: 'Team',
               id: 3693417, // datavis team id
-            }]
+            }],
           });
         github-token: ${{ secrets.ADMIN_TOKEN_GH }}
 
@@ -80,6 +80,9 @@ jobs:
             auto_merge: false, // use branch as is without merging with base
             required_contexts: [], // TODO: check should be passed but could check
             environment: "${{ env.ENVIRONMENT_NAME }}",
+            payload: {
+              ref_name: "${{ github.ref_name }}",
+            },
           });
         # Cannot use GITHUB_TOKEN here or won't trigger deploy action
         # See https://github.com/octokit/request-action/issues/12

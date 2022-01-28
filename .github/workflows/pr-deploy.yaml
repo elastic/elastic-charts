@@ -176,9 +176,9 @@ jobs:
 #########################################################################################################
 
   firebase-branch:
-    name: "Deploying ${{ github.event.deployment.environment }}"
+    name: "Deploying ${{ github.event.deployment.environment || 'pull request' }}"
+    if: ${{ github.event.deployment.payload.ref_name == github.event.deployment.environment }}
     runs-on: ubuntu-latest
-    # branch limitations defined in repo environment settings
     environment: ${{ github.event.deployment.environment }}
     steps:
       - name: Print context
@@ -198,7 +198,7 @@ jobs:
   testing-test:
     name: Testing Test
     runs-on: ubuntu-latest
-    # branch limitations defined in repo environment settings
+    if: ${{ github.event.deployment.payload.ref_name == 'test' }}
     environment: test
     steps:
       - name: Print context
@@ -208,7 +208,8 @@ jobs:
 
   github-pages:
     name: Deploying to GitHub pages
-    # branch limitations defined in repo environment settings
+    # branch policies defined in repo environment settings are also enforced
+    if: ${{ github.event.deployment.payload.ref_name == 'master' }}
     environment: github-pages
     runs-on: ubuntu-latest
     steps:
