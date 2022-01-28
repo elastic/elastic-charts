@@ -258,7 +258,8 @@ jobs:
         with:
           script: | # This is javascript :)
             const [deployment] = await github.rest.repos.listDeployments({
-              ...context.repo,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               task: "deploy",
               sha: "${{ github.sha }}",
               ref: "${{ github.ref_name }}",
@@ -266,7 +267,8 @@ jobs:
             });
             if (deployment) {
               await github.rest.repos.createDeploymentStatus({
-                ...context.repo,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 state: 'success',
                 deployment_id: deployment.id,
                 environment_url: "${{ needs.key-branch.outputs.env-url }}",
