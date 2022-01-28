@@ -2,7 +2,7 @@
 # Handles running playwright tests when deployment is complete
 #########################################################################################################
 
-name: E2E Test Trigger
+name: E2E Tests
 
 concurrency:
   group: '${{ github.workflow }} - ${{ github.event.deployment.id }}'
@@ -26,7 +26,7 @@ jobs:
     if: ${{ github.event.deployment_status.environment_url != '' }}
     steps:
     - name: Handle successful deployment
-      if: ${{ github.event.deployment_status.state != 'success' }}
+      if: ${{ github.event.deployment_status.state == 'success' }}
       uses: octokit/request-action@v2.x
       with:
         # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
@@ -40,7 +40,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
     - name: Handle error or failure in deployment
-      if: ${{ github.event.deployment_status.state != 'error' || github.event.deployment_status.state != 'failure' }}
+      if: ${{ github.event.deployment_status.state == 'error' || github.event.deployment_status.state == 'failure' }}
       uses: octokit/request-action@v2.x
       with:
         # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
@@ -54,7 +54,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
     - name: Fail check run if deployment failed
-      if: ${{ github.event.deployment_status.state != 'error' || github.event.deployment_status.state != 'failure' }}
+      if: ${{ github.event.deployment_status.state == 'error' || github.event.deployment_status.state == 'failure' }}
       uses: actions/github-script@v3
       with:
         script: core.setFailed("Deployment ${{ github.event.deployment_status.state }}, testing aborted.")
