@@ -2,7 +2,7 @@
 # Handles running playwright tests when deployment is complete
 #########################################################################################################
 
-name: Deployment
+name: E2E Tests
 
 concurrency:
   # e.g. 'e2e_tests - <branch name>'
