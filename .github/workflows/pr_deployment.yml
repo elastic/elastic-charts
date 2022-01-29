@@ -166,6 +166,11 @@ jobs:
             environment: "${{ github.event.client_payload.environment }}",
           });
           if (deployment) {
+            await github.rest.repos.createDeploymentStatus({
+              ...context.repo,
+              state: 'inactive',
+              deployment_id: deployment.id,
+            });
             await github.rest.repos.deleteDeployment({
               ...context.repo,
               deployment_id: deployment.id,
