@@ -3,7 +3,7 @@ name: Fire dispatch # test
 on:
   push:
     branches:
-      - master
+      # - master
 
 jobs:
   fire-dispatch-event:

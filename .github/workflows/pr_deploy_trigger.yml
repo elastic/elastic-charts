@@ -56,7 +56,7 @@ jobs:
           # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
           script: | # This is javascript :)
             return await github.rest.repos.createDeployment({
-              ...context.repo
+              ...context.repo,
               ref: context.payload.pull_request.head.sha,
               auto_merge: false, // use branch as is without merging with base
               required_contexts: [],

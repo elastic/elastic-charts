@@ -13,7 +13,7 @@ env:
   NODE_VERSION: '16.13.2' # should match version in .nvmrc
 
 on:
-  deployment
+  release:
 
 jobs:
 
