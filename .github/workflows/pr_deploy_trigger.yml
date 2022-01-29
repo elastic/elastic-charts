@@ -131,8 +131,8 @@ jobs:
                 environment: "${{ env.ENVIRONMENT_NAME }}",
                 branch_name: "${{ github.event.pull_request.head.ref }}",
                 sha: "${{ github.event.pull_request.head.sha }}",
-                pr_number: "${{ github.event.pull_request.number }}",
-                is_fork: "${{ github.event.pull_request.head.fork }}",
+                pr_number: ${{ github.event.pull_request.number }},
+                is_fork: ${{ github.event.pull_request.head.repo.fork }},
                 deployment_id: "${{ fromJSON(steps.deployment.outputs.result).data.id }}",
               },
             });
