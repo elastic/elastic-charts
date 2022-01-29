@@ -1,3 +1,5 @@
+name: Cool name
+
 on:
   repository_dispatch:
     types: [test_result_old]
