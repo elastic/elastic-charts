@@ -4,6 +4,7 @@ on:
   push:
     branches:
       # - master
+      - none
 
 jobs:
   fire-dispatch-event:
