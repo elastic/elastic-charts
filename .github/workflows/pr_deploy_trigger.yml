@@ -118,42 +118,27 @@ jobs:
 
 #########################################################################################################
 
-      - name: Fire test
-        uses: octokit/request-action@v2.x
+      - name: Trigger deployment
+        uses: actions/github-script@v5
         with:
           # https://docs.github.com/en/rest/reference/repos#create-a-repository-dispatch-event
-          route: POST /repos/{repo}/dispatches
-          repo: ${{ github.repository }}
-          event_type: 'deploy_pull_request'
-          client_payload: |
-            {
-              "passed": false,
-              "message": "Error: timeout"
-            }
-        env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
-
-      # - name: Trigger deployment
-      #   uses: actions/github-script@v5
-      #   with:
-      #     # https://docs.github.com/en/rest/reference/repos#create-a-repository-dispatch-event
-      #     script: | # This is javascript :)
-      #       await github.rest.repos.createDispatchEvent({
-      #         ...context.repo,
-      #         event_type: 'deploy_pull_request',
-      #         client_payload: {
-      #           ref: context.sha,
-      #           environment: "${{ env.ENVIRONMENT_NAME }}",
-      #           repo: "${{ github.repository }}",
-      #           head_repo: "${{ github.event.pull_request.head.repo.full_name }}",
-      #           head_ref: "${{ github.event.pull_request.head.ref }}",
-      #           head_sha: "${{ github.event.pull_request.head.sha }}",
-      #           pr_head_ref: "refs/pull/${{ github.event.pull_request.number }}/head",
-      #           pr_merge_ref: "refs/pull/${{ github.event.pull_request.number }}/merge",
-      #           pr_number: "${{ github.event.pull_request.number }}",
-      #           deployment_id: "${{ fromJSON(steps.deployment.outputs.result).data.id }}",
-      #         },
-      #       });
-      #     github-token: ${{ secrets.ADMIN_TOKEN_GH }}
+          script: | # This is javascript :)
+            await github.rest.repos.createDispatchEvent({
+              ...context.repo,
+              event_type: 'deploy_pull_request',
+              client_payload: {
+                ref: context.sha,
+                environment: "${{ env.ENVIRONMENT_NAME }}",
+                repo: "${{ github.repository }}",
+                head_repo: "${{ github.event.pull_request.head.repo.full_name }}",
+                head_ref: "${{ github.event.pull_request.head.ref }}",
+                head_sha: "${{ github.event.pull_request.head.sha }}",
+                pr_head_ref: "refs/pull/${{ github.event.pull_request.number }}/head",
+                pr_merge_ref: "refs/pull/${{ github.event.pull_request.number }}/merge",
+                pr_number: "${{ github.event.pull_request.number }}",
+                deployment_id: "${{ fromJSON(steps.deployment.outputs.result).data.id }}",
+              },
+            });
+          github-token: ${{ secrets.ADMIN_TOKEN_GH }}
 
 #########################################################################################################
