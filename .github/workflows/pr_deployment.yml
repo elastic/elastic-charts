@@ -12,9 +12,9 @@ env:
   NODE_VERSION: '16.13.2' # should match version in .nvmrc
 
 on:
-  repository_dispatch: # Only triggered from master
+  repository_dispatch: # Only triggers workflow from master
     types:
-      - deploy_pull_request
+      - 'Deploy pull request'
 
 jobs:
 
@@ -26,8 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       deployment_id: ${{ github.event.client_payload.deployment_id }}
-      repo: ${{ github.event.client_payload.repo }}
       pr_number: ${{ github.event.client_payload.pr_number }}
+    outputs:
+      environment_url: ${{ steps.deploy.outputs.details_url }}
+      log_url: "${{ steps.run_info.outputs.result }}"
     steps:
       - name: Print context - Testing 2
         shell: python
@@ -41,23 +43,22 @@ jobs:
         with:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
           route: POST /repos/{repo}/deployments/{deployment_id}/statuses
-          repo: ${{ env.repo }}
+          repo: "${{ github.repository }}"
           deployment_id: ${{ env.deployment_id }}
           state: in_progress
         env:
-          # Must be GITHUB_TOKEN or will trigger a deployment_status event
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #########################################################################################################
 
-      - name: Checkout & Setup node
-        uses: nickofthyme/checkout-node-setup@v1
-        with:
-          repository: ${{ github.event.client_payload.repo }}
-          ref: "refs/pull/${{ env.pr_number }}/merge" # maybe /head ????
-          # See https://github.com/bahmutov/npm-install/issues/80
-          skip-npm-install: true # This fails
-      - run: yarn install --frozen-lockfile # TODO: fix caching
+      # - name: Checkout & Setup node
+      #   uses: nickofthyme/checkout-node-setup@v1
+      #   with:
+      #     repository: ${{ github.event.client_payload.repo }}
+      #     ref: "refs/pull/${{ env.pr_number }}/merge" # maybe /head ????
+      #     # See https://github.com/bahmutov/npm-install/issues/80
+      #     skip-npm-install: true # This fails
+      # - run: yarn install --frozen-lockfile # TODO: fix caching
 
 #########################################################################################################
 #     Build Storybook and e2e server. Outputs build to /e2e-server/public
@@ -110,26 +111,10 @@ jobs:
 
       #       return run ? run.html_url :
       #         `https://github.com/${context.owner}/${context.repo}/actions/runs/${context.runId}`;
-      #     github-token: ${{ secrets.ADMIN_TOKEN_GH }}
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
       # - run: echo "run_info - ${{ steps.run_info.outputs.result }}"
 
 #########################################################################################################
-
-      - name: Update Deployment status - Success
-        if: ${{ success() }}
-        uses: octokit/request-action@v2.x
-        with:
-          # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
-          route: POST /repos/{repo}/deployments/{deployment_id}/statuses
-          repo: ${{ env.repo }}
-          deployment_id: ${{ env.deployment_id }}
-          state: "success"
-          log_url: "${{ steps.run_info.outputs.result }}" # link to github action run
-          environment_url: "https://ech-e2e-ci--pr1568-czfjtdq5.web.app"
-          # environment_url: ${{ steps.deploy.outputs.details_url }} # link to deployed firebase channel url
-        env:
-          # Must be GITHUB_TOKEN or will trigger a deployment_status event
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Deployment status - Failure
         if: ${{ failure() }}
@@ -137,7 +122,7 @@ jobs:
         with:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
           route: POST /repos/{repo}/deployments/{deployment_id}/statuses
-          repo: ${{ env.repo }}
+          repo: "${{ github.repository }}"
           deployment_id: ${{ env.deployment_id }}
           state: "failure"
           log_url: "${{ steps.run_info.outputs.result }}"
@@ -150,12 +135,58 @@ jobs:
         with:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
           route: POST /repos/{repo}/deployments/{deployment_id}/statuses
-          repo: ${{ env.repo }}
+          repo: "${{ github.repository }}"
           deployment_id: ${{ env.deployment_id }}
           state: "inactive"
           log_url: "${{ steps.run_info.outputs.result }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#########################################################################################################
+
+  cleanup:
+    name: Cleanup and update statuses
+    needs: build-deploy
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    env:
+      deployment_id: ${{ github.event.client_payload.deployment_id }}
+    steps:
+    # This will create a duplicate deployment refernce that points to the wrong commit
+    - name: Delete auto-created Deployment from deploy job
+      if: ${{ github.event.client_payload.payload.is_fork }}
+      uses: actions/github-script@v5
+      with:
+        script: | # This is javascript :)
+          const { data: [deployment]} = await github.rest.repos.listDeployments({
+            ...context.repo,
+            task: "deploy",
+            sha: "${{ github.sha }}",
+            ref: "${{ github.ref_name }}",
+            environment: "${{ github.event.client_payload.environment }}",
+          });
+          if (deployment) {
+            await github.rest.repos.deleteDeployment({
+              ...context.repo,
+              deployment_id: deployment.id,
+            });
+          }
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # Need to wait until deploy job is finished to issue success or this will become incative
+    - name: Update Deployment status - success
+      if: ${{ always() && needs.build-deploy.result == 'success' }}
+      uses: octokit/request-action@v2.x
+      with:
+        # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
+        route: POST /repos/{repo}/deployments/{deployment_id}/statuses
+        repo: "${{ github.repository }}"
+        deployment_id: ${{ env.deployment_id }}
+        state: "success"
+        log_url: ${{ needs.build-deploy.outputs.log_url }} # link to github action run
+        environment_url: ${{ needs.build-deploy.outputs.environment_url }} # link to deployed firebase channel url
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #########################################################################################################
 

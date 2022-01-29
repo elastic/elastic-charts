@@ -125,17 +125,14 @@ jobs:
           script: | # This is javascript :)
             await github.rest.repos.createDispatchEvent({
               ...context.repo,
-              event_type: 'deploy_pull_request',
+              event_type: 'Deploy pull request',
               client_payload: {
-                ref: context.sha,
-                environment: "${{ env.ENVIRONMENT_NAME }}",
                 repo: "${{ github.repository }}",
-                head_repo: "${{ github.event.pull_request.head.repo.full_name }}",
-                head_ref: "${{ github.event.pull_request.head.ref }}",
-                head_sha: "${{ github.event.pull_request.head.sha }}",
-                pr_head_ref: "refs/pull/${{ github.event.pull_request.number }}/head",
-                pr_merge_ref: "refs/pull/${{ github.event.pull_request.number }}/merge",
+                environment: "${{ env.ENVIRONMENT_NAME }}",
+                branch_name: "${{ github.event.pull_request.head.ref }}",
+                sha: "${{ github.event.pull_request.head.sha }}",
                 pr_number: "${{ github.event.pull_request.number }}",
+                is_fork: "${{ github.event.pull_request.head.fork }}",
                 deployment_id: "${{ fromJSON(steps.deployment.outputs.result).data.id }}",
               },
             });
