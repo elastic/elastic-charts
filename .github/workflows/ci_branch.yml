@@ -68,9 +68,9 @@ jobs:
         script: | # This is javascript :)
           await github.rest.repos.createDispatchEvent({
             ...context.repo,
-            event_type: "${{ steps.environment.outputs.result }}",
+            event_type: "${{ steps.event_type.outputs.result }}",
             client_payload: {
-              environment: "${{ steps.event_type.outputs.result }}",
+              environment: "${{ steps.environment.outputs.result }}",
               branch_name: "${{ github.ref_name }}",
             },
 
