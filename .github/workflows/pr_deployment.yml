@@ -13,8 +13,7 @@ env:
 
 on:
   repository_dispatch: # Only triggered from master
-    types:
-      - deploy_pull_request
+    types: [deploy_pull_request]
 
 jobs:
 
