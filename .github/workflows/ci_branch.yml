@@ -1,6 +1,7 @@
 #########################################################################################################
-# Handles CI checks for pull requests and pushed to all key branches
+# Handles CI checks and triggers deployment for pushes to key branches
 #########################################################################################################
+
 name: CI Branch
 
 concurrency:
@@ -10,7 +11,7 @@ concurrency:
 on:
   push:
     branches:
-      # - master
+      - master
       - alpha
       - next
       - '[0-9]+.[0-9]+.[0-9]+'
@@ -18,164 +19,80 @@ on:
       - '[0-9]+.x'
 
 jobs:
-
-#########################################################################################################
-
-  # checks-workflow:
-  #   name: Checks
-  #   uses: elastic/elastic-charts/.github/workflows/checks.reusable.yml@master # TODO: set this to master
-
-
-#########################################################################################################
+  checks-workflow:
+    name: Checks
+    # uses: elastic/elastic-charts/.github/workflows/checks.reusable.yml@master # TODO this
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Placeholder"
 
   trigger-deploy:
-    name: Trigger deployment of branch
-    # needs: checks-workflow # wait for all workflow checks to pass
+    name: Trigger deployment
     runs-on: ubuntu-latest
-    outputs:
-      id: ${{ fromJSON(steps.trigger-deployment.outputs.result).id }}
     steps:
+    - name: Get deployment environment
+      uses: actions/github-script@v5
+      id: environment
+      with:
+        result-encoding: string
+        script: |
+          return "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}";
+    - name: Get deployment event type
+      uses: actions/github-script@v5
+      id: event_type
+      with:
+        result-encoding: string
+        script: |
+          return "${{ github.ref_name }}" === 'master' ? 'Deploy GitHub pages' : "Deploy branch";
 
-#########################################################################################################
-
-    - name: Create restricted environment for key branches
+    - name: Create restricted environment
       if: github.ref_name != 'master'
       uses: actions/github-script@v5
       with:
-        # TODO: check that this env is cleaned up after master merge and deploy
         script: | # This is javascript :)
           // https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
           await github.rest.repos.createOrUpdateEnvironment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
+            ...context.repo,
             environment_name: "${{ github.ref_name }}",
             reviewers: [{
               type: 'Team',
               id: 3693417, // datavis team id
             }],
           });
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Trigger deployment workflow
+      uses: actions/github-script@v5
+      with:
+        # https://docs.github.com/en/rest/reference/repos#create-a-repository-dispatch-event
+        script: | # This is javascript :)
+          await github.rest.repos.createDispatchEvent({
+            ...context.repo,
+            event_type: ${{ steps.environment.outputs.result }},
+            client_payload: {
+              environment: ${{ steps.event_type.outputs.result }},
+              branch_name: "${{ github.ref_name }}",
+            },
+
+          });
         github-token: ${{ secrets.ADMIN_TOKEN_GH }}
 
 #########################################################################################################
 
-    # - uses: actions/github-script@v5
-    #   id: environment
-    #   with:
-    #     script: |
-    #       return "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}";
-    # - name: start deployment
-    #   uses: bobheadxi/deployments@v0.6.2
-    #   id: deployment
-    #   with:
-    #     step: start
-    #     token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
-    #     env: ${{steps.environment.outputs.result}}
-    #     ref: ${{ github.sha }}
-
-    - name: Create new PR deployment for branch
-      uses: actions/github-script@v5
-      id: trigger-deployment
-      with:
-        # https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
-        script: | # This is javascript :)
-          return (await github.rest.repos.createDeployment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: "${{ github.sha }}",
-            task: 'trigger',
-            auto_merge: false, // use branch as is without merging with base
-            required_contexts: [], // TODO: check should be passed but could check
-            environment: "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}",
-            payload: {
-              ref_name: "${{ github.ref_name }}",
-            },
-          })).data;
-        # Cannot use GITHUB_TOKEN here or won't trigger deploy action
-        # See https://github.com/octokit/request-action/issues/12
-        github-token: ${{ secrets.GH_DEPLOYMENT_TOKEN }}
-
-
-
-# #########################################################################################################
-
-#   build-sb:
-#     name: Build Storybook
-#     needs: checks-workflow
-#     if: github.ref == 'refs/heads/master'
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout & Setup node
-#         uses: nickofthyme/checkout-node-setup@v1
-#       - name: Building storybook
-#         run: yarn storybook:build
-#       - name: Save build output
-#         uses: actions/upload-artifact@v2
-#         with:
-#           name: sb-output
-#           path: .out
-#           if-no-files-found: error
-#           retention-days: 1
-
-# #########################################################################################################
-
-#   deploy:
-#     name: Deploy Storybook
-#     needs: build-sb
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Download build
-#         uses: actions/download-artifact@v2
-#         with:
-#           name: sb-output
-#           path: .out
-
-#       - name: Deploy master
-#         if: github.ref == 'refs/heads/master'
-#         uses: JamesIves/github-pages-deploy-action@3.7.1
-#         with:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#           BRANCH: gh-pages
-#           FOLDER: .out
-#           CLEAN: true
-
-# #########################################################################################################
-
-  final-cleanup:
-    name: Cleanup
-    needs: [trigger-deploy]
+  failure-check:
+    name: Print context on failure
+    # if: ${{ failure() }} # TODO this
+    if: ${{ always() }}
+    needs: [checks-workflow, trigger-deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Print github context
         shell: python
         run: |
           print("""${{ toJSON(github) }}""")
-
-      # Github creates a duplicate deployment event when you use a deployment workflow with an environment.
-      # Basically they create a deployment to automate status updates, so this deployment is not needed.
-      - name: Delete triggered deployment
-        if: ${{ needs.trigger-deploy.outputs.id }}
-        uses: octokit/request-action@v2.x
-        with:
-          # https://docs.github.com/en/rest/reference/deployments#delete-a-deployment
-          route: DELETE /repos/{repo}/deployments/{deployment_id}
-          repo: ${{ github.repository }}
-          deployment_id: ${{ needs.trigger-deploy.outputs.id }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+      - name: Print needs context
+        shell: python
+        run: |
+          print("""${{ toJSON(needs) }}""")
 
 #########################################################################################################
-
-  # active-deployment:
-  #   name: Cleanup trigger deployment
-  #   if: ${{ github.event.deployment.task == 'trigger' }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Delete triggered deployment
-  #       uses: octokit/request-action@v2.x
-  #       with:
-  #         # https://docs.github.com/en/rest/reference/deployments#delete-a-deployment
-  #         route: DELETE /repos/{repo}/deployments/{deployment_id}
-  #         repo: ${{ github.repository }}
-  #         deployment_id: ${{ github.event.deployment.id }}
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}

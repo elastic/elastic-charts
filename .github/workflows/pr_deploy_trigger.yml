@@ -20,11 +20,10 @@ permissions:
   security-events: none
 
 on:
-#########################################################################################################
-# Needed to allow forks to access secrets in ci with limited scope
+
+# The _target event is needed to allow forks to access secrets in ci with limited scope
 # This is why we limit 3rd party contributors running actions
 # See https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request_target
-#########################################################################################################
   pull_request_target:
     branches:
       - master
@@ -35,8 +34,8 @@ on:
       # - '[0-9]+.x'
 
 jobs:
-  testing:
-    name: Testing deployment event
+  trigger-deploy:
+    name: Trigger deployment
     runs-on: ubuntu-latest
     env:
       ENVIRONMENT_NAME: "PR #${{ github.event.pull_request.number }}"
@@ -104,7 +103,7 @@ jobs:
         run: |
           print("""${{ toJSON(fromJSON(steps.deployment.outputs.result)) }}""")
 
-      - name: Update Deployment status to queued
+      - name: Update Deployment status - queued
         uses: octokit/request-action@v2.x
         with:
           # https://docs.github.com/en/rest/reference/deployments#create-a-deployment-status
@@ -127,7 +126,6 @@ jobs:
               ...context.repo,
               event_type: 'Deploy pull request',
               client_payload: {
-                repo: "${{ github.repository }}",
                 environment: "${{ env.ENVIRONMENT_NAME }}",
                 branch_name: "${{ github.event.pull_request.head.ref }}",
                 sha: "${{ github.event.pull_request.head.sha }}",

@@ -1,5 +1,5 @@
 #########################################################################################################
-# Handled deployment of pull requests (firebase)
+# Handles deployment of pull requests to firebase
 #########################################################################################################
 
 name: PR Deployment
@@ -51,68 +51,66 @@ jobs:
 
 #########################################################################################################
 
-      # - name: Checkout & Setup node
-      #   uses: nickofthyme/checkout-node-setup@v1
-      #   with:
-      #     repository: ${{ github.event.client_payload.repo }}
-      #     ref: "refs/pull/${{ env.pr_number }}/merge" # maybe /head ????
-      #     # See https://github.com/bahmutov/npm-install/issues/80
-      #     skip-npm-install: true # This fails
-      # - run: yarn install --frozen-lockfile # TODO: fix caching
-
-#########################################################################################################
-#     Build Storybook and e2e server. Outputs build to /e2e-server/public
-#########################################################################################################
-
-      # - name: Building storybook
-      #   working-directory: storybook
-      #   run: yarn build:firebase
-      # - name: Generate e2e server files
-      #   run: yarn test:e2e:generate
-      # - name: Build e2e server inside storybook output directory
-      #   run: yarn test:e2e:server:build -o '../public/e2e'
+      - name: Checkout & Setup node
+        uses: nickofthyme/checkout-node-setup@v1
+        with:
+          repository: ${{ github.event.client_payload.repo }}
+          ref: "refs/pull/${{ env.pr_number }}/merge" # maybe /head ????
+          # See https://github.com/bahmutov/npm-install/issues/80
+          skip-npm-install: true # This fails
+      - run: yarn install --frozen-lockfile # TODO: fix caching
 
 #########################################################################################################
 
-      # - name: Deploy build to firebase
-      #   id: deploy
-      #   uses: FirebaseExtended/action-hosting-deploy@v0
-      #   with:
-      #     expires: 14d # this updates for every deploy
-      #     entryPoint: 'e2e-server'
-      #     repoToken: '${{ secrets.GITHUB_TOKEN }}'
-      #     # New project on elastic's GCP org
-      #     # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
-      #     firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
-      #     projectId: 'ech-e2e-ci'
-      #     channelId: "pr-${{ env.pr_number }}" # e.g. pr123
-      # - name: Outputs
-      #   shell: python
-      #   run: |
-      #     print("""${{ toJSON(steps.deploy.outputs) }}""")
+      - name: Building storybook
+        working-directory: storybook
+        run: yarn build:firebase # Outputs build to /e2e-server/public
+      - name: Generate e2e server files
+        run: yarn test:e2e:generate
+      - name: Build e2e server inside storybook output directory
+        run: yarn test:e2e:server:build -o '../public/e2e' # Outputs build to /e2e-server/public/e2e
 
 #########################################################################################################
 
-      # - name: Get workflow run link
-      #   id: run_info
-      #   uses: actions/github-script@v5
-      #   with:
-      #     result-encoding: string
-      #     script: | # This is javascript :)
-      #       const { data } = await github.rest.actions.listJobsForWorkflowRun({
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         run_id: context.runId,
-      #       });
+      - name: Deploy build to firebase
+        id: deploy
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          expires: 14d # this updates for every deploy
+          entryPoint: 'e2e-server'
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          # New project on elastic's GCP org
+          # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
+          projectId: 'ech-e2e-ci'
+          channelId: "pr-${{ env.pr_number }}" # e.g. pr123
+      - name: Outputs
+        shell: python
+        run: |
+          print("""${{ toJSON(steps.deploy.outputs) }}""")
 
-      #       const run = data.jobs.find(({ name, head_sha }) => {
-      #         return name.startsWith('Deploy | #') && head_sha === context.sha;
-      #       });
+#########################################################################################################
 
-      #       return run ? run.html_url :
-      #         `https://github.com/${context.owner}/${context.repo}/actions/runs/${context.runId}`;
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      # - run: echo "run_info - ${{ steps.run_info.outputs.result }}"
+      - name: Get workflow run link # TODO: make logic this smarter
+        id: run_info
+        uses: actions/github-script@v5
+        with:
+          result-encoding: string
+          script: | # This is javascript :)
+            const { data } = await github.rest.actions.listJobsForWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId,
+            });
+
+            const run = data.jobs.find(({ name, head_sha }) => {
+              return name.startsWith('Deploy | #') && head_sha === context.sha;
+            });
+
+            return run ? run.html_url :
+              `https://github.com/${context.owner}/${context.repo}/actions/runs/${context.runId}`;
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "run_info - ${{ steps.run_info.outputs.result }}" # TODO: remove
 
 #########################################################################################################
 
@@ -152,7 +150,7 @@ jobs:
     env:
       deployment_id: ${{ github.event.client_payload.deployment_id }}
     steps:
-    # This will create a duplicate deployment refernce that points to the wrong commit
+    # This will create a duplicate deployment refernce that points to the wrong commit (from master)
     - name: Delete auto-created Deployment from deploy job
       if: ${{ github.event.client_payload.is_fork }}
       uses: actions/github-script@v5
@@ -161,11 +159,12 @@ jobs:
           const { data: [deployment]} = await github.rest.repos.listDeployments({
             ...context.repo,
             task: "deploy",
+            per_page: 1,
             sha: "${{ github.sha }}",
             ref: "${{ github.ref_name }}",
             environment: "${{ github.event.client_payload.environment }}",
           });
-          if (deployment) {
+          if (deployment && deployment.id) {
             await github.rest.repos.createDeploymentStatus({
               ...context.repo,
               state: 'inactive',

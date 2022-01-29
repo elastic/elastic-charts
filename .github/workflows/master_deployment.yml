@@ -1,0 +1,72 @@
+#########################################################################################################
+# Handles deployment of master to github pages
+#########################################################################################################
+
+name: Master Deployment
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '16.13.2' # should match version in .nvmrc
+
+on:
+  repository_dispatch: # Only triggers workflow from master
+    types:
+      - 'Deploy GitHub pages'
+
+jobs:
+  build-deploy:
+    name: Deploy | github-pages
+    runs-on: ubuntu-latest
+    if: ${{ github.ref_name == 'master' }}
+    # branch policies defined in repo environment settings are also enforced
+    environment:
+      name: github-pages
+      url: https://elastic.github.io/elastic-charts
+    steps:
+      - name: Checkout & Setup node
+        uses: nickofthyme/checkout-node-setup@v1
+        with:
+          repository: ${{ github.repo }}
+          ref: ${{ github.ref }} # TODO: check these make sense
+          # See https://github.com/bahmutov/npm-install/issues/80
+          skip-npm-install: true # This fails on deployment events
+      - run: yarn install --frozen-lockfile # TODO: fix caching
+
+      - name: Building storybook
+        working-directory: storybook
+        run: yarn build # Outputs build to /.out
+      - name: Generate e2e server files
+        run: yarn test:e2e:generate
+      - name: Build e2e server inside storybook output directory
+        run: yarn test:e2e:server:build -o '../../.out/e2e' # Outputs build to /.out/e2e
+
+      - name: Deploy to github pages
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: .out
+          CLEAN: true
+
+#########################################################################################################
+
+  failure-check:
+    name: Print context on failure
+    # if: ${{ failure() }} # TODO this
+    if: ${{ always() }}
+    needs: [build-deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print github context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+      - name: Print needs context
+        shell: python
+        run: |
+          print("""${{ toJSON(needs) }}""")
+
+#########################################################################################################
