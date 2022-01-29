@@ -194,7 +194,7 @@ jobs:
     name: Print context on failure
     # if: ${{ failure() }} # TODO this
     if: ${{ always() }}
-    needs: deploy
+    needs: build-deploy
     runs-on: ubuntu-latest
     steps:
       - name: Print github context
