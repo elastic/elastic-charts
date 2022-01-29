@@ -8,9 +8,9 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  pull_request:
+  push:
     branches:
-      - master
+      # - master
       - alpha
       - next
       - '[0-9]+.[0-9]+.[0-9]+'
@@ -23,6 +23,6 @@ jobs:
 
   checks-workflow:
     name: Checks
-    uses: elastic/elastic-charts/.github/workflows/checks.yml@next
+    uses: elastic/elastic-charts/.github/workflows/checks.reusable.yml@master
 
 #########################################################################################################

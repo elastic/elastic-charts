@@ -13,7 +13,7 @@ env:
   E2E_CHECK_CONTEXT: 'Playwright e2e' # should match playwright.yml workflow
 
 on:
-  deployment_status
+  release:
 
 jobs:
 
@@ -66,7 +66,7 @@ jobs:
     needs: checks
     if: ${{ success() && github.event.deployment.payload.head_ref == 'playwright'  }}
     # if: ${{ success() && github.event.deployment.payload.type == 'pull_request' }}
-    uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
+    uses: elastic/elastic-charts/.github/workflows/playwright.reusable.yml@master # TODO: set this to master
     with:
       url: ${{ github.event.deployment_status.environment_url }}
       sha: ${{ github.event.deployment.sha }}
@@ -77,7 +77,7 @@ jobs:
   #   name: Branch
   #   needs: checks
   #   if: ${{ success() && github.event.deployment.payload.type != 'pull_request' }}
-  #   uses: elastic/elastic-charts/.github/workflows/playwright.yml@next # TODO: set this to master
+  #   uses: elastic/elastic-charts/.github/workflows/playwright.reusable.yml@master # TODO: set this to master
 
 #########################################################################################################
 

@@ -1,0 +1,117 @@
+#########################################################################################################
+# Handles deployment of key branches to firebase
+#########################################################################################################
+
+name: Branch Deployment
+
+concurrency:
+  group: '${{ github.workflow }} - ${{ github.event.client_payload.environment }}'
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '16.13.2' # should match version in .nvmrc
+
+on:
+  repository_dispatch: # Only triggers workflow from master
+    types:
+      - 'Deploy branch'
+
+jobs:
+  build-deploy:
+    name: "Deploy | ${{ github.event.deployment.environment }}"
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.client_payload.environment }}
+    outputs:
+      environment_url: https://ech-e2e-ci--pr1568-czfjtdq5.web.app/ # TODO this
+      # environment_url: ${{ steps.deploy.outputs.details_url }}
+    steps:
+      - name: Checkout & Setup node
+        uses: nickofthyme/checkout-node-setup@v1
+        with:
+          repository: ${{ github.repo }}
+          ref: ${{ github.ref }} # TODO: check these make sense
+          # See https://github.com/bahmutov/npm-install/issues/80
+          skip-npm-install: true # This fails on deployment events
+      - run: yarn install --frozen-lockfile # TODO: fix caching
+
+#########################################################################################################
+
+      - name: Building storybook
+        working-directory: storybook
+        run: yarn build:firebase # Outputs build to /e2e-server/public
+      - name: Generate e2e server files
+        run: yarn test:e2e:generate
+      - name: Build e2e server inside storybook output directory
+        run: yarn test:e2e:server:build -o '../public/e2e' # Outputs build to /e2e-server/public/e2e
+
+#########################################################################################################
+
+      - name: Deploy build to firebase
+        id: deploy
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          expires: 14d # this updates for every new deployment
+          entryPoint: 'e2e-server'
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          # New project on elastic's GCP org
+          # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
+          projectId: 'ech-e2e-ci'
+          channelId: ${{ github.event.client_payload.ref_name }} # e.g. next, v40.0.0, etc.
+
+      - name: Outputs # TODO: remove
+        shell: python
+        run: |
+          print("""${{ toJSON(steps.deploy.outputs) }}""")
+
+#########################################################################################################
+
+  cleanup:
+    name: Cleanup
+    runs-on: ubuntu-latest
+    needs: build-deploy
+    steps:
+      - name: Update deployment status url
+        uses: actions/github-script@v5
+        with:
+          script: | # This is javascript :)
+            const { data: [deployment]} = await github.rest.repos.listDeployments({
+              ...context.repo,
+              task: "deploy",
+              per_page: 1,
+              sha: "${{ github.sha }}",
+              ref: "${{ github.ref_name }}",
+              environment: "${{ github.event.client_payload.environment }}",
+            });
+
+            if (deployment) {
+              await github.rest.repos.createDeploymentStatus({
+                ...context.repo,
+                state: 'success',
+                deployment_id: deployment.id,
+                log_url: deployment.log_url,
+                environment_url: "${{ needs.build-deploy.outputs.environment_url }}",
+              });
+            }
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+#########################################################################################################
+
+  failure-check:
+    name: Print context on failure
+    # if: ${{ failure() }} # TODO this
+    if: ${{ always() }}
+    needs: [build-deploy, cleanup]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print github context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+      - name: Print needs context
+        shell: python
+        run: |
+          print("""${{ toJSON(needs) }}""")
+
+#########################################################################################################
