@@ -59,7 +59,7 @@ jobs:
               id: 3693417, // datavis team id
             }],
           });
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.ADMIN_TOKEN_GH }}
 
     - name: Trigger deployment workflow
       uses: actions/github-script@v5
