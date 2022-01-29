@@ -20,7 +20,7 @@ jobs:
 
 #########################################################################################################
 
-  deploy:
+  build-deploy:
     environment: ${{ github.event.client_payload.environment }}
     name: "Deploy | ${{ github.event.client_payload.environment }}"
     runs-on: ubuntu-latest
