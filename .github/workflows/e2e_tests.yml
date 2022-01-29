@@ -13,7 +13,7 @@ env:
   E2E_CHECK_CONTEXT: 'Playwright e2e' # should match playwright.yml workflow
 
 on:
-  deployment_status
+  release:
 
 jobs:
 
