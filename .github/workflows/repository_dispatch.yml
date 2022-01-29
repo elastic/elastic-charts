@@ -1,6 +1,6 @@
 on:
   repository_dispatch:
-    types: [test_result]
+    types: [test_result_old]
 
 jobs:
   run_if_failure:

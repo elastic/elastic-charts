@@ -11,13 +11,13 @@ concurrency:
 env:
   NODE_VERSION: '16.13.2' # should match version in .nvmrc
 
-on:
-  repository_dispatch: # Only triggered from master
-    types: [deploy_pull_request]
-
 # on:
-#   repository_dispatch:
-#     types: [test_result]
+#   repository_dispatch: # Only triggered from master
+#     types: [deploy_pull_request]
+
+on:
+  repository_dispatch:
+    types: [test_result]
 
 jobs:
   test-why:
