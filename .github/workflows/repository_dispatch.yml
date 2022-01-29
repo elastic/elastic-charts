@@ -6,9 +6,9 @@ jobs:
   run_if_failure:
     if: ${{ !github.event.client_payload.passed }}
     runs-on: ubuntu-latest
-    environment:
-      name: nick
-      url: https://example.com/
+    # environment:
+    #   name: nick
+    #   url: https://example.com/
     steps:
       - name: Print github context
         shell: python
