@@ -154,7 +154,7 @@ jobs:
     steps:
     # This will create a duplicate deployment refernce that points to the wrong commit
     - name: Delete auto-created Deployment from deploy job
-      if: ${{ github.event.client_payload.payload.is_fork }}
+      if: ${{ github.event.client_payload.is_fork }}
       uses: actions/github-script@v5
       with:
         script: | # This is javascript :)
