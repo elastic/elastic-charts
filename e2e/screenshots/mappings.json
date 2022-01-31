@@ -12316,6 +12316,10 @@
     "testPath": "/Users/nicholaspartridge/Documents/repos/elastic-charts/integration/tests/line_stories.test.ts"
   },
   {
+    "testNamePath": [
+      "Small multiples - dark mode",
+      "renders panel titles"
+    ],
     "testName": "Small multiples - dark mode renders panel titles",
     "snapshotPath": "/Users/nicholaspartridge/Documents/repos/elastic-charts/integration/tests/__image_snapshots__/dark-mode-test-ts-small-multiples-dark-mode-renders-panel-titles-1-snap.png",
     "testPath": "/Users/nicholaspartridge/Documents/repos/elastic-charts/integration/tests/dark_mode.test.ts"
