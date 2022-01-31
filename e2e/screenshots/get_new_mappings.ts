@@ -45,21 +45,11 @@ const getNewPath = (testNamePath: string[], testPath: string) => {
       return newSegment ?? s; // skip '' to delete path segment
     })
     .filter((s) => s)
-    .map((s) => s.replace(/\//g, '-'))
-    .map((s) => s.replace(/\s/g, '-'))
-    .map((s) => s.replace(/-+/g, '-'));
-
-  if (baseTestPath === 'all.test.ts') {
-    const storybookName = updatedPaths.pop();
-    const newSbName = kebabCase(storybookName);
-    updatedPaths.push(newSbName);
-
-    console.log(`${storybookName} -> ${newSbName}`);
-  }
+    .map((s) => kebabCase(s).replace(/\//g, '-').replace(/\s/g, '-').replace(/-+/g, '-'));
 
   return `${[newBasePath.replace(repoBasePath, '').slice(0, -1), `${baseTestPath}-snapshots`, ...updatedPaths].join(
     '/',
-  )}-Chrome-linux.png`;
+  )}-chrome-linux.png`.toLowerCase();
 };
 
 const newMappings = mappings.map(({ testNamePath, testPath, snapshotPath, testName }) => {
