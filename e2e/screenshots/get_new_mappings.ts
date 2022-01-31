@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import { kebabCase } from 'lodash'
 
 interface MappingRow {
   snapshotPath: string;
@@ -25,17 +26,30 @@ const replacementPaths = {
 }
 
 const getNewPath = (testNamePath: string[], testPath: string) => {
-  const baseTestPath = testPath.replace(repoBasePath + 'elastic-charts/integration/tests/', '');
+  const baseTestPath = testPath.replace(repoBasePath + 'integration/tests/', '');
   const updatedPaths = testNamePath
     .map((s) => {
       // @ts-ignore
-      return replacementPaths?.[baseTestPath]?.[s] ?? s // skip '' to delete path segment
+      const newSegment = replacementPaths?.[baseTestPath]?.[s];
+      if (newSegment) console.log(`${s} -> ${newSegment}`)
+      return newSegment ?? s // skip '' to delete path segment
     })
     .filter((s) => s)
-    .map((s) => s.replace(/\//g, '-'));
+    .map((s) => s.replace(/\//g, '-'))
+    .map((s) => s.replace(/\s/g, '-'))
+    .map((s) => s.replace(/-+/g, '-'));
+
+  if (baseTestPath === 'all.test.ts') {
+    const storybookName = updatedPaths.pop();
+    const newSbName = kebabCase(storybookName);
+    updatedPaths.push(newSbName);
+
+    console.log(`${storybookName} -> ${newSbName}`);
+  }
 
   return [
     newBasePath.replace(repoBasePath, '').slice(0, -1),
+    baseTestPath + '-snapshots',
     ...updatedPaths,
   ].join('/') + '-Chrome-linux.png';
 }
