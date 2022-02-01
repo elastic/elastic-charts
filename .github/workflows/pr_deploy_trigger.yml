@@ -35,7 +35,7 @@ on:
 
 jobs:
   should-trigger:
-    name: Check for e2e/package.json
+    name: Check for e2e/deploy.txt
     runs-on: ubuntu-latest
     outputs:
       check: ${{ steps.check-e2e-package.outputs.files_exists }}
@@ -46,7 +46,7 @@ jobs:
         id: check-e2e-package
         uses: andstor/file-existence-action@v1
         with:
-          files: e2e/package.json
+          files: e2e/deploy.txt
 
   trigger-deploy:
     name: Trigger deployment
