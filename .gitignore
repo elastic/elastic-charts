@@ -22,3 +22,6 @@ playground/playground.tsx
 .jest-image-snapshot-touched-files
 
 **/__diff_output__/
+
+# keep only top-level lock file
+**/*/yarn.lock

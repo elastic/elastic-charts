@@ -9,7 +9,6 @@ module.exports = {
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
     'plugin:eslint-comments/recommended',
-    'plugin:jest/recommended',
     'plugin:promise/recommended',
     'plugin:unicorn/recommended',
     'plugin:react/recommended',
@@ -252,13 +251,6 @@ module.exports = {
     'react/jsx-wrap-multilines': 0,
 
     /*
-     * jest plugin
-     */
-    'jest/no-standalone-expect': 0, // using custom expect functions
-    'jest/no-disabled-tests': 0,
-    'jest/no-identical-title': 0, // does not account for <describe|it>.each
-
-    /*
      * unicorn plugin
      */
     'unicorn/prevent-abbreviations': 0, // Common abbreviations are known and readable
@@ -411,32 +403,25 @@ module.exports = {
       },
     },
     {
-      files: ['integration/**/*.ts?(x)'],
-      rules: {
-        'jest/expect-expect': [
-          'error',
-          {
-            assertFunctionNames: [
-              'expect',
-              'common.expectChartAtUrlToMatchScreenshot',
-              'common.expectElementAtUrlToMatchScreenshot',
-              'common.expectChartAtUrlToMatchScreenshot',
-              'common.expectChartWithMouseAtUrlToMatchScreenshot',
-              'common.expectChartWithDragAtUrlToMatchScreenshot',
-            ],
-          },
-        ],
-      },
-    },
-    {
       files: ['playground/**/*.ts?(x)'],
       rules: {
         'react/prefer-stateless-function': 0,
       },
     },
     {
-      files: ['*.test.ts?(x)', '**/__mocks__/**/*.ts?(x)', 'packages/charts/src/mocks/**'],
+      files: ['./**/@types/*.d.ts'],
       rules: {
+        'unicorn/filename-case': 0,
+      },
+    },
+    {
+      files: ['*.test.ts?(x)', '**/__mocks__/**/*.ts?(x)', 'packages/charts/src/mocks/**'],
+      excludedFiles: ['./e2e/**/*.test.ts'],
+      extends: ['plugin:jest/recommended'],
+      rules: {
+        'jest/no-standalone-expect': 0, // using custom expect functions
+        'jest/no-disabled-tests': 0,
+        'jest/no-identical-title': 0, // does not account for <describe|it>.each
         'elastic-charts/require-release-tag': 0,
         'elastic-charts/require-tsdocs': 0,
         'elastic-charts/require-documentation': 0,
