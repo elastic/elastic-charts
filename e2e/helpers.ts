@@ -6,62 +6,32 @@
  * Side Public License, v 1.
  */
 
-/* eslint-disable jest/no-export */
+import { test, Page } from '@playwright/test';
 
-import { lstatSync, readdirSync } from 'fs';
-import path from 'path';
+// TODO fix bad src imports
+export type Rotation = 0 | 90 | -90 | 180;
+export const themeIds = ['light', 'dark', 'eui-light', 'eui-dark'];
 
-import { getStorybook, configure } from '@storybook/react';
+type TestExamples = {
+  groupFile: string;
+  slugifiedGroupTitle: string;
+  groupTitle: string;
+  exampleFiles: {
+    slugifiedName: string;
+    name: string;
+    filename: string;
+    url: string;
+    filePath: string;
+  }[];
+}[];
 
-import { Rotation } from '../packages/charts/src';
-import { ThemeId } from '../storybook/use_base_theme';
-// @ts-ignore - no type declarations
-import { isLegacyVRTServer } from './config';
-
-export type StoryInfo = [string, string, number];
-
-export type StoryGroupInfo = [string, string, StoryInfo[]];
-
-function enumerateFiles(basedir: string, dir: string) {
-  let result: string[] = [];
-  readdirSync(path.join(basedir, dir)).forEach((file) => {
-    const relativePath = path.join(dir, file);
-    const stats = lstatSync(path.join(basedir, relativePath));
-    if (stats.isDirectory()) {
-      result = result.concat(enumerateFiles(basedir, relativePath));
-    } else if (/\.stories\.tsx$/.test(relativePath)) {
-      result.push(relativePath);
-    }
-  });
-  return result;
-}
-
-function requireAllStories(basedir: string, directory: string) {
-  const absoluteDirectory = path.resolve(basedir, directory);
-
-  const keys = enumerateFiles(absoluteDirectory, '.');
-  function requireContext(key: string) {
-    if (!keys.includes(key)) {
-      throw new Error(`Cannot find module '${key}'`);
-    }
-    const fullKey = path.resolve(absoluteDirectory, key);
-    return require(fullKey);
-  }
-
-  requireContext.keys = () => keys;
-  return requireContext;
-}
-
-function encodeString(string: string) {
-  return string
-    .replace(/-/g, ' ')
-    .replace(/\w-\w/g, ' ')
-    .replace(/\//gi, ' ')
-    .replace(/-/g, ' ')
-    .replace(/[^\d\s/a-z|]+/gi, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .toLowerCase();
+export interface StoryGroupInfo {
+  group: string;
+  encodedGroup: string;
+  stories: {
+    name: string;
+    slugifiedName: string;
+  }[];
 }
 
 /**
@@ -74,49 +44,22 @@ const storiesToSkip: Record<string, Record<string, string[]>> = {
   },
 };
 
-/**
- * Delays for stories to skip in all vrt based on group.
- */
-const storiesToDelay: Record<string, Record<string, number>> = {
-  // GroupName: {
-  //   'some story name': 200,
-  // },
-};
-
 export function getStorybookInfo(): StoryGroupInfo[] {
-  if (isLegacyVRTServer) {
-    configure(requireAllStories(__dirname, '../stories'), module);
-
-    return getStorybook()
-      .filter(({ kind }) => kind)
-      .map(({ kind: group, stories: storiesRaw }) => {
-        const stories: StoryInfo[] = storiesRaw
-          .filter(({ name }) => name && !storiesToSkip[group]?.storybook.includes(name))
-          .map(({ name: title }) => {
-            // cleans story name to match url params
-            const encodedTitle = encodeString(title);
-            const delay = (storiesToDelay[group] ?? {})[title];
-            return [title, encodedTitle, delay];
-          });
-
-        const encodedGroup = encodeString(group);
-
-        return [group, encodedGroup, stories] as StoryGroupInfo;
-      })
-      .filter(([, , stories]) => stories.length > 0);
-  }
   try {
-    const examples = require('./tmp/examples.json');
-    return examples.map((d: any) => {
-      return [
-        d.groupTitle,
-        d.slugifiedGroupTitle,
-        d.exampleFiles
-          .filter(({ name }: any) => name && !storiesToSkip[d.groupTitle]?.examples.includes(name))
-          .map((example: any) => {
-            return [example.name, example.slugifiedName, 0];
-          }),
-      ];
+    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+    const examples = require('./tmp/examples.json') as TestExamples;
+    // const examples = require('../e2e-server/tmp/examples.json');
+    return examples.map<StoryGroupInfo>(({ groupTitle: group, slugifiedGroupTitle, exampleFiles }) => {
+      return {
+        group,
+        encodedGroup: slugifiedGroupTitle,
+        stories: exampleFiles
+          .filter(({ name }: any) => name && !storiesToSkip[group]?.examples.includes(name))
+          .map(({ name, slugifiedName }) => ({
+            name,
+            slugifiedName,
+          })),
+      };
     });
   } catch {
     throw new Error('A required file is not available, please run yarn test:integration:generate');
@@ -130,36 +73,94 @@ const rotationCases: [string, Rotation][] = [
   ['negative 90', -90],
 ];
 
+interface EachRotationCbParams {
+  page: Page;
+  rotation: Rotation;
+  label: string;
+}
+
 /**
  * This is a wrapper around it.each for Rotations
  * This is needed as the negative sign (-) will be excluded from the png filename
  */
 export const eachRotation = {
-  it(fn: (rotation: Rotation) => any, title = 'rotation - %s') {
-    // eslint-disable-next-line jest/valid-title
-    return it.each<[string, Rotation]>(rotationCases)(title, (_, r) => fn(r));
+  test(
+    fn: (params: EachRotationCbParams) => any,
+    titleFn: (rotationLabel: string) => string = (r) => `rotation - ${r}`,
+  ) {
+    // return it.each<[string, Rotation]>(rotationCases)(title, (_, r) => fn(r));
+    rotationCases.forEach(([label, rotation]) => {
+      test(titleFn(label), ({ page }) => fn({ page, rotation, label }));
+    });
   },
-  describe(fn: (rotation: Rotation) => any, title = 'rotation - %s') {
-    // eslint-disable-next-line jest/valid-title, jest/valid-describe
-    return describe.each<[string, Rotation]>(rotationCases)(title, (_, r) => fn(r));
+  describe(
+    fn: (params: Omit<EachRotationCbParams, 'page'>) => any,
+    titleFn: (rotationLabel: string) => string = (r) => `rotation - ${r}`,
+  ) {
+    rotationCases.forEach(([label, rotation]) => {
+      test.describe(titleFn(label), () => fn({ rotation, label }));
+    });
   },
 };
 
-const themeIds = Object.values(ThemeId);
+interface EachThemeCbParams {
+  page: Page;
+  theme: string;
+  urlParam: string;
+}
 
 /**
  * This is a wrapper around it.each for Themes
  * Returns the requried query params to trigger correct theme
  */
 export const eachTheme = {
-  it(fn: (theme: ThemeId, urlParam: string) => any, title = 'theme - %s') {
-    // eslint-disable-next-line jest/valid-title
-    return it.each<ThemeId>(themeIds)(title, (theme) => fn(theme, `globals=theme:${theme}`));
+  test(fn: (params: EachThemeCbParams) => any, titleFn: (theme: string) => string = (t) => `theme - ${t}`) {
+    themeIds.forEach((theme) => {
+      test(titleFn(theme), ({ page }) => fn({ page, theme, urlParam: `globals=theme:${theme}` }));
+    });
   },
-  describe(fn: (theme: ThemeId, urlParam: string) => any, title = 'theme - %s') {
-    // eslint-disable-next-line jest/valid-title, jest/valid-describe
-    return describe.each<ThemeId>(themeIds)(title, (theme) => fn(theme, `globals=theme:${theme}`));
+  describe(
+    fn: (params: Omit<EachThemeCbParams, 'page'>) => any,
+    titleFn: (theme: string) => string = (t) => `theme - ${t}`,
+  ) {
+    themeIds.forEach((theme) => {
+      test.describe(titleFn(theme), () => fn({ theme, urlParam: `globals=theme:${theme}` }));
+    });
   },
 };
 
-/* eslint-enable jest/no-export */
+/**
+ * A helper class to replace `describe.each` and `it.each` from jest in playwright
+ */
+export const pwEach = {
+  /**
+   * Similar to jest's `it.each` for playwright
+   */
+  test<T>(values: T[]) {
+    const titles = new Set();
+    return (titleFn: (value: T) => string, fn: (page: Page, value: T) => Promise<any> | any) => {
+      values.forEach((value) => {
+        const title = titleFn(value);
+        if (titles.has(title)) throw new Error('Each test within `each.test` block must have a unique title.');
+        titles.add(title);
+        // eslint-disable-next-line @typescript-eslint/return-await
+        test(title, async ({ page }) => await fn(page, value));
+      });
+    };
+  },
+  /**
+   * Similar to jest's `describe.each` for playwright
+   */
+  describe<T>(values: T[]) {
+    const titles = new Set();
+    return (titleFn: (value: T) => string, fn: (value: T) => any) => {
+      values.forEach((value) => {
+        const title = titleFn(value);
+        if (titles.has(title)) throw new Error('Each describe within `each.describe` block must have a unique title.');
+        titles.add(title);
+        // eslint-disable-next-line @typescript-eslint/return-await
+        test.describe(title, fn(value));
+      });
+    };
+  },
+};
