@@ -20,7 +20,7 @@ module.exports = {
   output: {
     filename: '[name].bundle.js',
     chunkFilename: '[name].chunk.js',
-    path: path.resolve(__dirname, 'packages/charts/dist'),
+    path: path.resolve(__dirname, '../.out'),
   },
   infrastructureLogging: {
     level: 'verbose',
@@ -58,7 +58,7 @@ module.exports = {
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
-          configFile: 'integration/server/webpack.tsconfig.json',
+          configFile: 'e2e-server/server/webpack.tsconfig.json',
           transpileOnly: true,
         },
       },
