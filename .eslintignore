@@ -21,3 +21,6 @@ packages/charts/src/utils/d3-delaunay
 # auto generated directories
 **/tmp
 docs/
+
+e2e/
+e2e-server/

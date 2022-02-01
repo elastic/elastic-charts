@@ -1,0 +1,119 @@
+#########################################################################################################
+# This is a reusable workflow to share common jobs between workflows.
+# See https://docs.github.com/en/actions/using-workflows/reusing-workflows
+# Runs all check associated with the repo, excluding playwright tests
+#########################################################################################################
+
+name: Reusable checks workflow
+
+env:
+  NODE_VERSION: '16.13.2' # should match version in .nvmrc
+  PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: false
+        type: string
+        default: '16.13.2'
+
+jobs:
+
+#########################################################################################################
+# Setup is used to check and preload the npm cache is necessary
+#########################################################################################################
+
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      # Runs first to cache node_modules for later runs
+      - name: Checkout & Setup node
+        uses: nickofthyme/checkout-node-setup@v1
+        with:
+          skip-npm-install: true # Checks cache below
+          # node-version: ${{ inputs.node-version }}
+      - name: Install local action packages
+        run: npm --prefix ./.github/actions/npm_cache_check ci
+      - name: Check cache
+        id: cacheCheck
+        uses: ./.github/actions/npm_cache_check
+      - name: Install and cache node_modules
+        if: steps.cacheCheck.outputs.cacheHit == false
+        uses: bahmutov/npm-install@v1
+        with:
+          useRollingCache: true
+
+#########################################################################################################
+
+  eslint:
+    name: Eslint
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout & Setup node
+        uses: nickofthyme/checkout-node-setup@v1
+      - name: Eslint check
+        run: yarn lint
+
+#########################################################################################################
+
+  prettier:
+    name: Prettier
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout & Setup node
+        uses: nickofthyme/checkout-node-setup@v1
+      - name: Prettier check
+        run: yarn prettier:check
+
+#########################################################################################################
+
+  type-check:
+    name: Type Check
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout & Setup node
+        uses: nickofthyme/checkout-node-setup@v1
+      - name: Run global typecheck
+        run: yarn typecheck:all
+
+#########################################################################################################
+
+  api-check:
+    name: API Check
+    needs: type-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout & Setup node
+        uses: nickofthyme/checkout-node-setup@v1
+      - name: Run API-Extractor
+        run: yarn api:check
+      - name: Handle API-Extractor failure
+        if: ${{ failure() }}
+        uses: LouisBrunner/diff-action@v0.1.0
+        with:
+          old: packages/charts/api/charts.api.md
+          new: packages/charts/tmp/charts.api.md
+          mode: deletion
+          tolerance: better
+
+#########################################################################################################
+
+  jest:
+    name: Jest
+    needs: setup
+    runs-on: ubuntu-latest
+    # TODO: Parallelize this job into test groups
+    steps:
+      - name: Checkout & Setup node
+        uses: nickofthyme/checkout-node-setup@v1
+      - name: TimeZone tests
+        run: yarn test:tz --ci
+      - name: Testing
+        run: yarn test --coverage --ci
+
+#########################################################################################################
