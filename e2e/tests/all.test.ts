@@ -6,17 +6,24 @@
  * Side Public License, v 1.
  */
 
+import { test } from '@playwright/test';
+import { paramCase } from 'change-case';
+
 import { getStorybookInfo } from '../helpers';
 import { common } from '../page_objects';
 
 const storyGroups = getStorybookInfo();
 
-describe('Baseline Visual tests for all stories', () => {
-  describe.each(storyGroups)('%s', (_group, encodedGroup, stories) => {
-    describe.each(stories)('%s', (_title, encodedTitle) => {
-      it('visually looks correct', async () => {
-        const url = `http://localhost:9001?id=${encodedGroup}--${encodedTitle}`;
-        await common.expectChartAtUrlToMatchScreenshot(url);
+// Top level is needed to run in parallel
+test.describe.parallel('Baselines', () => {
+  storyGroups.slice(0, 1).forEach(({ group, stories, encodedGroup }) => {
+    test.describe.parallel(group, () => {
+      stories.slice(0, 1).forEach(({ name, slugifiedName }) => {
+        // takes camelCase storybook name and converts to dash-case for file naming
+        test(paramCase(name), async ({ page }) => {
+          const url = `http://localhost?id=${encodedGroup}--${slugifiedName}`;
+          await common.expectChartAtUrlToMatchScreenshot(page)(url);
+        });
       });
     });
   });

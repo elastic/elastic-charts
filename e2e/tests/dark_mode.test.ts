@@ -6,12 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { test } from '@playwright/test';
+
 import { common } from '../page_objects/common';
 
-describe('Small multiples - dark mode', () => {
-  it('renders panel titles', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      `http://localhost:9001/?path=/story/small-multiples-alpha--sunbursts&globals=theme:dark;background:black`,
+test.describe('Small multiples - dark mode', () => {
+  test('renders panel titles', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      `https://ech-e2e-ci--pr-1572-p2bcha8q.web.app/e2e/?path=/story/small-multiples-alpha--sunbursts&globals=theme:dark;background:black`,
     );
   });
 });

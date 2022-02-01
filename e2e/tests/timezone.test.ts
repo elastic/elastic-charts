@@ -6,32 +6,34 @@
  * Side Public License, v 1.
  */
 
+import { test } from '@playwright/test';
+
 import { common } from '../page_objects/common';
 
-describe('Time zone', () => {
-  it('UTC plus 8', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
+test.describe('Time zone', () => {
+  test('UTC plus 8', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/scales--timezone-configuration&globals=theme:light&knob-dataset=utc%2B8&knob-tooltip=utc',
     );
   });
-  it('UTC minus 8', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
+  test('UTC minus 8', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/scales--timezone-configuration&globals=theme:light&knob-dataset=utc-8&knob-tooltip=utc',
     );
   });
-  it('use default local timezone America/New_York', async () => {
+  test('use default local timezone America/New_York', async ({ page }) => {
     await page.emulateTimezone('America/New_York');
     // time should start at 06:00 (UTC time is 11:00)
-    await common.expectChartWithMouseAtUrlToMatchScreenshot(
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/bar-chart--with-time-x-axis',
       { left: 80, top: 100 },
       { screenshotSelector: 'body' },
     );
   });
-  it('use default local timezone Europe/Rome', async () => {
+  test('use default local timezone Europe/Rome', async ({ page }) => {
     await page.emulateTimezone('Europe/Rome');
     // time should start at 12:00 (UTC time is 11:00)
-    await common.expectChartWithMouseAtUrlToMatchScreenshot(
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/bar-chart--with-time-x-axis',
       { left: 80, top: 100 },
       { screenshotSelector: 'body' },

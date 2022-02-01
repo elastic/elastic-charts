@@ -6,13 +6,22 @@
  * Side Public License, v 1.
  */
 
-import { TEMPLATES } from '../../storybook/stories/wordcloud/1_wordcloud.story';
+import { test } from '@playwright/test';
+
+import { pwEach } from '../helpers';
 import { common } from '../page_objects';
 
-describe('Scales stories', () => {
-  it.each(TEMPLATES.filter((t) => t !== 'edit'))('should render %s wordcloud template', async (template) => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      `http://localhost:9001/?path=/story/wordcloud-alpha--simple-wordcloud&knob-template=${template}`,
-    );
-  });
+// TODO fix imports
+// import { TEMPLATES } from '../../storybook/stories/wordcloud/1_wordcloud.story';
+export const TEMPLATES = ['edit', 'single', 'rightAngled', 'multiple', 'squareWords', 'smallWaves', 'sparse'];
+
+test.describe('Scales stories', () => {
+  pwEach.test(TEMPLATES.filter((t) => t !== 'edit'))(
+    (t) => `should render ${t} wordcloud template`,
+    async (page, template) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/wordcloud-alpha--simple-wordcloud&knob-template=${template}`,
+      );
+    },
+  );
 });
