@@ -37,14 +37,14 @@ test.describe('Heatmap stories', () => {
   });
 
   test('should maximize the label with an unique fontSize', async ({ page }) => {
-    await page.setViewport({ width: 450, height: 600 });
+    await page.setViewportSize({ width: 450, height: 600 });
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/heatmap-alpha--categorical',
     );
   });
 
   test('should maximize the label fontSize', async ({ page }) => {
-    await page.setViewport({ width: 420, height: 600 });
+    await page.setViewportSize({ width: 420, height: 600 });
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/heatmap-alpha--categorical&knob-use global min fontSize_labels=false',
     );
@@ -53,7 +53,7 @@ test.describe('Heatmap stories', () => {
   pwEach.test([[2], [3], [4], [5], [6], [7], [8], [9]])(
     (d) => `time snap with dataset ${d}`,
     async (page, dataset) => {
-      await page.setViewport({ width: 785, height: 600 });
+      await page.setViewportSize({ width: 785, height: 600 });
       await common.expectChartAtUrlToMatchScreenshot(page)(
         `http://localhost:9001/?path=/story/heatmap-alpha--time-snap&globals=theme:light&knob-dataset=${dataset}`,
       );

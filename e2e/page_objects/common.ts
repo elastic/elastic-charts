@@ -14,7 +14,7 @@ import { expect, test, Page } from '@playwright/test';
 // @ts-ignore - no type declarations
 import { paramCase } from 'change-case';
 
-import { port, hostname, environmentUrl } from '../config';
+import { port, hostname, environmentUrl } from '../e2e-config';
 
 interface MousePosition {
   /**
@@ -364,7 +364,7 @@ export class CommonPage {
     selector: string = 'body',
     options?: ScreenshotElementAtUrlOptions,
   ) => {
-    const screenshotPath = CommonPage.getPathFromTestInfo(options.screenshotPath);
+    const screenshotPath = CommonPage.getPathFromTestInfo(options?.screenshotPath);
     const success = await this.loadElementFromURL(page)(url, options?.waitSelector ?? selector, options?.timeout);
 
     expect(success).toBe(true);
