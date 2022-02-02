@@ -47,8 +47,8 @@ const storiesToSkip: Record<string, Record<string, string[]>> = {
 export function getStorybookInfo(): StoryGroupInfo[] {
   try {
     // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-    const examples = require('./tmp/examples.json') as TestExamples;
-    // const examples = require('../e2e-server/tmp/examples.json');
+    const examples = require('../e2e-server/tmp/examples.json') as TestExamples;;
+
     return examples.map<StoryGroupInfo>(({ groupTitle: group, slugifiedGroupTitle, exampleFiles }) => {
       return {
         group,
@@ -158,8 +158,7 @@ export const pwEach = {
         const title = titleFn(value);
         if (titles.has(title)) throw new Error('Each describe within `each.describe` block must have a unique title.');
         titles.add(title);
-        // eslint-disable-next-line @typescript-eslint/return-await
-        test.describe(title, fn(value));
+        test.describe(title, () => fn(value));
       });
     };
   },

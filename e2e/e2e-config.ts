@@ -6,9 +6,4 @@
  * Side Public License, v 1.
  */
 
-module.exports = {
-  port: process.env.PORT || '9009',
-  hostname: 'host.docker.internal',
-  isLocalVRTServer: process.env.LOCAL_VRT_SERVER === 'true',
-  environmentUrl: process.env.ENV_URL,
-};
+export const environmentUrl = process.env.ENV_URL;

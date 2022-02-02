@@ -16,7 +16,6 @@ const config: PlaywrightTestConfig = {
     screenshot: 'off',
     video: 'retain-on-failure',
   },
-  // eslint-disable-next-line prettier/prettier
   reporter: process.env.CI ? 'github' : [
     ['html', { open: 'never', outputFolder: 'report' }],
     ['list'],
@@ -33,18 +32,6 @@ const config: PlaywrightTestConfig = {
       name: 'chrome',
       use: {
         browserName: 'chromium',
-      },
-    },
-    {
-      name: 'firefox',
-      use: {
-        browserName: 'firefox',
-      },
-    },
-    {
-      name: 'safari',
-      use: {
-        browserName: 'webkit',
       },
     },
   ],

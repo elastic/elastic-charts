@@ -3,11 +3,9 @@
   "description": "Visual regression test runner",
   "license": "SEE LICENSE IN LICENSE.txt",
   "scripts": {
-    "server": "webpack serve -c server/webpack.config.js",
-    "build": "docker build . -f Dockerfile -t e2e-integration",
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
-    "test": "playwright test",
-    "nick": "playwright test --help"
+    "test": "bash ./scripts/start.sh",
+    "test:playwright": "bash ./scripts/test.sh"
   },
   "dependencies": {
     "@playwright/test": "^1.18.1",

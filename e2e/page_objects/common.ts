@@ -14,7 +14,7 @@ import { expect, test, Page } from '@playwright/test';
 // @ts-ignore - no type declarations
 import { paramCase } from 'change-case';
 
-import { port, hostname, environmentUrl } from '../e2e-config';
+import { environmentUrl } from '../e2e-config';
 
 interface MousePosition {
   /**
@@ -141,18 +141,13 @@ export class CommonPage {
       'knob-debug': false,
     };
 
-    if (environmentUrl) {
-      const envUrl = Url.parse(environmentUrl, true);
-      return Url.format({
-        ...envUrl,
-        query,
-      });
+    if (!environmentUrl) {
+      throw new Error(`ENV_URL must be provideded`)
     }
 
+    const envUrl = Url.parse(environmentUrl, true);
     return Url.format({
-      protocol: 'http',
-      hostname,
-      port,
+      ...envUrl,
       query,
     });
   }
