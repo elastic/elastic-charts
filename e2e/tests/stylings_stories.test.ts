@@ -8,7 +8,7 @@
 
 import { test } from '@playwright/test';
 
-import { SeriesType } from '../../packages/charts/src';
+import { SeriesType } from '@elastic/charts';
 import { pwEach } from '../helpers';
 import { common } from '../page_objects';
 

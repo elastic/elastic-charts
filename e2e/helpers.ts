@@ -8,9 +8,8 @@
 
 import { test, Page } from '@playwright/test';
 
-// TODO fix bad src imports
-export type Rotation = 0 | 90 | -90 | 180;
-export const themeIds = ['light', 'dark', 'eui-light', 'eui-dark'];
+import { Rotation } from '@elastic/charts';
+// import { ThemeId } from '../storybook/use_base_theme';
 
 type TestExamples = {
   groupFile: string;
@@ -108,6 +107,9 @@ interface EachThemeCbParams {
   theme: string;
   urlParam: string;
 }
+
+// const themeIds = Object.values(ThemeId);
+export const themeIds = ['light', 'dark', 'eui-light', 'eui-dark'];
 
 /**
  * This is a wrapper around it.each for Themes

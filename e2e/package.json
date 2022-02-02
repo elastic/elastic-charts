@@ -4,8 +4,9 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "scripts": {
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
-    "test": "bash ./scripts/start.sh",
-    "test:playwright": "bash ./scripts/test.sh"
+    "test": "./scripts/start.sh",
+    "test:playwright": "./scripts/test.sh",
+    "playwright": "playwright"
   },
   "dependencies": {
     "@playwright/test": "^1.18.1",

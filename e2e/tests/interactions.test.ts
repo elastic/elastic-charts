@@ -9,7 +9,7 @@
 import { test } from '@playwright/test';
 import { camelCase } from 'lodash';
 
-import { Placement } from '../../packages/charts/src';
+import { Placement } from '@elastic/charts';
 import { eachRotation, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
