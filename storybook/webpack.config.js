@@ -33,17 +33,16 @@ const MAX_CYCLES = 0;
 let numCyclesDetected = 0;
 
 module.exports = ({ config }) => {
-  const FAST = Boolean(JSON.parse(process.env.FAST ?? false));
-
   config.plugins.push(
     new webpack.EnvironmentPlugin({
-      FAST,
       RNG_SEED: null,
       VRT: process.env.VRT ?? null,
     }),
   );
 
-  if (!FAST) {
+  console.log(`process.env.CI =`, process.env.CI);
+
+  if (process.env.CI) {
     config.plugins.push(
       new CircularDependencyPlugin({
         onStart() {
