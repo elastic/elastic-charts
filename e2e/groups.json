@@ -1,11 +1,11 @@
 {
-  "enabled": false,
+  "enabled": true,
   "count": 1104,
   "groupCount": 23,
   "groups": [
     {
       "id": 1,
-      "enabled": false,
+      "enabled": true,
       "tests": [
         {
           "test": "all.test.ts",
