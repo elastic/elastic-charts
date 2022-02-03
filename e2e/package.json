@@ -6,6 +6,7 @@
   "scripts": {
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
     "clean": "./scripts/clean.sh",
+    "regroup": "ts-node ./scripts/group_tests.ts",
     "test": "./scripts/start.sh",
     "test:playwright": "./scripts/test.sh",
     "playwright": "playwright"
