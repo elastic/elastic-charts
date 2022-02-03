@@ -14,7 +14,7 @@ const config: PlaywrightTestConfig = {
     locale: 'en-us',
     viewport: { width: 785, height: 600 },
     screenshot: 'off',
-    video: 'off',
+    video: 'retain-on-failure',
   },
   reporter: process.env.CI ? 'github' : [['html', { open: 'never', outputFolder: 'report' }], ['list']],
   expect: {
