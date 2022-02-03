@@ -4,6 +4,7 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "scripts": {
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
+    "clean": "./scripts/clean.sh",
     "test": "./scripts/start.sh",
     "test:playwright": "./scripts/test.sh",
     "playwright": "playwright"

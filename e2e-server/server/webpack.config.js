@@ -102,10 +102,13 @@ module.exports = {
     },
     extensions: ['.tsx', '.ts', '.js'],
   },
-  optimization: process.env.NODE_ENV === 'production' ? {
-    minimize: true,
-    minimizer: [new TerserPlugin()],
-  } : {},
+  optimization:
+    process.env.NODE_ENV === 'production'
+      ? {
+          minimize: true,
+          minimizer: [new TerserPlugin()],
+        }
+      : {},
   plugins: [
     new HtmlWebpackPlugin({
       hash: true,

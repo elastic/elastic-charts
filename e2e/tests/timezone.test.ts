@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 import { common } from '../page_objects/common';
 
@@ -23,7 +23,7 @@ test.describe('Time zone', () => {
   });
   test.describe('timezone America/New_York', () => {
     const timezoneId = 'America/New_York';
-    test.use({ timezoneId })
+    test.use({ timezoneId });
     test('use default local timezone America/New_York', async ({ page, contextOptions }) => {
       expect(contextOptions.timezoneId === timezoneId);
       // time should start at 06:00 (UTC time is 11:00)
@@ -36,7 +36,7 @@ test.describe('Time zone', () => {
   });
   test.describe('timezone Europe/Rome', () => {
     const timezoneId = 'Europe/Rome';
-    test.use({ timezoneId })
+    test.use({ timezoneId });
     test('use default local timezone Europe/Rome', async ({ page, contextOptions }) => {
       expect(contextOptions.timezoneId === timezoneId);
       // time should start at 12:00 (UTC time is 11:00)

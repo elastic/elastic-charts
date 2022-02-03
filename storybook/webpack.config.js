@@ -40,6 +40,8 @@ module.exports = ({ config }) => {
     }),
   );
 
+  // Checking CI value here
+  // eslint-disable-next-line no-console
   console.log(`process.env.CI =`, process.env.CI);
 
   if (process.env.CI) {

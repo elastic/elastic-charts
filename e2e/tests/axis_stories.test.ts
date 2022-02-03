@@ -9,6 +9,7 @@
 import { test } from '@playwright/test';
 
 import { Position } from '@elastic/charts';
+
 import { eachRotation, eachTheme, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
@@ -162,11 +163,14 @@ test.describe('Axis stories', () => {
           ['should hide title', `knob-Hide title_${position}=true`],
           ['should hide empty title', `knob-Title_${position}=%20&knob-Hide title_${position}=false`],
           ['should hide panel titles', `knob-Hide panel titles_${position}=true`],
-        ])(([t]) => t, async (page, [, params]) => {
-          await common.expectChartAtUrlToMatchScreenshot(page)(
-            `http://localhost:9001/?path=/story/small-multiples-alpha--grid-lines&${showAllParams}&${params}`,
-          );
-        });
+        ])(
+          ([t]) => t,
+          async (page, [, params]) => {
+            await common.expectChartAtUrlToMatchScreenshot(page)(
+              `http://localhost:9001/?path=/story/small-multiples-alpha--grid-lines&${showAllParams}&${params}`,
+            );
+          },
+        );
       },
     );
   });

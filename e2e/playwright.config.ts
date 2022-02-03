@@ -10,19 +10,17 @@ import { PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
   use: {
-    // headless: false,
+    headless: true,
     locale: 'en-us',
     viewport: { width: 785, height: 600 },
     screenshot: 'off',
-    video: 'retain-on-failure',
+    video: 'off',
   },
-  reporter: process.env.CI ? 'github' : [
-    ['html', { open: 'never', outputFolder: 'report' }],
-    ['list'],
-  ],
+  reporter: process.env.CI ? 'github' : [['html', { open: 'never', outputFolder: 'report' }], ['list']],
   expect: {
-    toMatchSnapshot: { threshold: 0.1 },
+    toMatchSnapshot: { threshold: 0 },
   },
+  timeout: 10 * 1000,
   preserveOutput: 'failures-only',
   snapshotDir: 'screenshots',
   testDir: 'tests',

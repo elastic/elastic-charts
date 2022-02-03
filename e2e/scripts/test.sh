@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
+set -e
+
 ### Runs prechecks on env url before running playwright e2e tests
 
 attempt_counter=0
 retries=5
 interval=2
 
-PORT="${PORT:-9002}"
+export PORT="${PORT:-9002}"
 
 if [ -f /.dockerenv ]; then
   hostname=host.docker.internal
@@ -34,7 +36,7 @@ until $(curl --output /dev/null --silent --head --fail ${ENV_URL}); do
     sleep ${interval}
 done
 
-echo $ENV_URL
+echo "Connected to e2e server at ${ENV_URL}"
 
 # Install dependencies for e2e testing only
 yarn install --frozen-lockfile

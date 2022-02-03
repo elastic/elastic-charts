@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 import { PartitionLayout, Position } from '@elastic/charts';
+
 import { pwEach } from '../helpers';
 import { common } from '../page_objects';
 

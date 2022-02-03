@@ -8,13 +8,12 @@
 
 /* eslint-disable no-console */
 
-import * as Url from 'url';
+import { URL } from 'url';
 
 import { expect, test, Page } from '@playwright/test';
-// @ts-ignore - no type declarations
 import { paramCase } from 'change-case';
 
-import { environmentUrl } from '../e2e-config';
+import { environmentUrl } from '../e2e_config';
 
 interface MousePosition {
   /**
@@ -76,11 +75,6 @@ function getCursorPosition(
 interface ScreenshotDOMElementOptions {
   padding?: number;
   /**
-   * Path to save screenshot to. This is *NOT* the path to save screenshots for comparison.
-   * To set the path where screenshots are saved use `screenshotPath`
-   */
-  path?: string;
-  /**
    * Screenshot selector override. Used to select beyond set element.
    */
   hiddenSelectors?: string[];
@@ -130,26 +124,24 @@ export class CommonPage {
 
   /**
    * Parse storybook url to e2e storybook url given config parameters
-   * TODO: fix this logic to use non-deprecated WHATWG URL API instead
    * @param url
    */
   static parseUrl(url: string): string {
-    const { id, ...testParams } = Url.parse(url, true).query as any;
-    const query = {
-      path: `/story/${id}`,
-      ...testParams,
-      'knob-debug': false,
-    };
+    if (!environmentUrl) throw new Error(`ENV_URL must be provideded`);
 
-    if (!environmentUrl) {
-      throw new Error(`ENV_URL must be provideded`)
-    }
+    const { searchParams: testParams } = new URL(url);
+    const id = testParams.get('id');
+    const path = testParams.get('path');
 
-    const envUrl = Url.parse(environmentUrl, true);
-    return Url.format({
-      ...envUrl,
-      query,
-    });
+    if (!id && !path) throw new Error('No chart path or id was provided in url');
+
+    const envUrl = new URL(environmentUrl);
+    testParams.forEach((v, k) => envUrl.searchParams.append(k, v));
+    envUrl.searchParams.delete('id');
+    envUrl.searchParams.set('path', path ?? `/story/${id}`);
+    envUrl.searchParams.append('knob-debug', 'false');
+
+    return envUrl.toString();
   }
 
   static validatePath(path: string | string[]): string | string[] {
@@ -220,7 +212,6 @@ export class CommonPage {
     options?: ScreenshotDOMElementOptions,
   ): Promise<Buffer> => {
     const padding = options?.padding ? options.padding : 0;
-    const path = options?.path ? options.path : undefined;
     const rect = await this.getBoundingClientRect(page)(selector);
 
     if (options?.hiddenSelectors) {
@@ -228,7 +219,6 @@ export class CommonPage {
     }
 
     const buffer = await page.screenshot({
-      path,
       clip: {
         x: rect.left - padding,
         y: rect.top - padding,
@@ -521,7 +511,7 @@ export class CommonPage {
     await page.waitForSelector(waitSelector, {
       state: 'attached',
       timeout: timeout,
-      strict: true,
+      strict: false, // should be true but some stories have multiple charts
     });
   };
 }

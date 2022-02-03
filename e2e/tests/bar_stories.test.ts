@@ -9,6 +9,7 @@
 import { test } from '@playwright/test';
 
 import { DisplayValueStyle, HorizontalAlignment, VerticalAlignment } from '@elastic/charts';
+
 import { eachRotation, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
