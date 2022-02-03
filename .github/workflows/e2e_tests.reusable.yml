@@ -206,7 +206,7 @@ jobs:
     needs: [deployment-status, deployment-ping]
     if: ${{ success() }}
     outputs:
-      test-files: ${{ steps.test-files.outputs.json }}
+      groups: ${{ steps.groups.outputs.json }}
       playwright-version: ${{ steps.playwright.outputs.version }}
     steps: # TODO: cleanup this logic without python and shell scripts
       - name: Checkout & Setup node
@@ -215,19 +215,12 @@ jobs:
           repository: ${{ github.repository }}
           ref: ${{ inputs.sha }}
           skip-npm-install: true # not required here
-      - name: Get test file paths
-        id: test-files
-        shell: python
-        run: |
-          import os, glob, json
-          os.chdir('e2e/tests')
-          files = glob.glob('**/*.test.ts', recursive=True)
-          print(f"::set-output name=json::{json.dumps(files)}")
       - name: Get Playwright version
         id: playwright
+        working-directory: e2e
         run: |
           regex="@playwright/test@(.+)"
-          result="$(cd e2e && yarn list --pattern "@playwright/test" --depth=0 | grep playwright/test)"
+          result="$(yarn list --pattern "@playwright/test" --depth=0 | grep playwright/test)"
           if [[ $result =~ $regex ]]
           then
             echo "::set-output name=version::${BASH_REMATCH[1]}"
@@ -235,22 +228,38 @@ jobs:
             echo "Unable to find '@playwright/test' version"
             exit 1
           fi
-      - name: Print files
-        run: echo "${{ steps.test-files.outputs.json }}"
       - name: Print version
         run: echo "${{ steps.playwright.outputs.version }}"
+      # TODO run this when all screenshots in e2e/ are updated in master
+      # - name: Regroup e2e test suites
+      #   working-directory: e2e
+      #   run: yarn regroup
+      - name: Get e2e matrix groups
+        id: groups
+        shell: python
+        working-directory: e2e
+        run: |
+          import json
+          file = open('groups.json')
+          data = json.load(file)
+          print(f"::set-output name=json::{json.dumps(data['groups'])}")
+          file.close()
+      - name: Print groups context
+        shell: python
+        run: |
+          print("""${{ steps.groups.outputs.json }}""")
 
   e2e:
-    name: '${{ matrix.browser }} / ${{ matrix.test-file }} ${{ matrix.test-patterns }}'
+    name: '${{ matrix.browser }} / Test group #${{ matrix.group.id }}'
     runs-on: ubuntu-latest
     needs: e2e-setup
+    if: ${{ matrix.group.enabled }}
     strategy:
       fail-fast: false
-      max-parallel: 10 # TODO: test how performant this is
+      # max-parallel: 10 # TODO: test how performant this is
       matrix:
-        test-file: ${{ fromJSON(needs.e2e-setup.outputs.test-files) }}
+        group: ${{ fromJSON(needs.e2e-setup.outputs.groups) }}
         browser: ['Chrome']
-        # browser: ['chrome', 'Safari', 'Firefox']
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.e2e-setup.outputs.playwright-version }}-focal
     steps:
@@ -259,11 +268,15 @@ jobs:
         with:
           ref: ${{ inputs.sha }}
           skip-npm-install: true # This fails in this github context
+      - name: Print group info
+        shell: python
+        run: |
+          print("""${{ toJSON(matrix.group) }}""")
       - run: yarn install --frozen-lockfile # TODO: fix caching
         working-directory: e2e
       - name: Test run
         working-directory: e2e
-        run: yarn test --forbid-only --project=${{ matrix.browser }} ./tests/${{ matrix.test-file }}
+        run: yarn test --forbid-only --project=${{ matrix.browser }} {{ matrix.group.args }}
 
   e2e-status-success:
     name: set success Status

@@ -1,0 +1,414 @@
+{
+  "enabled": false,
+  "count": 1104,
+  "groupCount": 23,
+  "groups": [
+    {
+      "id": 1,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "all.test.ts",
+          "count": 322
+        }
+      ],
+      "testString": "all.test.ts",
+      "count": 54,
+      "args": "--shard=1/6 all.test.ts",
+      "shard": {
+        "current": 1,
+        "total": 6
+      }
+    },
+    {
+      "id": 2,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "all.test.ts",
+          "count": 322
+        }
+      ],
+      "testString": "all.test.ts",
+      "count": 54,
+      "args": "--shard=2/6 all.test.ts",
+      "shard": {
+        "current": 2,
+        "total": 6
+      }
+    },
+    {
+      "id": 3,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "all.test.ts",
+          "count": 322
+        }
+      ],
+      "testString": "all.test.ts",
+      "count": 54,
+      "args": "--shard=3/6 all.test.ts",
+      "shard": {
+        "current": 3,
+        "total": 6
+      }
+    },
+    {
+      "id": 4,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "all.test.ts",
+          "count": 322
+        }
+      ],
+      "testString": "all.test.ts",
+      "count": 54,
+      "args": "--shard=4/6 all.test.ts",
+      "shard": {
+        "current": 4,
+        "total": 6
+      }
+    },
+    {
+      "id": 5,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "all.test.ts",
+          "count": 322
+        }
+      ],
+      "testString": "all.test.ts",
+      "count": 54,
+      "args": "--shard=5/6 all.test.ts",
+      "shard": {
+        "current": 5,
+        "total": 6
+      }
+    },
+    {
+      "id": 6,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "all.test.ts",
+          "count": 322
+        }
+      ],
+      "testString": "all.test.ts",
+      "count": 54,
+      "args": "--shard=6/6 all.test.ts",
+      "shard": {
+        "current": 6,
+        "total": 6
+      }
+    },
+    {
+      "id": 7,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "annotations_stories.test.ts",
+          "count": 80
+        }
+      ],
+      "testString": "annotations_stories.test.ts",
+      "count": 40,
+      "args": "--shard=1/2 annotations_stories.test.ts",
+      "shard": {
+        "current": 1,
+        "total": 2
+      }
+    },
+    {
+      "id": 8,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "annotations_stories.test.ts",
+          "count": 80
+        }
+      ],
+      "testString": "annotations_stories.test.ts",
+      "count": 40,
+      "args": "--shard=2/2 annotations_stories.test.ts",
+      "shard": {
+        "current": 2,
+        "total": 2
+      }
+    },
+    {
+      "id": 9,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "area_stories.test.ts",
+          "count": 11
+        },
+        {
+          "test": "dark_mode.test.ts",
+          "count": 1
+        },
+        {
+          "test": "goal_stories.test.ts",
+          "count": 18
+        },
+        {
+          "test": "grid_stories.test.ts",
+          "count": 1
+        },
+        {
+          "test": "line_stories.test.ts",
+          "count": 9
+        },
+        {
+          "test": "styles.test.ts",
+          "count": 2
+        },
+        {
+          "test": "timezone.test.ts",
+          "count": 4
+        },
+        {
+          "test": "waffle_stories.test.ts",
+          "count": 1
+        },
+        {
+          "test": "wordcloud_stories.test.ts",
+          "count": 6
+        }
+      ],
+      "testString": "area_stories.test.ts dark_mode.test.ts goal_stories.test.ts grid_stories.test.ts line_stories.test.ts styles.test.ts timezone.test.ts waffle_stories.test.ts wordcloud_stories.test.ts",
+      "count": 53,
+      "args": " area_stories.test.ts dark_mode.test.ts goal_stories.test.ts grid_stories.test.ts line_stories.test.ts styles.test.ts timezone.test.ts waffle_stories.test.ts wordcloud_stories.test.ts"
+    },
+    {
+      "id": 10,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "axis_stories.test.ts",
+          "count": 43
+        }
+      ],
+      "testString": "axis_stories.test.ts",
+      "count": 43,
+      "args": " axis_stories.test.ts"
+    },
+    {
+      "id": 11,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "bar_stories.test.ts",
+          "count": 84
+        }
+      ],
+      "testString": "bar_stories.test.ts",
+      "count": 42,
+      "args": "--shard=1/2 bar_stories.test.ts",
+      "shard": {
+        "current": 1,
+        "total": 2
+      }
+    },
+    {
+      "id": 12,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "bar_stories.test.ts",
+          "count": 84
+        }
+      ],
+      "testString": "bar_stories.test.ts",
+      "count": 42,
+      "args": "--shard=2/2 bar_stories.test.ts",
+      "shard": {
+        "current": 2,
+        "total": 2
+      }
+    },
+    {
+      "id": 13,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "heatmap_stories.test.ts",
+          "count": 20
+        },
+        {
+          "test": "scales_stories.test.ts",
+          "count": 13
+        },
+        {
+          "test": "stylings_stories.test.ts",
+          "count": 14
+        }
+      ],
+      "testString": "heatmap_stories.test.ts scales_stories.test.ts stylings_stories.test.ts",
+      "count": 47,
+      "args": " heatmap_stories.test.ts scales_stories.test.ts stylings_stories.test.ts"
+    },
+    {
+      "id": 14,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "interactions.test.ts",
+          "count": 169
+        }
+      ],
+      "testString": "interactions.test.ts",
+      "count": 56,
+      "args": "--shard=1/3 interactions.test.ts",
+      "shard": {
+        "current": 1,
+        "total": 3
+      }
+    },
+    {
+      "id": 15,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "interactions.test.ts",
+          "count": 169
+        }
+      ],
+      "testString": "interactions.test.ts",
+      "count": 56,
+      "args": "--shard=2/3 interactions.test.ts",
+      "shard": {
+        "current": 2,
+        "total": 3
+      }
+    },
+    {
+      "id": 16,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "interactions.test.ts",
+          "count": 169
+        }
+      ],
+      "testString": "interactions.test.ts",
+      "count": 56,
+      "args": "--shard=3/3 interactions.test.ts",
+      "shard": {
+        "current": 3,
+        "total": 3
+      }
+    },
+    {
+      "id": 17,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "legend_stories.test.ts",
+          "count": 47
+        }
+      ],
+      "testString": "legend_stories.test.ts",
+      "count": 47,
+      "args": " legend_stories.test.ts"
+    },
+    {
+      "id": 18,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "mixed_stories.test.ts",
+          "count": 180
+        }
+      ],
+      "testString": "mixed_stories.test.ts",
+      "count": 45,
+      "args": "--shard=1/4 mixed_stories.test.ts",
+      "shard": {
+        "current": 1,
+        "total": 4
+      }
+    },
+    {
+      "id": 19,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "mixed_stories.test.ts",
+          "count": 180
+        }
+      ],
+      "testString": "mixed_stories.test.ts",
+      "count": 45,
+      "args": "--shard=2/4 mixed_stories.test.ts",
+      "shard": {
+        "current": 2,
+        "total": 4
+      }
+    },
+    {
+      "id": 20,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "mixed_stories.test.ts",
+          "count": 180
+        }
+      ],
+      "testString": "mixed_stories.test.ts",
+      "count": 45,
+      "args": "--shard=3/4 mixed_stories.test.ts",
+      "shard": {
+        "current": 3,
+        "total": 4
+      }
+    },
+    {
+      "id": 21,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "mixed_stories.test.ts",
+          "count": 180
+        }
+      ],
+      "testString": "mixed_stories.test.ts",
+      "count": 45,
+      "args": "--shard=4/4 mixed_stories.test.ts",
+      "shard": {
+        "current": 4,
+        "total": 4
+      }
+    },
+    {
+      "id": 22,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "partition_stories.test.ts",
+          "count": 40
+        }
+      ],
+      "testString": "partition_stories.test.ts",
+      "count": 40,
+      "args": " partition_stories.test.ts"
+    },
+    {
+      "id": 23,
+      "enabled": false,
+      "tests": [
+        {
+          "test": "test_cases_stories.test.ts",
+          "count": 39
+        }
+      ],
+      "testString": "test_cases_stories.test.ts",
+      "count": 39,
+      "args": " test_cases_stories.test.ts"
+    }
+  ]
+}
