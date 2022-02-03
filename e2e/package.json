@@ -1,5 +1,6 @@
 {
   "name": "charts-e2e",
+  "private": "true",
   "description": "Visual regression test runner",
   "license": "SEE LICENSE IN LICENSE.txt",
   "scripts": {
