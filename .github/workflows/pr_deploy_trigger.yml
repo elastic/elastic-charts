@@ -47,6 +47,7 @@ jobs:
         uses: andstor/file-existence-action@v1
         with:
           files: e2e/groups.json
+      - run: cat e2e/groups.json
       - name: Check e2e groups are enabled
         if: ${{ steps.has-groups.outputs.files_exists }}
         id: e2e
@@ -58,6 +59,8 @@ jobs:
           data = json.load(file)
           print(f"::set-output name=enabled::{json.dumps(data['enabled'])}")
           file.close()
+      - run: echo "${{ steps.e2e.outputs.enabled }}"
+
 
   trigger-deploy:
     name: Trigger deployment
