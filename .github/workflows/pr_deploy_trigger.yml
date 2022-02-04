@@ -42,6 +42,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
       - name: Check is e2e setup ready
         id: has-groups
         uses: andstor/file-existence-action@v1
@@ -72,6 +74,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
       - run: ls
       - name: Print context
         shell: python
