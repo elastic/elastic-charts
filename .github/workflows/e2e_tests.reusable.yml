@@ -281,7 +281,9 @@ jobs:
         working-directory: e2e
       - name: Test run
         working-directory: e2e
-        run: yarn test --forbid-only --project=${{ matrix.browser }} {{ matrix.group.args }}
+        env:
+          ENV_URL: ${{ inputs.environment_url }}
+        run: yarn test:playwright --forbid-only --project=${{ matrix.browser }} ${{ matrix.group.args }}
 
   e2e-status-success:
     name: set success Status

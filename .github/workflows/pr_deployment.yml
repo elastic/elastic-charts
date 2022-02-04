@@ -117,7 +117,7 @@ jobs:
             });
 
             return run ? run.html_url :
-              `https://github.com/${context.owner}/${{ github.repository }}/actions/runs/${context.runId}`;
+              `https://github.com/${{ github.repository }}/actions/runs/${context.runId}`;
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "run_info - ${{ steps.run_info.outputs.result }}" # TODO: remove
 
