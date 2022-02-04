@@ -6,15 +6,22 @@
  * Side Public License, v 1.
  */
 
+import { extent } from '../../../../common/math';
+import { cutToLength } from '../../../../common/text_utils';
+import { transformA2, Vec2 } from '../../../../common/vectors';
+import { screenspaceMarkerScaleCompressor } from '../../../../solvers/screenspace_marker_scale_compressor';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { Dimensions, horizontalPad, innerPad, outerPad, verticalPad } from '../../../../utils/dimensions';
+import { degToRad } from '../../../../utils/common';
+import { Dimensions, horizontalPad, innerPad, outerPad, pad } from '../../../../utils/dimensions';
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { AxisStyle, HeatmapStyle } from '../../../../utils/themes/theme';
+import { limitXAxisLabelRotation } from '../../layout/viewmodel/default_constaints';
 import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
+import { HeatmapSpec } from '../../specs/heatmap';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { getXAxisRightOverflow } from './get_x_axis_right_overflow';
@@ -56,10 +63,10 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
     container,
     legendSize,
 
-    { yValues },
+    { yValues, xValues },
     { heatmap, axes: { axisTitle: axisTitleStyle } },
     rightOverflow,
-    { xAxisTitle, yAxisTitle },
+    { xAxisTitle, yAxisTitle, xAxisLabelFormatter },
   ): ChartElementSizes => {
     return withTextMeasure((textMeasure) => {
       const isLegendHorizontal = isHorizontalLegend(legendSize.position);
@@ -72,11 +79,20 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
       const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, textMeasure);
 
       const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
-      const xAxisHeight = heatmap.xAxisLabel.visible
-        ? heatmap.xAxisLabel.fontSize + verticalPad(heatmap.xAxisLabel.padding)
-        : 0;
 
-      const availableHeightForGrid = container.height - xAxisTitleVerticalSize - xAxisHeight - legendHeight;
+      const xAxisSize = getXAxisSize(
+        heatmap.xAxisLabel,
+        xAxisLabelFormatter,
+        xValues,
+        textMeasure,
+        container.width - legendWidth,
+        [
+          yAxisTitleHorizontalSize + yAxisWidth + rightOverflow,
+          0, // fill this if you need a right Y axis
+        ],
+      );
+
+      const availableHeightForGrid = container.height - xAxisTitleVerticalSize - xAxisSize.height - legendHeight;
 
       const rowHeight = getGridCellHeight(yValues.length, heatmap.grid, availableHeightForGrid);
       const fullHeatmapHeight = rowHeight * yValues.length;
@@ -87,9 +103,9 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
           : yValues.length;
 
       const grid: Dimensions = {
-        width: container.width - yAxisWidth - yAxisTitleHorizontalSize - rightOverflow - legendWidth,
+        width: xAxisSize.width,
         height: visibleNumberOfRows * rowHeight,
-        left: container.left + yAxisTitleHorizontalSize + yAxisWidth,
+        left: container.left + (container.width - legendWidth) - xAxisSize.width,
         top: container.top,
       };
 
@@ -102,7 +118,7 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
 
       const xAxis: Dimensions = {
         width: grid.width,
-        height: xAxisHeight,
+        height: xAxisSize.height,
         top: grid.top + grid.height,
         left: grid.left,
       };
@@ -177,4 +193,61 @@ function getGridCellHeight(rows: number, grid: HeatmapStyle['grid'], height: num
   }
 
   return stretchedHeight;
+}
+
+function getXAxisSize(
+  style: HeatmapStyle['xAxisLabel'],
+  formatter: HeatmapSpec['xAxisLabelFormatter'],
+  labels: (string | number)[],
+  textMeasure: TextMeasure,
+  containerWidth: number,
+  surroundingSpace: [number, number],
+) {
+  const rotationRad = degToRad(limitXAxisLabelRotation(style.rotation));
+  const { itemWidths, domainPositions, hMax } = labels.reduce<{
+    wMax: number;
+    hMax: number;
+    itemWidths: [number, number][];
+    domainPositions: number[];
+  }>(
+    (acc, label) => {
+      // use formatted and optionally limited labels{
+      const text = cutToLength(formatter(label), style.overflow ? style.maxTextLength : Infinity);
+      const { width, height } = textMeasure(text, style, style.fontSize);
+
+      // rotate the label coordinates
+      const labelRect: Vec2[] = [
+        [0, 0],
+        [width, 0],
+        [width, height],
+        [0, height],
+      ];
+      const rotatedVectors = transformA2(labelRect, rotationRad, [0, height / 2]);
+
+      // find the rotated bounding box
+      const x = extent(rotatedVectors.map((v) => v[0]));
+      const y = extent(rotatedVectors.map((v) => v[1]));
+      acc.wMax = Math.max(acc.wMax, Math.abs(x[1] - x[0]));
+      acc.hMax = Math.max(acc.hMax, Math.abs(y[1] - y[0]));
+
+      // describe the item width as the left and right vector size from the rotation origin
+      acc.itemWidths.push([Math.abs(x[0]), Math.abs(x[1])]);
+
+      // use a categorical scale with labels aligned to the center to compute the domain position
+      const domainPosition = labels.indexOf(label) / labels.length + 1 / labels.length / 2;
+      acc.domainPositions.push(domainPosition);
+      return acc;
+    },
+    { wMax: -Infinity, hMax: -Infinity, itemWidths: [], domainPositions: [] },
+  );
+  return {
+    // the horizontal space
+    width: screenspaceMarkerScaleCompressor(
+      [0, ...domainPositions, 1], // account for the left and right space (Y axis, Legend etc)
+      [[surroundingSpace[0], 0], ...itemWidths, [0, surroundingSpace[1]]],
+      containerWidth,
+    ).scaleMultiplier,
+    // the height represent the height of the max rotated bbox plus the padding and the vertical position of the rotation origin
+    height: style.visible ? hMax + pad(style.padding, 'top') + style.fontSize / 2 : 0,
+  };
 }

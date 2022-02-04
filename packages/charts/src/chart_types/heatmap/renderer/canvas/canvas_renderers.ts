@@ -9,11 +9,11 @@
 import { Color, Colors } from '../../../../common/colors';
 import { Font } from '../../../../common/text_utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
-import { clamp } from '../../../../utils/common';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { limitXAxisLabelRotation } from '../../layout/viewmodel/default_constaints';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_dimensions';
 
 /** @internal */
@@ -156,12 +156,12 @@ export function renderCanvas2d(
           ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
           heatmapViewModel.xValues.forEach((xValue, index) => {
             if (!theme.xAxisLabel.alternate || index % 2 === 0) {
-              const labelRotation = clamp(theme.xAxisLabel.rotation, -90, 90);
+              const rotation = limitXAxisLabelRotation(theme.xAxisLabel.rotation);
               const font = {
                 ...theme.xAxisLabel,
-                align: labelRotation > 0 ? 'left' : labelRotation < 0 ? 'right' : theme.xAxisLabel.align,
+                align: rotation < 0 ? 'right' : theme.xAxisLabel.align,
               };
-              renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, font, theme.xAxisLabel.rotation);
+              renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, font, rotation);
             }
           });
         }),
