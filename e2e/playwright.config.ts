@@ -13,13 +13,15 @@ const config: PlaywrightTestConfig = {
     headless: true,
     locale: 'en-us',
     viewport: { width: 785, height: 600 },
-    screenshot: 'off',
-    video: 'retain-on-failure',
+    trace: 'off',
+    screenshot: 'off', // already testing screenshots
+    video: process.env.CI ? 'off' : 'retain-on-failure',
   },
   reporter: process.env.CI ? 'github' : [['html', { open: 'never', outputFolder: 'report' }], ['list']],
   expect: {
     toMatchSnapshot: { threshold: 0 },
   },
+  forbidOnly: Boolean(process.env.CI),
   timeout: 10 * 1000,
   preserveOutput: 'failures-only',
   snapshotDir: 'screenshots',
