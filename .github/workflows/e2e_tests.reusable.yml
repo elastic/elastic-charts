@@ -206,7 +206,7 @@ jobs:
     needs: [deployment-status, deployment-ping]
     if: ${{ success() }}
     outputs:
-      matrix: ${{ steps.groups.outputs.matrix }}
+      groups: ${{ steps.groups.outputs.result }}
       playwright-version: ${{ steps.playwright.outputs.version }}
     steps: # TODO: cleanup this logic without python and shell scripts
       - name: Checkout & Setup node
@@ -234,30 +234,37 @@ jobs:
       # - name: Regroup e2e test suites
       #   working-directory: e2e
       #   run: yarn regroup
-      - name: Get e2e matrix groups
+      - name: Get e2e matrix test groups
         id: groups
-        shell: python
-        working-directory: e2e
-        run: |
-          import json
-          file = open('groups.json')
-          data = json.load(file)
-          matrix = { 'include': data['groups'] };
-          print(f"::set-output name=matrix::{json.dumps(matrix)}")
-          file.close()
+        uses: actions/github-script@v5
+        with:
+          script: |
+            data = require('./e2e/groups.json');
+            if (data && data.enabled) {
+              console.log('---- groups.json ----');
+              console.log(JSON.stringify(data, null, 2));
+              const groups = data.groups.filter(({ enabled }) => enabled);
+              if (groups.length > 0) {
+                console.log('---- groups ----');
+                console.log(JSON.stringify(groups, null, 2));
+                return groups;
+              }
+            }
       - name: Print groups context
         shell: python
         run: |
-          print("""${{ steps.groups.outputs.matrix }}""")
+          print("""${{ steps.groups.outputs.result }}""")
 
   e2e:
-    name: '${{ matrix.browser }} / Test group #${{ matrix.id }}'
+    name: '${{ matrix.browser }} / Test group #${{ matrix.group.id }}'
     runs-on: ubuntu-latest
     needs: e2e-setup
-    if: ${{ matrix.enabled }}
+    if: ${{ needs.e2e-setup.outputs.groups }}
     strategy:
       fail-fast: false
-      matrix: ${{ fromJSON(needs.e2e-setup.outputs.matrix) }}
+      matrix:
+        group: ${{ fromJSON(needs.e2e-setup.outputs.groups) }}
+        browser: [Chrome]
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.e2e-setup.outputs.playwright-version }}-focal
     steps:
@@ -274,7 +281,7 @@ jobs:
         working-directory: e2e
       - name: Test run
         working-directory: e2e
-        run: yarn test --forbid-only --project=${{ matrix.browser }} {{ matrix.args }}
+        run: yarn test --forbid-only --project=${{ matrix.browser }} {{ matrix.group.args }}
 
   e2e-status-success:
     name: set success Status
