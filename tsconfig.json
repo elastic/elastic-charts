@@ -18,9 +18,8 @@
     "downlevelIteration": true,
     "stripInternal": true,
     "resolveJsonModule": true,
-    "typeRoots": ["./**/@types/*.d.ts", "./node_modules/@types"],
     "paths": {
-      "*": ["./declarations/*", "./e2e/declarations/*", "./*"],
+      "*": ["./declarations/*", "./*"],
       "/@elastic/charts$": ["./packages/charts/src"],
       "/@elastic/charts/src/*": ["./packages/charts/src/*"]
     }

@@ -26,18 +26,3 @@ jobs:
     uses: elastic/elastic-charts/.github/workflows/checks.reusable.yml@master
 
 #########################################################################################################
-
-  docker-test:
-    name: 'Test docker context'
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.18.1-focal
-    steps:
-      - name: Checkout & Setup node
-        uses: nickofthyme/checkout-node-setup@v1
-        with:
-          ref: ${{ github.event.pull_request.merge_commit_sha }}
-          skip-npm-install: true
-      - run: ls
-      - run: ls e2e
-      - run: ls packages/charts
