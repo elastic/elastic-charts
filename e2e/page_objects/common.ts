@@ -507,10 +507,10 @@ export class CommonPage {
    * @param {string} [waitSelector] the DOM selector to wait for, default to '.echChartStatus[data-ech-render-complete=true]'
    * @param {number} [timeout] - the timeout for the operation, default to 1000ms
    */
-  waitForElement = (page: Page) => async (waitSelector: string, timeout = 1000) => {
+  waitForElement = (page: Page) => async (waitSelector: string, timeout = 10 * 1000) => {
     await page.waitForSelector(waitSelector, {
       state: 'attached',
-      timeout: timeout,
+      timeout,
       strict: false, // should be true but some stories have multiple charts
     });
   };
