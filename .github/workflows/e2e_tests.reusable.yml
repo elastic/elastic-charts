@@ -277,6 +277,10 @@ jobs:
         shell: python
         run: |
           print("""${{ toJSON(matrix) }}""")
+      - run: yarn install --frozen-lockfile # TODO: fix e2e-server independence
+        if: ${{ contains(matrix.group.testString, 'all.test.ts') }}
+      - run: yarn test:e2e:generate # TODO: fix e2e-server independence
+        if: ${{ contains(matrix.group.testString, 'all.test.ts') }}
       - run: yarn install --frozen-lockfile # TODO: fix caching
         working-directory: e2e
       - name: Test run

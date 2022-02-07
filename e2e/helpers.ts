@@ -60,7 +60,7 @@ export function getStorybookInfo(): StoryGroupInfo[] {
       };
     });
   } catch {
-    throw new Error('A required file is not available, please run yarn test:integration:generate');
+    throw new Error('A required file is not available, please run yarn test:e2e:generate');
   }
 }
 
