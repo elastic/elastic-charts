@@ -105,7 +105,7 @@ jobs:
         # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
         route: POST /repos/{repo}/statuses/{sha}
         repo: ${{ github.repository }}
-        sha: ${{ inputs.sha }}
+        sha: ${{ inputs.commit_sha }}
         context: ${{ inputs.status_context }}
         state: 'error'
         description: 'No deployment found, testing aborted.'
@@ -119,7 +119,7 @@ jobs:
         # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
         route: POST /repos/{repo}/statuses/{sha}
         repo: ${{ github.repository }}
-        sha: ${{ inputs.sha }}
+        sha: ${{ inputs.commit_sha }}
         context: ${{ inputs.status_context }}
         state: 'pending'
         description: 'Deployment successful, starting tests'
@@ -133,7 +133,7 @@ jobs:
         # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
         route: POST /repos/{repo}/statuses/{sha}
         repo: ${{ github.repository }}
-        sha: ${{ inputs.sha }}
+        sha: ${{ inputs.commit_sha }}
         context: ${{ inputs.status_context }}
         state: ${{ steps.deployment-status.outputs.result }}
         description: "Deployment ${{ steps.deployment-status.outputs.result }}, testing aborted."
@@ -147,7 +147,7 @@ jobs:
         # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
         route: POST /repos/{repo}/statuses/{sha}
         repo: ${{ github.repository }}
-        sha: ${{ inputs.sha }}
+        sha: ${{ inputs.commit_sha }}
         context: ${{ inputs.status_context }}
         state: error
         description: "Deployment pending, testing aborted."
@@ -181,7 +181,7 @@ jobs:
           # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
           route: POST /repos/{repo}/statuses/{sha}
           repo: ${{ github.repository }}
-          sha: ${{ inputs.sha }}
+          sha: ${{ inputs.commit_sha }}
           context: ${{ inputs.status_context }}
           state: error
           description: 'Deployment unresponsive, testing aborted.'
