@@ -11,8 +11,6 @@ import { test } from '@playwright/test';
 import { pwEach } from '../helpers';
 import { common } from '../page_objects';
 
-// TODO fix imports
-// import { TEMPLATES } from '../../storybook/stories/wordcloud/1_wordcloud.story';
 export const TEMPLATES = ['edit', 'single', 'rightAngled', 'multiple', 'squareWords', 'smallWaves', 'sparse'];
 
 test.describe('Scales stories', () => {

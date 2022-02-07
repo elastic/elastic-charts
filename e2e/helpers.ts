@@ -8,8 +8,7 @@
 
 import { test, Page } from '@playwright/test';
 
-import { Rotation } from '@elastic/charts';
-// import { ThemeId } from '../storybook/use_base_theme';
+import { Rotation } from './constants';
 
 type TestExamples = {
   groupFile: string;
@@ -108,7 +107,6 @@ interface EachThemeCbParams {
   urlParam: string;
 }
 
-// const themeIds = Object.values(ThemeId);
 export const themeIds = ['light', 'dark', 'eui-light', 'eui-dark'];
 
 /**

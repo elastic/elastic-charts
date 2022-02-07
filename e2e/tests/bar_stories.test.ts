@@ -8,8 +8,7 @@
 
 import { test } from '@playwright/test';
 
-import { DisplayValueStyle, HorizontalAlignment, VerticalAlignment } from '@elastic/charts';
-
+import { DisplayValueStyleAlignment, HorizontalAlignment, VerticalAlignment } from '../constants';
 import { eachRotation, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
@@ -119,14 +118,14 @@ test.describe('Bar series stories', () => {
 
   test.describe('value label positioning and formatting', () => {
     eachRotation.describe(({ rotation }) => {
-      pwEach.describe<NonNullable<DisplayValueStyle['alignment']>['vertical']>([
+      pwEach.describe<NonNullable<DisplayValueStyleAlignment>['vertical']>([
         VerticalAlignment.Middle,
         VerticalAlignment.Top,
         VerticalAlignment.Bottom,
       ])(
         (v) => `Vertical Alignment - ${v}`,
         (verticalAlignment) => {
-          pwEach.describe<NonNullable<DisplayValueStyle['alignment']>['horizontal']>([
+          pwEach.describe<NonNullable<DisplayValueStyleAlignment>['horizontal']>([
             HorizontalAlignment.Left,
             HorizontalAlignment.Center,
             HorizontalAlignment.Right,

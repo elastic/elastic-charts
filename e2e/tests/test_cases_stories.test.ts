@@ -8,8 +8,7 @@
 
 import { test } from '@playwright/test';
 
-import { PartitionLayout, SeriesType } from '@elastic/charts';
-
+import { PartitionLayout, SeriesType } from '../constants';
 import { eachRotation, pwEach } from '../helpers';
 import { common } from '../page_objects';
 

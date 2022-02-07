@@ -8,8 +8,7 @@
 
 import { test, expect } from '@playwright/test';
 
-import { PartitionLayout, Position } from '@elastic/charts';
-
+import { PartitionLayout, Position } from '../constants';
 import { pwEach } from '../helpers';
 import { common } from '../page_objects';
 
