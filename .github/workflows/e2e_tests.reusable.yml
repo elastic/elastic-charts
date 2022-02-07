@@ -286,7 +286,7 @@ jobs:
       - name: Test run
         working-directory: e2e
         env:
-          ENV_URL: ${{ inputs.environment_url }}
+          ENV_URL: ${{ inputs.environment_url }}/e2e
         run: yarn test:playwright --forbid-only --project=${{ matrix.browser }} ${{ matrix.group.args }}
 
   e2e-status-success:
