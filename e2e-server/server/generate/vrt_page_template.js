@@ -98,8 +98,8 @@ function compileVRTPage(examples) {
     { imports: [], routes: [], urls: [] },
   );
 
-  fs.writeFileSync(path.join('integration', 'tmp', 'vrt_page.tsx'), pageTemplate(imports, routes, urls));
-  fs.writeFileSync(path.join('integration', 'tmp', 'index.tsx'), indexTemplate());
+  fs.writeFileSync(path.join('e2e-server', 'tmp', 'vrt_page.tsx'), pageTemplate(imports, routes, urls));
+  fs.writeFileSync(path.join('e2e-server', 'tmp', 'index.tsx'), indexTemplate());
 }
 
 compileVRTPage(require('../../tmp/examples.json'));

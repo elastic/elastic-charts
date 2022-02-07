@@ -106,7 +106,7 @@ function extractExamples(exampleRelativePath = 'storybook/stories') {
 
 function extractAndSaveExamples() {
   const examples = JSON.stringify(extractExamples(), null, 2);
-  const examplesFileDir = path.join('integration', 'tmp');
+  const examplesFileDir = path.join('e2e-server', 'tmp');
   fs.mkdirSync(examplesFileDir, { recursive: true });
   fs.writeFileSync(path.join(examplesFileDir, 'examples.json'), examples);
 }
