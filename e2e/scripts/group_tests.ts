@@ -18,7 +18,7 @@ import * as glob from 'glob';
  * to approximate the number of screenshots per test file.
  */
 
-const limit = 50;
+const limit = 100;
 
 interface Deploy {
   enabled: boolean;
@@ -26,6 +26,7 @@ interface Deploy {
   groupCount: number;
   groups: {
     id: number;
+    browser: 'Chrome';
     enabled: boolean;
     tests: {
       test: string;
@@ -73,6 +74,7 @@ testCounts.forEach(({ test, count }) => {
       testString: test,
       count,
       args: '',
+      browser: 'Chrome', // TODO add more browsers
     });
   } else {
     smGroup.count += count;
