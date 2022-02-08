@@ -23,7 +23,7 @@
     },
     {
       "id": 2,
-      "enabled": false,
+      "enabled": true,
       "tests": [
         {
           "test": "all.test.ts",
