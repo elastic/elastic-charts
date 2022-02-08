@@ -41,7 +41,7 @@
     },
     {
       "id": 3,
-      "enabled": false,
+      "enabled": true,
       "tests": [
         {
           "test": "all.test.ts",
