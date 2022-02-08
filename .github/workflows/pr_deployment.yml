@@ -43,8 +43,7 @@ jobs:
       deployment_id: ${{ github.event.client_payload.deployment_id }}
       pr_number: ${{ github.event.client_payload.pr_number }}
     outputs:
-      # environment_url: ${{ steps.deploy.outputs.details_url }}
-      environment_url: https://ech-e2e-ci--pr-1572-p2bcha8q.web.app
+      environment_url: ${{ steps.deploy.outputs.details_url }}
       log_url: "${{ steps.run_info.outputs.result }}"
     steps:
       - name: Update Deployment status - in progress
@@ -93,7 +92,7 @@ jobs:
           # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ECH_E2E_CI }}'
           projectId: 'ech-e2e-ci'
-          channelId: "pr-${{ env.pr_number }}" # e.g. pr123
+          channelId: "pr-${{ env.pr_number }}" # e.g. pr-123
       - name: Outputs
         shell: python
         run: |
