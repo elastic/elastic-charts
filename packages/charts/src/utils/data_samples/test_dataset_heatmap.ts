@@ -4240,3 +4240,28 @@ export const DATA_9: HeatmapDataSets = {
   timeZone: 'Europe/Rome',
   data: DATA_8.data,
 };
+
+/** @internal */
+export const ECOMMERCE_DATA = [
+  ['Low Tide Media', "Men's Clothing", 1125],
+  ['Low Tide Media', "Men's Shoes", 595],
+  ['Low Tide Media', "Men's Accessories", 355],
+  ['Low Tide Media', "Women's Shoes", 233],
+  ['Low Tide Media', "Women's Clothing", 136],
+  ['Elitelligence', "Men's Clothing", 1242],
+  ['Elitelligence', "Men's Shoes", 528],
+  ['Elitelligence', "Men's Accessories", 338],
+  ['Elitelligence', "Women's Accessories", 46],
+  ['Elitelligence', "Women's Clothing", 1],
+  ['Oceanavigations', "Men's Clothing", 600],
+  ['Oceanavigations', "Women's Clothing", 418],
+  ['Oceanavigations', "Women's Shoes", 286],
+  ['Oceanavigations', "Men's Shoes", 258],
+  ['Oceanavigations', "Women's Accessories", 239],
+  ['Tigress Enterprises', "Women's Clothing", 816],
+  ['Tigress Enterprises', "Women's Shoes", 556],
+  ['Tigress Enterprises', "Women's Accessories", 395],
+  ['Pyramidustries', "Women's Clothing", 747],
+  ['Pyramidustries', "Women's Shoes", 425],
+  ['Pyramidustries', "Women's Accessories", 377],
+];

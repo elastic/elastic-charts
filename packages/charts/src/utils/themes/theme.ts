@@ -220,7 +220,6 @@ export interface HeatmapStyle {
     padding: Pixels | Padding;
     overflow: 'ellipsis' | false;
     rotation: number;
-    alternate: boolean;
     maxTextLength: number;
   };
   yAxisLabel: Font & {
@@ -230,7 +229,6 @@ export interface HeatmapStyle {
     visible: boolean;
     overflow: 'ellipsis' | false;
     padding: Pixels | Padding;
-    rotation: number;
     maxTextLength: number;
   };
   grid: {

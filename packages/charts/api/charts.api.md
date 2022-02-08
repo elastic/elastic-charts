@@ -1200,15 +1200,10 @@ export interface HeatmapStyle {
         align: TextAlign;
         baseline: TextBaseline;
         visible: boolean;
-<<<<<<< HEAD
-        padding: number;
+        padding: Pixels | Padding;
         overflow: 'ellipsis' | false;
         rotation: number;
-        alternate: boolean;
         maxTextLength: number;
-=======
-        padding: Pixels | Padding;
->>>>>>> master
     };
     // (undocumented)
     yAxisLabel: Font & {
@@ -1218,19 +1213,9 @@ export interface HeatmapStyle {
         };
         baseline: TextBaseline;
         visible: boolean;
-<<<<<<< HEAD
         overflow: 'ellipsis' | false;
-        padding: number | {
-            left?: number;
-            right?: number;
-            top?: number;
-            bottom?: number;
-        };
-        rotation: number;
-        maxTextLength: number;
-=======
         padding: Pixels | Padding;
->>>>>>> master
+        maxTextLength: number;
     };
 }
 

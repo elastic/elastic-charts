@@ -144,7 +144,6 @@ export function renderCanvas2d(
               resultText,
               // the alignment for y axis labels is fixed to the right
               { ...theme.yAxisLabel, align: 'right' },
-              theme.yAxisLabel.rotation,
             );
           });
         }),
@@ -154,15 +153,13 @@ export function renderCanvas2d(
         theme.xAxisLabel.visible &&
         withContext(ctx, () => {
           ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
-          heatmapViewModel.xValues.forEach((xValue, index) => {
-            if (!theme.xAxisLabel.alternate || index % 2 === 0) {
-              const rotation = limitXAxisLabelRotation(theme.xAxisLabel.rotation);
-              const font = {
-                ...theme.xAxisLabel,
-                align: rotation < 0 ? 'right' : theme.xAxisLabel.align,
-              };
-              renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, font, rotation);
-            }
+          const rotation = limitXAxisLabelRotation(theme.xAxisLabel.rotation);
+          const font = {
+            ...theme.xAxisLabel,
+            align: rotation < 0 ? 'right' : theme.xAxisLabel.align,
+          };
+          heatmapViewModel.xValues.forEach(({ x, y, text }) => {
+            renderText(ctx, { x, y }, text, font, rotation);
           });
         }),
 
