@@ -165,7 +165,7 @@ export class CommonPage {
   static getPathFromTestInfo(path?: string | string[]): string | string[] {
     if (path) return CommonPage.validatePath(path);
     const info = test.info();
-    const options = { splitRegexp: /([a-z])([A-Z0-9])/g };
+    const options = { splitRegexp: /([a-z])([\dA-Z])/g };
     const formattedSegments = info.titlePath
       .slice(1)
       .map((s) => paramCase(s, options).replace(/\//g, '-').replace(/\s/g, '-').replace(/-+/g, '-').toLowerCase());
