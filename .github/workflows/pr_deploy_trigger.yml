@@ -35,18 +35,34 @@ on:
 
 jobs:
   should-trigger:
-    name: Check for e2e/package.json
+    name: Check for e2e/groups.json
     runs-on: ubuntu-latest
     outputs:
-      check: ${{ steps.check-e2e-package.outputs.files_exists }}
+      check: ${{ steps.e2e.outputs.enabled == 'true' }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
       - name: Check is e2e setup ready
-        id: check-e2e-package
+        id: has-groups
         uses: andstor/file-existence-action@v1
         with:
-          files: e2e/package.json
+          files: e2e/groups.json
+      - run: cat e2e/groups.json
+      - name: Check e2e groups are enabled
+        if: ${{ steps.has-groups.outputs.files_exists }}
+        id: e2e
+        shell: python
+        working-directory: e2e
+        run: |
+          import json
+          file = open('groups.json')
+          data = json.load(file)
+          print(f"::set-output name=enabled::{json.dumps(data['enabled'])}")
+          file.close()
+      - run: echo "${{ steps.e2e.outputs.enabled }}"
+
 
   trigger-deploy:
     name: Trigger deployment
@@ -58,6 +74,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
       - run: ls
       - name: Print context
         shell: python

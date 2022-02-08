@@ -6,11 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { test } from '@playwright/test';
+
 import { common } from '../page_objects/common';
 
-describe('Waffle', () => {
-  it('should render cells in ascending order', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
+test.describe('Waffle', () => {
+  test('should render cells in ascending order', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/waffle-alpha--simple&globals=theme:light&knob-show table for debugging=&knob-ascending sort=true',
     );
   });

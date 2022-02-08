@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps, useRef } from 'react';
+import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
@@ -95,6 +95,31 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   yAxisLabelFormatter: LabelAccessor<string | number>;
 }
 
+const buildProps = buildSFProps<HeatmapSpec>()(
+  {
+    chartType: ChartType.Heatmap,
+    specType: SpecType.Series,
+  },
+  {
+    data: [],
+    valueAccessor: ({ value }) => value,
+    xScale: { type: X_SCALE_DEFAULT.type },
+    valueFormatter: (value) => `${value}`,
+    xSortPredicate: Predicate.AlphaAsc,
+    ySortPredicate: Predicate.AlphaAsc,
+    // TODO: make accessors required
+    xAccessor: (d) => d?.x,
+    yAccessor: (d) => d?.y,
+    timeZone: 'UTC',
+    xAxisTitle: '',
+    yAxisTitle: '',
+    xAxisLabelName: 'X Value',
+    xAxisLabelFormatter: String,
+    yAxisLabelName: 'Y Value',
+    yAxisLabelFormatter: String,
+  },
+);
+
 /**
  * Adds heatmap spec to chart specs
  * @alpha
@@ -102,40 +127,13 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
 export const Heatmap = function <D extends BaseDatum = Datum>(
   props: SFProps<
     HeatmapSpec<D>,
-    keyof typeof buildProps.current['overrides'],
-    keyof typeof buildProps.current['defaults'],
-    keyof typeof buildProps.current['optionals'],
-    keyof typeof buildProps.current['requires']
+    keyof typeof buildProps['overrides'],
+    keyof typeof buildProps['defaults'],
+    keyof typeof buildProps['optionals'],
+    keyof typeof buildProps['requires']
   >,
 ) {
-  const buildProps = useRef(
-    // @ts-ignore - excessively deep types
-    buildSFProps<HeatmapSpec<D>>()(
-      {
-        chartType: ChartType.Heatmap,
-        specType: SpecType.Series,
-      },
-      {
-        data: [],
-        valueAccessor: ({ value }) => value,
-        xScale: { type: X_SCALE_DEFAULT.type },
-        valueFormatter: (value) => `${value}`,
-        xSortPredicate: Predicate.AlphaAsc,
-        ySortPredicate: Predicate.AlphaAsc,
-        // TODO: make accessors required
-        xAccessor: (d) => (d as any)?.x,
-        yAccessor: (d) => (d as any)?.y,
-        timeZone: 'UTC',
-        xAxisTitle: '',
-        yAxisTitle: '',
-        xAxisLabelName: 'X Value',
-        xAxisLabelFormatter: String,
-        yAxisLabelName: 'Y Value',
-        yAxisLabelFormatter: String,
-      },
-    ),
-  );
-  const { defaults, overrides } = buildProps.current;
+  const { defaults, overrides } = buildProps;
   useSpecFactory<HeatmapSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };

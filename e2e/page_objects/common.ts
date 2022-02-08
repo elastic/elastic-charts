@@ -6,19 +6,14 @@
  * Side Public License, v 1.
  */
 
-import Url from 'url';
+/* eslint-disable no-console */
 
-import { DRAG_DETECTION_TIMEOUT } from '../../packages/charts/src/state/reducers/interactions';
-// @ts-ignore - no type declarations
-import { port, hostname, debug, isLegacyVRTServer } from '../config';
-import { toMatchImageSnapshot } from '../jest_env_setup';
+import { URL } from 'url';
 
-const legacyBaseUrl = `http://${hostname}:${port}/iframe.html`;
+import { expect, test, Page } from '@playwright/test';
+import { paramCase } from 'change-case';
 
-// @ts-ignore - used to log console statements from within the page.evaluate blocks
-// page.on('console', (msg) => (msg._type === 'log' ? console.log('PAGE LOG:', msg._text) : null)); // eslint-disable-line no-console
-
-expect.extend({ toMatchImageSnapshot });
+import { environmentUrl } from '../e2e_config';
 
 interface MousePosition {
   /**
@@ -79,19 +74,15 @@ function getCursorPosition(
 
 interface ScreenshotDOMElementOptions {
   padding?: number;
-  path?: string;
   /**
    * Screenshot selector override. Used to select beyond set element.
    */
   hiddenSelectors?: string[];
   /**
-   * Pauses just before taking screenshot to debug dom
+   * Use playwright debug tooling
+   * See https://playwright.dev/docs/debug#run-in-debug-mode
    *
-   * To continue:
-   *  - resume script execution in dev tools
-   *  - press enter in the terminal running the jest tests
-   *
-   * **Only triggered when `process.env.DEBUG` is true**
+   * @deprecated
    */
   debug?: boolean;
 }
@@ -119,82 +110,115 @@ type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
    * Screenshot selector override. Used to select beyond set element.
    */
   screenshotSelector?: string;
+  /**
+   * Path to save screenshot comparisons when calling `toMatchSnapshot`.
+   * Defaults to auto-generated path using test info.
+   */
+  screenshotPath?: string | string[];
 };
 
-class CommonPage {
+export class CommonPage {
   readonly chartWaitSelector = '.echChartStatus[data-ech-render-complete=true]';
 
   readonly chartSelector = '.echChart';
 
   /**
-   * Parse url from knob storybook url to iframe storybook url
-   *
+   * Parse storybook url to e2e storybook url given config parameters
    * @param url
    */
   static parseUrl(url: string): string {
-    if (isLegacyVRTServer) {
-      const { query } = Url.parse(url);
-      return `${legacyBaseUrl}?${query}${query ? '&' : ''}knob-debug=false`;
-    }
-    const { query } = Url.parse(url, true);
-    const { id, ...rest } = query;
-    return Url.format({
-      protocol: 'http',
-      hostname,
-      port,
-      query: {
-        path: `/story/${id}`,
-        ...rest,
-        'knob-debug': false,
-      },
-    });
+    if (!environmentUrl) throw new Error(`ENV_URL must be provideded`);
+
+    const { searchParams: testParams } = new URL(url);
+    const id = testParams.get('id');
+    const path = testParams.get('path');
+
+    if (!id && !path) throw new Error('No chart path or id was provided in url');
+
+    const envUrl = new URL(environmentUrl);
+    testParams.forEach((v, k) => envUrl.searchParams.append(k, v));
+    envUrl.searchParams.delete('id');
+    envUrl.searchParams.set('path', path ?? `/story/${id}`);
+    envUrl.searchParams.append('knob-debug', 'false');
+
+    return envUrl.toString();
+  }
+
+  static validatePath(path: string | string[]): string | string[] {
+    const fileName = Array.isArray(path) ? path[path.length - 1] : path;
+    if (/\.png$/.test(fileName)) return path;
+    throw new Error(`Screenshot path or last path segment must contain the .png file extension.`);
+  }
+
+  /**
+   * Get url path from test info
+   *
+   * Applies the following mutations to test path segments in order:
+   *  - Changes case to dash-case
+   *  - Replaces `/` with a dash
+   *  - Replaces spaces with a dash
+   *  - Replaces more than one dash with single dash
+   *  - Lowercase all remaining uppercase characters
+   *
+   * @param url
+   */
+  static getPathFromTestInfo(path?: string | string[]): string | string[] {
+    if (path) return CommonPage.validatePath(path);
+    const info = test.info();
+
+    const formattedSegments = info.titlePath
+      .slice(1)
+      .map((s) => paramCase(s).replace(/\//g, '-').replace(/\s/g, '-').replace(/-+/g, '-').toLowerCase());
+
+    return [
+      // New directory for each test.describe block
+      ...formattedSegments.slice(0, -1),
+      `${formattedSegments[formattedSegments.length - 1]}.png`,
+    ];
   }
 
   /**
    * Toggle element visibility
    * @param selector
    */
-  async toggleElementVisibility(selector: string) {
+  toggleElementVisibility = (page: Page) => async (selector: string) => {
     await page.$$eval(selector, (elements) => {
       elements.forEach((element) => {
         element.classList.toggle('echInvisible');
       });
     });
-  }
+  };
 
   /**
    * Get getBoundingClientRect of selected element
    *
    * @param selector
    */
-  async getBoundingClientRect(selector: string) {
+  getBoundingClientRect = (page: Page) => async (selector: string) => {
     return await page.$eval(selector, (element) => {
       const { x, y, width, height } = element.getBoundingClientRect();
       return { left: x, top: y, width, height, id: element.id };
     });
-  }
+  };
 
   /**
-   * Capture screenshot of selected element only
+   * Capture screenshot Buffer of selected element only
    *
    * @param selector
    * @param options
    */
-  async screenshotDOMElement(selector: string, options?: ScreenshotDOMElementOptions): Promise<Buffer> {
-    const padding: number = options && options.padding ? options.padding : 0;
-    const path: string | undefined = options && options.path ? options.path : undefined;
-    const rect = await this.getBoundingClientRect(selector);
+  screenshotDOMElement = (page: Page) => async (
+    selector: string,
+    options?: ScreenshotDOMElementOptions,
+  ): Promise<Buffer> => {
+    const padding = options?.padding ? options.padding : 0;
+    const rect = await this.getBoundingClientRect(page)(selector);
 
     if (options?.hiddenSelectors) {
-      await Promise.all(options.hiddenSelectors.map(this.toggleElementVisibility));
-    }
-
-    if (options?.debug && debug) {
-      await jestPuppeteer.debug();
+      await Promise.all(options.hiddenSelectors.map(this.toggleElementVisibility(page)));
     }
 
     const buffer = await page.screenshot({
-      path,
       clip: {
         x: rect.left - padding,
         y: rect.top - padding,
@@ -204,20 +228,20 @@ class CommonPage {
     });
 
     if (options?.hiddenSelectors) {
-      await Promise.all(options.hiddenSelectors.map(this.toggleElementVisibility));
+      await Promise.all(options.hiddenSelectors.map(this.toggleElementVisibility(page)));
     }
 
     return buffer;
-  }
+  };
 
   /**
    * Move mouse
    * @param mousePosition
    * @param selector
    */
-  async moveMouse(x: number, y: number) {
+  moveMouse = (page: Page) => async (x: number, y: number) => {
     await page.mouse.move(x, y);
-  }
+  };
 
   /**
    * Move mouse relative to element
@@ -225,11 +249,11 @@ class CommonPage {
    * @param mousePosition
    * @param selector
    */
-  async moveMouseRelativeToDOMElement(mousePosition: MousePosition, selector: string) {
-    const element = await this.getBoundingClientRect(selector);
+  moveMouseRelativeToDOMElement = (page: Page) => async (mousePosition: MousePosition, selector: string) => {
+    const element = await this.getBoundingClientRect(page)(selector);
     const { x, y } = getCursorPosition(mousePosition, element);
-    await this.moveMouse(x, y);
-  }
+    await this.moveMouse(page)(x, y);
+  };
 
   /**
    * Click mouse relative to element
@@ -237,11 +261,11 @@ class CommonPage {
    * @param mousePosition
    * @param selector
    */
-  async clickMouseRelativeToDOMElement(mousePosition: MousePosition, selector: string) {
-    const element = await this.getBoundingClientRect(selector);
+  clickMouseRelativeToDOMElement = (page: Page) => async (mousePosition: MousePosition, selector: string) => {
+    const element = await this.getBoundingClientRect(page)(selector);
     const { x, y } = getCursorPosition(mousePosition, element);
     await page.mouse.click(x, y);
-  }
+  };
 
   /**
    * Drag mouse relative to element
@@ -249,15 +273,18 @@ class CommonPage {
    * @param mousePosition
    * @param selector
    */
-  async dragMouseRelativeToDOMElement(start: MousePosition, end: MousePosition, selector: string) {
-    const element = await this.getBoundingClientRect(selector);
+  dragMouseRelativeToDOMElement = (page: Page) => async (
+    start: MousePosition,
+    end: MousePosition,
+    selector: string,
+  ) => {
+    const element = await this.getBoundingClientRect(page)(selector);
     const { x: x0, y: y0 } = getCursorPosition(start, element);
     const { x: x1, y: y1 } = getCursorPosition(end, element);
-    await this.moveMouse(x0, y0);
+    await this.moveMouse(page)(x0, y0);
     await page.mouse.down();
-    await page.waitFor(DRAG_DETECTION_TIMEOUT);
-    await this.moveMouse(x1, y1);
-  }
+    await this.moveMouse(page)(x1, y1);
+  };
 
   /**
    * Drop mouse
@@ -265,9 +292,9 @@ class CommonPage {
    * @param mousePosition
    * @param selector
    */
-  async dropMouse() {
+  dropMouse = (page: Page) => async () => {
     await page.mouse.up();
-  }
+  };
 
   /**
    * Press keyboard keys
@@ -275,12 +302,10 @@ class CommonPage {
    * @param key
    */
   // eslint-disable-next-line class-methods-use-this
-  async pressKey(key: string, count: number) {
+  pressKey = (page: Page) => async (key: string, count: number) => {
     if (key === 'tab') {
       let i = 0;
       while (i < count) {
-        // eslint-disable-next-line eslint-comments/disable-enable-pair
-        /* eslint-disable no-await-in-loop */
         await page.keyboard.press('Tab');
         i++;
       }
@@ -291,7 +316,7 @@ class CommonPage {
         i++;
       }
     }
-  }
+  };
 
   /**
    * Drag and drop mouse relative to element
@@ -299,10 +324,16 @@ class CommonPage {
    * @param mousePosition
    * @param selector
    */
-  async dragAndDropMouseRelativeToDOMElement(start: MousePosition, end: MousePosition, selector: string) {
-    await this.dragMouseRelativeToDOMElement(start, end, selector);
-    await this.dropMouse();
-  }
+  dragAndDropMouseRelativeToDOMElement = (page: Page) => async (
+    start: MousePosition,
+    end: MousePosition,
+    selector: string,
+  ) => {
+    await this.dragMouseRelativeToDOMElement(page)(start, end, selector);
+    await this.dropMouse(page)();
+  };
+
+  count = 0;
 
   /**
    * Expect an element given a url and selector from storybook
@@ -313,37 +344,34 @@ class CommonPage {
    * @param selector selector of element to screenshot
    * @param options
    */
-  async expectElementAtUrlToMatchScreenshot(
+  expectElementAtUrlToMatchScreenshot = (page: Page) => async (
     url: string,
     selector: string = 'body',
     options?: ScreenshotElementAtUrlOptions,
-  ) {
-    try {
-      const success = await this.loadElementFromURL(url, options?.waitSelector ?? selector, options?.timeout);
+  ) => {
+    const screenshotPath = CommonPage.getPathFromTestInfo(options?.screenshotPath);
+    const success = await this.loadElementFromURL(page)(url, options?.waitSelector ?? selector, options?.timeout);
 
-      expect(success).toBe(true);
+    expect(success).toBe(true);
 
-      if (options?.action) {
-        await options.action();
-      }
-
-      if (options?.delay) {
-        await page.waitFor(options.delay);
-      }
-
-      const element = await this.screenshotDOMElement(options?.screenshotSelector ?? selector, options);
-
-      if (!element) {
-        // eslint-disable-next-line no-console
-        console.error(`Failed to find element at \`${selector}\`\n\n\t${url}`);
-      }
-
-      expect(element).toBeDefined();
-      expect(element).toMatchImageSnapshot();
-    } catch {
-      // prevent throwing error on failed assertion
+    if (options?.action) {
+      await options.action();
     }
-  }
+
+    if (options?.delay) {
+      await page.waitForTimeout(options.delay);
+    }
+
+    const element = await this.screenshotDOMElement(page)(options?.screenshotSelector ?? selector, options);
+
+    expect(element).toBeDefined(); // TODO see why this does NOT fail the test
+
+    if (!element) {
+      throw new Error(`Failed to find element at \`${selector}\`\n\n\t${url}`);
+    } else {
+      expect(element).toMatchSnapshot(screenshotPath);
+    }
+  };
 
   /**
    * Expect a chart given a url from storybook
@@ -351,12 +379,28 @@ class CommonPage {
    * @param url Storybook url from knobs section
    * @param options
    */
-  async expectChartAtUrlToMatchScreenshot(url: string, options?: ScreenshotElementAtUrlOptions) {
-    await this.expectElementAtUrlToMatchScreenshot(url, this.chartSelector, {
+  expectChartAtUrlToMatchScreenshot = (page: Page) => async (url: string, options?: ScreenshotElementAtUrlOptions) => {
+    await this.expectElementAtUrlToMatchScreenshot(page)(url, this.chartSelector, {
       waitSelector: this.chartWaitSelector,
       ...options,
     });
-  }
+  };
+
+  /**
+   * Expect a chart given a url from storybook
+   *
+   * @param url Storybook url from knobs section
+   * @param options
+   */
+  expectChartAtUrlToMatchScreenshotOld = (page: Page) => async (
+    url: string,
+    options?: ScreenshotElementAtUrlOptions,
+  ) => {
+    await this.expectElementAtUrlToMatchScreenshot(page)(url, this.chartSelector, {
+      waitSelector: this.chartWaitSelector,
+      ...options,
+    });
+  };
 
   /**
    * Expect a chart given a url from storybook with mouse move
@@ -365,20 +409,20 @@ class CommonPage {
    * @param mousePosition - position of mouse relative to chart
    * @param options
    */
-  async expectChartWithMouseAtUrlToMatchScreenshot(
+  expectChartWithMouseAtUrlToMatchScreenshot = (page: Page) => async (
     url: string,
     mousePosition: MousePosition,
     options?: ScreenshotElementAtUrlOptions,
-  ) {
+  ) => {
     const action = async () => {
       await options?.action?.();
-      await this.moveMouseRelativeToDOMElement(mousePosition, this.chartSelector);
+      await this.moveMouseRelativeToDOMElement(page)(mousePosition, this.chartSelector);
     };
-    await this.expectChartAtUrlToMatchScreenshot(url, {
+    await this.expectChartAtUrlToMatchScreenshot(page)(url, {
       ...options,
       action,
     });
-  }
+  };
 
   /**
    * Expect a chart given a url from storybook with keyboard events
@@ -386,26 +430,26 @@ class CommonPage {
    * @param keyboardEvents
    * @param options
    */
-  async expectChartWithKeyboardEventsAtUrlToMatchScreenshot(
+  expectChartWithKeyboardEventsAtUrlToMatchScreenshot = (page: Page) => async (
     url: string,
     keyboardEvents: KeyboardKeys,
     options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
-  ) {
+  ) => {
     const action = async () => {
       // click to focus within the chart
-      await this.clickMouseRelativeToDOMElement({ top: 0, left: 0 }, this.chartSelector);
+      await this.clickMouseRelativeToDOMElement(page)({ top: 0, left: 0 }, this.chartSelector);
       // eslint-disable-next-line no-restricted-syntax
       for (const actions of keyboardEvents) {
-        await this.pressKey(actions.key, actions.count);
+        await this.pressKey(page)(actions.key, actions.count);
       }
-      await this.moveMouseRelativeToDOMElement({ top: 0, left: 0 }, this.chartSelector);
+      await this.moveMouseRelativeToDOMElement(page)({ top: 0, left: 0 }, this.chartSelector);
     };
 
-    await this.expectChartAtUrlToMatchScreenshot(url, {
+    await this.expectChartAtUrlToMatchScreenshot(page)(url, {
       ...options,
       action,
     });
-  }
+  };
 
   /**
    * Expect a chart given a url from storybook with mouse move
@@ -415,18 +459,18 @@ class CommonPage {
    * @param end - the end position of mouse relative to chart
    * @param options
    */
-  async expectChartWithDragAtUrlToMatchScreenshot(
+  expectChartWithDragAtUrlToMatchScreenshot = (page: Page) => async (
     url: string,
     start: MousePosition,
     end: MousePosition,
     options?: Omit<ScreenshotElementAtUrlOptions, 'action'>,
-  ) {
-    const action = async () => await this.dragMouseRelativeToDOMElement(start, end, this.chartSelector);
-    await this.expectChartAtUrlToMatchScreenshot(url, {
+  ) => {
+    const action = async () => await this.dragMouseRelativeToDOMElement(page)(start, end, this.chartSelector);
+    await this.expectChartAtUrlToMatchScreenshot(page)(url, {
       ...options,
       action,
     });
-  }
+  };
 
   /**
    * Loads storybook page from raw url, and waits for element
@@ -435,41 +479,43 @@ class CommonPage {
    * @param waitSelector selector of element to wait to appear in DOM
    * @param timeout timeout for waiting on element to appear in DOM
    */
-  async loadElementFromURL(url: string, waitSelector?: string, timeout?: number): Promise<boolean> {
+  loadElementFromURL = (page: Page) => async (
+    url: string,
+    waitSelector?: string,
+    timeout?: number,
+  ): Promise<boolean> => {
     const cleanUrl = CommonPage.parseUrl(url);
     await page.goto(cleanUrl);
 
     if (waitSelector) {
       try {
-        await this.waitForElement(waitSelector, timeout);
+        await this.waitForElement(page)(waitSelector, timeout);
         return true;
-      } catch {
-        // eslint-disable-next-line no-console
-        console.error(`Failed to load url. Check story at: \n\n\tstorybook url: ${url}\n\tlocal vrt url: ${cleanUrl}`);
+      } catch (error) {
+        console.error(error);
+        console.error(`Check story at: \n\n\tstorybook url: ${url}\n\tlocal vrt url: ${cleanUrl}`);
         return false;
       }
     }
 
-    if (isLegacyVRTServer) {
-      // activate peripheral visibility
-      await page.evaluate(() => {
-        document.querySelector('html')!.classList.add('echVisualTesting');
-      });
-      return true;
-    }
-
     return false;
-  }
+  };
 
   /**
    * Wait for an element to be on the DOM
    *
    * @param {string} [waitSelector] the DOM selector to wait for, default to '.echChartStatus[data-ech-render-complete=true]'
-   * @param {number} [timeout] - the timeout for the operation, default to 10000ms
+   * @param {number} [timeout] - the timeout for the operation, default to 1000ms
    */
-  async waitForElement(waitSelector: string, timeout = 10000) {
-    await page.waitForSelector(waitSelector, { timeout });
-  }
+  waitForElement = (page: Page) => async (waitSelector: string, timeout = 10 * 1000) => {
+    await page.waitForSelector(waitSelector, {
+      state: 'attached',
+      timeout,
+      strict: false, // should be true but some stories have multiple charts
+    });
+  };
 }
 
 export const common = new CommonPage();
+
+/* eslint-enable no-console */

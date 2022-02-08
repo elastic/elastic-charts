@@ -18,12 +18,11 @@
     "downlevelIteration": true,
     "stripInternal": true,
     "resolveJsonModule": true,
-    "typeRoots": ["./node_modules/@types"],
     "paths": {
       "*": ["./declarations/*", "./*"],
       "/@elastic/charts$": ["./packages/charts/src"],
       "/@elastic/charts/src/*": ["./packages/charts/src/*"]
     }
   },
-  "exclude": ["**/tmp", "**/dist", "./docs", "./e2e"]
+  "exclude": ["**/tmp", "**/dist", "./docs"]
 }

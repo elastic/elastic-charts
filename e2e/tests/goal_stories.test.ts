@@ -6,67 +6,74 @@
  * Side Public License, v 1.
  */
 
+import { test } from '@playwright/test';
+
 import { eachTheme } from '../helpers';
 import { common } from '../page_objects';
 
-describe('Goal stories', () => {
-  it('should render without target', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
+test.describe('Goal stories', () => {
+  test('should render without target', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/goal-alpha--gaps&knob-show target=false&knob-target=260',
     );
   });
 
-  it('should render actual tooltip color on hover', async () => {
+  test('should render actual tooltip color on hover', async ({ page }) => {
     await common.expectChartWithMouseAtUrlToMatchScreenshot(
+      page,
+    )(
       'http://localhost:9001/?path=/story/goal-alpha--gaps&knob-show target=false&knob-target=260&globals=background:white',
       { right: 245, bottom: 120 },
     );
   });
 
-  describe('Sagitta offset', () => {
-    it('should render goal with asymetric angle', async () => {
-      await common.expectChartAtUrlToMatchScreenshot(
+  test.describe('Sagitta offset', () => {
+    test('should render goal with asymetric angle', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target&knob-angleStart (n * π/8)=10&knob-angleEnd (n * π/8)=1',
       );
     });
 
-    it('should limit min offset to π/2', async () => {
-      await common.expectChartAtUrlToMatchScreenshot(
+    test('should limit min offset to π/2', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target&knob-angleStart (n * π/8)=6&knob-angleEnd (n * π/8)=2',
       );
     });
 
-    it('should limit max offset to 3/2π', async () => {
+    test('should limit max offset to 3/2π', async ({ page }) => {
       // TODO revist once full circle chart is handled
-      await common.expectChartAtUrlToMatchScreenshot(
+      await common.expectChartAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target&knob-angleStart (n * π/8)=11&knob-angleEnd (n * π/8)=-3',
       );
     });
 
-    it('should show custom value formatter in tooltip', async () => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
+    test('should show custom value formatter in tooltip', async ({ page }) => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target&knob-test tooltip value formatter=true',
-        { right: 245, bottom: 120 },
+        {
+          right: 245,
+          bottom: 120,
+        },
       );
     });
   });
 
-  eachTheme.describe((_, params) => {
-    it('should render gauge with target story', async () => {
-      await common.expectChartAtUrlToMatchScreenshot(
-        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--gauge-with-target&${params}`,
+  eachTheme.describe(({ urlParam }) => {
+    test('should render gauge with target story', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--gauge-with-target&${urlParam}`,
       );
     });
 
-    it('should render minimal goal story', async () => {
-      await common.expectChartAtUrlToMatchScreenshot(
-        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--minimal-goal&${params}`,
+    test('should render minimal goal story', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--minimal-goal&${urlParam}`,
       );
     });
 
-    it('should render vertical negative story', async () => {
-      await common.expectChartAtUrlToMatchScreenshot(
-        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--vertical-negative&${params}`,
+    test('should render vertical negative story', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--vertical-negative&${urlParam}`,
       );
     });
   });

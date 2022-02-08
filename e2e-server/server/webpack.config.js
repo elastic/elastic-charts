@@ -16,11 +16,11 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: '../tmp/index.tsx',
-  mode: 'production',
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   output: {
     filename: '[name].bundle.js',
     chunkFilename: '[name].chunk.js',
-    path: path.resolve(__dirname, 'packages/charts/dist'),
+    path: path.resolve(__dirname, '../.out'),
   },
   infrastructureLogging: {
     level: 'verbose',
@@ -58,7 +58,7 @@ module.exports = {
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
-          configFile: 'integration/server/webpack.tsconfig.json',
+          configFile: 'e2e-server/server/webpack.tsconfig.json',
           transpileOnly: true,
         },
       },
@@ -102,10 +102,13 @@ module.exports = {
     },
     extensions: ['.tsx', '.ts', '.js'],
   },
-  optimization: {
-    minimize: true,
-    minimizer: [new TerserPlugin()],
-  },
+  optimization:
+    process.env.NODE_ENV === 'production'
+      ? {
+          minimize: true,
+          minimizer: [new TerserPlugin()],
+        }
+      : {},
   plugins: [
     new HtmlWebpackPlugin({
       hash: true,
