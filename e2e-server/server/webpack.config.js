@@ -40,6 +40,10 @@ module.exports = {
     devMiddleware: {
       stats: 'errors-only',
     },
+    static: {
+      directory: path.resolve(__dirname, '../../public'),
+      publicPath: '/public',
+    },
   },
   module: {
     rules: [

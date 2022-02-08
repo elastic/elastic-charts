@@ -165,10 +165,10 @@ export class CommonPage {
   static getPathFromTestInfo(path?: string | string[]): string | string[] {
     if (path) return CommonPage.validatePath(path);
     const info = test.info();
-
+    const options = { splitRegexp: /([a-z])([\dA-Z])/g };
     const formattedSegments = info.titlePath
       .slice(1)
-      .map((s) => paramCase(s).replace(/\//g, '-').replace(/\s/g, '-').replace(/-+/g, '-').toLowerCase());
+      .map((s) => paramCase(s, options).replace(/\//g, '-').replace(/\s/g, '-').replace(/-+/g, '-').toLowerCase());
 
     return [
       // New directory for each test.describe block
