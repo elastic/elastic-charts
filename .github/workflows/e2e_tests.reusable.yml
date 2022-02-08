@@ -267,6 +267,7 @@ jobs:
         browser: [Chrome]
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.e2e-setup.outputs.playwright-version }}-focal
+      options: --cpus 2 # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
     steps:
       - name: Checkout & Setup node
         uses: nickofthyme/checkout-node-setup@v1
