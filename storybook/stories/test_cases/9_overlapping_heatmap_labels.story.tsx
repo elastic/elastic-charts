@@ -12,25 +12,27 @@ import React from 'react';
 
 import { Chart, Heatmap, HeatmapStyle, RecursivePartial, Settings } from '@elastic/charts';
 
-import { ECOMMERCE_DATA } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
+import { ScaleType } from '../../../packages/charts/src/scales/constants';
+import { DATA_1, ECOMMERCE_DATA } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const heatmap: RecursivePartial<HeatmapStyle> = {
     xAxisLabel: {
-      visible: boolean('xAxisLabel visible', true, 'Theme'),
-      fontSize: number('xAxisLabel fontSize', 12, { range: true, min: 5, max: 20 }, 'Theme'),
-      padding: number('xAxisLabel padding', 6, { range: true, min: 0, max: 15 }, 'Theme'),
-      rotation: number('set rotation of x axis label', -45, { step: 1, min: -90, max: 0, range: true }, 'labels'),
-      overflow: boolean('set overflow property for x axis labels', false, 'labels') ? 'ellipsis' : false,
-      maxTextLength: parseFloat(text('set the max text length for the x axis labels', '20', 'labels')),
+      visible: boolean('xAxisLabel visible', true),
+      fontSize: number('xAxisLabel fontSize', 12, { range: true, min: 5, max: 20 }),
+      padding: number('xAxisLabel padding', 6, { range: true, min: 0, max: 15 }),
+      rotation: number('set rotation of x axis label', -20, { step: 1, min: -90, max: 0, range: true }),
+      maxTextLength: parseFloat(text('set the max text length for the x axis labels', 'Infinity')),
     },
   };
+  const useCategoricalDataset = boolean('categorical data', false);
+  const dataset = useCategoricalDataset ? ECOMMERCE_DATA : DATA_1.data;
   return (
     <Chart>
       <Settings
         onElementClick={action('onElementClick')}
-        showLegend
+        showLegend={boolean('show legend', false)}
         legendPosition="right"
         brushAxis="both"
         theme={{ heatmap }}
@@ -43,19 +45,31 @@ export const Example = () => {
         colorScale={{
           type: 'bands',
           bands: [
-            { start: -Infinity, end: 1000, color: '#AADC32' },
-            { start: 1000, end: 5000, color: '#35B779' },
-            { start: 5000, end: 10000, color: '#24868E' },
-            { start: 10000, end: 50000, color: '#3B528B' },
-            { start: 50000, end: Infinity, color: '#471164' },
+            { start: -Infinity, end: 100, color: '#AADC32' },
+            { start: 100, end: 200, color: '#35B779' },
+            { start: 200, end: 300, color: '#24868E' },
+            { start: 300, end: 400, color: '#3B528B' },
+            { start: 400, end: Infinity, color: '#471164' },
           ],
         }}
-        data={ECOMMERCE_DATA}
-        xAccessor={(d) => d[0]}
-        yAccessor={(d) => d[1]}
-        valueAccessor={(d) => d[2]}
+        xScale={
+          useCategoricalDataset
+            ? {
+                type: ScaleType.Ordinal,
+              }
+            : {
+                type: ScaleType.Time,
+                interval: DATA_1.interval,
+              }
+        }
+        data={dataset}
+        timeZone={DATA_1.timeZone}
+        xAxisLabelFormatter={useCategoricalDataset ? (d) => `${d}` : DATA_1.xFormatter}
+        xAccessor={(d) => (useCategoricalDataset ? d[0] : d.x)}
+        yAccessor={(d) => (useCategoricalDataset ? d[1] : d.y)}
+        valueAccessor={(d) => (useCategoricalDataset ? d[2] : d.value)}
         valueFormatter={(value) => (Number.isFinite(value) ? value.toFixed(0.2) : '')}
-        xSortPredicate="alphaAsc"
+        xSortPredicate="dataIndex"
       />
     </Chart>
   );

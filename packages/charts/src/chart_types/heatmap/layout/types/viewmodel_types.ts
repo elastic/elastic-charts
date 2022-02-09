@@ -9,7 +9,7 @@
 import { ChartType } from '../../..';
 import { Color, Colors } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
-import { Box, Font } from '../../../../common/text_utils';
+import { Box, Font, TextAlign } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { HeatmapBrushEvent } from '../../../../specs/settings';
 import { Point } from '../../../../utils/point';
@@ -40,6 +40,7 @@ export interface TextBox extends Box {
   value: NonNullable<PrimitiveValue>;
   x: number;
   y: number;
+  align: TextAlign;
 }
 
 /** @internal */

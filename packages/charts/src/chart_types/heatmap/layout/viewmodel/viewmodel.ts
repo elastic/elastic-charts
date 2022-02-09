@@ -13,13 +13,12 @@ import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import { Box, Font, cutToLength, maximiseFontSize } from '../../../../common/text_utils';
-import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
-import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
 import { clamp } from '../../../../utils/common';
-import { Dimensions, horizontalPad, innerPad, pad } from '../../../../utils/dimensions';
+import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
@@ -53,30 +52,6 @@ function getValuesInRange(
   return values.slice(startIndex, endIndex);
 }
 
-function estimatedNonOverlappingTickCount(
-  chartWidth: number,
-  formatter: HeatmapSpec['xAxisLabelFormatter'],
-  style: HeatmapStyle['xAxisLabel'],
-): number {
-  return withTextMeasure((textMeasure) => {
-    const labelSample = formatter(Date.now());
-    const { width } = textMeasure(
-      labelSample,
-      {
-        fontFamily: style.fontFamily,
-        fontWeight: style.fontWeight,
-        fontVariant: style.fontVariant,
-        fontStyle: style.fontStyle,
-      },
-      style.fontSize,
-    );
-    const maxTicks = chartWidth / (width + horizontalPad(style.padding));
-    // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
-    // to many ticks creating nice rounded tick values
-    // TODO add support for limiting the number of tick in {@link ScaleContinuous}
-    return Math.floor(maxTicks / 2);
-  });
-}
 /** @internal */
 export function shapeViewModel(
   textMeasure: TextMeasure,
@@ -125,7 +100,7 @@ export function shapeViewModel(
   const currentGridHeight = elementSizes.grid.height;
 
   // compute the position of each column label
-  const textXValues = getXTicks(spec, heatmapTheme, elementSizes.grid, xScale, heatmapTable);
+  const textXValues = getXTicks(spec, heatmapTheme.xAxisLabel, xScale, heatmapTable.xValues);
 
   const { padding } = heatmapTheme.yAxisLabel;
 
@@ -136,6 +111,7 @@ export function shapeViewModel(
       // position of the Y labels
       x: -pad(padding, 'right'),
       y: cellHeight / 2 + (yScale(d.value) || 0),
+      align: 'right',
     };
   });
 
@@ -434,48 +410,21 @@ export function isRasterTimeScale(scale: RasterTimeScale | OrdinalScale | Linear
 
 function getXTicks(
   spec: HeatmapSpec,
-  style: HeatmapStyle,
-  grid: Dimensions,
-  xScale: ScaleBand<string | number>,
-  { xValues, xNumericExtent }: HeatmapTable,
+  style: HeatmapStyle['xAxisLabel'],
+  scale: ScaleBand<string | number>,
+  values: NonNullable<PrimitiveValue>[],
 ): Array<TextBox> {
-  const { maxTextLength } = style.xAxisLabel;
-  const getTextValue = (
-    formatter: HeatmapSpec['xAxisLabelFormatter'],
-    scaleCallback: (x: string | number) => number | undefined | null,
-    overflow: HeatmapStyle['xAxisLabel']['overflow'],
-  ) => (value: string | number): TextBox => {
+  const isTimeScale = isRasterTimeScale(spec.xScale);
+  const isRotated = style.rotation !== 0;
+  return values.map<TextBox>((value) => {
     return {
-      text: overflow ? cutToLength(formatter(value), maxTextLength) : formatter(value),
+      text: cutToLength(spec.xAxisLabelFormatter(value), style.maxTextLength),
       value,
       isValue: false,
-      ...style.xAxisLabel,
-      x: scaleCallback(value) ?? 0,
-      y: style.xAxisLabel.fontSize / 2 + pad(style.xAxisLabel.padding, 'top'),
-    };
-  };
-  if (isRasterTimeScale(spec.xScale)) {
-    const timeScale = new ScaleContinuous(
-      {
-        type: ScaleType.Time,
-        domain: xNumericExtent,
-        range: [0, grid.width],
-        nice: false,
-      },
-      {
-        desiredTickCount: estimatedNonOverlappingTickCount(grid.width, spec.xAxisLabelFormatter, style.xAxisLabel),
-        timeZone: spec.timeZone,
-      },
-    );
-    return timeScale
-      .ticks()
-      .map<TextBox>(getTextValue(spec.xAxisLabelFormatter, (x) => timeScale.scale(x), style.xAxisLabel.overflow));
-  }
-
-  return xValues.map<TextBox>((textBox: string | number) => {
-    return {
-      ...getTextValue(spec.xAxisLabelFormatter, xScale, style.xAxisLabel.overflow)(textBox),
-      x: (xScale(textBox) || 0) + xScale.bandwidth() / 2,
+      ...style,
+      y: style.fontSize / 2 + pad(style.padding, 'top'),
+      x: (scale(value) ?? 0) + (isTimeScale ? 0 : scale.bandwidth() / 2),
+      align: isRotated ? 'right' : isTimeScale ? 'left' : 'center',
     };
   });
 }

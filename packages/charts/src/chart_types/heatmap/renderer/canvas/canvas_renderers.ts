@@ -154,12 +154,21 @@ export function renderCanvas2d(
         withContext(ctx, () => {
           ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
           const rotation = limitXAxisLabelRotation(theme.xAxisLabel.rotation);
-          const font = {
-            ...theme.xAxisLabel,
-            align: rotation < 0 ? 'right' : theme.xAxisLabel.align,
-          };
-          heatmapViewModel.xValues.forEach(({ x, y, text }) => {
-            renderText(ctx, { x, y }, text, font, rotation);
+          heatmapViewModel.xValues.forEach(({ x, y, text, align }) => {
+            // TODO fix style
+            renderMultiLine(
+              ctx,
+              [
+                {
+                  x1: x,
+                  x2: x,
+                  y1: 0,
+                  y2: 5,
+                },
+              ],
+              { width: 1, dash: [], color: [0, 0, 0, 1] },
+            );
+            renderText(ctx, { x, y }, text, { ...theme.xAxisLabel, align }, rotation);
           });
         }),
 

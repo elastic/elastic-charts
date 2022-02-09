@@ -10,7 +10,7 @@ import { $Values } from 'utility-types';
 
 import { Color } from '../../common/colors';
 import { Pixels, Ratio } from '../../common/geometry';
-import { Font, FontStyle, TextAlign, TextBaseline } from '../../common/text_utils';
+import { Font, FontStyle, TextBaseline } from '../../common/text_utils';
 import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, Padding, SimplePadding } from '../dimensions';
 import { Point } from '../point';
@@ -214,12 +214,15 @@ export interface HeatmapStyle {
   xAxisLabel: Font & {
     fontSize: Pixels;
     width: Pixels | 'auto';
-    align: TextAlign;
+    // align: TextAlign;
     baseline: TextBaseline;
     visible: boolean;
     padding: Pixels | Padding;
-    overflow: 'ellipsis' | false;
     rotation: number;
+    /**
+     * Specify the max text length before truncating it with ellipsis
+     * @defaultValue Infinity
+     */
     maxTextLength: number;
   };
   yAxisLabel: Font & {
