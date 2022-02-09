@@ -27,28 +27,28 @@ import { isFiniteNumber } from '../common';
  * @public
  * @param data - an array of objects
  * @param groupAccessors - an array of accessor keys or a fn to describe an unique id for each group
- * @param valueAccessor - a fn that returns the value to use
- * @param ratioKeyName - the object key used to store the computed ratio
+ * @param valueGetterSetters - an array of getter and setter functions for the metric and ratio values
  */
 export function computeRatioByGroups<T extends Record<string, unknown>>(
   data: T[],
   groupAccessors: GroupKeysOrKeyFn<T>,
-  valueAccessor: (k: T) => number | null | undefined,
-  ratioKeyName: string,
-) {
+  valueGetterSetters: Array<[(datum: T) => unknown, (datum: T, value: number) => T]>,
+): T[] {
   return groupBy(data, groupAccessors, true)
     .map((groupedData) => {
       const groupSum = groupedData.reduce((sum, datum) => {
-        const value = valueAccessor(datum);
-        return sum + (isFiniteNumber(value) ? Math.abs(value) : 0);
+        return (
+          valueGetterSetters.reduce((valueSum, [getter]) => {
+            const value = getter(datum);
+            return valueSum + (isFiniteNumber(value) ? Math.abs(value) : 0);
+          }, 0) + sum
+        );
       }, 0);
       return groupedData.map((datum) => {
-        const value = valueAccessor(datum);
-        return {
-          ...datum,
-          // if the value is null/undefined we don't compute the ratio, we just return the original null/undefined value
-          [ratioKeyName]: isFiniteNumber(value) ? (groupSum === 0 ? 0 : Math.abs(value) / groupSum) : value,
-        };
+        return valueGetterSetters.reduce<T>((acc, [getter, setter]) => {
+          const value = getter(acc);
+          return isFiniteNumber(value) ? setter(acc, groupSum === 0 ? 0 : Math.abs(value) / groupSum) : acc;
+        }, datum);
       });
     })
     .flat();

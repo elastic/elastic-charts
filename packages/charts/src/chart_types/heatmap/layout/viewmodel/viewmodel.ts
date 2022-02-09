@@ -17,7 +17,7 @@ import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
-import { clamp } from '../../../../utils/common';
+import { clamp, Datum } from '../../../../utils/common';
 import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
@@ -33,6 +33,7 @@ import {
   ShapeViewModel,
   TextBox,
 } from '../types/viewmodel_types';
+import { BaseDatum } from './../../../xy_chart/utils/specs';
 
 /** @public */
 export interface HeatmapCellDatum {
@@ -53,9 +54,9 @@ function getValuesInRange(
 }
 
 /** @internal */
-export function shapeViewModel(
+export function shapeViewModel<D extends BaseDatum = Datum>(
   textMeasure: TextMeasure,
-  spec: HeatmapSpec,
+  spec: HeatmapSpec<D>,
   { heatmap: heatmapTheme, axes: { axisTitle }, background }: Theme,
   elementSizes: ChartElementSizes,
   heatmapTable: HeatmapTable,

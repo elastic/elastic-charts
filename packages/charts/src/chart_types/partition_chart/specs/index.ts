@@ -6,20 +6,27 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
 import { Distance, Pixels, Radius } from '../../../common/geometry';
-import { Spec } from '../../../specs';
+import { BaseDatum, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
-import { getConnect, specComponentFactory } from '../../../state/spec_factory';
+import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
-import { Datum, LabelAccessor, ShowAccessor, ValueAccessor, ValueFormatter } from '../../../utils/common';
+import {
+  Datum,
+  LabelAccessor,
+  ShowAccessor,
+  ValueAccessor,
+  ValueFormatter,
+  stripUndefined,
+} from '../../../utils/common';
 import { FillFontSizeRange, FillLabelConfig } from '../../../utils/themes/partition';
 import { percentFormatter } from '../layout/config';
 import { AnimationConfig, PartitionLayout } from '../layout/types/config_types';
-import { NodeColorAccessor, ShapeTreeNode, ValueGetter } from '../layout/types/viewmodel_types';
-import { AGGREGATE_KEY, NodeSorter, PrimitiveValue } from '../layout/utils/group_by_rollup';
+import { NodeColorAccessor, ValueGetter } from '../layout/types/viewmodel_types';
+import { NodeSorter, AGGREGATE_KEY } from '../layout/utils/group_by_rollup';
 
 interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {
   valueFormatter: ValueFormatter;
@@ -29,8 +36,8 @@ interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {
  * Specification for a given layer in the partition chart
  * @public
  */
-export interface Layer {
-  groupByRollup: IndexedAccessorFn;
+export interface Layer<D extends BaseDatum = Datum> {
+  groupByRollup: IndexedAccessorFn<D>;
   sortPredicate?: NodeSorter | null;
   nodeLabel?: LabelAccessor;
   fillLabel?: Partial<ExtendedFillLabelConfig>;
@@ -39,52 +46,20 @@ export interface Layer {
 }
 
 /**
- * @todo: we really need these typed, but since `specComponentFactory` has the typing
- * for optional and required props built-in, this is not currently possible.
- */
-const defaultProps = {
-  chartType: ChartType.Partition,
-  specType: SpecType.Series,
-  valueAccessor: (d: Datum) => (typeof d === 'number' ? d : 0),
-  valueGetter: (n: ShapeTreeNode): number => n[AGGREGATE_KEY],
-  valueFormatter: (d: number): string => String(d),
-  percentFormatter,
-  topGroove: 20,
-  smallMultiples: null,
-  layers: [
-    {
-      groupByRollup: (d: Datum, i: number) => i,
-      nodeLabel: (d: PrimitiveValue) => String(d),
-      showAccessor: () => true,
-      fillLabel: {},
-    },
-  ],
-  clockwiseSectors: true,
-  specialFirstInnermostSector: true,
-  layout: PartitionLayout.sunburst,
-  drilldown: false,
-  maxRowCount: 12,
-  fillOutside: false,
-  radiusOutside: 128,
-  fillRectangleWidth: Infinity,
-  fillRectangleHeight: Infinity,
-};
-
-/**
  * Specifies the partition chart
  * @public
  */
-export interface PartitionSpec extends Spec, AnimationConfig {
+export interface PartitionSpec<D extends BaseDatum = Datum> extends Spec, AnimationConfig {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Partition;
-  data: Datum[];
-  valueAccessor: ValueAccessor;
+  data: D[];
+  valueAccessor: ValueAccessor<D>;
   valueFormatter: ValueFormatter;
   valueGetter: ValueGetter;
   percentFormatter: ValueFormatter;
   topGroove: Pixels;
   smallMultiples: string | null;
-  layers: Layer[];
+  layers: Layer<D>[];
   /**
    * Largest to smallest sectors are positioned in a clockwise order
    */
@@ -105,28 +80,56 @@ export interface PartitionSpec extends Spec, AnimationConfig {
   fillRectangleHeight: Distance;
 }
 
-type SpecRequiredProps = Pick<PartitionSpec, 'id' | 'data'>;
-type SpecOptionalProps = Partial<Omit<PartitionSpec, 'chartType' | 'specType' | 'id' | 'data'>>;
+const buildProps = buildSFProps<PartitionSpec>()(
+  {
+    chartType: ChartType.Partition,
+    specType: SpecType.Series,
+  },
+  {
+    valueAccessor: (d) => (typeof d === 'number' ? d : 0),
+    valueGetter: (n) => n[AGGREGATE_KEY],
+    valueFormatter: (d) => String(d),
+    percentFormatter,
+    topGroove: 20,
+    smallMultiples: '__global__small_multiples___',
+    layers: [
+      {
+        groupByRollup: (_, i) => i,
+        nodeLabel: (d) => String(d),
+        showAccessor: () => true,
+        fillLabel: {},
+      },
+    ],
+    clockwiseSectors: true,
+    specialFirstInnermostSector: true,
+    layout: PartitionLayout.sunburst,
+    drilldown: false,
+    maxRowCount: 12,
+    fillOutside: false,
+    radiusOutside: 128,
+    fillRectangleWidth: Infinity,
+    fillRectangleHeight: Infinity,
+    animation: { duration: 0 },
+  },
+);
+
+/**
+ * Adds partition spec to chart specs
+ * @public
+ */
+export const Partition = function <D extends BaseDatum = Datum>(
+  props: SFProps<
+    PartitionSpec<D>,
+    keyof typeof buildProps['overrides'],
+    keyof typeof buildProps['defaults'],
+    keyof typeof buildProps['optionals'],
+    keyof typeof buildProps['requires']
+  >,
+) {
+  const { defaults, overrides } = buildProps;
+  useSpecFactory<PartitionSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
+  return null;
+};
 
 /** @public */
-export const Partition: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
-  specComponentFactory<
-    PartitionSpec,
-    | 'valueAccessor'
-    | 'valueGetter'
-    | 'valueFormatter'
-    | 'percentFormatter'
-    | 'topGroove'
-    | 'smallMultiples'
-    | 'layers'
-    | 'clockwiseSectors'
-    | 'specialFirstInnermostSector'
-    | 'layout'
-    | 'drilldown'
-    | 'maxRowCount'
-    | 'fillOutside'
-    | 'radiusOutside'
-    | 'fillRectangleWidth'
-    | 'fillRectangleHeight'
-  >(defaultProps),
-);
+export type PartitionProps = ComponentProps<typeof Partition>;

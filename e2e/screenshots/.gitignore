@@ -1,0 +1,5 @@
+*.jpeg
+*.jpg
+*.png
+# ignore all pngs created outside of docker
+!*-linux.png

@@ -96,6 +96,7 @@ export function renderCanvas2d(
         }),
 
       () =>
+        theme.cell.label.visible &&
         withContext(ctx, () => {
           // Text on cells
           const { x, y } = heatmapViewModel.gridOrigin;

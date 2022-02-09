@@ -55,12 +55,8 @@ exports[`Chart should render the legend name test 1`] = `
       <ErrorBoundary>
         <Connect(SpecsParserComponent)>
           <SpecsParserComponent specParsed={[Function (anonymous)]} specUnmounted={[Function (anonymous)]}>
-            <Connect(SpecInstance) debug={true} rendering=\\"svg\\" showLegend={true}>
-              <SpecInstance debug={true} rendering=\\"svg\\" showLegend={true} upsertSpec={[Function (anonymous)]} removeSpec={[Function (anonymous)]} id=\\"__global__settings___\\" chartType=\\"global\\" specType=\\"settings\\" rotation={0} animateData={true} resizeDebounce={10} tooltip={{...}} pointerUpdateTrigger=\\"x\\" externalPointerEvents={{...}} baseTheme={{...}} brushAxis=\\"x\\" minBrushDelta={2} ariaUseDefaultSummary={true} ariaLabelHeadingLevel=\\"p\\" allowBrushingLastHistogramBin={true} legendSize={NaN} showLegendExtra={false} legendMaxDepth={Infinity} legendPosition=\\"right\\" />
-            </Connect(SpecInstance)>
-            <Connect(SpecInstance) id=\\"test\\" data={{...}}>
-              <SpecInstance id=\\"test\\" data={{...}} upsertSpec={[Function (anonymous)]} removeSpec={[Function (anonymous)]} chartType=\\"xy_axis\\" specType=\\"series\\" seriesType=\\"bar\\" groupId=\\"__global__\\" xScaleType=\\"ordinal\\" yScaleType=\\"linear\\" xAccessor=\\"x\\" yAccessors={{...}} hideInLegend={false} enableHistogramMode={false} />
-            </Connect(SpecInstance)>
+            <Settings debug={true} rendering=\\"svg\\" showLegend={true} />
+            <BarSeries id=\\"test\\" data={{...}} xAccessor=\\"x\\" yAccessors={{...}} />
           </SpecsParserComponent>
         </Connect(SpecsParserComponent)>
         <div className=\\"echContainer\\">
@@ -73,7 +69,7 @@ exports[`Chart should render the legend name test 1`] = `
                 <Connect(XYChart) forwardCanvasRef={{...}}>
                   <XYChart forwardCanvasRef={{...}} isRTL={false} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
                     <figure aria-labelledby={[undefined]} aria-describedby=\\"chart1--defaultSummary\\">
-                      <canvas dir=\\"ltr\\" className=\\"echCanvasRenderer\\" width={150} height={200} style={{...}} role=\\"presentation\\" />
+                      <canvas dir=\\"ltr\\" className=\\"echCanvasRenderer\\" width={151} height={200} style={{...}} role=\\"presentation\\" />
                     </figure>
                     <Connect(ScreenReaderSummaryComponent)>
                       <ScreenReaderSummaryComponent chartTypeDescription=\\"bar chart\\" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function: dispatch]}>
@@ -114,7 +110,7 @@ exports[`Chart should render the legend name test 1`] = `
                     <svg className=\\"echHighlighter\\" style={{...}}>
                       <defs>
                         <clipPath id=\\"echHighlighterClipPath__chart1\\">
-                          <rect x=\\"0\\" y=\\"0\\" width={130} height={180} />
+                          <rect x=\\"0\\" y=\\"0\\" width={131} height={180} />
                         </clipPath>
                       </defs>
                     </svg>

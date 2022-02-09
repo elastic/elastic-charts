@@ -31,7 +31,6 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
     const resultData = data.reduce<HeatmapTable>(
       (acc, curr, index) => {
         const x = getAccessorValue(curr, xAccessor);
-
         const y = getAccessorValue(curr, yAccessor);
         const value = getAccessorValue(curr, valueAccessor);
 

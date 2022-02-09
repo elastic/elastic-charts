@@ -11,12 +11,14 @@ import {
   countryDimension,
   productDimension,
   regionDimension,
+  productPriceNames,
 } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
 export const productLookup = arrayToLookup((d: any) => d.sitc1, productDimension);
 export const regionLookup = arrayToLookup((d: any) => d.region, regionDimension);
 export const countryLookup = arrayToLookup((d: any) => d.country, countryDimension);
+export const productPriceLookup = arrayToLookup((d: any) => d.products_price, productPriceNames);
 
 type ColorMaker = (x: number) => string;
 

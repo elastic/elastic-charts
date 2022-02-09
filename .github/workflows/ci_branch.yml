@@ -1,0 +1,122 @@
+#########################################################################################################
+# Handles CI checks and triggers deployment for pushes to key branches
+#########################################################################################################
+
+name: CI Branch
+
+concurrency:
+  group: '${{ github.workflow }} - ${{ github.ref_name }}'
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - master
+      - alpha
+      - next
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.x'
+      - '[0-9]+.x'
+
+jobs:
+  checks-workflow: # runs all common workflow check
+    name: Checks
+    uses: elastic/elastic-charts/.github/workflows/checks.reusable.yml@master
+
+  should-trigger:
+    name: Check for e2e/groups.json
+    runs-on: ubuntu-latest
+    outputs:
+      check: ${{ steps.e2e.outputs.enabled == 'true' }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Check is e2e setup ready
+        id: has-groups
+        uses: andstor/file-existence-action@v1
+        with:
+          files: e2e/groups.json
+      - name: Check e2e groups are enabled
+        if: ${{ steps.has-groups.outputs.files_exists }}
+        id: e2e
+        shell: python
+        working-directory: e2e
+        run: |
+          import json
+          file = open('groups.json')
+          data = json.load(file)
+          print(f"::set-output name=enabled::{json.dumps(data['enabled'])}")
+          file.close()
+
+  trigger-deploy:
+    name: Trigger deployment
+    runs-on: ubuntu-latest
+    if: ${{ needs.should-trigger.outputs.check == 'true' }}
+    steps:
+    - name: Get deployment environment
+      uses: actions/github-script@v5
+      id: environment
+      with:
+        result-encoding: string
+        script: |
+          return "${{ github.ref_name }}" === 'master' ? 'github-pages' : "${{ github.ref_name }}";
+    - name: Get deployment event type
+      uses: actions/github-script@v5
+      id: event_type
+      with:
+        result-encoding: string
+        script: |
+          return "${{ github.ref_name }}" === 'master' ? 'Deployment | GitHub Pages' : "Deployment | Branch";
+
+    - name: Create restricted environment
+      if: github.ref_name != 'master'
+      uses: actions/github-script@v5
+      with:
+        script: | # This is javascript :)
+          // https://docs.github.com/en/rest/reference/deployments#create-or-update-an-environment
+          await github.rest.repos.createOrUpdateEnvironment({
+            ...context.repo,
+            environment_name: "${{ github.ref_name }}",
+            // reviewers: [{
+            //   type: 'Team',
+            //   id: 3693417, // datavis team id
+            // }],
+          });
+        github-token: ${{ secrets.ADMIN_TOKEN_GH }}
+
+    - name: Trigger deployment workflow
+      uses: actions/github-script@v5
+      with:
+        # https://docs.github.com/en/rest/reference/repos#create-a-repository-dispatch-event
+        script: | # This is javascript :)
+          await github.rest.repos.createDispatchEvent({
+            ...context.repo,
+            event_type: "${{ steps.event_type.outputs.result }}",
+            client_payload: {
+              sha: "${{ github.sha }}",
+              environment: "${{ steps.environment.outputs.result }}",
+              branch_name: "${{ github.ref_name }}",
+            },
+
+          });
+        github-token: ${{ secrets.ADMIN_TOKEN_GH }}
+
+#########################################################################################################
+
+  failure-check:
+    name: Print context on failure
+    # if: ${{ failure() }} # TODO this
+    if: ${{ always() }}
+    needs: [checks-workflow, should-trigger, trigger-deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print github context
+        shell: python
+        run: |
+          print("""${{ toJSON(github) }}""")
+      - name: Print needs context
+        shell: python
+        run: |
+          print("""${{ toJSON(needs) }}""")
+
+#########################################################################################################

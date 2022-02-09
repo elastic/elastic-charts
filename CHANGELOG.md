@@ -1,3 +1,76 @@
+## [43.1.1](https://github.com/elastic/elastic-charts/compare/v43.1.0...v43.1.1) (2022-01-26)
+
+
+### Bug Fixes
+
+* revert removal of resize observer polyfill ([#1570](https://github.com/elastic/elastic-charts/issues/1570)) ([8a951f4](https://github.com/elastic/elastic-charts/commit/8a951f4bf2161eb59cc2d865b49fb47efe79e403))
+
+# [43.1.0](https://github.com/elastic/elastic-charts/compare/v43.0.1...v43.1.0) (2022-01-25)
+
+
+### Bug Fixes
+
+* use window scope to call the ResizeObserver ([#1569](https://github.com/elastic/elastic-charts/issues/1569)) ([747e626](https://github.com/elastic/elastic-charts/commit/747e626f592e4e413567cd6710a95575e892aa71))
+
+
+### Features
+
+* **xy:** expose projection area ([#1567](https://github.com/elastic/elastic-charts/issues/1567)) ([b36a75a](https://github.com/elastic/elastic-charts/commit/b36a75a842af0d8e9c704e61b152e4423b4a69ca))
+
+## [43.0.1](https://github.com/elastic/elastic-charts/compare/v43.0.0...v43.0.1) (2022-01-20)
+
+
+### Bug Fixes
+
+* **deps:** remove the ResizeObserver polyfill ([#1554](https://github.com/elastic/elastic-charts/issues/1554)) ([542f2bf](https://github.com/elastic/elastic-charts/commit/542f2bf3a20d5463c14d614cb55491430763e133))
+* **deps:** update dependency puppeteer to v5.4.2 ([#1547](https://github.com/elastic/elastic-charts/issues/1547)) ([307e3e2](https://github.com/elastic/elastic-charts/commit/307e3e2481b0bcda9ff5aca2a5c1a4e90eefa176))
+* **heatmap:** fix unpredictable tick count ([#1551](https://github.com/elastic/elastic-charts/issues/1551)) ([6242fad](https://github.com/elastic/elastic-charts/commit/6242fad5319a8d99935919804487e2686f071228))
+* **heatmap:** text measure bugs ([#1560](https://github.com/elastic/elastic-charts/issues/1560)) ([5d83ab8](https://github.com/elastic/elastic-charts/commit/5d83ab82dadca5af13576225105e8ad2898fc389))
+
+# [43.0.0](https://github.com/elastic/elastic-charts/compare/v42.1.0...v43.0.0) (2022-01-14)
+
+
+### Bug Fixes
+
+* **heatmap:** labels visibility regression ([#1549](https://github.com/elastic/elastic-charts/issues/1549)) ([067189d](https://github.com/elastic/elastic-charts/commit/067189d95b0dfd342f31bc819e3d6bc9df076533))
+* **xy:** switch default timezone to `local` ([#1544](https://github.com/elastic/elastic-charts/issues/1544)) ([1233e69](https://github.com/elastic/elastic-charts/commit/1233e698e9d187b1fab55662754fca5f5459376e))
+
+
+### BREAKING CHANGES
+
+* **xy:** The time axis labels of a time-series chart configured without the timeZone prop are now rendering the labels with the local browser timezone instead of UTC.
+
+# [42.1.0](https://github.com/elastic/elastic-charts/compare/v42.0.0...v42.1.0) (2022-01-10)
+
+
+### Features
+
+* allow multiple value accessors when computing the stack ratio ([#1537](https://github.com/elastic/elastic-charts/issues/1537)) ([c2eb4b8](https://github.com/elastic/elastic-charts/commit/c2eb4b8d91436975eee2ff499cac0dfa7bb33e56))
+
+# [42.0.0](https://github.com/elastic/elastic-charts/compare/v41.0.1...v42.0.0) (2022-01-05)
+
+
+### Bug Fixes
+
+* **flamegraph:** solve animation regression occurring with 6db2677 ([#1541](https://github.com/elastic/elastic-charts/issues/1541)) ([5ec6037](https://github.com/elastic/elastic-charts/commit/5ec603767da22fe6cf2820536687aa77013436cc)), closes [#1540](https://github.com/elastic/elastic-charts/issues/1540)
+* **heatmap:** render empty state ([#1532](https://github.com/elastic/elastic-charts/issues/1532)) ([59002df](https://github.com/elastic/elastic-charts/commit/59002df28e2a82f285c0375dd866655afb53abab))
+* **waffle:** fix strange 0 text in legend item extra when label is 0 ([#1538](https://github.com/elastic/elastic-charts/issues/1538)) ([72224b9](https://github.com/elastic/elastic-charts/commit/72224b9bcbdc2ff9eb6c048fdba7dd13fac39db5))
+
+
+### Features
+
+* **goal:** add valueFormatter for tooltip ([#1529](https://github.com/elastic/elastic-charts/issues/1529)) ([8139973](https://github.com/elastic/elastic-charts/commit/8139973fb58c0ddb089da356904f50bea3f80817))
+* **heatmap:** add axis titles ([#1503](https://github.com/elastic/elastic-charts/issues/1503)) ([a87325d](https://github.com/elastic/elastic-charts/commit/a87325d56ea4a3ce1eb7e3da688499f39427253a))
+* **types:** improve generic types in specs, and spec prop types ([#1421](https://github.com/elastic/elastic-charts/issues/1421)) ([562929e](https://github.com/elastic/elastic-charts/commit/562929ef012aa80cc058b5c4a6dbe8f7226fb977))
+
+
+### BREAKING CHANGES
+
+* **types:** The `xAccessor` and `yAccessor` are now required on all xy chart specs. Stronger typing on `data` prop that may cause type errors when using untyped array (i.e. `const arr: never[] = []`). Other minor type changes related to spec types.
+* **heatmap:** The heatmap yAxisLabel.padding style type is changed from Pixel | Partial<Padding> to Pixels | Padding. The heatmap axis labels are now correctly subjected to padding calculations and it will result in a slightly different position of labels.
+
+Co-authored-by: Marco Vettorello <vettorello.marco@gmail.com>
+
 ## [41.0.1](https://github.com/elastic/elastic-charts/compare/v41.0.0...v41.0.1) (2021-12-20)
 
 

@@ -140,6 +140,8 @@ export const Example = () => {
       <Series
         id="series"
         curve={curve}
+        xAccessor="x"
+        yAccessors={['y']}
         yScaleType={yLogKnobs.scaleType}
         xScaleType={xLogKnobs.scaleType}
         areaSeriesStyle={{ point: { visible: true } }}

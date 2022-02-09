@@ -78,6 +78,8 @@ export const Example = () => {
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         data={data}
+        xAccessor="x"
+        yAccessors={['y']}
         splitSeriesAccessors={['split']}
         color={(seriesIdentifier) => {
           return colorMap[seriesIdentifier.splitAccessors.get('split') ?? 'Default'];

@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
-import { getConnect, specComponentFactory } from '../../../state/spec_factory';
-import { LabelAccessor } from '../../../utils/common';
+import { specComponentFactory } from '../../../state/spec_factory';
+import { LabelAccessor, ValueFormatter } from '../../../utils/common';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
 import { GoalSubtype } from './constants';
 
@@ -35,11 +35,6 @@ export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color
 /** @alpha */
 export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
 
-const defaultProps = {
-  chartType: ChartType.Goal,
-  ...defaultGoalSpec,
-};
-
 /** @alpha */
 export interface GoalSpec extends Spec {
   specType: typeof SpecType.Series;
@@ -59,30 +54,22 @@ export interface GoalSpec extends Spec {
   angleStart: number;
   angleEnd: number;
   bandLabels: string[];
+  tooltipValueFormatter: ValueFormatter;
 }
 
-type SpecRequiredProps = Pick<GoalSpec, 'id' | 'actual'>;
-type SpecOptionalProps = Partial<Omit<GoalSpec, 'chartType' | 'specType' | 'id' | 'data'>>;
-
-/** @alpha */
-export const Goal: React.FunctionComponent<SpecRequiredProps & SpecOptionalProps> = getConnect()(
-  specComponentFactory<
-    GoalSpec,
-    | 'chartType'
-    | 'subtype'
-    | 'base'
-    | 'target'
-    | 'actual'
-    | 'bands'
-    | 'bandLabels'
-    | 'ticks'
-    | 'bandFillColor'
-    | 'tickValueFormatter'
-    | 'labelMajor'
-    | 'labelMinor'
-    | 'centralMajor'
-    | 'centralMinor'
-    | 'angleStart'
-    | 'angleEnd'
-  >(defaultProps),
+/**
+ * Add Goal spec to chart
+ * @alpha
+ */
+export const Goal = specComponentFactory<GoalSpec>()(
+  {
+    specType: SpecType.Series,
+    chartType: ChartType.Goal,
+  },
+  {
+    ...defaultGoalSpec,
+  },
 );
+
+/** @public */
+export type GoalProps = ComponentProps<typeof Goal>;

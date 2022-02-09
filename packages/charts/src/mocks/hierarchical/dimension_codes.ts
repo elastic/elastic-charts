@@ -6,6 +6,18 @@
  * Side Public License, v 1.
  */
 
+/**@internal */
+export const productPriceNames = [
+  { products_price: 0.0, name: '0' },
+  { products_price: 50.0, name: '50' },
+  { products_price: 100.0, name: '100' },
+  { products_price: 150.0, name: '150' },
+  { products_price: 200.0, name: '200' },
+  { products_price: 350.0, name: '350' },
+  { products_price: 400.0, name: '400' },
+  { products_price: 1050.0, name: '1050' },
+];
+
 /** @internal */
 export const productDimension = [
   {

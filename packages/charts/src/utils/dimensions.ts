@@ -8,7 +8,7 @@
 
 import { Pixels } from '../common/geometry';
 
-/** @internal */
+/** @public */
 export interface Dimensions {
   top: number;
   left: number;

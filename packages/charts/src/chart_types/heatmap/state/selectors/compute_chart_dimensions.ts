@@ -48,6 +48,7 @@ export type ChartElementSizes = {
   rowHeight: number;
   visibleNumberOfRows: number;
 };
+
 /**
  * Returns grid and axes sizes and positions.
  * @internal
@@ -57,10 +58,9 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
   (
     container,
     legendSize,
-
     { yValues, xValues, xNumericExtent },
     { heatmap, axes: { axisTitle: axisTitleStyle } },
-    { xAxisTitle, yAxisTitle, xAxisLabelFormatter, xScale },
+    { xAxisTitle, yAxisTitle, xAxisLabelFormatter, yAxisLabelFormatter, xScale },
   ): ChartElementSizes => {
     return withTextMeasure((textMeasure) => {
       const isLegendHorizontal = isHorizontalLegend(legendSize.position);
@@ -70,7 +70,7 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
         : 0;
 
       const yAxisTitleHorizontalSize = getTextSizeDimension(yAxisTitle, axisTitleStyle, textMeasure, 'height');
-      const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, textMeasure);
+      const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, yAxisLabelFormatter, textMeasure);
 
       const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
       console.log({ yAxisWidth, yAxisTitleHorizontalSize });
@@ -133,6 +133,7 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
 function getYAxisHorizontalUsedSpace(
   yValues: HeatmapTable['yValues'],
   style: HeatmapStyle['yAxisLabel'],
+  formatter: HeatmapSpec['yAxisLabelFormatter'],
   textMeasure: TextMeasure,
 ) {
   if (!style.visible) {
@@ -140,7 +141,7 @@ function getYAxisHorizontalUsedSpace(
   }
   // account for the space required to show the longest Y axis label
   const longestLabelWidth = yValues.reduce<number>((acc, value) => {
-    const { width } = textMeasure(`${value}`, style, style.fontSize);
+    const { width } = textMeasure(formatter(value), style, style.fontSize);
     return Math.max(width, acc);
   }, 0);
 

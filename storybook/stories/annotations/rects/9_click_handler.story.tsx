@@ -27,7 +27,7 @@ import {
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { debugstateLogger } from '../../utils/debug_state_logger';
+import { getDebugStateLogger } from '../../utils/debug_state_logger';
 
 export const Example = () => {
   const onAnnotationClick = boolean('onAnnotationClick listener', true);
@@ -38,7 +38,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings
-        onRenderChange={debugstateLogger}
+        onRenderChange={getDebugStateLogger(debugState)}
         debugState={debugState}
         baseTheme={useBaseTheme()}
         onAnnotationClick={onAnnotationClick ? action('onAnnotationClick') : undefined}

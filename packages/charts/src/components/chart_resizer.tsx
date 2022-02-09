@@ -15,7 +15,7 @@ import { debounce } from 'ts-debounce';
 import { updateParentDimensions } from '../state/actions/chart_settings';
 import { GlobalChartState } from '../state/chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
-import { isDefined } from '../utils/common';
+import { isFiniteNumber } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
 
 interface ResizerStateProps {
@@ -33,7 +33,7 @@ const DEFAULT_RESIZE_DEBOUNCE = 200;
 class Resizer extends React.Component<ResizerProps> {
   private initialResizeComplete = false;
 
-  private containerRef: RefObject<HTMLDivElement>;
+  private readonly containerRef: RefObject<HTMLDivElement>;
 
   private ro: ResizeObserver;
 
@@ -99,12 +99,9 @@ const mapDispatchToProps = (dispatch: Dispatch): ResizerDispatchProps =>
   );
 
 const mapStateToProps = (state: GlobalChartState): ResizerStateProps => {
-  const settings = getSettingsSpecSelector(state);
-  const resizeDebounce =
-    settings.resizeDebounce === undefined || settings.resizeDebounce === null ? 200 : settings.resizeDebounce;
+  const { resizeDebounce } = getSettingsSpecSelector(state);
   return {
-    resizeDebounce:
-      !isDefined(resizeDebounce) || Number.isNaN(resizeDebounce) ? DEFAULT_RESIZE_DEBOUNCE : resizeDebounce,
+    resizeDebounce: isFiniteNumber(resizeDebounce) ? resizeDebounce : DEFAULT_RESIZE_DEBOUNCE,
   };
 };
 

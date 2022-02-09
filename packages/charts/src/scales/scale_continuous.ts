@@ -39,7 +39,7 @@ const SCALES = {
 const defaultScaleOptions: ScaleOptions = {
   bandwidth: 0,
   minInterval: 0,
-  timeZone: 'utc',
+  timeZone: 'local',
   totalBarsInCluster: 1,
   barsPadding: 0,
   constrainDomainPadding: true,
@@ -364,7 +364,7 @@ type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
   /**
    * A time zone identifier. Can be any IANA zone supported by he host environment,
    * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
-   * @defaultValue `utc`
+   * @defaultValue `local`
    */
   timeZone: string;
   /**

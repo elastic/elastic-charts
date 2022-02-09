@@ -9,11 +9,9 @@
 import { action } from '@storybook/addon-actions';
 import { boolean, color, number, text } from '@storybook/addon-knobs';
 import React from 'react';
-import { debounce } from 'ts-debounce';
 
 import {
   Chart,
-  DebugState,
   Heatmap,
   HeatmapStyle,
   niceTimeFormatter,
@@ -25,10 +23,10 @@ import { DATA_6 } from '@elastic/charts/src/utils/data_samples/test_dataset_heat
 
 import { AxisStyle } from '../../../packages/charts/src/utils/themes/theme';
 import { useBaseTheme } from '../../use_base_theme';
+import { getDebugStateLogger } from '../utils/debug_state_logger';
 
 export const Example = () => {
   const debugState = boolean('Enable debug state', true);
-  const dataStateAction = action('DataState');
   const axes: RecursivePartial<AxisStyle> = {
     axisTitle: {
       fontSize: number('axisTitle fontSize', 12, { range: true, min: 5, max: 20 }, 'Axis Title'),
@@ -87,23 +85,10 @@ export const Example = () => {
     },
   };
 
-  const logDebugState = debounce(() => {
-    if (!debugState) return;
-
-    const statusEl = document.querySelector<HTMLDivElement>('.echChartStatus');
-
-    if (statusEl) {
-      const dataState = statusEl.dataset.echDebugState
-        ? (JSON.parse(statusEl.dataset.echDebugState) as DebugState)
-        : null;
-      dataStateAction(dataState);
-    }
-  }, 100);
-
   return (
     <Chart>
       <Settings
-        onRenderChange={logDebugState}
+        onRenderChange={getDebugStateLogger(debugState)}
         showLegend
         legendPosition="right"
         onBrushEnd={action('onBrushEnd')}
