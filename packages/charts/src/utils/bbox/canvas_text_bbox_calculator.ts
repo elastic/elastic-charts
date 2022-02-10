@@ -7,7 +7,7 @@
  */
 
 import { cssFontShorthand, Font } from '../../common/text_utils';
-import { Size } from '../dimensions';
+import { horizontalPad, Padding, Size, verticalPad } from '../dimensions';
 
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {
@@ -29,5 +29,13 @@ export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
     ctx.font = cssFontShorthand(font, fontSize);
     const { width } = ctx.measureText(text);
     return { width, height: fontSize * lineHeight };
+  };
+}
+
+/** @internal */
+export function addPadding(size: Size, padding: number | Padding) {
+  return {
+    width: size.width + horizontalPad(padding),
+    height: size.height + verticalPad(padding),
   };
 }

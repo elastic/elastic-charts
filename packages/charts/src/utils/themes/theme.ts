@@ -214,7 +214,6 @@ export interface HeatmapStyle {
   xAxisLabel: Font & {
     fontSize: Pixels;
     width: Pixels | 'auto';
-    // align: TextAlign;
     baseline: TextBaseline;
     visible: boolean;
     padding: Pixels | Padding;

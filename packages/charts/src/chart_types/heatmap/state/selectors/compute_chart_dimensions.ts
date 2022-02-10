@@ -8,17 +8,18 @@
 
 import { scaleBand } from 'd3-scale';
 
+import { Radian } from '../../../../common/geometry';
 import { extent } from '../../../../common/math';
-import { cutToLength } from '../../../../common/text_utils';
+import { cutToLength, TextAlign } from '../../../../common/text_utils';
 import { rotate2, sub2, Vec2 } from '../../../../common/vectors';
 import { screenspaceMarkerScaleCompressor } from '../../../../solvers/screenspace_marker_scale_compressor';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
-import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { addPadding, TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { degToRad, isFiniteNumber } from '../../../../utils/common';
-import { Dimensions, horizontalPad, innerPad, outerPad, pad } from '../../../../utils/dimensions';
+import { Dimensions, horizontalPad, innerPad, outerPad, pad, Size } from '../../../../utils/dimensions';
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { AxisStyle, HeatmapStyle } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
@@ -47,6 +48,7 @@ export type ChartElementSizes = {
   fullHeatmapHeight: number;
   rowHeight: number;
   visibleNumberOfRows: number;
+  xAxisTickCadence: number;
 };
 
 /**
@@ -75,11 +77,12 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
       const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
       console.log({ yAxisWidth, yAxisTitleHorizontalSize });
       const isTimeScale = isRasterTimeScale(xScale);
-
+      const isRotated = heatmap.xAxisLabel.rotation !== 0;
       const normalizedXScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, 1]);
       console.log({ xValues, xNumericExtent });
       const xScaleLabelAlignment = isRasterTimeScale(xScale) ? 0 : normalizedXScale.bandwidth() / 2;
       const xAxisSize = getXAxisSize(
+        isTimeScale,
         heatmap.xAxisLabel,
         xAxisLabelFormatter,
         (d) => {
@@ -92,6 +95,7 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
           yAxisTitleHorizontalSize + yAxisWidth,
           0, // fill this if you need a right Y axis
         ],
+        isRotated ? 'right' : isTimeScale ? 'left' : 'center',
       );
 
       const availableHeightForGrid = container.height - xAxisTitleVerticalSize - xAxisSize.height - legendHeight;
@@ -107,7 +111,7 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
       const grid: Dimensions = {
         width: xAxisSize.width,
         height: visibleNumberOfRows * rowHeight,
-        left: container.left + (container.width - legendWidth) - xAxisSize.width,
+        left: container.left + xAxisSize.left,
         top: container.top,
       };
 
@@ -125,7 +129,15 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
         left: grid.left,
       };
 
-      return { grid, yAxis, xAxis, visibleNumberOfRows, fullHeatmapHeight, rowHeight };
+      return {
+        grid,
+        yAxis,
+        xAxis,
+        visibleNumberOfRows,
+        fullHeatmapHeight,
+        rowHeight,
+        xAxisTickCadence: xAxisSize.tickCadence,
+      };
     });
   },
 );
@@ -199,6 +211,7 @@ function getGridCellHeight(rows: number, grid: HeatmapStyle['grid'], height: num
 }
 
 function getXAxisSize(
+  isTimeScale: boolean,
   style: HeatmapStyle['xAxisLabel'],
   formatter: HeatmapSpec['xAxisLabelFormatter'],
   scale: (d: NonNullable<PrimitiveValue>) => number,
@@ -206,36 +219,84 @@ function getXAxisSize(
   textMeasure: TextMeasure,
   containerWidth: number,
   surroundingSpace: [number, number],
+  alignment: TextAlign,
 ) {
+  if (!style.visible) {
+    return { width: 0, height: 0, left: 0, right: 0, tickCadence: 1 };
+  }
   const rotationRad = degToRad(-limitXAxisLabelRotation(style.rotation));
 
-  const { itemWidths, domainPositions, hMax } = labels.reduce<{
+  const formattedLabels = labels.map((label) =>
+    style.width === 'auto' || !isFiniteNumber(style.width)
+      ? // use formatted and optionally limited labels
+        // measure the text label size or use a fixed width/height depending on the style
+        {
+          ...addPadding(
+            textMeasure(cutToLength(formatter(label), style.maxTextLength), style, style.fontSize),
+            style.padding,
+          ),
+          label,
+        }
+      : { width: style.width, height: style.fontSize, label },
+  );
+
+  // TODO refactor and move to monotonic hill climber
+  let tickCadence = 1;
+  let dimension = {
+    width: 0,
+    height: 0,
+    left: 0,
+    right: 0,
+    containsOverlap: true,
+  };
+
+  while (dimension.containsOverlap && tickCadence <= formattedLabels.length) {
+    tickCadence++;
+    dimension = computeCompressedScale(
+      isTimeScale,
+      style,
+      scale,
+      formattedLabels.filter((_, i) => i % tickCadence === 0),
+      containerWidth,
+      surroundingSpace,
+      alignment,
+      rotationRad,
+    );
+  }
+  console.log(tickCadence);
+
+  return {
+    ...dimension,
+    tickCadence,
+  };
+}
+
+function computeCompressedScale(
+  checkForOverlaps: boolean,
+  style: HeatmapStyle['xAxisLabel'],
+  scale: (d: NonNullable<PrimitiveValue>) => number,
+  formattedLabels: Array<Size & { label: number | NonNullable<PrimitiveValue> }>,
+  containerWidth: number,
+  surroundingSpace: [number, number],
+  alignment: TextAlign,
+  rotation: Radian,
+): Size & { left: number; right: number; containsOverlap: boolean } {
+  const { itemWidths, domainPositions, hMax } = formattedLabels.reduce<{
     wMax: number;
     hMax: number;
     itemWidths: [number, number][];
     domainPositions: number[];
   }>(
-    (acc, label) => {
-      // use formatted and optionally limited labels{
-      const text = cutToLength(formatter(label), style.maxTextLength);
-      // auto compute the text label or use a fixed width/height depending on the style
-      const { width, height } =
-        style.width === 'auto'
-          ? textMeasure(text, style, style.fontSize)
-          : { width: style.width, height: style.fontSize };
-
-      // TODO add horizontal/vertical style padding
-      // rotate the label coordinates
+    (acc, { width, height, label }) => {
+      // rotate the label box coordinates
       const labelRect: Vec2[] = [
         [0, 0],
         [width, 0],
         [width, height],
         [0, height],
       ];
-      // with no rotation move the origin to the middle/center
-      // with rotation instead rotate around the right most/middle center (right alignment)
-      const rotationOrigin: Vec2 = style.rotation === 0 ? [width / 2, height / 2] : [width, height / 2];
-      const rotatedVectors = labelRect.map((vector) => rotate2(rotationRad, sub2(vector, rotationOrigin)));
+      const rotationOrigin: Vec2 = getRotationOriginFromAlignment(width, height, alignment);
+      const rotatedVectors = labelRect.map((vector) => rotate2(rotation, sub2(vector, rotationOrigin)));
 
       // find the rotated bounding box
       const x = extent(rotatedVectors.map((v) => v[0]));
@@ -253,6 +314,7 @@ function getXAxisSize(
     },
     { wMax: -Infinity, hMax: -Infinity, itemWidths: [], domainPositions: [] },
   );
+
   // account for the left and right space (Y axes, overflows etc)
   const globalDomainPositions = [0, ...domainPositions, 1];
   const globalItemWidth: [number, number][] = [[surroundingSpace[0], 0], ...itemWidths, [0, surroundingSpace[1]]];
@@ -261,16 +323,38 @@ function getXAxisSize(
     globalItemWidth,
     containerWidth,
   );
-  console.log({ globalDomainPositions, globalItemWidth });
+  const containsOverlap = checkForOverlaps
+    ? itemWidths.some((curr, i) => {
+        if (i >= itemWidths.length - 2) {
+          return false;
+        }
+        const currentX = domainPositions[i] * scaleMultiplier;
+        const nextX = domainPositions[i + 1] * scaleMultiplier;
+        return currentX + curr[1] > nextX + itemWidths[i + 1][0];
+      })
+    : false;
   const leftMargin = isFiniteNumber(bounds[0]) ? globalItemWidth[bounds[0]][0] : 0;
   const rightMargin = isFiniteNumber(bounds[1]) ? globalItemWidth[bounds[1]][1] : 0;
-  console.log({ leftMargin, rightMargin, surroundingSpace });
   return {
     // the horizontal space
     width: scaleMultiplier,
     right: rightMargin,
     left: leftMargin,
     // the height represent the height of the max rotated bbox plus the padding and the vertical position of the rotation origin
-    height: style.visible ? hMax + pad(style.padding, 'top') + style.fontSize / 2 : 0,
+    height: hMax + pad(style.padding, 'top') + style.fontSize / 2,
+    containsOverlap,
   };
+}
+
+function getRotationOriginFromAlignment(width: number, height: number, alignment: TextAlign): Vec2 {
+  // with no rotation move the origin to the middle/center
+  // with rotation instead rotate around the right most/middle center (right alignment)
+  switch (alignment) {
+    case 'right':
+      return [width, height / 2];
+    case 'left':
+      return [0, height / 2];
+    default:
+      return [width / 2, height / 2];
+  }
 }

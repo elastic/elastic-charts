@@ -18,16 +18,20 @@ import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const heatmap: RecursivePartial<HeatmapStyle> = {
+    yAxisLabel: {
+      width: 40,
+    },
     xAxisLabel: {
       visible: boolean('xAxisLabel visible', true),
       fontSize: number('xAxisLabel fontSize', 12, { range: true, min: 5, max: 20 }),
       padding: number('xAxisLabel padding', 6, { range: true, min: 0, max: 15 }),
-      rotation: number('set rotation of x axis label', -20, { step: 1, min: -90, max: 0, range: true }),
-      maxTextLength: parseFloat(text('set the max text length for the x axis labels', 'Infinity')),
+      rotation: number('set rotation of x axis label', 0, { step: 1, min: -90, max: 0, range: true }),
+      // maxTextLength: parseFloat(text('set the max text length for the x axis labels', 'Infinity')),
+      width: Infinity,
     },
   };
   const useCategoricalDataset = boolean('categorical data', false);
-  const dataset = useCategoricalDataset ? ECOMMERCE_DATA : DATA_1.data;
+  const dataset = useCategoricalDataset ? ECOMMERCE_DATA : DATA_1.data; //.filter((d) => d.x < 1634292000000);
   return (
     <Chart>
       <Settings
@@ -37,7 +41,7 @@ export const Example = () => {
         brushAxis="both"
         theme={{ heatmap }}
         baseTheme={useBaseTheme()}
-        debug
+        // debug
         onBrushEnd={action('onBrushEnd')}
       />
       <Heatmap

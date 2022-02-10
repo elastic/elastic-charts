@@ -143,32 +143,33 @@ export function renderCanvas2d(
         withContext(ctx, () => {
           ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
           const rotation = limitXAxisLabelRotation(theme.xAxisLabel.rotation);
-
-          heatmapViewModel.xValues.forEach(({ x, y, text, align }) => {
-            const [truncatedText] = wrapLines(
-              ctx,
-              text,
-              theme.xAxisLabel,
-              theme.xAxisLabel.fontSize,
-              theme.xAxisLabel.width === 'auto' ? Infinity : theme.xAxisLabel.width,
-              16,
-              { shouldAddEllipsis: true, wrapAtWord: false },
-            ).lines;
-            // TODO fix style
-            renderMultiLine(
-              ctx,
-              [
-                {
-                  x1: x,
-                  x2: x,
-                  y1: 0,
-                  y2: 5,
-                },
-              ],
-              { width: 1, dash: [], color: [0, 0, 0, 1] },
-            );
-            renderText(ctx, { x, y }, truncatedText, { ...theme.xAxisLabel, align }, rotation);
-          });
+          heatmapViewModel.xValues
+            .filter((_, i) => i % elementSizes.xAxisTickCadence === 0)
+            .forEach(({ x, y, text, align }) => {
+              const [truncatedText] = wrapLines(
+                ctx,
+                text,
+                theme.xAxisLabel,
+                theme.xAxisLabel.fontSize,
+                theme.xAxisLabel.width === 'auto' ? Infinity : theme.xAxisLabel.width,
+                16,
+                { shouldAddEllipsis: true, wrapAtWord: false },
+              ).lines;
+              // TODO fix style
+              renderMultiLine(
+                ctx,
+                [
+                  {
+                    x1: x,
+                    x2: x,
+                    y1: 0,
+                    y2: 5,
+                  },
+                ],
+                heatmapViewModel.gridLines.stroke,
+              );
+              renderText(ctx, { x, y }, truncatedText, { ...theme.xAxisLabel, align }, rotation);
+            });
         }),
 
       () =>
