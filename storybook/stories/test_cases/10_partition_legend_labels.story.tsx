@@ -23,26 +23,24 @@ export const Example = () => {
       />
       <Partition
         id="spec_1"
-        data={[
-          { g1: 1, g2: "a", v: 2 },
-        ]}
+        data={[{ g1: 1, g2: 'a', v: 2 }]}
         layout={PartitionLayout.sunburst}
         valueAccessor={(d) => d.v}
         layers={[
           {
             groupByRollup: (d: any) => d.g1,
-            nodeLabel: () => "Testing a super duper really long legend",
+            nodeLabel: () => 'Testing a super duper really long legend',
             shape: {
-              fillColor: () => "#90E0EF"
-            }
+              fillColor: () => '#90E0EF',
+            },
           },
           {
             groupByRollup: (d: any) => d.g2,
-            nodeLabel: () => "Testing a super duper really long legend",
+            nodeLabel: () => 'Testing a super duper really long legend',
             shape: {
-              fillColor: () => "#00B4D8"
-            }
-          }
+              fillColor: () => '#00B4D8',
+            },
+          },
         ]}
       />
     </Chart>

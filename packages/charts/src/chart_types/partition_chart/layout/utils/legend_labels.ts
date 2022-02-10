@@ -8,12 +8,17 @@
 
 import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { Layer } from '../../specs';
-import { CHILDREN_KEY, HIERARCHY_ROOT_KEY, HierarchyOfArrays, PATH_KEY, ArrayNode, NULL_SMALL_MULTIPLES_KEY } from './group_by_rollup';
+import {
+  CHILDREN_KEY,
+  HIERARCHY_ROOT_KEY,
+  HierarchyOfArrays,
+  PATH_KEY,
+  ArrayNode,
+  NULL_SMALL_MULTIPLES_KEY,
+} from './group_by_rollup';
 
 /** @internal */
 export function getLegendLabels(layers: Layer[], tree: HierarchyOfArrays, legendMaxDepth: number) {
-  console.log(flatSlicesNames(layers, 0, tree));
-
   return flatSlicesNames(layers, 0, tree).filter(({ depth }) => depth <= legendMaxDepth);
 }
 
