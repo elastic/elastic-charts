@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { Color, Colors } from '../../../../common/colors';
-import { Font } from '../../../../common/text_utils';
+import { Color } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { horizontalPad } from '../../../../utils/dimensions';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
-import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
+import { renderText, TextFont, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { limitXAxisLabelRotation } from '../../layout/viewmodel/default_constaints';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_dimensions';
@@ -118,34 +118,22 @@ export function renderCanvas2d(
         // render text on Y axis
         theme.yAxisLabel.visible &&
         withContext(ctx, () => {
+          // the text is right aligned so the canvas needs to be aligned to the right of the Y axis box
           ctx.translate(elementSizes.yAxis.left + elementSizes.yAxis.width, elementSizes.yAxis.top);
-          filteredYValues.forEach((yValue) => {
-            const font: Font = {
-              fontFamily: theme.yAxisLabel.fontFamily,
-              fontStyle: theme.yAxisLabel.fontStyle ? theme.yAxisLabel.fontStyle : 'normal',
-              fontVariant: 'normal',
-              fontWeight: 'normal',
-              textColor: Colors.Black.keyword,
-            };
-            const { padding } = theme.yAxisLabel;
-            const horizontalPadding =
-              typeof padding === 'number' ? padding * 2 : (padding.left ?? 0) + (padding.right ?? 0);
+          const font: TextFont = { ...theme.yAxisLabel, align: 'right' /* fixed */ };
+          const { padding } = theme.yAxisLabel;
+          const horizontalPadding = horizontalPad(padding);
+          filteredYValues.forEach(({ x, y, text }) => {
             const [resultText] = wrapLines(
               ctx,
-              yValue.text,
+              text,
               font,
               theme.yAxisLabel.fontSize,
               heatmapViewModel.gridOrigin.x - horizontalPadding,
               16,
               { shouldAddEllipsis: true, wrapAtWord: false },
             ).lines;
-            renderText(
-              ctx,
-              { x: yValue.x, y: yValue.y },
-              resultText,
-              // the alignment for y axis labels is fixed to the right
-              { ...theme.yAxisLabel, align: 'right' },
-            );
+            renderText(ctx, { x, y }, resultText, font);
           });
         }),
 
@@ -155,7 +143,17 @@ export function renderCanvas2d(
         withContext(ctx, () => {
           ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
           const rotation = limitXAxisLabelRotation(theme.xAxisLabel.rotation);
+
           heatmapViewModel.xValues.forEach(({ x, y, text, align }) => {
+            const [truncatedText] = wrapLines(
+              ctx,
+              text,
+              theme.xAxisLabel,
+              theme.xAxisLabel.fontSize,
+              theme.xAxisLabel.width === 'auto' ? Infinity : theme.xAxisLabel.width,
+              16,
+              { shouldAddEllipsis: true, wrapAtWord: false },
+            ).lines;
             // TODO fix style
             renderMultiLine(
               ctx,
@@ -169,7 +167,7 @@ export function renderCanvas2d(
               ],
               { width: 1, dash: [], color: [0, 0, 0, 1] },
             );
-            renderText(ctx, { x, y }, text, { ...theme.xAxisLabel, align }, rotation);
+            renderText(ctx, { x, y }, truncatedText, { ...theme.xAxisLabel, align }, rotation);
           });
         }),
 
