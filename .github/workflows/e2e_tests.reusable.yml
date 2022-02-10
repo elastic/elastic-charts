@@ -312,7 +312,7 @@ jobs:
           context: ${{ inputs.status_context }}
           state: 'success'
           description: 'All tests passed!' # TODO add number of tests
-          target_url: ${{ env.current_run_url }}
+          target_url: ${{ inputs.current_run_url }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -332,7 +332,7 @@ jobs:
           context: ${{ inputs.status_context }}
           state: 'failure'
           description: 'Some tests failed' # TODO add number of tests
-          target_url: ${{ env.current_run_url }}
+          target_url: ${{ inputs.current_run_url }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -352,7 +352,7 @@ jobs:
           context: ${{ inputs.status_context }}
           state: 'failure'
           description: 'Tests were cancelled'
-          target_url: ${{ env.current_run_url }}
+          target_url: ${{ inputs.current_run_url }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
