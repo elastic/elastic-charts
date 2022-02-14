@@ -13,8 +13,6 @@ export type Vec2 = [number, number];
 
 /**
  * Rotate a Vec2 vector by radians
- * @param radian
- * @param vector
  * @internal
  */
 export function rotate2(radian: Radian, vector: Vec2): Vec2 {
@@ -25,9 +23,7 @@ export function rotate2(radian: Radian, vector: Vec2): Vec2 {
 }
 
 /**
- * Add Vec2 b from a
- * @param a Vec2
- * @param b Vec2
+ * Subtract vector b from a
  * @internal
  */
 export function sub2(a: Vec2, b: Vec2): Vec2 {

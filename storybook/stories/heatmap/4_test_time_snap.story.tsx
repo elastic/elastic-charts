@@ -54,11 +54,10 @@ const theme: PartialTheme = {
     yAxisLabel: {
       visible: true,
       width: 'auto',
-      padding: { left: 0, right: 0 },
+      padding: { left: 10, right: 10 },
     },
     xAxisLabel: {
       padding: { top: 4, bottom: 4 },
-      rotation: -20,
     },
   },
 };

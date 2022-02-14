@@ -72,37 +72,68 @@ export const Example = () => {
   );
   const showLegend = boolean('Show Legend', true);
   const onElementClick = action('onElementClick');
-  const D = [
-    ['osx', 359],
-    ['win xp', 349],
-    ['ios', 341],
-    ['win 7', 329],
-    ['win 8', 323],
-  ];
+
   return (
     <Chart>
-      <Settings onElementClick={onElementClick} showLegend={showLegend} baseTheme={useBaseTheme()} rotation={90} />
+      <Settings onElementClick={onElementClick} showLegend={showLegend} baseTheme={useBaseTheme()} />
       <Axis id="time" title="Day of week" position={Position.Bottom} gridLine={{ visible: false }} />
       <Axis id="y" title="Count of logins" position={Position.Left} gridLine={{ visible: false }} />
 
       <GroupBy
         id="h_split"
         by={(spec, datum) => {
-          return datum[0];
+          return datum.site;
         }}
-        sort="dataIndex"
+        sort="alphaAsc"
       />
       <SmallMultiples splitVertically="h_split" />
-
+      <LineAnnotation
+        dataValues={[
+          {
+            dataValue: 100,
+            details: 'Minimum # of connected users',
+          },
+        ]}
+        id="threshold"
+        domainType={AnnotationDomainType.YDomain}
+        marker={marker}
+        style={{
+          line: {
+            dash: [5, 10],
+            stroke: 'black',
+            opacity: 0.8,
+            strokeWidth: 1,
+          },
+        }}
+      />
       <BarSeries
         id="website a"
         xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         timeZone="local"
-        xAccessor={() => 'value'}
-        yAccessors={[1]}
-        data={D}
+        xAccessor="x"
+        yAccessors={['y']}
+        stackAccessors={['x']}
+        splitSeriesAccessors={['g']}
+        data={[...data1, ...data2]}
         color={[LIGHT_THEME.colors.vizColors[0], 'lightgray']}
+      />
+      <LineSeries
+        id="avg"
+        xScaleType={ScaleType.Ordinal}
+        yScaleType={ScaleType.Linear}
+        timeZone="local"
+        xAccessor="x"
+        yAccessors={['y']}
+        splitSeriesAccessors={['g']}
+        data={[...datal1, ...datal2]}
+        lineSeriesStyle={{
+          point: {
+            radius: 1,
+            fill: ColorVariant.Series,
+          },
+        }}
+        color={['black', 'darkgray']}
       />
     </Chart>
   );
