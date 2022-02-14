@@ -151,11 +151,12 @@ export function renderCanvas2d(
                 text,
                 theme.xAxisLabel,
                 theme.xAxisLabel.fontSize,
-                theme.xAxisLabel.width === 'auto' ? Infinity : theme.xAxisLabel.width,
+                // TODO specify the grid size
+                Infinity,
                 16,
                 { shouldAddEllipsis: true, wrapAtWord: false },
               ).lines;
-              // TODO fix style
+
               renderMultiLine(
                 ctx,
                 [
@@ -168,7 +169,7 @@ export function renderCanvas2d(
                 ],
                 heatmapViewModel.gridLines.stroke,
               );
-              renderText(ctx, { x, y }, truncatedText, { ...theme.xAxisLabel, align }, rotation);
+              renderText(ctx, { x, y }, truncatedText, { ...theme.xAxisLabel, baseline: 'middle', align }, rotation);
             });
         }),
 

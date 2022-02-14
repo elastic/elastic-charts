@@ -10,14 +10,14 @@ import { scaleBand } from 'd3-scale';
 
 import { Radian } from '../../../../common/geometry';
 import { extent } from '../../../../common/math';
-import { cutToLength, TextAlign } from '../../../../common/text_utils';
+import { cutToLength } from '../../../../common/text_utils';
 import { rotate2, sub2, Vec2 } from '../../../../common/vectors';
 import { screenspaceMarkerScaleCompressor } from '../../../../solvers/screenspace_marker_scale_compressor';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
-import { addPadding, TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { degToRad, isFiniteNumber } from '../../../../utils/common';
 import { Dimensions, horizontalPad, innerPad, outerPad, pad, Size } from '../../../../utils/dimensions';
 import { isHorizontalLegend } from '../../../../utils/legend';
@@ -60,7 +60,7 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
   (
     container,
     legendSize,
-    { yValues, xValues, xNumericExtent },
+    { yValues, xValues },
     { heatmap, axes: { axisTitle: axisTitleStyle } },
     { xAxisTitle, yAxisTitle, xAxisLabelFormatter, yAxisLabelFormatter, xScale },
   ): ChartElementSizes => {
@@ -75,20 +75,18 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
       const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, yAxisLabelFormatter, textMeasure);
 
       const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
-      console.log({ yAxisWidth, yAxisTitleHorizontalSize });
       const isTimeScale = isRasterTimeScale(xScale);
       const isRotated = heatmap.xAxisLabel.rotation !== 0;
       const normalizedXScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, 1]);
-      console.log({ xValues, xNumericExtent });
-      const xScaleLabelAlignment = isRasterTimeScale(xScale) ? 0 : normalizedXScale.bandwidth() / 2;
+      const xScaleLabelAlignment = isTimeScale ? 0 : normalizedXScale.bandwidth() / 2;
       const xAxisSize = getXAxisSize(
-        isTimeScale,
+        !isTimeScale,
         heatmap.xAxisLabel,
         xAxisLabelFormatter,
         (d) => {
           return (normalizedXScale(d) ?? 0) + xScaleLabelAlignment;
         },
-        isTimeScale ? [...xValues, xNumericExtent[1] - 1] : xValues,
+        xValues,
         textMeasure,
         container.width - legendWidth,
         [
@@ -211,7 +209,7 @@ function getGridCellHeight(rows: number, grid: HeatmapStyle['grid'], height: num
 }
 
 function getXAxisSize(
-  isTimeScale: boolean,
+  isCategoricalScale: boolean,
   style: HeatmapStyle['xAxisLabel'],
   formatter: HeatmapSpec['xAxisLabelFormatter'],
   scale: (d: NonNullable<PrimitiveValue>) => number,
@@ -219,51 +217,93 @@ function getXAxisSize(
   textMeasure: TextMeasure,
   containerWidth: number,
   surroundingSpace: [number, number],
-  alignment: TextAlign,
-) {
+  alignment: 'left' | 'right' | 'center',
+): Size & { right: number; left: number; tickCadence: number } {
   if (!style.visible) {
-    return { width: 0, height: 0, left: 0, right: 0, tickCadence: 1 };
+    return {
+      height: 0,
+      width: Math.max(containerWidth - surroundingSpace[0] - surroundingSpace[1], 0),
+      left: surroundingSpace[0],
+      right: surroundingSpace[1],
+      tickCadence: NaN,
+    };
   }
+
   const rotationRad = degToRad(-limitXAxisLabelRotation(style.rotation));
 
-  const formattedLabels = labels.map((label) =>
-    style.width === 'auto' || !isFiniteNumber(style.width)
-      ? // use formatted and optionally limited labels
-        // measure the text label size or use a fixed width/height depending on the style
-        {
-          ...addPadding(
-            textMeasure(cutToLength(formatter(label), style.maxTextLength), style, style.fontSize),
-            style.padding,
-          ),
-          label,
-        }
-      : { width: style.width, height: style.fontSize, label },
-  );
+  const measuredLabels = labels.map((label) => ({
+    ...textMeasure(cutToLength(formatter(label), style.maxTextLength), style, style.fontSize),
+    label,
+  }));
 
-  // TODO refactor and move to monotonic hill climber
-  let tickCadence = 1;
-  let dimension = {
-    width: 0,
-    height: 0,
-    left: 0,
-    right: 0,
-    containsOverlap: true,
-  };
-
-  while (dimension.containsOverlap && tickCadence <= formattedLabels.length) {
-    tickCadence++;
-    dimension = computeCompressedScale(
-      isTimeScale,
+  if (isCategoricalScale) {
+    const categoricalCompression = computeCompressedScale(
       style,
       scale,
-      formattedLabels.filter((_, i) => i % tickCadence === 0),
+      measuredLabels,
+      containerWidth,
+      surroundingSpace,
+      alignment,
+      rotationRad,
+    );
+    if (!isFiniteNumber(categoricalCompression.width)) {
+      return {
+        height: 0,
+        width: Math.max(containerWidth - surroundingSpace[0] - surroundingSpace[1], 0),
+        left: surroundingSpace[0],
+        right: surroundingSpace[1],
+        tickCadence: NaN,
+      };
+    }
+    return {
+      height: 0,
+      width: categoricalCompression.width,
+      left: categoricalCompression.left,
+      right: categoricalCompression.right,
+      // never hide categorical ticks
+      tickCadence: 1,
+    };
+  }
+
+  // TODO refactor and move to monotonic hill climber and no mutations
+  let tickCadence = 0;
+  let dimension = computeCompressedScale(
+    style,
+    scale,
+    measuredLabels,
+    containerWidth,
+    surroundingSpace,
+    alignment,
+    rotationRad,
+  );
+
+  for (let i = 0; i < measuredLabels.length; i++) {
+    if ((!dimension.containsOverlap && !dimension.overflow.right) || !isFiniteNumber(dimension.width)) {
+      break;
+    }
+    tickCadence++;
+    dimension = computeCompressedScale(
+      style,
+      scale,
+      measuredLabels.filter((_, index) => index % (i + 1) === 0),
       containerWidth,
       surroundingSpace,
       alignment,
       rotationRad,
     );
   }
-  console.log(tickCadence);
+
+  if (!isFiniteNumber(dimension.width)) {
+    return {
+      // hide the whole axis
+      height: 0,
+      width: Math.max(containerWidth - surroundingSpace[0] - surroundingSpace[1], 0),
+      left: surroundingSpace[0],
+      right: surroundingSpace[1],
+      // hide all ticks
+      tickCadence: NaN,
+    };
+  }
 
   return {
     ...dimension,
@@ -272,16 +312,15 @@ function getXAxisSize(
 }
 
 function computeCompressedScale(
-  checkForOverlaps: boolean,
   style: HeatmapStyle['xAxisLabel'],
   scale: (d: NonNullable<PrimitiveValue>) => number,
-  formattedLabels: Array<Size & { label: number | NonNullable<PrimitiveValue> }>,
+  labels: Array<Size & { label: number | NonNullable<PrimitiveValue> }>,
   containerWidth: number,
   surroundingSpace: [number, number],
-  alignment: TextAlign,
+  alignment: 'left' | 'right' | 'center',
   rotation: Radian,
-): Size & { left: number; right: number; containsOverlap: boolean } {
-  const { itemWidths, domainPositions, hMax } = formattedLabels.reduce<{
+): Size & { left: number; right: number; containsOverlap: boolean; overflow: { left: boolean; right: boolean } } {
+  const { itemWidths, domainPositions, hMax } = labels.reduce<{
     wMax: number;
     hMax: number;
     itemWidths: [number, number][];
@@ -323,17 +362,19 @@ function computeCompressedScale(
     globalItemWidth,
     containerWidth,
   );
-  const containsOverlap = checkForOverlaps
-    ? itemWidths.some((curr, i) => {
-        if (i >= itemWidths.length - 2) {
-          return false;
-        }
-        const currentX = domainPositions[i] * scaleMultiplier;
-        const nextX = domainPositions[i + 1] * scaleMultiplier;
-        return currentX + curr[1] > nextX + itemWidths[i + 1][0];
-      })
-    : false;
-  const leftMargin = isFiniteNumber(bounds[0]) ? globalItemWidth[bounds[0]][0] : 0;
+
+  const containsOverlap = itemWidths.some((curr, i) => {
+    if (i >= itemWidths.length - 2) {
+      return false;
+    }
+    const currentX = domainPositions[i] * scaleMultiplier;
+    const nextX = domainPositions[i + 1] * scaleMultiplier;
+    return currentX + curr[1] + horizontalPad(style.padding) > nextX + itemWidths[i + 1][0];
+  });
+
+  const leftMargin = isFiniteNumber(bounds[0])
+    ? globalItemWidth[bounds[0]][0] - scaleMultiplier * globalDomainPositions[bounds[0]]
+    : 0;
   const rightMargin = isFiniteNumber(bounds[1]) ? globalItemWidth[bounds[1]][1] : 0;
   return {
     // the horizontal space
@@ -343,10 +384,14 @@ function computeCompressedScale(
     // the height represent the height of the max rotated bbox plus the padding and the vertical position of the rotation origin
     height: hMax + pad(style.padding, 'top') + style.fontSize / 2,
     containsOverlap,
+    overflow: {
+      right: bounds[1] !== globalDomainPositions.length - 1,
+      left: bounds[0] !== 0,
+    },
   };
 }
 
-function getRotationOriginFromAlignment(width: number, height: number, alignment: TextAlign): Vec2 {
+function getRotationOriginFromAlignment(width: number, height: number, alignment: 'left' | 'right' | 'center'): Vec2 {
   // with no rotation move the origin to the middle/center
   // with rotation instead rotate around the right most/middle center (right alignment)
   switch (alignment) {
@@ -354,7 +399,7 @@ function getRotationOriginFromAlignment(width: number, height: number, alignment
       return [width, height / 2];
     case 'left':
       return [0, height / 2];
-    default:
+    case 'center':
       return [width / 2, height / 2];
   }
 }

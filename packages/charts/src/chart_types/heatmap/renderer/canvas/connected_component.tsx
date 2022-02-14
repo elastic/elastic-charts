@@ -164,6 +164,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     fullHeatmapHeight: 0,
     rowHeight: 0,
     visibleNumberOfRows: 0,
+    xAxisTickCadence: 1,
   },
   debug: false,
 };

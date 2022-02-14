@@ -213,8 +213,6 @@ export interface HeatmapStyle {
   };
   xAxisLabel: Font & {
     fontSize: Pixels;
-    width: Pixels | 'auto';
-    baseline: TextBaseline;
     visible: boolean;
     padding: Pixels | Padding;
     rotation: number;

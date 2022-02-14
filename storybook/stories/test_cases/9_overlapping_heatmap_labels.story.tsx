@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, color, number, text } from '@storybook/addon-knobs';
+import { boolean, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Heatmap, HeatmapStyle, RecursivePartial, Settings } from '@elastic/charts';
@@ -18,20 +18,16 @@ import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const heatmap: RecursivePartial<HeatmapStyle> = {
-    yAxisLabel: {
-      width: 40,
-    },
     xAxisLabel: {
-      visible: boolean('xAxisLabel visible', true),
-      fontSize: number('xAxisLabel fontSize', 12, { range: true, min: 5, max: 20 }),
-      padding: number('xAxisLabel padding', 6, { range: true, min: 0, max: 15 }),
-      rotation: number('set rotation of x axis label', 0, { step: 1, min: -90, max: 0, range: true }),
-      // maxTextLength: parseFloat(text('set the max text length for the x axis labels', 'Infinity')),
-      width: Infinity,
+      visible: boolean('visible', true),
+      fontSize: number('fontSize', 12, { range: true, min: 5, max: 20 }),
+      padding: number('padding', 6, { range: true, min: 0, max: 15 }),
+      rotation: number('rotation', 0, { step: 1, min: -90, max: 0, range: true }),
+      maxTextLength: parseFloat(text('max charts length', 'Infinity')),
     },
   };
   const useCategoricalDataset = boolean('categorical data', false);
-  const dataset = useCategoricalDataset ? ECOMMERCE_DATA : DATA_1.data; //.filter((d) => d.x < 1634292000000);
+  const dataset = useCategoricalDataset ? ECOMMERCE_DATA : DATA_1.data;
   return (
     <Chart>
       <Settings
@@ -44,7 +40,7 @@ export const Example = () => {
         // debug
         onBrushEnd={action('onBrushEnd')}
       />
-      <Heatmap
+      <Heatmap<{ x: number | string; y: string; value: number }>
         id="heatmap2"
         colorScale={{
           type: 'bands',
@@ -69,9 +65,9 @@ export const Example = () => {
         data={dataset}
         timeZone={DATA_1.timeZone}
         xAxisLabelFormatter={useCategoricalDataset ? (d) => `${d}` : DATA_1.xFormatter}
-        xAccessor={(d) => (useCategoricalDataset ? d[0] : d.x)}
-        yAccessor={(d) => (useCategoricalDataset ? d[1] : d.y)}
-        valueAccessor={(d) => (useCategoricalDataset ? d[2] : d.value)}
+        xAccessor={(d) => d.x}
+        yAccessor={(d) => d.y}
+        valueAccessor={(d) => d.value}
         valueFormatter={(value) => (Number.isFinite(value) ? value.toFixed(0.2) : '')}
         xSortPredicate="dataIndex"
       />
