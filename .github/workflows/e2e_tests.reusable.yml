@@ -105,7 +105,7 @@ jobs:
         # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
         route: POST /repos/{repo}/statuses/{sha}
         repo: ${{ github.repository }}
-        sha: ${{ inputs.sha }}
+        sha: ${{ inputs.commit_sha }}
         context: ${{ inputs.status_context }}
         state: 'error'
         description: 'No deployment found, testing aborted.'
@@ -119,7 +119,7 @@ jobs:
         # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
         route: POST /repos/{repo}/statuses/{sha}
         repo: ${{ github.repository }}
-        sha: ${{ inputs.sha }}
+        sha: ${{ inputs.commit_sha }}
         context: ${{ inputs.status_context }}
         state: 'pending'
         description: 'Deployment successful, starting tests'
@@ -133,7 +133,7 @@ jobs:
         # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
         route: POST /repos/{repo}/statuses/{sha}
         repo: ${{ github.repository }}
-        sha: ${{ inputs.sha }}
+        sha: ${{ inputs.commit_sha }}
         context: ${{ inputs.status_context }}
         state: ${{ steps.deployment-status.outputs.result }}
         description: "Deployment ${{ steps.deployment-status.outputs.result }}, testing aborted."
@@ -147,7 +147,7 @@ jobs:
         # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
         route: POST /repos/{repo}/statuses/{sha}
         repo: ${{ github.repository }}
-        sha: ${{ inputs.sha }}
+        sha: ${{ inputs.commit_sha }}
         context: ${{ inputs.status_context }}
         state: error
         description: "Deployment pending, testing aborted."
@@ -181,7 +181,7 @@ jobs:
           # https://docs.github.com/en/rest/reference/commits#create-a-commit-status
           route: POST /repos/{repo}/statuses/{sha}
           repo: ${{ github.repository }}
-          sha: ${{ inputs.sha }}
+          sha: ${{ inputs.commit_sha }}
           context: ${{ inputs.status_context }}
           state: error
           description: 'Deployment unresponsive, testing aborted.'
@@ -206,7 +206,7 @@ jobs:
     needs: [deployment-status, deployment-ping]
     if: ${{ success() }}
     outputs:
-      test-files: ${{ steps.test-files.outputs.json }}
+      groups: ${{ steps.groups.outputs.result }}
       playwright-version: ${{ steps.playwright.outputs.version }}
     steps: # TODO: cleanup this logic without python and shell scripts
       - name: Checkout & Setup node
@@ -215,19 +215,12 @@ jobs:
           repository: ${{ github.repository }}
           ref: ${{ inputs.sha }}
           skip-npm-install: true # not required here
-      - name: Get test file paths
-        id: test-files
-        shell: python
-        run: |
-          import os, glob, json
-          os.chdir('e2e/tests')
-          files = glob.glob('**/*.test.ts', recursive=True)
-          print(f"::set-output name=json::{json.dumps(files)}")
       - name: Get Playwright version
         id: playwright
+        working-directory: e2e
         run: |
           regex="@playwright/test@(.+)"
-          result="$(cd e2e && yarn list --pattern "@playwright/test" --depth=0 | grep playwright/test)"
+          result="$(yarn list --pattern "@playwright/test" --depth=0 | grep playwright/test)"
           if [[ $result =~ $regex ]]
           then
             echo "::set-output name=version::${BASH_REMATCH[1]}"
@@ -235,35 +228,67 @@ jobs:
             echo "Unable to find '@playwright/test' version"
             exit 1
           fi
-      - name: Print files
-        run: echo "${{ steps.test-files.outputs.json }}"
       - name: Print version
         run: echo "${{ steps.playwright.outputs.version }}"
+      # TODO run this when all screenshots in e2e/ are updated in master
+      # - name: Regroup e2e test suites
+      #   working-directory: e2e
+      #   run: yarn regroup
+      - name: Get e2e matrix test groups
+        id: groups
+        uses: actions/github-script@v5
+        with:
+          script: |
+            data = require('./e2e/groups.json');
+            if (data && data.enabled) {
+              console.log('---- groups.json ----');
+              console.log(JSON.stringify(data, null, 2));
+              const groups = data.groups.filter(({ enabled }) => enabled);
+              if (groups.length > 0) {
+                console.log('---- groups ----');
+                console.log(JSON.stringify(groups, null, 2));
+                return groups;
+              }
+            }
+      - name: Print groups context
+        shell: python
+        run: |
+          print("""${{ steps.groups.outputs.result }}""")
 
   e2e:
-    name: '${{ matrix.browser }} / ${{ matrix.test-file }} ${{ matrix.test-patterns }}'
+    name: '${{ matrix.browser }} / Test group #${{ matrix.group.id }}'
     runs-on: ubuntu-latest
     needs: e2e-setup
+    if: ${{ needs.e2e-setup.outputs.groups }}
     strategy:
       fail-fast: false
-      max-parallel: 10 # TODO: test how performant this is
       matrix:
-        test-file: ${{ fromJSON(needs.e2e-setup.outputs.test-files) }}
-        browser: ['Chrome']
-        # browser: ['chrome', 'Safari', 'Firefox']
+        group: ${{ fromJSON(needs.e2e-setup.outputs.groups) }}
+        browser: [Chrome]
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.e2e-setup.outputs.playwright-version }}-focal
+      options: --cpus 2 # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
     steps:
       - name: Checkout & Setup node
         uses: nickofthyme/checkout-node-setup@v1
         with:
           ref: ${{ inputs.sha }}
           skip-npm-install: true # This fails in this github context
+      - name: Print group info
+        shell: python
+        run: |
+          print("""${{ toJSON(matrix) }}""")
+      - run: yarn install --frozen-lockfile # TODO: fix e2e-server independence
+        if: ${{ contains(matrix.group.testString, 'all.test.ts') }}
+      - run: yarn test:e2e:generate # TODO: fix e2e-server independence
+        if: ${{ contains(matrix.group.testString, 'all.test.ts') }}
       - run: yarn install --frozen-lockfile # TODO: fix caching
         working-directory: e2e
       - name: Test run
         working-directory: e2e
-        run: yarn test --forbid-only --project=${{ matrix.browser }} ./tests/${{ matrix.test-file }}
+        env:
+          ENV_URL: ${{ inputs.environment_url }}/e2e
+        run: yarn test:playwright --forbid-only --project=${{ matrix.browser }} ${{ matrix.group.args }}
 
   e2e-status-success:
     name: set success Status
@@ -284,10 +309,10 @@ jobs:
           route: POST /repos/{repo}/statuses/{sha}
           repo: ${{ github.repository }}
           sha: ${{ inputs.commit_sha }}
-          context: ${{ env.status_context }}
+          context: ${{ inputs.status_context }}
           state: 'success'
           description: 'All tests passed!' # TODO add number of tests
-          target_url: ${{ env.current_run_url }}
+          target_url: ${{ inputs.current_run_url }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -304,10 +329,10 @@ jobs:
           route: POST /repos/{repo}/statuses/{sha}
           repo: ${{ github.repository }}
           sha: ${{ inputs.commit_sha }}
-          context: ${{ env.status_context }}
+          context: ${{ inputs.status_context }}
           state: 'failure'
           description: 'Some tests failed' # TODO add number of tests
-          target_url: ${{ env.current_run_url }}
+          target_url: ${{ inputs.current_run_url }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -324,10 +349,10 @@ jobs:
           route: POST /repos/{repo}/statuses/{sha}
           repo: ${{ github.repository }}
           sha: ${{ inputs.commit_sha }}
-          context: ${{ env.status_context }}
+          context: ${{ inputs.status_context }}
           state: 'failure'
           description: 'Tests were cancelled'
-          target_url: ${{ env.current_run_url }}
+          target_url: ${{ inputs.current_run_url }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

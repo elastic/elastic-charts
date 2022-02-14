@@ -1,6 +1,6 @@
 {
   "lerna": "3.20.2",
-  "packages": ["packages/*"],
+  "packages": ["packages/*", "storybook"],
   "npmClient": "yarn",
   "useWorkspaces": true,
   "version": "independent"

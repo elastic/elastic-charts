@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Fetch open pull requests
         id: fetch
-        uses: octokit/request-action@v2.x
+        uses: octokit/request-action@v2.x # TODO use graphQL to reduce passed payload
         with:
           route: GET /repos/{repo}/pulls?state=open
           repo: ${{ github.repository }}
