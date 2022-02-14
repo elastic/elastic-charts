@@ -12,7 +12,7 @@ import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
-import { Box, Font, cutToLength, maximiseFontSize } from '../../../../common/text_utils';
+import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -419,7 +419,7 @@ function getXTicks(
   const isRotated = style.rotation !== 0;
   return values.map<TextBox>((value) => {
     return {
-      text: cutToLength(spec.xAxisLabelFormatter(value), style.maxTextLength),
+      text: spec.xAxisLabelFormatter(value),
       value,
       isValue: false,
       ...style,

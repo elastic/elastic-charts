@@ -120,20 +120,21 @@ export function renderCanvas2d(
         withContext(ctx, () => {
           // the text is right aligned so the canvas needs to be aligned to the right of the Y axis box
           ctx.translate(elementSizes.yAxis.left + elementSizes.yAxis.width, elementSizes.yAxis.top);
-          const font: TextFont = { ...theme.yAxisLabel, align: 'right' /* fixed */ };
+          const font: TextFont = { ...theme.yAxisLabel, baseline: 'middle' /* fixed */, align: 'right' /* fixed */ };
           const { padding } = theme.yAxisLabel;
           const horizontalPadding = horizontalPad(padding);
           filteredYValues.forEach(({ x, y, text }) => {
-            const [resultText] = wrapLines(
+            const results = wrapLines(
               ctx,
               text,
               font,
               theme.yAxisLabel.fontSize,
               heatmapViewModel.gridOrigin.x - horizontalPadding,
-              16,
+              theme.yAxisLabel.fontSize,
               { shouldAddEllipsis: true, wrapAtWord: false },
             ).lines;
-            renderText(ctx, { x, y }, resultText, font);
+            // TODO improve the `wrapLines` code to handle results with short width
+            renderText(ctx, { x, y }, results.length > 0 ? results[0] : '…', font);
           });
         }),
 
@@ -156,7 +157,6 @@ export function renderCanvas2d(
                 16,
                 { shouldAddEllipsis: true, wrapAtWord: false },
               ).lines;
-
               renderMultiLine(
                 ctx,
                 [

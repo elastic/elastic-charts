@@ -17,13 +17,17 @@ import { DATA_1, ECOMMERCE_DATA } from '../../../packages/charts/src/utils/data_
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
+  const yAxisAutoWidth = boolean('auto width', true, 'y axis');
+  const yAxisWidth = number('width', 50, { range: true, min: 0, max: 100 }, 'y axis');
   const heatmap: RecursivePartial<HeatmapStyle> = {
     xAxisLabel: {
-      visible: boolean('visible', true),
-      fontSize: number('fontSize', 12, { range: true, min: 5, max: 20 }),
-      padding: number('padding', 6, { range: true, min: 0, max: 15 }),
-      rotation: number('rotation', 0, { step: 1, min: -90, max: 0, range: true }),
-      maxTextLength: parseFloat(text('max charts length', 'Infinity')),
+      visible: boolean('visible', true, 'x axis'),
+      fontSize: number('fontSize', 12, { range: true, min: 5, max: 20 }, 'x axis'),
+      padding: number('padding', 6, { range: true, min: 0, max: 15 }, 'x axis'),
+      rotation: number('rotation', 0, { step: 1, min: -90, max: 0, range: true }, 'x axis'),
+    },
+    yAxisLabel: {
+      width: yAxisAutoWidth ? 'auto' : yAxisWidth,
     },
   };
   const useCategoricalDataset = boolean('categorical data', false);

@@ -1227,7 +1227,6 @@ export interface HeatmapStyle {
         visible: boolean;
         padding: Pixels | Padding;
         rotation: number;
-        maxTextLength: number;
     };
     // (undocumented)
     yAxisLabel: Font & {
@@ -1235,11 +1234,8 @@ export interface HeatmapStyle {
         width: Pixels | 'auto' | {
             max: Pixels;
         };
-        baseline: TextBaseline;
         visible: boolean;
-        overflow: 'ellipsis' | false;
         padding: Pixels | Padding;
-        maxTextLength: number;
     };
 }
 
@@ -2674,7 +2670,6 @@ export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
 // Warnings were encountered during analysis:
 //
 // src/chart_types/partition_chart/layout/types/config.ts:60:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
-// src/utils/themes/theme.ts:228:5 - (ae-forgotten-export) The symbol "TextBaseline" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

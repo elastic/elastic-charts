@@ -10,7 +10,6 @@ import { scaleBand } from 'd3-scale';
 
 import { Radian } from '../../../../common/geometry';
 import { extent } from '../../../../common/math';
-import { cutToLength } from '../../../../common/text_utils';
 import { rotate2, sub2, Vec2 } from '../../../../common/vectors';
 import { screenspaceMarkerScaleCompressor } from '../../../../solvers/screenspace_marker_scale_compressor';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -145,24 +144,20 @@ function getYAxisHorizontalUsedSpace(
   style: HeatmapStyle['yAxisLabel'],
   formatter: HeatmapSpec['yAxisLabelFormatter'],
   textMeasure: TextMeasure,
-) {
+): number {
   if (!style.visible) {
     return 0;
+  }
+  if (typeof style.width === 'number' && isFiniteNumber(style.width)) {
+    return style.width;
   }
   // account for the space required to show the longest Y axis label
   const longestLabelWidth = yValues.reduce<number>((acc, value) => {
     const { width } = textMeasure(formatter(value), style, style.fontSize);
-    return Math.max(width, acc);
+    return Math.max(width + horizontalPad(style.padding), acc);
   }, 0);
 
-  const labelsWidth =
-    style.width === 'auto'
-      ? longestLabelWidth
-      : typeof style.width === 'number'
-      ? style.width
-      : Math.max(longestLabelWidth, style.width.max);
-
-  return labelsWidth + horizontalPad(style.padding);
+  return style.width === 'auto' ? longestLabelWidth : Math.max(longestLabelWidth, style.width.max);
 }
 
 function getTextSizeDimension(
@@ -229,15 +224,17 @@ function getXAxisSize(
     };
   }
 
+  // use positive angle from 0 to 90 only
   const rotationRad = degToRad(-limitXAxisLabelRotation(style.rotation));
 
   const measuredLabels = labels.map((label) => ({
-    ...textMeasure(cutToLength(formatter(label), style.maxTextLength), style, style.fontSize),
+    ...textMeasure(formatter(label), style, style.fontSize),
     label,
   }));
 
-  if (isCategoricalScale) {
-    const categoricalCompression = computeCompressedScale(
+  // don't filter ticks if categorical or with rotated labels
+  if (isCategoricalScale || rotationRad !== 0) {
+    const { width, left, right, height } = computeCompressedScale(
       style,
       scale,
       measuredLabels,
@@ -246,22 +243,13 @@ function getXAxisSize(
       alignment,
       rotationRad,
     );
-    if (!isFiniteNumber(categoricalCompression.width)) {
-      return {
-        height: 0,
-        width: Math.max(containerWidth - surroundingSpace[0] - surroundingSpace[1], 0),
-        left: surroundingSpace[0],
-        right: surroundingSpace[1],
-        tickCadence: NaN,
-      };
-    }
+    const validCompression = isFiniteNumber(width);
     return {
-      height: 0,
-      width: categoricalCompression.width,
-      left: categoricalCompression.left,
-      right: categoricalCompression.right,
-      // never hide categorical ticks
-      tickCadence: 1,
+      height: validCompression ? height : 0,
+      width: validCompression ? width : Math.max(containerWidth - surroundingSpace[0] - surroundingSpace[1], 0),
+      left: validCompression ? left : surroundingSpace[0],
+      right: validCompression ? right : surroundingSpace[1],
+      tickCadence: validCompression ? 1 : NaN,
     };
   }
 

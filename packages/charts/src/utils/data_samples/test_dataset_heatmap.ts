@@ -4245,17 +4245,17 @@ export const DATA_9: HeatmapDataSets = {
 /** @internal */
 export const ECOMMERCE_DATA = [
   {
-    x: 'Tigress Haute Couture',
+    x: 'Tigress Haute Couture Haute Couture',
     y: 'Dress',
     value: 816,
   },
   {
-    x: 'Tigress Haute Couture',
+    x: 'Tigress Haute Couture Haute Couture',
     y: 'Shoes',
     value: 556,
   },
   {
-    x: 'Tigress Haute Couture',
+    x: 'Tigress Haute Couture Haute Couture',
     y: 'Shirts',
     value: 395,
   },

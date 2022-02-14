@@ -335,7 +335,6 @@ export const LIGHT_THEME: Theme = {
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
       rotation: 0,
-      maxTextLength: 200,
     },
     yAxisLabel: {
       visible: true,
@@ -346,10 +345,7 @@ export const LIGHT_THEME: Theme = {
       textColor: Colors.Black.keyword,
       fontVariant: 'normal',
       fontWeight: 'normal',
-      baseline: 'middle',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
-      overflow: 'ellipsis',
-      maxTextLength: 200,
     },
     grid: {
       cellWidth: {
