@@ -353,7 +353,7 @@ function computeCompressedScale(
   );
 
   // check label overlaps using the computed compressed scale
-  const overlaps = itemsPerSideSize.some(([_, rightSide], i) => {
+  const overlaps = itemsPerSideSize.some(([, rightSide], i) => {
     if (i >= itemsPerSideSize.length - 2) {
       return false;
     }
