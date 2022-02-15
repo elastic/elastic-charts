@@ -73,25 +73,17 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
       const yAxisWidth = getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, yAxisLabelFormatter, textMeasure);
 
       const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
-      const isTimeScale = isRasterTimeScale(xScale);
-      const isRotated = heatmap.xAxisLabel.rotation !== 0;
-      const normalizedXScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, 1]);
-      const xScaleLabelAlignment = isTimeScale ? 0 : normalizedXScale.bandwidth() / 2;
       const xAxisSize = getXAxisSize(
-        !isTimeScale,
+        !isRasterTimeScale(xScale),
         heatmap.xAxisLabel,
         xAxisLabelFormatter,
-        (d) => {
-          return (normalizedXScale(d) ?? 0) + xScaleLabelAlignment;
-        },
         xValues,
         textMeasure,
         container.width - legendWidth,
         [
           yAxisTitleHorizontalSize + yAxisWidth,
-          0, // fill this if you need a right Y axis
+          0, // this can be used if we have a right Y axis
         ],
-        isRotated ? 'right' : isTimeScale ? 'left' : 'center',
       );
 
       const availableHeightForGrid = container.height - xAxisTitleVerticalSize - xAxisSize.height - legendHeight;
@@ -206,12 +198,10 @@ function getXAxisSize(
   isCategoricalScale: boolean,
   style: HeatmapStyle['xAxisLabel'],
   formatter: HeatmapSpec['xAxisLabelFormatter'],
-  scale: (d: NonNullable<PrimitiveValue>) => number,
   labels: (string | number)[],
   textMeasure: TextMeasure,
   containerWidth: number,
   surroundingSpace: [number, number],
-  alignment: 'left' | 'right' | 'center',
 ): Size & { right: number; left: number; tickCadence: number } {
   if (!style.visible) {
     return {
@@ -223,6 +213,11 @@ function getXAxisSize(
     };
   }
 
+  const normalizedScale = scaleBand<NonNullable<PrimitiveValue>>().domain(labels).range([0, 1]);
+  const alignment = style.rotation !== 0 ? 'right' : isCategoricalScale ? 'center' : 'left';
+  const alignmentOffset = isCategoricalScale ? normalizedScale.bandwidth() / 2 : 0;
+  const scale = (d: NonNullable<PrimitiveValue>) => (normalizedScale(d) ?? 0) + alignmentOffset;
+
   // use positive angle from 0 to 90 only
   const rotationRad = degToRad(style.rotation);
 
@@ -231,7 +226,7 @@ function getXAxisSize(
     label,
   }));
 
-  // don't filter ticks if categorical or with rotated labels
+  // don't filter ticks if categorical scale or with rotated labels
   if (isCategoricalScale || rotationRad !== 0) {
     const { width, left, right, height } = computeCompressedScale(
       style,
@@ -344,6 +339,7 @@ function computeCompressedScale(
   // account for the left and right space (Y axes, overflows etc)
   const globalDomainPositions = [0, ...domainPositions, 1];
   const globalItemWidth: [number, number][] = [[surroundingSpace[0], 0], ...itemWidths, [0, surroundingSpace[1]]];
+
   const { scaleMultiplier, bounds } = screenspaceMarkerScaleCompressor(
     globalDomainPositions,
     globalItemWidth,
@@ -363,6 +359,7 @@ function computeCompressedScale(
     ? globalItemWidth[bounds[0]][0] - scaleMultiplier * globalDomainPositions[bounds[0]]
     : 0;
   const rightMargin = isFiniteNumber(bounds[1]) ? globalItemWidth[bounds[1]][1] : 0;
+
   return {
     // the horizontal space
     width: scaleMultiplier,
@@ -372,8 +369,12 @@ function computeCompressedScale(
     height: hMax + pad(style.padding, 'top') + style.fontSize / 2,
     containsOverlap,
     overflow: {
-      right: bounds[1] !== globalDomainPositions.length - 1,
+      // true if a label exist protrude to the left making the scale shrink from the left
+      // the current check is based on the way we construct globalItemWidth and globalDomainPositions
       left: bounds[0] !== 0,
+      // true if a label exist protrude to the right making the scale shrink from the right
+      // the current check is based on the way we construct globalItemWidth and globalDomainPositions
+      right: bounds[1] !== globalDomainPositions.length - 1,
     },
   };
 }
