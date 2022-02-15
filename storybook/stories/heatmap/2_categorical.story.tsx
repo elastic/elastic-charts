@@ -28,8 +28,8 @@ export const Example = () => {
   const minCellHeight = number('min cell height', 10, { step: 1, min: 3, max: 8, range: true }, 'grid');
   const maxCellHeight = number('max cell height', 30, { step: 1, min: 8, max: 45, range: true }, 'grid');
 
-  const showXAxisTitle = boolean('Show x axis title', false);
-  const showYAxisTitle = boolean('Show y axis title', false);
+  const showXAxisTitle = boolean('Show x axis title', true);
+  const showYAxisTitle = boolean('Show y axis title', true);
 
   return (
     <Chart>
@@ -88,8 +88,8 @@ export const Example = () => {
         valueAccessor={(d) => d[3]}
         valueFormatter={(value) => value.toFixed(0.2)}
         xSortPredicate="alphaAsc"
-        xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
-        yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
+        xAxisTitle={showXAxisTitle ? 'Popular baby names' : undefined}
+        yAxisTitle={showYAxisTitle ? 'Years' : undefined}
       />
     </Chart>
   );

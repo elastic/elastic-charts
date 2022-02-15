@@ -18,5 +18,4 @@ export { Example as legendScrollBarSizing } from './5_legend_scroll_bar_sizing.s
 export { Example as accessibilityCustomizations } from './6_a11y_custom_description.story';
 export { Example as rtlText } from './7_rtl_text.story';
 export { Example as testPointsOutsideOfDomain } from './8_test_points_outside_of_domain.story';
-export { Example as heatmapAxisLabels } from './9_heatmap_axis_labels.story';
-export { Example as heatmapLabelRotation } from './10_heatmap_label_rotation.story';
+export { Example as heatmapLabelRotation } from './9_heatmap_label_rotation.story';
