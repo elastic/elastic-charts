@@ -215,6 +215,10 @@ export interface HeatmapStyle {
     fontSize: Pixels;
     visible: boolean;
     padding: Pixels | Padding;
+    /**
+     * Positive 0 - 90 degree angle
+     * @defaultValue 0
+     */
     rotation: number;
   };
   yAxisLabel: Font & {

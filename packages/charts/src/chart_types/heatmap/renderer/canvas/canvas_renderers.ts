@@ -13,7 +13,6 @@ import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/li
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, TextFont, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { limitXAxisLabelRotation } from '../../layout/viewmodel/default_constaints';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_dimensions';
 
 /** @internal */
@@ -124,7 +123,7 @@ export function renderCanvas2d(
           const { padding } = theme.yAxisLabel;
           const horizontalPadding = horizontalPad(padding);
           filteredYValues.forEach(({ x, y, text }) => {
-            const results = wrapLines(
+            const textLines = wrapLines(
               ctx,
               text,
               font,
@@ -134,7 +133,7 @@ export function renderCanvas2d(
               { shouldAddEllipsis: true, wrapAtWord: false },
             ).lines;
             // TODO improve the `wrapLines` code to handle results with short width
-            renderText(ctx, { x, y }, results.length > 0 ? results[0] : '…', font);
+            renderText(ctx, { x, y }, textLines.length > 0 ? textLines[0] : '…', font);
           });
         }),
 
@@ -143,20 +142,20 @@ export function renderCanvas2d(
         theme.xAxisLabel.visible &&
         withContext(ctx, () => {
           ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
-          const rotation = limitXAxisLabelRotation(theme.xAxisLabel.rotation);
           heatmapViewModel.xValues
             .filter((_, i) => i % elementSizes.xAxisTickCadence === 0)
             .forEach(({ x, y, text, align }) => {
-              const [truncatedText] = wrapLines(
+              const textLines = wrapLines(
                 ctx,
                 text,
                 theme.xAxisLabel,
                 theme.xAxisLabel.fontSize,
-                // TODO specify the grid size
+                // TODO wrap into multilines
                 Infinity,
                 16,
                 { shouldAddEllipsis: true, wrapAtWord: false },
               ).lines;
+              // Renders the X axis grid tick
               renderMultiLine(
                 ctx,
                 [
@@ -169,7 +168,14 @@ export function renderCanvas2d(
                 ],
                 heatmapViewModel.gridLines.stroke,
               );
-              renderText(ctx, { x, y }, truncatedText, { ...theme.xAxisLabel, baseline: 'middle', align }, rotation);
+              renderText(
+                ctx,
+                { x, y },
+                textLines.length > 0 ? textLines[0] : '…',
+                { ...theme.xAxisLabel, baseline: 'middle', align },
+                // negative rotation due to the canvas rotation direction
+                -theme.xAxisLabel.rotation,
+              );
             });
         }),
 

@@ -22,7 +22,6 @@ import { Dimensions, horizontalPad, innerPad, outerPad, pad, Size } from '../../
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { AxisStyle, HeatmapStyle } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { limitXAxisLabelRotation } from '../../layout/viewmodel/default_constaints';
 import { HeatmapCellDatum, isRasterTimeScale } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs/heatmap';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
@@ -225,7 +224,7 @@ function getXAxisSize(
   }
 
   // use positive angle from 0 to 90 only
-  const rotationRad = degToRad(-limitXAxisLabelRotation(style.rotation));
+  const rotationRad = degToRad(style.rotation);
 
   const measuredLabels = labels.map((label) => ({
     ...textMeasure(formatter(label), style, style.fontSize),
