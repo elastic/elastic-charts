@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, number, text } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Heatmap, HeatmapStyle, RecursivePartial, Settings } from '@elastic/charts';
@@ -24,7 +24,7 @@ export const Example = () => {
       visible: boolean('visible', true, 'x axis'),
       fontSize: number('fontSize', 12, { range: true, min: 5, max: 20 }, 'x axis'),
       padding: number('padding', 6, { range: true, min: 0, max: 15 }, 'x axis'),
-      rotation: number('rotation', 0, { step: 1, min: -90, max: 0, range: true }, 'x axis'),
+      rotation: number('rotation', 0, { step: 1, min: 0, max: 90, range: true }, 'x axis'),
     },
     yAxisLabel: {
       width: yAxisAutoWidth ? 'auto' : yAxisWidth,

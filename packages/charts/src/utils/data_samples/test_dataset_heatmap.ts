@@ -23,7 +23,7 @@ type HeatmapDataSets = {
 export const DATA_1: HeatmapDataSets = {
   interval: { type: 'fixed', unit: 'h', value: 12 },
   xFormatter: (value: string | number) => {
-    return DateTime.fromMillis(value as number).toFormat('dd/MM/yy HH:mm', { timeZone: 'Europe/Rome' });
+    return DateTime.fromMillis(value as number).toFormat('dd/MM HHa', { timeZone: 'Europe/Rome' });
   },
   timeZone: 'Europe/Rome',
   data: [
