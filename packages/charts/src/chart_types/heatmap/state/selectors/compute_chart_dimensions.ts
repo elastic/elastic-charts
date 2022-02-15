@@ -212,9 +212,10 @@ function getXAxisSize(
       tickCadence: NaN,
     };
   }
-
+  const isRotated = style.rotation !== 0;
   const normalizedScale = scaleBand<NonNullable<PrimitiveValue>>().domain(labels).range([0, 1]);
-  const alignment = style.rotation !== 0 ? 'right' : isCategoricalScale ? 'center' : 'left';
+
+  const alignment = isRotated ? 'right' : isCategoricalScale ? 'center' : 'left';
   const alignmentOffset = isCategoricalScale ? normalizedScale.bandwidth() / 2 : 0;
   const scale = (d: NonNullable<PrimitiveValue>) => (normalizedScale(d) ?? 0) + alignmentOffset;
 
@@ -227,7 +228,7 @@ function getXAxisSize(
   }));
 
   // don't filter ticks if categorical scale or with rotated labels
-  if (isCategoricalScale || rotationRad !== 0) {
+  if (isCategoricalScale || isRotated) {
     const { width, left, right, height } = computeCompressedScale(
       style,
       scale,
@@ -248,6 +249,7 @@ function getXAxisSize(
   }
 
   // TODO refactor and move to monotonic hill climber and no mutations
+  // reduce the tick cadence on time scale to avoid overlaps and overflows
   let tickCadence = 0;
   let dimension = computeCompressedScale(
     style,
@@ -260,7 +262,7 @@ function getXAxisSize(
   );
 
   for (let i = 0; i < measuredLabels.length; i++) {
-    if ((!dimension.containsOverlap && !dimension.overflow.right) || !isFiniteNumber(dimension.width)) {
+    if ((!dimension.overlaps && !dimension.overflow.right) || !isFiniteNumber(dimension.width)) {
       break;
     }
     tickCadence++;
@@ -275,6 +277,7 @@ function getXAxisSize(
     );
   }
 
+  // hide the axis because there is no space for labels
   if (!isFiniteNumber(dimension.width)) {
     return {
       // hide the whole axis
@@ -301,11 +304,11 @@ function computeCompressedScale(
   surroundingSpace: [number, number],
   alignment: 'left' | 'right' | 'center',
   rotation: Radian,
-): Size & { left: number; right: number; containsOverlap: boolean; overflow: { left: boolean; right: boolean } } {
-  const { itemWidths, domainPositions, hMax } = labels.reduce<{
+): Size & { left: number; right: number; overlaps: boolean; overflow: { left: boolean; right: boolean } } {
+  const { itemsPerSideSize, domainPositions, hMax } = labels.reduce<{
     wMax: number;
     hMax: number;
-    itemWidths: [number, number][];
+    itemsPerSideSize: [number, number][];
     domainPositions: number[];
   }>(
     (acc, { width, height, label }) => {
@@ -316,7 +319,10 @@ function computeCompressedScale(
         [width, height],
         [0, height],
       ];
-      const rotationOrigin: Vec2 = getRotationOriginFromAlignment(width, height, alignment);
+
+      const rotationOrigin: Vec2 =
+        alignment === 'right' ? [width, height / 2] : alignment === 'left' ? [0, height / 2] : [width / 2, height / 2];
+
       const rotatedVectors = labelRect.map((vector) => rotate2(rotation, sub2(vector, rotationOrigin)));
 
       // find the rotated bounding box
@@ -326,19 +332,19 @@ function computeCompressedScale(
       acc.hMax = Math.max(acc.hMax, Math.abs(y[1] - y[0]));
 
       // describe the item width as the left and right vector size from the rotation origin
-      acc.itemWidths.push([Math.abs(x[0]), Math.abs(x[1])]);
+      acc.itemsPerSideSize.push([Math.abs(x[0]), Math.abs(x[1])]);
 
       // use a categorical scale with labels aligned to the center to compute the domain position
       const domainPosition = scale(label);
       acc.domainPositions.push(domainPosition);
       return acc;
     },
-    { wMax: -Infinity, hMax: -Infinity, itemWidths: [], domainPositions: [] },
+    { wMax: -Infinity, hMax: -Infinity, itemsPerSideSize: [], domainPositions: [] },
   );
 
   // account for the left and right space (Y axes, overflows etc)
   const globalDomainPositions = [0, ...domainPositions, 1];
-  const globalItemWidth: [number, number][] = [[surroundingSpace[0], 0], ...itemWidths, [0, surroundingSpace[1]]];
+  const globalItemWidth: [number, number][] = [[surroundingSpace[0], 0], ...itemsPerSideSize, [0, surroundingSpace[1]]];
 
   const { scaleMultiplier, bounds } = screenspaceMarkerScaleCompressor(
     globalDomainPositions,
@@ -346,13 +352,15 @@ function computeCompressedScale(
     containerWidth,
   );
 
-  const containsOverlap = itemWidths.some((curr, i) => {
-    if (i >= itemWidths.length - 2) {
+  // check label overlaps using the computed compressed scale
+  const overlaps = itemsPerSideSize.some(([_, rightSide], i) => {
+    if (i >= itemsPerSideSize.length - 2) {
       return false;
     }
-    const currentX = domainPositions[i] * scaleMultiplier;
-    const nextX = domainPositions[i + 1] * scaleMultiplier;
-    return currentX + curr[1] + horizontalPad(style.padding) > nextX + itemWidths[i + 1][0];
+    const currentItemRightSide = domainPositions[i] * scaleMultiplier + rightSide + pad(style.padding, 'right');
+    const nextItemLeftSize =
+      domainPositions[i + 1] * scaleMultiplier - itemsPerSideSize[i + 1][0] - pad(style.padding, 'left');
+    return currentItemRightSide > nextItemLeftSize;
   });
 
   const leftMargin = isFiniteNumber(bounds[0])
@@ -367,7 +375,7 @@ function computeCompressedScale(
     left: leftMargin,
     // the height represent the height of the max rotated bbox plus the padding and the vertical position of the rotation origin
     height: hMax + pad(style.padding, 'top') + style.fontSize / 2,
-    containsOverlap,
+    overlaps,
     overflow: {
       // true if a label exist protrude to the left making the scale shrink from the left
       // the current check is based on the way we construct globalItemWidth and globalDomainPositions
@@ -377,17 +385,4 @@ function computeCompressedScale(
       right: bounds[1] !== globalDomainPositions.length - 1,
     },
   };
-}
-
-function getRotationOriginFromAlignment(width: number, height: number, alignment: 'left' | 'right' | 'center'): Vec2 {
-  // with no rotation move the origin to the middle/center
-  // with rotation instead rotate around the right most/middle center (right alignment)
-  switch (alignment) {
-    case 'right':
-      return [width, height / 2];
-    case 'left':
-      return [0, height / 2];
-    case 'center':
-      return [width / 2, height / 2];
-  }
 }
