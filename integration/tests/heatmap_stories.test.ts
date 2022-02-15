@@ -53,21 +53,21 @@ describe('Heatmap stories', () => {
     );
   });
 
-  it('should allow rotation of labels', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/test-cases--overlapping-heatmap-labels&&knob-set%20rotation%20of%20x%20axis%20label_labels=45',
-    );
-  });
-
-  it('should allow customizable length for x axis labels and allow alternating labels', async () => {
-    await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/test-cases--overlapping-heatmap-labels&&knob-set%20rotation%20of%20x%20axis%20label_labels=45&knob-show_labels=true&knob-set the max text length for the x axis labels_labels=5&knob-set overflow property for x axis labels_labels=true',
-    );
-  });
-
   it('should show x and y axis titles', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/heatmap-alpha--basic&knob-Show%20x%20axis%20title=true&knob-Show%20y%20axis%20title=true',
+    );
+  });
+
+  test('rotate categorical axis labels', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/test-cases--heatmap-label-rotation&globals=theme:light&knob-auto width_y axis=true&knob-width_y axis=50&knob-visible_x axis=true&knob-fontSize_x axis=12&knob-padding_x axis=6&knob-rotation_x axis=45&knob-categorical data=true&knob-show legend=false',
+    );
+  });
+
+  test('rotate time axis labels', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/test-cases--heatmap-label-rotation&globals=theme:light&knob-auto width_y axis=true&knob-width_y axis=50&knob-visible_x axis=true&knob-fontSize_x axis=12&knob-padding_x axis=6&knob-rotation_x axis=45&knob-categorical data=&knob-show legend=false',
     );
   });
 });

@@ -13,7 +13,7 @@ import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getAccessorValue } from '../../../../utils/accessor';
-import { timeRange } from '../../../../utils/chrono/elasticsearch';
+import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
 import { isFiniteNumber } from '../../../../utils/common';
 import { HeatmapTable } from './compute_chart_dimensions';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
@@ -64,8 +64,11 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
     );
     if (xScale.type === ScaleType.Time) {
       const [xDataMin = NaN, xDataMax = NaN] = extent(resultData.xValues as number[]);
+      // to correctly compute the time extent from data, we need to add an interval to the max value of the dataset
+      const dataMaxExtended = xDataMax ? addIntervalToTime(xDataMax, xScale.interval, timeZone) : NaN;
+
       const [customMin, customMax] = !Array.isArray(xDomain) ? [xDomain?.min ?? NaN, xDomain?.max ?? NaN] : [NaN, NaN];
-      const [min, max] = extent([xDataMin, customMin, customMax, xDataMax]);
+      const [min, max] = extent([xDataMin, customMin, customMax, dataMaxExtended]);
       resultData.xNumericExtent = [min ?? NaN, max ?? NaN];
       resultData.xValues =
         isFiniteNumber(min) && isFiniteNumber(max) ? timeRange(min, max, xScale.interval, timeZone) : [];

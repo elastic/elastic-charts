@@ -250,7 +250,7 @@ function getXAxisSize(
 
   // TODO refactor and move to monotonic hill climber and no mutations
   // reduce the tick cadence on time scale to avoid overlaps and overflows
-  let tickCadence = 0;
+  let tickCadence = 1;
   let dimension = computeCompressedScale(
     style,
     scale,
@@ -261,11 +261,10 @@ function getXAxisSize(
     rotationRad,
   );
 
-  for (let i = 0; i < measuredLabels.length; i++) {
+  for (let i = 1; i < measuredLabels.length; i++) {
     if ((!dimension.overlaps && !dimension.overflow.right) || !isFiniteNumber(dimension.width)) {
       break;
     }
-    tickCadence++;
     dimension = computeCompressedScale(
       style,
       scale,
@@ -275,6 +274,7 @@ function getXAxisSize(
       alignment,
       rotationRad,
     );
+    tickCadence++;
   }
 
   // hide the axis because there is no space for labels
