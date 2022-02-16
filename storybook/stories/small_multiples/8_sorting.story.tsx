@@ -9,9 +9,17 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { ScaleType, Position, Chart, Axis, GroupBy, SmallMultiples, Settings, BarSeries } from '@elastic/charts';
-
-import { Predicate } from '../../../packages/charts/src/common/predicate';
+import {
+  ScaleType,
+  Position,
+  Chart,
+  Axis,
+  GroupBy,
+  SmallMultiples,
+  Settings,
+  BarSeries,
+  Predicate,
+} from '@elastic/charts';
 
 /**
  * This story is used on VRTs to test the sorting logic of the dataIndex sort predicate
