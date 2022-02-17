@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import React, { createRef } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, Store, Unsubscribe, StoreEnhancer, applyMiddleware, Middleware } from 'redux';
-import { v4 as uuidv4 } from 'uuid';
+import uuid from 'uuid';
 
 import { Colors } from '../common/colors';
 import { LegendPositionConfig, PointerEvent } from '../specs';
@@ -78,7 +78,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartContainerRef = createRef();
     this.chartStageRef = createRef();
 
-    const id = props.id ?? uuidv4();
+    const id = props.id ?? uuid.v4();
     const storeReducer = chartStoreReducer(id);
     const enhancer = getMiddlware(id);
     this.chartStore = createStore(storeReducer, enhancer);
