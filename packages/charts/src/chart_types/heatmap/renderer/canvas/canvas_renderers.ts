@@ -37,6 +37,7 @@ export function renderCanvas2d(
     //         text rendering must be y-flipped, which is a bit easier this way
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    ctx.lineCap = 'square';
     // ctx.translate(chartCenter.x, chartCenter.y);
     // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
     // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up

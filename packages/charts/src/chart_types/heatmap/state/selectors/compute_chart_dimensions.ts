@@ -79,14 +79,15 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
         xAxisLabelFormatter,
         xValues,
         textMeasure,
-        container.width - legendWidth,
+        container.width - legendWidth - heatmap.grid.stroke.width / 2, // we should consider also the grid width
         [
           yAxisTitleHorizontalSize + yAxisWidth,
           0, // this can be used if we have a right Y axis
         ],
       );
 
-      const availableHeightForGrid = container.height - xAxisTitleVerticalSize - xAxisSize.height - legendHeight;
+      const availableHeightForGrid =
+        container.height - xAxisTitleVerticalSize - xAxisSize.height - legendHeight - heatmap.grid.stroke.width / 2;
 
       const rowHeight = getGridCellHeight(yValues.length, heatmap.grid, availableHeightForGrid);
       const fullHeatmapHeight = rowHeight * yValues.length;
@@ -98,9 +99,9 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
 
       const grid: Dimensions = {
         width: xAxisSize.width,
-        height: visibleNumberOfRows * rowHeight,
+        height: visibleNumberOfRows * rowHeight - heatmap.grid.stroke.width / 2,
         left: container.left + xAxisSize.left,
-        top: container.top,
+        top: container.top + heatmap.grid.stroke.width / 2,
       };
 
       const yAxis: Dimensions = {

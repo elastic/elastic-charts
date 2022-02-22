@@ -329,8 +329,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const yLines = Array.from({ length: elementSizes.visibleNumberOfRows + 1 }, (d, i) => ({
     x1: elementSizes.grid.left,
     x2: elementSizes.grid.left + elementSizes.grid.width,
-    y1: i * cellHeight,
-    y2: i * cellHeight,
+    y1: elementSizes.grid.top + i * cellHeight,
+    y2: elementSizes.grid.top + i * cellHeight,
   }));
 
   const cells = Object.values(cellMap);
