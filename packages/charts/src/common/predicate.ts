@@ -41,13 +41,13 @@ export function getPredicateFn<T>(predicate: Predicate, accessor?: keyof T): (a:
         const bValue = Number(accessor ? b[accessor] : b);
         return bValue - aValue;
       };
-    default:
-    case 'dataIndex':
     case 'numAsc':
       return (a: T, b: T) => {
         const aValue = Number(accessor ? a[accessor] : a);
         const bValue = Number(accessor ? b[accessor] : b);
         return aValue - bValue;
       };
+    case 'dataIndex':
+      return () => 0;
   }
 }
