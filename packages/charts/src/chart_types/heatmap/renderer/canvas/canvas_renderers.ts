@@ -155,19 +155,6 @@ export function renderCanvas2d(
                 16,
                 { shouldAddEllipsis: true, wrapAtWord: false },
               ).lines;
-              // Renders the X axis grid tick
-              renderMultiLine(
-                ctx,
-                [
-                  {
-                    x1: x,
-                    x2: x,
-                    y1: 0,
-                    y2: 5,
-                  },
-                ],
-                heatmapViewModel.gridLines.stroke,
-              );
               renderText(
                 ctx,
                 { x, y },

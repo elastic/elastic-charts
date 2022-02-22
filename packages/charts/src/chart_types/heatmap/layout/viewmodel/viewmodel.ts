@@ -314,13 +314,16 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     return pickHighlightedArea(area.x, area.y);
   };
 
-  // vertical lines
-  const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => ({
-    x1: elementSizes.grid.left + i * cellWidth,
-    x2: elementSizes.grid.left + i * cellWidth,
-    y1: elementSizes.grid.top,
-    y2: currentGridHeight,
-  }));
+  // ordered left-right vertical lines
+  const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => {
+    const xAxisExtension = i % elementSizes.xAxisTickCadence === 0 ? 5 : 0;
+    return {
+      x1: elementSizes.grid.left + i * cellWidth,
+      x2: elementSizes.grid.left + i * cellWidth,
+      y1: elementSizes.grid.top,
+      y2: currentGridHeight + xAxisExtension,
+    };
+  });
 
   // horizontal lines
   const yLines = Array.from({ length: elementSizes.visibleNumberOfRows + 1 }, (d, i) => ({
