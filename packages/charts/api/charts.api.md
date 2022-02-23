@@ -1069,8 +1069,6 @@ export type GroupByKeyFn<T> = (data: T) => string;
 // @public (undocumented)
 export type GroupByProps = ComponentProps<typeof GroupBy>;
 
-// Warning: (ae-forgotten-export) The symbol "Predicate" needs to be exported by the entry point index.d.ts
-//
 // @alpha (undocumented)
 export type GroupBySort = Predicate;
 
@@ -1838,6 +1836,18 @@ export interface Postfixes {
     y0AccessorFormat?: string;
     y1AccessorFormat?: string;
 }
+
+// @public (undocumented)
+export const Predicate: Readonly<{
+    NumAsc: "numAsc";
+    NumDesc: "numDesc";
+    AlphaAsc: "alphaAsc";
+    AlphaDesc: "alphaDesc";
+    DataIndex: "dataIndex";
+}>;
+
+// @public (undocumented)
+export type Predicate = $Values<typeof Predicate>;
 
 // @public
 export type PrimitiveValue = string | number | null;

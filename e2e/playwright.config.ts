@@ -16,6 +16,9 @@ const config: PlaywrightTestConfig = {
     trace: 'off',
     screenshot: 'off', // already testing screenshots
     video: process.env.CI ? 'off' : 'retain-on-failure',
+    launchOptions: {
+      ignoreDefaultArgs: ['--hide-scrollbars'],
+    },
   },
   reporter: process.env.CI ? 'github' : [['html', { open: 'never', outputFolder: 'report' }], ['list']],
   expect: {

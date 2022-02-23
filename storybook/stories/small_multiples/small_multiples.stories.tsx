@@ -18,3 +18,5 @@ export { Example as gridLines } from './3_grid_lines.story';
 export { Example as histogramBars } from './5_histogram_bars.story';
 export { Example as heterogeneous } from './6_heterogeneous_cartesians.story';
 export { Example as sunbursts } from './7_sunbursts.story';
+
+export { Example as sorting } from './8_sorting.story';
