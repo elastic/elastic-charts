@@ -165,6 +165,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     rowHeight: 0,
     visibleNumberOfRows: 0,
     xAxisTickCadence: 1,
+    xLabelRotation: 0,
   },
   debug: false,
 };
