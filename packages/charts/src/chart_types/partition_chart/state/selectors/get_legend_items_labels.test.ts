@@ -96,12 +96,20 @@ describe('Partition - Legend items labels', () => {
         label: 'bbb',
       },
       {
+        depth: 2,
+        label: 'aa',
+      },
+      {
         depth: 3,
         label: '7',
       },
       {
         depth: 3,
         label: '8',
+      },
+      {
+        depth: 2,
+        label: 'bb',
       },
       {
         depth: 3,
@@ -164,6 +172,14 @@ describe('Partition - Legend items labels', () => {
       {
         depth: 1,
         label: 'bbb',
+      },
+      {
+        depth: 2,
+        label: 'aa',
+      },
+      {
+        depth: 2,
+        label: 'bb',
       },
       {
         depth: 2,

@@ -52,7 +52,13 @@ describe('Retain hierarchy even with arbitrary names', () => {
     it('all distinct labels are present', () => {
       MockStore.addSpecs([MockGlobalSpec.settings({ showLegend: true }), MockSeriesSpec.sunburst(specJSON)], store);
       expect(getLegendItemsLabels(store.getState()).sort(ascByLabel)).toEqual([
+        { depth: 1, label: 'A' },
         { depth: 2, label: 'A' },
+        { depth: 2, label: 'A' },
+        { depth: 2, label: 'A' },
+        { depth: 2, label: 'B' },
+        { depth: 1, label: 'B' },
+        { depth: 2, label: 'B' },
         { depth: 2, label: 'B' },
         { depth: 1, label: 'C' },
       ]);
@@ -79,7 +85,10 @@ describe('Retain hierarchy even with arbitrary names', () => {
         ],
         store,
       );
-      expect(getLegendItemsLabels(store.getState())).toEqual([{ depth: 2, label: 'A' }]);
+      expect(getLegendItemsLabels(store.getState())).toEqual([
+        { depth: 1, label: 'A' },
+        { depth: 2, label: 'A' },
+      ]);
     });
 
     it('special case: one input, two labels', () => {
