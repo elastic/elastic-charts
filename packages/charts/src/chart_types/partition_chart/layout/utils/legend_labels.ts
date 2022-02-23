@@ -51,7 +51,7 @@ function flatSlicesNames(
       // Node key must be unique for each node in the tree
       const nodeKey = getArrayNodeKey(arrayNode);
       // save only the max depth, so we can compute the the max extension of the legend
-      depths.set(nodeKey, Math.max(depth, depths.get(nodeKey) ?? 0));
+      depths.set(nodeKey, depth);
       keys.set(nodeKey, formattedValue);
     }
 
