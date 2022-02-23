@@ -29,7 +29,7 @@ export interface ScaleCompression {
  */
 export const screenspaceMarkerScaleCompressor = (
   domainPositions: Cartesian[],
-  itemWidths: Pixels[],
+  itemWidths: Array<[Pixels, Pixels]>,
   outerWidth: Pixels,
 ): ScaleCompression => {
   const result: ScaleCompression = { bounds: [], scaleMultiplier: Infinity };
@@ -38,7 +38,7 @@ export const screenspaceMarkerScaleCompressor = (
     for (let right = 0; right < itemCount; right++) {
       if (domainPositions[left] > domainPositions[right]) continue; // must adhere to left <= right
 
-      const range = outerWidth - itemWidths[left] / 2 - itemWidths[right] / 2; // negative if not enough room
+      const range = outerWidth - itemWidths[left][0] - itemWidths[right][1]; // negative if not enough room
       const domain = domainPositions[right] - domainPositions[left]; // always non-negative and finite
       const scaleMultiplier = range / domain; // may not be finite, and that's OK
 

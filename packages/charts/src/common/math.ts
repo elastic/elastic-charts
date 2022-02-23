@@ -10,3 +10,19 @@
 export function logarithm(base: number, y: number) {
   return Math.log(y) / Math.log(base);
 }
+
+/**
+ * Computes the min and max values of an array of numbers
+ * @internal
+ */
+export function extent(array: number[]): [min: number, max: number] {
+  const len = array.length;
+  let min = Infinity;
+  let max = -Infinity;
+  for (let i = 0; i < len; i += 1) {
+    const value = array[i];
+    if (min > value) min = value;
+    if (max < value) max = value;
+  }
+  return [min, max];
+}
