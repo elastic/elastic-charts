@@ -51,6 +51,7 @@ jobs:
   trigger-deploy:
     name: Trigger deployment
     runs-on: ubuntu-latest
+    needs: should-trigger
     if: ${{ needs.should-trigger.outputs.check == 'true' }}
     steps:
     - name: Get deployment environment
