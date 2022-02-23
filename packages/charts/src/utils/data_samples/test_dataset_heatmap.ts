@@ -25,6 +25,7 @@ export const DATA_1: HeatmapDataSets = {
   xFormatter: (value: string | number) => {
     return DateTime.fromMillis(value as number).toFormat('dd/MM HHa', { timeZone: 'Europe/Rome' });
   },
+  timeZone: 'Europe/Rome',
   data: [
     {
       y: 'AE',
@@ -4240,3 +4241,117 @@ export const DATA_9: HeatmapDataSets = {
   timeZone: 'Europe/Rome',
   data: DATA_8.data,
 };
+
+/** @internal */
+export const ECOMMERCE_DATA = [
+  {
+    x: 'Tigress Haute Couture Haute Couture',
+    y: 'Dress',
+    value: 816,
+  },
+  {
+    x: 'Tigress Haute Couture Haute Couture',
+    y: 'Shoes',
+    value: 556,
+  },
+  {
+    x: 'Tigress Haute Couture Haute Couture',
+    y: 'Shirts',
+    value: 395,
+  },
+  {
+    x: 'Low Tide Media',
+    y: 'T-Shirts',
+    value: 1125,
+  },
+  {
+    x: 'Low Tide Media',
+    y: 'Sweaters',
+    value: 595,
+  },
+  {
+    x: 'Low Tide Media',
+    y: 'Pullovers',
+    value: 355,
+  },
+  {
+    x: 'Low Tide Media',
+    y: 'Shoes',
+    value: 233,
+  },
+  {
+    x: 'Low Tide Media',
+    y: 'Dress',
+    value: 136,
+  },
+  {
+    x: 'Elitelligence',
+    y: 'T-Shirts',
+    value: 1242,
+  },
+  {
+    x: 'Elitelligence',
+    y: 'Sweaters',
+    value: 528,
+  },
+  {
+    x: 'Elitelligence',
+    y: 'Jumper',
+    value: 2338,
+  },
+  {
+    x: 'Elitelligence',
+    y: 'Shirts',
+    value: 46,
+  },
+  {
+    x: 'Elitelligence',
+    y: 'Dress',
+    value: 1,
+  },
+  {
+    x: 'Oceanavigations',
+    y: 'T-Shirts',
+    value: 600,
+  },
+  {
+    x: 'Oceanavigations',
+    y: 'Dress',
+    value: 418,
+  },
+  {
+    x: 'Oceanavigations',
+    y: 'Cardigans',
+    value: 286,
+  },
+  {
+    x: 'Oceanavigations',
+    y: 'Jumpsuit',
+    value: 123,
+  },
+  {
+    x: 'Oceanavigations',
+    y: 'Sweaters',
+    value: 258,
+  },
+  {
+    x: 'Oceanavigations',
+    y: 'Shirts',
+    value: 239,
+  },
+  {
+    x: 'Pyramidustries Young Moda',
+    y: 'Dress',
+    value: 747,
+  },
+  {
+    x: 'Pyramidustries Young Moda',
+    y: 'Shoes',
+    value: 425,
+  },
+  {
+    x: 'Pyramidustries Young Moda',
+    y: 'Shirts',
+    value: 377,
+  },
+];

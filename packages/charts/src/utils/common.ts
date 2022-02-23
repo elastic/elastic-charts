@@ -159,6 +159,9 @@ export function getColorFromVariant(seriesColor: Color, color?: Color | ColorVar
 /** @internal */
 export const degToRad = (angle: Degrees): Radian => (angle / 180) * Math.PI;
 
+/** @internal */
+export const radToDeg = (radian: Radian): Degrees => (radian * 180) / Math.PI;
+
 /**
  * This function returns a function to generate ids.
  * This can be used to generate unique, but predictable ids to pair labels

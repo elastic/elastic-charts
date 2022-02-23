@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { Color, Colors } from '../../../../common/colors';
-import { Font } from '../../../../common/text_utils';
+import { Color } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { radToDeg } from '../../../../utils/common';
+import { horizontalPad } from '../../../../utils/dimensions';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
-import { renderText, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
+import { renderText, TextFont, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_dimensions';
 
@@ -37,6 +38,7 @@ export function renderCanvas2d(
     //         text rendering must be y-flipped, which is a bit easier this way
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    ctx.lineCap = 'square';
     // ctx.translate(chartCenter.x, chartCenter.y);
     // this applies the mathematical x/y conversion (+y is North) which is easier when developing geometry
     // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
@@ -117,34 +119,23 @@ export function renderCanvas2d(
         // render text on Y axis
         theme.yAxisLabel.visible &&
         withContext(ctx, () => {
+          // the text is right aligned so the canvas needs to be aligned to the right of the Y axis box
           ctx.translate(elementSizes.yAxis.left + elementSizes.yAxis.width, elementSizes.yAxis.top);
-          filteredYValues.forEach((yValue) => {
-            const font: Font = {
-              fontFamily: theme.yAxisLabel.fontFamily,
-              fontStyle: theme.yAxisLabel.fontStyle ? theme.yAxisLabel.fontStyle : 'normal',
-              fontVariant: 'normal',
-              fontWeight: 'normal',
-              textColor: Colors.Black.keyword,
-            };
-            const { padding } = theme.yAxisLabel;
-            const horizontalPadding =
-              typeof padding === 'number' ? padding * 2 : (padding.left ?? 0) + (padding.right ?? 0);
-            const [resultText] = wrapLines(
+          const font: TextFont = { ...theme.yAxisLabel, baseline: 'middle' /* fixed */, align: 'right' /* fixed */ };
+          const { padding } = theme.yAxisLabel;
+          const horizontalPadding = horizontalPad(padding);
+          filteredYValues.forEach(({ x, y, text }) => {
+            const textLines = wrapLines(
               ctx,
-              yValue.text,
+              text,
               font,
               theme.yAxisLabel.fontSize,
               heatmapViewModel.gridOrigin.x - horizontalPadding,
-              16,
+              theme.yAxisLabel.fontSize,
               { shouldAddEllipsis: true, wrapAtWord: false },
             ).lines;
-            renderText(
-              ctx,
-              { x: yValue.x, y: yValue.y },
-              resultText,
-              // the alignment for y axis labels is fixed to the right
-              { ...theme.yAxisLabel, align: 'right' },
-            );
+            // TODO improve the `wrapLines` code to handle results with short width
+            renderText(ctx, { x, y }, textLines.length > 0 ? textLines[0] : '…', font);
           });
         }),
 
@@ -153,9 +144,28 @@ export function renderCanvas2d(
         theme.xAxisLabel.visible &&
         withContext(ctx, () => {
           ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
-          heatmapViewModel.xValues.forEach((xValue) =>
-            renderText(ctx, { x: xValue.x, y: xValue.y }, xValue.text, theme.xAxisLabel),
-          );
+          heatmapViewModel.xValues
+            .filter((_, i) => i % elementSizes.xAxisTickCadence === 0)
+            .forEach(({ x, y, text, align }) => {
+              const textLines = wrapLines(
+                ctx,
+                text,
+                theme.xAxisLabel,
+                theme.xAxisLabel.fontSize,
+                // TODO wrap into multilines
+                Infinity,
+                16,
+                { shouldAddEllipsis: true, wrapAtWord: false },
+              ).lines;
+              renderText(
+                ctx,
+                { x, y },
+                textLines.length > 0 ? textLines[0] : '…',
+                { ...theme.xAxisLabel, baseline: 'middle', align },
+                // negative rotation due to the canvas rotation direction
+                radToDeg(-elementSizes.xLabelRotation),
+              );
+            });
         }),
 
       () =>

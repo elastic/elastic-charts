@@ -7,7 +7,7 @@
  */
 
 import { colorToRgba, overrideOpacity, RGBATupleToString } from '../../common/color_library_wrappers';
-import { mergePartial } from '../../utils/common';
+import { clamp, mergePartial } from '../../utils/common';
 import { Logger } from '../../utils/logger';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { PartialTheme, Theme } from '../../utils/themes/theme';
@@ -43,6 +43,9 @@ function validateTheme(theme: Theme): Theme {
     const newFallback = overrideOpacity(fallbackRGBA, 1);
     theme.background.fallbackColor = RGBATupleToString(newFallback);
   }
+
+  // heatmap rotation constraint:
+  theme.heatmap.xAxisLabel.rotation = clamp(theme.heatmap.xAxisLabel.rotation, 0, 90);
 
   return theme;
 }
