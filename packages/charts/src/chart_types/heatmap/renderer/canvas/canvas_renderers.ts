@@ -8,6 +8,7 @@
 
 import { Color } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { radToDeg } from '../../../../utils/common';
 import { horizontalPad } from '../../../../utils/dimensions';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
@@ -162,7 +163,7 @@ export function renderCanvas2d(
                 textLines.length > 0 ? textLines[0] : '…',
                 { ...theme.xAxisLabel, baseline: 'middle', align },
                 // negative rotation due to the canvas rotation direction
-                -theme.xAxisLabel.rotation,
+                radToDeg(-elementSizes.xLabelRotation),
               );
             });
         }),

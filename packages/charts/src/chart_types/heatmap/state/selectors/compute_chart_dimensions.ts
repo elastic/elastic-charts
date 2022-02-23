@@ -47,6 +47,7 @@ export type ChartElementSizes = {
   rowHeight: number;
   visibleNumberOfRows: number;
   xAxisTickCadence: number;
+  xLabelRotation: number;
 };
 
 /**
@@ -126,6 +127,7 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
         fullHeatmapHeight,
         rowHeight,
         xAxisTickCadence: xAxisSize.tickCadence,
+        xLabelRotation: xAxisSize.minRotation,
       };
     });
   },
@@ -203,7 +205,7 @@ function getXAxisSize(
   textMeasure: TextMeasure,
   containerWidth: number,
   surroundingSpace: [number, number],
-): Size & { right: number; left: number; tickCadence: number } {
+): Size & { right: number; left: number; tickCadence: number; minRotation: Radian } {
   if (!style.visible) {
     return {
       height: 0,
@@ -211,6 +213,7 @@ function getXAxisSize(
       left: surroundingSpace[0],
       right: surroundingSpace[1],
       tickCadence: NaN,
+      minRotation: 0,
     };
   }
   const isRotated = style.rotation !== 0;
@@ -230,7 +233,16 @@ function getXAxisSize(
 
   // don't filter ticks if categorical scale or with rotated labels
   if (isCategoricalScale || isRotated) {
-    const { width, left, right, height } = computeCompressedScale(
+    const maxLabelBBox = measuredLabels.reduce(
+      (acc, curr) => {
+        return {
+          height: Math.max(acc.height, curr.height),
+          width: Math.max(acc.width, curr.width),
+        };
+      },
+      { height: 0, width: 0 },
+    );
+    const compressedScale = computeCompressedScale(
       style,
       scale,
       measuredLabels,
@@ -239,6 +251,27 @@ function getXAxisSize(
       alignment,
       rotationRad,
     );
+    const scaleStep = compressedScale.width / labels.length;
+    // this optimal rotation is computed on a suboptimal compressed scale, it can be further enhanced with a monotonic hill climber
+    const optimalRotation =
+      scaleStep > maxLabelBBox.width ? 0 : Math.asin(Math.min(maxLabelBBox.height / scaleStep, 1));
+    // if the current requested rotation is not at least bigger then the optimal one, recalculate the compression
+    // using the optimal one forcing the rotation to be without overlaps
+    const { width, height, left, right, minRotation } = {
+      ...(rotationRad !== 0 && optimalRotation > rotationRad
+        ? computeCompressedScale(
+            style,
+            scale,
+            measuredLabels,
+            containerWidth,
+            surroundingSpace,
+            alignment,
+            optimalRotation,
+          )
+        : compressedScale),
+      minRotation: isRotated ? Math.max(optimalRotation, rotationRad) : 0,
+    };
+
     const validCompression = isFiniteNumber(width);
     return {
       height: validCompression ? height : 0,
@@ -246,6 +279,7 @@ function getXAxisSize(
       left: validCompression ? left : surroundingSpace[0],
       right: validCompression ? right : surroundingSpace[1],
       tickCadence: validCompression ? 1 : NaN,
+      minRotation,
     };
   }
 
@@ -288,12 +322,14 @@ function getXAxisSize(
       right: surroundingSpace[1],
       // hide all ticks
       tickCadence: NaN,
+      minRotation: rotationRad,
     };
   }
 
   return {
     ...dimension,
     tickCadence,
+    minRotation: rotationRad,
   };
 }
 
