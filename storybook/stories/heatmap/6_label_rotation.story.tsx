@@ -17,32 +17,30 @@ import { DATA_1, ECOMMERCE_DATA } from '../../../packages/charts/src/utils/data_
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const yAxisAutoWidth = boolean('auto width', true, 'y axis');
-  const yAxisWidth = number('width', 50, { range: true, min: 0, max: 100 }, 'y axis');
+  const yAxisAutoWidth = boolean('Y-axis auto width', true);
+  const yAxisWidth = number('Y-axis width', 50, { range: true, min: 0, max: 100 });
   const heatmap: RecursivePartial<HeatmapStyle> = {
     xAxisLabel: {
-      visible: boolean('visible', true, 'x axis'),
-      fontSize: number('fontSize', 12, { range: true, min: 5, max: 20 }, 'x axis'),
-      padding: number('padding', 6, { range: true, min: 0, max: 15 }, 'x axis'),
-      rotation: number('rotation', 0, { step: 1, min: 0, max: 90, range: true }, 'x axis'),
+      visible: boolean('X-Axis visible', true),
+      fontSize: number('X-Axis label fontSize', 12, { range: true, min: 5, max: 20 }),
+      padding: number('X-Axis label padding', 6, { range: true, min: 0, max: 15 }),
+      rotation: number('X-Axis label rotation', 0, { step: 1, min: 0, max: 90, range: true }),
     },
     yAxisLabel: {
       width: yAxisAutoWidth ? 'auto' : yAxisWidth,
     },
   };
-  const useCategoricalDataset = boolean('categorical data', false);
+  const useCategoricalDataset = boolean('Use categorical data', false);
   const dataset = useCategoricalDataset ? ECOMMERCE_DATA : DATA_1.data;
   return (
     <Chart>
       <Settings
         onElementClick={action('onElementClick')}
-        showLegend={boolean('show legend', false)}
+        showLegend={boolean('Show legend', false)}
         legendPosition="right"
         brushAxis="both"
         theme={{ heatmap }}
         baseTheme={useBaseTheme()}
-        // debug
-        onBrushEnd={action('onBrushEnd')}
       />
       <Heatmap<{ x: number | string; y: string; value: number }>
         id="heatmap2"

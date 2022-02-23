@@ -61,13 +61,13 @@ describe('Heatmap stories', () => {
 
   test('rotate categorical axis labels', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/test-cases--heatmap-label-rotation&globals=theme:light&knob-auto width_y axis=true&knob-width_y axis=50&knob-visible_x axis=true&knob-fontSize_x axis=12&knob-padding_x axis=6&knob-rotation_x axis=45&knob-categorical data=true&knob-show legend=false',
+      'http://localhost:9001/?path=/story/heatmap-alpha--label-rotation&globals=theme:light&knob-Y-axis auto width=true&knob-Y-axis width=50&knob-X-Axis visible=true&knob-X-Axis label fontSize=12&knob-X-Axis label padding=6&knob-X-Axis label rotation=45&knob-Use categorical data=true&knob-Show legend=',
     );
   });
 
   test('rotate time axis labels', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/test-cases--heatmap-label-rotation&globals=theme:light&knob-auto width_y axis=true&knob-width_y axis=50&knob-visible_x axis=true&knob-fontSize_x axis=12&knob-padding_x axis=6&knob-rotation_x axis=45&knob-categorical data=&knob-show legend=false',
+      'http://localhost:9001/?path=/story/heatmap-alpha--label-rotation&globals=theme:light&knob-Y-axis auto width=true&knob-Y-axis width=50&knob-X-Axis visible=true&knob-X-Axis label fontSize=12&knob-X-Axis label padding=6&knob-X-Axis label rotation=45&knob-Use categorical data=&knob-Show legend=',
     );
   });
 });
