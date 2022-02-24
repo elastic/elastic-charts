@@ -34,10 +34,12 @@ export const Example = () => (
       xAccessor="x"
       yAccessors={['y']}
       data={[
-        { x: 0, y: 2 },
+        // the data is not sorted to verify that the ordinal scale keeps the sorting and the labels are
+        // correctly aligned see https://github.com/elastic/elastic-charts/issues/1608
+        { x: 3, y: 6 },
         { x: 1, y: 7 },
         { x: 2, y: 3 },
-        { x: 3, y: 6 },
+        { x: 0, y: 2 },
       ]}
     />
   </Chart>
