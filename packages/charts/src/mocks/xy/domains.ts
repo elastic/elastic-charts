@@ -25,7 +25,7 @@ export class MockXDomain {
     ...X_SCALE_DEFAULT,
     isBandScale: X_SCALE_DEFAULT.type !== ScaleType.Ordinal,
     minInterval: 0,
-    timeZone: 'UTC',
+    timeZone: 'local',
     domain: [0, 1],
   };
 

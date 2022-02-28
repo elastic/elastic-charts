@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import React, { ComponentType, ReactChild } from 'react';
+import { ComponentProps, ComponentType, ReactChild } from 'react';
 
 import { CustomXDomain, GroupByAccessor, Spec, TooltipStickTo } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
-import { LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
+import { BaseDatum, LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
 import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { Color } from '../common/colors';
@@ -21,16 +21,19 @@ import { TooltipPortalSettings } from '../components';
 import { CustomTooltip } from '../components/tooltip/types';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { LegendPath } from '../state/actions/legend';
-import { getConnect, specComponentFactory } from '../state/spec_factory';
+import { SFProps, useSpecFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
 import {
+  Datum,
   HorizontalAlignment,
   LayoutDirection,
   Position,
   Rendering,
   Rotation,
   VerticalAlignment,
+  stripUndefined,
 } from '../utils/common';
+import { Dimensions } from '../utils/dimensions';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
@@ -38,12 +41,12 @@ import { PartialTheme, Theme } from '../utils/themes/theme';
 import {
   BinAgg,
   BrushAxis,
-  DEFAULT_SETTINGS_SPEC,
   DEFAULT_TOOLTIP_CONFIG,
   Direction,
   PointerEventType,
   PointerUpdateTrigger,
   TooltipType,
+  settingsBuildProps,
 } from './constants';
 
 /** @public */
@@ -148,6 +151,9 @@ export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
 
 /** @public */
+export type ProjectionAreaChangeListener = (areas: { projection: Dimensions; parent: Dimensions }) => void;
+
+/** @public */
 export type HeatmapBrushEvent = {
   cells: Cell[];
   x: (string | number)[];
@@ -174,7 +180,7 @@ export type BasicListener = () => undefined | void;
 /** @public */
 export type RectAnnotationEvent = { id: SpecId; datum: RectAnnotationDatum };
 /** @public */
-export type LineAnnotationEvent = { id: SpecId; datum: LineAnnotationDatum };
+export type LineAnnotationEvent = { id: SpecId; datum: LineAnnotationDatum<any> };
 /** @public */
 export type AnnotationClickListener = (annotations: {
   rects: RectAnnotationEvent[];
@@ -215,7 +221,7 @@ export type PointerEvent = PointerOverEvent | PointerOutEvent;
  * This interface describe the properties of single value shown in the tooltip
  * @public
  */
-export interface TooltipValue {
+export interface TooltipValue<D extends BaseDatum = Datum> {
   /**
    * The label of the tooltip value
    */
@@ -255,13 +261,13 @@ export interface TooltipValue {
   /**
    * The accessor linked to the current tooltip value
    */
-  valueAccessor?: Accessor;
+  valueAccessor?: Accessor<D>;
 
   /**
    * The datum associated with the current tooltip value
    * Maybe not available
    */
-  datum?: unknown;
+  datum?: D;
 }
 
 /**
@@ -537,6 +543,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
   onBrushEnd?: BrushEndListener;
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
+  onProjectionAreaChange?: ProjectionAreaChangeListener;
   xDomain?: CustomXDomain;
   /**
    * allows user to set a click handler to the annotations
@@ -678,40 +685,26 @@ export interface OrderBy {
   direction?: Direction;
 }
 
-/** @public */
-export type DefaultSettingsProps =
-  | 'id'
-  | 'chartType'
-  | 'specType'
-  | 'rendering'
-  | 'rotation'
-  | 'resizeDebounce'
-  | 'pointerUpdateDebounce'
-  | 'pointerUpdateTrigger'
-  | 'animateData'
-  | 'debug'
-  | 'tooltip'
-  | 'theme'
-  | 'brushAxis'
-  | 'minBrushDelta'
-  | 'externalPointerEvents'
-  | 'showLegend'
-  | 'showLegendExtra'
-  | 'legendPosition'
-  | 'legendMaxDepth'
-  | 'legendSize'
-  | 'ariaUseDefaultSummary'
-  | 'ariaLabelHeadingLevel'
-  | 'ariaTableCaption'
-  | 'allowBrushingLastHistogramBin';
+/**
+ * Adds settings spec to chart specs
+ * @public
+ */
+export const Settings = function (
+  props: SFProps<
+    SettingsSpec,
+    keyof typeof settingsBuildProps['overrides'],
+    keyof typeof settingsBuildProps['defaults'],
+    keyof typeof settingsBuildProps['optionals'],
+    keyof typeof settingsBuildProps['requires']
+  >,
+) {
+  const { defaults, overrides } = settingsBuildProps;
+  useSpecFactory<SettingsSpec>({ ...defaults, ...stripUndefined(props), ...overrides });
+  return null;
+};
 
 /** @public */
-export type SettingsSpecProps = Partial<Omit<SettingsSpec, 'chartType' | 'specType' | 'id'>>;
-
-/** @public */
-export const Settings: React.FunctionComponent<SettingsSpecProps> = getConnect()(
-  specComponentFactory<SettingsSpec, DefaultSettingsProps>(DEFAULT_SETTINGS_SPEC),
-);
+export type SettingsProps = ComponentProps<typeof Settings>;
 
 /** @internal */
 export function isPointerOutEvent(event: PointerEvent | null | undefined): event is PointerOutEvent {

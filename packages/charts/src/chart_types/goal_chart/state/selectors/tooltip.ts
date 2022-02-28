@@ -30,6 +30,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
     if (!spec) {
       return EMPTY_TOOLTIP;
     }
+    const { tooltipValueFormatter, id } = spec;
 
     const tooltipInfo: TooltipInfo = {
       header: null,
@@ -43,11 +44,11 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
         isHighlighted: false,
         isVisible: true,
         seriesIdentifier: {
-          specId: spec.id,
-          key: spec.id,
+          specId: id,
+          key: id,
         },
         value,
-        formattedValue: `${value}`,
+        formattedValue: tooltipValueFormatter(value),
         datum: value,
       });
     });

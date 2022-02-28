@@ -13,13 +13,12 @@ import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
-import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
-import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
-import { clamp } from '../../../../utils/common';
-import { Dimensions, horizontalPad, innerPad, pad } from '../../../../utils/dimensions';
+import { clamp, Datum } from '../../../../utils/common';
+import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
@@ -34,6 +33,7 @@ import {
   ShapeViewModel,
   TextBox,
 } from '../types/viewmodel_types';
+import { BaseDatum } from './../../../xy_chart/utils/specs';
 
 /** @public */
 export interface HeatmapCellDatum {
@@ -53,34 +53,10 @@ function getValuesInRange(
   return values.slice(startIndex, endIndex);
 }
 
-function estimatedNonOverlappingTickCount(
-  chartWidth: number,
-  formatter: HeatmapSpec['xAxisLabelFormatter'],
-  style: HeatmapStyle['xAxisLabel'],
-): number {
-  return withTextMeasure((textMeasure) => {
-    const labelSample = formatter(Date.now());
-    const { width } = textMeasure(
-      labelSample,
-      {
-        fontFamily: style.fontFamily,
-        fontWeight: style.fontWeight,
-        fontVariant: style.fontVariant,
-        fontStyle: style.fontStyle,
-      },
-      style.fontSize,
-    );
-    const maxTicks = chartWidth / (width + horizontalPad(style.padding));
-    // Dividing by 2 is a temp fix to make sure {@link ScaleContinuous} won't produce
-    // to many ticks creating nice rounded tick values
-    // TODO add support for limiting the number of tick in {@link ScaleContinuous}
-    return Math.floor(maxTicks / 2);
-  });
-}
 /** @internal */
-export function shapeViewModel(
+export function shapeViewModel<D extends BaseDatum = Datum>(
   textMeasure: TextMeasure,
-  spec: HeatmapSpec,
+  spec: HeatmapSpec<D>,
   { heatmap: heatmapTheme, axes: { axisTitle }, background }: Theme,
   elementSizes: ChartElementSizes,
   heatmapTable: HeatmapTable,
@@ -125,7 +101,7 @@ export function shapeViewModel(
   const currentGridHeight = elementSizes.grid.height;
 
   // compute the position of each column label
-  const textXValues = getXTicks(spec, heatmapTheme, elementSizes.grid, xScale, heatmapTable);
+  const textXValues = getXTicks(spec, heatmapTheme.xAxisLabel, xScale, heatmapTable.xValues);
 
   const { padding } = heatmapTheme.yAxisLabel;
 
@@ -136,6 +112,7 @@ export function shapeViewModel(
       // position of the Y labels
       x: -pad(padding, 'right'),
       y: cellHeight / 2 + (yScale(d.value) || 0),
+      align: 'right',
     };
   });
 
@@ -337,20 +314,23 @@ export function shapeViewModel(
     return pickHighlightedArea(area.x, area.y);
   };
 
-  // vertical lines
-  const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => ({
-    x1: elementSizes.grid.left + i * cellWidth,
-    x2: elementSizes.grid.left + i * cellWidth,
-    y1: elementSizes.grid.top,
-    y2: currentGridHeight,
-  }));
+  // ordered left-right vertical lines
+  const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => {
+    const xAxisExtension = i % elementSizes.xAxisTickCadence === 0 ? 5 : 0;
+    return {
+      x1: elementSizes.grid.left + i * cellWidth,
+      x2: elementSizes.grid.left + i * cellWidth,
+      y1: elementSizes.grid.top,
+      y2: currentGridHeight + xAxisExtension,
+    };
+  });
 
   // horizontal lines
   const yLines = Array.from({ length: elementSizes.visibleNumberOfRows + 1 }, (d, i) => ({
     x1: elementSizes.grid.left,
     x2: elementSizes.grid.left + elementSizes.grid.width,
-    y1: i * cellHeight,
-    y2: i * cellHeight,
+    y1: elementSizes.grid.top + i * cellHeight,
+    y2: elementSizes.grid.top + i * cellHeight,
   }));
 
   const cells = Object.values(cellMap);
@@ -434,44 +414,21 @@ export function isRasterTimeScale(scale: RasterTimeScale | OrdinalScale | Linear
 
 function getXTicks(
   spec: HeatmapSpec,
-  style: HeatmapStyle,
-  grid: Dimensions,
-  xScale: ScaleBand<string | number>,
-  { xValues, xNumericExtent }: HeatmapTable,
+  style: HeatmapStyle['xAxisLabel'],
+  scale: ScaleBand<string | number>,
+  values: NonNullable<PrimitiveValue>[],
 ): Array<TextBox> {
-  const getTextValue = (
-    formatter: HeatmapSpec['xAxisLabelFormatter'],
-    scaleCallback: (x: string | number) => number | undefined | null,
-  ) => (value: string | number): TextBox => {
+  const isTimeScale = isRasterTimeScale(spec.xScale);
+  const isRotated = style.rotation !== 0;
+  return values.map<TextBox>((value) => {
     return {
-      text: formatter(value),
+      text: spec.xAxisLabelFormatter(value),
       value,
       isValue: false,
-      ...style.xAxisLabel,
-      x: scaleCallback(value) ?? 0,
-      y: style.xAxisLabel.fontSize / 2 + pad(style.xAxisLabel.padding, 'top'),
-    };
-  };
-  if (isRasterTimeScale(spec.xScale)) {
-    const timeScale = new ScaleContinuous(
-      {
-        type: ScaleType.Time,
-        domain: xNumericExtent,
-        range: [0, grid.width],
-        nice: false,
-      },
-      {
-        desiredTickCount: estimatedNonOverlappingTickCount(grid.width, spec.xAxisLabelFormatter, style.xAxisLabel),
-        timeZone: spec.timeZone,
-      },
-    );
-    return timeScale.ticks().map<TextBox>(getTextValue(spec.xAxisLabelFormatter, (x) => timeScale.scale(x)));
-  }
-
-  return xValues.map<TextBox>((textBox: string | number) => {
-    return {
-      ...getTextValue(spec.xAxisLabelFormatter, xScale)(textBox),
-      x: (xScale(textBox) || 0) + xScale.bandwidth() / 2,
+      ...style,
+      y: style.fontSize / 2 + pad(style.padding, 'top'),
+      x: (scale(value) ?? 0) + (isTimeScale ? 0 : scale.bandwidth() / 2),
+      align: isRotated ? 'right' : isTimeScale ? 'left' : 'center',
     };
   });
 }

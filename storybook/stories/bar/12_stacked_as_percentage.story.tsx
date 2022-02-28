@@ -33,27 +33,37 @@ export const Example = () => {
   const stackMode = modes === 'stackAsPercentage' ? StackMode.Percentage : undefined;
 
   const originalData = [
-    { x: 'pos/neg', y: -10, g: 'a' },
-    { x: 'pos/neg', y: 10, g: 'b' },
+    { x: 'pos/neg', y: -10, y2: 10, g: 'a' },
+    { x: 'pos/neg', y: 10, y2: 10, g: 'b' },
 
-    { x: 'zero/zero', y: 0, g: 'a' },
-    { x: 'zero/zero', y: 0, g: 'b' },
+    { x: 'zero/zero', y: 0, y2: 10, g: 'a' },
+    { x: 'zero/zero', y: 0, y2: 10, g: 'b' },
 
-    { x: 'zero/pos', y: 0, g: 'a' },
-    { x: 'zero/pos', y: 10, g: 'b' },
+    { x: 'zero/pos', y: 0, y2: 10, g: 'a' },
+    { x: 'zero/pos', y: 10, y2: 10, g: 'b' },
 
-    { x: 'null/pos', y: null, g: 'a' },
-    { x: 'null/pos', y: 10, g: 'b' },
+    { x: 'null/pos', y: null, y2: 10, g: 'a' },
+    { x: 'null/pos', y: 10, y2: 10, g: 'b' },
 
-    { x: 'pos/pos', y: 2, g: 'a' },
-    { x: 'pos/pos', y: 8, g: 'b' },
+    { x: 'pos/pos', y: 2, y2: 10, g: 'a' },
+    { x: 'pos/pos', y: 8, y2: 10, g: 'b' },
 
-    { x: 'neg/neg', y: -2, g: 'a' },
-    { x: 'neg/neg', y: -8, g: 'b' },
+    { x: 'neg/neg', y: -2, y2: 10, g: 'a' },
+    { x: 'neg/neg', y: -8, y2: 10, g: 'b' },
   ];
 
+  const useMultipleY = boolean('use multiple Y accessors', false);
   const data = boolean('use computeRatioByGroups fn', false)
-    ? computeRatioByGroups(originalData, ['x'], (d) => d.y, 'y')
+    ? computeRatioByGroups(
+        originalData,
+        ['x'],
+        useMultipleY
+          ? [
+              [(d) => d.y, (d, v) => ({ ...d, y: v })],
+              [(d) => d.y2, (d, v) => ({ ...d, y2: v })],
+            ]
+          : [[(d) => d.y, (d, v) => ({ ...d, y: v })]],
+      )
     : originalData;
 
   return (
@@ -75,7 +85,7 @@ export const Example = () => {
         xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
-        yAccessors={['y']}
+        yAccessors={useMultipleY ? ['y', 'y2'] : ['y']}
         stackAccessors={stack}
         stackMode={stack && stackMode}
         splitSeriesAccessors={['g']}

@@ -328,16 +328,14 @@ export const DARK_THEME: Theme = {
 
     xAxisLabel: {
       visible: true,
-      width: 'auto',
       fontSize: 12,
       fontFamily: 'Sans-Serif',
       fontStyle: 'normal',
       textColor: Colors.White.keyword,
       fontVariant: 'normal',
       fontWeight: 'normal',
-      align: 'center',
-      baseline: 'middle',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
+      rotation: 0,
     },
     yAxisLabel: {
       visible: true,
@@ -348,7 +346,6 @@ export const DARK_THEME: Theme = {
       textColor: Colors.White.keyword,
       fontVariant: 'normal',
       fontWeight: 'normal',
-      baseline: 'middle',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
     },
     grid: {

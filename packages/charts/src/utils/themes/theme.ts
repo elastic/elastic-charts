@@ -10,7 +10,7 @@ import { $Values } from 'utility-types';
 
 import { Color } from '../../common/colors';
 import { Pixels, Ratio } from '../../common/geometry';
-import { Font, FontStyle, TextAlign, TextBaseline } from '../../common/text_utils';
+import { Font, FontStyle } from '../../common/text_utils';
 import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, Padding, SimplePadding } from '../dimensions';
 import { Point } from '../point';
@@ -213,16 +213,17 @@ export interface HeatmapStyle {
   };
   xAxisLabel: Font & {
     fontSize: Pixels;
-    width: Pixels | 'auto';
-    align: TextAlign;
-    baseline: TextBaseline;
     visible: boolean;
     padding: Pixels | Padding;
+    /**
+     * Positive 0 - 90 degree angle
+     * @defaultValue 0
+     */
+    rotation: number;
   };
   yAxisLabel: Font & {
     fontSize: Pixels;
     width: Pixels | 'auto' | { max: Pixels };
-    baseline: TextBaseline;
     visible: boolean;
     padding: Pixels | Padding;
   };

@@ -53,6 +53,7 @@ export const Example = () => {
       <BarSeries
         id="bars"
         data={BARCHART_1Y0G_LINEAR}
+        xAccessor="x"
         yAccessors={['y']}
         xScaleType={ScaleType.Linear}
         displayValueSettings={{ showValueLabel: true }}

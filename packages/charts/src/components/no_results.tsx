@@ -8,10 +8,10 @@
 
 import React, { FC, Suspense } from 'react';
 
-import { SettingsSpecProps } from '../specs';
+import { SettingsProps } from '../specs';
 
 interface NoResultsProps {
-  renderFn?: SettingsSpecProps['noResults'];
+  renderFn?: SettingsProps['noResults'];
 }
 
 /** @internal */

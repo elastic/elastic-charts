@@ -39,7 +39,7 @@ const SCALES = {
 const defaultScaleOptions: ScaleOptions = {
   bandwidth: 0,
   minInterval: 0,
-  timeZone: 'utc',
+  timeZone: 'local',
   totalBarsInCluster: 1,
   barsPadding: 0,
   constrainDomainPadding: true,
@@ -289,7 +289,10 @@ function getPixelPaddedDomain(
   const orderedDomain: [number, number] = inverted ? [domain[1], domain[0]] : domain;
   const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
     orderedDomain,
-    [2 * desiredPixelPadding, 2 * desiredPixelPadding],
+    [
+      [desiredPixelPadding, desiredPixelPadding],
+      [desiredPixelPadding, desiredPixelPadding],
+    ],
     chartHeight,
   );
   const baselinePaddedDomainLo = orderedDomain[0] - desiredPixelPadding / scaleMultiplier;
@@ -301,14 +304,26 @@ function getPixelPaddedDomain(
     : crossAbove
     ? orderedDomain[0] -
       desiredPixelPadding /
-        screenspaceMarkerScaleCompressor([orderedDomain[0], intercept], [2 * desiredPixelPadding, 0], chartHeight)
-          .scaleMultiplier
+        screenspaceMarkerScaleCompressor(
+          [orderedDomain[0], intercept],
+          [
+            [desiredPixelPadding, desiredPixelPadding],
+            [0, 0],
+          ],
+          chartHeight,
+        ).scaleMultiplier
     : baselinePaddedDomainLo;
   const paddedDomainHigh = crossBelow
     ? orderedDomain[1] +
       desiredPixelPadding /
-        screenspaceMarkerScaleCompressor([intercept, orderedDomain[1]], [0, 2 * desiredPixelPadding], chartHeight)
-          .scaleMultiplier
+        screenspaceMarkerScaleCompressor(
+          [intercept, orderedDomain[1]],
+          [
+            [0, 0],
+            [desiredPixelPadding, desiredPixelPadding],
+          ],
+          chartHeight,
+        ).scaleMultiplier
     : crossAbove
     ? intercept
     : baselinePaddedDomainHigh;
@@ -349,7 +364,7 @@ type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
   /**
    * A time zone identifier. Can be any IANA zone supported by he host environment,
    * or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
-   * @defaultValue `utc`
+   * @defaultValue `local`
    */
   timeZone: string;
   /**

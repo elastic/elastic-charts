@@ -9,11 +9,9 @@
 import { action } from '@storybook/addon-actions';
 import { boolean, button } from '@storybook/addon-knobs';
 import React, { useCallback, useMemo, useState } from 'react';
-import { debounce } from 'ts-debounce';
 
 import {
   Chart,
-  DebugState,
   ElementClickListener,
   Heatmap,
   HeatmapBrushEvent,
@@ -27,6 +25,7 @@ import {
 
 import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
 import { useBaseTheme } from '../../use_base_theme';
+import { getDebugStateLogger } from '../utils/debug_state_logger';
 
 export const Example = () => {
   const [selection, setSelection] = useState<{ x: (string | number)[]; y: (string | number)[] } | undefined>();
@@ -35,8 +34,6 @@ export const Example = () => {
   const debugState = boolean('Enable debug state', true);
   const showXAxisTitle = boolean('Show x axis title', false);
   const showYAxisTitle = boolean('Show y axis title', false);
-
-  const dataStateAction = action('DataState');
 
   const handler = useCallback(() => {
     setSelection(undefined);
@@ -79,19 +76,6 @@ export const Example = () => {
     return styles;
   }, []);
 
-  const logDebugState = debounce(() => {
-    if (!debugState) return;
-
-    const statusEl = document.querySelector<HTMLDivElement>('.echChartStatus');
-
-    if (statusEl) {
-      const dataState = statusEl.dataset.echDebugState
-        ? (JSON.parse(statusEl.dataset.echDebugState) as DebugState)
-        : null;
-      dataStateAction(dataState);
-    }
-  }, 100);
-
   const onElementClick: ElementClickListener = useCallback((e) => {
     const cell = (e as HeatmapElementEvent[])[0][0];
     setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
@@ -103,7 +87,7 @@ export const Example = () => {
     <Chart>
       <Settings
         onElementClick={onElementClick}
-        onRenderChange={logDebugState}
+        onRenderChange={getDebugStateLogger(debugState)}
         showLegend
         legendPosition="right"
         brushAxis="both"

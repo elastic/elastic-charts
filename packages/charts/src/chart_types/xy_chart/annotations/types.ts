@@ -39,7 +39,7 @@ export interface AnnotationDetails {
  *
  * @public
  */
-export type ComponentWithAnnotationDatum = ComponentType<LineAnnotationDatum>;
+export type ComponentWithAnnotationDatum<D = any> = ComponentType<LineAnnotationDatum<D>>;
 
 /**
  * The marker for an Annotation. Usually a JSX element

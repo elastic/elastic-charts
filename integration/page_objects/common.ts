@@ -167,8 +167,8 @@ class CommonPage {
    *
    * @param selector
    */
-  async getBoundingClientRect(selector: string) {
-    return await page.$eval(selector, (element) => {
+  getBoundingClientRect(selector: string) {
+    return page.$eval(selector, (element) => {
       const { x, y, width, height } = element.getBoundingClientRect();
       return { left: x, top: y, width, height, id: element.id };
     });

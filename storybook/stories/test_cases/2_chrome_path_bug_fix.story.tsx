@@ -76,6 +76,8 @@ export const Example = () => {
         xScaleType="time"
         yScaleType={ScaleType.Linear}
         stackAccessors={['yes']}
+        xAccessor="x"
+        yAccessors={['y']}
         splitSeriesAccessors={['g']}
         data={data}
       />

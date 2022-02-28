@@ -27,7 +27,7 @@ export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
       return { width: 0, height: fontSize * lineHeight };
     }
     ctx.font = cssFontShorthand(font, fontSize);
-    const { actualBoundingBoxLeft, actualBoundingBoxRight } = ctx.measureText(text);
-    return { width: actualBoundingBoxLeft + actualBoundingBoxRight, height: fontSize * lineHeight };
+    const { width } = ctx.measureText(text);
+    return { width, height: fontSize * lineHeight };
   };
 }

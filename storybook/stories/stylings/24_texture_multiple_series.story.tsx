@@ -144,6 +144,8 @@ export const Example = () => {
               texture: getTexture(random),
             },
           }}
+          xAccessor="x"
+          yAccessors={['y']}
           color={chartColor}
           stackAccessors={['yes']}
           data={data[i]}

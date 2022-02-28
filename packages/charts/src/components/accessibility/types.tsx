@@ -31,7 +31,7 @@ export function ScreenReaderTypes({
     <dl>
       <dt>Chart type:</dt>
       <dd id={defaultSummaryId}>{chartTypeDescription}</dd>
-      {validGoalChart && goalChartData ? (
+      {validGoalChart && goalChartData && !isNaN(goalChartData.maximum) ? (
         <>
           <dt>Minimum:</dt>
           <dd>{goalChartData.minimum}</dd>
