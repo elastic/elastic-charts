@@ -22,13 +22,14 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { ArrayEntry } from '../../../packages/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
 import { useBaseTheme } from '../../use_base_theme';
-import { colorBrewerCategoricalStark9, discreteColor, productLookup } from '../utils/utils';
+import { colorBrewerCategoricalStark9, discreteColor } from '../utils/utils';
 
 export const Example = () => {
   const showDebug = boolean('show table for debugging', false);
   const ascendingSort = boolean('ascending sort', false);
   // this is used to test the sorting capabilities
   const data = mocks.pie.slice(0, 4).sort(() => (Math.random() > 0.5 ? 1 : -1));
+  const names: Record<string, string> = { '7': 'Al', '3': 'Au', '5': 'Ag', '8': 'Cu' };
   return (
     <Chart className="story-chart">
       <Settings
@@ -51,7 +52,7 @@ export const Example = () => {
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,
-            nodeLabel: (d: Datum) => productLookup[d].name,
+            nodeLabel: (d: Datum) => names[d],
             shape: {
               fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9.slice(1))(d.sortIndex),
             },
