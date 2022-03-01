@@ -8,6 +8,7 @@
 
 import { Scale, ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
+import { isContinuousScale } from '../../../../scales/types';
 import { AxisSpec, SettingsSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
@@ -72,9 +73,9 @@ export function generateTicks(
   showGrid: boolean,
 ): AxisTick[] {
   const getDirection = getDirectionFn(scale);
+  const isContinuous = isContinuousScale(scale);
   return ticks.map<AxisTick>((value) => {
-    const domainClampedValue =
-      typeof value === 'number' && typeof scale.domain[0] === 'number' ? Math.max(scale.domain[0], value) : value;
+    const domainClampedValue = isContinuous && typeof value === 'number' ? Math.max(value, scale.domain[0]) : value;
     const label = labelFormatter(value);
     return {
       value,
