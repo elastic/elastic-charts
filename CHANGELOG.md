@@ -1,3 +1,26 @@
+# [44.0.0](https://github.com/elastic/elastic-charts/compare/v43.1.1...v44.0.0) (2022-03-01)
+
+
+### Bug Fixes
+
+* **axis:** correct tick alignment in ordinal scale with numeric values ([#1609](https://github.com/elastic/elastic-charts/issues/1609)) ([915349d](https://github.com/elastic/elastic-charts/commit/915349d21e1bb75a0a8522ed6fdadfdfa9c3910d))
+* **legend:** width with duplicate nested pie slice labels ([#1585](https://github.com/elastic/elastic-charts/issues/1585)) ([1073231](https://github.com/elastic/elastic-charts/commit/10732310feaf311803ced0ec626610d8c2401419))
+* **partition:** consider legend extras when computing the legend size ([#1611](https://github.com/elastic/elastic-charts/issues/1611)) ([2078f3d](https://github.com/elastic/elastic-charts/commit/2078f3db6ba6fa1270ec8ebc06fcbc21044814d6))
+* **xy:** dataIndex keeps original data order on small multiples ([#1597](https://github.com/elastic/elastic-charts/issues/1597)) ([9e2566c](https://github.com/elastic/elastic-charts/commit/9e2566cc9ae057e33a05b65093ba039acbe48442))
+
+
+### Features
+
+* **api:** expose Predicate enum ([#1574](https://github.com/elastic/elastic-charts/issues/1574)) ([1f73eec](https://github.com/elastic/elastic-charts/commit/1f73eecca590e6115f1b315148a890032447e8eb))
+* **heatmap:** allow rotation of x axis labels ([#1514](https://github.com/elastic/elastic-charts/issues/1514)) ([b655156](https://github.com/elastic/elastic-charts/commit/b655156911710d2ef8e18c8dbff836030e5df175))
+
+
+### BREAKING CHANGES
+
+* **heatmap:** `width`, `align`, and `baseline` style properties are removed from the `xAxisLabels` and `yAxisLabels` style of the Heatmap theme.
+
+Co-authored-by: Marco Vettorello <vettorello.marco@gmail.com>
+
 ## [43.1.1](https://github.com/elastic/elastic-charts/compare/v43.1.0...v43.1.1) (2022-01-26)
 
 
