@@ -30,7 +30,7 @@ import '@elastic/charts/dist/theme_light.css';
 import '@elastic/charts/dist/theme_dark.css';
 ```
 
-If using Elastic Charts in a project that already uses [EUI](https://github.com/elastic/eui) or some other styling library, will want to import the **theme only** files.
+If using Elastic Charts in a project that already uses [EUI](https://github.com/elastic/eui) or some other styling library, you should import the **theme only** files.
 
 ```js
 import '@elastic/charts/dist/theme_only_light.css';
