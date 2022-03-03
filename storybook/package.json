@@ -35,7 +35,7 @@
     "@storybook/source-loader": "^6.3.7",
     "@storybook/theming": "^6.3.7",
     "circular-dependency-plugin": "^5.2.2",
-    "sass": "~1.32.0",
+    "sass": "^1.49.9",
     "sass-loader": "^10.1.1",
     "storybook-addon-theme-toggle": "^0.0.1",
     "storybook-addon-background-toggle": "^0.0.1",
