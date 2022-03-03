@@ -17,16 +17,16 @@ interface EchPalette {
 
 const echPaletteColorBlind: EchPalette = {
   colors: [
-    '#1EA593',
-    '#2B70F7',
-    '#CE0060',
-    '#38007E',
-    '#FCA5D3',
-    '#F37020',
-    '#E49E29',
-    '#B0916F',
-    '#7B000B',
-    '#34130C',
+    '#54B399',
+    '#6092C0',
+    '#D36086',
+    '#9170B8',
+    '#CA8EAE',
+    '#D6BF57',
+    '#B9A888',
+    '#DA8B45',
+    '#AA6556',
+    '#E7664C',
   ],
 };
 
@@ -40,16 +40,16 @@ const echPaletteForDarkBackground: EchPalette = {
 
 const echPaletteForStatus: EchPalette = {
   colors: [
-    '#58BA6D',
-    '#6ECE67',
-    '#A5E26A',
-    '#D2E26A',
-    '#EBDF61',
-    '#EBD361',
-    '#EBC461',
-    '#D99D4C',
-    '#D97E4C',
-    '#D75949',
+    '#209280',
+    '#359F8A',
+    '#4AAC94',
+    '#6EB58C',
+    '#A2BA71',
+    '#DD9B53',
+    '#E4784E',
+    '#E2634A',
+    '#D75C46',
+    '#CC5642',
   ],
 };
 

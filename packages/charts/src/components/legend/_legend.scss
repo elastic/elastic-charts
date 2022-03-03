@@ -2,6 +2,10 @@
   .echLegendList {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    padding-inline-start: 0;
+    padding-inline-end: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
   }
   &--horizontal {
     .echLegendList {
@@ -34,7 +38,7 @@
     overflow-x: hidden;
 
     :focus {
-      @include euiFocusRing;
+      @include euiFocusRing(null, 1);
       background-color: $euiFocusBackgroundColor;
       border-radius: $euiBorderRadius / 2;
     }

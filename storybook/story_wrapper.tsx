@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { EuiMarkdownFormat, EuiFlexGroup, EuiFlexItem, EuiHorizontalRule, EuiText } from '@elastic/eui';
+import { EuiProvider, EuiMarkdownFormat, EuiFlexGroup, EuiFlexItem, EuiHorizontalRule, EuiText } from '@elastic/eui';
 import { DecoratorFunction } from '@storybook/addons';
 import React from 'react';
 
@@ -18,42 +18,45 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
   const themeId = context.globals?.theme ?? ThemeId.Light;
   const backgroundId = context.globals?.background;
   const markdown = context?.parameters?.markdown;
+  const colorMode = themeId.includes('light') ? 'light' : 'dark';
 
   return (
-    <ThemeIdProvider value={themeId}>
-      <BackgroundIdProvider value={backgroundId}>
-        <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
-          <EuiFlexItem id="story-header" grow={false}>
-            <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
-              <EuiFlexItem>
-                <EuiText>
-                  <h1 style={{ fontWeight: 200 }}>{context.kind}</h1>
-                </EuiText>
-              </EuiFlexItem>
+    <EuiProvider colorMode={colorMode}>
+      <ThemeIdProvider value={themeId}>
+        <BackgroundIdProvider value={backgroundId}>
+          <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
+            <EuiFlexItem id="story-header" grow={false}>
+              <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
+                <EuiFlexItem>
+                  <EuiText>
+                    <h1 style={{ fontWeight: 200 }}>{context.kind}</h1>
+                  </EuiText>
+                </EuiFlexItem>
 
-              <EuiFlexItem>
-                <EuiText>
-                  <h2 style={{ fontWeight: 400 }}>{context.name}</h2>
-                </EuiText>
-              </EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiText>
+                    <h2 style={{ fontWeight: 400 }}>{context.name}</h2>
+                  </EuiText>
+                </EuiFlexItem>
 
-              <EuiHorizontalRule />
-            </EuiFlexGroup>
-          </EuiFlexItem>
-
-          <EuiFlexItem grow={false}>
-            <div id="story-root">
-              <Story {...context} />
-            </div>
-          </EuiFlexItem>
-
-          {markdown && (
-            <EuiFlexItem style={{ padding: 24 }}>
-              <EuiMarkdownFormat>{markdown}</EuiMarkdownFormat>
+                <EuiHorizontalRule />
+              </EuiFlexGroup>
             </EuiFlexItem>
-          )}
-        </EuiFlexGroup>
-      </BackgroundIdProvider>
-    </ThemeIdProvider>
+
+            <EuiFlexItem grow={false}>
+              <div id="story-root">
+                <Story {...context} />
+              </div>
+            </EuiFlexItem>
+
+            {markdown && (
+              <EuiFlexItem style={{ padding: 24 }}>
+                <EuiMarkdownFormat>{markdown}</EuiMarkdownFormat>
+              </EuiFlexItem>
+            )}
+          </EuiFlexGroup>
+        </BackgroundIdProvider>
+      </ThemeIdProvider>
+    </EuiProvider>
   );
 };

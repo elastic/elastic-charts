@@ -44,6 +44,7 @@ ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElemen
 function pageTemplate(imports, routes, urls) {
   return `
 import React, { Suspense } from 'react';
+import { EuiProvider } from '@elastic/eui';
 import { ThemeIdProvider, BackgroundIdProvider } from '../../storybook/use_base_theme';
 import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
 
@@ -54,6 +55,7 @@ export function VRTPage() {
     setParams,
   } = useGlobalsParameters();
   const urlParams = new URL(window.location.toString()).searchParams;
+  const colorMode = themeId.includes('light') ? 'light' : 'dark';
   ${imports.join('\n  ')}
 
   const path = urlParams.get('path');
@@ -70,13 +72,15 @@ export function VRTPage() {
     </>);
   }
   return (
-    <ThemeIdProvider value={themeId as any}>
-      <BackgroundIdProvider value={backgroundId}>
-        <Suspense fallback={<div>Loading...</div>}>
-          ${routes.join('\n          ')}
-        </Suspense>
-      </BackgroundIdProvider>
-    </ThemeIdProvider>
+    <EuiProvider colorMode={colorMode}>
+      <ThemeIdProvider value={themeId as any}>
+        <BackgroundIdProvider value={backgroundId}>
+          <Suspense fallback={<div>Loading...</div>}>
+            ${routes.join('\n          ')}
+          </Suspense>
+        </BackgroundIdProvider>
+      </ThemeIdProvider>
+    </EuiProvider>
   );
 }
 
