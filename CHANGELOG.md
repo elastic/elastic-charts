@@ -1,3 +1,15 @@
+# [45.0.0](https://github.com/elastic/elastic-charts/compare/v44.0.0...v45.0.0) (2022-03-04)
+
+
+### Features
+
+* **styles:** eui Amsterdam theme ([#1463](https://github.com/elastic/elastic-charts/issues/1463)) ([fea1445](https://github.com/elastic/elastic-charts/commit/fea1445999165cace4a9f812c05e8864baf9c0fc))
+
+
+### BREAKING CHANGES
+
+* **styles:** chart color and style changes
+
 # [44.0.0](https://github.com/elastic/elastic-charts/compare/v43.1.1...v44.0.0) (2022-03-01)
 
 
