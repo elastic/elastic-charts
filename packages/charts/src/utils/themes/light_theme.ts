@@ -221,6 +221,8 @@ export const LIGHT_THEME: Theme = {
   goal: {
     minFontSize: 8,
     maxFontSize: 64,
+    maxCircularSize: 360,
+    maxBulletSize: 500,
     tickLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',

@@ -1012,6 +1012,8 @@ export interface GoalStyles {
     majorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
     // (undocumented)
     majorLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    maxBulletSize: number;
+    maxCircularSize: number;
     // (undocumented)
     maxFontSize: number;
     // (undocumented)

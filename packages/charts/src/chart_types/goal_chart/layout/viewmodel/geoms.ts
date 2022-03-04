@@ -17,8 +17,6 @@ import { GoalSubtype } from '../../specs/constants';
 import { BulletViewModel } from '../types/viewmodel_types';
 import { getSagitta, getMinSagitta } from './utils';
 
-const referenceCircularSizeCap = 360; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space
-const referenceBulletSizeCap = 500; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space
 const barThicknessMinSizeRatio = 1 / 10; // bar thickness is a maximum of this fraction of the smaller graph area size
 const baselineArcThickness = 32; // bar is this thick if there's ample room; no need for greater thickness even if there's a large area
 const baselineBarThickness = 32; // bar is this thick if there's ample room; no need for greater thickness even if there's a large area
@@ -276,7 +274,7 @@ export function geoms(
 
   const referenceSize =
     Math.min(
-      circular ? referenceCircularSizeCap : referenceBulletSizeCap,
+      circular ? theme.maxCircularSize : theme.maxBulletSize,
       circular ? minSize : vertical ? parentDimensions.height : parentDimensions.width,
     ) *
     (1 - 2 * marginRatio);

@@ -187,6 +187,14 @@ export interface GoalStyles {
   minorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
   minFontSize: number;
   maxFontSize: number;
+  /**
+   * Circular goal/gauge size limit. The chart will _NOT_ be bigger even if there's ample room.
+   */
+  maxCircularSize: number;
+  /**
+   * Bullet goal/gauge size limit. The chart will _NOT_ be bigger even if there's ample room.
+   */
+  maxBulletSize: number;
 }
 
 /**
