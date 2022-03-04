@@ -8,3 +8,5 @@
 **/dist/
 coverage/
 **/tmp/
+
+packages/charts/src/_reset.scss
