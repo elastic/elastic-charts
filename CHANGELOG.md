@@ -1,3 +1,10 @@
+## [45.0.1](https://github.com/elastic/elastic-charts/compare/v45.0.0...v45.0.1) (2022-03-04)
+
+
+### Bug Fixes
+
+* **heatmap:** align debug state with the visualized axis labels([#1619](https://github.com/elastic/elastic-charts/issues/1619)) ([8854522](https://github.com/elastic/elastic-charts/commit/88545226de9076a2a41d664e11d90b531a06c885))
+
 # [45.0.0](https://github.com/elastic/elastic-charts/compare/v44.0.0...v45.0.0) (2022-03-04)
 
 
