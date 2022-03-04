@@ -54,7 +54,8 @@ const customConfig = {
           : `yarn test:integration:server --port=${port}`,
         port,
         usedPortAction: 'error',
-        launchTimeout: 200000,
+        // TODO: drop back to 200 after eui pow changes are released
+        launchTimeout: 300 * 1000,
         ...(!isLegacyVRTServer && {
           waitOnScheme: {
             // using localhost as the server is running on the local machine

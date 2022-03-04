@@ -8,19 +8,18 @@
 
 import {
   EuiButton,
-  EuiButtonIcon,
+  EuiButtonEmpty,
   EuiColorPicker,
-  EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
   EuiWrappingPopover,
   PopoverAnchorPosition,
 } from '@elastic/eui';
-import React from 'react';
+import React, { FC } from 'react';
 
-import { LegendColorPicker } from '@elastic/charts';
+import { LegendColorPickerProps } from '@elastic/charts';
 
-export const getColorPicker = (anchorPosition: PopoverAnchorPosition = 'leftCenter'): LegendColorPicker => ({
+export const getColorPicker = (anchorPosition: PopoverAnchorPosition = 'leftCenter'): FC<LegendColorPickerProps> => ({
   anchor,
   color,
   onClose,
@@ -29,30 +28,22 @@ export const getColorPicker = (anchorPosition: PopoverAnchorPosition = 'leftCent
   <EuiWrappingPopover isOpen button={anchor} closePopover={onClose} anchorPosition={anchorPosition} ownFocus>
     <EuiColorPicker display="inline" color={color} onChange={onChange} />
     <EuiSpacer size="m" />
-    <EuiFlexGroup gutterSize="none" alignItems="center" direction="row">
-      <EuiFlexItem grow={false}>
-        <EuiButton size="s" fill onClick={onClose} title="Confirm color selection">
-          Done
-        </EuiButton>
-      </EuiFlexItem>
-
-      <EuiFlexItem>
-        <EuiSpacer size="m" />
-      </EuiFlexItem>
-
-      <EuiFlexItem grow={false}>
-        <EuiButtonIcon
-          display="base"
-          iconType="cross"
-          color="danger"
-          title="Clear color selection"
-          onClick={() => {
-            onChange(null);
-            anchor.focus();
-            onClose();
-          }}
-        />
-      </EuiFlexItem>
-    </EuiFlexGroup>
+    <EuiFlexItem grow={false}>
+      <EuiButtonEmpty
+        color="danger"
+        size="s"
+        onClick={() => {
+          onChange(null);
+          anchor.focus();
+          onClose();
+        }}
+        title="Clear color selection"
+      >
+        Clear color
+      </EuiButtonEmpty>
+    </EuiFlexItem>
+    <EuiButton fullWidth size="s" iconType="check" title="Confirm color selection" onClick={onClose}>
+      Done
+    </EuiButton>
   </EuiWrappingPopover>
 );

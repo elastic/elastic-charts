@@ -22,7 +22,7 @@ yarn add moment-timezone
 
 ### Importing CSS
 
-You need to import a CSS style, related to the theme you are using. You can use Webpack or another bundler to import the compiled CSS style with the `style`,`css`, and `postcss` loaders.
+You __*MUST*__ import CSS styles related to the theme you are using. You may use Webpack or another bundler to import the compiled CSS style with the `style`, `css` and `postcss` loaders.
 
 ```js
 import '@elastic/charts/dist/theme_light.css';
@@ -30,7 +30,7 @@ import '@elastic/charts/dist/theme_light.css';
 import '@elastic/charts/dist/theme_dark.css';
 ```
 
-If using Elastic Charts in a project that already uses [EUI](https://github.com/elastic/eui) or some other styling library, you should import the **theme only** files.
+If using Elastic Charts in a project that already uses [`eui`](https://github.com/elastic/eui) or some other styling library, you should import the **theme only** files, which excludes reset styles.
 
 ```js
 import '@elastic/charts/dist/theme_only_light.css';
@@ -38,12 +38,17 @@ import '@elastic/charts/dist/theme_only_light.css';
 import '@elastic/charts/dist/theme_only_dark.css';
 ```
 
+> Note: `@elastic/charts` does not provide custom reset styles. We use and test using reset styles provided by [`eui`](https://github.com/elastic/eui) via the [`EuiProvider`](https://eui.elastic.co/#/utilities/provider).
+
 If using Elastic Charts in the same project that is already compiling EUI's Sass (like Kibana), you can import the SASS files directly instead of using the CSS. Just be sure to import Elastic Charts Sass files **after** EUI.
 
 ```scss
-@import '~@elastic/eui/src/themes/amsterdam/colors_light';
-@import '~@elastic/eui/src/themes/amsterdam/globals';
-@import '~@elastic/charts/dist/theme';
+@import './node_modules/@elastic/eui/src/themes/amsterdam/colors_light';
+@import './node_modules/@elastic/eui/src/themes/amsterdam/globals';
+
+@import './node_modules/@elastic/charts/theme_light';
+// or
+@import './node_modules/@elastic/charts/theme_dark';
 ```
 
 ## Polyfills

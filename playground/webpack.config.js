@@ -54,7 +54,15 @@ module.exports = {
               },
             },
           },
-          'sass-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                // prevent divider deprecation warning messages
+                quietDeps: true,
+              },
+            },
+          },
         ],
       },
     ],
