@@ -15,21 +15,39 @@ import { round } from '../../../../utils/common';
  */
 const LIMITING_ANGLE = Math.PI / 2;
 
+const hasTopGap = (startAngle: Radian, endAngle: Radian): boolean => {
+  const [a, b] = [startAngle, endAngle].sort();
+  return a <= -Math.PI / 2 && a >= (-Math.PI * 3) / 2 && b >= -Math.PI / 2 && b <= Math.PI / 2;
+};
+
+const hasBottomGap = (startAngle: Radian, endAngle: Radian): boolean => {
+  const [a, b] = [startAngle, endAngle].sort();
+  return a >= -Math.PI / 2 && a <= Math.PI / 2 && b < (Math.PI * 3) / 2 && b >= Math.PI / 2;
+};
+
+const isOnlyTopHalf = (startAngle: Radian, endAngle: Radian): boolean => {
+  const [a, b] = [startAngle, endAngle].sort();
+  return a >= 0 && b <= Math.PI;
+};
+
+const isOnlyBottomHalf = (startAngle: Radian, endAngle: Radian): boolean => {
+  const [a, b] = [startAngle, endAngle].sort();
+  return (a >= Math.PI && b <= 2 * Math.PI) || (a >= -Math.PI && b <= 0);
+};
+
+/** @internal */
+export const getTranformDirection = (startAngle: Radian, endAngle: Radian): 1 | -1 =>
+  hasTopGap(startAngle, endAngle) || isOnlyBottomHalf(startAngle, endAngle) ? -1 : 1;
+
 /**
- * Returns limiting angle form π/2 towards 3/2π from left and right
+ * Returns limiting angle form π/2 towards 3/2π from left and right, top and bottom
  */
-const controllingAngle = (...angles: Radian[]): Radian =>
-  angles.reduce((limitAngle, a) => {
-    if (a >= Math.PI / 2 && a <= (3 / 2) * Math.PI) {
-      const newA = Math.abs(a - Math.PI / 2);
-      return Math.max(limitAngle, newA);
-    }
-    if (a >= -Math.PI / 2 && a <= Math.PI / 2) {
-      const newA = Math.abs(a - Math.PI / 2);
-      return Math.max(limitAngle, newA);
-    }
-    return limitAngle;
-  }, LIMITING_ANGLE);
+const controllingAngle = (startAngle: Radian, endAngle: Radian): number => {
+  if (isOnlyTopHalf(startAngle, endAngle) || isOnlyBottomHalf(startAngle, endAngle)) return LIMITING_ANGLE;
+  if (!hasTopGap(startAngle, endAngle) && !hasBottomGap(startAngle, endAngle)) return LIMITING_ANGLE * 2;
+  const offset = hasBottomGap(startAngle, endAngle) ? -Math.PI / 2 : Math.PI / 2;
+  return Math.max(Math.abs(startAngle + offset), Math.abs(endAngle + offset), LIMITING_ANGLE);
+};
 
 /** @internal */
 export function getSagitta(angle: Radian, radius: number, fractionDigits: number = 1) {
