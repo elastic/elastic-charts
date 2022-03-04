@@ -23,6 +23,7 @@
 html {
   font-size: 14px !important;
   &.light-theme {
+    @import '~@elastic/eui/dist/eui_theme_light';
     @import '~@elastic/charts/src/theme_light';
 
     body,
