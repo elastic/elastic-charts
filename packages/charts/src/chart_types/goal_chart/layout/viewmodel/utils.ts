@@ -35,6 +35,11 @@ const isOnlyBottomHalf = (startAngle: Radian, endAngle: Radian): boolean => {
   return (a >= Math.PI && b <= 2 * Math.PI) || (a >= -Math.PI && b <= 0);
 };
 
+const isWithinLimitedDomain = (startAngle: Radian, endAngle: Radian): boolean => {
+  const [a, b] = [startAngle, endAngle].sort();
+  return a > -2 * Math.PI && b < 2 * Math.PI;
+};
+
 /** @internal */
 export const getTranformDirection = (startAngle: Radian, endAngle: Radian): 1 | -1 =>
   hasTopGap(startAngle, endAngle) || isOnlyBottomHalf(startAngle, endAngle) ? -1 : 1;
@@ -43,6 +48,7 @@ export const getTranformDirection = (startAngle: Radian, endAngle: Radian): 1 | 
  * Returns limiting angle form π/2 towards 3/2π from left and right, top and bottom
  */
 const controllingAngle = (startAngle: Radian, endAngle: Radian): number => {
+  if (!isWithinLimitedDomain(startAngle, endAngle)) return LIMITING_ANGLE * 2;
   if (isOnlyTopHalf(startAngle, endAngle) || isOnlyBottomHalf(startAngle, endAngle)) return LIMITING_ANGLE;
   if (!hasTopGap(startAngle, endAngle) && !hasBottomGap(startAngle, endAngle)) return LIMITING_ANGLE * 2;
   const offset = hasBottomGap(startAngle, endAngle) ? -Math.PI / 2 : Math.PI / 2;
