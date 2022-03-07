@@ -1,4 +1,50 @@
 /**
+The MIT License (MIT)
+
+Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
+/**
+The MIT License (MIT)
+
+Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
+/**
  * 1. Focus rings shouldn't be visible on scrollable regions, but a11y requires them to be focusable.
  *    Browser's supporting `:focus-visible` will still show outline on keyboard focus only.
  *    Others like Safari, won't show anything at all.
@@ -1176,6 +1222,29 @@
 }
 
 /**
+The MIT License (MIT)
+
+Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
+/**
  * 1. Focus rings shouldn't be visible on scrollable regions, but a11y requires them to be focusable.
  *    Browser's supporting `:focus-visible` will still show outline on keyboard focus only.
  *    Others like Safari, won't show anything at all.
@@ -1868,6 +1937,52 @@ svg text {
   background: transparent;
 }
 @charset "UTF-8";
+/**
+The MIT License (MIT)
+
+Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
+/**
+The MIT License (MIT)
+
+Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
 /**
  * 1. Focus rings shouldn't be visible on scrollable regions, but a11y requires them to be focusable.
  *    Browser's supporting `:focus-visible` will still show outline on keyboard focus only.
@@ -9740,6 +9855,7 @@ svg text {
   }
 }
 .euiEmptyPrompt .euiEmptyPrompt__icon > * {
+  flex-shrink: 1;
   max-width: 25.71429rem;
 }
 
@@ -9841,29 +9957,29 @@ svg text {
 }
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
-  .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    padding: 24px 0;
+  .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon {
+    min-width: 40%;
+    max-width: 50%;
   }
 }
 @media only screen and (min-width: 1200px) {
-  .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    padding: 24px 0;
+  .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon {
+    min-width: 40%;
+    max-width: 50%;
   }
 }
-.euiEmptyPrompt--horizontal .euiEmptyPrompt__contentInner {
+.euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
   max-width: 36em;
 }
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
-  .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon,
-.euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    width: 50%;
+  .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
+    padding: 24px 0;
   }
 }
 @media only screen and (min-width: 1200px) {
-  .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon,
-.euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    width: 50%;
+  .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
+    padding: 24px 0;
   }
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -9881,14 +9997,26 @@ svg text {
   padding: 8px;
 }
 
+.euiEmptyPrompt--paddingSmall.euiEmptyPrompt--horizontal .euiEmptyPrompt__main {
+  gap: 8px;
+}
+
 .euiEmptyPrompt--paddingMedium .euiEmptyPrompt__main,
 .euiEmptyPrompt--paddingMedium .euiEmptyPrompt__footer {
   padding: 16px;
 }
 
+.euiEmptyPrompt--paddingMedium.euiEmptyPrompt--horizontal .euiEmptyPrompt__main {
+  gap: 16px;
+}
+
 .euiEmptyPrompt--paddingLarge .euiEmptyPrompt__main,
 .euiEmptyPrompt--paddingLarge .euiEmptyPrompt__footer {
   padding: 24px;
+}
+
+.euiEmptyPrompt--paddingLarge.euiEmptyPrompt--horizontal .euiEmptyPrompt__main {
+  gap: 24px;
 }
 
 .euiErrorBoundary {
@@ -16857,13 +16985,11 @@ button.euiLink {
 .euiLoadingSpinner--small {
   width: 12px;
   height: 12px;
-  border-width: 1px;
 }
 
 .euiLoadingSpinner--medium {
   width: 16px;
   height: 16px;
-  border-width: 1px;
 }
 
 .euiLoadingSpinner--large {
@@ -16874,6 +17000,16 @@ button.euiLink {
 .euiLoadingSpinner--xLarge {
   width: 32px;
   height: 32px;
+}
+
+.euiLoadingSpinner--xxLarge {
+  width: 40px;
+  height: 40px;
+}
+
+.euiLoadingSpinner--small,
+.euiLoadingSpinner--medium {
+  border-width: 1px;
 }
 
 @-webkit-keyframes euiLoadingSpinner {
@@ -17296,6 +17432,14 @@ button.euiLink {
   background-color: transparent;
 }
 
+.euiMarkdownEditorPreview-isReadOnly .euiCheckbox__input ~ .euiCheckbox__label {
+  cursor: default;
+}
+
+.euiMarkdownEditorPreview-isReadOnly .euiCheckbox__input:focus:not(:checked) + .euiCheckbox__square {
+  border-color: #c9cbcd;
+}
+
 .euiMarkdownEditorTextArea {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-weight: 400;
@@ -17364,6 +17508,16 @@ button.euiLink {
   background-color: white;
   background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
   background-size: 100% 100%;
+}
+
+.euiMarkdownEditorTextArea-isReadOnly {
+  background: #FFF;
+  cursor: unset;
+}
+
+.euiMarkdownEditorTextArea-isReadOnly:focus,
+.euiMarkdownEditor:focus-within .euiMarkdownEditorTextArea-isReadOnly {
+  background: none;
 }
 
 .euiMarkdownEditorToolbar {
@@ -20298,12 +20452,15 @@ button.euiLink {
 }
 
 .euiSelectableListItem__text {
+  flex-grow: 1;
+}
+
+.euiSelectableListItem__text--truncate {
   max-width: 100%;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
   word-wrap: normal !important;
-  flex-grow: 1;
 }
 
 /**
@@ -26005,6 +26162,52 @@ html {
 }
 html.light-theme {
   /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
+  /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
+  /**
    * 1. Focus rings shouldn't be visible on scrollable regions, but a11y requires them to be focusable.
    *    Browser's supporting `:focus-visible` will still show outline on keyboard focus only.
    *    Others like Safari, won't show anything at all.
@@ -26365,6 +26568,52 @@ html.light-theme {
    * Footer specific overrides
    */
   /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
+  /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
+  /**
    * 1. Focus rings shouldn't be visible on scrollable regions, but a11y requires them to be focusable.
    *    Browser's supporting `:focus-visible` will still show outline on keyboard focus only.
    *    Others like Safari, won't show anything at all.
@@ -26405,6 +26654,29 @@ html.light-theme {
   ** Similarly, you will also find several times where we use display: none to
   ** completely remove extraneous UI (they had some overly obvious legends for example).
   */
+  /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
   /**
    * 1. Focus rings shouldn't be visible on scrollable regions, but a11y requires them to be focusable.
    *    Browser's supporting `:focus-visible` will still show outline on keyboard focus only.
@@ -32925,6 +33197,7 @@ html.light-theme .euiEmptyPrompt {
   }
 }
 html.light-theme .euiEmptyPrompt .euiEmptyPrompt__icon > * {
+  flex-shrink: 1;
   max-width: 25.71429rem;
 }
 html.light-theme .euiEmptyPrompt.euiPanel--transparent .euiEmptyPrompt__footer {
@@ -33010,28 +33283,28 @@ html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon {
   justify-content: center;
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
-  html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    padding: 24px 0;
+  html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon {
+    min-width: 40%;
+    max-width: 50%;
   }
 }
 @media only screen and (min-width: 1200px) {
-  html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    padding: 24px 0;
+  html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon {
+    min-width: 40%;
+    max-width: 50%;
   }
 }
-html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__contentInner {
+html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
   max-width: 36em;
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
-  html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon,
-html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    width: 50%;
+  html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
+    padding: 24px 0;
   }
 }
 @media only screen and (min-width: 1200px) {
-  html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon,
-html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    width: 50%;
+  html.light-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
+    padding: 24px 0;
   }
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -33048,13 +33321,22 @@ html.light-theme .euiEmptyPrompt--paddingSmall .euiEmptyPrompt__main,
 html.light-theme .euiEmptyPrompt--paddingSmall .euiEmptyPrompt__footer {
   padding: 8px;
 }
+html.light-theme .euiEmptyPrompt--paddingSmall.euiEmptyPrompt--horizontal .euiEmptyPrompt__main {
+  gap: 8px;
+}
 html.light-theme .euiEmptyPrompt--paddingMedium .euiEmptyPrompt__main,
 html.light-theme .euiEmptyPrompt--paddingMedium .euiEmptyPrompt__footer {
   padding: 16px;
 }
+html.light-theme .euiEmptyPrompt--paddingMedium.euiEmptyPrompt--horizontal .euiEmptyPrompt__main {
+  gap: 16px;
+}
 html.light-theme .euiEmptyPrompt--paddingLarge .euiEmptyPrompt__main,
 html.light-theme .euiEmptyPrompt--paddingLarge .euiEmptyPrompt__footer {
   padding: 24px;
+}
+html.light-theme .euiEmptyPrompt--paddingLarge.euiEmptyPrompt--horizontal .euiEmptyPrompt__main {
+  gap: 24px;
 }
 html.light-theme .euiErrorBoundary {
   background: repeating-linear-gradient(45deg, rgba(189, 39, 30, 0.25), rgba(189, 39, 30, 0.25) 1px, rgba(189, 39, 30, 0.05) 1px, rgba(189, 39, 30, 0.05) 20px);
@@ -38765,12 +39047,10 @@ html.light-theme .euiLoadingSpinner {
 html.light-theme .euiLoadingSpinner--small {
   width: 12px;
   height: 12px;
-  border-width: 1px;
 }
 html.light-theme .euiLoadingSpinner--medium {
   width: 16px;
   height: 16px;
-  border-width: 1px;
 }
 html.light-theme .euiLoadingSpinner--large {
   width: 24px;
@@ -38779,6 +39059,14 @@ html.light-theme .euiLoadingSpinner--large {
 html.light-theme .euiLoadingSpinner--xLarge {
   width: 32px;
   height: 32px;
+}
+html.light-theme .euiLoadingSpinner--xxLarge {
+  width: 40px;
+  height: 40px;
+}
+html.light-theme .euiLoadingSpinner--small,
+html.light-theme .euiLoadingSpinner--medium {
+  border-width: 1px;
 }
 @-webkit-keyframes euiLoadingSpinner {
   from {
@@ -39119,6 +39407,12 @@ html.light-theme .euiMarkdownEditorPreview::-webkit-scrollbar-thumb {
 html.light-theme .euiMarkdownEditorPreview::-webkit-scrollbar-corner, html.light-theme .euiMarkdownEditorPreview::-webkit-scrollbar-track {
   background-color: transparent;
 }
+html.light-theme .euiMarkdownEditorPreview-isReadOnly .euiCheckbox__input ~ .euiCheckbox__label {
+  cursor: default;
+}
+html.light-theme .euiMarkdownEditorPreview-isReadOnly .euiCheckbox__input:focus:not(:checked) + .euiCheckbox__square {
+  border-color: #c9cbcd;
+}
 html.light-theme .euiMarkdownEditorTextArea {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-weight: 400;
@@ -39179,6 +39473,14 @@ html.light-theme .euiMarkdownEditor:focus-within .euiMarkdownEditorTextArea {
   background-color: white;
   background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
   background-size: 100% 100%;
+}
+html.light-theme .euiMarkdownEditorTextArea-isReadOnly {
+  background: #FFF;
+  cursor: unset;
+}
+html.light-theme .euiMarkdownEditorTextArea-isReadOnly:focus,
+html.light-theme .euiMarkdownEditor:focus-within .euiMarkdownEditorTextArea-isReadOnly {
+  background: none;
 }
 html.light-theme .euiMarkdownEditorToolbar {
   display: flex;
@@ -41571,12 +41873,14 @@ html.light-theme .euiSelectableListItem__append {
   flex-shrink: 0;
 }
 html.light-theme .euiSelectableListItem__text {
+  flex-grow: 1;
+}
+html.light-theme .euiSelectableListItem__text--truncate {
   max-width: 100%;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
   word-wrap: normal !important;
-  flex-grow: 1;
 }
 html.light-theme .euiSelectableMessage {
   padding: 8px;
@@ -47667,6 +47971,52 @@ html.light-theme .euiText {
 }
 html.dark-theme {
   /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
+  /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
+  /**
    * 1. Focus rings shouldn't be visible on scrollable regions, but a11y requires them to be focusable.
    *    Browser's supporting `:focus-visible` will still show outline on keyboard focus only.
    *    Others like Safari, won't show anything at all.
@@ -48027,6 +48377,52 @@ html.dark-theme {
    * Footer specific overrides
    */
   /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
+  /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
+  /**
    * 1. Focus rings shouldn't be visible on scrollable regions, but a11y requires them to be focusable.
    *    Browser's supporting `:focus-visible` will still show outline on keyboard focus only.
    *    Others like Safari, won't show anything at all.
@@ -48067,6 +48463,29 @@ html.dark-theme {
   ** Similarly, you will also find several times where we use display: none to
   ** completely remove extraneous UI (they had some overly obvious legends for example).
   */
+  /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
   /**
    * 1. Focus rings shouldn't be visible on scrollable regions, but a11y requires them to be focusable.
    *    Browser's supporting `:focus-visible` will still show outline on keyboard focus only.
@@ -54587,6 +55006,7 @@ html.dark-theme .euiEmptyPrompt {
   }
 }
 html.dark-theme .euiEmptyPrompt .euiEmptyPrompt__icon > * {
+  flex-shrink: 1;
   max-width: 25.71429rem;
 }
 html.dark-theme .euiEmptyPrompt.euiPanel--transparent .euiEmptyPrompt__footer {
@@ -54672,28 +55092,28 @@ html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon {
   justify-content: center;
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
-  html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    padding: 24px 0;
+  html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon {
+    min-width: 40%;
+    max-width: 50%;
   }
 }
 @media only screen and (min-width: 1200px) {
-  html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    padding: 24px 0;
+  html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon {
+    min-width: 40%;
+    max-width: 50%;
   }
 }
-html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__contentInner {
+html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
   max-width: 36em;
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
-  html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon,
-html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    width: 50%;
+  html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
+    padding: 24px 0;
   }
 }
 @media only screen and (min-width: 1200px) {
-  html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__icon,
-html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
-    width: 50%;
+  html.dark-theme .euiEmptyPrompt--horizontal .euiEmptyPrompt__content {
+    padding: 24px 0;
   }
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -54710,13 +55130,22 @@ html.dark-theme .euiEmptyPrompt--paddingSmall .euiEmptyPrompt__main,
 html.dark-theme .euiEmptyPrompt--paddingSmall .euiEmptyPrompt__footer {
   padding: 8px;
 }
+html.dark-theme .euiEmptyPrompt--paddingSmall.euiEmptyPrompt--horizontal .euiEmptyPrompt__main {
+  gap: 8px;
+}
 html.dark-theme .euiEmptyPrompt--paddingMedium .euiEmptyPrompt__main,
 html.dark-theme .euiEmptyPrompt--paddingMedium .euiEmptyPrompt__footer {
   padding: 16px;
 }
+html.dark-theme .euiEmptyPrompt--paddingMedium.euiEmptyPrompt--horizontal .euiEmptyPrompt__main {
+  gap: 16px;
+}
 html.dark-theme .euiEmptyPrompt--paddingLarge .euiEmptyPrompt__main,
 html.dark-theme .euiEmptyPrompt--paddingLarge .euiEmptyPrompt__footer {
   padding: 24px;
+}
+html.dark-theme .euiEmptyPrompt--paddingLarge.euiEmptyPrompt--horizontal .euiEmptyPrompt__main {
+  gap: 24px;
 }
 html.dark-theme .euiErrorBoundary {
   background: repeating-linear-gradient(45deg, rgba(248, 107, 99, 0.25), rgba(248, 107, 99, 0.25) 1px, rgba(248, 107, 99, 0.05) 1px, rgba(248, 107, 99, 0.05) 20px);
@@ -60427,12 +60856,10 @@ html.dark-theme .euiLoadingSpinner {
 html.dark-theme .euiLoadingSpinner--small {
   width: 12px;
   height: 12px;
-  border-width: 1px;
 }
 html.dark-theme .euiLoadingSpinner--medium {
   width: 16px;
   height: 16px;
-  border-width: 1px;
 }
 html.dark-theme .euiLoadingSpinner--large {
   width: 24px;
@@ -60441,6 +60868,14 @@ html.dark-theme .euiLoadingSpinner--large {
 html.dark-theme .euiLoadingSpinner--xLarge {
   width: 32px;
   height: 32px;
+}
+html.dark-theme .euiLoadingSpinner--xxLarge {
+  width: 40px;
+  height: 40px;
+}
+html.dark-theme .euiLoadingSpinner--small,
+html.dark-theme .euiLoadingSpinner--medium {
+  border-width: 1px;
 }
 @-webkit-keyframes euiLoadingSpinner {
   from {
@@ -60781,6 +61216,12 @@ html.dark-theme .euiMarkdownEditorPreview::-webkit-scrollbar-thumb {
 html.dark-theme .euiMarkdownEditorPreview::-webkit-scrollbar-corner, html.dark-theme .euiMarkdownEditorPreview::-webkit-scrollbar-track {
   background-color: transparent;
 }
+html.dark-theme .euiMarkdownEditorPreview-isReadOnly .euiCheckbox__input ~ .euiCheckbox__label {
+  cursor: default;
+}
+html.dark-theme .euiMarkdownEditorPreview-isReadOnly .euiCheckbox__input:focus:not(:checked) + .euiCheckbox__square {
+  border-color: #66676d;
+}
 html.dark-theme .euiMarkdownEditorTextArea {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-weight: 400;
@@ -60841,6 +61282,14 @@ html.dark-theme .euiMarkdownEditor:focus-within .euiMarkdownEditorTextArea {
   background-color: #111216;
   background-image: linear-gradient(to top, #36A2EF, #36A2EF 2px, transparent 2px, transparent 100%);
   background-size: 100% 100%;
+}
+html.dark-theme .euiMarkdownEditorTextArea-isReadOnly {
+  background: #1D1E24;
+  cursor: unset;
+}
+html.dark-theme .euiMarkdownEditorTextArea-isReadOnly:focus,
+html.dark-theme .euiMarkdownEditor:focus-within .euiMarkdownEditorTextArea-isReadOnly {
+  background: none;
 }
 html.dark-theme .euiMarkdownEditorToolbar {
   display: flex;
@@ -63233,12 +63682,14 @@ html.dark-theme .euiSelectableListItem__append {
   flex-shrink: 0;
 }
 html.dark-theme .euiSelectableListItem__text {
+  flex-grow: 1;
+}
+html.dark-theme .euiSelectableListItem__text--truncate {
   max-width: 100%;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
   word-wrap: normal !important;
-  flex-grow: 1;
 }
 html.dark-theme .euiSelectableMessage {
   padding: 8px;
@@ -69327,9 +69778,59 @@ html.dark-theme .echChart {
 html.dark-theme .euiText {
   color: #DFE5EF;
 }
+html.eui.dark-theme {
+  /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
+}
 html.eui.dark-theme body,
 html.eui.dark-theme .echChart {
   background: #1D1E24 !important;
+}
+html.eui.light-theme {
+  /**
+  The MIT License (MIT)
+
+  Copyright (c) 2015 strarsis https://github.com/strarsis/sass-math-pow
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+   */
 }
 html.eui.light-theme body,
 html.eui.light-theme .echChart {
