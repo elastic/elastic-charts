@@ -15,26 +15,41 @@ import { round } from '../../../../utils/common';
  */
 const LIMITING_ANGLE = Math.PI / 2;
 
+/**
+ * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ */
 const hasTopGap = (startAngle: Radian, endAngle: Radian): boolean => {
   const [a, b] = [startAngle, endAngle].sort();
   return a <= -Math.PI / 2 && a >= (-Math.PI * 3) / 2 && b >= -Math.PI / 2 && b <= Math.PI / 2;
 };
 
+/**
+ * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ */
 const hasBottomGap = (startAngle: Radian, endAngle: Radian): boolean => {
   const [a, b] = [startAngle, endAngle].sort();
   return a >= -Math.PI / 2 && a <= Math.PI / 2 && b < (Math.PI * 3) / 2 && b >= Math.PI / 2;
 };
 
+/**
+ * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ */
 const isOnlyTopHalf = (startAngle: Radian, endAngle: Radian): boolean => {
   const [a, b] = [startAngle, endAngle].sort();
   return a >= 0 && b <= Math.PI;
 };
 
+/**
+ * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ */
 const isOnlyBottomHalf = (startAngle: Radian, endAngle: Radian): boolean => {
   const [a, b] = [startAngle, endAngle].sort();
   return (a >= Math.PI && b <= 2 * Math.PI) || (a >= -Math.PI && b <= 0);
 };
 
+/**
+ * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ */
 const isWithinLimitedDomain = (startAngle: Radian, endAngle: Radian): boolean => {
   const [a, b] = [startAngle, endAngle].sort();
   return a > -2 * Math.PI && b < 2 * Math.PI;
@@ -46,6 +61,7 @@ export const getTranformDirection = (startAngle: Radian, endAngle: Radian): 1 | 
 
 /**
  * Returns limiting angle form π/2 towards 3/2π from left and right, top and bottom
+ * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
  */
 const controllingAngle = (startAngle: Radian, endAngle: Radian): number => {
   if (!isWithinLimitedDomain(startAngle, endAngle)) return LIMITING_ANGLE * 2;
@@ -55,7 +71,10 @@ const controllingAngle = (startAngle: Radian, endAngle: Radian): number => {
   return Math.max(Math.abs(startAngle + offset), Math.abs(endAngle + offset), LIMITING_ANGLE);
 };
 
-/** @internal */
+/**
+ * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ * @internal
+ */
 export function getSagitta(angle: Radian, radius: number, fractionDigits: number = 1) {
   const arcLength = angle * radius;
   const halfCord = radius * Math.sin(arcLength / (2 * radius));
@@ -64,7 +83,10 @@ export function getSagitta(angle: Radian, radius: number, fractionDigits: number
   return round(sagitta, fractionDigits);
 }
 
-/** @internal */
+/**
+ * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ * @internal
+ */
 export function getMinSagitta(startAngle: Radian, endAngle: Radian, radius: number, fractionDigits?: number) {
   const limitingAngle = controllingAngle(startAngle, endAngle);
   return getSagitta(limitingAngle * 2, radius, fractionDigits);
