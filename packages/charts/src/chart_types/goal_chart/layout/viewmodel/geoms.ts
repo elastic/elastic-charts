@@ -12,7 +12,6 @@ import { cssFontShorthand, Font } from '../../../../common/text_utils';
 import { CanvasRenderer } from '../../../../renderers/canvas';
 import { measureText } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Dimensions } from '../../../../utils/dimensions';
-import { Logger } from '../../../../utils/logger';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSubtype } from '../../specs/constants';
 import { BulletViewModel } from '../types/viewmodel_types';
@@ -248,20 +247,9 @@ export function geoms(
     labelMinor,
     centralMajor,
     centralMinor,
+    angleEnd,
     angleStart,
   } = bulletViewModel;
-
-  let { angleEnd } = bulletViewModel;
-  if (Math.abs(angleEnd - angleStart) > TAU) {
-    angleEnd = angleStart + TAU * Math.sign(angleEnd - angleStart);
-
-    Logger.warn(`The total angle of the goal chart must not exceed 2π radians.\
-To prevent overlapping, the value of \`angleEnd\` will be replaced.
-
-  original: ${bulletViewModel.angleEnd} (${bulletViewModel.angleEnd / Math.PI}π)
-  replaced: ${angleEnd} (${angleEnd / Math.PI}π)
-`);
-  }
 
   const circular = subtype === GoalSubtype.Goal;
   const vertical = subtype === GoalSubtype.VerticalBullet;
