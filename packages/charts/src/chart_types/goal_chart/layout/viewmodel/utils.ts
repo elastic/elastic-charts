@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { TAU } from '../../../../common/constants';
 import { Radian } from '../../../../common/geometry';
 import { round } from '../../../../utils/common';
 
@@ -18,58 +19,70 @@ const LIMITING_ANGLE = Math.PI / 2;
 /**
  * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
  */
-const hasTopGap = (startAngle: Radian, endAngle: Radian): boolean => {
-  const [a, b] = [startAngle, endAngle].sort();
+const hasTopGap = (angleStart: Radian, angleEnd: Radian): boolean => {
+  const [a, b] = [angleStart, angleEnd].sort();
   return a <= -Math.PI / 2 && a >= (-Math.PI * 3) / 2 && b >= -Math.PI / 2 && b <= Math.PI / 2;
 };
 
 /**
  * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
  */
-const hasBottomGap = (startAngle: Radian, endAngle: Radian): boolean => {
-  const [a, b] = [startAngle, endAngle].sort();
+const hasBottomGap = (angleStart: Radian, angleEnd: Radian): boolean => {
+  const [a, b] = [angleStart, angleEnd].sort();
   return a >= -Math.PI / 2 && a <= Math.PI / 2 && b < (Math.PI * 3) / 2 && b >= Math.PI / 2;
 };
 
 /**
  * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
  */
-const isOnlyTopHalf = (startAngle: Radian, endAngle: Radian): boolean => {
-  const [a, b] = [startAngle, endAngle].sort();
+const isOnlyTopHalf = (angleStart: Radian, angleEnd: Radian): boolean => {
+  const [a, b] = [angleStart, angleEnd].sort();
   return a >= 0 && b <= Math.PI;
 };
 
 /**
  * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
  */
-const isOnlyBottomHalf = (startAngle: Radian, endAngle: Radian): boolean => {
-  const [a, b] = [startAngle, endAngle].sort();
+const isOnlyBottomHalf = (angleStart: Radian, angleEnd: Radian): boolean => {
+  const [a, b] = [angleStart, angleEnd].sort();
   return (a >= Math.PI && b <= 2 * Math.PI) || (a >= -Math.PI && b <= 0);
 };
 
 /**
  * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
  */
-const isWithinLimitedDomain = (startAngle: Radian, endAngle: Radian): boolean => {
-  const [a, b] = [startAngle, endAngle].sort();
+const isWithinLimitedDomain = (angleStart: Radian, angleEnd: Radian): boolean => {
+  const [a, b] = [angleStart, angleEnd].sort();
   return a > -2 * Math.PI && b < 2 * Math.PI;
 };
 
 /** @internal */
-export const getTranformDirection = (startAngle: Radian, endAngle: Radian): 1 | -1 =>
-  hasTopGap(startAngle, endAngle) || isOnlyBottomHalf(startAngle, endAngle) ? -1 : 1;
+export const getTranformDirection = (angleStart: Radian, angleEnd: Radian): 1 | -1 =>
+  hasTopGap(angleStart, angleEnd) || isOnlyBottomHalf(angleStart, angleEnd) ? -1 : 1;
 
 /**
  * Returns limiting angle form π/2 towards 3/2π from left and right, top and bottom
  * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
  */
-const controllingAngle = (startAngle: Radian, endAngle: Radian): number => {
-  if (!isWithinLimitedDomain(startAngle, endAngle)) return LIMITING_ANGLE * 2;
-  if (isOnlyTopHalf(startAngle, endAngle) || isOnlyBottomHalf(startAngle, endAngle)) return LIMITING_ANGLE;
-  if (!hasTopGap(startAngle, endAngle) && !hasBottomGap(startAngle, endAngle)) return LIMITING_ANGLE * 2;
-  const offset = hasBottomGap(startAngle, endAngle) ? -Math.PI / 2 : Math.PI / 2;
-  return Math.max(Math.abs(startAngle + offset), Math.abs(endAngle + offset), LIMITING_ANGLE);
+const controllingAngle = (angleStart: Radian, angleEnd: Radian): number => {
+  if (!isWithinLimitedDomain(angleStart, angleEnd)) return LIMITING_ANGLE * 2;
+  if (isOnlyTopHalf(angleStart, angleEnd) || isOnlyBottomHalf(angleStart, angleEnd)) return LIMITING_ANGLE;
+  if (!hasTopGap(angleStart, angleEnd) && !hasBottomGap(angleStart, angleEnd)) return LIMITING_ANGLE * 2;
+  const offset = hasBottomGap(angleStart, angleEnd) ? -Math.PI / 2 : Math.PI / 2;
+  return Math.max(Math.abs(angleStart + offset), Math.abs(angleEnd + offset), LIMITING_ANGLE);
 };
+
+/**
+ * Normalize angles to minimum equivalent pair within -2π >= θ >= 2π
+ * Assumes angles are no more that 2π apart.
+ * @internal
+ */
+export function normalizeAngles(angleStart: Radian, angleEnd: Radian): [angleStart: Radian, angleEnd: Radian] {
+  const maxOffset = Math.max(Math.ceil(Math.abs(angleStart) / TAU), Math.ceil(Math.abs(angleEnd) / TAU)) - 1;
+  const offsetDirection = angleStart > 0 && angleEnd > 0 ? -1 : 1;
+  const offset = offsetDirection * maxOffset * TAU;
+  return [angleStart + offset, angleEnd + offset];
+}
 
 /**
  * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
@@ -87,7 +100,8 @@ export function getSagitta(angle: Radian, radius: number, fractionDigits: number
  * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
  * @internal
  */
-export function getMinSagitta(startAngle: Radian, endAngle: Radian, radius: number, fractionDigits?: number) {
-  const limitingAngle = controllingAngle(startAngle, endAngle);
+export function getMinSagitta(angleStart: Radian, angleEnd: Radian, radius: number, fractionDigits?: number) {
+  const normalizedAngles = normalizeAngles(angleStart, angleEnd);
+  const limitingAngle = controllingAngle(...normalizedAngles);
   return getSagitta(limitingAngle * 2, radius, fractionDigits);
 }

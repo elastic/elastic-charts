@@ -393,7 +393,6 @@ export function geoms(
   const r = 0.5 * referenceSize - maxWidth / 2;
 
   if (circular) {
-    // This logic is only applicable to angles where -2π > θ > 2π with the smallest angle from 0
     const sagitta = getMinSagitta(angleStart, angleEnd, r);
     const maxSagitta = getSagitta((3 / 2) * Math.PI, r);
     const direction = getTranformDirection(angleStart, angleEnd);
