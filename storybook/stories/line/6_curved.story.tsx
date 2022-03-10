@@ -21,13 +21,26 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { Placement } from '../../../e2e/constants';
+import { TooltipStickTo, TooltipType } from '../../../packages/charts/src/specs/constants';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 
 export const Example = () => (
   <Chart>
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+    <Settings
+      showLegend
+      showLegendExtra
+      legendPosition={Position.Right}
+      baseTheme={useBaseTheme()}
+      tooltip={{
+        type: TooltipType.Follow,
+        stickTo: TooltipStickTo.Top,
+        placement: Placement.Left,
+        fallbackPlacements: [Placement.BottomStart],
+      }}
+    />
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis
       id="left"

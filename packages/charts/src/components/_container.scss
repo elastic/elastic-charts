@@ -22,7 +22,17 @@
   box-sizing: border-box;
   user-select: none;
 }
-
+.echChartTooltipBackground {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  pointer-events: all;
+  background-color: #0b2030;
+  opacity: 0.3;
+  z-index: 1;
+}
 .echChartResizer {
   z-index: -10000000;
   position: absolute;

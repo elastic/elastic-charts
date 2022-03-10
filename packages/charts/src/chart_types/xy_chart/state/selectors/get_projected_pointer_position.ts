@@ -50,9 +50,13 @@ function getProjectedPointerPosition(
   if (xPos < 0 || xPos >= width) {
     xPos = -1;
   }
-  if (yPos < 0 || yPos >= height) {
+  // FIXME this is an example of expanding the vertical cursor band to cover the X axis
+  if (yPos < 0) {
     yPos = -1;
+  } else if (yPos >= height && yPos < height + 50) {
+    yPos = 0;
   }
+
   const h = getPosRelativeToPanel(horizontal, xPos);
   const v = getPosRelativeToPanel(vertical, yPos);
 

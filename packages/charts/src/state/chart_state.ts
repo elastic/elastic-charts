@@ -185,6 +185,9 @@ export interface InteractionsState {
   hoveredDOMElement: DOMElement | null;
   drilldown: CategoryKey[];
   prevDrilldown: CategoryKey[];
+  // FIXME temporary
+  tooltipStick: boolean;
+  tooltipToggledItems: Set<SeriesIdentifier>;
 }
 
 /** @internal */
@@ -278,6 +281,9 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     hoveredDOMElement: null,
     drilldown: [],
     prevDrilldown: [],
+    // FIXME temporary
+    tooltipStick: false,
+    tooltipToggledItems: new Set(),
   },
   externalEvents: {
     pointer: null,

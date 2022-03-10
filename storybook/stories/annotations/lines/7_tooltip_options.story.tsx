@@ -61,6 +61,12 @@ export const Example = () => {
         <div>
           <h2>custom Details</h2>
           <p>{details}</p>
+          <ul>
+            <li>annotation 1</li>
+            <li>annotation 2</li>
+            <li>annotation 3</li>
+            <li>annotation 4</li>
+          </ul>
         </div>
       )
     : undefined;

@@ -12,6 +12,8 @@ import React from 'react';
 import { Chart, LineSeries, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { Placement } from '../../../e2e/constants';
+import { TooltipStickTo, TooltipType } from '../../../packages/charts/src/specs/constants';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
@@ -23,7 +25,15 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings
+        baseTheme={useBaseTheme()}
+        tooltip={{
+          type: TooltipType.Follow,
+          stickTo: TooltipStickTo.Top,
+          placement: Placement.Left,
+          fallbackPlacements: [Placement.BottomStart],
+        }}
+      />
       <LineSeries
         id={specId}
         xScaleType={ScaleType.Time}

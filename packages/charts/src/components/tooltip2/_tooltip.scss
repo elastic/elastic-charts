@@ -1,0 +1,170 @@
+@import '../mixins';
+
+.echTooltip2 {
+  @include euiBottomShadow($color: $euiColorInk);
+  border-radius: $euiBorderRadius;
+  @include euiFontSizeXS;
+  background-color: $euiColorEmptyShade;
+  color: $euiTextColor;
+  padding: 0;
+  transition: height 2s linear;
+
+  user-select: none;
+  width: 150px;
+  pointer-events: none;
+
+  &__stick {
+    pointer-events: auto;
+  }
+  &__list {
+    transition: height 0.2s linear;
+  }
+  &__limitedList {
+    max-height: (21px * 3.5);
+    overflow: hidden;
+  }
+  &__scrollableList {
+    max-height: (21px * 4);
+    overflow: auto;
+  }
+
+
+  &__header {
+    @include euiToolTipTitle;
+    margin-bottom: 0;
+    padding: $euiSizeXS ($euiSizeXS * 2);
+    border-bottom: solid $euiBorderWidthThin #D3DAE6;
+  }
+
+  &__footer {
+    margin-bottom: 0;
+    border-top: solid $euiBorderWidthThin #D3DAE6;
+    padding: $euiSizeXS ($euiSizeXS * 2);
+    color: $euiTextSubduedColor;
+  }
+
+  &__item {
+    display: flex;
+    height: 21px;
+    min-width: 1px;
+    background-color: rgba(0,0,0,0);
+    transition: all 0.1s ease;
+
+    &::before {
+      content: '';
+      width: 0;
+      overflow: hidden;
+      transition: width 0.1s ease;
+    }
+
+    &--selected{
+
+      &::before {
+        content: '✔️';
+        width: 14px;
+      }
+    }
+
+    &--highlighted {
+      background-color: transparentize($euiColorDarkestShade, 0.9);
+    }
+
+    &:hover {
+      background-color: transparentize($euiColorDarkestShade, 0.9);
+    }
+
+    &--container {
+      display: flex;
+      flex: 1 1 auto;
+      padding: 3px;
+      padding-left: 0;
+      min-width: 1px;
+    }
+
+    &--backgroundColor {
+      position: relative;
+      width: $euiSizeXS;
+      margin-right: 3px;
+      flex-shrink: 0;
+    }
+
+    &--color {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+
+  &__label {
+    @include wrapText;
+    min-width: 1px;
+    flex: 1 1 auto;
+    font-style: normal;
+    font-weight: $euiFontWeightMedium;
+  }
+
+  &__value {
+    font-style: normal;
+    font-weight: $euiFontWeightMedium;
+    text-align: right;
+    font-feature-settings: 'tnum';
+    margin-left: $euiSizeS;
+    direction: ltr;
+  }
+
+
+
+  &--hidden {
+    opacity: 0;
+  }
+
+  &[dir='rtl'] {
+    .echTooltip2 {
+      &__item {
+        &--container {
+          padding: 3px;
+          padding-right: 0;
+        }
+
+        &--backgroundColor {
+          margin-right: 0;
+          margin-left: 3px;
+        }
+      }
+
+      &__value {
+        margin-left: 0;
+        margin-right: $euiSizeS;
+      }
+    }
+  }
+}
+
+.echTooltip2Footer__actionList {
+  transition: all 0.2s ease-out;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  li {
+    text-align: left;
+    &:hover {
+      background-color: transparentize($euiColorDarkestShade, 0.9);
+    }
+  }
+  button {
+    @include euiFontSizeXS;
+    color: $euiColorPrimary;
+  }
+  button:disabled,
+  button[disabled]{
+    pointer-events: none;
+    color: $euiColorDisabledText;
+  }
+}
+
+.echTooltip2Footer__showActionList {
+  opacity: 1;
+  height: (16px * 4);
+}

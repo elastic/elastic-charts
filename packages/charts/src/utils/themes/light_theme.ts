@@ -112,7 +112,7 @@ export const LIGHT_THEME: Theme = {
   },
   sharedStyle: DEFAULT_GEOMETRY_STYLES,
   scales: {
-    barsPadding: 0.25,
+    barsPadding: 0.65,
     histogramPadding: 0.05,
   },
   axes: {

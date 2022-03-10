@@ -23,6 +23,7 @@ import {
   ToggleDeselectSeriesAction,
 } from '../actions/legend';
 import { MouseActions, ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE } from '../actions/mouse';
+import { ON_TOOLTIP_ITEM_TOGGLED, TooltipActions } from '../actions/tooltip';
 import { GlobalChartState, InteractionsState } from '../chart_state';
 import { getInitialPointerState } from '../utils';
 
@@ -39,7 +40,7 @@ const DRAG_DETECTION_PIXEL_DELTA = 4;
 /** @internal */
 export function interactionsReducer(
   globalState: GlobalChartState,
-  action: LegendActions | MouseActions | KeyActions | DOMElementActions,
+  action: LegendActions | MouseActions | KeyActions | DOMElementActions | TooltipActions,
   legendItems: LegendItem[],
 ): InteractionsState {
   const { interactions: state } = globalState;
@@ -63,12 +64,14 @@ export function interactionsReducer(
         pointer: {
           ...state.pointer,
           dragging,
-          current: {
-            position: {
-              ...action.position,
-            },
-            time: action.time,
-          },
+          current: state.tooltipStick
+            ? state.pointer.current
+            : {
+                position: {
+                  ...action.position,
+                },
+                time: action.time,
+              },
         },
       };
     case ON_MOUSE_DOWN:
@@ -128,6 +131,9 @@ export function interactionsReducer(
             time: action.time,
           },
         },
+        tooltipStick: !state.tooltipStick,
+        // clear if tooltip was sticky and we are going to close it
+        tooltipToggledItems: state.tooltipStick ? new Set() : state.tooltipToggledItems,
       };
     }
     case ON_LEGEND_ITEM_OUT:
@@ -157,6 +163,18 @@ export function interactionsReducer(
         ...state,
         hoveredDOMElement: null,
       };
+    case ON_TOOLTIP_ITEM_TOGGLED: {
+      const updatedItems = new Set([...state.tooltipToggledItems.values()]);
+      if (updatedItems.has(action.itemId)) {
+        updatedItems.delete(action.itemId);
+      } else {
+        updatedItems.add(action.itemId);
+      }
+      return {
+        ...state,
+        tooltipToggledItems: updatedItems,
+      };
+    }
     default:
       return state;
   }

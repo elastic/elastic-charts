@@ -39,6 +39,7 @@
     "start": "yarn storybook",
     "storybook": "lerna run --scope charts-storybook start --stream --no-prefix",
     "storybook:build": "lerna run --scope charts-storybook build --stream --no-prefix",
+    "dev": "lerna run --scope charts-storybook dev --stream --no-prefix",
     "test": "jest --verbose --config jest.config.js",
     "test:tz": "yarn test:tz-utc && yarn test:tz-ny && yarn test:tz-jp",
     "test:tz-utc": "TZ=UTC jest --verbose --config=jest.tz.config.js",

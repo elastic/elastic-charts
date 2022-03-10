@@ -8,14 +8,26 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, Placement } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { TooltipStickTo, TooltipType } from '../../../packages/charts/src/specs/constants';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => (
   <Chart>
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+    <Settings
+      showLegend
+      showLegendExtra
+      legendPosition={Position.Right}
+      baseTheme={useBaseTheme()}
+      tooltip={{
+        type: TooltipType.Follow,
+        // stickTo: TooltipStickTo.Top,
+        // placement: Placement.Left,
+        // fallbackPlacements: [Placement.BottomStart],
+      }}
+    />
     <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
     <BarSeries
@@ -25,7 +37,8 @@ export const Example = () => (
       xAccessor="x"
       yAccessors={['y1', 'y2']}
       splitSeriesAccessors={['g1', 'g2']}
-      data={TestDatasets.BARCHART_2Y2G}
+      // stackAccessors={[1]}
+      data={TestDatasets.BARCHART_2Y2G.map((d) => ({ ...d, g1: d.g1.slice(0, 3), g2: d.g2.slice(0, 3) }))}
     />
   </Chart>
 );
