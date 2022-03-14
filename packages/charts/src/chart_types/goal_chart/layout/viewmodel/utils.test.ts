@@ -9,8 +9,8 @@
 import { Radian } from './../../../../common/geometry';
 import { normalizeAngles } from './utils';
 
-const normalize = (a: Radian) => a / Math.PI;
-const denormalize = (a: number) => a * Math.PI;
+const normalize = (a: Radian): number => a / Math.PI;
+const denormalize = (a: number): Radian => a * Math.PI;
 
 /**
  * Units of π
