@@ -15,7 +15,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSubtype } from '../../specs/constants';
 import { BulletViewModel } from '../types/viewmodel_types';
-import { getSagitta, getMinSagitta } from './utils';
+import { getSagitta, getMinSagitta, getTranformDirection } from './utils';
 
 /** @internal */
 export interface Mark {
@@ -254,8 +254,8 @@ export function geoms(
     labelMinor,
     centralMajor,
     centralMinor,
-    angleStart,
     angleEnd,
+    angleStart,
   } = bulletViewModel;
 
   const circular = subtype === GoalSubtype.Goal;
@@ -402,7 +402,8 @@ export function geoms(
   if (circular) {
     const sagitta = getMinSagitta(angleStart, angleEnd, r);
     const maxSagitta = getSagitta((3 / 2) * Math.PI, r);
-    data.yOffset.value = sagitta >= maxSagitta ? 0 : (maxSagitta - sagitta) / 2;
+    const direction = getTranformDirection(angleStart, angleEnd);
+    data.yOffset.value = Math.abs(sagitta) >= maxSagitta ? 0 : (direction * (maxSagitta - sagitta)) / 2;
   }
 
   const fullSize = referenceSize;

@@ -953,8 +953,10 @@ export interface GeometryValue {
 // @public (undocumented)
 export function getNodeName(node: ArrayNode): string;
 
+// Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
+//
 // @alpha
-export const Goal: FC<SFProps<GoalSpec, "chartType" | "specType", "base" | "actual" | "bands" | "ticks" | "bandFillColor" | "tickValueFormatter" | "labelMajor" | "labelMinor" | "centralMajor" | "centralMinor" | "angleStart" | "angleEnd" | "bandLabels" | "tooltipValueFormatter", "target", "id" | "subtype">>;
+export const Goal: (props: SFProps<GoalSpec, keyof typeof buildProps['overrides'], keyof typeof buildProps['defaults'], keyof typeof buildProps['optionals'], keyof typeof buildProps['requires']>) => null;
 
 // @alpha (undocumented)
 export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;

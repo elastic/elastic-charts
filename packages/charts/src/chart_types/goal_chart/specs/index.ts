@@ -10,10 +10,12 @@ import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
+import { TAU } from '../../../common/constants';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
-import { specComponentFactory } from '../../../state/spec_factory';
-import { LabelAccessor, ValueFormatter } from '../../../utils/common';
+import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
+import { LabelAccessor, round, stripUndefined, ValueFormatter } from '../../../utils/common';
+import { Logger } from '../../../utils/logger';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
 import { GoalSubtype } from './constants';
 
@@ -57,11 +59,7 @@ export interface GoalSpec extends Spec {
   tooltipValueFormatter: ValueFormatter;
 }
 
-/**
- * Add Goal spec to chart
- * @alpha
- */
-export const Goal = specComponentFactory<GoalSpec>()(
+const buildProps = buildSFProps<GoalSpec>()(
   {
     specType: SpecType.Series,
     chartType: ChartType.Goal,
@@ -70,6 +68,44 @@ export const Goal = specComponentFactory<GoalSpec>()(
     ...defaultGoalSpec,
   },
 );
+
+/**
+ * Add Goal spec to chart
+ * @alpha
+ */
+export const Goal = function (
+  props: SFProps<
+    GoalSpec,
+    keyof typeof buildProps['overrides'],
+    keyof typeof buildProps['defaults'],
+    keyof typeof buildProps['optionals'],
+    keyof typeof buildProps['requires']
+  >,
+) {
+  const { defaults, overrides } = buildProps;
+  const angleStart = props.angleStart ?? defaults.angleStart;
+  const angleEnd = props.angleEnd ?? defaults.angleEnd;
+  const constraints: Pick<typeof props, 'angleEnd'> = {};
+
+  if (Math.abs(angleEnd - angleStart) > TAU) {
+    constraints.angleEnd = angleStart + TAU * Math.sign(angleEnd - angleStart);
+
+    Logger.warn(`The total angle of the goal chart must not exceed 2π radians.\
+To prevent overlapping, the value of \`angleEnd\` will be replaced.
+
+  original: ${angleEnd} (~${round(angleEnd / Math.PI, 3)}π)
+  replaced: ${constraints.angleEnd} (~${round(constraints.angleEnd / Math.PI, 3)}π)
+`);
+  }
+
+  useSpecFactory<GoalSpec>({
+    ...defaults,
+    ...stripUndefined(props),
+    ...overrides,
+    ...constraints,
+  });
+  return null;
+};
 
 /** @public */
 export type GoalProps = ComponentProps<typeof Goal>;
