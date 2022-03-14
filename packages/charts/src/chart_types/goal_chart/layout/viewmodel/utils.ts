@@ -17,7 +17,7 @@ import { round } from '../../../../utils/common';
 const LIMITING_ANGLE = Math.PI / 2;
 
 /**
- * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ * Angles are relative to mathematical angles of a unit circle from -2π > θ > 2π
  */
 const hasTopGap = (angleStart: Radian, angleEnd: Radian): boolean => {
   const [a, b] = [angleStart, angleEnd].sort();
@@ -25,7 +25,7 @@ const hasTopGap = (angleStart: Radian, angleEnd: Radian): boolean => {
 };
 
 /**
- * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ * Angles are relative to mathematical angles of a unit circle from -2π > θ > 2π
  */
 const hasBottomGap = (angleStart: Radian, angleEnd: Radian): boolean => {
   const [a, b] = [angleStart, angleEnd].sort();
@@ -33,7 +33,7 @@ const hasBottomGap = (angleStart: Radian, angleEnd: Radian): boolean => {
 };
 
 /**
- * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ * Angles are relative to mathematical angles of a unit circle from -2π > θ > 2π
  */
 const isOnlyTopHalf = (angleStart: Radian, angleEnd: Radian): boolean => {
   const [a, b] = [angleStart, angleEnd].sort();
@@ -41,7 +41,7 @@ const isOnlyTopHalf = (angleStart: Radian, angleEnd: Radian): boolean => {
 };
 
 /**
- * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ * Angles are relative to mathematical angles of a unit circle from -2π > θ > 2π
  */
 const isOnlyBottomHalf = (angleStart: Radian, angleEnd: Radian): boolean => {
   const [a, b] = [angleStart, angleEnd].sort();
@@ -49,7 +49,7 @@ const isOnlyBottomHalf = (angleStart: Radian, angleEnd: Radian): boolean => {
 };
 
 /**
- * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ * Angles are relative to mathematical angles of a unit circle from -2π > θ > 2π
  */
 const isWithinLimitedDomain = (angleStart: Radian, angleEnd: Radian): boolean => {
   const [a, b] = [angleStart, angleEnd].sort();
@@ -62,7 +62,7 @@ export const getTranformDirection = (angleStart: Radian, angleEnd: Radian): 1 | 
 
 /**
  * Returns limiting angle form π/2 towards 3/2π from left and right, top and bottom
- * Angles are relative to mathmatical angles of a unit circle from -2π > θ > 2π
+ * Angles are relative to mathematical angles of a unit circle from -2π > θ > 2π
  */
 const controllingAngle = (angleStart: Radian, angleEnd: Radian): number => {
   if (!isWithinLimitedDomain(angleStart, angleEnd)) return LIMITING_ANGLE * 2;
