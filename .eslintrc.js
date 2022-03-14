@@ -468,5 +468,11 @@ module.exports = {
         'promise/no-promise-in-callback': 0,
       },
     },
+    {
+      files: ['./integration/**/*.test.ts?(x)'],
+      rules: {
+        'jest/expect-expect': 0,
+      },
+    },
   ],
 };

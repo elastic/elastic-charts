@@ -15,7 +15,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSubtype } from '../../specs/constants';
 import { BulletViewModel } from '../types/viewmodel_types';
-import { getSagitta, getMinSagitta } from './utils';
+import { getSagitta, getMinSagitta, getTranformDirection } from './utils';
 
 const referenceCircularSizeCap = 360; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space
 const referenceBulletSizeCap = 500; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space
@@ -247,8 +247,8 @@ export function geoms(
     labelMinor,
     centralMajor,
     centralMinor,
-    angleStart,
     angleEnd,
+    angleStart,
   } = bulletViewModel;
 
   const circular = subtype === GoalSubtype.Goal;
@@ -395,7 +395,8 @@ export function geoms(
   if (circular) {
     const sagitta = getMinSagitta(angleStart, angleEnd, r);
     const maxSagitta = getSagitta((3 / 2) * Math.PI, r);
-    data.yOffset.value = sagitta >= maxSagitta ? 0 : (maxSagitta - sagitta) / 2;
+    const direction = getTranformDirection(angleStart, angleEnd);
+    data.yOffset.value = Math.abs(sagitta) >= maxSagitta ? 0 : (direction * (maxSagitta - sagitta)) / 2;
   }
 
   const fullSize = referenceSize;
