@@ -109,8 +109,8 @@ jobs:
         with:
           result-encoding: string
           script: | # This is javascript :)
-            // whitelist dependabot on pull requests
-            if (context.actor === 'dependabot[bot]') return 'queued' // ready to deploy!!
+            // whitelist dependabot and renovatebot on pull requests
+            if (context.actor === 'dependabot[bot]' || context.actor === 'renovate[bot]') return 'queued' // ready to deploy!!
             // https://docs.github.com/en/rest/reference/orgs#check-organization-membership-for-a-user
             const { status } = await github.rest.orgs.checkMembershipForUser({
               org: 'elastic',

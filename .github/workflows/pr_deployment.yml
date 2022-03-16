@@ -25,13 +25,13 @@ on:
       - 'Deployment | Pull Request'
 
 jobs:
-  deployment-waiting-check:
-    name: Deployment Waiting check
-    uses: elastic/elastic-charts/.github/workflows/e2e_waiting.reusable.yml@master
-    with:
-      sha: ${{ github.event.client_payload.head_sha }}
-      current_run_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
-      environment: "${{ github.event.client_payload.environment }}"
+  # deployment-waiting-check:
+  #   name: Deployment Waiting check
+  #   uses: elastic/elastic-charts/.github/workflows/e2e_waiting.reusable.yml@master
+  #   with:
+  #     sha: ${{ github.event.client_payload.head_sha }}
+  #     current_run_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
+  #     environment: "${{ github.event.client_payload.environment }}"
 
 #########################################################################################################
 
@@ -202,35 +202,35 @@ jobs:
 
 #########################################################################################################
 
-  e2e-tests:
-    name: e2e Tests
-    uses: elastic/elastic-charts/.github/workflows/e2e_tests.reusable.yml@master
-    if: ${{ success() }}
-    needs: [build-deploy, cleanup]
-    with:
-      status_context: Playwright e2e
-      sha: "${{ github.event.client_payload.merge_sha }}"
-      commit_sha: "${{ github.event.client_payload.head_sha }}"
-      current_run_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
-      environment: "${{ github.event.client_payload.environment }}"
-      environment_url: "${{ needs.build-deploy.outputs.environment_url }}"
+  # e2e-tests:
+  #   name: e2e Tests
+  #   uses: elastic/elastic-charts/.github/workflows/e2e_tests.reusable.yml@master
+  #   if: ${{ success() }}
+  #   needs: [build-deploy, cleanup]
+  #   with:
+  #     status_context: Playwright e2e
+  #     sha: "${{ github.event.client_payload.merge_sha }}"
+  #     commit_sha: "${{ github.event.client_payload.head_sha }}"
+  #     current_run_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
+  #     environment: "${{ github.event.client_payload.environment }}"
+  #     environment_url: "${{ needs.build-deploy.outputs.environment_url }}"
 
 #########################################################################################################
 
-  failure-check:
-    name: Print context on failure
-    # if: ${{ failure() }} # TODO this
-    if: ${{ always() }}
-    needs: build-deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print github context
-        shell: python
-        run: |
-          print("""${{ toJSON(github) }}""")
-      - name: Print needs context
-        shell: python
-        run: |
-          print("""${{ toJSON(needs) }}""")
+  # failure-check:
+  #   name: Print context on failure
+  #   # if: ${{ failure() }} # TODO this
+  #   if: ${{ always() }}
+  #   needs: build-deploy
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Print github context
+  #       shell: python
+  #       run: |
+  #         print("""${{ toJSON(github) }}""")
+  #     - name: Print needs context
+  #       shell: python
+  #       run: |
+  #         print("""${{ toJSON(needs) }}""")
 
 #########################################################################################################
