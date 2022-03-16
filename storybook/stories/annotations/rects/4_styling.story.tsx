@@ -9,7 +9,17 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
+import {
+  AnnotationDomainType,
+  Axis,
+  Chart,
+  LineAnnotation,
+  LineAnnotationDatum,
+  LineSeries,
+  RectAnnotation,
+  ScaleType,
+  Settings,
+} from '@elastic/charts';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
@@ -19,7 +29,6 @@ import { getChartRotationKnob } from '../../utils/knobs';
 export const Example = () => {
   const debug = boolean('debug', false);
   const rotation = getChartRotationKnob();
-
   const dataValues = [
     {
       coordinates: {
@@ -58,9 +67,11 @@ export const Example = () => {
       details: 'annotation 3',
     },
   ];
-
+  const lineData = dataValues.flatMap<LineAnnotationDatum>(({ coordinates: { x0, x1 } }) => [
+    { dataValue: x0, details: 'start' },
+    { dataValue: x1, details: 'end' },
+  ]);
   const zIndex = number('annotation zIndex', 0);
-
   const style = {
     strokeWidth: number('rect border stroke width', 1),
     stroke: color('rect border stroke color', '#e5e5e5'),
@@ -90,6 +101,7 @@ export const Example = () => {
   const xAxisTitle = isBottom ? 'x-domain axis (botttom)' : 'x-domain axis (top)';
   const xAxisPosition = isBottom ? Position.Bottom : Position.Top;
   const hideTooltips = boolean('hide tooltips', false);
+  const showLineAnnotations = boolean('showLineAnnotations', false);
 
   return (
     <Chart>
@@ -102,6 +114,14 @@ export const Example = () => {
         zIndex={zIndex}
         hideTooltips={hideTooltips}
       />
+      {showLineAnnotations && (
+        <LineAnnotation
+          id="annotation_1"
+          domainType={AnnotationDomainType.XDomain}
+          dataValues={lineData}
+          marker={<Icon type="alert" />}
+        />
+      )}
       <Axis id="bottom" position={xAxisPosition} title={xAxisTitle} />
       <Axis id="left" title={yAxisTitle} position={yAxisPosition} />
       <LineSeries

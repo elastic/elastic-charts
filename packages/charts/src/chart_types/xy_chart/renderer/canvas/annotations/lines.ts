@@ -10,7 +10,7 @@ import { colorToRgba, overrideOpacity } from '../../../../../common/color_librar
 import { Stroke } from '../../../../../geoms/types';
 import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
-import { LineAnnotationStyle } from '../../../../../utils/themes/theme';
+import { GeometryStyle, LineAnnotationStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 import { renderMultiLine } from '../primitives/line';
 import { withPanelTransform } from '../utils/panel_transform';
@@ -20,20 +20,25 @@ export function renderLineAnnotations(
   ctx: CanvasRenderingContext2D,
   annotations: AnnotationLineProps[],
   lineStyle: LineAnnotationStyle,
+  getHoverStyle: (id: string) => GeometryStyle,
   rotation: Rotation,
   renderingArea: Dimensions,
 ) {
-  const strokeColor = overrideOpacity(
-    colorToRgba(lineStyle.line.stroke),
-    (opacity) => opacity * lineStyle.line.opacity,
-  );
-  const stroke: Stroke = {
-    color: strokeColor,
-    width: lineStyle.line.strokeWidth,
-    dash: lineStyle.line.dash,
+  const getStroke = (id: string): Stroke => {
+    const strokeColor = overrideOpacity(
+      colorToRgba(lineStyle.line.stroke),
+      (opacity) => opacity * lineStyle.line.opacity * getHoverStyle(id).opacity,
+    );
+    return {
+      color: strokeColor,
+      width: lineStyle.line.strokeWidth,
+      dash: lineStyle.line.dash,
+    };
   };
 
-  annotations.forEach(({ linePathPoints, panel }) =>
-    withPanelTransform(ctx, panel, rotation, renderingArea, () => renderMultiLine(ctx, [linePathPoints], stroke)),
+  annotations.forEach(({ linePathPoints, panel, id }) =>
+    withPanelTransform(ctx, panel, rotation, renderingArea, () =>
+      renderMultiLine(ctx, [linePathPoints], getStroke(id)),
+    ),
   );
 }

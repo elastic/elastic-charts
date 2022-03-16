@@ -48,6 +48,7 @@ export function renderXYChartCanvas2d(
       axesStyles,
       debug,
       panelGeoms,
+      hoveredAnnotationIds,
     } = props;
     const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
     renderLayers(ctx, [
@@ -76,7 +77,12 @@ export function renderXYChartCanvas2d(
         }),
 
       // rendering background annotations
-      () => renderAnnotations(ctx, { rotation, renderingArea, annotationDimensions, annotationSpecs }, true),
+      () =>
+        renderAnnotations(
+          ctx,
+          { rotation, renderingArea, annotationDimensions, annotationSpecs, sharedStyle, hoveredAnnotationIds },
+          true,
+        ),
 
       // rendering bars
       () =>
@@ -138,7 +144,12 @@ export function renderXYChartCanvas2d(
         ),
 
       // rendering foreground annotations
-      () => renderAnnotations(ctx, { annotationDimensions, annotationSpecs, rotation, renderingArea }, false),
+      () =>
+        renderAnnotations(
+          ctx,
+          { annotationDimensions, annotationSpecs, rotation, renderingArea, sharedStyle, hoveredAnnotationIds },
+          false,
+        ),
 
       // rendering debugger
       () =>

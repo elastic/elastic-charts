@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Position } from '../../packages/charts/src';
+import { Position, Rotation } from '../../packages/charts/src';
 import { eachRotation } from '../helpers';
 import { common } from '../page_objects';
 
@@ -16,6 +16,41 @@ describe('Annotations stories', () => {
       await common.expectChartAtUrlToMatchScreenshot(
         `http://localhost:9001/?path=/story/annotations-lines--single-bar-histogram&knob-debug=&knob-chartRotation=${rotation}`,
       );
+    });
+  });
+
+  describe('Hover state', () => {
+    const getUrl = (rotation: Rotation) =>
+      `http://localhost:9001/?path=/story/annotations-rects--styling&knob-showLineAnnotations=true&knob-chartRotation=${rotation}`;
+
+    describe('Horizontal rotation', () => {
+      it('should fade all other annotations when line marker is hovered', async () => {
+        await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(0), {
+          bottom: 52,
+          left: 315,
+        });
+      });
+      it('should fade all other annotations when rect annotation is hovered', async () => {
+        await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(0), {
+          bottom: 200,
+          left: 338,
+        });
+      });
+    });
+
+    describe('Vertical rotation', () => {
+      it('should fade all other annotations when line marker is hovered', async () => {
+        await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(90), {
+          top: 140,
+          left: 56,
+        });
+      });
+      it('should fade all other annotations when rect annotation is hovered', async () => {
+        await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(90), {
+          bottom: 90,
+          left: 300,
+        });
+      });
     });
   });
 

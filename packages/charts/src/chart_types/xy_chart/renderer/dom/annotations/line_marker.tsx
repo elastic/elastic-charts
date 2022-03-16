@@ -7,7 +7,7 @@
  */
 
 import { createPopper, Instance } from '@popperjs/core';
-import React, { RefObject, useRef, useEffect, useCallback } from 'react';
+import React, { RefObject, useRef, useEffect, useCallback, CSSProperties } from 'react';
 
 import { DEFAULT_CSS_CURSOR } from '../../../../../common/constants';
 import { AnnotationClickListener } from '../../../../../specs';
@@ -19,6 +19,7 @@ import {
 } from '../../../../../state/actions/dom_element';
 import { Position, renderWithProps } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
+import { GeometryStateStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 
 type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'markers' | 'panel'> & {
@@ -28,6 +29,7 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'ma
   onDOMElementLeave: typeof onDOMElementLeaveAction;
   onDOMElementClick: typeof onDOMElementClickAction;
   annotationSpec?: AnnotationClickListener;
+  markerStyles: GeometryStateStyle;
 };
 
 const MARKER_TRANSFORMS = {
@@ -57,11 +59,13 @@ export function LineMarker({
   onDOMElementLeave,
   onDOMElementClick,
   annotationSpec,
+  markerStyles,
 }: LineMarkerProps) {
   const iconRef = useRef<HTMLDivElement | null>(null);
   const testRef = useRef<HTMLDivElement | null>(null);
   const popper = useRef<Instance | null>(null);
-  const style = {
+  const style: CSSProperties = {
+    ...markerStyles,
     color,
     top: chartDimensions.top + position.top + panel.top,
     left: chartDimensions.left + position.left + panel.left,

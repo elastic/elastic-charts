@@ -10,6 +10,7 @@ import React, { RefObject, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { LIGHT_THEME } from '../../../../..';
 import { AnnotationClickListener } from '../../../../../specs';
 import {
   onDOMElementEnter as onDOMElementEnterAction,
@@ -19,6 +20,7 @@ import {
 } from '../../../../../state/actions/dom_element';
 import { onPointerMove as onPointerMoveAction } from '../../../../../state/actions/mouse';
 import { GlobalChartState, BackwardRef } from '../../../../../state/chart_state';
+import { getChartThemeSelector } from '../../../../../state/selectors/get_chart_theme';
 import {
   getInternalIsInitializedSelector,
   InitStatus,
@@ -26,11 +28,13 @@ import {
 import { getSettingsSpecSelector } from '../../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { AnnotationId } from '../../../../../utils/ids';
+import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 import { AnnotationDimensions, AnnotationTooltipState } from '../../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../../state/selectors/compute_annotations';
 import { computeChartDimensionsSelector } from '../../../state/selectors/compute_chart_dimensions';
 import { getAnnotationTooltipStateSelector } from '../../../state/selectors/get_annotation_tooltip_state';
+import { getHighlightedAnnotationIdsSelector } from '../../../state/selectors/get_highlighted_annotation';
 import { getAnnotationSpecsSelector } from '../../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../../state/selectors/is_chart_empty';
 import { getSpecsById } from '../../../state/utils/spec';
@@ -49,9 +53,11 @@ interface AnnotationsStateProps {
   tooltipState: AnnotationTooltipState | null;
   chartDimensions: Dimensions;
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
+  sharedStyle: SharedGeometryStateStyle;
   annotationSpecs: AnnotationSpec[];
   chartId: string;
   zIndex: number;
+  hoveredAnnotationIds: string[];
   onAnnotationClick?: AnnotationClickListener;
 }
 
@@ -62,18 +68,32 @@ interface AnnotationsOwnProps {
 
 type AnnotationsProps = AnnotationsDispatchProps & AnnotationsStateProps & AnnotationsOwnProps;
 
+/** @internal */
+export const getAnnotationHoverStylesFn = (hoveredElementIds: string[], styles: SharedGeometryStateStyle) => (
+  id: string,
+): GeometryStateStyle =>
+  hoveredElementIds.length === 0
+    ? styles.default
+    : hoveredElementIds.includes(id)
+    ? styles.highlighted
+    : styles.unhighlighted;
+
 function renderAnnotationLineMarkers(
   chartAreaRef: RefObject<HTMLCanvasElement>,
   chartDimensions: Dimensions,
   annotationLines: AnnotationLineProps[],
   onDOMElementEnter: typeof onDOMElementEnterAction,
   onDOMElementLeave: typeof onDOMElementLeaveAction,
+  hoveredIds: string[],
+  sharedStyle: SharedGeometryStateStyle,
   onAnnotationClick?: AnnotationClickListener,
 ) {
+  const getHoverStyles = getAnnotationHoverStylesFn(hoveredIds, sharedStyle);
   return annotationLines.reduce<JSX.Element[]>((acc, props: AnnotationLineProps) => {
     if (props.markers.length === 0) {
       return acc;
     }
+
     acc.push(
       <LineMarker
         {...props}
@@ -84,6 +104,7 @@ function renderAnnotationLineMarkers(
         onDOMElementLeave={onDOMElementLeave}
         onDOMElementClick={onDOMElementClick}
         annotationSpec={onAnnotationClick}
+        markerStyles={getHoverStyles(props.id)}
       />,
     );
 
@@ -104,10 +125,11 @@ const AnnotationsComponent = ({
   onDOMElementEnter,
   onDOMElementLeave,
   onAnnotationClick,
+  hoveredAnnotationIds,
+  sharedStyle,
 }: AnnotationsProps) => {
   const renderAnnotationMarkers = useCallback((): JSX.Element[] => {
     const markers: JSX.Element[] = [];
-
     annotationDimensions.forEach((dimensions: AnnotationDimensions, id: AnnotationId) => {
       const annotationSpec = getSpecsById<AnnotationSpec>(annotationSpecs, id);
       if (!annotationSpec) {
@@ -122,6 +144,8 @@ const AnnotationsComponent = ({
           annotationLines,
           onDOMElementEnter,
           onDOMElementLeave,
+          hoveredAnnotationIds,
+          sharedStyle,
           onAnnotationClick,
         );
         lineMarkers.forEach((m) => markers.push(m));
@@ -136,6 +160,8 @@ const AnnotationsComponent = ({
     chartDimensions,
     onDOMElementEnter,
     onDOMElementLeave,
+    hoveredAnnotationIds,
+    sharedStyle,
     onAnnotationClick,
   ]);
 
@@ -180,22 +206,26 @@ const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
     return {
       isChartEmpty: true,
       chartDimensions: { top: 0, left: 0, width: 0, height: 0 },
+      sharedStyle: LIGHT_THEME.sharedStyle,
       annotationDimensions: new Map(),
       annotationSpecs: [],
       tooltipState: null,
       chartId,
       zIndex,
+      hoveredAnnotationIds: [],
       onAnnotationClick: undefined,
     };
   }
   return {
     isChartEmpty: isChartEmptySelector(state),
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
+    sharedStyle: getChartThemeSelector(state).sharedStyle,
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),
     tooltipState: getAnnotationTooltipStateSelector(state),
     chartId,
     zIndex,
+    hoveredAnnotationIds: getHighlightedAnnotationIdsSelector(state),
     onAnnotationClick: getSettingsSpecSelector(state).onAnnotationClick,
   };
 };

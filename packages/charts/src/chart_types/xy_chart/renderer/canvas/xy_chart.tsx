@@ -42,6 +42,7 @@ import {
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getGridLinesSelector } from '../../state/selectors/get_grid_lines';
+import { getHighlightedAnnotationIdsSelector } from '../../state/selectors/get_highlighted_annotation';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
@@ -66,6 +67,7 @@ export interface ReactiveChartStateProps {
   renderingArea: Dimensions;
   chartTransform: Transform;
   highlightedLegendItem?: LegendItem;
+  hoveredAnnotationIds: string[];
   axesSpecs: AxisSpec[];
   perPanelAxisGeoms: Array<PerPanelAxisGeoms>;
   perPanelGridLines: Array<LinesGrid>;
@@ -230,6 +232,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   perPanelAxisGeoms: [],
   perPanelGridLines: [],
   axesStyles: new Map(),
+  hoveredAnnotationIds: [],
   annotationDimensions: new Map(),
   annotationSpecs: [],
   panelGeoms: [],
@@ -255,6 +258,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     theme: getChartThemeSelector(state),
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
     highlightedLegendItem: getHighlightedSeriesSelector(state),
+    hoveredAnnotationIds: getHighlightedAnnotationIdsSelector(state),
     rotation: getChartRotationSelector(state),
     renderingArea: computeChartDimensionsSelector(state).chartDimensions,
     chartTransform: computeChartTransformSelector(state),
