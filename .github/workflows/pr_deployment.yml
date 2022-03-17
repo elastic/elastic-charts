@@ -63,7 +63,7 @@ jobs:
         uses: nickofthyme/checkout-node-setup@v1
         with:
           repository: ${{ github.repo }}
-          ref: ${{ github.event.client_payload.merge_sha }}
+          ref: ${{ github.event.client_payload.head_sha }}
           # ref: "refs/pull/${{ env.pr_number }}/merge" # maybe /head ????
           # See https://github.com/bahmutov/npm-install/issues/80
           skip-npm-install: true # This fails on deployment events
