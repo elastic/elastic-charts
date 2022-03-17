@@ -19,7 +19,7 @@ import { AnnotationRectProps } from '../../../annotations/rect/types';
 import { AnnotationDimensions } from '../../../annotations/types';
 import { getSpecsById } from '../../../state/utils/spec';
 import { AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../../utils/specs';
-import { getAnnotationHoverStylesFn } from '../../dom/annotations/annotations';
+import { getAnnotationHoverStylesFn } from '../../common/utils';
 import { renderLineAnnotations } from './lines';
 import { renderRectAnnotations } from './rect';
 

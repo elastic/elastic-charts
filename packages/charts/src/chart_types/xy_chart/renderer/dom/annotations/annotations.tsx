@@ -10,7 +10,6 @@ import React, { RefObject, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { LIGHT_THEME } from '../../../../..';
 import { AnnotationClickListener } from '../../../../../specs';
 import {
   onDOMElementEnter as onDOMElementEnterAction,
@@ -28,7 +27,8 @@ import {
 import { getSettingsSpecSelector } from '../../../../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { AnnotationId } from '../../../../../utils/ids';
-import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
+import { LIGHT_THEME } from '../../../../../utils/themes/light_theme';
+import { SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 import { AnnotationDimensions, AnnotationTooltipState } from '../../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../../state/selectors/compute_annotations';
@@ -39,6 +39,7 @@ import { getAnnotationSpecsSelector } from '../../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../../state/selectors/is_chart_empty';
 import { getSpecsById } from '../../../state/utils/spec';
 import { isLineAnnotation, AnnotationSpec } from '../../../utils/specs';
+import { getAnnotationHoverStylesFn } from '../../common/utils';
 import { AnnotationTooltip } from './annotation_tooltip';
 import { LineMarker } from './line_marker';
 
@@ -67,16 +68,6 @@ interface AnnotationsOwnProps {
 }
 
 type AnnotationsProps = AnnotationsDispatchProps & AnnotationsStateProps & AnnotationsOwnProps;
-
-/** @internal */
-export const getAnnotationHoverStylesFn = (hoveredElementIds: string[], styles: SharedGeometryStateStyle) => (
-  id: string,
-): GeometryStateStyle =>
-  hoveredElementIds.length === 0
-    ? styles.default
-    : hoveredElementIds.includes(id)
-    ? styles.highlighted
-    : styles.unhighlighted;
 
 function renderAnnotationLineMarkers(
   chartAreaRef: RefObject<HTMLCanvasElement>,
