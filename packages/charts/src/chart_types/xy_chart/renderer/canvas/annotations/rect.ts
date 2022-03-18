@@ -25,7 +25,8 @@ export function renderRectAnnotations(
   renderingArea: Dimensions,
 ) {
   const getFillAndStroke = (id: string): [Fill, Stroke] => {
-    const hoverStyle = getHoverStyle(id);
+    // TODO: restore when rect annotation usage is determined
+    const hoverStyle = { opacity: 1 } ?? getHoverStyle(id);
     const fill: Fill = {
       color: overrideOpacity(
         colorToRgba(rectStyle.fill),

@@ -9,7 +9,6 @@
 import { DOMElementType } from '../../../../state/actions/dom_element';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { AnnotationType } from '../../utils/specs';
 import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annotations';
 
 const getHoveredDOMElement = (state: GlobalChartState) => state.interactions.hoveredDOMElement;
@@ -17,10 +16,12 @@ const getHoveredDOMElement = (state: GlobalChartState) => state.interactions.hov
 /** @internal */
 export const getHighlightedAnnotationIdsSelector = createCustomCachedSelector(
   [getHoveredDOMElement, getMultipleRectangleAnnotations],
-  (hoveredDOMElement, rectAnnotationTooltips): string[] => {
-    const ids: string[] = (rectAnnotationTooltips ?? [])
-      .filter(({ annotationType, isVisible }) => isVisible && annotationType === AnnotationType.Rectangle)
-      .map(({ id }) => id);
+  (hoveredDOMElement): string[] => {
+    const ids: string[] = [];
+    // TODO: restore when rect annotation usage is determined
+    // (rectAnnotationTooltips ?? [])
+    //   .filter(({ annotationType, isVisible }) => isVisible && annotationType === AnnotationType.Rectangle)
+    //   .forEach(({ id }) => ids.push(id));
     if (hoveredDOMElement?.type === DOMElementType.LineAnnotationMarker && hoveredDOMElement?.id) {
       ids.push(hoveredDOMElement.id);
     }
