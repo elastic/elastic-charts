@@ -1010,12 +1010,26 @@ export interface GoalSpec extends Spec {
 
 // @public (undocumented)
 export interface GoalStyles {
+    arcBoxSamplePitch: Radian;
+    barThicknessMinSizeRatio: number;
+    baselineArcThickness: number;
+    baselineBarThickness: number;
+    capturePad: number;
     // (undocumented)
     majorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
     // (undocumented)
     majorLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
+    marginRatio: number;
+    maxBulletSize: number;
+    // (undocumented)
+    maxCentralFontSize: number;
+    maxCircularSize: number;
     // (undocumented)
     maxFontSize: number;
+    // (undocumented)
+    maxLabelFontSize: number;
+    // (undocumented)
+    maxTickFontSize: number;
     // (undocumented)
     minFontSize: number;
     // (undocumented)
