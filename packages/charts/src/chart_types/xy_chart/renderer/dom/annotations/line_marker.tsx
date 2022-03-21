@@ -115,6 +115,7 @@ export function LineMarker({
   }, [setPopper, body]);
 
   void popper?.current?.update?.();
+
   // want it to be tabbable if interactive if there is a click handler
   return onDOMElementClick ? (
     <button

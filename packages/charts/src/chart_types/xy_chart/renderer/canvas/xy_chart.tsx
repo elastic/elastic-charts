@@ -42,7 +42,7 @@ import {
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getGridLinesSelector } from '../../state/selectors/get_grid_lines';
-import { getHighlightedAnnotationIdsSelector } from '../../state/selectors/get_highlighted_annotation';
+import { getHighlightedAnnotationIdsSelector } from '../../state/selectors/get_highlighted_annotation_ids_selector';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';

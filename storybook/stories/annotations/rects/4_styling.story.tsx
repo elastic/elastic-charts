@@ -15,7 +15,7 @@ import {
   Chart,
   LineAnnotation,
   LineAnnotationDatum,
-  LineSeries,
+  BarSeries,
   RectAnnotation,
   ScaleType,
   Settings,
@@ -23,7 +23,6 @@ import {
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
-import { BarSeries } from '../../../../packages/charts/src/chart_types/specs';
 import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob } from '../../utils/knobs';
 
@@ -79,7 +78,7 @@ export const Example = () => {
       max: 1,
       step: 0.1,
     }),
-    fadeOut: boolean('fade out on else over', true),
+    fadeOut: boolean('fade out on hover', true),
   };
 
   const hasCustomTooltip = boolean('has custom tooltip render', false);

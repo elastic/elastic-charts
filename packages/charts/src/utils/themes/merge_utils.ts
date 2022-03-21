@@ -31,6 +31,7 @@ export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
   strokeWidth: 0,
   opacity: 0.25,
   fill: '#FFEEBC',
+  fadeOut: false,
 };
 
 /** @public */

@@ -3,6 +3,7 @@
   user-select: none;
   font-size: $euiFontSizeXS;
   font-weight: $euiFontWeightBold;
+  transition: opacity $euiAnimSpeedNormal;
 
   &__tooltip {
     @include euiToolTipStyle;

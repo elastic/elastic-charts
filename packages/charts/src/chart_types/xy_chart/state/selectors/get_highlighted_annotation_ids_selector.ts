@@ -13,13 +13,17 @@ import { mergeWithDefaultAnnotationRect } from '../../../../utils/themes/merge_u
 import { AnnotationType, RectAnnotationSpec } from '../../utils/specs';
 import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annotations';
 import { getAnnotationSpecsSelector } from './get_specs';
+import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 
 const getHoveredDOMElement = (state: GlobalChartState) => state.interactions.hoveredDOMElement;
 
 /** @internal */
 export const getHighlightedAnnotationIdsSelector = createCustomCachedSelector(
-  [getHoveredDOMElement, getMultipleRectangleAnnotations, getAnnotationSpecsSelector],
-  (hoveredDOMElement, rectAnnotationTooltips, specs): string[] => {
+  [getHoveredDOMElement, getMultipleRectangleAnnotations, getAnnotationSpecsSelector, getHighlightedGeomsSelector],
+  (hoveredDOMElement, rectAnnotationTooltips, specs, highlightedGeoms): string[] => {
+    // TODO: Remove when annotation tooltip is itegrated into main tooltip
+    if (highlightedGeoms.length > 0) return [];
+
     const ids: string[] = [];
 
     // TODO: restore when rect annotation usage is determined
