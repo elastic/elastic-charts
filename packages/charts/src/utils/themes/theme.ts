@@ -680,4 +680,4 @@ export interface LineAnnotationStyle {
 }
 
 /** @public */
-export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray>;
+export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray> & { fadeOut: boolean };

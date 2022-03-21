@@ -23,6 +23,7 @@ import {
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
+import { BarSeries } from '../../../../packages/charts/src/chart_types/specs';
 import { useBaseTheme } from '../../../use_base_theme';
 import { getChartRotationKnob } from '../../utils/knobs';
 
@@ -50,19 +51,15 @@ export const Example = () => {
     },
     {
       coordinates: {
-        x0: 1.1,
-        x1: 1.3,
-        y0: 0,
-        y1: 7,
+        x0: 2,
+        x1: 3,
       },
-      details: 'annotation 2',
+      details: 'annotation 3',
     },
     {
       coordinates: {
-        x0: 2.5,
-        x1: 3,
-        y0: 0,
-        y1: 7,
+        x0: 8,
+        x1: 8,
       },
       details: 'annotation 3',
     },
@@ -82,6 +79,7 @@ export const Example = () => {
       max: 1,
       step: 0.1,
     }),
+    fadeOut: boolean('fade out on else over', true),
   };
 
   const hasCustomTooltip = boolean('has custom tooltip render', false);
@@ -101,7 +99,7 @@ export const Example = () => {
   const xAxisTitle = isBottom ? 'x-domain axis (botttom)' : 'x-domain axis (top)';
   const xAxisPosition = isBottom ? Position.Bottom : Position.Top;
   const hideTooltips = boolean('hide tooltips', false);
-  const showLineAnnotations = boolean('showLineAnnotations', false);
+  const showLineAnnotations = boolean('showLineAnnotations', true);
 
   return (
     <Chart>
@@ -124,16 +122,24 @@ export const Example = () => {
       )}
       <Axis id="bottom" position={xAxisPosition} title={xAxisTitle} />
       <Axis id="left" title={yAxisTitle} position={yAxisPosition} />
-      <LineSeries
+      <BarSeries
         id="lines"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
         data={[
           { x: 0, y: 2 },
-          { x: 1, y: 7 },
-          { x: 3, y: 6 },
+          { x: 1, y: 3 },
+          { x: 2, y: 10 },
+          { x: 3, y: 3 },
+          { x: 4, y: 6 },
+          { x: 5, y: 12 },
+          { x: 6, y: 2 },
+          { x: 7, y: 1 },
+          { x: 8, y: 8 },
+          { x: 9, y: 11 },
+          { x: 10, y: 7 },
         ]}
       />
     </Chart>
