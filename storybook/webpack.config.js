@@ -44,7 +44,6 @@ module.exports = ({ config }) => {
   config.plugins.push(
     new webpack.EnvironmentPlugin({
       RNG_SEED: null,
-      VRT: process.env.VRT ?? null,
     }),
   );
 
