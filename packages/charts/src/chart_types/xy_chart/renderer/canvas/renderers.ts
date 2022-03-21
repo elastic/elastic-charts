@@ -9,6 +9,7 @@
 import { Colors } from '../../../../common/colors';
 import { Rect } from '../../../../geoms/types';
 import { clearCanvas, isCanvasRenderer, renderLayers, withContext } from '../../../../renderers/canvas';
+import { AnimationState } from '../../../partition_chart/renderer/canvas/partition';
 import { renderAnnotations } from './annotations';
 import { renderAreas } from './areas';
 import { renderBars } from './bars';
@@ -26,6 +27,7 @@ export function renderXYChartCanvas2d(
   dpr: number,
   clippings: Rect,
   props: ReactiveChartStateProps,
+  animationState: AnimationState,
 ) {
   const imgCanvas = document.createElement('canvas');
 

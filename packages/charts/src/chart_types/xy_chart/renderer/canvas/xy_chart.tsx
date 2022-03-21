@@ -30,6 +30,7 @@ import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { AnnotationId, AxisId } from '../../../../utils/ids';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme, AxisStyle } from '../../../../utils/themes/theme';
+import { AnimationState } from '../../../partition_chart/renderer/canvas/partition';
 import { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
@@ -94,6 +95,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
   static displayName = 'XYChart';
 
   private ctx: CanvasRenderingContext2D | null;
+  private animationState: AnimationState;
 
   // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
   private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
@@ -102,6 +104,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
     super(props);
     this.ctx = null;
     this.devicePixelRatio = window.devicePixelRatio;
+    this.animationState = { rafId: NaN };
   }
 
   componentDidMount() {
@@ -137,7 +140,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
       const width = (vertical ? renderingArea.height : renderingArea.width) + CLIPPING_MARGINS * 2;
       const height = (vertical ? renderingArea.width : renderingArea.height) + CLIPPING_MARGINS * 2;
       const clippings = { x: -CLIPPING_MARGINS, y: -CLIPPING_MARGINS, width, height };
-      renderXYChartCanvas2d(this.ctx, this.devicePixelRatio, clippings, this.props);
+      renderXYChartCanvas2d(this.ctx, this.devicePixelRatio, clippings, this.props, this.animationState);
     }
   }
 
