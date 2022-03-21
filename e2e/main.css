@@ -17554,12 +17554,6 @@ button.euiLink {
   transform: translateY(-1px);
 }
 
-.euiMark {
-  background-color: transparent;
-  font-weight: 700;
-  color: #343741;
-}
-
 /**
  * 1. Fix IE overflow issue (min-height) by adding a separate wrapper for the
  *    flex display. https://github.com/philipwalton/flexbugs#flexbug-3
@@ -20492,7 +20486,7 @@ button.euiLink {
 }
 
 .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) {
-  color: rgba(255, 255, 255, 0.7);
+  color: #FFF;
 }
 
 .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input {
@@ -20501,17 +20495,17 @@ button.euiLink {
 }
 
 .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input::-moz-placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: #bdc0c6;
   opacity: 1;
 }
 
 .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input:-ms-input-placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: #bdc0c6;
   opacity: 1;
 }
 
 .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: #bdc0c6;
   opacity: 1;
 }
 
@@ -24811,6 +24805,14 @@ button.euiSuggestItem:hover .euiSuggestItem__label, button.euiSuggestItem:focus 
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
 }
 
+.euiFilterGroup--compressed {
+  border-radius: 4px;
+}
+
+.euiFilterGroup--compressed .euiFilterButton {
+  height: 32px;
+}
+
 .euiFilterButton {
   border-radius: 0;
   border: none;
@@ -25247,10 +25249,6 @@ button.euiSuggestItem:hover .euiSuggestItem__label, button.euiSuggestItem:focus 
 
 .euiKeyPadMenuItem__label {
   font-weight: 600;
-}
-
-.euiMark {
-  background: rgba(0, 119, 204, 0.1);
 }
 
 .euiMarkdownEditorToolbar {
@@ -39511,11 +39509,6 @@ html.light-theme .euiMarkdownEditorToolbar__divider {
 html.light-theme .euiMarkdownTooltip__icon {
   transform: translateY(-1px);
 }
-html.light-theme .euiMark {
-  background-color: transparent;
-  font-weight: 700;
-  color: #343741;
-}
 html.light-theme .euiModal {
   border: 1px solid #D3DAE6;
   box-shadow: 0 2.7px 9px rgba(0, 0, 0, 0.13), 0 9.4px 24px rgba(0, 0, 0, 0.09), 0 21.8px 43px rgba(0, 0, 0, 0.08);
@@ -41904,22 +41897,22 @@ html.light-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControl
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
 }
 html.light-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) {
-  color: rgba(255, 255, 255, 0.7);
+  color: #FFF;
 }
 html.light-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input {
   color: inherit;
   background-color: transparent;
 }
 html.light-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input::-moz-placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: #bdc0c6;
   opacity: 1;
 }
 html.light-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input:-ms-input-placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: #bdc0c6;
   opacity: 1;
 }
 html.light-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: #bdc0c6;
   opacity: 1;
 }
 html.light-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) .euiFormControlLayout__append {
@@ -45423,6 +45416,12 @@ html.light-theme .euiFilterGroup {
   background-color: #fbfcfd;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
 }
+html.light-theme .euiFilterGroup--compressed {
+  border-radius: 4px;
+}
+html.light-theme .euiFilterGroup--compressed .euiFilterButton {
+  height: 32px;
+}
 html.light-theme .euiFilterButton {
   border-radius: 0;
   border: none;
@@ -45765,9 +45764,6 @@ html.light-theme .euiKeyPadMenuItem.euiKeyPadMenuItem-isSelected.euiKeyPadMenuIt
 }
 html.light-theme .euiKeyPadMenuItem__label {
   font-weight: 600;
-}
-html.light-theme .euiMark {
-  background: rgba(0, 119, 204, 0.1);
 }
 html.light-theme .euiMarkdownEditorToolbar {
   border-radius: 6px 6px 0 0;
@@ -61320,11 +61316,6 @@ html.dark-theme .euiMarkdownEditorToolbar__divider {
 html.dark-theme .euiMarkdownTooltip__icon {
   transform: translateY(-1px);
 }
-html.dark-theme .euiMark {
-  background-color: transparent;
-  font-weight: 700;
-  color: #DFE5EF;
-}
 html.dark-theme .euiModal {
   border: 1px solid #343741;
   box-shadow: 0 2.7px 9px rgba(0, 0, 0, 0.325), 0 9.4px 24px rgba(0, 0, 0, 0.225), 0 21.8px 43px rgba(0, 0, 0, 0.2);
@@ -63713,22 +63704,22 @@ html.dark-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlL
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
 }
 html.dark-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) {
-  color: rgba(255, 255, 255, 0.7);
+  color: #FFF;
 }
 html.dark-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input {
   color: inherit;
   background-color: transparent;
 }
 html.dark-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input::-moz-placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: #abaeb5;
   opacity: 1;
 }
 html.dark-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input:-ms-input-placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: #abaeb5;
   opacity: 1;
 }
 html.dark-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: #abaeb5;
   opacity: 1;
 }
 html.dark-theme .euiHeader--dark .euiSelectableTemplateSitewide .euiFormControlLayout:not(:focus-within) .euiFormControlLayout__append {
@@ -67232,6 +67223,12 @@ html.dark-theme .euiFilterGroup {
   background-color: #16171c;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
+html.dark-theme .euiFilterGroup--compressed {
+  border-radius: 4px;
+}
+html.dark-theme .euiFilterGroup--compressed .euiFilterButton {
+  height: 32px;
+}
 html.dark-theme .euiFilterButton {
   border-radius: 0;
   border: none;
@@ -67574,9 +67571,6 @@ html.dark-theme .euiKeyPadMenuItem.euiKeyPadMenuItem-isSelected.euiKeyPadMenuIte
 }
 html.dark-theme .euiKeyPadMenuItem__label {
   font-weight: 600;
-}
-html.dark-theme .euiMark {
-  background: rgba(54, 162, 239, 0.2);
 }
 html.dark-theme .euiMarkdownEditorToolbar {
   border-radius: 6px 6px 0 0;
