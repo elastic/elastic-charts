@@ -20,6 +20,7 @@ import { AnnotationDimensions } from '../../../annotations/types';
 import { getSpecsById } from '../../../state/utils/spec';
 import { AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../../utils/specs';
 import { getAnnotationHoverStylesFn } from '../../common/utils';
+import { AnimationContext } from '../animations';
 import { renderLineAnnotations } from './lines';
 import { renderRectAnnotations } from './rect';
 
@@ -35,6 +36,7 @@ interface AnnotationProps {
 /** @internal */
 export function renderAnnotations(
   ctx: CanvasRenderingContext2D,
+  aCtx: AnimationContext,
   {
     annotationDimensions,
     annotationSpecs,
@@ -54,6 +56,7 @@ export function renderAnnotations(
         const lineStyle = mergeWithDefaultAnnotationLine(spec.style);
         renderLineAnnotations(
           ctx,
+          aCtx,
           annotation as AnnotationLineProps[],
           lineStyle,
           getHoverStyle,
@@ -64,6 +67,7 @@ export function renderAnnotations(
         const rectStyle = mergeWithDefaultAnnotationRect(spec.style);
         renderRectAnnotations(
           ctx,
+          aCtx,
           annotation as AnnotationRectProps[],
           rectStyle,
           getHoverStyle,

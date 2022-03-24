@@ -9,7 +9,8 @@
 import { Colors } from '../../../../common/colors';
 import { Rect } from '../../../../geoms/types';
 import { clearCanvas, isCanvasRenderer, renderLayers, withContext } from '../../../../renderers/canvas';
-import { AnimationState } from '../../../partition_chart/renderer/canvas/partition';
+import { AnimationContext, getAnimationPoolFn } from './animations';
+import { AnimationState } from './animations/animation';
 import { renderAnnotations } from './annotations';
 import { renderAreas } from './areas';
 import { renderBars } from './bars';
@@ -29,155 +30,161 @@ export function renderXYChartCanvas2d(
   props: ReactiveChartStateProps,
   animationState: AnimationState,
 ) {
-  const imgCanvas = document.createElement('canvas');
+  function render(aCtx: AnimationContext) {
+    const imgCanvas = document.createElement('canvas');
 
-  withContext(ctx, () => {
-    // let's set the devicePixelRatio once and for all; then we'll never worry about it again
-    ctx.scale(dpr, dpr);
-    const {
-      renderingArea,
-      chartTransform,
-      rotation,
-      geometries,
-      geometriesIndex,
-      theme: { axes: sharedAxesStyle, sharedStyle, barSeriesStyle, background },
-      highlightedLegendItem,
-      annotationDimensions,
-      annotationSpecs,
-      perPanelAxisGeoms,
-      perPanelGridLines,
-      axesSpecs,
-      axesStyles,
-      debug,
-      panelGeoms,
-      hoveredAnnotationIds,
-    } = props;
-    const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
-    renderLayers(ctx, [
-      () => clearCanvas(ctx, 'transparent'),
+    withContext(ctx, () => {
+      // let's set the devicePixelRatio once and for all; then we'll never worry about it again
+      ctx.scale(dpr, dpr);
+      const {
+        renderingArea,
+        chartTransform,
+        rotation,
+        geometries,
+        geometriesIndex,
+        theme: { axes: sharedAxesStyle, sharedStyle, barSeriesStyle, background },
+        highlightedLegendItem,
+        annotationDimensions,
+        annotationSpecs,
+        perPanelAxisGeoms,
+        perPanelGridLines,
+        axesSpecs,
+        axesStyles,
+        debug,
+        panelGeoms,
+        hoveredAnnotationIds,
+      } = props;
+      const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
+      renderLayers(ctx, [
+        () => clearCanvas(ctx, 'transparent'),
 
-      // render panel grid
-      () => debug && renderGridPanels(ctx, transform, panelGeoms),
+        // render panel grid
+        () => debug && renderGridPanels(ctx, transform, panelGeoms),
 
-      () =>
-        renderGrids(ctx, {
-          axesSpecs,
-          renderingArea,
-          perPanelGridLines,
-          axesStyles,
-          sharedAxesStyle,
-        }),
+        () =>
+          renderGrids(ctx, {
+            axesSpecs,
+            renderingArea,
+            perPanelGridLines,
+            axesStyles,
+            sharedAxesStyle,
+          }),
 
-      () =>
-        renderPanelSubstrates(ctx, {
-          axesSpecs,
-          perPanelAxisGeoms,
-          renderingArea,
-          debug,
-          axesStyles,
-          sharedAxesStyle,
-        }),
+        () =>
+          renderPanelSubstrates(ctx, {
+            axesSpecs,
+            perPanelAxisGeoms,
+            renderingArea,
+            debug,
+            axesStyles,
+            sharedAxesStyle,
+          }),
 
-      // rendering background annotations
-      () =>
-        renderAnnotations(
-          ctx,
-          { rotation, renderingArea, annotationDimensions, annotationSpecs, sharedStyle, hoveredAnnotationIds },
-          true,
-        ),
+        // rendering background annotations
+        () =>
+          renderAnnotations(
+            ctx,
+            aCtx,
+            { rotation, renderingArea, annotationDimensions, annotationSpecs, sharedStyle, hoveredAnnotationIds },
+            true,
+          ),
 
-      // rendering bars
-      () =>
-        renderBars(
-          ctx,
-          imgCanvas,
-          geometries.bars,
-          sharedStyle,
-          clippings,
-          renderingArea,
-          highlightedLegendItem,
-          rotation,
-        ),
+        // rendering bars
+        () =>
+          renderBars(
+            ctx,
+            imgCanvas,
+            geometries.bars,
+            sharedStyle,
+            clippings,
+            renderingArea,
+            highlightedLegendItem,
+            rotation,
+          ),
 
-      // rendering areas
-      () =>
-        renderAreas(ctx, imgCanvas, {
-          areas: geometries.areas,
-          clippings,
-          renderingArea,
-          rotation,
-          highlightedLegendItem,
-          sharedStyle,
-        }),
-
-      // rendering lines
-      () =>
-        renderLines(ctx, {
-          lines: geometries.lines,
-          clippings,
-          renderingArea,
-          rotation,
-          highlightedLegendItem,
-          sharedStyle,
-        }),
-
-      // rendering bubbles
-      () =>
-        renderBubbles(ctx, {
-          bubbles: geometries.bubbles,
-          clippings,
-          highlightedLegendItem,
-          sharedStyle,
-          rotation,
-          renderingArea,
-        }),
-
-      () =>
-        geometries.bars.forEach(({ value: bars, panel }) =>
-          renderBarValues(ctx, {
-            bars,
-            panel,
+        // rendering areas
+        () =>
+          renderAreas(ctx, imgCanvas, {
+            areas: geometries.areas,
+            clippings,
             renderingArea,
             rotation,
-            debug,
-            barSeriesStyle,
-            background,
+            highlightedLegendItem,
+            sharedStyle,
           }),
-        ),
 
-      // rendering foreground annotations
-      () =>
-        renderAnnotations(
-          ctx,
-          { annotationDimensions, annotationSpecs, rotation, renderingArea, sharedStyle, hoveredAnnotationIds },
-          false,
-        ),
+        // rendering lines
+        () =>
+          renderLines(ctx, {
+            lines: geometries.lines,
+            clippings,
+            renderingArea,
+            rotation,
+            highlightedLegendItem,
+            sharedStyle,
+          }),
 
-      // rendering debugger
-      () =>
-        debug &&
-        withContext(ctx, () => {
-          const { left, top, width, height } = renderingArea;
+        // rendering bubbles
+        () =>
+          renderBubbles(ctx, {
+            bubbles: geometries.bubbles,
+            clippings,
+            highlightedLegendItem,
+            sharedStyle,
+            rotation,
+            renderingArea,
+          }),
 
-          renderDebugRect(
+        () =>
+          geometries.bars.forEach(({ value: bars, panel }) =>
+            renderBarValues(ctx, {
+              bars,
+              panel,
+              renderingArea,
+              rotation,
+              debug,
+              barSeriesStyle,
+              background,
+            }),
+          ),
+
+        // rendering foreground annotations
+        () =>
+          renderAnnotations(
             ctx,
-            { x: left, y: top, width, height },
-            0,
-            { color: Colors.Transparent.rgba },
-            { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
-          );
+            aCtx,
+            { annotationDimensions, annotationSpecs, rotation, renderingArea, sharedStyle, hoveredAnnotationIds },
+            false,
+          ),
 
-          const renderer = geometriesIndex.triangulation([0, 0, width, height])?.render;
-          if (isCanvasRenderer(renderer)) {
-            ctx.beginPath();
-            ctx.translate(left, top);
-            ctx.setLineDash([5, 5]);
-            renderer(ctx);
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = 'blue';
-            ctx.stroke();
-          }
-        }),
-    ]);
-  });
+        // rendering debugger
+        () =>
+          debug &&
+          withContext(ctx, () => {
+            const { left, top, width, height } = renderingArea;
+
+            renderDebugRect(
+              ctx,
+              { x: left, y: top, width, height },
+              0,
+              { color: Colors.Transparent.rgba },
+              { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
+            );
+
+            const renderer = geometriesIndex.triangulation([0, 0, width, height])?.render;
+            if (isCanvasRenderer(renderer)) {
+              ctx.beginPath();
+              ctx.translate(left, top);
+              ctx.setLineDash([5, 5]);
+              renderer(ctx);
+              ctx.lineWidth = 1;
+              ctx.strokeStyle = 'blue';
+              ctx.stroke();
+            }
+          }),
+      ]);
+    });
+  }
+
+  void getAnimationPoolFn(animationState, render);
 }

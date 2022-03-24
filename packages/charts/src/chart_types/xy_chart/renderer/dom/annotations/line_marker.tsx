@@ -19,7 +19,6 @@ import {
 } from '../../../../../state/actions/dom_element';
 import { Position, renderWithProps } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
-import { GeometryStateStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 
 type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'markers' | 'panel'> & {
@@ -29,7 +28,7 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'ma
   onDOMElementLeave: typeof onDOMElementLeaveAction;
   onDOMElementClick: typeof onDOMElementClickAction;
   annotationSpec?: AnnotationClickListener;
-  markerStyles: GeometryStateStyle;
+  markerStyles: CSSProperties;
 };
 
 const MARKER_TRANSFORMS = {

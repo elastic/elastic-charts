@@ -30,7 +30,6 @@ import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { AnnotationId, AxisId } from '../../../../utils/ids';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme, AxisStyle } from '../../../../utils/themes/theme';
-import { AnimationState } from '../../../partition_chart/renderer/canvas/partition';
 import { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
@@ -51,6 +50,7 @@ import { Geometries, Transform } from '../../state/utils/types';
 import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { AxisSpec, AnnotationSpec } from '../../utils/specs';
+import { AnimationState } from './animations/animation';
 import { renderXYChartCanvas2d } from './renderers';
 import { hasMostlyRTL } from './utils/has_mostly_rtl';
 
@@ -104,7 +104,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
     super(props);
     this.ctx = null;
     this.devicePixelRatio = window.devicePixelRatio;
-    this.animationState = { rafId: NaN };
+    this.animationState = { rafId: NaN, pool: new Map() };
   }
 
   componentDidMount() {

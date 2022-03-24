@@ -12,22 +12,35 @@ import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { GeometryStyle, LineAnnotationStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
+import { AnimationContext } from '../animations';
 import { renderMultiLine } from '../primitives/line';
 import { withPanelTransform } from '../utils/panel_transform';
 
 /** @internal */
 export function renderLineAnnotations(
   ctx: CanvasRenderingContext2D,
+  aCtx: AnimationContext,
   annotations: AnnotationLineProps[],
   lineStyle: LineAnnotationStyle,
   getHoverStyle: (id: string) => GeometryStyle,
   rotation: Rotation,
   renderingArea: Dimensions,
 ) {
+  const getAnimatedValue = aCtx.getValue({
+    delay: 1000,
+  });
+
   const getStroke = (id: string): Stroke => {
+    const op = getHoverStyle(id).opacity;
+    const hoverOpacity = getAnimatedValue<number>(`anno-line-opacity-${id}`, op);
+
+    if (id === 'annotation_1________start__0') {
+      console.log({ animated: hoverOpacity, computed: op });
+    }
+
     const strokeColor = overrideOpacity(
       colorToRgba(lineStyle.line.stroke),
-      (opacity) => opacity * lineStyle.line.opacity * getHoverStyle(id).opacity,
+      (opacity) => opacity * lineStyle.line.opacity * hoverOpacity,
     );
     return {
       color: strokeColor,

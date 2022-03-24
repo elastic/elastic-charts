@@ -6,7 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../../utils/themes/theme';
+import { CSSProperties } from 'react';
+
+import { GeometryStyle, SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 
 /**
  * Returns function to get geometry styles for a given id
@@ -14,9 +16,19 @@ import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../../utils/
  */
 export const getAnnotationHoverStylesFn = (hoveredElementIds: string[], styles: SharedGeometryStateStyle) => (
   id: string,
-): GeometryStateStyle =>
-  hoveredElementIds.length === 0
-    ? styles.default
-    : hoveredElementIds.includes(id)
-    ? styles.highlighted
-    : styles.unhighlighted;
+): GeometryStyle & CSSProperties => {
+  const isHighlighted = hoveredElementIds.includes(id);
+  const shared =
+    hoveredElementIds.length === 0 ? styles.default : isHighlighted ? styles.highlighted : styles.unhighlighted;
+  const shouldTransition = !isHighlighted && hoveredElementIds.length > 0;
+
+  return {
+    ...shared,
+    ...(shouldTransition && {
+      transitionDuration: '250ms',
+      transitionDelay: '500ms',
+      transitionProperty: 'opacity',
+      transitionTimingFunction: 'linear',
+    }),
+  };
+};

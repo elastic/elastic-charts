@@ -12,32 +12,30 @@ import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { GeometryStyle, RectAnnotationStyle } from '../../../../../utils/themes/theme';
 import { AnnotationRectProps } from '../../../annotations/rect/types';
+import { AnimationContext } from '../animations';
 import { renderRect } from '../primitives/rect';
 import { withPanelTransform } from '../utils/panel_transform';
 
 /** @internal */
 export function renderRectAnnotations(
   ctx: CanvasRenderingContext2D,
+  aCtx: AnimationContext,
   annotations: AnnotationRectProps[],
   rectStyle: RectAnnotationStyle,
   getHoverStyle: (id: string) => GeometryStyle,
   rotation: Rotation,
   renderingArea: Dimensions,
 ) {
+  const getAnimatedValue = aCtx.getValue({
+    delay: 1000,
+  });
   const getFillAndStroke = (id: string): [Fill, Stroke] => {
-    // TODO: restore when rect annotation usage is determined
-    const hoverStyle = rectStyle.fadeOut ? getHoverStyle(id) : { opacity: 1 };
+    const hoverOpacity = getAnimatedValue<number>(`anno-rect-opacity-${id}`, getHoverStyle(id).opacity);
     const fill: Fill = {
-      color: overrideOpacity(
-        colorToRgba(rectStyle.fill),
-        (opacity) => opacity * rectStyle.opacity * hoverStyle.opacity,
-      ),
+      color: overrideOpacity(colorToRgba(rectStyle.fill), (opacity) => opacity * rectStyle.opacity * hoverOpacity),
     };
     const stroke: Stroke = {
-      color: overrideOpacity(
-        colorToRgba(rectStyle.stroke),
-        (opacity) => opacity * rectStyle.opacity * hoverStyle.opacity,
-      ),
+      color: overrideOpacity(colorToRgba(rectStyle.stroke), (opacity) => opacity * rectStyle.opacity * hoverOpacity),
       width: rectStyle.strokeWidth,
     };
 
