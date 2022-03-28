@@ -48,6 +48,21 @@ describe('Axis stories', () => {
       'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=8.5&knob-Shorter X axis minor whiskers=true&knob-Stretch time=6.8&knob-Time zoom=120&knob-X axis minor whiskers=true&knob-fallback placement=left-start&knob-layerCount=3&knob-placement=left&knob-placement offset=5&knob-showOverlappingLabels time axis=true&knob-showOverlappingTicks time axis=true&knob-stickTo=MousePosition&knob-Horizontal axis title=&knob-Top X axis=true',
     );
   });
+  it('uses proper english ending at a daily resolution, 28th....14th', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=-5.75&knob-Stretch time=6.8&knob-Time zoom=120&knob-layerCount=3&knob-Horizontal axis title=&knob-Top X axis=&knob-showOverlappingTicks time axis=&knob-showOverlappingLabels time axis=',
+    );
+  });
+  it('uses proper english ending at a daily resolution, 9th...26th', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=-8.3&knob-Stretch time=6.8&knob-Time zoom=120&knob-layerCount=3&knob-Horizontal axis title=&knob-Top X axis=&knob-showOverlappingTicks time axis=&knob-showOverlappingLabels time axis=',
+    );
+  });
+  it('uses proper english ending at a weekly resolution', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=-8.3&knob-Stretch time=10&knob-Time zoom=120&knob-layerCount=3&knob-Horizontal axis title=&knob-Top X axis=&knob-showOverlappingTicks time axis=&knob-showOverlappingLabels time axis=',
+    );
+  });
   it('should extend the domain on the right with one bin width with custom bin width', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/bar-chart--test-discover&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Pan%20time=0&knob-Shift%20time=0&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=3.8&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-layerCount=3&knob-showOverlappingLabels%20time%20axis=true&knob-showOverlappingTicks%20time%20axis=true&knob-use%20custom%20minInterval%20of%2030s=true&knob-use%20multilayer%20time%20axis=true',
