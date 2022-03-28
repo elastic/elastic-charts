@@ -86,13 +86,16 @@ const hourFormat: Partial<ConstructorParameters<typeof Intl.DateTimeFormat>[1]> 
   hour12: false,
 };
 
-const englishOrdinalEndings = ['th', 'st', 'nd', 'rd', 'th'];
-const englishOrdinalEnding = (signedNumber: number) => {
-  const n = Math.abs(signedNumber);
-  const ones = n % 10;
-  const tens = Math.floor(n / 10) % 10;
-  return tens === 1 ? 'th' : englishOrdinalEndings[Math.min(ones, 4)];
+const englishOrdinalEndings = {
+  zero: 'th',
+  one: 'st',
+  two: 'nd',
+  few: 'rd',
+  many: 'th',
+  other: 'th',
 };
+const englishPluralRules = new Intl.PluralRules('en-US', { type: 'ordinal' });
+const englishOrdinalEnding = (signedNumber: number) => englishOrdinalEndings[englishPluralRules.select(signedNumber)];
 
 /** @internal */
 export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, timeZone: string) => {
