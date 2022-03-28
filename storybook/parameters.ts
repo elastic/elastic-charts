@@ -84,7 +84,7 @@ export const storybookParameters: Parameters = {
         // See integration/jest_puppeteer.config.js#L19-L22
         name: 'VRT Viewport',
         styles: {
-          width: '800px',
+          width: '785px',
           height: '600px',
         },
       },

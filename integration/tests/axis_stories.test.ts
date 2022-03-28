@@ -48,14 +48,14 @@ describe('Axis stories', () => {
       'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=8.5&knob-Shorter X axis minor whiskers=true&knob-Stretch time=6.8&knob-Time zoom=120&knob-X axis minor whiskers=true&knob-fallback placement=left-start&knob-layerCount=3&knob-placement=left&knob-placement offset=5&knob-showOverlappingLabels time axis=true&knob-showOverlappingTicks time axis=true&knob-stickTo=MousePosition&knob-Horizontal axis title=&knob-Top X axis=true',
     );
   });
-  it('uses proper english ending at a daily resolution, 28th....14th', async () => {
+  it('uses proper english ending at a daily resolution, 30th....14th', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=-5.75&knob-Stretch time=6.8&knob-Time zoom=120&knob-layerCount=3&knob-Horizontal axis title=&knob-Top X axis=&knob-showOverlappingTicks time axis=&knob-showOverlappingLabels time axis=',
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=-7.1&knob-Stretch time=6.6&knob-Time zoom=120&knob-layerCount=3&knob-Horizontal axis title=&knob-Top X axis=&knob-showOverlappingTicks time axis=&knob-showOverlappingLabels time axis=',
     );
   });
-  it('uses proper english ending at a daily resolution, 9th...26th', async () => {
+  it('uses proper english ending at a daily resolution, 10th...25th', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
-      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=-8.3&knob-Stretch time=6.8&knob-Time zoom=120&knob-layerCount=3&knob-Horizontal axis title=&knob-Top X axis=&knob-showOverlappingTicks time axis=&knob-showOverlappingLabels time axis=',
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=-9.8&knob-Stretch time=6.6&knob-Time zoom=120&knob-layerCount=3&knob-Horizontal axis title=&knob-Top X axis=&knob-showOverlappingTicks time axis=&knob-showOverlappingLabels time axis=',
     );
   });
   it('uses proper english ending at a weekly resolution', async () => {
