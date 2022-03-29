@@ -86,15 +86,32 @@ const hourFormat: Partial<ConstructorParameters<typeof Intl.DateTimeFormat>[1]> 
   hour12: false,
 };
 
+const englishOrdinalEndings = {
+  zero: 'th',
+  one: 'st',
+  two: 'nd',
+  few: 'rd',
+  many: 'th',
+  other: 'th',
+};
+const englishPluralRules = new Intl.PluralRules('en-US', { type: 'ordinal' });
+const englishOrdinalEnding = (signedNumber: number) => englishOrdinalEndings[englishPluralRules.select(signedNumber)];
+
 /** @internal */
 export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, timeZone: string) => {
-  const minorDayFormat = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone }).format;
+  const minorDayBaseFormat = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone }).format;
+  const minorDayFormat = (d: number) => {
+    const numberString = minorDayBaseFormat(d);
+    const number = Number.parseInt(numberString, 10);
+    return locale.substr(0, 2) === 'en' ? `${numberString}${englishOrdinalEnding(number)}` : numberString;
+  };
   const detailedDayFormat = new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
     timeZone,
   }).format;
+
   const detailedHourFormatBase = new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'short',
@@ -231,21 +248,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       }
     },
     detailedLabelFormat: detailedDayFormat,
-    minorTickLabelFormat: (d) => {
-      const numberString = minorDayFormat(d);
-      const number = Number.parseInt(numberString, 10);
-      return locale.substr(0, 2) === 'en'
-        ? `${numberString}${
-            number === 1 || number === 21 || number === 31
-              ? 'st'
-              : number === 2 || number === 22
-              ? 'nd'
-              : number === 3 || number === 23
-              ? 'rd'
-              : 'th'
-          }`
-        : numberString;
-    },
+    minorTickLabelFormat: minorDayFormat,
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
@@ -268,7 +271,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         }
       }
     },
-    minorTickLabelFormat: (d) => `${minorDayFormat(d)}th`,
+    minorTickLabelFormat: minorDayFormat,
     detailedLabelFormat: detailedDayFormat,
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
