@@ -27,7 +27,9 @@ export function renderRectAnnotations(
   renderingArea: Dimensions,
 ) {
   const getAnimatedValue = aCtx.getValue({
-    delay: 1000,
+    delay: 'slow',
+    duration: 'slow',
+    snapValues: [1],
   });
   const getFillAndStroke = (id: string): [Fill, Stroke] => {
     const hoverOpacity = getAnimatedValue<number>(`anno-rect-opacity-${id}`, getHoverStyle(id).opacity);

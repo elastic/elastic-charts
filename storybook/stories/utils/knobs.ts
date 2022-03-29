@@ -66,6 +66,13 @@ export const getTooltipTypeKnob = (
     groupId,
   );
 
+interface KnobFromEnumOptions<T extends SelectTypeKnobValue> {
+  group?: string;
+  allowUndefined?: boolean;
+  include?: T[];
+  exclude?: T[];
+}
+
 /**
  * Generates storybook knobs from const enum
  *
@@ -75,17 +82,7 @@ export const getKnobsFromEnum = <T extends SelectTypeKnobValue, O extends Record
   name: string,
   options: O,
   defaultValue: T,
-  {
-    group,
-    allowUndefined,
-    include,
-    exclude,
-  }: {
-    group?: string;
-    allowUndefined?: boolean;
-    include?: Array<T>;
-    exclude?: Array<T>;
-  } = {},
+  { group, allowUndefined, include, exclude }: KnobFromEnumOptions<T> = {},
 ): T | undefined =>
   select<T>(
     name,

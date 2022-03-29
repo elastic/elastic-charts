@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean, color, number } from '@storybook/addon-knobs';
+import { boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -15,27 +15,37 @@ import {
   Chart,
   LineAnnotation,
   LineAnnotationDatum,
-  BarSeries,
   RectAnnotation,
   ScaleType,
   Settings,
 } from '@elastic/charts';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
+import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { Position } from '@elastic/charts/src/utils/common';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getChartRotationKnob } from '../../utils/knobs';
+import { getChartRotationKnob, getXYSeriesKnob } from '../../utils/knobs';
+
+const rng = getRandomNumberGenerator();
+const randomArray = new Array(100).fill(0).map(() => rng(0, 10, 2));
 
 export const Example = () => {
   const debug = boolean('debug', false);
+  const [SeriesType] = getXYSeriesKnob(undefined, 'line');
+  const xScaleType = select(
+    'Scale type',
+    {
+      Linear: ScaleType.Linear,
+      Ordinal: ScaleType.Ordinal,
+    },
+    ScaleType.Linear,
+  );
   const rotation = getChartRotationKnob();
   const dataValues = [
     {
       coordinates: {
         x0: 0,
         x1: 0.25,
-        y0: 0,
-        y1: 7,
       },
       details: 'annotation 1',
     },
@@ -43,8 +53,6 @@ export const Example = () => {
       coordinates: {
         x0: -0.1,
         x1: 0,
-        y0: 0,
-        y1: 7,
       },
       details: 'annotation 2',
     },
@@ -99,6 +107,11 @@ export const Example = () => {
   const xAxisPosition = isBottom ? Position.Bottom : Position.Top;
   const hideTooltips = boolean('hide tooltips', false);
   const showLineAnnotations = boolean('showLineAnnotations', true);
+  const minAnnoCount = lineData.length;
+  const annotationCount = number('annotation count', minAnnoCount, { min: minAnnoCount, max: 100 });
+  randomArray.slice(0, annotationCount - minAnnoCount).forEach((dataValue) => {
+    lineData.push({ dataValue, details: `Autogen value: ${dataValue}` });
+  });
 
   return (
     <Chart>
@@ -121,9 +134,9 @@ export const Example = () => {
       )}
       <Axis id="bottom" position={xAxisPosition} title={xAxisTitle} />
       <Axis id="left" title={yAxisTitle} position={yAxisPosition} />
-      <BarSeries
-        id="lines"
-        xScaleType={ScaleType.Ordinal}
+      <SeriesType
+        id="series"
+        xScaleType={xScaleType}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}

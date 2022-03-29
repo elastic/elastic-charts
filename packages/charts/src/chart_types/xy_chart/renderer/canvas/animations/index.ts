@@ -34,56 +34,58 @@ export interface AnimationContext {
 /** @internal */
 export const getAnimationPoolFn = (
   animationState: AnimationState,
-  renderFn: (animationCtx: AnimationContext, t: number) => void,
+  renderFn: (animationCtx: AnimationContext) => void,
 ) => {
   // TODO might not need to clear raf outside of debounce
   window.cancelAnimationFrame(animationState.rafId);
   animationState.pool.forEach((a) => a.clear());
 
-  return debounce(function getAnimationPoolFnDebounce(
-    animationState: AnimationState,
-    renderFn: (animationCtx: AnimationContext, t: number) => void,
-  ) {
-    const uniquePropsForRun = new Set();
-    let renderCount = 0;
-    const getAnimatedValueFn = (t: number): AnimateFn => (options) => (prop, value) => {
-      if (t === 0 && uniquePropsForRun.has(prop)) {
-        Logger.error(`Using getAnimatedValueFn must have unique prop for every value.`);
-      }
-
-      uniquePropsForRun.add(prop);
-      if (!animationState.pool.has(prop)) {
-        animationState.pool.set(prop, new Animation(value, options));
-        return value;
-      }
-
-      const animation = animationState.pool.get(prop)!;
-
-      animation.next(value);
-
-      return animation.getValue(t);
-    };
-
-    function getAnimationContext(t: number): AnimationContext {
-      // TODO build out simplified functions for different usages
-      return {
-        getValue: getAnimatedValueFn(t),
-      };
-    }
-
-    renderFn(getAnimationContext(0), renderCount);
-
-    animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
-      const anim = (t: number) => {
-        const elapsed = moment.duration(t - epochStartTime).asMilliseconds();
-        const hasActiveAmins = [...animationState.pool.values()].some((a) => a.isActive(elapsed));
-        renderFn(getAnimationContext(elapsed), ++renderCount);
-        if (hasActiveAmins && renderCount < 100) {
-          animationState.rafId = window.requestAnimationFrame(anim);
+  return debounce(
+    function getAnimationPoolFnDebounce(
+      animationState: AnimationState,
+      renderFn: (animationCtx: AnimationContext) => void,
+    ) {
+      const uniquePropsForRun = new Set();
+      const getAnimatedValueFn = (t: number): AnimateFn => (options) => (prop, value) => {
+        if (t === 0 && uniquePropsForRun.has(prop)) {
+          Logger.error(`Using getAnimatedValueFn must have unique prop for every value.`);
         }
+
+        uniquePropsForRun.add(prop);
+        if (!animationState.pool.has(prop)) {
+          animationState.pool.set(prop, new Animation(value, options));
+          return value;
+        }
+
+        const animation = animationState.pool.get(prop)!;
+
+        animation.next(value);
+
+        return animation.getValue(t);
       };
-      animationState.rafId = window.requestAnimationFrame(anim);
-    });
-  },
-  200)(animationState, renderFn);
+
+      function getAnimationContext(t: number): AnimationContext {
+        // TODO build out simplified functions for different usages
+        return {
+          getValue: getAnimatedValueFn(t),
+        };
+      }
+
+      renderFn(getAnimationContext(0));
+
+      animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
+        const anim = (t: number) => {
+          const elapsed = moment.duration(t - epochStartTime).asMilliseconds();
+          const hasActiveAmins = [...animationState.pool.values()].some((a) => a.isActive(elapsed));
+          renderFn(getAnimationContext(elapsed));
+          if (hasActiveAmins) {
+            animationState.rafId = window.requestAnimationFrame(anim);
+          }
+        };
+        animationState.rafId = window.requestAnimationFrame(anim);
+      });
+    },
+    300,
+    { isImmediate: true }, // ensures the hovered ids are correct
+  )(animationState, renderFn);
 };

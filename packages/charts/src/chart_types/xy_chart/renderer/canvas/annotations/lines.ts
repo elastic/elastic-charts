@@ -27,16 +27,14 @@ export function renderLineAnnotations(
   renderingArea: Dimensions,
 ) {
   const getAnimatedValue = aCtx.getValue({
-    delay: 1000,
+    delay: 'slow',
+    duration: 'slow',
+    snapValues: [1],
   });
 
   const getStroke = (id: string): Stroke => {
     const op = getHoverStyle(id).opacity;
     const hoverOpacity = getAnimatedValue<number>(`anno-line-opacity-${id}`, op);
-
-    if (id === 'annotation_1________start__0') {
-      console.log({ animated: hoverOpacity, computed: op });
-    }
 
     const strokeColor = overrideOpacity(
       colorToRgba(lineStyle.line.stroke),
