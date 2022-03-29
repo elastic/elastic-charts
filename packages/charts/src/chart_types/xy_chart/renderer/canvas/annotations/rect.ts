@@ -26,13 +26,9 @@ export function renderRectAnnotations(
   rotation: Rotation,
   renderingArea: Dimensions,
 ) {
-  const getAnimatedValue = aCtx.getValue({
-    delay: 'slow',
-    duration: 'slow',
-    snapValues: [1],
-  });
+  const getAnimatedValue = aCtx.getValue(rectStyle.animations);
   const getFillAndStroke = (id: string): [Fill, Stroke] => {
-    const hoverOpacity = getAnimatedValue<number>(`anno-rect-opacity-${id}`, getHoverStyle(id).opacity);
+    const hoverOpacity = getAnimatedValue(`anno-rect-opacity-${id}`, getHoverStyle(id).opacity);
     const fill: Fill = {
       color: overrideOpacity(colorToRgba(rectStyle.fill), (opacity) => opacity * rectStyle.opacity * hoverOpacity),
     };

@@ -6,8 +6,17 @@
  * Side Public License, v 1.
  */
 
+import { $Keys } from 'utility-types';
+
+import { TimeMs } from '../../../../../common/geometry';
 import { isNil } from '../../../../../utils/common';
 import { TimeFunction, TimingFunction, TimingFunctions } from './../../../../../utils/time_functions';
+
+/**
+ * TODO add logic for other types like colors
+ * @public
+ */
+export type AnimatedValue = number;
 
 /**
  * Shared animation speeds in ms
@@ -22,19 +31,23 @@ export const AnimationSpeed = Object.freeze({
 });
 
 /** @internal */
+export type AnimationSpeed = $Keys<typeof AnimationSpeed>;
+
+/** @internal */
 export class Animation {
-  private initial: any;
-  private target: any;
-  private current: any;
-  private snapValues: any[];
+  private initial: AnimatedValue;
+  private target: AnimatedValue;
+  private current: AnimatedValue;
+  private snapValues: AnimatedValue[];
   private timeFunction: TimeFunction;
   private delay: number; // ms
   private duration: number; // ms
   private timingFn: TimingFunction = () => NaN;
 
-  constructor(initial: any, options: AnimationOptions = {}) {
+  constructor(initial: AnimatedValue, options: AnimationOptions = {}) {
     this.initial = initial;
     this.target = initial;
+    this.current = initial;
     this.delay = typeof options?.delay === 'string' ? AnimationSpeed[options.delay] : options?.delay ?? 0;
     this.duration = typeof options?.duration === 'string' ? AnimationSpeed[options.duration] : options?.duration ?? 0;
     this.timeFunction = options?.timeFunction ?? TimeFunction.linear;
@@ -49,7 +62,7 @@ export class Animation {
     return t - this.delay < this.duration;
   }
 
-  next(value: any) {
+  next(value: AnimatedValue) {
     if (this.snapValues.includes(value)) {
       this.current = value;
       this.clear();
@@ -65,7 +78,7 @@ export class Animation {
     }
   }
 
-  getValue(t: number) {
+  getValue(t: number): AnimatedValue {
     if (t < this.delay) return this.initial;
     const unitNormalizedTime = Math.max(0, Math.min(1, (t - this.delay) / this.duration));
     const value = this.timingFn(unitNormalizedTime);
@@ -80,35 +93,29 @@ export class Animation {
   }
 }
 
-interface BaseAnimationOptions {
+/** @public */
+export interface AnimationOptions {
+  /**
+   * Enables animations on annotations
+   */
+  enabled?: boolean;
   /**
    * start delay in ms
-   * @defaultValue 0
    */
-  delay?: number | keyof typeof AnimationSpeed;
+  delay?: TimeMs | AnimationSpeed;
   /**
    * Snaps back to initial value instantly
-   * @defaultValue false
    */
-  snapValues?: any[];
-}
-
-/** @internal */
-export interface TweenAnimationOptions extends BaseAnimationOptions {
+  snapValues?: AnimatedValue[];
   /**
    * The speed curve of the animation
-   * @defaultValue 'linear'
    */
   timeFunction?: TimeFunction;
   /**
    * Duration from start of animation to completion in ms
-   * @defaultValue 0
    */
-  duration?: number | keyof typeof AnimationSpeed;
+  duration?: TimeMs | AnimationSpeed;
 }
-
-/** @internal */
-export type AnimationOptions = TweenAnimationOptions;
 
 /** @internal */
 export interface AnimationState {

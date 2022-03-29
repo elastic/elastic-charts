@@ -10,13 +10,7 @@ import moment from 'moment';
 import { debounce } from 'ts-debounce';
 
 import { Logger } from './../../../../../utils/logger';
-import { Animation, AnimationOptions, AnimationState } from './animation';
-
-/**
- * TODO add logic for other types like colors
- * @internal
- */
-export type AnimatedValue = number;
+import { AnimatedValue, Animation, AnimationOptions, AnimationState } from './animation';
 
 /**
  * Function used to animate values from within a render context.
@@ -24,7 +18,7 @@ export type AnimatedValue = number;
  * `options` are applied only on initial render and never changed.
  * @internal
  */
-export type AnimateFn = (options?: AnimationOptions) => <T extends AnimatedValue>(prop: string, value: T) => T;
+export type AnimateFn = (options?: AnimationOptions) => (prop: string, value: AnimatedValue) => AnimatedValue;
 
 /** @internal */
 export interface AnimationContext {
@@ -50,6 +44,8 @@ export const getAnimationPoolFn = (
         if (t === 0 && uniquePropsForRun.has(prop)) {
           Logger.error(`Using getAnimatedValueFn must have unique prop for every value.`);
         }
+
+        if (!(options?.enabled ?? true)) return value;
 
         uniquePropsForRun.add(prop);
         if (!animationState.pool.has(prop)) {

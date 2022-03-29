@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { mergePartial } from '../common';
+import { mergePartial, RecursivePartial } from '../common';
 import { LIGHT_THEME } from './light_theme';
 import { LineAnnotationStyle, PartialTheme, RectAnnotationStyle, Theme } from './theme';
 
@@ -24,6 +24,13 @@ export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
     fill: '#777',
     padding: 0,
   },
+  animations: {
+    enabled: true,
+    duration: 'slow',
+    delay: 'slow',
+    snapValues: [1],
+    timeFunction: 'linear',
+  },
 };
 /** @public */
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
@@ -31,46 +38,23 @@ export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
   strokeWidth: 0,
   opacity: 0.25,
   fill: '#FFEEBC',
-  fadeOut: false,
+  animations: {
+    enabled: true,
+    duration: 'slow',
+    delay: 'slow',
+    snapValues: [1],
+    timeFunction: 'linear',
+  },
 };
 
 /** @public */
-export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationStyle>): LineAnnotationStyle {
-  const defaultLine = DEFAULT_ANNOTATION_LINE_STYLE.line;
-  const defaultDetails = DEFAULT_ANNOTATION_LINE_STYLE.details;
-  const mergedConfig: LineAnnotationStyle = { ...DEFAULT_ANNOTATION_LINE_STYLE };
-
-  if (!config) {
-    return mergedConfig;
-  }
-
-  if (config.line) {
-    mergedConfig.line = {
-      ...defaultLine,
-      ...config.line,
-    };
-  }
-
-  if (config.details) {
-    mergedConfig.details = {
-      ...defaultDetails,
-      ...config.details,
-    };
-  }
-
-  return mergedConfig;
+export function mergeWithDefaultAnnotationLine(config?: RecursivePartial<LineAnnotationStyle>): LineAnnotationStyle {
+  return mergePartial(DEFAULT_ANNOTATION_LINE_STYLE, config);
 }
 
 /** @public */
-export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationStyle>): RectAnnotationStyle {
-  if (!config) {
-    return DEFAULT_ANNOTATION_RECT_STYLE;
-  }
-
-  return {
-    ...DEFAULT_ANNOTATION_RECT_STYLE,
-    ...config,
-  };
+export function mergeWithDefaultAnnotationRect(config?: RecursivePartial<RectAnnotationStyle>): RectAnnotationStyle {
+  return mergePartial(DEFAULT_ANNOTATION_RECT_STYLE, config);
 }
 
 /**

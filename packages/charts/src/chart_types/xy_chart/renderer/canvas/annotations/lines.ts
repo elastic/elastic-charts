@@ -26,16 +26,9 @@ export function renderLineAnnotations(
   rotation: Rotation,
   renderingArea: Dimensions,
 ) {
-  const getAnimatedValue = aCtx.getValue({
-    delay: 'slow',
-    duration: 'slow',
-    snapValues: [1],
-  });
-
+  const getAnimatedValue = aCtx.getValue(lineStyle.animations);
   const getStroke = (id: string): Stroke => {
-    const op = getHoverStyle(id).opacity;
-    const hoverOpacity = getAnimatedValue<number>(`anno-line-opacity-${id}`, op);
-
+    const hoverOpacity = getAnimatedValue(`anno-line-opacity-${id}`, getHoverStyle(id).opacity);
     const strokeColor = overrideOpacity(
       colorToRgba(lineStyle.line.stroke),
       (opacity) => opacity * lineStyle.line.opacity * hoverOpacity,

@@ -6,25 +6,28 @@
  * Side Public License, v 1.
  */
 
-import { boolean, color, number, select } from '@storybook/addon-knobs';
+import { array, boolean, color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
+  AnnotationAnimation,
   AnnotationDomainType,
   Axis,
   Chart,
   LineAnnotation,
   LineAnnotationDatum,
   RectAnnotation,
+  RectAnnotationStyle,
   ScaleType,
   Settings,
 } from '@elastic/charts';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
-import { Position } from '@elastic/charts/src/utils/common';
+import { Position, RecursivePartial } from '@elastic/charts/src/utils/common';
+import { TimeFunction } from '@elastic/charts/src/utils/time_functions';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getChartRotationKnob, getXYSeriesKnob } from '../../utils/knobs';
+import { getChartRotationKnob, getKnobsFromEnum, getXYSeriesKnob } from '../../utils/knobs';
 
 const rng = getRandomNumberGenerator();
 const randomArray = new Array(100).fill(0).map(() => rng(0, 10, 2));
@@ -75,21 +78,25 @@ export const Example = () => {
     { dataValue: x0, details: 'start' },
     { dataValue: x1, details: 'end' },
   ]);
-  const zIndex = number('annotation zIndex', 0);
-  const style = {
-    strokeWidth: number('rect border stroke width', 1),
-    stroke: color('rect border stroke color', '#e5e5e5'),
-    fill: color('fill color', '#e5e5e5'),
-    opacity: number('annotation opacity', 0.5, {
-      range: true,
-      min: 0,
-      max: 1,
-      step: 0.1,
-    }),
-    fadeOut: boolean('fade out on hover', true),
+  const zIndex = number('annotation zIndex', 0, {}, 'Styles');
+  const rectStyle: RecursivePartial<RectAnnotationStyle> = {
+    strokeWidth: number('rect border stroke width', 1, {}, 'Styles'),
+    stroke: color('rect border stroke color', '#e5e5e5', 'Styles'),
+    fill: color('fill color', '#e5e5e5', 'Styles'),
+    opacity: number(
+      'annotation opacity',
+      0.5,
+      {
+        range: true,
+        min: 0,
+        max: 1,
+        step: 0.1,
+      },
+      'Styles',
+    ),
   };
 
-  const hasCustomTooltip = boolean('has custom tooltip render', false);
+  const hasCustomTooltip = boolean('has custom tooltip render', false, 'Styles');
 
   const customTooltip = ({ details }: { details?: string }) => (
     <div>
@@ -98,20 +105,28 @@ export const Example = () => {
     </div>
   );
 
-  const isLeft = boolean('y-domain axis is Position.Left', true);
+  const isLeft = boolean('y-domain axis is Position.Left', true, 'Styles');
   const yAxisTitle = isLeft ? 'y-domain axis (left)' : 'y-domain axis (right)';
   const yAxisPosition = isLeft ? Position.Left : Position.Right;
 
-  const isBottom = boolean('x-domain axis is Position.Bottom', true);
+  const isBottom = boolean('x-domain axis is Position.Bottom', true, 'Styles');
   const xAxisTitle = isBottom ? 'x-domain axis (botttom)' : 'x-domain axis (top)';
   const xAxisPosition = isBottom ? Position.Bottom : Position.Top;
-  const hideTooltips = boolean('hide tooltips', false);
-  const showLineAnnotations = boolean('showLineAnnotations', true);
+  const hideTooltips = boolean('hide tooltips', false, 'Styles');
+  const showLineAnnotations = boolean('showLineAnnotations', true, 'Styles');
   const minAnnoCount = lineData.length;
-  const annotationCount = number('annotation count', minAnnoCount, { min: minAnnoCount, max: 100 });
+  const annotationCount = number('annotation count', minAnnoCount, { min: minAnnoCount, max: 100 }, 'Styles');
   randomArray.slice(0, annotationCount - minAnnoCount).forEach((dataValue) => {
     lineData.push({ dataValue, details: `Autogen value: ${dataValue}` });
   });
+
+  const animations: Partial<AnnotationAnimation> = {
+    enabled: boolean('enabled', true, 'Animations'),
+    delay: number('delay (ms)', 300, { min: 0, max: 10000, step: 50 }, 'Animations'),
+    duration: number('duration (ms)', 300, { min: 0, max: 10000, step: 50 }, 'Animations'),
+    timeFunction: getKnobsFromEnum('time function', TimeFunction, 'linear', { group: 'Animations' }),
+    snapValues: array('snap values', ['1'], undefined, 'Animations').map(Number),
+  };
 
   return (
     <Chart>
@@ -119,7 +134,7 @@ export const Example = () => {
       <RectAnnotation
         dataValues={dataValues}
         id="rect"
-        style={style}
+        style={{ ...rectStyle, animations }}
         customTooltip={hasCustomTooltip ? customTooltip : undefined}
         zIndex={zIndex}
         hideTooltips={hideTooltips}
@@ -128,6 +143,7 @@ export const Example = () => {
         <LineAnnotation
           id="annotation_1"
           domainType={AnnotationDomainType.XDomain}
+          style={{ animations }}
           dataValues={lineData}
           marker={<Icon type="alert" />}
         />
@@ -156,4 +172,10 @@ export const Example = () => {
       />
     </Chart>
   );
+};
+
+Example.parameters = {
+  markdown: `Animations styles set via \`RectAnnotationStyle.animations\` or \`LineAnnotationStyle.animations\` are only read on intial
+render. Changes to these options, excluding \`enabled\`, will not be reflected on rerenders.
+`,
 };
