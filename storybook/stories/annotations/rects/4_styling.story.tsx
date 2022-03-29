@@ -66,7 +66,7 @@ export const Example = () => {
     {
       coordinates: {
         x0: 8,
-        x1: 8,
+        x1: 9,
       },
       details: 'annotation 3',
     },
