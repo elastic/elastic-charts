@@ -1,3 +1,20 @@
+# [45.1.0](https://github.com/elastic/elastic-charts/compare/v45.0.1...v45.1.0) (2022-03-29)
+
+
+### Bug Fixes
+
+* **axis:** ordinal number ending fix for the weekly resolution ([#1634](https://github.com/elastic/elastic-charts/issues/1634)) ([18b4077](https://github.com/elastic/elastic-charts/commit/18b4077f4fdb0c2b38bc351809706f5112fc2690))
+* **deps:** update dependency @elastic/eui to ^52.2.0 ([#1632](https://github.com/elastic/elastic-charts/issues/1632)) ([7e0be07](https://github.com/elastic/elastic-charts/commit/7e0be078f86453c32bb1109b0390bfd03ecb39b6))
+* **deps:** update dependency @elastic/eui to v50 ([#1622](https://github.com/elastic/elastic-charts/issues/1622)) ([0eb7975](https://github.com/elastic/elastic-charts/commit/0eb79759621e0b1b0e7df36115fd7df9589b7ce9))
+* **deps:** update dependency @elastic/eui to v51 ([#1624](https://github.com/elastic/elastic-charts/issues/1624)) ([64d87e5](https://github.com/elastic/elastic-charts/commit/64d87e58632c37f8e05ee179ab4fffb3e68233af))
+* **deps:** update dependency @elastic/eui to v52 ([#1630](https://github.com/elastic/elastic-charts/issues/1630)) ([ada254e](https://github.com/elastic/elastic-charts/commit/ada254e563807e18bd7002f41c148c6ba7e78dc7))
+* **goal:** chart placement and overlap issues ([#1620](https://github.com/elastic/elastic-charts/issues/1620)) ([b5d375b](https://github.com/elastic/elastic-charts/commit/b5d375b53499fcfb9640a4f4f18383a5f1afff1d))
+
+
+### Features
+
+* **goal:** expose max sizing limits in theme.goal options ([#1621](https://github.com/elastic/elastic-charts/issues/1621)) ([60a14ba](https://github.com/elastic/elastic-charts/commit/60a14ba87f3f63910df9aa99312dfe4b8d6ce847))
+
 ## [45.0.1](https://github.com/elastic/elastic-charts/compare/v45.0.0...v45.0.1) (2022-03-04)
 
 
