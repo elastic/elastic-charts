@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import bezier from 'bezier-easing';
 import { $Values } from 'utility-types';
 
 /** @internal */
@@ -14,18 +15,33 @@ export const TimeFunction = Object.freeze({
    * Animation with the same speed from start to end
    */
   linear: 'linear' as const,
-  // TODO add timing functions
-  // ease - Animation with a slow start, then fast, then end slowly (this is default)
-  // linear - Animation with the same speed from start to end
-  // ease-in - Animation with a slow start
-  // ease-out - Animation with a slow end
-  // ease-in-out - Animation with a slow start and end
+  /**
+   * Animation with a slow start, then fast, then end slowly (this is default)
+   */
+  ease: 'ease' as const,
+  /**
+   * Animation with a slow start
+   */
+  easeIn: 'easeIn' as const,
+  /**
+   * Animation with a slow end
+   */
+  easeOut: 'easeOut' as const,
+  /**
+   * Animation with a slow start and end
+   */
+  easeInOut: 'easeInOut' as const,
 });
 /** @internal */
 export type TimeFunction = $Values<typeof TimeFunction>;
 
+/**
+ * Unit normalized time. Value ranges between 0 and 1.
+ * @internal */
+export type UnitTime = number;
+
 /** @internal */
-export type TimingFunction = (time: number) => number;
+export type TimingFunction = (time: UnitTime) => number;
 
 /** @internal */
 export interface TimingFunctionValues {
@@ -35,9 +51,17 @@ export interface TimingFunctionValues {
   t1?: number;
 }
 
-/** @internal */
-export class TimingFunctions {
-  static linear({ y0 = 0, y1 = 0, t0 = 0, t1 = 0 }: TimingFunctionValues): TimingFunction {
-    return (t: number) => y0 + (t - t0) * ((y1 - y0) / (t1 - t0));
-  }
-}
+/**
+ * Time functions used by CSS spec
+ * See https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function
+ * @internal
+ */
+export const TimingFunctions: Record<TimeFunction, TimingFunction> = {
+  linear(t) {
+    return t;
+  },
+  ease: bezier(0.25, 0.1, 0.25, 1.0),
+  easeIn: bezier(0.42, 0.0, 1.0, 1.0),
+  easeOut: bezier(0.0, 0.0, 0.58, 1.0),
+  easeInOut: bezier(0.42, 0.0, 0.58, 1.0),
+};

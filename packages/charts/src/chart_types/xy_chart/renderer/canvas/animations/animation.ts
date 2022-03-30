@@ -70,12 +70,16 @@ export class Animation {
       this.initial = this.target;
       this.target = value;
       this.current = value;
-      this.timingFn = TimingFunctions[this.timeFunction]({
-        t1: 1,
-        y0: this.initial,
-        y1: this.target,
-      });
+      this.setTimingFn();
     }
+  }
+
+  setTimingFn() {
+    const scalar = this.target - this.initial;
+    this.timingFn = (t) => {
+      const mulitplier = TimingFunctions[this.timeFunction](t);
+      return this.initial + scalar * mulitplier;
+    };
   }
 
   getValue(t: number): AnimatedValue {
@@ -89,7 +93,7 @@ export class Animation {
   clear() {
     this.initial = this.current;
     this.target = this.current;
-    this.timingFn = () => this.current;
+    this.setTimingFn();
   }
 }
 
