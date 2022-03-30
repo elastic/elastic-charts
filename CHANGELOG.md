@@ -1,3 +1,10 @@
+## [45.1.1](https://github.com/elastic/elastic-charts/compare/v45.1.0...v45.1.1) (2022-03-30)
+
+
+### Bug Fixes
+
+* **style:** remove unnecessary eui exports ([3b8243c](https://github.com/elastic/elastic-charts/commit/3b8243c8222fc335670cf77b2013aadf9e7dcc7a))
+
 # [45.1.0](https://github.com/elastic/elastic-charts/compare/v45.0.1...v45.1.0) (2022-03-29)
 
 
