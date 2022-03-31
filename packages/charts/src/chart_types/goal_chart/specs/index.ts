@@ -47,7 +47,6 @@ export interface GoalSpec extends Spec {
   actual: number;
   bands: number[];
   ticks?: number[];
-  nice: boolean;
   bandFillColor: BandFillColorAccessor;
   tickValueFormatter: GoalLabelAccessor;
   labelMajor: string | GoalLabelAccessor;

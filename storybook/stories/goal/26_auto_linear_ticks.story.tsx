@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Goal, Settings } from '@elastic/charts';
@@ -28,6 +28,12 @@ const bandFillColor = (x: number): Color => colorMap[x];
 
 export const Example = () => {
   const reverse = boolean('reverse', false);
+  const start = number('angleStart (π)', 5 / 4, { min: -2, max: 2, step: 1 / 8 });
+  const end = number('angleEnd (π)', -1 / 4, { min: -2, max: 2, step: 1 / 8 });
+
+  const angleStart = start * Math.PI;
+  const angleEnd = end * Math.PI;
+
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
@@ -38,8 +44,8 @@ export const Example = () => {
         target={260}
         actual={280}
         bands={[200, 250, 300]}
-        angleStart={reverse ? -Math.PI / 4 : Math.PI + Math.PI / 4}
-        angleEnd={reverse ? Math.PI + Math.PI / 4 : -Math.PI / 4}
+        angleStart={reverse ? angleEnd : angleStart}
+        angleEnd={reverse ? angleStart : angleEnd}
         tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
         bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
         labelMajor=""

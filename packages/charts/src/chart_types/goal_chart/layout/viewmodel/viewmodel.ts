@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Radian } from '../../../../common/geometry';
 import { ScaleContinuous } from '../../../../scales';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
@@ -38,7 +39,6 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     bandLabels,
     angleStart,
     angleEnd,
-    nice,
   } = spec;
   const [lowestValue, highestValue] = [
     base,
@@ -50,12 +50,16 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
 
   const ticks =
     spec.ticks ??
-    new ScaleContinuous({
-      type: 'linear', // TODO allow other scale types
-      domain: [lowestValue, highestValue],
-      range: [0, chartDimensions.width], // TODO apply range based on chart rotation
-      nice,
-    }).ticks();
+    new ScaleContinuous(
+      {
+        type: 'linear',
+        domain: [lowestValue, highestValue],
+        range: [0, 1],
+      },
+      {
+        desiredTickCount: getDesiredTicks(angleStart, angleEnd),
+      },
+    ).ticks();
 
   const aboveBaseCount = bands.filter((b: number) => b > base).length;
   const belowBaseCount = bands.filter((b: number) => b <= base).length;
@@ -110,4 +114,9 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     bulletViewModel,
     pickQuads,
   };
+}
+
+function getDesiredTicks(angleStart: Radian, angleEnd: Radian) {
+  const arc = Math.abs(angleStart - angleEnd);
+  return Math.ceil(arc / (Math.PI / 4));
 }
