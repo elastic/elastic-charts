@@ -7,6 +7,7 @@
  */
 
 import { Radian } from '../../../../common/geometry';
+import { extent } from '../../../../common/math';
 import { ScaleContinuous } from '../../../../scales';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
@@ -40,13 +41,13 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     angleStart,
     angleEnd,
   } = spec;
-  const [lowestValue, highestValue] = [
+  const [lowestValue, highestValue] = extent([
     base,
     ...(target ? [target] : []),
     actual,
     ...bands,
     ...(spec.ticks ?? []),
-  ].reduce(([min, max], value) => [Math.min(min, value), Math.max(max, value)], [Infinity, -Infinity]);
+  ]);
 
   const ticks =
     spec.ticks ??
