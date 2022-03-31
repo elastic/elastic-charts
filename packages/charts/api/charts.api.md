@@ -993,6 +993,8 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     labelMinor: string | GoalLabelAccessor;
     // (undocumented)
+    nice: boolean;
+    // (undocumented)
     specType: typeof SpecType.Series;
     // Warning: (ae-forgotten-export) The symbol "GoalSubtype" needs to be exported by the entry point index.d.ts
     //
@@ -1001,7 +1003,7 @@ export interface GoalSpec extends Spec {
     // (undocumented)
     target?: number;
     // (undocumented)
-    ticks: number[];
+    ticks?: number[];
     // (undocumented)
     tickValueFormatter: GoalLabelAccessor;
     // (undocumented)
