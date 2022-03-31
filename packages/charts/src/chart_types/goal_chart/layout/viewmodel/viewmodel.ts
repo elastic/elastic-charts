@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { ScaleContinuous } from '../../../../scales';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSpec } from '../../specs';
@@ -28,7 +29,6 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     target,
     actual,
     bands,
-    ticks,
     bandFillColor,
     tickValueFormatter,
     labelMajor,
@@ -38,11 +38,24 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     bandLabels,
     angleStart,
     angleEnd,
+    nice,
   } = spec;
-  const [lowestValue, highestValue] = [base, ...(target ? [target] : []), actual, ...bands, ...ticks].reduce(
-    ([min, max], value) => [Math.min(min, value), Math.max(max, value)],
-    [Infinity, -Infinity],
-  );
+  const [lowestValue, highestValue] = [
+    base,
+    ...(target ? [target] : []),
+    actual,
+    ...bands,
+    ...(spec.ticks ?? []),
+  ].reduce(([min, max], value) => [Math.min(min, value), Math.max(max, value)], [Infinity, -Infinity]);
+
+  const ticks =
+    spec.ticks ??
+    new ScaleContinuous({
+      type: 'linear', // TODO allow other scale types
+      domain: [lowestValue, highestValue],
+      range: [0, chartDimensions.width], // TODO apply range based on chart rotation
+      nice,
+    }).ticks();
 
   const aboveBaseCount = bands.filter((b: number) => b > base).length;
   const belowBaseCount = bands.filter((b: number) => b <= base).length;

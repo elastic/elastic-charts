@@ -62,7 +62,7 @@ export type ShapeViewModel = {
 const commonDefaults = {
   base: 0,
   actual: 50,
-  ticks: [0, 25, 50, 75, 100],
+  nice: false,
 };
 
 /** @internal */
