@@ -13,6 +13,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSpec } from '../../specs';
 import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
+import { isBetween } from './../../../../utils/common';
 
 /** @internal */
 export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Dimensions): ShapeViewModel {
@@ -30,7 +31,9 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     base,
     target,
     actual,
+    ticks,
     bands,
+    domain,
     bandFillColor,
     tickValueFormatter,
     labelMajor,
@@ -41,29 +44,36 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     angleStart,
     angleEnd,
   } = spec;
-  const [lowestValue, highestValue] = extent([
-    base,
-    ...(target ? [target] : []),
-    actual,
-    ...bands,
-    ...(spec.ticks ?? []),
-  ]);
+  const [min, max] = extent([base, ...(target ? [target] : []), actual, ...(bands ?? []), ...(ticks ?? [])]);
+  const lowestValue = domain?.min ?? min;
+  const highestValue = domain?.max ?? max;
+  const finalTicks = Array.isArray(ticks)
+    ? ticks.filter(isBetween(lowestValue, highestValue))
+    : new ScaleContinuous(
+        {
+          type: 'linear',
+          domain: [lowestValue, highestValue],
+          range: [0, 1],
+        },
+        {
+          desiredTickCount: ticks ?? getDesiredTicks(angleStart, angleEnd),
+        },
+      ).ticks();
+  const finalBands = Array.isArray(bands)
+    ? bands.filter(isBetween(lowestValue, highestValue))
+    : new ScaleContinuous(
+        {
+          type: 'linear',
+          domain: [lowestValue, highestValue],
+          range: [0, 1],
+        },
+        {
+          desiredTickCount: bands ?? getDesiredTicks(angleStart, angleEnd),
+        },
+      ).ticks();
 
-  const ticks =
-    spec.ticks ??
-    new ScaleContinuous(
-      {
-        type: 'linear',
-        domain: [lowestValue, highestValue],
-        range: [0, 1],
-      },
-      {
-        desiredTickCount: getDesiredTicks(angleStart, angleEnd),
-      },
-    ).ticks();
-
-  const aboveBaseCount = bands.filter((b: number) => b > base).length;
-  const belowBaseCount = bands.filter((b: number) => b <= base).length;
+  const aboveBaseCount = finalBands.filter((b: number) => b > base).length;
+  const belowBaseCount = finalBands.filter((b: number) => b <= base).length;
 
   const callbackArgs = {
     base,
@@ -80,12 +90,12 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     base,
     target,
     actual,
-    bands: bands.map((value: number, index: number) => ({
+    bands: finalBands.map((value: number, index: number) => ({
       value,
       fillColor: bandFillColor({ value, index, ...callbackArgs }),
       text: bandLabels,
     })),
-    ticks: ticks.map((value: number, index: number) => ({
+    ticks: finalTicks.map((value: number, index: number) => ({
       value,
       text: tickValueFormatter({ value, index, ...callbackArgs }),
     })),

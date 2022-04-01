@@ -11,7 +11,7 @@ import { ComponentProps } from 'react';
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { TAU } from '../../../common/constants';
-import { Spec } from '../../../specs';
+import { DomainRange, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { LabelAccessor, round, stripUndefined, ValueFormatter } from '../../../utils/common';
@@ -45,8 +45,18 @@ export interface GoalSpec extends Spec {
   base: number;
   target?: number;
   actual: number;
-  bands: number[];
-  ticks?: number[];
+  /**
+   * array of descrete band intervals or aproximate number of desired bands
+   */
+  bands?: number | number[];
+  /**
+   * array of descrete tick values or aproximate number of desired ticks
+   */
+  ticks?: number | number[];
+  /**
+   * Domain extents of goal chart. Overrides computed extents.
+   */
+  domain?: Partial<Omit<DomainRange, 'minInterval'>>;
   bandFillColor: BandFillColorAccessor;
   tickValueFormatter: GoalLabelAccessor;
   labelMajor: string | GoalLabelAccessor;

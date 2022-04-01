@@ -6,30 +6,32 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { array, boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Goal, Settings } from '@elastic/charts';
 import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
-import { Color } from '../../../packages/charts/src/common/colors';
 import { useBaseTheme } from '../../use_base_theme';
 
 const subtype = GoalSubtype.Goal;
-
-const colorMap: { [k: number]: Color } = {
-  200: '#fc8d62',
-  250: 'lightgrey',
-  300: '#66c2a5',
-};
-
-const bandFillColor = (x: number): Color => colorMap[x];
 
 export const Example = () => {
   const reverse = boolean('reverse', false);
   const start = number('angleStart (π)', 5 / 4, { min: -2, max: 2, step: 1 / 8 });
   const end = number('angleEnd (π)', -1 / 4, { min: -2, max: 2, step: 1 / 8 });
+  const base = number('base', 0);
+  const target = number('target', 260);
+  const actual = number('actual', 280);
+  const autoMin = boolean('auto domain min', true);
+  const min = autoMin ? undefined : number('domain min', 0, { min: 0, step: 50 });
+  const autoMax = boolean('auto domain max', true);
+  const max = autoMax ? undefined : number('domain max', 300, { min, step: 50 });
+  const autoTicks = boolean('auto generate ticks', true);
+  const ticks = autoTicks ? undefined : array('ticks', ['0', '100', '200', '300']).map(Number);
+  const autoBands = boolean('auto generate bands', true);
+  const bands = autoBands ? undefined : array('bands', ['200', '250', '300']).map(Number);
 
   const angleStart = start * Math.PI;
   const angleEnd = end * Math.PI;
@@ -40,14 +42,15 @@ export const Example = () => {
       <Goal
         id="spec"
         subtype={subtype}
-        base={0}
-        target={260}
-        actual={280}
-        bands={[200, 250, 300]}
+        base={base}
+        target={target}
+        actual={actual}
+        ticks={ticks}
+        bands={bands}
+        domain={{ min, max }}
         angleStart={reverse ? angleEnd : angleStart}
         angleEnd={reverse ? angleStart : angleEnd}
         tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-        bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
         labelMajor=""
         labelMinor=""
         centralMajor="280 MB/s"
@@ -58,5 +61,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  markdown: `Leaving \`ticks\` as undefined will automatically create a linear ticks array given the domain`,
+  markdown: `Leaving \`ticks\` and/or \`bands\` as \`undefined\` will automatically generate linear values given the computed or specified domain.
+If \`ticks\` and/or \`bands\` is set to \`[]\` (empty array), no ticks or bands will be displayed, respectively`,
 };

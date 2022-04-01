@@ -67,7 +67,6 @@ const commonDefaults = {
 /** @internal */
 export const defaultGoalSpec = {
   ...commonDefaults,
-  bands: [50, 75, 100],
   bandFillColor: ({ value, highestValue, lowestValue }: BandFillColorAccessorInput) => {
     return getGreensColorScale(0.5, [highestValue, lowestValue])(value);
   },
