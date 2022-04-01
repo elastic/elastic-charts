@@ -978,8 +978,7 @@ export interface GoalSpec extends Spec {
     bandFillColor: BandFillColorAccessor;
     // (undocumented)
     bandLabels: string[];
-    // (undocumented)
-    bands: number[];
+    bands?: number | number[];
     // (undocumented)
     base: number;
     // (undocumented)
@@ -988,12 +987,11 @@ export interface GoalSpec extends Spec {
     centralMinor: string | GoalLabelAccessor;
     // (undocumented)
     chartType: typeof ChartType.Goal;
+    domain?: Partial<Omit<DomainRange, 'minInterval'>>;
     // (undocumented)
     labelMajor: string | GoalLabelAccessor;
     // (undocumented)
     labelMinor: string | GoalLabelAccessor;
-    // (undocumented)
-    nice: boolean;
     // (undocumented)
     specType: typeof SpecType.Series;
     // Warning: (ae-forgotten-export) The symbol "GoalSubtype" needs to be exported by the entry point index.d.ts
@@ -1002,8 +1000,7 @@ export interface GoalSpec extends Spec {
     subtype: GoalSubtype;
     // (undocumented)
     target?: number;
-    // (undocumented)
-    ticks?: number[];
+    ticks?: number | number[];
     // (undocumented)
     tickValueFormatter: GoalLabelAccessor;
     // (undocumented)
