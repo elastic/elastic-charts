@@ -46,11 +46,11 @@ export interface GoalSpec extends Spec {
   target?: number;
   actual: number;
   /**
-   * array of descrete band intervals or aproximate number of desired bands
+   * array of discrete band intervals or approximate number of desired bands
    */
   bands?: number | number[];
   /**
-   * array of descrete tick values or aproximate number of desired ticks
+   * Array of discrete tick values or approximate number of desired ticks
    */
   ticks?: number | number[];
   /**
