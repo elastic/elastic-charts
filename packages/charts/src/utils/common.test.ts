@@ -21,6 +21,7 @@ import {
   isDefined,
   isDefinedFrom,
   isBetween,
+  clampAll,
 } from './common';
 
 describe('common utilities', () => {
@@ -1033,6 +1034,15 @@ describe('#isDefinedFrom', () => {
     });
     it('should filter array values between min and max exclusive', () => {
       expect([1, 2, 3, 4, 5, 6].filter(isBetween(2, 5, true))).toEqual([3, 4]);
+    });
+  });
+
+  describe('#clampAll', () => {
+    it('should clamp each value in array between min and max', () => {
+      expect([0, 200, 400].reduce(...clampAll(100, 300))).toEqual([100, 200, 300]);
+    });
+    it('should clamp array values and remove duplicates', () => {
+      expect([0, 100, 200, 300, 400].reduce(...clampAll(100, 300))).toEqual([100, 200, 300]);
     });
   });
 });

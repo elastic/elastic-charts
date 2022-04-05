@@ -7,14 +7,13 @@
  */
 
 import { Radian } from '../../../../common/geometry';
-import { extent } from '../../../../common/math';
 import { ScaleContinuous } from '../../../../scales';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSpec } from '../../specs';
 import { GoalSubtype } from '../../specs/constants';
 import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
-import { isBetween } from './../../../../utils/common';
+import { clamp, clampAll, isBetween, isFiniteNumber, isNil } from './../../../../utils/common';
 
 /** @internal */
 export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Dimensions): ShapeViewModel {
@@ -29,9 +28,6 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
 
   const {
     subtype,
-    base,
-    target,
-    actual,
     ticks,
     bands,
     domain,
@@ -45,9 +41,12 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     angleStart,
     angleEnd,
   } = spec;
-  const [min, max] = extent([base, ...(target ? [target] : []), actual, ...(bands ?? []), ...(ticks ?? [])]);
-  const lowestValue = domain?.min ?? min;
-  const highestValue = domain?.max ?? max;
+  const lowestValue = isFiniteNumber(domain.min) ? domain.min : 0;
+  const highestValue = isFiniteNumber(domain.max) ? domain.max : 1;
+  const base = clamp(spec.base, lowestValue, highestValue);
+  const target =
+    !isNil(spec.target) && spec.target <= highestValue && spec.target >= lowestValue ? spec.target : undefined;
+  const actual = clamp(spec.actual, lowestValue, highestValue);
   const finalTicks = Array.isArray(ticks)
     ? ticks.filter(isBetween(lowestValue, highestValue))
     : new ScaleContinuous(
@@ -60,8 +59,9 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
           desiredTickCount: ticks ?? getDesiredTicks(subtype, angleStart, angleEnd),
         },
       ).ticks();
+
   const finalBands = Array.isArray(bands)
-    ? bands
+    ? bands.reduce(...clampAll(lowestValue, highestValue))
     : new ScaleContinuous(
         {
           type: 'linear',

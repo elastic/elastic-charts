@@ -647,8 +647,28 @@ export function stripUndefined<R extends Record<string, unknown>>(source: R): R 
 }
 
 /**
- * Returns filter callback for values between a min and max
+ * Returns `Array.filter` callback for values between a min and max
  * @internal
  */
 export const isBetween = (min: number, max: number, exclusive = false): ((n: number) => boolean) =>
   exclusive ? (n) => n < max && n > min : (n) => n <= max && n >= min;
+
+/**
+ * Returns `Array.reduce` callback to clamp values and remove duplicates
+ * @internal
+ */
+export const clampAll = (
+  min: number,
+  max: number,
+): [callbackfn: (acc: number[], value: number) => number[], initialAcc: number[]] => {
+  const seen = new Set<number>();
+  return [
+    (acc: number[], n: number) => {
+      const clampValue = clamp(n, min, max);
+      if (!seen.has(clampValue)) acc.push(clampValue);
+      seen.add(clampValue);
+      return acc;
+    },
+    [],
+  ];
+};

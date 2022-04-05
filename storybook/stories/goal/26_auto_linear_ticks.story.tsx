@@ -25,10 +25,8 @@ export const Example = () => {
   const base = number('base', 0);
   const target = number('target', 260);
   const actual = number('actual', 280);
-  const autoMin = boolean('auto domain min', true);
-  const min = autoMin ? undefined : number('domain min', 0, { min: 0, step: 50 });
-  const autoMax = boolean('auto domain max', true);
-  const max = autoMax ? undefined : number('domain max', 300, { min, step: 50 });
+  const min = number('domain min', 0, { min: 0, step: 50 });
+  const max = number('domain max', 300, { min, step: 50 });
   const autoTicks = boolean('auto generate ticks', true);
   const ticks = autoTicks ? undefined : array('ticks', ['0', '100', '200', '300']).map(Number);
   const autoBands = boolean('auto generate bands', true);
