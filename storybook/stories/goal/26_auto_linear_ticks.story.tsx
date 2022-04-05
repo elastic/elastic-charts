@@ -14,10 +14,11 @@ import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
 import { useBaseTheme } from '../../use_base_theme';
-
-const subtype = GoalSubtype.Goal;
+import { getKnobsFromEnum } from '../utils/knobs';
 
 export const Example = () => {
+  const subtype =
+    getKnobsFromEnum('subtype', GoalSubtype, GoalSubtype.VerticalBullet as GoalSubtype) ?? GoalSubtype.VerticalBullet;
   const reverse = boolean('reverse', false);
   const start = number('angleStart (π)', 5 / 4, { min: -2, max: 2, step: 1 / 8 });
   const end = number('angleEnd (π)', -1 / 4, { min: -2, max: 2, step: 1 / 8 });
@@ -51,9 +52,9 @@ export const Example = () => {
         angleStart={reverse ? angleEnd : angleStart}
         angleEnd={reverse ? angleStart : angleEnd}
         tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-        labelMajor=""
-        labelMinor=""
-        centralMajor="280 MB/s"
+        labelMajor="Speed average"
+        labelMinor={subtype === GoalSubtype.Goal ? '' : `${actual} MB/s`}
+        centralMajor={`${actual} MB/s`}
         centralMinor=""
       />
     </Chart>

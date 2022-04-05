@@ -12,6 +12,7 @@ import { ScaleContinuous } from '../../../../scales';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSpec } from '../../specs';
+import { GoalSubtype } from '../../specs/constants';
 import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
 import { isBetween } from './../../../../utils/common';
 
@@ -56,11 +57,11 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
           range: [0, 1],
         },
         {
-          desiredTickCount: ticks ?? getDesiredTicks(angleStart, angleEnd),
+          desiredTickCount: ticks ?? getDesiredTicks(subtype, angleStart, angleEnd),
         },
       ).ticks();
   const finalBands = Array.isArray(bands)
-    ? bands.filter(isBetween(lowestValue, highestValue))
+    ? bands
     : new ScaleContinuous(
         {
           type: 'linear',
@@ -68,7 +69,7 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
           range: [0, 1],
         },
         {
-          desiredTickCount: bands ?? getDesiredTicks(angleStart, angleEnd),
+          desiredTickCount: bands ?? getDesiredTicks(subtype, angleStart, angleEnd),
         },
       ).ticks();
 
@@ -127,7 +128,8 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
   };
 }
 
-function getDesiredTicks(angleStart: Radian, angleEnd: Radian) {
+function getDesiredTicks(subtype: GoalSubtype, angleStart: Radian, angleEnd: Radian) {
+  if (subtype !== GoalSubtype.Goal) return 5;
   const arc = Math.abs(angleStart - angleEnd);
   return Math.ceil(arc / (Math.PI / 4));
 }
