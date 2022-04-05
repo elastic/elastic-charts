@@ -20,6 +20,7 @@ import {
   isUniqueArray,
   isDefined,
   isDefinedFrom,
+  isBetween,
 } from './common';
 
 describe('common utilities', () => {
@@ -1024,5 +1025,14 @@ describe('#isDefinedFrom', () => {
       isDefinedFrom(({ aa }) => aa?.a !== undefined && aa?.a !== null),
     );
     expect(result).toEqual(values.slice(0, 3));
+  });
+
+  describe('#isBetween', () => {
+    it('should filter array values between min and max inclusive', () => {
+      expect([1, 2, 3, 4, 5, 6].filter(isBetween(2, 5, false))).toEqual([2, 3, 4, 5]);
+    });
+    it('should filter array values between min and max exclusive', () => {
+      expect([1, 2, 3, 4, 5, 6].filter(isBetween(2, 5, true))).toEqual([3, 4]);
+    });
   });
 });

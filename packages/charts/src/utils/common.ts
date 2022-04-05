@@ -650,4 +650,5 @@ export function stripUndefined<R extends Record<string, unknown>>(source: R): R 
  * Returns filter callback for values between a min and max
  * @internal
  */
-export const isBetween = (min: number, max: number) => (n: number) => n <= max && n >= min;
+export const isBetween = (min: number, max: number, exclusive = false): ((n: number) => boolean) =>
+  exclusive ? (n) => n < max && n > min : (n) => n <= max && n >= min;
