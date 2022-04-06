@@ -39,15 +39,18 @@ export const getAnimationPoolFn = (
       animationState: AnimationState,
       renderFn: (animationCtx: AnimationContext) => void,
     ) {
-      const uniquePropsForRun = new Set();
+      const propValuesForRun = new Map<string, number>();
       const getAnimatedValueFn = (t: number): AnimateFn => (options) => (prop, value) => {
-        if (t === 0 && uniquePropsForRun.has(prop)) {
-          Logger.error(`Using getAnimatedValueFn must have unique prop for every value.`);
+        if (t === 0 && propValuesForRun.has(prop) && propValuesForRun.get(prop) !== value) {
+          Logger.error(
+            `aCtx.getValue(\`${prop}\`, <value>) was called multiple times in a single render with different values.\
+ Please animate these values independently to avoid collisions.`,
+          );
         }
 
         if (!(options?.enabled ?? true)) return value;
 
-        uniquePropsForRun.add(prop);
+        propValuesForRun.set(prop, value);
         if (!animationState.pool.has(prop)) {
           animationState.pool.set(prop, new Animation(value, options));
         }
