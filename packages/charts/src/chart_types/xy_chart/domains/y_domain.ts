@@ -15,7 +15,15 @@ import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { getSpecDomainGroupId } from '../state/utils/spec';
 import { groupBy } from '../utils/group_data_series';
 import { DataSeries } from '../utils/series';
-import { BasicSeriesSpec, DomainPaddingUnit, SeriesScales, SeriesType, StackMode, YDomainRange } from '../utils/specs';
+import {
+  BasicSeriesSpec,
+  DomainPaddingUnit,
+  LineAnnotationSpec,
+  SeriesScales,
+  SeriesType,
+  StackMode,
+  YDomainRange,
+} from '../utils/specs';
 import { YDomain } from './types';
 
 /** @internal */
@@ -25,7 +33,11 @@ export type YBasicSeriesSpec = Pick<
 > & { stackMode?: StackMode; enableHistogramMode?: boolean };
 
 /** @internal */
-export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: ScaleConfigs['y']): YDomain[] {
+export function mergeYDomain(
+  yScaleAPIConfig: ScaleConfigs['y'],
+  dataSeries: DataSeries[],
+  annotations: LineAnnotationSpec[],
+): YDomain[] {
   const dataSeriesByGroupId = groupBy(dataSeries, ({ spec }) => getSpecDomainGroupId(spec), true);
   return dataSeriesByGroupId.reduce<YDomain[]>((acc, groupedDataSeries) => {
     const stacked = groupedDataSeries.filter(({ isStacked, isFiltered }) => isStacked && !isFiltered);
@@ -33,7 +45,7 @@ export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: ScaleCon
     const hasNonZeroBaselineTypes = groupedDataSeries.some(
       ({ seriesType, isFiltered }) => seriesType === SeriesType.Bar || (seriesType === SeriesType.Area && !isFiltered),
     );
-    const domain = mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, yScaleAPIConfig);
+    const domain = mergeYDomainForGroup(stacked, nonStacked, annotations, hasNonZeroBaselineTypes, yScaleAPIConfig);
     return domain ? [...acc, domain] : acc;
   }, []);
 }
@@ -41,6 +53,7 @@ export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: ScaleCon
 function mergeYDomainForGroup(
   stacked: DataSeries[],
   nonStacked: DataSeries[],
+  annotations: LineAnnotationSpec[],
   hasZeroBaselineSpecs: boolean,
   yScaleConfig: ScaleConfigs['y'],
 ): YDomain | null {
@@ -57,8 +70,14 @@ function mergeYDomainForGroup(
   if (isStacked && stackMode === StackMode.Percentage) {
     mergedDomain = computeContinuousDataDomain([0, 1], type, customDomain);
   } else {
-    const stackedDomain = computeYDomain(stacked, hasZeroBaselineSpecs, type, newCustomDomain);
-    const nonStackedDomain = computeYDomain(nonStacked, hasZeroBaselineSpecs, type, newCustomDomain);
+    const annotationData =
+      newCustomDomain.fitAnnotations ?? newCustomDomain.fit
+        ? annotations
+            .filter((a) => a.groupId === groupId)
+            .flatMap(({ dataValues }) => dataValues.map(({ dataValue }) => dataValue))
+        : [];
+    const stackedDomain = computeYDomain(stacked, annotationData, hasZeroBaselineSpecs, type, newCustomDomain);
+    const nonStackedDomain = computeYDomain(nonStacked, annotationData, hasZeroBaselineSpecs, type, newCustomDomain);
     mergedDomain = computeContinuousDataDomain([...stackedDomain, ...nonStackedDomain], type, newCustomDomain);
     const [computedDomainMin, computedDomainMax] = mergedDomain;
 
@@ -98,6 +117,7 @@ function mergeYDomainForGroup(
 
 function computeYDomain(
   dataSeries: DataSeries[],
+  annotationYValues: any[],
   hasZeroBaselineSpecs: boolean,
   scaleType: ScaleType,
   customDomain: YDomainRange,
@@ -114,7 +134,7 @@ function computeYDomain(
   }
   // padding already applied, set to 0 here to avoid duplicating
   const domainOptions = { ...customDomain, padding: 0 };
-  return computeContinuousDataDomain([...yValues], scaleType, domainOptions);
+  return computeContinuousDataDomain([...yValues, ...annotationYValues], scaleType, domainOptions);
 }
 
 /** @internal */

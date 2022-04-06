@@ -46,6 +46,8 @@ import {
   isBandedSpec,
 } from '../../utils/series';
 import {
+  AnnotationDomainType,
+  AnnotationSpec,
   AxisSpec,
   BasicSeriesSpec,
   Fit,
@@ -55,7 +57,9 @@ import {
   isAreaSeriesSpec,
   isBarSeriesSpec,
   isBubbleSeriesSpec,
+  isLineAnnotation,
   isLineSeriesSpec,
+  LineAnnotationSpec,
 } from '../../utils/specs';
 import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales';
 import { ScaleConfigs } from '../selectors/get_api_scale_configs';
@@ -116,6 +120,7 @@ export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   scaleConfigs: ScaleConfigs,
   deselectedDataSeries: SeriesIdentifier[] = [],
+  annotations: AnnotationSpec[],
   settingsSpec?: Pick<SettingsSpec, 'orderOrdinalBinsBy'>,
   smallMultiples?: SmallMultiplesGroupBy,
 ): SeriesDomainsAndData {
@@ -139,9 +144,10 @@ export function computeSeriesDomains(
   const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.type).sort(
     seriesSortFn,
   );
+  const yDomainAnnotations = getYLineAnnotationSpecs(annotations);
 
   // let's compute the yDomains after computing all stacked values
-  const yDomains = mergeYDomain(formattedDataSeries, scaleConfigs.y);
+  const yDomains = mergeYDomain(scaleConfigs.y, formattedDataSeries, yDomainAnnotations);
 
   // sort small multiples values
   const horizontalPredicate = smallMultiples?.horizontal?.sort ?? Predicate.DataIndex;
@@ -157,6 +163,10 @@ export function computeSeriesDomains(
     smVDomain,
     formattedDataSeries,
   };
+}
+
+function getYLineAnnotationSpecs(annotations: AnnotationSpec[]): LineAnnotationSpec[] {
+  return annotations.filter(isLineAnnotation).filter(({ domainType }) => domainType === AnnotationDomainType.YDomain);
 }
 
 /** @internal */

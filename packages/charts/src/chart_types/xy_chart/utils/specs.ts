@@ -326,6 +326,13 @@ export interface YDomainBase {
    */
   fit?: boolean;
   /**
+   * Whether to fit the domain to annotstion data values.
+   *
+   * Setting `max` or `min` will override this functionality.
+   * @defaultValue YDomainBase.fit
+   */
+  fitAnnotations?: boolean;
+  /**
    * Padding for computed domain as positive number.
    * Applied to domain __before__ nicing
    *
