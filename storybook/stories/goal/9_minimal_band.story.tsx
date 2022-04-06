@@ -32,6 +32,7 @@ export const Example = () => (
       base={0}
       target={225}
       actual={0}
+      domain={{ min: 0, max: 300 }}
       bands={[300]}
       ticks={[0, 50, 100, 150, 200, 250, 300]}
       tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}

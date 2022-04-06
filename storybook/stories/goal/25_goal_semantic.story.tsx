@@ -39,7 +39,7 @@ export const Example = () => {
         base={0}
         target={260}
         actual={170}
-        // doesn't mess with canvas_renderers.ts
+        domain={{ min: 0, max: 300 }}
         bands={bands}
         ticks={[0, 50, 100, 150, 200, 250, 300]}
         tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
