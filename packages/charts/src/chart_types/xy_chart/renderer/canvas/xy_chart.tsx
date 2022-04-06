@@ -133,6 +133,10 @@ class XYChartComponent extends React.Component<XYChartProps> {
     }
   }
 
+  componentWillUnmount() {
+    window.cancelAnimationFrame(this.animationState.rafId);
+  }
+
   private drawCanvas() {
     if (this.ctx) {
       const { renderingArea, rotation } = this.props;

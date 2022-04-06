@@ -29,15 +29,12 @@ export const getAnimationPoolFn = (
   animationState: AnimationState,
   renderFn: (animationCtx: AnimationContext) => void,
 ) => {
-  // TODO might not need to clear raf outside of debounce
+  // Must clear raf outside of debounce to maintain active state
   window.cancelAnimationFrame(animationState.rafId);
   animationState.pool.forEach((a) => a.clear());
 
   return debounce(
-    function getAnimationPoolFnDebounce(
-      animationState: AnimationState,
-      renderFn: (animationCtx: AnimationContext) => void,
-    ) {
+    function getAnimationPoolFnDebounce() {
       const propValuesForRun = new Map<string, number>();
       const getAnimatedValueFn = (t: number): AnimateFn => (options) => (prop, value) => {
         if (t === 0 && propValuesForRun.has(prop) && propValuesForRun.get(prop) !== value) {
@@ -74,9 +71,13 @@ export const getAnimationPoolFn = (
       animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
         const anim = (t: number) => {
           const elapsed = t - epochStartTime;
-          const hasActiveAnimations = [...animationState.pool.values()].some((a) => a.isActive(elapsed));
-          renderFn(getAnimationContext(elapsed));
-          if (hasActiveAnimations) {
+          const animations = [...animationState.pool.values()];
+
+          // skips render if all animations are actively delayed
+          if (!animations.every((a) => a.isDelayed(elapsed))) {
+            renderFn(getAnimationContext(elapsed));
+          }
+          if (animations.some((a) => a.isActive(elapsed))) {
             animationState.rafId = window.requestAnimationFrame(anim);
           }
         };
@@ -85,5 +86,5 @@ export const getAnimationPoolFn = (
     },
     300,
     { isImmediate: true }, // ensures the hovered ids are correct
-  )(animationState, renderFn);
+  )();
 };

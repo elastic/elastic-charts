@@ -40,8 +40,8 @@ export class Animation {
   private current: AnimatedValue;
   private snapValues: AnimatedValue[];
   private timeFunction: TimeFunction;
-  private delay: number; // ms
-  private duration: number; // ms
+  private delay: TimeMs;
+  private duration: TimeMs;
   private timingFn: TimingFunction = () => NaN;
 
   constructor(value: AnimatedValue, options: AnimationOptions = {}) {
@@ -61,7 +61,11 @@ export class Animation {
     }
   }
 
-  isActive(t: number) {
+  isDelayed(t: TimeMs) {
+    return t < this.delay;
+  }
+
+  isActive(t: TimeMs) {
     if (!isFiniteNumber(this.initial) || !isFiniteNumber(this.initial) || this.initial === this.target) {
       return false;
     }
@@ -80,7 +84,7 @@ export class Animation {
     }
   }
 
-  setTimingFn() {
+  private setTimingFn() {
     const scalar = this.target - this.initial;
     this.timingFn = (t) => {
       const mulitplier = TimingFunctions[this.timeFunction](t);
@@ -88,8 +92,8 @@ export class Animation {
     };
   }
 
-  getValue(t: number): AnimatedValue {
-    if (t < this.delay) return this.initial;
+  getValue(t: TimeMs): AnimatedValue {
+    if (this.isDelayed(t)) return this.initial;
     const unitNormalizedTime = Math.max(0, Math.min(1, (t - this.delay) / this.duration));
     const value = this.timingFn(unitNormalizedTime);
     this.current = value; // need to set for clear to be called with no time value
@@ -120,7 +124,7 @@ export interface AnimationOptions {
    * atx.getValue('bar-height', 100, { initialValue: 0 })
    * ```
    */
-  initialValue?: number;
+  initialValue?: AnimatedValue;
   /**
    * start delay in ms
    */
