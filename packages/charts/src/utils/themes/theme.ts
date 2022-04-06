@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { $Values } from 'utility-types';
+import { $Values, Optional } from 'utility-types';
 
 import { AnimationOptions } from '../../chart_types/xy_chart/renderer/canvas/animations/animation';
 import { Color } from '../../common/colors';
@@ -699,7 +699,7 @@ export interface CrosshairStyle {
 }
 
 /** @public */
-export type AnnotationAnimation = Required<AnimationOptions>;
+export type AnnotationAnimation = Optional<Required<AnimationOptions>, 'initialValue'>;
 
 /**
  * The style for a linear annotation

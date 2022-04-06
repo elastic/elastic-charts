@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { AnimationSpeed } from '../../chart_types/xy_chart/renderer/canvas/animations/animation';
 import { mergePartial, RecursivePartial } from '../common';
 import { LIGHT_THEME } from './light_theme';
 import { LineAnnotationStyle, PartialTheme, RectAnnotationStyle, Theme } from './theme';
@@ -26,8 +27,8 @@ export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
   },
   animations: {
     enabled: true,
-    duration: 'slow',
-    delay: 'slow',
+    duration: AnimationSpeed.slow,
+    delay: AnimationSpeed.slow,
     snapValues: [1],
     timeFunction: 'linear',
   },
@@ -40,8 +41,8 @@ export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
   fill: '#FFEEBC',
   animations: {
     enabled: true,
-    duration: 'slow',
-    delay: 'slow',
+    duration: AnimationSpeed.slow,
+    delay: AnimationSpeed.slow,
     snapValues: [1],
     timeFunction: 'linear',
   },
