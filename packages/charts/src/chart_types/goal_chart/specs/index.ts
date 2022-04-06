@@ -39,7 +39,13 @@ export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
 
 /** @alpha */
 export interface GoalDomainRange {
+  /**
+   * A finite number to defined the lower bound of the domain. Defaults to 0 if _not_ finite.
+   */
   min: number;
+  /**
+   * A finite number to defined the upper bound of the domain. Defaults to 1 if _not_ finite.
+   */
   max: number;
 }
 
@@ -60,7 +66,7 @@ export interface GoalSpec extends Spec {
    */
   ticks?: number | number[];
   /**
-   * Domain extents of goal chart. Overrides computed extents.
+   * Domain of goal charts. Limits every value to within domain.
    */
   domain: GoalDomainRange;
   bandFillColor: BandFillColorAccessor;

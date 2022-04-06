@@ -60,6 +60,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  markdown: `Leaving \`ticks\` and/or \`bands\` as \`undefined\` will automatically generate linear values given the computed or specified domain.
+  markdown: `Leaving \`ticks\` and/or \`bands\` as \`undefined\` will automatically generate linear values given the specified domain.
 If \`ticks\` and/or \`bands\` is set to \`[]\` (empty array), no ticks or bands will be displayed, respectively`,
 };
