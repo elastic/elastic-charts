@@ -62,13 +62,11 @@ export type ShapeViewModel = {
 const commonDefaults = {
   base: 0,
   actual: 50,
-  ticks: [0, 25, 50, 75, 100],
 };
 
 /** @internal */
 export const defaultGoalSpec = {
   ...commonDefaults,
-  bands: [50, 75, 100],
   bandFillColor: ({ value, highestValue, lowestValue }: BandFillColorAccessorInput) => {
     return getGreensColorScale(0.5, [highestValue, lowestValue])(value);
   },
