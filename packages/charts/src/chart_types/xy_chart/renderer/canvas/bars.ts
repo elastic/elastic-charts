@@ -13,6 +13,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { BarGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
+import { AnimationContext } from './animations';
 import { renderRect } from './primitives/rect';
 import { buildBarStyle } from './styles/bar';
 import { withPanelTransform } from './utils/panel_transform';
@@ -20,6 +21,7 @@ import { withPanelTransform } from './utils/panel_transform';
 /** @internal */
 export function renderBars(
   ctx: CanvasRenderingContext2D,
+  aCtx: AnimationContext,
   imgCanvas: HTMLCanvasElement,
   geoms: Array<PerPanel<BarGeometry[]>>,
   sharedStyle: SharedGeometryStateStyle,
@@ -35,8 +37,17 @@ export function renderBars(
       rotation,
       renderingArea,
       () =>
-        bars.forEach((barGeometry) => {
-          const { x, y, width, height, color, seriesStyle: style, seriesIdentifier } = barGeometry;
+        bars.forEach((barGeometry, i) => {
+          const { x, width, color, seriesStyle: style, seriesIdentifier } = barGeometry;
+          const height = aCtx.getValue({ initialValue: 0, duration: 400 })(
+            `bar-${i}-${seriesIdentifier.key}-height`,
+            barGeometry.height,
+          );
+          const y = aCtx.getValue({ initialValue: barGeometry.y + barGeometry.height, duration: 400 })(
+            `bar-${i}-${seriesIdentifier.key}-y`,
+            barGeometry.y,
+          );
+
           const rect = { x, y, width, height };
           const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
           const barStyle = buildBarStyle(ctx, imgCanvas, color, style.rect, style.rectBorder, geometryStateStyle, rect);
