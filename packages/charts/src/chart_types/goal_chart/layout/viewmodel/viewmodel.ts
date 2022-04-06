@@ -6,10 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { Radian } from '../../../../common/geometry';
+import { ScaleContinuous } from '../../../../scales';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSpec } from '../../specs';
+import { GoalSubtype } from '../../specs/constants';
 import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
+import { clamp, clampAll, isBetween, isFiniteNumber, isNil } from './../../../../utils/common';
 
 /** @internal */
 export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Dimensions): ShapeViewModel {
@@ -24,11 +28,9 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
 
   const {
     subtype,
-    base,
-    target,
-    actual,
-    bands,
     ticks,
+    bands,
+    domain,
     bandFillColor,
     tickValueFormatter,
     labelMajor,
@@ -39,13 +41,40 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     angleStart,
     angleEnd,
   } = spec;
-  const [lowestValue, highestValue] = [base, ...(target ? [target] : []), actual, ...bands, ...ticks].reduce(
-    ([min, max], value) => [Math.min(min, value), Math.max(max, value)],
-    [Infinity, -Infinity],
-  );
+  const lowestValue = isFiniteNumber(domain.min) ? domain.min : 0;
+  const highestValue = isFiniteNumber(domain.max) ? domain.max : 1;
+  const base = clamp(spec.base, lowestValue, highestValue);
+  const target =
+    !isNil(spec.target) && spec.target <= highestValue && spec.target >= lowestValue ? spec.target : undefined;
+  const actual = clamp(spec.actual, lowestValue, highestValue);
+  const finalTicks = Array.isArray(ticks)
+    ? ticks.filter(isBetween(lowestValue, highestValue))
+    : new ScaleContinuous(
+        {
+          type: 'linear',
+          domain: [lowestValue, highestValue],
+          range: [0, 1],
+        },
+        {
+          desiredTickCount: ticks ?? getDesiredTicks(subtype, angleStart, angleEnd),
+        },
+      ).ticks();
 
-  const aboveBaseCount = bands.filter((b: number) => b > base).length;
-  const belowBaseCount = bands.filter((b: number) => b <= base).length;
+  const finalBands = Array.isArray(bands)
+    ? bands.reduce(...clampAll(lowestValue, highestValue))
+    : new ScaleContinuous(
+        {
+          type: 'linear',
+          domain: [lowestValue, highestValue],
+          range: [0, 1],
+        },
+        {
+          desiredTickCount: bands ?? getDesiredTicks(subtype, angleStart, angleEnd),
+        },
+      ).ticks();
+
+  const aboveBaseCount = finalBands.filter((b: number) => b > base).length;
+  const belowBaseCount = finalBands.filter((b: number) => b <= base).length;
 
   const callbackArgs = {
     base,
@@ -62,12 +91,12 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     base,
     target,
     actual,
-    bands: bands.map((value: number, index: number) => ({
+    bands: finalBands.map((value: number, index: number) => ({
       value,
       fillColor: bandFillColor({ value, index, ...callbackArgs }),
       text: bandLabels,
     })),
-    ticks: ticks.map((value: number, index: number) => ({
+    ticks: finalTicks.map((value: number, index: number) => ({
       value,
       text: tickValueFormatter({ value, index, ...callbackArgs }),
     })),
@@ -97,4 +126,10 @@ export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Di
     bulletViewModel,
     pickQuads,
   };
+}
+
+function getDesiredTicks(subtype: GoalSubtype, angleStart: Radian, angleEnd: Radian) {
+  if (subtype !== GoalSubtype.Goal) return 5;
+  const arc = Math.abs(angleStart - angleEnd);
+  return Math.ceil(arc / (Math.PI / 4));
 }
