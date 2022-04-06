@@ -960,9 +960,7 @@ export const Goal: (props: SFProps<GoalSpec, keyof typeof buildProps['overrides'
 
 // @alpha (undocumented)
 export interface GoalDomainRange {
-    // (undocumented)
     max: number;
-    // (undocumented)
     min: number;
 }
 
