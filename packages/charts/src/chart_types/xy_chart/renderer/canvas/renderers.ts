@@ -93,7 +93,6 @@ export function renderXYChartCanvas2d(
         () =>
           renderBars(
             ctx,
-            aCtx,
             imgCanvas,
             geometries.bars,
             sharedStyle,
