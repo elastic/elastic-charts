@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import moment from 'moment';
 import { debounce } from 'ts-debounce';
 
 import { Logger } from './../../../../../utils/logger';
@@ -74,10 +73,10 @@ export const getAnimationPoolFn = (
 
       animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
         const anim = (t: number) => {
-          const elapsed = moment.duration(t - epochStartTime).asMilliseconds();
-          const hasActiveAmins = [...animationState.pool.values()].some((a) => a.isActive(elapsed));
+          const elapsed = t - epochStartTime;
+          const hasActiveAnimations = [...animationState.pool.values()].some((a) => a.isActive(elapsed));
           renderFn(getAnimationContext(elapsed));
-          if (hasActiveAmins) {
+          if (hasActiveAnimations) {
             animationState.rafId = window.requestAnimationFrame(anim);
           }
         };

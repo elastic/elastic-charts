@@ -9,7 +9,7 @@
 import { $Keys } from 'utility-types';
 
 import { TimeMs } from '../../../../../common/geometry';
-import { isNil } from '../../../../../utils/common';
+import { isFiniteNumber } from '../../../../../utils/common';
 import { TimeFunction, TimingFunction, TimingFunctions } from './../../../../../utils/time_functions';
 
 /**
@@ -48,7 +48,7 @@ export class Animation {
     this.initial = options?.initialValue ?? value;
     this.current = options?.initialValue ?? value;
     this.target = value;
-    this.delay = typeof options?.delay === 'string' ? AnimationSpeed[options.delay] : options?.delay ?? 0;
+    this.delay = (typeof options?.delay === 'string' ? AnimationSpeed[options.delay] : options?.delay) ?? 0;
     this.duration =
       typeof options?.duration === 'string'
         ? AnimationSpeed[options.duration]
@@ -62,7 +62,7 @@ export class Animation {
   }
 
   isActive(t: number) {
-    if (isNil(this.initial) || isNil(this.target) || this.initial === this.target) {
+    if (!isFiniteNumber(this.initial) || !isFiniteNumber(this.initial) || this.initial === this.target) {
       return false;
     }
 

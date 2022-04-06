@@ -251,8 +251,8 @@ export function getAnnotationRectPropsId(
   specId: string,
   datum: RectAnnotationDatum,
   index: number,
-  verticalValue?: any,
-  horizontalValue?: any,
+  verticalValue: number | string,
+  horizontalValue: number | string,
 ) {
   return [specId, verticalValue, horizontalValue, ...Object.values(datum.coordinates), datum.details, index].join('__');
 }

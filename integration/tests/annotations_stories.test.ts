@@ -23,33 +23,16 @@ describe('Annotations stories', () => {
     const getUrl = (rotation: Rotation) =>
       `http://localhost:9001/?path=/story/annotations-rects--styling&knob-showLineAnnotations=true&knob-chartRotation=${rotation}`;
 
-    describe('Horizontal rotation', () => {
-      it('should fade all other annotations when line marker is hovered', async () => {
-        await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(0), {
-          bottom: 52,
-          left: 315,
-        });
-      });
-      it('should fade all other annotations when rect annotation is hovered', async () => {
-        await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(0), {
-          bottom: 200,
-          left: 338,
-        });
+    it('should fade all other annotations when line marker is hovered', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(0), {
+        bottom: 52,
+        left: 315,
       });
     });
-
-    describe('Vertical rotation', () => {
-      it('should fade all other annotations when line marker is hovered', async () => {
-        await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(90), {
-          top: 140,
-          left: 56,
-        });
-      });
-      it('should fade all other annotations when rect annotation is hovered', async () => {
-        await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(90), {
-          bottom: 90,
-          left: 300,
-        });
+    it('should fade all other annotations when rect annotation is hovered', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(0), {
+        bottom: 200,
+        left: 338,
       });
     });
   });

@@ -73,7 +73,7 @@ export function computeMultipleRectAnnotationTooltipState(
     .filter(isRectAnnotation)
     .sort(({ zIndex: a = Number.MIN_SAFE_INTEGER }, { zIndex: b = Number.MIN_SAFE_INTEGER }) => a - b);
   return sortedAnnotationSpecs.reduce<AnnotationTooltipState[]>((acc, spec) => {
-    const annotationDimension = annotationDimensions.get(spec.id) as AnnotationRectProps[];
+    const annotationDimension = annotationDimensions.get(spec.id);
     if (!spec.hideTooltips && annotationDimension) {
       const { customTooltip, customTooltipDetails } = spec;
 
@@ -81,7 +81,7 @@ export function computeMultipleRectAnnotationTooltipState(
 
       const rectAnnotationTooltipState = getRectAnnotationTooltipState(
         cursorPosition,
-        annotationDimension,
+        annotationDimension as AnnotationRectProps[],
         chartRotation,
         chartDimensions,
         spec.id,
