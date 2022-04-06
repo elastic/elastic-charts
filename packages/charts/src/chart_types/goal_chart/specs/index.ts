@@ -37,7 +37,7 @@ export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color
 /** @alpha */
 export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
 
-/** @internal */
+/** @alpha */
 export interface GoalDomainRange {
   min: number;
   max: number;
