@@ -135,6 +135,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
   componentWillUnmount() {
     window.cancelAnimationFrame(this.animationState.rafId);
+    this.animationState.pool.clear();
   }
 
   private drawCanvas() {
