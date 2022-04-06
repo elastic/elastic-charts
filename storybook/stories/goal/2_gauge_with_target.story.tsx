@@ -66,6 +66,7 @@ export const Example = () => {
         actual={actual}
         bands={bands}
         ticks={ticks}
+        domain={{ min: 0, max: 300 }}
         tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
         bandFillColor={useColors ? ({ value }: BandFillColorAccessorInput) => bandFillColor(value) : undefined}
         labelMajor="Revenue 2020 YTD  "
