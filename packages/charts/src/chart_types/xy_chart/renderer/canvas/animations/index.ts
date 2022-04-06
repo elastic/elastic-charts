@@ -50,10 +50,10 @@ export const getAnimationPoolFn = (
         uniquePropsForRun.add(prop);
         if (!animationState.pool.has(prop)) {
           animationState.pool.set(prop, new Animation(value, options));
-          return value;
         }
 
-        const animation = animationState.pool.get(prop)!;
+        const animation = animationState.pool.get(prop);
+        if (!animation) return value;
 
         animation.next(value);
 

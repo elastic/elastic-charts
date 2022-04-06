@@ -44,14 +44,21 @@ export class Animation {
   private duration: number; // ms
   private timingFn: TimingFunction = () => NaN;
 
-  constructor(initial: AnimatedValue, options: AnimationOptions = {}) {
-    this.initial = initial;
-    this.target = initial;
-    this.current = initial;
+  constructor(value: AnimatedValue, options: AnimationOptions = {}) {
+    this.initial = options?.initialValue ?? value;
+    this.current = options?.initialValue ?? value;
+    this.target = value;
     this.delay = typeof options?.delay === 'string' ? AnimationSpeed[options.delay] : options?.delay ?? 0;
-    this.duration = typeof options?.duration === 'string' ? AnimationSpeed[options.duration] : options?.duration ?? 0;
+    this.duration =
+      typeof options?.duration === 'string'
+        ? AnimationSpeed[options.duration]
+        : options?.duration ?? AnimationSpeed.slow;
     this.timeFunction = options?.timeFunction ?? TimeFunction.linear;
     this.snapValues = options?.snapValues ?? [];
+
+    if (options.hasOwnProperty('initialValue')) {
+      this.setTimingFn();
+    }
   }
 
   isActive(t: number) {
@@ -67,9 +74,8 @@ export class Animation {
       this.current = value;
       this.clear();
     } else if (this.target !== value) {
-      this.initial = this.target;
+      this.initial = this.current;
       this.target = value;
-      this.current = value;
       this.setTimingFn();
     }
   }
@@ -103,6 +109,18 @@ export interface AnimationOptions {
    * Enables animations on annotations
    */
   enabled?: boolean;
+  /**
+   * Set initial value for initial render animations.
+   * By default the initial value is determined on the initial render
+   * then animtes any change thereafter.
+   *
+   * @example
+   * ```ts
+   * // Initially animates the height from 0 to 100 with no value change
+   * atx.getValue('bar-height', 100, { initialValue: 0 })
+   * ```
+   */
+  initialValue?: number;
   /**
    * start delay in ms
    */
