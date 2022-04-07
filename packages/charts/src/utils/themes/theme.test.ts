@@ -7,6 +7,7 @@
  */
 
 import { Margins } from '../dimensions';
+import { TimeFunction } from '../time_functions';
 import { DARK_THEME } from './dark_theme';
 import { LIGHT_THEME } from './light_theme';
 import {
@@ -16,7 +17,15 @@ import {
   mergeWithDefaultAnnotationRect,
   mergeWithDefaultTheme,
 } from './merge_utils';
-import { AreaSeriesStyle, LineSeriesStyle, PartialTheme, TextStyle, Theme } from './theme';
+import {
+  AreaSeriesStyle,
+  LineAnnotationStyle,
+  LineSeriesStyle,
+  PartialTheme,
+  RectAnnotationStyle,
+  TextStyle,
+  Theme,
+} from './theme';
 
 describe('Theme', () => {
   let CLONED_LIGHT_THEME: Theme;
@@ -65,19 +74,59 @@ describe('Theme', () => {
         padding: 0,
       };
 
-      const expectedMergedCustomLineConfig = { line: customLineConfig, details: defaultDetailsConfig };
+      const customAnimationsConfig = {
+        delay: 100,
+        duration: 100,
+        enabled: false,
+        snapValues: [],
+        timeFunction: TimeFunction.ease,
+      };
+
+      const defaultAnimationsConfig = {
+        delay: 350,
+        duration: 350,
+        enabled: true,
+        snapValues: [1],
+        timeFunction: TimeFunction.linear,
+      };
+
+      const expectedMergedCustomLineConfig = {
+        line: customLineConfig,
+        details: defaultDetailsConfig,
+        animations: defaultAnimationsConfig,
+      } as LineAnnotationStyle;
       const mergedCustomLineConfig = mergeWithDefaultAnnotationLine({ line: customLineConfig });
       expect(mergedCustomLineConfig).toEqual(expectedMergedCustomLineConfig);
 
-      const expectedMergedCustomDetailsConfig = { line: defaultLineConfig, details: customDetailsConfig };
+      const expectedMergedCustomDetailsConfig = {
+        line: defaultLineConfig,
+        details: customDetailsConfig,
+        animations: defaultAnimationsConfig,
+      } as LineAnnotationStyle;
       const mergedCustomDetailsConfig = mergeWithDefaultAnnotationLine({ details: customDetailsConfig });
       expect(mergedCustomDetailsConfig).toEqual(expectedMergedCustomDetailsConfig);
+
+      const expectedMergedCustomAnimationsConfig = {
+        line: defaultLineConfig,
+        details: defaultDetailsConfig,
+        animations: customAnimationsConfig,
+      } as LineAnnotationStyle;
+      const mergedCustomAnimationsConfig = mergeWithDefaultAnnotationLine({ animations: customAnimationsConfig });
+      expect(mergedCustomAnimationsConfig).toEqual(expectedMergedCustomAnimationsConfig);
     });
   });
 
   describe('mergeWithDefaultAnnotationRect', () => {
     it('should merge custom and default rect annotation style', () => {
       expect(mergeWithDefaultAnnotationRect()).toEqual(DEFAULT_ANNOTATION_RECT_STYLE);
+
+      const defaultAnimationsConfig = {
+        delay: 350,
+        duration: 350,
+        enabled: true,
+        snapValues: [1],
+        timeFunction: TimeFunction.linear,
+      };
 
       const customConfig = {
         stroke: 'customStroke',
@@ -89,9 +138,25 @@ describe('Theme', () => {
         fill: 'customFill',
         opacity: 0.25,
         strokeWidth: 0,
+        animations: defaultAnimationsConfig,
+      };
+
+      const customAnimationsConfig = {
+        delay: 100,
+        duration: 100,
+        enabled: false,
+        snapValues: [],
+        timeFunction: TimeFunction.ease,
       };
 
       expect(mergeWithDefaultAnnotationRect(customConfig)).toEqual(expectedMergedConfig);
+
+      const expectedMergedCustomAnimationsConfig = {
+        ...DEFAULT_ANNOTATION_RECT_STYLE,
+        animations: customAnimationsConfig,
+      } as RectAnnotationStyle;
+      const mergedCustomAnimationsConfig = mergeWithDefaultAnnotationRect({ animations: customAnimationsConfig });
+      expect(mergedCustomAnimationsConfig).toEqual(expectedMergedCustomAnimationsConfig);
     });
   });
 
