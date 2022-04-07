@@ -11,6 +11,8 @@ import { debounce } from 'ts-debounce';
 import { Logger } from './../../../../../utils/logger';
 import { AnimatedValue, Animation, AnimationOptions, AnimationState } from './animation';
 
+const DISABLE_ANIMATIONS = Boolean(process.env.VRT);
+
 /**
  * Function used to animate values from within a render context.
  *
@@ -44,7 +46,7 @@ export const getAnimationPoolFn = (
           );
         }
 
-        if (!(options?.enabled ?? true)) return value;
+        if (DISABLE_ANIMATIONS || !(options?.enabled ?? true)) return value;
 
         propValuesForRun.set(prop, value);
         if (!animationState.pool.has(prop)) {

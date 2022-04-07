@@ -41,11 +41,7 @@ const MAX_CYCLES = 0;
 let numCyclesDetected = 0;
 
 module.exports = ({ config }) => {
-  config.plugins.push(
-    new webpack.EnvironmentPlugin({
-      RNG_SEED: null,
-    }),
-  );
+  config.plugins.push(new webpack.EnvironmentPlugin({ RNG_SEED: null }));
 
   if (process.env.CI) {
     config.plugins.push(
