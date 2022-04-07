@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { action } from '@storybook/addon-actions';
 import { array, boolean, color, number, select } from '@storybook/addon-knobs';
-import React from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 
 import {
   AnnotationAnimation,
@@ -32,7 +33,7 @@ import { getChartRotationKnob, getKnobsFromEnum, getXYSeriesKnob } from '../../u
 const rng = getRandomNumberGenerator();
 const randomArray = new Array(100).fill(0).map(() => rng(0, 10, 2));
 
-export const Example = () => {
+const ExampleChart2 = memo(({ animations }: { animations: Partial<AnnotationAnimation> }) => {
   const debug = boolean('debug', false);
   const [SeriesType] = getXYSeriesKnob(undefined, 'line');
   const xScaleType = select(
@@ -47,24 +48,17 @@ export const Example = () => {
   const dataValues = [
     {
       coordinates: {
-        x0: 0,
+        x0: -0.1,
         x1: 0.25,
       },
       details: 'annotation 1',
     },
     {
       coordinates: {
-        x0: -0.1,
-        x1: 0,
-      },
-      details: 'annotation 2',
-    },
-    {
-      coordinates: {
         x0: 2,
         x1: 3,
       },
-      details: 'annotation 3',
+      details: 'annotation 2',
     },
     {
       coordinates: {
@@ -120,14 +114,6 @@ export const Example = () => {
     lineData.push({ dataValue, details: `Autogen value: ${dataValue}` });
   });
 
-  const animations: Partial<AnnotationAnimation> = {
-    enabled: boolean('enabled', true, 'Animations'),
-    delay: number('delay (ms)', 300, { min: 0, max: 10000, step: 50 }, 'Animations'),
-    duration: number('duration (ms)', 300, { min: 0, max: 10000, step: 50 }, 'Animations'),
-    timeFunction: getKnobsFromEnum('time function', TimeFunction, 'linear' as TimeFunction, { group: 'Animations' }),
-    snapValues: array('snap values', ['1'], undefined, 'Animations').map(Number),
-  };
-
   return (
     <Chart>
       <Settings debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
@@ -172,10 +158,47 @@ export const Example = () => {
       />
     </Chart>
   );
+});
+
+let prevAnimationStr = '';
+
+export const Example = () => {
+  const [mountCount, setMountCount] = useState(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const animations: Partial<AnnotationAnimation> = {
+    enabled: boolean('enabled', true, 'Animations'),
+    delay: number('delay (ms)', 300, { min: 0, max: 10000, step: 50 }, 'Animations'),
+    duration: number('duration (ms)', 300, { min: 0, max: 10000, step: 50 }, 'Animations'),
+    timeFunction: getKnobsFromEnum('time function', TimeFunction, 'linear' as TimeFunction, { group: 'Animations' }),
+    snapValues: array('snap values', ['1'], undefined, 'Animations').map(Number),
+  };
+
+  // The following is a HACK to remount the chart when the animation options change, see description in markdown
+  const animationsStr = useMemo(() => JSON.stringify(animations), [animations]);
+
+  useEffect(() => {
+    prevAnimationStr = animationsStr;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (prevAnimationStr !== animationsStr) setMountCount(mountCount + 1);
+    prevAnimationStr = animationsStr;
+  }, [animationsStr]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (mountCount % 2 === 0) {
+    return <ExampleChart2 animations={animations} />;
+  }
+
+  action('mounted new chart')();
+  setTimeout(() => setMountCount((c) => c + 1));
+  return null;
 };
 
 Example.parameters = {
   markdown: `Animations styles set via \`RectAnnotationStyle.animations\` or \`LineAnnotationStyle.animations\` are only read on intial
-render. Changes to these options, excluding \`enabled\`, will not be reflected on rerenders.
+render.
+
+> :warning: Animations options, excluding \`enabled\`, are set _only_ when the chart is _**mounted**_ and _**not**_ on every rerender. \
+For demonstration purposes, the chart on this story is forced to re-mount whenever the animation options change, hence the flashing.
 `,
 };
