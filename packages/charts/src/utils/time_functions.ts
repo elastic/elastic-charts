@@ -9,7 +9,7 @@
 import bezier from 'bezier-easing';
 import { $Values } from 'utility-types';
 
-/** @internal */
+/** @public */
 export const TimeFunction = Object.freeze({
   /**
    * Animation with the same speed from start to end
@@ -32,7 +32,7 @@ export const TimeFunction = Object.freeze({
    */
   easeInOut: 'easeInOut' as const,
 });
-/** @internal */
+/** @public */
 export type TimeFunction = $Values<typeof TimeFunction>;
 
 /**

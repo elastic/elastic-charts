@@ -20,7 +20,7 @@ export type AnimatedValue = number;
 
 /**
  * Shared animation speeds in ms
- * @internal
+ * @public
  */
 export const AnimationSpeed = Object.freeze({
   extraFast: 90,
@@ -30,7 +30,7 @@ export const AnimationSpeed = Object.freeze({
   extraSlow: 500,
 });
 
-/** @internal */
+/** @public */
 export type AnimationSpeed = $Keys<typeof AnimationSpeed>;
 
 /** @internal */
