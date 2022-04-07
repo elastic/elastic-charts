@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Position, Rotation } from '../../packages/charts/src';
+import { Position } from '../../packages/charts/src';
 import { eachRotation } from '../helpers';
 import { common } from '../page_objects';
 
@@ -20,19 +20,19 @@ describe('Annotations stories', () => {
   });
 
   describe('Hover state', () => {
-    const getUrl = (rotation: Rotation) =>
-      `http://localhost:9001/?path=/story/annotations-rects--styling&knob-showLineAnnotations=true&knob-chartRotation=${rotation}`;
+    const url =
+      'http://localhost:9001/?path=/story/annotations-rects--styling&knob-showLineAnnotations=true&knob-chartRotation=0';
 
     it('should fade all other annotations when line marker is hovered', async () => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(0), {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(url, {
         bottom: 52,
-        left: 315,
+        left: 196,
       });
     });
     it('should fade all other annotations when rect annotation is hovered', async () => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(getUrl(0), {
-        bottom: 200,
-        left: 338,
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(url, {
+        bottom: 188,
+        left: 225,
       });
     });
   });
