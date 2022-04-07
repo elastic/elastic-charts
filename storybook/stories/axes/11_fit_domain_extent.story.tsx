@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { array, boolean, number, select } from '@storybook/addon-knobs';
+import { array, boolean, number, object, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -16,6 +16,7 @@ import {
   LineAnnotation,
   LineSeries,
   Position,
+  RectAnnotation,
   ScaleType,
   Settings,
 } from '@elastic/charts';
@@ -57,7 +58,8 @@ export const Example = () => {
     DomainPaddingUnit,
     DomainPaddingUnit.DomainRatio as DomainPaddingUnit,
   );
-  const thesholds = array('thesholds', ['200']).filter(Boolean).map(Number);
+  const thesholds = array('thesholds - line', ['200']).filter(Boolean).map(Number);
+  const rectTheshold = object('theshold - rect', { y0: 100, y1: null });
 
   return (
     <Chart>
@@ -89,6 +91,13 @@ export const Example = () => {
             opacity: 1,
             dash: [4, 4],
           },
+        }}
+      />
+      <RectAnnotation
+        id="rect"
+        dataValues={[{ coordinates: rectTheshold }]}
+        style={{
+          fill: '#f137407b',
         }}
       />
       <LineSeries

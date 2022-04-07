@@ -12,7 +12,7 @@ import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
 import { Scale } from '../../../../scales';
 import { SettingsSpec, TickFormatter } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
+import { isFiniteNumber, isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import {
@@ -59,7 +59,6 @@ import {
   isBubbleSeriesSpec,
   isLineAnnotation,
   isLineSeriesSpec,
-  LineAnnotationSpec,
 } from '../../utils/specs';
 import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales';
 import { ScaleConfigs } from '../selectors/get_api_scale_configs';
@@ -144,10 +143,10 @@ export function computeSeriesDomains(
   const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.type).sort(
     seriesSortFn,
   );
-  const yDomainAnnotations = getYLineAnnotationSpecs(annotations);
+  const annotationYValueMap = getAnnotationYValueMap(annotations);
 
   // let's compute the yDomains after computing all stacked values
-  const yDomains = mergeYDomain(scaleConfigs.y, formattedDataSeries, yDomainAnnotations);
+  const yDomains = mergeYDomain(scaleConfigs.y, formattedDataSeries, annotationYValueMap);
 
   // sort small multiples values
   const horizontalPredicate = smallMultiples?.horizontal?.sort ?? Predicate.DataIndex;
@@ -165,8 +164,16 @@ export function computeSeriesDomains(
   };
 }
 
-function getYLineAnnotationSpecs(annotations: AnnotationSpec[]): LineAnnotationSpec[] {
-  return annotations.filter(isLineAnnotation).filter(({ domainType }) => domainType === AnnotationDomainType.YDomain);
+function getAnnotationYValueMap(annotations: AnnotationSpec[]): Map<GroupId, number[]> {
+  return annotations.reduce((acc, spec) => {
+    const yValues: number[] = isLineAnnotation(spec)
+      ? spec.domainType === AnnotationDomainType.YDomain
+        ? spec.dataValues.map(({ dataValue }) => dataValue)
+        : []
+      : spec.dataValues.flatMap(({ coordinates: { y0, y1 } }) => [y0, y1]);
+    const groupValues = acc.get(spec.groupId) ?? [];
+    return acc.set(spec.groupId, [...groupValues, ...yValues.filter(isFiniteNumber)]);
+  }, new Map<GroupId, number[]>());
 }
 
 /** @internal */
