@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { CSSProperties } from 'react';
 import { $Values, Optional } from 'utility-types';
 
 import { AnimationOptions } from '../../chart_types/xy_chart/renderer/canvas/animations/animation';
@@ -89,10 +90,10 @@ export interface GeometryStateStyle {
 }
 
 /** @public */
-export interface SharedGeometryStateStyle {
-  default: GeometryStateStyle;
-  highlighted: GeometryStateStyle;
-  unhighlighted: GeometryStateStyle;
+export interface SharedGeometryStateStyle<S extends CSSProperties = GeometryStateStyle> {
+  default: S;
+  highlighted: S;
+  unhighlighted: S;
 }
 
 /**

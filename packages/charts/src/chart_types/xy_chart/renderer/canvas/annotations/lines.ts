@@ -10,8 +10,9 @@ import { colorToRgba, overrideOpacity } from '../../../../../common/color_librar
 import { Stroke } from '../../../../../geoms/types';
 import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
-import { GeometryStyle, LineAnnotationStyle } from '../../../../../utils/themes/theme';
+import { LineAnnotationStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
+import { AnnotationHoverParams } from '../../common/utils';
 import { AnimationContext } from '../animations';
 import { renderMultiLine } from '../primitives/line';
 import { withPanelTransform } from '../utils/panel_transform';
@@ -22,13 +23,15 @@ export function renderLineAnnotations(
   aCtx: AnimationContext,
   annotations: AnnotationLineProps[],
   lineStyle: LineAnnotationStyle,
-  getHoverStyle: (id: string) => GeometryStyle,
+  getHoverParams: (id: string) => AnnotationHoverParams,
   rotation: Rotation,
   renderingArea: Dimensions,
 ) {
   const getAnimatedValue = aCtx.getValue(lineStyle.animations);
   const getStroke = (id: string): Stroke => {
-    const hoverOpacity = getAnimatedValue(`anno-line-opacity-${id}`, getHoverStyle(id).opacity);
+    const { style, isHighlighted } = getHoverParams(id);
+    const prop = isHighlighted ? `anno-line-opacity-highlighted` : `anno-line-opacity-unhighlighted`;
+    const hoverOpacity = getAnimatedValue(prop, style.opacity);
     const strokeColor = overrideOpacity(
       colorToRgba(lineStyle.line.stroke),
       (opacity) => opacity * lineStyle.line.opacity * hoverOpacity,

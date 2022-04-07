@@ -10,7 +10,6 @@ import { createPopper, Instance } from '@popperjs/core';
 import React, { RefObject, useRef, useEffect, useCallback, CSSProperties } from 'react';
 
 import { DEFAULT_CSS_CURSOR } from '../../../../../common/constants';
-import { AnnotationClickListener } from '../../../../../specs';
 import {
   DOMElementType,
   onDOMElementEnter as onDOMElementEnterAction,
@@ -19,6 +18,7 @@ import {
 } from '../../../../../state/actions/dom_element';
 import { Position, renderWithProps } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
+import { AnnotationAnimation } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 
 type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'markers' | 'panel'> & {
@@ -27,8 +27,9 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'ma
   onDOMElementEnter: typeof onDOMElementEnterAction;
   onDOMElementLeave: typeof onDOMElementLeaveAction;
   onDOMElementClick: typeof onDOMElementClickAction;
-  annotationSpec?: AnnotationClickListener;
-  markerStyles: CSSProperties;
+  clickable: boolean;
+  animationStyle: AnnotationAnimation;
+  style: CSSProperties;
 };
 
 const MARKER_TRANSFORMS = {
@@ -57,21 +58,22 @@ export function LineMarker({
   onDOMElementEnter,
   onDOMElementLeave,
   onDOMElementClick,
-  annotationSpec,
-  markerStyles,
+  clickable,
+  style,
+  animationStyle,
 }: LineMarkerProps) {
   const iconRef = useRef<HTMLDivElement | null>(null);
   const testRef = useRef<HTMLDivElement | null>(null);
   const popper = useRef<Instance | null>(null);
-  const style: CSSProperties = {
-    ...markerStyles,
+  const markerStyle: CSSProperties = {
+    ...style,
+    ...getAnimatedStyles(animationStyle, style),
     color,
     top: chartDimensions.top + position.top + panel.top,
     left: chartDimensions.left + position.left + panel.left,
-    cursor: annotationSpec ? 'pointer' : DEFAULT_CSS_CURSOR,
+    cursor: clickable ? 'pointer' : DEFAULT_CSS_CURSOR,
   };
   const transform = { transform: getMarkerCentredTransform(alignment, Boolean(dimension)) };
-
   const setPopper = useCallback(() => {
     if (!iconRef.current || !testRef.current) return;
 
@@ -119,7 +121,6 @@ export function LineMarker({
   return onDOMElementClick ? (
     <button
       className="echAnnotation"
-      key={`annotation-${id}`}
       onMouseEnter={() => {
         onDOMElementEnter({
           createdBySpecId: specId,
@@ -130,7 +131,7 @@ export function LineMarker({
       }}
       onMouseLeave={onDOMElementLeave}
       onClick={onDOMElementClick}
-      style={{ ...style, ...transform }}
+      style={{ ...markerStyle, ...transform }}
       type="button"
     >
       <div ref={iconRef} className="echAnnotation__icon">
@@ -145,7 +146,6 @@ export function LineMarker({
   ) : (
     <div
       className="echAnnotation"
-      key={`annotation-${id}`}
       onMouseEnter={() => {
         onDOMElementEnter({
           createdBySpecId: specId,
@@ -155,7 +155,7 @@ export function LineMarker({
         });
       }}
       onMouseLeave={onDOMElementLeave}
-      style={{ ...style, ...transform }}
+      style={{ ...markerStyle, ...transform }}
     >
       <div ref={iconRef} className="echAnnotation__icon">
         {renderWithProps(icon, datum)}
@@ -167,4 +167,17 @@ export function LineMarker({
       )}
     </div>
   );
+}
+
+function getAnimatedStyles(
+  { duration, delay, timeFunction, snapValues }: AnnotationAnimation,
+  { opacity }: CSSProperties,
+): CSSProperties {
+  if (typeof opacity === 'number' && snapValues.includes(opacity)) return {};
+  return {
+    transitionDuration: `${duration}ms`,
+    transitionDelay: `${delay}ms`,
+    transitionProperty: 'opacity',
+    transitionTimingFunction: timeFunction,
+  };
 }

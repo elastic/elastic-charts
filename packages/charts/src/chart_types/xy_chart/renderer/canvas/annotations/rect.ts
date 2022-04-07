@@ -10,8 +10,9 @@ import { colorToRgba, overrideOpacity } from '../../../../../common/color_librar
 import { Fill, Stroke } from '../../../../../geoms/types';
 import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
-import { GeometryStyle, RectAnnotationStyle } from '../../../../../utils/themes/theme';
+import { RectAnnotationStyle } from '../../../../../utils/themes/theme';
 import { AnnotationRectProps } from '../../../annotations/rect/types';
+import { AnnotationHoverParams } from '../../common/utils';
 import { AnimationContext } from '../animations';
 import { renderRect } from '../primitives/rect';
 import { withPanelTransform } from '../utils/panel_transform';
@@ -22,13 +23,15 @@ export function renderRectAnnotations(
   aCtx: AnimationContext,
   annotations: AnnotationRectProps[],
   rectStyle: RectAnnotationStyle,
-  getHoverStyle: (id: string) => GeometryStyle,
+  getHoverParams: (id: string) => AnnotationHoverParams,
   rotation: Rotation,
   renderingArea: Dimensions,
 ) {
   const getAnimatedValue = aCtx.getValue(rectStyle.animations);
   const getFillAndStroke = (id: string): [Fill, Stroke] => {
-    const hoverOpacity = getAnimatedValue(`anno-rect-opacity-${id}`, getHoverStyle(id).opacity);
+    const { style, isHighlighted } = getHoverParams(id);
+    const prop = isHighlighted ? `anno-rect-opacity-highlighted` : `anno-rect-opacity-unhighlighted`;
+    const hoverOpacity = getAnimatedValue(prop, style.opacity);
     const fill: Fill = {
       color: overrideOpacity(colorToRgba(rectStyle.fill), (opacity) => opacity * rectStyle.opacity * hoverOpacity),
     };

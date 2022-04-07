@@ -19,7 +19,7 @@ import { AnnotationRectProps } from '../../../annotations/rect/types';
 import { AnnotationDimensions } from '../../../annotations/types';
 import { getSpecsById } from '../../../state/utils/spec';
 import { AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../../utils/specs';
-import { getAnnotationHoverStylesFn } from '../../common/utils';
+import { getAnnotationHoverParamsFn } from '../../common/utils';
 import { AnimationContext } from '../animations';
 import { renderLineAnnotations } from './lines';
 import { renderRectAnnotations } from './rect';
@@ -47,7 +47,7 @@ export function renderAnnotations(
   }: AnnotationProps,
   renderOnBackground: boolean = true,
 ) {
-  const getHoverStyle = getAnnotationHoverStylesFn(hoveredAnnotationIds, sharedStyle);
+  const getHoverParams = getAnnotationHoverParamsFn(hoveredAnnotationIds, sharedStyle);
   annotationDimensions.forEach((annotation, id) => {
     const spec = getSpecsById<AnnotationSpec>(annotationSpecs, id);
     const isBackground = (spec?.zIndex ?? 0) <= 0;
@@ -59,7 +59,7 @@ export function renderAnnotations(
           aCtx,
           annotation as AnnotationLineProps[],
           lineStyle,
-          getHoverStyle,
+          getHoverParams,
           rotation,
           renderingArea,
         );
@@ -70,7 +70,7 @@ export function renderAnnotations(
           aCtx,
           annotation as AnnotationRectProps[],
           rectStyle,
-          getHoverStyle,
+          getHoverParams,
           rotation,
           renderingArea,
         );
