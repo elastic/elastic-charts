@@ -2229,89 +2229,6 @@ SOFTWARE.
   height: 100% !important;
 }
 
-.euiAvatar {
-  flex-shrink: 0;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  background-size: cover;
-  text-align: center;
-  vertical-align: middle;
-  overflow-x: hidden;
-  font-weight: 500;
-}
-
-.euiAvatar--user {
-  position: relative;
-  border-radius: 50%;
-}
-
-.euiAvatar--user:after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 50%;
-  content: "";
-  pointer-events: none;
-  border: 1px solid rgba(52, 55, 65, 0.05);
-}
-
-.euiAvatar--space {
-  position: relative;
-  border-radius: 6px;
-}
-
-.euiAvatar--space:after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 6px;
-  content: "";
-  pointer-events: none;
-  border: 1px solid rgba(52, 55, 65, 0.05);
-}
-
-.euiAvatar-isDisabled {
-  cursor: not-allowed;
-  filter: grayscale(100%);
-}
-
-.euiAvatar--plain {
-  background-color: #FFF;
-}
-
-.euiAvatar--s {
-  width: 24px;
-  height: 24px;
-  line-height: 24px;
-  font-size: 12px;
-}
-
-.euiAvatar--m {
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
-  font-size: 14.4px;
-}
-
-.euiAvatar--l {
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
-  font-size: 19.2px;
-}
-
-.euiAvatar--xl {
-  width: 64px;
-  height: 64px;
-  line-height: 64px;
-  font-size: 25.6px;
-}
-
 /**
  * 1. Accounts for the border
  */
@@ -10670,6 +10587,8 @@ SOFTWARE.
 
 .euiFieldNumber[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -10736,6 +10655,8 @@ SOFTWARE.
 
 .euiFieldNumber--compressed[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -10748,14 +10669,6 @@ SOFTWARE.
 
 .euiFieldNumber--withIcon {
   padding-left: 40px;
-}
-
-.euiFieldNumber-isLoading {
-  padding-right: 40px;
-}
-
-.euiFieldNumber-isLoading.euiFieldNumber--compressed {
-  padding-right: 32px;
 }
 
 .euiFieldNumber--withIcon.euiFieldNumber--compressed {
@@ -10861,6 +10774,8 @@ SOFTWARE.
 
 .euiFieldPassword[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -10927,6 +10842,8 @@ SOFTWARE.
 
 .euiFieldPassword--compressed[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -10935,14 +10852,6 @@ SOFTWARE.
 .euiFieldPassword--inGroup {
   box-shadow: none !important;
   border-radius: 0;
-}
-
-.euiFieldPassword-isLoading {
-  padding-right: 40px;
-}
-
-.euiFieldPassword-isLoading.euiFieldPassword--compressed {
-  padding-right: 32px;
 }
 
 .euiFieldPassword.euiFieldPassword--compressed {
@@ -11059,6 +10968,8 @@ SOFTWARE.
 
 .euiFieldSearch[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -11125,6 +11036,8 @@ SOFTWARE.
 
 .euiFieldSearch--compressed[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -11153,32 +11066,8 @@ SOFTWARE.
   /* 2 */
 }
 
-.euiFieldSearch.euiFieldSearch-isClearable {
-  padding-right: 40px;
-}
-
-.euiFieldSearch.euiFieldSearch-isLoading {
-  padding-right: 40px;
-}
-
-.euiFieldSearch.euiFieldSearch-isLoading.euiFieldSearch-isClearable {
-  padding-right: 62px;
-}
-
-.euiFieldSearch.euiFieldSearch--compressed {
+.euiFieldSearch--compressed {
   padding-left: 32px;
-}
-
-.euiFieldSearch.euiFieldSearch--compressed.euiFieldSearch-isClearable {
-  padding-right: 32px;
-}
-
-.euiFieldSearch.euiFieldSearch--compressed.euiFieldSearch-isLoading {
-  padding-right: 32px;
-}
-
-.euiFieldSearch.euiFieldSearch--compressed.euiFieldSearch-isLoading.euiFieldSearch-isClearable {
-  padding-right: 54px;
 }
 
 .euiFieldText {
@@ -11282,6 +11171,8 @@ SOFTWARE.
 
 .euiFieldText[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -11348,6 +11239,8 @@ SOFTWARE.
 
 .euiFieldText--compressed[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -11362,14 +11255,6 @@ SOFTWARE.
   padding-left: 40px;
 }
 
-.euiFieldText-isLoading {
-  padding-right: 40px;
-}
-
-.euiFieldText-isLoading.euiFieldText--compressed {
-  padding-right: 32px;
-}
-
 .euiFieldText.euiFieldText-isInvalid {
   background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
   background-size: 100%;
@@ -11377,14 +11262,6 @@ SOFTWARE.
 
 .euiFieldText--withIcon.euiFieldText--compressed {
   padding-left: 32px;
-}
-
-.euiFieldText--isClearable {
-  padding-right: 40px;
-}
-
-.euiFieldText--isClearable.euiFieldText--compressed {
-  padding-right: 32px;
 }
 
 /**
@@ -11684,6 +11561,497 @@ SOFTWARE.
   margin-bottom: 16px;
 }
 
+/**
+ * 1. Ensure the descenders don't get cut off
+ */
+.euiSelect {
+  max-width: 400px;
+  width: 100%;
+  height: 40px;
+  background-color: #fbfcfd;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 400;
+  letter-spacing: normal;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-kerning: normal;
+  font-size: 14px;
+  color: #343741;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  line-height: 40px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+}
+
+.euiSelect--fullWidth {
+  max-width: 100%;
+}
+
+.euiSelect--compressed {
+  height: 32px;
+}
+
+.euiSelect--inGroup {
+  height: 100%;
+}
+
+@supports (-moz-appearance: none) {
+  .euiSelect {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
+  .euiSelect {
+    line-height: 1em;
+  }
+}
+
+.euiSelect::-moz-placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+
+.euiSelect:-ms-input-placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+
+.euiSelect::placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+
+.euiSelect:invalid {
+  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+
+.euiSelect:focus {
+  background-color: white;
+  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSelect:disabled {
+  color: #98A2B3;
+  -webkit-text-fill-color: #98A2B3;
+  cursor: not-allowed;
+  background: #eef2f7;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSelect:disabled::-moz-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSelect:disabled:-ms-input-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSelect:disabled::placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSelect[readOnly] {
+  cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
+  background: #FFF;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSelect:-webkit-autofill {
+  -webkit-text-fill-color: #343741;
+}
+
+.euiSelect:-webkit-autofill ~ .euiFormControlLayoutIcons {
+  color: #343741;
+}
+
+.euiSelect--compressed {
+  background-color: #fbfcfd;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+@supports (-moz-appearance: none) {
+  .euiSelect--compressed {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+.euiSelect--compressed:invalid {
+  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+
+.euiSelect--compressed:focus {
+  background-color: white;
+  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSelect--compressed:disabled {
+  color: #98A2B3;
+  -webkit-text-fill-color: #98A2B3;
+  cursor: not-allowed;
+  background: #eef2f7;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSelect--compressed:disabled::-moz-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSelect--compressed:disabled:-ms-input-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSelect--compressed:disabled::placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSelect--compressed[readOnly] {
+  cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
+  background: #FFF;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSelect--inGroup {
+  box-shadow: none !important;
+  border-radius: 0;
+}
+
+.euiSelect--compressed {
+  line-height: 32px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+}
+
+.euiSelect--inGroup {
+  line-height: 38px;
+  /* 1 */
+}
+
+.euiSelect--inGroup.euiSelect--compressed {
+  line-height: 30px;
+  /* 1 */
+}
+
+.euiSelect::-ms-expand {
+  display: none;
+}
+
+.euiSelect:focus::-ms-value {
+  color: #343741;
+  background: transparent;
+}
+
+.euiSelect:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #343741;
+}
+
+.euiSuperSelect__listbox {
+  scrollbar-color: rgba(105, 112, 125, 0.5) transparent;
+  scrollbar-width: thin;
+  max-height: 300px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.euiSuperSelect__listbox::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+.euiSuperSelect__listbox::-webkit-scrollbar-thumb {
+  background-color: rgba(105, 112, 125, 0.5);
+  background-clip: content-box;
+  border-radius: 16px;
+  border: 6px solid transparent;
+}
+
+.euiSuperSelect__listbox::-webkit-scrollbar-corner, .euiSuperSelect__listbox::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.euiSuperSelect__item {
+  font-size: 14px;
+  font-size: 1rem;
+  line-height: 1.71429rem;
+  padding: 8px;
+}
+
+.euiSuperSelect__item:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.euiSuperSelect__item:focus {
+  cursor: pointer;
+  text-decoration: underline;
+  background-color: rgba(0, 119, 204, 0.1);
+}
+
+.euiSuperSelect__item:disabled {
+  cursor: not-allowed;
+  text-decoration: none;
+  color: #ABB4C4;
+}
+
+.euiSuperSelect__item--hasDividers:not(:last-of-type) {
+  border-bottom: 1px solid #D3DAE6;
+}
+
+/**
+ * 1. Ensure the descenders don't get cut off
+ * 2. Makes sure the height is correct when there's no selection
+ */
+.euiSuperSelectControl {
+  max-width: 400px;
+  width: 100%;
+  height: 40px;
+  background-color: #fbfcfd;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 400;
+  letter-spacing: normal;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-kerning: normal;
+  font-size: 14px;
+  color: #343741;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  display: block;
+  /* 2 */
+  text-align: left;
+  line-height: 40px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.euiSuperSelectControl--fullWidth {
+  max-width: 100%;
+}
+
+.euiSuperSelectControl--compressed {
+  height: 32px;
+}
+
+.euiSuperSelectControl--inGroup {
+  height: 100%;
+}
+
+@supports (-moz-appearance: none) {
+  .euiSuperSelectControl {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
+  .euiSuperSelectControl {
+    line-height: 1em;
+  }
+}
+
+.euiSuperSelectControl::-moz-placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+
+.euiSuperSelectControl:-ms-input-placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+
+.euiSuperSelectControl::placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+
+.euiSuperSelectControl:invalid {
+  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+
+.euiSuperSelectControl:focus {
+  background-color: white;
+  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSuperSelectControl:disabled {
+  color: #98A2B3;
+  -webkit-text-fill-color: #98A2B3;
+  cursor: not-allowed;
+  background: #eef2f7;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSuperSelectControl:disabled::-moz-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSuperSelectControl:disabled:-ms-input-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSuperSelectControl:disabled::placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSuperSelectControl[readOnly] {
+  cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
+  background: #FFF;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSuperSelectControl:-webkit-autofill {
+  -webkit-text-fill-color: #343741;
+}
+
+.euiSuperSelectControl:-webkit-autofill ~ .euiFormControlLayoutIcons {
+  color: #343741;
+}
+
+.euiSuperSelectControl--compressed {
+  background-color: #fbfcfd;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+@supports (-moz-appearance: none) {
+  .euiSuperSelectControl--compressed {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+.euiSuperSelectControl--compressed:invalid {
+  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+
+.euiSuperSelectControl--compressed:focus {
+  background-color: white;
+  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSuperSelectControl--compressed:disabled {
+  color: #98A2B3;
+  -webkit-text-fill-color: #98A2B3;
+  cursor: not-allowed;
+  background: #eef2f7;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSuperSelectControl--compressed:disabled::-moz-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSuperSelectControl--compressed:disabled:-ms-input-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSuperSelectControl--compressed:disabled::placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+
+.euiSuperSelectControl--compressed[readOnly] {
+  cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
+  background: #FFF;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
+.euiSuperSelectControl--inGroup {
+  box-shadow: none !important;
+  border-radius: 0;
+}
+
+.euiSuperSelectControl-isInvalid {
+  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+
+.euiSuperSelectControl--compressed {
+  line-height: 32px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+}
+
+.euiSuperSelectControl.euiSuperSelect--isOpen__button {
+  background-color: white;
+  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+
 .euiFormControlLayout {
   max-width: 400px;
   width: 100%;
@@ -11700,6 +12068,46 @@ SOFTWARE.
 
 .euiFormControlLayout--inGroup {
   height: 100%;
+}
+
+.euiFormControlLayout--1icons {
+  padding-right: 34px;
+}
+
+.euiFormControlLayout--1icons[class*=compressed] {
+  padding-right: 26px;
+}
+
+.euiFormControlLayout--2icons {
+  padding-right: 56px;
+}
+
+.euiFormControlLayout--2icons[class*=compressed] {
+  padding-right: 44px;
+}
+
+.euiFormControlLayout--3icons {
+  padding-right: 78px;
+}
+
+.euiFormControlLayout--3icons[class*=compressed] {
+  padding-right: 62px;
+}
+
+.euiFormControlLayout--4icons {
+  padding-right: 100px;
+}
+
+.euiFormControlLayout--4icons[class*=compressed] {
+  padding-right: 80px;
+}
+
+.euiFormControlLayout--5icons {
+  padding-right: 122px;
+}
+
+.euiFormControlLayout--5icons[class*=compressed] {
+  padding-right: 98px;
 }
 
 .euiFormControlLayout__childrenWrapper {
@@ -11972,6 +12380,8 @@ SOFTWARE.
 
 .euiFormControlLayoutDelimited[class*="--readOnly"] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -13066,515 +13476,6 @@ SOFTWARE.
   visibility: hidden;
 }
 
-/**
- * 1. Leave room for caret.
- * 2. Ensure the descenders don't get cut off
- */
-.euiSelect {
-  max-width: 400px;
-  width: 100%;
-  height: 40px;
-  background-color: #fbfcfd;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-weight: 400;
-  letter-spacing: normal;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  font-kerning: normal;
-  font-size: 14px;
-  color: #343741;
-  border: none;
-  border-radius: 6px;
-  padding: 12px;
-  padding-right: 40px;
-  /* 1 */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  line-height: 40px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-}
-
-.euiSelect--fullWidth {
-  max-width: 100%;
-}
-
-.euiSelect--compressed {
-  height: 32px;
-}
-
-.euiSelect--inGroup {
-  height: 100%;
-}
-
-@supports (-moz-appearance: none) {
-  .euiSelect {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
-  .euiSelect {
-    line-height: 1em;
-  }
-}
-
-.euiSelect::-moz-placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-
-.euiSelect:-ms-input-placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-
-.euiSelect::placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-
-.euiSelect:invalid {
-  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-
-.euiSelect:focus {
-  background-color: white;
-  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSelect:disabled {
-  color: #98A2B3;
-  -webkit-text-fill-color: #98A2B3;
-  cursor: not-allowed;
-  background: #eef2f7;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSelect:disabled::-moz-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSelect:disabled:-ms-input-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSelect:disabled::placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSelect[readOnly] {
-  cursor: default;
-  background: #FFF;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSelect:-webkit-autofill {
-  -webkit-text-fill-color: #343741;
-}
-
-.euiSelect:-webkit-autofill ~ .euiFormControlLayoutIcons {
-  color: #343741;
-}
-
-.euiSelect--compressed {
-  background-color: #fbfcfd;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  padding: 8px;
-  border-radius: 4px;
-}
-
-@supports (-moz-appearance: none) {
-  .euiSelect--compressed {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-.euiSelect--compressed:invalid {
-  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-
-.euiSelect--compressed:focus {
-  background-color: white;
-  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSelect--compressed:disabled {
-  color: #98A2B3;
-  -webkit-text-fill-color: #98A2B3;
-  cursor: not-allowed;
-  background: #eef2f7;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSelect--compressed:disabled::-moz-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSelect--compressed:disabled:-ms-input-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSelect--compressed:disabled::placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSelect--compressed[readOnly] {
-  cursor: default;
-  background: #FFF;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSelect--inGroup {
-  box-shadow: none !important;
-  border-radius: 0;
-}
-
-.euiSelect-isLoading {
-  padding-right: 62px;
-}
-
-.euiSelect-isLoading.euiSelect--compressed {
-  padding-right: 54px;
-}
-
-.euiSelect--compressed {
-  padding-right: 32px;
-  /* 1 */
-  line-height: 32px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-}
-
-.euiSelect--inGroup {
-  line-height: 38px;
-  /* 2 */
-}
-
-.euiSelect--inGroup.euiSelect--compressed {
-  line-height: 30px;
-  /* 2 */
-}
-
-.euiSelect::-ms-expand {
-  display: none;
-}
-
-.euiSelect:focus::-ms-value {
-  color: #343741;
-  background: transparent;
-}
-
-.euiSelect:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 #343741;
-}
-
-.euiSuperSelect__listbox {
-  scrollbar-color: rgba(105, 112, 125, 0.5) transparent;
-  scrollbar-width: thin;
-  max-height: 300px;
-  overflow: hidden;
-  overflow-y: auto;
-}
-
-.euiSuperSelect__listbox::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
-}
-
-.euiSuperSelect__listbox::-webkit-scrollbar-thumb {
-  background-color: rgba(105, 112, 125, 0.5);
-  background-clip: content-box;
-  border-radius: 16px;
-  border: 6px solid transparent;
-}
-
-.euiSuperSelect__listbox::-webkit-scrollbar-corner, .euiSuperSelect__listbox::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-
-.euiSuperSelect__item {
-  font-size: 14px;
-  font-size: 1rem;
-  line-height: 1.71429rem;
-  padding: 8px;
-}
-
-.euiSuperSelect__item:hover {
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.euiSuperSelect__item:focus {
-  cursor: pointer;
-  text-decoration: underline;
-  background-color: rgba(0, 119, 204, 0.1);
-}
-
-.euiSuperSelect__item:disabled {
-  cursor: not-allowed;
-  text-decoration: none;
-  color: #ABB4C4;
-}
-
-.euiSuperSelect__item--hasDividers:not(:last-of-type) {
-  border-bottom: 1px solid #D3DAE6;
-}
-
-/**
- * 1. Leave room for caret.
- * 2. Ensure the descenders don't get cut off
- * 3. Makes sure the height is correct when there's no selection
- */
-.euiSuperSelectControl {
-  max-width: 400px;
-  width: 100%;
-  height: 40px;
-  background-color: #fbfcfd;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-weight: 400;
-  letter-spacing: normal;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  font-kerning: normal;
-  font-size: 14px;
-  color: #343741;
-  border: none;
-  border-radius: 6px;
-  padding: 12px;
-  padding-right: 40px;
-  /* 1 */
-  display: block;
-  /* 3 */
-  text-align: left;
-  line-height: 40px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.euiSuperSelectControl--fullWidth {
-  max-width: 100%;
-}
-
-.euiSuperSelectControl--compressed {
-  height: 32px;
-}
-
-.euiSuperSelectControl--inGroup {
-  height: 100%;
-}
-
-@supports (-moz-appearance: none) {
-  .euiSuperSelectControl {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
-  .euiSuperSelectControl {
-    line-height: 1em;
-  }
-}
-
-.euiSuperSelectControl::-moz-placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-
-.euiSuperSelectControl:-ms-input-placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-
-.euiSuperSelectControl::placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-
-.euiSuperSelectControl:invalid {
-  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-
-.euiSuperSelectControl:focus {
-  background-color: white;
-  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSuperSelectControl:disabled {
-  color: #98A2B3;
-  -webkit-text-fill-color: #98A2B3;
-  cursor: not-allowed;
-  background: #eef2f7;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSuperSelectControl:disabled::-moz-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSuperSelectControl:disabled:-ms-input-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSuperSelectControl:disabled::placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSuperSelectControl[readOnly] {
-  cursor: default;
-  background: #FFF;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSuperSelectControl:-webkit-autofill {
-  -webkit-text-fill-color: #343741;
-}
-
-.euiSuperSelectControl:-webkit-autofill ~ .euiFormControlLayoutIcons {
-  color: #343741;
-}
-
-.euiSuperSelectControl--compressed {
-  background-color: #fbfcfd;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  padding: 8px;
-  border-radius: 4px;
-}
-
-@supports (-moz-appearance: none) {
-  .euiSuperSelectControl--compressed {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-.euiSuperSelectControl--compressed:invalid {
-  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-
-.euiSuperSelectControl--compressed:focus {
-  background-color: white;
-  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSuperSelectControl--compressed:disabled {
-  color: #98A2B3;
-  -webkit-text-fill-color: #98A2B3;
-  cursor: not-allowed;
-  background: #eef2f7;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSuperSelectControl--compressed:disabled::-moz-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSuperSelectControl--compressed:disabled:-ms-input-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSuperSelectControl--compressed:disabled::placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-
-.euiSuperSelectControl--compressed[readOnly] {
-  cursor: default;
-  background: #FFF;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
-.euiSuperSelectControl--inGroup {
-  box-shadow: none !important;
-  border-radius: 0;
-}
-
-.euiSuperSelectControl-isLoading {
-  padding-right: 62px;
-}
-
-.euiSuperSelectControl-isLoading.euiSuperSelectControl--compressed {
-  padding-right: 54px;
-}
-
-.euiSuperSelectControl-isInvalid {
-  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-
-.euiSuperSelectControl--compressed {
-  padding-right: 32px;
-  /* 1 */
-  line-height: 32px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-}
-
-.euiSuperSelectControl.euiSuperSelect--isOpen__button {
-  background-color: white;
-  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-
 .euiSwitch {
   position: relative;
   display: inline-flex;
@@ -13881,6 +13782,8 @@ SOFTWARE.
 
 .euiTextArea[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -13947,6 +13850,8 @@ SOFTWARE.
 
 .euiTextArea--compressed[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -22804,11 +22709,6 @@ button.euiSuggestItem:hover .euiSuggestItem__label, button.euiSuggestItem:focus 
   text-align: center;
 }
 
-.euiAvatar--space:after,
-.euiAvatar--user:after {
-  display: none;
-}
-
 .euiBreadcrumb__content.euiLink:focus {
   outline-offset: -1px;
 }
@@ -23706,11 +23606,13 @@ button.euiSuggestItem:hover .euiSuggestItem__label, button.euiSuggestItem:focus 
 }
 
 .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:first-child .euiSelect,
+.euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:first-child .euiSuperSelectControl,
 .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:first-child [class*=euiField] {
   border-radius: 6px 0 0 6px;
 }
 
 .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:last-child .euiSelect,
+.euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:last-child .euiSuperSelectControl,
 .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:last-child [class*=euiField] {
   border-radius: 0 6px 6px 0;
 }
@@ -25246,6 +25148,13 @@ html.light-theme {
     * 1. Undo the pointer-events: none applied to the enclosing prompt.
     */
   /**
+   * 1. Ensure the descenders don't get cut off
+   */
+  /**
+   * 1. Ensure the descenders don't get cut off
+   * 2. Makes sure the height is correct when there's no selection
+   */
+  /**
    * 1. Account for inner box-shadow style border
    * 2. Ensure truncation works in children elements
    */
@@ -25269,15 +25178,6 @@ html.light-theme {
    *    use the descendant selector to allow the width to shrink.
    *
    * 2. Prevent the prepend/append label from extending outside the parent element
-   */
-  /**
-   * 1. Leave room for caret.
-   * 2. Ensure the descenders don't get cut off
-   */
-  /**
-   * 1. Leave room for caret.
-   * 2. Ensure the descenders don't get cut off
-   * 3. Makes sure the height is correct when there's no selection
    */
   /**
    * 1. Fix for IE where the image correctly resizes in width but doesn't collapse its height
@@ -26642,78 +26542,6 @@ html.light-theme .euiAspectRatio > * {
   left: 0 !important;
   width: 100% !important;
   height: 100% !important;
-}
-html.light-theme .euiAvatar {
-  flex-shrink: 0;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  background-size: cover;
-  text-align: center;
-  vertical-align: middle;
-  overflow-x: hidden;
-  font-weight: 500;
-}
-html.light-theme .euiAvatar--user {
-  position: relative;
-  border-radius: 50%;
-}
-html.light-theme .euiAvatar--user:after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 50%;
-  content: "";
-  pointer-events: none;
-  border: 1px solid rgba(52, 55, 65, 0.05);
-}
-html.light-theme .euiAvatar--space {
-  position: relative;
-  border-radius: 6px;
-}
-html.light-theme .euiAvatar--space:after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 6px;
-  content: "";
-  pointer-events: none;
-  border: 1px solid rgba(52, 55, 65, 0.05);
-}
-html.light-theme .euiAvatar-isDisabled {
-  cursor: not-allowed;
-  filter: grayscale(100%);
-}
-html.light-theme .euiAvatar--plain {
-  background-color: #FFF;
-}
-html.light-theme .euiAvatar--s {
-  width: 24px;
-  height: 24px;
-  line-height: 24px;
-  font-size: 12px;
-}
-html.light-theme .euiAvatar--m {
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
-  font-size: 14.4px;
-}
-html.light-theme .euiAvatar--l {
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
-  font-size: 19.2px;
-}
-html.light-theme .euiAvatar--xl {
-  width: 64px;
-  height: 64px;
-  line-height: 64px;
-  font-size: 25.6px;
 }
 html.light-theme .euiBadge {
   font-size: 12px;
@@ -33582,6 +33410,8 @@ html.light-theme .euiFieldNumber:disabled::placeholder {
 }
 html.light-theme .euiFieldNumber[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -33638,6 +33468,8 @@ html.light-theme .euiFieldNumber--compressed:disabled::placeholder {
 }
 html.light-theme .euiFieldNumber--compressed[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -33648,12 +33480,6 @@ html.light-theme .euiFieldNumber--inGroup {
 }
 html.light-theme .euiFieldNumber--withIcon {
   padding-left: 40px;
-}
-html.light-theme .euiFieldNumber-isLoading {
-  padding-right: 40px;
-}
-html.light-theme .euiFieldNumber-isLoading.euiFieldNumber--compressed {
-  padding-right: 32px;
 }
 html.light-theme .euiFieldNumber--withIcon.euiFieldNumber--compressed {
   padding-left: 32px;
@@ -33743,6 +33569,8 @@ html.light-theme .euiFieldPassword:disabled::placeholder {
 }
 html.light-theme .euiFieldPassword[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -33799,6 +33627,8 @@ html.light-theme .euiFieldPassword--compressed:disabled::placeholder {
 }
 html.light-theme .euiFieldPassword--compressed[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -33806,12 +33636,6 @@ html.light-theme .euiFieldPassword--compressed[readOnly] {
 html.light-theme .euiFieldPassword--inGroup {
   box-shadow: none !important;
   border-radius: 0;
-}
-html.light-theme .euiFieldPassword-isLoading {
-  padding-right: 40px;
-}
-html.light-theme .euiFieldPassword-isLoading.euiFieldPassword--compressed {
-  padding-right: 32px;
 }
 html.light-theme .euiFieldPassword.euiFieldPassword--compressed {
   padding-left: 32px;
@@ -33906,6 +33730,8 @@ html.light-theme .euiFieldSearch:disabled::placeholder {
 }
 html.light-theme .euiFieldSearch[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -33962,6 +33788,8 @@ html.light-theme .euiFieldSearch--compressed:disabled::placeholder {
 }
 html.light-theme .euiFieldSearch--compressed[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -33984,26 +33812,8 @@ html.light-theme .euiFieldSearch::-ms-clear {
   display: none;
   /* 2 */
 }
-html.light-theme .euiFieldSearch.euiFieldSearch-isClearable {
-  padding-right: 40px;
-}
-html.light-theme .euiFieldSearch.euiFieldSearch-isLoading {
-  padding-right: 40px;
-}
-html.light-theme .euiFieldSearch.euiFieldSearch-isLoading.euiFieldSearch-isClearable {
-  padding-right: 62px;
-}
-html.light-theme .euiFieldSearch.euiFieldSearch--compressed {
+html.light-theme .euiFieldSearch--compressed {
   padding-left: 32px;
-}
-html.light-theme .euiFieldSearch.euiFieldSearch--compressed.euiFieldSearch-isClearable {
-  padding-right: 32px;
-}
-html.light-theme .euiFieldSearch.euiFieldSearch--compressed.euiFieldSearch-isLoading {
-  padding-right: 32px;
-}
-html.light-theme .euiFieldSearch.euiFieldSearch--compressed.euiFieldSearch-isLoading.euiFieldSearch-isClearable {
-  padding-right: 54px;
 }
 html.light-theme .euiFieldText {
   max-width: 400px;
@@ -34092,6 +33902,8 @@ html.light-theme .euiFieldText:disabled::placeholder {
 }
 html.light-theme .euiFieldText[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -34148,6 +33960,8 @@ html.light-theme .euiFieldText--compressed:disabled::placeholder {
 }
 html.light-theme .euiFieldText--compressed[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -34159,24 +33973,12 @@ html.light-theme .euiFieldText--inGroup {
 html.light-theme .euiFieldText--withIcon {
   padding-left: 40px;
 }
-html.light-theme .euiFieldText-isLoading {
-  padding-right: 40px;
-}
-html.light-theme .euiFieldText-isLoading.euiFieldText--compressed {
-  padding-right: 32px;
-}
 html.light-theme .euiFieldText.euiFieldText-isInvalid {
   background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
   background-size: 100%;
 }
 html.light-theme .euiFieldText--withIcon.euiFieldText--compressed {
   padding-left: 32px;
-}
-html.light-theme .euiFieldText--isClearable {
-  padding-right: 40px;
-}
-html.light-theme .euiFieldText--isClearable.euiFieldText--compressed {
-  padding-right: 32px;
 }
 html.light-theme .euiFilePicker {
   max-width: 400px;
@@ -34418,6 +34220,420 @@ html.light-theme .euiForm__error {
 html.light-theme .euiForm__errors {
   margin-bottom: 16px;
 }
+html.light-theme .euiSelect {
+  max-width: 400px;
+  width: 100%;
+  height: 40px;
+  background-color: #fbfcfd;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 400;
+  letter-spacing: normal;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-kerning: normal;
+  font-size: 14px;
+  color: #343741;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  line-height: 40px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+}
+html.light-theme .euiSelect--fullWidth {
+  max-width: 100%;
+}
+html.light-theme .euiSelect--compressed {
+  height: 32px;
+}
+html.light-theme .euiSelect--inGroup {
+  height: 100%;
+}
+@supports (-moz-appearance: none) {
+  html.light-theme .euiSelect {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
+  html.light-theme .euiSelect {
+    line-height: 1em;
+  }
+}
+html.light-theme .euiSelect::-moz-placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+html.light-theme .euiSelect:-ms-input-placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+html.light-theme .euiSelect::placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+html.light-theme .euiSelect:invalid {
+  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+html.light-theme .euiSelect:focus {
+  background-color: white;
+  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSelect:disabled {
+  color: #98A2B3;
+  -webkit-text-fill-color: #98A2B3;
+  cursor: not-allowed;
+  background: #eef2f7;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSelect:disabled::-moz-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSelect:disabled:-ms-input-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSelect:disabled::placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSelect[readOnly] {
+  cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
+  background: #FFF;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSelect:-webkit-autofill {
+  -webkit-text-fill-color: #343741;
+}
+html.light-theme .euiSelect:-webkit-autofill ~ .euiFormControlLayoutIcons {
+  color: #343741;
+}
+html.light-theme .euiSelect--compressed {
+  background-color: #fbfcfd;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  padding: 8px;
+  border-radius: 4px;
+}
+@supports (-moz-appearance: none) {
+  html.light-theme .euiSelect--compressed {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+html.light-theme .euiSelect--compressed:invalid {
+  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+html.light-theme .euiSelect--compressed:focus {
+  background-color: white;
+  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSelect--compressed:disabled {
+  color: #98A2B3;
+  -webkit-text-fill-color: #98A2B3;
+  cursor: not-allowed;
+  background: #eef2f7;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSelect--compressed:disabled::-moz-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSelect--compressed:disabled:-ms-input-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSelect--compressed:disabled::placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSelect--compressed[readOnly] {
+  cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
+  background: #FFF;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSelect--inGroup {
+  box-shadow: none !important;
+  border-radius: 0;
+}
+html.light-theme .euiSelect--compressed {
+  line-height: 32px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+}
+html.light-theme .euiSelect--inGroup {
+  line-height: 38px;
+  /* 1 */
+}
+html.light-theme .euiSelect--inGroup.euiSelect--compressed {
+  line-height: 30px;
+  /* 1 */
+}
+html.light-theme .euiSelect::-ms-expand {
+  display: none;
+}
+html.light-theme .euiSelect:focus::-ms-value {
+  color: #343741;
+  background: transparent;
+}
+html.light-theme .euiSelect:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #343741;
+}
+html.light-theme .euiSuperSelect__listbox {
+  scrollbar-color: rgba(105, 112, 125, 0.5) transparent;
+  scrollbar-width: thin;
+  max-height: 300px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+html.light-theme .euiSuperSelect__listbox::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+html.light-theme .euiSuperSelect__listbox::-webkit-scrollbar-thumb {
+  background-color: rgba(105, 112, 125, 0.5);
+  background-clip: content-box;
+  border-radius: 16px;
+  border: 6px solid transparent;
+}
+html.light-theme .euiSuperSelect__listbox::-webkit-scrollbar-corner, html.light-theme .euiSuperSelect__listbox::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+html.light-theme .euiSuperSelect__item {
+  font-size: 14px;
+  font-size: 1rem;
+  line-height: 1.71429rem;
+  padding: 8px;
+}
+html.light-theme .euiSuperSelect__item:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+html.light-theme .euiSuperSelect__item:focus {
+  cursor: pointer;
+  text-decoration: underline;
+  background-color: rgba(0, 119, 204, 0.1);
+}
+html.light-theme .euiSuperSelect__item:disabled {
+  cursor: not-allowed;
+  text-decoration: none;
+  color: #ABB4C4;
+}
+html.light-theme .euiSuperSelect__item--hasDividers:not(:last-of-type) {
+  border-bottom: 1px solid #D3DAE6;
+}
+html.light-theme .euiSuperSelectControl {
+  max-width: 400px;
+  width: 100%;
+  height: 40px;
+  background-color: #fbfcfd;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 400;
+  letter-spacing: normal;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-kerning: normal;
+  font-size: 14px;
+  color: #343741;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  display: block;
+  /* 2 */
+  text-align: left;
+  line-height: 40px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+html.light-theme .euiSuperSelectControl--fullWidth {
+  max-width: 100%;
+}
+html.light-theme .euiSuperSelectControl--compressed {
+  height: 32px;
+}
+html.light-theme .euiSuperSelectControl--inGroup {
+  height: 100%;
+}
+@supports (-moz-appearance: none) {
+  html.light-theme .euiSuperSelectControl {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
+  html.light-theme .euiSuperSelectControl {
+    line-height: 1em;
+  }
+}
+html.light-theme .euiSuperSelectControl::-moz-placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+html.light-theme .euiSuperSelectControl:-ms-input-placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+html.light-theme .euiSuperSelectControl::placeholder {
+  color: #69707D;
+  opacity: 1;
+}
+html.light-theme .euiSuperSelectControl:invalid {
+  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+html.light-theme .euiSuperSelectControl:focus {
+  background-color: white;
+  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSuperSelectControl:disabled {
+  color: #98A2B3;
+  -webkit-text-fill-color: #98A2B3;
+  cursor: not-allowed;
+  background: #eef2f7;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSuperSelectControl:disabled::-moz-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSuperSelectControl:disabled:-ms-input-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSuperSelectControl:disabled::placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSuperSelectControl[readOnly] {
+  cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
+  background: #FFF;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSuperSelectControl:-webkit-autofill {
+  -webkit-text-fill-color: #343741;
+}
+html.light-theme .euiSuperSelectControl:-webkit-autofill ~ .euiFormControlLayoutIcons {
+  color: #343741;
+}
+html.light-theme .euiSuperSelectControl--compressed {
+  background-color: #fbfcfd;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  padding: 8px;
+  border-radius: 4px;
+}
+@supports (-moz-appearance: none) {
+  html.light-theme .euiSuperSelectControl--compressed {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+html.light-theme .euiSuperSelectControl--compressed:invalid {
+  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+html.light-theme .euiSuperSelectControl--compressed:focus {
+  background-color: white;
+  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSuperSelectControl--compressed:disabled {
+  color: #98A2B3;
+  -webkit-text-fill-color: #98A2B3;
+  cursor: not-allowed;
+  background: #eef2f7;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSuperSelectControl--compressed:disabled::-moz-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSuperSelectControl--compressed:disabled:-ms-input-placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSuperSelectControl--compressed:disabled::placeholder {
+  color: #98A2B3;
+  opacity: 1;
+}
+html.light-theme .euiSuperSelectControl--compressed[readOnly] {
+  cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
+  background: #FFF;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
+html.light-theme .euiSuperSelectControl--inGroup {
+  box-shadow: none !important;
+  border-radius: 0;
+}
+html.light-theme .euiSuperSelectControl-isInvalid {
+  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+html.light-theme .euiSuperSelectControl--compressed {
+  line-height: 32px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+}
+html.light-theme .euiSuperSelectControl.euiSuperSelect--isOpen__button {
+  background-color: white;
+  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
+}
 html.light-theme .euiFormControlLayout {
   max-width: 400px;
   width: 100%;
@@ -34431,6 +34647,36 @@ html.light-theme .euiFormControlLayout--compressed {
 }
 html.light-theme .euiFormControlLayout--inGroup {
   height: 100%;
+}
+html.light-theme .euiFormControlLayout--1icons {
+  padding-right: 34px;
+}
+html.light-theme .euiFormControlLayout--1icons[class*=compressed] {
+  padding-right: 26px;
+}
+html.light-theme .euiFormControlLayout--2icons {
+  padding-right: 56px;
+}
+html.light-theme .euiFormControlLayout--2icons[class*=compressed] {
+  padding-right: 44px;
+}
+html.light-theme .euiFormControlLayout--3icons {
+  padding-right: 78px;
+}
+html.light-theme .euiFormControlLayout--3icons[class*=compressed] {
+  padding-right: 62px;
+}
+html.light-theme .euiFormControlLayout--4icons {
+  padding-right: 100px;
+}
+html.light-theme .euiFormControlLayout--4icons[class*=compressed] {
+  padding-right: 80px;
+}
+html.light-theme .euiFormControlLayout--5icons {
+  padding-right: 122px;
+}
+html.light-theme .euiFormControlLayout--5icons[class*=compressed] {
+  padding-right: 98px;
 }
 html.light-theme .euiFormControlLayout__childrenWrapper {
   position: relative;
@@ -34662,6 +34908,8 @@ html.light-theme .euiFormControlLayoutDelimited[class*=-isDisabled] .euiFormCont
 }
 html.light-theme .euiFormControlLayoutDelimited[class*="--readOnly"] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -35550,432 +35798,6 @@ html.light-theme .euiDualRange__slider::-moz-range-thumb {
 html.light-theme .euiDualRange__slider::-ms-thumb {
   visibility: hidden;
 }
-html.light-theme .euiSelect {
-  max-width: 400px;
-  width: 100%;
-  height: 40px;
-  background-color: #fbfcfd;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-weight: 400;
-  letter-spacing: normal;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  font-kerning: normal;
-  font-size: 14px;
-  color: #343741;
-  border: none;
-  border-radius: 6px;
-  padding: 12px;
-  padding-right: 40px;
-  /* 1 */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  line-height: 40px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-}
-html.light-theme .euiSelect--fullWidth {
-  max-width: 100%;
-}
-html.light-theme .euiSelect--compressed {
-  height: 32px;
-}
-html.light-theme .euiSelect--inGroup {
-  height: 100%;
-}
-@supports (-moz-appearance: none) {
-  html.light-theme .euiSelect {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
-  html.light-theme .euiSelect {
-    line-height: 1em;
-  }
-}
-html.light-theme .euiSelect::-moz-placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-html.light-theme .euiSelect:-ms-input-placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-html.light-theme .euiSelect::placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-html.light-theme .euiSelect:invalid {
-  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-html.light-theme .euiSelect:focus {
-  background-color: white;
-  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSelect:disabled {
-  color: #98A2B3;
-  -webkit-text-fill-color: #98A2B3;
-  cursor: not-allowed;
-  background: #eef2f7;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSelect:disabled::-moz-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSelect:disabled:-ms-input-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSelect:disabled::placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSelect[readOnly] {
-  cursor: default;
-  background: #FFF;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSelect:-webkit-autofill {
-  -webkit-text-fill-color: #343741;
-}
-html.light-theme .euiSelect:-webkit-autofill ~ .euiFormControlLayoutIcons {
-  color: #343741;
-}
-html.light-theme .euiSelect--compressed {
-  background-color: #fbfcfd;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  padding: 8px;
-  border-radius: 4px;
-}
-@supports (-moz-appearance: none) {
-  html.light-theme .euiSelect--compressed {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-html.light-theme .euiSelect--compressed:invalid {
-  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-html.light-theme .euiSelect--compressed:focus {
-  background-color: white;
-  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSelect--compressed:disabled {
-  color: #98A2B3;
-  -webkit-text-fill-color: #98A2B3;
-  cursor: not-allowed;
-  background: #eef2f7;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSelect--compressed:disabled::-moz-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSelect--compressed:disabled:-ms-input-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSelect--compressed:disabled::placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSelect--compressed[readOnly] {
-  cursor: default;
-  background: #FFF;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSelect--inGroup {
-  box-shadow: none !important;
-  border-radius: 0;
-}
-html.light-theme .euiSelect-isLoading {
-  padding-right: 62px;
-}
-html.light-theme .euiSelect-isLoading.euiSelect--compressed {
-  padding-right: 54px;
-}
-html.light-theme .euiSelect--compressed {
-  padding-right: 32px;
-  /* 1 */
-  line-height: 32px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-}
-html.light-theme .euiSelect--inGroup {
-  line-height: 38px;
-  /* 2 */
-}
-html.light-theme .euiSelect--inGroup.euiSelect--compressed {
-  line-height: 30px;
-  /* 2 */
-}
-html.light-theme .euiSelect::-ms-expand {
-  display: none;
-}
-html.light-theme .euiSelect:focus::-ms-value {
-  color: #343741;
-  background: transparent;
-}
-html.light-theme .euiSelect:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 #343741;
-}
-html.light-theme .euiSuperSelect__listbox {
-  scrollbar-color: rgba(105, 112, 125, 0.5) transparent;
-  scrollbar-width: thin;
-  max-height: 300px;
-  overflow: hidden;
-  overflow-y: auto;
-}
-html.light-theme .euiSuperSelect__listbox::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
-}
-html.light-theme .euiSuperSelect__listbox::-webkit-scrollbar-thumb {
-  background-color: rgba(105, 112, 125, 0.5);
-  background-clip: content-box;
-  border-radius: 16px;
-  border: 6px solid transparent;
-}
-html.light-theme .euiSuperSelect__listbox::-webkit-scrollbar-corner, html.light-theme .euiSuperSelect__listbox::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-html.light-theme .euiSuperSelect__item {
-  font-size: 14px;
-  font-size: 1rem;
-  line-height: 1.71429rem;
-  padding: 8px;
-}
-html.light-theme .euiSuperSelect__item:hover {
-  cursor: pointer;
-  text-decoration: underline;
-}
-html.light-theme .euiSuperSelect__item:focus {
-  cursor: pointer;
-  text-decoration: underline;
-  background-color: rgba(0, 119, 204, 0.1);
-}
-html.light-theme .euiSuperSelect__item:disabled {
-  cursor: not-allowed;
-  text-decoration: none;
-  color: #ABB4C4;
-}
-html.light-theme .euiSuperSelect__item--hasDividers:not(:last-of-type) {
-  border-bottom: 1px solid #D3DAE6;
-}
-html.light-theme .euiSuperSelectControl {
-  max-width: 400px;
-  width: 100%;
-  height: 40px;
-  background-color: #fbfcfd;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-weight: 400;
-  letter-spacing: normal;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  font-kerning: normal;
-  font-size: 14px;
-  color: #343741;
-  border: none;
-  border-radius: 6px;
-  padding: 12px;
-  padding-right: 40px;
-  /* 1 */
-  display: block;
-  /* 3 */
-  text-align: left;
-  line-height: 40px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-html.light-theme .euiSuperSelectControl--fullWidth {
-  max-width: 100%;
-}
-html.light-theme .euiSuperSelectControl--compressed {
-  height: 32px;
-}
-html.light-theme .euiSuperSelectControl--inGroup {
-  height: 100%;
-}
-@supports (-moz-appearance: none) {
-  html.light-theme .euiSuperSelectControl {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
-  html.light-theme .euiSuperSelectControl {
-    line-height: 1em;
-  }
-}
-html.light-theme .euiSuperSelectControl::-moz-placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-html.light-theme .euiSuperSelectControl:-ms-input-placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-html.light-theme .euiSuperSelectControl::placeholder {
-  color: #69707D;
-  opacity: 1;
-}
-html.light-theme .euiSuperSelectControl:invalid {
-  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-html.light-theme .euiSuperSelectControl:focus {
-  background-color: white;
-  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSuperSelectControl:disabled {
-  color: #98A2B3;
-  -webkit-text-fill-color: #98A2B3;
-  cursor: not-allowed;
-  background: #eef2f7;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSuperSelectControl:disabled::-moz-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSuperSelectControl:disabled:-ms-input-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSuperSelectControl:disabled::placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSuperSelectControl[readOnly] {
-  cursor: default;
-  background: #FFF;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSuperSelectControl:-webkit-autofill {
-  -webkit-text-fill-color: #343741;
-}
-html.light-theme .euiSuperSelectControl:-webkit-autofill ~ .euiFormControlLayoutIcons {
-  color: #343741;
-}
-html.light-theme .euiSuperSelectControl--compressed {
-  background-color: #fbfcfd;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  padding: 8px;
-  border-radius: 4px;
-}
-@supports (-moz-appearance: none) {
-  html.light-theme .euiSuperSelectControl--compressed {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-html.light-theme .euiSuperSelectControl--compressed:invalid {
-  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-html.light-theme .euiSuperSelectControl--compressed:focus {
-  background-color: white;
-  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSuperSelectControl--compressed:disabled {
-  color: #98A2B3;
-  -webkit-text-fill-color: #98A2B3;
-  cursor: not-allowed;
-  background: #eef2f7;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSuperSelectControl--compressed:disabled::-moz-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSuperSelectControl--compressed:disabled:-ms-input-placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSuperSelectControl--compressed:disabled::placeholder {
-  color: #98A2B3;
-  opacity: 1;
-}
-html.light-theme .euiSuperSelectControl--compressed[readOnly] {
-  cursor: default;
-  background: #FFF;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
-html.light-theme .euiSuperSelectControl--inGroup {
-  box-shadow: none !important;
-  border-radius: 0;
-}
-html.light-theme .euiSuperSelectControl-isLoading {
-  padding-right: 62px;
-}
-html.light-theme .euiSuperSelectControl-isLoading.euiSuperSelectControl--compressed {
-  padding-right: 54px;
-}
-html.light-theme .euiSuperSelectControl-isInvalid {
-  background-image: linear-gradient(to top, #BD271E, #BD271E 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-html.light-theme .euiSuperSelectControl--compressed {
-  padding-right: 32px;
-  /* 1 */
-  line-height: 32px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-}
-html.light-theme .euiSuperSelectControl.euiSuperSelect--isOpen__button {
-  background-color: white;
-  background-image: linear-gradient(to top, #07C, #07C 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
-}
 html.light-theme .euiSwitch {
   position: relative;
   display: inline-flex;
@@ -36233,6 +36055,8 @@ html.light-theme .euiTextArea:disabled::placeholder {
 }
 html.light-theme .euiTextArea[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -36289,6 +36113,8 @@ html.light-theme .euiTextArea--compressed:disabled::placeholder {
 }
 html.light-theme .euiTextArea--compressed[readOnly] {
   cursor: default;
+  color: #343741;
+  -webkit-text-fill-color: #343741;
   background: #FFF;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(17, 43, 134, 0.1);
@@ -43560,10 +43386,6 @@ html.light-theme .euiTextAlign--right {
 html.light-theme .euiTextAlign--center {
   text-align: center;
 }
-html.light-theme .euiAvatar--space:after,
-html.light-theme .euiAvatar--user:after {
-  display: none;
-}
 html.light-theme .euiBreadcrumb__content.euiLink:focus {
   outline-offset: -1px;
 }
@@ -44266,10 +44088,12 @@ html.light-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWra
   border-radius: 0;
 }
 html.light-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:first-child .euiSelect,
+html.light-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:first-child .euiSuperSelectControl,
 html.light-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:first-child [class*=euiField] {
   border-radius: 6px 0 0 6px;
 }
 html.light-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:last-child .euiSelect,
+html.light-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:last-child .euiSuperSelectControl,
 html.light-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:last-child [class*=euiField] {
   border-radius: 0 6px 6px 0;
 }
@@ -46105,6 +45929,13 @@ html.dark-theme {
     * 1. Undo the pointer-events: none applied to the enclosing prompt.
     */
   /**
+   * 1. Ensure the descenders don't get cut off
+   */
+  /**
+   * 1. Ensure the descenders don't get cut off
+   * 2. Makes sure the height is correct when there's no selection
+   */
+  /**
    * 1. Account for inner box-shadow style border
    * 2. Ensure truncation works in children elements
    */
@@ -46128,15 +45959,6 @@ html.dark-theme {
    *    use the descendant selector to allow the width to shrink.
    *
    * 2. Prevent the prepend/append label from extending outside the parent element
-   */
-  /**
-   * 1. Leave room for caret.
-   * 2. Ensure the descenders don't get cut off
-   */
-  /**
-   * 1. Leave room for caret.
-   * 2. Ensure the descenders don't get cut off
-   * 3. Makes sure the height is correct when there's no selection
    */
   /**
    * 1. Fix for IE where the image correctly resizes in width but doesn't collapse its height
@@ -47501,78 +47323,6 @@ html.dark-theme .euiAspectRatio > * {
   left: 0 !important;
   width: 100% !important;
   height: 100% !important;
-}
-html.dark-theme .euiAvatar {
-  flex-shrink: 0;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  background-size: cover;
-  text-align: center;
-  vertical-align: middle;
-  overflow-x: hidden;
-  font-weight: 500;
-}
-html.dark-theme .euiAvatar--user {
-  position: relative;
-  border-radius: 50%;
-}
-html.dark-theme .euiAvatar--user:after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 50%;
-  content: "";
-  pointer-events: none;
-  border: 1px solid rgba(212, 218, 229, 0.05);
-}
-html.dark-theme .euiAvatar--space {
-  position: relative;
-  border-radius: 6px;
-}
-html.dark-theme .euiAvatar--space:after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 6px;
-  content: "";
-  pointer-events: none;
-  border: 1px solid rgba(212, 218, 229, 0.05);
-}
-html.dark-theme .euiAvatar-isDisabled {
-  cursor: not-allowed;
-  filter: grayscale(100%);
-}
-html.dark-theme .euiAvatar--plain {
-  background-color: #1D1E24;
-}
-html.dark-theme .euiAvatar--s {
-  width: 24px;
-  height: 24px;
-  line-height: 24px;
-  font-size: 12px;
-}
-html.dark-theme .euiAvatar--m {
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
-  font-size: 14.4px;
-}
-html.dark-theme .euiAvatar--l {
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
-  font-size: 19.2px;
-}
-html.dark-theme .euiAvatar--xl {
-  width: 64px;
-  height: 64px;
-  line-height: 64px;
-  font-size: 25.6px;
 }
 html.dark-theme .euiBadge {
   font-size: 12px;
@@ -54441,6 +54191,8 @@ html.dark-theme .euiFieldNumber:disabled::placeholder {
 }
 html.dark-theme .euiFieldNumber[readOnly] {
   cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
   background: #1D1E24;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -54497,6 +54249,8 @@ html.dark-theme .euiFieldNumber--compressed:disabled::placeholder {
 }
 html.dark-theme .euiFieldNumber--compressed[readOnly] {
   cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
   background: #1D1E24;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -54507,12 +54261,6 @@ html.dark-theme .euiFieldNumber--inGroup {
 }
 html.dark-theme .euiFieldNumber--withIcon {
   padding-left: 40px;
-}
-html.dark-theme .euiFieldNumber-isLoading {
-  padding-right: 40px;
-}
-html.dark-theme .euiFieldNumber-isLoading.euiFieldNumber--compressed {
-  padding-right: 32px;
 }
 html.dark-theme .euiFieldNumber--withIcon.euiFieldNumber--compressed {
   padding-left: 32px;
@@ -54602,6 +54350,8 @@ html.dark-theme .euiFieldPassword:disabled::placeholder {
 }
 html.dark-theme .euiFieldPassword[readOnly] {
   cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
   background: #1D1E24;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -54658,6 +54408,8 @@ html.dark-theme .euiFieldPassword--compressed:disabled::placeholder {
 }
 html.dark-theme .euiFieldPassword--compressed[readOnly] {
   cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
   background: #1D1E24;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -54665,12 +54417,6 @@ html.dark-theme .euiFieldPassword--compressed[readOnly] {
 html.dark-theme .euiFieldPassword--inGroup {
   box-shadow: none !important;
   border-radius: 0;
-}
-html.dark-theme .euiFieldPassword-isLoading {
-  padding-right: 40px;
-}
-html.dark-theme .euiFieldPassword-isLoading.euiFieldPassword--compressed {
-  padding-right: 32px;
 }
 html.dark-theme .euiFieldPassword.euiFieldPassword--compressed {
   padding-left: 32px;
@@ -54765,6 +54511,8 @@ html.dark-theme .euiFieldSearch:disabled::placeholder {
 }
 html.dark-theme .euiFieldSearch[readOnly] {
   cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
   background: #1D1E24;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -54821,6 +54569,8 @@ html.dark-theme .euiFieldSearch--compressed:disabled::placeholder {
 }
 html.dark-theme .euiFieldSearch--compressed[readOnly] {
   cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
   background: #1D1E24;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -54843,26 +54593,8 @@ html.dark-theme .euiFieldSearch::-ms-clear {
   display: none;
   /* 2 */
 }
-html.dark-theme .euiFieldSearch.euiFieldSearch-isClearable {
-  padding-right: 40px;
-}
-html.dark-theme .euiFieldSearch.euiFieldSearch-isLoading {
-  padding-right: 40px;
-}
-html.dark-theme .euiFieldSearch.euiFieldSearch-isLoading.euiFieldSearch-isClearable {
-  padding-right: 62px;
-}
-html.dark-theme .euiFieldSearch.euiFieldSearch--compressed {
+html.dark-theme .euiFieldSearch--compressed {
   padding-left: 32px;
-}
-html.dark-theme .euiFieldSearch.euiFieldSearch--compressed.euiFieldSearch-isClearable {
-  padding-right: 32px;
-}
-html.dark-theme .euiFieldSearch.euiFieldSearch--compressed.euiFieldSearch-isLoading {
-  padding-right: 32px;
-}
-html.dark-theme .euiFieldSearch.euiFieldSearch--compressed.euiFieldSearch-isLoading.euiFieldSearch-isClearable {
-  padding-right: 54px;
 }
 html.dark-theme .euiFieldText {
   max-width: 400px;
@@ -54951,6 +54683,8 @@ html.dark-theme .euiFieldText:disabled::placeholder {
 }
 html.dark-theme .euiFieldText[readOnly] {
   cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
   background: #1D1E24;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -55007,6 +54741,8 @@ html.dark-theme .euiFieldText--compressed:disabled::placeholder {
 }
 html.dark-theme .euiFieldText--compressed[readOnly] {
   cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
   background: #1D1E24;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -55018,24 +54754,12 @@ html.dark-theme .euiFieldText--inGroup {
 html.dark-theme .euiFieldText--withIcon {
   padding-left: 40px;
 }
-html.dark-theme .euiFieldText-isLoading {
-  padding-right: 40px;
-}
-html.dark-theme .euiFieldText-isLoading.euiFieldText--compressed {
-  padding-right: 32px;
-}
 html.dark-theme .euiFieldText.euiFieldText-isInvalid {
   background-image: linear-gradient(to top, #F86B63, #F86B63 2px, transparent 2px, transparent 100%);
   background-size: 100%;
 }
 html.dark-theme .euiFieldText--withIcon.euiFieldText--compressed {
   padding-left: 32px;
-}
-html.dark-theme .euiFieldText--isClearable {
-  padding-right: 40px;
-}
-html.dark-theme .euiFieldText--isClearable.euiFieldText--compressed {
-  padding-right: 32px;
 }
 html.dark-theme .euiFilePicker {
   max-width: 400px;
@@ -55277,6 +55001,420 @@ html.dark-theme .euiForm__error {
 html.dark-theme .euiForm__errors {
   margin-bottom: 16px;
 }
+html.dark-theme .euiSelect {
+  max-width: 400px;
+  width: 100%;
+  height: 40px;
+  background-color: #16171c;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 400;
+  letter-spacing: normal;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-kerning: normal;
+  font-size: 14px;
+  color: #DFE5EF;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  line-height: 40px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+}
+html.dark-theme .euiSelect--fullWidth {
+  max-width: 100%;
+}
+html.dark-theme .euiSelect--compressed {
+  height: 32px;
+}
+html.dark-theme .euiSelect--inGroup {
+  height: 100%;
+}
+@supports (-moz-appearance: none) {
+  html.dark-theme .euiSelect {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
+  html.dark-theme .euiSelect {
+    line-height: 1em;
+  }
+}
+html.dark-theme .euiSelect::-moz-placeholder {
+  color: #81858f;
+  opacity: 1;
+}
+html.dark-theme .euiSelect:-ms-input-placeholder {
+  color: #81858f;
+  opacity: 1;
+}
+html.dark-theme .euiSelect::placeholder {
+  color: #81858f;
+  opacity: 1;
+}
+html.dark-theme .euiSelect:invalid {
+  background-image: linear-gradient(to top, #F86B63, #F86B63 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+html.dark-theme .euiSelect:focus {
+  background-color: #111216;
+  background-image: linear-gradient(to top, #36A2EF, #36A2EF 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSelect:disabled {
+  color: #535966;
+  -webkit-text-fill-color: #535966;
+  cursor: not-allowed;
+  background: #202128;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSelect:disabled::-moz-placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSelect:disabled:-ms-input-placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSelect:disabled::placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSelect[readOnly] {
+  cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
+  background: #1D1E24;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSelect:-webkit-autofill {
+  -webkit-text-fill-color: #343741;
+}
+html.dark-theme .euiSelect:-webkit-autofill ~ .euiFormControlLayoutIcons {
+  color: #343741;
+}
+html.dark-theme .euiSelect--compressed {
+  background-color: #16171c;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  padding: 8px;
+  border-radius: 4px;
+}
+@supports (-moz-appearance: none) {
+  html.dark-theme .euiSelect--compressed {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+html.dark-theme .euiSelect--compressed:invalid {
+  background-image: linear-gradient(to top, #F86B63, #F86B63 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+html.dark-theme .euiSelect--compressed:focus {
+  background-color: #111216;
+  background-image: linear-gradient(to top, #36A2EF, #36A2EF 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSelect--compressed:disabled {
+  color: #535966;
+  -webkit-text-fill-color: #535966;
+  cursor: not-allowed;
+  background: #202128;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSelect--compressed:disabled::-moz-placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSelect--compressed:disabled:-ms-input-placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSelect--compressed:disabled::placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSelect--compressed[readOnly] {
+  cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
+  background: #1D1E24;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSelect--inGroup {
+  box-shadow: none !important;
+  border-radius: 0;
+}
+html.dark-theme .euiSelect--compressed {
+  line-height: 32px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+}
+html.dark-theme .euiSelect--inGroup {
+  line-height: 38px;
+  /* 1 */
+}
+html.dark-theme .euiSelect--inGroup.euiSelect--compressed {
+  line-height: 30px;
+  /* 1 */
+}
+html.dark-theme .euiSelect::-ms-expand {
+  display: none;
+}
+html.dark-theme .euiSelect:focus::-ms-value {
+  color: #DFE5EF;
+  background: transparent;
+}
+html.dark-theme .euiSelect:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #DFE5EF;
+}
+html.dark-theme .euiSuperSelect__listbox {
+  scrollbar-color: rgba(152, 162, 179, 0.5) transparent;
+  scrollbar-width: thin;
+  max-height: 300px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+html.dark-theme .euiSuperSelect__listbox::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+html.dark-theme .euiSuperSelect__listbox::-webkit-scrollbar-thumb {
+  background-color: rgba(152, 162, 179, 0.5);
+  background-clip: content-box;
+  border-radius: 16px;
+  border: 6px solid transparent;
+}
+html.dark-theme .euiSuperSelect__listbox::-webkit-scrollbar-corner, html.dark-theme .euiSuperSelect__listbox::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+html.dark-theme .euiSuperSelect__item {
+  font-size: 14px;
+  font-size: 1rem;
+  line-height: 1.71429rem;
+  padding: 8px;
+}
+html.dark-theme .euiSuperSelect__item:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+html.dark-theme .euiSuperSelect__item:focus {
+  cursor: pointer;
+  text-decoration: underline;
+  background-color: rgba(54, 162, 239, 0.2);
+}
+html.dark-theme .euiSuperSelect__item:disabled {
+  cursor: not-allowed;
+  text-decoration: none;
+  color: #515761;
+}
+html.dark-theme .euiSuperSelect__item--hasDividers:not(:last-of-type) {
+  border-bottom: 1px solid #343741;
+}
+html.dark-theme .euiSuperSelectControl {
+  max-width: 400px;
+  width: 100%;
+  height: 40px;
+  background-color: #16171c;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 400;
+  letter-spacing: normal;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-kerning: normal;
+  font-size: 14px;
+  color: #DFE5EF;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  display: block;
+  /* 2 */
+  text-align: left;
+  line-height: 40px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+html.dark-theme .euiSuperSelectControl--fullWidth {
+  max-width: 100%;
+}
+html.dark-theme .euiSuperSelectControl--compressed {
+  height: 32px;
+}
+html.dark-theme .euiSuperSelectControl--inGroup {
+  height: 100%;
+}
+@supports (-moz-appearance: none) {
+  html.dark-theme .euiSuperSelectControl {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
+  html.dark-theme .euiSuperSelectControl {
+    line-height: 1em;
+  }
+}
+html.dark-theme .euiSuperSelectControl::-moz-placeholder {
+  color: #81858f;
+  opacity: 1;
+}
+html.dark-theme .euiSuperSelectControl:-ms-input-placeholder {
+  color: #81858f;
+  opacity: 1;
+}
+html.dark-theme .euiSuperSelectControl::placeholder {
+  color: #81858f;
+  opacity: 1;
+}
+html.dark-theme .euiSuperSelectControl:invalid {
+  background-image: linear-gradient(to top, #F86B63, #F86B63 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+html.dark-theme .euiSuperSelectControl:focus {
+  background-color: #111216;
+  background-image: linear-gradient(to top, #36A2EF, #36A2EF 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSuperSelectControl:disabled {
+  color: #535966;
+  -webkit-text-fill-color: #535966;
+  cursor: not-allowed;
+  background: #202128;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSuperSelectControl:disabled::-moz-placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSuperSelectControl:disabled:-ms-input-placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSuperSelectControl:disabled::placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSuperSelectControl[readOnly] {
+  cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
+  background: #1D1E24;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSuperSelectControl:-webkit-autofill {
+  -webkit-text-fill-color: #343741;
+}
+html.dark-theme .euiSuperSelectControl:-webkit-autofill ~ .euiFormControlLayoutIcons {
+  color: #343741;
+}
+html.dark-theme .euiSuperSelectControl--compressed {
+  background-color: #16171c;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
+  padding: 8px;
+  border-radius: 4px;
+}
+@supports (-moz-appearance: none) {
+  html.dark-theme .euiSuperSelectControl--compressed {
+    transition-property: box-shadow, background-image, background-size;
+  }
+}
+html.dark-theme .euiSuperSelectControl--compressed:invalid {
+  background-image: linear-gradient(to top, #F86B63, #F86B63 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+html.dark-theme .euiSuperSelectControl--compressed:focus {
+  background-color: #111216;
+  background-image: linear-gradient(to top, #36A2EF, #36A2EF 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSuperSelectControl--compressed:disabled {
+  color: #535966;
+  -webkit-text-fill-color: #535966;
+  cursor: not-allowed;
+  background: #202128;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSuperSelectControl--compressed:disabled::-moz-placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSuperSelectControl--compressed:disabled:-ms-input-placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSuperSelectControl--compressed:disabled::placeholder {
+  color: #535966;
+  opacity: 1;
+}
+html.dark-theme .euiSuperSelectControl--compressed[readOnly] {
+  cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
+  background: #1D1E24;
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+html.dark-theme .euiSuperSelectControl--inGroup {
+  box-shadow: none !important;
+  border-radius: 0;
+}
+html.dark-theme .euiSuperSelectControl-isInvalid {
+  background-image: linear-gradient(to top, #F86B63, #F86B63 2px, transparent 2px, transparent 100%);
+  background-size: 100%;
+}
+html.dark-theme .euiSuperSelectControl--compressed {
+  line-height: 32px;
+  /* 1 */
+  padding-top: 0;
+  /* 1 */
+  padding-bottom: 0;
+  /* 1 */
+}
+html.dark-theme .euiSuperSelectControl.euiSuperSelect--isOpen__button {
+  background-color: #111216;
+  background-image: linear-gradient(to top, #36A2EF, #36A2EF 2px, transparent 2px, transparent 100%);
+  background-size: 100% 100%;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
 html.dark-theme .euiFormControlLayout {
   max-width: 400px;
   width: 100%;
@@ -55290,6 +55428,36 @@ html.dark-theme .euiFormControlLayout--compressed {
 }
 html.dark-theme .euiFormControlLayout--inGroup {
   height: 100%;
+}
+html.dark-theme .euiFormControlLayout--1icons {
+  padding-right: 34px;
+}
+html.dark-theme .euiFormControlLayout--1icons[class*=compressed] {
+  padding-right: 26px;
+}
+html.dark-theme .euiFormControlLayout--2icons {
+  padding-right: 56px;
+}
+html.dark-theme .euiFormControlLayout--2icons[class*=compressed] {
+  padding-right: 44px;
+}
+html.dark-theme .euiFormControlLayout--3icons {
+  padding-right: 78px;
+}
+html.dark-theme .euiFormControlLayout--3icons[class*=compressed] {
+  padding-right: 62px;
+}
+html.dark-theme .euiFormControlLayout--4icons {
+  padding-right: 100px;
+}
+html.dark-theme .euiFormControlLayout--4icons[class*=compressed] {
+  padding-right: 80px;
+}
+html.dark-theme .euiFormControlLayout--5icons {
+  padding-right: 122px;
+}
+html.dark-theme .euiFormControlLayout--5icons[class*=compressed] {
+  padding-right: 98px;
 }
 html.dark-theme .euiFormControlLayout__childrenWrapper {
   position: relative;
@@ -55521,6 +55689,8 @@ html.dark-theme .euiFormControlLayoutDelimited[class*=-isDisabled] .euiFormContr
 }
 html.dark-theme .euiFormControlLayoutDelimited[class*="--readOnly"] {
   cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
   background: #1D1E24;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -56409,432 +56579,6 @@ html.dark-theme .euiDualRange__slider::-moz-range-thumb {
 html.dark-theme .euiDualRange__slider::-ms-thumb {
   visibility: hidden;
 }
-html.dark-theme .euiSelect {
-  max-width: 400px;
-  width: 100%;
-  height: 40px;
-  background-color: #16171c;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-weight: 400;
-  letter-spacing: normal;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  font-kerning: normal;
-  font-size: 14px;
-  color: #DFE5EF;
-  border: none;
-  border-radius: 6px;
-  padding: 12px;
-  padding-right: 40px;
-  /* 1 */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  line-height: 40px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-}
-html.dark-theme .euiSelect--fullWidth {
-  max-width: 100%;
-}
-html.dark-theme .euiSelect--compressed {
-  height: 32px;
-}
-html.dark-theme .euiSelect--inGroup {
-  height: 100%;
-}
-@supports (-moz-appearance: none) {
-  html.dark-theme .euiSelect {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
-  html.dark-theme .euiSelect {
-    line-height: 1em;
-  }
-}
-html.dark-theme .euiSelect::-moz-placeholder {
-  color: #81858f;
-  opacity: 1;
-}
-html.dark-theme .euiSelect:-ms-input-placeholder {
-  color: #81858f;
-  opacity: 1;
-}
-html.dark-theme .euiSelect::placeholder {
-  color: #81858f;
-  opacity: 1;
-}
-html.dark-theme .euiSelect:invalid {
-  background-image: linear-gradient(to top, #F86B63, #F86B63 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-html.dark-theme .euiSelect:focus {
-  background-color: #111216;
-  background-image: linear-gradient(to top, #36A2EF, #36A2EF 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSelect:disabled {
-  color: #535966;
-  -webkit-text-fill-color: #535966;
-  cursor: not-allowed;
-  background: #202128;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSelect:disabled::-moz-placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSelect:disabled:-ms-input-placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSelect:disabled::placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSelect[readOnly] {
-  cursor: default;
-  background: #1D1E24;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSelect:-webkit-autofill {
-  -webkit-text-fill-color: #343741;
-}
-html.dark-theme .euiSelect:-webkit-autofill ~ .euiFormControlLayoutIcons {
-  color: #343741;
-}
-html.dark-theme .euiSelect--compressed {
-  background-color: #16171c;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  padding: 8px;
-  border-radius: 4px;
-}
-@supports (-moz-appearance: none) {
-  html.dark-theme .euiSelect--compressed {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-html.dark-theme .euiSelect--compressed:invalid {
-  background-image: linear-gradient(to top, #F86B63, #F86B63 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-html.dark-theme .euiSelect--compressed:focus {
-  background-color: #111216;
-  background-image: linear-gradient(to top, #36A2EF, #36A2EF 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSelect--compressed:disabled {
-  color: #535966;
-  -webkit-text-fill-color: #535966;
-  cursor: not-allowed;
-  background: #202128;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSelect--compressed:disabled::-moz-placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSelect--compressed:disabled:-ms-input-placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSelect--compressed:disabled::placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSelect--compressed[readOnly] {
-  cursor: default;
-  background: #1D1E24;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSelect--inGroup {
-  box-shadow: none !important;
-  border-radius: 0;
-}
-html.dark-theme .euiSelect-isLoading {
-  padding-right: 62px;
-}
-html.dark-theme .euiSelect-isLoading.euiSelect--compressed {
-  padding-right: 54px;
-}
-html.dark-theme .euiSelect--compressed {
-  padding-right: 32px;
-  /* 1 */
-  line-height: 32px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-}
-html.dark-theme .euiSelect--inGroup {
-  line-height: 38px;
-  /* 2 */
-}
-html.dark-theme .euiSelect--inGroup.euiSelect--compressed {
-  line-height: 30px;
-  /* 2 */
-}
-html.dark-theme .euiSelect::-ms-expand {
-  display: none;
-}
-html.dark-theme .euiSelect:focus::-ms-value {
-  color: #DFE5EF;
-  background: transparent;
-}
-html.dark-theme .euiSelect:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 #DFE5EF;
-}
-html.dark-theme .euiSuperSelect__listbox {
-  scrollbar-color: rgba(152, 162, 179, 0.5) transparent;
-  scrollbar-width: thin;
-  max-height: 300px;
-  overflow: hidden;
-  overflow-y: auto;
-}
-html.dark-theme .euiSuperSelect__listbox::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
-}
-html.dark-theme .euiSuperSelect__listbox::-webkit-scrollbar-thumb {
-  background-color: rgba(152, 162, 179, 0.5);
-  background-clip: content-box;
-  border-radius: 16px;
-  border: 6px solid transparent;
-}
-html.dark-theme .euiSuperSelect__listbox::-webkit-scrollbar-corner, html.dark-theme .euiSuperSelect__listbox::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-html.dark-theme .euiSuperSelect__item {
-  font-size: 14px;
-  font-size: 1rem;
-  line-height: 1.71429rem;
-  padding: 8px;
-}
-html.dark-theme .euiSuperSelect__item:hover {
-  cursor: pointer;
-  text-decoration: underline;
-}
-html.dark-theme .euiSuperSelect__item:focus {
-  cursor: pointer;
-  text-decoration: underline;
-  background-color: rgba(54, 162, 239, 0.2);
-}
-html.dark-theme .euiSuperSelect__item:disabled {
-  cursor: not-allowed;
-  text-decoration: none;
-  color: #515761;
-}
-html.dark-theme .euiSuperSelect__item--hasDividers:not(:last-of-type) {
-  border-bottom: 1px solid #343741;
-}
-html.dark-theme .euiSuperSelectControl {
-  max-width: 400px;
-  width: 100%;
-  height: 40px;
-  background-color: #16171c;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: 0 0 transparent, inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-weight: 400;
-  letter-spacing: normal;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  font-kerning: normal;
-  font-size: 14px;
-  color: #DFE5EF;
-  border: none;
-  border-radius: 6px;
-  padding: 12px;
-  padding-right: 40px;
-  /* 1 */
-  display: block;
-  /* 3 */
-  text-align: left;
-  line-height: 40px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-html.dark-theme .euiSuperSelectControl--fullWidth {
-  max-width: 100%;
-}
-html.dark-theme .euiSuperSelectControl--compressed {
-  height: 32px;
-}
-html.dark-theme .euiSuperSelectControl--inGroup {
-  height: 100%;
-}
-@supports (-moz-appearance: none) {
-  html.dark-theme .euiSuperSelectControl {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
-  html.dark-theme .euiSuperSelectControl {
-    line-height: 1em;
-  }
-}
-html.dark-theme .euiSuperSelectControl::-moz-placeholder {
-  color: #81858f;
-  opacity: 1;
-}
-html.dark-theme .euiSuperSelectControl:-ms-input-placeholder {
-  color: #81858f;
-  opacity: 1;
-}
-html.dark-theme .euiSuperSelectControl::placeholder {
-  color: #81858f;
-  opacity: 1;
-}
-html.dark-theme .euiSuperSelectControl:invalid {
-  background-image: linear-gradient(to top, #F86B63, #F86B63 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-html.dark-theme .euiSuperSelectControl:focus {
-  background-color: #111216;
-  background-image: linear-gradient(to top, #36A2EF, #36A2EF 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSuperSelectControl:disabled {
-  color: #535966;
-  -webkit-text-fill-color: #535966;
-  cursor: not-allowed;
-  background: #202128;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSuperSelectControl:disabled::-moz-placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSuperSelectControl:disabled:-ms-input-placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSuperSelectControl:disabled::placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSuperSelectControl[readOnly] {
-  cursor: default;
-  background: #1D1E24;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSuperSelectControl:-webkit-autofill {
-  -webkit-text-fill-color: #343741;
-}
-html.dark-theme .euiSuperSelectControl:-webkit-autofill ~ .euiFormControlLayoutIcons {
-  color: #343741;
-}
-html.dark-theme .euiSuperSelectControl--compressed {
-  background-color: #16171c;
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  transition: box-shadow 150ms ease-in, background-image 150ms ease-in, background-size 150ms ease-in, background-color 150ms ease-in;
-  padding: 8px;
-  border-radius: 4px;
-}
-@supports (-moz-appearance: none) {
-  html.dark-theme .euiSuperSelectControl--compressed {
-    transition-property: box-shadow, background-image, background-size;
-  }
-}
-html.dark-theme .euiSuperSelectControl--compressed:invalid {
-  background-image: linear-gradient(to top, #F86B63, #F86B63 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-html.dark-theme .euiSuperSelectControl--compressed:focus {
-  background-color: #111216;
-  background-image: linear-gradient(to top, #36A2EF, #36A2EF 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSuperSelectControl--compressed:disabled {
-  color: #535966;
-  -webkit-text-fill-color: #535966;
-  cursor: not-allowed;
-  background: #202128;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSuperSelectControl--compressed:disabled::-moz-placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSuperSelectControl--compressed:disabled:-ms-input-placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSuperSelectControl--compressed:disabled::placeholder {
-  color: #535966;
-  opacity: 1;
-}
-html.dark-theme .euiSuperSelectControl--compressed[readOnly] {
-  cursor: default;
-  background: #1D1E24;
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-html.dark-theme .euiSuperSelectControl--inGroup {
-  box-shadow: none !important;
-  border-radius: 0;
-}
-html.dark-theme .euiSuperSelectControl-isLoading {
-  padding-right: 62px;
-}
-html.dark-theme .euiSuperSelectControl-isLoading.euiSuperSelectControl--compressed {
-  padding-right: 54px;
-}
-html.dark-theme .euiSuperSelectControl-isInvalid {
-  background-image: linear-gradient(to top, #F86B63, #F86B63 2px, transparent 2px, transparent 100%);
-  background-size: 100%;
-}
-html.dark-theme .euiSuperSelectControl--compressed {
-  padding-right: 32px;
-  /* 1 */
-  line-height: 32px;
-  /* 2 */
-  padding-top: 0;
-  /* 2 */
-  padding-bottom: 0;
-  /* 2 */
-}
-html.dark-theme .euiSuperSelectControl.euiSuperSelect--isOpen__button {
-  background-color: #111216;
-  background-image: linear-gradient(to top, #36A2EF, #36A2EF 2px, transparent 2px, transparent 100%);
-  background-size: 100% 100%;
-  outline: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
 html.dark-theme .euiSwitch {
   position: relative;
   display: inline-flex;
@@ -57092,6 +56836,8 @@ html.dark-theme .euiTextArea:disabled::placeholder {
 }
 html.dark-theme .euiTextArea[readOnly] {
   cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
   background: #1D1E24;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -57148,6 +56894,8 @@ html.dark-theme .euiTextArea--compressed:disabled::placeholder {
 }
 html.dark-theme .euiTextArea--compressed[readOnly] {
   cursor: default;
+  color: #DFE5EF;
+  -webkit-text-fill-color: #DFE5EF;
   background: #1D1E24;
   border-color: transparent;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -64419,10 +64167,6 @@ html.dark-theme .euiTextAlign--right {
 html.dark-theme .euiTextAlign--center {
   text-align: center;
 }
-html.dark-theme .euiAvatar--space:after,
-html.dark-theme .euiAvatar--user:after {
-  display: none;
-}
 html.dark-theme .euiBreadcrumb__content.euiLink:focus {
   outline-offset: -1px;
 }
@@ -65125,10 +64869,12 @@ html.dark-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrap
   border-radius: 0;
 }
 html.dark-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:first-child .euiSelect,
+html.dark-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:first-child .euiSuperSelectControl,
 html.dark-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:first-child [class*=euiField] {
   border-radius: 6px 0 0 6px;
 }
 html.dark-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:last-child .euiSelect,
+html.dark-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:last-child .euiSuperSelectControl,
 html.dark-theme .euiFormControlLayout--group .euiFormControlLayout__childrenWrapper:last-child [class*=euiField] {
   border-radius: 0 6px 6px 0;
 }
