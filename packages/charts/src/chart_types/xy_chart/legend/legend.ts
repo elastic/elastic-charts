@@ -10,10 +10,10 @@ import { Color } from '../../../common/colors';
 import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { TickFormatterOptions } from '../../../specs';
-import { mergePartial, Rotation } from '../../../utils/common';
+import { SettingsSpec, TickFormatterOptions } from '../../../specs';
+import { mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
-import { getLegendCompareFn } from '../../../utils/series_sort';
+import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
@@ -100,11 +100,10 @@ export function computeLegend(
   seriesColors: Map<SeriesKey, Color>,
   specs: BasicSeriesSpec[],
   axesSpecs: AxisSpec[],
-  showLegendExtra: boolean,
+  settingsSpec: SettingsSpec,
   serialIdentifierDataSeriesMap: Record<string, DataSeries>,
   deselectedDataSeries: SeriesIdentifier[] = [],
   theme: Theme,
-  chartRotation: Rotation,
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
@@ -133,7 +132,7 @@ export function computeLegend(
     const labelY1 = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name;
 
     // Use this to get axis spec w/ tick formatter
-    const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
+    const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, settingsSpec.rotation);
     const formatter = spec.tickFormat ?? yAxis?.tickFormat ?? defaultTickFormatter;
     const { hideInLegend } = spec;
 
@@ -151,7 +150,7 @@ export function computeLegend(
       isSeriesHidden,
       isItemHidden: hideInLegend,
       isToggleable: true,
-      defaultExtra: getLegendExtra(showLegendExtra, xScaleType, formatter, 'y1', lastValue),
+      defaultExtra: getLegendExtra(settingsSpec.showLegendExtra, xScaleType, formatter, 'y1', lastValue),
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
       pointStyle,
@@ -166,7 +165,7 @@ export function computeLegend(
         isSeriesHidden,
         isItemHidden: hideInLegend,
         isToggleable: true,
-        defaultExtra: getLegendExtra(showLegendExtra, xScaleType, formatter, 'y0', lastValue),
+        defaultExtra: getLegendExtra(settingsSpec.showLegendExtra, xScaleType, formatter, 'y0', lastValue),
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
         pointStyle,
@@ -179,9 +178,10 @@ export function computeLegend(
     const bDs = serialIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);
   });
+  const sortFn: SeriesCompareFn = settingsSpec.legendSort ? settingsSpec.legendSort : legendSortFn;
 
   return groupBy(
-    legendItems.sort((a, b) => legendSortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0])),
+    legendItems.sort((a, b) => sortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0])),
     ({ keys, childId }) => {
       return [...keys, childId].join('__'); // childId is used for band charts
     },

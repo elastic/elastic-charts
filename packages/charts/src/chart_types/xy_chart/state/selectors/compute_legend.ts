@@ -41,18 +41,16 @@ export const computeLegendSelector = createCustomCachedSelector(
     settings,
     siDataSeriesMap: Record<string, DataSeries>,
   ): LegendItem[] => {
-    const lastValues = getLastValues(formattedDataSeries, xDomain);
     return computeLegend(
       formattedDataSeries,
-      lastValues,
+      getLastValues(formattedDataSeries, xDomain),
       seriesColors,
       seriesSpecs,
       axesSpecs,
-      settings.showLegendExtra,
+      settings,
       siDataSeriesMap,
       deselectedDataSeries,
       chartTheme,
-      settings.rotation,
     );
   },
 );
