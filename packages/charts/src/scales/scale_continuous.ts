@@ -159,7 +159,7 @@ export class ScaleContinuous implements Scale<number> {
             nicePaddedDomain[nicePaddedDomain.length - 1],
             scaleOptions.desiredTickCount,
             this.linearBase,
-            scaleOptions.minInterval,
+            scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
           )
         : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount);
     // : new Array(Math.floor((nicePaddedDomain[1] - nicePaddedDomain[0]) / minInterval) + 1)
