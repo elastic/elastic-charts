@@ -2691,7 +2691,7 @@ export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends Se
 export interface YDomainBase {
     constrainPadding?: boolean;
     fit?: boolean;
-    fitAnnotations?: boolean;
+    includeDataFromIds?: SpecId[];
     padding?: number;
     paddingUnit?: DomainPaddingUnit;
 }
