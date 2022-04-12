@@ -20,8 +20,8 @@ export const computeSeriesDomainsSelector = createCustomCachedSelector(
   [
     getSeriesSpecsSelector,
     getScaleConfigsFromSpecsSelector,
-    getDeselectedSeriesSelector,
     getAnnotationSpecsSelector,
+    getDeselectedSeriesSelector,
     getSettingsSpecSelector,
     getSmallMultiplesIndexOrderSelector,
   ],

@@ -21,9 +21,7 @@ export function mergeYCustomDomainsByGroupId(
   axesSpecs.forEach((spec: AxisSpec) => {
     const { id, groupId, domain } = spec;
 
-    if (!domain) {
-      return;
-    }
+    if (!domain) return;
 
     if (isXDomain(spec.position, chartRotation)) {
       throw new Error(`[Axis ${id}]: custom domain for xDomain should be defined in Settings`);

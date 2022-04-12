@@ -118,8 +118,8 @@ export function getCustomSeriesColors(dataSeries: DataSeries[]): Map<SeriesKey, 
 export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   scaleConfigs: ScaleConfigs,
-  deselectedDataSeries: SeriesIdentifier[] = [],
   annotations: AnnotationSpec[],
+  deselectedDataSeries: SeriesIdentifier[] = [],
   settingsSpec?: Pick<SettingsSpec, 'orderOrdinalBinsBy'>,
   smallMultiples?: SmallMultiplesGroupBy,
 ): SeriesDomainsAndData {
@@ -169,8 +169,8 @@ function getAnnotationYValueMap(
   yScaleConfig: ScaleConfigs['y'],
 ): Map<GroupId, number[]> {
   return annotations.reduce((acc, spec) => {
-    const { fit, fitAnnotations } = yScaleConfig[spec.groupId].customDomain ?? {};
-    if (!(fitAnnotations ?? fit)) return acc.set(spec.groupId, []);
+    const { includeDataFromIds = [] } = yScaleConfig[spec.groupId]?.customDomain ?? {};
+    if (!includeDataFromIds.includes(spec.id)) return acc.set(spec.groupId, []);
     const yValues: number[] = isLineAnnotation(spec)
       ? spec.domainType === AnnotationDomainType.YDomain
         ? spec.dataValues.map(({ dataValue }) => dataValue)

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { array, boolean, number, object, select } from '@storybook/addon-knobs';
+import { array, boolean, number, object, optionsKnob, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -23,7 +23,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getKnobsFromEnum } from '../utils/knobs';
+import { getKnobsFromEnum, getMultiSelectKnob } from '../utils/knobs';
 
 const dg = new SeededDataGenerator();
 const base = dg.generateBasicSeries(100, 0, 50);
@@ -50,7 +50,15 @@ export const Example = () => {
 
   const dataset = dataTypes[dataKey];
   const fit = boolean('fit Y domain to data', true);
-  const fitAnnotations = boolean('fit Y domain to annotations', true);
+  const includeDataFromIds = getMultiSelectKnob<string>(
+    'Specs to fit (yDomain)',
+    {
+      Lines: 'theshold',
+      Rects: 'rect',
+    },
+    ['theshold', 'rect'],
+    'check',
+  )
   const constrainPadding = boolean('constrain padding', true);
   const padding = number('domain padding', 0.1);
   const paddingUnit = getKnobsFromEnum(
@@ -70,7 +78,7 @@ export const Example = () => {
           min: NaN,
           max: NaN,
           fit,
-          fitAnnotations,
+          includeDataFromIds,
           padding,
           paddingUnit,
           constrainPadding,
