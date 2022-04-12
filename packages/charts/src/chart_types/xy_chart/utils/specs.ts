@@ -326,12 +326,12 @@ export interface YDomainBase {
    */
   fit?: boolean;
   /**
-   * Whether to fit the domain to annotstion data values.
-   *
-   * Setting `max` or `min` will override this functionality.
-   * @defaultValue YDomainBase.fit
+   * Specify a series of specIds to include into the domain calculation.
+   * Currently, it will work only for annotations, everything else is already included in the domain automatically.
+   * Setting `domain.max` or `domain.min` will override this functionality.
+   * @defaultValue []
    */
-  fitAnnotations?: boolean;
+  includeDataFromIds: SpecId[];
   /**
    * Padding for computed domain as positive number.
    * Applied to domain __before__ nicing
