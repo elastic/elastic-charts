@@ -111,7 +111,7 @@ function mergeYDomainForGroup(
 
 function computeYDomain(
   dataSeries: DataSeries[],
-  annotationYValues: any[],
+  annotationYValues: number[],
   hasZeroBaselineSpecs: boolean,
   scaleType: ScaleType,
   customDomain: YDomainRange,
