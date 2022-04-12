@@ -117,7 +117,7 @@ function renderXYAxisChart() {
 
       <BarSeries
         id="series bars chart"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
