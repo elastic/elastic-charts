@@ -143,7 +143,7 @@ export function computeSeriesDomains(
   const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.type).sort(
     seriesSortFn,
   );
-  const annotationYValueMap = getAnnotationYValueMap(annotations);
+  const annotationYValueMap = getAnnotationYValueMap(annotations, scaleConfigs.y);
 
   // let's compute the yDomains after computing all stacked values
   const yDomains = mergeYDomain(scaleConfigs.y, formattedDataSeries, annotationYValueMap);
@@ -164,8 +164,13 @@ export function computeSeriesDomains(
   };
 }
 
-function getAnnotationYValueMap(annotations: AnnotationSpec[]): Map<GroupId, number[]> {
+function getAnnotationYValueMap(
+  annotations: AnnotationSpec[],
+  yScaleConfig: ScaleConfigs['y'],
+): Map<GroupId, number[]> {
   return annotations.reduce((acc, spec) => {
+    const { fit, fitAnnotations } = yScaleConfig[spec.groupId].customDomain ?? {};
+    if (!(fitAnnotations ?? fit)) return acc.set(spec.groupId, []);
     const yValues: number[] = isLineAnnotation(spec)
       ? spec.domainType === AnnotationDomainType.YDomain
         ? spec.dataValues.map(({ dataValue }) => dataValue)

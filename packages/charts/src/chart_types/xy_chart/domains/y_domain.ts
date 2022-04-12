@@ -68,8 +68,7 @@ function mergeYDomainForGroup(
   if (isStacked && stackMode === StackMode.Percentage) {
     mergedDomain = computeContinuousDataDomain([0, 1], type, customDomain);
   } else {
-    const annotationData =
-      newCustomDomain.fitAnnotations ?? newCustomDomain.fit ? annotationYValueMap.get(groupId) ?? [] : [];
+    const annotationData = annotationYValueMap.get(groupId) ?? [];
     const stackedDomain = computeYDomain(stacked, annotationData, hasZeroBaselineSpecs, type, newCustomDomain);
     const nonStackedDomain = computeYDomain(nonStacked, annotationData, hasZeroBaselineSpecs, type, newCustomDomain);
     mergedDomain = computeContinuousDataDomain([...stackedDomain, ...nonStackedDomain], type, newCustomDomain);
