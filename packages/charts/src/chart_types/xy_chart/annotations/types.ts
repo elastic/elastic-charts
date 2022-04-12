@@ -11,6 +11,7 @@ import { ComponentType, ReactNode } from 'react';
 import { Color } from '../../../common/colors';
 import { TooltipPortalSettings } from '../../../components/portal';
 import { Position } from '../../../utils/common';
+import { AnnotationId, SpecId } from '../../../utils/ids';
 import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../utils/specs';
 import { AnnotationLineProps } from './line/types';
 import { AnnotationRectProps } from './rect/types';
@@ -62,8 +63,8 @@ export interface AnnotationMarker {
 
 /** @internal */
 export interface AnnotationTooltipState {
-  id: string;
-  specId: string;
+  id: AnnotationId;
+  specId: SpecId;
   isVisible: true;
   annotationType: AnnotationType;
   datum: LineAnnotationDatum | RectAnnotationDatum;

@@ -9,6 +9,7 @@
 import { Rect } from '../../../../geoms/types';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
+import { SpecId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { isHorizontalRotation } from '../../state/utils/common';
 import { AnnotationType } from '../../utils/specs';
@@ -22,7 +23,7 @@ export function getRectAnnotationTooltipState(
   annotationRects: AnnotationRectProps[],
   rotation: Rotation,
   chartDimensions: Dimensions,
-  specId: string,
+  specId: SpecId,
 ): AnnotationTooltipState | null {
   for (let i = 0; i < annotationRects.length; i++) {
     const { rect, panel, datum, id } = annotationRects[i];
