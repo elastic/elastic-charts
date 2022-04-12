@@ -9,7 +9,6 @@
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { Position } from '../../../utils/common';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
 
 const SPEC_ID = 'spec_1';

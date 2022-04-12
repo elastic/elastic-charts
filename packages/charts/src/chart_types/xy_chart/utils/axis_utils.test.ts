@@ -9,13 +9,11 @@
 import { DateTime } from 'luxon';
 import moment from 'moment-timezone';
 
-import { ChartType } from '../..';
 import { MockGlobalSpec /*, MockSeriesSpec*/ } from '../../../mocks/specs/specs';
 // import { MockStore } from '../../../mocks/store/store';
 import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
 import { Position, mergePartial, HorizontalAlignment, VerticalAlignment } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { OrdinalDomain } from '../../../utils/domain';

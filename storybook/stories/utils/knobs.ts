@@ -8,7 +8,13 @@
 
 import { PopoverAnchorPosition } from '@elastic/eui';
 import { select, array, number, optionsKnob } from '@storybook/addon-knobs';
-import { OptionsTypeKnobSingleValue, OptionsTypeKnobValue, OptionsTypeOptionsProp, SelectTypeKnobValue } from '@storybook/addon-knobs/dist/components/types';
+import {
+  OptionsTypeKnobSingleValue,
+  OptionsTypeKnobValue,
+  OptionsTypeOptionsProp,
+  SelectTypeKnobValue,
+} from '@storybook/addon-knobs/dist/components/types';
+import { OptionsKnobOptionsDisplay } from '@storybook/addon-knobs/dist/components/types/Options';
 import { startCase, kebabCase } from 'lodash';
 import { $Values } from 'utility-types';
 
@@ -26,7 +32,6 @@ import {
 } from '@elastic/charts';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 import { VerticalAlignment, HorizontalAlignment } from '@elastic/charts/src/utils/common';
-import { OptionsKnobOptionsDisplay } from '@storybook/addon-knobs/dist/components/types/Options';
 
 export const getPositiveNumberKnob = (name: string, value: number, groupId?: string) =>
   number(name, value, { min: 0 }, groupId);
@@ -213,7 +218,7 @@ export function getMultiSelectKnob<T extends OptionsTypeKnobSingleValue>(
   if (typeof knob === 'string') return knob.split(', ') as T[];
   if (typeof knob === 'number') return [knob] as T[];
   return !knob ? [] : knob;
-};
+}
 
 export const getFallbackPlacementsKnob = (groupId?: string): Placement[] => {
   return getMultiSelectKnob<Placement>(

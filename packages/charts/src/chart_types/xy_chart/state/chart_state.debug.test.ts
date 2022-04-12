@@ -9,7 +9,7 @@
 import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
-import { Position, Rotation } from '../../../utils/common';
+import { Rotation } from '../../../utils/common';
 import { getDebugStateSelector } from './selectors/get_debug_state';
 
 describe('XYChart - debug state', () => {
@@ -29,12 +29,18 @@ describe('XYChart - debug state', () => {
           xScaleType: ScaleType.Linear,
           yScaleType: ScaleType.Linear,
         }),
-        MockGlobalSpec.xAxis({
-          integersOnly: true,
-        }, rotation),
-        MockGlobalSpec.yAxis({
-          integersOnly: true,
-        }, rotation),
+        MockGlobalSpec.xAxis(
+          {
+            integersOnly: true,
+          },
+          rotation,
+        ),
+        MockGlobalSpec.yAxis(
+          {
+            integersOnly: true,
+          },
+          rotation,
+        ),
       ],
       store,
     );

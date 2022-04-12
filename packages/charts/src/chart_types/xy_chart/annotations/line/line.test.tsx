@@ -129,12 +129,7 @@ describe('annotation marker', () => {
 
   test('should compute line annotation dimensions with marker if defined (x domain)', () => {
     MockStore.addSpecs(
-      [
-        spec,
-        MockGlobalSpec.settingsNoMargins(),
-        MockGlobalSpec.xAxis({ hide: true }),
-        lineXDomainAnnotation,
-      ],
+      [spec, MockGlobalSpec.settingsNoMargins(), MockGlobalSpec.xAxis({ hide: true }), lineXDomainAnnotation],
       store,
     );
 

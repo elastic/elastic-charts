@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { array, boolean, number, object, optionsKnob, select } from '@storybook/addon-knobs';
+import { array, boolean, number, object, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -58,7 +58,7 @@ export const Example = () => {
     },
     ['theshold', 'rect'],
     'check',
-  )
+  );
   const constrainPadding = boolean('constrain padding', true);
   const padding = number('domain padding', 0.1);
   const paddingUnit = getKnobsFromEnum(

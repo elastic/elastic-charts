@@ -353,18 +353,22 @@ export class MockGlobalSpec {
   }
 
   static xAxis(partial?: RecursivePartial<Omit<AxisSpec, 'domain'>>, rotation: Rotation = 0): AxisSpec {
-    return mergePartial<AxisSpec>(MockGlobalSpec.axisBase, partial, {}, [{
-      id: 'xAxis',
-      position: isHorizontalRotation(rotation) ? Position.Bottom : Position.Left,
-    }]);
+    return mergePartial<AxisSpec>(MockGlobalSpec.axisBase, partial, {}, [
+      {
+        id: 'xAxis',
+        position: isHorizontalRotation(rotation) ? Position.Bottom : Position.Left,
+      },
+    ]);
   }
 
   static yAxis(partial?: RecursivePartial<AxisSpec>, rotation: Rotation = 0): AxisSpec {
-    return mergePartial<AxisSpec>(MockGlobalSpec.axisBase, partial, {}, [{
-      id: 'yAxis',
-      position: isHorizontalRotation(rotation) ? Position.Left : Position.Bottom,
-      domain: { min: NaN, max: NaN, includeDataFromIds: [] },
-  }]);
+    return mergePartial<AxisSpec>(MockGlobalSpec.axisBase, partial, {}, [
+      {
+        id: 'yAxis',
+        position: isHorizontalRotation(rotation) ? Position.Left : Position.Bottom,
+        domain: { min: NaN, max: NaN, includeDataFromIds: [] },
+      },
+    ]);
   }
 
   static smallMultiple(partial?: RecursivePartial<SmallMultiplesSpec>): SmallMultiplesSpec {
