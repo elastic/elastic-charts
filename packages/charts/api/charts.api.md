@@ -54,6 +54,31 @@ export interface AngleFromTo {
     x1: Radian;
 }
 
+// @public
+export type AnimatedValue = number;
+
+// @public (undocumented)
+export interface AnimationOptions {
+    delay?: TimeMs | AnimationSpeed;
+    duration?: TimeMs | AnimationSpeed;
+    enabled?: boolean;
+    initialValue?: AnimatedValue;
+    snapValues?: AnimatedValue[];
+    timeFunction?: TimeFunction;
+}
+
+// @public
+export const AnimationSpeed: Readonly<{
+    extraFast: number;
+    fast: number;
+    normal: number;
+    slow: number;
+    extraSlow: number;
+}>;
+
+// @public (undocumented)
+export type AnimationSpeed = $Keys<typeof AnimationSpeed>;
+
 // @alpha (undocumented)
 export interface AnimKeyframe {
     // Warning: (ae-forgotten-export) The symbol "EasingFunction" needs to be exported by the entry point index.d.ts
@@ -64,8 +89,6 @@ export interface AnimKeyframe {
     time: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "AnimationOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type AnnotationAnimation = Optional<Required<AnimationOptions>, 'initialValue'>;
 
@@ -2454,6 +2477,21 @@ export type TickStyle = StrokeStyle & Visible & {
 export function timeFormatter(format: string): TickFormatter;
 
 // @public (undocumented)
+export const TimeFunction: Readonly<{
+    linear: "linear";
+    ease: "ease";
+    easeIn: "easeIn";
+    easeOut: "easeOut";
+    easeInOut: "easeInOut";
+}>;
+
+// @public (undocumented)
+export type TimeFunction = $Values<typeof TimeFunction>;
+
+// @public (undocumented)
+export type TimeMs = number;
+
+// @public (undocumented)
 export interface TimeScale {
     // (undocumented)
     type: typeof ScaleType.Time;
@@ -2703,10 +2741,6 @@ export interface YDomainBase {
 
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
-
-// Warnings were encountered during analysis:
-//
-// src/chart_types/partition_chart/layout/types/config.ts:60:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

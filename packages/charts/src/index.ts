@@ -66,6 +66,13 @@ export { CustomTooltip, TooltipInfo } from './components/tooltip/types';
 export { ScaleType } from './scales/constants';
 export { ScaleContinuousType, ScaleOrdinalType, ScaleBandType, LogScaleOptions } from './scales';
 
+// TODO move animation to its own package
+export {
+  AnimationOptions,
+  AnimatedValue,
+  AnimationSpeed,
+} from './chart_types/xy_chart/renderer/canvas/animations/animation';
+
 // theme
 export * from './utils/themes/theme';
 export * from './utils/themes/theme_common';
@@ -108,7 +115,7 @@ export * from './utils/themes/merge_utils';
 export * from './utils/use_legend_action';
 export { MODEL_KEY, defaultPartitionValueFormatter } from './chart_types/partition_chart/layout/config';
 export { LegendStrategy } from './chart_types/partition_chart/layout/utils/highlighted_geoms';
-export { Pixels, Ratio } from './common/geometry';
+export { Pixels, Ratio, TimeMs } from './common/geometry';
 export { AdditiveNumber } from './utils/accessor';
 export { FontStyle, FONT_STYLES } from './common/text_utils';
 export { Color } from './common/colors';
@@ -125,3 +132,4 @@ export {
 // data utils
 export { GroupKeysOrKeyFn, GroupByKeyFn } from './chart_types/xy_chart/utils/group_data_series';
 export { computeRatioByGroups } from './utils/data/data_processing';
+export { TimeFunction } from './utils/time_functions';
