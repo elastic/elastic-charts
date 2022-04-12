@@ -59,6 +59,13 @@ export function array(name: string, dftValues: unknown[], options: any, groupId?
   return values;
 }
 
+export function object(name: string, dftValue: unknown, options: any, groupId?: string) {
+  const params = getParams();
+  const key = getKnobKey(name, groupId);
+  const value = params.get(key);
+  return value ? JSON.parse(value) : dftValue;
+}
+
 export function optionsKnob(name: string, values: unknown, dftValues: unknown[], options: any, groupId?: string) {
   return array(name, dftValues, options, groupId);
 }
