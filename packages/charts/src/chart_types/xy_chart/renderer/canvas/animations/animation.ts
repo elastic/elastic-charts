@@ -87,8 +87,8 @@ export class Animation {
   private setTimingFn() {
     const scalar = this.target - this.initial;
     this.timingFn = (t) => {
-      const mulitplier = TimingFunctions[this.timeFunction](t);
-      return this.initial + scalar * mulitplier;
+      const multiplier = TimingFunctions[this.timeFunction](t);
+      return this.initial + scalar * multiplier;
     };
   }
 
@@ -115,8 +115,8 @@ export interface AnimationOptions {
   enabled?: boolean;
   /**
    * Set initial value for initial render animations.
-   * By default the initial value is determined on the initial render
-   * then animtes any change thereafter.
+   * By default, the initial value is determined on the initial render
+   * then animates any change thereafter.
    *
    * @example
    * ```ts

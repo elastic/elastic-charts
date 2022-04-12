@@ -20,7 +20,8 @@ const getHoveredDOMElement = (state: GlobalChartState) => state.interactions.hov
 export const getHighlightedAnnotationIdsSelector = createCustomCachedSelector(
   [getHoveredDOMElement, getMultipleRectangleAnnotations, getAnnotationSpecsSelector, getHighlightedGeomsSelector],
   (hoveredDOMElement, rectAnnotationTooltips, specs, highlightedGeoms): string[] => {
-    // TODO: Remove when annotation tooltip is itegrated into main tooltip
+    // TODO: Remove when annotation tooltip is integrated into main tooltip
+    // This check is to prevent annotation fading when annotation is behind an actively hovered geometry element
     if (highlightedGeoms.length > 0) return [];
 
     // TODO: restore when rect annotation usage is determined
