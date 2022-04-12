@@ -21,13 +21,14 @@ import { Required } from 'utility-types';
 
 import { Scale, ScaleContinuousType } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { getLinearTicks, getNiceLinearTicks } from '../chart_types/xy_chart/utils/get_linear_ticks';
+import { getNiceLinearTicks } from '../chart_types/xy_chart/utils/get_linear_ticks';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
 import { clamp, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
 import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
 import { LogScaleOptions } from './types';
+import { getLinearNonDenserTicks } from './utils';
 
 const SCALES = {
   [ScaleType.Linear]: scaleLinear,
@@ -152,18 +153,18 @@ export class ScaleContinuous implements Scale<number> {
       // we want to avoid displaying inner ticks between bars in a bar chart when using linear x scale
       type === ScaleType.Time
         ? getTimeTicks(scaleOptions.desiredTickCount, scaleOptions.timeZone, nicePaddedDomain)
-        : scaleOptions.minInterval <= 0 || scaleOptions.bandwidth <= 0
-        ? this.type === ScaleType.Linear
-          ? getLinearTicks(
-              nicePaddedDomain[0],
-              nicePaddedDomain[nicePaddedDomain.length - 1],
-              scaleOptions.desiredTickCount,
-              this.linearBase,
-            )
-          : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount)
-        : new Array(Math.floor((nicePaddedDomain[1] - nicePaddedDomain[0]) / minInterval) + 1)
-            .fill(0)
-            .map((_, i) => nicePaddedDomain[0] + i * minInterval);
+        : this.type === ScaleType.Linear
+        ? getLinearNonDenserTicks(
+            nicePaddedDomain[0],
+            nicePaddedDomain[nicePaddedDomain.length - 1],
+            scaleOptions.desiredTickCount,
+            this.linearBase,
+            scaleOptions.minInterval,
+          )
+        : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount);
+    // : new Array(Math.floor((nicePaddedDomain[1] - nicePaddedDomain[0]) / minInterval) + 1)
+    //     .fill(0)
+    //     .map((_, i) => nicePaddedDomain[0] + i * minInterval);
     this.domain = nicePaddedDomain;
     this.project = (d: number) => d3Scale(d);
     this.inverseProject = (d: number) => d3Scale.invert(d);
