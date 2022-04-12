@@ -56,7 +56,7 @@ describe('annotation marker', () => {
       [
         spec,
         MockGlobalSpec.settingsNoMargins(),
-        MockGlobalSpec.axis({ position: Position.Left, hide: true }),
+        MockGlobalSpec.yAxis({ position: Position.Left, hide: true }),
         lineYDomainAnnotation,
       ],
       store,
@@ -92,7 +92,7 @@ describe('annotation marker', () => {
       [
         spec,
         MockGlobalSpec.settingsNoMargins({ rotation: 180 }),
-        MockGlobalSpec.axis({ position: Position.Left, hide: true }),
+        MockGlobalSpec.yAxis({ position: Position.Left, hide: true }),
         lineYDomainAnnotation,
       ],
       store,
@@ -132,7 +132,7 @@ describe('annotation marker', () => {
       [
         spec,
         MockGlobalSpec.settingsNoMargins(),
-        MockGlobalSpec.axis({ position: Position.Bottom, hide: true }),
+        MockGlobalSpec.xAxis({ hide: true }),
         lineXDomainAnnotation,
       ],
       store,

@@ -29,16 +29,12 @@ describe('XYChart - debug state', () => {
           xScaleType: ScaleType.Linear,
           yScaleType: ScaleType.Linear,
         }),
-        MockGlobalSpec.axis({
-          id: 'bottom',
-          position: Position.Bottom,
+        MockGlobalSpec.xAxis({
           integersOnly: true,
-        }),
-        MockGlobalSpec.axis({
-          id: 'left',
-          position: Position.Left,
+        }, rotation),
+        MockGlobalSpec.yAxis({
           integersOnly: true,
-        }),
+        }, rotation),
       ],
       store,
     );

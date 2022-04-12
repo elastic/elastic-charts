@@ -351,6 +351,8 @@ export function renderWithProps<P extends Record<string, any>>(El: ReactNode | C
  *
  * @param base structure to be duplicated, must have all props of `partial`
  * @param partial structure to override values from base
+ * @param options options to control merge behaviour
+ * @param additionalPartials partials to be used before base and after partial
  *
  * @returns new base structure with updated partial values
  * @internal

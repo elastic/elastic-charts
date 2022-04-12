@@ -103,37 +103,28 @@ describe('Axis computational utils', () => {
     maxLabelTextHeight: 10,
     isHidden: false,
   };
-  const verticalAxisSpec = MockGlobalSpec.axis({
-    chartType: ChartType.XYAxis,
-    specType: SpecType.Axis,
+  const verticalAxisSpec = MockGlobalSpec.yAxis({
     id: 'axis_1',
     title: 'Axis 1',
     groupId: 'group_1',
     hide: false,
-    showOverlappingTicks: false,
-    showOverlappingLabels: false,
-    position: Position.Left,
     style,
     showGridLines: true,
     integersOnly: false,
   });
 
-  const horizontalAxisSpec = MockGlobalSpec.axis({
-    chartType: ChartType.XYAxis,
-    specType: SpecType.Axis,
+  const horizontalAxisSpec = MockGlobalSpec.xAxis({
     id: 'axis_2',
     title: 'Axis 2',
     groupId: 'group_1',
     hide: false,
-    showOverlappingTicks: false,
-    showOverlappingLabels: false,
     position: Position.Top,
     style,
     integersOnly: false,
   });
 
   /*
-    const verticalAxisSpecWTitle = MockGlobalSpec.axis({
+    const verticalAxisSpecWTitle = MockGlobalSpec.yAxis({
       chartType: ChartType.XYAxis,
       specType: SpecType.Axis,
       id: 'axis_1',
@@ -1019,7 +1010,7 @@ describe('Axis computational utils', () => {
         [
           MockGlobalSpec.settingsNoMargins(),
           lineSeriesSpec,
-          MockGlobalSpec.axis({
+          MockGlobalSpec.yAxis({
             ...verticalAxisSpec,
             hide: true,
             gridLine: {

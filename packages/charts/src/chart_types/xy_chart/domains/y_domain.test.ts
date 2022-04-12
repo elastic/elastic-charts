@@ -59,10 +59,9 @@ describe('Y Domain', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y',
-          position: Position.Left,
-          domain: { fit: true, min: NaN, max: NaN },
+          domain: { fit: true },
         }),
         MockSeriesSpec.line({
           ...DEMO_AREA_SPEC_1,
@@ -85,10 +84,9 @@ describe('Y Domain', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y',
-          position: Position.Left,
-          domain: { fit: true, min: NaN, max: NaN },
+          domain: { fit: true },
         }),
         MockSeriesSpec.area({
           ...DEMO_AREA_SPEC_1,
@@ -111,17 +109,15 @@ describe('Y Domain', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y a',
           groupId: 'a',
-          position: Position.Left,
-          domain: { fit: true, min: NaN, max: NaN },
+          domain: { fit: true },
         }),
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y b',
           groupId: 'b',
-          position: Position.Left,
-          domain: { fit: true, min: NaN, max: NaN },
+          domain: { fit: true },
         }),
         MockSeriesSpec.line(DEMO_AREA_SPEC_1),
         MockSeriesSpec.line({
@@ -150,11 +146,10 @@ describe('Y Domain', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y a',
           groupId: 'a',
-          position: Position.Left,
-          domain: { fit: true, min: NaN, max: NaN },
+          domain: { fit: true },
         }),
         MockSeriesSpec.area(DEMO_AREA_SPEC_1),
         MockSeriesSpec.area({
@@ -179,11 +174,10 @@ describe('Y Domain', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y a',
           groupId: 'a',
-          position: Position.Left,
-          domain: { fit: true, min: NaN, max: NaN },
+          domain: { fit: true },
         }),
         MockSeriesSpec.area(DEMO_AREA_SPEC_1),
         MockSeriesSpec.area({
@@ -369,10 +363,9 @@ describe('Y Domain', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y a',
           groupId: 'a',
-          position: Position.Left,
           domain: { min: 0, max: 20, fit: true },
         }),
         MockSeriesSpec.area(DEMO_AREA_SPEC_1),
@@ -393,11 +386,10 @@ describe('Y Domain', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y a',
           groupId: 'a',
-          position: Position.Left,
-          domain: { min: 0, fit: true, max: NaN },
+          domain: { min: 0, fit: true },
         }),
         MockSeriesSpec.area(DEMO_AREA_SPEC_1),
       ],
@@ -417,11 +409,10 @@ describe('Y Domain', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y a',
           groupId: 'a',
-          position: Position.Left,
-          domain: { min: 20, fit: true, max: NaN },
+          domain: { min: 20, fit: true },
         }),
         MockSeriesSpec.area(DEMO_AREA_SPEC_1),
       ],
@@ -440,11 +431,10 @@ describe('Y Domain', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y a',
           groupId: 'a',
-          position: Position.Left,
-          domain: { min: NaN, max: 20, fit: true },
+          domain: { max: 20, fit: true },
         }),
         MockSeriesSpec.line(DEMO_AREA_SPEC_1),
       ],
@@ -464,11 +454,10 @@ describe('Y Domain', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y a',
           groupId: 'a',
-          position: Position.Left,
-          domain: { min: NaN, max: -1, fit: true },
+          domain: { max: -1, fit: true },
         }),
         MockSeriesSpec.area(DEMO_AREA_SPEC_1),
       ],
@@ -512,10 +501,9 @@ describe('Y Domain', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
-        MockGlobalSpec.axis({
+        MockGlobalSpec.yAxis({
           id: 'y a',
           groupId: 'a',
-          position: Position.Left,
           domain: { min: 2, max: 20, fit: true },
         }),
         MockSeriesSpec.area({
