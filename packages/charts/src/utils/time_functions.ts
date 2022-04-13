@@ -41,7 +41,14 @@ export type TimeFunction = $Values<typeof TimeFunction>;
 export type UnitTime = number;
 
 /** @internal */
-export type TimingFunction = (time: UnitTime) => number;
+export interface TimingFunction {
+  (time: UnitTime): number;
+
+  /**
+   * Inverts timing function, takes a value from 0 to 1 and returns unit time
+   */
+  inverse: (value: number) => UnitTime;
+}
 
 /** @internal */
 export interface TimingFunctionValues {
@@ -51,17 +58,24 @@ export interface TimingFunctionValues {
   t1?: number;
 }
 
+const getBezierFn = (x1: number, y1: number, x2: number, y2: number): TimingFunction => {
+  const fn: TimingFunction = bezier(x1, y1, x2, y2) as TimingFunction;
+  fn.inverse = bezier(y1, x1, y2, x2);
+  return fn;
+};
+
+const linear: TimingFunction = ((t) => t) as TimingFunction;
+linear.inverse = (n) => n;
+
 /**
  * Time functions used by CSS spec
  * See https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function
  * @internal
  */
 export const TimingFunctions: Record<TimeFunction, TimingFunction> = {
-  linear(t) {
-    return t;
-  },
-  ease: bezier(0.25, 0.1, 0.25, 1.0),
-  easeIn: bezier(0.42, 0.0, 1.0, 1.0),
-  easeOut: bezier(0.0, 0.0, 0.58, 1.0),
-  easeInOut: bezier(0.42, 0.0, 0.58, 1.0),
+  linear,
+  ease: getBezierFn(0.25, 0.1, 0.25, 1.0),
+  easeIn: getBezierFn(0.42, 0.0, 1.0, 1.0),
+  easeOut: getBezierFn(0.0, 0.0, 0.58, 1.0),
+  easeInOut: getBezierFn(0.42, 0.0, 0.58, 1.0),
 };
