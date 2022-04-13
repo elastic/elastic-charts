@@ -178,7 +178,7 @@ export function computeLegend(
     const bDs = serialIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);
   });
-  const sortFn: SeriesCompareFn = settingsSpec.legendSort ? settingsSpec.legendSort : legendSortFn;
+  const sortFn: SeriesCompareFn = settingsSpec.legendSort ?? legendSortFn;
 
   return groupBy(
     legendItems.sort((a, b) => sortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0])),
