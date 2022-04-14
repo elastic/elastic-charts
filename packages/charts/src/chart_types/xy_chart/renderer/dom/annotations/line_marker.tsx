@@ -170,10 +170,10 @@ export function LineMarker({
 }
 
 function getAnimatedStyles(
-  { duration, delay, timeFunction, snapValues }: AnnotationAnimation,
+  { duration, delay, timeFunction, snapValues, enabled }: AnnotationAnimation,
   { opacity }: CSSProperties,
 ): CSSProperties {
-  if (typeof opacity === 'number' && snapValues.includes(opacity)) return {};
+  if (!enabled || (typeof opacity === 'number' && snapValues.includes(opacity))) return {};
   return {
     transitionDuration: `${duration}ms`,
     transitionDelay: `${delay}ms`,
