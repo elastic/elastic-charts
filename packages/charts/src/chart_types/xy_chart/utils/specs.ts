@@ -20,7 +20,7 @@ import { AccessorFormat, AccessorFn, Accessor } from '../../../utils/accessor';
 import { RecursivePartial, Position, Datum } from '../../../utils/common';
 import { CurveType } from '../../../utils/curves';
 import { OrdinalDomain } from '../../../utils/domain';
-import { AxisId, GroupId } from '../../../utils/ids';
+import { AxisId, GroupId, SpecId } from '../../../utils/ids';
 import {
   AreaSeriesStyle,
   BarSeriesStyle,
@@ -325,6 +325,13 @@ export interface YDomainBase {
    * @defaultValue false
    */
   fit?: boolean;
+  /**
+   * Specify a series of specIds to include into the domain calculation.
+   * Currently, it will work only for annotations, everything else is already included in the domain automatically.
+   * Setting `domain.max` or `domain.min` will override this functionality.
+   * @defaultValue []
+   */
+  includeDataFromIds?: SpecId[];
   /**
    * Padding for computed domain as positive number.
    * Applied to domain __before__ nicing

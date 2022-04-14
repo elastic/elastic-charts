@@ -33,6 +33,7 @@ export { CurveType } from './utils/curves';
 export { ContinuousDomain, OrdinalDomain } from './utils/domain';
 export { Dimensions, SimplePadding, Padding, PerSideDistance, Margins } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
+export { SeriesCompareFn } from './utils/series_sort';
 export { SeriesIdentifier, SeriesKey } from './common/series_id';
 export { XYChartSeriesIdentifier, DataSeriesDatum, FilledValues } from './chart_types/xy_chart/utils/series';
 export {

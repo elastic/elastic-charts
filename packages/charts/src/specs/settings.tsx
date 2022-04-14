@@ -484,6 +484,10 @@ export interface LegendSpec {
    */
   legendAction?: LegendAction;
   legendColorPicker?: LegendColorPicker;
+  /**
+   * A SeriesSortFn to sort the legend values (top-bottom)
+   */
+  legendSort?: SeriesCompareFn;
 }
 
 /**

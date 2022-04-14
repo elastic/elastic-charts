@@ -36,6 +36,7 @@ function initStore() {
 
 describe('Picked shapes selector', () => {
   function addSeries(store: Store<GlobalChartState>, spec: PartitionSpec, settings?: Partial<SettingsSpec>) {
+    // @ts-ignore - nesting limitation
     store.dispatch(upsertSpec(MockGlobalSpec.settings(settings)));
     store.dispatch(upsertSpec(spec));
     store.dispatch(specParsed());

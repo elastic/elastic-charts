@@ -6,18 +6,29 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number, select } from '@storybook/addon-knobs';
+import { array, boolean, number, object, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, DomainPaddingUnit, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
+import {
+  Axis,
+  Chart,
+  DomainPaddingUnit,
+  LineAnnotation,
+  LineSeries,
+  Position,
+  RectAnnotation,
+  ScaleType,
+  Settings,
+} from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getKnobsFromEnum } from '../utils/knobs';
+import { getKnobsFromEnum, getMultiSelectKnob } from '../utils/knobs';
+
+const dg = new SeededDataGenerator();
+const base = dg.generateBasicSeries(100, 0, 50);
 
 export const Example = () => {
-  const dg = new SeededDataGenerator();
-  const base = dg.generateBasicSeries(100, 0, 50);
   const positive = base.map(({ x, y }) => ({ x, y: y + 1000 }));
   const both = base.map(({ x, y }) => ({ x, y: y - 100 }));
   const negative = base.map(({ x, y }) => ({ x, y: y - 1000 }));
@@ -39,6 +50,15 @@ export const Example = () => {
 
   const dataset = dataTypes[dataKey];
   const fit = boolean('fit Y domain to data', true);
+  const includeDataFromIds = getMultiSelectKnob<string>(
+    'Specs to fit (yDomain)',
+    {
+      Lines: 'theshold',
+      Rects: 'rect',
+    },
+    ['theshold', 'rect'],
+    'check',
+  );
   const constrainPadding = boolean('constrain padding', true);
   const padding = number('domain padding', 0.1);
   const paddingUnit = getKnobsFromEnum(
@@ -46,6 +66,8 @@ export const Example = () => {
     DomainPaddingUnit,
     DomainPaddingUnit.DomainRatio as DomainPaddingUnit,
   );
+  const thesholds = array('thesholds - line', ['200']).filter(Boolean).map(Number);
+  const rectTheshold = object('theshold - rect', { y0: 100, y1: null });
 
   return (
     <Chart>
@@ -56,6 +78,7 @@ export const Example = () => {
           min: NaN,
           max: NaN,
           fit,
+          includeDataFromIds,
           padding,
           paddingUnit,
           constrainPadding,
@@ -65,7 +88,26 @@ export const Example = () => {
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
       />
-
+      <LineAnnotation
+        id="theshold"
+        dataValues={thesholds.map((dataValue) => ({ dataValue }))}
+        domainType="yDomain"
+        style={{
+          line: {
+            stroke: '#e73c45',
+            strokeWidth: 2,
+            opacity: 1,
+            dash: [4, 4],
+          },
+        }}
+      />
+      <RectAnnotation
+        id="rect"
+        dataValues={[{ coordinates: rectTheshold }]}
+        style={{
+          fill: '#f137407b',
+        }}
+      />
       <LineSeries
         id="lines"
         xScaleType={ScaleType.Linear}

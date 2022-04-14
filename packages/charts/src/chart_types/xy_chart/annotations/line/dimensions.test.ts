@@ -10,7 +10,6 @@ import { MockAnnotationLineProps, MockAnnotationRectProps } from '../../../../mo
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
 import { ScaleType } from '../../../../scales/constants';
-import { Position } from '../../../../utils/common';
 import { AnnotationId } from '../../../../utils/ids';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../../utils/themes/merge_utils';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
@@ -44,15 +43,11 @@ describe('Annotation utils', () => {
     ],
   });
 
-  const verticalAxisSpec = MockGlobalSpec.axis({
-    id: 'vertical_axis',
+  const defaultAxisSpec = {
     groupId,
-    hide: false,
-    showOverlappingTicks: false,
-    showOverlappingLabels: false,
-    position: Position.Left,
+    hide: true,
     showGridLines: true,
-  });
+  };
 
   test('should compute line annotation in x ordinal scale', () => {
     const store = MockStore.default();
@@ -131,15 +126,7 @@ describe('Annotation utils', () => {
     });
 
     MockStore.addSpecs(
-      [
-        settings,
-        ordinalBarChart,
-        lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
-          hide: true,
-        }),
-      ],
+      [settings, ordinalBarChart, lineAnnotation, MockGlobalSpec.yAxis(defaultAxisSpec, settings.rotation)],
       store,
     );
 
@@ -174,16 +161,7 @@ describe('Annotation utils', () => {
     });
 
     MockStore.addSpecs(
-      [
-        settings,
-        ordinalBarChart,
-        lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
-          position: Position.Right,
-          hide: true,
-        }),
-      ],
+      [settings, ordinalBarChart, lineAnnotation, MockGlobalSpec.yAxis(defaultAxisSpec, settings.rotation)],
       store,
     );
 
@@ -218,15 +196,7 @@ describe('Annotation utils', () => {
     });
 
     MockStore.addSpecs(
-      [
-        settings,
-        ordinalBarChart,
-        lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
-          hide: true,
-        }),
-      ],
+      [settings, ordinalBarChart, lineAnnotation, MockGlobalSpec.yAxis(defaultAxisSpec, settings.rotation)],
       store,
     );
 
@@ -264,8 +234,8 @@ describe('Annotation utils', () => {
         settings,
         ordinalBarChart,
         lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
+        MockGlobalSpec.yAxis({
+          ...defaultAxisSpec,
           hide: true,
         }),
       ],
@@ -290,16 +260,7 @@ describe('Annotation utils', () => {
     });
 
     MockStore.addSpecs(
-      [
-        settings,
-        ordinalBarChart,
-        lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
-          position: Position.Bottom,
-          hide: true,
-        }),
-      ],
+      [settings, ordinalBarChart, lineAnnotation, MockGlobalSpec.xAxis(defaultAxisSpec, settings.rotation)],
       store,
     );
 
@@ -333,16 +294,7 @@ describe('Annotation utils', () => {
     });
 
     MockStore.addSpecs(
-      [
-        settings,
-        continuousBarChart,
-        lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
-          position: Position.Top,
-          hide: true,
-        }),
-      ],
+      [settings, continuousBarChart, lineAnnotation, MockGlobalSpec.xAxis(defaultAxisSpec, settings.rotation)],
       store,
     );
 
@@ -375,16 +327,7 @@ describe('Annotation utils', () => {
     });
 
     MockStore.addSpecs(
-      [
-        settings,
-        continuousBarChart,
-        lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
-          position: Position.Bottom,
-          hide: true,
-        }),
-      ],
+      [settings, continuousBarChart, lineAnnotation, MockGlobalSpec.xAxis(defaultAxisSpec, settings.rotation)],
       store,
     );
 
@@ -417,16 +360,7 @@ describe('Annotation utils', () => {
     });
 
     MockStore.addSpecs(
-      [
-        settings,
-        ordinalBarChart,
-        lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
-          position: Position.Top,
-          hide: true,
-        }),
-      ],
+      [settings, ordinalBarChart, lineAnnotation, MockGlobalSpec.xAxis(defaultAxisSpec, settings.rotation)],
       store,
     );
 
@@ -460,16 +394,7 @@ describe('Annotation utils', () => {
     });
 
     MockStore.addSpecs(
-      [
-        settings,
-        continuousBarChart,
-        lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
-          position: Position.Top,
-          hide: true,
-        }),
-      ],
+      [settings, continuousBarChart, lineAnnotation, MockGlobalSpec.xAxis(defaultAxisSpec, settings.rotation)],
       store,
     );
 
@@ -504,16 +429,7 @@ describe('Annotation utils', () => {
     });
 
     MockStore.addSpecs(
-      [
-        settings,
-        continuousBarChart,
-        lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
-          position: Position.Top,
-          hide: true,
-        }),
-      ],
+      [settings, continuousBarChart, lineAnnotation, MockGlobalSpec.xAxis(defaultAxisSpec, settings.rotation)],
       store,
     );
 
@@ -547,16 +463,7 @@ describe('Annotation utils', () => {
     });
 
     MockStore.addSpecs(
-      [
-        settings,
-        continuousBarChart,
-        lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
-          position: Position.Top,
-          hide: true,
-        }),
-      ],
+      [settings, continuousBarChart, lineAnnotation, MockGlobalSpec.xAxis(defaultAxisSpec, settings.rotation)],
       store,
     );
 
@@ -590,16 +497,7 @@ describe('Annotation utils', () => {
     });
 
     MockStore.addSpecs(
-      [
-        settings,
-        continuousBarChart,
-        lineAnnotation,
-        MockGlobalSpec.axis({
-          ...verticalAxisSpec,
-          position: Position.Bottom,
-          hide: true,
-        }),
-      ],
+      [settings, continuousBarChart, lineAnnotation, MockGlobalSpec.xAxis(defaultAxisSpec, settings.rotation)],
       store,
     );
 

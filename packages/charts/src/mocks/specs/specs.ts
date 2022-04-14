@@ -13,6 +13,7 @@ import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/
 import { ShapeTreeNode } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
 import { AGGREGATE_KEY, PrimitiveValue } from '../../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../chart_types/partition_chart/specs';
+import { isHorizontalRotation } from '../../chart_types/xy_chart/state/utils/common';
 import {
   SeriesSpecs,
   DEFAULT_GLOBAL_ID,
@@ -41,7 +42,7 @@ import {
   Spec,
   HeatmapSpec,
 } from '../../specs';
-import { Datum, mergePartial, Position, RecursivePartial } from '../../utils/common';
+import { Datum, mergePartial, Position, RecursivePartial, Rotation } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 
 /** @internal */
@@ -297,7 +298,10 @@ export class MockSeriesSpecs {
 
 /** @internal */
 export class MockGlobalSpec {
-  private static readonly settingsBase: SettingsSpec = DEFAULT_SETTINGS_SPEC;
+  private static readonly settingsBase: SettingsSpec = {
+    ...DEFAULT_SETTINGS_SPEC,
+    xDomain: { min: NaN, max: NaN },
+  };
 
   private static readonly axisBase: AxisSpec = {
     id: 'yAxis',
@@ -339,24 +343,39 @@ export class MockGlobalSpec {
     sort: Predicate.DataIndex,
   };
 
-  static settings(partial?: Partial<SettingsSpec>): SettingsSpec {
+  static settings(partial?: RecursivePartial<SettingsSpec>): SettingsSpec {
     // @ts-ignore - nesting limitation
     return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBase, partial);
   }
 
-  static settingsNoMargins(partial?: Partial<SettingsSpec>): SettingsSpec {
+  static settingsNoMargins(partial?: RecursivePartial<SettingsSpec>): SettingsSpec {
     return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBaseNoMargings, partial);
   }
 
-  static axis(partial?: Partial<AxisSpec>): AxisSpec {
-    return mergePartial<AxisSpec>(MockGlobalSpec.axisBase, partial);
+  static xAxis(partial?: RecursivePartial<Omit<AxisSpec, 'domain'>>, rotation: Rotation = 0): AxisSpec {
+    return mergePartial<AxisSpec>(MockGlobalSpec.axisBase, partial, {}, [
+      {
+        id: 'xAxis',
+        position: isHorizontalRotation(rotation) ? Position.Bottom : Position.Left,
+      },
+    ]);
   }
 
-  static smallMultiple(partial?: Partial<SmallMultiplesSpec>): SmallMultiplesSpec {
+  static yAxis(partial?: RecursivePartial<AxisSpec>, rotation: Rotation = 0): AxisSpec {
+    return mergePartial<AxisSpec>(MockGlobalSpec.axisBase, partial, {}, [
+      {
+        id: 'yAxis',
+        position: isHorizontalRotation(rotation) ? Position.Left : Position.Bottom,
+        domain: { min: NaN, max: NaN, includeDataFromIds: [] },
+      },
+    ]);
+  }
+
+  static smallMultiple(partial?: RecursivePartial<SmallMultiplesSpec>): SmallMultiplesSpec {
     return mergePartial<SmallMultiplesSpec>(MockGlobalSpec.smallMultipleBase, partial);
   }
 
-  static groupBy(partial?: Partial<GroupBySpec>): GroupBySpec {
+  static groupBy(partial?: RecursivePartial<GroupBySpec>): GroupBySpec {
     return mergePartial<GroupBySpec>(MockGlobalSpec.groupByBase, partial);
   }
 }

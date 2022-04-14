@@ -15,15 +15,13 @@ import { getAnnotationAxis, getTransformedCursor, invertTransformedCursor } from
 describe('Annotation utils', () => {
   const groupId = 'foo-group';
 
-  const verticalAxisSpec = MockGlobalSpec.axis({
+  const verticalAxisSpec = MockGlobalSpec.yAxis({
     id: 'vertical_axis',
     groupId,
-    position: Position.Left,
   });
-  const horizontalAxisSpec = MockGlobalSpec.axis({
+  const horizontalAxisSpec = MockGlobalSpec.xAxis({
     id: 'vertical_axis',
     groupId,
-    position: Position.Bottom,
   });
 
   test('should get associated axis for an annotation', () => {

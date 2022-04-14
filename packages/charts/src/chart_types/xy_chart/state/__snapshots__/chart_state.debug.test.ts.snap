@@ -8,7 +8,7 @@ Object {
     "x": Array [
       Object {
         "gridlines": Array [],
-        "id": "left",
+        "id": "xAxis",
         "labels": Array [
           "0",
           "1",
@@ -42,7 +42,7 @@ Object {
     "y": Array [
       Object {
         "gridlines": Array [],
-        "id": "bottom",
+        "id": "yAxis",
         "labels": Array [
           "0",
           "1",
@@ -122,7 +122,7 @@ Object {
     "x": Array [
       Object {
         "gridlines": Array [],
-        "id": "bottom",
+        "id": "xAxis",
         "labels": Array [
           "0",
           "1",
@@ -156,7 +156,7 @@ Object {
     "y": Array [
       Object {
         "gridlines": Array [],
-        "id": "left",
+        "id": "yAxis",
         "labels": Array [
           "0",
           "1",
@@ -236,7 +236,7 @@ Object {
     "x": Array [
       Object {
         "gridlines": Array [],
-        "id": "left",
+        "id": "xAxis",
         "labels": Array [
           "0",
           "1",
@@ -270,7 +270,7 @@ Object {
     "y": Array [
       Object {
         "gridlines": Array [],
-        "id": "bottom",
+        "id": "yAxis",
         "labels": Array [
           "0",
           "1",
@@ -350,7 +350,7 @@ Object {
     "x": Array [
       Object {
         "gridlines": Array [],
-        "id": "bottom",
+        "id": "xAxis",
         "labels": Array [
           "0",
           "1",
@@ -384,7 +384,7 @@ Object {
     "y": Array [
       Object {
         "gridlines": Array [],
-        "id": "left",
+        "id": "yAxis",
         "labels": Array [
           "0",
           "1",

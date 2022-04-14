@@ -23,6 +23,11 @@ describe('Axis stories', () => {
       'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Shift%20time=0&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=18&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-showOverlappingLabels%20time%20axis=true',
     );
   });
+  it('should included select annotation y domains', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/axes--fit-domain&globals=theme:light&knob-dataset=positive&knob-fit%20Y%20domain%20to%20data=true&knob-Specs%20to%20fit%20(yDomain)[0]=theshold&knob-Specs%20to%20fit%20(yDomain)[1]=rect&knob-constrain%20padding=true&knob-domain%20padding=0.1&knob-Domain%20padding%20unit=domainRatio&knob-thesholds%20-%20line[0]=1300&knob-theshold%20-%20rect={%22y0%22:-200,%22y1%22:null}',
+    );
+  });
   it('should have st nd rd th after day-of-month numbers', async () => {
     await common.expectChartAtUrlToMatchScreenshot(
       'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Shift%20time=-4.3&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=4.8&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-showOverlappingLabels%20time%20axis=true&knob-showOverlappingTicks%20time%20axis=true',
