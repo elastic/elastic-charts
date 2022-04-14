@@ -65,7 +65,7 @@ export const Example = () => {
       <Series
         id="series"
         timeZone="local"
-        xScaleType={multiLayerAxis ? ScaleType.Time : ScaleType.Linear}
+        xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
