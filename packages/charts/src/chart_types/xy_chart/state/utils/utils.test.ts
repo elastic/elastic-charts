@@ -68,7 +68,7 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y0G,
     });
     const scaleConfig = getScaleConfigsFromSpecs([], [spec1, spec2], MockGlobalSpec.settings());
-    const domains = computeSeriesDomains([spec1, spec2], scaleConfig);
+    const domains = computeSeriesDomains([spec1, spec2], scaleConfig, []);
     expect(domains.xDomain).toEqual(
       MockXDomain.fromScaleType(ScaleType.Linear, {
         domain: [0, 3],
@@ -120,7 +120,7 @@ describe('Chart State utils', () => {
       data: BARCHART_1Y1G,
     });
     const scaleConfig = getScaleConfigsFromSpecs([], [spec1, spec2], MockGlobalSpec.settings());
-    const domains = computeSeriesDomains([spec1, spec2], scaleConfig);
+    const domains = computeSeriesDomains([spec1, spec2], scaleConfig, []);
     expect(domains.xDomain).toEqual(
       MockXDomain.fromScaleType(ScaleType.Linear, {
         domain: [0, 3],

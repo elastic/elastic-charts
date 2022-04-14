@@ -1449,7 +1449,7 @@ export interface LegendStyle {
 export const LIGHT_THEME: Theme;
 
 // @public
-export const LineAnnotation: <D = any>(props: SFProps<LineAnnotationSpec<D>, "chartType" | "specType", "style" | "zIndex" | "groupId" | "hideLines" | "hideLinesTooltips" | "annotationType" | "hideTooltips", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "marker" | "customTooltip" | "markerBody" | "markerDimensions" | "markerPosition" | "customTooltipDetails", "id" | "dataValues" | "domainType">) => null;
+export const LineAnnotation: <D = any>(props: SFProps<LineAnnotationSpec<D>, "chartType" | "specType", "style" | "zIndex" | "groupId" | "hideLines" | "hideLinesTooltips" | "annotationType" | "hideTooltips", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "marker" | "customTooltip" | "markerBody" | "markerDimensions" | "markerPosition" | "customTooltipDetails", "id" | "domainType" | "dataValues">) => null;
 
 // @public
 export interface LineAnnotationDatum<D = any> {
@@ -2694,6 +2694,7 @@ export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends Se
 export interface YDomainBase {
     constrainPadding?: boolean;
     fit?: boolean;
+    includeDataFromIds?: SpecId[];
     padding?: number;
     paddingUnit?: DomainPaddingUnit;
 }

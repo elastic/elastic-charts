@@ -56,7 +56,7 @@ describe('annotation marker', () => {
       [
         spec,
         MockGlobalSpec.settingsNoMargins(),
-        MockGlobalSpec.axis({ position: Position.Left, hide: true }),
+        MockGlobalSpec.yAxis({ position: Position.Left, hide: true }),
         lineYDomainAnnotation,
       ],
       store,
@@ -92,7 +92,7 @@ describe('annotation marker', () => {
       [
         spec,
         MockGlobalSpec.settingsNoMargins({ rotation: 180 }),
-        MockGlobalSpec.axis({ position: Position.Left, hide: true }),
+        MockGlobalSpec.yAxis({ position: Position.Left, hide: true }),
         lineYDomainAnnotation,
       ],
       store,
@@ -129,12 +129,7 @@ describe('annotation marker', () => {
 
   test('should compute line annotation dimensions with marker if defined (x domain)', () => {
     MockStore.addSpecs(
-      [
-        spec,
-        MockGlobalSpec.settingsNoMargins(),
-        MockGlobalSpec.axis({ position: Position.Bottom, hide: true }),
-        lineXDomainAnnotation,
-      ],
+      [spec, MockGlobalSpec.settingsNoMargins(), MockGlobalSpec.xAxis({ hide: true }), lineXDomainAnnotation],
       store,
     );
 

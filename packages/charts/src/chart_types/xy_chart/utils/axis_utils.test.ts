@@ -9,13 +9,11 @@
 import { DateTime } from 'luxon';
 import moment from 'moment-timezone';
 
-import { ChartType } from '../..';
 import { MockGlobalSpec /*, MockSeriesSpec*/ } from '../../../mocks/specs/specs';
 // import { MockStore } from '../../../mocks/store/store';
 import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
 import { Position, mergePartial, HorizontalAlignment, VerticalAlignment } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { OrdinalDomain } from '../../../utils/domain';
@@ -103,37 +101,28 @@ describe('Axis computational utils', () => {
     maxLabelTextHeight: 10,
     isHidden: false,
   };
-  const verticalAxisSpec = MockGlobalSpec.axis({
-    chartType: ChartType.XYAxis,
-    specType: SpecType.Axis,
+  const verticalAxisSpec = MockGlobalSpec.yAxis({
     id: 'axis_1',
     title: 'Axis 1',
     groupId: 'group_1',
     hide: false,
-    showOverlappingTicks: false,
-    showOverlappingLabels: false,
-    position: Position.Left,
     style,
     showGridLines: true,
     integersOnly: false,
   });
 
-  const horizontalAxisSpec = MockGlobalSpec.axis({
-    chartType: ChartType.XYAxis,
-    specType: SpecType.Axis,
+  const horizontalAxisSpec = MockGlobalSpec.xAxis({
     id: 'axis_2',
     title: 'Axis 2',
     groupId: 'group_1',
     hide: false,
-    showOverlappingTicks: false,
-    showOverlappingLabels: false,
     position: Position.Top,
     style,
     integersOnly: false,
   });
 
   /*
-    const verticalAxisSpecWTitle = MockGlobalSpec.axis({
+    const verticalAxisSpecWTitle = MockGlobalSpec.yAxis({
       chartType: ChartType.XYAxis,
       specType: SpecType.Axis,
       id: 'axis_1',
@@ -1019,7 +1008,7 @@ describe('Axis computational utils', () => {
         [
           MockGlobalSpec.settingsNoMargins(),
           lineSeriesSpec,
-          MockGlobalSpec.axis({
+          MockGlobalSpec.yAxis({
             ...verticalAxisSpec,
             hide: true,
             gridLine: {
