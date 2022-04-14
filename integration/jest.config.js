@@ -14,7 +14,7 @@ const { debug } = require('./config');
 
 module.exports = {
   moduleNameMapper: {
-    '@elastic/charts': '<rootDir>/../packages/charts',
+    '@elastic/charts(.*)': '<rootDir>/../packages/charts$1',
   },
   setupFilesAfterEnv: ['<rootDir>/jest_env_setup.ts', 'jest-extended'],
   globals: {
