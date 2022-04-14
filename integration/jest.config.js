@@ -13,6 +13,9 @@ const tsPreset = require('ts-jest/jest-preset');
 const { debug } = require('./config');
 
 module.exports = {
+  moduleNameMapper: {
+    '@elastic/charts': '<rootDir>/../packages/charts',
+  },
   setupFilesAfterEnv: ['<rootDir>/jest_env_setup.ts', 'jest-extended'],
   globals: {
     'ts-jest': {
