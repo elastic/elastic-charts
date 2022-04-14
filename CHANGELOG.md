@@ -1,3 +1,25 @@
+# [46.0.0](https://github.com/elastic/elastic-charts/compare/v45.1.1...v46.0.0) (2022-04-14)
+
+
+### Bug Fixes
+
+* **axis:** ticks generation for linear scale on bar charts ([#1645](https://github.com/elastic/elastic-charts/issues/1645)) ([65d0e7d](https://github.com/elastic/elastic-charts/commit/65d0e7deeba4f6b98d13e3eeff5442aefcb85132))
+* **axis:** use correct desired tick count based on axis type ([#1646](https://github.com/elastic/elastic-charts/issues/1646)) ([512a6cd](https://github.com/elastic/elastic-charts/commit/512a6cda80a6df0fc7709b4a0b1d5516df8782f2))
+* **deps:** update dependency @elastic/eui to v53 ([#1639](https://github.com/elastic/elastic-charts/issues/1639)) ([34bf325](https://github.com/elastic/elastic-charts/commit/34bf3251d69e07dde3537a2bececd84905836732))
+* **deps:** update dependency @elastic/eui to v54 ([#1642](https://github.com/elastic/elastic-charts/issues/1642)) ([6eaca0a](https://github.com/elastic/elastic-charts/commit/6eaca0a5052fd877aa380216a155982ca2198a2c))
+
+
+### Features
+
+* **axes:** option to fit domain to list of annotation `SpecIds` ([#1641](https://github.com/elastic/elastic-charts/issues/1641)) ([220350d](https://github.com/elastic/elastic-charts/commit/220350df862b52de364b7e96088f6c5651cb396b))
+* **goal:** auto generated linear ticks ([#1637](https://github.com/elastic/elastic-charts/issues/1637)) ([5437d8e](https://github.com/elastic/elastic-charts/commit/5437d8e985ecc8cfa32651ccc97fdf7b9da84b01))
+* **legend:** expose sorting function ([#1644](https://github.com/elastic/elastic-charts/issues/1644)) ([128114c](https://github.com/elastic/elastic-charts/commit/128114c57d722702faceb1d3277f5b12f3407dac))
+
+
+### BREAKING CHANGES
+
+* **goal:** goal chart now requires domain min and max to be defined
+
 ## [45.1.1](https://github.com/elastic/elastic-charts/compare/v45.1.0...v45.1.1) (2022-03-30)
 
 
