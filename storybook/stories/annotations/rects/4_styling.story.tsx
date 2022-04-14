@@ -167,10 +167,12 @@ export const Example = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const animations: Partial<AnnotationAnimation> = {
     enabled: boolean('enabled', true, 'Animations'),
-    delay: number('delay (ms)', 300, { min: 0, max: 10000, step: 50 }, 'Animations'),
-    duration: number('duration (ms)', 300, { min: 0, max: 10000, step: 50 }, 'Animations'),
-    timeFunction: getKnobsFromEnum('time function', TimeFunction, 'linear' as TimeFunction, { group: 'Animations' }),
-    snapValues: array('snap values', ['1'], undefined, 'Animations').map(Number),
+    delay: number('delay (ms)', 50, { min: 0, max: 10000, step: 50 }, 'Animations'),
+    duration: number('duration (ms)', 250, { min: 0, max: 10000, step: 50 }, 'Animations'),
+    timeFunction: getKnobsFromEnum('time function', TimeFunction, TimeFunction.easeInOut as TimeFunction, {
+      group: 'Animations',
+    }),
+    snapValues: array('snap values', [], undefined, 'Animations').map(Number),
   };
 
   // The following is a HACK to remount the chart when the animation options change, see description in markdown
