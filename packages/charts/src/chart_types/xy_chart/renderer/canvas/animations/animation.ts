@@ -42,7 +42,7 @@ export class Animation {
   private timeFunction: TimeFunction;
   private delay: TimeMs;
   private duration: TimeMs;
-  private timingFn: (n: number) => number = () => NaN;
+  private timingFn: (n: number) => number = TimingFunctions.linear;
 
   constructor(value: AnimatedValue, options: AnimationOptions = {}) {
     this.initial = options?.initialValue ?? value;
@@ -55,10 +55,7 @@ export class Animation {
         : options?.duration ?? AnimationSpeed.slow;
     this.timeFunction = options?.timeFunction ?? TimeFunction.linear;
     this.snapValues = options?.snapValues ?? [];
-
-    if (options.hasOwnProperty('initialValue')) {
-      this.setTimingFn();
-    }
+    this.setTimingFn();
   }
 
   /**
@@ -72,7 +69,7 @@ export class Animation {
    * Animation is delayed or actively tweening
    */
   isActive(t: TimeMs) {
-    if (!isFiniteNumber(this.initial) || !isFiniteNumber(this.initial) || this.initial === this.target) {
+    if (!isFiniteNumber(this.initial) || !isFiniteNumber(this.target) || this.initial === this.target) {
       return false;
     }
 
