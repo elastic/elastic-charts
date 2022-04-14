@@ -990,6 +990,12 @@ export function getNodeName(node: ArrayNode): string;
 export const Goal: (props: SFProps<GoalSpec, keyof typeof buildProps['overrides'], keyof typeof buildProps['defaults'], keyof typeof buildProps['optionals'], keyof typeof buildProps['requires']>) => null;
 
 // @alpha (undocumented)
+export interface GoalDomainRange {
+    max: number;
+    min: number;
+}
+
+// @alpha (undocumented)
 export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
 
 // Warning: (ae-incompatible-release-tags) The symbol "GoalProps" is marked as @public, but its signature references "Goal" which is marked as @alpha
@@ -1009,8 +1015,7 @@ export interface GoalSpec extends Spec {
     bandFillColor: BandFillColorAccessor;
     // (undocumented)
     bandLabels: string[];
-    // (undocumented)
-    bands: number[];
+    bands?: number | number[];
     // (undocumented)
     base: number;
     // (undocumented)
@@ -1019,6 +1024,7 @@ export interface GoalSpec extends Spec {
     centralMinor: string | GoalLabelAccessor;
     // (undocumented)
     chartType: typeof ChartType.Goal;
+    domain: GoalDomainRange;
     // (undocumented)
     labelMajor: string | GoalLabelAccessor;
     // (undocumented)
@@ -1031,8 +1037,7 @@ export interface GoalSpec extends Spec {
     subtype: GoalSubtype;
     // (undocumented)
     target?: number;
-    // (undocumented)
-    ticks: number[];
+    ticks?: number | number[];
     // (undocumented)
     tickValueFormatter: GoalLabelAccessor;
     // (undocumented)

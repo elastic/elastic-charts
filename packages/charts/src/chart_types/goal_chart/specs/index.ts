@@ -38,6 +38,18 @@ export type BandFillColorAccessor = (input: BandFillColorAccessorInput) => Color
 export type GoalLabelAccessor = LabelAccessor<BandFillColorAccessorInput>;
 
 /** @alpha */
+export interface GoalDomainRange {
+  /**
+   * A finite number to defined the lower bound of the domain. Defaults to 0 if _not_ finite.
+   */
+  min: number;
+  /**
+   * A finite number to defined the upper bound of the domain. Defaults to 1 if _not_ finite.
+   */
+  max: number;
+}
+
+/** @alpha */
 export interface GoalSpec extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Goal;
@@ -45,8 +57,18 @@ export interface GoalSpec extends Spec {
   base: number;
   target?: number;
   actual: number;
-  bands: number[];
-  ticks: number[];
+  /**
+   * array of discrete band intervals or approximate number of desired bands
+   */
+  bands?: number | number[];
+  /**
+   * Array of discrete tick values or approximate number of desired ticks
+   */
+  ticks?: number | number[];
+  /**
+   * Domain of goal charts. Limits every value to within domain.
+   */
+  domain: GoalDomainRange;
   bandFillColor: BandFillColorAccessor;
   tickValueFormatter: GoalLabelAccessor;
   labelMajor: string | GoalLabelAccessor;

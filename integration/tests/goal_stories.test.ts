@@ -83,6 +83,14 @@ describe('Goal stories', () => {
     );
   });
 
+  describe('auto ticks', () => {
+    it.each<boolean>([true, false])('goal - reverse %p', async (reverse) => {
+      await common.expectChartAtUrlToMatchScreenshot(
+        `http://localhost:9001/?path=/story/goal-alpha--auto-linear-ticks&knob-subtype=goal&knob-reverse=${reverse}`,
+      );
+    });
+  });
+
   describe('sagitta shifted goal charts', () => {
     it.each<[title: string, startAngle: number, endAngle: number]>([
       // top openings

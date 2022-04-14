@@ -37,3 +37,4 @@ export { Example as horizontalPlusMinus } from './22_horizontal_plusminus.story'
 export { Example as verticalPlusMinus } from './23_vertical_plusminus.story';
 export { Example as goalPlusMinus } from './24_goal_plusminus.story';
 export { Example as goalSemantics } from './25_goal_semantic.story';
+export { Example as autoLinearTicks } from './26_auto_linear_ticks.story';
