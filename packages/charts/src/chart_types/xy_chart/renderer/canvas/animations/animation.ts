@@ -10,7 +10,7 @@ import { $Keys } from 'utility-types';
 
 import { TimeMs } from '../../../../../common/geometry';
 import { isFiniteNumber } from '../../../../../utils/common';
-import { TimeFunction, TimingFunction, TimingFunctions } from './../../../../../utils/time_functions';
+import { TimeFunction, TimingFunctions } from './../../../../../utils/time_functions';
 
 /**
  * TODO add logic for other types like colors
@@ -42,7 +42,7 @@ export class Animation {
   private timeFunction: TimeFunction;
   private delay: TimeMs;
   private duration: TimeMs;
-  private timingFn: TimingFunction = () => NaN;
+  private timingFn: (n: number) => number = () => NaN;
 
   constructor(value: AnimatedValue, options: AnimationOptions = {}) {
     this.initial = options?.initialValue ?? value;
@@ -61,10 +61,16 @@ export class Animation {
     }
   }
 
+  /**
+   * Animation is delayed and value has not started tweening
+   */
   isDelayed(t: TimeMs) {
     return t < this.delay;
   }
 
+  /**
+   * Animation is delayed or actively tweening
+   */
   isActive(t: TimeMs) {
     if (!isFiniteNumber(this.initial) || !isFiniteNumber(this.initial) || this.initial === this.target) {
       return false;
@@ -73,6 +79,9 @@ export class Animation {
     return t - this.delay < this.duration;
   }
 
+  /**
+   * Set the next value to trigger animation of value
+   */
   next(value: AnimatedValue) {
     if (this.snapValues.includes(value)) {
       this.current = value;
@@ -92,7 +101,10 @@ export class Animation {
     };
   }
 
-  getValue(t: TimeMs): AnimatedValue {
+  /**
+   * Get animated value at time t
+   */
+  valueAtTime(t: TimeMs): AnimatedValue {
     if (this.isDelayed(t)) return this.initial;
     const unitNormalizedTime = Math.max(0, Math.min(1, (t - this.delay) / this.duration));
     const value = this.timingFn(unitNormalizedTime);
@@ -100,6 +112,9 @@ export class Animation {
     return value;
   }
 
+  /**
+   * Pause animation at current time/value and clears initial and target values
+   */
   clear() {
     this.initial = this.current;
     this.target = this.current;

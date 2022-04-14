@@ -58,7 +58,7 @@ export const getAnimationPoolFn = (
 
         animation.next(value);
 
-        return animation.getValue(t);
+        return animation.valueAtTime(t);
       };
 
       function getAnimationContext(t: number): AnimationContext {
