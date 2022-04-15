@@ -83,11 +83,11 @@ describe('Theme', () => {
       };
 
       const defaultAnimationsConfig = {
-        delay: 350,
-        duration: 350,
         enabled: true,
-        snapValues: [1],
-        timeFunction: TimeFunction.linear,
+        duration: 250,
+        delay: 50,
+        snapValues: [],
+        timeFunction: TimeFunction.easeInOut,
       };
 
       const expectedMergedCustomLineConfig = {
@@ -121,11 +121,11 @@ describe('Theme', () => {
       expect(mergeWithDefaultAnnotationRect()).toEqual(DEFAULT_ANNOTATION_RECT_STYLE);
 
       const defaultAnimationsConfig = {
-        delay: 350,
-        duration: 350,
         enabled: true,
-        snapValues: [1],
-        timeFunction: TimeFunction.linear,
+        duration: 250,
+        delay: 50,
+        snapValues: [],
+        timeFunction: TimeFunction.easeInOut,
       };
 
       const customConfig = {
