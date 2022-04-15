@@ -7,7 +7,6 @@
  */
 
 import { Colors } from '../../../../common/colors';
-import { Rect } from '../../../../geoms/types';
 import { clearCanvas, isCanvasRenderer, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderAnnotations } from './annotations';
 import { renderAreas } from './areas';
@@ -21,12 +20,7 @@ import { renderBarValues } from './values/bar';
 import { ReactiveChartStateProps } from './xy_chart';
 
 /** @internal */
-export function renderXYChartCanvas2d(
-  ctx: CanvasRenderingContext2D,
-  dpr: number,
-  clippings: Rect,
-  props: ReactiveChartStateProps,
-) {
+export function renderXYChartCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, props: ReactiveChartStateProps) {
   const imgCanvas = document.createElement('canvas');
 
   withContext(ctx, () => {
@@ -79,23 +73,12 @@ export function renderXYChartCanvas2d(
       () => renderAnnotations(ctx, { rotation, renderingArea, annotationDimensions, annotationSpecs }, true),
 
       // rendering bars
-      () =>
-        renderBars(
-          ctx,
-          imgCanvas,
-          geometries.bars,
-          sharedStyle,
-          clippings,
-          renderingArea,
-          highlightedLegendItem,
-          rotation,
-        ),
+      () => renderBars(ctx, imgCanvas, geometries.bars, sharedStyle, renderingArea, highlightedLegendItem, rotation),
 
       // rendering areas
       () =>
         renderAreas(ctx, imgCanvas, {
           areas: geometries.areas,
-          clippings,
           renderingArea,
           rotation,
           highlightedLegendItem,
@@ -106,7 +89,6 @@ export function renderXYChartCanvas2d(
       () =>
         renderLines(ctx, {
           lines: geometries.lines,
-          clippings,
           renderingArea,
           rotation,
           highlightedLegendItem,
@@ -117,7 +99,6 @@ export function renderXYChartCanvas2d(
       () =>
         renderBubbles(ctx, {
           bubbles: geometries.bubbles,
-          clippings,
           highlightedLegendItem,
           sharedStyle,
           rotation,

@@ -7,12 +7,12 @@
  */
 
 import { LegendItem } from '../../../../common/legend';
-import { Rect } from '../../../../geoms/types';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { BarGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
+import { getPanelClipping } from './panel_clipping';
 import { renderRect } from './primitives/rect';
 import { buildBarStyle } from './styles/bar';
 import { withPanelTransform } from './utils/panel_transform';
@@ -23,12 +23,12 @@ export function renderBars(
   imgCanvas: HTMLCanvasElement,
   geoms: Array<PerPanel<BarGeometry[]>>,
   sharedStyle: SharedGeometryStateStyle,
-  clippings: Rect,
   renderingArea: Dimensions,
   highlightedLegendItem?: LegendItem,
   rotation: Rotation = 0,
 ) {
-  geoms.forEach(({ panel, value: bars }: PerPanel<BarGeometry[]>) =>
+  geoms.forEach(({ panel, value: bars }: PerPanel<BarGeometry[]>) => {
+    const clippings = getPanelClipping(panel, rotation);
     withPanelTransform(
       ctx,
       panel,
@@ -37,12 +37,20 @@ export function renderBars(
       () =>
         bars.forEach((barGeometry) => {
           const { x, y, width, height, color, seriesStyle: style, seriesIdentifier } = barGeometry;
-          const rect = { x, y, width, height };
+          const rect = {
+            x,
+            y,
+            width,
+            height,
+          };
           const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
           const barStyle = buildBarStyle(ctx, imgCanvas, color, style.rect, style.rectBorder, geometryStateStyle, rect);
           renderRect(ctx, rect, barStyle.fill, barStyle.stroke);
         }),
-      { area: clippings, shouldClip: true },
-    ),
-  );
+      {
+        area: clippings,
+        shouldClip: true,
+      },
+    );
+  });
 }

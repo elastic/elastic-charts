@@ -15,6 +15,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { LineGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
+import { getPanelClipping } from './panel_clipping';
 import { renderPoints } from './points';
 import { renderLinePaths } from './primitives/path';
 import { buildLineStyles } from './styles/line';
@@ -27,17 +28,16 @@ interface LineGeometriesDataProps {
   rotation: Rotation;
   sharedStyle: SharedGeometryStateStyle;
   highlightedLegendItem?: LegendItem;
-  clippings: Rect;
 }
 
 /** @internal */
 export function renderLines(ctx: CanvasRenderingContext2D, props: LineGeometriesDataProps) {
   withContext(ctx, () => {
-    const { lines, sharedStyle, highlightedLegendItem, clippings, renderingArea, rotation } = props;
+    const { lines, sharedStyle, highlightedLegendItem, renderingArea, rotation } = props;
 
     lines.forEach(({ panel, value: line }) => {
       const { style, points } = line;
-
+      const clippings = getPanelClipping(panel, rotation);
       if (style.line.visible) {
         withPanelTransform(
           ctx,

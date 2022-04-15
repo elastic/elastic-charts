@@ -16,6 +16,7 @@ import { AreaGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
 import { getTextureStyles } from '../../utils/texture';
+import { getPanelClipping } from './panel_clipping';
 import { renderPoints } from './points';
 import { renderLinePaths, renderAreaPath } from './primitives/path';
 import { buildAreaStyles } from './styles/area';
@@ -28,16 +29,16 @@ interface AreaGeometriesProps {
   rotation: Rotation;
   renderingArea: Dimensions;
   highlightedLegendItem?: LegendItem;
-  clippings: Rect;
 }
 
 /** @internal */
 export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvasElement, props: AreaGeometriesProps) {
-  const { sharedStyle, highlightedLegendItem, areas, rotation, clippings, renderingArea } = props;
+  const { sharedStyle, highlightedLegendItem, areas, rotation, renderingArea } = props;
 
   withContext(ctx, () => {
     areas.forEach(({ panel, value: area }) => {
       const { style } = area;
+      const clippings = getPanelClipping(panel, rotation);
       if (style.area.visible) {
         withPanelTransform(
           ctx,
@@ -61,6 +62,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
     });
 
     areas.forEach(({ panel, value: area }) => {
+      const clippings = getPanelClipping(panel, rotation);
       const { style, seriesIdentifier, points } = area;
       const visiblePoints = style.point.visible ? points : points.filter(({ orphan }) => orphan);
       if (visiblePoints.length === 0) {
