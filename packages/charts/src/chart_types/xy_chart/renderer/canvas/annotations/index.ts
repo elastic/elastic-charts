@@ -51,6 +51,7 @@ export function renderAnnotations(
   annotationDimensions.forEach((annotation, id) => {
     const spec = getSpecsById<AnnotationSpec>(annotationSpecs, id);
     const isBackground = (spec?.zIndex ?? 0) <= 0;
+
     if (spec && isBackground === renderOnBackground) {
       if (isLineAnnotation(spec)) {
         const lineStyle = mergeWithDefaultAnnotationLine(spec.style);

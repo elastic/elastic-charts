@@ -31,7 +31,7 @@ export const getAnimationPoolFn = (
   animationState: AnimationState,
   renderFn: (animationCtx: AnimationContext) => void,
 ) => {
-  // Must clear raf outside of debounce to maintain active state
+  // Must clear raf/pool outside of debounce to maintain active state
   window.cancelAnimationFrame(animationState.rafId);
   animationState.pool.forEach((a) => a.clear());
 
@@ -56,7 +56,7 @@ export const getAnimationPoolFn = (
         const animation = animationState.pool.get(prop);
         if (!animation) return value;
 
-        animation.next(value);
+        animation.setTarget(value);
 
         return animation.valueAtTime(t);
       };

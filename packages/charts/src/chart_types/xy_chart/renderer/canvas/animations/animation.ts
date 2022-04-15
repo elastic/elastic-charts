@@ -9,7 +9,7 @@
 import { $Keys } from 'utility-types';
 
 import { TimeMs } from '../../../../../common/geometry';
-import { isFiniteNumber } from '../../../../../utils/common';
+import { clamp, isFiniteNumber } from '../../../../../utils/common';
 import { TimeFunction, TimingFunctions } from './../../../../../utils/time_functions';
 
 /**
@@ -37,17 +37,21 @@ export type AnimationSpeed = $Keys<typeof AnimationSpeed>;
 export class Animation {
   private initial: AnimatedValue;
   private target: AnimatedValue;
+  private previousTarget: AnimatedValue | null;
   private current: AnimatedValue;
   private snapValues: AnimatedValue[];
   private timeFunction: TimeFunction;
   private delay: TimeMs;
   private duration: TimeMs;
+  private timeOffset: TimeMs;
   private timingFn: (n: number) => number = TimingFunctions.linear;
 
   constructor(value: AnimatedValue, options: AnimationOptions = {}) {
     this.initial = options?.initialValue ?? value;
     this.current = options?.initialValue ?? value;
     this.target = value;
+    this.previousTarget = value;
+    this.timeOffset = 0;
     this.delay = (typeof options?.delay === 'string' ? AnimationSpeed[options.delay] : options?.delay) ?? 0;
     this.duration =
       typeof options?.duration === 'string'
@@ -62,6 +66,7 @@ export class Animation {
    * Animation is delayed and value has not started tweening
    */
   isDelayed(t: TimeMs) {
+    if (this.timeOffset !== 0) return false;
     return t < this.delay;
   }
 
@@ -72,30 +77,50 @@ export class Animation {
     if (!isFiniteNumber(this.initial) || !isFiniteNumber(this.target) || this.initial === this.target) {
       return false;
     }
+    // if (this.debug && count++ % 30 === 0) console.log(t, this.delay, this.duration, this.timeOffset);
 
-    return t - this.delay < this.duration;
+    return t - this.delay + this.timeOffset < this.duration;
   }
 
   /**
-   * Set the next value to trigger animation of value
+   * Sets the target value to trigger tweening of value
    */
-  next(value: AnimatedValue) {
+  setTarget(value: AnimatedValue) {
     if (this.snapValues.includes(value)) {
       this.current = value;
       this.clear();
     } else if (this.target !== value) {
-      this.initial = this.current;
-      this.target = value;
-      this.setTimingFn();
+      if (this.previousTarget) {
+        this.initial = this.previousTarget;
+        this.target = value;
+        this.setTimingFn();
+        this.timeOffset = this.invertTimingFn();
+      } else {
+        this.timeOffset = 0;
+        this.initial = this.current;
+        this.target = value;
+        this.setTimingFn();
+      }
     }
+  }
+
+  private invertTimingFn() {
+    const scaledValue = this.current - this.initial;
+    const scalar = this.target - this.initial;
+    const multiplier = scaledValue / scalar;
+    const timeDelta = clamp(TimingFunctions[this.timeFunction].inverse(multiplier), 0, 1);
+    return timeDelta * this.duration + this.delay;
   }
 
   private setTimingFn() {
     const scalar = this.target - this.initial;
-    this.timingFn = (t) => {
-      const multiplier = TimingFunctions[this.timeFunction](t);
-      return this.initial + scalar * multiplier;
-    };
+    this.timingFn =
+      scalar === 0
+        ? () => this.initial
+        : (t) => {
+            const multiplier = TimingFunctions[this.timeFunction](t);
+            return this.initial + scalar * multiplier;
+          };
   }
 
   /**
@@ -103,7 +128,7 @@ export class Animation {
    */
   valueAtTime(t: TimeMs): AnimatedValue {
     if (this.isDelayed(t)) return this.initial;
-    const unitNormalizedTime = Math.max(0, Math.min(1, (t - this.delay) / this.duration));
+    const unitNormalizedTime = Math.max(0, Math.min(1, (t - this.delay + this.timeOffset) / this.duration));
     const value = this.timingFn(unitNormalizedTime);
     this.current = value; // need to set for clear to be called with no time value
     return value;
@@ -113,6 +138,7 @@ export class Animation {
    * Pause animation at current time/value and clears initial and target values
    */
   clear() {
+    this.previousTarget = this.current === this.target ? null : this.target;
     this.initial = this.current;
     this.target = this.current;
     this.setTimingFn();

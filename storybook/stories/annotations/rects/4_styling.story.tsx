@@ -33,7 +33,7 @@ import { getChartRotationKnob, getKnobsFromEnum, getXYSeriesKnob } from '../../u
 const rng = getRandomNumberGenerator();
 const randomArray = new Array(100).fill(0).map(() => rng(0, 10, 2));
 
-const ExampleChart2 = memo(({ animations }: { animations: Partial<AnnotationAnimation> }) => {
+const ExampleChart = memo(({ animations }: { animations: Partial<AnnotationAnimation> }) => {
   const debug = boolean('debug', false);
   const [SeriesType] = getXYSeriesKnob(undefined, 'line');
   const xScaleType = select(
@@ -188,7 +188,7 @@ export const Example = () => {
   }, [animationsStr]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (mountCount % 2 === 0) {
-    return <ExampleChart2 animations={animations} />;
+    return <ExampleChart animations={animations} />;
   }
 
   action('mounted new chart')();
