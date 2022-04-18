@@ -58,7 +58,7 @@ export const startGroup = (msg: string) => console.log(`--- ${msg}`);
 export const getArtifacts = (query: string, step?: string, destination = '.') => {
   startGroup(`Downloading artifacts${step ? ` from step: ${step}` : ''}`);
   const dest = destination.endsWith('/') || destination === '.' ? destination : `${destination}/`;
-  const stepArg = step ? `--step ${step}` : '';
+  const stepArg = step ? ` --step ${step}` : '';
   const q = query.includes('*') ? `"${query}"` : query;
   // const buildId = bkEnv.buildId;
   const buildId = '43e55a6a-45ea-4239-b2b2-2dc09a61cf92';
