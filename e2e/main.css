@@ -8656,7 +8656,6 @@ SOFTWARE.
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 240px;
 }
 
 .euiEmptyPrompt--vertical .euiEmptyPrompt__contentInner {
@@ -31861,7 +31860,6 @@ html.light-theme .euiEmptyPrompt--vertical .euiEmptyPrompt__main {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 240px;
 }
 html.light-theme .euiEmptyPrompt--vertical .euiEmptyPrompt__contentInner {
   max-width: 36em;
@@ -52642,7 +52640,6 @@ html.dark-theme .euiEmptyPrompt--vertical .euiEmptyPrompt__main {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 240px;
 }
 html.dark-theme .euiEmptyPrompt--vertical .euiEmptyPrompt__contentInner {
   max-width: 36em;
