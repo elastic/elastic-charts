@@ -1,5 +1,6 @@
 # Force include
 !.*.js
+!.buildkite
 !packages/charts/.*.js
 
 # Ignore
@@ -21,3 +22,4 @@ packages/charts/src/utils/d3-delaunay
 # auto generated directories
 **/tmp
 docs/
+.buildkite/buildkite.d.ts

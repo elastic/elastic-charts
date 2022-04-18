@@ -1,4 +1,6 @@
-report
-test-failures
+html_report/
+html_reports/
+merged_html_report/
+test_failures/
 
 !yarn.lock

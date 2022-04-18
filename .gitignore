@@ -7,6 +7,7 @@ test/failure-screenshots/**/*.png
 
 reports/
 **/tmp/
+**/.env
 .temp/
 **/dist/
 coverage/
@@ -22,6 +23,7 @@ playground/playground.tsx
 .jest-image-snapshot-touched-files
 
 **/__diff_output__/
+.buildkite/buildkite.d.ts
 
 # keep only top-level lock file
 **/*/yarn.lock

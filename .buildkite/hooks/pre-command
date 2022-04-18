@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+source .buildkite/scripts/utils.sh
+
+cd '.buildkite'
+
+echo '--- Installing buildkite dependencies'
+
+retry 5 15 install_deps
+
+echo '--- Generating buildkite files'
+
+yarn build:bk:types
+
+cd ..
+
+echo '--- Setting up job environment'
+
+GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/github)
+export GITHUB_AUTH
+
+FIREBASE_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/firebase)
+export FIREBASE_AUTH
+
+BUILDKITE_TOKEN=$(retry 5 5 vault read -field=token secret/datavis/buildkite)
+export BUILDKITE_TOKEN
+
+echo '--- Updating commit status for job'
+
+npx ts-node .buildkite/scripts/pre_command.ts

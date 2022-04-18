@@ -1,0 +1,29 @@
+{
+  "name": "elastic-charts-buildkite",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:bk:types": "ts-node scripts/get_buildkite_types.ts",
+    "build:pipeline": "ts-node pipelines/pull_request/pipeline.ts",
+    "build:pipeline:test": "yarn build:bk:types && ts-node -r dotenv/config pipelines/pull_request/pipeline.ts",
+    "test:command": "ts-node --cwd ../ -r dotenv/config "
+  },
+  "dependencies": {
+    "@types/tmp": "^0.2.3",
+    "@octokit/auth-app": "^3.6.1",
+    "@octokit/plugin-retry": "^3.0.9",
+    "@octokit/rest": "^18.12.0",
+    "axios": "^0.26.1",
+    "buildkite-agent-node": "^0.0.11-pre.2",
+    "json-schema-to-typescript": "^10.1.5",
+    "kibana-buildkite-library": "elastic/kibana-buildkite-library",
+    "minimatch": "^5.0.1",
+    "tmp": "^0.2.1",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.4.3",
+    "utility-types": "^3.10.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.0"
+  }
+}

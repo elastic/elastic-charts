@@ -20,7 +20,7 @@ const config: PlaywrightTestConfig = {
       ignoreDefaultArgs: ['--hide-scrollbars'],
     },
   },
-  reporter: process.env.CI ? 'github' : [['html', { open: 'never', outputFolder: 'report' }], ['list']],
+  reporter: [['html', { open: 'never', outputFolder: 'html_report' }], ['list']],
   expect: {
     toMatchSnapshot: { threshold: 0 },
   },
@@ -29,7 +29,7 @@ const config: PlaywrightTestConfig = {
   preserveOutput: 'failures-only',
   snapshotDir: 'screenshots',
   testDir: 'tests',
-  outputDir: 'test-failures',
+  outputDir: 'test_failures',
   projects: [
     {
       name: 'chrome',

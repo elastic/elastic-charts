@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+echo '--- Update commit status for job'
+
+npx ts-node .buildkite/scripts/pre_exit.ts
