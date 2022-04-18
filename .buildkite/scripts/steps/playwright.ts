@@ -20,13 +20,17 @@ const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}
 (async () => {
   yarnInstall();
 
-  const envUrl = await getMetadata(MetaDataKeys.deploymentUrl);
-  console.log('envUrl', envUrl);
+  const deploymentUrl =
+    (await getMetadata(MetaDataKeys.deploymentUrl)) ?? 'https://ech-e2e-ci--pr-1652-j2ovg5rl.web.app';
+
+  if (!deploymentUrl) {
+    throw new Error('Error: No deploymentUrl passed to playwright');
+  }
 
   exec(`yarn test:playwright --project=Chrome${shard} line_stories.test.ts`, {
     cwd: './e2e',
     env: {
-      [ENV_URL]: envUrl ?? 'https://ech-e2e-ci--pr-1652-j2ovg5rl.web.app/e2e',
+      [ENV_URL]: `${deploymentUrl}/e2e`,
     },
   });
 })();
