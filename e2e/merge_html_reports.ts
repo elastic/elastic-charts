@@ -16,6 +16,10 @@ const inputReportPaths = fs
   .filter((item) => item.isDirectory())
   .map(({ name }) => path.resolve('reports', name));
 
+if (inputReportPaths.length === 0) {
+  throw new Error('Error: No e2e reports found in e2e/reports/* to merge');
+}
+
 if (!fs.existsSync('./node_modules/@playwright/test/node_modules/playwright-core')) {
   fs.symlinkSync(
     path.resolve('./node_modules/playwright-core'),
@@ -24,8 +28,8 @@ if (!fs.existsSync('./node_modules/@playwright/test/node_modules/playwright-core
 }
 
 const config = {
-  outputFolderName: 'merged_html_report',
-  outputBasePath: process.cwd(),
+  outputFolderName: process.env.HTML_REPORT_DIR ?? 'merged_html_report',
+  outputBasePath: path.resolve(process.cwd(), process.env.HTML_REPORT_PATH ?? ''),
 };
 
 void mergeHTMLReports(inputReportPaths, config);

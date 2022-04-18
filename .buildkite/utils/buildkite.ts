@@ -55,13 +55,14 @@ export const bkEnv = (() => {
  */
 export const startGroup = (msg: string) => console.log(`--- ${msg}`);
 
-export const getArtifacts = (query: string, step: string, destination = '.') => {
-  startGroup(`Downloading artifacts from step: ${step}`);
+export const getArtifacts = (query: string, step?: string, destination = '.') => {
+  startGroup(`Downloading artifacts${step ? ` from step: ${step}` : ''}`);
   const dest = destination.endsWith('/') || destination === '.' ? destination : `${destination}/`;
+  const stepArg = step ? `--step ${step}` : '';
   const q = query.includes('*') ? `"${query}"` : query;
   // const buildId = bkEnv.buildId;
   const buildId = '43e55a6a-45ea-4239-b2b2-2dc09a61cf92';
-  exec(`buildkite-agent artifact download ${q} ${dest} --step ${step} --build ${buildId}`);
+  exec(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
 };
 
 function getEnvNumber(key: string) {
@@ -105,9 +106,7 @@ export const setJobMetadata = async (prop: string, value: string) => {
   await setMetadata(`${bkEnv.jobId}__${prop}`, value);
 };
 
-export async function getJobTiming() {
-  const jobId = bkEnv.jobId;
-
+export async function getJobTiming(jobId = bkEnv.jobId) {
   if (!jobId) throw new Error(`Error: no job id found [${jobId}]`);
 
   const { data } = await buildkiteGQLQuery<JobTimingReponse>(`query getJobTimings {
@@ -148,6 +147,43 @@ interface JobTimingReponse {
       startedAt: string | null;
       finishedAt: string | null;
       canceledAt: string | null;
+    };
+  };
+}
+
+export async function getJobSteps(stepKey: string) {
+  const buildId = bkEnv.buildId;
+
+  if (!buildId) throw new Error(`Error: no job id found [${buildId}]`);
+
+  const { data } = await buildkiteGQLQuery<JobStepsReponse>(`query getJobSteps {
+    build(uuid: "${buildId}") {
+      jobs(first: 100, step: { key: "${stepKey}" }) {
+        edges {
+          node {
+            ... on JobTypeCommand {
+              passed
+              url
+            }
+          }
+        }
+      }
+    }
+  }`);
+  return data?.build?.jobs?.edges.map(({ node }) => node) ?? [];
+}
+
+interface JobStepsReponse {
+  data: {
+    build: {
+      jobs: {
+        edges: {
+          node: {
+            passed: boolean;
+            url: string | null;
+          };
+        }[];
+      };
     };
   };
 }

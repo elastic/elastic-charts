@@ -126,9 +126,9 @@ export class ChangeContext {
 
 const getDefaultDescription = async (state: OctokitParameters<'repos/create-commit-status'>['state']) => {
   const timingStr = await getJobTimingStr();
-  if (state === 'success') return `Successful in ${timingStr}`;
-  if (state === 'failure') return `Failure in ${timingStr} - see logs...`;
-  if (state === 'error') return `Errored in ${timingStr} - see logs...`;
+  if (state === 'success') return `Successful after ${timingStr}`;
+  if (state === 'failure') return `Failure after ${timingStr} - see logs...`;
+  if (state === 'error') return `Errored after ${timingStr} - see logs...`;
 };
 
 export const commitStatusIsPennding = async (context = bkEnv.context, userRef?: string): Promise<boolean> => {

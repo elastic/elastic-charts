@@ -27,10 +27,11 @@ const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}
     throw new Error('Error: No deploymentUrl passed to playwright');
   }
 
-  exec(`yarn test:playwright --project=Chrome${shard} line_stories.test.ts`, {
+  exec(`yarn test:playwright --project=Chrome${shard} line_stories.test.ts timezone.test.ts`, {
     cwd: './e2e',
     env: {
       [ENV_URL]: `${deploymentUrl}/e2e`,
+      PLAYWRIGHT_HTML_REPORT: `reports/report_${jobIndex ?? 0}`,
     },
   });
 })();
