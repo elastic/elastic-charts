@@ -12,7 +12,7 @@ export const typeCheckStep = createStep<CustomCommandStep>((ctx) => {
   return {
     ...commandStepDefaults,
     label: ':typescript: Type Check',
-    key: 'api_check',
+    key: 'type_check',
     skip: isSkippable(ctx),
     commands: ['npx ts-node .buildkite/scripts/steps/type_check.ts'],
     env: {
