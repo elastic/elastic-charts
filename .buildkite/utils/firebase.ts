@@ -11,7 +11,7 @@ import { writeSync } from 'fs';
 import { setMetadata } from 'buildkite-agent-node';
 import { fileSync } from 'tmp';
 
-import { bkEnv, startGroup } from './buildkite';
+import { startGroup } from './buildkite';
 import { DEFAULT_FIREBASE_URL, MetaDataKeys } from './constants';
 import { exec } from './exec';
 import { createDeploymentStatus } from './github';
@@ -27,7 +27,15 @@ function createGACFile() {
   return tmpFile.name;
 }
 
-export const firebaseDeploy = (expires: string = '7d') => {
+interface DeployOptions {
+  expires?: string;
+  redeploy?: boolean;
+}
+
+export const firebaseDeploy = (opt: DeployOptions = {}) => {
+  const expires = opt.expires ?? '7d';
+  const redeploy = opt.redeploy ?? false;
+
   startGroup('Deploying to firebase');
 
   const channelId = 'nick';
@@ -49,9 +57,11 @@ export const firebaseDeploy = (expires: string = '7d') => {
       GOOGLE_APPLICATION_CREDENTIALS: gacFile,
     },
     onFailure() {
-      createDeploymentStatus({
-        state: 'failure',
-      });
+      if (!redeploy) {
+        createDeploymentStatus({
+          state: 'failure',
+        });
+      }
     },
   });
 
@@ -61,11 +71,14 @@ export const firebaseDeploy = (expires: string = '7d') => {
     const deploymentUrl = 'hosting' in result ? DEFAULT_FIREBASE_URL : result['ech-e2e-ci'].url;
     if (!deploymentUrl) throw new Error('Error: No url found for deployments');
     console.log(`Successfully deployed to ${deploymentUrl}`);
-    setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
-    createDeploymentStatus({
-      state: 'success',
-      environment_url: deploymentUrl,
-    });
+
+    if (!redeploy) {
+      setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
+      createDeploymentStatus({
+        state: 'success',
+        environment_url: deploymentUrl,
+      });
+    }
     return deploymentUrl;
   } else {
     throw new Error(`Error: Firebase deployment resulted in ${status}`);

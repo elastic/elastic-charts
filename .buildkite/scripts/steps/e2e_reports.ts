@@ -81,7 +81,7 @@ async function setGroupStatus() {
   const hasE2EReportIndex = fs.existsSync('./e2e-server/public/e2e-report/index.html');
 
   if (hasStorybookIndex && hasE2EIndex && hasE2EReportIndex) {
-    firebaseDeploy();
+    firebaseDeploy({ redeploy: true });
   } else {
     throw new Error('Error: Missing deployment files in e2e-server/public');
   }
