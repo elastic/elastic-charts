@@ -27,8 +27,7 @@ export function renderBars(
   highlightedLegendItem?: LegendItem,
   rotation: Rotation = 0,
 ) {
-  geoms.forEach(({ panel, value: bars }: PerPanel<BarGeometry[]>) => {
-    const clippings = getPanelClipping(panel, rotation);
+  geoms.forEach(({ panel, value: bars }: PerPanel<BarGeometry[]>) =>
     withPanelTransform(
       ctx,
       panel,
@@ -42,7 +41,7 @@ export function renderBars(
           const barStyle = buildBarStyle(ctx, imgCanvas, color, style.rect, style.rectBorder, geometryStateStyle, rect);
           renderRect(ctx, rect, barStyle.fill, barStyle.stroke);
         }),
-      { area: clippings, shouldClip: true },
-    );
-  });
+      { area: getPanelClipping(panel, rotation), shouldClip: true },
+    ),
+  );
 }
