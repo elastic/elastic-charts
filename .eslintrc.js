@@ -104,7 +104,7 @@ module.exports = {
     'consistent-return': 0,
     'no-plusplus': 0,
     'no-bitwise': 0,
-    'no-void': 1,
+    'no-void': [2, { allowAsStatement: true }],
     yoda: 0,
     'no-restricted-globals': 0,
     'no-case-declarations': 0,

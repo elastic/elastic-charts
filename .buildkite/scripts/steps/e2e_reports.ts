@@ -62,8 +62,8 @@ async function setGroupStatus() {
 
   getArtifacts('e2e/reports/*');
 
-  console.log(fs.readdirSync('./e2e/reports/report_1'));
-  console.log(fs.readdirSync('./e2e/reports/report_2'));
+  console.log(fs.readdirSync('./e2e/reports/report_1/data'));
+  console.log(fs.readdirSync('./e2e/reports/report_2/data'));
 
   startGroup('Merging e2e reports');
 
@@ -91,6 +91,11 @@ async function setGroupStatus() {
 
   // if (hasStorybookIndex && hasE2EIndex && hasE2EReportIndex) {
   if (hasE2EReportIndex) {
+    const files = fs.readdirSync('./e2e-server/public/e2e-report/data');
+    console.log('pre deploy check files');
+    console.log('total files in data', files.length);
+    console.log(files);
+
     firebaseDeploy({ redeploy: true });
   } else {
     throw new Error('Error: Missing deployment files in e2e-server/public');
