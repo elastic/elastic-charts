@@ -20,6 +20,8 @@ if (inputReportPaths.length === 0) {
   throw new Error('Error: No e2e reports found in e2e/reports/* to merge');
 }
 
+console.log(`Merging playwright all html reports:\n\n${inputReportPaths.map((f) => `\t${f}\n`)}`);
+
 if (!fs.existsSync('./node_modules/@playwright/test/node_modules/playwright-core')) {
   fs.symlinkSync(
     path.resolve('./node_modules/playwright-core'),

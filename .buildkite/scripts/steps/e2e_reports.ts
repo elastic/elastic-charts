@@ -62,6 +62,8 @@ async function setGroupStatus() {
 
   getArtifacts('e2e/reports/*');
 
+  console.log(fs.readdirSync('./e2e/reports'));
+
   startGroup('Merging e2e reports');
 
   exec('npx ts-node ./merge_html_reports.ts', {
