@@ -75,21 +75,22 @@ async function setGroupStatus() {
     },
   });
 
-  getArtifacts('e2e-server/public/*', 'storybook');
+  // getArtifacts('e2e-server/public/*', 'storybook');
 
-  getArtifacts('e2e-server/public/e2e/*', 'e2e_server');
+  // getArtifacts('e2e-server/public/e2e/*', 'e2e_server');
 
   startGroup('Checking deployment files');
 
-  const hasStorybookIndex = fs.existsSync('./e2e-server/public/index.html');
-  const hasE2EIndex = fs.existsSync('./e2e-server/public/e2e/index.html');
+  // const hasStorybookIndex = fs.existsSync('./e2e-server/public/index.html');
+  // const hasE2EIndex = fs.existsSync('./e2e-server/public/e2e/index.html');
   const hasE2EReportIndex = fs.existsSync('./e2e-server/public/e2e-report/index.html');
 
-  console.log(`hasStorybookIndex: ${hasStorybookIndex}`);
-  console.log(`hasE2EIndex: ${hasE2EIndex}`);
+  // console.log(`hasStorybookIndex: ${hasStorybookIndex}`);
+  // console.log(`hasE2EIndex: ${hasE2EIndex}`);
   console.log(`hasE2EReportIndex: ${hasE2EReportIndex}`);
 
-  if (hasStorybookIndex && hasE2EIndex && hasE2EReportIndex) {
+  // if (hasStorybookIndex && hasE2EIndex && hasE2EReportIndex) {
+  if (hasE2EReportIndex) {
     firebaseDeploy({ redeploy: true });
   } else {
     throw new Error('Error: Missing deployment files in e2e-server/public');
