@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { ChangeContext, createStep, CustomCommandStep } from '../utils';
+import { ChangeContext, createStep, CustomCommandStep, commandStepDefaults } from '../utils';
 
 export const jestStep = createStep<CustomCommandStep>((ctx) => {
   return {
+    ...commandStepDefaults,
     label: ':jest: Jest',
     key: 'jest',
     skip: isSkippable(ctx),

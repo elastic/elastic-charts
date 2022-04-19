@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { createStep, CustomCommandStep } from '../utils';
+import { createStep, CustomCommandStep, commandStepDefaults } from '../utils';
 
 export const prettierStep = createStep<CustomCommandStep>(() => {
   return {
+    ...commandStepDefaults,
     label: ':prettier: Prettier',
     key: 'prettier',
     skip: false, // TODO: add skippable logic - hard to tell what exactly would cause this and task is lightweight

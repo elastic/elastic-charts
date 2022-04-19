@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { ChangeContext, createStep, CustomCommandStep } from '../utils';
+import { ChangeContext, createStep, CustomCommandStep, commandStepDefaults } from '../utils';
 
 export const eslintStep = createStep<CustomCommandStep>((ctx) => {
   return {
+    ...commandStepDefaults,
     label: ':eslint: Eslint',
     key: 'eslint',
     skip: isSkippable(ctx),

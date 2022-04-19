@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { ChangeContext, createStep, CustomCommandStep } from '../utils';
+import { ChangeContext, createStep, CustomCommandStep, commandStepDefaults } from '../utils';
 
 export const apiCheckStep = createStep<CustomCommandStep>((ctx) => {
   return {
+    ...commandStepDefaults,
     label: ':robot_face: API Check',
     key: 'api_check',
     skip: isSkippable(ctx),

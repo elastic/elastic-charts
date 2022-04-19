@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { createStep, CustomCommandStep } from '../utils';
+import { createStep, CustomCommandStep, commandStepDefaults } from '../utils';
 
 export const storybookStep = createStep<CustomCommandStep>(() => {
   return {
+    ...commandStepDefaults,
     label: ':storybook: Storybook build',
     key: 'storybook',
     artifact_paths: ['e2e-server/public/**/*'],
