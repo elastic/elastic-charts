@@ -15,7 +15,7 @@ const config: PlaywrightTestConfig = {
     viewport: { width: 785, height: 600 },
     trace: 'off',
     screenshot: 'off', // already testing screenshots
-    video: process.env.CI ? 'off' : 'retain-on-failure',
+    video: 'retain-on-failure',
     launchOptions: {
       ignoreDefaultArgs: ['--hide-scrollbars'],
     },

@@ -39,12 +39,13 @@ export type CustomGroupStep = Omit<GroupStep, 'steps'> & {
 // Only current supported steps
 export type Step = CustomGroupStep | CustomCommandStep;
 
-export const commandStepDefaults = {
+export const commandStepDefaults: Partial<CustomCommandStep> = {
   agents: {
     queue: 'n2-2' as AgentQueue,
   },
   priority: 10,
   plugins: [Plugins.docker.node()],
+  timeout_in_minutes: 10,
 };
 
 export const createStep =

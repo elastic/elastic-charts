@@ -60,8 +60,8 @@ export const getArtifacts = (query: string, step?: string, destination = '.') =>
   const dest = destination.endsWith('/') || destination === '.' ? destination : `${destination}/`;
   const stepArg = step ? ` --step ${step}` : '';
   const q = query.includes('*') ? `"${query}"` : query;
-  // const buildId = bkEnv.buildId;
-  const buildId = '5d1fe937-74c3-45ec-8f5c-82ecb5b48ca9';
+  const buildId = bkEnv.buildId;
+  // const buildId = '5d1fe937-74c3-45ec-8f5c-82ecb5b48ca9';
   exec(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
 };
 

@@ -8,7 +8,7 @@
 
 import { getMetadata } from 'buildkite-agent-node';
 
-import { exec, yarnInstall } from '../../utils';
+import { exec, startGroup, yarnInstall } from '../../utils';
 import { getNumber } from '../../utils/common';
 import { ENV_URL, MetaDataKeys } from '../../utils/constants';
 
@@ -20,11 +20,15 @@ const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}
 (async () => {
   yarnInstall();
 
+  startGroup('Checking for deployment');
+
   const deploymentUrl = (await getMetadata(MetaDataKeys.deploymentUrl)) ?? 'https://ech-e2e-ci--nick-at97gghd.web.app';
 
   if (!deploymentUrl) {
     throw new Error('Error: No deploymentUrl passed to playwright');
   }
+
+  startGroup('Running e2e playwright job');
 
   exec(`yarn test:playwright --project=Chrome${shard} line_stories.test.ts timezone.test.ts`, {
     cwd: './e2e',
