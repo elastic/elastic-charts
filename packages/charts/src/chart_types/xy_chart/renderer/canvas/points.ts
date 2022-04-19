@@ -62,7 +62,7 @@ export function renderPointGroup(
       };
       const coordinates: Circle = { x: x + transform.x, y, radius };
       const renderer = () => renderShape(ctx, style.shape, coordinates, fill, stroke);
-      const clippings = getPanelClipping(panel, rotation);
-      withPanelTransform(ctx, panel, rotation, renderingArea, renderer, { area: clippings, shouldClip });
+      const clippings = { area: getPanelClipping(panel, rotation), shouldClip };
+      withPanelTransform(ctx, panel, rotation, renderingArea, renderer, clippings);
     });
 }
