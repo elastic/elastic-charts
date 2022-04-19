@@ -52,19 +52,15 @@ async function setGroupStatus() {
 }
 
 (async () => {
-  await setGroupStatus();
+  // await setGroupStatus();
 
   fs.mkdirSync('./e2e-server/public/e2e', { recursive: true });
 
-  getArtifacts('e2e-server/public/*', 'storybook');
-
-  getArtifacts('e2e-server/public/e2e/*', 'e2e_server');
-
-  startGroup('Checking deployment files');
-
-  getArtifacts('e2e/reports/*');
+  yarnInstall();
 
   yarnInstall('e2e');
+
+  getArtifacts('e2e/reports/*');
 
   startGroup('Merging e2e reports');
 
@@ -75,6 +71,12 @@ async function setGroupStatus() {
       HTML_REPORT_PATH: '../e2e-server/public',
     },
   });
+
+  getArtifacts('e2e-server/public/*', 'storybook');
+
+  getArtifacts('e2e-server/public/e2e/*', 'e2e_server');
+
+  startGroup('Checking deployment files');
 
   const hasStorybookIndex = fs.existsSync('./e2e-server/public/index.html');
   const hasE2EIndex = fs.existsSync('./e2e-server/public/e2e/index.html');

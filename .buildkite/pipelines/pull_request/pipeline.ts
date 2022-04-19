@@ -58,9 +58,9 @@ const MAIN_CI_CONTEXT = '@elastic/charts CI';
       apiCheckStep(skipit),
       prettierStep(skipit),
       typeCheckStep(skipit),
-      storybookStep(),
-      e2eServerStep(),
-      deployStep(),
+      storybookStep(skipit),
+      e2eServerStep(skipit),
+      deployStep(skipit),
       playwrightStep(),
     ].map((step) => step(changeCtx));
 
