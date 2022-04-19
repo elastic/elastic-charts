@@ -10,7 +10,7 @@ import { createDeploymentStatus, exec, yarnInstall } from '../../utils';
 
 yarnInstall();
 
-createDeploymentStatus({ state: 'pending' });
+void createDeploymentStatus({ state: 'pending' });
 
 exec('yarn test:e2e:generate');
 

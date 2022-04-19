@@ -18,7 +18,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
       {
         ...commandStepDefaults,
         label: ':playwright: Playwright e2e',
-        skip: true,
+        skip,
         parallelism: 2,
         key: parallelKey,
         depends_on: ['deploy'],
@@ -31,7 +31,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         label: ':playwright: Set group status and deploy report',
         skip,
         allow_dependency_failure: true,
-        // depends_on: [parallelKey],
+        depends_on: [parallelKey],
         artifact_paths: ['e2e-server/public/e2e-report/**/*'],
         commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
         env: {

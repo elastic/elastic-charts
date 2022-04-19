@@ -45,9 +45,9 @@ export const exec = (
     return result;
   } catch (error) {
     console.error(`Failed to run command: [${command}]`);
-    setJobMetadata('failed', 'true');
+    void setJobMetadata('failed', 'true');
     onFailure?.();
-    setFailedStatus(failureMsg);
+    void setFailedStatus(failureMsg);
 
     throw error;
   }

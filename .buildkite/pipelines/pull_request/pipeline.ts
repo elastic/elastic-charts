@@ -35,7 +35,7 @@ import { MetaDataKeys } from '../../utils/constants';
 
 const MAIN_CI_CONTEXT = '@elastic/charts CI';
 
-(async () => {
+void (async () => {
   try {
     const pipeline: Required<BuildkitePipeline, 'steps'> = {
       steps: [],
@@ -45,7 +45,7 @@ const MAIN_CI_CONTEXT = '@elastic/charts CI';
     await changeCtx.init();
 
     // Set main job status
-    setStatus({
+    await setStatus({
       context: MAIN_CI_CONTEXT,
       state: 'pending',
       target_url: bkEnv.buildUrl,
@@ -77,14 +77,14 @@ const MAIN_CI_CONTEXT = '@elastic/charts CI';
       .filter(({ context }) => Boolean(context))
       .forEach(({ skip, context }) => {
         if (skip) {
-          setStatus({
+          void setStatus({
             context,
             description: skip === true ? '[Skipped]' : `[Skipped] ${skip}`,
             state: 'success',
             target_url: bkEnv.buildUrl,
           });
         } else {
-          setStatus({
+          void setStatus({
             context,
             state: 'pending',
             target_url: bkEnv.buildUrl,
@@ -98,7 +98,7 @@ const MAIN_CI_CONTEXT = '@elastic/charts CI';
       console.log('DEPLOYYING');
 
       await createDeployment();
-      createDeploymentStatus({ state: 'queued' });
+      await createDeploymentStatus({ state: 'queued' });
     }
 
     pipeline.steps = steps;

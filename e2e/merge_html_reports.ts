@@ -36,10 +36,4 @@ void (async () => {
   };
 
   await mergeHTMLReports(inputReportPaths, config);
-
-  const files = fs.readdirSync(`${config.outputBasePath}/${config.outputFolderName}/data`);
-
-  console.log('post merge check files');
-  console.log('total files', files.length);
-  console.log(files);
 })();

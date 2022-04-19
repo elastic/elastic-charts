@@ -17,7 +17,7 @@ const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
 
 const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}/${jobTotal}` : '';
 
-(async () => {
+void (async () => {
   yarnInstall();
 
   startGroup('Checking for deployment');

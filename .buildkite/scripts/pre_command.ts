@@ -8,7 +8,7 @@
 
 import { bkEnv, setStatus } from '../utils';
 
-(async function () {
+void (async function () {
   const { context, retryCount, jobUrl } = bkEnv;
 
   if (context) {

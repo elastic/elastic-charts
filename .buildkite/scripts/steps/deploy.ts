@@ -10,7 +10,7 @@ import fs from 'fs';
 
 import { createDeploymentStatus, firebaseDeploy, getArtifacts, startGroup } from '../../utils';
 
-createDeploymentStatus({ state: 'in_progress' });
+void createDeploymentStatus({ state: 'in_progress' });
 
 fs.mkdirSync('./e2e-server/public/e2e', { recursive: true });
 
@@ -24,7 +24,7 @@ const hasStorybookIndex = fs.existsSync('./e2e-server/public/index.html');
 const hasE2EIndex = fs.existsSync('./e2e-server/public/e2e/index.html');
 
 if (hasStorybookIndex && hasE2EIndex) {
-  firebaseDeploy();
+  void firebaseDeploy();
 } else {
   throw new Error('Error: Missing deployment files in e2e-server/public');
 }

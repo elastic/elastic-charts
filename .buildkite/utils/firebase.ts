@@ -32,7 +32,7 @@ interface DeployOptions {
   redeploy?: boolean;
 }
 
-export const firebaseDeploy = (opt: DeployOptions = {}) => {
+export const firebaseDeploy = async (opt: DeployOptions = {}) => {
   const expires = opt.expires ?? '7d';
   const redeploy = opt.redeploy ?? false;
 
@@ -58,7 +58,7 @@ export const firebaseDeploy = (opt: DeployOptions = {}) => {
     },
     onFailure() {
       if (!redeploy) {
-        createDeploymentStatus({
+        void createDeploymentStatus({
           state: 'failure',
         });
       }
@@ -73,8 +73,8 @@ export const firebaseDeploy = (opt: DeployOptions = {}) => {
     console.log(`Successfully deployed to ${deploymentUrl}`);
 
     if (!redeploy) {
-      setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
-      createDeploymentStatus({
+      await setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
+      await createDeploymentStatus({
         state: 'success',
         environment_url: deploymentUrl,
       });

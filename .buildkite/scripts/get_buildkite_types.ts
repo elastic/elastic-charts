@@ -12,7 +12,7 @@ import path from 'path';
 import axios from 'axios';
 import { compile } from 'json-schema-to-typescript';
 
-(async function () {
+void (async function () {
   try {
     const { data: buildkiteSchema } = await axios(
       'https://raw.githubusercontent.com/buildkite/pipeline-schema/master/schema.json',

@@ -8,7 +8,7 @@
 
 import { bkEnv, buildkiteGQLQuery, commitStatusIsPennding, getJobMetadata, getJobTimingStr, setStatus } from '../utils';
 
-(async function () {
+void (async function () {
   const { context, jobId, jobUrl } = bkEnv;
 
   if (context && jobId) {

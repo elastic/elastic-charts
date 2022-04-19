@@ -43,7 +43,7 @@ async function setGroupStatus() {
       ? `Failure in ${failedSteps.length} of ${e2eSteps.length} jobs`
       : `Successful in all ${e2eSteps.length} jobs`;
 
-  setStatus({
+  await setStatus({
     context,
     description,
     state: failedSteps.length > 0 ? 'failure' : 'success',
@@ -51,8 +51,8 @@ async function setGroupStatus() {
   });
 }
 
-(async () => {
-  // await setGroupStatus();
+void (async () => {
+  await setGroupStatus();
 
   fs.mkdirSync('./e2e-server/public/e2e', { recursive: true });
 
@@ -75,28 +75,22 @@ async function setGroupStatus() {
     },
   });
 
-  // getArtifacts('e2e-server/public/*', 'storybook');
+  getArtifacts('e2e-server/public/*', 'storybook');
 
-  // getArtifacts('e2e-server/public/e2e/*', 'e2e_server');
+  getArtifacts('e2e-server/public/e2e/*', 'e2e_server');
 
   startGroup('Checking deployment files');
 
-  // const hasStorybookIndex = fs.existsSync('./e2e-server/public/index.html');
-  // const hasE2EIndex = fs.existsSync('./e2e-server/public/e2e/index.html');
+  const hasStorybookIndex = fs.existsSync('./e2e-server/public/index.html');
+  const hasE2EIndex = fs.existsSync('./e2e-server/public/e2e/index.html');
   const hasE2EReportIndex = fs.existsSync('./e2e-server/public/e2e-report/index.html');
 
-  // console.log(`hasStorybookIndex: ${hasStorybookIndex}`);
-  // console.log(`hasE2EIndex: ${hasE2EIndex}`);
-  console.log(`hasE2EReportIndex: ${hasE2EReportIndex}`);
+  console.log(`Has storybook index.html: ${hasStorybookIndex}`);
+  console.log(`Has e2e index.html: ${hasE2EIndex}`);
+  console.log(`Has e2e-report index.html: ${hasE2EReportIndex}`);
 
-  // if (hasStorybookIndex && hasE2EIndex && hasE2EReportIndex) {
-  if (hasE2EReportIndex) {
-    const files = fs.readdirSync('./e2e-server/public/e2e-report/data');
-    console.log('pre deploy check files');
-    console.log('total files in data', files.length);
-    console.log(files);
-
-    firebaseDeploy({ redeploy: true });
+  if (hasStorybookIndex && hasE2EIndex && hasE2EReportIndex) {
+    void firebaseDeploy({ redeploy: true });
   } else {
     throw new Error('Error: Missing deployment files in e2e-server/public');
   }
