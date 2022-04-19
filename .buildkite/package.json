@@ -6,7 +6,8 @@
     "build:bk:types": "ts-node scripts/get_buildkite_types.ts",
     "build:pipeline": "ts-node pipelines/pull_request/pipeline.ts",
     "build:pipeline:test": "yarn build:bk:types && ts-node -r dotenv/config pipelines/pull_request/pipeline.ts",
-    "test:command": "cd ../ && DOTENV_CONFIG_PATH=.buildkite/.env ts-node -r dotenv/config "
+    "test:command": "cd ../ && DOTENV_CONFIG_PATH=.buildkite/.env ts-node -r dotenv/config ",
+    "run:script": "ts-node -r dotenv/config "
   },
   "dependencies": {
     "@types/tmp": "^0.2.3",
@@ -24,6 +25,7 @@
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "nodejs-file-downloader": "^4.9.3"
   }
 }
