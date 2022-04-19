@@ -1,3 +1,11 @@
+## [46.0.1](https://github.com/elastic/elastic-charts/compare/v46.0.0...v46.0.1) (2022-04-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^54.1.0 ([#1652](https://github.com/elastic/elastic-charts/issues/1652)) ([c9c6d31](https://github.com/elastic/elastic-charts/commit/c9c6d31aca342df83271efcbaeed5a79c02a71a3))
+* **rendering:** clip at panel sizes on small multiples ([#1651](https://github.com/elastic/elastic-charts/issues/1651)) ([2850530](https://github.com/elastic/elastic-charts/commit/285053061f286d6171221cb99483dd500dfaf52a))
+
 # [46.0.0](https://github.com/elastic/elastic-charts/compare/v45.1.1...v46.0.0) (2022-04-14)
 
 

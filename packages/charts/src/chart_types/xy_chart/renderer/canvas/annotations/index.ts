@@ -24,27 +24,16 @@ import { AnimationContext } from '../animations';
 import { renderLineAnnotations } from './lines';
 import { renderRectAnnotations } from './rect';
 
-interface AnnotationProps {
-  annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
-  annotationSpecs: AnnotationSpec[];
-  rotation: Rotation;
-  renderingArea: Dimensions;
-  sharedStyle: SharedGeometryStateStyle;
-  hoveredAnnotationIds: string[];
-}
-
 /** @internal */
 export function renderAnnotations(
   ctx: CanvasRenderingContext2D,
   aCtx: AnimationContext,
-  {
-    annotationDimensions,
-    annotationSpecs,
-    rotation,
-    renderingArea,
-    sharedStyle,
-    hoveredAnnotationIds,
-  }: AnnotationProps,
+  annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
+  annotationSpecs: AnnotationSpec[],
+  rotation: Rotation,
+  renderingArea: Dimensions,
+  sharedStyle: SharedGeometryStateStyle,
+  hoveredAnnotationIds: string[],
   renderOnBackground: boolean = true,
 ) {
   const getHoverParams = getAnnotationHoverParamsFn(hoveredAnnotationIds, sharedStyle);

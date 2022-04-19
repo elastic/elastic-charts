@@ -7,7 +7,6 @@
  */
 
 import { Colors } from '../../../../common/colors';
-import { Rect } from '../../../../geoms/types';
 import { clearCanvas, isCanvasRenderer, renderLayers, withContext } from '../../../../renderers/canvas';
 import { AnimationContext, getAnimationPoolFn } from './animations';
 import { AnimationState } from './animations/animation';
@@ -26,7 +25,6 @@ import { ReactiveChartStateProps } from './xy_chart';
 export function renderXYChartCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
-  clippings: Rect,
   props: ReactiveChartStateProps,
   animationState: AnimationState,
 ) {
@@ -85,55 +83,27 @@ export function renderXYChartCanvas2d(
           renderAnnotations(
             ctx,
             aCtx,
-            { rotation, renderingArea, annotationDimensions, annotationSpecs, sharedStyle, hoveredAnnotationIds },
+            annotationDimensions,
+            annotationSpecs,
+            rotation,
+            renderingArea,
+            sharedStyle,
+            hoveredAnnotationIds,
             true,
           ),
 
         // rendering bars
-        () =>
-          renderBars(
-            ctx,
-            imgCanvas,
-            geometries.bars,
-            sharedStyle,
-            clippings,
-            renderingArea,
-            highlightedLegendItem,
-            rotation,
-          ),
+        () => renderBars(ctx, imgCanvas, geometries.bars, sharedStyle, rotation, renderingArea, highlightedLegendItem),
 
         // rendering areas
         () =>
-          renderAreas(ctx, imgCanvas, {
-            areas: geometries.areas,
-            clippings,
-            renderingArea,
-            rotation,
-            highlightedLegendItem,
-            sharedStyle,
-          }),
+          renderAreas(ctx, imgCanvas, geometries.areas, sharedStyle, rotation, renderingArea, highlightedLegendItem),
 
         // rendering lines
-        () =>
-          renderLines(ctx, {
-            lines: geometries.lines,
-            clippings,
-            renderingArea,
-            rotation,
-            highlightedLegendItem,
-            sharedStyle,
-          }),
+        () => renderLines(ctx, geometries.lines, sharedStyle, rotation, renderingArea, highlightedLegendItem),
 
         // rendering bubbles
-        () =>
-          renderBubbles(ctx, {
-            bubbles: geometries.bubbles,
-            clippings,
-            highlightedLegendItem,
-            sharedStyle,
-            rotation,
-            renderingArea,
-          }),
+        () => renderBubbles(ctx, geometries.bubbles, sharedStyle, rotation, renderingArea, highlightedLegendItem),
 
         () =>
           geometries.bars.forEach(({ value: bars, panel }) =>
@@ -153,7 +123,12 @@ export function renderXYChartCanvas2d(
           renderAnnotations(
             ctx,
             aCtx,
-            { annotationDimensions, annotationSpecs, rotation, renderingArea, sharedStyle, hoveredAnnotationIds },
+            annotationDimensions,
+            annotationSpecs,
+            rotation,
+            renderingArea,
+            sharedStyle,
+            hoveredAnnotationIds,
             false,
           ),
 
