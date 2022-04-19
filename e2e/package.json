@@ -13,6 +13,6 @@
   "dependencies": {
     "@playwright/test": "^1.18.1",
     "change-case": "^4.1.2",
-    "playwright-merge-html-reports": "^0.2.0"
+    "playwright-merge-html-reports": "nickofthyme/playwright-merge-html-reports#temp"
   }
 }
