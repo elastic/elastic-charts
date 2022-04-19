@@ -37,20 +37,12 @@ export function renderBars(
       () =>
         bars.forEach((barGeometry) => {
           const { x, y, width, height, color, seriesStyle: style, seriesIdentifier } = barGeometry;
-          const rect = {
-            x,
-            y,
-            width,
-            height,
-          };
+          const rect = { x, y, width, height };
           const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
           const barStyle = buildBarStyle(ctx, imgCanvas, color, style.rect, style.rectBorder, geometryStateStyle, rect);
           renderRect(ctx, rect, barStyle.fill, barStyle.stroke);
         }),
-      {
-        area: clippings,
-        shouldClip: true,
-      },
+      { area: clippings, shouldClip: true },
     );
   });
 }
