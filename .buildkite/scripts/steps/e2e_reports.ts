@@ -62,7 +62,8 @@ async function setGroupStatus() {
 
   getArtifacts('e2e/reports/*');
 
-  console.log(fs.readdirSync('./e2e/reports'));
+  console.log(fs.readdirSync('./e2e/reports/report_1'));
+  console.log(fs.readdirSync('./e2e/reports/report_2'));
 
   startGroup('Merging e2e reports');
 
@@ -83,6 +84,10 @@ async function setGroupStatus() {
   const hasStorybookIndex = fs.existsSync('./e2e-server/public/index.html');
   const hasE2EIndex = fs.existsSync('./e2e-server/public/e2e/index.html');
   const hasE2EReportIndex = fs.existsSync('./e2e-server/public/e2e-report/index.html');
+
+  console.log(`hasStorybookIndex: ${hasStorybookIndex}`);
+  console.log(`hasE2EIndex: ${hasE2EIndex}`);
+  console.log(`hasE2EReportIndex: ${hasE2EReportIndex}`);
 
   if (hasStorybookIndex && hasE2EIndex && hasE2EReportIndex) {
     firebaseDeploy({ redeploy: true });

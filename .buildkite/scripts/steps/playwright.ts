@@ -20,8 +20,7 @@ const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}
 (async () => {
   yarnInstall();
 
-  const deploymentUrl =
-    (await getMetadata(MetaDataKeys.deploymentUrl)) ?? 'https://ech-e2e-ci--pr-1652-j2ovg5rl.web.app';
+  const deploymentUrl = (await getMetadata(MetaDataKeys.deploymentUrl)) ?? 'https://ech-e2e-ci--nick-at97gghd.web.app';
 
   if (!deploymentUrl) {
     throw new Error('Error: No deploymentUrl passed to playwright');
@@ -31,7 +30,7 @@ const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}
     cwd: './e2e',
     env: {
       [ENV_URL]: `${deploymentUrl}/e2e`,
-      PLAYWRIGHT_HTML_REPORT: `reports/report_${jobIndex ?? 0}`,
+      PLAYWRIGHT_HTML_REPORT: `reports/report_${(jobIndex ?? 0) + 1}`,
     },
   });
 })();
