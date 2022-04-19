@@ -16,28 +16,28 @@ import { AreaGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
 import { getTextureStyles } from '../../utils/texture';
+import { getPanelClipping } from './panel_clipping';
 import { renderPoints } from './points';
 import { renderLinePaths, renderAreaPath } from './primitives/path';
 import { buildAreaStyles } from './styles/area';
 import { buildLineStyles } from './styles/line';
 import { withPanelTransform } from './utils/panel_transform';
 
-interface AreaGeometriesProps {
-  areas: Array<PerPanel<AreaGeometry>>;
-  sharedStyle: SharedGeometryStateStyle;
-  rotation: Rotation;
-  renderingArea: Dimensions;
-  highlightedLegendItem?: LegendItem;
-  clippings: Rect;
-}
-
 /** @internal */
-export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvasElement, props: AreaGeometriesProps) {
-  const { sharedStyle, highlightedLegendItem, areas, rotation, clippings, renderingArea } = props;
-
+export function renderAreas(
+  ctx: CanvasRenderingContext2D,
+  imgCanvas: HTMLCanvasElement,
+  areas: Array<PerPanel<AreaGeometry>>,
+  sharedStyle: SharedGeometryStateStyle,
+  rotation: Rotation,
+  renderingArea: Dimensions,
+  highlightedLegendItem?: LegendItem,
+) {
   withContext(ctx, () => {
+    // first render all the areas and lines
     areas.forEach(({ panel, value: area }) => {
       const { style } = area;
+      const clippings = getPanelClipping(panel, rotation);
       if (style.area.visible) {
         withPanelTransform(
           ctx,
@@ -59,7 +59,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
         );
       }
     });
-
+    // now we can render the visible points on top of each the areas/lines
     areas.forEach(({ panel, value: area }) => {
       const { style, seriesIdentifier, points } = area;
       const visiblePoints = style.point.visible ? points : points.filter(({ orphan }) => orphan);
@@ -73,7 +73,7 @@ export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvas
         rotation,
         renderingArea,
         () => renderPoints(ctx, visiblePoints, geometryStateStyle),
-        { area: clippings, shouldClip: points[0]?.value.mark !== null },
+        { area: getPanelClipping(panel, rotation), shouldClip: points[0]?.value.mark !== null },
       );
     });
   });

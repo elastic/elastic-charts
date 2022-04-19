@@ -87,4 +87,10 @@ describe('Area series stories', () => {
       );
     });
   });
+
+  it('small multiples with log scale dont clip', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/small-multiples-alpha--vertical-areas&globals=theme:light&knob-Show Legend=true&knob-Use log scale (different data)=true',
+    );
+  });
 });
