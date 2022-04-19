@@ -58,9 +58,9 @@ void (async () => {
       apiCheckStep(skipit),
       prettierStep(skipit),
       typeCheckStep(skipit),
-      storybookStep(skipit),
-      e2eServerStep(skipit),
-      deployStep(skipit),
+      storybookStep(),
+      e2eServerStep(),
+      deployStep(),
       playwrightStep(),
     ].map((step) => step(changeCtx));
 
