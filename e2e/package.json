@@ -5,13 +5,12 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "scripts": {
     "clean": "./scripts/clean.sh",
-    "regroup": "ts-node ./scripts/group_tests.ts",
     "test": "./scripts/start.sh",
     "test:playwright": "./scripts/test.sh",
     "playwright": "playwright"
   },
   "dependencies": {
-    "@playwright/test": "^1.18.1",
+    "@playwright/test": "^1.21.1",
     "change-case": "^4.1.2",
     "playwright-merge-html-reports": "nickofthyme/playwright-merge-html-reports#temp"
   }
