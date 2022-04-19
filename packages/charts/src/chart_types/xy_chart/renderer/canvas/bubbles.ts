@@ -16,19 +16,16 @@ import { SharedGeometryStateStyle, GeometryStateStyle } from '../../../../utils/
 import { getGeometryStateStyle } from '../../rendering/utils';
 import { renderPointGroup } from './points';
 
-interface BubbleGeometriesDataProps {
-  animated?: boolean;
-  bubbles: Array<PerPanel<BubbleGeometry>>;
-  sharedStyle: SharedGeometryStateStyle;
-  highlightedLegendItem?: LegendItem;
-  rotation: Rotation;
-  renderingArea: Dimensions;
-}
-
 /** @internal */
-export function renderBubbles(ctx: CanvasRenderingContext2D, props: BubbleGeometriesDataProps) {
+export function renderBubbles(
+  ctx: CanvasRenderingContext2D,
+  bubbles: Array<PerPanel<BubbleGeometry>>,
+  sharedStyle: SharedGeometryStateStyle,
+  rotation: Rotation,
+  renderingArea: Dimensions,
+  highlightedLegendItem?: LegendItem,
+) {
   withContext(ctx, () => {
-    const { bubbles, sharedStyle, highlightedLegendItem, rotation, renderingArea } = props;
     const styles: Record<SeriesKey, GeometryStateStyle> = {};
     const allPoints = bubbles.flatMap(({ value: { seriesIdentifier, points } }) => {
       styles[seriesIdentifier.key] = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);

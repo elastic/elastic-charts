@@ -70,40 +70,19 @@ export function renderXYChartCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
         }),
 
       // rendering background annotations
-      () => renderAnnotations(ctx, { rotation, renderingArea, annotationDimensions, annotationSpecs }, true),
+      () => renderAnnotations(ctx, annotationDimensions, annotationSpecs, rotation, renderingArea, true),
 
       // rendering bars
-      () => renderBars(ctx, imgCanvas, geometries.bars, sharedStyle, renderingArea, highlightedLegendItem, rotation),
+      () => renderBars(ctx, imgCanvas, geometries.bars, sharedStyle, rotation, renderingArea, highlightedLegendItem),
 
       // rendering areas
-      () =>
-        renderAreas(ctx, imgCanvas, {
-          areas: geometries.areas,
-          renderingArea,
-          rotation,
-          highlightedLegendItem,
-          sharedStyle,
-        }),
+      () => renderAreas(ctx, imgCanvas, geometries.areas, sharedStyle, rotation, renderingArea, highlightedLegendItem),
 
       // rendering lines
-      () =>
-        renderLines(ctx, {
-          lines: geometries.lines,
-          renderingArea,
-          rotation,
-          highlightedLegendItem,
-          sharedStyle,
-        }),
+      () => renderLines(ctx, geometries.lines, sharedStyle, rotation, renderingArea, highlightedLegendItem),
 
       // rendering bubbles
-      () =>
-        renderBubbles(ctx, {
-          bubbles: geometries.bubbles,
-          highlightedLegendItem,
-          sharedStyle,
-          rotation,
-          renderingArea,
-        }),
+      () => renderBubbles(ctx, geometries.bubbles, sharedStyle, rotation, renderingArea, highlightedLegendItem),
 
       () =>
         geometries.bars.forEach(({ value: bars, panel }) =>
@@ -119,7 +98,7 @@ export function renderXYChartCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
         ),
 
       // rendering foreground annotations
-      () => renderAnnotations(ctx, { annotationDimensions, annotationSpecs, rotation, renderingArea }, false),
+      () => renderAnnotations(ctx, annotationDimensions, annotationSpecs, rotation, renderingArea, false),
 
       // rendering debugger
       () =>

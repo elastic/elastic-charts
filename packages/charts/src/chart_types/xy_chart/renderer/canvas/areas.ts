@@ -23,18 +23,16 @@ import { buildAreaStyles } from './styles/area';
 import { buildLineStyles } from './styles/line';
 import { withPanelTransform } from './utils/panel_transform';
 
-interface AreaGeometriesProps {
-  areas: Array<PerPanel<AreaGeometry>>;
-  sharedStyle: SharedGeometryStateStyle;
-  rotation: Rotation;
-  renderingArea: Dimensions;
-  highlightedLegendItem?: LegendItem;
-}
-
 /** @internal */
-export function renderAreas(ctx: CanvasRenderingContext2D, imgCanvas: HTMLCanvasElement, props: AreaGeometriesProps) {
-  const { sharedStyle, highlightedLegendItem, areas, rotation, renderingArea } = props;
-
+export function renderAreas(
+  ctx: CanvasRenderingContext2D,
+  imgCanvas: HTMLCanvasElement,
+  areas: Array<PerPanel<AreaGeometry>>,
+  sharedStyle: SharedGeometryStateStyle,
+  rotation: Rotation,
+  renderingArea: Dimensions,
+  highlightedLegendItem?: LegendItem,
+) {
   withContext(ctx, () => {
     // first render all the areas and lines
     areas.forEach(({ panel, value: area }) => {

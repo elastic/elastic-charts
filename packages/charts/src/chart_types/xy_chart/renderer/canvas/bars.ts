@@ -23,9 +23,9 @@ export function renderBars(
   imgCanvas: HTMLCanvasElement,
   geoms: Array<PerPanel<BarGeometry[]>>,
   sharedStyle: SharedGeometryStateStyle,
+  rotation: Rotation,
   renderingArea: Dimensions,
   highlightedLegendItem?: LegendItem,
-  rotation: Rotation = 0,
 ) {
   geoms.forEach(({ panel, value: bars }: PerPanel<BarGeometry[]>) =>
     withPanelTransform(
