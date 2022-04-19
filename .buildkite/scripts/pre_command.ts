@@ -16,7 +16,7 @@ import { bkEnv, setStatus } from '../utils';
       context,
       state: 'pending',
       target_url: jobUrl,
-      description: retryCount ? `Retry - ${retryCount}` : undefined,
+      description: `Started${retryCount ? ` (retry ${retryCount})` : ''}`,
     });
   }
 })();
