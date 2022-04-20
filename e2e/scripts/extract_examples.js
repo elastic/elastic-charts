@@ -6,6 +6,10 @@
  * Side Public License, v 1.
  */
 
+// -----------------------------------------------------------------------------------------
+// This duplicate script allows us to skip root node install on all e2e test runners in CI
+// -----------------------------------------------------------------------------------------
+
 const fs = require('fs');
 const path = require('path');
 

@@ -7,7 +7,7 @@
  */
 
 import { test } from '@playwright/test';
-import { camelCase } from 'lodash';
+import { camelCase } from 'change-case';
 
 import { Placement } from '../constants';
 import { eachRotation, pwEach } from '../helpers';

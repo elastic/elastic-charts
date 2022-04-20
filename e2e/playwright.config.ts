@@ -37,6 +37,7 @@ const config: PlaywrightTestConfig = {
   snapshotDir: 'screenshots',
   testDir: 'tests',
   outputDir: 'test_failures',
+  fullyParallel: true, // all tests must be independent
   projects: [
     {
       name: 'chrome',

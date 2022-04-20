@@ -18,7 +18,7 @@ const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
 const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}/${jobTotal}` : '';
 
 void (async () => {
-  yarnInstall();
+  yarnInstall('e2e');
 
   startGroup('Checking for deployment');
 
@@ -27,6 +27,11 @@ void (async () => {
   if (!deploymentUrl) {
     throw new Error('Error: No deploymentUrl passed to playwright');
   }
+
+  startGroup('Generating test examples.json');
+
+  // TODO Fix this duplicate script that allows us to skip root node install on all e2e test runners
+  exec('node ./e2e/scripts/extract_examples.js');
 
   startGroup('Running e2e playwright job');
 
