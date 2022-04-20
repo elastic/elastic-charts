@@ -30,7 +30,7 @@ void (async () => {
 
   startGroup('Running e2e playwright job');
 
-  exec(`yarn test:playwright --project=Chrome${shard} line_stories.test.ts timezone.test.ts`, {
+  exec(`yarn test:playwright --project=Chrome${shard}`, {
     cwd: './e2e',
     env: {
       [ENV_URL]: `${deploymentUrl}/e2e`,
