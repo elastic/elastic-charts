@@ -21,17 +21,13 @@ import { AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../../uti
 import { renderLineAnnotations } from './lines';
 import { renderRectAnnotations } from './rect';
 
-interface AnnotationProps {
-  annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
-  annotationSpecs: AnnotationSpec[];
-  rotation: Rotation;
-  renderingArea: Dimensions;
-}
-
 /** @internal */
 export function renderAnnotations(
   ctx: CanvasRenderingContext2D,
-  { annotationDimensions, annotationSpecs, rotation, renderingArea }: AnnotationProps,
+  annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
+  annotationSpecs: AnnotationSpec[],
+  rotation: Rotation,
+  renderingArea: Dimensions,
   renderOnBackground: boolean = true,
 ) {
   annotationDimensions.forEach((annotation, id) => {
