@@ -29,7 +29,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
       {
         ...commandStepDefaults,
         label: ':playwright: Set group status and deploy report',
-        skip,
+        skip: true,
         allow_dependency_failure: true,
         depends_on: [parallelKey],
         artifact_paths: ['e2e-server/public/e2e-report/**/*'],

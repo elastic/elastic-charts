@@ -18,6 +18,7 @@ const config: PlaywrightTestConfig = {
     video: 'retain-on-failure',
     launchOptions: {
       ignoreDefaultArgs: ['--hide-scrollbars'],
+      slowMo: 500,
     },
   },
   reporter: [['html', { open: 'never', outputFolder: 'html_report' }], ['list']],

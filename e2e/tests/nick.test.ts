@@ -18,12 +18,6 @@ test.describe('Nick', () => {
       { screenshotSelector: 'body' },
     );
   });
-  test('Testing no hover with body', async ({ page }) => {
-    await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/bar-chart--with-time-x-axis',
-      { screenshotSelector: 'body' },
-    );
-  });
 
   test('Testing hover with root', async ({ page }) => {
     await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
@@ -32,22 +26,11 @@ test.describe('Nick', () => {
       { screenshotSelector: '#root' },
     );
   });
-  test('Testing no hover with root', async ({ page }) => {
-    await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/bar-chart--with-time-x-axis',
-      { screenshotSelector: '#root' },
-    );
-  });
 
   test('Testing hover with chart', async ({ page }) => {
     await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/bar-chart--with-time-x-axis',
       { left: 80, top: 100 },
-    );
-  });
-  test('Testing no hover with chart', async ({ page }) => {
-    await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/bar-chart--with-time-x-axis',
     );
   });
 });
