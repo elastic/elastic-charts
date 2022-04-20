@@ -17,4 +17,4 @@ else
 fi
 
 # Run e2e playwright tests inside container
-docker run --rm --name e2e-playwright-tests -e PORT=${PORT} -e ENV_URL=${ENV_URL} -e PLAYWRIGHT_HTML_REPORT=${PLAYWRIGHT_HTML_REPORT} -w /usr/src/app/e2e -v $(pwd)/../:/usr/src/app/ ${pw_image} yarn test:playwright "$@"
+docker run --rm --init --cpus=5 --name e2e-playwright-tests -e PORT=${PORT} -e ENV_URL=${ENV_URL} -e PLAYWRIGHT_HTML_REPORT=${PLAYWRIGHT_HTML_REPORT} -w /usr/src/app/e2e -v $(pwd)/../:/usr/src/app/ ${pw_image} yarn test:playwright "$@"
