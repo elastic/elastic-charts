@@ -55,12 +55,12 @@ export const bkEnv = (() => {
  */
 export const startGroup = (msg: string) => console.log(`--- ${msg}`);
 
-export const getArtifacts = (query: string, step?: string, destination = '.') => {
+export const getArtifacts = (query: string, step?: string, destination = '.', build?: string) => {
   startGroup(`Downloading artifacts${step ? ` from step: ${step}` : ''}`);
   const dest = destination.endsWith('/') || destination === '.' ? destination : `${destination}/`;
   const stepArg = step ? ` --step ${step}` : '';
   const q = query.includes('*') ? `"${query}"` : query;
-  const buildId = bkEnv.buildId;
+  const buildId = build ?? bkEnv.buildId;
   exec(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
 };
 

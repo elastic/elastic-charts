@@ -12,10 +12,10 @@ import { exec, startGroup, yarnInstall } from '../../utils';
 import { getNumber } from '../../utils/common';
 import { ENV_URL, MetaDataKeys } from '../../utils/constants';
 
-const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
-const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
+// const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
+// const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
 
-const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}/${jobTotal}` : '';
+// const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}/${jobTotal}` : '';
 
 void (async () => {
   yarnInstall();
@@ -30,11 +30,18 @@ void (async () => {
 
   startGroup('Running e2e playwright job');
 
-  exec(`yarn test:playwright --project=Chrome${shard} line_stories.test.ts timezone.test.ts`, {
+  exec(`yarn test:playwright --project=Chrome nick.test.ts`, {
     cwd: './e2e',
     env: {
       [ENV_URL]: `${deploymentUrl}/e2e`,
-      PLAYWRIGHT_HTML_REPORT: `reports/report_${(jobIndex ?? 0) + 1}`,
+      PLAYWRIGHT_HTML_REPORT: `reports/report_1`,
     },
   });
+  // exec(`yarn test:playwright --project=Chrome${shard} line_stories.test.ts timezone.test.ts`, {
+  //   cwd: './e2e',
+  //   env: {
+  //     [ENV_URL]: `${deploymentUrl}/e2e`,
+  //     PLAYWRIGHT_HTML_REPORT: `reports/report_${(jobIndex ?? 0) + 1}`,
+  //   },
+  // });
 })();

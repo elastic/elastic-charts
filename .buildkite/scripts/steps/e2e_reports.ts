@@ -52,7 +52,7 @@ async function setGroupStatus() {
 }
 
 void (async () => {
-  await setGroupStatus();
+  // await setGroupStatus();
 
   fs.mkdirSync('./e2e-server/public/e2e', { recursive: true });
 
@@ -75,9 +75,9 @@ void (async () => {
     },
   });
 
-  getArtifacts('e2e-server/public/*', 'storybook');
+  getArtifacts('e2e-server/public/*', 'storybook', undefined, 'a79cece9-acec-43f2-afde-e5b815446e82');
 
-  getArtifacts('e2e-server/public/e2e/*', 'e2e_server');
+  getArtifacts('e2e-server/public/e2e/*', 'e2e_server', undefined, 'a79cece9-acec-43f2-afde-e5b815446e82');
 
   startGroup('Checking deployment files');
 
