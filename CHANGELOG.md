@@ -1,3 +1,10 @@
+## [40.3.1](https://github.com/elastic/elastic-charts/compare/v40.3.0...v40.3.1) (2022-04-20)
+
+
+### Bug Fixes
+
+* **rendering:** clip at panel sizes on small multiples ([#1656](https://github.com/elastic/elastic-charts/issues/1656)) ([04ff7ac](https://github.com/elastic/elastic-charts/commit/04ff7acf3ae95a05905bee8c250cd05477ecab64))
+
 # [40.3.0](https://github.com/elastic/elastic-charts/compare/v40.2.0...v40.3.0) (2022-01-18)
 
 
