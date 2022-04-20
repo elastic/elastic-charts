@@ -62,9 +62,6 @@ void (async () => {
 
   getArtifacts('e2e/reports/*');
 
-  console.log(fs.readdirSync('./e2e/reports/report_1/data'));
-  console.log(fs.readdirSync('./e2e/reports/report_2/data'));
-
   startGroup('Merging e2e reports');
 
   exec('npx ts-node ./merge_html_reports.ts', {
