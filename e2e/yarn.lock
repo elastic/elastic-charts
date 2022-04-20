@@ -1269,7 +1269,7 @@ playwright-core@1.21.1:
 
 playwright-merge-html-reports@nickofthyme/playwright-merge-html-reports#temp:
   version "0.2.0"
-  resolved "https://codeload.github.com/nickofthyme/playwright-merge-html-reports/tar.gz/9c212667da9555a990df8d2359f80e08ac0b533a"
+  resolved "https://codeload.github.com/nickofthyme/playwright-merge-html-reports/tar.gz/14b0fafbbf765b7feffcfebd54470f9a485d63b2"
   dependencies:
     jszip "^3.7.1"
     yazl "^2.5.1"
