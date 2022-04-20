@@ -12,6 +12,7 @@ import { ChartType } from '../chart_types';
 import { GoalState } from '../chart_types/goal_chart/state/chart_state';
 import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
+import { NewVizState } from '../chart_types/template/state/chart_state';
 import { WordcloudState } from '../chart_types/wordcloud/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { CategoryKey } from '../common/category';
@@ -429,6 +430,7 @@ const constructors: Record<ChartType, () => InternalChartState | null> = {
   [ChartType.Heatmap]: () => new HeatmapState(),
   [ChartType.Wordcloud]: () => new WordcloudState(),
   [ChartType.Global]: () => null,
+  [ChartType.NewViz]: () => new NewVizState(),
 }; // with no default, TS signals if a new chart type isn't added here too
 
 function newInternalState(chartType: ChartType | null): InternalChartState | null {
