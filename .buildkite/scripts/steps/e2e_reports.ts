@@ -55,6 +55,7 @@ void (async () => {
   await setGroupStatus();
 
   fs.mkdirSync('./e2e-server/public/e2e', { recursive: true });
+  fs.mkdirSync('./e2e-server/public/e2e-report', { recursive: true });
 
   yarnInstall();
 
