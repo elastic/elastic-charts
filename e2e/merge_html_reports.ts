@@ -23,13 +23,6 @@ void (async () => {
 
   console.log(`Merging ${inputReportPaths.length} playwright html reports:\n\n\t${inputReportPaths.join('\n\t')}\n`);
 
-  if (!fs.existsSync('./node_modules/@playwright/test/node_modules/playwright-core')) {
-    fs.symlinkSync(
-      path.resolve('./node_modules/playwright-core'),
-      path.resolve('./node_modules/@playwright/test/node_modules/playwright-core'),
-    );
-  }
-
   const config = {
     outputFolderName: process.env.HTML_REPORT_DIR ?? 'merged_html_report',
     outputBasePath: path.resolve(process.cwd(), process.env.HTML_REPORT_PATH ?? ''),
