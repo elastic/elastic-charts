@@ -19,7 +19,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         ...commandStepDefaults,
         label: ':playwright: Playwright e2e',
         skip,
-        // parallelism: 2,
+        parallelism: 2,
         key: parallelKey,
         depends_on: ['deploy'],
         artifact_paths: ['e2e/reports/**/*', 'e2e/test_failures/**/*'],
@@ -29,7 +29,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
       {
         ...commandStepDefaults,
         label: ':playwright: Set group status and deploy report',
-        skip: true,
+        skip,
         allow_dependency_failure: true,
         depends_on: [parallelKey],
         artifact_paths: ['e2e-server/public/e2e-report/**/*'],

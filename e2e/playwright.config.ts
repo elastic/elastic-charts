@@ -23,7 +23,12 @@ const config: PlaywrightTestConfig = {
   },
   reporter: [['html', { open: 'never', outputFolder: 'html_report' }], ['list']],
   expect: {
-    toMatchSnapshot: { threshold: 0 },
+    toMatchSnapshot: {
+      threshold: 0,
+      // This is to allow a 2 px diff whenever expectChartWithMouseAtUrlToMatchScreenshot is used
+      // https://buildkite.com/elastic/elastic-charts-ci/builds/237#36e8d2d7-2cc0-473b-9c10-1fdab7df1fef/162
+      maxDiffPixels: 10,
+    },
   },
   forbidOnly: Boolean(process.env.CI),
   timeout: 10 * 1000,

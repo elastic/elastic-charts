@@ -395,6 +395,8 @@ export class CommonPage {
   /**
    * Expect a chart given a url from storybook with mouse move
    *
+   * TODO - Find why this always creates a 2px diff
+   *
    * @param url Storybook url from knobs section
    * @param mousePosition - position of mouse relative to chart
    * @param options

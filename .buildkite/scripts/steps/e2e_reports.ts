@@ -52,7 +52,7 @@ async function setGroupStatus() {
 }
 
 void (async () => {
-  // await setGroupStatus();
+  await setGroupStatus();
 
   fs.mkdirSync('./e2e-server/public/e2e', { recursive: true });
 
