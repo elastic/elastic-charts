@@ -4,11 +4,14 @@
 
 ```ts
 
+import { $Keys } from 'utility-types';
 import { $Values } from 'utility-types';
 import { ComponentProps } from 'react';
 import { ComponentType } from 'react';
+import { CSSProperties } from 'react';
 import { FC } from 'react';
 import { LegacyRef } from 'react';
+import { Optional } from 'utility-types';
 import { OptionalKeys } from 'utility-types';
 import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
@@ -51,6 +54,31 @@ export interface AngleFromTo {
     x1: Radian;
 }
 
+// @public
+export type AnimatedValue = number;
+
+// @public (undocumented)
+export interface AnimationOptions {
+    delay?: TimeMs | AnimationSpeed;
+    duration?: TimeMs | AnimationSpeed;
+    enabled?: boolean;
+    initialValue?: AnimatedValue;
+    snapValues?: AnimatedValue[];
+    timeFunction?: TimeFunction;
+}
+
+// @public
+export const AnimationSpeed: Readonly<{
+    extraFast: number;
+    fast: number;
+    normal: number;
+    slow: number;
+    extraSlow: number;
+}>;
+
+// @public (undocumented)
+export type AnimationSpeed = $Keys<typeof AnimationSpeed>;
+
 // @alpha (undocumented)
 export interface AnimKeyframe {
     // Warning: (ae-forgotten-export) The symbol "EasingFunction" needs to be exported by the entry point index.d.ts
@@ -60,6 +88,9 @@ export interface AnimKeyframe {
     // (undocumented)
     time: number;
 }
+
+// @public (undocumented)
+export type AnnotationAnimation = Optional<Required<AnimationOptions>, 'initialValue'>;
 
 // @public (undocumented)
 export type AnnotationClickListener = (annotations: {
@@ -318,7 +349,7 @@ export interface BaseAnnotationSpec<T extends typeof AnnotationType.Rectangle | 
     hideTooltips?: boolean;
     // (undocumented)
     specType: typeof SpecType.Annotation;
-    style?: Partial<S>;
+    style?: RecursivePartial<S>;
     zIndex?: number;
 }
 
@@ -1484,6 +1515,7 @@ export type LineAnnotationSpec<D = any> = BaseAnnotationSpec<typeof AnnotationTy
 
 // @public
 export interface LineAnnotationStyle {
+    animations: AnnotationAnimation;
     // @deprecated
     details: TextStyle;
     line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
@@ -1549,10 +1581,10 @@ export type Margins = PerSideDistance;
 export type MarkBuffer = number | ((radius: number) => number);
 
 // @public (undocumented)
-export function mergeWithDefaultAnnotationLine(config?: Partial<LineAnnotationStyle>): LineAnnotationStyle;
+export function mergeWithDefaultAnnotationLine(config?: RecursivePartial<LineAnnotationStyle>): LineAnnotationStyle;
 
 // @public (undocumented)
-export function mergeWithDefaultAnnotationRect(config?: Partial<RectAnnotationStyle>): RectAnnotationStyle;
+export function mergeWithDefaultAnnotationRect(config?: RecursivePartial<RectAnnotationStyle>): RectAnnotationStyle;
 
 // @public @deprecated
 export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, auxiliaryThemes?: PartialTheme[]): Theme;
@@ -1938,7 +1970,9 @@ export type RectAnnotationSpec = BaseAnnotationSpec<typeof AnnotationType.Rectan
 };
 
 // @public (undocumented)
-export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray>;
+export interface RectAnnotationStyle extends StrokeStyle, FillStyle, Opacity, Partial<StrokeDashArray> {
+    animations: AnnotationAnimation;
+}
 
 // @public (undocumented)
 export interface RectBorderStyle {
@@ -2219,13 +2253,13 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
 }
 
 // @public (undocumented)
-export interface SharedGeometryStateStyle {
+export interface SharedGeometryStateStyle<S extends CSSProperties = GeometryStateStyle> {
     // (undocumented)
-    default: GeometryStateStyle;
+    default: S;
     // (undocumented)
-    highlighted: GeometryStateStyle;
+    highlighted: S;
     // (undocumented)
-    unhighlighted: GeometryStateStyle;
+    unhighlighted: S;
 }
 
 // @public (undocumented)
@@ -2449,6 +2483,21 @@ export type TickStyle = StrokeStyle & Visible & {
 
 // @public (undocumented)
 export function timeFormatter(format: string): TickFormatter;
+
+// @public (undocumented)
+export const TimeFunction: Readonly<{
+    linear: "linear";
+    ease: "ease";
+    easeIn: "easeIn";
+    easeOut: "easeOut";
+    easeInOut: "easeInOut";
+}>;
+
+// @public (undocumented)
+export type TimeFunction = $Values<typeof TimeFunction>;
+
+// @public (undocumented)
+export type TimeMs = number;
 
 // @public (undocumented)
 export interface TimeScale {
@@ -2701,10 +2750,6 @@ export interface YDomainBase {
 
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
-
-// Warnings were encountered during analysis:
-//
-// src/chart_types/partition_chart/layout/types/config.ts:60:5 - (ae-forgotten-export) The symbol "TimeMs" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

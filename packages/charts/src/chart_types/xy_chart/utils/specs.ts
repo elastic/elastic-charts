@@ -983,7 +983,7 @@ export interface BaseAnnotationSpec<
   /**
    * Custom annotation style
    */
-  style?: Partial<S>;
+  style?: RecursivePartial<S>;
   /**
    * Toggles tooltip annotation visibility
    */

@@ -9,6 +9,7 @@
 import { Rect } from '../../../../geoms/types';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
+import { SpecId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { isHorizontalRotation } from '../../state/utils/common';
 import { AnnotationType } from '../../utils/specs';
@@ -22,25 +23,22 @@ export function getRectAnnotationTooltipState(
   annotationRects: AnnotationRectProps[],
   rotation: Rotation,
   chartDimensions: Dimensions,
-  id: string,
+  specId: SpecId,
 ): AnnotationTooltipState | null {
-  const totalAnnotationRect = annotationRects.length;
-
-  for (let i = 0; i < totalAnnotationRect; i++) {
-    const rectProps = annotationRects[i];
-    const { panel, datum } = rectProps;
-
-    const rect = transformRotateRect(rectProps.rect, rotation, panel);
-
-    const startX = rect.x + chartDimensions.left + panel.left;
-    const endX = startX + rect.width;
-    const startY = rect.y + chartDimensions.top + panel.top;
-    const endY = startY + rect.height;
+  for (let i = 0; i < annotationRects.length; i++) {
+    const { rect, panel, datum, id } = annotationRects[i];
+    const newRect = transformRotateRect(rect, rotation, panel);
+    const startX = newRect.x + chartDimensions.left + panel.left;
+    const endX = startX + newRect.width;
+    const startY = newRect.y + chartDimensions.top + panel.top;
+    const endY = startY + newRect.height;
     const bounds: Bounds = { startX, endX, startY, endY };
     const isWithinBounds = isWithinRectBounds(cursorPosition, bounds);
+
     if (isWithinBounds) {
       return {
-        id,
+        id, // annotation id
+        specId,
         isVisible: true,
         annotationType: AnnotationType.Rectangle,
         anchor: {

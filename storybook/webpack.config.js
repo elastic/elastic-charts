@@ -40,10 +40,6 @@ const MAX_CYCLES = 0;
 let numCyclesDetected = 0;
 
 module.exports = ({ config }) => {
-  // Checking CI value here
-  // eslint-disable-next-line no-console
-  console.log(`process.env.CI =`, process.env.CI);
-
   if (process.env.CI) {
     config.plugins.push(
       new CircularDependencyPlugin({

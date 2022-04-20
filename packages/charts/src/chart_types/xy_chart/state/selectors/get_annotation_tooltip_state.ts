@@ -128,7 +128,8 @@ export function getTooltipStateForDOMElements(
   }
 
   return {
-    id: spec.id,
+    id: dimension.id,
+    specId: spec.id,
     isVisible: true,
     annotationType: AnnotationType.Line,
     datum: dimension.datum,
