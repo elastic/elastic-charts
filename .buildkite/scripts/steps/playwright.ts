@@ -8,7 +8,7 @@
 
 import { getMetadata } from 'buildkite-agent-node';
 
-import { exec, startGroup, yarnInstall } from '../../utils';
+import { exec, getArtifacts, startGroup, yarnInstall } from '../../utils';
 import { getNumber } from '../../utils/common';
 import { ENV_URL, MetaDataKeys } from '../../utils/constants';
 
@@ -20,13 +20,15 @@ const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}
 void (async () => {
   yarnInstall('e2e');
 
-  startGroup('Checking for deployment');
+  // startGroup('Checking for deployment');
 
-  const deploymentUrl = (await getMetadata(MetaDataKeys.deploymentUrl)) ?? 'https://ech-e2e-ci--nick-at97gghd.web.app';
+  // const deploymentUrl = (await getMetadata(MetaDataKeys.deploymentUrl)) ?? 'https://ech-e2e-ci--nick-at97gghd.web.app';
 
-  if (!deploymentUrl) {
-    throw new Error('Error: No deploymentUrl passed to playwright');
-  }
+  // if (!deploymentUrl) {
+  //   throw new Error('Error: No deploymentUrl passed to playwright');
+  // }
+
+  getArtifacts('e2e-server/public/e2e/*', 'e2e_server', undefined, 'a79cece9-acec-43f2-afde-e5b815446e82');
 
   startGroup('Generating test examples.json');
 
@@ -35,10 +37,12 @@ void (async () => {
 
   startGroup('Running e2e playwright job');
 
-  exec(`yarn test:playwright --project=Chrome${shard}`, {
+  // exec(`yarn test:playwright --project=Chrome${shard}`, {
+  exec(`yarn test:playwright --project=Chrome --shard=1/20`, {
     cwd: './e2e',
     env: {
-      [ENV_URL]: `${deploymentUrl}/e2e`,
+      [ENV_URL]: 'file:///app/e2e-server/public/e2e/index.html',
+      // [ENV_URL]: `${deploymentUrl}/e2e`,
       PLAYWRIGHT_HTML_REPORT: `reports/report_${(jobIndex ?? 0) + 1}`,
     },
   });

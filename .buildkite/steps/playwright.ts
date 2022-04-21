@@ -19,7 +19,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         ...commandStepDefaults,
         label: ':playwright: Playwright e2e',
         skip,
-        parallelism: 20,
+        parallelism: 1,
         key: parallelKey,
         depends_on: ['deploy'],
         artifact_paths: ['e2e/reports/**/*', 'e2e/test_failures/**/*'],
