@@ -8,6 +8,8 @@
 
 import { PlaywrightTestConfig } from '@playwright/test';
 
+const isCI = process.env.CI === 'true';
+
 const config: PlaywrightTestConfig = {
   use: {
     headless: true,
@@ -21,7 +23,7 @@ const config: PlaywrightTestConfig = {
       slowMo: 500,
     },
   },
-  reporter: [['html', { open: 'never', outputFolder: 'html_report' }], ['list']],
+  reporter: [['html', { open: 'never', outputFolder: 'html_report' }], isCI ? ['line'] : ['list']],
   expect: {
     toMatchSnapshot: {
       threshold: 0,
@@ -30,8 +32,7 @@ const config: PlaywrightTestConfig = {
       maxDiffPixels: 4,
     },
   },
-  // workers: 8,
-  forbidOnly: Boolean(process.env.CI),
+  forbidOnly: isCI,
   timeout: 10 * 1000,
   preserveOutput: 'failures-only',
   snapshotDir: 'screenshots',
