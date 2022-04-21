@@ -30,7 +30,7 @@ const config: PlaywrightTestConfig = {
       maxDiffPixels: 4,
     },
   },
-  workers: 8,
+  // workers: 8,
   forbidOnly: Boolean(process.env.CI),
   timeout: 10 * 1000,
   preserveOutput: 'failures-only',
