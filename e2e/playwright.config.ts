@@ -20,7 +20,7 @@ const config: PlaywrightTestConfig = {
     video: 'retain-on-failure',
     launchOptions: {
       ignoreDefaultArgs: ['--hide-scrollbars'],
-      slowMo: 500,
+      args: ['--use-gl=egl'],
     },
   },
   reporter: [['html', { open: 'never', outputFolder: 'html_report' }], isCI ? ['line'] : ['list']],

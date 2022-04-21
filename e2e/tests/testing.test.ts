@@ -6,4 +6,9 @@
  * Side Public License, v 1.
  */
 
-export const environmentUrl = process.env.ENV_URL ?? 'https://ech-e2e-ci--nick-at97gghd.web.app/e2e';
+import { test, expect } from '@playwright/test';
+
+test('Testing page.goto', async ({ page }) => {
+  await page.goto('https://google.com');
+  expect(true).toBe(true);
+});
