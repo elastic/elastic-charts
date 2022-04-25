@@ -1147,6 +1147,30 @@ SOFTWARE.
   }
 }
 /**
+ * Scroll bar only
+ */
+.eui-scrollBar {
+  scrollbar-color: rgba(105, 112, 125, 0.5) transparent;
+  scrollbar-width: thin;
+}
+
+.eui-scrollBar::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+.eui-scrollBar::-webkit-scrollbar-thumb {
+  background-color: rgba(105, 112, 125, 0.5);
+  background-clip: content-box;
+  border-radius: 16px;
+  border: 6px solid transparent;
+}
+
+.eui-scrollBar::-webkit-scrollbar-corner, .eui-scrollBar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/**
   * Overflow scrolling
   */
 .eui-yScroll {
@@ -10446,48 +10470,20 @@ SOFTWARE.
   min-width: 0;
 }
 
-.euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--xxxsmall {
-  padding-top: 8px;
+.euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child,
+.euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow:first-child:not(.euiFormRow--hasLabel) {
+  margin-top: 0;
 }
 
-.euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--xxsmall {
-  padding-top: 11px;
+.euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child::before,
+.euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow:first-child:not(.euiFormRow--hasLabel)::before {
+  content: "";
 }
 
-.euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--xsmall {
-  padding-top: 11px;
+.euiDescribedFormGroup__descriptionColumn {
+  min-width: min(20rem, 50%);
 }
 
-.euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--small {
-  padding-top: 23px;
-}
-
-.euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--medium {
-  padding-top: 30.5px;
-}
-
-.euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--large {
-  padding-top: 41px;
-}
-
-@media only screen and (max-width: 574px) {
-  .euiDescribedFormGroup .euiDescribedFormGroup__fields {
-    padding-top: 0;
-  }
-
-  .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child {
-    padding-top: 0;
-  }
-}
-@media only screen and (min-width: 575px) and (max-width: 767px) {
-  .euiDescribedFormGroup .euiDescribedFormGroup__fields {
-    padding-top: 0;
-  }
-
-  .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child {
-    padding-top: 0;
-  }
-}
 .euiFieldNumber {
   max-width: 400px;
   width: 100%;
@@ -12639,7 +12635,7 @@ SOFTWARE.
 }
 
 .euiFormRow--hasEmptyLabelSpace {
-  margin-top: 22px;
+  margin-top: 20px;
   /* 2 */
   min-height: 40px;
   padding-bottom: 0;
@@ -24958,6 +24954,9 @@ html.light-theme {
     * https://github.com/philipwalton/flexbugs/issues/104
     */
   /**
+   * Scroll bar only
+   */
+  /**
     * Overflow scrolling
     */
   /**
@@ -25676,6 +25675,23 @@ html.light-theme [class*=eui-showFor] {
     flex-shrink: 1;
     flex-basis: 0%;
   }
+}
+html.light-theme .eui-scrollBar {
+  scrollbar-color: rgba(105, 112, 125, 0.5) transparent;
+  scrollbar-width: thin;
+}
+html.light-theme .eui-scrollBar::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+html.light-theme .eui-scrollBar::-webkit-scrollbar-thumb {
+  background-color: rgba(105, 112, 125, 0.5);
+  background-clip: content-box;
+  border-radius: 16px;
+  border: 6px solid transparent;
+}
+html.light-theme .eui-scrollBar::-webkit-scrollbar-corner, html.light-theme .eui-scrollBar::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 html.light-theme .eui-yScroll {
   scrollbar-color: rgba(105, 112, 125, 0.5) transparent;
@@ -33290,39 +33306,16 @@ html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__description {
 html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields {
   min-width: 0;
 }
-html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--xxxsmall {
-  padding-top: 8px;
+html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child,
+html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow:first-child:not(.euiFormRow--hasLabel) {
+  margin-top: 0;
 }
-html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--xxsmall {
-  padding-top: 11px;
+html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child::before,
+html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow:first-child:not(.euiFormRow--hasLabel)::before {
+  content: "";
 }
-html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--xsmall {
-  padding-top: 11px;
-}
-html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--small {
-  padding-top: 23px;
-}
-html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--medium {
-  padding-top: 30.5px;
-}
-html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--large {
-  padding-top: 41px;
-}
-@media only screen and (max-width: 574px) {
-  html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields {
-    padding-top: 0;
-  }
-  html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child {
-    padding-top: 0;
-  }
-}
-@media only screen and (min-width: 575px) and (max-width: 767px) {
-  html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields {
-    padding-top: 0;
-  }
-  html.light-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child {
-    padding-top: 0;
-  }
+html.light-theme .euiDescribedFormGroup__descriptionColumn {
+  min-width: min(20rem, 50%);
 }
 html.light-theme .euiFieldNumber {
   max-width: 400px;
@@ -35115,7 +35108,7 @@ html.light-theme .euiFormRow--fullWidth {
   max-width: 100%;
 }
 html.light-theme .euiFormRow--hasEmptyLabelSpace {
-  margin-top: 22px;
+  margin-top: 20px;
   /* 2 */
   min-height: 40px;
   padding-bottom: 0;
@@ -45738,6 +45731,9 @@ html.dark-theme {
     * https://github.com/philipwalton/flexbugs/issues/104
     */
   /**
+   * Scroll bar only
+   */
+  /**
     * Overflow scrolling
     */
   /**
@@ -46456,6 +46452,23 @@ html.dark-theme [class*=eui-showFor] {
     flex-shrink: 1;
     flex-basis: 0%;
   }
+}
+html.dark-theme .eui-scrollBar {
+  scrollbar-color: rgba(152, 162, 179, 0.5) transparent;
+  scrollbar-width: thin;
+}
+html.dark-theme .eui-scrollBar::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+html.dark-theme .eui-scrollBar::-webkit-scrollbar-thumb {
+  background-color: rgba(152, 162, 179, 0.5);
+  background-clip: content-box;
+  border-radius: 16px;
+  border: 6px solid transparent;
+}
+html.dark-theme .eui-scrollBar::-webkit-scrollbar-corner, html.dark-theme .eui-scrollBar::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 html.dark-theme .eui-yScroll {
   scrollbar-color: rgba(152, 162, 179, 0.5) transparent;
@@ -54070,39 +54083,16 @@ html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__description {
 html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields {
   min-width: 0;
 }
-html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--xxxsmall {
-  padding-top: 8px;
+html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child,
+html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow:first-child:not(.euiFormRow--hasLabel) {
+  margin-top: 0;
 }
-html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--xxsmall {
-  padding-top: 11px;
+html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child::before,
+html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow:first-child:not(.euiFormRow--hasLabel)::before {
+  content: "";
 }
-html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--xsmall {
-  padding-top: 11px;
-}
-html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--small {
-  padding-top: 23px;
-}
-html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--medium {
-  padding-top: 30.5px;
-}
-html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fieldPadding--large {
-  padding-top: 41px;
-}
-@media only screen and (max-width: 574px) {
-  html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields {
-    padding-top: 0;
-  }
-  html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child {
-    padding-top: 0;
-  }
-}
-@media only screen and (min-width: 575px) and (max-width: 767px) {
-  html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields {
-    padding-top: 0;
-  }
-  html.dark-theme .euiDescribedFormGroup .euiDescribedFormGroup__fields > .euiFormRow--hasEmptyLabelSpace:first-child {
-    padding-top: 0;
-  }
+html.dark-theme .euiDescribedFormGroup__descriptionColumn {
+  min-width: min(20rem, 50%);
 }
 html.dark-theme .euiFieldNumber {
   max-width: 400px;
@@ -55895,7 +55885,7 @@ html.dark-theme .euiFormRow--fullWidth {
   max-width: 100%;
 }
 html.dark-theme .euiFormRow--hasEmptyLabelSpace {
-  margin-top: 22px;
+  margin-top: 20px;
   /* 2 */
   min-height: 40px;
   padding-bottom: 0;
