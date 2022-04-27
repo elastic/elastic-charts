@@ -33,16 +33,24 @@ void (async () => {
 
   startGroup('Running e2e playwright job');
   const reportDir = `./reports/report_${shardIndex}`;
-  exec(`yarn playwright test --project=Chrome${shard}`, {
-    cwd: 'e2e',
-    env: {
-      [ENV_URL]: 'http://127.0.0.1:9002',
-      PLAYWRIGHT_HTML_REPORT: reportDir,
-    },
-  });
+  async function compressReport() {
+    await compress({
+      src: path.join('e2e', reportDir),
+      dest: `.buildkite/artifacts/e2e_reports/report_${shardIndex}.gz`,
+    });
+  }
 
-  await compress({
-    src: path.join('e2e', reportDir),
-    dest: `.buildkite/artifacts/e2e_reports/report_${shardIndex}.gz`,
-  });
+  try {
+    exec(`yarn playwright test --project=Chrome${shard}`, {
+      cwd: 'e2e',
+      env: {
+        [ENV_URL]: 'http://127.0.0.1:9002',
+        PLAYWRIGHT_HTML_REPORT: reportDir,
+      },
+    });
+    await compressReport();
+  } catch (error) {
+    await compressReport();
+    throw error;
+  }
 })();
