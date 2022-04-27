@@ -1,5 +1,4 @@
-html_report/
-html_reports/
+reports/
 merged_html_report/
 test_failures/
 server/

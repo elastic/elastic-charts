@@ -20,6 +20,11 @@ const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${shardIndex}/$
 void (async () => {
   yarnInstall('e2e');
 
+  startGroup('TTTTTTTESTING HERE');
+  exec(`npx ts-node nick.ts`, {
+    cwd: 'e2e',
+  });
+
   const src = '.buildkite/artifacts/e2e_server.gz';
   downloadArtifacts(src, 'e2e_server', undefined, 'fd2c3cce-376a-4f1d-9764-24b3ff1dca69');
   await decompress({
@@ -32,7 +37,7 @@ void (async () => {
   exec('node ./e2e/scripts/extract_examples.js');
 
   startGroup('Running e2e playwright job');
-  const reportDir = `./reports/report_${shardIndex}`;
+  const reportDir = `reports/report_${shardIndex}`;
   async function compressReport() {
     await compress({
       src: path.join('e2e', reportDir),
@@ -46,6 +51,7 @@ void (async () => {
       env: {
         [ENV_URL]: 'http://127.0.0.1:9002',
         PLAYWRIGHT_HTML_REPORT: reportDir,
+        PLAYWRIGHT_JSON_OUTPUT_NAME: `reports/json/report_${shardIndex}.json`,
       },
     });
     await compressReport();

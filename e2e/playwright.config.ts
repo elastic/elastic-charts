@@ -22,7 +22,11 @@ const config: PlaywrightTestConfig = {
       ignoreDefaultArgs: ['--hide-scrollbars'],
     },
   },
-  reporter: [['html', { open: 'never', outputFolder: 'html_report' }], ['list']],
+  reporter: [
+    ['list'],
+    ['html', { open: 'never', outputFolder: 'reports/html' }],
+    ['json', { outputFile: 'reports/json/report.json' }],
+  ],
   expect: {
     toMatchSnapshot: {
       threshold: 0,
