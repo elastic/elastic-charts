@@ -6,22 +6,16 @@
  * Side Public License, v 1.
  */
 
-import {
-  exec,
-  downloadArtifacts,
-  uploadArtifacts,
-  startGroup,
-  yarnInstall,
-  getNumber,
-  decompress,
-  compress,
-} from '../../utils';
+import path from 'path';
+
+import { exec, downloadArtifacts, startGroup, yarnInstall, getNumber, decompress, compress } from '../../utils';
 import { ENV_URL } from '../../utils/constants';
 
 const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
+const shardIndex = jobIndex ? jobIndex + 1 : 1;
 const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
 
-const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}/${jobTotal}` : '';
+const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${shardIndex}/${jobTotal}` : '';
 
 void (async () => {
   yarnInstall('e2e');
@@ -40,10 +34,10 @@ void (async () => {
   exec('node ./e2e/scripts/extract_examples.js');
 
   startGroup('Running e2e playwright job');
-  const reportDir = `./reports/report_${(jobIndex ?? 0) + 1}`;
+  const reportDir = `./reports/report_${shardIndex}`;
   // exec(`yarn playwright test --project=Chrome${shard}`, {
   exec(`yarn playwright test --project=Chrome timezone.test.ts`, {
-    cwd: './e2e',
+    cwd: 'e2e',
     env: {
       [ENV_URL]: 'http://127.0.0.1:9002',
       PLAYWRIGHT_HTML_REPORT: reportDir,
@@ -51,8 +45,7 @@ void (async () => {
   });
 
   await compress({
-    src: reportDir,
-    dest: `./.buildkite/artifacts/e2e_reports/report_${(jobIndex ?? 0) + 1}.gz`,
+    src: path.join('e2e', reportDir),
+    dest: `.buildkite/artifacts/e2e_reports/report_${shardIndex}.gz`,
   });
-  uploadArtifacts('.buildkite/artifacts/e2e_reports/*');
 })();

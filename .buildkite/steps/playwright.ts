@@ -23,6 +23,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         key: parallelKey,
         // depends_on: ['e2e_server'],
         plugins: [Plugins.docker.playwright()],
+        artifact_paths: ['.buildkite/artifacts/e2e_reports/*'],
         commands: ['npx ts-node .buildkite/scripts/steps/playwright.ts'],
       },
       {
