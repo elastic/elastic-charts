@@ -20,11 +20,6 @@ const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${shardIndex}/$
 void (async () => {
   yarnInstall('e2e');
 
-  startGroup('TTTTTTTESTING HERE');
-  exec(`npx ts-node nick.ts`, {
-    cwd: 'e2e',
-  });
-
   const src = '.buildkite/artifacts/e2e_server.gz';
   downloadArtifacts(src, 'e2e_server', undefined, 'fd2c3cce-376a-4f1d-9764-24b3ff1dca69');
   await decompress({

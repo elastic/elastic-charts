@@ -29,7 +29,7 @@ const config: PlaywrightTestConfig = {
   ],
   expect: {
     toMatchSnapshot: {
-      threshold: 0,
+      threshold: 0.01,
     },
   },
   forbidOnly: isCI,
