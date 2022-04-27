@@ -27,16 +27,13 @@ void (async () => {
     dest: 'e2e/server',
   });
 
-  // downloadArtifacts('e2e-server/public/e2e/*', 'e2e_server', undefined, 'a79cece9-acec-43f2-afde-e5b815446e82');
-
   startGroup('Generating test examples.json');
   // TODO Fix this duplicate script that allows us to skip root node install on all e2e test runners
   exec('node ./e2e/scripts/extract_examples.js');
 
   startGroup('Running e2e playwright job');
   const reportDir = `./reports/report_${shardIndex}`;
-  // exec(`yarn playwright test --project=Chrome${shard}`, {
-  exec(`yarn playwright test --project=Chrome timezone.test.ts`, {
+  exec(`yarn playwright test --project=Chrome${shard}`, {
     cwd: 'e2e',
     env: {
       [ENV_URL]: 'http://127.0.0.1:9002',

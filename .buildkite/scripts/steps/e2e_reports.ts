@@ -66,8 +66,8 @@ void (async () => {
 
   console.log(fs.readdirSync('.buildkite/artifacts/e2e_reports'));
 
-  const reportDir = './.buildkite/artifacts/e2e_reports';
-  const files = fs.readdirSync('./.buildkite/artifacts/e2e_reports');
+  const reportDir = '.buildkite/artifacts/e2e_reports';
+  const files = fs.readdirSync('.buildkite/artifacts/e2e_reports');
   await Promise.all<void>(
     files
       .filter((f) => f.startsWith('report_'))

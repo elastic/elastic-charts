@@ -23,7 +23,7 @@ void (async () => {
     },
   });
 
-  const dest = './.buildkite/artifacts/e2e_server.gz';
+  const dest = '.buildkite/artifacts/e2e_server.gz';
   await compress({
     src: './e2e-server/.out',
     dest,
