@@ -17,4 +17,16 @@ else
 fi
 
 # Run e2e playwright tests inside container
-docker run --rm --init --cpus=5 --name e2e-playwright-tests -e PORT=${PORT} -e ENV_URL=${ENV_URL} -e PLAYWRIGHT_HTML_REPORT=${PLAYWRIGHT_HTML_REPORT} -w /app/e2e -v $(pwd)/../:/app/ ${pw_image} yarn test:playwright "$@"
+docker run \
+  --rm `# removes named container on every run` \
+  --init `# handles terminating signals like SIGTERM` \
+  --cpus=5 `# limits number of cpus that can be used` \
+  --name e2e-playwright-tests `# reusable name of container` \
+  -e PORT=${PORT} `# port of local web server ` \
+  -e ENV_URL=${ENV_URL} `# url of web server, overrides hostname and PORT ` \
+  -e PLAYWRIGHT_HTML_REPORT=${PLAYWRIGHT_HTML_REPORT} `# where to save the playwright html report ` \
+  -w /app/e2e `# working directory` \
+  -v $(pwd)/:/app/e2e `# mount local e2e/ directory in app/e2e directory in container` \
+  -v $(pwd)/../e2e-server/tmp/:/app/e2e-server/tmp `# mount required example.json file in container` \
+  ${pw_image} `# playwright docker image derived above from @playwright/test version used ` \
+  yarn test:playwright "$@" # runs test.sh forwarding any additional passed args

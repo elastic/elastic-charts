@@ -6,4 +6,4 @@
  * Side Public License, v 1.
  */
 
-export const environmentUrl = process.env.ENV_URL ?? 'https://ech-e2e-ci--nick-at97gghd.web.app/e2e';
+export const environmentUrl = process.env.ENV_URL;

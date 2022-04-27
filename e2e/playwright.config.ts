@@ -47,6 +47,14 @@ const config: PlaywrightTestConfig = {
       },
     },
   ],
+  webServer: isCI
+    ? {
+        command: 'yarn start',
+        port: 9002,
+        timeout: 20 * 1000,
+        reuseExistingServer: false,
+      }
+    : undefined,
 };
 
 export default config;

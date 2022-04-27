@@ -6,6 +6,13 @@
  * Side Public License, v 1.
  */
 
+import fs from 'fs';
+import path from 'path';
+
+import targz from 'targz';
+
+import { startGroup } from './buildkite';
+
 /**
  * Returns a finite number or null
  */
@@ -14,3 +21,35 @@ export function getNumber(value?: string): number | null {
   const n = Number(value);
   return isNaN(n) ? null : n;
 }
+
+export const compress = (opts: targz.options) =>
+  new Promise<void>((resolve, reject) => {
+    startGroup(`Compressing files in "${opts.src}"`);
+    const destPath = path.dirname(opts.dest);
+    console.log(destPath);
+
+    fs.mkdirSync(destPath, { recursive: true });
+    targz.compress(opts, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        console.log(`Compressed files successfully to "${opts.dest}"`);
+        resolve();
+      }
+    });
+  });
+
+export const decompress = (opts: targz.options) =>
+  new Promise<void>((resolve, reject) => {
+    startGroup(`Decompressing from "${opts.src}"`);
+    const destPath = path.dirname(opts.dest);
+    fs.mkdirSync(destPath, { recursive: true });
+    targz.decompress(opts, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        console.log(`Decompressed files successfully to "${opts.dest}"`);
+        resolve();
+      }
+    });
+  });

@@ -8,15 +8,15 @@
 
 import fs from 'fs';
 
-import { createDeploymentStatus, firebaseDeploy, getArtifacts, startGroup } from '../../utils';
+import { createDeploymentStatus, firebaseDeploy, downloadArtifacts, startGroup } from '../../utils';
 
 void createDeploymentStatus({ state: 'in_progress' });
 
 fs.mkdirSync('./e2e-server/public/e2e', { recursive: true });
 
-getArtifacts('e2e-server/public/*', 'storybook');
+downloadArtifacts('e2e-server/public/*', 'storybook');
 
-getArtifacts('e2e-server/public/e2e/*', 'e2e_server');
+downloadArtifacts('e2e-server/public/e2e/*', 'e2e_server');
 
 startGroup('Check deployment files');
 

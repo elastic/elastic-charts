@@ -21,8 +21,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         skip,
         parallelism: 12,
         key: parallelKey,
-        // depends_on: ['e2e_server'],
-        artifact_paths: ['e2e/reports/**/*', 'e2e/test_failures/**/*'],
+        depends_on: ['e2e_server'],
         plugins: [Plugins.docker.playwright()],
         commands: ['npx ts-node .buildkite/scripts/steps/playwright.ts'],
       },
@@ -32,7 +31,6 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         skip,
         allow_dependency_failure: true,
         depends_on: [parallelKey],
-        artifact_paths: ['e2e-server/public/e2e-report/**/*'],
         commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
         env: {
           ECH_GH_STATUS_CONTEXT: 'Playwright e2e',

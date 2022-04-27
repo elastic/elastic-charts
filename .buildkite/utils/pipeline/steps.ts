@@ -46,6 +46,7 @@ export const commandStepDefaults: Partial<CustomCommandStep> = {
   priority: 10,
   plugins: [Plugins.docker.node()],
   timeout_in_minutes: 10,
+  artifact_paths: ['.buildkite/artifacts/**/*.gz'],
 };
 
 export const createStep =

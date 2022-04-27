@@ -59,7 +59,7 @@ void (async () => {
       prettierStep(skipit),
       typeCheckStep(skipit),
       storybookStep(skipit),
-      e2eServerStep(skipit),
+      e2eServerStep(),
       deployStep(skipit),
       playwrightStep(),
     ].map((step) => step(changeCtx));

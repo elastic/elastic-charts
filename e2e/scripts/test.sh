@@ -38,7 +38,7 @@ done
 
 echo "Connected to e2e server at ${ENV_URL}"
 
-# Install dependencies for e2e testing only
+# Install dependencies only e2e modules for testing
 yarn install --frozen-lockfile
 
 # Run playwright tests with passed args

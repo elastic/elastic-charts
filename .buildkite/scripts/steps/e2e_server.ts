@@ -6,12 +6,26 @@
  * Side Public License, v 1.
  */
 
-import { createDeploymentStatus, exec, yarnInstall } from '../../utils';
+import { createDeploymentStatus, exec, yarnInstall, compress, startGroup } from '../../utils';
 
-yarnInstall();
+void (async () => {
+  yarnInstall();
 
-void createDeploymentStatus({ state: 'pending' });
+  await createDeploymentStatus({ state: 'pending' });
 
-exec('yarn test:e2e:generate');
+  startGroup('Generating e2e server files');
+  exec('yarn test:e2e:generate');
 
-exec('yarn test:e2e:server:build -o "../public/e2e"');
+  startGroup('Building e2e server');
+  exec('yarn test:e2e:server:build', {
+    env: {
+      NODE_ENV: 'production',
+    },
+  });
+
+  const dest = './.buildkite/artifacts/e2e_server.gz';
+  await compress({
+    src: './e2e-server/.out',
+    dest,
+  });
+})();

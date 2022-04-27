@@ -55,13 +55,19 @@ export const bkEnv = (() => {
  */
 export const startGroup = (msg: string) => console.log(`--- ${msg}`);
 
-export const getArtifacts = (query: string, step?: string, destination = '.', build?: string) => {
+export const downloadArtifacts = (query: string, step?: string, destination = '.', build?: string) => {
   startGroup(`Downloading artifacts${step ? ` from step: ${step}` : ''}`);
   const dest = destination.endsWith('/') || destination === '.' ? destination : `${destination}/`;
   const stepArg = step ? ` --step ${step}` : '';
   const q = query.includes('*') ? `"${query}"` : query;
   const buildId = build ?? bkEnv.buildId;
   exec(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
+};
+
+export const uploadArtifacts = (query: string) => {
+  const q = query.includes('*') ? `"${query}"` : query;
+  startGroup(`Uploading artifacts matching "${q}"`);
+  exec(`buildkite-agent artifact upload ${q}`);
 };
 
 function getEnvNumber(key: string) {

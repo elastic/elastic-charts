@@ -13,7 +13,6 @@ export const storybookStep = createStep<CustomCommandStep>(() => {
     ...commandStepDefaults,
     label: ':storybook: Storybook build',
     key: 'storybook',
-    artifact_paths: ['e2e-server/public/**/*'],
     commands: ['npx ts-node .buildkite/scripts/steps/storybook.ts'],
     env: {
       ECH_GH_STATUS_CONTEXT: 'Storybook build',

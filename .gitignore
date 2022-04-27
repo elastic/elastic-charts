@@ -24,6 +24,7 @@ playground/playground.tsx
 
 **/__diff_output__/
 .buildkite/buildkite.d.ts
+.buildkite/artifacts/
 
 # keep only top-level lock file
 **/*/yarn.lock

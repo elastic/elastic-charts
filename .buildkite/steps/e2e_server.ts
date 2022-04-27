@@ -14,7 +14,6 @@ export const e2eServerStep = createStep<CustomCommandStep>(() => {
     label: ':building_construction: E2E server build',
     key: 'e2e_server',
     commands: ['npx ts-node .buildkite/scripts/steps/e2e_server.ts'],
-    artifact_paths: ['e2e-server/public/e2e/**/*'],
     env: {
       ECH_GH_STATUS_CONTEXT: 'E2E server build',
     },

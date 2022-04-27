@@ -14,7 +14,7 @@ const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 
-console.log(process.env.NODE_ENV === 'production');
+console.log('NODE_ENV', process.env.NODE_ENV, process.env.NODE_ENV === 'production');
 
 module.exports = {
   entry: '../tmp/index.tsx',
