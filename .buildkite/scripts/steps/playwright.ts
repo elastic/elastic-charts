@@ -26,11 +26,11 @@ const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${jobIndex + 1}
 void (async () => {
   yarnInstall('e2e');
 
-  const src = './.buildkite/artifacts/e2e_server.gz';
-  downloadArtifacts(src, 'e2e_server');
+  const src = '.buildkite/artifacts/e2e_server.gz';
+  downloadArtifacts(src, 'e2e_server', undefined, 'fd2c3cce-376a-4f1d-9764-24b3ff1dca69');
   await decompress({
     src,
-    dest: './e2e/server',
+    dest: 'e2e/server',
   });
 
   // downloadArtifacts('e2e-server/public/e2e/*', 'e2e_server', undefined, 'a79cece9-acec-43f2-afde-e5b815446e82');
@@ -41,7 +41,8 @@ void (async () => {
 
   startGroup('Running e2e playwright job');
   const reportDir = `./reports/report_${(jobIndex ?? 0) + 1}`;
-  exec(`yarn playwright test --project=Chrome${shard}`, {
+  // exec(`yarn playwright test --project=Chrome${shard}`, {
+  exec(`yarn playwright test --project=Chrome timezone.test.ts`, {
     cwd: './e2e',
     env: {
       [ENV_URL]: 'http://127.0.0.1:9002',
