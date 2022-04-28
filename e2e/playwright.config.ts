@@ -15,7 +15,7 @@ const config: PlaywrightTestConfig = {
     headless: true,
     locale: 'en-us',
     viewport: { width: 785, height: 600 },
-    trace: 'off',
+    trace: 'retain-on-failure',
     screenshot: 'off', // already testing screenshots
     video: 'retain-on-failure',
     launchOptions: {

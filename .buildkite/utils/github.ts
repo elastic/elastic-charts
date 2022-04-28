@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { createAppAuth } from '@octokit/auth-app';
+import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
 import { retry } from '@octokit/plugin-retry';
 import { Octokit } from '@octokit/rest';
 import { getMetadata, metadataExists, setMetadata } from 'buildkite-agent-node';
+import ghpages from 'gh-pages';
 import minimatch, { IOptions as MinimatchOptions } from 'minimatch';
 import { Optional } from 'utility-types';
 
@@ -245,4 +246,29 @@ async function getFileDiffs(): Promise<FileDiff[]> {
     console.error(`Failed to list files for PR #${prNumber}`);
     throw error;
   }
+}
+
+export async function ghpDeploy(outDir: string) {
+  if (!process.env.GITHUB_AUTH) throw new Error('GITHUB_AUTH env variable must be defined');
+
+  const auth = createAppAuth(JSON.parse(process.env.GITHUB_AUTH) as StrategyOptions);
+  const { token } = await auth({
+    type: 'installation',
+  });
+
+  await new Promise<void>((resolve, reject) => {
+    ghpages.publish(
+      outDir,
+      {
+        silent: true,
+        branch: 'gh-pages',
+        message: `Deploying ${bkEnv.commit ?? 'latest changes'} 🚀`,
+        repo: `https://git:${token}@github.com/elastic/elastic-charts.git`,
+      },
+      (error) => {
+        if (error) reject(error);
+        else resolve();
+      },
+    );
+  });
 }

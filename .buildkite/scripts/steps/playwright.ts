@@ -40,8 +40,13 @@ void (async () => {
     });
   }
 
+  // TODO revert this toggle
+  const command =
+    (jobTotal ?? 0) > 1
+      ? `yarn playwright test --project=Chrome${shard}`
+      : 'yarn playwright test --project=Chrome legend_stories.test.ts';
   try {
-    exec(`yarn playwright test --project=Chrome${shard}`, {
+    exec(command, {
       cwd: 'e2e',
       env: {
         [ENV_URL]: 'http://127.0.0.1:9002',

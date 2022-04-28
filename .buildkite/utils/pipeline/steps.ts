@@ -50,9 +50,9 @@ export const commandStepDefaults: Partial<CustomCommandStep> = {
 };
 
 export const createStep =
-  <S extends Step>(getStep: (ctx: ChangeContext) => S) =>
+  <S extends Step>(getStep: (ctx: Omit<ChangeContext, 'init'>) => S) =>
   (overrides?: Partial<S>) =>
-  (ctx: ChangeContext) => {
+  (ctx: Omit<ChangeContext, 'init'>) => {
     return {
       ...getStep(ctx),
       ...overrides,

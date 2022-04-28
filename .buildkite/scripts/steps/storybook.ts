@@ -6,10 +6,23 @@
  * Side Public License, v 1.
  */
 
-import { createDeploymentStatus, exec, yarnInstall } from '../../utils';
+import { bkEnv, compress, createDeploymentStatus, exec, yarnInstall } from '../../utils';
 
-yarnInstall();
+void (async () => {
+  yarnInstall();
 
-void createDeploymentStatus({ state: 'pending' });
+  await createDeploymentStatus({ state: 'pending' });
 
-exec('yarn build:firebase', { cwd: './storybook' });
+  exec('yarn build', {
+    cwd: 'storybook',
+    env: {
+      NODE_ENV: bkEnv.branch === 'master' ? 'production' : 'development',
+    },
+  });
+
+  const outDir = `.out`;
+  await compress({
+    src: outDir,
+    dest: '.buildkite/artifacts/storybook.gz',
+  });
+})();

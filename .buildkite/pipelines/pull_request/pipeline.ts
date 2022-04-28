@@ -12,7 +12,8 @@ import { Required } from 'utility-types';
 import { JSONSchemaForBuildkitePipelineConfigurationFiles as BuildkitePipeline } from '../../buildkite.d';
 import {
   apiCheckStep,
-  deployStep,
+  ghpDeployStep,
+  firebaseDeployStep,
   e2eServerStep,
   eslintStep,
   jestStep,
@@ -58,10 +59,11 @@ void (async () => {
       apiCheckStep(skipit),
       prettierStep(skipit),
       typeCheckStep(skipit),
-      storybookStep(skipit),
-      e2eServerStep(skipit),
-      deployStep(skipit),
+      storybookStep(),
+      e2eServerStep(),
+      ghpDeployStep(skipit),
       playwrightStep(),
+      firebaseDeployStep(),
     ].map((step) => step(changeCtx));
 
     steps

@@ -84,33 +84,12 @@ void (async () => {
   exec('npx ts-node ./merge_html_reports.ts', {
     cwd: 'e2e',
     env: {
-      HTML_REPORT_DIR: 'e2e-report',
-      HTML_REPORT_PATH: '../e2e-server/public',
+      HTML_REPORT_DIR: 'merged_e2e_report',
     },
   });
 
-  const hasE2EReportIndex = fs.existsSync('./e2e-server/public/e2e-report/index.html');
-  if (hasE2EReportIndex) {
-    void firebaseDeploy({ redeploy: true });
-  }
-
-  // downloadArtifacts('e2e-server/public/*', 'storybook', undefined, 'a79cece9-acec-43f2-afde-e5b815446e82');
-
-  // downloadArtifacts('e2e-server/public/e2e/*', 'e2e_server', undefined, 'a79cece9-acec-43f2-afde-e5b815446e82');
-
-  // startGroup('Checking deployment files');
-
-  // const hasStorybookIndex = fs.existsSync('./e2e-server/public/index.html');
-  // const hasE2EIndex = fs.existsSync('./e2e-server/public/e2e/index.html');
-  // const hasE2EReportIndex = fs.existsSync('./e2e-server/public/e2e-report/index.html');
-
-  // console.log(`Has storybook index.html: ${hasStorybookIndex}`);
-  // console.log(`Has e2e index.html: ${hasE2EIndex}`);
-  // console.log(`Has e2e-report index.html: ${hasE2EReportIndex}`);
-
-  // if (hasStorybookIndex && hasE2EIndex && hasE2EReportIndex) {
-  //   void firebaseDeploy({ redeploy: true });
-  // } else {
-  //   throw new Error('Error: Missing deployment files in e2e-server/public');
-  // }
+  await compress({
+    src: 'e2e/merged_e2e_report',
+    dest: '.buildkite/artifacts/merged_e2e_report.gz',
+  });
 })();
