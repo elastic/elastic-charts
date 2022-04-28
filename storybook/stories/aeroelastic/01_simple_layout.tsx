@@ -8,7 +8,15 @@
 
 import React, { MouseEvent, RefObject } from 'react';
 
-import { BorderResizeHandle } from '@elastic/charts/dist/common/aeroelastic/mini_canvas/layout_annotations';
+import {
+  AlignmentGuide,
+  DragBoxAnnotation,
+  HoverAnnotation,
+  TooltipAnnotation,
+  RotationHandle,
+  BorderConnection,
+  BorderResizeHandle,
+} from '@elastic/charts/dist/common/aeroelastic/mini_canvas/layout_annotations';
 import { Shape } from '@elastic/charts/src/common/aeroelastic';
 import { translate } from '@elastic/charts/src/common/aeroelastic/matrix';
 import { PositionedElement } from '@elastic/charts/src/common/aeroelastic/mini_canvas/fixed_canvas_types';
@@ -17,12 +25,39 @@ import { PositionedElement } from '@elastic/charts/src/common/aeroelastic/mini_c
 import { shapeToElement } from '@elastic/charts/src/common/aeroelastic/mini_canvas/integration_utils';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+// eslint-disable-next-line import/no-duplicates
 import { componentLayoutState } from '@elastic/charts/src/common/aeroelastic/mini_canvas/workpad_interactive_page';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// eslint-disable-next-line import/no-duplicates
+// import { LayoutAnnotation } from '@elastic/charts/src/common/aeroelastic/mini_canvas/workpad_interactive_page';
 import { localMousePosition } from '@elastic/charts/src/common/aeroelastic/mini_canvas/workpad_interactive_page/event_handlers';
 
 import { Example as TimeslipExample } from '../area/21_with_time_timeslip.story';
 import { Example as SmallMultiplesExample } from '../small_multiples/6_heterogeneous_cartesians.story';
 import { Example as TreemapExample } from '../treemap/2_one_layer_2.story';
+
+function LayoutAnnotation(element, subtype) {
+  switch (subtype) {
+    case 'alignmentGuide':
+      return <AlignmentGuide {...element} />;
+    case 'adHocChildAnnotation': // now sharing aesthetics but may diverge in the future
+    case 'hoverAnnotation': // fixme: with the upcoming TS work, use enumerative types here
+      return <HoverAnnotation {...element} />;
+    case 'dragBoxAnnotation':
+      return <DragBoxAnnotation {...element} />;
+    case 'rotationHandle':
+      return <RotationHandle {...element} />;
+    case 'resizeHandle':
+      return <BorderResizeHandle {...element} />;
+    case 'resizeConnector':
+      return <BorderConnection {...element} />;
+    case 'rotationTooltip':
+      return <TooltipAnnotation {...element} />;
+    default:
+      return [];
+  }
+}
 
 const zoomScale = 1; // could be `dpr` in the future, for standardized css pixel
 
@@ -178,13 +213,14 @@ class Canvas extends React.Component {
           const centerX = left + width / 2;
           const centerY = top + height / 2;
 
-          if (shape.subtype === 'resizeHandle') {
-            return (
-              <BorderResizeHandle
-                id={`${element.id}_${i}`}
-                transformMatrix={shape.transformMatrix}
-                {...element.position}
-              />
+          if (shape.subtype) {
+            return LayoutAnnotation(
+              {
+                id: `${element.id}_${i}`,
+                transformMatrix: shape.transformMatrix,
+                ...element.position,
+              },
+              shape.subtype,
             );
           }
           return (

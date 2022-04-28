@@ -23,7 +23,7 @@ import {
 // import { InteractionBoundary } from './interaction_boundary';
 
 /** @internal */
-export function layoutAnnotation(element, subtype) {
+export function LayoutAnnotation(element, subtype) {
   switch (subtype) {
     case 'alignmentGuide':
       return <AlignmentGuide {...element} />;
