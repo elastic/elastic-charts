@@ -204,7 +204,8 @@ class Canvas extends React.Component {
           width: '100%',
           height: '200%',
           background: 'white',
-          border: '1px dashed black',
+          outline: 'none'
+          /*border: '1px dashed black',*/
         }}
       >
         {store.aeroStore.getCurrentState().currentScene.shapes.map((shape: Shape, i: number) => {
