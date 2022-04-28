@@ -9,15 +9,17 @@
 import { createStep, CustomCommandStep, commandStepDefaults, bkEnv } from '../utils';
 
 export const ghpDeployStep = createStep<CustomCommandStep>(() => {
+  const isMaster = bkEnv.branch === 'master';
+
   return {
     ...commandStepDefaults,
     label: ':github: Deploy',
     key: 'ghp-deploy',
-    skip: bkEnv.branch === 'master' ? false : 'Not target branch',
+    skip: isMaster ? false : 'Not target branch',
     depends_on: ['storybook'],
     commands: ['npx ts-node .buildkite/scripts/steps/ghp_deploy.ts'],
     env: {
-      ECH_GH_STATUS_CONTEXT: 'Deploy - GitHub pages',
+      ECH_GH_STATUS_CONTEXT: isMaster ? 'Deploy - GitHub pages' : undefined,
     },
   };
 });
