@@ -8,13 +8,13 @@
 
 import React, { MouseEvent, RefObject } from 'react';
 
-import { TransformMatrix3d } from '@elastic/charts/src/common/aeroelastic';
+import { BorderResizeHandle } from '@elastic/charts/dist/common/aeroelastic/mini_canvas/layout_annotations';
+import { Shape } from '@elastic/charts/src/common/aeroelastic';
 import { translate } from '@elastic/charts/src/common/aeroelastic/matrix';
 import { PositionedElement } from '@elastic/charts/src/common/aeroelastic/mini_canvas/fixed_canvas_types';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { shapeToElement } from '@elastic/charts/src/common/aeroelastic/mini_canvas/integration_utils';
-import { BorderResizeHandle } from '@elastic/charts/src/common/aeroelastic/mini_canvas/layout_annotations';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { componentLayoutState } from '@elastic/charts/src/common/aeroelastic/mini_canvas/workpad_interactive_page';
@@ -29,16 +29,6 @@ const zoomScale = 1; // could be `dpr` in the future, for standardized css pixel
 const canvasSizeCss = 800;
 const width = canvasSizeCss;
 const height = canvasSizeCss;
-
-interface Shape {
-  id: string;
-  type: 'rectangleElement' | 'group';
-  subtype: string;
-  parent: string | null;
-  transformMatrix: TransformMatrix3d;
-  a: number;
-  b: number;
-}
 
 const charts = (
   <>
@@ -187,6 +177,7 @@ class Canvas extends React.Component {
           const { left, top, width, height, angle } = element.position;
           const centerX = left + width / 2;
           const centerY = top + height / 2;
+          console.log({shape})
           if (shape.subtype === 'resizeHandle') return <BorderResizeHandle {...shape} />;
           return (
             <div

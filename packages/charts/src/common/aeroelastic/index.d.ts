@@ -77,3 +77,14 @@ export interface Store {
   setCurrentState: (state: State) => void;
   commit: (type: TypeName, payload: Payload) => void;
 }
+
+/** @internal */
+export interface Shape {
+  id: string;
+  type: 'rectangleElement' | 'group';
+  subtype: string;
+  parent: string | null;
+  transformMatrix: TransformMatrix3d;
+  a: number;
+  b: number;
+}
