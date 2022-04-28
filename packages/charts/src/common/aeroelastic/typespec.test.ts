@@ -47,25 +47,25 @@ describe('vector array creation', () => {
 
     // 2D vector not OK
 
-    // @ts-expect-error
-    vec2d = 3; // not even an array
-    // @ts-expect-error
-    vec2d = [] as Vector2d; // no elements
-    // @ts-expect-error
-    vec2d = [0, 0] as Vector2d; // too few elements
-    // @ts-expect-error
-    vec2d = [0, 0, 0, 0] as Vector2d; // too many elements
+    // @ts-expect-error not even an array
+    vec2d = 3;
+    // @ts-expect-error no elements
+    vec2d = [] as Vector2d;
+    // @ts-expect-error too few elements
+    vec2d = [0, 0] as Vector2d;
+    // @ts-expect-error too many elements
+    vec2d = [0, 0, 0, 0] as Vector2d;
 
     // 3D vector not OK
 
-    // @ts-expect-error
-    vec3d = 3; // not even an array
-    // @ts-expect-error
-    vec3d = [] as Vector3d; // no elements
-    // @ts-expect-error
-    vec3d = [0, 0, 0] as Vector3d; // too few elements
-    // @ts-expect-error
-    vec3d = [0, 0, 0, 0, 0] as Vector3d; // too many elements
+    // @ts-expect-error not even an array
+    vec3d = 3;
+    // @ts-expect-error no elements
+    vec3d = [] as Vector3d;
+    // @ts-expect-error too few elements
+    vec3d = [0, 0, 0] as Vector3d;
+    // @ts-expect-error too many elements
+    vec3d = [0, 0, 0, 0, 0] as Vector3d;
   });
 });
 
@@ -86,28 +86,28 @@ describe('matrix array creation', () => {
 
     // 2D matrix not OK
 
-    // @ts-expect-error
-    mat2d = 3; // not even an array
-    // @ts-expect-error
-    mat2d = [] as TransformMatrix2d; // no elements
-    // @ts-expect-error
-    mat2d = [0, 1, 2, 3, 4, 5, 6, 7] as TransformMatrix2d; // too few elements
-    // @ts-expect-error
-    mat2d = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] as TransformMatrix2d; // too many elements
+    // @ts-expect-error not even an array
+    mat2d = 3;
+    // @ts-expect-error no elements
+    mat2d = [] as TransformMatrix2d;
+    // @ts-expect-error too few elements
+    mat2d = [0, 1, 2, 3, 4, 5, 6, 7] as TransformMatrix2d;
+    // @ts-expect-error too many elements
+    mat2d = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] as TransformMatrix2d;
 
     // 3D vector not OK
 
-    // @ts-expect-error
-    mat3d = 3; // not even an array
-    // @ts-expect-error
-    mat3d = [] as TransformMatrix3d; // no elements
-    // @ts-expect-error
-    mat3d = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] as TransformMatrix3d; // too few elements
-    // @ts-expect-error
-    mat3d = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] as TransformMatrix3d; // too many elements
+    // @ts-expect-error not even an array
+    mat3d = 3;
+    // @ts-expect-error no elements
+    mat3d = [] as TransformMatrix3d;
+    // @ts-expect-error too few elements
+    mat3d = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] as TransformMatrix3d;
+    // @ts-expect-error too many elements
+    mat3d = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] as TransformMatrix3d;
 
-    // @ts-expect-error
-    mat3d[3] = 100; // Matrix modification is NOT OK
+    // @ts-expect-error Matrix modification is NOT OK
+    mat3d[3] = 100;
   });
 });
 
@@ -119,18 +119,18 @@ describe('matrix addition', () => {
     add2d(mat2d, mat2d); // OK
     add3d(mat3d, mat3d); // OK
 
-    // @ts-expect-error
-    add2d(mat2d, mat3d); // at least one arg doesn't comply
-    // @ts-expect-error
-    add2d(mat3d, mat2d); // at least one arg doesn't comply
-    // @ts-expect-error
-    add2d(mat3d, mat3d); // at least one arg doesn't comply
-    // @ts-expect-error
-    add3d(mat2d, mat3d); // at least one arg doesn't comply
-    // @ts-expect-error
-    add3d(mat3d, mat2d); // at least one arg doesn't comply
-    // @ts-expect-error
-    add3d(mat2d, mat2d); // at least one arg doesn't comply
+    // @ts-expect-error at least one arg doesn't comply
+    add2d(mat2d, mat3d);
+    // @ts-expect-error at least one arg doesn't comply
+    add2d(mat3d, mat2d);
+    // @ts-expect-error at least one arg doesn't comply
+    add2d(mat3d, mat3d);
+    // @ts-expect-error at least one arg doesn't comply
+    add3d(mat2d, mat3d);
+    // @ts-expect-error at least one arg doesn't comply
+    add3d(mat3d, mat2d);
+    // @ts-expect-error at least one arg doesn't comply
+    add3d(mat2d, mat2d);
   });
 });
 
@@ -144,20 +144,20 @@ describe('matric vector multiplication', () => {
     mult2d(mat2d, vec2d); // OK
     mult3d(mat3d, vec3d); // OK
 
-    // @ts-expect-error
-    mult3d(mat2d, vec2d); // trying to use a 3d fun for 2d args
-    // @ts-expect-error
-    mult2d(mat3d, vec3d); // trying to use a 2d fun for 3d args
+    // @ts-expect-error trying to use a 3d fun for 2d args
+    mult3d(mat2d, vec2d);
+    // @ts-expect-error trying to use a 2d fun for 3d args
+    mult2d(mat3d, vec3d);
 
-    // @ts-expect-error
-    mult2d(mat3d, vec2d); // 1st arg is a mismatch
-    // @ts-expect-error
-    mult2d(mat2d, vec3d); // 2nd arg is a mismatch
+    // @ts-expect-error 1st arg is a mismatch
+    mult2d(mat3d, vec2d);
+    // @ts-expect-error 2nd arg is a mismatch
+    mult2d(mat2d, vec3d);
 
-    // @ts-expect-error
-    mult3d(mat2d, vec3d); // 1st arg is a mismatch
-    // @ts-expect-error
-    mult3d(mat3d, vec2d); // 2nd arg is a mismatch
+    // @ts-expect-error 1st arg is a mismatch
+    mult3d(mat2d, vec3d);
+    // @ts-expect-error 2nd arg is a mismatch
+    mult3d(mat3d, vec2d);
   });
 });
 
@@ -184,18 +184,18 @@ describe('json', () => {
     plain = [0, null, false, NaN, 3.14, 'one more'];
     plain = { a: { b: 5, c: { d: [1, 'a', -Infinity, null], e: -1 }, f: 'b' }, g: false };
 
-    // @ts-expect-error
-    plain = undefined; // it's undefined
-    // @ts-expect-error
-    plain = (a) => a; // it's a function
-    // @ts-expect-error
-    plain = [new Date()]; // it's a time
-    // @ts-expect-error
-    plain = { a: Symbol('haha') }; // symbol isn't permitted either
-    // @ts-expect-error
-    plain = window || void 0;
-    // @ts-expect-error
-    plain = { a: { b: 5, c: { d: [1, 'a', undefined, null] } } }; // going deep into the structure
+    // @ts-expect-error it's undefined
+    plain = undefined;
+    // @ts-expect-error it's a function
+    plain = (a) => a;
+    // @ts-expect-error it's a time
+    plain = [new Date()];
+    // @ts-expect-error symbol isn't permitted either
+    plain = { a: Symbol('haha') };
+    // @ts-expect-error can only guess what I wanted to check with this
+    plain = window || undefined;
+    // @ts-expect-error going deep into the structure
+    plain = { a: { b: 5, c: { d: [1, 'a', undefined, null] } } };
   });
 });
 
@@ -208,12 +208,12 @@ describe('select', () => {
     selector = select(() => 1); // zero arg
     selector = select((...args: Json[]) => args); // variadic
 
-    // @ts-expect-error
-    selector = (a: Json) => a; // not a selector
-    // @ts-expect-error
-    selector = select(() => {}); // should yield a JSON value, but it returns void
-    // @ts-expect-error
-    selector = select((x: Json) => ({ a: x, b: undefined })); // should return a Json
+    // @ts-expect-error not a selector
+    selector = (a: Json) => a;
+    // @ts-expect-error should yield a JSON value, but it returns void
+    selector = select(() => {});
+    // @ts-expect-error should return a Json
+    selector = select((x: Json) => ({ a: x, b: undefined }));
 
     use(selector);
   });

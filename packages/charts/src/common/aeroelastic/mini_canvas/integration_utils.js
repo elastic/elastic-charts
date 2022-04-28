@@ -54,44 +54,6 @@ export const shapeToElement = (shape) => ({
   type: shape.type === 'group' ? 'group' : 'element',
 });
 
-const configuration = {
-  getAdHocChildAnnotationName: 'adHocChildAnnotation',
-  adHocGroupName: 'adHocGroup',
-  alignmentGuideName: 'alignmentGuide',
-  atopZ: 1000,
-  depthSelect: true,
-  devColor: 'magenta',
-  dragBoxAnnotationName: 'dragBoxAnnotation',
-  dragBoxZ: 1050, // above alignment guides but below the upcoming hover tooltip
-  groupName: 'group',
-  groupResize: true,
-  guideDistance: 3,
-  hoverAnnotationName: 'hoverAnnotation',
-  hoverLift: 100,
-  intraGroupManipulation: false,
-  intraGroupSnapOnly: false,
-  minimumElementSize: 2,
-  persistentGroupName: 'persistentGroup',
-  resizeAnnotationConnectorOffset: 0,
-  resizeAnnotationOffset: 0,
-  resizeAnnotationOffsetZ: 0.1, // causes resize markers to be slightly above the shape plane
-  resizeAnnotationSize: 10,
-  resizeConnectorName: 'resizeConnector',
-  resizeHandleName: 'resizeHandle',
-  rotateAnnotationOffset: 12,
-  rotateSnapInPixels: 10,
-  rotationEpsilon: 0.001,
-  rotationHandleName: 'rotationHandle',
-  rotationHandleSize: 14,
-  rotationTooltipName: 'rotationTooltip',
-  shortcuts: false,
-  singleSelect: false,
-  snapConstraint: true,
-  tooltipZ: 1100,
-};
-
-
-
 const ascending = (a, b) => (a.id < b.id ? -1 : 1);
 const relevant = (s) => s.type !== 'annotation' && s.subtype !== 'adHocGroup';
 
