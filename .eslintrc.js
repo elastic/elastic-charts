@@ -81,7 +81,6 @@ module.exports = {
     'unicorn/number-literal-case': 0, // use prettier lower case preference
     'global-require': 1,
     'import/no-dynamic-require': 1,
-    'no-shadow': 1,
     'react/no-array-index-key': 1,
     'react/prefer-stateless-function': 1,
     'react/require-default-props': 'off',
