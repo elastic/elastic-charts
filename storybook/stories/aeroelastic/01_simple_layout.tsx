@@ -199,13 +199,14 @@ class Canvas extends React.Component {
         onKeyDown={this.onKeyPress.bind(this)}
         style={{
           position: 'absolute',
-          top: 0,
+          top: -50,
           left: 0,
-          width: '100%',
+          width: 'calc(100% - 0px)',
           height: '200%',
           background: 'white',
-          outline: 'none'
-          /*border: '1px dashed black',*/
+          outline: 'none',
+          border: '4px solid blanchedalmond',
+          borderRadius: 40,
         }}
       >
         {store.aeroStore.getCurrentState().currentScene.shapes.map((shape: Shape, i: number) => {
