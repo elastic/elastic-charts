@@ -235,7 +235,7 @@ class Canvas extends React.Component {
                 width,
                 height,
                 background: 'rgba(0, 0, 0, 0)',
-                border: '1px solid black',
+                border: '1px solid lightgrey',
               }}
             >
               {charts.props.children[chartLookup[element.id]]}
