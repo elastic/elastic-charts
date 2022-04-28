@@ -28,5 +28,8 @@ void (async () => {
     outputBasePath: path.resolve(process.cwd(), process.env.HTML_REPORT_PATH ?? ''),
   };
 
+  const outputDir = path.join(config.outputBasePath, config.outputFolderName);
+  fs.mkdirSync(outputDir, { recursive: true });
+
   await mergeHTMLReports(inputReportPaths, config);
 })();

@@ -13,7 +13,6 @@ import {
   bkEnv,
   exec,
   setStatus,
-  firebaseDeploy,
   downloadArtifacts,
   getJobSteps,
   startGroup,
@@ -57,14 +56,9 @@ async function setGroupStatus() {
 void (async () => {
   // await setGroupStatus();
 
-  fs.mkdirSync('./e2e-server/public/e2e-report', { recursive: true });
-
-  yarnInstall();
   yarnInstall('e2e');
 
   downloadArtifacts('.buildkite/artifacts/e2e_reports/*');
-
-  console.log(fs.readdirSync('.buildkite/artifacts/e2e_reports'));
 
   const reportDir = '.buildkite/artifacts/e2e_reports';
   const files = fs.readdirSync('.buildkite/artifacts/e2e_reports');
@@ -84,12 +78,12 @@ void (async () => {
   exec('npx ts-node ./merge_html_reports.ts', {
     cwd: 'e2e',
     env: {
-      HTML_REPORT_DIR: 'merged_e2e_report',
+      HTML_REPORT_DIR: 'merged_html_report',
     },
   });
 
   await compress({
-    src: 'e2e/merged_e2e_report',
-    dest: '.buildkite/artifacts/merged_e2e_report.gz',
+    src: 'e2e/merged_html_report',
+    dest: '.buildkite/artifacts/merged_html_report.gz',
   });
 })();

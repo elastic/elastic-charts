@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { bkEnv, compress, createDeploymentStatus, exec, yarnInstall } from '../../utils';
+import { bkEnv, compress, createDeploymentStatus, exec, startGroup, yarnInstall } from '../../utils';
 
 void (async () => {
   yarnInstall();
 
   await createDeploymentStatus({ state: 'pending' });
 
+  startGroup('Building storybook');
   exec('yarn build', {
     cwd: 'storybook',
     env: {
