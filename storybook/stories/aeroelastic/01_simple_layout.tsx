@@ -207,6 +207,7 @@ class Canvas extends React.Component {
           outline: 'none',
           border: '4px solid blanchedalmond',
           borderRadius: 40,
+          cursor: store.aeroStore.getCurrentState().currentScene.cursor,
         }}
       >
         {store.aeroStore.getCurrentState().currentScene.shapes.map((shape: Shape, i: number) => {
