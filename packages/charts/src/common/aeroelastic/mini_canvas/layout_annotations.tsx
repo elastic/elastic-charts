@@ -71,7 +71,6 @@ export const BorderResizeHandle: FC<BorderResizeHandleProps> = ({ id, transformM
   <div
     className="canvasBorderResizeHandle canvasLayoutAnnotation"
     key={id}
-    key={id}
     style={{
       transform: `${matrixToCSS(transformMatrix)} scale3d(${1 / zoomScale},${1 / zoomScale}, 1)`,
     }}

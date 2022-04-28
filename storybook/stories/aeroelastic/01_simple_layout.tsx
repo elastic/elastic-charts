@@ -177,8 +177,16 @@ class Canvas extends React.Component {
           const { left, top, width, height, angle } = element.position;
           const centerX = left + width / 2;
           const centerY = top + height / 2;
-          console.log({shape})
-          if (shape.subtype === 'resizeHandle') return <BorderResizeHandle {...shape} />;
+
+          if (shape.subtype === 'resizeHandle') {
+            return (
+              <BorderResizeHandle
+                id={`${element.id}_${i}`}
+                transformMatrix={shape.transformMatrix}
+                {...element.position}
+              />
+            );
+          }
           return (
             <div
               key={element.id}
