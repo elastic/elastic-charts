@@ -21,7 +21,7 @@ void (async () => {
   yarnInstall('e2e');
 
   const src = '.buildkite/artifacts/e2e_server.gz';
-  downloadArtifacts(src, 'e2e_server', undefined, 'fd2c3cce-376a-4f1d-9764-24b3ff1dca69');
+  downloadArtifacts(src, 'e2e_server');
   await decompress({
     src,
     dest: 'e2e/server',

@@ -48,6 +48,7 @@ export const decompress = (opts: targz.options) =>
       if (err) {
         reject(err);
       } else {
+        fs.rmSync(opts.src); // delete source to prevent uploading again
         console.log(`Decompressed files successfully to "${opts.dest}"`);
         resolve();
       }

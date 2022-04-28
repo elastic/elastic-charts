@@ -17,21 +17,21 @@ void (async () => {
   const outDir = 'e2e-server/public';
 
   const storybookSrc = '.buildkite/artifacts/storybook.gz';
-  downloadArtifacts(storybookSrc, 'storybook', undefined, 'ed84778c-9b1e-46fb-8b64-a7cac197ca28');
+  downloadArtifacts(storybookSrc, 'storybook', undefined, '61442a8d-3283-422e-a42c-c3fc232ddbde');
   await decompress({
     src: storybookSrc,
     dest: outDir,
   });
 
   const e2eSrc = '.buildkite/artifacts/e2e_server.gz';
-  downloadArtifacts(e2eSrc, 'e2e_server', undefined, 'ed84778c-9b1e-46fb-8b64-a7cac197ca28');
+  downloadArtifacts(e2eSrc, 'e2e_server', undefined, '61442a8d-3283-422e-a42c-c3fc232ddbde');
   await decompress({
     src: e2eSrc,
     dest: path.join(outDir, 'e2e'),
   });
 
   const e2eReportSrc = '.buildkite/artifacts/merged_html_report.gz';
-  downloadArtifacts(e2eReportSrc, 'playwright-merge-and-status', undefined, 'ed84778c-9b1e-46fb-8b64-a7cac197ca28');
+  downloadArtifacts(e2eReportSrc, 'playwright-merge-and-status', undefined, '61442a8d-3283-422e-a42c-c3fc232ddbde');
   await decompress({
     src: e2eReportSrc,
     dest: path.join(outDir, 'e2e-report'),

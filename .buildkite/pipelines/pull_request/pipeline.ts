@@ -59,10 +59,10 @@ void (async () => {
       apiCheckStep(skipit),
       prettierStep(skipit),
       typeCheckStep(skipit),
-      storybookStep(),
-      e2eServerStep(),
+      storybookStep(skipit),
+      e2eServerStep(skipit),
       ghpDeployStep(skipit),
-      playwrightStep(),
+      // playwrightStep(skipit),
       firebaseDeployStep(),
     ].map((step) => step(changeCtx));
 
