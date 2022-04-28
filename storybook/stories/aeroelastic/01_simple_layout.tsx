@@ -221,6 +221,7 @@ class Canvas extends React.Component {
               {
                 id: `${element.id}_${i}`,
                 transformMatrix: shape.transformMatrix,
+                text: shape.text,
                 ...element.position,
               },
               shape.subtype,
