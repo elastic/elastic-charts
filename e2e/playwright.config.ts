@@ -6,7 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { PlaywrightTestConfig } from '@playwright/test';
+import { PlaywrightTestConfig, expect } from '@playwright/test';
+import { matchers } from 'expect-playwright';
+
+expect.extend(matchers);
 
 const isCI = process.env.CI === 'true';
 
@@ -29,7 +32,7 @@ const config: PlaywrightTestConfig = {
   ],
   expect: {
     toMatchSnapshot: {
-      threshold: 0.01,
+      threshold: 0.05, // TODO find a way to lower this across platforms
     },
   },
   forbidOnly: isCI,
