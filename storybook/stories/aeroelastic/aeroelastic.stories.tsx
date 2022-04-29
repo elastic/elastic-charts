@@ -11,3 +11,4 @@ export default {
 };
 
 export { Example as aeroSimpleLayout } from './01_simple_layout';
+export { Example as marginalScatterplot } from './02_marginal_scatterplot';
