@@ -6,65 +6,23 @@
  * Side Public License, v 1.
  */
 
-import React, { MouseEvent, RefObject } from 'react';
+import React from 'react';
 
 import { Shape } from '@elastic/charts/src/common/aeroelastic';
 import { translate } from '@elastic/charts/src/common/aeroelastic/matrix';
-import { PositionedElement } from '@elastic/charts/src/common/aeroelastic/mini_canvas/fixed_canvas_types';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { shapeToElement } from '@elastic/charts/src/common/aeroelastic/mini_canvas/integration_utils';
-import {
-  AlignmentGuide,
-  DragBoxAnnotation,
-  HoverAnnotation,
-  TooltipAnnotation,
-  RotationHandle,
-  BorderConnection,
-  BorderResizeHandle,
-  Positionable,
-} from '@elastic/charts/src/common/aeroelastic/mini_canvas/view_components';
+import { Canvas, shapeToElementForReal } from '@elastic/charts/src/common/aeroelastic/mini_canvas/view_components';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // eslint-disable-next-line import/no-duplicates
 import { componentLayoutState } from '@elastic/charts/src/common/aeroelastic/mini_canvas/workpad_interactive_page';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+
 // eslint-disable-next-line import/no-duplicates
 // import { LayoutAnnotation } from '@elastic/charts/src/common/aeroelastic/mini_canvas/workpad_interactive_page';
-import { localMousePosition } from '@elastic/charts/src/common/aeroelastic/mini_canvas/workpad_interactive_page/event_handlers';
-
 import { Example as TimeslipExample } from '../area/21_with_time_timeslip.story';
 import { Example as SmallMultiplesExample } from '../small_multiples/6_heterogeneous_cartesians.story';
 import { Example as TreemapExample } from '../treemap/2_one_layer_2.story';
-
-function LayoutAnnotation(element, subtype) {
-  switch (subtype) {
-    case 'alignmentGuide':
-      return <AlignmentGuide {...element} />;
-    case 'adHocChildAnnotation': // now sharing aesthetics but may diverge in the future
-    case 'hoverAnnotation': // fixme: with the upcoming TS work, use enumerative types here
-      return <HoverAnnotation {...element} />;
-    case 'dragBoxAnnotation':
-      return <DragBoxAnnotation {...element} />;
-    case 'rotationHandle':
-      return <RotationHandle {...element} />;
-    case 'resizeHandle':
-      return <BorderResizeHandle {...element} />;
-    case 'resizeConnector':
-      return <BorderConnection {...element} />;
-    case 'rotationTooltip':
-      return <TooltipAnnotation {...element} />;
-    default:
-      return [];
-  }
-}
-
-const zoomScale = 1; // could be `dpr` in the future, for standardized css pixel
-
-const canvasSizeCss = 800;
-const width = canvasSizeCss;
-const height = canvasSizeCss;
 
 const charts = (
   <>
@@ -79,9 +37,9 @@ const sampleShape0: Shape = {
   type: 'rectangleElement',
   subtype: '',
   parent: null,
-  transformMatrix: translate(width / 1.4, height / 2, 0),
-  a: width / 3,
-  b: height / 4,
+  transformMatrix: translate(800 / 1.4, 800 / 2, 0),
+  a: 800 / 3,
+  b: 800 / 4,
 };
 
 const sampleShape1: Shape = {
@@ -89,9 +47,9 @@ const sampleShape1: Shape = {
   type: 'rectangleElement',
   subtype: '',
   parent: null,
-  transformMatrix: translate(width / 5, height / 1.3, 0),
-  a: width / 6,
-  b: height / 8,
+  transformMatrix: translate(800 / 5, 800 / 1.3, 0),
+  a: 800 / 6,
+  b: 800 / 8,
 };
 
 const sampleShape2: Shape = {
@@ -99,22 +57,13 @@ const sampleShape2: Shape = {
   type: 'rectangleElement',
   subtype: '',
   parent: null,
-  transformMatrix: translate(width / 2.5, height / 5, 0),
-  a: width / 3,
-  b: height / 8,
+  transformMatrix: translate(800 / 2.5, 800 / 5, 0),
+  a: 800 / 3,
+  b: 800 / 8,
 };
-
-// todo fix the misnomer `shapeToElement` once it's no longer in Kibana
-const shapeToElementForReal = (shape: Shape) => ({ id: shape.id, position: shapeToElement(shape) });
 
 const sampleShapes = [sampleShape0, sampleShape1, sampleShape2];
 const sampleElements = sampleShapes.map(shapeToElementForReal);
-
-const chartLookup = {
-  sampleElement0: 0,
-  sampleElement1: 1,
-  sampleElement2: 2,
-};
 
 let currentState = undefined;
 const setAeroStore = (state) => (currentState = state);
@@ -124,122 +73,9 @@ const store = componentLayoutState({
   setAeroStore,
   elements: sampleElements,
   selectedToplevelNodes: [],
-  height: height,
-  width: width,
+  height: 800,
+  width: 800,
 });
-
-interface CanvasProps {
-  store: any;
-  charts: any;
-}
-
-class Canvas extends React.Component {
-  private readonly forwardStageRef: RefObject<HTMLDivElement>;
-  private store: any;
-  private charts: any;
-
-  constructor(props: CanvasProps) {
-    super(props);
-    this.forwardStageRef = React.createRef();
-    this.store = store;
-    this.charts = charts;
-  }
-
-  componentDidMount() {}
-
-  componentDidUpdate() {}
-
-  getRect() {
-    return this.forwardStageRef.current?.getBoundingClientRect() ?? { top: NaN, left: NaN };
-  }
-
-  onMouseMove({ clientX, clientY, altKey, metaKey, shiftKey, ctrlKey }: MouseEvent<HTMLDivElement>) {
-    const { x, y } = localMousePosition(this.getRect.bind(this), clientX, clientY, zoomScale);
-    this.store.aeroStore.commit('cursorPosition', { x, y, altKey, metaKey, shiftKey, ctrlKey });
-    this.setState({});
-  }
-
-  onMouseDown({ clientX, clientY, altKey, metaKey, shiftKey, ctrlKey }: MouseEvent<HTMLDivElement>) {
-    const { x, y } = localMousePosition(this.getRect.bind(this), clientX, clientY, zoomScale);
-    this.store.aeroStore.commit('mouseEvent', { event: 'mouseDown', x, y, altKey, metaKey, shiftKey, ctrlKey });
-    this.setState({});
-  }
-
-  onMouseUp({ clientX, clientY, altKey, metaKey, shiftKey, ctrlKey }: MouseEvent<HTMLDivElement>) {
-    const { x, y } = localMousePosition(this.getRect.bind(this), clientX, clientY, zoomScale);
-    this.store.aeroStore.commit('mouseEvent', { event: 'mouseUp', x, y, altKey, metaKey, shiftKey, ctrlKey });
-    this.setState({});
-  }
-
-  onKeyPress(keyEvent: KeyboardEvent) {
-    // see for more interactions, many of them not aeroelastic actions: https://github.com/elastic/kibana/blob/6693ef371f887eca639b09c4c9b15701b4ebabd4/x-pack/plugins/canvas/public/lib/element_handler_creators.ts
-    const event = {
-      g: 'group',
-      u: 'ungroup',
-      a: 'alignLeft',
-      s: 'alignCenter',
-      d: 'alignRight',
-      w: 'alignTop',
-      m: 'alignMiddle',
-      z: 'alignBottom',
-      h: 'distributeHorizontally',
-      v: 'distributeVertically',
-    }[keyEvent.key];
-    if (event) {
-      // keyEvent.preventDefault();
-      keyEvent.stopPropagation();
-      this.store.aeroStore.commit('actionEvent', { event });
-      this.setState({});
-    }
-  }
-
-  render() {
-    return (
-      <div
-        className="canvasPage canvasPage canvasInteractivePage"
-        ref={this.forwardStageRef}
-        role="presentation"
-        tabIndex={0}
-        // mouse events: check this for more subtlety https://github.com/elastic/kibana/blob/6693ef371f887eca639b09c4c9b15701b4ebabd4/x-pack/plugins/canvas/public/components/workpad_page/workpad_interactive_page/event_handlers.ts
-        onMouseMove={this.onMouseMove.bind(this)}
-        onMouseDown={this.onMouseDown.bind(this)}
-        onMouseUp={this.onMouseUp.bind(this)}
-        onKeyDown={this.onKeyPress.bind(this)}
-        style={{
-          position: 'absolute',
-          top: -50,
-          left: 0,
-          width: 'calc(100% - 0px)',
-          height: '200%',
-          background: 'white',
-          outline: 'none',
-          border: '4px solid blanchedalmond',
-          borderRadius: 40,
-          cursor: this.store.aeroStore.getCurrentState().currentScene.cursor,
-        }}
-      >
-        {this.store.aeroStore.getCurrentState().currentScene.shapes.map((shape: Shape, i: number) => {
-          const element: PositionedElement = shapeToElementForReal(shape);
-          const props = {
-            id: `${element.id}_${i}_${shape.subtype}`,
-            transformMatrix: shape.transformMatrix,
-            text: shape.text,
-            ...element.position,
-          };
-
-          if (shape.subtype) {
-            return LayoutAnnotation(props, shape.subtype);
-          }
-          return (
-            <Positionable key={props.id} {...props}>
-              {this.charts.props.children[chartLookup[element.id]]}
-            </Positionable>
-          );
-        })}
-      </div>
-    );
-  }
-}
 
 export const Example = () => <Canvas store={store} charts={charts}></Canvas>;
 
