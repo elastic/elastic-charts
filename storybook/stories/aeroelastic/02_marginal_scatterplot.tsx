@@ -55,8 +55,8 @@ const charts = (
         theme={{
           chartMargins: {
             bottom: 0,
-            left: 0,
-            right: 0,
+            left: 64,
+            right: 10,
             top: 0,
           },
         }}
@@ -107,8 +107,8 @@ const charts = (
         theme={{
           chartMargins: {
             bottom: 0,
-            left: 0,
-            right: 0,
+            left: 6,
+            right: 60,
             top: 0,
           },
         }}
@@ -154,15 +154,15 @@ const charts = (
 const chartDescriptors = [
   {
     id: 'sampleElement0',
-    position: { left: 0, top: 150, width: 500, height: 300, angle: 0, parent: null },
+    position: { left: 100, top: 150, width: 500, height: 300, angle: 0, parent: null },
   },
   {
     id: 'sampleElement1',
-    position: { left: 68, top: 51, width: 432, height: 100, angle: 0, parent: null },
+    position: { left: 100, top: 51, width: 500, height: 100, angle: 0, parent: null },
   },
   {
     id: 'sampleElement2',
-    position: { left: 437, top: 230, width: 225, height: 100, angle: 90, parent: null },
+    position: { left: 499, top: 250, width: 300, height: 100, angle: 90, parent: null },
   },
 ];
 
