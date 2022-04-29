@@ -31,38 +31,33 @@ const charts = (
   </>
 );
 
+const elements = [
+  {
+    id: 'sampleElement0',
+    transformMatrix: translate(570, 400, 0),
+    a: 260,
+    b: 200,
+  },
+  {
+    id: 'sampleElement1',
+    transformMatrix: translate(160, 620, 0),
+    a: 130,
+    b: 200,
+  },
+  {
+    id: 'sampleElement2',
+    transformMatrix: translate(320, 160, 0),
+    a: 260,
+    b: 100,
+  },
+].map(shapeToElementForReal);
+
+debugger
+
 const store = componentLayoutState({
   aeroStore: undefined,
   setAeroStore: () => {},
-  elements: [
-    {
-      id: 'sampleElement0',
-      type: 'rectangleElement',
-      subtype: '',
-      parent: null,
-      transformMatrix: translate(570, 400, 0),
-      a: 260,
-      b: 200,
-    },
-    {
-      id: 'sampleElement1',
-      type: 'rectangleElement',
-      subtype: '',
-      parent: null,
-      transformMatrix: translate(160, 620, 0),
-      a: 130,
-      b: 200,
-    },
-    {
-      id: 'sampleElement2',
-      type: 'rectangleElement',
-      subtype: '',
-      parent: null,
-      transformMatrix: translate(320, 160, 0),
-      a: 260,
-      b: 100,
-    },
-  ].map(shapeToElementForReal),
+  elements,
   selectedToplevelNodes: [],
   height: 800,
   width: 800,
