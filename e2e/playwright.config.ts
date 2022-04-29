@@ -7,9 +7,9 @@
  */
 
 import { PlaywrightTestConfig, expect } from '@playwright/test';
-import { matchers } from 'expect-playwright';
+import * as pwExpect from 'expect-playwright';
 
-expect.extend(matchers);
+expect.extend(pwExpect.matchers);
 
 const isCI = process.env.CI === 'true';
 
@@ -32,7 +32,9 @@ const config: PlaywrightTestConfig = {
   ],
   expect: {
     toMatchSnapshot: {
-      threshold: 0.05, // TODO find a way to lower this across platforms
+      // TODO find a way to lower this across platforms
+      threshold: 0.05,
+      maxDiffPixelRatio: 0.05,
     },
   },
   forbidOnly: isCI,
