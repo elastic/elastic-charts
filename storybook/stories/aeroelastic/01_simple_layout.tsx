@@ -32,46 +32,41 @@ const charts = (
   </>
 );
 
-const sampleShape0: Shape = {
-  id: 'sampleElement0',
-  type: 'rectangleElement',
-  subtype: '',
-  parent: null,
-  transformMatrix: translate(800 / 1.4, 800 / 2, 0),
-  a: 800 / 3,
-  b: 800 / 4,
-};
-
-const sampleShape1: Shape = {
-  id: 'sampleElement1',
-  type: 'rectangleElement',
-  subtype: '',
-  parent: null,
-  transformMatrix: translate(800 / 5, 800 / 1.3, 0),
-  a: 800 / 6,
-  b: 800 / 8,
-};
-
-const sampleShape2: Shape = {
-  id: 'sampleElement2',
-  type: 'rectangleElement',
-  subtype: '',
-  parent: null,
-  transformMatrix: translate(800 / 2.5, 800 / 5, 0),
-  a: 800 / 3,
-  b: 800 / 8,
-};
-
-const sampleShapes = [sampleShape0, sampleShape1, sampleShape2];
-const sampleElements = sampleShapes.map(shapeToElementForReal);
-
 let currentState = undefined;
 const setAeroStore = (state) => (currentState = state);
 
 const store = componentLayoutState({
   aeroStore: undefined,
   setAeroStore,
-  elements: sampleElements,
+  elements: [
+    {
+      id: 'sampleElement0',
+      type: 'rectangleElement',
+      subtype: '',
+      parent: null,
+      transformMatrix: translate(800 / 1.4, 800 / 2, 0),
+      a: 800 / 3,
+      b: 800 / 4,
+    },
+    {
+      id: 'sampleElement1',
+      type: 'rectangleElement',
+      subtype: '',
+      parent: null,
+      transformMatrix: translate(800 / 5, 800 / 1.3, 0),
+      a: 800 / 6,
+      b: 800 / 8,
+    },
+    {
+      id: 'sampleElement2',
+      type: 'rectangleElement',
+      subtype: '',
+      parent: null,
+      transformMatrix: translate(800 / 2.5, 800 / 5, 0),
+      a: 800 / 3,
+      b: 800 / 8,
+    },
+  ].map(shapeToElementForReal),
   selectedToplevelNodes: [],
   height: 800,
   width: 800,
