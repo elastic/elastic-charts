@@ -35,7 +35,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         depends_on: [parallelKey],
         commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
         env: {
-          // TODO fix this status update
+          // TODO: fix this status update
           ECH_GH_STATUS_CONTEXT: 'Playwright e2e',
         },
       },
