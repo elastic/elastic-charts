@@ -19,7 +19,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         ...commandStepDefaults,
         label: ':playwright: Playwright e2e',
         skip,
-        parallelism: 12,
+        parallelism: 1,
         key: parallelKey,
         depends_on: ['e2e_server'],
         plugins: [Plugins.docker.playwright()],
