@@ -32,9 +32,9 @@ const config: PlaywrightTestConfig = {
   ],
   expect: {
     toMatchSnapshot: {
-      // TODO find a way to lower this across platforms
-      threshold: 0.05,
-      maxDiffPixelRatio: 0.05,
+      threshold: 0,
+      maxDiffPixelRatio: 0,
+      maxDiffPixels: 0,
     },
   },
   forbidOnly: isCI,
