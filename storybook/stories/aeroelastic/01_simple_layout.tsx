@@ -8,7 +8,6 @@
 
 import React from 'react';
 
-import { Shape } from '@elastic/charts/src/common/aeroelastic';
 import { translate } from '@elastic/charts/src/common/aeroelastic/matrix';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -32,39 +31,36 @@ const charts = (
   </>
 );
 
-let currentState = undefined;
-const setAeroStore = (state) => (currentState = state);
-
 const store = componentLayoutState({
   aeroStore: undefined,
-  setAeroStore,
+  setAeroStore: () => {},
   elements: [
     {
       id: 'sampleElement0',
       type: 'rectangleElement',
       subtype: '',
       parent: null,
-      transformMatrix: translate(800 / 1.4, 800 / 2, 0),
-      a: 800 / 3,
-      b: 800 / 4,
+      transformMatrix: translate(570, 400, 0),
+      a: 260,
+      b: 200,
     },
     {
       id: 'sampleElement1',
       type: 'rectangleElement',
       subtype: '',
       parent: null,
-      transformMatrix: translate(800 / 5, 800 / 1.3, 0),
-      a: 800 / 6,
-      b: 800 / 8,
+      transformMatrix: translate(160, 620, 0),
+      a: 130,
+      b: 200,
     },
     {
       id: 'sampleElement2',
       type: 'rectangleElement',
       subtype: '',
       parent: null,
-      transformMatrix: translate(800 / 2.5, 800 / 5, 0),
-      a: 800 / 3,
-      b: 800 / 8,
+      transformMatrix: translate(320, 160, 0),
+      a: 260,
+      b: 100,
     },
   ].map(shapeToElementForReal),
   selectedToplevelNodes: [],
