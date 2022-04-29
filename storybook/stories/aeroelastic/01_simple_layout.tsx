@@ -34,15 +34,15 @@ const charts = (
 const elements = [
   {
     id: 'sampleElement0',
-    position: { left: 310, top: 200, width: 520, height: 400, angle: 0, parent: null, type: 'element' },
+    position: { left: 310, top: 200, width: 520, height: 400, angle: 0, parent: null },
   },
   {
     id: 'sampleElement1',
-    position: { left: 30, top: 420, width: 260, height: 400, angle: 0, parent: null, type: 'element' },
+    position: { left: 30, top: 420, width: 260, height: 400, angle: 0, parent: null },
   },
   {
     id: 'sampleElement2',
-    position: { left: 60, top: 60, width: 520, height: 200, angle: 0, parent: null, type: 'element' },
+    position: { left: 60, top: 60, width: 520, height: 200, angle: 0, parent: null },
   },
 ];
 
