@@ -20,6 +20,9 @@ const xDomain = { min: 0, max: 6000 };
 const charts = (buckets: number) => {
   return (
     <>
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.03)' }}></div>
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'blue' }}></div>
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'red' }}></div>
       <Chart>
         <Settings
           tooltip={{
@@ -160,24 +163,14 @@ const charts = (buckets: number) => {
           ]}
         />
       </Chart>
-      <div style={{ width: '100%', height: '100%', backgroundColor: 'blue' }}></div>
-      <div style={{ width: '100%', height: '100%', backgroundColor: 'red' }}></div>
     </>
   );
 };
 
 const chartDescriptors = [
   {
-    id: 'sampleElement0',
-    position: { left: 100, top: 150, width: 500, height: 300, angle: 0, parent: null },
-  },
-  {
-    id: 'sampleElement1',
-    position: { left: 100, top: 71, width: 500, height: 80, angle: 0, parent: null },
-  },
-  {
-    id: 'sampleElement2',
-    position: { left: 599, top: 150, width: 80, height: 300, angle: 0, parent: null },
+    id: 'marginalScatter',
+    position: { left: 100, top: 71, width: 580, height: 380, angle: 0, parent: null },
   },
   {
     id: 'sampleShape0',
@@ -186,6 +179,18 @@ const chartDescriptors = [
   {
     id: 'sampleShape1',
     position: { left: 800, top: 51, width: 100, height: 700, angle: 0, parent: null },
+  },
+  {
+    id: 'sampleElement0',
+    position: { left: 100, top: 150, width: 500, height: 300, angle: 0, parent: 'marginalScatter' },
+  },
+  {
+    id: 'sampleElement1',
+    position: { left: 100, top: 71, width: 500, height: 80, angle: 0, parent: 'marginalScatter' },
+  },
+  {
+    id: 'sampleElement2',
+    position: { left: 599, top: 150, width: 80, height: 300, angle: 0, parent: 'marginalScatter' },
   },
 ];
 
