@@ -16,7 +16,8 @@ import {
   RotationHandle,
   BorderConnection,
   BorderResizeHandle,
-} from '@elastic/charts/dist/common/aeroelastic/mini_canvas/layout_annotations';
+  Positionable,
+} from '@elastic/charts/src/common/aeroelastic/mini_canvas/layout_annotations';
 import { Shape } from '@elastic/charts/src/common/aeroelastic';
 import { translate } from '@elastic/charts/src/common/aeroelastic/matrix';
 import { PositionedElement } from '@elastic/charts/src/common/aeroelastic/mini_canvas/fixed_canvas_types';
@@ -212,38 +213,20 @@ class Canvas extends React.Component {
       >
         {store.aeroStore.getCurrentState().currentScene.shapes.map((shape: Shape, i: number) => {
           const element: PositionedElement = shapeToElementForReal(shape);
-          const { left, top, width, height, angle } = element.position;
-          const centerX = left + width / 2;
-          const centerY = top + height / 2;
+          const props = {
+            id: `${element.id}_${i}_${shape.subtype}`,
+            transformMatrix: shape.transformMatrix,
+            text: shape.text,
+            ...element.position,
+          };
 
           if (shape.subtype) {
-            return LayoutAnnotation(
-              {
-                id: `${element.id}_${i}`,
-                transformMatrix: shape.transformMatrix,
-                text: shape.text,
-                ...element.position,
-              },
-              shape.subtype,
-            );
+            return LayoutAnnotation(props, shape.subtype);
           }
           return (
-            <div
-              key={element.id}
-              style={{
-                position: 'absolute',
-                transform: `translate(${centerX}px, ${centerY}px) rotate(${angle}deg)`, // todo: use `matrixToCSS` for generality
-                transformOrigin: 'center',
-                left: -width / 2,
-                top: -height / 2,
-                width,
-                height,
-                background: 'rgba(0, 0, 0, 0)',
-                border: '1px solid lightgrey',
-              }}
-            >
+            <Positionable key={props.id} {...props}>
               {charts.props.children[chartLookup[element.id]]}
-            </div>
+            </Positionable>
           );
         })}
       </div>

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { FC } from 'react';
+import React, { CSSProperties, FC, ReactElement } from 'react';
 
 import { TransformMatrix3d } from '..';
 
@@ -145,6 +145,38 @@ export const TooltipAnnotation: FC<TooltipAnnotationProps> = ({ id, transformMat
       style={{ transform: `${matrixToCSS(transformMatrix)} translate(1em, -1em)` }}
     >
       <p>{text}°</p>
+    </div>
+  );
+};
+
+interface Props extends SharedAnnotationProps {
+  children: ReactElement;
+  height: number;
+  width: number;
+}
+
+/** @internal */
+export const Positionable: FC<Props> = ({ id, children, transformMatrix, width, height }) => {
+  // Throw if there is more than one child
+  const childNode = React.Children.only(children);
+
+  const matrix = (transformMatrix.map((n, i) => (i < 12 ? n : Math.round(n))) as any) as TransformMatrix3d;
+
+  return (
+    <div
+      className="canvasPositionable canvasInteractable"
+      key={id}
+      style={{
+        width,
+        height,
+        marginLeft: -width / 2,
+        marginTop: -height / 2,
+        position: 'absolute',
+        transform: matrixToCSS(matrix),
+        border: '1px solid lightgrey',
+      }}
+    >
+      {childNode}
     </div>
   );
 };
