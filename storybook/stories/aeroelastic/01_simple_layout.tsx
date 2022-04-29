@@ -8,17 +8,8 @@
 
 import React from 'react';
 
-import { translate } from '@elastic/charts/src/common/aeroelastic/matrix';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { Canvas, shapeToElementForReal } from '@elastic/charts/src/common/aeroelastic/mini_canvas/view_components';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// eslint-disable-next-line import/no-duplicates
-import { componentLayoutState } from '@elastic/charts/src/common/aeroelastic/mini_canvas/workpad_interactive_page';
+import { Canvas } from '@elastic/charts/src/common/aeroelastic/mini_canvas/view_components';
 
-// eslint-disable-next-line import/no-duplicates
-// import { LayoutAnnotation } from '@elastic/charts/src/common/aeroelastic/mini_canvas/workpad_interactive_page';
 import { Example as TimeslipExample } from '../area/21_with_time_timeslip.story';
 import { Example as SmallMultiplesExample } from '../small_multiples/6_heterogeneous_cartesians.story';
 import { Example as TreemapExample } from '../treemap/2_one_layer_2.story';
@@ -31,7 +22,7 @@ const charts = (
   </>
 );
 
-const elements = [
+const chartDescriptors = [
   {
     id: 'sampleElement0',
     position: { left: 310, top: 200, width: 520, height: 400, angle: 0, parent: null },
@@ -46,16 +37,7 @@ const elements = [
   },
 ];
 
-const store = componentLayoutState({
-  aeroStore: undefined,
-  setAeroStore: () => {},
-  elements,
-  selectedToplevelNodes: [],
-  height: 800,
-  width: 800,
-});
-
-export const Example = () => <Canvas store={store} charts={charts}></Canvas>;
+export const Example = () => <Canvas charts={charts} chartDescriptors={chartDescriptors}></Canvas>;
 
 Example.parameters = {
   background: { default: 'white' },

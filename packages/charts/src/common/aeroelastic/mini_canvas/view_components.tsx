@@ -13,6 +13,9 @@ import { PositionedElement } from './fixed_canvas_types';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { shapeToElement } from './integration_utils';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { componentLayoutState } from './workpad_interactive_page';
 import { localMousePosition } from './workpad_interactive_page/event_handlers';
 
 // converts a transform matrix to a CSS string
@@ -219,10 +222,14 @@ const chartLookup = {
 };
 
 interface CanvasProps {
-  store: any;
+  chartDescriptors: any;
   charts: any;
 }
 
+/**
+ * Canvas wrapper
+ * @public
+ */
 export class Canvas extends React.Component {
   private readonly forwardStageRef: RefObject<HTMLDivElement>;
   private store: any;
@@ -231,7 +238,14 @@ export class Canvas extends React.Component {
   constructor(props: CanvasProps) {
     super(props);
     this.forwardStageRef = React.createRef();
-    this.store = props.store;
+    this.store = componentLayoutState({
+      aeroStore: undefined,
+      setAeroStore: () => {},
+      elements: props.chartDescriptors,
+      selectedToplevelNodes: [],
+      height: 800,
+      width: 800,
+    });
     this.charts = props.charts;
   }
 
