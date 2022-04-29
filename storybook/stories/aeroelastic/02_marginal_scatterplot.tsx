@@ -148,6 +148,8 @@ const charts = (
         ]}
       />
     </Chart>
+    <div style={{ width: '100%', height: '100%', backgroundColor: 'blue' }}></div>
+    <div style={{ width: '100%', height: '100%', backgroundColor: 'red' }}></div>
   </>
 );
 
@@ -163,6 +165,14 @@ const chartDescriptors = [
   {
     id: 'sampleElement2',
     position: { left: 499, top: 250, width: 300, height: 100, angle: 90, parent: null },
+  },
+  {
+    id: 'sampleShape0',
+    position: { left: 500, top: 550, width: 500, height: 100, angle: 0, parent: null },
+  },
+  {
+    id: 'sampleShape1',
+    position: { left: 800, top: 51, width: 100, height: 700, angle: 0, parent: null },
   },
 ];
 

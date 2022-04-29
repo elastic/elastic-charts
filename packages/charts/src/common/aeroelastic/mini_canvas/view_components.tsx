@@ -166,7 +166,7 @@ interface Props extends SharedAnnotationProps {
 /** @internal */
 export const Positionable: FC<Props> = ({ id, children, transformMatrix, width, height }) => {
   // Throw if there is more than one child
-  const childNode = React.Children.only(children);
+  // const childNode = React.Children.only(children);
 
   const matrix = (transformMatrix.map((n, i) => (i < 12 ? n : Math.round(n))) as any) as TransformMatrix3d;
 
@@ -184,7 +184,7 @@ export const Positionable: FC<Props> = ({ id, children, transformMatrix, width, 
         border: '1px solid lightgrey',
       }}
     >
-      {childNode}
+      {children}
     </div>
   );
 };
@@ -215,11 +215,6 @@ const zoomScale = 1; // could be `dpr` in the future, for standardized css pixel
 // todo fix the misnomer `shapeToElement` once it's no longer in Kibana
 /** @internal */
 export const shapeToElementForReal = (shape: Shape) => ({ id: shape.id, position: shapeToElement(shape) });
-const chartLookup = {
-  sampleElement0: 0,
-  sampleElement1: 1,
-  sampleElement2: 2,
-};
 
 interface CanvasProps {
   chartDescriptors: any;
@@ -234,6 +229,7 @@ export class Canvas extends React.Component {
   private readonly forwardStageRef: RefObject<HTMLDivElement>;
   private store: any;
   private charts: any;
+  private chartLookup: Record<string, number>;
 
   constructor(props: CanvasProps) {
     super(props);
@@ -247,6 +243,7 @@ export class Canvas extends React.Component {
       width: 800,
     });
     this.charts = props.charts;
+    this.chartLookup = Object.assign({}, ...props.chartDescriptors.map((d, i) => ({ [d.id]: i })));
   }
 
   componentDidMount() {}
@@ -336,7 +333,7 @@ export class Canvas extends React.Component {
           }
           return (
             <Positionable key={props.id} {...props}>
-              {this.charts.props.children[chartLookup[element.id]]}
+              {this.charts.props.children[this.chartLookup[element.id]]}
             </Positionable>
           );
         })}
