@@ -128,14 +128,21 @@ const store = componentLayoutState({
   width: width,
 });
 
-type CanvasProps = Record<string, never>;
+interface CanvasProps {
+  store: any;
+  charts: any;
+}
 
 class Canvas extends React.Component {
   private readonly forwardStageRef: RefObject<HTMLDivElement>;
+  private store: any;
+  private charts: any;
 
   constructor(props: CanvasProps) {
     super(props);
     this.forwardStageRef = React.createRef();
+    this.store = store;
+    this.charts = charts;
   }
 
   componentDidMount() {}
@@ -148,19 +155,19 @@ class Canvas extends React.Component {
 
   onMouseMove({ clientX, clientY, altKey, metaKey, shiftKey, ctrlKey }: MouseEvent<HTMLDivElement>) {
     const { x, y } = localMousePosition(this.getRect.bind(this), clientX, clientY, zoomScale);
-    store.aeroStore.commit('cursorPosition', { x, y, altKey, metaKey, shiftKey, ctrlKey });
+    this.store.aeroStore.commit('cursorPosition', { x, y, altKey, metaKey, shiftKey, ctrlKey });
     this.setState({});
   }
 
   onMouseDown({ clientX, clientY, altKey, metaKey, shiftKey, ctrlKey }: MouseEvent<HTMLDivElement>) {
     const { x, y } = localMousePosition(this.getRect.bind(this), clientX, clientY, zoomScale);
-    store.aeroStore.commit('mouseEvent', { event: 'mouseDown', x, y, altKey, metaKey, shiftKey, ctrlKey });
+    this.store.aeroStore.commit('mouseEvent', { event: 'mouseDown', x, y, altKey, metaKey, shiftKey, ctrlKey });
     this.setState({});
   }
 
   onMouseUp({ clientX, clientY, altKey, metaKey, shiftKey, ctrlKey }: MouseEvent<HTMLDivElement>) {
     const { x, y } = localMousePosition(this.getRect.bind(this), clientX, clientY, zoomScale);
-    store.aeroStore.commit('mouseEvent', { event: 'mouseUp', x, y, altKey, metaKey, shiftKey, ctrlKey });
+    this.store.aeroStore.commit('mouseEvent', { event: 'mouseUp', x, y, altKey, metaKey, shiftKey, ctrlKey });
     this.setState({});
   }
 
@@ -181,7 +188,7 @@ class Canvas extends React.Component {
     if (event) {
       // keyEvent.preventDefault();
       keyEvent.stopPropagation();
-      store.aeroStore.commit('actionEvent', { event });
+      this.store.aeroStore.commit('actionEvent', { event });
       this.setState({});
     }
   }
@@ -208,10 +215,10 @@ class Canvas extends React.Component {
           outline: 'none',
           border: '4px solid blanchedalmond',
           borderRadius: 40,
-          cursor: store.aeroStore.getCurrentState().currentScene.cursor,
+          cursor: this.store.aeroStore.getCurrentState().currentScene.cursor,
         }}
       >
-        {store.aeroStore.getCurrentState().currentScene.shapes.map((shape: Shape, i: number) => {
+        {this.store.aeroStore.getCurrentState().currentScene.shapes.map((shape: Shape, i: number) => {
           const element: PositionedElement = shapeToElementForReal(shape);
           const props = {
             id: `${element.id}_${i}_${shape.subtype}`,
@@ -225,7 +232,7 @@ class Canvas extends React.Component {
           }
           return (
             <Positionable key={props.id} {...props}>
-              {charts.props.children[chartLookup[element.id]]}
+              {this.charts.props.children[chartLookup[element.id]]}
             </Positionable>
           );
         })}
@@ -234,7 +241,7 @@ class Canvas extends React.Component {
   }
 }
 
-export const Example = () => <Canvas></Canvas>;
+export const Example = () => <Canvas store={store} charts={charts}></Canvas>;
 
 Example.parameters = {
   background: { default: 'white' },
