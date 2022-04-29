@@ -20,7 +20,7 @@ const xDomain = { min: 0, max: 6000 };
 const charts = (buckets: number) => {
   return (
     <>
-      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.03)' }}></div>
+      <div />
       <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 255, 0.1)' }}></div>
       <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255, 0, 0, 0.1)' }}></div>
       <Chart>
