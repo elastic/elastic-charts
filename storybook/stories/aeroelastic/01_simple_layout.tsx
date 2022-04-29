@@ -34,25 +34,17 @@ const charts = (
 const elements = [
   {
     id: 'sampleElement0',
-    transformMatrix: translate(570, 400, 0),
-    a: 260,
-    b: 200,
+    position: { left: 310, top: 200, width: 520, height: 400, angle: 0, parent: null, type: 'element' },
   },
   {
     id: 'sampleElement1',
-    transformMatrix: translate(160, 620, 0),
-    a: 130,
-    b: 200,
+    position: { left: 30, top: 420, width: 260, height: 400, angle: 0, parent: null, type: 'element' },
   },
   {
     id: 'sampleElement2',
-    transformMatrix: translate(320, 160, 0),
-    a: 260,
-    b: 100,
+    position: { left: 60, top: 60, width: 520, height: 200, angle: 0, parent: null, type: 'element' },
   },
-].map(shapeToElementForReal);
-
-debugger
+];
 
 const store = componentLayoutState({
   aeroStore: undefined,
