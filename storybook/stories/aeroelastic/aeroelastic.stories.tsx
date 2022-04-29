@@ -10,7 +10,7 @@ export default {
   title: 'Aeroelastic (@alpha)',
 };
 
-export { Example as aeroSimpleLayout } from './01_simple_layout';
 export { Example as ungrouped } from './01_ungrouped';
+export { Example as aeroSimpleLayout } from './01_simple_layout';
 export { Example as marginalScatterplot } from './02_marginal_scatterplot';
 export { Example as marginalScatterplot2 } from './03_marginal_scatterplot_2';
