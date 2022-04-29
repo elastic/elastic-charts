@@ -8,6 +8,12 @@
 
 import React, { MouseEvent, RefObject } from 'react';
 
+import { Shape } from '@elastic/charts/src/common/aeroelastic';
+import { translate } from '@elastic/charts/src/common/aeroelastic/matrix';
+import { PositionedElement } from '@elastic/charts/src/common/aeroelastic/mini_canvas/fixed_canvas_types';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { shapeToElement } from '@elastic/charts/src/common/aeroelastic/mini_canvas/integration_utils';
 import {
   AlignmentGuide,
   DragBoxAnnotation,
@@ -17,13 +23,7 @@ import {
   BorderConnection,
   BorderResizeHandle,
   Positionable,
-} from '@elastic/charts/src/common/aeroelastic/mini_canvas/layout_annotations';
-import { Shape } from '@elastic/charts/src/common/aeroelastic';
-import { translate } from '@elastic/charts/src/common/aeroelastic/matrix';
-import { PositionedElement } from '@elastic/charts/src/common/aeroelastic/mini_canvas/fixed_canvas_types';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { shapeToElement } from '@elastic/charts/src/common/aeroelastic/mini_canvas/integration_utils';
+} from '@elastic/charts/src/common/aeroelastic/mini_canvas/view_components';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // eslint-disable-next-line import/no-duplicates

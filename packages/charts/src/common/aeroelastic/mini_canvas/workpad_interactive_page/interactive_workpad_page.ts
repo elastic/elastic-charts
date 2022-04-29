@@ -18,7 +18,7 @@ import {
   RotationHandle,
   BorderConnection,
   BorderResizeHandle,
-} from '../layout_annotations';
+} from '../view_components';
 // import { interactiveWorkpadPagePropTypes } from '../prop_types';
 // import { InteractionBoundary } from './interaction_boundary';
 
