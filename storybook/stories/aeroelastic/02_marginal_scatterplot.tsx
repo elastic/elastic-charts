@@ -11,147 +11,160 @@ import React from 'react';
 
 import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType, BarSeries } from '@elastic/charts';
 import { Canvas } from '@elastic/charts/src/common/aeroelastic/mini_canvas/view_components';
-import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-const dg = new SeededDataGenerator();
-const data = dg.generateRandomSeries(600);
+import { data } from './data';
 
-const charts = (
-  <>
-    <Chart>
-      <Settings
-        tooltip={{
-          type: TooltipType.Follow,
-          snap: false,
-        }}
-        debug={boolean('debug', false)}
-        pointBuffer={(r) => 20 / r}
-      />
-      <Axis id="bottom" position={Position.Bottom} title="Bottom axis" ticks={5} />
-      <Axis id="left2" title="Left axis" position={Position.Left} ticks={5} />
+const yDomain = { min: 0, max: 600000 };
+const xDomain = { min: 0, max: 6000 };
 
-      <BubbleSeries
-        id="bubbles"
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y']}
-        bubbleSeriesStyle={{
-          point: {
-            shape: 'circle',
-            fill: '__use__series__color__',
-            opacity: 0.8,
-          },
-        }}
-        data={data}
-      />
-    </Chart>
-    <Chart>
-      <Settings
-        tooltip={{
-          type: TooltipType.Follow,
-          snap: false,
-        }}
-        theme={{
-          chartMargins: {
-            bottom: 0,
-            left: 64,
-            right: 10,
-            top: 0,
-          },
-        }}
-      />
-      <Axis
-        id="title"
-        position={Position.Top}
-        title="X"
-        style={{
-          axisLine: {
-            visible: false,
-          },
-          tickLabel: {
-            visible: false,
-          },
-          tickLine: {
-            visible: false,
-          },
-        }}
-      />
+const charts = (buckets: number) => {
+  return (
+    <>
+      <Chart>
+        <Settings
+          tooltip={{
+            type: TooltipType.Follow,
+            snap: false,
+          }}
+          debug={boolean('debug', false)}
+          pointBuffer={(r) => 20 / r}
+          xDomain={xDomain}
+        />
+        <Axis
+          id="bottom"
+          position={Position.Bottom}
+          title="Ground living area"
+          ticks={5}
+          style={{
+            tickLine: {
+              size: 5,
+              padding: 3,
+            },
+          }}
+          gridLine={{
+            visible: true,
+            stroke: '#eaeaea',
+          }}
+        />
+        <Axis
+          id="left2"
+          title="Sale price (k$)"
+          position={Position.Left}
+          ticks={5}
+          tickFormat={(d) => `${d / 1000}`}
+          style={{
+            tickLine: {
+              size: 5,
+              padding: 3,
+            },
+          }}
+          gridLine={{
+            visible: true,
+            stroke: '#eaeaea',
+          }}
+          domain={yDomain}
+        />
 
-      <BarSeries
-        id="horizontal"
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor={0}
-        yAccessors={[1]}
-        data={[
-          ...data
-            .reduce((acc, curr) => {
-              const x = Math.floor(curr.x / 10);
-              const y = acc.get(x) ?? 0;
-              acc.set(x, y + 1);
-              return acc;
-            }, new Map<number, number>())
-            .entries(),
-        ]}
-      />
-    </Chart>
-    <Chart>
-      <Settings
-        tooltip={{
-          type: TooltipType.Follow,
-          snap: false,
-        }}
-        debug={boolean('debug', false)}
-        pointBuffer={(r) => 20 / r}
-        theme={{
-          chartMargins: {
-            bottom: 0,
-            left: 6,
-            right: 60,
-            top: 0,
-          },
-        }}
-      />
-      <Axis
-        id="bottom"
-        position={Position.Top}
-        title="Y"
-        style={{
-          axisLine: {
-            visible: false,
-          },
-          tickLabel: {
-            visible: false,
-          },
-          tickLine: {
-            visible: false,
-          },
-        }}
-      />
-
-      <BarSeries
-        id="vertical"
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor={0}
-        yAccessors={[1]}
-        data={[
-          ...data
-            .reduce((acc, curr) => {
-              const x = Math.floor(curr.y / 10);
-              const y = acc.get(x) ?? 0;
-              acc.set(x, y + 1);
-              return acc;
-            }, new Map<number, number>())
-            .entries(),
-        ]}
-      />
-    </Chart>
-    <div style={{ width: '100%', height: '100%', backgroundColor: 'blue' }}></div>
-    <div style={{ width: '100%', height: '100%', backgroundColor: 'red' }}></div>
-  </>
-);
+        <BubbleSeries
+          id="Sale price (k$)"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          bubbleSeriesStyle={{
+            point: {
+              shape: 'circle',
+              fill: '__use__series__color__',
+              opacity: 0.4,
+            },
+          }}
+          data={data}
+        />
+      </Chart>
+      <Chart>
+        <Settings
+          theme={{
+            chartMargins: {
+              bottom: 0,
+              left: 55,
+              right: 23,
+              top: 0,
+            },
+            scales: {
+              histogramPadding: 0.01,
+            },
+          }}
+        />
+        <Axis id="x" position={Position.Bottom} tickFormat={(d) => `${d} - ${d + xDomain.max / buckets}`} hide />
+        <BarSeries
+          id="# of apartments"
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          minBarHeight={1}
+          enableHistogramMode
+          data={[
+            ...data
+              .reduce((acc, curr) => {
+                const band = xDomain.max / buckets;
+                const x = Math.floor(curr[0] / band) * band;
+                const y = acc.get(x) ?? 0;
+                acc.set(x, y + 1);
+                return acc;
+              }, new Map<number, number>())
+              .entries(),
+          ]}
+        />
+      </Chart>
+      <Chart>
+        <Settings
+          theme={{
+            chartMargins: {
+              bottom: 48,
+              left: 0,
+              right: 0,
+              top: 17,
+            },
+            scales: {
+              histogramPadding: 0.01,
+            },
+          }}
+          rotation={90}
+          xDomain={Array.from({ length: buckets }, (d, i) => (i * yDomain.max) / buckets).reverse()}
+        />
+        <Axis
+          id="x"
+          position={Position.Left}
+          tickFormat={(d) => `${d / 1000}k$ - ${d / 1000 + yDomain.max / buckets}k$`}
+          hide
+        />
+        <BarSeries
+          id="# of apartments"
+          xScaleType={ScaleType.Ordinal}
+          yScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          minBarHeight={1}
+          enableHistogramMode
+          data={[
+            ...data
+              .reduce((acc, curr) => {
+                const band = yDomain.max / buckets;
+                const x = Math.floor(curr[1] / band) * band;
+                const y = acc.get(x) ?? 0;
+                acc.set(x, y + 1);
+                return acc;
+              }, new Map<number, number>())
+              .entries(),
+          ]}
+        />
+      </Chart>
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'blue' }}></div>
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'red' }}></div>
+    </>
+  );
+};
 
 const chartDescriptors = [
   {
@@ -160,11 +173,11 @@ const chartDescriptors = [
   },
   {
     id: 'sampleElement1',
-    position: { left: 100, top: 51, width: 500, height: 100, angle: 0, parent: null },
+    position: { left: 100, top: 71, width: 500, height: 80, angle: 0, parent: null },
   },
   {
     id: 'sampleElement2',
-    position: { left: 499, top: 250, width: 300, height: 100, angle: 90, parent: null },
+    position: { left: 599, top: 150, width: 80, height: 300, angle: 0, parent: null },
   },
   {
     id: 'sampleShape0',
@@ -176,7 +189,10 @@ const chartDescriptors = [
   },
 ];
 
-export const Example = () => <Canvas charts={charts} chartDescriptors={chartDescriptors}></Canvas>;
+export const Example = () => {
+  // const buckets = number('buckets', 12, { min: 1, max: 48, step: 1, range: true });
+  return <Canvas charts={charts(24)} chartDescriptors={chartDescriptors}></Canvas>;
+};
 
 Example.parameters = {
   background: { default: 'white' },
