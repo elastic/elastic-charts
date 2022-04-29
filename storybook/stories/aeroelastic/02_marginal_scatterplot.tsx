@@ -169,7 +169,8 @@ const charts = (buckets: number) => {
 
 const chartDescriptors = [
   {
-    id: 'marginalScatter',
+    id: 'group_marginalScatter',
+    group: true,
     position: { left: 100, top: 71, width: 580, height: 380, angle: 0, parent: null },
   },
   {
@@ -182,15 +183,15 @@ const chartDescriptors = [
   },
   {
     id: 'sampleElement0',
-    position: { left: 100, top: 150, width: 500, height: 300, angle: 0, parent: 'marginalScatter' },
+    position: { left: 100, top: 150, width: 500, height: 300, angle: 0, parent: 'group_marginalScatter' },
   },
   {
     id: 'sampleElement1',
-    position: { left: 100, top: 71, width: 500, height: 80, angle: 0, parent: 'marginalScatter' },
+    position: { left: 100, top: 71, width: 500, height: 80, angle: 0, parent: 'group_marginalScatter' },
   },
   {
     id: 'sampleElement2',
-    position: { left: 599, top: 150, width: 80, height: 300, angle: 0, parent: 'marginalScatter' },
+    position: { left: 599, top: 150, width: 80, height: 300, angle: 0, parent: 'group_marginalScatter' },
   },
 ];
 

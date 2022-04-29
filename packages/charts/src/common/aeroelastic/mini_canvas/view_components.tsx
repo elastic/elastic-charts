@@ -217,7 +217,7 @@ const zoomScale = 1; // could be `dpr` in the future, for standardized css pixel
 export const shapeToElementForReal = (shape: Shape) => ({ id: shape.id, position: shapeToElement(shape) });
 
 interface CanvasProps {
-  chartDescriptors: any;
+  chartDescriptors: PositionedElement;
   charts: any;
 }
 
