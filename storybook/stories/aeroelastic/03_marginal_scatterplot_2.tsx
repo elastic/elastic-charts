@@ -179,11 +179,11 @@ const chartDescriptors = [
   },
   {
     id: 'verticalConstraint',
-    position: { left: 0, top: 250, width: 1000, height: 300, angle: 0, parent: null },
+    position: { left: 20, top: 250, width: 1000, height: 300, angle: 0, parent: null },
   },
   {
     id: 'horizontalConstraint',
-    position: { left: 200, top: 0, width: 500, height: 700, angle: 0, parent: null },
+    position: { left: 200, top: 20, width: 500, height: 700, angle: 0, parent: null },
   },
   {
     id: 'bubbles',
