@@ -11,6 +11,7 @@ export default {
 };
 
 export { Example as ungrouped } from './01_ungrouped';
-export { Example as aeroSimpleLayout } from './01_simple_layout';
 export { Example as marginalScatterplot } from './02_marginal_scatterplot';
-export { Example as projectionConcept } from './03_projection_concept';
+export { Example as aeroSimpleLayout } from './03_simple_layout';
+export { Example as projectionConcept } from './04_projection_concept';
+export { Example as projectionExample } from './05_projection_example';
