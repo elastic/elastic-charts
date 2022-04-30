@@ -79,3 +79,16 @@
   outline: none;
   pointer-events: none;
 }
+
+.canvasInteractivePage {
+  user-select: none;
+}
+
+.canvasPage {
+  @include euiBottomShadowFlat;
+  z-index: initial;
+  position: absolute;
+  top: 0;
+  transform-style: preserve-3d !important; // sass-lint:disable-line no-important
+  background-color: $euiColorEmptyShade;
+}
