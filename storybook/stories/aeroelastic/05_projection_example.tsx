@@ -23,8 +23,10 @@ const charts = (buckets: number) => {
       <div />
       <div />
       <div />
-      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 255, 0.02)' }}></div>
-      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255, 0, 0, 0.02)' }}></div>
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 255, 0.2)' }} />
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255, 0, 0, 0.2)' }} />
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 255, 0.02)' }} />
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255, 0, 0, 0.02)' }} />
       <Chart>
         <Settings
           theme={{ colors: { vizColors: ['#2b8cbe'] } }}
@@ -181,11 +183,19 @@ const chartDescriptors = [
   },
   {
     id: 'group_verticalConstraint',
-    position: { left: 20, top: 250, width: 1000, height: 300, angle: 0, parent: null },
+    position: { left: 20, top: 250, width: 20, height: 300, angle: 0, parent: null },
   },
   {
     id: 'group_horizontalConstraint',
-    position: { left: 200, top: 20, width: 500, height: 700, angle: 0, parent: null },
+    position: { left: 200, top: 20, width: 500, height: 20, angle: 0, parent: null },
+  },
+  {
+    id: 'handle_verticalConstraint',
+    position: { left: 20, top: 250, width: 20, height: 300, angle: 0, parent: 'group_verticalConstraint' },
+  },
+  {
+    id: 'handle_horizontalConstraint',
+    position: { left: 200, top: 20, width: 500, height: 20, angle: 0, parent: 'group_horizontalConstraint' },
   },
   {
     id: 'verticalConstraint',
