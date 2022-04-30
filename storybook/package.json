@@ -12,7 +12,7 @@
   "dependencies": {
     "@elastic/charts": "^30.2.0",
     "@elastic/datemath": "^5.0.3",
-    "@elastic/eui": "^55.0.1",
+    "@elastic/eui": "^55.1.0",
     "@emotion/react": "^11.7.1",
     "luxon": "^1.27.0",
     "moment": "^2.29.1",
