@@ -9,6 +9,8 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
+import { Example as TimeslipExample } from '../area/21_with_time_timeslip.story';
+
 import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType, BarSeries } from '@elastic/charts';
 import { Canvas } from '@elastic/charts/src/common/canvas_components/view_components';
 
@@ -168,6 +170,7 @@ const charts = (buckets: number) => {
           ]}
         />
       </Chart>
+      <TimeslipExample noXAxis={true} />
     </>
   );
 };
@@ -200,7 +203,7 @@ const chartDescriptors = [
   },
   {
     id: 'horizontalConstraint',
-    position: { left: 200, top: 20, width: 500, height: 700, angle: 0, parent: 'group_horizontalConstraint' },
+    position: { left: 200, top: 20, width: 500, height: 760, angle: 0, parent: 'group_horizontalConstraint' },
   },
   {
     id: 'bubbles',
@@ -213,6 +216,10 @@ const chartDescriptors = [
   {
     id: 'barsOnSide',
     position: { left: 709, top: 250, width: 80, height: 300, angle: 0, parent: 'group_verticalConstraint' },
+  },
+  {
+    id: 'timeslip',
+    position: { left: 200, top: 560, width: 500, height: 180, angle: 0, parent: 'group_horizontalConstraint' },
   },
 ];
 

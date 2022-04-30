@@ -38,7 +38,8 @@ const t1 = data[data.length - 1][0];
 const topAxisLabelFormat = (d: any) =>
   `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
 
-export const Example = () => {
+export const Example = (props) => {
+  const disableXAxis = props && props.noXAxis;
   const minorGridLines = boolean('Minor grid lines', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
   const yAxisTitle = 'CPU utilization';
@@ -83,28 +84,30 @@ export const Example = () => {
             : undefined
         }
       />
-      <Axis
-        id="x_minor"
-        position={topAxis ? Position.Top : Position.Bottom}
-        showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
-        showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
-        showGridLines={minorGridLines}
-        style={{
-          axisLine: { stroke: dataInk },
-          tickLine: { size: 0.0001, padding: 4 },
-          tickLabel: {
-            ...tickLabelStyle,
-            alignment: { horizontal: Position.Left, vertical: Position.Bottom },
-            padding: 0,
-            offset: { x: 0, y: 0 },
-          },
-          axisTitle: { fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },
-        }}
-        tickFormat={tooltipDateFormatter}
-        labelFormat={topAxisLabelFormat}
-        title="time (1-minute measurements)"
-        timeAxisLayerCount={number('layerCount', 3, { range: true, min: 0, max: 3, step: 1 })}
-      />
+      {!disableXAxis && (
+        <Axis
+          id="x_minor"
+          position={topAxis ? Position.Top : Position.Bottom}
+          showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
+          showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
+          showGridLines={minorGridLines}
+          style={{
+            axisLine: { stroke: dataInk },
+            tickLine: { size: 0.0001, padding: 4 },
+            tickLabel: {
+              ...tickLabelStyle,
+              alignment: { horizontal: Position.Left, vertical: Position.Bottom },
+              padding: 0,
+              offset: { x: 0, y: 0 },
+            },
+            axisTitle: { fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },
+          }}
+          tickFormat={tooltipDateFormatter}
+          labelFormat={topAxisLabelFormat}
+          title="time (1-minute measurements)"
+          timeAxisLayerCount={number('layerCount', 3, { range: true, min: 0, max: 3, step: 1 })}
+        />
+      )}
       <Axis
         id="left"
         title={yAxisTitle}
