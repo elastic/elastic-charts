@@ -38,7 +38,7 @@ const charts = (buckets: number) => {
         <Axis
           id="bottom"
           position={Position.Bottom}
-          title="Ground living area"
+          title="Time (ms)"
           ticks={5}
           style={{
             tickLine: {
@@ -53,7 +53,7 @@ const charts = (buckets: number) => {
         />
         <Axis
           id="left2"
-          title="Sale price (k$)"
+          title="Request count"
           position={Position.Left}
           ticks={5}
           tickFormat={(d) => `${d / 1000}`}
