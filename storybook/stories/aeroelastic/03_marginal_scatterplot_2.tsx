@@ -175,7 +175,7 @@ const chartDescriptors = [
   {
     id: 'group_marginalScatter',
     group: true,
-    position: { left: 200, top: 161, width: 580, height: 380, angle: 0, parent: null },
+    position: { left: 200, top: 161, width: 589, height: 389, angle: 0, parent: null },
   },
   {
     id: 'verticalConstraint',
