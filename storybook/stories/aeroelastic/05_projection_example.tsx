@@ -31,7 +31,7 @@ const charts = (buckets: number) => {
       <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255, 0, 0, 0.02)' }} />
       <Chart>
         <Settings
-          theme={{ colors: { vizColors: ['#2b8cbe'] } }}
+          theme={{ colors: { vizColors: ['#2b8cbe'] }, background: { color: 'white' } }}
           tooltip={{ type: TooltipType.None }}
           debug={boolean('debug', false)}
           pointBuffer={(r) => 20 / r}
@@ -93,6 +93,7 @@ const charts = (buckets: number) => {
         <Settings
           theme={{
             colors: { vizColors: ['#74a9cf'] },
+            background: { color: 'white' },
             chartMargins: {
               bottom: 0,
               left: 55,
@@ -130,6 +131,7 @@ const charts = (buckets: number) => {
         <Settings
           theme={{
             colors: { vizColors: ['#74a9cf'] },
+            background: { color: 'white' },
             chartMargins: {
               bottom: 48,
               left: 0,
@@ -174,8 +176,6 @@ const charts = (buckets: number) => {
     </>
   );
 };
-
-window.delaunay = false;
 
 const chartDescriptors = [
   {
@@ -226,7 +226,7 @@ const chartDescriptors = [
 ];
 
 export const Example = () => {
-  // const buckets = number('buckets', 12, { min: 1, max: 48, step: 1, range: true });
+  window.delaunay = false;
   return <Canvas charts={charts(24)} chartDescriptors={chartDescriptors}></Canvas>;
 };
 

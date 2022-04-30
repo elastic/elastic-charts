@@ -21,11 +21,11 @@ const charts = (buckets: number) => {
   return (
     <>
       <div />
-      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 255, 0.1)' }}></div>
-      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255, 0, 0, 0.1)' }}></div>
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 255, 0.03)' }}></div>
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255, 0, 0, 0.03)' }}></div>
       <Chart>
         <Settings
-          theme={{ colors: { vizColors: ['#2b8cbe'] } }}
+          theme={{ colors: { vizColors: ['#2b8cbe'] }, background: { color: 'white' } }}
           tooltip={{
             type: TooltipType.Follow,
             snap: false,

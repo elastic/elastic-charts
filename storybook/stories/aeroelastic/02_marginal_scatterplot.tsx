@@ -158,7 +158,7 @@ const charts = (buckets: number) => {
 
       <Chart>
         <Settings
-          theme={{ colors: { vizColors: ['#2b8cbe'] } }}
+          theme={{ colors: { vizColors: ['#2b8cbe'] }, background: { color: 'transparent' } }}
           tooltip={{
             type: TooltipType.Follow,
             snap: false,
@@ -374,6 +374,7 @@ const chartDescriptors = [
 ];
 
 export const Example = () => {
+  window.delaunay = true;
   return <Canvas charts={charts(20)} chartDescriptors={chartDescriptors}></Canvas>;
 };
 

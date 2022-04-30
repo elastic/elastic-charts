@@ -38,7 +38,7 @@ const t1 = data[data.length - 1][0];
 const topAxisLabelFormat = (d: any) =>
   `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
 
-export const Example = (props) => {
+export const Example = (props?: { noXAxis: boolean }) => {
   const disableXAxis = props && props.noXAxis;
   const minorGridLines = boolean('Minor grid lines', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
