@@ -33,6 +33,8 @@ const colors = ['#6e40aa', '#5465d6', '#2f96e0', '#1ac7c2', '#28ea8d', '#60f760'
 const charts = (buckets: number) => {
   return (
     <>
+      <div />
+
       <Chart>
         <Settings
           theme={{
@@ -154,7 +156,6 @@ const charts = (buckets: number) => {
         />
       </Chart>
 
-      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.03)' }}></div>
       <Chart>
         <Settings
           theme={{ colors: { vizColors: ['#2b8cbe'] } }}
@@ -350,13 +351,13 @@ const charts = (buckets: number) => {
 
 const chartDescriptors = [
   {
-    id: 'heatmap',
-    position: { left: 100 + 55, top: 179, width: 409, height: 408, angle: 0 },
-  },
-  {
     id: 'group_marginalScatter',
     group: true,
-    position: { left: 100, top: 71, width: 580, height: 380, angle: 0, parent: null },
+    position: { left: 100, top: 71, width: 580, height: 485 + 80, angle: 0, parent: null },
+  },
+  {
+    id: 'heatmap',
+    position: { left: 100 + 55, top: 179, width: 409, height: 408, angle: 0, parent: 'group_marginalScatter' },
   },
   {
     id: 'bubbles',
