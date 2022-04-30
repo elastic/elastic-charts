@@ -16,6 +16,39 @@ const charts = (
   <>
     <div />
     <TimeslipExample />
+    <div
+      role="presentation"
+      tabIndex={0}
+      onKeyPress={(keyEvent: KeyboardEvent) => {
+        //keyEvent.stopPropagation();
+        //keyEvent.preventDefault();
+        console.log(keyEvent.key);
+      }}
+      style={{ width: '100%', height: '100%', backgroundColor: 'white' }}
+    >
+      <input
+        type="text"
+        defaultValue="time (1-minute measurements)"
+        readOnly={false}
+        disabled={false}
+        id="name"
+        name="name"
+        style={{
+          width: '100%',
+          height: '100%',
+          border: 'none',
+          outline: 'none',
+          fontFamily: '"Atkinson Hyperlegible"',
+          fontSize: '11px',
+          fontWeight: 'bold',
+          color: 'rgb(108, 108, 108)',
+          textAlign: 'center',
+        }}
+        minLength={4}
+        maxLength={80}
+        size={30}
+      />
+    </div>
   </>
 );
 
@@ -28,6 +61,10 @@ const chartDescriptors = [
   {
     id: 'timeslip',
     position: { left: 140, top: 160, width: 800, height: 300, angle: 0, parent: 'group_chart' },
+  },
+  {
+    id: 'xLabel',
+    position: { left: 400, top: 426, width: 330, height: 28, angle: 0, parent: null },
   },
 ];
 

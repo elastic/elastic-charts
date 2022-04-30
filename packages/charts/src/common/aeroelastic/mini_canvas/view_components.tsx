@@ -286,9 +286,9 @@ export class Canvas extends React.Component {
       h: 'distributeHorizontally',
       v: 'distributeVertically',
     }[keyEvent.key];
+    keyEvent.stopPropagation();
     if (event) {
       // keyEvent.preventDefault();
-      keyEvent.stopPropagation();
       this.store.aeroStore.commit('actionEvent', { event });
       this.setState({});
     }
@@ -305,7 +305,7 @@ export class Canvas extends React.Component {
         onMouseMove={this.onMouseMove.bind(this)}
         onMouseDown={this.onMouseDown.bind(this)}
         onMouseUp={this.onMouseUp.bind(this)}
-        onKeyDown={this.onKeyPress.bind(this)}
+        onKeyPress={this.onKeyPress.bind(this)}
         style={{
           position: 'absolute',
           top: -50,
