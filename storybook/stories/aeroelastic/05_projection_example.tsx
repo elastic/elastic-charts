@@ -21,8 +21,10 @@ const charts = (buckets: number) => {
   return (
     <>
       <div />
-      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 255, 0.1)' }}></div>
-      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255, 0, 0, 0.1)' }}></div>
+      <div />
+      <div />
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 255, 0.02)' }}></div>
+      <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(255, 0, 0, 0.02)' }}></div>
       <Chart>
         <Settings
           theme={{ colors: { vizColors: ['#2b8cbe'] } }}
@@ -178,24 +180,32 @@ const chartDescriptors = [
     position: { left: 200, top: 161, width: 589, height: 389, angle: 0, parent: null },
   },
   {
-    id: 'verticalConstraint',
+    id: 'group_verticalConstraint',
     position: { left: 20, top: 250, width: 1000, height: 300, angle: 0, parent: null },
   },
   {
-    id: 'horizontalConstraint',
+    id: 'group_horizontalConstraint',
     position: { left: 200, top: 20, width: 500, height: 700, angle: 0, parent: null },
   },
   {
+    id: 'verticalConstraint',
+    position: { left: 20, top: 250, width: 1000, height: 300, angle: 0, parent: 'group_verticalConstraint' },
+  },
+  {
+    id: 'horizontalConstraint',
+    position: { left: 200, top: 20, width: 500, height: 700, angle: 0, parent: 'group_horizontalConstraint' },
+  },
+  {
     id: 'bubbles',
-    position: { left: 200, top: 250, width: 500, height: 300, angle: 0, parent: 'group_marginalScatter' },
+    position: { left: 200, top: 250, width: 500, height: 300, angle: 0, parent: 'group_horizontalConstraint' },
   },
   {
     id: 'barsOnTop',
-    position: { left: 200, top: 161, width: 500, height: 80, angle: 0, parent: 'group_marginalScatter' },
+    position: { left: 200, top: 161, width: 500, height: 80, angle: 0, parent: 'group_horizontalConstraint' },
   },
   {
     id: 'barsOnSide',
-    position: { left: 709, top: 250, width: 80, height: 300, angle: 0, parent: 'group_marginalScatter' },
+    position: { left: 709, top: 250, width: 80, height: 300, angle: 0, parent: 'group_verticalConstraint' },
   },
 ];
 
