@@ -30,10 +30,7 @@ const charts = (buckets: number) => {
       <Chart>
         <Settings
           theme={{ colors: { vizColors: ['#2b8cbe'] } }}
-          tooltip={{
-            type: TooltipType.Follow,
-            snap: false,
-          }}
+          tooltip={{ type: TooltipType.None }}
           debug={boolean('debug', false)}
           pointBuffer={(r) => 20 / r}
           xDomain={xDomain}
@@ -83,8 +80,8 @@ const charts = (buckets: number) => {
             point: {
               shape: 'circle',
               fill: '__use__series__color__',
-              opacity: 0.1,
-              radius: 4,
+              opacity: 0.5,
+              radius: 1,
             },
           }}
           data={data}
