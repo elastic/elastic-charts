@@ -26,10 +26,10 @@ html {
     @import '~@elastic/eui/dist/eui_theme_light';
     @import '~@elastic/charts/src/theme_light';
 
-    body,
-    .echChart {
-      background: white !important;
-    }
+    //body,
+    //.echChart {
+    //  background: white;
+    //}
 
     .euiText {
       // required to prevent inheriting from html
@@ -41,10 +41,10 @@ html {
     @import '~@elastic/eui/dist/eui_theme_dark';
     @import '~@elastic/charts/src/theme_dark';
 
-    body,
-    .echChart {
-      background: black !important;
-    }
+    //body,
+    //.echChart {
+    //  background: black;
+    //}
 
     .euiText {
       // required to prevent inheriting from html
@@ -56,10 +56,10 @@ html {
     &.dark-theme {
       @import '~@elastic/eui/src/themes/amsterdam/colors_dark';
 
-      body,
-      .echChart {
-        background: $euiColorEmptyShade !important;
-      }
+      //body,
+      //.echChart {
+      //  background: $euiColorEmptyShade !important;
+      //}
     }
 
     &.light-theme {
