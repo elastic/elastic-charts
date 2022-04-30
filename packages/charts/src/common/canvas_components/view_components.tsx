@@ -8,7 +8,7 @@
 
 import React, { FC, MouseEvent, ReactElement, RefObject } from 'react';
 
-import { Shape, TransformMatrix3d } from '..';
+import { Shape, TransformMatrix3d } from '../aeroelastic';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { componentLayoutState } from './component_layout_state';

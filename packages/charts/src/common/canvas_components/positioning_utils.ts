@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { multiply, rotateZ, translate } from '../matrix';
+import { multiply, rotateZ, translate } from '../aeroelastic/matrix';
 import { ElementPosition, PositionedElement } from './fixed_canvas_types';
 
 /** @internal */

@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Canvas } from '@elastic/charts/src/common/aeroelastic/mini_canvas/view_components';
+import { Canvas } from '@elastic/charts/src/common/canvas_components/view_components';
 
 import { Example as TimeslipExample } from '../area/21_with_time_timeslip.story';
 

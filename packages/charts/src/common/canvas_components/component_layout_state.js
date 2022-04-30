@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { updater } from '../layout';
-import { createStore } from '../store';
+import { updater } from '../aeroelastic/layout';
+import { createStore } from '../aeroelastic/store';
 import { shapesForNodes } from './integration_utils';
 
 const configuration = {

@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { arrayToMap, flatten, identity, shallowEqual } from '../functional';
-import { getLocalTransformMatrix } from '../layout_functions';
-import { matrixToAngle } from '../matrix';
+import { arrayToMap, flatten, identity, shallowEqual } from '../aeroelastic/functional';
+import { getLocalTransformMatrix } from '../aeroelastic/layout_functions';
+import { matrixToAngle } from '../aeroelastic/matrix';
 import { isGroupId, elementToShape } from './positioning_utils';
 // import { PositionedElement } from './fixed_canvas_types'
 

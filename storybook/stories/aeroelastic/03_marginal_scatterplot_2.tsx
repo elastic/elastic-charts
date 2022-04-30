@@ -10,7 +10,7 @@ import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType, BarSeries } from '@elastic/charts';
-import { Canvas } from '@elastic/charts/src/common/aeroelastic/mini_canvas/view_components';
+import { Canvas } from '@elastic/charts/src/common/canvas_components/view_components';
 
 import { data } from './data';
 
