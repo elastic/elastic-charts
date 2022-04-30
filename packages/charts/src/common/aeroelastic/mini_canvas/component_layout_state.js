@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { updater } from '../../layout';
-import { createStore } from '../../store';
-import { shapesForNodes } from '../integration_utils';
+import { updater } from '../layout';
+import { createStore } from '../store';
+import { shapesForNodes } from './integration_utils';
 
 const configuration = {
   getAdHocChildAnnotationName: 'adHocChildAnnotation',

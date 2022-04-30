@@ -9,13 +9,13 @@
 import React, { FC, MouseEvent, ReactElement, RefObject } from 'react';
 
 import { Shape, TransformMatrix3d } from '..';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { componentLayoutState } from './component_layout_state';
 import { PositionedElement } from './fixed_canvas_types';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { shapeToElement } from './integration_utils';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { componentLayoutState } from './workpad_page';
 
 // converts a transform matrix to a CSS string
 const matrixToCSS = (transformMatrix: TransformMatrix3d): string =>
