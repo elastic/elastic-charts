@@ -16,7 +16,6 @@ import { shapeToElement } from './integration_utils';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { componentLayoutState } from './workpad_interactive_page';
-import { localMousePosition } from './workpad_interactive_page/event_handlers';
 
 // converts a transform matrix to a CSS string
 const matrixToCSS = (transformMatrix: TransformMatrix3d): string =>
@@ -220,6 +219,20 @@ interface CanvasProps {
   chartDescriptors: PositionedElement;
   charts: any;
 }
+
+const localMousePosition = (
+  canvasOrigin: () => { left: number; top: number },
+  clientX: number,
+  clientY: number,
+  zoomScale = 1,
+) => {
+  const { left, top } = canvasOrigin();
+  return {
+    // commit unscaled coordinates
+    x: (clientX - left) / zoomScale,
+    y: (clientY - top) / zoomScale,
+  };
+};
 
 /**
  * Canvas wrapper
