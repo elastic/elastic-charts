@@ -37,7 +37,7 @@ export const AlignmentGuide: FC<AlignmentGuideProps> = ({ id, transformMatrix, w
     className="canvasAlignmentGuide canvasInteractable canvasLayoutAnnotation"
     key={id}
     style={{
-      background: 'magenta',
+      background: 'rgba(255, 0, 255, 0.1)',
       height,
       marginLeft: -width / 2,
       marginTop: -height / 2,

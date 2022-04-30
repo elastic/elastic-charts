@@ -213,11 +213,11 @@ const chartDescriptors = [
   },
   {
     id: 'barsOnTop',
-    position: { left: 200, top: 161, width: 500, height: 80, angle: 0, parent: 'group_horizontalConstraint' },
+    position: { left: 200, top: 191, width: 500, height: 50, angle: 0, parent: 'group_horizontalConstraint' },
   },
   {
     id: 'barsOnSide',
-    position: { left: 709, top: 250, width: 80, height: 300, angle: 0, parent: 'group_verticalConstraint' },
+    position: { left: 709, top: 250, width: 50, height: 300, angle: 0, parent: 'group_horizontalConstraint' },
   },
   {
     id: 'timeslip',
