@@ -15,7 +15,7 @@ import { PositionedElement } from './fixed_canvas_types';
 import { shapeToElement } from './integration_utils';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { componentLayoutState } from './workpad_interactive_page';
+import { componentLayoutState } from './workpad_page';
 
 // converts a transform matrix to a CSS string
 const matrixToCSS = (transformMatrix: TransformMatrix3d): string =>
@@ -310,7 +310,7 @@ export class Canvas extends React.Component {
   render() {
     return (
       <div
-        className="canvasPage canvasPage canvasInteractivePage"
+        className="canvasPage canvasInteractivePage"
         ref={this.forwardStageRef}
         role="presentation"
         tabIndex={0}
