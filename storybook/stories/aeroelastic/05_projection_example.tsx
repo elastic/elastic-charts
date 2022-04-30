@@ -175,6 +175,8 @@ const charts = (buckets: number) => {
   );
 };
 
+window.delaunay = false;
+
 const chartDescriptors = [
   {
     id: 'group_marginalScatter',
