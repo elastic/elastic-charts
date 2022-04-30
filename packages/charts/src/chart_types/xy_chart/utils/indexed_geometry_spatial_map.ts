@@ -40,7 +40,9 @@ export class IndexedGeometrySpatialMap {
   }
 
   set(points: PointGeometry[]) {
-    if(window.delaunay === false) return;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (window.delaunay === false) return;
     this.maxRadius = Math.max(this.maxRadius, ...points.map(({ radius }) => radius));
     const { pointGeometries } = this;
     points.forEach((p) => pointGeometries.push(p));

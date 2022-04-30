@@ -188,7 +188,16 @@ export const Positionable: FC<Props> = ({ id, children, transformMatrix, width, 
   );
 };
 
-function LayoutAnnotation(element, subtype) {
+interface ElementProps {
+  id: string;
+  transformMatrix: TransformMatrix3d;
+  text: string;
+  width: number;
+  height: number;
+  zoomScale: number;
+}
+
+function LayoutAnnotation(element: ElementProps, subtype: string) {
   switch (subtype) {
     case 'alignmentGuide':
       return <AlignmentGuide {...element} />;
@@ -216,7 +225,7 @@ const zoomScale = 1; // could be `dpr` in the future, for standardized css pixel
 export const shapeToElementForReal = (shape: Shape) => ({ id: shape.id, position: shapeToElement(shape) });
 
 interface CanvasProps {
-  chartDescriptors: PositionedElement;
+  chartDescriptors: PositionedElement[];
   charts: any;
 }
 
@@ -249,7 +258,7 @@ export class Canvas extends React.Component {
     this.forwardStageRef = React.createRef();
     this.store = componentLayoutState({
       aeroStore: undefined,
-      setAeroStore: () => {},
+      setAeroStore: () => {}, // this can be used for callbacks etc.
       elements: props.chartDescriptors,
       selectedToplevelNodes: [],
       height: 800,
@@ -285,7 +294,7 @@ export class Canvas extends React.Component {
     this.setState({});
   }
 
-  onKeyPress(keyEvent: KeyboardEvent) {
+  onKeyPress(keyEvent: { key: string | number; stopPropagation: () => void }) {
     // see for more interactions, many of them not aeroelastic actions: https://github.com/elastic/kibana/blob/6693ef371f887eca639b09c4c9b15701b4ebabd4/x-pack/plugins/canvas/public/lib/element_handler_creators.ts
     const event = {
       g: 'group',
@@ -313,6 +322,7 @@ export class Canvas extends React.Component {
         className="canvasPage canvasInteractivePage"
         ref={this.forwardStageRef}
         role="presentation"
+        /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
         tabIndex={0}
         // mouse events: check this for more subtlety https://github.com/elastic/kibana/blob/6693ef371f887eca639b09c4c9b15701b4ebabd4/x-pack/plugins/canvas/public/components/workpad_page/workpad_interactive_page/event_handlers.ts
         onMouseMove={this.onMouseMove.bind(this)}
@@ -337,7 +347,8 @@ export class Canvas extends React.Component {
           const props = {
             id: `${element.id}_${i}_${shape.subtype}`,
             transformMatrix: shape.transformMatrix,
-            text: shape.text,
+            text: shape.text ?? '',
+            zoomScale,
             ...element.position,
           };
 

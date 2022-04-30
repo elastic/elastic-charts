@@ -87,4 +87,5 @@ export interface Shape {
   transformMatrix: TransformMatrix3d;
   a: number;
   b: number;
+  text?: string;
 }
