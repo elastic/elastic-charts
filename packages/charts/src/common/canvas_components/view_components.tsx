@@ -359,7 +359,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
           }
           return (
             <Positionable key={props.id} {...props}>
-              {this.charts.props.children[this.chartLookup[element.id]]}
+              {this.charts.props.children[this.chartLookup[element.id]] ?? this.charts.props.children}
             </Positionable>
           );
         })}
