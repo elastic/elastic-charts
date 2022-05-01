@@ -226,8 +226,10 @@ export const shapeToElementForReal = (shape: Shape) => ({ id: shape.id, position
 
 interface CanvasProps {
   chartDescriptors: PositionedElement[];
-  charts: any;
+  charts: JSX.Element;
 }
+
+type CanvasState = Record<string, never>; // no state yet
 
 const localMousePosition = (
   canvasOrigin: () => { left: number; top: number },
@@ -247,7 +249,7 @@ const localMousePosition = (
  * Canvas wrapper
  * @public
  */
-export class Canvas extends React.Component {
+export class Canvas extends React.Component<CanvasProps, CanvasState> {
   private readonly forwardStageRef: RefObject<HTMLDivElement>;
   private store: any;
   private charts: any;
