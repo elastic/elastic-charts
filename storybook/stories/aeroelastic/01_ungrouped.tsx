@@ -15,7 +15,7 @@ import { Example as TimeslipExample } from '../area/21_with_time_timeslip.story'
 const charts = (
   <>
     <div />
-    <TimeslipExample />
+    <TimeslipExample noXAxis={false} xAxisText=" " />
     <div
       role="presentation"
       tabIndex={0}
@@ -24,13 +24,14 @@ const charts = (
         //keyEvent.preventDefault();
         console.log(keyEvent.key);
       }}
-      style={{ width: '100%', height: '100%', backgroundColor: 'white' }}
+      style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
     >
       <input
         type="text"
         defaultValue="time (1-minute measurements)"
         readOnly={false}
         disabled={false}
+        autoComplete="off"
         id="name"
         name="name"
         style={{
@@ -42,6 +43,7 @@ const charts = (
           fontSize: '11px',
           fontWeight: 'bold',
           color: 'rgb(108, 108, 108)',
+          backgroundColor: 'transparent',
           textAlign: 'center',
         }}
         minLength={4}

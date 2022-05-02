@@ -38,7 +38,7 @@ const t1 = data[data.length - 1][0];
 const topAxisLabelFormat = (d: any) =>
   `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
 
-export const Example = (props?: { noXAxis: boolean }) => {
+export const Example = (props?: { noXAxis: boolean; xAxisText: string }) => {
   const disableXAxis = props && props.noXAxis;
   const minorGridLines = boolean('Minor grid lines', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
@@ -104,7 +104,7 @@ export const Example = (props?: { noXAxis: boolean }) => {
           }}
           tickFormat={tooltipDateFormatter}
           labelFormat={topAxisLabelFormat}
-          title="time (1-minute measurements)"
+          title={props?.xAxisText ?? 'time (1-minute measurements)'}
           timeAxisLayerCount={number('layerCount', 3, { range: true, min: 0, max: 3, step: 1 })}
         />
       )}
