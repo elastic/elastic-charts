@@ -130,10 +130,13 @@ interface RotationHandleProps extends SharedAnnotationProps {
 
 /** @internal */
 export const RotationHandle: FC<RotationHandleProps> = ({ id, transformMatrix, zoomScale = 1 }) => (
-  <div className="canvasRotationHandle canvasLayoutAnnotation" style={{ transform: matrixToCSS(transformMatrix) }}>
+  <div
+    className="canvasRotationHandle canvasLayoutAnnotation"
+    key={id}
+    style={{ transform: matrixToCSS(transformMatrix) }}
+  >
     <div
       className="canvasRotationHandle__handle"
-      key={id}
       style={{ transform: `scale3d(${1 / zoomScale},${1 / zoomScale},1)` }}
     />
   </div>
