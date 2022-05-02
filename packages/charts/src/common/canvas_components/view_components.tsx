@@ -31,8 +31,7 @@ interface AlignmentGuideProps extends SharedAnnotationProps {
   width: number;
 }
 
-/** @internal */
-export const AlignmentGuide: FC<AlignmentGuideProps> = ({ id, transformMatrix, width, height }) => (
+const AlignmentGuide: FC<AlignmentGuideProps> = ({ id, transformMatrix, width, height }) => (
   <div
     className="canvasAlignmentGuide canvasInteractable canvasLayoutAnnotation"
     key={id}
@@ -53,8 +52,7 @@ interface BorderConnectionProps extends SharedAnnotationProps {
   width: number;
 }
 
-/** @internal */
-export const BorderConnection: FC<BorderConnectionProps> = ({ id, transformMatrix, width, height }) => (
+const BorderConnection: FC<BorderConnectionProps> = ({ id, transformMatrix, width, height }) => (
   <div
     className="canvasBorderConnection canvasLayoutAnnotation"
     key={id}
@@ -73,8 +71,7 @@ interface BorderResizeHandleProps extends SharedAnnotationProps {
   zoomScale?: number;
 }
 
-/** @internal */
-export const BorderResizeHandle: FC<BorderResizeHandleProps> = ({ id, transformMatrix, zoomScale = 1 }) => (
+const BorderResizeHandle: FC<BorderResizeHandleProps> = ({ id, transformMatrix, zoomScale = 1 }) => (
   <div
     className="canvasBorderResizeHandle canvasLayoutAnnotation"
     key={id}
@@ -89,8 +86,7 @@ interface DragBoxAnnotationProps extends SharedAnnotationProps {
   width: number;
 }
 
-/** @internal */
-export const DragBoxAnnotation: FC<DragBoxAnnotationProps> = ({ id, transformMatrix, width, height }) => (
+const DragBoxAnnotation: FC<DragBoxAnnotationProps> = ({ id, transformMatrix, width, height }) => (
   <div
     className="canvasDragBoxAnnotation canvasLayoutAnnotation"
     key={id}
@@ -109,8 +105,7 @@ interface HoverAnnotationProps extends SharedAnnotationProps {
   width: number;
 }
 
-/** @internal */
-export const HoverAnnotation: FC<HoverAnnotationProps> = ({ id, transformMatrix, width, height }) => (
+const HoverAnnotation: FC<HoverAnnotationProps> = ({ id, transformMatrix, width, height }) => (
   <div
     className="canvasHoverAnnotation canvasLayoutAnnotation"
     key={id}
@@ -128,8 +123,7 @@ interface RotationHandleProps extends SharedAnnotationProps {
   zoomScale?: number;
 }
 
-/** @internal */
-export const RotationHandle: FC<RotationHandleProps> = ({ id, transformMatrix, zoomScale = 1 }) => (
+const RotationHandle: FC<RotationHandleProps> = ({ id, transformMatrix, zoomScale = 1 }) => (
   <div
     className="canvasRotationHandle canvasLayoutAnnotation"
     key={id}
@@ -146,8 +140,7 @@ interface TooltipAnnotationProps extends SharedAnnotationProps {
   text: string;
 }
 
-/** @internal */
-export const TooltipAnnotation: FC<TooltipAnnotationProps> = ({ id, transformMatrix, text }) => {
+const TooltipAnnotation: FC<TooltipAnnotationProps> = ({ id, transformMatrix, text }) => {
   return (
     <div
       className="tooltipAnnotation canvasLayoutAnnotation"
@@ -165,8 +158,7 @@ interface Props extends SharedAnnotationProps {
   width: number;
 }
 
-/** @internal */
-export const Positionable: FC<Props> = ({ id, children, transformMatrix, width, height }) => {
+const Positionable: FC<Props> = ({ id, children, transformMatrix, width, height }) => {
   // Throw if there is more than one child
   // const childNode = React.Children.only(children);
 
@@ -224,8 +216,7 @@ function LayoutAnnotation(element: ElementProps, subtype: string) {
 
 const zoomScale = 1; // could be `dpr` in the future, for standardized css pixel
 // todo fix the misnomer `shapeToElement` once it's no longer in Kibana
-/** @internal */
-export const shapeToElementForReal = (shape: Shape) => ({ id: shape.id, position: shapeToElement(shape) });
+const shapeToElementForReal = (shape: Shape) => ({ id: shape.id, position: shapeToElement(shape) });
 
 interface CanvasProps {
   chartDescriptors: PositionedElement[];
