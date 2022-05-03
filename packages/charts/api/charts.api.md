@@ -58,6 +58,14 @@ export interface AngleFromTo {
 export type AnimatedValue = number;
 
 // @public (undocumented)
+export interface AnimationConfig {
+    // @alpha (undocumented)
+    animation: {
+        duration: TimeMs;
+    };
+}
+
+// @public (undocumented)
 export interface AnimationOptions {
     delay?: TimeMs | AnimationSpeed;
     duration?: TimeMs | AnimationSpeed;
@@ -956,8 +964,6 @@ export type FitConfig = {
     endValue?: number | 'nearest';
 };
 
-// Warning: (ae-forgotten-export) The symbol "FlameSpec" needs to be exported by the entry point index.d.ts
-//
 // @public
 export const Flame: <D extends BaseDatum = any>(props: SFProps<FlameSpec<D>, "chartType" | "specType", "animation" | "valueAccessor" | "valueFormatter" | "valueGetter", never, "id" | "columnarData" | "controlProviderCallback">) => null;
 
@@ -967,6 +973,28 @@ export type FlameElementEvent = FlameLayerValue;
 // @public (undocumented)
 export interface FlameLayerValue {
     vmIndex: number;
+}
+
+// @public
+export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, AnimationConfig {
+    // (undocumented)
+    chartType: typeof ChartType.Flame;
+    // Warning: (ae-forgotten-export) The symbol "ColumnarViewModel" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    columnarData: ColumnarViewModel;
+    // (undocumented)
+    controlProviderCallback: ControlProviderCallback;
+    // (undocumented)
+    specType: typeof SpecType.Series;
+    // (undocumented)
+    valueAccessor: ValueAccessor<D>;
+    // (undocumented)
+    valueFormatter: ValueFormatter;
+    // Warning: (ae-forgotten-export) The symbol "ValueGetterFunction" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    valueGetter: ValueGetterFunction_2;
 }
 
 // @public (undocumented)

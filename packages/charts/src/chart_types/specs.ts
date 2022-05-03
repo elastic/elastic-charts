@@ -28,6 +28,5 @@ export {
 export * from './xy_chart/utils/specs';
 
 export { Partition } from './partition_chart/specs';
-export { Flame, ControlProviderCallback } from './flame_chart/flame_api';
 
 export { Heatmap, HeatmapSpec, RasterTimeScale, TimeScale, LinearScale, OrdinalScale } from './heatmap/specs';
