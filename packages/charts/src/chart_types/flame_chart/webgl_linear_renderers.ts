@@ -106,7 +106,7 @@ const renderer = (
           focus1: [focusLoX, focusHiX, focusLoY, focusHiY],
         },
         viewport: canvasSizeChanged && { x: 0, y: 0, width: textureWidth, height: textureHeight },
-        clear: { rect: [0, 0, 1, 1], color: [0, 0, 0, 0] }, // todo fix rendering glitches, clearing doesn't seem to help
+        clear: { color: [0, 0, 0, 0] }, // todo fix rendering glitches, clearing doesn't seem to help
         draw: {
           geom: gl.TRIANGLE_STRIP,
           offset: 0,

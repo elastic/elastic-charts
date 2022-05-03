@@ -10,14 +10,12 @@ import React, { createRef, CSSProperties, MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { Color } from '../../common/colors';
 import { Tooltip } from '../../components/tooltip';
 import { onDatumHovered } from '../../state/actions/hover';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
 import { A11ySettings, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
-import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { Size } from '../../utils/dimensions';
-import { getFlameSpec, getPickedShape } from './data_flow';
+import { getFlameSpec } from './data_flow';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, ColumnarViewModel, GLResources, nullColumnarViewModel } from './types';
 import { ensureLinearFlameWebGL, renderLinearFlameWebGL } from './webgl_linear_renderers';
@@ -32,8 +30,6 @@ interface ReactiveChartStateProps {
   animationDuration: number;
   chartDimensions: Size;
   a11ySettings: A11ySettings;
-  background: Color;
-  hoverIndex: number;
 }
 
 interface ReactiveChartDispatchProps {
@@ -80,6 +76,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private animationState: AnimationState;
   private drilldown: DrilldownAction;
   private prevDrilldown: DrilldownAction;
+  private hoverIndex: number;
   private readonly devicePixelRatio: number; // fixme this be no constant: https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#monitoring_screen_resolution_or_zoom_level_changes
 
   constructor(props: Readonly<FlameProps>) {
@@ -104,6 +101,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.animationState = { rafId: NaN };
     this.drilldown = { datumIndex: 0, timestamp: -Infinity };
     this.prevDrilldown = { datumIndex: 0, timestamp: -Infinity };
+    this.hoverIndex = DUMMY_INDEX;
   }
 
   private inTween(t: DOMHighResTimeStamp) {
@@ -120,10 +118,7 @@ class FlameComponent extends React.Component<FlameProps> {
   }
 
   componentDidUpdate() {
-    if (!this.ctx) {
-      this.tryCanvasContext();
-    }
-    this.drawCanvas();
+    if (!this.ctx) this.tryCanvasContext();
   }
 
   getFocus() {
@@ -149,16 +144,11 @@ class FlameComponent extends React.Component<FlameProps> {
   }
 
   getHoveredDatumIndex(e: MouseEvent<HTMLCanvasElement>) {
-    const {
-      chartDimensions: { width, height },
-      forwardStageRef,
-    } = this.props;
-    if (!forwardStageRef.current || !this.ctx || width === 0 || height === 0 || this.inTween(e.timeStamp)) {
-      return;
-    }
+    if (!this.props.forwardStageRef.current || !this.ctx || this.inTween(e.timeStamp)) return;
+
     const picker = this.glResources.readPixelXY;
     const focus = this.getFocus();
-    const box = forwardStageRef.current.getBoundingClientRect();
+    const box = this.props.forwardStageRef.current.getBoundingClientRect();
     const x = e.clientX - box.left;
     const y = e.clientY - box.top;
     const datumIndex = picker(x, y, focus);
@@ -168,7 +158,11 @@ class FlameComponent extends React.Component<FlameProps> {
 
   handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
     const hovered = this.getHoveredDatumIndex(e);
-    if (hovered) this.props.onDatumHovered(hovered.datumIndex);
+    if (hovered) {
+      this.props.onDatumHovered(hovered.datumIndex);
+      this.hoverIndex = Number.isNaN(hovered.datumIndex) ? DUMMY_INDEX : hovered.datumIndex;
+      this.drawCanvas();
+    }
   }
 
   handleMouseClick(e: MouseEvent<HTMLCanvasElement>) {
@@ -194,7 +188,6 @@ class FlameComponent extends React.Component<FlameProps> {
       padding: 0,
       margin: 0,
       border: 0,
-      background: 'transparent',
       position: 'absolute',
       // cursor: 'crosshair',
     };
@@ -238,7 +231,7 @@ class FlameComponent extends React.Component<FlameProps> {
             props.chartDimensions.height,
             props.animationDuration,
             this.getFocus(),
-            props.hoverIndex,
+            this.hoverIndex,
             this.animationState,
             glResources,
             this.inTween(t),
@@ -275,8 +268,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     animationDuration: flameSpec?.animation.duration ?? 0,
     chartDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
-    background: getChartThemeSelector(state).background.color,
-    hoverIndex: getPickedShape(state) || DUMMY_INDEX,
   };
 };
 
