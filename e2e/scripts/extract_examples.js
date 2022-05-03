@@ -87,10 +87,11 @@ function extractExamples(exampleRelativePath = 'storybook/stories') {
           .replace(/([A-Z])/g, '-$1')
           .trim()
           .toLocaleLowerCase();
-        // slugify the story name
-        const slugifiedURLPath = slugify(urlPath, { lower: true, strict: true });
         // TODO fix poor slug matching for special characters
-        const url = `/story/${slugifiedGroupTitle}--${slugifiedURLPath}`.replace('---', '--');
+        const slugifiedURLPath = slugify(urlPath, { lower: true, strict: true })
+          .replace(/^-+|-+$/, '')
+          .trim();
+        const url = `/story/${slugifiedGroupTitle}--${slugifiedURLPath}`;
         return {
           slugifiedName: slugifiedURLPath,
           name,

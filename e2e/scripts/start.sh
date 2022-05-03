@@ -7,8 +7,8 @@ set -e
 # Get correct playwright image - must match installed version of @playwright/test
 regex="@playwright/test@(.+)"
 result="$(yarn list --pattern "@playwright/test" --depth=0 | grep playwright/test)"
-if [[ $result =~ $regex ]]
-then
+
+if [[ $result =~ $regex ]]; then
   pw_version=${BASH_REMATCH[1]}
   pw_image="mcr.microsoft.com/playwright:v${pw_version}-focal"
 else

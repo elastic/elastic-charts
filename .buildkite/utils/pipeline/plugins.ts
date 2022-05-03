@@ -47,6 +47,7 @@ export class Plugins {
         workdir: '/app',
         'propagate-environment': true,
         environment: [...environment, ...env],
+        ipc: 'host', // recommended by playwright, see https://playwright.dev/docs/docker#end-to-end-tests
       },
     }),
   };
