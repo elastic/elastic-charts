@@ -12,7 +12,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { Color } from '../../common/colors';
 import { Tooltip } from '../../components/tooltip';
-import { onDatumSelected } from '../../state/actions/selections';
+import { onDatumHovered } from '../../state/actions/hover';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
 import { A11ySettings, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
@@ -37,7 +37,7 @@ interface ReactiveChartStateProps {
 }
 
 interface ReactiveChartDispatchProps {
-  onDatumSelected: typeof onDatumSelected;
+  onDatumHovered: typeof onDatumHovered;
 }
 
 interface ReactiveChartOwnProps {
@@ -168,7 +168,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
     const hovered = this.getHoveredDatumIndex(e);
-    if (hovered) this.props.onDatumSelected(hovered.datumIndex);
+    if (hovered) this.props.onDatumHovered(hovered.datumIndex);
   }
 
   handleMouseClick(e: MouseEvent<HTMLCanvasElement>) {
@@ -266,7 +266,7 @@ class FlameComponent extends React.Component<FlameProps> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
-  bindActionCreators({ onDatumSelected }, dispatch);
+  bindActionCreators({ onDatumHovered: onDatumHovered }, dispatch);
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   const flameSpec = getFlameSpec(state);

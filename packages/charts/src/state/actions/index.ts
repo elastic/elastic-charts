@@ -10,6 +10,7 @@ import { ChartActions } from './chart';
 import { ChartSettingsActions } from './chart_settings';
 import { ColorsActions } from './colors';
 import { EventsActions } from './events';
+import { HoverActions } from './hover';
 import { KeyActions } from './key';
 import { LegendActions } from './legend';
 import { MouseActions } from './mouse';
@@ -20,6 +21,7 @@ import { ZIndexActions } from './z_index';
 export type StateActions =
   | SpecActions
   | ChartActions
+  | HoverActions
   | ChartSettingsActions
   | LegendActions
   | EventsActions

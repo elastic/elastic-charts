@@ -8,12 +8,12 @@
 
 import { ChartType } from '../../chart_types';
 import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
-import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
+import { getPickedShapesLayerValues as partitionPicks } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
 import { LegendItem } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
-import { LayerValue } from '../../specs';
 import { getDelta } from '../../utils/point';
 import { DOMElementActions, ON_DOM_ELEMENT_ENTER, ON_DOM_ELEMENT_LEAVE } from '../actions/dom_element';
+import { HoverActions, ON_DATUM_HOVERED } from '../actions/hover';
 import { KeyActions, ON_KEY_UP } from '../actions/key';
 import {
   LegendActions,
@@ -27,11 +27,6 @@ import { GlobalChartState, InteractionsState } from '../chart_state';
 import { getInitialPointerState } from '../utils';
 
 /**
- * The minimum amount of time to consider for for dragging purposes
- * @internal
- */
-export const DRAG_DETECTION_TIMEOUT = 100;
-/**
  * The minimum number of pixel between two pointer positions to consider for dragging purposes
  */
 const DRAG_DETECTION_PIXEL_DELTA = 4;
@@ -39,11 +34,13 @@ const DRAG_DETECTION_PIXEL_DELTA = 4;
 /** @internal */
 export function interactionsReducer(
   globalState: GlobalChartState,
-  action: LegendActions | MouseActions | KeyActions | DOMElementActions,
+  action: LegendActions | MouseActions | KeyActions | DOMElementActions | HoverActions,
   legendItems: LegendItem[],
 ): InteractionsState {
   const { interactions: state } = globalState;
   switch (action.type) {
+    case ON_DATUM_HOVERED:
+      return { ...state, hoveredGeomIndex: action.datumIndex };
     case ON_KEY_UP:
       if (action.key === 'Escape') {
         return {
@@ -70,11 +67,12 @@ export function interactionsReducer(
             time: action.time,
           },
         },
+        hoveredGeomIndex: action.position.x >= 0 && action.position.y >= 0 ? state.hoveredGeomIndex : NaN,
       };
     case ON_MOUSE_DOWN:
       return {
         ...state,
-        drilldown: getDrilldownData(globalState),
+        drilldown: { datumIndex: getDrilldownData(globalState), timestamp: action.time },
         prevDrilldown: state.drilldown,
         pointer: {
           ...state.pointer,
@@ -177,27 +175,22 @@ function toggleDeselectedDataSeries(
 
   const alreadyDeselected = actionSeriesKeys.every((key) => deselectedDataSeriesKeys.has(key));
 
+  // todo consider branch simplifications
   if (negate) {
-    if (!alreadyDeselected && deselectedDataSeries.length === legendItemsKeys.length - 1) {
-      return legendItemIds;
-    }
-
-    return legendItems
-      .map(({ seriesIdentifiers }) => seriesIdentifiers)
-      .flat()
-      .filter(({ key }) => !actionSeriesKeys.includes(key));
+    return alreadyDeselected || deselectedDataSeries.length !== legendItemsKeys.length - 1
+      ? legendItems
+          .map(({ seriesIdentifiers }) => seriesIdentifiers)
+          .flat()
+          .filter(({ key }) => !actionSeriesKeys.includes(key))
+      : legendItemIds;
+  } else {
+    return alreadyDeselected
+      ? deselectedDataSeries.filter(({ key }) => !actionSeriesKeys.includes(key))
+      : [...deselectedDataSeries, ...legendItemIds];
   }
-
-  if (alreadyDeselected) {
-    return deselectedDataSeries.filter(({ key }) => !actionSeriesKeys.includes(key));
-  }
-  return [...deselectedDataSeries, ...legendItemIds];
 }
 
-function getDrilldownData(globalState: GlobalChartState) {
-  if (globalState.chartType !== ChartType.Partition || !drilldownActive(globalState)) {
-    return [];
-  }
-  const layerValues: LayerValue[] = getPickedShapesLayerValues(globalState)[0];
-  return layerValues ? layerValues[layerValues.length - 1].path.map((n) => n.value) : [];
-}
+const getDrilldownData = (globalState: GlobalChartState): number =>
+  globalState.chartType === ChartType.Partition && drilldownActive(globalState)
+    ? [...(partitionPicks(globalState)[0] ?? [{ vmIndex: 0 }])].reverse()[0].vmIndex || 0 // vmIndex of the last item, ie. that of the leaf node
+    : 0;
