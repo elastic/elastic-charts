@@ -190,7 +190,8 @@ function toggleDeselectedDataSeries(
   }
 }
 
-const getDrilldownData = (globalState: GlobalChartState): number =>
-  globalState.chartType === ChartType.Partition && drilldownActive(globalState)
+function getDrilldownData(globalState: GlobalChartState): number {
+  return globalState.chartType === ChartType.Partition && drilldownActive(globalState)
     ? [...(partitionPicks(globalState)[0] ?? [{ vmIndex: 0 }])].reverse()[0].vmIndex || 0 // vmIndex of the last item, ie. that of the leaf node
     : 0;
+}
