@@ -80,6 +80,18 @@ export interface LayerValue {
    * where `index` corresponds to `sortIndex` and `value` corresponds `groupByRollup`
    */
   path: LegendPath;
+  /**
+   * The zero-based index of the geometry (rectangle or annular sector) created
+   */
+  vmIndex: number;
+}
+
+/** @public */
+export interface FlameLayerValue {
+  /**
+   * The zero-based index of the data point
+   */
+  vmIndex: number;
 }
 
 /** @public */
@@ -98,6 +110,8 @@ export interface XYBrushEvent {
 export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
 /** @public */
 export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
+/** @public */
+export type FlameElementEvent = FlameLayerValue;
 /** @public */
 export type HeatmapElementEvent = [Cell, SeriesIdentifier];
 /** @public */
@@ -137,11 +151,16 @@ export type ProjectionClickListener = (values: ProjectedValues) => void;
 
 /** @public */
 export type ElementClickListener = (
-  elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>,
+  elements: Array<
+    XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent
+  >,
 ) => void;
+
 /** @public */
 export type ElementOverListener = (
-  elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>,
+  elements: Array<
+    XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent
+  >,
 ) => void;
 
 /** @public */

@@ -503,6 +503,7 @@ export const ChartType: Readonly<{
     Global: "global";
     Goal: "goal";
     Partition: "partition";
+    Flame: "flame";
     XYAxis: "xy_axis";
     Heatmap: "heatmap";
     Wordcloud: "wordcloud";
@@ -554,6 +555,9 @@ export function computeRatioByGroups<T extends Record<string, unknown>>(data: T[
 
 // @public (undocumented)
 export type ContinuousDomain = [min: number, max: number];
+
+// @public
+export type ControlProviderCallback = (controlName: string, controlFunction: (...args: unknown[]) => void) => void;
 
 // @public (undocumented)
 export interface CrosshairStyle {
@@ -871,10 +875,10 @@ export interface DomainRange {
 }
 
 // @public (undocumented)
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>) => void;
+export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent>) => void;
 
 // @public (undocumented)
-export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>) => void;
+export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent>) => void;
 
 // @public (undocumented)
 export const entryKey: ([key]: ArrayEntry) => string;
@@ -951,6 +955,19 @@ export type FitConfig = {
     value?: number;
     endValue?: number | 'nearest';
 };
+
+// Warning: (ae-forgotten-export) The symbol "FlameSpec" needs to be exported by the entry point index.d.ts
+//
+// @public
+export const Flame: <D extends BaseDatum = any>(props: SFProps<FlameSpec<D>, "chartType" | "specType", "animation" | "valueAccessor" | "valueFormatter" | "valueGetter", never, "id" | "columnarData" | "controlProviderCallback">) => null;
+
+// @public (undocumented)
+export type FlameElementEvent = FlameLayerValue;
+
+// @public (undocumented)
+export interface FlameLayerValue {
+    vmIndex: number;
+}
 
 // @public (undocumented)
 export const FONT_STYLES: readonly ["normal", "italic", "oblique", "inherit", "initial", "unset"];
@@ -1370,6 +1387,7 @@ export interface LayerValue {
     smAccessorValue: ReturnType<GroupByAccessor>;
     sortIndex: number;
     value: number;
+    vmIndex: number;
 }
 
 // @public (undocumented)
@@ -1662,7 +1680,7 @@ export type PartialTheme = RecursivePartial<Theme>;
 // Warning: (ae-forgotten-export) The symbol "PartitionSpec" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const Partition: <D extends BaseDatum = any>(props: SFProps<PartitionSpec<D>, "chartType" | "specType", "animation" | "layout" | "valueAccessor" | "clockwiseSectors" | "specialFirstInnermostSector" | "drilldown" | "maxRowCount" | "fillOutside" | "radiusOutside" | "fillRectangleWidth" | "fillRectangleHeight" | "valueFormatter" | "valueGetter" | "percentFormatter" | "topGroove" | "smallMultiples" | "layers", never, "data" | "id">) => null;
+export const Partition: <D extends BaseDatum = any>(props: SFProps<PartitionSpec<D>, "chartType" | "specType", "animation" | "layout" | "valueAccessor" | "valueFormatter" | "valueGetter" | "clockwiseSectors" | "specialFirstInnermostSector" | "drilldown" | "maxRowCount" | "fillOutside" | "radiusOutside" | "fillRectangleWidth" | "fillRectangleHeight" | "percentFormatter" | "topGroove" | "smallMultiples" | "layers", never, "data" | "id">) => null;
 
 // Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
 //
@@ -2175,7 +2193,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof typeof settingsBuildP
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "debug" | "tooltip" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaLabel" | "xDomain" | "theme" | "ariaDescription" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "flatLegend" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "pointBuffer" | "onBrushEnd" | "onPointerUpdate" | "onRenderChange" | "onProjectionAreaChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "legendSort", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "debug" | "tooltip" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaLabel" | "onElementClick" | "onElementOver" | "ariaDescription" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "xDomain" | "theme" | "flatLegend" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "onElementOut" | "pointBuffer" | "onBrushEnd" | "onPointerUpdate" | "onRenderChange" | "onProjectionAreaChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "legendSort", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -2248,6 +2266,8 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
     sortIndex: number;
     // (undocumented)
     value: number;
+    // (undocumented)
+    vmIndex: number;
     // (undocumented)
     yMidPx: Distance;
 }

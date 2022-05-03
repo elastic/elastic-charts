@@ -16,6 +16,7 @@ export const ChartType = Object.freeze({
   Global: 'global' as const,
   Goal: 'goal' as const,
   Partition: 'partition' as const,
+  Flame: 'flame' as const,
   XYAxis: 'xy_axis' as const,
   Heatmap: 'heatmap' as const,
   Wordcloud: 'wordcloud' as const,

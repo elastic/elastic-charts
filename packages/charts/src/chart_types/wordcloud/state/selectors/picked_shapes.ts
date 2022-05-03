@@ -35,6 +35,7 @@ export const getPickedShapesLayerValues = createCustomCachedSelector(
     const elements = pickedShapes.map<Array<LayerValue>>((model) => {
       const values: Array<LayerValue> = [];
       values.push({
+        vmIndex: NaN, // not currently used in word cloud
         smAccessorValue: '',
         groupByRollup: 'Word count',
         value: model.data.length,

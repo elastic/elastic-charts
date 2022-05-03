@@ -11,6 +11,8 @@ import { PointerStates } from '../state/chart_state';
 import { isClicking } from '../state/utils';
 import { SeriesIdentifier } from './series_id';
 
+// todo revise all the complex branching in this file, replace some `if`s and multiple return points with ternaries
+
 /** @internal */
 export const getOnElementClickSelector = (prev: { click: PointerStates['lastClick'] }) => (
   spec: Spec | null,
@@ -26,7 +28,7 @@ export const getOnElementClickSelector = (prev: { click: PointerStates['lastClic
   }
   const nextPickedShapesLength = pickedShapes.length;
   if (nextPickedShapesLength > 0 && isClicking(prev.click, lastClick) && settings && settings.onElementClick) {
-    const elements = pickedShapes.map<[Array<LayerValue>, SeriesIdentifier]>((values) => [
+    const elements = pickedShapes.map<[LayerValue[], SeriesIdentifier]>((values) => [
       values,
       {
         specId: spec.id,
@@ -50,7 +52,8 @@ export const getOnElementOutSelector = (prev: { pickedShapes: number | null }) =
   if (!settings.onElementOut) {
     return;
   }
-  const nextPickedShapes = pickedShapes.length;
+  const nextPickedShapes =
+    pickedShapes.length > 0 && pickedShapes[0].length > 0 && pickedShapes[0][0].vmIndex !== 0 ? 1 : 0;
 
   if (prev.pickedShapes !== null && prev.pickedShapes > 0 && nextPickedShapes === 0) {
     settings.onElementOut();
@@ -58,7 +61,7 @@ export const getOnElementOutSelector = (prev: { pickedShapes: number | null }) =
   prev.pickedShapes = nextPickedShapes;
 };
 
-function isOverElement(prevPickedShapes: Array<Array<LayerValue>> = [], nextPickedShapes: Array<Array<LayerValue>>) {
+function isNewPickedShapes(prevPickedShapes: LayerValue[][] = [], nextPickedShapes: LayerValue[][]) {
   if (nextPickedShapes.length === 0) {
     return;
   }
@@ -89,15 +92,9 @@ export const getOnElementOverSelector = (prev: { pickedShapes: LayerValue[][] })
   nextPickedShapes: LayerValue[][],
   settings: SettingsSpec,
 ): void => {
-  if (!spec) {
-    return;
-  }
-  if (!settings.onElementOver) {
-    return;
-  }
-
-  if (isOverElement(prev.pickedShapes, nextPickedShapes)) {
-    const elements = nextPickedShapes.map<[Array<LayerValue>, SeriesIdentifier]>((values) => [
+  if (!spec || !settings.onElementOver) return;
+  if (isNewPickedShapes(prev.pickedShapes, nextPickedShapes)) {
+    const elements = nextPickedShapes.map<[LayerValue[], SeriesIdentifier]>((values) => [
       values,
       {
         specId: spec.id,

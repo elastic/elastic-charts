@@ -37,7 +37,7 @@ class Resizer extends React.Component<ResizerProps> {
 
   private ro: ResizeObserver;
 
-  private animationFrameID: number | null;
+  private animationFrameID: number;
 
   private onResizeDebounced: (entries: ResizeObserverEntry[]) => void;
 
@@ -45,7 +45,7 @@ class Resizer extends React.Component<ResizerProps> {
     super(props);
     this.containerRef = React.createRef();
     this.ro = new ResizeObserver(this.handleResize);
-    this.animationFrameID = null;
+    this.animationFrameID = NaN;
     this.onResizeDebounced = () => {};
   }
 
@@ -57,9 +57,7 @@ class Resizer extends React.Component<ResizerProps> {
   }
 
   componentWillUnmount() {
-    if (this.animationFrameID) {
-      window.cancelAnimationFrame(this.animationFrameID);
-    }
+    window.cancelAnimationFrame(this.animationFrameID);
     this.ro.disconnect();
   }
 
