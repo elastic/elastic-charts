@@ -283,7 +283,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
 const FlameChartLayer = connect(mapStateToProps, mapDispatchToProps)(FlameComponent);
 
 /** @internal */
-export const render = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
+export const FlameWithTooltip = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
   <>
     <Tooltip getChartContainerRef={containerRef} />
     <FlameChartLayer forwardStageRef={forwardStageRef} />
