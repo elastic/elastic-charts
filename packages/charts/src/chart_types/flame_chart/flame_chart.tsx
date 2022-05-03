@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { createRef, CSSProperties, MouseEvent, RefObject, WheelEventHandler } from 'react';
+import React, { createRef, CSSProperties, KeyboardEvent, MouseEvent, RefObject, WheelEventHandler } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -33,14 +33,14 @@ import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
 import { roundUpSize } from './render/common';
 import { drawFrame } from './render/draw_a_frame';
-import { ensureWebgl } from './render/ensure_webgl';
+import { ensureWebgl, uploadToWebgl } from './render/ensure_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const RECURRENCE_ALPHA_PER_MS_X = 0.01;
-const RECURRENCE_ALPHA_PER_MS_Y = 0.01;
+const RECURRENCE_ALPHA_PER_MS_Y = 0.0062;
 const SINGLE_CLICK_EMPTY_FOCUS = true;
 const IS_META_REQUIRED_FOR_ZOOM = false;
 const ZOOM_SPEED = 0.0015;
@@ -72,26 +72,29 @@ interface FocusRect {
   y1: number;
 }
 
-const focusRect = (
-  columnarViewModel: FlameSpec['columnarData'],
-  chartHeight: number,
-  drilldownDatumIndex: number,
-  drilldownTimestamp: number,
-): FocusRect => {
-  const { x0, x1, y0, y1 } = columnToRowPositions(columnarViewModel, drilldownDatumIndex || 0);
+const focusForArea = (chartHeight: number, { x0, x1, y0, y1 }: { x0: number; x1: number; y0: number; y1: number }) => {
   const sideOvershoot = SIDE_OVERSHOOT_RATIO * (x1 - x0);
   const unitHeight = (chartHeight / initialPixelRowPitch()) * (y1 - y0);
   const intendedY0 = y1 - unitHeight;
   const bottomOvershoot = Math.max(0, -intendedY0);
   const top = Math.min(1, y1 + bottomOvershoot);
   return {
-    timestamp: drilldownTimestamp,
     x0: Math.max(0, x0 - sideOvershoot),
     x1: Math.min(1, x1 + sideOvershoot),
     y0: Math.max(0, intendedY0),
     y1: Math.min(1, top),
   };
 };
+
+const focusRect = (
+  columnarViewModel: FlameSpec['columnarData'],
+  chartHeight: number,
+  drilldownDatumIndex: number,
+  drilldownTimestamp: number,
+): FocusRect => ({
+  timestamp: drilldownTimestamp,
+  ...focusForArea(chartHeight, columnToRowPositions(columnarViewModel, drilldownDatumIndex || 0)),
+});
 
 const getColor = (c: Float32Array, i: number) => {
   const r = Math.round(255 * c[4 * i]);
@@ -139,6 +142,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private pickTexture: Texture;
   private glResources: GLResources;
   private readonly glCanvasRef: RefObject<HTMLCanvasElement>;
+  private readonly searchInputRef: RefObject<HTMLInputElement>;
 
   // native browser pinch zoom handling
   private pinchZoomSetInterval: number;
@@ -163,6 +167,10 @@ class FlameComponent extends React.Component<FlameProps> {
   private startOfDragY: number = NaN;
   private startOfDragY0: number = NaN;
 
+  // text search
+  private currentSearchString: string = '';
+  private currentSearchHitCount: number = 0;
+
   constructor(props: Readonly<FlameProps>) {
     super(props);
     this.ctx = null;
@@ -170,6 +178,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.pickTexture = NullTexture;
     this.glResources = NULL_GL_RESOURCES;
     this.glCanvasRef = createRef();
+    this.searchInputRef = createRef();
     this.animationRafId = NaN;
     this.prevT = NaN;
     this.currentFocus = focusRect(this.props.columnarViewModel, props.chartDimensions.height, 0, -Infinity);
@@ -436,6 +445,38 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
+  private handleKeyPress = (e: KeyboardEvent) => {
+    e.stopPropagation();
+    const input = this.searchInputRef.current;
+    const searchString = input?.value;
+    this.currentSearchHitCount = 0;
+    if (!input || typeof searchString !== 'string' || searchString === this.currentSearchString) return;
+    this.currentSearchString = searchString;
+    const columns = this.props.columnarViewModel;
+    const labels = columns.label;
+    const size = columns.size1;
+    const position = columns.position1;
+    const rowHeight = unitRowPitch(position);
+    const datumCount = labels.length;
+    let x0 = Infinity;
+    let x1 = -Infinity;
+    let y0 = Infinity;
+    let y1 = -Infinity;
+    for (let i = 0; i < datumCount; i++) {
+      if (labels[i].includes(searchString)) {
+        this.currentSearchHitCount++;
+        x0 = Math.min(x0, position[2 * i]);
+        x1 = Math.max(x1, position[2 * i] + size[i]);
+        y0 = Math.min(y0, position[2 * i + 1]);
+        y1 = Math.max(y1, position[2 * i + 1] + rowHeight);
+      }
+    }
+    if (Number.isFinite(x0)) {
+      Object.assign(this.targetFocus, focusForArea(this.props.chartDimensions.height, { x0, x1, y0, y1 }));
+    }
+    this.setState({});
+  };
+
   render = () => {
     const {
       forwardStageRef,
@@ -459,6 +500,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const canvasWidth = width * dpr;
     const canvasHeight = height * dpr;
     const columns = this.props.columnarViewModel;
+    const hitCount = this.currentSearchHitCount;
     return (
       <>
         <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
@@ -473,12 +515,13 @@ class FlameComponent extends React.Component<FlameProps> {
           />
           <canvas /* Canvas2d layer */
             ref={forwardStageRef}
+            tabIndex={0}
             className="echCanvasRenderer"
             width={canvasWidth}
             height={canvasHeight}
             onMouseMove={this.handleMouseHoverMove}
             onMouseDown={this.handleMouseDown}
-            /*onMouseUp={this.handleMouseUp}*/
+            /*onKeyPress={this.handleKeyPress}*/
             onMouseLeave={this.handleMouseLeave}
             onWheel={this.handleWheel}
             style={style}
@@ -486,6 +529,28 @@ class FlameComponent extends React.Component<FlameProps> {
             role="presentation"
           />
         </figure>
+        <div
+          style={{
+            position: 'absolute',
+            transform: 'translateY(340px)',
+          }}
+        >
+          <input
+            ref={this.searchInputRef}
+            type="text"
+            tabIndex={0}
+            placeholder="Enter search string"
+            onKeyPress={this.handleKeyPress}
+            onKeyUp={this.handleKeyPress}
+            style={{
+              border: '0px solid lightgray',
+              padding: 3,
+              outline: 'none',
+              background: 'rgba(255,0,255,0)',
+            }}
+          />
+          <p style={{ float: 'right', padding: 3 }}>{this.currentSearchString ? `Found: ${hitCount}` : ''}</p>
+        </div>
         <BasicTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
           position={{ x: this.pointerX, y: this.pointerY, width: 0, height: 0 }}
@@ -545,7 +610,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
       const relativeExpansionX = Math.max(1, (currentExtentX + dx1 - dx0) / currentExtentX);
       const relativeExpansionY = Math.max(1, (currentExtentX + dy1 - dy0) / currentExtentY);
-      const jointRelativeExpansion = relativeExpansionX * relativeExpansionY;
+      const jointRelativeExpansion = (relativeExpansionX + relativeExpansionY) / 2;
 
       const convergenceRateX = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_X) / jointRelativeExpansion;
       const convergenceRateY = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_Y) / jointRelativeExpansion;
@@ -558,7 +623,11 @@ class FlameComponent extends React.Component<FlameProps> {
       renderFrame([this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1]);
 
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
-      if (maxDiff > 1e-12) this.animationRafId = window.requestAnimationFrame(anim);
+      if (maxDiff > 1e-12) {
+        this.animationRafId = window.requestAnimationFrame(anim);
+      } else {
+        this.prevT = NaN;
+      }
     };
     window.cancelAnimationFrame(this.animationRafId);
     this.animationRafId = window.requestAnimationFrame(anim);
@@ -600,7 +669,8 @@ class FlameComponent extends React.Component<FlameProps> {
     this.ensurePickTexture();
 
     if (this.glContext && this.glResources === NULL_GL_RESOURCES) {
-      this.glResources = ensureWebgl(this.glContext, this.props.columnarViewModel);
+      this.glResources = ensureWebgl(this.glContext, Object.keys(this.props.columnarViewModel));
+      uploadToWebgl(this.glContext, this.glResources.attributes, this.props.columnarViewModel);
     }
   };
 }

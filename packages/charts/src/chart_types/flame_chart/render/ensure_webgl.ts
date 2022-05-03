@@ -7,6 +7,7 @@
  */
 
 import {
+  Attributes,
   bindVertexArray,
   createCompiledShader,
   createLinkedProgram,
@@ -17,20 +18,19 @@ import {
 } from '../../../common/kingly';
 import { ColumnarViewModel } from '../flame_api';
 import { colorFrag, rectVert, roundedRectFrag } from '../shaders';
-import { GLResources } from '../types';
+import { GLResources, NULL_GL_RESOURCES } from '../types';
 
 /** @internal */
-export function ensureWebgl(gl: WebGL2RenderingContext, columnarViewModel: ColumnarViewModel): GLResources {
+export function ensureWebgl(gl: WebGL2RenderingContext, instanceAttributes: string[]): GLResources {
   /**
    * Vertex array attributes
    */
 
   const vao = gl.createVertexArray();
-  if (!vao) return { roundedRectRenderer: () => {}, pickTextureRenderer: () => {} };
+  if (!vao) return NULL_GL_RESOURCES;
 
   bindVertexArray(gl, vao);
 
-  const instanceAttributes = Object.keys(columnarViewModel);
   const attributeLocations = new Map(instanceAttributes.map((name, i: GLuint) => [name, i]));
 
   // by how many instances should each attribute advance?
@@ -65,11 +65,19 @@ export function ensureWebgl(gl: WebGL2RenderingContext, columnarViewModel: Colum
   const roundedRectRenderer = getRenderer(gl, geomProgram, vao, { depthTest: false, blend: true });
   const pickTextureRenderer = getRenderer(gl, pickProgram, vao, { depthTest: false, blend: false }); // must not blend the texture, else the pick color thus datumIndex will be wrong
 
-  // fill attribute values
-  getAttributes(gl, geomProgram, attributeLocations).forEach((setValue, key) => {
+  const attributes = getAttributes(gl, geomProgram, attributeLocations);
+
+  return { roundedRectRenderer, pickTextureRenderer, attributes };
+}
+
+/** @internal */
+export function uploadToWebgl(
+  gl: WebGL2RenderingContext,
+  attributes: Attributes,
+  columnarViewModel: ColumnarViewModel,
+) {
+  attributes.forEach((setValue, key) => {
     const value = columnarViewModel[key as keyof ColumnarViewModel];
     if (value instanceof Float32Array) setValue(value);
   });
-
-  return { roundedRectRenderer, pickTextureRenderer };
 }

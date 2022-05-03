@@ -51,6 +51,9 @@ export const drawCanvas = (
   ctx.scale(dpr, dpr);
   ctx.font = `${fontSize}px sans-serif`;
   ctx.clearRect(0, 0, roundUpSize(cssWidth), roundUpSize(cssHeight));
+  ctx.beginPath();
+  ctx.rect(0, 0, roundUpSize(cssWidth), cssHeight);
+  ctx.clip();
   let lastTextColor = '';
 
   columnarGeomData.label.forEach((dataName, i) => {

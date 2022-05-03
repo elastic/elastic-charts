@@ -455,11 +455,14 @@ const attribElementTypeLookup = {
 const integerTypes = new Set([GL.BYTE, GL.SHORT, GL.INT, GL.UNSIGNED_BYTE, GL.UNSIGNED_SHORT, GL.UNSIGNED_INT]);
 
 /** @internal */
+export type Attributes = Map<string, (data: ArrayBufferView) => void>;
+
+/** @internal */
 export const getAttributes = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
   attributeLocations: Map<string, GLuint>,
-) =>
+): Attributes =>
   new Map(
     [...new Array(gl.getProgramParameter(program, GL.ACTIVE_ATTRIBUTES) /* attributesCount */)].map((_, index) => {
       const normalize = false; // don't normalize the data

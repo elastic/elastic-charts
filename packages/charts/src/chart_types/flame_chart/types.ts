@@ -7,16 +7,21 @@
  */
 
 import { Pixels } from '../../common/geometry';
-import { UseInfo } from '../../common/kingly';
+import { Attributes, UseInfo } from '../../common/kingly';
 
 /** @internal */
 export interface GLResources {
   roundedRectRenderer: (u: UseInfo) => void;
   pickTextureRenderer: (u: UseInfo) => void;
+  attributes: Attributes;
 }
 
 /** @internal */
-export const NULL_GL_RESOURCES = { roundedRectRenderer: () => {}, pickTextureRenderer: () => {} };
+export const NULL_GL_RESOURCES = {
+  roundedRectRenderer: () => {},
+  pickTextureRenderer: () => {},
+  attributes: new Map(),
+};
 
 /** @internal */
 export interface ContinuousDomainFocus {

@@ -14,9 +14,10 @@ import { drawWebgl } from './draw_webgl';
 
 const CHART_BOX_LINE_WIDTH = 0.5;
 const MINIMAP_SIZE_RATIO_X = 3;
-const MINIMAP_SIZE_RATIO_Y = 5;
+const MINIMAP_SIZE_RATIO_Y = 3;
 const MINIMAP_FOCUS_BOX_LINE_WIDTH = 1;
 const MINIMAP_BOX_LINE_WIDTH = 1;
+const PADDING_BOTTOM = 24;
 
 /** @internal */
 export const drawFrame = (
@@ -30,7 +31,7 @@ export const drawFrame = (
   pickTextureRenderer: Render,
   roundedRectRenderer: Render,
   hoverIndex: number,
-  rowHeight: number,
+  unitRowHeight: number,
 ) => (currentFocus: [number, number, number, number]) => {
   const canvasHeightExcess = (roundUpSize(cssHeight) - cssHeight) * dpr;
   const minimapHeight = cssHeight / MINIMAP_SIZE_RATIO_Y;
@@ -43,13 +44,13 @@ export const drawFrame = (
       gl,
       1,
       cssWidth * dpr,
-      cssHeight * dpr,
+      (cssHeight - PADDING_BOTTOM) * dpr,
       0,
-      pickLayer ? 0 : canvasHeightExcess,
+      (pickLayer ? 0 : canvasHeightExcess) + dpr * PADDING_BOTTOM,
       pickTexture,
       pickLayer ? pickTextureRenderer : roundedRectRenderer,
       hoverIndex,
-      rowHeight,
+      unitRowHeight,
       currentFocus,
       columnarGeomData.label.length,
       true,
@@ -67,7 +68,7 @@ export const drawFrame = (
       pickTexture,
       pickLayer ? pickTextureRenderer : roundedRectRenderer,
       hoverIndex,
-      rowHeight,
+      unitRowHeight,
       fullFocus,
       columnarGeomData.label.length,
       false,
@@ -77,7 +78,7 @@ export const drawFrame = (
   // base (focus) layer
   drawFocusLayer(false);
 
-  drawCanvas(ctx, 1, cssWidth, cssHeight, dpr, columnarGeomData, rowHeight, currentFocus);
+  drawCanvas(ctx, 1, cssWidth, cssHeight - PADDING_BOTTOM, dpr, columnarGeomData, unitRowHeight, currentFocus);
 
   // minimap geoms
   drawContextLayer(false);
@@ -89,7 +90,18 @@ export const drawFrame = (
   drawContextLayer(true);
 
   // chart border
-  drawRect(ctx, cssWidth, cssHeight, 0, cssHeight, dpr, fullFocus, '', 'black', CHART_BOX_LINE_WIDTH);
+  drawRect(
+    ctx,
+    cssWidth,
+    cssHeight - PADDING_BOTTOM,
+    0,
+    cssHeight - PADDING_BOTTOM,
+    dpr,
+    fullFocus,
+    '',
+    'black',
+    CHART_BOX_LINE_WIDTH,
+  );
 
   // minimap box - erase Canvas2d text from the main chart that falls within the minimap area
   drawRect(ctx, minimapWidth, minimapHeight, minimapLeft, cssHeight, dpr, fullFocus, 'rgba(255,255,255,1)', '', 0);
