@@ -136,6 +136,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   componentDidUpdate = () => {
     if (!this.ctx) this.tryCanvasContext();
+    this.drawCanvas(); // eg. due to chartDimensions (parentDimensions) change
   };
 
   private getFocus = () => {
