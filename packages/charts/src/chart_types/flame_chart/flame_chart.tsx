@@ -78,6 +78,14 @@ const focusRect = (columnarViewModel: ColumnarViewModel, { datumIndex, timestamp
   };
 };
 
+const getColor = (c: Float32Array, i: number) => {
+  const r = Math.round(255 * c[4 * i]);
+  const g = Math.round(255 * c[4 * i + 1]);
+  const b = Math.round(255 * c[4 * i + 2]);
+  const a = c[4 * i + 3];
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+
 class FlameComponent extends React.Component<FlameProps> {
   static displayName = 'Flame';
 
@@ -260,11 +268,7 @@ class FlameComponent extends React.Component<FlameProps> {
                 ? [
                     {
                       label: columns.label[this.hoverIndex],
-                      color: `rgba(${Math.round(255 * columns.color[4 * this.hoverIndex])}, ${Math.round(
-                        255 * columns.color[4 * this.hoverIndex + 1],
-                      )}, ${Math.round(255 * columns.color[4 * this.hoverIndex + 2])}, ${
-                        columns.color[4 * this.hoverIndex + 3]
-                      })`,
+                      color: getColor(columns.color, this.hoverIndex),
                       isHighlighted: false,
                       isVisible: true,
                       seriesIdentifier: { specId: '', key: '' },
