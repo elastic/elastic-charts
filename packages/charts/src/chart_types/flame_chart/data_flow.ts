@@ -7,7 +7,6 @@
  */
 
 import { ChartType } from '..';
-import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { getTooltipType, SpecType, TooltipType } from '../../specs';
 import { GlobalChartState } from '../../state/chart_state';
 import { createCustomCachedSelector } from '../../state/create_selector';
@@ -21,13 +20,6 @@ export const getFlameSpec = (state: GlobalChartState): FlameSpec | void =>
 
 /** @internal */
 export const getPickedShape = ({ interactions }: GlobalChartState) => interactions.hoveredGeomIndex;
-
-/** @internal */
-export const getPointerCursor = createCustomCachedSelector(
-  [getPickedShape, getSettingsSpecSelector],
-  (pickedShape, { onElementClick, onElementOver }) =>
-    Number.isFinite(pickedShape) && (onElementClick || onElementOver) ? 'pointer' : DEFAULT_CSS_CURSOR,
-);
 
 /** @internal */
 export const shouldDisplayTooltip = createCustomCachedSelector(

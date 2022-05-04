@@ -10,6 +10,7 @@ import React, { createRef, CSSProperties, MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { NakedTooltip } from '../../components/tooltip/tooltip';
 import { onDatumHovered } from '../../state/actions/hover';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
@@ -196,7 +197,7 @@ class FlameComponent extends React.Component<FlameProps> {
       margin: 0,
       border: 0,
       position: 'absolute',
-      // cursor: 'crosshair',
+      cursor: this.hoverIndex >= 0 ? 'pointer' : DEFAULT_CSS_CURSOR,
     };
     const canvasWidth = width * this.devicePixelRatio;
     const canvasHeight = height * this.devicePixelRatio;
