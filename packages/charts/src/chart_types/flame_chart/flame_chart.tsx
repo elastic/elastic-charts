@@ -13,7 +13,14 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { NakedTooltip } from '../../components/tooltip/tooltip';
-import { getTooltipType, SpecType, TooltipType } from '../../specs';
+import {
+  BasicListener,
+  ElementClickListener,
+  ElementOverListener,
+  getTooltipType,
+  SpecType,
+  TooltipType,
+} from '../../specs';
 import { onDatumHovered } from '../../state/actions/hover';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
@@ -39,6 +46,9 @@ interface ReactiveChartStateProps {
   tooltipRequired: boolean;
   pointerX: number;
   pointerY: number;
+  onElementOver: ElementOverListener;
+  onElementClick: ElementClickListener;
+  onElementOut: BasicListener;
 }
 
 interface ReactiveChartDispatchProps {
@@ -168,10 +178,17 @@ class FlameComponent extends React.Component<FlameProps> {
 
   handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
     const hovered = this.getHoveredDatumIndex(e);
+    const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
     if (hovered) {
       this.props.onDatumHovered(hovered.datumIndex);
       this.hoverIndex = Number.isNaN(hovered.datumIndex) ? DUMMY_INDEX : hovered.datumIndex;
       this.drawCanvas();
+      if (Number.isFinite(hovered.datumIndex) && !Object.is(this.hoverIndex, prevHoverIndex)) {
+        this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
+      }
+    } else if (Number.isFinite(prevHoverIndex)) {
+      this.hoverIndex = DUMMY_INDEX;
+      this.props.onElementOut(); // userland callback
     }
   }
 
@@ -183,6 +200,7 @@ class FlameComponent extends React.Component<FlameProps> {
       this.hoverIndex = DUMMY_INDEX; // no highlight
       this.props.onDatumHovered(NaN); // no tooltip
       this.drawCanvas(); // consider switching to the less direct this.setState
+      this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
     }
   }
 
@@ -317,6 +335,9 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     tooltipRequired: getTooltipType(settingsSpec) !== TooltipType.None,
     pointerX: state.interactions.pointer.current.position.x,
     pointerY: state.interactions.pointer.current.position.y,
+    onElementOver: settingsSpec.onElementOver ?? (() => {}),
+    onElementClick: settingsSpec.onElementClick ?? (() => {}),
+    onElementOut: settingsSpec.onElementOut ?? (() => {}),
   };
 };
 
