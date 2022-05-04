@@ -219,6 +219,10 @@ export function ensureLinearFlameWebGL(
     if (typeof attributeLocation === 'number') gl.vertexAttribDivisor(attributeLocation, 1);
   });
 
+  /**
+   * Programs
+   */
+
   const geomProgram =
     glResources.geomProgram ||
     createLinkedProgram(

@@ -208,9 +208,11 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleMouseLeave = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
-    this.hoverIndex = DUMMY_INDEX; // no highlight
-    this.setState({});
-    this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
+    if (this.hoverIndex !== DUMMY_INDEX) {
+      this.hoverIndex = DUMMY_INDEX; // no highlight when outside
+      this.setState({}); // no tooltip when outside
+      this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
+    }
   };
 
   render = () => {
