@@ -185,7 +185,7 @@ class FlameComponent extends React.Component<FlameProps> {
         this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
       }
       this.setState({});
-      this.drawCanvas(); // why is it also needed if there's setState?
+      this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
     } else if (Number.isFinite(prevHoverIndex)) {
       this.hoverIndex = DUMMY_INDEX;
       this.props.onElementOut(); // userland callback
@@ -199,7 +199,8 @@ class FlameComponent extends React.Component<FlameProps> {
       this.prevDrilldown = this.drilldown;
       this.drilldown = hovered;
       this.hoverIndex = DUMMY_INDEX; // no highlight
-      this.drawCanvas(); // consider switching to the less direct this.setState
+      this.setState({});
+      this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
       this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
     }
   };
@@ -208,7 +209,7 @@ class FlameComponent extends React.Component<FlameProps> {
     e.stopPropagation();
     this.hoverIndex = DUMMY_INDEX; // no highlight
     this.setState({});
-    this.drawCanvas(); // why is it also needed if there's setState?
+    this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
   };
 
   render = () => {
