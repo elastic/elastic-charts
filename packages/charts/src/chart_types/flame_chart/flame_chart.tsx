@@ -182,7 +182,7 @@ class FlameComponent extends React.Component<FlameProps> {
     return { datumIndex, timestamp: e.timeStamp };
   }
 
-  handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
+  handleMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     const hovered = this.getHoveredDatumIndex(e);
     const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
@@ -197,9 +197,9 @@ class FlameComponent extends React.Component<FlameProps> {
       this.hoverIndex = DUMMY_INDEX;
       this.props.onElementOut(); // userland callback
     }
-  }
+  };
 
-  handleMouseClick(e: MouseEvent<HTMLCanvasElement>) {
+  handleMouseClick = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     const hovered = this.getHoveredDatumIndex(e);
     if (hovered) {
@@ -209,7 +209,7 @@ class FlameComponent extends React.Component<FlameProps> {
       this.drawCanvas(); // consider switching to the less direct this.setState
       this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
     }
-  }
+  };
 
   render() {
     const {
@@ -249,9 +249,9 @@ class FlameComponent extends React.Component<FlameProps> {
             className="echCanvasRenderer"
             width={canvasWidth}
             height={canvasHeight}
-            onMouseMove={this.handleMouseMove.bind(this)}
+            onMouseMove={this.handleMouseMove}
             onMouseDown={(e) => e.stopPropagation()}
-            onMouseUp={this.handleMouseClick.bind(this)}
+            onMouseUp={this.handleMouseClick}
             style={style}
             // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
             role="presentation"
