@@ -59,9 +59,8 @@ export const getTooltipInfo = createCustomCachedSelector(
 
 /** @internal */
 export const shouldDisplayTooltip = createCustomCachedSelector(
-  [getFlameSpec, getSettingsSpecSelector, getPickedShape],
-  (spec, settingsSpec, datumIndex): boolean =>
-    Boolean(spec) && Number.isFinite(datumIndex) && getTooltipType(settingsSpec) !== TooltipType.None,
+  [getFlameSpec, getSettingsSpecSelector],
+  (spec, settingsSpec): boolean => Boolean(spec) && getTooltipType(settingsSpec) !== TooltipType.None,
 );
 
 /** @internal */

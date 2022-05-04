@@ -229,7 +229,7 @@ class FlameComponent extends React.Component<FlameProps> {
         <NakedTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
           position={this.props.tooltipAnchor}
-          visible={this.props.isTooltipVisible}
+          visible={this.props.isTooltipVisible && this.hoverIndex >= 0}
           info={this.props.tooltipInfo}
           getChartContainerRef={this.props.containerRef}
         />
