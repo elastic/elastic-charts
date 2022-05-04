@@ -18,10 +18,9 @@ fi
 
 # Run e2e playwright tests inside container
 docker run \
-  --ipc host `# recommended by playwright, see https://playwright.dev/docs/docker#end-to-end-tests` \
-  --platform linux/arm64 `# explicitly set platform` \
   --rm `# removes named container on every run` \
   --init `# handles terminating signals like SIGTERM` \
+  --platform linux/arm64 `# explicitly set platform` \
   --name e2e-playwright-tests `# reusable name of container` \
   -e PORT=${PORT} `# port of local web server ` \
   -e ENV_URL=${ENV_URL} `# url of web server, overrides hostname and PORT ` \

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { createStep, CustomGroupStep, commandStepDefaults, Plugins } from '../utils';
+import { createStep, CustomGroupStep, commandStepDefaults } from '../utils';
 
 export const playwrightStep = createStep<CustomGroupStep>(() => {
   const skip = false;
@@ -22,23 +22,24 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         parallelism: 1,
         key: parallelKey,
         depends_on: ['e2e_server'],
-        plugins: [Plugins.docker.playwright()],
+        plugins: [],
+        // plugins: [Plugins.docker.playwright()],
         artifact_paths: ['.buildkite/artifacts/e2e_reports/*', 'e2e/reports/json/report_*.json'],
         commands: ['npx ts-node .buildkite/scripts/steps/playwright.ts'],
       },
-      {
-        ...commandStepDefaults,
-        key: 'playwright-merge-and-status',
-        label: ':playwright: Set group status and merge reports',
-        skip,
-        allow_dependency_failure: true,
-        depends_on: [parallelKey],
-        commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
-        env: {
-          // TODO fix this status update
-          ECH_GH_STATUS_CONTEXT: 'Playwright e2e',
-        },
-      },
+      // {
+      //   ...commandStepDefaults,
+      //   key: 'playwright-merge-and-status',
+      //   label: ':playwright: Set group status and merge reports',
+      //   skip,
+      //   allow_dependency_failure: true,
+      //   depends_on: [parallelKey],
+      //   commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
+      //   env: {
+      //     // TODO fix this status update
+      //     ECH_GH_STATUS_CONTEXT: 'Playwright e2e',
+      //   },
+      // },
     ],
   };
 });

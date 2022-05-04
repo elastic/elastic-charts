@@ -47,7 +47,7 @@ void (async () => {
   const command =
     (jobTotal ?? 0) > 1
       ? `yarn playwright test --project=Chrome${shard}`
-      : 'yarn playwright test --project=Chrome stylings_stories.test.ts';
+      : 'sh ./scripts/start_test.sh --project=Chrome stylings_stories.test.ts';
   try {
     exec(command, {
       cwd: 'e2e',
