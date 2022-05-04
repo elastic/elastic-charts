@@ -10,16 +10,18 @@ import React, { createRef, CSSProperties, MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { NakedTooltip } from '../../components/tooltip/tooltip';
-import { getTooltipType, TooltipType } from '../../specs';
+import { getTooltipType, SpecType, TooltipType } from '../../specs';
 import { onDatumHovered } from '../../state/actions/hover';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
 import { A11ySettings, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
+import { getSpecsFromStore } from '../../state/utils';
 import { Size } from '../../utils/dimensions';
-import { getFlameSpec } from './data_flow';
+import { FlameSpec } from './flame_api';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, ColumnarViewModel, GLResources, nullColumnarViewModel } from './types';
 import { ensureLinearFlameWebGL, renderLinearFlameWebGL } from './webgl_linear_renderers';
@@ -305,7 +307,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
   bindActionCreators({ onDatumHovered: onDatumHovered }, dispatch);
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
-  const flameSpec = getFlameSpec(state);
+  const flameSpec = getSpecsFromStore<FlameSpec>(state.specs, ChartType.Flame, SpecType.Series)[0];
   const settingsSpec = getSettingsSpecSelector(state);
   return {
     columnarViewModel: flameSpec?.columnarData ?? nullColumnarViewModel,
