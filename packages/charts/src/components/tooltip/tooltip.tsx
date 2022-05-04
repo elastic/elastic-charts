@@ -7,15 +7,15 @@
  */
 
 import classNames from 'classnames';
-import React, { memo, useCallback, useMemo, useEffect } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { colorToRgba } from '../../common/color_library_wrappers';
 import { Colors } from '../../common/colors';
-import { TooltipValueFormatter, TooltipSettings, TooltipValue } from '../../specs';
+import { TooltipSettings, TooltipValue, TooltipValueFormatter } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
-import { GlobalChartState, BackwardRef } from '../../state/chart_state';
+import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
@@ -24,8 +24,8 @@ import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
-import { Rotation, isDefined, hasMostlyRTLItems } from '../../utils/common';
-import { TooltipPortal, TooltipPortalSettings, AnchorPosition, Placement } from '../portal';
+import { hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
+import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
 import { getTooltipSettings } from './get_tooltip_settings';
 import { TooltipInfo } from './types';
 
@@ -38,15 +38,6 @@ interface TooltipStateProps {
   visible: boolean;
   position: AnchorPosition | null;
   info?: TooltipInfo;
-  headerFormatter?: TooltipValueFormatter;
-  settings?: TooltipSettings;
-  rotation: Rotation;
-  chartId: string;
-  backgroundColor: string;
-}
-
-interface TooltipStateProps2 {
-  zIndex: number;
   headerFormatter?: TooltipValueFormatter;
   settings?: TooltipSettings;
   rotation: Rotation;
@@ -227,47 +218,33 @@ const HIDDEN_TOOLTIP_PROPS = {
 const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
   bindActionCreators({ onPointerMove: onPointerMoveAction }, dispatch);
 
-const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
-    return HIDDEN_TOOLTIP_PROPS;
-  }
-  const { visible, isExternal } = getInternalIsTooltipVisibleSelector(state);
+const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 'visible' | 'position' | 'info'> =>
+  getInternalIsInitializedSelector(state) !== InitStatus.Initialized
+    ? HIDDEN_TOOLTIP_PROPS
+    : {
+        zIndex: state.zIndex,
+        headerFormatter: getTooltipHeaderFormatterSelector(state),
+        settings: getTooltipSettings(
+          getSettingsSpecSelector(state),
+          getInternalIsTooltipVisibleSelector(state).isExternal,
+        ),
+        rotation: getChartRotationSelector(state),
+        chartId: state.chartId,
+        backgroundColor: getChartThemeSelector(state).background.color,
+      };
 
-  const settingsSpec = getSettingsSpecSelector(state);
-  const settings = getTooltipSettings(settingsSpec, isExternal);
-  return {
-    visible,
-    zIndex: state.zIndex,
-    info: getInternalTooltipInfoSelector(state),
-    position: getInternalTooltipAnchorPositionSelector(state),
-    headerFormatter: getTooltipHeaderFormatterSelector(state),
-    settings,
-    rotation: getChartRotationSelector(state),
-    chartId: state.chartId,
-    backgroundColor: getChartThemeSelector(state).background.color,
-  };
-};
-
-const mapStateToProps2 = (state: GlobalChartState): TooltipStateProps2 => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
-    return HIDDEN_TOOLTIP_PROPS;
-  }
-  const isExternal = false;
-
-  const settingsSpec = getSettingsSpecSelector(state);
-  const settings = getTooltipSettings(settingsSpec, isExternal);
-  return {
-    zIndex: state.zIndex,
-    headerFormatter: getTooltipHeaderFormatterSelector(state),
-    settings,
-    rotation: getChartRotationSelector(state),
-    chartId: state.chartId,
-    backgroundColor: getChartThemeSelector(state).background.color,
-  };
-};
+const mapStateToProps = (state: GlobalChartState): TooltipStateProps =>
+  getInternalIsInitializedSelector(state) !== InitStatus.Initialized
+    ? HIDDEN_TOOLTIP_PROPS
+    : {
+        ...mapStateToPropsBasic(state),
+        visible: getInternalIsTooltipVisibleSelector(state).visible,
+        position: getInternalTooltipAnchorPositionSelector(state),
+        info: getInternalTooltipInfoSelector(state),
+      };
 
 /** @internal */
 export const Tooltip = memo(connect(mapStateToProps, mapDispatchToProps)(TooltipComponent));
 
 /** @internal */
-export const NakedTooltip = memo(connect(mapStateToProps2)(TooltipComponent));
+export const BasicTooltip = memo(connect(mapStateToPropsBasic)(TooltipComponent));

@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import { NakedTooltip } from '../../components/tooltip/tooltip';
+import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
@@ -258,7 +258,7 @@ class FlameComponent extends React.Component<FlameProps> {
             role="presentation"
           />
         </figure>
-        <NakedTooltip
+        <BasicTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
           position={{ x: this.pointerX, y: this.pointerY, width: 0, height: 0 }}
           visible={this.props.tooltipRequired && this.hoverIndex >= 0}
