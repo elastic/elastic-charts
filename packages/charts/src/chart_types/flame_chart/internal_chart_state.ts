@@ -14,7 +14,7 @@ import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getLastClickSelector } from '../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../utils/dimensions';
-import { getFlameSpec, getPickedShape, getPointerCursor, getTooltipInfo, shouldDisplayTooltip } from './data_flow';
+import { getFlameSpec, getPickedShape, getPointerCursor } from './data_flow';
 import { FlameWithTooltip } from './flame_chart';
 
 const EMPTY_LIST: never[] = [];
@@ -29,15 +29,6 @@ export class FlameState implements InternalChartState {
 
   isInitialized = (globalState: GlobalChartState) =>
     getFlameSpec(globalState) ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
-
-  getTooltipAnchor = ({ interactions: { pointer } }: GlobalChartState) => {
-    return { x: pointer.current.position.x, y: pointer.current.position.y, width: 0, height: 0, isRotated: false };
-  };
-
-  isTooltipVisible = (globalState: GlobalChartState) => ({
-    visible: shouldDisplayTooltip(globalState),
-    isExternal: false,
-  });
 
   eventCallbacks(globalState: GlobalChartState) {
     const settings = getSettingsSpecSelector(globalState);
@@ -70,7 +61,9 @@ export class FlameState implements InternalChartState {
   getLegendItems = () => EMPTY_LIST;
   getLegendExtraValues = () => new Map<SeriesKey, LegendItemExtraValues>();
   getPointerCursor = getPointerCursor;
-  getTooltipInfo = getTooltipInfo;
+  getTooltipAnchor = () => ({ x: 0, y: 0, width: 0, height: 0 });
+  isTooltipVisible = () => ({ visible: false, isExternal: false });
+  getTooltipInfo = () => ({ header: null, values: [] });
   getProjectionContainerArea = (): Dimensions => ({ width: 0, height: 0, top: 0, left: 0 });
   getMainProjectionArea = (): Dimensions => ({ width: 0, height: 0, top: 0, left: 0 });
   getBrushArea = () => null;

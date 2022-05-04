@@ -45,6 +45,15 @@ interface TooltipStateProps {
   backgroundColor: string;
 }
 
+interface TooltipStateProps2 {
+  zIndex: number;
+  headerFormatter?: TooltipValueFormatter;
+  settings?: TooltipSettings;
+  rotation: Rotation;
+  chartId: string;
+  backgroundColor: string;
+}
+
 interface TooltipOwnProps {
   getChartContainerRef: BackwardRef;
 }
@@ -239,5 +248,26 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps => {
   };
 };
 
+const mapStateToProps2 = (state: GlobalChartState): TooltipStateProps2 => {
+  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+    return HIDDEN_TOOLTIP_PROPS;
+  }
+  const isExternal = false;
+
+  const settingsSpec = getSettingsSpecSelector(state);
+  const settings = getTooltipSettings(settingsSpec, isExternal);
+  return {
+    zIndex: state.zIndex,
+    headerFormatter: getTooltipHeaderFormatterSelector(state),
+    settings,
+    rotation: getChartRotationSelector(state),
+    chartId: state.chartId,
+    backgroundColor: getChartThemeSelector(state).background.color,
+  };
+};
+
 /** @internal */
 export const Tooltip = memo(connect(mapStateToProps, mapDispatchToProps)(TooltipComponent));
+
+/** @internal */
+export const NakedTooltip = memo(connect(mapStateToProps2)(TooltipComponent));

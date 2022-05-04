@@ -63,3 +63,8 @@ export const shouldDisplayTooltip = createCustomCachedSelector(
   (spec, settingsSpec, datumIndex): boolean =>
     Boolean(spec) && Number.isFinite(datumIndex) && getTooltipType(settingsSpec) !== TooltipType.None,
 );
+
+/** @internal */
+export const getTooltipAnchor = ({ interactions: { pointer } }: GlobalChartState) => {
+  return { x: pointer.current.position.x, y: pointer.current.position.y, width: 0, height: 0, isRotated: false };
+};

@@ -10,12 +10,15 @@ import React, { createRef, CSSProperties, MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { Tooltip } from '../../components/tooltip';
+import { AnchorPosition } from '../../components/portal';
+import { NakedTooltip } from '../../components/tooltip/tooltip';
+import { TooltipInfo } from '../../components/tooltip/types';
 import { onDatumHovered } from '../../state/actions/hover';
+import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
 import { A11ySettings, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { Size } from '../../utils/dimensions';
-import { getFlameSpec } from './data_flow';
+import { getFlameSpec, getTooltipAnchor, getTooltipInfo, shouldDisplayTooltip } from './data_flow';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, ColumnarViewModel, GLResources, nullColumnarViewModel } from './types';
 import { ensureLinearFlameWebGL, renderLinearFlameWebGL } from './webgl_linear_renderers';
@@ -30,6 +33,9 @@ interface ReactiveChartStateProps {
   animationDuration: number;
   chartDimensions: Size;
   a11ySettings: A11ySettings;
+  isTooltipVisible: boolean;
+  tooltipAnchor: AnchorPosition;
+  tooltipInfo: TooltipInfo;
 }
 
 interface ReactiveChartDispatchProps {
@@ -37,6 +43,7 @@ interface ReactiveChartDispatchProps {
 }
 
 interface ReactiveChartOwnProps {
+  containerRef: BackwardRef;
   forwardStageRef: RefObject<HTMLCanvasElement>;
 }
 
@@ -196,28 +203,37 @@ class FlameComponent extends React.Component<FlameProps> {
     const canvasWidth = width * this.devicePixelRatio;
     const canvasHeight = height * this.devicePixelRatio;
     return (
-      <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
-        <canvas /* WebGL2 layer */
-          ref={this.glCanvasRef}
-          className="echCanvasRenderer"
-          width={canvasWidth}
-          height={canvasHeight}
-          style={style}
-          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-          role="presentation"
+      <>
+        <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
+          <canvas /* WebGL2 layer */
+            ref={this.glCanvasRef}
+            className="echCanvasRenderer"
+            width={canvasWidth}
+            height={canvasHeight}
+            style={style}
+            // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+            role="presentation"
+          />
+          <canvas /* Canvas2d layer */
+            ref={forwardStageRef}
+            className="echCanvasRenderer"
+            width={canvasWidth}
+            height={canvasHeight}
+            onMouseMove={this.handleMouseMove.bind(this)}
+            onMouseUp={this.handleMouseClick.bind(this)}
+            style={style}
+            // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
+            role="presentation"
+          />
+        </figure>
+        <NakedTooltip
+          onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
+          position={this.props.tooltipAnchor}
+          visible={this.props.isTooltipVisible}
+          info={this.props.tooltipInfo}
+          getChartContainerRef={this.props.containerRef}
         />
-        <canvas /* Canvas2d layer */
-          ref={forwardStageRef}
-          className="echCanvasRenderer"
-          width={canvasWidth}
-          height={canvasHeight}
-          onMouseMove={this.handleMouseMove.bind(this)}
-          onMouseUp={this.handleMouseClick.bind(this)}
-          style={style}
-          // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
-          role="presentation"
-        />
-      </figure>
+      </>
     );
   }
 
@@ -270,15 +286,15 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     animationDuration: flameSpec?.animation.duration ?? 0,
     chartDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
+    isTooltipVisible: shouldDisplayTooltip(state),
+    tooltipAnchor: getTooltipAnchor(state),
+    tooltipInfo: getTooltipInfo(state),
   };
 };
 
-const FlameChartLayer = connect(mapStateToProps, mapDispatchToProps)(FlameComponent);
+const FlameChartLayers = connect(mapStateToProps, mapDispatchToProps)(FlameComponent);
 
 /** @internal */
 export const FlameWithTooltip = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
-  <>
-    <Tooltip getChartContainerRef={containerRef} />
-    <FlameChartLayer forwardStageRef={forwardStageRef} />
-  </>
+  <FlameChartLayers forwardStageRef={forwardStageRef} containerRef={containerRef} />
 );
