@@ -8,7 +8,6 @@
 
 import React, { createRef, CSSProperties, MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
 
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
@@ -21,7 +20,6 @@ import {
   SpecType,
   TooltipType,
 } from '../../specs';
-import { onDatumHovered } from '../../state/actions/hover';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
 import { A11ySettings, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
@@ -51,16 +49,12 @@ interface ReactiveChartStateProps {
   onElementOut: BasicListener;
 }
 
-interface ReactiveChartDispatchProps {
-  onDatumHovered: typeof onDatumHovered;
-}
-
 interface ReactiveChartOwnProps {
   containerRef: BackwardRef;
   forwardStageRef: RefObject<HTMLCanvasElement>;
 }
 
-type FlameProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
+type FlameProps = ReactiveChartStateProps & ReactiveChartOwnProps;
 
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 
@@ -180,7 +174,6 @@ class FlameComponent extends React.Component<FlameProps> {
     const hovered = this.getHoveredDatumIndex(e);
     const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
     if (hovered) {
-      this.props.onDatumHovered(hovered.datumIndex);
       this.hoverIndex = Number.isNaN(hovered.datumIndex) ? DUMMY_INDEX : hovered.datumIndex;
       this.drawCanvas();
       if (Number.isFinite(hovered.datumIndex) && !Object.is(this.hoverIndex, prevHoverIndex)) {
@@ -198,7 +191,6 @@ class FlameComponent extends React.Component<FlameProps> {
       this.prevDrilldown = this.drilldown;
       this.drilldown = hovered;
       this.hoverIndex = DUMMY_INDEX; // no highlight
-      this.props.onDatumHovered(NaN); // no tooltip
       this.drawCanvas(); // consider switching to the less direct this.setState
       this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
     }
@@ -321,9 +313,6 @@ class FlameComponent extends React.Component<FlameProps> {
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
-  bindActionCreators({ onDatumHovered: onDatumHovered }, dispatch);
-
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   const flameSpec = getSpecsFromStore<FlameSpec>(state.specs, ChartType.Flame, SpecType.Series)[0];
   const settingsSpec = getSettingsSpecSelector(state);
@@ -341,7 +330,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   };
 };
 
-const FlameChartLayers = connect(mapStateToProps, mapDispatchToProps)(FlameComponent);
+const FlameChartLayers = connect(mapStateToProps)(FlameComponent);
 
 /** @internal */
 export const FlameWithTooltip = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (

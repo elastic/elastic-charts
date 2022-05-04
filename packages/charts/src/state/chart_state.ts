@@ -192,7 +192,6 @@ export interface InteractionsState {
   hoveredDOMElement: DOMElement | null;
   drilldown: DrilldownAction;
   prevDrilldown: DrilldownAction;
-  hoveredGeomIndex: number;
 }
 
 /** @internal */
@@ -286,7 +285,6 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     hoveredDOMElement: null,
     drilldown: { datumIndex: 0, timestamp: -Infinity },
     prevDrilldown: { datumIndex: 0, timestamp: -Infinity },
-    hoveredGeomIndex: NaN,
   },
   externalEvents: {
     pointer: null,

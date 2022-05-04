@@ -13,7 +13,6 @@ import { LegendItem } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
 import { getDelta } from '../../utils/point';
 import { DOMElementActions, ON_DOM_ELEMENT_ENTER, ON_DOM_ELEMENT_LEAVE } from '../actions/dom_element';
-import { HoverActions, ON_DATUM_HOVERED } from '../actions/hover';
 import { KeyActions, ON_KEY_UP } from '../actions/key';
 import {
   LegendActions,
@@ -34,13 +33,11 @@ const DRAG_DETECTION_PIXEL_DELTA = 4;
 /** @internal */
 export function interactionsReducer(
   globalState: GlobalChartState,
-  action: LegendActions | MouseActions | KeyActions | DOMElementActions | HoverActions,
+  action: LegendActions | MouseActions | KeyActions | DOMElementActions,
   legendItems: LegendItem[],
 ): InteractionsState {
   const { interactions: state } = globalState;
   switch (action.type) {
-    case ON_DATUM_HOVERED:
-      return { ...state, hoveredGeomIndex: action.datumIndex };
     case ON_KEY_UP:
       if (action.key === 'Escape') {
         return {
@@ -67,7 +64,6 @@ export function interactionsReducer(
             time: action.time,
           },
         },
-        hoveredGeomIndex: action.position.x >= 0 && action.position.y >= 0 ? state.hoveredGeomIndex : NaN,
       };
     case ON_MOUSE_DOWN:
       return {
