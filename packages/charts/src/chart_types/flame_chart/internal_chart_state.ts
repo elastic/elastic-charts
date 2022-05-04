@@ -7,6 +7,7 @@
  */
 
 import { ChartType } from '..';
+import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { LegendItemExtraValues } from '../../common/legend';
 import { SeriesKey } from '../../common/series_id';
 import { GlobalChartState, InternalChartState } from '../../state/chart_state';
@@ -14,9 +15,8 @@ import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getLastClickSelector } from '../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../utils/dimensions';
-import { getFlameSpec, getPickedShape } from './data_flow';
+import { getFlameSpec } from './data_flow';
 import { FlameWithTooltip } from './flame_chart';
-import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 
 const EMPTY_LIST: never[] = [];
 
@@ -33,7 +33,7 @@ export class FlameState implements InternalChartState {
 
   eventCallbacks(globalState: GlobalChartState) {
     const settings = getSettingsSpecSelector(globalState);
-    const next = getPickedShape(globalState);
+    const next = globalState.interactions.hoveredGeomIndex;
     const lastClick = getLastClickSelector(globalState);
 
     if (settings.onElementOver && next >= 0 && !Object.is(this.lastHoveredElement, next)) {

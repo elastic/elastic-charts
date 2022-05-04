@@ -16,5 +16,4 @@ import { FlameSpec } from './flame_api';
 export const getFlameSpec = (state: GlobalChartState): FlameSpec | void =>
   getSpecsFromStore<FlameSpec>(state.specs, ChartType.Flame, SpecType.Series)[0];
 
-/** @internal */
-export const getPickedShape = ({ interactions }: GlobalChartState) => interactions.hoveredGeomIndex;
+
