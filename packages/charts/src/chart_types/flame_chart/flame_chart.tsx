@@ -12,14 +12,7 @@ import { connect } from 'react-redux';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { NakedTooltip } from '../../components/tooltip/tooltip';
-import {
-  BasicListener,
-  ElementClickListener,
-  ElementOverListener,
-  getTooltipType,
-  SpecType,
-  TooltipType,
-} from '../../specs';
+import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
 import { A11ySettings, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
@@ -42,9 +35,10 @@ interface ReactiveChartStateProps {
   chartDimensions: Size;
   a11ySettings: A11ySettings;
   tooltipRequired: boolean;
-  onElementOver: ElementOverListener;
-  onElementClick: ElementClickListener;
-  onElementOut: BasicListener;
+  onElementOver: NonNullable<SettingsSpec['onElementOver']>;
+  onElementClick: NonNullable<SettingsSpec['onElementClick']>;
+  onElementOut: NonNullable<SettingsSpec['onElementOut']>;
+  onRenderChange: NonNullable<SettingsSpec['onRenderChange']>;
 }
 
 interface ReactiveChartOwnProps {
@@ -309,6 +303,7 @@ class FlameComponent extends React.Component<FlameProps> {
             glResources,
             this.inTween(t),
           );
+          this.props.onRenderChange(true);
         }
       });
     }
@@ -340,9 +335,13 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     chartDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
     tooltipRequired: getTooltipType(settingsSpec) !== TooltipType.None,
+
+    // mandatory charts API protocol; todo extract these mappings once there are other charts like Flame
     onElementOver: settingsSpec.onElementOver ?? (() => {}),
     onElementClick: settingsSpec.onElementClick ?? (() => {}),
     onElementOut: settingsSpec.onElementOut ?? (() => {}),
+    onRenderChange: settingsSpec.onRenderChange ?? (() => {}), // todo eventually also update data props on a local .echChartStatus element: data-ech-render-complete={rendered} data-ech-render-count={renderedCount}
+    // todo add something for updating data-ech-debug-state={debugStateString} on a local .echChartStatus element
   };
 };
 
