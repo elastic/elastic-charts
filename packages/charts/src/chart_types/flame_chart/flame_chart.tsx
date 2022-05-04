@@ -42,8 +42,6 @@ interface ReactiveChartStateProps {
   chartDimensions: Size;
   a11ySettings: A11ySettings;
   tooltipRequired: boolean;
-  pointerX: number;
-  pointerY: number;
   onElementOver: ElementOverListener;
   onElementClick: ElementClickListener;
   onElementOut: BasicListener;
@@ -91,6 +89,8 @@ class FlameComponent extends React.Component<FlameProps> {
   private drilldown: DrilldownAction;
   private prevDrilldown: DrilldownAction;
   private hoverIndex: number;
+  private pointerX: number;
+  private pointerY: number;
   private readonly devicePixelRatio: number; // fixme this be no constant: https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#monitoring_screen_resolution_or_zoom_level_changes
 
   constructor(props: Readonly<FlameProps>) {
@@ -116,6 +116,8 @@ class FlameComponent extends React.Component<FlameProps> {
     this.drilldown = { datumIndex: 0, timestamp: -Infinity };
     this.prevDrilldown = { datumIndex: 0, timestamp: -Infinity };
     this.hoverIndex = DUMMY_INDEX;
+    this.pointerX = -10000;
+    this.pointerY = -10000;
   }
 
   private inTween(t: DOMHighResTimeStamp) {
@@ -166,19 +168,23 @@ class FlameComponent extends React.Component<FlameProps> {
     const x = e.clientX - box.left;
     const y = e.clientY - box.top;
     const datumIndex = picker(x, y, focus);
+    this.pointerX = x;
+    this.pointerY = y;
 
     return { datumIndex, timestamp: e.timeStamp };
   }
 
   handleMouseMove(e: MouseEvent<HTMLCanvasElement>) {
+    e.stopPropagation();
     const hovered = this.getHoveredDatumIndex(e);
     const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
     if (hovered) {
       this.hoverIndex = Number.isNaN(hovered.datumIndex) ? DUMMY_INDEX : hovered.datumIndex;
-      this.drawCanvas();
       if (Number.isFinite(hovered.datumIndex) && !Object.is(this.hoverIndex, prevHoverIndex)) {
         this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
       }
+      this.setState({});
+      this.drawCanvas(); // why is it also needed if there's setState?
     } else if (Number.isFinite(prevHoverIndex)) {
       this.hoverIndex = DUMMY_INDEX;
       this.props.onElementOut(); // userland callback
@@ -186,6 +192,7 @@ class FlameComponent extends React.Component<FlameProps> {
   }
 
   handleMouseClick(e: MouseEvent<HTMLCanvasElement>) {
+    e.stopPropagation();
     const hovered = this.getHoveredDatumIndex(e);
     if (hovered) {
       this.prevDrilldown = this.drilldown;
@@ -234,6 +241,7 @@ class FlameComponent extends React.Component<FlameProps> {
             width={canvasWidth}
             height={canvasHeight}
             onMouseMove={this.handleMouseMove.bind(this)}
+            onMouseDown={(e) => e.stopPropagation()}
             onMouseUp={this.handleMouseClick.bind(this)}
             style={style}
             // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
@@ -242,7 +250,7 @@ class FlameComponent extends React.Component<FlameProps> {
         </figure>
         <NakedTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
-          position={{ x: this.props.pointerX, y: this.props.pointerY, width: 0, height: 0 }}
+          position={{ x: this.pointerX, y: this.pointerY, width: 0, height: 0 }}
           visible={this.props.tooltipRequired && this.hoverIndex >= 0}
           info={{
             header: null,
@@ -322,8 +330,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     chartDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
     tooltipRequired: getTooltipType(settingsSpec) !== TooltipType.None,
-    pointerX: state.interactions.pointer.current.position.x,
-    pointerY: state.interactions.pointer.current.position.y,
     onElementOver: settingsSpec.onElementOver ?? (() => {}),
     onElementClick: settingsSpec.onElementClick ?? (() => {}),
     onElementOut: settingsSpec.onElementOut ?? (() => {}),
