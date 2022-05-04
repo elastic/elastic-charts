@@ -29,25 +29,6 @@ const DUMMY_INDEX = 0 - GEOM_INDEX_OFFSET - 1; // GLSL doesn't guarantee a NaN, 
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
 
-interface StateProps {
-  columnarViewModel: ColumnarViewModel;
-  animationDuration: number;
-  chartDimensions: Size;
-  a11ySettings: A11ySettings;
-  tooltipRequired: boolean;
-  onElementOver: NonNullable<SettingsSpec['onElementOver']>;
-  onElementClick: NonNullable<SettingsSpec['onElementClick']>;
-  onElementOut: NonNullable<SettingsSpec['onElementOut']>;
-  onRenderChange: NonNullable<SettingsSpec['onRenderChange']>;
-}
-
-interface OwnProps {
-  containerRef: BackwardRef;
-  forwardStageRef: RefObject<HTMLCanvasElement>;
-}
-
-type FlameProps = StateProps & OwnProps;
-
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 
 const columnToRowPositions = ({ position1, size1 }: ColumnarViewModel, i: number) => ({
@@ -79,6 +60,25 @@ const getColor = (c: Float32Array, i: number) => {
   const a = c[4 * i + 3];
   return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
+
+interface StateProps {
+  columnarViewModel: ColumnarViewModel;
+  animationDuration: number;
+  chartDimensions: Size;
+  a11ySettings: A11ySettings;
+  tooltipRequired: boolean;
+  onElementOver: NonNullable<SettingsSpec['onElementOver']>;
+  onElementClick: NonNullable<SettingsSpec['onElementClick']>;
+  onElementOut: NonNullable<SettingsSpec['onElementOut']>;
+  onRenderChange: NonNullable<SettingsSpec['onRenderChange']>;
+}
+
+interface OwnProps {
+  containerRef: BackwardRef;
+  forwardStageRef: RefObject<HTMLCanvasElement>;
+}
+
+type FlameProps = StateProps & OwnProps;
 
 class FlameComponent extends React.Component<FlameProps> {
   static displayName = 'Flame';
