@@ -170,6 +170,8 @@ class FlameComponent extends React.Component<FlameProps> {
     if (hovered) {
       this.prevDrilldown = this.drilldown;
       this.drilldown = hovered;
+      this.hoverIndex = DUMMY_INDEX; // no highlight
+      this.props.onDatumHovered(NaN); // no tooltip
       this.drawCanvas(); // consider switching to the less direct this.setState
     }
   }
