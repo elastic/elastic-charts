@@ -15,13 +15,13 @@ import { NakedTooltip } from '../../components/tooltip/tooltip';
 import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
-import { A11ySettings, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
+import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getSpecsFromStore } from '../../state/utils';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
 import { GEOM_INDEX_OFFSET } from './shaders';
-import { AnimationState, ColumnarViewModel, GLResources, nullColumnarViewModel } from './types';
+import { AnimationState, GLResources, nullColumnarViewModel } from './types';
 import { ensureLinearFlameWebGL, renderLinearFlameWebGL } from './webgl_linear_renderers';
 
 const TWEEN_EPSILON_MS = 20;
@@ -31,14 +31,14 @@ const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows
 
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 
-const columnToRowPositions = ({ position1, size1 }: ColumnarViewModel, i: number) => ({
+const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i: number) => ({
   x0: position1[i * 2],
   x1: position1[i * 2] + size1[i],
   y0: position1[i * 2 + 1],
   y1: position1[i * 2 + 1] + rowHeight(position1),
 });
 
-const focusRect = (columnarViewModel: ColumnarViewModel, { datumIndex, timestamp }: DrilldownAction) => {
+const focusRect = (columnarViewModel: FlameSpec['columnarData'], { datumIndex, timestamp }: DrilldownAction) => {
   if (Number.isNaN(datumIndex)) return { x0: 0, y0: 0, x1: 1, y1: 1, timestamp: 0 };
   const rect = columnToRowPositions(columnarViewModel, datumIndex);
   const sideOvershoot = SIDE_OVERSHOOT_RATIO * (rect.x1 - rect.x0);
@@ -62,10 +62,10 @@ const getColor = (c: Float32Array, i: number) => {
 };
 
 interface StateProps {
-  columnarViewModel: ColumnarViewModel;
+  columnarViewModel: FlameSpec['columnarData'];
   animationDuration: number;
   chartDimensions: Size;
-  a11ySettings: A11ySettings;
+  a11ySettings: ReturnType<typeof getA11ySettingsSelector>;
   tooltipRequired: boolean;
   onElementOver: NonNullable<SettingsSpec['onElementOver']>;
   onElementClick: NonNullable<SettingsSpec['onElementClick']>;
@@ -340,8 +340,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     onElementOver: settingsSpec.onElementOver ?? (() => {}),
     onElementClick: settingsSpec.onElementClick ?? (() => {}),
     onElementOut: settingsSpec.onElementOut ?? (() => {}),
-    onRenderChange: settingsSpec.onRenderChange ?? (() => {}), // todo eventually also update data props on a local .echChartStatus element: data-ech-render-complete={rendered} data-ech-render-count={renderedCount}
-    // todo add something for updating data-ech-debug-state={debugStateString} on a local .echChartStatus element
+    onRenderChange: settingsSpec.onRenderChange ?? (() => {}), // todo eventually also update data props on a local .echChartStatus element: data-ech-render-complete={rendered} data-ech-render-count={renderedCount} data-ech-debug-state={debugStateString}
   };
 };
 
