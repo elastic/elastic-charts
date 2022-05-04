@@ -15,5 +15,3 @@ import { FlameSpec } from './flame_api';
 /** @internal */
 export const getFlameSpec = (state: GlobalChartState): FlameSpec | void =>
   getSpecsFromStore<FlameSpec>(state.specs, ChartType.Flame, SpecType.Series)[0];
-
-

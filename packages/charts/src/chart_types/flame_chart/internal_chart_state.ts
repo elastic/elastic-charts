@@ -15,7 +15,6 @@ import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getLastClickSelector } from '../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { Dimensions } from '../../utils/dimensions';
-import { getFlameSpec } from './data_flow';
 import { FlameWithTooltip } from './flame_chart';
 
 const EMPTY_LIST: never[] = [];
@@ -27,9 +26,6 @@ export class FlameState implements InternalChartState {
   lastHoveredElement: number = NaN;
   lastClickedElement: number = NaN;
   lastClickedTime: number = -Infinity;
-
-  isInitialized = (globalState: GlobalChartState) =>
-    getFlameSpec(globalState) ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
 
   eventCallbacks(globalState: GlobalChartState) {
     const settings = getSettingsSpecSelector(globalState);
@@ -53,6 +49,7 @@ export class FlameState implements InternalChartState {
     this.lastHoveredElement = next;
   }
 
+  isInitialized = () => InitStatus.Initialized;
   chartRenderer = FlameWithTooltip;
   getChartTypeDescription = () => 'Flame chart';
   isBrushAvailable = () => false;
