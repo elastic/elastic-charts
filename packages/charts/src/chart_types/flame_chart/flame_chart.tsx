@@ -12,12 +12,14 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { NakedTooltip } from '../../components/tooltip/tooltip';
+import { getTooltipType, TooltipType } from '../../specs';
 import { onDatumHovered } from '../../state/actions/hover';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
 import { A11ySettings, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
+import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { Size } from '../../utils/dimensions';
-import { getFlameSpec, shouldDisplayTooltip } from './data_flow';
+import { getFlameSpec } from './data_flow';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, ColumnarViewModel, GLResources, nullColumnarViewModel } from './types';
 import { ensureLinearFlameWebGL, renderLinearFlameWebGL } from './webgl_linear_renderers';
@@ -32,7 +34,7 @@ interface ReactiveChartStateProps {
   animationDuration: number;
   chartDimensions: Size;
   a11ySettings: A11ySettings;
-  isTooltipVisible: boolean;
+  tooltipRequired: boolean;
   pointerX: number;
   pointerY: number;
 }
@@ -229,7 +231,7 @@ class FlameComponent extends React.Component<FlameProps> {
         <NakedTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
           position={{ x: this.props.pointerX, y: this.props.pointerY, width: 0, height: 0 }}
-          visible={this.props.isTooltipVisible && this.hoverIndex >= 0}
+          visible={this.props.tooltipRequired && this.hoverIndex >= 0}
           info={{
             header: null,
             values:
@@ -304,12 +306,13 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   const flameSpec = getFlameSpec(state);
+  const settingsSpec = getSettingsSpecSelector(state);
   return {
     columnarViewModel: flameSpec?.columnarData ?? nullColumnarViewModel,
     animationDuration: flameSpec?.animation.duration ?? 0,
     chartDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
-    isTooltipVisible: shouldDisplayTooltip(state),
+    tooltipRequired: getTooltipType(settingsSpec) !== TooltipType.None,
     pointerX: state.interactions.pointer.current.position.x,
     pointerY: state.interactions.pointer.current.position.y,
   };

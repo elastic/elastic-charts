@@ -7,10 +7,8 @@
  */
 
 import { ChartType } from '..';
-import { getTooltipType, SpecType, TooltipType } from '../../specs';
+import { SpecType } from '../../specs';
 import { GlobalChartState } from '../../state/chart_state';
-import { createCustomCachedSelector } from '../../state/create_selector';
-import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getSpecsFromStore } from '../../state/utils';
 import { FlameSpec } from './flame_api';
 
@@ -20,9 +18,3 @@ export const getFlameSpec = (state: GlobalChartState): FlameSpec | void =>
 
 /** @internal */
 export const getPickedShape = ({ interactions }: GlobalChartState) => interactions.hoveredGeomIndex;
-
-/** @internal */
-export const shouldDisplayTooltip = createCustomCachedSelector(
-  [getFlameSpec, getSettingsSpecSelector],
-  (spec, settingsSpec): boolean => Boolean(spec) && getTooltipType(settingsSpec) !== TooltipType.None,
-);
