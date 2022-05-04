@@ -223,6 +223,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const canvasWidth = width * this.devicePixelRatio;
     const canvasHeight = height * this.devicePixelRatio;
     const specValueFormatter = (d: number) => d;
+    const columns = this.props.columnarViewModel;
     return (
       <>
         <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
@@ -258,19 +259,17 @@ class FlameComponent extends React.Component<FlameProps> {
               this.hoverIndex >= 0
                 ? [
                     {
-                      label: this.props.columnarViewModel.label[this.hoverIndex],
-                      color: `rgba(${Math.round(
-                        255 * this.props.columnarViewModel.color[4 * this.hoverIndex],
-                      )}, ${Math.round(
-                        255 * this.props.columnarViewModel.color[4 * this.hoverIndex + 1],
-                      )}, ${Math.round(255 * this.props.columnarViewModel.color[4 * this.hoverIndex + 2])}, ${
-                        this.props.columnarViewModel.color[4 * this.hoverIndex + 3]
+                      label: columns.label[this.hoverIndex],
+                      color: `rgba(${Math.round(255 * columns.color[4 * this.hoverIndex])}, ${Math.round(
+                        255 * columns.color[4 * this.hoverIndex + 1],
+                      )}, ${Math.round(255 * columns.color[4 * this.hoverIndex + 2])}, ${
+                        columns.color[4 * this.hoverIndex + 3]
                       })`,
                       isHighlighted: false,
                       isVisible: true,
                       seriesIdentifier: { specId: '', key: '' },
-                      value: this.props.columnarViewModel.value[this.hoverIndex],
-                      formattedValue: `${specValueFormatter(this.props.columnarViewModel.value[this.hoverIndex])}`,
+                      value: columns.value[this.hoverIndex],
+                      formattedValue: `${specValueFormatter(columns.value[this.hoverIndex])}`,
                       valueAccessor: this.hoverIndex,
                     },
                   ]
