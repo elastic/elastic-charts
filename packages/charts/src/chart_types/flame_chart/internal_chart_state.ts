@@ -17,10 +17,12 @@ import { FlameWithTooltip } from './flame_chart';
 /** @internal */
 export class FlameState implements InternalChartState {
   chartType = ChartType.Flame;
+  getChartTypeDescription = () => 'Flame chart';
+  chartRenderer = FlameWithTooltip;
+
+  // default empty properties, unused in Flame
   eventCallbacks = () => {};
   isInitialized = () => InitStatus.Initialized;
-  chartRenderer = FlameWithTooltip;
-  getChartTypeDescription = () => 'Flame chart';
   isBrushAvailable = () => false;
   isBrushing = () => false;
   isChartEmpty = () => false;
