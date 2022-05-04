@@ -10,14 +10,13 @@ import React, { createRef, CSSProperties, MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { AnchorPosition } from '../../components/portal';
 import { NakedTooltip } from '../../components/tooltip/tooltip';
 import { onDatumHovered } from '../../state/actions/hover';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
 import { A11ySettings, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { Size } from '../../utils/dimensions';
-import { getFlameSpec, getTooltipAnchor, shouldDisplayTooltip } from './data_flow';
+import { getFlameSpec, shouldDisplayTooltip } from './data_flow';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, ColumnarViewModel, GLResources, nullColumnarViewModel } from './types';
 import { ensureLinearFlameWebGL, renderLinearFlameWebGL } from './webgl_linear_renderers';
@@ -33,7 +32,8 @@ interface ReactiveChartStateProps {
   chartDimensions: Size;
   a11ySettings: A11ySettings;
   isTooltipVisible: boolean;
-  tooltipAnchor: AnchorPosition;
+  pointerX: number;
+  pointerY: number;
 }
 
 interface ReactiveChartDispatchProps {
@@ -227,7 +227,7 @@ class FlameComponent extends React.Component<FlameProps> {
         </figure>
         <NakedTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
-          position={this.props.tooltipAnchor}
+          position={{ x: this.props.pointerX, y: this.props.pointerY, width: 0, height: 0 }}
           visible={this.props.isTooltipVisible && this.hoverIndex >= 0}
           info={{
             header: null,
@@ -309,7 +309,8 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     chartDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
     isTooltipVisible: shouldDisplayTooltip(state),
-    tooltipAnchor: getTooltipAnchor(state),
+    pointerX: state.interactions.pointer.current.position.x,
+    pointerY: state.interactions.pointer.current.position.y,
   };
 };
 
