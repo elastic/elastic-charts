@@ -128,24 +128,23 @@ class FlameComponent extends React.Component<FlameProps> {
     this.pointerY = -10000;
   }
 
-  private inTween(t: DOMHighResTimeStamp) {
-    return this.drilldown.timestamp + this.props.animationDuration + TWEEN_EPSILON_MS >= t;
-  }
+  private inTween = (t: DOMHighResTimeStamp) =>
+    this.drilldown.timestamp + this.props.animationDuration + TWEEN_EPSILON_MS >= t;
 
-  componentDidMount() {
+  componentDidMount = () => {
     /*
      * the DOM element has just been appended, and getContext('2d') is always non-null,
      * so we could use a couple of ! non-null assertions but no big plus
      */
     this.tryCanvasContext();
     this.drawCanvas();
-  }
+  };
 
-  componentDidUpdate() {
+  componentDidUpdate = () => {
     if (!this.ctx) this.tryCanvasContext();
-  }
+  };
 
-  getFocus() {
+  private getFocus = () => {
     const { x0: currentFocusX0, y0: currentFocusY0, x1: currentFocusX1, y1: currentFocusY1, timestamp } = focusRect(
       this.props.columnarViewModel,
       this.drilldown,
@@ -165,9 +164,9 @@ class FlameComponent extends React.Component<FlameProps> {
       prevFocusX1,
       prevFocusY1,
     };
-  }
+  };
 
-  getHoveredDatumIndex(e: MouseEvent<HTMLCanvasElement>) {
+  private getHoveredDatumIndex = (e: MouseEvent<HTMLCanvasElement>) => {
     if (!this.props.forwardStageRef.current || !this.ctx || this.inTween(e.timeStamp)) return;
 
     const picker = this.glResources.readPixelXY;
@@ -180,9 +179,9 @@ class FlameComponent extends React.Component<FlameProps> {
     this.pointerY = y;
 
     return { datumIndex, timestamp: e.timeStamp };
-  }
+  };
 
-  handleMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
+  private handleMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     const hovered = this.getHoveredDatumIndex(e);
     const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
@@ -199,7 +198,7 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
-  handleMouseClick = (e: MouseEvent<HTMLCanvasElement>) => {
+  private handleMouseClick = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     const hovered = this.getHoveredDatumIndex(e);
     if (hovered) {
@@ -211,7 +210,14 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
-  render() {
+  private handleMouseLeave = (e: MouseEvent<HTMLCanvasElement>) => {
+    e.stopPropagation();
+    this.hoverIndex = DUMMY_INDEX; // no highlight
+    this.setState({});
+    this.drawCanvas(); // why is it also needed if there's setState?
+  };
+
+  render = () => {
     const {
       forwardStageRef,
       chartDimensions: { width, height },
@@ -252,6 +258,7 @@ class FlameComponent extends React.Component<FlameProps> {
             onMouseMove={this.handleMouseMove}
             onMouseDown={(e) => e.stopPropagation()}
             onMouseUp={this.handleMouseClick}
+            onMouseLeave={this.handleMouseLeave}
             style={style}
             // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
             role="presentation"
@@ -283,9 +290,9 @@ class FlameComponent extends React.Component<FlameProps> {
         />
       </>
     );
-  }
+  };
 
-  private drawCanvas() {
+  private drawCanvas = () => {
     if (this.ctx) {
       const { ctx, glResources, devicePixelRatio, props } = this;
       window.requestAnimationFrame((t) => {
@@ -305,9 +312,9 @@ class FlameComponent extends React.Component<FlameProps> {
         }
       });
     }
-  }
+  };
 
-  private tryCanvasContext() {
+  private tryCanvasContext = () => {
     const canvas = this.props.forwardStageRef.current;
     const glCanvas = this.glCanvasRef.current;
     this.ctx = canvas && canvas.getContext('2d');
@@ -321,7 +328,7 @@ class FlameComponent extends React.Component<FlameProps> {
         this.props.chartDimensions.height,
       );
     }
-  }
+  };
 }
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
