@@ -12,13 +12,12 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { AnchorPosition } from '../../components/portal';
 import { NakedTooltip } from '../../components/tooltip/tooltip';
-import { TooltipInfo } from '../../components/tooltip/types';
 import { onDatumHovered } from '../../state/actions/hover';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
 import { A11ySettings, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { Size } from '../../utils/dimensions';
-import { getFlameSpec, getTooltipAnchor, getTooltipInfo, shouldDisplayTooltip } from './data_flow';
+import { getFlameSpec, getTooltipAnchor, shouldDisplayTooltip } from './data_flow';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, ColumnarViewModel, GLResources, nullColumnarViewModel } from './types';
 import { ensureLinearFlameWebGL, renderLinearFlameWebGL } from './webgl_linear_renderers';
@@ -35,7 +34,6 @@ interface ReactiveChartStateProps {
   a11ySettings: A11ySettings;
   isTooltipVisible: boolean;
   tooltipAnchor: AnchorPosition;
-  tooltipInfo: TooltipInfo;
 }
 
 interface ReactiveChartDispatchProps {
@@ -202,6 +200,7 @@ class FlameComponent extends React.Component<FlameProps> {
     };
     const canvasWidth = width * this.devicePixelRatio;
     const canvasHeight = height * this.devicePixelRatio;
+    const specValueFormatter = (d: number) => d;
     return (
       <>
         <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
@@ -230,7 +229,30 @@ class FlameComponent extends React.Component<FlameProps> {
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
           position={this.props.tooltipAnchor}
           visible={this.props.isTooltipVisible && this.hoverIndex >= 0}
-          info={this.props.tooltipInfo}
+          info={{
+            header: null,
+            values:
+              this.hoverIndex >= 0
+                ? [
+                    {
+                      label: this.props.columnarViewModel.label[this.hoverIndex],
+                      color: `rgba(${Math.round(
+                        255 * this.props.columnarViewModel.color[4 * this.hoverIndex],
+                      )}, ${Math.round(
+                        255 * this.props.columnarViewModel.color[4 * this.hoverIndex + 1],
+                      )}, ${Math.round(255 * this.props.columnarViewModel.color[4 * this.hoverIndex + 2])}, ${
+                        this.props.columnarViewModel.color[4 * this.hoverIndex + 3]
+                      })`,
+                      isHighlighted: false,
+                      isVisible: true,
+                      seriesIdentifier: { specId: '', key: '' },
+                      value: this.props.columnarViewModel.value[this.hoverIndex],
+                      formattedValue: `${specValueFormatter(this.props.columnarViewModel.value[this.hoverIndex])}`,
+                      valueAccessor: this.hoverIndex,
+                    },
+                  ]
+                : [],
+          }}
           getChartContainerRef={this.props.containerRef}
         />
       </>
@@ -288,7 +310,6 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     a11ySettings: getA11ySettingsSelector(state),
     isTooltipVisible: shouldDisplayTooltip(state),
     tooltipAnchor: getTooltipAnchor(state),
-    tooltipInfo: getTooltipInfo(state),
   };
 };
 
