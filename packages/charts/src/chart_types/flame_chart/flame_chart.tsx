@@ -29,7 +29,7 @@ const DUMMY_INDEX = 0 - GEOM_INDEX_OFFSET - 1; // GLSL doesn't guarantee a NaN, 
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
 
-interface ReactiveChartStateProps {
+interface StateProps {
   columnarViewModel: ColumnarViewModel;
   animationDuration: number;
   chartDimensions: Size;
@@ -41,12 +41,12 @@ interface ReactiveChartStateProps {
   onRenderChange: NonNullable<SettingsSpec['onRenderChange']>;
 }
 
-interface ReactiveChartOwnProps {
+interface OwnProps {
   containerRef: BackwardRef;
   forwardStageRef: RefObject<HTMLCanvasElement>;
 }
 
-type FlameProps = ReactiveChartStateProps & ReactiveChartOwnProps;
+type FlameProps = StateProps & OwnProps;
 
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 
@@ -326,7 +326,7 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 }
 
-const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
+const mapStateToProps = (state: GlobalChartState): StateProps => {
   const flameSpec = getSpecsFromStore<FlameSpec>(state.specs, ChartType.Flame, SpecType.Series)[0];
   const settingsSpec = getSettingsSpecSelector(state);
   return {

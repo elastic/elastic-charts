@@ -37,7 +37,6 @@ export function interactionsReducer(
   legendItems: LegendItem[],
 ): InteractionsState {
   const { interactions: state } = globalState;
-  console.log(action.type);
   switch (action.type) {
     case ON_KEY_UP:
       if (action.key === 'Escape') {
