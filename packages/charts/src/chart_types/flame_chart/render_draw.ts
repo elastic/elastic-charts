@@ -9,7 +9,7 @@
 import { Render, Texture } from '../../common/kingly';
 import { LabelAccessor } from '../../utils/common';
 import { GEOM_INDEX_OFFSET } from './shaders';
-import { AnimationState, ColumnarViewModel, ContinuousDomainFocus, GLResources } from './types';
+import { ColumnarViewModel, ContinuousDomainFocus } from './types';
 
 // text rendering and other config
 const MAX_PADDING_RATIO = 0.25;
@@ -23,14 +23,11 @@ const ROW_OFFSET_Y = 0.45; // approx. middle line (text is middle anchored so ta
 const MAX_FONT_HEIGHT_RATIO = 0.9; // relative to the row height
 const MAX_FONT_SIZE = 14;
 const BOX_GAP = 0.5;
-
-// utility functions
-const linear = (x: number) => x;
-const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
 const mix = (a: number, b: number, x: number) => (1 - x) * a + x * b; // like the GLSL `mix`
 const scale = (value: number, from: number, to: number) => (value - from) / (to - from);
 
-const renderer = (
+/** @internal */
+export const renderer = (
   ctx: CanvasRenderingContext2D,
   gl: WebGL2RenderingContext,
   focus: ContinuousDomainFocus,
@@ -69,10 +66,6 @@ const renderer = (
       Math.round(zoomedRowHeight * textureHeight - dpr * BOX_GAP) * MAX_FONT_HEIGHT_RATIO,
       dpr * MAX_FONT_SIZE,
     );
-    const minTextLengthCssPix = MIN_TEXT_LENGTH * fontSize; // don't render shorter text than this
-    const minRectWidthForTextInCssPix = minTextLengthCssPix + TEXT_PAD_LEFT + TEXT_PAD_RIGHT;
-    const minRectWidth = minRectWidthForTextInCssPix / cssWidth;
-
     const canvasSizeChanged = true; // textureWidthChanged || textureHeightChanged;
     pickTexture.clear();
     [false, true].forEach((pickLayer) =>
@@ -84,7 +77,7 @@ const renderer = (
           resolution: [cssWidth, cssHeight],
           gapPx: pickLayer ? [0, 0] : [BOX_GAP, BOX_GAP], // in CSS pixels (but let's not leave a gap for shape picking)
           minFillRatio: MIN_FILL_RATIO,
-          cornerRadiusPx: pickLayer ? 0 : cssHeight * rowHeight * CORNER_RADIUS_RATIO, // note that for perf reasons the fragment shaders are split anywayrowHeight0: rowHeight,
+          cornerRadiusPx: pickLayer ? 0 : cssHeight * rowHeight * CORNER_RADIUS_RATIO, // note that for perf reasons the fragment shaders are split anyway
           hoverIndex: hoverIndex + GEOM_INDEX_OFFSET,
           rowHeight0: rowHeight,
           rowHeight1: rowHeight,
@@ -101,6 +94,10 @@ const renderer = (
         },
       }),
     );
+
+    const minTextLengthCssPix = MIN_TEXT_LENGTH * fontSize; // don't render shorter text than this
+    const minRectWidthForTextInCssPix = minTextLengthCssPix + TEXT_PAD_LEFT + TEXT_PAD_RIGHT;
+    const minRectWidth = minRectWidthForTextInCssPix / cssWidth;
 
     // text rendering
     ctx.save();
@@ -142,60 +139,3 @@ const renderer = (
     ctx.restore();
   };
 };
-
-/** @internal */
-export function webglRender(
-  ctx: CanvasRenderingContext2D,
-  dpr: number,
-  containerWidth: number,
-  containerHeight: number,
-  animationDuration: number,
-  focus: ContinuousDomainFocus,
-  hoverIndex: number,
-  animationState: AnimationState,
-  glResources: GLResources,
-  inTween: boolean,
-) {
-  const { gl, columnarGeomData, roundedRectRenderer, pickTextureRenderer, pickTexture } = glResources;
-  if (!gl || !pickTexture) return;
-  const { currentFocusX0, currentFocusX1, prevFocusX0, prevFocusX1 } = focus;
-
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const formatter: LabelAccessor = (v) => `${v}`; // todo add a proper formatter option to the APL
-  const timeFunction = animationDuration > 0 ? easeInOut(Math.min(5, animationDuration / 100)) : linear;
-
-  const render = renderer(
-    ctx,
-    gl,
-    focus,
-    containerWidth,
-    containerHeight,
-    dpr,
-    columnarGeomData,
-    formatter,
-    pickTexture,
-    pickTextureRenderer,
-    roundedRectRenderer,
-    hoverIndex,
-  );
-
-  window.cancelAnimationFrame(animationState.rafId); // todo consider deallocating/reallocating or ensuring resources upon cancellation
-  if (animationDuration > 0 && inTween) {
-    render(0);
-    const focusChanged = currentFocusX0 !== prevFocusX0 || currentFocusX1 !== prevFocusX1;
-    if (focusChanged) {
-      animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
-        const anim = (t: number) => {
-          const unitNormalizedTime = Math.max(0, (t - epochStartTime) / animationDuration);
-          render(timeFunction(Math.min(1, unitNormalizedTime)));
-          if (unitNormalizedTime <= 1) {
-            animationState.rafId = window.requestAnimationFrame(anim);
-          }
-        };
-        animationState.rafId = window.requestAnimationFrame(anim);
-      });
-    }
-  } else {
-    render(1);
-  }
-}

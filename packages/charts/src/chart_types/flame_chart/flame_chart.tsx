@@ -20,10 +20,10 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getSpecsFromStore } from '../../state/utils';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
+import { webglRender } from './render_animate';
+import { webglEnsure } from './render_webgl_ensure';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, GLResources, nullColumnarViewModel } from './types';
-import { webglRender } from './webgl_render';
-import {webglEnsure} from "./webgl_ensure";
 
 const TWEEN_EPSILON_MS = 20;
 const DUMMY_INDEX = 0 - GEOM_INDEX_OFFSET - 1; // GLSL doesn't guarantee a NaN, and it's a shader integer anyway, so let's find a safe special number
