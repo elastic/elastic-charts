@@ -20,7 +20,7 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getSpecsFromStore } from '../../state/utils';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
-import { webglRender } from './render/animate';
+import { animatedDraw } from './render/animated_draw';
 import { ensureWebgl } from './render/ensure_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, GLResources, nullColumnarViewModel } from './types';
@@ -296,7 +296,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const { ctx, glResources, devicePixelRatio, props } = this;
       window.requestAnimationFrame((t) => {
         if (ctx instanceof CanvasRenderingContext2D) {
-          webglRender(
+          animatedDraw(
             ctx,
             devicePixelRatio,
             props.chartDimensions.width,

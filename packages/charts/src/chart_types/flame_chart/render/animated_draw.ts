@@ -8,13 +8,13 @@
 
 import { LabelAccessor } from '../../../utils/common';
 import { AnimationState, ContinuousDomainFocus, GLResources } from '../types';
-import { renderer } from './draw';
+import { drawFrame } from './draw_a_frame';
 
 const linear = (x: number) => x;
 const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
 
 /** @internal */
-export function webglRender(
+export function animatedDraw(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   containerWidth: number,
@@ -34,7 +34,7 @@ export function webglRender(
   const formatter: LabelAccessor = (v) => `${v}`; // todo add a proper formatter option to the APL
   const timeFunction = animationDuration > 0 ? easeInOut(Math.min(5, animationDuration / 100)) : linear;
 
-  const render = renderer(
+  const renderFrame = drawFrame(
     ctx,
     gl,
     focus,
@@ -51,13 +51,13 @@ export function webglRender(
 
   window.cancelAnimationFrame(animationState.rafId); // todo consider deallocating/reallocating or ensuring resources upon cancellation
   if (animationDuration > 0 && inTween) {
-    render(0);
+    renderFrame(0);
     const focusChanged = currentFocusX0 !== prevFocusX0 || currentFocusX1 !== prevFocusX1;
     if (focusChanged) {
       animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
         const anim = (t: number) => {
           const unitNormalizedTime = Math.max(0, (t - epochStartTime) / animationDuration);
-          render(timeFunction(Math.min(1, unitNormalizedTime)));
+          renderFrame(timeFunction(Math.min(1, unitNormalizedTime)));
           if (unitNormalizedTime <= 1) {
             animationState.rafId = window.requestAnimationFrame(anim);
           }
@@ -66,6 +66,6 @@ export function webglRender(
       });
     }
   } else {
-    render(1);
+    renderFrame(1);
   }
 }

@@ -8,7 +8,7 @@
 
 import { LabelAccessor } from '../../../utils/common';
 import { ColumnarViewModel } from '../types';
-import { BOX_GAP, mix } from './draw';
+import { BOX_GAP, mix } from './draw_a_frame';
 
 const scale = (value: number, from: number, to: number) => (value - from) / (to - from);
 

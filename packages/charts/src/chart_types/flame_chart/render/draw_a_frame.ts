@@ -25,7 +25,7 @@ const getLayerCount = (columnarGeomData: ColumnarViewModel) => {
 };
 
 /** @internal */
-export const renderer = (
+export const drawFrame = (
   ctx: CanvasRenderingContext2D,
   gl: WebGL2RenderingContext,
   focus: ContinuousDomainFocus,
