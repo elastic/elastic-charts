@@ -11,6 +11,7 @@ import { ColumnarViewModel } from '../types';
 import { BOX_GAP, mix } from './draw_a_frame';
 
 const scale = (value: number, from: number, to: number) => (value - from) / (to - from);
+const formatter: LabelAccessor<string> = (label: string) => label; // todo loop in API value
 
 const TEXT_PAD_LEFT = 3;
 const TEXT_PAD_RIGHT = 3;
@@ -27,7 +28,6 @@ export const drawCanvas = (
   cssHeight: number,
   dpr: number,
   columnarGeomData: ColumnarViewModel,
-  formatter: LabelAccessor,
   rowHeight: number,
   [focusLoX, focusHiX, focusLoY, focusHiY]: [number, number, number, number],
 ) => {

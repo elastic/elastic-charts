@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { LabelAccessor } from '../../../utils/common';
 import { AnimationState, ContinuousDomainFocus, GLResources } from '../types';
 import { drawFrame } from './draw_a_frame';
 
@@ -31,7 +30,6 @@ export function animatedDraw(
   const { currentFocusX0, currentFocusX1, prevFocusX0, prevFocusX1 } = focus;
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
-  const formatter: LabelAccessor = (v) => `${v}`; // todo add a proper formatter option to the APL
   const timeFunction = animationDuration > 0 ? easeInOut(Math.min(5, animationDuration / 100)) : linear;
 
   const renderFrame = drawFrame(
@@ -42,7 +40,6 @@ export function animatedDraw(
     containerHeight,
     dpr,
     columnarGeomData,
-    formatter,
     pickTexture,
     pickTextureRenderer,
     roundedRectRenderer,

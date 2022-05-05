@@ -7,7 +7,6 @@
  */
 
 import { Render, Texture } from '../../../common/kingly';
-import { LabelAccessor } from '../../../utils/common';
 import { ColumnarViewModel, ContinuousDomainFocus } from '../types';
 import { drawCanvas } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
@@ -33,7 +32,6 @@ export const drawFrame = (
   cssHeight: number,
   dpr: number,
   columnarGeomData: ColumnarViewModel,
-  formatter: LabelAccessor,
   pickTexture: Texture,
   pickTextureRenderer: Render,
   roundedRectRenderer: Render,
@@ -65,6 +63,6 @@ export const drawFrame = (
       columnarGeomData.label.length,
     );
 
-    drawCanvas(ctx, logicalTime, cssWidth, cssHeight, dpr, columnarGeomData, formatter, rowHeight, currentFocus);
+    drawCanvas(ctx, logicalTime, cssWidth, cssHeight, dpr, columnarGeomData, rowHeight, currentFocus);
   };
 };
