@@ -108,7 +108,6 @@ class FlameComponent extends React.Component<FlameProps> {
   private ctx: CanvasRenderingContext2D | null;
   private glContext: WebGL2RenderingContext | null;
   private pickTexture: Texture;
-  private datumAtXY: PickFunction;
   private glResources: GLResources;
   private readonly glCanvasRef: RefObject<HTMLCanvasElement>;
   private animationState: AnimationState;
@@ -127,7 +126,6 @@ class FlameComponent extends React.Component<FlameProps> {
     this.ctx = null;
     this.glContext = null;
     this.pickTexture = NullTexture;
-    this.datumAtXY = () => NaN;
     this.glResources = {
       columnarGeomData: nullColumnarViewModel,
       roundedRectRenderer: () => {},
@@ -226,6 +224,20 @@ class FlameComponent extends React.Component<FlameProps> {
     };
   };
 
+  private datumAtXY: PickFunction = (x, y, pickTextureTarget) => {
+    if (this.glContext && pickTextureTarget) {
+      bindFramebuffer(this.glContext, GL_READ_FRAMEBUFFER, pickTextureTarget);
+      const pixel = readPixel(this.glContext, x, y);
+      const found = pixel[0] + pixel[1] + pixel[2] + pixel[3] > 0;
+      const datumIndex = found
+        ? pixel[3] + 256 * (pixel[2] + 256 * (pixel[1] + 256 * pixel[0])) - GEOM_INDEX_OFFSET
+        : NaN;
+      return Number.isNaN(datumIndex) ? NaN : datumIndex;
+    } else {
+      return NaN;
+    }
+  };
+
   private getHoveredDatumIndex = (e: MouseEvent<HTMLCanvasElement>) => {
     if (!this.props.forwardStageRef.current || !this.ctx || this.inTween(e.timeStamp)) return;
 
@@ -233,7 +245,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const x = e.clientX - box.left;
     const y = e.clientY - box.top;
     const pr = window.devicePixelRatio * this.pinchZoomScale;
-    const datumIndex = this.datumAtXY(pr * x, pr * (this.props.chartDimensions.height - y));
+    const datumIndex = this.datumAtXY(pr * x, pr * (this.props.chartDimensions.height - y), this.pickTexture.target());
     this.pointerX = x;
     this.pointerY = y;
 
@@ -427,21 +439,6 @@ class FlameComponent extends React.Component<FlameProps> {
           internalFormat: this.glContext.RGBA8,
           data: null,
         }) ?? NullTexture;
-
-      // (re)create picker function
-      this.datumAtXY = (x, y) => {
-        if (this.glContext) {
-          bindFramebuffer(this.glContext, GL_READ_FRAMEBUFFER, this.pickTexture.target());
-          const pixel = readPixel(this.glContext, x, y);
-          const found = pixel[0] + pixel[1] + pixel[2] + pixel[3] > 0;
-          const datumIndex = found
-            ? pixel[3] + 256 * (pixel[2] + 256 * (pixel[1] + 256 * pixel[0])) - GEOM_INDEX_OFFSET
-            : NaN;
-          return Number.isNaN(datumIndex) ? NaN : datumIndex;
-        } else {
-          return NaN;
-        }
-      };
     }
   };
 
