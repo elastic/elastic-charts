@@ -20,7 +20,7 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getSpecsFromStore } from '../../state/utils';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
-import { animatedDraw } from './render/animated_draw';
+import { drawFrame } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, GLResources, nullColumnarViewModel } from './types';
@@ -30,6 +30,8 @@ const DUMMY_INDEX = 0 - GEOM_INDEX_OFFSET - 1; // GLSL doesn't guarantee a NaN, 
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
 
+const linear = (x: number) => x;
+const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 
 const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i: number) => ({
@@ -41,14 +43,14 @@ const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i
 
 const focusRect = (columnarViewModel: FlameSpec['columnarData'], { datumIndex, timestamp }: DrilldownAction) => {
   if (Number.isNaN(datumIndex)) return { x0: 0, y0: 0, x1: 1, y1: 1, timestamp: 0 };
-  const rect = columnToRowPositions(columnarViewModel, datumIndex);
-  const sideOvershoot = SIDE_OVERSHOOT_RATIO * (rect.x1 - rect.x0);
+  const { x0, x1, y1: rawY1 } = columnToRowPositions(columnarViewModel, datumIndex);
+  const sideOvershoot = SIDE_OVERSHOOT_RATIO * (x1 - x0);
   const topOvershoot = TOP_OVERSHOOT_ROW_COUNT * rowHeight(columnarViewModel.position1);
-  const y1 = Math.min(1, rect.y1 + topOvershoot);
+  const y1 = Math.min(1, rawY1 + topOvershoot);
   return {
     timestamp,
-    x0: Math.max(0, rect.x0 - sideOvershoot),
-    x1: Math.min(1, rect.x1 + sideOvershoot),
+    x0: Math.max(0, x0 - sideOvershoot),
+    x1: Math.min(1, x1 + sideOvershoot),
     y0: y1 - 1,
     y1: y1,
   };
@@ -292,26 +294,51 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private drawCanvas = () => {
-    if (this.ctx) {
-      const { ctx, glResources, devicePixelRatio, props } = this;
-      window.requestAnimationFrame((t) => {
-        if (ctx instanceof CanvasRenderingContext2D) {
-          animatedDraw(
-            ctx,
-            devicePixelRatio,
-            props.chartDimensions.width,
-            props.chartDimensions.height,
-            props.animationDuration,
-            this.getFocus(),
-            this.hoverIndex,
-            this.animationState,
-            glResources,
-            this.inTween(t),
-          );
-          this.props.onRenderChange(true);
+    window.requestAnimationFrame((t) => {
+      if (!this.ctx || !this.glResources.gl || !this.glResources.pickTexture) return;
+
+      const focus = this.getFocus();
+
+      // eslint-disable-next-line unicorn/consistent-function-scoping
+      const timeFunction =
+        this.props.animationDuration > 0 ? easeInOut(Math.min(5, this.props.animationDuration / 100)) : linear;
+
+      const renderFrame = drawFrame(
+        this.ctx,
+        this.glResources.gl,
+        focus,
+        this.props.chartDimensions.width,
+        this.props.chartDimensions.height,
+        this.devicePixelRatio,
+        this.glResources.columnarGeomData,
+        this.glResources.pickTexture,
+        this.glResources.pickTextureRenderer,
+        this.glResources.roundedRectRenderer,
+        this.hoverIndex,
+      );
+
+      window.cancelAnimationFrame(this.animationState.rafId); // todo consider deallocating/reallocating or ensuring resources upon cancellation
+      if (this.props.animationDuration > 0 && this.inTween(t)) {
+        renderFrame(0);
+        const focusChanged = focus.currentFocusX0 !== focus.prevFocusX0 || focus.currentFocusX1 !== focus.prevFocusX1;
+        if (focusChanged) {
+          this.animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
+            const anim = (t: number) => {
+              const unitNormalizedTime = Math.max(0, (t - epochStartTime) / this.props.animationDuration);
+              renderFrame(timeFunction(Math.min(1, unitNormalizedTime)));
+              if (unitNormalizedTime <= 1) {
+                this.animationState.rafId = window.requestAnimationFrame(anim);
+              }
+            };
+            this.animationState.rafId = window.requestAnimationFrame(anim);
+          });
         }
-      });
-    }
+      } else {
+        renderFrame(1);
+      }
+
+      this.props.onRenderChange(true);
+    });
   };
 
   private tryCanvasContext = () => {
