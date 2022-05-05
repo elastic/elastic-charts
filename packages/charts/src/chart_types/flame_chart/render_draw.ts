@@ -39,8 +39,8 @@ function drawWebgl(
   focusHiX: number,
   focusLoY: number,
   focusHiY: number,
-  textureWidth: number,
-  textureHeight: number,
+  canvasWidth: number,
+  canvasHeight: number,
   gl: WebGL2RenderingContext,
   instanceCount: number,
 ) {
@@ -60,7 +60,7 @@ function drawWebgl(
         focus0: [focusLoX, focusHiX, focusLoY, focusHiY],
         focus1: [focusLoX, focusHiX, focusLoY, focusHiY],
       },
-      viewport: { x: 0, y: 0, width: textureWidth, height: textureHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
+      viewport: { x: 0, y: 0, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
       clear: { color: [0, 0, 0, 0] }, // or conditionalize: can use pickTexture.clear() for the texture
       draw: {
         geom: gl.TRIANGLE_STRIP,
