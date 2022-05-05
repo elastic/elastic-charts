@@ -11,38 +11,27 @@ import {
   bindVertexArray,
   createCompiledShader,
   createLinkedProgram,
-  createTexture,
   getAttributes,
   getRenderer,
   GL_FRAGMENT_SHADER,
   GL_READ_FRAMEBUFFER,
   GL_VERTEX_SHADER,
   readPixel,
+  Texture,
 } from '../../../common/kingly';
 import { colorFrag, GEOM_INDEX_OFFSET, rectVert, roundedRectFrag } from '../shaders';
 import { ColumnarViewModel, GLResources, PickFunction } from '../types';
 
 /** @internal */
 export function ensureWebgl(
-  glCanvas: HTMLCanvasElement,
+  gl: WebGL2RenderingContext,
   glResources: GLResources,
   columnarViewModel: ColumnarViewModel,
-  width: number,
-  height: number,
+  textureTarget: Texture['target'],
 ): GLResources {
-  const gl = glResources.gl || glCanvas.getContext('webgl2', { premultipliedAlpha: true, antialias: true });
-  if (!gl) return glResources;
-
-  // ensure texture for the appropriate size
-  const pickTexture =
-    glResources.pickTexture && width === glResources.textureWidth && height === glResources.textureHeight
-      ? glResources.pickTexture
-      : (glResources.pickTexture?.delete() ?? true) &&
-        createTexture(gl, { textureIndex: 0, width, height, internalFormat: gl.RGBA8, data: null }); // we use a shader to write this texture
-
   const readPixelXY: PickFunction = (x, y) => {
     if (gl) {
-      bindFramebuffer(gl, GL_READ_FRAMEBUFFER, pickTexture.target());
+      bindFramebuffer(gl, GL_READ_FRAMEBUFFER, textureTarget());
       const pixel = readPixel(gl, x, y);
       const found = pixel[0] + pixel[1] + pixel[2] + pixel[3] > 0;
       const datumIndex = found
@@ -115,8 +104,7 @@ export function ensureWebgl(
    */
 
   // eslint-disable-next-line no-shadow
-  const deallocateResources = ({ gl, vao, pickTexture, geomProgram, pickProgram }: GLResources) => {
-    pickTexture?.delete();
+  const deallocateResources = ({ vao, geomProgram, pickProgram }: GLResources) => {
     if (gl) {
       if (geomProgram) {
         getAttributes(gl, geomProgram, attributeLocations).forEach((setValue) => setValue(new Float32Array())); // set buffers to zero length
@@ -129,14 +117,10 @@ export function ensureWebgl(
   };
 
   return {
-    gl,
     columnarGeomData,
     roundedRectRenderer,
     pickTextureRenderer,
     deallocateResources,
-    pickTexture,
-    textureWidth: width,
-    textureHeight: height,
     vao,
     geomProgram,
     pickProgram,

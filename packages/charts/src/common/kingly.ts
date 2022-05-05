@@ -359,6 +359,14 @@ export interface Texture {
 }
 
 /** @internal */
+export const NullTexture = {
+  clear: () => {},
+  setUniform: () => {},
+  target: () => null,
+  delete: () => {},
+};
+
+/** @internal */
 export const createTexture = (
   gl: WebGL2RenderingContext,
   { textureIndex, internalFormat, width, height, data, min = GL.NEAREST, mag = GL.NEAREST }: TextureSpecification,

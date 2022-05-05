@@ -7,18 +7,14 @@
  */
 
 import { Pixels } from '../../common/geometry';
-import { Texture, UseInfo } from '../../common/kingly';
+import { UseInfo } from '../../common/kingly';
 
 /** @internal */
 export interface GLResources {
-  gl: WebGL2RenderingContext | null;
   columnarGeomData: ColumnarViewModel;
   roundedRectRenderer: (u: UseInfo) => void;
   pickTextureRenderer: (u: UseInfo) => void;
   deallocateResources: (glResources: GLResources) => void;
-  pickTexture: Texture | null;
-  textureWidth: number;
-  textureHeight: number;
   vao: WebGLVertexArrayObject | null;
   geomProgram: WebGLProgram | null;
   pickProgram: WebGLProgram | null;

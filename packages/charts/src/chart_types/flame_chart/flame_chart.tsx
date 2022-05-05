@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
+import { createTexture, NullTexture, Texture } from '../../common/kingly';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
@@ -97,6 +98,8 @@ class FlameComponent extends React.Component<FlameProps> {
 
   // firstRender = true; // this will be useful for stable resizing of treemaps
   private ctx: CanvasRenderingContext2D | null;
+  private glContext: WebGL2RenderingContext | null;
+  private pickTexture: Texture;
   private glResources: GLResources;
   private readonly glCanvasRef: RefObject<HTMLCanvasElement>;
   private animationState: AnimationState;
@@ -113,15 +116,13 @@ class FlameComponent extends React.Component<FlameProps> {
   constructor(props: Readonly<FlameProps>) {
     super(props);
     this.ctx = null;
+    this.glContext = null;
+    this.pickTexture = NullTexture;
     this.glResources = {
-      gl: null,
       columnarGeomData: nullColumnarViewModel,
       roundedRectRenderer: () => {},
       pickTextureRenderer: () => {},
       deallocateResources: () => {},
-      pickTexture: null,
-      textureWidth: NaN,
-      textureHeight: NaN,
       vao: null,
       geomProgram: null,
       pickProgram: null,
@@ -351,7 +352,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private drawCanvas = () => {
     window.requestAnimationFrame((t) => {
-      if (!this.ctx || !this.glResources.gl || !this.glResources.pickTexture) return;
+      if (!this.ctx || !this.glContext || !this.pickTexture) return;
 
       const focus = this.getFocus();
 
@@ -361,13 +362,13 @@ class FlameComponent extends React.Component<FlameProps> {
 
       const renderFrame = drawFrame(
         this.ctx,
-        this.glResources.gl,
+        this.glContext,
         focus,
         this.props.chartDimensions.width,
         this.props.chartDimensions.height,
         window.devicePixelRatio * this.pinchZoomScale,
         this.glResources.columnarGeomData,
-        this.glResources.pickTexture,
+        this.pickTexture,
         this.glResources.pickTextureRenderer,
         this.glResources.roundedRectRenderer,
         this.hoverIndex,
@@ -401,11 +402,30 @@ class FlameComponent extends React.Component<FlameProps> {
   private tryCanvasContext = () => {
     const canvas = this.props.forwardStageRef.current;
     const glCanvas = this.glCanvasRef.current;
+
     this.ctx = canvas && canvas.getContext('2d');
-    if (glCanvas) {
-      const { width, height } = this.props.chartDimensions;
-      const pr = window.devicePixelRatio * this.pinchZoomScale;
-      this.glResources = ensureWebgl(glCanvas, this.glResources, this.props.columnarViewModel, pr * width, pr * height);
+    this.glContext = glCanvas && glCanvas.getContext('webgl2');
+
+    const { width, height } = this.props.chartDimensions;
+    const pr = window.devicePixelRatio * this.pinchZoomScale;
+
+    this.pickTexture = this.glContext
+      ? createTexture(this.glContext, {
+          textureIndex: 0,
+          width: pr * width,
+          height: pr * height,
+          internalFormat: this.glContext.RGBA8,
+          data: null,
+        }) ?? NullTexture
+      : NullTexture;
+
+    if (this.glContext) {
+      this.glResources = ensureWebgl(
+        this.glContext,
+        this.glResources,
+        this.props.columnarViewModel,
+        this.pickTexture.target,
+      );
     }
   };
 }
