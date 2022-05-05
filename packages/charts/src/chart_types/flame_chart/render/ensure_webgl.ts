@@ -43,7 +43,7 @@ export function ensureWebgl(
   const readPixelXY: PickFunction = (x, y) => {
     if (gl) {
       bindFramebuffer(gl, GL_READ_FRAMEBUFFER, pickTexture.target());
-      const pixel = readPixel(gl, x, height - y);
+      const pixel = readPixel(gl, x, y);
       const found = pixel[0] + pixel[1] + pixel[2] + pixel[3] > 0;
       const datumIndex = found
         ? pixel[3] + 256 * (pixel[2] + 256 * (pixel[1] + 256 * pixel[0])) - GEOM_INDEX_OFFSET

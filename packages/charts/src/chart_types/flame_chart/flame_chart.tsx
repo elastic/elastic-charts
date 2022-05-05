@@ -224,7 +224,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const x = e.clientX - box.left;
     const y = e.clientY - box.top;
     const pr = window.devicePixelRatio * this.pinchZoomScale;
-    const datumIndex = picker(pr * x, pr * y, focus);
+    const datumIndex = picker(pr * x, pr * (this.props.chartDimensions.height - y), focus);
     this.pointerX = x;
     this.pointerY = y;
 
