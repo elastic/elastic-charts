@@ -31,6 +31,7 @@ const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows
 const linear = (x: number) => x;
 const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
+const specValueFormatter = (d: number) => d; // fixme use the formatter from the spec
 
 const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i: number) => ({
   x0: position1[i * 2],
@@ -100,7 +101,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private hoverIndex: number;
   private pointerX: number;
   private pointerY: number;
-  private readonly devicePixelRatio: number; // fixme this be no constant: https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#monitoring_screen_resolution_or_zoom_level_changes
+  // fixme this be no constant: https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#monitoring_screen_resolution_or_zoom_level_changes
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -120,7 +121,6 @@ class FlameComponent extends React.Component<FlameProps> {
       readPixelXY: () => NaN,
     };
     this.glCanvasRef = createRef();
-    this.devicePixelRatio = window.devicePixelRatio;
     this.animationState = { rafId: NaN };
     this.drilldownDatumIndex = 0;
     this.drilldownTimestamp = -Infinity;
@@ -247,9 +247,9 @@ class FlameComponent extends React.Component<FlameProps> {
       position: 'absolute',
       cursor: this.hoverIndex >= 0 ? 'pointer' : DEFAULT_CSS_CURSOR,
     };
-    const canvasWidth = width * this.devicePixelRatio;
-    const canvasHeight = height * this.devicePixelRatio;
-    const specValueFormatter = (d: number) => d;
+    const dpr = window.devicePixelRatio;
+    const canvasWidth = width * dpr;
+    const canvasHeight = height * dpr;
     const columns = this.props.columnarViewModel;
     return (
       <>
@@ -321,7 +321,7 @@ class FlameComponent extends React.Component<FlameProps> {
         focus,
         this.props.chartDimensions.width,
         this.props.chartDimensions.height,
-        this.devicePixelRatio,
+        window.devicePixelRatio,
         this.glResources.columnarGeomData,
         this.glResources.pickTexture,
         this.glResources.pickTextureRenderer,
@@ -362,7 +362,7 @@ class FlameComponent extends React.Component<FlameProps> {
       this.glResources = ensureWebgl(
         glCanvas,
         this.glResources,
-        this.devicePixelRatio,
+        window.devicePixelRatio,
         this.props.columnarViewModel,
         this.props.chartDimensions.width,
         this.props.chartDimensions.height,
