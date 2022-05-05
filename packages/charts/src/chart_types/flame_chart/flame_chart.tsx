@@ -200,7 +200,7 @@ class FlameComponent extends React.Component<FlameProps> {
           this.hoverIndex = NaN;
           this.props.onElementOut(); // userland callback
         }
-        this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
+        this.drawCanvas();
       }
       this.setState({}); // exact tooltip location needs an update
     }
@@ -215,8 +215,8 @@ class FlameComponent extends React.Component<FlameProps> {
       this.drilldownDatumIndex = hovered.datumIndex;
       this.drilldownTimestamp = hovered.timestamp;
       this.hoverIndex = NaN; // no highlight
+      this.drawCanvas();
       this.setState({});
-      this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
       this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
     }
   };
@@ -225,8 +225,8 @@ class FlameComponent extends React.Component<FlameProps> {
     e.stopPropagation();
     if (Number.isFinite(this.hoverIndex)) {
       this.hoverIndex = NaN; // no highlight when outside
+      this.drawCanvas();
       this.setState({}); // no tooltip when outside
-      this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
     }
   };
 
