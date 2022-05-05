@@ -24,13 +24,13 @@ export function ensureWebgl(gl: WebGL2RenderingContext, columnarViewModel: Colum
    * Vertex array attributes
    */
 
-  const instanceAttributes = Object.keys(columnarViewModel);
-  const attributeLocations = new Map(instanceAttributes.map((name, i: GLuint) => [name, i]));
-
   const vao = gl.createVertexArray();
   if (!vao) return { roundedRectRenderer: () => {}, pickTextureRenderer: () => {} };
 
   bindVertexArray(gl, vao);
+
+  const instanceAttributes = Object.keys(columnarViewModel);
+  const attributeLocations = new Map(instanceAttributes.map((name, i: GLuint) => [name, i]));
 
   // by how many instances should each attribute advance?
   instanceAttributes.forEach((name) => {
@@ -60,15 +60,15 @@ export function ensureWebgl(gl: WebGL2RenderingContext, columnarViewModel: Colum
    * Resource allocation: Render setup
    */
 
+  // couple the program with the attribute input and global GL flags
+  const roundedRectRenderer = getRenderer(gl, geomProgram, vao, { depthTest: false, blend: true });
+  const pickTextureRenderer = getRenderer(gl, pickProgram, vao, { depthTest: false, blend: false }); // must not blend the texture, else the pick color thus datumIndex will be wrong
+
   // fill attribute values
   getAttributes(gl, geomProgram, attributeLocations).forEach((setValue, key) => {
     const value = columnarViewModel[key as keyof ColumnarViewModel];
     if (value instanceof Float32Array) setValue(value);
   });
-
-  // couple the program with the attribute input and global GL flags
-  const roundedRectRenderer = getRenderer(gl, geomProgram, vao, { depthTest: false, blend: true });
-  const pickTextureRenderer = getRenderer(gl, pickProgram, vao, { depthTest: false, blend: false }); // must not blend the texture, else the pick color thus datumIndex will be wrong
 
   return { roundedRectRenderer, pickTextureRenderer };
 }
