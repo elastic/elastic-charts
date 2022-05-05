@@ -35,10 +35,7 @@ const drawCanvas = (
   columnarGeomData: ColumnarViewModel,
   formatter: LabelAccessor,
   rowHeight: number,
-  focusLoX: number,
-  focusHiX: number,
-  focusLoY: number,
-  focusHiY: number,
+  [focusLoX, focusHiX, focusLoY, focusHiY]: [number, number, number, number],
 ) => {
   const zoomedRowHeight = rowHeight / Math.abs(focusHiY - focusLoY);
   const fontSize = Math.min(Math.round(zoomedRowHeight * cssHeight - BOX_GAP) * MAX_FONT_HEIGHT_RATIO, MAX_FONT_SIZE);
@@ -96,10 +93,7 @@ const drawWebgl = (
   roundedRectRenderer: Render,
   hoverIndex: number,
   rowHeight: number,
-  focusLoX: number,
-  focusHiX: number,
-  focusLoY: number,
-  focusHiY: number,
+  currentFocus: [number, number, number, number],
   instanceCount: number,
 ) =>
   [false, true].forEach((pickLayer) =>
@@ -115,8 +109,8 @@ const drawWebgl = (
         hoverIndex: hoverIndex + GEOM_INDEX_OFFSET,
         rowHeight0: rowHeight,
         rowHeight1: rowHeight,
-        focus0: [focusLoX, focusHiX, focusLoY, focusHiY],
-        focus1: [focusLoX, focusHiX, focusLoY, focusHiY],
+        focus0: currentFocus,
+        focus1: currentFocus,
       },
       viewport: { x: 0, y: 0, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
       clear: { color: [0, 0, 0, 0] }, // or conditionalize: can use pickTexture.clear() for the texture
@@ -155,11 +149,12 @@ export const renderer = (
 
   // determine layer count
   return (logicalTime: number) => {
-    // get focus
-    const focusLoX = mix(focus.prevFocusX0, focus.currentFocusX0, logicalTime);
-    const focusLoY = mix(focus.prevFocusY0, focus.currentFocusY0, logicalTime);
-    const focusHiX = mix(focus.prevFocusX1, focus.currentFocusX1, logicalTime);
-    const focusHiY = mix(focus.prevFocusY1, focus.currentFocusY1, logicalTime);
+    const currentFocus: [number, number, number, number] = [
+      mix(focus.prevFocusX0, focus.currentFocusX0, logicalTime),
+      mix(focus.prevFocusX1, focus.currentFocusX1, logicalTime),
+      mix(focus.prevFocusY0, focus.currentFocusY0, logicalTime),
+      mix(focus.prevFocusY1, focus.currentFocusY1, logicalTime),
+    ];
 
     drawWebgl(
       gl,
@@ -171,26 +166,10 @@ export const renderer = (
       roundedRectRenderer,
       hoverIndex,
       rowHeight,
-      focusLoX,
-      focusHiX,
-      focusLoY,
-      focusHiY,
+      currentFocus,
       columnarGeomData.label.length,
     );
 
-    drawCanvas(
-      ctx,
-      logicalTime,
-      cssWidth,
-      cssHeight,
-      dpr,
-      columnarGeomData,
-      formatter,
-      rowHeight,
-      focusLoX,
-      focusHiX,
-      focusLoY,
-      focusHiY,
-    );
+    drawCanvas(ctx, logicalTime, cssWidth, cssHeight, dpr, columnarGeomData, formatter, rowHeight, currentFocus);
   };
 };
