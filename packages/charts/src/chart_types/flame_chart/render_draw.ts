@@ -74,7 +74,6 @@ function drawCanvas(
   rowHeight: number,
   focusHiY: number,
   focusLoY: number,
-  textureHeight: number,
   dpr: number,
   cssWidth: number,
   ctx: CanvasRenderingContext2D,
@@ -86,10 +85,7 @@ function drawCanvas(
   formatter: LabelAccessor,
 ) {
   const zoomedRowHeight = rowHeight / Math.abs(focusHiY - focusLoY);
-  const fontSize = Math.min(
-    Math.round(zoomedRowHeight * textureHeight - dpr * BOX_GAP) * MAX_FONT_HEIGHT_RATIO,
-    dpr * MAX_FONT_SIZE,
-  );
+  const fontSize = Math.min(Math.round(zoomedRowHeight * cssHeight - BOX_GAP) * MAX_FONT_HEIGHT_RATIO, MAX_FONT_SIZE);
   const minTextLengthCssPix = MIN_TEXT_LENGTH * fontSize; // don't render shorter text than this
   const minRectWidthForTextInCssPix = minTextLengthCssPix + TEXT_PAD_LEFT + TEXT_PAD_RIGHT;
   const minRectWidth = minRectWidthForTextInCssPix / cssWidth;
@@ -156,7 +152,6 @@ export const renderer = (
   hoverIndex: number,
 ) => {
   // focus
-  const canvasHeight = dpr * cssHeight;
   const rowHeight = 1 / getLayerCount(columnarGeomData);
 
   // determine layer count
@@ -179,7 +174,7 @@ export const renderer = (
       focusLoY,
       focusHiY,
       dpr * cssWidth,
-      canvasHeight,
+      dpr * cssHeight,
       gl,
       columnarGeomData.label.length,
     );
@@ -188,7 +183,6 @@ export const renderer = (
       rowHeight,
       focusHiY,
       focusLoY,
-      canvasHeight,
       dpr,
       cssWidth,
       ctx,
