@@ -28,9 +28,7 @@ export function ensureWebgl(
    * Vertex array attributes
    */
 
-  const columnarGeomData: ColumnarViewModel = columnarViewModel;
-
-  const instanceAttributes = Object.keys(columnarGeomData);
+  const instanceAttributes = Object.keys(columnarViewModel);
   const attributeLocations = new Map(instanceAttributes.map((name, i: GLuint) => [name, i]));
 
   const vao = glResources.vao || gl.createVertexArray();
@@ -72,7 +70,7 @@ export function ensureWebgl(
 
   // fill attribute values
   getAttributes(gl, geomProgram, attributeLocations).forEach((setValue, key) => {
-    const value = columnarGeomData[key as keyof ColumnarViewModel];
+    const value = columnarViewModel[key as keyof ColumnarViewModel];
     if (value instanceof Float32Array) setValue(value);
   });
 
@@ -98,7 +96,6 @@ export function ensureWebgl(
   };
 
   return {
-    columnarGeomData,
     roundedRectRenderer,
     pickTextureRenderer,
     deallocateResources,

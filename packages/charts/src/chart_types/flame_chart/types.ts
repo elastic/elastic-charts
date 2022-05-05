@@ -11,7 +11,6 @@ import { UseInfo } from '../../common/kingly';
 
 /** @internal */
 export interface GLResources {
-  columnarGeomData: ColumnarViewModel;
   roundedRectRenderer: (u: UseInfo) => void;
   pickTextureRenderer: (u: UseInfo) => void;
   deallocateResources: (glResources: GLResources) => void;

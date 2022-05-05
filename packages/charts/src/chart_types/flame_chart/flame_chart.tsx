@@ -127,7 +127,6 @@ class FlameComponent extends React.Component<FlameProps> {
     this.glContext = null;
     this.pickTexture = NullTexture;
     this.glResources = {
-      columnarGeomData: nullColumnarViewModel,
       roundedRectRenderer: () => {},
       pickTextureRenderer: () => {},
       deallocateResources: () => {},
@@ -387,12 +386,12 @@ class FlameComponent extends React.Component<FlameProps> {
         this.props.chartDimensions.width,
         this.props.chartDimensions.height,
         window.devicePixelRatio * this.pinchZoomScale,
-        this.glResources.columnarGeomData,
+        this.props.columnarViewModel,
         this.pickTexture,
         this.glResources.pickTextureRenderer,
         this.glResources.roundedRectRenderer,
         this.hoverIndex,
-        rowHeight(this.glResources.columnarGeomData.position1),
+        rowHeight(this.props.columnarViewModel.position1),
       );
 
       window.cancelAnimationFrame(this.animationState.rafId); // todo consider deallocating/reallocating or ensuring resources upon cancellation
