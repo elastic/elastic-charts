@@ -19,7 +19,7 @@ const DISABLE_ANIMATIONS = Boolean(process.env.VRT);
  * `options` are applied only on initial render and never changed.
  * @internal
  */
-export type AnimateFn = (options?: AnimationOptions) => (prop: string, value: AnimatedValue) => AnimatedValue;
+export type AnimateFn = (options?: AnimationOptions) => (key: string, value: AnimatedValue) => AnimatedValue;
 
 /** @internal */
 export interface AnimationContext {
@@ -38,22 +38,22 @@ export const getAnimationPoolFn = (
   return debounce(
     function getAnimationPoolFnDebounce() {
       const propValuesForRun = new Map<string, number>();
-      const getAnimatedValueFn = (t: number): AnimateFn => (options) => (prop, value) => {
-        if (t === 0 && propValuesForRun.has(prop) && propValuesForRun.get(prop) !== value) {
+      const getAnimatedValueFn = (t: number): AnimateFn => (options) => (key, value) => {
+        if (t === 0 && propValuesForRun.has(key) && propValuesForRun.get(key) !== value) {
           Logger.error(
-            `aCtx.getValue(\`${prop}\`, <value>) was called multiple times in a single render with different values.\
+            `aCtx.getValue(\`${key}\`, <value>) was called multiple times in a single render with different values.\
  Please animate these values independently to avoid collisions.`,
           );
         }
 
         if (DISABLE_ANIMATIONS || !(options?.enabled ?? true)) return value;
 
-        propValuesForRun.set(prop, value);
-        if (!animationState.pool.has(prop)) {
-          animationState.pool.set(prop, new Animation(value, options));
+        propValuesForRun.set(key, value);
+        if (!animationState.pool.has(key)) {
+          animationState.pool.set(key, new Animation(value, options));
         }
 
-        const animation = animationState.pool.get(prop);
+        const animation = animationState.pool.get(key);
         if (!animation) return value;
 
         animation.setTarget(value);
