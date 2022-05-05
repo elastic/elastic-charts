@@ -29,9 +29,11 @@ export function renderRectAnnotations(
 ) {
   const getAnimatedValue = aCtx.getValue(rectStyle.animations);
   const getFillAndStroke = (id: string): [Fill, Stroke] => {
-    const { style, isHighlighted } = getHoverParams(id);
-    const prop = isHighlighted ? `anno-rect-opacity-highlighted` : `anno-rect-opacity-unhighlighted`;
-    const hoverOpacity = getAnimatedValue(prop, style.opacity);
+    const { style } = getHoverParams(id);
+
+    const opacityKey = `anno-rect-opacity--${id}`;
+    const hoverOpacity = getAnimatedValue(opacityKey, style.opacity);
+
     const fill: Fill = {
       color: overrideOpacity(colorToRgba(rectStyle.fill), (opacity) => opacity * rectStyle.opacity * hoverOpacity),
     };

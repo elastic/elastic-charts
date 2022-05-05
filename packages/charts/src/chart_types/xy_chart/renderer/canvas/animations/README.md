@@ -1,10 +1,10 @@
 # Animation in charts
 
-This directory contains shared logic for implementing animations throught charts canvas render methods.
+This directory contains shared logic for implementing animations throughout charts canvas render methods.
 
 ## Animating a value
 
-Currently this animation framework only targets animation or tweening of a specific value that is mapped to a provided `prop` string to identify the given value.
+Currently this animation framework only targets animation or tweening of a specific value that is mapped to a provided `key` string to identify the given value.
 
 ### Setup
 
@@ -87,7 +87,9 @@ function render(aCtx: AnimationContext) {
 
 Here the `computedOpacity` is passed to the `aCtx.getValue` with defined `AnimationOptions` and returns the tween `opacity` used to render. The `aCtx.getValue` method uses [currying](https://javascript.info/currying-partials) to enable the same animated options to be used in multiple places.
 
-The `'my-opacity'` string is used to identify this value from all other tracked animated values. This prop should be uniuqe given all animation states. For example, using two props for `n` bars to define `highlighted-bar-opacity` and `unhighlighted-bar-opacity` minimizes the total tracked values. This is fine so long as the two values change in unisoun everywhere they are used. An error will throw if a single key is used with diverging values.
+The `'my-opacity'` string is used to identify this value from all other tracked animated values. This key should be unique given all animation states.
+
+For the time being, using multiple parameterized keys should be _avoided_. For example, given a bar chart with `n` bars using two keys to define `highlighted-bar-opacity` and `unhighlighted-bar-opacity` could minimizes the total tracked values. However, this is currently not supported as the animations work by reacting to changes in values, in this case if key changes when the value changes, the animations state will be malformed causing flashing and instant tweening, see https://github.com/elastic/elastic-charts/pull/1665.
 
 The full list of `AnimationOptions` is shown below.
 
@@ -132,7 +134,7 @@ export interface AnimationOptions {
 
 ### Event-driven
 
-Create a parallel event-driven animation mechanism to offer less control but more predicatability for what animations are rendered.
+Create a parallel event-driven animation mechanism to offer less control but more predictability for what animations are rendered.
 
 ### Greater value support
 

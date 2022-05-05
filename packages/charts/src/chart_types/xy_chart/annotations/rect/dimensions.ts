@@ -95,6 +95,7 @@ export function computeRectAnnotationDimensions(
               }),
         };
         rectsProps.push({
+          specId: annotationSpecId,
           rect: rectDimensions,
           datum,
         });
@@ -137,6 +138,7 @@ export function computeRectAnnotationDimensions(
     };
 
     rectsProps.push({
+      specId: annotationSpecId,
       rect: rectDimensions,
       datum,
     });

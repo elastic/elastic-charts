@@ -29,9 +29,11 @@ export function renderLineAnnotations(
 ) {
   const getAnimatedValue = aCtx.getValue(lineStyle.animations);
   const getStroke = (id: string): Stroke => {
-    const { style, isHighlighted } = getHoverParams(id);
-    const prop = isHighlighted ? `anno-line-opacity-highlighted` : `anno-line-opacity-unhighlighted`;
-    const hoverOpacity = getAnimatedValue(prop, style.opacity);
+    const { style } = getHoverParams(id);
+
+    const opacityKey = `anno-rect-opacity--${id}`;
+    const hoverOpacity = getAnimatedValue(opacityKey, style.opacity);
+
     const strokeColor = overrideOpacity(
       colorToRgba(lineStyle.line.stroke),
       (opacity) => opacity * lineStyle.line.opacity * hoverOpacity,
