@@ -1,3 +1,17 @@
+# [46.1.0](https://github.com/elastic/elastic-charts/compare/v46.0.1...v46.1.0) (2022-05-05)
+
+
+### Bug Fixes
+
+* **animations:** flashing when using grouped parameterized keys ([#1665](https://github.com/elastic/elastic-charts/issues/1665)) ([1323edc](https://github.com/elastic/elastic-charts/commit/1323edc76f496028ffe2119ec83af2834484bede))
+* **deps:** update dependency @elastic/eui to ^55.1.0 ([#1663](https://github.com/elastic/elastic-charts/issues/1663)) ([ef8a185](https://github.com/elastic/elastic-charts/commit/ef8a185fc621890d561432953846112e957bdb5d))
+* **deps:** update dependency @elastic/eui to v55 ([#1659](https://github.com/elastic/elastic-charts/issues/1659)) ([5fc4af3](https://github.com/elastic/elastic-charts/commit/5fc4af3c84b1ff9d2818862d1eb19de780de4208))
+
+
+### Features
+
+* **annotations:** animated focus states for hovered annotation ([#1628](https://github.com/elastic/elastic-charts/issues/1628)) ([0bbb809](https://github.com/elastic/elastic-charts/commit/0bbb809132897dc691f1a71c676c46ec91aa59df))
+
 ## [46.0.1](https://github.com/elastic/elastic-charts/compare/v46.0.0...v46.0.1) (2022-04-19)
 
 
