@@ -20,8 +20,8 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getSpecsFromStore } from '../../state/utils';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
-import { webglRender } from './render_animate';
-import { webglEnsure } from './render_webgl_ensure';
+import { webglRender } from './render/animate';
+import { ensureWebgl } from './render/ensure_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, GLResources, nullColumnarViewModel } from './types';
 
@@ -319,7 +319,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const glCanvas = this.glCanvasRef.current;
     this.ctx = canvas && canvas.getContext('2d');
     if (glCanvas) {
-      this.glResources = webglEnsure(
+      this.glResources = ensureWebgl(
         glCanvas,
         this.glResources,
         this.devicePixelRatio,

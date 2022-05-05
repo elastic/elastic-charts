@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { LabelAccessor } from '../../utils/common';
-import { renderer } from './render_draw';
-import { AnimationState, ContinuousDomainFocus, GLResources } from './types';
+import { LabelAccessor } from '../../../utils/common';
+import { AnimationState, ContinuousDomainFocus, GLResources } from '../types';
+import { renderer } from './draw';
 
 const linear = (x: number) => x;
 const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);

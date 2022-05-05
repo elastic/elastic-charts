@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { Render, Texture } from '../../common/kingly';
-import { BOX_GAP } from './render_draw';
-import { GEOM_INDEX_OFFSET } from './shaders';
+import { Render, Texture } from '../../../common/kingly';
+import { GEOM_INDEX_OFFSET } from '../shaders';
+import { BOX_GAP } from './draw';
 
 // text rendering and other config
 const MAX_PADDING_RATIO = 0.25;

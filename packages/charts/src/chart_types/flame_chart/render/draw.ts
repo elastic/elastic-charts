@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { Render, Texture } from '../../common/kingly';
-import { LabelAccessor } from '../../utils/common';
-import { drawCanvas } from './render_draw_canvas';
-import { drawWebgl } from './render_draw_webgl';
-import { ColumnarViewModel, ContinuousDomainFocus } from './types';
+import { Render, Texture } from '../../../common/kingly';
+import { LabelAccessor } from '../../../utils/common';
+import { ColumnarViewModel, ContinuousDomainFocus } from '../types';
+import { drawCanvas } from './draw_canvas';
+import { drawWebgl } from './draw_webgl';
 
 /** @internal */
 export const BOX_GAP = 0.5;

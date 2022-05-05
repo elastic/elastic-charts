@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { LabelAccessor } from '../../utils/common';
-import { BOX_GAP, mix } from './render_draw';
-import { ColumnarViewModel } from './types';
+import { LabelAccessor } from '../../../utils/common';
+import { ColumnarViewModel } from '../types';
+import { BOX_GAP, mix } from './draw';
 
 const scale = (value: number, from: number, to: number) => (value - from) / (to - from);
 

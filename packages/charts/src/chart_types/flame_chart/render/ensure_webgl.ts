@@ -18,12 +18,12 @@ import {
   GL_READ_FRAMEBUFFER,
   GL_VERTEX_SHADER,
   readPixel,
-} from '../../common/kingly';
-import { colorFrag, GEOM_INDEX_OFFSET, rectVert, roundedRectFrag } from './shaders';
-import { ColumnarViewModel, GLResources, PickFunction } from './types';
+} from '../../../common/kingly';
+import { colorFrag, GEOM_INDEX_OFFSET, rectVert, roundedRectFrag } from '../shaders';
+import { ColumnarViewModel, GLResources, PickFunction } from '../types';
 
 /** @internal */
-export function webglEnsure(
+export function ensureWebgl(
   glCanvas: HTMLCanvasElement,
   glResources: GLResources,
   dpr: number,
