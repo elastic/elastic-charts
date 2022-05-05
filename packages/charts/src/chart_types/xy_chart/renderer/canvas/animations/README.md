@@ -87,7 +87,7 @@ function render(aCtx: AnimationContext) {
 
 Here the `computedOpacity` is passed to the `aCtx.getValue` with defined `AnimationOptions` and returns the tween `opacity` used to render. The `aCtx.getValue` method uses [currying](https://javascript.info/currying-partials) to enable the same animated options to be used in multiple places.
 
-The `'my-opacity'` string is used to identify this value from all other tracked animated values. This prop should be uniuqe given all animation states. For example, using two props for `n` bars to define `highlighted-bar-opacity` and `unhighlighted-bar-opacity` minimizes the total tracked values. This is fine so long as the two values change in unisoun everywhere they are used. An error will throw if a single key is used with diverging values.
+The `'my-opacity'` string is used to identify this value from all other tracked animated values. This prop should be uniuqe given all animation states. For example, using two props for `n` bars to define `highlighted-bar-opacity` and `unhighlighted-bar-opacity` minimizes the total tracked values. This is fine so long as the two values change in unisoun everywhere they are used and all prop variants are initialized/used on each render to avoid, https://github.com/elastic/elastic-charts/pull/1665. An error will throw if a single key is used with diverging values.
 
 The full list of `AnimationOptions` is shown below.
 
