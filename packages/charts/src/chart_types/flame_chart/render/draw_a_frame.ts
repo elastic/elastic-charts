@@ -17,12 +17,6 @@ export const BOX_GAP = 0.5;
 /** @internal */
 export const mix = (a: number, b: number, x: number) => (1 - x) * a + x * b; // like the GLSL `mix`
 
-const getLayerCount = (columnarGeomData: ColumnarViewModel) => {
-  const layerSet = new Set<number>();
-  for (let i = 1; i < columnarGeomData.position1.length; i += 2) layerSet.add(columnarGeomData.position1[i]);
-  return layerSet.size;
-};
-
 /** @internal */
 export const drawFrame = (
   ctx: CanvasRenderingContext2D,
@@ -36,33 +30,28 @@ export const drawFrame = (
   pickTextureRenderer: Render,
   roundedRectRenderer: Render,
   hoverIndex: number,
-) => {
-  // focus
-  const rowHeight = 1 / getLayerCount(columnarGeomData);
+  rowHeight: number,
+) => (logicalTime: number) => {
+  const currentFocus: [number, number, number, number] = [
+    mix(focus.prevFocusX0, focus.currentFocusX0, logicalTime),
+    mix(focus.prevFocusX1, focus.currentFocusX1, logicalTime),
+    mix(focus.prevFocusY0, focus.currentFocusY0, logicalTime),
+    mix(focus.prevFocusY1, focus.currentFocusY1, logicalTime),
+  ];
 
-  // determine layer count
-  return (logicalTime: number) => {
-    const currentFocus: [number, number, number, number] = [
-      mix(focus.prevFocusX0, focus.currentFocusX0, logicalTime),
-      mix(focus.prevFocusX1, focus.currentFocusX1, logicalTime),
-      mix(focus.prevFocusY0, focus.currentFocusY0, logicalTime),
-      mix(focus.prevFocusY1, focus.currentFocusY1, logicalTime),
-    ];
+  drawWebgl(
+    gl,
+    logicalTime,
+    cssWidth * dpr,
+    cssHeight * dpr,
+    pickTexture,
+    pickTextureRenderer,
+    roundedRectRenderer,
+    hoverIndex,
+    rowHeight,
+    currentFocus,
+    columnarGeomData.label.length,
+  );
 
-    drawWebgl(
-      gl,
-      logicalTime,
-      cssWidth * dpr,
-      cssHeight * dpr,
-      pickTexture,
-      pickTextureRenderer,
-      roundedRectRenderer,
-      hoverIndex,
-      rowHeight,
-      currentFocus,
-      columnarGeomData.label.length,
-    );
-
-    drawCanvas(ctx, logicalTime, cssWidth, cssHeight, dpr, columnarGeomData, rowHeight, currentFocus);
-  };
+  drawCanvas(ctx, logicalTime, cssWidth, cssHeight, dpr, columnarGeomData, rowHeight, currentFocus);
 };

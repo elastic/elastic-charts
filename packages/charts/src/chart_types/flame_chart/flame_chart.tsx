@@ -326,6 +326,7 @@ class FlameComponent extends React.Component<FlameProps> {
         this.glResources.pickTextureRenderer,
         this.glResources.roundedRectRenderer,
         this.hoverIndex,
+        rowHeight(this.glResources.columnarGeomData.position1),
       );
 
       window.cancelAnimationFrame(this.animationState.rafId); // todo consider deallocating/reallocating or ensuring resources upon cancellation
