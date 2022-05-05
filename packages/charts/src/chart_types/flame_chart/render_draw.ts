@@ -26,64 +26,20 @@ const BOX_GAP = 0.5;
 const mix = (a: number, b: number, x: number) => (1 - x) * a + x * b; // like the GLSL `mix`
 const scale = (value: number, from: number, to: number) => (value - from) / (to - from);
 
-function drawWebgl(
-  pickTextureRenderer: Render,
-  roundedRectRenderer: Render,
-  pickTexture: Texture,
-  logicalTime: number,
-  rowHeight: number,
-  hoverIndex: number,
-  focusLoX: number,
-  focusHiX: number,
-  focusLoY: number,
-  focusHiY: number,
-  canvasWidth: number,
-  canvasHeight: number,
-  gl: WebGL2RenderingContext,
-  instanceCount: number,
-) {
-  [false, true].forEach((pickLayer) =>
-    (pickLayer ? pickTextureRenderer : roundedRectRenderer)({
-      target: pickLayer ? pickTexture.target() : null,
-      uniformValues: {
-        pickLayer,
-        t: Math.max(0.001, logicalTime), // for some reason, an exact zero will lead to `mix` as if it were 1 (glitch)
-        resolution: [canvasWidth, canvasHeight],
-        gapPx: pickLayer ? [0, 0] : [BOX_GAP, BOX_GAP], // in CSS pixels (but let's not leave a gap for shape picking)
-        minFillRatio: MIN_FILL_RATIO,
-        cornerRadiusPx: pickLayer ? 0 : canvasHeight * rowHeight * CORNER_RADIUS_RATIO, // note that for perf reasons the fragment shaders are split anyway
-        hoverIndex: hoverIndex + GEOM_INDEX_OFFSET,
-        rowHeight0: rowHeight,
-        rowHeight1: rowHeight,
-        focus0: [focusLoX, focusHiX, focusLoY, focusHiY],
-        focus1: [focusLoX, focusHiX, focusLoY, focusHiY],
-      },
-      viewport: { x: 0, y: 0, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
-      clear: { color: [0, 0, 0, 0] }, // or conditionalize: can use pickTexture.clear() for the texture
-      draw: {
-        geom: gl.TRIANGLE_STRIP,
-        offset: 0,
-        count: VERTICES_PER_GEOM,
-        instanceCount,
-      },
-    }),
-  );
-}
-
-function drawCanvas(
-  rowHeight: number,
-  focusHiY: number,
-  focusLoY: number,
-  dpr: number,
-  cssWidth: number,
+const drawCanvas = (
   ctx: CanvasRenderingContext2D,
-  cssHeight: number,
-  columnarGeomData: ColumnarViewModel,
   logicalTime: number,
-  focusHiX: number,
-  focusLoX: number,
+  cssWidth: number,
+  cssHeight: number,
+  dpr: number,
+  columnarGeomData: ColumnarViewModel,
   formatter: LabelAccessor,
-) {
+  rowHeight: number,
+  focusLoX: number,
+  focusHiX: number,
+  focusLoY: number,
+  focusHiY: number,
+) => {
   const zoomedRowHeight = rowHeight / Math.abs(focusHiY - focusLoY);
   const fontSize = Math.min(Math.round(zoomedRowHeight * cssHeight - BOX_GAP) * MAX_FONT_HEIGHT_RATIO, MAX_FONT_SIZE);
   const minTextLengthCssPix = MIN_TEXT_LENGTH * fontSize; // don't render shorter text than this
@@ -128,7 +84,50 @@ function drawCanvas(
     }
   });
   ctx.restore();
-}
+};
+
+const drawWebgl = (
+  gl: WebGL2RenderingContext,
+  logicalTime: number,
+  canvasWidth: number,
+  canvasHeight: number,
+  pickTexture: Texture,
+  pickTextureRenderer: Render,
+  roundedRectRenderer: Render,
+  hoverIndex: number,
+  rowHeight: number,
+  focusLoX: number,
+  focusHiX: number,
+  focusLoY: number,
+  focusHiY: number,
+  instanceCount: number,
+) =>
+  [false, true].forEach((pickLayer) =>
+    (pickLayer ? pickTextureRenderer : roundedRectRenderer)({
+      target: pickLayer ? pickTexture.target() : null,
+      uniformValues: {
+        pickLayer,
+        t: Math.max(0.001, logicalTime), // for some reason, an exact zero will lead to `mix` as if it were 1 (glitch)
+        resolution: [canvasWidth, canvasHeight],
+        gapPx: pickLayer ? [0, 0] : [BOX_GAP, BOX_GAP], // in CSS pixels (but let's not leave a gap for shape picking)
+        minFillRatio: MIN_FILL_RATIO,
+        cornerRadiusPx: pickLayer ? 0 : canvasHeight * rowHeight * CORNER_RADIUS_RATIO, // note that for perf reasons the fragment shaders are split anyway
+        hoverIndex: hoverIndex + GEOM_INDEX_OFFSET,
+        rowHeight0: rowHeight,
+        rowHeight1: rowHeight,
+        focus0: [focusLoX, focusHiX, focusLoY, focusHiY],
+        focus1: [focusLoX, focusHiX, focusLoY, focusHiY],
+      },
+      viewport: { x: 0, y: 0, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
+      clear: { color: [0, 0, 0, 0] }, // or conditionalize: can use pickTexture.clear() for the texture
+      draw: {
+        geom: gl.TRIANGLE_STRIP,
+        offset: 0,
+        count: VERTICES_PER_GEOM,
+        instanceCount,
+      },
+    }),
+  );
 
 function getLayerCount(columnarGeomData: ColumnarViewModel) {
   const layerSet = new Set<number>();
@@ -163,35 +162,35 @@ export const renderer = (
     const focusHiY = mix(focus.prevFocusY1, focus.currentFocusY1, logicalTime);
 
     drawWebgl(
+      gl,
+      logicalTime,
+      cssWidth * dpr,
+      cssHeight * dpr,
+      pickTexture,
       pickTextureRenderer,
       roundedRectRenderer,
-      pickTexture,
-      logicalTime,
-      rowHeight,
       hoverIndex,
+      rowHeight,
       focusLoX,
       focusHiX,
       focusLoY,
       focusHiY,
-      dpr * cssWidth,
-      dpr * cssHeight,
-      gl,
       columnarGeomData.label.length,
     );
 
     drawCanvas(
-      rowHeight,
-      focusHiY,
-      focusLoY,
-      dpr,
-      cssWidth,
       ctx,
-      cssHeight,
-      columnarGeomData,
       logicalTime,
-      focusHiX,
-      focusLoX,
+      cssWidth,
+      cssHeight,
+      dpr,
+      columnarGeomData,
       formatter,
+      rowHeight,
+      focusLoX,
+      focusHiX,
+      focusLoY,
+      focusHiY,
     );
   };
 };
