@@ -14,7 +14,7 @@ import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
-import { BackwardRef, DrilldownAction, GlobalChartState } from '../../state/chart_state';
+import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getSpecsFromStore } from '../../state/utils';
@@ -93,10 +93,12 @@ class FlameComponent extends React.Component<FlameProps> {
   // firstRender = true; // this will be useful for stable resizing of treemaps
   private ctx: CanvasRenderingContext2D | null;
   private glResources: GLResources;
-  private glCanvasRef: RefObject<HTMLCanvasElement>;
+  private readonly glCanvasRef: RefObject<HTMLCanvasElement>;
   private animationState: AnimationState;
-  private drilldown: DrilldownAction;
-  private prevDrilldown: DrilldownAction;
+  private drilldownDatumIndex: number;
+  private drilldownTimestamp: number;
+  private prevDrilldownDatumIndex: number;
+  private prevDrilldownTimestamp: number;
   private hoverIndex: number;
   private pointerX: number;
   private pointerY: number;
@@ -122,15 +124,17 @@ class FlameComponent extends React.Component<FlameProps> {
     this.glCanvasRef = createRef();
     this.devicePixelRatio = window.devicePixelRatio;
     this.animationState = { rafId: NaN };
-    this.drilldown = { datumIndex: 0, timestamp: -Infinity };
-    this.prevDrilldown = { datumIndex: 0, timestamp: -Infinity };
+    this.drilldownDatumIndex = 0;
+    this.drilldownTimestamp = -Infinity;
+    this.prevDrilldownDatumIndex = 0;
+    this.prevDrilldownTimestamp = -Infinity;
     this.hoverIndex = DUMMY_INDEX;
     this.pointerX = -10000;
     this.pointerY = -10000;
   }
 
   private inTween = (t: DOMHighResTimeStamp) =>
-    this.drilldown.timestamp + this.props.animationDuration + TWEEN_EPSILON_MS >= t;
+    this.drilldownTimestamp + this.props.animationDuration + TWEEN_EPSILON_MS >= t;
 
   componentDidMount = () => {
     /*
@@ -149,13 +153,13 @@ class FlameComponent extends React.Component<FlameProps> {
   private getFocus = () => {
     const { x0: currentFocusX0, y0: currentFocusY0, x1: currentFocusX1, y1: currentFocusY1, timestamp } = focusRect(
       this.props.columnarViewModel,
-      this.drilldown.datumIndex,
-      this.drilldown.timestamp,
+      this.drilldownDatumIndex,
+      this.drilldownTimestamp,
     );
     const { x0: prevFocusX0, y0: prevFocusY0, x1: prevFocusX1, y1: prevFocusY1 } = focusRect(
       this.props.columnarViewModel,
-      this.prevDrilldown.datumIndex,
-      this.prevDrilldown.timestamp,
+      this.prevDrilldownDatumIndex,
+      this.prevDrilldownTimestamp,
     );
     return {
       currentTimestamp: timestamp,
@@ -206,8 +210,10 @@ class FlameComponent extends React.Component<FlameProps> {
     e.stopPropagation();
     const hovered = this.getHoveredDatumIndex(e);
     if (hovered) {
-      this.prevDrilldown = this.drilldown;
-      this.drilldown = hovered;
+      this.prevDrilldownDatumIndex = this.drilldownDatumIndex;
+      this.prevDrilldownTimestamp = this.drilldownTimestamp;
+      this.drilldownDatumIndex = hovered.datumIndex;
+      this.drilldownTimestamp = hovered.timestamp;
       this.hoverIndex = DUMMY_INDEX; // no highlight
       this.setState({});
       this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
