@@ -24,6 +24,7 @@ import { drawFrame } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
 import { AnimationState, GLResources, nullColumnarViewModel } from './types';
 
+const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const TWEEN_EPSILON_MS = 20;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
@@ -32,6 +33,11 @@ const linear = (x: number) => x;
 const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const specValueFormatter = (d: number) => d; // fixme use the formatter from the spec
+const browserRootWindow = () => {
+  let rootWindow = window; // we might be in an iframe, and visualViewport.scale is toplevel only
+  while (window.parent && window.parent.window !== rootWindow) rootWindow = rootWindow.parent.window;
+  return rootWindow;
+};
 
 const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i: number) => ({
   x0: position1[i * 2],
@@ -101,7 +107,8 @@ class FlameComponent extends React.Component<FlameProps> {
   private hoverIndex: number;
   private pointerX: number;
   private pointerY: number;
-  // fixme this be no constant: https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#monitoring_screen_resolution_or_zoom_level_changes
+  private pinchZoomSetInterval: number;
+  private pinchZoomScale: number;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -129,12 +136,17 @@ class FlameComponent extends React.Component<FlameProps> {
     this.hoverIndex = NaN;
     this.pointerX = -10000;
     this.pointerY = -10000;
+
+    // browser pinch zoom handling
+    this.pinchZoomSetInterval = NaN;
+    this.pinchZoomScale = browserRootWindow().visualViewport.scale;
+    this.setupViewportScaleChangeListener();
   }
 
   private inTween = (t: DOMHighResTimeStamp) =>
     this.drilldownTimestamp + this.props.animationDuration + TWEEN_EPSILON_MS >= t;
 
-  updateDevicePixelRatio = () => {
+  setupDevicePixelRatioChangeListener = () => {
     // redraw if the devicePixelRatio changed, for example:
     //   - applied browser zoom from the browser's top right hamburger menu (NOT the pinch zoom)
     //   - changed monitor resolution
@@ -146,10 +158,22 @@ class FlameComponent extends React.Component<FlameProps> {
         this.setState({});
         // this re-adds the `once` event listener (not sure if componentDidMount guarantees single execution)
         // and the value in the `watchMedia` resolution needs to change as well
-        this.updateDevicePixelRatio();
+        this.setupDevicePixelRatioChangeListener();
       },
       { once: true },
     );
+  };
+
+  setupViewportScaleChangeListener = () => {
+    window.clearInterval(this.pinchZoomSetInterval);
+    this.pinchZoomSetInterval = window.setInterval(() => {
+      const pinchZoomScale = browserRootWindow().visualViewport.scale; // not cached, to avoid holding a reference to a `window` object
+      if (pinchZoomScale !== this.pinchZoomScale) {
+        this.pinchZoomScale = pinchZoomScale;
+        this.drawCanvas();
+        this.setState({});
+      }
+    }, PINCH_ZOOM_CHECK_INTERVAL_MS);
   };
 
   componentDidMount = () => {
@@ -159,7 +183,7 @@ class FlameComponent extends React.Component<FlameProps> {
      */
     this.tryCanvasContext();
     this.drawCanvas();
-    this.updateDevicePixelRatio();
+    this.setupDevicePixelRatioChangeListener();
   };
 
   componentDidUpdate = () => {
@@ -266,7 +290,7 @@ class FlameComponent extends React.Component<FlameProps> {
       position: 'absolute',
       cursor: this.hoverIndex >= 0 ? 'pointer' : DEFAULT_CSS_CURSOR,
     };
-    const dpr = window.devicePixelRatio;
+    const dpr = window.devicePixelRatio * this.pinchZoomScale;
     const canvasWidth = width * dpr;
     const canvasHeight = height * dpr;
     const columns = this.props.columnarViewModel;
@@ -340,7 +364,7 @@ class FlameComponent extends React.Component<FlameProps> {
         focus,
         this.props.chartDimensions.width,
         this.props.chartDimensions.height,
-        window.devicePixelRatio,
+        window.devicePixelRatio * this.pinchZoomScale,
         this.glResources.columnarGeomData,
         this.glResources.pickTexture,
         this.glResources.pickTextureRenderer,
@@ -381,7 +405,7 @@ class FlameComponent extends React.Component<FlameProps> {
       this.glResources = ensureWebgl(
         glCanvas,
         this.glResources,
-        window.devicePixelRatio,
+        window.devicePixelRatio * this.pinchZoomScale,
         this.props.columnarViewModel,
         this.props.chartDimensions.width,
         this.props.chartDimensions.height,
