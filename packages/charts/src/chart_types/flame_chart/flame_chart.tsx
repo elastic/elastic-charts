@@ -22,11 +22,9 @@ import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
 import { drawFrame } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
-import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, GLResources, nullColumnarViewModel } from './types';
 
 const TWEEN_EPSILON_MS = 20;
-const DUMMY_INDEX = 0 - GEOM_INDEX_OFFSET - 1; // GLSL doesn't guarantee a NaN, and it's a shader integer anyway, so let's find a safe special number
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
 
@@ -128,7 +126,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.drilldownTimestamp = -Infinity;
     this.prevDrilldownDatumIndex = 0;
     this.prevDrilldownTimestamp = -Infinity;
-    this.hoverIndex = DUMMY_INDEX;
+    this.hoverIndex = NaN;
     this.pointerX = -10000;
     this.pointerY = -10000;
   }
@@ -194,15 +192,16 @@ class FlameComponent extends React.Component<FlameProps> {
     const hovered = this.getHoveredDatumIndex(e);
     const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
     if (hovered) {
-      this.hoverIndex = Number.isNaN(hovered.datumIndex) ? DUMMY_INDEX : hovered.datumIndex;
-      if (Number.isFinite(hovered.datumIndex) && !Object.is(this.hoverIndex, prevHoverIndex)) {
+      this.hoverIndex = hovered.datumIndex;
+      if (Object.is(this.hoverIndex, prevHoverIndex)) return;
+      if (Number.isFinite(hovered.datumIndex)) {
         this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
+      } else {
+        this.hoverIndex = NaN;
+        this.props.onElementOut(); // userland callback
       }
       this.setState({});
       this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
-    } else if (Number.isFinite(prevHoverIndex)) {
-      this.hoverIndex = DUMMY_INDEX;
-      this.props.onElementOut(); // userland callback
     }
   };
 
@@ -214,7 +213,7 @@ class FlameComponent extends React.Component<FlameProps> {
       this.prevDrilldownTimestamp = this.drilldownTimestamp;
       this.drilldownDatumIndex = hovered.datumIndex;
       this.drilldownTimestamp = hovered.timestamp;
-      this.hoverIndex = DUMMY_INDEX; // no highlight
+      this.hoverIndex = NaN; // no highlight
       this.setState({});
       this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
       this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
@@ -223,8 +222,8 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleMouseLeave = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
-    if (this.hoverIndex !== DUMMY_INDEX) {
-      this.hoverIndex = DUMMY_INDEX; // no highlight when outside
+    if (Number.isFinite(this.hoverIndex)) {
+      this.hoverIndex = NaN; // no highlight when outside
       this.setState({}); // no tooltip when outside
       this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
     }

@@ -15,6 +15,7 @@ const MAX_PADDING_RATIO = 0.25;
 const MIN_FILL_RATIO = [1 - MAX_PADDING_RATIO, 0.6]; // retain at least 90% of the width and 60% of the height
 const CORNER_RADIUS_RATIO = 0.25; // as a proportion of the shorter rectangle edge length
 const VERTICES_PER_GEOM = 4; // assuming `gl.TRIANGLE_STRIP`
+const DUMMY_INDEX = 0; // GLSL doesn't guarantee a NaN, and it's a shader integer anyway, so let's find a safe special number
 
 /** @internal */
 export const drawWebgl = (
@@ -40,7 +41,7 @@ export const drawWebgl = (
         gapPx: pickLayer ? [0, 0] : [BOX_GAP, BOX_GAP], // in CSS pixels (but let's not leave a gap for shape picking)
         minFillRatio: MIN_FILL_RATIO,
         cornerRadiusPx: pickLayer ? 0 : canvasHeight * rowHeight * CORNER_RADIUS_RATIO, // note that for perf reasons the fragment shaders are split anyway
-        hoverIndex: hoverIndex + GEOM_INDEX_OFFSET,
+        hoverIndex: Number.isFinite(hoverIndex) ? hoverIndex + GEOM_INDEX_OFFSET : DUMMY_INDEX,
         rowHeight0: rowHeight,
         rowHeight1: rowHeight,
         focus0: currentFocus,
