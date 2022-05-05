@@ -193,15 +193,16 @@ class FlameComponent extends React.Component<FlameProps> {
     const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
     if (hovered) {
       this.hoverIndex = hovered.datumIndex;
-      if (Object.is(this.hoverIndex, prevHoverIndex)) return;
-      if (Number.isFinite(hovered.datumIndex)) {
-        this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
-      } else {
-        this.hoverIndex = NaN;
-        this.props.onElementOut(); // userland callback
+      if (!Object.is(this.hoverIndex, prevHoverIndex)) {
+        if (Number.isFinite(hovered.datumIndex)) {
+          this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
+        } else {
+          this.hoverIndex = NaN;
+          this.props.onElementOut(); // userland callback
+        }
+        this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
       }
-      this.setState({});
-      this.drawCanvas(); // todo use setState properly which would also trigger drawCanvas
+      this.setState({}); // exact tooltip location needs an update
     }
   };
 
