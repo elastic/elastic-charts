@@ -27,33 +27,23 @@ export function ensureWebgl(
   glCanvas: HTMLCanvasElement,
   glResources: GLResources,
   columnarViewModel: ColumnarViewModel,
-  dpr: number,
-  cssWidth: number,
-  cssHeight: number,
+  width: number,
+  height: number,
 ): GLResources {
   const gl = glResources.gl || glCanvas.getContext('webgl2', { premultipliedAlpha: true, antialias: true });
   if (!gl) return glResources;
 
-  const textureWidth = dpr * cssWidth;
-  const textureHeight = dpr * cssHeight;
-
   // ensure texture for the appropriate size
   const pickTexture =
-    glResources.pickTexture && textureWidth === glResources.textureWidth && textureHeight === glResources.textureHeight
+    glResources.pickTexture && width === glResources.textureWidth && height === glResources.textureHeight
       ? glResources.pickTexture
       : (glResources.pickTexture?.delete() ?? true) &&
-        createTexture(gl, {
-          textureIndex: 0,
-          width: textureWidth,
-          height: textureHeight,
-          internalFormat: gl.RGBA8,
-          data: null, // we use a shader to write this texture,
-        });
+        createTexture(gl, { textureIndex: 0, width, height, internalFormat: gl.RGBA8, data: null }); // we use a shader to write this texture
 
   const readPixelXY: PickFunction = (x, y) => {
     if (gl) {
       bindFramebuffer(gl, GL_READ_FRAMEBUFFER, pickTexture.target());
-      const pixel = readPixel(gl, dpr * x, textureHeight - dpr * y);
+      const pixel = readPixel(gl, x, height - y);
       const found = pixel[0] + pixel[1] + pixel[2] + pixel[3] > 0;
       const datumIndex = found
         ? pixel[3] + 256 * (pixel[2] + 256 * (pixel[1] + 256 * pixel[0])) - GEOM_INDEX_OFFSET
@@ -145,8 +135,8 @@ export function ensureWebgl(
     pickTextureRenderer,
     deallocateResources,
     pickTexture,
-    textureWidth,
-    textureHeight,
+    textureWidth: width,
+    textureHeight: height,
     vao,
     geomProgram,
     pickProgram,

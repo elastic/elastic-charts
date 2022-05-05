@@ -223,7 +223,8 @@ class FlameComponent extends React.Component<FlameProps> {
     const box = this.props.forwardStageRef.current.getBoundingClientRect();
     const x = e.clientX - box.left;
     const y = e.clientY - box.top;
-    const datumIndex = picker(x, y, focus);
+    const pr = window.devicePixelRatio * this.pinchZoomScale;
+    const datumIndex = picker(pr * x, pr * y, focus);
     this.pointerX = x;
     this.pointerY = y;
 
@@ -402,14 +403,9 @@ class FlameComponent extends React.Component<FlameProps> {
     const glCanvas = this.glCanvasRef.current;
     this.ctx = canvas && canvas.getContext('2d');
     if (glCanvas) {
-      this.glResources = ensureWebgl(
-        glCanvas,
-        this.glResources,
-        this.props.columnarViewModel,
-        window.devicePixelRatio * this.pinchZoomScale,
-        this.props.chartDimensions.width,
-        this.props.chartDimensions.height,
-      );
+      const { width, height } = this.props.chartDimensions;
+      const pr = window.devicePixelRatio * this.pinchZoomScale;
+      this.glResources = ensureWebgl(glCanvas, this.glResources, this.props.columnarViewModel, pr * width, pr * height);
     }
   };
 }
