@@ -19,11 +19,7 @@ import { colorFrag, rectVert, roundedRectFrag } from '../shaders';
 import { ColumnarViewModel, GLResources } from '../types';
 
 /** @internal */
-export function ensureWebgl(
-  gl: WebGL2RenderingContext,
-  glResources: GLResources,
-  columnarViewModel: ColumnarViewModel,
-): GLResources {
+export function ensureWebgl(gl: WebGL2RenderingContext, columnarViewModel: ColumnarViewModel): GLResources {
   /**
    * Vertex array attributes
    */
@@ -31,8 +27,8 @@ export function ensureWebgl(
   const instanceAttributes = Object.keys(columnarViewModel);
   const attributeLocations = new Map(instanceAttributes.map((name, i: GLuint) => [name, i]));
 
-  const vao = glResources.vao || gl.createVertexArray();
-  if (!vao) return glResources;
+  const vao = gl.createVertexArray();
+  if (!vao) return { roundedRectRenderer: () => {}, pickTextureRenderer: () => {} };
 
   bindVertexArray(gl, vao);
 
@@ -46,23 +42,19 @@ export function ensureWebgl(
    * Programs
    */
 
-  const geomProgram =
-    glResources.geomProgram ||
-    createLinkedProgram(
-      gl,
-      createCompiledShader(gl, GL_VERTEX_SHADER, rectVert),
-      createCompiledShader(gl, GL_FRAGMENT_SHADER, roundedRectFrag),
-      attributeLocations,
-    );
+  const geomProgram = createLinkedProgram(
+    gl,
+    createCompiledShader(gl, GL_VERTEX_SHADER, rectVert),
+    createCompiledShader(gl, GL_FRAGMENT_SHADER, roundedRectFrag),
+    attributeLocations,
+  );
 
-  const pickProgram =
-    glResources.pickProgram ||
-    createLinkedProgram(
-      gl,
-      createCompiledShader(gl, GL_VERTEX_SHADER, rectVert),
-      createCompiledShader(gl, GL_FRAGMENT_SHADER, colorFrag),
-      attributeLocations,
-    );
+  const pickProgram = createLinkedProgram(
+    gl,
+    createCompiledShader(gl, GL_VERTEX_SHADER, rectVert),
+    createCompiledShader(gl, GL_FRAGMENT_SHADER, colorFrag),
+    attributeLocations,
+  );
 
   /**
    * Resource allocation: Render setup
@@ -78,29 +70,5 @@ export function ensureWebgl(
   const roundedRectRenderer = getRenderer(gl, geomProgram, vao, { depthTest: false, blend: true });
   const pickTextureRenderer = getRenderer(gl, pickProgram, vao, { depthTest: false, blend: false }); // must not blend the texture, else the pick color thus datumIndex will be wrong
 
-  /**
-   * Resource allocation: Texture
-   */
-
-  // eslint-disable-next-line no-shadow
-  const deallocateResources = ({ vao, geomProgram, pickProgram }: GLResources) => {
-    if (gl) {
-      if (geomProgram) {
-        getAttributes(gl, geomProgram, attributeLocations).forEach((setValue) => setValue(new Float32Array())); // set buffers to zero length
-      }
-
-      gl.deleteVertexArray(vao);
-      gl.deleteProgram(geomProgram);
-      gl.deleteProgram(pickProgram);
-    }
-  };
-
-  return {
-    roundedRectRenderer,
-    pickTextureRenderer,
-    deallocateResources,
-    vao,
-    geomProgram,
-    pickProgram,
-  };
+  return { roundedRectRenderer, pickTextureRenderer };
 }

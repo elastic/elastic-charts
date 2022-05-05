@@ -31,7 +31,7 @@ import { FlameSpec } from './flame_api';
 import { drawFrame } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
-import { AnimationState, GLResources, nullColumnarViewModel, PickFunction } from './types';
+import { AnimationState, GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const TWEEN_EPSILON_MS = 20;
@@ -126,14 +126,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.ctx = null;
     this.glContext = null;
     this.pickTexture = NullTexture;
-    this.glResources = {
-      roundedRectRenderer: () => {},
-      pickTextureRenderer: () => {},
-      deallocateResources: () => {},
-      vao: null,
-      geomProgram: null,
-      pickProgram: null,
-    };
+    this.glResources = NULL_GL_RESOURCES;
     this.glCanvasRef = createRef();
     this.animationState = { rafId: NaN };
     this.drilldownDatumIndex = 0;
@@ -450,8 +443,8 @@ class FlameComponent extends React.Component<FlameProps> {
 
     this.ensurePickTexture();
 
-    if (this.glContext) {
-      this.glResources = ensureWebgl(this.glContext, this.glResources, this.props.columnarViewModel);
+    if (this.glContext && this.glResources === NULL_GL_RESOURCES) {
+      this.glResources = ensureWebgl(this.glContext, this.props.columnarViewModel);
     }
   };
 }

@@ -13,11 +13,10 @@ import { UseInfo } from '../../common/kingly';
 export interface GLResources {
   roundedRectRenderer: (u: UseInfo) => void;
   pickTextureRenderer: (u: UseInfo) => void;
-  deallocateResources: (glResources: GLResources) => void;
-  vao: WebGLVertexArrayObject | null;
-  geomProgram: WebGLProgram | null;
-  pickProgram: WebGLProgram | null;
 }
+
+/** @internal */
+export const NULL_GL_RESOURCES = { roundedRectRenderer: () => {}, pickTextureRenderer: () => {} };
 
 /** @internal */
 export interface ContinuousDomainFocus {
