@@ -405,8 +405,8 @@ class FlameComponent extends React.Component<FlameProps> {
       this.glResources = ensureWebgl(
         glCanvas,
         this.glResources,
-        window.devicePixelRatio * this.pinchZoomScale,
         this.props.columnarViewModel,
+        window.devicePixelRatio * this.pinchZoomScale,
         this.props.chartDimensions.width,
         this.props.chartDimensions.height,
       );

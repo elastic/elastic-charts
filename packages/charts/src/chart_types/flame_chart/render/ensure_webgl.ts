@@ -26,8 +26,8 @@ import { ColumnarViewModel, GLResources, PickFunction } from '../types';
 export function ensureWebgl(
   glCanvas: HTMLCanvasElement,
   glResources: GLResources,
-  dpr: number,
   columnarViewModel: ColumnarViewModel,
+  dpr: number,
   cssWidth: number,
   cssHeight: number,
 ): GLResources {
