@@ -22,7 +22,8 @@ import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, GLResources, nullColumnarViewModel } from './types';
-import { ensureLinearFlameWebGL, renderLinearFlameWebGL } from './webgl_linear_renderers';
+import { webglRender } from './webgl_render';
+import {webglEnsure} from "./webgl_ensure";
 
 const TWEEN_EPSILON_MS = 20;
 const DUMMY_INDEX = 0 - GEOM_INDEX_OFFSET - 1; // GLSL doesn't guarantee a NaN, and it's a shader integer anyway, so let's find a safe special number
@@ -295,7 +296,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const { ctx, glResources, devicePixelRatio, props } = this;
       window.requestAnimationFrame((t) => {
         if (ctx instanceof CanvasRenderingContext2D) {
-          renderLinearFlameWebGL(
+          webglRender(
             ctx,
             devicePixelRatio,
             props.chartDimensions.width,
@@ -318,7 +319,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const glCanvas = this.glCanvasRef.current;
     this.ctx = canvas && canvas.getContext('2d');
     if (glCanvas) {
-      this.glResources = ensureLinearFlameWebGL(
+      this.glResources = webglEnsure(
         glCanvas,
         this.glResources,
         this.devicePixelRatio,
