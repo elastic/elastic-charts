@@ -134,6 +134,24 @@ class FlameComponent extends React.Component<FlameProps> {
   private inTween = (t: DOMHighResTimeStamp) =>
     this.drilldownTimestamp + this.props.animationDuration + TWEEN_EPSILON_MS >= t;
 
+  updateDevicePixelRatio = () => {
+    // redraw if the devicePixelRatio changed, for example:
+    //   - applied browser zoom from the browser's top right hamburger menu (NOT the pinch zoom)
+    //   - changed monitor resolution
+    //   - dragged the browser to a monitor with a differing devicePixelRatio
+    window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addEventListener(
+      'change',
+      () => {
+        this.drawCanvas();
+        this.setState({});
+        // this re-adds the `once` event listener (not sure if componentDidMount guarantees single execution)
+        // and the value in the `watchMedia` resolution needs to change as well
+        this.updateDevicePixelRatio();
+      },
+      { once: true },
+    );
+  };
+
   componentDidMount = () => {
     /*
      * the DOM element has just been appended, and getContext('2d') is always non-null,
@@ -141,6 +159,7 @@ class FlameComponent extends React.Component<FlameProps> {
      */
     this.tryCanvasContext();
     this.drawCanvas();
+    this.updateDevicePixelRatio();
   };
 
   componentDidUpdate = () => {
