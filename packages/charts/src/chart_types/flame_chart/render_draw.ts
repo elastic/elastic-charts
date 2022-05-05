@@ -59,14 +59,8 @@ export const renderer = (
     const focusHiX = mix(focus.prevFocusX1, focus.currentFocusX1, logicalTime);
     const focusHiY = mix(focus.prevFocusY1, focus.currentFocusY1, logicalTime);
 
-    // row height, font size and dependent values
     const rowHeight = 1 / layerCount;
-    const zoomedRowHeight = rowHeight / Math.abs(focusHiY - focusLoY);
-    const fontSize = Math.min(
-      Math.round(zoomedRowHeight * textureHeight - dpr * BOX_GAP) * MAX_FONT_HEIGHT_RATIO,
-      dpr * MAX_FONT_SIZE,
-    );
-    const canvasSizeChanged = true; // textureWidthChanged || textureHeightChanged;
+
     pickTexture.clear();
     [false, true].forEach((pickLayer) =>
       (pickLayer ? pickTextureRenderer : roundedRectRenderer)({
@@ -84,7 +78,7 @@ export const renderer = (
           focus0: [focusLoX, focusHiX, focusLoY, focusHiY],
           focus1: [focusLoX, focusHiX, focusLoY, focusHiY],
         },
-        viewport: canvasSizeChanged && { x: 0, y: 0, width: textureWidth, height: textureHeight },
+        viewport: { x: 0, y: 0, width: textureWidth, height: textureHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
         clear: { color: [0, 0, 0, 0] }, // todo fix rendering glitches, clearing doesn't seem to help
         draw: {
           geom: gl.TRIANGLE_STRIP,
@@ -95,6 +89,11 @@ export const renderer = (
       }),
     );
 
+    const zoomedRowHeight = rowHeight / Math.abs(focusHiY - focusLoY);
+    const fontSize = Math.min(
+      Math.round(zoomedRowHeight * textureHeight - dpr * BOX_GAP) * MAX_FONT_HEIGHT_RATIO,
+      dpr * MAX_FONT_SIZE,
+    );
     const minTextLengthCssPix = MIN_TEXT_LENGTH * fontSize; // don't render shorter text than this
     const minRectWidthForTextInCssPix = minTextLengthCssPix + TEXT_PAD_LEFT + TEXT_PAD_RIGHT;
     const minRectWidth = minRectWidthForTextInCssPix / cssWidth;
