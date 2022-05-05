@@ -15,7 +15,7 @@ const MAX_PADDING_RATIO = 0.25;
 const MIN_FILL_RATIO = [1 - MAX_PADDING_RATIO, 0.6]; // retain at least 90% of the width and 60% of the height
 const CORNER_RADIUS_RATIO = 0.25; // as a proportion of the shorter rectangle edge length
 const VERTICES_PER_GEOM = 4; // assuming `gl.TRIANGLE_STRIP`
-const DUMMY_INDEX = 0; // GLSL doesn't guarantee a NaN, and it's a shader integer anyway, so let's find a safe special number
+const DUMMY_INDEX = -1; // GLSL doesn't guarantee a NaN, and it's a shader integer anyway, so let's find a safe special number
 
 /** @internal */
 export const drawWebgl = (

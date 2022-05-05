@@ -9,7 +9,7 @@
 import { frag, vert } from '../../common/kingly';
 
 /** @internal */
-export const GEOM_INDEX_OFFSET = 1; // root node will have an index of 1 both for color picking simplicity and GLSL int zero weirdness
+export const GEOM_INDEX_OFFSET = 1; // zero color means, empty area (no rectangle) so the rectangles are base 1 indexed for pick coloring
 
 /** @internal */
 export const rectVert = /* language=GLSL */ vert`
