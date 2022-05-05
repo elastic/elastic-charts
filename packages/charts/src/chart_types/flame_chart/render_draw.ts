@@ -31,8 +31,6 @@ function drawWebgl(
   roundedRectRenderer: Render,
   pickTexture: Texture,
   logicalTime: number,
-  cssWidth: number,
-  cssHeight: number,
   rowHeight: number,
   hoverIndex: number,
   focusLoX: number,
@@ -50,10 +48,10 @@ function drawWebgl(
       uniformValues: {
         pickLayer,
         t: Math.max(0.001, logicalTime), // for some reason, an exact zero will lead to `mix` as if it were 1 (glitch)
-        resolution: [cssWidth, cssHeight],
+        resolution: [canvasWidth, canvasHeight],
         gapPx: pickLayer ? [0, 0] : [BOX_GAP, BOX_GAP], // in CSS pixels (but let's not leave a gap for shape picking)
         minFillRatio: MIN_FILL_RATIO,
-        cornerRadiusPx: pickLayer ? 0 : cssHeight * rowHeight * CORNER_RADIUS_RATIO, // note that for perf reasons the fragment shaders are split anyway
+        cornerRadiusPx: pickLayer ? 0 : canvasHeight * rowHeight * CORNER_RADIUS_RATIO, // note that for perf reasons the fragment shaders are split anyway
         hoverIndex: hoverIndex + GEOM_INDEX_OFFSET,
         rowHeight0: rowHeight,
         rowHeight1: rowHeight,
@@ -174,8 +172,6 @@ export const renderer = (
       roundedRectRenderer,
       pickTexture,
       logicalTime,
-      cssWidth,
-      cssHeight,
       rowHeight,
       hoverIndex,
       focusLoX,
