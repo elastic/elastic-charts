@@ -41,14 +41,18 @@ const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i
   y1: position1[i * 2 + 1] + rowHeight(position1),
 });
 
-const focusRect = (columnarViewModel: FlameSpec['columnarData'], { datumIndex, timestamp }: DrilldownAction) => {
-  if (Number.isNaN(datumIndex)) return { x0: 0, y0: 0, x1: 1, y1: 1, timestamp: 0 };
-  const { x0, x1, y1: rawY1 } = columnToRowPositions(columnarViewModel, datumIndex);
+const focusRect = (
+  columnarViewModel: FlameSpec['columnarData'],
+  drilldownDatumIndex: number,
+  drilldownTimestamp: number,
+) => {
+  if (Number.isNaN(drilldownDatumIndex)) return { x0: 0, y0: 0, x1: 1, y1: 1, timestamp: 0 };
+  const { x0, x1, y1: rawY1 } = columnToRowPositions(columnarViewModel, drilldownDatumIndex);
   const sideOvershoot = SIDE_OVERSHOOT_RATIO * (x1 - x0);
   const topOvershoot = TOP_OVERSHOOT_ROW_COUNT * rowHeight(columnarViewModel.position1);
   const y1 = Math.min(1, rawY1 + topOvershoot);
   return {
-    timestamp,
+    timestamp: drilldownTimestamp,
     x0: Math.max(0, x0 - sideOvershoot),
     x1: Math.min(1, x1 + sideOvershoot),
     y0: y1 - 1,
@@ -145,11 +149,13 @@ class FlameComponent extends React.Component<FlameProps> {
   private getFocus = () => {
     const { x0: currentFocusX0, y0: currentFocusY0, x1: currentFocusX1, y1: currentFocusY1, timestamp } = focusRect(
       this.props.columnarViewModel,
-      this.drilldown,
+      this.drilldown.datumIndex,
+      this.drilldown.timestamp,
     );
     const { x0: prevFocusX0, y0: prevFocusY0, x1: prevFocusX1, y1: prevFocusY1 } = focusRect(
       this.props.columnarViewModel,
-      this.prevDrilldown,
+      this.prevDrilldown.datumIndex,
+      this.prevDrilldown.timestamp,
     );
     return {
       currentTimestamp: timestamp,
