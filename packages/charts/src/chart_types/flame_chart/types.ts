@@ -18,7 +18,6 @@ export interface GLResources {
   vao: WebGLVertexArrayObject | null;
   geomProgram: WebGLProgram | null;
   pickProgram: WebGLProgram | null;
-  readPixelXY: PickFunction;
 }
 
 /** @internal */
@@ -35,7 +34,7 @@ export interface ContinuousDomainFocus {
 }
 
 /** @internal */
-export type PickFunction = (x: Pixels, y: Pixels, focus: ContinuousDomainFocus, currentSelection?: number) => number;
+export type PickFunction = (x: Pixels, y: Pixels) => number;
 
 /** @public */
 export interface ColumnarViewModel {

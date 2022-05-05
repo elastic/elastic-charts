@@ -11,7 +11,14 @@ import { connect } from 'react-redux';
 
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import { createTexture, NullTexture, Texture } from '../../common/kingly';
+import {
+  bindFramebuffer,
+  createTexture,
+  GL_READ_FRAMEBUFFER,
+  NullTexture,
+  readPixel,
+  Texture,
+} from '../../common/kingly';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
@@ -23,7 +30,8 @@ import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
 import { drawFrame } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
-import { AnimationState, GLResources, nullColumnarViewModel } from './types';
+import { GEOM_INDEX_OFFSET } from './shaders';
+import { AnimationState, GLResources, nullColumnarViewModel, PickFunction } from './types';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const TWEEN_EPSILON_MS = 20;
@@ -100,6 +108,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private ctx: CanvasRenderingContext2D | null;
   private glContext: WebGL2RenderingContext | null;
   private pickTexture: Texture;
+  private datumAtXY: PickFunction;
   private glResources: GLResources;
   private readonly glCanvasRef: RefObject<HTMLCanvasElement>;
   private animationState: AnimationState;
@@ -118,6 +127,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.ctx = null;
     this.glContext = null;
     this.pickTexture = NullTexture;
+    this.datumAtXY = () => NaN;
     this.glResources = {
       columnarGeomData: nullColumnarViewModel,
       roundedRectRenderer: () => {},
@@ -126,7 +136,6 @@ class FlameComponent extends React.Component<FlameProps> {
       vao: null,
       geomProgram: null,
       pickProgram: null,
-      readPixelXY: () => NaN,
     };
     this.glCanvasRef = createRef();
     this.animationState = { rafId: NaN };
@@ -147,7 +156,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private inTween = (t: DOMHighResTimeStamp) =>
     this.drilldownTimestamp + this.props.animationDuration + TWEEN_EPSILON_MS >= t;
 
-  setupDevicePixelRatioChangeListener = () => {
+  private setupDevicePixelRatioChangeListener = () => {
     // redraw if the devicePixelRatio changed, for example:
     //   - applied browser zoom from the browser's top right hamburger menu (NOT the pinch zoom)
     //   - changed monitor resolution
@@ -165,7 +174,7 @@ class FlameComponent extends React.Component<FlameProps> {
     );
   };
 
-  setupViewportScaleChangeListener = () => {
+  private setupViewportScaleChangeListener = () => {
     window.clearInterval(this.pinchZoomSetInterval);
     this.pinchZoomSetInterval = window.setInterval(() => {
       const pinchZoomScale = browserRootWindow().visualViewport.scale; // not cached, to avoid holding a reference to a `window` object
@@ -189,6 +198,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   componentDidUpdate = () => {
     if (!this.ctx) this.tryCanvasContext();
+    this.ensurePickTexture();
     this.drawCanvas(); // eg. due to chartDimensions (parentDimensions) change
   };
 
@@ -219,13 +229,11 @@ class FlameComponent extends React.Component<FlameProps> {
   private getHoveredDatumIndex = (e: MouseEvent<HTMLCanvasElement>) => {
     if (!this.props.forwardStageRef.current || !this.ctx || this.inTween(e.timeStamp)) return;
 
-    const picker = this.glResources.readPixelXY;
-    const focus = this.getFocus();
     const box = this.props.forwardStageRef.current.getBoundingClientRect();
     const x = e.clientX - box.left;
     const y = e.clientY - box.top;
     const pr = window.devicePixelRatio * this.pinchZoomScale;
-    const datumIndex = picker(pr * x, pr * (this.props.chartDimensions.height - y), focus);
+    const datumIndex = this.datumAtXY(pr * x, pr * (this.props.chartDimensions.height - y));
     this.pointerX = x;
     this.pointerY = y;
 
@@ -399,6 +407,44 @@ class FlameComponent extends React.Component<FlameProps> {
     });
   };
 
+  private ensurePickTexture = () => {
+    const { width, height } = this.props.chartDimensions;
+    const pr = window.devicePixelRatio * this.pinchZoomScale;
+    const textureWidth = pr * width;
+    const textureHeight = pr * height;
+    const current = this.pickTexture;
+    if (
+      this.glContext &&
+      (current === NullTexture || current.width !== textureWidth || current.height !== textureHeight)
+    ) {
+      // (re)create texture
+      current.delete();
+      this.pickTexture =
+        createTexture(this.glContext, {
+          textureIndex: 0,
+          width: textureWidth,
+          height: textureHeight,
+          internalFormat: this.glContext.RGBA8,
+          data: null,
+        }) ?? NullTexture;
+
+      // (re)create picker function
+      this.datumAtXY = (x, y) => {
+        if (this.glContext) {
+          bindFramebuffer(this.glContext, GL_READ_FRAMEBUFFER, this.pickTexture.target());
+          const pixel = readPixel(this.glContext, x, y);
+          const found = pixel[0] + pixel[1] + pixel[2] + pixel[3] > 0;
+          const datumIndex = found
+            ? pixel[3] + 256 * (pixel[2] + 256 * (pixel[1] + 256 * pixel[0])) - GEOM_INDEX_OFFSET
+            : NaN;
+          return Number.isNaN(datumIndex) ? NaN : datumIndex;
+        } else {
+          return NaN;
+        }
+      };
+    }
+  };
+
   private tryCanvasContext = () => {
     const canvas = this.props.forwardStageRef.current;
     const glCanvas = this.glCanvasRef.current;
@@ -406,26 +452,10 @@ class FlameComponent extends React.Component<FlameProps> {
     this.ctx = canvas && canvas.getContext('2d');
     this.glContext = glCanvas && glCanvas.getContext('webgl2');
 
-    const { width, height } = this.props.chartDimensions;
-    const pr = window.devicePixelRatio * this.pinchZoomScale;
-
-    this.pickTexture = this.glContext
-      ? createTexture(this.glContext, {
-          textureIndex: 0,
-          width: pr * width,
-          height: pr * height,
-          internalFormat: this.glContext.RGBA8,
-          data: null,
-        }) ?? NullTexture
-      : NullTexture;
+    this.ensurePickTexture();
 
     if (this.glContext) {
-      this.glResources = ensureWebgl(
-        this.glContext,
-        this.glResources,
-        this.props.columnarViewModel,
-        this.pickTexture.target,
-      );
+      this.glResources = ensureWebgl(this.glContext, this.glResources, this.props.columnarViewModel);
     }
   };
 }

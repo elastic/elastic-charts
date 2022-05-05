@@ -7,42 +7,23 @@
  */
 
 import {
-  bindFramebuffer,
   bindVertexArray,
   createCompiledShader,
   createLinkedProgram,
   getAttributes,
   getRenderer,
   GL_FRAGMENT_SHADER,
-  GL_READ_FRAMEBUFFER,
   GL_VERTEX_SHADER,
-  readPixel,
-  Texture,
 } from '../../../common/kingly';
-import { colorFrag, GEOM_INDEX_OFFSET, rectVert, roundedRectFrag } from '../shaders';
-import { ColumnarViewModel, GLResources, PickFunction } from '../types';
+import { colorFrag, rectVert, roundedRectFrag } from '../shaders';
+import { ColumnarViewModel, GLResources } from '../types';
 
 /** @internal */
 export function ensureWebgl(
   gl: WebGL2RenderingContext,
   glResources: GLResources,
   columnarViewModel: ColumnarViewModel,
-  textureTarget: Texture['target'],
 ): GLResources {
-  const readPixelXY: PickFunction = (x, y) => {
-    if (gl) {
-      bindFramebuffer(gl, GL_READ_FRAMEBUFFER, textureTarget());
-      const pixel = readPixel(gl, x, y);
-      const found = pixel[0] + pixel[1] + pixel[2] + pixel[3] > 0;
-      const datumIndex = found
-        ? pixel[3] + 256 * (pixel[2] + 256 * (pixel[1] + 256 * pixel[0])) - GEOM_INDEX_OFFSET
-        : NaN;
-      return Number.isNaN(datumIndex) ? NaN : datumIndex;
-    } else {
-      return NaN;
-    }
-  };
-
   /**
    * Vertex array attributes
    */
@@ -124,6 +105,5 @@ export function ensureWebgl(
     vao,
     geomProgram,
     pickProgram,
-    readPixelXY,
   };
 }

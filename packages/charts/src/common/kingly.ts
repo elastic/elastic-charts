@@ -356,14 +356,18 @@ export interface Texture {
   setUniform: (location: WebGLUniformLocation) => void;
   target: () => WebGLFramebuffer | null;
   delete: () => void;
+  width: number;
+  height: number;
 }
 
 /** @internal */
-export const NullTexture = {
+export const NullTexture: Texture = {
   clear: () => {},
   setUniform: () => {},
   target: () => null,
   delete: () => {},
+  width: 0,
+  height: 0,
 };
 
 /** @internal */
@@ -429,6 +433,8 @@ export const createTexture = (
       gl.deleteTexture(texture);
       return true; // success
     },
+    width,
+    height,
   };
 };
 
