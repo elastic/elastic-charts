@@ -160,7 +160,6 @@ class FlameComponent extends React.Component<FlameProps> {
     window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addEventListener(
       'change',
       () => {
-        this.drawCanvas();
         this.setState({});
         // this re-adds the `once` event listener (not sure if componentDidMount guarantees single execution)
         // and the value in the `watchMedia` resolution needs to change as well
@@ -176,7 +175,6 @@ class FlameComponent extends React.Component<FlameProps> {
       const pinchZoomScale = browserRootWindow().visualViewport.scale; // not cached, to avoid holding a reference to a `window` object
       if (pinchZoomScale !== this.pinchZoomScale) {
         this.pinchZoomScale = pinchZoomScale;
-        this.drawCanvas();
         this.setState({});
       }
     }, PINCH_ZOOM_CHECK_INTERVAL_MS);
@@ -255,7 +253,6 @@ class FlameComponent extends React.Component<FlameProps> {
           this.hoverIndex = NaN;
           this.props.onElementOut(); // userland callback
         }
-        this.drawCanvas();
       }
       this.setState({}); // exact tooltip location needs an update
     }
@@ -270,7 +267,6 @@ class FlameComponent extends React.Component<FlameProps> {
       this.drilldownDatumIndex = hovered.datumIndex;
       this.drilldownTimestamp = hovered.timestamp;
       this.hoverIndex = NaN; // no highlight
-      this.drawCanvas();
       this.setState({});
       this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
     }
@@ -280,7 +276,6 @@ class FlameComponent extends React.Component<FlameProps> {
     e.stopPropagation();
     if (Number.isFinite(this.hoverIndex)) {
       this.hoverIndex = NaN; // no highlight when outside
-      this.drawCanvas();
       this.setState({}); // no tooltip when outside
     }
   };
