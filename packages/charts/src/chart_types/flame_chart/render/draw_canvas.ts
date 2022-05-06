@@ -9,6 +9,7 @@
 import { LabelAccessor } from '../../../utils/common';
 import { ColumnarViewModel } from '../types';
 import { BOX_GAP, mix } from './draw_a_frame';
+import { CANVAS_SIZE_INCREMENT } from '../flame_chart';
 
 const scale = (value: number, from: number, to: number) => (value - from) / (to - from);
 const formatter: LabelAccessor<string> = (label: string) => label; // todo loop in API value
@@ -42,7 +43,12 @@ export const drawCanvas = (
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, cssWidth, cssHeight);
+  ctx.clearRect(
+    0,
+    0,
+    CANVAS_SIZE_INCREMENT * Math.ceil(cssWidth / CANVAS_SIZE_INCREMENT),
+    CANVAS_SIZE_INCREMENT * Math.ceil(cssHeight / CANVAS_SIZE_INCREMENT),
+  );
   let lastTextColor = '';
   columnarGeomData.label.forEach((dataName, i) => {
     const textColor = 'black';

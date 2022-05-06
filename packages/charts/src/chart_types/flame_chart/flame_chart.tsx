@@ -38,6 +38,9 @@ const TWEEN_EPSILON_MS = 20;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
 
+/** @internal */
+export const CANVAS_SIZE_INCREMENT = 256; // to avoid thrashing the layout and canvases on every one pixel width/height change
+
 const linear = (x: number) => x;
 const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
@@ -283,9 +286,11 @@ class FlameComponent extends React.Component<FlameProps> {
   render = () => {
     const {
       forwardStageRef,
-      chartDimensions: { width, height },
+      chartDimensions: { width: requestedWidth, height: requestedHeight },
       a11ySettings,
     } = this.props;
+    const width = CANVAS_SIZE_INCREMENT * Math.ceil(requestedWidth / CANVAS_SIZE_INCREMENT);
+    const height = requestedHeight;
     const style: CSSProperties = {
       width,
       height,
