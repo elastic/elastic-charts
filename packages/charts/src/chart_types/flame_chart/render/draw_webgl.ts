@@ -23,6 +23,7 @@ export const drawWebgl = (
   logicalTime: number,
   canvasWidth: number,
   canvasHeight: number,
+  verticalOffset: number,
   pickTexture: Texture,
   pickTextureRenderer: Render,
   roundedRectRenderer: Render,
@@ -47,7 +48,7 @@ export const drawWebgl = (
         focus0: currentFocus,
         focus1: currentFocus,
       },
-      viewport: { x: 0, y: 0, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
+      viewport: { x: 0, y: pickLayer ? 0 : verticalOffset, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
       clear: { color: [0, 0, 0, 0] }, // or conditionalize: can use pickTexture.clear() for the texture
       draw: {
         geom: gl.TRIANGLE_STRIP,

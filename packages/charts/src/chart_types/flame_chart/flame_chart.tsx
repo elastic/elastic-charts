@@ -28,7 +28,7 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getSpecsFromStore } from '../../state/utils';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
-import { drawFrame } from './render/draw_a_frame';
+import { drawFrame, roundUpSize } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
@@ -289,8 +289,8 @@ class FlameComponent extends React.Component<FlameProps> {
       chartDimensions: { width: requestedWidth, height: requestedHeight },
       a11ySettings,
     } = this.props;
-    const width = CANVAS_SIZE_INCREMENT * Math.ceil(requestedWidth / CANVAS_SIZE_INCREMENT);
-    const height = requestedHeight;
+    const width = roundUpSize(requestedWidth);
+    const height = roundUpSize(requestedHeight);
     const style: CSSProperties = {
       width,
       height,
