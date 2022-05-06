@@ -82,6 +82,12 @@ const getColor = (c: Float32Array, i: number) => {
   return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
 
+const colorToDatumIndex = (pixel: Uint8Array) => {
+  // this is the inverse of what's done via BIT_SHIFTERS in shader code (bijective color/index mapping)
+  const isEmptyArea = pixel[0] + pixel[1] + pixel[2] + pixel[3] < GEOM_INDEX_OFFSET; // ie. zero
+  return isEmptyArea ? NaN : pixel[3] + 256 * (pixel[2] + 256 * (pixel[1] + 256 * pixel[0])) - GEOM_INDEX_OFFSET;
+};
+
 interface StateProps {
   columnarViewModel: FlameSpec['columnarData'];
   animationDuration: number;
@@ -217,17 +223,9 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private datumAtXY: PickFunction = (x, y, pickTextureTarget) => {
-    if (this.glContext && pickTextureTarget) {
-      bindFramebuffer(this.glContext, GL_READ_FRAMEBUFFER, pickTextureTarget);
-      const pixel = readPixel(this.glContext, x, y);
-      const found = pixel[0] + pixel[1] + pixel[2] + pixel[3] > 0;
-      const datumIndex = found
-        ? pixel[3] + 256 * (pixel[2] + 256 * (pixel[1] + 256 * pixel[0])) - GEOM_INDEX_OFFSET
-        : NaN;
-      return Number.isNaN(datumIndex) ? NaN : datumIndex;
-    } else {
-      return NaN;
-    }
+    if (!this.glContext || !pickTextureTarget) return NaN;
+    bindFramebuffer(this.glContext, GL_READ_FRAMEBUFFER, pickTextureTarget);
+    return colorToDatumIndex(readPixel(this.glContext, x, y));
   };
 
   private getHoveredDatumIndex = (e: MouseEvent<HTMLCanvasElement>) => {
