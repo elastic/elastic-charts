@@ -36,7 +36,7 @@ export const drawFrame = (
 
   drawWebgl(
     gl,
-    logicalTime,
+    1,
     cssWidth * dpr,
     cssHeight * dpr,
     (roundUpSize(cssHeight) - cssHeight) * dpr,
@@ -49,5 +49,5 @@ export const drawFrame = (
     columnarGeomData.label.length,
   );
 
-  drawCanvas(ctx, logicalTime, cssWidth, cssHeight, dpr, columnarGeomData, rowHeight, currentFocus);
+  drawCanvas(ctx, 1, cssWidth, cssHeight, dpr, columnarGeomData, rowHeight, currentFocus);
 };
