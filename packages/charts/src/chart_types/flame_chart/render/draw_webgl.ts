@@ -45,8 +45,7 @@ export const drawWebgl = (
         hoverIndex: Number.isFinite(hoverIndex) ? hoverIndex + GEOM_INDEX_OFFSET : DUMMY_INDEX,
         rowHeight0: rowHeight,
         rowHeight1: rowHeight,
-        focus0: currentFocus,
-        focus1: currentFocus,
+        focus: currentFocus,
       },
       viewport: { x: 0, y: pickLayer ? 0 : verticalOffset, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
       clear: { color: [0, 0, 0, 0] }, // or conditionalize: can use pickTexture.clear() for the texture

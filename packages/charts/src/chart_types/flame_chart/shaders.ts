@@ -25,7 +25,7 @@ export const rectVert = /* language=GLSL */ vert`
   uniform vec2 minFillRatio;
   uniform float cornerRadiusPx;
   uniform float rowHeight0, rowHeight1;
-  uniform mat2 focus0, focus1; // [[focusLoX, focusHiX], [focusLoY, focusHiY]]
+  uniform mat2 focus; // [[focusLoX, focusHiX], [focusLoY, focusHiY]]
   uniform int hoverIndex;
 
   out vec4 fragmentColor;
@@ -48,8 +48,8 @@ export const rectVert = /* language=GLSL */ vert`
     vec2 withGapXY = size * unitSquareCoord;
 
     // determine what we're zooming/panning into
-    vec2 focusX = mix(focus0[0], focus1[0], t);
-    vec2 focusY = mix(focus0[1], focus1[1], t);
+    vec2 focusX = focus[0];
+    vec2 focusY = focus[1];
     float viewableX = focusX[1] - focusX[0];
     float viewableY = focusY[1] - focusY[0];
     vec2 viewable = vec2(viewableX, viewableY);
