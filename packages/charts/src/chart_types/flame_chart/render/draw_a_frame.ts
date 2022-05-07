@@ -8,7 +8,7 @@
 
 import { Render, Texture } from '../../../common/kingly';
 import { ColumnarViewModel, ContinuousDomainFocus } from '../types';
-import { mix, roundUpSize } from './common';
+import { roundUpSize } from './common';
 import { drawCanvas } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
 
@@ -26,14 +26,7 @@ export const drawFrame = (
   roundedRectRenderer: Render,
   hoverIndex: number,
   rowHeight: number,
-) => (logicalTime: number) => {
-  const currentFocus: [number, number, number, number] = [
-    mix(focus.prevFocusX0, focus.currentFocusX0, logicalTime),
-    mix(focus.prevFocusX1, focus.currentFocusX1, logicalTime),
-    mix(focus.prevFocusY0, focus.currentFocusY0, logicalTime),
-    mix(focus.prevFocusY1, focus.currentFocusY1, logicalTime),
-  ];
-
+) => (currentFocus: [number, number, number, number]) => {
   drawWebgl(
     gl,
     1,

@@ -28,7 +28,7 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getSpecsFromStore } from '../../state/utils';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
-import { roundUpSize } from './render/common';
+import { mix, roundUpSize } from './render/common';
 import { drawFrame } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
@@ -401,13 +401,20 @@ class FlameComponent extends React.Component<FlameProps> {
 
       window.cancelAnimationFrame(this.animationState.rafId); // todo consider deallocating/reallocating or ensuring resources upon cancellation
       if (this.props.animationDuration > 0 && this.inTween(t)) {
-        renderFrame(0);
+        renderFrame([focus.prevFocusX0, focus.prevFocusX1, focus.prevFocusY0, focus.prevFocusY1]);
         const focusChanged = focus.currentFocusX0 !== focus.prevFocusX0 || focus.currentFocusX1 !== focus.prevFocusX1;
         if (focusChanged) {
           this.animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
             const anim = (t: number) => {
               const unitNormalizedTime = Math.max(0, (t - epochStartTime) / this.props.animationDuration);
-              renderFrame(timeFunction(Math.min(1, unitNormalizedTime)));
+              const logicalTime = timeFunction(Math.min(1, unitNormalizedTime));
+              const currentFocus: [number, number, number, number] = [
+                mix(focus.prevFocusX0, focus.currentFocusX0, logicalTime),
+                mix(focus.prevFocusX1, focus.currentFocusX1, logicalTime),
+                mix(focus.prevFocusY0, focus.currentFocusY0, logicalTime),
+                mix(focus.prevFocusY1, focus.currentFocusY1, logicalTime),
+              ];
+              renderFrame(currentFocus);
               if (unitNormalizedTime <= 1) {
                 this.animationState.rafId = window.requestAnimationFrame(anim);
               }
@@ -416,7 +423,7 @@ class FlameComponent extends React.Component<FlameProps> {
           });
         }
       } else {
-        renderFrame(1);
+        renderFrame([focus.currentFocusX0, focus.currentFocusX1, focus.currentFocusY0, focus.currentFocusY1]);
       }
 
       this.props.onRenderChange(true);
