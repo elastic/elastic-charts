@@ -56,11 +56,19 @@ const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i
   y1: position1[i * 2 + 1] + rowHeight(position1),
 });
 
+interface FocusRect {
+  timestamp: number;
+  x0: number;
+  x1: number;
+  y0: number;
+  y1: number;
+}
+
 const focusRect = (
   columnarViewModel: FlameSpec['columnarData'],
   drilldownDatumIndex: number,
   drilldownTimestamp: number,
-) => {
+): FocusRect => {
   if (Number.isNaN(drilldownDatumIndex)) return { x0: 0, y0: 0, x1: 1, y1: 1, timestamp: 0 };
   const { x0, x1, y1: rawY1 } = columnToRowPositions(columnarViewModel, drilldownDatumIndex);
   const sideOvershoot = SIDE_OVERSHOOT_RATIO * (x1 - x0);
@@ -111,22 +119,30 @@ type FlameProps = StateProps & OwnProps;
 class FlameComponent extends React.Component<FlameProps> {
   static displayName = 'Flame';
 
-  // firstRender = true; // this will be useful for stable resizing of treemaps
+  // DOM API Canvas2d and WebGL resources
   private ctx: CanvasRenderingContext2D | null;
   private glContext: WebGL2RenderingContext | null;
   private pickTexture: Texture;
   private glResources: GLResources;
   private readonly glCanvasRef: RefObject<HTMLCanvasElement>;
+
+  // native browser pinch zoom handling
+  private pinchZoomSetInterval: number;
+  private pinchZoomScale: number;
+
+  // mouse coordinates for the tooltip
+  private pointerX: number;
+  private pointerY: number;
+
+  // currently hovered over datum
+  private hoverIndex: number;
+
+  // drilldown and animation
   private animationState: AnimationState;
   private drilldownDatumIndex: number;
   private drilldownTimestamp: number;
   private prevDrilldownDatumIndex: number;
   private prevDrilldownTimestamp: number;
-  private hoverIndex: number;
-  private pointerX: number;
-  private pointerY: number;
-  private pinchZoomSetInterval: number;
-  private pinchZoomScale: number;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
