@@ -7,20 +7,10 @@
  */
 
 import { Render, Texture } from '../../../common/kingly';
-import { CANVAS_SIZE_INCREMENT } from '../flame_chart';
 import { ColumnarViewModel, ContinuousDomainFocus } from '../types';
+import { mix, roundUpSize } from './common';
 import { drawCanvas } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
-
-/** @internal */
-export const roundUpSize = (cssPixelSize: number) =>
-  CANVAS_SIZE_INCREMENT * Math.ceil(cssPixelSize / CANVAS_SIZE_INCREMENT);
-
-/** @internal */
-export const BOX_GAP = 0.5;
-
-/** @internal */
-export const mix = (a: number, b: number, x: number) => (1 - x) * a + x * b; // like the GLSL `mix`
 
 /** @internal */
 export const drawFrame = (

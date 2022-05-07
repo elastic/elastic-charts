@@ -8,7 +8,7 @@
 
 import { Render, Texture } from '../../../common/kingly';
 import { GEOM_INDEX_OFFSET } from '../shaders';
-import { BOX_GAP } from './draw_a_frame';
+import { BOX_GAP } from './common';
 
 // text rendering and other config
 const MAX_PADDING_RATIO = 0.25;

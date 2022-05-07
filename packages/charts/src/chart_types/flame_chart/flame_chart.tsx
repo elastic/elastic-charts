@@ -28,7 +28,8 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getSpecsFromStore } from '../../state/utils';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
-import { drawFrame, roundUpSize } from './render/draw_a_frame';
+import { roundUpSize } from './render/common';
+import { drawFrame } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { AnimationState, GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
@@ -37,9 +38,6 @@ const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const TWEEN_EPSILON_MS = 20;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
-
-/** @internal */
-export const CANVAS_SIZE_INCREMENT = 256; // to avoid thrashing the layout and canvases on every one pixel width/height change
 
 const linear = (x: number) => x;
 const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
