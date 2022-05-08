@@ -37,7 +37,7 @@ import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } f
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
-const LERP_ALPHA = 0.2;
+const LERP_ALPHA_PER_MS = 0.015;
 
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const specValueFormatter = (d: number) => d; // fixme use the formatter from the spec
@@ -137,6 +137,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   // drilldown animation
   private animationRafId: number;
+  private prevT: number;
   private currentFocus: FocusRect;
   private targetFocus: FocusRect;
 
@@ -148,6 +149,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.glResources = NULL_GL_RESOURCES;
     this.glCanvasRef = createRef();
     this.animationRafId = NaN;
+    this.prevT = NaN;
     this.currentFocus = focusRect(this.props.columnarViewModel, 0, -Infinity);
     this.targetFocus = { ...this.currentFocus };
     this.hoverIndex = NaN;
@@ -247,6 +249,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const hovered = this.getHoveredDatumIndex(e);
     if (hovered) {
       this.targetFocus = focusRect(this.props.columnarViewModel, hovered.datumIndex, hovered.timestamp);
+      this.prevT = NaN;
       this.hoverIndex = NaN; // no highlight
       this.setState({});
       this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
@@ -355,18 +358,21 @@ class FlameComponent extends React.Component<FlameProps> {
       rowHeight(this.props.columnarViewModel.position1),
     );
 
-    const anim = () => {
+    const anim = (t: DOMHighResTimeStamp) => {
+      const msDeltaT = Number.isNaN(this.prevT) ? 0 : t - this.prevT;
+      this.prevT = t;
+      const lerp = Math.min(1, msDeltaT * LERP_ALPHA_PER_MS);
       const dx0 = this.targetFocus.x0 - this.currentFocus.x0;
       const dx1 = this.targetFocus.x1 - this.currentFocus.x1;
       const dy0 = this.targetFocus.y0 - this.currentFocus.y0;
       const dy1 = this.targetFocus.y1 - this.currentFocus.y1;
-      this.currentFocus.x0 += dx0 * LERP_ALPHA;
-      this.currentFocus.x1 += dx1 * LERP_ALPHA;
-      this.currentFocus.y0 += dy0 * LERP_ALPHA;
-      this.currentFocus.y1 += dy1 * LERP_ALPHA;
+      this.currentFocus.x0 += lerp * dx0;
+      this.currentFocus.x1 += lerp * dx1;
+      this.currentFocus.y0 += lerp * dy0;
+      this.currentFocus.y1 += lerp * dy1;
       renderFrame([this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1]);
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
-      if (maxDiff > 1e-9) this.animationRafId = window.requestAnimationFrame(anim);
+      if (maxDiff > 1e-12) this.animationRafId = window.requestAnimationFrame(anim);
     };
     window.cancelAnimationFrame(this.animationRafId);
     this.animationRafId = window.requestAnimationFrame(anim);
