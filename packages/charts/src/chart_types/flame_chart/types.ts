@@ -56,8 +56,5 @@ export const nullColumnarViewModel = {
   size1: new Float32Array(),
 };
 
-/** @internal */
-export type AnimationState = { rafId: number };
-
 /** @public */
 export type ValueGetterFunction = (datumIndex: number) => number; // todo add doc

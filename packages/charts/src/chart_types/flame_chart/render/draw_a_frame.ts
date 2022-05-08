@@ -7,7 +7,7 @@
  */
 
 import { Render, Texture } from '../../../common/kingly';
-import { ColumnarViewModel, ContinuousDomainFocus } from '../types';
+import { ColumnarViewModel } from '../types';
 import { roundUpSize } from './common';
 import { drawCanvas } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
@@ -16,7 +16,6 @@ import { drawWebgl } from './draw_webgl';
 export const drawFrame = (
   ctx: CanvasRenderingContext2D,
   gl: WebGL2RenderingContext,
-  focus: ContinuousDomainFocus,
   cssWidth: number,
   cssHeight: number,
   dpr: number,

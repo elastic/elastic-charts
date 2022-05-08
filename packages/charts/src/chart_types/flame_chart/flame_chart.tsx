@@ -28,19 +28,17 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getSpecsFromStore } from '../../state/utils';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
-import { mix, roundUpSize } from './render/common';
+import { roundUpSize } from './render/common';
 import { drawFrame } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
-import { AnimationState, GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
+import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
-const TWEEN_EPSILON_MS = 20;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
+const LERP_ALPHA = 0.2;
 
-const linear = (x: number) => x;
-const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const specValueFormatter = (d: number) => d; // fixme use the formatter from the spec
 const browserRootWindow = () => {
@@ -137,12 +135,10 @@ class FlameComponent extends React.Component<FlameProps> {
   // currently hovered over datum
   private hoverIndex: number;
 
-  // drilldown and animation
-  private animationState: AnimationState;
-  private drilldownDatumIndex: number;
-  private drilldownTimestamp: number;
-  private prevDrilldownDatumIndex: number;
-  private prevDrilldownTimestamp: number;
+  // drilldown animation
+  private animationRafId: number;
+  private currentFocus: FocusRect;
+  private targetFocus: FocusRect;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -151,11 +147,9 @@ class FlameComponent extends React.Component<FlameProps> {
     this.pickTexture = NullTexture;
     this.glResources = NULL_GL_RESOURCES;
     this.glCanvasRef = createRef();
-    this.animationState = { rafId: NaN };
-    this.drilldownDatumIndex = 0;
-    this.drilldownTimestamp = -Infinity;
-    this.prevDrilldownDatumIndex = 0;
-    this.prevDrilldownTimestamp = -Infinity;
+    this.animationRafId = NaN;
+    this.currentFocus = focusRect(this.props.columnarViewModel, 0, -Infinity);
+    this.targetFocus = { ...this.currentFocus };
     this.hoverIndex = NaN;
     this.pointerX = -10000;
     this.pointerY = -10000;
@@ -165,9 +159,6 @@ class FlameComponent extends React.Component<FlameProps> {
     this.pinchZoomScale = browserRootWindow().visualViewport.scale;
     this.setupViewportScaleChangeListener();
   }
-
-  private inTween = (t: DOMHighResTimeStamp) =>
-    this.drilldownTimestamp + this.props.animationDuration + TWEEN_EPSILON_MS >= t;
 
   private setupDevicePixelRatioChangeListener = () => {
     // redraw if the devicePixelRatio changed, for example:
@@ -213,30 +204,6 @@ class FlameComponent extends React.Component<FlameProps> {
     this.drawCanvas(); // eg. due to chartDimensions (parentDimensions) change
   };
 
-  private getFocus = () => {
-    const { x0: currentFocusX0, y0: currentFocusY0, x1: currentFocusX1, y1: currentFocusY1, timestamp } = focusRect(
-      this.props.columnarViewModel,
-      this.drilldownDatumIndex,
-      this.drilldownTimestamp,
-    );
-    const { x0: prevFocusX0, y0: prevFocusY0, x1: prevFocusX1, y1: prevFocusY1 } = focusRect(
-      this.props.columnarViewModel,
-      this.prevDrilldownDatumIndex,
-      this.prevDrilldownTimestamp,
-    );
-    return {
-      currentTimestamp: timestamp,
-      currentFocusX0,
-      currentFocusY0,
-      currentFocusX1,
-      currentFocusY1,
-      prevFocusX0,
-      prevFocusY0,
-      prevFocusX1,
-      prevFocusY1,
-    };
-  };
-
   private datumAtXY: PickFunction = (x, y, pickTextureTarget) => {
     if (!this.glContext || !pickTextureTarget) return NaN;
     bindFramebuffer(this.glContext, GL_READ_FRAMEBUFFER, pickTextureTarget);
@@ -244,7 +211,7 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private getHoveredDatumIndex = (e: MouseEvent<HTMLCanvasElement>) => {
-    if (!this.props.forwardStageRef.current || !this.ctx || this.inTween(e.timeStamp)) return;
+    if (!this.props.forwardStageRef.current || !this.ctx) return;
 
     const box = this.props.forwardStageRef.current.getBoundingClientRect();
     const x = e.clientX - box.left;
@@ -279,10 +246,7 @@ class FlameComponent extends React.Component<FlameProps> {
     e.stopPropagation();
     const hovered = this.getHoveredDatumIndex(e);
     if (hovered) {
-      this.prevDrilldownDatumIndex = this.drilldownDatumIndex;
-      this.prevDrilldownTimestamp = this.drilldownTimestamp;
-      this.drilldownDatumIndex = hovered.datumIndex;
-      this.drilldownTimestamp = hovered.timestamp;
+      this.targetFocus = focusRect(this.props.columnarViewModel, hovered.datumIndex, hovered.timestamp);
       this.hoverIndex = NaN; // no highlight
       this.setState({});
       this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
@@ -375,59 +339,39 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private drawCanvas = () => {
-    window.requestAnimationFrame((t) => {
-      if (!this.ctx || !this.glContext || !this.pickTexture) return;
+    if (!this.ctx || !this.glContext || !this.pickTexture) return;
 
-      const focus = this.getFocus();
+    const renderFrame = drawFrame(
+      this.ctx,
+      this.glContext,
+      this.props.chartDimensions.width,
+      this.props.chartDimensions.height,
+      window.devicePixelRatio * this.pinchZoomScale,
+      this.props.columnarViewModel,
+      this.pickTexture,
+      this.glResources.pickTextureRenderer,
+      this.glResources.roundedRectRenderer,
+      this.hoverIndex,
+      rowHeight(this.props.columnarViewModel.position1),
+    );
 
-      // eslint-disable-next-line unicorn/consistent-function-scoping
-      const timeFunction =
-        this.props.animationDuration > 0 ? easeInOut(Math.min(5, this.props.animationDuration / 100)) : linear;
+    const anim = () => {
+      const dx0 = this.targetFocus.x0 - this.currentFocus.x0;
+      const dx1 = this.targetFocus.x1 - this.currentFocus.x1;
+      const dy0 = this.targetFocus.y0 - this.currentFocus.y0;
+      const dy1 = this.targetFocus.y1 - this.currentFocus.y1;
+      this.currentFocus.x0 += dx0 * LERP_ALPHA;
+      this.currentFocus.x1 += dx1 * LERP_ALPHA;
+      this.currentFocus.y0 += dy0 * LERP_ALPHA;
+      this.currentFocus.y1 += dy1 * LERP_ALPHA;
+      renderFrame([this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1]);
+      const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
+      if (maxDiff > 1e-9) this.animationRafId = window.requestAnimationFrame(anim);
+    };
+    window.cancelAnimationFrame(this.animationRafId);
+    this.animationRafId = window.requestAnimationFrame(anim);
 
-      const renderFrame = drawFrame(
-        this.ctx,
-        this.glContext,
-        focus,
-        this.props.chartDimensions.width,
-        this.props.chartDimensions.height,
-        window.devicePixelRatio * this.pinchZoomScale,
-        this.props.columnarViewModel,
-        this.pickTexture,
-        this.glResources.pickTextureRenderer,
-        this.glResources.roundedRectRenderer,
-        this.hoverIndex,
-        rowHeight(this.props.columnarViewModel.position1),
-      );
-
-      window.cancelAnimationFrame(this.animationState.rafId); // todo consider deallocating/reallocating or ensuring resources upon cancellation
-      if (this.props.animationDuration > 0 && this.inTween(t)) {
-        renderFrame([focus.prevFocusX0, focus.prevFocusX1, focus.prevFocusY0, focus.prevFocusY1]);
-        const focusChanged = focus.currentFocusX0 !== focus.prevFocusX0 || focus.currentFocusX1 !== focus.prevFocusX1;
-        if (focusChanged) {
-          this.animationState.rafId = window.requestAnimationFrame((epochStartTime) => {
-            const anim = (t: number) => {
-              const unitNormalizedTime = Math.max(0, (t - epochStartTime) / this.props.animationDuration);
-              const logicalTime = timeFunction(Math.min(1, unitNormalizedTime));
-              const currentFocus: [number, number, number, number] = [
-                mix(focus.prevFocusX0, focus.currentFocusX0, logicalTime),
-                mix(focus.prevFocusX1, focus.currentFocusX1, logicalTime),
-                mix(focus.prevFocusY0, focus.currentFocusY0, logicalTime),
-                mix(focus.prevFocusY1, focus.currentFocusY1, logicalTime),
-              ];
-              renderFrame(currentFocus);
-              if (unitNormalizedTime <= 1) {
-                this.animationState.rafId = window.requestAnimationFrame(anim);
-              }
-            };
-            this.animationState.rafId = window.requestAnimationFrame(anim);
-          });
-        }
-      } else {
-        renderFrame([focus.currentFocusX0, focus.currentFocusX1, focus.currentFocusY0, focus.currentFocusY1]);
-      }
-
-      this.props.onRenderChange(true);
-    });
+    this.props.onRenderChange(true); // emit API callback
   };
 
   private ensurePickTexture = () => {

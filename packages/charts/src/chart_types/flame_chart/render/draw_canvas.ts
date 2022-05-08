@@ -8,7 +8,7 @@
 
 import { LabelAccessor } from '../../../utils/common';
 import { ColumnarViewModel } from '../types';
-import { BOX_GAP, mix, roundUpSize } from './common';
+import { BOX_GAP, roundUpSize } from './common';
 
 const scale = (value: number, from: number, to: number) => (value - from) / (to - from);
 const formatter: LabelAccessor<string> = (label: string) => label; // todo loop in API value
@@ -19,6 +19,8 @@ const MIN_TEXT_LENGTH = 0; // in font height, so 1 means roughly 2 characters (l
 const ROW_OFFSET_Y = 0.45; // approx. middle line (text is middle anchored so tall bars with small fonts can still have vertically centered text)
 const MAX_FONT_HEIGHT_RATIO = 0.9; // relative to the row height
 const MAX_FONT_SIZE = 14;
+
+const mix = (a: number, b: number, x: number) => (1 - x) * a + x * b; // like the GLSL `mix`
 
 /** @internal */
 export const drawCanvas = (

@@ -9,9 +9,6 @@
 /** @internal */
 export const BOX_GAP = 0.5;
 
-/** @internal */
-export const mix = (a: number, b: number, x: number) => (1 - x) * a + x * b; // like the GLSL `mix`
-
 const CANVAS_SIZE_INCREMENT = 256; // to avoid thrashing the layout and canvases on every one pixel width/height change
 
 /** @internal */
