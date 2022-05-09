@@ -147,8 +147,10 @@ class FlameComponent extends React.Component<FlameProps> {
   private targetFocus: FocusRect;
 
   // panning
-  private startOfDragX: number;
-  private startOfDragX0: number;
+  private startOfDragX: number = NaN;
+  private startOfDragX0: number = NaN;
+  private startOfDragY: number = NaN;
+  private startOfDragY0: number = NaN;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -164,8 +166,6 @@ class FlameComponent extends React.Component<FlameProps> {
     this.hoverIndex = NaN;
     this.pointerX = -10000;
     this.pointerY = -10000;
-    this.startOfDragX = NaN;
-    this.startOfDragX0 = NaN;
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
@@ -248,7 +248,8 @@ class FlameComponent extends React.Component<FlameProps> {
     return { datumIndex, timestamp: e.timeStamp };
   };
 
-  private getDragDistance = () => this.pointerX - this.startOfDragX;
+  private getDragDistanceX = () => this.pointerX - this.startOfDragX;
+  private getDragDistanceY = () => -(this.pointerY - this.startOfDragY);
 
   private handleMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
@@ -257,18 +258,29 @@ class FlameComponent extends React.Component<FlameProps> {
     if (isLeftButtonHeld) {
       const { x0, x1, y0, y1 } = this.currentFocus;
       const focusWidth = x1 - x0; // this stays constant during panning
+      const focusHeight = y1 - y0; // this stays constant during panning
       if (Number.isNaN(this.startOfDragX0)) this.startOfDragX0 = x0;
-      const dragDistance = this.getDragDistance();
-      const chartWidth = this.props.chartDimensions.width;
-      const deltaIntent = (-dragDistance / chartWidth) * focusWidth;
-      const deltaCorrection =
-        deltaIntent > 0
-          ? Math.min(0, 1 - (this.startOfDragX0 + focusWidth + deltaIntent))
-          : -Math.min(0, this.startOfDragX0 + deltaIntent);
-      const delta = deltaIntent + deltaCorrection; // todo allow a bit of overdrag: use 0.95-0.98 times deltaCorrection and snap back on mouseup
-      const newX0 = clamp(this.startOfDragX0 + delta, 0, 1); // to avoid negligible FP domain breaches
-      const newX1 = clamp(this.startOfDragX0 + focusWidth + delta, 0, 1); // to avoid negligible FP domain breaches
-      const newFocus = { x0: newX0, x1: newX1, y0, y1, timestamp: e.timeStamp };
+      if (Number.isNaN(this.startOfDragY0)) this.startOfDragY0 = y0;
+      const dragDistanceX = this.getDragDistanceX();
+      const dragDistanceY = this.getDragDistanceY();
+      const { width: chartWidth, height: chartHeight } = this.props.chartDimensions;
+      const deltaIntentX = (-dragDistanceX / chartWidth) * focusWidth;
+      const deltaIntentY = (-dragDistanceY / chartHeight) * focusHeight;
+      const deltaCorrectionX =
+        deltaIntentX > 0
+          ? Math.min(0, 1 - (this.startOfDragX0 + focusWidth + deltaIntentX))
+          : -Math.min(0, this.startOfDragX0 + deltaIntentX);
+      const deltaCorrectionY =
+        deltaIntentY > 0
+          ? Math.min(0, 1 - (this.startOfDragY0 + focusHeight + deltaIntentY))
+          : -Math.min(0, this.startOfDragY0 + deltaIntentY);
+      const deltaX = deltaIntentX + deltaCorrectionX; // todo allow a bit of overdrag: use 0.95-0.98 times deltaCorrectionX and snap back on mouseup
+      const deltaY = deltaIntentY + deltaCorrectionY; // todo allow a bit of overdrag: use 0.95-0.98 times deltaCorrectionX and snap back on mouseup
+      const newX0 = clamp(this.startOfDragX0 + deltaX, 0, 1); // to avoid negligible FP domain breaches
+      const newX1 = clamp(this.startOfDragX0 + focusWidth + deltaX, 0, 1); // to avoid negligible FP domain breaches
+      const newY0 = clamp(this.startOfDragY0 + deltaY, 0, 1); // to avoid negligible FP domain breaches
+      const newY1 = clamp(this.startOfDragY0 + focusHeight + deltaY, 0, 1); // to avoid negligible FP domain breaches
+      const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1, timestamp: e.timeStamp };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
       this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
@@ -291,8 +303,16 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
+  private clearDrag = () => {
+    this.startOfDragX = NaN;
+    this.startOfDragX0 = NaN;
+    this.startOfDragY = NaN;
+    this.startOfDragY0 = NaN;
+  };
+
   private resetDrag = () => {
     this.startOfDragX = this.pointerX;
+    this.startOfDragY = this.pointerY;
   };
 
   private handleMouseDown = () => {
@@ -302,7 +322,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private handleMouseUp = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     this.updatePointerLocation(e); // just in case: eg. the user tabbed away, moved mouse elsewhere, and came back
-    const dragDistance = this.getDragDistance(); // zero or NaN means that a non-zero drag didn't happen
+    const dragDistance = this.getDragDistanceX(); // zero or NaN means that a non-zero drag didn't happen
     if (!dragDistance) {
       const hovered = this.getHoveredDatumIndex(e);
       const isDoubleClick = e.detail > 1;
@@ -316,8 +336,7 @@ class FlameComponent extends React.Component<FlameProps> {
         this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
       }
     }
-    this.startOfDragX = NaN; // no drag in progress
-    this.startOfDragX0 = NaN;
+    this.clearDrag();
   };
 
   private handleMouseLeave = (e: MouseEvent<HTMLCanvasElement>) => {
@@ -352,7 +371,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const newY1 = Math.max(targetY1, midY); // to prevent lo/hi values from switching places
 
     const xZoom = (e.ctrlKey || !e.altKey) && newX1 - newX0 >= DEEPEST_ZOOM_RATIO;
-    const yZoom = (e.ctrlKey || e.altKey) && newY1 - newY0 >= 0.5 * rowHeight(this.props.columnarViewModel.position1);
+    const yZoom = (e.ctrlKey || e.altKey) && newY1 - newY0 >= rowHeight(this.props.columnarViewModel.position1);
 
     if (xZoom || yZoom) {
       const newFocus = {
