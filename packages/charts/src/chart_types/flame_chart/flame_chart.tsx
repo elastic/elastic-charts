@@ -39,6 +39,8 @@ const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
 const LERP_ALPHA_PER_MS = 0.015;
+const SINGLE_CLICK_EMPTY_FOCUS = true;
+const IS_META_REQUIRED_FOR_ZOOM = false;
 const ZOOM_SPEED = 0.0015;
 
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
@@ -299,12 +301,13 @@ class FlameComponent extends React.Component<FlameProps> {
   private handleMouseUp = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     this.updatePointerLocation(e); // just in case: eg. the user tabbed away, moved mouse elsewhere, and came back
-    const dragDistance = this.getDragDistance();
-    if (dragDistance) {
-      this.startOfDragX0 = NaN;
-    } else {
+    const dragDistance = this.getDragDistance(); // zero or NaN means that a non-zero drag didn't happen
+    if (!dragDistance) {
       const hovered = this.getHoveredDatumIndex(e);
-      if (hovered) {
+      const isDoubleClick = e.detail > 1;
+      const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
+      const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
+      if (mustFocus) {
         this.targetFocus = focusRect(this.props.columnarViewModel, hovered.datumIndex, hovered.timestamp);
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
@@ -313,6 +316,7 @@ class FlameComponent extends React.Component<FlameProps> {
       }
     }
     this.startOfDragX = NaN; // no drag in progress
+    this.startOfDragX0 = NaN;
   };
 
   private handleMouseLeave = (e: MouseEvent<HTMLCanvasElement>) => {
@@ -323,10 +327,10 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
-  private preventScroll = (e: WheelEvent) => e.metaKey && e.preventDefault();
+  private preventScroll = (e: WheelEvent) => e.metaKey === IS_META_REQUIRED_FOR_ZOOM && e.preventDefault();
 
   private handleWheel: WheelEventHandler = (e) => {
-    if (!e.metaKey) return; // do like mapbox
+    if (e.metaKey !== IS_META_REQUIRED_FOR_ZOOM) return; // one way: zoom; other way: let scroll happen
     this.updatePointerLocation(e);
     const { x0, x1, y0, y1 } = this.currentFocus;
     const unitX = this.pointerX / this.props.chartDimensions.width;
