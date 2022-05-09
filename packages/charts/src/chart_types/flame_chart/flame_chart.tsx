@@ -39,7 +39,7 @@ const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
 const LERP_ALPHA_PER_MS = 0.015;
-const ZOOM_SPEED = 0.001;
+const ZOOM_SPEED = 0.0015;
 
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const specValueFormatter = (d: number) => d; // fixme use the formatter from the spec
@@ -143,6 +143,10 @@ class FlameComponent extends React.Component<FlameProps> {
   private currentFocus: FocusRect;
   private targetFocus: FocusRect;
 
+  // panning
+  private startOfDragX: number;
+  private startOfDragX0: number;
+
   constructor(props: Readonly<FlameProps>) {
     super(props);
     this.ctx = null;
@@ -157,6 +161,8 @@ class FlameComponent extends React.Component<FlameProps> {
     this.hoverIndex = NaN;
     this.pointerX = -10000;
     this.pointerY = -10000;
+    this.startOfDragX = NaN;
+    this.startOfDragX0 = NaN;
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
@@ -219,52 +225,94 @@ class FlameComponent extends React.Component<FlameProps> {
     return colorToDatumIndex(readPixel(this.glContext, x, y));
   };
 
-  private getHoveredDatumIndex = (e: MouseEvent<HTMLCanvasElement>) => {
+  private updatePointerLocation(
+    e: React.MouseEvent<HTMLCanvasElement, globalThis.MouseEvent> | React.WheelEvent<Element>,
+  ) {
     if (!this.props.forwardStageRef.current || !this.ctx) return;
-
     const box = this.props.forwardStageRef.current.getBoundingClientRect();
-    const x = e.clientX - box.left;
-    const y = e.clientY - box.top;
+    this.pointerX = e.clientX - box.left;
+    this.pointerY = e.clientY - box.top;
+  }
+
+  private getHoveredDatumIndex = (e: MouseEvent<HTMLCanvasElement>) => {
     const pr = window.devicePixelRatio * this.pinchZoomScale;
-    const datumIndex = this.datumAtXY(pr * x, pr * (this.props.chartDimensions.height - y), this.pickTexture.target());
-    this.pointerX = x;
-    this.pointerY = y;
+    const datumIndex = this.datumAtXY(
+      pr * this.pointerX,
+      pr * (this.props.chartDimensions.height - this.pointerY),
+      this.pickTexture.target(),
+    );
 
     return { datumIndex, timestamp: e.timeStamp };
   };
 
+  private getDragDistance = () => this.pointerX - this.startOfDragX;
+
   private handleMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
-    const hovered = this.getHoveredDatumIndex(e);
-    const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
-    if (hovered) {
-      this.hoverIndex = hovered.datumIndex;
-      if (!Object.is(this.hoverIndex, prevHoverIndex)) {
-        if (Number.isFinite(hovered.datumIndex)) {
-          this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
-        } else {
-          this.hoverIndex = NaN;
-          this.props.onElementOut(); // userland callback
+    this.updatePointerLocation(e);
+    const isLeftButtonHeld = e.buttons & 1;
+    if (isLeftButtonHeld) {
+      const { x0, x1, y0, y1 } = this.currentFocus;
+      const focusWidth = x1 - x0; // this stays constant during panning
+      if (Number.isNaN(this.startOfDragX0)) this.startOfDragX0 = x0;
+      const dragDistance = this.getDragDistance();
+      const chartWidth = this.props.chartDimensions.width;
+      const deltaIntent = (-dragDistance / chartWidth) * focusWidth;
+      const deltaCorrection =
+        deltaIntent > 0
+          ? Math.min(0, 1 - (this.startOfDragX0 + focusWidth + deltaIntent))
+          : -Math.min(0, this.startOfDragX0 + deltaIntent);
+      const delta = deltaIntent + deltaCorrection; // todo allow a bit of overdrag: use 0.95-0.98 times deltaCorrection and snap back on mouseup
+      const newX0 = clamp(this.startOfDragX0 + delta, 0, 1); // to avoid negligible FP domain breaches
+      const newX1 = clamp(this.startOfDragX0 + focusWidth + delta, 0, 1); // to avoid negligible FP domain breaches
+      const newFocus = { x0: newX0, x1: newX1, y0, y1, timestamp: e.timeStamp };
+      this.currentFocus = newFocus;
+      this.targetFocus = newFocus;
+      this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
+      this.setState({});
+    } else {
+      const hovered = this.getHoveredDatumIndex(e);
+      const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
+      if (hovered) {
+        this.hoverIndex = hovered.datumIndex;
+        if (!Object.is(this.hoverIndex, prevHoverIndex)) {
+          if (Number.isFinite(hovered.datumIndex)) {
+            this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
+          } else {
+            this.hoverIndex = NaN;
+            this.props.onElementOut(); // userland callback
+          }
         }
+        this.setState({}); // exact tooltip location needs an update
       }
-      this.setState({}); // exact tooltip location needs an update
     }
   };
 
-  private handleMouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
-    e.stopPropagation();
+  private resetDrag = () => {
+    this.startOfDragX = this.pointerX;
+  };
+
+  private handleMouseDown = () => {
+    this.resetDrag();
   };
 
   private handleMouseUp = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
-    const hovered = this.getHoveredDatumIndex(e);
-    if (hovered) {
-      this.targetFocus = focusRect(this.props.columnarViewModel, hovered.datumIndex, hovered.timestamp);
-      this.prevT = NaN;
-      this.hoverIndex = NaN; // no highlight
-      this.setState({});
-      this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
+    this.updatePointerLocation(e); // just in case: eg. the user tabbed away, moved mouse elsewhere, and came back
+    const dragDistance = this.getDragDistance();
+    if (dragDistance) {
+      this.startOfDragX0 = NaN;
+    } else {
+      const hovered = this.getHoveredDatumIndex(e);
+      if (hovered) {
+        this.targetFocus = focusRect(this.props.columnarViewModel, hovered.datumIndex, hovered.timestamp);
+        this.prevT = NaN;
+        this.hoverIndex = NaN; // no highlight
+        this.setState({});
+        this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
+      }
     }
+    this.startOfDragX = NaN; // no drag in progress
   };
 
   private handleMouseLeave = (e: MouseEvent<HTMLCanvasElement>) => {
@@ -279,6 +327,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleWheel: WheelEventHandler = (e) => {
     if (!e.metaKey) return; // do like mapbox
+    this.updatePointerLocation(e);
     const { x0, x1, y0, y1 } = this.currentFocus;
     const unitX = this.pointerX / this.props.chartDimensions.width;
     const midX = x0 + unitX * Math.abs(x1 - x0);
