@@ -322,8 +322,9 @@ class FlameComponent extends React.Component<FlameProps> {
   private handleMouseUp = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     this.updatePointerLocation(e); // just in case: eg. the user tabbed away, moved mouse elsewhere, and came back
-    const dragDistance = this.getDragDistanceX(); // zero or NaN means that a non-zero drag didn't happen
-    if (!dragDistance) {
+    const dragDistanceX = this.getDragDistanceX(); // zero or NaN means that a non-zero drag didn't happen
+    const dragDistanceY = this.getDragDistanceY(); // zero or NaN means that a non-zero drag didn't happen
+    if (!dragDistanceX && !dragDistanceY) {
       const hovered = this.getHoveredDatumIndex(e);
       const isDoubleClick = e.detail > 1;
       const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
