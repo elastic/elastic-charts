@@ -42,6 +42,7 @@ const LERP_ALPHA_PER_MS = 0.015;
 const SINGLE_CLICK_EMPTY_FOCUS = true;
 const IS_META_REQUIRED_FOR_ZOOM = false;
 const ZOOM_SPEED = 0.0015;
+const DEEPEST_ZOOM_RATIO = 1e-7; // FP calcs seem precise enough down to a 10 000 000 times zoom: 1e-7
 
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const specValueFormatter = (d: number) => d; // fixme use the formatter from the spec
@@ -340,9 +341,11 @@ class FlameComponent extends React.Component<FlameProps> {
     const targetX1 = clamp(x1 + delta * (midX - x1), 0, 1);
     const newX0 = Math.min(targetX0, midX); // to prevent left/right target x from switching places
     const newX1 = Math.max(targetX1, midX); // to prevent left/right target x from switching places
-    const newFocus = { x0: newX0, x1: newX1, y0, y1, timestamp: e.timeStamp };
-    this.currentFocus = newFocus;
-    this.targetFocus = newFocus;
+    if (newX1 - newX0 >= DEEPEST_ZOOM_RATIO) {
+      const newFocus = { x0: newX0, x1: newX1, y0, y1, timestamp: e.timeStamp };
+      this.currentFocus = newFocus;
+      this.targetFocus = newFocus;
+    }
     this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
     this.setState({});
   };
