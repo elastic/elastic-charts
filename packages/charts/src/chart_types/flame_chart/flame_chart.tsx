@@ -38,7 +38,7 @@ import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } f
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
-const LERP_ALPHA_PER_MS = 0.015;
+const RECURRENCE_ALPHA_PER_MS = 0.01;
 const SINGLE_CLICK_EMPTY_FOCUS = true;
 const IS_META_REQUIRED_FOR_ZOOM = false;
 const ZOOM_SPEED = 0.0015;
@@ -448,15 +448,19 @@ class FlameComponent extends React.Component<FlameProps> {
     const anim = (t: DOMHighResTimeStamp) => {
       const msDeltaT = Number.isNaN(this.prevT) ? 0 : t - this.prevT;
       this.prevT = t;
-      const lerp = Math.min(1, msDeltaT * LERP_ALPHA_PER_MS);
+      const convergenceRate = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS);
       const dx0 = this.targetFocus.x0 - this.currentFocus.x0;
       const dx1 = this.targetFocus.x1 - this.currentFocus.x1;
       const dy0 = this.targetFocus.y0 - this.currentFocus.y0;
       const dy1 = this.targetFocus.y1 - this.currentFocus.y1;
-      this.currentFocus.x0 += lerp * dx0;
-      this.currentFocus.x1 += lerp * dx1;
-      this.currentFocus.y0 += lerp * dy0;
-      this.currentFocus.y1 += lerp * dy1;
+      // const currentExtentX = this.currentFocus.x1 - this.currentFocus.x0;
+      // const targetExtentX = this.targetFocus.x1 - this.targetFocus.x0;
+      // const logRelativeExtentChange = Math.log2(targetExtentX / currentExtentX);
+      // const MAX_LOG_RELATIVE_EXTENT_CHANGE = 0.01;
+      this.currentFocus.x0 += convergenceRate * dx0; // compounding (exponential) would be more accurate
+      this.currentFocus.x1 += convergenceRate * dx1; // compounding (exponential) would be more accurate
+      this.currentFocus.y0 += convergenceRate * dy0; // compounding (exponential) would be more accurate
+      this.currentFocus.y1 += convergenceRate * dy1; // compounding (exponential) would be more accurate
       renderFrame([this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1]);
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
       if (maxDiff > 1e-12) this.animationRafId = window.requestAnimationFrame(anim);
