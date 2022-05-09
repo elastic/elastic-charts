@@ -73,7 +73,7 @@ export const drawCanvas = (
       }
       ctx.save();
       ctx.clip();
-      ctx.fillText(label, x + TEXT_PAD_LEFT, y - ROW_OFFSET_Y * rowHeight * cssHeight);
+      ctx.fillText(label, x + TEXT_PAD_LEFT, y - ROW_OFFSET_Y * zoomedRowHeight * cssHeight);
       ctx.restore();
     }
   });
