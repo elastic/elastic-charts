@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { createRef, CSSProperties, MouseEvent, RefObject } from 'react';
+import React, { createRef, CSSProperties, MouseEvent, RefObject, WheelEventHandler } from 'react';
 import { connect } from 'react-redux';
 
 import { ChartType } from '..';
@@ -26,6 +26,7 @@ import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getSpecsFromStore } from '../../state/utils';
+import { clamp } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
 import { roundUpSize } from './render/common';
@@ -38,6 +39,7 @@ const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
 const LERP_ALPHA_PER_MS = 0.015;
+const ZOOM_SPEED = 0.001;
 
 const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const specValueFormatter = (d: number) => d; // fixme use the formatter from the spec
@@ -198,7 +200,12 @@ class FlameComponent extends React.Component<FlameProps> {
     this.tryCanvasContext();
     this.drawCanvas();
     this.setupDevicePixelRatioChangeListener();
+    this.props.containerRef().current?.addEventListener('wheel', this.preventScroll, { passive: false });
   };
+
+  componentWillUnmount() {
+    this.props.containerRef().current?.removeEventListener('wheel', this.preventScroll);
+  }
 
   componentDidUpdate = () => {
     if (!this.ctx) this.tryCanvasContext();
@@ -264,6 +271,25 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
+  private preventScroll = (e: WheelEvent) => e.metaKey && e.preventDefault();
+
+  private handleWheel: WheelEventHandler = (e) => {
+    if (!e.metaKey) return; // do like mapbox
+    const { x0, x1, y0, y1 } = this.currentFocus;
+    const unitX = this.pointerX / this.props.chartDimensions.width;
+    const midX = x0 + unitX * Math.abs(x1 - x0);
+    const delta = -e.deltaY * ZOOM_SPEED; // mapbox convention: scroll down increases magnification
+    const targetX0 = clamp(x0 - delta * (x0 - midX), 0, 1);
+    const targetX1 = clamp(x1 + delta * (midX - x1), 0, 1);
+    const newX0 = Math.min(targetX0, midX); // to prevent left/right target x from switching places
+    const newX1 = Math.max(targetX1, midX); // to prevent left/right target x from switching places
+    const newFocus = { x0: newX0, x1: newX1, y0, y1, timestamp: e.timeStamp };
+    this.currentFocus = newFocus;
+    this.targetFocus = newFocus;
+    this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
+    this.setState({});
+  };
+
   render = () => {
     const {
       forwardStageRef,
@@ -308,6 +334,7 @@ class FlameComponent extends React.Component<FlameProps> {
             onMouseDown={(e) => e.stopPropagation()}
             onMouseUp={this.handleMouseClick}
             onMouseLeave={this.handleMouseLeave}
+            onWheel={this.handleWheel}
             style={style}
             // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
             role="presentation"

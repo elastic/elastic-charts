@@ -64,7 +64,8 @@ export const drawCanvas = (
       const label = formatter(dataName);
       if (x + scaledSize < 0 || x > cssWidth || y < 0 || y > cssHeight || !label) return; // don't render what's outside
       ctx.beginPath();
-      ctx.rect(x, y - zoomedRowHeight * cssHeight, width, zoomedRowHeight * cssHeight);
+      const renderedWidth = Math.min(width, cssWidth - x); // to not let text protrude on the right when zooming
+      ctx.rect(x, y - zoomedRowHeight * cssHeight, renderedWidth, zoomedRowHeight * cssHeight);
       if (textColor !== lastTextColor) {
         // as we're sorting the iteration, the number of color changes (API calls) is minimized
         ctx.fillStyle = textColor;
