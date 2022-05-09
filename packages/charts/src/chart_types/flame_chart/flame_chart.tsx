@@ -251,7 +251,11 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
-  private handleMouseClick = (e: MouseEvent<HTMLCanvasElement>) => {
+  private handleMouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
+    e.stopPropagation();
+  };
+
+  private handleMouseUp = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     const hovered = this.getHoveredDatumIndex(e);
     if (hovered) {
@@ -331,8 +335,8 @@ class FlameComponent extends React.Component<FlameProps> {
             width={canvasWidth}
             height={canvasHeight}
             onMouseMove={this.handleMouseMove}
-            onMouseDown={(e) => e.stopPropagation()}
-            onMouseUp={this.handleMouseClick}
+            onMouseDown={this.handleMouseDown}
+            onMouseUp={this.handleMouseUp}
             onMouseLeave={this.handleMouseLeave}
             onWheel={this.handleWheel}
             style={style}
