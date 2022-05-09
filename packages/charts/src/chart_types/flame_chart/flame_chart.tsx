@@ -338,16 +338,30 @@ class FlameComponent extends React.Component<FlameProps> {
     const wheelDelta = -e.deltaY; // mapbox convention: scroll down increases magnification
     const delta = wheelDelta * ZOOM_SPEED;
 
-    const unitX = this.pointerX / this.props.chartDimensions.width;
-    const midX = x0 + unitX * Math.abs(x1 - x0);
-    const targetX0 = clamp(x0 - delta * (x0 - midX), 0, 1);
-    const targetX1 = clamp(x1 + delta * (midX - x1), 0, 1);
-    const newX0 = Math.min(targetX0, midX); // to prevent left/right target x from switching places
-    const newX1 = Math.max(targetX1, midX); // to prevent left/right target x from switching places
-    if (newX1 - newX0 >= DEEPEST_ZOOM_RATIO) {
-      const newFocus = { x0: newX0, x1: newX1, y0, y1, timestamp: e.timeStamp };
-      this.currentFocus = newFocus;
-      this.targetFocus = newFocus;
+    if (e.altKey) {
+      const unitY = this.pointerY / this.props.chartDimensions.height;
+      const midY = y0 + unitY * Math.abs(y1 - y0);
+      const targetY0 = clamp(y0 - delta * (y0 - midY), 0, 1);
+      const targetY1 = clamp(y1 + delta * (midY - y1), 0, 1);
+      const newY0 = Math.min(targetY0, midY); // to prevent left/right target x from switching places
+      const newY1 = Math.max(targetY1, midY); // to prevent left/right target x from switching places
+      if (newY1 - newY0 >= DEEPEST_ZOOM_RATIO) {
+        const newFocus = { x0, x1, y0: newY0, y1: newY1, timestamp: e.timeStamp };
+        this.currentFocus = newFocus;
+        this.targetFocus = newFocus;
+      }
+    } else {
+      const unitX = this.pointerX / this.props.chartDimensions.width;
+      const midX = x0 + unitX * Math.abs(x1 - x0);
+      const targetX0 = clamp(x0 - delta * (x0 - midX), 0, 1);
+      const targetX1 = clamp(x1 + delta * (midX - x1), 0, 1);
+      const newX0 = Math.min(targetX0, midX); // to prevent left/right target x from switching places
+      const newX1 = Math.max(targetX1, midX); // to prevent left/right target x from switching places
+      if (newX1 - newX0 >= DEEPEST_ZOOM_RATIO) {
+        const newFocus = { x0: newX0, x1: newX1, y0, y1, timestamp: e.timeStamp };
+        this.currentFocus = newFocus;
+        this.targetFocus = newFocus;
+      }
     }
 
     this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
