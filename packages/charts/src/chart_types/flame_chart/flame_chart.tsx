@@ -332,11 +332,14 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleWheel: WheelEventHandler = (e) => {
     if (e.metaKey !== IS_META_REQUIRED_FOR_ZOOM) return; // one way: zoom; other way: let scroll happen
+
     this.updatePointerLocation(e);
     const { x0, x1, y0, y1 } = this.currentFocus;
+    const wheelDelta = -e.deltaY; // mapbox convention: scroll down increases magnification
+    const delta = wheelDelta * ZOOM_SPEED;
+
     const unitX = this.pointerX / this.props.chartDimensions.width;
     const midX = x0 + unitX * Math.abs(x1 - x0);
-    const delta = -e.deltaY * ZOOM_SPEED; // mapbox convention: scroll down increases magnification
     const targetX0 = clamp(x0 - delta * (x0 - midX), 0, 1);
     const targetX1 = clamp(x1 + delta * (midX - x1), 0, 1);
     const newX0 = Math.min(targetX0, midX); // to prevent left/right target x from switching places
@@ -346,6 +349,7 @@ class FlameComponent extends React.Component<FlameProps> {
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
     }
+
     this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
     this.setState({});
   };
