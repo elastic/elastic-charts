@@ -38,6 +38,7 @@ export const drawCanvas = (
   const minTextLengthCssPix = MIN_TEXT_LENGTH * fontSize; // don't render shorter text than this
   const minRectWidthForTextInCssPix = minTextLengthCssPix + TEXT_PAD_LEFT + TEXT_PAD_RIGHT;
   const minRectWidth = minRectWidthForTextInCssPix / cssWidth;
+  const textColor = 'black'; // todo it could come from config / theme or automatic decision like in other charts
 
   // text rendering
   ctx.save();
@@ -47,22 +48,21 @@ export const drawCanvas = (
   ctx.clearRect(0, 0, roundUpSize(cssWidth), roundUpSize(cssHeight));
   let lastTextColor = '';
   columnarGeomData.label.forEach((dataName, i) => {
-    const textColor = 'black';
+    const label = formatter(dataName);
     const size = mix(columnarGeomData.size0[i], columnarGeomData.size1[i], logicalTime);
     // todo also trivially skip text outside the current view (eg. more than 1 row above currently selected node; or left/right of the currently selected node
     // otherwise it becomes too choppy as the horizontal magnification makes rectangles wider for text even outside the chart
     const scaledSize = size / (focusHiX - focusLoX);
-    if (scaledSize >= minRectWidth) {
+    if (label && scaledSize >= minRectWidth) {
       const xNorm = mix(columnarGeomData.position0[2 * i], columnarGeomData.position1[2 * i], logicalTime);
       const yNorm = mix(columnarGeomData.position0[2 * i + 1], columnarGeomData.position1[2 * i + 1], logicalTime);
+      if (xNorm + size < focusLoX || xNorm > focusHiX || yNorm < focusLoY || yNorm > focusHiY) return; // don't render what's outside
       const baseX = scale(xNorm, focusLoX, focusHiX) * cssWidth;
       const leftOutside = Math.max(0, -baseX);
       const x = baseX + leftOutside; // don't start the text in the negative range, b/c it's not readable there
       const y = cssHeight * (1 - scale(yNorm, focusLoY, focusHiY));
       const baseWidth = scaledSize * cssWidth - BOX_GAP - TEXT_PAD_RIGHT;
       const width = baseWidth - leftOutside; // if a box is partially cut on the left, the remaining box becomes smaller
-      const label = formatter(dataName);
-      if (x + scaledSize < 0 || x > cssWidth || y < 0 || y > cssHeight || !label) return; // don't render what's outside
       ctx.beginPath();
       const renderedWidth = Math.min(width, cssWidth - x); // to not let text protrude on the right when zooming
       ctx.rect(x, y - zoomedRowHeight * cssHeight, renderedWidth, zoomedRowHeight * cssHeight);
