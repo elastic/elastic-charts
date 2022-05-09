@@ -8,7 +8,7 @@
 
 const GL_DEBUG = true;
 
-const GL = WebGL2RenderingContext; // just a shorthand, otherwise it's so long, and static number access has benefits
+const GL = window.WebGL2RenderingContext; // just a shorthand, otherwise it's so long, and static number access has benefits
 
 /****************
  * Minimize calls
@@ -220,12 +220,14 @@ const uniformSetterLookup = {
       locationUniformValues.set(location, value);
     }
   },
-  [GL.SAMPLER_2D]: (gl: WebGL2RenderingContext, location: WebGLUniformLocation) => ({ setUniform }: Sampler) => {
-    if (locationUniformValues.get(location) !== setUniform) {
-      setUniform(location);
-      locationUniformValues.set(location, setUniform);
-    }
-  },
+  [GL.SAMPLER_2D]:
+    (gl: WebGL2RenderingContext, location: WebGLUniformLocation) =>
+    ({ setUniform }: Sampler) => {
+      if (locationUniformValues.get(location) !== setUniform) {
+        setUniform(location);
+        locationUniformValues.set(location, setUniform);
+      }
+    },
 };
 
 type UniformsMap = Map<string, (...args: any[]) => void>;
