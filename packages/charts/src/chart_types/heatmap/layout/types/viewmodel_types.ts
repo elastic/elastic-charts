@@ -36,6 +36,12 @@ export interface Cell {
 }
 
 /** @internal */
+export interface InvertedPosition {
+  xValue?: string | number;
+  yValue?: string | number;
+}
+
+/** @internal */
 export interface TextBox extends Box {
   value: NonNullable<PrimitiveValue>;
   x: number;
@@ -96,6 +102,10 @@ export type PickHighlightedArea = (
   y: Array<NonNullable<PrimitiveValue>>,
 ) => Rect | null;
 
+
+/** @internal */
+export type PickInvertedPosition = (x: Pixels, y: Pixels) => InvertedPosition;
+
 /** @internal */
 export type DragShape = ReturnType<PickDragShapeFunction>;
 
@@ -107,6 +117,7 @@ export type ShapeViewModel = {
   pickDragArea: PickDragFunction;
   pickDragShape: PickDragShapeFunction;
   pickHighlightedArea: PickHighlightedArea;
+  pickInvertedPosition: PickInvertedPosition;
 };
 
 /** @internal */
@@ -136,4 +147,5 @@ export const nullShapeViewModel = (): ShapeViewModel => ({
   pickDragArea: () => ({ cells: [], x: [], y: [], chartType: ChartType.Heatmap }),
   pickDragShape: () => ({ x: 0, y: 0, width: 0, height: 0 }),
   pickHighlightedArea: () => ({ x: 0, y: 0, width: 0, height: 0 }),
+  pickInvertedPosition: () => ({ xValue: undefined, yValue: undefined}),
 });

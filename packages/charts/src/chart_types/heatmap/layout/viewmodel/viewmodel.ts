@@ -26,7 +26,7 @@ import { HeatmapSpec } from '../../specs';
 import { ChartElementSizes, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
 import { ColorScale } from '../../state/selectors/get_color_scale';
 import {
-  Cell,
+  Cell, InvertedPosition,
   PickDragFunction,
   PickDragShapeFunction,
   PickHighlightedArea,
@@ -176,6 +176,29 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     };
     return acc;
   }, {});
+
+
+  /**
+   * Returns selected elements based on coordinates.
+   * @param x
+   * @param y
+   */
+  const pickInvertedPosition = (x: Pixels, y: Pixels): InvertedPosition => {
+
+    if (x < elementSizes.grid.left || y < elementSizes.grid.top) {
+      return {xValue: undefined, yValue: undefined};
+    }
+    if (x > elementSizes.grid.width + elementSizes.grid.left || y > elementSizes.grid.top + elementSizes.grid.height) {
+      return {xValue: undefined, yValue: undefined};
+    }
+    const xValue = xInvertedScale(x - elementSizes.grid.left);
+    const yValue = yInvertedScale(y);
+    if (xValue === undefined || yValue === undefined) {
+      return {xValue: undefined, yValue: undefined};
+    }
+    return {xValue, yValue};
+  };
+
 
   /**
    * Returns selected elements based on coordinates.
@@ -392,6 +415,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         },
       ],
     },
+    pickInvertedPosition,
     pickQuads,
     pickDragArea,
     pickDragShape,

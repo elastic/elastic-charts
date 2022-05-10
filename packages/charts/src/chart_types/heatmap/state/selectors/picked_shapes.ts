@@ -8,11 +8,11 @@
 
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { Cell, TextBox } from '../../layout/types/viewmodel_types';
+import { Cell, InvertedPosition, TextBox } from '../../layout/types/viewmodel_types';
 import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getHeatmapGeometries } from './geometries';
 
-function getCurrentPointerPosition(state: GlobalChartState) {
+export function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;
 }
 
@@ -26,5 +26,15 @@ export const getPickedShapes = createCustomCachedSelector(
     return Array.isArray(pickedData)
       ? pickedData.filter(({ y }) => y < dims.rowHeight * dims.visibleNumberOfRows)
       : pickedData;
+  },
+);
+
+export const getXValue = createCustomCachedSelector(
+  [getHeatmapGeometries, getCurrentPointerPosition, computeChartElementSizesSelector],
+  (geoms, pointerPosition): InvertedPosition => {
+    const picker = geoms.pickInvertedPosition;
+    const { x, y } = pointerPosition;
+    const pickedData = picker(x, y);
+    return pickedData;
   },
 );

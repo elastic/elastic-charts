@@ -87,6 +87,7 @@ export const Example = () => {
     <Chart>
       <Settings
         onElementClick={onElementClick}
+        onPointerUpdate={(e) => console.log("Pointer event updated", e)}
         onRenderChange={getDebugStateLogger(debugState)}
         showLegend
         legendPosition="right"
