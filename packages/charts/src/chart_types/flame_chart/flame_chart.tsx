@@ -73,16 +73,15 @@ const focusRect = (
   drilldownTimestamp: number,
 ): FocusRect => {
   if (Number.isNaN(drilldownDatumIndex)) return { x0: 0, y0: 0, x1: 1, y1: 1, timestamp: 0 };
-  const { x0, x1, y1: rawY1 } = columnToRowPositions(columnarViewModel, drilldownDatumIndex);
+  const { x0, x1, y0, y1 } = columnToRowPositions(columnarViewModel, drilldownDatumIndex);
   const sideOvershoot = SIDE_OVERSHOOT_RATIO * (x1 - x0);
   const topOvershoot = TOP_OVERSHOOT_ROW_COUNT * rowHeight(columnarViewModel.position1);
-  const y1 = Math.min(1, rawY1 + topOvershoot);
   return {
     timestamp: drilldownTimestamp,
     x0: Math.max(0, x0 - sideOvershoot),
     x1: Math.min(1, x1 + sideOvershoot),
-    y0: Math.min(0, y1 - 1),
-    y1,
+    y0: Math.min(0, y0 + topOvershoot),
+    y1: Math.min(1, y1 + topOvershoot),
   };
 };
 
