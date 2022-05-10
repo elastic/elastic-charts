@@ -238,7 +238,8 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): Uniform
       if (!activeUniform) throw new Error(`Whoa, active uniform not found`); // just appeasing the TS linter
       const { name, type } = activeUniform;
       const location = gl.getUniformLocation(program, name);
-      if (!location) throw new Error(`Whoa, uniform location (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
+      if (location === null)
+        throw new Error(`Whoa, uniform location ${location} (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
       const setValue = uniformSetterLookup[type](gl, location);
       if (GL_DEBUG && !setValue) throw new Error(`No setValue for uniform GL[${type}] (name: ${name}) implemented yet`);
       return [name, setValue];
