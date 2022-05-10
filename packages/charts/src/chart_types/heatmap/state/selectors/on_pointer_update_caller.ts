@@ -18,11 +18,11 @@ import {
 } from '../../../../specs';
 import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getSpecOrNull } from './heatmap_spec';
 import { getCurrentPointerPosition, getXValue } from './picked_shapes';
-import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 
 function isSameEventValue(a: PointerOverEvent, b: PointerOverEvent, changeTrigger: PointerUpdateTrigger) {
   const checkX = changeTrigger === PointerUpdateTrigger.X || changeTrigger === PointerUpdateTrigger.Both;
@@ -39,7 +39,6 @@ const hasPointerEventChanged = (prev: PointerEvent, next: PointerEvent | null, c
     next?.type === PointerEventType.Over &&
     !isSameEventValue(prev, next, changeTrigger));
 
-
 /**
  * Will call the onPointerUpdate listener every time the following preconditions are met:
  * - the onPointerUpdate listener is available
@@ -54,8 +53,22 @@ export function createOnPointerUpdateCaller(): (state: GlobalChartState) => void
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.Heatmap) {
       selector = createCustomCachedSelector(
-        [getSpecOrNull, getLastClickSelector, getSettingsSpecSelector, getCurrentPointerPosition, getXValue, getChartIdSelector],
-        (spec, lastClick: PointerState | null, settings: SettingsSpec, currentPointer, invertedValues, chartId): void => {
+        [
+          getSpecOrNull,
+          getLastClickSelector,
+          getSettingsSpecSelector,
+          getCurrentPointerPosition,
+          getXValue,
+          getChartIdSelector,
+        ],
+        (
+          spec,
+          lastClick: PointerState | null,
+          settings: SettingsSpec,
+          currentPointer,
+          invertedValues,
+          chartId,
+        ): void => {
           if (!spec) {
             return;
           }
@@ -65,26 +78,25 @@ export function createOnPointerUpdateCaller(): (state: GlobalChartState) => void
           }
           const tempPrev = { ...prevPointerEvent };
           const nextPointerEvent = {
-              chartId: state.chartId,
-              type:currentPointer.x === - 1 && currentPointer.y === -1 ?  PointerEventType.Out : PointerEventType.Over,
-              scale: "time",
-              x: invertedValues.xValue,
-              y: [{value: invertedValues.yValue ?? null}],
-              smHorizontalValue: null,
-              smVerticalValue: null,
-            } as PointerOverEvent
+            chartId: state.chartId,
+            type: currentPointer.x === -1 && currentPointer.y === -1 ? PointerEventType.Out : PointerEventType.Over,
+            scale: 'time',
+            x: invertedValues.xValue,
+            y: [{ value: invertedValues.yValue ?? null }],
+            smHorizontalValue: null,
+            smVerticalValue: null,
+          } as PointerOverEvent;
           // we have to update the prevPointerEvents before possibly calling the onPointerUpdate
           // to avoid a recursive loop of calls caused by the impossibility to update the prevPointerEvent
           prevPointerEvent = nextPointerEvent;
 
-          if (settings.onPointerUpdate && hasPointerEventChanged(tempPrev, nextPointerEvent, settings.pointerUpdateTrigger)){
-            console.log("onPointerUpdate", nextPointerEvent)
+          if (
+            settings.onPointerUpdate &&
+            hasPointerEventChanged(tempPrev, nextPointerEvent, settings.pointerUpdateTrigger)
+          ) {
             settings.onPointerUpdate(nextPointerEvent);
-        }
-
-
-        }
-
+          }
+        },
       );
     }
     if (selector) {

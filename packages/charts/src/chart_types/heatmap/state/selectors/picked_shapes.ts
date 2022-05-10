@@ -12,6 +12,7 @@ import { Cell, InvertedPosition, TextBox } from '../../layout/types/viewmodel_ty
 import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getHeatmapGeometries } from './geometries';
 
+/** @internal */
 export function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;
 }
@@ -29,6 +30,7 @@ export const getPickedShapes = createCustomCachedSelector(
   },
 );
 
+/** @internal */
 export const getXValue = createCustomCachedSelector(
   [getHeatmapGeometries, getCurrentPointerPosition, computeChartElementSizesSelector],
   (geoms, pointerPosition): InvertedPosition => {

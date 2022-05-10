@@ -102,7 +102,6 @@ export type PickHighlightedArea = (
   y: Array<NonNullable<PrimitiveValue>>,
 ) => Rect | null;
 
-
 /** @internal */
 export type PickInvertedPosition = (x: Pixels, y: Pixels) => InvertedPosition;
 
@@ -147,5 +146,5 @@ export const nullShapeViewModel = (): ShapeViewModel => ({
   pickDragArea: () => ({ cells: [], x: [], y: [], chartType: ChartType.Heatmap }),
   pickDragShape: () => ({ x: 0, y: 0, width: 0, height: 0 }),
   pickHighlightedArea: () => ({ x: 0, y: 0, width: 0, height: 0 }),
-  pickInvertedPosition: () => ({ xValue: undefined, yValue: undefined}),
+  pickInvertedPosition: () => ({ xValue: undefined, yValue: undefined }),
 });
