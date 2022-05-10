@@ -81,8 +81,8 @@ const focusRect = (
     timestamp: drilldownTimestamp,
     x0: Math.max(0, x0 - sideOvershoot),
     x1: Math.min(1, x1 + sideOvershoot),
-    y0: y1 - 1,
-    y1: y1,
+    y0: Math.min(0, y1 - 1),
+    y1,
   };
 };
 

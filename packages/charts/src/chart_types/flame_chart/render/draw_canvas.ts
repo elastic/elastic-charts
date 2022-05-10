@@ -56,7 +56,7 @@ export const drawCanvas = (
     if (label && scaledSize >= minRectWidth) {
       const xNorm = mix(columnarGeomData.position0[2 * i], columnarGeomData.position1[2 * i], logicalTime);
       const yNorm = mix(columnarGeomData.position0[2 * i + 1], columnarGeomData.position1[2 * i + 1], logicalTime);
-      if (xNorm + size < focusLoX || xNorm > focusHiX || yNorm < focusLoY || yNorm > focusHiY) return; // don't render what's outside
+      if (xNorm + size < focusLoX || xNorm > focusHiX || yNorm + rowHeight < focusLoY || yNorm > focusHiY) return; // don't render what's outside
       const baseX = scale(xNorm, focusLoX, focusHiX) * cssWidth;
       const leftOutside = Math.max(0, -baseX);
       const x = baseX + leftOutside; // don't start the text in the negative range, b/c it's not readable there
