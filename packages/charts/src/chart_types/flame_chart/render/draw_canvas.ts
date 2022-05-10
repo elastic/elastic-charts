@@ -15,7 +15,7 @@ const formatter: LabelAccessor<string> = (label: string) => label; // todo loop 
 
 const TEXT_PAD_LEFT = 3;
 const TEXT_PAD_RIGHT = 3;
-const MIN_TEXT_LENGTH = 0; // in font height, so 1 means roughly 2 characters (latin characters are tall on average)
+const MIN_TEXT_LENGTH = 0.5; // in font height, so 1 means roughly 2 characters (latin characters are tall on average)
 const ROW_OFFSET_Y = 0.45; // approx. middle line (text is middle anchored so tall bars with small fonts can still have vertically centered text)
 const MAX_FONT_HEIGHT_RATIO = 0.9; // relative to the row height
 const MAX_FONT_SIZE = 14;
@@ -34,7 +34,8 @@ export const drawCanvas = (
   [focusLoX, focusHiX, focusLoY, focusHiY]: [number, number, number, number],
 ) => {
   const zoomedRowHeight = rowHeight / Math.abs(focusHiY - focusLoY);
-  const fontSize = Math.min(Math.round(zoomedRowHeight * cssHeight - BOX_GAP) * MAX_FONT_HEIGHT_RATIO, MAX_FONT_SIZE);
+  const rowHeightPx = zoomedRowHeight * cssHeight;
+  const fontSize = Math.min((zoomedRowHeight * cssHeight - BOX_GAP) * MAX_FONT_HEIGHT_RATIO, MAX_FONT_SIZE);
   const minTextLengthCssPix = MIN_TEXT_LENGTH * fontSize; // don't render shorter text than this
   const minRectWidthForTextInCssPix = minTextLengthCssPix + TEXT_PAD_LEFT + TEXT_PAD_RIGHT;
   const minRectWidth = minRectWidthForTextInCssPix / cssWidth;
@@ -45,8 +46,18 @@ export const drawCanvas = (
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.scale(dpr, dpr);
+  ctx.font = `${fontSize}px "Atkinson Hyperlegible"`;
   ctx.clearRect(0, 0, roundUpSize(cssWidth), roundUpSize(cssHeight));
   let lastTextColor = '';
+
+  /*
+  const rowHeightPx = zoomedRowHeight * cssHeight;
+  if (rowHeightPx < 10) {
+    ctx.restore();
+    return;
+  }
+*/
+
   columnarGeomData.label.forEach((dataName, i) => {
     const label = formatter(dataName);
     const size = mix(columnarGeomData.size0[i], columnarGeomData.size1[i], logicalTime);
@@ -65,7 +76,7 @@ export const drawCanvas = (
       const width = baseWidth - leftOutside; // if a box is partially cut on the left, the remaining box becomes smaller
       ctx.beginPath();
       const renderedWidth = Math.min(width, cssWidth - x); // to not let text protrude on the right when zooming
-      ctx.rect(x, y - zoomedRowHeight * cssHeight, renderedWidth, zoomedRowHeight * cssHeight);
+      ctx.rect(x, y - zoomedRowHeight * cssHeight, renderedWidth, rowHeightPx);
       if (textColor !== lastTextColor) {
         // as we're sorting the iteration, the number of color changes (API calls) is minimized
         ctx.fillStyle = textColor;
