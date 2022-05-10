@@ -220,14 +220,12 @@ const uniformSetterLookup = {
       locationUniformValues.set(location, value);
     }
   },
-  [GL.SAMPLER_2D]:
-    (gl: WebGL2RenderingContext, location: WebGLUniformLocation) =>
-    ({ setUniform }: Sampler) => {
-      if (locationUniformValues.get(location) !== setUniform) {
-        setUniform(location);
-        locationUniformValues.set(location, setUniform);
-      }
-    },
+  [GL.SAMPLER_2D]: (gl: WebGL2RenderingContext, location: WebGLUniformLocation) => ({ setUniform }: Sampler) => {
+    if (locationUniformValues.get(location) !== setUniform) {
+      setUniform(location);
+      locationUniformValues.set(location, setUniform);
+    }
+  },
 };
 
 type UniformsMap = Map<string, (...args: any[]) => void>;
@@ -240,9 +238,9 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): Uniform
       if (!activeUniform) throw new Error(`Whoa, active uniform not found`); // just appeasing the TS linter
       const { name, type } = activeUniform;
       const location = gl.getUniformLocation(program, name);
-      if (!location) throw new Error(`Whoa, uniform location not found`); // just appeasing the TS linter
+      if (!location) throw new Error(`Whoa, uniform location (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
       const setValue = uniformSetterLookup[type](gl, location);
-      if (GL_DEBUG && !setValue) throw new Error(`No setValue for uniform GL[${type}] implemented yet`);
+      if (GL_DEBUG && !setValue) throw new Error(`No setValue for uniform GL[${type}] (name: ${name}) implemented yet`);
       return [name, setValue];
     }),
   );
