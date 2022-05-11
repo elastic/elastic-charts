@@ -2,22 +2,18 @@
 
 set -euo pipefail
 
-# source .buildkite/scripts/utils.sh
+source .buildkite/scripts/utils.sh
 
 echo '--- Setting up job environment'
 
+GITHUB_TOKEN=$(retry 5 5 vault read -field=github_token secret/kibana-issues/dev/kibanamachine)
+export GITHUB_TOKEN
 
-curl --location --request GET 'https://api.github.com/repos/elastic/elastic-charts/commits/01d9863aa6c010b33aed5106851a2cb36bfca85a' \
-  --header "Authorization: Bearer $GITHUB_TOKEN" \
-  -H "Accept: application/vnd.github.v3+json"
+GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/github)
+export GITHUB_AUTH
 
-exit 0
+FIREBASE_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/firebase)
+export FIREBASE_AUTH
 
-# GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/github)
-# export GITHUB_AUTH
-
-# FIREBASE_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/firebase)
-# export FIREBASE_AUTH
-
-# BUILDKITE_TOKEN=$(retry 5 5 vault read -field=token secret/datavis/buildkite)
-# export BUILDKITE_TOKEN
+BUILDKITE_TOKEN=$(retry 5 5 vault read -field=token secret/datavis/buildkite)
+export BUILDKITE_TOKEN
