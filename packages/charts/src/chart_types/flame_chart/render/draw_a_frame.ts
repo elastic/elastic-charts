@@ -12,8 +12,9 @@ import { roundUpSize } from './common';
 import { drawRect, drawCanvas } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
 
+const CHART_BOX_LINE_WIDTH = 1;
 const MINIMAP_SIZE_RATIO_X = 3;
-const MINIMAP_SIZE_RATIO_Y = 5;
+const MINIMAP_SIZE_RATIO_Y = 3;
 const MINIMAP_FOCUS_BOX_LINE_WIDTH = 1;
 const MINIMAP_BOX_LINE_WIDTH = 1;
 
@@ -45,6 +46,7 @@ export const drawFrame = (
     currentFocus,
     columnarGeomData.label.length,
     true,
+    0,
   );
 
   drawCanvas(ctx, 1, cssWidth, cssHeight, dpr, columnarGeomData, rowHeight, currentFocus);
@@ -64,6 +66,38 @@ export const drawFrame = (
     [0, 1, 0, 1],
     columnarGeomData.label.length,
     false,
+    cssWidth * dpr - (cssWidth * dpr) / MINIMAP_SIZE_RATIO_X,
+  );
+
+  // chart border
+  drawRect(ctx, cssWidth, cssHeight, 0, cssHeight, dpr, [0, 1, 0, 1], '', 'black', CHART_BOX_LINE_WIDTH);
+
+  // minimap box erase
+  drawRect(
+    ctx,
+    cssWidth / MINIMAP_SIZE_RATIO_X,
+    cssHeight / MINIMAP_SIZE_RATIO_Y,
+    cssWidth - cssWidth / MINIMAP_SIZE_RATIO_X,
+    cssHeight,
+    dpr,
+    [0, 1, 0, 1],
+    'rgba(255,255,255,1)',
+    '',
+    0,
+  );
+
+  // minimap box clear
+  drawRect(
+    ctx,
+    cssWidth / MINIMAP_SIZE_RATIO_X,
+    cssHeight / MINIMAP_SIZE_RATIO_Y,
+    cssWidth - cssWidth / MINIMAP_SIZE_RATIO_X,
+    cssHeight,
+    dpr,
+    [0, 1, 0, 1],
+    'transparent',
+    '',
+    0,
   );
 
   // minimap focus border
@@ -71,6 +105,7 @@ export const drawFrame = (
     ctx,
     cssWidth / MINIMAP_SIZE_RATIO_X,
     cssHeight / MINIMAP_SIZE_RATIO_Y,
+    cssWidth - cssWidth / MINIMAP_SIZE_RATIO_X,
     cssHeight,
     dpr,
     currentFocus,
@@ -84,6 +119,7 @@ export const drawFrame = (
     ctx,
     cssWidth / MINIMAP_SIZE_RATIO_X,
     cssHeight / MINIMAP_SIZE_RATIO_Y,
+    cssWidth - cssWidth / MINIMAP_SIZE_RATIO_X,
     cssHeight,
     dpr,
     [0, 1, 0, 1],

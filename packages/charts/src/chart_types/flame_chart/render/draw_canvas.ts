@@ -89,7 +89,8 @@ export const drawRect = (
   ctx: CanvasRenderingContext2D,
   cssWidth: number,
   cssHeight: number,
-  heightOffset: number,
+  xOffset: number,
+  yOffset: number,
   dpr: number,
   [focusLoX, focusHiX, focusLoY, focusHiY]: [number, number, number, number],
   fillColor: string,
@@ -100,14 +101,17 @@ export const drawRect = (
   ctx.save();
   ctx.scale(dpr, dpr);
   ctx.beginPath();
-  const height = cssHeight * Math.abs(focusHiY - focusLoY);
-  ctx.rect(
-    cssWidth * focusLoX + borderLineWidth / 2,
-    heightOffset - height - focusLoY * cssHeight + borderLineWidth / 2,
-    cssWidth * (focusHiX - focusLoX) - borderLineWidth,
-    height - borderLineWidth,
-  );
-  if (fillColor) {
+  const boxHeight = cssHeight * Math.abs(focusHiY - focusLoY);
+  const x = xOffset + cssWidth * focusLoX + borderLineWidth / 2;
+  const y = yOffset - boxHeight - focusLoY * cssHeight + borderLineWidth / 2;
+  const width = cssWidth * (focusHiX - focusLoX) - borderLineWidth;
+  const height = boxHeight - borderLineWidth;
+  if (fillColor === 'transparent') {
+    ctx.clearRect(x, y, width, height);
+  } else {
+    ctx.rect(x, y, width, height);
+  }
+  if (fillColor && fillColor !== 'transparent') {
     ctx.fillStyle = fillColor;
     ctx.fill();
   }
