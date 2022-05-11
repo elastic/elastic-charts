@@ -6,7 +6,11 @@ set -euo pipefail
 
 echo '--- Setting up job environment'
 
-printenv
+
+curl --location --request GET 'https://api.github.com/repos/elastic/elastic-charts/commits/01d9863aa6c010b33aed5106851a2cb36bfca85a' \
+  --header "Authorization: Bearer $GITHUB_TOKEN" \
+  -H "Accept: application/vnd.github.v3+json"
+
 exit 0
 
 # GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/github)
