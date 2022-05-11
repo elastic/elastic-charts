@@ -2,9 +2,12 @@
 
 set -euo pipefail
 
-source .buildkite/scripts/utils.sh
+# source .buildkite/scripts/utils.sh
 
 echo '--- Setting up job environment'
+
+printenv
+exit 0
 
 # GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/github)
 # export GITHUB_AUTH
