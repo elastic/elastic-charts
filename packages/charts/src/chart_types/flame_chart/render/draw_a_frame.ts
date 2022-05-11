@@ -9,8 +9,13 @@
 import { Render, Texture } from '../../../common/kingly';
 import { ColumnarViewModel } from '../types';
 import { roundUpSize } from './common';
-import { drawCanvas } from './draw_canvas';
+import { drawRect, drawCanvas } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
+
+const MINIMAP_SIZE_RATIO_X = 3;
+const MINIMAP_SIZE_RATIO_Y = 5;
+const MINIMAP_FOCUS_BOX_LINE_WIDTH = 1;
+const MINIMAP_BOX_LINE_WIDTH = 1;
 
 /** @internal */
 export const drawFrame = (
@@ -39,7 +44,51 @@ export const drawFrame = (
     rowHeight,
     currentFocus,
     columnarGeomData.label.length,
+    true,
   );
 
   drawCanvas(ctx, 1, cssWidth, cssHeight, dpr, columnarGeomData, rowHeight, currentFocus);
+
+  // minimap geoms
+  drawWebgl(
+    gl,
+    1,
+    (cssWidth * dpr) / MINIMAP_SIZE_RATIO_X,
+    (cssHeight * dpr) / MINIMAP_SIZE_RATIO_Y,
+    (roundUpSize(cssHeight) - cssHeight) * dpr,
+    pickTexture,
+    pickTextureRenderer,
+    roundedRectRenderer,
+    hoverIndex,
+    rowHeight,
+    [0, 1, 0, 1],
+    columnarGeomData.label.length,
+    false,
+  );
+
+  // minimap focus border
+  drawRect(
+    ctx,
+    cssWidth / MINIMAP_SIZE_RATIO_X,
+    cssHeight / MINIMAP_SIZE_RATIO_Y,
+    cssHeight,
+    dpr,
+    currentFocus,
+    '',
+    'magenta',
+    MINIMAP_FOCUS_BOX_LINE_WIDTH,
+  );
+
+  // minimap box rectangle
+  drawRect(
+    ctx,
+    cssWidth / MINIMAP_SIZE_RATIO_X,
+    cssHeight / MINIMAP_SIZE_RATIO_Y,
+    cssHeight,
+    dpr,
+    [0, 1, 0, 1],
+    '',
+    'black',
+    MINIMAP_BOX_LINE_WIDTH,
+  );
 };

@@ -51,14 +51,6 @@ export const drawCanvas = (
   ctx.clearRect(0, 0, roundUpSize(cssWidth), roundUpSize(cssHeight));
   let lastTextColor = '';
 
-  /*
-  const rowHeightPx = zoomedRowHeight * cssHeight;
-  if (rowHeightPx < 10) {
-    ctx.restore();
-    return;
-  }
-*/
-
   columnarGeomData.label.forEach((dataName, i) => {
     const label = formatter(dataName);
     const size = mix(columnarGeomData.size0[i], columnarGeomData.size1[i], logicalTime);
@@ -89,5 +81,40 @@ export const drawCanvas = (
       ctx.restore();
     }
   });
+  ctx.restore();
+};
+
+/** @internal */
+export const drawRect = (
+  ctx: CanvasRenderingContext2D,
+  cssWidth: number,
+  cssHeight: number,
+  heightOffset: number,
+  dpr: number,
+  [focusLoX, focusHiX, focusLoY, focusHiY]: [number, number, number, number],
+  fillColor: string,
+  borderColor: string,
+  borderLineWidth: number,
+) => {
+  // text rendering
+  ctx.save();
+  ctx.scale(dpr, dpr);
+  ctx.beginPath();
+  const height = cssHeight * Math.abs(focusHiY - focusLoY);
+  ctx.rect(
+    cssWidth * focusLoX + borderLineWidth / 2,
+    heightOffset - height - focusLoY * cssHeight + borderLineWidth / 2,
+    cssWidth * (focusHiX - focusLoX) - borderLineWidth,
+    height - borderLineWidth,
+  );
+  if (fillColor) {
+    ctx.fillStyle = fillColor;
+    ctx.fill();
+  }
+  if (borderColor && borderLineWidth > 0) {
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = borderLineWidth;
+    ctx.stroke();
+  }
   ctx.restore();
 };
