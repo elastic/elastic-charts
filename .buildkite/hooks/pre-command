@@ -14,19 +14,6 @@ echo '--- Generating buildkite files'
 
 yarn build:bk:types
 
-cd ..
+echo '--- Updating commit status for jobs'
 
-echo '--- Setting up job environment'
-
-GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/github)
-export GITHUB_AUTH
-
-FIREBASE_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/firebase)
-export FIREBASE_AUTH
-
-BUILDKITE_TOKEN=$(retry 5 5 vault read -field=token secret/datavis/buildkite)
-export BUILDKITE_TOKEN
-
-echo '--- Updating commit status for job'
-
-npx ts-node .buildkite/scripts/pre_command.ts
+npx ts-node scripts/pre_command.ts
