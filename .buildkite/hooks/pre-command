@@ -4,6 +4,20 @@ set -euo pipefail
 
 source .buildkite/scripts/utils.sh
 
+echo '--- Setting job environment variables'
+
+GITHUB_TOKEN=$(retry 5 5 vault read -field=github_token secret/kibana-issues/dev/kibanamachine)
+export GITHUB_TOKEN
+
+GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/github)
+export GITHUB_AUTH
+
+FIREBASE_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/firebase)
+export FIREBASE_AUTH
+
+BUILDKITE_TOKEN=$(retry 5 5 vault read -field=token secret/datavis/buildkite)
+export BUILDKITE_TOKEN
+
 cd '.buildkite'
 
 echo '--- Installing buildkite dependencies'
