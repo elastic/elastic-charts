@@ -37,14 +37,14 @@ import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } f
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
-const TOP_OVERSHOOT_ROW_COUNT = 2; // e.g. 2 means, try to render two extra rows above (parent and grandparent)
 const RECURRENCE_ALPHA_PER_MS = 0.01;
 const SINGLE_CLICK_EMPTY_FOCUS = true;
 const IS_META_REQUIRED_FOR_ZOOM = false;
 const ZOOM_SPEED = 0.0015;
 const DEEPEST_ZOOM_RATIO = 1e-7; // FP calcs seem precise enough down to a 10 000 000 times zoom: 1e-7
 
-const rowHeight = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
+const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
+const initialPixelRowPitch = () => 16;
 const specValueFormatter = (d: number) => d; // fixme use the formatter from the spec
 const browserRootWindow = () => {
   let rootWindow = window; // we might be in an iframe, and visualViewport.scale is toplevel only
@@ -56,7 +56,7 @@ const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i
   x0: position1[i * 2],
   x1: position1[i * 2] + size1[i],
   y0: position1[i * 2 + 1],
-  y1: position1[i * 2 + 1] + rowHeight(position1),
+  y1: position1[i * 2 + 1] + unitRowPitch(position1),
 });
 
 interface FocusRect {
@@ -69,19 +69,22 @@ interface FocusRect {
 
 const focusRect = (
   columnarViewModel: FlameSpec['columnarData'],
+  chartHeight: number,
   drilldownDatumIndex: number,
   drilldownTimestamp: number,
 ): FocusRect => {
-  if (Number.isNaN(drilldownDatumIndex)) return { x0: 0, y0: 0, x1: 1, y1: 1, timestamp: 0 };
-  const { x0, x1, y0, y1 } = columnToRowPositions(columnarViewModel, drilldownDatumIndex);
+  const { x0, x1, y0, y1 } = columnToRowPositions(columnarViewModel, drilldownDatumIndex || 0);
   const sideOvershoot = SIDE_OVERSHOOT_RATIO * (x1 - x0);
-  const topOvershoot = TOP_OVERSHOOT_ROW_COUNT * rowHeight(columnarViewModel.position1);
+  const unitHeight = (chartHeight / initialPixelRowPitch()) * (y1 - y0);
+  const intendedY0 = y1 - unitHeight;
+  const bottomOvershoot = Math.max(0, -intendedY0);
+  const top = Math.min(1, y1 + bottomOvershoot);
   return {
     timestamp: drilldownTimestamp,
     x0: Math.max(0, x0 - sideOvershoot),
     x1: Math.min(1, x1 + sideOvershoot),
-    y0: Math.min(0, y0 + topOvershoot),
-    y1: Math.min(1, y1 + topOvershoot),
+    y0: Math.max(0, intendedY0),
+    y1: Math.min(1, top),
   };
 };
 
@@ -160,7 +163,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.glCanvasRef = createRef();
     this.animationRafId = NaN;
     this.prevT = NaN;
-    this.currentFocus = focusRect(this.props.columnarViewModel, 0, -Infinity);
+    this.currentFocus = focusRect(this.props.columnarViewModel, props.chartDimensions.height, 0, -Infinity);
     this.targetFocus = { ...this.currentFocus };
     this.hoverIndex = NaN;
     this.pointerX = -10000;
@@ -329,7 +332,12 @@ class FlameComponent extends React.Component<FlameProps> {
       const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
       if (mustFocus) {
-        this.targetFocus = focusRect(this.props.columnarViewModel, hovered.datumIndex, hovered.timestamp);
+        this.targetFocus = focusRect(
+          this.props.columnarViewModel,
+          this.props.chartDimensions.height,
+          hovered.datumIndex,
+          hovered.timestamp,
+        );
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
         this.setState({});
@@ -371,7 +379,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const newY1 = Math.max(targetY1, midY); // to prevent lo/hi values from switching places
 
     const xZoom = (e.ctrlKey || !e.altKey) && newX1 - newX0 >= DEEPEST_ZOOM_RATIO;
-    const yZoom = (e.ctrlKey || e.altKey) && newY1 - newY0 >= rowHeight(this.props.columnarViewModel.position1);
+    const yZoom = (e.ctrlKey || e.altKey) && newY1 - newY0 >= unitRowPitch(this.props.columnarViewModel.position1);
 
     if (xZoom || yZoom) {
       const newFocus = {
@@ -481,7 +489,7 @@ class FlameComponent extends React.Component<FlameProps> {
       this.glResources.pickTextureRenderer,
       this.glResources.roundedRectRenderer,
       this.hoverIndex,
-      rowHeight(this.props.columnarViewModel.position1),
+      unitRowPitch(this.props.columnarViewModel.position1),
     );
 
     const anim = (t: DOMHighResTimeStamp) => {
