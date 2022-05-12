@@ -6,9 +6,11 @@ source .buildkite/scripts/utils.sh
 
 echo '--- Setting job environment variables'
 
+# kibanamachine token to access org
 GITHUB_TOKEN=$(retry 5 5 vault read -field=github_token secret/kibana-issues/dev/kibanamachine)
 export GITHUB_TOKEN
 
+# charts github app to send checks
 GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/github)
 export GITHUB_AUTH
 
