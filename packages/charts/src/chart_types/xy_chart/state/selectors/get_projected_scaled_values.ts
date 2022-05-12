@@ -8,6 +8,7 @@
 
 import { ProjectedValues } from '../../../../specs/settings';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { isDefined } from '../../../../utils/common';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
@@ -25,13 +26,13 @@ export const getProjectedScaledValues = createCustomCachedSelector(
     }
 
     const xValue = xScale.invertWithStep(x, geometriesIndexKeys);
-    if (!xValue) {
+    if (!isDefined(xValue.value)) {
       return;
     }
 
     return {
       x: xValue.value,
-      y: [...yScales.entries()].map(([groupId, yScale]) => ({ value: yScale.invert(y), groupId })),
+      y: [...yScales.entries()].map(([groupId, yScale]) => ({ value: yScale.invert(y) ?? NaN, groupId })),
       smVerticalValue: verticalPanelValue,
       smHorizontalValue: horizontalPanelValue,
     };

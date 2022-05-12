@@ -26,7 +26,7 @@ export type ScaleBandType = ScaleOrdinalType;
 /**
  * A `Scale` interface. A scale can map an input value within a specified domain
  * to an output value from a specified range.
- * The the value is mapped depending on the `type` (linear, log, sqrt, time, ordinal)
+ * The value is mapped depending on the `type` (linear, log, sqrt, time, ordinal)
  * @internal
  */
 export interface Scale<T> {
@@ -39,12 +39,12 @@ export interface Scale<T> {
   ticks: () => T[];
   scale: (value?: PrimitiveValue) => number;
   pureScale: (value?: PrimitiveValue) => number;
-  invert: (value: number) => T;
+  invert: (value: number) => T | undefined;
   invertWithStep: (
     value: number,
     data: any[],
   ) => {
-    value: T;
+    value: T | undefined;
     withinBandwidth: boolean;
   };
   isSingleValue: () => boolean;

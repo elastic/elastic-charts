@@ -446,19 +446,6 @@ export function getDistance(a: Point, b: Point): number {
   return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 }
 
-/** @internal */
-export function stringifyNullsUndefined(value?: PrimitiveValue): string | number {
-  if (value === undefined) {
-    return 'undefined';
-  }
-
-  if (value === null) {
-    return 'null';
-  }
-
-  return value;
-}
-
 /**
  * Determines if an array has all unique values
  *

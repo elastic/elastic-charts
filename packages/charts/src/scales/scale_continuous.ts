@@ -15,6 +15,7 @@ import {
   ScaleLogarithmic,
   ScalePower,
   scaleSqrt,
+  ScaleTime,
   scaleUtc,
 } from 'd3-scale';
 import { Required } from 'utility-types';
@@ -29,7 +30,15 @@ import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
 import { LogScaleOptions } from './types';
 
-const SCALES = {
+type ContinuousScaleType =
+  | typeof ScaleType.Time
+  | typeof ScaleType.Linear
+  | typeof ScaleType.Log
+  | typeof ScaleType.Sqrt;
+const SCALES: Record<
+  ContinuousScaleType,
+  () => ScaleContinuousNumeric<number, number, undefined> | ScaleTime<number, number, undefined>
+> = {
   [ScaleType.Linear]: scaleLinear,
   [ScaleType.Log]: scaleLog,
   [ScaleType.Sqrt]: scaleSqrt,
@@ -70,7 +79,7 @@ export class ScaleContinuous implements Scale<number> {
   readonly timeZone: string;
   readonly barsPadding: number;
   readonly isSingleValueHistogram: boolean;
-  private readonly project: (d: number) => number;
+  private readonly project: (d: number) => number | undefined;
   private readonly inverseProject: (d: number) => number | Date;
 
   constructor(
@@ -171,12 +180,14 @@ export class ScaleContinuous implements Scale<number> {
 
   scale(value?: PrimitiveValue) {
     return typeof value === 'number'
-      ? this.project(value) + (this.bandwidthPadding / 2) * this.totalBarsInCluster
+      ? (this.project(value) ?? NaN) + (this.bandwidthPadding / 2) * this.totalBarsInCluster
       : NaN;
   }
 
   pureScale(value?: PrimitiveValue) {
-    return typeof value === 'number' ? this.project(this.bandwidth === 0 ? value : value + this.minInterval / 2) : NaN;
+    return typeof value === 'number'
+      ? this.project(this.bandwidth === 0 ? value : value + this.minInterval / 2) ?? NaN
+      : NaN;
   }
 
   ticks() {

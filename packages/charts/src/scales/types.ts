@@ -12,7 +12,7 @@ import { ScaleBand } from './scale_band';
 import { ScaleContinuous } from './scale_continuous';
 
 /**
- * Check if a scale is logaritmic
+ * Check if a scale is logarithmic
  * @internal
  */
 export function isLogarithmicScale(scale: Scale<number | string>): scale is ScaleContinuous {

@@ -15,6 +15,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { isDefined } from '../../../../utils/common';
 import { ComputedScales } from '../utils/types';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
@@ -47,7 +48,7 @@ function getPointerEvent(
     return { chartId, type: PointerEventType.Out };
   }
   const xValue = xScale.invertWithStep(x, geometriesIndexKeys);
-  if (!xValue) {
+  if (!isDefined(xValue.value)) {
     return { chartId, type: PointerEventType.Out };
   }
   return {
@@ -57,7 +58,7 @@ function getPointerEvent(
     scale: xScale.type,
     x: xValue.value,
     y: [...yScales.entries()].map(([groupId, yScale]) => {
-      return { value: yScale.invert(y), groupId };
+      return { value: yScale.invert(y) ?? NaN, groupId };
     }),
     smVerticalValue: verticalPanelValue,
     smHorizontalValue: horizontalPanelValue,

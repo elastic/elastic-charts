@@ -17,7 +17,7 @@ import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
-import { clamp, Datum } from '../../../../utils/common';
+import { clamp, Datum, isDefined } from '../../../../utils/common';
 import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
@@ -89,7 +89,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     .domain([0, elementSizes.grid.width])
     .range(xValues);
 
-  // compute the cell width (can be smaller then the available size depending on config
+  // compute the cell width (can be smaller than the available size depending on config
   const cellWidth =
     heatmapTheme.cell.maxWidth !== 'fill' && xScale.bandwidth() > heatmapTheme.cell.maxWidth
       ? heatmapTheme.cell.maxWidth
@@ -129,8 +129,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
   // compute each available cell position, color and value
   const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
-    const x = xScale(String(d.x));
-    const y = yScale(String(d.y))! + gridStrokeWidth;
+    const x = xScale(d.x);
+    const y = yScale(d.y);
     const yIndex = yValues.indexOf(d.y);
 
     if (x === undefined || y === undefined || yIndex === -1) {
@@ -156,7 +156,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       x:
         (heatmapTheme.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : x) +
         gridStrokeWidth,
-      y,
+      y: y + gridStrokeWidth,
       yIndex,
       width: cellWidthInner,
       height: cellHeightInner,
@@ -230,6 +230,13 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const endX = xInvertedScale(clamp(bottomRight[0], 0, width));
     const startY = yInvertedScale(clamp(topLeft[1], 0, currentGridHeight - 1));
     const endY = yInvertedScale(clamp(bottomRight[1], 0, currentGridHeight - 1));
+    if (!isDefined(startX) || !isDefined(endX) || !isDefined(startY) || !isDefined(endY)) {
+      return {
+        cells: [],
+        x: [],
+        y: [],
+      };
+    }
 
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);

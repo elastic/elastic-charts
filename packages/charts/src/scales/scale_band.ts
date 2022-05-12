@@ -12,7 +12,7 @@ import { Scale, ScaleBandType } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Ratio } from '../common/geometry';
 import { RelativeBandsPadding } from '../specs';
-import { clamp, stringifyNullsUndefined } from '../utils/common';
+import { clamp } from '../utils/common';
 import { Range } from '../utils/domain';
 import { ScaleType } from './constants';
 
@@ -20,7 +20,7 @@ import { ScaleType } from './constants';
  * Categorical scale
  * @internal
  */
-export class ScaleBand<T extends number | string> implements Scale<T> {
+export class ScaleBand<T extends number | string | undefined> implements Scale<T> {
   readonly bandwidth: number;
 
   readonly bandwidthPadding: number;
@@ -85,7 +85,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
   }
 
   scale(value?: PrimitiveValue) {
-    const scaleValue = this.d3Scale(stringifyNullsUndefined(value));
+    const scaleValue = this.d3Scale((value as unknown) as T);
     return typeof scaleValue === 'number' && Number.isFinite(scaleValue) ? scaleValue : NaN; // fixme when TS improves
   }
 

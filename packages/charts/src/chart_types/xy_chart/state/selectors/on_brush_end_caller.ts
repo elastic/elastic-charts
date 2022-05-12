@@ -156,8 +156,8 @@ function getXBrushExtent(
   const histogramEnabled = isHistogramEnabled(seriesSpecs);
   const invertValue =
     histogramEnabled && roundHistogramBrushValues
-      ? (value: number) => xScale.invertWithStep(value, xScale.domain).value
-      : (value: number) => xScale.invert(value);
+      ? (value: number) => xScale.invertWithStep(value, xScale.domain).value ?? NaN
+      : (value: number) => xScale.invert(value) ?? NaN;
   const minPosScaled = invertValue(minPos + offset);
   const maxPosScaled = invertValue(maxPos + offset);
   const maxDomainValue =
@@ -210,8 +210,8 @@ function getYBrushExtents(
       return;
     }
 
-    const minPosScaled = yScale.invert(minPos);
-    const maxPosScaled = yScale.invert(maxPos);
+    const minPosScaled = yScale.invert(minPos) ?? NaN;
+    const maxPosScaled = yScale.invert(maxPos) ?? NaN;
     const minValue = clamp(minPosScaled, yScale.domain[0], maxPosScaled);
     const maxValue = clamp(minPosScaled, maxPosScaled, yScale.domain[1]);
     yValues.push({ extent: [minValue, maxValue], groupId });
