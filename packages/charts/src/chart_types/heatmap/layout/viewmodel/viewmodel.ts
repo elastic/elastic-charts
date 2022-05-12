@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -7,8 +8,7 @@
  */
 
 import { bisectLeft } from 'd3-array';
-import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
-
+import { scaleBand, scaleQuantize } from 'd3-scale';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
@@ -35,6 +35,7 @@ import {
   TextBox,
 } from '../types/viewmodel_types';
 import { BaseDatum } from './../../../xy_chart/utils/specs';
+import { ScaleBand } from '../../../../scales';
 
 /** @public */
 export interface HeatmapCellDatum {
@@ -76,6 +77,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     ...heatmapTheme.yAxisLabel,
   }));
 
+
   // compute the scale for the rows positions
   const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, elementSizes.fullHeatmapHeight]);
 
@@ -85,6 +87,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
   // compute the scale for the columns positions
   const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, elementSizes.grid.width]);
+  const xScaleBand = new ScaleBand(xValues, [0, elementSizes.grid.width]);
 
   const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
     .domain([0, elementSizes.grid.width])
@@ -416,6 +419,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     pickDragArea,
     pickDragShape,
     pickHighlightedArea,
+    xScale: xScaleBand
   };
 }
 

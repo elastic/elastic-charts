@@ -35,6 +35,10 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerUpdateCaller } from './selectors/on_pointer_update_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
+import { CursorLine } from '../renderer/dom/cursor_line';
+import { CursorBand } from '../renderer/dom/cursor_band';
+// import { CursorLine } from '../../xy_chart/renderer/dom/cursor_line';
+// import { CursorBand } from '../../xy_chart/renderer/dom/cursor_band';
 
 const EMPTY_MAP = new Map();
 
@@ -83,6 +87,8 @@ export class HeatmapState implements InternalChartState {
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
     return (
       <>
+        <CursorBand/>
+        <CursorLine/>
         <Tooltip getChartContainerRef={containerRef} />
         <Heatmap forwardStageRef={forwardStageRef} />
         <BrushTool />
@@ -92,6 +98,7 @@ export class HeatmapState implements InternalChartState {
   }
 
   getPointerCursor(globalState: GlobalChartState) {
+    console.log("globalState", globalState)
     return getPointerCursorSelector(globalState);
   }
 

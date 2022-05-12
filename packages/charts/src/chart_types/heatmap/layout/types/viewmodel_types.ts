@@ -17,6 +17,8 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Visible, HeatmapStyle } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapCellDatum } from '../viewmodel/viewmodel';
+import { LinearScale, OrdinalScale, RasterTimeScale } from '../../specs';
+import { ScaleBand } from '../../../../scales';
 
 /** @public */
 export interface Cell {

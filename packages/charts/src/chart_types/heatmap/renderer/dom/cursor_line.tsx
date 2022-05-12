@@ -20,68 +20,73 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { Rotation } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme } from '../../../../utils/themes/theme';
-import { getCursorBandPositionSelector } from '../../state/selectors/get_cursor_band';
+import { getCursorLinePositionSelector } from '../../state/selectors/get_cursor_line';
 
-interface CursorBandProps {
+interface CursorLineProps {
   theme: Theme;
   chartRotation: Rotation;
   cursorPosition?: Rect;
   tooltipType: TooltipType;
   fromExternalEvent?: boolean;
+  isLine: boolean;
 }
 
 function canRenderBand(type: TooltipType, visible: boolean, fromExternalEvent?: boolean) {
   return visible && (type === TooltipType.Crosshairs || type === TooltipType.VerticalCursor || fromExternalEvent);
 }
 
-class CursorBandComponent extends React.Component<CursorBandProps> {
-  static displayName = 'CursorBand';
+class CursorLineComponent extends React.Component<CursorLineProps> {
+  static displayName = 'CursorLine';
 
   render() {
     const {
       theme: {
-        crosshair: { band },
+        crosshair: { band, line },
       },
       cursorPosition,
       tooltipType,
       fromExternalEvent,
+      isLine,
     } = this.props;
-    const isBand = (cursorPosition?.width ?? 0) > 0 && (cursorPosition?.height ?? 0) > 0;
-    if (!isBand || !cursorPosition || !canRenderBand(tooltipType, band.visible, fromExternalEvent)) {
+
+    if (!cursorPosition || !canRenderBand(tooltipType, band.visible, fromExternalEvent) || !isLine) {
       return null;
     }
     const { x, y, width, height } = cursorPosition;
-    const { fill } = band;
+    const { strokeWidth, stroke, dash } = line;
+    const strokeDasharray = (dash ?? []).join(' ');
     return (
       <svg className="echCrosshair__cursor" width="100%" height="100%">
-        <rect {...{ x, y, width, height, fill }} />
+        <line {...{ x1: x, x2: x + width, y1: y, y2: y + height, strokeWidth, stroke, strokeDasharray }} />
       </svg>
     );
   }
 }
 
-const mapStateToProps = (state: GlobalChartState): CursorBandProps => {
+const mapStateToProps = (state: GlobalChartState): CursorLineProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return {
       theme: LIGHT_THEME,
       chartRotation: 0,
       tooltipType: TooltipType.None,
+      isLine: false,
     };
   }
   const settings = getSettingsSpecSelector(state);
-  const cursorBandPosition = getCursorBandPositionSelector(state);
+  const cursorBandPosition = getCursorLinePositionSelector(state);
   const fromExternalEvent = cursorBandPosition?.fromExternalEvent;
   const tooltipType = getTooltipType(settings, fromExternalEvent);
+  const isLine = cursorBandPosition?.width === 0 || cursorBandPosition?.height === 0;
 
-  console.log("cursorBandPosition", cursorBandPosition)
   return {
     theme: getChartThemeSelector(state),
     chartRotation: getChartRotationSelector(state),
     cursorPosition: cursorBandPosition,
     tooltipType,
     fromExternalEvent,
+    isLine,
   };
 };
 
 /** @internal */
-export const CursorBand = connect(mapStateToProps)(CursorBandComponent);
+export const CursorLine = connect(mapStateToProps)(CursorLineComponent);
