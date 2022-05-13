@@ -38,22 +38,26 @@ export const drawFrame = (
   const minimapLeft = cssWidth - minimapWidth;
   const fullFocus: [number, number, number, number] = [0, 1, 0, 1];
 
-  drawWebgl(
-    gl,
-    1,
-    cssWidth * dpr,
-    cssHeight * dpr,
-    0,
-    canvasHeightExcess,
-    pickTexture,
-    pickTextureRenderer,
-    roundedRectRenderer,
-    hoverIndex,
-    rowHeight,
-    currentFocus,
-    columnarGeomData.label.length,
-    true,
-  );
+  const drawFocusLayer = (pickLayer: boolean) =>
+    drawWebgl(
+      gl,
+      1,
+      cssWidth * dpr,
+      cssHeight * dpr,
+      0,
+      canvasHeightExcess,
+      pickTexture,
+      pickLayer ? pickTextureRenderer : roundedRectRenderer,
+      hoverIndex,
+      rowHeight,
+      currentFocus,
+      columnarGeomData.label.length,
+      true,
+      pickLayer,
+    );
+
+  // base (focus) layer
+  drawFocusLayer(false);
 
   drawCanvas(ctx, 1, cssWidth, cssHeight, dpr, columnarGeomData, rowHeight, currentFocus);
 
@@ -66,14 +70,17 @@ export const drawFrame = (
     cssWidth * dpr * (1 - 1 / MINIMAP_SIZE_RATIO_X),
     canvasHeightExcess,
     pickTexture,
-    pickTextureRenderer,
     roundedRectRenderer,
     hoverIndex,
     rowHeight,
     fullFocus,
     columnarGeomData.label.length,
     false,
+    false,
   );
+
+  // base (focus) pick layer
+  drawFocusLayer(true);
 
   // chart border
   drawRect(ctx, cssWidth, cssHeight, 0, cssHeight, dpr, fullFocus, '', 'black', CHART_BOX_LINE_WIDTH);

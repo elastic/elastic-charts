@@ -26,38 +26,36 @@ export const drawWebgl = (
   xOffset: number,
   yOffset: number,
   pickTexture: Texture,
-  pickTextureRenderer: Render,
-  roundedRectRenderer: Render,
+  renderer: Render,
   hoverIndex: number,
   rowHeight: number,
   currentFocus: [number, number, number, number],
   instanceCount: number,
   clear: boolean,
+  pickLayer: boolean,
 ) =>
-  [false, true].forEach((pickLayer) =>
-    (pickLayer ? pickTextureRenderer : roundedRectRenderer)({
-      target: pickLayer ? pickTexture.target() : null,
-      uniformValues: {
-        pickLayer,
-        t: Math.max(0.001, logicalTime), // for some reason, an exact zero will lead to `mix` as if it were 1 (glitch)
-        resolution: [canvasWidth, canvasHeight],
-        gapPx: pickLayer ? [0, 0] : [BOX_GAP, BOX_GAP], // in CSS pixels (but let's not leave a gap for shape picking)
-        minFillRatio: MIN_FILL_RATIO,
-        cornerRadiusPx: pickLayer ? 0 : canvasHeight * rowHeight * CORNER_RADIUS_RATIO, // note that for perf reasons the fragment shaders are split anyway
-        hoverIndex: Number.isFinite(hoverIndex) ? hoverIndex + GEOM_INDEX_OFFSET : DUMMY_INDEX,
-        rowHeight0: rowHeight,
-        rowHeight1: rowHeight,
-        focus: currentFocus,
-      },
-      viewport: { x: xOffset, y: pickLayer ? 0 : yOffset, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
-      clear: clear
-        ? { color: [0, 0, 0, 0] /*, rect: [0, 0, 1, 1]*/ }
-        : { color: [0, 0, 0, 0.03], rect: [xOffset, yOffset, canvasWidth, canvasHeight] }, // or conditionalize: can use pickTexture.clear() for the texture
-      draw: {
-        geom: gl.TRIANGLE_STRIP,
-        offset: 0,
-        count: VERTICES_PER_GEOM,
-        instanceCount,
-      },
-    }),
-  );
+  renderer({
+    target: pickLayer ? pickTexture.target() : null,
+    uniformValues: {
+      pickLayer,
+      t: Math.max(0.001, logicalTime), // for some reason, an exact zero will lead to `mix` as if it were 1 (glitch)
+      resolution: [canvasWidth, canvasHeight],
+      gapPx: pickLayer ? [0, 0] : [BOX_GAP, BOX_GAP], // in CSS pixels (but let's not leave a gap for shape picking)
+      minFillRatio: MIN_FILL_RATIO,
+      cornerRadiusPx: pickLayer ? 0 : canvasHeight * rowHeight * CORNER_RADIUS_RATIO, // note that for perf reasons the fragment shaders are split anyway
+      hoverIndex: Number.isFinite(hoverIndex) ? hoverIndex + GEOM_INDEX_OFFSET : DUMMY_INDEX,
+      rowHeight0: rowHeight,
+      rowHeight1: rowHeight,
+      focus: currentFocus,
+    },
+    viewport: { x: xOffset, y: pickLayer ? 0 : yOffset, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
+    clear: clear
+      ? { color: [0, 0, 0, 0] /*, rect: [0, 0, 1, 1]*/ }
+      : { color: [0, 0, 0, 0.03], rect: [xOffset, yOffset, canvasWidth, canvasHeight] }, // or conditionalize: can use pickTexture.clear() for the texture
+    draw: {
+      geom: gl.TRIANGLE_STRIP,
+      offset: 0,
+      count: VERTICES_PER_GEOM,
+      instanceCount,
+    },
+  });
