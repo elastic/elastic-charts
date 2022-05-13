@@ -56,31 +56,37 @@ export const drawFrame = (
       pickLayer,
     );
 
+  const drawContextLayer = (pickLayer: boolean) =>
+    drawWebgl(
+      gl,
+      1,
+      (cssWidth * dpr) / MINIMAP_SIZE_RATIO_X,
+      (cssHeight * dpr) / MINIMAP_SIZE_RATIO_Y,
+      cssWidth * dpr * (1 - 1 / MINIMAP_SIZE_RATIO_X),
+      canvasHeightExcess,
+      pickTexture,
+      pickLayer ? pickTextureRenderer : roundedRectRenderer,
+      hoverIndex,
+      rowHeight,
+      fullFocus,
+      columnarGeomData.label.length,
+      false,
+      pickLayer,
+    );
+
   // base (focus) layer
   drawFocusLayer(false);
 
   drawCanvas(ctx, 1, cssWidth, cssHeight, dpr, columnarGeomData, rowHeight, currentFocus);
 
   // minimap geoms
-  drawWebgl(
-    gl,
-    1,
-    (cssWidth * dpr) / MINIMAP_SIZE_RATIO_X,
-    (cssHeight * dpr) / MINIMAP_SIZE_RATIO_Y,
-    cssWidth * dpr * (1 - 1 / MINIMAP_SIZE_RATIO_X),
-    canvasHeightExcess,
-    pickTexture,
-    roundedRectRenderer,
-    hoverIndex,
-    rowHeight,
-    fullFocus,
-    columnarGeomData.label.length,
-    false,
-    false,
-  );
+  drawContextLayer(false);
 
   // base (focus) pick layer
   drawFocusLayer(true);
+
+  // minimap pick layer
+  drawContextLayer(true);
 
   // chart border
   drawRect(ctx, cssWidth, cssHeight, 0, cssHeight, dpr, fullFocus, '', 'black', CHART_BOX_LINE_WIDTH);
