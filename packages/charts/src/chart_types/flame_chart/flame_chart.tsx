@@ -232,11 +232,8 @@ class FlameComponent extends React.Component<FlameProps> {
     // this.props.onChartRendered() // creates and infinite update loop
   };
 
-  private datumAtXY: PickFunction = (x, y, pickTextureTarget) => {
-    if (!this.glContext || !pickTextureTarget) return NaN;
-    bindFramebuffer(this.glContext, GL_READ_FRAMEBUFFER, pickTextureTarget);
-    return colorToDatumIndex(readPixel(this.glContext, x, y));
-  };
+  private datumAtXY: PickFunction = (x, y) =>
+    this.glContext ? colorToDatumIndex(readPixel(this.glContext, x, y)) : NaN;
 
   private updatePointerLocation(
     e: React.MouseEvent<HTMLCanvasElement, globalThis.MouseEvent> | React.WheelEvent<Element>,
@@ -249,13 +246,10 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private getHoveredDatumIndex = (e: MouseEvent<HTMLCanvasElement>) => {
     const pr = window.devicePixelRatio * this.pinchZoomScale;
-    const datumIndex = this.datumAtXY(
-      pr * this.pointerX,
-      pr * (this.props.chartDimensions.height - this.pointerY),
-      this.pickTexture.target(),
-    );
-
-    return { datumIndex, timestamp: e.timeStamp };
+    return {
+      datumIndex: this.datumAtXY(pr * this.pointerX, pr * (this.props.chartDimensions.height - this.pointerY)),
+      timestamp: e.timeStamp,
+    };
   };
 
   private getDragDistanceX = () => this.pointerX - this.startOfDragX;
@@ -546,6 +540,7 @@ class FlameComponent extends React.Component<FlameProps> {
           internalFormat: this.glContext.RGBA8,
           data: null,
         }) ?? NullTexture;
+      bindFramebuffer(this.glContext, GL_READ_FRAMEBUFFER, this.pickTexture.target());
     }
   };
 

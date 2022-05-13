@@ -32,7 +32,7 @@ export interface ContinuousDomainFocus {
 }
 
 /** @internal */
-export type PickFunction = (x: Pixels, y: Pixels, target: WebGLFramebuffer | null) => number;
+export type PickFunction = (x: Pixels, y: Pixels) => number;
 
 /** @public */
 export interface ColumnarViewModel {
