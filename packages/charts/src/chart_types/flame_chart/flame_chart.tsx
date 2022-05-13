@@ -8,6 +8,7 @@
 
 import React, { createRef, CSSProperties, MouseEvent, RefObject, WheelEventHandler } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
 
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
@@ -21,6 +22,7 @@ import {
 } from '../../common/kingly';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
+import { onChartRendered } from '../../state/actions/chart';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
@@ -114,12 +116,16 @@ interface StateProps {
   onRenderChange: NonNullable<SettingsSpec['onRenderChange']>;
 }
 
+interface DispatchProps {
+  onChartRendered: typeof onChartRendered;
+}
+
 interface OwnProps {
   containerRef: BackwardRef;
   forwardStageRef: RefObject<HTMLCanvasElement>;
 }
 
-type FlameProps = StateProps & OwnProps;
+type FlameProps = StateProps & DispatchProps & OwnProps;
 
 class FlameComponent extends React.Component<FlameProps> {
   static displayName = 'Flame';
@@ -210,6 +216,7 @@ class FlameComponent extends React.Component<FlameProps> {
      */
     this.tryCanvasContext();
     this.drawCanvas();
+    this.props.onChartRendered();
     this.setupDevicePixelRatioChangeListener();
     this.props.containerRef().current?.addEventListener('wheel', this.preventScroll, { passive: false });
   };
@@ -222,6 +229,7 @@ class FlameComponent extends React.Component<FlameProps> {
     if (!this.ctx) this.tryCanvasContext();
     this.ensurePickTexture();
     this.drawCanvas(); // eg. due to chartDimensions (parentDimensions) change
+    // this.props.onChartRendered() // creates and infinite update loop
   };
 
   private datumAtXY: PickFunction = (x, y, pickTextureTarget) => {
@@ -574,7 +582,15 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   };
 };
 
-const FlameChartLayers = connect(mapStateToProps)(FlameComponent);
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
+  bindActionCreators(
+    {
+      onChartRendered,
+    },
+    dispatch,
+  );
+
+const FlameChartLayers = connect(mapStateToProps, mapDispatchToProps)(FlameComponent);
 
 /** @internal */
 export const FlameWithTooltip = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
