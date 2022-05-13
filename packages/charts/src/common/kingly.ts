@@ -220,14 +220,12 @@ const uniformSetterLookup = {
       locationUniformValues.set(location, value);
     }
   },
-  [GL.SAMPLER_2D]:
-    (gl: WebGL2RenderingContext, location: WebGLUniformLocation) =>
-    ({ setUniform }: Sampler) => {
-      if (locationUniformValues.get(location) !== setUniform) {
-        setUniform(location);
-        locationUniformValues.set(location, setUniform);
-      }
-    },
+  [GL.SAMPLER_2D]: (gl: WebGL2RenderingContext, location: WebGLUniformLocation) => ({ setUniform }: Sampler) => {
+    if (locationUniformValues.get(location) !== setUniform) {
+      setUniform(location);
+      locationUniformValues.set(location, setUniform);
+    }
+  },
 };
 
 type UniformsMap = Map<string, (...args: any[]) => void>;
