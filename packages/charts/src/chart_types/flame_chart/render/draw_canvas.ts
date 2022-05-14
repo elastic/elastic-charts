@@ -106,8 +106,8 @@ export const drawRect = (
   const boxHeight = cssHeight * Math.abs(focusHiY - focusLoY);
   const x = xOffset + cssWidth * focusLoX + borderLineWidth / 2;
   const y = yOffset - boxHeight - focusLoY * cssHeight + borderLineWidth / 2;
-  const width = cssWidth * (focusHiX - focusLoX) - borderLineWidth;
-  const height = boxHeight - borderLineWidth;
+  const width = Math.max(borderLineWidth, cssWidth * (focusHiX - focusLoX) - borderLineWidth);
+  const height = Math.max(borderLineWidth, boxHeight - borderLineWidth);
   if (fillColor === 'transparent') {
     ctx.clearRect(x, y, width, height);
   } else {
