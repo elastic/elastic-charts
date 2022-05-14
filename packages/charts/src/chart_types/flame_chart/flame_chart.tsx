@@ -370,8 +370,8 @@ class FlameComponent extends React.Component<FlameProps> {
 
     const unitX = this.pointerX / this.props.chartDimensions.width;
     const unitY = (this.props.chartDimensions.height - this.pointerY) / this.props.chartDimensions.height;
-    const midX = x0 + unitX * Math.abs(x1 - x0);
-    const midY = y0 + unitY * Math.abs(y1 - y0);
+    const midX = clamp(x0 + unitX * Math.abs(x1 - x0), 0, 1);
+    const midY = clamp(y0 + unitY * Math.abs(y1 - y0), 0, 1);
     const targetX0 = clamp(x0 - delta * (x0 - midX), 0, 1);
     const targetX1 = clamp(x1 + delta * (midX - x1), 0, 1);
     const targetY0 = clamp(y0 - delta * (y0 - midY), 0, 1);
