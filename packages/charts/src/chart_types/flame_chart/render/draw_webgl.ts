@@ -33,8 +33,7 @@ export const drawWebgl = (
   instanceCount: number,
   focusLayer: boolean,
   pickLayer: boolean,
-) => {
-  if (focusLayer && pickLayer) pickTexture.clear();
+) =>
   renderer({
     target: pickLayer ? pickTexture.target() : null,
     uniformValues: {
@@ -49,13 +48,11 @@ export const drawWebgl = (
       rowHeight1: rowHeight,
       focus: currentFocus,
     },
-    viewport: { x: xOffset, y: pickLayer ? 0 : yOffset, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
-    clear: pickLayer
-      ? undefined
-      : {
-          color: [0, 0, 0, focusLayer ? 0 : 0.03],
-          rect: [xOffset, yOffset, canvasWidth, canvasHeight],
-        },
+    viewport: { x: xOffset, y: yOffset, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
+    clear: {
+      color: [0, 0, 0, focusLayer || pickLayer ? 0 : 0.03],
+      rect: [xOffset, yOffset, canvasWidth, canvasHeight],
+    },
     draw:
       pickLayer && !focusLayer
         ? undefined
@@ -66,4 +63,3 @@ export const drawWebgl = (
             instanceCount,
           },
   });
-};
