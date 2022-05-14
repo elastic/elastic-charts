@@ -509,9 +509,10 @@ class FlameComponent extends React.Component<FlameProps> {
 
       const relativeExpansionX = Math.max(1, (currentExtentX + dx1 - dx0) / currentExtentX);
       const relativeExpansionY = Math.max(1, (currentExtentX + dy1 - dy0) / currentExtentY);
+      const jointRelativeExpansion = relativeExpansionX * relativeExpansionY;
 
-      const convergenceRateX = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_X) / relativeExpansionX;
-      const convergenceRateY = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_Y) / relativeExpansionY;
+      const convergenceRateX = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_X) / jointRelativeExpansion;
+      const convergenceRateY = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_Y) / jointRelativeExpansion;
 
       this.currentFocus.x0 += convergenceRateX * dx0;
       this.currentFocus.x1 += convergenceRateX * dx1;
