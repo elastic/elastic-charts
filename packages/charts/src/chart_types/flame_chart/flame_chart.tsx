@@ -498,20 +498,16 @@ class FlameComponent extends React.Component<FlameProps> {
     const anim = (t: DOMHighResTimeStamp) => {
       const msDeltaT = Number.isNaN(this.prevT) ? 0 : t - this.prevT;
       this.prevT = t;
-      const convergenceRateX = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_X);
-      const convergenceRateY = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_Y);
       const dx0 = this.targetFocus.x0 - this.currentFocus.x0;
       const dx1 = this.targetFocus.x1 - this.currentFocus.x1;
       const dy0 = this.targetFocus.y0 - this.currentFocus.y0;
       const dy1 = this.targetFocus.y1 - this.currentFocus.y1;
-      // const currentExtentX = this.currentFocus.x1 - this.currentFocus.x0;
-      // const targetExtentX = this.targetFocus.x1 - this.targetFocus.x0;
-      // const logRelativeExtentChange = Math.log2(targetExtentX / currentExtentX);
-      // const MAX_LOG_RELATIVE_EXTENT_CHANGE = 0.01;
-      this.currentFocus.x0 += convergenceRateX * dx0; // compounding (exponential) would be more accurate
-      this.currentFocus.x1 += convergenceRateX * dx1; // compounding (exponential) would be more accurate
-      this.currentFocus.y0 += convergenceRateY * dy0; // compounding (exponential) would be more accurate
-      this.currentFocus.y1 += convergenceRateY * dy1; // compounding (exponential) would be more accurate
+      const convergenceRateX = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_X);
+      const convergenceRateY = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_Y);
+      this.currentFocus.x0 += convergenceRateX * dx0;
+      this.currentFocus.x1 += convergenceRateX * dx1;
+      this.currentFocus.y0 += convergenceRateY * dy0;
+      this.currentFocus.y1 += convergenceRateY * dy1;
       renderFrame([this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1]);
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
       if (maxDiff > 1e-12) this.animationRafId = window.requestAnimationFrame(anim);
