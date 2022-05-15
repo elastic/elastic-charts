@@ -33,3 +33,5 @@ yarn build:bk:types
 echo '--- Updating commit status for jobs'
 
 npx ts-node scripts/pre_command.ts
+
+cd '../'
