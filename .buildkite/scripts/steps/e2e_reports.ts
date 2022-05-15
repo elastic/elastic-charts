@@ -60,7 +60,7 @@ async function commitNewScreenshots() {
   startGroup('Commiting updated screenshots from jobs');
   downloadArtifacts(
     '.buildkite/artifacts/screenshots/*',
-    'playwright',
+    'playwright__parallel-step',
     undefined,
     '5e30a75f-cb4c-4535-ad23-6fe5b227879e',
   );
