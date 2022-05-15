@@ -56,10 +56,10 @@ async function setGroupStatus() {
 }
 
 async function commitNewScreenshots() {
+  startGroup('Commiting updated screenshots from jobs');
   downloadArtifacts('.buildkite/artifacts/screenshots/*');
   const screenshotDir = '.buildkite/artifacts/screenshots';
   const files = fs.readdirSync(screenshotDir);
-  console.log(files);
 
   await Promise.all<void>(
     files.map((f) =>
@@ -69,6 +69,7 @@ async function commitNewScreenshots() {
       }),
     ),
   );
+  exec('git status');
 }
 
 void (async () => {
@@ -77,7 +78,7 @@ void (async () => {
 
   // if (updateScreenshots) {}
 
-  await setGroupStatus();
+  // await setGroupStatus();
 
   // downloadArtifacts('.buildkite/artifacts/e2e_reports/*');
 

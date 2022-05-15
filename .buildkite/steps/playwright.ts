@@ -21,7 +21,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         skip,
         parallelism: 2,
         key: parallelKey,
-        depends_on: ['e2e_server'],
+        // depends_on: ['e2e_server'],
         plugins: [Plugins.docker.playwright(['UPDATE_SCREENSHOTS'])],
         artifact_paths: [
           '.buildkite/artifacts/e2e_reports/*',

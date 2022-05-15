@@ -60,7 +60,7 @@ void (async () => {
       prettierStep(skipit),
       typeCheckStep(skipit),
       storybookStep(skipit),
-      e2eServerStep(),
+      e2eServerStep(skipit),
       ghpDeployStep(),
       playwrightStep(),
       firebaseDeployStep(skipit),

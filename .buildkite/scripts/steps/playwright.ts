@@ -59,13 +59,16 @@ async function compressNewScreenshots() {
       src: uploadDir,
       dest: `.buildkite/artifacts/screenshots/shard_${shardIndex}.gz`,
     });
+    console.log(`Updated ${updatedScreenshotFiles.length} screenshot${updatedScreenshotFiles.length === 1 ? '' : 's'}`);
+  } else {
+    console.log('No screenshots to be updated');
   }
 }
 
 void (async () => {
   yarnInstall('e2e');
   const src = '.buildkite/artifacts/e2e_server.gz';
-  downloadArtifacts(src, 'e2e_server');
+  downloadArtifacts(src, 'e2e_server', undefined, '528d33e8-4b68-4953-b42d-55aed8dfd8d8');
   await decompress({
     src,
     dest: 'e2e/server',
