@@ -321,7 +321,8 @@ class FlameComponent extends React.Component<FlameProps> {
     this.startOfDragY = this.pointerY;
   };
 
-  private handleMouseDown = () => {
+  private handleMouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
+    e.stopPropagation();
     this.resetDrag();
   };
 
