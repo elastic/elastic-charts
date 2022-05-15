@@ -9,17 +9,16 @@
 import fs from 'fs';
 import path from 'path';
 
-import { exec, downloadArtifacts, startGroup, yarnInstall, getNumber, decompress, compress } from '../../utils';
+import { exec, downloadArtifacts, startGroup, yarnInstall, getNumber, decompress, compress, bkEnv } from '../../utils';
 import { ENV_URL } from '../../utils/constants';
 
 const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
 const shardIndex = jobIndex ? jobIndex + 1 : 1;
 const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
-const updateScreenshots = process.env.UPDATE_SCREENSHOTS === 'true';
 
 const pwFlags = ['--project=Chrome'];
 
-if (updateScreenshots) {
+if (bkEnv.updateScreenshots) {
   pwFlags.push('--update-snapshots');
 }
 

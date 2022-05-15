@@ -231,7 +231,7 @@ export const createDeploymentStatus = async (
 };
 
 async function getFileDiffs(): Promise<FileDiff[]> {
-  if (!bkEnv.pullRequest) return [];
+  if (!bkEnv.isPullRequest) return [];
   const prNumber = bkEnv.pullRequestNumber;
 
   if (!prNumber) throw new Error(`Failed to set status, no prNumber available`);

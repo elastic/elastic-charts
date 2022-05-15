@@ -23,7 +23,7 @@ const hasLintConfigChanges = changes.files.has([
 
 yarnInstall();
 
-if (bkEnv.pullRequest && !hasLintConfigChanges) {
+if (bkEnv.isPullRequest && !hasLintConfigChanges) {
   const filesToLint = changes.files.filter('**/*.ts?(x)').join(' ');
 
   if (filesToLint.length > 0) {

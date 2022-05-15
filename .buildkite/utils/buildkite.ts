@@ -33,16 +33,32 @@ export const uploadPipeline = (pipelineContent: any) => {
  * Buildkite environment variables
  */
 export const bkEnv = (() => {
-  const env = getBuildkiteEnv();
+  const { pullRequest: _, branch: bkBranch, ...env } = getBuildkiteEnv();
+  const branch = bkBranch && bkBranch.split(':').reverse()[0];
   const pullRequestNumber = getEnvNumber('BUILDKITE_PULL_REQUEST');
   const context = getEnvString(ECH_GH_STATUS_CONTEXT);
+  const isPullRequest = Boolean(pullRequestNumber);
+  const updateScreenshots = isPullRequest ? process.env.UPDATE_SCREENSHOTS === 'true' : false;
+  let username: string | undefined;
+
+  if (isPullRequest) {
+    const userRE = /^\b(?:git|https)\b:\/\/github\.com\/([^#./]+)\/[^#./]+\.git$/;
+    const [, repoOwner] = userRE.exec(env.pullRequestRepo ?? '') ?? [];
+    if (repoOwner !== 'elastic') {
+      username = repoOwner;
+    }
+  }
 
   return {
     ...env,
     /**
      * Step context for commit status
      */
+    branch,
     context,
+    username,
+    isPullRequest,
+    updateScreenshots,
     pullRequestNumber,
     buildUrl: env.buildUrl,
     jobUrl: env.jobId ? `${env.buildUrl}#${env.jobId}` : undefined,

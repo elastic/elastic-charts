@@ -21,8 +21,6 @@ import {
   decompress,
 } from '../../utils';
 
-const updateScreenshots = process.env.UPDATE_SCREENSHOTS === 'true';
-
 async function setGroupStatus() {
   const { context, stepKey } = bkEnv;
 
@@ -61,6 +59,10 @@ async function commitNewScreenshots() {
   const screenshotDir = '.buildkite/artifacts/screenshots';
   const files = fs.readdirSync(screenshotDir);
 
+  if (files.length === 0) {
+    console.log('No updated screenshots to commit');
+    return;
+  }
   await Promise.all<void>(
     files.map((f) =>
       decompress({
@@ -70,10 +72,25 @@ async function commitNewScreenshots() {
     ),
   );
   exec('git status');
+  exec('git remote -vv');
+
+  if (bkEnv.username) {
+    exec(`git config user.name "${bkEnv.username}"`);
+  }
+
+  if (bkEnv.buildCreatorEmail) {
+    exec(`git config user.email "${bkEnv.buildCreatorEmail}"`);
+  }
+
+  const message = `test(vrt): update screenshots`;
+  exec('git add e2e/screenshots');
+  exec(`git commit -m "${message}"`);
+  exec(`git push "origin" "${bkEnv.branch}"`);
 }
 
 void (async () => {
   // yarnInstall('e2e');
+
   await commitNewScreenshots();
 
   // if (updateScreenshots) {}

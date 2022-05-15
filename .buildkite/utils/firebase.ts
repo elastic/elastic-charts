@@ -39,7 +39,7 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
   startGroup('Deploying to firebase');
 
   const channelId = 'nick';
-  // const channelId = bkEnv.pullRequest
+  // const channelId = bkEnv.isPullRequest
   //   ? `pr-${bkEnv.pullRequestNumber}`
   //   : bkEnv.branch === 'master'
   //   ? null
