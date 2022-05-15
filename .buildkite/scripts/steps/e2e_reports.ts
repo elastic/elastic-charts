@@ -82,15 +82,17 @@ async function commitNewScreenshots() {
   exec('git status');
 
   const botName = 'elastic-charts[bot]';
-  // const botUid = '98618603';
+  const botUid = '98618603';
   exec(`git config user.name "${botName}"`);
-  exec(`git config user.email "elastic-charts-bot@users.noreply.github.com"`);
+  exec(`git config user.email "${botUid}+elastic-charts[bot]@users.noreply.github.com"`);
 
   const { token } = (await octokit.auth({
     type: 'installation',
   } as InstallationAuthOptions)) as InstallationAccessTokenAuthentication;
 
-  const remoteUrl = `https://elastic-charts-bot:${token}@github.com/${bkEnv.username ?? 'elastic'}/elastic-charts.git`;
+  const remoteUrl = `https://${encodeURI(botName)}:${token}@github.com/${
+    bkEnv.username ?? 'elastic'
+  }/elastic-charts.git`;
 
   const message = `test(vrt): update screenshots [skip ci]`;
   exec('git add e2e/screenshots');
