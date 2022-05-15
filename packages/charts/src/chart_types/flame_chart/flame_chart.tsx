@@ -46,6 +46,7 @@ const IS_META_REQUIRED_FOR_ZOOM = false;
 const ZOOM_SPEED = 0.0015;
 const DEEPEST_ZOOM_RATIO = 1e-7; // FP calcs seem precise enough down to a 10 000 000 times zoom: 1e-7
 const ZOOM_FROM_EDGE_BAND = 16; // so the user needs not be precisely at the edge to zoom in one direction
+const LEFT_MOUSE_BUTTON = 1;
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const initialPixelRowPitch = () => 16;
@@ -256,17 +257,33 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private getDragDistanceX = () => this.pointerX - this.startOfDragX;
   private getDragDistanceY = () => -(this.pointerY - this.startOfDragY);
+  private isDragging = ({ buttons }: { buttons: number }) => buttons & LEFT_MOUSE_BUTTON;
 
   private handleMouseHoverMove = (e: MouseEvent<HTMLCanvasElement>) => {
-    const isLeftButtonHeld = e.buttons & 1;
-    if (!isLeftButtonHeld) this.handleMouseMove(e);
+    if (!this.isDragging(e)) {
+      e.stopPropagation();
+      this.updatePointerLocation(e);
+      const hovered = this.getHoveredDatumIndex(e);
+      const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
+      if (hovered) {
+        this.hoverIndex = hovered.datumIndex;
+        if (!Object.is(this.hoverIndex, prevHoverIndex)) {
+          if (Number.isFinite(hovered.datumIndex)) {
+            this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
+          } else {
+            this.hoverIndex = NaN;
+            this.props.onElementOut(); // userland callback
+          }
+        }
+        this.setState({}); // exact tooltip location needs an update
+      }
+    }
   };
 
-  private handleMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
+  private handleMouseDragMove = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     this.updatePointerLocation(e);
-    const isLeftButtonHeld = e.buttons & 1;
-    if (isLeftButtonHeld) {
+    if (this.isDragging(e)) {
       const { x0, x1, y0, y1 } = this.currentFocus;
       const focusWidth = x1 - x0; // this stays constant during panning
       const focusHeight = y1 - y0; // this stays constant during panning
@@ -296,21 +313,6 @@ class FlameComponent extends React.Component<FlameProps> {
       this.targetFocus = newFocus;
       this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
       this.setState({});
-    } else {
-      const hovered = this.getHoveredDatumIndex(e);
-      const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
-      if (hovered) {
-        this.hoverIndex = hovered.datumIndex;
-        if (!Object.is(this.hoverIndex, prevHoverIndex)) {
-          if (Number.isFinite(hovered.datumIndex)) {
-            this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
-          } else {
-            this.hoverIndex = NaN;
-            this.props.onElementOut(); // userland callback
-          }
-        }
-        this.setState({}); // exact tooltip location needs an update
-      }
     }
   };
 
@@ -329,13 +331,13 @@ class FlameComponent extends React.Component<FlameProps> {
   private handleMouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     this.resetDrag();
-    window.addEventListener('mousemove', this.handleMouseMove, { passive: true });
+    window.addEventListener('mousemove', this.handleMouseDragMove, { passive: true });
     window.addEventListener('mouseup', this.handleMouseUp, { passive: true });
   };
 
   private handleMouseUp = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
-    window.removeEventListener('mousemove', this.handleMouseMove);
+    window.removeEventListener('mousemove', this.handleMouseDragMove);
     window.removeEventListener('mouseup', this.handleMouseUp);
     this.updatePointerLocation(e); // just in case: eg. the user tabbed away, moved mouse elsewhere, and came back
     const dragDistanceX = this.getDragDistanceX(); // zero or NaN means that a non-zero drag didn't happen
