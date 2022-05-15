@@ -9,6 +9,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import { InstallationAccessTokenAuthentication, InstallationAuthOptions } from '@octokit/auth-app';
+
 import {
   bkEnv,
   exec,
@@ -19,6 +21,7 @@ import {
   yarnInstall,
   compress,
   decompress,
+  octokit,
 } from '../../utils';
 
 async function setGroupStatus() {
@@ -55,7 +58,12 @@ async function setGroupStatus() {
 
 async function commitNewScreenshots() {
   startGroup('Commiting updated screenshots from jobs');
-  downloadArtifacts('.buildkite/artifacts/screenshots/*');
+  downloadArtifacts(
+    '.buildkite/artifacts/screenshots/*',
+    'playwright',
+    undefined,
+    '5e30a75f-cb4c-4535-ad23-6fe5b227879e',
+  );
   const screenshotDir = '.buildkite/artifacts/screenshots';
   const files = fs.readdirSync(screenshotDir);
 
@@ -72,20 +80,30 @@ async function commitNewScreenshots() {
     ),
   );
   exec('git status');
+
+  // if (bkEnv.username) {
+  //   exec(`git config user.name "${bkEnv.username}"`);
+  // }
+
+  // if (bkEnv.buildCreatorEmail) {
+  //   exec(`git config user.email "${bkEnv.buildCreatorEmail}"`);
+  // }
+
+  const { token } = (await octokit.auth({
+    type: 'installation',
+  } as InstallationAuthOptions)) as InstallationAccessTokenAuthentication;
+  const remote = 'pr-origin-repo';
+  const remoteUrl = `https://${token}@github.com/${bkEnv.username ?? 'elastic'}/elastic-charts.git`;
+
+  console.log(`git remote add ${remote} ${remoteUrl}`);
+
+  exec(`git remote add ${remote} ${remoteUrl}`);
   exec('git remote -vv');
-
-  if (bkEnv.username) {
-    exec(`git config user.name "${bkEnv.username}"`);
-  }
-
-  if (bkEnv.buildCreatorEmail) {
-    exec(`git config user.email "${bkEnv.buildCreatorEmail}"`);
-  }
 
   const message = `test(vrt): update screenshots`;
   exec('git add e2e/screenshots');
   exec(`git commit -m "${message}"`);
-  exec(`git push "origin" "${bkEnv.branch}"`);
+  exec(`git push ${remote} ${bkEnv.branch}`);
 }
 
 void (async () => {
