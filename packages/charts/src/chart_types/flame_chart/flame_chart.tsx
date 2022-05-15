@@ -238,16 +238,14 @@ class FlameComponent extends React.Component<FlameProps> {
   private datumAtXY: PickFunction = (x, y) =>
     this.glContext ? colorToDatumIndex(readPixel(this.glContext, x, y)) : NaN;
 
-  private updatePointerLocation(
-    e: React.MouseEvent<HTMLCanvasElement, globalThis.MouseEvent> | React.WheelEvent<Element>,
-  ) {
+  private updatePointerLocation(e: { clientX: number; clientY: number }) {
     if (!this.props.forwardStageRef.current || !this.ctx) return;
     const box = this.props.forwardStageRef.current.getBoundingClientRect();
     this.pointerX = e.clientX - box.left;
     this.pointerY = e.clientY - box.top;
   }
 
-  private getHoveredDatumIndex = (e: MouseEvent<HTMLCanvasElement>) => {
+  private getHoveredDatumIndex = (e: { timeStamp: number }) => {
     const pr = window.devicePixelRatio * this.pinchZoomScale;
     return {
       datumIndex: this.datumAtXY(pr * this.pointerX, pr * (this.props.chartDimensions.height - this.pointerY)),
@@ -259,7 +257,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private getDragDistanceY = () => -(this.pointerY - this.startOfDragY);
   private isDragging = ({ buttons }: { buttons: number }) => buttons & LEFT_MOUSE_BUTTON;
 
-  private handleMouseHoverMove = (e: MouseEvent<HTMLCanvasElement>) => {
+  private handleMouseHoverMove = (e: React.MouseEvent<HTMLCanvasElement, globalThis.MouseEvent>) => {
     if (!this.isDragging(e)) {
       e.stopPropagation();
       this.updatePointerLocation(e);
@@ -280,7 +278,13 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
-  private handleMouseDragMove = (e: MouseEvent<HTMLCanvasElement>) => {
+  private handleMouseDragMove = (e: {
+    stopPropagation: () => void;
+    timeStamp: number;
+    buttons: number;
+    clientX: number;
+    clientY: number;
+  }) => {
     e.stopPropagation();
     this.updatePointerLocation(e);
     if (this.isDragging(e)) {
@@ -335,7 +339,14 @@ class FlameComponent extends React.Component<FlameProps> {
     window.addEventListener('mouseup', this.handleMouseUp, { passive: true });
   };
 
-  private handleMouseUp = (e: MouseEvent<HTMLCanvasElement>) => {
+  private handleMouseUp = (e: {
+    stopPropagation: () => void;
+    timeStamp: number;
+    buttons: number;
+    clientX: number;
+    clientY: number;
+    detail: number;
+  }) => {
     e.stopPropagation();
     window.removeEventListener('mousemove', this.handleMouseDragMove);
     window.removeEventListener('mouseup', this.handleMouseUp);
