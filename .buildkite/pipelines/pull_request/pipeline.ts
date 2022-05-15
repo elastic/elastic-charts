@@ -52,6 +52,11 @@ void (async () => {
       target_url: bkEnv.buildUrl,
     });
 
+    if (skipBuild()) {
+      handleSkippedBuild();
+      return;
+    }
+
     const skipit = { skip: true };
     const steps: Step[] = [
       jestStep(skipit),
@@ -111,3 +116,14 @@ void (async () => {
     process.exit(1);
   }
 })();
+
+function skipBuild() {
+  if (process.env.BUILDKITE_BUILD_AUTHOR === 'elastic-charts-bot[bot]') {
+    return true;
+  }
+}
+
+function handleSkippedBuild() {
+  // TODO
+  console.log('handleSkippedBuild');
+}

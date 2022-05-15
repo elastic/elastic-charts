@@ -81,33 +81,33 @@ async function commitNewScreenshots() {
   );
   exec('git status');
 
-  // if (bkEnv.username) {
-  //   exec(`git config user.name "${bkEnv.username}"`);
-  // }
-
-  // if (bkEnv.buildCreatorEmail) {
-  //   exec(`git config user.email "${bkEnv.buildCreatorEmail}"`);
-  // }
+  const botName = 'elastic-charts[bot]';
+  const botUid = '98618603';
+  exec(`git config user.name "${botName}"`);
+  exec(`git config user.email "${botUid}+${botName}@users.noreply.github.com"`);
 
   const { token } = (await octokit.auth({
     type: 'installation',
   } as InstallationAuthOptions)) as InstallationAccessTokenAuthentication;
-  const remote = 'pr-origin-repo';
-  const remoteUrl = `https://${token}@github.com/${bkEnv.username ?? 'elastic'}/elastic-charts.git`;
 
-  console.log(`git remote add ${remote} ${remoteUrl}`);
-
-  exec(`git remote add ${remote} ${remoteUrl}`);
-  exec('git remote -vv');
+  const remoteUrl = `https://${encodeURI(botName)}:${token}@github.com/${
+    bkEnv.username ?? 'elastic'
+  }/elastic-charts.git`;
 
   const message = `test(vrt): update screenshots`;
   exec('git add e2e/screenshots');
   exec(`git commit -m "${message}"`);
-  exec(`git push ${remote} ${bkEnv.branch}`);
+  exec(`git push ${remoteUrl} HEAD:${bkEnv.branch}`); // HEAD:* required when detached from HEAD
 }
 
 void (async () => {
   // yarnInstall('e2e');
+
+  // console.log(
+  //   await octokit.auth({
+  //     type: 'installation',
+  //   }),
+  // );
 
   await commitNewScreenshots();
 
