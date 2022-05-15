@@ -52,8 +52,7 @@ export const getOnElementOutSelector = (prev: { pickedShapes: number | null }) =
   if (!settings.onElementOut) {
     return;
   }
-  const nextPickedShapes =
-    pickedShapes.length > 0 && pickedShapes[0].length > 0 && pickedShapes[0][0].vmIndex !== 0 ? 1 : 0;
+  const nextPickedShapes = pickedShapes.length;
 
   if (prev.pickedShapes !== null && prev.pickedShapes > 0 && nextPickedShapes === 0) {
     settings.onElementOut();

@@ -1415,7 +1415,6 @@ export interface LayerValue {
     smAccessorValue: ReturnType<GroupByAccessor>;
     sortIndex: number;
     value: number;
-    vmIndex: number;
 }
 
 // @public (undocumented)
@@ -2294,8 +2293,6 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
     sortIndex: number;
     // (undocumented)
     value: number;
-    // (undocumented)
-    vmIndex: number;
     // (undocumented)
     yMidPx: Distance;
 }

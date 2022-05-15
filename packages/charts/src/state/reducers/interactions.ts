@@ -8,7 +8,7 @@
 
 import { ChartType } from '../../chart_types';
 import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
-import { getPickedShapesLayerValues as partitionPicks } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
+import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
 import { LegendItem } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
 import { getDelta } from '../../utils/point';
@@ -68,7 +68,7 @@ export function interactionsReducer(
     case ON_MOUSE_DOWN:
       return {
         ...state,
-        drilldown: { datumIndex: getDrilldownData(globalState), timestamp: action.time },
+        drilldown: getDrilldownData(globalState),
         prevDrilldown: state.drilldown,
         pointer: {
           ...state.pointer,
@@ -186,8 +186,10 @@ function toggleDeselectedDataSeries(
   }
 }
 
-function getDrilldownData(globalState: GlobalChartState): number {
-  return globalState.chartType === ChartType.Partition && drilldownActive(globalState)
-    ? [...(partitionPicks(globalState)[0] ?? [{ vmIndex: 0 }])].reverse()[0].vmIndex || 0 // vmIndex of the last item, ie. that of the leaf node
-    : 0;
+function getDrilldownData(globalState: GlobalChartState) {
+  if (globalState.chartType !== ChartType.Partition || !drilldownActive(globalState)) {
+    return [];
+  }
+  const layerValues = getPickedShapesLayerValues(globalState)[0];
+  return layerValues ? layerValues[layerValues.length - 1].path.map((n) => n.value) : [];
 }

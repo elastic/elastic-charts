@@ -265,7 +265,6 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   path: LegendPath;
   dataName: DataName;
   value: number;
-  vmIndex: number;
   [MODEL_KEY]: ArrayNode;
 }
 

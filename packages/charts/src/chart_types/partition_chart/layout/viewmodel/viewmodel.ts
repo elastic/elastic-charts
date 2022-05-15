@@ -517,7 +517,7 @@ export function shapeViewModel(
 }
 
 function partToShapeTreeNode(treemapLayout: boolean, innerRadius: Radius, ringThickness: number) {
-  return ({ node, x0, x1, y0, y1 }: Part, vmIndex: number): ShapeTreeNode => ({
+  return ({ node, x0, x1, y0, y1 }: Part): ShapeTreeNode => ({
     dataName: entryKey(node),
     depth: depthAccessor(node),
     value: aggregateAccessor(node),
@@ -531,6 +531,5 @@ function partToShapeTreeNode(treemapLayout: boolean, innerRadius: Radius, ringTh
     y0px: treemapLayout ? y0 : innerRadius + y0 * ringThickness,
     y1px: treemapLayout ? y1 : innerRadius + y1 * ringThickness,
     yMidPx: treemapLayout ? (y0 + y1) / 2 : innerRadius + ((y0 + y1) / 2) * ringThickness,
-    vmIndex,
   });
 }

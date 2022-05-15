@@ -15,6 +15,7 @@ import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
 import { WordcloudState } from '../chart_types/wordcloud/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
+import { CategoryKey } from '../common/category';
 import { Color } from '../common/colors';
 import { LegendItem, LegendItemExtraValues } from '../common/legend';
 import { SeriesIdentifier, SeriesKey } from '../common/series_id';
@@ -179,19 +180,13 @@ export interface PointerStates {
 }
 
 /** @internal */
-export interface DrilldownAction {
-  datumIndex: number;
-  timestamp: number; // milliseconds; still awaiting nominal types in TypeScript
-}
-
-/** @internal */
 export interface InteractionsState {
   pointer: PointerStates;
   highlightedLegendPath: LegendPath;
   deselectedDataSeries: SeriesIdentifier[];
   hoveredDOMElement: DOMElement | null;
-  drilldown: DrilldownAction;
-  prevDrilldown: DrilldownAction;
+  drilldown: CategoryKey[];
+  prevDrilldown: CategoryKey[];
 }
 
 /** @internal */
@@ -283,8 +278,8 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     highlightedLegendPath: [],
     deselectedDataSeries: [],
     hoveredDOMElement: null,
-    drilldown: { datumIndex: 0, timestamp: -Infinity },
-    prevDrilldown: { datumIndex: 0, timestamp: -Infinity },
+    drilldown: [],
+    prevDrilldown: [],
   },
   externalEvents: {
     pointer: null,

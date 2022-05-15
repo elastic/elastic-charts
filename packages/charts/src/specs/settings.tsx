@@ -80,10 +80,6 @@ export interface LayerValue {
    * where `index` corresponds to `sortIndex` and `value` corresponds `groupByRollup`
    */
   path: LegendPath;
-  /**
-   * The zero-based index of the geometry (rectangle or annular sector) created
-   */
-  vmIndex: number;
 }
 
 /** @public */

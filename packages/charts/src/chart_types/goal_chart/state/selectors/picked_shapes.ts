@@ -63,7 +63,6 @@ export const getPickedShapesLayerValues = createCustomCachedSelector(
     return pickedShapes.map<Array<LayerValue>>((model) => {
       const values: Array<LayerValue> = [];
       values.push({
-        vmIndex: NaN, // not currently used in bullet graphs
         smAccessorValue: '',
         groupByRollup: 'Actual',
         value: model.actual,

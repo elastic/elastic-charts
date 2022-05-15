@@ -7,10 +7,10 @@
  */
 
 import { ChartType } from '../../..';
+import { CategoryKey } from '../../../../common/category';
 import { Pixels } from '../../../../common/geometry';
 import { Font } from '../../../../common/text_utils';
 import { RelativeBandsPadding, SmallMultiplesSpec, SpecType } from '../../../../specs';
-import { DrilldownAction } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -206,9 +206,13 @@ export const partitionMultiGeometries = createCustomCachedSelector(
   },
 );
 
-const focusRect = (quadViewModel: QuadViewModel[], { left, width }: Dimensions, drilldown: DrilldownAction) =>
-  drilldown ? quadViewModel[drilldown.datumIndex] : { x0: left, x1: left + width };
-
+function focusRect(quadViewModel: QuadViewModel[], { left, width }: Dimensions, drilldown: CategoryKey[]) {
+  return drilldown.length === 0
+    ? { x0: left, x1: left + width }
+    : quadViewModel.find(
+        ({ path }) => path.length === drilldown.length && path.every(({ value }, i) => value === drilldown[i]),
+      ) ?? { x0: left, x1: left + width };
+}
 /** @internal */
 export const partitionDrilldownFocus = createCustomCachedSelector(
   [
