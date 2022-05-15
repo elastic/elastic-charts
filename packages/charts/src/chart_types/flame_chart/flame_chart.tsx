@@ -257,6 +257,11 @@ class FlameComponent extends React.Component<FlameProps> {
   private getDragDistanceX = () => this.pointerX - this.startOfDragX;
   private getDragDistanceY = () => -(this.pointerY - this.startOfDragY);
 
+  private handleMouseHoverMove = (e: MouseEvent<HTMLCanvasElement>) => {
+    const isLeftButtonHeld = e.buttons & 1;
+    if (!isLeftButtonHeld) this.handleMouseMove(e);
+  };
+
   private handleMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     this.updatePointerLocation(e);
@@ -324,10 +329,14 @@ class FlameComponent extends React.Component<FlameProps> {
   private handleMouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     this.resetDrag();
+    window.addEventListener('mousemove', this.handleMouseMove, { passive: true });
+    window.addEventListener('mouseup', this.handleMouseUp, { passive: true });
   };
 
   private handleMouseUp = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
+    window.removeEventListener('mousemove', this.handleMouseMove);
+    window.removeEventListener('mouseup', this.handleMouseUp);
     this.updatePointerLocation(e); // just in case: eg. the user tabbed away, moved mouse elsewhere, and came back
     const dragDistanceX = this.getDragDistanceX(); // zero or NaN means that a non-zero drag didn't happen
     const dragDistanceY = this.getDragDistanceY(); // zero or NaN means that a non-zero drag didn't happen
@@ -453,9 +462,9 @@ class FlameComponent extends React.Component<FlameProps> {
             className="echCanvasRenderer"
             width={canvasWidth}
             height={canvasHeight}
-            onMouseMove={this.handleMouseMove}
+            onMouseMove={this.handleMouseHoverMove}
             onMouseDown={this.handleMouseDown}
-            onMouseUp={this.handleMouseUp}
+            /*onMouseUp={this.handleMouseUp}*/
             onMouseLeave={this.handleMouseLeave}
             onWheel={this.handleWheel}
             style={style}
