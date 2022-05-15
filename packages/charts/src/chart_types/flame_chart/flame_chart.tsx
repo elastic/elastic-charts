@@ -371,16 +371,17 @@ class FlameComponent extends React.Component<FlameProps> {
 
     const unitX = this.pointerX / this.props.chartDimensions.width;
     const unitY = (this.props.chartDimensions.height - this.pointerY) / this.props.chartDimensions.height;
+    const zoomOut = delta <= 0;
     const midX =
-      x0 === 0 && this.pointerX < ZOOM_FROM_EDGE_BAND
+      x0 === 0 && (zoomOut || this.pointerX < ZOOM_FROM_EDGE_BAND)
         ? 0
-        : x1 === 1 && this.pointerX > this.props.chartDimensions.width - ZOOM_FROM_EDGE_BAND
+        : x1 === 1 && (zoomOut || this.pointerX > this.props.chartDimensions.width - ZOOM_FROM_EDGE_BAND)
         ? 1
         : clamp(x0 + unitX * Math.abs(x1 - x0), 0, 1);
     const midY =
-      y0 === 0 && this.pointerY > this.props.chartDimensions.height - ZOOM_FROM_EDGE_BAND
+      y0 === 0 && (zoomOut || this.pointerY > this.props.chartDimensions.height - ZOOM_FROM_EDGE_BAND)
         ? 0
-        : y1 === 1 && this.pointerY < ZOOM_FROM_EDGE_BAND
+        : y1 === 1 && (zoomOut || this.pointerY < ZOOM_FROM_EDGE_BAND)
         ? 1
         : clamp(y0 + unitY * Math.abs(y1 - y0), 0, 1);
     const targetX0 = clamp(x0 - delta * (x0 - midX), 0, 1);
