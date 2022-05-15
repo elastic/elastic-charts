@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import fs from 'fs';
 import path from 'path';
 
 import { exec, downloadArtifacts, startGroup, yarnInstall, getNumber, decompress, compress } from '../../utils';
@@ -14,23 +15,64 @@ import { ENV_URL } from '../../utils/constants';
 const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
 const shardIndex = jobIndex ? jobIndex + 1 : 1;
 const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
+const updateScreenshots = process.env.UPDATE_SCREENSHOTS === 'true';
 
-const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${shardIndex}/${jobTotal}` : '';
+const pwFlags = ['--project=Chrome'];
+
+if (updateScreenshots) {
+  pwFlags.push('--update-snapshots');
+}
+
+if (jobIndex !== null && jobTotal !== null) {
+  // TODO revert this
+  pwFlags.push('stylings_stories.test.ts');
+  // pwFlags.push(`--shard=${shardIndex}/${jobTotal}`);
+}
+
+async function compressNewScreenshots() {
+  exec('which git');
+  const filePath =
+    shardIndex === 1
+      ? 'e2e/screenshots/stylings_stories.test.ts-snapshots/stylings-stories/texture/bar'
+      : 'e2e/screenshots/stylings_stories.test.ts-snapshots/stylings-stories/texture/area';
+  exec('git add e2e/screenshots');
+  const output = exec(`git --no-pager diff --cached --name-only --diff-filter=ACMRU ${filePath} | cat`, {
+    stdio: 'pipe',
+  });
+  const updatedScreenshotFiles = output.trim().split(/\n/);
+
+  console.log(updatedScreenshotFiles);
+
+  if (updatedScreenshotFiles.length > 0) {
+    const uploadDir = 'e2e/screenshots/__upload';
+    updatedScreenshotFiles
+      .filter((f) => f.endsWith('.png'))
+      .forEach((file) => {
+        const dest = file.replace('e2e/screenshots', uploadDir);
+        console.log(dest);
+        fs.mkdirSync(path.dirname(dest), { recursive: true });
+
+        fs.copyFileSync(file, dest);
+      });
+
+    await compress({
+      src: uploadDir,
+      dest: `.buildkite/artifacts/screenshots/shard_${shardIndex}.gz`,
+    });
+  }
+}
 
 void (async () => {
   yarnInstall('e2e');
-
   const src = '.buildkite/artifacts/e2e_server.gz';
   downloadArtifacts(src, 'e2e_server');
   await decompress({
     src,
     dest: 'e2e/server',
   });
-
   startGroup('Generating test examples.json');
   // TODO Fix this duplicate script that allows us to skip root node install on all e2e test runners
   exec('node ./e2e/scripts/extract_examples.js');
-
   startGroup('Running e2e playwright job');
   const reportDir = `reports/report_${shardIndex}`;
   async function compressReport() {
@@ -39,12 +81,7 @@ void (async () => {
       dest: `.buildkite/artifacts/e2e_reports/report_${shardIndex}.gz`,
     });
   }
-
-  // TODO revert this toggle
-  const command =
-    (jobTotal ?? 0) > 1
-      ? `yarn playwright test --project=Chrome${shard}`
-      : 'yarn playwright test --project=Chrome legend_stories.test.ts';
+  const command = `yarn playwright test ${pwFlags.join(' ')}`;
   try {
     exec(command, {
       cwd: 'e2e',
@@ -54,6 +91,8 @@ void (async () => {
         PLAYWRIGHT_JSON_OUTPUT_NAME: `reports/json/report_${shardIndex}.json`,
       },
     });
+    await compressNewScreenshots();
+    // if (updateScreenshots) {}
     await compressReport();
   } catch (error) {
     await compressReport();

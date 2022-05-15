@@ -19,12 +19,19 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         ...commandStepDefaults,
         label: ':playwright: Playwright e2e',
         skip,
-        parallelism: 1,
+        parallelism: 2,
         key: parallelKey,
         depends_on: ['e2e_server'],
-        plugins: [Plugins.docker.playwright()],
-        artifact_paths: ['.buildkite/artifacts/e2e_reports/*', 'e2e/reports/json/report_*.json'],
+        plugins: [Plugins.docker.playwright(['UPDATE_SCREENSHOTS'])],
+        artifact_paths: [
+          '.buildkite/artifacts/e2e_reports/*',
+          '.buildkite/artifacts/screenshots/*',
+          'e2e/reports/json/*',
+        ],
         commands: ['npx ts-node .buildkite/scripts/steps/playwright.ts'],
+        env: {
+          UPDATE_SCREENSHOTS: 'true',
+        },
       },
       {
         ...commandStepDefaults,
@@ -37,6 +44,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         env: {
           // TODO: fix this status update
           ECH_GH_STATUS_CONTEXT: 'Playwright e2e',
+          UPDATE_SCREENSHOTS: 'true',
         },
       },
     ],

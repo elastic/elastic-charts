@@ -21,6 +21,8 @@ import {
   decompress,
 } from '../../utils';
 
+const updateScreenshots = process.env.UPDATE_SCREENSHOTS === 'true';
+
 async function setGroupStatus() {
   const { context, stepKey } = bkEnv;
 
@@ -53,37 +55,56 @@ async function setGroupStatus() {
   });
 }
 
-void (async () => {
-  // await setGroupStatus();
+async function commitNewScreenshots() {
+  downloadArtifacts('.buildkite/artifacts/screenshots/*');
+  const screenshotDir = '.buildkite/artifacts/screenshots';
+  const files = fs.readdirSync(screenshotDir);
+  console.log(files);
 
-  yarnInstall('e2e');
-
-  downloadArtifacts('.buildkite/artifacts/e2e_reports/*');
-
-  const reportDir = '.buildkite/artifacts/e2e_reports';
-  const files = fs.readdirSync('.buildkite/artifacts/e2e_reports');
   await Promise.all<void>(
-    files
-      .filter((f) => f.startsWith('report_'))
-      .map((f) =>
-        decompress({
-          src: path.join(reportDir, f),
-          dest: path.join('e2e/reports', path.basename(f, '.gz')),
-        }),
-      ),
+    files.map((f) =>
+      decompress({
+        src: path.join(screenshotDir, f),
+        dest: path.join('e2e/screenshots'),
+      }),
+    ),
   );
+}
 
-  startGroup('Merging e2e reports');
+void (async () => {
+  // yarnInstall('e2e');
+  await commitNewScreenshots();
 
-  exec('npx ts-node ./merge_html_reports.ts', {
-    cwd: 'e2e',
-    env: {
-      HTML_REPORT_DIR: 'merged_html_report',
-    },
-  });
+  // if (updateScreenshots) {}
 
-  await compress({
-    src: 'e2e/merged_html_report',
-    dest: '.buildkite/artifacts/merged_html_report.gz',
-  });
+  await setGroupStatus();
+
+  // downloadArtifacts('.buildkite/artifacts/e2e_reports/*');
+
+  // const reportDir = '.buildkite/artifacts/e2e_reports';
+  // const files = fs.readdirSync(reportDir);
+  // await Promise.all<void>(
+  //   files
+  //     .filter((f) => f.startsWith('report_'))
+  //     .map((f) =>
+  //       decompress({
+  //         src: path.join(reportDir, f),
+  //         dest: path.join('e2e/reports', path.basename(f, '.gz')),
+  //       }),
+  //     ),
+  // );
+
+  // startGroup('Merging e2e reports');
+
+  // exec('npx ts-node ./merge_html_reports.ts', {
+  //   cwd: 'e2e',
+  //   env: {
+  //     HTML_REPORT_DIR: 'merged_html_report',
+  //   },
+  // });
+
+  // await compress({
+  //   src: 'e2e/merged_html_report',
+  //   dest: '.buildkite/artifacts/merged_html_report.gz',
+  // });
 })();
