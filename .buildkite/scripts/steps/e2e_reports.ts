@@ -84,7 +84,7 @@ async function commitNewScreenshots() {
   const botName = 'elastic-charts[bot]';
   const botUid = '98618603';
   exec(`git config user.name "${botName}"`);
-  exec(`git config user.email "${botName}@users.noreply.github.com"`);
+  exec(`git config user.email "${botUid}+${botName}@users.noreply.github.com"`);
 
   const { token } = (await octokit.auth({
     type: 'installation',
@@ -94,7 +94,7 @@ async function commitNewScreenshots() {
     bkEnv.username ?? 'elastic'
   }/elastic-charts.git`;
 
-  const message = `test(vrt): update screenshots`;
+  const message = `test(vrt): update screenshots [skip ci]`;
   exec('git add e2e/screenshots');
   exec(`git commit -m "${message}"`);
   exec(`git push ${remoteUrl} HEAD:${bkEnv.branch}`); // HEAD:* required when detached from HEAD
