@@ -9,7 +9,6 @@
 import { PointerEvent } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { isDefined } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { ChartDimensions } from '../../utils/dimensions';
@@ -56,7 +55,7 @@ function getElementAtCursorPosition(
     return geometriesIndex.find(externalPointerEvent.x, { x: -1, y: -1 });
   }
   const xValue = scales.xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys);
-  if (!isDefined(xValue.value)) {
+  if (!Number.isFinite(xValue.value)) {
     return [];
   }
   // get the elements at cursor position

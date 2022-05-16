@@ -39,12 +39,12 @@ export interface Scale<T> {
   ticks: () => T[];
   scale: (value?: PrimitiveValue) => number;
   pureScale: (value?: PrimitiveValue) => number;
-  invert: (value: number) => T | undefined;
+  invert: (value: number) => T;
   invertWithStep: (
     value: number,
     data: any[],
   ) => {
-    value: T | undefined;
+    value: T;
     withinBandwidth: boolean;
   };
   isSingleValue: () => boolean;
