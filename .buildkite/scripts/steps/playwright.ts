@@ -27,16 +27,11 @@ if (jobIndex !== null && jobTotal !== null) {
 }
 
 async function compressNewScreenshots() {
-  exec('which git');
-  const filePath =
-    shardIndex === 1
-      ? 'e2e/screenshots/stylings_stories.test.ts-snapshots/stylings-stories/texture/bar'
-      : 'e2e/screenshots/stylings_stories.test.ts-snapshots/stylings-stories/texture/area';
   exec('git add e2e/screenshots');
-  const output = exec(`git --no-pager diff --cached --name-only --diff-filter=ACMRU ${filePath} | cat`, {
+  const output = exec(`git --no-pager diff --cached --name-only --diff-filter=ACMRU e2e/screenshots | cat`, {
     stdio: 'pipe',
   });
-  const updatedScreenshotFiles = output.trim().split(/\n/);
+  const updatedScreenshotFiles = output.trim().split(/\n/).filter(Boolean);
 
   console.log(updatedScreenshotFiles);
 
