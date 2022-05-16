@@ -23,7 +23,7 @@ const MAX_FONT_SIZE = 12;
 const mix = (a: number, b: number, x: number) => (1 - x) * a + x * b; // like the GLSL `mix`
 
 /** @internal */
-export const drawCanvas = (
+export const drawCanvas2d = (
   ctx: CanvasRenderingContext2D,
   logicalTime: number,
   cssWidth: number,
@@ -32,6 +32,7 @@ export const drawCanvas = (
   columnarGeomData: ColumnarViewModel,
   rowHeight: number,
   [focusLoX, focusHiX, focusLoY, focusHiY]: [number, number, number, number],
+  color: Float32Array,
 ) => {
   const zoomedRowHeight = rowHeight / Math.abs(focusHiY - focusLoY);
   const rowHeightPx = zoomedRowHeight * cssHeight;
@@ -55,6 +56,7 @@ export const drawCanvas = (
   ctx.rect(0, 0, roundUpSize(cssWidth), cssHeight);
   ctx.clip();
   let lastTextColor = '';
+  let lastTextAlpha = 1;
 
   columnarGeomData.label.forEach((dataName, i) => {
     const label = formatter(dataName);
@@ -79,6 +81,12 @@ export const drawCanvas = (
         // as we're sorting the iteration, the number of color changes (API calls) is minimized
         ctx.fillStyle = textColor;
         lastTextColor = textColor;
+      }
+      const textAlpha = color[i * 4 + 3];
+      if (textAlpha !== lastTextAlpha) {
+        // as we're sorting the iteration, the number of color changes (API calls) is minimized
+        ctx.globalAlpha = textAlpha;
+        lastTextAlpha = textAlpha;
       }
       ctx.save();
       ctx.clip();

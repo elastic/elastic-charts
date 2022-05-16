@@ -9,7 +9,7 @@
 import { Render, Texture } from '../../../common/kingly';
 import { ColumnarViewModel } from '../flame_api';
 import { roundUpSize } from './common';
-import { drawRect, drawCanvas } from './draw_canvas';
+import { drawRect, drawCanvas2d } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
 
 const CHART_BOX_LINE_WIDTH = 0.5;
@@ -32,6 +32,7 @@ export const drawFrame = (
   roundedRectRenderer: Render,
   hoverIndex: number,
   unitRowHeight: number,
+  currentColor: Float32Array,
 ) => (currentFocus: [number, number, number, number]) => {
   const canvasHeightExcess = (roundUpSize(cssHeight) - cssHeight) * dpr;
   const minimapHeight = cssHeight / MINIMAP_SIZE_RATIO_Y;
@@ -78,7 +79,17 @@ export const drawFrame = (
   // base (focus) layer
   drawFocusLayer(false);
 
-  drawCanvas(ctx, 1, cssWidth, cssHeight - PADDING_BOTTOM, dpr, columnarGeomData, unitRowHeight, currentFocus);
+  drawCanvas2d(
+    ctx,
+    1,
+    cssWidth,
+    cssHeight - PADDING_BOTTOM,
+    dpr,
+    columnarGeomData,
+    unitRowHeight,
+    currentFocus,
+    currentColor,
+  );
 
   // minimap geoms
   drawContextLayer(false);

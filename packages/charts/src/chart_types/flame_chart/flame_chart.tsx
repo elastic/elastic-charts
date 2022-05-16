@@ -170,6 +170,7 @@ class FlameComponent extends React.Component<FlameProps> {
   // text search
   private currentSearchString: string = '';
   private currentSearchHitCount: number = 0;
+  private currentColor: Float32Array;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -191,6 +192,9 @@ class FlameComponent extends React.Component<FlameProps> {
     this.pinchZoomSetInterval = NaN;
     this.pinchZoomScale = browserRootWindow().visualViewport.scale;
     this.setupViewportScaleChangeListener();
+
+    // search
+    this.currentColor = this.props.columnarViewModel.color;
   }
 
   private setupDevicePixelRatioChangeListener = () => {
@@ -449,10 +453,11 @@ class FlameComponent extends React.Component<FlameProps> {
     e.stopPropagation();
     const input = this.searchInputRef.current;
     const searchString = input?.value;
-    this.currentSearchHitCount = 0;
     if (!input || typeof searchString !== 'string' || searchString === this.currentSearchString) return;
+    this.currentSearchHitCount = 0;
     this.currentSearchString = searchString;
     const columns = this.props.columnarViewModel;
+    this.currentColor = new Float32Array(columns.color);
     const labels = columns.label;
     const size = columns.size1;
     const position = columns.position1;
@@ -469,11 +474,23 @@ class FlameComponent extends React.Component<FlameProps> {
         x1 = Math.max(x1, position[2 * i] + size[i]);
         y0 = Math.min(y0, position[2 * i + 1]);
         y1 = Math.max(y1, position[2 * i + 1] + rowHeight);
+      } else {
+        this.currentColor[4 * i + 3] *= 0.25; // multiply alpha
       }
     }
+
+    // update focus rectangle if needed
     if (Number.isFinite(x0)) {
       Object.assign(this.targetFocus, focusForArea(this.props.chartDimensions.height, { x0, x1, y0, y1 }));
     }
+
+    // update colors
+    const colorSetter = this.glResources.attributes.get('color');
+    if (this.glContext && colorSetter) {
+      uploadToWebgl(this.glContext, new Map([['color', colorSetter]]), { color: this.currentColor });
+    }
+
+    // render
     this.setState({});
   };
 
@@ -594,6 +611,7 @@ class FlameComponent extends React.Component<FlameProps> {
       this.glResources.roundedRectRenderer,
       this.hoverIndex,
       unitRowPitch(this.props.columnarViewModel.position1),
+      this.currentColor,
     );
 
     const anim = (t: DOMHighResTimeStamp) => {

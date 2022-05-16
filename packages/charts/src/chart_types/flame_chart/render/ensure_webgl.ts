@@ -74,7 +74,7 @@ export function ensureWebgl(gl: WebGL2RenderingContext, instanceAttributes: stri
 export function uploadToWebgl(
   gl: WebGL2RenderingContext,
   attributes: Attributes,
-  columnarViewModel: ColumnarViewModel,
+  columnarViewModel: Partial<ColumnarViewModel>,
 ) {
   attributes.forEach((setValue, key) => {
     const value = columnarViewModel[key as keyof ColumnarViewModel];
