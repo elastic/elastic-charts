@@ -7,7 +7,7 @@
  */
 
 import { Render, Texture } from '../../../common/kingly';
-import { ColumnarViewModel } from '../types';
+import { ColumnarViewModel } from '../flame_api';
 import { roundUpSize } from './common';
 import { drawRect, drawCanvas } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';

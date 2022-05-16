@@ -12,13 +12,33 @@ import { BaseDatum, Spec } from '../../specs';
 import { SpecType } from '../../specs/constants'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
 import { Datum, stripUndefined, ValueAccessor, ValueFormatter } from '../../utils/common';
-import { ColumnarViewModel, ValueGetterFunction } from './types';
 
 /**
  * Provides direct controls for the component user
  * @public
  */
 export type ControlProviderCallback = (controlName: string, controlFunction: (...args: unknown[]) => void) => void;
+
+/**
+ * Column oriented data input for N data points:
+ *   - label: array of N strings
+ *   - value: Float64Array of N numbers, for tooltip value display
+ *   - color: Float32Array of 4 * N numbers, eg. green[i] = color[4 * i + 1]
+ *   - position0: Float32Array of 2 * N numbers with unit coordinates [x0, y0, x1, y1, ..., xN-1, yN-1]
+ *   - position1: for now, the same typed array for position0 to be used
+ *   - size0: Float32Array of N numbers with unit widths [width0, width1, ... , widthN-1]
+ *   - size1: for now, the same typed array for size0 to be used
+ * @public
+ */
+export interface ColumnarViewModel {
+  label: string[];
+  value: Float64Array;
+  color: Float32Array;
+  position0: Float32Array;
+  position1: Float32Array;
+  size0: Float32Array;
+  size1: Float32Array;
+}
 
 /**
  * Specifies the flame chart
@@ -31,7 +51,7 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, AnimationC
   controlProviderCallback: ControlProviderCallback;
   valueAccessor: ValueAccessor<D>;
   valueFormatter: ValueFormatter;
-  valueGetter: ValueGetterFunction;
+  valueGetter: (datumIndex: number) => number;
 }
 
 const buildProps = buildSFProps<FlameSpec>()(

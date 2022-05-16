@@ -34,17 +34,6 @@ export interface ContinuousDomainFocus {
 /** @internal */
 export type PickFunction = (x: Pixels, y: Pixels) => number;
 
-/** @public */
-export interface ColumnarViewModel {
-  label: string[];
-  value: Float64Array;
-  color: Float32Array;
-  position0: Float32Array;
-  position1: Float32Array;
-  size0: Float32Array;
-  size1: Float32Array;
-}
-
 /** @internal */
 export const nullColumnarViewModel = {
   label: [],
@@ -55,6 +44,3 @@ export const nullColumnarViewModel = {
   size0: new Float32Array(),
   size1: new Float32Array(),
 };
-
-/** @public */
-export type ValueGetterFunction = (datumIndex: number) => number; // todo add doc

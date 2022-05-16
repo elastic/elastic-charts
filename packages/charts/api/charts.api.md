@@ -556,6 +556,24 @@ export const ColorVariant: Readonly<{
 export type ColorVariant = $Values<typeof ColorVariant>;
 
 // @public
+export interface ColumnarViewModel {
+    // (undocumented)
+    color: Float32Array;
+    // (undocumented)
+    label: string[];
+    // (undocumented)
+    position0: Float32Array;
+    // (undocumented)
+    position1: Float32Array;
+    // (undocumented)
+    size0: Float32Array;
+    // (undocumented)
+    size1: Float32Array;
+    // (undocumented)
+    value: Float64Array;
+}
+
+// @public
 export type ComponentWithAnnotationDatum<D = any> = ComponentType<LineAnnotationDatum<D>>;
 
 // @public
@@ -979,8 +997,6 @@ export interface FlameLayerValue {
 export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, AnimationConfig {
     // (undocumented)
     chartType: typeof ChartType.Flame;
-    // Warning: (ae-forgotten-export) The symbol "ColumnarViewModel" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     columnarData: ColumnarViewModel;
     // (undocumented)
@@ -991,10 +1007,8 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, AnimationC
     valueAccessor: ValueAccessor<D>;
     // (undocumented)
     valueFormatter: ValueFormatter;
-    // Warning: (ae-forgotten-export) The symbol "ValueGetterFunction" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
-    valueGetter: ValueGetterFunction_2;
+    valueGetter: (datumIndex: number) => number;
 }
 
 // @public (undocumented)

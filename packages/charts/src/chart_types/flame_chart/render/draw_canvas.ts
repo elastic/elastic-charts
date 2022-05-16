@@ -7,7 +7,7 @@
  */
 
 import { LabelAccessor } from '../../../utils/common';
-import { ColumnarViewModel } from '../types';
+import { ColumnarViewModel } from '../flame_api';
 import { BOX_GAP, roundUpSize } from './common';
 
 const scale = (value: number, from: number, to: number) => (value - from) / (to - from);

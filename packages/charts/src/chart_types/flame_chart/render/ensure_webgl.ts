@@ -15,8 +15,9 @@ import {
   GL_FRAGMENT_SHADER,
   GL_VERTEX_SHADER,
 } from '../../../common/kingly';
+import { ColumnarViewModel } from '../flame_api';
 import { colorFrag, rectVert, roundedRectFrag } from '../shaders';
-import { ColumnarViewModel, GLResources } from '../types';
+import { GLResources } from '../types';
 
 /** @internal */
 export function ensureWebgl(gl: WebGL2RenderingContext, columnarViewModel: ColumnarViewModel): GLResources {
