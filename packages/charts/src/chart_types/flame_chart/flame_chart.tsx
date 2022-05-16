@@ -469,10 +469,11 @@ class FlameComponent extends React.Component<FlameProps> {
     let x1 = -Infinity;
     let y0 = Infinity;
     let y1 = -Infinity;
+    const regex = this.useRegex && new RegExp(searchString);
     const customizedSearchString = this.caseSensitive ? searchString : searchString.toLowerCase();
     for (let i = 0; i < datumCount; i++) {
       const label = this.caseSensitive ? labels[i] : labels[i].toLowerCase();
-      if (label.includes(customizedSearchString)) {
+      if (regex ? label.match(regex) : label.includes(customizedSearchString)) {
         this.currentSearchHitCount++;
         x0 = Math.min(x0, position[2 * i]);
         x1 = Math.max(x1, position[2 * i] + size[i]);
@@ -572,9 +573,12 @@ class FlameComponent extends React.Component<FlameProps> {
           />
           <label
             style={{
-              color: this.caseSensitive ? 'black' : 'darkgrey',
-              fontWeight: this.caseSensitive ? 'bolder' : 'bolder',
-              paddingInline: 10,
+              color: this.caseSensitive && !this.useRegex ? 'black' : 'darkgrey',
+              backgroundColor: 'rgb(228, 228, 228)',
+              fontWeight: 'bolder',
+              paddingInline: 4,
+              marginInline: 4,
+              borderRadius: 4,
             }}
           >
             Cc
@@ -591,11 +595,14 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             style={{
               color: this.useRegex ? 'black' : 'darkgrey',
-              fontWeight: this.useRegex ? 'bolder' : 'bolder',
-              paddingInline: 10,
+              backgroundColor: 'rgb(228, 228, 228)',
+              fontWeight: 'bolder',
+              paddingInline: 4,
+              marginInline: 4,
+              borderRadius: 4,
             }}
           >
-            .*
+            . *
             <input
               type="checkbox"
               tabIndex={0}
