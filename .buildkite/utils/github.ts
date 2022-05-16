@@ -17,6 +17,7 @@ import { Optional } from 'utility-types';
 import { bkEnv, getJobTimingStr } from './buildkite';
 import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
+import { CheckStatusOptions, CreateCheckOptions, UpdateCheckOptions } from './octokit';
 import { OctokitParameters, FileDiff } from './types';
 
 if (!process.env.GITHUB_AUTH) throw new Error('GITHUB_AUTH env variable must be defined');
@@ -144,15 +145,15 @@ export const commitStatusIsPennding = async (context = bkEnv.context, userRef?: 
   return data.find((status) => status.context === context)?.state === 'pending' ?? false;
 };
 
-export const setStatus = async (
-  { state, context, ...options }: Optional<OctokitParameters<'repos/create-commit-status'>, 'sha'>,
-  checkPending = false,
-) => {
+export const setStatus = async ({
+  state,
+  context,
+  ...options
+}: Optional<OctokitParameters<'repos/create-commit-status'>, 'sha'>) => {
   if (process.env.BLOCK_REQUESTS) return;
   const sha = options.sha ?? bkEnv.commit;
-  if (!sha) throw new Error(`Failed to set status, no sha available`);
-  if (!context) throw new Error(`Failed to set status, no context available`);
-  if (checkPending && (await commitStatusIsPennding(context, sha))) return;
+  if (!sha) throw new Error(`Failed to set status, no sha provided`);
+  if (!context) throw new Error(`Failed to set status, no context provided`);
 
   const description = options.description ?? (await getDefaultDescription(state));
 
@@ -168,6 +169,59 @@ export const setStatus = async (
     });
   } catch (error) {
     console.error(`Failed to set status for sha [${sha}]`);
+    console.error(error);
+    throw error;
+  }
+};
+
+export const codeCheckIsPending = async (name = bkEnv.context, userRef?: string): Promise<boolean> => {
+  const ref = userRef ?? bkEnv.commit;
+  if (!ref) throw new Error(`Failed to get status, no ref provided`);
+  if (!name) throw new Error(`Failed to set status, no name provided`);
+
+  const { data } = await octokit.checks.listForRef({
+    ...defaultGHOptions,
+    ref,
+  });
+  return data.check_runs.find(({ external_id }) => external_id === name)?.status !== 'completed' ?? false;
+};
+
+export const setCheckRunStatus = async ({
+  name,
+  ...options
+}: Optional<CreateCheckOptions, 'head_sha' | 'repo' | 'owner'> & CheckStatusOptions) => {
+  if (process.env.BLOCK_REQUESTS) return;
+  const head_sha = options.head_sha ?? bkEnv.commit;
+  if (!head_sha) throw new Error(`Failed to set status, no head_sha provided`);
+  if (!name) throw new Error(`Failed to set status, no name provided`);
+
+  try {
+    const run = (
+      await octokit.checks.listForRef({
+        ...defaultGHOptions,
+        ref: head_sha,
+      })
+    ).data.check_runs.find((r) => r.external_id === name);
+
+    if (!run) {
+      await octokit.checks.create({
+        ...defaultGHOptions,
+        details_url: bkEnv.jobUrl,
+        head_sha,
+        ...options,
+        name,
+      } as any); // octokit types are bad :(
+    } else {
+      await octokit.checks.update({
+        ...defaultGHOptions,
+        check_run_id: run.id, // required
+        details_url: bkEnv.jobUrl,
+        ...options,
+        name,
+      } as any); // octokit types are bad :(
+    }
+  } catch (error) {
+    console.error(`Failed to create/update check run for sha [${head_sha}]`);
     console.error(error);
     throw error;
   }
