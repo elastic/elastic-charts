@@ -142,7 +142,6 @@ class FlameComponent extends React.Component<FlameProps> {
   private pickTexture: Texture;
   private glResources: GLResources;
   private readonly glCanvasRef: RefObject<HTMLCanvasElement>;
-  private readonly searchInputRef: RefObject<HTMLInputElement>;
 
   // native browser pinch zoom handling
   private pinchZoomSetInterval: number;
@@ -168,9 +167,12 @@ class FlameComponent extends React.Component<FlameProps> {
   private startOfDragY0: number = NaN;
 
   // text search
-  private currentSearchString: string = '';
-  private currentSearchHitCount: number = 0;
+  private readonly searchInputRef: RefObject<HTMLInputElement>;
+  private currentSearchString = '';
+  private currentSearchHitCount = 0;
   private currentColor: Float32Array;
+  private caseSensitive = false;
+  private useRegex = false;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -467,8 +469,10 @@ class FlameComponent extends React.Component<FlameProps> {
     let x1 = -Infinity;
     let y0 = Infinity;
     let y1 = -Infinity;
+    const customizedSearchString = this.caseSensitive ? searchString : searchString.toLowerCase();
     for (let i = 0; i < datumCount; i++) {
-      if (labels[i].includes(searchString)) {
+      const label = this.caseSensitive ? labels[i] : labels[i].toLowerCase();
+      if (label.includes(customizedSearchString)) {
         this.currentSearchHitCount++;
         x0 = Math.min(x0, position[2 * i]);
         x1 = Math.max(x1, position[2 * i] + size[i]);
@@ -566,6 +570,43 @@ class FlameComponent extends React.Component<FlameProps> {
               background: 'rgba(255,0,255,0)',
             }}
           />
+          <label
+            style={{
+              color: this.caseSensitive ? 'black' : 'darkgrey',
+              fontWeight: this.caseSensitive ? 'bolder' : 'bolder',
+              paddingInline: 10,
+            }}
+          >
+            Cc
+            <input
+              type="checkbox"
+              tabIndex={0}
+              onClick={() => {
+                this.caseSensitive = !this.caseSensitive;
+                this.setState({});
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+          <label
+            style={{
+              color: this.useRegex ? 'black' : 'darkgrey',
+              fontWeight: this.useRegex ? 'bolder' : 'bolder',
+              paddingInline: 10,
+            }}
+          >
+            .*
+            <input
+              type="checkbox"
+              tabIndex={0}
+              onClick={() => {
+                this.useRegex = !this.useRegex;
+                this.setState({});
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+
           <p style={{ float: 'right', padding: 3 }}>{this.currentSearchString ? `Found: ${hitCount}` : ''}</p>
         </div>
         <BasicTooltip
