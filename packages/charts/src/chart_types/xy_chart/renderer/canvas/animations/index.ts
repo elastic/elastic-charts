@@ -11,7 +11,14 @@ import { debounce } from 'ts-debounce';
 import { Logger } from './../../../../../utils/logger';
 import { AnimatedValue, Animation, AnimationOptions, AnimationState } from './animation';
 
-const DISABLE_ANIMATIONS = Boolean(process?.env?.VRT);
+let DISABLE_ANIMATIONS: boolean;
+
+try {
+  // TODO find a better way to do this when we have an actual build process
+  DISABLE_ANIMATIONS = process.env.VRT === 'true'
+} catch {
+  DISABLE_ANIMATIONS = false;
+}
 
 /**
  * Function used to animate values from within a render context.
