@@ -23,9 +23,7 @@ if (bkEnv.updateScreenshots) {
 }
 
 if (jobIndex !== null && jobTotal !== null) {
-  // TODO revert this
-  pwFlags.push('stylings_stories.test.ts');
-  // pwFlags.push(`--shard=${shardIndex}/${jobTotal}`);
+  pwFlags.push(`--shard=${shardIndex}/${jobTotal}`);
 }
 
 async function compressNewScreenshots() {
@@ -77,11 +75,15 @@ void (async () => {
   exec('node ./e2e/scripts/extract_examples.js');
   startGroup('Running e2e playwright job');
   const reportDir = `reports/report_${shardIndex}`;
-  async function compressReport() {
+  async function postCommandTasks() {
     await compress({
       src: path.join('e2e', reportDir),
       dest: `.buildkite/artifacts/e2e_reports/report_${shardIndex}.gz`,
     });
+
+    if (bkEnv.updateScreenshots) {
+      await compressNewScreenshots();
+    }
   }
   const command = `yarn playwright test ${pwFlags.join(' ')}`;
   try {
@@ -93,11 +95,9 @@ void (async () => {
         PLAYWRIGHT_JSON_OUTPUT_NAME: `reports/json/report_${shardIndex}.json`,
       },
     });
-    await compressNewScreenshots();
-    // if (updateScreenshots) {}
-    await compressReport();
+    await postCommandTasks();
   } catch (error) {
-    await compressReport();
+    await postCommandTasks();
     throw error;
   }
 })();

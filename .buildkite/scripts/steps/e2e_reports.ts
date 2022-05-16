@@ -57,13 +57,8 @@ async function setGroupStatus() {
 }
 
 async function commitNewScreenshots() {
-  startGroup('Commiting updated screenshots from jobs');
-  downloadArtifacts(
-    '.buildkite/artifacts/screenshots/*',
-    'playwright__parallel-step',
-    undefined,
-    '5e30a75f-cb4c-4535-ad23-6fe5b227879e',
-  );
+  startGroup('Committing updated screenshots from e2e jobs');
+  downloadArtifacts('.buildkite/artifacts/screenshots/*', 'playwright__parallel-step');
   const screenshotDir = '.buildkite/artifacts/screenshots';
   const files = fs.readdirSync(screenshotDir);
 
@@ -103,16 +98,6 @@ async function commitNewScreenshots() {
 void (async () => {
   // yarnInstall('e2e');
 
-  // console.log(
-  //   await octokit.auth({
-  //     type: 'installation',
-  //   }),
-  // );
-
-  await commitNewScreenshots();
-
-  // if (updateScreenshots) {}
-
   // await setGroupStatus();
 
   // downloadArtifacts('.buildkite/artifacts/e2e_reports/*');
@@ -143,4 +128,8 @@ void (async () => {
   //   src: 'e2e/merged_html_report',
   //   dest: '.buildkite/artifacts/merged_html_report.gz',
   // });
+
+  if (bkEnv.updateScreenshots) {
+    await commitNewScreenshots();
+  }
 })();
