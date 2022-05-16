@@ -372,6 +372,7 @@ class FlameComponent extends React.Component<FlameProps> {
       }
     }
     this.clearDrag();
+    this.setState({});
   };
 
   private handleMouseLeave = (e: MouseEvent<HTMLCanvasElement>) => {
@@ -452,7 +453,7 @@ class FlameComponent extends React.Component<FlameProps> {
       margin: 0,
       border: 0,
       position: 'absolute',
-      cursor: this.hoverIndex >= 0 ? 'pointer' : DEFAULT_CSS_CURSOR,
+      cursor: this.startOfDragX ? 'grab' : this.hoverIndex >= 0 ? 'pointer' : DEFAULT_CSS_CURSOR,
     };
     const dpr = window.devicePixelRatio * this.pinchZoomScale;
     const canvasWidth = width * dpr;
