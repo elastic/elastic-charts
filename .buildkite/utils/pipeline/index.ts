@@ -8,3 +8,7 @@
 
 export * from './plugins';
 export * from './steps';
+
+export interface ScreenshotMeta {
+  files: string[];
+}

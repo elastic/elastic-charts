@@ -9,7 +9,17 @@
 import fs from 'fs';
 import path from 'path';
 
-import { exec, downloadArtifacts, startGroup, yarnInstall, getNumber, decompress, compress, bkEnv } from '../../utils';
+import {
+  exec,
+  downloadArtifacts,
+  startGroup,
+  yarnInstall,
+  getNumber,
+  decompress,
+  compress,
+  bkEnv,
+  ScreenshotMeta,
+} from '../../utils';
 import { ENV_URL } from '../../utils/constants';
 
 const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
@@ -28,12 +38,16 @@ if (jobIndex !== null && jobTotal !== null) {
 
 async function compressNewScreenshots() {
   exec('git add e2e/screenshots');
+
   const output = exec(`git --no-pager diff --cached --name-only --diff-filter=ACMRU e2e/screenshots | cat`, {
     stdio: 'pipe',
   });
   const updatedScreenshotFiles = output.trim().split(/\n/).filter(Boolean);
-
-  console.log(updatedScreenshotFiles);
+  const meta: ScreenshotMeta = {
+    files: updatedScreenshotFiles,
+  };
+  fs.mkdirSync('.buildkite/artifacts/screenshot_meta', { recursive: true });
+  fs.writeFileSync(`.buildkite/artifacts/screenshot_meta/shard_${shardIndex}.json`, JSON.stringify(meta));
 
   if (updatedScreenshotFiles.length > 0) {
     const uploadDir = 'e2e/screenshots/__upload';
@@ -51,7 +65,10 @@ async function compressNewScreenshots() {
       src: uploadDir,
       dest: `.buildkite/artifacts/screenshots/shard_${shardIndex}.gz`,
     });
-    console.log(`Updated ${updatedScreenshotFiles.length} screenshot${updatedScreenshotFiles.length === 1 ? '' : 's'}`);
+    console.log(`Found ${updatedScreenshotFiles.length} screenshot${
+      updatedScreenshotFiles.length === 1 ? '' : 's'
+    } to be updated:
+  - ${updatedScreenshotFiles.join('\n  - ')}`);
   } else {
     console.log('No screenshots to be updated');
   }
@@ -59,15 +76,18 @@ async function compressNewScreenshots() {
 
 void (async () => {
   yarnInstall('e2e');
+
   const src = '.buildkite/artifacts/e2e_server.gz';
   downloadArtifacts(src, 'e2e_server', undefined, '528d33e8-4b68-4953-b42d-55aed8dfd8d8');
   await decompress({
     src,
     dest: 'e2e/server',
   });
+
   startGroup('Generating test examples.json');
   // TODO Fix this duplicate script that allows us to skip root node install on all e2e test runners
   exec('node ./e2e/scripts/extract_examples.js');
+
   startGroup('Running e2e playwright job');
   const reportDir = `reports/report_${shardIndex}`;
   async function postCommandTasks() {
@@ -80,7 +100,9 @@ void (async () => {
       await compressNewScreenshots();
     }
   }
+
   const command = `yarn playwright test ${pwFlags.join(' ')}`;
+
   try {
     exec(command, {
       cwd: 'e2e',

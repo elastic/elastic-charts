@@ -26,6 +26,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         artifact_paths: [
           '.buildkite/artifacts/e2e_reports/*',
           '.buildkite/artifacts/screenshots/*',
+          '.buildkite/artifacts/screenshot_meta/*',
           'e2e/reports/json/*',
         ],
         commands: ['npx ts-node .buildkite/scripts/steps/playwright.ts'],

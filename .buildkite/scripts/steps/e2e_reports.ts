@@ -22,6 +22,7 @@ import {
   compress,
   decompress,
   octokit,
+  ScreenshotMeta,
 } from '../../utils';
 
 async function setGroupStatus() {
@@ -58,6 +59,23 @@ async function setGroupStatus() {
 
 async function commitNewScreenshots() {
   startGroup('Committing updated screenshots from e2e jobs');
+  downloadArtifacts('.buildkite/artifacts/screenshot_meta/*', 'playwright__parallel-step');
+
+  const screenshotMetaDir = '.buildkite/artifacts/screenshot_meta';
+  const metaFiles = fs.readdirSync(screenshotMetaDir);
+  const updatedFilePaths = metaFiles.sort().flatMap((f) => {
+    const meta = JSON.parse(fs.readFileSync(path.join(screenshotMetaDir, f)).toString()) as ScreenshotMeta;
+    return meta.files;
+  }, 0);
+
+  if (updatedFilePaths.length === 0) {
+    console.log('No screenshots to be updated');
+    return;
+  }
+
+  console.log(`Updating ${updatedFilePaths.length} screenshot${updatedFilePaths.length === 1 ? '' : 's'}:
+  - ${updatedFilePaths.join('\n  - ')}`);
+
   downloadArtifacts('.buildkite/artifacts/screenshots/*', 'playwright__parallel-step');
   const screenshotDir = '.buildkite/artifacts/screenshots';
   const files = fs.readdirSync(screenshotDir);

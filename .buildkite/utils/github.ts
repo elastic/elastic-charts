@@ -17,7 +17,7 @@ import { Optional } from 'utility-types';
 import { bkEnv, getJobTimingStr } from './buildkite';
 import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
-import { CheckStatusOptions, CreateCheckOptions, UpdateCheckOptions } from './octokit';
+import { CheckStatusOptions, CreateCheckOptions } from './octokit';
 import { OctokitParameters, FileDiff } from './types';
 
 if (!process.env.GITHUB_AUTH) throw new Error('GITHUB_AUTH env variable must be defined');
