@@ -8,7 +8,7 @@
 
 import { Scale, ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
-import { isDefined, Position, Rotation } from '../../../../utils/common';
+import { isDefined, isFiniteNumber, Position, Rotation } from '../../../../utils/common';
 import { AxisId, GroupId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { AxisStyle } from '../../../../utils/themes/theme';
@@ -151,7 +151,7 @@ export function computeRectAnnotationDimensions(
         const id = getAnnotationRectPropsId(annotationSpecId, props.datum, i, vDomainValue, hDomainValue);
         const top = smallMultiplesScales.vertical.scale(vDomainValue);
         const left = smallMultiplesScales.horizontal.scale(hDomainValue);
-        if (Number.isNaN(top + left)) return;
+        if (!isFiniteNumber(top + left)) return;
         const panel = { ...panelSize, top, left };
         duplicated.push({ ...props, panel, id });
       });
@@ -170,7 +170,7 @@ function scaleXonBandScale(
   const padding = (xScale.step - xScale.originalBandwidth) / 2;
   let scaledX1 = xScale.scale(x1);
   let scaledX0 = xScale.scale(x0);
-  if (Number.isNaN(scaledX1 + scaledX0)) {
+  if (!isFiniteNumber(scaledX1 + scaledX0)) {
     return null;
   }
   // extend the x1 scaled value to fully cover the last bar
@@ -205,9 +205,9 @@ function scaleXonContinuousScale(
     xScale.totalBarsInCluster > 0 && !isHistogramModeEnabled ? xScale.scale(x1 + xScale.minInterval) : xScale.scale(x1);
   // the width needs to be computed before adjusting the x anchor
   const width = Math.abs(scaledX1 - scaledX0);
-  return Number.isNaN(width)
-    ? null
-    : { width, x: scaledX0 - (xScale.bandwidthPadding / 2) * xScale.totalBarsInCluster };
+  return isFiniteNumber(width)
+    ? { width, x: scaledX0 - (xScale.bandwidthPadding / 2) * xScale.totalBarsInCluster }
+    : null;
 }
 
 /**

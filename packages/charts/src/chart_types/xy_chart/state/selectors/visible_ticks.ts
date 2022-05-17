@@ -13,7 +13,7 @@ import { AxisSpec, SettingsSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { isRTLString, Position, Rotation } from '../../../../utils/common';
+import { isFiniteNumber, isRTLString, Position, Rotation } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
 import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
@@ -121,6 +121,8 @@ function getVisibleTicks(
     (enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2) + (scale.isSingleValue() ? 0 : rotationOffset);
 
   const firstTickValue = ticks[0];
+  const firstTickValueScaled = scale.scale(firstTickValue);
+
   const allTicks: AxisTick[] =
     makeRaster && isSingleValueScale && typeof firstTickValue === 'number'
       ? [
@@ -128,8 +130,8 @@ function getVisibleTicks(
             value: firstTickValue,
             domainClampedValue: firstTickValue,
             label: labelFormatter(firstTickValue),
-            position: (scale.scale(firstTickValue) || 0) + offset,
-            domainClampedPosition: (scale.scale(firstTickValue) || 0) + offset,
+            position: (isFiniteNumber(firstTickValueScaled) ? firstTickValueScaled : 0) + offset,
+            domainClampedPosition: (isFiniteNumber(firstTickValueScaled) ? firstTickValueScaled : 0) + offset,
             layer: undefined, // no multiple layers with `singleValueScale`s
             detailedLayer: 0,
             direction: 'rtl',

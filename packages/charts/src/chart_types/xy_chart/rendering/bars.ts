@@ -10,7 +10,7 @@ import { Color } from '../../../common/colors';
 import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, mergePartial } from '../../../utils/common';
+import { clamp, isFiniteNumber, mergePartial } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
@@ -49,7 +49,7 @@ export function renderBars(
   const isInvertedY = yScale.isInverted;
   return dataSeries.data.reduce((barTuple: BarTuple, datum) => {
     const xScaled = xScale.scale(datum.x);
-    if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
+    if (!xScale.isValueInDomain(datum.x) || !isFiniteNumber(xScaled)) {
       return barTuple; // don't create a bar if not within the xScale domain
     }
     const { barGeometries, indexedGeometryMap } = barTuple;
@@ -67,7 +67,7 @@ export function renderBars(
     const height = absHeight === 0 ? absHeight : Math.max(minBarHeight, absHeight); // extend nonzero bars
     const heightExtension = height - absHeight;
     const isUpsideDown = finiteHeight < 0;
-    const finiteY = Number.isNaN(y0Scaled + rawY) ? 0 : rawY;
+    const finiteY = isFiniteNumber(y0Scaled + rawY) ? rawY : 0;
     const y = isUpsideDown ? finiteY - height + heightExtension : finiteY - heightExtension;
 
     const seriesIdentifier: XYChartSeriesIdentifier = {

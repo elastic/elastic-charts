@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { isFiniteNumber } from '../../../utils/common';
 import { Point } from '../../../utils/point';
 import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 
@@ -28,9 +29,11 @@ export function getPerPanelMap<T>(
     return [
       ...acc,
       ...horizontal.domain.reduce<Array<T & PerPanelMap>>((hAcc, horizontalValue) => {
+        const x = horizontal.scale(horizontalValue);
+        const y = vertical.scale(verticalValue);
         const panelAnchor: Point = {
-          x: horizontal.scale(horizontalValue) || 0,
-          y: vertical.scale(verticalValue) || 0,
+          x: isFiniteNumber(x) ? x : 0,
+          y: isFiniteNumber(y) ? y : 0,
         };
         const fnObj = fn(panelAnchor, horizontalValue, verticalValue, scales);
         return fnObj ? [...hAcc, { panelAnchor, horizontalValue, verticalValue, ...fnObj }] : hAcc;

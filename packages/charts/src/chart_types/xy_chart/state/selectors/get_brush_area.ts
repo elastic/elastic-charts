@@ -11,7 +11,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { clamp, Rotation } from '../../../../utils/common';
+import { clamp, isFiniteNumber, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Point } from '../../../../utils/point';
 import { isVerticalRotation } from '../utils/common';
@@ -72,10 +72,12 @@ export function getPointsConstraintToSinglePanel(
   const hPanel = horizontal.invert(startPlotPoint.x);
   const vPanel = vertical.invert(startPlotPoint.y);
 
-  const hPanelStart = horizontal.scale(hPanel) || 0;
+  const scaledHorizontal = horizontal.scale(hPanel);
+  const hPanelStart = isFiniteNumber(scaledHorizontal) ? scaledHorizontal : 0;
   const hPanelEnd = hPanelStart + horizontal.bandwidth;
 
-  const vPanelStart = vertical.scale(vPanel) || 0;
+  const scaledVertical = vertical.scale(vPanel);
+  const vPanelStart = isFiniteNumber(scaledVertical) ? scaledVertical : 0;
   const vPanelEnd = vPanelStart + vertical.bandwidth;
 
   const start = {

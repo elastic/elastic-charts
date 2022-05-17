@@ -353,13 +353,13 @@ function renderGeometries(
 
     const { stackMode } = ds;
 
-    const leftPos = smHScale.scale(ds.smHorizontalAccessorValue) || 0;
-    const topPos = smVScale.scale(ds.smVerticalAccessorValue) || 0;
+    const leftPos = smHScale.scale(ds.smHorizontalAccessorValue);
+    const topPos = smVScale.scale(ds.smVerticalAccessorValue);
     const panel: Dimensions = {
       width: smHScale.bandwidth,
       height: smVScale.bandwidth,
-      top: topPos,
-      left: leftPos,
+      top: isFiniteNumber(topPos) ? topPos : 0,
+      left: isFiniteNumber(leftPos) ? leftPos : 0,
     };
     const dataSeriesKey = getSeriesKey(
       {

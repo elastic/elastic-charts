@@ -8,7 +8,7 @@
 
 import { Color } from '../../../common/colors';
 import { Scale } from '../../../scales';
-import { isNil } from '../../../utils/common';
+import { isFiniteNumber, isNil } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, PointGeometry } from '../../../utils/geometry';
 import { PointStyle } from '../../../utils/themes/theme';
@@ -63,7 +63,7 @@ export function renderPoints(
     // don't create the point if it that point was filled
     const x = xScale.scale(xValue);
 
-    if (Number.isNaN(x)) return acc;
+    if (!isFiniteNumber(x)) return acc;
 
     const points: PointGeometry[] = [];
     const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandChart ? ['y0', 'y1'] : ['y1'];

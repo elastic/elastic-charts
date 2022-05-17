@@ -11,6 +11,7 @@ import { SettingsSpec, PointerEvent } from '../../../../specs/settings';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { isFiniteNumber } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';
 import { ChartDimensions } from '../../utils/dimensions';
@@ -92,14 +93,14 @@ function getCursorBand(
     }
   }
   const { horizontal, vertical } = smallMultipleScales;
-  const topPos = vertical.scale(pointerPosition.verticalPanelValue) || 0;
-  const leftPos = horizontal.scale(pointerPosition.horizontalPanelValue) || 0;
+  const topPos = vertical.scale(pointerPosition.verticalPanelValue);
+  const leftPos = horizontal.scale(pointerPosition.horizontalPanelValue);
 
   const panel = {
     width: horizontal.bandwidth,
     height: vertical.bandwidth,
-    top: chartDimensions.top + topPos,
-    left: chartDimensions.left + leftPos,
+    top: chartDimensions.top + (isFiniteNumber(topPos) ? topPos : 0),
+    left: chartDimensions.left + (isFiniteNumber(leftPos) ? leftPos : 0),
   };
   const cursorBand = getCursorBandPosition(
     settingsSpec.rotation,

@@ -11,7 +11,7 @@ import { Line, Rect } from '../../../geoms/types';
 import { Scale } from '../../../scales';
 import { isContinuousScale } from '../../../scales/types';
 import { TooltipStickTo } from '../../../specs/constants';
-import { Rotation } from '../../../utils/common';
+import { isFiniteNumber, Rotation } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { Point } from '../../../utils/point';
 import { isHorizontalRotation, isVerticalRotation } from '../state/utils/common';
@@ -26,7 +26,7 @@ export function getSnapPosition(
   totalBarsInCluster = 1,
 ): { band: number; position: number } | undefined {
   const position = scale.scale(value);
-  if (Number.isNaN(position)) {
+  if (!isFiniteNumber(position)) {
     return;
   }
 

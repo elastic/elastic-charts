@@ -10,7 +10,7 @@ import { LegendItem } from '../../../common/legend';
 import { Scale } from '../../../scales';
 import { isLogarithmicScale } from '../../../scales/types';
 import { MarkBuffer } from '../../../specs';
-import { getDistance } from '../../../utils/common';
+import { getDistance, isFiniteNumber } from '../../../utils/common';
 import { BarGeometry, ClippedRanges, isPointGeometry, PointGeometry } from '../../../utils/geometry';
 import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
@@ -67,7 +67,7 @@ export function getClippedRanges(
 
   return dataset.reduce<ClippedRanges>((acc, data) => {
     const xScaled = xScale.scale(data.x);
-    if (Number.isNaN(xScaled)) return acc;
+    if (!isFiniteNumber(xScaled)) return acc;
 
     const xValue = xScaled - xScaleOffset + xScale.bandwidth / 2;
 

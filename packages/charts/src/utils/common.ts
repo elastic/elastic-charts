@@ -615,7 +615,10 @@ export function getOppositeAlignment<A extends HorizontalAlignment | VerticalAli
   return (oppositeAlignmentMap[alignment] as A) ?? alignment;
 }
 
-/** @internal */
+/**
+ * Number.isFinite is regrettably not a type guard yet https://github.com/microsoft/TypeScript/issues/10038#issuecomment-924115831
+ * @internal
+ */
 export function isFiniteNumber(value: unknown): value is number {
   return Number.isFinite(value);
 }
