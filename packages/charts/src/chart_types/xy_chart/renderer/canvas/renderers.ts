@@ -7,7 +7,7 @@
  */
 
 import { Colors } from '../../../../common/colors';
-import { clearCanvas, isCanvasRenderer, renderLayers, withContext } from '../../../../renderers/canvas';
+import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { AnimationContext, getAnimationPoolFn } from './animations';
 import { AnimationState } from './animations/animation';
 import { renderAnnotations } from './annotations';
@@ -39,7 +39,6 @@ export function renderXYChartCanvas2d(
         chartTransform,
         rotation,
         geometries,
-        geometriesIndex,
         theme: { axes: sharedAxesStyle, sharedStyle, barSeriesStyle, background },
         highlightedLegendItem,
         annotationDimensions,
