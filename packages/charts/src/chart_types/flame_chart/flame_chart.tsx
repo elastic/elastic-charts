@@ -501,6 +501,28 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
+  focusOnHit = (timestamp: number) => {
+    let datumIndex = NaN;
+    let hitEnumerator = -1;
+    for (let i = 0; i < this.props.columnarViewModel.label.length; i++) {
+      if (this.props.columnarViewModel.label[i].includes(this.currentSearchString)) {
+        datumIndex = i;
+        hitEnumerator++;
+        if (hitEnumerator === this.focusedMatchIndex) break;
+      }
+    }
+    if (hitEnumerator >= 0) {
+      this.targetFocus = focusRect(
+        this.props.columnarViewModel,
+        this.props.chartDimensions.height,
+        datumIndex,
+        timestamp,
+      );
+      this.prevT = NaN;
+      this.hoverIndex = NaN; // no highlight
+    }
+  };
+
   render = () => {
     const {
       forwardStageRef,
@@ -633,8 +655,9 @@ class FlameComponent extends React.Component<FlameProps> {
             <input
               type="checkbox"
               tabIndex={0}
-              onClick={() => {
+              onClick={(e) => {
                 this.focusedMatchIndex = ((this.focusedMatchIndex || 0) - 1 + hitCount) % hitCount;
+                this.focusOnHit(e.timeStamp);
                 this.setState({});
               }}
               style={{ display: 'none' }}
@@ -653,9 +676,10 @@ class FlameComponent extends React.Component<FlameProps> {
             <input
               type="checkbox"
               tabIndex={0}
-              onClick={() => {
+              onClick={(e) => {
                 this.focusedMatchIndex =
                   ((Number.isNaN(this.focusedMatchIndex) ? -1 : this.focusedMatchIndex) + 1 + hitCount) % hitCount;
+                this.focusOnHit(e.timeStamp);
                 this.setState({});
               }}
               style={{ display: 'none' }}
