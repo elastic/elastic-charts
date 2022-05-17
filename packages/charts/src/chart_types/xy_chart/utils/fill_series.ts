@@ -57,5 +57,5 @@ export function fillSeries(dataSeries: DataSeries[], xValues: Set<string | numbe
 }
 
 function isXFillRequired(spec: BasicSeriesSpec, isStacked: boolean): boolean {
-  return isStacked && (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec));
+  return (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && (isStacked || !!spec.fit);
 }
