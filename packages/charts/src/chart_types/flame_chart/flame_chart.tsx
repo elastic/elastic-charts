@@ -452,13 +452,11 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
-  private handleKeyPress = (e: KeyboardEvent) => {
-    e.stopPropagation();
-    const input = this.searchInputRef.current;
-    const searchString = input?.value;
-    if (!input || typeof searchString !== 'string' || searchString === this.currentSearchString) return;
+  private focusOnAllMatches = () => {
     this.currentSearchHitCount = 0;
-    this.currentSearchString = searchString;
+    const searchString = this.currentSearchString;
+    const customizedSearchString = this.caseSensitive ? searchString : searchString.toLowerCase();
+    const regex = this.useRegex && new RegExp(searchString);
     const columns = this.props.columnarViewModel;
     this.currentColor = new Float32Array(columns.color);
     const labels = columns.label;
@@ -470,8 +468,6 @@ class FlameComponent extends React.Component<FlameProps> {
     let x1 = -Infinity;
     let y0 = Infinity;
     let y1 = -Infinity;
-    const regex = this.useRegex && new RegExp(searchString);
-    const customizedSearchString = this.caseSensitive ? searchString : searchString.toLowerCase();
     for (let i = 0; i < datumCount; i++) {
       const label = this.caseSensitive ? labels[i] : labels[i].toLowerCase();
       if (regex ? label.match(regex) : label.includes(customizedSearchString)) {
@@ -485,10 +481,20 @@ class FlameComponent extends React.Component<FlameProps> {
       }
     }
 
-    // update focus rectangle if needed
     if (Number.isFinite(x0)) {
       Object.assign(this.targetFocus, focusForArea(this.props.chartDimensions.height, { x0, x1, y0, y1 }));
     }
+  };
+
+  private handleKeyPress = (e: KeyboardEvent) => {
+    e.stopPropagation();
+    const input = this.searchInputRef.current;
+    const searchString = input?.value;
+    if (!input || typeof searchString !== 'string' || searchString === this.currentSearchString) return;
+    this.currentSearchString = searchString;
+
+    // update focus rectangle if needed
+    this.focusOnAllMatches();
 
     // update colors
     const colorSetter = this.glResources.attributes.get('color');
@@ -502,24 +508,29 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   focusOnHit = (timestamp: number) => {
-    let datumIndex = NaN;
-    let hitEnumerator = -1;
-    for (let i = 0; i < this.props.columnarViewModel.label.length; i++) {
-      if (this.props.columnarViewModel.label[i].includes(this.currentSearchString)) {
-        datumIndex = i;
-        hitEnumerator++;
-        if (hitEnumerator === this.focusedMatchIndex) break;
+    if (Number.isNaN(this.focusedMatchIndex)) {
+      // resetting to focus on everything
+      this.focusOnAllMatches();
+    } else {
+      let datumIndex = NaN;
+      let hitEnumerator = -1;
+      for (let i = 0; i < this.props.columnarViewModel.label.length; i++) {
+        if (this.props.columnarViewModel.label[i].includes(this.currentSearchString)) {
+          datumIndex = i;
+          hitEnumerator++;
+          if (hitEnumerator === this.focusedMatchIndex) break;
+        }
       }
-    }
-    if (hitEnumerator >= 0) {
-      this.targetFocus = focusRect(
-        this.props.columnarViewModel,
-        this.props.chartDimensions.height,
-        datumIndex,
-        timestamp,
-      );
-      this.prevT = NaN;
-      this.hoverIndex = NaN; // no highlight
+      if (hitEnumerator >= 0) {
+        this.targetFocus = focusRect(
+          this.props.columnarViewModel,
+          this.props.chartDimensions.height,
+          datumIndex,
+          timestamp,
+        );
+        this.prevT = NaN;
+        this.hoverIndex = NaN; // no highlight
+      }
     }
   };
 
@@ -583,6 +594,7 @@ class FlameComponent extends React.Component<FlameProps> {
         >
           <input
             ref={this.searchInputRef}
+            title="Search string or regex pattern"
             type="text"
             tabIndex={0}
             placeholder="Enter search string"
@@ -596,6 +608,7 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           />
           <label
+            title="Case sensitivity (highlighted: case sensitive)"
             style={{
               color: this.caseSensitive && !this.useRegex ? 'black' : 'darkgrey',
               backgroundColor: 'rgb(228, 228, 228)',
@@ -619,6 +632,7 @@ class FlameComponent extends React.Component<FlameProps> {
             />
           </label>
           <label
+            title="Regex matching (highlighted: use regex)"
             style={{
               color: this.useRegex ? 'black' : 'darkgrey',
               backgroundColor: 'rgb(228, 228, 228)',
@@ -642,6 +656,7 @@ class FlameComponent extends React.Component<FlameProps> {
             />
           </label>
           <label
+            title="Previous hit"
             style={{
               color: hitCount ? 'black' : 'darkgrey',
               fontWeight: 'bolder',
@@ -656,7 +671,11 @@ class FlameComponent extends React.Component<FlameProps> {
               type="checkbox"
               tabIndex={0}
               onClick={(e) => {
-                this.focusedMatchIndex = ((this.focusedMatchIndex || 0) - 1 + hitCount) % hitCount;
+                this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
+                  ? hitCount - 1
+                  : this.focusedMatchIndex === 0
+                  ? NaN
+                  : this.focusedMatchIndex - 1;
                 this.focusOnHit(e.timeStamp);
                 this.setState({});
               }}
@@ -664,6 +683,7 @@ class FlameComponent extends React.Component<FlameProps> {
             />
           </label>
           <label
+            title="Next hit"
             style={{
               color: hitCount ? 'black' : 'darkgrey',
               fontWeight: 'bolder',
@@ -677,8 +697,11 @@ class FlameComponent extends React.Component<FlameProps> {
               type="checkbox"
               tabIndex={0}
               onClick={(e) => {
-                this.focusedMatchIndex =
-                  ((Number.isNaN(this.focusedMatchIndex) ? -1 : this.focusedMatchIndex) + 1 + hitCount) % hitCount;
+                this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
+                  ? 0
+                  : this.focusedMatchIndex === hitCount - 1
+                  ? NaN
+                  : this.focusedMatchIndex + 1;
                 this.focusOnHit(e.timeStamp);
                 this.setState({});
               }}
