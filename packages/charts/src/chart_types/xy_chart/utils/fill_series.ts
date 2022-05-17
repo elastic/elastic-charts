@@ -21,9 +21,8 @@ export function fillSeries(
   const sortedXValues = [...xValues.values()];
   return dataSeries.map((series) => {
     const { spec, data, isStacked } = series;
-
-    const noFillRequired = isXFillNotRequired(spec, groupScaleType, isStacked);
-    if (data.length === xValues.size || noFillRequired) {
+    const xFillRequired = isXFillRequired(spec, groupScaleType, isStacked);
+    if (data.length === xValues.size || !xFillRequired) {
       return {
         ...series,
         data,
@@ -62,11 +61,11 @@ export function fillSeries(
   });
 }
 
-function isXFillNotRequired(spec: BasicSeriesSpec, groupScaleType: ScaleType, isStacked: boolean) {
-  const onlyNoFitAreaLine = (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && !spec.fit;
+function isXFillRequired(spec: BasicSeriesSpec, groupScaleType: ScaleType, isStacked: boolean): boolean {
+  const onlyFitAreaLine = (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && Boolean(spec.fit);
   const onlyContinuous =
     groupScaleType === ScaleType.Linear ||
     groupScaleType === ScaleType.LinearBinary ||
     groupScaleType === ScaleType.Time;
-  return onlyNoFitAreaLine && onlyContinuous && !isStacked;
+  return onlyFitAreaLine && onlyContinuous && isStacked;
 }
