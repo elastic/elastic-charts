@@ -613,6 +613,41 @@ class FlameComponent extends React.Component<FlameProps> {
               style={{ display: 'none' }}
             />
           </label>
+          <label
+            style={{
+              color: this.currentSearchString ? 'black' : 'darkgrey',
+              fontWeight: 'bolder',
+              paddingLeft: 16,
+              paddingRight: 4,
+            }}
+          >
+            ◀
+            <input
+              type="checkbox"
+              tabIndex={0}
+              onClick={() => {
+                console.log('Previous hit');
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+          <label
+            style={{
+              color: this.currentSearchString ? 'black' : 'darkgrey',
+              fontWeight: 'bolder',
+              paddingInline: 4,
+            }}
+          >
+            ▶
+            <input
+              type="checkbox"
+              tabIndex={0}
+              onClick={() => {
+                console.log('Next hit');
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
 
           <p style={{ float: 'right', padding: 3 }}>{this.currentSearchString ? `Found: ${hitCount}` : ''}</p>
         </div>
