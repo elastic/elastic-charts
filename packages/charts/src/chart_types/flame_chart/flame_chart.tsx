@@ -579,6 +579,8 @@ class FlameComponent extends React.Component<FlameProps> {
               paddingInline: 4,
               marginInline: 4,
               borderRadius: 4,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
             }}
           >
             Cc
@@ -600,6 +602,8 @@ class FlameComponent extends React.Component<FlameProps> {
               paddingInline: 4,
               marginInline: 4,
               borderRadius: 4,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
             }}
           >
             . *
@@ -615,10 +619,12 @@ class FlameComponent extends React.Component<FlameProps> {
           </label>
           <label
             style={{
-              color: this.currentSearchString ? 'black' : 'darkgrey',
+              color: hitCount ? 'black' : 'darkgrey',
               fontWeight: 'bolder',
               paddingLeft: 16,
               paddingRight: 4,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
             }}
           >
             ◀
@@ -633,9 +639,11 @@ class FlameComponent extends React.Component<FlameProps> {
           </label>
           <label
             style={{
-              color: this.currentSearchString ? 'black' : 'darkgrey',
+              color: hitCount ? 'black' : 'darkgrey',
               fontWeight: 'bolder',
               paddingInline: 4,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
             }}
           >
             ▶
@@ -649,7 +657,16 @@ class FlameComponent extends React.Component<FlameProps> {
             />
           </label>
 
-          <p style={{ float: 'right', padding: 3 }}>{this.currentSearchString ? `Found: ${hitCount}` : ''}</p>
+          <p
+            style={{
+              float: 'right',
+              padding: 3,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
+            }}
+          >
+            {`Found: ${hitCount}`}
+          </p>
         </div>
         <BasicTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
