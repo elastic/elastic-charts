@@ -173,6 +173,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private currentColor: Float32Array;
   private caseSensitive = false;
   private useRegex = false;
+  private focusedMatchIndex = NaN;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -496,6 +497,7 @@ class FlameComponent extends React.Component<FlameProps> {
     }
 
     // render
+    this.focusedMatchIndex = NaN;
     this.setState({});
   };
 
@@ -632,7 +634,8 @@ class FlameComponent extends React.Component<FlameProps> {
               type="checkbox"
               tabIndex={0}
               onClick={() => {
-                console.log('Previous hit');
+                this.focusedMatchIndex = ((this.focusedMatchIndex || 0) - 1 + hitCount) % hitCount;
+                this.setState({});
               }}
               style={{ display: 'none' }}
             />
@@ -651,7 +654,9 @@ class FlameComponent extends React.Component<FlameProps> {
               type="checkbox"
               tabIndex={0}
               onClick={() => {
-                console.log('Next hit');
+                this.focusedMatchIndex =
+                  ((Number.isNaN(this.focusedMatchIndex) ? -1 : this.focusedMatchIndex) + 1 + hitCount) % hitCount;
+                this.setState({});
               }}
               style={{ display: 'none' }}
             />
@@ -665,7 +670,7 @@ class FlameComponent extends React.Component<FlameProps> {
               transition: 'opacity 250ms ease-in-out',
             }}
           >
-            {`Found: ${hitCount}`}
+            {`Match${Number.isNaN(this.focusedMatchIndex) ? 'es:' : `: ${this.focusedMatchIndex + 1} /`} ${hitCount}`}
           </p>
         </div>
         <BasicTooltip
