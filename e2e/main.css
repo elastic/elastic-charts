@@ -220,6 +220,7 @@ svg text {
       -ms-flex: 1;
           flex: 1;
   position: relative;
+  overflow: hidden;
 }
 
 .echChartPointerContainer {
@@ -42432,6 +42433,7 @@ html.light-theme .echChart--column {
 html.light-theme .echContainer {
   flex: 1;
   position: relative;
+  overflow: hidden;
 }
 html.light-theme .echChartPointerContainer {
   position: absolute;
@@ -61950,6 +61952,7 @@ html.dark-theme .echChart--column {
 html.dark-theme .echContainer {
   flex: 1;
   position: relative;
+  overflow: hidden;
 }
 html.dark-theme .echChartPointerContainer {
   position: absolute;
@@ -62536,7 +62539,7 @@ body {
   position: relative;
   z-index: 500;
   box-sizing: border-box;
-  background-color: blanchedalmond;
+  /* background-color: blanchedalmond; */
 }
 
 #story-header {
