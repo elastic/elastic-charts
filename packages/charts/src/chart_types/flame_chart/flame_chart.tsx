@@ -478,6 +478,7 @@ class FlameComponent extends React.Component<FlameProps> {
     let x1 = -Infinity;
     let y0 = Infinity;
     let y1 = -Infinity;
+    // todo unify with matcher loop and setup in focusOnHit
     for (let i = 0; i < datumCount; i++) {
       const label = this.caseSensitive ? labels[i] : labels[i].toLowerCase();
       if (regex ? label.match(regex) : label.includes(customizedSearchString)) {
@@ -528,8 +529,14 @@ class FlameComponent extends React.Component<FlameProps> {
     } else {
       let datumIndex = NaN;
       let hitEnumerator = -1;
-      for (let i = 0; i < this.props.columnarViewModel.label.length; i++) {
-        if (this.props.columnarViewModel.label[i].includes(this.currentSearchString)) {
+      const searchString = this.currentSearchString;
+      const customizedSearchString = this.caseSensitive ? searchString : searchString.toLowerCase();
+      const regex = this.useRegex && getRegExp(searchString);
+      const labels = this.props.columnarViewModel.label;
+      // todo unify with matcher loop and setup in focusOnAllMatches
+      for (let i = 0; i < labels.length; i++) {
+        const label = this.caseSensitive ? labels[i] : labels[i].toLowerCase();
+        if (regex ? label.match(regex) : label.includes(customizedSearchString)) {
           datumIndex = i;
           hitEnumerator++;
           if (hitEnumerator === this.focusedMatchIndex) break;
@@ -639,6 +646,7 @@ class FlameComponent extends React.Component<FlameProps> {
               type="checkbox"
               tabIndex={0}
               onClick={() => {
+                if (!this.currentSearchString) return;
                 this.caseSensitive = !this.caseSensitive;
                 this.searchForText(true);
               }}
@@ -663,6 +671,7 @@ class FlameComponent extends React.Component<FlameProps> {
               type="checkbox"
               tabIndex={0}
               onClick={() => {
+                if (!this.currentSearchString) return;
                 this.useRegex = !this.useRegex;
                 this.searchForText(true);
               }}
@@ -685,6 +694,7 @@ class FlameComponent extends React.Component<FlameProps> {
               type="checkbox"
               tabIndex={0}
               onClick={(e) => {
+                if (!this.currentSearchString) return;
                 this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
                   ? hitCount - 1
                   : this.focusedMatchIndex === 0
@@ -711,6 +721,7 @@ class FlameComponent extends React.Component<FlameProps> {
               type="checkbox"
               tabIndex={0}
               onClick={(e) => {
+                if (!this.currentSearchString) return;
                 this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
                   ? 0
                   : this.focusedMatchIndex === hitCount - 1
