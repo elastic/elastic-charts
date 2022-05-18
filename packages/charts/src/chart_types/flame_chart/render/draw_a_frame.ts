@@ -18,7 +18,9 @@ const MINIMAP_SIZE_RATIO_Y = 3;
 const MINIMAP_FOCUS_BOX_LINE_WIDTH = 1;
 const MINIMAP_BOX_LINE_WIDTH = 1;
 const PADDING_TOP = 16; // for the UI controls and the minimap protrusion
-const PADDING_BOTTOM = 24; // for the UI controls and the minimap protrusion
+
+/** @internal */
+export const PADDING_BOTTOM = 24; // for the UI controls and the minimap protrusion
 const PADDING_LEFT = 16; // for the location indicator or edge zoom
 const PADDING_RIGHT = 16; // for aesthetic purposes or edge zoom
 const FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH = 0.5;

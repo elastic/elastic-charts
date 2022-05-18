@@ -32,7 +32,7 @@ import { clamp } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
 import { roundUpSize } from './render/common';
-import { drawFrame } from './render/draw_a_frame';
+import { drawFrame, PADDING_BOTTOM } from './render/draw_a_frame';
 import { ensureWebgl, uploadToWebgl } from './render/ensure_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
@@ -610,7 +610,7 @@ class FlameComponent extends React.Component<FlameProps> {
         <div
           style={{
             position: 'absolute',
-            transform: 'translateY(340px)',
+            transform: `translateY(${this.props.chartDimensions.height - PADDING_BOTTOM + 4}px)`,
           }}
         >
           <input
