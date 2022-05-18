@@ -345,8 +345,12 @@ class FlameComponent extends React.Component<FlameProps> {
       const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1, timestamp: e.timeStamp };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
-      this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
-      this.setState({});
+      if (Number.isFinite(this.hoverIndex)) {
+        this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
+        this.setState({});
+      } else {
+        this.drawCanvas();
+      }
     }
   };
 
@@ -461,9 +465,12 @@ class FlameComponent extends React.Component<FlameProps> {
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
     }
-
-    this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
-    this.setState({});
+    if (Number.isFinite(this.hoverIndex)) {
+      this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
+      this.setState({});
+    } else {
+      this.drawCanvas();
+    }
   };
 
   private focusOnAllMatches = () => {
