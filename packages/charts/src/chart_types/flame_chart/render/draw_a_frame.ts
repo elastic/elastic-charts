@@ -17,7 +17,9 @@ const MINIMAP_SIZE_RATIO_X = 3;
 const MINIMAP_SIZE_RATIO_Y = 3;
 const MINIMAP_FOCUS_BOX_LINE_WIDTH = 1;
 const MINIMAP_BOX_LINE_WIDTH = 1;
-const PADDING_BOTTOM = 24;
+const PADDING_BOTTOM = 24; // for the UI controls and the minimap protrusion
+const PADDING_LEFT = 16; // for the location indicator or edge zoom
+const PADDING_RIGHT = 16; // for aesthetic purposes or edge zoom
 
 /** @internal */
 export const drawFrame = (
@@ -40,13 +42,19 @@ export const drawFrame = (
   const minimapLeft = cssWidth - minimapWidth;
   const fullFocus: [number, number, number, number] = [0, 1, 0, 1];
 
+  const drawnCssWidth = cssWidth;
+  const drawnCanvasWidth = drawnCssWidth * dpr;
+  const focusLayerCssWidth = drawnCssWidth - PADDING_LEFT - PADDING_RIGHT;
+  const focusLayerCanvasWidth = focusLayerCssWidth * dpr;
+  const focusLayerCanvasOffsetX = PADDING_LEFT * dpr;
+
   const drawFocusLayer = (pickLayer: boolean) =>
     drawWebgl(
       gl,
       1,
-      cssWidth * dpr,
+      focusLayerCanvasWidth,
       (cssHeight - PADDING_BOTTOM) * dpr,
-      0,
+      focusLayerCanvasOffsetX,
       (pickLayer ? 0 : canvasHeightExcess) + dpr * PADDING_BOTTOM,
       pickTexture,
       pickLayer ? pickTextureRenderer : roundedRectRenderer,
@@ -62,9 +70,9 @@ export const drawFrame = (
     drawWebgl(
       gl,
       1,
-      (cssWidth * dpr) / MINIMAP_SIZE_RATIO_X,
+      drawnCanvasWidth / MINIMAP_SIZE_RATIO_X,
       (cssHeight * dpr) / MINIMAP_SIZE_RATIO_Y,
-      cssWidth * dpr * (1 - 1 / MINIMAP_SIZE_RATIO_X),
+      drawnCanvasWidth * (1 - 1 / MINIMAP_SIZE_RATIO_X),
       pickLayer ? 0 : canvasHeightExcess,
       pickTexture,
       pickLayer ? pickTextureRenderer : roundedRectRenderer,
@@ -82,8 +90,9 @@ export const drawFrame = (
   drawCanvas2d(
     ctx,
     1,
-    cssWidth,
+    focusLayerCssWidth,
     cssHeight - PADDING_BOTTOM,
+    PADDING_LEFT,
     dpr,
     columnarGeomData,
     unitRowHeight,
@@ -100,12 +109,12 @@ export const drawFrame = (
   // minimap pick layer
   drawContextLayer(true);
 
-  // chart border
+  // focus chart border
   drawRect(
     ctx,
-    cssWidth,
+    focusLayerCssWidth,
     cssHeight - PADDING_BOTTOM,
-    0,
+    PADDING_LEFT,
     cssHeight - PADDING_BOTTOM,
     dpr,
     fullFocus,
