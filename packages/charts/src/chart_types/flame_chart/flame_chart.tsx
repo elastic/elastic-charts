@@ -46,6 +46,10 @@ const IS_META_REQUIRED_FOR_ZOOM = false;
 const ZOOM_SPEED = 0.0015;
 const DEEPEST_ZOOM_RATIO = 1e-7; // FP calcs seem precise enough down to a 10 000 000 times zoom: 1e-7
 const ZOOM_FROM_EDGE_BAND = 16; // so the user needs not be precisely at the edge to zoom in one direction
+const ZOOM_FROM_EDGE_BAND_LEFT = ZOOM_FROM_EDGE_BAND;
+const ZOOM_FROM_EDGE_BAND_RIGHT = ZOOM_FROM_EDGE_BAND;
+const ZOOM_FROM_EDGE_BAND_TOP = ZOOM_FROM_EDGE_BAND;
+const ZOOM_FROM_EDGE_BAND_BOTTOM = ZOOM_FROM_EDGE_BAND;
 const LEFT_MOUSE_BUTTON = 1;
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
@@ -423,15 +427,15 @@ class FlameComponent extends React.Component<FlameProps> {
     const unitY = (this.props.chartDimensions.height - this.pointerY) / this.props.chartDimensions.height;
     const zoomOut = delta <= 0;
     const midX =
-      x0 === 0 && (zoomOut || this.pointerX < ZOOM_FROM_EDGE_BAND)
+      x0 === 0 && (zoomOut || this.pointerX < ZOOM_FROM_EDGE_BAND_LEFT)
         ? 0
-        : x1 === 1 && (zoomOut || this.pointerX > this.props.chartDimensions.width - ZOOM_FROM_EDGE_BAND)
+        : x1 === 1 && (zoomOut || this.pointerX > this.props.chartDimensions.width - ZOOM_FROM_EDGE_BAND_RIGHT)
         ? 1
         : clamp(x0 + unitX * Math.abs(x1 - x0), 0, 1);
     const midY =
-      y0 === 0 && (zoomOut || this.pointerY > this.props.chartDimensions.height - ZOOM_FROM_EDGE_BAND)
+      y0 === 0 && (zoomOut || this.pointerY > this.props.chartDimensions.height - ZOOM_FROM_EDGE_BAND_BOTTOM)
         ? 0
-        : y1 === 1 && (zoomOut || this.pointerY < ZOOM_FROM_EDGE_BAND)
+        : y1 === 1 && (zoomOut || this.pointerY < ZOOM_FROM_EDGE_BAND_TOP)
         ? 1
         : clamp(y0 + unitY * Math.abs(y1 - y0), 0, 1);
     const targetX0 = clamp(x0 - delta * (x0 - midX), 0, 1);
