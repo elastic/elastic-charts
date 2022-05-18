@@ -9,6 +9,8 @@
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
+import { WebGLRenderingContextBase } from './webgl_context_mock';
+
 configure({ adapter: new Adapter() });
 
 process.env.RNG_SEED = 'jest-unit-tests';
@@ -45,3 +47,6 @@ window.ResizeObserver = ResizeObserverMock;
 class Path2D {}
 // @ts-ignore - setting mock override
 window.Path2D = Path2D;
+
+// @ts-ignore - override webgl constants
+window.WebGL2RenderingContext = WebGLRenderingContextBase;

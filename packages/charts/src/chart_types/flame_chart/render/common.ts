@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-export default {
-  title: 'Flame (@alpha)',
-};
+/** @internal */
+export const BOX_GAP = 0.5;
 
-export { Example as icicleChart } from './01_unix_icicle.story';
-export { Example as flameChart } from './02_unix_flame.story';
-export { Example as cpuProfileFlameChart } from './03_cpu_profile_flame.story';
-export { Example as cpuProfileGLFlameChart } from './04_cpu_profile_gl_flame.story';
+const CANVAS_SIZE_INCREMENT = 256; // to avoid thrashing the layout and canvases on every one pixel width/height change
+
+/** @internal */
+export const roundUpSize = (cssPixelSize: number) =>
+  CANVAS_SIZE_INCREMENT * Math.ceil(cssPixelSize / CANVAS_SIZE_INCREMENT);

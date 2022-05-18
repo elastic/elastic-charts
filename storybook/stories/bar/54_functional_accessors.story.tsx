@@ -19,6 +19,7 @@ import {
   Settings,
   AccessorFn,
   ElementClickListener,
+  XYChartElementEvent,
 } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
@@ -31,11 +32,16 @@ export const Example = () => {
   const splitAccessorFn: AccessorFn = (d) => d.g2;
   splitAccessorFn.fieldName = text('split fn name', '') || undefined;
 
-  const onElementClick: ElementClickListener = ([[, { key }]]) => action('clicked series key')(key);
+  const onElementClick = ([[, { key }]]: XYChartElementEvent[]) => action('clicked series key')(key);
 
   return (
     <Chart>
-      <Settings onElementClick={onElementClick} showLegend legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings
+        onElementClick={onElementClick as ElementClickListener}
+        showLegend
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
