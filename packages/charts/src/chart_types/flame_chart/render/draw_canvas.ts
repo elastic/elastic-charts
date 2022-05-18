@@ -29,6 +29,7 @@ export const drawCanvas2d = (
   cssWidth: number,
   cssHeight: number,
   cssOffsetX: number,
+  cssOffsetY: number,
   dpr: number,
   columnarGeomData: ColumnarViewModel,
   rowHeight: number,
@@ -53,7 +54,7 @@ export const drawCanvas2d = (
   ctx.scale(dpr, dpr);
   ctx.font = `${fontSize}px sans-serif`;
   ctx.clearRect(0, 0, roundUpSize(cssWidth), roundUpSize(cssHeight));
-  ctx.translate(cssOffsetX, 0);
+  ctx.translate(cssOffsetX, cssOffsetY);
   ctx.beginPath();
   ctx.rect(0, 0, roundUpSize(cssWidth), cssHeight);
   ctx.clip();

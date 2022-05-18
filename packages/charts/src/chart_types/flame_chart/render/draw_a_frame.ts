@@ -17,6 +17,7 @@ const MINIMAP_SIZE_RATIO_X = 3;
 const MINIMAP_SIZE_RATIO_Y = 3;
 const MINIMAP_FOCUS_BOX_LINE_WIDTH = 1;
 const MINIMAP_BOX_LINE_WIDTH = 1;
+const PADDING_TOP = 16; // for the UI controls and the minimap protrusion
 const PADDING_BOTTOM = 24; // for the UI controls and the minimap protrusion
 const PADDING_LEFT = 16; // for the location indicator or edge zoom
 const PADDING_RIGHT = 16; // for aesthetic purposes or edge zoom
@@ -48,12 +49,14 @@ export const drawFrame = (
   const focusLayerCanvasWidth = focusLayerCssWidth * dpr;
   const focusLayerCanvasOffsetX = PADDING_LEFT * dpr;
 
+  const focusLayerCssHeight = cssHeight - PADDING_TOP - PADDING_BOTTOM;
+
   const drawFocusLayer = (pickLayer: boolean) =>
     drawWebgl(
       gl,
       1,
       focusLayerCanvasWidth,
-      (cssHeight - PADDING_BOTTOM) * dpr,
+      focusLayerCssHeight * dpr,
       focusLayerCanvasOffsetX,
       (pickLayer ? 0 : canvasHeightExcess) + dpr * PADDING_BOTTOM,
       pickTexture,
@@ -91,8 +94,9 @@ export const drawFrame = (
     ctx,
     1,
     focusLayerCssWidth,
-    cssHeight - PADDING_BOTTOM,
+    focusLayerCssHeight,
     PADDING_LEFT,
+    PADDING_TOP,
     dpr,
     columnarGeomData,
     unitRowHeight,
@@ -113,9 +117,9 @@ export const drawFrame = (
   drawRect(
     ctx,
     focusLayerCssWidth,
-    cssHeight - PADDING_BOTTOM,
+    focusLayerCssHeight,
     PADDING_LEFT,
-    cssHeight - PADDING_BOTTOM,
+    focusLayerCssHeight + PADDING_TOP,
     dpr,
     fullFocus,
     '',
