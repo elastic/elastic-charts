@@ -110,6 +110,16 @@ const colorToDatumIndex = (pixel: Uint8Array) => {
   return isEmptyArea ? NaN : pixel[3] + 256 * (pixel[2] + 256 * (pixel[1] + 256 * pixel[0])) - GEOM_INDEX_OFFSET;
 };
 
+const getRegExp = (searchString: string): RegExp => {
+  let regex: RegExp;
+  try {
+    regex = new RegExp(searchString);
+  } catch {
+    return new RegExp('iIUiUYIuiGjhG678987gjhgfytr678576'); // todo find a quick failing regex
+  }
+  return regex;
+};
+
 interface StateProps {
   columnarViewModel: FlameSpec['columnarData'];
   animationDuration: number;
@@ -456,7 +466,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.currentSearchHitCount = 0;
     const searchString = this.currentSearchString;
     const customizedSearchString = this.caseSensitive ? searchString : searchString.toLowerCase();
-    const regex = this.useRegex && new RegExp(searchString);
+    const regex = this.useRegex && getRegExp(searchString);
     const columns = this.props.columnarViewModel;
     this.currentColor = new Float32Array(columns.color);
     const labels = columns.label;
@@ -486,11 +496,10 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
-  private handleKeyPress = (e: KeyboardEvent) => {
-    e.stopPropagation();
+  private searchForText = (force: boolean) => {
     const input = this.searchInputRef.current;
     const searchString = input?.value;
-    if (!input || typeof searchString !== 'string' || searchString === this.currentSearchString) return;
+    if (!input || typeof searchString !== 'string' || (searchString === this.currentSearchString && !force)) return;
     this.currentSearchString = searchString;
 
     // update focus rectangle if needed
@@ -505,6 +514,11 @@ class FlameComponent extends React.Component<FlameProps> {
     // render
     this.focusedMatchIndex = NaN;
     this.setState({});
+  };
+
+  private handleKeyPress = (e: KeyboardEvent) => {
+    e.stopPropagation();
+    this.searchForText(false);
   };
 
   private focusOnHit = (timestamp: number) => {
@@ -626,7 +640,7 @@ class FlameComponent extends React.Component<FlameProps> {
               tabIndex={0}
               onClick={() => {
                 this.caseSensitive = !this.caseSensitive;
-                this.setState({});
+                this.searchForText(true);
               }}
               style={{ display: 'none' }}
             />
@@ -650,7 +664,7 @@ class FlameComponent extends React.Component<FlameProps> {
               tabIndex={0}
               onClick={() => {
                 this.useRegex = !this.useRegex;
-                this.setState({});
+                this.searchForText(true);
               }}
               style={{ display: 'none' }}
             />
