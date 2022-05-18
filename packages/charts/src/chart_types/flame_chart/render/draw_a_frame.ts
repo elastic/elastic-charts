@@ -21,6 +21,7 @@ const PADDING_TOP = 16; // for the UI controls and the minimap protrusion
 const PADDING_BOTTOM = 24; // for the UI controls and the minimap protrusion
 const PADDING_LEFT = 16; // for the location indicator or edge zoom
 const PADDING_RIGHT = 16; // for aesthetic purposes or edge zoom
+const FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH = 0.5;
 
 /** @internal */
 export const drawFrame = (
@@ -125,6 +126,34 @@ export const drawFrame = (
     '',
     'black',
     CHART_BOX_LINE_WIDTH,
+  );
+
+  // focus chart horizontal placeholder
+  drawRect(
+    ctx,
+    focusLayerCssWidth,
+    0,
+    PADDING_LEFT,
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2,
+    dpr,
+    fullFocus,
+    '',
+    'lightgrey',
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
+  );
+
+  // focus chart vertical placeholder
+  drawRect(
+    ctx,
+    0,
+    focusLayerCssHeight,
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2,
+    focusLayerCssHeight + PADDING_TOP,
+    dpr,
+    fullFocus,
+    '',
+    'lightgrey',
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
   );
 
   // minimap box - erase Canvas2d text from the main chart that falls within the minimap area
